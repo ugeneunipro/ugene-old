@@ -1,0 +1,76 @@
+#!UGENE_WORKFLOW
+#Builds statistical profile for SITECON. The SITECON is a program for probabilistic recognition of transcription factor binding sites.
+
+workflow sitecon-build{
+
+    read-msa {
+        type:read-msa;
+        name:"Read alignment";
+    }
+    sitecon-build {
+        type:sitecon-build;
+        name:"Build SITECON model";
+        calibrate-length:1000000;
+        seed:0;
+        weight-algorithm:0;
+        window-size:40;
+    }
+    sitecon-write {
+        type:sitecon-write;
+        name:"Write SITECON model";
+        write-mode:2;
+    }
+
+    read-msa.msa->sitecon-build.in-msa.msa
+    sitecon-build.sitecon-model->sitecon-write.in-sitecon.sitecon-model
+
+    .meta {
+        aliases {
+            read-msa.url-in:in;
+            sitecon-build.calibrate-length:clength;
+            sitecon-build.seed:rseed;
+            sitecon-build.weight-algorithm:walg;
+            sitecon-build.window-size:wsize;
+            sitecon-write.url-out:out;
+        }
+        help {
+            in:"Input alignment";
+            clength:"Length of random synthetic sequences used to calibrate the profile";
+            rseed:"The seed for random numbers";
+            walg:"Weight algorithm";
+            wsize:"Window size, bp";
+            out:"Output SITECON model";
+        }
+        visual {
+            read-msa {
+                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
+                pos:"-765 -675";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
+            }
+            sitecon-build {
+                tooltip:"Builds statistical profile for SITECON. The SITECON is a program for probabilistic recognition of transcription factor binding sites.";
+                pos:"-570 -675";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-sitecon.angle:360;
+            }
+            sitecon-write {
+                tooltip:"Saves all input SITECON profiles to specified location.";
+                pos:"-345 -675";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sitecon.angle:180;
+            }
+            read-msa.out-msa->sitecon-build.in-msa {
+                text-pos:"-45 -50";
+            }
+            sitecon-build.out-sitecon->sitecon-write.in-sitecon {
+                text-pos:"-37 -24";
+            }
+        }
+    }
+}
+

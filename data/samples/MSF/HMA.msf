@@ -1,0 +1,756 @@
+PileUp   MSF: 1340  Type: N    Check:  3029   ..
+
+ Name: sf170-A3 oo  Len: 1340  Check:  3165  Weight:  1.000
+ Name: br20-B1 oo  Len: 1340  Check:  2267  Weight:  1.000
+ Name: th14-B2 oo  Len: 1340  Check:  9878  Weight:  1.000
+ Name: sf162-B3 oo  Len: 1340  Check:  2869  Weight:  1.000
+ Name: ma959-C1 oo  Len: 1340  Check:  3493  Weight:  1.000
+ Name: zm18-C2 oo  Len: 1340  Check:  3953  Weight:  1.000
+ Name: in868-C3 oo  Len: 1340  Check:  7099  Weight:  1.000
+ Name: ug21-D1 oo  Len: 1340  Check:  5919  Weight:  1.000
+ Name: ug46-D3 oo  Len: 1340  Check:  6418  Weight:  1.000
+ Name: th22-E1 oo  Len: 1340  Check:   716  Weight:  1.000
+ Name: th06-E2 oo  Len: 1340  Check:  6676  Weight:  1.000
+ Name: bz162-F1 oo  Len: 1340  Check:  7398  Weight:  1.000
+ Name: bz163-F2 oo  Len: 1340  Check:   443  Weight:  1.000
+ Name: ru131-G1 oo  Len: 1340  Check:  4399  Weight:  1.000
+ Name: lbv21-G2 oo  Len: 1340  Check:  6773  Weight:  1.000
+ Name: vi525-G3 oo  Len: 1340  Check:  3844  Weight:  1.000
+ Name: vi557-H2 oo  Len: 1340  Check:  2113  Weight:  1.000
+ Name: se9173-J1 oo  Len: 1340  Check:  6719  Weight:  1.000
+ Name: se9280-J2 oo  Len: 1340  Check:  3905  Weight:  1.000
+ Name: primer_ed5 oo  Len: 1340  Check:  7631  Weight:  1.000
+ Name: primer_ed31 oo  Len: 1340  Check:  6931  Weight:  1.000
+ Name: primer_es7 oo  Len: 1340  Check:  1696  Weight:  1.000
+ Name: primer_ed33REVCOMP oo  Len: 1340  Check:  6033  Weight:  1.000
+ Name: primer_es8REVCOMP oo  Len: 1340  Check:  2041  Weight:  1.000
+ Name: primer_ed12REVCOMP oo  Len: 1340  Check:   650  Weight:  1.000
+
+//
+sf170-A3            ATGGGACCAG AGTCTAAAGC CATGTGTAAA GTTAACCCCT CTCTGCGTTA
+br20-B1             ATGGGATCAA AGCCTAAAGC CTTGTGTAAA GTTAACCCCA CTCTGTGTTA
+th14-B2             ATGGGATCAA AGCCTAAAGC CATGTGTAAA ATTAACCCCA CTCTGTGTTA
+sf162-B3            ATGGGATCAA AGTCTAAAGC CATGTGTAAA GTTAACCCCA CTCTGTGTTA
+ma959-C1            ATGGGATCAA AGCCTAAAGC CATGTGTAAA GTTGACCCCA CTCTGTGTCA
+zm18-C2             ATGGGATCAA AGCTTAAAGC CATGTGTAAA GTTGACCCCA CTCTGTGTCA
+in868-C3            ATGGGATCCA AGCCTGAAGC CATGTGTAAA GTTGACCCCA CTCTGTGTCA
+ug21-D1             ATGGGATCAA AGCCTAAAAC CATGTGTAAA ATTACCCCCA CTCTGTGTCA
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             ATGGGATCAA AGTCTAAAGC CATGTGTAAA GTTAACTCCT CTCTGTGTTA
+th06-E2             ATGGGATCAA AGTCTAAAGC CATGTGTAAA GTTAACTCCT CTCTGCGTTA
+bz162-F1            ATGGGATCAA AGCCTAAAGC CATGTGTGAA GTTAACCCCA CTCTGTGTTA
+bz163-F2            ATGGGATCAA AGCCTAAAGC CATGTGTGAA GTTAACCCCA CTCTGTGTTA
+ru131-G1            ATGGGATGAA AGCCTAAAGC CATGTGTAAA GTTAACCCCT CTCTGTGTTA
+lbv21-G2            ATGGGATGAA AGCCTAAAGC CATGTGTAAA GTTAACCCCT CTCTGTGTTA
+vi525-G3            ATGGGATGAA AGCTTAAAGC CATGTGTAGA GCTAACCCCT CTCTGTGTTA
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           ATGGGATGAA AGCTTAAAGC CATGTGTAAA GATAACCCCT CTCTGTGTCA
+se9280-J2           ATGGGATGAA AGCTTAAAGC CATGTGTAAA GATAACCCCT CTATGTGTCA
+primer_ed5          ATGGGATCAA AGCCTAAAGC CATGTG.... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            CTTTAAATTG TAGCCAT... AACATCACCA CC........ ..........
+br20-B1             CTTTAAATTG CATTGATTTG AAT....... .......... ..........
+th14-B2             CTTTAAACTG CACTGATTTG AGG....... .......... ..........
+sf162-B3            CTCTACATTG CACTAATTTG AAG....... .......... ..........
+ma959-C1            CTTTAAATTG TAGCAATGCT AAC....... .......... ..........
+zm18-C2             CTTTAGAATG TGGAAATGTT AAT....... .......... ..........
+in868-C3            CTTTAGAATG TAGAGAGGTT AAT....... .......... ..........
+ug21-D1             CTTTAAACTG CACTGAATGG AAG....... .......... ..........
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             CTTTAAATTG TACCAATGCT AATTTGATCA AT........ ..........
+th06-E2             CTTTAAATTG TACCAATGCT AAAGTGACCA AT........ ..........
+bz162-F1            CTTTAAATTG TACTGATGCC ATC....... .......... ..........
+bz163-F2            CTTTAAATTG TACTAATGCC ATT....... .......... ..........
+ru131-G1            CTTTAAACTG TAGAAATGTA AGCTGTACTA ATTGTACTAA GGGAAAC...
+lbv21-G2            CCTTAAACTG TACTAAT... .......... .....GCAAT CGCTAATGTA
+vi525-G3            CTTTAAACTG TACTAAGGTA ACCTACAATA GCACTGCAGC CAACAATAGA
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           CTTTAAATTG TAGCGAC... .......... .......... .......GTC
+se9280-J2           CTTTAAATTG TAGTAAC... .......... .......... .......ATC
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            .......... .....CATAA CATCACCACC AACAACCCCA ATATCACCAA
+br20-B1             .........A ATAGTACTAA CAACAATAAT AGTAGTGGGG TAAAAACAGG
+th14-B2             .........A ATGCTACTAA TACCAGTAGT ACA....... ..........
+sf162-B3            .........A ATGCTACTAA TACCAAGAGT AGTAAT.... ..TGGAAAGA
+ma959-C1            .......... ........AA CACTGCTACC AATAATGTAA CTGCTACCAA
+zm18-C2             .......... .......... .......... ......GTTA CCCATGAGAA
+in868-C3            .......... ........GA T......ACT AGAAATGGGG TTAATGTTAC
+ug21-D1             .........A ATGCCACCAC TAATGCCACT AATGAGGGCA TA........
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             .......... .....GTCAA TAACATAACC AATGTCTCTA ACATAATAGG
+th06-E2             .......... .....GTCAG TAATACAATC AATGCCCCTG ACATA...GG
+bz162-F1            .........A ATAGCACT.. ....AAAAAC AGCACC.... .....CTGAT
+bz163-F2            .........A ATGCCACTGC CATTCAAGAC GGGGAC.... .....CTGAA
+ru131-G1            .......... .......... .......... ......AACA ATAGAACTGT
+lbv21-G2            ACCAACAGCA ATAAGACTAG TAACAACAGC AGCCTTGGGA ATAGCACTGT
+vi525-G3            TCATCCACTG TCACCACCCC TACTAGTACT GTAACCAACA ATAGCACTGT
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           AATAGTAACA ATAGTACAGA TAGTAATAGT AGTGCAAGCA ACAATAGTCC
+se9280-J2           ACTAGTAACA GTAATACAAC TAGTAACAGT AGTGTAAGT. .....AGTCC
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            ATACATGGAA GGAGAAATAA AGAACTGCTC TTACAATATG ACCACAGAAC
+br20-B1             GATAGACAAG GGAGAGATAA AAAACTGCTC TTTCAATACC ACCACAAGTG
+th14-B2             .ATGGAGGGA GGAGAAATAA AAAACTGCTC TTTCAATATC ACCACGAGCA
+sf162-B3            GATGGACAGA GGAGAAATAA AAAATTGCTC TTTCAAGGTC ACCACAAGCA
+ma959-C1            TAATGTAACC AGTGACATGA AAAATTGTTC TTTCAATGCA ACCACAGAAT
+zm18-C2             TAGCACGAAG GGGGAAATGA AAAATTGCTC TTTCAATGCA ACCACAGAAC
+in868-C3            CAATAATGGG GAAGAAATAA AAAATTGCTC TTTCAATGCA ACCACAGAAA
+ug21-D1             .......... ...GGAATGA AAAACTGCTC TTTC...... ...ACAGAAG
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             AAATATAACA GATGAAGTAA GAAACTGTAC TTTTAATATG ACCACAGAAA
+th06-E2             AAATATAACA GATGAAGTAA GAAACTGTTC TTTTAATATG ACCACAGAAC
+bz162-F1            GGAAGAGTCA GGGGCAATAC AAAACTGTTC TTTCAATATG ACCACAGAAG
+bz163-F2            GGAAGGACCA GGGGCAATAC AAAACTGTTC TTTCAATGTG ACCATGGAAG
+ru131-G1            GGAAGGCAAG GACGAAATGA AAAACTGCTC TTTCAATGTA ACTACAGAAA
+lbv21-G2            GAGTAGCATA GAAGAAATGA AAAACTGCTC TTTCAATATA ACCACAGAAG
+vi525-G3            GAGTGGCAAA GAAGAAATGA CAAACTGCTC TTTCAATGTA ACCACAGAAC
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           T......... GAAATCATGA AAAACTGCTC TTTCAATGTA ACTACAGAAA
+se9280-J2           T......... GATATCATGA CAAACTGCTC TTTCAATATA ACTACAGAAA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            TAAGGGATAA GAAACAGAAA GTGTATTCAC TTTTTTATAA ACTTGATGTA
+br20-B1             TAAAAGATAA GGAGAAGAAG GAATATGCTC TCTTCTATAA TCTTGATGTA
+th14-B2             TAAAAACTAA GGTA...AAA GACTATGCAC TTTTTTATAA ACTTGATGTA
+sf162-B3            TAAGAAATAA GATGCAGAAA GAATATGCAC TTTTTTATAA ACTTGATGTA
+ma959-C1            TAAGAGATAA GAGACAGAAA GTGTATGCAC TTTTTTATAA ACTTGATATA
+zm18-C2             TAAAAGATAA AAAACAGAGA GTGTATGCAC TTTTTTATAA ACTTGATATA
+in868-C3            TAAGAGATAG GAAGCAGACA GTGTATGCAC TTTTTTATAG ACTTGATATA
+ug21-D1             TAAGAGATAA GAAGAAGCAA GCATATGCAC TTTTTTATAA GCTTGATGTG
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             TAAGAGATAA ACAGCAGAAG GTCCATGCAC TTTTTTATAG GCTTGATATA
+th06-E2             TAAGAGATAA GAAGCAGAAG GTCCATGCAC TTTTTTATAA GCTTGATATA
+bz162-F1            TAAGAGATAA GCAGAAGAGA GTACATGCAC TTTTTTATAA ACTTGATATA
+bz163-F2            TAAGAGATAA GCAGCAGAAA GTACATGCAC TGTTT.ATAG ACTTGATATA
+ru131-G1            TAAGAGATAA GAAAAAGACA GAATACGCGC TTTTCTATAA ACTTGATGTA
+lbv21-G2            TAAGAGATAA GAGTAAGAAA GAATACGCTC TTTTCTATAG ACTTGATGTG
+vi525-G3            TAAGAGATAA GCAGAAGGCA GAATACGCGC TTTTCTATAA ACTTGATGTA
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           TAAGAAATAA AAGGAAGCAA GAATACGCGC TTTTCTATAG ACAAGATGTA
+se9280-J2           TAAGAAATAA AAGGAAGCAA GAGTACGCGC TTTTCTATAG ACAAGATGTA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            GTACCAATTG ATAAAAATAA TGGTAATAAC AATATAAGGA CTCAGTATAG
+br20-B1             GTACAAAT.. .......AGG TAATGATAA. .....TACTA GC...TATAG
+th14-B2             GTACCAAT.. .......AGA TAATGATAA. .....TACCA GC...TATAG
+sf162-B3            GTACCAAT.. .......AGA TAATGATAA. .....TACAA GC...TATAA
+ma959-C1            GTACCACTTA ATGAGAAGGA TAACAGCAG. .....CTCTG GAGAATATAG
+zm18-C2             GTACCACTTA ATGAGAATAA CAACTCTAGT GAGGACTCTA GTGAGTATAG
+in868-C3            GTACCACTTG ATAATAAGAA GAAGAACA.. .ACTCTAGTG AGTATTATAG
+ug21-D1             GTACAAATGA ATG...ATGA TAATAGTAC. .....TAATA CCAGTTATAG
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             GTACAAAT.. .......GCA TAATGAAAA. .....TAGTA GTGAGTATAG
+th06-E2             GTACAA.... .......... ....GTTAA. .....TAGTA GTGAGTACAG
+bz162-F1            GTACCAAT.. .......CAA TGGCAGTAG. .....AACAT CA...TACAG
+bz163-F2            GTACCAATTA GCAATGGAAG AAATGGCAG. .....TGGAG ACTACTACAG
+ru131-G1            GTACCAATTA ......ATGA TGAAAGTAG. .....TAATA GTACTTATAG
+lbv21-G2            GTACCAATTA ATGGTAATGA AAATAGTAG. .....TACAA CTGATTATAG
+vi525-G3            GTACCAAT.. .......TGA TAATAATAG. .....AAATG ATAGTTATAG
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           GTACCAAT.. .......TAA TAGTGACAA. .....TAAAA GT...TATAT
+se9280-J2           GTACCAAT.. .......TGA TAGTAACAA. .....TAAAA AT...TATAT
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            ATTAATAAAT TGTAATACCT CAGCCATTAC ACAGGCTTGT CCAAAAGTAT
+br20-B1             ATTGACAAGT TGTAATACCT CAGTCATTAC CCAGGCCTGT CCAAAGGTAA
+th14-B2             GTTGATAAAT TGTAACACCT CAGTCATTAC ACAAGCTTGT CCAAAGGTAT
+sf162-B3            ATTGATAAAT TGTAACACCT CAGTCATTAC ACAGGCCTGT CCAAAGGTAT
+ma959-C1            ATTAATAAAT TGCAGTACCT CAACTGTAAC ACAAGCCTGT CCAAAGGTCT
+zm18-C2             ATTAATAAAT TGTAATACCT CAGCCATAAC ACAAGCCTGT CCAAAGGTCA
+in868-C3            ATTAATAAAT TGTAATACCT CAGCCATAAC ACAAGCCTGT CCAAAGGCCA
+ug21-D1             ATTAATAAAT TGTAATGCCT CAACCATTAC ACAGGCGTGT CCAAAGATAT
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             GTTAATAAAT TGTAATACTT CAGTCATTAA GCAGGCTTGT CCAAAGATAT
+th06-E2             GTTAATAAAT TGTAATACTT CAGTCATTAA GCAGGCTTGT CCAAAGATAT
+bz162-F1            GCTAATAAAT TGTAATACCT CAACCATTAC ACAGGCTTGT CCAAAGGTAT
+bz163-F2            GCTAATAAAT TGCAATACCT CAACCATTAC ACAGGCTTGT CCAAAAGTAT
+ru131-G1            GCTAATAAAT TGTAATGTCT CAACCATTAA ACAGGCTTGT CCAAAGGTGA
+lbv21-G2            GCTAATAAAT TGTAATGCCT CAACCATTAA ACAAGCTTGT CCAAAGGTGA
+vi525-G3            GCTAATACAT TGTAATGTCT CAACCATTAA ACAGGCTTGT CCCAAGGTAT
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           TCTAATAAAC TGTAATACCT CAGTTATTAA ACAGGCTTGT CCAAAGGTGT
+se9280-J2           TCTAATAAAC TGTAATACCT CAGTCATTAA ACAAGCTTGT CCAAAGGTGT
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......CCT CAGCCATTAC ACAGGCCTGT CCAAAG....
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            CCTTTGAGCC AATTCCCATA CATTATTGTG CTCCAGCTGG TTTTGCGATT
+br20-B1             CCTTTGAGCC AATTCCCATA CATTATTGTA CCCCGGCTGG TTATGCGATT
+th14-B2             CCTTTGAGCC AATTCCCATA CATTATTGTA CCCCGGCTGG TTTTGCGATT
+sf162-B3            CCTTTGAACC AATTCCCATA CATTATTGTG CCCCGGCTGG TTTTGCGATT
+ma959-C1            CTTTTGACCC AATTCCTATA CATTATTGTA CTCCAGCTGG TTATGCGATT
+zm18-C2             CTTTGGATCC AATTCCTATA CATTATTGTG CTCCAGCTGG ATATGCGATT
+in868-C3            CTTTTGATCC AATTCCTATA CACTATTGTG CTCCAGCTGG TTTTGCGATT
+ug21-D1             CCTTTGAGCC AATTCCCATA CATTATTGTG CCCCAGCTGG ATTTGCAATT
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             CCTTTGATCC AATTCCTATA CATTATTGTA CTCCAGCTGG TTATGCGATT
+th06-E2             CCTTTGATCC AATTCCTATA CATTATTGTG CTCCAGCTGG TTATGCGATT
+bz162-F1            CTTGGGATCC TATTCCCATA CATTATTGTG CTCCAGCTGG TTATACGATT
+bz163-F2            CTTGGGGTCC AATTCCCATA CATTATTGTG CTCCAGCTGG TTATGCGATT
+ru131-G1            ATTTTGACCC AATTCCCATA CATTATTGTG CTCCAGCTGG TTTTGCGATT
+lbv21-G2            CTTTTGACCC AATTCCCATA CATTATTGCG CTCCAGCTGG GTTTGCGATT
+vi525-G3            CTTTTGAACC AATTCCCATA CATTATTGTG CTCCAGCTGG TTTTGCAATT
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           CTTTTCAACC AATTCCCATA CATTATTGTG CTCCAGCTGG TTTTGCGATT
+se9280-J2           CTTTTCAACC AATTCCCATA CATTATTGTG CCCCAGCTGG TTTTGCGATT
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            CTAAAGTGTA ATGATGCAGA GTTCAATGGA ACAGGGCCAT GCAAGAATGT
+br20-B1             CTAAAGTGTA ATGGTAAGAA GTTCAATGGA ACAGGACCCT GTACAAATGT
+th14-B2             CTACAGTGTA ACAATAAAAA GTTCAATGGA ACAGGACCAT GTACAAATGT
+sf162-B3            CTAAAGTGTA ATGATAAGAA GTTCAATGGA TCAGGACCAT GTACAAATGT
+ma959-C1            CTAAAGTGTA ATAATAAGAC ATTCAATGGG ACAGGACCAT GCCATAATGT
+zm18-C2             CTAAAGTGTA ATAATAAGAC ATTCAATGGG ACAGGACCAT GCCATAATGT
+in868-C3            ATAAAGTGTA ATAATAAGAC ATTCAATGGG ACAGGACCAT GCAGTAATGT
+ug21-D1             CTAAAATGTA ATGATAAAAA GTTCAATGGG ACAGGTCCAT GTAAAAATGT
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             TTAAAGTGTA ATGACAAGAA TTTTACTGGG ACAGGGCCAT GTAAAAATGT
+th06-E2             TTAAAGTGTA ATGATAAAAA CTTCAATGGG ACAGGGCCAT GTAAAAATGT
+bz162-F1            CTAAAGTGTA AGGATAAAAA GTTCAATGGG ACAGGGCCAT GCGAGAATGT
+bz163-F2            TTAAAGTGTA ATGATAAAAA GTTCAATGGG ACAGGGCCAT GCAAGAATGT
+ru131-G1            TTAAAGTGTA GGGATAAGAA TTTCACTGGA ACAGGACCAT GTAAAAATGT
+lbv21-G2            CTAACATGTA GGGATAAGAA GTTCAATGGA ACAGGACCGT GTAAAAATGT
+vi525-G3            TTAAAGTGTA GGGAGAAGAA TTTCACTGGA ACAGGACTAT GTAAAAATGT
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           CTAAAATGTA ATAATAAGAC TTTCAATGGA ACAGGACCAT GCAAAAATGT
+se9280-J2           CTAAAATGTA ATGATAAGAA TTTCAATGGA ACAGGATCAT GCAAAAATGT
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            CAGCACAGTA CAATGCACAC ATGGAATCAG GCCAGTA.AT ATCAACCCAA
+br20-B1             CAGCACAGTA CAATGTACAC ATGGAATTAA GCCAGTA.GT GTCCACTCAA
+th14-B2             CAGTACAGTA CAATGTACAC ATGGAATTAG GCCAGTA.GT ATCAACTCAA
+sf162-B3            CAGCACAGTA CAATGTACAC ATGGAATTAG GCCAGTA.GT GTCAACTCAA
+ma959-C1            CAGCACAGTA CAGTGTACAC ATGGAATTAA GCCAGTG.GT ATCAACTCAA
+zm18-C2             CAGCACAGTA CAATGTACAC ACGGAATCAA GCCAGTG.GT ATCAACTCAA
+in868-C3            CAGCACAGTA CAATGTACAC ATGGAATTAA GCCAGTG.GT ATCAACTCAA
+ug21-D1             CAGCACAGTA CAGTGTACAC ATGGGATTAA GCCAGTA.GT GTCAACTCAA
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             CAGCTCAGTA CAATGCACAC ATGGAATTAA GCCAGTG.GT ATCAACTCAA
+th06-E2             CAGCTCAGTA CAATGCACAC ATGGAATTAA GCCAGTG.GT ATCAACTCAA
+bz162-F1            CAGCACAGTA CAATGTACAC ATGGAATTAA ACCAGTG.GT ATCAACTCAA
+bz163-F2            CGC.ACAGTA CAGTGTACAC ATGGAATTAA ACCAGTG.GT ATCAACTCAA
+ru131-G1            CAGTACAGTA CAATGTACAC ATGGAATTAA GCCAGTG.GT ATCAACTCAA
+lbv21-G2            CAGTACAGTG CAATGTACAC ATGGAATTAA GCCAGTG.GT ATCAACTCAA
+vi525-G3            CAGTACAGTA CAATGTACAC ATGGAATTAA GCCAGTG.GT ATCAACTCAA
+vi557-H2            .......... .......... .......... .......... ..........
+se9173-J1           CAGTACAGTA CAATGTACAC ACGGAATTAA GCCAGTG.GT ATCAACTCAA
+se9280-J2           CAGTACAGTA CAATGTACAC ACGGAATTAA GCCAGTG.GT ATCAACTCAA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .....TGTAA AACGACGGCC
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            CTGCTGTTAA ATGGCAGTCT AGCAGAAGGA AGGGTAAAGA TTAGATCTGA
+br20-B1             CTGCTGTTAA ATGGCAGTCT AGCAGAAGAA GATATAGTAA TTAGATCTGA
+th14-B2             CTGCTGTTAA ATGGCAGTTT AGCAGAAGAA GAGGTAGTAA TTAGATCTAG
+sf162-B3            TTGCTGTTAA ATGGCAGTCT AGCAGAAGAA GGGGTAGTAA TTAGATCTGA
+ma959-C1            CTACTGTTAA ATGGTAGCCT AGCAGAAGGA GAAATAATAA TTAGATCTGA
+zm18-C2             CTACTGTTAA ATGGTAGCCT AGCAGAAGAA GAGATAATAA TTAGGTCTGA
+in868-C3            CTACTGTTAG ATGGTAGCCT AGCAGAAGAA GGGATAATAA TTAGATCTGA
+ug21-D1             CTGTTGTTGA ATGGCAGTCT AGCAGAAGAA GAGATAATAA TTAGATCTGA
+ug46-D3             .......... .......... .......... ...ATAATAA TTAGATCTGA
+th22-E1             TTGCTGTTAA ATGGCAGTCT AGCAGAAGAA GAGATAATAA TCAGATCTGA
+th06-E2             TTGCTGTTAA ATGGCAGTCT AGCAGAAGAA GAGATAATAA TCAGATCTGA
+bz162-F1            TTGTTGTTAA ATGGCAGCCT AGCAGAAGAA AGTATAGTAA TCAGATCTCA
+bz163-F2            TTGTTGTTAA ATGGCAGCCT AGCAGAAGAA GATATAATAA TCAGATCTCA
+ru131-G1            TTATTGCTGA ATGGCAGCTT AGCAGAAGAA GAAATAATAG TTAGATCTGA
+lbv21-G2            TTACTGCTGA ATGGCAGTTT AGCAGAAGAA GAAATAATGA TTAGATCTGA
+vi525-G3            CTACTGCTGA ATGGCAGTTT AGCAGAAAAA GAAATTATAA TTAGATCTGA
+vi557-H2            .......... .......... .......AAC CATGTAATAA TTAGATCTAA
+se9173-J1           CTACTGCTAA ATGGCAGTGT AGCAGAAGGA GACATAATAA TTAGATCTGA
+se9280-J2           CTACTGCTAA ATGGCAGTAT AGCAGAAGGA GACATAATAA TTAGATCTGA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          AGTCTGTTAA ATGGCAGTCT AGC....... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            AAATATCACA AACAATGCCA AAACCATAAT AGTACAACTT AACAAGACTG
+br20-B1             AAATCTCACA AACAATGCTA AAACCATAAT AGTGCAGCTA AAGGACCCTG
+th14-B2             CAATTTCACG GACAATGCTA GAGTCATAAT AGTACAGCTG AATGAATCTG
+sf162-B3            AAATTTCACA GACAATGCTA AAACTATAAT AGTACAGCTG AAGGAATCTG
+ma959-C1            AAATCTGACA AACAATGTCA AAACAATAAT AGTGCACCTT AATGAATCTG
+zm18-C2             AAATCTAACA AACAATGCCA AAACAATAAT AGTACATCTT AATGAATCTG
+in868-C3            AAATCTGACA AACAATGCCA AAATAATAAT AGTACATCTT GATCAACCTG
+ug21-D1             AAATCTCACA AATAATGCTA AAATTATAAT AGTACATCTT AATGAGTCTG
+ug46-D3             AAATCTCACA AATAATGCTA AAACCATAAT AGTACAGCTT AATGAGTCTG
+th22-E1             AAATCTCACA AACAATGCCA AAACCATAAT AGTGCACCTT AATAAATCTG
+th06-E2             AAATCTCACA AACAATGCCA AAACCATAAT AGTGTACCTT AATAAATCTG
+bz162-F1            AAATATCTCA GATAATGCAA AAATCATAAT AGTACACCTT AATGAATCTG
+bz163-F2            AAATATCTCA GATAATGCAA AAACCATAAT AGTACACTTT AATGAATCTG
+ru131-G1            AAACTTCACA GACAATGCCA AAGTCATAAT AGTGCAGCTT AATAAATCTG
+lbv21-G2            AAACTTCACA AACAATGCCA AAAACATAAT AGTGCAATTT AATAAATCTA
+vi525-G3            AAACTTCACA AACAATGCCA AAGTCATAAT AGTGCAGCTT AATGAAACTG
+vi557-H2            AAATATCACA GACAATACCA AAAACATAAT AGTACAGCTT AAAAGTCCTG
+se9173-J1           AAATATCTCA GACAATGCTA AAAACATAAT AGTACAACTT AATGACACTG
+se9280-J2           AAACATCTCA GACAATGCCA AAAACATAAT AGTACAACTT AATAAAACTG
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            TAGAAATTAA TTGTACCAGA CCTAACAACA ATACAAGAAA AAGTGTACGT
+br20-B1             TAGACATTAA TTGTACAAGA CCCAACAACA ATACAAGAAA GAGTATACAT
+th14-B2             TAGAAATTAA TTGTACAAGA CCCAACAACA ATACAAGAAA AAGTATACAT
+sf162-B3            TAGAAATTAA TTGTACAAGA CCTAACAATA ATACAAGAAA AAGTATAACT
+ma959-C1            TAGAAATTGT GTGTACAAGA CCCAACAATA ATACAAGAAG AAGTATAAGA
+zm18-C2             TAGAAATTGT GTGTACAAGA CCCAGCAATA ATACAAGAAA AAGTATAAGG
+in868-C3            TAGAAATTGT GCGTACAAGA CCAAACAATA ATACAAGAAA AAGTATAAGG
+ug21-D1             TACCAATTAA TTGCACAAGG CCCTACGATA AGGTAAGCTA CAGGACACCT
+ug46-D3             TACCAATTAA TTGCTCAAGG CCCTACGAAA ATAAAAGACG ACGTACACCT
+th22-E1             TAGAAATCAA TTGTACCAGA CCCTCCAACA ATACAAGAAC AAGTATAACT
+th06-E2             TAGAAATCAA TTGTACCAGA CCCTCCAACA ATACAAGAAC AAGTATAACT
+bz162-F1            TACAAATTAA TTGTACAAGA CCCAACAACA ATACAAGAAA AAGTATACAT
+bz163-F2            TACAGATTAA TTGTACAAGA CCCAACAACA ATACAAGAAA AGGTATACAT
+ru131-G1            TAGAAATTAC ATGTACCAGA CCTAATAACA ATACAAGAAA AAGTATAACT
+lbv21-G2            TAGATATTGT GTGTACCAGA CCCAACAACA ATACAAGAAA AAGTATACAC
+vi525-G3            TAGAAATTAA TTGTACCAGA CCCAACAACA ATACAAGAAA AAGTATAAAA
+vi557-H2            TACCAATTAA CTGTACCAGA CCCAACAATA ATACGAGAAA AAGTATAAGT
+se9173-J1           TAGAAATTGT GTGTACCAGA CCTAATAACA ATACAAGAAA AGGTATACAC
+se9280-J2           TAGAAATTGT GTGTTACAGA CCTAATAACA ATACAAGGAA AGGTATACAC
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            ATAGGACCAG GACAAGCATT CTATGCAACA GGTGACATAA TAGGGGATAT
+br20-B1             ATAGGACCAG GGAGAGCATT TTATGCAACA GGAGACATAA TAGGAGATAT
+th14-B2             CTAGGACCAG GGCGAGCATG GTATACAACA GGACAAATAA TAGGAGATAT
+sf162-B3            ATAGGACCGG GGAGAGCATT TTATGCAACA GGAGACATAA TAGGAGATAT
+ma959-C1            ATAGGACCAG GACAAGTATT CTATGCAAAT AATGACATAA TAGGAGACAT
+zm18-C2             ATAGGACCAG GACAAGCATT CTATGCAACA GGTGGCATAA TAGGAAACAT
+in868-C3            ATAGGACCAG GACAAACATT CTATGCAACA GGAGACATAA TAGGAGACAT
+ug21-D1             ATAGGAGTAG GGCGAGCATC CTATACAACA AG...AATAA AAGGAGATAT
+ug46-D3             ATAGGACTAG GGCAAGCGTA CTATACAACA AA...ATTAA AAGGATATAT
+th22-E1             ATAGGACCAG GACAAGTATT CTATAGAACA GGAGACATAA TAGGAGATAT
+th06-E2             ATAGGACCAG GACAAGTATT CTATAGAACA GGAGACATAA TAGGAGATAT
+bz162-F1            ATAGGACCAG GACGGGCACT TTATGCAACA GGAGACATAA TAGGAGACAT
+bz163-F2            ATAGGACCAG GACGAGCATT TTATGCAACA GGAGACATAA TAGGAGACAT
+ru131-G1            TTTGCACCAG GACAAGCGCT CTATGCAACA GGTGAAATAA TAGGAGATAT
+lbv21-G2            ATAGGACCTG GACAAGCATT ATATGCAACA GGCGCCATAA TAGGCGATAT
+vi525-G3            TTCGGAACAG GACGAGTGTT ATATGCAACA GGTGCCATAA TAGGAAATAT
+vi557-H2            ATAGGGCCAG GACAAGCATT CTATGCAACA GGTGACATCA TAGGAGATAT
+se9173-J1           ATGGGACCAG GACAAGTGCT CTACGCAACA GGGGAAATAA TAGGAGATAT
+se9280-J2           ATGGGACCAG GACAAGTGCT CTACGCAACA GGAGAAATAA TAGGAAATAT
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            AAGACAAGCA TATTGTAATG TCAGTAGAGC AGACTGGAAT AAAACTTTAC
+br20-B1             AAGACAAGCA CATTGTAACC TTAGCAGAGC ACAATGGAAT GACACTTTAA
+th14-B2             AAGACAAGCA CATTGTAACC TTAGTAGCAC AAAATGGAAT AACACTTTAA
+sf162-B3            AAGACAAGCA CATTGTAACA TTAGTGGAGA AAAATGGAAT AACACTTTAA
+ma959-C1            AAGACAAGCA CATTGCAACA TTAGTAAGGA TGTCTGGAAC AGTACTTTAC
+zm18-C2             AAGACAAGCA CATTGTAACA TTAGTAAAGA GAACTGGAAT AAAACTTTAC
+in868-C3            AAGACGAGCA TATTGTAACA TTAGTGAAAA CAAATGGAAT GAAACTTTAC
+ug21-D1             AAGACAAGCA CATTGTAACA TTAGTGGAGA AAAATGGAAT AAAACTTTAC
+ug46-D3             AAGACCAGCA CATTGTAATA TTAGTGGAGC AGAATGGAAT AAAACTTTAC
+th22-E1             AAGAAGAGCA TATTGTGAGA TTAATGGAAC AAAATGGAAT AAAGCTTTAA
+th06-E2             AAGACAAGCA TATTGTGAGA TTAATGAAAC AAAATGGAAT GAAACTTTAA
+bz162-F1            CAGAAAGGCA CATTGTAACG TTAGTAGAAC ACAATGGAAT AAGAAGTTAG
+bz163-F2            CAGAAAGGCC CATTGTAATG TTAGTGGAAC ACAATGGAAT AAAACATTAG
+ru131-G1            AAGACAAGCA CATTGTAATG TTAGTAGAAA AGATTGGAAT GAGATGTTGC
+lbv21-G2            AAGACAAGCA CATTGTAATG TTAGTGAAAC AGACTGGAGA GACATGTTAC
+vi525-G3            AAGACAAGCA CATTGTAATG TTAGTACAGA AAAATGGGGT AAGATGTTAC
+vi557-H2            AAGAAAAGCA TATTGTAATA TTACTAGGGA AGATTGGAAA AGGACTTTAC
+se9173-J1           AAGGAAAGCA TATTGTAACA TTAGTAGAAA AGATTGGAAT AACACTTTAC
+se9280-J2           AAGAGAAACA CATTGTAACA TTAGTGAAAG AGATTGGAGT AACACTTTAC
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            AAGGGGTAGC CAACCAATTA AAAAGTTACT TTAGTAACAA AACAATAATC
+br20-B1             GCAAGATAGT TACAAAATTA AGAGAACAAT TTGAGAATAA AACAATAAAG
+th14-B2             GACAGATAAC TGAAAAATTA AGAGAACAAT TTGGGAACAA AACAATAGTC
+sf162-B3            AACAGATAGT TACAAAATTA CAAGCACAAT TTGGGAATAA AACAATAGTC
+ma959-C1            AAAAGGTAGG TAAAAAATTA AAAGAACACT TCCCTAATAA AACAATAACA
+zm18-C2             AAAAGGTAGG AAAAAAATTA GCAGAGCACT TCCCTAATAA AACAATAAAA
+in868-C3            AAAGGGTGAG TAAAAAATTA GCAGAATACT TCCCTAATAA AACAATACAA
+ug21-D1             AACAGGTAGC TGCGAAATTA AGAGACCTTC TTAACCAAAC AGCAATAATT
+ug46-D3             AACAGGTAGC TAAAAAATTA GGAGACCTTT TCAACCAGAC AACAATAATT
+th22-E1             AACAGGTAAC TGAAAAATTA AAAGAGCACT TTAAT...AA GACAATAATC
+th06-E2             AACAGGTAAC TAAAAAATTA AAAGAGCACT TTAATAATAA GACAATAATC
+bz162-F1            ACCAGGTAAA GGCAGAGTTA AAGTCTCATT TCCCTAATGC AACAATACAA
+bz163-F2            AACAAGTAAG GGCAAAGTTA AAGTCTCATT TTCCTAATGC AACAATAAAA
+ru131-G1            AGAATGTGAC TACAAAACTA AAAGGAATCT TTAACAACAC AAACATAACA
+lbv21-G2            AGAAGGTAAA AGCACAACTA CAAGGAATCT ACAACAAAAG C...ATAACC
+vi525-G3            AGAATGTAGC TGCAAAACTA CAAAAAGAAT TTAATAAA.. .AACATAACC
+vi557-H2            ATGAGGTAGT TCAGCAATTA AGAGAACACT TTAATAATCA AACAATAATT
+se9173-J1           GTAGAGTAGC TAAAAAACTA AGAGAACACT TTAATAAAAC A...ATAGAC
+se9280-J2           GTAGAGTAGC TACAAAACTA AGAGAACACT TTAATAAAAC A...ATAAAC
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            TTTGCTAGCT CCTCAGGAGG GGATTTAGAA ATTACAACAC ATAGTTTTAA
+br20-B1             TTTCAGCCAC CCTCAGGAGG GGATCCAGAA ATTGTATTTC ACAGTTTTAA
+th14-B2             TTTAATCAAT CCTCAGGAGG GGACCCAGAG ATTGTAATGC ACAGTTTTAA
+sf162-B3            TTTAAGCAAT CCTCAGGAGG GGACCCAGAA ATTGTAATGC ACAGTTTTAA
+ma959-C1            TTTGAACCAC ACTCAGGAGG AGATCTAGAA ATTACAACAC ATAGTTTTAA
+zm18-C2             TTTGACCAAC ACTCAGGAGG GGACCTAGAA ATTACAACAC ATAGCTTTAA
+in868-C3            TTTGCATCAT CCTCAGGAGG GGACCTAGAA ATTACAACAC ATAGCTTTAA
+ug21-D1             TTTAAACCAT CCTCGGGAGG GGACCCAGAA ATTACAACAC ACAGCTTTAA
+ug46-D3             TTTCAACCA. .......... .......... .......... ..........
+th22-E1             TTTCAACCAC CCTCAGGAGG AGATCTAGAA ATTACAATGC ATCATTTTAA
+th06-E2             TTTCACCCAC CCTCAGGAGG AGATCTAGAA ATTATAACGC ATCATTTTAA
+bz162-F1            TTTAACTCAT CCTCAGGAGG GGACCTAGAA GTTACAATGC ATCATTTTAT
+bz163-F2            TTTAATTCAT CCTCAGGAGG GGACCTAGAA ATTACAATGC ATAGTTTTAA
+ru131-G1            TATAACTCAG CTGCAGGAGG AGATCTAGAA ATTACAACAC ATAGTTTTAA
+lbv21-G2            TTTAACTCAT CCTCAGGAGG GGACCTAGAA ATTACAGCAC ATAGTTTTAA
+vi525-G3            TTTAACTCAT CCTCAGGAGG GGACCTAGAA ATTACAACAC ATAGTTTTAA
+vi557-H2            TTCGAACCAT CCTCAGGAGG GGACATGGAA ATTACAATGC ATACTTTTAA
+se9173-J1           TTTACATCAC CCTCAGGAGG GGACATAGAA ATTACAACAC ATAGTTTTAA
+se9280-J2           TTTACATCAC CCTCAGGAGG GGATATAGAA ATTGTGACAC ATAGTTTTAA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            TTGTGGAGGA GAATTTTTTT ATTGTGATAC ATCAGGCCTG TTTAATAGCA
+br20-B1             TTGTGGAGGG GAATTTTTCT ACTGTAATAC AACACAACTG TTTAATAGTA
+th14-B2             TTGTGGAGGG GAATTTTTCT ACTGTAATAC AACACAACTG TTTAATAGTA
+sf162-B3            TTGTGGAGGG GAATTTTTCT ACTGTAATTC AACACAGCTT TTTAATAGTA
+ma959-C1            TTGTAGAGGA GAATTTTTCT ATTGCAATAC ATCAGGGCTG TTTAATAGTA
+zm18-C2             TTGTAGAGGA GAATTTTTCT ATTGCAATAC ATCAAACCTG TTTAATAGTA
+in868-C3            TTGTAGAGGA GAATTTTTCT ATTGCAATAC ATCAAACCTG TTTAATGGTA
+ug21-D1             TTGTGGAGGG GAATTTTTCT ACTGCAATAC ATCAGGACTG TTTAACAATA
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             TTGTAGAGGG GAATTTTTCT ATTGCAATAC AACACGACTG TTTAGTAATA
+th06-E2             TTGTAGAGGG GAATTTTTCT ATTGCAATAC ACCAAAATTG TTTAATGGAA
+bz162-F1            TTGTAAAGGA GAATTTTTCT ACTGCGATAC ATCAAGACTG TTCAGTAACA
+bz163-F2            TTGTAGAGGA GAATTTTTCT ACTGCAATAC ATCAGGACTG TT........
+ru131-G1            TTGTAGAGGA GAATTTTTCT ATTGCAATAC ATCAGGACTG TTTAATAATA
+lbv21-G2            TTGTAGAGGA GAATTTTTCT ATTGTAATAC ATCAGGACTG TTTAATAGTA
+vi525-G3            TTGTAGAGGA GAATTTTTTT ATTGTAAGAC ATCAGAGCTG TTTAATAGTA
+vi557-H2            TTGTAGAGGA GAATTTTTCT ATTGCAATAC ATCAAAATTG TTTAACAGTA
+se9173-J1           TTGTGGAGGA GAATTTTTCT ATTGTAATAC ATCAACACTG TTCAATAGTA
+se9280-J2           TTGTGGAGGA GAATTTTTAT ATTGTAATAC ATCAAAACTG TTCAATAGTA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .....GAGGG GAATTTTTCT ACTGTAA... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            CATGGGGGGG AAATAGCACT GACAGCATAC AGGAGTCAAA TAGCACAGAG
+br20-B1             CCTGGACAAA TAACAC...T GAAGGGACAA GTAACACTAC AGGGAATGAC
+th14-B2             CTTGGAATGA TACTAG...T ACTTGG...A ATAATAATAC AGGAAATGGC
+sf162-B3            CTTGGA...A TAATAC...T ATAGGGCCAA ATAACACT.. ....AATGGA
+ma959-C1            .........A CTTTAA...T GATACAGAAG GTAATTCA.. ....ACTTTA
+zm18-C2             CATATA...A GCCTAA...T GATACAAATA GTACATATAA TCCTAATGAT
+in868-C3            ......CATA CATGAA...T GGTACAAAAA GTAATTCA.. ....AGCTCA
+ug21-D1             GTGTATGGAC ATCAAA...T AGT...ACGA TAGGGGCA.. ....AATGGG
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             CTTGCATAAA AAATGA...A ACCATGGCGG GG...TGT.. ....AACGGC
+th06-E2             CCATGGAGGG GCCTAA...T AACACGGAGG GGCCTAAT.. ....AACACT
+bz162-F1            C......... .......... ..AGAATCCA ATGGCACAGA ATCCAATGGC
+bz163-F2            .......... .......... ........TA ACGACACAGG ATCCAATGGC
+ru131-G1            G......... TGAGAA...T AACTCCACTA TCGAGAAT.. ....AACTCC
+lbv21-G2            GTATATTATC TAACAA...T AATGCACCAT CTAATAGC.. ....AGTAAG
+vi525-G3            CTTGGTTGTT TAATAGTACT G...GGCTGG TTAATAGTAC TTGGAATGAT
+vi557-H2            CTTGGG...T TAACAG...T ACATCAAATG ATATCTCAAA TGGCACAACA
+se9173-J1           GTTGGGATGA GAATAACATT AAGGACACAA ATAGTACAAA TGACAACACA
+se9280-J2           GTTGGGATAA GAATAGCATT GAAGCTACAA ATGACACAAG T...NACGCA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            TCAAATGACA CTATAATTCT CCCATGCAGA ATAAAGCAAA TTATAAATAT
+br20-B1             AC........ .AATCACACT CCCATGTAGA ATAAAACAAA TTGTAAACAT
+th14-B2             AC........ .TATCACGCT CCCTTGCAGA ATAAAACAAA TTGTAAACAT
+sf162-B3            AC........ .TATCACACT CCCATGCAGA ATAAAACAAA TTATAAACAG
+ma959-C1            AG........ .CATAACCCT CCCATGCAGA ATAAAACAAA TTATAAACAT
+zm18-C2             AC........ .AATCACACT CCCATGCAGA ATAAAACAAA TTATAAACAT
+in868-C3            AC........ .CATCACAAT CCTATGCAGA ATAAAACAAG TTGTAAACAT
+ug21-D1             AC........ .AATCACACT CCCATGCAGA ATAAAACAAA TTATAAATAT
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             AC........ .TATCATACT TCCATGCAAG ATAAAGCAAA TTATAAACAT
+th06-E2             AC........ .TATCATACT TCCATGCAAG ATAAAGCAAA TTGTAAACAT
+bz162-F1            AC........ .TATCACTCT CCCATGTCGA ATAAAACAAA TGGTAAACAT
+bz163-F2            AC........ .TATCACTCT CCTATGTCGA ATAAAACAAA TGGTAAACAT
+ru131-G1            AC........ .TATCACACT CCCATGTAGG ATAAAACAAA TTATAATAAT
+lbv21-G2            AA........ .TATCACACT CCCATGTAGA ATAAAACAAA TTGTAAGAAT
+vi525-G3            ACACGAAAAG ATATTACACT GCAATGCAAA ATAAAACAAA TTGTGAGAAT
+vi557-H2            AT........ .AATTGAACT GCCATGCAGA ATAAAACAAA TTATAAACAT
+se9173-J1           AC........ .TATCACAAT ACCATGTAAA ATAAAACAAA TTGTGAGAAT
+se9280-J2           AC........ .TATCACAAT ACCATGTAAA ATAAAACAAA TTGTGAGAAT
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            GTGGCAGAGA GTAGGACAAG CAATGTATGC CCCTCCCATC ...CAAGGAG
+br20-B1             GTGGCAGGAA GTAGGAAAAG CAATGTATGC CCCTCCCATC ...AAGGGAA
+th14-B2             GTGGCAGGAA GTAGGAAAAG CAATGTATGC CCCTCCCATC ...AGAGGAC
+sf162-B3            GTGGCAGGAA GTAGGAAAAG CAATGTATGC CCCTCCCATC ...AGAGGAC
+ma959-C1            GTGGCAGGAG GTAGGACGAG CAATGTATGC CCCTCCCATT ...GAAGGAA
+zm18-C2             GTGGCAGGGG GTAGGACAAG CAATGTATGC CCCTCCCATT ...GCAGGAA
+in868-C3            GTGGCAGGAG GTAGGACGAG CAATGTATGC CCCTCCCATT ...GAAGGAA
+ug21-D1             GTGGCAGGGA GTAGGAAAAG CAATGTATAC CCCTCCCATT ...GAAGGAC
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             GTGGCAGGGA GCAGGACAAG CAATGTATGC TCCTCCCATT ...AGGGGAA
+th06-E2             GTGGCAGGGA GCAGGACAAG CAATGTATGC TCCTCCCATC ...AGTGGAA
+bz162-F1            GTGGCAGGAA GTAGGACGAA CAATGTATGC CGCTCCCATC ...GCAGGAA
+bz163-F2            GTGGCAGGAA GTGGGACGAG CAATGTATGC CGCTCCCATC ...TCAGAAA
+ru131-G1            GTGGCAGAGA GTGGGGCAAG CAATGTATGC CCCTCCCATC ...GCAGGAA
+lbv21-G2            GTGGCAGAGG GTGGGACAAG CAATGTATGC CCCTCCCATT ...GCAGGAA
+vi525-G3            GTGGCAGAGA GTGGGACAAG CAATGTATGC CCCTCCCATC GCAGCAGGAA
+vi557-H2            GTGGCAGAGA GTAGGACAAG CAATGTATGC CCCTCCCATC ...AAAGGAA
+se9173-J1           GTGGCAAAGA ACAGGACAAG CAATATATGC CCCTCCCATC ...GCAGGAA
+se9280-J2           GTGGCAAAGG ACAGGACAAG CAATCTATGC CCCTCCCATT ...GCAGGAA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            TAATAAAGTG TATATCAAAT ATTACAGGAC TTCTATTAAC AAGAGATGGT
+br20-B1             AAATTAAATG TTCATCAAAC ATTACAGGGC TACTATTGAC AAGGGATGGT
+th14-B2             AAATTAGATG TTCATCAAAT ATTACAGGGT TGCTATTAAC AAGAGATGGT
+sf162-B3            AAATTAGATG CTCATCAAAT ATTACAGGAC TGCTATTAAC AAGAGATGGT
+ma959-C1            ACATAACATG TAAATCAAAT ATCACAGGAC TACTATTGAC ACGTGGTGGA
+zm18-C2             ACATAACATG TAAATCAAAT ATCACAGGAC TACTATTGAC ACGGGATGGA
+in868-C3            ACATAACATG TAAATCAAAT ATCACAGGAC TACTATTGGC ACGTGATGGA
+ug21-D1             AAATCAACTG TTCATCAACT ATTACAGGAC TATTGTTGAC AAGAGATGGT
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             GAATTAATTG TGTATCAAAT ATTACAGGAA TACTATTGAC AAGGGATGGT
+th06-E2             GAATTAATTG TGTATCAAAT ATTACAGGAA TACTATTAAC AAGAGATGGT
+bz162-F1            ACATTACCTG TAACTCAAAT ATTACAGGTC TACTATTGAC AAGAGACGGT
+bz163-F2            ACATTACCTG TAACTCGAAT ATTACAGGTC TACTATTGAC AAGAGATGGT
+ru131-G1            ACATCACATG TATTTCAAAC ATTACAGGAC TACTATTAAC AAGAGATGGT
+lbv21-G2            ACATTACATG TAAATCAAAC ATTACAGGAC TAATATTAAC AAGAGATGGT
+vi525-G3            ACATTGAATG TAGATCAAGC ATTACAGGAC TAATATTAAC AAGAGATGGT
+vi557-H2            AAATTACATG TGAATCAAAT ATTACAGGGC TAATATTGAC AAGTGATCAT
+se9173-J1           ACATTACATG CAAATCAAAT ATTACAGGAT TATTATTGAC ACGTGATGGA
+se9280-J2           ACATTACGTG CACATCAAAT ATTACAGGAT TACTATTGAC ACGTGATGGA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            GG........ .GGA...... TAATAACAGT GCA......A ATGAAACCTT
+br20-B1             GG........ .TAA...... TAATGAGATG AAC...ACGA CCGAGATCTT
+th14-B2             GG........ .TAA...... TAGTGAGAAC AAG...ACCA CCGAGACCTT
+sf162-B3            GG........ .TAA...... AGAGATCAGT AAC...ACCA CCGAGATCTT
+ma959-C1            GG........ .TCC...... A...ACTAAC ACA...AAGA CAGAGACATT
+zm18-C2             GG........ .GTC...... AAATGATACC ACA...AACA CAGAGACATT
+in868-C3            GG........ .AAC...... A...GAGTCA AAT...CATA CAGAGATATT
+ug21-D1             GG........ .TGT...... GAAAAATAAT AGT...CAGA ACGAGACCTT
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             GG........ .TGC...... TAATAATGCG .........A ACGAGACCTT
+th06-E2             GG........ .TGC...... TAATAATACG AC......TA ACGAGACCTT
+bz162-F1            GGGTTAGATG ATGGTAGGAA TACTAGTCAG ACTAATCGGA CTGAGATCTT
+bz163-F2            GG........ .TCA...... GAATAATAAT CAG......A CTGAGACCTT
+ru131-G1            GG........ .GAA...... CAATAATAAC AGCACAAATA ATGAGACCTT
+lbv21-G2            GG........ .GAA...... TAGTACCAAT GGA......A ATGAGACCTT
+vi525-G3            GG........ .GAA...... TAATAATAAT ACC......A ATGAGACCTT
+vi557-H2            G......... .......... ..TTAATTCT GCAGAAAGTA ATGTTACCTT
+se9173-J1           GG........ .AAACA...G GAATGGCAGT GAGAATGGCA CTGAGACCTT
+se9280-J2           GG........ .AAACAGGGG GAATGGCAGT GAGAATGGCA CTGAGACCTT
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            CAGACCTACA GGAGGAAATA TGAGGGACAA TTGGAGAAGT GAATTATATA
+br20-B1             CAGACCTGGA GGAGGAGATA TGAGGGACAA TTGGAGGAGT GAATTATATA
+th14-B2             CAGACCTGGA GGAGGAGATA TGAGGGACAA TTGGAGAAGT GAATTATATA
+sf162-B3            CAGACCTGGA GGTGGAGATA TGAGGGACAA TTGGAGAAGT GAATTATATA
+ma959-C1            CAGGCCTGGA GGAGGAGATA TGAGGGACAA TTGGAGAAGT GAATTATATA
+zm18-C2             CAGACCTGGA GGAGGAGATA TGAGGGACAA TTGGAGAAGT GAACTATATA
+in868-C3            CAGACCTGGA GGAGGAGATA TGAGGAACAA TTGGAGAAGT GAATTATATA
+ug21-D1             CAGACCTGGA GGGGGAGATA TGAGAGACAA CTGGAGAAAT GAATTATACA
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             CAGACCTGGA GGAGGAAATA TAAAGGACAA TTGGAGAAGT GAATTATATA
+th06-E2             CAGACCTGGA GGAGGAAATA TAAAGGACAA TTGGAGAAGT GAATTATATA
+bz162-F1            CAGACCTGGG GGAGGAAATA TGAAAGACAA TTGGAGAAGT GAATTATATA
+bz163-F2            CAGACCTGGG GGTGGTGATA TGAAAGACTA TTGGAGAAGT GTATTATATA
+ru131-G1            CAGACCTGGA GGAGGAGATA TGAGGGACAA TTGGAGAAGT GAATTATATA
+lbv21-G2            CAGACCTGCA GGAGGAGACA TGAGGGACAA TTGGAGAAGT GAATTATATA
+vi525-G3            CAGACCTGGA GGAGGAGACA TGAGGGGCAA TTGGAGAAGT GAATTATATA
+vi557-H2            CAGACCTGGA GGAGGAGATA TGAGGGACAA TTGGAGAAGT GAATTATATA
+se9173-J1           CAGACCTACA GGAGGAAATA TGAAAGATAA TTGGAGAAGT GAATTATATA
+se9280-J2           CAGACCTACA GGAGGAAATA TGAAGGACAA TTGGAGAAGT GAATTATATA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... TGAGGGACAA TTGGAGAAGT GGGTCATAGC
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            AGTATAAAGT AGTAAAAATT GAACCACTAG GAGTAGCACC CACCCCGGCA
+br20-B1             AATATAAAGT AGTAAGAATT GAACCATTAG GAATAGCACC CACCAGGGCA
+th14-B2             AATATAAAGT AGTGAAAATT GAACCATTAG GAGTAGCACC CACCAAGCCA
+sf162-B3            AATATAAAGT AGTAAAAATT GAGCCATTAG GAGTAGCACC CACCAAGGCA
+ma959-C1            AGTATAAAGT GGTAGAAATT AAGCCATTGG GAGTAGCACC CACTAAGGCA
+zm18-C2             AATATAAAGT GGTAGAAATT AAACCATTGG GCATAGCACC CACTGCGGCA
+in868-C3            AATACAAAGT GGTAGAAATT AAGCCATTGG GAGTAGTACC CACTACAGCA
+ug21-D1             AATATAAAGT AGTAAGAATT GAACCACTAG GTCTAGCACC CACCAAGGCA
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             AATATAAAGT AGTACAAATT GAACCACTAG GAATAGCACC CACCAGGGCA
+th06-E2             AATATAAAGT AGTACAAATT GAACCACTAG GAATAGCACC CACCAGGGCA
+bz162-F1            AATATAAAGT AGTAGAAATT GAACCACTAG GAGTAGCACC CACCAAGGCA
+bz163-F2            AGTATAAAGT AGTAGAAATT GAACCACTAG GAGTAGCACC CACCAGGGCA
+ru131-G1            AGTATAAAGT AGTAAGAATT AAACCACTAG GAGTAGCACC CACCAGG...
+lbv21-G2            AGTATAAAGT AATAAAAATT AAACCACTAG GAGTAGCACC CACCAAGGCA
+vi525-G3            AGTATAAAGT AGTAAAAATC AAATCACTAG GAGTAGCACC CACCAGGGCA
+vi557-H2            AATATAAAGT AGTAAGAGTC GAACCACTAG GATTAGCACC CACCAGGGCA
+se9173-J1           AATATAAAGT AGTAGAGCTT GAGCCACTAG GAGTAGCACC CACCAAGGCA
+se9280-J2           AATATAAAGT AGTAGAGATT GAGCCACTAG GAGTAGCACC CACCAAGGCA
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   TGTTTCCTG. .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            AAGAGAAGAG TGGTGCAG.. .AGAGAAAAA AGAGCAGTTG GA...ATAGG
+br20-B1             AAGAGAAGAG TGGTGCAA.. .AGAGAAAAA AGAGCAGTGG GAACATTAGG
+th14-B2             AAGAGAAGAG TGGTGCAG.. .AGAGAAAAA AGAGCAGTGG GAACGATAGG
+sf162-B3            AAGAGAAGAG TGGTGCAG.. .AGAGAAAAA AGAGCAGTG. ..ACGCTAGG
+ma959-C1            AAAAGGAGAG TGGTGGAG.. .AGAGAAAAA AGAGCAGTGG GA...ATAGG
+zm18-C2             AAAAGGAGAG TGGTGGAGAC GAGAGAAAAA AGAGCAGTGG GA...ATAGG
+in868-C3            AAAAGGAGAG TGGTGGAG.. .AGAGAAAAA AGAGCAGTGG GA...ATGGG
+ug21-D1             AGGAGAAGAG TGGTGGAA.. .AGAGAAAAA AGAGCAATAG GA...CTGGG
+ug46-D3             .......... .......... .......... .......... ..........
+th22-E1             AAGAGAAGAG TGGTGGAG.. .AGAGAAAAA AGAGCAGTGG GA...ATAGG
+th06-E2             AAGAGAAGAG TGGTGGAG.. .AGAGAAAAA AGAGCAGTGG GA...ATAGG
+bz162-F1            AAAAGACAAG TGGTGAAG.. .AGAGAAAAA AGAGCAGTGG GA...ATAGG
+bz163-F2            AAAAGACAAG TGGTGAGG.. .AGAGAAAAA AGAGCAGTGG GA...ATGGG
+ru131-G1            .......... .......... .......... .......... ..........
+lbv21-G2            AGGAGAAGAG TGGTGGGG.. .AGAGAAAAA AGAGCAATTA CT......GG
+vi525-G3            AGGAGAAGAG TGGTGGAG.. .AGAGAAAAA AGAGCAATTG GA...CTGGG
+vi557-H2            AGGAGAAGAG TGGTGGAA.. .AGAGAAAAA AGAGCTGTGG GA...CTGGA
+se9173-J1           AAAAGAAGAG TGGTGGAG.. .AGAGAAAAA AGAGCAGTGG GA...ATAGG
+se9280-J2           AAAAGAAGAG TGGTGGAG.. .AGAGAAAAA AGAGCAGTGG GA...ATAGG
+primer_ed5          .......... .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... .......... ..........
+primer_es7          .......... .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... .......... .......... .......... ..........
+
+
+sf170-A3            AGCTGTATTC ATTGGGTTCT TAGGAGCAGC CGGAAGCACT
+br20-B1             AGCTATGTTC CTTGGGTTCT TGGGAGCAGC AGGAAGCACT
+th14-B2             AGCTATGTTC CTTGGGTTCT TGGGAACAGC AGGAAGCACT
+sf162-B3            AGCTATGTTC CTTGGGTTCT TGGGAGCAGC AGGAAGCACT
+ma959-C1            AGCTGTGTTC CTTGGGTTCT TGGGAGCAGC AGGAAGCACT
+zm18-C2             AGCTGTGTTC CTTGGGTTCT TGGGAGCAGC AGGAAGCACT
+in868-C3            AGCTGTGTTC CTTGGGTTCT TGGGAGCAGC AGGAACCACT
+ug21-D1             AGCTTTGTTC CTTGGGTTCT TGGGAGCAGC AGGAAGCACG
+ug46-D3             .......... .......... .......... ..........
+th22-E1             AGCTATGATC TTTGGGTTCT TAGGAGCAGC AGGAAGCACT
+th06-E2             AGCTATGATC TTTGGGTTCT TAGGAGCAGC AGGAAGCACT
+bz162-F1            AGCTATGTTC CTTGGGTTCT TGGGAGCAGC AGGAAGCTCT
+bz163-F2            AGCTTTGTTC CTTGGGTTCT TGAGCGCGGC AGGAAGCACT
+ru131-G1            .......... .......... .......... ..........
+lbv21-G2            AGCTGTCTTC CTTGGGTTCT TAGGAGCAGC TGGGAGCACT
+vi525-G3            AGCTGTCTTC CTTGGGTTCT TAGGAGCAGC AGGAAGCACT
+vi557-H2            AGCTGTTTTC CTTGGGTTCT TGGGAGCAGC AGGGAGCACT
+se9173-J1           AGCTGTGTTC CTTGGGTTCT TGGGAACAGC AGGAAGCACT
+se9280-J2           AGCTGTGTTC CTTGGGTTCT TGGGAACAGC AGGAAGTACT
+primer_ed5          .......... .......... .......... ..........
+primer_ed31         .......... .......... .......... ..........
+primer_es7          .......... .......... .......... ..........
+primer_ed33REVCOMP  .......... .......... .......... ..........
+primer_es8REVCOMP   .......... .......... .......... ..........
+primer_ed12REVCOMP  .......... CTTGGGTTCT TGGGAGCAGC AGGAAGCACT 

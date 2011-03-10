@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+
+<dict>
+    <key>CFBundleName</key>
+    <string>Unipro UGENE</string>
+
+    <key>CFBundleIconFile</key>
+    <string>ugene_mac.icns</string>
+
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+
+    <key>CFBundleGetInfoString</key>
+    <string>Unipro UGENE</string>
+    
+    <key>CFBundleSignature</key>
+    <string>Unipro, Russia</string>
+
+    <key>CFBundleExecutable</key>
+    <string>ugene.sh</string>
+
+</dict>
+</plist>

@@ -1,0 +1,81 @@
+#ifndef _U2_MSA_EDITOR_NAME_LIST_H_
+#define _U2_MSA_EDITOR_NAME_LIST_H_
+
+#include <U2Core/global.h>
+#include <U2Core/U2Region.h>
+
+#include <QtGui/QMenu>
+#include <QtGui/QScrollBar>
+
+namespace U2 {
+
+class MSAEditor;
+class MSAEditorUI;
+class GObjectView;
+class MAlignment;
+class MAlignmentModInfo;
+class MSAEditorSelection;
+
+class MSAEditorNameList: public QWidget {
+    Q_OBJECT
+public:
+    MSAEditorNameList(MSAEditorUI* ui, QScrollBar* nhBar);
+    ~MSAEditorNameList();
+
+private slots:
+    void sl_buildStaticMenu(GObjectView* v, QMenu* m);
+    void sl_buildContextMenu(GObjectView* v, QMenu* m);
+    void sl_copyCurrentSequence();
+    void sl_editSequenceName();
+    void sl_lockedStateChanged();
+    void sl_removeCurrentSequence();
+    void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
+    void sl_onScrollBarActionTriggered( int scrollAction );
+    
+    void sl_startChanged(const QPoint& p, const QPoint& prev);
+    void sl_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
+
+    void sl_nameBarMoved(int n);
+    void sl_fontChanged();
+
+protected:
+    void resizeEvent(QResizeEvent* e);
+    void paintEvent(QPaintEvent* e);
+    void keyPressEvent (QKeyEvent *e);
+    void mousePressEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent* e);
+    void mouseReleaseEvent(QMouseEvent *e);
+    void mouseDoubleClickEvent(QMouseEvent *e);
+    void focusOutEvent(QFocusEvent* fe);
+    void focusInEvent(QFocusEvent* fe);
+    void wheelEvent (QWheelEvent * we);
+    //todo context menu?
+
+private:
+    void updateActions();
+    void buildMenu(QMenu* m);
+    void updateScrollBar();
+    void updateSelection(int newSeqNum);
+    
+    void drawAll();
+    void drawContent(QPainter& p);
+    void drawSelection(QPainter& p);
+    void drawSequenceItem(QPainter& p, int n, bool selected);
+    void drawFocus(QPainter& p);
+    
+    MSAEditor*          editor;
+    MSAEditorUI*        ui;
+    QScrollBar*         nhBar;
+    int                 curSeq;
+    bool                scribbling;
+
+    QAction*            editSequenceNameAction;
+    QAction*            copyCurrentSequenceAction;
+    QAction*            removeCurrentSequenceAction;
+    QPixmap*            cachedView;
+    bool                completeRedraw;
+
+};
+
+}//namespace
+#endif

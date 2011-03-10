@@ -1,0 +1,96 @@
+#!UGENE_WORKFLOW
+#Search for transcription factor binding sites (TFBS) with weight matrices
+
+workflow "Search weight matrix"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    wmatrix-read {
+        type:wmatrix-read;
+        name:"Read weight matrix";
+    }
+    wmatrix-search {
+        type:wmatrix-search;
+        name:"Search for TFBS with weight matrix";
+        min-score:85;
+        result-name:misc_feature;
+        strand:0;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->wmatrix-search.in-sequence.sequence
+    wmatrix-read.wmatrix->wmatrix-search.in-wmatrix.wmatrix
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    wmatrix-search.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:seq;
+            wmatrix-read.url-in:matrix;
+            wmatrix-search.min-score:min-score;
+            wmatrix-search.result-name:name;
+            wmatrix-search.strand:strand;
+            write-genbank.url-out:out;
+        }
+        help {
+            seq:"Input sequence";
+            matrix:"Input weight matrix";
+            min-score:"Minimum score to detect transcription factor binding site";
+            name:"Annotation name for marking found regions";
+            strand:"Search strand";
+            out:"Output file with annotations";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-765 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            wmatrix-read {
+                tooltip:"Reads weight matrices from file(s). The files can be local or Internet URLs.";
+                pos:"-765 -390";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-wmatrix.angle:360;
+            }
+            wmatrix-search {
+                tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified weight matrices. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
+                pos:"-585 -480";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:150;
+                in-wmatrix.angle:210;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-285 -480";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->wmatrix-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            wmatrix-read.out-wmatrix->wmatrix-search.in-wmatrix {
+                text-pos:"-37.5 -24";
+            }
+            wmatrix-search.out-annotations->write-genbank.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

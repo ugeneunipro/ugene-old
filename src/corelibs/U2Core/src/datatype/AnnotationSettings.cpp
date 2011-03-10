@@ -1,0 +1,135 @@
+#include "AnnotationSettings.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/Settings.h>
+#include <U2Core/FeatureColors.h>
+#include <U2Core/AnnotationTableObject.h>
+
+#include <QtCore/QSet>
+
+namespace U2 {
+
+#define SETTINGS_ROOT QString("annotation_settings/")
+#define MAX_CACHE_SIZE 1000
+
+AnnotationSettingsRegistry::AnnotationSettingsRegistry(const QList<AnnotationSettings*>& predefined) {
+    changeSettings(predefined, false);
+    read();
+}
+
+AnnotationSettingsRegistry::~AnnotationSettingsRegistry() {
+    save();
+    qDeleteAll(persistentMap);
+    qDeleteAll(transientMap);
+}
+
+void AnnotationSettingsRegistry::changeSettings(const QList<AnnotationSettings*>& settings, bool saveAsPersistent) {
+    if (settings.isEmpty()) {
+        return;
+    }
+    QStringList changedNames;
+    foreach(AnnotationSettings* s, settings) {
+        assert(s->color.isValid());
+        assert(!s->name.isEmpty());
+        persistentMap.remove(s->name);
+        transientMap.remove(s->name);
+        if (saveAsPersistent) {
+            persistentMap[s->name] = s;
+        } else {
+            transientMap[s->name] = s;
+        }
+        changedNames.append(s->name);
+    }
+    emit si_annotationSettingsChanged(changedNames);
+}
+
+QStringList AnnotationSettingsRegistry::getAllSettings() const {
+    return (persistentMap.keys() + transientMap.keys()).toSet().toList();
+}
+
+AnnotationSettings* AnnotationSettingsRegistry::getAnnotationSettings(Annotation* a) {
+    return getAnnotationSettings(a->getAnnotationName());
+}
+
+AnnotationSettings* AnnotationSettingsRegistry::getAnnotationSettings(const QString& name) {
+    //Search in persistent settings:
+    AnnotationSettings* s = persistentMap.value(name);
+    if (s != NULL) {
+        return s;
+    }
+    
+    //search in transient cache:
+    s = transientMap.value(name);
+    if (s!=NULL){
+        return s;
+    }
+    s = new AnnotationSettings();
+    s->name = name;
+    s->color = FeatureColors::genLightColor(name);
+    s->visible = true;
+    if (transientMap.size() == MAX_CACHE_SIZE) {
+        //todo: mutex!?
+        transientMap.erase(transientMap.begin());
+    }
+    transientMap[name]=s;
+    return s;
+}
+
+
+void AnnotationSettingsRegistry::read() {
+
+    Settings* s = AppContext::getSettings();
+    QStringList keys = s->getAllKeys(SETTINGS_ROOT);
+    QList<AnnotationSettings*> list;
+    foreach(const QString& key, keys) {
+        QString name = key.split('/').first();
+        AnnotationSettings* as = transientMap.value(name);
+        if (as == NULL) {
+            as = new AnnotationSettings();
+            as->name = name;
+        }
+        as->color = s->getValue(SETTINGS_ROOT + as->name + "/color", FeatureColors::genLightColor(as->name)).value<QColor>();
+        as->visible = s->getValue(SETTINGS_ROOT + as->name + "/visible", true).toBool();
+        as->amino = s->getValue(SETTINGS_ROOT + as->name + "/amino", true).toBool();
+        QString qs = s->getValue(SETTINGS_ROOT + as->name + "/quals", "").toString();
+        if (!qs.isEmpty()) {
+            as->nameQuals = qs.split(',', QString::SkipEmptyParts);
+        }
+        list.append(as);
+    }
+    changeSettings(list, false);
+}
+
+void AnnotationSettingsRegistry::save() {
+    Settings* s = AppContext::getSettings();
+    QStringList keys = s->getAllKeys(SETTINGS_ROOT);
+    foreach(const AnnotationSettings* as, persistentMap.values()) {
+        s->setValue(SETTINGS_ROOT + as->name + "/color", as->color);
+        s->setValue(SETTINGS_ROOT + as->name + "/visible", as->visible);
+        s->setValue(SETTINGS_ROOT + as->name + "/amino", as->amino);
+        s->setValue(SETTINGS_ROOT + as->name + "/quals", as->nameQuals.join(","));
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+AnnotationSettings::AnnotationSettings() {
+    amino = false;
+    color = Qt::black;
+    visible = true;
+}
+
+AnnotationSettings::AnnotationSettings(const QString& _name, bool _amino, const QColor& _color, bool _visible) 
+: name(_name), color(_color), amino(_amino), visible(_visible)
+{
+}
+
+bool AnnotationSettings::equals(const AnnotationSettings* as) const {
+    return name == as->name 
+        && amino == as->amino
+        && color == as->color
+        && visible == as->visible
+        && nameQuals == as->nameQuals;
+}
+
+
+}//namespace

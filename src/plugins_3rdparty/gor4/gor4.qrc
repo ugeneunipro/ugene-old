@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="gor4/" >
+        <file>datafiles/New_KS.267.obs</file>
+        <file>datafiles/New_KS.267.seq</file>
+    </qresource>
+
+</RCC>

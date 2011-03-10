@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<CodonFrequencyTableList>
+ <Folder name="Codon Frequency Tables">
+    <Folder name="Primates">
+        <CodonFrequencyTable name="Homo_sapiens_(human).cut"/>
+        <CodonFrequencyTable name="mitochondrion_Homo_sapiens_(human).cut"/>
+        <CodonFrequencyTable name="Pan_troglodytes_(chimpanzee).cut"/>
+        <CodonFrequencyTable name="mitochondrion_Pan_troglodytes_(chimpanzee).cut"/>
+    </Folder>   
+    <Folder name="Mammalia">
+        <CodonFrequencyTable name="Bos_taurus_(cow).cut"/>
+        <CodonFrequencyTable name="Canis_familiaris_(dog).cut"/>
+        <CodonFrequencyTable name="mitochondrion_Bos_taurus_(cow).cut"/>
+        <CodonFrequencyTable name="Sus_scrofa_(pig).cut"/>
+        <CodonFrequencyTable name="mitochondrion_Sus_scrofa_(pig).cut"/>
+    </Folder>  
+    <Folder name="Invertebrates">
+        <CodonFrequencyTable name="Apis_mellifera_(honey_bee).cut"/>
+        <CodonFrequencyTable name="Caenorhabditis_elegans.cut"/>
+        <CodonFrequencyTable name="Drosophila_melanogaster_(fruit_fly).cut"/>
+        <CodonFrequencyTable name="mitochondrion_Drosophila_melanogaster_(fruit_fly).cut"/>
+        <CodonFrequencyTable name="mitochondrion_Caenorhabditis_elegans.cut"/>
+        <CodonFrequencyTable name="Plasmodium_falciparum_(malaria_parasite_P._falciparum).cut"/>
+    </Folder> 
+	<Folder name="Vertebrates">
+        <CodonFrequencyTable name="Gallus_gallus_(chicken).cut"/>
+        <CodonFrequencyTable name="mitochondrion_Gallus_gallus_(chicken).cut"/>
+        <CodonFrequencyTable name="Takifugu_rubripes_(Fugu_rubripes).cut"/>
+        <CodonFrequencyTable name="mitochondrion_Takifugu_rubripes_(Fugu_rubripes).cut"/>
+        <CodonFrequencyTable name="Xenopus_laevis_(African_clawed_frog).cut"/>
+    </Folder>
+	<Folder name="Rodents">
+        <CodonFrequencyTable name="Mus_musculus_(house_mouse).cut"/>
+        <CodonFrequencyTable name="Rattus_norvegicus_(Norway_rat).cut"/>
+	</Folder>
+	<Folder name="Plants">
+        <CodonFrequencyTable name="Arabidopsis_thaliana_(thale_cress).cut"/>
+        <CodonFrequencyTable name="Oryza_sativa.cut"/>
+        <CodonFrequencyTable name="Zea_mays.cut"/>
+	</Folder>
+	<Folder name="Viruses">
+        <CodonFrequencyTable name="Human_immunodeficiency_virus_1_(HIV-1).cut"/>
+        <CodonFrequencyTable name="Influenza_A_virus.cut"/>
+	</Folder>
+	<Folder name="Yeast">
+        <CodonFrequencyTable name="Saccharomyces_cerevisiae_(baker's_yeast).cut"/>
+	</Folder>
+	<Folder name="Bacteria">
+        <CodonFrequencyTable name="Arthrobacter_aurescens_TC1.cut"/>
+        <CodonFrequencyTable name="Bacillus_subtilis.cut"/>
+        <CodonFrequencyTable name="Escherichia_coli.cut"/>
+        <CodonFrequencyTable name="Haemophilus_influenzae.cut"/>
+        <CodonFrequencyTable name="Helicobacter_pylori.cut"/>
+        <CodonFrequencyTable name="Listeria_monocytogenes.cut"/>
+        <CodonFrequencyTable name="Neisseria_meningitidis.cut"/>
+        <CodonFrequencyTable name="Salmonella_typhimurium_LT2.cut"/>
+        <CodonFrequencyTable name="Sulfolobus_solfataricus_P2.cut"/>
+	</Folder>
+ </Folder>
+</CodonFrequencyTableList>

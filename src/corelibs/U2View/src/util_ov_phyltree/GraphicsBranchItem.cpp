@@ -1,0 +1,214 @@
+#include "GraphicsBranchItem.h"
+#include "GraphicsButtonItem.h"
+#include "TreeViewerUtils.h"
+
+#include <QtGui/QGraphicsView>
+#include <QtGui/QGraphicsScene>
+#include <QtCore/QStack>
+
+namespace U2 {
+
+QColor BranchSettings::defaultColor = QColor(0, 0, 0);
+int BranchSettings::defaultThickness = 1;
+
+BranchSettings::BranchSettings() {
+
+    branchColor = defaultColor;
+    branchThickness = defaultThickness;
+}
+
+const int GraphicsBranchItem::TextSpace = 8;
+const int GraphicsBranchItem::SelectedPenWidth = 1;
+
+void GraphicsBranchItem::updateSettings(const BranchSettings& branchSettings) {
+
+    settings = branchSettings;
+
+    int penWidth = settings.branchThickness;
+    if (isSelected()) {
+        penWidth += SelectedPenWidth;
+    }
+
+    QPen currentPen = this->pen();
+    currentPen.setColor(settings.branchColor);
+    currentPen.setWidth(penWidth);
+
+    this->setPen(currentPen);
+}
+
+void GraphicsBranchItem::updateTextSettings(const QFont& font, const QColor& color){
+    if(distanceText){
+        distanceText->setFont(font);
+        distanceText->setBrush(color);
+    }
+    if(nameText){
+        nameText->setFont(font);
+        nameText->setBrush(color);
+    }
+}
+
+void GraphicsBranchItem::collapse() {
+    collapsed = !collapsed;
+    QList<QGraphicsItem*> items = childItems();
+    if (collapsed) {
+        for (int i = 0, s = items.size(); i < s; ++i) {
+            if (dynamic_cast<GraphicsBranchItem*>(items[i])) {
+                items[i]->hide();
+            }
+        }
+
+        int penWidth = settings.branchThickness;
+        if (isSelected()) {
+            penWidth += SelectedPenWidth;
+        }
+
+        QPen pen1(settings.branchColor);
+        pen1.setWidth(penWidth);
+        pen1.setCosmetic(true);
+        QGraphicsRectItem *r = new QGraphicsRectItem(0, -4, 16, 8, this);
+        r->setPen(pen1);
+    } else {
+        for (int i = 0, s = items.size(); i < s; ++i) {
+            if (dynamic_cast<QGraphicsRectItem*>(items[i])) {
+                items[i]->setParentItem(NULL);
+                scene()->removeItem(items[i]);
+            } else {
+                if (items[i] != getDistanceText() && items[i] != getNameText()) {
+                    items[i]->show();
+                }
+            }
+        }
+        setSelectedRecurs(true,true);
+    }
+}
+
+void GraphicsBranchItem::setSelectedRecurs(bool sel, bool recursively) {
+
+    int penWidth = settings.branchThickness;
+    if (sel) {
+        penWidth = settings.branchThickness + SelectedPenWidth;
+    }
+
+    QPen thisPen = this->pen();
+    thisPen.setWidth(penWidth);
+    setPen(thisPen);
+
+    if (buttonItem) {
+        buttonItem->setSelected(sel);
+    }
+
+    if (recursively) {
+        foreach(QGraphicsItem* graphItem, this->childItems()) {
+            GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
+
+            if (branchItem) {
+                 branchItem->setSelectedRecurs(sel, recursively);
+            }
+            
+        }
+    }
+    this->setSelected(sel);
+    scene()->update();
+    
+}
+
+void GraphicsBranchItem::initText(qreal d) {
+    QString str = QString::number(d, 'f', 3);
+    int i = str.length() - 1;
+    for (; i >= 0 && str[i] == '0'; --i) ;
+    if (str[i] == '.')
+        --i;
+    str.truncate(i + 1);
+
+    distanceText = new QGraphicsSimpleTextItem(str);
+    distanceText->setFont(TreeViewerUtils::getFont());
+    distanceText->setBrush(Qt::darkGray);
+    QRectF rect = distanceText->boundingRect();
+    distanceText->setPos(-rect.width(), 0);
+    distanceText->setParentItem(this);
+    distanceText->setZValue(1);
+}
+
+GraphicsBranchItem::GraphicsBranchItem(bool withButton)
+: buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false) {
+
+    setFlag(QGraphicsItem::ItemIsSelectable);
+    setAcceptHoverEvents(false);
+    setAcceptedMouseButtons(Qt::NoButton);
+
+    if (withButton) {
+        buttonItem = new GraphicsButtonItem();
+        buttonItem->setParentItem(this);
+    }
+
+    setBrush(settings.branchColor);
+    QPen pen1(settings.branchColor);
+    pen1.setCosmetic(true);
+    setPen(pen1);
+}
+
+GraphicsBranchItem::GraphicsBranchItem(const QString& name): buttonItem(NULL), distanceText(NULL), collapsed(false) {
+
+    setFlag(QGraphicsItem::ItemIsSelectable);
+    setAcceptHoverEvents(false);
+    setAcceptedMouseButtons(Qt::NoButton);
+
+    QPen pen1(settings.branchColor);
+    pen1.setStyle(Qt::DotLine);
+    pen1.setCosmetic(true);
+    setPen(pen1);
+
+    width = 0;
+    dist = 0;
+
+    nameText = new QGraphicsSimpleTextItem(name);
+    nameText->setFont(TreeViewerUtils::getFont());
+    nameText->setBrush(Qt::darkGray);
+    QRectF rect = nameText->boundingRect();
+    nameText->setPos(GraphicsBranchItem::TextSpace, -rect.height() / 2);
+    nameText->setParentItem(this);
+    nameText->setZValue(1);
+}
+
+GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
+: buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false) {
+
+    setFlag(QGraphicsItem::ItemIsSelectable);
+    setAcceptHoverEvents(false);
+    setAcceptedMouseButtons(Qt::NoButton);
+
+    if (withButton) {
+        buttonItem = new GraphicsButtonItem();
+        buttonItem->setParentItem(this);
+    }
+
+    initText(d);
+    QPen pen1(settings.branchColor);
+    pen1.setCosmetic(true);
+    if (d < 0) {
+        pen1.setStyle(Qt::DashLine);
+    }
+    setPen(pen1);
+    setBrush(settings.branchColor);
+}
+
+void GraphicsBranchItem::setWidth(qreal w) {
+    if (width == w) {
+        return;
+    }
+
+    setPos(pos().x() - width + w, pos().y());
+    if (getDistanceText() != NULL) {
+        QPointF pos = getDistanceText()->pos();
+        getDistanceText()->setPos(pos.x() + (width - w) * 0.5, pos.y());
+    }
+
+    prepareGeometryChange();
+    width = w;
+}
+
+bool GraphicsBranchItem::isCollapsed(){
+    return collapsed;
+}
+
+} //namespace

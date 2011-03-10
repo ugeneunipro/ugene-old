@@ -1,0 +1,37 @@
+#ifndef _U2_DOCUMENT_FORMATS_H_
+#define _U2_DOCUMENT_FORMATS_H_
+
+#include <U2Core/global.h>
+
+namespace U2 {
+
+class U2CORE_EXPORT BaseDocumentFormats {
+public:
+    static const DocumentFormatId PLAIN_TEXT;
+    static const DocumentFormatId PLAIN_FASTA;
+    static const DocumentFormatId PLAIN_GENBANK;
+    static const DocumentFormatId PLAIN_EMBL;
+    static const DocumentFormatId ABIF;
+    static const DocumentFormatId SCF;
+    static const DocumentFormatId RAW_DNA_SEQUENCE;
+    static const DocumentFormatId CLUSTAL_ALN;
+    static const DocumentFormatId STOCKHOLM;
+    static const DocumentFormatId NEWICK;
+    static const DocumentFormatId PLAIN_PDB;
+    static const DocumentFormatId INDEX;
+    static const DocumentFormatId FASTQ;
+    static const DocumentFormatId PLAIN_ASN;
+    static const DocumentFormatId MSF;
+    static const DocumentFormatId ACE;
+    static const DocumentFormatId GFF;
+    static const DocumentFormatId SRF;
+    static const DocumentFormatId SAM;
+    static const DocumentFormatId NEXUS;
+    static const DocumentFormatId MEGA;
+    static const DocumentFormatId PDW;
+};
+
+
+}//namespace
+
+#endif

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/repeat_finder" >
+        <file>images/repeats.png</file>
+        <file>images/repeats_tandem.png</file>
+    </qresource>
+</RCC>

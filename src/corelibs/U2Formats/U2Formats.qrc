@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="format/" >
+        <file>datafiles/MMDBStdResidueDict</file>
+    </qresource>
+</RCC>

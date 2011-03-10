@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="workflow_designer/" >
+        <file>images/green_circle.png</file>
+        <file>images/mag_circle.png</file>
+        <file>images/bringtofront.png</file>
+        <file>images/sendtoback.png</file>
+        <file>images/delete.png</file>
+        <file>images/export.png</file>
+        <file>images/filenew.png</file>
+        <file>images/fileopen.png</file>
+        <file>images/filesave.png</file>
+        <file>images/tag.png</file>
+        <file>images/rot_arrow.png</file>
+        <file>images/rot_cur.png</file>
+        <file>images/run.png</file>
+        <file>images/ok.png</file>
+        <file>images/editcopy.png</file>
+        <file>images/editcut.png</file>
+        <file>images/editpaste.png</file>
+        <file>images/leftarrow.png</file>
+        <file>images/cmdline.png</file>
+		<file>images/script.png</file>
+		<file>images/edit_script.png</file>
+		<file>images/wd.png</file>
+		<file>images/stopTask.png</file>
+		<file>images/toggle_expand.png</file>
+		<file>images/toggle.png</file>
+    </qresource>
+</RCC>

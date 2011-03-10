@@ -1,0 +1,63 @@
+#include "PWMConversionAlgorithmNLG.h"
+#include <math.h>
+
+namespace U2 {
+
+PWMConversionAlgorithmFactoryNLG::PWMConversionAlgorithmFactoryNLG(QObject* p) 
+: PWMConversionAlgorithmFactory(BuiltInPWMConversionAlgorithms::NLG_ALGO, p)
+{
+}
+
+PWMConversionAlgorithm* PWMConversionAlgorithmFactoryNLG::createAlgorithm(QObject* p){
+    return new PWMConversionAlgorithmNLG(this, p);
+}
+
+QString PWMConversionAlgorithmFactoryNLG::getName() const {
+    return tr("NLG");
+}
+
+QString PWMConversionAlgorithmFactoryNLG::getDescription() const {
+    return tr("NLG weight function");
+}
+
+PWMatrix PWMConversionAlgorithmNLG::convert(const PFMatrix& matrix) {
+    int size = (matrix.getType() == PFM_MONONUCLEOTIDE) ? 4 : 16;
+    int sum[16];
+    qMemSet(sum, 0, size*sizeof(int));
+    int all_hits = 0;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0, n = matrix.getLength(); j < n; j++) {
+            sum[i] += matrix.getValue(i, j);
+            all_hits += matrix.getValue(i, j);
+        }
+    }
+    if (all_hits <= 0) {
+        return PWMatrix();
+    }
+    float p[16];
+    for (int i = 0; i < size; i++) {
+        p[i] = sum[i];
+        p[i] /= all_hits;
+        if (qAbs(p[i]) <= 1e-9) {
+            return PWMatrix();
+        }
+    }
+
+    QVarLengthArray<float> res(size*matrix.getLength());
+    for (int i = 0; i < size; i++) {
+        for (int j = 0, n = matrix.getLength(); j < n; j++) {
+            res[matrix.index(i, j)] = -matrix.getValue(i, j)*log(p[i]);
+        }
+    }
+
+    PWMatrix w(res, (matrix.getType() == PFM_MONONUCLEOTIDE) ? PWM_MONONUCLEOTIDE : PWM_DINUCLEOTIDE);
+    w.setInfo(UniprobeInfo(matrix.getProperties()));
+    return w;
+}
+
+PWMConversionAlgorithmNLG::PWMConversionAlgorithmNLG(PWMConversionAlgorithmFactory* factory, QObject* p)
+: PWMConversionAlgorithm(factory, p)
+{
+}
+
+}

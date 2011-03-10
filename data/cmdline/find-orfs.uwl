@@ -1,0 +1,86 @@
+#!UGENE_WORKFLOW
+#Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations.
+
+workflow find-orfs{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    orf-search {
+        type:orf-search;
+        name:"ORF marker";
+        allow-alternative-codons:false;
+        genetic-code:"NCBI-GenBank #1";
+        min-length:100;
+        require-init-codon:true;
+        require-stop-codon:false;
+        result-name:ORF;
+        strand:0;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->orf-search.in-sequence.sequence
+    orf-search.annotations->write-genbank.in-sequence.annotations
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:in;
+            orf-search.allow-alternative-codons:allow-alternative-codons;
+            orf-search.min-length:min-length;
+            orf-search.require-init-codon:require-init-codon;
+            orf-search.require-stop-codon:require-stop-codon;
+            orf-search.result-name:name;
+            write-genbank.url-out:out;
+        }
+        help {
+            in:"Input sequence";
+            allow-alternative-codons:"Allow ORFs starting with alternative initiation codons";
+            min-length:"Ignore ORFs shorter than the specified length";
+            require-init-codon:"Specifies that each ORF found must start with the start codon";
+            require-stop-codon:"Ignore boundary ORFs which last beyound the search region";
+            name:"Name of the result annotations marking found ORFs";
+            out:"Output file with annotations";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-780 -600";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            orf-search {
+                tooltip:"Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations.<p>Protein sequences are skipped if any supplied to input.<p><dfn>ORFs are DNA sequence regions that could potentially encode a protein, and usually give a good indication of the presence of a gene in the surrounding sequence.</dfn></p><p>In the sequence, ORFs are located between a start-code sequence (initiation codon) and a stop-code sequence (termination codon), defined by the selected genetic code.</p>";
+                pos:"-615 -600";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-285 -600";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->orf-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            orf-search.out-annotations->write-genbank.in-sequence {
+                text-pos:"-44.5 -24";
+            }
+        }
+    }
+}
+

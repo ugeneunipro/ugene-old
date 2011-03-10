@@ -1,0 +1,67 @@
+#!UGENE_WORKFLOW
+#Build frequency matrix from existing multiple sequence alignment
+
+workflow "Build frequency matrix"{
+
+    read-msa {
+        type:read-msa;
+        name:"Read alignment";
+    }
+    fmatrix-build {
+        type:fmatrix-build;
+        name:"Build frequency matrix";
+        matrix-type:false;
+    }
+    fmatrix-write {
+        type:fmatrix-write;
+        name:"Write frequency matrix";
+        write-mode:2;
+    }
+
+    read-msa.msa->fmatrix-build.in-msa.msa
+    fmatrix-build.fmatrix->fmatrix-write.in-fmatrix.fmatrix
+
+    .meta {
+        aliases {
+            read-msa.url-in:in;
+            fmatrix-build.matrix-type:type;
+            fmatrix-write.url-out:out;
+        }
+        help {
+            in:"Input alignment";
+            type:"Frequency matrix type";
+            out:"Output frequency matrix";
+        }
+        visual {
+            read-msa {
+                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
+                pos:"-780 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
+            }
+            fmatrix-build {
+                tooltip:"Builds frequency matrix. Frequency matrices are used for probabilistic recognition of transcription factor binding sites.";
+                pos:"-600 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-fmatrix.angle:360;
+            }
+            fmatrix-write {
+                tooltip:"Saves all input frequency matrices to specified location.";
+                pos:"-390 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-fmatrix.angle:180;
+            }
+            read-msa.out-msa->fmatrix-build.in-msa {
+                text-pos:"-45 -50";
+            }
+            fmatrix-build.out-fmatrix->fmatrix-write.in-fmatrix {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

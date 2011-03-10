@@ -1,0 +1,82 @@
+#ifndef _U2_POSITION_WEIGHT_MATRIX_H_
+#define _U2_POSITION_WEIGHT_MATRIX_H_
+
+#include <U2Core/global.h>
+#include <QtCore/QVarLengthArray>
+
+namespace U2 {
+//Type of Weight matrix
+enum PWMatrixType {
+    PWM_MONONUCLEOTIDE,
+    PWM_DINUCLEOTIDE
+};
+
+class U2CORE_EXPORT UniprobeInfo {
+public:
+    //default empty constructor
+    UniprobeInfo();
+
+    //constructor from parsed data
+    UniprobeInfo(const QMap<QString, QString>& properties);
+
+    //constructor from raw data
+    UniprobeInfo(const QString& data);
+
+    QString getProperty (const QString& name) const;
+
+    QMap<QString, QString> getProperties() const;
+
+private:
+    QMap<QString, QString> properties;
+};
+
+//Position frequency matrix
+//Also known as PSSM - Position score-specific matrix
+class U2CORE_EXPORT PWMatrix {
+public:
+    //create empty matrix
+    PWMatrix() : data(QVarLengthArray<float>()), length(0), type(PWM_MONONUCLEOTIDE) {};
+
+    //create matrix from pre-counted data
+    PWMatrix(const QVarLengthArray<float> &matrix, const PWMatrixType& type);
+
+    //get internal index of position in 1-dimensional array
+    int index (int row, int column) const;
+
+    //get length of matrix row
+    int getLength () const;
+
+    //get type of matrix: mono- or dinucleotide
+    PWMatrixType getType() const;
+
+    //get value at specified position
+    float getValue (int row, int column) const;
+
+    //get sum of minimum values in each column
+    float getMinSum () const;
+
+    //get sum of maximum values in each column
+    float getMaxSum () const;
+
+    //set UniPROBE info for matrix
+    void setInfo (const UniprobeInfo& info);
+
+    //get specified UniPROBE property
+    QString getProperty (const QString& propertyName) const;
+    
+    //get all UniPROBE properties
+    QMap<QString, QString> getProperties() const;
+
+
+private:
+    QVarLengthArray<float> data;
+    int length;
+    PWMatrixType type;
+    float minSum, maxSum;
+    UniprobeInfo info;
+    
+};
+
+}//namespace
+
+#endif

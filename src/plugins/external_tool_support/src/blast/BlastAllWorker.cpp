@@ -1,0 +1,224 @@
+#include "BlastAllWorker.h"
+#include "TaskLocalStorage.h"
+#include "BlastAllSupport.h"
+
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseActorCategories.h>
+#include <U2Designer/DelegateEditors.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/Log.h>
+
+namespace U2 {
+namespace LocalWorkflow {
+
+/****************************
+ * BlastAllWorkerFactory
+ ****************************/
+const QString BlastAllWorkerFactory::ACTOR_ID("blast");
+const QString PROGRAM_NAME("blast-type");
+const QString DATABASE_PATH("db-path");
+const QString DATABASE_NAME("db-name");
+const QString EXPECT_VALUE("e-val");
+const QString GROUP_NAME("result-name");
+//const QString ORIGINAL_OUT("Blast_output");
+const QString EXT_TOOL_PATH("tool-path");
+const QString TMP_DIR_PATH("temp-dir");
+
+void BlastAllWorkerFactory::init() {
+    QList<PortDescriptor*> p; QList<Attribute*> a;
+    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), BlastAllWorker::tr("Input sequence"), 
+        BlastAllWorker::tr("Sequence for which annotations is searched."));
+    Descriptor oud(BasePorts::OUT_ANNOTATIONS_PORT_ID(), BlastAllWorker::tr("Annotations"), BlastAllWorker::tr("Found annotations."));
+    
+    QMap<Descriptor, DataTypePtr> inM;
+    inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
+    p << new PortDescriptor(ind, DataTypePtr(new MapDataType("blast.seq", inM)), true /*input*/);
+    QMap<Descriptor, DataTypePtr> outM;
+    outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
+    p << new PortDescriptor(oud, DataTypePtr(new MapDataType("blast.seq", outM)), false /*input*/, true /*multi*/);
+    
+    Descriptor pn(PROGRAM_NAME, BlastAllWorker::tr("Search type"),
+                   BlastAllWorker::tr("Select type of BLAST searches"));
+    Descriptor dp(DATABASE_PATH, BlastAllWorker::tr("Database Path"),
+                   BlastAllWorker::tr("Path with database files"));
+    Descriptor dn(DATABASE_NAME, BlastAllWorker::tr("Database Name"),
+                   BlastAllWorker::tr("Base name for BLAST DB files"));
+    Descriptor ev(EXPECT_VALUE, BlastAllWorker::tr("Expected value"),
+                   BlastAllWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
+    Descriptor gn(GROUP_NAME, BlastAllWorker::tr("Annotate as"),
+                   BlastAllWorker::tr("Name for annotations"));
+//    Descriptor output(ORIGINAL_OUT, BlastAllWorker::tr("BLAST output"),
+//                   BlastAllWorker::tr("Location of BLAST output file."));
+    Descriptor etp(EXT_TOOL_PATH, BlastAllWorker::tr("Tool Path"),
+                   BlastAllWorker::tr("External tool path"));
+    Descriptor tdp(TMP_DIR_PATH, BlastAllWorker::tr("Temporary directory"),
+                   BlastAllWorker::tr("Directory for temporary files"));
+
+    a << new Attribute(pn, BaseTypes::STRING_TYPE(), true, QVariant("blastn"));
+    a << new Attribute(dp, BaseTypes::STRING_TYPE(), true, QVariant(""));
+    a << new Attribute(dn, BaseTypes::STRING_TYPE(), true, QVariant(""));
+    a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
+    a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant(""));
+//    a << new Attribute(output, BaseTypes::STRING_TYPE(), false, QVariant(""));
+    a << new Attribute(etp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
+    a << new Attribute(tdp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
+
+    Descriptor desc(ACTOR_ID, BlastAllWorker::tr("Local BLAST search"),
+        BlastAllWorker::tr("Finds annotations for DNA sequence in local database"));
+    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+
+    QMap<QString, PropertyDelegate*> delegates;
+
+    {
+        QVariantMap m;
+        m["blastn"] = "blastn";
+        m["blastp"] = "blastp";
+        m["blastx"] = "blastx";
+        m["tblastn"] = "tblastn";
+        m["tblastx"] = "tblastx";
+        delegates[PROGRAM_NAME] = new ComboBoxDelegate(m);
+    }
+    {
+        QVariantMap m;
+        m["1e-100"] = 1e-100;
+        m["1e-10"] = 1e-10;
+        m["1"] = 1;
+        m["10"] = 10;
+        m["100"] = 100;
+        m["1000"] = 1000;
+        delegates[EXPECT_VALUE] = new ComboBoxDelegate(m);
+    }
+    delegates[DATABASE_PATH] = new URLDelegate("", "Database Directory", false, true);
+//    delegates[ORIGINAL_OUT] = new URLDelegate("(*.xml)", "xml file", false);
+    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
+    delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
+
+    proto->setEditor(new DelegateEditor(delegates));
+    proto->setPrompter(new BlastAllPrompter());
+    proto->setIconPath(":external_tool_support/images/ncbi.png");
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
+
+    DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
+    localDomain->registerEntry(new BlastAllWorkerFactory());
+}
+
+/****************************
+* BlastAllPrompter
+****************************/
+BlastAllPrompter::BlastAllPrompter(Actor* p) : PrompterBase<BlastAllPrompter>(p) {
+}
+QString BlastAllPrompter::composeRichDoc() {
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()));
+    Actor* producer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
+    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
+    QString doc = tr("For sequence %1 find annotations in database <u>%2</u>")
+        .arg(producerName).arg(getParameter(DATABASE_NAME).toString());
+
+    return doc;
+}
+/****************************
+* BlastAllWorker
+****************************/
+BlastAllWorker::BlastAllWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {
+}
+
+void BlastAllWorker::init() {
+    input = ports.value(BasePorts::IN_SEQ_PORT_ID());
+    output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
+}
+
+bool BlastAllWorker::isReady() {
+    return (input && input->hasMessage());
+}
+
+Task* BlastAllWorker::tick() {
+    Message inputMessage = getMessageAndSetupScriptValues(input);
+    cfg.programName=actor->getParameter(PROGRAM_NAME)->getAttributeValue<QString>();
+    cfg.databaseNameAndPath=actor->getParameter(DATABASE_PATH)->getAttributeValue<QString>() +"/"+
+                            actor->getParameter(DATABASE_NAME)->getAttributeValue<QString>();
+    cfg.isDefaultCosts=true;
+    cfg.isDefaultMatrix=true;
+    cfg.isDefautScores=true;
+    cfg.expectValue=actor->getParameter(EXPECT_VALUE)->getAttributeValue<double>();
+    cfg.groupName=actor->getParameter(GROUP_NAME)->getAttributeValue<QString>();
+    if(cfg.groupName.isEmpty()){
+        cfg.groupName="blast result";
+    }
+    cfg.wordSize=0;
+
+    QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>();
+    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+        AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->setPath(path);
+    }
+    path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>();
+    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+        AppContext::getAppSettings()->getUserAppsSettings()->setTemporaryDirPath(path);
+    }
+    DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+    
+    if( seq.length() < 1) {
+        algoLog.error( tr("Empty sequence supplied to BLAST") );
+        return NULL;
+    }
+    cfg.querySequence=seq.seq;
+
+    DNAAlphabet *alp = AppContext::getDNAAlphabetRegistry()->findAlphabet(seq.seq);
+    cfg.alphabet=alp;
+    //TO DO: Check alphabet
+    if(alp == AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::AMINO_DEFAULT())) {
+        if(cfg.programName == "blastn" || cfg.programName == "blastx" || cfg.programName == "tblastx") {
+            algoLog.info(tr("Selected BLAST search with nucleotide input sequence"));
+            return NULL;
+        }
+    }
+    else {
+        if(cfg.programName == "blastp" || cfg.programName == "tblastn") {
+            algoLog.info(tr("Selected BLAST search with amino acid input sequence"));
+            return NULL;
+        }
+    }
+    cfg.needCreateAnnotations=false;
+    Task* t = new BlastAllSupportTask(cfg);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+    return t;
+}
+
+void BlastAllWorker::sl_taskFinished() {
+    BlastAllSupportTask* t = qobject_cast<BlastAllSupportTask*>(sender());
+    if (t->getState() != Task::State_Finished) return;
+
+    if(output) {
+        QList<SharedAnnotationData> res = t->getResultedAnnotations();
+        QString annName = actor->getParameter(GROUP_NAME)->getAttributeValue<QString>();
+        if(!annName.isEmpty()) {
+            for(int i = 0; i<res.count();i++) {
+                res[i]->name = annName;
+            }
+        }
+        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+        if (input->isEnded()) {
+            output->setEnded();
+        }
+    }
+}
+
+bool BlastAllWorker::isDone() {
+    return !input || input->isEnded();
+}
+
+void BlastAllWorker::cleanup() {
+}
+
+} //namespace LocalWorkflow
+} //namespace U2

@@ -1,0 +1,4 @@
+#ifndef _BOWTIE_CONSTANTS_H_
+#define _BOWTIE_CONSTANTS_H_
+
+#endif //_BOWTIE_CONSTANTS_H_

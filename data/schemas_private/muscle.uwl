@@ -1,0 +1,73 @@
+#!UGENE_WORKFLOW
+#Schema is used to run muscle in separate process
+
+workflow "Align with muscle"{
+
+    read-msa {
+        type:read-msa;
+        name:"Read alignment";
+    }
+    write-msa {
+        type:write-msa;
+        name:"Write alignment";
+        document-format:clustal;
+        write-mode:1;
+    }
+    muscle {
+        type:muscle;
+        name:"Align with MUSCLE";
+        max-iterations:2;
+        mode:0;
+        range:"Whole alignment";
+        stable:true;
+    }
+
+    muscle.msa->write-msa.in-msa.msa
+    read-msa.msa->muscle.in-msa.msa
+
+    .meta {
+        aliases {
+            read-msa.url-in:in;
+            write-msa.document-format:format;
+            write-msa.url-out:out;
+            muscle.max-iterations:max-iterations;
+            muscle.mode:mode;
+            muscle.range:range;
+            muscle.stable:stable;
+        }
+        visual {
+            read-msa {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads MSA(s) from <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
+                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
+                pos:"-765 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
+            }
+            write-msa {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all MSAs from <span style=' text-decoration: underline;'>Align with MUSCLE</span> to <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
+                tooltip:"Writes all supplied alignments to file(s) in selected format";
+                pos:"-285 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+            }
+            muscle {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Align with MUSCLE</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Aligns each MSA supplied with MUSCLE using &quot;<span style=' text-decoration: underline;'>MUSCLE default</span>&quot; mode.</p></body></html>";
+                tooltip:"MUSCLE is public domain multiple alignment software for protein and nucleotide sequences.<p><dfn>MUSCLE stands for MUltiple Sequence Comparison by Log-Expectation.</dfn></p>";
+                pos:"-555 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-msa.angle:360;
+            }
+            read-msa.out-msa->muscle.in-msa {
+                text-pos:"-45 -50";
+            }
+            muscle.out-msa->write-msa.in-msa {
+                text-pos:"-45 -50";
+            }
+        }
+    }
+}
+

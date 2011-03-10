@@ -1,0 +1,62 @@
+#!UGENE_WORKFLOW
+#For all incoming sequences, dump sequence name and sequence size to output
+
+workflow "Dump sequence info"{
+
+    Script-Dump-sequence-info {
+        type:"Script-Dump sequence info";
+        name:"Dump sequence info";
+        script {
+out_text=getName(in_sequence) + ": " + size(in_sequence);
+        };
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    write-text {
+        type:write-text;
+        name:"Write plain text";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->Script-Dump-sequence-info.in.sequence
+    Script-Dump-sequence-info.text->write-text.in-text.text
+
+    .meta {
+        visual {
+            Script-Dump-sequence-info {
+                tooltip:"Evaluates user's script";
+                pos:"-555 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in.angle:180;
+                out.angle:360;
+            }
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-780 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-text {
+                tooltip:"Write strings to a file";
+                pos:"-360 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-text.angle:180;
+            }
+            read-sequence.out-sequence->Script-Dump-sequence-info.in {
+                text-pos:"-27.5 -24";
+            }
+            Script-Dump-sequence-info.out->write-text.in-text {
+                text-pos:"-32.5 -24";
+            }
+        }
+    }
+}
+

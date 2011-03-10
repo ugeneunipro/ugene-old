@@ -1,0 +1,107 @@
+#!UGENE_WORKFLOW
+#Extract sequences from annotated regions
+
+workflow {
+
+    filter-annotations {
+        type:filter-annotations;
+        name:"Filter annotations by name";
+        accept-or-filter:true;
+    }
+    extract-annotated-sequence {
+        type:extract-annotated-sequence;
+        name:"Get sequences by annotations";
+        complement:true;
+        extend-left:0;
+        extend-right:0;
+        merge-gap-length:1;
+        translate:false;
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    write-fasta {
+        type:write-fasta;
+        name:"Write FASTA";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.annotations->filter-annotations.in-annotations.annotations
+    filter-annotations.annotations->extract-annotated-sequence.in-sequence.annotations
+    read-sequence.sequence->extract-annotated-sequence.in-sequence.sequence
+    read-sequence.url->write-fasta.in-sequence.fasta-header
+    extract-annotated-sequence.sequence->write-fasta.in-sequence.sequence
+
+    .meta {
+	aliases {
+            read-sequence.url-in:in;
+            write-fasta.url-out:out;
+            filter-annotations.accept-or-filter:accept-or-filter;
+            filter-annotations.annotation-names:annotation-names;
+            extract-annotated-sequence.complement:complement;
+            extract-annotated-sequence.extend-left:extend-left;
+            extract-annotated-sequence.extend-right:extend-right;
+            extract-annotated-sequence.merge-gap-length:gap-length;
+            extract-annotated-sequence.translate:transl;
+        }
+        help {
+            in:"Input sequence";
+            out:"Output sequences in FASTA format";
+            accept-or-filter:"Accept specified names or accept all except specified";
+            annotation-names:"List of annotation names which will be accepted or filtered. Use space as the separator";
+            complement:"Complement the annotated regions if the corresponding annotation is located on complement strand";
+            extend-left:"Extend the resulted regions to left";
+            extend-right:"Extend the resulted regions to right";
+            gap-length:"Insert gap of specified length between merged locations of annotation";
+            transl:"Translate the annotated regions if the corresponding annotation marks translated subsequence";
+        }
+        visual {
+            filter-annotations {
+                tooltip:"Filters annotations by name";
+                pos:"-645 -720";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-annotations.angle:180;
+                out-annotations.angle:360;
+            }
+            extract-annotated-sequence {
+                tooltip:"Creates sequences from annotated regions of input sequence";
+                pos:"-480 -720";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 135 92";
+                in-sequence.angle:180;
+                out-sequence.angle:360;
+            }
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-780 -720";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-fasta {
+                tooltip:"Writes all supplied sequences to file(s) in FASTA format.";
+                pos:"-255 -720";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 75 89";
+                in-sequence.angle:180;
+            }
+            filter-annotations.out-annotations->extract-annotated-sequence.in-sequence {
+                text-pos:"-45 -37";
+            }
+            read-sequence.out-sequence->filter-annotations.in-annotations {
+                text-pos:"-27.5 -24";
+            }
+            extract-annotated-sequence.out-sequence->write-fasta.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="chroma_view/" >
+        <file>images/cv.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,14 @@
+<!DOCTYPE GB2WORKFLOW>
+<Actor>
+ <Input-port>
+  <In-Slots Slot="seq"/>
+ </Input-port>
+ <Output-port>
+  <Out-Slots Slot="seq"/>
+ </Output-port>
+ <Attributes>
+  <Attribute Type="number" Name="quality"/>
+ </Attributes>
+ <Element-name Name="Quality filter example"/>
+ <Element-description Description="Filter's sequences for quality"/>
+</Actor>

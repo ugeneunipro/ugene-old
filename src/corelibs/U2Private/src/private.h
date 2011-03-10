@@ -1,0 +1,10 @@
+#ifndef _PRIVATE_DEFINES_H_
+#define _PRIVATE_DEFINES_H_
+
+#ifdef BUILDING_U2PRIVATE_DLL
+#   define U2PRIVATE_EXPORT Q_DECL_EXPORT
+#else
+#   define U2PRIVATE_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif

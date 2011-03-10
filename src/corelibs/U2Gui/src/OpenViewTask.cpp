@@ -1,0 +1,256 @@
+#include "OpenViewTask.h"
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/Log.h>
+#include <U2Core/ResourceTracker.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/GObject.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/GHints.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/BaseDocumentFormats.h>
+
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+
+#include <U2Core/AnnotationTableObject.h>
+
+#include <QtCore/QFileInfo>
+#include <QtGui/QApplication>
+
+namespace U2 {
+
+/* TRANSLATOR U2::LoadUnloadedDocumentTask */    
+
+
+//////////////////////////////////////////////////////////////////////////
+// LoadUnloadedDocumentAndOpenViewTask
+
+LoadUnloadedDocumentAndOpenViewTask::LoadUnloadedDocumentAndOpenViewTask(Document* d) :
+Task("", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
+{
+    loadUnloadedTask = new LoadUnloadedDocumentTask(d);
+    setUseDescriptionFromSubtask(true);
+
+    setVerboseLogMode(true);
+    setTaskName(tr("Load document: '%1'").arg(d->getName()));
+
+    addSubTask(loadUnloadedTask);
+}
+
+static Task* createOpenViewTask(const MultiGSelection& ms) {
+    QList<GObjectViewFactory*> fs = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
+    QList<GObjectViewFactory*> ls;
+
+    foreach(GObjectViewFactory* f, fs) {
+        //check if new view can be created
+        if (f->canCreateView(ms)) {
+            ls.append(f);
+        }
+    }
+    
+    if (ls.size() > 1) {
+        GObjectViewFactory* f = AppContext::getObjectViewFactoryRegistry()->getFactoryById(GObjectViewFactory::SIMPLE_TEXT_FACTORY);
+        if (ls.contains(f)) {
+            // ignore auxiliary text data
+            ls.removeAll(f);
+        }
+    }
+
+    if (ls.size() == 1) {
+        GObjectViewFactory* f = ls.first();
+        Task* t = f->createViewTask(ms, true);
+        return t;
+    }
+    return NULL;
+}
+
+QList<Task*> LoadUnloadedDocumentAndOpenViewTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> res;
+    if (subTask != loadUnloadedTask || hasErrors() || isCanceled()) {
+        return res;
+    }
+    
+    // look if saved state can be loaded
+    Document* doc = loadUnloadedTask->getDocument();
+    assert(doc->isLoaded());
+    
+    res.append( new OpenViewTask(doc));
+    return res;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// OpenViewTask
+
+
+OpenViewTask::OpenViewTask( Document* d )
+: Task("Open view", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText ), doc(d)
+{
+    assert(doc != NULL);
+    assert(doc->isLoaded());
+
+}
+
+void OpenViewTask::prepare()
+{   
+    
+    QList<Task*> res;
+    
+    //if any of existing views has added an object from the document -> do not open new view
+    const QList<GObject*>& docObjects = doc->getObjects();
+    if (!GObjectViewUtils::findViewsWithAnyOfObjects(docObjects).isEmpty()) {
+        return;
+    }
+
+    //try open new view
+    GObjectSelection os; os.addToSelection(docObjects);
+    MultiGSelection ms; ms.addSelection(&os);
+    QList<GObjectViewState*> sl = GObjectViewUtils::selectStates(ms, AppContext::getProject()->getGObjectViewStates());
+    if (sl.size() == 1) {
+        GObjectViewState* state = sl.first();
+        GObjectViewFactory* f = AppContext::getObjectViewFactoryRegistry()->getFactoryById(state->getViewFactoryId());
+        assert(f!=NULL);
+        res.append(f->createViewTask(state->getViewName(), state->getStateData()));
+    } else {
+        Task* openViewTask = createOpenViewTask(ms);
+        if (openViewTask!=NULL) {
+            openViewTask->setSubtaskProgressWeight(0);
+            res.append(openViewTask);
+        }
+    }
+
+    if (res.isEmpty()) { 
+        // no view can be opened -> check special case: loaded object contains annotations associated with sequence
+        // -> load sequence and open view for it;
+        foreach(GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE)) {
+            QList<GObjectRelation> rels = obj->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);
+            if (rels.isEmpty()) {
+                continue;
+            }
+            const GObjectRelation& rel = rels.first();
+            Document* seqDoc = AppContext::getProject()->findDocumentByURL(rel.ref.docUrl);
+            if (seqDoc!=NULL) {
+                if (seqDoc->isLoaded()) { //try open sequence view 
+                    GObject* seqObj = seqDoc->findGObjectByName(rel.ref.objName);
+                    if (seqObj!=NULL && seqObj->getGObjectType() == GObjectTypes::SEQUENCE) {
+                        GObjectSelection os2; os2.addToSelection(seqObj);
+                        MultiGSelection ms2; ms2.addSelection(&os2);
+                        Task* openViewTask = createOpenViewTask(ms2);
+                        if (openViewTask!=NULL) {
+                            openViewTask->setSubtaskProgressWeight(0);
+                            res.append(openViewTask);
+                        }
+                    }
+                } else { //try load doc and open sequence view 
+                    AppContext::getTaskScheduler()->registerTopLevelTask(new LoadUnloadedDocumentAndOpenViewTask(seqDoc));
+                }
+            } 
+            if (!res.isEmpty()) { //one view is ok
+                break;
+            }
+        }
+    }
+    
+    foreach(Task* task, res) {
+        addSubTask(task);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+LoadRemoteDocumentAndOpenViewTask::LoadRemoteDocumentAndOpenViewTask( const QString& accId, const QString& dbName )
+: Task("LoadRemoteDocumentAndOpenView", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), loadRemoteDocTask(NULL)
+{
+    accNumber = accId;
+    databaseName = dbName;
+}
+
+LoadRemoteDocumentAndOpenViewTask::LoadRemoteDocumentAndOpenViewTask( const GUrl& url )
+: Task(tr("Load remote document and open view"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), loadRemoteDocTask(NULL)
+{
+    docUrl = url;
+}
+
+LoadRemoteDocumentAndOpenViewTask::LoadRemoteDocumentAndOpenViewTask(const QString& accId, const QString& dbName, const QString & fp) 
+: Task(tr("Load remote document and open view"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), loadRemoteDocTask(NULL) {
+    accNumber = accId;
+    databaseName = dbName;
+    fullpath = fp;
+}
+
+void LoadRemoteDocumentAndOpenViewTask::prepare()
+{
+    if (docUrl.isEmpty()) {
+        loadRemoteDocTask = new LoadRemoteDocumentTask(accNumber, databaseName, fullpath);
+    } else {
+        loadRemoteDocTask = new LoadRemoteDocumentTask(docUrl); 
+    }
+    addSubTask(loadRemoteDocTask);
+}
+
+QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask )
+{
+    QList<Task*> subTasks;
+    if (subTask->hasErrors()) {
+        return subTasks;
+    }
+
+    if (subTask->isCanceled()) {
+        return subTasks;
+    }
+
+    if (subTask == loadRemoteDocTask ) {
+        // hack for handling errors with http requests with bad resource id
+        Document * d = loadRemoteDocTask->getDocument();
+        if(d->getDocumentFormatId() == BaseDocumentFormats::PLAIN_TEXT) {
+            setError(tr("Cannot find %1 in %2 database").arg(accNumber).arg(databaseName));
+            // try to delete file with response that was created
+            QFile::remove(d->getURLString());
+            // and remove it from downloaded cache
+            RecentlyDownloadedCache * cache = AppContext::getRecentlyDownloadedCache();
+            if( cache != NULL ) {
+                cache->remove(d->getURLString());
+            }
+            return subTasks;
+        }
+
+        QString fullPath = loadRemoteDocTask->getLocalUrl();
+        Project* proj = AppContext::getProject();
+        if (proj == NULL) {
+            subTasks.append(  AppContext::getProjectLoader()->openProjectTask(fullPath, false));
+        } else {
+            Document* doc = loadRemoteDocTask->getDocument();
+            assert(doc != NULL);
+
+            if ( proj->getDocuments().contains(doc) ) {
+                if (doc->isLoaded()) {
+                    subTasks.append(new OpenViewTask(doc));
+                } else {
+                    subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
+                }
+            } else {
+                // Add document to project
+                DocumentFormat* format = doc->getDocumentFormat(); 
+                IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+                Document* clonedDoc = new Document(format, iof, fullPath);
+                clonedDoc->loadFrom(doc); // doc was loaded in a separate thread -> clone all GObjects
+                assert(!clonedDoc->isTreeItemModified());
+                assert(clonedDoc->isLoaded());
+                subTasks.append(new AddDocumentTask(clonedDoc));
+                subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(clonedDoc));
+
+            }    
+        }
+    }
+
+    return subTasks;
+}
+
+}//namespace

@@ -1,0 +1,76 @@
+#!UGENE_WORKFLOW
+#Annotates a sequence in compliance with a UGENE Query Language (UQL) schema.
+
+workflow "Annotate with UQL Schema"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+    query {
+        type:query;
+        name:"Annotate with UQL";
+        merge:false;
+        offset:0;
+    }
+
+    query.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->query.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:in;
+            write-genbank.url-out:out;
+            query.merge:merge;
+            query.offset:offset;
+            query.schema:schema;
+        }
+        help {
+            in:"Input sequence";
+            out:"Output file with annotations";
+            merge:"Merges regions of each result into single annotation";
+            offset:"Specifies left and right offsets for merged annotation (if merge parameter is set to true)";
+            schema:"Input query schema";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-585 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 45 90";
+                out-sequence.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-210 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            query {
+                tooltip:"Analyzes a nucleotide sequence using different algorithms                      (Repeat finder, ORF finder, etc.) imposing constraints                      on the positional relationship of the results.";
+                pos:"-420 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
+            query.out-annotations->write-genbank.in-sequence {
+                text-pos:"-45 -37";
+            }
+            read-sequence.out-sequence->query.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+        }
+    }
+}
+

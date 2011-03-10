@@ -1,0 +1,113 @@
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+#include <QtXml/QDomDocument>
+
+#include <U2Core/Log.h>
+#include <U2Core/L10n.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/Settings.h>
+#include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/SchemaSerializer.h>
+
+#include "WorkflowIOTasks.h"
+
+namespace U2 {
+using namespace Workflow;
+
+/************************************
+ * LoadWorkflowTask
+ ************************************/
+LoadWorkflowTask::LoadWorkflowTask(Schema* s, Workflow::Metadata* m, const QString& u):
+Task(tr("Loading schema"), TaskFlag_None),
+    url(u), schema(s), meta(m) {
+    assert(schema != NULL);
+}
+
+void LoadWorkflowTask::run() {
+    ioLog.details(tr("Loading schema from file: %1").arg(url));
+    
+    QFile file(url);
+    if (!file.open(QIODevice::ReadOnly)) {
+        stateInfo.setError(L10N::errorOpeningFileRead(url));
+        return;
+    }
+    QTextStream in(&file);
+    in.setCodec("UTF-8");
+    rawData = in.readAll();
+    format = detectFormat(rawData);
+    if(format == UNKNOWN) {
+        setError(tr("Undefined format: plain text or xml expected"));
+        return;
+    }
+}
+
+Task::ReportResult LoadWorkflowTask::report() {
+    if(stateInfo.hasErrors()) {
+        return ReportResult_Finished;
+    }
+    
+    QString err;
+    if(format == HR) {
+        err = HRSchemaSerializer::string2Schema(rawData, schema, meta, &remap);
+    } else if(format == XML) {
+        setError(tr("Sorry! XML schema format is obsolete and not supported. You can create new schema in GUI mode"
+                    " or write it by yourself. Check our documentation for details!"));
+        return ReportResult_Finished;
+    } else {
+        // check in constructor
+        assert(false);
+    }
+    
+    if(!err.isEmpty()) {
+        setError(err);
+        schema->reset();
+        if(meta) {
+            meta->reset();
+        }
+        return ReportResult_Finished;
+    }
+    if(meta) {
+        meta->url = url;
+    }
+    return ReportResult_Finished;
+}
+
+LoadWorkflowTask::FileFormat LoadWorkflowTask::detectFormat(const QString & rawData) {
+    if(rawData.trimmed().startsWith(HRSchemaSerializer::HEADER_LINE)) {
+        return HR;
+    } else if(rawData.trimmed().startsWith("<!DOCTYPE GB2WORKFLOW>")) {
+        return XML;
+    } else {
+        return UNKNOWN;
+    }
+}
+
+/************************************
+ * SaveWorkflowTask
+ ************************************/
+SaveWorkflowTask::SaveWorkflowTask(Schema* schema, const Metadata& meta, bool copyMode) :
+Task(tr("Save workflow schema task"), TaskFlag_None), url(meta.url) {
+    assert(schema != NULL);
+    rawData = HRSchemaSerializer::schema2String(*schema, &meta, copyMode);
+}
+
+void SaveWorkflowTask::run() {
+    if(hasErrors() || isCanceled()) {
+        return;
+    }
+    
+    QFile file(url);
+    if(!file.open(QIODevice::WriteOnly)) {
+        setError(L10N::errorOpeningFileWrite(url));
+        return;
+    }
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    out << rawData;
+}
+
+Task::ReportResult SaveWorkflowTask::report() {
+    return ReportResult_Finished;
+}
+
+}//namespace

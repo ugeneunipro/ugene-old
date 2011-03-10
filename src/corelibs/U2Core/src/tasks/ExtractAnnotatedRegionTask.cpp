@@ -1,0 +1,80 @@
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/AnnotationSettings.h>
+#include <U2Core/SequenceUtils.h>
+
+#include "ExtractAnnotatedRegionTask.h"
+
+namespace U2{ 
+
+ExtractAnnotatedRegionTask::ExtractAnnotatedRegionTask( const DNASequence & sequence_, SharedAnnotationData sd_, const ExtractAnnotatedRegionTaskSettings & cfg_ ) :
+Task( tr("Extract annotated regions"), TaskFlag_None ), inputSeq(sequence_), inputAnn(sd_), cfg(cfg_), complT(0), aminoT(0)
+{
+}
+
+void ExtractAnnotatedRegionTask::prepare() {
+    prepareTranslations();
+    resultedSeq.alphabet = aminoT ? aminoT->getDstAlphabet() : complT ? complT->getDstAlphabet() : inputSeq.alphabet;
+   // resultedSeq.info = inputSeq.info;
+    resultedSeq.info[DNAInfo::ID] = inputSeq.getName();
+}
+
+void ExtractAnnotatedRegionTask::prepareTranslations() {
+    //TODO move these logic somewhere upstairs
+    bool aminoSeq = inputSeq.alphabet->isAmino();
+    if (aminoSeq) {
+        return;
+    }
+    if (cfg.complement && inputAnn->getStrand().isCompementary()) {
+        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
+            lookupTranslation( inputSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL );
+        if (!compTTs.isEmpty()) {
+            complT = compTTs.first(); 
+        }
+    }
+
+    if (cfg.translate) {
+        DNATranslationType dnaTranslType = (inputSeq.alphabet->getType() == DNAAlphabet_NUCL) ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
+        QList<DNATranslation*> aminoTTs = AppContext::getDNATranslationRegistry()->lookupTranslation( inputSeq.alphabet, dnaTranslType );
+        if( !aminoTTs.isEmpty() ) {
+            aminoT = aminoTTs.first();
+        } 
+    }
+}
+
+void ExtractAnnotatedRegionTask::run() {
+    QVector<U2Region> safeLocation = inputAnn->getRegions();
+    U2Region::bound(0, inputSeq.length(), safeLocation);
+    QList<QByteArray> resParts = SequenceUtils::extractRegions(inputSeq.constData(), safeLocation, complT);
+    QVector<U2Region> resLocation = SequenceUtils::toJoinedRegions(resParts);
+    if (aminoT == NULL) { // extension does not work for translated annotations
+        if (cfg.extLeft > 0) {
+            int annStart = safeLocation.first().startPos;
+            int preStart = qMax(0,  annStart - cfg.extLeft);
+            int preLen = annStart - preStart;
+            QByteArray preSeq = inputSeq.seq.mid(preStart, preLen);
+            resParts.prepend(preSeq);
+            U2Region::shift(cfg.extLeft, resLocation);
+        }
+        if (cfg.extRight) {
+            U2Region annRegion = U2Region::containingRegion(safeLocation);
+            int annEnd = annRegion.endPos();
+            int postEnd = qMin(inputSeq.length(), annEnd + cfg.extRight);
+            int postLen = postEnd - annEnd;
+            QByteArray postSeq = inputSeq.seq.mid(annEnd, postLen);
+            resParts.append(postSeq);
+        }
+    } else {
+        resParts = SequenceUtils::translateRegions(resParts, aminoT, inputAnn->isJoin());
+        resLocation = SequenceUtils::toJoinedRegions(resParts);
+    }
+    resultedSeq.seq = resParts.size() == 1 ? resParts.first() : SequenceUtils::joinRegions(resParts);
+    resultedAnn = inputAnn;
+    resultedAnn->location->regions = resLocation;
+    resultedAnn->setStrand(U2Strand::Direct);
+    resultedAnn->setLocationOperator(inputAnn->getLocationOperator());
+}
+
+
+} // U2

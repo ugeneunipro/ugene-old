@@ -1,0 +1,1 @@
+MA0118.1	7.46607328520911	Macho-1	Zinc-coordinating	; acc "Q9GRA5" ; collection "CORE" ; comment "-" ; family "BetaBetaAlpha-zinc finger" ; medline "15661650" ; species "7729" ; tax_group "urochordates" ; type "SELEX" 

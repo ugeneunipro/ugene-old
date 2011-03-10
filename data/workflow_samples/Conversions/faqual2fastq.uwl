@@ -1,0 +1,65 @@
+#!UGENE_WORKFLOW
+#This schema allows to add PHRED quality scores to the sequence and save output to Fastq. For example, one can read a Fasta file, import PHRED quality values from corresponding qualities file and export the result to Fastq.
+#To execute the schema do the following:
+#1) Select "Sequence Reader" task and specify source file(s) at "URL" field in the Property Editor.
+#2) Select "Import PHRED qualities" task and specify URL to the quality file. Usually such files have .qual extension. 
+#3) Launch the schema with pressing Ctrl+R shrotcut.
+#After running the schema, target fastq file will appear in the same folder as the source file, with the same name but diffrent extension.
+
+workflow "Convert seq/qual pair to Fastq"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    import-phred-qualities {
+        type:import-phred-qualities;
+        name:"Import PHRED qualities";
+        quality-format:Sanger;
+    }
+    write-fastq {
+        type:write-fastq;
+        name:"Write FASTQ";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->import-phred-qualities.in-sequence.sequence
+    import-phred-qualities.sequence->write-fastq.in-sequence.sequence
+
+    .meta {
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-765 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            import-phred-qualities {
+                tooltip:"Add corresponding PHRED quality scores to the sequences. You can use this worker to convert .fasta and .qual pair to fastq format";
+                pos:"-600 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-sequence.angle:360;
+            }
+            write-fastq {
+                tooltip:"Writes all supplied sequences to file(s) in FASTQ format.";
+                pos:"-330 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->import-phred-qualities.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            import-phred-qualities.out-sequence->write-fastq.in-sequence {
+                text-pos:"-45 -50";
+            }
+        }
+    }
+}
+

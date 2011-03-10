@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="sitecon/" >
+        <file>images/sitecon.png</file>
+    </qresource>
+</RCC>

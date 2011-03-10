@@ -1,0 +1,66 @@
+<ui version="4.0" >
+ <class>PluginViewWidget</class>
+ <widget class="QWidget" name="PluginViewWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>931</width>
+    <height>490</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>plugin_viewer_widget_caption</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QSplitter" name="splitter" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QTextBrowser" name="infoView" >
+      <property name="autoFillBackground" >
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QTreeWidget" name="treeWidget" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="contextMenuPolicy" >
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
+      <property name="sortingEnabled" >
+       <bool>false</bool>
+      </property>
+      <column>
+       <property name="text" >
+        <string>item_type_label</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>item_name_label</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>item_state_label</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>item_desc_label</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,586 @@
+<ui version="4.0" >
+ <class>ORFDialogBase</class>
+ <widget class="QDialog" name="ORFDialogBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>496</width>
+    <height>560</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize" >
+   <size>
+    <width>494</width>
+    <height>560</height>
+   </size>
+  </property>
+  <property name="maximumSize" >
+   <size>
+    <width>32767</width>
+    <height>32767</height>
+   </size>
+  </property>
+  <property name="mouseTracking" >
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle" >
+   <string>find_dialog_caption</string>
+  </property>
+  <property name="toolTip" >
+   <string/>
+  </property>
+  <property name="whatsThis" >
+   <string>find_dialog_wit</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4" >
+   <item>
+    <layout class="QGridLayout" name="gridLayout" >
+     <item row="0" column="0" >
+      <layout class="QHBoxLayout" name="horizontalLayout_2" >
+       <item>
+        <widget class="QGroupBox" name="bgStrand" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title" >
+          <string>strand_group</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout" >
+          <item>
+           <widget class="QRadioButton" name="rbBoth" >
+            <property name="toolTip" >
+             <string>strand_both_wit</string>
+            </property>
+            <property name="whatsThis" >
+             <string>strand_both_wit</string>
+            </property>
+            <property name="text" >
+             <string>strand_both</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="rbDirect" >
+            <property name="toolTip" >
+             <string>strand_direct_wit</string>
+            </property>
+            <property name="whatsThis" >
+             <string>strand_direct_wit</string>
+            </property>
+            <property name="text" >
+             <string>strand_direct_label</string>
+            </property>
+            <property name="shortcut" >
+             <string/>
+            </property>
+            <property name="checked" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="rbComplement" >
+            <property name="toolTip" >
+             <string>strand_complement_wit</string>
+            </property>
+            <property name="whatsThis" >
+             <string>strand_complement_wit</string>
+            </property>
+            <property name="text" >
+             <string>strand_complement_label</string>
+            </property>
+            <property name="shortcut" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>0</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="title" >
+          <string>param_group</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3" >
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout" >
+            <item>
+             <widget class="QCheckBox" name="ckMinLen" >
+              <property name="toolTip" >
+               <string>min_len_tip</string>
+              </property>
+              <property name="whatsThis" >
+               <string>min_len_tip</string>
+              </property>
+              <property name="text" >
+               <string>min_len_label</string>
+              </property>
+              <property name="checked" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="sbMinLen" >
+              <property name="enabled" >
+               <bool>true</bool>
+              </property>
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip" >
+               <string/>
+              </property>
+              <property name="whatsThis" >
+               <string/>
+              </property>
+              <property name="suffix" >
+               <string/>
+              </property>
+              <property name="minimum" >
+               <number>1</number>
+              </property>
+              <property name="maximum" >
+               <number>999999999</number>
+              </property>
+              <property name="value" >
+               <number>100</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ckFit" >
+            <property name="toolTip" >
+             <string>must_fit_tip</string>
+            </property>
+            <property name="whatsThis" >
+             <string>must_fit_tip</string>
+            </property>
+            <property name="text" >
+             <string>must_fit_label</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ckInit" >
+            <property name="toolTip" >
+             <string>must_init_tip</string>
+            </property>
+            <property name="whatsThis" >
+             <string>must_init_tip</string>
+            </property>
+            <property name="text" >
+             <string>must_init_label</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ckAlt" >
+            <property name="enabled" >
+             <bool>true</bool>
+            </property>
+            <property name="toolTip" >
+             <string>allow_alt_tip</string>
+            </property>
+            <property name="whatsThis" >
+             <string>allow_alt_tip</string>
+            </property>
+            <property name="text" >
+             <string>allow_alternative_label</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item rowspan="3" row="0" column="1" >
+      <layout class="QVBoxLayout" name="verticalLayout_2" >
+       <item>
+        <widget class="QPushButton" name="pbFindAll" >
+         <property name="enabled" >
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>find_all_wit</string>
+         </property>
+         <property name="text" >
+          <string>find_all_button</string>
+         </property>
+         <property name="shortcut" >
+          <string/>
+         </property>
+         <property name="default" >
+          <bool>true</bool>
+         </property>
+         <property name="flat" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbSaveAnnotations" >
+         <property name="toolTip" >
+          <string>save_as_features_tt</string>
+         </property>
+         <property name="whatsThis" >
+          <string>save_as_features_wit</string>
+         </property>
+         <property name="text" >
+          <string>save_as_annotations</string>
+         </property>
+         <property name="shortcut" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbClose" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>hide_button_wit</string>
+         </property>
+         <property name="text" >
+          <string>close_button</string>
+         </property>
+         <property name="shortcut" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="spacer4" >
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>88</width>
+           <height>17</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbClearList" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>clear_list_button</string>
+         </property>
+         <property name="shortcut" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QComboBox" name="transCombo" />
+     </item>
+     <item row="2" column="0" >
+      <widget class="QTextEdit" name="codonsView" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>0</width>
+         <height>65</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>16777215</width>
+         <height>65</height>
+        </size>
+       </property>
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTreeWidget" name="resultsTree" >
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
+     <column>
+      <property name="text" >
+       <string>region</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>compl</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>len</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2" >
+     <item row="0" column="0" >
+      <widget class="QLabel" name="lRangeStart" >
+       <property name="text" >
+        <string>rstart_label</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" >
+      <widget class="QSpinBox" name="sbRangeStart" >
+       <property name="minimumSize" >
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="accelerated" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" >
+      <spacer name="horizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>13</width>
+         <height>15</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="lRangeEnd" >
+       <property name="text" >
+        <string>rend_label</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QSpinBox" name="sbRangeEnd" >
+       <property name="minimumSize" >
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="accelerated" >
+        <bool>true</bool>
+       </property>
+       <property name="maximum" >
+        <number>99</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2" >
+      <spacer name="horizontalSpacer_2" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>13</width>
+         <height>15</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4" >
+     <item>
+      <widget class="QPushButton" name="pbRangeToSelection" >
+       <property name="toolTip" >
+        <string>sel_bt_tip</string>
+       </property>
+       <property name="whatsThis" >
+        <string>sel_bt_tip</string>
+       </property>
+       <property name="text" >
+        <string>Selection range</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbRangeToPan" >
+       <property name="toolTip" >
+        <string>pv_bt_tip</string>
+       </property>
+       <property name="whatsThis" >
+        <string>pv_bt_tip</string>
+       </property>
+       <property name="text" >
+        <string>Overview range</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbRangeToSeq" >
+       <property name="toolTip" >
+        <string>seq_bt_tip</string>
+       </property>
+       <property name="whatsThis" >
+        <string>seq_bt_tip</string>
+       </property>
+       <property name="text" >
+        <string>Sequence range</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="statusBar" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font" >
+      <font/>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>pbFindAll</tabstop>
+  <tabstop>pbClose</tabstop>
+  <tabstop>rbBoth</tabstop>
+  <tabstop>rbDirect</tabstop>
+  <tabstop>rbComplement</tabstop>
+  <tabstop>sbMinLen</tabstop>
+  <tabstop>pbSaveAnnotations</tabstop>
+  <tabstop>pbClearList</tabstop>
+  <tabstop>sbRangeStart</tabstop>
+  <tabstop>sbRangeEnd</tabstop>
+  <tabstop>pbRangeToSelection</tabstop>
+  <tabstop>pbRangeToPan</tabstop>
+  <tabstop>pbRangeToSeq</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ckMinLen</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sbMinLen</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>303</x>
+     <y>32</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>419</x>
+     <y>32</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ckInit</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ckAlt</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>279</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>279</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,0 +1,92 @@
+#!UGENE_WORKFLOW
+#Aligns short reads to reference genome using a pre-built Bowtie genome index. The output alignment is saved to SAM format. 
+#To execute the schema do the following:
+#1) Select "Short reads loader" task and specify source file(s) at "URL" field in the Property Editor.
+#2) Select "Bowtie index reader" task and specify URL to the pre-built index. 
+#3) Specify Bowtie options in the properties of "Bowtie aligner" task.
+#4) Launch the schema with pressing Ctrl+R shrotcut.
+#After running the schema, the alignment file will appear in the same folder as the source file. Pre-built indxeses can be downloaded from CBCB ftp server ftp://ftp.cbcb.umd.edu/pub/data/bowtie_indexes/
+
+workflow "Align to reference genome with Bowtie"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    bowtie-read-index {
+        type:bowtie-read-index;
+        name:"Bowtie index reader";
+    }
+    bowtie2 {
+        type:bowtie;
+        name:"Bowtie aligner";
+        chunk-mbs:64;
+        maq-err:70;
+        max-backtracks:-1;
+        mismatches-num:2;
+        no-forward:false;
+        no-maq-rounding:false;
+        no-reverse-complemented:false;
+        report-with-mismatches:-1;
+        seed:-1;
+        seed-length:28;
+        try-hard:false;
+    }
+    write-clustalw {
+        type:write-clustalw;
+        name:"Write ClustalW";
+        write-mode:2;
+    }
+
+    bowtie-read-index.ebwt-index->bowtie2.in-ebwt.ebwt-index
+    read-sequence.sequence->bowtie2.in-sequence.sequence
+    bowtie2.msa->write-clustalw.in-msa.msa
+
+    .meta {
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-795 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            bowtie-read-index {
+                tooltip:"Read a set of 6 files with suffixes .1.ebwt, .2.ebwt, .3.ebwt, .4.ebwt, .rev.1.ebwt, and .rev.2.ebwt. These files together constitute the index: they are all that is needed to align reads to that reference.";
+                pos:"-795 -480";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-ebwt.angle:360;
+            }
+            bowtie2 {
+                tooltip:"An ultrafast memory-efficient short read aligner, http://bowtie-bio.sourceforge.net";
+                pos:"-615 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-ebwt.angle:220.462;
+                in-sequence.angle:141.34;
+                out-msa.angle:360;
+            }
+            write-clustalw {
+                tooltip:"Writes all supplied alignments to file(s) in CLUSTALW format.";
+                pos:"-390 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+            }
+
+            read-sequence.out-sequence->bowtie2.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            bowtie-read-index.out-ebwt->bowtie2.in-ebwt {
+                text-pos:"-32.5 -24";
+            }
+            bowtie2.out-msa->write-clustalw.in-msa {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

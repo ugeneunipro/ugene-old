@@ -1,0 +1,138 @@
+#ifndef _U2_WORKFLOW_LOCAL_DOMAIN_H_
+#define _U2_WORKFLOW_LOCAL_DOMAIN_H_
+
+#include <U2Lang/IntegralBus.h>
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/WorkflowTransport.h>
+#include <U2Lang/WorkflowManager.h>
+
+#include <QtCore/QQueue>
+#include <limits.h>
+
+namespace U2 {
+
+namespace LocalWorkflow {
+
+using namespace Workflow;
+
+/**
+ * currently, all wd workers inherits this class
+ * 
+ * base class for workers in integral bus model
+ */
+class U2LANG_EXPORT BaseWorker : public QObject, public Worker, public CommunicationSubject {
+    Q_OBJECT
+public:
+    BaseWorker(Actor* a, bool autoTransitBus = true);
+    virtual ~BaseWorker();
+    
+    virtual ActorId getActorId() const;
+    
+    // reimplemented from CommunicationSubject
+    virtual bool addCommunication(const QString& name, CommunicationChannel* _ch);
+    virtual CommunicationChannel* getCommunication(const QString& name);
+    
+    // if you want your worker support scripts -> you should call this function to get Messages from channels
+    // call this when channel has message
+    // after calling: set all needed values for running your worker
+    // called from 'tick' and then setup worker params
+    virtual Message getMessageAndSetupScriptValues( CommunicationChannel * channel );
+    
+private:
+    // bind values from input ports to script vars. 
+    // This function is called before 'get' data from channel -> to set up parameters for scripting
+    void bindScriptValues();
+    
+protected:
+    Actor* actor;
+    // integral buses of actor's ports
+    QMap<QString, IntegralBus*> ports;
+    // workflow settings: worker task should fail on first error
+    //bool failFast;
+    
+}; // BaseWorker
+
+/**
+ * simple realization of scheduler
+ * worker tasks run sequentially, not in parallel
+ *
+ * bind to BaseWorker class as actor's workers
+ */
+class U2LANG_EXPORT SimplestSequentialScheduler : public Scheduler {
+public:
+    SimplestSequentialScheduler(Schema* sh);
+    virtual ~SimplestSequentialScheduler();
+    
+    // reimplemented from Worker
+    virtual void init();
+    virtual bool isReady();
+    virtual Task* tick();
+    virtual bool isDone();
+    virtual void cleanup();
+    
+    virtual WorkerState getWorkerState(ActorId);
+    
+private:
+    Schema* schema;
+    BaseWorker* lastWorker;
+    Task* lastTask;
+    
+}; // SimplestSequentialScheduler
+
+/**
+ * simple realization of Communnication channel
+ */
+class U2LANG_EXPORT SimpleQueue : public CommunicationChannel {
+public:
+    SimpleQueue();
+    virtual ~SimpleQueue(){}
+    
+    // reimplemented from CommunicationChannel
+    virtual Message get();
+    virtual Message look() const;
+    virtual void put(const Message& m);
+    virtual int hasMessage() const;
+    virtual int takenMessages()const;
+    virtual int hasRoom(const DataType* ) const;
+    virtual bool isEnded() const;
+    virtual void setEnded();
+    // capacity is INT_MAX
+    virtual int capacity() const;
+    // does nothing
+    virtual void setCapacity(int);
+    
+protected:
+    // first in, first out
+    QQueue<Message> que;
+    // 'end' flag
+    bool ended;
+    // 
+    int takenMsgs;
+    
+}; // SimpleQueue
+
+/**
+ * runtime domain for SimplestSequentialScheduler and SimpleQueue
+ * 
+ * currently, container for all DomainFactories of computational tasks
+ */
+class U2LANG_EXPORT LocalDomainFactory : public DomainFactory {
+public:
+    static const QString ID;
+
+public:
+    LocalDomainFactory();
+    virtual ~LocalDomainFactory(){}
+    
+    virtual Worker* createWorker(Actor*);
+    virtual CommunicationChannel* createConnection(Link*);
+    virtual Scheduler* createScheduler(Schema*);
+    virtual void destroy(Scheduler*, Schema*);
+    
+}; // LocalDomainFactory
+
+}//Workflow namespace
+
+}//GB2 namespace
+
+#endif // _U2_WORKFLOW_LOCAL_DOMAIN_H_

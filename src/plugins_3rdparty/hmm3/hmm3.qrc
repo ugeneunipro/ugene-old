@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="hmm3/" >
+        <file>images/hmmer_16.png</file>
+    </qresource>
+</RCC>

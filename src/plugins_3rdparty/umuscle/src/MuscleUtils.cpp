@@ -1,0 +1,159 @@
+/// various helper methods and structures
+#include "MuscleUtils.h"
+
+#include <U2Core/DNAAlphabet.h>
+
+#include "MuscleAdapter.h"
+
+#include <algorithm>
+#include <QtCore/QVector>
+
+namespace U2 {
+
+MuscleParamsHelper::MuscleParamsHelper(TaskStateInfo& ti, MuscleContext *_ctx)
+: ctx(_ctx), ugeneFileStub(ti)
+{
+    SetParams();
+
+    //override some params. TODO: recheck possible conflict with SetPPScore() !
+    ctx->progressPercent = &ti.progress;
+    ctx->cancelFlag = &ti.cancelFlag;
+    ctx->progress.g_fProgress = &ugeneFileStub; //log context
+    ctx->progress.pr_printf = ugene_printf; //overriding logging
+    ctx->params.g_uMaxMB = 0; //unlimited memory
+
+    SetMaxIters(ctx->params.g_uMaxIters);
+    SetStartTime();
+}
+
+MuscleParamsHelper::~MuscleParamsHelper() {
+    ctx->cancelFlag = &ctx->cancelStub;
+    ctx->progressPercent = &ctx->progressStub;
+    ctx->progress.pr_printf = fprintf;
+    ctx->progress.g_fProgress = NULL;
+}
+
+int ugene_printf(FILE *f, const char *format, ...) {
+    if (format[0] <= 31 || strlen(format) == 1) {
+        return 0;
+    }
+    char str[1024];
+    va_list ArgList;
+    va_start(ArgList, format);
+    int n = vsprintf(str, format, ArgList);
+    assert(n>=0 && n < 1024);
+    Q_UNUSED(n);
+
+    FILEStub* s = (FILEStub*)f;
+    s->tsi.setStateDesc(QString::fromAscii(str));
+    return 0;
+}
+
+ALPHA convertAlpha(DNAAlphabet* al) {
+    if (al->isAmino()) {
+        return ALPHA_Amino;
+    }
+    const QString& id = al->getId();
+    if (id == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT() || id == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()) {
+        return ALPHA_DNA;
+    }
+    if (id == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT() || id == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED()) {
+        return ALPHA_RNA;
+    }
+    return ALPHA_Undefined;
+}
+
+void setupAlphaAndScore(DNAAlphabet* al, TaskStateInfo& ti) {
+    ALPHA Alpha = convertAlpha(al);
+    if (Alpha == ALPHA_Undefined) {
+        ti.setError(  U2::MuscleAdapter::tr("Unsupported alphabet: %1").arg(al->getName()) );
+        return;
+    }
+    SetAlpha(Alpha);
+    SetPPScore();
+    if (ALPHA_DNA == Alpha || ALPHA_RNA == Alpha) {
+        SetPPScore(PPSCORE_SPN);
+    }
+}
+
+void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) {
+    for (int i=0, n = ma.getNumRows(); i<n; i++) {
+        const MAlignmentRow& row = ma.getRow(i);
+        
+		int coreLen = row.getCoreLength();
+        char* seq  = new char[coreLen + 1];
+        memcpy(seq, row.getCore().constData(), coreLen);
+        seq[row.getCoreLength()] = '\0';
+
+        char* name = new char[row.getName().length() + 1];
+        memcpy(name, row.getName().toLocal8Bit().constData(), row.getName().length());
+        name[row.getName().length()] = '\0';
+        
+        muscleMSA.AppendSeq(seq, coreLen, name);
+    }
+    if (fixAlpha) {
+        muscleMSA.FixAlpha();
+    }
+}
+
+void convertMAlignment2SecVect(SeqVect& sv, const MAlignment& ma, bool fixAlpha) {
+    sv.Clear();
+    MuscleContext *ctx = getMuscleContext();
+    unsigned i=0;
+    unsigned seq_count = 0;
+    foreach(const MAlignmentRow& row, ma.getRows()) {
+        Seq *ptrSeq = new Seq();
+        QByteArray name =  row.getName().toLocal8Bit();
+        ptrSeq->FromString(row.getCore().constData(), name.constData());
+        //stripping gaps, original Seq::StripGaps fails on MSVC9
+        Seq::iterator newEnd = std::remove(ptrSeq->begin(), ptrSeq->end(), MAlignment_GapChar);
+        ptrSeq->erase(newEnd, ptrSeq->end());
+        if (ptrSeq->Length()!=0) {
+            ctx->tmp_uIds[seq_count] = ctx->input_uIds[i];
+            sv.push_back(ptrSeq);
+            seq_count++; 
+        }
+        i++;
+    }
+    if (fixAlpha) {
+        sv.FixAlpha();
+    }
+}
+
+void convertMSA2MAlignment(MSA& msa, DNAAlphabet* al, MAlignment& res) {
+    assert(res.isEmpty());
+    MuscleContext *ctx = getMuscleContext();
+    res.setAlphabet(al);
+    delete[] ctx->output_uIds;
+    ctx->output_uIds = new unsigned[msa.GetSeqCount()];
+    
+    for(int i=0, n = msa.GetSeqCount(); i < n; i++) {
+        QString name = msa.GetSeqName(i);
+        QByteArray seq;
+        seq.reserve(msa.GetColCount());
+        for (int j = 0, m = msa.GetColCount(); j < m ; j++) {
+            char c = msa.GetChar(i, j);
+            seq.append(c);
+        }
+        ctx->output_uIds[i] = ctx->tmp_uIds[msa.GetSeqId(i)];
+        MAlignmentRow row(name, seq);
+        res.addRow(row);      
+    }
+}
+
+void prepareAlignResults(MSA& msa, DNAAlphabet* al, MAlignment& ma, bool mhack) {
+    if (mhack) {
+        MHackEnd(msa);
+    }
+    MuscleContext* ctx = getMuscleContext();
+    if (ctx->params.g_bStable) {
+        MSA msaStable;
+        Stabilize(msa, msaStable);
+        msa.Clear();
+        convertMSA2MAlignment(msaStable, al, ma);
+    } else {
+        convertMSA2MAlignment(msa, al, ma);
+    }
+}
+
+} //namespace

@@ -1,0 +1,241 @@
+
+#include <QtXml/QDomDocument>
+#include <QtCore/QFile>
+#include <QtCore/QTimer>
+
+#include <U2Core/L10n.h>
+#include <U2Core/Log.h>
+#include <U2Core/Counter.h>
+
+#include <U2Remote/SerializeUtils.h>
+#include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/WorkflowUtils.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/BaseAttributes.h>
+#include <time.h>
+
+#include "RemoteWorkflowRunTask.h"
+
+
+namespace U2 {
+
+#define TASK_OUTPUT_DIR "out/"
+#define TASK_INPUT_DIR "in/"
+
+/***************************************
+* RemoteWorkflowRunTask
+***************************************/
+
+RemoteWorkflowRunTask::RemoteWorkflowRunTask( RemoteMachineSettings * m, const Schema & sc, const QList<Iteration> & its ) 
+    : Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE ), machineSettings( m ), 
+      machine( NULL ), schema( sc ), iterations( its ), taskId(0), eventLoop(NULL),taskIsActive(false) 
+{
+    GCOUNTER(cvar, tvar, "WorkflowOnTheCloud");
+    if( NULL == machineSettings ) {
+        setError( tr("Bad remote machine settings"));
+        return;
+    }
+    tpm = Progress_Manual;
+}
+
+RemoteWorkflowRunTask::RemoteWorkflowRunTask( RemoteMachineSettings *m, qint64 remoteTaskId )
+: Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE ), machineSettings( m ), 
+machine( NULL ), taskId(remoteTaskId), eventLoop(NULL), taskIsActive(true)
+{
+    GCOUNTER(cvar, tvar, "WorkflowOnTheCloud");
+    if( NULL == machineSettings ) {
+        setError( tr("Bad remote machine settings"));
+        return;
+    }
+    tpm = Progress_Manual;    
+}
+
+void RemoteWorkflowRunTask::preprocessSchema()
+{
+    foreach( Actor * actor, schema.getProcesses() ) {
+        assert( NULL != actor );
+        if( actor->getParameter( BaseAttributes::URL_IN_ATTRIBUTE().getId() ) != NULL &&
+            actor->getParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId()) == NULL ) {
+
+                actor->addParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId(), 
+                    new Attribute( BaseAttributes::URL_LOCATION_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true ) );
+        }
+
+        QList<Iteration>::iterator it = iterations.begin();
+        ActorId id = actor->getId();
+        while( it != iterations.end() ) {
+            QList<QString> parameterNames = actor->getParameters().keys();
+            foreach( const QString & paramName, parameterNames ) {
+                if( !it->cfg[id].contains( paramName ) ) {
+                    it->cfg[id][paramName] = actor->getParameter( paramName )->getAttributePureValue();
+                }
+            }
+            ++it;
+        }
+    }
+}
+
+void RemoteWorkflowRunTask::dumpSchema(const QString& fileName, const QByteArray& schema) {
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly);
+    file.write(schema);
+    file.close();
+}
+
+
+void RemoteWorkflowRunTask::prepare()
+{
+    if( hasErrors() || isCanceled() ) {
+        return;
+    }
+
+    rsLog.trace(tr("Started remote workflow task"));
+    machine = AppContext::getProtocolInfoRegistry()->getProtocolInfo( machineSettings->getProtocolId() )
+        ->getRemoteMachineFactory()->createInstance( machineSettings );
+    if( NULL == machine ) {
+        setError( tr( "Cannot create remote machine from remote machine settings: %1" ).arg( machineSettings->getName()) );
+        return;
+    }
+
+    stateInfo.progress = 0;
+
+    if (taskIsActive) {
+        return;
+    }
+
+    preprocessSchema();
+
+    QStringList inputUrls;
+
+    foreach( Actor * actor, schema.getProcesses() ) {
+        assert( NULL != actor );
+        ActorId actorId = actor->getId();
+
+        Attribute * urlInAttr = actor->getParameter( BaseAttributes::URL_IN_ATTRIBUTE().getId() );
+        if( NULL != urlInAttr ) {
+            QList<Iteration>::iterator it = iterations.begin();
+            while( it != iterations.end() ) {
+                if( it->cfg[actorId].value( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() ).value<bool>() ) { // file located on this computer
+                    QString urlpath = it->cfg[actorId].value( BaseAttributes::URL_IN_ATTRIBUTE().getId() ).value<QString>();
+                    // multiple urls are in the same string
+                    // TODO: folder contents handling
+                    QStringList urls = urlpath.split(';', QString::SkipEmptyParts); 
+                    QStringList newPathes;
+                    foreach (const GUrl& filePath, urls) {
+                        QString path = TASK_INPUT_DIR + filePath.fileName();
+                        inputUrls.append(filePath.getURLString());
+                        newPathes.append(path);
+                    }
+                    // skip first semicolon
+                    QString newPath = newPathes.join(";");
+                    it->cfg[actorId][BaseAttributes::URL_IN_ATTRIBUTE().getId()] = newPath;
+                }
+                ++it;
+            }
+        }
+
+        Attribute * urlOutAttr = actor->getParameter( BaseAttributes::URL_OUT_ATTRIBUTE().getId() );
+        if( NULL != urlOutAttr ) {
+            assert( NULL == actor->getParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() ) );
+            QList<Iteration>::iterator it = iterations.begin();
+            while( it != iterations.end() ) {
+                QVariantMap cfg = it->getParameters( actorId );
+                GUrl filePath = cfg.value( BaseAttributes::URL_OUT_ATTRIBUTE().getId() ).value<QString>();
+                QString newPath = TASK_OUTPUT_DIR + filePath.fileName();
+                outputUrls.append(filePath.getURLString());
+                it->cfg[actorId][BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = newPath;
+                ++it;
+            }
+        }
+    }
+
+    schema.getIterations() = iterations;
+    QByteArray rawData = HRSchemaSerializer::schema2String(schema, NULL).toUtf8();
+    
+    taskSettings.insert(CoreLibConstants::WORKFLOW_SCHEMA_ATTR, rawData);
+    taskSettings.insert(CoreLibConstants::DATA_IN_ATTR, inputUrls);
+    taskSettings.insert(CoreLibConstants::DATA_OUT_ATTR, outputUrls);
+
+    rsLog.trace("Schema is preprocessed for sending to remote service");
+
+#ifdef _DEBUG
+    assert(!WorkflowUtils::WD_FILE_EXTENSIONS.isEmpty());
+    dumpSchema("dump." + WorkflowUtils::WD_FILE_EXTENSIONS.first(), rawData);
+#endif
+}
+
+void RemoteWorkflowRunTask::run() {
+    if (!taskIsActive) {
+        taskId = machine->runTask(stateInfo, CoreLibConstants::WORKFLOW_ON_CLOUD_TASK_ID, taskSettings);
+        if (hasErrors()) {
+            return;
+        }
+    }
+
+    eventLoop = new QEventLoop(this);
+
+    QTimer::singleShot(RemoteWorkflowRunTask::TIMER_UPDATE_TIME, this, SLOT(sl_remoteTaskTimerUpdate()));
+    eventLoop->exec(QEventLoop::ExcludeUserInputEvents);
+
+    delete eventLoop;
+    eventLoop = NULL;
+}
+
+
+void RemoteWorkflowRunTask::sl_remoteTaskTimerUpdate()  {
+    assert( eventLoop != NULL );
+    if (isCanceled()) {
+        machine->cancelTask(stateInfo, taskId);
+        eventLoop->exit();
+        return;
+    }  
+
+    State state = State_Running;
+    state = machine->getTaskState(stateInfo, taskId);
+    if (hasErrors()) {
+        eventLoop->exit();
+        return;
+    }
+
+    if (state == State_Finished) {
+        rsLog.trace("Workflow task finished on remote host.");
+        if (!outputUrls.isEmpty()) {
+            machine->getTaskResult(stateInfo, taskId, outputUrls, TASK_OUTPUT_DIR);
+            if (hasErrors()) {
+                eventLoop->exit();
+                return;
+            }
+            rsLog.trace("Retrieved result data from remote host.");
+        }
+        eventLoop->exit();
+        return;
+
+    }
+
+    int progress = machine->getTaskProgress(stateInfo, taskId);
+    if (hasErrors()) {
+        eventLoop->exit();
+        return;
+    }
+
+    stateInfo.progress = progress;
+    QTimer::singleShot( RemoteWorkflowRunTask::TIMER_UPDATE_TIME, this, SLOT( sl_remoteTaskTimerUpdate() ) );
+}
+
+
+Task::ReportResult RemoteWorkflowRunTask::report() {
+    if (!hasErrors() && !isCanceled()) {
+        rsLog.details("Remote task finished successfully");
+    }
+    return ReportResult_Finished;
+}
+
+RemoteWorkflowRunTask::~RemoteWorkflowRunTask() {
+    delete machine;
+}
+
+
+} // ~ U2
+
+

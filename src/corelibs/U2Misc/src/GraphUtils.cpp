@@ -1,0 +1,402 @@
+#include "GraphUtils.h"
+
+#include <U2Core/FormatUtils.h>
+
+#include <math.h>
+#include <QtCore/QVector>
+#include <QtGui/QColor>
+
+namespace U2 {
+
+static void drawNum(QPainter& p, int x1, int x2, const QString& num, int lBorder, int rBorder, int y1, int y2) {
+    if (x1 < lBorder|| x2 > rBorder) {
+        return;
+    }
+    QRect rect(x1, y1, x2-x1+1, y2-y1+1);
+    p.drawText(rect, Qt::AlignVCenter | Qt::AlignHCenter, num);
+}
+
+#define MIN_RULER_LEN 10
+void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 start, qint64 end, const QFont& font, const RulerConfig& c) {
+
+    if (start == end || len < MIN_RULER_LEN) {
+        return;
+    }
+    
+    p.save();
+    
+    assert(c.drawArrow != c.drawBorderNotches);
+    assert(c.drawArrow ? c.drawAxis : true);
+    
+    p.setFont(font);
+    QFontMetrics fm = p.fontMetrics();
+    int cw = fm.width('0');
+    int ch = fm.height();
+    QString st = FormatUtils::splitThousands(start);
+    QString en = FormatUtils::splitThousands(end);
+
+    int stW = fm.width(st);
+    int enW = fm.width(en);
+
+    //the width of the bigger number
+    int N = cw * qMax(QString::number(start).length(), QString::number(end).length()) * 4 / 3;
+    qint64 span = qMax(start, end) - qMin(start, end);
+    int dN = 0;
+    int chunk = 1;
+    while (span > 2 * chunk) {
+        dN = chunk > (1000 * 1000)? cw * 2 : (chunk > 1000 ?  cw * 2 : 0);
+        qint64 reqLen = qint64((double(span) / chunk) * (N - dN));
+        assert(reqLen > 0);
+        if (reqLen < len) {
+            break;
+        } 
+        if (reqLen / 2 < len) {
+            int cchunk = chunk*2;
+            dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
+            qint64 reqLen2 = qint64((double(span) / cchunk) * (N - dN));
+            if (reqLen2 < len) {
+                chunk = cchunk;
+                break;
+            }
+        }
+
+        if (reqLen / 5 < len) {
+            int cchunk = chunk*5;
+            dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
+            qint64 reqLen5 = qint64((double(span) / cchunk) * (N - dN));
+            if (reqLen5 < len) {
+                chunk = cchunk;
+                break;
+            }
+        }
+        chunk *= 10;
+    }
+    assert(span / chunk < 1000);
+    while (chunk > span) {
+        chunk /= 2;
+    }
+    float scale =  len / (float)span;
+    if (c.direction == BTT) {
+        if(c.drawAxis) {
+            p.drawLine(pos.x(), pos.y() - c.extraAxisLenBefore, pos.x(), pos.y() + len + c.extraAxisLenAfter);
+        }
+        if (c.drawBorderNotches) {
+            p.drawLine(pos.x()-c.notchSize, pos.y(), pos.x() + c.notchSize, pos.y());
+            p.drawLine(pos.x()-c.notchSize, pos.y() + len, pos.x() + c.notchSize, pos.y() + len);
+        }
+        if (c.drawArrow) {
+            p.drawLine(pos.x(), pos.y(), pos.x() - c.arrowWidth, pos.y() + c.arrowLen);
+            p.drawLine(pos.x(), pos.y(), pos.x() + c.arrowWidth, pos.y() + c.arrowLen);
+        }
+        if (c.drawNumbers) {
+            if (c.textPosition == LEFT) {
+                p.drawText(pos.x() - c.textOffset - st.length() * cw, pos.y() + len, st);
+                p.drawText(pos.x() - c.textOffset - en.length() * cw, pos.y() + ch, en);
+            } else {
+                assert(c.textPosition == RIGHT);
+                p.drawText(pos.x() + c.textOffset, pos.y() + len, st);
+                p.drawText(pos.x() + c.textOffset, pos.y() + ch, en);
+            }
+        }
+    } else if (c.direction == TTB) {
+        int notchDX1 =  c.notchSize;
+        int notchDX2 =  c.notchSize;
+        QFontMetrics fm(font);
+        int fontHeight = fm.height();
+        if(c.drawAxis) {
+            p.drawLine(pos.x(), pos.y() - c.extraAxisLenBefore , pos.x(), pos.y() + len + c.extraAxisLenAfter);
+        }
+        if (c.drawBorderNotches) {
+            p.drawLine(pos.x()- c.notchSize, pos.y(), pos.x() + c.notchSize, pos.y());
+            p.drawLine(pos.x()- c.notchSize, pos.y() + len, pos.x() + c.notchSize, pos.y() + len);
+        }
+        if (c.drawArrow) { 
+            p.drawLine(pos.x(), pos.y() + len, pos.x() - c.arrowWidth, pos.y() + len - c.arrowLen);
+            p.drawLine(pos.x(), pos.y() + len, pos.x() + c.arrowWidth, pos.y() + len - c.arrowLen);
+        }
+        if (start / chunk != end / chunk) {
+            for (int currnotch = chunk * (start / chunk + 1); currnotch < end; currnotch += chunk) {
+                int y = qRound((end - currnotch) * scale);
+                if (c.drawNotches) {
+                    p.drawLine(pos.x() - notchDX1, pos.y() + len - y, pos.x() + notchDX2, pos.y() + len - y);
+                }
+                if (c.drawNumbers) {
+                    QString snum = FormatUtils::formatNumber(currnotch);
+                    if( y > fontHeight){
+                        if (c.textPosition == LEFT) {
+                            p.drawText(pos.x() - c.textOffset - snum.length() * cw, pos.y() + len - y, snum);
+                        }else{
+                            assert(c.textPosition == RIGHT);
+                            p.drawText(pos.x() + c.textOffset - snum.length() * cw, pos.y() + len - y, snum);
+                        }
+                    }
+                }
+            }
+        }
+        if (c.drawNumbers) {
+            QString endStr = QString::number(end);
+            int roundedEnd = end, endLen = endStr.length();
+            if (endLen >= 4){
+                endStr = endStr.left(endLen - 3);
+                roundedEnd = endStr.toInt() * pow((double)10 , (double)(endLen - 3));
+            }
+            endStr = FormatUtils::formatNumber(roundedEnd);
+            if (c.textPosition == LEFT) {
+                p.drawText(pos.x() - c.textOffset - endStr.length() * cw, pos.y() + len, endStr);
+            } else {
+                assert(c.textPosition == RIGHT);
+                p.drawText(pos.x() + c.textOffset - endStr.length() * cw, pos.y() + len, endStr);
+            }
+        }
+    } else {
+        int notchDY1 =  c.notchSize;
+        int notchDY2 =  c.notchSize;
+        if (c.singleSideNotches) {
+            if (c.textPosition == LEFT) {
+                notchDY2 = 0;
+            } else {
+                notchDY1 = 0;
+            }
+        }
+        if(c.drawAxis) {
+            p.drawLine(pos.x() - c.extraAxisLenBefore, pos.y(), pos.x() + len + c.extraAxisLenAfter, pos.y());
+        }
+        if (c.drawBorderNotches) {
+            p.drawLine(pos.x(), pos.y() - notchDY1, pos.x(), pos.y() + notchDY2);
+            p.drawLine(pos.x() + len, pos.y() - notchDY1, pos.x() + len, pos.y() + notchDY2);
+        }
+
+        //text properties
+        int yt1 = c.textPosition == LEFT ? pos.y() - c.textOffset - ch : pos.y() + c.textOffset;
+        int yt2 = c.textPosition == LEFT ? pos.y() - c.textOffset : pos.y() + c.textOffset + ch;
+        int stX1 = pos.x() + c.textBorderStart;
+        int stX2 = pos.x() + stW;
+        int enX1 = pos.x() + len - enW;
+        int enX2 = pos.x() + len - c.textBorderEnd;
+        if (c.drawNumbers) {
+            drawNum(p, stX1, stX2, st, stX1, stX2, yt1, yt2);
+            drawNum(p, enX1, enX2, en, enX1, enX2, yt1, yt2);
+        }
+        
+        if (c.direction == LTR) {
+            int leftborder = stX2;
+            int rightborder= enX1;
+            if (c.drawArrow) {
+                p.drawLine(pos.x() + len, pos.y(), pos.x() + len - c.arrowLen, pos.y() - c.arrowWidth);
+                p.drawLine(pos.x() + len, pos.y(), pos.x() + len - c.arrowLen, pos.y() + c.arrowWidth);
+            }
+            if (start / chunk != end / chunk) {
+                for (int currnotch = chunk * (start / chunk + 1); currnotch < end; currnotch += chunk) {
+                    int x = qRound(scale * (currnotch - start));
+                    if (c.drawNotches) {
+                        p.drawLine(pos.x() + x, pos.y() - notchDY1, pos.x() + x, pos.y() + notchDY2);
+                    }
+                    if (c.drawNumbers) {
+                        QString snum = FormatUtils::formatNumber(currnotch);
+                        int notchleft = pos.x() + x - snum.length() * cw / 2;
+                        int notchright = notchleft + snum.length() * cw;
+                        drawNum(p, notchleft, notchright, snum, leftborder, rightborder, yt1, yt2);
+                    }
+                }
+            }
+        } else if (c.direction == RTL) {
+            int leftborder = enX2;
+            int rightborder= stX1;
+            if (c.drawArrow) {
+                p.drawLine(pos.x(), pos.y(), pos.x() + c.arrowLen, pos.y() - c.arrowWidth);
+                p.drawLine(pos.x(), pos.y(), pos.x() + c.arrowLen, pos.y() + c.arrowWidth);
+            }
+            if (start / chunk != end / chunk) {
+                for (int currnotch = chunk * (start / chunk + 1); currnotch < end; currnotch += chunk) {
+                    int x = qRound((currnotch - start) * scale);
+                    if (c.drawNotches) {
+                        p.drawLine(pos.x() + len - x, pos.y() - notchDY1, pos.x() + len - x, pos.y() + notchDY2);
+                    }
+                    if (c.drawNumbers) {
+                        QString snum = FormatUtils::formatNumber(currnotch);
+                        int notchleft = pos.x() + len - x - snum.length() * cw / 2;
+                        int notchright = notchleft + snum.length() * cw;
+                        drawNum(p, notchleft, notchright, snum, leftborder, rightborder, yt1, yt2);
+                    }
+                }
+            }
+        }
+    }
+    p.restore();
+}
+
+int GraphUtils::findChunk(qint64 len, qint64 span, int N) {
+    int dN = 0;
+    int chunk = 1;
+    while (span > 2 * chunk) {
+        //dN = chunk > (1000 * 1000)? cw * 2 : (chunk > 1000 ?  cw * 2 : 0);
+        qint64 reqLen = qint64((double(span) / chunk) * (N - dN));
+        assert(reqLen > 0);
+        if (reqLen < len) {
+            break;
+        } 
+        if (reqLen / 2 < len) {
+            int cchunk = chunk*2;
+            //dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
+            qint64 reqLen2 = qint64((double(span) / cchunk) * (N - dN));
+            if (reqLen2 < len) {
+                chunk = cchunk;
+                break;
+            }
+        }
+
+        if (reqLen / 5 < len) {
+            int cchunk = chunk*5;
+            //dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
+            qint64 reqLen5 = qint64((double(span) / cchunk) * (N - dN));
+            if (reqLen5 < len) {
+                chunk = cchunk;
+                break;
+            }
+        }
+        chunk *= 10;
+    }
+    assert(span / chunk < 1000);
+    while (chunk > span) {
+        chunk /= 2;
+    }
+    return chunk;
+}
+
+
+/*
+void GraphUtils::drawDensityPlot(QPainter& p, QRect& drawRect,
+    QRect& calcRect, quint32 n, quint32* x, quint32* y, quint32* len){
+    if (n == 0) {
+        return;
+    }
+    quint32 PIX_SIZE = 2;
+    quint32 squaresX = drawRect.width() / PIX_SIZE;
+    quint32 squaresY = drawRect.height() / PIX_SIZE;
+    if (squaresX == 0 || squaresY == 0) {
+        return;
+    }
+    quint32 dMapSize = squaresX* squaresY;
+    quint32* densityMap = new quint32[dMapSize];
+    memset(densityMap, 0, dMapSize * 4);
+    double xScale = calcRect.width() / (double) squaresX;
+    double yScale = calcRect.height() / (double) squaresY;
+    quint32 offsetX = calcRect.x();
+    quint32 offsetY = calcRect.y();
+    quint32 i;
+    for (i = 0; i < n; i++) {
+        quint32 x0 = x[i] - offsetX;
+        quint32 y0 = y[i] - offsetY;
+        quint32 l = len[i];
+
+        quint32 sx = quint32(x0 / xScale);
+        quint32 sy = quint32(y0 / yScale);
+        quint32 index = sx* squaresY + sy;
+        densityMap[index]++;
+        if (l > xScale || l > yScale) {
+            quint32 lx = l;
+            quint32 ly = l;
+            while (lx || ly) {
+                if (lx) {
+                    sx++;
+                    lx = lx > xScale ? quint32(lx - xScale) : 0;
+                }
+                if (ly) {
+                    sy++;
+                    ly = ly > yScale ? quint32(ly - yScale) : 0;
+                }
+            }
+            index = sx * squaresY + sy;
+            densityMap[index]++;
+        }
+    }
+
+    float maxDensity = 0;
+    for (i = 0; i < dMapSize; i++) {
+        if (densityMap[i] < maxDensity) {
+            continue;
+        }
+        maxDensity = densityMap[i];
+        if (maxDensity > 1000) {
+            maxDensity = 1000;
+            break;
+        }
+    }
+    double k = 1.7;
+    quint32 EXP = 0;
+    while (maxDensity >= 1) {
+        EXP++;
+        maxDensity = maxDensity / k;
+    }
+    double m = 1;
+    for (i = 0; i < EXP; i++) {
+        m = m * k;
+    }
+    quint32 MAX = (quint32) m;
+    quint32* colors = new quint32[MAX + 1];
+    for (i = 0; i < MAX; colors[i++] = 0xFFFFFF)
+        ;
+    quint32 color;
+    double exp = 1;
+    float dc = 255. / (EXP - 1);
+    for (i = 1; i <= EXP; i++) {
+        double endExp = exp* k;
+        quint32 c = 255 - (quint32) (i* dc);
+        color = (c << 16) + (c << 8) + c;
+        for (quint32 j = (quint32) exp; j <= (quint32) endExp; j++) {
+            colors[j] = color;
+        }
+        exp = endExp;
+    }
+    colors[MAX] = 0;
+
+    for (quint32 xi = 0; xi < squaresX; xi++) {
+        quint32 xo = xi* squaresY;
+        for (quint32 yj = 0; yj < squaresY; yj++) {
+            quint32 d = densityMap[xo + yj];
+            if (d == 0) {
+                continue;
+            }
+            d > MAX && (d = MAX);
+            color = colors[d];
+            p.fillRect(QRect(xi * PIX_SIZE, yj * PIX_SIZE, PIX_SIZE, PIX_SIZE),
+                QBrush(color));
+        }
+    }
+    delete colors;
+    delete[] densityMap;
+}
+*/
+
+static QVector<QColor>  prepareColors() {
+    QVector<QColor> colors(6*6*6);
+    //00 = 0, 1 = 33, 2 = 66, 3 = 99, 4 = CC, 5 = FF
+    int nLightColors = 0;
+    for(int i=0; i< colors.count(); i++) {
+        int color = i;
+        int r = 0x33 * (color%6);
+        int g = 0x33 * ((color/6)%6);
+        int b = 0x33 * ((color/36)%6);
+        if (r==0xFF || g==0xFF || b==0xFF) {
+            colors[nLightColors] = QColor(r, g, b);
+            nLightColors++;
+        }
+
+    }
+    return colors;
+}
+
+QColor GraphUtils::proposeLightColorByKey(const QString& key) {
+    //TODO: make thread safe!
+    static QVector<QColor> colors = prepareColors();
+
+    int hash =0;
+    uint len = key.length();
+    for (int j=len-1; j>=0; j--) {
+        hash+=key.at(j).toAscii();
+    }
+    return colors.at((hash*hash)%colors.size());
+}
+
+}//namespace
+

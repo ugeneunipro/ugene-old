@@ -1,0 +1,229 @@
+#ifndef _U2_DNASEQUENCE_OBJECT_TESTS_H_
+#define _U2_DNASEQUENCE_OBJECT_TESTS_H_
+
+#include <U2Test/XMLTestUtils.h>
+
+#include <QtXml/QDomElement>
+#include <U2Core/DNAAlphabet.h>
+
+namespace U2 {
+
+class Document;
+class LoadDocumentTask;
+
+class GTest_DNASequenceSize : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNASequenceSize, "check-sequence-size");
+
+    ReportResult report();
+
+    QString objContextName;
+
+    int     seqSize;
+
+};
+
+class GTest_DNASequenceAlphabet : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNASequenceAlphabet, "check-sequence-alphabet");
+
+    ReportResult report();
+
+    QString objContextName;
+
+    QString name;
+    QString alphabetId;
+};
+
+class GTest_DNASequencePart : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNASequencePart, "check-sequence-part");
+
+    ReportResult report();
+
+    QString     objContextName;
+
+    QByteArray  subseq;
+    int         startPos;
+};
+
+class GTest_DNASequenceAlphabetType : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNASequenceAlphabetType, "check-sequence-alphabet-by-type");
+
+    ReportResult report();
+
+    QString         objContextName;
+    
+    DNAAlphabetType alphabetType;
+};
+
+class GTest_DNASequenceAlphabetId : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNASequenceAlphabetId, "check-sequence-alphabet-by-id");
+
+    ReportResult report();
+
+    QString objContextName;
+    
+    QString alpId;
+};
+
+
+class GTest_DNASequenceQualityScores : public GTest {
+    Q_OBJECT
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNASequenceQualityScores, "check-sequence-quality-scores");
+
+    ReportResult report();
+
+    QString     objContextName;
+    QByteArray  qualityScores;
+};
+
+class GTest_DNASequenceQualityValue : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNASequenceQualityValue, "check-sequence-quality-value");
+
+    ReportResult report();
+
+    QString objContextName;
+    int     pos;
+    int     expectedVal;
+};
+
+class GTest_CompareDNASequenceQualityInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CompareDNASequenceQualityInTwoObjects, "compare-sequence-quality-in-two-objects");
+    
+    ReportResult report();
+    
+    QString doc1CtxName;
+    QString doc2CtxName;
+};
+
+class GTest_DNAcompareSequencesNamesInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAcompareSequencesNamesInTwoObjects, "compare-sequences-names-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+class GTest_DNAcompareSequencesInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAcompareSequencesInTwoObjects, "compare-sequences-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+class GTest_DNAcompareSequencesAlphabetsInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAcompareSequencesAlphabetsInTwoObjects, "compare-sequences-alphabets-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+class GTest_DNAMulSequenceAlphabetId : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAMulSequenceAlphabetId, "check-Msequence-alphabet-by-id");
+
+    ReportResult report();
+
+    QString objContextName;
+    
+    QString alpId;
+};
+
+class GTest_DNAMulSequenceSize : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAMulSequenceSize, "check-Msequence-size");
+
+    ReportResult report();
+
+    QString objContextName;
+
+    int     seqSize;
+
+};
+
+class GTest_DNAMulSequencePart : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAMulSequencePart, "check-Msequence-part");
+
+    ReportResult report();
+
+    QString     objContextName;
+
+    QByteArray  subseq;
+    int         startPos;
+    QString     seqName;
+
+};
+
+class GTest_DNAMulSequenceQuality : public GTest {
+    Q_OBJECT
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAMulSequenceQuality, "check-Msequence-quality");
+
+    ReportResult report();
+
+    QString     objContextName;
+
+    QByteArray  expectedQuality;
+    int         startPos;
+    QString     seqName;
+
+};
+
+
+class GTest_DNASequencInMulSequence : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNASequencInMulSequence, "check-numbers-of-sequence-in-Msequence");
+
+    ReportResult report();
+
+    QString objContextName;
+
+    int     seqInMSeq;
+
+};
+class GTest_DNAcompareMulSequencesInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAcompareMulSequencesInTwoObjects, "compare-Msequences-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+    QString sortValue;
+};
+
+class GTest_DNAcompareMulSequencesNamesInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAcompareMulSequencesNamesInTwoObjects, "compare-Msequences-names-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+class GTest_DNAcompareMulSequencesAlphabetIdInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DNAcompareMulSequencesAlphabetIdInTwoObjects, "compare-Msequences-alphabets-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+
+class DNASequenceObjectTests {
+public:
+    static QList<XMLTestFactory*> createTestFactories();
+};
+
+}//namespace
+#endif

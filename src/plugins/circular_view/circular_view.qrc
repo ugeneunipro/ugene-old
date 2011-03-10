@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="circular_view/" >
+        <file>images/circular.png</file>
+    </qresource>
+</RCC>

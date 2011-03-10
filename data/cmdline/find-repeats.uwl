@@ -1,0 +1,92 @@
+#!UGENE_WORKFLOW
+#Find repeat units in supplied sequence
+
+workflow find-repeats{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    repeats-search {
+        type:repeats-search;
+        name:"Find repeats";
+        algorithm:0;
+        filter-nested:true;
+        identity:100;
+        inverted:false;
+        max-distance:5000;
+        min-distance:0;
+        min-length:5;
+        result-name:repeat_unit;
+        threads:0;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->repeats-search.in-sequence.sequence
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    repeats-search.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:in;
+            repeats-search.filter-nested:filter-nested;
+            repeats-search.identity:identity;
+            repeats-search.inverted:inverted;
+            repeats-search.max-distance:max-distance;
+            repeats-search.min-distance:min-distance;
+            repeats-search.min-length:min-length;
+            repeats-search.result-name:name;
+            write-genbank.url-out:out;
+        }
+        help {
+            in:"Input sequence";
+            filter-nested:"Filter nested repeats";
+            identity:"Repeats identity";
+            inverted:"Search for inverted repeats";
+            max-distance:"Maximum distance between repeats";
+            min-distance:"Minimum distance between repeats";
+            min-length:"Minimum length of repeats";
+            name:"Name of the result annotations marking found repeats";
+            out:"Output file with annotations";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-735 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            repeats-search {
+                tooltip:"Finds repeats in each supplied sequence, stores found regions as annotations.";
+                pos:"-570 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-285 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->repeats-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            repeats-search.out-annotations->write-genbank.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

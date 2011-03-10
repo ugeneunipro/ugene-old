@@ -1,0 +1,143 @@
+#ifndef _U2_STATE_LOCKS_H_
+#define _U2_STATE_LOCKS_H_
+
+#include <U2Core/global.h>
+
+#include <QtCore/QSet>
+
+namespace U2 {
+
+enum StateLockFlag {
+    StateLockFlag_NoFlags  = 0x00,
+    StateLockFlag_LiveLock = 0x01,
+    StateLockFlag_AnyFlags = 0xFF
+};
+
+typedef QFlags<StateLockFlag> StateLockFlags;
+
+class U2CORE_EXPORT StateLock {
+public:
+    StateLock() : flags(StateLockFlag_NoFlags){}
+    StateLock(const QString& _userDesc, StateLockFlags _flags = StateLockFlag_NoFlags) : userDesc(_userDesc), flags(_flags){}
+
+    QString getUserDesc() const {return userDesc;}
+    void setUserDesc(const QString& d) {userDesc = d;}
+    
+    StateLockFlags getFlags() const {return flags;}
+
+private:
+    QString         userDesc;
+    StateLockFlags  flags;
+};
+
+class U2CORE_EXPORT StateLockableItem : public QObject {
+    Q_OBJECT
+public:
+    StateLockableItem(QObject* p = NULL);
+    ~StateLockableItem();
+
+    int getStateLocksCount() const {return locks.size();}
+
+    virtual bool isStateLocked() const {return !locks.isEmpty();}
+
+    const QList<StateLock*>& getStateLocks() const {return locks;}
+
+    virtual void lockState(StateLock* lock);
+
+    virtual void unlockState(StateLock* lock);
+
+    virtual void setModified(bool modified);
+
+    virtual bool isItemModified() const {return itemIsModified;}
+
+    virtual bool isMainThreadModel() const {return mainThreadModel;}
+
+    virtual void setMainThreadModel(bool v) { mainThreadModel = v; }
+
+    //returns number of modifications done to this item
+    virtual int getModificationVersion() const {return modificationVersion;}
+
+signals:
+    void si_lockedStateChanged();
+    void si_modifiedStateChanged();
+
+protected:
+    QList<StateLock*> locks;
+    bool itemIsModified;
+    bool mainThreadModel;
+    int  modificationVersion;
+};
+
+//////////////////////////////////////////////////////////////////////////
+/// Tree model
+enum StateLockableTreeItemBranchFlag {
+    StateLockableTreeItemBranch_Item     = 0x1,
+    StateLockableTreeItemBranch_Parents  = 0x2,
+    StateLockableTreeItemBranch_Children = 0x4
+};
+
+typedef QFlags<StateLockableTreeItemBranchFlag> StateLockableTreeItemBranchFlags;
+
+#define StateLockableTreeFlags_ItemAndChildren (StateLockableTreeItemBranchFlags(StateLockableTreeItemBranch_Item) | StateLockableTreeItemBranch_Children)
+#define StateLockableTreeFlags_ItemAndParents  (StateLockableTreeItemBranchFlags(StateLockableTreeItemBranch_Item) | StateLockableTreeItemBranch_Parents)
+#define StateLockableTreeFlags_ItemAndChildrenAndParents  (StateLockableTreeFlags_ItemAndParents | StateLockableTreeItemBranch_Children)
+
+
+class U2CORE_EXPORT StateLockableTreeItem : public StateLockableItem {
+    Q_OBJECT
+public:
+    StateLockableTreeItem() : StateLockableItem(), parentStateLockItem(NULL), childLocksCount(0), numModifiedChildren(0){}
+
+    ~StateLockableTreeItem();
+
+    virtual bool isStateLocked() const;
+
+    virtual void lockState(StateLock* lock);
+
+    virtual void unlockState(StateLock* lock);
+
+    virtual void setModified(bool modified);
+
+    virtual bool isTreeItemModified () const {return numModifiedChildren > 0 || itemIsModified;}
+
+    virtual bool hasModifiedChildren() const {return numModifiedChildren != 0;}
+
+    StateLockableTreeItem* getParentStateLockItem() const { return parentStateLockItem; }
+
+    bool hasLocks(StateLockableTreeItemBranchFlags treeFlags, StateLockFlag lockFlag = StateLockFlag_AnyFlags) const {
+        return !findLocks(treeFlags, lockFlag).isEmpty();
+    }
+
+    int countLocks(StateLockableTreeItemBranchFlags treeFlags, StateLockFlag lockFlag = StateLockFlag_AnyFlags) const {
+        return findLocks(treeFlags, lockFlag).size();
+    }
+
+    QList<StateLock*> findLocks(StateLockableTreeItemBranchFlags treeFlags, StateLockFlag lockFlag = StateLockFlag_AnyFlags) const;
+
+protected:
+    
+    static void setParentStateLockItem_static(StateLockableTreeItem* child, StateLockableTreeItem* newParent, bool ignoreLocks = false) {
+        child->setParentStateLockItem(newParent, ignoreLocks);
+    }
+
+    void setParentStateLockItem(StateLockableTreeItem* p, bool ignoreLocks = false, bool modify = true);
+    void setModified(bool modified, bool ignoreLocks);
+
+    void increaseNumModifiedChilds(int n);
+    void decreaseNumModifiedChilds(int n);
+
+    void onParentStateLocked();
+    void onParentStateUnlocked();
+
+    const QSet<StateLockableTreeItem*>& getChildItems() const {return childItems;}
+
+private:
+    StateLockableTreeItem*          parentStateLockItem;
+    QSet<StateLockableTreeItem*>    childItems;
+    int                             childLocksCount;
+    int                             numModifiedChildren;
+};
+
+}//namespace
+
+#endif

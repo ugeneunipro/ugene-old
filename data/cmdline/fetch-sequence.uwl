@@ -1,0 +1,35 @@
+#!UGENE_WORKFLOW
+#Fetches sequences from remote database
+
+workflow fetch-sequence{
+
+    fetch-sequence {
+        type:fetch-sequence;
+        name:"Read from remote database";
+        database:"NCBI GenBank (DNA sequence)";
+        save-dir:.;
+    }
+
+    .meta {
+        aliases {
+            fetch-sequence.database:db;
+            fetch-sequence.resource-id:id;
+            fetch-sequence.save-dir:save-dir;
+        }
+        help {
+            db:"Database name";
+            id:"Resource ID in the database. Several IDs can be separated with semicolon";
+            save-dir:"Directory to store loaded sequences";
+        }
+        visual {
+            fetch-sequence {
+                tooltip:"Reads sequences and annotations if any from a remote database.";
+                pos:"-600 -555";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+        }
+    }
+}
+

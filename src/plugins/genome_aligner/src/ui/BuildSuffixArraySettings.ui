@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BuildSuffixArraySettings</class>
+ <widget class="QWidget" name="BuildSuffixArraySettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>395</width>
+    <height>136</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="ParamBox">
+     <property name="toolTip">
+      <string>Set the paramaters of the selected align short reads algorithm.</string>
+     </property>
+     <property name="title">
+      <string>Parameters</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="groupBox_mismatches">
+        <property name="toolTip">
+         <string>Chech this box if mismatches between the reference sequence and the reads are allowed.</string>
+        </property>
+        <property name="title">
+         <string>Mismatches allowed</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="absRadioButton">
+             <property name="toolTip">
+              <string>Select the number of mismatched nucleotides allowed.</string>
+             </property>
+             <property name="text">
+              <string>Mismatches number</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="mismatchesAllowedSpinBox">
+             <property name="toolTip">
+              <string>Select the number of mismatched nucleotides allowed.</string>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>3</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="percentRadioButton">
+             <property name="toolTip">
+              <string>Select the percentage of mismatches allowed. Note, that absolute number of mismatches can vary for different reads.</string>
+             </property>
+             <property name="text">
+              <string>Percentage of mismatches</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="percentMismatchesAllowedSpinBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Select the percentage of mismatches allowed. Note, that absolute number of mismatches can vary for different reads.</string>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>absRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mismatchesAllowedSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>179</x>
+     <y>104</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>108</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>percentRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>percentMismatchesAllowedSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>116</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>137</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

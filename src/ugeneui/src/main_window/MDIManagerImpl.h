@@ -1,0 +1,88 @@
+#ifndef _U2_MDI_MANAGER_IMPL_H_
+#define _U2_MDI_MANAGER_IMPL_H_
+
+#include "MainWindowImpl.h"
+
+#include <QtCore/QSignalMapper>
+#include <QtCore/QEvent>
+
+#include <QtGui/QMdiArea>
+#include <QtGui/QMdiSubWindow>
+
+namespace U2 {
+
+class MDIItem : QWidget { 
+	Q_OBJECT
+public:
+    MDIItem(MWMDIWindow* _w, QMdiSubWindow* _qw) : w(_w), qw(_qw){this->setObjectName(_w->objectName()+"_MDIItem");qw->setObjectName(_w->objectName()+"_SubWindow");}
+	
+	MWMDIWindow* w;
+	QMdiSubWindow* qw;
+};
+
+typedef QList<MDIItem*> MDIItems;
+
+class MWMDIManagerImpl : public MWMDIManager {
+	Q_OBJECT
+public:
+    MWMDIManagerImpl(MainWindow* _mw, FixedMdiArea* _mdiArea) 
+		: MWMDIManager(_mw), mw(_mw), mdiArea(_mdiArea){ prepareGUI();}
+
+	~MWMDIManagerImpl();
+
+	virtual void addMDIWindow(MWMDIWindow* w);
+
+	virtual bool closeMDIWindow(MWMDIWindow* w);
+
+	virtual QList<MWMDIWindow*> getWindows() const;
+
+	virtual MWMDIWindow* getWindowById(int id) const;
+
+	virtual void activateWindow(MWMDIWindow* w);
+	
+	virtual MWMDIWindow* getActiveWindow() const;
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *event);
+	
+private slots:
+	void sl_setActiveSubWindow(QWidget *);
+	void sl_updateWindowMenu();
+	void sl_onSubWindowActivated(QMdiSubWindow *);
+    void sl_updateWindowLayout();
+	
+private:
+	MDIItem* getMDIItem(int id) const;
+	MDIItem* getMDIItem(MWMDIWindow* w) const;
+	MDIItem* getMDIItem(QMdiSubWindow* qw) const;
+
+	void clearMDIContent(bool addCloseAction);
+	void prepareGUI();
+
+	void updateActions();
+	void updateState();
+
+	MDIItem* getCurrentMDIItem() const ;
+
+
+	MainWindow* mw;
+	FixedMdiArea*	mdiArea;
+	MDIItems	items;
+
+
+	QAction* closeAct;
+	QAction* closeAllAct;
+	QAction* tileAct;
+	QAction* cascadeAct;
+	QAction* nextAct;
+	QAction* previousAct;
+	QAction* separatorAct;
+
+	QSignalMapper*  windowMapper;
+	bool            defaultIsMaximized;
+	MDIItem*        mdiContentOwner;
+};
+
+} //namespace
+
+#endif

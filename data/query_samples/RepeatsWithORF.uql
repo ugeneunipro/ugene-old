@@ -1,0 +1,20 @@
+#!UGENE_QUERY
+#Open Reading Frame surrounded by repeat units
+
+query RepeatsWithOrf {
+
+
+    Repeat { type: repeats; min-length: 10; identity:100; } 
+    ORF { type: orf; } 
+
+    Repeat.left--ORF.unit { type: distance; distance_type: end-to-start; min: 0; max: 5000; }
+    ORF.unit--Repeat.right { type: distance; distance_type: end-to-start; min: 0; max: 5000; }
+
+    .meta{
+        visual{
+                Repeat.left { geometry: 35,30,229,120,120; } 
+                Repeat.right { geometry: 504,30,238,120,120; } 
+                ORF.unit { geometry: 302,150,166,160,160; } 
+        }
+    }
+}

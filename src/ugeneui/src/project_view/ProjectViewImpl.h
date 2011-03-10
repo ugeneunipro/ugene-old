@@ -1,0 +1,149 @@
+#ifndef _U2_PROJECT_VIEW_WIDGET_
+#define _U2_PROJECT_VIEW_WIDGET_
+
+
+#include "../_tmp/ui/ui_ProjectViewWidget.h"
+
+#include <U2Gui/ProjectView.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Core/Task.h>
+
+#include <assert.h>
+#include <U2Gui/ProjectTreeController.h>
+#include <U2Gui/ObjectViewTreeController.h>
+
+#include <QtGui/QDockWidget>
+
+namespace U2 {
+
+class EnableProjectViewTask;
+class DisableProjectViewTask;
+class ProjectViewWidgetFactory;
+
+class ProjectViewWidget : public QWidget, public Ui_ProjectViewWidget {
+    Q_OBJECT
+public:
+    ProjectViewWidget();
+    QMenu*      groupModeMenu;
+};
+
+class ProjectViewImpl: public ProjectView , public LoadDocumentTaskProvider {
+    Q_OBJECT
+
+    friend class ProjectViewWidgetFactory;
+	friend class EnableProjectViewTask;
+	friend class DisableProjectViewTask;
+public:
+    ProjectViewImpl();
+    ~ProjectViewImpl();
+    
+    virtual const DocumentSelection* getDocumentSelection() const {return projectTreeController->getDocumentSelection();}
+    
+    virtual const GObjectSelection* getGObjectSelection() const  {return projectTreeController->getGObjectSelection();};
+	
+	void initView();
+
+	//QAction* getAddNewDocumentAction() const {return addNewDocumentAction;}
+
+	QAction* getAddExistingDocumentAction() const {return addExistingDocumentAction;}
+
+    virtual Task* createLoadDocumentTask(Document* doc) const;
+
+    void highlightItem(Document*);
+
+    void setSaveProjectOnCloseEnabled(bool enabled) { saveProjectOnClose = enabled; }
+
+protected:
+	/// returns NULL if no actions are required to enable service
+	virtual Task* createServiceEnablingTask();
+
+	/// returns NULL if no actions are required to disable service
+	virtual Task* createServiceDisablingTask();
+
+
+	void enable();
+	void disable();
+
+
+	bool eventFilter(QObject *obj, QEvent *event);
+
+private slots: 
+    void sl_onDocumentAdded(Document* d);
+    void sl_onDocumentLoadedStateChanged();
+
+	void sl_onProjectModifiedStateChanged();
+	void sl_onDocumentRemoved(Document* d);
+	void sl_onAddExistingDocument();
+	void sl_onAddNewDocument();
+	void sl_onSaveSelectedDocs();
+	void sl_onDocTreePopupMenuRequested(QMenu& popup);
+	void sl_openNewView();
+	void sl_openStateView();
+	void sl_activateView();
+	void sl_addToView();
+	void sl_onMDIWindowAdded(MWMDIWindow*);
+	void sl_onViewPersistentStateChanged(GObjectViewWindow* thiz);
+	void sl_onDoubleClicked(GObject*);
+    void sl_filterTextChanged(const QString& t);
+    void sl_relocate();
+    void sl_saveCopy();
+    void sl_onNameChanged(GObject *);
+
+private:
+
+    void saveWidgetState(ProjectViewWidget* w);
+    void restoreWidgetState(ProjectViewWidget* w);
+    void buildViewMenu(QMenu& m);
+    void buildOpenViewMenu(const MultiGSelection& ms, QMenu* m);
+    void buildAddToViewMenu(const MultiGSelection& ms, QMenu* m);
+    void buildRelocateMenu(QMenu* m);
+    QList<QAction*> selectOpenViewActions(GObjectViewFactory* f, const MultiGSelection& ms, QObject* actionsParent);
+    void saveViewState(GObjectViewWindow* v, const QString& stateName);
+    void updateMWTitle();
+	
+    //todo: find a better place to do this
+    void registerBuiltInObjectViews();
+    void unregisterBuiltInObjectViews();
+
+
+    QAction*    addExistingDocumentAction;
+    //QAction*  addNewDocumentAction;
+    QAction*    saveSelectedDocsAction;
+    QAction*    relocateDocumentAction;
+    QAction*    saveCopyAction;
+    bool saveProjectOnClose;
+
+	ProjectViewWidget* w;
+	ProjectViewWidgetFactory* f;
+	ProjectTreeController* projectTreeController;
+	ObjectViewTreeController* objectViewController;
+};
+
+
+class EnableProjectViewTask : public Task {
+    Q_OBJECT
+
+public:
+	EnableProjectViewTask(ProjectViewImpl* pvi);
+
+	ReportResult report();
+private:
+	ProjectViewImpl* pvi;
+};
+
+class DisableProjectViewTask : public Task {
+    Q_OBJECT
+
+public:
+	DisableProjectViewTask(ProjectViewImpl* pvi, bool saveProjectOnClose);
+    void prepare();
+	ReportResult report();
+private:
+	ProjectViewImpl* pvi;
+    bool saveProject;
+};
+
+
+
+}//namespace
+#endif

@@ -1,0 +1,109 @@
+#ifndef _U2_CLUSTALW_SUPPORT_TASK_H
+#define _U2_CLUSTALW_SUPPORT_TASK_H
+
+#include <U2Core/Task.h>
+#include <U2Core/IOAdapter.h>
+
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/SaveDocumentTask.h>
+#include "utils/ExportTasks.h"
+
+#include <U2Core/MAlignmentObject.h>
+
+#include "ExternalToolRunTask.h"
+
+namespace U2 {
+
+/*Options for clustalW
+    ***Multiple Alignments:***
+? -NEWTREE=      :file for new guide tree
+? -USETREE=      :file for old guide tree
++ -MATRIX=       :Protein weight matrix=BLOSUM, PAM, GONNET, ID or filename
++ -DNAMATRIX=    :DNA weight matrix=IUB, CLUSTALW or filename
++ -GAPOPEN=f     :gap opening penalty -- 100.0?
++ -GAPEXT=f      :gap extension penalty -- 10.0?
++ -ENDGAPS       :no end gap separation pen.
++ -GAPDIST=n     :gap separation pen. range
++ -NOPGAP        :residue-specific gaps off
++ -NOHGAP        :hydrophilic gaps off
+? -HGAPRESIDUES= :list hydrophilic res.
+? -MAXDIV=n      :% ident. for delay
+? -TYPE=         :PROTEIN or DNA
+- -TRANSWEIGHT=f :transitions weighting
++ -ITERATION=    :NONE or TREE or ALIGNMENT
++ -NUMITER=n     :maximum number of iterations to perform
+- -NOWEIGHTS     :disable sequence weighting
+
++ -OUTORDER=     :INPUT or ALIGNED
+*/
+class ClustalWLogParser;
+class ClustalWSupportTaskSettings {
+public:
+    ClustalWSupportTaskSettings() {reset();}
+    void reset();
+
+    float   gapOpenPenalty;
+    float   gapExtenstionPenalty;
+    bool    endGaps;
+    bool    noPGaps;
+    bool    noHGaps;
+    int     gapDist;
+    QString iterationType;
+    int     numIterations;
+    QString inputFilePath;
+    QString matrix;
+    bool    outOrderInput; // false - aligned, true - input
+};
+
+
+class ClustalWSupportTask : public Task {
+    Q_OBJECT
+public:
+    ClustalWSupportTask(MAlignmentObject* _mAObject, const ClustalWSupportTaskSettings& settings);
+    void prepare();
+    Task::ReportResult report();
+
+    QList<Task*> onSubTaskFinished(Task* subTask);
+
+    MAlignment                  resultMA;
+private:
+    MAlignmentObject*           mAObject;
+    Document*                   currentDocument;
+    Document*                   newDocument;
+    QString                     url;
+    ClustalWLogParser*          logParser;
+
+    SaveAlignmentTask*          saveTemporaryDocumentTask;
+    ExternalToolRunTask*        clustalWTask;
+    LoadDocumentTask*           loadTemporyDocumentTask;
+    ClustalWSupportTaskSettings settings;
+};
+
+class ClustalWWithExtFileSpecifySupportTask : public Task {
+    Q_OBJECT
+public:
+    ClustalWWithExtFileSpecifySupportTask(const ClustalWSupportTaskSettings& settings);
+    void prepare();
+    Task::ReportResult report();
+
+    QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    MAlignmentObject*           mAObject;
+    Document*                   currentDocument;
+
+    SaveDocumentTask*           saveDocumentTask;
+    LoadDocumentTask*           loadDocumentTask;
+    ClustalWSupportTask*        clustalWSupportTask;
+    ClustalWSupportTaskSettings settings;
+};
+
+class ClustalWLogParser : public ExternalToolLogParser {
+public:
+    ClustalWLogParser(int countSequencesInMSA);
+    int getProgress();
+private:
+    int countSequencesInMSA;
+};
+
+}//namespace
+#endif // _U2_CLUSTALW_SUPPORT_TASK_H

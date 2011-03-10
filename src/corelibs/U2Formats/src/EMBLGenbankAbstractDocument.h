@@ -1,0 +1,99 @@
+#ifndef _U2_EMBL_GENBANK_ABSTRACT_DOCUMENT_H_
+#define _U2_EMBL_GENBANK_ABSTRACT_DOCUMENT_H_
+
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
+
+#include <QtCore/QStringList>
+#include <U2Core/AnnotationTableObject.h>
+
+
+namespace U2 {
+
+class IOAdapter;
+class ParserState;
+class EMBLGenbankDataEntry;
+
+
+class U2FORMATS_EXPORT EMBLGenbankAbstractDocument : public DocumentFormat {
+    Q_OBJECT
+public:
+    EMBLGenbankAbstractDocument(const DocumentFormatId& id, const QString& formatName, 
+                                int maxLineSize, DocumentFormatFlags flags, QObject* p);
+
+    virtual DocumentFormatId getFormatId() const {return id;}
+
+    virtual const QString& getFormatName() const {return formatName;}
+
+    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
+    
+    static const QString UGENE_MARK;
+    static const QString DEFAULT_OBJ_NAME;
+
+    // move to utils??
+    static QString	genObjectName(QSet<QString>& usedNames, const QString& name, const QVariantMap& info, int n, const GObjectType& t);
+    
+protected:
+
+    virtual void load(IOAdapter* io, QList<GObject*>& objects, QVariantMap& fs, TaskStateInfo& si, QString& writeLockReason, DocumentLoadMode mode);
+    
+    virtual int     readMultilineQualifier(IOAdapter* io, char* cbuff, int maxSize, bool prevLineHasMaxSize);
+    virtual SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, TaskStateInfo& si, int offset);
+    virtual bool    readSequence(QByteArray& sequence, ParserState*);
+
+    virtual bool readEntry(QByteArray& sequence, ParserState*) = 0;
+    virtual void readAnnotations(ParserState*, int offset);
+    
+    
+    DocumentFormatId id;
+    QString     formatName;
+    QByteArray  fPrefix;
+    QByteArray  sequenceStartPrefix;
+    int         maxAnnotationLineLen;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// header model
+
+class EMBLGenbankDataEntry {
+public:
+    EMBLGenbankDataEntry() : seqLen(0), hasAnnotationObjectFlag(false), circular(false) {}
+     /** locus name */
+    QString name;
+
+    /** sequence len*/
+    int	seqLen;
+
+    QVariantMap tags;
+    QList<SharedAnnotationData> features;
+
+    // hasAnnotationObjectFlag parameter is used to indicate that 
+    // annotation table object must present even if result list is empty
+    bool hasAnnotationObjectFlag;
+    bool circular;
+};
+
+class ParserState {
+public:
+    ParserState(int off, IOAdapter* io, EMBLGenbankDataEntry* e, TaskStateInfo& si)
+        : valOffset(off), entry(e), io(io), buff(NULL), len(0), si(si) {}
+    const int valOffset;
+    EMBLGenbankDataEntry* entry;
+    IOAdapter* io;
+    static const int READ_BUFF_SIZE = 8192;
+    char* buff;
+    int len;
+    TaskStateInfo& si;
+    QString value() const;
+    QString key () const;
+    bool hasKey(const char*, int slen) const;
+    bool hasKey(const char* s) const {return hasKey(s, strlen(s));}
+    bool hasContinuation() const { return len > valOffset && hasKey(" ");}
+    bool hasValue() const {return len > valOffset;}
+    bool readNextLine(bool emptyOK = false);
+    bool isNull() const {return entry->name.isNull();}
+};
+
+}//namespace
+
+#endif

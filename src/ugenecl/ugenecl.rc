@@ -1,0 +1,43 @@
+IDI_ICON1       ICON        DISCARDABLE "images/ugene.ico"
+IDI_ICON2       ICON        DISCARDABLE "images/ext.ico"
+
+#include <Windows.h>
+
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+#define UGENE_VERSION_STRING TOSTRING(UGENE_VERSION)
+
+#ifndef DEBUG
+#define VER_DEBUG                   0
+#else
+#define VER_DEBUG                   VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    	UGENE_VER_MAJOR,UGENE_VER_MINOR,UGENE_VER_BUILD,UGENE_VER_REVISION
+PRODUCTVERSION 	UGENE_VER_MAJOR,UGENE_VER_MINOR,UGENE_VER_BUILD
+FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
+//FILEFLAGS      	(VER_PRIVATEBUILD|VER_PRERELEASE|VER_DEBUG)
+FILEFLAGS      	(VER_DEBUG)
+//FILEOS         	VOS__WINDOWS32
+FILETYPE       	VFT_APP
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",      "Unipro, Russia"
+            VALUE "FileDescription",  "Command line interface of UGENE"
+            VALUE "FileVersion",      TOSTRING(UGENE_VER_MAJOR.UGENE_VER_MINOR.UGENE_VER_BUILD.UGENE_VER_REVISION)
+            //VALUE "InternalName",     VER_INTERNALNAME_STR
+            //VALUE "LegalCopyright",   VER_LEGALCOPYRIGHT_STR
+            //VALUE "LegalTrademarks1", VER_LEGALTRADEMARKS1_STR
+            //VALUE "LegalTrademarks2", VER_LEGALTRADEMARKS2_STR
+            VALUE "OriginalFilename", "ugenecl"
+            VALUE "ProductName",      "Unipro UGENE"
+            VALUE "ProductVersion",   UGENE_VERSION_STRING
+            VALUE "Comments",         "UGENE is a free cross-platform genome analysis suite: http://ugene.unipro.ru/"
+        END
+    END
+END

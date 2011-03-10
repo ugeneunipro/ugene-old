@@ -1,0 +1,1821 @@
+#include "DotPlotWidget.h"
+#include "DotPlotDialog.h"
+#include "DotPlotTasks.h"
+
+#include <U2Algorithm/RepeatFinderTaskFactory.h>
+#include <U2Core/AppContext.h>
+#include <U2Misc/GraphUtils.h>
+#include <U2Misc/DialogUtils.h>
+
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+
+#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
+#include <U2Algorithm/RepeatFinderSettings.h>
+#include <U2Algorithm/RepeatFinderTaskFactory.h>
+
+#include <U2Core/MultiTask.h>
+#include <U2View/PanView.h>
+
+
+#include <QtGui/QMouseEvent>
+#include <QtGui/QFileDialog>
+#include <QtGui/QToolTip>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QFileDialog>
+
+namespace U2 {
+
+DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
+    :ADVSplitWidget(dnaView),
+    selecting(false),shifting(false),miniMapLooking(false), selActive(true), nearestSelecting(false),
+    selectionX(NULL),selectionY(NULL),sequenceX(NULL),sequenceY(NULL), direct(true), inverted(false), nearestInverted(false), ignorePanView(false), keepAspectRatio(false),
+    zoom(1.0f, 1.0f), shiftX(0), shiftY(0),
+    minLen(100), identity(100),
+    pixMapUpdateNeeded(true), deleteDotPlotFlag(false), dotPlotTask(NULL), pixMap(NULL), miniMap(NULL),
+    nearestRepeat(NULL),
+    sharedSeqX(NULL), sharedSeqY(NULL)
+{
+    dotPlotDirectResultsListener = new DotPlotResultsListener();
+    dotPlotInverseResultsListener = new DotPlotResultsListener();
+
+    QFontMetrics fm = QPainter(this).fontMetrics();
+    int minTextSpace = fm.width(" 00000 ");
+
+    if (defaultTextSpace < minTextSpace) {
+        textSpace = minTextSpace;
+    }
+    else {
+        textSpace = defaultTextSpace;
+    }
+
+    // border around view
+    w = width() - 2*textSpace;
+    h = height() - 2*textSpace;
+
+    Q_ASSERT(dnaView);
+    this->dnaView = dnaView;
+
+    initActionsAndSignals();
+
+    dotPlotBGColor = QColor(240, 240, 255);
+    dotPlotNearestRepeatColor = QColor(240, 0, 0);
+
+    setFocusPolicy(Qt::WheelFocus);
+
+    timer = new QTimer(this);
+    timer->setInterval(2000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(sl_timer()));
+
+    exitButton = new QToolButton(this);
+    connect(exitButton, SIGNAL(clicked()), SLOT(sl_showDeleteDialog()));
+    exitButton->setToolTip("Close");
+    QIcon exitIcon = QIcon(QString(":dotplot/images/exit.png"));
+    exitButton->setIcon(exitIcon);
+
+    exitButton->setAutoFillBackground(true);
+
+}
+
+// init menu items, actions and connect signals
+void DotPlotWidget::initActionsAndSignals() {
+
+    showSettingsDialogAction = new QAction(tr("Parameters"), this);
+    connect(showSettingsDialogAction, SIGNAL(triggered()), SLOT(sl_showSettingsDialog()));
+
+    saveImageAction = new QAction(tr("Save as image"), this);
+    connect(saveImageAction, SIGNAL(triggered()), SLOT(sl_showSaveImageDialog()));
+
+    saveDotPlotAction = new QAction(tr("Save"), this);
+    connect(saveDotPlotAction, SIGNAL(triggered()), SLOT(sl_showSaveFileDialog()));
+
+    loadDotPlotAction = new QAction(tr("Load"), this);
+    connect(loadDotPlotAction, SIGNAL(triggered()), SLOT(sl_showLoadFileDialog()));
+
+    deleteDotPlotAction = new QAction(tr("Remove"), this);
+    connect(deleteDotPlotAction, SIGNAL(triggered()), SLOT(sl_showDeleteDialog()));
+
+    connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskFinished(Task*)));
+
+    foreach (ADVSequenceWidget *advSeqWidget, dnaView->getSequenceWidgets()) {
+        ADVSingleSequenceWidget *ssw = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
+        if (ssw != NULL) {
+            connect (ssw->getPanView(), SIGNAL(si_visibleRangeChanged()), SLOT(sl_panViewChanged()));
+        }
+    }
+
+    setMouseTracking(true);
+}
+
+// connect signals to know if user clicks on dotplot sequences
+void DotPlotWidget::connectSequenceSelectionSignals() {
+
+    if (!(sequenceX && sequenceY)) {
+        return;
+    }
+
+    Q_ASSERT(dnaView);
+    connect (dnaView, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
+
+    foreach (ADVSequenceObjectContext* ctx, dnaView->getSequenceContexts()) {
+
+        Q_ASSERT(ctx);
+
+        connect(ctx->getSequenceSelection(),
+            SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
+            SLOT(sl_onSequenceSelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
+    }
+}
+
+DotPlotWidget::~DotPlotWidget() {
+
+    delete timer;
+    delete showSettingsDialogAction;
+    delete saveImageAction;
+    delete saveDotPlotAction;
+    delete loadDotPlotAction;
+    delete deleteDotPlotAction;
+    delete pixMap;
+
+    if (dotPlotTask) {
+        cancelRepeatFinderTask();
+    }
+    delete dotPlotDirectResultsListener;
+    delete dotPlotInverseResultsListener;
+}
+
+
+// called by DotPlotSplitter
+void DotPlotWidget::buildPopupMenu(QMenu *m) const {
+    QPoint mapped(mapFromGlobal(QCursor::pos()));
+
+    // build menu only if the mouse cursor is over this dotplot
+    if (sequenceX && sequenceY && QRect(0, 0, width(), height()).contains(mapped)) {
+        assert(!m->actions().isEmpty());
+
+        QMenu* dotPlotMenu = new QMenu(tr("Dotplot"), m);
+        QMenu* saveMenu = new QMenu(tr("Save/Load"), dotPlotMenu);
+
+        saveMenu->addAction(saveImageAction);
+        saveMenu->addAction(saveDotPlotAction);
+        saveMenu->addAction(loadDotPlotAction);
+
+        dotPlotMenu->setIcon(QIcon(":dotplot/images/dotplot.png"));
+        dotPlotMenu->addAction(showSettingsDialogAction);
+        dotPlotMenu->addMenu(saveMenu);
+        dotPlotMenu->addAction(deleteDotPlotAction);
+
+        QAction *b = *(m->actions().begin());
+        m->insertMenu(b, dotPlotMenu);
+    }
+}
+
+QPointF DotPlotWidget::zoomTo(Qt::Axis axis, const U2Region &lr, bool emitSignal) {
+
+    QPointF oldZoom = zoom;
+
+    int seqLen = 0;
+    switch (axis) {
+        case Qt::XAxis :
+            seqLen = sequenceX->getSequenceLen();
+
+            zoom.setX(seqLen/(float)lr.length);
+            shiftX = -lr.startPos*w/(float)seqLen;
+            shiftX*=zoom.x();
+            break;
+
+        case Qt::YAxis :
+            seqLen = sequenceY->getSequenceLen();
+
+            zoom.setY(seqLen/(float)lr.length);
+            shiftY = -lr.startPos*h/(float)seqLen;
+            shiftY*=zoom.y();
+            break;
+
+        default:
+            return zoom;
+    }
+
+    checkShift(emitSignal);
+    pixMapUpdateNeeded = true;
+    update();
+
+    return zoom;
+}
+
+U2Region DotPlotWidget::getVisibleRange(Qt::Axis axis) {
+
+    QPointF zeroPoint(0, 0);
+    QPointF rightPoint(w, 0);
+    QPointF topPoint(0, h);
+
+    int startPos = 0;
+    int len = 0;
+
+    switch (axis) {
+        case Qt::XAxis:
+            startPos = sequenceCoords(unshiftedUnzoomed(zeroPoint)).x();
+            len = sequenceCoords(unshiftedUnzoomed(rightPoint)).x();
+            break;
+
+        case Qt::YAxis:
+            startPos = sequenceCoords(unshiftedUnzoomed(zeroPoint)).y();
+            len = sequenceCoords(unshiftedUnzoomed(topPoint)).y();
+            break;
+
+        default:
+            return U2Region();
+    }
+
+    len-=startPos;
+
+    return U2Region(startPos, len);
+}
+
+int DotPlotWidget::getLrDifference(const U2Region &a, const U2Region &b) {
+
+    return qAbs(a.startPos - b.startPos) + qAbs(a.length - b.length);
+}
+
+void DotPlotWidget::sl_panViewChanged() {
+
+    GSequenceLineView *lw = qobject_cast<GSequenceLineView*>(sender());
+    PanView *panView = qobject_cast<PanView*>(sender());
+
+    if (selecting || shifting || !(lw && panView) || nearestSelecting) {
+        return;
+    }
+
+    U2Region lr = panView->getVisibleRange();
+    ADVSequenceObjectContext* ctx = lw->getSequenceContext();
+
+    if (!ctx || ignorePanView) {
+        return;
+    }
+
+    U2Region xAxisVisibleRange = getVisibleRange(Qt::XAxis);
+    if ((ctx == sequenceX) && (lr != xAxisVisibleRange)) {
+        zoomTo(Qt::XAxis, lr);
+    }
+
+    if (!shifting) {
+        U2Region yAxisVisibleRange = getVisibleRange(Qt::YAxis);
+        if ((ctx == sequenceY) && (lr != yAxisVisibleRange)) {
+            if(sequenceX == sequenceY){
+                zoomTo(Qt::XAxis, lr, sequenceX != sequenceY);
+            }else{
+                zoomTo(Qt::YAxis, lr, sequenceX != sequenceY);
+            }
+        }
+    }
+}
+
+void DotPlotWidget::sl_timer(){
+    if (hasFocus() && selActive) {
+        QPoint pos = clickedSecond.toPoint();
+        pos = sequenceCoords(unshiftedUnzoomed(pos));
+        const DotPlotResults *res = findNearestRepeat(pos);
+        if(res == nearestRepeat){
+            QString text = makeToolTipText();
+            QToolTip::showText(QCursor::pos(), text);
+        }
+    }
+    timer->stop();
+}
+
+void DotPlotWidget::sl_taskFinished(Task *task) {
+
+    Q_ASSERT(task);
+    if ( task != dotPlotTask || task->getState() != Task::State_Finished) {
+        return;
+    }
+
+    if (!dotPlotDirectResultsListener->stateOk || !dotPlotInverseResultsListener->stateOk) {
+        DotPlotDialogs::tooManyResults();
+    }
+    dotPlotTask = NULL;
+    dotPlotDirectResultsListener->setTask(NULL);
+    dotPlotInverseResultsListener->setTask(NULL);
+
+    if (deleteDotPlotFlag) {
+        deleteDotPlotFlag = false;
+        emit si_removeDotPlot();
+        return;
+    }
+
+    // build dotplot task finished
+    pixMapUpdateNeeded = true;
+    update();
+}
+
+// tell repeat finder that dotPlotResultsListener will be deleted
+// if dotPlotTask is not RF task, nothing happened
+void DotPlotWidget::cancelRepeatFinderTask() {
+
+    RepeatFinderTaskFactoryRegistry *tfr = AppContext::getRepeatFinderTaskFactoryRegistry();
+    Q_ASSERT(tfr);
+    RepeatFinderTaskFactory *factory = tfr->getFactory("");
+    Q_ASSERT(factory);
+    factory->setRFResultsListener(dotPlotTask, NULL);
+
+    MultiTask *mTask = qobject_cast<MultiTask*>(dotPlotTask);
+    if (mTask) {
+        foreach(Task *t, mTask->getSubtasks()) {
+
+            if (!t->isFinished()) {
+                t->cancel();
+            }
+        }
+    }
+}
+
+bool DotPlotWidget::event(QEvent *event){
+    if (event->type() == QEvent::ToolTip && hasFocus() && selActive) {
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+        QPoint pos = toInnerCoords(helpEvent->pos().x(), helpEvent->pos().y());
+        pos = sequenceCoords(unshiftedUnzoomed(pos));
+        const DotPlotResults *res = findNearestRepeat(pos);
+        if(res == nearestRepeat){
+            QString text = makeToolTipText();
+            QToolTip::showText(helpEvent->globalPos(), text);
+        }
+    }
+    return QWidget::event(event);
+}
+
+void DotPlotWidget::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
+
+    bool needed = false;
+    foreach (ADVSequenceObjectContext *deleted, w->getSequenceContexts()) {
+        if (deleted == sequenceX) {
+            sequenceX = NULL;
+            needed = true;
+        }
+        if (deleted == sequenceY) {
+            sequenceY = NULL;
+            needed = true;
+        }
+    }
+
+    if (needed) {
+        deleteDotPlotFlag = true;
+        if (dotPlotTask) {
+            cancelRepeatFinderTask();
+        }
+        else {
+            addCloseDotPlotTask();
+        }
+    }
+}
+
+
+// click on the sequence view
+void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QVector<U2Region>&, const QVector<U2Region>&) {
+
+    QObject *sen = sender();
+
+    DNASequenceSelection *dnaSelection = qobject_cast<DNASequenceSelection*>(sen);
+    if (dnaSelection) {
+        const DNASequenceObject *selectedSequence = dnaSelection->getSequenceObject();
+                if (selectedSequence == sequenceX->getSequenceGObject()) {
+                selectionX = s;
+            }
+
+            if (selectedSequence == sequenceY->getSequenceObject()) {
+                selectionY = s;
+            }
+
+        update();
+    }
+    emit si_dotPlotSelecting();
+}
+
+// save dotplot as image
+void DotPlotWidget::sl_showSaveImageDialog() {
+
+    LastOpenDirHelper lod("Dotplot");
+    lod.url = QFileDialog::getSaveFileName(NULL, tr("Save Dotplot image"), lod.dir, tr("Image Files (*.png *.jpg *.bmp)"));
+
+    if (lod.url.length() <= 0) {
+        return; // Cancel button pressed
+    }
+
+    QImage image(width(), height(), QImage::Format_RGB32);
+    QPainter p(&image);
+
+    drawAll(p);
+    image.save(lod.url);
+}
+
+// save dotplot into a dotplot file, return true if successful
+bool DotPlotWidget::sl_showSaveFileDialog() {
+
+    LastOpenDirHelper lod("Dotplot");
+    lod.url = QFileDialog::getSaveFileName(NULL, tr("Save Dotplot"), lod.dir, tr("Dotplot files (*.dpt)"));
+
+    if (lod.url.length() <= 0) {
+        return false; // Cancel button pressed
+    }
+
+    // check if file opens
+    DotPlotDialogs::Errors err = SaveDotPlotTask::checkFile(lod.url);
+
+    switch (err) {
+        case DotPlotDialogs::ErrorOpen:
+            DotPlotDialogs::fileOpenError(lod.url);
+            return false;
+
+        default:
+            break;
+    }
+
+    TaskScheduler* ts = AppContext::getTaskScheduler();
+    if (dotPlotTask) { // Check if there is already some dotPlotTask
+        DotPlotDialogs::taskRunning();
+
+        return false;
+    }
+    Q_ASSERT(dotPlotDirectResultsListener);
+    Q_ASSERT(sequenceX);
+    Q_ASSERT(sequenceY);
+
+    dotPlotTask = new SaveDotPlotTask(
+            lod.url,
+            dotPlotDirectResultsListener->dotPlotList,
+            dotPlotInverseResultsListener->dotPlotList,
+            sequenceX->getSequenceObject(),
+            sequenceY->getSequenceObject(),
+            minLen,
+            identity
+    );
+    ts->registerTopLevelTask(dotPlotTask);
+
+    return true;
+}
+
+// load dotplot from the dotplot file, return true if successful
+bool DotPlotWidget::sl_showLoadFileDialog() {
+
+    LastOpenDirHelper lod("Dotplot");
+    lod.url = QFileDialog::getOpenFileName(NULL, tr("Load Dotplot"), lod.dir, tr("Dotplot files (*.dpt)"));
+
+    if (lod.url.length() <= 0) {
+        return false; // Cancel button pressed
+    }
+
+    if (dotPlotTask) { // Check if there is already some dotPlotTask
+        DotPlotDialogs::taskRunning();
+
+        return false;
+    }
+
+    Q_ASSERT(sequenceX);
+    Q_ASSERT(sequenceY);
+
+    Q_ASSERT(sequenceX->getSequenceObject());
+    Q_ASSERT(sequenceY->getSequenceObject());
+
+    // check if the file opens and names of the loading sequences same as names of current sequences
+    DotPlotDialogs::Errors err = LoadDotPlotTask::checkFile(
+            lod.url,
+            sequenceX->getSequenceObject()->getGObjectName(),
+            sequenceY->getSequenceObject()->getGObjectName()
+    );
+
+    switch (err) {
+        case DotPlotDialogs::ErrorOpen:
+            DotPlotDialogs::fileOpenError(lod.url);
+            return false;
+
+        case DotPlotDialogs::ErrorNames:
+            if (DotPlotDialogs::loadDifferent() == QMessageBox::Yes) {
+                break; // load dotplot anyway
+            }
+            else {
+                return false;
+            }
+
+        default:
+            break;
+    }
+
+    Q_ASSERT(dotPlotDirectResultsListener);
+    Q_ASSERT(dotPlotDirectResultsListener->dotPlotList);
+
+    Q_ASSERT(dotPlotInverseResultsListener);
+    Q_ASSERT(dotPlotInverseResultsListener->dotPlotList);
+
+    dotPlotTask = new LoadDotPlotTask(
+            lod.url,
+            dotPlotDirectResultsListener->dotPlotList,
+            dotPlotInverseResultsListener->dotPlotList,
+            sequenceX->getSequenceObject(),
+            sequenceY->getSequenceObject(),
+            &minLen,
+            &identity,
+            &direct,
+            &inverted
+    );
+
+    TaskScheduler* ts = AppContext::getTaskScheduler();
+    ts->registerTopLevelTask(dotPlotTask);
+
+    pixMapUpdateNeeded = true;
+    update();
+
+    return true;
+}
+
+// creating new dotplot or changing settings
+bool DotPlotWidget::sl_showSettingsDialog() {
+
+    if (dotPlotTask) { // Check if there is already some dotPlotTask
+        DotPlotDialogs::taskRunning();
+
+        return false;
+    }
+
+    Q_ASSERT(dnaView);
+    QList<ADVSequenceObjectContext *> sequences = dnaView->getSequenceContexts();
+
+    if (sequences.size() <= 0) {
+        return false;
+    }
+
+    DotPlotDialog d(this, sequences, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor);
+    if (d.exec()) {
+        setMinimumHeight(200);
+
+        nearestRepeat = NULL;
+        nearestInverted = false;
+
+        bool res = false;
+        if ((sequenceX != d.getXSeq()) || (sequenceY != d.getYSeq())) {
+            res = true;
+        }
+
+        sequenceX = d.getXSeq();
+        sequenceY = d.getYSeq();
+
+        if(res){
+            resetZooming();
+        }
+
+        direct = d.isDirect();
+        inverted = d.isInverted();
+
+        Q_ASSERT(direct || inverted);
+
+        dotPlotDirectColor = d.getDirectColor();
+        dotPlotInvertedColor = d.getInvertedColor();
+
+        Q_ASSERT(d.minLenBox);
+        Q_ASSERT(d.identityBox);
+
+        minLen = d.minLenBox->value();
+        identity = d.identityBox->value();
+
+        connectSequenceSelectionSignals();
+
+        Q_ASSERT(dotPlotDirectResultsListener);
+        Q_ASSERT(dotPlotDirectResultsListener->dotPlotList);
+        dotPlotDirectResultsListener->dotPlotList->clear();
+
+        Q_ASSERT(dotPlotInverseResultsListener);
+        Q_ASSERT(dotPlotInverseResultsListener->dotPlotList);
+        dotPlotInverseResultsListener->dotPlotList->clear();
+
+        Q_ASSERT(sequenceX);
+        Q_ASSERT(sequenceY);
+
+        if ((sequenceX->getAlphabet()->getType() != sequenceY->getAlphabet()->getType()) || (sequenceX->getAlphabet()->getType() != DNAAlphabet_NUCL)){
+
+            sequenceX = NULL;
+            sequenceY = NULL;
+
+            DotPlotDialogs::wrongAlphabetTypes();
+            return false;
+        }
+
+        Q_ASSERT(sequenceX->getSequenceObject());
+        Q_ASSERT(sequenceY->getSequenceObject());
+
+
+        foreach (ADVSequenceWidget *advSeqWidget, sequenceX->getSequenceWidgets()) {
+            ADVSingleSequenceWidget *ssw = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
+            if (ssw) {
+                zoomUseX.setPanView(ssw->getPanView());
+                break;
+            }
+        }
+        foreach (ADVSequenceWidget *advSeqWidget, sequenceY->getSequenceWidgets()) {
+            ADVSingleSequenceWidget *ssw = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
+            if (ssw) {
+                zoomUseY.setPanView(ssw->getPanView());
+                break;
+            }
+        }
+
+        DNAAlphabet *al = sequenceX->getAlphabet();
+        if ((al->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) || (al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT())) {
+            al = sequenceY->getAlphabet();
+        }
+
+        sharedSeqX = sequenceX->getSequenceObject()->getSequence();
+        sharedSeqY = sequenceY->getSequenceObject()->getSequence();
+
+        RepeatFinderTaskFactoryRegistry *tfr = AppContext::getRepeatFinderTaskFactoryRegistry();
+        Q_ASSERT(tfr);
+        RepeatFinderTaskFactory *factory = tfr->getFactory("");
+        Q_ASSERT(factory);
+
+        QList<Task*> tasks;
+
+        if (d.isDirect()) {
+            RepeatFinderSettings cDirect(
+                dotPlotDirectResultsListener,
+                sequenceX->getSequenceObject()->getSequence().data(),
+                sequenceX->getSequenceLen(),
+                false,                        // direct
+                sequenceY->getSequenceObject()->getSequence().data(),
+                sequenceY->getSequenceLen(),
+                al,
+                d.getMinLen(), d.getMismatches(),
+                d.getAlgo()
+            );
+
+            Task *dotPlotDirectTask = factory->getTaskInstance(cDirect);
+            dotPlotDirectResultsListener->setTask(dotPlotDirectTask);
+
+            tasks << dotPlotDirectTask;
+        }
+
+        if (d.isInverted()) {
+            RepeatFinderSettings cInverse(
+                dotPlotInverseResultsListener,
+                sequenceX->getSequenceObject()->getSequence().data(),
+                sequenceX->getSequenceLen(),
+                true,                        // inversed
+                sequenceY->getSequenceObject()->getSequence().data(),
+                sequenceY->getSequenceLen(),
+                al,
+                d.getMinLen(), d.getMismatches(),
+                d.getAlgo()
+            );
+
+            Task *dotPlotInversedTask = factory->getTaskInstance(cInverse);
+            dotPlotInverseResultsListener->setTask(dotPlotInversedTask);
+
+            tasks << dotPlotInversedTask;
+        }
+
+        dotPlotTask = new MultiTask("Searching repeats", tasks);
+
+        TaskScheduler* ts = AppContext::getTaskScheduler();
+        ts->registerTopLevelTask(dotPlotTask);
+    }
+    else {
+        return false;
+    }
+
+    return true;
+}
+
+// ask user if he wants to save dotplot first
+void DotPlotWidget::sl_showDeleteDialog() {
+
+    int answer = DotPlotDialogs::saveDotPlot();
+    bool saveDotPlot;
+
+    switch (answer) {
+        case QMessageBox::Cancel:
+            return;
+
+        case QMessageBox::Yes:
+            saveDotPlot = sl_showSaveFileDialog();
+            if (!saveDotPlot) { // cancel button pressed
+                return;
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    if (!deleteDotPlotFlag) {
+        addCloseDotPlotTask();
+    }
+}
+
+void DotPlotWidget::addCloseDotPlotTask() {
+
+    deleteDotPlotFlag = true;
+
+    Task *t = new Task("Closing dotplot", TaskFlags_NR_FOSCOE);
+    if (!dotPlotTask) {
+        dotPlotTask = t;
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+}
+
+// dotplot results updated, need to update picture
+void DotPlotWidget::pixMapUpdate() {
+
+    if (!pixMapUpdateNeeded || !sequenceX || !sequenceY || dotPlotTask) {
+        return;
+    }
+
+    if ((sequenceX->getSequenceLen() <= 0) || (sequenceY->getSequenceLen() <= 0)) {
+        return;
+    }
+
+    float ratioX = w/(float)sequenceX->getSequenceLen();
+    float ratioY = h/(float)sequenceY->getSequenceLen();
+    //float ratioY = ratioX;
+
+    delete pixMap;
+    pixMap = new QPixmap(w, h);
+
+    QPainter pixp(pixMap);
+    pixp.setPen( Qt::NoPen ); // do not draw outline
+    pixp.setBrush(dotPlotBGColor);
+    pixp.drawRect(0, 0, w, h);
+
+    QLine line;
+
+    Q_ASSERT(dotPlotDirectResultsListener);
+    Q_ASSERT(dotPlotDirectResultsListener->dotPlotList);
+
+    // draw to the dotplot direct results
+    if (direct) {
+        pixp.setPen(dotPlotDirectColor);
+        foreach(const DotPlotResults &r, *dotPlotDirectResultsListener->dotPlotList) {
+
+            if (!getLineToDraw(r, &line, ratioX, ratioY)) {
+                continue;
+            }
+
+            pixp.drawLine(line);
+        }
+    }
+
+    // draw to the dotplot inverted results
+    if (inverted) {
+        pixp.setPen(dotPlotInvertedColor);
+        foreach(const DotPlotResults &r, *dotPlotInverseResultsListener->dotPlotList) {
+
+            if (!getLineToDraw(r, &line, ratioX, ratioY, true)) {
+                continue;
+            }
+
+            pixp.drawLine(line);
+        }
+    }
+
+    pixMapUpdateNeeded = false;
+}
+
+// return true if the line intersects with the area to draw
+bool DotPlotWidget::getLineToDraw(const DotPlotResults &r, QLine *line, float ratioX, float ratioY, bool invert) const {
+
+    float x1 = r.x*ratioX * zoom.x() + shiftX;
+    float y1 = r.y*ratioY * zoom.y() + shiftY;
+    float x2 = x1 + r.len*ratioX * zoom.x();
+    float y2 = y1 + r.len*ratioY * zoom.y();
+
+    if ((x2 < 0) || (y2 < 0) || (x1 > w) || (y1 > h)) {
+        return false;
+    }
+
+    if (x1<0) {
+        float y_0 = y1 - x1*(y2-y1)/(x2-x1);
+        if ((y_0 >= 0) && (y_0 <= h)) {
+            x1 = 0;
+            y1 = y_0;
+        }
+
+    }
+
+    if (x2>w) {
+        float y_w = y1 + (w-x1)*(y2-y1)/(x2-x1);
+        if ((y_w >= 0) && (y_w <= h)) {
+            x2 = w;
+            y2 = y_w;
+        }
+
+    }
+
+    if (y1<0) {
+        float x_0 = x1 - y1*(x2-x1)/(y2-y1);
+        if ((x_0 >= 0) && (x_0 <= w)) {
+            y1 = 0;
+            x1 = x_0;
+        }
+
+    }
+
+    if (y2>h) {
+        float x_h = x1 + (h-y1)*(x2-x1)/(y2-y1);
+        if ((x_h >= 0) && (x_h <= w)) {
+            y2 = h;
+            x2 = x_h;
+        }
+
+    }
+
+    if ((x1 < 0) || (x2 < 0) || (y1 < 0) || (y2 < 0) || (x1 > w) || (y1 > h) || (x2 > w) || (y2 > h)) {
+        return false;
+    }
+
+    Q_ASSERT(line);
+
+    if (invert) {
+        float tmpX = x1;
+        x1 = x2;
+        x2 = tmpX;
+    }
+    line->setLine(x1, y1, x2, y2);
+    return true;
+}
+
+// draw everything
+void DotPlotWidget::drawAll(QPainter& p) {
+
+    if (sequenceX == NULL || sequenceY == NULL || w <= 0 || h <= 0) {
+        return;
+    }
+
+    p.save();
+    p.setRenderHint(QPainter::Antialiasing);
+
+    p.setBrush(QBrush(palette().window().color()));
+
+    drawNames(p);
+    p.translate(textSpace, textSpace);
+
+    drawAxises(p);
+    drawDots(p);
+    drawSelection(p);
+    drawMiniMap(p);
+    drawNearestRepeat(p);
+
+    p.translate(-textSpace, -textSpace);
+    drawRulers(p);
+
+    p.restore();
+
+    if(hasFocus()){
+        drawFocus(p);
+    }
+
+#define DP_MARGIN 2
+#define DP_EXIT_BUTTON_SIZE 20
+    exitButton->setGeometry(width()- DP_MARGIN - DP_EXIT_BUTTON_SIZE, DP_MARGIN, DP_EXIT_BUTTON_SIZE, DP_EXIT_BUTTON_SIZE);
+}
+
+void DotPlotWidget::drawFocus(QPainter& p) const{
+    p.setPen(QPen(Qt::black, 1, Qt::DotLine));
+    p.drawRect(0, 0, width()-1, height()-1);
+}
+
+
+void DotPlotWidget::drawNames(QPainter &p) const {
+
+    Q_ASSERT(sequenceX->getSequenceObject());
+    Q_ASSERT(sequenceY->getSequenceObject());
+    QString nameX = sequenceX->getSequenceObject()->getGObjectName();
+    QString nameY = sequenceY->getSequenceObject()->getGObjectName();
+
+    nameX += " (" + tr("min length")+" "+QString::number(minLen)+", "+tr("identity")+" "+QString::number(identity)+"%)";
+
+    p.drawText(0, h + textSpace, w+2*textSpace, textSpace, Qt::AlignCenter, nameX);
+
+    p.save();
+
+    p.rotate(90);
+    p.translate(0, -(w + textSpace*2));
+    p.drawText(0, 0, h+textSpace, textSpace, Qt::AlignCenter, nameY);
+
+    p.restore();
+}
+
+void DotPlotWidget::drawNearestRepeat(QPainter& p) const {
+
+    if (!nearestRepeat) {
+        return;
+    }
+    p.save();
+    p.setPen(dotPlotNearestRepeatColor);
+
+    float ratioX = w/(float)sequenceX->getSequenceLen();
+    float ratioY = h/(float)sequenceY->getSequenceLen();
+
+    QLine line;
+    if (getLineToDraw(*nearestRepeat, &line, ratioX, ratioY, nearestInverted)) {
+
+        p.drawLine(line);
+    }
+
+    p.restore();
+}
+
+void DotPlotWidget::drawMiniMap(QPainter& p) const {
+
+    if (miniMap && ((zoom.x() > 1.0f) || (zoom.y() > 1.0f))) {
+        miniMap->draw(p, shiftX, shiftY, zoom);
+    }
+}
+
+// update dotplot picture if needed and draw it
+void DotPlotWidget::drawDots(QPainter& p) {
+
+    pixMapUpdate();
+
+    if (pixMap) {
+        p.drawPixmap(0, 0, w, h, *pixMap);
+    }
+}
+
+void DotPlotWidget::drawAxises(QPainter& p) const {
+
+    QPoint zeroPoint(0, 0);
+    QPoint lowLeftPoint(0, h);
+    QPoint topRightPoint(w, 0);
+
+    p.drawLine(zeroPoint, lowLeftPoint);
+    p.drawLine(zeroPoint, topRightPoint);
+}
+
+// get cutted text to draw rulers
+QString DotPlotWidget::getRoundedText(QPainter &p, int num, int size) const {
+
+    QRectF rect;
+    QString curStr = QString::number(num);
+
+    rect = p.boundingRect(0, 0, size, 100, Qt::AlignLeft | Qt::AlignTop, curStr);
+    if (rect.width() < size)
+        return curStr;
+
+    curStr = QString::number(num/(float)1000, 'f', 1) + QString("K");
+    rect = p.boundingRect(0, 0, size, 100, Qt::AlignLeft | Qt::AlignTop, curStr);
+    if (rect.width() < size)
+        return curStr;
+
+    curStr = QString::number(num/(float)1000000, 'f', 1) + QString("M");
+    rect = p.boundingRect(0, 0, size, 100, Qt::AlignLeft | Qt::AlignTop, curStr);
+    if (rect.width() < size)
+        return curStr;
+
+    return "";
+}
+
+void DotPlotWidget::drawRulers(QPainter &p) const{
+
+    GraphUtils::RulerConfig rConf;
+
+    rConf.notchSize = rulerNotchSize;
+    rConf.textPosition = GraphUtils::LEFT;
+    QFont rulerFont;
+
+    rulerFont.setFamily("Arial");
+    rulerFont.setPointSize(8);
+
+    int startX = sequenceCoords(unshiftedUnzoomed(QPointF(0,0))).x(),
+        endX = sequenceCoords(unshiftedUnzoomed(QPointF(w,0))).x(),
+        startY = sequenceCoords(unshiftedUnzoomed(QPointF(0,0))).y(),
+        endY = sequenceCoords(unshiftedUnzoomed(QPointF(0,h))).y();
+
+    QPoint extraLen(0, 0);
+    int xSeqLen = sequenceX->getSequenceLen();
+    int ySeqLen = sequenceY->getSequenceLen();
+
+    if (xSeqLen && ySeqLen) {
+        float ratioX = w/(float)xSeqLen;
+        float ratioY = h/(float)ySeqLen;
+
+        extraLen = QPoint(0.5*ratioX, 0.5*ratioY);
+    }
+
+    GraphUtils::drawRuler(p, QPoint(textSpace + extraLen.x(), textSpace), w - 2*extraLen.x(), startX+1, endX, rulerFont, rConf);
+
+    rConf.direction = GraphUtils::TTB;
+    rConf.textBorderEnd = 10;
+    GraphUtils::drawRuler(p, QPoint(textSpace, textSpace + extraLen.y()), h - 2*extraLen.y(), startY+1, endY, rulerFont, rConf);
+}
+
+// need to draw inside area not containing borders
+void DotPlotWidget::drawRectCorrect(QPainter &p, QRectF r) const {
+
+    if ((r.right() < 0) || (r.left() > w) || (r.bottom() < 0) || (r.top() > h)) {
+        return;
+    }
+
+    if (r.left() < 0) {
+        r.setLeft(0);
+    }
+
+    if (r.top() < 0) {
+        r.setTop(0);
+    }
+
+    if (r.right() > w) {
+        r.setRight(w);
+    }
+
+    if (r.bottom() > h) {
+        r.setBottom(h);
+    }
+
+    p.drawRect(r);
+}
+
+// part of the sequence is selected, show it
+void DotPlotWidget::drawSelection(QPainter &p) const {
+
+    if (!sequenceX || !sequenceY) {
+        return;
+    }
+
+    if (!(selectionX || selectionY)) {
+        return;
+    }
+
+    p.save();
+
+    QPen pen;
+    pen.setStyle(Qt::DotLine);
+    pen.setColor(QColor(0, 125, 227, 200));
+
+    p.setPen(pen);
+    p.setBrush(QBrush(QColor(200, 200, 200, 100)));
+
+    float xLeft, xLen, yBottom, yLen;
+    int xSeqLen = sequenceX->getSequenceLen();
+    int ySeqLen = sequenceY->getSequenceLen();
+
+    Q_ASSERT(xSeqLen);
+    Q_ASSERT(ySeqLen);
+
+    // for each selected part on the sequence X, highlight selected part on the sequence Y
+    if((selectionX && selectionX->getSelectedRegions().size() > 1)){
+        const QVector<U2Region>& sel = selectionX->getSelectedRegions();
+        const U2Region &rx = sel[0];
+        xLeft = rx.startPos/(float)xSeqLen * w*zoom.x();
+        xLen = rx.length/(float)xSeqLen * w*zoom.x();
+        const U2Region &ry = sel[1];
+        yBottom = ry.startPos/(float)ySeqLen * h*zoom.y();
+        yLen = ry.length/(float)ySeqLen * h*zoom.y();
+
+        drawRectCorrect(p, QRectF(xLeft + shiftX, yBottom + shiftY, xLen, yLen));
+    }else{
+        if (selectionX) {
+            foreach(const U2Region &rx, selectionX->getSelectedRegions()) {
+
+                xLeft = rx.startPos/(float)xSeqLen * w*zoom.x();
+                xLen = rx.length/(float)xSeqLen * w*zoom.x();
+
+                if (!selectionY || selectionY->getSelectedRegions().size() == 0) {
+                    yBottom = 0;
+                    yLen = 1.0f * h*zoom.y();
+
+                    drawRectCorrect(p, QRectF(xLeft + shiftX, yBottom + shiftY, xLen, yLen));
+                }
+                else {
+                    foreach(const U2Region &ry, selectionY->getSelectedRegions()) {
+                        yBottom = ry.startPos/(float)ySeqLen * h*zoom.y();
+                        yLen = ry.length/(float)ySeqLen * h*zoom.y();
+
+                        drawRectCorrect(p, QRectF(xLeft + shiftX, yBottom + shiftY, xLen, yLen));
+
+                    }
+                }
+            }
+        }
+
+        // user selected only part of the Y sequence
+        if ((!selectionX || selectionX->getSelectedRegions().size() == 0) && (selectionY && selectionY->getSelectedRegions().size() != 0)) {
+            xLeft = 0;
+            xLen = 1.0f * w*zoom.x();
+
+            foreach(const U2Region &ry, selectionY->getSelectedRegions()) {
+                yBottom = ry.startPos/(float)ySeqLen * h*zoom.y();
+                yLen = ry.length/(float)ySeqLen * h*zoom.y();
+
+                drawRectCorrect(p, QRectF(xLeft + shiftX, yBottom + shiftY, xLen, yLen));
+            }
+        }
+    }
+
+    p.restore();
+}
+
+// shifted camera or changed zoom
+void DotPlotWidget::checkShift(bool emitSignal) {
+
+    if (shiftX > 0) {
+        shiftX = 0;
+    }
+
+    if (shiftY > 0) {
+        shiftY = 0;
+    }
+
+    if (shiftX < w*(1-zoom.x())) {
+        shiftX = w*(1-zoom.x());
+    }
+
+    if (shiftY < h*(1-zoom.y())) {
+        shiftY = h*(1-zoom.y());
+    }
+
+    if (emitSignal) {
+        emit si_dotPlotChanged(sequenceX, sequenceY, shiftX/w, shiftY/h, zoom);
+    }
+    U2Region visRangeX;
+    U2Region visRangeY;
+
+    foreach (ADVSequenceWidget *advSeqWidget, dnaView->getSequenceWidgets()) {
+        ADVSingleSequenceWidget *advSingleSeqWidget = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
+        visRangeX = getVisibleRange(Qt::XAxis);
+        visRangeY = getVisibleRange(Qt::YAxis);
+
+        if (advSingleSeqWidget->getSequenceContext() == sequenceX) {
+            if (advSingleSeqWidget->getVisibleRange() != getVisibleRange(Qt::XAxis)) {
+                advSingleSeqWidget->setVisibleRange(getVisibleRange(Qt::XAxis));
+            }
+        }
+        if ((sequenceX != sequenceY) && (advSingleSeqWidget->getSequenceContext() == sequenceY)) {
+            if (advSingleSeqWidget->getVisibleRange() != getVisibleRange(Qt::YAxis)) {
+                advSingleSeqWidget->setVisibleRange(getVisibleRange(Qt::YAxis));
+            }
+        }
+    }
+}
+
+void DotPlotWidget::calcZooming(const QPointF &oldzoom, const QPointF &nZoom, const QPoint &inner, bool emitSignal) {
+
+    if (dotPlotTask || (w<=0) || (h<=0)) {
+        return;
+    }
+
+    if (!(sequenceX && sequenceY)) {
+        return;
+    }
+
+    float seqLenX = sequenceX->getSequenceLen();
+    float seqLenY = sequenceY->getSequenceLen();
+
+    QPointF newzoom(nZoom);
+    // limit maximum zoom
+    if (newzoom.x() > seqLenX) {
+        newzoom.setX(seqLenX);
+    }
+    if (newzoom.y() > seqLenY) {
+        newzoom.setY(seqLenY);
+    }
+    // dotplot has no zooming and the user tries zoom out
+    if (newzoom.x() < 1.0f) {
+        newzoom.setX(1.0f);
+    }
+    if (newzoom.y() < 1.0f) {
+        newzoom.setY(1.0f);
+    }
+
+    float xi = (inner.x() - shiftX)/oldzoom.x();
+    float yi = (inner.y() - shiftY)/oldzoom.y();
+
+    shiftX = inner.x() - xi*newzoom.x();
+    shiftY = inner.y() - yi*newzoom.y();
+
+    if (zoom != newzoom) {
+        pixMapUpdateNeeded = true;
+        update();
+    }
+    zoom = newzoom;
+    checkShift(emitSignal);
+}
+
+void DotPlotWidget::multZooming(float multzoom) {
+
+    if (multzoom <=0 ) {
+        return;
+    }
+
+    calcZooming(zoom, zoom*multzoom, QPoint(w/2, h/2));
+}
+
+void DotPlotWidget::setShiftZoom(ADVSequenceObjectContext* seqX, ADVSequenceObjectContext* seqY, float shX, float shY, const QPointF &z) {
+
+    shX*=w;
+    shY*=h;
+
+    if ((sequenceX == seqX) && (sequenceY == seqY)) {
+        if (shiftX!=(int)shX || shiftY!=(int)shY || zoom!=z) {
+            pixMapUpdateNeeded = true;
+        }
+
+        shiftX = shX;
+        shiftY = shY;
+        zoom = z;
+
+        update();
+    }
+}
+
+void DotPlotWidget::setIgnorePanView(bool ignore) {
+
+    ignorePanView = ignore;
+}
+
+void DotPlotWidget::setKeepAspectRatio(bool keepAr) {
+
+    keepAspectRatio = keepAr;
+}
+
+void DotPlotWidget::zoomIn() {
+    if (hasSelection()) {
+
+        if (selectionX && !selectionX->getSelectedRegions().isEmpty()) {
+            zoomTo(Qt::XAxis, selectionX->getSelectedRegions().first());
+        }
+
+        if (selectionY && !selectionY->getSelectedRegions().isEmpty()) {
+            if(sequenceX != sequenceY || selectionY->getSelectedRegions().count() == 1){
+                zoomTo(Qt::YAxis, selectionY->getSelectedRegions().first());
+            }else{
+                zoomTo(Qt::YAxis, selectionY->getSelectedRegions().at(1));
+            }
+        }
+    }else{
+        multZooming(2.0f);
+    }
+}
+
+void DotPlotWidget::zoomOut() {
+
+    multZooming(0.5f);
+}
+
+void DotPlotWidget::zoomReset() {
+
+    resetZooming();
+}
+
+
+// translate visible coords to the sequence coords (starts from 0)
+QPoint DotPlotWidget::sequenceCoords(const QPointF &c) const {
+
+    Q_ASSERT(sequenceX);
+    Q_ASSERT(sequenceY);
+
+    int xLen = sequenceX->getSequenceLen();
+    int yLen = sequenceY->getSequenceLen();
+
+    Q_ASSERT(w>0);
+    Q_ASSERT(h>0);
+
+    int innerX = (c.x() * xLen)/w;
+    int innerY = (c.y() * yLen)/h;
+
+    return QPoint(innerX, innerY);
+}
+
+// select sequences using sequence coords
+void DotPlotWidget::sequencesCoordsSelection(const QPointF &start, const QPointF &end) {
+
+    float startX = start.x();
+    float startY = start.y();
+    float endX = end.x();
+    float endY = end.y();
+
+    if (endX < startX) {
+        float tmp = endX;
+        endX = startX;
+        startX = tmp;
+    }
+    if (endY < startY) {
+        float tmp = endY;
+        endY = startY;
+        startY = tmp;
+    }
+
+    Q_ASSERT(dnaView);
+    foreach (ADVSequenceWidget *w, dnaView->getSequenceWidgets()) {
+
+        Q_ASSERT(w);
+        foreach (ADVSequenceObjectContext *s, w->getSequenceContexts()) {
+            Q_ASSERT(s);
+
+            if ( ((int)(endX-startX) > 0) && (s == sequenceX)) {
+                s->getSequenceSelection()->clear();
+                s->getSequenceSelection()->addRegion(U2Region(startX, endX-startX));
+
+                w->centerPosition(startX);
+            }
+
+            if ( ((int)(endY-startY) > 0) && (s == sequenceY)) {
+                if(sequenceX != sequenceY){
+                    s->getSequenceSelection()->clear();
+                }
+                s->getSequenceSelection()->addRegion(U2Region(startY, endY-startY));
+
+                w->centerPosition(startY);
+            }
+        }
+    }
+
+    update();
+}
+
+// select sequences with mouse
+void DotPlotWidget::sequencesMouseSelection(const QPointF &zoomedA, const QPointF &zoomedB) {
+
+    if (!(sequenceX || sequenceY)) {
+        return;
+    }
+
+    if (zoomedA == zoomedB) {
+        selectionX = NULL;
+        selectionY = NULL;
+
+        return;
+    }
+
+    QPointF a(unshiftedUnzoomed(zoomedA));
+    QPointF b(unshiftedUnzoomed(zoomedB));
+
+    QPointF start = sequenceCoords(a);
+    QPointF end = sequenceCoords(b);
+
+    sequencesCoordsSelection(start, end);
+}
+
+// get mouse coords, select the nearest found repeat
+void DotPlotWidget::selectNearestRepeat(const QPointF &p) {
+
+    QPoint seqCoords = sequenceCoords(unshiftedUnzoomed(p));
+
+    nearestRepeat = findNearestRepeat(seqCoords);
+    if (!nearestRepeat) {
+        return;
+    }
+
+    nearestSelecting = true;
+    // There is only one sequence view, can't select two places there
+    if (sequenceX != sequenceY) {
+        sequencesCoordsSelection(
+            QPoint(nearestRepeat->x, nearestRepeat->y),
+            QPoint(nearestRepeat->x + nearestRepeat->len, nearestRepeat->y + nearestRepeat->len)
+        );
+    }
+
+    foreach (ADVSequenceWidget *w, dnaView->getSequenceWidgets()) {
+        foreach (ADVSequenceObjectContext *s, w->getSequenceContexts()) {
+            if (s == sequenceX) {
+                w->centerPosition(nearestRepeat->x);
+            }
+        }
+    }
+    nearestSelecting = false;
+}
+
+// get sequence coords, return sequence coords of the nearest repeat
+const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
+
+    const DotPlotResults* need = NULL;
+    float minD = 0;
+
+    float x = p.x();
+    float y = p.y();
+
+    Q_ASSERT(sequenceX);
+    Q_ASSERT(sequenceY);
+
+    if ((sequenceX->getSequenceLen() <= 0) || (sequenceY->getSequenceLen() <= 0)) {
+        return NULL;
+    }
+
+    float ratioX = w/(float)sequenceX->getSequenceLen();
+    float ratioY = h/(float)sequenceY->getSequenceLen();
+
+    ratioX*=ratioX;
+    ratioY*=ratioY;
+
+    bool first = true;
+
+    Q_ASSERT (dotPlotDirectResultsListener);
+    foreach (const DotPlotResults &r, *dotPlotDirectResultsListener->dotPlotList) {
+
+        float halfLen = r.len/(float)2;
+        float midX = r.x + halfLen;
+        float midY = r.y + halfLen;
+
+        // square of the distance between two points. ratioX and ratioY are squared
+        float d = (x-midX)*(x-midX)*ratioX + (y-midY)*(y-midY)*ratioY;
+
+        if (d < minD || first) {
+            minD = d;
+            need = &r;
+
+            nearestInverted = false;
+        }
+
+        first = false;
+    }
+
+    Q_ASSERT (dotPlotInverseResultsListener);
+    foreach (const DotPlotResults &r, *dotPlotInverseResultsListener->dotPlotList) {
+
+        float halfLen = r.len/(float)2;
+        float midX = r.x + halfLen;
+        float midY = r.y + halfLen;
+
+        // square of the distance between two points. ratioX and ratioY are squared
+        float d = (x-midX)*(x-midX)*ratioX + (y-midY)*(y-midY)*ratioY;
+
+        if (d < minD || first) {
+            minD = d;
+            need = &r;
+
+            nearestInverted = true;
+        }
+
+        first = false;
+    }
+    return need;
+}
+
+// get mouse coords, return coords in the area without border
+QPoint DotPlotWidget::toInnerCoords(int x, int y) const {
+
+    x = x - textSpace;
+    y = y - textSpace;
+
+    if (x > w) {
+        x = w;
+    }
+    if (y > h) {
+        y = h;
+    }
+
+    if (x < 0) {
+        x = 0;
+    }
+    if (y < 0) {
+        y = 0;
+    }
+
+    return QPoint(x, y);
+}
+
+QPoint DotPlotWidget::toInnerCoords(const QPoint &p) const {
+
+    return toInnerCoords(p.x(), p.y());
+}
+
+void DotPlotWidget::paintEvent(QPaintEvent *e) {
+
+    QWidget::paintEvent(e);
+
+    QPainter p(this);
+    drawAll(p);
+}
+
+void DotPlotWidget::resizeEvent(QResizeEvent *e) {
+
+    Q_ASSERT(e);
+
+    if (e->oldSize() == e->size()) {
+        return;
+    }
+
+    int oldw = w;
+    int oldh = h;
+
+    w = e->size().width() - 2*textSpace;
+    h = e->size().height() - 2*textSpace;
+
+    // update shift when resizing
+    if (pixMap && (oldw > 0) && (oldh > 0)) {
+        shiftX *= w/(float)(oldw);
+        shiftY *= h/(float)(oldh);
+    }
+
+    delete miniMap;
+    miniMap = new DotPlotMiniMap(w, h, 10);
+
+    pixMapUpdateNeeded = true;
+}
+
+// zoom in/zoom out
+void DotPlotWidget::wheelEvent(QWheelEvent *e) {
+
+    Q_ASSERT(e);
+    setFocus();
+    if (dotPlotTask) {
+        return;
+    }
+
+    QPointF oldCoords = toInnerCoords(e->pos().x(), e->pos().y());
+
+    QPointF oldzoom = zoom;
+    QPointF newzoom = zoom*(1 + e->delta()/(float)1000);
+
+    // cursor coords excluding dotplot border
+    calcZooming(oldzoom, newzoom, toInnerCoords(e->pos()));
+    update();
+}
+
+QString DotPlotWidget::makeToolTipText() const{
+    if(!nearestRepeat){
+        return "";
+    }
+
+    if(!sequenceX || !sequenceY){
+        return "";
+    }
+
+    int shownLen = 20;
+    QString text ="HIT:  len: ";
+    QString upLineSeq ="";
+    QString middleLineSeq = "";
+    QString downLineSeq = "";
+    const QByteArray &seqX = sequenceX->getSequenceData();
+    const QByteArray &seqY = sequenceY->getSequenceData();
+    int match = 0;
+
+    for(int i = 0; i < nearestRepeat->len; i++){
+        if(seqX.at(nearestRepeat->x +i) == seqY.at(nearestRepeat->y +i)){
+            match++;
+        }
+    }
+
+    text.append(QString("%1").arg(nearestRepeat->len));
+    text.append(", match: ");
+
+    text.append(QString("%1").arg(match));
+    text.append(QString(", %: %1").arg((float)(match/(float)nearestRepeat->len)*100));
+
+    text.append("\nS1:     ");
+
+    for(int i = 0; i < nearestRepeat->len && i<shownLen; i++){
+        if(seqX.at(nearestRepeat->x +i) == seqY.at(nearestRepeat->y +i)){
+            middleLineSeq.append(seqX.at(nearestRepeat->x +i));
+        }else{
+            middleLineSeq.append("*");
+        }
+        upLineSeq.append(seqX.at(nearestRepeat->x +i));
+        downLineSeq.append(seqY.at(nearestRepeat->y +i));
+    }
+
+    text.append(upLineSeq);
+    text.append("...\nCons: ");
+
+    text.append(middleLineSeq);
+    text.append("...\nS2:     ");
+    text.append(downLineSeq);
+    text.append("...");
+
+    return text;
+}
+
+void DotPlotWidget::resetZooming() {
+
+    calcZooming(zoom, QPointF(1.0f, 1.0f), QPoint(w/2, h/2));
+}
+
+// user clicked on the minimap
+void DotPlotWidget::miniMapShift() {
+
+    Q_ASSERT(miniMap);
+
+    QPointF fromMiniMap = miniMap->fromMiniMap(clickedSecond, zoom);
+    shiftX = -fromMiniMap.x();
+    shiftY = -fromMiniMap.y();
+    checkShift();
+    pixMapUpdateNeeded = true;
+    update();
+}
+
+void DotPlotWidget::mousePressEvent(QMouseEvent *e) {
+    setFocus();
+
+    Q_ASSERT(e);
+
+    QWidget::mousePressEvent(e);
+
+    if (dotPlotTask) {
+        return;
+    }
+
+    clickedFirst = toInnerCoords(e->pos().x(), e->pos().y());
+    clickedSecond = clickedFirst;
+
+    // selecting sequences or using minimap
+    if (e->button() == Qt::LeftButton) {
+
+        if (miniMap && miniMap->getBoundary().contains(clickedFirst)) { // click on the miniMap
+            miniMapLooking = true;
+            miniMapShift();
+
+            return;
+        }
+
+        if(e->modifiers() & Qt::ControlModifier){
+            clearRepeatSelection();
+        }else if(e->modifiers() & Qt::ShiftModifier){
+            shifting = true;
+            cursor.setShape(Qt::OpenHandCursor);
+            setCursor(cursor);
+        }else if(selActive){
+            selecting = true;
+        }else{
+            shifting = true;
+        }
+    }
+    // shifting dotplot view
+    if (e->button() == Qt::MidButton) {
+        shifting = true;
+    }
+    if(timer->isActive()){
+        timer->stop();
+    }
+}
+
+// return real coords on the dotplot
+QPointF DotPlotWidget::unshiftedUnzoomed(const QPointF &p) const {
+
+    //Q_ASSERT(zoom.manhattanLength()>0);
+
+    return QPointF((p.x() - shiftX)/zoom.x(), (p.y() - shiftY)/zoom.y());
+}
+
+void DotPlotWidget::mouseMoveEvent(QMouseEvent *e) {
+
+    Q_ASSERT(e);
+
+    QWidget::mouseMoveEvent(e);
+
+
+    if (dotPlotTask) {
+        return;
+    }
+
+    clickedSecond = toInnerCoords(e->pos().x(), e->pos().y());
+
+    if (miniMapLooking) {
+        miniMapShift();
+
+        return;
+    }
+
+    QToolTip::showText(e->globalPos(), "");
+
+    if (selecting) {
+        if ((clickedFirst.x() != clickedSecond.x()) && (clickedFirst.y() != clickedSecond.y())) {
+            sequencesMouseSelection(clickedFirst, clickedSecond);
+        }
+    }
+
+    if (shifting) {
+        shiftX += (clickedSecond.x() - clickedFirst.x());
+        shiftY += (clickedSecond.y() - clickedFirst.y());
+
+        clickedFirst = toInnerCoords(e->pos().x(), e->pos().y());
+        checkShift();
+        pixMapUpdateNeeded = true;
+        update();
+    }
+    if(timer->isActive()){
+        timer->stop();
+    }
+
+}
+void DotPlotWidget::sequenceClearSelection(){
+    Q_ASSERT(dnaView);
+    foreach (ADVSequenceWidget *w, dnaView->getSequenceWidgets()) {
+        Q_ASSERT(w);
+        foreach (ADVSequenceObjectContext *s, w->getSequenceContexts()) {
+            Q_ASSERT(s);
+            s->getSequenceSelection()->clear();
+        }
+    }
+}
+
+QString DotPlotWidget::getXSequenceName() {
+
+    if (!sequenceX) {
+        return "";
+    }
+
+    return sequenceX->getSequenceObject()->getGObjectName();
+}
+
+QString DotPlotWidget::getYSequenceName() {
+
+    if (!sequenceY) {
+        return "";
+    }
+
+    return sequenceY->getSequenceObject()->getGObjectName();
+}
+
+
+void DotPlotWidget::mouseReleaseEvent(QMouseEvent *e) {
+    setFocus();
+    Q_ASSERT(e);
+
+    if (dotPlotTask) {
+        return;
+    }
+
+    QWidget::mouseReleaseEvent(e);
+
+    if (e->button() == Qt::LeftButton) {
+        if(!shifting){
+            selecting = false;
+            miniMapLooking = false;
+            if (clickedFirst == clickedSecond && !(e->modifiers() & Qt::ControlModifier)) {
+                if(!timer->isActive()){
+                     timer->start();
+                }
+                selectNearestRepeat(clickedFirst);
+                sequenceClearSelection();
+            }
+        }
+        shifting = false;
+        updateCursor();
+    }
+
+    if (e->button() == Qt::MidButton) {
+        shifting = false;
+    }
+
+    update();
+}
+
+
+bool DotPlotWidget::hasSelection() {
+
+    if (selectionX) {
+        foreach (const U2Region &lr, selectionX->getSelectedRegions()) {
+            if (lr.length>0) {
+                return true;
+            }
+        }
+    }
+
+    if (selectionY) {
+        foreach (const U2Region &lr, selectionY->getSelectedRegions()) {
+            if (lr.length>0) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool DotPlotWidget::canZoomIn(){
+    float seqLenX = sequenceX->getSequenceLen();
+    float seqLenY = sequenceY->getSequenceLen();
+
+    return ((zoom.x() < seqLenX) && (zoom.y() < seqLenY));
+}
+bool DotPlotWidget::canZoomOut(){
+    return ((zoom.x() > 1.0f) || (zoom.y() > 1.0f));
+}
+
+void DotPlotWidget::setSelActive(bool state){
+    selActive = state;
+    updateCursor();
+}
+
+void DotPlotWidget::focusInEvent(QFocusEvent* fe) {
+    QWidget::focusInEvent(fe);
+
+    emit si_dotPlotChanged(sequenceX, sequenceY, shiftX/w, shiftY/h, zoom);
+}
+void DotPlotWidget::focusOutEvent(QFocusEvent* fe){
+    QWidget::focusOutEvent(fe);
+
+    emit si_dotPlotChanged(sequenceX, sequenceY, shiftX/w, shiftY/h, zoom);
+}
+void DotPlotWidget::updateCursor(){
+    if(selActive){
+        cursor.setShape(Qt::ArrowCursor);
+    }else{
+        cursor.setShape(Qt::OpenHandCursor);
+    }
+    setCursor(cursor);
+}
+
+void DotPlotWidget::clearRepeatSelection(){
+    nearestRepeat = NULL; 
+    update();
+}
+} // namespace

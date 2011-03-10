@@ -1,0 +1,73 @@
+#ifndef _U2_BIOSTRUCT3D_MOLECULAR_SURFACE_H_
+#define _U2_BIOSTRUCT3D_MOLECULAR_SURFACE_H_
+
+#include <QtCore/QObject>
+#include <QtCore/QVector>
+#include <QtCore/QString>
+#include <memory>
+#include <limits>
+
+#include <U2Core/Task.h>
+#include <U2Core/BioStruct3D.h>
+
+#include "GeomUtils.h"
+
+namespace U2 {
+
+template<class T> inline T sqr(const T& x) { return x*x; }
+
+class U2ALGORITHM_EXPORT AtomConstants {
+    static const int NUM_ELEMENTS = 120; 
+    static double atomRadiusTable[NUM_ELEMENTS];
+public:
+    inline static double getAtomCovalentRadius(int atomicNumber);
+    static void init();
+};
+
+double AtomConstants::getAtomCovalentRadius( int atomicNumber ) {
+    Q_ASSERT(atomicNumber < NUM_ELEMENTS);
+    return atomRadiusTable[atomicNumber];
+}
+
+
+class U2ALGORITHM_EXPORT MolecularSurface {
+protected:
+    static const float TOLERANCE;
+public:
+    virtual void calculate(const QList<SharedAtom>& atoms, int& progress)=0;
+    virtual qint64 estimateMemoryUsage(int numberOfAtoms);
+    const QVector<Face> &getFaces()const;
+protected:
+    QVector<Face> faces;
+public:
+    static QList<SharedAtom> findAtomNeighbors(const SharedAtom& a, const QList<SharedAtom>& atoms);
+    static GeodesicSphere getAtomSurfaceDots(const SharedAtom& a, int detaillevel);
+    static bool vertexNeighboursOneOf(const Vector3D& v, const QList<SharedAtom>& atoms);
+};
+
+
+class U2ALGORITHM_EXPORT MolecularSurfaceCalcTask : public Task
+{
+    Q_OBJECT
+    MolecularSurface* molSurface;
+    QString typeName;
+    const QList<SharedAtom> atoms;
+public: 
+    MolecularSurfaceCalcTask(const QString& surfaceTypeName, const QList<SharedAtom>& atoms);
+    std::auto_ptr<MolecularSurface> getCalculatedSurface();
+    virtual void run();
+    virtual ReportResult report();
+};
+
+
+
+class U2ALGORITHM_EXPORT MolecularSurfaceFactory {
+public:
+    virtual MolecularSurface *createInstance()const=0;
+    virtual bool hasConstraints(const BioStruct3D&) const {  return false; }
+};
+
+} //namespace
+
+#endif //_U2_BIOSTRUCT3D_MOLECULAR_SURFACE_H_
+

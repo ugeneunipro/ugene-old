@@ -1,0 +1,88 @@
+#!UGENE_WORKFLOW
+#Find pattern in supplied sequence using Smith-Waterman algorithm
+
+workflow find-sw{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    ssearch {
+        type:ssearch;
+        name:"Smith-Waterman search";
+        algorithm:"Classic 2";
+        amino:false;
+        filter-strategy:filter-intersections;
+        gap-ext-score:-1;
+        gap-open-score:-10;
+        matrix:Auto;
+        min-score:90;
+        result-name:misc_feature;
+        strand:2;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->ssearch.in-sequence.sequence
+    ssearch.annotations->write-genbank.in-sequence.annotations
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:in;
+            ssearch.filter-strategy:filter;
+            ssearch.matrix:matrix;
+            ssearch.min-score:score;
+            ssearch.pattern:ptrn;
+            ssearch.result-name:name;
+            write-genbank.url-out:out;
+        }
+        help {
+            in:"Input sequence";
+            filter:"Result filtering strategy";
+            matrix:"Scoring matrix";
+            score:"The minimum score of the result";
+            ptrn:"A subsequence pattern to look for";
+            name:"Name of the result annotations marking found regions";
+            out:"Output file with annotations";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-750 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            ssearch {
+                tooltip:"Finds regions of similarity to the specified pattern in each input sequence (nucleotide or protein one). <p>Under the hood is the well-known Smith-Waterman algorithm for performing local sequence alignment.";
+                pos:"-570 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-300 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->ssearch.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            ssearch.out-annotations->write-genbank.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

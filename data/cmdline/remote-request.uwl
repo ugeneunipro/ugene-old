@@ -1,0 +1,85 @@
+#!UGENE_WORKFLOW
+#Finds annotations for DNA sequence in remote database: NCBI BLSAT or CDD. Result annotations store to file in genbank format. Source data can be of any format containing sequences or alignments
+
+workflow remote-request{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    blast-ncbi {
+        type:blast-ncbi;
+        name:"Request to remote database";
+        db:ncbi-blastn;
+        e-val:10;
+        max-hits:10;
+        short-sequence:false;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->blast-ncbi.in-sequence.sequence
+    blast-ncbi.annotations->write-genbank.in-sequence.annotations
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:in;
+            blast-ncbi.blast-output:blast-output;
+            blast-ncbi.db:db;
+            blast-ncbi.e-val:eval;
+            blast-ncbi.max-hits:hits;
+            blast-ncbi.result-name:name;
+            blast-ncbi.short-sequence:short;
+            write-genbank.url-out:out;
+        }
+        help {
+            in:"Input sequence";
+            blast-output:"Location of BLAST output file";
+            db:"The database to search through";
+            eval:"The statistical significance threshold of reporting matches against the database sequences";
+            hits:"Maximum number of hits";
+            name:"Name of the result annotations";
+            short:"Optimize search for short sequences";
+            out:"Output file with annotations";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-780 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            blast-ncbi {
+                tooltip:"Finds annotations for DNA sequence in remote database";
+                pos:"-600 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-360 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->blast-ncbi.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            blast-ncbi.out-annotations->write-genbank.in-sequence {
+                text-pos:"-33 -24";
+            }
+        }
+    }
+}
+

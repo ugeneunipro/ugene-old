@@ -1,0 +1,81 @@
+#!UGENE_WORKFLOW
+#Reads an HMM from a file and searches input sequences for significantly similar matches, saves found signals to a file.You can specify several input files for both HMM and sequences, the schema will process Cartesian product of inputs. That is, each sequence will be searched with all specified HMMs in turn.To specify task parameters, select it and edit interesting fields in table "Parameters" of Property Inspector panel.Schedule the workflow for execution by pressing CTRL+R shortcut. You can watch its" progress in Task View of UGENE.
+
+workflow "Search sequences with profile HMM"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    hmm2-read-profile {
+        type:hmm2-read-profile;
+        name:"Read HMM profile";
+    }
+    hmm2-search {
+        type:hmm2-search;
+        name:"HMM search";
+        e-val:-1;
+        result-name:hmm_signal;
+        score:-1000000000;
+        seqs-num:1;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    hmm2-read-profile.hmm2-profile->hmm2-search.in-hmm2.hmm2-profile
+    read-sequence.sequence->hmm2-search.in-sequence.sequence
+    hmm2-search.annotations->write-genbank.in-sequence.annotations
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-750 -675";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            hmm2-read-profile {
+                tooltip:"Reads HMM profiles from file(s). The files can be local or Internet URLs.";
+                pos:"-750 -480";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-hmm2.angle:360;
+            }
+            hmm2-search {
+                tooltip:"Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence";
+                pos:"-585 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-hmm2.angle:230.042;
+                in-sequence.angle:141.911;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-315 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->hmm2-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            hmm2-read-profile.out-hmm2->hmm2-search.in-hmm2 {
+                text-pos:"-32 -24";
+            }
+            hmm2-search.out-annotations->write-genbank.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

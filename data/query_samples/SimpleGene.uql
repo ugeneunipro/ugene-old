@@ -1,0 +1,28 @@
+#!UGENE_QUERY
+#To launch this schema choose SITECON profile for TFBS element
+
+query SimpleGene {
+
+
+    TATA-box { type: search; key: tata-box; pattern: TATA; } 
+    ORF { type: orf; min-length: 1000; } 
+    TFBS {
+         type: sitecon;
+         err1: 0.2;
+         err2: 0.001123;
+         key: tfbs;
+         score: 88;
+    }
+
+    TATA-box.unit--ORF.unit { type: distance; distance_type: end-to-start; min: 0; max: 150; }
+    TFBS.unit--ORF.unit { type: distance; distance_type: end-to-start; min: 0; max: 150; }
+
+    .meta{
+        visual{
+                ORF.unit { geometry: 428,29,278,120,120; } 
+                TATA-box.unit { geometry: 29,29,165,80,80; } 
+                TFBS.unit { geometry: 222,29,152,120,120; } 
+        }
+        order{ ORF;TATA-box;TFBS; }
+    }
+}

@@ -1,0 +1,158 @@
+#!UGENE_WORKFLOW
+#Predicts binding sites for number of transcription factors of interest using SITECON algorithm.The present workflow sample is designed for simultaneous recognition of binding sites for 3 different transcription factor types, you can expand it for recognition of any desired number of transription factor types.SITECON - is a program pakage for recognition of potential transcription factor binding sites basing on the data about conservative conformational and physicochemical properties revealed on the basis of the binding sites sets analysis.Citing SITECON        Please cite:Oshchepkov D.Y., Vityaev E.E., Grigorovich D.A., Ignatieva E.V., Khlebodarova T.M.SITECON:a tool for detecting conservative conformational and physicochemicalproperties in transcription factor binding site alignments and for siterecognition. // Nucleic Acids Res. 2004 Jul 1;32(Web Server issue):W208-12.
+
+workflow "Search for transcription factor binding sites ( TFBS) in genomic sequences"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    sitecon-search {
+        type:sitecon-search;
+        name:"Search for TFBS with SITECON";
+        err1:0;
+        err2:0.001;
+        min-score:85;
+        result-name:misc_feature;
+        strand:0;
+    }
+    sitecon-search2 {
+        type:sitecon-search;
+        name:"Search for TFBS with SITECON 2";
+        err1:0;
+        err2:0.001;
+        min-score:85;
+        result-name:misc_feature;
+        strand:0;
+    }
+    sitecon-search3 {
+        type:sitecon-search;
+        name:"Search for TFBS with SITECON 3";
+        err1:0;
+        err2:0.001;
+        min-score:85;
+        result-name:misc_feature;
+        strand:0;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+    sitecon-read {
+        type:sitecon-read;
+        name:"Read SITECON model";
+    }
+    sitecon-read2 {
+        type:sitecon-read;
+        name:"Read SITECON model 2";
+    }
+    sitecon-read3 {
+        type:sitecon-read;
+        name:"Read SITECON model 3";
+    }
+
+    read-sequence.sequence->sitecon-search.in-sequence.sequence
+    sitecon-read.sitecon-model->sitecon-search.in-sitecon.sitecon-model
+    read-sequence.sequence->sitecon-search2.in-sequence.sequence
+    sitecon-read2.sitecon-model->sitecon-search2.in-sitecon.sitecon-model
+    read-sequence.sequence->sitecon-search3.in-sequence.sequence
+    sitecon-read3.sitecon-model->sitecon-search3.in-sitecon.sitecon-model
+    sitecon-search3.annotations->write-genbank.in-sequence.annotations
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    sitecon-search.annotations->write-genbank.in-sequence.annotations
+    sitecon-search2.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-795 -585";
+                style:simple;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            sitecon-search {
+                tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
+                pos:"-630 -585";
+                style:simple;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:183.18;
+                in-sitecon.angle:273.814;
+                out-annotations.angle:360;
+            }
+            sitecon-search2 {
+                tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
+                pos:"-510 -585";
+                style:simple;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:183.576;
+                in-sitecon.angle:273.576;
+                out-annotations.angle:360;
+            }
+            sitecon-search3 {
+                tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
+                pos:"-390 -585";
+                style:simple;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:178.21;
+                in-sitecon.angle:271.364;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-240 -585";
+                style:simple;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->sitecon-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            sitecon-search.out-annotations->sitecon-search2.in-sequence {
+                text-pos:"-45 -37";
+            }
+            sitecon-search2.out-annotations->sitecon-search3.in-sequence {
+                text-pos:"-45 -37";
+            }
+            sitecon-read {
+                tooltip:"Reads SITECON profiles from file(s). The files can be local or Internet URLs.";
+                pos:"-630 -465";
+                style:simple;
+                bg-color-ext:"0 128 128 64";
+                out-sitecon.angle:88.727;
+            }
+            sitecon-read2 {
+                tooltip:"Reads SITECON profiles from file(s). The files can be local or Internet URLs.";
+                pos:"-510 -465";
+                style:simple;
+                bg-color-ext:"0 128 128 64";
+                out-sitecon.angle:85.486;
+            }
+            sitecon-read3 {
+                tooltip:"Reads SITECON profiles from file(s). The files can be local or Internet URLs.";
+                pos:"-390 -465";
+                style:simple;
+                bg-color-ext:"0 128 128 64";
+                out-sitecon.angle:90;
+            }
+            sitecon-read.out-sitecon->sitecon-search.in-sitecon {
+                text-pos:"-37 -24";
+            }
+            sitecon-read2.out-sitecon->sitecon-search2.in-sitecon {
+                text-pos:"-37 -24";
+            }
+            sitecon-read3.out-sitecon->sitecon-search3.in-sitecon {
+                text-pos:"-37 -24";
+            }
+            sitecon-search3.out-annotations->write-genbank.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

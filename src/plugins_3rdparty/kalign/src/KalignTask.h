@@ -1,0 +1,147 @@
+#ifndef _U2_KALIGN_TASK_H_
+#define _U2_KALIGN_TASK_H_
+
+#include <QtCore/QPointer>
+#include <U2Core/Task.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/TLSTask.h>
+#include <U2Lang/RunSchemaForTask.h>
+#include <U2Algorithm/MSAAlignTask.h>
+
+#define KALIGN_CONTEXT_ID "kalign"
+
+struct kalign_context;
+
+namespace U2 {
+
+class StateLock;
+class MAlignmentObject;
+class LoadDocumentTask;
+
+class KalignContext : public TLSContext {
+public:
+    KalignContext(kalign_context* _d) : TLSContext(KALIGN_CONTEXT_ID), d(_d) { }
+    kalign_context* d;
+};
+
+class KalignTaskSettings {
+public:
+    KalignTaskSettings() {reset();}
+    void reset();
+    
+    float   gapOpenPenalty;
+    float   gapExtenstionPenalty;
+    float   termGapPenalty;
+    float   secret;
+    QString inputFilePath;
+    //used only for KalignTaskOp_DoAlign
+    //bool            alignRegion;
+    //U2Region         regionToAlign;
+};
+
+class KalignTask : public TLSTask {
+    Q_OBJECT
+public:
+    KalignTask(const MAlignment& ma, const KalignTaskSettings& config);
+    
+    void _run();
+    void doAlign();
+    ReportResult report();
+    
+    KalignTaskSettings          config;
+    MAlignment                  inputMA;
+    MAlignment                  resultMA;
+    
+    MAlignment                  inputSubMA;
+    MAlignment                  resultSubMA;
+    
+protected:
+    TLSContext* createContextInstance();
+};
+
+//locks MAlignment object and propagate KalignTask results to it
+class  KalignGObjectTask : public Task {
+    Q_OBJECT
+public:
+    KalignGObjectTask(MAlignmentObject* obj, const KalignTaskSettings& config);
+    ~KalignGObjectTask();     
+
+    virtual void prepare();
+    ReportResult report();
+
+    QPointer<MAlignmentObject>  obj;
+    StateLock*                  lock;
+    KalignTask*                 kalignTask;
+    KalignTaskSettings          config;
+};
+
+/**
+* runs kalign from cmdline schema in separate process
+* using data/schemas_private/kalign.uwl schema
+* schema has following aliases:
+* in - input file with alignment (will be set in WorkflowRunSchemaForTask)
+* out - output file with result (will be set in WorkflowRunSchemaForTask)
+* format - output file format (will be set in WorkflowRunSchemaForTask)
+* bonus-score - bonus score of kalign task
+* gap-ext-penalty - kalign parameter
+* gap-open-penalty - kalign parameter
+* gap-terminal-penalty - kalign parameter
+*/
+class KalignGObjectRunFromSchemaTask : public Task, public WorkflowRunSchemaForTaskCallback {
+    Q_OBJECT
+public:
+    KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & config);
+    ~KalignGObjectRunFromSchemaTask();
+    
+    // from Task
+    virtual void prepare();
+    virtual ReportResult report();
+
+    // from WorkflowRunSchemaForTaskCallback
+    virtual QList<GObject*> createInputData() const;
+    virtual DocumentFormatId getInputFileFormat()const;
+    virtual QVariantMap getSchemaData() const;
+    virtual DocumentFormatId getOutputFileFormat() const;
+
+private:
+    QPointer<MAlignmentObject> obj;
+    StateLock * lock;
+    KalignTaskSettings config;
+    WorkflowRunSchemaForTask * runSchemaTask;
+    QString objName;
+};
+
+// FIXME: not used!
+class KalignWithExtFileSpecifySupportTask : public Task {
+public:
+    KalignWithExtFileSpecifySupportTask(const KalignTaskSettings& config);
+    void prepare();
+    Task::ReportResult report();    
+
+    QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    MAlignmentObject*   mAObject;
+    Document*           currentDocument;
+
+    SaveDocumentTask*   saveDocumentTask;
+    LoadDocumentTask*   loadDocumentTask;
+    KalignGObjectTask*  kalignGObjectTask;
+    KalignTaskSettings  config;
+};
+
+class KalignMainTask : public MSAAlignTask {
+    Q_OBJECT
+    MSA_ALIGN_TASK_FACTORY(KalignMainTask)
+public:
+    static const QString OPTION_GAP_OPEN_PENALTY; 
+    static const QString OPTION_GAP_EXTENSION_PENALTY;
+    static const QString OPTION_TERMINAL_GAP_PENALTY; 
+    static const QString OPTION_BONUS_SCORE;
+
+    KalignMainTask(MAlignmentObject* obj, const MSAAlignTaskSettings & config);
+};
+
+}//namespace
+
+#endif

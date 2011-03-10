@@ -1,0 +1,129 @@
+#include "PanViewRows.h"
+
+#include <U2Core/AnnotationTableObject.h>
+#include <QtCore/QVarLengthArray>
+
+namespace U2 {
+
+PVRowsManager::~PVRowsManager() {
+    clear();
+}
+
+void PVRowsManager::clear() {
+    qDeleteAll(rows);
+    rows.clear();
+    rowByAnnotation.clear();
+}
+
+typedef QVector<U2Region>::const_iterator LRIter;
+
+bool PVRowData::fitToRow(const QVector<U2Region>& location) {
+    //assume locations are always in ascending order
+    //usually annotations come in sorted by location 
+    //first check the most frequent way
+    {
+        const U2Region& l = location.first();
+        const U2Region& r = ranges.last();
+        if (l.startPos > r.endPos()) {
+            ranges << location;
+            return true;
+        } else if (l.startPos >= r.startPos || l.endPos() >= r.startPos) {
+            //got intersection
+            return false;
+        }
+    }
+    //bad luck, full search required
+    QVarLengthArray<int,16> pos;
+    LRIter zero = ranges.constBegin();
+    LRIter end = ranges.constEnd();
+    foreach(const U2Region& l, location) {
+        LRIter it = qLowerBound(ranges, l);
+        if (it != end && 
+                (it->startPos <= l.endPos() || (it != zero && (it-1)->endPos() >= l.startPos))
+           ) {
+            //got intersection
+            return false;
+        }
+        pos.append(it-zero);
+    }
+    //ok this feature can be added to row;
+    //keep the ranges in ascending order
+    for(int i = location.size()-1; i>=0; i--) {
+        ranges.insert(pos[i], location.at(i));
+    }
+    
+    return true;
+}
+
+inline bool compare_rows(PVRowData* x, PVRowData* y) { 
+    return  x->key.compare(y->key) > 0;
+}    
+
+void PVRowsManager::addAnnotation(Annotation* a, const QString& key) {
+    assert(!rowByAnnotation.contains(a));
+    QVector<U2Region> location = a->getRegions();
+    foreach(PVRowData* row, rows) {
+        if (row->key == key && row->fitToRow(location)) {
+            row->annotations.append(a);
+            rowByAnnotation[a] = row;
+            return;
+        }
+    }
+    PVRowData* row = new PVRowData(key);
+    row->ranges << location;
+    row->annotations.append(a);
+
+    rowByAnnotation[a] = row;
+    rows.push_back(row);
+    qStableSort(rows.begin(), rows.end(), compare_rows);
+}
+
+void PVRowsManager::removeAnnotation(Annotation* a) {
+    PVRowData* row = rowByAnnotation.value(a, NULL);
+    assert(row != NULL);
+    rowByAnnotation.remove(a);
+    row->annotations.removeOne(a);
+    U2Region::removeAll(row->ranges, a->getRegions());
+    if (row->annotations.empty()) {
+        rows.removeOne(row);
+        delete row;
+    }
+}
+
+int PVRowsManager::getAnnotationRowIdx(Annotation* a) const {
+    PVRowData* row = rowByAnnotation.value(a, NULL);
+    assert(row != NULL);
+    return rows.indexOf(row);
+}
+
+const QString& PVRowsManager::getRowKey(int rowNum) const {
+    assert(rowNum >= 0 && rowNum < rows.size());
+    PVRowData* r = rows[rowNum];
+    return r->key;
+}
+
+int PVRowsManager::getNumAnnotationsInRow(int rowNum) const {
+    assert(rowNum >= 0 && rowNum < rows.size());
+    PVRowData* r = rows[rowNum];
+    return r->annotations.size();
+}
+
+
+bool PVRowsManager::contains(const QString& key) const {
+    foreach(PVRowData* r, rows) {
+        if (r->key == key) {
+            return true;
+        }
+    }
+    return false;
+}
+
+PVRowData* PVRowsManager::getRow( int row ) const
+{
+    if (row>= 0 && row<rows.size()) {
+        return rows.at(row);
+    }
+    return NULL;
+}
+
+} // namespace

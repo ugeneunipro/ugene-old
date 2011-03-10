@@ -1,0 +1,118 @@
+#!UGENE_WORKFLOW
+#Search for transcription factor binding sites (TFBS) with position frequency matrices
+
+workflow "Search frequency matrix"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    fmatrix-read {
+        type:fmatrix-read;
+        name:"Read frequency matrix";
+    }
+    fmatrix-to-wmatrix {
+        type:fmatrix-to-wmatrix;
+        name:"Convert frequency matrix";
+        matrix-type:false;
+        weight-algorithm:"Berg and von Hippel";
+    }
+    wmatrix-search {
+        type:wmatrix-search;
+        name:"Search for TFBS with weight matrix";
+        min-score:85;
+        result-name:misc_feature;
+        strand:0;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    fmatrix-read.fmatrix->fmatrix-to-wmatrix.in-fmatrix.fmatrix
+    read-sequence.sequence->wmatrix-search.in-sequence.sequence
+    fmatrix-to-wmatrix.wmatrix->wmatrix-search.in-wmatrix.wmatrix
+    wmatrix-search.annotations->write-genbank.in-sequence.annotations
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:seq;
+            fmatrix-read.url-in:matrix;
+            fmatrix-to-wmatrix.matrix-type:type;
+            fmatrix-to-wmatrix.weight-algorithm:algo;
+            wmatrix-search.min-score:score;
+            wmatrix-search.result-name:annotation-name;
+            wmatrix-search.strand:strand;
+            write-genbank.url-out:out;
+        }
+        help {
+            seq:"Input sequence";
+            matrix:"Input frequency matrix";
+            type:"Matrix type";
+            algo:"Weight algorithm";
+            score:"Minimum score to detect transcription factor binding site";
+            annotation-name:"Annotation name for marking found regions";
+            strand:"Search strand";
+            out:"Output file with annotations";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-780 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            fmatrix-read {
+                tooltip:"Reads frequency matrices from file(s). The files can be local or Internet URLs.";
+                pos:"-750 -435";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-fmatrix.angle:360;
+            }
+            fmatrix-to-wmatrix {
+                tooltip:"Converts frequency matrix to weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.";
+                pos:"-540 -435";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-fmatrix.angle:180;
+                out-wmatrix.angle:76.6075;
+            }
+            wmatrix-search {
+                tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified weight matrices. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
+                pos:"-585 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:150;
+                in-wmatrix.angle:291.389;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-285 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            fmatrix-read.out-fmatrix->fmatrix-to-wmatrix.in-fmatrix {
+                text-pos:"-45 -37";
+            }
+            fmatrix-to-wmatrix.out-wmatrix->wmatrix-search.in-wmatrix {
+                text-pos:"-37.5 -24";
+            }
+            read-sequence.out-sequence->wmatrix-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            wmatrix-search.out-annotations->write-genbank.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

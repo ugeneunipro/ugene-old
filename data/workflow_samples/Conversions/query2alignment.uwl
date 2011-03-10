@@ -1,0 +1,137 @@
+#!UGENE_WORKFLOW
+#This schema allows to analyze sequence with Query and save results as alignment of selected features.
+#To execute the schema do the following:
+#1) Select "Sequence Reader" task and specify source file at "URL" field in the Property Editor.
+#2) Select "Annotate with UQL" task and specify the URL of the UQL schema file.
+#3) Select "Filter annotations by name" task and specify the name of features to be joined into alignment.
+#4) Select "Join sequences into alignment" task and specify the URL of the result file.
+#
+
+workflow "Convert UQL schema results to alignment" {
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    query {
+        type:query;
+        name:"Annotate with UQL";
+        merge:false;
+        offset:0;
+    }
+    extract-annotated-sequence {
+        type:extract-annotated-sequence;
+        name:"Get sequences by annotations";
+        complement:true;
+        extend-left:0;
+        extend-right:0;
+        merge-gap-length:1;
+        translate:false;
+    }
+    sequences-to-msa {
+        type:sequences-to-msa;
+        name:"Join sequences into alignment";
+    }
+    write-msa {
+        type:write-msa;
+        name:"Write alignment";
+        document-format:clustal;
+        write-mode:2;
+    }
+    filter-annotations {
+        type:filter-annotations;
+        name:"Filter annotations by name";
+        accept-or-filter:true;
+    }
+
+    read-sequence.sequence->query.in-sequence.sequence
+    filter-annotations.annotations->extract-annotated-sequence.in-sequence.annotations
+    read-sequence.sequence->extract-annotated-sequence.in-sequence.sequence
+    extract-annotated-sequence.sequence->sequences-to-msa.in-sequence.sequence
+    sequences-to-msa.msa->write-msa.in-msa.msa
+    query.annotations->filter-annotations.in-annotations.annotations
+
+    .iteration "Default iteration"{
+        id:11;
+
+        query {
+            merge:false;
+        }
+    }
+    .meta {
+        visual {
+            read-sequence {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-765 -795";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            query {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Annotate with UQL</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Analyze each nucleotide sequence <span style=' text-decoration: underline;'>from Read sequence</span> with <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
+                tooltip:"Analyzes a nucleotide sequence using different algorithms                      (Repeat finder, ORF finder, etc.) imposing constraints                      on the positional relationship of the results.";
+                pos:"-615 -795";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 75 91";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
+            read-sequence.out-sequence->query.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            extract-annotated-sequence {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Get sequences by annotations</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Extract each annotated sequence region from <span style=' text-decoration: underline;'>Read sequence</span> make it <span style=' text-decoration: underline;'>reverse-complement</span> if annotation is located on complement strand.</p></body></html>";
+                tooltip:"Creates sequences from annotated regions of input sequence";
+                pos:"-270 -795";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 116 105";
+                in-sequence.angle:183.18;
+                out-sequence.angle:294.642;
+            }
+            sequences-to-msa {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Join sequences into alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Creates multiple sequence alignment from supplied sequences.</p></body></html>";
+                tooltip:"Creates multiple sequence alignment from sequences.";
+                pos:"-255 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:45;
+                out-msa.angle:291.49;
+            }
+            extract-annotated-sequence.out-sequence->sequences-to-msa.in-sequence {
+                text-pos:"-45 -37";
+            }
+            write-msa {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all MSAs from <span style=' text-decoration: underline;'>Join sequences into alignment</span> to <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
+                tooltip:"Writes all supplied alignments to file(s) in selected format";
+                pos:"-240 -390";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:73.0725;
+            }
+            sequences-to-msa.out-msa->write-msa.in-msa {
+                text-pos:"-43.5 -24";
+            }
+            filter-annotations {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Filter annotations by name</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Filters annotations by name.</p></body></html>";
+                tooltip:"Filters annotations by name";
+                pos:"-435 -795";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-annotations.angle:180;
+                out-annotations.angle:360;
+            }
+            query.out-annotations->filter-annotations.in-annotations {
+                text-pos:"-45 -37";
+            }
+            filter-annotations.out-annotations->extract-annotated-sequence.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

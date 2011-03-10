@@ -1,0 +1,69 @@
+#!UGENE_WORKFLOW
+#This schema filters sequences with quality >= than parameter "quality" and writes result in file in FASTQ format
+
+workflow "Quality filter"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    write-fastq {
+        type:write-fastq;
+        name:"Write FASTQ";
+        accumulate:true;
+        write-mode:2;
+    }
+    Script-Quality-filter-example {
+        type:"Script-Quality filter example";
+        name:"Quality filter example";
+        script {
+var qual;
+
+if (hasQuality(in_sequence)) {
+    qual = getMinimumQuality(in_sequence);
+    if(qual >= quality) {
+        out_sequence = in_sequence;
+    }
+}
+        };
+    }
+
+    Script-Quality-filter-example.sequence->write-fastq.in-sequence.sequence
+    read-sequence.sequence->Script-Quality-filter-example.in.sequence
+
+    .meta {
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-780 -600";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-fastq {
+                tooltip:"Writes all supplied sequences to file(s) in FASTQ format.";
+                pos:"-330 -600";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            Script-Quality-filter-example {
+                tooltip:"Filter's sequences for quality";
+                pos:"-600 -600";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in.angle:180;
+                out.angle:360;
+            }
+            read-sequence.out-sequence->Script-Quality-filter-example.in {
+                text-pos:"-27.5 -24";
+            }
+            Script-Quality-filter-example.out->write-fastq.in-sequence {
+                text-pos:"-32.5 -24";
+            }
+        }
+    }
+}
+

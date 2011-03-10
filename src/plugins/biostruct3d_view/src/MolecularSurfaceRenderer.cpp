@@ -1,0 +1,70 @@
+#include "MolecularSurfaceRenderer.h"
+#include <U2Algorithm/MolecularSurface.h>
+#include <QtOpenGL>
+
+namespace U2 {
+
+const QString DotsRenderer::ID(QObject::tr("Dots"));
+const QString ConvexMapRenderer::ID(QObject::tr("ConvexMap"));
+
+#define REGISTER_FACTORY(c) \
+    map.insert(c::ID, new c::Factory)
+
+QMap<QString,MolecularSurfaceRendererFactory*> MolecularSurfaceRendererFactory::createFactories()
+{
+    QMap<QString,MolecularSurfaceRendererFactory*> map;
+    REGISTER_FACTORY(DotsRenderer);
+    REGISTER_FACTORY(ConvexMapRenderer);
+    return map;
+}
+
+MolecularSurfaceRenderer::MolecularSurfaceRenderer()
+{
+
+}
+
+void DotsRenderer::drawSurface( MolecularSurface& surface )
+{
+    glDisable(GL_LIGHTING);
+    glBegin(GL_POINTS);
+    glPointSize(1.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    foreach(const Face& face, surface.getFaces()) {
+        float vct[3][3] = {
+            {face.v[0].x,face.v[0].y,face.v[0].z},
+            {face.v[1].x,face.v[1].y,face.v[1].z},
+            {face.v[2].x,face.v[2].y,face.v[2].z},
+        };
+        glVertex3fv(vct[0]);
+        glVertex3fv(vct[1]);
+        glVertex3fv(vct[2]);
+
+/*        glVertex3f(face.v[0].x, face.v[0].y, face.v[0].z);
+        glVertex3f(face.v[1].x, face.v[1].y, face.v[1].z);
+        glVertex3f(face.v[2].x, face.v[2].y, face.v[2].z);
+        */
+    }
+    glEnd( );
+    glEnable(GL_LIGHTING);
+
+
+}
+
+void ConvexMapRenderer::drawSurface( MolecularSurface& surface )
+{
+    static GLfloat wall_mat[] = {1.f, 1.f, 1.f, 0.3f};
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wall_mat);
+
+    glBegin(GL_TRIANGLES);
+    foreach(const Face& face, surface.getFaces()) {
+        glNormal3f(face.n[0].x, face.n[0].y, face.n[0].z);
+        glVertex3f(face.v[0].x, face.v[0].y, face.v[0].z);
+        glNormal3f(face.n[1].x, face.n[1].y, face.n[1].z);
+        glVertex3f(face.v[1].x, face.v[1].y, face.v[1].z);
+        glNormal3f(face.n[2].x, face.n[2].y, face.n[2].z);
+        glVertex3f(face.v[2].x, face.v[2].y, face.v[2].z);
+    }
+    glEnd( );
+}
+
+} // namespace

@@ -1,0 +1,12 @@
+<!DOCTYPE GB2WORKFLOW>
+<Actor>
+ <Input-port>
+  <In-Slots Slot="seq"/>
+ </Input-port>
+ <Output-port>
+  <Out-Slots Slot="string"/>
+ </Output-port>
+ <Attributes/>
+ <Element-name Name="Dump sequence info"/>
+ <Element-description Description="For all incoming sequences, dump sequence name and sequence size to output"/>
+</Actor>

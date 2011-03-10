@@ -1,0 +1,55 @@
+#!UGENE_WORKFLOW
+#Converts sequence from one document format to another
+
+workflow convert-seq{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write sequence";
+        accumulate:true;
+        document-format:fasta;
+        write-mode:2;
+    }
+
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    read-sequence.sequence->write-sequence.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:in;
+            write-sequence.document-format:format;
+            write-sequence.url-out:out;
+        }
+        help {
+            in:"Input sequence";
+            format:"Document format of output sequence";
+            out:"Output sequence";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-795 -615";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                tooltip:"Writes all supplied alignments to file(s) in selected format";
+                pos:"-525 -615";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->write-sequence.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+        }
+    }
+}
+

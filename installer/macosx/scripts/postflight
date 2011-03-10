@@ -1,0 +1,19 @@
+#!/bin/bash
+
+export INSTALL_DIR="${2}/Applications/Unipro UGENE.app/Contents/MacOS"
+export STARTUP_SCRIPT="${INSTALL_DIR}/ugeneui.sh"
+
+echo "#!/bin/bash" > "${STARTUP_SCRIPT}"
+echo "export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:\"${INSTALL_DIR}\"" >> "${STARTUP_SCRIPT}"
+echo "\"${INSTALL_DIR}/ugeneui\"" >> "${STARTUP_SCRIPT}"
+
+chmod +x "${STARTUP_SCRIPT}"
+
+#creating launcher for console version of ugene
+export STARTUP_SCRIPT="${INSTALL_DIR}/ugene.sh"
+
+echo "#!/bin/bash" > "${STARTUP_SCRIPT}"
+echo "export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:\"${INSTALL_DIR}\"" >> "${STARTUP_SCRIPT}"
+echo "\"${INSTALL_DIR}/ugene\"" >> "${STARTUP_SCRIPT}"
+
+chmod +x "${STARTUP_SCRIPT}"

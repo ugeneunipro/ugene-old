@@ -1,0 +1,9 @@
+#link_ID|db_file_Link
+
+PDB Wiki|http://pdbwiki.org/index.php/%1
+
+RSCB PDB|http://www.pdb.org/pdb/explore/explore.do?structureId=%1
+
+PDBsum|http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=%1
+
+NCBI MMDB|http://www.ncbi.nlm.nih.gov/sites/entrez?db=structure&term=%1&submit=Go

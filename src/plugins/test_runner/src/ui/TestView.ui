@@ -1,0 +1,56 @@
+<ui version="4.0" >
+ <class>TestView</class>
+ <widget class="QWidget" name="TestView" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>771</width>
+    <height>329</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>utf_view_title</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <item>
+    <widget class="QSplitter" name="splitter" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="childrenCollapsible" >
+      <bool>false</bool>
+     </property>
+     <widget class="QTreeWidget" name="tree" >
+      <column>
+       <property name="text" >
+        <string>testColumn</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>stateColumn</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QWidget" name="layoutWidget" >
+      <layout class="QVBoxLayout" name="verticalLayout" >
+       <item>
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>info_label</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="contextInfoEdit" />
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,5 @@
+MA0260.1	10.1225649784196	che-1	Zinc-coordinating	; acc "Q966L8" ; collection "CORE" ; comment "-" ; family "BetaBetaAlpha-zinc finger" ; medline "17606643" ; species "6239" ; tax_group "nematodes" ; type "COMPILED" 
+MA0262.1	17.2157474927534	mab-3	Zinc-coordinating	; acc "O18214" ; collection "CORE" ; comment "-" ; family "DM" ; medline "9927589" ; species "6239" ; tax_group "nematodes" ; type "EMSA" 
+MA0264.1	12.5462910458534	ceh-22	Helix-Turn-Helix	; acc "P41936" ; collection "CORE" ; comment "NK-2 class; ortholog to Drosophila tinman and vertebrate Nkx2-5" ; family "Homeo" ; medline "16998473" ; species "6239" ; tax_group "nematodes" ; type "PBM" 
+MA0263.1	17.9840978364634	ttx-3::ceh-10	Helix-Turn-Helix	; acc "Q94156,P41935" ; collection "CORE" ; comment "dimer" ; family "Homeo" ; medline "15177025 " ; species "6239" ; tax_group "nematodes" ; type "EMSA" 
+MA0261.1	8.89281451812391	lin-14	Other	; acc "Q21446" ; collection "CORE" ; comment "-" ; family "Other" ; medline "16314527 " ; species "6239" ; tax_group "nematodes" ; type "SELEX" 

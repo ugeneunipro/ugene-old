@@ -1,0 +1,164 @@
+#include "QueryDesignerPlugin.h"
+#include "QueryViewController.h"
+#include "QDSamples.h"
+#include "QDRunDialog.h"
+#include "QDDocumentFormat.h"
+#include "QDSceneIOTasks.h"
+#include "QDTests.h"
+#include "QDWorker.h"
+
+#include <library/QDFindActor.h>
+#include <library/QDFindPolyRegionsActor.h>
+
+#include <U2Core/AppContext.h>
+#include <U2Gui/ObjectViewModel.h>
+
+#include <U2View/ADVUtils.h>
+#include <U2View/ADVConstants.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include <U2Misc/DialogUtils.h>
+
+#include <U2Test/GTestFrameworkComponents.h>
+
+#include <U2Core/GAutoDeleteList.h>
+
+
+namespace U2 {
+
+extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
+    QueryDesignerPlugin * plug = new QueryDesignerPlugin();
+    return plug;
+}
+
+QueryDesignerPlugin::QueryDesignerPlugin() 
+    : Plugin(tr("Query Designer"),
+             tr("Analyzes a nucleotide sequence using different algorithms (Repeat finder, \
+                ORF finder, etc.) imposing constraints on the positional relationship \
+                of the results.")) {
+    if (AppContext::getMainWindow()) {
+        services << new QueryDesignerService();
+        viewCtx = new QueryDesignerViewContext(this);
+        viewCtx->init();
+        AppContext::getObjectViewFactoryRegistry()
+            ->registerGObjectViewFactory(new QDViewFactory(this));
+    }
+    registerLibFactories();
+    AppContext::getDocumentFormatRegistry()->registerFormat(new QDDocFormat(this));
+
+    QString defaultDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/query_samples";
+
+    if (DialogUtils::getLastOpenFileDir(QUERY_DESIGNER_ID).isEmpty()) {
+        DialogUtils::setLastOpenFileDir(defaultDir, QUERY_DESIGNER_ID);
+    }
+
+    //tests
+    GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
+    XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
+    assert(xmlTestFormat!=NULL);
+
+    GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
+    l->qlist = QDTests::createTestFactories();
+
+    foreach(XMLTestFactory* f, l->qlist) { 
+        bool res = xmlTestFormat->registerTestFactory(f);
+        assert(res); Q_UNUSED(res);
+    }
+
+    LocalWorkflow::QDWorkerFactory::init();
+}
+
+void QueryDesignerPlugin::registerLibFactories() {
+    AppContext::getQDActorProtoRegistry()->registerProto(new QDFindActorPrototype());
+    AppContext::getQDActorProtoRegistry()->registerProto(new QDFindPolyActorPrototype());
+}
+
+QueryDesignerViewContext::QueryDesignerViewContext(QObject *p)
+: GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID) {}
+
+void QueryDesignerViewContext::initViewContext(GObjectView* view) {
+    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
+    ADVGlobalAction* a = new ADVGlobalAction(av,
+        QIcon(":query_designer/images/query_designer.png"),
+        tr("Analyze with query schema..."), 50, ADVGlobalActionFlag_AddToAnalyseMenu);
+    connect(a, SIGNAL(triggered()), SLOT(sl_showDialog()));
+}
+
+void QueryDesignerViewContext::sl_showDialog() {
+    GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(sender());
+    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
+    assert(av);
+    ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
+    QDDialog d(seqCtx);
+    d.exec();
+}
+
+class CloseDesignerTask : public Task {
+public:
+    CloseDesignerTask(QueryDesignerService* s) : 
+      Task(U2::QueryDesignerPlugin::tr("Close Designer"), TaskFlag_NoRun),
+          service(s) {}
+      virtual void prepare();
+private:
+    QueryDesignerService* service;
+};
+
+void CloseDesignerTask::prepare() {
+    if (!service->closeViews()) {
+        stateInfo.setError(  U2::QueryDesignerPlugin::tr("Close Designer canceled") );
+    }
+}
+
+bool QueryDesignerService::closeViews() {
+    MWMDIManager* wm = AppContext::getMainWindow()->getMDIManager();
+    assert(wm);
+    foreach(MWMDIWindow* w, wm->getWindows()) {
+        QueryViewController* view = qobject_cast<QueryViewController*>(w);
+        if (view) {
+            if (!AppContext::getMainWindow()->getMDIManager()->closeMDIWindow(view)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void QueryDesignerService::sl_startQDPlugin() {
+    QAction* action = new QAction(QIcon(":query_designer/images/query_designer.png"), tr("Query Designer..."), this);
+    connect(action, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
+
+    QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
+    toolsMenu->addAction(action);
+}
+
+void QueryDesignerService::sl_showDesignerWindow() {
+    assert(isEnabled());
+    QueryViewController* view = new QueryViewController;
+    view->setWindowIcon(QIcon(":query_designer/images/query_designer.png"));
+    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(view);
+    AppContext::getMainWindow()->getMDIManager()->activateWindow(view);
+}
+
+Task* QueryDesignerService::createServiceEnablingTask() {
+    QString defaultDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + QUERY_SAMPLES_PATH;
+    return new QDLoadSamplesTask(QStringList(defaultDir));
+}
+
+Task* QueryDesignerService::createServiceDisablingTask() {
+    return new CloseDesignerTask(this);
+}
+
+void QueryDesignerService::serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged) {
+    if (!enabledStateChanged) {
+        return;
+    }
+    if (isEnabled()) {
+        if(!AppContext::getPluginSupport()->isAllPluginsLoaded()) {
+            connect(AppContext::getPluginSupport(),SIGNAL(si_allStartUpPluginsLoaded()),SLOT(sl_startQDPlugin())); 
+        } else {
+            sl_startQDPlugin();
+        }
+    }
+}
+
+}//namespace

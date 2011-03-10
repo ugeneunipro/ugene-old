@@ -1,0 +1,68 @@
+#!UGENE_WORKFLOW
+#Create alignment with Kalign algorithm. Kalign is a fast and accurate multiple sequence alignment algorithm designed to align large numbers of protein sequences.
+
+workflow align-kalign{
+
+    read-msa {
+        type:read-msa;
+        name:"Read alignment";
+    }
+    kalign {
+        type:kalign;
+        name:"Align with Kalign";
+        bonus-score:0.02;
+        gap-ext-penalty:8.52;
+        gap-open-penalty:54.9;
+        terminal-gap-penalty:4.42;
+    }
+    write-clustalw {
+        type:write-clustalw;
+        name:"Write ClustalW";
+        write-mode:2;
+    }
+
+    read-msa.msa->kalign.in-msa.msa
+    kalign.msa->write-clustalw.in-msa.msa
+
+    .meta {
+        aliases {
+            read-msa.url-in:in;
+            write-clustalw.url-out:out;
+        }
+        help {
+            in:"Input alignment";
+            out:"Output alignment";
+        }
+        visual {
+            read-msa {
+                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
+                pos:"-765 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
+            }
+            kalign {
+                tooltip:"Aligns multiple sequence alignments (MSAs) supplied with Kalign.<p>Kalign is a fast and accurate multiple sequence alignment tool. The original version of the tool can be found on <a href='http://msa.sbc.su.se'>http://msa.sbc.su.se</a>.";
+                pos:"-585 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-msa.angle:360;
+            }
+            write-clustalw {
+                tooltip:"Writes all supplied alignments to file(s) in CLUSTALW format.";
+                pos:"-345 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+            }
+            read-msa.out-msa->kalign.in-msa {
+                text-pos:"-45 -50";
+            }
+            kalign.out-msa->write-clustalw.in-msa {
+                text-pos:"-45 -24";
+            }
+        }
+    }
+}
+

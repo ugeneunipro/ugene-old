@@ -1,0 +1,347 @@
+#ifndef _U2_TASK_H_
+#define _U2_TASK_H_
+
+#include <U2Core/global.h>
+#include <U2Core/Log.h>
+
+#include <QtCore/QDateTime>
+#include <QtCore/QStringList>
+#include <QtCore/QVarLengthArray>
+#include <QtCore/QReadWriteLock>
+
+namespace U2 {
+
+struct  U2CORE_EXPORT TaskResourceUsage {
+    
+    TaskResourceUsage(int id = 0, int use = 0, bool prepareStage = false) 
+        : resourceId(id), resourceUse(use), prepareStageLock(prepareStage), locked(false) 
+    {}
+
+    int resourceId;
+    int resourceUse;
+    bool prepareStageLock;
+    bool locked; 
+};
+
+class TaskScheduler;
+
+/** 
+    Holds task state info about current error and progress 
+    Error variable is protected by RW lock to ensure safe multi-threaded updates
+*/
+class U2CORE_EXPORT TaskStateInfo {
+public:
+    TaskStateInfo() : progress(-1), cancelFlag(false), hasErr(false), lock(QReadWriteLock::NonRecursive) {}
+    
+    /* Percent values in range 0..100, negative if unknown. */
+    int    progress;
+    int    cancelFlag;
+    
+    bool hasErrors() const {return hasErr;}
+    QString getError() const {QReadLocker r(&lock); return error;}
+    void setError(const QString& err) {QWriteLocker w(&lock); error =  err; hasErr = !error.isEmpty();}
+
+    QString getStateDesc() const {QReadLocker r(&lock); return stateDesc;}
+    void setStateDesc(const QString& desc) {QWriteLocker w(&lock); stateDesc = desc;}
+
+private:
+    bool hasErr; 
+    QString stateDesc;
+    QString error;
+
+private:
+    mutable QReadWriteLock lock; //the lock is used because error & stateDesc can be assigned from any thread
+};
+
+class U2CORE_EXPORT TaskTimeInfo {
+public:
+    //time in microseconds from Unix Epoch (UTC). See Timer.h
+    qint64 startTime;  //the time task is promoted to 'running' state
+    qint64 finishTime; //the time task is promoted to 'finished' state
+};
+
+#define MAX_PARALLEL_SUBTASKS_AUTO   0
+#define MAX_PARALLEL_SUBTASKS_SERIAL 1
+    
+enum TaskFlag {
+    
+    // Base flags
+    TaskFlag_None = 0,
+
+    TaskFlag_NoRun = 1 << 1,
+
+    TaskFlag_RunBeforeSubtasksFinished = 1 << 2, //subtask can be run before its subtasks finished
+
+    TaskFlag_NoAutoDelete = 1 << 3, //for top level tasks only: task is not deleted by scheduler after task is finished
+    
+
+    
+    // Behavior based on subtasks
+    TaskFlag_FailOnSubtaskError = 1 << 10, //subtask error is propagated automatically
+
+    TaskFlag_FailOnSubtaskCancel = 1 << 11, // error and cancel flag are set if subtask was canceled and parent is neither canceled nor have errors
+
+    TaskFlag_PropagateSubtaskDesc = 1 << 12, // task use description from the subtask (last changed)
+
+
+    // Reporting options
+    TaskFlag_ReportingIsSupported = 1 << 20, // task supports reporting
+
+    TaskFlag_ReportingIsEnabled = 1 << 21, // task is asked to generate report
+
+    TaskFlag_VerboseStateLog = 1 << 22, //tasks prepared/finished state is dumped to the 'info' log category
+
+    TaskFlag_MinimizeSubtaskErrorText = 1 << 23, //for TaskFlag_FailOnSubtaskError task minimizes the error text
+                                                // excluding task-names info from the text
+
+    TaskFlag_SuppressErrorNotification = 1 << 24 //for top level tasks only: if task fails, tells if notification is shown
+
+};
+
+#define TaskFlags_FOSCOE                (TaskFlags(TaskFlag_FailOnSubtaskError) | TaskFlag_FailOnSubtaskCancel)
+#define TaskFlags_NR_FOSCOE             (TaskFlags_FOSCOE | TaskFlag_NoRun)
+#define TaskFlags_RBSF_FOSCOE           (TaskFlags_FOSCOE | TaskFlag_RunBeforeSubtasksFinished)
+
+typedef QFlags<TaskFlag> TaskFlags;
+typedef QVarLengthArray<TaskResourceUsage, 1> TaskResources;
+
+class U2CORE_EXPORT Task : public QObject {
+    Q_OBJECT
+    friend class TaskScheduler;
+public:
+
+    enum State {
+        State_New,
+        State_Prepared,
+        State_Running,
+        State_Finished
+    };
+
+    enum ProgressManagement {
+        Progress_Manual,
+        Progress_SubTasksBased
+    };
+
+    enum ReportResult {
+        ReportResult_Finished,
+        ReportResult_CallMeAgain
+    };
+
+
+    //Creates new task with State_New state
+    Task(const QString& _name, TaskFlags f);
+
+    //Prepares Task to run
+    //Task must request/prepare all resources it needs, create subtasks and define progress management type
+    //This method called after Task is added to Scheduler from the main thread
+    //After calling this method task gets State_Prepared state
+    virtual void prepare(){}
+
+    // Called by Scheduler from the separate thread. No updates to Project/Document model can be done from this method
+    // Task gets State_Running state when its first of its subtasks is run
+    virtual void run() {assert(0);} // assertion is added to find all tasks with RUN declared in flags but not implemented
+    
+    // Called from the main thread after run() is finished
+    // Task must report all of it results if needed.
+    // If task can't report right now (for example a model is state-locked)
+    // task can return ReportResult_CallMeAgain.
+    // If task locks some resources, it's a good place to release them
+    // After task reporting succeeds, it gets State_Finished state
+    virtual ReportResult report() {return ReportResult_Finished;}
+
+    // Set's cancelFlag to true. Does not wait for task to be stopped
+    void cancel();
+
+    bool isCanceled() const {return stateInfo.cancelFlag;}
+
+    // Returns subtasks of the task. Task must prepare it's subtask on prepare() call and can't change them latter.
+    QList<Task*> getSubtasks() const {return subtasks;}
+    
+    QString getTaskName() const {return taskName;}
+    
+    State getState() const {return state;}
+
+    const TaskStateInfo& getStateInfo() const { return stateInfo; }
+    
+    const TaskTimeInfo&  getTimeInfo() const { return timeInfo; }
+
+    int getProgress() const {return stateInfo.progress;}
+
+    ProgressManagement getProgressManagementType() const {return tpm;}
+
+    TaskFlags getFlags() const {return flags;}
+
+    bool hasFlags(TaskFlags f) const {return flags & f;}
+
+    void addSubTask(Task* sub);
+
+    bool hasErrors() const {return stateInfo.hasErrors();}
+
+    QString getError() const {return stateInfo.getError();}
+
+    bool isFinished() const {return state == Task::State_Finished;}
+
+    bool isRunning() const {return state == Task::State_Running;}
+
+    bool isPrepared() const {return state == Task::State_Prepared;}
+
+    bool isNew() const {return state == Task::State_New;}
+
+    // When called for a finished task it must deallocate all resources it keeps.
+    // ATTENTION: this method WILL NOT be called by Task Scheduler automatically.
+    // It is guaranteed that only tests run by TestRunnerTask will be cleaned up.
+    // So, if any task provides 'cleanup' method, it still MUST correctly clean up 
+    // its resources in destructor.
+    virtual void cleanup();
+
+    virtual bool hasSubtasksWithErrors() const  { return getSubtaskWithErrors() != NULL; }
+
+    virtual bool propagateSubtaskError();
+    
+    virtual Task* getSubtaskWithErrors() const;
+
+    virtual qint64 getTaskId() const {return taskId;}
+
+    virtual bool isTopLevelTask() const {return getParentTask() == 0;}
+
+    virtual Task* getParentTask() const {return parentTask;}
+
+    virtual Task* getTopLevelParentTask() {return isTopLevelTask() ? this : parentTask->getTopLevelParentTask();}
+
+    virtual bool isReportingSupported() const {return flags.testFlag(TaskFlag_ReportingIsSupported);}
+    
+    virtual bool isReportingEnabled() const {return flags.testFlag(TaskFlag_ReportingIsEnabled);}
+
+    virtual void setReportingEnabled(bool v) {assert(isReportingSupported()); setFlag(TaskFlag_ReportingIsEnabled, v);}
+
+    virtual void setNoAutoDelete( bool v ) { setFlag( TaskFlag_NoAutoDelete, v ); }
+
+    virtual QString generateReport() const {assert(0); return QString();}
+   
+    float getSubtaskProgressWeight() const {return progressWeightAsSubtask;}
+    
+    void setSubtaskProgressWeight(float v) {progressWeightAsSubtask = v;}
+
+    bool useDescriptionFromSubtask() const {return flags.testFlag(TaskFlag_PropagateSubtaskDesc);}
+    
+    void setUseDescriptionFromSubtask(bool v) { setFlag(TaskFlag_PropagateSubtaskDesc, v);}
+
+    bool isVerboseLogMode() const {return flags.testFlag(TaskFlag_VerboseStateLog);}
+    
+    void setVerboseLogMode(bool v) { setFlag(TaskFlag_VerboseStateLog, v); }
+    
+    bool isErrorNotificationSuppressed() const { return flags.testFlag(TaskFlag_SuppressErrorNotification); }
+        
+    void setErrorNotificationSuppression(bool v) { setFlag(TaskFlag_SuppressErrorNotification, v); }
+    
+    const TaskResources& getTaskResources() {return taskResources;}
+
+    //WARN: if set to MAX_PARALLEL_SUBTASKS_AUTO, returns unprocessed value (MAX_PARALLEL_SUBTASKS_AUTO = 0)
+    int getMaxParallelSubtasks() const {return maxParallelSubtasks;}
+
+    // the difference from getMaxParralelSubtasks is that this method
+    // will process MAX_PARALLEL_SUBTASKS_AUTO and will never return 0
+    virtual int getNumParallelSubtasks() const;
+
+    void setMaxParallelSubtasks(int n);
+
+    void setError(const QString& err) {stateInfo.setError(err);} 
+
+    void setMinimizeSubtaskErrorText(bool v);
+    
+    void setTimeOut(int sec) {timeOut=sec;}
+    
+    int getTimeOut() { return timeOut;}
+
+signals:
+    void si_subtaskAdded(Task* sub);
+
+    void si_progressChanged();
+    void si_descriptionChanged();
+    void si_stateChanged();
+
+protected:
+    /// Called by scheduler when subtask is finished.
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    void setRunResources(const TaskResources& taskR) {assert(state <= State_Prepared); taskResources = taskR;}
+
+    void setTaskName(const QString& taskName);
+
+
+    TaskStateInfo       stateInfo;
+    TaskTimeInfo        timeInfo;
+    ProgressManagement  tpm;
+
+    float               progressWeightAsSubtask;
+    TaskResources       taskResources;
+    int                 maxParallelSubtasks;
+
+private:
+    void setFlag(TaskFlag f, bool v) { 
+        flags = v ? (flags | f) : flags & (~f); 
+    }
+
+    TaskFlags           flags;
+    QString             taskName;
+    State               state;
+    Task*               parentTask;
+    QList<Task*>        subtasks;
+    qint64              taskId;
+    int                 timeOut;
+};
+
+
+class U2CORE_EXPORT TaskScheduler : public QObject {
+    Q_OBJECT
+public:
+
+    virtual void registerTopLevelTask(Task* t) = 0;
+    
+    virtual void unregisterTopLevelTask(Task* t) = 0;
+
+    virtual const QList<Task*>& getTopLevelTasks() const = 0;
+
+    virtual Task * getTopLevelTaskById( qint64 id ) const = 0;
+
+    virtual QDateTime estimatedFinishTime(Task*) const = 0;
+
+    virtual void cancelAllTasks() = 0;
+
+    virtual QString getStateName(Task* t) const = 0;
+
+    virtual void addThreadId(qint64 taskId, Qt::HANDLE id)  = 0;
+    virtual void removeThreadId(qint64 taskId) = 0;
+    virtual qint64 getNameByThreadId(Qt::HANDLE id) const = 0;
+    virtual QList<LogMessage*> getMessages() = 0;
+
+protected:
+
+    TaskResources& getTaskResources(Task* t) {return t->taskResources;}
+
+    TaskStateInfo&  getTaskStateInfo(Task* t) {return t->stateInfo;}
+
+    TaskTimeInfo&   getTaskTimeInfo(Task* t) {return t->timeInfo;}
+
+    void emit_taskProgressChanged(Task* t) {emit t->si_progressChanged();}
+    
+    void emit_taskDescriptionChanged(Task* t) {emit t->si_descriptionChanged();}
+
+    QList<Task*> onSubTaskFinished(Task* parentTask, Task* subTask) {return parentTask->onSubTaskFinished(subTask);}
+
+    void addSubTask(Task* t, Task* sub);
+        
+    void setTaskState(Task* t, Task::State newState);
+
+    void setTaskStateDesc(Task* t, const QString& desc);
+
+signals:
+    void si_topLevelTaskRegistered(Task*);
+
+    void si_topLevelTaskUnregistered(Task*);
+
+    void si_stateChanged(Task* task);
+};
+
+} //namespace
+
+#endif

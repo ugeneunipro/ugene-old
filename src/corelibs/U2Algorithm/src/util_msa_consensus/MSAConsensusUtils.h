@@ -1,0 +1,46 @@
+#ifndef _U2_MSA_CONSENSUS_UTILS_H_
+#define _U2_MSA_CONSENSUS_UTILS_H_
+
+#include <U2Core/global.h>
+#include <U2Core/U2Region.h>
+
+#include <QtCore/QByteArray>
+
+namespace U2 {
+
+class MSAConsensusAlgorithm;
+class MAlignment;
+
+
+class U2ALGORITHM_EXPORT MSAConsensusUtils : public QObject {
+    Q_OBJECT
+public:
+
+    static void updateConsensus(const MAlignment& msa, QByteArray& cons, MSAConsensusAlgorithm* algo);
+
+    static void updateConsensus(const MAlignment& msa, const U2Region& region, QByteArray& cons, MSAConsensusAlgorithm* algo);
+
+    static void updateConsensus(const MAlignment& msa, const QVector<U2Region>& region, QByteArray& cons, MSAConsensusAlgorithm* algo);
+
+    static QString getConsensusPercentTip(const MAlignment& msa, int pos, int minReportPercent, int maxReportChars);
+
+    // mask4 must contain 4 descending percent values (>= used), example: 100, 75, 50, 33
+    // countGaps tells if to include gaps into percent computation
+    // result: up to 4 most used chars (from 'A' to 'Z') are packed into return value
+    // WARN: the lowest val in mask must be >= 25
+    // WARN: works only for alphabet chars (A - Z)
+    static quint32 packConsensusCharsToInt(const MAlignment& msa, int pos, const int* mask4, bool gapsAffectPercents);
+
+    // up to 4 chars can be unpacked to charVal values, their percent ranges are saved to mark3Pos
+    static void unpackConsensusCharsFromInt(quint32 val, char* charVal, int* maskPos);
+
+    // computes frequency by char. Returns the most frequent char that is not gap.
+    // nonGapChars = sum of all non-gap characters
+    // TODO: use var-length array instead of the vector!
+    static uchar getColumnFreqs(const MAlignment& ma, int pos, QVector<int>& freqsByChar, int& nonGapChars);
+
+};
+
+}//namespace
+
+#endif

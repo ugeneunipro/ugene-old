@@ -1,0 +1,78 @@
+#!UGENE_WORKFLOW
+#Build hmm profile using hmmer2
+
+workflow hmm2-build{
+
+    read-msa {
+        type:read-msa;
+        name:"Read alignment";
+    }
+    hmm2-build {
+        type:hmm2-build;
+        name:"HMM build";
+        calibrate:true;
+        calibration-threads:1;
+        deviation:200;
+        fix-samples-length:0;
+        mean-samples-length:325;
+        samples-num:5000;
+        seed:0;
+        strategy:1;
+    }
+    hmm2-write-profile {
+        type:hmm2-write-profile;
+        name:"Write HMM profile";
+        write-mode:2;
+    }
+
+    read-msa.msa->hmm2-build.in-msa.msa
+    hmm2-build.hmm2-profile->hmm2-write-profile.in-hmm2.hmm2-profile
+
+    .meta {
+        aliases {
+            read-msa.url-in:in;
+            hmm2-build.calibrate:calibrate;
+            hmm2-build.profile-name:name;
+            hmm2-build.seed:seed;
+            hmm2-write-profile.url-out:out;
+        }
+        help {
+            in:"Input alignment";
+            calibrate:"Enables/disables optional profile calibration";
+            name:"Name of the profile HMM";
+            seed:"The seed for random numbers";
+            out:"Output profile HMM";
+        }
+        visual {
+            read-msa {
+                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
+                pos:"-750 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
+            }
+            hmm2-build {
+                tooltip:"Builds a HMM profile from a multiple sequence alignment.<p>The HMM profile is a statistical model which captures position-specific information about how conserved each column of the alignment is, and which residues are likely.";
+                pos:"-555 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-hmm2.angle:360;
+            }
+            hmm2-write-profile {
+                tooltip:"Saves all input HMM profiles to specified location.";
+                pos:"-360 -660";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-hmm2.angle:180;
+            }
+            read-msa.out-msa->hmm2-build.in-msa {
+                text-pos:"-45 -50";
+            }
+            hmm2-build.out-hmm2->hmm2-write-profile.in-hmm2 {
+                text-pos:"-32 -24";
+            }
+        }
+    }
+}
+

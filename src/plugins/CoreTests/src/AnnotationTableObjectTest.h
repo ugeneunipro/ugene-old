@@ -1,0 +1,188 @@
+#ifndef _U2_ANNOTATION_TABLE_OBJECT_TESTS_H_
+#define _U2_ANNOTATION_TABLE_OBJECT_TESTS_H_
+
+#include <U2Test/XMLTestUtils.h>
+#include <U2Core/GObject.h>
+#include <QtXml/QDomElement>
+#include <U2Core/U2Region.h>
+#include <U2Core/AnnotationTableObject.h>
+namespace U2 {
+
+class Document;
+class LoadDocumentTask;
+
+class GTestAnnotationDataItem: public QObject {
+    Q_OBJECT
+public:
+    GTestAnnotationDataItem(const SharedAnnotationData& ad, QObject* p) : QObject(p), aData(ad){}
+    const SharedAnnotationData& getAnnotation() const {return aData;}
+private:
+    SharedAnnotationData aData;
+};
+
+
+class GTest_CheckNumAnnotations : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckNumAnnotations, "check-num-annotations");
+
+    ReportResult report();
+
+private:    
+    QString        objContextName;
+    int            num;
+};
+
+class GTest_FindAnnotationByNum : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByNum, "find-annotation-by-number");
+
+    ReportResult report();
+
+    const Annotation *getAnnotation() const {return result;}
+
+    void cleanup();
+
+private:    
+    QString     objContextName;
+    QString     annotationContextName;
+    int         number;
+    Annotation  *result;
+};
+
+class GTest_FindAnnotationByName : public GTest {
+    Q_OBJECT
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByName, "find-annotation-by-name");
+
+    ReportResult report();
+
+    const Annotation *getAnnotation() const {return result;}
+
+    void cleanup();
+
+private:    
+    QString     objContextName;
+    QString     annotationContextName;
+    QString     aName;
+    Annotation  *result;
+};
+
+class GTest_FindAnnotationByLocation : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByLocation, "find-annotation-by-location");
+
+    ReportResult report();
+
+    const Annotation *getAnnotation() const {return result;}
+
+    void cleanup();
+
+private:    
+    QString     objContextName;
+    QString     annotationContextName;
+    U2Region    location;
+    U2Strand    strand;
+    Annotation  *result;
+};
+
+
+class GTest_CheckAnnotationLocation : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationLocation, "check-annotation-location");
+
+    ReportResult report();
+
+private:
+    QString             annCtxName;
+    QVector<U2Region>     location;
+    U2Strand            strand;
+};
+
+class GTest_CheckAnnotationName : public GTest {
+    Q_OBJECT
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationName, "check-annotation-name");
+
+    ReportResult report();
+
+private:    
+    QString         annCtxName;
+    QString         aName;
+};
+
+class GTest_CheckAnnotationSequence : public GTest {
+    Q_OBJECT
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationSequence, "check-annotation-sequence");
+
+    ReportResult report();
+
+private:    
+    QString         seqPart;
+    QString         seqCtxName;
+    QString         aCtxName;
+};
+
+
+class GTest_CheckAnnotationQualifier : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationQualifier, "check-annotation-qualifier");
+
+    ReportResult report();
+
+private:    
+    QString        annCtxName;
+    QString        qName;
+    QString        qValue;
+};
+
+class GTest_CheckAnnotationsNumInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsNumInTwoObjects, "compare-annotations-num-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+class GTest_CheckAnnotationsLocationsInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsLocationsInTwoObjects, "compare-annotations-locations-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+// compare annotations that may be in different order in two docs
+class GTest_CheckAnnotationsLocationsAndNumReorderdered : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsLocationsAndNumReorderdered, "compare-annotations-locations-and-num-reordered");
+    
+    ReportResult report();
+    QString doc1CtxName;
+    QString doc2CtxName;
+};
+
+class GTest_CheckAnnotationsQualifiersInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsQualifiersInTwoObjects, "compare-annotations-qualifiers-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+class GTest_CheckAnnotationsNamesInTwoObjects : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsNamesInTwoObjects, "compare-annotations-names-in-two-objects");
+
+    ReportResult report();
+    QString docContextName;
+    QString secondDocContextName;
+};
+
+class AnnotationTableObjectTest {
+public:
+    static QList<XMLTestFactory*> createTestFactories();
+};
+
+}//namespace
+#endif

@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="psipred/" >
+      <file>datafiles/weights_s.dat</file>
+      <file>datafiles/weights_s.dat2</file>
+      <file>datafiles/weights_s.dat3</file>
+      <file>datafiles/weights_p2.dat</file>
+    </qresource>
+
+</RCC>

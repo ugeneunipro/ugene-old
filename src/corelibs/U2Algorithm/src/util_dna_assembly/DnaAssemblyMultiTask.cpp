@@ -1,0 +1,110 @@
+#include "DnaAssemblyMultiTask.h"
+
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/AddDocumentTask.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/MAlignmentObject.h>
+
+namespace U2 {
+
+DnaAssemblyMultiTask::DnaAssemblyMultiTask( const DnaAssemblyToRefTaskSettings& s, bool view, bool _justBuildIndex )
+: Task("DnaAssemblyMultiTask", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), settings(s),
+assemblyToRefTask(NULL), addDocumentTask(NULL), loadDocumentTask(NULL),
+doc(NULL), shortReadUrls(s.shortReadUrls), openView(view), justBuildIndex(_justBuildIndex)
+{
+
+}
+
+void DnaAssemblyMultiTask::prepare() {
+    // perform assembly
+    QString algName = settings.algName;
+    DnaAssemblyAlgorithmEnv* env= AppContext::getDnaAssemblyAlgRegistry()->getAlgorithm(algName);
+    assert(env);
+    if (env == NULL) {
+        setError(QString("Algorithm %1 is not found").arg(algName));
+        return;
+    }
+    assemblyToRefTask = env->getTaskFactory()->createTaskInstance(settings, justBuildIndex);
+    addSubTask(assemblyToRefTask);
+}
+
+Task::ReportResult DnaAssemblyMultiTask::report() {
+    return ReportResult_Finished;
+}
+
+QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
+    QList<Task*> subTasks;
+    if (subTask->hasErrors() || isCanceled()) {
+        return subTasks;
+    }
+
+    if (subTask == assemblyToRefTask) {
+        qint64 time=(subTask->getTimeInfo().finishTime - subTask->getTimeInfo().startTime);
+        taskLog.details(QString("Assembly to reference task time: %1").arg((double)time/(1000*1000)));
+    }
+
+    if ( subTask == assemblyToRefTask && settings.loadResultDocument ) {
+        assert(!settings.resultFileName.isEmpty());
+        GUrl resultUrl(settings.resultFileName); 
+        QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(resultUrl);    
+        if (!detectedFormats.isEmpty()) {
+            IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            DocumentFormat* format = detectedFormats.first();
+            loadDocumentTask = new LoadDocumentTask(format->getFormatId(), resultUrl, factory);
+            subTasks.append(loadDocumentTask);
+        }  
+
+    } else if (subTask == loadDocumentTask ) {
+        doc = loadDocumentTask->getDocument();
+        if (openView) {
+            DocumentFormat* format = doc->getDocumentFormat(); 
+            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            Document* clonedDoc = new Document(format, iof, doc->getURLString());
+            clonedDoc->loadFrom(doc); // doc was loaded in a separate thread -> clone all GObjects
+            assert(!clonedDoc->isTreeItemModified());
+            assert(clonedDoc->isLoaded());
+
+            // Leak alert: if this signal isn't handled somewhere, memory allocated for this document will be lost.
+            emit documentAvailable(clonedDoc);
+        }
+    }
+
+    return subTasks;
+}
+
+const MAlignmentObject* DnaAssemblyMultiTask::getAssemblyResult() {
+    if ( doc == NULL ) {
+        return NULL;
+    }
+
+    QList<GObject*> objs = doc->getObjects();
+    if ( objs.size() == 0 ) {
+        return NULL;
+    }
+
+    return qobject_cast<MAlignmentObject*> (objs.first());
+}
+
+QString DnaAssemblyMultiTask::generateReport() const {
+    QString res;
+    if (hasErrors() || isCanceled()) {
+        return res;
+    }
+
+    if (justBuildIndex) {
+        res = settings.algName + QString(" index-file for %1 was built successfully")
+        .arg(settings.refSeqUrl.fileName());
+    } else if (assemblyToRefTask->isHaveResult()) {
+        res = QString("Assembly to reference %1 was finished successfully")
+        .arg(settings.refSeqUrl.fileName());
+    } else {
+        res = QString("Assembly to reference %1 was failed. No possible alignment was found")
+        .arg(settings.refSeqUrl.fileName());
+    }
+    return res;
+}
+
+} // namespace

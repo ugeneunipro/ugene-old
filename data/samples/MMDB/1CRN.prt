@@ -1,0 +1,4306 @@
+Ncbi-mime-asn1 ::= strucseq {
+  structure {
+    id {
+      mmdb-id 55825
+    },
+    descr {
+      name "1CRN",
+      history {
+        replaces {
+          id mmdb-id 596,
+          date std {
+            year 2007,
+            month 8,
+            day 27
+          }
+        },
+        data-source {
+          name-of-database "Protein Data Bank",
+          version-of-database release-date std {
+            year 2007,
+            month 8,
+            day 27
+          },
+          database-entry-id other-database {
+            db "PDB",
+            tag str "1CRN"
+          },
+          database-entry-date std {
+            year 1981,
+            month 4,
+            day 30
+          }
+        }
+      },
+      attribution sub {
+        authors {
+          names std {
+            {
+              name name {
+                last "Hendrickson",
+                full "W.A.Hendrickson",
+                initials "W.A."
+              }
+            },
+            {
+              name name {
+                last "Teeter",
+                full "M.M.Teeter",
+                initials "M.M."
+              }
+            }
+          }
+        },
+        imp {
+          date std {
+            year 1981,
+            month 4,
+            day 30
+          }
+        }
+      },
+      attribution equiv {
+        article {
+          title {
+            name "Water structure of a hydrophobic protein at atomic
+ resolution: Pentagon rings of water molecules in crystals of crambin."
+          },
+          authors {
+            names std {
+              {
+                name name {
+                  last "Teeter",
+                  full "M.M.Teeter",
+                  initials "M.M."
+                }
+              }
+            },
+            affil str "Department of Chemistry, Boston University, 685
+ Commonwealth Avenue, Boston, MA 02215."
+          },
+          from journal {
+            title {
+              iso-jta "Proc. Natl. Acad. Sci. U.S.A.",
+              ml-jta "Proc Natl Acad Sci U S A",
+              issn "0027-8424",
+              name "Proceedings of the National Academy of Sciences of the
+ United States of America"
+            },
+            imp {
+              date std {
+                year 1984,
+                month 10
+              },
+              volume "81",
+              issue "19",
+              pages "6014-6018",
+              language "ENG",
+              pubstatus ppublish,
+              history {
+                {
+                  pubstatus pubmed,
+                  date std {
+                    year 1984,
+                    month 10,
+                    day 1,
+                    hour 0,
+                    minute 0
+                  }
+                },
+                {
+                  pubstatus medline,
+                  date std {
+                    year 1984,
+                    month 10,
+                    day 1,
+                    hour 0,
+                    minute 0
+                  }
+                }
+              }
+            }
+          },
+          ids {
+            pubmed 16593516
+          }
+        },
+        pmid 16593516
+      },
+      attribution article {
+        title {
+          name "Structure Of The Hydrophobic Protein Crambin Determined
+ Directly From The Anomalous Scattering Of Sulphur"
+        },
+        authors {
+          names std {
+            {
+              name name {
+                last "Hendrickson",
+                full "W.A.Hendrickson",
+                initials "W.A."
+              }
+            },
+            {
+              name name {
+                last "Teeter",
+                full "M.M.Teeter",
+                initials "M.M."
+              }
+            }
+          }
+        },
+        from journal {
+          title {
+            jta "Nature",
+            issn "0028-0836"
+          },
+          imp {
+            date std {
+              year 1981
+            },
+            volume "290",
+            pages "107"
+          }
+        }
+      },
+      attribution equiv {
+        article {
+          title {
+            name "Highly ordered crystals of the plant seed protein crambin."
+          },
+          authors {
+            names std {
+              {
+                name name {
+                  last "Teeter",
+                  full "M.M.Teeter",
+                  initials "M.M."
+                }
+              },
+              {
+                name name {
+                  last "Hendrickson",
+                  full "W.A.Hendrickson",
+                  initials "W.A."
+                }
+              }
+            }
+          },
+          from journal {
+            title {
+              iso-jta "J. Mol. Biol.",
+              ml-jta "J Mol Biol",
+              issn "0022-2836",
+              name "Journal of molecular biology"
+            },
+            imp {
+              date std {
+                year 1979,
+                month 1,
+                day 15
+              },
+              volume "127",
+              issue "2",
+              pages "219-223",
+              language "eng",
+              pubstatus ppublish,
+              history {
+                {
+                  pubstatus pubmed,
+                  date std {
+                    year 1979,
+                    month 1,
+                    day 15
+                  }
+                },
+                {
+                  pubstatus medline,
+                  date std {
+                    year 1979,
+                    month 1,
+                    day 15,
+                    hour 0,
+                    minute 1
+                  }
+                }
+              }
+            }
+          },
+          ids {
+            pubmed 430565,
+            pii "0022-2836(79)90242-0"
+          }
+        },
+        pmid 430565
+      }
+    },
+    chemical-graph {
+      descr {
+        name "Water Structure Of A Hydrophobic Protein At Atomic Resolution.
+ Pentagon Rings Of Water Molecules In Crystals Of Crambin",
+        pdb-class "Plant Seed Protein",
+        pdb-source "Mol_id: 1; Organism_scientific: Crambe Abyssinica",
+        pdb-comment "Water Structure Of A Hydrophobic Protein At Atomic
+ Resolution. Pentagon Rings Of Water Molecules In Crystals Of Crambin Plant
+ Seed Protein Mol_id: 1; Molecule: Crambin; Chain: A; Engineered: Yes",
+        assembly-type other
+      },
+      molecule-graphs {
+        {
+          id 1,
+          descr {
+            name "A",
+            pdb-comment "SEQRES",
+            molecule-type protein,
+            organism {
+              org {
+                taxname "Crambe hispanica subsp. abyssinica",
+                db {
+                  {
+                    db "taxon",
+                    tag id 3721
+                  }
+                },
+                syn {
+                  "Crambe hispanica subsp. abyssinica (Hochst. ex R.E.Fr.)
+ Prina",
+                  "Crambe abyssinica Hochst. ex R.E.Fr.",
+                  "Crambe abyssinica",
+                  "Abyssinian crambe",
+                  "Abyssinian kale"
+                },
+                orgname {
+                  name binomial {
+                    genus "Crambe",
+                    species "hispanica",
+                    subspecies "subsp. abyssinica"
+                  },
+                  mod {
+                    {
+                      subtype sub-species,
+                      subname "abyssinica"
+                    }
+                  },
+                  lineage "Eukaryota; Viridiplantae; Streptophyta;
+ Embryophyta; Tracheophyta; Spermatophyta; Magnoliophyta; eudicotyledons; core
+ eudicotyledons; rosids; eurosids II; Brassicales; Brassicaceae; Crambe",
+                  gcode 1,
+                  mgcode 1,
+                  div "PLN"
+                }
+              }
+            }
+          },
+          seq-id gi 157830695,
+          residue-sequence {
+            {
+              id 1,
+              name "   1 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 51
+              }
+            },
+            {
+              id 2,
+              name "   2 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 49
+              }
+            },
+            {
+              id 3,
+              name "   3 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 13
+              }
+            },
+            {
+              id 4,
+              name "   4 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 13
+              }
+            },
+            {
+              id 5,
+              name "   5 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 43
+              }
+            },
+            {
+              id 6,
+              name "   6 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 46
+              }
+            },
+            {
+              id 7,
+              name "   7 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 28
+              }
+            },
+            {
+              id 8,
+              name "   8 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 58
+              }
+            },
+            {
+              id 9,
+              name "   9 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 1
+              }
+            },
+            {
+              id 10,
+              name "  10 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 4
+              }
+            },
+            {
+              id 11,
+              name "  11 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 46
+              }
+            },
+            {
+              id 12,
+              name "  12 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 7
+              }
+            },
+            {
+              id 13,
+              name "  13 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 40
+              }
+            },
+            {
+              id 14,
+              name "  14 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 7
+              }
+            },
+            {
+              id 15,
+              name "  15 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 58
+              }
+            },
+            {
+              id 16,
+              name "  16 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 13
+              }
+            },
+            {
+              id 17,
+              name "  17 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 4
+              }
+            },
+            {
+              id 18,
+              name "  18 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 31
+              }
+            },
+            {
+              id 19,
+              name "  19 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 43
+              }
+            },
+            {
+              id 20,
+              name "  20 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 22
+              }
+            },
+            {
+              id 21,
+              name "  21 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 49
+              }
+            },
+            {
+              id 22,
+              name "  22 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 43
+              }
+            },
+            {
+              id 23,
+              name "  23 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 19
+              }
+            },
+            {
+              id 24,
+              name "  24 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 1
+              }
+            },
+            {
+              id 25,
+              name "  25 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 28
+              }
+            },
+            {
+              id 26,
+              name "  26 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 13
+              }
+            },
+            {
+              id 27,
+              name "  27 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 1
+              }
+            },
+            {
+              id 28,
+              name "  28 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 49
+              }
+            },
+            {
+              id 29,
+              name "  29 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 55
+              }
+            },
+            {
+              id 30,
+              name "  30 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 49
+              }
+            },
+            {
+              id 31,
+              name "  31 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 22
+              }
+            },
+            {
+              id 32,
+              name "  32 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 13
+              }
+            },
+            {
+              id 33,
+              name "  33 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 28
+              }
+            },
+            {
+              id 34,
+              name "  34 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 28
+              }
+            },
+            {
+              id 35,
+              name "  35 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 28
+              }
+            },
+            {
+              id 36,
+              name "  36 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 43
+              }
+            },
+            {
+              id 37,
+              name "  37 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 22
+              }
+            },
+            {
+              id 38,
+              name "  38 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 1
+              }
+            },
+            {
+              id 39,
+              name "  39 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 49
+              }
+            },
+            {
+              id 40,
+              name "  40 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 13
+              }
+            },
+            {
+              id 41,
+              name "  41 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 43
+              }
+            },
+            {
+              id 42,
+              name "  42 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 22
+              }
+            },
+            {
+              id 43,
+              name "  43 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 10
+              }
+            },
+            {
+              id 44,
+              name "  44 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 55
+              }
+            },
+            {
+              id 45,
+              name "  45 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 1
+              }
+            },
+            {
+              id 46,
+              name "  46 ",
+              residue-graph standard {
+                biostruc-residue-graph-set-id other-database {
+                  db "Standard residue dictionary",
+                  tag id 1
+                },
+                residue-graph-id 8
+              }
+            }
+          },
+          inter-residue-bonds {
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 1,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 2,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 2,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 3,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 3,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 4,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 4,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 5,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 5,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 6,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 6,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 7,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 7,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 8,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 8,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 9,
+                atom-id 6
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 9,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 10,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 10,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 11,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 11,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 12,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 12,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 13,
+                atom-id 17
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 13,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 14,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 14,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 15,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 15,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 16,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 16,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 17,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 17,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 18,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 18,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 19,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 19,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 20,
+                atom-id 4
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 20,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 21,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 21,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 22,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 22,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 23,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 23,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 24,
+                atom-id 6
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 24,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 25,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 25,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 26,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 26,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 27,
+                atom-id 6
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 27,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 28,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 28,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 29,
+                atom-id 17
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 29,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 30,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 30,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 31,
+                atom-id 4
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 31,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 32,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 32,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 33,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 33,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 34,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 34,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 35,
+                atom-id 10
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 35,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 36,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 36,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 37,
+                atom-id 4
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 37,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 38,
+                atom-id 6
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 38,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 39,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 39,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 40,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 40,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 41,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 41,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 42,
+                atom-id 4
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 42,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 43,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 43,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 44,
+                atom-id 17
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 44,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 45,
+                atom-id 6
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 45,
+                atom-id 1
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 46,
+                atom-id 7
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 3,
+                atom-id 9
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 40,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 4,
+                atom-id 9
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 32,
+                atom-id 9
+              }
+            },
+            {
+              atom-id-1 {
+                molecule-id 1,
+                residue-id 16,
+                atom-id 9
+              },
+              atom-id-2 {
+                molecule-id 1,
+                residue-id 26,
+                atom-id 9
+              }
+            }
+          }
+        }
+      }
+    },
+    features {
+      {
+        id 1,
+        descr {
+          name "PDB secondary structure"
+        },
+        features {
+          {
+            id 1,
+            name " H1",
+            type helix,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 7,
+                to 19
+              }
+            }
+          },
+          {
+            id 2,
+            name " H2",
+            type helix,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 23,
+                to 30
+              }
+            }
+          },
+          {
+            id 3,
+            name " S1 1",
+            type strand,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 1,
+                to 4
+              }
+            }
+          },
+          {
+            id 4,
+            name " S1 2",
+            type strand,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 32,
+                to 35
+              }
+            }
+          },
+          {
+            id 5,
+            name " T1",
+            type turn,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 41,
+                to 44
+              }
+            }
+          }
+        }
+      },
+      {
+        id 2,
+        descr {
+          name "NCBI assigned secondary structure"
+        },
+        features {
+          {
+            id 1,
+            name "helix 1",
+            type helix,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 7,
+                to 17
+              }
+            }
+          },
+          {
+            id 2,
+            name "helix 2",
+            type helix,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 23,
+                to 31
+              }
+            }
+          },
+          {
+            id 3,
+            name "strand 1",
+            type strand,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 1,
+                to 4
+              }
+            }
+          },
+          {
+            id 4,
+            name "strand 2",
+            type strand,
+            location subgraph residues interval {
+              {
+                molecule-id 1,
+                from 32,
+                to 35
+              }
+            }
+          }
+        }
+      }
+    },
+    model {
+      {
+        id 3,
+        type ncbi-all-atom,
+        descr {
+          name "Single-coordinate-per-atom model from PDB entry 1CRN with a
+ vector model attached",
+          pdb-reso "Resolution: 1.5",
+          pdb-method "X-Ray Diffraction",
+          pdb-comment "APR 16 87 Typographical~MAR 4 85 Typographical~SEP 30
+ 83 Typographical~DEC 3 81 Typographical~JUL 28 81 Initial Entry"
+        },
+        model-space {
+          coordinate-units angstroms,
+          thermal-factor-units b
+        },
+        model-coordinates {
+          {
+            id 1,
+            coordinates literal atomic {
+              number-of-points 327,
+              atoms {
+                number-of-ptrs 327,
+                molecule-ids {
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                },
+                residue-ids {
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  2,
+                  2,
+                  2,
+                  2,
+                  2,
+                  2,
+                  2,
+                  3,
+                  3,
+                  3,
+                  3,
+                  3,
+                  3,
+                  4,
+                  4,
+                  4,
+                  4,
+                  4,
+                  4,
+                  5,
+                  5,
+                  5,
+                  5,
+                  5,
+                  5,
+                  5,
+                  6,
+                  6,
+                  6,
+                  6,
+                  6,
+                  6,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  8,
+                  8,
+                  8,
+                  8,
+                  8,
+                  8,
+                  8,
+                  9,
+                  9,
+                  9,
+                  9,
+                  9,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  11,
+                  11,
+                  11,
+                  11,
+                  11,
+                  11,
+                  12,
+                  12,
+                  12,
+                  12,
+                  12,
+                  12,
+                  12,
+                  12,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  15,
+                  15,
+                  15,
+                  15,
+                  15,
+                  15,
+                  15,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  17,
+                  17,
+                  17,
+                  17,
+                  17,
+                  17,
+                  17,
+                  17,
+                  17,
+                  17,
+                  17,
+                  18,
+                  18,
+                  18,
+                  18,
+                  18,
+                  18,
+                  18,
+                  18,
+                  19,
+                  19,
+                  19,
+                  19,
+                  19,
+                  19,
+                  19,
+                  20,
+                  20,
+                  20,
+                  20,
+                  21,
+                  21,
+                  21,
+                  21,
+                  21,
+                  21,
+                  21,
+                  22,
+                  22,
+                  22,
+                  22,
+                  22,
+                  22,
+                  22,
+                  23,
+                  23,
+                  23,
+                  23,
+                  23,
+                  23,
+                  23,
+                  23,
+                  23,
+                  24,
+                  24,
+                  24,
+                  24,
+                  24,
+                  25,
+                  25,
+                  25,
+                  25,
+                  25,
+                  25,
+                  25,
+                  25,
+                  26,
+                  26,
+                  26,
+                  26,
+                  26,
+                  26,
+                  27,
+                  27,
+                  27,
+                  27,
+                  27,
+                  28,
+                  28,
+                  28,
+                  28,
+                  28,
+                  28,
+                  28,
+                  29,
+                  29,
+                  29,
+                  29,
+                  29,
+                  29,
+                  29,
+                  29,
+                  29,
+                  29,
+                  29,
+                  29,
+                  30,
+                  30,
+                  30,
+                  30,
+                  30,
+                  30,
+                  30,
+                  31,
+                  31,
+                  31,
+                  31,
+                  32,
+                  32,
+                  32,
+                  32,
+                  32,
+                  32,
+                  33,
+                  33,
+                  33,
+                  33,
+                  33,
+                  33,
+                  33,
+                  33,
+                  34,
+                  34,
+                  34,
+                  34,
+                  34,
+                  34,
+                  34,
+                  34,
+                  35,
+                  35,
+                  35,
+                  35,
+                  35,
+                  35,
+                  35,
+                  35,
+                  36,
+                  36,
+                  36,
+                  36,
+                  36,
+                  36,
+                  36,
+                  37,
+                  37,
+                  37,
+                  37,
+                  38,
+                  38,
+                  38,
+                  38,
+                  38,
+                  39,
+                  39,
+                  39,
+                  39,
+                  39,
+                  39,
+                  39,
+                  40,
+                  40,
+                  40,
+                  40,
+                  40,
+                  40,
+                  41,
+                  41,
+                  41,
+                  41,
+                  41,
+                  41,
+                  41,
+                  42,
+                  42,
+                  42,
+                  42,
+                  43,
+                  43,
+                  43,
+                  43,
+                  43,
+                  43,
+                  43,
+                  43,
+                  44,
+                  44,
+                  44,
+                  44,
+                  44,
+                  44,
+                  44,
+                  44,
+                  44,
+                  44,
+                  44,
+                  44,
+                  45,
+                  45,
+                  45,
+                  45,
+                  45,
+                  46,
+                  46,
+                  46,
+                  46,
+                  46,
+                  46,
+                  46,
+                  46,
+                  46
+                },
+                atom-ids {
+                  8,
+                  2,
+                  1,
+                  9,
+                  3,
+                  10,
+                  4,
+                  9,
+                  2,
+                  1,
+                  10,
+                  3,
+                  11,
+                  4,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  9,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  9,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  5,
+                  4,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  9,
+                  10,
+                  2,
+                  1,
+                  11,
+                  3,
+                  5,
+                  6,
+                  4,
+                  9,
+                  2,
+                  1,
+                  10,
+                  3,
+                  4,
+                  5,
+                  6,
+                  2,
+                  1,
+                  7,
+                  3,
+                  10,
+                  2,
+                  1,
+                  14,
+                  3,
+                  5,
+                  4,
+                  11,
+                  6,
+                  12,
+                  13,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  9,
+                  7,
+                  2,
+                  1,
+                  9,
+                  3,
+                  4,
+                  10,
+                  8,
+                  17,
+                  2,
+                  1,
+                  18,
+                  3,
+                  8,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9,
+                  7,
+                  2,
+                  1,
+                  9,
+                  3,
+                  4,
+                  10,
+                  8,
+                  9,
+                  2,
+                  1,
+                  10,
+                  3,
+                  4,
+                  5,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  9,
+                  10,
+                  2,
+                  1,
+                  14,
+                  3,
+                  5,
+                  4,
+                  11,
+                  6,
+                  12,
+                  13,
+                  10,
+                  2,
+                  1,
+                  11,
+                  3,
+                  6,
+                  4,
+                  5,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  5,
+                  4,
+                  4,
+                  2,
+                  1,
+                  5,
+                  9,
+                  2,
+                  1,
+                  10,
+                  3,
+                  11,
+                  4,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  5,
+                  4,
+                  10,
+                  2,
+                  1,
+                  11,
+                  3,
+                  5,
+                  4,
+                  12,
+                  13,
+                  6,
+                  2,
+                  1,
+                  7,
+                  3,
+                  10,
+                  2,
+                  1,
+                  11,
+                  3,
+                  5,
+                  6,
+                  4,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  9,
+                  6,
+                  2,
+                  1,
+                  7,
+                  3,
+                  9,
+                  2,
+                  1,
+                  10,
+                  3,
+                  11,
+                  4,
+                  17,
+                  2,
+                  1,
+                  18,
+                  3,
+                  8,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9,
+                  19,
+                  9,
+                  2,
+                  1,
+                  10,
+                  3,
+                  11,
+                  4,
+                  4,
+                  2,
+                  1,
+                  5,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  9,
+                  10,
+                  2,
+                  1,
+                  11,
+                  3,
+                  5,
+                  6,
+                  4,
+                  10,
+                  2,
+                  1,
+                  11,
+                  3,
+                  5,
+                  6,
+                  4,
+                  10,
+                  2,
+                  1,
+                  11,
+                  3,
+                  5,
+                  6,
+                  4,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  5,
+                  4,
+                  4,
+                  2,
+                  1,
+                  5,
+                  6,
+                  2,
+                  1,
+                  7,
+                  3,
+                  9,
+                  2,
+                  1,
+                  10,
+                  3,
+                  11,
+                  4,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  9,
+                  7,
+                  2,
+                  1,
+                  8,
+                  3,
+                  5,
+                  4,
+                  4,
+                  2,
+                  1,
+                  5,
+                  9,
+                  2,
+                  1,
+                  10,
+                  3,
+                  4,
+                  11,
+                  12,
+                  17,
+                  2,
+                  1,
+                  18,
+                  3,
+                  8,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9,
+                  19,
+                  6,
+                  2,
+                  1,
+                  7,
+                  3,
+                  7,
+                  2,
+                  1,
+                  9,
+                  3,
+                  4,
+                  10,
+                  8,
+                  11
+                }
+              },
+              sites {
+                scale-factor 1000,
+                x {
+                  17047,
+                  16966,
+                  15685,
+                  15267,
+                  18170,
+                  19333,
+                  18149,
+                  15114,
+                  13855,
+                  14163,
+                  14993,
+                  12732,
+                  13307,
+                  12484,
+                  13487,
+                  13659,
+                  12269,
+                  11392,
+                  14368,
+                  15885,
+                  12019,
+                  10645,
+                  10654,
+                  11659,
+                  10057,
+                  9836,
+                  9560,
+                  9447,
+                  9288,
+                  9489,
+                  8229,
+                  7337,
+                  8366,
+                  8875,
+                  8673,
+                  8753,
+                  8725,
+                  7340,
+                  6274,
+                  8880,
+                  8911,
+                  7580,
+                  7670,
+                  9206,
+                  10713,
+                  8810,
+                  11185,
+                  6458,
+                  5144,
+                  5114,
+                  4664,
+                  3994,
+                  2716,
+                  3757,
+                  5605,
+                  5598,
+                  6440,
+                  6052,
+                  6021,
+                  7646,
+                  8496,
+                  7797,
+                  7877,
+                  9847,
+                  10751,
+                  11225,
+                  12142,
+                  12758,
+                  12538,
+                  13600,
+                  7185,
+                  6500,
+                  5381,
+                  5212,
+                  5907,
+                  6989,
+                  4647,
+                  3545,
+                  4106,
+                  3536,
+                  2663,
+                  1802,
+                  1567,
+                  1394,
+                  5258,
+                  5928,
+                  6303,
+                  6136,
+                  7183,
+                  7883,
+                  8906,
+                  7532,
+                  9560,
+                  8175,
+                  9140,
+                  6900,
+                  7330,
+                  6116,
+                  6239,
+                  8145,
+                  9555,
+                  10012,
+                  10119,
+                  4993,
+                  3782,
+                  3296,
+                  2947,
+                  2697,
+                  1383,
+                  3174,
+                  3321,
+                  2890,
+                  3687,
+                  3200,
+                  3039,
+                  2559,
+                  4997,
+                  5894,
+                  5737,
+                  6228,
+                  7369,
+                  7717,
+                  7948,
+                  9211,
+                  9536,
+                  8659,
+                  10793,
+                  5051,
+                  4933,
+                  4396,
+                  4987,
+                  4196,
+                  4960,
+                  3907,
+                  6129,
+                  3328,
+                  2792,
+                  3572,
+                  3259,
+                  1358,
+                  1223,
+                  2421,
+                  4565,
+                  5366,
+                  5006,
+                  5534,
+                  4181,
+                  3766,
+                  5017,
+                  5947,
+                  2992,
+                  2051,
+                  2259,
+                  4971,
+                  6143,
+                  6400,
+                  5485,
+                  5703,
+                  4676,
+                  3963,
+                  7728,
+                  8114,
+                  7427,
+                  7035,
+                  9647,
+                  10439,
+                  11940,
+                  12416,
+                  12538,
+                  7211,
+                  6613,
+                  5211,
+                  4782,
+                  6605,
+                  4445,
+                  3073,
+                  3085,
+                  2315,
+                  2203,
+                  1815,
+                  902,
+                  755,
+                  4032,
+                  4179,
+                  4631,
+                  4227,
+                  5038,
+                  4348,
+                  5407,
+                  5879,
+                  4696,
+                  4527,
+                  6880,
+                  3826,
+                  2690,
+                  1672,
+                  947,
+                  1985,
+                  1664,
+                  2914,
+                  1621,
+                  714,
+                  1125,
+                  286,
+                  754,
+                  -202,
+                  -1547,
+                  193,
+                  -2496,
+                  -800,
+                  -2078,
+                  -3096,
+                  2470,
+                  2986,
+                  3608,
+                  3766,
+                  4076,
+                  5125,
+                  3493,
+                  3983,
+                  4769,
+                  6255,
+                  7037,
+                  6710,
+                  8140,
+                  8500,
+                  7580,
+                  8503,
+                  8048,
+                  9793,
+                  10279,
+                  11345,
+                  11970,
+                  10789,
+                  12059,
+                  9684,
+                  12732,
+                  11489,
+                  12552,
+                  13590,
+                  13168,
+                  11987,
+                  10913,
+                  13130,
+                  10151,
+                  14855,
+                  15930,
+                  16913,
+                  17097,
+                  16621,
+                  17360,
+                  15592,
+                  18298,
+                  17663,
+                  18635,
+                  19924,
+                  20593,
+                  18944,
+                  18238,
+                  17371,
+                  20172,
+                  21451,
+                  21142,
+                  20138,
+                  22055,
+                  22018,
+                  21944,
+                  21868,
+                  23246,
+                  21893,
+                  21936,
+                  20614,
+                  20357,
+                  23131,
+                  24284,
+                  23340,
+                  19826,
+                  18503,
+                  18684,
+                  19533,
+                  17582,
+                  17198,
+                  17879,
+                  17923,
+                  17392,
+                  16652,
+                  17076,
+                  16097,
+                  16858,
+                  17728,
+                  17333,
+                  15875,
+                  15434,
+                  15036,
+                  13564,
+                  12935,
+                  11720,
+                  12932,
+                  13140,
+                  14109,
+                  12267,
+                  13725,
+                  13256,
+                  14274,
+                  14930,
+                  13199,
+                  12000,
+                  12119,
+                  10774,
+                  11045,
+                  9675,
+                  9802,
+                  8739,
+                  14342,
+                  15444,
+                  15170,
+                  16093,
+                  15680,
+                  13965,
+                  13512,
+                  13310,
+                  13732,
+                  12265,
+                  12538,
+                  11982,
+                  13406,
+                  12703
+                },
+                y {
+                  14098,
+                  12784,
+                  12755,
+                  13824,
+                  12703,
+                  12829,
+                  11545,
+                  11555,
+                  11468,
+                  10784,
+                  9862,
+                  10711,
+                  9439,
+                  11442,
+                  11241,
+                  10706,
+                  10430,
+                  11307,
+                  11748,
+                  12425,
+                  9272,
+                  8991,
+                  8793,
+                  8295,
+                  7751,
+                  8017,
+                  9107,
+                  9034,
+                  7670,
+                  7519,
+                  9956,
+                  9786,
+                  9803,
+                  6685,
+                  5314,
+                  4375,
+                  4857,
+                  5120,
+                  5219,
+                  3075,
+                  2082,
+                  2089,
+                  2030,
+                  676,
+                  702,
+                  -476,
+                  -515,
+                  2161,
+                  2209,
+                  3378,
+                  3267,
+                  2354,
+                  2891,
+                  1031,
+                  4546,
+                  5767,
+                  5526,
+                  5933,
+                  6977,
+                  4908,
+                  4609,
+                  3608,
+                  3778,
+                  4019,
+                  3607,
+                  4698,
+                  5571,
+                  6609,
+                  6932,
+                  7322,
+                  2582,
+                  1583,
+                  2312,
+                  2016,
+                  462,
+                  -272,
+                  3181,
+                  3934,
+                  4850,
+                  5000,
+                  4677,
+                  3734,
+                  2612,
+                  4251,
+                  5498,
+                  6357,
+                  5578,
+                  6072,
+                  6993,
+                  8005,
+                  7585,
+                  9373,
+                  8538,
+                  10281,
+                  9845,
+                  4389,
+                  3607,
+                  3210,
+                  3144,
+                  2404,
+                  2855,
+                  3894,
+                  1955,
+                  2927,
+                  2598,
+                  3871,
+                  3816,
+                  1952,
+                  1825,
+                  532,
+                  4986,
+                  6284,
+                  6597,
+                  7146,
+                  7368,
+                  9013,
+                  6227,
+                  6488,
+                  5559,
+                  5901,
+                  6506,
+                  7686,
+                  8946,
+                  8855,
+                  9532,
+                  10350,
+                  9491,
+                  4410,
+                  3430,
+                  4013,
+                  3755,
+                  2184,
+                  1177,
+                  97,
+                  606,
+                  4795,
+                  5375,
+                  6539,
+                  7045,
+                  5765,
+                  5693,
+                  4940,
+                  7046,
+                  8190,
+                  9480,
+                  10510,
+                  9437,
+                  10609,
+                  11397,
+                  10756,
+                  10187,
+                  9144,
+                  11348,
+                  12703,
+                  13512,
+                  13232,
+                  13060,
+                  14968,
+                  14892,
+                  13567,
+                  13296,
+                  13102,
+                  14072,
+                  13682,
+                  13284,
+                  12093,
+                  12170,
+                  13225,
+                  11069,
+                  15333,
+                  16316,
+                  15935,
+                  16166,
+                  17694,
+                  15317,
+                  14894,
+                  13642,
+                  13522,
+                  14637,
+                  16048,
+                  13864,
+                  16760,
+                  12763,
+                  11548,
+                  11944,
+                  11251,
+                  10517,
+                  9793,
+                  13012,
+                  13501,
+                  13907,
+                  13421,
+                  14614,
+                  14802,
+                  15220,
+                  14131,
+                  14112,
+                  16520,
+                  16221,
+                  17739,
+                  13189,
+                  12045,
+                  11125,
+                  10631,
+                  11229,
+                  10043,
+                  10336,
+                  8750,
+                  9329,
+                  7704,
+                  8031,
+                  7057,
+                  10984,
+                  9994,
+                  10505,
+                  9715,
+                  9102,
+                  10027,
+                  8324,
+                  11763,
+                  12336,
+                  12243,
+                  12750,
+                  11630,
+                  11694,
+                  13140,
+                  13949,
+                  10685,
+                  8987,
+                  13409,
+                  14760,
+                  14657,
+                  13583,
+                  15534,
+                  14803,
+                  15685,
+                  15675,
+                  15772,
+                  15876,
+                  16916,
+                  18006,
+                  16360,
+                  15338,
+                  16517,
+                  16024,
+                  16493,
+                  17454,
+                  17549,
+                  16659,
+                  16995,
+                  15651,
+                  16974,
+                  15206,
+                  18669,
+                  18861,
+                  18041,
+                  17742,
+                  20364,
+                  20937,
+                  19899,
+                  17729,
+                  16968,
+                  15477,
+                  15022,
+                  14701,
+                  13241,
+                  12628,
+                  11387,
+                  12696,
+                  13435,
+                  12911,
+                  13190,
+                  14317,
+                  13600,
+                  13401,
+                  12935,
+                  12109,
+                  12312,
+                  12451,
+                  11718,
+                  11116,
+                  10928,
+                  13265,
+                  13420,
+                  12206,
+                  11368,
+                  14657,
+                  14689,
+                  14149,
+                  12123,
+                  10956,
+                  10687,
+                  9550,
+                  11746,
+                  11572,
+                  11227,
+                  11039,
+                  12737,
+                  14093,
+                  14303,
+                  14963,
+                  11173,
+                  10744,
+                  9687,
+                  9862,
+                  11913,
+                  12819,
+                  13852,
+                  12616,
+                  14675,
+                  13432,
+                  14456,
+                  15265,
+                  8640,
+                  7666,
+                  6532,
+                  5704,
+                  7098,
+                  6501,
+                  5394,
+                  5853,
+                  6928,
+                  4769,
+                  4303,
+                  4848,
+                  3298,
+                  4973
+                },
+                z {
+                  3625,
+                  4337,
+                  5132,
+                  5593,
+                  5336,
+                  4462,
+                  6303,
+                  5264,
+                  6065,
+                  7379,
+                  7442,
+                  5261,
+                  4926,
+                  3894,
+                  8416,
+                  9786,
+                  10322,
+                  10185,
+                  10690,
+                  10015,
+                  10928,
+                  11407,
+                  12918,
+                  13491,
+                  10682,
+                  8904,
+                  13562,
+                  15012,
+                  15605,
+                  16819,
+                  15345,
+                  14114,
+                  12958,
+                  14795,
+                  15279,
+                  14083,
+                  12923,
+                  15996,
+                  15031,
+                  14357,
+                  13258,
+                  12505,
+                  11244,
+                  13923,
+                  14312,
+                  12968,
+                  15142,
+                  13159,
+                  12453,
+                  11461,
+                  10343,
+                  13477,
+                  12869,
+                  14208,
+                  11940,
+                  11081,
+                  9850,
+                  8744,
+                  11890,
+                  10005,
+                  8836,
+                  7875,
+                  6651,
+                  9305,
+                  8149,
+                  7243,
+                  8034,
+                  7442,
+                  6157,
+                  8201,
+                  8444,
+                  7565,
+                  6772,
+                  5557,
+                  8399,
+                  9012,
+                  7446,
+                  6750,
+                  5690,
+                  4617,
+                  7748,
+                  8609,
+                  8164,
+                  9767,
+                  6005,
+                  5054,
+                  3799,
+                  2653,
+                  5754,
+                  4882,
+                  4026,
+                  4982,
+                  3194,
+                  4144,
+                  3292,
+                  3989,
+                  2790,
+                  1914,
+                  684,
+                  3240,
+                  3730,
+                  3322,
+                  4539,
+                  2571,
+                  1741,
+                  1003,
+                  -188,
+                  2608,
+                  1805,
+                  3005,
+                  1720,
+                  1126,
+                  -111,
+                  -1103,
+                  2240,
+                  1649,
+                  -100,
+                  -1213,
+                  -2408,
+                  -3506,
+                  -731,
+                  206,
+                  -615,
+                  -1337,
+                  -2430,
+                  -3032,
+                  -2898,
+                  -2203,
+                  -3325,
+                  -4619,
+                  -5686,
+                  -2862,
+                  -1991,
+                  -1633,
+                  -2767,
+                  -4543,
+                  -5796,
+                  -6322,
+                  -7421,
+                  -5472,
+                  -3993,
+                  -3407,
+                  -5559,
+                  -6018,
+                  -5280,
+                  -5730,
+                  -4262,
+                  -3513,
+                  -3042,
+                  -2523,
+                  -2224,
+                  -2622,
+                  -1550,
+                  -3176,
+                  -2696,
+                  -1225,
+                  -381,
+                  -2920,
+                  -3996,
+                  -3811,
+                  -921,
+                  500,
+                  1409,
+                  2539,
+                  660,
+                  63,
+                  391,
+                  680,
+                  291,
+                  966,
+                  1912,
+                  2349,
+                  3494,
+                  1246,
+                  1404,
+                  1756,
+                  2644,
+                  3578,
+                  462,
+                  -128,
+                  810,
+                  757,
+                  2312,
+                  3187,
+                  4596,
+                  5546,
+                  2539,
+                  1021,
+                  4693,
+                  6026,
+                  6881,
+                  8024,
+                  5829,
+                  6357,
+                  7193,
+                  7434,
+                  8468,
+                  6613,
+                  5230,
+                  6699,
+                  6511,
+                  6657,
+                  7815,
+                  8545,
+                  5322,
+                  5354,
+                  5644,
+                  5099,
+                  5672,
+                  5156,
+                  5429,
+                  5458,
+                  7994,
+                  8949,
+                  10229,
+                  11185,
+                  8225,
+                  7823,
+                  7034,
+                  10241,
+                  11359,
+                  11105,
+                  11954,
+                  9991,
+                  9635,
+                  9206,
+                  8944,
+                  8529,
+                  8880,
+                  9173,
+                  8822,
+                  7743,
+                  7552,
+                  10085,
+                  10670,
+                  11137,
+                  11781,
+                  7038,
+                  6035,
+                  6559,
+                  6945,
+                  4681,
+                  4163,
+                  3628,
+                  2937,
+                  6535,
+                  6940,
+                  5818,
+                  4969,
+                  8284,
+                  8067,
+                  9434,
+                  9218,
+                  5806,
+                  4737,
+                  4948,
+                  3944,
+                  4782,
+                  5907,
+                  6596,
+                  6217,
+                  6513,
+                  6427,
+                  5877,
+                  7032,
+                  7019,
+                  8395,
+                  8435,
+                  6275,
+                  9435,
+                  10809,
+                  11520,
+                  11947,
+                  11593,
+                  10708,
+                  12961,
+                  11642,
+                  12298,
+                  13784,
+                  14362,
+                  11996,
+                  10237,
+                  14425,
+                  15876,
+                  16593,
+                  16033,
+                  16145,
+                  14996,
+                  13779,
+                  17884,
+                  18690,
+                  18871,
+                  19166,
+                  18715,
+                  18836,
+                  17469,
+                  17427,
+                  19579,
+                  18958,
+                  18211,
+                  19264,
+                  16424,
+                  15081,
+                  14612,
+                  13567,
+                  14071,
+                  14399,
+                  15331,
+                  13762,
+                  15609,
+                  14048,
+                  14996,
+                  15269,
+                  15421,
+                  15246,
+                  14279,
+                  14038,
+                  16681,
+                  13739,
+                  12878,
+                  11454,
+                  11026,
+                  13501,
+                  14921,
+                  15885,
+                  15015,
+                  10746
+                }
+              },
+              temperature-factors isotropic {
+                scale-factor 1000,
+                b {
+                  13789,
+                  10800,
+                  9189,
+                  9850,
+                  13020,
+                  15060,
+                  14229,
+                  7809,
+                  8310,
+                  5800,
+                  6940,
+                  10319,
+                  12810,
+                  11899,
+                  5239,
+                  5389,
+                  4449,
+                  6539,
+                  5989,
+                  7010,
+                  3900,
+                  4239,
+                  3720,
+                  5300,
+                  4409,
+                  4719,
+                  3960,
+                  4250,
+                  4960,
+                  7440,
+                  5110,
+                  5239,
+                  5199,
+                  4829,
+                  4449,
+                  4989,
+                  4610,
+                  5050,
+                  6389,
+                  4940,
+                  6329,
+                  5320,
+                  6849,
+                  8430,
+                  9779,
+                  11699,
+                  9920,
+                  5019,
+                  6929,
+                  5389,
+                  6300,
+                  9640,
+                  13850,
+                  11970,
+                  3730,
+                  3559,
+                  4130,
+                  4360,
+                  4800,
+                  3730,
+                  3380,
+                  3470,
+                  4670,
+                  3950,
+                  4550,
+                  5889,
+                  6199,
+                  7519,
+                  10680,
+                  9479,
+                  5190,
+                  4599,
+                  4840,
+                  5840,
+                  5909,
+                  8380,
+                  3539,
+                  4570,
+                  4139,
+                  5519,
+                  6420,
+                  8250,
+                  12720,
+                  9920,
+                  3430,
+                  3490,
+                  3400,
+                  4070,
+                  5480,
+                  5570,
+                  6989,
+                  6519,
+                  8199,
+                  6340,
+                  6840,
+                  3640,
+                  4309,
+                  3980,
+                  6219,
+                  5809,
+                  6820,
+                  9430,
+                  8210,
+                  3759,
+                  3980,
+                  3799,
+                  4849,
+                  4710,
+                  6670,
+                  6260,
+                  3789,
+                  3539,
+                  3480,
+                  4630,
+                  4579,
+                  5659,
+                  3990,
+                  3829,
+                  3789,
+                  5389,
+                  4110,
+                  4690,
+                  5099,
+                  4710,
+                  5280,
+                  6670,
+                  6409,
+                  4699,
+                  5460,
+                  5130,
+                  5550,
+                  6469,
+                  7429,
+                  8699,
+                  9390,
+                  4280,
+                  5380,
+                  6300,
+                  9619,
+                  5869,
+                  6469,
+                  6449,
+                  4940,
+                  5389,
+                  5030,
+                  7340,
+                  4099,
+                  3940,
+                  3960,
+                  5820,
+                  4130,
+                  5449,
+                  5409,
+                  5039,
+                  4690,
+                  4190,
+                  4469,
+                  7119,
+                  7030,
+                  4900,
+                  5159,
+                  5309,
+                  4110,
+                  5110,
+                  6159,
+                  7480,
+                  9399,
+                  10399,
+                  13319,
+                  4559,
+                  4489,
+                  4099,
+                  5639,
+                  5800,
+                  4369,
+                  5440,
+                  4320,
+                  4719,
+                  6420,
+                  7500,
+                  7650,
+                  7800,
+                  3920,
+                  4369,
+                  3950,
+                  4739,
+                  4630,
+                  5610,
+                  3890,
+                  4429,
+                  4260,
+                  5440,
+                  5360,
+                  4530,
+                  5079,
+                  4619,
+                  7800,
+                  6030,
+                  7190,
+                  7340,
+                  5010,
+                  6599,
+                  4920,
+                  7130,
+                  9659,
+                  11560,
+                  12850,
+                  14439,
+                  16610,
+                  17110,
+                  19989,
+                  28979,
+                  5309,
+                  5699,
+                  6280,
+                  8770,
+                  6550,
+                  6570,
+                  7289,
+                  4989,
+                  5500,
+                  4190,
+                  6119,
+                  4300,
+                  4889,
+                  5500,
+                  5820,
+                  4659,
+                  5329,
+                  6019,
+                  5239,
+                  5159,
+                  7190,
+                  5489,
+                  6849,
+                  6449,
+                  8939,
+                  5519,
+                  6820,
+                  6920,
+                  9220,
+                  8109,
+                  9590,
+                  9729,
+                  13409,
+                  7059,
+                  7519,
+                  6630,
+                  7900,
+                  8069,
+                  9409,
+                  9460,
+                  9850,
+                  8069,
+                  8779,
+                  8310,
+                  9090,
+                  9670,
+                  10149,
+                  9529,
+                  8479,
+                  9199,
+                  10409,
+                  12060,
+                  9239,
+                  9239,
+                  9600,
+                  13649,
+                  10430,
+                  8699,
+                  9460,
+                  8319,
+                  9890,
+                  10720,
+                  11659,
+                  11810,
+                  7639,
+                  8050,
+                  7630,
+                  9640,
+                  7800,
+                  7300,
+                  8000,
+                  8960,
+                  9060,
+                  8819,
+                  10390,
+                  10989,
+                  10489,
+                  7550,
+                  8000,
+                  7219,
+                  8409,
+                  5539,
+                  5849,
+                  5869,
+                  7289,
+                  6719,
+                  8590,
+                  9590,
+                  11449,
+                  5219,
+                  5559,
+                  4610,
+                  6039,
+                  5409,
+                  5340,
+                  6590,
+                  5940,
+                  5969,
+                  5170,
+                  5960,
+                  8600,
+                  4760,
+                  5889,
+                  6670,
+                  7559,
+                  6820,
+                  5800,
+                  6150,
+                  6610,
+                  7179,
+                  7269,
+                  7980,
+                  11000,
+                  10319,
+                  7860
+                }
+              }
+            }
+          },
+          {
+            id 2,
+            descr {
+              other-comment "strand"
+            },
+            coordinates literal surface {
+              contents residues interval {
+                {
+                  molecule-id 1,
+                  from 1,
+                  to 4
+                }
+              },
+              surface brick {
+                corner-000 {
+                  scale-factor 1000000,
+                  x 16714633,
+                  y 11923621,
+                  z 3804405
+                },
+                corner-001 {
+                  scale-factor 1000000,
+                  x 15691615,
+                  y 13635873,
+                  z 3951460
+                },
+                corner-010 {
+                  scale-factor 1000000,
+                  x 16700384,
+                  y 11916126,
+                  z 3792539
+                },
+                corner-011 {
+                  scale-factor 1000000,
+                  x 15677366,
+                  y 13628378,
+                  z 3939594
+                },
+                corner-100 {
+                  scale-factor 1000000,
+                  x 11884633,
+                  y 8345621,
+                  z 11864405
+                },
+                corner-101 {
+                  scale-factor 1000000,
+                  x 10861615,
+                  y 10057873,
+                  z 12011460
+                },
+                corner-110 {
+                  scale-factor 1000000,
+                  x 11870384,
+                  y 8338126,
+                  z 11852539
+                },
+                corner-111 {
+                  scale-factor 1000000,
+                  x 10847366,
+                  y 10050378,
+                  z 11999594
+                }
+              }
+            }
+          },
+          {
+            id 3,
+            descr {
+              other-comment "helix"
+            },
+            coordinates literal surface {
+              contents residues interval {
+                {
+                  molecule-id 1,
+                  from 7,
+                  to 17
+                }
+              },
+              surface cylinder {
+                axis-top {
+                  scale-factor 1000000,
+                  x 4367000,
+                  y 4819000,
+                  z -1066000
+                },
+                axis-bottom {
+                  scale-factor 1000000,
+                  x 7276000,
+                  y 3457000,
+                  z 13707000
+                },
+                radius {
+                  scale-factor 1,
+                  scaled-integer-value 2
+                }
+              }
+            }
+          },
+          {
+            id 4,
+            descr {
+              other-comment "helix"
+            },
+            coordinates literal surface {
+              contents residues interval {
+                {
+                  molecule-id 1,
+                  from 23,
+                  to 31
+                }
+              },
+              surface cylinder {
+                axis-top {
+                  scale-factor 1000000,
+                  x 2430000,
+                  y 12003000,
+                  z 10412000
+                },
+                axis-bottom {
+                  scale-factor 1000000,
+                  x 6252000,
+                  y 14439000,
+                  z 125000
+                },
+                radius {
+                  scale-factor 1,
+                  scaled-integer-value 2
+                }
+              }
+            }
+          },
+          {
+            id 5,
+            descr {
+              other-comment "strand"
+            },
+            coordinates literal surface {
+              contents residues interval {
+                {
+                  molecule-id 1,
+                  from 32,
+                  to 35
+                }
+              },
+              surface brick {
+                corner-000 {
+                  scale-factor 1000000,
+                  x 8273273,
+                  y 11611786,
+                  z 9799259
+                },
+                corner-001 {
+                  scale-factor 1000000,
+                  x 7231853,
+                  y 13318548,
+                  z 9848319
+                },
+                corner-010 {
+                  scale-factor 1000000,
+                  x 8280146,
+                  y 11615451,
+                  z 9817680
+                },
+                corner-011 {
+                  scale-factor 1000000,
+                  x 7238726,
+                  y 13322213,
+                  z 9866740
+                },
+                corner-100 {
+                  scale-factor 1000000,
+                  x 16046273,
+                  y 16465786,
+                  z 5933259
+                },
+                corner-101 {
+                  scale-factor 1000000,
+                  x 15004853,
+                  y 18172548,
+                  z 5982319
+                },
+                corner-110 {
+                  scale-factor 1000000,
+                  x 16053146,
+                  y 16469451,
+                  z 5951680
+                },
+                corner-111 {
+                  scale-factor 1000000,
+                  x 15011726,
+                  y 18176213,
+                  z 6000740
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  sequences {
+    seq {
+      id {
+        pdb {
+          mol "1CRN",
+          chain 65,
+          rel std {
+            year 1981,
+            month 4,
+            day 30
+          }
+        },
+        gi 157830695
+      },
+      descr {
+        pdb {
+          deposition std {
+            year 1981,
+            month 4,
+            day 30
+          },
+          class "Plant Seed Protein",
+          compound {
+            "Water Structure Of A Hydrophobic Protein At Atomic Resolution.
+ Pentagon Rings Of Water Molecules In Crystals Of Crambin"
+          },
+          source {
+            "Mol_id: 1; Organism_scientific: Crambe Abyssinica"
+          }
+        },
+        source {
+          org {
+            taxname "Crambe hispanica subsp. abyssinica",
+            db {
+              {
+                db "taxon",
+                tag id 3721
+              }
+            },
+            syn {
+              "Crambe hispanica subsp. abyssinica (Hochst. ex R.E.Fr.) Prina",
+              "Crambe abyssinica Hochst. ex R.E.Fr.",
+              "Crambe abyssinica",
+              "Abyssinian crambe",
+              "Abyssinian kale"
+            },
+            orgname {
+              name binomial {
+                genus "Crambe",
+                species "hispanica",
+                subspecies "subsp. abyssinica"
+              },
+              mod {
+                {
+                  subtype sub-species,
+                  subname "abyssinica"
+                }
+              },
+              lineage "Eukaryota; Viridiplantae; Streptophyta; Embryophyta;
+ Tracheophyta; Spermatophyta; Magnoliophyta; eudicotyledons; core
+ eudicotyledons; rosids; eurosids II; Brassicales; Brassicaceae; Crambe",
+              gcode 1,
+              mgcode 1,
+              div "PLN"
+            }
+          }
+        }
+      },
+      inst {
+        repr raw,
+        mol aa,
+        length 46,
+        seq-data iupacaa "TTCCPSIVARSNFNVCRLPGTPEAICATYTGCIIIPGATCPGDYAN"
+      }
+    }
+  },
+  style-dictionary {
+    global-style {
+      protein-backbone {
+        type trace,
+        style tube-worm,
+        color-scheme secondary-structure,
+        user-color {
+          scale-factor 10000,
+          red 5000,
+          green 5000,
+          blue 5000,
+          alpha 10000
+        }
+      },
+      nucleotide-backbone {
+        type trace,
+        style tube-worm,
+        color-scheme molecule,
+        user-color {
+          scale-factor 10000,
+          red 5000,
+          green 5000,
+          blue 5000,
+          alpha 10000
+        }
+      },
+      protein-sidechains {
+        is-on FALSE,
+        style wire,
+        color-scheme element,
+        user-color {
+          scale-factor 10000,
+          red 5000,
+          green 5000,
+          blue 5000,
+          alpha 10000
+        }
+      },
+      nucleotide-sidechains {
+        is-on FALSE,
+        style wire,
+        color-scheme element,
+        user-color {
+          scale-factor 10000,
+          red 5000,
+          green 5000,
+          blue 5000,
+          alpha 10000
+        }
+      },
+      heterogens {
+        is-on TRUE,
+        style ball-and-stick,
+        color-scheme element,
+        user-color {
+          scale-factor 10000,
+          red 5000,
+          green 5000,
+          blue 5000,
+          alpha 10000
+        }
+      },
+      solvents {
+        is-on FALSE,
+        style ball-and-stick,
+        color-scheme element,
+        user-color {
+          scale-factor 10000,
+          red 5000,
+          green 5000,
+          blue 5000,
+          alpha 10000
+        }
+      },
+      connections {
+        is-on TRUE,
+        style tubes,
+        color-scheme user-select,
+        user-color {
+          scale-factor 10000,
+          red 9000,
+          green 9000,
+          blue 10000,
+          alpha 10000
+        }
+      },
+      helix-objects {
+        is-on TRUE,
+        style with-arrows,
+        color-scheme secondary-structure,
+        user-color {
+          scale-factor 10000,
+          red 5000,
+          green 5000,
+          blue 5000,
+          alpha 10000
+        }
+      },
+      strand-objects {
+        is-on TRUE,
+        style with-arrows,
+        color-scheme secondary-structure,
+        user-color {
+          scale-factor 10000,
+          red 5000,
+          green 5000,
+          blue 5000,
+          alpha 10000
+        }
+      },
+      virtual-disulfides-on TRUE,
+      virtual-disulfide-color {
+        scale-factor 10000,
+        red 9300,
+        green 5500,
+        blue 500,
+        alpha 10000
+      },
+      hydrogens-on TRUE,
+      background-color {
+        scale-factor 10000,
+        red 0,
+        green 0,
+        blue 0,
+        alpha 10000
+      },
+      scale-factor 10000,
+      space-fill-proportion 10000,
+      ball-radius 4000,
+      stick-radius 2000,
+      tube-radius 3000,
+      tube-worm-radius 3000,
+      helix-radius 18000,
+      strand-width 20000,
+      strand-thickness 5000,
+      protein-labels {
+        spacing 0,
+        type three-letter,
+        number sequential,
+        termini FALSE,
+        white TRUE
+      },
+      nucleotide-labels {
+        spacing 0,
+        type three-letter,
+        number sequential,
+        termini FALSE,
+        white TRUE
+      },
+      ion-labels TRUE
+    }
+  },
+  user-annotations {
+    view {
+      camera-distance { 528460927488816, 10, -13 },
+      camera-angle-rad { 610865238198015, 10, -15 },
+      camera-look-at-X { 0, 10, 0 },
+      camera-look-at-Y { 0, 10, 0 },
+      camera-clip-near { 243902776775804, 10, -13 },
+      camera-clip-far { 824846631835331, 10, -13 },
+      matrix {
+        m0 { 756122708320618, 10, -15 },
+        m1 { -448594018816948, 10, -16 },
+        m2 { -652889966964722, 10, -15 },
+        m3 { 0, 10, 0 },
+        m4 { 23760224878788, 10, -14 },
+        m5 { 948391020298004, 10, -15 },
+        m6 { 210007518529892, 10, -15 },
+        m7 { 0, 10, 0 },
+        m8 { 609773278236389, 10, -15 },
+        m9 { -313919514417648, 10, -15 },
+        m10 { 727758526802063, 10, -15 },
+        m11 { 0, 10, 0 },
+        m12 { -135815353393555, 10, -13 },
+        m13 { -667890644073486, 10, -14 },
+        m14 { -107414162158966, 10, -14 },
+        m15 { 1, 10, 0 }
+      },
+      rotation-center {
+        x { 926840366972477, 10, -14 },
+        y { 978676758409786, 10, -14 },
+        z { 696673088685015, 10, -14 }
+      }
+    }
+  }
+}

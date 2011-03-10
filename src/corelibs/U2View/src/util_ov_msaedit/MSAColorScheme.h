@@ -1,0 +1,189 @@
+#ifndef _U2_MSA_COLOR_SCHEME_H_
+#define _U2_MSA_COLOR_SCHEME_H_
+
+#include <U2Core/global.h>
+
+#include <QtCore/QVector>
+#include <QtGui/QColor>
+
+namespace U2 {
+
+class MAlignmentObject;
+class MSAColorScheme;
+class MAlignment;
+class MAlignmentModInfo;
+
+//////////////////////////////////////////////////////////////////////////
+// factories
+
+class U2VIEW_EXPORT MSAColorSchemeFactory : public QObject {
+    Q_OBJECT
+public:
+    MSAColorSchemeFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype);
+    virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj) = 0;
+
+    const QString& getId() const {return id;}
+    const QString& getName() const {return name;}
+    DNAAlphabetType getAlphabetType() const {return aType;}
+
+private:
+    QString         id;
+    QString         name;
+    DNAAlphabetType aType;
+};
+
+class U2VIEW_EXPORT MSAColorSchemeStaticFactory : public MSAColorSchemeFactory {
+    Q_OBJECT
+public:
+    MSAColorSchemeStaticFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype, const QVector<QColor>& colorsPerChar);
+    virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj);
+private:
+    QVector<QColor> colorsPerChar;
+};
+
+class MSAColorSchemePercIdentFactory : public MSAColorSchemeFactory {
+    Q_OBJECT
+public:
+    MSAColorSchemePercIdentFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype);
+    virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj);
+};
+
+class MSAColorSchemeClustalXFactory : public MSAColorSchemeFactory {
+    Q_OBJECT
+public:
+    MSAColorSchemeClustalXFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype);
+    virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj);
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+// schemes
+
+class U2VIEW_EXPORT MSAColorScheme : public QObject {
+    Q_OBJECT
+public:
+    MSAColorScheme(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o);
+    virtual QColor getColor(int seq, int pos) = 0;
+    MSAColorSchemeFactory* getFactory() const {return factory;}
+
+    static QString EMPTY_NUCL;
+    static QString UGENE_NUCL;
+    static QString JALVIEW_NUCL;
+    static QString IDENTPERC_NUCL;
+
+    static QString EMPTY_AMINO;
+    static QString UGENE_AMINO;
+    static QString ZAPPO_AMINO;
+    static QString TAILOR_AMINO;
+    static QString HYDRO_AMINO;
+    static QString HELIX_AMINO;
+    static QString STRAND_AMINO;
+    static QString TURN_AMINO;
+    static QString BURIED_AMINO;
+    static QString IDENTPERC_AMINO;
+    static QString CLUSTALX_AMINO;
+
+protected:
+    MSAColorSchemeFactory*  factory;
+    MAlignmentObject*       maObj;
+};
+
+class U2VIEW_EXPORT MSAColorSchemeStatic : public MSAColorScheme {
+    Q_OBJECT
+public:
+    MSAColorSchemeStatic(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o, const QVector<QColor>& colorsPerChar);
+    virtual QColor getColor(int seq, int pos);
+    const QColor& getColor(char c) const {return colorsPerChar[(quint8)c];}
+private:
+
+    QVector<QColor> colorsPerChar;
+};
+
+//PERCENT
+class U2VIEW_EXPORT MSAColorSchemePercIdent : public MSAColorScheme {
+    Q_OBJECT
+public:
+    MSAColorSchemePercIdent(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o);
+    virtual QColor getColor(int seq, int pos);
+
+private slots:
+    void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&) {objVersion++;}
+
+protected:
+    void updateCache();
+
+    QVector<quint32>    indentCache;
+    int                 cacheVersion;
+    int                 objVersion;
+    QColor              colorsByRange[4];
+    int                 mask4[4];
+    char                tmpChars[4];
+    int                 tmpRanges[4];
+};
+
+//CLUSTALX
+// 0.5 * alisize mem use, slow update
+class U2VIEW_EXPORT MSAColorSchemeClustalX: public MSAColorScheme {
+    Q_OBJECT
+public:
+    MSAColorSchemeClustalX(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o);
+    virtual QColor getColor(int seq, int pos);
+private slots:
+    void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&) {objVersion++;}
+
+protected:
+    void updateCache();
+    int getCacheIdx(int seq, int pos, bool& low) const {
+        assert(objVersion == cacheVersion); 
+        int res = seq * aliLen + pos;
+        low = !(res & 0x1);
+        return res / 2;
+    }
+
+    int getColorIdx(int seq, int pos);
+    void setColorIdx(int seq, int pos, int cidx);
+
+    enum ClustalColor {
+        ClustalColor_NO_COLOR,
+        ClustalColor_BLUE,
+        ClustalColor_RED,
+        ClustalColor_GREEN,
+        ClustalColor_PINK,
+        ClustalColor_MAGENTA,
+        ClustalColor_ORANGE,
+        ClustalColor_CYAN,
+        ClustalColor_YELLOW,
+        ClustalColor_NUM_COLORS
+    };
+    int              objVersion;
+    int              cacheVersion;
+    int              aliLen;
+    QVector<quint8>  colorsCache;
+    QColor           colorByIdx[ClustalColor_NUM_COLORS];
+};
+
+//////////////////////////////////////////////////////////////////////////
+// registry
+class U2VIEW_EXPORT MSAColorSchemeRegistry : public QObject {
+    Q_OBJECT
+public:
+    MSAColorSchemeRegistry();
+
+    const QList<MSAColorSchemeFactory*>& getMSAColorSchemes() const {return colorers;}
+    
+    QList<MSAColorSchemeFactory*> getMSAColorSchemes(DNAAlphabetType atype) const;
+
+    MSAColorSchemeFactory* getMSAColorSchemeFactoryById(const QString& id) const;
+
+    void addMSAColorSchemeFactory(MSAColorSchemeFactory* cs);
+
+    
+private:
+    void initBuiltInSchemes();
+
+    QList<MSAColorSchemeFactory*> colorers;
+};
+
+
+}//namespace
+#endif

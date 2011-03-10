@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="annotator/" >
+        <file>images/regions.png</file>
+    </qresource>
+</RCC>

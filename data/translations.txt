@@ -1,0 +1,4 @@
+EN English|transl_en
+RU Русский|transl_ru
+CS Český|transl_cs
+#FR French|transl_fr

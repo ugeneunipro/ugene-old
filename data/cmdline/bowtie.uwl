@@ -1,0 +1,120 @@
+#!UGENE_WORKFLOW
+#Bowtie is fast and memory efficient short read aligner. This task allows to align shortreads to reference genome from pre-built index
+
+workflow "Bowtie aligner"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    bowtie-read-index {
+        type:bowtie-read-index;
+        name:"Bowtie index reader";
+    }
+    bowtie {
+        type:bowtie;
+        name:"Bowtie aligner";
+        chunk-mbs:64;
+        maq-err:70;
+        max-backtracks:-1;
+        mismatches-num:2;
+        no-forward:false;
+        no-maq-rounding:false;
+        no-reverse-complemented:false;
+        report-with-mismatches:-1;
+        seed:-1;
+        seed-length:28;
+        try-hard:false;
+    }
+    write-msa {
+        type:write-msa;
+        name:"Write alignment";
+        document-format:clustal;
+        write-mode:2;
+    }
+
+    bowtie-read-index.ebwt-index->bowtie.in-ebwt.ebwt-index
+    read-sequence.sequence->bowtie.in-sequence.sequence
+    bowtie.msa->write-msa.in-msa.msa
+
+    .meta {
+        aliases {
+            read-sequence.url-in:reads;
+            bowtie-read-index.url-ebwt:ebwt;
+            bowtie.chunk-mbs:chunkmbs;
+            bowtie.maq-err:maqerr;
+            bowtie.max-backtracks:maxbts;
+            bowtie.mismatches-num:n;
+            bowtie.no-forward:nofw;
+            bowtie.no-maq-rounding:nomaqround;
+            bowtie.no-reverse-complemented:norc;
+            bowtie.report-with-mismatches:v;
+            bowtie.seed:seed;
+            bowtie.seed-length:seedlen;
+            bowtie.try-hard:tryhard;
+            write-msa.document-format:format;
+            write-msa.url-out:out;
+        }
+        help {
+            reads:"Input reads";
+            ebwt:"Input Bowtie index";
+            chunkmbs:"The number of megabytes of memory to store path descriptors";
+            maqerr:"Maximum permitted total of quality values at all mismatched read positions throughout the entire alignment, not just in the 'seed'";
+            maxbts:"The maximum number of backtracks permitted when aligning a read in -n 2 or -n 3 mode";
+            n:"Alignments may have no more than n mismatches";
+            nofw:"Bowtie will not attempt to align against the forward reference strand";
+            nomaqround:"Prevents rounding quality values to the nearest 10";
+            norc:"Bowtie will not attempt to align against the reverse-complement reference strand";
+            v:"Report alignments with at most v mismatches. Mutually exclusive with -n parameter";
+            seed:"Seed for pseudo-random number generator";
+            seedlen:"The number of bases on the high-quality end of the read to which the -n ceiling applies";
+            tryhard:"Try as hard as possible to find valid alignments when they exist, including paired-end alignments";
+            format:"Document format of output alignment";
+            out:"Output alignment";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-780 -735";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            bowtie-read-index {
+                tooltip:"Read a set of 6 files with suffixes .1.ebwt, .2.ebwt, .3.ebwt, .4.ebwt, .rev.1.ebwt, and .rev.2.ebwt. These files together constitute the index: they are all that is needed to align reads to that reference.";
+                pos:"-780 -525";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-ebwt.angle:360;
+            }
+            bowtie {
+                tooltip:"An ultrafast memory-efficient short read aligner, http://bowtie-bio.sourceforge.net";
+                pos:"-585 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-ebwt.angle:229.764;
+                in-sequence.angle:140.194;
+                out-msa.angle:360;
+            }
+            write-msa {
+                tooltip:"Writes all supplied alignments to file(s) in selected format";
+                pos:"-345 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+            }
+            read-sequence.out-sequence->bowtie.in-sequence {
+                text-pos:"-22.5 -28";
+            }
+            bowtie-read-index.out-ebwt->bowtie.in-ebwt {
+                text-pos:"-32.5 -4";
+            }
+            bowtie.out-msa->write-msa.in-msa {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

@@ -1,0 +1,82 @@
+#!UGENE_WORKFLOW
+#Create alignment with MAFFT. MAFFT is a multiple sequence alignment program for unix-like operating systems. Must have an installed MAFFT package.
+
+workflow align-mafft{
+
+    read-msa {
+        type:read-msa;
+        name:"Read alignment";
+    }
+    mafft {
+        type:mafft;
+        name:"Align with MAFFT";
+        gap-ext-penalty:0;
+        gap-open-penalty:1.53;
+        iterations-max-num:0;
+        path:default;
+        temp-dir:default;
+    }
+    write-msa {
+        type:write-msa;
+        name:"Write alignment";
+        document-format:clustal;
+        write-mode:2;
+    }
+
+    read-msa.msa->mafft.in-msa.msa
+    mafft.msa->write-msa.in-msa.msa
+
+    .meta {
+        aliases {
+            read-msa.url-in:in;
+            mafft.gap-ext-penalty:ep;
+            mafft.gap-open-penalty:op;
+            mafft.iterations-max-num:maxiterate;
+            mafft.path:toolpath;
+            mafft.temp-dir:tmpdir;
+            write-msa.document-format:format;
+            write-msa.url-out:out;
+        }
+        help {
+            in:"Input alignment";
+            ep:"Gap extension penalty";
+            op:"Gap open penalty";
+            maxiterate:"Maximum number of iterative refinement";
+            toolpath:"MAFFT location";
+            tmpdir:"Directory to store temporary files";
+            format:"Document format of output alignment";
+            out:"Output alignment";
+        }
+        visual {
+            read-msa {
+                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
+                pos:"-750 -675";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
+            }
+            mafft {
+                tooltip:"MAFFT is a multiple sequence alignment program for unix-like operating systems. <p><dfn>It offers a range of multiple alignment methods, L-INS-i (accurate; for alignment of &lt;&#126;200 sequences), FFT-NS-2 (fast; for alignment of &lt;&#126;10,000 sequences), etc. </dfn></p>";
+                pos:"-540 -675";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-msa.angle:360;
+            }
+            write-msa {
+                tooltip:"Writes all supplied alignments to file(s) in selected format";
+                pos:"-300 -675";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+            }
+            read-msa.out-msa->mafft.in-msa {
+                text-pos:"-45 -50";
+            }
+            mafft.out-msa->write-msa.in-msa {
+                text-pos:"-45 -50";
+            }
+        }
+    }
+}
+

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="enzymes/" >
+        <file>images/enzymes.png</file>
+    </qresource>
+</RCC>

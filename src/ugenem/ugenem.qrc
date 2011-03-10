@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="ugenem/" >
+        <file>images/crash_icon.png</file>
+    </qresource>
+</RCC>

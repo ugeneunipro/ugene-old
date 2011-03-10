@@ -1,0 +1,59 @@
+#ifndef _U2_WORKFLOW_ENV_H_
+#define _U2_WORKFLOW_ENV_H_
+
+#include <assert.h>
+#include <U2Lang/Datatype.h>
+#include "Descriptor.h"
+
+namespace U2 {
+
+class DataTypeRegistry;
+
+namespace Workflow {
+
+class DomainFactoryRegistry;
+class ActorPrototypeRegistry;
+
+/**
+ * base class for workflow environment
+ * has one instance
+ * same as AppContext only for workflow
+ * 
+ * see WorkflowEnvImpl for realization
+ */
+class U2LANG_EXPORT WorkflowEnv {
+public:
+    static bool init(WorkflowEnv* instance);
+    static void shutdown() { delete instance; instance = NULL;}
+    
+    static DataTypeRegistry* getDataTypeRegistry() {return getInstance()->data;}
+    static ActorPrototypeRegistry* getProtoRegistry() {return getInstance()->proto;}
+    static DomainFactoryRegistry* getDomainRegistry() {return getInstance()->domain;}
+    static DataTypeValueFactoryRegistry* getDataTypeValueFactoryRegistry() { return getInstance()->dvfReg; }
+    
+protected:
+    static WorkflowEnv* instance;
+    static WorkflowEnv* getInstance() {assert(instance); return instance;}
+    
+public:
+    virtual ~WorkflowEnv() {}
+    
+protected:
+    virtual DataTypeRegistry* initDataRegistry() = 0;
+    virtual ActorPrototypeRegistry* initProtoRegistry() = 0;
+    virtual DomainFactoryRegistry* initDomainRegistry() = 0;
+    virtual DataTypeValueFactoryRegistry* initDataTypeValueFactoryRegistry() = 0;
+    
+protected:
+    DataTypeRegistry* data;
+    ActorPrototypeRegistry* proto;
+    DomainFactoryRegistry* domain;
+    DataTypeValueFactoryRegistry* dvfReg;
+    
+}; // WorkflowEnv
+
+} //namespace Workflow
+
+} //namespace U2
+
+#endif // _U2_WORKFLOW_ENV_H_

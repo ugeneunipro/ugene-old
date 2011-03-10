@@ -1,0 +1,102 @@
+#include "EntropyAlgorithm.h"
+#include "DNAGraphPackPlugin.h"
+
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNATranslationImpl.h>
+#include <U2Core/TextUtils.h>
+
+#include <math.h>
+
+/* TRANSLATOR U2::EntropyGraphFactory */
+
+/**
+ * entropy = sum (p * log(2) p) where p - frequency of dif codons
+ * entropy is a measure of randomness, it mean that coding sequences
+ * have entropy lower than random sequence
+ **/
+
+namespace U2 {
+
+static QString nameByType() {
+    return EntropyGraphFactory::tr("informational_entropy");
+
+}
+
+EntropyGraphFactory::EntropyGraphFactory(QObject* p)
+: GSequenceGraphFactory(nameByType(), p)
+{
+}
+
+#define MAX_CHARS_IN_ALPHABET 7
+#define MAX_INDEX_SIZE 512
+
+bool EntropyGraphFactory::isEnabled(DNASequenceObject* o) const {
+    DNAAlphabet* al = o->getAlphabet();
+    return al->isNucleic() && al->getAlphabetChars().size() <= MAX_CHARS_IN_ALPHABET;
+}
+
+QList<GSequenceGraphData*> EntropyGraphFactory::createGraphs(GSequenceGraphView* v) {
+    Q_UNUSED(v);
+    QList<GSequenceGraphData*> res;
+    assert(isEnabled(v->getSequenceObject()));
+    GSequenceGraphData* d = new GSequenceGraphData(getGraphName());
+    d->ga = new EntropyGraphAlgorithm;
+    res.append(d);
+    return res;
+}
+
+GSequenceGraphDrawer* EntropyGraphFactory::getDrawer(GSequenceGraphView* v) {
+    GSequenceGraphWindowData wd(50, 500);
+    return new GSequenceGraphDrawer(v, wd);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// EntropyGraphAlgorithm
+
+EntropyGraphAlgorithm::EntropyGraphAlgorithm()
+{
+}
+
+void EntropyGraphAlgorithm::calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+    assert(d!=NULL);
+    int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
+    res.reserve(nSteps);
+
+    const QByteArray& seq = o->getSequence();
+    const DNAAlphabet* al = o->getAlphabet();
+    
+    // prepare index -> TODO: make it once and cache!
+    IndexedMapping3To1<int> index(al->getAlphabetChars(), 0);
+    int* mapData = index.mapData();
+    int indexSize = index.getMapSize();
+    
+    // algorithm
+    float log10_2 = log10(2.0);
+    const char* seqStr = seq.constData();
+    for (int i = 0; i < nSteps; i++) {
+        int start = vr.startPos + i * d->step;
+        int end = start + d->window;
+        for (int x = start; x < end-2; x++) {
+            int& val = index.mapNC(seqStr + x);
+            val++;
+        }
+        //derive entropy from triplets and zero them
+        float total = end-start-2;
+        float ent = 0;
+        for (int j = 0; j < indexSize; j++) {
+            int ifreq = mapData[j];
+            if (ifreq == 0) {
+                continue;
+            }
+            mapData[j] = 0; //zero triplets
+            float freq = ifreq / total;
+            ent -= freq*log10(freq)/log10_2;
+        }
+        res.append(ent);
+    }
+}
+
+} // namespace
+

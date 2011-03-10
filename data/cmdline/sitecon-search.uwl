@@ -1,0 +1,102 @@
+#!UGENE_WORKFLOW
+#Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles(models). In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.
+
+workflow sitecon-search{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    sitecon-read {
+        type:sitecon-read;
+        name:"Read SITECON model";
+    }
+    sitecon-search {
+        type:sitecon-search;
+        name:"Search for TFBS with SITECON";
+        err1:0;
+        err2:0.001;
+        min-score:85;
+        result-name:misc_feature;
+        strand:0;
+    }
+    write-genbank {
+        type:write-genbank;
+        name:"Write Genbank";
+        accumulate:true;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->sitecon-search.in-sequence.sequence
+    sitecon-read.sitecon-model->sitecon-search.in-sitecon.sitecon-model
+    read-sequence.annotations->write-genbank.in-sequence.annotations
+    sitecon-search.annotations->write-genbank.in-sequence.annotations
+    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .meta {
+        aliases {
+            read-sequence.url-in:in;
+            sitecon-read.url-in:inmodel;
+            sitecon-search.err1:min-err1;
+            sitecon-search.err2:max-err2;
+            sitecon-search.min-score:min-score;
+            sitecon-search.result-name:annotation-name;
+            sitecon-search.strand:strand;
+            write-genbank.url-out:out;
+        }
+        help {
+            in:"Input sequence";
+            inmodel:"Input SITECON model";
+            min-err1:"Minimal value of Error type I";
+            max-err2:"Maximal value of Error type II";
+            min-score:"Recognition quality threshold, should be less than 100%";
+            annotation-name:"Annotation name for marking found regions";
+            strand:"Search strand";
+            out:"Output file with annotations";
+        }
+        visual {
+            read-sequence {
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-765 -645";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            sitecon-read {
+                tooltip:"Reads SITECON profiles from file(s). The files can be local or Internet URLs.";
+                pos:"-765 -450";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sitecon.angle:360;
+            }
+            sitecon-search {
+                tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
+                pos:"-615 -540";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:150;
+                in-sitecon.angle:210;
+                out-annotations.angle:360;
+            }
+            write-genbank {
+                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
+                pos:"-300 -540";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->sitecon-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            sitecon-read.out-sitecon->sitecon-search.in-sitecon {
+                text-pos:"-37 -24";
+            }
+            sitecon-search.out-annotations->write-genbank.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+

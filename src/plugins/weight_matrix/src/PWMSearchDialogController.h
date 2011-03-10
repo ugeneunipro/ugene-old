@@ -1,0 +1,94 @@
+#ifndef _U2_WEIGHT_MATRIX_SEARCH_DIALOG_H_
+#define _U2_WEIGHT_MATRIX_SEARCH_DIALOG_H_
+
+#include <U2Core/global.h>
+#include <U2Core/U2Region.h>
+
+#include <ui/ui_PWMSearchDialog.h>
+
+#include <QtCore/QList>
+#include <QtGui/QTreeWidgetItem>
+#include <QtGui/QCloseEvent>
+#include <QtCore/QTimer>
+
+#include <U2Core/PFMatrix.h>
+#include <U2Core/PWMatrix.h>
+
+#include "WeightMatrixSearchTask.h"
+
+namespace U2 {
+
+class ADVSequenceObjectContext;
+class DNASequenceObject;
+class WeightMatrixSearchTask;
+class Task;
+class WeightMatrixResultItem;
+class WeightMatrixQueueItem;
+
+class PWMSearchDialogController : public QDialog, public Ui_PWMSearchDialog {
+    Q_OBJECT
+public:
+    PWMSearchDialogController(ADVSequenceObjectContext* ctx, QWidget *p = NULL);
+
+public slots:
+    virtual void reject();
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *ev);
+
+private slots:
+    
+    //buttons:
+    void sl_selectModelFile();
+    void sl_onSaveAnnotations();
+    void sl_onClearList();
+    void sl_onSearch();
+    void sl_onClose();
+    void sl_onBuildMatrix();
+    void sl_onSearchJaspar();
+
+    void sl_onSliderMoved(int value);
+    void sl_onAlgoChanged(QString newAlgo);
+    void sl_onViewMatrix();
+    void sl_onAddToQueue();
+    void sl_onLoadList();
+    void sl_onSaveList();
+    void sl_onLoadFolder();
+    void sl_onClearQueue();
+
+    // groups
+    void sl_onTaskFinished();
+    void sl_onTimer();
+
+    void sl_onResultActivated(QTreeWidgetItem* i, int col);
+    
+private:
+    void connectGUI();
+    void updateState();
+    void updateStatus();
+    void updateModel(const PWMatrix& m);
+    void loadFile(QString filename);
+    void addToQueue();
+    
+    bool checkPrevSettings();
+    void savePrevSettings();
+
+    void runTask();
+    void importResults();
+
+private:
+    ADVSequenceObjectContext*                           ctx;
+    U2Region                                             initialSelection;
+    
+    PFMatrix                                            intermediate;
+    PWMatrix                                            model;    
+    
+    QList< QPair<PWMatrix, WeightMatrixSearchCfg> >     queue;
+
+    WeightMatrixSearchTask*                             task;
+    QTimer*                                             timer;
+};
+
+}//namespace
+
+#endif

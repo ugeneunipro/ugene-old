@@ -1,0 +1,144 @@
+
+#include <U2Core/AppContext.h>
+#include <U2Algorithm/SecStructPredictAlgRegistry.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/AnnotationTableObject.h>
+
+#include "SecStructPredictTests.h"
+#include <U2Algorithm/SecStructPredictTask.h>
+
+namespace U2 {
+
+#define SEQ_ATTR "seq"
+#define SEQ_NAME_ATTR "seq-name"
+#define INDEX_ATTR "index"
+#define OUTPUT_SEQ_ATTR "output-seq"
+#define ALG_NAME_ATTR "algorithm-name"
+
+
+void GTest_SecStructPredictAlgorithm::init(XMLTestFormat *tf, const QDomElement& el) {
+    Q_UNUSED(tf);
+    inputSeq = el.attribute(SEQ_ATTR);
+    if (inputSeq.isEmpty()) {
+        failMissingValue(SEQ_ATTR);
+        return;
+    }
+
+    outputSeq = el.attribute(OUTPUT_SEQ_ATTR);
+    if (outputSeq.isEmpty()) {
+        failMissingValue(OUTPUT_SEQ_ATTR);
+        return;
+    }
+
+    algName = el.attribute(ALG_NAME_ATTR);
+    if (algName.isEmpty()) {
+        failMissingValue(ALG_NAME_ATTR);
+        return;
+    }
+
+}
+
+
+void GTest_SecStructPredictAlgorithm::prepare() {
+    
+    SecStructPredictAlgRegistry* sspr = AppContext::getSecStructPredictAlgRegistry();
+    if (!sspr->hadRegistered(algName)) {
+        stateInfo.setError(  QString(tr("Algorithm named %1 not found")).arg(algName) );
+        return;
+    }
+    SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algName);
+    task = factory->createTaskInstance(inputSeq.toAscii());
+    addSubTask(task);
+
+}
+
+
+Task::ReportResult GTest_SecStructPredictAlgorithm::report() {
+
+    const QByteArray& output = task->getSSFormatResults();
+
+    if (output != outputSeq) {
+        stateInfo.setError(tr("Output sec struct sequence is incorrect") );
+        return ReportResult_Finished;
+    }
+
+    return ReportResult_Finished;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+void GTest_SecStructPredictTask::init(XMLTestFormat *tf, const QDomElement& el) {
+    Q_UNUSED(tf);
+
+    seqName = el.attribute(SEQ_NAME_ATTR);
+    if (seqName.isEmpty()) {
+        failMissingValue(SEQ_NAME_ATTR);
+        return;
+    }
+    
+    algName = el.attribute(ALG_NAME_ATTR);
+    if (algName.isEmpty()) {
+        failMissingValue(ALG_NAME_ATTR);
+        return;
+    }
+
+    resultsTableContextName = el.attribute(INDEX_ATTR);
+    if (resultsTableContextName.isEmpty()) {
+        failMissingValue(INDEX_ATTR);
+        return;
+    }
+}
+
+void GTest_SecStructPredictTask::prepare()
+{
+    DNASequenceObject * mySequence = getContext<DNASequenceObject>(this, seqName);
+    if(mySequence==NULL){
+        stateInfo.setError(  QString("error can't cast to sequence from GObject") );
+        return;
+    }
+    SecStructPredictAlgRegistry* sspr = AppContext::getSecStructPredictAlgRegistry();
+    if (!sspr->hadRegistered(algName)) {
+        stateInfo.setError(  QString(tr("Algorithm named %1 not found")).arg(algName) );
+        return;
+    }
+    SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algName);
+    task = factory->createTaskInstance(mySequence->getSequence());
+    addSubTask(task);
+}
+
+Task::ReportResult GTest_SecStructPredictTask::report()
+{
+    if (task!=NULL && task->hasErrors()) {
+        stateInfo.setError( task->getError());
+    } else if (!resultsTableContextName.isEmpty()) {
+        QList<SharedAnnotationData> results = task->getResults();
+        aObj = new AnnotationTableObject(resultsTableContextName);
+        foreach(SharedAnnotationData sd, results) {
+            aObj->addAnnotation(new Annotation(sd));
+        }
+        addContext(resultsTableContextName, aObj);
+        contextAdded = true;
+    }
+    
+    return ReportResult_Finished;
+}
+
+void GTest_SecStructPredictTask::cleanup()
+{
+    if (contextAdded) {
+        removeContext(resultsTableContextName);
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+QList<XMLTestFactory*> SecStructPredictTests::createTestFactories()
+{
+    QList<XMLTestFactory*> res;
+    res.append(GTest_SecStructPredictAlgorithm::createFactory());
+    res.append(GTest_SecStructPredictTask::createFactory());
+    return res;
+}
+
+} //namespace
+

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="weight_matrix/" >
+        <file>images/weight_matrix.png</file>
+    </qresource>
+</RCC>

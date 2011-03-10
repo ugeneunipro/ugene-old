@@ -1,0 +1,342 @@
+#include "WeightMatrixWorkers.h"
+#include "WeightMatrixIOWorkers.h"
+#include "WeightMatrixPlugin.h"
+#include "PWMBuildDialogController.h"
+
+#include <U2Algorithm/BuiltInPWMConversionAlgorithms.h>
+#include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
+
+#include <U2Lang/Datatype.h>
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseActorCategories.h>
+#include <U2Designer/DelegateEditors.h>
+#include <U2Lang/CoreLibConstants.h>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/MAlignment.h>
+
+/* TRANSLATOR U2::WeightMatrixIO */
+/* TRANSLATOR U2::LocalWorkflow::PWMatrixBuildWorker */
+
+namespace U2 {
+namespace LocalWorkflow {
+
+static const QString ALG_ATTR("weight-algorithm");
+static const QString TYPE_ATTR("matrix-type");
+
+static const QString FMATRIX_OUT_PORT_ID("out-fmatrix");
+static const QString FMATRIX_IN_PORT_ID("in-fmatrix");
+static const QString WMATRIX_OUT_PORT_ID("out-wmatrix");
+
+const QString PWMatrixBuildWorker::ACTOR_ID("wmatrix-build");
+const QString PFMatrixBuildWorker::ACTOR_ID("fmatrix-build");
+const QString PFMatrixConvertWorker::ACTOR_ID("fmatrix-to-wmatrix");
+
+//////////////////////////////////////////////////////////////////////////
+// PWMatrix build worker
+//////////////////////////////////////////////////////////////////////////
+
+void PWMatrixBuildWorker::registerProto() {
+    QList<PortDescriptor*> p; QList<Attribute*> a;
+    QMap<Descriptor, DataTypePtr> m;
+    Descriptor id(BasePorts::IN_MSA_PORT_ID(), PWMatrixBuildWorker::tr("Input alignment"), 
+        PWMatrixBuildWorker::tr("Input multiple sequence alignment for building statistical model."));
+    m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
+    DataTypePtr t(new MapDataType(Descriptor("build.pwmatrix.content"), m));
+
+    Descriptor od(WMATRIX_OUT_PORT_ID, PWMatrixBuildWorker::tr("Weight matrix"), PWMatrixBuildWorker::tr("Produced statistical model of specified TFBS data."));
+    p << new PortDescriptor(id, t, true /*input*/);
+    
+    QMap<Descriptor, DataTypePtr> outM;
+    outM[PWMatrixWorkerFactory::WMATRIX_SLOT] = PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE();
+    p << new PortDescriptor(od, DataTypePtr(new MapDataType("wmatrix.build.out", outM)), false /*input*/, true /*multi*/);
+    
+    {
+        Descriptor ad(ALG_ATTR, PWMatrixBuildWorker::tr("Weight algorithm"), 
+            QApplication::translate("PWMBuildDialog", "algo_tip", 0, QApplication::UnicodeUTF8));
+        a << new Attribute(ad, BaseTypes::STRING_TYPE(), true, BuiltInPWMConversionAlgorithms::BVH_ALGO);
+    }
+
+    {
+        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), 
+            QApplication::translate("PWMBuildDialog", "type_tip", 0, QApplication::UnicodeUTF8));
+        a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
+    }
+
+    Descriptor desc(ACTOR_ID, tr("Build weight matrix"),
+        tr("Builds weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites."));
+    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+    QMap<QString, PropertyDelegate*> delegates;    
+
+    {
+        QVariantMap modeMap;
+        QStringList algo = AppContext::getPWMConversionAlgorithmRegistry()->getAlgorithmIds();
+        foreach (QString curr, algo) {
+            modeMap[curr] = QVariant(curr);
+        }
+        delegates[ALG_ATTR] = new ComboBoxDelegate(modeMap);
+    }
+
+    {
+        QVariantMap modeMap;
+        modeMap[tr("Mononucleic")] = QVariant(false);
+        modeMap[tr("Dinucleic")] = QVariant(true);
+        delegates[TYPE_ATTR] = new ComboBoxDelegate(modeMap);
+    }
+    
+    proto->setPrompter(new PWMatrixBuildPrompter());
+    proto->setEditor(new DelegateEditor(delegates));
+    proto->setIconPath(":weight_matrix/images/weight_matrix.png");
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);
+}
+
+QString PWMatrixBuildPrompter::composeRichDoc() {
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_MSA_PORT_ID()));
+    Actor* msaProducer = input->getProducer(BasePorts::IN_MSA_PORT_ID());
+
+    QString msaName = msaProducer ? tr("For each MSA from <u>%1</u>,").arg(msaProducer->getLabel()) : "";
+    QString doc = tr("%1 build weight matrix.")
+        .arg(msaName);
+
+    return doc;
+}
+
+void PWMatrixBuildWorker::init() {
+    input = ports.value(BasePorts::IN_MSA_PORT_ID());
+    output = ports.value(WMATRIX_OUT_PORT_ID);
+}
+
+bool PWMatrixBuildWorker::isReady() {
+    return (input && input->hasMessage());
+}
+
+Task* PWMatrixBuildWorker::tick() {
+    Message inputMessage = getMessageAndSetupScriptValues(input);
+    mtype = PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE();
+    QVariantMap data = inputMessage.getData().toMap();
+    cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>();
+    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>() ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+    const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+    Task* t = new PWMatrixBuildTask(cfg, ma);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+    return t;
+}
+
+void PWMatrixBuildWorker::sl_taskFinished() {
+    PWMatrixBuildTask* t = qobject_cast<PWMatrixBuildTask*>(sender());
+    if (t->getState() != Task::State_Finished) return;
+    PWMatrix model = t->getResult();
+    QVariant v = qVariantFromValue<PWMatrix>(model);
+    output->put(Message(mtype, v));
+    if (input->isEnded()) {
+        output->setEnded();
+    }
+}
+
+bool PWMatrixBuildWorker::isDone() {
+    return !input || input->isEnded();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// PFMatrix build worker
+//////////////////////////////////////////////////////////////////////////
+
+void PFMatrixBuildWorker::registerProto() {
+    QList<PortDescriptor*> p; QList<Attribute*> a;
+    QMap<Descriptor, DataTypePtr> m;
+    Descriptor id(BasePorts::IN_MSA_PORT_ID(), PFMatrixBuildWorker::tr("Input alignment"), 
+        PFMatrixBuildWorker::tr("Input multiple sequence alignment for building statistical model."));
+    m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
+    DataTypePtr t(new MapDataType(Descriptor("build.pfmatrix.content"), m));
+
+    Descriptor od(FMATRIX_OUT_PORT_ID, PFMatrixBuildWorker::tr("Frequency matrix"), 
+        PFMatrixBuildWorker::tr("Produced statistical model of specified TFBS data."));
+    p << new PortDescriptor(id, t, true /*input*/);
+    
+    QMap<Descriptor, DataTypePtr> outM;
+    outM[PFMatrixWorkerFactory::FMATRIX_SLOT] = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
+    p << new PortDescriptor(od, DataTypePtr(new MapDataType("fmatrix.build.out", outM)), false /*input*/, true /*multi*/);
+    
+    {
+        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), 
+            QApplication::translate("PWMBuildDialog", "type_tip", 0, QApplication::UnicodeUTF8));
+        a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
+    }
+
+    Descriptor desc(ACTOR_ID, tr("Build frequency matrix"),
+        tr("Builds frequency matrix. Frequency matrices are used for probabilistic recognition of transcription factor binding sites."));
+    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+    QMap<QString, PropertyDelegate*> delegates;
+
+    {
+        QVariantMap modeMap;
+        modeMap[tr("Mononucleic")] = QVariant(false);
+        modeMap[tr("Dinucleic")] = QVariant(true);
+        delegates[TYPE_ATTR] = new ComboBoxDelegate(modeMap);
+    }
+
+    proto->setPrompter(new PFMatrixBuildPrompter());
+    proto->setEditor(new DelegateEditor(delegates));
+    proto->setIconPath(":weight_matrix/images/weight_matrix.png");
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);
+}
+
+QString PFMatrixBuildPrompter::composeRichDoc() {
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_MSA_PORT_ID()));
+    Actor* msaProducer = input->getProducer(BasePorts::IN_MSA_PORT_ID());
+
+    QString msaName = msaProducer ? tr("For each MSA from <u>%1</u>,").arg(msaProducer->getLabel()) : "";
+    QString doc = tr("%1 build frequency matrix.")
+        .arg(msaName);
+
+    return doc;
+}
+
+void PFMatrixBuildWorker::init() {
+    input = ports.value(BasePorts::IN_MSA_PORT_ID());
+    output = ports.value(FMATRIX_OUT_PORT_ID);
+}
+
+bool PFMatrixBuildWorker::isReady() {
+    return (input && input->hasMessage());
+}
+
+Task* PFMatrixBuildWorker::tick() {
+    Message inputMessage = getMessageAndSetupScriptValues(input);
+    mtype = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
+    QVariantMap data = inputMessage.getData().toMap();
+    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>() ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+    const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+    Task* t = new PFMatrixBuildTask(cfg, ma);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+    return t;
+}
+
+void PFMatrixBuildWorker::sl_taskFinished() {
+    PFMatrixBuildTask* t = qobject_cast<PFMatrixBuildTask*>(sender());
+    if (t->getState() != Task::State_Finished) return;
+    PFMatrix model = t->getResult();
+    QVariant v = qVariantFromValue<PFMatrix>(model);
+    output->put(Message(mtype, v));
+    if (input->isEnded()) {
+        output->setEnded();
+    }
+}
+
+bool PFMatrixBuildWorker::isDone() {
+    return !input || input->isEnded();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// PFMatrix convert worker
+//////////////////////////////////////////////////////////////////////////
+
+void PFMatrixConvertWorker::registerProto() {
+    QList<PortDescriptor*> p; QList<Attribute*> a;
+    QMap<Descriptor, DataTypePtr> m;
+    Descriptor id(FMATRIX_IN_PORT_ID, PFMatrixConvertWorker::tr("Frequency matrix"), 
+        PFMatrixConvertWorker::tr("Frequency matrix to convert."));
+    m[PFMatrixWorkerFactory::FMATRIX_SLOT] = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
+    DataTypePtr t(new MapDataType(Descriptor("convert.pfmatrix.content"), m));
+
+    Descriptor od(WMATRIX_OUT_PORT_ID, PFMatrixConvertWorker::tr("Weight matrix"), 
+        PFMatrixConvertWorker::tr("Produced statistical model of specified TFBS data."));
+    p << new PortDescriptor(id, t, true /*input*/);
+    
+    QMap<Descriptor, DataTypePtr> outM;
+    outM[PWMatrixWorkerFactory::WMATRIX_SLOT] = PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE();
+    p << new PortDescriptor(od, DataTypePtr(new MapDataType("fmatrix.convert.out", outM)), false /*input*/, true /*multi*/);
+    
+    {
+        Descriptor ad(ALG_ATTR, PWMatrixBuildWorker::tr("Weight algorithm"), QApplication::translate("PWMBuildDialog", "algo_tip", 0, QApplication::UnicodeUTF8));
+        a << new Attribute(ad, BaseTypes::STRING_TYPE(), true, BuiltInPWMConversionAlgorithms::BVH_ALGO);
+    }
+
+    {
+        Descriptor td(TYPE_ATTR, PWMatrixBuildWorker::tr("Matrix type"), QApplication::translate("PWMBuildDialog", "type_tip", 0, QApplication::UnicodeUTF8));
+        a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
+    }
+
+    Descriptor desc(ACTOR_ID, tr("Convert frequency matrix"),
+        tr("Converts frequency matrix to weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites."));
+    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+    QMap<QString, PropertyDelegate*> delegates;    
+
+    {
+        QVariantMap modeMap;
+        QStringList algo = AppContext::getPWMConversionAlgorithmRegistry()->getAlgorithmIds();
+        foreach (QString curr, algo) {
+            modeMap[curr] = QVariant(curr);
+        }
+        delegates[ALG_ATTR] = new ComboBoxDelegate(modeMap);
+    }
+
+    {
+        QVariantMap modeMap;
+        modeMap[tr("Mononucleic")] = QVariant(false);
+        modeMap[tr("Dinucleic")] = QVariant(true);
+        delegates[TYPE_ATTR] = new ComboBoxDelegate(modeMap);
+    }
+
+    proto->setPrompter(new PFMatrixConvertPrompter());
+    proto->setEditor(new DelegateEditor(delegates));
+    proto->setIconPath(":weight_matrix/images/weight_matrix.png");
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);
+}
+
+QString PFMatrixConvertPrompter::composeRichDoc() {
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(FMATRIX_IN_PORT_ID));
+    Actor* msaProducer = input->getProducer(FMATRIX_IN_PORT_ID);
+
+    QString msaName = msaProducer ? tr("For each frequency matrix from <u>%1</u>,").arg(msaProducer->getLabel()) : "";
+    QString doc = tr("%1 build weight matrix.")
+        .arg(msaName);
+
+    return doc;
+}
+
+void PFMatrixConvertWorker::init() {
+    input = ports.value(FMATRIX_IN_PORT_ID);
+    output = ports.value(WMATRIX_OUT_PORT_ID);
+}
+
+bool PFMatrixConvertWorker::isReady() {
+    return (input && input->hasMessage());
+}
+
+Task* PFMatrixConvertWorker::tick() {
+    Message inputMessage = getMessageAndSetupScriptValues(input);
+    mtype = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
+    QVariantMap data = inputMessage.getData().toMap();
+    PWMatrix model = data.value(PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE_ID).value<PWMatrix>();
+    QString url = data.value(BaseSlots::URL_SLOT().getId()).toString();
+    cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>();
+    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>() ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+    const PFMatrix& ma = data.value(PFMatrixWorkerFactory::FMATRIX_SLOT.getId()).value<PFMatrix>();
+    Task* t = new PWMatrixBuildTask(cfg, ma);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+    return t;
+}
+
+void PFMatrixConvertWorker::sl_taskFinished() {
+    PWMatrixBuildTask* t = qobject_cast<PWMatrixBuildTask*>(sender());
+    if (t->getState() != Task::State_Finished) return;
+    PWMatrix model = t->getResult();
+    QVariant v = qVariantFromValue<PWMatrix>(model);
+    output->put(Message(mtype, v));
+    if (input->isEnded()) {
+        output->setEnded();
+    }
+}
+
+bool PFMatrixConvertWorker::isDone() {
+    return !input || input->isEnded();
+}
+
+} //namespace LocalWorkflow
+} //namespace U2

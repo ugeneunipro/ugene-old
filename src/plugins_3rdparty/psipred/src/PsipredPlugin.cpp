@@ -1,0 +1,56 @@
+#include <QtGui/QMenu>
+#include <QtGui/QAction>
+#include <QtGui/QMessageBox>
+#include <QtCore/QMap>
+#include <QtCore/QFile>
+
+#include <U2Core/GAutoDeleteList.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
+#include <U2Core/AppContext.h>
+#include <U2Algorithm/SecStructPredictAlgRegistry.h>
+#include <U2Core/BioStruct3D.h>
+#include <U2Core/AnnotationSettings.h>
+#include <U2Test/GTestFrameworkComponents.h>
+
+#include <U2Algorithm/SecStructPredictTask.h>
+
+#include "PsipredPlugin.h"
+#include "PsipredAlgTask.h"
+#include "sspred_utils.h"
+
+namespace U2 {
+
+
+extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
+    PsipredPlugin* plug = new PsipredPlugin();
+    return plug;
+}
+
+
+PsipredPlugin::PsipredPlugin() : Plugin(tr("PsiPred"), tr("PsiPred protein secondary structure prediction")) {
+   
+    // Register PsiPred algorithm
+    SecStructPredictAlgRegistry* registry = AppContext::getSecStructPredictAlgRegistry();
+    SecStructPredictTaskFactory* taskFactory = new PsipredAlgTask::Factory;
+    registry->registerAlgorithm(taskFactory, PsipredAlgTask::taskName);
+    
+    //Register PsiPred annotation settings
+    AnnotationSettingsRegistry* asr =AppContext::getAnnotationsSettingsRegistry();
+    AnnotationSettings* as = new AnnotationSettings(PSIPRED_ANNOTATION_NAME, true, QColor(102,255, 0), true);
+    as->nameQuals.append(BioStruct3D::SecStructTypeQualifierName);
+    asr->changeSettings(QList<AnnotationSettings*>() << as, false);
+
+
+}
+
+PsipredPlugin::~PsipredPlugin() {
+}
+
+
+
+}//namespace
+

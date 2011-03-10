@@ -1,0 +1,175 @@
+#db_xref_ID|db_xref_PageLink|db_xref_FileLink|db_xref_Comment
+
+AceView/WormGenes|http://www.ncbi.nlm.nih.gov/IEB/Research/Acembly/av.cgi?exdb=AceView&db=36a&term=%1||AceView Worm Genome
+
+AFTOL|http://aftol.biology.duke.edu/pub/primers/getPrimersByAFTOLID?aftol_id=%1||Assembling the Fungal Tree of Life
+
+ASAP|http://asap.ahabs.wisc.edu/asap/feature_info.php?FeatureID=%1||A Systematic Annotation Package for Community Analysis of Genomes
+
+ATCC|||American Type Culture Collection database
+
+ApiDB|http://eupathdb.org/eupathdb/showSummary.do?questionFullName=GeneQuestions.GeneBySingleLocusTag&myProp%28single_gene_id%29=%1||Apicomplexan Database Resources
+
+ApiDB_CryptoDB|http://www.cryptodb.org/cryptodb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&project_id=&primary_key=%1||Cryptosporidium Genome Resources
+
+ApiDB_PlasmoDB|http://www.plasmodb.org/plasmo/showRecord.do?name=GeneRecordClasses.GeneRecordClass&project_id=&primary_key=%1||Plasmodium Genome Resources
+
+ApiDB_ToxoDB|http://www.toxodb.org/toxo/showRecord.do?name=GeneRecordClasses.GeneRecordClass&project_id=&primary_key=%1||Toxoplasma Genome Resources
+
+ATCC(in host)|||American Type Culture Collection database
+
+ATCC(dna)|||American Type Culture Collection database
+
+Axeldb|http://indigene.ibaic.u-psud.fr/cgi-bin/ace/searches/basic/default?class=Any;query=%1||A Xenopus laevis database
+
+BDGP_EST|||Berkeley Drosophila Genome Project EST database
+
+BDGP_INS|||Berkeley Drosophila Genome Project database -- Insertion
+
+BHB|||BioHealthBase
+
+BOLD|||Barcode of Life database
+
+CDD|http://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=%1||Conserved Domain Database
+
+CCDS|http://www.ncbi.nlm.nih.gov/projects/CCDS/CcdsBrowse.cgi?REQUEST=CCDS&DATA=%1&ORGANISM=0&BUILDS=CURRENTBUILDS||The Consensus CDS (CCDS) project is a collaborative effort to identify a core set of human and mouse protein coding regions that are consistently annotated and of high quality.
+
+dbEST|http://www.ncbi.nlm.nih.gov/sites/entrez?db=nucest&term=%1&pmfilter_MDatLimit=10+Years||EST database maintained at the NCBI.
+
+dbProbe|http://www.ncbi.nlm.nih.gov/sites/entrez?db=probe&cmd=search&term=%1||NCBI Probe database Public registry of nucleic acid reagents
+
+dbSNP|http://www.ncbi.nlm.nih.gov/sites/entrez?db=snp&cmd=search&term=%1||Variation database maintained at the NCBI.
+
+dbSTS|http://www.ncbi.nlm.nih.gov/sites/entrez?db=unists&cmd=search&term=%1||STS database maintained at the NCBI.
+
+dictyBase|http://dictybase.org/db/cgi-bin/gene_page.pl?primary_id=%1||Dictyostelium genome database
+
+EcoGene|http://ecogene.org/geneInfo.php?eg_id=%1||Database of Escherichia coli Sequence and Function
+
+ENSEMBL|||Database of automatically annotated genomic data
+
+ERIC|http://www.ericbrc.org/asap/feature_info.php?FeatureID=%1||Enteropathogen Resource Integration Center
+
+ESTLIB|||EBI's EST library identifier
+
+FANTOM_DB|||Database of Functional Annotation of Mouse
+
+FLYBASE||| Database of Genetic and molecular data of Drosophila.
+
+GABI|||Network of Different Plant Genomic Research Projects
+
+GDB|||Human Genome Database accession numbers
+
+GeneDB|http://www.genedb.org/genedb/Dispatcher?formType=navBar&organism=All%3A*&name=%1&desc=yes||Curated gene database for Schizosaccharomyces pombe, Leishmania major and Trypanosoma brucei
+
+GeneID|http://www.ncbi.nlm.nih.gov/sites/entrez?db=gene&cmd=search&term=%1||Entrez Gene Database (replaces NCBI Locus Link)
+
+GI|http://www.ncbi.nlm.nih.gov/sites/gquery?term=%1||GenInfo identifier, used as a unique sequence identifier for nucleotide and proteins
+
+GO|||Gene Ontology Database identifier
+
+GOA|||Gene Ontology Annotation Database Identifier
+
+GRIN|||Germplasm Resources Information Network
+
+HGNC|http://www.genenames.org/data/hgnc_data.php?hgnc_id=%1||Human Gene Nomenclature Database
+
+H-InvDB|||H-Invitational Database
+
+HSSP|||Database of homology-derived secondary structure of proteins
+
+IMGT/GENE-DB|||Immunogenetics database, immunoglobulin and T-cell receptor genes
+
+IMGT/LIGM|||Immunogenetics database, immunoglobulins and T-cell receptors
+
+IMGT/HLA|||Immunogenetics database, human MHC
+
+InterimID|||
+
+Interpro|||InterPro protein sequence database
+
+ISD|||Influenza Sequence Database
+
+ISFinder|||Insertion sequence elements database
+
+JCM||| Japan Collection of Microorganisms
+
+LocusID||| NCBI LocusLink ID **Discontinued March 2005
+
+MaizeGDB|||Maize Genome Database unique identifiers
+
+MGI||| Mouse Genome Informatics
+
+MIM|http://www.ncbi.nlm.nih.gov/entrez/dispomim.cgi?id=%1|| Mendelian Inheritance in Man numbers
+
+miRBase|http://microrna.sanger.ac.uk/cgi-bin/sequences/mirna_entry.pl?acc=%1||miRBase is the new home of microRNA data on the web, providing data previously accessible from the miRNA Registry.
+
+NBRC|||NITE Biological Resource Center
+
+NextDB|||Nematode Expression Pattern DataBase
+
+niaEST|||NIA Mouse cDNA Project
+
+NMPDR|||National Microbial Pathogen Data Resource
+
+NRESTdb|||Natural Rubber EST database
+
+Pathema|||Pathema Genome Resource
+
+PDB|http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=pdb&compression=NO&structureId=%1|http://www.rcsb.org/pdb/files/%1.pdb|Biological macromolecule three dimensional structure database
+
+PFAM|||Collection of protein families
+
+PGN|||Plant Genome Network
+
+PIR|||Protein Information Resource accession numbers
+
+PSEUDO|||EMBL pseudo protein identifier
+
+RATMAP|||Rat Genome Database
+
+REBASE|http://rebase.neb.com/cgi-bin/reb_get.pl?enzname=%1||REBASE: The Restriction Enzyme Database
+
+RFAM|http://rfam.sanger.ac.uk/family?entry=%1||RNA families database of alignments and CMs
+
+RGD|||Rat Genome Database
+
+RiceGenes|||Rice database accession numbers
+
+RZPD|||Resource Centre Primary Database Clone Identifiers
+
+SEED|||The SEED Database
+
+SGD|||Saccharomyces Genome Database
+
+SoyBase|||Glycine max Genome Database
+
+SPTREMBL|http://www.ebi.ac.uk/uniprot/unisave/?query=%1&search=Go||SWISS-PROT protein sequence database
+
+SubtiList|||Bacillus subtilis genome sequencing project
+
+SWISS-PROT|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.fasta|The Universal Protein Resource (UniProt) is a comprehensive resource for protein sequence and annotation data.
+
+taxon|||NCBI's taxonomic identifier
+
+TIGRFAM|||TIGR protein families
+
+UNILIB|||Unified Library Database, a library-level view of the EST and SAGE libraries present in dbEST, UniGene and SAGEmap
+
+UniProtKB/Swiss-Prot|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.fasta|section of the UniProt Knowledgebase, containing annotated records
+
+UniProtKB/TrEMBL|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.fasta|section of the UniProt Knowledgebase, containing computationally analysed records waiting for full manual annotation
+
+UniSTS|http://www.ncbi.nlm.nih.gov/genome/sts/sts.cgi?uid=%1||NCBI UniSTS is a comprehensive database of sequence tagged sites (STSs) derived from STS-based maps and other experiments.
+
+VBASE2|||Integrative database of germ-line V genes from the immunoglobulin loci of human and mouse
+
+VectorBase|||Bioinformatics Resource Center for Invertebrate Vectors of Human Pathogens
+
+WorfDB|||C. elegans ORFeome cloning project
+
+WormBase|||Caenorhabditis elegans Genome Database
+
+Xenbase|||Xenopus laevis and tropicalis biology and genomics resource
+
+ZFIN|||Zebrafish Information Network

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="perf_monitor/" >
+        <file>images/mon.png</file>
+    </qresource>
+</RCC>
