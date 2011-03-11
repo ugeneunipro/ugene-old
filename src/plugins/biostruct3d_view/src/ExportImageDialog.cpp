@@ -45,7 +45,7 @@ void ExportImageDialog::setupComponents()
 
     QString fileName = lod.dir + "/" + glWidget->getPDBId() + "."  + formatsBox->currentText();
     fileName = GUrlUtils::rollFileName(fileName, "_copy", QSet<QString>());
-    fileNameEdit->setText(QDir::toNativeSeparators(fileName));
+    fileNameEdit->setText(QDir::cleanPath(QDir::toNativeSeparators(fileName)));
 
     setSizeControlsEnabled(!isVectorGraphicFormat(formatsBox->currentText()));
 
@@ -98,11 +98,17 @@ void ExportImageDialog::accept()
 }
 
 void ExportImageDialog::sl_onBrowseButtonClick() {
+    QString curFormat = formatsBox->currentText();
+    assert(supportedFormats.contains(curFormat));
+    QList<QString> formats(supportedFormats);
+    formats.removeAll(curFormat);
+    formats.prepend(curFormat);
     QString fileFormats;
-    foreach (const QString &formatName, supportedFormats) {
+    for(int i = 0; i < formats.size(); ++i) {
+        QString formatName = formats.at(i);
         fileFormats += formatName.toUpper() + " format (*." + formatName + ");;";
     }
-
+    
     QString fileName = fileNameEdit->text();
     LastOpenDirHelper lod(IMAGE_DIR);
     lod.url = QFileDialog::getSaveFileName(this, tr("Save image to..."), fileName, fileFormats, 0, QFileDialog::DontConfirmOverwrite);
