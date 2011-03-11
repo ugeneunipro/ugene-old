@@ -24,7 +24,7 @@
 #include <format/uHMMFormat.h>
 
 #include <build/uHMM3BuildDialogImpl.h>
-#include <build/uhmm3QDActor.h>
+#include <search/uhmm3QDActor.h>
 #include <search/uHMM3SearchDialogImpl.h>
 #include <phmmer/uHMM3PhmmerDialogImpl.h>
 

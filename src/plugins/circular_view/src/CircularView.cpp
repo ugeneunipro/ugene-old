@@ -983,4 +983,8 @@ void CircularViewRenderArea::evaluateLabelPositions() {
     }
 }
 
+CircularViewRenderArea::~CircularViewRenderArea() {
+    qDeleteAll(circItems.values());
+}
+
 }//namespace

@@ -5,7 +5,6 @@ HEADERS += src/uHMM3Plugin.h \
            src/build/uhmm3build.h \
            src/build/uHMM3BuildDialogImpl.h \
            src/build/uHMM3BuildTask.h \
-           src/build/uhmm3QDActor.h \
            src/format/uHMMFormat.h \
            src/format/uHMMFormatReader.h \
            src/gobject/uHMMObject.h \
@@ -19,6 +18,7 @@ HEADERS += src/uHMM3Plugin.h \
            src/search/uHMM3SearchDialogImpl.h \
            src/search/uhmm3SearchResult.h \
            src/search/uHMM3SearchTask.h \
+           src/search/uhmm3QDActor.h \
            src/task_local_storage/uHMMSearchTaskLocalData.h \
            src/task_local_storage/uHMMSearchTaskLocalStorage.h \
            src/tests/uhmmer3BuildTests.h \
@@ -62,7 +62,6 @@ SOURCES += src/uHMM3Plugin.cpp \
            src/build/uhmm3build.cpp \
            src/build/uHMM3BuildDialogImpl.cpp \
            src/build/uHMM3BuildTask.cpp \
-           src/build/uhmm3QDActor.cpp \
            src/format/uHMMFormat.cpp \
            src/format/uHMMFormatReader.cpp \
            src/gobject/uHMMObject.cpp \
@@ -97,6 +96,7 @@ SOURCES += src/uHMM3Plugin.cpp \
            src/search/uHMM3SearchDialogImpl.cpp \
            src/search/uhmm3SearchResult.cpp \
            src/search/uHMM3SearchTask.cpp \
+           src/search/uhmm3QDActor.cpp \
            src/task_local_storage/uHMMSearchTaskLocalData.cpp \
            src/task_local_storage/uHMMSearchTaskLocalStorage.cpp \
            src/tests/uhmmer3BuildTests.cpp \

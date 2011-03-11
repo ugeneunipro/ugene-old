@@ -98,6 +98,7 @@ class CircularViewRenderArea : public GSequenceLineViewAnnotatedRenderArea {
     Q_OBJECT
 public:
     CircularViewRenderArea(CircularView* d);
+    ~CircularViewRenderArea();
 
     int getAnnotationYLevel (Annotation* a) const { return annotationYLevel.value(a); }
     void adaptNumberOfLabels(int h);
