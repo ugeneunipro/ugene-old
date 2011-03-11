@@ -62,7 +62,7 @@ public:
     static const QString HEADER_EXTENSION;
     static const QString SARRAY_EXTENSION;
     static const QString REF_INDEX_EXTENSION;
-    static const int charsInMask;
+    static const int charsInMask = 31;
 };
 
 } //U2

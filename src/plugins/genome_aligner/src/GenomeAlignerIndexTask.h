@@ -3,7 +3,7 @@
 
 #include <U2Core/Task.h>
 #include <U2Algorithm/BitsTable.h>
-#include <QList>
+#include <QVector>
 #include <QFile>
 
 namespace U2 {
@@ -41,7 +41,7 @@ private:
     BitsTable       bt;
     const quint32*  bitTable;
     int             bitCharLen;
-    QList<QFile*>   tempFiles;
+    QVector<QFile*>   tempFiles;
     QFile           *newRefFile;
     quint64         bitFilter;
     char            *buffer;

@@ -5,6 +5,7 @@ HEADERS += src/BuildSArraySettingsWidget.h \
            src/GenomeAlignerFindTask.h \
            src/GenomeAlignerIndex.h \
            src/GenomeAlignerIndexTask.h \
+           src/GenomeAlignerIO.h \
            src/GenomeAlignerPlugin.h \
            src/GenomeAlignerSettingsWidget.h \
            src/GenomeAlignerTask.h \
@@ -15,6 +16,7 @@ SOURCES += src/BuildSArraySettingsWidget.cpp \
            src/GenomeAlignerFindTask.cpp \
            src/GenomeAlignerIndex.cpp \
            src/GenomeAlignerIndexTask.cpp \
+           src/GenomeAlignerIO.cpp \
            src/GenomeAlignerPlugin.cpp \
            src/GenomeAlignerSettingsWidget.cpp \
            src/GenomeAlignerTask.cpp \

@@ -1,0 +1,94 @@
+#!UGENE_WORKFLOW
+#Aligns short reads to reference genome using a pre-built genome aligner index. The output alignment is saved to SAM format. To execute the schema do the following:1) Select "Read sequence" task and specify source file(s) at "URL" field in the Property Editor.2) Select "Genome aligner index reader" task and specify URL to the pre-built index.3) Specify genome aligner options in the properties of "UGENE genome aligner" task.4) Launch the schema with pressing Ctrl+R shrotcut.After running the schema, the alignment file will appear in the same folder as the source file. Pre-built indxeses can be built by UGENE genome aligner index builder.
+
+workflow "Align to reference genome with UGENE genome aligner"{
+
+    write-msa {
+        type:write-msa;
+        name:"Запись множественного выравнивания";
+        document-format:clustal;
+        write-mode:2;
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    gen-al-read-index {
+        type:gen-al-read-index;
+        name:"Genome aligner index reader";
+    }
+    genome-aligner {
+        type:genome-aligner;
+        name:"Модуль сборки контигов UGENE";
+        absolute-mismatches:0;
+        best:false;
+        gpu:false;
+        if-absolute-mismatches-value:false;
+        percentage-mismatches:0;
+        quality-threshold:false;
+        reverse:true;
+    }
+
+    genome-aligner.msa->write-msa.in-msa.msa
+    gen-al-read-index.gen-al-index-slot->genome-aligner.in-gen-al-index.gen-al-index-slot
+    read-sequence.sequence->genome-aligner.in-sequence.sequence
+
+    .iteration "Основная итерация"{
+        id:6;
+
+        write-msa {
+            document-format:sam;
+        }
+    }
+    .meta {
+        visual {
+            write-msa {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Запись множественного выравнивания</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all MSAs from <span style=' text-decoration: underline;'>Модуль сборки контигов UGENE</span> to <span style=' text-decoration: underline; color:#ff0000;'>не указан</span>.</p></body></html>";
+                tooltip:"Запись всех входных выравниваний в файл(ы) в выбранном формате";
+                pos:"-165 -510";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+            }
+            read-sequence {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <span style=' text-decoration: underline; color:#ff0000;'>не указан</span>.</p></body></html>";
+                tooltip:"Считывает последовательности вместе с аннотациями из файлов, расположенных локально или удаленно.";
+                pos:"-675 -420";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            gen-al-read-index {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Genome aligner index reader</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Read genome aligner index from and send it url to output.</p></body></html>";
+                tooltip:"Read a set of 3 files with suffixes .idx, .ref, .sarr. These files together constitute the index: they are all that is needed to align reads to that reference.";
+                pos:"-705 -615";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-gen-al-index.angle:360;
+            }
+            genome-aligner {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Модуль сборки контигов UGENE</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Собрать контигы из считываемых последовательностей по референсному геному и направить их на вывод.</p></body></html>";
+                tooltip:"Уникальный алгоритм UGENE для сборки контигов из считываемых последовательностей по референсному геному";
+                pos:"-465 -510";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 147 104";
+                in-gen-al-index.angle:150;
+                in-sequence.angle:210;
+                out-msa.angle:360;
+            }
+            genome-aligner.out-msa->write-msa.in-msa {
+                text-pos:"-60.5 -50";
+            }
+            gen-al-read-index.out-gen-al-index->genome-aligner.in-gen-al-index {
+                text-pos:"-45 -37";
+            }
+            read-sequence.out-sequence->genome-aligner.in-sequence {
+                text-pos:"-58 -24";
+            }
+        }
+    }
+}
+

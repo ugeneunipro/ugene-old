@@ -10,7 +10,6 @@
 
 namespace U2 {
 
-const int GenomeAlignerIndex::charsInMask = 31;
 const QString GenomeAlignerIndex::HEADER_EXTENSION("idx");
 const QString GenomeAlignerIndex::SARRAY_EXTENSION("sarr");
 const QString GenomeAlignerIndex::REF_INDEX_EXTENSION("ref");
@@ -209,7 +208,6 @@ void GenomeAlignerIndex::createMemCache() {
     memIdx[0] = idx;
     memBM[0] = qFromBigEndian<quint64>((uchar*)(buff+sizeof(quint32)));
     bool foundBorder = false;
-    qint64 compRes = 0;
     int maxPartSize = 0;
     int curPartSize = 0;
     quint64 bitFilter = ((quint64)0 - 1)<<(62 - GenomeAlignerTask::MIN_BIT_MASK_LENGTH);

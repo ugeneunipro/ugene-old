@@ -91,9 +91,9 @@ void GTest_DnaAssemblyToReferenceTask::prepare()
             return;
         }
     }
-    resultFileName = GUrlUtils::rollFileName(dir+"/"+GUrl(refSeqUrl).baseFileName() + "_aligned.sam",DocumentUtils::getNewDocFileNameExcludesHint());
+    QString id = QString::number(rand());
+    resultFileName = GUrlUtils::rollFileName(dir+"/"+GUrl(refSeqUrl).baseFileName() + "_" + id + "_aligned.sam",DocumentUtils::getNewDocFileNameExcludesHint());
     if (indexFileName.isEmpty()) {
-        QString id = QString::number(rand());
         indexFileName = GUrlUtils::rollFileName(dir+"/"+GUrl(refSeqUrl).baseFileName() + "_index_" + id,DocumentUtils::getNewDocFileNameExcludesHint());
         newIndex = true;
     } else {

@@ -410,17 +410,16 @@ void GenomeAlignerIndexTask::writePart(QFile *file, quint32 arrLen) {
 void GenomeAlignerIndexTask::mergeSort() {
     QFile indexFile(baseFileName+QString(".")+GenomeAlignerIndex::SARRAY_EXTENSION);
     indexFile.open(QIODevice::WriteOnly);
-    QList<QFile*> files;
+    QFile **files = tempFiles.data();
     int size = tempFiles.size();
     char **buffers = new char*[size];
     int *idxs = new int[size];
     int *sizes = new int[size];
 
-    files.append(tempFiles);
     for (int i=0; i<size; i++) {
         buffers[i] = new char[BUFF_SIZE];
         idxs[i] = 0;
-        sizes[i] = files.at(i)->read(buffers[i], BUFF_SIZE);
+        sizes[i] = files[i]->read(buffers[i], BUFF_SIZE);
     }
 
     int idx = 0;
@@ -443,7 +442,7 @@ void GenomeAlignerIndexTask::mergeSort() {
             }
             if (idxs[i] == sizes[i]) {
                 idxs[i] = 0;
-                sizes[i] = files.at(i)->read(buffers[i], BUFF_SIZE);
+                sizes[i] = files[i]->read(buffers[i], BUFF_SIZE);
                 if (0 == sizes[i]) {
                     continue;
                 }

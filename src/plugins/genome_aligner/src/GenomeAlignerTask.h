@@ -5,6 +5,7 @@
 #include <U2Formats/StreamSequenceReader.h>
 #include <U2Formats/StreamSequenceWriter.h>
 #include "GenomeAlignerFindTask.h"
+#include "GenomeAlignerIO.h"
 
 namespace U2 {
 
@@ -25,6 +26,9 @@ public:
     virtual void run();
     virtual ReportResult report();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    QString getIndexPath();
+    static const QString OPTION_READS_READER;
+    static const QString OPTION_READS_WRITER;
     static const QString OPTION_ALIGN_REVERSED;
     static const QString OPTION_OPENCL;
     static const QString OPTION_IF_ABS_MISMATCHES;
@@ -45,8 +49,8 @@ private:
     ReadShortReadsSubTask *readTask;
     GenomeAlignerFindTask *findTask;
     WriteAlignedReadsSubTask *writeTask;
-    StreamSequenceReader seqReader;
-    StreamContigWriter seqWriter;
+    GenomeAlignerReader *seqReader;
+    GenomeAlignerWriter *seqWriter;
     bool justBuildIndex;
     uint windowSize, bunchSize, nMismatches, ptMismatches;
     bool absMismatches;
@@ -66,7 +70,7 @@ class ReadShortReadsSubTask : public Task {
     Q_OBJECT
 public:
     ReadShortReadsSubTask(const DNASequenceObject **lastObj,
-                          StreamSequenceReader &seqReader,
+                          GenomeAlignerReader *seqReader,
                           QVector<SearchQuery*> &queries,
                           const DnaAssemblyToRefTaskSettings& settings,
                           quint64 freeMemorySize,
@@ -77,7 +81,7 @@ public:
 
 private:
     const DNASequenceObject **lastObj;
-    StreamSequenceReader &seqReader;
+    GenomeAlignerReader *seqReader;
     QVector<SearchQuery*> &queries;
     const DnaAssemblyToRefTaskSettings &settings;
     quint64 freeMemorySize;
@@ -89,10 +93,10 @@ private:
 class WriteAlignedReadsSubTask : public Task {
     Q_OBJECT
 public:
-    WriteAlignedReadsSubTask(StreamContigWriter &seqWriter, QVector<SearchQuery*> &queries);
+    WriteAlignedReadsSubTask(GenomeAlignerWriter *seqWriter, QVector<SearchQuery*> &queries);
     virtual void run();
 private:
-    StreamContigWriter &seqWriter;
+    GenomeAlignerWriter *seqWriter;
     QVector<SearchQuery*> &queries;
 };
 

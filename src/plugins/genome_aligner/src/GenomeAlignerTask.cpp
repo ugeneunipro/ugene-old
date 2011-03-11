@@ -24,6 +24,8 @@
 namespace U2 {
 
 const QString GenomeAlignerTask::taskName(tr("UGENE genome aligner"));
+const QString GenomeAlignerTask::OPTION_READS_READER("rreader");
+const QString GenomeAlignerTask::OPTION_READS_WRITER("rwriter");
 const QString GenomeAlignerTask::OPTION_ALIGN_REVERSED("align_reversed");
 const QString GenomeAlignerTask::OPTION_OPENCL("use_gpu_optimization");
 const QString GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES("if_absolute_mismatches_value");
@@ -37,8 +39,8 @@ const QString GenomeAlignerTask::OPTION_QUAL_THRESHOLD("quality_threshold");
 
 GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settings, bool _justBuildIndex )
 : DnaAssemblyToReferenceTask(settings, TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported, _justBuildIndex),
-createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL),
-seqWriter(settings.resultFileName, settings.refSeqUrl.baseFileName()),
+createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), seqReader(NULL),
+seqWriter(NULL),
 justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastObj(NULL)
 {
     GCOUNTER(cvar,tvar, "GenomeAlignerTask");  
@@ -57,11 +59,21 @@ GenomeAlignerTask::~GenomeAlignerTask() {
 
 void GenomeAlignerTask::prepare() {
     if (!justBuildIndex) {
-        bool init = seqReader.init(settings.shortReadUrls);
+        seqReader = settings.getCustomValue(OPTION_READS_READER, qVariantFromValue(GenomeAlignerReaderContainer()))
+            .value<GenomeAlignerReaderContainer>().reader;
+        if (NULL == seqReader) {
+            seqReader = new GenomeAlignerUrlReader(settings.shortReadUrls);
+        }
 
-        if (!init) {
-            setError(tr("Can not init short reads loader. %1").arg(seqReader.getErrorMessage()));
+        if (seqReader->isEnd()) {
+            setError(tr("Can not init short reads loader."));
             return;
+        }
+
+        seqWriter = settings.getCustomValue(OPTION_READS_WRITER, qVariantFromValue(GenomeAlignerWriterContainer()))
+            .value<GenomeAlignerWriterContainer>().writer;
+        if (NULL == seqWriter) {
+            seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, settings.refSeqUrl.baseFileName());
         }
     }
 
@@ -120,7 +132,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     qint64 time=(subTask->getTimeInfo().finishTime - subTask->getTimeInfo().startTime);
     if (subTask == createIndexTask) {
         index = createIndexTask->index;
-        seqWriter.setRefSeqName(index->getSeqName());
+        seqWriter->setReferenceName(index->getSeqName());
         taskLog.details(QString("Genome aligner index creation time: %1").arg((double)time/(1000*1000)));
     }
 
@@ -219,11 +231,11 @@ Task::ReportResult GenomeAlignerTask::report() {
         return ReportResult_Finished;
     }
     
-    if (seqWriter.getNumSeqWritten() == 0) {
+    if (seqWriter->getWrittenReadsCount() == 0) {
         haveResults = false;
         return ReportResult_Finished;
     }
-    seqWriter.close();
+    seqWriter->close();
 
     // TODO: the MAlignment object should be ommited 
     result.setName("Unused object");
@@ -282,8 +294,12 @@ int GenomeAlignerTask::calculateWindowSize(bool absMismatches, int nMismatches, 
     return windowSize;
 }
 
+QString GenomeAlignerTask::getIndexPath() {
+    return indexFileName;
+}
+
 ReadShortReadsSubTask::ReadShortReadsSubTask(const DNASequenceObject **_lastObj,
-                                             StreamSequenceReader &_seqReader,
+                                             GenomeAlignerReader *_seqReader,
                                              QVector<SearchQuery*> &_queries,
                                              const DnaAssemblyToRefTaskSettings &_settings,
                                              quint64 m,
@@ -315,10 +331,10 @@ void ReadShortReadsSubTask::run() {
     int qualityThreshold = settings.getCustomValue(GenomeAlignerTask::OPTION_QUAL_THRESHOLD, 0).toInt();
     int n = 0;
 
-    while(seqReader.hasNext()) {
+    while(!seqReader->isEnd()) {
         const DNASequenceObject *obj = NULL;
         if (NULL == *lastObj) {
-            obj = seqReader.getNextSequenceObject();
+            obj = seqReader->read();
         } else {
             obj = *lastObj;
         }
@@ -383,7 +399,7 @@ void ReadShortReadsSubTask::run() {
     }
 }
 
-WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(StreamContigWriter &_seqWriter, QVector<SearchQuery*> &_queries)
+WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries)
 : Task("WriteAlignedReadsSubTask", TaskFlag_None), seqWriter(_seqWriter), queries(_queries)
 {
 
@@ -394,7 +410,7 @@ void WriteAlignedReadsSubTask::run() {
         QList<quint32> findResults = qu->results;
         const DNASequence& seq = qu->shortRead; 
         foreach (quint32 offset, findResults) {
-            seqWriter.writeNextAlignedRead(offset, seq);
+            seqWriter->write(seq, offset);
         }
     }
 }

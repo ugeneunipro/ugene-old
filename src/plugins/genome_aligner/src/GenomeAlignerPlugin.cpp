@@ -6,6 +6,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Lang/WorkflowEnv.h>
 
 #include "GenomeAlignerTask.h"
 #include "GenomeAlignerWorker.h"
@@ -17,6 +18,20 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
+const QString GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE_ID("gai");
+
+DataTypePtr GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE()
+{
+    DataTypeRegistry* dtr = WorkflowEnv::getDataTypeRegistry();
+    assert(dtr);
+    static bool startup = true;
+    if (startup)
+    {
+        dtr->registerEntry(DataTypePtr(new DataType(GENOME_ALIGNER_INDEX_TYPE_ID, QString("Genome aligner index"), QString("Index for genome aligner"))));
+        startup = false;
+    }
+    return dtr->getById(GENOME_ALIGNER_INDEX_TYPE_ID);
+}
 
 class GenomeAlignerGuiExtFactory : public DnaAssemblyGUIExtensionsFactory {
 public:
@@ -33,13 +48,14 @@ GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE genome aligner"),
     
     bool guiMode = AppContext::getMainWindow();
     DnaAssemblyGUIExtensionsFactory* guiFactory = guiMode ? new GenomeAlignerGuiExtFactory(): NULL;
-    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv(GenomeAlignerTask::taskName, new GenomeAlignerTask::Factory, guiFactory, true);
+    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv("UGENE genome aligner", new GenomeAlignerTask::Factory, guiFactory, true);
     bool res = registry->registerAlgorithm(algo);
     Q_UNUSED(res);
     assert(res);
 
-    //TODO: bug-0001958
-    //LocalWorkflow::GenomeAlignerWorkerFactory::init();
+    LocalWorkflow::GenomeAlignerWorkerFactory::init();
+    LocalWorkflow::GenomeAlignerBuildWorkerFactory::init();
+    LocalWorkflow::GenomeAlignerIndexReaderWorkerFactory::init();
 }
 
 GenomeAlignerPlugin::~GenomeAlignerPlugin() {

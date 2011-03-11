@@ -46,8 +46,8 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
-    char fastaHeaderStartChar = '>';
-    QBitArray fastaHeaderStart = TextUtils::createBitMap(fastaHeaderStartChar);
+    static char fastaHeaderStartChar = '>';
+    static QBitArray fastaHeaderStart = TextUtils::createBitMap(fastaHeaderStartChar);
 
     bool merge = gapSize!=-1;
     QByteArray sequence;
@@ -60,7 +60,7 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
 
     //skip leading whites if present
     bool lineOk = true;
-    QBitArray nonWhites = ~TextUtils::WHITES;
+    static QBitArray nonWhites = ~TextUtils::WHITES;
     io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
 
     int sequenceStart = 0;
