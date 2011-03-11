@@ -13,7 +13,8 @@ class Document;
 class Project;
 class Task;
 
-#define PROJECTFILE_EXT QString(".uprj")
+#define PROJECT_FILE_PURE_EXT QString("uprj")
+#define PROJECTFILE_EXT QString("." + PROJECT_FILE_PURE_EXT)
 
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {

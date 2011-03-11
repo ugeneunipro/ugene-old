@@ -161,7 +161,7 @@ void ProjectLoaderImpl::sl_projectOpened() {
     Task *t = static_cast<Task*>(sender());
     if(t->isFinished()) {
         Project *p = AppContext::getProject();
-        if(p->getDocuments().isEmpty()) {
+        if(p && p->getDocuments().isEmpty()) {
             Task * cls = new CloseProjectTask();
             AppContext::getTaskScheduler()->registerTopLevelTask(cls);
         }

@@ -81,24 +81,29 @@ OpenProjectTask::OpenProjectTask(const QString& _url, bool _closeActiveProject, 
 OpenProjectTask::OpenProjectTask(const QList<GUrl>& list, bool _closeActiveProject) 
     : Task(tr("open_project_task_name"), TaskFlags_NR_FOSCOE), urlList(list), loadProjectTask(NULL), closeActiveProject(_closeActiveProject) 
 {
+    assert(!urlList.isEmpty());
+    int howManyProjFiles = 0;
+    foreach(const GUrl & url, urlList) {
+        if(url.lastFileSuffix() == PROJECT_FILE_PURE_EXT) {
+            howManyProjFiles++;
+        }
+    }
+    if(howManyProjFiles == urlList.size()) { // only project files are given -> open first project, ignore other
+        url = urlList.takeFirst().getURLString();
+        foreach( const GUrl & url, urlList ) {
+            coreLog.info(tr("Project file '%1' ignored").arg(url.getURLString()));
+        }
+    }
 }
 
-
-
 void OpenProjectTask::prepare() {
-    if (urlList.size() == 1 && url.isEmpty()) {
-        //FIXME issue 534
-        GUrl tmp = urlList.takeFirst();
-        url = tmp.getURLString();
-    }
-
     if (url.endsWith(PROJECTFILE_EXT)) { // open a project
         QFileInfo f(url);
         if (f.exists() && !(f.isFile() && f.isReadable())) {
             stateInfo.setError(  tr("invalid_url%1").arg(url) );
             return;
         }
-
+        
         // close current
         if (AppContext::getProject()!=NULL) {
             if(url == AppContext::getProject()->getProjectURL()) {
@@ -156,10 +161,9 @@ void OpenProjectTask::prepare() {
             addSubTask(rpt);
         }
         foreach(const GUrl& _url, urlList) {
-            //FIXME issue 534
-            if (_url.lastFileSuffix() == PROJECTFILE_EXT) {
+            if (_url.lastFileSuffix() == PROJECT_FILE_PURE_EXT) {
                 // skip extra project files
-                stateInfo.setError(  tr("ignore %1").arg(url) );
+                coreLog.info(tr("Project file '%1' ignored").arg(_url.getURLString()));
                 continue;
             }
             Document * doc = p->findDocumentByURL(_url);
