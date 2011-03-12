@@ -17,7 +17,10 @@ HEADERS += \
     src/Index.h \
     src/BaiReader.h \
     src/BaiWriter.h \
-    src/Dbi.h
+    src/Dbi.h \
+    src/ConvertToSQLiteTask.h \
+    src/ConvertToSQLiteDialog.h \
+    src/SelectReferencesDialog.h
 SOURCES += \
     src/BAMDbiPlugin.cpp \
     src/BAMFormat.cpp \
@@ -34,4 +37,11 @@ SOURCES += \
     src/Index.cpp \
     src/BaiReader.cpp \
     src/BaiWriter.cpp \
-    src/Dbi.cpp
+    src/Dbi.cpp \
+    src/ConvertToSQLiteTask.cpp \
+    src/ConvertToSQLiteDialog.cpp \
+    src/SelectReferencesDialog.cpp
+
+FORMS += \
+    src/ConvertToSQLiteDialog.ui \
+    src/SelectReferencesDialog.ui

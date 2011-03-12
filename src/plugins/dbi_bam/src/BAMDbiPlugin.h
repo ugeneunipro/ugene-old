@@ -12,6 +12,8 @@ class BAMDbiPlugin : public Plugin
     Q_OBJECT
 public:
     BAMDbiPlugin();
+private slots:
+    void sl_converter();
 };
 
 } // namespace BAM

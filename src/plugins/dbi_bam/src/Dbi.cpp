@@ -47,7 +47,7 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
         assembliesCount = reader->getHeader().getReferences().size();
         objectRDbi.reset(new ObjectRDbi(*this, dbRef, assembliesCount));
         assemblyRDbi.reset(new AssemblyRDbi(*this, *reader, dbRef, assembliesCount));
-        buildIndex();
+        buildIndex(os);
         state = U2DbiState_Ready;
         initProps = properties;
     } catch(const Exception &e) {
@@ -132,7 +132,7 @@ U2AssemblyRDbi *Dbi::getAssemblyRDbi() {
     }
 }
 
-void Dbi::buildIndex() {
+void Dbi::buildIndex(U2OpStatus &os) {
     {
         U2OpStatusImpl opStatus;
         int tableCount = SQLiteQuery("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND (name = 'assemblies' OR name = 'assemblyReads');", &dbRef, opStatus).selectInt64();
@@ -233,6 +233,10 @@ void Dbi::buildIndex() {
                         }
                         maxEndPositions[alignment.getReferenceId()] = qMax(maxEndPositions[alignment.getReferenceId()], endPosition);
                     }
+                    if(os.isCanceled()) {
+                        throw Exception(BAMDbiPlugin::tr("Operation was cancelled"));
+                    }
+                    os.setProgress(ioAdapter->getProgress());
                 }
             }
             for(int referenceId = 0;referenceId < header.getReferences().size();referenceId++) {
@@ -689,50 +693,55 @@ quint64 AssemblyRDbi::getMaxEndPos(U2DataId assemblyId, U2OpStatus &os) {
     }
 }
 
+U2AssemblyRead AssemblyRDbi::alignmentToRead(const Alignment &alignment) {
+    U2AssemblyRead row;
+    row.leftmostPos = alignment.getPosition();
+    row.readSequence = alignment.getSequence();
+    row.complementary = (alignment.getFlags() & Alignment::Reverse);
+    foreach(const Alignment::CigarOperation &cigarOperation, alignment.getCigar()) {
+        U2CigarOp cigarOp = U2CigarOp_Invalid;
+        switch(cigarOperation.getOperation()) {
+        case Alignment::CigarOperation::AlignmentMatch:
+            cigarOp = U2CigarOp_M;
+            break;
+        case Alignment::CigarOperation::Insertion:
+            cigarOp = U2CigarOp_I;
+            break;
+        case Alignment::CigarOperation::Deletion:
+            cigarOp = U2CigarOp_D;
+            break;
+        case Alignment::CigarOperation::Skipped:
+            cigarOp = U2CigarOp_N;
+            break;
+        case Alignment::CigarOperation::SoftClip:
+            cigarOp = U2CigarOp_S;
+            break;
+        case Alignment::CigarOperation::HardClip:
+            cigarOp = U2CigarOp_H;
+            break;
+        case Alignment::CigarOperation::Padding:
+            cigarOp = U2CigarOp_P;
+            break;
+        case Alignment::CigarOperation::SequenceMatch:
+            cigarOp = U2CigarOp_M;
+            break;
+        case Alignment::CigarOperation::SequenceMismatch:
+            cigarOp = U2CigarOp_M;
+            break;
+        default:
+            assert(false);
+        }
+        row.cigar.append(U2CigarToken(cigarOp, cigarOperation.getLength()));
+    }
+    return row;
+}
+
 U2AssemblyRead AssemblyRDbi::getReadById(U2DataId rowId, qint64 packedRow, U2OpStatus &os) {
     try {
         reader.seek(VirtualOffset((quint64)rowId));
-        Alignment alignment = reader.readAlignment();
-        U2AssemblyRead row;
-        row.leftmostPos = alignment.getPosition();
+        U2AssemblyRead row = alignmentToRead(reader.readAlignment());
         row.id = rowId;
         row.packedViewRow = packedRow;
-        row.readSequence = alignment.getSequence();
-        foreach(const Alignment::CigarOperation &cigarOperation, alignment.getCigar()) {
-            U2CigarOp cigarOp = U2CigarOp_Invalid;
-            switch(cigarOperation.getOperation()) {
-            case Alignment::CigarOperation::AlignmentMatch:
-                cigarOp = U2CigarOp_M;
-                break;
-            case Alignment::CigarOperation::Insertion:
-                cigarOp = U2CigarOp_I;
-                break;
-            case Alignment::CigarOperation::Deletion:
-                cigarOp = U2CigarOp_D;
-                break;
-            case Alignment::CigarOperation::Skipped:
-                cigarOp = U2CigarOp_N;
-                break;
-            case Alignment::CigarOperation::SoftClip:
-                cigarOp = U2CigarOp_S;
-                break;
-            case Alignment::CigarOperation::HardClip:
-                cigarOp = U2CigarOp_H;
-                break;
-            case Alignment::CigarOperation::Padding:
-                cigarOp = U2CigarOp_P;
-                break;
-            case Alignment::CigarOperation::SequenceMatch:
-                cigarOp = U2CigarOp_M;
-                break;
-            case Alignment::CigarOperation::SequenceMismatch:
-                cigarOp = U2CigarOp_M;
-                break;
-            default:
-                assert(false);
-            }
-            row.cigar.append(U2CigarToken(cigarOp, cigarOperation.getLength()));
-        }
         return row;
     } catch(const Exception &e) {
         os.setError(e.getMessage());

@@ -3,6 +3,7 @@
 
 #include <U2Core/U2Dbi.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2DbiRegistry.h>
 
@@ -37,7 +38,7 @@ public:
     virtual QHash<QString, QString> getInitProperties() const {return initProps;}
 
 private:
-    void buildIndex();
+    void buildIndex(U2OpStatus &os);
 
 private:
     static const int COLUMN_DISTANCE = 100;
@@ -121,6 +122,8 @@ public:
     virtual QList<U2AssemblyRead> getReadsByRow(U2DataId assemblyId, const U2Region &r, qint64 minRow, qint64 maxRow, U2OpStatus &os);
 
     virtual quint64 getMaxEndPos(U2DataId assemblyId, U2OpStatus &os);
+
+    static U2AssemblyRead alignmentToRead(const Alignment &alignment);
 private:
     U2AssemblyRead getReadById(U2DataId rowId, qint64 packedRow, U2OpStatus &os);
     QList<U2AssemblyRead> getReadsByIds(QList<U2DataId> rowIds, QList<qint64> packedRows, U2OpStatus &os);

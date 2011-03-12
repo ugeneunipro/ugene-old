@@ -1,8 +1,18 @@
+#include <QtGui/QAction>
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Gui/MainWindow.h>
 #include "BAMFormat.h"
 #include "Dbi.h"
+#include "Header.h"
+#include "Reader.h"
+#include "IOException.h"
+#include "ConvertToSQLiteDialog.h"
+#include "SelectReferencesDialog.h"
+#include "ConvertToSQLiteTask.h"
 #include "BAMDbiPlugin.h"
 
 namespace U2 {
@@ -13,11 +23,50 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-
 BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface for indexed read-only access to BAM files"))
 {
     AppContext::getDocumentFormatRegistry()->registerFormat(new BAMFormat());
     AppContext::getDbiRegistry()->registerDbiFactory(new DbiFactory());
+
+    {
+        MainWindow *mainWindow = AppContext::getMainWindow();
+        if(NULL != mainWindow) {
+            QAction *converterAction = new QAction(tr("Import BAM File..."), this);
+            connect(converterAction, SIGNAL(triggered()), SLOT(sl_converter()));
+            mainWindow->getTopLevelMenu(MWMENU_TOOLS)->addAction(converterAction);
+        }
+    }
+}
+
+void BAMDbiPlugin::sl_converter() {
+    try {
+        if(!AppContext::getDbiRegistry()->getRegisteredDbiFactories().contains("SQLiteDbi")) {
+            throw Exception(tr("SQLite DBI plugin is not loaded"));
+        }
+        ConvertToSQLiteDialog convertDialog;
+        if(QDialog::Accepted == convertDialog.exec()) {
+            Header header;
+            {
+                std::auto_ptr<IOAdapter> ioAdapter;
+                {
+                    IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(convertDialog.getSourceUrl()));
+                    ioAdapter.reset(factory->createIOAdapter());
+                }
+                if(!ioAdapter->open(convertDialog.getSourceUrl(), IOAdapterMode_Read)) {
+                    throw IOException(BAMDbiPlugin::tr("Can't open file '%1'").arg(convertDialog.getSourceUrl().getURLString()));
+                }
+                std::auto_ptr<Reader> reader(new Reader(*ioAdapter));
+                header = reader->getHeader();
+            }
+            SelectReferencesDialog referencesDialog(header.getReferences());
+//            if(QDialog::Accepted == referencesDialog.exec()) {
+                ConvertToSQLiteTask *task = new ConvertToSQLiteTask(convertDialog.getSourceUrl(), referencesDialog.getReferenceUrls(), convertDialog.getDestinationUrl());
+                AppContext::getTaskScheduler()->registerTopLevelTask(task);
+//            }
+        }
+    } catch(const Exception &e) {
+        QMessageBox::critical(NULL, tr("Error"), e.getMessage());
+    }
 }
 
 } // namespace BAM
