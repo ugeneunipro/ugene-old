@@ -7,7 +7,7 @@
 namespace U2 {
 
 DNASequenceObject::DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap) 
-: GObject(GObjectTypes::SEQUENCE, name, hintsMap), dnaSeq(seq)
+: GObject(GObjectTypes::SEQUENCE, name, hintsMap), U2SequenceRDbi(NULL), dnaSeq(seq)
 {
     assert(dnaSeq.alphabet!=NULL);
     seqRange = U2Region(0, dnaSeq.seq.length());
@@ -64,9 +64,33 @@ void DNASequenceObject::setQuality( const DNAQuality& quality )
     dnaSeq.quality = quality;
     emit si_sequenceChanged();
 }
-DNASequenceObjectConstraints::DNASequenceObjectConstraints(QObject* p) : GObjectConstraints(GObjectTypes::SEQUENCE, p){}
+
+DNASequenceObjectConstraints::DNASequenceObjectConstraints(QObject* p) 
+: GObjectConstraints(GObjectTypes::SEQUENCE, p)
+{
+}
 
 
+
+U2Sequence DNASequenceObject::getSequenceObject(U2DataId sequenceId, U2OpStatus& os) {
+    GObjectReference ref(this);
+    U2Sequence res;
+    res.id = sequenceId;
+    res.dbiId = ref.docUrl + "|" + ref.objName;
+    res.alphabet = dnaSeq.alphabet->getId();
+    res.length = dnaSeq.length();
+    res.circular = isCircular();
+    res.version = -1; // not supported
+    return res;
+}
+    
+QByteArray DNASequenceObject::getSequenceData(U2DataId sequenceId, const U2Region& region, U2OpStatus& os) {
+    U2Region safeRegion = seqRange.intersect(region);
+    if (safeRegion.isEmpty()) {
+        return QByteArray();
+    }
+    return dnaSeq.seq.mid(safeRegion.startPos, safeRegion.length);
+}
 
 
 }//namespace

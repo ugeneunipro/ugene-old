@@ -347,9 +347,6 @@ public:
     The region must be valid region within sequence bounds.
     */
     virtual QByteArray getSequenceData(U2DataId sequenceId, const U2Region& region, U2OpStatus& os) = 0;
-
-    /** Emitted when sequence is modified */
-    void si_sequenceModified(U2DataId sequenceId);
 };
 
 /**
