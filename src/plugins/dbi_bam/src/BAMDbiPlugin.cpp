@@ -11,7 +11,6 @@
 #include "Reader.h"
 #include "IOException.h"
 #include "ConvertToSQLiteDialog.h"
-#include "SelectReferencesDialog.h"
 #include "ConvertToSQLiteTask.h"
 #include "BAMDbiPlugin.h"
 
