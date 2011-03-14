@@ -10,13 +10,13 @@ use_bundled_zlib() {
     INCLUDEPATH += ../../libs_3rdparty/zlib/src
 }
 
-LIBS += -lugene_db
+LIBS += -lugenedb
 
 !debug_and_release|build_pass {
 
     CONFIG(debug, debug|release) {
-        LIBS -= -lugene_db
-        LIBS += -lugene_dbd
+        LIBS -= -lugenedb
+        LIBS += -lugenedbd
     }
 }
 

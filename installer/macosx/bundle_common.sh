@@ -58,7 +58,7 @@ changeCoreInstallNames () {
         install_name_tool -change libU2Remote.1.dylib  @executable_path/libU2Remote.1.dylib "$TARGET_EXE_DIR"/$1
         install_name_tool -change libU2Test.1.dylib  @executable_path/libU2Test.1.dylib "$TARGET_EXE_DIR"/$1
         install_name_tool -change libU2View.1.dylib  @executable_path/libU2View.1.dylib "$TARGET_EXE_DIR"/$1
-         install_name_tool -change libsqlite3.1.dylib  @executable_path/libsqlite3.1.dylib "$TARGET_EXE_DIR"/$1
+        install_name_tool -change libugenedb.1.dylib  @executable_path/ugenedb.1.dylib "$TARGET_EXE_DIR"/$1
   
    else
        echo "changeCoreInstallNames: no parameter passed."

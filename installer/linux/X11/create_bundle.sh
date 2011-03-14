@@ -62,7 +62,7 @@ cp -v "$RELEASE_DIR/libU2Private.so.1" "${TARGET_APP_DIR}"
 cp -v "$RELEASE_DIR/libU2Remote.so.1" "${TARGET_APP_DIR}"
 cp -v "$RELEASE_DIR/libU2Test.so.1" "${TARGET_APP_DIR}"
 cp -v "$RELEASE_DIR/libU2View.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libugene_db.so.1" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libugenedb.so.1" "${TARGET_APP_DIR}"
 
 echo
 echo copying qt libraries

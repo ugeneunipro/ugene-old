@@ -58,7 +58,7 @@ add-library U2Private
 add-library U2Remote
 add-library U2Test
 add-library U2View
-add-library sqlite3
+add-library ugenedb
 
 echo
 echo copying plugins

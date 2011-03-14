@@ -2,7 +2,7 @@
 include( ../../ugene_globals.pri )
 UGENE_RELATIVE_DESTDIR = ''
 
-TARGET = ugene_db
+TARGET = ugenedb
 TEMPLATE = lib
 CONFIG +=thread debug_and_release
 INCLUDEPATH += src
@@ -12,7 +12,7 @@ LIBS += -L../../_release
 !debug_and_release|build_pass {
 
     CONFIG(debug, debug|release) {
-        TARGET = ugene_dbd
+        TARGET = ugenedbd
         DEFINES+=_DEBUG
         CONFIG +=console
         DESTDIR=../../_debug/
@@ -22,7 +22,7 @@ LIBS += -L../../_release
     }
 
     CONFIG(release, debug|release) {
-        TARGET = ugene_db
+        TARGET = ugenedb
         DEFINES+=NDEBUG
         DESTDIR=../../_release/
         OBJECTS_DIR=_tmp/obj/release

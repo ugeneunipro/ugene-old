@@ -9,7 +9,7 @@ CONFIG +=qt dll thread debug_and_release console
 DEFINES+= QT_DLL QT_FATAL_ASSERT
 INCLUDEPATH += src _tmp ../include ../corelibs/U2Private/src
 
-LIBS += -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2Test -lU2Remote -lU2Misc -lU2Lang -lU2Private -lugene_db
+LIBS += -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2Test -lU2Remote -lU2Misc -lU2Lang -lU2Private -lugenedb
 
 !debug_and_release|build_pass {
 
@@ -19,8 +19,8 @@ LIBS += -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2Test -lU2Re
         DESTDIR=../_debug
         MOC_DIR=_tmp/moc/debug
         OBJECTS_DIR=_tmp/obj/debug
-        LIBS -= -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2Test -lU2Remote -lU2Misc -lU2Lang -lU2Private -lugene_db
-        LIBS += -L../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Guid -lU2Testd -lU2Remoted -lU2Miscd -lU2Langd -lU2Privated -lugene_dbd
+        LIBS -= -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2Test -lU2Remote -lU2Misc -lU2Lang -lU2Private -lugenedb
+        LIBS += -L../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Guid -lU2Testd -lU2Remoted -lU2Miscd -lU2Langd -lU2Privated -lugenedbd
     }
 
     CONFIG(release, debug|release) {
