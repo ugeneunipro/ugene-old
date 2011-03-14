@@ -15,7 +15,7 @@ use_bundled_zlib() {
 }
 
 LIBS += -L../../_release
-LIBS += -lsqlite3
+LIBS += -lugene_db
 
 INCLUDEPATH += ../../libs_3rdparty/sqlite3/src
 
@@ -29,8 +29,8 @@ INCLUDEPATH += ../../libs_3rdparty/sqlite3/src
             LIBS += -lzlibd
             LIBS -= -lzlib
         }
-        LIBS -= -lsqlite3
-        LIBS += -lsqlite3d
+        LIBS -= -lugene_db
+        LIBS += -lugene_dbd
     }
 
     CONFIG(release, debug|release) {

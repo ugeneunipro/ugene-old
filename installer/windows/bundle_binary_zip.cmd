@@ -31,7 +31,7 @@ REM copy data
 svn export %U_ROOT%\data %OUTPUT_DIR%\data
 
 REM copy libs 
-copy %RELEASE_DIR%\sqlite3.dll %OUTPUT_DIR%
+copy %RELEASE_DIR%\ugene_db.dll %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Algorithm.dll %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Core.dll %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Designer.dll  %OUTPUT_DIR%
