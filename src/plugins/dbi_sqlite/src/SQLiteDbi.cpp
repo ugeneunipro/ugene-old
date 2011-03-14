@@ -90,7 +90,10 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     
     // objects table - stores IDs and types for all objects. It also stores 'top_level' flag to simplify queries
     // top_level = 1 if object is placed into some folder.
-    CT("Object", " id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, version INTEGER NOT NULL DEFAULT 1, top_level INTEGER NOT NULL");
+    // name is a visual name of the object shown to user.
+    CT("Object", " id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
+        "version INTEGER NOT NULL DEFAULT 1, top_level INTEGER NOT NULL, "
+        "name TEXT NOT NULL");
     
     // parent-child object relation
     CT("Parent", "parent INTEGER, child INTEGER, "
@@ -143,9 +146,8 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
 
     // assembly object
     // reference    - reference sequence id
-    // alphabet     - alphabet
     // lextra       - extra info about max read length in assembly. Different strategies can be used here. Depends on DBI version
-    CT("Assembly", "object INTEGER, reference INTEGER, alphabet TEXT NOT NULL, lextra INTEGER NOT NULL, "
+    CT("Assembly", "object INTEGER, reference INTEGER, lextra INTEGER NOT NULL, "
                     " FOREIGN KEY(object) REFERENCES Object(id), "
                     " FOREIGN KEY(reference) REFERENCES Sequence(object)");
 

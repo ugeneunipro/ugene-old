@@ -77,12 +77,12 @@ void SQLiteAssemblyDbi::createReadsIndexes(U2DataId id, U2OpStatus& os) {
 
 U2Assembly SQLiteAssemblyDbi::getAssemblyObject(U2DataId assemblyId, U2OpStatus& os) {
     U2Assembly res(assemblyId, dbi->getDbiId(), 0);
-    SQLiteQuery q("SELECT Assembly.reference, Assembly.alphabet, Object.version FROM Assembly, Object "
+    SQLiteQuery q("SELECT Assembly.reference, Object.name, Object.version FROM Assembly, Object "
                 " WHERE Object.id = ?1 AND Assembly.object = Object.id", db, os);
     q.bindDataId(1, assemblyId);
     if (q.step())  {
         res.referenceId = q.getDataId(0, U2Type::Assembly);
-        res.alphabet = q.getString(1);
+        res.visualName = q.getString(1);
         res.version = q.getInt64(2);
         q.ensureDone();
     } 
@@ -245,7 +245,7 @@ quint64 SQLiteAssemblyDbi::getMaxEndPos(U2DataId assemblyId, U2OpStatus& os) {
 #define INSERT_CHUNK_SIZE (100*1000)
 
 void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString& folder, U2AssemblyReadsIterator* it, U2OpStatus& os) {
-    assembly.id = SQLiteObjectDbi::createObject(U2Type::Assembly, folder, db, os);
+    assembly.id = SQLiteObjectDbi::createObject(U2Type::Assembly, folder, assembly.visualName, db, os);
     if (os.hasError()) {
         return;
     }
@@ -256,11 +256,10 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     }
 
     QString readsTable = getReadsTableName(assembly.id);
-    SQLiteQuery q("INSERT INTO Assembly(object, reference, alphabet, lextra) VALUES(?1, ?2, ?3, ?4)", db, os);
+    SQLiteQuery q("INSERT INTO Assembly(object, reference, lextra) VALUES(?1, ?2, ?3)", db, os);
     q.bindDataId(1, assembly.id);
     q.bindDataId(2, assembly.referenceId);
-    q.bindText(3, assembly.alphabet.id);
-    q.bindInt64(4, 0);
+    q.bindInt64(3, 0);
     q.execute();
 
     if (it != NULL) {

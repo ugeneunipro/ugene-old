@@ -349,7 +349,7 @@ U2Assembly AssemblyObjectDbi::getAssemblyObject( U2DataId id, U2OpStatus& os ) {
 
     msa.id = id;
     msa.dbiId = root->getDbiId();
-    msa.alphabet.id = mao->getAlphabet()->getId();
+    msa.visualName = mao->getGObjectName();
     //TODO ref
     return msa;
 }

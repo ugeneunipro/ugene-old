@@ -114,6 +114,9 @@ public:
 
     /** Version of the object. Same as modification count of the object */
     qint64      version;
+
+    /** The name of the object shown to user. Any reasonably short text */
+    QString     visualName;
 };
 
 

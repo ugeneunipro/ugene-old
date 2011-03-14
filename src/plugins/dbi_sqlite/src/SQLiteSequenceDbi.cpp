@@ -52,7 +52,7 @@ QByteArray SQLiteSequenceDbi::getSequenceData(U2DataId sequenceId, const U2Regio
 
 
 void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) {
-    sequence.id = SQLiteObjectDbi::createObject(U2Type::Sequence, folder, db, os);
+    sequence.id = SQLiteObjectDbi::createObject(U2Type::Sequence, folder, sequence.visualName, db, os);
     if (os.hasError()) {
         return;
     }

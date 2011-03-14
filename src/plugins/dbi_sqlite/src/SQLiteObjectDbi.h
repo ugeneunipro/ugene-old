@@ -112,7 +112,7 @@ public:
         Creates new object of the specified type. Puts it into the 'folder'
         Returns result object data id
     */
-    static U2DataId createObject(U2DataType type, const QString& folder, DbRef* db, U2OpStatus& os);
+    static U2DataId createObject(U2DataType type, const QString& folder, const QString& objectName, DbRef* db, U2OpStatus& os);
 
     /** 
         Returns internal database folder id 

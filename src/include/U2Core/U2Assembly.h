@@ -79,11 +79,7 @@ public:
     U2Assembly() {}
     U2Assembly(U2DataId id, QString dbId, qint64 version) : U2Object(id, dbId, version) {}
 
-    
     U2DataId        referenceId;
-
-    /** Alignment alphabet. All sequence in alignment must have alphabet that fits into alignment alphabet */
-    U2AlphabetId    alphabet;
 };
 
 
