@@ -189,6 +189,7 @@ void QueryEditor::edit(QDActor* a) {
         setDescriptor(&a->getProto()->getDescriptor(),
             tr("To configure the algorithm element parameters go to the \"Parameters\" area below."));
         cfgModel->setConfiguration(a->getParameters());
+        a->updateEditor();
         tableSplitter->show();
         tableSplitter->setDisabled(false);
     } else {

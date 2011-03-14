@@ -652,7 +652,7 @@ void QueryViewController::createActions() {
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
     
     saveAsAction = new QAction(tr("Save schema as"), this);
-    saveAsAction->setShortcut(QKeySequence::Save);
+    saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setIcon(QIcon(":query_designer/images/filesave.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
@@ -683,13 +683,13 @@ void QueryViewController::createActions() {
 
     strandActions = new QActionGroup(this);
 
-    directStrandAction = new QAction(tr("Direct"), strandActions);
+    directStrandAction = new QAction(tr("Direct strand"), strandActions);
     directStrandAction->setCheckable(true);
 
-    complementStrandAction = new QAction(tr("Complementary"), strandActions);
+    complementStrandAction = new QAction(tr("Reverse complementary strand"), strandActions);
     complementStrandAction->setCheckable(true);
 
-    bothStrandsAction = new QAction(tr("Both"), strandActions);
+    bothStrandsAction = new QAction(tr("Both strands"), strandActions);
     bothStrandsAction->setCheckable(true);
 
     QDStrandOption strand = scene->getScheme()->getStrand();
@@ -734,7 +734,7 @@ void QueryViewController::setupMDIToolbar(QToolBar* tb) {
     tb->addSeparator();
 
     QToolButton* st = new QToolButton(tb);
-    QMenu* strandMenu = new QMenu(tr("Strand"), this);
+    QMenu* strandMenu = new QMenu(tr("Query Sequence Mode"), this);
     setupStrandMenu(strandMenu);
     QAction* sa = strandMenu->menuAction();
     st->setDefaultAction(sa);

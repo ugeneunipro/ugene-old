@@ -24,7 +24,7 @@ signals:
 class U2LANG_EXPORT QDActorParameters : public QDParameters {
     Q_OBJECT
 public:
-    QDActorParameters() : annKey("misc feature") {}
+    QDActorParameters() : annKey("misc_feature") {}
     void setLabel(const QString& l) { label = l; emit si_modified(); }
     const QString& getLabel() const { return label; }
     void setAnnotationKey(const QString& key) { annKey = key; emit si_modified(); }
@@ -109,6 +109,8 @@ public:
 
     QDStrandOption getStrand() const;
     void setStrand(QDStrandOption stOp);
+
+    virtual void updateEditor() {}
 
     bool hasAnyDirection() const { return getStrand()==QDStrand_Both; }
     bool hasForwardDirection() const { return getStrand()==QDStrand_DirectOnly; }

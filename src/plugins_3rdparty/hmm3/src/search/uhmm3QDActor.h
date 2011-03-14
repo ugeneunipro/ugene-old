@@ -19,8 +19,10 @@ public:
     Task* getAlgorithmTask(const QVector<U2Region>& location);
     QColor defaultColor() const { return QColor(0x66,0xa3,0xd2); }
     virtual bool hasStrand() const { return false; }
+    virtual void updateEditor();
 private slots:
     void sl_onTaskFinished(Task*);
+    void sl_evChanged(int);
 private:
     QMap<UHMM3SWSearchTask*, qint64> offsets;
 };

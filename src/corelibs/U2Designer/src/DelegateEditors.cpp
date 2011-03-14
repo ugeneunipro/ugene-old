@@ -19,10 +19,11 @@ QWidget *SpinBoxDelegate::createEditor(QWidget *parent,
     const QStyleOptionViewItem &/* option */,
     const QModelIndex &/* index */) const
 {
-    QSpinBox *editor = new QSpinBox(parent);
-    WorkflowUtils::setQObjectProperties(*editor, spinProperties);
+    currentEditor = new QSpinBox(parent);
+    connect(currentEditor, SIGNAL(valueChanged(int)), SIGNAL(si_valueChanged(int)));
+    WorkflowUtils::setQObjectProperties(*currentEditor, spinProperties);
 
-    return editor;
+    return currentEditor;
 }
 
 void SpinBoxDelegate::setEditorData(QWidget *editor,
@@ -47,6 +48,13 @@ QVariant SpinBoxDelegate::getDisplayValue( const QVariant& v) const {
     WorkflowUtils::setQObjectProperties(editor, spinProperties);
     editor.setValue(v.toInt());
     return editor.text();
+}
+
+void SpinBoxDelegate::setEditorProperty(const char* name, const QVariant& val ) {
+    spinProperties[name] = val;
+    if (!currentEditor.isNull()) {
+        currentEditor->setProperty(name, val);
+    }
 }
 
 /********************************

@@ -24,7 +24,7 @@ static const QString MAX_LEN_ATTR("max-length");
     
 QDRepeatActor::QDRepeatActor(QDActorPrototype const* proto) : QDActor(proto) {
     simmetric = true;
-    cfg->setAnnotationKey("repeat unit");
+    cfg->setAnnotationKey("repeat_unit");
     units["left"] = new QDSchemeUnit(this);
     units["right"] = new QDSchemeUnit(this);
     paramConstraints << new QDDistanceConstraint(units.values(), E2S, 0, 5000);

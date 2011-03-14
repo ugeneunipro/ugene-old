@@ -4,6 +4,7 @@
 #include <U2Lang/ConfigurationEditor.h>
 
 #include <QtCore/QModelIndex>
+#include <QtCore/QPointer>
 #include <QtGui/QLineEdit>
 #include <QtGui/QToolButton>
 #include <QtGui/QDialog>
@@ -87,9 +88,10 @@ protected:
 };
 
 class U2DESIGNER_EXPORT SpinBoxDelegate : public PropertyDelegate {
+    Q_OBJECT
 public:
     SpinBoxDelegate(const QVariantMap& props = QVariantMap(), QObject *parent = 0) : 
-      PropertyDelegate(parent), spinProperties(props) {}
+      PropertyDelegate(parent), spinProperties(props), currentEditor(NULL) {}
     virtual ~SpinBoxDelegate() {}
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
@@ -100,8 +102,13 @@ public:
         const QModelIndex &index) const;
     QVariant getDisplayValue(const QVariant&) const;
 
+    void setEditorProperty(const char* name, const QVariant& val);
+
+signals:
+    void si_valueChanged(int);
 private:
     QVariantMap spinProperties;
+    mutable QPointer<QWidget> currentEditor;
 };
 
 class U2DESIGNER_EXPORT DoubleSpinBoxDelegate : public PropertyDelegate {
