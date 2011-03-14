@@ -5,7 +5,9 @@
 
 #include <QtCore/QByteArray>
 #include <U2Core/U2Dbi.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2Assembly.h>
+#include <U2Core/AssemblyObject.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/MainWindow.h>
@@ -52,7 +54,7 @@ class AssemblyBrowserUi;
 class AssemblyBrowserWindow : public MWMDIWindow {
     Q_OBJECT
 public:
-    AssemblyBrowserWindow();
+    AssemblyBrowserWindow(AssemblyObject * o);
     ~AssemblyBrowserWindow();
 
     virtual void setupMDIToolbar(QToolBar* tb);
@@ -88,6 +90,9 @@ signals:
     void si_zoomOperationPerformed();
     void si_offsetsChanged();
 
+protected:
+    bool onCloseEvent();
+
 private slots:
     void sl_loadAssembly();
     void sl_assemblyLoaded();
@@ -105,7 +110,9 @@ private:
 
     AssemblyBrowserUi * ui;
 
-    U2Dbi * dbi; //TODO: remove
+    AssemblyObject * gobject;
+    DbiHandle * dbiHandle;
+    U2OpStatusImpl dbiOpStatus;
     AssemblyModel * model;
 
     double zoomFactor;

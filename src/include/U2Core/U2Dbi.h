@@ -54,12 +54,6 @@ enum U2CORE_EXPORT U2DbiState {
 };
 
 /** 
-    ID of the DBI. Defines type of the DBI driver.
-    Examples: 'sqlite', 'mysql', 'fasta'....
-*/
-typedef QString U2DbiFactoryId;
-
-/** 
     DBI factory provides functions to create new DBI instances
     and check file content to ensure that file is a valid database file
 */

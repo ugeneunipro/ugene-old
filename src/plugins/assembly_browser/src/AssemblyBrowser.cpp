@@ -1,5 +1,8 @@
 #include "AssemblyBrowser.h"
 
+#include <U2Core/U2Type.h>
+#include <U2Core/U2DbiUtils.h>
+
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QMenu>
@@ -14,6 +17,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/U2Dbi.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/Timer.h>
 
 #include <U2Misc/DialogUtils.h>
 
@@ -97,16 +101,30 @@ QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus&
 // AssemblyBrowserWindow
 //==============================================================================
 
-AssemblyBrowserWindow::AssemblyBrowserWindow() : MWMDIWindow("AssemblyBrowser"), ui(0),
-model(new AssemblyModel), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0) {
+AssemblyBrowserWindow::AssemblyBrowserWindow(AssemblyObject * o) : MWMDIWindow("AssemblyBrowser"), ui(0),
+gobject(o), dbiHandle(0), model(new AssemblyModel), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0) {
     initFont();
     setupActions();
     updateActions();
 
-    sl_loadAssembly();
+    if(gobject) {
+        gobject->setView(this);
+        const U2DataRef& ref= gobject->getDbiRef();
+        dbiHandle = new DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus);
+        sl_assemblyLoaded();
+    }
+}
+
+
+bool AssemblyBrowserWindow::onCloseEvent() {
+    if(gobject){
+        gobject->setView(0);
+    }
+    return true;
 }
 
 AssemblyBrowserWindow::~AssemblyBrowserWindow() {
+    delete dbiHandle;
     delete model;
 }
 
@@ -209,23 +227,23 @@ void AssemblyBrowserWindow::adjustOffsets(qint64 dx, qint64 dy) {
 }
 
 void AssemblyBrowserWindow::sl_loadAssembly() {
-    dbi = AppContext::getDbiRegistry()->getDbiFactoryById("SQLiteDbi")->createDbi(); 
-    assert(U2DbiState_Void == dbi->getState());
-
-    //TODO stub
     U2OpStatusImpl os;
     QHash<QString, QString> props;
     //props["url"] = "E:/BT474_dir75.sqlite";
-    props["url"] = "E:/MCF7_dir100.sqlite";
+    //props["url"] = "E:/MCF7_dir100.sqlite";
     //props["url"] = "E:/example-alignment.sqlite";
-    dbi->init(props, QVariantMap(), os);
-    checkAndLogError(os);
+    //dbi->init(props, QVariantMap(), os);
+    //checkAndLogError(os);
 
     //dbi->getAssemblyRWDbi()->pack(1, os);
 
     if(!checkAndLogError(os)) {
         sl_assemblyLoaded();
+    }
 
+    return;
+    if(!checkAndLogError(os)) {
+        sl_assemblyLoaded();
         U2Dbi * sdbi = AppContext::getDbiRegistry()->getDbiFactoryById("SQLiteDbi")->createDbi();
         U2OpStatusImpl os;
         QHash<QString, QString> props;
@@ -262,16 +280,16 @@ void AssemblyBrowserWindow::sl_loadAssembly() {
 }
 
 void AssemblyBrowserWindow::sl_assemblyLoaded() {
-    U2OpStatusImpl status;
-    checkAndLogError(status);
+    GTIMER(c1, t1, "AssemblyBrowserWindow::sl_assemblyLoaded");
+    checkAndLogError(dbiOpStatus);
+    U2Dbi * dbi = dbiHandle->dbi;
     assert(U2DbiState_Ready == dbi->getState());
 
     U2AssemblyRDbi * assmDbi = dbi->getAssemblyRDbi();
 
-    U2DataId assmId = dbi->getObjectRDbi()->getObjects(U2Type::Assembly, 0, -1, status).at(0);
-    checkAndLogError(status);
-    U2Assembly assm = dbi->getAssemblyRDbi()->getAssemblyObject(assmId, status);
-    checkAndLogError(status);
+    U2DataId objectId = gobject->getDbiRef().entityId;
+    U2Assembly assm = dbi->getAssemblyRDbi()->getAssemblyObject(objectId, dbiOpStatus);
+    checkAndLogError(dbiOpStatus);
 
     model->addAssembly(assmDbi, assm);
     createWidgets();

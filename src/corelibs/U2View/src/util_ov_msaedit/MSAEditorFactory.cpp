@@ -38,7 +38,7 @@ bool MSAEditorFactory::canCreateView(const MultiGSelection& multiSelection) {
 Task* MSAEditorFactory::createViewTask(const MultiGSelection& multiSelection, bool single) {
     QSet<GObject*> msaObjects = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &multiSelection, UOF_LoadedAndUnloaded);
     QSet<Document*> docsWithMSA = SelectionUtils::findDocumentsWithObjects(GObjectTypes::MULTIPLE_ALIGNMENT, 
-                                                            &multiSelection, UOF_LoadedAndUnloaded, false);
+        &multiSelection, UOF_LoadedAndUnloaded, false);
     QList<OpenMSAEditorTask*> resTasks;
 
     foreach(Document* doc, docsWithMSA) {

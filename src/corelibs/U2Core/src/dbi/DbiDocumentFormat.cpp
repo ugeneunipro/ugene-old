@@ -43,12 +43,15 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
     QList<GObject*> objects;
     U2DataRef ref;
     ref.dbiId = url;
+    ref.factoryId = id;
+    int assemblyNumber = 0;
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle.dbi->getEntityTypeById(id);
         switch (objectType) {
             case U2Type::Assembly: 
                 ref.entityId = id;
-                objects.append(new AssemblyObject(ref, "Assembly", QVariantMap()));
+                 
+                objects.append(new AssemblyObject(ref, "Assembly_" + QString::number(assemblyNumber++), QVariantMap()));
                 break;
             default: // do nothing
                 break;

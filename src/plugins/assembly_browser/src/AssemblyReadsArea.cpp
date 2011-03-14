@@ -70,10 +70,10 @@ void AssemblyReadsArea::setupVScrollBar() {
 
     if(numVisibleRows == assemblyHeight) {
         vBar->setDisabled(true);
-        vBar->hide();
+        //vBar->hide(); TODO: do hide(), but prevent infinite resizing (hide->show->hide->show) caused by width change
     } else {
         vBar->setDisabled(false);
-        vBar->show();
+        //vBar->show();
     }
 
     connect(vBar, SIGNAL(valueChanged(int)), SLOT(sl_onVScrollMoved(int)));
@@ -196,6 +196,9 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
 
         U2Region readVisibleBases = readBases.intersect(visibleBases);
         U2Region xToDrawRegion(readVisibleBases.startPos - xOffsetInAssembly, readVisibleBases.length);
+        if(readVisibleBases.isEmpty()) {
+            continue;
+        }
 
         U2Region readVisibleRows = U2Region(read.packedViewRow, 1).intersect(visibleRows); // WTF?
         U2Region yToDrawRegion(readVisibleRows.startPos - yOffsetInAssembly, readVisibleRows.length);
@@ -212,12 +215,10 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             ShortReadIterator cigarIt(readSequence, read.cigar, firstVisibleBase);
             for(int x_pix_offset = 0; cigarIt.hasNext(); x_pix_offset += letterWidth) {                
                 GTIMER(c2, t2, "AssemblyReadsArea::drawReads -> cycle through one read");
-
                 char c = cigarIt.nextLetter();
                 if(!defaultColorScheme.contains(c)) { //TODO: smarter analysis. Don't forget about '=' symbol
                     c = 'N';
                 }
-
                 QPoint cellStart(x_pix_start + x_pix_offset, y_pix_start);
                 p.drawImage(cellStart, cells[c]);
             }
@@ -320,7 +321,5 @@ void AssemblyReadsArea::sl_redraw() {
     initRedraw();
     update();
 }
-
-
-
+ 
 } //ns

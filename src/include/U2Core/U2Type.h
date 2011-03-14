@@ -60,6 +60,12 @@ public:
 
 };
 
+/** 
+    ID of the DBI. Defines type of the DBI driver.
+    Examples: 'sqlite', 'mysql', 'fasta'....
+*/
+typedef QString U2DbiFactoryId;
+
 
 /** 
     Cross database data reference
@@ -67,7 +73,7 @@ public:
 class U2CORE_EXPORT U2DataRef {
 public:
     U2DataRef() {}
-    U2DataRef(const QString& _dbiId, const U2DataId& _entityId) : dbiId(_dbiId),entityId(_entityId){}
+    U2DataRef(const QString& _dbiId, const U2DataId& _entityId, const U2DbiFactoryId& fid) : dbiId(_dbiId),entityId(_entityId), factoryId(fid){}
 
     /** database  id */
     QString         dbiId;
@@ -77,7 +83,9 @@ public:
 
     /** Object version number this reference is valid for */
     qint64          version;
-
+    
+    /** Type of the dbi driver (factory)*/
+    U2DbiFactoryId  factoryId;
 };
 
 /** 
