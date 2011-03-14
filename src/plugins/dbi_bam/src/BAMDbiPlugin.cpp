@@ -45,24 +45,8 @@ void BAMDbiPlugin::sl_converter() {
         }
         ConvertToSQLiteDialog convertDialog;
         if(QDialog::Accepted == convertDialog.exec()) {
-            Header header;
-            {
-                std::auto_ptr<IOAdapter> ioAdapter;
-                {
-                    IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(convertDialog.getSourceUrl()));
-                    ioAdapter.reset(factory->createIOAdapter());
-                }
-                if(!ioAdapter->open(convertDialog.getSourceUrl(), IOAdapterMode_Read)) {
-                    throw IOException(BAMDbiPlugin::tr("Can't open file '%1'").arg(convertDialog.getSourceUrl().getURLString()));
-                }
-                std::auto_ptr<Reader> reader(new Reader(*ioAdapter));
-                header = reader->getHeader();
-            }
-            SelectReferencesDialog referencesDialog(header.getReferences());
-//            if(QDialog::Accepted == referencesDialog.exec()) {
-                ConvertToSQLiteTask *task = new ConvertToSQLiteTask(convertDialog.getSourceUrl(), referencesDialog.getReferenceUrls(), convertDialog.getDestinationUrl());
-                AppContext::getTaskScheduler()->registerTopLevelTask(task);
-//            }
+            ConvertToSQLiteTask *task = new ConvertToSQLiteTask(convertDialog.getSourceUrl(), convertDialog.getDestinationUrl());
+            AppContext::getTaskScheduler()->registerTopLevelTask(task);
         }
     } catch(const Exception &e) {
         QMessageBox::critical(NULL, tr("Error"), e.getMessage());

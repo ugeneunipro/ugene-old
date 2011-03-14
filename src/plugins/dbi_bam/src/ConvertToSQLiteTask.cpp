@@ -12,10 +12,9 @@
 namespace U2 {
 namespace BAM {
 
-ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &sourceUrl, const QList<GUrl> referenceUrls, const GUrl &destinationUrl):
+ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &sourceUrl, const GUrl &destinationUrl):
     Task("Convert BAM to SQLite", TaskFlag_None),
     sourceUrl(sourceUrl),
-    referenceUrls(referenceUrls),
     destinationUrl(destinationUrl)
 {
     tpm = Progress_Manual;
