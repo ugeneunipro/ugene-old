@@ -9,7 +9,8 @@
 
 namespace U2 {
 
-AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v) : ADVSequenceWidgetAction("aa", tr("Automatic annotation highlighting"))
+AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnnotationObject* obj) 
+: ADVSequenceWidgetAction("AutoAnnotationUpdateAction", tr("Automatic annotation highlighting")), aaObj(obj)
 {
     seqWidget = v;
     addToBar = true;
@@ -20,26 +21,11 @@ AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v) : ADVSe
     
     updateMenu();
 
-    connect( AppContext::getAutoAnnotationsSupport(), 
-        SIGNAL(si_updateAutoAnnotationsGroupRequired(const QString&)), SLOT(sl_onAutoAnnotationsUpdate(const QString&)) );
 }
 
-void AutoAnnotationsADVAction::sl_windowActivated( MWMDIWindow* w )
-{
-    GObjectViewWindow* gow = qobject_cast<GObjectViewWindow*>(w);
-    if (gow == NULL) {
-        return;
-    }
-    
-    if ((GObjectView*)seqWidget->getAnnotatedDNAView() == gow->getObjectView()) {
-        updateMenu();   
-    }
-
-}
 
 void AutoAnnotationsADVAction::updateMenu()
 {
-    menu->clear();
     AutoAnnotationConstraints constraints;
     if (seqWidget->getSequenceContexts().count() > 0) {
         constraints.alphabet = seqWidget->getSequenceContexts().first()->getAlphabet();
@@ -51,26 +37,29 @@ void AutoAnnotationsADVAction::updateMenu()
         bool enabled = updater->checkConstraints(constraints);
         toggleAction->setEnabled(enabled);
         toggleAction->setCheckable(true);
-        toggleAction->setChecked(updater->isEnabled());
-        connect(toggleAction, SIGNAL(triggered(bool)), updater, SLOT(toggle(bool)) );
+        bool checked = updater->isCheckedByDefault();
+        toggleAction->setChecked(checked);
+        aaObj->setGroupEnabled(updater->getGroupName(), checked);
+        aaObj->update(updater);
+        connect( toggleAction, SIGNAL(toggled(bool)), SLOT(sl_toggle(bool)) );
         menu->addAction(toggleAction);
     }
     menu->update();
 }
 
-void AutoAnnotationsADVAction::sl_onAutoAnnotationsUpdate( const QString& groupName )
+void AutoAnnotationsADVAction::sl_toggle( bool toggled )
 {
-    AutoAnnotationsUpdater* updater = AppContext::getAutoAnnotationsSupport()->findUpdaterByGroupName(groupName);
-    const QString& actionText = updater->getName();
-
-    QList<QAction*> actions = menu->actions();
-    foreach(QAction* action, actions) {
-        if (action->text() == actionText) {
-            action->setChecked(updater->isEnabled());
-        }
+    QAction* action = qobject_cast<QAction*>(sender());
+    if (action == NULL) {
+        return;
+    }
+    AutoAnnotationsUpdater* updater = AppContext::getAutoAnnotationsSupport()->findUpdaterByName(action->text());
+    if (updater != NULL) {
+        QString groupName = updater->getGroupName();
+        aaObj->setGroupEnabled(groupName, toggled);
+        aaObj->update(updater);
     }
 }
-
 
 
 } //namespace

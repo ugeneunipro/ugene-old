@@ -1,6 +1,7 @@
 #ifndef _U2_AUTO_ANNOTATIONS_SUPPORT_H_
 #define _U2_AUTO_ANNOTATIONS_SUPPORT_H_
 
+#include <QtCore/QSet>
 #include <U2Core/Task.h>
 
 namespace U2 {
@@ -26,16 +27,18 @@ public:
     ~AutoAnnotationObject();
     AnnotationTableObject* getAnnotationObject() const { return aobj; }
     DNASequenceObject* getSeqObject() const {return dnaObj; }
-    void update();
+    void setGroupEnabled(const QString& groupName, bool enabled);
     void lock();
     void unlock();
-private slots:
+    void update();
+    void update(AutoAnnotationsUpdater* updater);
+public slots:
     void updateGroup(const QString& groupName);
 private:
-    void handleUpdate(AutoAnnotationsUpdater* updater);
     DNASequenceObject* dnaObj;
     AnnotationTableObject*  aobj;
     AutoAnnotationsSupport* aaSupport;
+    QSet<QString> enabledGroups;
     StateLock* stateLock;
 };
 
@@ -51,15 +54,13 @@ class U2CORE_EXPORT AutoAnnotationsUpdater : public QObject {
 private:
     QString groupName;
     QString name;
-    bool enabled;
-public slots:
-    void toggle(bool enable);    
+    bool checkedByDefault;
 public:
     AutoAnnotationsUpdater(const QString& nm, const QString& gName);
     virtual ~AutoAnnotationsUpdater();
     const QString& getGroupName() { return groupName; }
     const QString& getName() { return name; }
-    bool isEnabled() { return enabled; }
+    bool isCheckedByDefault() { return checkedByDefault; }
     virtual bool checkConstraints(const AutoAnnotationConstraints& constraints) = 0;   
     virtual Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa) = 0;
 };
@@ -72,6 +73,7 @@ public:
     void registerAutoAnnotationsUpdater(AutoAnnotationsUpdater* updater);
     QList<AutoAnnotationsUpdater*> getAutoAnnotationUpdaters();
     AutoAnnotationsUpdater* findUpdaterByGroupName(const QString& groupName);
+    AutoAnnotationsUpdater* findUpdaterByName(const QString& name);
     void updateAnnotationsByGroup(const QString& groupName);
 signals:
     void si_updateAutoAnnotationsGroupRequired(const QString& groupName);

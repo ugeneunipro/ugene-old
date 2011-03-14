@@ -150,6 +150,10 @@ QWidget* AnnotatedDNAView::createWidget() {
         ADVSingleSequenceWidget* block = new ADVSingleSequenceWidget(seqCtx, this);
         block->setObjectName("ADV_single_sequence_widget_"+QString::number(i));
         addSequenceWidget(block);
+        if (autoAnnotationsMap.contains(seqCtx)) {
+            AutoAnnotationObject* aaobj = autoAnnotationsMap.value(seqCtx);
+            block->addADVSequenceWidgetAction(new AutoAnnotationsADVAction(block,aaobj));
+        }
     }
 
     annotationsView = new AnnotationsTreeView(this);
@@ -513,8 +517,6 @@ void AnnotatedDNAView::addSequenceWidget(ADVSequenceWidget* v) {
     scrolledWidgetLayout->insertWidget(0, v);
     v->setVisible(true);
     v->installEventFilter(this);
-    AutoAnnotationsADVAction* aaAction = new AutoAnnotationsADVAction(v);
-    v->addADVSequenceWidgetAction( aaAction );
     updateScrollAreaHeight();
     updateMultiViewActions();
     emit si_sequenceWidgetAdded(v);
@@ -787,10 +789,16 @@ void AnnotatedDNAView::addRelatedAnnotations(ADVSequenceObjectContext* seqCtx) {
 
 void AnnotatedDNAView::addAutoAnnotations( ADVSequenceObjectContext* seqCtx )
 {
+    
     AutoAnnotationObject* aa = new AutoAnnotationObject(seqCtx->getSequenceObject());
     seqCtx->addAutoAnnotationObject(aa->getAnnotationObject());
     autoAnnotationsMap.insert(seqCtx, aa);
-    aa->update();    
+
+    foreach(ADVSequenceWidget* w, seqCtx->getSequenceWidgets()) {
+        AutoAnnotationsADVAction* aaAction = new AutoAnnotationsADVAction(w, aa);
+        w->addADVSequenceWidgetAction( aaAction );
+    }
+
 }
 
 
@@ -997,6 +1005,7 @@ QList<GObject*> AnnotatedDNAView::getAutoAnnotationsGObjects()
 
     return result;
 }
+
 
 
 

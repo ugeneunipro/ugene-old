@@ -30,6 +30,17 @@ AutoAnnotationsUpdater* AutoAnnotationsSupport::findUpdaterByGroupName( const QS
     return NULL;
 }
 
+AutoAnnotationsUpdater* AutoAnnotationsSupport::findUpdaterByName( const QString& name )
+{
+    foreach (AutoAnnotationsUpdater* updater, aaUpdaters) {
+        if (updater->getName() == name) {
+            return updater;
+        }
+    }
+
+    return NULL;   
+}
+
 void AutoAnnotationsSupport::updateAnnotationsByGroup( const QString& groupName )
 {
     emit si_updateAutoAnnotationsGroupRequired(groupName);
@@ -39,6 +50,8 @@ AutoAnnotationsSupport::~AutoAnnotationsSupport()
 {
     qDeleteAll(aaUpdaters);
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +87,7 @@ void AutoAnnotationObject::update()
 {
     QList<AutoAnnotationsUpdater*> aaUpdaters = aaSupport->getAutoAnnotationUpdaters();
     foreach( AutoAnnotationsUpdater* updater, aaUpdaters) {
-        handleUpdate(updater);  
+        update(updater);  
     }
 }
 
@@ -82,11 +95,11 @@ void AutoAnnotationObject::updateGroup( const QString& groupName )
 {
     AutoAnnotationsUpdater* updater = aaSupport->findUpdaterByGroupName(groupName);
     if (updater != NULL) {
-        handleUpdate(updater);
+        update(updater);
     }
 }
 
-void AutoAnnotationObject::handleUpdate( AutoAnnotationsUpdater* updater )
+void AutoAnnotationObject::update( AutoAnnotationsUpdater* updater )
 {
     // cleanup 
     AnnotationGroup* root = aobj->getRootGroup();
@@ -97,20 +110,27 @@ void AutoAnnotationObject::handleUpdate( AutoAnnotationsUpdater* updater )
         lock();
     }
 
-    if (!updater->isEnabled()) {
-        return;
-    }
+    if (enabledGroups.contains(updater->getGroupName())) {
+        // create update tasks
+        Task* t = updater->createAutoAnnotationsUpdateTask(this);
+        if (t == NULL) {
+            return;
+        }
 
-    // create update tasks
-    Task* t = updater->createAutoAnnotationsUpdateTask(this);
-    if (t == NULL) {
-        return;
-    }
-    
-    // envelope to unlock annotation object
-    AutoAnnotationsUpdateTask* updateTask = new AutoAnnotationsUpdateTask(this, t);
+        // envelope to unlock annotation object
+        AutoAnnotationsUpdateTask* updateTask = new AutoAnnotationsUpdateTask(this, t);
 
-    AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
+        AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
+    }
+}
+
+void AutoAnnotationObject::setGroupEnabled( const QString& groupName, bool enabled )
+{
+    if (enabled) {
+        enabledGroups.insert(groupName);
+    } else {
+        enabledGroups.remove(groupName);
+    }
 }
 
 
@@ -134,21 +154,15 @@ AutoAnnotationsUpdateTask::~AutoAnnotationsUpdateTask()
 }
 
 
-void AutoAnnotationsUpdater::toggle( bool enable )
-{
-    enabled = enable;
-    AppContext::getAutoAnnotationsSupport()->updateAnnotationsByGroup(groupName);
-}
-
 AutoAnnotationsUpdater::AutoAnnotationsUpdater( const QString& nm, const QString& gName )
  : groupName(gName), name(nm)
 {
-    enabled = AppContext::getSettings()->getValue(AUTO_ANNOTATION_SETTINGS + groupName, true).toBool();
+    
+    checkedByDefault = false; //AppContext::getSettings()->getValue(AUTO_ANNOTATION_SETTINGS + groupName, false).toBool();
 }
 
 AutoAnnotationsUpdater::~AutoAnnotationsUpdater()
 {
-    AppContext::getSettings()->setValue(AUTO_ANNOTATION_SETTINGS + groupName, enabled);
 }
 
 } //namespace
