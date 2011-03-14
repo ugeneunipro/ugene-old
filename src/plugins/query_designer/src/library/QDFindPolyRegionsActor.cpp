@@ -107,7 +107,7 @@ int QDFindPolyActor::getMaxResultLen() const {
 }
 
 QString QDFindPolyActor::getText() const {
-    return tr("Find regions containing specified percent of particular base.");
+    return tr("Searches regions in a sequence that contain a specified percentage of a certain base.");
 }
 
 Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
@@ -169,12 +169,25 @@ void QDFindPolyActor::sl_onTaskFinished(Task* t) {
 QDFindPolyActorPrototype::QDFindPolyActorPrototype() {
     descriptor.setId("base-content");
     descriptor.setDisplayName(QDFindPolyActor::tr("BaseContent"));
-    descriptor.setDocumentation(QDFindPolyActor::tr("Finds regions containing specified percent of particular base."));
+    descriptor.setDocumentation(QDFindPolyActor::tr(
+        "Searches regions in a sequence that contain a specified percentage"
+        " of a certain base."));
 
-    Descriptor bd(BASE_ATTR, QDFindPolyActor::tr("Base"), QDFindPolyActor::tr("Specifies base."));
-    Descriptor pd(PERCENT_ATTR, QDFindPolyActor::tr("Percent"), QDFindPolyActor::tr("Percentage of specified base."));
-    Descriptor mind(MIN_LEN_ATTR, QDFindPolyActor::tr("Min len"), QDFindPolyActor::tr("Minimum length of the result."));
-    Descriptor maxd(MAX_LEN_ATTR, QDFindPolyActor::tr("Max len"), QDFindPolyActor::tr("Maximum length of the result."));
+    Descriptor bd(BASE_ATTR,
+        QDFindPolyActor::tr("Base"),
+        QDFindPolyActor::tr("Specifies the base."));
+
+    Descriptor pd(PERCENT_ATTR,
+        QDFindPolyActor::tr("Percentage"),
+        QDFindPolyActor::tr("Percentage of the base in a region."));
+
+    Descriptor mind(MIN_LEN_ATTR,
+        QDFindPolyActor::tr("Min Length"),
+        QDFindPolyActor::tr("Minimum length of a region."));
+
+    Descriptor maxd(MAX_LEN_ATTR,
+        QDFindPolyActor::tr("Max Length"),
+        QDFindPolyActor::tr("Maximum length of a region."));
 
     attributes << new Attribute(bd, BaseTypes::STRING_TYPE(), true);
     attributes << new Attribute(pd, BaseTypes::NUM_TYPE(), true, QVariant(90));
