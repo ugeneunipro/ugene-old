@@ -62,6 +62,7 @@ void BAMDbiPlugin::sl_converter() {
         ConvertToSQLiteDialog convertDialog;
         if(QDialog::Accepted == convertDialog.exec()) {
             ConvertToSQLiteTask *task = new ConvertToSQLiteTask(convertDialog.getSourceUrl(), convertDialog.getDestinationUrl());
+            AppContext::getTaskScheduler()->registerTopLevelTask(task);
         }
     } catch(const Exception &e) {
         QMessageBox::critical(NULL, tr("Error"), e.getMessage());
