@@ -188,8 +188,6 @@ void ProjectViewImpl::disable() {
         saveWidgetState(w);
         saveGroupMode(projectTreeController->getModeSettings().groupMode);
     }	
-    delete w;
-    w = NULL;
 
     Project* pr = AppContext::getProject();
     pr->disconnect(this);
@@ -209,6 +207,9 @@ void ProjectViewImpl::disable() {
         mdiManager->closeMDIWindow(view);
     }
     mw->setWindowTitle("");
+
+    delete w;
+    w = NULL;
 }
 
 

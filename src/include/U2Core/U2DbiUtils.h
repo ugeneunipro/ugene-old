@@ -56,10 +56,14 @@ public:
     /** Opens connection to existing DBI or create news DBI*/
     DbiHandle(U2DbiFactoryId id, const QString& url,  bool create, U2OpStatus& os);
 
+    DbiHandle(const DbiHandle & dbiHandle_);
+
     ~DbiHandle();
 
     U2Dbi* dbi;
     U2OpStatus& os;
+private: //TODO
+    DbiHandle & operator=(const DbiHandle & DbiHandle_);
 };
 
 

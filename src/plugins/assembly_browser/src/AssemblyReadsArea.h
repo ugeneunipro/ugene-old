@@ -26,6 +26,7 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QScrollBar>
+#include <QtCore/QSharedPointer>
 
 #include "AssemblyCellRenderer.h"
 
@@ -75,7 +76,7 @@ private slots:
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowserWindow * window;
-    AssemblyModel * model;
+    QSharedPointer<AssemblyModel> model;
 
     bool redraw;
     QPixmap cachedView;

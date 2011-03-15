@@ -42,6 +42,7 @@
 
 #include <U2Misc/DialogUtils.h>
 
+#include "AssemblyBrowserPlugin.h"
 #include "AssemblyOverview.h"
 #include "AssemblyReferenceArea.h"
 #include "AssemblyDensityGraph.h"
@@ -56,7 +57,9 @@ const double AssemblyBrowserWindow::ZOOM_MULT = 1.25;
 // AssemblyModel
 //==============================================================================
 
-AssemblyModel::AssemblyModel() : cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0) {
+AssemblyModel::AssemblyModel(const DbiHandle & dbiHandle_) : 
+cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), dbiHandle(dbiHandle_) 
+{
 }
 
 
@@ -122,41 +125,41 @@ QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus&
 // AssemblyBrowserWindow
 //==============================================================================
 
-AssemblyBrowserWindow::AssemblyBrowserWindow(AssemblyObject * o) : MWMDIWindow("AssemblyBrowser"), ui(0),
-gobject(o), dbiHandle(0), model(new AssemblyModel), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0) {
+AssemblyBrowserWindow::AssemblyBrowserWindow(AssemblyObject * o) : 
+GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
+gobject(o), model(0), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0) {
     initFont();
     setupActions();
     updateActions();
 
     if(gobject) {
-        gobject->setView(this);
         const U2DataRef& ref= gobject->getDbiRef();
-        dbiHandle = new DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus);
+        model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus)));
         sl_assemblyLoaded();
     }
 }
 
 
 bool AssemblyBrowserWindow::onCloseEvent() {
-    if(gobject){
-        gobject->setView(0);
-    }
     return true;
 }
 
+QWidget * AssemblyBrowserWindow::createWidget() {
+    ui = new AssemblyBrowserUi(this);
+    return ui;
+}
+
 AssemblyBrowserWindow::~AssemblyBrowserWindow() {
-    delete dbiHandle;
-    delete model;
 }
 
 void AssemblyBrowserWindow::setupMDIToolbar(QToolBar* tb) {
-    tb->addAction(openAssemblyAction);
+//    tb->addAction(openAssemblyAction);
     tb->addAction(zoomInAction);
     tb->addAction(zoomOutAction);
 }
 
 void AssemblyBrowserWindow::setupViewMenu(QMenu* n) {
-    n->addAction(openAssemblyAction);
+//    n->addAction(openAssemblyAction);
     n->addAction(zoomInAction);
     n->addAction(zoomOutAction);
 }
@@ -301,9 +304,10 @@ void AssemblyBrowserWindow::sl_loadAssembly() {
 }
 
 void AssemblyBrowserWindow::sl_assemblyLoaded() {
+    assert(model);
     GTIMER(c1, t1, "AssemblyBrowserWindow::sl_assemblyLoaded");
     checkAndLogError(dbiOpStatus);
-    U2Dbi * dbi = dbiHandle->dbi;
+    U2Dbi * dbi = model->getDbiHandle().dbi;
     assert(U2DbiState_Ready == dbi->getState());
 
     U2AssemblyRDbi * assmDbi = dbi->getAssemblyRDbi();
@@ -313,8 +317,8 @@ void AssemblyBrowserWindow::sl_assemblyLoaded() {
     checkAndLogError(dbiOpStatus);
 
     model->addAssembly(assmDbi, assm);
-    createWidgets();
-    ui->update();
+//     createWidgets();
+//     ui->update();
 }
 
 void AssemblyBrowserWindow::sl_zoomIn() {
@@ -350,14 +354,6 @@ void AssemblyBrowserWindow::sl_zoomOut() {
     }
     updateActions();
     emit si_zoomOperationPerformed();
-}
-
-void AssemblyBrowserWindow::createWidgets() {
-    ui = new AssemblyBrowserUi(this);
-    QLayout * l = new QVBoxLayout(this);
-    l->setMargin(1);
-    l->addWidget(ui);
-    setLayout(l);
 }
 
 void AssemblyBrowserWindow::initFont() {

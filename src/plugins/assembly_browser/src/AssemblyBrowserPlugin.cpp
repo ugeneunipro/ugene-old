@@ -40,26 +40,26 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 AssemblyBrowserPlugin::AssemblyBrowserPlugin() : 
 Plugin(tr("Assembly Browser"), tr("Visualization of enormous genome assemblies.")), window(0) {
     if(AppContext::isGUIMode()) {
-        windowAction = new QAction(tr("Assembly Browser"), this);
-        connect(windowAction, SIGNAL(triggered()), SLOT(sl_showWindow()));
-        AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(windowAction);
+//         windowAction = new QAction(tr("Assembly Browser"), this);
+//         connect(windowAction, SIGNAL(triggered()), SLOT(sl_showWindow()));
+//         AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(windowAction);
         AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(new AssemblyBrowserFactory(this));
     }
 }
 
 void AssemblyBrowserPlugin::sl_showWindow() {
-    if(!window) {
-        window = new AssemblyBrowserWindow(0);
-        window->installEventFilter(this);
-        AppContext::getMainWindow()->getMDIManager()->addMDIWindow(window);
-    }
-    AppContext::getMainWindow()->getMDIManager()->activateWindow(window);
+//     if(!window) {
+//         window = new AssemblyBrowserWindow(0);
+//         window->installEventFilter(this);
+//         AppContext::getMainWindow()->getMDIManager()->addMDIWindow(window);
+//     }
+//     AppContext::getMainWindow()->getMDIManager()->activateWindow(window);
 }
 
 bool AssemblyBrowserPlugin::eventFilter(QObject *obj, QEvent *event) {
-    if(obj == window && QEvent::Close == event->type()) {
-        window = 0;
-    }
+//     if(obj == window && QEvent::Close == event->type()) {
+//         window = 0;
+//     }
     return QObject::eventFilter(obj, event);
 }
 
@@ -75,13 +75,8 @@ GObjectViewFactory(ID, tr("Assembly Browser"), parent)
 }
 
 bool AssemblyBrowserFactory::canCreateView(const MultiGSelection & multiSelection) {
-    QSet<GObject *> gobjects = SelectionUtils::findObjects(GObjectTypes::ASSEMBLY, &multiSelection, UOF_LoadedAndUnloaded);
-    foreach(GObject * go, gobjects) {
-        if(qobject_cast<UnloadedObject*>(go) || !qobject_cast<AssemblyObject *>(go)->getView()) {
-            return true;
-        }
-    }
-    return false;
+    bool hasAssembly = !SelectionUtils::findDocumentsWithObjects(GObjectTypes::ASSEMBLY, &multiSelection, UOF_LoadedAndUnloaded, true).isEmpty();
+    return hasAssembly;
 }
 
 #define MAX_VIEWS 5
@@ -179,10 +174,16 @@ void OpenAssemblyBrowserTask::open() {
 
     foreach(QPointer<GObject> po, selectedObjects) {
         AssemblyObject* o = qobject_cast<AssemblyObject*>(po);
-        assert(o && !o->getView()); 
         AssemblyBrowserWindow* view = new AssemblyBrowserWindow(o);
-        AppContext::getMainWindow()->getMDIManager()->addMDIWindow(view);
-        AppContext::getMainWindow()->getMDIManager()->activateWindow(view);
+
+        viewName = GObjectViewUtils::genUniqueViewName(o->getDocument(), o);
+        uiLog.details(tr("Opening Assembly Browser for object: %1").arg(o->getGObjectName()));
+
+        AssemblyBrowserWindow * v = new AssemblyBrowserWindow(o);
+        GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);
+
+        AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
+//        AppContext::getMainWindow()->getMDIManager()->activateWindow(w);
     }
 }
 

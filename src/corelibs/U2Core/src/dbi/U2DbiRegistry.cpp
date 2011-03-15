@@ -91,6 +91,17 @@ U2Dbi* U2DbiPool::openDbi(U2DbiFactoryId id, const QString& url, bool create, U2
     return dbi;
 }
 
+void U2DbiPool::addRef(U2Dbi * dbi, U2OpStatus & os) {
+    QMutexLocker m(&lock);
+    QString url = dbi->getInitProperties().value(U2_DBI_OPTION_URL);
+    if (!dbiByUrl.contains(url)) {    
+        os.setError(tr("DbiPool: DBI not found! URL: %1").arg(url));
+        return;
+    }
+    assert(dbiCountersByUrl[url] > 0);
+    dbiCountersByUrl[url]++;
+}
+
 void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
     QMutexLocker m(&lock);
     QString url = dbi->getInitProperties().value(U2_DBI_OPTION_URL);

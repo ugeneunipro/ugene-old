@@ -264,7 +264,7 @@ void AssemblyOverview::sl_redraw() {
 // AssemblyOverviewRenderTask
 //==============================================================================
 
-AssemblyOverviewRenderTask::AssemblyOverviewRenderTask(AssemblyModel * model_, QSize imageSize) :
+AssemblyOverviewRenderTask::AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model_, QSize imageSize) :
 Task(tr("Assembly overview renderer"), TaskFlag_None), model(model_), result(imageSize, QImage::Format_ARGB32_Premultiplied) {
     //TODO: progress
 }
@@ -328,7 +328,7 @@ void AssemblyOverviewRenderTask::run() {
 // BackgroundRenderer
 //==============================================================================
 
-BackgroundRenderer::BackgroundRenderer(AssemblyModel * model_) : renderTask(0), model(model_), redrawRunning(false), redrawNeeded(true) 
+BackgroundRenderer::BackgroundRenderer(QSharedPointer<AssemblyModel> model_) : renderTask(0), model(model_), redrawRunning(false), redrawNeeded(true) 
 {
 }
 

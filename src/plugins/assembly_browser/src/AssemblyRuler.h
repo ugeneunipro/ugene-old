@@ -53,7 +53,7 @@ private:
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowserWindow * window;
-    AssemblyModel * model;
+    QSharedPointer<AssemblyModel> model;
 
     QPixmap cachedView;
     bool redraw;

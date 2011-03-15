@@ -38,7 +38,11 @@ DbiHandle::DbiHandle(U2DbiFactoryId id, const QString& url,  U2OpStatus& _os) : 
 }
 
 DbiHandle::DbiHandle(U2DbiFactoryId id, const QString& url,  bool create, U2OpStatus& _os) : dbi(NULL), os(_os) {
-    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(id, url, false, os);
+    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(id, url, create, os);
+}
+
+DbiHandle::DbiHandle(const DbiHandle & dbiHandle_) : dbi(dbiHandle_.dbi), os(dbiHandle_.os) {
+    AppContext::getDbiRegistry()->getGlobalDbiPool()->addRef(dbi, os);
 }
 
 DbiHandle::~DbiHandle() {

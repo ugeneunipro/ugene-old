@@ -22,6 +22,7 @@
 #ifndef __ASSEMBLY_OVERVIEW_H__
 #define __ASSEMBLY_OVERVIEW_H__
 
+#include <QtCore/QSharedPointer>
 #include <QtGui/QWidget>
 #include <QtGui/QPixmap>
 
@@ -34,18 +35,18 @@ class AssemblyModel;
 class AssemblyOverviewRenderTask: public Task {
     Q_OBJECT
 public:
-    AssemblyOverviewRenderTask(AssemblyModel * model, QSize imageSize);
+    AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model, QSize imageSize);
     virtual void run();
     inline QImage getResult() const {return result;};
 private:
-    AssemblyModel * model;
+    QSharedPointer<AssemblyModel> model;
     QImage result;
 };
 
 class BackgroundRenderer: public QObject {
     Q_OBJECT
 public:
-    BackgroundRenderer(AssemblyModel * model_);
+    BackgroundRenderer(QSharedPointer<AssemblyModel> model_);
     void render(const QSize & size_);
     QImage getImage() const;
 signals:
@@ -55,7 +56,7 @@ private slots:
 private:
     AssemblyOverviewRenderTask * renderTask;
     QImage result;
-    AssemblyModel * model;
+    QSharedPointer<AssemblyModel> model;
     QSize size;
     bool redrawRunning;
     bool redrawNeeded;
@@ -98,7 +99,7 @@ private:
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowserWindow * window;
-    AssemblyModel * model;
+    QSharedPointer<AssemblyModel> model;
 
     QRect cachedSelection;
 

@@ -24,6 +24,7 @@
 
 #include <assert.h>
 
+#include <QtCore/QSharedPointer>
 #include <QtCore/QByteArray>
 #include <U2Core/U2Dbi.h>
 #include <U2Core/U2DbiUtils.h>
@@ -32,12 +33,14 @@
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/ObjectViewModel.h>
 
 namespace U2 {
 
 class AssemblyModel {
 public:
-    AssemblyModel();
+    //TODO refactor 
+    AssemblyModel(const DbiHandle & dbiHandle);
 
     bool isEmpty() const;
 
@@ -57,6 +60,8 @@ public:
 
     QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
 
+    const DbiHandle & getDbiHandle() const {return dbiHandle;}
+
 private:
     const static qint64 NO_VAL = -1;
     //TODO: track model changes and invalidate caches accordingly
@@ -68,11 +73,13 @@ private:
 
     QList<U2Assembly> assemblies;
     QList<U2AssemblyRDbi *> assemblyDbis;
+
+    DbiHandle dbiHandle; 
 };
 
 class AssemblyBrowserUi;
 
-class AssemblyBrowserWindow : public MWMDIWindow {
+class AssemblyBrowserWindow : public GObjectView {
     Q_OBJECT
 public:
     AssemblyBrowserWindow(AssemblyObject * o);
@@ -95,7 +102,7 @@ public:
     bool areCellsVisible() const;
     bool areLettersVisible() const;
 
-    inline AssemblyModel * getModel() const {return model;}
+    inline QSharedPointer<AssemblyModel> getModel() const {return model;}
     inline double getZoomFactor() const {return zoomFactor;}
     inline QFont getFont() const {return font;}
 
@@ -113,6 +120,7 @@ signals:
 
 protected:
     bool onCloseEvent();
+    virtual QWidget * createWidget();
 
 private slots:
     void sl_loadAssembly();
@@ -123,7 +131,6 @@ public slots:
     void sl_zoomOut();
 
 private:
-    void createWidgets();
     void initFont();
     void setupActions();
     void updateActions();
@@ -132,9 +139,8 @@ private:
     AssemblyBrowserUi * ui;
 
     AssemblyObject * gobject;
-    DbiHandle * dbiHandle;
     U2OpStatusImpl dbiOpStatus;
-    AssemblyModel * model;
+    QSharedPointer<AssemblyModel> model;
 
     double zoomFactor;
     QFont font;
@@ -164,7 +170,7 @@ class AssemblyBrowserUi : public QWidget {
 public:
     AssemblyBrowserUi(AssemblyBrowserWindow * window);
 
-    inline AssemblyModel * getModel() const {return window->getModel();}
+    inline QSharedPointer<AssemblyModel> getModel() const {return window->getModel();}
     inline AssemblyBrowserWindow * getWindow() const {return window;}
 
     inline AssemblyReadsArea * getReadsArea() const {return readsArea;}

@@ -23,6 +23,7 @@
 #define __ASSEMBLY_REFERENCE_AREA_H__
 
 #include <QtGui/QWidget>
+#include <QtCore/QSharedPointer>
 
 #include "AssemblyCellRenderer.h"
 
@@ -52,7 +53,7 @@ private:
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowserWindow * window;
-    AssemblyModel * model;
+    QSharedPointer<AssemblyModel> model;
 
     QPixmap cachedView;
     bool redraw;
