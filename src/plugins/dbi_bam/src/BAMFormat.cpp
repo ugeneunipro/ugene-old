@@ -216,7 +216,7 @@ void BAMFormat::storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io) {
     }
 }
 
-FormatDetectionResult BAMFormat::checkRawData(const QByteArray &rawData, const GUrl& url) const {
+FormatDetectionResult BAMFormat::checkRawData(const QByteArray &rawData, const GUrl & /*url*/) const {
     z_stream_s stream;
     stream.zalloc = Z_NULL;
     stream.zfree = Z_NULL;
