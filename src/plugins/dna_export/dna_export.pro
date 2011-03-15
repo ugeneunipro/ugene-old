@@ -6,7 +6,7 @@ HEADERS += src/CSVColumnConfiguration.h \
            src/DNAExportPlugin.h \
            src/DNAExportPluginTests.h \
            src/ExportAlignmentViewItems.h \
-           src/ExportAnnotations2CSVDialog.h \
+           src/ExportAnnotationsDialog.h \
            src/ExportAnnotations2CSVTask.h \
            src/ExportChromatogramDialog.h \
            src/ExportMSA2MSADialog.h \
@@ -25,7 +25,7 @@ HEADERS += src/CSVColumnConfiguration.h \
            src/ImportQualityScoresWorker.h \
            src/WriteAnnotationsWorker.h
 FORMS += src/ui/CSVColumnConfigurationDialog.ui \
-         src/ui/ExportAnnotations2CSVDialog.ui \
+         src/ui/ExportAnnotationsDialog.ui \
          src/ui/ExportChromatogramDialog.ui \
          src/ui/ExportMSA2MSADialog.ui \
          src/ui/ExportMSA2SequencesDialog.ui \
@@ -37,7 +37,7 @@ SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/DNAExportPlugin.cpp \
            src/DNAExportPluginTests.cpp \
            src/ExportAlignmentViewItems.cpp \
-           src/ExportAnnotations2CSVDialog.cpp \
+           src/ExportAnnotationsDialog.cpp \
            src/ExportAnnotations2CSVTask.cpp \
            src/ExportChromatogramDialog.cpp \
            src/ExportMSA2MSADialog.cpp \

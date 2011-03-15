@@ -113,7 +113,9 @@ public:
     SharedAnnotationData data() const {return d;}
     
     QString getQualifiersTip(int maxRows, DNASequenceObject* = NULL, DNATranslation* complTT = NULL, DNATranslation* aminoTT = NULL) const;
-        
+    
+    static bool annotationLessThan(Annotation *first, Annotation *second);
+    
 private:
     AnnotationTableObject*                  obj;
     SharedAnnotationData                    d;

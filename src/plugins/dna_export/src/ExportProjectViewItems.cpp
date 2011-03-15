@@ -6,7 +6,7 @@
 #include "ExportMSA2SequencesDialog.h"
 #include "ExportMSA2MSADialog.h"
 #include "ExportChromatogramDialog.h"
-#include "ExportAnnotations2CSVDialog.h"
+#include "ExportAnnotationsDialog.h"
 #include "ExportAnnotations2CSVTask.h"
 #include "ExportUtils.h"
 
@@ -64,8 +64,8 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : Q
     exportDNAChromatogramAction = new QAction(tr("Export chromatogram to SCF"), this);
     connect(exportDNAChromatogramAction, SIGNAL(triggered()), SLOT(sl_exportChromatogramToSCF()));
 
-    exportAnnotations2CSV = new QAction(tr("Export annotations to CSV file"), this);
-    connect(exportAnnotations2CSV, SIGNAL(triggered()), SLOT(sl_exportAnnotationsToCSV()));
+    exportAnnotations2CSV = new QAction(tr("Export annotations"), this);
+    connect(exportAnnotations2CSV, SIGNAL(triggered()), SLOT(sl_exportAnnotations()));
 
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
@@ -364,18 +364,21 @@ void ExportProjectViewItemsContoller::sl_exportChromatogramToSCF() {
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
 
-void ExportProjectViewItemsContoller::sl_exportAnnotationsToCSV()
-{
+void ExportProjectViewItemsContoller::sl_exportAnnotations() {
+    // find annotations: whole annotation file
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
-
-    MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
+    
+    MultiGSelection ms; 
+    ms.addSelection(pv->getGObjectSelection()); 
+    ms.addSelection(pv->getDocumentSelection());
+    
     QSet<GObject*> set = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
     if (set.size() != 1 ) {
         QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(), tr("Select one annotation object to export"));
         return;
     }
-
+    
     GObject* obj = set.toList().first();
     AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject*>(obj);
     assert(aObj != NULL);
@@ -385,25 +388,31 @@ void ExportProjectViewItemsContoller::sl_exportAnnotationsToCSV()
         return;
     }
     
-    ExportAnnotations2CSVDialog d(QApplication::activeWindow());
-    d.setWindowTitle(exportAnnotations2CSV->text());
     Annotation* first = annotations.first();
     const GUrl& url = first->getGObject()->getDocument()->getURL();
-    QString fileName = GUrlUtils::rollFileName(url.dirPath() + "/" + url.baseFileName() + "_annotations.csv", DocumentUtils::getNewDocFileNameExcludesHint());
-    d.setFileName(fileName);
-    d.setExportSequenceEnabled(false);    
-
+    QString fileName = GUrlUtils::rollFileName(url.dirPath() + "/" + url.baseFileName() + "_annotations.csv", 
+        DocumentUtils::getNewDocFileNameExcludesHint());
+    
+    ExportAnnotationsDialog d(fileName, QApplication::activeWindow());
+    d.setWindowTitle(exportAnnotations2CSV->text());
+    d.setExportSequenceVisible(false);    
+    
     if (QDialog::Accepted != d.exec()) {
         return;
     }
-
+    
     // TODO: lock documents or use shared-data objects
-    // TODO: sort?
-    // qStableSort(annotations.begin(), annotations.end(), annotationLessThan);
-
-    AppContext::getTaskScheduler()->registerTopLevelTask(
-        new ExportAnnotations2CSVTask(annotations, QByteArray(),NULL, false, d.getFileName()));
-
+    // same as in ADVExportContext::sl_saveSelectedAnnotations()
+    qStableSort(annotations.begin(), annotations.end(), Annotation::annotationLessThan);
+    
+    // run task
+    Task * t = NULL;
+    if(d.fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
+        t = new ExportAnnotations2CSVTask(annotations, QByteArray(),NULL, false, d.filePath());
+    } else {
+        t = ExportUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotations);
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 } //namespace

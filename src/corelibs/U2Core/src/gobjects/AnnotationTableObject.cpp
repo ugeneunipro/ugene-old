@@ -140,6 +140,45 @@ QString Annotation::getQualifiersTip(int maxRows, DNASequenceObject* seq, DNATra
     return tip;
 }
 
+bool Annotation::annotationLessThan(Annotation *first, Annotation *second) {
+    QListIterator<AnnotationGroup *> firstIterator(first->getGroups());
+    QListIterator<AnnotationGroup *> secondIterator(second->getGroups());
+    while(firstIterator.hasNext() && secondIterator.hasNext()) {
+        if (firstIterator.peekNext()->getGroupName() < secondIterator.peekNext()->getGroupName()) {
+            return true;
+        }
+        if (firstIterator.peekNext()->getGroupName() > secondIterator.peekNext()->getGroupName()) {
+            return false;
+        }
+        firstIterator.next();
+        secondIterator.next();
+    }
+    if (secondIterator.hasNext()) {
+        if(first->getAnnotationName() < secondIterator.peekNext()->getGroupName()) {
+            return true;
+        }
+        if(first->getAnnotationName() > secondIterator.peekNext()->getGroupName()) {
+            return false;
+        }
+        secondIterator.next();
+    }
+    if (firstIterator.hasNext()) {
+        if(firstIterator.peekNext()->getGroupName() < second->getAnnotationName()) {
+            return true;
+        }
+        if(firstIterator.peekNext()->getGroupName() > second->getAnnotationName()) {
+            return false;
+        }
+        firstIterator.next();
+    }
+    if (secondIterator.hasNext()) {
+        return true;
+    }
+    if (firstIterator.hasNext()) {
+        return false;
+    }
+    return (first->getAnnotationName() < second->getAnnotationName());
+}
 
 const QVector<U2Qualifier>& Annotation::getQualifiers() const {
     return d->qualifiers;

@@ -2,7 +2,7 @@
 #include "ExportUtils.h"
 #include "ExportSequenceTask.h"
 #include "ExportSequencesDialog.h"
-#include "ExportAnnotations2CSVDialog.h"
+#include "ExportAnnotationsDialog.h"
 #include "ExportAnnotations2CSVTask.h"
 #include "ExportSequences2MSADialog.h"
 #include "GetSequenceByIdDialog.h"
@@ -25,6 +25,7 @@
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/GObjectRelationRoles.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -80,8 +81,8 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     annotations2SequenceAction = new QAction(tr("Export sequence of selected annotations..."), this);
     connect(annotations2SequenceAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotationsSequence()));
 
-    annotations2CSVAction = new QAction(tr("Export annotations to CSV format..."), this);
-    connect(annotations2CSVAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotationsToCSV()));
+    annotations2CSVAction = new QAction(tr("Export annotations..."), this);
+    connect(annotations2CSVAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotations()));
 
     annotationsToAlignmentAction = new QAction(QIcon(":core/images/msa.png"), tr("Align selected annotations..."), this);
     connect(annotationsToAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotationsToAlignment()));
@@ -111,7 +112,6 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     foreach(ADVSequenceObjectContext* sCtx, view->getSequenceContexts()) {
         sl_onSequenceContextAdded(sCtx);
     }
-
 }
 
 void ADVExportContext::sl_onSequenceContextAdded(ADVSequenceObjectContext* c) {
@@ -372,47 +372,8 @@ void ADVExportContext::sl_saveSelectedSequences() {
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
-static bool annotationLessThan(Annotation *first, Annotation *second) {
-    QListIterator<AnnotationGroup *> firstIterator(first->getGroups());
-    QListIterator<AnnotationGroup *> secondIterator(second->getGroups());
-    while(firstIterator.hasNext() && secondIterator.hasNext()) {
-        if (firstIterator.peekNext()->getGroupName() < secondIterator.peekNext()->getGroupName()) {
-            return true;
-        }
-        if (firstIterator.peekNext()->getGroupName() > secondIterator.peekNext()->getGroupName()) {
-            return false;
-        }
-        firstIterator.next();
-        secondIterator.next();
-    }
-    if (secondIterator.hasNext()) {
-        if(first->getAnnotationName() < secondIterator.peekNext()->getGroupName()) {
-            return true;
-        }
-        if(first->getAnnotationName() > secondIterator.peekNext()->getGroupName()) {
-            return false;
-        }
-        secondIterator.next();
-    }
-    if (firstIterator.hasNext()) {
-        if(firstIterator.peekNext()->getGroupName() < second->getAnnotationName()) {
-            return true;
-        }
-        if(firstIterator.peekNext()->getGroupName() > second->getAnnotationName()) {
-            return false;
-        }
-        firstIterator.next();
-    }
-    if (secondIterator.hasNext()) {
-        return true;
-    }
-    if (firstIterator.hasNext()) {
-        return false;
-    }
-    return (first->getAnnotationName() < second->getAnnotationName());
-}
-
-void ADVExportContext::sl_saveSelectedAnnotationsToCSV() {
+void ADVExportContext::sl_saveSelectedAnnotations() {
+    // find annotations: selected annotations, selected groups
     QSet<Annotation *> annotationSet;
     AnnotationSelection* as = view->getAnnotationsSelection();
     foreach(const AnnotationSelectionData &data, as->getSelection()) {
@@ -427,43 +388,45 @@ void ADVExportContext::sl_saveSelectedAnnotationsToCSV() {
         return;
     }
 
-    ExportAnnotations2CSVDialog d(AppContext::getMainWindow()->getQMainWindow());
-    d.setWindowTitle(annotations2CSVAction->text());
-    
     Annotation* first = *annotationSet.begin();
     Document* doc = first->getGObject()->getDocument();
     ADVSequenceObjectContext *sequenceContext = view->getSequenceInFocus();
     
-    QString fileName("annotations");
+    GUrl url;
     if (doc != NULL) {
-        const GUrl& url = first->getGObject()->getDocument()->getURL();
-        fileName = url.isLocalFile() ? url.getURLString() : url.fileName();
+        url = doc->getURL();
     } else if (sequenceContext != NULL) {
-        const GUrl& url = sequenceContext->getSequenceGObject()->getDocument()->getURL();
-        fileName = url.isLocalFile() ? url.getURLString() : url.fileName();
-    } 
+        url = sequenceContext->getSequenceGObject()->getDocument()->getURL();
+    } else {
+        url = GUrl("newfile");
+    }
     
-    fileName += ".csv";
-    d.setFileName(fileName);
-
+    QString fileName = GUrlUtils::rollFileName(url.dirPath() + "/" + url.baseFileName() + "_annotations.csv", 
+        DocumentUtils::getNewDocFileNameExcludesHint());
+    ExportAnnotationsDialog d(fileName, AppContext::getMainWindow()->getQMainWindow());
+    d.setWindowTitle(annotations2CSVAction->text());
+    
     if (QDialog::Accepted != d.exec()) {
         return;
     }
-
+    
     //TODO: lock documents or use shared-data objects
     QList<Annotation *> annotationList = annotationSet.toList();
-    qStableSort(annotationList.begin(), annotationList.end(), annotationLessThan);
-
+    qStableSort(annotationList.begin(), annotationList.end(), Annotation::annotationLessThan);
     
-    AppContext::getTaskScheduler()->registerTopLevelTask(
-        new ExportAnnotations2CSVTask(annotationList, sequenceContext->getSequenceData(),
-        sequenceContext->getComplementTT(), d.getExportSequence(), d.getFileName()));
+    // run task
+    Task * t = NULL;
+    if(d.fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
+        t = new ExportAnnotations2CSVTask(annotationList, sequenceContext->getSequenceData(),
+            sequenceContext->getComplementTT(), d.exportSequence(), d.filePath());
+    } else {
+        t = ExportUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotationList);
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 // alignment part
-
 
 #define MAX_ALI_MODEL (10*1000*1000)
 

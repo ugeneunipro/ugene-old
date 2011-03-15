@@ -10,6 +10,7 @@ class Task;
 class ExportSequencesDialog;
 class ExportSequenceTaskSettings;
 class AbstractExportTask;
+class Annotation;
 
 class ExportUtils: public QObject {
     Q_OBJECT
@@ -21,6 +22,8 @@ public:
 
     // generates unique name using prefix + numbers
     static QString genUniqueName(const QSet<QString>& names, QString prefix);
+    
+    static Task * saveAnnotationsTask(const QString & filepath, const DocumentFormatId & format, const QList<Annotation*> & annList);
 };
 
 }//namespace

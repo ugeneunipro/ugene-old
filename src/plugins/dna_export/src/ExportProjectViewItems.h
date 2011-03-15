@@ -22,7 +22,7 @@ private slots:
     void sl_exportNucleicAlignmentToAmino();
     void sl_importAnnotationsFromCSV();
     void sl_exportChromatogramToSCF();
-    void sl_exportAnnotationsToCSV();
+    void sl_exportAnnotations();
 
 private:
     void addExportMenu(QMenu& m);

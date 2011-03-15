@@ -1,7 +1,12 @@
-#include "ExportUtils.h"
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/DocumentUtils.h>
 
 #include "ExportSequencesDialog.h"
 #include "ExportSequenceTask.h"
+#include "ExportUtils.h"
 
 namespace U2 {
 
@@ -38,6 +43,34 @@ QString ExportUtils::genUniqueName(const QSet<QString>& names, QString prefix) {
         name = prefix + "_" + QString::number(++i);
     } while(true);
     return name;
+}
+
+Task * ExportUtils::saveAnnotationsTask(const QString & filepath, const DocumentFormatId & format, const QList<Annotation*> & annList) {
+    SaveDocFlags fl(SaveDoc_Roll);
+    fl |= SaveDoc_DestroyAfter;
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(filepath));
+    assert(iof != NULL);
+    DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(format);
+    assert(df != NULL);
+    Document * doc = new Document(df, iof, filepath);
+    doc->setLoaded(true);
+    
+    // object and annotations will be deleted when savedoc task will delete doc
+    AnnotationTableObject * att = new AnnotationTableObject("exported_annotations");
+    bool setAttName = false;
+    foreach(Annotation * a, annList) {
+        if(!setAttName && a->getGObject() != NULL) {
+            QString newName = a->getGObject()->getGObjectName();
+            assert(!newName.isEmpty());
+            att->setGObjectName(newName);
+            setAttName = true;
+        }
+        QString groupName = a->getGroups().isEmpty() ? "" : a->getGroups().first()->getGroupName();
+        att->addAnnotation(new Annotation(a->data()), groupName);
+    }
+    att->setModified(false);
+    doc->addObject(att);
+    return new SaveDocumentTask(doc, fl, DocumentUtils::getNewDocFileNameExcludesHint());
 }
 
 }//namespace

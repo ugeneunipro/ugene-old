@@ -34,7 +34,7 @@ public:
 protected slots:
     void sl_saveSelectedSequences();
     void sl_saveSelectedAnnotationsSequence();
-    void sl_saveSelectedAnnotationsToCSV();
+    void sl_saveSelectedAnnotations();
     void sl_saveSelectedAnnotationsToAlignment();
     void sl_saveSelectedAnnotationsToAlignmentWithTranslation();
     void sl_saveSelectedSequenceToAlignment();
