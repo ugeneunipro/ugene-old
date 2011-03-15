@@ -19,8 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/Log.h>
 #include "BioStruct3D.h"
+
+#include <U2Core/U2Region.h>
+#include <U2Core/Log.h>
 
 namespace U2 { 
 
@@ -166,8 +168,6 @@ const QString BioStruct3D::getSecStructTypeName( SecondaryStructure::Type type )
 
 }
 
-
-
 void BioStruct3D::generateSecStructureAnnotations()
 {
     // TODO: issue 0000637
@@ -208,4 +208,57 @@ QByteArray BioStruct3D::getRawSequenceByChainId( int id ) const
     return sequence;
 }
 
-} //namespace
+/* class U2CORE_EXPORT BioStruct3DSelection */
+
+BioStruct3DSelection::BioStruct3DSelection(const BioStruct3D &biostruct_)
+        : biostruct(biostruct_), data(new BioStruct3DSelectionData())
+{}
+
+BioStruct3DSelection::BioStruct3DSelection(const BioStruct3DSelection &other)
+        : biostruct(other.biostruct), data(other.data)
+{}
+
+bool BioStruct3DSelection::inSelection(int chainId, int residueId) const {
+    return data->selection.contains(chainId, residueId);
+}
+
+void BioStruct3DSelection::add(int chain, const U2Region &region) {
+    int start = biostruct.moleculeMap[chain]->residueMap.begin().key();
+    for (int i = region.startPos; i < region.endPos(); ++i) {
+        if (!data->selection.contains(chain, start + i)) {
+            data->selection.insert(chain, start + i);
+        }
+
+    }
+}
+
+void BioStruct3DSelection::add(int chain, const QVector<U2Region> &regions) {
+    foreach (const U2Region &region, regions) {
+        add(chain, region);
+    }
+}
+
+void BioStruct3DSelection::remove(int chain, const U2Region &region) {
+    int start = biostruct.moleculeMap[chain]->residueMap.begin().key();
+    for (int i = region.startPos; i < region.endPos(); ++i) {
+        data->selection.remove(chain, start + i);
+    }
+}
+
+void BioStruct3DSelection::remove(int chain, const QVector<U2Region> &regions) {
+    foreach (const U2Region &region, regions) {
+        remove(chain, region);
+    }
+}
+
+void BioStruct3DSelection::update(int chain, const U2Region &add, const U2Region &remove) {
+    this->add(chain, add);
+    this->remove(chain, remove);
+}
+
+void BioStruct3DSelection::update(int chain, const QVector<U2Region> &adds, const QVector<U2Region> &removes) {
+    add(chain, adds);
+    remove(chain, removes);
+}
+
+} // namespace U2
