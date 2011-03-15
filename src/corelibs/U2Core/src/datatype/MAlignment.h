@@ -275,6 +275,9 @@ private:
 
     // Additional alignment info
     QVariantMap             info;
+
+private:
+    static bool registerMeta;
 };
 
 inline char MAlignment::charAt(int seqNum, int pos) const {

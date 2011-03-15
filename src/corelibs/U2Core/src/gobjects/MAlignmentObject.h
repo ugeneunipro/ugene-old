@@ -17,6 +17,9 @@ public:
     MAlignmentModInfo() : sequenceContentChanged(true), sequenceListChanged(true) {}
     bool sequenceContentChanged;
     bool sequenceListChanged;
+
+private:
+    static bool registerMeta;
 };
 
 class U2CORE_EXPORT MAlignmentObject : public GObject {
@@ -73,6 +76,5 @@ protected:
 
 
 }//namespace
-
 
 #endif

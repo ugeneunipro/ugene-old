@@ -302,6 +302,12 @@ void MAlignmentObject::deleteAllGapColumn() {
     emit si_alignmentChanged(maBefore, mi);   
 }
 
+static bool _registerMeta() {
+    qRegisterMetaType<MAlignmentModInfo>("MAlignmentModInfo");
+    return true;
+}
+
+bool MAlignmentModInfo::registerMeta = _registerMeta();
 
 }//namespace
 

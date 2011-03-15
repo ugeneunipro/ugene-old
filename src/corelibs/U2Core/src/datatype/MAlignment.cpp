@@ -694,6 +694,11 @@ void MAlignment::check() const {
 #endif
 }
 
+static bool _registerMeta() {
+    qRegisterMetaType<MAlignment>("MAlignment");
+    return true;
+}
 
+bool MAlignment::registerMeta = _registerMeta();
 
-}//namespace
+}//namespace U2
