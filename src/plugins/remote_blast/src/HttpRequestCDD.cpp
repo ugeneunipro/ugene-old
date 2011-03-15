@@ -136,27 +136,41 @@ void HttpRequestCDD::parseHit(QByteArray &b,ResponseBuffer &buf) {
     for(int i = ind;b[i]!='&';i++)
         t[i-ind] = b[i];
     ad->qualifiers.push_back(U2Qualifier("Bit Score",QString(t)));
-    buf.readLine();
-    buf.readLine();
-    buf.readLine();
-    buf.readLine();
+    
+    int begLoc = 1000000;
+    int endLoc = 0;
+    QString id;
+    while(!b.contains("</TABLE>")) {
+        
+        while(!b.contains("lcl|") && !b.contains("</TABLE>")) {
+            b = buf.readLine();
+        } 
 
-    b = buf.readLine();
-    int from,to;
-    if(!getLocations(b,from,to)) {
-        connectionError = true;
-        error = QObject::tr("Cannot evaluate the location");
-        return;
+        if(b.contains("</TABLE>")) {
+            break;
+        }
+
+        int from,to;
+        if(!getLocations(b,from,to)) {
+            connectionError = true;
+            error = QObject::tr("Cannot evaluate the location");
+            return;
+        }
+        if(from < begLoc) {
+            begLoc = from;
+        }
+        endLoc = to;
+
+        b = buf.readLine();
+        b = buf.readLine();
+        ind = b.indexOf("Cdd:") + 4;
+        for(int i = ind;b[i]!='<' && i < b.length();i++) {
+            t[i-ind] = b[i];
+        }
+        id = QString(t);
     }
-    ad->location->regions << U2Region( from-1, to - from + 1);
-
-    buf.readLine();
-    b = buf.readLine();
-    ind = b.indexOf("Cdd:") + 4;
-    for(int i = ind;b[i]!='<';i++)
-        t[i-ind] = b[i];
+    ad->location->regions << U2Region( begLoc-1, endLoc - begLoc + 1);
     ad->qualifiers.push_back(U2Qualifier("id",QString(t)));
-
 
     ad->name = "CDD result";
     result.append(ad);

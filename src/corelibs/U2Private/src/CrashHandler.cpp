@@ -222,10 +222,10 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
         }
         message += taskList;
         if(taskList.isEmpty()) {
-            message += "None|None";
+            message += "None";
         }
     } else {
-        message += "None";
+        message += "None|None";
     }
 
     static QMutex mutex;

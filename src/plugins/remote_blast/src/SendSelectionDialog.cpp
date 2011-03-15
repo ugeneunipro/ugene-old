@@ -24,7 +24,7 @@ namespace U2 {
 void SendSelectionDialog::setUpSettings() {
     Settings *s = AppContext::getSettings();
     shortSequenceCheckBox->setChecked(s->getValue(SETTINGS_ROOT + SHORT_SETTINGS, false).toBool());
-    evalueSpinBox->setValue(s->getValue(SETTINGS_ROOT + EXPECT_SETTINGS, 10).toInt());
+    evalueSpinBox->setValue(s->getValue(SETTINGS_ROOT + EXPECT_SETTINGS, 10).toDouble());
     quantitySpinBox->setValue(s->getValue(SETTINGS_ROOT + HITS_SETTINGS, 20).toInt());
     lowComplexityFilterCheckBox->setChecked(s->getValue(SETTINGS_ROOT + LOW_COMPLEX_SETTINGS, true).toBool());
     repeatsCheckBox->setChecked(s->getValue(SETTINGS_ROOT + REPEATS_SETTINGS, false).toBool());

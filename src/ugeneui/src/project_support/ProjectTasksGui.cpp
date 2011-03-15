@@ -440,20 +440,24 @@ void ExportProjectTask::prepare(){
     }
 
     QMap<QString, QString> urlRemap;
-    /*foreach(Document* doc, docList){
+    foreach(Document* doc, docList){
         QString origPath = doc->getURLString();
         IOAdapterId id = doc->getIOAdapterFactory()->getAdapterId();
         if (id == BaseIOAdapters::LOCAL_FILE || id == BaseIOAdapters::GZIPPED_LOCAL_FILE){
             QFile f(origPath);
             QFileInfo fi(f);
             QString resultPath = destinationDir + "/" + fi.fileName();
-            if (!f.copy(resultPath)){
-                log.error(tr("Error during coping documents"));
+            if (resultPath != origPath && !f.copy(resultPath)){
+                if(QFile::exists(resultPath)) {
+                    coreLog.error(tr("Error during coping documents: file already exist"));
+                } else {
+                    coreLog.error(tr("Error during coping documents"));
+                }
                 return;
             }
             urlRemap[origPath] = resultPath;
         }
-    }*/
+    }
     if(pr->getProjectName().isEmpty()){
         QFileInfo fi(projectFile);
         pr->setProjectName(fi.baseName());
