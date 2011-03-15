@@ -143,7 +143,11 @@ QByteArray U2BitCompression::uncompress(const char* data, const QByteArray& alph
         }
     }
     int pos = alphaMaskOffset + alphabetSize;
+#if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
     QByteArray result(len, Qt::Uninitialized);
+#else
+    QByteArray result(len, (char)0);
+#endif
     char* res = result.data();
     for (int i = 0; i < len; i++, pos += bitsPerChar) {
         int m = U2Bits::bitsRange2Int32(bits, pos, bitsPerChar);
@@ -182,11 +186,11 @@ int U2Bits::getNumberOfBitsPerChar(int nChars)  {
 
 QByteArray U2Bits::allocateBits(int nBits) {
     int nBytes = getNumberOfBytes(nBits);
-    if (QT_VERSION > 0x040701) {
+#if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
         return QByteArray(nBytes, Qt::Uninitialized);
-    } else {
+#else
         return QByteArray(nBytes, char(0));
-    }
+#endif
 }
 
 
