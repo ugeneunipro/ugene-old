@@ -324,7 +324,7 @@ qint64 SQLiteObjectDbi::getObjectVersion(U2DataId objectId, U2OpStatus& os) {
 }
 
 U2DataId SQLiteObjectDbi::createObject(U2DataType type, const QString& folder, const QString& vname, DbRef* db, U2OpStatus& os) {
-    SQLiteQuery i1("INSERT INTO Object(type, top_level, vname) VALUES(?1, ?2, ?3)", db, os);
+    SQLiteQuery i1("INSERT INTO Object(type, top_level, name) VALUES(?1, ?2, ?3)", db, os);
     i1.bindType(1, type);
     i1.bindBool(2, true);
     i1.bindText(3, vname);
