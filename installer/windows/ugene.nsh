@@ -103,6 +103,9 @@ Section "Build"
     SetOutPath $INSTDIR\plugins
     File /r /x .svn "includes\plugins\*.*"
 
+    !insertmacro AddPlugin assembly_browser
+    !insertmacro AddPlugin dbi_bam
+    !insertmacro AddPlugin dbi_sqlite
     !insertmacro AddPlugin annotator
     !insertmacro AddPlugin ball
     !insertmacro AddPlugin biostruct3d_view
