@@ -211,7 +211,7 @@ scriptingMode(false) {
         }
         
         if (!err.isEmpty()) {
-            scene->sl_reset();
+            sl_newScene();
             coreLog.error(err);
         } else {
             if (go->getDocument()) {
@@ -409,7 +409,6 @@ void WorkflowView::sl_editScript() {
             }
         }
     }
-    
 }
 
 void WorkflowView::sl_protoDeleted(const QString &id) {
