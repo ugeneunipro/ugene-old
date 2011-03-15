@@ -295,12 +295,24 @@ void LogViewWidget::setSettings(const LogSettings& s) {
 
 
 QString LogViewWidget::prepareText(const LogMessage& msg) const {
-    QString color = settings.levelColors[msg.level];
-    QString date = settings.showDate ? "["+GTimer::createDateTime(msg.time).toString("hh:mm") + "]" : QString();
+    QString color = settings.enableColor? settings.levelColors[msg.level] : QString();
+
+    QString prefix = "[" + settings.logPattern + "]";
     QString category = settings.showCategory ? "[" + getEffectiveCategory(msg) + "]" : QString();
-    QString level = settings.showLevel ? "["+ LogCategories::getLocalizedLevelName(msg.level)+"] " : QString();
-    QString spacing = date.isEmpty() && category.isEmpty() && level.isEmpty() ? QString() : QString(" ");
-    QString text = "<font color="+color+">" + date + category + level + spacing + msg.text +"</font><br/>";
+    QString level = settings.showLevel ? "[" + LogCategories::getLocalizedLevelName(msg.level) + "]" : QString();
+    QStringList date =  GTimer::createDateTime(msg.time).toString("yyyy:yy:MM:dd:hh:mm:ss:zz").split(":");
+    prefix.replace("YYYY", date[0]);
+    prefix.replace("YY", date[1]);
+    prefix.replace("MM", date[2]);
+    prefix.replace("dd", date[3]);
+    prefix.replace("hh", date[4]);
+    prefix.replace("mm", date[5]);
+    prefix.replace("ss", date[6]);
+    prefix.replace("zzz", date[7]);
+    prefix.prepend(level);
+    prefix.prepend(category);
+    QString spacing = prefix.isEmpty() ? QString() : QString(" ");
+    QString text = "<font color="+color+">" + prefix + spacing + msg.text +"</font><br/>";
 
     return text;
 }

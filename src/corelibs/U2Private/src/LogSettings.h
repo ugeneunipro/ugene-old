@@ -27,7 +27,9 @@ class U2PRIVATE_EXPORT LogCategories : QObject {
     Q_OBJECT
 public:
     static void init();
-    static const QString getLocalizedLevelName(LogLevel l) {return localizedLevelNames[l];}
+    static const QString getLocalizedLevelName(LogLevel l) {
+        return localizedLevelNames[l];
+    }
 protected:
     static QString localizedLevelNames[LogLevel_NumLevels];
 };
@@ -53,12 +55,14 @@ public:
     
     QString levelColors[LogLevel_NumLevels];
     bool    activeLevelGlobalFlag[LogLevel_NumLevels];
+    QString logPattern;
 
     bool showDate;
     bool showLevel;
     bool showCategory;
+    bool enableColor;
 
-private:
+//private:
     QHash<QString, LoggerSettings> categories;
 };
 

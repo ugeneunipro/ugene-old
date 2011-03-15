@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>605</width>
-    <height>685</height>
+    <height>781</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,27 +46,57 @@
      <property name="title">
       <string>Log format</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
        <widget class="QCheckBox" name="showDateCB">
         <property name="text">
          <string>Show date</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Date format:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="dateFormatEdit"/>
+      </item>
+      <item row="1" column="0">
        <widget class="QCheckBox" name="showLevelCB">
         <property name="text">
          <string>Show log level</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="1">
        <widget class="QCheckBox" name="showCategoryCB">
         <property name="text">
          <string>Show log category</string>
         </property>
        </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="colorCB">
+        <property name="text">
+         <string>Enable colored log output</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>

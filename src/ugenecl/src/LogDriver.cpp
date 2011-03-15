@@ -27,6 +27,8 @@ const QString LogDriver::LOG_LEVEL_DETAILS_CMD_OPTION       = "log-level-details
 const QString LogDriver::LOG_LEVEL_TRACE_CMD_OPTION         = "log-level-trace";
 const QString LogDriver::COLOR_OUTPUT_CMD_OPTION            = "log-color-output";
 const QString LogDriver::LOG_SETTINGS_ACTIVE_FLAG           = "activeFlagLevel";
+//const QString LogDriver::LOG_FORMAT                         = "log-format";
+//const QString LogDriver::LOG_LEVEL                          = "log-level";
 
 bool LogDriver::helpRegistered = false;
 
@@ -37,10 +39,8 @@ LogDriver::LogDriver() : printToConsole (true) {
         setLogCmdlineHelp();
     }
     
+    setLogSettings();
     setCmdLineSettings();
-    
-    settings.reinitCategories();
-    settings.reinitAll();
 }
 
 void LogDriver::setLogCmdlineHelp() {
@@ -50,34 +50,134 @@ void LogDriver::setLogCmdlineHelp() {
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
     
-    CMDLineHelpProvider * colorOutputSection = new CMDLineHelpProvider( COLOR_OUTPUT_CMD_OPTION,
-        tr( "colored output messages" ) );
-    CMDLineHelpProvider * logLevelTraceSection = new CMDLineHelpProvider( LOG_LEVEL_TRACE_CMD_OPTION,
-        tr( "show trace log messages" ) );
-    CMDLineHelpProvider * logLevelDetailsSection = new CMDLineHelpProvider( LOG_LEVEL_DETAILS_CMD_OPTION,
-        tr( "show details log messages" ) );
-    CMDLineHelpProvider * logLevelInfoSection = new CMDLineHelpProvider( LOG_LEVEL_INFO_CMD_OPTION,
-        tr( "show error and info log messages (default)" ) );
-    CMDLineHelpProvider * logLevelErrorSection = new CMDLineHelpProvider( LOG_LEVEL_ERROR_CMD_OPTION,
-        tr( "show only error log messages" ) );
-    CMDLineHelpProvider * logLevelNoneSection = new CMDLineHelpProvider( LOG_LEVEL_NONE_CMD_OPTION,
-        tr( "Don't show log messages" ) );
-    CMDLineHelpProvider * logShowCatSection = new CMDLineHelpProvider( LOG_SHOW_CATEGORY_CMD_OPTION,
-        tr( "Show message category at log" ) );
-    CMDLineHelpProvider * logShowLevelSection = new CMDLineHelpProvider( LOG_SHOW_LEVEL_CMD_OPTION,
-        tr( "Show message level at log" ) );
-    CMDLineHelpProvider * logShowDateSection = new CMDLineHelpProvider( LOG_SHOW_DATE_CMD_OPTION,
-        tr( "Show date&time info at log" ) );
+    CMDLineHelpProvider * logFormat = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_FORMAT,
+        tr( "Sets pattern for log.") );
+    CMDLineHelpProvider * logFormat1 = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_FORMAT, 
+        tr("Use following notations: L - level, C - category, YYYY - 4digit year, YY - 2digit year, MM - month,"));
+    CMDLineHelpProvider * logFormat2 = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_FORMAT, 
+        tr("dd - day, hh - hour, mm - minutes, ss - seconds, zzz - milliseconds."));
+    CMDLineHelpProvider * logFormat3 = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_FORMAT, "By default, logformat=\"[L][hh:mm]\"");
+
+    CMDLineHelpProvider * logLevelArgument = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_LEVEL, 
+        tr("Sets the log level per category. If a category is not specified, the log level is applied to all categories."));
+    CMDLineHelpProvider * logLevelArgument2 = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_LEVEL,
+        tr("Format of the value is the following: \"category1 = level1, category2 = level2\" or simply \"level\"."));
+    CMDLineHelpProvider * logLevel1 = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_LEVEL,
+        tr( "The following categories are available: \"Algorithms\", \"Console\", \"Core Services\", \"Input/Output\", \"Performance\","));
+    CMDLineHelpProvider * logLevel2 = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_LEVEL,
+        tr("\"Remote Service\", \"Scripts\", \"Tasks\", \"User Interface\"." ) );
+    CMDLineHelpProvider * logLevel3 = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_LEVEL,
+        tr( "The following log levels are available: TRACE, DETAILS, INFO, ERROR or NONE." ) );
+    CMDLineHelpProvider * logLevel4 = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_LEVEL,
+        tr( "By default, loglevel=\"ERROR\"." ) );
+
+    cmdLineRegistry->registerCMDLineHelpProvider( logFormat );
+    cmdLineRegistry->registerCMDLineHelpProvider( logFormat1 );
+    cmdLineRegistry->registerCMDLineHelpProvider( logFormat2 );
+    cmdLineRegistry->registerCMDLineHelpProvider( logFormat3 );
+    cmdLineRegistry->registerCMDLineHelpProvider( logLevelArgument );
+    cmdLineRegistry->registerCMDLineHelpProvider( logLevelArgument2 );
+    cmdLineRegistry->registerCMDLineHelpProvider( logLevel1 );
+    cmdLineRegistry->registerCMDLineHelpProvider( logLevel2 );
+    cmdLineRegistry->registerCMDLineHelpProvider( logLevel3 );
+    cmdLineRegistry->registerCMDLineHelpProvider( logLevel4 );
+}
+
+void LogDriver::setLogSettings() {
+    CMDLineRegistry *cmd = AppContext::getCMDLineRegistry();
+    if(cmd->hasParameter(CMDLineCoreOptions::LOG_FORMAT)) {
+       QString logFormat = cmd->getParameterValue(CMDLineCoreOptions::LOG_FORMAT);
+       settings.showLevel = logFormat.contains("L", Qt::CaseSensitive);
+       settings.showCategory = logFormat.contains("C", Qt::CaseSensitive);
+       settings.showDate = logFormat.contains(QRegExp("[M{2}Y{2,4}d{2}H{2}m{2}s{2}z{3}]"));
+       settings.logPattern = logFormat;
+    } else if(cmd->hasParameter( LOG_SHOW_DATE_CMD_OPTION ) || //old options
+        cmd->hasParameter( LOG_SHOW_LEVEL_CMD_OPTION ) ||
+        cmd->hasParameter( LOG_SHOW_CATEGORY_CMD_OPTION )){
+
+        settings.logPattern = "";
+        if (cmd->hasParameter( LOG_SHOW_DATE_CMD_OPTION )) {
+            settings.showDate = true;
+            settings.logPattern += "[hh:mm]";
+        }
+        if (cmd->hasParameter( LOG_SHOW_LEVEL_CMD_OPTION )) {
+            settings.showLevel = true;
+            settings.logPattern += "[L]";
+        }
+        if (cmd->hasParameter( LOG_SHOW_CATEGORY_CMD_OPTION )) {
+            settings.showCategory = true;
+            settings.logPattern += "[C]";
+        }
+    } else{
+        settings.logPattern = "[hh:mm][L]";
+    }
+
+    QString logLevel;
+    if(cmd->hasParameter(CMDLineCoreOptions::LOG_LEVEL)){
+        logLevel = cmd->getParameterValue(CMDLineCoreOptions::LOG_LEVEL);
+    } else if( cmd->hasParameter( LOG_LEVEL_NONE_CMD_OPTION ) ){
+        logLevel = "NONE";
+    } else if(cmd->hasParameter( LOG_LEVEL_ERROR_CMD_OPTION )) {
+        logLevel = "ERROR";
+    }else if( cmd->hasParameter( LOG_LEVEL_INFO_CMD_OPTION ) ) {
+        logLevel = "INFO";
+    } else if( cmd->hasParameter( LOG_LEVEL_DETAILS_CMD_OPTION ) ) {
+        logLevel = "DETAILS";
+    } else if( cmd->hasParameter( LOG_LEVEL_TRACE_CMD_OPTION ) ) {
+        logLevel = "TRACE";
+    }else {
+        logLevel = "ERROR";
+    }
     
-    cmdLineRegistry->registerCMDLineHelpProvider( colorOutputSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevelTraceSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevelDetailsSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevelInfoSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevelErrorSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevelNoneSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( logShowCatSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( logShowLevelSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( logShowDateSection );
+    LogServer* ls = LogServer::getInstance();
+    const QStringList& categoryList = ls->getCategories();
+    logLevel = logLevel.remove(" ");
+    QStringList cats = logLevel.split(QRegExp("[,=]"));
+
+    LogCategories::init();
+    if(cats.size() == 1) {
+        int minLevel = 10;
+        for (int i=0; i<LogLevel_NumLevels; i++) {
+            if(LogCategories::getLocalizedLevelName((LogLevel)i) == logLevel) {
+                minLevel = i;
+            } 
+        }
+        foreach(const QString &str, categoryList) {
+            LoggerSettings cs;
+            cs.categoryName = str;
+            for (int i=0; i<LogLevel_NumLevels; i++) {
+                cs.activeLevelFlag[i] = (i >= minLevel);
+            }
+            settings.categories[str] = cs;
+        }
+    } else {
+
+        foreach(const QString &str, categoryList) {
+            LoggerSettings cs;
+            cs.categoryName = str;
+            QString catWithoutSpaces = str;
+            catWithoutSpaces = catWithoutSpaces.remove(" ");
+            if(logLevel.contains(catWithoutSpaces)) {
+                int ind = cats.indexOf(catWithoutSpaces);
+                QString level = cats[ind + 1];
+                int minLevel = 10;
+                for (int i=0; i<LogLevel_NumLevels; i++) {
+                    if(LogCategories::getLocalizedLevelName((LogLevel)i) == level) {
+                        cs.activeLevelFlag[i] = true;
+                        minLevel = i;
+                    } else {
+                        cs.activeLevelFlag[i] = (i > minLevel);
+                    }
+                }
+
+            } else {
+                for (int i=0; i<LogLevel_NumLevels; i++) {
+                    cs.activeLevelFlag[i] = false;
+                }
+            }
+            settings.categories[str] = cs;
+        }
+    }
 }
 
 void LogDriver::setCmdLineSettings() {
@@ -86,58 +186,29 @@ void LogDriver::setCmdLineSettings() {
     Settings * settings = AppContext::getSettings();
     assert( NULL != settings );
 
-    if (cmdLineRegistry->hasParameter( LOG_SHOW_DATE_CMD_OPTION )) {
-        settings->setValue( LOG_SETTINGS_ROOT + "showDate", true);
-    }
-    if (cmdLineRegistry->hasParameter( LOG_SHOW_LEVEL_CMD_OPTION )) {
-        settings->setValue( LOG_SETTINGS_ROOT + "showLevel", true );
-    }
-    if (cmdLineRegistry->hasParameter( LOG_SHOW_CATEGORY_CMD_OPTION )) {
-        settings->setValue( LOG_SETTINGS_ROOT + "showCategory", true );
-    }
-
-    int i = 0;
-    if( cmdLineRegistry->hasParameter( LOG_LEVEL_NONE_CMD_OPTION ) ) {
-        for( i = 0; i < LogLevel_NumLevels; i++ ) {
-            settings->setValue( LOG_SETTINGS_ROOT + LOG_SETTINGS_ACTIVE_FLAG + QString::number( i ), false );
-        }
-    } else if( cmdLineRegistry->hasParameter( LOG_LEVEL_ERROR_CMD_OPTION ) ) {
-        for( i = 0; i < LogLevel_NumLevels; i++ ) {
-            settings->setValue( LOG_SETTINGS_ROOT + LOG_SETTINGS_ACTIVE_FLAG + QString::number( i ), i >= LogLevel_ERROR );
-        }
-    } else if( cmdLineRegistry->hasParameter( LOG_LEVEL_INFO_CMD_OPTION ) ) {
-        for( i = 0; i < LogLevel_NumLevels; i++ ) {
-            settings->setValue( LOG_SETTINGS_ROOT + LOG_SETTINGS_ACTIVE_FLAG + QString::number( i ), i >= LogLevel_INFO );
-        }
-    } else if( cmdLineRegistry->hasParameter( LOG_LEVEL_DETAILS_CMD_OPTION ) ) {
-        for( i = 0; i < LogLevel_NumLevels; i++ ) {
-            settings->setValue( LOG_SETTINGS_ROOT + LOG_SETTINGS_ACTIVE_FLAG + QString::number( i ), i >= LogLevel_DETAILS );
-        }
-    } else if( cmdLineRegistry->hasParameter( LOG_LEVEL_TRACE_CMD_OPTION ) ) {
-        for( i = 0;i < LogLevel_NumLevels; i++ ) {
-            settings->setValue( LOG_SETTINGS_ROOT + LOG_SETTINGS_ACTIVE_FLAG + QString::number( i ), i >= LogLevel_TRACE );
-        }
-    } else {
-        for( i = 0; i < LogLevel_NumLevels; i++ ) {
-            settings->setValue( LOG_SETTINGS_ROOT + LOG_SETTINGS_ACTIVE_FLAG + QString::number( i ), i >= LogLevel_ERROR );
-        }
-    }
-    if (cmdLineRegistry->hasParameter( COLOR_OUTPUT_CMD_OPTION )) {
-        settings->setValue( LOG_SETTINGS_ROOT + "colorOut", true );
-    }
+    /*if (cmdLineRegistry->hasParameter( COLOR_OUTPUT_CMD_OPTION )) {
+        settings.enableColor = true;
+    }*/
     if (cmdLineRegistry->hasParameter( CMDLineCoreOptions::TEAMCITY_OUTPUT )) {
         settings->setValue( LOG_SETTINGS_ROOT + "teamcityOut", true );
     }
-    
-    
 }
 
 QString LogDriver::prepareText(const LogMessage& msg) const {
-    QString date = settings.showDate ? "["+GTimer::createDateTime(msg.time).toString("hh:mm") + "]" : QString();
-    QString category = settings.showCategory ? "["+ getEffectiveCategory(msg) + "]" : QString();
-    QString level = settings.showLevel ? "["+ LogCategories::getLocalizedLevelName(msg.level) +"] " : QString();
-    QString spacing = date.isEmpty() && category.isEmpty() && level.isEmpty() ? QString() : QString(" ");
-    QString text = date + category + level + spacing + msg.text;
+    QString prefix = settings.logPattern;
+    prefix.replace("C", getEffectiveCategory(msg));
+    prefix.replace("L", LogCategories::getLocalizedLevelName(msg.level));
+    QStringList date =  GTimer::createDateTime(msg.time).toString("yyyy:yy:MM:dd:hh:mm:ss:zzz").split(":");
+    prefix.replace("YYYY", date[0]);
+    prefix.replace("YY", date[1]);
+    prefix.replace("MM", date[2]);
+    prefix.replace("dd", date[3]);
+    prefix.replace("hh", date[4]);
+    prefix.replace("mm", date[5]);
+    prefix.replace("ss", date[6]);
+    prefix.replace("zzz", date[7]);
+    QString spacing = prefix.isEmpty() ? QString() : QString(" ");
+    QString text = prefix + spacing + msg.text;
 
     return text;
 }

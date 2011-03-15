@@ -19,8 +19,11 @@ public:
     static const QString LOG_LEVEL_TRACE_CMD_OPTION;
     static const QString LOG_SETTINGS_ACTIVE_FLAG;
     static const QString COLOR_OUTPUT_CMD_OPTION;
+    //static const QString LOG_FORMAT;
+    //static const QString LOG_LEVEL;
     
     static void setLogCmdlineHelp();
+    void setLogSettings();
 
 private:
     static bool helpRegistered;

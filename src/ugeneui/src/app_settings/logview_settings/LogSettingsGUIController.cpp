@@ -122,6 +122,8 @@ void LogSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     showCategoryCB->setChecked(settings.showCategory);
     showDateCB->setChecked(settings.showDate);
     showLevelCB->setChecked(settings.showLevel);
+    colorCB->setChecked(settings.enableColor);
+    dateFormatEdit->setText(settings.logPattern);
 }
 
 AppSettingsGUIPageState* LogSettingsPageWidget::getState(QString& err) const {
@@ -150,6 +152,8 @@ AppSettingsGUIPageState* LogSettingsPageWidget::getState(QString& err) const {
     settings.showCategory = showCategoryCB->isChecked();
     settings.showDate = showDateCB->isChecked();
     settings.showLevel = showLevelCB->isChecked();
+    settings.enableColor = colorCB->isChecked();
+    settings.logPattern = dateFormatEdit->text();
     
     return state;
 }

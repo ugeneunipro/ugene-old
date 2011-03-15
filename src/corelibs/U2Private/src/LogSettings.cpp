@@ -2,6 +2,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
+#include <U2Core/CMDLineRegistry.h>
 
 #include <QtGui/QColor>
 
@@ -47,20 +48,19 @@ void LogSettings::reinitAll() {
             levelColors[i] = QColor(Qt::black).name();
         }
     }
-
-
+    
     showDate = s->getValue(SETTINGS_ROOT + "showDate", true).toBool();
     showLevel = s->getValue(SETTINGS_ROOT + "showLevel", true).toBool();
-    showCategory = s->getValue(SETTINGS_ROOT + "showCategory", false).toBool();;
+    showCategory = s->getValue(SETTINGS_ROOT + "showCategory", false).toBool();
+    logPattern = s->getValue(SETTINGS_ROOT + "datePattern", "hh:mm").toString();
+    enableColor = s->getValue(SETTINGS_ROOT + "enableColor", true).toBool();
 
     reinitCategories();
 }
 
 void LogSettings::reinitCategories() {
-
-    Settings *s = AppContext::getSettings();
-
     LogCategories::init();
+    Settings *s = AppContext::getSettings();
     for (int i=0; i<LogLevel_NumLevels; i++) {
         activeLevelGlobalFlag[i] = s->getValue(SETTINGS_ROOT + "activeFlagLevel"+QString::number(i), i >= LogLevel_INFO).toBool();
     }
@@ -77,6 +77,7 @@ void LogSettings::reinitCategories() {
             categories[name] = cs;
         }
     }
+
 }
 
 void LogSettings::removeCategory(const QString& name) {
@@ -106,7 +107,9 @@ void LogSettings::save() {
 
     s->setValue(SETTINGS_ROOT + "showDate", showDate);
     s->setValue(SETTINGS_ROOT + "showLevel", showLevel);
-    s->getValue(SETTINGS_ROOT + "showCategory", showCategory);
+    s->setValue(SETTINGS_ROOT + "showCategory", showCategory);
+    s->setValue(SETTINGS_ROOT + "enableColor", enableColor);
+    s->setValue(SETTINGS_ROOT + "datePattern", logPattern);
 }
 
 bool LogSettings::operator==(const LogSettings& other) const {

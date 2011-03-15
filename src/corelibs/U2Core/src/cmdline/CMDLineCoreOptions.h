@@ -19,6 +19,8 @@ public:
     static const QString TRANSLATION;
     static const QString TEST_THREADS;
     static const QString TEAMCITY_OUTPUT;
+    static const QString LOG_FORMAT;
+    static const QString LOG_LEVEL;
     
 public:
     // initialize help for core cmdline options

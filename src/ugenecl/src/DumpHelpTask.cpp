@@ -75,6 +75,9 @@ void DumpHelpTask::dumpHelp() {
             dumpSectionName( sectionName );
             prevSectionName = sectionName;
         } else {
+            if(sectionName == CMDLineCoreOptions::LOG_FORMAT || sectionName == CMDLineCoreOptions::LOG_LEVEL) {
+                continue;
+            }
             dumpSectionIndent();
         }
         dumpSectionContent( hProvider->getHelpSectionContent() );
@@ -89,9 +92,8 @@ void DumpHelpTask::prepare() {
         dumpHelp();
         return;
     }
-
-    int ind = 0;
     QList<CMDLineHelpProvider* > helpProviders = AppContext::getCMDLineRegistry()->listCMDLineHelpProviders();
+    int ind = 0;
     int sz = helpProviders.size();
     for( ind = 0; ind < sz; ++ind ) {
         if( helpProviders.at(ind)->getHelpSectionName() == paramName ) {
