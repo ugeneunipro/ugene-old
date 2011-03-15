@@ -67,7 +67,7 @@ void U2::BAM::ConvertToSQLiteDialog::on_sourceUrlButton_clicked() {
 void U2::BAM::ConvertToSQLiteDialog::on_destinationUrlButton_clicked() {
     GUrl url(ui.sourceUrlEdit->text());
     QString dir = url.dirPath() + "/" + url.baseFileName();
-    QString returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination SQLite File"), dir, BAMDbiPlugin::tr("SQLite Files (*.sqlite);;All Files (*)"));
+    QString returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination SQLite File"), dir, BAMDbiPlugin::tr("SQLite Files (*.ugenedb);;All Files (*)"));
     if(!returnedValue.isEmpty()) {
         ui.destinationUrlEdit->setText(returnedValue);
     }

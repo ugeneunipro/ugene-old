@@ -80,8 +80,8 @@ void ConvertToSQLiteTask::run() {
         }
         QList<U2Assembly> assemblies;
         foreach(const Header::Reference &reference, reader->getHeader().getReferences()) {
-            Q_UNUSED(reference);
             U2Assembly assembly;
+            assembly.visualName = reference.getName();
             {
                 U2OpStatusImpl opStatus;
                 sqliteDbi->getAssemblyRWDbi()->createAssemblyObject(assembly, "/", NULL, opStatus);

@@ -126,7 +126,7 @@ private:
 
 class AssemblyRDbi : public U2AssemblyRDbi {
 public:
-    AssemblyRDbi(Dbi &dbi, Reader &reader, DbRef &dbRef, int assembliesCount);
+    AssemblyRDbi(Dbi &dbi, Reader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths);
 
     virtual U2Assembly getAssemblyObject(U2DataId id, U2OpStatus &os);
 
@@ -146,6 +146,7 @@ public:
 
     static U2AssemblyRead alignmentToRead(const Alignment &alignment);
 private:
+    qint64 getMaxReadLength(U2DataId assemblyId, const U2Region &r);
     U2AssemblyRead getReadById(U2DataId rowId, qint64 packedRow, U2OpStatus &os);
     QList<U2AssemblyRead> getReadsByIds(QList<U2DataId> rowIds, QList<qint64> packedRows, U2OpStatus &os);
 
@@ -153,6 +154,7 @@ private:
     Reader &reader;
     DbRef &dbRef;
     int assembliesCount;
+    QList<qint64> maxReadLengths;
 };
 
 } // namespace BAM

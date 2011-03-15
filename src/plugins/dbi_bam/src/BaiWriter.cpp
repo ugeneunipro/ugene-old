@@ -62,7 +62,7 @@ void BaiWriter::writeIndex(const Index &index) {
 
 void BaiWriter::writeBytes(const char *buff, qint64 size) {
     if(ioAdapter.writeBlock(buff, size) != size) {
-        throw IOException(BAMDbiPlugin::tr("can't write output"));
+        throw IOException(BAMDbiPlugin::tr("Can't write output"));
     }
 }
 

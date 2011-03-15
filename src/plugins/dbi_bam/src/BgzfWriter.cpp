@@ -40,7 +40,7 @@ BgzfWriter::BgzfWriter(IOAdapter &ioAdapter):
     stream.next_out = Z_NULL;
     stream.avail_out = 0;
     if(Z_OK != deflateInit2(&stream, Z_DEFAULT_COMPRESSION, Z_DEFLATED, 16 + 15, 8, Z_DEFAULT_STRATEGY)) {
-        throw Exception(BAMDbiPlugin::tr("can't initialize zlib"));
+        throw Exception(BAMDbiPlugin::tr("Can't initialize zlib"));
     }
 }
 
@@ -67,11 +67,11 @@ void BgzfWriter::write(const char *buff, qint64 size) {
             stream.next_out = (Bytef *)buffer;
             stream.avail_out = sizeof(buffer);
             if(Z_OK != deflate(&stream, Z_NO_FLUSH)) {
-                throw Exception(BAMDbiPlugin::tr("can't compress data"));
+                throw Exception(BAMDbiPlugin::tr("Can't compress data"));
             } else {
                 qint64 toWrite = sizeof(buffer) - stream.avail_out;
                 if(ioAdapter.writeBlock(buffer, toWrite) != toWrite) {
-                    throw IOException(BAMDbiPlugin::tr("can't write output"));
+                    throw IOException(BAMDbiPlugin::tr("Can't write output"));
                 }
             }
         }
@@ -103,13 +103,13 @@ void BgzfWriter::finishBlock() {
         if((Z_OK == returnedValue) || (Z_STREAM_END == returnedValue)) {
             qint64 toWrite = sizeof(buffer) - stream.avail_out;
             if(ioAdapter.writeBlock(buffer, toWrite) != toWrite) {
-                throw IOException(BAMDbiPlugin::tr("can't write output"));
+                throw IOException(BAMDbiPlugin::tr("Can't write output"));
             }
             if(Z_STREAM_END == returnedValue) {
                 break;
             }
         } else {
-            throw Exception(BAMDbiPlugin::tr("can't compress data"));
+            throw Exception(BAMDbiPlugin::tr("Can't compress data"));
         }
     }
     blockEnd = true;

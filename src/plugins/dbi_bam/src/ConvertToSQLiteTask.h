@@ -34,6 +34,7 @@ public:
     ConvertToSQLiteTask(const GUrl &sourceUrl, const GUrl &destinationUrl);
 
     virtual void run();
+
 private:
     GUrl sourceUrl;
     GUrl destinationUrl;

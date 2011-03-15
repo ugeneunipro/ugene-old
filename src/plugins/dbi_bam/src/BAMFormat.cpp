@@ -120,7 +120,7 @@ Document *BAMFormat::loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVaria
         foreach(MAlignment alignment, alignments) {
             DocumentFormatUtils::assignAlphabet(alignment);
             if(NULL == alignment.getAlphabet()) {
-                throw Exception(BAMDbiPlugin::tr("alphabet is unknown"));
+                throw Exception(BAMDbiPlugin::tr("Alphabet is unknown"));
             }
             objects.push_back(new MAlignmentObject(alignment));
         }

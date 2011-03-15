@@ -40,7 +40,7 @@ BgzfReader::BgzfReader(IOAdapter &ioAdapter):
     stream.next_out = Z_NULL;
     stream.avail_out = 0;
     if(Z_OK != inflateInit2(&stream, 16 + 15)) {
-        throw Exception(BAMDbiPlugin::tr("can't initialize zlib"));
+        throw Exception(BAMDbiPlugin::tr("Can't initialize zlib"));
     }
 }
 
@@ -58,7 +58,7 @@ qint64 BgzfReader::read(char *buff, qint64 maxSize) {
         if(0 == stream.avail_in) {
             qint64 returnedValue = ioAdapter.readBlock(buffer, sizeof(buffer));
             if(-1 == returnedValue) {
-                throw IOException(BAMDbiPlugin::tr("can't read input"));
+                throw IOException(BAMDbiPlugin::tr("Can't read input"));
             } else if(0 == returnedValue) {
                 endOfFile = true;
                 break;
@@ -71,7 +71,7 @@ qint64 BgzfReader::read(char *buff, qint64 maxSize) {
         if(Z_STREAM_END == returnedValue) {
             nextBlock();
         } else if(Z_OK != returnedValue) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("can't decompress data"));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Can't decompress data"));
         }
     }
     if(0 == stream.avail_in) {
@@ -107,18 +107,18 @@ void BgzfReader::seek(VirtualOffset offset) {
     if((offset.getCoffset() == headerOffset) && (offset.getUoffset() >= (int)stream.total_out)) {
         qint64 toSkip = offset.getUoffset() - stream.total_out;
         if(skip(toSkip) < toSkip) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("unexpected end of file"));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Unexpected end of file"));
         }
     } else {
         if(!ioAdapter.skip(offset.getCoffset() - ioAdapter.bytesRead())) {
-            throw IOException(BAMDbiPlugin::tr("can't read input"));
+            throw IOException(BAMDbiPlugin::tr("Can't read input"));
         }
         stream.next_in = Z_NULL;
         stream.avail_in = 0;
         headerOffset = ioAdapter.bytesRead();
         inflateReset(&stream);
         if(skip(offset.getUoffset()) < offset.getUoffset()) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("unexpected end of file"));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Unexpected end of file"));
         }
     }
     endOfFile = false;
@@ -131,7 +131,7 @@ void BgzfReader::nextBlock() {
         if(0 == stream.avail_in) {
             qint64 returnedValue = ioAdapter.readBlock(buffer, sizeof(buffer));
             if(-1 == returnedValue) {
-                throw IOException(BAMDbiPlugin::tr("can't read input"));
+                throw IOException(BAMDbiPlugin::tr("Can't read input"));
             } else if(0 == returnedValue) {
                 endOfFile = true;
                 break;
@@ -147,7 +147,7 @@ void BgzfReader::nextBlock() {
         } else if(Z_BUF_ERROR == returnedValue) {
             break;
         } else if(Z_OK != returnedValue) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("can't decompress data"));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Can't decompress data"));
         }
     }
     stream.avail_out = oldAvailOut;

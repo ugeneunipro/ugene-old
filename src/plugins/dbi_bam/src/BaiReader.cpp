@@ -36,18 +36,18 @@ Index BaiReader::readIndex() {
     {
         QByteArray magic = readBytes(4);
         if("BAI\001" != magic) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid magic number"));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid magic number"));
         }
     }
     int referencesNumber = readInt32();
     if(referencesNumber < 0) {
-        throw InvalidFormatException(BAMDbiPlugin::tr("invalid number of references: %1").arg(referencesNumber));
+        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid number of references: %1").arg(referencesNumber));
     }
     QList<Index::ReferenceIndex> referenceIndices;
     for(int referenceId = 0;referenceId < referencesNumber;referenceId++) {
         int binsNumber = readInt32();
         if(binsNumber < 0) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid number of bins: %1").arg(binsNumber));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid number of bins: %1").arg(binsNumber));
         }
         QList<QList<Index::ReferenceIndex::Chunk> > bins;
         for(int i = 0;i < 37500;i++) {
@@ -57,20 +57,20 @@ Index BaiReader::readIndex() {
             unsigned int bin = readUint32();
             int chunksNumber = readInt32();
             if(chunksNumber < 0) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("invalid number of chunks: %1").arg(chunksNumber));
+                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid number of chunks: %1").arg(chunksNumber));
             }
             for(int chunkId = 0;chunkId < chunksNumber;chunkId++) {
                 VirtualOffset chunkBegin(readUint64());
                 VirtualOffset chunkEnd(readUint64());
                 if(chunkEnd < chunkBegin) {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("invalid chunk"));
+                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid chunk"));
                 }
                 bins[bin].append(Index::ReferenceIndex::Chunk(chunkBegin, chunkEnd));
             }
         }
         int intervalsNumber = readInt32();
         if(intervalsNumber < 0) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid number of intervals: %1").arg(intervalsNumber));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid number of intervals: %1").arg(intervalsNumber));
         }
         QList<VirtualOffset> intervals;
         for(int intervalId = 0;intervalId < intervalsNumber;intervalId++) {
@@ -85,9 +85,9 @@ Index BaiReader::readIndex() {
 void BaiReader::readBytes(char *buff, qint64 size) {
     qint64 returnedValue = ioAdapter.readBlock(buff, size);
     if(-1 == returnedValue) {
-        throw IOException(BAMDbiPlugin::tr("can't read input"));
+        throw IOException(BAMDbiPlugin::tr("Can't read input"));
     } else if(returnedValue < size) {
-        throw InvalidFormatException(BAMDbiPlugin::tr("unexpected end of file"));
+        throw InvalidFormatException(BAMDbiPlugin::tr("Unexpected end of file"));
     }
 }
 

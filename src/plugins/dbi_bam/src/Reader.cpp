@@ -41,19 +41,19 @@ Alignment Reader::readAlignment() {
     Alignment alignment;
     int blockSize = readInt32();
     if(blockSize < 0) {
-        throw InvalidFormatException(BAMDbiPlugin::tr("invalid block size: %1").arg(blockSize));
+        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid block size: %1").arg(blockSize));
     }
     {
         int referenceId = readInt32();
         if((referenceId < -1) || (referenceId >= header.getReferences().size())) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid reference id: %1").arg(referenceId));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid reference id: %1").arg(referenceId));
         }
         alignment.setReferenceId(referenceId);
     }
     {
         int position = readInt32();
         if(position < -1) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid read position: %1").arg(position));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid read position: %1").arg(position));
         }
         alignment.setPosition(position);
     }
@@ -109,19 +109,19 @@ Alignment Reader::readAlignment() {
     }
     int length = readInt32();
     if(length < 0) {
-        throw InvalidFormatException(BAMDbiPlugin::tr("invalid read length: %1").arg(length));
+        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid read length: %1").arg(length));
     }
     {
         int nextReferenceId = readInt32();
         if((nextReferenceId < -1) || (nextReferenceId >= header.getReferences().size())) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid mate reference id: %1").arg(nextReferenceId));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid mate reference id: %1").arg(nextReferenceId));
         }
         alignment.setNextReferenceId(nextReferenceId);
     }
     {
         int nextPosition = readInt32();
         if(nextPosition < -1) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid mate position: %1").arg(nextPosition));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid mate position: %1").arg(nextPosition));
         }
         alignment.setNextPosition(nextPosition);
     }
@@ -129,7 +129,7 @@ Alignment Reader::readAlignment() {
         int templateLength = readInt32();
         if(!(alignment.getFlags() & Alignment::Fragmented)) {
             if(0 != templateLength) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("invalid template length of a sigle-fragment template: %1").arg(templateLength));
+                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid template length of a sigle-fragment template: %1").arg(templateLength));
             }
         }
         alignment.setTemplateLength(templateLength);
@@ -170,7 +170,7 @@ Alignment Reader::readAlignment() {
                 operation = Alignment::CigarOperation::SequenceMismatch;
                 break;
             default:
-                throw InvalidFormatException(BAMDbiPlugin::tr("invalid cigar operation code: %1").arg(value & 0xf));
+                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid cigar operation code: %1").arg(value & 0xf));
             }
             int operatonLength = value >> 4;
             cigar.append(Alignment::CigarOperation(operatonLength, operation));
@@ -180,18 +180,18 @@ Alignment Reader::readAlignment() {
             for(int index = 0;index < cigarLength;index++) {
                 if(Alignment::CigarOperation::HardClip == cigar[index].getOperation()) {
                     if((index > 0) && (index < cigarLength - 1)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("hard clip in the middle of cigar"));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Hard clip in the middle of cigar"));
                     }
                 }
                 if(Alignment::CigarOperation::SoftClip == cigar[index].getOperation()) {
                     if((index > 1) && (index < cigarLength - 2)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("misplaced soft clip in the cigar"));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Misplaced soft clip in the cigar"));
                     }
                     if((1 == index) && (Alignment::CigarOperation::HardClip != cigar[0].getOperation())) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("misplaced soft clip in the cigar"));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Misplaced soft clip in the cigar"));
                     }
                     if((cigarLength - 2 == index) && (Alignment::CigarOperation::HardClip != cigar[cigarLength - 1].getOperation())) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("misplaced soft clip in the cigar"));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Misplaced soft clip in the cigar"));
                     }
                 }
                 if((Alignment::CigarOperation::AlignmentMatch == cigar[index].getOperation()) ||
@@ -203,7 +203,7 @@ Alignment Reader::readAlignment() {
                 }
             }
             if(length != totalLength) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("cigar length mismatch"));
+                throw InvalidFormatException(BAMDbiPlugin::tr("Cigar length mismatch"));
             }
         }
         alignment.setCigar(cigar);
@@ -238,7 +238,7 @@ Alignment Reader::readAlignment() {
                 sequence[index] = 'N';
                 break;
             default:
-                throw InvalidFormatException(BAMDbiPlugin::tr("invalid sequence character code: %1").arg(value));
+                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid sequence character code: %1").arg(value));
             }
         }
         alignment.setSequence(sequence);
@@ -264,7 +264,7 @@ Alignment Reader::readAlignment() {
             QByteArray tag = readBytes(2);
             foreach(QChar character, tag) {
                 if(!character.isLetter()) {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("invalid optional field tag: %1").arg(QString(tag)));
+                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field tag: %1").arg(QString(tag)));
                 }
             }
             char type = readChar();
@@ -314,13 +314,13 @@ Alignment Reader::readAlignment() {
                 {
                     QByteArray hexString = readString();
                     if(0 != (hexString.size()%2)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("odd hex string length: %1").arg(hexString.size()));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Odd hex string length: %1").arg(hexString.size()));
                     }
                     QByteArray data(hexString.size()/2, 0);
                     for(int index = 0;index < hexString.size();index++) {
                         int digitValue = QChar(hexString[index]).digitValue();
                         if((-1 == digitValue) || (digitValue > 0xf)) {
-                            throw InvalidFormatException(BAMDbiPlugin::tr("invalid hex string digit: %1").arg(hexString[index]));
+                            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid hex string digit: %1").arg(hexString[index]));
                         }
                         if(0 == (index%2)) {
                             data[index/2] = data[index/2] | (digitValue << 4);
@@ -333,12 +333,12 @@ Alignment Reader::readAlignment() {
                     break;
                 }
             default:
-                throw InvalidFormatException(BAMDbiPlugin::tr("invalid optional field value type: %1").arg(type));
+                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field value type: %1").arg(type));
             }
             optionalFields.insert(tag, value);
         }
         if(bytesRead > toRead) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid block size: %1").arg(blockSize));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid block size: %1").arg(blockSize));
         }
         alignment.setOptionalFields(optionalFields);
     }
@@ -359,7 +359,7 @@ void Reader::seek(VirtualOffset offset) {
 
 void Reader::readBytes(char *buffer, qint64 size) {
     if(reader.read(buffer, size) < size) {
-        throw InvalidFormatException(BAMDbiPlugin::tr("unexpected end of file"));
+        throw InvalidFormatException(BAMDbiPlugin::tr("Unexpected end of file"));
     }
 }
 
@@ -442,14 +442,14 @@ void Reader::readHeader() {
     {
         QByteArray magic = readBytes(4);
         if("BAM\001" != magic) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid magic number"));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid magic number"));
         }
     }
     QByteArray text;
     {
         int textSize = readInt32();
         if(textSize < 0) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid header text size: %1").arg(textSize));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header text size: %1").arg(textSize));
         }
         text = readBytes(textSize);
     }
@@ -457,24 +457,24 @@ void Reader::readHeader() {
     {
         int referencesNumber = readInt32();
         if(referencesNumber < 0) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("invalid number of references: %1").arg(referencesNumber));
+            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid number of references: %1").arg(referencesNumber));
         }
         for(int index = 0;index < referencesNumber;index++) {
             QByteArray name;
             {
                 int nameLength = readInt32();
                 if(nameLength < 0) {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("invalid reference name length: %1").arg(nameLength));
+                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid reference name length: %1").arg(nameLength));
                 }
                 name = readBytes(nameLength - 1);
                 readChar();
                 if(!QRegExp("[ -)+-<>-~][ -~]*").exactMatch(name)) {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("invalid reference name: %1").arg(QString(name)));
+                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid reference name: %1").arg(QString(name)));
                 }
             }
             int length = readInt32();
             if(length < 0) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("invalid reference sequence length: %1").arg(length));
+                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid reference sequence length: %1").arg(length));
             }
             referencesMap.insert(name, references.size());
             references.append(Header::Reference(name, length));
@@ -492,7 +492,7 @@ void Reader::readHeader() {
                 continue;
             }
             if(!line.startsWith('@')) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("invalid header line: %1").arg(QString(line)));
+                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header line: %1").arg(QString(line)));
             }
             QByteArray recordTag;
             QHash<QByteArray, QByteArray> fields;
@@ -500,7 +500,7 @@ void Reader::readHeader() {
                 QList<QByteArray> tokens = line.split('\t');
                 recordTag = tokens[0].mid(1);
                 if(!QRegExp("[A-Za-z][A-Za-z]").exactMatch(recordTag)) {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("invalid header record tag: %1").arg(QString(recordTag)));
+                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header record tag: %1").arg(QString(recordTag)));
                 }
                 for(int index = 1;index < tokens.size();index++) {
                     QByteArray fieldTag;
@@ -514,19 +514,19 @@ void Reader::readHeader() {
                             fieldTag = "ID";
                             fieldValue = tokens[index];
                         } else {
-                            throw InvalidFormatException(BAMDbiPlugin::tr("invalid header field: %1").arg(QString(tokens[index])));
+                            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header field: %1").arg(QString(tokens[index])));
                         }
                     }
                     if(!QRegExp("[A-Za-z][A-Za-z]").exactMatch(fieldTag)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("invalid header field tag: %1").arg(QString(fieldTag)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header field tag: %1").arg(QString(fieldTag)));
                     }
                     if(!QRegExp("[ -~]+").exactMatch(fieldValue)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("invalid %1-%2 value: %3").arg(QString(recordTag)).arg(QString(fieldTag)).arg(QString(fieldValue)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid %1-%2 value: %3").arg(QString(recordTag)).arg(QString(fieldTag)).arg(QString(fieldValue)));
                     }
                     if(!fields.contains(fieldTag)) {
                         fields.insert(fieldTag, fieldValue);
                     } else {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("duplicate header field: %1").arg(QString(fieldTag)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Duplicate header field: %1").arg(QString(fieldTag)));
                     }
                 }
             }
@@ -534,7 +534,7 @@ void Reader::readHeader() {
                 if(fields.contains("VN")) {
                     QByteArray value = fields["VN"];
                     if(!QRegExp("[0-9]+\\.[0-9]+").exactMatch(value)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("invalid HD-VN value: %1").arg(QString(value)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid HD-VN value: %1").arg(QString(value)));
                     }
                     header.setFormatVersion(Version::parseVersion(value));
                 } else {
@@ -553,7 +553,7 @@ void Reader::readHeader() {
                     } else if("sorted" == value) { // workaround for invalid headers produced by some programs
                         header.setSortingOrder(Header::Coordinate);
                     } else {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("invalid HD-SO value: %1").arg(QString(value)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid HD-SO value: %1").arg(QString(value)));
                     }
                 }
             } else if("SQ" == recordTag) {
@@ -563,7 +563,7 @@ void Reader::readHeader() {
                     if(referencesMap.contains(value)) {
                         reference = &references[referencesMap[value]];
                     } else {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("unmatched SQ-SN value: %1").arg(QString(value)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Unmatched SQ-SN value: %1").arg(QString(value)));
                     }
                 } else {
                     throw InvalidFormatException(BAMDbiPlugin::tr("SQ record without SN field"));
@@ -577,7 +577,7 @@ void Reader::readHeader() {
                             throw InvalidFormatException(BAMDbiPlugin::tr("SQ-LN value mismatch: %1 != %2").arg(reference->getLength()).arg(length));
                         }
                     } else {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("invalid SQ-LN value: %1").arg(QString(value)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid SQ-LN value: %1").arg(QString(value)));
                     }
                 } else {
                     throw InvalidFormatException(BAMDbiPlugin::tr("SQ record without LN field"));
@@ -588,7 +588,7 @@ void Reader::readHeader() {
                 if(fields.contains("M5")) {
                     QByteArray value = fields["M5"];
                     if(!QRegExp("[0-9A-F]+").exactMatch(value)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("invalid SQ-M5 value: %1").arg(QString(value)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid SQ-M5 value: %1").arg(QString(value)));
                     }
                     reference->setMd5(fields["M5"]);
                 }
@@ -622,7 +622,7 @@ void Reader::readHeader() {
                         if(date.isValid()) {
                             readGroup.setDate(date);
                         } else {
-                            throw InvalidFormatException(BAMDbiPlugin::tr("invalid RG-DT field value: %1").arg(QString(value)));
+                            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid RG-DT field value: %1").arg(QString(value)));
                         }
                     }
                 }
@@ -639,7 +639,7 @@ void Reader::readHeader() {
                     if(ok) {
                         readGroup.setPredictedInsertSize(predictedInsertSize);
                     } else {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("invalid RG-PI field value: %1").arg(QString(value)));
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid RG-PI field value: %1").arg(QString(value)));
                     }
                 }
                 if(fields.contains("PL")) {
@@ -682,7 +682,7 @@ void Reader::readHeader() {
                 if(programsMap.contains(previousProgramId)) {
                     programs[index].setPreviousId(programsMap[previousProgramId]);
                 } else {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("invalid PG-PP field value: %1").arg(QString(previousProgramId)));
+                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid PG-PP field value: %1").arg(QString(previousProgramId)));
                 }
             }
         }
