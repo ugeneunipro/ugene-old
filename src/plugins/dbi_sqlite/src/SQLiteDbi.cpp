@@ -93,7 +93,7 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     // name is a visual name of the object shown to user.
     CT("Object", " id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
         "version INTEGER NOT NULL DEFAULT 1, top_level INTEGER NOT NULL, "
-        "name TEXT NOT NULL");
+        "vname TEXT NOT NULL");
     
     // parent-child object relation
     CT("Parent", "parent INTEGER, child INTEGER, "
