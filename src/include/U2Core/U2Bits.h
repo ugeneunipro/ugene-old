@@ -38,7 +38,7 @@ public:
     
     static int getNumberOfBitsPerChar(int nChars);
         
-    static QByteArray allocateBits(int nBits, Qt::Initialization i);
+    static QByteArray allocateBits(int nBits);
 
     static bool getBit(const uchar* bitSet, int idx);
 

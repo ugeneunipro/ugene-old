@@ -90,7 +90,7 @@ QByteArray U2BitCompression::compress(const char* text, int len, int alphabetSiz
     int headerSizeBits = 2 + lenBits + alphabetSize;
     int resultSizeBits = headerSizeBits + compressedBitSize;
     static QByteArray res;
-    QByteArray bitSet = U2Bits::allocateBits(resultSizeBits, Qt::Uninitialized);
+    QByteArray bitSet = U2Bits::allocateBits(resultSizeBits);
     uchar* bits = (uchar*)bitSet.data();
     writeLength(bits, len, lenBits);
     int pos = 2 + lenBits;
@@ -180,9 +180,13 @@ int U2Bits::getNumberOfBitsPerChar(int nChars)  {
     return bitsPerChar;
 }
 
-QByteArray U2Bits::allocateBits(int nBits, Qt::Initialization i) {
+QByteArray U2Bits::allocateBits(int nBits) {
     int nBytes = getNumberOfBytes(nBits);
-    return QByteArray(nBytes, i);
+    if (QT_VERSION > 0x040701) {
+        return QByteArray(nBytes, Qt::Uninitialized);
+    } else {
+        return QByteArray(nBytes, char(0));
+    }
 }
 
 
