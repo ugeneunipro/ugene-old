@@ -40,6 +40,8 @@
 namespace U2 {
 //QDScheduler
 //////////////////////////////////////////////////////////////////////////
+static int PROCESSING_PROGRESS_WEIGHT(80);
+
 QDScheduler::QDScheduler(const QDRunSettings& _settings)
 : Task(tr("QDScheduler"), TaskFlags_NR_FOSCOE), settings(_settings), importTask(NULL) 
 {
@@ -51,7 +53,15 @@ QDScheduler::QDScheduler(const QDRunSettings& _settings)
 
     tpm = Progress_Manual;
     stateInfo.progress = 0;
-    progressDelta = 100 / settings.scheme->getActors().size();
+    // if annotation table is not added to project
+    // annotations will be added in subtask thread
+    // => leave some progress bar space for it
+    Document* annObjDoc = settings.annotationsObj->getDocument();
+    if (annObjDoc) {
+        progressDelta = 100 / settings.scheme->getActors().size();
+    } else {
+        progressDelta = PROCESSING_PROGRESS_WEIGHT / settings.scheme->getActors().size();
+    }
 
     if (settings.annotationsObj == NULL) {
         GObject* ao = GObjectUtils::selectObjectByReference(settings.annotationsObjRef, UOF_LoadedAndUnloaded);
@@ -121,10 +131,15 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
     return subs;
 }
 
+#define PUSH_WEIGTH ( 1.0f - PROCESSING_PROGRESS_WEIGHT / 100.0f )
 void QDScheduler::sl_updateProgress() {
     Task* sub = qobject_cast<Task*>(sender());
     int numProcessed = currentStep->getLinkedActors().size();
-    stateInfo.progress = progressDelta * ( numProcessed + sub->getProgress()/100.0f );
+    if (numProcessed < settings.scheme->getActors().size()) {
+        stateInfo.progress = progressDelta * ( numProcessed + sub->getProgress()/100.0f );
+    } else {
+        stateInfo.progress = PROCESSING_PROGRESS_WEIGHT + PUSH_WEIGTH * sub->getProgress();
+    }
 }
 
 Task::ReportResult QDScheduler::report() {

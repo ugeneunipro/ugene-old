@@ -102,7 +102,9 @@ OpenProjectTask::OpenProjectTask(const QString& _url, bool _closeActiveProject, 
 OpenProjectTask::OpenProjectTask(const QList<GUrl>& list, bool _closeActiveProject) 
     : Task(tr("open_project_task_name"), TaskFlags_NR_FOSCOE), urlList(list), loadProjectTask(NULL), closeActiveProject(_closeActiveProject) 
 {
-    assert(!urlList.isEmpty());
+    if (urlList.isEmpty()) {
+        return;
+    }
     int howManyProjFiles = 0;
     foreach(const GUrl & url, urlList) {
         if(url.lastFileSuffix() == PROJECT_FILE_PURE_EXT) {
