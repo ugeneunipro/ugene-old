@@ -160,6 +160,7 @@ scriptingMode(false) {
     //connect(scene, SIGNAL(selectionChanged()), propertyEditor, SLOT(clearContents()));
     //connect(scene, SIGNAL(selectionChanged()), propertyEditor, SLOT(hide()));
     connect(scene, SIGNAL(selectionChanged()), SLOT(sl_editItem()));
+    connect(scene, SIGNAL(selectionChanged()), SLOT(sl_onSelectionChanged()));
     splitter->addWidget(propertyEditor);
 
     Settings* settings = AppContext::getSettings();
@@ -376,6 +377,7 @@ void WorkflowView::createActions() {
 
     editScriptAction = new QAction(tr("Edit script text"),this);
     editScriptAction->setIcon(QIcon(":workflow_designer/images/edit_script.png"));
+    editScriptAction->setEnabled(false); // because user need to select actor with script to enable it
     connect(editScriptAction, SIGNAL(triggered()), SLOT(sl_editScript()));
 }
 
@@ -398,7 +400,7 @@ void WorkflowView::sl_createScript() {
 
 void WorkflowView::sl_editScript() {
     QList<Actor *> selectedActors = scene->getSelectedProcItems();
-    if(selectedActors.count() == 1) {
+    if(selectedActors.size() == 1) {
         Actor *scriptActor = selectedActors.first();
         AttributeScript *script = scriptActor->getScript();
         if(script!= NULL) {
@@ -1105,6 +1107,11 @@ void WorkflowView::sl_editItem() {
     } else {
         propertyEditor->reset();
     }
+}
+
+void WorkflowView::sl_onSelectionChanged() {
+    QList<Actor*> actorsSelected = scene->getSelectedProcItems();
+    editScriptAction->setEnabled(actorsSelected.size() == 1 && actorsSelected.first()->getScript() != NULL);
 }
 
 void WorkflowView::sl_exportScene() {

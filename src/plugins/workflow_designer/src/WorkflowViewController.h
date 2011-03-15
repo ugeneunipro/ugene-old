@@ -128,6 +128,7 @@ public:
     }; // RunMode
 private slots:
     void sl_editItem();
+    void sl_onSelectionChanged();
     void sl_showEditor();
     void sl_selectProcess(Workflow::ActorPrototype*);
     void sl_procItemAdded();
