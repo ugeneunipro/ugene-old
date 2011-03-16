@@ -58,6 +58,7 @@ private:
     DnaAssemblyAlgorithmMainWidget* customGUI;
     static QString genomePath;
     static QList<QString> shortReads;
+    static QString methodName;
     void updateState();
     void addGuiExtension();
     void buildResultUrl(const GUrl& url);

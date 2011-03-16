@@ -37,6 +37,7 @@ namespace U2 {
 
 QList<QString> DnaAssemblyDialog::shortReads;
 QString DnaAssemblyDialog::genomePath;
+QString DnaAssemblyDialog::methodName;
 
 DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWidget* p /*= NULL*/ )
 : QDialog(p), assemblyRegistry(registry), customGUI(NULL)
@@ -46,7 +47,15 @@ DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWi
     methodNamesBox->addItems(names);
     // TODO: change the way default method is set
     if (names.size() > 0) {
-        methodNamesBox->setCurrentIndex(names.size() - 1);
+        int res = -1;
+        if (!methodName.isEmpty()) {
+            res = methodNamesBox->findText(methodName);
+        }
+        if (-1 == res) {
+            methodNamesBox->setCurrentIndex(names.size() - 1);
+        } else {
+            methodNamesBox->setCurrentIndex(res);
+        }
     }
     shortReadsList->installEventFilter(this);
     sl_onAlgorithmChanged(methodNamesBox->currentText());
@@ -168,7 +177,8 @@ void DnaAssemblyDialog::sl_onSetResultFileNameButtonClicked() {
     }
 }
 
-void DnaAssemblyDialog::sl_onAlgorithmChanged(const QString&) {
+void DnaAssemblyDialog::sl_onAlgorithmChanged(const QString &text) {
+    methodName = text;
     updateState();
 }
 
