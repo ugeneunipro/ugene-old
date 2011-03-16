@@ -24,6 +24,7 @@
 
 
 #include <QtGui/QWidget>
+#include <QtCore/QSharedPointer>
 
 namespace U2 {
 
