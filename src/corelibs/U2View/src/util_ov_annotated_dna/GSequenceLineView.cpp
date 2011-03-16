@@ -44,8 +44,7 @@ frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
     setFocusPolicy(Qt::WheelFocus);
 
     scrollBar = new GScrollBar(Qt::Horizontal, this);
-    scrollBar->setFixedHeight(18);
-
+    
     connect(ctx->getSequenceSelection(),
         SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
         SLOT(sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
@@ -60,7 +59,7 @@ void GSequenceLineView::pack() {
     layout->addWidget(scrollBar);
     setLayout(layout);
 
-    setFixedHeight(renderArea->height() + scrollBar->height());
+    setFixedHeight(layout->minimumSize().height());
 }
 
 void GSequenceLineView::resizeEvent(QResizeEvent *e) { 

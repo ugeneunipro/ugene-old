@@ -154,7 +154,7 @@ void PanView::pack() {
     layout->addWidget(scrollBar, 1, 0, 1, 1);
     setLayout(layout);
 
-    setFixedHeight(renderArea->height() + scrollBar->height());
+    setFixedHeight(layout->minimumSize().height());
 }
 
 PanView::~PanView() {
@@ -198,7 +198,10 @@ void PanView::updateRAHeight() {
 
     bool heightChanged = ra->updateNumVisibleRows();
     if (heightChanged) {
-        setFixedHeight(renderArea->height() + scrollBar->height());
+        QLayout* lt = layout();
+        if (lt != NULL) {
+            setFixedHeight(lt->minimumSize().height());
+        }
     }
 }
 

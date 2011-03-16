@@ -44,6 +44,7 @@
 #include <QtGui/QFontMetrics>
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
+#include <QtGui/QLayout>
 
 
 namespace U2 {
@@ -86,7 +87,7 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
 void DetView::updateSize() {
     DetViewRenderArea* detArea = (static_cast<DetViewRenderArea*>(renderArea));
     detArea->updateSize();
-    setFixedHeight(detArea->height() + scrollBar->height());
+    setFixedHeight(layout()->minimumSize().height());
 }
 
 void DetView::resizeEvent(QResizeEvent *e) { 
