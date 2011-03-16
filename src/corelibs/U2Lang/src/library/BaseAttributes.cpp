@@ -85,9 +85,17 @@ const QString BaseAttributes::STRAND_COMPLEMENTARY() {
 
 const QVariantMap BaseAttributes::STRAND_ATTRIBUTE_VALUES_MAP() {
     QVariantMap strandMap; 
-    strandMap[tr("both strands")] = STRAND_BOTH();
-    strandMap[tr("direct strand")] = STRAND_DIRECT();
-    strandMap[tr("complement strand")] = STRAND_COMPLEMENTARY();
+
+    // The constant strings are used to generate the translations properly.
+    // When a string is used as an argument of the strandMap, nothing is generated.
+    const QString bothStrands = tr("both strands");
+    const QString directStrand = tr("direct strand");
+    const QString complementaryStrand = tr("complementary strand");
+
+    strandMap[bothStrands] = STRAND_BOTH();
+    strandMap[directStrand] = STRAND_DIRECT();
+    strandMap[complementaryStrand] = STRAND_COMPLEMENTARY();
+
     return strandMap;
 }
 

@@ -25,6 +25,7 @@
 #include "SWTaskFactory.h"
 #include "SmithWatermanTests.h"
 #include "SWQuery.h"
+#include "SWWorker.h"
 
 #include <U2Gui/GUIUtils.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -72,6 +73,8 @@ SWAlgorithmPlugin::SWAlgorithmPlugin()
         ctxADV->init();
     }
 
+    LocalWorkflow::SWWorkerFactory::init();
+
     QDActorPrototypeRegistry* qdpr = AppContext::getQDActorProtoRegistry();
     qdpr->registerProto(new SWQDActorFactory());
 
@@ -90,16 +93,16 @@ SWAlgorithmPlugin::SWAlgorithmPlugin()
     }    
     SmithWatermanTaskFactoryRegistry* swar = AppContext::getSmithWatermanTaskFactoryRegistry();
 
-    coreLog.trace("Registering classic SW implementation");        
-    swar->registerFactory(new SWTaskFactory(SW_classic), QString("Classic 2"));    
+    coreLog.trace("Registering classic SW implementation");
+    swar->registerFactory(new SWTaskFactory(SW_classic), QString("Classic 2"));
     regDependedIMPLFromOtherPlugins();
 
 #ifdef SW2_BUILD_WITH_SSE2
-    coreLog.trace("Registering SSE2 SW implementation");        
+    coreLog.trace("Registering SSE2 SW implementation");
     swar->registerFactory(new SWTaskFactory(SW_sse2), QString("SSE2"));
 #endif    
 
-    this->connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(regDependedIMPLFromOtherPlugins()));    
+    this->connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(regDependedIMPLFromOtherPlugins()));
 }
 
 QList<XMLTestFactory*> SWAlgorithmTests::createTestFactories() {

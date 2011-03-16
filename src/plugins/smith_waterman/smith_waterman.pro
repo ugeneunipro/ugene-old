@@ -11,6 +11,7 @@ HEADERS += src/PairAlignSequences.h \
            src/sw_cuda_cpp.h \
            src/SWTaskFactory.h \
            src/SmithWatermanTests.h \
+           src/SWWorker.h \
            src/SWQuery.h
 
 SOURCES += src/PairAlignSequences.cpp \
@@ -23,6 +24,7 @@ SOURCES += src/PairAlignSequences.cpp \
            src/sw_cuda_cpp.cpp \
            src/SWTaskFactory.cpp \
            src/SmithWatermanTests.cpp \
+           src/SWWorker.cpp \
            src/SWQuery.cpp
 
 RESOURCES += smith_waterman.qrc

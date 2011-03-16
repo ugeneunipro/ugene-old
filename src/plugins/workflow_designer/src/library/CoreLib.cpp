@@ -28,7 +28,6 @@
 #include "DocActors.h"
 #include "GenericReadActor.h"
 #include "FindWorker.h"
-#include "SWWorker.h"
 #include "SequenceSplitWorker.h"
 #include "ScriptWorker.h"
 #include "Text2SequenceWorker.h"
@@ -283,7 +282,6 @@ void CoreLib::init() {
     }
     DataWorkerFactory::init();
     FindWorkerFactory::init();
-    SWWorkerFactory::init();
     RemoteDBFetcherFactory::init();
     SequenceSplitWorkerFactory::init();
     Text2SequenceWorkerFactory::init();

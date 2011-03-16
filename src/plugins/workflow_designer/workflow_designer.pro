@@ -33,7 +33,6 @@ HEADERS += src/ActorCfgModel.h \
            src/library/RemoteDBFetcherWorker.h \
            src/library/ScriptWorker.h \
            src/library/SequenceSplitWorker.h \
-           src/library/SWWorker.h \
            src/library/Text2SequenceWorker.h \
            src/library/WorkflowScriptFunctions.h \
            src/library/SequencesToMSAWorker.h \
@@ -79,7 +78,6 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/RemoteDBFetcherWorker.cpp \
            src/library/ScriptWorker.cpp \
            src/library/SequenceSplitWorker.cpp \
-           src/library/SWWorker.cpp \
            src/library/Text2SequenceWorker.cpp \
            src/library/FilterAnnotationsWorker.cpp \
            src/library/SequencesToMSAWorker.cpp \

@@ -1,26 +1,25 @@
 /**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
+* UGENE - Integrated Bioinformatics Tools.
+* Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+* http://ugene.unipro.ru
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+* MA 02110-1301, USA.
+*/
 
 #include "SWWorker.h"
-#include "FindWorker.h"
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -46,11 +45,6 @@
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/SWResultFilterRegistry.h>
-
-#include "CoreLib.h"
-
-/* TRANSLATOR U2::LocalWorkflow::SWWorker */
-/* TRANSLATOR U2::LocalWorkflow::FindWorker */
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -92,13 +86,18 @@ void SWAlgoEditor::populate() {
 void SWWorkerFactory::init() {
     QList<PortDescriptor*> p;
     {
-        Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), SWWorker::tr("Input data"), 
-            SWWorker::tr("An input sequence and set of regions to search in."));
-        Descriptor oud(BasePorts::OUT_ANNOTATIONS_PORT_ID(), SWWorker::tr("Pattern annotations"), SWWorker::tr("Found regions"));
+        Descriptor ind(BasePorts::IN_SEQ_PORT_ID(),
+            SWWorker::tr("Input Data"),
+            SWWorker::tr("An input sequence to search in."));
+
+        Descriptor oud(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
+            SWWorker::tr("Pattern Annotations"),
+            SWWorker::tr("The regions found."));
         
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         p << new PortDescriptor(ind, DataTypePtr(new MapDataType("sw.sequence", inM)), true);
+
         QMap<Descriptor, DataTypePtr> outM;
         outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
         p << new PortDescriptor(oud, DataTypePtr(new MapDataType("sw.annotations", outM)), false, true);
@@ -108,17 +107,47 @@ void SWWorkerFactory::init() {
     
     QList<Attribute*> a;
     {
-        Descriptor nd(NAME_ATTR, FindWorker::tr("Annotate as"), SWWorker::tr("Name of the result annotations marking found regions."));
-        Descriptor pd(PATTERN_ATTR, FindWorker::tr("Pattern"), 
-            SWWorker::tr("A subsequence pattern to look for. Several patterns can be delimited with semicolon"));
-        Descriptor scd(SCORE_ATTR, SWWorker::tr("Min score"), SWWorker::tr("The search stringency."));
-        Descriptor ald(ALGO_ATTR, SWWorker::tr("Algorithm"), SWWorker::tr("Algorithm version."));
-        Descriptor amd(AMINO_ATTR, FindWorker::tr("Search in translation"), SWWorker::tr("Translate a supplied nucleotide sequence to protein then search in the translated sequence."));
-        Descriptor mxd(MATRIX_ATTR, SWWorker::tr("Scoring matrix"), SWWorker::tr("The scoring matrix."));
-        Descriptor frd(FILTER_ATTR, SWWorker::tr("Filter results"), SWWorker::tr("Result filtering strategy."));
-        Descriptor god(GAPOPEN_ATTR, SWWorker::tr("Gap open score"), SWWorker::tr("Gap open score."));
-        Descriptor ged(GAPEXT_ATTR, SWWorker::tr("Gap ext score"), SWWorker::tr("Gap extension score."));
-        
+        Descriptor nd(NAME_ATTR,
+            SWWorker::tr("Annotate as"),
+            SWWorker::tr("Name of the result annotations."));
+
+        Descriptor pd(PATTERN_ATTR,
+            SWWorker::tr("Pattern(s)"),
+            SWWorker::tr("Semicolon-separated list of patterns to search for."));
+
+        Descriptor scd(SCORE_ATTR,
+            SWWorker::tr("Min Score"),
+            SWWorker::tr("Minimal percent similarity between a sequence and a pattern."));
+
+        Descriptor ald(ALGO_ATTR,
+            SWWorker::tr("Algorithm"),
+            SWWorker::tr("Version of the Smith-Waterman algorithm. You can use the optimized"
+                " versions of the algorithm (SSE, CUDA and OpenCL) if your hardware supports"
+                " these capabilities."));
+
+        Descriptor amd(AMINO_ATTR,
+            SWWorker::tr("Search in Translation"),
+            SWWorker::tr("Translates a supplied nucleotide sequence to protein"
+                " and searches in the translated sequence."));
+
+        Descriptor mxd(MATRIX_ATTR,
+            SWWorker::tr("Substitution Matrix"),
+            SWWorker::tr("Describes the rate at which one character in a sequence changes"
+                " to other character states over time."));
+
+        Descriptor frd(FILTER_ATTR,
+            SWWorker::tr("Filter Results"),
+            SWWorker::tr("Specifies either to filter the intersected results or to return all"
+                " the results."));
+
+        Descriptor god(GAPOPEN_ATTR,
+            SWWorker::tr("Gap Open Score"),
+            SWWorker::tr("Penalty for opening a gap."));
+
+        Descriptor ged(GAPEXT_ATTR,
+            SWWorker::tr("Gap Extension Score"),
+            SWWorker::tr("Penalty for extending a gap."));
+
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
         a << new Attribute(pd, BaseTypes::STRING_TYPE(), true);
         a << new Attribute(mxd, BaseTypes::STRING_TYPE(), true, QString("Auto"));
@@ -131,12 +160,17 @@ void SWWorkerFactory::init() {
         a << new Attribute(ged, BaseTypes::NUM_TYPE(), false, -1.);
     }
     
-    Descriptor desc(ACTOR_ID, SWWorker::tr("Smith-Waterman search"), SWWorker::tr("Finds regions of similarity to the specified pattern in each input sequence (nucleotide or protein one). "
-        "<p>Under the hood is the well-known Smith-Waterman algorithm for performing local sequence alignment."));
+    Descriptor desc(ACTOR_ID,
+        SWWorker::tr("Smith-Waterman Search"),
+        SWWorker::tr("Searches regions in a sequence similar to a pattern"
+            " sequence. Outputs a set of annotations. <p>Under the hood is"
+            " the well-known Smith-Waterman algorithm for performing local"
+            " sequence alignment."));
+
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     
-    // delegatess
-    QMap<QString, PropertyDelegate*> delegates;    
+    // delegates
+    QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap m; m["minimum"] = 1; m["maximum"] = 100; m["suffix"] = "%";
         delegates[SCORE_ATTR] = new SpinBoxDelegate(m);
@@ -200,44 +234,50 @@ static StrandOption getStrand(const QString & s) {
  **************************/
 QString SWPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()));
-    //Actor* annProducer = input->getProducer(BioActorLibrary::FEATURE_TABLE_SLOT_ID);
     Actor* seqProducer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
-    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
-    QString seqName = tr("In each sequence from <u>%1</u>,").arg(seqProducer ? seqProducer->getLabel() : unsetStr);
-    //QString annName = annProducer ? tr(" within a set of regions from <u>%1</u>").arg(annProducer->getLabel()) : "";
+    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
+
+    QString seqName;
+    seqProducer ? (seqName = seqProducer->getLabel()) : (seqName = unsetStr);
 
     SmithWatermanSettings cfg;
     cfg.strand = getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>());
     cfg.percentOfScore = getParameter(SCORE_ATTR).toInt();
-    //cfg.insDelAlg = getParameter(ALGO_ATTR).toBool();
     QString pattern = getRequiredParam(PATTERN_ATTR);
 
     QString strandName;
     switch (cfg.strand) {
-    case StrandOption_Both: strandName = FindWorker::tr("both strands"); break;
-    case StrandOption_DirectOnly: strandName = FindWorker::tr("direct strand"); break;
-    case StrandOption_ComplementOnly: strandName = FindWorker::tr("complement strand"); break;
-    default: break;
+        case StrandOption_Both:
+            strandName = SWWorker::tr("both strands");
+            break;
+        case StrandOption_DirectOnly:
+            strandName = SWWorker::tr("direct strand");
+            break;
+        case StrandOption_ComplementOnly:
+            strandName = SWWorker::tr("complementary strand");
+            break;
+        default:
+            assert(false);
     }
+
+    QString searchInTranslationSelected = "";
     if (getParameter(AMINO_ATTR).toBool()) {
-        strandName += tr(" of translated sequence");
+        searchInTranslationSelected = "<u>" + tr("translated") + "</u>" + " ";
     }
 
     QString resultName = getRequiredParam(NAME_ATTR);
-    
-    QString match = cfg.percentOfScore < 100 ? 
-        tr("matches with <u>at least %1% score</u>").arg(cfg.percentOfScore) : tr("exact matches");
 
-    //FIXME mention search algorithm?
-    QString doc = tr("%1 find pattern <u>%2</u>."
-        "<br>Look for <u>%3</u> in <u>%4</u>."
-        "<br>Output the list of found regions annotated as <u>%5</u>.")
+    QString doc = tr("Searches regions in each sequence from <u>%1</u>"
+        " similar to <u>%2</u> pattern(s). <br/>Percent similarity between"
+        " a sequence and a pattern is <u>%3%</u>. <br/>Seaches in <u>%4</u>"
+        " of a %5sequence. <br/>Outputs the regions found annotated as <u>%6</u>.")
         .arg(seqName)
         .arg(pattern)
-        .arg(match)
+        .arg(cfg.percentOfScore)
         .arg(strandName)
+        .arg(searchInTranslationSelected)
         .arg(resultName);
-    
+
     return doc;
 }
 

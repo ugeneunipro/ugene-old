@@ -71,8 +71,14 @@ void FindWorkerFactory::init() {
     
     QList<PortDescriptor*> p;
     {
-        Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), FindWorker::tr("Input data"), FindWorker::tr("An input sequence and set of regions to search in."));
-        Descriptor oud(BasePorts::OUT_ANNOTATIONS_PORT_ID(), FindWorker::tr("Pattern annotations"), FindWorker::tr("Found regions"));
+        Descriptor ind(BasePorts::IN_SEQ_PORT_ID(),
+            FindWorker::tr("Input Data"),
+            FindWorker::tr("An input sequence to search in."));
+
+        Descriptor oud(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
+            FindWorker::tr("Pattern Annotations"),
+            FindWorker::tr("The regions found."));
+
         p << new PortDescriptor(ind, inSet, true);
         QMap<Descriptor, DataTypePtr> outM;
         outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
@@ -80,13 +86,27 @@ void FindWorkerFactory::init() {
     }
     QList<Attribute*> a;
     {
-        Descriptor nd(NAME_ATTR, FindWorker::tr("Annotate as"), FindWorker::tr("Name of the result annotations marking found regions."));
-        Descriptor pd(PATTERN_ATTR, FindWorker::tr("Pattern"), FindWorker::tr("A subsequence pattern to look for."));
-        Descriptor ed(ERR_ATTR, FindWorker::tr("Max mismatches"), 
-            FindWorker::tr("The search stringency measured in number of max allowed mismatching symbols to the pattern."));
-        Descriptor ald(ALGO_ATTR, FindWorker::tr("Allow insertions/deletions"), 
-            FindWorker::tr("Take into account possibility of insertions/deletions when searching. By default substitutions only considered."));
-        Descriptor amd(AMINO_ATTR, FindWorker::tr("Search in translation"), FindWorker::tr("Translate a supplied nucleotide sequence to protein then search in the translated sequence."));
+        Descriptor nd(NAME_ATTR,
+            FindWorker::tr("Annotate as"),
+            FindWorker::tr("Name of the result annotations."));
+
+        Descriptor pd(PATTERN_ATTR,
+            FindWorker::tr("Pattern(s)"),
+            FindWorker::tr("Semicolon-separated list of patterns to search for."));
+
+        Descriptor ed(ERR_ATTR, FindWorker::tr("Max Mismatches"),
+            FindWorker::tr("Maximum number of mismatches between a substring"
+                " and a pattern."));
+
+        Descriptor ald(ALGO_ATTR,
+            FindWorker::tr("Allow Insertions/Deletions"),
+            FindWorker::tr("Takes into account possibility of insertions/deletions"
+                " when searching. By default substitutions are only considered."));
+
+        Descriptor amd(AMINO_ATTR,
+            FindWorker::tr("Search in Translation"),
+            FindWorker::tr("Translates a supplied nucleotide sequence to protein"
+            " and searches in the translated sequence."));
         
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
         a << new Attribute(pd, BaseTypes::STRING_TYPE(), true);
@@ -96,11 +116,14 @@ void FindWorkerFactory::init() {
         a << new Attribute(amd, BaseTypes::BOOL_TYPE(), false, false);
     }
     
-    Descriptor desc(ACTOR_ID, FindWorker::tr("Find substrings"), FindWorker::tr("Finds regions of similarity to the specified string in each input sequence (nucleotide or protein one). "
-        "<p>Under the hood is the well-known Smith-Waterman algorithm for performing local sequence alignment."));
+    Descriptor desc(ACTOR_ID,
+        FindWorker::tr("Find Substrings"),
+        FindWorker::tr("Searches regions in a sequence similar to a pattern"
+            " sequence. Outputs a set of annotations."));
+
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     
-    QMap<QString, PropertyDelegate*> delegates;    
+    QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap lenMap; 
         lenMap["minimum"] = QVariant(0); 
@@ -145,10 +168,10 @@ static FindAlgorithmStrand getStrand(const QString & s) {
 QString FindPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()));
     Actor* seqProducer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
-    Actor* annProducer = input->getProducer(BaseSlots::ANNOTATION_TABLE_SLOT().getId());
-    
-    QString seqName = seqProducer ? tr("In each sequence from <u>%1</u>,").arg(seqProducer->getLabel()) : "";
-    QString annName = annProducer ? tr(" within a set of regions from <u>%1</u>").arg(annProducer->getLabel()) : "";
+    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
+
+    QString seqName;
+    seqProducer ? (seqName = seqProducer->getLabel()) : (seqName = unsetStr);
 
     FindAlgorithmSettings cfg;
     cfg.strand = getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>());
@@ -158,26 +181,47 @@ QString FindPrompter::composeRichDoc() {
 
     QString strandName;
     switch (cfg.strand) {
-    case FindAlgorithmStrand_Both: strandName = FindWorker::tr("both strands"); break;
-    case FindAlgorithmStrand_Direct: strandName = FindWorker::tr("direct strand"); break;
-    case FindAlgorithmStrand_Complement: strandName = FindWorker::tr("complement strand"); break;
+        case FindAlgorithmStrand_Both:
+            strandName = FindWorker::tr("both strands");
+            break;
+        case FindAlgorithmStrand_Direct:
+            strandName = FindWorker::tr("direct strand");
+            break;
+        case FindAlgorithmStrand_Complement:
+            strandName = FindWorker::tr("complement strand");
+            break;
+        default:
+            assert(false);
     }
+
+    QString searchInTranslationSelected = "";
     if (getParameter(AMINO_ATTR).toBool()) {
-        strandName += tr(" of translated sequence");
+        searchInTranslationSelected = "<u>" + tr("translated") + "</u>" + " ";
     }
-    
+
     QString resultName = getRequiredParam(NAME_ATTR);
-    QString match = cfg.maxErr ? tr("matches with <u>no more than %1 errors</u>").arg(cfg.maxErr) : tr("exact matches");
-    
-    QString doc = tr("%1 find pattern <u>%2</u> %3."
-        "<br>Look for <u>%4</u> in <u>%5</u>."
-        "<br>Output the list of found regions annotated as <u>%6</u>.")
+
+    QString matches;
+    if (0 == cfg.maxErr)
+    {
+        matches = tr("A substring must <u>match a pattern exactly</u>.");
+    }
+    else
+    {
+        matches = tr("Maximum <u>number of mismatches is %1</u>.").arg(cfg.maxErr);
+    }
+
+    QString doc = tr("Searches regions in each sequence from <u>%1</u>"
+        " similar to <u>%2</u> pattern(s).<br/>%3<br/>Searches in"
+        " <u>%4</u> of a %5sequence. Outputs the regions found"
+        " annotated as <u>%6</u>.")
         .arg(seqName)
         .arg(pattern)
-        .arg(annName)
-        .arg(match)
+        .arg(matches)
         .arg(strandName)
+        .arg(searchInTranslationSelected)
         .arg(resultName);
+
     return doc;
 }
 
