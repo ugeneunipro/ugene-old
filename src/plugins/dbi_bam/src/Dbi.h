@@ -56,7 +56,7 @@ public:
 
     virtual U2AssemblyRDbi *getAssemblyRDbi();
 
-    virtual QHash<QString, QString> getInitProperties() const {return initProps;}
+    virtual QHash<QString, QString> getInitProperties() const;
 
 private:
     void buildIndex(U2OpStatus &os);
@@ -83,8 +83,7 @@ public:
 
     virtual U2DbiFactoryId getId()const;
 
-    /** Checks that data pointed by properties is a valid DBI resource */
-    virtual bool isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const;
+    virtual bool isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus &os) const;
 
 public:
     static const QString ID;
@@ -112,11 +111,11 @@ public:
 
     virtual QStringList getObjectFolders(U2DataId objectId, U2OpStatus &os);
 
-    virtual qint64 getObjectVersion(U2DataId objectId, U2OpStatus& os);
+    virtual qint64 getObjectVersion(U2DataId objectId, U2OpStatus &os);
 
-    virtual qint64 getFolderLocalVersion(const QString& folder, U2OpStatus& os);
+    virtual qint64 getFolderLocalVersion(const QString &folder, U2OpStatus &os);
 
-    virtual qint64 getFolderGlobalVersion(const QString& folder, U2OpStatus& os);
+    virtual qint64 getFolderGlobalVersion(const QString &folder, U2OpStatus &os);
 
 private:
     Dbi &dbi;

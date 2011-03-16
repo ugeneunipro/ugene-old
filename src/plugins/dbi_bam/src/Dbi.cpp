@@ -50,7 +50,7 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
         }
         url = GUrl(properties.value(U2_DBI_OPTION_URL));
         if(!url.isLocalFile()) {
-            throw Exception(BAMDbiPlugin::tr("Non-local files are not supported")); // FIXME:
+            throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
         {
             IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
@@ -81,8 +81,8 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
             }
             assemblyRDbi.reset(new AssemblyRDbi(*this, *reader, dbRef, assembliesCount, maxReadLengths));
         }
-        state = U2DbiState_Ready;
         initProps = properties;
+        state = U2DbiState_Ready;
     } catch(const Exception &e) {
         os.setError(e.getMessage());
         assemblyRDbi.reset();
@@ -163,6 +163,10 @@ U2AssemblyRDbi *Dbi::getAssemblyRDbi() {
     } else {
         return NULL;
     }
+}
+
+QHash<QString, QString> Dbi::getInitProperties() const {
+    return initProps;
 }
 
 void Dbi::buildIndex(U2OpStatus &os) {
@@ -317,12 +321,12 @@ U2DbiFactoryId DbiFactory::getId()const {
     return ID;
 }
 
-const QString DbiFactory::ID = "BAMDbi";
-
-bool DbiFactory::isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const {
+bool DbiFactory::isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus & /*os*/) const {
     BAMFormat f;
-    return f.checkRawData(rawData, properties.value(U2_DBI_OPTION_URL));
+    return (FormatDetection_Matched == f.checkRawData(rawData, properties.value(U2_DBI_OPTION_URL)));
 }
+
+const QString DbiFactory::ID = "BAMDbi";
 
 // ObjectRDbi
 
