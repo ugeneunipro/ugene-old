@@ -19,31 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_HELP_DUMPER_
-#define _U2_HELP_DUMPER_
+#include <U2Core/AppContext.h>
+#include <U2Core/CMDLineHelpProvider.h>
+#include <U2Core/CMDLineRegistry.h>
 
-#include <U2Core/Task.h>
+#include "DumpHelpTask.h"
+#include "DumpVersionTask.h"
 
 namespace U2 {
 
-class DumpHelpTask : public Task {
-    Q_OBJECT
-public:
-    static void dumpHelp();
-    // for debug uses only
-    static void dumpParameters();
-    
-    static const QString VERSION_INFO;
-    
-public:
-    DumpHelpTask();
-    virtual void prepare();
+const QString DumpVersionTask::VERSION_CMDLINE_OPTION       = "version";
+const QString DumpVersionTask::VERSION_CMDLINE_OPTION_SHORT = "v";
 
-protected:
-    /// Called by scheduler when subtask is finished.
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
-};
+void DumpVersionTask::initHelp() {
+    CMDLineHelpProvider * versionSection = new CMDLineHelpProvider(VERSION_CMDLINE_OPTION, tr("show version information"), VERSION_CMDLINE_OPTION_SHORT);
+    AppContext::getCMDLineRegistry()->registerCMDLineHelpProvider( versionSection );
+}
 
-} //namespace U2
+DumpVersionTask::DumpVersionTask() : Task(tr("Dump version information task"), TaskFlag_None) {
+}
 
-#endif
+void DumpVersionTask::run() {
+    fprintf(stdout, "%s", DumpHelpTask::VERSION_INFO.toAscii().constData());
+    fprintf(stdout, "Using Qt %s\n", qVersion());
+}
+
+} // U2

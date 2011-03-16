@@ -46,11 +46,11 @@ workflow "Bowtie aligner"{
             bowtie.chunk-mbs:chunkmbs;
             bowtie.maq-err:maqerr;
             bowtie.max-backtracks:maxbts;
-            bowtie.mismatches-num:n;
+            bowtie.mismatches-num:mismatches-num;
             bowtie.no-forward:nofw;
             bowtie.no-maq-rounding:nomaqround;
             bowtie.no-reverse-complemented:norc;
-            bowtie.report-with-mismatches:v;
+            bowtie.report-with-mismatches:report-with-mismatches;
             bowtie.seed:seed;
             bowtie.seed-length:seedlen;
             bowtie.try-hard:tryhard;
@@ -63,11 +63,11 @@ workflow "Bowtie aligner"{
             chunkmbs:"The number of megabytes of memory to store path descriptors";
             maqerr:"Maximum permitted total of quality values at all mismatched read positions throughout the entire alignment, not just in the 'seed'";
             maxbts:"The maximum number of backtracks permitted when aligning a read in -n 2 or -n 3 mode";
-            n:"Alignments may have no more than n mismatches";
+            mismatches-num:"Alignments may have no more than n mismatches";
             nofw:"Bowtie will not attempt to align against the forward reference strand";
             nomaqround:"Prevents rounding quality values to the nearest 10";
             norc:"Bowtie will not attempt to align against the reverse-complement reference strand";
-            v:"Report alignments with at most v mismatches. Mutually exclusive with -n parameter";
+            report-with-mismatches:"Report alignments with at most v mismatches. Mutually exclusive with -n parameter";
             seed:"Seed for pseudo-random number generator";
             seedlen:"The number of bases on the high-quality end of the read to which the -n ceiling applies";
             tryhard:"Try as hard as possible to find valid alignments when they exist, including paired-end alignments";

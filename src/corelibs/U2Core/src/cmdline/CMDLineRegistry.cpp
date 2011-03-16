@@ -129,7 +129,7 @@ QString CMDLineRegistry::getParameterValue( const QString & paramName, int start
 }
 
 static bool providerNameComparator(const CMDLineHelpProvider* p1, const CMDLineHelpProvider* p2) {
-    return p1->getHelpSectionName().compare(p2->getHelpSectionName()) > 0;
+    return p1->getHelpSectionFullName().compare(p2->getHelpSectionFullName()) > 0;
 }
 
 void CMDLineRegistry::registerCMDLineHelpProvider(CMDLineHelpProvider* provider) {

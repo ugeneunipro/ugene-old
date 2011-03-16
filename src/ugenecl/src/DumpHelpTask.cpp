@@ -42,9 +42,10 @@ namespace U2 {
 // TODO i18n help messages ?
 // FIXME windows console encoding issue (see LogDriver.cpp)
 
+const QString DumpHelpTask::VERSION_INFO = QString("\nConsole version of UGENE %1\n").arg(Version::ugeneVersion().text);
+
 static void dumpProgramNameAndUsage() {
-    Version v = Version::ugeneVersion();
-    fprintf( stdout, "\nConsole version of UGENE %s\n" , v.text.toAscii().constData());
+    fprintf( stdout, "%s" , DumpHelpTask::VERSION_INFO.toAscii().constData());
     fprintf( stdout, "Usage: ugene [[--task=]taskName] [--task_parameter=value] [-task_parameter value] "
         "[--option[=value]] [-option [value]]\n\n");
 }
@@ -91,12 +92,13 @@ void DumpHelpTask::dumpHelp() {
     QString prevSectionName;
     QList<CMDLineHelpProvider* > helpProviders = AppContext::getCMDLineRegistry()->listCMDLineHelpProviders();
     foreach (CMDLineHelpProvider* hProvider, helpProviders) {
-        const QString& sectionName = hProvider->getHelpSectionName();
-        if ( sectionName != prevSectionName) {
+        assert(hProvider != NULL);
+        const QString& sectionName = hProvider->getHelpSectionNames();
+        if(sectionName != prevSectionName) {
             dumpSectionName( sectionName );
             prevSectionName = sectionName;
         } else {
-            if(sectionName == CMDLineCoreOptions::LOG_FORMAT || sectionName == CMDLineCoreOptions::LOG_LEVEL) {
+            if(sectionName.startsWith(CMDLineCoreOptions::LOG_FORMAT) || sectionName.startsWith(CMDLineCoreOptions::LOG_LEVEL)) {
                 continue;
             }
             dumpSectionIndent();
@@ -108,7 +110,10 @@ void DumpHelpTask::dumpHelp() {
 }
 
 void DumpHelpTask::prepare() {
-    QString paramName = AppContext::getCMDLineRegistry()->getParameterValue( CMDLineCoreOptions::HELP );
+    CMDLineRegistry * cmdlineRegistry = AppContext::getCMDLineRegistry();
+    assert(cmdlineRegistry != NULL);
+    QString paramName = cmdlineRegistry->getParameterValue( CMDLineCoreOptions::HELP );
+    paramName = paramName.isEmpty() ? cmdlineRegistry->getParameterValue(CMDLineCoreOptions::HELP_SHORT) : paramName;
     if( paramName.isEmpty() ) {
         dumpHelp();
         return;
@@ -117,7 +122,8 @@ void DumpHelpTask::prepare() {
     int ind = 0;
     int sz = helpProviders.size();
     for( ind = 0; ind < sz; ++ind ) {
-        if( helpProviders.at(ind)->getHelpSectionName() == paramName ) {
+        CMDLineHelpProvider * cur = helpProviders.at(ind);
+        if( cur->getHelpSectionFullName() == paramName || cur->getHelpSectionShortName() == paramName) {
             break;
         }
     }
@@ -139,12 +145,13 @@ void DumpHelpTask::prepare() {
     }
 
     dumpProgramNameAndUsage();
-
+    
     // dump help of selected section in registered help pages
-    dumpSectionName( helpProviders.at(ind)->getHelpSectionName() );
+    dumpSectionName( helpProviders.at(ind)->getHelpSectionNames() );
     dumpSectionContent( helpProviders.at(ind)->getHelpSectionContent() );
     for( int i = ind + 1; i < sz; ++i ) {
-        if( helpProviders.at(i)->getHelpSectionName() != paramName ) {
+        CMDLineHelpProvider * provider = helpProviders.at(i);
+        if( provider->getHelpSectionFullName() != paramName && provider->getHelpSectionShortName() != paramName) {
             break;
         }
         fprintf(stdout, "\n");

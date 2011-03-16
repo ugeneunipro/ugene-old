@@ -37,12 +37,13 @@ public:
     static const QString TEST_REPORT;
     static const QString STAY_ALIVE;
     static const QString HELP;
+    static const QString HELP_SHORT;
     static const QString TRANSLATION;
     static const QString TEST_THREADS;
     static const QString TEAMCITY_OUTPUT;
     static const QString LOG_FORMAT;
     static const QString LOG_LEVEL;
-    
+        
 public:
     // initialize help for core cmdline options
     static void initHelp();

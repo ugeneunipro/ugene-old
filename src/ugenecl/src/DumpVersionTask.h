@@ -19,31 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_HELP_DUMPER_
-#define _U2_HELP_DUMPER_
+#ifndef _U2_DUMP_VERSION_TASK_H__
+#define _U2_DUMP_VERSION_TASK_H__
 
 #include <U2Core/Task.h>
 
 namespace U2 {
 
-class DumpHelpTask : public Task {
-    Q_OBJECT
+class DumpVersionTask : public Task {
+Q_OBJECT
 public:
-    static void dumpHelp();
-    // for debug uses only
-    static void dumpParameters();
-    
-    static const QString VERSION_INFO;
+    static const QString VERSION_CMDLINE_OPTION;
+    static const QString VERSION_CMDLINE_OPTION_SHORT;
+    static void initHelp();
     
 public:
-    DumpHelpTask();
-    virtual void prepare();
+    DumpVersionTask();
+    virtual void run();
+    
+}; // DumpVersionTask
 
-protected:
-    /// Called by scheduler when subtask is finished.
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
-};
+} // U2
 
-} //namespace U2
-
-#endif
+#endif // _U2_DUMP_VERSION_TASK_H__

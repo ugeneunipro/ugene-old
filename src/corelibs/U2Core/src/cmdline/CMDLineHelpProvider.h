@@ -28,13 +28,17 @@ namespace U2 {
 
 class U2CORE_EXPORT CMDLineHelpProvider {
 public:
-    CMDLineHelpProvider( const QString & n, const QString & c ) : name(n), content(c) {}
+    CMDLineHelpProvider( const QString & _fullName, const QString & _content, const QString & _shortName = QString() ) 
+        : fullName(_fullName), shortName(_shortName), content(_content) {}
     
-    QString getHelpSectionName() const { return name; }
+    QString getHelpSectionNames() const { QString ret = fullName; if(!shortName.isEmpty()) { ret += ", -" + shortName; } return ret; }
+    QString getHelpSectionFullName() const {return fullName;}
+    QString getHelpSectionShortName() const {return shortName;}
     QString getHelpSectionContent() const { return content; }
     
 private:
-    QString name;
+    QString fullName;
+    QString shortName;
     QString content;
     
 }; // CMDLineHelpProvider

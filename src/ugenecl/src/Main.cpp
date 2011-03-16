@@ -81,6 +81,7 @@
 #include "TestStarter.h"
 #include "TaskStatusBar.h"
 #include "DumpLicenseTask.h"
+#include "DumpVersionTask.h"
 #include "DumpHelpTask.h"
 
 #include <QtCore/QCoreApplication>
@@ -309,6 +310,7 @@ int main(int argc, char **argv)
 
     CMDLineUtils::init();
     DumpLicenseTask::initHelp();
+    DumpVersionTask::initHelp();
     
     PhyTreeGeneratorRegistry* phyreg = new PhyTreeGeneratorRegistry();
     appContext->setPhyTreeGeneratorRegistry(phyreg);
@@ -407,7 +409,8 @@ int main(int argc, char **argv)
     }
     
     // show help if need
-    bool showHelp = cmdLineRegistry->hasParameter( CMDLineCoreOptions::HELP );
+    bool showHelp = cmdLineRegistry->hasParameter(CMDLineCoreOptions::HELP);
+    showHelp = showHelp || cmdLineRegistry->hasParameter(CMDLineCoreOptions::HELP_SHORT);
     if( showHelp ) {
         QObject::connect( psp, SIGNAL( si_allStartUpPluginsLoaded()), new TaskStarter(new DumpHelpTask()), SLOT(registerTask()));
     }
@@ -415,6 +418,12 @@ int main(int argc, char **argv)
     bool showLicense = cmdLineRegistry->hasParameter(DumpLicenseTask::LICENSE_CMDLINE_OPTION);
     if( showLicense ) {
         QObject::connect(psp, SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(new DumpLicenseTask()), SLOT(registerTask()));
+    }
+    
+    bool showVersion = cmdLineRegistry->hasParameter(DumpVersionTask::VERSION_CMDLINE_OPTION);
+    showVersion = showVersion || cmdLineRegistry->hasParameter(DumpVersionTask::VERSION_CMDLINE_OPTION_SHORT);
+    if(showVersion) {
+        QObject::connect(psp, SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(new DumpVersionTask()), SLOT(registerTask()));
     }
     
     openDocs();
