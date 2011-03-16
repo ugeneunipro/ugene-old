@@ -266,7 +266,7 @@ void AssemblyOverview::sl_redraw() {
 
 AssemblyOverviewRenderTask::AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model_, QSize imageSize) :
 Task(tr("Assembly overview renderer"), TaskFlag_None), model(model_), result(imageSize, QImage::Format_ARGB32_Premultiplied) {
-    //TODO: progress
+    tpm = Progress_Manual;
 }
 
 void AssemblyOverviewRenderTask::run() {
@@ -294,6 +294,7 @@ void AssemblyOverviewRenderTask::run() {
         if(stateInfo.cancelFlag) {
             return;
         }
+        stateInfo.progress = double(i) / widgetWidth * 100.;
         quint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(start, lettersPerXPixel), status);
         if(status.hasError()) {
             stateInfo.setError(status.getError());
@@ -328,7 +329,8 @@ void AssemblyOverviewRenderTask::run() {
 // BackgroundRenderer
 //==============================================================================
 
-BackgroundRenderer::BackgroundRenderer(QSharedPointer<AssemblyModel> model_) : renderTask(0), model(model_), redrawRunning(false), redrawNeeded(true) 
+BackgroundRenderer::BackgroundRenderer(QSharedPointer<AssemblyModel> model_) : 
+renderTask(0), model(model_), redrawRunning(false), redrawNeeded(true) 
 {
 }
 
