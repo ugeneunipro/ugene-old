@@ -151,6 +151,7 @@ Section "Build"
     # Write the uninstall keys for Windows
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "DisplayName" "${FullProductName} ${PrintableVersion}"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "UninstallString" "$INSTDIR\Uninst.exe"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "Publisher" "Unipro"
     WriteUninstaller "$INSTDIR\Uninst.exe"
 
 
@@ -170,7 +171,7 @@ Section "Add Shortcuts"
     SetShellVarContext all
     RMDir /r "$SMPROGRAMS\${FullProductName}"
     CreateDirectory "$SMPROGRAMS\${FullProductName}"
-    CreateShortCut "$SMPROGRAMS\${FullProductName}\Launch UGENE ${PrintableVersion}.lnk" "$INSTDIR\ugeneui.exe" "" "$INSTDIR\ugeneui.exe" 0
+    CreateShortCut "$SMPROGRAMS\${FullProductName}\Launch UGENE.lnk" "$INSTDIR\ugeneui.exe" "" "$INSTDIR\ugeneui.exe" 0
     CreateShortCut "$SMPROGRAMS\${FullProductName}\Download User Manual.lnk" "$INSTDIR\download_manual.url" "" "$INSTDIR\download_manual.url" 0
     # make sure uninstall shortcut will be last item in Start menu
 #    nsisStartMenu::RegenerateFolder "${FullProductName}"

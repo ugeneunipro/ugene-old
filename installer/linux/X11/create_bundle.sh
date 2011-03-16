@@ -39,6 +39,10 @@ cp -v ../../_common_data/ugene.1.gz "$TARGET_APP_DIR/man1"
 echo copying README file
 cp -v ../../_common_data/README "$TARGET_APP_DIR"
 
+echo copying LICENSE file
+cp -v ../../source/LICENSE "$TARGET_APP_DIR"
+
+
 mkdir "${TARGET_APP_DIR}/plugins"
 
 echo copying translations
