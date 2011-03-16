@@ -1,24 +1,3 @@
-/**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
-
 #include <U2Core/BioStruct3D.h>
 #include <QtOpenGL>
 
@@ -33,7 +12,8 @@ namespace U2 {
 const QString WormsGLRenderer::ID(QObject::tr("Worms"));
 
 
-WormsGLRenderer::WormsGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s ) : BioStruct3DGLRenderer(struc,s)
+WormsGLRenderer::WormsGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
+        : BioStruct3DGLRenderer(struc,s,shownModels,widget)
 {
     const char* alphaCarbonTag = "CA";
     const char* phosophorTag = "P";
@@ -82,8 +62,7 @@ void WormsGLRenderer::drawWorms(  )
 
     foreach (int chainId, wormMap.keys()) {
         const Worm worm = wormMap.value(chainId);
-        QList<int> modelsIndexList = glWidget->getActiveModelIndexList();
-        foreach (int index, modelsIndexList) {
+        foreach (int index, shownModels) {
             const WormModel& model = worm.models.at(index);
             //Draw worm bodies (let the bodies set the scene!!!)
             const AtomsVector wormCoords = model.atoms; 
@@ -125,7 +104,7 @@ void WormsGLRenderer::drawWorms(  )
             }
             
             //Draw 3d objects
-            if (modelsIndexList.count() == 1) {
+            if (shownModels.count() == 1) {
                 foreach( Object3D* obj, model.objects) {
                     obj->draw(glWidget->getRenderDetailLevel());
                 }
@@ -158,6 +137,10 @@ void WormsGLRenderer::updateColorScheme()
     
     //TODO: optimization -> don't have to create everything again
     createObjects3D();
+}
+
+void WormsGLRenderer::updateShownModels() {
+    updateColorScheme();
 }
 
 void WormsGLRenderer::createObjects3D()

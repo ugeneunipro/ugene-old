@@ -1,24 +1,3 @@
-/**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
-
 #include <QtOpenGL>
 #include <time.h>
 
@@ -39,7 +18,6 @@ unsigned int DisplayLists::bigDL = -1;
 
 void BallAndStickGLRenderer::drawBioStruct3D(  )
 {
-    modelIndexList = glWidget->getActiveModelIndexList();
     drawAtomsAndBonds();
 }
 
@@ -48,17 +26,23 @@ void BallAndStickGLRenderer::drawAtomsAndBonds()
     glCallList(bigDL);
 }
 
-BallAndStickGLRenderer::BallAndStickGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s )
-    : BioStruct3DGLRenderer(struc,s)
+BallAndStickGLRenderer::BallAndStickGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
+    : BioStruct3DGLRenderer(struc,s,shownModels,widget)
 {
     bigDL = DisplayLists::getBigDisplayList();
+    updateColorScheme();
 }
 
 void BallAndStickGLRenderer::updateColorScheme()
 {   
     float detailLevel = glWidget->getRenderDetailLevel();
-    DisplayLists::createBigDisplayList(detailLevel, bioStruct, glWidget->getActiveModelIndexList(),colorScheme);
+    DisplayLists::createBigDisplayList(detailLevel, bioStruct, shownModels, colorScheme);
 
+}
+
+void BallAndStickGLRenderer::updateShownModels() {
+    float detailLevel = glWidget->getRenderDetailLevel();
+    DisplayLists::createBigDisplayList(detailLevel, bioStruct, shownModels, colorScheme);
 }
 
 

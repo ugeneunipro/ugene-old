@@ -1,26 +1,11 @@
-/**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
-
 #ifndef _U2_OPENGL_WIDGET_H_
 #define _U2_OPENGL_WIDGET_H_
+
+#include "BioStruct3DGLRender.h"
+#include "BioStruct3DColorScheme.h"
+
+#include <U2Core/Vector3D.h>
+#include <U2Core/BioStruct3DObject.h>
 
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QMenu>
@@ -28,19 +13,12 @@
 #include <QtGui/QAction>
 #include <QtGui/QColor>
 #include <QtCore/QTimer>
-
-
-#include <U2Core/Vector3D.h>
-#include <U2Core/U2Region.h>
 #include <memory>
 
 namespace U2 { 
 
 class Document;
-class BioStruct3DObject;
 class BioStruct3D;
-class BioStruct3DGLRenderer;
-class BioStruct3DColorScheme;
 class BioStruct3DColorSchemeFactory;
 class BioStruct3DGLRendererFactory;
 class MolecularSurfaceRendererFactory;
@@ -57,7 +35,23 @@ class GLFrameManager;
 class GLFrame;
 class MolecularSurface;
 class MolecularSurfaceRenderer;
+class U2Region;
 
+class BioStruct3DRendererContext {
+public:
+    BioStruct3DRendererContext(BioStruct3DObject *obj)
+            : obj(obj), biostruct(&obj->getBioStruct3D())
+    {}
+
+    const BioStruct3DObject *obj;
+    const BioStruct3D *biostruct;
+
+    QSharedPointer<BioStruct3DGLRenderer> renderer;
+    QSharedPointer<BioStruct3DColorScheme> colorScheme;
+
+    // this is just index numbers of models, NOT modelIds
+    QList<int> shownModelsIndexes;
+};
 
 /*!
 * @class BioStruct3DGLWidget BioStruct3DGLWidget.h
@@ -75,29 +69,9 @@ class MolecularSurfaceRenderer;
 class BioStruct3DGLWidget : public QGLWidget
 {
     Q_OBJECT
-    static const int GL_MATRIX_SIZE = 16;
     static int widgetCount;
 
 public:
-    QString BACKGROUND_COLOR_NAME;
-
-    QString PRODUCT_NAME;
-    QString PLUGIN_NAME;
-    QString COLOR_SCHEME_NAME;
-    QString RENDERER_NAME;
-    QString OBJECT_ID_NAME;
-
-    QString SELECTION_COLOR_NAME;
-
-    QString LEFT_EYE_COLOR_NAME;
-    QString RIGHT_EYE_COLOR_NAME;
-
-    QString RENDER_DETAIL_LEVEL_NAME;
-    QString SHADING_LEVEL_NAME;
-    QString ANAGLYPH_NAME;
-    QString EYES_SHIFT_NAME;
-
-
     /*!
     * Constructor.
     * @param bsObj BioStruct3DObject contains 3d model for visualization
@@ -105,39 +79,26 @@ public:
     * @param manager GlFrameManager is required for OpenGL frame manipulation
     * @param parent Parent widget
     */ 
-    BioStruct3DGLWidget(const BioStruct3DObject* bsObj, const AnnotatedDNAView* view, GLFrameManager* manager, QWidget *parent);
-    /*!
-    * Destructor.
-    */ 
+    BioStruct3DGLWidget(BioStruct3DObject* bsObj, const AnnotatedDNAView* view, GLFrameManager* manager, QWidget *parent);
+
+    //! Destructor.
     ~BioStruct3DGLWidget();
-    /*!
-    * @return Secondary structure annotation colors obtained from AppContext.
-    */
-    const QMap<QString, QColor> getSecStructAnnotationColors() const;
-    /*!
-    * @return Molecular chain colors obtained from AppContext.
-    */
-    const QMap<int, QColor> getChainColors() const;
+
     /*!
     * @return Contexts for corresponding biostruct3d primary structure (sequences).
     */
     const QList<ADVSequenceObjectContext*> getSequenceContexts() const;
-    /*!
-    * @return Indices of biostruct3d models to be drawn.
-    */
-    const QList<int> getActiveModelIndexList() const { return activeModelIndexList; }
-    /*!
-    * @return BioStruct3D const reference.
-    */
-    const BioStruct3D& getBioStruct3D() const { return biostruc; }
-    /*!
-    * @return BioStruct3DObject name.
-    */
-    const QString getBioStruct3DObjectName() const;
-    /*!
-    * @return BioStruct3D Protein Data Bank id.
-    */
-    const QString getPDBId() const;
+
+    //! @return BioStruct3D const reference.
+    const BioStruct3D& getBioStruct3D() const { return *(contexts.first().biostruct); }
+
+    //! @return BioStruct3D Protein Data Bank id.
+    const QString getPDBId() const { return contexts.first().biostruct->pdbId; }
+
+    //! @return BioStruct3DObject name.
+    // unused
+    //const QString getBioStruct3DObjectName() const;
+
     /*!
     * @return Menu containing display actions: renderers, color schemes etc.
     */
@@ -208,41 +169,56 @@ protected:
     void contextMenuEvent(QContextMenuEvent *_event);
     
 private:
+    //! Sets unselected regions shading level
+    void setUnselectedShadingLevel(int shading);
 
     /*!
-    * Helper function called by all constructors.
-    */ 
-    void setBioStruct3DColorScheme(BioStruct3DColorScheme* clScheme);
-    /*!
-    * Sets active renderer.
-    */
-    void setBioStruct3DRenderer(BioStruct3DGLRenderer* renderer);
-    /*!
-    * Sets unselected regions shading level
-    */
-    void setUnselectedShadingLevel(int shading);
-    /*!
+    * Sets light position.
     * @param pos New light source position. Directional light is being used.
     */
     void setLightPosition(const Vector3D& pos);
-    /*!
-    * Creates actions for existing GLRenderers, loads default renderer.
-    */
+
+    // controller logic
+    //! Creates actions for existing GLRenderers, loads default renderer.
     void loadGLRenderers();
-    /*!
-    * Creates actions for existing ColorSchemes, loads default color scheme.
-    */
+    //! Creates actions for existing ColorSchemes, loads default color scheme.
     void loadColorSchemes();
+
+    //! Creates actions for select/deselect shown models.
+    void createSelectModelsActions();
+
+    //! Creates menu for select/deselect shown models.
+    void createSelectModelsMenu();
+
     void createActions();
     void createMenus();
-    void createActiveModelIndexList();
+
+    // view logic
+    //! Adds biostruct to scene.
+    void addBiostruct(BioStruct3DObject *biostruct);
+
+    //! Creates renderers for all biostructs.
+    void setupRenderer(const QString &name);
+
+    //! Creates color scheme for all biostructs.
+    void setupColorScheme(const QString &name);
+
+    //! Updates color scheme for all renderers.
+    void updateAllColorSchemes();
+
+    //! Show/hide selected model for first biostruct
+    //! @param modelId - key from BioStruct3D::modelMap
+    void showModel(int modelId, bool show);
+
+    //! Show/hide all models for first biostruct
+    void showAllModels(bool show);
+
     void saveDefaultSettings();
-    BioStruct3DColorScheme* createCustomColorScheme(const QString& name); 
-    BioStruct3DGLRenderer* createCustomRenderer(const QString& name);
+
     int getChainIdForAnnotationObject(AnnotationTableObject* ao); 
-    void switchActiveModel(bool forward);
     void connectExternalSignals();
 
+    // anaglyph related
     unsigned int* emptyTextureData;
     GLuint anaglyphRenderTextureLeft, anaglyphRenderTextureRight, tempAnaglyphRenderTexture;
 
@@ -252,7 +228,7 @@ private:
 
     void draw();
     void drawTexturesAnaglyph(GLuint anaglyphRenderTextureLeft, GLuint anaglyphRenderTextureRight);                                // Draw The Image
-    void drawTexture(GLuint anaglyphRenderTexture, int red, int green, int blue, float alpha, bool alphaOnly);                              // Draw The Blurred Image
+    void drawTexture(GLuint anaglyphRenderTexture, int red, int green, int blue, float alpha, bool alphaOnly);                     // Draw The Blurred Image
     void drawAll();
     void drawColoredPlane(int red, int green, int blue, float alpha);
 
@@ -264,76 +240,117 @@ private:
     bool isSyncModeOn();
 
 private:
-    const QList<const BioStruct3DObject*> biostructs;
-    const BioStruct3D& biostruc;
-    const Document* biostrucDoc;
+    // related sequences view
     const AnnotatedDNAView* dnaView;
+
+    QList<BioStruct3DRendererContext> contexts;
+
     GLFrameManager* frameManager;
-    std::auto_ptr<MolecularSurface> molSurface;
     std::auto_ptr<GLFrame> glFrame;
-    std::auto_ptr<BioStruct3DColorScheme> colorScheme;
-    std::auto_ptr<BioStruct3DGLRenderer> biostructRenderer;
+
+    std::auto_ptr<MolecularSurface> molSurface;
     std::auto_ptr<MolecularSurfaceRenderer> surfaceRenderer;
-    QVariantMap defaultsSettings;
+
     MolecularSurfaceCalcTask* surfaceCalcTask;
+
+    QVariantMap defaultsSettings;
+
+    // controller logic
     QString currentColorSchemeName;
     QString currentGLRendererName;
-    QString currentModelID;
-    QMap<QString, BioStruct3DColorSchemeFactory*> colorSchemeFactoryMap;
-    QMap<QString, BioStruct3DGLRendererFactory*> rendererFactoryMap;
-    QMap<QString, MolecularSurfaceRendererFactory*> surfaceRendererFactoryMap;
-    QMap<const AnnotationTableObject*, int> chainIdCache;
-    QList<int> activeModelIndexList;
-    GLfloat cameraClipNear, cameraClipFar; //cameraDistance, 
 
+    QMap<const AnnotationTableObject*, int> chainIdCache;
+
+    // camera
+    GLfloat cameraClipNear, cameraClipFar; //cameraDistance, 
     GLfloat rotAngle, spinAngle;
-    GLfloat lightPostion[4];
     Vector3D rotAxis, lastPos;
+
+    // light
+    GLfloat lightPostion[4];
+
+    QColor backgroundColor;
+    QColor selectionColor;
+    QTimer* animationTimer;
+
+    int renderDetailLevel;
+    int unselectedShadingLevel;
+
+    // anaglyph related
+    bool anaglyph, anaglyphAvailable, firstResize;
+    int eyesShift;
+    QColor leftEyeColor;
+    QColor rightEyeColor;
+
+    // controller logic
     QAction *spinAction;
     QAction *settingsAction;
     QAction *closeAction;
     QAction *exportImageAction;
-    QAction *setNextModelAction, *setPrevModelAction, *setAllModelsActiveAction;
+    QAction *alignWithAction;
+
+    // actions for select/deselect shown models
+    QActionGroup *selectModelActions;
+    QAction *selectModelsExclusiveAction;
+    QAction *selectAllModelsAction;
+    QAction *selectOneModelAction;
+
     QActionGroup *colorSchemeActions;
     QActionGroup *rendererActions;
     QActionGroup *molSurfaceRenderActions;
     QActionGroup *molSurfaceTypeActions;
-    QTimer* animationTimer;
     QMenu *selectColorSchemeMenu;
     QMenu *selectRendererMenu;
     QMenu *displayMenu;
     QMenu *modelsMenu;
-    QColor backgroundColor;
-    QColor selectionColor;
 
-    bool multipleModels;
-
-    QColor leftEyeColor;
-    QColor rightEyeColor;
-
-    int renderDetailLevel;
-    int unselectedShadingLevel;
-    bool anaglyph, anaglyphAvailable, firstResize;
-    int eyesShift;
-
- private slots:
+private slots:
      void sl_selectColorScheme(QAction* action);
      void sl_selectGLRenderer(QAction* action);
      void sl_updateRenderSettings(const QStringList& list);
      void sl_acitvateSpin();
-     void sl_onSequenceSelectionChanged(LRegionsSelection* s, const QVector<U2Region>& r, const QVector<U2Region>& a);
+     void sl_onSequenceSelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed);
      void sl_onAnnotationSelectionChanged(AnnotationSelection* thiz, const QList<Annotation*>& added, const QList<Annotation*>& removed);
      void sl_updateAnnimation();
      void sl_settings();
      void sl_closeWidget();
      void sl_exportImage();
-     void sl_setNextModelAcitve();
-     void sl_setPrevModelAcitve();
-     void sl_setAllModelsActive();
+     void sl_alignWith();
+
+     // slots for select/deselect shown models actions
+     // they affects only first biostruct
+     void sl_selectModel(QAction *action);
+     void sl_selectAllModels();
+     void sl_selectOneModel();
+     void sl_selectModelsExclusive();
+
      void sl_showSurface();
      void sl_hideSurface();
      void sl_selectSurfaceRenderer(QAction* surfaceRenderer);
+
+     // used only for handling MolecularSurfaceCalcTask
+     // should be in special MolecularSurfaceProxy
      void sl_onTaskFinished(Task* task);
+
+public:
+    static const QString BACKGROUND_COLOR_NAME;
+
+    static const QString PRODUCT_NAME;
+    static const QString PLUGIN_NAME;
+    static const QString COLOR_SCHEME_NAME;
+    static const QString RENDERER_NAME;
+    // unused
+    //static const QString OBJECT_ID_NAME;
+
+    static const QString SELECTION_COLOR_NAME;
+
+    static const QString LEFT_EYE_COLOR_NAME;
+    static const QString RIGHT_EYE_COLOR_NAME;
+
+    static const QString RENDER_DETAIL_LEVEL_NAME;
+    static const QString SHADING_LEVEL_NAME;
+    static const QString ANAGLYPH_NAME;
+    static const QString EYES_SHIFT_NAME;
 };
 
 } //namespace

@@ -1,24 +1,3 @@
-/**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
-
 #include <QtOpenGL>
 
 #include "GraphicUtils.h"
@@ -42,8 +21,7 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
     SharedAtom bufAtom;
     
     foreach (Tube tube, tubeMap) {
-        QList<int> modelsIndexList = glWidget->getActiveModelIndexList();
-        foreach (int index, modelsIndexList) {
+        foreach (int index, shownModels) {
             const AtomsVector& tubeAtoms = tube.modelsMap.value(index);
             foreach(const SharedAtom atom, tubeAtoms) {
                 Color4f atomColor = colorScheme->getAtomColor(atom);
@@ -83,7 +61,8 @@ void TubeGLRenderer::drawBioStruct3D()
 }
 
 
-TubeGLRenderer::TubeGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s ) : BioStruct3DGLRenderer(struc,s)
+TubeGLRenderer::TubeGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
+        : BioStruct3DGLRenderer(struc,s,shownModels,widget)
 {
     const char* alphaCarbonTag = "CA";
     const char* phosporTag = "P";

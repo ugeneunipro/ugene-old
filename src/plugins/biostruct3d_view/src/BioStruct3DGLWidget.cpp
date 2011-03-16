@@ -1,30 +1,12 @@
-/**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
+#include "BioStruct3DGLWidget.h"
+#include "BioStruct3DGLRender.h"
+#include "BioStruct3DColorScheme.h"
+#include "GLFrameManager.h"
+#include "ExportImageDialog.h"
+#include "SettingsDialog.h"
+#include "MolecularSurfaceRenderer.h"
 
-#include <QtGui/QMouseEvent>
-#include <QtGui/QMessageBox>
-#include <QtGui/QColorDialog>
-#include <QtGui/QFileDialog>
-#include <QtGui/QImageWriter>
-#include <QtCore/QTime>
+#include "StructuralAlignmentDialog.h"
 
 #include <U2Core/BioStruct3D.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -45,23 +27,28 @@
 #include <U2Core/AnnotationSelection.h>
 #include <time.h>
 
-#include "BioStruct3DGLWidget.h"
-#include "BioStruct3DGLRender.h"
-#include "BioStruct3DColorScheme.h"
-#include "GLFrameManager.h"
-#include "ExportImageDialog.h"
-#include "SettingsDialog.h"
-#include "MolecularSurfaceRenderer.h"
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithm.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
+
+#include <QtGui/QMouseEvent>
+#include <QtGui/QMessageBox>
+#include <QtGui/QColorDialog>
+#include <QtGui/QFileDialog>
+#include <QtGui/QImageWriter>
+#include <QtCore/QTime>
 
 #include "gl2ps/gl2ps.h"
 
-//disable "unsafe functions" deprecation warnings on MS VS
+// disable "unsafe functions" deprecation warnings on MS VS
 #ifdef Q_OS_WIN
 #pragma warning(disable : 4996)
 #endif
 
-
-namespace U2 { 
+namespace U2 {
 
 int BioStruct3DGLWidget::widgetCount = 0;
 
@@ -77,43 +64,41 @@ static int DEFAULT_RENDER_DETAIL_LEVEL = 100;
 static int DEFAULT_EYES_SHIFT = 160;
 static int DEFAULT_SHADING_LEVEL = 50;
 
-BioStruct3DGLWidget::BioStruct3DGLWidget(const BioStruct3DObject* obj, const AnnotatedDNAView* view, GLFrameManager* manager, QWidget *parent /* = 0*/)
+const QString BioStruct3DGLWidget::BACKGROUND_COLOR_NAME("BackgroundColor");
+const QString BioStruct3DGLWidget::PRODUCT_NAME("Unipro Ugene");
+const QString BioStruct3DGLWidget::PLUGIN_NAME("BioStruct3D Viewer Plugin");
+const QString BioStruct3DGLWidget::COLOR_SCHEME_NAME("ColorScheme");
+const QString BioStruct3DGLWidget::RENDERER_NAME("GLRenderer");
+// unused
+//const QString BioStruct3DGLWidget::OBJECT_ID_NAME("OBJECT_ID");
+
+const QString BioStruct3DGLWidget::SELECTION_COLOR_NAME("SelectionColor");
+
+const QString BioStruct3DGLWidget::LEFT_EYE_COLOR_NAME("LeftEyeColor");
+const QString BioStruct3DGLWidget::RIGHT_EYE_COLOR_NAME("RightEyeColor");
+
+const QString BioStruct3DGLWidget::RENDER_DETAIL_LEVEL_NAME("RenderDetailLevel");
+const QString BioStruct3DGLWidget::SHADING_LEVEL_NAME("Shading Unselected Regions Level");
+const QString BioStruct3DGLWidget::ANAGLYPH_NAME("Anaglyph");
+const QString BioStruct3DGLWidget::EYES_SHIFT_NAME("EyesShift");
+
+BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const AnnotatedDNAView* view, GLFrameManager* manager, QWidget *parent /* = 0*/)
     : QGLWidget(parent),
-    biostructs( QList<const BioStruct3DObject*>() << obj ),
-    biostruc(obj->getBioStruct3D()), biostrucDoc(obj->getDocument()),
-    dnaView(view), frameManager(manager), molSurface(NULL), currentModelID(obj->getBioStruct3D().pdbId), spinAngle(0), displayMenu(NULL)
+    dnaView(view),
+    contexts(),
+    frameManager(manager), molSurface(NULL),
+    spinAngle(0), displayMenu(NULL)
 {
-    BACKGROUND_COLOR_NAME = QString("BackgroundColor");
-    PRODUCT_NAME = QString("Unipro Ugene");
-    PLUGIN_NAME = QString("BioStruct3D Viewer Plugin");
-    COLOR_SCHEME_NAME = QString("ColorScheme");
-    RENDERER_NAME = QString("GLRenderer");
-    OBJECT_ID_NAME = QString("OBJECT_ID");
-
-    SELECTION_COLOR_NAME = QString("SelectionColor");
-
-    LEFT_EYE_COLOR_NAME = QString("LeftEyeColor");
-    RIGHT_EYE_COLOR_NAME = QString("RightEyeColor");
-
-    RENDER_DETAIL_LEVEL_NAME = QString("RenderDetailLevel");
-    SHADING_LEVEL_NAME = QString("Shading Unselected Regions Level");
-    ANAGLYPH_NAME = QString("Anaglyph");
-    EYES_SHIFT_NAME = QString("EyesShift");
-
-
     GCOUNTER( cvar, tvar, "BioStruct3DGLWidget" );
+
+    QString currentModelID = obj->getBioStruct3D().pdbId;
     setObjectName(currentModelID + "-" + QString("%1").arg(++widgetCount));
     //TODO: ? setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
-    colorSchemeFactoryMap = BioStruct3DColorSchemeFactory::createFactories();
-    rendererFactoryMap = BioStruct3DGLRendererFactory::createFactories();
-    surfaceRendererFactoryMap = MolecularSurfaceRendererFactory::createFactories();
-    createActiveModelIndexList();
-    createActions();
-    createMenus();
+
     connectExternalSignals();
+
     backgroundColor = DEFAULT_BACKGROUND_COLOR;
     selectionColor = DEFAULT_SELECTION_COLOR;
-
     eyesShift = DEFAULT_EYES_SHIFT;
 
     anaglyphRenderTextureLeft = 0;
@@ -132,18 +117,31 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(const BioStruct3DObject* obj, const Ann
 
     emptyTextureData = NULL;
 
-    chainIdCache.clear();
+    currentColorSchemeName = BioStruct3DColorSchemeRegistry::defaultFactoryName();
+    currentGLRendererName = BioStruct3DGLRendererRegistry::defaultFactoryName();
 
-    // Load renderers and color schemes
+    addBiostruct(obj);
+
+    createActions();
+    createMenus();
+
+    createSelectModelsActions();
+    createSelectModelsMenu();
+
     loadColorSchemes();
     loadGLRenderers();
 
-    // Set view settings
-    float scaleFactor = 2.5;
-    float camZ = scaleFactor * biostruc.getMaxDistFromCenter();
+    /*setupRenderer(currentGLRendererName);
+    setupColorScheme(currentColorSchemeName);*/
 
-    cameraClipNear = (camZ - biostruc.getMaxDistFromCenter()) * 0.66f;
-    cameraClipFar = (camZ + biostruc.getMaxDistFromCenter()) * 1.2f; 
+    // Set view settings
+    // shoud be separate function
+    float scaleFactor = 2.5;
+    float maxDistFromCenter = contexts.first().biostruct->getMaxDistFromCenter();
+    float camZ = scaleFactor * maxDistFromCenter;
+
+    cameraClipNear = (camZ - maxDistFromCenter) * 0.66f;
+    cameraClipFar = (camZ + maxDistFromCenter) * 1.2f;
 
     glFrame.reset( new GLFrame(this, cameraClipNear, cameraClipFar, camZ) );
     frameManager->addGLFrame(glFrame.get());
@@ -152,25 +150,7 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(const BioStruct3DObject* obj, const Ann
     setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::BIOSTRUCTURE_3D).icon);
 }
 
-BioStruct3DGLWidget::~BioStruct3DGLWidget()
-{
-    // Clean up factories
-    
-    foreach(QString key, colorSchemeFactoryMap.keys()) {
-         BioStruct3DColorSchemeFactory* f = colorSchemeFactoryMap.take(key);
-         delete f;
-    }
-    
-    foreach(QString key, rendererFactoryMap.keys()) {
-        BioStruct3DGLRendererFactory* f = rendererFactoryMap.take(key);
-        delete f;
-    }
-    
-    foreach(QString key, surfaceRendererFactoryMap.keys()) {
-        MolecularSurfaceRendererFactory* f = surfaceRendererFactoryMap.take(key);
-        delete f;
-    }
-
+BioStruct3DGLWidget::~BioStruct3DGLWidget() {
     uiLog.trace("Biostruct3DGLWdiget "+objectName()+" deleted");
 }
 
@@ -182,7 +162,11 @@ void BioStruct3DGLWidget::initializeGL()
     GLfloat mat_specular[] = { 0.6f, 0.6f, 0.6f, 1.0 };
     GLfloat mat_shininess[] = { 90.0 };
 
-    DisplayLists::createBigDisplayList(getRenderDetailLevel(), biostruc, activeModelIndexList, &(*colorScheme));
+    // bug-2860:
+    const BioStruct3D &bs = *contexts.first().biostruct;
+    BioStruct3DColorScheme *scheme = contexts.first().colorScheme.data();
+    const QList<int> &activeModelIndexList = contexts.first().shownModelsIndexes;
+    DisplayLists::createBigDisplayList(getRenderDetailLevel(), bs, activeModelIndexList, scheme);
 
     qglClearColor(backgroundColor);
     glShadeModel (GL_SMOOTH);
@@ -226,41 +210,6 @@ void BioStruct3DGLWidget::paintGL()
         return;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     draw();
-}
-
-void BioStruct3DGLWidget::mousePressEvent(QMouseEvent *event)
-{
-    lastPos = getTrackballMapping(event->x(), event->y());
-}
-
-void BioStruct3DGLWidget::mouseMoveEvent(QMouseEvent *event)
-{
-    Vector3D rotCenter = biostruc.getCenter();
-
-    if (event->buttons() & Qt::LeftButton) {
-        Vector3D curPos = getTrackballMapping(event->x(), event->y());
-        Vector3D delta = curPos - lastPos;
-
-        if (delta.x || delta.y || delta.z) {
-            rotAngle = 90.0f*delta.length();
-            rotAxis =  vector_cross(lastPos,curPos);
-
-            bool syncLock = isSyncModeOn();
-            QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
-            foreach( GLFrame* frame, frames) {
-                frame->makeCurrent();
-
-                if (event->modifiers() & Qt::CTRL)
-                    frame->performShift(delta.x, delta.y);
-                else
-                    frame->rotateCamera(rotAxis, rotAngle);
-
-                frame->updateGL();
-            }
-        }
-
-        lastPos = curPos;
-    }
 }
 
 float BioStruct3DGLWidget::getEyesShiftMult() const
@@ -364,6 +313,14 @@ void BioStruct3DGLWidget::drawTexture(GLuint anaglyphRenderTexture, int red, int
     if (hasGlErrors()) { return; }
 }
 
+static Vector3D calcRotationCenter(const QList<BioStruct3DRendererContext> &contexts) {
+    Vector3D c;
+    foreach (const BioStruct3DRendererContext &ctx, contexts) {
+        c += ctx.biostruct->getCenter();
+    }
+    return c/contexts.length();
+}
+
 void BioStruct3DGLWidget::drawAll()
 {
     glEnable(GL_DEPTH_TEST);                                    // Enable Depth Testing
@@ -373,7 +330,7 @@ void BioStruct3DGLWidget::drawAll()
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Vector3D rotCenter = biostruc.getCenter();
+    Vector3D rotCenter = calcRotationCenter(contexts);
 
     glTranslatef(glFrame->getCameraPosition().x, glFrame->getCameraPosition().y, 0);
 
@@ -381,7 +338,9 @@ void BioStruct3DGLWidget::drawAll()
     glTranslatef(-rotCenter.x ,-rotCenter.y, -rotCenter.z);
     clock_t t1 =  clock();
 
-    biostructRenderer->drawBioStruct3D();
+    foreach (const BioStruct3DRendererContext &ctx, contexts) {
+        ctx.renderer->drawBioStruct3D();
+    }
 
     if(NULL != molSurface.get())
     {
@@ -397,6 +356,9 @@ void BioStruct3DGLWidget::drawAll()
     glDisable(GL_LIGHT0);
     glDisable(GL_DEPTH_TEST);                                   // Disable Depth Testing
 
+    // bug-2858: This profiling wrong when anaglyph enabled
+    // This profiling doesn't consider creation time of
+    // BioStruct3DGLRenderer and BioStruct3DColorScheme which may be crucial
     clock_t t2 = clock();
     perfLog.trace("BioStruct3D structure rendering time " + QString::number((float)( t2 - t1)/ CLOCKS_PER_SEC)+ " s");
 }
@@ -483,170 +445,8 @@ Vector3D BioStruct3DGLWidget::getTrackballMapping(int x, int y)
     return pos;
 } 
 
-
-void BioStruct3DGLWidget::wheelEvent ( QWheelEvent * event )
-{
-    float numDegrees =  event->delta() / 8;
-    zoom(numDegrees / 10);
-}
-
-void BioStruct3DGLWidget::createActions()
-{
-
-    QAction* action = NULL;
-
-    animationTimer = new QTimer(this);
-    animationTimer->setInterval(20); // fixed interval
-    connect(animationTimer, SIGNAL(timeout()), this, SLOT(sl_updateAnnimation()));
-
-    rendererActions = new QActionGroup(this);
-    connect(rendererActions, SIGNAL(triggered(QAction *)), this, SLOT(sl_selectGLRenderer(QAction *)));
-    foreach(QString key, rendererFactoryMap.keys()) {
-        action  = new QAction(key, rendererActions);
-        action->setCheckable(true);
-    }
-
-    colorSchemeActions = new QActionGroup(this);    
-    connect(colorSchemeActions, SIGNAL(triggered(QAction *)), this, SLOT(sl_selectColorScheme(QAction *)));
-    foreach(QString key, colorSchemeFactoryMap.keys()) {
-        action = new QAction(key, colorSchemeActions);
-        action->setCheckable(true);
-    }   
-
-    molSurfaceRenderActions = new QActionGroup(this);
-    connect(molSurfaceRenderActions, SIGNAL(triggered(QAction *)), this, SLOT(sl_selectSurfaceRenderer(QAction*)));
-    foreach(QString key, surfaceRendererFactoryMap.keys()) {
-        action = new QAction(key, molSurfaceRenderActions);
-        action->setCheckable(true);
-        if (key == ConvexMapRenderer::ID) {
-            action->setChecked(true);
-        }
-    }   
-
-    molSurfaceTypeActions = new QActionGroup(this);
-    foreach(QString key, AppContext::getMolecularSurfaceFactoryRegistry()->getSurfNameList())
-    {
-        action = new QAction(key, molSurfaceTypeActions);
-        connect(action, SIGNAL(triggered()), this, SLOT(sl_showSurface()));
-        action->setCheckable(true);
-        bool hasConstraints = AppContext::getMolecularSurfaceFactoryRegistry()->getSurfaceFactory(key)->hasConstraints(biostruc);
-        action->setEnabled(!hasConstraints);
-
-    }
-    action = new QAction(tr("Off"), molSurfaceTypeActions);
-    connect(action, SIGNAL(triggered()), this, SLOT(sl_hideSurface()));
-    action->setCheckable(true);
-    action->setChecked(true);
-
-    spinAction = new QAction(tr("Spin"), this);
-    spinAction->setCheckable(true);
-    connect(spinAction, SIGNAL(triggered()), this, SLOT(sl_acitvateSpin()));
-
-    settingsAction = new QAction(tr("Settings"), this);
-    connect(settingsAction, SIGNAL(triggered()), this, SLOT(sl_settings()));
-
-    closeAction = new QAction(tr("close_action"), this);
-    connect(closeAction, SIGNAL(triggered()), this, SLOT(sl_closeWidget()));
-
-    exportImageAction = new QAction(tr("Export image"), this);
-    connect(exportImageAction, SIGNAL(triggered()), this, SLOT(sl_exportImage()));
-
-    if (multipleModels) {
-        setNextModelAction = new QAction(tr("Next model"), this);
-        connect(setNextModelAction, SIGNAL(triggered()), this, SLOT(sl_setNextModelAcitve()));
-
-        setPrevModelAction = new QAction(tr("Prev model"), this);
-        connect(setPrevModelAction, SIGNAL(triggered()), this, SLOT(sl_setPrevModelAcitve()));
-
-        setAllModelsActiveAction = new QAction(tr("All models"), this);
-        setAllModelsActiveAction->setCheckable(true);
-        connect(setAllModelsActiveAction, SIGNAL(triggered()), this, SLOT(sl_setAllModelsActive()));
-    }
-
-    connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
-
-}
-
-void BioStruct3DGLWidget::createMenus()
-{
-    // Renderer selection   
-    selectRendererMenu = new QMenu(tr("Render style"));
-    selectRendererMenu->addActions(rendererActions->actions());
-    
-    // Color scheme selection
-    selectColorSchemeMenu = new QMenu(tr("Color Scheme"));
-    selectColorSchemeMenu->addActions(colorSchemeActions->actions());
-    
-    // Molecular surface
-    QMenu* surfaceMenu = new QMenu(tr("Molecular Surface Render Style"));
-    surfaceMenu->addActions(molSurfaceRenderActions->actions());
-
-    QMenu *surfaceTypeMenu = new QMenu(tr("Molecular Surface"));
-    surfaceTypeMenu->addActions(molSurfaceTypeActions->actions());
-        
-    // Models selection 
-    if (multipleModels) {
-        modelsMenu = new QMenu(tr("Models"));
-        modelsMenu->addAction(setNextModelAction);
-        modelsMenu->addAction(setPrevModelAction);
-        modelsMenu->addAction(setAllModelsActiveAction);
-    } else {
-        modelsMenu = NULL;
-    }
-
-    // Display (context) menu
-    displayMenu = new QMenu(this);
-    displayMenu->addMenu(selectRendererMenu);
-    displayMenu->addMenu(selectColorSchemeMenu);
-    if (modelsMenu) {
-        displayMenu->addMenu(modelsMenu);
-    }
-    displayMenu->addMenu(surfaceMenu);
-    displayMenu->addMenu(surfaceTypeMenu);
-    displayMenu->addAction(spinAction);
-    displayMenu->addAction(settingsAction);
-    displayMenu->addAction(exportImageAction);
-
-}
-
-void BioStruct3DGLWidget::connectExternalSignals()
-{
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    connect(asr, SIGNAL(si_annotationSettingsChanged(const QStringList& )), this, SLOT(sl_updateRenderSettings(const QStringList& )) );
-
-    const QList<ADVSequenceObjectContext*> seqContexts = getSequenceContexts();
-    foreach (ADVSequenceObjectContext* ctx, seqContexts) {
-        connect(ctx->getSequenceSelection(), 
-            SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)), 
-            SLOT(sl_onSequenceSelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
-
-        connect(dnaView->getAnnotationsSelection(), 
-            SIGNAL(si_selectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)),
-            SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)));
-    }
-
-}
-
-
-
-void BioStruct3DGLWidget::setBioStruct3DColorScheme( BioStruct3DColorScheme* clScheme )
-{
-    Q_ASSERT(clScheme != NULL);
-    biostructRenderer->setColorScheme(clScheme);
-    colorScheme.reset(clScheme);    
-}
-
-void BioStruct3DGLWidget::setBioStruct3DRenderer( BioStruct3DGLRenderer* r )
-{
-    Q_ASSERT(r != NULL);
-    biostructRenderer.reset(r);
-
-}
-
-void BioStruct3DGLWidget::contextMenuEvent( QContextMenuEvent *event )
-{
+void BioStruct3DGLWidget::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu;
-    
     foreach(QAction* action, getDisplayMenu()->actions()) {
         menu.addAction(action);
     }
@@ -656,88 +456,7 @@ void BioStruct3DGLWidget::contextMenuEvent( QContextMenuEvent *event )
     menu.exec(event->globalPos());
 }
 
-void BioStruct3DGLWidget::sl_selectColorScheme(QAction* action)
-{
-    BioStruct3DColorScheme* colorScheme = NULL;
-    QString schemeName = action->text();
-    colorScheme = createCustomColorScheme(schemeName);
-    Q_ASSERT(colorScheme != NULL);
-    colorScheme->setSelectionColor(selectionColor);
-    colorScheme->setUnselectedShadingLevel(unselectedShadingLevel/100.0);
-    setBioStruct3DColorScheme(colorScheme);
-    currentColorSchemeName = schemeName;
-    GLFrame* frame = frameManager->getGLWidgetFrame(this);
-    frame->makeCurrent();
-    frame->updateGL();
-        
-}
 
-void BioStruct3DGLWidget::sl_updateRenderSettings(const QStringList& list )
-{
-    Q_UNUSED(list);
-    sl_selectColorScheme(colorSchemeActions->checkedAction());
-}
-
-
-const QMap<QString, QColor> BioStruct3DGLWidget::getSecStructAnnotationColors() const
-{
-    QMap<QString, QColor> colors;
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-
-    foreach (GObject* obj, biostrucDoc->getObjects() ) {
-        if (obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
-            AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(obj);
-            foreach(Annotation* a, ao->getAnnotations()) {
-                QString name = a->getAnnotationName();
-                if ( name == BioStruct3D::SecStructAnnotationTag) {
-                    QString ssName = a->getQualifiers().first().value;
-                    AnnotationSettings* as = asr->getAnnotationSettings(ssName);
-                    colors.insert(ssName, as->color);
-                }
-            }
-        }
-    }
-
-    return colors;
-}
-
-
-
-const QMap<int, QColor> BioStruct3DGLWidget::getChainColors() const
-{
-    QMap<int, QColor> colorMap;
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    
-    foreach (GObject* obj, biostrucDoc->getObjects() ) {
-        if (obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
-            AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(obj);
-            foreach(Annotation* a, ao->getAnnotations()) {
-                QString name = a->getAnnotationName();
-                if (name.startsWith(BioStruct3D::MoleculeAnnotationTag)) {
-                    int chainId = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt();
-                    Q_ASSERT(chainId != 0);
-                    AnnotationSettings* as = asr->getAnnotationSettings(name);
-                    colorMap.insert(chainId, as->color);
-                }
-            }
-        }
-    }
-    
-    return colorMap;
-}
-
-void BioStruct3DGLWidget::sl_selectGLRenderer( QAction* action )
-{
-    QString rendererName = action->text();
-    BioStruct3DGLRenderer* renderer = createCustomRenderer(rendererName);
-    Q_ASSERT(renderer != NULL);
-    setBioStruct3DRenderer(renderer);
-    currentGLRendererName = rendererName;
-    renderer->updateColorScheme();
-    GLFrame* frame = frameManager->getGLWidgetFrame(this);
-    frame->makeCurrent();
-    frame->updateGL();
-}
 
 void BioStruct3DGLWidget::setLightPosition( const Vector3D& pos )
 {
@@ -747,32 +466,12 @@ void BioStruct3DGLWidget::setLightPosition( const Vector3D& pos )
     lightPostion[3] = 1.0;
 }
 
-BioStruct3DColorScheme* BioStruct3DGLWidget::createCustomColorScheme( const QString& name )
-{
-    if (colorSchemeFactoryMap.contains(name)) {
-        return colorSchemeFactoryMap.value(name)->createInstance(this);    
-    } else {
-        return NULL;
-    }
-
-}
-
-BioStruct3DGLRenderer* BioStruct3DGLWidget::createCustomRenderer( const QString& name )
-{
-    if (rendererFactoryMap.contains(name)) {
-        return rendererFactoryMap.value(name)->createInstance(biostruc, colorScheme.get());    
-    } else {
-        return NULL;
-    }
-}
-
-
 const QList<ADVSequenceObjectContext*> BioStruct3DGLWidget::getSequenceContexts() const
 {
     return dnaView->getSequenceContexts();
 }
 
-void BioStruct3DGLWidget::sl_onSequenceSelectionChanged( LRegionsSelection* s, const QVector<U2Region>&  added, const QVector<U2Region>&  removed)
+void BioStruct3DGLWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed)
 {
     if (!isVisible())
         return;
@@ -780,23 +479,23 @@ void BioStruct3DGLWidget::sl_onSequenceSelectionChanged( LRegionsSelection* s, c
     DNASequenceSelection* selection = qobject_cast<DNASequenceSelection*>(s);
     const DNASequenceObject* seqObj = selection->getSequenceObject();
     
-    // TODO: better to use objects relations here
-    if (!seqObj->getGObjectName().startsWith(biostruc.pdbId)) {
+    const BioStruct3D &biostruct = *contexts.first().biostruct;
+
+    // bug-2857: GObject relations shoud be used
+    if (!seqObj->getGObjectName().startsWith(biostruct.pdbId)) {
         return;
     }
     
-    
     if (seqObj) {
+        // TODO: this is correct only for first biostruct
         int chainId = getSequenceChainId(seqObj);
-        Q_ASSERT(biostruc.moleculeMap.contains(chainId));
-        colorScheme->updateSelectionRegion(chainId, added, removed);
-        biostructRenderer->updateColorScheme();
+        assert(biostruct.moleculeMap.contains(chainId));
+
+        contexts.first().colorScheme->updateSelectionRegion(chainId, added, removed);
+        updateAllColorSchemes();
         update();
     }
-
-
 }
-
 
 int BioStruct3DGLWidget::getChainIdForAnnotationObject(AnnotationTableObject* ao) 
 {
@@ -805,8 +504,9 @@ int BioStruct3DGLWidget::getChainIdForAnnotationObject(AnnotationTableObject* ao
     } else {
         int chainID = -1;
         QList<GObjectRelation> relations = ao->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);
-        Q_ASSERT(relations.count() == 1);
+        assert(relations.count() == 1);
         GObjectRelation relation = relations.first();
+        Document *biostrucDoc = contexts.first().obj->getDocument();
         GObject* obj = biostrucDoc->findGObjectByName(relation.ref.objName);
         DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
         if (seqObj) {
@@ -817,72 +517,6 @@ int BioStruct3DGLWidget::getChainIdForAnnotationObject(AnnotationTableObject* ao
     }
 }
 
-void BioStruct3DGLWidget::sl_onAnnotationSelectionChanged( AnnotationSelection* as, const QList<Annotation*>& added, const QList<Annotation*>& removed )
-{
-    Q_UNUSED(as);
-    if (!isVisible())
-        return;
-    
-    QVector<U2Region> empty;
-    QList<GObject*> seqObjects = dnaView->getSequenceGObjectsWithContexts();
-
-    foreach (Annotation* annotation, added) {
-        if (annotation->getLocation()->isEmpty()) { //TODO: there must be no such annotations!
-            continue;
-        }
-
-        AnnotationTableObject* ao = annotation->getGObject();
-        int chainId  = getChainIdForAnnotationObject(ao);
-        if (chainId!=-1) {
-            Q_ASSERT(biostruc.moleculeMap.contains(chainId));
-            colorScheme->updateSelectionRegion(chainId, annotation->getRegions(), empty );
-        }
-    }
-
-    foreach (Annotation* annotation, removed) {
-        if (annotation->getLocation()->isEmpty() ) { //TODO: there must be no such annotations!
-            continue;
-        }
-        AnnotationTableObject* ao = annotation->getGObject();
-        int chainId  = getChainIdForAnnotationObject(ao);
-        if (chainId!=-1) {
-            Q_ASSERT(biostruc.moleculeMap.contains(chainId));
-            colorScheme->updateSelectionRegion(chainId, empty, annotation->getRegions());
-        }
-    }
-
-    biostructRenderer->updateColorScheme();
-    update();
-}
-
-void BioStruct3DGLWidget::sl_acitvateSpin()
-{
-    if (spinAction->isChecked()) { 
-        animationTimer->start();
-    } else {
-        animationTimer->stop();
-    }
-
-    updateGL();
-
-}
-
-void BioStruct3DGLWidget::sl_updateAnnimation()
-{
-    static float velocity = 0.05f;
-    spinAngle = velocity* animationTimer->interval();
-    Vector3D rotAxis(0,1,0);
-    bool syncLock = isSyncModeOn();
-    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
-    
-    foreach( GLFrame* frame, frames) {
-        frame->makeCurrent();
-        frame->rotateCamera(rotAxis, spinAngle);
-        frame->updateGL();
-    }
-    updateGL();
-}
-
 QVariantMap BioStruct3DGLWidget::getState()
 {
     QVariantMap state;
@@ -890,7 +524,8 @@ QVariantMap BioStruct3DGLWidget::getState()
 
     state[COLOR_SCHEME_NAME] = QVariant::fromValue(currentColorSchemeName);
     state[RENDERER_NAME] = QVariant::fromValue(currentGLRendererName);
-    state[OBJECT_ID_NAME] = QVariant::fromValue(getBioStruct3DObjectName());
+    // unused
+    //state[OBJECT_ID_NAME] = QVariant::fromValue(getBioStruct3DObjectName());
 
     state[BACKGROUND_COLOR_NAME] = QVariant::fromValue(backgroundColor);
     state[SELECTION_COLOR_NAME] = QVariant::fromValue(selectionColor);
@@ -908,7 +543,7 @@ QVariantMap BioStruct3DGLWidget::getState()
 
 void BioStruct3DGLWidget::setState( const QVariantMap& state )
 {
-    // TODO: draw current selection correctly
+    // bug-2859: correct save/restore current selection.
     if (state.isEmpty()) {
         return;
     }
@@ -916,7 +551,7 @@ void BioStruct3DGLWidget::setState( const QVariantMap& state )
 
     backgroundColor = state.value(BACKGROUND_COLOR_NAME, DEFAULT_BACKGROUND_COLOR).value<QColor>();
     setBackgroundColor(backgroundColor);
-    
+
     selectionColor = state.value(SELECTION_COLOR_NAME, DEFAULT_SELECTION_COLOR).value<QColor>();
 
     leftEyeColor = state.value(LEFT_EYE_COLOR_NAME, DEFAULT_LEFT_EYE_COLOR).value<QColor>();
@@ -929,98 +564,65 @@ void BioStruct3DGLWidget::setState( const QVariantMap& state )
     QString previousColorSchemeName = currentColorSchemeName;
     QString previousGLRendererName = currentGLRendererName;
 
-    currentColorSchemeName = state.value(COLOR_SCHEME_NAME, BioStruct3DColorSchemeFactory::defaultFactoryName()).value<QString>();
-    currentGLRendererName = state.value(RENDERER_NAME, BioStruct3DGLRendererFactory::defaultFactoryName()).value<QString>();
+    currentColorSchemeName = state.value(COLOR_SCHEME_NAME, BioStruct3DColorSchemeRegistry::defaultFactoryName()).value<QString>();
+    currentGLRendererName = state.value(RENDERER_NAME, BioStruct3DGLRendererRegistry::defaultFactoryName()).value<QString>();
 
-    if (previousColorSchemeName!=currentColorSchemeName){
-        setBioStruct3DColorScheme(createCustomColorScheme(currentColorSchemeName));
+    if (previousColorSchemeName != currentColorSchemeName){
+        setupColorScheme(currentColorSchemeName);
     }
 
     unselectedShadingLevel = state.value(SHADING_LEVEL_NAME, DEFAULT_SHADING_LEVEL).value<int>();
     setUnselectedShadingLevel(unselectedShadingLevel);
 
-    if (previousGLRendererName!=currentGLRendererName){
-        setBioStruct3DRenderer(createCustomRenderer(currentGLRendererName));
+    if (previousGLRendererName != currentGLRendererName) {
+        setupRenderer(currentGLRendererName);
     }
 
     resizeGL(width(), height());
     updateGL();
 }
 
-const QString BioStruct3DGLWidget::getBioStruct3DObjectName() const
-{
-    foreach (GObject* obj, biostrucDoc->getObjects()) {
-        if (obj->getGObjectType() == GObjectTypes::BIOSTRUCTURE_3D)
-            return obj->getGObjectName();
+void BioStruct3DGLWidget::setupColorScheme(const QString &name) {
+    QList<BioStruct3DRendererContext>::iterator i = contexts.begin();
+    for (; i != contexts.end(); ++i) {
+        BioStruct3DRendererContext &ctx = *(i);
+
+        // TODO: this situation may be potentialy dangerous
+        // if renderer starts draw right now, maybe SharedPointer will be good solution
+        BioStruct3DColorScheme *scheme = BioStruct3DColorSchemeRegistry::createColorScheme(name, ctx.obj);
+        assert(scheme);
+
+        scheme->setSelectionColor(selectionColor);
+        scheme->setUnselectedShadingLevel((double)unselectedShadingLevel/100.0);
+
+        ctx.colorScheme = QSharedPointer<BioStruct3DColorScheme>(scheme);
+        ctx.renderer->setColorScheme(scheme);
     }
-    Q_ASSERT(0);
-    return ""; 
+}
+
+void BioStruct3DGLWidget::setupRenderer(const QString &name) {
+    QList<BioStruct3DRendererContext>::iterator i = contexts.begin();
+    for (; i != contexts.end(); ++i) {
+        BioStruct3DRendererContext &ctx = *(i);
+
+        // TODO: this situation may be potentialy dangerous
+        // if renderer starts draw right now, maybe SharedPointer will be good solution
+        BioStruct3DGLRenderer *rend = BioStruct3DGLRendererRegistry::createRenderer(name, *ctx.biostruct, ctx.colorScheme.data(), ctx.shownModelsIndexes, this);
+        assert(rend);
+        ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(rend);
+    }
+}
+
+void BioStruct3DGLWidget::updateAllColorSchemes() {
+    foreach (const BioStruct3DRendererContext &ctx, contexts) {
+        ctx.renderer->updateColorScheme();
+    }
 }
 
 void BioStruct3DGLWidget::setBackgroundColor(QColor backgroundColor)
 {
     this->backgroundColor=backgroundColor;
     qglClearColor(backgroundColor);
-}
-
-void BioStruct3DGLWidget::sl_settings()
-{
-    BioStruct3DSettingsDialog dialog;
-
-    dialog.setWidget(this);
-
-    dialog.setBackgroundColor(backgroundColor);
-    dialog.setSelectionColor(selectionColor);
-    dialog.setRenderDetailLevel(renderDetailLevel);
-    dialog.setShadingLevel(unselectedShadingLevel);
-
-    dialog.setAnaglyphAvailability(anaglyphAvailable);
-    dialog.setAnaglyph(anaglyph);
-    dialog.setEyesShift(eyesShift);
-    dialog.setGlassesColorScheme(leftEyeColor, rightEyeColor);
-
-    QVariantMap previousState = getState();
-
-    if (QDialog::Accepted == dialog.exec())
-    {
-        backgroundColor=dialog.getBackgroundColor();
-        selectionColor=dialog.getSelectionColor();
-        colorScheme->setSelectionColor(selectionColor);
-        renderDetailLevel=dialog.getRenderDetailLevel();
-        unselectedShadingLevel = dialog.getShadingLevel();
-        anaglyph = dialog.getAnaglyph();
-
-        eyesShift = dialog.getEyesShift();
-
-        leftEyeColor = dialog.getLeftEyeColor();
-        rightEyeColor = dialog.getRightEyeColor();
-
-        this->makeCurrent();
-        setBackgroundColor(backgroundColor);
-
-//        DisplayLists::createAtomDisplayList(getRenderDetailLevel());
-        DisplayLists::createBigDisplayList(getRenderDetailLevel(), biostruc, activeModelIndexList, &(*colorScheme));
-        updateGL();
-    }
-    else
-    {
-        setState(previousState);
-    }
-
-}
-
-void BioStruct3DGLWidget::sl_closeWidget()
-{
-    hide();
-    emit si_widgetClosed(this);
-}
-
-void BioStruct3DGLWidget::sl_exportImage() 
-{
-    
-    ExportImageDialog dialog(this);
-    dialog.exec();
-
 }
 
 void BioStruct3DGLWidget::zoom( float delta )
@@ -1052,12 +654,11 @@ void BioStruct3DGLWidget::saveDefaultSettings()
     glFrame->writeStateToMap(defaultsSettings);
     defaultsSettings[COLOR_SCHEME_NAME] = QVariant::fromValue(currentColorSchemeName);
     defaultsSettings[RENDERER_NAME] = QVariant::fromValue(currentGLRendererName);
-
 }
 
 void BioStruct3DGLWidget::restoreDefaultSettigns()
 {   
-    Q_ASSERT(!defaultsSettings.isEmpty());
+    assert(!defaultsSettings.isEmpty());
     bool syncLock = isSyncModeOn();
     QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
     foreach( GLFrame* frame, frames) {
@@ -1068,74 +669,108 @@ void BioStruct3DGLWidget::restoreDefaultSettigns()
     } 
 }
 
+void BioStruct3DGLWidget::showModel(int modelId, bool show) {
+    BioStruct3DRendererContext &ctx = contexts.first();
 
-QMenu* BioStruct3DGLWidget::getDisplayMenu()
-{
-    Q_ASSERT(displayMenu != NULL);
-    return displayMenu;
+    // this function uses modelId - key from BioStruct3D::modelMap
+    int idx = ctx.biostruct->modelMap.keys().indexOf(modelId);
+    assert(idx != -1);
+
+    if (show && !ctx.shownModelsIndexes.contains(idx)) {
+        ctx.shownModelsIndexes.append(idx);
+    }
+    else if (!show) {
+        ctx.shownModelsIndexes.removeAll(idx);
+    }
+    ctx.renderer->getShownModelsIndexes() = ctx.shownModelsIndexes;
 }
 
+void BioStruct3DGLWidget::showAllModels(bool show) {
+    BioStruct3DRendererContext &ctx = contexts.first();
 
-
-void BioStruct3DGLWidget::createActiveModelIndexList()
-{
-    int numModels = biostruc.modelMap.count();
-    multipleModels = numModels > 1 ? true : false;
-    // set only first model active
-    activeModelIndexList.append(0);
-}
-
-
-void BioStruct3DGLWidget::switchActiveModel(bool forward)
-{
-    if (activeModelIndexList.count() == 1) {
-        int index = activeModelIndexList.takeFirst();
-        int numModels = biostruc.modelMap.size();
-        if (forward) {
-            ++index;
-        } else {
-            --index;
-            if (index == -1 ) {
-                index =numModels - 1;
-            }
+    ctx.shownModelsIndexes.clear();
+    if (show) {
+        int numModels = ctx.biostruct->modelMap.size();
+        for (int i = 0; i < numModels; ++i) {
+            ctx.shownModelsIndexes.append(i);            
         }
-        activeModelIndexList.append(index);
-    } else {
-        // if there are more then one model active, unselect all, set default index = 0
-        activeModelIndexList.clear();
-        activeModelIndexList.append(0);
-        setAllModelsActiveAction->setChecked(false);
     }
+    ctx.renderer->getShownModelsIndexes() = ctx.shownModelsIndexes;
 }
 
+void BioStruct3DGLWidget::sl_selectModel(QAction *action) {
+    int modelId = action->text().toInt();
+    bool show = action->isChecked();
 
-void BioStruct3DGLWidget::sl_setNextModelAcitve()
-{
-    switchActiveModel(true);
-    biostructRenderer->updateColorScheme();
-    updateGL();
-}
-
-
-void BioStruct3DGLWidget::sl_setPrevModelAcitve()
-{
-    switchActiveModel(false);
-    biostructRenderer->updateColorScheme();
-    updateGL();
-}
-
-void BioStruct3DGLWidget::sl_setAllModelsActive()
-{
-    int numModels = biostruc.modelMap.count();
-    activeModelIndexList.clear();
-    for (int i = 0; i < numModels; ++i) {
-        activeModelIndexList.append(i);
+    // in exclusive mode only one model shown at the same time
+    if (selectModelActions->isExclusive()) {
+        showAllModels(false);
     }
-    biostructRenderer->updateColorScheme();
-    updateGL();
 
+    showModel(modelId, show);
+    contexts.first().renderer->updateShownModels();
+    updateGL();
 }
 
+void BioStruct3DGLWidget::sl_selectAllModels() {
+    selectModelsExclusiveAction->setChecked(false);
+    selectModelActions->setExclusive(false);
+
+    foreach (QAction *action, selectModelActions->actions()) {
+        action->setChecked(true);
+    }
+
+    showAllModels(true);
+    contexts.first().renderer->updateShownModels();
+    updateGL();
+}
+
+void BioStruct3DGLWidget::sl_selectOneModel() {
+    int firstId = -1;
+    foreach (QAction *action, selectModelActions->actions()) {
+        if (firstId == -1 && action->isChecked()) {
+            firstId = action->text().toInt();
+            continue;
+        }
+        action->setChecked(false);
+    }
+
+    showAllModels(false);
+
+    if (firstId != -1) {
+        showModel(firstId, true);
+    }
+
+    contexts.first().renderer->updateShownModels();
+    updateGL();
+}
+
+void BioStruct3DGLWidget::sl_selectModelsExclusive() {
+    if (selectModelsExclusiveAction->isChecked()) {
+        int firstId = -1;
+        foreach (QAction *action, selectModelActions->actions()) {
+            if (firstId == -1 && action->isChecked()) {
+                firstId = action->text().toInt();
+                continue;
+            }
+            action->setChecked(false);
+        }
+
+        showAllModels(false);
+
+        if (firstId != -1) {
+            showModel(firstId, true);
+        }
+
+        selectModelActions->setExclusive(true);
+    }
+    else {
+        selectModelActions->setExclusive(false);
+    }
+
+    contexts.first().renderer->updateShownModels();
+    updateGL();
+}
 
 void BioStruct3DGLWidget::writeImage2DToFile( int format, int options, int nbcol, const char *fileName )
 {
@@ -1180,25 +815,19 @@ void BioStruct3DGLWidget::writeImage2DToFile( int format, int options, int nbcol
   
 }
 
-const QString BioStruct3DGLWidget::getPDBId() const
+int BioStruct3DGLWidget::getSequenceChainId(const DNASequenceObject* seqObj)
 {
-    return biostruc.pdbId;
-}
+    const QVariantMap &info = seqObj->getDNASequence().info;
+    int id = info.value(DNAInfo::CHAIN_ID, qVariantFromValue(-1)).toInt();
 
-int BioStruct3DGLWidget::getSequenceChainId( const DNASequenceObject* seqObj )
-{
-    const QVariantMap info =  seqObj->getDNASequence().info;
-    if (info.contains(DNAInfo::CHAIN_ID)) {
-        return info.value(DNAInfo::CHAIN_ID).toInt();
-    }
-
-    return -1;
+    return id;
 }
 
 void BioStruct3DGLWidget::loadColorSchemes()
 {
-    currentColorSchemeName =  BioStruct3DColorSchemeFactory::defaultFactoryName();
+    currentColorSchemeName = BioStruct3DColorSchemeRegistry::defaultFactoryName();
 
+    // highlight default color scheme in menu
     QList<QAction*>::iterator iter;
     QList<QAction*> schemeActions = colorSchemeActions->actions();
     for (iter = schemeActions.begin(); iter != schemeActions.end(); ++iter) {
@@ -1207,15 +836,14 @@ void BioStruct3DGLWidget::loadColorSchemes()
             break;
         }
     }
-    Q_ASSERT(iter != schemeActions.end());
-    colorScheme.reset(colorSchemeFactoryMap.value(currentColorSchemeName)->createInstance(this));
-    colorScheme->setSelectionColor(selectionColor);
-    colorScheme->setUnselectedShadingLevel(unselectedShadingLevel/100.0);
+    assert(iter != schemeActions.end());    
 }
 
 void BioStruct3DGLWidget::loadGLRenderers()
 {
-    currentGLRendererName =  BioStruct3DGLRendererFactory::defaultFactoryName();
+    currentGLRendererName =  BioStruct3DGLRendererRegistry::defaultFactoryName();
+
+    // highlight default renderer in menu
     QList<QAction*>::iterator iter;
     QList<QAction*> renderActions = rendererActions->actions();
     for (iter = renderActions.begin(); iter != renderActions.end(); ++iter) {
@@ -1224,13 +852,10 @@ void BioStruct3DGLWidget::loadGLRenderers()
             break;
         }
     }
-    Q_ASSERT(iter != renderActions.end());
-    const BioStruct3DColorScheme* scheme = colorScheme.get();  
-    biostructRenderer.reset(rendererFactoryMap.value(currentGLRendererName)->createInstance(biostruc,scheme));
-    
+    assert(iter != renderActions.end());
+
     QString surfaceRendererName = ConvexMapRenderer::ID;
-    surfaceRenderer.reset(surfaceRendererFactoryMap.value(surfaceRendererName)->createInstance());
-    
+    surfaceRenderer.reset(MolecularSurfaceRendererRegistry::createMSRenderer(surfaceRendererName));
 }
 
 bool BioStruct3DGLWidget::isSyncModeOn()
@@ -1241,11 +866,388 @@ bool BioStruct3DGLWidget::isSyncModeOn()
     return synchronizationMode;
 }
 
+void BioStruct3DGLWidget::setUnselectedShadingLevel(int shading) {
+    foreach (const BioStruct3DRendererContext &ctx, contexts) {
+        ctx.colorScheme->setUnselectedShadingLevel((double)shading/100.0);
+    }
+    updateAllColorSchemes();
+}
+
+QMenu* BioStruct3DGLWidget::getDisplayMenu()
+{
+    assert(displayMenu != NULL);
+    return displayMenu;
+}
+
+void BioStruct3DGLWidget::mousePressEvent(QMouseEvent *event)
+{
+    lastPos = getTrackballMapping(event->x(), event->y());
+}
+
+void BioStruct3DGLWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    Vector3D rotCenter = contexts.first().biostruct->getCenter();
+
+    if (event->buttons() & Qt::LeftButton) {
+        Vector3D curPos = getTrackballMapping(event->x(), event->y());
+        Vector3D delta = curPos - lastPos;
+
+        if (delta.x || delta.y || delta.z) {
+            rotAngle = 90.0f*delta.length();
+            rotAxis =  vector_cross(lastPos,curPos);
+
+            bool syncLock = isSyncModeOn();
+            QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
+            foreach( GLFrame* frame, frames) {
+                frame->makeCurrent();
+
+                if (event->modifiers() & Qt::CTRL)
+                    frame->performShift(delta.x, delta.y);
+                else
+                    frame->rotateCamera(rotAxis, rotAngle);
+
+                frame->updateGL();
+            }
+        }
+
+        lastPos = curPos;
+    }
+}
+
+void BioStruct3DGLWidget::wheelEvent ( QWheelEvent * event )
+{
+    float numDegrees =  event->delta() / 8;
+    zoom(numDegrees / 10);
+}
+
+void BioStruct3DGLWidget::createSelectModelsActions() {
+    const BioStruct3DRendererContext &ctx = contexts.first();
+    const BioStruct3D &biostruct = *ctx.biostruct;
+
+    if (biostruct.modelMap.size() > 1) {
+        selectModelActions = new QActionGroup(this);
+        connect(selectModelActions, SIGNAL(triggered(QAction *)), this, SLOT(sl_selectModel(QAction *)));
+
+        foreach (int modelId, biostruct.modelMap.keys()) {
+            QAction *action = new QAction(QString::number(modelId), selectModelActions);
+            action->setCheckable(true);
+
+            if (ctx.shownModelsIndexes.contains(biostruct.modelMap.keys().indexOf(modelId))) {
+                action->setChecked(true);
+            }
+        }        
+        selectModelsExclusiveAction = new QAction(tr("Exclusive"), this);
+        selectModelsExclusiveAction->setCheckable(true);
+        selectModelsExclusiveAction->setChecked(true);
+        selectModelActions->setExclusive(true);
+        connect(selectModelsExclusiveAction, SIGNAL(triggered()), this, SLOT(sl_selectModelsExclusive()));
+
+        selectAllModelsAction = new QAction(tr("Select all"), this);
+        connect(selectAllModelsAction, SIGNAL(triggered()), this, SLOT(sl_selectAllModels()));
+
+        selectOneModelAction = new QAction(tr("Select one"), this);
+        connect(selectOneModelAction, SIGNAL(triggered()), this, SLOT(sl_selectOneModel()));
+    }
+}
+
+void BioStruct3DGLWidget::createActions()
+{
+    QAction* action = NULL;
+
+    animationTimer = new QTimer(this);
+    animationTimer->setInterval(20); // fixed interval
+    connect(animationTimer, SIGNAL(timeout()), this, SLOT(sl_updateAnnimation()));
+
+    rendererActions = new QActionGroup(this);
+    connect(rendererActions, SIGNAL(triggered(QAction *)), this, SLOT(sl_selectGLRenderer(QAction *)));
+
+    foreach(const QString &key, BioStruct3DGLRendererRegistry::factoriesNames()) {
+        action  = new QAction(key, rendererActions);
+        action->setCheckable(true);
+    }
+
+    colorSchemeActions = new QActionGroup(this);
+    connect(colorSchemeActions, SIGNAL(triggered(QAction *)), this, SLOT(sl_selectColorScheme(QAction *)));
+    foreach(const QString &key, BioStruct3DColorSchemeRegistry::factoriesNames()) {
+        action = new QAction(key, colorSchemeActions);
+        action->setCheckable(true);
+    }
+
+    molSurfaceRenderActions = new QActionGroup(this);
+    connect(molSurfaceRenderActions, SIGNAL(triggered(QAction *)), this, SLOT(sl_selectSurfaceRenderer(QAction*)));
+    foreach(const QString &key, MolecularSurfaceRendererRegistry::factoriesNames()) {
+        action = new QAction(key, molSurfaceRenderActions);
+        action->setCheckable(true);
+        if (key == ConvexMapRenderer::ID) {
+            action->setChecked(true);
+        }
+    }
+
+    molSurfaceTypeActions = new QActionGroup(this);
+    foreach(QString key, AppContext::getMolecularSurfaceFactoryRegistry()->getSurfNameList())
+    {
+        action = new QAction(key, molSurfaceTypeActions);
+        connect(action, SIGNAL(triggered()), this, SLOT(sl_showSurface()));
+        action->setCheckable(true);
+        bool hasConstraints = AppContext::getMolecularSurfaceFactoryRegistry()->getSurfaceFactory(key)->hasConstraints(*contexts.first().biostruct);
+        action->setEnabled(!hasConstraints);
+
+    }
+    action = new QAction(tr("Off"), molSurfaceTypeActions);
+    connect(action, SIGNAL(triggered()), this, SLOT(sl_hideSurface()));
+    action->setCheckable(true);
+    action->setChecked(true);
+
+    spinAction = new QAction(tr("Spin"), this);
+    spinAction->setCheckable(true);
+    connect(spinAction, SIGNAL(triggered()), this, SLOT(sl_acitvateSpin()));
+
+    settingsAction = new QAction(tr("Settings"), this);
+    connect(settingsAction, SIGNAL(triggered()), this, SLOT(sl_settings()));
+
+    closeAction = new QAction(tr("close_action"), this);
+    connect(closeAction, SIGNAL(triggered()), this, SLOT(sl_closeWidget()));
+
+    exportImageAction = new QAction(tr("Export image"), this);
+    connect(exportImageAction, SIGNAL(triggered()), this, SLOT(sl_exportImage()));
+
+    // bug-2855 Disabled while not ready
+    /*
+    alignWithAction = new QAction(tr("Align With..."), this);
+    connect(alignWithAction, SIGNAL(triggered()), this, SLOT(sl_alignWith()));
+    */
+
+    connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
+}
+
+void BioStruct3DGLWidget::createSelectModelsMenu() {
+    if (selectModelActions) {
+        modelsMenu = new QMenu(tr("Models"));
+        modelsMenu->addAction(selectModelsExclusiveAction);
+        modelsMenu->addAction(selectAllModelsAction);
+        modelsMenu->addAction(selectOneModelAction);
+        modelsMenu->addActions(selectModelActions->actions());
+
+        displayMenu->addMenu(modelsMenu);
+    }
+}
+
+void BioStruct3DGLWidget::createMenus()
+{
+    // Renderer selection
+    selectRendererMenu = new QMenu(tr("Render style"));
+    selectRendererMenu->addActions(rendererActions->actions());
+
+    // Color scheme selection
+    selectColorSchemeMenu = new QMenu(tr("Color Scheme"));
+    selectColorSchemeMenu->addActions(colorSchemeActions->actions());
+
+    // Molecular surface
+    QMenu* surfaceMenu = new QMenu(tr("Molecular Surface Render Style"));
+    surfaceMenu->addActions(molSurfaceRenderActions->actions());
+
+    QMenu *surfaceTypeMenu = new QMenu(tr("Molecular Surface"));
+    surfaceTypeMenu->addActions(molSurfaceTypeActions->actions());
+
+    // Display (context) menu
+    displayMenu = new QMenu(this);
+    displayMenu->addMenu(selectRendererMenu);
+    displayMenu->addMenu(selectColorSchemeMenu);
+
+    displayMenu->addMenu(surfaceMenu);
+    displayMenu->addMenu(surfaceTypeMenu);
+    displayMenu->addAction(spinAction);
+    displayMenu->addAction(settingsAction);
+    displayMenu->addAction(exportImageAction);
+    displayMenu->addAction(alignWithAction);
+}
+
+void BioStruct3DGLWidget::connectExternalSignals()
+{
+    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
+    connect(asr, SIGNAL(si_annotationSettingsChanged(const QStringList& )), this, SLOT(sl_updateRenderSettings(const QStringList& )) );
+
+    const QList<ADVSequenceObjectContext*> seqContexts = getSequenceContexts();
+    foreach (ADVSequenceObjectContext* ctx, seqContexts) {
+        connect(ctx->getSequenceSelection(),
+            SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
+            SLOT(sl_onSequenceSelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
+
+        connect(dnaView->getAnnotationsSelection(),
+            SIGNAL(si_selectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)),
+            SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)));
+    }
+}
+
+void BioStruct3DGLWidget::sl_selectColorScheme(QAction* action) {
+    QString schemeName = action->text();
+
+    currentColorSchemeName = schemeName;
+    setupColorScheme(schemeName);
+
+    GLFrame* frame = frameManager->getGLWidgetFrame(this);
+    frame->makeCurrent();
+    frame->updateGL();
+}
+
+void BioStruct3DGLWidget::sl_updateRenderSettings(const QStringList& list )
+{
+    Q_UNUSED(list);
+    sl_selectColorScheme(colorSchemeActions->checkedAction());
+}
+
+void BioStruct3DGLWidget::sl_onAnnotationSelectionChanged( AnnotationSelection* as, const QList<Annotation*>& added, const QList<Annotation*>& removed )
+{
+    Q_UNUSED(as);
+    if (!isVisible())
+        return;
+
+    QVector<U2Region> empty;
+    QList<GObject*> seqObjects = dnaView->getSequenceGObjectsWithContexts();
+
+    const BioStruct3D &biostruct = *contexts.first().biostruct;
+    BioStruct3DColorScheme *scheme = contexts.first().colorScheme.data();
+
+    foreach (Annotation* annotation, added) {
+        if (annotation->getLocation()->isEmpty()) { //TODO: there must be no such annotations!
+            continue;
+        }
+
+        AnnotationTableObject* ao = annotation->getGObject();
+        int chainId  = getChainIdForAnnotationObject(ao);
+        if (chainId != -1) {
+            assert(biostruct.moleculeMap.contains(chainId));
+            scheme->updateSelectionRegion(chainId, annotation->getRegions(), empty);
+        }
+    }
+
+    foreach (Annotation* annotation, removed) {
+        if (annotation->getLocation()->isEmpty() ) { //TODO: there must be no such annotations!
+            continue;
+        }
+        AnnotationTableObject* ao = annotation->getGObject();
+        int chainId = getChainIdForAnnotationObject(ao);
+        if (chainId != -1) {
+            assert(biostruct.moleculeMap.contains(chainId));
+            scheme->updateSelectionRegion(chainId, empty, annotation->getRegions());
+        }
+    }
+
+    updateAllColorSchemes();
+    update();
+}
+
+void BioStruct3DGLWidget::sl_acitvateSpin()
+{
+    if (spinAction->isChecked()) {
+        animationTimer->start();
+    } else {
+        animationTimer->stop();
+    }
+
+    updateGL();
+
+}
+
+void BioStruct3DGLWidget::sl_updateAnnimation()
+{
+    static float velocity = 0.05f;
+    spinAngle = velocity* animationTimer->interval();
+    Vector3D rotAxis(0,1,0);
+    bool syncLock = isSyncModeOn();
+    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
+
+    foreach( GLFrame* frame, frames) {
+        frame->makeCurrent();
+        frame->rotateCamera(rotAxis, spinAngle);
+        frame->updateGL();
+    }
+    updateGL();
+}
+
+void BioStruct3DGLWidget::sl_selectGLRenderer(QAction* action)
+{
+    QString rendererName = action->text();
+    currentGLRendererName = rendererName;
+    setupRenderer(currentGLRendererName);
+
+    GLFrame* frame = frameManager->getGLWidgetFrame(this);
+    frame->makeCurrent();
+    frame->updateGL();
+}
+
+void BioStruct3DGLWidget::sl_settings()
+{
+    BioStruct3DSettingsDialog dialog;
+
+    dialog.setWidget(this);
+
+    dialog.setBackgroundColor(backgroundColor);
+    dialog.setSelectionColor(selectionColor);
+    dialog.setRenderDetailLevel(renderDetailLevel);
+    dialog.setShadingLevel(unselectedShadingLevel);
+
+    dialog.setAnaglyphAvailability(anaglyphAvailable);
+    dialog.setAnaglyph(anaglyph);
+    dialog.setEyesShift(eyesShift);
+    dialog.setGlassesColorScheme(leftEyeColor, rightEyeColor);
+
+    QVariantMap previousState = getState();
+
+    if (QDialog::Accepted == dialog.exec())
+    {
+        backgroundColor=dialog.getBackgroundColor();
+        selectionColor = dialog.getSelectionColor();
+        unselectedShadingLevel = dialog.getShadingLevel();
+
+        foreach (const BioStruct3DRendererContext &ctx, contexts) {
+            ctx.colorScheme->setSelectionColor(selectionColor);
+        }
+        setUnselectedShadingLevel(unselectedShadingLevel);
+
+        renderDetailLevel=dialog.getRenderDetailLevel();
+        anaglyph = dialog.getAnaglyph();
+
+        eyesShift = dialog.getEyesShift();
+
+        leftEyeColor = dialog.getLeftEyeColor();
+        rightEyeColor = dialog.getRightEyeColor();
+
+        this->makeCurrent();
+        setBackgroundColor(backgroundColor);
+
+        // bug-2860:
+        const BioStruct3D &bs = *contexts.first().biostruct;
+        BioStruct3DColorScheme *scheme = contexts.first().colorScheme.data();
+        const QList<int> &activeModelIndexList = contexts.first().shownModelsIndexes;
+        DisplayLists::createBigDisplayList(getRenderDetailLevel(), bs, activeModelIndexList, scheme);
+
+        updateGL();
+    }
+    else
+    {
+        setState(previousState);
+    }
+
+}
+
+void BioStruct3DGLWidget::sl_closeWidget()
+{
+    hide();
+    emit si_widgetClosed(this);
+}
+
+void BioStruct3DGLWidget::sl_exportImage()
+{
+    ExportImageDialog dialog(this);
+    dialog.exec();
+}
+
 void BioStruct3DGLWidget::sl_showSurface()
 {
     QList<SharedAtom> atoms;
-    int index = getActiveModelIndexList().first();
-    foreach (const SharedMolecule mol, biostruc.moleculeMap) {
+    int index = contexts.first().shownModelsIndexes.first();
+    foreach (const SharedMolecule &mol, contexts.first().biostruct->moleculeMap) {
         const Molecule3DModel& model = mol->models.at(index);
         atoms += model.atoms;
     }
@@ -1253,7 +1255,6 @@ void BioStruct3DGLWidget::sl_showSurface()
     QString surfaceType = qobject_cast<QAction *>( sender() )->text();
     surfaceCalcTask = new MolecularSurfaceCalcTask(surfaceType, atoms);
     AppContext::getTaskScheduler()->registerTopLevelTask(surfaceCalcTask);
-    
 }
 
 void BioStruct3DGLWidget::sl_hideSurface()
@@ -1266,11 +1267,9 @@ void BioStruct3DGLWidget::sl_hideSurface()
 
 void BioStruct3DGLWidget::sl_selectSurfaceRenderer(QAction*  action)
 {
-    {
-        MolecularSurfaceRendererFactory* f = surfaceRendererFactoryMap.value(action->text());
-        surfaceRenderer.reset( f->createInstance() );
-    }
-    
+    QString msRendererName = action->text();
+    surfaceRenderer.reset(MolecularSurfaceRendererRegistry::createMSRenderer(msRendererName));
+
     makeCurrent();
     updateGL();
 }
@@ -1284,17 +1283,75 @@ void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
     molSurface.reset();
     molSurface = surfaceCalcTask->getCalculatedSurface();
     
-
     makeCurrent();
     updateGL();
-
-
 }
 
-void BioStruct3DGLWidget::setUnselectedShadingLevel(int shading)
-{
-    colorScheme->setUnselectedShadingLevel(shading/100.0);
-    biostructRenderer->updateColorScheme();
+void BioStruct3DGLWidget::addBiostruct(BioStruct3DObject *obj) {
+    assert(obj);
+
+    BioStruct3DRendererContext ctx(obj);
+
+    // initially show only first model
+    ctx.shownModelsIndexes.append(0);
+
+    BioStruct3DColorScheme *colorScheme = BioStruct3DColorSchemeRegistry::createColorScheme(currentColorSchemeName, ctx.obj);
+    assert(colorScheme);
+    ctx.colorScheme = QSharedPointer<BioStruct3DColorScheme>(colorScheme);
+    ctx.colorScheme->setSelectionColor(selectionColor);
+    ctx.colorScheme->setUnselectedShadingLevel((double)unselectedShadingLevel/100.0);
+
+    BioStruct3DGLRenderer *renderer = BioStruct3DGLRendererRegistry::createRenderer(currentGLRendererName, *ctx.biostruct, ctx.colorScheme.data(), ctx.shownModelsIndexes, this);
+    assert(renderer);
+    ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(renderer);
+
+    contexts.append(ctx);
 }
 
-} //namespace
+void BioStruct3DGLWidget::sl_alignWith() {
+    // bug-2855 This code is here temporary only for testing,
+    // and should be removed bebore release
+    QList<BioStruct3DObject*> biostructs;
+
+    Project *proj = AppContext::getProject();
+    if (proj) {
+        foreach (Document *doc, proj->getDocuments()) {
+            assert(doc);
+            if (doc->isLoaded()) {
+                foreach (GObject *obj, doc->findGObjectByType(GObjectTypes::BIOSTRUCTURE_3D)) {
+                    biostructs << qobject_cast<BioStruct3DObject*>(obj);
+                }
+            }
+        }
+    }
+
+    StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
+    if (reg->getFactoriesIds().isEmpty()) {
+        QMessageBox::warning(0, "Error", "No available algorithms");
+        return;
+    }
+
+    StructuralAlignmentAlgorithmFactory *fac = reg->getAlgorithmFactory(reg->getFactoriesIds().first());
+    StructuralAlignmentAlgorithm *alg = fac->create();
+    assert(alg);
+
+    int refModel = contexts.first().shownModelsIndexes.first();
+    StructuralAlignmentDialog dlg(biostructs, contexts.first().obj, refModel);
+    if (dlg.exec() == QDialog::Accepted) {
+        BioStruct3DObject *refo = static_cast<BioStruct3DObject*>( dlg.reference->itemData(dlg.reference->currentIndex()).value<void*>() );
+        BioStruct3DObject *alto = static_cast<BioStruct3DObject*>( dlg.alter->itemData(dlg.alter->currentIndex()).value<void*>() );
+
+        const BioStruct3D &ref = refo->getBioStruct3D();
+        const BioStruct3D &alt = alto->getBioStruct3D();
+
+        int altModel = dlg.altModel->itemData(dlg.altModel->currentIndex()).value<int>();
+
+        //StructuralAlignment result = alg->align(ref, alt);
+        addBiostruct(alto);
+        contexts.last().shownModelsIndexes = QList<int>() << altModel;
+        contexts.last().renderer->getShownModelsIndexes() = contexts.last().shownModelsIndexes;
+        contexts.last().renderer->updateShownModels();
+    }
+}
+} // namespace U2
+

@@ -1,24 +1,3 @@
-/**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
-
 #include <U2Core/Vector3D.h>
 
 #include "GLFrameManager.h"
@@ -28,64 +7,6 @@ namespace U2 {
 
 const GLfloat GLFrame::DEFAULT_ZOOM = 45.0f;
 //const Vector3D GLFrame::DEFAULT_CAMERA = Vector3D(0, 0, 0);
-
-///////////////////////////////////////////////////////////////////////////////////////////
-/// Matrix4x4
-
-Matrix4x4::Matrix4x4()
-{
-    m[0] = 0; m[1] = 0; m[2] = 0; m[3] = 0;
-    m[4] = 0; m[5] = 0; m[6] = 0; m[7] = 0;
-    m[8] = 0; m[9] = 0; m[10] = 0; m[11] = 0;
-    m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 0;
-}
-
-void Matrix4x4::loadIdentity()
-{
-    m[0] = 1; m[1] = 0; m[2] = 0; m[3] = 0;
-    m[4] = 0; m[5] = 1; m[6] = 0; m[7] = 0;
-    m[8] = 0; m[9] = 0; m[10] = 1; m[11] = 0;
-    m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
-}
-
-float& Matrix4x4::operator[]( unsigned int i )
-{
-    static float err = 0.0;
-    if (i < 16)
-        return m[i];
-    else  {
-        qCritical("Vector operator [] access out of range : %d", i);
-        return err;
-    }
-}
-
-Matrix4x4& Matrix4x4::operator=( const Matrix4x4& matrix )
-{
-    if (this == &matrix) { 
-        return *this;
-    }
-    memcpy((void*) m, (void*) matrix.m, sizeof(matrix.m) ); 
-    return *this;
-
-}
-
-void Matrix4x4::load( QVariantList values )
-{
-    Q_ASSERT(values.size() == 16);
-    for (int i = 0; i < 16; ++i) {
-        m[i] = values.at(i).value<float>(); 
-    }
-
-}
-
-QVariantList Matrix4x4::store()
-{
-    QVariantList values;
-    for (int i = 0; i < 16; ++i ) {
-        values.append(QVariant::fromValue(m[i]));
-    }
-    return values;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 /// GLFrame

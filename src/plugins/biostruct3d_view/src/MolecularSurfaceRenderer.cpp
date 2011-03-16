@@ -1,49 +1,52 @@
-/**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
-
 #include "MolecularSurfaceRenderer.h"
 #include <U2Algorithm/MolecularSurface.h>
 #include <QtOpenGL>
 
 namespace U2 {
 
+/* class MolecularSurfaceRendererRegistry */
+const QString MolecularSurfaceRendererRegistry::defaultFactoryName() {
+    return ConvexMapRenderer::ID;
+}
+
+const QList<QString> MolecularSurfaceRendererRegistry::factoriesNames() {
+    return getInstance()->factories.keys();
+}
+
+const MolecularSurfaceRendererFactory* MolecularSurfaceRendererRegistry::getFactory(const QString &name) {
+    return getInstance()->factories.value(name, 0);
+}
+
+MolecularSurfaceRenderer* MolecularSurfaceRendererRegistry::createMSRenderer(const QString &name) {
+    const MolecularSurfaceRendererFactory *fact = getFactory(name);
+
+    if (fact) {
+        return fact->createInstance();
+    }
+
+    return 0;
+}
+
+MolecularSurfaceRendererRegistry::MolecularSurfaceRendererRegistry() {
+    registerFactories();
+}
+
+MolecularSurfaceRendererRegistry* MolecularSurfaceRendererRegistry::getInstance() {
+    static MolecularSurfaceRendererRegistry *reg = new MolecularSurfaceRendererRegistry();
+    return reg;
+}
+
+#define REGISTER_FACTORY(c) factories.insert(c::ID, new c::Factory)
+void MolecularSurfaceRendererRegistry::registerFactories() {
+    REGISTER_FACTORY(DotsRenderer);
+    REGISTER_FACTORY(ConvexMapRenderer);
+}
+
+
 const QString DotsRenderer::ID(QObject::tr("Dots"));
 const QString ConvexMapRenderer::ID(QObject::tr("ConvexMap"));
 
-#define REGISTER_FACTORY(c) \
-    map.insert(c::ID, new c::Factory)
-
-QMap<QString,MolecularSurfaceRendererFactory*> MolecularSurfaceRendererFactory::createFactories()
-{
-    QMap<QString,MolecularSurfaceRendererFactory*> map;
-    REGISTER_FACTORY(DotsRenderer);
-    REGISTER_FACTORY(ConvexMapRenderer);
-    return map;
-}
-
-MolecularSurfaceRenderer::MolecularSurfaceRenderer()
-{
-
-}
-
+/* class DotsRenderer : public MolecularSurfaceRenderer */
 void DotsRenderer::drawSurface( MolecularSurface& surface )
 {
     glDisable(GL_LIGHTING);
@@ -67,10 +70,10 @@ void DotsRenderer::drawSurface( MolecularSurface& surface )
     }
     glEnd( );
     glEnable(GL_LIGHTING);
-
-
 }
 
+
+/* class ConvexMapRenderer : public MolecularSurfaceRenderer */
 void ConvexMapRenderer::drawSurface( MolecularSurface& surface )
 {
     static GLfloat wall_mat[] = {1.f, 1.f, 1.f, 0.3f};
