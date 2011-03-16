@@ -82,6 +82,7 @@ public:
     const QString& getGroupName() { return groupName; }
     const QString& getName() { return name; }
     bool isCheckedByDefault() { return checkedByDefault; }
+    void setCheckedByDefault(bool checked) { checkedByDefault = checked; }
     virtual bool checkConstraints(const AutoAnnotationConstraints& constraints) = 0;   
     virtual Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa) = 0;
 };

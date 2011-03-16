@@ -51,8 +51,12 @@ void AutoAnnotationsADVAction::updateMenu()
     if (seqWidget->getSequenceContexts().count() > 0) {
         constraints.alphabet = seqWidget->getSequenceContexts().first()->getAlphabet();
     }
-
+    
     QList<AutoAnnotationsUpdater*> updaters = AppContext::getAutoAnnotationsSupport()->getAutoAnnotationUpdaters();
+    if (updaters.count() == 0 ) {
+        setEnabled(false);
+        return;
+    }
     foreach (AutoAnnotationsUpdater* updater, updaters) {
         QAction* toggleAction = new QAction(updater->getName(), this);
         bool enabled = updater->checkConstraints(constraints);
@@ -79,7 +83,15 @@ void AutoAnnotationsADVAction::sl_toggle( bool toggled )
         QString groupName = updater->getGroupName();
         aaObj->setGroupEnabled(groupName, toggled);
         aaObj->update(updater);
+        updater->setCheckedByDefault(toggled);
     }
+}
+
+AutoAnnotationsADVAction::~AutoAnnotationsADVAction()
+{
+    menu->clear();
+    delete menu;
+    menu = NULL;
 }
 
 

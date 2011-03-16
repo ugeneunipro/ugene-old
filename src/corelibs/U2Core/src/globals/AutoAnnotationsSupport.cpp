@@ -29,11 +29,18 @@
 
 namespace U2 {
 
-void AutoAnnotationsSupport::registerAutoAnnotationsUpdater( AutoAnnotationsUpdater* updater )
+
+AutoAnnotationsUpdater::AutoAnnotationsUpdater( const QString& nm, const QString& gName )
+: groupName(gName), name(nm)
 {
-    aaUpdaters.append(updater);
+    
+    checkedByDefault = AppContext::getSettings()->getValue(AUTO_ANNOTATION_SETTINGS + groupName, true).toBool();
 }
 
+AutoAnnotationsUpdater::~AutoAnnotationsUpdater()
+{
+    AppContext::getSettings()->setValue(AUTO_ANNOTATION_SETTINGS + groupName, checkedByDefault);
+}
 
 QList<AutoAnnotationsUpdater*> AutoAnnotationsSupport::getAutoAnnotationUpdaters()
 {
@@ -61,6 +68,14 @@ AutoAnnotationsUpdater* AutoAnnotationsSupport::findUpdaterByName( const QString
 
     return NULL;   
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+void AutoAnnotationsSupport::registerAutoAnnotationsUpdater( AutoAnnotationsUpdater* updater )
+{
+    aaUpdaters.append(updater);
+}
+
 
 void AutoAnnotationsSupport::updateAnnotationsByGroup( const QString& groupName )
 {
@@ -175,15 +190,6 @@ AutoAnnotationsUpdateTask::~AutoAnnotationsUpdateTask()
 }
 
 
-AutoAnnotationsUpdater::AutoAnnotationsUpdater( const QString& nm, const QString& gName )
- : groupName(gName), name(nm)
-{
-    
-    checkedByDefault = false; //AppContext::getSettings()->getValue(AUTO_ANNOTATION_SETTINGS + groupName, false).toBool();
-}
 
-AutoAnnotationsUpdater::~AutoAnnotationsUpdater()
-{
-}
 
 } //namespace

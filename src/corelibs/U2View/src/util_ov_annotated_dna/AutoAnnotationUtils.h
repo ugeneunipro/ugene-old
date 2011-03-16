@@ -33,6 +33,7 @@ class AutoAnnotationsADVAction : public ADVSequenceWidgetAction {
     Q_OBJECT
 public:
     AutoAnnotationsADVAction(ADVSequenceWidget* widget, AutoAnnotationObject* aaObj);
+    ~AutoAnnotationsADVAction();
 private slots:
     void sl_toggle(bool toggled);
 private:
