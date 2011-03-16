@@ -163,38 +163,102 @@ void UHMM3QDActor::updateEditor() {
 UHMM3QDActorPrototype::UHMM3QDActorPrototype() {
     descriptor.setId("hmm3");
     descriptor.setDisplayName(UHMM3QDActor::tr("HMM3"));
-    descriptor.setDocumentation(UHMM3QDActor::tr("Finds HMM signals in supplied sequence, stores found regions as annotations."));
+    descriptor.setDocumentation(UHMM3QDActor::tr(
+        "Searches HMM signals in a sequence with one or more profile HMM"
+        " and saves the results as annotations."));
 
     {
-        Descriptor pd(PROFILE_ATTR, UHMM3QDActor::tr("HMM profile"), UHMM3QDActor::tr("HMM profile(s) to search with"));
-        Descriptor nsd(NSEQ_ATTR, UHMM3QDActor::tr("Number of seqs"), QApplication::translate("HMMSearchDialog", "e_value_as_nsec_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor ded(DOM_E_ATTR, UHMM3QDActor::tr("Filter by high E-value"), QApplication::translate("HMMSearchDialog", "results_evalue_cutoff_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor dtd(DOM_T_ATTR, UHMM3QDActor::tr("Filter by low score"), QApplication::translate("HMMSearchDialog", "results_score_cutoff_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor bd(NO_BIAS_ATTR, UHMM3QDActor::tr("No bias filter"), UHMM3QDActor::tr("Turns off composition bias filter."));
-        Descriptor nd(NO_NULL_ATTR, UHMM3QDActor::tr("Turn off biased composition score corrections"), UHMM3QDActor::tr("Turns off biased composition score corrections."));
-        Descriptor md(DO_MAX_ATTR, UHMM3QDActor::tr("Do max"), UHMM3QDActor::tr("Turns all heuristic filters off (less speed, more power)."));
-        Descriptor f1d(F1_ATTR, UHMM3QDActor::tr("MSV filter threshold"), UHMM3QDActor::tr("MSV filter treshold."));
-        Descriptor f2d(F2_ATTR, UHMM3QDActor::tr("Viterbi filter threshold"), UHMM3QDActor::tr("Viterbi filter treshold."));
-        Descriptor f3d(F3_ATTR, UHMM3QDActor::tr("Forward filter threshold"), UHMM3QDActor::tr("Forward filter treshold."));
-        Descriptor sd(SEED_ATTR, UHMM3QDActor::tr("Random generator seed"), UHMM3QDActor::tr("Random generator seed."));
-        Descriptor useEvd(USE_EVAL, UHMM3QDActor::tr("Use E-value"), UHMM3QDActor::tr("Filters by E-value if true. Otherwise filters by score."));
-        Descriptor mind(MIN_LEN, UHMM3QDActor::tr("Min len"), UHMM3QDActor::tr("Min result length."));
-        Descriptor maxd(MAX_LEN, UHMM3QDActor::tr("Max len"), UHMM3QDActor::tr("Maximum result length."));
+        Descriptor pd(PROFILE_ATTR,
+            UHMM3QDActor::tr("Profile HMM"),
+            UHMM3QDActor::tr("Semicolon-separated list of input HMM files."));
+
+        Descriptor mind(MIN_LEN,
+            UHMM3QDActor::tr("Min Length"),
+            UHMM3QDActor::tr("Minimum length of a result region."));
+
+        Descriptor maxd(MAX_LEN,
+            UHMM3QDActor::tr("Max Length"),
+            UHMM3QDActor::tr("Maximum length of a result region."));
+
+        // Parameters controlling reporting thresholds
+        //
+        Descriptor useEvd(USE_EVAL,
+            UHMM3QDActor::tr("Use E-value"),
+            UHMM3QDActor::tr("Filters by E-value if true. Otherwise filters by score."));
+
+        Descriptor ded(DOM_E_ATTR,
+            UHMM3QDActor::tr("Filter by High E-value"),
+            UHMM3QDActor::tr("Reports domains &lt;= this E-value threshold"
+            " in output."));
+
+        Descriptor dtd(DOM_T_ATTR,
+            UHMM3QDActor::tr("Filter by Low Score"),
+            UHMM3QDActor::tr("Reports domains &gt;= this score cutoff in output."));
+
+        // Parameters controlling the acceleration pipeline
+        //
+        Descriptor md(DO_MAX_ATTR,
+            UHMM3QDActor::tr("Max"),
+            UHMM3QDActor::tr(
+            "Turns off all acceleration heuristic filters. This increases"
+            " sensitivity somewhat, at a large cost in speed."));
+
+        Descriptor f1d(F1_ATTR,
+            UHMM3QDActor::tr("MSV Filter Threshold"),
+            UHMM3QDActor::tr("P-value threshold for the MSV filter step"
+            " of the acceleration pipeline."));
+
+        Descriptor f2d(F2_ATTR,
+            UHMM3QDActor::tr("Viterbi Filter Threshold"),
+            UHMM3QDActor::tr("P-value threshold for the Viterbi filter step"
+            " of the acceleration pipeline."));
+
+        Descriptor f3d(F3_ATTR,
+            UHMM3QDActor::tr("Forward Filter Threshold"),
+            UHMM3QDActor::tr("P-value threshold for the Forward filter step"
+            " of the acceleration pipeline."));
+
+        Descriptor bd(NO_BIAS_ATTR,
+            UHMM3QDActor::tr("No Bias Filter"),
+            UHMM3QDActor::tr("Turns off composition bias filter. This increases"
+            " sensitivity somewhat, but can come at a high cost in"
+            " speed."));
+
+        // Other parameters
+        //
+        Descriptor nd(NO_NULL_ATTR,
+            UHMM3QDActor::tr("No Null2"),
+            UHMM3QDActor::tr("Turns off the null2 score corrections for"
+            " biased composition."));
+
+        Descriptor nsd(NSEQ_ATTR,
+            UHMM3QDActor::tr("Number of Sequences"),
+            UHMM3QDActor::tr("Specifies number of significant sequences."
+            " It is used for domain E-value calculations."));
+
+        Descriptor sd(SEED_ATTR,
+            UHMM3QDActor::tr("Seed"),
+            UHMM3QDActor::tr("Random number seed. The default is to use"
+            " a fixed seed(42), so that results are exactly reproducible."
+            " Any other positive integer will give different (but also"
+            " reproducible) results. A choice of 0 uses a randomly"
+            " chosen seed."));
 
         attributes << new Attribute(pd, BaseTypes::STRING_TYPE(), true);
-        attributes << new Attribute(nsd, BaseTypes::NUM_TYPE(), false, QVariant(1));
+        attributes << new Attribute(mind, BaseTypes::NUM_TYPE(), false, QVariant(10));
+        attributes << new Attribute(maxd, BaseTypes::NUM_TYPE(), false, QVariant(1000));
         attributes << new Attribute(useEvd, BaseTypes::BOOL_TYPE(), false, true);
         attributes << new Attribute(ded, BaseTypes::NUM_TYPE(), false, QVariant(1));
         attributes << new Attribute(dtd, BaseTypes::NUM_TYPE(), false, QVariant(0.01));
-        attributes << new Attribute(bd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
-        attributes << new Attribute(nd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+
         attributes << new Attribute(md, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         attributes << new Attribute(f1d, BaseTypes::NUM_TYPE(), false, QVariant(0.02));
         attributes << new Attribute(f2d, BaseTypes::NUM_TYPE(), false, QVariant(0.001));
         attributes << new Attribute(f3d, BaseTypes::NUM_TYPE(), false, QVariant(0.00001));
+        attributes << new Attribute(bd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+        attributes << new Attribute(nd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+        attributes << new Attribute(nsd, BaseTypes::NUM_TYPE(), false, QVariant(1));
         attributes << new Attribute(sd, BaseTypes::NUM_TYPE(), false, QVariant(42));
-        attributes << new Attribute(mind, BaseTypes::NUM_TYPE(), false, QVariant(30));
-        attributes << new Attribute(maxd, BaseTypes::NUM_TYPE(), false, QVariant(5000));
     }
 
     QMap<QString, PropertyDelegate*> delegates;

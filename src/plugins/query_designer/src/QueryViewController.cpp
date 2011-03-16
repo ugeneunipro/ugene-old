@@ -804,7 +804,7 @@ void QueryViewController::sl_run() {
     if (scheme->isEmpty()) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("The schema is empty!"));
     } else if (!scheme->isValid()) {
-        QMessageBox::critical(this, L10N::errorTitle(), tr("The schema is invalid! Check log for error info."));
+        QMessageBox::critical(this, L10N::errorTitle(), tr("The schema is invalid! Please see the log for details."));
     } else {
         QDRunDialog runDlg(scene->getScheme(), this, inFile_, outFile_);
         runDlg.exec();
