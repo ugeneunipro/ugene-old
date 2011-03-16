@@ -87,7 +87,7 @@ protected:
     BioStruct3DGLRenderer(const BioStruct3D &biostruct, const BioStruct3DColorScheme *scheme, const QList<int> &shownModels, const BioStruct3DGLWidget *widget);
 
 public:
-    virtual ~BioStruct3DGLRenderer() {};
+    virtual ~BioStruct3DGLRenderer() {}
 
     //! Visualizes macromolecule.
     virtual void drawBioStruct3D() = 0;
@@ -118,8 +118,6 @@ protected:
 
 protected:
     const BioStruct3DGLWidget* glWidget;
-
-    unsigned int bigDL;
 };
 
 

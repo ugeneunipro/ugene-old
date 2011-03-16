@@ -25,21 +25,25 @@
 #include "BioStruct3DGLRender.h"
 #include <QtOpenGL>
 
-namespace U2 { 
+namespace U2 {
 
 class BallAndStickGLRenderer : public BioStruct3DGLRenderer {
-
-        
-    void drawAtomsAndBonds();
-    
 protected:
     BallAndStickGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget);
 
 public:
+    virtual ~BallAndStickGLRenderer();
+
     void drawBioStruct3D();
     
     virtual void updateColorScheme();
     virtual void updateShownModels();
+
+private:
+    void createDisplayList();
+
+private:
+    GLuint dl;
 
     RENDERER_FACTORY(BallAndStickGLRenderer)   
 };

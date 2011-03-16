@@ -35,37 +35,117 @@
 namespace U2 { 
 
 const QString BallAndStickGLRenderer::ID(QObject::tr("Ball-and-stick"));
-unsigned int DisplayLists::bigDL = -1;
 
-void BallAndStickGLRenderer::drawBioStruct3D(  )
+BallAndStickGLRenderer::BallAndStickGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
+    : BioStruct3DGLRenderer(struc,s,shownModels,widget), dl(0)
 {
-    drawAtomsAndBonds();
+    dl = glGenLists(1);
+    createDisplayList();
 }
 
-void BallAndStickGLRenderer::drawAtomsAndBonds()
-{
-    glCallList(bigDL);
+BallAndStickGLRenderer::~BallAndStickGLRenderer() {
+    glDeleteLists(dl, 1);
 }
 
-BallAndStickGLRenderer::BallAndStickGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
-    : BioStruct3DGLRenderer(struc,s,shownModels,widget)
-{
-    bigDL = DisplayLists::getBigDisplayList();
-    updateColorScheme();
+void BallAndStickGLRenderer::drawBioStruct3D() {
+    glCallList(dl);
 }
 
-void BallAndStickGLRenderer::updateColorScheme()
-{   
-    float detailLevel = glWidget->getRenderDetailLevel();
-    DisplayLists::createBigDisplayList(detailLevel, bioStruct, shownModels, colorScheme);
-
+void BallAndStickGLRenderer::updateColorScheme() {
+    createDisplayList();
 }
 
 void BallAndStickGLRenderer::updateShownModels() {
-    float detailLevel = glWidget->getRenderDetailLevel();
-    DisplayLists::createBigDisplayList(detailLevel, bioStruct, shownModels, colorScheme);
+    createDisplayList();
 }
 
+static void drawAtomsBonds(const Color4f &viewAtomColor, float renderDetailLevel, const Molecule3DModel &model, const BioStruct3DColorScheme* colorScheme)
+{
+    GLUquadricObj *pObj = gluNewQuadric();
+    gluQuadricNormals(pObj, GLU_SMOOTH);
 
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, viewAtomColor.getConstData());
+
+    static float bondThickness = 0.15f;
+    float radius = 0.35f;
+    int numSlices = 8 * renderDetailLevel;
+
+    foreach(const SharedAtom atom, model.atoms) {
+        Color4f atomColor = colorScheme->getAtomColor(atom);
+        if (viewAtomColor==atomColor)
+        {
+            Vector3D pos = atom->coord3d;
+            //glPushMatrix();
+            glTranslatef(pos.x, pos.y, pos.z);
+            gluSphere(pObj, radius, numSlices, numSlices);
+            glTranslatef(-pos.x, -pos.y, -pos.z);
+            //glPopMatrix();
+        }
+    }
+
+    foreach (Bond bond, model.bonds) {
+        const SharedAtom a1 = bond.getAtom1();
+        const SharedAtom a2 = bond.getAtom2();
+
+        const Color4f &a1Color = colorScheme->getAtomColor(a1);
+        const Color4f &a2Color = colorScheme->getAtomColor(a2);
+
+        Vector3D middle = (a1->coord3d + a2->coord3d) / 2;
+
+        if (a1Color==viewAtomColor)
+        {
+            if (a1Color==a2Color)
+            {
+                //glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, a1Color);
+                glDrawCylinder(pObj, a1->coord3d, a2->coord3d, bondThickness, renderDetailLevel);
+            }
+            else
+            {
+                //glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, a1Color);
+                glDrawCylinder(pObj, a1->coord3d, middle, bondThickness, renderDetailLevel);
+            }
+        }
+        if (a2Color == viewAtomColor)
+        {
+            //glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, a2Color);
+            glDrawCylinder(pObj, middle, a2->coord3d, bondThickness, renderDetailLevel);
+        }
+    }
+
+    gluDeleteQuadric(pObj);
+}
+
+void BallAndStickGLRenderer::createDisplayList()
+{
+    float renderDetailLevel = glWidget->getRenderDetailLevel();
+
+    QList<Color4f> colors;
+
+    glNewList(dl, GL_COMPILE);
+
+    foreach (const SharedMolecule mol, bioStruct.moleculeMap) {
+        foreach (int index, shownModels) {
+            const Molecule3DModel& model = mol->models.at(index);
+
+            colors.clear();
+
+            foreach(const SharedAtom atom, model.atoms) {
+                Color4f atomColor = colorScheme->getAtomColor(atom);
+
+                if (colors.contains(atomColor))
+                {
+                    continue; // Atom and bonds with this color has been already viewed
+                }
+                else
+                {
+                    drawAtomsBonds(atomColor, renderDetailLevel, model, colorScheme);
+                    colors.push_back(atomColor);
+                }
+            }
+        }
+    }
+
+    glEndList();
+}
 
 } //namespace

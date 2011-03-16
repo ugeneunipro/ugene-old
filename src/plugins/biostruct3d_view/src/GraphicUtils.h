@@ -121,20 +121,6 @@ Vector3D projectPointOnAxis(const Vector3D& point, const Vector3D& axisUnitVecto
 //! Calculates average point
 Vector3D calcMiddlePoint(const QVector<Vector3D>& points);
 
-class DisplayLists {
-    static unsigned int bigDL;
-    static unsigned int vanDerWaalsDL;
-    static const int BIG_DL_INDEX = 1;
-    static const int VANDERWAALS_DL_INDEX = 2;
-
-    static void drawAtomsBonds(const Color4f &viewAtomColor, float renderDetailLevel, const Molecule3DModel &model, const BioStruct3DColorScheme* colorScheme);
-
-public:
-    static void createBigDisplayList(float renderDetailLevel, const BioStruct3D& bioStruct, const QList<int> &modelIndexList, const BioStruct3DColorScheme* colorScheme);
-    static int getBigDisplayList() { return bigDL; }
-};
-
-
 void accPerspective(double fovy, double aspect,
                     double near, double far, double pixdx, double pixdy,
                     double eyedx, double eyedy, double focus);

@@ -72,9 +72,7 @@ void BioStruct3DGLRendererRegistry::registerFactories() {
 /* class BioStruct3DGLRenderer */
 BioStruct3DGLRenderer::BioStruct3DGLRenderer( const BioStruct3D& _bioStruct, const BioStruct3DColorScheme* _s, const QList<int> &_shownModels, const BioStruct3DGLWidget *widget)
         : bioStruct(_bioStruct), colorScheme(_s), shownModels(_shownModels), glWidget(widget)
-{
-    bigDL = -1;
-}
+{}
 
 void BioStruct3DGLRenderer::setColorScheme( const BioStruct3DColorScheme* s )
 {

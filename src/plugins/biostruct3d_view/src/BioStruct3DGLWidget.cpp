@@ -183,12 +183,6 @@ void BioStruct3DGLWidget::initializeGL()
     GLfloat mat_specular[] = { 0.6f, 0.6f, 0.6f, 1.0 };
     GLfloat mat_shininess[] = { 90.0 };
 
-    // bug-2860:
-    const BioStruct3D &bs = *contexts.first().biostruct;
-    BioStruct3DColorScheme *scheme = contexts.first().colorScheme.data();
-    const QList<int> &activeModelIndexList = contexts.first().shownModelsIndexes;
-    DisplayLists::createBigDisplayList(getRenderDetailLevel(), bs, activeModelIndexList, scheme);
-
     qglClearColor(backgroundColor);
     glShadeModel (GL_SMOOTH);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -1235,12 +1229,6 @@ void BioStruct3DGLWidget::sl_settings()
 
         this->makeCurrent();
         setBackgroundColor(backgroundColor);
-
-        // bug-2860:
-        const BioStruct3D &bs = *contexts.first().biostruct;
-        BioStruct3DColorScheme *scheme = contexts.first().colorScheme.data();
-        const QList<int> &activeModelIndexList = contexts.first().shownModelsIndexes;
-        DisplayLists::createBigDisplayList(getRenderDetailLevel(), bs, activeModelIndexList, scheme);
 
         updateGL();
     }
