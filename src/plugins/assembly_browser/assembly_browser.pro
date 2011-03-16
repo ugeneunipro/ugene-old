@@ -9,7 +9,8 @@ HEADERS += src/AssemblyBrowser.h \
            src/AssemblyReferenceArea.h \
            src/AssemblyCellRenderer.h \
            src/AssemblyRuler.h \
-           src/ShortReadIterator.h
+           src/ShortReadIterator.h \
+           src/AssemblyBrowserFactory.h
 SOURCES += src/AssemblyBrowser.cpp \
            src/AssemblyBrowserPlugin.cpp \
            src/AssemblyDensityGraph.cpp \
@@ -18,4 +19,5 @@ SOURCES += src/AssemblyBrowser.cpp \
            src/AssemblyReferenceArea.cpp \
            src/AssemblyCellRenderer.cpp \
            src/AssemblyRuler.cpp  \
-           src/ShortReadIterator.cpp
+           src/ShortReadIterator.cpp \
+           src/AssemblyBrowserFactory.cpp

@@ -63,7 +63,7 @@ private:
 };
 
 class AssemblyBrowserUi;
-class AssemblyBrowserWindow;
+class AssemblyBrowser;
 class AssemblyOverviewRenderTask;
 
 class AssemblyOverview: public QWidget {
@@ -98,7 +98,7 @@ private:
 
 private:
     AssemblyBrowserUi * ui;
-    AssemblyBrowserWindow * window;
+    AssemblyBrowser * browser;
     QSharedPointer<AssemblyModel> model;
 
     QRect cachedSelection;

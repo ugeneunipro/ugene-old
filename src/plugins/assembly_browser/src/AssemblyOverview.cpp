@@ -39,7 +39,7 @@ namespace U2 {
 // AssemblyOverview
 //==============================================================================
 
-AssemblyOverview::AssemblyOverview(AssemblyBrowserUi * ui_): ui(ui_), window(ui->getWindow()), model(ui_->getModel()), 
+AssemblyOverview::AssemblyOverview(AssemblyBrowserUi * ui_): ui(ui_), browser(ui->getWindow()), model(ui_->getModel()), 
 redrawSelection(true), bgrRenderer(model), scribbling(false)
 {
     setFixedHeight(FIXED_HEIGHT);
@@ -50,8 +50,8 @@ redrawSelection(true), bgrRenderer(model), scribbling(false)
 
 void AssemblyOverview::connectSlots() {
     connect(&bgrRenderer, SIGNAL(si_rendered()), SLOT(sl_redraw()));
-    connect(window, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_visibleAreaChanged()));
-    connect(window, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
+    connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_visibleAreaChanged()));
+    connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
 }
 
 void AssemblyOverview::initSelectionRedraw() {
@@ -119,8 +119,8 @@ void AssemblyOverview::drawCoordLabels(QPainter & p) {
         p.drawText(grtRect, Qt::AlignCenter, globalRegionText);
     }
 
-    qint64 from = window->getXOffsetInAssembly();
-    qint64 to = qMin(window->getXOffsetInAssembly() + window->basesCanBeVisible(), model->getModelLength(status));
+    qint64 from = browser->getXOffsetInAssembly();
+    qint64 to = qMin(browser->getXOffsetInAssembly() + browser->basesCanBeVisible(), model->getModelLength(status));
 
     QString fromText = QString::number(from);
     QString toText = QString::number(to);
@@ -156,10 +156,10 @@ QRect AssemblyOverview::calcCurrentSelection() const {
     int w = rect().width();
     int h = rect().height();
 
-    int x_pix_start = double(w) / model->getModelLength(status) * window->getXOffsetInAssembly() + 0.5;
-    int y_pix_start = double(h) / model->getModelHeight(status) * window->getYOffsetInAssembly() + 0.5;
-    int pix_width = double(w) / model->getModelLength(status) * window->basesVisible() + 0.5;
-    int pix_height = double(h) / model->getModelHeight(status) * window->rowsVisible() + 0.5;
+    int x_pix_start = double(w) / model->getModelLength(status) * browser->getXOffsetInAssembly() + 0.5;
+    int y_pix_start = double(h) / model->getModelHeight(status) * browser->getYOffsetInAssembly() + 0.5;
+    int pix_width = double(w) / model->getModelLength(status) * browser->basesVisible() + 0.5;
+    int pix_height = double(h) / model->getModelHeight(status) * browser->rowsVisible() + 0.5;
     
     return QRect(x_pix_start, y_pix_start, pix_width, pix_height);
 }
@@ -194,21 +194,21 @@ void AssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
     qint64 newXoffset = 0;
     qint64 newYoffset = 0;
     if(dx) {
-        newXoffset = (dx < 0) ? 0 : model->getModelLength(status) - window->basesVisible();
+        newXoffset = (dx < 0) ? 0 : model->getModelLength(status) - browser->basesVisible();
         moveModel = true;
     } else {
         newXoffset = calcXAssemblyCoord(newSelection.x());
     }
     if(dy) {
-        newYoffset = (dy < 0) ? 0 : model->getModelHeight(status) - window->rowsVisible();
+        newYoffset = (dy < 0) ? 0 : model->getModelHeight(status) - browser->rowsVisible();
         moveModel = true;
     } else {
         newYoffset = calcYAssemblyCoord(newSelection.y());
     }
     
     if(moveModel) {
-        window->setXOffsetInAssembly(newXoffset);
-        window->setYOffsetInAssembly(newYoffset);
+        browser->setXOffsetInAssembly(newXoffset);
+        browser->setYOffsetInAssembly(newYoffset);
     } 
 }
 

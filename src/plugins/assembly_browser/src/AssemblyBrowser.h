@@ -79,11 +79,10 @@ private:
 
 class AssemblyBrowserUi;
 
-class AssemblyBrowserWindow : public GObjectView {
+class AssemblyBrowser : public GObjectView {
     Q_OBJECT
 public:
-    AssemblyBrowserWindow(AssemblyObject * o);
-    ~AssemblyBrowserWindow();
+    AssemblyBrowser(AssemblyObject * o);
 
     virtual void setupMDIToolbar(QToolBar* tb);
     virtual void setupViewMenu(QMenu* n);
@@ -168,10 +167,10 @@ class AssemblyReadsArea;
 class AssemblyBrowserUi : public QWidget {
     Q_OBJECT
 public:
-    AssemblyBrowserUi(AssemblyBrowserWindow * window);
+    AssemblyBrowserUi(AssemblyBrowser * browser);
 
-    inline QSharedPointer<AssemblyModel> getModel() const {return window->getModel();}
-    inline AssemblyBrowserWindow * getWindow() const {return window;}
+    inline QSharedPointer<AssemblyModel> getModel() const {return browser->getModel();}
+    inline AssemblyBrowser * getWindow() const {return browser;}
 
     inline AssemblyReadsArea * getReadsArea() const {return readsArea;}
 
@@ -182,7 +181,7 @@ private:
     AssemblyRuler * ruler;
     AssemblyReadsArea * readsArea;
     
-    AssemblyBrowserWindow * window;
+    AssemblyBrowser * browser;
 };
 
 /**

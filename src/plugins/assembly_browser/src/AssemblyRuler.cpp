@@ -31,7 +31,7 @@
 namespace U2 {
 
 AssemblyRuler::AssemblyRuler(AssemblyBrowserUi * ui) :
-ui(ui), window(ui->getWindow()), model(ui->getModel())
+ui(ui), browser(ui->getWindow()), model(ui->getModel())
 {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
@@ -39,8 +39,8 @@ ui(ui), window(ui->getWindow()), model(ui->getModel())
 }
 
 void AssemblyRuler::connectSlots() {
-    connect(window, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_redraw()));
-    connect(window, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
+    connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_redraw()));
+    connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
 }
 
 void AssemblyRuler::drawAll() {
@@ -77,17 +77,17 @@ void AssemblyRuler::drawRuler(QPainter & p) {
         p.drawLine(width()-1, 2, width()-1, lowBorder);
     }
 
-    int lettersPerZ = window->calcAsmCoord(50);
+    int lettersPerZ = browser->calcAsmCoord(50);
     int interval = pow((double)10, (int)numOfDigits(lettersPerZ)-1);
-    int pixInterval = window->calcPixelCoord(interval);
+    int pixInterval = browser->calcPixelCoord(interval);
     
-    int globalOffset = window->getXOffsetInAssembly();
+    int globalOffset = browser->getXOffsetInAssembly();
     int firstLetterToMark = (globalOffset + interval)/ interval * interval;
     int distToFLTM = firstLetterToMark - globalOffset;
 
-    int end = window->basesCanBeVisible();
+    int end = browser->basesCanBeVisible();
     int z = interval * 10;
-    int halfCell = window->getCellWidth() / 2;
+    int halfCell = browser->getCellWidth() / 2;
     for(int i = distToFLTM; i < end; i+=interval) {
         int lowBorder = (height() - 5) / 2;
         int y = 5;

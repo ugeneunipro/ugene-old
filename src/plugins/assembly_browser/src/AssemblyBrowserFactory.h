@@ -19,49 +19,41 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __ASSEMBLY_REFERENCE_AREA_H__
-#define __ASSEMBLY_REFERENCE_AREA_H__
+#ifndef __ASSEMBLY_BROWSER_FACTORY_H__
+#define __ASSEMBLY_BROWSER_FACTORY_H__
 
-#include <QtGui/QWidget>
-#include <QtCore/QSharedPointer>
-
-#include "AssemblyCellRenderer.h"
+#include <U2Core/GObjectReference.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/ObjectViewTasks.h>
 
 namespace U2 {
 
-class AssemblyBrowserUi;
-class AssemblyBrowser;
-class AssemblyModel;
-
-class AssemblyReferenceArea: public QWidget {
+class AssemblyBrowserFactory : public GObjectViewFactory {
     Q_OBJECT
 public:
-    AssemblyReferenceArea(AssemblyBrowserUi * ui);
+    AssemblyBrowserFactory(QObject * parent = 0);
 
-protected:
-    void paintEvent(QPaintEvent * e);
-    void resizeEvent(QResizeEvent * e);
+    virtual bool canCreateView(const MultiGSelection & multiSelection);
+    virtual Task * createViewTask(const MultiGSelection & multiSelection, bool single = false);
 
-private slots:
-    void sl_redraw();
-
-private:
-    void connectSlots();
-    void drawAll();
-    void drawReference(QPainter & p);
-
-private:
-    AssemblyBrowserUi * ui;
-    AssemblyBrowser * browser;
-    QSharedPointer<AssemblyModel> model;
-
-    QPixmap cachedView;
-    bool redraw;
-    AssemblyCellRenderer cellRenderer;
-
-    const static int FIXED_HEIGHT = 25;
+    static const GObjectViewFactoryId ID;
 };
 
-} //ns
+class AssemblyObject;
+class UnloadedObject;
+class Document;
 
-#endif 
+class OpenAssemblyBrowserTask : public ObjectViewTask {
+    Q_OBJECT
+public:
+    OpenAssemblyBrowserTask(AssemblyObject * obj);
+    OpenAssemblyBrowserTask(UnloadedObject * obj);
+    OpenAssemblyBrowserTask(Document * doc);
+    virtual void open();
+private:
+    GObjectReference unloadedObjRef;
+};
+
+}
+
+#endif

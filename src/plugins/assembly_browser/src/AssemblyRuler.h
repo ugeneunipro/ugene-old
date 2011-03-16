@@ -29,7 +29,7 @@
 namespace U2 {
 
 class AssemblyBrowserUi;
-class AssemblyBrowserWindow;
+class AssemblyBrowser;
 class AssemblyModel;
 
 class AssemblyRuler : public QWidget {
@@ -53,7 +53,7 @@ private:
 
 private:
     AssemblyBrowserUi * ui;
-    AssemblyBrowserWindow * window;
+    AssemblyBrowser * browser;
     QSharedPointer<AssemblyModel> model;
 
     QPixmap cachedView;

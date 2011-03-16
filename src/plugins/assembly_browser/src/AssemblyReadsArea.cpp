@@ -40,7 +40,7 @@
 namespace U2 {
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
-ui(ui_), window(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true), hBar(hBar_), vBar(vBar_)
+ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true), hBar(hBar_), vBar(vBar_)
 {
     initRedraw();
     connectSlots();
@@ -52,8 +52,8 @@ void AssemblyReadsArea::initRedraw() {
 }
 
 void AssemblyReadsArea::connectSlots() {
-    connect(window, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_zoomOperationPerformed()));
-    connect(window, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
+    connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_zoomOperationPerformed()));
+    connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
 }   
 
 void AssemblyReadsArea::setupHScrollBar() {
@@ -61,11 +61,11 @@ void AssemblyReadsArea::setupHScrollBar() {
     hBar->disconnect(this);
 
     qint64 assemblyLen = model->getModelLength(status);
-    qint64 numVisibleBases = window->basesVisible();
+    qint64 numVisibleBases = browser->basesVisible();
 
     hBar->setMinimum(0);
     hBar->setMaximum(assemblyLen - numVisibleBases); // what if too long ???
-    hBar->setSliderPosition(window->getXOffsetInAssembly());
+    hBar->setSliderPosition(browser->getXOffsetInAssembly());
 
     hBar->setSingleStep(1);
     hBar->setPageStep(numVisibleBases);
@@ -80,11 +80,11 @@ void AssemblyReadsArea::setupVScrollBar() {
     vBar->disconnect(this);
 
     qint64 assemblyHeight = model->getModelHeight(status);
-    qint64 numVisibleRows = window->rowsVisible();
+    qint64 numVisibleRows = browser->rowsVisible();
 
     vBar->setMinimum(0);
     vBar->setMaximum(assemblyHeight - numVisibleRows); //FIXME what if too long ???
-    vBar->setSliderPosition(window->getYOffsetInAssembly());
+    vBar->setSliderPosition(browser->getYOffsetInAssembly());
 
     vBar->setSingleStep(1);
     vBar->setPageStep(numVisibleRows);
@@ -107,9 +107,9 @@ void AssemblyReadsArea::drawAll() {
             QPainter p(&cachedView);
             redraw = false;
 
-            if(!window->areReadsVisible()) {
+            if(!browser->areReadsVisible()) {
                 drawDensityGraph(p);
-            } else if(window->areReadsVisible()) {
+            } else if(browser->areReadsVisible()) {
                 drawReads(p);
             }
             setupHScrollBar(); 
@@ -133,7 +133,7 @@ void AssemblyReadsArea::drawDensityGraph(QPainter & p) {
     quint64 widgetWidth = width();
     quint64 widgetHeight = height();
 
-    quint64 lettersPerXPixel =  window->calcAsmCoord(1);
+    quint64 lettersPerXPixel =  browser->calcAsmCoord(1);
 
     //???
     //FIXME
@@ -141,7 +141,7 @@ void AssemblyReadsArea::drawDensityGraph(QPainter & p) {
     // TODO don't duplicate the code with ass. overview and ass. density graph
 //     QVector<quint64> readsPerXPixels(widgetWidth);
 //     quint64 maxReadsPerXPixels = 0;
-//     quint64 start = window->getXOffsetInAssembly(); 
+//     quint64 start = browser->getXOffsetInAssembly(); 
 //     for(int i = 0 ; i < widgetWidth; ++i) {
 //         quint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(start, lettersPerXPixel), status);
 //         if(checkAndLogError(status)) {
@@ -172,14 +172,14 @@ void AssemblyReadsArea::drawDensityGraph(QPainter & p) {
 void AssemblyReadsArea::drawReads(QPainter & p) {
     GTIMER(c1, t1, "AssemblyReadsArea::drawReads");
 
-    p.setFont(window->getFont());
+    p.setFont(browser->getFont());
     p.fillRect(rect(), Qt::white);
 
-    const qint64 xOffsetInAssembly = window->getXOffsetInAssembly();
-    const qint64 yOffsetInAssembly = window->getYOffsetInAssembly();
+    const qint64 xOffsetInAssembly = browser->getXOffsetInAssembly();
+    const qint64 yOffsetInAssembly = browser->getYOffsetInAssembly();
 
-    U2Region visibleBases(xOffsetInAssembly, window->basesCanBeVisible());
-    U2Region visibleRows(yOffsetInAssembly, window->rowsCanBeVisible());
+    U2Region visibleBases(xOffsetInAssembly, browser->basesCanBeVisible());
+    U2Region visibleRows(yOffsetInAssembly, browser->rowsCanBeVisible());
 
     // 0. Get reads from the database
     U2OpStatusImpl status;
@@ -192,13 +192,13 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     }
 
     // 1. Render cells using AssemblyCellRenderer
-    const int letterWidth = window->getCellWidth();
+    const int letterWidth = browser->getCellWidth();
 
     QVector<QImage> cells;
-    bool text = window->areLettersVisible(); 
-    if(window->areCellsVisible()) {
+    bool text = browser->areLettersVisible(); 
+    if(browser->areCellsVisible()) {
         GTIMER(c3, t3, "AssemblyReadsArea::drawReads -> cells rendering");
-        QFont f = window->getFont();
+        QFont f = browser->getFont();
         if(text) {
             f.setPointSize(calcFontPointSize());
         }
@@ -227,7 +227,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             continue;
         }
 
-        if(window->areCellsVisible()) { //->draw color rects 
+        if(browser->areCellsVisible()) { //->draw color rects 
             int firstVisibleBase = readVisibleBases.startPos - readBases.startPos; 
             int x_pix_start = calcPainterOffset(xToDrawRegion.startPos);
             int y_pix_start = calcPainterOffset(yToDrawRegion.startPos);
@@ -244,10 +244,10 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
                 p.drawImage(cellStart, cells[c]);
             }
         } else { 
-            int xstart = window->calcPixelCoord(xToDrawRegion.startPos);
-            int xend = window->calcPixelCoord(xToDrawRegion.endPos());
-            int ystart = window->calcPixelCoord(yToDrawRegion.startPos);
-            int yend = window->calcPixelCoord(yToDrawRegion.endPos());
+            int xstart = browser->calcPixelCoord(xToDrawRegion.startPos);
+            int xend = browser->calcPixelCoord(xToDrawRegion.endPos());
+            int ystart = browser->calcPixelCoord(yToDrawRegion.startPos);
+            int yend = browser->calcPixelCoord(yToDrawRegion.endPos());
 
             p.fillRect(xstart, ystart, xend - xstart, yend - ystart, Qt::black);
         }
@@ -255,13 +255,13 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
 }
 
 int AssemblyReadsArea::calcFontPointSize() const {
-    return window->getCellWidth() / 2;
+    return browser->getCellWidth() / 2;
 }
 
 qint64 AssemblyReadsArea::calcPainterOffset(qint64 xAsmCoord) const {
-    qint64 letterWidth = window->getCellWidth();
+    qint64 letterWidth = browser->getCellWidth();
     if(!(letterWidth > 0)) {
-        return window->calcPixelCoord(xAsmCoord);
+        return browser->calcPixelCoord(xAsmCoord);
     }
     qint64 result = letterWidth * xAsmCoord;
     return result;
@@ -290,9 +290,9 @@ void AssemblyReadsArea::wheelEvent(QWheelEvent * e) {
     if(Qt::NoButton == e->buttons()) {
         for(int i = 0; i < numSteps; ++i) {
             if(positive) {
-                window->sl_zoomIn();
+                browser->sl_zoomIn();
             } else {
-                window->sl_zoomOut();
+                browser->sl_zoomOut();
             }
         }
     }
@@ -303,7 +303,7 @@ void AssemblyReadsArea::mousePressEvent(QMouseEvent * e) {
     if(e->button() == Qt::LeftButton) {
         scribbling = true;
         setCursor(Qt::ClosedHandCursor);
-        mouseMover = MouseMover(window->getCellWidth(), e->pos());
+        mouseMover = MouseMover(browser->getCellWidth(), e->pos());
     }
     QWidget::mousePressEvent(e);
 }
@@ -322,16 +322,16 @@ void AssemblyReadsArea::mouseMoveEvent(QMouseEvent * e) {
 
         int x_units = mouseMover.getXunits();
         int y_units = mouseMover.getYunits();
-        window->adjustOffsets(-x_units, -y_units);
+        browser->adjustOffsets(-x_units, -y_units);
     }
 }
 
 void AssemblyReadsArea::sl_onHScrollMoved(int pos) {
-    window->setXOffsetInAssembly(pos);
+    browser->setXOffsetInAssembly(pos);
 }
 
 void AssemblyReadsArea::sl_onVScrollMoved(int pos) {
-    window->setYOffsetInAssembly(pos);
+    browser->setYOffsetInAssembly(pos);
 }
 
 void AssemblyReadsArea::sl_zoomOperationPerformed() {

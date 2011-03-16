@@ -32,7 +32,7 @@
 
 namespace U2 {
 
-class AssemblyBrowserWindow;
+class AssemblyBrowser;
 class AssemblyBrowserUi;
 class AssemblyModel;
 
@@ -75,7 +75,7 @@ private slots:
 
 private:
     AssemblyBrowserUi * ui;
-    AssemblyBrowserWindow * window;
+    AssemblyBrowser * browser;
     QSharedPointer<AssemblyModel> model;
 
     bool redraw;

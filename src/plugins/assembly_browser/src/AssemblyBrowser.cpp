@@ -42,7 +42,7 @@
 
 #include <U2Misc/DialogUtils.h>
 
-#include "AssemblyBrowserPlugin.h"
+#include "AssemblyBrowserFactory.h"
 #include "AssemblyOverview.h"
 #include "AssemblyReferenceArea.h"
 #include "AssemblyDensityGraph.h"
@@ -51,7 +51,7 @@
 
 namespace U2 {
 
-const double AssemblyBrowserWindow::ZOOM_MULT = 1.25;
+const double AssemblyBrowser::ZOOM_MULT = 1.25;
 
 //==============================================================================
 // AssemblyModel
@@ -122,10 +122,10 @@ QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus&
 }
 
 //==============================================================================
-// AssemblyBrowserWindow
+// AssemblyBrowser
 //==============================================================================
 
-AssemblyBrowserWindow::AssemblyBrowserWindow(AssemblyObject * o) : 
+AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
 gobject(o), model(0), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0) {
     initFont();
@@ -140,35 +140,33 @@ gobject(o), model(0), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0)
 }
 
 
-bool AssemblyBrowserWindow::onCloseEvent() {
+bool AssemblyBrowser::onCloseEvent() {
     return true;
 }
 
-QWidget * AssemblyBrowserWindow::createWidget() {
+QWidget * AssemblyBrowser::createWidget() {
     ui = new AssemblyBrowserUi(this);
     return ui;
 }
 
-AssemblyBrowserWindow::~AssemblyBrowserWindow() {
-}
 
-void AssemblyBrowserWindow::setupMDIToolbar(QToolBar* tb) {
+void AssemblyBrowser::setupMDIToolbar(QToolBar* tb) {
 //    tb->addAction(openAssemblyAction);
     tb->addAction(zoomInAction);
     tb->addAction(zoomOutAction);
 }
 
-void AssemblyBrowserWindow::setupViewMenu(QMenu* n) {
+void AssemblyBrowser::setupViewMenu(QMenu* n) {
 //    n->addAction(openAssemblyAction);
     n->addAction(zoomInAction);
     n->addAction(zoomOutAction);
 }
 
-int AssemblyBrowserWindow::getCellWidth() const {
+int AssemblyBrowser::getCellWidth() const {
     return calcPixelCoord(1);
 }
 
-qint64 AssemblyBrowserWindow::calcAsmCoord(qint64 xPixCoord) const {
+qint64 AssemblyBrowser::calcAsmCoord(qint64 xPixCoord) const {
     U2OpStatusImpl status;
     qint64 modelLen = model->getModelLength(status);
     qint64 width = ui->getReadsArea()->width();
@@ -176,7 +174,7 @@ qint64 AssemblyBrowserWindow::calcAsmCoord(qint64 xPixCoord) const {
     return xAsmCoord;
 }
 
-qint64 AssemblyBrowserWindow::calcPixelCoord(qint64 xAsmCoord) const {
+qint64 AssemblyBrowser::calcPixelCoord(qint64 xAsmCoord) const {
     U2OpStatusImpl status;
     qint64 modelLen = model->getModelLength(status);
     qint64 width = ui->getReadsArea()->width();
@@ -184,7 +182,7 @@ qint64 AssemblyBrowserWindow::calcPixelCoord(qint64 xAsmCoord) const {
     return xPixelCoord;
 }
 
-qint64 AssemblyBrowserWindow::basesCanBeVisible() const {
+qint64 AssemblyBrowser::basesCanBeVisible() const {
     int width = ui->getReadsArea()->width();
     qint64 letterWidth = getCellWidth();
     if(0 == letterWidth) {
@@ -194,13 +192,13 @@ qint64 AssemblyBrowserWindow::basesCanBeVisible() const {
     return result;
 }
 
-qint64 AssemblyBrowserWindow::basesVisible() const {
+qint64 AssemblyBrowser::basesVisible() const {
     U2OpStatusImpl status;
     qint64 modelLength = model->getModelLength(status);
     return qMin(modelLength, basesCanBeVisible());
 }
 
-qint64 AssemblyBrowserWindow::rowsCanBeVisible() const {
+qint64 AssemblyBrowser::rowsCanBeVisible() const {
     int height = ui->getReadsArea()->height();
     qint64 letterWidth = getCellWidth();
     if(0 == letterWidth) {
@@ -210,36 +208,36 @@ qint64 AssemblyBrowserWindow::rowsCanBeVisible() const {
     return result;
 }
 
-qint64 AssemblyBrowserWindow::rowsVisible() const {
+qint64 AssemblyBrowser::rowsVisible() const {
     U2OpStatusImpl status;
     qint64 modelHeight = model->getModelHeight(status);
     return qMin(rowsCanBeVisible(), modelHeight);
 }
 
-bool AssemblyBrowserWindow::areReadsVisible() const {
+bool AssemblyBrowser::areReadsVisible() const {
     int readWidthPix = calcPixelCoord(1); // TODO: average read length ? 
     return readWidthPix >= 1;
 }
 
-bool AssemblyBrowserWindow::areCellsVisible() const {
+bool AssemblyBrowser::areCellsVisible() const {
     return getCellWidth() >= CELL_VISIBLE_WIDTH;
 }
 
-bool AssemblyBrowserWindow::areLettersVisible() const {
+bool AssemblyBrowser::areLettersVisible() const {
     return getCellWidth() >= LETTER_VISIBLE_WIDTH;
 }
 
-void AssemblyBrowserWindow::setXOffsetInAssembly(qint64 x) {
+void AssemblyBrowser::setXOffsetInAssembly(qint64 x) {
     xOffsetInAssembly = x;
     emit si_offsetsChanged();
 }
 
-void AssemblyBrowserWindow::setYOffsetInAssembly(qint64 y) {
+void AssemblyBrowser::setYOffsetInAssembly(qint64 y) {
     yOffsetInAssembly = y;
     emit si_offsetsChanged();
 }
 
-void AssemblyBrowserWindow::adjustOffsets(qint64 dx, qint64 dy) {
+void AssemblyBrowser::adjustOffsets(qint64 dx, qint64 dy) {
     U2OpStatusImpl status;
     qint64 modelLen = model->getModelLength(status);
     qint64 modelHeight = model->getModelHeight(status);
@@ -250,7 +248,7 @@ void AssemblyBrowserWindow::adjustOffsets(qint64 dx, qint64 dy) {
     emit si_offsetsChanged();
 }
 
-void AssemblyBrowserWindow::sl_loadAssembly() {
+void AssemblyBrowser::sl_loadAssembly() {
     U2OpStatusImpl os;
     QHash<QString, QString> props;
     //props["url"] = "E:/BT474_dir75.sqlite";
@@ -303,9 +301,9 @@ void AssemblyBrowserWindow::sl_loadAssembly() {
     }
 }
 
-void AssemblyBrowserWindow::sl_assemblyLoaded() {
+void AssemblyBrowser::sl_assemblyLoaded() {
     assert(model);
-    GTIMER(c1, t1, "AssemblyBrowserWindow::sl_assemblyLoaded");
+    GTIMER(c1, t1, "AssemblyBrowser::sl_assemblyLoaded");
     checkAndLogError(dbiOpStatus);
     U2Dbi * dbi = model->getDbiHandle().dbi;
     assert(U2DbiState_Ready == dbi->getState());
@@ -321,7 +319,7 @@ void AssemblyBrowserWindow::sl_assemblyLoaded() {
 //     ui->update();
 }
 
-void AssemblyBrowserWindow::sl_zoomIn() {
+void AssemblyBrowser::sl_zoomIn() {
     int oldCellSize = getCellWidth();
     if(!oldCellSize) {
         zoomFactor /= ZOOM_MULT;
@@ -341,7 +339,7 @@ void AssemblyBrowserWindow::sl_zoomIn() {
     emit si_zoomOperationPerformed();
 }
 
-void AssemblyBrowserWindow::sl_zoomOut() {
+void AssemblyBrowser::sl_zoomOut() {
     int oldCellSize = getCellWidth();
     if(zoomFactor * ZOOM_MULT > 1.) {
         zoomFactor = 1.;
@@ -356,11 +354,11 @@ void AssemblyBrowserWindow::sl_zoomOut() {
     emit si_zoomOperationPerformed();
 }
 
-void AssemblyBrowserWindow::initFont() {
+void AssemblyBrowser::initFont() {
     font.setStyleHint(QFont::SansSerif, QFont::PreferAntialias);
 }
 
-void AssemblyBrowserWindow::setupActions() {
+void AssemblyBrowser::setupActions() {
     openAssemblyAction = new QAction(tr("Load assembly"), this);
     connect(openAssemblyAction, SIGNAL(triggered()), SLOT(sl_loadAssembly()));
 
@@ -371,7 +369,7 @@ void AssemblyBrowserWindow::setupActions() {
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOut()));
 }
 
-void AssemblyBrowserWindow::updateActions() {
+void AssemblyBrowser::updateActions() {
     zoomOutAction->setEnabled(1. != zoomFactor);
 }
 
@@ -379,7 +377,7 @@ void AssemblyBrowserWindow::updateActions() {
 // AssemblyBrowserUi
 //==============================================================================
 
-AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowserWindow * window_) : window(window_) {
+AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(browser_) {
     setMinimumSize(300, 200);
 
     QScrollBar * readsHBar = new QScrollBar(Qt::Horizontal);
@@ -419,7 +417,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowserWindow * window_) : window(w
 
 bool checkAndLogError(const U2OpStatusImpl & status) {
     if(status.hasError()) {
-        uiLog.error(AssemblyBrowserWindow::tr(QString("Assembly Browser -> Database Error: " + status.getError()).toAscii().data()));
+        uiLog.error(AssemblyBrowser::tr(QString("Assembly Browser -> Database Error: " + status.getError()).toAscii().data()));
     }
     return status.hasError();
 }

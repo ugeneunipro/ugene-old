@@ -28,7 +28,7 @@
 namespace U2 {
 
 AssemblyReferenceArea::AssemblyReferenceArea(AssemblyBrowserUi * ui_) : 
-ui(ui_), window(ui_->getWindow()), model(ui_->getModel())
+ui(ui_), browser(ui_->getWindow()), model(ui_->getModel())
 {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
@@ -36,8 +36,8 @@ ui(ui_), window(ui_->getWindow()), model(ui_->getModel())
 }
 
 void AssemblyReferenceArea::connectSlots() {
-    connect(window, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_redraw()));
-    connect(window, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
+    connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_redraw()));
+    connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
 }
 
 void AssemblyReferenceArea::drawAll() {
@@ -56,11 +56,11 @@ void AssemblyReferenceArea::drawAll() {
 void AssemblyReferenceArea::drawReference(QPainter & p) {
     GTIMER(c1, t1, "AssemblyReferenceArea::drawReference");
 
-    if(window->areCellsVisible()) {
+    if(browser->areCellsVisible()) {
         p.fillRect(rect(), Qt::white);
 
-        qint64 xOffsetInAss = window->getXOffsetInAssembly();
-        U2Region visibleRegion(xOffsetInAss,  window->basesCanBeVisible());
+        qint64 xOffsetInAss = browser->getXOffsetInAssembly();
+        U2Region visibleRegion(xOffsetInAss,  browser->basesCanBeVisible());
 
         U2OpStatusImpl status;
         QByteArray visibleSequence = model->getReferenceRegion(visibleRegion, status);
@@ -68,14 +68,14 @@ void AssemblyReferenceArea::drawReference(QPainter & p) {
             return;
         }
 
-        int letterWidth = window->getCellWidth();
+        int letterWidth = browser->getCellWidth();
         int letterHeight = FIXED_HEIGHT;
 
         int x_pix_start = 0;
         const int y_pix_start = 0;
 
-        bool text = window->areLettersVisible();
-        QFont f = window->getFont();
+        bool text = browser->areLettersVisible();
+        QFont f = browser->getFont();
         if(text) {
             int pointSize = qMin(letterWidth, letterHeight) / 2;
             if(pointSize) {
