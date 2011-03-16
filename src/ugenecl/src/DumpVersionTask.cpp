@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <cstdio>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineHelpProvider.h>
 #include <U2Core/CMDLineRegistry.h>
