@@ -1032,11 +1032,10 @@ void BioStruct3DGLWidget::createActions()
     exportImageAction = new QAction(tr("Export image"), this);
     connect(exportImageAction, SIGNAL(triggered()), this, SLOT(sl_exportImage()));
 
-    // bug-2855 Disabled while not ready
-    /*
     alignWithAction = new QAction(tr("Align With..."), this);
     connect(alignWithAction, SIGNAL(triggered()), this, SLOT(sl_alignWith()));
-    */
+    // bug-2855 Disabled for now
+    alignWithAction->setVisible(false);
 
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
 }
