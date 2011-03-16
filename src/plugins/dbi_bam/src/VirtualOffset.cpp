@@ -33,7 +33,7 @@ VirtualOffset::VirtualOffset(quint64 packedOffset):
 VirtualOffset::VirtualOffset(quint64 coffset, int uoffset):
         packedOffset((coffset << 16) | uoffset)
 {
-    assert(coffset <= 0xffffffffffff);
+    assert(coffset <= 0xffffffffffffLL);
     assert(uoffset >= 0);
     assert(uoffset <= 0xffff);
 }

@@ -36,6 +36,7 @@ const QString GenomeAlignerIndex::SARRAY_EXTENSION("sarr");
 const QString GenomeAlignerIndex::REF_INDEX_EXTENSION("ref");
 const QString GenomeAlignerIndex::HEADER("#UGENE suffix array index\n");
 const QString GenomeAlignerIndex::PARAMETERS("#file \"%1\", sequence's length = %2, w = %3\n");
+const int GenomeAlignerIndex::charsInMask = 31;
 const QString COMMENT1("#sequence length, window size, index size, bitChar's length, count of sequences\n");
 const QString COMMENT2("#reference name\n");
 const QString COMMENT3("#offsets of sequences in the reference\n");
