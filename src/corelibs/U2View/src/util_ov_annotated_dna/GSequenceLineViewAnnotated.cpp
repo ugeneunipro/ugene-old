@@ -422,7 +422,8 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter& p, DrawAnnot
         rectPath.addRect(x1, y.startPos, rw, y.length);
         bool leftTrim  = visibleLocation.startPos != r.startPos;
         bool rightTrim = visibleLocation.endPos()!= r.endPos();
-        if (drawSettings.drawAnnotationArrows && (!leftTrim && !rightTrim)) {
+        bool drawArrow = a->getStrand().isCompementary() ? !leftTrim : !rightTrim;
+        if (drawSettings.drawAnnotationArrows && drawArrow ) {
             addArrowPath(rectPath, annotationRect, a->getStrand().isCompementary());
         } /* else  {
             if (leftTrim) {
