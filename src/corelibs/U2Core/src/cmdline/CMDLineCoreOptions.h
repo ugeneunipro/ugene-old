@@ -35,7 +35,6 @@ public:
     static const QString INI_FILE;
     static const QString SUITE_URLS;
     static const QString TEST_REPORT;
-    static const QString STAY_ALIVE;
     static const QString HELP;
     static const QString HELP_SHORT;
     static const QString TRANSLATION;

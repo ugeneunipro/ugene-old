@@ -404,10 +404,6 @@ int main(int argc, char **argv)
     
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
-    if( cmdLineRegistry->hasParameter( CMDLineCoreOptions::STAY_ALIVE ) ) {
-        setCongeneStayAlive();
-    }
-    
     // show help if need
     bool showHelp = cmdLineRegistry->hasParameter(CMDLineCoreOptions::HELP);
     showHelp = showHelp || cmdLineRegistry->hasParameter(CMDLineCoreOptions::HELP_SHORT);

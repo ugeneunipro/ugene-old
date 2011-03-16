@@ -131,8 +131,9 @@ void WorkflowDesignerPlugin::registerCMDLineHelp() {
     
     cmdLineRegistry->registerCMDLineHelpProvider( taskSectionArguments );
     cmdLineRegistry->registerCMDLineHelpProvider( taskSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSectionArguments );
-    cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSection );
+    //TODO: bug UGENE-23
+    //cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSectionArguments );
+    //cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSection );
 }
 
 class CloseDesignerTask : public Task {
