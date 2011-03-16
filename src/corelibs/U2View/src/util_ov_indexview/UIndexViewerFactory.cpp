@@ -56,7 +56,7 @@ bool UIndexViewerFactory::isStateInSelection(const MultiGSelection& mSelection, 
 
 // similar to MSAEditorFactory::createViewTask
 Task* UIndexViewerFactory::createViewTask(const MultiGSelection& mSel, bool single ) {
-    QSet<GObject*> indObjs = SelectionUtils::findObjects( GObjectTypes::UINDEX, &mSel, UOF_LoadedAndUnloaded );
+    QList<GObject*> indObjs = SelectionUtils::findObjects( GObjectTypes::UINDEX, &mSel, UOF_LoadedAndUnloaded );
     QSet<Document*> docsWithUInd = SelectionUtils::findDocumentsWithObjects( GObjectTypes::UINDEX, &mSel,
                                         UOF_LoadedAndUnloaded, false );
     QList< OpenUIndexViewerTask* > resTasks;
@@ -64,7 +64,7 @@ Task* UIndexViewerFactory::createViewTask(const MultiGSelection& mSel, bool sing
     foreach(Document* doc, docsWithUInd ) {
         QList<GObject*> docObjs = doc->findGObjectByType( GObjectTypes::UINDEX, UOF_LoadedAndUnloaded );
         if ( !docObjs.isEmpty() ) {
-            indObjs += docObjs.toSet();
+            indObjs += docObjs;
         } else {
             resTasks.append( new OpenUIndexViewerTask( doc ) );
         }

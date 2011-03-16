@@ -451,7 +451,9 @@ void ADVSyncViewManager::sl_onSelectionChanged( LRegionsSelection* sel, const QV
             if (r.endPos() > w->getSequenceLen()) {
                 r.length = w->getSequenceLen() - r.startPos;
             }
-            selection->addRegion(r);
+            if(r.length > 0) {
+                selection->addRegion(r);
+            }
         }
 
     } 

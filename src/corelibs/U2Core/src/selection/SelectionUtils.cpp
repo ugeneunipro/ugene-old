@@ -49,10 +49,10 @@ template<class T> static void removeDuplicatesPointersFromList(QList<T*>& list) 
     list.removeAll(NULL);
 }
 
-QSet<GObject*> SelectionUtils::findObjects(GObjectType t, const MultiGSelection* ms, UnloadedObjectFilter f) {
-    QSet<GObject*> res;
+QList<GObject*> SelectionUtils::findObjects(GObjectType t, const MultiGSelection* ms, UnloadedObjectFilter f) {
+    QList<GObject*> res;
     foreach(const GSelection* s, ms->getSelections()) {
-        QSet<GObject*> tmp = findObjects(t, s, f);
+        QList<GObject*> tmp = findObjects(t, s, f);
         res+=tmp;
     }
     return res;
@@ -71,8 +71,8 @@ QList<GObject*> SelectionUtils::findObjectsKeepOrder(GObjectType t, const MultiG
     return res;
 }
 
-QSet<GObject*> SelectionUtils::findObjects(GObjectType t, const GSelection* s, UnloadedObjectFilter f) {
-    QSet<GObject*> res = findObjectsKeepOrder(t, s, f).toSet();
+QList<GObject*> SelectionUtils::findObjects(GObjectType t, const GSelection* s, UnloadedObjectFilter f) {
+    QList<GObject*> res = findObjectsKeepOrder(t, s, f);
     return res;
 }
 
@@ -125,7 +125,7 @@ QSet<Document*> SelectionUtils::findDocumentsWithObjects(GObjectType t, const GS
             }
         }
     } else if (st == GSelectionTypes::GOBJECTS && deriveDocsFromObjectSelection) {
-        QSet<GObject*> objects = findObjects(t, s, f);
+        QList<GObject*> objects = findObjects(t, s, f);
         foreach(GObject* o, objects) {
             res+=o->getDocument();
         }

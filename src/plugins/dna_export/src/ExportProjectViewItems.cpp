@@ -108,7 +108,7 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
     QMenu* sub = NULL;
 
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
-    QSet<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
+    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
     if (!set.isEmpty()) {
         sub = new QMenu(tr("Export"));
         sub->addAction(exportSequencesToSequenceFormatAction);
@@ -118,7 +118,7 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
         if (set.size() == 1) {
             sub = new QMenu(tr("Export"));
             sub->addAction(exportAlignmentAsSequencesAction);
-            GObject* obj = set.toList().first();
+            GObject* obj = set.first();
             MAlignment ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
             if (ma.getAlphabet()->isNucleic()) {
                 sub->addAction(exportNucleicAlignmentToAminoAction);
@@ -157,7 +157,7 @@ void ExportProjectViewItemsContoller::addImportMenu(QMenu& m) {
     m.insertMenu(beforeAction, importMenu);
 }
 
-static bool hasComplementForAll(const QSet<GObject*>& set) {
+static bool hasComplementForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
         DNASequenceObject* so = qobject_cast<DNASequenceObject*>(o);
         if (o == NULL || GObjectUtils::findComplementTT(so) == NULL) {
@@ -167,7 +167,7 @@ static bool hasComplementForAll(const QSet<GObject*>& set) {
     return true;
 }
 
-static bool hasAminoForAll(const QSet<GObject*>& set) {
+static bool hasAminoForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
         DNASequenceObject* so = qobject_cast<DNASequenceObject*>(o);
         if (o == NULL || GObjectUtils::findAminoTT(so, false, NULL) == NULL) {
@@ -177,7 +177,7 @@ static bool hasAminoForAll(const QSet<GObject*>& set) {
     return true;
 }
 
-static bool hasNucleicForAll(const QSet<GObject*>& set) {
+static bool hasNucleicForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
         DNASequenceObject* so = qobject_cast<DNASequenceObject*>(o);
         if (o == NULL || GObjectUtils::findBackTranslationTT(so) == NULL) {
@@ -193,7 +193,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     assert(pv!=NULL);
 
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
-    QSet<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
+    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
     if (set.isEmpty()) {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
         return;
@@ -286,12 +286,12 @@ void ExportProjectViewItemsContoller::sl_saveAlignmentAsSequences() {
     assert(pv!=NULL);
 
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
-    QSet<GObject*> set = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly);
+    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly);
     if (set.size()!=1) {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("Select one alignment object to export"));
         return;
     }
-    GObject* obj = set.toList().first();
+    GObject* obj = set.first();
     MAlignmentObject* maObject = qobject_cast<MAlignmentObject*>(obj);
     const MAlignment& ma = maObject->getMAlignment();
     ExportMSA2SequencesDialog d(AppContext::getMainWindow()->getQMainWindow());
@@ -309,17 +309,17 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
     assert(pv!=NULL);
 
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
-    QSet<GObject*> set = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly);
+    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly);
     if (set.size()!=1) {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("Select one alignment object to export"));
         return;
     }    
 
-    GObject* obj = set.toList().first();
+    GObject* obj = set.first();
     MAlignmentObject* mobj = qobject_cast<MAlignmentObject*>(obj);
     MAlignment ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
 
-    GObject* firstObject = set.toList().first();
+    GObject* firstObject = set.first();
     Document* doc = firstObject->getDocument();
 
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
@@ -358,12 +358,12 @@ void ExportProjectViewItemsContoller::sl_exportChromatogramToSCF() {
     assert(pv!=NULL);
 
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
-    QSet<GObject*> set = SelectionUtils::findObjects(GObjectTypes::CHROMATOGRAM, &ms, UOF_LoadedOnly);
+    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::CHROMATOGRAM, &ms, UOF_LoadedOnly);
     if (set.size() != 1 ) {
         QMessageBox::warning(NULL, L10N::errorTitle(), tr("Select one chromatogram object to export"));
         return;
     }
-    GObject* obj = set.toList().first();
+    GObject* obj = set.first();
     DNAChromatogramObject* chromaObj = qobject_cast<DNAChromatogramObject*>(obj);
     assert(chromaObj != NULL);
     
@@ -394,13 +394,13 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     ms.addSelection(pv->getGObjectSelection()); 
     ms.addSelection(pv->getDocumentSelection());
     
-    QSet<GObject*> set = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
+    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
     if (set.size() != 1 ) {
         QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(), tr("Select one annotation object to export"));
         return;
     }
     
-    GObject* obj = set.toList().first();
+    GObject* obj = set.first();
     AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject*>(obj);
     assert(aObj != NULL);
     QList<Annotation*> annotations = aObj->getAnnotations();

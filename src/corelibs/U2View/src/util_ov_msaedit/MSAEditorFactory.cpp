@@ -57,7 +57,7 @@ bool MSAEditorFactory::canCreateView(const MultiGSelection& multiSelection) {
 #define MAX_VIEWS 10
 
 Task* MSAEditorFactory::createViewTask(const MultiGSelection& multiSelection, bool single) {
-    QSet<GObject*> msaObjects = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &multiSelection, UOF_LoadedAndUnloaded);
+    QList<GObject*> msaObjects = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &multiSelection, UOF_LoadedAndUnloaded);
     QSet<Document*> docsWithMSA = SelectionUtils::findDocumentsWithObjects(GObjectTypes::MULTIPLE_ALIGNMENT, 
         &multiSelection, UOF_LoadedAndUnloaded, false);
     QList<OpenMSAEditorTask*> resTasks;
@@ -65,7 +65,7 @@ Task* MSAEditorFactory::createViewTask(const MultiGSelection& multiSelection, bo
     foreach(Document* doc, docsWithMSA) {
         QList<GObject*> docObjs = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT, UOF_LoadedAndUnloaded);
         if (!docObjs.isEmpty()) {
-            msaObjects+=docObjs.toSet();
+            msaObjects+=docObjs;
         } else {
             resTasks.append(new OpenMSAEditorTask(doc));
             if (resTasks.size() == MAX_VIEWS) {

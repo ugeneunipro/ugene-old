@@ -76,10 +76,10 @@ QList<GObject*> GObjectUtils::findAllObjects(UnloadedObjectFilter f, GObjectType
 }
 
 
-QSet<GObject*> GObjectUtils::selectRelations(GObject* obj, GObjectType type, const QString& relationRole, 
+QList<GObject*> GObjectUtils::selectRelations(GObject* obj, GObjectType type, const QString& relationRole, 
                                              const QList<GObject*>& fromObjects, UnloadedObjectFilter f)
 {
-    QSet<GObject*> res;
+    QList<GObject*> res;
     QList<GObjectRelation> relations = obj->getObjectRelations();
     foreach(const GObjectRelation& r, relations) {
         if (r.role != relationRole || (!type.isEmpty() && r.ref.objType!=type)) {
@@ -87,7 +87,7 @@ QSet<GObject*> GObjectUtils::selectRelations(GObject* obj, GObjectType type, con
         }
         GObject* obj = selectObjectByReference(r.ref, fromObjects, f);
         if (obj!=NULL) {
-            res.insert(obj);
+            res.append(obj);
         }
     }
     return res;

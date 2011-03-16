@@ -45,7 +45,7 @@ public:
 
     // select objects from 'fromObjects' 
     // that are referenced by relations stored in 'obj' with 'relationRole' and 'type'
-    static QSet<GObject*>   selectRelations(GObject* obj, GObjectType type, const QString& relationRole, 
+    static QList<GObject*>   selectRelations(GObject* obj, GObjectType type, const QString& relationRole, 
                                         const QList<GObject*>& fromObjects, UnloadedObjectFilter f);
 
     static QList<GObject*>  findObjectsRelatedToObjectByRole(const GObject* obj, GObjectType resultObjType, 

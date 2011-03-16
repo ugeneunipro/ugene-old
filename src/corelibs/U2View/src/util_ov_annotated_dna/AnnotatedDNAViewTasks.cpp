@@ -55,14 +55,14 @@ OpenAnnotatedDNAViewTask::OpenAnnotatedDNAViewTask(const QList<GObject*>& object
     //  remember only sequence objects -> other added automatically
     //  load all objects
 
-    QSet<Document*> docsToLoadSet;
+    QList<Document*> docsToLoadSet;
     QSet<GObject*>  refsAdded;
     QList<GObject*> allSequenceObjects = GObjectUtils::findAllObjects(UOF_LoadedAndUnloaded, GObjectTypes::SEQUENCE);
     foreach(GObject* obj, objects) {
         uiLog.trace("Object to open sequence view: '" + obj->getGObjectName()+"'");
         Document* doc = obj->getDocument();
         if (!doc->isLoaded()) {
-            docsToLoadSet.insert(doc);
+            docsToLoadSet.append(doc);
         }
         if (GObjectUtils::hasType(obj, GObjectTypes::SEQUENCE)) {
             sequenceObjectRefs.append(GObjectReference(doc->getURLString(), obj->getGObjectName(), GObjectTypes::SEQUENCE));
@@ -72,7 +72,7 @@ OpenAnnotatedDNAViewTask::OpenAnnotatedDNAViewTask(const QList<GObject*>& object
         
     
         //look for sequence object using relations
-        QSet<GObject*> objWithSeqRelation = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, 
+        QList<GObject*> objWithSeqRelation = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, 
                                         GObjectRelationRole::SEQUENCE, allSequenceObjects, UOF_LoadedAndUnloaded);
 
         foreach(GObject* robj, objWithSeqRelation) {
@@ -84,7 +84,7 @@ OpenAnnotatedDNAViewTask::OpenAnnotatedDNAViewTask(const QList<GObject*>& object
             }
             Document* rdoc = robj->getDocument();
             if (!rdoc->isLoaded()) {
-                docsToLoadSet.insert(rdoc);
+                docsToLoadSet.append(rdoc);
             }
             refsAdded.insert(robj);
             sequenceObjectRefs.append(GObjectReference(rdoc->getURLString(), robj->getGObjectName(), GObjectTypes::SEQUENCE));
@@ -154,7 +154,7 @@ void OpenAnnotatedDNAViewTask::open() {
         stateInfo.setError(tr("No sequence objects found"));
         return;
     }
-    qSort(seqObjects.begin(), seqObjects.end(), objLessThan);
+    //qSort(seqObjects.begin(), seqObjects.end(), objLessThan);
     QString viewName = deriveViewName(seqObjects);
     AnnotatedDNAView* v = new AnnotatedDNAView(viewName, seqObjects);
     GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);

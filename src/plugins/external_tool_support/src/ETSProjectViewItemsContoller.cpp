@@ -61,7 +61,7 @@ void ETSProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
     assert(pv!=NULL);
 
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
-    QSet<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
+    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
     if (!set.isEmpty()) {
         QMenu* subMenu = m.addMenu(tr("BLAST"));
         subMenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));

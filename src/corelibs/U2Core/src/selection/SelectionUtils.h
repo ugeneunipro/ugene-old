@@ -35,11 +35,11 @@ class GSelection;
 class U2CORE_EXPORT SelectionUtils {
 public:
 
-    static QSet<GObject*>   findObjects(GObjectType t, const MultiGSelection* s, UnloadedObjectFilter f);
+    static QList<GObject*>   findObjects(GObjectType t, const MultiGSelection* s, UnloadedObjectFilter f);
 
     static QList<GObject*>  findObjectsKeepOrder(GObjectType t, const MultiGSelection* s, UnloadedObjectFilter f);
 
-    static QSet<GObject*>   findObjects(GObjectType t, const GSelection* s, UnloadedObjectFilter f);
+    static QList<GObject*>   findObjects(GObjectType t, const GSelection* s, UnloadedObjectFilter f);
 
     static QList<GObject*>  findObjectsKeepOrder(GObjectType t, const GSelection* s, UnloadedObjectFilter f);
 

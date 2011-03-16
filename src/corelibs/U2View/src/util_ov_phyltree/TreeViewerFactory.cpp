@@ -54,7 +54,7 @@ bool TreeViewerFactory::canCreateView(const MultiGSelection& multiSelection) {
 #define MAX_VIEWS 10
 
 Task* TreeViewerFactory::createViewTask(const MultiGSelection& multiSelection, bool single) {
-    QSet<GObject*> phyObjects = SelectionUtils::findObjects(GObjectTypes::PHYLOGENETIC_TREE, &multiSelection, UOF_LoadedAndUnloaded);
+    QList<GObject*> phyObjects = SelectionUtils::findObjects(GObjectTypes::PHYLOGENETIC_TREE, &multiSelection, UOF_LoadedAndUnloaded);
     QSet<Document*> docsWithPhy = SelectionUtils::findDocumentsWithObjects(GObjectTypes::PHYLOGENETIC_TREE, 
                                                             &multiSelection, UOF_LoadedAndUnloaded, false);
     QList<OpenTreeViewerTask*> resTasks;
@@ -62,7 +62,7 @@ Task* TreeViewerFactory::createViewTask(const MultiGSelection& multiSelection, b
     foreach(Document* doc, docsWithPhy) {
         QList<GObject*> docObjs = doc->findGObjectByType(GObjectTypes::PHYLOGENETIC_TREE, UOF_LoadedAndUnloaded);
         if (!docObjs.isEmpty()) {
-            phyObjects += docObjs.toSet();
+            phyObjects += docObjs;
         } else {
             resTasks.append(new OpenTreeViewerTask(doc));
             if (resTasks.size() == MAX_VIEWS) {

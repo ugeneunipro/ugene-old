@@ -28,7 +28,7 @@ bool AssemblyBrowserFactory::canCreateView(const MultiGSelection & multiSelectio
 #define MAX_VIEWS 5
 
 Task * AssemblyBrowserFactory::createViewTask(const MultiGSelection & multiSelection, bool single /* = false */) {
-    QSet<GObject*> asmObjects = SelectionUtils::findObjects(GObjectTypes::ASSEMBLY, &multiSelection, UOF_LoadedAndUnloaded);
+    QList<GObject*> asmObjects = SelectionUtils::findObjects(GObjectTypes::ASSEMBLY, &multiSelection, UOF_LoadedAndUnloaded);
     QSet<Document*> docsWithAsm = SelectionUtils::findDocumentsWithObjects(GObjectTypes::ASSEMBLY, 
         &multiSelection, UOF_LoadedAndUnloaded, false);
     QList<OpenAssemblyBrowserTask*> resTasks;
@@ -36,7 +36,7 @@ Task * AssemblyBrowserFactory::createViewTask(const MultiGSelection & multiSelec
     foreach(Document* doc, docsWithAsm) {
         QList<GObject*> docObjs = doc->findGObjectByType(GObjectTypes::ASSEMBLY, UOF_LoadedAndUnloaded);
         if (!docObjs.isEmpty()) {
-            asmObjects+=docObjs.toSet();
+            asmObjects+=docObjs;
         } else {
             resTasks.append(new OpenAssemblyBrowserTask(doc));
             if (resTasks.size() == MAX_VIEWS) {

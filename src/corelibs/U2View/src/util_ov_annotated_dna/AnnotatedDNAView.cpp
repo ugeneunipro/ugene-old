@@ -714,7 +714,7 @@ QString AnnotatedDNAView::addObject(GObject* o) {
 }
 
 QList<ADVSequenceObjectContext*> AnnotatedDNAView::findRelatedSequenceContexts(GObject* obj) const {
-    QSet<GObject*> relatedObjects = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, GObjectRelationRole::SEQUENCE, objects, UOF_LoadedOnly);
+    QList<GObject*> relatedObjects = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, GObjectRelationRole::SEQUENCE, objects, UOF_LoadedOnly);
     QList<ADVSequenceObjectContext*> res;
     foreach(GObject* seqObj, relatedObjects) {
         DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(seqObj);

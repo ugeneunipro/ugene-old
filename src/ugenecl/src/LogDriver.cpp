@@ -163,6 +163,9 @@ void LogDriver::setLogSettings() {
                 minLevel = i;
             } 
         }
+        for (int i=0; i<LogLevel_NumLevels; i++) {
+            settings.activeLevelGlobalFlag[i] = (i >= minLevel);
+        }
         foreach(const QString &str, categoryList) {
             LoggerSettings cs;
             cs.categoryName = str;
