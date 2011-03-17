@@ -77,7 +77,7 @@ MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
     //todo: make more precise estimation, use config.op mode
     int aliLen = ma.getLength();
     int nSeq = ma.getNumRows();
-    int memUseMB = int(quint64(200 * aliLen * nSeq) / (1024 * 1024)); //200x per char in alignment
+    int memUseMB = qint64(aliLen) * qint64(nSeq) * 200 / (1024 * 1024); //200x per char in alignment
     TaskResourceUsage tru(RESOURCE_MEMORY, memUseMB);
     
     inputSubMA = inputMA;
