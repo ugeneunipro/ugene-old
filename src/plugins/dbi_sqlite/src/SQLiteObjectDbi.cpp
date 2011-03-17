@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-SQLiteObjectDbi::SQLiteObjectDbi(SQLiteDbi* dbi) : U2FolderDbi(dbi), SQLiteChildDBICommon(dbi) {
+SQLiteObjectDbi::SQLiteObjectDbi(SQLiteDbi* dbi) : U2ObjectDbi(dbi), SQLiteChildDBICommon(dbi) {
 
 }
 

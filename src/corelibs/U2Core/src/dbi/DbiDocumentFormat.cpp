@@ -59,7 +59,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
         return NULL;
     }
     
-    U2ObjectRDbi* odbi = handle.dbi->getObjectRDbi();
+    U2ObjectDbi* odbi = handle.dbi->getObjectDbi();
     QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, os);
     if (os.isCoR()) {
         return NULL;

@@ -52,11 +52,11 @@ public:
 
     qint64 getModelHeight(U2OpStatus & os);
 
-    void addAssembly(U2AssemblyRDbi * dbi, const U2Assembly & assm);
+    void addAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
 
     bool hasReference() const;
 
-    void setReference(U2SequenceRDbi * dbi, const U2Sequence & seq);
+    void setReference(U2SequenceDbi * dbi, const U2Sequence & seq);
 
     QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
 
@@ -69,10 +69,10 @@ private:
     qint64 cachedModelHeight;
 
     U2Sequence reference;
-    U2SequenceRDbi * referenceDbi;
+    U2SequenceDbi * referenceDbi;
 
     QList<U2Assembly> assemblies;
-    QList<U2AssemblyRDbi *> assemblyDbis;
+    QList<U2AssemblyDbi *> assemblyDbis;
 
     DbiHandle dbiHandle; 
 };

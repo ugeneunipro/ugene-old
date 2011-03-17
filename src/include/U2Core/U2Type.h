@@ -38,6 +38,21 @@ namespace U2 {
 typedef quint16 U2DataType;
 typedef quint64 U2DataId;
 
+/** 
+    ID of the DBI Factory. Defines type of the DBI driver.
+    Examples: 'sqlite', 'mysql', 'fasta'....
+*/
+typedef QString U2DbiFactoryId;
+
+/** 
+    ID of the DBI. Points to DBI instance inside of the given DBI factory
+    Usually is an URL or the DBI file/resource
+*/
+
+typedef QString U2DbiId;
+
+
+
 
 /** 
     Built in types 
@@ -80,13 +95,6 @@ public:
     static bool isAttributeType(U2DataType type) {return type >=2000 && type < 2100;}
 
 };
-
-/** 
-    ID of the DBI. Defines type of the DBI driver.
-    Examples: 'sqlite', 'mysql', 'fasta'....
-*/
-typedef QString U2DbiFactoryId;
-
 
 /** 
     Cross database data reference

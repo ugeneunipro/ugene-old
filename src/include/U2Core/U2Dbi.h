@@ -31,23 +31,17 @@
 #include <U2Core/U2Sequence.h>
 
 #include <QtCore/QHash>
+#include <QtCore/QSet>
 
 namespace U2 {
 
 // For the classes below, see description in class definition
-class U2ObjectRDbi;
-class U2ObjectRWDbi;
-class U2FolderDbi;
-class U2SequenceRDbi;
-class U2SequenceRWDbi;
-class U2AnnotationRDbi;
-class U2AnnotationRWDbi;
-class U2MsaRDbi;
-class U2MsaRWDbi;
-class U2AssemblyRDbi;
-class U2AssemblyRWDbi;
-class U2AttributeRDbi;
-class U2AttributeRWDbi;
+class U2ObjectDbi;
+class U2SequenceDbi;
+class U2AnnotationDbi;
+class U2MsaDbi;
+class U2AssemblyDbi;
+class U2AttributeDbi;
 class U2OpStatus;
 class U2Dbi;
 
@@ -65,7 +59,7 @@ class U2Dbi;
 
 
 /**
-Operational state of the database.
+    Operational state of the database.
 */
 enum U2CORE_EXPORT U2DbiState {
     U2DbiState_Void = 1,
@@ -73,6 +67,32 @@ enum U2CORE_EXPORT U2DbiState {
     U2DbiState_Ready = 3,
     U2DbiState_Stopping = 4
 };
+
+/**
+    DBI feature flags
+*/
+enum U2CORE_EXPORT U2DbiFeature {
+    
+    //TODO: add notes
+    U2DbiFeature_ReadSequence                 = 1,
+    U2DbiFeature_ReadMsa                      = 2,
+    U2DbiFeature_ReadAssembly                 = 3,
+    U2DbiFeature_ReadSequenceAnnotations      = 4,
+    U2DbiFeature_ReadAttributes               = 5,
+
+    U2DbiFeature_WriteCrossDatabaseReferences = 100,
+    U2DbiFeature_WriteSequence                = 101,
+    U2DbiFeature_WriteMsa                     = 102,
+    U2DbiFeature_WriteAssembly                = 103,
+    U2DbiFeature_WriteSequenceAnnotations     = 104,
+    U2DbiFeature_WriteAttributes              = 105,
+    
+    U2DbiFeature_RemoveObjects                = 200,
+    U2DbiFeature_ChangeFolders                = 201,
+
+    U2DbiFeature_AssemblyReadsPacking         = 300,
+};
+
 
 /** 
     DBI factory provides functions to create new DBI instances
@@ -137,11 +157,14 @@ public:
     */
     virtual bool flush(U2OpStatus& os) = 0;
     
-    /** 
-        Unique database id. Used for cross-database references. 
-        Usually is an URL of the database;
-    */
-    virtual QString getDbiId() const = 0;
+    /**  Unique database id. Usually is an URL of the database */
+    virtual U2DbiId getDbiId() const = 0;
+
+    /** Return factory instance for this DBI */
+    virtual U2DbiFactoryId getFactoryId() const  = 0;
+
+    /** Returns all features supported by this DBI instance */
+    virtual const QSet<U2DbiFeature>& getFeatures() const = 0;
 
     /** Returns properties used to initialized the database */
     virtual QHash<QString, QString> getInitProperties() const = 0;
@@ -155,58 +178,41 @@ public:
     /** Returns current DBI state */
     virtual U2DbiState getState() const = 0;
 
-    /** Database interface to access objects. Must not be NULL! */
-    virtual U2ObjectRDbi* getObjectRDbi() = 0;
-
-    /**  Generic database interface to remove objects from database */
-    virtual U2ObjectRWDbi* getObjectRWDbi() {return NULL;}
-
-    /** Database interface to modify folder information. */
-    virtual U2FolderDbi* getFolderDbi() const {return NULL;};
-
-    /**  U2Sequence read ops. Not null if DBI supports the whole set of sequence reading operations */
-    virtual U2SequenceRDbi* getSequenceRDbi() {return NULL;}
-
-    /** U2Sequence read and write ops. Not null if DBI supports the whole set of sequence writing operations */
-    virtual U2SequenceRWDbi* getSequenceRWDbi() {return NULL;}
-
-    /**  U2Annotation read ops. Not null if DBI supports the whole set of annotation reading operations */
-    virtual U2AnnotationRDbi* getAnnotationRDbi() {return NULL;}
-
-    /** U2Annotation write ops. Not null if DBI supports the whole set of annotation writing operations */
-    virtual U2AnnotationRWDbi* getAnnotationRWDbi() {return NULL;}
-
     /** 
-        U2Msa read ops. Not null if DBI supports the whole set of msa reading operations
-        U2MsaRDbi requires U2SequenceRDbi support
+        Database interface to access objects
+        All dbi implementation must support a subset of this interface
     */
-    virtual U2MsaRDbi* getMsaRDbi() {return NULL;}
+    virtual U2ObjectDbi* getObjectDbi() = 0;
 
-    /** 
-        U2Msa read ops. Not null if DBI supports the whole set of msa reading operations
-        U2MsaRWDbi requires U2SequenceRWDbi support
-    */        
-    virtual U2MsaRWDbi* getMsaRWDbi() {return NULL;}
-
-    /** 
-        U2Assembly read ops. Not null if DBI supports the whole set of assembly reading operations
-        U2AssemblyRDbi requires U2SequenceRDbi support
+    /**  
+        U2Sequence related DBI routines 
+        Not NULL only if U2DbiFeature_ReadSequences supported
     */
-    virtual U2AssemblyRDbi* getAssemblyRDbi() {return NULL;}
+    virtual U2SequenceDbi* getSequenceDbi() = 0;
 
-    /** 
-        U2Msa read ops. Not null if DBI supports the whole set of msa reading operations
-        Support of U2MsaRWDbi requires U2SequenceRWDbi support
-    */        
-    virtual U2AssemblyRWDbi* getAssemblyRWDbi() {return NULL;}
+    /**  
+        U2Annotation related DBI routines 
+        Not NULL only if U2DbiFeature_ReadAnnotations supported
+    */
+    virtual U2AnnotationDbi* getAnnotationRDbi() = 0;
 
+    /**  
+        U2Annotation related DBI routines 
+        Not NULL only if U2DbiFeature_ReadMsa supported
+    */
+    virtual U2MsaDbi* getMsaDbi() = 0;
 
-    /**  U2Attribute read ops. Not null if DBI supports the whole set of attributes reading operations */
-    virtual U2AttributeRDbi* getAttributeRDbi() {return NULL;}
+    /**  
+        U2Annotation related DBI routines 
+        Not NULL only if U2DbiFeature_ReadAssembly supported
+    */
+    virtual U2AssemblyDbi* getAssemblyDbi()  = 0;
 
-    /**  U2Annotation write ops. Not null if DBI supports the whole set of attribute writing operations */
-    virtual U2AttributeRWDbi* getAttributeRWDbi() {return NULL;}
-
+    /**  
+        U2Attribute related DBI routines 
+        Not NULL only if U2DbiFeature_ReadAttributes supported
+    */
+    virtual U2AttributeDbi* getAttributeDbi()  = 0;
 };
 
 /** 
@@ -232,9 +238,9 @@ private:
     Folders have unique string IDs - constructed similar to full folders names on Unix systems
     The root folder "/" is required for any DBI
 */
-class U2CORE_EXPORT U2ObjectRDbi : public U2ChildDbi {
+class U2CORE_EXPORT U2ObjectDbi : public U2ChildDbi {
 protected:
-    U2ObjectRDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {}
+    U2ObjectDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {}
 
 public:
     
@@ -252,7 +258,7 @@ public:
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
     virtual QList<U2DataId> getObjects(U2DataType type, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
-    /**  Returns parents for entity.
+    /**  Returns parents for the entity.
         If entity is object, returns other object this object is a part of
         If object is not a part of any other object and does not belongs to any folder - it's automatically removed.
      */
@@ -288,21 +294,12 @@ public:
 
     /** Returns version of the given object */
     virtual qint64 getObjectVersion(U2DataId objectId, U2OpStatus& os) = 0;
-};
 
-/**
-    An interface used to add/remove objects from database
-*/
-class U2CORE_EXPORT U2ObjectRWDbi : public U2ObjectRDbi {
-protected:
-    U2ObjectRWDbi(U2Dbi* rootDbi) : U2ObjectRDbi(rootDbi) {}
-
-public:
-    
     /** 
         Removes object from the specified folder. If folder is empty - removes object from all folders.
         Note: the object & all related data is automatically removed from database when
         object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
+        Requires: U2DbiFeature_RemoveObjects feature support
     */
     virtual void removeObject(U2DataId dataId, const QString& folder, U2OpStatus& os) = 0;
     
@@ -310,54 +307,47 @@ public:
         Removes collection of objects from the specified folder. If folder is empty - removes object from all folders.
         Note: the object & all related data is automatically removed from database when
         object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
+        Requires: U2DbiFeature_RemoveObjects feature support
     */
     virtual void removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) = 0;
-};
 
 
-/**
-    An interface used to add/remove folders
-    Requires U2ObjectRWDbi to present
-*/
-class U2CORE_EXPORT U2FolderDbi : public U2ObjectRWDbi {
-protected:
-    U2FolderDbi(U2Dbi* rootDbi): U2ObjectRWDbi(rootDbi) {}
-
-public:
     /** Creates folder in the database.
-    The specified path must be a valid unique path, not existing in the database.
-    It is not required that parent folders must exist, they are created automatically.
+        The specified path must be a valid unique path, not existing in the database.
+        It is not required that parent folders must exist, they are created automatically.
+        Requires: U2DbiFeature_ChangeFolders feature support
     */
     virtual void createFolder(const QString& path, U2OpStatus& os) = 0;
 
-    /** Removes folder. The folder must be existing path. Runs GC check for all objects in the folder */
+    /** 
+        Removes folder. The folder must be existing path. Runs GC check for all objects in the folder 
+        Requires: U2DbiFeature_ChangeFolders feature support
+    */
     virtual void removeFolder(const QString& folder, U2OpStatus& os) = 0;
 
     /** Adds objects to the specified folder.
         All objects must exist and have a top-level type.
-        Counter role: number of objects added
+        Requires: U2DbiFeature_ChangeFolders feature support
     */
-    virtual void addObjectsToFolder(const QList<U2DataId>& objectIds, const QString& toFolder, 
-                                U2OpStatus& os) = 0;
+    virtual void addObjectsToFolder(const QList<U2DataId>& objectIds, const QString& toFolder, U2OpStatus& os) = 0;
 
     /** Moves objects between folders.
-    'fromFolder' must be existing path containing all specified objects.
-    'toFolder' must be existing path or empty string.
-    If 'toFolder' is empty, removes the objects from 'fromFolder' and 
-    deletes non-top-level objects without parents, if any appear in the specified list.
-    Otherwise, moves the specified objects between the specified folders, omitting duplicates.
-    Counter role: number of objects moved
+        'fromFolder' must be existing path containing all specified objects.
+        'toFolder' must be existing path or empty string.
+        If 'toFolder' is empty, removes the objects from 'fromFolder' and 
+        deletes non-top-level objects without parents, if any appear in the specified list.
+        Otherwise, moves the specified objects between the specified folders, omitting duplicates.
+        Requires: U2DbiFeature_ChangeFolders feature support
     */
-    virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, 
-        U2OpStatus& os) = 0;
+    virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, U2OpStatus& os) = 0;
 };
 
 /**
-    An interface to obtain 'read' access to sequence objects
+    An interface to access to sequence objects
 */
-class U2CORE_EXPORT U2SequenceRDbi : public U2ChildDbi {
+class U2CORE_EXPORT U2SequenceDbi : public U2ChildDbi {
 protected:
-    U2SequenceRDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
+    U2SequenceDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
 public:
     /** Reads sequence object from database */
@@ -368,22 +358,12 @@ public:
     The region must be valid region within sequence bounds.
     */
     virtual QByteArray getSequenceData(U2DataId sequenceId, const U2Region& region, U2OpStatus& os) = 0;
-};
-
-/**
-    An interface to obtain 'write' access to sequence objects
-*/
-class U2CORE_EXPORT U2SequenceRWDbi : public U2SequenceRDbi {
-protected:
-    U2SequenceRWDbi(U2Dbi* rootDbi) : U2SequenceRDbi(rootDbi){}
-
-public:
 
     /**  Adds new (empty) sequence instance into database, sets the assigned id on the passed U2Sequence instance. 
         The folder must exist in the database.
         Use 'updateSequenceData' method to supply data to the created sequence.
 
-        //TODO do we ever need to allow empty folder??
+        Requires: U2DbiFeature_WriteSequence feature support
     */
     virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) = 0;
 
@@ -394,6 +374,8 @@ public:
 
         //TODO think about annotations: should we fix locations automatically?? If yes, emit notifications??
         // varlax: I think this should be left to user, no automatic fixes.
+
+        Requires: U2DbiFeature_WriteSequence feature support
     */
     virtual void updateSequenceData(U2DataId sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os) = 0;
 };
@@ -402,9 +384,9 @@ public:
 /**
     An interface to obtain 'read' access to sequence annotations
 */
-class U2CORE_EXPORT U2AnnotationRDbi : public U2ChildDbi {
+class U2CORE_EXPORT U2AnnotationDbi : public U2ChildDbi {
 protected:
-    U2AnnotationRDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
+    U2AnnotationDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
 public:
     /** 
@@ -439,65 +421,78 @@ public:
 
     /** Reads annotation entity by id */
     virtual U2Annotation getAnnotation(U2DataId annotationId, U2OpStatus& os) = 0;
-};
 
-/**
-    An interface to obtain 'write' access to sequence annotations
-*/
-class U2CORE_EXPORT U2AnnotationRWDbi : public U2AnnotationRDbi {
-protected:
-    U2AnnotationRWDbi(U2Dbi* rootDbi) : U2AnnotationRDbi(rootDbi){}
 
-public:
-
-    /** Adds new annotation. Assigns Id to annotation */
+    /** 
+        Adds new annotation. Assigns Id to annotation 
+        Requires: U2DbiFeature_WriteAnnotation feature support
+    */
     virtual void createAnnotation(U2Annotation& a, U2OpStatus& os) = 0;
 
     /** 
         Adds list of new annotations. Assigns Ids to annotations added 
-        Counter role: number of annotations created
+        Requires: U2DbiFeature_WriteAnnotation feature support
     */
     virtual void createAnnotations(QList<U2Annotation>& annotations, U2OpStatus& os) = 0;
 
     
-    /* Removes annotation from database */
+    /** 
+        Removes annotation from database 
+        Requires: U2DbiFeature_WriteAnnotation feature support
+     */
     virtual void removeAnnotation(U2DataId annotationId, U2OpStatus& os) = 0;
 
     /**  
         Removes annotations from database  
-        Counter role: number of annotations removed
+        Requires: U2DbiFeature_WriteAnnotation feature support
     */
     virtual void removeAnnotations(const QList<U2DataId>& annotationIds, U2OpStatus& os) = 0;
     
-    /** Changes annotations location */
-    virtual U2Annotation updateLocation(U2DataId annotationId, const U2Location& location, U2OpStatus& os) = 0;  
+    /** 
+        Changes annotations location 
+        Requires: U2DbiFeature_WriteAnnotation feature support
+    */
+    virtual void updateLocation(U2DataId annotationId, const U2Location& location, U2OpStatus& os) = 0;  
     
-    /** Changes annotations name */
-    virtual U2Annotation updateName(U2DataId annotationId, const QString& newName, U2OpStatus& os) = 0;  
+    /** 
+        Changes annotations name 
+        Requires: U2DbiFeature_WriteAnnotation feature support
+    */
+    virtual void updateName(U2DataId annotationId, const QString& newName, U2OpStatus& os) = 0;  
     
-    /** Adds new qualifier to annotation  */
-    virtual U2Annotation createQualifier(U2DataId annotationId, const U2Qualifier& q, U2OpStatus& os) = 0;
+    /** 
+        Adds new qualifier to annotation  
+        Requires: U2DbiFeature_WriteAnnotation feature support
+    */
+    virtual void createQualifier(U2DataId annotationId, const U2Qualifier& q, U2OpStatus& os) = 0;
     
-    /** Removes existing qualifier from annotation  */    
-    virtual U2Annotation removeQualifier(U2DataId annotationId, const U2Qualifier& q, U2OpStatus& os) = 0; 
+    /** 
+        Removes existing qualifier from annotation  
+        Requires: U2DbiFeature_WriteAnnotation feature support
+     */    
+    virtual void removeQualifier(U2DataId annotationId, const U2Qualifier& q, U2OpStatus& os) = 0; 
 
-    /** Adds annotation to the specified group */    
-    virtual U2Annotation addToGroup(U2DataId annotationId, const QString& group, U2OpStatus& os) = 0; 
+    /** 
+        Adds annotation to the specified group 
+        Requires: U2DbiFeature_WriteAnnotation feature support
+    */    
+    virtual void addToGroup(U2DataId annotationId, const QString& group, U2OpStatus& os) = 0; 
     
     /** 
         Removes annotation from the specified group 
         If annotation belongs to no group, it is removed
+        Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual U2Annotation removeFromGroup(U2DataId annotationId, const QString& group, U2OpStatus& os) = 0; 
+    virtual void removeFromGroup(U2DataId annotationId, const QString& group, U2OpStatus& os) = 0; 
 };
 
 
 /**
-    An interface to obtain 'read' access to multiple sequence alignment
+    An interface to obtain access to multiple sequence alignment
 */
-class U2CORE_EXPORT U2MsaRDbi : public U2ChildDbi {
+class U2CORE_EXPORT U2MsaDbi : public U2ChildDbi {
 protected:
-    U2MsaRDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {} 
+    U2MsaDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {} 
 
 public:
     /** Reads Msa objects by id */
@@ -542,41 +537,43 @@ public:
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
     virtual QList<U2DataId> getSequencesWithoutGapAt(U2DataId msaId, qint64 coord, qint32 offset, qint32 count, U2OpStatus& os) = 0;
 
-
-};
-
-/**
-    An interface to obtain 'write' access to multiple sequence alignment
-*/
-class U2CORE_EXPORT U2MsaRWDbi : public U2MsaRDbi {
-protected:
-    U2MsaRWDbi(U2Dbi* rootDbi) : U2MsaRDbi(rootDbi) {} 
-
-public:
-    /** Creates new empty Msa object  */
+    /** 
+        Creates new empty Msa object  
+        Requires: U2DbiFeature_WriteMsa feature support
+    */
     virtual void createMsaObject(U2Msa& msa, const QString& folder, U2OpStatus& os) = 0;
     
     /** 
         Removes sequences from MSA
         Automatically removes affected sequences that are not anymore located in some folder nor Msa object
-        Counter role: number of sequences removed
+        Requires: U2DbiFeature_WriteMsa feature support
     */
     virtual void removeSequences(U2Msa& msa, const QList<U2DataId> sequenceIds, U2OpStatus& os) = 0;
 
     /**  
         Adds sequences to MSA 
-        Counter role: number of sequences added
+        Requires: U2DbiFeature_WriteMsa feature support
     */
     virtual void addSequences(U2Msa& msa, const QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
 
 };
 
+/** Class used to iterate huge amount of assembly reads and optimize assembly import operation to DBI */
+class U2AssemblyReadsIterator {
+public:
+    /** returns true if there are more reads to iterate*/
+    virtual bool hasNext() = 0;
+
+    /** returns next read or error */
+    virtual U2AssemblyRead next(U2OpStatus& os) = 0;
+};
+
 /**
-    An interface to obtain 'read' access to assembly data
+    An interface to obtain  access to assembly data
 */
-class U2CORE_EXPORT U2AssemblyRDbi : public U2ChildDbi {
+class U2CORE_EXPORT U2AssemblyDbi : public U2ChildDbi {
 protected:
-    U2AssemblyRDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {} 
+    U2AssemblyDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {} 
 
 public:
     /** Reads assembly objects by id */
@@ -613,52 +610,35 @@ public:
     /** Count 'length of assembly' - position of the rightmost base of all reads */
     virtual quint64 getMaxEndPos(U2DataId assemblyId, U2OpStatus& os) = 0;
 
-};
 
-/** Class used to iterate huge amount of assembly reads and optimize assembly import operation to DBI */
-class U2AssemblyReadsIterator {
-public:
-    /** returns true if there are more reads to iterate*/
-    virtual bool hasNext() = 0;
-    
-    /** returns next read or error */
-    virtual U2AssemblyRead next(U2OpStatus& os) = 0;
-};
-    
-
-/**
-    An interface to obtain 'write' access to multiple sequence alignment
-*/
-class U2CORE_EXPORT U2AssemblyRWDbi : public U2AssemblyRDbi {
-protected:
-    U2AssemblyRWDbi(U2Dbi* rootDbi) : U2AssemblyRDbi(rootDbi) {} 
-
-public:
-    /** Creates new empty assembly object, reads iterator can be NULL  */
+    /** 
+        Creates new empty assembly object, reads iterator can be NULL  
+        Requires: U2DbiFeature_WriteAssembly feature support
+    */
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder, U2AssemblyReadsIterator* it, U2OpStatus& os) = 0;
     
     /** 
         Removes sequences from assembly
         Automatically removes affected sequences that are not anymore accessible from folders
-        Counter role: number of reads removed
+        Requires: U2DbiFeature_WriteAssembly feature support
     */
     virtual void removeReads(U2DataId assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
 
     /**  
         Adds sequences to assembly
         Reads got their ids assigned.
-        Counter role: number of reads added
+        Requires: U2DbiFeature_WriteAssembly feature support
     */
     virtual void addReads(U2DataId assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) = 0;
 
     /**  
         Packs assembly rows: assigns packedViewRow value for every read in assembly 
-        Counter role: percent of completion
+        Requires: U2DbiFeature_WriteAssembly and U2DbiFeature_AssemblyReadsPacking features support
     */
     virtual void pack(U2DataId assemblyId, U2OpStatus& os) = 0;
 
 };
-
+    
 
 
 /**
@@ -685,11 +665,11 @@ public:
 };
 
 /**
-    An interface to obtain 'read' access to object attributes
+    An interface to obtain access to object attributes
 */
-class U2CORE_EXPORT U2AttributeRDbi: public U2ChildDbi {
+class U2CORE_EXPORT U2AttributeDbi: public U2ChildDbi {
 protected:
-    U2AttributeRDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
+    U2AttributeDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
 public:
     /** Returns all attribute names available in the database */
@@ -727,42 +707,60 @@ public:
 
     /** Sorts all objects in database according to U2DbiSortConfig provided  */
     virtual QList<U2DataId> sort(const U2DbiSortConfig& sc, qint64 offset, qint64 count, U2OpStatus& os) = 0;
-};
 
-/** 
-    An interface to create / remove attributes
-    Note: when attribute is created, the old one with the same name must be automatically deleted
-*/
-class U2CORE_EXPORT U2AttributeRWDbi: public U2AttributeRDbi {
-protected:
-    U2AttributeRWDbi(U2Dbi* rootDbi) : U2AttributeRDbi(rootDbi){}
 
-public:
-    /** Removes attribute from database */
+    /** 
+        Removes attribute from database 
+        Requires U2DbiFeature_WriteAttribute feature support
+    */
     virtual void removeAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
     
-    /** Creates int32 attribute in database. ObjectId must be already set in attribute and present in the same database */
+    /** 
+        Creates int32 attribute in database. ObjectId must be already set in attribute and present in the same database 
+        Requires U2DbiFeature_WriteAttribute feature support
+    */
     virtual void createInt32Attribute(U2Int32Attribute& a, U2OpStatus& os) = 0;
 
-    /** Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database */    
+    /** 
+        Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database 
+        Requires U2DbiFeature_WriteAttribute feature support
+    */    
     virtual void createInt64Attribute(U2Int64Attribute& a, U2OpStatus& os) = 0;
 
-    /** Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database */    
+    /** 
+        Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database 
+        Requires U2DbiFeature_WriteAttribute feature support
+    */    
     virtual void createReal64Attribute(U2Real64Attribute& a, U2OpStatus& os) = 0;
 
-    /** Creates String attribute in database. ObjectId must be already set in attribute and present in the same database */    
+    /** 
+        Creates String attribute in database. ObjectId must be already set in attribute and present in the same database 
+        Requires U2DbiFeature_WriteAttribute feature support
+    */    
     virtual void createStringAttribute(U2StringAttribute& a, U2OpStatus& os) = 0;
 
-    /** Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database */    
+    /** 
+        Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database 
+        Requires U2DbiFeature_WriteAttribute feature support
+    */    
     virtual void createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpStatus& os) = 0;
 
-    /** Creates Date-time attribute in database. ObjectId must be already set in attribute and present in the same database */    
+    /** 
+        Creates Date-time attribute in database. ObjectId must be already set in attribute and present in the same database 
+        Requires U2DbiFeature_WriteAttribute feature support   
+     */    
     virtual void createDateTimeAttribute(U2DateTimeAttribute& a, U2OpStatus& os) = 0;
 
-    /** Creates range int32-values attribute in database. ObjectId must be already set in attribute and present in the same database */    
+    /** 
+        Creates range int32-values attribute in database. ObjectId must be already set in attribute and present in the same database 
+        Requires U2DbiFeature_WriteAttribute feature support
+     */    
     virtual void createRangeInt32StatAttribute(U2RangeInt32StatAttribute& a, U2OpStatus& os) = 0;
 
-    /** Creates range real32-values attribute in database. ObjectId must be already set in attribute and present in the same database */    
+    /** 
+        Creates range real32-values attribute in database. ObjectId must be already set in attribute and present in the same database 
+        Requires U2DbiFeature_WriteAttribute feature support
+     */    
     virtual void createRangeReal64StatAttribute(U2RangeReal64StatAttribute& a, U2OpStatus& os) = 0;
 };
 

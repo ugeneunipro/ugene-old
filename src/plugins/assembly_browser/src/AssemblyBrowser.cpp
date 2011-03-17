@@ -99,7 +99,7 @@ qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
     return cachedModelHeight;
 }
 
-void AssemblyModel::addAssembly(U2AssemblyRDbi * dbi, const U2Assembly & assm) {
+void AssemblyModel::addAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
     //TODO: == operator for U2Assembly
     assert(!assemblyDbis.contains(dbi));
     //assert(!assemblies.contains(assm));
@@ -111,7 +111,7 @@ bool AssemblyModel::hasReference() const {
     return (bool)referenceDbi;
 }
 
-void AssemblyModel::setReference(U2SequenceRDbi * dbi, const U2Sequence & seq) {
+void AssemblyModel::setReference(U2SequenceDbi * dbi, const U2Sequence & seq) {
     //TODO emit signal ??
     reference = seq;
     referenceDbi = dbi;
@@ -291,12 +291,12 @@ void AssemblyBrowser::sl_loadAssembly() {
         QByteArray seq = seqDbi->getSequenceData(s.id, U2Region(0, 9996), os);
         checkAndLogError(os);
 #else
-        U2DataId refId = sdbi->getObjectRDbi()->getObjects(U2Type::Sequence, 0, -1, os).at(0);
+        U2DataId refId = sdbi->getObjectDbi()->getObjects(U2Type::Sequence, 0, -1, os).at(0);
         checkAndLogError(os);
-        U2Sequence s = sdbi->getSequenceRDbi()->getSequenceObject(refId, os);
+        U2Sequence s = sdbi->getSequenceDbi()->getSequenceObject(refId, os);
         checkAndLogError(os);
 #endif
-        model->setReference(sdbi->getSequenceRDbi(), sdbi->getSequenceRDbi()->getSequenceObject(s.id, os));
+        model->setReference(sdbi->getSequenceDbi(), sdbi->getSequenceDbi()->getSequenceObject(s.id, os));
         checkAndLogError(os);
     }
 }
@@ -308,10 +308,10 @@ void AssemblyBrowser::sl_assemblyLoaded() {
     U2Dbi * dbi = model->getDbiHandle().dbi;
     assert(U2DbiState_Ready == dbi->getState());
 
-    U2AssemblyRDbi * assmDbi = dbi->getAssemblyRDbi();
+    U2AssemblyDbi * assmDbi = dbi->getAssemblyDbi();
 
     U2DataId objectId = gobject->getDbiRef().entityId;
-    U2Assembly assm = dbi->getAssemblyRDbi()->getAssemblyObject(objectId, dbiOpStatus);
+    U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(objectId, dbiOpStatus);
     checkAndLogError(dbiOpStatus);
 
     model->addAssembly(assmDbi, assm);
@@ -429,8 +429,8 @@ qint64 countReadLength(qint64 realLen, const QList<U2CigarToken> & cigar) {
 QByteArray getReadSequence(U2Dbi * dbi, const U2AssemblyRead & read, U2OpStatus & os) {
     if(read.sequenceId) {
         assert(dbi);
-        U2Sequence seq = dbi->getSequenceRDbi()->getSequenceObject(read.sequenceId, os);
-        return dbi->getSequenceRDbi()->getSequenceData(read.sequenceId, U2Region(0, seq.length), os);
+        U2Sequence seq = dbi->getSequenceDbi()->getSequenceObject(read.sequenceId, os);
+        return dbi->getSequenceDbi()->getSequenceData(read.sequenceId, U2Region(0, seq.length), os);
     } else {
         return read.readSequence;
     }

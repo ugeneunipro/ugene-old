@@ -28,7 +28,7 @@
 namespace U2 {
 
 DNASequenceObject::DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap) 
-: GObject(GObjectTypes::SEQUENCE, name, hintsMap), U2SequenceRDbi(NULL), dnaSeq(seq)
+: GObject(GObjectTypes::SEQUENCE, name, hintsMap), U2SimpleSequenceDbi(NULL), dnaSeq(seq)
 {
     assert(dnaSeq.alphabet!=NULL);
     seqRange = U2Region(0, dnaSeq.seq.length());

@@ -73,7 +73,7 @@ void ConvertToSQLiteTask::run() {
         }
         {
             U2OpStatusImpl opStatus;
-            sqliteDbi->getFolderDbi()->createFolder("/", opStatus);
+            sqliteDbi->getObjectDbi()->createFolder("/", opStatus);
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());
             }
@@ -84,7 +84,7 @@ void ConvertToSQLiteTask::run() {
             assembly.visualName = reference.getName();
             {
                 U2OpStatusImpl opStatus;
-                sqliteDbi->getAssemblyRWDbi()->createAssemblyObject(assembly, "/", NULL, opStatus);
+                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }
@@ -103,7 +103,7 @@ void ConvertToSQLiteTask::run() {
                 while(!reader->isEof()) {
                     Alignment alignment = reader->readAlignment();
                     if(-1 != alignment.getReferenceId()) {
-                        reads[alignment.getReferenceId()].append(AssemblyRDbi::alignmentToRead(alignment));
+                        reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
                         readsCount++;
                     }
                     if(readsCount >= 16384) {
@@ -114,7 +114,7 @@ void ConvertToSQLiteTask::run() {
             for(int index = 0;index < assemblies.size();index++) {
                 if(!reads[index].isEmpty()) {
                     U2OpStatusImpl opStatus;
-                    sqliteDbi->getAssemblyRWDbi()->addReads(assemblies[index].id, reads[index], opStatus);
+                    sqliteDbi->getAssemblyDbi()->addReads(assemblies[index].id, reads[index], opStatus);
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }
@@ -128,7 +128,7 @@ void ConvertToSQLiteTask::run() {
         for(int index = 0;index < assemblies.size();index++) {
             {
                 U2OpStatusImpl opStatus;
-                sqliteDbi->getAssemblyRWDbi()->pack(assemblies[index].id, opStatus);
+                sqliteDbi->getAssemblyDbi()->pack(assemblies[index].id, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }

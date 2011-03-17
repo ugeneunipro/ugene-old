@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-SQLiteMsaRDbi::SQLiteMsaRDbi(SQLiteDbi* dbi) : U2MsaRDbi(dbi), SQLiteChildDBICommon(dbi) {
+SQLiteMsaRDbi::SQLiteMsaRDbi(SQLiteDbi* dbi) : U2SimpleMsaDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
 

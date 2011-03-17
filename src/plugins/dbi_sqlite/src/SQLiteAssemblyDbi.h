@@ -28,7 +28,7 @@ namespace U2 {
 
 class SQLiteQuery;
 
-class SQLiteAssemblyDbi : public U2AssemblyRWDbi, public SQLiteChildDBICommon {
+class SQLiteAssemblyDbi : public U2AssemblyDbi, public SQLiteChildDBICommon {
 
 public:
     SQLiteAssemblyDbi(SQLiteDbi* dbi);

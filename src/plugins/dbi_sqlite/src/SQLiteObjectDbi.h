@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-class SQLiteObjectDbi : public U2FolderDbi, public SQLiteChildDBICommon {
+class SQLiteObjectDbi : public U2ObjectDbi, public SQLiteChildDBICommon {
 public:
     SQLiteObjectDbi(SQLiteDbi* dbi);
 

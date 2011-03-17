@@ -25,11 +25,16 @@
 
 namespace U2 {
 
-//////////////////////////////////////////////////////////////////////////
-U2AbstractDbi::U2AbstractDbi() {
-    state = U2DbiState_Void;
-}
+void U2DbiUtils::logNotSupported(U2DbiFeature f, U2Dbi* dbi) {
+    coreLog.error(tr("Feature is not supported: %1, dbi: %2").arg(int(f)).arg(dbi == NULL ? QString("<unknown>") : dbi->getDbiId()));
 
+#ifdef _DEBUG
+    if (dbi->getFeatures().contains(f)) {
+        coreLog.error("Calling not-supported method while features is listed in supported features list!");
+    }
+    assert(0);
+#endif
+}
 
 //////////////////////////////////////////////////////////////////////////
 // U2DbiHandle

@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-SQLiteSequenceDbi::SQLiteSequenceDbi(SQLiteDbi* dbi) : U2SequenceRWDbi(dbi), SQLiteChildDBICommon(dbi) {
+SQLiteSequenceDbi::SQLiteSequenceDbi(SQLiteDbi* dbi) : U2SequenceDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
 U2Sequence SQLiteSequenceDbi::getSequenceObject(U2DataId sequenceId, U2OpStatus& os) {

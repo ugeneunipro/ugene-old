@@ -27,19 +27,12 @@
 
 namespace U2 {
 
-/** Default (empty) implementation for optional DBI methods */
-class U2CORE_EXPORT U2AbstractDbi : public U2Dbi {
+class U2CORE_EXPORT U2DbiUtils : public QObject{
+    Q_OBJECT
 public:
-    U2AbstractDbi();
-    
-    virtual bool flush(U2OpStatus& os) {return true;}
-
-    virtual U2DbiState getState() const {return state;}
-
-protected:
-    U2DbiState state;
+    /** Logs that operation called is not supported by DBI */
+    static void logNotSupported(U2DbiFeature f, U2Dbi* dbi);
 };
-
 
 /** 
     Helper class that allocates connection in constructor and automatically releases it in the destructor 

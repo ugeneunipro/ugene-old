@@ -35,7 +35,7 @@
 namespace U2 {
 
 
-SQLiteDbi::SQLiteDbi() {
+SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     db = new DbRef();
     flags = 0;
 
@@ -199,6 +199,17 @@ void SQLiteDbi::internalInit(U2OpStatus& os){
         coreLog.trace(QString("SQLiteDbi: enabling reads compression mode: %1").arg(url));
         flags|=SQLiteDbiFlag_AssemblyReadsCompression1;
     }
+
+    // set up features list
+    features.insert(U2DbiFeature_ReadSequence);
+    features.insert(U2DbiFeature_ReadMsa);
+    features.insert(U2DbiFeature_ReadAssembly);
+    features.insert(U2DbiFeature_WriteSequence);
+    //features.insert(U2DbiFeature_WriteMsa);
+    features.insert(U2DbiFeature_WriteAssembly);
+    features.insert(U2DbiFeature_AssemblyReadsPacking);
+    features.insert(U2DbiFeature_RemoveObjects);
+    features.insert(U2DbiFeature_ChangeFolders);
 }
 
 
@@ -252,6 +263,8 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
                 }
             }
         } 
+
+        dbiId = url;
         internalInit(os);
         // OK, initialization complete
 
@@ -306,7 +319,7 @@ U2DataType SQLiteDbi::getEntityTypeById(U2DataId id) const {
     return SQLiteUtils::toType(id);
 }
 
-SQLiteObjectDbi* SQLiteDbi::getObjectDbi() const {
+SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
     return static_cast<SQLiteObjectDbi*>(objectDbi);
 }
 

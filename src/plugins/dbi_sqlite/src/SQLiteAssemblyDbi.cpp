@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-SQLiteAssemblyDbi::SQLiteAssemblyDbi(SQLiteDbi* dbi) : U2AssemblyRWDbi(dbi), SQLiteChildDBICommon(dbi) {
+SQLiteAssemblyDbi::SQLiteAssemblyDbi(SQLiteDbi* dbi) : U2AssemblyDbi(dbi), SQLiteChildDBICommon(dbi) {
     dnaAlpha = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT())->getAlphabetChars();
     dnaExtAlpha = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED())->getAlphabetChars();
     //dnaAlpha.remove('-'); //this symbol will be removed from alpha chars in 2.0
@@ -299,7 +299,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
 }
     
 void SQLiteAssemblyDbi::removeReads(U2DataId assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
-    SQLiteObjectDbi* objDbi = dbi->getObjectDbi();
+    SQLiteObjectDbi* objDbi = dbi->getSQLiteObjectDbi();
     QString readsTable = getReadsTableName(assemblyId);
     SQLiteQuery selectSequenceQuery(QString("SELECT sequence FROM %1 WHERE id = ?1").arg(readsTable), db, os);
     foreach(U2DataId rowId, rowIds) {
@@ -353,12 +353,12 @@ void SQLiteAssemblyDbi::addReads(U2DataId assemblyId, QList<U2AssemblyRead>& row
         flags = flags | (dnaExt ? (1 << BIT_EXT_DNA_ALPHABET) : 0 );
         
         if (row.sequenceId != 0) {
-            U2Sequence rowSeq = getRootDbi()->getSequenceRDbi()->getSequenceObject(row.sequenceId, os);
+            U2Sequence rowSeq = getRootDbi()->getSequenceDbi()->getSequenceObject(row.sequenceId, os);
             if (os.hasError()) {
                 break;
             }
             rowLen = rowSeq.length;
-            dbi->getObjectDbi()->ensureParent(assemblyId, row.sequenceId, os);
+            dbi->getSQLiteObjectDbi()->ensureParent(assemblyId, row.sequenceId, os);
             //TODO: dnaExt = rowSeq.alphabet ...
         } else {
             rowLen = row.readSequence.length();

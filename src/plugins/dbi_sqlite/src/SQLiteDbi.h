@@ -22,8 +22,7 @@
 #ifndef _U2_SQLITE_DBI_H_
 #define _U2_SQLITE_DBI_H_
 
-#include <U2Core/U2Dbi.h>
-#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2DbiRegistry.h>
 
 #include <QtCore/QFlag>
@@ -81,24 +80,15 @@ public:
     virtual U2DataType getEntityTypeById(U2DataId id) const;
 
 
-    virtual U2ObjectRDbi* getObjectRDbi()  {return objectDbi;}
+    virtual U2ObjectDbi* getObjectDbi()  {return objectDbi;}
 
-    virtual U2ObjectRWDbi* getObjectRWDbi() {return objectDbi;}
+    virtual U2SequenceDbi* getSequenceDbi()  {return sequenceDbi;}
 
-    virtual U2FolderDbi* getFolderDbi() const {return objectDbi;};
-
-    virtual U2SequenceRDbi* getSequenceRDbi()  {return sequenceDbi;}
-
-    virtual U2SequenceRWDbi* getSequenceRWDbi() {return sequenceDbi;}
-
-    virtual U2AssemblyRDbi* getAssemblyRDbi()  {return assemblyDbi;}
-
-    virtual U2AssemblyRWDbi* getAssemblyRWDbi() {return assemblyDbi;}
-
+    virtual U2AssemblyDbi* getAssemblyDbi()  {return assemblyDbi;}
 
     DbRef*    getDbRef() const {return db;}
 
-    SQLiteObjectDbi* getObjectDbi() const;
+    SQLiteObjectDbi* getSQLiteObjectDbi() const;
 
     bool isAssemblyReadsCompressionEnabled() const {return flags.testFlag(SQLiteDbiFlag_AssemblyReadsCompression1);}
 
@@ -117,18 +107,16 @@ private:
     QString             url;
     DbRef*              db;
 
-    U2FolderDbi*        objectDbi;
-    U2SequenceRWDbi*    sequenceDbi;
-    U2MsaRDbi*          msaRDbi;
-    U2AssemblyRWDbi*    assemblyDbi;
+    U2ObjectDbi*        objectDbi;
+    U2SequenceDbi*      sequenceDbi;
+    U2MsaDbi*           msaRDbi;
+    U2AssemblyDbi*      assemblyDbi;
     SQLiteDbiFlags      flags;
-    /** Copy of initialization properties */
-    QHash<QString, QString> initProperties;
 
     friend class SQLiteObjectDbi;
     friend class SQLiteSequenceDbi;
     friend class SQLiteAssemblyDbi;
-    friend class SQLiteMsaRDbi;
+    friend class SQLiteMsaDbi;
 };
 
 class SQLiteDbiFactory : public U2DbiFactory {

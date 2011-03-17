@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-class SQLiteSequenceDbi : public U2SequenceRWDbi, SQLiteChildDBICommon {
+class SQLiteSequenceDbi : public U2SequenceDbi, SQLiteChildDBICommon {
     
 public:
     SQLiteSequenceDbi(SQLiteDbi* dbi);

@@ -26,11 +26,11 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequence.h>
-#include <U2Core/U2Dbi.h>
+#include <U2Core/U2AbstractDbi.h>
 
 namespace U2 {
 
-class  U2CORE_EXPORT DNASequenceObject: public GObject, public U2SequenceRDbi {
+class  U2CORE_EXPORT DNASequenceObject: public GObject, public U2SimpleSequenceDbi {
     Q_OBJECT
 public:
     DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap = QVariantMap());

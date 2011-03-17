@@ -23,7 +23,7 @@
 #define _U2_BAM_DBI_H_
 
 #include <U2Core/U2Dbi.h>
-#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -35,8 +35,8 @@
 namespace U2 {
 namespace BAM {
 
-class ObjectRDbi;
-class AssemblyRDbi;
+class ObjectDbi;
+class AssemblyDbi;
 
 class Dbi : public U2AbstractDbi {
 public:
@@ -46,17 +46,13 @@ public:
 
     virtual QVariantMap shutdown(U2OpStatus &os);
     
-    virtual QString getDbiId() const;
-
     virtual QHash<QString, QString> getDbiMetaInfo(U2OpStatus &);
 
     virtual U2DataType getEntityTypeById(U2DataId id) const;
 
-    virtual U2ObjectRDbi *getObjectRDbi();
+    virtual U2ObjectDbi *getObjectDbi();
 
-    virtual U2AssemblyRDbi *getAssemblyRDbi();
-
-    virtual QHash<QString, QString> getInitProperties() const;
+    virtual U2AssemblyDbi *getAssemblyDbi();
 
 private:
     void buildIndex(U2OpStatus &os);
@@ -70,9 +66,8 @@ private:
     int assembliesCount;
     std::auto_ptr<IOAdapter> ioAdapter;
     std::auto_ptr<Reader> reader;
-    std::auto_ptr<ObjectRDbi> objectRDbi;
-    std::auto_ptr<AssemblyRDbi> assemblyRDbi;
-    QHash<QString, QString> initProps;
+    std::auto_ptr<ObjectDbi> objectDbi;
+    std::auto_ptr<AssemblyDbi> assemblyDbi;
 };
 
 class DbiFactory : public U2DbiFactory {
@@ -89,9 +84,9 @@ public:
     static const QString ID;
 };
 
-class ObjectRDbi : public U2ObjectRDbi {
+class ObjectDbi : public U2SimpleObjectDbi {
 public:
-    ObjectRDbi(Dbi &dbi, DbRef &dbRef, int assembliesCount);
+    ObjectDbi(Dbi &dbi, DbRef &dbRef, int assembliesCount);
 
     virtual qint64 countObjects(U2OpStatus &os);
 
@@ -123,9 +118,9 @@ private:
     int assembliesCount;
 };
 
-class AssemblyRDbi : public U2AssemblyRDbi {
+class AssemblyDbi : public U2SimpleAssemblyDbi {
 public:
-    AssemblyRDbi(Dbi &dbi, Reader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths);
+    AssemblyDbi(Dbi &dbi, Reader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths);
 
     virtual U2Assembly getAssemblyObject(U2DataId id, U2OpStatus &os);
 

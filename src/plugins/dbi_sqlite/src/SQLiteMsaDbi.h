@@ -24,9 +24,11 @@
 
 #include "SQLiteDbi.h"
 
+#include <U2Core/U2AbstractDbi.h>
+
 namespace U2 {
 
-class SQLiteMsaRDbi : public U2MsaRDbi, public SQLiteChildDBICommon {
+class SQLiteMsaRDbi : public U2SimpleMsaDbi, public SQLiteChildDBICommon {
 
 public:
     SQLiteMsaRDbi(SQLiteDbi* dbi);
