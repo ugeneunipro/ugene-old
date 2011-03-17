@@ -23,7 +23,7 @@ Wscript.Echo curDir
 
 runStr = curDir & "\\bundle_binary_zip.cmd " & verStr
 Wscript.Echo runStr
-WshShell.Run runStr,1,False
+WshShell.Run runStr,1,True
    
 objFile.Close
 
