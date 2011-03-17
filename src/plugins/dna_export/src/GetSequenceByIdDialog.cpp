@@ -27,6 +27,7 @@
 #include "GetSequenceByIdDialog.h"
 #include <U2Misc/DialogUtils.h>
 #include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 
 namespace U2 {
 
@@ -53,7 +54,19 @@ void GetSequenceByIdDialog::accept() {
     if(dir.isEmpty()) {
         return;
     }
-
+    
+    QDir downloadDir(dir);
+    if (!downloadDir.exists()) {
+        if (QMessageBox::Yes == QMessageBox::question(this, 
+            windowTitle(), tr("Directory doesn't exist. Do you want to create it?"),
+            QMessageBox::Yes, QMessageBox::No))
+        {
+            downloadDir.mkpath(dir);
+        } else {
+            return;
+        }
+    }
+    
     addToProject = addBox->isChecked();
     QDialog::accept();
 }
