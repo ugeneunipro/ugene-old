@@ -27,6 +27,12 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="value">
            <double>54.950000000000003</double>
           </property>
@@ -70,6 +76,12 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="value">
            <double>8.520000000000000</double>
           </property>
@@ -103,6 +115,12 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="value">
            <double>4.420000000000000</double>
           </property>
@@ -135,6 +153,12 @@
          <widget class="QDoubleSpinBox" name="bonusScoreSpinBox">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
           </property>
           <property name="value">
            <double>0.020000000000000</double>

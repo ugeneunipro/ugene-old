@@ -60,6 +60,7 @@ void KalignDialogController::setupUiExt() {
 	gapOpenSpinBox->setObjectName(QString::fromUtf8("gapOpenSpinBox"));
 	gapOpenSpinBox->setEnabled(false);
 	gapOpenSpinBox->setValue(53.9);
+    gapOpenSpinBox->setMinimumSize(80, 0);
 	gridLayout_2->addWidget(gapOpenSpinBox, 1, 1, 1, 1);
 
 	gridLayout_2->removeWidget(gapExtensionPenaltySpinBox);
@@ -68,6 +69,7 @@ void KalignDialogController::setupUiExt() {
 	gapExtensionPenaltySpinBox->setObjectName(QString::fromUtf8("gapExtensionPenaltySpinBox"));
 	gapExtensionPenaltySpinBox->setEnabled(false);
 	gapExtensionPenaltySpinBox->setValue(8.52);
+    gapExtensionPenaltySpinBox->setMinimumSize(80, 0);
 	gridLayout_2->addWidget(gapExtensionPenaltySpinBox, 2, 1, 1, 1);
 
 	gridLayout_2->removeWidget(terminalGapSpinBox);
@@ -76,6 +78,7 @@ void KalignDialogController::setupUiExt() {
 	terminalGapSpinBox->setObjectName(QString::fromUtf8("terminalGapSpinBox"));
 	terminalGapSpinBox->setEnabled(false);
 	terminalGapSpinBox->setValue(4.42);
+    terminalGapSpinBox->setMinimumSize(80, 0);
 	gridLayout_2->addWidget(terminalGapSpinBox, 3, 1, 1, 1);
 
 	gridLayout_2->removeWidget(bonusScoreSpinBox);
@@ -84,6 +87,7 @@ void KalignDialogController::setupUiExt() {
 	bonusScoreSpinBox->setObjectName(QString::fromUtf8("bonusScoreSpinBox"));
 	bonusScoreSpinBox->setEnabled(false);
 	bonusScoreSpinBox->setValue(0.02);
+    bonusScoreSpinBox->setMinimumSize(80, 0);
 	gridLayout_2->addWidget(bonusScoreSpinBox, 4, 1, 1, 1);
 
 	QObject::connect(gapOpenCheckBox, SIGNAL(clicked(bool)), gapOpenSpinBox, SLOT(setEnabled(bool)));
