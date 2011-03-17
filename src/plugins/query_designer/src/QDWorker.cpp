@@ -93,9 +93,9 @@ void QDWorkerFactory::init() {
     }
 
     Descriptor desc(ACTOR_ID, QDWorker::tr("Annotate with UQL"), 
-        QDWorker::tr("Analyzes a nucleotide sequence using different algorithms \
-                     (Repeat finder, ORF finder, etc.) imposing constraints \
-                     on the positional relationship of the results."));
+        QDWorker::tr("Analyzes a nucleotide sequence using different algorithms"
+                     "(Repeat finder, ORF finder, etc.) imposing constraints"
+                     " on the positional relationship of the results."));
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 

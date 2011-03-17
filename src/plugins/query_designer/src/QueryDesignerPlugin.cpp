@@ -54,9 +54,9 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
 QueryDesignerPlugin::QueryDesignerPlugin() 
     : Plugin(tr("Query Designer"),
-             tr("Analyzes a nucleotide sequence using different algorithms (Repeat finder, \
-                ORF finder, etc.) imposing constraints on the positional relationship \
-                of the results.")) {
+             tr("Analyzes a nucleotide sequence using different algorithms (Repeat finder,"
+                " ORF finder, etc.) imposing constraints on the positional relationship"
+                " of the results.")) {
     if (AppContext::getMainWindow()) {
         services << new QueryDesignerService();
         viewCtx = new QueryDesignerViewContext(this);

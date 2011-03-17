@@ -156,6 +156,7 @@ private:
     void createActions();
     void saveState();
     void setupViewModeMenu(QMenu* m);
+    void setupQuerySequenceModeMenu(QMenu* m);
     void setupStrandMenu(QMenu* m);
     bool confirmModified();
 private:

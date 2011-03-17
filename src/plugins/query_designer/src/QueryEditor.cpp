@@ -62,8 +62,8 @@ QueryEditor::QueryEditor(QWidget* parent/* =0 */) : QWidget(parent), current(NUL
     QueryViewController* controller = qobject_cast<QueryViewController*>(parent);
     ProcessNameValidator* validator = new ProcessNameValidator(this, controller);
     nameEdit->setValidator(validator);
-    directionCombo->insertItem(0, tr("Direct"));
-    directionCombo->insertItem(1, tr("Complementary"));
+    directionCombo->insertItem(0, tr("Forward"));
+    directionCombo->insertItem(1, tr("Backward"));
     directionCombo->insertItem(2, tr("Any"));
 
     cfgModel = new QueryProcCfgModel(this);
@@ -137,11 +137,11 @@ void QueryEditor::setDescriptor(const Descriptor* d, const QString& hint) {
 
 void QueryEditor::showProto(QDActorPrototype* proto) {
     if (proto) {
-        caption->setText(tr("Element name:"));
+        caption->setText(tr("Element Name"));
         caption->show();
-        annotationLbl->setText(tr("Annotate as:"));
+        annotationLbl->setText(tr("Annotate As"));
         annotationLbl->show();
-        directionLbl->setText(tr("Strand:"));
+        directionLbl->setText(tr("Direction"));
         directionLbl->show();
         //nameEdit->setText(a->getParameters()->getLabel());
         nameEdit->show();
@@ -187,11 +187,11 @@ void QueryEditor::edit(QDConstraint* constraint) {
 void QueryEditor::edit(QDActor* a) {
     current = a;
     if(a) {
-        caption->setText(tr("Element name:"));
+        caption->setText(tr("Element Name"));
         caption->show();
-        annotationLbl->setText(tr("Annotate as:"));
+        annotationLbl->setText(tr("Annotate As"));
         annotationLbl->show();
-        directionLbl->setText(tr("Strand:"));
+        directionLbl->setText(tr("Direction"));
         directionLbl->show();
         nameEdit->setText(a->getParameters()->getLabel());
         nameEdit->show();

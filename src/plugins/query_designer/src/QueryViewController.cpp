@@ -652,27 +652,27 @@ void QueryViewController::loadScene(const QString& content) {
 }
 
 void QueryViewController::createActions() {
-    runAction = new QAction(tr("Run schema"), this);
+    runAction = new QAction(tr("Run Schema..."), this);
     runAction->setIcon(QIcon(":query_designer/images/run.png"));
     connect(runAction, SIGNAL(triggered()), SLOT(sl_run()));
 
-    newAction = new QAction(tr("New schema"), this);
+    newAction = new QAction(tr("New Schema"), this);
     newAction->setShortcuts(QKeySequence::New);
     newAction->setIcon(QIcon(":query_designer/images/filenew.png"));
     connect(newAction, SIGNAL(triggered()), SLOT(sl_newScene()));
     
-    loadAction = new QAction(tr("Load schema"), this);
+    loadAction = new QAction(tr("Load Schema..."), this);
     loadAction->setShortcut(QKeySequence("Ctrl+L"));
     loadAction->setIcon(QIcon(":query_designer/images/fileopen.png"));
     connect(loadAction, SIGNAL(triggered()), SLOT(sl_loadScene()));
 
-    saveAction = new QAction(tr("Save schema"), this);
+    saveAction = new QAction(tr("Save Schema"), this);
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setIcon(QIcon(":query_designer/images/filesave.png"));
     saveAction->setDisabled(true);
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
     
-    saveAsAction = new QAction(tr("Save schema as"), this);
+    saveAsAction = new QAction(tr("Save Schema As..."), this);
     saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setIcon(QIcon(":query_designer/images/filesave.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
@@ -739,6 +739,12 @@ void QueryViewController::setupViewModeMenu(QMenu* m) {
     m->addAction(showOrderAction);
 }
 
+void QueryViewController::setupQuerySequenceModeMenu(QMenu* m) {
+    m->addAction(directStrandAction);
+    m->addAction(complementStrandAction);
+    m->addAction(bothStrandsAction);
+}
+
 void QueryViewController::setupStrandMenu(QMenu* m) {
     m->addActions(strandActions->actions());
 }
@@ -749,10 +755,18 @@ void QueryViewController::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(saveAction);
     tb->addAction(saveAsAction);
     tb->addSeparator();
+
     tb->addAction(runAction);
     tb->addSeparator();
-    tb->addAction(deleteAction);
-    tb->addSeparator();
+
+    QToolButton* tt = new QToolButton(tb);
+    QMenu* viewModeMenu = new QMenu(tr("View Mode"), this);
+    setupViewModeMenu(viewModeMenu);
+    QAction* a = viewModeMenu->menuAction();
+    tt->setDefaultAction(a);
+    tt->setPopupMode(QToolButton::InstantPopup);
+    tt->setIcon(QIcon(":query_designer/images/eye.png"));
+    tb->addWidget(tt);
 
     QToolButton* st = new QToolButton(tb);
     QMenu* strandMenu = new QMenu(tr("Query Sequence Mode"), this);
@@ -760,20 +774,14 @@ void QueryViewController::setupMDIToolbar(QToolBar* tb) {
     QAction* sa = strandMenu->menuAction();
     st->setDefaultAction(sa);
     st->setPopupMode(QToolButton::InstantPopup);
+    st->setIcon(QIcon(":query_designer/images/strands.png"));
     tb->addWidget(st);
 
-    QToolButton* tt = new QToolButton(tb);
-    QMenu* viewModeMenu = new QMenu(tr("View mode"), this);
-    setupViewModeMenu(viewModeMenu);
-    QAction* a = viewModeMenu->menuAction();
-    tt->setDefaultAction(a);
-    tt->setPopupMode(QToolButton::InstantPopup);
-    tb->addWidget(tt);
+    tb->addSeparator();
+    tb->addAction(deleteAction);
 }
 
 void QueryViewController::setupViewMenu(QMenu* m) {
-    m->addAction(deleteAction);
-    m->addSeparator();
     m->addAction(newAction);
     m->addAction(loadAction);
     m->addAction(saveAction);
@@ -781,9 +789,20 @@ void QueryViewController::setupViewMenu(QMenu* m) {
     m->addSeparator();
     m->addAction(runAction);
     m->addSeparator();
-    QMenu* viewModeMenu = new QMenu(tr("View mode"), this);
+
+    QMenu* viewModeMenu = new QMenu(tr("View Mode"), this);
+    viewModeMenu->setIcon(QIcon(":query_designer/images/eye.png"));
     setupViewModeMenu(viewModeMenu);
     m->addMenu(viewModeMenu);
+
+    QMenu* querySequenceModeMenu = new QMenu(tr("Query Sequence Mode"), this);
+    querySequenceModeMenu->setIcon((QIcon(":query_designer/images/strands.png")));
+    setupQuerySequenceModeMenu(querySequenceModeMenu);
+    m->addMenu(querySequenceModeMenu);
+
+    m->addSeparator();
+    m->addAction(deleteAction);
+    m->addSeparator();
 }
 
 void QueryViewController::switchToGroupsTab() {
@@ -832,7 +851,7 @@ void QueryViewController::sl_loadScene() {
         }
     }
     LastOpenDirHelper dir(QUERY_DESIGNER_ID);
-    dir.url = QFileDialog::getOpenFileName(this, tr("Load schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
+    dir.url = QFileDialog::getOpenFileName(this, tr("Load Schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
     if (!dir.url.isEmpty()) {
         QDLoadSceneTask* t = new QDLoadSceneTask(scene, dir.url);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_updateTitle()));
@@ -858,7 +877,7 @@ void QueryViewController::sl_saveScene() {
 
 void QueryViewController::sl_saveSceneAs() {
     LastOpenDirHelper dir(QUERY_DESIGNER_ID);
-    dir.url = QFileDialog::getSaveFileName(this, tr("Save schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
+    dir.url = QFileDialog::getSaveFileName(this, tr("Save Schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
     if (!dir.url.isEmpty()) {
         schemeUri = dir.url;
         sl_saveScene();
@@ -1034,7 +1053,7 @@ AddConstraintDialog::AddConstraintDialog(QueryScene* _scene, QDDistanceType _kin
 : scene(_scene), kind(_kind) {
     setupUi(this);
 
-    QString title = "Add %1 constraint";
+    QString title = "Add %1 Constraint";
     switch (kind)
     {
     case E2S:
@@ -1116,12 +1135,12 @@ QPixmap QDUtils::generateSnapShot( QueryScene* scene, const QRect& rect) {
 
     QPixmap pixmap(bounds.size().toSize());
     if (pixmap.isNull()) { // failed to allocate 
-        uiLog.trace(QString("Failed to allocate pixmap for qd-scene, bounds: x:%1 y:%2 w:%3 h:%4")
+        uiLog.trace(QString("Failed to allocate pixmap for the QD scene, bounds: x:%1 y:%2 w:%3 h:%4")
             .arg(bounds.x()).arg(bounds.y()).arg(bounds.width()).arg(bounds.height()));
         QPixmap naPixmap = QPixmap(rect.size());
         naPixmap.fill();
         QPainter p(&naPixmap);
-        p.drawText(naPixmap.rect(), Qt::AlignHCenter | Qt::AlignTop, QueryScene::tr("Preview is not available"));
+        p.drawText(naPixmap.rect(), Qt::AlignHCenter | Qt::AlignTop, QueryScene::tr("Preview is not available."));
         return naPixmap;
     }
     pixmap.fill();

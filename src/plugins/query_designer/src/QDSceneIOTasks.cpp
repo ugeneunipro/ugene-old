@@ -241,7 +241,7 @@ bool QDSceneSerializer::doc2scheme(const QList<QDDocument*>& docs, QMap<QDElemen
                 }
             }
             if (actualStmt==NULL) {
-                algoLog.error(QObject::tr("{%1} not found in imported files").arg(actualStmt->getId()));
+                algoLog.error(QObject::tr("{%1} is not found in imported files.").arg(actualStmt->getId()));
                 return false;
             }
             actor = QDSchemeSerializer::loadActor(actualStmt, group);
@@ -384,7 +384,7 @@ QDActor* QDSchemeSerializer::loadActor(QDElementStatement* actorElement, QString
     }
     QDActorPrototypeRegistry* afr = AppContext::getQDActorProtoRegistry();
     if (!afr->getAllIds().contains(algo)) {
-        ioLog.error(QObject::tr("Can not find %1").arg(algo));
+        ioLog.error(QObject::tr("Can not find %1.").arg(algo));
         return NULL;
     }
     QDActor* actor = afr->getProto(algo)->createInstance();
@@ -515,7 +515,7 @@ bool QDSchemeSerializer::loadGroups(QDScheme* scheme, QDDocument* doc) {
         QPair<QString, QString> attr = el->getAttributes().at(idx);
         QString group = attr.first;
         if (!scheme->getActorGroups().contains(group)) {
-            coreLog.error(QObject::tr("Error loading schema. Schema does not contain group %1").arg(group));
+            coreLog.error(QObject::tr("Error loading schema. Schema does not contain group %1.").arg(group));
             return false;
         }
         bool ok;

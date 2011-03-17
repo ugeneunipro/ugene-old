@@ -50,7 +50,7 @@ formatName(tr("Query Schema")) {
     supportedObjectTypes += QDGObject::TYPE;
 }
 
-Document* QDDocFormat::createNewDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs /*= QVariantMap()*/ ) {
+Document* QDDocFormat::createNewDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs /* = QVariantMap()*/ ) {
     Document* d = DocumentFormat::createNewDocument(io, url, fs);
     GObject* o = new QDGObject(tr("Query Schema"), "");
     d->addObject(o);
@@ -58,7 +58,7 @@ Document* QDDocFormat::createNewDocument(IOAdapterFactory* io, const QString& ur
 }
 
 #define BUFF_SIZE 1024
-Document* QDDocFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode /*= DocumentLoadMode_Whole*/ ) {
+Document* QDDocFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode /* = DocumentLoadMode_Whole*/ ) {
     Q_UNUSED(mode);
     QByteArray  rawData;
     QByteArray block(BUFF_SIZE, '\0');
@@ -119,7 +119,7 @@ bool QDViewFactory::canCreateView( const MultiGSelection& multiSelection ) {
     return false;
 }
 
-Task* QDViewFactory::createViewTask( const MultiGSelection& multiSelection, bool single /*= false*/ ) {
+Task* QDViewFactory::createViewTask( const MultiGSelection& multiSelection, bool single /* = false*/ ) {
     QSet<Document*> documents = SelectionUtils::findDocumentsWithObjects(QDGObject::TYPE, &multiSelection, UOF_LoadedAndUnloaded, true);
     if (documents.size() == 0) {
         return NULL;

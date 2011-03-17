@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Analyze with query schema</string>
+   <string>Analyze with Query Schema</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

@@ -5,46 +5,46 @@
     <name>AddConstraintDialog</name>
     <message>
         <location filename="../src/ui/AddConstraintDialog.ui" line="14"/>
-        <source>Add constraint</source>
-        <translation type="unfinished">Добавить расстояние</translation>
+        <source>Add Constraint</source>
+        <translation>Добавить расстояние</translation>
     </message>
     <message>
         <location filename="../src/ui/AddConstraintDialog.ui" line="30"/>
         <source>From</source>
-        <translation type="unfinished">От</translation>
+        <translation>От</translation>
     </message>
     <message>
         <location filename="../src/ui/AddConstraintDialog.ui" line="43"/>
         <source>To</source>
-        <translation type="unfinished">До</translation>
+        <translation>До</translation>
     </message>
     <message>
         <location filename="../src/ui/AddConstraintDialog.ui" line="84"/>
         <source>Min</source>
-        <translation type="unfinished">Мин</translation>
+        <translation>Минимальное</translation>
     </message>
     <message>
         <location filename="../src/ui/AddConstraintDialog.ui" line="97"/>
         <source>Max</source>
-        <translation type="unfinished">Макс</translation>
+        <translation>Максимальное</translation>
     </message>
 </context>
 <context>
     <name>QDDialog</name>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="14"/>
-        <source>Analyze with query schema</source>
-        <translation type="unfinished">Поиск сигналов с помощью дизайнера запросов</translation>
+        <source>Analyze with Query Schema</source>
+        <translation>Поиск сигналов с помощью дизайнера запросов</translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="22"/>
         <source>File with query</source>
-        <translation type="unfinished">Файл схемы запроса</translation>
+        <translation>Файл схемы запроса</translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="36"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="54"/>
@@ -66,37 +66,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/QDDialog.ui" line="76"/>
         <source>Range</source>
-        <translation type="unfinished">Искать в диапазоне</translation>
+        <translation>Искать в диапазоне</translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="82"/>
         <source>Whole sequence</source>
-        <translation type="unfinished">Вся последовательность</translation>
+        <translation>Вся последовательность</translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="92"/>
         <source>Selected range</source>
-        <translation type="unfinished">Выделенный регион</translation>
+        <translation>Выделенный регион</translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="99"/>
         <source>Custom range</source>
-        <translation type="unfinished">Указанный регион</translation>
+        <translation>Указанный регион</translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="131"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="204"/>
         <source>Search</source>
-        <translation type="unfinished">Искать</translation>
+        <translation>Искать</translation>
     </message>
     <message>
         <location filename="../src/ui/QDDialog.ui" line="211"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -104,31 +104,31 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QueryPalette.cpp" line="38"/>
         <source>End-Start</source>
-        <translation type="unfinished">Конец-Начало</translation>
+        <translation>Конец-Начало</translation>
     </message>
     <message>
         <location filename="../src/QueryPalette.cpp" line="39"/>
         <source>Start-End</source>
-        <translation type="unfinished">Начало-Конец</translation>
+        <translation>Начало-Конец</translation>
     </message>
     <message>
         <location filename="../src/QueryPalette.cpp" line="40"/>
         <source>End-End</source>
-        <translation type="unfinished">Конец-Конец</translation>
+        <translation>Конец-Конец</translation>
     </message>
     <message>
         <location filename="../src/QueryPalette.cpp" line="41"/>
         <source>Start-Start</source>
-        <translation type="unfinished">Начало-Начало</translation>
+        <translation>Начало-Начало</translation>
     </message>
     <message>
         <location filename="../src/QDSceneIOTasks.cpp" line="244"/>
-        <source>{%1} not found in imported files</source>
-        <translation type="unfinished"></translation>
+        <source>{%1} is not found in imported files.</source>
+        <translation>{%1} не найден в импортируемых файлах.</translation>
     </message>
     <message>
         <location filename="../src/QDSceneIOTasks.cpp" line="387"/>
-        <source>Can not find %1</source>
+        <source>Can not find %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -138,7 +138,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/QDSceneIOTasks.cpp" line="518"/>
-        <source>Error loading schema. Schema does not contain group %1</source>
+        <source>Error loading schema. Schema does not contain group %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -152,81 +152,81 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/QueryEditorWidget.ui" line="35"/>
         <source>Property Editor</source>
-        <translation type="unfinished">Редактор настроек</translation>
+        <translation>Редактор настроек</translation>
     </message>
     <message>
-        <location filename="../src/ui/QueryEditorWidget.ui" line="57"/>
-        <location filename="../src/ui/QueryEditorWidget.ui" line="73"/>
-        <location filename="../src/ui/QueryEditorWidget.ui" line="80"/>
+        <location filename="../src/ui/QueryEditorWidget.ui" line="49"/>
+        <location filename="../src/ui/QueryEditorWidget.ui" line="78"/>
+        <location filename="../src/ui/QueryEditorWidget.ui" line="88"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/QueryEditorWidget.ui" line="166"/>
+        <location filename="../src/ui/QueryEditorWidget.ui" line="152"/>
         <source>Parameters</source>
-        <translation type="unfinished">Параметры</translation>
+        <translation>Параметры</translation>
     </message>
 </context>
 <context>
     <name>RunQueryDlg</name>
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="26"/>
-        <source>Run schema</source>
-        <translation type="unfinished">Запуск схемы</translation>
+        <source>Run Schema</source>
+        <translation>Запуск схемы</translation>
     </message>
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="42"/>
         <source>Load sequence</source>
-        <translation type="unfinished">Последовательность</translation>
+        <translation>Последовательность</translation>
     </message>
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="55"/>
         <source>Save results to</source>
-        <translation type="unfinished">Сохранить реультаты в</translation>
+        <translation>Сохранить реультаты в</translation>
     </message>
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="80"/>
         <location filename="../src/ui/RunQueryDialog.ui" line="87"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="119"/>
         <source>Add to project</source>
-        <translation type="unfinished">Добавить к проекту</translation>
+        <translation>Добавить к проекту</translation>
     </message>
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="159"/>
         <source>Run</source>
-        <translation type="unfinished">Выполнить</translation>
+        <translation>Выполнить</translation>
     </message>
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="166"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
     <name>U2::AddConstraintDialog</name>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="1041"/>
+        <location filename="../src/QueryViewController.cpp" line="1060"/>
         <source>End-Start</source>
-        <translation type="unfinished">Конец-Начало</translation>
+        <translation>Конец-Начало</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="1044"/>
+        <location filename="../src/QueryViewController.cpp" line="1063"/>
         <source>End-End</source>
-        <translation type="unfinished">Конец-Конец</translation>
+        <translation>Конец-Конец</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="1047"/>
+        <location filename="../src/QueryViewController.cpp" line="1066"/>
         <source>Start-End</source>
-        <translation type="unfinished">Начало-Конец</translation>
+        <translation>Начало-Конец</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="1050"/>
+        <location filename="../src/QueryViewController.cpp" line="1069"/>
         <source>Start-Start</source>
-        <translation type="unfinished">Начало-Начало</translation>
+        <translation>Начало-Начало</translation>
     </message>
 </context>
 <context>
@@ -340,7 +340,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/QDWorker.cpp" line="96"/>
-        <source>Analyzes a nucleotide sequence using different algorithms                      (Repeat finder, ORF finder, etc.) imposing constraints                      on the positional relationship of the results.</source>
+        <source>Analyzes a nucleotide sequence using different algorithms(Repeat finder, ORF finder, etc.) imposing constraints on the positional relationship of the results.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -354,28 +354,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QDRunDialog.cpp" line="362"/>
         <source>Select query</source>
-        <translation type="unfinished">Выбор схемы запроса</translation>
+        <translation>Выбор схемы запроса</translation>
     </message>
     <message>
         <location filename="../src/QDRunDialog.cpp" line="378"/>
         <location filename="../src/QDRunDialog.cpp" line="385"/>
         <source>Can not load %1</source>
-        <translation type="unfinished">Не удаётся загрузить схему %1</translation>
+        <translation>Не удаётся загрузить схему %1</translation>
     </message>
     <message>
         <location filename="../src/QDRunDialog.cpp" line="432"/>
         <source>File with query is not selected!</source>
-        <translation type="unfinished">Не выбран файл схемы!</translation>
+        <translation>Не выбран файл схемы!</translation>
     </message>
     <message>
         <location filename="../src/QDRunDialog.cpp" line="437"/>
         <source>Error in schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка в схеме!</translation>
     </message>
     <message>
         <location filename="../src/QDRunDialog.cpp" line="443"/>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
 </context>
 <context>
@@ -390,7 +390,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QDDocumentFormat.cpp" line="72"/>
         <source>Invalid header. %1 expected</source>
-        <translation type="unfinished">Неправильный заголовок! Должен быть: %1</translation>
+        <translation>Неправильный заголовок! Должен быть: %1</translation>
     </message>
 </context>
 <context>
@@ -398,17 +398,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QueryViewItems.cpp" line="356"/>
         <source>Set order</source>
-        <translation type="unfinished">Задать порядок</translation>
+        <translation>Задать порядок</translation>
     </message>
     <message>
         <location filename="../src/QueryViewItems.cpp" line="375"/>
         <source>Remove from group</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить из группы</translation>
     </message>
     <message>
         <location filename="../src/QueryViewItems.cpp" line="377"/>
         <source>Add to group</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить к группе</translation>
     </message>
     <message>
         <location filename="../src/QueryViewItems.cpp" line="383"/>
@@ -423,20 +423,16 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QueryViewItems.cpp" line="395"/>
         <source>Add &apos;%1&apos; to group</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить &apos;%1&apos; к группе</translation>
     </message>
     <message>
         <location filename="../src/QueryViewItems.cpp" line="396"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа</translation>
     </message>
 </context>
 <context>
     <name>U2::QDFindActor</name>
-    <message>
-        <source>%1 &lt;br /&gt; Annotate as %2.</source>
-        <translation type="obsolete">%1 &lt;br /&gt; Аннотировать как %2.</translation>
-    </message>
     <message>
         <location filename="../src/library/QDFindActor.cpp" line="65"/>
         <source>Find</source>
@@ -462,14 +458,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/library/QDFindActor.cpp" line="107"/>
         <source>Finds pattern.</source>
         <translation type="unfinished">Ищет паттерн.</translation>
-    </message>
-    <message>
-        <source>Annotate as</source>
-        <translation type="obsolete">Аннотации</translation>
-    </message>
-    <message>
-        <source>Name of the result annotations marking found matches.</source>
-        <translation type="obsolete">Имя аннотаций помечающих найденные совпадения.</translation>
     </message>
     <message>
         <location filename="../src/library/QDFindActor.cpp" line="109"/>
@@ -556,77 +544,77 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="49"/>
         <source>Add Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить группу</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="52"/>
         <source>Remove Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить группу</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="55"/>
         <source>Add Element</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить элемент</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="58"/>
         <source>Remove Element</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить элемент</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="61"/>
         <source>Set Required Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Задать число элементов</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="105"/>
         <source>Query Designer</source>
-        <translation type="unfinished">Дизайнер запросов</translation>
+        <translation>Дизайнер запросов</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="110"/>
         <source>Create element group</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать группу элементов</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="110"/>
         <source>Group name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя группы</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="115"/>
         <source>Group &apos;%1&apos; already exists!</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа &apos;%1&apos; уже существует!</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="119"/>
         <source>Invalid group name!</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое имя группы!</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="149"/>
         <source>Add Element To Group &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить элемент к группе &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="149"/>
         <source>Element:</source>
-        <translation type="unfinished"></translation>
+        <translation>Элемент</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="158"/>
         <source>Actor is already in group!</source>
-        <translation type="unfinished"></translation>
+        <translation>Элемент уже присутствует в группе!</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="181"/>
         <source>Set required number for &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Задать минимальное число элементов группы &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="182"/>
         <source>Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Число</translation>
     </message>
 </context>
 <context>
@@ -682,36 +670,24 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::QDRunDialog</name>
     <message>
-        <source>Select file with sequence</source>
-        <translation type="obsolete">Выбрать файл с последовательностью</translation>
-    </message>
-    <message>
         <location filename="../src/QDRunDialog.cpp" line="92"/>
         <source>Select output file</source>
-        <translation type="unfinished">Выбрать выходной файл</translation>
-    </message>
-    <message>
-        <source>The schema is empty!</source>
-        <translation type="obsolete">Схема пуста!</translation>
-    </message>
-    <message>
-        <source>The schema is invalid!</source>
-        <translation type="obsolete">Неверная схема!</translation>
+        <translation>Выбрать выходной файл</translation>
     </message>
     <message>
         <location filename="../src/QDRunDialog.cpp" line="89"/>
         <source>Select input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать входной файл</translation>
     </message>
     <message>
         <location filename="../src/QDRunDialog.cpp" line="126"/>
         <source>The sequence is not specified!</source>
-        <translation type="unfinished">Не задана последовательность!</translation>
+        <translation>Не задана последовательность!</translation>
     </message>
     <message>
         <location filename="../src/QDRunDialog.cpp" line="130"/>
         <source>The output file is not selected!</source>
-        <translation type="unfinished">Не задан выходной файл!</translation>
+        <translation>Не задан выходной файл!</translation>
     </message>
 </context>
 <context>
@@ -759,15 +735,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/QDDocumentFormat.h" line="79"/>
         <location filename="../src/QueryDesignerPlugin.cpp" line="56"/>
         <source>Query Designer</source>
-        <translation type="unfinished">Дизайнер запросов</translation>
-    </message>
-    <message>
-        <source>Analyzes a nucleotide sequence using different algorithms (Repeat finder, 				ORF finder, etc.) imposing constraints on the positional relationship 				of the results.</source>
-        <translation type="obsolete">Ищет комплексные сигналы в нуклеотидных последовательностях, состоящие из результатов работы отдельных алгоритмов</translation>
+        <translation>Дизайнер запросов</translation>
     </message>
     <message>
         <location filename="../src/QueryDesignerPlugin.cpp" line="57"/>
-        <source>Analyzes a nucleotide sequence using different algorithms (Repeat finder,                 ORF finder, etc.) imposing constraints on the positional relationship                 of the results.</source>
+        <source>Analyzes a nucleotide sequence using different algorithms (Repeat finder, ORF finder, etc.) imposing constraints on the positional relationship of the results.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -786,12 +758,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QueryDesignerPlugin.cpp" line="148"/>
         <source>Query Designer...</source>
-        <translation type="unfinished">Дизайнер запросов...</translation>
+        <translation>Дизайнер запросов...</translation>
     </message>
     <message>
         <location filename="../src/QueryDesignerPlugin.h" line="58"/>
         <source>Query Designer</source>
-        <translation type="unfinished">Дизайнер запросов</translation>
+        <translation>Дизайнер запросов</translation>
     </message>
 </context>
 <context>
@@ -806,50 +778,46 @@ p, li { white-space: pre-wrap; }
     <name>U2::QueryEditor</name>
     <message>
         <location filename="../src/QueryEditor.cpp" line="65"/>
-        <source>Direct</source>
-        <translation type="unfinished"></translation>
+        <source>Forward</source>
+        <translation>Прямое</translation>
     </message>
     <message>
         <location filename="../src/QueryEditor.cpp" line="66"/>
-        <source>Complementary</source>
-        <translation type="unfinished"></translation>
+        <source>Backward</source>
+        <translation>Обратное</translation>
     </message>
     <message>
         <location filename="../src/QueryEditor.cpp" line="67"/>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Любое</translation>
     </message>
     <message>
         <location filename="../src/QueryEditor.cpp" line="133"/>
         <source>Select an element to inspect.</source>
-        <translation type="unfinished">Выберите элемент для просмотра или редактирования.</translation>
+        <translation>Выберите элемент для просмотра или редактирования.</translation>
     </message>
     <message>
         <location filename="../src/QueryEditor.cpp" line="140"/>
         <location filename="../src/QueryEditor.cpp" line="190"/>
-        <source>Element name:</source>
-        <translation type="unfinished"></translation>
+        <source>Element Name</source>
+        <translation>Имя элемента</translation>
     </message>
     <message>
         <location filename="../src/QueryEditor.cpp" line="142"/>
         <location filename="../src/QueryEditor.cpp" line="192"/>
-        <source>Annotate as:</source>
-        <translation type="unfinished"></translation>
+        <source>Annotate As</source>
+        <translation>Аннотации</translation>
     </message>
     <message>
         <location filename="../src/QueryEditor.cpp" line="144"/>
         <location filename="../src/QueryEditor.cpp" line="194"/>
-        <source>Strand:</source>
-        <translation type="unfinished"></translation>
+        <source>Direction</source>
+        <translation>Направление</translation>
     </message>
     <message>
         <location filename="../src/QueryEditor.cpp" line="178"/>
         <source>To configure the constraint element parameters go to the &quot;Parameters&quot; area below.</source>
         <translation type="unfinished">Параметры элемента можно отредактировать в таблице, расположенной ниже.</translation>
-    </message>
-    <message>
-        <source>Label:</source>
-        <translation type="obsolete">Имя элемента:</translation>
     </message>
     <message>
         <location filename="../src/QueryEditor.cpp" line="156"/>
@@ -863,12 +831,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QueryPalette.cpp" line="157"/>
         <source>Algorithms</source>
-        <translation type="unfinished">Алгоритмы</translation>
+        <translation>Алгоритмы</translation>
     </message>
     <message>
         <location filename="../src/QueryPalette.cpp" line="173"/>
         <source>Constraints</source>
-        <translation type="unfinished">Условия</translation>
+        <translation>Условия</translation>
     </message>
 </context>
 <context>
@@ -887,132 +855,138 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::QueryScene</name>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="1124"/>
-        <source>Preview is not available</source>
-        <translation type="unfinished">Предпросмотр недоступен</translation>
+        <location filename="../src/QueryViewController.cpp" line="1143"/>
+        <source>Preview is not available.</source>
+        <translation>Предварительный просмотр недоступен.</translation>
     </message>
 </context>
 <context>
     <name>U2::QueryViewController</name>
     <message>
         <location filename="../src/QueryViewController.cpp" line="593"/>
-        <location filename="../src/QueryViewController.cpp" line="1007"/>
+        <location filename="../src/QueryViewController.cpp" line="1026"/>
         <source>Query Designer</source>
-        <translation type="unfinished">Дизайнер запросов</translation>
+        <translation>Дизайнер запросов</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="605"/>
         <source>Elements</source>
-        <translation type="unfinished">Элементы</translation>
+        <translation>Элементы</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="606"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Группы</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="607"/>
         <source>Samples</source>
-        <translation type="unfinished">Примеры</translation>
+        <translation>Примеры</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="655"/>
-        <source>Run schema</source>
-        <translation type="unfinished">Выполнить схему</translation>
+        <source>Run Schema...</source>
+        <translation>Выполнить схему...</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="659"/>
-        <source>New schema</source>
-        <translation type="unfinished">Новая схема</translation>
+        <source>New Schema</source>
+        <translation>Создать схему</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="664"/>
-        <location filename="../src/QueryViewController.cpp" line="835"/>
-        <source>Load schema</source>
-        <translation type="unfinished">Загрузить схему</translation>
+        <source>Load Schema...</source>
+        <translation>Загрузить схему...</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="669"/>
-        <location filename="../src/QueryViewController.cpp" line="861"/>
-        <source>Save schema</source>
-        <translation type="unfinished">Сохранить схему</translation>
+        <location filename="../src/QueryViewController.cpp" line="880"/>
+        <source>Save Schema</source>
+        <translation>Сохранить схему</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="675"/>
-        <source>Save schema as</source>
-        <translation type="unfinished"></translation>
+        <source>Save Schema As...</source>
+        <translation>Сохранить схему как...</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="680"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="685"/>
         <source>Show title</source>
-        <translation type="unfinished">Показывать заголовок</translation>
+        <translation>Показывать заголовок</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="690"/>
         <source>Show description</source>
-        <translation type="unfinished">Показывать описание</translation>
+        <translation>Показывать описание схемы</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="695"/>
         <source>Show element info</source>
-        <translation type="unfinished">Показывать описание элемента</translation>
+        <translation>Показывать описание элемента</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="700"/>
         <source>Show order</source>
-        <translation type="unfinished">Показывать порядок</translation>
+        <translation>Показывать порядок выполнения</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="707"/>
         <source>Direct strand</source>
-        <translation type="unfinished"></translation>
+        <translation>Считывать прямую цепь</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="710"/>
         <source>Reverse complementary strand</source>
-        <translation type="unfinished"></translation>
+        <translation>Считывать обратно-комлементарную цепь</translation>
     </message>
     <message>
         <location filename="../src/QueryViewController.cpp" line="713"/>
         <source>Both strands</source>
-        <translation type="unfinished"></translation>
+        <translation>Считывать обе цепи</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="758"/>
+        <location filename="../src/QueryViewController.cpp" line="772"/>
+        <location filename="../src/QueryViewController.cpp" line="798"/>
         <source>Query Sequence Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим считывания последовательности</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="766"/>
-        <location filename="../src/QueryViewController.cpp" line="784"/>
-        <source>View mode</source>
-        <translation type="unfinished">Стиль</translation>
+        <location filename="../src/QueryViewController.cpp" line="763"/>
+        <location filename="../src/QueryViewController.cpp" line="793"/>
+        <source>View Mode</source>
+        <translation>Режим отображения</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="805"/>
+        <location filename="../src/QueryViewController.cpp" line="824"/>
         <source>The schema is empty!</source>
         <translation type="unfinished">Схема пуста!</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="807"/>
+        <location filename="../src/QueryViewController.cpp" line="826"/>
         <source>The schema is invalid! Please see the log for details.</source>
-        <translation></translation>
+        <translation>Схема содержит ошибки. Для получения подробностей обратитесь к логу.</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="963"/>
+        <location filename="../src/QueryViewController.cpp" line="854"/>
+        <source>Load Schema</source>
+        <translation>Загрузить схему</translation>
+    </message>
+    <message>
+        <location filename="../src/QueryViewController.cpp" line="982"/>
         <source>Query Designer - %1</source>
         <translation type="unfinished">Дизайнер заросов - %1</translation>
     </message>
     <message>
-        <location filename="../src/QueryViewController.cpp" line="1008"/>
+        <location filename="../src/QueryViewController.cpp" line="1027"/>
         <source>The schema has been modified.
 Do you want to save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Схема была изменена.
+Сохранить изменения?</translation>
     </message>
 </context>
 </TS>
