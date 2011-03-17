@@ -196,6 +196,9 @@ void DotPlotWidget::buildPopupMenu(QMenu *m) const {
 
 QPointF DotPlotWidget::zoomTo(Qt::Axis axis, const U2Region &lr, bool emitSignal) {
 
+    if(lr.length == 0){
+        return zoom;
+    }
     QPointF oldZoom = zoom;
 
     int seqLen = 0;
@@ -628,14 +631,15 @@ bool DotPlotWidget::sl_showSettingsDialog() {
         foreach (ADVSequenceWidget *advSeqWidget, sequenceX->getSequenceWidgets()) {
             ADVSingleSequenceWidget *ssw = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
             if (ssw) {
-                zoomUseX.setPanView(ssw->getPanView());
+               
+                //zoomUseX->setPanView(ssw->getPanView());
                 break;
             }
         }
         foreach (ADVSequenceWidget *advSeqWidget, sequenceY->getSequenceWidgets()) {
             ADVSingleSequenceWidget *ssw = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
             if (ssw) {
-                zoomUseY.setPanView(ssw->getPanView());
+                //zoomUseY.setPanView(ssw->getPanView());
                 break;
             }
         }

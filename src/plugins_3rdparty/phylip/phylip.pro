@@ -14,7 +14,8 @@ HEADERS += src/dist.h \
            src/seq.h \
 	   src/seqboot.h \
 	   src/SeqBootAdapter.h \
-	   src/SeqBootModelWidget.h
+	   src/SeqBootModelWidget.h \
+	   src/cons.h
 FORMS += src/ui/DistMatrixModel.ui \
          src/ui/SeqBootModel.ui
 SOURCES += src/dist.cpp \
@@ -30,6 +31,6 @@ SOURCES += src/dist.cpp \
            src/seq.cpp \
 	   src/seqboot.cpp \
 	   src/SeqBootAdapter.cpp \
-	   src/SeqBootModelWidget.cpp
-
-
+	   src/SeqBootModelWidget.cpp \
+	   src/cons.cpp \
+	   src/consense.cpp

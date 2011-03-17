@@ -9,6 +9,42 @@
 long loci, maxalleles, groups, 
 nenzymes, reps, ws, blocksize, maxnewsites;
 
+Phylip_Char **nodep_boot;           /* molecular or morph data */
+
+Phylip_Char *factor = NULL;  /* factor[sites] - direct read-in of factors file */
+long *factorr = NULL; /* [0..sites-1] => nondecreasing [1..groups] */
+
+long *alleles = NULL;
+
+/* Mapping with read-in weights eliminated
+* Allocated once in allocnew() */
+long newsites;
+long newgroups;
+long *newwhere   = NULL;    /* Map [0..newgroups-1] => [1..newsites] */
+long *newhowmany = NULL;    /* Number of chars for each [0..newgroups-1] */
+
+/* Mapping with bootstrapped weights applied */
+/* (re)allocated by allocnewer() */
+long newersites, newergroups;
+long *newerfactor  = NULL;  /* Map [0..newersites-1] => [1..newergroups] */
+long *newerwhere   = NULL;  /* Map [0..newergroups-1] => [1..newersites] */
+long *newerhowmany = NULL;  /* Number of chars for each [0..newergroups-1] */
+long **charorder   = NULL;  /* Permutation [0..spp-1][0..newergroups-1] */
+long **sppord      = NULL;  /* Permutation [0..newergroups-1][0..spp-1] */
+
+longer seed_boot;
+
+
+
+Phylip_Char ** getData(){
+    return nodep_boot;
+}
+
+void putCharToAl(QVector<U2::MAlignment*>& mavect, int rep, int row, int pos, char ch){
+    mavect[rep]->insertChar(row, pos-1, ch);
+}
+
+
 void seqboot_getoptions(void)
 {
   /* interactively set options */
@@ -51,11 +87,11 @@ void seqboot_inputnumbers()
   /* read numbers of species and of sites */
   long i;
 
-  fscanf(infile, "%ld%ld", &spp, &sites);
+  //fscanf(infile, "%ld%ld", &spp, &sites);
   loci = sites;
   maxalleles = 1;
   if (data == restsites && enzymes)
-    fscanf(infile, "%ld", &nenzymes);
+    //fscanf(infile, "%ld", &nenzymes);
   if (data == genefreqs) {
     alleles = (long *)Malloc(sites*sizeof(long));
     scan_eoln(infile);
@@ -63,7 +99,7 @@ void seqboot_inputnumbers()
     for (i = 0; i < (loci); i++) {
       if (eoln(infile)) 
         scan_eoln(infile);
-      fscanf(infile, "%ld", &alleles[i]);
+      //fscanf(infile, "%ld", &alleles[i]);
       if (alleles[i] > maxalleles)
          maxalleles = alleles[i];
       if (all)
@@ -615,7 +651,7 @@ void bootweights()
   if (jackknife) {
     if (fabs(newgroups*fracsample - (long)(newgroups*fracsample+0.5))
        > 0.00001) {
-      if (randum(seed)
+      if (randum(seed_boot)
           < (newgroups*fracsample - (long)(newgroups*fracsample))
             /((long)(newgroups*fracsample+1.0)-(long)(newgroups*fracsample)))
         q = (long)(newgroups*fracsample)+1;
@@ -627,7 +663,7 @@ void bootweights()
     p = q / r;
     ws = 0;
     for (i = 0; i < (newgroups); i++) {
-      if (randum(seed) < p) {
+      if (randum(seed_boot) < p) {
         weight[i]++;
         ws++;
         q--;
@@ -642,7 +678,7 @@ void bootweights()
   } else if (bootstrap) {
     blocks = fracsample * newgroups / blocksize;
     for (i = 1; i <= (blocks); i++) {
-      j = (long)(newgroups * randum(seed)) + 1;
+      j = (long)(newgroups * randum(seed_boot)) + 1;
       for (k = 0; k < blocksize; k++) {
         weight[j - 1]++;
         j++;
@@ -693,7 +729,7 @@ void permute_vec(long *a, long n)
   long i, j, k;
 
   for (i = 1; i < n; i++) {
-    k = (long)((i+1) * randum(seed));
+    k = (long)((i+1) * randum(seed_boot));
     j = a[i];
     a[i] = a[k];
     a[k] = j;
@@ -713,8 +749,10 @@ void charpermute(long m, long n)
 } /* charpermute */
 
 
-void writedata()
+void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment& ma)
 {
+    
+
   /* write out one set of bootstrapped sequences */
   long i, j, k, l, m, n, n2;
   double x;
@@ -731,43 +769,43 @@ void writedata()
   }
   if (!justwts || permute) {
     if (data == restsites && enzymes)
-      fprintf(outfile, "%5ld %5ld% 4ld\n", spp, newergroups, nenzymes);
+      printf("%5ld %5ld% 4ld\n", spp, newergroups, nenzymes);
     else if (data == genefreqs)
-      fprintf(outfile, "%5ld %5ld\n", spp, newergroups);
+      printf("%5ld %5ld\n", spp, newergroups);
     else {
       if ((data == seqs) && rewrite && xml)
-        fprintf(outfile, "<alignment>\n");
+        printf("<alignment>\n");
       else 
         if (rewrite && nexus) {
-          fprintf(outfile, "#NEXUS\n");
-          fprintf(outfile, "BEGIN DATA;\n");
-          fprintf(outfile, "  DIMENSIONS NTAX=%ld NCHAR=%ld;\n",
+          printf( "#NEXUS\n");
+          printf("BEGIN DATA;\n");
+          printf( "  DIMENSIONS NTAX=%ld NCHAR=%ld;\n",
                     spp, newersites);
-          fprintf(outfile, "  FORMAT");
+          printf( "  FORMAT");
           if (interleaved)
-            fprintf(outfile, " interleave=yes");
+            printf( " interleave=yes");
           else
-            fprintf(outfile, " interleave=no");
-          fprintf(outfile, " DATATYPE=");
+            printf( " interleave=no");
+          printf( " DATATYPE=");
           if (data == seqs) {
             switch (seq) { 
-              case (dna): fprintf(outfile, "DNA missing=N gap=-"); break;
-              case (rna): fprintf(outfile, "RNA missing=N gap=-"); break;
+              case (dna): printf( "DNA missing=N gap=-"); break;
+              case (rna): printf( "RNA missing=N gap=-"); break;
               case (protein):
-                fprintf(outfile, "protein missing=? gap=-");
+                printf( "protein missing=? gap=-");
                 break;
               }
           }
           if (data == morphology)
-            fprintf(outfile, "STANDARD");
-          fprintf(outfile, ";\n  MATRIX\n");
+            printf( "STANDARD");
+          printf( ";\n  MATRIX\n");
           }
-        else fprintf(outfile, "%5ld %5ld\n", spp, newersites);
+        //else printf("%5ld %5ld\n", spp, newersites);
     }
     if (data == genefreqs) {
       for (i = 0; i < (newergroups); i++)
-        fprintf(outfile, " %3ld", alleles[factorr[newerwhere[i] - 1] - 1]);
-      putc('\n', outfile);
+        printf(" %3ld", alleles[factorr[newerwhere[i] - 1] - 1]);
+      putchar('\n');
     }
   }
   l = 1;
@@ -784,17 +822,18 @@ void writedata()
     if (m > newergroups)
       m = newergroups;
     for (j = 0; j < spp; j++) {
+      QByteArray curAr;
       n = 0;
       if ((l == 1) || (interleaved && nexus)) {
         if (rewrite && xml) {
-          fprintf(outfile, "   <sequence");
+          printf("   <sequence");
           switch (seq) {
-            case (dna): fprintf(outfile, " type=\"dna\""); break;
-            case (rna): fprintf(outfile, " type=\"rna\""); break;
-            case (protein): fprintf(outfile, " type=\"protein\""); break;
+            case (dna): printf(" type=\"dna\""); break;
+            case (rna): printf(" type=\"rna\""); break;
+            case (protein): printf( " type=\"protein\""); break;
           }
-          fprintf(outfile, ">\n");
-          fprintf(outfile, "      <name>");
+          printf( ">\n");
+          printf( "      <name>");
         }
         n2 = nmlngth;
         if (rewrite && (xml || nexus)) {
@@ -802,23 +841,23 @@ void writedata()
             n2--;
         }
         if (nexus)
-          fprintf(outfile, "  ");
+          printf( "  ");
         for (k = 0; k < n2; k++)
           if (nexus && (nayme[j][k] == ' ') && (k < n2))
-            putc('_', outfile);
+            putchar('_');
           else
-            putc(nayme[j][k], outfile);
+            putchar(nayme[j][k]);
         if (rewrite && xml)
-          fprintf(outfile, "</name>\n      <data>");
+          printf( "</name>\n      <data>");
       } else {
         if (rewrite && xml) {
-          fprintf(outfile, "      ");
+          printf("      ");
         }
       }
       if (!xml) {
         for (k = 0; k < nmlngth-n2; k++)
-          fprintf(outfile, " "); 
-        fprintf(outfile, " "); 
+          printf( " "); 
+        printf( " "); 
       }
       for (k = l - 1; k < m; k++) {
         if (permute && j + 1 == 1)
@@ -827,40 +866,51 @@ void writedata()
           n++;
           if (data == genefreqs) {
             if (n > 1 && (n & 7) == 1)
-              fprintf(outfile, "\n              ");
+              printf( "\n              ");
             x = nodef[sppord[charorder[j][k]][j] - 1]
                      [newerwhere[charorder[j][k]] + n2];
-            fprintf(outfile, "%8.5f", x);
+            printf("%8.5f", x);
           } else {
             if (rewrite && xml && (n > 1) && (n % 60 == 1))
-              fprintf(outfile, "\n            ");
+              printf( "\n            ");
             else if (!nexus && !interleaved && (n > 1) && (n % 60 == 1))
-                fprintf(outfile, "\n           ");
+                printf("\n           ");
             charstate = nodep_boot[sppord[charorder[j][k]][j] - 1]
                              [newerwhere[charorder[j][k]] + n2];
-            putc(charstate, outfile);
+            curAr.append(charstate);
+            //putCharToAl(mavect, rep, j, n, charstate);
+            //putchar(charstate);
             if (n % 10 == 0 && n % 60 != 0)
-              putc(' ', outfile);
+              //putchar(' ');
+              ;
           }
         }
       }
       if (rewrite && xml) {
-        fprintf(outfile, "</data>\n   </sequence>\n");
+        printf("</data>\n   </sequence>\n");
       }
-      putc('\n', outfile);
+      putchar('\n');
+      if(j >= mavect[rep]->getNumRows()){
+        U2::MAlignmentRow curR(ma.getRow(j).getName(), curAr);
+        mavect[rep]->addRow(curR);
+      }else{
+        const U2::MAlignmentRow& curR = mavect[rep]->getRow(j);
+        mavect[rep]->appendChars(j,curAr.data(), curAr.length());
+      }
+      
     }
     if (interleaved) {
       if ((m <= newersites) && (newersites > 60))
-        putc('\n', outfile);
+        putchar('\n');
       l += 60;
       m += 60;
     }
   } while (interleaved && l <= newersites);
   if ((data == seqs) &&
       (rewrite && xml))
-    fprintf(outfile, "</alignment>\n");
+    printf("</alignment>\n");
   if (rewrite && nexus)
-    fprintf(outfile, "  ;\nEND;\n");
+    printf("  ;\nEND;\n");
   for (i = 0; i < (newergroups); i++)
     free(sppord[i]);
   free(sppord);
@@ -1083,7 +1133,7 @@ void writefactors(void)
 } /* writefactors */
 
 
-void bootwrite()
+void bootwrite( QVector<U2::MAlignment*>& mavect, const U2::MAlignment& ma)
 { /* does bootstrapping and writes out data sets */
   long i, j, rr, repdiv10;
 
@@ -1110,7 +1160,7 @@ void bootwrite()
       for (i = 0; i < spp; i++)
         charpermute(i, newergroups);
     if (!justwts || permute || ild || lockhart)
-      writedata();
+      writedata(mavect, rr-1, ma);
     
     if (progress && !rewrite && ((reps < 10) || rr % repdiv10 == 0)) {
       printf("completed replicate number %4ld\n", rr);

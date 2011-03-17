@@ -93,7 +93,6 @@ void DotPlotResultsListener::setTask(Task *t) {
     stateOk = true;
 }
 
-
 // add new found results to the list
 void DotPlotResultsListener::onResult(const RFResult& r) {
     QMutexLocker locker(&mutex);
