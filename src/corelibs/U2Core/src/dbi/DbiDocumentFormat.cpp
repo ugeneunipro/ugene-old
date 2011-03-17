@@ -55,6 +55,9 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
     QString url = io->getURL().getURLString();
     U2OpTaskStatus os(&ts);
     DbiHandle handle(id, url, true, os);
+    if(os.isCoR()) {
+        return NULL;
+    }
     
     U2ObjectRDbi* odbi = handle.dbi->getObjectRDbi();
     QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, os);
