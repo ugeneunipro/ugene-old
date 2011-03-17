@@ -106,6 +106,53 @@ FormatDetectionResult SAMFormat::checkRawData( const QByteArray& rawData, const 
     return FormatDetection_VeryHighSimilarity;
 }
 
+static void prepareRead(const QByteArray& core, const QByteArray& quality, QByteArray& seq, QByteArray& qual, QByteArray& cigar) {
+    bool gap = true;
+    int lastCigarPos = 0;
+
+    QList<U2CigarToken> cigarTokens;
+
+    for(int i = 0, coreLen = core.length(); i < coreLen; i++) {
+        char c = core[i];
+        if(c == MAlignment_GapChar) {
+            if(!gap) {
+                if(i != lastCigarPos) {
+                    cigarTokens.append(U2CigarToken(U2CigarOp_M, i - lastCigarPos));
+                }
+                gap = true;
+                lastCigarPos = i;
+            }
+        } else {
+            seq.push_back(c);
+            if(!quality.isEmpty()) {
+                qual.push_back(DNAQuality::encode(quality[i], DNAQualityType_Sanger));
+            }
+            if(gap) {
+                if(i != lastCigarPos) {
+                    cigarTokens.append(U2CigarToken(U2CigarOp_N, i - lastCigarPos));
+                }
+                gap = false;
+                lastCigarPos = i;
+            }
+        }
+    }
+    if(lastCigarPos != core.length() - 1) {
+        cigarTokens.append(U2CigarToken(gap ? U2CigarOp_N : U2CigarOp_M, core.length() - 1 - lastCigarPos));
+    }
+    if(cigarTokens.isEmpty()) {
+        cigar = QByteArray("*");
+    } else {
+        foreach(U2CigarToken token, cigarTokens) {
+            assert(token.count != 0);
+            cigar.append(QString::number(token.count));
+            switch(token.op) {
+                case U2CigarOp_M: cigar.append("M"); break;
+                case U2CigarOp_N: cigar.append("N"); break;
+            }
+        }
+    }
+}
+
 Document* SAMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& _fs, DocumentLoadMode mode /*= DocumentLoadMode_Whole*/ )
 {
     Q_UNUSED(mode);
@@ -347,18 +394,20 @@ void SAMFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io )
         QByteArray rname(ma.getName().replace(QRegExp("\\s|\\t"), "_").toAscii());
         foreach(MAlignmentRow row, ma.getRows()) {
             block.clear();
+            const QByteArray &core = row.getCore();
             QByteArray qname = QString(row.getName()).replace(QRegExp("\\s|\\t"), "_").toAscii();
             QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
             QByteArray pos = QByteArray::number(row.getCoreStart()+1);
             QByteArray mapq("255"); //255 indicating the mapping quality is not available
-            QByteArray cigar("*");
             QByteArray mrnm("*");
             QByteArray mpos("0");
             QByteArray isize("0");
-            QByteArray seq(row.getCore());
-            QByteArray qual(row.getCoreQuality().qualCodes);
-            if(qual.isEmpty()) qual.fill('I', row.getCoreLength()); //I - 50 Phred quality score (99.999%)
+            QByteArray seq;
+            QByteArray qual = row.hasQuality() ? QByteArray() : QByteArray("*");
+            QByteArray cigar;
 
+            prepareRead(row.getCore(), row.getCoreQuality().qualCodes, seq, qual, cigar);
+            
             block = qname + tab + flag + tab+ rname + tab + pos + tab + mapq + tab + cigar + tab + mrnm
                 + tab + mpos + tab + isize + tab + seq + tab + qual + "\n";
             if (io->writeBlock( block ) != block.length()) {
@@ -405,18 +454,18 @@ bool SAMFormat::storeAlignedRead( int offset, const DNASequence& read, IOAdapter
     if (qname.isEmpty()) {
         qname = "contig";
     }
+
     QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
     QByteArray pos = QByteArray::number(offset+1);
     QByteArray mapq("255"); //255 indicating the mapping quality is not available
-    QByteArray cigar("*");
+    QByteArray cigar;
     QByteArray mrnm("*");
     QByteArray mpos("0");
     QByteArray isize("0");
-    QByteArray seq(read.seq);
-    QByteArray qual(read.quality.qualCodes);
-    if(qual.isEmpty()) {
-        qual.fill('I', read.length()); //I - 50 Phred quality score (99.999%)
-    }
+    QByteArray seq;
+    QByteArray qual = read.hasQualityScores() ? QByteArray() : QByteArray("*");
+
+    prepareRead(read.seq, read.quality.qualCodes, seq, qual, cigar);
 
     block = qname + TAB + flag + TAB + rname + TAB + pos + TAB + mapq + TAB + cigar + TAB + mrnm
         + TAB + mpos + TAB + isize + TAB + seq + TAB + qual + "\n";
@@ -425,9 +474,6 @@ bool SAMFormat::storeAlignedRead( int offset, const DNASequence& read, IOAdapter
     }
 
     return true;
-
-
-    
 }
 
 }// namespace
