@@ -436,7 +436,8 @@ void AnnotationsTreeView::sl_onAnnotationObjectRemoved(AnnotationTableObject* ob
     TreeSorter ts(this);
 
     AVGroupItem* groupItem = findGroupItem(obj->getRootGroup());
-    assert(groupItem!=NULL);
+    
+    // it's safe to delete NULL pointer
     delete groupItem;
     
     obj->disconnect(this);

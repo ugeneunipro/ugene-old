@@ -44,6 +44,7 @@ public:
     ADVSyncViewManager(AnnotatedDNAView* v);
     ~ADVSyncViewManager();
 
+    void updateAutoAnnotationActions();
     void updateToolbar1(QToolBar* tb);
     void updateToolbar2(QToolBar* tb);
 private slots:
@@ -56,7 +57,10 @@ private slots:
     void sl_sync();
 
     void sl_toggleVisualMode();
-    void updateVisualMode();
+    void sl_toggleAutoAnnotaionsHighlighting();
+    void sl_updateAutoAnnotationsMenu();
+    void sl_updateVisualMode();
+    
 
 private:
     enum SyncMode {
@@ -101,6 +105,12 @@ private:
     bool                                selectionRecursion;
     bool                                recursion;
     QList<ADVSingleSequenceWidget*>     views;
+    
+    // auto annotation highlighting 
+    QMap<QString, QAction*>             aaActionMap;
+    QAction*                            toggleAutoAnnotationsAction;
+    QMenu*                              toggleAutoAnnotationsMenu;
+    QToolButton*                        toggleAutoAnnotationsButton;
     
     // visual mode vars
     QAction*                            toggleViewButtonAction;

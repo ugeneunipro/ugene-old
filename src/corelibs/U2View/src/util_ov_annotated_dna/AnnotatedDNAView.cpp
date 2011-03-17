@@ -171,10 +171,6 @@ QWidget* AnnotatedDNAView::createWidget() {
         ADVSingleSequenceWidget* block = new ADVSingleSequenceWidget(seqCtx, this);
         block->setObjectName("ADV_single_sequence_widget_"+QString::number(i));
         addSequenceWidget(block);
-        if (autoAnnotationsMap.contains(seqCtx)) {
-            AutoAnnotationObject* aaobj = autoAnnotationsMap.value(seqCtx);
-            block->addADVSequenceWidgetAction(new AutoAnnotationsADVAction(block,aaobj));
-        }
     }
 
     annotationsView = new AnnotationsTreeView(this);
@@ -534,6 +530,7 @@ void AnnotatedDNAView::addSequenceWidget(ADVSequenceWidget* v) {
     QList<ADVSequenceObjectContext*> contexts = v->getSequenceContexts();
     foreach(ADVSequenceObjectContext* c, contexts) {
         c->addSequenceWidget(v);
+        addAutoAnnotations(c);
     }
     scrolledWidgetLayout->insertWidget(0, v);
     v->setVisible(true);
@@ -698,7 +695,6 @@ QString AnnotatedDNAView::addObject(GObject* o) {
             addSequenceWidget(block);
         }
         addRelatedAnnotations(sc);
-        addAutoAnnotations(sc);
         emit si_sequenceAdded(sc);
     } else if (o->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
         AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(o);

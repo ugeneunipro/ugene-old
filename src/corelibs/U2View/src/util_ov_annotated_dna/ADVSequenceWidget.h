@@ -51,6 +51,8 @@ public:
     virtual void addADVSequenceWidgetAction(ADVSequenceWidgetAction* action);
     
     ADVSequenceWidgetAction* getADVSequenceWidgetAction(const QString& objName) const;
+
+    QList<ADVSequenceWidgetAction*> getADVSequenceWidgetActions() const { return wActions; }
     
     virtual ADVSequenceObjectContext* getActiveSequenceContext() const = 0;
 

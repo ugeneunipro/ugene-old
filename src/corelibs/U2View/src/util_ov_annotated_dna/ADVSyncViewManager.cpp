@@ -23,6 +23,7 @@
 #include "AnnotatedDNAView.h"
 #include "ADVSingleSequenceWidget.h"
 #include "ADVSequenceObjectContext.h"
+#include "AutoAnnotationUtils.h"
 #include "PanView.h"
 
 #include <U2Core/DNASequenceSelection.h>
@@ -87,6 +88,19 @@ ADVSyncViewManager::ADVSyncViewManager(AnnotatedDNAView* v) : QObject(v), adv(v)
     lockButtonTBAction = NULL;
     syncButtonTBAction = NULL;
     
+    // auto-annotations highlighting ops
+        
+    toggleAutoAnnotationsMenu = new QMenu("Global automatic annotation highlighting");
+    toggleAutoAnnotationsMenu->setIcon(QIcon(":core/images/predefined_annotation_groups.png"));
+    connect( toggleAutoAnnotationsMenu, SIGNAL(aboutToShow()), SLOT(sl_updateAutoAnnotationsMenu()) );
+     
+    toggleAutoAnnotationsButton = new QToolButton();
+    toggleAutoAnnotationsButton->setDefaultAction(toggleAutoAnnotationsMenu->menuAction());
+    toggleAutoAnnotationsButton->setPopupMode(QToolButton::InstantPopup);
+    
+    toggleAutoAnnotationsAction = NULL;
+    
+    
     // visual mode ops
     toggleAllAction = new QAction("Toggle All sequence views", this);
     connect(toggleAllAction, SIGNAL(triggered()), SLOT(sl_toggleVisualMode()));
@@ -108,7 +122,7 @@ ADVSyncViewManager::ADVSyncViewManager(AnnotatedDNAView* v) : QObject(v), adv(v)
     toggleViewButtonMenu->addAction(toggleOveAction);
     toggleViewButtonMenu->addAction(togglePanAction);
     toggleViewButtonMenu->addAction(toggleDetAction);
-    connect(toggleViewButtonMenu, SIGNAL(aboutToShow()), SLOT(updateVisualMode()));
+    connect(toggleViewButtonMenu, SIGNAL(aboutToShow()), SLOT(sl_updateVisualMode()));
     
     toggleViewButton = new QToolButton();
     toggleViewButton->setDefaultAction(toggleViewButtonMenu->menuAction());
@@ -126,6 +140,9 @@ ADVSyncViewManager::~ADVSyncViewManager() {
     delete syncMenu;
     delete lockMenu;
     
+    delete toggleAutoAnnotationsButton;
+    delete toggleAutoAnnotationsMenu;
+
     delete toggleViewButton;
     delete toggleViewButtonMenu;
 }
@@ -141,6 +158,14 @@ void ADVSyncViewManager::updateToolbar1(QToolBar* tb) {
 }
 
 void ADVSyncViewManager::updateToolbar2(QToolBar* tb) {
+
+    if (toggleAutoAnnotationsAction == NULL ) {
+        updateAutoAnnotationActions();
+        toggleAutoAnnotationsAction = tb->addWidget(toggleAutoAnnotationsButton);
+    } else {
+        tb->addAction(toggleAutoAnnotationsAction);
+    }
+
     if (toggleViewButtonAction == NULL) {
         toggleViewButtonAction = tb->addWidget(toggleViewButton);
     } else {
@@ -160,6 +185,9 @@ void ADVSyncViewManager::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
         return;
     }
     unlock();
+    if (toggleAutoAnnotationsAction != NULL) {
+        updateAutoAnnotationActions();
+    }
 }
 
 void ADVSyncViewManager::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
@@ -168,6 +196,7 @@ void ADVSyncViewManager::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
         return;
     }
     unlock();
+    updateAutoAnnotationActions();
 }
 
 void ADVSyncViewManager::unlock() {
@@ -370,7 +399,7 @@ ADVSyncViewManager::SyncMode ADVSyncViewManager::detectSyncMode() const {
 
 }
 
-void ADVSyncViewManager::updateVisualMode() {
+void ADVSyncViewManager::sl_updateVisualMode() {
     //if have at least 1 visible -> hide all
     bool haveVisiblePan = false;    
     bool haveVisibleDet = false;
@@ -474,4 +503,82 @@ void ADVSyncViewManager::toggleCheckedAction( SyncMode mode )
             lockByStartPosAction->toggle();
     }
 }
+
+void ADVSyncViewManager::updateAutoAnnotationActions()
+{
+    aaActionMap.clear();
+    toggleAutoAnnotationsMenu->clear();
+
+    foreach (ADVSequenceWidget* w, adv->getSequenceWidgets()) {
+        QList<ADVSequenceWidgetAction*> actions = w->getADVSequenceWidgetActions();
+        foreach (ADVSequenceWidgetAction* action, actions) {
+            AutoAnnotationsADVAction* aaAction = qobject_cast<AutoAnnotationsADVAction*>(action);
+            if (aaAction != NULL) {
+                QList<QAction*> aaToggleActions = aaAction->getToggleActions();
+                foreach( QAction* toggleAction, aaToggleActions) {
+                    if (toggleAction->isEnabled()) {
+                        aaActionMap.insertMulti(toggleAction->text(), toggleAction);
+                    }
+                }
+            }
+        }
+    }
+    
+    toggleAutoAnnotationsButton->setEnabled(!aaActionMap.isEmpty());
+    
+    QSet<QString> actionNames = aaActionMap.keys().toSet();
+
+    foreach (const QString& aName, actionNames) {
+        QAction* action = new QAction(toggleAutoAnnotationsMenu);
+        action->setObjectName(aName);
+        connect(action, SIGNAL(triggered()), SLOT(sl_toggleAutoAnnotaionsHighlighting()));
+        toggleAutoAnnotationsMenu->addAction(action);
+    }
+}
+
+#define HAVE_ENABLED_AUTOANNOTATIONS "have_enabled_autoannotations"
+
+void ADVSyncViewManager::sl_toggleAutoAnnotaionsHighlighting()
+{
+    QAction* menuAction = qobject_cast<QAction*>( sender() );
+    if (menuAction == NULL) {
+        return;
+    }
+    QVariant val = menuAction->property(HAVE_ENABLED_AUTOANNOTATIONS);
+    assert(val.isValid());
+    bool haveEnabledAutoAnnotations = val.toBool();
+    QList<QAction*> aaActions = aaActionMap.values(menuAction->objectName());
+    foreach (QAction* aaAction, aaActions ) 
+    {
+        aaAction->setChecked(!haveEnabledAutoAnnotations);
+    }
+
+}
+
+void ADVSyncViewManager::sl_updateAutoAnnotationsMenu()
+{
+    QList<QAction*> menuActions = toggleAutoAnnotationsMenu->actions();
+    
+    foreach (QAction* menuAction, menuActions) {
+        QString aName = menuAction->objectName(); 
+        bool haveEnabledAutoAnnotations = false;   
+        //if have at least 1 checked  -> uncheck all
+        QList<QAction*> aaActions = aaActionMap.values(aName);
+        foreach(QAction* aaAction, aaActions ) {
+            if (aaAction->isChecked()) {
+                haveEnabledAutoAnnotations = true;
+                break;
+            }
+        }
+        
+        if (haveEnabledAutoAnnotations) {
+            menuAction->setText(tr("Hide %1").arg(aName));
+        } else {
+            menuAction->setText(tr("Show %1").arg(aName));
+        }
+        menuAction->setProperty(HAVE_ENABLED_AUTOANNOTATIONS,haveEnabledAutoAnnotations);
+    }
+
+}
+
 }//namespace

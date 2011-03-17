@@ -94,5 +94,10 @@ AutoAnnotationsADVAction::~AutoAnnotationsADVAction()
     menu = NULL;
 }
 
+QList<QAction*> AutoAnnotationsADVAction::getToggleActions()
+{
+    return menu->actions();
+}
+
 
 } //namespace

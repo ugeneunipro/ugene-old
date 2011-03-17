@@ -34,6 +34,7 @@ class AutoAnnotationsADVAction : public ADVSequenceWidgetAction {
 public:
     AutoAnnotationsADVAction(ADVSequenceWidget* widget, AutoAnnotationObject* aaObj);
     ~AutoAnnotationsADVAction();
+    QList<QAction*> getToggleActions();
 private slots:
     void sl_toggle(bool toggled);
 private:
