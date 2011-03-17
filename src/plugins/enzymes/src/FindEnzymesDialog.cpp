@@ -491,8 +491,13 @@ void FindEnzymesDialog::initSettings()
 void FindEnzymesDialog::saveSettings()
 {
     AppContext::getSettings()->setValue(ENABLE_HIT_COUNT, filterGroupBox->isChecked());
-    AppContext::getSettings()->setValue(MIN_HIT_VALUE, minHitSB->value());
-    AppContext::getSettings()->setValue(MAX_HIT_VALUE, maxHitSB->value());
+    if (filterGroupBox->isChecked()) {
+        AppContext::getSettings()->setValue(MIN_HIT_VALUE, minHitSB->value());
+        AppContext::getSettings()->setValue(MAX_HIT_VALUE, maxHitSB->value());
+    } else {
+        AppContext::getSettings()->setValue(MIN_HIT_VALUE, 1);
+        AppContext::getSettings()->setValue(MAX_HIT_VALUE, INT_MAX);
+    }
 
     QVector<U2Region> range;
     if (excludeRegionBox->isChecked()) {
