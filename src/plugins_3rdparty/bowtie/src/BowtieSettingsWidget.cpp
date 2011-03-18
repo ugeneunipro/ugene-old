@@ -28,16 +28,17 @@ namespace U2 {
 BowtieSettingsWidget::BowtieSettingsWidget(QWidget* parent) : DnaAssemblyAlgorithmMainWidget(parent) {
     setupUi(this);
     layout()->setContentsMargins(0,0,0,0);
+
 }
 
 QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() {
     QMap<QString,QVariant> settings;
-	if(mismatchesCheckBox->isChecked())	{
-		switch(mismatchesComboBox->currentIndex()) {
-			case 0: settings.insert(BowtieTask::OPTION_N_MISMATCHES, mismatchesSpinBox->value()); break;
-			case 1: settings.insert(BowtieTask::OPTION_V_MISMATCHES, mismatchesSpinBox->value()); break;
-		}
+	
+    switch(mismatchesComboBox->currentIndex()) {
+	    case 0: settings.insert(BowtieTask::OPTION_N_MISMATCHES, mismatchesSpinBox->value()); break;
+		case 1: settings.insert(BowtieTask::OPTION_V_MISMATCHES, mismatchesSpinBox->value()); break;
 	}
+
     if(maqerrCheckBox->isChecked())	{
         settings.insert(BowtieTask::OPTION_MAQERR, maqerrSpinBox->value());
     }

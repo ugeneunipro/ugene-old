@@ -38,6 +38,7 @@ PositionSelector::PositionSelector(QWidget* p, int s, int e)
 
     QToolButton* goButton = new QToolButton(this);
     goButton->setText(tr("Go!"));
+    goButton->setToolTip(tr("Go to position"));
     connect(goButton, SIGNAL(clicked(bool)), SLOT(sl_onButtonClicked(bool)));
 
     layout()->addWidget(goButton);
@@ -53,6 +54,7 @@ void PositionSelector::init() {
         posEdit->setMinimumWidth(qMax(120, w));
     }
     posEdit->setAlignment(Qt::AlignRight);
+    posEdit->setToolTip("Enter position here");
     connect(posEdit, SIGNAL(returnPressed()), SLOT(sl_onReturnPressed()));
 
     QHBoxLayout* l = new QHBoxLayout(this);

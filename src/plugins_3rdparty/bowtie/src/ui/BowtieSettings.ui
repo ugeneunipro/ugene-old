@@ -305,9 +305,9 @@ Default: 64.</string>
         <item row="0" column="2">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QCheckBox" name="mismatchesCheckBox">
+           <widget class="QLabel" name="label">
             <property name="text">
-             <string/>
+             <string>Mode:  </string>
             </property>
            </widget>
           </item>
@@ -537,22 +537,6 @@ bowtie is somewhat slower when --best is specified.
     <hint type="destinationlabel">
      <x>327</x>
      <y>305</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mismatchesCheckBox</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>mismatchesSpinBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>45</x>
-     <y>70</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>327</x>
-     <y>74</y>
     </hint>
    </hints>
   </connection>
