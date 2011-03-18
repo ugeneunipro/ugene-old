@@ -30,7 +30,7 @@ namespace U2
 AddDocumentTask::AddDocumentTask( Document * _d ) :
 Task( tr("Add document to the project: %1").arg(_d->getURLString()), TaskFlag_NoRun), d(_d)
 {
-
+    d->checkMainThreadModel();
 }
 
 Task::ReportResult AddDocumentTask::report() {

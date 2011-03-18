@@ -626,7 +626,8 @@ void ProjectTreeController::sl_onToggleReadonly() {
 }
 
 void ProjectTreeController::sl_lockedStateChanged() {
-    Document* doc = qobject_cast<Document*>(sender());
+    QObject * who = sender();
+    Document* doc = qobject_cast<Document*>(who);
     assert(doc!=NULL);
 
     ProjViewDocumentItem* di = findDocumentItem(doc);

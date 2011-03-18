@@ -98,8 +98,13 @@ public:
     virtual ReportResult report();
     virtual void cleanup();
 
+    /** 
+        WARNING: these methods returns document created in worker thread !! 
+        This document must be cloned in main thread before adding to project
+    */
     Document* getDocument() const {return result;}
     Document* takeDocument() {Document* d = result; result = NULL; return d;}
+
     const GUrl& getURL() const {return url;}
 
 private:

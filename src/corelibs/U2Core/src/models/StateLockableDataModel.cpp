@@ -40,18 +40,23 @@ StateLockableItem::~StateLockableItem(){
     }
 }
 
-static void checkThread(StateLockableItem* i) {
+static void checkThread(const StateLockableItem* i) {
 #ifdef _DEBUG
     if (i->isMainThreadModel()) {
         QThread* appThread = QApplication::instance()->thread();
         QThread* thisThread = QThread::currentThread();
-        assert (appThread == thisThread);
+        QThread* itemThread = i->thread();
+        assert(appThread == thisThread);
+        assert(appThread == itemThread);
     }
 #else 
     Q_UNUSED(i);
 #endif    
 }
 
+void StateLockableItem::checkMainThreadModel() const {
+    checkThread(this);
+}
 
 void StateLockableItem::lockState(StateLock* lock) {
     assert(!locks.contains(lock));
@@ -99,6 +104,10 @@ StateLockableTreeItem::~StateLockableTreeItem() {
 
 bool StateLockableTreeItem::isStateLocked() const {
     return StateLockableItem::isStateLocked() || (parentStateLockItem!=NULL ? parentStateLockItem->isStateLocked() : false);
+}
+
+bool StateLockableTreeItem::isMainThreadModel() const {
+    return StateLockableItem::isMainThreadModel() || (parentStateLockItem != NULL && parentStateLockItem->isMainThreadModel()); 
 }
 
 void StateLockableTreeItem::lockState(StateLock* lock) {

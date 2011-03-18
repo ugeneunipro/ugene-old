@@ -207,7 +207,7 @@ QList<Task*> KalignWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
         return res;
     }
     if(subTask==loadDocumentTask){
-        currentDocument=loadDocumentTask->takeDocument();
+        currentDocument = loadDocumentTask->getDocument()->clone();
         assert(currentDocument!=NULL);
         assert(currentDocument->getObjects().length()==1);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());

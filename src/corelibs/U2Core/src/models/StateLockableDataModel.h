@@ -78,6 +78,8 @@ public:
     //returns number of modifications done to this item
     virtual int getModificationVersion() const {return modificationVersion;}
 
+    virtual void checkMainThreadModel() const;
+
 signals:
     void si_lockedStateChanged();
     void si_modifiedStateChanged();
@@ -134,6 +136,8 @@ public:
     }
 
     QList<StateLock*> findLocks(StateLockableTreeItemBranchFlags treeFlags, StateLockFlag lockFlag = StateLockFlag_AnyFlags) const;
+
+    virtual bool isMainThreadModel() const;
 
 protected:
     

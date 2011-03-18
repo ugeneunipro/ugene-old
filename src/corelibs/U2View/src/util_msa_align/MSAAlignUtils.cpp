@@ -83,7 +83,7 @@ QList<Task*> MSAAlignFileTask::onSubTaskFinished( Task* subTask ) {
     }
 
     if(subTask==loadDocumentTask){
-        doc = loadDocumentTask->takeDocument();
+        doc = loadDocumentTask->getDocument()->clone();
         assert(doc != NULL);
         assert(doc->getObjects().length() == 1);
         obj = qobject_cast<MAlignmentObject*>(doc->getObjects().first());
