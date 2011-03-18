@@ -936,6 +936,7 @@ void BioStruct3DGLWidget::wheelEvent ( QWheelEvent * event )
 }
 
 void BioStruct3DGLWidget::createSelectModelsActions() {
+    selectModelActions = 0;
     const BioStruct3DRendererContext &ctx = contexts.first();
     const BioStruct3D &biostruct = *ctx.biostruct;
 
