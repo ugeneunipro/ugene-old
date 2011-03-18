@@ -28,6 +28,7 @@
 #include <U2Core/Vector3D.h>
 #include <U2Core/BioStruct3DObject.h>
 
+#include <QSharedPointer>
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QMenu>
 #include <QtGui/QActionGroup>
