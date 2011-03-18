@@ -37,10 +37,21 @@ using namespace Workflow;
 
 class U2LANG_EXPORT WorkflowRunSchemaForTaskCallback {
 public:
-    virtual QList<GObject*> createInputData() const = 0; // for saving input data (sequence, msa ...)
-    virtual DocumentFormatId getInputFileFormat() const = 0; // format of input file to save
-    virtual QVariantMap getSchemaData() const = 0; // pairs (alias, value)
-    virtual DocumentFormatId getOutputFileFormat() const = 0; // will set --format alias
+    // if true: saves input data to tmpfile and set --in=tmpfile
+    virtual bool saveInput()const = 0;
+    // for saving input data (sequence, msa ...)
+    virtual QList<GObject*> createInputData() const {return QList<GObject*>();}
+    // format of input file to save
+    virtual DocumentFormatId inputFileFormat() const {return QString();}
+    
+    // pairs (alias, value)
+    virtual QVariantMap getSchemaData() const = 0;
+    
+    // if true: save result to temporary file (with out and format parameters)
+    //          and load result document after running schema
+    virtual bool saveOutput() const = 0;
+    // will set --format alias
+    virtual DocumentFormatId outputFileFormat() const {return QString();}
     
 }; // WorkflowRunSchemaForTaskCallback
 

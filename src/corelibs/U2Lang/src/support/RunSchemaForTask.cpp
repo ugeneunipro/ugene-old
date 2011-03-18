@@ -49,25 +49,29 @@ WorkflowRunSchemaForTask::WorkflowRunSchemaForTask(const QString & scName, Workf
   loadSchemaTask(NULL), inputDocument(NULL), saveInputTask(NULL), runSchemaTask(NULL), loadResultTask(NULL), schemaName(scName) {
     assert(callback != NULL);
     
-    DocumentFormat * inputDf = AppContext::getDocumentFormatRegistry()->getFormatById(callback->getInputFileFormat());
-    assert(inputDf != NULL);
-    saveInputTmpFile.setFileTemplate(QString("%1/XXXXXX.%2").arg(QDir::tempPath()).arg(inputDf->getSupportedDocumentFileExtensions().first()));
-    if(!saveInputTmpFile.open()) {
-        setError(tr("Cannot create temporary file for writing"));
-        return;
+    if(callback->saveInput()) {
+        DocumentFormat * inputDf = AppContext::getDocumentFormatRegistry()->getFormatById(callback->inputFileFormat());
+        assert(inputDf != NULL);
+        saveInputTmpFile.setFileTemplate(QString("%1/XXXXXX.%2").arg(QDir::tempPath()).arg(inputDf->getSupportedDocumentFileExtensions().first()));
+        if(!saveInputTmpFile.open()) {
+            setError(tr("Cannot create temporary file for writing"));
+            return;
+        }
+        saveInputTmpFilename = saveInputTmpFile.fileName();
+        saveInputTmpFile.close();
     }
-    saveInputTmpFilename = saveInputTmpFile.fileName();
-    saveInputTmpFile.close();
     
-    DocumentFormat * outputDf = AppContext::getDocumentFormatRegistry()->getFormatById(callback->getOutputFileFormat());
-    assert(outputDf != NULL);
-    resultTmpFile.setFileTemplate(QString("%1/XXXXXX.%2").arg(QDir::tempPath()).arg(outputDf->getSupportedDocumentFileExtensions().first()));
-    if(!resultTmpFile.open()) {
-        setError(tr("Cannot create temporary file for reading and writing"));
-        return;
+    if(callback->saveOutput()) {
+        DocumentFormat * outputDf = AppContext::getDocumentFormatRegistry()->getFormatById(callback->outputFileFormat());
+        assert(outputDf != NULL);
+        resultTmpFile.setFileTemplate(QString("%1/XXXXXX.%2").arg(QDir::tempPath()).arg(outputDf->getSupportedDocumentFileExtensions().first()));
+        if(!resultTmpFile.open()) {
+            setError(tr("Cannot create temporary file for reading and writing"));
+            return;
+        }
+        resultTmpFilename = resultTmpFile.fileName();
+        resultTmpFile.close();
     }
-    resultTmpFilename = resultTmpFile.fileName();
-    resultTmpFile.close();
     
     QString schemaPath = findSchemaPath(schemaName);
     if(schemaPath.isEmpty()) {
@@ -90,9 +94,13 @@ static const QString OUTPUT_FILE_FORMAT_ALIAS("format");
 
 void WorkflowRunSchemaForTask::setSchemaSettings() {
     QVariantMap data(callback->getSchemaData());
-    data[INPUT_FILE_ALIAS] = qVariantFromValue(saveInputTmpFilename);
-    data[OUTPUT_FILE_ALIAS] = qVariantFromValue(resultTmpFilename);
-    data[OUTPUT_FILE_FORMAT_ALIAS] = qVariantFromValue(callback->getOutputFileFormat());
+    if(callback->saveInput()) {
+        data[INPUT_FILE_ALIAS] = qVariantFromValue(saveInputTmpFilename);
+    }
+    if(callback->saveOutput()) {
+        data[OUTPUT_FILE_ALIAS] = qVariantFromValue(resultTmpFilename);
+        data[OUTPUT_FILE_FORMAT_ALIAS] = qVariantFromValue(callback->outputFileFormat());    
+    }
     setSchemaSettings(data);
 }
 
@@ -121,28 +129,64 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
         return res;
     }
     
+    enum WhatNext {
+        SAVE_INPUT,
+        RUN_SCHEMA,
+        LOAD_RESULT,
+        NOTHING
+    };
+    
+    WhatNext what = NOTHING;
     if(loadSchemaTask == subTask) {
-        assert(inputDocument == NULL);
-        assert(!saveInputTmpFilename.isEmpty());
-        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(saveInputTmpFilename));
-        assert(iof != NULL);
-        DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(callback->getInputFileFormat());
-        assert(df != NULL);
-        inputDocument = new Document(df, iof, saveInputTmpFilename, callback->createInputData());
-        saveInputTask = new SaveDocumentTask(inputDocument);
-        res << saveInputTask;
-    } else if(saveInputTask == subTask) {
-        setSchemaSettings();
-        if(hasErrors()) {
-            return res;
+        if(callback->saveInput()) {
+            what = SAVE_INPUT;
+        } else {
+            assert(callback->inputFileFormat().isEmpty());
+            assert(callback->createInputData().isEmpty());
+            what = RUN_SCHEMA;
         }
-        runSchemaTask = new WorkflowRunInProcessTask(schema, schema.getIterations());
-        res << runSchemaTask;
-    } else if(runSchemaTask == subTask) {
-        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(resultTmpFilename));
-        assert(iof != NULL);
-        loadResultTask = new LoadDocumentTask(callback->getOutputFileFormat(), resultTmpFilename, iof);
-        res << loadResultTask;
+    } else if(saveInputTask == subTask) {
+        what = RUN_SCHEMA;
+    } else if(runSchemaTask == subTask && callback->saveOutput()) { // result saved to temp file: load result from it
+        what = LOAD_RESULT;
+    }
+    
+    switch(what) {
+    case SAVE_INPUT:
+        {
+            assert(inputDocument == NULL);
+            assert(!saveInputTmpFilename.isEmpty());
+            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(saveInputTmpFilename));
+            assert(iof != NULL);
+            DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(callback->inputFileFormat());
+            assert(df != NULL);
+            inputDocument = new Document(df, iof, saveInputTmpFilename, callback->createInputData());
+            saveInputTask = new SaveDocumentTask(inputDocument);
+            res << saveInputTask;
+        }
+        break;
+    case RUN_SCHEMA:
+        {
+            setSchemaSettings();
+            if(hasErrors()) {
+                return res;
+            }
+            runSchemaTask = new WorkflowRunInProcessTask(schema, schema.getIterations());
+            res << runSchemaTask;
+        }
+        break;
+    case LOAD_RESULT:
+        {
+            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(resultTmpFilename));
+            assert(iof != NULL);
+            loadResultTask = new LoadDocumentTask(callback->outputFileFormat(), resultTmpFilename, iof);
+            res << loadResultTask;
+        }
+        break;
+    case NOTHING:
+        break;
+    default:
+        assert(false);
     }
     return res;
 }

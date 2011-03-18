@@ -589,6 +589,10 @@ Task::ReportResult MuscleGObjectRunFromSchemaTask::report() {
     return ReportResult_Finished;
 }
 
+bool MuscleGObjectRunFromSchemaTask::saveInput() const {
+    return true;
+}
+
 QList<GObject*> MuscleGObjectRunFromSchemaTask::createInputData() const {
     QList<GObject*> objs;
     objs << obj.data()->clone();
@@ -608,12 +612,16 @@ QVariantMap MuscleGObjectRunFromSchemaTask::getSchemaData() const {
     return res;
 }
 
-DocumentFormatId MuscleGObjectRunFromSchemaTask::getOutputFileFormat() const {
+DocumentFormatId MuscleGObjectRunFromSchemaTask::outputFileFormat() const {
     return BaseDocumentFormats::CLUSTAL_ALN;
 }
 
-DocumentFormatId MuscleGObjectRunFromSchemaTask::getInputFileFormat() const {
+DocumentFormatId MuscleGObjectRunFromSchemaTask::inputFileFormat() const {
     return BaseDocumentFormats::CLUSTAL_ALN;
+}
+
+bool MuscleGObjectRunFromSchemaTask::saveOutput() const {
+    return true;
 }
 
 } //namespace

@@ -47,22 +47,21 @@ const QString BowtieWorkerFactory::ACTOR_ID("bowtie");
 const QString BowtieBuildWorkerFactory::ACTOR_ID("bowtie-build-index");
 const QString BowtieIndexReaderWorkerFactory::ACTOR_ID("bowtie-read-index");
 
-const QString REFSEQ_URL_ATTR("url-reference");
-const QString EBWT_URL_ATTR("url-ebwt");
-const QString USE_PREBUILT_INDEX_ATTR("use-prebuilt-index");
-const QString N_MODE_MISMATCHES_ATTR("mismatches-num");
-const QString V_MODE_MISMATCHES_ATTR("report-with-mismatches");
-const QString MAQERR_ATTR("maq-err");
-const QString SEEDLEN_ATTR("seed-length");
-const QString NOMAQROUND_ATTR("no-maq-rounding");
-const QString NOFW_ATTR("no-forward");
-const QString NORC_ATTR("no-reverse-complemented");
-const QString MAXBTS_ATTR("max-backtracks");
-const QString TRYHARD_ATTR("try-hard");
-const QString CHUNKMBS_ATTR("chunk-mbs");
-const QString SEED_ATTR("seed");
-const QString BEST_ATTR("best");
-const QString ALL_ATTR("all");
+static const QString REFSEQ_URL_ATTR("url-reference");
+static const QString EBWT_URL_ATTR("url-ebwt");
+static const QString N_MODE_MISMATCHES_ATTR("mismatches-num");
+static const QString V_MODE_MISMATCHES_ATTR("report-with-mismatches");
+static const QString MAQERR_ATTR("maq-err");
+static const QString SEEDLEN_ATTR("seed-length");
+static const QString NOMAQROUND_ATTR("no-maq-rounding");
+static const QString NOFW_ATTR("no-forward");
+static const QString NORC_ATTR("no-reverse-complemented");
+static const QString MAXBTS_ATTR("max-backtracks");
+static const QString TRYHARD_ATTR("try-hard");
+static const QString CHUNKMBS_ATTR("chunk-mbs");
+static const QString SEED_ATTR("seed");
+static const QString BEST_ATTR("best");
+static const QString ALL_ATTR("all");
 
 /************************************************************************/
 /* BowtieCommunicationChanelReader                                      */
@@ -128,12 +127,8 @@ void BowtieWorkerFactory::init() {
     outM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("bowtie.out.out.ma", outM)), false /*input*/, false /*multi*/);
 	
-	//Descriptor refseq(REFSEQ_URL_ATTR, BowtieWorker::tr("Reference"), 
-	//	BowtieWorker::tr("Reference sequence url. The short reads will be aligned to this reference genome."));
 	Descriptor desc(ACTOR_ID, BowtieWorker::tr("Bowtie aligner"), 
 		BowtieWorker::tr("An ultrafast memory-efficient short read aligner, http://bowtie-bio.sourceforge.net"));
-	//Descriptor use_prebuilt_index(USE_PREBUILT_INDEX_ATTR, BowtieWorker::tr("prebuilt index"), 
-	//	BowtieWorker::tr("Using prebuilt ebwt index instead of reference sequence"));
 	Descriptor n_mismatches(N_MODE_MISMATCHES_ATTR, BowtieWorker::tr("-n alignment mode"), 
 		BowtieWorker::tr("<html><body><p><b>-n</b></p>Alignments may have no more than N mismatches (where N is a number 0-3, set with -n) in the first L bases  \
                          (where L is a number 5 or greater, set with -l) on the high-quality (left) end of the read. The first L bases are called \
@@ -243,8 +238,6 @@ void BowtieWorker::init() {
     reads = ports.value(BasePorts::IN_SEQ_PORT_ID());
 	ebwt = ports.value(EBWT_PORT);
 	output = ports.value(BasePorts::OUT_MSA_PORT_ID());
-	//settings.refSeqUrl = actor->getParameter(REFSEQ_URL_ATTR)->getAttributeValue<QString>();
-	//settings.setCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, actor->getParameter(USE_PREBUILT_INDEX_ATTR)->getAttributeValue<bool>());
 	settings.setCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, true);
 	settings.setCustomValue(BowtieTask::OPTION_N_MISMATCHES, actor->getParameter(N_MODE_MISMATCHES_ATTR)->getAttributeValue<int>());
 	settings.setCustomValue(BowtieTask::OPTION_V_MISMATCHES, actor->getParameter(V_MODE_MISMATCHES_ATTR)->getAttributeValue<int>());
@@ -267,12 +260,6 @@ bool BowtieWorker::isReady() {
 
 Task* BowtieWorker::tick() {
 	if (reads->hasMessage())  {  
-		/*while (!reads->isEnded()) {
-			DNASequence read = reads->get().getData().value<DNASequence>();
-			log.trace(BowtieWorker::tr("Loaded short read %1").arg(read.getName())); 
-			settings.shortReads.append(read);
-		}*/
-
 		if( reads->isEnded()) {
 			algoLog.error(BowtieWorker::tr("Short reads list is empty."));
 			return NULL;
@@ -305,7 +292,6 @@ void BowtieWorker::cleanup() {
 	reader = NULL;
 }
 
-
 void BowtieWorker::sl_taskFinished() {
 	BowtieTask* t = qobject_cast<BowtieTask*>(sender());
 	if (t->getState() != Task::State_Finished) {
@@ -318,7 +304,7 @@ void BowtieWorker::sl_taskFinished() {
 		output->setEnded();
 	}
 		
-	algoLog.trace(tr("Bowtie alignment finished. Result name is %1").arg(t->getResult().getName()));
+	algoLog.trace(tr("Bowtie alignment finished. Result name is %1").arg(settings.resultFileName.baseFileName()));
 }
 
 bool BowtieWorker::isDone() {

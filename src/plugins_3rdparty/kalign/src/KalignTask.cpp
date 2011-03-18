@@ -337,17 +337,21 @@ Task::ReportResult KalignGObjectRunFromSchemaTask::report() {
     return ReportResult_Finished;
 }
 
+bool KalignGObjectRunFromSchemaTask::saveInput() const {
+    return true;
+}
+
 QList<GObject*> KalignGObjectRunFromSchemaTask::createInputData() const {
     QList<GObject*> objs;
     objs << obj.data()->clone();
     return objs;
 }
 
-DocumentFormatId KalignGObjectRunFromSchemaTask::getInputFileFormat() const {
+DocumentFormatId KalignGObjectRunFromSchemaTask::inputFileFormat() const {
     return BaseDocumentFormats::CLUSTAL_ALN;
 }
 
-DocumentFormatId KalignGObjectRunFromSchemaTask::getOutputFileFormat() const {
+DocumentFormatId KalignGObjectRunFromSchemaTask::outputFileFormat() const {
     return BaseDocumentFormats::CLUSTAL_ALN;
 }
 
@@ -358,6 +362,10 @@ QVariantMap KalignGObjectRunFromSchemaTask::getSchemaData() const {
     res["gap-open-penalty"] = qVariantFromValue(config.gapOpenPenalty);
     res["gap-terminal-penalty"] = qVariantFromValue(config.termGapPenalty);
     return res;
+}
+
+bool KalignGObjectRunFromSchemaTask::saveOutput() const {
+    return true;
 }
 
 } //namespace

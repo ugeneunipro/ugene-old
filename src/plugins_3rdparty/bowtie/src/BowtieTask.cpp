@@ -40,14 +40,42 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Formats/DocumentFormatUtils.h>
+#include <U2Lang/WorkflowSettings.h>
 
 #include <QtCore/QMutexLocker>
 
 namespace U2 {
 
-QMutex BowtieBuildTask::mutex;
+/************************************************************************/
+/* BowtieBaseTask
+/************************************************************************/
+const QString BowtieBaseTask::taskName("Bowtie");
 
-const QString BowtieTask::taskName(tr("Bowtie"));
+BowtieBaseTask::BowtieBaseTask(const DnaAssemblyToRefTaskSettings & c, bool jbi) 
+: DnaAssemblyToReferenceTask(c, TaskFlags_NR_FOSCOE, jbi), sub(NULL) {
+    haveResults = true;
+// old task is invoked
+// wait for better testing
+// planned release: 1.9.3
+    /*if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+        sub = new BowtieRunFromSchemaTask(settings, justBuildIndex);
+    } else {
+        sub = new BowtieTask(settings, justBuildIndex);
+    }*/
+    sub = new BowtieTask(settings, justBuildIndex);
+    addSubTask(sub);
+}
+
+Task::ReportResult BowtieBaseTask::report() {
+    haveResults = sub->isHaveResult();
+    return ReportResult_Finished;
+}
+
+/************************************************************************/
+/* BowtieTask
+/************************************************************************/
+
+QMutex BowtieBuildTask::mutex;
 
 const QString BowtieTask::OPTION_READS_READER = "rreader";
 const QString BowtieTask::OPTION_READS_WRITER = "rwriter";
@@ -68,20 +96,20 @@ const QString BowtieTask::OPTION_BEST = "best";
 const QString BowtieTask::OPTION_ALL = "all";
 const QString BowtieTask::OPTION_SORT_ALIGNMENT_BY_OFFSET = "sort";
 
+const QString BowtieTask::INDEX_REGEXP_STR = "(.+)(\\.rev)?\\.\\d\\.ebwt";
 
 BowtieTask::BowtieTask(const DnaAssemblyToRefTaskSettings & _config, bool _justBuildIndex)
-: DnaAssemblyToReferenceTask(_config, TaskFlags_NR_FOSCOE, _justBuildIndex), justBuildIndex(_justBuildIndex)
+: DnaAssemblyToReferenceTask(_config, TaskFlags_NR_FOSCOE, _justBuildIndex)
 {
     GCOUNTER( cvar, tvar, "BowtieTask" );
 	tlsTask = NULL;
 	buildTask = NULL;
     numHits = 0;
     setMaxParallelSubtasks(1);
-    fileSize = 0;
     haveResults = true;
 }
 
-bool checkIndex(QString url, TaskStateInfo& ti) {
+static bool checkIndex(QString url, TaskStateInfo& ti) {
 	QString indexSuffixes[] = {".1.ebwt", ".2.ebwt", ".3.ebwt", ".4.ebwt", ".rev.1.ebwt", ".rev.2.ebwt" };
 	for(int i=0; i<6; i++) {
 		QFileInfo file(url + indexSuffixes[i]);
@@ -96,11 +124,10 @@ bool checkIndex(QString url, TaskStateInfo& ti) {
 void BowtieTask::prepare()
 {
 	QString indexURL(settings.refSeqUrl.getURLString());
-
-	QRegExp rx("(.+)(\\.rev)?\\.\\d\\.ebwt");
-
-	if(settings.getCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, false).toBool()) { //if it is true then justBuildIndex == false
-		QRegExp rx("(.+)(\\.rev)?\\.\\d\\.ebwt");
+	QRegExp rx(INDEX_REGEXP_STR);
+    int fileSize = 0;
+	if(settings.getCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, false).toBool()) {
+        assert(justBuildIndex == false);
 		if(rx.indexIn(indexURL) != -1) {
 			indexPath = rx.cap(1);
 		} else {
@@ -132,15 +159,7 @@ void BowtieTask::prepare()
 	if (justBuildIndex) { //do nothing if justBuildIndex == true
 		return;
 	}
-
-// 	int shortReadAvgLen = settings.shortReads.first().length();
-// 	int shortReadsCount = settings.shortReads.count();
-// 	int step = shortReadsCount / 10;
-// 	for(int i=step; i < step*10; i+=step) {
-// 		shortReadAvgLen += settings.shortReads.at(i).length();
-// 	}
-// 	shortReadAvgLen /= 10;
-// 
+    
     static const int SHORT_READ_AVG_LENGTH = 1000;
  	qint64 memUseMB = (fileSize *  4 + SHORT_READ_AVG_LENGTH*10 ) / 1024 / 1024 + 100;
  	TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB, true);
@@ -157,8 +176,9 @@ QList<Task*> BowtieTask::onSubTaskFinished(Task* subTask) {
 	if(subTask->hasErrors()) {
 		return res;
 	}
-	if(subTask == buildTask)
+    if(subTask == buildTask) {
 		indexPath = static_cast<BowtieBuildTask*>(subTask)->getEbwtPath();
+    }
 	return res;
 }
 
@@ -175,6 +195,126 @@ Task::ReportResult BowtieTask::report() {
     return ReportResult_Finished;
 }
 
+/************************************************************************/
+/* BowtieRunFromSchemaTask                                              */
+/************************************************************************/
+static const QString BOWTIE_SCHEMA_NAME("bowtie");
+
+BowtieRunFromSchemaTask::BowtieRunFromSchemaTask(const DnaAssemblyToRefTaskSettings & c, bool jbi) 
+: DnaAssemblyToReferenceTask(c, TaskFlags_NR_FOSCOE, jbi), buildTask(NULL) {
+    haveResults = true;
+}
+
+void BowtieRunFromSchemaTask::prepare() {
+    QRegExp rx(BowtieTask::INDEX_REGEXP_STR);
+    QString indexURL(settings.refSeqUrl.getURLString());
+    bool hasPrebuiltIndex = settings.getCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, false).toBool();
+    if(justBuildIndex || !hasPrebuiltIndex) {
+        if(rx.indexIn(indexURL) != -1) {
+            setError(BowtieBuildTask::tr("attempt to build ebwt index from ebwt index \"%1\"").arg(indexURL));
+            return;
+        }
+        if(!QFileInfo(indexURL).exists()) {
+            setError(BowtieBuildTask::tr("Reference sequence file \"%1\" not exists").arg(indexURL));
+            return;
+        }
+        buildTask = new BowtieBuildTask(indexURL, settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName()); 
+        addSubTask(buildTask);
+    } else { // hasIndex, run bowtie assembly
+        if(rx.indexIn(indexURL) != -1) {
+            indexPath = rx.cap(1);
+        } else {
+            indexPath = indexURL;
+        }
+        if(!checkIndex(indexPath, stateInfo)) {
+            return;
+        }
+        addSubTask(new WorkflowRunSchemaForTask(BOWTIE_SCHEMA_NAME, this));
+    }
+}
+
+QList<Task*> BowtieRunFromSchemaTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> res;
+    if(subTask == NULL) {
+        assert(false);
+        return res;
+    }
+    propagateSubtaskError();
+    if(hasErrors() || isCanceled()) {
+        return res;
+    }
+    
+    if(subTask == buildTask && !justBuildIndex) { // run assembly
+        indexPath = buildTask->getEbwtPath();
+        res << new WorkflowRunSchemaForTask(BOWTIE_SCHEMA_NAME, this);
+    }
+    return res;
+}
+
+Task::ReportResult BowtieRunFromSchemaTask::report() {
+    if(hasErrors() || isCanceled()) {
+        return ReportResult_Finished;
+    }
+    QFileInfo fi(settings.resultFileName.getURLString());
+    if(!fi.exists() || fi.size() == 0) {
+        haveResults = false;
+    }
+    return ReportResult_Finished;
+}
+
+bool BowtieRunFromSchemaTask::saveInput() const {
+    return false;
+}
+
+QVariantMap BowtieRunFromSchemaTask::getSchemaData() const {
+    QVariantMap res;
+    
+    QString shortReads;
+    {
+        foreach(const GUrl & url, settings.shortReadUrls) {
+            shortReads += url.getURLString() + ";";
+        }
+        shortReads = shortReads.mid(0, shortReads.size() - 1); // remove last ';'
+    }
+    res["seq"] = qVariantFromValue(shortReads);
+    res["ebwt"] = qVariantFromValue(indexPath);
+    
+    res["all"] = settings.getCustomValue(BowtieTask::OPTION_ALL, false);
+    res["best"] = settings.getCustomValue(BowtieTask::OPTION_BEST, false);
+    if(settings.hasCustomValue(BowtieTask::OPTION_CHUNKMBS)) {
+        res["chunk-mbs"] = settings.getCustomValue(BowtieTask::OPTION_CHUNKMBS, 64);
+    }
+    if(settings.hasCustomValue(BowtieTask::OPTION_MAQERR)) {
+        res["maq-err"] = settings.getCustomValue(BowtieTask::OPTION_MAQERR, 70);
+    }
+    if(settings.hasCustomValue(BowtieTask::OPTION_MAXBTS)) {
+        res["max-backtracks"] = settings.getCustomValue(BowtieTask::OPTION_MAXBTS, -1);
+    }
+    if(settings.hasCustomValue(BowtieTask::OPTION_N_MISMATCHES)) {
+        res["mismatches-num"] = settings.getCustomValue(BowtieTask::OPTION_N_MISMATCHES, 2);
+    }
+    if(settings.hasCustomValue(BowtieTask::OPTION_V_MISMATCHES)) {
+        res["report-with-mismatches"] = settings.getCustomValue(BowtieTask::OPTION_V_MISMATCHES, -1);
+    }
+    if(settings.hasCustomValue(BowtieTask::OPTION_SEED)) {
+        res["seed"] = settings.getCustomValue(BowtieTask::OPTION_SEED, -1);
+    }
+    res["no-forward"] = settings.getCustomValue(BowtieTask::OPTION_NOFW, false);
+    res["no-maq-rounding"] = settings.getCustomValue(BowtieTask::OPTION_NOMAQROUND, false);
+    res["no-reverse-complemented"] = settings.getCustomValue(BowtieTask::OPTION_NORC, false);
+    
+    if(settings.hasCustomValue(BowtieTask::OPTION_SEED_LEN)) {
+        res["seed-length"] = settings.getCustomValue(BowtieTask::OPTION_SEED_LEN, 28);
+    }
+    res["try-hard"] = settings.getCustomValue(BowtieTask::OPTION_TRYHARD, false);
+    res["format"] = qVariantFromValue(BaseDocumentFormats::CLUSTAL_ALN);
+    res["out"] = settings.resultFileName.getURLString();
+    return res;
+}
+
+bool BowtieRunFromSchemaTask::saveOutput() const {
+    return false;
+}
 
 /************************************************************************/
 /* BowtieTLSTask                                                        */

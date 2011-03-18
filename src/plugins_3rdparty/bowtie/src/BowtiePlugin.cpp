@@ -91,7 +91,7 @@ BowtiePlugin::BowtiePlugin() : Plugin(tr("Bowtie"),
     
     bool guiMode = AppContext::getMainWindow()!=NULL;
     DnaAssemblyGUIExtensionsFactory* guiFactory = guiMode ? new BWTGuiExtFactory(): NULL;
-    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv(BowtieTask::taskName, new BowtieTask::Factory(), guiFactory, true);
+    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv(BowtieBaseTask::taskName, new BowtieBaseTask::Factory(), guiFactory, true);
     bool res = registry->registerAlgorithm(algo);
     Q_UNUSED(res);
     assert(res);
@@ -103,10 +103,9 @@ BowtiePlugin::BowtiePlugin() : Plugin(tr("Bowtie"),
 
 BowtiePlugin::~BowtiePlugin() {
     DnaAssemblyAlgRegistry* registry = AppContext::getDnaAssemblyAlgRegistry();
-    DnaAssemblyAlgorithmEnv* algo = registry->unregisterAlgorithm(BowtieTask::taskName);
+    DnaAssemblyAlgorithmEnv* algo = registry->unregisterAlgorithm(BowtieBaseTask::taskName);
     assert(algo!=NULL);
     delete algo;
 }
 
 }//namespace
-

@@ -34,8 +34,14 @@ class Document;
 
 class U2ALGORITHM_EXPORT DnaAssemblyToRefTaskSettings {
 public:
-    DnaAssemblyToRefTaskSettings() 
-    {}
+    DnaAssemblyToRefTaskSettings() {}
+    
+    void setCustomSettings(const QMap<QString, QVariant>& settings);
+    QVariant getCustomValue(const QString& optionName, const QVariant& defaultVal) const;
+    bool hasCustomValue(const QString & name) const;
+    void setCustomValue(const QString& optionName, const QVariant& val);
+    
+public:
     QList<DNASequence> shortReads;
     QList<GUrl> shortReadUrls;
     GUrl refSeqUrl;
@@ -43,9 +49,7 @@ public:
     QString indexFileName;
     QString algName;
     bool loadResultDocument;
-    void setCustomSettings(const QMap<QString, QVariant>& settings);
-    QVariant getCustomValue(const QString& optionName, const QVariant& defaultVal) const;
-    void setCustomValue(const QString& optionName, const QVariant& val);
+    
 private:
     QMap<QString, QVariant> customSettings;
 };
@@ -55,13 +59,10 @@ class U2ALGORITHM_EXPORT DnaAssemblyToReferenceTask : public Task {
 public:
     DnaAssemblyToReferenceTask(const DnaAssemblyToRefTaskSettings& settings, TaskFlags flags = TaskFlags_FOSCOE, bool justBuildIndex = false);
     virtual ~DnaAssemblyToReferenceTask() {}
-    const MAlignment& getResult() { return result; }
-    const GUrl getResultUrl() { return settings.resultFileName; }
     bool isHaveResult() const {return haveResults;}
-    bool isJustBuildIndex() const {return justBuildIndex;}
+    
 protected:
     const DnaAssemblyToRefTaskSettings& settings;
-    MAlignment result;
     bool justBuildIndex;
     bool haveResults;
 };

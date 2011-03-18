@@ -24,14 +24,10 @@
 namespace U2 {
 
 DnaAssemblyToReferenceTask::DnaAssemblyToReferenceTask( const DnaAssemblyToRefTaskSettings& s, TaskFlags _flags, bool _justBuildIndex )
- : Task("DnaAssemblyToRefTask", _flags), settings(s), justBuildIndex(_justBuildIndex)
-{
-    result.setName(s.resultFileName.baseFileName());
+ : Task("DnaAssemblyToRefTask", _flags), settings(s), justBuildIndex(_justBuildIndex) {
 }
 
-
-QVariant DnaAssemblyToRefTaskSettings::getCustomValue( const QString& optionName, const QVariant& defaultVal ) const
-{
+QVariant DnaAssemblyToRefTaskSettings::getCustomValue( const QString& optionName, const QVariant& defaultVal ) const {
     if (customSettings.contains(optionName)) {
         return customSettings.value(optionName);
     } else {
@@ -39,13 +35,15 @@ QVariant DnaAssemblyToRefTaskSettings::getCustomValue( const QString& optionName
     }    
 }
 
-void DnaAssemblyToRefTaskSettings::setCustomValue( const QString& optionName, const QVariant& val )
-{
+bool DnaAssemblyToRefTaskSettings::hasCustomValue(const QString & name) const {
+    return customSettings.contains(name);
+}
+
+void DnaAssemblyToRefTaskSettings::setCustomValue( const QString& optionName, const QVariant& val ) {
     customSettings.insert(optionName,val);
 }
 
-void DnaAssemblyToRefTaskSettings::setCustomSettings( const QMap<QString, QVariant>& settings )
-{
+void DnaAssemblyToRefTaskSettings::setCustomSettings( const QMap<QString, QVariant>& settings ) {
     customSettings = settings;
 }
 } // U2

@@ -257,11 +257,6 @@ Task::ReportResult GenomeAlignerTask::report() {
         return ReportResult_Finished;
     }
     seqWriter->close();
-
-    // TODO: the MAlignment object should be ommited 
-    result.setName("Unused object");
-    result.setAlphabet(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()));
-    
     return ReportResult_Finished;
 }
 

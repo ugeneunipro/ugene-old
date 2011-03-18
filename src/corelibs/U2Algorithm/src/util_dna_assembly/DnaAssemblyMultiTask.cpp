@@ -112,7 +112,7 @@ const MAlignmentObject* DnaAssemblyMultiTask::getAssemblyResult() {
 QString DnaAssemblyMultiTask::generateReport() const {
     QString res;
     if (hasErrors() || isCanceled()) {
-        return res;
+        return QString("Assembly task finished with error: %1").arg(getError());
     }
 
     if (justBuildIndex) {

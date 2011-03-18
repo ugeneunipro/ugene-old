@@ -120,11 +120,13 @@ public:
     virtual ReportResult report();
 
     // from WorkflowRunSchemaForTaskCallback
+    virtual bool saveInput()const;
     virtual QList<GObject*> createInputData() const;
-    virtual DocumentFormatId getInputFileFormat()const;
+    virtual DocumentFormatId inputFileFormat()const;
     virtual QVariantMap getSchemaData() const;
-    virtual DocumentFormatId getOutputFileFormat() const;
-
+    virtual DocumentFormatId outputFileFormat() const;
+    virtual bool saveOutput() const;
+    
 private:
     QPointer<MAlignmentObject> obj;
     StateLock * lock;

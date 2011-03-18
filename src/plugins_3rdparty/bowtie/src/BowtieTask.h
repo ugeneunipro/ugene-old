@@ -26,6 +26,7 @@
 #include <U2Core/TLSTask.h>
 #include <U2Algorithm/DnaAssemblyTask.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Lang/RunSchemaForTask.h>
 
 #include <QtCore/QPointer>
 #include <QtCore/QMutex>
@@ -42,10 +43,19 @@ class BowtieTLSTask;
 class BowtieTask;
 class BowtieBuildTask;
 
+class BowtieBaseTask : public DnaAssemblyToReferenceTask {
+    Q_OBJECT
+    DNA_ASSEMBLEY_TO_REF_TASK_FACTORY(BowtieBaseTask)
+public:
+    BowtieBaseTask(const DnaAssemblyToRefTaskSettings & config, bool justBuildIndex = false);
+    virtual ReportResult report();
+private:
+    DnaAssemblyToReferenceTask * sub;
+    
+};
 
 class BowtieTask : public DnaAssemblyToReferenceTask {
     Q_OBJECT
-	DNA_ASSEMBLEY_TO_REF_TASK_FACTORY(BowtieTask)
 	friend class BowtieTLSTask;
 public:
 
@@ -67,19 +77,44 @@ public:
     static const QString OPTION_BEST; //--best
     static const QString OPTION_ALL; //--all
 	static const QString OPTION_SORT_ALIGNMENT_BY_OFFSET;
-
+    
+    static const QString INDEX_REGEXP_STR;
+    
     BowtieTask(const DnaAssemblyToRefTaskSettings & config, bool justBuildIndex = false);
 	QList<Task*> onSubTaskFinished(Task* subTask);
 	void prepare();
     ReportResult report();
     int numHits;
 private:
-	int fileSize;
     BowtieTLSTask* tlsTask;
 	BowtieBuildTask* buildTask;
 	QString indexPath;
-	bool justBuildIndex;
 };
+
+/**
+ runs bowtie in separate process
+ if building index needed: it builds in current process
+ */
+class BowtieRunFromSchemaTask : public DnaAssemblyToReferenceTask, public WorkflowRunSchemaForTaskCallback {
+    Q_OBJECT
+public:
+    BowtieRunFromSchemaTask(const DnaAssemblyToRefTaskSettings & config, bool justBuildIndex = false);
+    
+    // from Task
+    virtual void prepare();
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    ReportResult report();
+    
+    //from WorkflowRunSchemaForTaskCallback
+    virtual bool saveInput() const;
+    virtual QVariantMap getSchemaData() const;
+    virtual bool saveOutput() const;
+    
+private:
+    BowtieBuildTask *   buildTask;
+    QString             indexPath;
+    
+}; // BowtieRunFromSchemaTask
 
 class BowtieTLSTask : public TLSTask {
 	Q_OBJECT
