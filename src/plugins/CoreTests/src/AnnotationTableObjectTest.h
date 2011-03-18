@@ -159,6 +159,7 @@ class GTest_CheckAnnotationsNumInTwoObjects : public GTest {
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsNumInTwoObjects, "compare-annotations-num-in-two-objects");
 
     ReportResult report();
+    bool compareNumObjects;
     QString docContextName;
     QString secondDocContextName;
 };
@@ -168,6 +169,7 @@ class GTest_CheckAnnotationsLocationsInTwoObjects : public GTest {
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsLocationsInTwoObjects, "compare-annotations-locations-in-two-objects");
 
     ReportResult report();
+    bool compareNumObjects;
     QString docContextName;
     QString secondDocContextName;
 };

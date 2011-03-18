@@ -434,7 +434,15 @@ void GTest_CheckAnnotationsNumInTwoObjects::init(XMLTestFormat *tf, const QDomEl
     if (secondDocContextName.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
+    }
+
+    QString buf = el.attribute("compare-num-objects");
+    if (buf == "false") {
+        compareNumObjects = false;
+    } else {
+        compareNumObjects = true;
+    }
+
 }
 
 Task::ReportResult GTest_CheckAnnotationsNumInTwoObjects::report() {
@@ -484,6 +492,10 @@ Task::ReportResult GTest_CheckAnnotationsNumInTwoObjects::report() {
         }
 
     }
+    
+    if (!compareNumObjects) {
+        return ReportResult_Finished;
+    }
 
     if (objs.size() != objs2.size()) {
         QString error("Number of objects in doc mismatches: [%1=%2] vs [%3=%4]");
@@ -512,7 +524,15 @@ void GTest_CheckAnnotationsLocationsInTwoObjects::init(XMLTestFormat *tf, const 
     if (secondDocContextName.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
+    }
+
+    QString buf = el.attribute("compare-num-objects");
+    if (buf == "false") {
+        compareNumObjects = false;
+    } else {
+        compareNumObjects = true;
+    }
+
 }
 
 Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
@@ -557,7 +577,11 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
                 const U2Location& l1 = annList.at(n)->getLocation();
                 const U2Location& l2 = annList2.at(n)->getLocation();
                 if (l1 != l2){
-                    stateInfo.setError(QString("annotations locations  in position %1 not matched").arg(n));
+                    U2Region r1 = l1->regions.first();
+                    U2Region r2 = l2->regions.first();
+                    stateInfo.setError(QString("annotations locations not matched.\
+                        A1 location is %1..%2, A2 location is %3..%4 ").arg(r1.startPos).arg(r1.endPos())
+                        .arg(r2.startPos).arg(r2.endPos()));
                     return ReportResult_Finished;
                 }
             }
@@ -566,6 +590,10 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
 
     }
     
+    if (!compareNumObjects) {
+        return ReportResult_Finished;
+    }
+
     if (objs.size() != objs2.size()) {
         QString error("Number of objects in doc1 mismatches: [%1=%2] vs [%3=%4]");
         error = error.arg(docContextName).arg(objs.size())
