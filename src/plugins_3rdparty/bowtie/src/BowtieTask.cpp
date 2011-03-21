@@ -173,7 +173,7 @@ void BowtieTask::prepare()
 QList<Task*> BowtieTask::onSubTaskFinished(Task* subTask) {
 	Q_UNUSED(subTask);
 	QList<Task*> res;
-	if(subTask->hasErrors()) {
+	if(hasErrors() || subTask->hasErrors()) {
 		return res;
 	}
     if(subTask == buildTask) {
@@ -365,6 +365,9 @@ void BowtieTLSTask::_run()
 	BowtieReadsReader* reader = parent->settings.getCustomValue(BowtieTask::OPTION_READS_READER, qVariantFromValue(BowtieReadsReaderContainer())).value<BowtieReadsReaderContainer>().reader;
 	if(reader == NULL) 
 		reader = new BowtieUrlReadsReader(parent->settings.shortReadUrls);
+    if (reader->isEnd()) {
+        setError("Unsupported short-reads file format or short reads list is empty");
+    }
 
 	BowtieReadsWriter* writer = parent->settings.getCustomValue(BowtieTask::OPTION_READS_WRITER, qVariantFromValue(BowtieReadsReaderContainer())).value<BowtieReadsWriterContainer>().writer;
 	if(writer == NULL) 
