@@ -161,7 +161,7 @@ fi
 # remove svn dirs
 find $TARGET_APP_DIR -name ".svn" | xargs rm -rf 
 
-REVISION=$BUILD_VCS_NUMBER_UGENE
+REVISION=$BUILD_VCS_NUMBER_new_trunk
 #`svn status -u | sed -n -e '/revision/p' | awk '{print $4}'`
 DATE=`date '+%d_%m_%H-%M'`
 ARCH=`uname -m`
