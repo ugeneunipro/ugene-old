@@ -278,14 +278,12 @@ void SaveProjectTask::prepare() {
         url = proj->getProjectURL();
     }
     QList<Task *> ssTasks;
-    if (url.isEmpty() && (!proj->getGObjectViewStates().isEmpty() || proj->getDocuments().size() > 1)) {
+    if (url.isEmpty() && (!proj->getGObjectViewStates().isEmpty() || proj->getDocuments().size() > 0)) {
         //ask if to save project
         QWidget* w  = AppContext::getMainWindow()->getQMainWindow();
         int code = QMessageBox::question(w, tr("UGENE"), tr("Save current project?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
         if (code == QMessageBox::Yes) {
             ProjectDialogController d(ProjectDialogController::Save_Project, w);
-            d.projectFolderEdit->setText(QDir::home().absolutePath());
-            d.projectNameEdit->setText(tr("My project"));
             int rc = d.exec();
             if (rc == QDialog::Accepted) {
                 AppContext::getProject()->setProjectName(d.projectNameEdit->text());

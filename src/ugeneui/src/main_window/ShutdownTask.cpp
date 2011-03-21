@@ -92,9 +92,9 @@ public:
         if (proj == NULL) {
             return;
         }
-        if ( proj->isTreeItemModified() ) {
+        if ( proj->isTreeItemModified() || proj->getProjectURL().isEmpty() ) {
             addSubTask(AppContext::getProjectService()->saveProjectTask(SaveProjectTaskKind_SaveProjectAndDocumentsAskEach));
-        }
+        } 
     }
 
     QList<Task*> onSubTaskFinished(Task* subTask) {

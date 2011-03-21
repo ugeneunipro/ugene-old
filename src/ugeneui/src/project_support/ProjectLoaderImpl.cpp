@@ -386,10 +386,12 @@ ProjectDialogController::ProjectDialogController(ProjectDialogController::Mode m
             QFileInfo fi(url);
             projectFileEdit->setText(fi.completeBaseName());
             projectFolderEdit->setText(fi.absolutePath());
+        } else {
+            setupDefaults();
         }
     } else {
-        projectNameEdit->setText(ProjectLoaderImpl::tr("new_project_default_name"));
-        projectFileEdit->setText(ProjectLoaderImpl::tr("new_project_default_file"));
+        setupDefaults();
+
     }
     //projectFolderEdit->setReadOnly(true);
     if (projectFileEdit->text().isEmpty()) {
@@ -443,6 +445,28 @@ void ProjectDialogController::sl_projectNameEdited(const QString& text) {
     }
     updateState();
     
+}
+
+void ProjectDialogController::setupDefaults()
+{
+    projectNameEdit->setText(ProjectLoaderImpl::tr("new_project_default_name"));
+    projectFolderEdit->setText(QDir::home().absolutePath());
+    projectFileEdit->setText(ProjectLoaderImpl::tr("new_project_default_file"));
+}
+
+void ProjectDialogController::accept()
+{
+    QString projUrl = projectFolderEdit->text() + "/" + projectFileEdit->text()+".uprj";
+    QFileInfo info(projUrl);
+    QString absPath = info.absoluteFilePath();
+    if (info.exists()) {
+        if (QMessageBox::Yes != QMessageBox::question(this, windowTitle(), 
+            tr("<html><body align=\"center\"><br>Project file already exists.<br>Are you sure you want to overwrite it?<body></html>"),
+            QMessageBox::Yes, QMessageBox::No) ) {
+                return;
+        } 
+    }
+    QDialog::accept();
 }
 
 Project* ProjectLoaderImpl::createProject(const QString& name, const QString& url, QList<Document*>& documents, QList<GObjectViewState*>& states) {

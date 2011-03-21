@@ -99,16 +99,18 @@ public:
     enum Mode {New_Project, Save_Project};
     ProjectDialogController(Mode m, QWidget *p);
 
+    void accept();
     void updateState();
 
 protected:
     void keyPressEvent ( QKeyEvent * event );
-
+    
 private slots:
     void sl_folderSelectClicked();
     void sl_fileNameEdited(const QString&);
     void sl_projectNameEdited(const QString&);
 private:
+    void setupDefaults();
     bool fileEditIsEmpty;
 };
 
