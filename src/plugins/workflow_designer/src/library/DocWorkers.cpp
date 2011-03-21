@@ -270,7 +270,8 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data) {
     if (sequenceName.isEmpty()) {
         int num = doc->findGObjectByType(GObjectTypes::SEQUENCE).size();
         sequenceName = QString("unknown sequence %1").arg(num);
-        annotationName = QString("unknown features %1").arg(num);
+        int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
+        annotationName = QString("unknown features %1").arg(featuresNum);
     } else {
         annotationName = sequenceName + " features";
     }
