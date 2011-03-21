@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <memory>
+
 #include "MuscleTask.h"
 #include "MuscleParallel.h"
 #include "MuscleAdapter.h"
@@ -572,7 +574,7 @@ Task::ReportResult MuscleGObjectRunFromSchemaTask::report() {
         return ReportResult_Finished;
     }
     
-    Document * result = runSchemaTask->getResult();
+    std::auto_ptr<Document> result(runSchemaTask->getResult());
     QList<GObject*> objs = result->getObjects();
     assert(objs.size() == 1);
     const QString MUSCLE_TASK_NO_RESULT_ERROR(tr("Undefined error: muscle task did not produced result"));

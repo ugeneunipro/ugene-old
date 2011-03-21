@@ -191,9 +191,14 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
     return res;
 }
 
+Task::ReportResult WorkflowRunSchemaForTask::report() {
+    propagateSubtaskError();
+    return ReportResult_Finished;
+}
+
 Document * WorkflowRunSchemaForTask::getResult() {
     if(loadResultTask != NULL) {
-        return loadResultTask->getDocument();
+        return loadResultTask->getDocument()->clone();
     } else {
         assert(false);
         return NULL;

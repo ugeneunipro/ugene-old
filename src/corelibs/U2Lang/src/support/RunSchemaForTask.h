@@ -62,6 +62,8 @@ public:
     ~WorkflowRunSchemaForTask();
     
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    virtual ReportResult report();
+    //returns new created document. caller should delete
     Document * getResult();
     
 private:

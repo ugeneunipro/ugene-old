@@ -85,7 +85,7 @@ void WorkflowRunFromCMDLineBase::processLoadSchemaTask( const QString & schemaNa
 LoadWorkflowTask * WorkflowRunFromCMDLineBase::prepareLoadSchemaTask( const QString & schemaName ) {
     QString pathToSchema = WorkflowUtils::findPathToSchemaFile( schemaName );
     if( pathToSchema.isEmpty() ) {
-        cmdLog.error( tr( "Cannot find schema: %1" ).arg( schemaName ) );
+        coreLog.error( tr( "Cannot find schema: %1" ).arg( schemaName ) );
         return NULL;
     }
 
@@ -114,20 +114,20 @@ static void setSchemaCMDLineOptions( Schema * schema, int optionsStartAtIdx ) {
         Actor * actor = WorkflowUtils::findActorByParamAlias( schema->getProcesses(), paramAlias, paramName );
         if( actor == NULL ) {
             assert( paramName.isEmpty() );
-            cmdLog.info( WorkflowRunFromCMDLineBase::tr( "alias '%1' not set in schema" ).arg( paramAlias ) );
+            coreLog.info( WorkflowRunFromCMDLineBase::tr( "alias '%1' not set in schema" ).arg( paramAlias ) );
             continue;
         }
 
         Attribute * attr = actor->getParameter( paramName );
         if( attr == NULL ) {
-            cmdLog.error( WorkflowRunFromCMDLineBase::tr( "actor parameter '%1' not found" ).arg( paramName ) );
+            coreLog.error( WorkflowRunFromCMDLineBase::tr( "actor parameter '%1' not found" ).arg( paramName ) );
             continue;
         }
 
         DataTypeValueFactory * valueFactory = WorkflowEnv::getDataTypeValueFactoryRegistry()->
             getById( attr->getAttributeType()->getId() );
         if( valueFactory == NULL ) {
-            cmdLog.error( WorkflowRunFromCMDLineBase::tr( "cannot parse value from '%1'" ).arg( param.second ) );
+            coreLog.error( WorkflowRunFromCMDLineBase::tr( "cannot parse value from '%1'" ).arg( param.second ) );
             continue;
         }
 
@@ -135,7 +135,7 @@ static void setSchemaCMDLineOptions( Schema * schema, int optionsStartAtIdx ) {
         bool isOk;
         QVariant value = valueFactory->getValueFromString( param.second, &isOk );
         if(!isOk){
-            cmdLog.error( WorkflowRunFromCMDLineBase::tr( "Incorrect value for '%1', null or default value passed to schema" ).
+            coreLog.error( WorkflowRunFromCMDLineBase::tr( "Incorrect value for '%1', null or default value passed to schema" ).
                 arg( param.first ));
             continue;
         }

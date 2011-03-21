@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <memory>
+
 #include "KalignTask.h"
 #include "KalignAdapter.h"
 #include "KalignConstants.h"
@@ -243,7 +245,7 @@ Task::ReportResult KalignGObjectRunFromSchemaTask::report() {
         return ReportResult_Finished;
     }
     
-    Document * result = runSchemaTask->getResult();
+    std::auto_ptr<Document> result(runSchemaTask->getResult());
     QList<GObject*> objs = result->getObjects();
     assert(objs.size() == 1);
     const QString KALIGN_TASK_NO_RESULT_ERROR(tr("Undefined error: Kalign task did not produced result"));

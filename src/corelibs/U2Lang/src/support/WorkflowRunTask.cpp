@@ -35,6 +35,7 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 namespace U2 {
 
@@ -401,8 +402,9 @@ QString WorkflowRunInProcessTask::generateReport() const {
  *******************************************/
 WorkflowIterationRunInProcessTask::WorkflowIterationRunInProcessTask(const Schema & sc, const Iteration & it) :
 Task(QString("Execute iteration '%1'").arg(it.name), TaskFlags_NR_FOSCOE), schema(new Schema()), saveSchemaTask(NULL), monitor(NULL) {
+    tempFile.setFileTemplate(QString("%1/XXXXXX.uwl").arg(QDir::tempPath()));
     if(!tempFile.open()) {
-        setError(tr("Cannot create temporary file!"));
+        setError(tr("Cannot create temporary file for saving schema!"));
         return;
     }
     Metadata meta; 
@@ -411,6 +413,7 @@ Task(QString("Execute iteration '%1'").arg(it.name), TaskFlags_NR_FOSCOE), schem
     
     rmap = HRSchemaSerializer::deepCopy(sc, schema);
     schema->applyConfiguration(it, rmap);
+    schema->getIterations().clear();
     saveSchemaTask = new SaveWorkflowTask(schema, meta, true);
     saveSchemaTask->setSubtaskProgressWeight(0);
     addSubTask(saveSchemaTask);
@@ -487,10 +490,10 @@ Task(tr("Monitoring execution of workflow schema"), TaskFlag_NoRun), schemaPath(
     args << QString("--%1").arg(OUTPUT_ERROR_OPTION);
     connect(proc, SIGNAL(error(QProcess::ProcessError)), SLOT(sl_onError(QProcess::ProcessError)));
     connect(proc, SIGNAL(readyReadStandardOutput()), SLOT(sl_onReadStandardOutput()));
-    proc->setProcessChannelMode(QProcess::MergedChannels);
     QString cmdlineUgenePath(WorkflowSettings::getCmdlineUgenePath());
     assert(!cmdlineUgenePath.isEmpty());
     proc->start(cmdlineUgenePath, args);
+    proc->waitForStarted();
 }
 
 WorkflowRunInProcessMonitorTask::~WorkflowRunInProcessMonitorTask() {
