@@ -613,11 +613,15 @@ QVariantMap MuscleGObjectRunFromSchemaTask::getSchemaData() const {
 }
 
 DocumentFormatId MuscleGObjectRunFromSchemaTask::outputFileFormat() const {
-    return BaseDocumentFormats::CLUSTAL_ALN;
+    return inputFileFormat();
 }
 
 DocumentFormatId MuscleGObjectRunFromSchemaTask::inputFileFormat() const {
-    return BaseDocumentFormats::CLUSTAL_ALN;
+    if(obj != NULL && obj->getDocument() != NULL && obj->getDocument()->getDocumentFormat() != NULL) {
+        return obj->getDocument()->getDocumentFormat()->getFormatId();
+    } else {
+        return BaseDocumentFormats::CLUSTAL_ALN;
+    }
 }
 
 bool MuscleGObjectRunFromSchemaTask::saveOutput() const {

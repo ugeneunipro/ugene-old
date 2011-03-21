@@ -271,11 +271,15 @@ QList<GObject*> KalignGObjectRunFromSchemaTask::createInputData() const {
 }
 
 DocumentFormatId KalignGObjectRunFromSchemaTask::inputFileFormat() const {
-    return BaseDocumentFormats::CLUSTAL_ALN;
+    if(obj != NULL && obj->getDocument() != NULL && obj->getDocument()->getDocumentFormat() != NULL) {
+        return obj->getDocument()->getDocumentFormat()->getFormatId();
+    } else {
+        return BaseDocumentFormats::CLUSTAL_ALN;
+    }
 }
 
 DocumentFormatId KalignGObjectRunFromSchemaTask::outputFileFormat() const {
-    return BaseDocumentFormats::CLUSTAL_ALN;
+    return inputFileFormat();
 }
 
 QVariantMap KalignGObjectRunFromSchemaTask::getSchemaData() const {
