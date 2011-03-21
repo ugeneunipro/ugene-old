@@ -125,17 +125,17 @@ QString QDLinkStatement::toString() const {
 //////////////////////////////////////////////////////////////////////////
 static const QString COMMENT_PATTERN = "\\\\\\\\|#([^\n]*)\n";
 static const QString SINGLE_ID_PATTERN = "(?:[a-zA-Z]|_|-)+[0-9_]*";
-static const QString ID_PATTERN = "(" + SINGLE_ID_PATTERN + "(?:\\." + SINGLE_ID_PATTERN + ")*)";
+const QString QDDocument::ID_PATTERN = "(" + SINGLE_ID_PATTERN + "(?:\\." + SINGLE_ID_PATTERN + ")*)";
 //static const QString VAL_PATTERN = "((?:\"[^\"]+\")|[^\\s\"]+)";
 static const QString VAL_PATTERN = "((?:\"[^\"]+\")|[^\\s;]+)";
 static const QString IMPORT_PATTERN = IMPORT_KEYWORD + "\\s+" + VAL_PATTERN;
-static const QString DOC_NAME_PATTERN = GRAPH_KEYWORD + "\\s*" + ID_PATTERN;// + "\\s*\\{{1,1}" + "[^\\{]*(?:\\{{1,1}[^\\{\\}]\\}{1,1})*" + "}{1,1}";
+static const QString DOC_NAME_PATTERN = GRAPH_KEYWORD + "\\s*" + QDDocument::ID_PATTERN;// + "\\s*\\{{1,1}" + "[^\\{]*(?:\\{{1,1}[^\\{\\}]\\}{1,1})*" + "}{1,1}";
 static const QString ELEMENT_ATTRS_PATTERN = "\\"+BLOCK_START+"{1,1}([^\\"+ BLOCK_START
 +"\\"+BLOCK_END+"]*)\\"+BLOCK_END+"{1,1}";
 //static const QString GROUP_ATTRS_PATTERN = "\\{{1,1}([^\\{\\}]*)\\}{1,1}";
-static const QString ELEMENT_STATEMENT_PATTERN = "[^--](?:\n|\\s)+" + ID_PATTERN + "\\s*" + ELEMENT_ATTRS_PATTERN;
+static const QString ELEMENT_STATEMENT_PATTERN = "[^--](?:\n|\\s)+" + QDDocument::ID_PATTERN + "\\s*" + ELEMENT_ATTRS_PATTERN;
 //static const QString GROUP_STATEMENT_PATTERN ="[^--]" + ID_PATTERN + "\\s*" + GROUP_ATTRS_PATTERN;
-static const QString LINK_STATEMENT_PATTERN = "(" + ID_PATTERN + "(?:\\s*--\\s*" + ID_PATTERN + ")+)\\s*" + ELEMENT_ATTRS_PATTERN;
+static const QString LINK_STATEMENT_PATTERN = "(" + QDDocument::ID_PATTERN + "(?:\\s*--\\s*" + QDDocument::ID_PATTERN + ")+)\\s*" + ELEMENT_ATTRS_PATTERN;
 
 static const QString ORDER_KEYWORD = "order";
 static const QString ORDER_PATTERN = ORDER_KEYWORD + "\\{{1,1}([^\\{\\}]*)\\}{1,1}";

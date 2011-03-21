@@ -115,6 +115,7 @@ public:
 public:
     static const QString HEADER_LINE;
     static const QString GROUPS_SECTION;
+    static const QString ID_PATTERN;
 private:
     void findImportedUrls(const QString& str);
     bool findElementStatements(const QString& str);

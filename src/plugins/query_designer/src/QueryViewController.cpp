@@ -455,7 +455,7 @@ void QueryScene::addActor(QDActor* actor, const QPointF& pos) {
     QDActorParameters* actorCfg = actor->getParameters();
     QString defaultName = actor->getProto()->getDisplayName();
     if (count>0) {
-        actorCfg->setLabel(QString("%1 %2").arg(defaultName).arg(count));
+        actorCfg->setLabel(QString("%1%2").arg(defaultName).arg(count));
     }
     else {
         actorCfg->setLabel(defaultName);

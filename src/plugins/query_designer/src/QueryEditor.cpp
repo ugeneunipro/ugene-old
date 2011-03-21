@@ -22,46 +22,25 @@
 #include "QueryEditor.h"
 #include "QueryProcCfgModel.h"
 #include "QueryProcCfgDelegate.h"
-
+#include "QDDocument.h"
 #include "QueryViewController.h"
 #include "QueryViewItems.h"
 
 #include <U2Lang/Attribute.h>
 #include <U2Lang/WorkflowUtils.h>
 
-#include <QtGui/QValidator>
+
+#include <QtGui/QRegExpValidator>
 
 
 namespace U2 {
-
-QValidator::State ProcessNameValidator::validate(QString& input, int& pos) const {
-    //Q_UNUSED(input);
-    if (input.contains(' ') || input.contains('-')) {
-        return Invalid;
-    }
-    Q_UNUSED(pos);
-    /*const QueryScene* scene = view->getScene();
-    foreach(QGraphicsItem* item, scene->items()) {
-        if (item->type()==QueryProcessItemType) {
-            QuerySchemeItem* procItem = qgraphicsitem_cast<QuerySchemeItem*>(item);
-            if(procItem->getProcess()->getNameLabel()==input) {
-                QueryEditor* ed = qobject_cast<QueryEditor*>(parent());
-                if(procItem->getProcess()->getNameLabel()!=ed->current->getNameLabel()) {
-                    return Invalid;
-                }
-            }
-        }
-    }*/
-    return Acceptable;
-}
 
 QueryEditor::QueryEditor(QWidget* parent/* =0 */) : QWidget(parent), current(NULL) {
     setupUi(this);
     caption->setMinimumHeight(nameEdit->sizeHint().height());
 
     QueryViewController* controller = qobject_cast<QueryViewController*>(parent);
-    ProcessNameValidator* validator = new ProcessNameValidator(this, controller);
-    nameEdit->setValidator(validator);
+    nameEdit->setValidator(new QRegExpValidator(QRegExp(QDDocument::ID_PATTERN), nameEdit));
     directionCombo->insertItem(0, tr("Forward"));
     directionCombo->insertItem(1, tr("Backward"));
     directionCombo->insertItem(2, tr("Any"));

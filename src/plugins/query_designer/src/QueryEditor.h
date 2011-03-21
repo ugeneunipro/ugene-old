@@ -60,16 +60,6 @@ private:
     QDActor* current;
 };
 
-class ProcessNameValidator : public QValidator {
-    Q_OBJECT
-public:
-    ProcessNameValidator(QObject* parent, QueryViewController* view)
-        : QValidator(parent), view(view) {}
-    QValidator::State validate(QString& input, int& pos) const;
-private:
-    QueryViewController* view;
-};
-
 }//namespace
 
 #endif
