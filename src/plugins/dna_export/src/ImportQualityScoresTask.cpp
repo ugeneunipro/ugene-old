@@ -106,7 +106,7 @@ void ReadQualityScoresTask::recordQuality( int headerCounter )
             qualCodes.append(code);
         }
         result.insert(headers[headerCounter], DNAQuality(qualCodes,type));
-        log.trace( QString("Phred quality parsed: %1 %2").arg(headers[headerCounter]).arg(qualCodes.constData()) );
+        //log.trace( QString("Phred quality parsed: %1 %2").arg(headers[headerCounter]).arg(qualCodes.constData()) );
     }
 }
 

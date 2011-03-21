@@ -135,24 +135,6 @@ private:
     QString objName;
 };
 
-// FIXME: not used!
-class KalignWithExtFileSpecifySupportTask : public Task {
-public:
-    KalignWithExtFileSpecifySupportTask(const KalignTaskSettings& config);
-    void prepare();
-    Task::ReportResult report();    
-
-    QList<Task*> onSubTaskFinished(Task* subTask);
-private:
-    MAlignmentObject*   mAObject;
-    Document*           currentDocument;
-
-    SaveDocumentTask*   saveDocumentTask;
-    LoadDocumentTask*   loadDocumentTask;
-    KalignGObjectTask*  kalignGObjectTask;
-    KalignTaskSettings  config;
-};
-
 class KalignMainTask : public MSAAlignTask {
     Q_OBJECT
     MSA_ALIGN_TASK_FACTORY(KalignMainTask)
