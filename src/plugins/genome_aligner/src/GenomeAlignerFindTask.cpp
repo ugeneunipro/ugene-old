@@ -268,11 +268,26 @@ QList<Task*> GenomeAlignerFindTask::findInPart(int part) {
     int length = 0;
     for (int i=0; i<partTaskCount; i++) {
         int first = it;
-        it += partSize;
         if (partTaskCount-1 == i) {
-            length = bitValuesCount - i*partSize;
+            length = bitValuesCount - it;
         } else {
             length = partSize;
+        }
+        if (length <= 0 || first >= bitValuesCount) {
+            partTaskCount = i + 1;
+            break;
+        }
+        if (i < partTaskCount-1) {
+            it += length;
+            int *rn = readNumbersV[part].data();
+            for (int last=it-1; it<bitValuesCount;) {
+                if (rn[last] == rn[it]) {
+                    it++;
+                    length++;
+                } else {
+                    break;
+                }
+            }
         }
         FindInPartSubTask *subTask = new FindInPartSubTask(index, settings, first, length,
                                                            bitValuesV[part].data(),
