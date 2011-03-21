@@ -20,25 +20,29 @@
  */
 
 #include <U2Core/LoadDocumentTask.h>
-#include <U2Algorithm/FindAlgorithmTask.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Algorithm/SArrayIndex.h>
-#include <U2Algorithm/SArrayBasedFindTask.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/Log.h>
+#include <U2Core/Timer.h>
+#include <U2Core/AssemblyObject.h>
+#include <U2Core/U2DbiUtils.h>
+
+#include <U2Algorithm/FindAlgorithmTask.h>
+#include <U2Algorithm/SArrayIndex.h>
+#include <U2Algorithm/SArrayBasedFindTask.h>
+
 #include <U2Gui/Notification.h>
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIndexTask.h"
 #include "GenomeAlignerIndex.h"
-#include <U2Core/Log.h>
-#include <U2Core/Timer.h>
 
 #include "GenomeAlignerTask.h"
 
@@ -55,13 +59,13 @@ const QString GenomeAlignerTask::OPTION_PERCENTAGE_MISMATCHES("mismatches_percen
 const QString GenomeAlignerTask::OPTION_PREBUILT_INDEX("if_prebuilt_index");
 const QString GenomeAlignerTask::OPTION_INDEX_URL("path_to_the_index_file");
 const QString GenomeAlignerTask::OPTION_BEST("best_mode");
-const QString GenomeAlignerTask::INDEX_EXTENSION("idx");
+const QString GenomeAlignerTask::OPTION_DBI_IO("dbi_io");
 const QString GenomeAlignerTask::OPTION_QUAL_THRESHOLD("quality_threshold");
 
 GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settings, bool _justBuildIndex )
 : DnaAssemblyToReferenceTask(settings, TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported, _justBuildIndex),
-createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), seqReader(NULL),
-seqWriter(NULL),
+loadDbiTask(NULL), createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), seqReader(NULL),
+seqWriter(NULL), handle(NULL),
 justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastObj(NULL)
 {
     GCOUNTER(cvar,tvar, "GenomeAlignerTask");  
@@ -76,10 +80,12 @@ GenomeAlignerTask::~GenomeAlignerTask() {
         delete qu;
     }
     delete index;
+    delete handle;
 }
 
 void GenomeAlignerTask::prepare() {
-    if (!justBuildIndex) {
+    dbiIO = false;//settings.getCustomValue(OPTION_DBI_IO, true).toBool();
+    if (!justBuildIndex && !dbiIO) {
         seqReader = settings.getCustomValue(OPTION_READS_READER, qVariantFromValue(GenomeAlignerReaderContainer()))
             .value<GenomeAlignerReaderContainer>().reader;
         if (NULL == seqReader) {
@@ -135,14 +141,47 @@ void GenomeAlignerTask::prepare() {
         
     }
 
-    windowSize = calculateWindowSize(absMismatches, nMismatches, ptMismatches);
-    setupCreateIndexTask();
-    addSubTask(createIndexTask);
+    if (!justBuildIndex && dbiIO) {
+        assert(settings.shortReadUrls.size() > 0);
+        QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(settings.shortReadUrls.first());
+        if (!detectedFormats.isEmpty()) {
+            IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            loadDbiTask = new LoadDocumentTask(detectedFormats.first()->getFormatId(), settings.shortReadUrls.first(), factory);
+            addSubTask(loadDbiTask);
+        } else {
+            setError("Unsupported dbi file format.");
+            return;
+        }
+    } else {
+        setupCreateIndexTask();
+        addSubTask(createIndexTask);
+    }
 }
 
 QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
     if (hasErrors() || isCanceled()) {
+        return subTasks;
+    }
+
+    if (dbiIO && subTask == loadDbiTask) {
+        Document *d = loadDbiTask->getDocument();
+        QList<GObject*> objects = d->findGObjectByType(GObjectTypes::ASSEMBLY);
+
+        if (objects.size() < 1) {
+            setError("Can't find assembly objects.");
+            return subTasks;
+        }
+        AssemblyObject *assObj = qobject_cast<AssemblyObject*>(objects.first());
+        U2OpStatusImpl status;
+        handle = new DbiHandle(assObj->getDbiRef().factoryId, assObj->getDbiRef().dbiId, status);
+        U2Dbi *dbi = handle->dbi;
+        U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(assObj->getDbiRef().entityId, status);
+        seqReader = new GenomeAlignerDbiReader(dbi->getAssemblyDbi(), assm);
+        seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, settings.refSeqUrl.baseFileName());
+        
+        setupCreateIndexTask();
+        subTasks.append(createIndexTask);
         return subTasks;
     }
 
@@ -182,13 +221,14 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         taskLog.details(QString("Reading (and comlementing) of %1 short-reads  time: %2")
             .arg(readTask->bunchSize).arg((double)time/(1000*1000)));
         SearchContext s;
-        s.w = windowSize;
         s.absMismatches = absMismatches;
         s.nMismatches = nMismatches;
         s.ptMismatches = ptMismatches;
         s.bestMode = bestMode;
         s.queries = queries;
         s.openCL = openCL;
+        s.minReadLength = readTask->minReadLength;
+        s.maxReadLength = readTask->maxReadLength;
         findTask = new GenomeAlignerFindTask(index, s);
         if (prebuiltIdx) {
             findTask->setSubtaskProgressWeight(0.33f);
@@ -257,6 +297,7 @@ Task::ReportResult GenomeAlignerTask::report() {
         return ReportResult_Finished;
     }
     seqWriter->close();
+    
     return ReportResult_Finished;
 }
 
@@ -264,8 +305,22 @@ void GenomeAlignerTask::run() {
     
 }
 
-int GenomeAlignerTask::calculateWindowSize(bool absMismatches, int nMismatches, int ptMismatches) {
-    int windowSize = MIN_SHORT_READ_LENGTH;
+int GenomeAlignerTask::calculateWindowSize(bool absMismatches, int nMismatches, int ptMismatches, int minReadLength, int maxReadLength) {
+    int CMAX = nMismatches;
+    int windowSize = MAX_BIT_MASK_LENGTH;
+    int q = 0;
+    for (int len = minReadLength; len <= maxReadLength; len++) {
+        if (!absMismatches) {
+            CMAX = len*ptMismatches/MAX_PERCENTAGE;
+        }
+        q = len/(CMAX + 1);
+        if (windowSize > q) {
+            windowSize = q;
+        }
+    }
+    return windowSize;
+
+    /*int windowSize = MIN_SHORT_READ_LENGTH;
     if (absMismatches) {
         if (nMismatches > 0) {
             windowSize = windowSize / (nMismatches + 1);
@@ -307,7 +362,7 @@ int GenomeAlignerTask::calculateWindowSize(bool absMismatches, int nMismatches, 
                 break;
         }
     }
-    return windowSize;
+    return windowSize;*/
 }
 
 QString GenomeAlignerTask::getIndexPath() {
@@ -324,7 +379,8 @@ ReadShortReadsSubTask::ReadShortReadsSubTask(const DNASequenceObject **_lastObj,
 seqReader(_seqReader), queries(_queries), settings(_settings),
 freeMemorySize(m), freeGPUSize(g)
 {
-
+    minReadLength = INT_MAX;
+    maxReadLength = 0;
 }
 
 void ReadShortReadsSubTask::run() {
@@ -355,12 +411,20 @@ void ReadShortReadsSubTask::run() {
             obj = *lastObj;
         }
         if (NULL == obj) {
-            setError("Short-reads object type must be a sequence, but not a multiple alignment");
+            if (!seqReader->isEnd()) {
+                setError("Short-reads object type must be a sequence, but not a multiple alignment");
+            }
             return;
         }
         const DNASequence& seq = obj->getDNASequence();
         if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH > seq.length()) {
             continue;
+        }
+        if (minReadLength > seq.length()) {
+            minReadLength = seq.length();
+        }
+        if (maxReadLength < seq.length()) {
+            maxReadLength = seq.length();
         }
         if ( qualityThreshold > 0 && seq.hasQualityScores() ) {
             // simple quality filtering

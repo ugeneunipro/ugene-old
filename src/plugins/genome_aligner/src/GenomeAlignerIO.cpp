@@ -25,6 +25,8 @@
 #include <U2Formats/DocumentFormatUtils.h>
 #include "GenomeAlignerIO.h"
 
+#include <U2Core/Counter.h>
+
 namespace U2 {
 
 /************************************************************************/
@@ -53,10 +55,10 @@ const DNASequenceObject *GenomeAlignerUrlReader::read() {
 GenomeAlignerUrlWriter::GenomeAlignerUrlWriter(const GUrl &resultFile, const QString &refName)
     :seqWriter(resultFile, refName)
 {
-
+    writtenReadsCount = 0;
 }
 
-void GenomeAlignerUrlWriter::write(const DNASequence &seq, int offset) {
+void GenomeAlignerUrlWriter::write(const DNASequence &seq, quint32 offset) {
     seqWriter.writeNextAlignedRead(offset, seq);
     writtenReadsCount++;
 }
@@ -98,11 +100,10 @@ GenomeAlignerCommunicationChanelReader::~GenomeAlignerCommunicationChanelReader(
 }
 
 /************************************************************************/
-/* GenomeAlignerMAlignmentWriter                                               */
+/* GenomeAlignerMAlignmentWriter                                        */
 /************************************************************************/
-GenomeAlignerMAlignmentWriter::GenomeAlignerMAlignmentWriter()
-{
-
+GenomeAlignerMAlignmentWriter::GenomeAlignerMAlignmentWriter() {
+    writtenReadsCount = 0;
 }
 
 void GenomeAlignerMAlignmentWriter::close() { 
@@ -114,7 +115,7 @@ MAlignment& GenomeAlignerMAlignmentWriter::getResult() {
     return result;
 }
 
-void GenomeAlignerMAlignmentWriter::write(const DNASequence& seq, int offset) {
+void GenomeAlignerMAlignmentWriter::write(const DNASequence& seq, quint32 offset) {
     MAlignmentRow row;
     row.setName(seq.getName());
     row.setSequence(seq.seq, offset);
@@ -122,6 +123,7 @@ void GenomeAlignerMAlignmentWriter::write(const DNASequence& seq, int offset) {
         row.setQuality(seq.quality);
     }
     result.addRow(row);
+    writtenReadsCount++;
 }
 
 void GenomeAlignerMAlignmentWriter::setReferenceName(const QString &refName) {
@@ -130,4 +132,68 @@ void GenomeAlignerMAlignmentWriter::setReferenceName(const QString &refName) {
 }
 
 } //LocalWorkflow
+
+/************************************************************************/
+/* GenomeAlignerDbiReader                                               */
+/************************************************************************/
+const qint64 GenomeAlignerDbiReader::readBunchSize = 1000;
+
+GenomeAlignerDbiReader::GenomeAlignerDbiReader(U2AssemblyDbi *_rDbi, U2Assembly _assembly)
+: rDbi(_rDbi), assembly(_assembly)
+{
+    obj = new DNASequenceObject("obj", DNASequence(QByteArray("aaa"), DocumentFormatUtils::findAlphabet("aaa")));
+    wholeAssembly.startPos = 0;
+    wholeAssembly.length = rDbi->getMaxEndPos(assembly.id, status);
+    currentIteration = -1;
+    currentRead = reads.end();
+    readNumber = 0;
+    maxRow = rDbi->getMaxPackedRow(assembly.id, wholeAssembly, status);
+
+    qint64 readsInAssembly = rDbi->countReadsAt(assembly.id, wholeAssembly, status);
+    if (readsInAssembly <= 0 || status.hasError()) {
+        uiLog.error(QString("Genome Aligner -> Database Error: " + status.getError()).toAscii().data());
+        end = true;
+        return;
+    }
+
+    end = false;
+}
+
+const DNASequenceObject *GenomeAlignerDbiReader::read() {
+    if (end) {
+        return NULL;
+    }
+
+    if (currentRead == reads.end()) {
+        currentIteration ++;
+        /*if (currentRow >= maxRow) {
+            end = true;
+            return NULL;
+        }*/
+        reads = rDbi->getReadsAt(assembly.id, wholeAssembly, currentIteration*readBunchSize, readBunchSize, status);
+        static int count = 0;
+        count += reads.size();
+        currentRead = reads.begin();
+
+        if (reads.size() <= 0) {
+            end = true;
+            return NULL;
+        }
+    }
+
+    U2AssemblyRead &read = *currentRead;
+    quint64 idd = read.sequenceId;
+    QString seqName = QString("r.%1").arg(readNumber);
+    obj->setSequence(DNASequence(seqName, read.readSequence));
+
+    currentRead++;
+    readNumber++;
+    
+    return obj;
+}
+
+bool GenomeAlignerDbiReader::isEnd() {
+    return end;
+}
+
 } //U2

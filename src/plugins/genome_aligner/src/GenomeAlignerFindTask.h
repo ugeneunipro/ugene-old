@@ -28,6 +28,7 @@
 
 #include <QtCore/QMutex>
 #include <QVector>
+#include <QMutex>
 
 #define ResType qint64
 
@@ -59,6 +60,8 @@ public:
     bool absMismatches;
     bool bestMode;
     bool openCL;
+    int minReadLength;
+    int maxReadLength;
     quint64 bitFilter;
     QVector<quint64> bitValuesV;
     QVector<int> readNumbersV;
@@ -77,6 +80,8 @@ public:
     virtual void run();
     virtual void prepare();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    QMutex &getPartLoadMutex() {return partLoadMutex;}
+    bool isPartLoaded() const {return partLoaded;}
 
 private:
     FindInPartSubTask *findInPartTask;
@@ -93,6 +98,8 @@ private:
     int partTaskCount;
     int maxPtMismatches;
     int maxNMismatches;
+    bool partLoaded;
+    QMutex partLoadMutex;
 
     void findInMemCache();
     QList<Task*> findInBitMask(int part);
@@ -122,6 +129,7 @@ class FindInBitMaskSubTask : public Task {
 public:
     FindInBitMaskSubTask(GenomeAlignerIndex *index,
                          SearchContext *settings,
+                         int part,
                          int first, int length,
                          quint64 *bitValues,
                          int *readNumbers,
@@ -130,6 +138,7 @@ public:
 private:
     GenomeAlignerIndex *index;
     SearchContext *settings;
+    int part;
     int first;
     int length;
     quint64 *bitValues;

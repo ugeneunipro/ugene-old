@@ -203,7 +203,6 @@ void GenomeAlignerWorker::sl_taskFinished() {
     if (reads->isEnded()) {
         output->setEnded();
     }
-    algoLog.trace(tr("Genome aligner finished. Result name is %1").arg(settings.resultFileName.baseFileName()));
     done = true;
 }
 

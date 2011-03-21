@@ -106,7 +106,7 @@ void GenomeAlignerIndex::serialize(const QString &refFileName, TaskStateInfo &ti
     file.close();
 }
 
-inline int getNextInt(QByteArray &data, bool &eol, bool &intErr) {
+inline quint32 getNextInt(QByteArray &data, bool &eol, bool &intErr) {
     int commaIdx = data.indexOf(',');
     if (-1 == commaIdx) {
         commaIdx = data.length();
@@ -124,7 +124,7 @@ inline int getNextInt(QByteArray &data, bool &eol, bool &intErr) {
             return -1;
         }
     }
-    return result.toInt();
+    return result.toUInt();
 }
 
 void GenomeAlignerIndex::deserialize(TaskStateInfo &ti) {

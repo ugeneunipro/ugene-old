@@ -37,6 +37,7 @@ class GenomeAlignerIndexTask;
 class GenomeAlignerIndex;
 class ReadShortReadsSubTask;
 class WriteAlignedReadsSubTask;
+class DbiHandle;
 
 class GenomeAlignerTask : public DnaAssemblyToReferenceTask {
     Q_OBJECT
@@ -59,31 +60,36 @@ public:
     static const QString OPTION_INDEX_URL;
     static const QString OPTION_QUAL_THRESHOLD;
     static const QString OPTION_BEST;
-    static const QString INDEX_EXTENSION;
+    static const QString OPTION_DBI_IO;
     static const int MIN_SHORT_READ_LENGTH = 30;
     static const int MIN_BIT_MASK_LENGTH = 14; //2*7, where 7 = min chars in bitMask
-    static int calculateWindowSize(bool absMismatches, int nMismatches, int ptMismatches);
+    static const int MAX_BIT_MASK_LENGTH = 31; //to aloid +- overflow
+    static int calculateWindowSize(bool absMismatches, int nMismatches, int ptMismatches, int minReadLength, int maxReadLength);
 
     DNA_ASSEMBLEY_TO_REF_TASK_FACTORY(GenomeAlignerTask)
 private:
+    LoadDocumentTask *loadDbiTask;
     GenomeAlignerIndexTask *createIndexTask;
     ReadShortReadsSubTask *readTask;
     GenomeAlignerFindTask *findTask;
     WriteAlignedReadsSubTask *writeTask;
     GenomeAlignerReader *seqReader;
     GenomeAlignerWriter *seqWriter;
+    DbiHandle *handle;
     bool justBuildIndex;
     uint windowSize, bunchSize, nMismatches, ptMismatches;
     bool absMismatches;
     bool prebuiltIdx;
     bool bestMode;
     bool openCL;
+    bool dbiIO;
     QString indexFileName;
     bool alignReversed;
     GenomeAlignerIndex *index;
     int qualityThreshold;
     QVector<SearchQuery*> queries;
     const DNASequenceObject *lastObj;
+
     void setupCreateIndexTask();
 };
 
@@ -99,6 +105,8 @@ public:
     virtual void run();
 
     uint bunchSize;
+    int minReadLength;
+    int maxReadLength;
 
 private:
     const DNASequenceObject **lastObj;

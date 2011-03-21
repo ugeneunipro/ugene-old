@@ -155,7 +155,7 @@ void GenomeAlignerIndexTask::run() {
 }
 
 void GenomeAlignerIndexTask::calculateMemForAligning() {
-    qint64 memSize = 1024*1024*AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB();
+    qint64 memSize = 1024*1024*(AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB() - 200);
     int elemSize = 12; //int + long long
     int pMem = (((qint64)index->indexLength)*elemSize)/(qint64)(MEMORY_DIVISION*memSize) + 1;
     int pGPU = 0;

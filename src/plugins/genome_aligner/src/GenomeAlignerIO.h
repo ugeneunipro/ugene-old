@@ -27,6 +27,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Formats/StreamSequenceReader.h>
 #include <U2Formats/StreamSequenceWriter.h>
 #include <U2Lang/LocalDomain.h>
@@ -47,12 +48,12 @@ public:
 
 class GenomeAlignerWriter {
 public:
-    virtual void write(const DNASequence &seq, int offset) = 0;
+    virtual void write(const DNASequence &seq, quint32 offset) = 0;
     virtual void close() = 0;
     virtual void setReferenceName(const QString &refName) = 0;
-    quint32 getWrittenReadsCount() {return writtenReadsCount;}
+    quint64 getWrittenReadsCount() {return writtenReadsCount;}
 protected:
-    quint32 writtenReadsCount;
+    quint64 writtenReadsCount;
     QString refName;
 };
 
@@ -94,16 +95,15 @@ private:
 class GenomeAlignerUrlWriter : public GenomeAlignerWriter {
 public:
     GenomeAlignerUrlWriter(const GUrl &resultFile, const QString &refName);
-    inline void write(const DNASequence &seq, int offset);
+    inline void write(const DNASequence &seq, quint32 offset);
     void close();
     void setReferenceName(const QString &refName);
 private:
     StreamContigWriter seqWriter;
 };
 
-
 /************************************************************************/
-/* Workflow short reads reader and writer                                    */
+/* Workflow short reads reader and writer                               */
 /************************************************************************/
 namespace LocalWorkflow {
 
@@ -121,7 +121,7 @@ private:
 class GenomeAlignerMAlignmentWriter : public GenomeAlignerWriter {
 public:
     GenomeAlignerMAlignmentWriter();
-    inline void write(const DNASequence &seq, int offset);
+    inline void write(const DNASequence &seq, quint32 offset);
     void close();
     void setReferenceName(const QString &refName);
     MAlignment &getResult();
@@ -130,6 +130,31 @@ private:
 };
 
 } //LocalWorkflow
+
+/************************************************************************/
+/* DBI short reads reader and writer                                    */
+/************************************************************************/
+class GenomeAlignerDbiReader : public GenomeAlignerReader {
+public:
+    GenomeAlignerDbiReader(U2AssemblyDbi *rDbi, U2Assembly assembly);
+    inline const DNASequenceObject *read();
+    inline bool isEnd();
+private:
+    bool end;
+    DNASequenceObject *obj;
+    U2AssemblyDbi *rDbi;
+    U2Assembly assembly;
+    QList<U2AssemblyRead> reads;
+    U2Region wholeAssembly;
+    U2OpStatusImpl status;
+    QList<U2AssemblyRead>::Iterator currentRead;
+    int currentIteration;
+    qint64 readNumber;
+    qint64 maxRow;
+
+    static const qint64 readBunchSize;
+};
+
 } //U2
 Q_DECLARE_METATYPE(U2::GenomeAlignerReaderContainer);
 Q_DECLARE_METATYPE(U2::GenomeAlignerWriterContainer);
