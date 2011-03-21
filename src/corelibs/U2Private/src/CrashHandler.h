@@ -45,6 +45,10 @@ namespace U2 {
 #else 
 #include <stdlib.h>
 #include <signal.h>
+#include <stdio.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <fcntl.h>
 #endif
 
 

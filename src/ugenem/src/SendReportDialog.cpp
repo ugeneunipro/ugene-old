@@ -21,6 +21,7 @@
 
 #include "SendReportDialog.h"
 #include <QMessageBox>
+#include <QFile>
 #define HOST_URL "http://ugene.unipro.ru"
 //#define HOST_URL "http://127.0.0.1"
 #define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest.html"
@@ -77,7 +78,14 @@ void SendReportDialog::sl_onOKclicked() {
     htmlReport.replace(' ', "_");
     htmlReport.replace('\n', "|");
     htmlReport.replace('\t', "<t>");
-    QString fullPath = reportsPath + "?data=" + htmlReport.toUtf8();
+    htmlReport.replace("#", "");
+    htmlReport.replace("*", "<p>");
+    htmlReport.replace("?", "-");
+    htmlReport.replace("~", "%7E");
+    htmlReport.replace("&", "<amp>");
+    QString fullPath = reportsPath;
+    fullPath += "?data=";
+    fullPath += htmlReport.toUtf8();
     QString res = http2.syncGet(fullPath); //TODO: consider using POST method?
     if( QHttp::NoError != http.error() ) {
         return;
@@ -108,6 +116,12 @@ void SendReportDialog::parse(const QString &report) {
         htmlReport += "Task tree:\n";
         htmlReport += list.takeFirst();
     }
+    QFile fp("/tmp/UGENEstacktrace.txt");
+    if(fp.open(QIODevice::ReadOnly)) {
+        QByteArray stacktrace = fp.readAll();
+        htmlReport += "Stack trace:\n";
+        htmlReport += stacktrace.data();
+    }
 }
 
 QString SendReportDialog::getOSVersion() {
@@ -136,6 +150,13 @@ SyncHTTP::SyncHTTP(const QString& hostName, quint16 port, QObject* parent)
 QString SyncHTTP::syncGet(const QString& path) {
     QBuffer to;
     requestID = get(path, &to);
+    loop.exec();
+    return QString(to.data());
+}
+
+QString SyncHTTP::syncPost(const QString& path, const QByteArray& data) {
+    QBuffer to;
+    requestID = post(path, data, &to);
     loop.exec();
     return QString(to.data());
 }

@@ -152,11 +152,11 @@ void HttpRequestCDD::parseHit(QByteArray &b,ResponseBuffer &buf) {
     QByteArray t;
     for(int i = ind;b[i]!='&';i++)
         t[i-ind] = b[i];
-    ad->qualifiers.push_back(U2Qualifier("Cd Length",QString(t)));
+    ad->qualifiers.push_back(U2Qualifier("cd_length",QString(t)));
     ind = b.indexOf("Bit Score: </b>") + 15;
     for(int i = ind;b[i]!='&';i++)
         t[i-ind] = b[i];
-    ad->qualifiers.push_back(U2Qualifier("Bit Score",QString(t)));
+    ad->qualifiers.push_back(U2Qualifier("bit_score",QString(t)));
     
     int begLoc = 1000000;
     int endLoc = 0;

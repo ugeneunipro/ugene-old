@@ -197,6 +197,23 @@ void CrashHandler::setupHandler() {
 void CrashHandler::runMonitorProcess(const QString &exceptionType) {
     QString path = QCoreApplication::applicationDirPath() + "/ugenem";
 
+#ifndef Q_OS_WIN
+    char pid_buf[30];
+    sprintf(pid_buf, "%d", getpid());
+    char name_buf[512];
+    name_buf[readlink(path.toAscii().data(), name_buf, 511)]=0;
+    FILE *fp;
+    fp = freopen ("/tmp/UGENEstacktrace.txt","w+",stdout);
+    int child_pid = fork();
+    if (!child_pid) {
+        fprintf(stdout,"stack trace for %s pid=%s\n",name_buf,pid_buf);
+        execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "bt", name_buf, pid_buf, NULL);
+        abort(); /* If gdb failed to start */
+    } else {
+        waitpid(child_pid,NULL,0);
+    }
+#endif
+
     QString message = exceptionType + "|";
 
     message += Version::ugeneVersion().text;

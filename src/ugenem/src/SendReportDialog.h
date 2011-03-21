@@ -26,6 +26,7 @@
 #include <QtCore/QEventLoop>
 #include <QtCore/QBuffer>
 #include <QtCore/QUrl>
+#include <QtCore/QByteArray>
 
 #include <QtCore/QTime>
 #include <QtCore/QDate>
@@ -40,6 +41,7 @@ class SyncHTTP : public QHttp {
 public:
     SyncHTTP(const QString& hostName, quint16 port=80, QObject* parent=0);
     QString syncGet(const QString& path);
+    QString syncPost(const QString& path, const QByteArray &data);
 protected slots:
     virtual void finished(int idx, bool err);
 
