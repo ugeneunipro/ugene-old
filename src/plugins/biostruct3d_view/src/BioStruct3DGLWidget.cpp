@@ -717,12 +717,15 @@ void BioStruct3DGLWidget::sl_selectModel(QAction *action) {
     int modelId = action->text().toInt();
     bool show = action->isChecked();
 
-    // in exclusive mode only one model shown at the same time
+    // in exclusive mode exact one model shown at the same time
     if (selectModelActions->isExclusive()) {
         showAllModels(false);
+        showModel(modelId, true);
+    }
+    else {
+        showModel(modelId, show);
     }
 
-    showModel(modelId, show);
     contexts.first().renderer->updateShownModels();
     updateGL();
 }
@@ -740,44 +743,26 @@ void BioStruct3DGLWidget::sl_selectAllModels() {
     updateGL();
 }
 
-void BioStruct3DGLWidget::sl_selectOneModel() {
-    int firstId = -1;
-    foreach (QAction *action, selectModelActions->actions()) {
-        if (firstId == -1 && action->isChecked()) {
-            firstId = action->text().toInt();
-            continue;
-        }
-        action->setChecked(false);
-    }
-
-    showAllModels(false);
-
-    if (firstId != -1) {
-        showModel(firstId, true);
-    }
-
-    contexts.first().renderer->updateShownModels();
-    updateGL();
-}
-
 void BioStruct3DGLWidget::sl_selectModelsExclusive() {
     if (selectModelsExclusiveAction->isChecked()) {
-        int firstId = -1;
+        QAction *first = 0;
         foreach (QAction *action, selectModelActions->actions()) {
-            if (firstId == -1 && action->isChecked()) {
-                firstId = action->text().toInt();
-                continue;
+            if (!first && action->isChecked()) {
+                first = action;
             }
             action->setChecked(false);
         }
 
-        showAllModels(false);
-
-        if (firstId != -1) {
-            showModel(firstId, true);
+        if (!first) {
+            first = selectModelActions->actions().first();
         }
 
+        int firstId = first->text().toInt();
+        showAllModels(false);
+        showModel(firstId, true);
+
         selectModelActions->setExclusive(true);
+        first->setChecked(true);
     }
     else {
         selectModelActions->setExclusive(false);
@@ -960,9 +945,6 @@ void BioStruct3DGLWidget::createSelectModelsActions() {
 
         selectAllModelsAction = new QAction(tr("Select all"), this);
         connect(selectAllModelsAction, SIGNAL(triggered()), this, SLOT(sl_selectAllModels()));
-
-        selectOneModelAction = new QAction(tr("Select one"), this);
-        connect(selectOneModelAction, SIGNAL(triggered()), this, SLOT(sl_selectOneModel()));
     }
 }
 
@@ -1040,7 +1022,6 @@ void BioStruct3DGLWidget::createSelectModelsMenu() {
         modelsMenu = new QMenu(tr("Models"));
         modelsMenu->addAction(selectModelsExclusiveAction);
         modelsMenu->addAction(selectAllModelsAction);
-        modelsMenu->addAction(selectOneModelAction);
         modelsMenu->addActions(selectModelActions->actions());
 
         displayMenu->addMenu(modelsMenu);

@@ -315,7 +315,6 @@ private:
     QActionGroup *selectModelActions;
     QAction *selectModelsExclusiveAction;
     QAction *selectAllModelsAction;
-    QAction *selectOneModelAction;
 
     QActionGroup *colorSchemeActions;
     QActionGroup *rendererActions;
@@ -343,7 +342,6 @@ private slots:
      // they affects only first biostruct
      void sl_selectModel(QAction *action);
      void sl_selectAllModels();
-     void sl_selectOneModel();
      void sl_selectModelsExclusive();
 
      void sl_showSurface();
