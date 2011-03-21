@@ -228,7 +228,8 @@ const int TreeViewerUI::MARGIN = 10;
 const qreal TreeViewerUI::SIZE_COEF = 0.1;
 
 
-TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhyObject()), root(treeViewer->getRoot()), rectRoot(treeViewer->getRoot()), layout(TreeLayout_Rectangular) {
+TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhyObject()), root(treeViewer->getRoot()), rectRoot(treeViewer->getRoot()), layout(TreeLayout_Rectangular), curTreeViewer(NULL) {
+    curTreeViewer = treeViewer;
     contEnabled = false;
     showDistanceLabels = true;
     showNameLabels = true;
@@ -806,24 +807,34 @@ void TreeViewerUI::sl_showNameLabelsTriggered(bool on) {
         scene()->setSceneRect(rect);
         showNameLabels = on;
         showLabels(LabelType_SequnceName);
-
-        if (contEnabled) {
-            QStack<GraphicsBranchItem*> stack;
-            stack.push(root);
-            if (root != rectRoot) {
-                stack.push(rectRoot);
+        if(curTreeViewer){
+            curTreeViewer->getContAction()->setDisabled(!showNameLabels);
+            if(!showNameLabels){
+                sl_contTriggered(false);
+            }else{
+                if(curTreeViewer->getContAction()->isChecked()){
+                    sl_contTriggered(true);
+                }
             }
-            while (!stack.empty()) {
-                GraphicsBranchItem* item = stack.pop();
-                if (item->getNameText() == NULL) {
-                    foreach (QGraphicsItem* citem, item->childItems()) {
-                        GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
-                        if (gbi != NULL) {
-                            stack.push(gbi);
+        }else{
+            if (contEnabled) {
+                QStack<GraphicsBranchItem*> stack;
+                stack.push(root);
+                if (root != rectRoot) {
+                    stack.push(rectRoot);
+                }
+                while (!stack.empty()) {
+                    GraphicsBranchItem* item = stack.pop();
+                    if (item->getNameText() == NULL) {
+                        foreach (QGraphicsItem* citem, item->childItems()) {
+                            GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
+                            if (gbi != NULL) {
+                                stack.push(gbi);
+                            }
                         }
+                    } else {
+                        item->setWidth(item->getWidth() + (on ? 1 : -1) * (maxNameWidth - item->getNameText()->boundingRect().width() - 2 * GraphicsBranchItem::TextSpace));
                     }
-                } else {
-                    item->setWidth(item->getWidth() + (on ? 1 : -1) * (maxNameWidth - item->getNameText()->boundingRect().width() - 2 * GraphicsBranchItem::TextSpace));
                 }
             }
         }

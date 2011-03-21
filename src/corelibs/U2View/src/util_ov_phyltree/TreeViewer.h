@@ -239,6 +239,8 @@ private:
     QGraphicsItem*      legend;
     QMenu*              buttonPopup;
 
+    const TreeViewer*   curTreeViewer;
+
     QAction*            swapAction;
     QAction*            zoomToAction;
     QAction*            zoomOutAction;
