@@ -111,7 +111,7 @@ if [ ! "$1" ]
    then
       echo
       echo pkg-dmg running...
-      pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-x86-r${BUILD_VCS_NUMBER_UGENE} --license ../source/LICENSE --volname "Unipro UGENE $VERSION" --symlink /Applications
+      pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-x86-r${BUILD_VCS_NUMBER_new_trunk} --license ../source/LICENSE --volname "Unipro UGENE $VERSION" --symlink /Applications
     
 fi
 
