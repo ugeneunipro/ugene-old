@@ -23,6 +23,8 @@
 #define _U2_GRAPHIC_UTILS_H_
 
 #include <U2Core/Vector3D.h>
+#include <U2Core/Log.h>
+#include <QtOpenGL>
 
 class GLUquadric;
 
@@ -133,8 +135,17 @@ void accFrustum(double left, double right, double bottom,
 //! Calculates axis through points using least linear square method
 QPair<Vector3D,Vector3D> calcBestAxisThroughPoints(const QVector<Vector3D>& points);
 
+//! Checks for OpenGL errors and reports them to log
+#define CHECK_GL_ERROR do { checkGlError(__FILE__, __LINE__); } while (0);
 
-
+inline void checkGlError(const char *file, int line) {
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        QString where = QString("%1:%2: ").arg(file).arg(line);
+        QString msg = QString("OpenGL error (%1): %2").arg(error).arg((char*)gluErrorString(error));
+        uiLog.trace(where + msg);
+    }
+}
 
 } //namespace
 
