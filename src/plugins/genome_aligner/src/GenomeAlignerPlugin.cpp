@@ -80,10 +80,6 @@ GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE genome aligner"),
 }
 
 GenomeAlignerPlugin::~GenomeAlignerPlugin() {
-    DnaAssemblyAlgRegistry* registry = AppContext::getDnaAssemblyAlgRegistry();
-    DnaAssemblyAlgorithmEnv* algo = registry->unregisterAlgorithm(GenomeAlignerTask::taskName);
-    assert(algo!=NULL);
-    delete algo;
 }
 
 
