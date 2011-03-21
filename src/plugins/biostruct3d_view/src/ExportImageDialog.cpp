@@ -40,7 +40,7 @@ static const QString IMAGE_DIR = "image";
 static const QString SVG_FORMAT = "svg";
 static const QString PS_FORMAT = "ps";
 
-ExportImageDialog::ExportImageDialog( BioStruct3DGLWidget* widget ) : QDialog(widget), glWidget(widget)
+ExportImageDialog::ExportImageDialog( BioStruct3DGLWidget* widget ) : QDialog(widget), glWidget(widget), lod(IMAGE_DIR, QDir::homePath())
 {
     setupUi(this);
 
@@ -61,8 +61,6 @@ void ExportImageDialog::setupComponents()
     foreach (const QString &format, supportedFormats) {
         formatsBox->addItem(format);
     }
-
-    LastOpenDirHelper lod(IMAGE_DIR, QDir::homePath());
 
     QString fileName = lod.dir + "/" + glWidget->getPDBId() + "."  + formatsBox->currentText();
     fileName = GUrlUtils::rollFileName(fileName, "_copy", QSet<QString>());
@@ -94,6 +92,7 @@ void ExportImageDialog::accept()
         }
     }
 
+    lod.url = fileName;
     ioLog.info(tr("Saving image to '%1'...").arg(fileName));
 
     QCursor cursor = this->cursor();
@@ -105,7 +104,7 @@ void ExportImageDialog::accept()
         glWidget->writeImage2DToFile(formatId, opt, 2, qPrintable(fileName));
     }
     else {
-        QPixmap image = glWidget->renderPixmap(widthSpinBox->value(), heightSpinBox->value());
+        QPixmap image = glWidget->renderPixmap(widthSpinBox->value(), heightSpinBox->value());        
         bool result = image.save(fileName, qPrintable(format));
         if (!result) {
             QMessageBox::critical(this, L10N::errorTitle(), L10N::errorImageSave(fileName, format));

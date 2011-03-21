@@ -22,6 +22,8 @@
 #ifndef _U2_EXPORT_IMAGE_DIALOG_H_
 #define _U2_EXPORT_IMAGE_DIALOG_H_
 
+#include <U2Misc/DialogUtils.h>
+
 #include <QtCore/QList>
 #include <QtCore/QString>
 
@@ -55,6 +57,8 @@ private:
 private:
     QList<QString> supportedFormats;
     BioStruct3DGLWidget* glWidget;
+
+    LastOpenDirHelper lod;
 }; // class ExportImageDialog
 
 } // namespace
