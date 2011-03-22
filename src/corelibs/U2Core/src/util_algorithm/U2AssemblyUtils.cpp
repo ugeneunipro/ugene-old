@@ -29,7 +29,8 @@
 namespace U2 {
 
 U2CigarOp U2AssemblyUtils::char2Cigar(char c, QString& err) {
-    switch (c) {
+    char cu = TextUtils::UPPER_CASE_MAP[c];
+    switch (cu) {
         case 'D':
             return U2CigarOp_D; // deleted
         case 'I':
