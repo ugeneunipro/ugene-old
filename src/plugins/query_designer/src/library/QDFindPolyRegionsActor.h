@@ -36,7 +36,7 @@ public:
     int percent;
     qint64 minLen;
     qint64 offset;
-    FindPolyRegionsSettings() : percent(0.9f), minLen(0), offset(0) {}
+    FindPolyRegionsSettings() : ch('A'), percent(0.9f), minLen(0), offset(0) {}
 };
 
 class FindPolyRegionsTask : public Task {

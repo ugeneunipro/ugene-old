@@ -31,7 +31,7 @@ namespace LocalWorkflow {
 class ImportAnnotationsWorker : public BaseWorker {
     Q_OBJECT
 public:
-    ImportAnnotationsWorker(Actor * p) : BaseWorker(p) {}
+    ImportAnnotationsWorker(Actor * p) : BaseWorker(p), inPort(NULL), outPort(NULL) {}
     
     virtual void init();
     virtual bool isReady();

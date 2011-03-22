@@ -50,7 +50,7 @@ public:
 
     void consensus();
 
-    const MAlignment& getMSA(int pos);
+    const MAlignment& getMSA(int pos) const;
 
     void initGenerSeq(int reps, int rowC, int seqLen);
 

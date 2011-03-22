@@ -71,7 +71,6 @@ void FindEnzymesToAnnotationsTask::run() {
     bool useWholeSequenceRange = cfg.excludedRegions.isEmpty();
     foreach(const SEnzymeData& ed, enzymes) {
         QList<SharedAnnotationData> anns = fTask->getResultsAsAnnotations(ed->id);
-        int size = anns.count();
         bool inRegion = false;
         if (!useWholeSequenceRange) {
             // filter 

@@ -335,7 +335,6 @@ void UHMM3SWPhmmerTask::onRegion(SequenceWalkerSubtask * t, TaskStateInfo & ti) 
     
     const char * seq    = t->getRegionSequence();
     int seqLen          = t->getRegionSequenceLen();
-    bool isCompl        = t->isDNAComplemented();
     bool isAmino        = t->isAminoTranslated();
     U2Region globalRegion = t->getGlobalRegion();
     

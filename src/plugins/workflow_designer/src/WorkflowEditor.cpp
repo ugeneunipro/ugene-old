@@ -457,16 +457,16 @@ void WorkflowEditor::edit(Configuration* cfg) {
         connect(paramBox, SIGNAL(toggled(bool)), SLOT(sl_resizeSplitter(bool)));
     }
     
-    int h = 0;
+    //int h = 0;
     if (subject && !customWidget) {
         assert(actor);
         actorModel->setActor(actor);
         updateIterationData();
         tableSplitter->setVisible(paramBox->isChecked());
-        if(paramBox->isChecked()) {
+        /*if(paramBox->isChecked()) {
             h = table->sizeHint().height();
             
-        }
+        }*/
         connect(paramBox, SIGNAL(toggled(bool)), tableSplitter, SLOT(setVisible(bool)));
         connect(paramBox, SIGNAL(toggled(bool)), SLOT(sl_resizeSplitter(bool)));
     } else {
@@ -475,9 +475,9 @@ void WorkflowEditor::edit(Configuration* cfg) {
             if (actor) assert(0 && "No support for iterations yet");
             paramBox->layout()->addWidget(customWidget);
             customWidget->setVisible(paramBox->isChecked());
-            if(paramBox->isChecked()) {
+            /*if(paramBox->isChecked()) {
                 h = customWidget->minimumSizeHint().height();
-            }
+            }*/
         }
     }
 }

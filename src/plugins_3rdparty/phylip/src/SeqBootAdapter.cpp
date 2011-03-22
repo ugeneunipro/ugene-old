@@ -31,7 +31,7 @@
 
 namespace U2{
 
-SeqBoot::SeqBoot(){
+SeqBoot::SeqBoot() : malignment(NULL) {
     seqLen = 0;
     seqRowCount = 0;
 }
@@ -106,7 +106,6 @@ void SeqBoot::consInit(){
     lasti  = -1;
 
     int i, j, k;
-    long total_trees = spp;
     long tip_count = spp;
      /* do allocation first *****************************************/
     grouping  = (group_type **)  Malloc(maxgrp*sizeof(group_type *));
@@ -153,7 +152,7 @@ void SeqBoot::consensus(){
     consInit();   
 }
 
-const MAlignment& SeqBoot::getMSA(int pos){
+const MAlignment& SeqBoot::getMSA(int pos) const {
     return *generatedSeq[pos];
 
 }
