@@ -46,7 +46,6 @@ FORMS += src/util_gui/ui/AddExistingDocumentDialog.ui \
          src/util_gui/ui/CopyDocumentDialog.ui \
          src/util_gui/ui/CreateAnnotationWidget.ui \
          src/util_gui/ui/CreateDocumentFromTextDialog.ui \
-         src/util_gui/ui/CreateNewObjectDialog.ui \
          src/util_gui/ui/CreateObjectRelationDialog.ui \
          src/util_gui/ui/DownloadRemoteFileDialog.ui \
          src/util_gui/ui/EditQualifierDialog.ui \
@@ -55,7 +54,6 @@ FORMS += src/util_gui/ui/AddExistingDocumentDialog.ui \
          src/util_gui/ui/MultipartDocFormatConfiguratorWidget.ui \
          src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui \
          src/util_gui/ui/RemovePartFromSequenceDialog.ui \
-         src/util_gui/ui/SelectFormatToSaveDialog.ui \
          src/util_gui/ui/SeqPasterWidget.ui
 SOURCES += src/MainWindow.cpp \
            src/Notification.cpp \
