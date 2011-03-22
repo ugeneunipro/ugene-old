@@ -143,12 +143,11 @@ GenomeAlignerDbiReader::GenomeAlignerDbiReader(U2AssemblyDbi *_rDbi, U2Assembly 
     obj = new DNASequenceObject("obj", DNASequence(QByteArray("aaa"), DocumentFormatUtils::findAlphabet("aaa")));
     wholeAssembly.startPos = 0;
     wholeAssembly.length = rDbi->getMaxEndPos(assembly.id, status);
-    currentIteration = -1;
     currentRead = reads.end();
     readNumber = 0;
     maxRow = rDbi->getMaxPackedRow(assembly.id, wholeAssembly, status);
 
-    readsInAssembly = rDbi->countReadsAt(assembly.id, wholeAssembly, status);
+    readsInAssembly = rDbi->countReads(assembly.id, wholeAssembly, status);
     if (readsInAssembly <= 0 || status.hasError()) {
         uiLog.error(QString("Genome Aligner -> Database Error: " + status.getError()).toAscii().data());
         end = true;
@@ -162,18 +161,21 @@ SearchQuery *GenomeAlignerDbiReader::read() {
     if (end) {
         return NULL;
     }
-
+    reads.clear();
+    if (dbiIterator.get() == NULL) {
+        dbiIterator.reset(rDbi->getReads(assembly.id, wholeAssembly, status));
+    }
     if (currentRead == reads.end()) {
-        currentIteration ++;
-        reads = rDbi->getReadsAt(assembly.id, wholeAssembly, currentIteration*readBunchSize, readBunchSize, status);
-        currentRead = reads.begin();
-
-        if (reads.size() <= 0) {
+        for (int i=0; i < readBunchSize && dbiIterator->hasNext(); i++) {
+            reads.append(dbiIterator->next());
+        }
+        if (reads.isEmpty()) {
             end = true;
             return NULL;
         }
+        currentRead = reads.begin();
     }
-
+    
     U2AssemblyRead &read = *currentRead;
 
     currentRead++;
@@ -197,7 +199,7 @@ GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(U2AssemblyDbi *_wDbi, U2Assembly 
     wholeAssembly.startPos = 0;
     wholeAssembly.length = wDbi->getMaxEndPos(assembly.id, status);
     maxRow = wDbi->getMaxPackedRow(assembly.id, wholeAssembly, status);
-    readsInAssembly = wDbi->countReadsAt(assembly.id, wholeAssembly, status);
+    readsInAssembly = wDbi->countReads(assembly.id, wholeAssembly, status);
     currentRow = maxRow;
 }
 
@@ -223,16 +225,18 @@ void GenomeAlignerDbiWriter::close() {
     }
 
 
+    /* TODO: what this all about?
     QList<U2DataId> ids;
     qint64 toRead = 0;
     for (qint64 count = 0; count < readsInAssembly;) {
         toRead = qMin((readsInAssembly - count), readBunchSize);
-        ids = wDbi->getReadIdsAt(assembly.id, wholeAssembly, 0, toRead, status);
+        ids = wDbi->getReadIds(assembly.id, wholeAssembly, 0, toRead, status);
         count += toRead;
         wDbi->removeReads(assembly.id, ids.mid(0, toRead), status);
         ids.clear();
     }
     //wDbi->pack(assembly.id, status);
+    */
 }
 
 bool checkAndLogError(const U2OpStatusImpl & status) {

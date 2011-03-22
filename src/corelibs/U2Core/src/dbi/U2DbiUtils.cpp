@@ -21,12 +21,17 @@
 
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/AppContext.h>
 
 namespace U2 {
 
-void U2DbiUtils::logNotSupported(U2DbiFeature f, U2Dbi* dbi) {
-    coreLog.error(tr("Feature is not supported: %1, dbi: %2").arg(int(f)).arg(dbi == NULL ? QString("<unknown>") : dbi->getDbiId()));
+void U2DbiUtils::logNotSupported(U2DbiFeature f, U2Dbi* dbi, U2OpStatus& os) {
+    QString msg = tr("Feature is not supported: %1, dbi: %2").arg(int(f)).arg(dbi == NULL ? QString("<unknown>") : dbi->getDbiId());
+    coreLog.error(msg);
+    if (!os.hasError()) {
+        os.setError(msg);
+    }
 
 #ifdef _DEBUG
     if (dbi->getFeatures().contains(f)) {

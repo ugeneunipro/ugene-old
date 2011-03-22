@@ -69,11 +69,12 @@ bool AssemblyModel::isEmpty() const {
 }
 
 QList<U2AssemblyRead> AssemblyModel::getReadsFromAssembly(int assIdx, const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os) {
-    return assemblyDbis.at(assIdx)->getReadsByRow(assemblies.at(assIdx).id, r, minRow, maxRow, os);
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > it(assemblyDbis.at(assIdx)->getReadsByRow(assemblies.at(assIdx).id, r, minRow, maxRow, os));
+    return U2DbiUtils::toList(it.get());
 }
 
 qint64 AssemblyModel::countReadsInAssembly(int assIdx, const U2Region & r, U2OpStatus & os) {
-    return assemblyDbis.at(assIdx)->countReadsAt(assemblies.at(assIdx).id, r, os);
+    return assemblyDbis.at(assIdx)->countReads(assemblies.at(assIdx).id, r, os);
 }
 
 qint64 AssemblyModel::getModelLength(U2OpStatus & os) {

@@ -134,7 +134,7 @@ void SQLiteAssemblyDbi::setMaximumReadLengthInRegion(const U2DataId& assemblyId,
     q.execute();
 }
 
-qint64 SQLiteAssemblyDbi::countReadsAt(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
+qint64 SQLiteAssemblyDbi::countReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::countReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::countReadsAt");
     QString readsTable = getReadsTableName(assemblyId);
@@ -143,15 +143,6 @@ qint64 SQLiteAssemblyDbi::countReadsAt(const U2DataId& assemblyId, const U2Regio
     q.bindInt64(1, r.startPos - maxReadLen);
     q.bindInt64(2, r.endPos());
     return q.selectInt64();
-}
-
-QList<U2DataId> SQLiteAssemblyDbi::getReadIdsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) {
-    QString readsTable = getReadsTableName(assemblyId);
-    qint64 maxReadLen = getMaximumReadLengthInRegion(assemblyId, r, os);
-    SQLiteQuery q(QString("SELECT id FROM %1 WHERE gstart >= ?1 AND gstart < ?2").arg(readsTable), db, os);
-    q.bindInt64(1, r.startPos - maxReadLen);
-    q.bindInt64(2, r.endPos());
-    return q.selectDataIds(U2Type::AssemblyRead);
 }
 
 void SQLiteAssemblyDbi::unpackSequenceAndCigar(qint64 flags, const QByteArray& data, QByteArray& sequence, QByteArray& cigar, U2OpStatus& os) {
@@ -215,15 +206,30 @@ QString SQLiteAssemblyDbi::getReadFields() const {
     }
 }
 
-QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) {
+U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
     QString readsTable = getReadsTableName(assemblyId);
     qint64 maxReadLen = getMaximumReadLengthInRegion(assemblyId, r, os);
-    SQLiteQuery q(QString("SELECT " + getReadFields() + " FROM %1 WHERE gstart >= ?1 AND gstart < ?2").arg(readsTable), offset, count, db, os);
+    SQLiteQuery q(QString("SELECT " + getReadFields() + " FROM %1 WHERE gstart >= ?1 AND gstart < ?2").arg(readsTable), db, os);
     q.bindInt64(1, r.startPos - maxReadLen);
     q.bindInt64(2, r.endPos());
-    return readRows(q, os);
+    QList<U2AssemblyRead> reads = readRows(q, os);
+    return new BufferedDbiIterator<U2AssemblyRead>(reads, U2AssemblyRead());
+}
+
+U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
+    QString readsTable = getReadsTableName(assemblyId);
+    qint64 maxReadLen = getMaximumReadLengthInRegion(assemblyId, r, os);
+    SQLiteQuery q(QString("SELECT " + getReadFields() + " FROM %1 WHERE "
+                            " gstart >= ?1 AND gstart < ?2 AND prow >= ?3 AND prow <= ?4").arg(readsTable), db, os);
+    q.bindInt64(1, r.startPos - maxReadLen);
+    q.bindInt64(2, r.endPos());
+    q.bindInt64(3, minRow);
+    q.bindInt64(4, maxRow);
+    
+    QList<U2AssemblyRead> reads = readRows(q, os);
+    return new BufferedDbiIterator<U2AssemblyRead>(reads, U2AssemblyRead());
 }
 
 qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
@@ -235,20 +241,8 @@ qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Re
     return q.selectInt64();
 }
 
-QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
-    QString readsTable = getReadsTableName(assemblyId);
-    qint64 maxReadLen = getMaximumReadLengthInRegion(assemblyId, r, os);
-    SQLiteQuery q(QString("SELECT " + getReadFields() + " FROM %1 WHERE "
-                            " gstart >= ?1 AND gstart < ?2 AND prow >= ?3 AND prow <= ?4").arg(readsTable), db, os);
-    q.bindInt64(1, r.startPos - maxReadLen);
-    q.bindInt64(2, r.endPos());
-    q.bindInt64(3, minRow);
-    q.bindInt64(4, maxRow);
-    
-    return readRows(q, os);
-}
 
-    
+
 quint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) {
     //TODO: cache value in assembly structure?
     return SQLiteQuery(QString("SELECT MAX(gstart + elen) FROM %1").arg(getReadsTableName(assemblyId)), db, os).selectInt64();
@@ -257,7 +251,7 @@ quint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& 
 
 #define INSERT_CHUNK_SIZE (100*1000)
 
-void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString& folder, U2AssemblyReadsIterator* it, U2OpStatus& os) {
+void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {
     assembly.id = SQLiteObjectDbi::createObject(U2Type::Assembly, folder, assembly.visualName, db, os);
     if (os.hasError()) {
         return;
@@ -279,7 +273,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
         do {
             QList<U2AssemblyRead>  reads;
             for (int i = 0; i < INSERT_CHUNK_SIZE && it->hasNext() && !os.hasError(); i++) {
-                reads.append(it->next(os));
+                reads.append(it->next());
             }
             if (!reads.isEmpty()) {
                 addReads(assembly.id, reads, os);

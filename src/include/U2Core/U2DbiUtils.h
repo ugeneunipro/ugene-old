@@ -27,12 +27,7 @@
 
 namespace U2 {
 
-class U2CORE_EXPORT U2DbiUtils : public QObject{
-    Q_OBJECT
-public:
-    /** Logs that operation called is not supported by DBI */
-    static void logNotSupported(U2DbiFeature f, U2Dbi* dbi);
-};
+class U2OpStatus;
 
 /** 
     Helper class that allocates connection in constructor and automatically releases it in the destructor 
@@ -60,6 +55,64 @@ private: //TODO
 };
 
 
+/**
+    Iterator over buffered data set
+*/
+template<class T> class BufferedDbiIterator : public U2DbiIterator<T> {
+public:
+    BufferedDbiIterator(const QList<T>& _buffer, const T& _errValue) : buffer(_buffer), pos(0), errValue(_errValue) {}
+
+    /** returns true if there are more reads to iterate*/
+    virtual bool hasNext() {
+        return pos < buffer.size();
+    }
+
+    /** returns next read and shifts one element*/
+    virtual const T& next() {
+        if (!hasNext()) {
+            return errValue;
+        }
+        const T& res = buffer.at(pos);
+        pos++;
+        return res;
+    }
+
+    /** returns next read without shifting*/
+    virtual const T& peek() {
+        if (!hasNext()) {
+            return errValue;
+        }
+        return buffer.at(pos);
+
+    }
+
+private:
+    QList<T>    buffer;
+    int         pos;
+    const T&    errValue;
+};
+
+
+class U2CORE_EXPORT U2DbiUtils : public QObject{
+    Q_OBJECT
+public:
+    /** 
+        Logs that operation called is not supported by DBI 
+        If U2OpStatus has no error set, sets the error message
+    */
+    static void logNotSupported(U2DbiFeature f, U2Dbi* dbi, U2OpStatus& os);
+
+    template<class T> static QList<T> toList(U2DbiIterator<T>* it);
+};
+
+
+template<class T> QList<T> U2DbiUtils::toList(U2DbiIterator<T>* it) {
+    QList<T> result;
+    while (it->hasNext()) {
+        result << it->next();
+    }
+    return result;
+}
 
 }// namespace
 

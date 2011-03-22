@@ -123,28 +123,6 @@ QByteArray U2AssemblyUtils::getCigarAlphabetChars() {
     return res;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// reads iterator impl
-
-U2AssemblyReadsIteratorImpl::U2AssemblyReadsIteratorImpl(const QList<U2AssemblyRead>& _reads) : pos (0), reads(_reads){
-
-}
-
-/** returns true if there are more reads to iterate*/
-bool U2AssemblyReadsIteratorImpl::hasNext() {
-    return pos + 1 < reads.size();     
-}
-
-/** returns next read or error */
-U2AssemblyRead U2AssemblyReadsIteratorImpl::next(U2OpStatus& os) {
-    if (!hasNext()) {
-        os.setError(U2AssemblyUtils::tr("No elements left!"));
-        return U2AssemblyRead();
-    }
-    pos++;
-    return reads.at(pos);
-}
-
 
 
 } //namespace

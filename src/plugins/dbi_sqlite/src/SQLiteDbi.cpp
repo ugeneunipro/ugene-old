@@ -253,8 +253,11 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         SQLiteQuery("PRAGMA journal_mode = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA cache_size = 10000", db, os).execute();
         //SQLiteQuery("PRAGMA page_size = 65536", db, os).execute();
-        
-        
+        //TODO: int sqlite3_enable_shared_cache(int);
+        //TODO: read_uncommitted
+        //TODO: incremental_vacuum
+        //TODO: temp_store_directory
+
         // check if the opened database is valid UGENE sqlite dbi
         initProperties = props;
         if (isEmpty(db, os)) {

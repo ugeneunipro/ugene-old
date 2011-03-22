@@ -56,8 +56,7 @@ public:
 */
 class U2CORE_EXPORT U2AssemblyReadData : public U2Entity, public QSharedData {
 public:
-    U2AssemblyReadData() : sequenceId(0), leftmostPos(0), packedViewRow(0){}
-    U2AssemblyReadData(U2DataId id) : U2Entity(id), sequenceId(0), leftmostPos(0), packedViewRow(0){}
+    U2AssemblyReadData() : sequenceId(0), leftmostPos(0), effectiveLen(0), packedViewRow(0){}
 
     /** 
         Sequence ID of the read.
@@ -71,6 +70,9 @@ public:
         Left-most position of the read 
     */
     qint64              leftmostPos;
+
+    /** Length of the read with CIGAR affect applied */
+    qint64              effectiveLen;
 
     /**
         Position of the read in packed view

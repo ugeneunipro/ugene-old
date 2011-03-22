@@ -71,21 +71,6 @@ public:
     static QByteArray getCigarAlphabetChars();
 };
 
-/** Simple qt collections based in-memory assembly reads iterator impl */
-class U2CORE_EXPORT U2AssemblyReadsIteratorImpl : public U2AssemblyReadsIterator {
-public:
-    U2AssemblyReadsIteratorImpl(const QList<U2AssemblyRead>& reads);
-
-    /** returns true if there are more reads to iterate*/
-    virtual bool hasNext();
-
-    /** returns next read or error */
-    virtual U2AssemblyRead next(U2OpStatus& os);
-
-private:
-    int pos;
-    QList<U2AssemblyRead> reads;
-};
 
 /** Helper class with default impl for all methods */
 } //namespace

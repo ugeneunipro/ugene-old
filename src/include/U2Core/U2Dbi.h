@@ -73,23 +73,36 @@ enum U2CORE_EXPORT U2DbiState {
 */
 enum U2CORE_EXPORT U2DbiFeature {
     
-    //TODO: add notes
+    /** DBI supports sequence reading methods */
     U2DbiFeature_ReadSequence                 = 1,
+    /** DBI supports MSA reading methods */
     U2DbiFeature_ReadMsa                      = 2,
+    /** DBI supports Assembly reading methods */
     U2DbiFeature_ReadAssembly                 = 3,
+    /** DBI supports sequence annotations reading methods */
     U2DbiFeature_ReadSequenceAnnotations      = 4,
+    /** DBI supports read methods for attributes */
     U2DbiFeature_ReadAttributes               = 5,
 
+    /** DBI supports cross database references */
     U2DbiFeature_WriteCrossDatabaseReferences = 100,
+    /** DBI supports changing/storing sequences */
     U2DbiFeature_WriteSequence                = 101,
+    /** DBI supports changing/storing multiple sequence alignments */
     U2DbiFeature_WriteMsa                     = 102,
-    U2DbiFeature_WriteAssembly                = 103,
+    /** DBI supports changing/storing assemblies */
+    U2DbiFeature_WriteAssembly                = 103
+    /** DBI supports changing/storing sequence annotations*/,
     U2DbiFeature_WriteSequenceAnnotations     = 104,
+    /** DBI supports changing/storing attributes */
     U2DbiFeature_WriteAttributes              = 105,
-    
-    U2DbiFeature_RemoveObjects                = 200,
-    U2DbiFeature_ChangeFolders                = 201,
 
+    /** DBI supports removal of objects */
+    U2DbiFeature_RemoveObjects                = 200,
+    /** DBI supports set folder modification operations */
+    U2DbiFeature_ChangeFolders                = 201,
+    
+    /** DBI provides optimized algorithm for assembly reads packing */
     U2DbiFeature_AssemblyReadsPacking         = 300,
 };
 
@@ -568,6 +581,22 @@ public:
     virtual U2AssemblyRead next(U2OpStatus& os) = 0;
 };
 
+/** Template class for DBI iterators */
+template<class T> class U2DbiIterator {
+public:
+    virtual ~U2DbiIterator(){}
+
+    /** returns true if there are more reads to iterate*/
+    virtual bool hasNext() = 0;
+
+    /** returns next read and shifts one element*/
+    virtual const T& next() = 0;
+
+    /** returns next read without shifting*/
+    virtual const T& peek() = 0;
+};
+
+
 /**
     An interface to obtain  access to assembly data
 */
@@ -580,19 +609,26 @@ public:
     virtual U2Assembly getAssemblyObject(const U2DataId& id, U2OpStatus& os) = 0;
 
     /** 
-        Return number of reads in assembly that intersect given region.
+        Return number of reads in assembly that are located near or intersect the region.
         The region should be a valid region within alignment bounds, i.e. non-negative and less than alignment length.
-        'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
+        
+        Note: 'near' here means that DBI is not forced to return precise number of reads that intersects the region
+        and some deviations is allowed in order to apply performance optimizations. 
+
     */
-    virtual qint64 countReadsAt(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) = 0;
+    virtual qint64 countReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) = 0;
 
-    /** Return 'count' row ids starting with 'offset' that intersect given region.
-    The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
-    virtual QList<U2DataId> getReadIdsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) = 0;
+    /** 
+        Return reads that intersect given region
+        Note: iterator instance must be deallocated by caller method
+    */
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) = 0;
 
-    /** Return 'count' rows starting with 'offset' that intersect given region.
-    The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
-    virtual QList<U2AssemblyRead> getReadsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) = 0;
+    /** 
+        Return reads with packed row value >= min, <= max that intersect given region 
+        Note: iterator instance must be deallocated by caller method
+    */
+    virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
 
     /** 
         Return max packed row at the given coordinate
@@ -600,20 +636,17 @@ public:
     */
     virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) = 0;
 
-    /** Return reads with packed row value >= min, <= max that intersect given region */
-    virtual QList<U2AssemblyRead> getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
-
 
     /** Count 'length of assembly' - position of the rightmost base of all reads */
     virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) = 0;
 
 
     /** 
-        Creates new empty assembly object, reads iterator can be NULL  
+        Creates new empty assembly object. Reads iterator can be NULL 
         Requires: U2DbiFeature_WriteAssembly feature support
     */
-    virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder, U2AssemblyReadsIterator* it, U2OpStatus& os) = 0;
-    
+    virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) = 0;
+
     /** 
         Removes sequences from assembly
         Automatically removes affected sequences that are not anymore accessible from folders

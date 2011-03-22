@@ -524,7 +524,7 @@ U2Assembly AssemblyDbi::getAssemblyObject(const U2DataId& id, U2OpStatus &os) {
     }
 }
 
-qint64 AssemblyDbi::countReadsAt(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os) {
+qint64 AssemblyDbi::countReads(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os) {
     try {
         if(U2DbiState_Ready != dbi.getState()) {
             throw Exception(BAMDbiPlugin::tr("Invalid DBI state"));
@@ -552,35 +552,7 @@ qint64 AssemblyDbi::countReadsAt(const U2DataId& assemblyId, const U2Region &r, 
     }
 }
 
-QList<U2DataId> AssemblyDbi::getReadIdsAt(const U2DataId& assemblyId, const U2Region &r, qint64 offset, qint64 count, U2OpStatus &os) {
-    try {
-        if(U2DbiState_Ready != dbi.getState()) {
-            throw Exception(BAMDbiPlugin::tr("Invalid DBI state"));
-        }
-        if(dbi.getEntityTypeById(assemblyId) != U2Type::Assembly) {
-            throw Exception(BAMDbiPlugin::tr("The specified object is not an assembly"));
-        }
-        QList<U2DataId> result;
-        {
-            U2OpStatusImpl opStatus;
-            SQLiteQuery q("SELECT id FROM assemblyReads WHERE assemblyId = ?1 AND startPosition < ?2 AND startPosition > ?3 AND endPosition > ?4", offset, count, &dbRef, opStatus);
-            q.bindDataId(1, assemblyId);
-            q.bindInt64(2, r.endPos());
-            q.bindInt64(3, r.startPos - getMaxReadLength(assemblyId, r));
-            q.bindInt64(4, r.startPos);
-            result = q.selectDataIds(0);
-            if(opStatus.hasError()) {
-                throw Exception(opStatus.getError());
-            }
-        }
-        return result;
-    } catch(const Exception &e) {
-        os.setError(e.getMessage());
-        return QList<U2DataId>();
-    }
-}
-
-QList<U2AssemblyRead> AssemblyDbi::getReadsAt(const U2DataId& assemblyId, const U2Region &r, qint64 offset, qint64 count, U2OpStatus &os) {
+U2DbiIterator<U2AssemblyRead>* AssemblyDbi::getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     try {
         if(U2DbiState_Ready != dbi.getState()) {
             throw Exception(BAMDbiPlugin::tr("Invalid DBI state"));
@@ -592,7 +564,7 @@ QList<U2AssemblyRead> AssemblyDbi::getReadsAt(const U2DataId& assemblyId, const 
         QList<qint64> packedRows;
         {
             U2OpStatusImpl opStatus;
-            SQLiteQuery q("SELECT id, packedRow FROM assemblyReads WHERE assemblyId = ?1 AND startPosition < ?2 AND startPosition > ?3 AND endPosition > ?4", offset, count, &dbRef, opStatus);
+            SQLiteQuery q("SELECT id, packedRow FROM assemblyReads WHERE assemblyId = ?1 AND startPosition < ?2 AND startPosition > ?3 AND endPosition > ?4", &dbRef, opStatus);
             q.bindDataId(1, assemblyId);
             q.bindInt64(2, r.endPos());
             q.bindInt64(3, r.startPos - getMaxReadLength(assemblyId, r));
@@ -614,10 +586,10 @@ QList<U2AssemblyRead> AssemblyDbi::getReadsAt(const U2DataId& assemblyId, const 
                 throw Exception(opStatus.getError());
             }
         }
-        return result;
+        return new BufferedDbiIterator<U2AssemblyRead>(result, U2AssemblyRead());
     } catch(const Exception &e) {
         os.setError(e.getMessage());
-        return QList<U2AssemblyRead>();
+        return NULL;
     }
 }
 
@@ -682,7 +654,7 @@ qint64 AssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region &
     }
 }
 
-QList<U2AssemblyRead> AssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region &r, qint64 minRow, qint64 maxRow, U2OpStatus &os) {
+U2DbiIterator<U2AssemblyRead>* AssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
     try {
         if(U2DbiState_Ready != dbi.getState()) {
             throw Exception(BAMDbiPlugin::tr("Invalid DBI state"));
@@ -717,10 +689,10 @@ QList<U2AssemblyRead> AssemblyDbi::getReadsByRow(const U2DataId& assemblyId, con
                 throw Exception(opStatus.getError());
             }
         }
-        return result;
+        return new BufferedDbiIterator<U2AssemblyRead>(result, U2AssemblyRead());
     } catch(const Exception &e) {
         os.setError(e.getMessage());
-        return QList<U2AssemblyRead>();
+        return NULL;
     }
 }
 

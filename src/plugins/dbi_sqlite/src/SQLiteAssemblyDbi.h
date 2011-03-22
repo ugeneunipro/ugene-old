@@ -40,30 +40,36 @@ public:
         Return number of reads in assembly that intersect given region 
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
     */
-    virtual qint64 countReadsAt(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
+    virtual qint64 countReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
 
-    /** Return 'count' row ids starting with 'offset' that intersect given region */
-    virtual QList<U2DataId> getReadIdsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os);
+    /** 
+        Return reads that intersect given region
+        Note: iterator instance must be deallocated by caller method
+    */
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
 
-    /** Return 'count' rows starting with 'offset' that intersect given region */
-    virtual QList<U2AssemblyRead> getReadsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os);
-    
+    /** 
+        Return reads with packed row value >= min, <= max that intersect given region 
+        Note: iterator instance must be deallocated by caller method
+    */
+    virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
+
     /** 
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
     */
     virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
 
-    /** Return reads with packed row value >= min, <=max that intersect given region */
-    virtual QList<U2AssemblyRead> getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
-
     /** Count 'length of assembly' - position of the rightmost base of all reads */
     virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os);
 
 
-    /** Creates new empty assembly object, reads iterator can be NULL  */
-    virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder, U2AssemblyReadsIterator* it, U2OpStatus& os);
-    
+    /** 
+        Creates new empty assembly object. Reads iterator can be NULL 
+        Requires: U2DbiFeature_WriteAssembly feature support
+    */
+    virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os);
+
     /** 
         Removes sequences from assembly
         Automatically removes affected sequences that are not anymore accessible from folders

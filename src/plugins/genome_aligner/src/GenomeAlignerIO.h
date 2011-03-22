@@ -150,10 +150,10 @@ private:
     U2Region wholeAssembly;
     U2OpStatusImpl status;
     QList<U2AssemblyRead>::Iterator currentRead;
-    int currentIteration;
     qint64 readNumber;
     qint64 maxRow;
     qint64 readsInAssembly;
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > dbiIterator;
 
     static const qint64 readBunchSize;
 };
