@@ -34,7 +34,13 @@ const QString DumpVersionTask::VERSION_CMDLINE_OPTION       = "version";
 const QString DumpVersionTask::VERSION_CMDLINE_OPTION_SHORT = "v";
 
 void DumpVersionTask::initHelp() {
-    CMDLineHelpProvider * versionSection = new CMDLineHelpProvider(VERSION_CMDLINE_OPTION, tr("show version information"), VERSION_CMDLINE_OPTION_SHORT);
+    CMDLineHelpProvider * versionSection = new CMDLineHelpProvider(
+        VERSION_CMDLINE_OPTION,
+        tr( "Shows version information." ),
+        "", // No full description
+        "", // No arguments
+        VERSION_CMDLINE_OPTION_SHORT);
+
     AppContext::getCMDLineRegistry()->registerCMDLineHelpProvider( versionSection );
 }
 

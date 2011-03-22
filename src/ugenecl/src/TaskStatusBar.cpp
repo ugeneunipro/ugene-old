@@ -75,7 +75,12 @@ void TaskStatusBarCon::setTSBCmdlineHelp() {
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
     
-    CMDLineHelpProvider * noTSBSection = new CMDLineHelpProvider( NO_TASK_STATUS_BAR_CMD_OPTION, tr( "Don't show task progress" ) );
+    CMDLineHelpProvider * noTSBSection = new CMDLineHelpProvider(
+        NO_TASK_STATUS_BAR_CMD_OPTION,
+        tr( "Specifies not to show the task progress." ),
+        tr( "A task progress is shown by default when a task is running."
+            " This option specifies not to show the progress." ));
+
     cmdLineRegistry->registerCMDLineHelpProvider( noTSBSection );
 }
 

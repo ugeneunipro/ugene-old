@@ -28,18 +28,42 @@ namespace U2 {
 
 class U2CORE_EXPORT CMDLineHelpProvider {
 public:
-    CMDLineHelpProvider( const QString & _fullName, const QString & _content, const QString & _shortName = QString() ) 
-        : fullName(_fullName), shortName(_shortName), content(_content) {}
-    
-    QString getHelpSectionNames() const { QString ret = fullName; if(!shortName.isEmpty()) { ret += ", -" + shortName; } return ret; }
-    QString getHelpSectionFullName() const {return fullName;}
+    CMDLineHelpProvider(
+        const QString & _fullName,                    // Name of the option (e.g. "version")
+        const QString & _shortDescription,            // Description shown in the options list
+        const QString & _fullDescription = QString(), // Description shown in the option's help
+        const QString & _argsDescription = QString(), // Description of the option arguments
+        const QString & _shortName = QString())       // Short name of the option (e.g. "v")
+        : fullName(_fullName),
+          shortDescription(_shortDescription),
+          fullDescription(_fullDescription),
+          argsDescription(_argsDescription),
+          shortName(_shortName)
+    {
+        assert((_shortDescription.length() < 49) && ("The length of the short"
+            " description must fit into the options list. If you need to create"
+            " a short description longer than 49 characters, then register two"
+            " or more CMDLineHelpProvider with the same fullName. They will be"
+            " placed on different lines in the options list."));
+    }
+        
+    QString getHelpSectionFullName() const {return fullName;}    
+    QString getHelpSectionShortDescription() const { return shortDescription; }
+    QString getHelpSectionFullDescription() const { return fullDescription; }
+    QString getHelpSectionArgsDescription() const { return argsDescription; }
     QString getHelpSectionShortName() const {return shortName;}
-    QString getHelpSectionContent() const { return content; }
+    QString getHelpSectionNames() const { 
+        QString ret = fullName; 
+        if (!shortName.isEmpty()) { ret += " | -" + shortName; } 
+        return ret; 
+    }
     
 private:
-    QString fullName;
+    QString fullName;    
+    QString shortDescription;
+    QString fullDescription;
+    QString argsDescription;
     QString shortName;
-    QString content;
     
 }; // CMDLineHelpProvider
 

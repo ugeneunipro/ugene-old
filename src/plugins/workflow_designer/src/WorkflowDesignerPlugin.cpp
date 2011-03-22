@@ -121,16 +121,18 @@ void WorkflowDesignerPlugin::sl_saveSchemaImageTaskFinished() {
 void WorkflowDesignerPlugin::registerCMDLineHelp() {
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
-    
-    CMDLineHelpProvider * taskSectionArguments = new CMDLineHelpProvider( RUN_WORKFLOW, 
-        "<path-to-schema or schema-name> [schema arguments ...]" );
-    CMDLineHelpProvider * taskSection = new CMDLineHelpProvider( RUN_WORKFLOW, tr( "run given workflow schema" ) );
-    
-    CMDLineHelpProvider * remoteMachineSectionArguments = new CMDLineHelpProvider( REMOTE_MACHINE, "<path-to-machine-file>");
-    CMDLineHelpProvider * remoteMachineSection = new CMDLineHelpProvider( REMOTE_MACHINE, tr("run provided tasks on given remote machine") );
-    
-    cmdLineRegistry->registerCMDLineHelpProvider( taskSectionArguments );
+
+    CMDLineHelpProvider * taskSection = new CMDLineHelpProvider(
+        RUN_WORKFLOW,
+        tr("Runs the specified task."),
+        tr("Runs the specified task. A path to a user-defined UGENE workflow"
+           " schema can be used as a task name."),
+        tr("<task_name> [<task_parameter>=value ...]"));
+
     cmdLineRegistry->registerCMDLineHelpProvider( taskSection );
+    
+    //CMDLineHelpProvider * remoteMachineSectionArguments = new CMDLineHelpProvider( REMOTE_MACHINE, "<path-to-machine-file>");
+    //CMDLineHelpProvider * remoteMachineSection = new CMDLineHelpProvider( REMOTE_MACHINE, tr("run provided tasks on given remote machine") );        
     //TODO: bug UGENE-23
     //cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSectionArguments );
     //cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSection );

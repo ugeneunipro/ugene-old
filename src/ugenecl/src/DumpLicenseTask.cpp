@@ -34,7 +34,11 @@ const QString DumpLicenseTask::LICENCE_FILENAME = "license";
 
 void DumpLicenseTask::initHelp() {
     CMDLineRegistry * cmdlineRegistry = AppContext::getCMDLineRegistry();
-    CMDLineHelpProvider * helpSection = new CMDLineHelpProvider( LICENSE_CMDLINE_OPTION, tr( "dump license information" ) );
+
+    CMDLineHelpProvider * helpSection = new CMDLineHelpProvider(
+        LICENSE_CMDLINE_OPTION,
+        tr( "Shows license information." ));
+
     cmdlineRegistry->registerCMDLineHelpProvider(helpSection);
 }
 

@@ -70,38 +70,31 @@ void LogDriver::setLogCmdlineHelp() {
     
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
-    
-    CMDLineHelpProvider * logFormat = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_FORMAT,
-        tr( "Sets pattern for log.") );
-    CMDLineHelpProvider * logFormat1 = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_FORMAT, 
-        tr("Use following notations: L - level, C - category, YYYY - 4digit year, YY - 2digit year, MM - month,"));
-    CMDLineHelpProvider * logFormat2 = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_FORMAT, 
-        tr("dd - day, hh - hour, mm - minutes, ss - seconds, zzz - milliseconds."));
-    CMDLineHelpProvider * logFormat3 = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_FORMAT, "By default, logformat=\"[L][hh:mm]\"");
 
-    CMDLineHelpProvider * logLevelArgument = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_LEVEL, 
-        tr("Sets the log level per category. If a category is not specified, the log level is applied to all categories."));
-    CMDLineHelpProvider * logLevelArgument2 = new CMDLineHelpProvider(CMDLineCoreOptions::LOG_LEVEL,
-        tr("Format of the value is the following: \"category1 = level1, category2 = level2\" or simply \"level\"."));
-    CMDLineHelpProvider * logLevel1 = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_LEVEL,
-        tr( "The following categories are available: \"Algorithms\", \"Console\", \"Core Services\", \"Input/Output\", \"Performance\","));
-    CMDLineHelpProvider * logLevel2 = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_LEVEL,
-        tr("\"Remote Service\", \"Scripts\", \"Tasks\", \"User Interface\"." ) );
-    CMDLineHelpProvider * logLevel3 = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_LEVEL,
-        tr( "The following log levels are available: TRACE, DETAILS, INFO, ERROR or NONE." ) );
-    CMDLineHelpProvider * logLevel4 = new CMDLineHelpProvider( CMDLineCoreOptions::LOG_LEVEL,
-        tr( "By default, loglevel=\"ERROR\"." ) );
+    CMDLineHelpProvider * logFormat = new CMDLineHelpProvider(
+        CMDLineCoreOptions::LOG_FORMAT,
+        tr( "Specifies the format of a log line." ),
+        tr( "Specifies the format of a log line."
+            "\n\nUse the following notations:"
+            " L - level, C - category, YYYY or YY - year, MM - month, dd - day,"
+            " hh - hour, mm - minutes, ss - seconds, zzz - milliseconds."
+            " \n\nBy default, logformat=\"[L][hh:mm]\"." ),
+        tr( "\"<format_string>\"" ));
+
+    CMDLineHelpProvider * logLevel = new CMDLineHelpProvider(
+        CMDLineCoreOptions::LOG_LEVEL,
+        tr( "Sets the log level." ),
+        tr( "Sets the log level per category. If a category is not specified,"
+            " the log level is applied to all categories."
+            "\n\nThe following categories are available: \n\"Algorithms\""
+            ", \"Console\", \"Core Services\", \"Input/Output\", \"Performance\""
+            ", \"Remote Service\", \"Scripts\", \"Tasks\"."
+            "\n\nThe following log levels are available: TRACE, DETAILS, INFO, ERROR or NONE."
+            "\n\nBy default, loglevel=\"ERROR\"." ),
+        tr( "\"<category1>=<level1> [<category2>=<level2> ...]\" | <level>" ));
 
     cmdLineRegistry->registerCMDLineHelpProvider( logFormat );
-    cmdLineRegistry->registerCMDLineHelpProvider( logFormat1 );
-    cmdLineRegistry->registerCMDLineHelpProvider( logFormat2 );
-    cmdLineRegistry->registerCMDLineHelpProvider( logFormat3 );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevelArgument );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevelArgument2 );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevel1 );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevel2 );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevel3 );
-    cmdLineRegistry->registerCMDLineHelpProvider( logLevel4 );
+    cmdLineRegistry->registerCMDLineHelpProvider( logLevel );
 }
 
 void LogDriver::setLogSettings() {

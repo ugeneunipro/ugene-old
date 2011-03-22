@@ -46,7 +46,7 @@ const QString DumpHelpTask::VERSION_INFO = QString("\nConsole version of UGENE %
 
 static void dumpProgramNameAndUsage() {
     fprintf( stdout, "%s" , DumpHelpTask::VERSION_INFO.toAscii().constData());
-    fprintf( stdout, "Usage: ugene [[--task=]taskName] [--task_parameter=value] [-task_parameter value] "
+    fprintf( stdout, "Usage: ugene [[--task=]task_name] [--task_parameter=value] [-task_parameter value] "
         "[--option[=value]] [-option [value]]\n\n");
 }
 
@@ -66,10 +66,41 @@ static void dumpTaskName(const QString & taskName) {
     fprintf(stdout, "     %-20s\n", taskName.toLocal8Bit().constData());
 }
 
+static void dumpOptionHelpSyntax(const QString & option, const QString & argsDescription) {
+    QString optionHelp;
+    if (argsDescription.isEmpty()) {
+        optionHelp = "ugene --" + option;
+    } else {
+        optionHelp = "ugene --" + option + "=" + argsDescription;
+    }
+    fprintf(stdout, "%s\n", optionHelp.toLocal8Bit().constData());
+}
+
+static void dumpOptionHelpDescription(const QString & description) {
+    fprintf(stdout, "%s\n", description.toLocal8Bit().constData());
+}
+
 void DumpHelpTask::dumpHelp() {
     dumpProgramNameAndUsage();
 
-    fprintf(stdout, "\nAvailable tasks (--task option):\n");
+    fprintf( stdout, "\nOptions: \n" );
+    QString prevSectionName;
+    QList<CMDLineHelpProvider* > helpProviders = AppContext::getCMDLineRegistry()->listCMDLineHelpProviders();
+    foreach (CMDLineHelpProvider* hProvider, helpProviders) {
+        assert(hProvider != NULL);
+        const QString& sectionName = hProvider->getHelpSectionNames();
+        if(sectionName != prevSectionName) {
+            dumpSectionName( sectionName );
+            prevSectionName = sectionName;
+        } else {
+            dumpSectionIndent();
+        }
+        dumpSectionContent( hProvider->getHelpSectionShortDescription() );
+        fprintf(stdout, "\n");
+    }
+    fprintf( stdout, "\n" );
+
+    fprintf(stdout, "\nAvailable tasks:\n");
     QStringList dataDirs = QDir::searchPaths(PATH_PREFIX_DATA);
     foreach(const QString & url, dataDirs ) {
         QString dirUrl = url + "/cmdline/";
@@ -87,26 +118,6 @@ void DumpHelpTask::dumpHelp() {
         }
     }
     fprintf(stdout, "Use ugene --help=<task-name> to get full help\n");
-
-    fprintf( stdout, "\nOptions: \n" );
-    QString prevSectionName;
-    QList<CMDLineHelpProvider* > helpProviders = AppContext::getCMDLineRegistry()->listCMDLineHelpProviders();
-    foreach (CMDLineHelpProvider* hProvider, helpProviders) {
-        assert(hProvider != NULL);
-        const QString& sectionName = hProvider->getHelpSectionNames();
-        if(sectionName != prevSectionName) {
-            dumpSectionName( sectionName );
-            prevSectionName = sectionName;
-        } else {
-            if(sectionName.startsWith(CMDLineCoreOptions::LOG_FORMAT) || sectionName.startsWith(CMDLineCoreOptions::LOG_LEVEL)) {
-                continue;
-            }
-            dumpSectionIndent();
-        }
-        dumpSectionContent( hProvider->getHelpSectionContent() );
-        fprintf(stdout, "\n");
-    }
-    fprintf( stdout, "\n" );
 }
 
 void DumpHelpTask::prepare() {
@@ -143,22 +154,38 @@ void DumpHelpTask::prepare() {
         addSubTask(new LoadWorkflowTask( schema, meta, pathToSchema ));
         return;
     }
-
-    dumpProgramNameAndUsage();
     
-    // dump help of selected section in registered help pages
-    dumpSectionName( helpProviders.at(ind)->getHelpSectionNames() );
-    dumpSectionContent( helpProviders.at(ind)->getHelpSectionContent() );
-    for( int i = ind + 1; i < sz; ++i ) {
-        CMDLineHelpProvider * provider = helpProviders.at(i);
-        if( provider->getHelpSectionFullName() != paramName && provider->getHelpSectionShortName() != paramName) {
-            break;
-        }
-        fprintf(stdout, "\n");
-        dumpSectionIndent();
-        dumpSectionContent( helpProviders.at(i)->getHelpSectionContent() );
-    }
+    // Dumping help of the selected section in the registered help pages
+    //
     fprintf( stdout, "\n" );
+
+    assert(0 != helpProviders.at(ind)->getHelpSectionFullName());
+    dumpOptionHelpSyntax(helpProviders.at(ind)->getHelpSectionFullName(),
+        helpProviders.at(ind)->getHelpSectionArgsDescription());
+
+    fprintf( stdout, "\n" );
+
+    QString description;
+    if (!helpProviders.at(ind)->getHelpSectionFullDescription().isEmpty())
+    {
+        description = helpProviders.at(ind)->getHelpSectionFullDescription();
+    }
+    else
+    {
+        assert(!helpProviders.at(ind)->getHelpSectionShortDescription().isEmpty());
+        description = helpProviders.at(ind)->getHelpSectionShortDescription();
+
+        // If the section has several short descriptions, append the next short descriptions
+        for (int i = ind + 1; i < sz; ++i) {
+            CMDLineHelpProvider * provider = helpProviders.at(i);
+            if( provider->getHelpSectionFullName() != paramName && provider->getHelpSectionShortName() != paramName) {
+                break;
+            }
+            description += "\n";
+            description += helpProviders.at(i)->getHelpSectionShortDescription();
+        }
+    }
+    dumpOptionHelpDescription(description);
 }
 
 static void dumpSchemaMetadata(Metadata * meta) {

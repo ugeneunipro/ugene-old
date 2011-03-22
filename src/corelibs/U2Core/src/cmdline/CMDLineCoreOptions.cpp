@@ -43,14 +43,26 @@ void CMDLineCoreOptions::initHelp() {
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
     
-    CMDLineHelpProvider * helpSection = new CMDLineHelpProvider( HELP, tr( "show help information" ), HELP_SHORT );
-    CMDLineHelpProvider * loadSettingsFileSectionArguments = new CMDLineHelpProvider( INI_FILE, "<settings-file>" );
-    CMDLineHelpProvider * loadSettingsFileSection = new CMDLineHelpProvider( INI_FILE, tr( "load configuration from the specified file" ) );
-    CMDLineHelpProvider * translSectionArguments = new CMDLineHelpProvider(TRANSLATION, "<language-code>");
-    CMDLineHelpProvider * translSection = new CMDLineHelpProvider(TRANSLATION, tr("load translations of specified language. Language is specified as a two-letter ISO 639 language code"));
+    CMDLineHelpProvider * helpSection = new CMDLineHelpProvider(
+        HELP,
+        tr( "Shows help information." ),
+        "",         // No full description
+        "",         // No arguments
+        HELP_SHORT);
+
+    CMDLineHelpProvider * loadSettingsFileSection = new CMDLineHelpProvider(
+        INI_FILE,
+        tr( "Loads UGENE configuration." ),
+        tr( "Loads configuration from the specified .ini file. By default the UGENE.ini file is used." ),
+        tr( "<path_to_file>" ));
+
+    CMDLineHelpProvider * translSection = new CMDLineHelpProvider(
+        TRANSLATION,
+        tr( "Specifies the language to use." ),
+        tr( "Specifies the language to use. The following values are available: CS, EN, RU." ),
+        tr( "<language_code>" ));
     
     cmdLineRegistry->registerCMDLineHelpProvider( helpSection );
-    cmdLineRegistry->registerCMDLineHelpProvider( translSectionArguments );
     cmdLineRegistry->registerCMDLineHelpProvider( translSection );
 }
 
