@@ -16,7 +16,6 @@ SRC_FILES=(
     "../../src/ugene_plugin_descriptor.pri"
     "../../src/ugene_lib_common.pri"
     "../../src/ugene_version.pri"
-    "../../src/qtranslate.cmd"
     "../.././build.txt"
     "../../src/libs_3rdparty"
     "../../src/plugins_3rdparty"

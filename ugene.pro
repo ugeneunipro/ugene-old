@@ -75,6 +75,7 @@ exclude_list_enabled() {
     SUBDIRS -= src/plugins/dbi_file
     SUBDIRS -= src/plugins/dbi_sqlite
     SUBDIRS -= src/plugins/dbi_bam
+    SUBDIRS -= src/plugins/assembly_browser
     SUBDIRS -= src/plugins/CoreTests
     SUBDIRS -= src/plugins/test_runner
     SUBDIRS -= src/plugins/perf_monitor
