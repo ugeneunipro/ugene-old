@@ -65,6 +65,9 @@ private slots:
     void sl_taskFinished(Task*);
 
 private:
+    QString readPatternsFromFile(const QString url);
+
+private:
     CommunicationChannel *input, *output;
     QMap<Task*, SmithWatermanReportCallbackImpl*> callbacks;
     QMap<Task*, QByteArray> patterns;

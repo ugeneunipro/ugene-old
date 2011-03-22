@@ -45,6 +45,11 @@
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/SWResultFilterRegistry.h>
+#include <U2Misc/DialogUtils.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/MAlignmentObject.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -93,7 +98,7 @@ void SWWorkerFactory::init() {
         Descriptor oud(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
             SWWorker::tr("Pattern Annotations"),
             SWWorker::tr("The regions found."));
-        
+
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         p << new PortDescriptor(ind, DataTypePtr(new MapDataType("sw.sequence", inM)), true);
@@ -102,9 +107,9 @@ void SWWorkerFactory::init() {
         outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
         p << new PortDescriptor(oud, DataTypePtr(new MapDataType("sw.annotations", outM)), false, true);
     }
-    
+
     QStringList filterLst = AppContext::getSWResultFilterRegistry()->getFiltersIds();
-    
+
     QList<Attribute*> a;
     {
         Descriptor nd(NAME_ATTR,
@@ -113,7 +118,7 @@ void SWWorkerFactory::init() {
 
         Descriptor pd(PATTERN_ATTR,
             SWWorker::tr("Pattern(s)"),
-            SWWorker::tr("Semicolon-separated list of patterns to search for."));
+            SWWorker::tr("Semicolon-separated list of patterns to search for. You can choose file with sequences for patterns or enter them manually"));
 
         Descriptor scd(SCORE_ATTR,
             SWWorker::tr("Min Score"),
@@ -159,7 +164,7 @@ void SWWorkerFactory::init() {
         a << new Attribute(god, BaseTypes::NUM_TYPE(), false, -10.);
         a << new Attribute(ged, BaseTypes::NUM_TYPE(), false, -1.);
     }
-    
+
     Descriptor desc(ACTOR_ID,
         SWWorker::tr("Smith-Waterman Search"),
         SWWorker::tr("Searches regions in a sequence similar to a pattern"
@@ -168,25 +173,25 @@ void SWWorkerFactory::init() {
             " sequence alignment."));
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    
+
     // delegates
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap m; m["minimum"] = 1; m["maximum"] = 100; m["suffix"] = "%";
         delegates[SCORE_ATTR] = new SpinBoxDelegate(m);
-    }    
+    }
     {
         QVariantMap m; m["maximum"] = -0.; m["minimum"]=-10000000.;
         delegates[GAPOPEN_ATTR] = new DoubleSpinBoxDelegate(m);
         m["maximum"] = -1.;
         delegates[GAPEXT_ATTR] = new DoubleSpinBoxDelegate(m);
-    }    
+    }
     delegates[BaseAttributes::STRAND_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::STRAND_ATTRIBUTE_VALUES_MAP());
     {
-        QVariantMap m;   
+        QVariantMap m;
         foreach(const QString& n, filterLst) {
             m.insert(n,n);
-        } 
+        }
         delegates[FILTER_ATTR] = new ComboBoxDelegate(m);
     }
     {
@@ -194,10 +199,11 @@ void SWWorkerFactory::init() {
         QStringList lst = AppContext::getSubstMatrixRegistry()->getMatrixNames();
         foreach(const QString& n, lst) {
             m.insert(n,n);
-        } 
+        }
         delegates[MATRIX_ATTR] = new ComboBoxDelegate(m);
     }
-    
+    delegates[PATTERN_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString());
+
     SWAlgoEditor* aled = new SWAlgoEditor(proto);
     aled->connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(populate()));
     delegates[ALGO_ATTR] = aled;
@@ -205,7 +211,7 @@ void SWWorkerFactory::init() {
     proto->setIconPath(":core/images/sw.png");
     proto->setPrompter(new SWPrompter());
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
-    
+
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new SWWorkerFactory());
 }
@@ -296,16 +302,78 @@ bool SWWorker::isReady() {
     return (input && input->hasMessage());
 }
 
+QString SWWorker::readPatternsFromFile(const QString url) {
+    QFileInfo fi(url);
+    QString pattern;
+    if(!fi.exists()){
+        return "";
+    }
+    QList<DocumentFormat*> fs = DocumentUtils::detectFormat(url);
+    DocumentFormat* format = NULL;
+
+    foreach( DocumentFormat * f, fs ) {
+        const QSet<GObjectType>& types = f->getSupportedObjectTypes();
+        if (types.contains(GObjectTypes::SEQUENCE) || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+            format = f;
+            break;
+        }
+    }
+
+    if (format == NULL) {
+        return "";
+    }
+    ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+
+    IOAdapter *io = iof->createIOAdapter();
+    if (!io->open(url, IOAdapterMode_Read)) {
+        return "";
+    }
+
+    QVariantMap hints;
+    TaskStateInfo stateInfo;
+    Document *doc = format->loadDocument(io, stateInfo, hints);
+//    assert(isCanceled() || doc!=NULL || hasErrors());
+    assert(doc == NULL || doc->isLoaded());
+    if (doc!=NULL && doc->isLoaded()) {
+        const QSet<GObjectType>& types = format->getSupportedObjectTypes();
+        if (types.contains(GObjectTypes::SEQUENCE)) {
+            QList<GObject*> seqObjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+            QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+            foreach(GObject* go, seqObjs) {
+                assert(go != NULL);
+                const DNASequence& dna = ((DNASequenceObject*)go)->getDNASequence();
+                pattern += QString(dna.constData()) + ";";
+            }
+
+        } else {
+            foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+                foreach(const DNASequence& s, MSAUtils::ma2seq(((MAlignmentObject*)go)->getMAlignment(), false)) {
+                    pattern += QString(s.constData()) + ";";
+                }
+            }
+        }
+    }
+    if (doc!=NULL && doc->isLoaded()) {
+        doc->unload();
+    }
+    return pattern;
+}
+
 Task* SWWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
     SmithWatermanSettings cfg;
-    
+
     // sequence
     DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
     if(seq.isNull()) {
         return new FailTask(tr("Null sequence supplied to Smith-Waterman: %1").arg(seq.getName()));
     }
     QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().toUpper();
+    if(QFile::exists(ptrnStr)) {
+        ptrnStr = readPatternsFromFile(ptrnStr);
+    }
+    ptrnStr.remove(" ");
     QByteArray ptrnBytes = QString(ptrnStr).remove(PATTERN_DELIMITER).toAscii();
     if(!seq.alphabet->containsAll(ptrnBytes.constData(), ptrnBytes.length())) {
         algoLog.error(tr("Incorrect value: pattern alphabet doesn't match sequence alphabet "));
@@ -320,10 +388,10 @@ Task* SWWorker::tick() {
         algoLog.error(tr("Incorrect value: score value must lay between 0 and 100"));
         return new FailTask(tr("Incorrect value: score value must lay between 0 and 100"));
     }
-    
+
     cfg.gapModel.scoreGapExtd = actor->getParameter(GAPEXT_ATTR)->getAttributeValue<double>();
     cfg.gapModel.scoreGapOpen = actor->getParameter(GAPOPEN_ATTR)->getAttributeValue<double>();
-    
+
     // filter
     QString filter = actor->getParameter(FILTER_ATTR)->getAttributeValue<QString>();
     cfg.resultFilter = AppContext::getSWResultFilterRegistry()->getFilter(filter);
@@ -331,14 +399,14 @@ Task* SWWorker::tick() {
         algoLog.error(tr("Incorrect value:  filter name incorrect, default value used")); //details level won't work
         cfg.resultFilter = AppContext::getSWResultFilterRegistry()->getFilter("none");
     }
-    
+
     // annotation name
     QString resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
     if(resultName.isEmpty()){
         algoLog.error(tr("Incorrect value: result name is empty, default value used")); //details level won't work
         resultName = "misc_feature";
     }
-    
+
     // translations
     cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>());
     if (cfg.strand != StrandOption_DirectOnly/* && seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
@@ -358,7 +426,7 @@ Task* SWWorker::tick() {
             cfg.aminoTT = TTs.first(); //FIXME let user choose or use hints ?
         }
     }
-    
+
     // scoring matrix
     QString mtrx = actor->getParameter(MATRIX_ATTR)->getAttributeValue<QString>();
     if(mtrx.isEmpty()){
@@ -385,14 +453,14 @@ Task* SWWorker::tick() {
             return new FailTask(tr("Wrong matrix selected. Alphabets do not match"));
         }
     }
-    
+
     // algorithm
     QString algName = actor->getParameter(ALGO_ATTR)->getAttributeValue<QString>();
     SmithWatermanTaskFactory* algo = AppContext::getSmithWatermanTaskFactoryRegistry()->getFactory(algName);
     if (!algo) {
         return new FailTask(tr("SmithWaterman algorithm not found: %1").arg(algName));
     }
-    
+
     // for each pattern run smith-waterman
     QStringList ptrnStrList = ptrnStr.split(PATTERN_DELIMITER, QString::SkipEmptyParts);
     if(ptrnStrList.isEmpty()) {
@@ -404,11 +472,11 @@ Task* SWWorker::tick() {
         assert(!p.isEmpty());
         SmithWatermanSettings config(cfg);
         config.ptrn = p.toAscii();
-        
+
         SmithWatermanReportCallbackImpl* rcb = new SmithWatermanReportCallbackImpl( NULL, resultName, QString());
         config.resultCallback = rcb;
         config.resultListener = new SmithWatermanResultListener(); //FIXME: where to delete?
-        
+
         Task * swTask = algo->getTaskInstance(config, tr("smith_waterman_task"));
         rcb->setParent(swTask); // swTask will delete rcb
         callbacks.insert(swTask, rcb);
@@ -416,7 +484,7 @@ Task* SWWorker::tick() {
         subs << swTask;
     }
     assert(!subs.isEmpty());
-    
+
     MultiTask * multiSw = new MultiTask(tr("Smith waterman subtasks"), subs);
     connect(new TaskSignalMapper(multiSw), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
     return multiSw;
@@ -437,7 +505,7 @@ void SWWorker::sl_taskFinished(Task* t) {
         }
         ptrns << patterns.value(sub);
     }
-    
+
     assert(output != NULL);
     if(output) {
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(annData);

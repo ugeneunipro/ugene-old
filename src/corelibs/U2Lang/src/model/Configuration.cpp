@@ -98,7 +98,7 @@ bool Configuration::validate(QStringList& errorList) const {
         if( !a->isRequiredAttribute() ) {
             continue;
         }
-        if( a->isEmpty() || a->isEmptyString() ) {
+        if( (a->isEmpty() || a->isEmptyString()) &&a->getAttributeScript().isEmpty()) {
             good = false;
             errorList.append(U2::WorkflowUtils::tr("Required parameter is not set: %1").arg(a->getDisplayName()));
         }
