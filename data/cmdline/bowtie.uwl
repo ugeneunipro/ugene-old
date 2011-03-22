@@ -13,9 +13,11 @@ workflow "Bowtie aligner"{
         type:bowtie-read-index;
         name:"Bowtie index reader";
     }
-    bowtie {
+    bowtie2 {
         type:bowtie;
         name:"Bowtie aligner";
+        all:false;
+        best:false;
         chunk-mbs:64;
         maq-err:70;
         max-backtracks:-1;
@@ -35,31 +37,34 @@ workflow "Bowtie aligner"{
         write-mode:2;
     }
 
-    bowtie-read-index.ebwt-index->bowtie.in-ebwt.ebwt-index
-    read-sequence.sequence->bowtie.in-sequence.sequence
-    bowtie.msa->write-msa.in-msa.msa
+    bowtie-read-index.ebwt-index->bowtie2.in-ebwt.ebwt-index
+    read-sequence.sequence->bowtie2.in-sequence.sequence
+    bowtie2.msa->write-msa.in-msa.msa
 
     .meta {
         aliases {
             read-sequence.url-in:reads;
             bowtie-read-index.url-ebwt:ebwt;
-            bowtie.chunk-mbs:chunkmbs;
-            bowtie.maq-err:maqerr;
-            bowtie.max-backtracks:maxbts;
-            bowtie.mismatches-num:mismatches-num;
-            bowtie.no-forward:nofw;
-            bowtie.no-maq-rounding:nomaqround;
-            bowtie.no-reverse-complemented:norc;
-            bowtie.report-with-mismatches:report-with-mismatches;
-            bowtie.seed:seed;
-            bowtie.seed-length:seedlen;
-            bowtie.try-hard:tryhard;
+            bowtie2.best:best;
+            bowtie2.chunk-mbs:chunkmbs;
+            bowtie2.maq-err:maqerr;
+            bowtie2.max-backtracks:maxbts;
+            bowtie2.mismatches-num:mismatches-num;
+            bowtie2.no-forward:nofw;
+            bowtie2.no-maq-rounding:nomaqround;
+            bowtie2.no-reverse-complemented:norc;
+            bowtie2.report-with-mismatches:report-with-mismatches;
+            bowtie2.seed:seed;
+            bowtie2.seed-length:seedlen;
+            bowtie2.try-hard:tryhard;
             write-msa.document-format:format;
             write-msa.url-out:out;
         }
         help {
             reads:"Input reads";
             ebwt:"Input Bowtie index";
+            out:"Output alignment";
+            format:"Document format of output alignment";
             chunkmbs:"The number of megabytes of memory to store path descriptors";
             maqerr:"Maximum permitted total of quality values at all mismatched read positions throughout the entire alignment, not just in the 'seed'";
             maxbts:"The maximum number of backtracks permitted when aligning a read in -n 2 or -n 3 mode";
@@ -71,27 +76,29 @@ workflow "Bowtie aligner"{
             seed:"Seed for pseudo-random number generator";
             seedlen:"The number of bases on the high-quality end of the read to which the -n ceiling applies";
             tryhard:"Try as hard as possible to find valid alignments when they exist, including paired-end alignments";
-            format:"Document format of output alignment";
-            out:"Output alignment";
+            best:"Guarantees that reported singleton alignments are best in terms of stratum.";
         }
         visual {
             read-sequence {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
                 tooltip:"Reads sequences and annotations if any from local or remote files.";
-                pos:"-780 -735";
+                pos:"-765 -720";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             bowtie-read-index {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Bowtie index reader</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Read ebwt index from and send it url to output.</p></body></html>";
                 tooltip:"Read a set of 6 files with suffixes .1.ebwt, .2.ebwt, .3.ebwt, .4.ebwt, .rev.1.ebwt, and .rev.2.ebwt. These files together constitute the index: they are all that is needed to align reads to that reference.";
-                pos:"-780 -525";
+                pos:"-765 -510";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-ebwt.angle:360;
             }
-            bowtie {
+            bowtie2 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Bowtie aligner</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Align short reads to the reference genome and send it to output.</p></body></html>";
                 tooltip:"An ultrafast memory-efficient short read aligner, http://bowtie-bio.sourceforge.net";
-                pos:"-585 -630";
+                pos:"-570 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-ebwt.angle:229.764;
@@ -99,19 +106,20 @@ workflow "Bowtie aligner"{
                 out-msa.angle:360;
             }
             write-msa {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all MSAs from <span style=' text-decoration: underline;'>Bowtie aligner</span> to <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
                 tooltip:"Writes all supplied alignments to file(s) in selected format";
-                pos:"-345 -630";
+                pos:"-330 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
             }
-            read-sequence.out-sequence->bowtie.in-sequence {
+            read-sequence.out-sequence->bowtie2.in-sequence {
                 text-pos:"-22.5 -28";
             }
-            bowtie-read-index.out-ebwt->bowtie.in-ebwt {
+            bowtie-read-index.out-ebwt->bowtie2.in-ebwt {
                 text-pos:"-32.5 -4";
             }
-            bowtie.out-msa->write-msa.in-msa {
+            bowtie2.out-msa->write-msa.in-msa {
                 text-pos:"-45 -37";
             }
         }
