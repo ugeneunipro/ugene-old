@@ -22,7 +22,8 @@
 #ifndef _GENOME_ALIGNER_IO_H_
 #define _GENOME_ALIGNER_IO_H_
 
-#include <QString>
+
+#include "GenomeAlignerSearchQuery.h"
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GUrl.h>
@@ -33,7 +34,9 @@
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
-#include "GenomeAlignerSearchQuery.h"
+#include <QtCore/QString>
+
+#include <memory>
 
 namespace U2 {
 

@@ -21,6 +21,13 @@
 
 #include "AssemblyBrowser.h"
 
+#include "AssemblyBrowserFactory.h"
+#include "AssemblyOverview.h"
+#include "AssemblyReferenceArea.h"
+#include "AssemblyDensityGraph.h"
+#include "AssemblyRuler.h"
+#include "AssemblyReadsArea.h"
+
 #include <U2Core/U2Type.h>
 #include <U2Core/U2DbiUtils.h>
 
@@ -42,12 +49,7 @@
 
 #include <U2Misc/DialogUtils.h>
 
-#include "AssemblyBrowserFactory.h"
-#include "AssemblyOverview.h"
-#include "AssemblyReferenceArea.h"
-#include "AssemblyDensityGraph.h"
-#include "AssemblyRuler.h"
-#include "AssemblyReadsArea.h"
+#include <memory>
 
 namespace U2 {
 
