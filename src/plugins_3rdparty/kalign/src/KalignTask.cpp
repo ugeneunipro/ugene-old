@@ -67,7 +67,9 @@ KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config)
     inputSubMA = inputMA;
     resultSubMA.setAlphabet(inputSubMA.getAlphabet());
     tpm = Task::Progress_Manual;
-    //TODO: add task resource usage
+    quint64 mem = inputMA.getNumRows() * sizeof(float);
+    TaskResourceUsage tru(RESOURCE_MEMORY,  (mem * mem + 3 * mem) / (1024 * 1024));
+    taskResources.append(tru);
 }
 
 void KalignTask::_run() {
