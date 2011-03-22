@@ -72,14 +72,14 @@ void GenomeAlignerFindTask::prepareBitValues() {
         maxNMismatches, maxPtMismatches, settings->minReadLength, settings->maxReadLength);
     for (QueryIter it=settings->queries.begin(); it!=settings->queries.end(); it++, readNum++) {
         qu = *it;
-        W = qu->shortRead.length();
+        W = qu->length();
         if (!settings->absMismatches) {
             CMAX = (W * maxPtMismatches) / MAX_PERCENTAGE;
         }
         q = W / (CMAX + 1);
         assert(q >= w);
 
-        const char* querySeq = qu->shortRead.constData();
+        const char* querySeq = qu->constData();
         for (int i = 0; i < W - w + 1; i+=q) {
             const char *seq = querySeq + i;
             settings->bitValuesV.push_back(index->getBitValue(seq, qMin(GenomeAlignerIndex::charsInMask, W - i)));
@@ -390,7 +390,7 @@ void FindInPartSubTask::run() {
         if (!settings->queries.at(readNum)->results.isEmpty() && settings->bestMode) {
             continue;
         }
-        index->findInPart(refFile, settings->queries.at(readNum)->shortRead.constSequence(), positionsAtRead[i],
+        index->findInPart(refFile, settings->queries.at(readNum)->constSequence(), positionsAtRead[i],
             bitMaskResults[i], bitValues[i], settings->queries.at(readNum)->results, settings);
     }
     refFile->close();

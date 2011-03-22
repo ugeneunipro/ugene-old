@@ -44,8 +44,8 @@ bool GenomeAlignerUrlReader::isEnd() {
     return !reader.hasNext();
 }
 
-const DNASequenceObject *GenomeAlignerUrlReader::read() {
-    return reader.getNextSequenceObject();
+SearchQuery *GenomeAlignerUrlReader::read() {
+    return new SearchQuery(reader.getNextSequenceObject()->getDNASequence());
 }
 
 /************************************************************************/
@@ -58,8 +58,8 @@ GenomeAlignerUrlWriter::GenomeAlignerUrlWriter(const GUrl &resultFile, const QSt
     writtenReadsCount = 0;
 }
 
-void GenomeAlignerUrlWriter::write(const DNASequence &seq, quint32 offset) {
-    seqWriter.writeNextAlignedRead(offset, seq);
+void GenomeAlignerUrlWriter::write(SearchQuery *seq, quint32 offset) {
+    seqWriter.writeNextAlignedRead(offset, seq->getSequence());
     writtenReadsCount++;
 }
 
@@ -88,11 +88,10 @@ bool GenomeAlignerCommunicationChanelReader::isEnd() {
     return !reads->hasMessage() || reads->isEnded();
 }
 
-const DNASequenceObject *GenomeAlignerCommunicationChanelReader::read() {
+SearchQuery *GenomeAlignerCommunicationChanelReader::read() {
     DNASequence seq = reads->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-    obj->setSequence(seq);
     
-    return obj;
+    return new SearchQuery(seq);
 }
 
 GenomeAlignerCommunicationChanelReader::~GenomeAlignerCommunicationChanelReader() {
@@ -115,12 +114,12 @@ MAlignment& GenomeAlignerMAlignmentWriter::getResult() {
     return result;
 }
 
-void GenomeAlignerMAlignmentWriter::write(const DNASequence& seq, quint32 offset) {
+void GenomeAlignerMAlignmentWriter::write(SearchQuery *seq, quint32 offset) {
     MAlignmentRow row;
-    row.setName(seq.getName());
-    row.setSequence(seq.seq, offset);
-    if (seq.quality.qualCodes.length() > 0) {
-        row.setQuality(seq.quality);
+    row.setName(seq->getName());
+    row.setSequence(seq->constSequence(), offset);
+    if (seq->getQuality().qualCodes.length() > 0) {
+        row.setQuality(seq->getQuality());
     }
     result.addRow(row);
     writtenReadsCount++;
@@ -149,7 +148,7 @@ GenomeAlignerDbiReader::GenomeAlignerDbiReader(U2AssemblyDbi *_rDbi, U2Assembly 
     readNumber = 0;
     maxRow = rDbi->getMaxPackedRow(assembly.id, wholeAssembly, status);
 
-    qint64 readsInAssembly = rDbi->countReadsAt(assembly.id, wholeAssembly, status);
+    readsInAssembly = rDbi->countReadsAt(assembly.id, wholeAssembly, status);
     if (readsInAssembly <= 0 || status.hasError()) {
         uiLog.error(QString("Genome Aligner -> Database Error: " + status.getError()).toAscii().data());
         end = true;
@@ -159,20 +158,14 @@ GenomeAlignerDbiReader::GenomeAlignerDbiReader(U2AssemblyDbi *_rDbi, U2Assembly 
     end = false;
 }
 
-const DNASequenceObject *GenomeAlignerDbiReader::read() {
+SearchQuery *GenomeAlignerDbiReader::read() {
     if (end) {
         return NULL;
     }
 
     if (currentRead == reads.end()) {
         currentIteration ++;
-        /*if (currentRow >= maxRow) {
-            end = true;
-            return NULL;
-        }*/
         reads = rDbi->getReadsAt(assembly.id, wholeAssembly, currentIteration*readBunchSize, readBunchSize, status);
-        static int count = 0;
-        count += reads.size();
         currentRead = reads.begin();
 
         if (reads.size() <= 0) {
@@ -182,18 +175,71 @@ const DNASequenceObject *GenomeAlignerDbiReader::read() {
     }
 
     U2AssemblyRead &read = *currentRead;
-    quint64 idd = read.sequenceId;
-    QString seqName = QString("r.%1").arg(readNumber);
-    obj->setSequence(DNASequence(seqName, read.readSequence));
 
     currentRead++;
     readNumber++;
     
-    return obj;
+    return new SearchQuery(read);
 }
 
 bool GenomeAlignerDbiReader::isEnd() {
     return end;
+}
+
+/************************************************************************/
+/* GenomeAlignerDbiWriter                                               */
+/************************************************************************/
+const qint64 GenomeAlignerDbiWriter::readBunchSize = 1000;
+
+GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(U2AssemblyDbi *_wDbi, U2Assembly _assembly)
+: wDbi(_wDbi), assembly(_assembly)
+{
+    wholeAssembly.startPos = 0;
+    wholeAssembly.length = wDbi->getMaxEndPos(assembly.id, status);
+    maxRow = wDbi->getMaxPackedRow(assembly.id, wholeAssembly, status);
+    readsInAssembly = wDbi->countReadsAt(assembly.id, wholeAssembly, status);
+    currentRow = maxRow;
+}
+
+void GenomeAlignerDbiWriter::write(SearchQuery *seq, quint32 offset) {
+    U2AssemblyRead read;
+    read.readSequence = seq->constSequence();
+    read.leftmostPos = offset;
+    read.cigar.append(U2CigarToken(U2CigarOp_M, seq->length()));
+    read.packedViewRow = currentRow;
+    currentRow++;
+
+    reads.append(read);
+    if (reads.size() >= readBunchSize) {
+        wDbi->addReads(assembly.id, reads, status);
+        reads.clear();
+    }
+}
+
+void GenomeAlignerDbiWriter::close() {
+    if (reads.size() > 0) {
+        wDbi->addReads(assembly.id, reads, status);
+        reads.clear();
+    }
+
+
+    QList<U2DataId> ids;
+    qint64 toRead = 0;
+    for (qint64 count = 0; count < readsInAssembly;) {
+        toRead = qMin((readsInAssembly - count), readBunchSize);
+        ids = wDbi->getReadIdsAt(assembly.id, wholeAssembly, 0, toRead, status);
+        count += toRead;
+        wDbi->removeReads(assembly.id, ids.mid(0, toRead), status);
+        ids.clear();
+    }
+    //wDbi->pack(assembly.id, status);
+}
+
+bool checkAndLogError(const U2OpStatusImpl & status) {
+    if(status.hasError()) {
+        uiLog.error(QString(QString("Genome Aligner -> Database Error: " + status.getError()).toAscii().data()));
+    }
+    return status.hasError();
 }
 
 } //U2

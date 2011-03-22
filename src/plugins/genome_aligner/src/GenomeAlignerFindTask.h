@@ -22,9 +22,12 @@
 #ifndef _U2_GENOME_ALIGNER_FIND_TASK_H_
 #define _U2_GENOME_ALIGNER_FIND_TASK_H_
 
+#include "GenomeAlignerSearchQuery.h"
+
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/U2AssemblyUtils.h>
 
 #include <QtCore/QMutex>
 #include <QVector>
@@ -37,20 +40,6 @@ namespace U2 {
 class GenomeAlignerIndex;
 class FindInPartSubTask;
 class PrepareVectorsSubTask;
-
-class CacheResult {
-public:
-    int posAtShortRead;
-    int numberOfPart;
-    quint64 bitValue;
-};
-
-class SearchQuery {
-public:
-    DNASequence shortRead;
-    QList<CacheResult> cacheResults; //must be sorted by numberOfPart
-    QList<quint32> results;
-};
 
 class SearchContext {
 public:

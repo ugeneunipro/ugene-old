@@ -33,6 +33,8 @@
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
+#include "GenomeAlignerSearchQuery.h"
+
 namespace U2 {
 
 /************************************************************************/
@@ -42,16 +44,16 @@ namespace U2 {
 class GenomeAlignerReader {
 public:
     virtual ~GenomeAlignerReader() {}
-    virtual const DNASequenceObject *read() = 0;
+    virtual SearchQuery *read() = 0;
     virtual bool isEnd() = 0;
 };
 
 class GenomeAlignerWriter {
 public:
-    virtual void write(const DNASequence &seq, quint32 offset) = 0;
+    virtual void write(SearchQuery *seq, quint32 offset) = 0;
     virtual void close() = 0;
     virtual void setReferenceName(const QString &refName) = 0;
-    quint64 getWrittenReadsCount() {return writtenReadsCount;}
+    quint64 getWrittenReadsCount() const {return writtenReadsCount;}
 protected:
     quint64 writtenReadsCount;
     QString refName;
@@ -85,7 +87,7 @@ public:
 class GenomeAlignerUrlReader : public GenomeAlignerReader {
 public:
     GenomeAlignerUrlReader(const QList<GUrl> &dnaList);
-    inline const DNASequenceObject *read();
+    inline SearchQuery *read();
     inline bool isEnd();
 private:
     bool initOk;
@@ -95,7 +97,7 @@ private:
 class GenomeAlignerUrlWriter : public GenomeAlignerWriter {
 public:
     GenomeAlignerUrlWriter(const GUrl &resultFile, const QString &refName);
-    inline void write(const DNASequence &seq, quint32 offset);
+    inline void write(SearchQuery *seq, quint32 offset);
     void close();
     void setReferenceName(const QString &refName);
 private:
@@ -111,7 +113,7 @@ class GenomeAlignerCommunicationChanelReader : public GenomeAlignerReader {
 public:
     GenomeAlignerCommunicationChanelReader(CommunicationChannel* reads);
     ~GenomeAlignerCommunicationChanelReader();
-    inline const DNASequenceObject *read();
+    inline SearchQuery *read();
     inline bool isEnd();
 private:
     CommunicationChannel* reads;
@@ -121,7 +123,7 @@ private:
 class GenomeAlignerMAlignmentWriter : public GenomeAlignerWriter {
 public:
     GenomeAlignerMAlignmentWriter();
-    inline void write(const DNASequence &seq, quint32 offset);
+    inline void write(SearchQuery *seq, quint32 offset);
     void close();
     void setReferenceName(const QString &refName);
     MAlignment &getResult();
@@ -137,7 +139,7 @@ private:
 class GenomeAlignerDbiReader : public GenomeAlignerReader {
 public:
     GenomeAlignerDbiReader(U2AssemblyDbi *rDbi, U2Assembly assembly);
-    inline const DNASequenceObject *read();
+    inline SearchQuery *read();
     inline bool isEnd();
 private:
     bool end;
@@ -151,9 +153,32 @@ private:
     int currentIteration;
     qint64 readNumber;
     qint64 maxRow;
+    qint64 readsInAssembly;
 
     static const qint64 readBunchSize;
 };
+
+class GenomeAlignerDbiWriter : public GenomeAlignerWriter {
+public:
+    GenomeAlignerDbiWriter(U2AssemblyDbi *wDbi, U2Assembly assembly);
+    inline void write(SearchQuery *seq, quint32 offset);
+    void close();
+    void setReferenceName(const QString &) {};
+private:
+    U2AssemblyDbi *wDbi;
+    U2Assembly assembly;
+    U2Assembly newAssembly;
+    QList<U2AssemblyRead> reads;
+    U2Region wholeAssembly;
+    U2OpStatusImpl status;
+    qint64 maxRow;
+    qint64 currentRow;
+    qint64 readsInAssembly;
+
+    static const qint64 readBunchSize;
+};
+
+bool checkAndLogError(const U2OpStatusImpl & status);
 
 } //U2
 Q_DECLARE_METATYPE(U2::GenomeAlignerReaderContainer);

@@ -88,7 +88,7 @@ private:
     GenomeAlignerIndex *index;
     int qualityThreshold;
     QVector<SearchQuery*> queries;
-    const DNASequenceObject *lastObj;
+    SearchQuery *lastQuery;
 
     void setupCreateIndexTask();
 };
@@ -96,7 +96,7 @@ private:
 class ReadShortReadsSubTask : public Task {
     Q_OBJECT
 public:
-    ReadShortReadsSubTask(const DNASequenceObject **lastObj,
+    ReadShortReadsSubTask(SearchQuery **lastQuery,
                           GenomeAlignerReader *seqReader,
                           QVector<SearchQuery*> &queries,
                           const DnaAssemblyToRefTaskSettings& settings,
@@ -109,7 +109,7 @@ public:
     int maxReadLength;
 
 private:
-    const DNASequenceObject **lastObj;
+    SearchQuery **lastQuery;
     GenomeAlignerReader *seqReader;
     QVector<SearchQuery*> &queries;
     const DnaAssemblyToRefTaskSettings &settings;

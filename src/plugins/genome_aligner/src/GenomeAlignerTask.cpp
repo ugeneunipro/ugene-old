@@ -66,7 +66,7 @@ GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settin
 : DnaAssemblyToReferenceTask(settings, TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported, _justBuildIndex),
 loadDbiTask(NULL), createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), seqReader(NULL),
 seqWriter(NULL), handle(NULL),
-justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastObj(NULL)
+justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQuery(NULL)
 {
     GCOUNTER(cvar,tvar, "GenomeAlignerTask");  
     // TODO: check every time we load
@@ -178,7 +178,8 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         U2Dbi *dbi = handle->dbi;
         U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(assObj->getDbiRef().entityId, status);
         seqReader = new GenomeAlignerDbiReader(dbi->getAssemblyDbi(), assm);
-        seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, settings.refSeqUrl.baseFileName());
+        seqWriter = new GenomeAlignerDbiWriter(dbi->getAssemblyDbi(), assm);
+        //seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, settings.refSeqUrl.baseFileName());
         
         setupCreateIndexTask();
         subTasks.append(createIndexTask);
@@ -201,7 +202,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
             taskLog.details(QString("Results writing time: %1").arg((double)time/(1000*1000)));
         }
         // Read next bunch of sequences
-        readTask = new ReadShortReadsSubTask(&lastObj, seqReader, queries, settings,
+        readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, queries, settings,
             createIndexTask->getFreeMemSize(), createIndexTask->getFreeGPUSize());
         if (prebuiltIdx) {
             readTask->setSubtaskProgressWeight(0.33f);
@@ -255,10 +256,10 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
 }
 
 
-static bool isDnaQualityAboveThreshold(const DNASequence& dna, int threshold) {
-    assert(!dna.quality.isEmpty());
-    for (int i = 0; i < dna.length(); ++i) {
-        int qValue = dna.quality.getValue(i);
+static bool isDnaQualityAboveThreshold(const DNAQuality &dna, int threshold) {
+    assert(!dna.isEmpty());
+    for (int i = 0; i < dna.qualCodes.length(); ++i) {
+        int qValue = dna.getValue(i);
         if (qValue < threshold) {
             return false;
         }
@@ -369,13 +370,13 @@ QString GenomeAlignerTask::getIndexPath() {
     return indexFileName;
 }
 
-ReadShortReadsSubTask::ReadShortReadsSubTask(const DNASequenceObject **_lastObj,
+ReadShortReadsSubTask::ReadShortReadsSubTask(SearchQuery **_lastQuery,
                                              GenomeAlignerReader *_seqReader,
                                              QVector<SearchQuery*> &_queries,
                                              const DnaAssemblyToRefTaskSettings &_settings,
                                              quint64 m,
                                              quint64 g)
-: Task("ReadShortReadsSubTask", TaskFlag_None), lastObj(_lastObj),
+: Task("ReadShortReadsSubTask", TaskFlag_None), lastQuery(_lastQuery),
 seqReader(_seqReader), queries(_queries), settings(_settings),
 freeMemorySize(m), freeGPUSize(g)
 {
@@ -404,56 +405,53 @@ void ReadShortReadsSubTask::run() {
     int n = 0;
 
     while(!seqReader->isEnd()) {
-        const DNASequenceObject *obj = NULL;
-        if (NULL == *lastObj) {
-            obj = seqReader->read();
+        SearchQuery *query = NULL;
+        if (NULL == *lastQuery) {
+            query = seqReader->read();
         } else {
-            obj = *lastObj;
+            query = *lastQuery;
         }
-        if (NULL == obj) {
+        if (NULL == query) {
             if (!seqReader->isEnd()) {
                 setError("Short-reads object type must be a sequence, but not a multiple alignment");
             }
             return;
         }
-        const DNASequence& seq = obj->getDNASequence();
-        if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH > seq.length()) {
+
+        if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH > query->length()) {
             continue;
         }
-        if (minReadLength > seq.length()) {
-            minReadLength = seq.length();
+        if (minReadLength > query->length()) {
+            minReadLength = query->length();
         }
-        if (maxReadLength < seq.length()) {
-            maxReadLength = seq.length();
+        if (maxReadLength < query->length()) {
+            maxReadLength = query->length();
         }
-        if ( qualityThreshold > 0 && seq.hasQualityScores() ) {
+        if ( qualityThreshold > 0 && query->hasQuality() ) {
             // simple quality filtering
-            bool ok = isDnaQualityAboveThreshold(seq, qualityThreshold);
+            bool ok = isDnaQualityAboveThreshold(query->getQuality(), qualityThreshold);
             if (!ok) {
                 continue;
             }
         }
 
-        n = absMismatches ? nMismatches+1 : (seq.length()*ptMismatches/100)+1;
+        n = absMismatches ? nMismatches+1 : (query->length()*ptMismatches/100)+1;
         if (alignReversed) {
             g -= 2*n*8;
-            m -= 2*(n*24 + ONE_SEARCH_QUERY_SIZE + seq.length() + seq.getName().length());  // 2*(long long + int) == 24
+            m -= 2*(n*24 + ONE_SEARCH_QUERY_SIZE + query->length() + query->getName().length());  // 2*(long long + int) == 24
         } else {
             g -= n*8; //long long == 8
-            m -= n*24 + ONE_SEARCH_QUERY_SIZE + seq.length() + seq.getName().length();
+            m -= n*24 + ONE_SEARCH_QUERY_SIZE + query->length() + query->getName().length();
         }
         if (m<=0 || (openCL && g<=0)) {
-            delete *lastObj;
-            *lastObj = new DNASequenceObject(obj->getGObjectName(), obj->getDNASequence());
+            delete *lastQuery;
+            *lastQuery = query;
             break;
         }
 
-        SearchQuery *qu = new SearchQuery();
-        qu->shortRead = seq;
-        GTIMER(cvar1, tvar1, "vector::append");
-        queries.append(qu);
+        queries.append(query);
         ++bunchSize;
-        *lastObj = NULL;
+        *lastQuery = NULL;
     }
 
     if (bunchSize == 0) {
@@ -464,12 +462,11 @@ void ReadShortReadsSubTask::run() {
         DNATranslation* transl = AppContext::getDNATranslationRegistry()->
             lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);
         foreach (SearchQuery *qu, queries) {
-            QByteArray reversed(qu->shortRead.seq);
+            QByteArray reversed(qu->constSequence());
             TextUtils::reverse(reversed.data(), reversed.count());
-            SearchQuery *rQu = new SearchQuery();
-            rQu->shortRead = DNASequence(QString("%1 rev").arg(qu->shortRead.getName()), reversed, NULL);
-            transl->translate(rQu->shortRead.seq.data(), rQu->shortRead.length());
-            if (rQu->shortRead.seq != qu->shortRead.seq) {
+            SearchQuery *rQu = new SearchQuery(DNASequence(QString("%1 rev").arg(qu->getName()), reversed, NULL));
+            transl->translate(rQu->data(), rQu->length());
+            if (rQu->constSequence() != qu->constSequence()) {
                 queries.append(rQu);
                 ++bunchSize;
             } else {
@@ -488,9 +485,8 @@ WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWrit
 void WriteAlignedReadsSubTask::run() {
     foreach (SearchQuery *qu, queries) {
         QList<quint32> findResults = qu->results;
-        const DNASequence& seq = qu->shortRead; 
         foreach (quint32 offset, findResults) {
-            seqWriter->write(seq, offset);
+            seqWriter->write(qu, offset);
         }
     }
 }
