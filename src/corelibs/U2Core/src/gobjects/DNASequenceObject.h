@@ -26,11 +26,10 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequence.h>
-#include <U2Core/U2AbstractDbi.h>
 
 namespace U2 {
 
-class  U2CORE_EXPORT DNASequenceObject: public GObject, public U2SimpleSequenceDbi {
+class  U2CORE_EXPORT DNASequenceObject: public GObject {
     Q_OBJECT
 public:
     DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap = QVariantMap());
@@ -62,16 +61,6 @@ public:
     bool isCircular() const {return dnaSeq.circular;}
 
     void setCircular(bool val);
-
-
-    /** Reads sequence object from database */
-    virtual U2Sequence getSequenceObject(U2DataId sequenceId, U2OpStatus& os);
-    
-    /**  
-    Reads specified sequence data region from database.
-    The region must be valid region within sequence bounds.
-    */
-    virtual QByteArray getSequenceData(U2DataId sequenceId, const U2Region& region, U2OpStatus& os);
 
 signals:
     void si_sequenceChanged();

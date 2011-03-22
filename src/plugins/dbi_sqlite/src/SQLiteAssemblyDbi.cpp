@@ -63,7 +63,7 @@ static bool isComplementaryRead(qint64 flags) {
 }
 
 
-void SQLiteAssemblyDbi::createReadsTable(U2DataId id, U2OpStatus& os) {
+void SQLiteAssemblyDbi::createReadsTable(const U2DataId& id, U2OpStatus& os) {
     // id -> read id
     // sequence -> sequence object id (if read is represented as a sequence)
     // prow -> packed row position
@@ -85,7 +85,7 @@ void SQLiteAssemblyDbi::createReadsTable(U2DataId id, U2OpStatus& os) {
     SQLiteQuery(q.arg(tableName), db, os).execute();
 }
 
-void SQLiteAssemblyDbi::createReadsIndexes(U2DataId id, U2OpStatus& os) {
+void SQLiteAssemblyDbi::createReadsIndexes(const U2DataId& id, U2OpStatus& os) {
     QString tableName = getReadsTableName(id);
 
     SQLiteQuery(QString("CREATE INDEX %1_gstart ON %1(gstart)").arg(tableName), db, os).execute();
@@ -96,7 +96,7 @@ void SQLiteAssemblyDbi::createReadsIndexes(U2DataId id, U2OpStatus& os) {
 }
 
 
-U2Assembly SQLiteAssemblyDbi::getAssemblyObject(U2DataId assemblyId, U2OpStatus& os) {
+U2Assembly SQLiteAssemblyDbi::getAssemblyObject(const U2DataId& assemblyId, U2OpStatus& os) {
     U2Assembly res(assemblyId, dbi->getDbiId(), 0);
     SQLiteQuery q("SELECT Assembly.reference, Object.name, Object.version FROM Assembly, Object "
                 " WHERE Object.id = ?1 AND Assembly.object = Object.id", db, os);
@@ -110,7 +110,7 @@ U2Assembly SQLiteAssemblyDbi::getAssemblyObject(U2DataId assemblyId, U2OpStatus&
     return res;
 }
 
-QString SQLiteAssemblyDbi::getReadsTableName(U2DataId id) {
+QString SQLiteAssemblyDbi::getReadsTableName(const U2DataId& id) {
     int dbId = SQLiteUtils::toDbiId(id);
     QString result = QString("AssemblyRead_%1").arg(dbId);
     return result;
@@ -119,14 +119,14 @@ QString SQLiteAssemblyDbi::getReadsTableName(U2DataId id) {
 // TODO: implement efficient tree-like structure that will keep assembly read length mapping per range
 #define MAX_READ_LENGTH 500
 
-qint64 SQLiteAssemblyDbi::getMaximumReadLengthInRegion(U2DataId assemblyId, const U2Region& r, U2OpStatus& os) {
+qint64 SQLiteAssemblyDbi::getMaximumReadLengthInRegion(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     // in v1.0 lextra keep max read length per whole assembly
     SQLiteQuery q("SELECT lextra FROM Assembly WHERE object = ?1", db, os);
     q.bindDataId(1, assemblyId);
     return q.selectInt64(MAX_READ_LENGTH);
 }
 
-void SQLiteAssemblyDbi::setMaximumReadLengthInRegion(U2DataId assemblyId, const U2Region& r, int val, U2OpStatus& os) {
+void SQLiteAssemblyDbi::setMaximumReadLengthInRegion(const U2DataId& assemblyId, const U2Region& r, int val, U2OpStatus& os) {
     // in v1.0 lextra keep max read length per whole assembly
     SQLiteQuery q("UPDATE Assembly SET lextra = ?1 WHERE object = ?2", db, os);
     q.bindInt32(1, val);
@@ -134,7 +134,7 @@ void SQLiteAssemblyDbi::setMaximumReadLengthInRegion(U2DataId assemblyId, const 
     q.execute();
 }
 
-qint64 SQLiteAssemblyDbi::countReadsAt(U2DataId assemblyId, const U2Region& r, U2OpStatus& os) {
+qint64 SQLiteAssemblyDbi::countReadsAt(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::countReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::countReadsAt");
     QString readsTable = getReadsTableName(assemblyId);
@@ -145,7 +145,7 @@ qint64 SQLiteAssemblyDbi::countReadsAt(U2DataId assemblyId, const U2Region& r, U
     return q.selectInt64();
 }
 
-QList<U2DataId> SQLiteAssemblyDbi::getReadIdsAt(U2DataId assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) {
+QList<U2DataId> SQLiteAssemblyDbi::getReadIdsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) {
     QString readsTable = getReadsTableName(assemblyId);
     qint64 maxReadLen = getMaximumReadLengthInRegion(assemblyId, r, os);
     SQLiteQuery q(QString("SELECT id FROM %1 WHERE gstart >= ?1 AND gstart < ?2").arg(readsTable), db, os);
@@ -215,7 +215,7 @@ QString SQLiteAssemblyDbi::getReadFields() const {
     }
 }
 
-QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsAt(U2DataId assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) {
+QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
     QString readsTable = getReadsTableName(assemblyId);
@@ -226,7 +226,7 @@ QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsAt(U2DataId assemblyId, const U
     return readRows(q, os);
 }
 
-U2AssemblyRead SQLiteAssemblyDbi::getReadById(U2DataId rowId, U2OpStatus& os){
+U2AssemblyRead SQLiteAssemblyDbi::getReadById(const U2DataId& rowId, U2OpStatus& os){
     U2AssemblyRead row(new U2AssemblyReadData());
     SQLiteQuery q("SELECT " + getReadFields() + "  FROM AssemblyRead WHERE id = ?1", db, os);
     q.bindDataId(1, rowId);
@@ -234,7 +234,7 @@ U2AssemblyRead SQLiteAssemblyDbi::getReadById(U2DataId rowId, U2OpStatus& os){
     return row;
 }
 
-qint64 SQLiteAssemblyDbi::getMaxPackedRow(U2DataId assemblyId, const U2Region& r, U2OpStatus& os) {
+qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     QString readsTable = getReadsTableName(assemblyId);
     qint64 maxReadLen = getMaximumReadLengthInRegion(assemblyId, r, os);
     SQLiteQuery q(QString("SELECT MAX(prow) FROM %1 WHERE gstart >= ?1 AND gstart < ?2").arg(readsTable), db, os);
@@ -243,7 +243,7 @@ qint64 SQLiteAssemblyDbi::getMaxPackedRow(U2DataId assemblyId, const U2Region& r
     return q.selectInt64();
 }
 
-QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsByRow(U2DataId assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
+QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
     QString readsTable = getReadsTableName(assemblyId);
     qint64 maxReadLen = getMaximumReadLengthInRegion(assemblyId, r, os);
     SQLiteQuery q(QString("SELECT " + getReadFields() + " FROM %1 WHERE "
@@ -257,7 +257,7 @@ QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsByRow(U2DataId assemblyId, cons
 }
 
     
-quint64 SQLiteAssemblyDbi::getMaxEndPos(U2DataId assemblyId, U2OpStatus& os) {
+quint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) {
     //TODO: cache value in assembly structure?
     return SQLiteQuery(QString("SELECT MAX(gstart + elen) FROM %1").arg(getReadsTableName(assemblyId)), db, os).selectInt64();
 }
@@ -298,7 +298,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     createReadsIndexes(assembly.id, os);
 }
     
-void SQLiteAssemblyDbi::removeReads(U2DataId assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
+void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
     SQLiteObjectDbi* objDbi = dbi->getSQLiteObjectDbi();
     QString readsTable = getReadsTableName(assemblyId);
     SQLiteQuery selectSequenceQuery(QString("SELECT sequence FROM %1 WHERE id = ?1").arg(readsTable), db, os);
@@ -323,7 +323,7 @@ void SQLiteAssemblyDbi::removeReads(U2DataId assemblyId, const QList<U2DataId>& 
     SQLiteObjectDbi::incrementVersion(assemblyId, db, os);
 }
 
-void SQLiteAssemblyDbi::addReads(U2DataId assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) {
+void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) {
     int maxReadLength = getMaximumReadLengthInRegion(assemblyId, U2Region(), os);
     int oldMaxReadLength = maxReadLength;
     if (os.hasError()) {
@@ -419,7 +419,7 @@ static qint64 selectProw(qint64* tails, qint64 start, qint64 end ){
 
 
 /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
-void SQLiteAssemblyDbi::pack(U2DataId assemblyId, U2OpStatus& os) {
+void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2OpStatus& os) {
     //Algorithm idea: 
     //  select * reads ordered by start position
     //  keep tack (tail) of used rows to assign packed row for reads (N elements)

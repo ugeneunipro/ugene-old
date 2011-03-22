@@ -52,7 +52,7 @@ QList<U2DataId> SQLiteObjectDbi::getObjects(U2DataType type, qint64 offset, qint
     return q.selectDataIdsExt();
 }
 
-QList<U2DataId> SQLiteObjectDbi::getParents(U2DataId entityId, U2OpStatus& os) {
+QList<U2DataId> SQLiteObjectDbi::getParents(const U2DataId& entityId, U2OpStatus& os) {
     SQLiteQuery q("SELECT o.id AS id, o.type AS type FROM Parent AS p, Object AS o WHERE p.child = ?1 and p.parent = o.id", db, os);
     q.bindDataId(1, entityId);
     return q.selectDataIdsExt();
@@ -62,7 +62,7 @@ QList<U2DataId> SQLiteObjectDbi::getParents(U2DataId entityId, U2OpStatus& os) {
 //////////////////////////////////////////////////////////////////////////
 // Write methods for objects
 
-void SQLiteObjectDbi::removeObject(U2DataId dataId, const QString& folder, U2OpStatus& os) {
+void SQLiteObjectDbi::removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) {
     removeObjectImpl(dataId, folder, os);
     if (os.hasError()) {
         return;
@@ -80,7 +80,7 @@ void SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, const QStrin
     onFolderUpdated(folder);
 }
 
-bool SQLiteObjectDbi::removeObjectImpl(U2DataId objectId, const QString& folder, U2OpStatus& os) {
+bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& folder, U2OpStatus& os) {
     SQLiteTransaction trans(db, os);
 
     U2DataType type = getRootDbi()->getEntityTypeById(objectId);
@@ -175,7 +175,7 @@ QList<U2DataId> SQLiteObjectDbi::getObjects(const QString& folder, qint64 offset
     return q.selectDataIdsExt();
 }
 
-QStringList SQLiteObjectDbi::getObjectFolders(U2DataId objectId, U2OpStatus& os) {
+QStringList SQLiteObjectDbi::getObjectFolders(const U2DataId& objectId, U2OpStatus& os) {
     SQLiteQuery q("SELECT f.path FROM FolderContent AS fc, Folder AS f WHERE fc.object = ?1 AND fc.folder = f.id", db, os);
     q.bindDataId(1, objectId);
     return q.selectStrings();
@@ -292,7 +292,7 @@ void SQLiteObjectDbi::moveObjects(const QList<U2DataId>& objectIds, const QStrin
 }
 
 
-void SQLiteObjectDbi::removeParent(U2DataId parentId, U2DataId childId, bool removeDeadChild, U2OpStatus& os) {
+void SQLiteObjectDbi::removeParent(const U2DataId& parentId, const U2DataId& childId, bool removeDeadChild, U2OpStatus& os) {
     SQLiteQuery q("DELETE FROM Parent WHERE parent = ?1 AND child = ?2", db, os);
     q.bindDataId(1, parentId);
     q.bindDataId(2, childId);
@@ -315,7 +315,7 @@ void SQLiteObjectDbi::removeParent(U2DataId parentId, U2DataId childId, bool rem
 }
 
 
-void SQLiteObjectDbi::ensureParent(U2DataId parentId, U2DataId childId, U2OpStatus& os) {
+void SQLiteObjectDbi::ensureParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os) {
     SQLiteQuery checkQ("SELECT COUNT(*) FROM Parent WHERE parent = ?1 AND child = ?2", db, os);
     checkQ.bindDataId(1, parentId);
     checkQ.bindDataId(2, childId);
@@ -332,13 +332,13 @@ void SQLiteObjectDbi::ensureParent(U2DataId parentId, U2DataId childId, U2OpStat
 //////////////////////////////////////////////////////////////////////////
 // Helper methods
 
-void SQLiteObjectDbi::incrementVersion(U2DataId objectId, DbRef* db, U2OpStatus& os) {
+void SQLiteObjectDbi::incrementVersion(const U2DataId& objectId, DbRef* db, U2OpStatus& os) {
     SQLiteQuery q("UPDATE Object SET version = version + 1 WHERE id = ?1", db, os);
     q.bindDataId(1, objectId);
     q.update(1);
 }
 
-qint64 SQLiteObjectDbi::getObjectVersion(U2DataId objectId, U2OpStatus& os) {
+qint64 SQLiteObjectDbi::getObjectVersion(const U2DataId& objectId, U2OpStatus& os) {
     SQLiteQuery q("SELECT version FROM Object WHERE id = ?1", db, os);
     q.bindDataId(1, objectId);
     return q.selectInt64();

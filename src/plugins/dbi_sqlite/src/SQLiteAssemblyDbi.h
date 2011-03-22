@@ -34,34 +34,34 @@ public:
     SQLiteAssemblyDbi(SQLiteDbi* dbi);
 
     /** Reads assembly objects by id */
-    virtual U2Assembly getAssemblyObject(U2DataId assemblyId, U2OpStatus& os);
+    virtual U2Assembly getAssemblyObject(const U2DataId& assemblyId, U2OpStatus& os);
 
     /** 
         Return number of reads in assembly that intersect given region 
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
     */
-    virtual qint64 countReadsAt(U2DataId assemblyId, const U2Region& r, U2OpStatus& os);
+    virtual qint64 countReadsAt(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
 
     /** Return 'count' row ids starting with 'offset' that intersect given region */
-    virtual QList<U2DataId> getReadIdsAt(U2DataId assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os);
+    virtual QList<U2DataId> getReadIdsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os);
 
     /** Return 'count' rows starting with 'offset' that intersect given region */
-    virtual QList<U2AssemblyRead> getReadsAt(U2DataId assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os);
+    virtual QList<U2AssemblyRead> getReadsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os);
     
     /** Return assembly row structure by id */
-    virtual U2AssemblyRead getReadById(U2DataId rowId, U2OpStatus& os);
+    virtual U2AssemblyRead getReadById(const U2DataId& rowId, U2OpStatus& os);
 
     /** 
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
     */
-    virtual qint64 getMaxPackedRow(U2DataId assemblyId, const U2Region& r, U2OpStatus& os);
+    virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
 
     /** Return reads with packed row value >= min, <=max that intersect given region */
-    virtual QList<U2AssemblyRead> getReadsByRow(U2DataId assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
+    virtual QList<U2AssemblyRead> getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
 
     /** Count 'length of assembly' - position of the rightmost base of all reads */
-    virtual quint64 getMaxEndPos(U2DataId assemblyId, U2OpStatus& os);
+    virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os);
 
 
     /** Creates new empty assembly object, reads iterator can be NULL  */
@@ -71,31 +71,31 @@ public:
         Removes sequences from assembly
         Automatically removes affected sequences that are not anymore accessible from folders
     */
-    virtual void removeReads(U2DataId assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os);
+    virtual void removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os);
 
     /**  
         Adds sequences to assembly
         Reads got their ids assigned.
     */
-    virtual void addReads(U2DataId assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os);
+    virtual void addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os);
 
     /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
-    virtual void pack(U2DataId assemblyId, U2OpStatus& os);
+    virtual void pack(const U2DataId& assemblyId, U2OpStatus& os);
 
 private:
     QList<U2AssemblyRead> readRows(SQLiteQuery& q, U2OpStatus& os);
     
     void readRow(U2AssemblyRead& row, SQLiteQuery& q, U2OpStatus& os);
 
-    void createReadsTable(U2DataId id, U2OpStatus& os);
+    void createReadsTable(const U2DataId& id, U2OpStatus& os);
     
-    void createReadsIndexes(U2DataId id, U2OpStatus& os);
+    void createReadsIndexes(const U2DataId& id, U2OpStatus& os);
 
-    QString getReadsTableName(U2DataId id);
+    QString getReadsTableName(const U2DataId& id);
 
-    qint64 getMaximumReadLengthInRegion(U2DataId assemblyId, const U2Region& r, U2OpStatus& os);
+    qint64 getMaximumReadLengthInRegion(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
     
-    void setMaximumReadLengthInRegion(U2DataId assemblyId, const U2Region& r, int val, U2OpStatus& os);
+    void setMaximumReadLengthInRegion(const U2DataId& assemblyId, const U2Region& r, int val, U2OpStatus& os);
 
     void unpackSequenceAndCigar(qint64 flags, const QByteArray& data, QByteArray& sequence, QByteArray& cigar, U2OpStatus& os);
 

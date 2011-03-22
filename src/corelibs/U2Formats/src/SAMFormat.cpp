@@ -35,6 +35,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2AssemblyUtils.h>
 
 #include <QtCore/QRegExp>
 

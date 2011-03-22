@@ -315,7 +315,7 @@ QHash<QString, QString> SQLiteDbi::getDbiMetaInfo(U2OpStatus& os) {
 
 }
 
-U2DataType SQLiteDbi::getEntityTypeById(U2DataId id) const {
+U2DataType SQLiteDbi::getEntityTypeById(const U2DataId& id) const {
     return SQLiteUtils::toType(id);
 }
 

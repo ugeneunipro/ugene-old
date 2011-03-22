@@ -48,7 +48,7 @@ public:
         If entity is object, returns other object this object is a part of
         If object is not a part of any other object and does not belongs to any folder - it's automatically removed.
      */
-    virtual QList<U2DataId> getParents(U2DataId entityId, U2OpStatus& os);
+    virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus& os);
 
 
     // Read methods for folders
@@ -67,7 +67,7 @@ public:
     virtual QList<U2DataId> getObjects(const QString& folder, qint64 offset, qint64 count, U2OpStatus& os);
 
     /**  Returns all folders this object must be shown in  */
-    virtual QStringList getObjectFolders(U2DataId objectId, U2OpStatus& os);
+    virtual QStringList getObjectFolders(const U2DataId& objectId, U2OpStatus& os);
 
 
 
@@ -78,7 +78,7 @@ public:
         Note: the object & all related data is automatically removed from database when
         object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
     */
-    virtual void removeObject(U2DataId dataId, const QString& folder, U2OpStatus& os);
+    virtual void removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os);
     
     /** 
         Removes collection of objects from the specified folder. If folder is empty - removes object from all folders.
@@ -142,25 +142,25 @@ public:
     static qint64 getFolderId(const QString& path, bool mustExist, DbRef* db, U2OpStatus& os);
 
     /** Increment object version count */
-    static void incrementVersion(U2DataId id, DbRef* db, U2OpStatus& os);
+    static void incrementVersion(const U2DataId& id, DbRef* db, U2OpStatus& os);
 
     /** Returns version of the given object */
-    virtual qint64 getObjectVersion(U2DataId objectId, U2OpStatus& os);
+    virtual qint64 getObjectVersion(const U2DataId& objectId, U2OpStatus& os);
 
     /** 
         Removes objects parent relation.
         If child object has no parents and is not top level 
         it will be automatically removed if 'removeDeadChild' is true
     */
-    void removeParent(U2DataId parentId, U2DataId childId, bool removeDeadChild, U2OpStatus& os);
+    void removeParent(const U2DataId& parentId, const U2DataId& childId, bool removeDeadChild, U2OpStatus& os);
 
     /** Ensures that corresponding parent record exists in db. Adds record if not exists */
-    void ensureParent(U2DataId parentId, U2DataId childId, U2OpStatus& os);
+    void ensureParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os);
 
 private:
 
     /** Removes object from database, returns 'true' if object is completely erased */
-    bool removeObjectImpl(U2DataId id, const QString& folder, U2OpStatus& os);
+    bool removeObjectImpl(const U2DataId& id, const QString& folder, U2OpStatus& os);
 
     /** Updates versions */
     void onFolderUpdated(const QString& folder);

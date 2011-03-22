@@ -173,7 +173,7 @@ public:
     virtual QHash<QString, QString> getDbiMetaInfo(U2OpStatus&) = 0;
 
     /** Returns type of the entity referenced by the given ID */
-    virtual U2DataType getEntityTypeById(U2DataId id) const = 0;
+    virtual U2DataType getEntityTypeById(const U2DataId& id) const = 0;
 
     /** Returns current DBI state */
     virtual U2DbiState getState() const = 0;
@@ -262,7 +262,7 @@ public:
         If entity is object, returns other object this object is a part of
         If object is not a part of any other object and does not belongs to any folder - it's automatically removed.
      */
-    virtual QList<U2DataId> getParents(U2DataId entityId, U2OpStatus& os) = 0;
+    virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus& os) = 0;
 
 
     /**  Returns list of folders stored in database. 
@@ -290,10 +290,10 @@ public:
     virtual QList<U2DataId> getObjects(const QString& folder, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
     /**  Returns all folders this object must be shown in  */
-    virtual QStringList getObjectFolders(U2DataId objectId, U2OpStatus& os) = 0;
+    virtual QStringList getObjectFolders(const U2DataId& objectId, U2OpStatus& os) = 0;
 
     /** Returns version of the given object */
-    virtual qint64 getObjectVersion(U2DataId objectId, U2OpStatus& os) = 0;
+    virtual qint64 getObjectVersion(const U2DataId& objectId, U2OpStatus& os) = 0;
 
     /** 
         Removes object from the specified folder. If folder is empty - removes object from all folders.
@@ -301,7 +301,7 @@ public:
         object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
         Requires: U2DbiFeature_RemoveObjects feature support
     */
-    virtual void removeObject(U2DataId dataId, const QString& folder, U2OpStatus& os) = 0;
+    virtual void removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) = 0;
     
     /** 
         Removes collection of objects from the specified folder. If folder is empty - removes object from all folders.
@@ -351,13 +351,13 @@ protected:
 
 public:
     /** Reads sequence object from database */
-    virtual U2Sequence getSequenceObject(U2DataId sequenceId, U2OpStatus& os) = 0;
+    virtual U2Sequence getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) = 0;
     
     /**  
     Reads specified sequence data region from database.
     The region must be valid region within sequence bounds.
     */
-    virtual QByteArray getSequenceData(U2DataId sequenceId, const U2Region& region, U2OpStatus& os) = 0;
+    virtual QByteArray getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) = 0;
 
     /**  Adds new (empty) sequence instance into database, sets the assigned id on the passed U2Sequence instance. 
         The folder must exist in the database.
@@ -377,7 +377,7 @@ public:
 
         Requires: U2DbiFeature_WriteSequence feature support
     */
-    virtual void updateSequenceData(U2DataId sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os) = 0;
+    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os) = 0;
 };
 
 
@@ -393,13 +393,13 @@ public:
         Returns number of annotations for the given sequence object  that belongs to the group specified
         If group name is empty - all annotations are counted
     */
-    virtual qint64 countAnnotations(U2DataId sequenceId, const QString& group,  U2OpStatus& os) = 0;
+    virtual qint64 countAnnotations(const U2DataId& sequenceId, const QString& group,  U2OpStatus& os) = 0;
     
     /** 
         Returns number of annotations for the given sequence object in the given region.
         Counts all annotations whose location intersects the region.
     */
-    virtual qint64 countAnnotations(U2DataId sequenceId, const U2Region& region, U2OpStatus& os) = 0;
+    virtual qint64 countAnnotations(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) = 0;
 
     /** 
         Returns annotations for the given sequence object that belongs to the group specified
@@ -407,7 +407,7 @@ public:
         Orders result by qualifier if not empty
         The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. 
     */
-    virtual QList<U2DataId> getAnnotations(U2DataId sequenceId, const QString& group, const QString& orderByQualifier,
+    virtual QList<U2DataId> getAnnotations(const U2DataId& sequenceId, const QString& group, const QString& orderByQualifier,
                                             qint64 offset, qint64 count, U2OpStatus& os) = 0;
     
     /** 
@@ -416,11 +416,11 @@ public:
         Orders result by qualifier if not empty.
         The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. 
     */
-    virtual QList<U2DataId> getAnnotations(U2DataId sequenceId, const U2Region& region, const QString& orderByQualifier, 
+    virtual QList<U2DataId> getAnnotations(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, 
                                             qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
     /** Reads annotation entity by id */
-    virtual U2Annotation getAnnotation(U2DataId annotationId, U2OpStatus& os) = 0;
+    virtual U2Annotation getAnnotation(const U2DataId& annotationId, U2OpStatus& os) = 0;
 
 
     /** 
@@ -440,7 +440,7 @@ public:
         Removes annotation from database 
         Requires: U2DbiFeature_WriteAnnotation feature support
      */
-    virtual void removeAnnotation(U2DataId annotationId, U2OpStatus& os) = 0;
+    virtual void removeAnnotation(const U2DataId& annotationId, U2OpStatus& os) = 0;
 
     /**  
         Removes annotations from database  
@@ -452,38 +452,38 @@ public:
         Changes annotations location 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void updateLocation(U2DataId annotationId, const U2Location& location, U2OpStatus& os) = 0;  
+    virtual void updateLocation(const U2DataId& annotationId, const U2Location& location, U2OpStatus& os) = 0;  
     
     /** 
         Changes annotations name 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void updateName(U2DataId annotationId, const QString& newName, U2OpStatus& os) = 0;  
+    virtual void updateName(const U2DataId& annotationId, const QString& newName, U2OpStatus& os) = 0;  
     
     /** 
         Adds new qualifier to annotation  
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void createQualifier(U2DataId annotationId, const U2Qualifier& q, U2OpStatus& os) = 0;
+    virtual void createQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os) = 0;
     
     /** 
         Removes existing qualifier from annotation  
         Requires: U2DbiFeature_WriteAnnotation feature support
      */    
-    virtual void removeQualifier(U2DataId annotationId, const U2Qualifier& q, U2OpStatus& os) = 0; 
+    virtual void removeQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os) = 0; 
 
     /** 
         Adds annotation to the specified group 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */    
-    virtual void addToGroup(U2DataId annotationId, const QString& group, U2OpStatus& os) = 0; 
+    virtual void addToGroup(const U2DataId& annotationId, const QString& group, U2OpStatus& os) = 0; 
     
     /** 
         Removes annotation from the specified group 
         If annotation belongs to no group, it is removed
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void removeFromGroup(U2DataId annotationId, const QString& group, U2OpStatus& os) = 0; 
+    virtual void removeFromGroup(const U2DataId& annotationId, const QString& group, U2OpStatus& os) = 0; 
 };
 
 
@@ -496,46 +496,46 @@ protected:
 
 public:
     /** Reads Msa objects by id */
-    virtual U2Msa getMsaObject(U2DataId id, U2OpStatus& os) = 0;
+    virtual U2Msa getMsaObject(const U2DataId& id, U2OpStatus& os) = 0;
 
     /** Returns number of sequences in MSA*/
-    virtual qint64 getSequencesCount(U2DataId msaId, U2OpStatus& os) = 0;
+    virtual qint64 getSequencesCount(const U2DataId& msaId, U2OpStatus& os) = 0;
 
     /** Returns region of Msa rows. Total number of MSA rows is equal to number of sequences in MSA.
     The 'firstRow' and 'numRows' must specify valid subset of rows in the alignment. */
-    virtual QList<U2MsaRow> getRows(U2DataId msaId, qint32 firstRow, qint32 numRows, U2OpStatus& os) = 0;
+    virtual QList<U2MsaRow> getRows(const U2DataId& msaId, qint32 firstRow, qint32 numRows, U2OpStatus& os) = 0;
     
     /** 
         Return number of sequences in alignment that intersect given coord.
         'Intersect' here means that first non gap character is <= coord <= last non gap character.
         The coord should be a valid coordinate within alignment bounds, i.e. non-negative and less than alignment length.
     */
-    virtual qint32 countSequencesAt(U2DataId msaId, qint64 coord, U2OpStatus& os) = 0;
+    virtual qint32 countSequencesAt(const U2DataId& msaId, qint64 coord, U2OpStatus& os) = 0;
 
     /** Return 'count' sequences starting with 'offset' that intersect given coordinate.
     The coord should be a valid coordinate within alignment bounds, i.e. non-negative and less than alignment length.
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
-    virtual QList<U2DataId> getSequencesAt(U2DataId msaId, qint64 coord, qint32 offset, qint32 count, U2OpStatus& os) = 0;
+    virtual QList<U2DataId> getSequencesAt(const U2DataId& msaId, qint64 coord, qint32 offset, qint32 count, U2OpStatus& os) = 0;
     
     /** Return number of sequences in alignment that intersect given region.
     The region should be a valid region within alignment bounds, i.e. non-negative and less than alignment length.
         'Intersect' here means that first non gap character is <= coord <= last non gap character
     */
-    virtual qint32 countSequencesAt(U2DataId msaId, const U2Region& r, U2OpStatus& os) = 0;
+    virtual qint32 countSequencesAt(const U2DataId& msaId, const U2Region& r, U2OpStatus& os) = 0;
 
     /** Return 'count' sequences starting with 'offset' that intersect given region.
     The region should be a valid region within alignment bounds, i.e. non-negative and less than alignment length.
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
-    virtual QList<U2DataId> getSequencesAt(U2DataId msaId, const U2Region& r, qint32 offset, qint32 count, U2OpStatus& os) = 0;
+    virtual QList<U2DataId> getSequencesAt(const U2DataId& msaId, const U2Region& r, qint32 offset, qint32 count, U2OpStatus& os) = 0;
 
     /** Return number of sequences in alignment that that have non-gap character at the given coord.
     The coord should be a valid coordinate within alignment bounds, i.e. non-negative and less than alignment length.*/
-    virtual qint32 countSequencesWithoutGapAt(U2DataId msaId, qint64 coord, U2OpStatus& os) = 0;
+    virtual qint32 countSequencesWithoutGapAt(const U2DataId& msaId, qint64 coord, U2OpStatus& os) = 0;
     
     /** Return 'count' sequence starting with 'offset' alignment that that have non-gap character at the given coord.
     The coord should be a valid coordinate within alignment bounds, i.e. non-negative and less than alignment length.
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
-    virtual QList<U2DataId> getSequencesWithoutGapAt(U2DataId msaId, qint64 coord, qint32 offset, qint32 count, U2OpStatus& os) = 0;
+    virtual QList<U2DataId> getSequencesWithoutGapAt(const U2DataId& msaId, qint64 coord, qint32 offset, qint32 count, U2OpStatus& os) = 0;
 
     /** 
         Creates new empty Msa object  
@@ -577,38 +577,38 @@ protected:
 
 public:
     /** Reads assembly objects by id */
-    virtual U2Assembly getAssemblyObject(U2DataId id, U2OpStatus& os) = 0;
+    virtual U2Assembly getAssemblyObject(const U2DataId& id, U2OpStatus& os) = 0;
 
     /** 
         Return number of reads in assembly that intersect given region.
         The region should be a valid region within alignment bounds, i.e. non-negative and less than alignment length.
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
     */
-    virtual qint64 countReadsAt(U2DataId assemblyId, const U2Region& r, U2OpStatus& os) = 0;
+    virtual qint64 countReadsAt(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) = 0;
 
     /** Return 'count' row ids starting with 'offset' that intersect given region.
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
-    virtual QList<U2DataId> getReadIdsAt(U2DataId assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) = 0;
+    virtual QList<U2DataId> getReadIdsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
     /** Return 'count' rows starting with 'offset' that intersect given region.
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
-    virtual QList<U2AssemblyRead> getReadsAt(U2DataId assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) = 0;
+    virtual QList<U2AssemblyRead> getReadsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
     /** Return assembly row structure by id */
-    virtual U2AssemblyRead getReadById(U2DataId rowId, U2OpStatus& os) = 0;
+    virtual U2AssemblyRead getReadById(const U2DataId& rowId, U2OpStatus& os) = 0;
 
     /** 
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
     */
-    virtual qint64 getMaxPackedRow(U2DataId assemblyId, const U2Region& r, U2OpStatus& os) = 0;
+    virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) = 0;
 
     /** Return reads with packed row value >= min, <= max that intersect given region */
-    virtual QList<U2AssemblyRead> getReadsByRow(U2DataId assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
+    virtual QList<U2AssemblyRead> getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
 
 
     /** Count 'length of assembly' - position of the rightmost base of all reads */
-    virtual quint64 getMaxEndPos(U2DataId assemblyId, U2OpStatus& os) = 0;
+    virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) = 0;
 
 
     /** 
@@ -622,20 +622,20 @@ public:
         Automatically removes affected sequences that are not anymore accessible from folders
         Requires: U2DbiFeature_WriteAssembly feature support
     */
-    virtual void removeReads(U2DataId assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
+    virtual void removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
 
     /**  
         Adds sequences to assembly
         Reads got their ids assigned.
         Requires: U2DbiFeature_WriteAssembly feature support
     */
-    virtual void addReads(U2DataId assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) = 0;
+    virtual void addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) = 0;
 
     /**  
         Packs assembly rows: assigns packedViewRow value for every read in assembly 
         Requires: U2DbiFeature_WriteAssembly and U2DbiFeature_AssemblyReadsPacking features support
     */
-    virtual void pack(U2DataId assemblyId, U2OpStatus& os) = 0;
+    virtual void pack(const U2DataId& assemblyId, U2OpStatus& os) = 0;
 
 };
     
@@ -682,28 +682,28 @@ public:
     virtual QList<U2DataId> getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, U2OpStatus& os) = 0;
 
     /** Loads int32 attribute by id */
-    virtual U2Int32Attribute getInt32Attribute(U2DataId attributeId, U2OpStatus& os) = 0;
+    virtual U2Int32Attribute getInt32Attribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Loads int64 attribute by id */
-    virtual U2Int64Attribute getInt64Attribute(U2DataId attributeId, U2OpStatus& os) = 0;
+    virtual U2Int64Attribute getInt64Attribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Loads real64 attribute by id */
-    virtual U2Real64Attribute getReal64Attribute(U2DataId attributeId, U2OpStatus& os) = 0;
+    virtual U2Real64Attribute getReal64Attribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Loads String attribute by id */
-    virtual U2StringAttribute getStringAttribute(U2DataId attributeId, U2OpStatus& os) = 0;
+    virtual U2StringAttribute getStringAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Loads byte attribute by id */
-    virtual U2ByteArrayAttribute getByteArrayAttribute(U2DataId attributeId, U2OpStatus& os) = 0;
+    virtual U2ByteArrayAttribute getByteArrayAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
     
     /** Loads date-time attribute by id */
-    virtual U2DateTimeAttribute getDateTimeAttribute(U2DataId attributeId, U2OpStatus& os) = 0;
+    virtual U2DateTimeAttribute getDateTimeAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Loads range int32-values attribute by id */
-    virtual U2RangeInt32StatAttribute getRangeInt32StatAttribute(U2DataId attributeId, U2OpStatus& os) = 0;
+    virtual U2RangeInt32StatAttribute getRangeInt32StatAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Loads range real64-values attribute by id */
-    virtual U2RangeReal64StatAttribute getRangeReal64StatAttribute(U2DataId attributeId, U2OpStatus& os) = 0;
+    virtual U2RangeReal64StatAttribute getRangeReal64StatAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Sorts all objects in database according to U2DbiSortConfig provided  */
     virtual QList<U2DataId> sort(const U2DbiSortConfig& sc, qint64 offset, qint64 count, U2OpStatus& os) = 0;

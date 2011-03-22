@@ -30,7 +30,7 @@ namespace U2 {
 SQLiteSequenceDbi::SQLiteSequenceDbi(SQLiteDbi* dbi) : U2SequenceDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
-U2Sequence SQLiteSequenceDbi::getSequenceObject(U2DataId sequenceId, U2OpStatus& os) {
+U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) {
     U2Sequence res(sequenceId, dbi->getDbiId(), 0);
     SQLiteQuery q("SELECT Sequence.length, Sequence.alphabet, Sequence.circular, Object.version FROM Sequence, Object "
         " WHERE Object.id = ?1 AND Sequence.object = Object.id", db, os);
@@ -45,7 +45,7 @@ U2Sequence SQLiteSequenceDbi::getSequenceObject(U2DataId sequenceId, U2OpStatus&
     return res;
 }
 
-QByteArray SQLiteSequenceDbi::getSequenceData(U2DataId sequenceId, const U2Region& region, U2OpStatus& os) {
+QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) {
     GTIMER(c1, t1, "SQLiteSequenceDbi::getSequenceData");
     GCOUNTER(c2, t2, "SQLiteSequenceDbi::getSequenceData -> calls");
     QByteArray res;
@@ -114,7 +114,7 @@ static QList<QByteArray> quantify(const QList<QByteArray> input) {
     return res;
 
 }
-void SQLiteSequenceDbi::updateSequenceData(U2DataId sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os) {
+void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     //algorithm: 
         // find all regions affected -> remove them

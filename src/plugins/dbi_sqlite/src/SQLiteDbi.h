@@ -77,7 +77,7 @@ public:
     virtual QHash<QString, QString> getDbiMetaInfo(U2OpStatus& os) ;
 
     /** Returns type of the entity referenced by the given ID */    
-    virtual U2DataType getEntityTypeById(U2DataId id) const;
+    virtual U2DataType getEntityTypeById(const U2DataId& id) const;
 
 
     virtual U2ObjectDbi* getObjectDbi()  {return objectDbi;}

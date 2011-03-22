@@ -32,10 +32,10 @@ public:
     SQLiteSequenceDbi(SQLiteDbi* dbi);
 
     /** Reads sequence object from database */
-    virtual U2Sequence getSequenceObject(U2DataId sequenceId, U2OpStatus& os);
+    virtual U2Sequence getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os);
 
     /**  Reads specified sequence data region from database */
-    virtual QByteArray getSequenceData(U2DataId sequenceId, const U2Region& region, U2OpStatus& os);
+    virtual QByteArray getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os);
 
 
 
@@ -54,7 +54,7 @@ public:
 
         //TODO think about annotations: should we fix locations automatically?? If yes, emit notifications??
     */
-    virtual void updateSequenceData(U2DataId sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os);
+    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os);
 
 };
 

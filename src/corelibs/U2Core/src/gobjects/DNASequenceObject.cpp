@@ -28,7 +28,7 @@
 namespace U2 {
 
 DNASequenceObject::DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap) 
-: GObject(GObjectTypes::SEQUENCE, name, hintsMap), U2SimpleSequenceDbi(NULL), dnaSeq(seq)
+: GObject(GObjectTypes::SEQUENCE, name, hintsMap), dnaSeq(seq)
 {
     assert(dnaSeq.alphabet!=NULL);
     seqRange = U2Region(0, dnaSeq.seq.length());
@@ -93,6 +93,7 @@ DNASequenceObjectConstraints::DNASequenceObjectConstraints(QObject* p)
 
 
 
+/*
 U2Sequence DNASequenceObject::getSequenceObject(U2DataId sequenceId, U2OpStatus& os) {
     GObjectReference ref(this);
     U2Sequence res;
@@ -113,6 +114,7 @@ QByteArray DNASequenceObject::getSequenceData(U2DataId sequenceId, const U2Regio
     return dnaSeq.seq.mid(safeRegion.startPos, safeRegion.length);
 }
 
+*/
 
 }//namespace
 

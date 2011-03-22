@@ -48,7 +48,7 @@ public:
     
     virtual QHash<QString, QString> getDbiMetaInfo(U2OpStatus &);
 
-    virtual U2DataType getEntityTypeById(U2DataId id) const;
+    virtual U2DataType getEntityTypeById(const U2DataId& id) const;
 
     virtual U2ObjectDbi *getObjectDbi();
 
@@ -96,7 +96,7 @@ public:
 
     virtual QList<U2DataId> getObjects(U2DataType type, qint64 offset, qint64 count, U2OpStatus &os);
 
-    virtual QList<U2DataId> getParents(U2DataId entityId, U2OpStatus &os);
+    virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus &os);
 
     virtual QStringList getFolders(U2OpStatus &os);
 
@@ -104,9 +104,9 @@ public:
 
     virtual QList<U2DataId> getObjects(const QString &folder, qint64 offset, qint64 count, U2OpStatus &os);
 
-    virtual QStringList getObjectFolders(U2DataId objectId, U2OpStatus &os);
+    virtual QStringList getObjectFolders(const U2DataId& objectId, U2OpStatus &os);
 
-    virtual qint64 getObjectVersion(U2DataId objectId, U2OpStatus &os);
+    virtual qint64 getObjectVersion(const U2DataId& objectId, U2OpStatus &os);
 
     virtual qint64 getFolderLocalVersion(const QString &folder, U2OpStatus &os);
 
@@ -122,26 +122,26 @@ class AssemblyDbi : public U2SimpleAssemblyDbi {
 public:
     AssemblyDbi(Dbi &dbi, Reader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths);
 
-    virtual U2Assembly getAssemblyObject(U2DataId id, U2OpStatus &os);
+    virtual U2Assembly getAssemblyObject(const U2DataId& id, U2OpStatus &os);
 
-    virtual qint64 countReadsAt(U2DataId assemblyId, const U2Region &r, U2OpStatus &os);
+    virtual qint64 countReadsAt(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os);
 
-    virtual QList<U2DataId> getReadIdsAt(U2DataId assemblyId, const U2Region &r, qint64 offset, qint64 count, U2OpStatus &os);
+    virtual QList<U2DataId> getReadIdsAt(const U2DataId& assemblyId, const U2Region &r, qint64 offset, qint64 count, U2OpStatus &os);
 
-    virtual QList<U2AssemblyRead> getReadsAt(U2DataId assemblyId, const U2Region &r, qint64 offset, qint64 count, U2OpStatus &os);
+    virtual QList<U2AssemblyRead> getReadsAt(const U2DataId& assemblyId, const U2Region &r, qint64 offset, qint64 count, U2OpStatus &os);
 
-    virtual U2AssemblyRead getReadById(U2DataId rowId, U2OpStatus &os);
+    virtual U2AssemblyRead getReadById(const U2DataId& rowId, U2OpStatus &os);
 
-    virtual qint64 getMaxPackedRow(U2DataId assemblyId, const U2Region &r, U2OpStatus &os);
+    virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os);
 
-    virtual QList<U2AssemblyRead> getReadsByRow(U2DataId assemblyId, const U2Region &r, qint64 minRow, qint64 maxRow, U2OpStatus &os);
+    virtual QList<U2AssemblyRead> getReadsByRow(const U2DataId& assemblyId, const U2Region &r, qint64 minRow, qint64 maxRow, U2OpStatus &os);
 
-    virtual quint64 getMaxEndPos(U2DataId assemblyId, U2OpStatus &os);
+    virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os);
 
     static U2AssemblyRead alignmentToRead(const Alignment &alignment);
 private:
-    qint64 getMaxReadLength(U2DataId assemblyId, const U2Region &r);
-    U2AssemblyRead getReadById(U2DataId rowId, qint64 packedRow, U2OpStatus &os);
+    qint64 getMaxReadLength(const U2DataId& assemblyId, const U2Region &r);
+    U2AssemblyRead getReadById(const U2DataId& rowId, qint64 packedRow, U2OpStatus &os);
     QList<U2AssemblyRead> getReadsByIds(QList<U2DataId> rowIds, QList<qint64> packedRows, U2OpStatus &os);
 
     Dbi &dbi;

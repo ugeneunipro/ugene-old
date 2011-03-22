@@ -32,7 +32,7 @@
 namespace U2 {
 
     /** Default (empty) implementation for optional DBI methods */
-class U2CORE_EXPORT U2AbstractDbi : public U2Dbi {
+class U2AbstractDbi : public U2Dbi {
 public:
     U2AbstractDbi(const U2DbiFactoryId& fid) {
         state = U2DbiState_Void;
@@ -74,11 +74,11 @@ protected:
 
 
 /** Default no-op implementation for write  methods of U2ObjectDbi */
-class U2CORE_EXPORT U2SimpleObjectDbi : public U2ObjectDbi {
+class U2SimpleObjectDbi : public U2ObjectDbi {
 protected:
     U2SimpleObjectDbi(U2Dbi* rootDbi) : U2ObjectDbi(rootDbi) {}
 
-    virtual void removeObject(U2DataId dataId, const QString& folder, U2OpStatus& os) {
+    virtual void removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi());
     }
 
@@ -104,7 +104,7 @@ protected:
 };
 
 /** Default no-op implementation for write  methods of U2SequenceDbi */
-class U2CORE_EXPORT U2SimpleSequenceDbi: public U2SequenceDbi {
+class U2SimpleSequenceDbi: public U2SequenceDbi {
 protected:
     U2SimpleSequenceDbi(U2Dbi* rootDbi) : U2SequenceDbi(rootDbi) {}
 
@@ -112,14 +112,14 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi());
     }
 
-    virtual void updateSequenceData(U2DataId sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os) {
+    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi());
     }
 };
 
 
 /** Default no-op implementation for write  methods of U2MsaDbi */
-class U2CORE_EXPORT U2SimpleMsaDbi: public U2MsaDbi{
+class U2SimpleMsaDbi: public U2MsaDbi{
 protected:
     U2SimpleMsaDbi(U2Dbi* rootDbi) : U2MsaDbi(rootDbi) {}
     
@@ -138,7 +138,7 @@ protected:
 
 
 /** Default no-op implementation for write  methods of U2AssemblyDbi */
-class U2CORE_EXPORT U2SimpleAssemblyDbi: public U2AssemblyDbi{
+class U2SimpleAssemblyDbi: public U2AssemblyDbi{
 protected:
     U2SimpleAssemblyDbi(U2Dbi* rootDbi) : U2AssemblyDbi(rootDbi) {}
 
@@ -146,21 +146,21 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi());
     }
 
-    virtual void removeReads(U2DataId assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os) {
+    virtual void removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi());
     }
 
-    virtual void addReads(U2DataId assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) {
+    virtual void addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi());
     }
 
-    virtual void pack(U2DataId assemblyId, U2OpStatus& os) {
+    virtual void pack(const U2DataId& assemblyId, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_AssemblyReadsPacking, getRootDbi());
     }
 };
 
 /** Default no-op implementation for write  methods of U2AnnotationDbi */
-class U2CORE_EXPORT U2SimpleAnnotationDbi: public U2AnnotationDbi {
+class U2SimpleAnnotationDbi: public U2AnnotationDbi {
 protected:
     U2SimpleAnnotationDbi(U2Dbi* rootDbi) : U2AnnotationDbi(rootDbi) {}
 
@@ -172,7 +172,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi());
     }
     
-    virtual void removeAnnotation(U2DataId annotationId, U2OpStatus& os) {
+    virtual void removeAnnotation(const U2DataId& annotationId, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi());
     }
 
@@ -180,33 +180,33 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi());
     }
     
-    virtual void updateLocation(U2DataId annotationId, const U2Location& location, U2OpStatus& os) {
+    virtual void updateLocation(const U2DataId& annotationId, const U2Location& location, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi()); 
     }
     
-    virtual void updateName(U2DataId annotationId, const QString& newName, U2OpStatus& os) {
+    virtual void updateName(const U2DataId& annotationId, const QString& newName, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi()); 
     }
     
-    virtual void createQualifier(U2DataId annotationId, const U2Qualifier& q, U2OpStatus& os) {
+    virtual void createQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi()); 
     }
     
-    virtual void removeQualifier(U2DataId annotationId, const U2Qualifier& q, U2OpStatus& os) {
+    virtual void removeQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi());
     }
 
-    virtual void addToGroup(U2DataId annotationId, const QString& group, U2OpStatus& os) {
+    virtual void addToGroup(const U2DataId& annotationId, const QString& group, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi());
     }
     
-    virtual void removeFromGroup(U2DataId annotationId, const QString& group, U2OpStatus& os) {
+    virtual void removeFromGroup(const U2DataId& annotationId, const QString& group, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi());
     }
 };
 
 /** Default no-op implementation for write  methods of U2AttributeDbi */
-class U2CORE_EXPORT U2SimpleAttributeDbi: public U2AttributeDbi{
+class U2SimpleAttributeDbi: public U2AttributeDbi{
 protected:
     U2SimpleAttributeDbi(U2Dbi* rootDbi) : U2AttributeDbi(rootDbi) {}
     
