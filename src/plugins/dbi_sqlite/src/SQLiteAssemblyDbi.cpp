@@ -170,25 +170,25 @@ void SQLiteAssemblyDbi::unpackSequenceAndCigar(qint64 flags, const QByteArray& d
 void SQLiteAssemblyDbi::readRow(U2AssemblyRead& row, SQLiteQuery& q, U2OpStatus& os) {
     bool compressedMode = dbi->isAssemblyReadsCompressionEnabled();
 
-    row.id = q.getDataId(0, U2Type::AssemblyRead);
-    row.sequenceId = q.getDataId(1, U2Type::Sequence);
-    row.packedViewRow = q.getInt64(2);
+    row->id = q.getDataId(0, U2Type::AssemblyRead);
+    row->sequenceId = q.getDataId(1, U2Type::Sequence);
+    row->packedViewRow = q.getInt64(2);
     if (q.hasError()) {
         return;
     }
     int flags = q.getInt64(3);
-    row.leftmostPos= q.getInt64(4);
+    row->leftmostPos= q.getInt64(4);
     QByteArray data = q.getBlob(5);
-    row.complementary = isComplementaryRead(flags);
+    row->complementary = isComplementaryRead(flags);
     QByteArray cigar;
     if (compressedMode) {
-        unpackSequenceAndCigar(flags, data, row.readSequence, cigar, os);
+        unpackSequenceAndCigar(flags, data, row->readSequence, cigar, os);
     } else {
-        row.readSequence = data;
+        row->readSequence = data;
         cigar = q.getCString(6);
     }
     QString err;
-    row.cigar = U2AssemblyUtils::parseCigar(cigar, err);;
+    row->cigar = U2AssemblyUtils::parseCigar(cigar, err);;
     if (!err.isEmpty()) {
         q.setError(err);
     }
@@ -197,7 +197,7 @@ void SQLiteAssemblyDbi::readRow(U2AssemblyRead& row, SQLiteQuery& q, U2OpStatus&
 QList<U2AssemblyRead> SQLiteAssemblyDbi::readRows(SQLiteQuery& q, U2OpStatus& os) {
     QList<U2AssemblyRead> res;
     while (q.step())  {
-        U2AssemblyRead row;
+        U2AssemblyRead row(new U2AssemblyReadData());
         readRow(row, q, os);
         if (q.hasError()) {
             break;
@@ -227,7 +227,7 @@ QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsAt(U2DataId assemblyId, const U
 }
 
 U2AssemblyRead SQLiteAssemblyDbi::getReadById(U2DataId rowId, U2OpStatus& os){
-    U2AssemblyRead row;
+    U2AssemblyRead row(new U2AssemblyReadData());
     SQLiteQuery q("SELECT " + getReadFields() + "  FROM AssemblyRead WHERE id = ?1", db, os);
     q.bindDataId(1, rowId);
     readRow(row, q, os);
@@ -346,25 +346,25 @@ void SQLiteAssemblyDbi::addReads(U2DataId assemblyId, QList<U2AssemblyRead>& row
         bool dnaExt = false;
         data.clear();
         
-        QByteArray cigarText = U2AssemblyUtils::cigar2String(row.cigar);
+        QByteArray cigarText = U2AssemblyUtils::cigar2String(row->cigar);
         
         int flags = 0;
-        flags = flags | (row.complementary ? (1 << BIT_COMPLEMENTARY_STRAND) : 0);
+        flags = flags | (row->complementary ? (1 << BIT_COMPLEMENTARY_STRAND) : 0);
         flags = flags | (dnaExt ? (1 << BIT_EXT_DNA_ALPHABET) : 0 );
         
-        if (row.sequenceId != 0) {
-            U2Sequence rowSeq = getRootDbi()->getSequenceDbi()->getSequenceObject(row.sequenceId, os);
+        if (row->sequenceId != 0) {
+            U2Sequence rowSeq = getRootDbi()->getSequenceDbi()->getSequenceObject(row->sequenceId, os);
             if (os.hasError()) {
                 break;
             }
             rowLen = rowSeq.length;
-            dbi->getSQLiteObjectDbi()->ensureParent(assemblyId, row.sequenceId, os);
+            dbi->getSQLiteObjectDbi()->ensureParent(assemblyId, row->sequenceId, os);
             //TODO: dnaExt = rowSeq.alphabet ...
         } else {
-            rowLen = row.readSequence.length();
+            rowLen = row->readSequence.length();
             dnaExt = false;//TODO: isExtAlphabet(row.readSequence);
         }
-        int effectiveRowLength = rowLen + U2AssemblyUtils::getCigarExtraLength(row.cigar);
+        int effectiveRowLength = rowLen + U2AssemblyUtils::getCigarExtraLength(row->cigar);
 
         if (compressMode) {
             QByteArray compressedCigar = U2BitCompression::compress(cigarText.constData(), cigarText.size(), 
@@ -373,22 +373,22 @@ void SQLiteAssemblyDbi::addReads(U2DataId assemblyId, QList<U2AssemblyRead>& row
                 os.setError(SQLiteL10n::tr("CIGAR text length is too long!"));
                 break;
             }
-            QByteArray compressedReadSequence = U2BitCompression::compress(row.readSequence.constData(), row.readSequence.size(), 
+            QByteArray compressedReadSequence = U2BitCompression::compress(row->readSequence.constData(), row->readSequence.size(), 
                             dnaExt ? dnaExtAlpha.size() : dnaAlpha.size(), dnaExt ? dnaExtAlphaNums.constData() : dnaAlphaNums.constData(), os); 
             data.resize(2 + compressedCigar.size() + compressedReadSequence.size());
             U2Bits::writeInt16((uchar*)data.data(), 0, (qint16)compressedCigar.size());
             qMemCopy(data.data() + 2, compressedCigar.constData(), compressedCigar.size());
             qMemCopy(data.data() + 2 + compressedCigar.size(), compressedReadSequence.constData(), compressedReadSequence.size());
         } else {
-            data = row.readSequence;
+            data = row->readSequence;
         }
         
         
         insertQ.reset();
-        insertQ.bindDataId(1, row.sequenceId);
-        insertQ.bindInt64(2, row.packedViewRow);
+        insertQ.bindDataId(1, row->sequenceId);
+        insertQ.bindInt64(2, row->packedViewRow);
         insertQ.bindInt64(3, flags);
-        insertQ.bindInt64(4, row.leftmostPos);
+        insertQ.bindInt64(4, row->leftmostPos);
         insertQ.bindInt64(5, effectiveRowLength);;
         insertQ.bindBlob(6, data, false);
         
@@ -396,7 +396,7 @@ void SQLiteAssemblyDbi::addReads(U2DataId assemblyId, QList<U2AssemblyRead>& row
             insertQ.bindText(7, cigarText);
         }
 
-        row.id = insertQ.insert(U2Type::AssemblyRead);
+        row->id = insertQ.insert(U2Type::AssemblyRead);
         maxReadLength = qMax(maxReadLength, effectiveRowLength);
     }
     

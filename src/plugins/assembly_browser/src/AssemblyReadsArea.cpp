@@ -213,7 +213,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
         U2OpStatusImpl os;
         const U2AssemblyRead & read = it.next();
         QByteArray readSequence = getReadSequence(0, read, status); //TODO: dbi
-        U2Region readBases(read.leftmostPos, countReadLength(readSequence.length(), read.cigar));
+        U2Region readBases(read->leftmostPos, countReadLength(readSequence.length(), read->cigar));
 
         U2Region readVisibleBases = readBases.intersect(visibleBases);
         U2Region xToDrawRegion(readVisibleBases.startPos - xOffsetInAssembly, readVisibleBases.length);
@@ -221,7 +221,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             continue;
         }
 
-        U2Region readVisibleRows = U2Region(read.packedViewRow, 1).intersect(visibleRows); // WTF?
+        U2Region readVisibleRows = U2Region(read->packedViewRow, 1).intersect(visibleRows); // WTF?
         U2Region yToDrawRegion(readVisibleRows.startPos - yOffsetInAssembly, readVisibleRows.length);
         if(readVisibleRows.isEmpty()) {
             continue;
@@ -233,7 +233,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             int y_pix_start = calcPainterOffset(yToDrawRegion.startPos);
             
             //iterate over letters of the read
-            ShortReadIterator cigarIt(readSequence, read.cigar, firstVisibleBase);
+            ShortReadIterator cigarIt(readSequence, read->cigar, firstVisibleBase);
             for(int x_pix_offset = 0; cigarIt.hasNext(); x_pix_offset += letterWidth) {                
                 GTIMER(c2, t2, "AssemblyReadsArea::drawReads -> cycle through one read");
                 char c = cigarIt.nextLetter();

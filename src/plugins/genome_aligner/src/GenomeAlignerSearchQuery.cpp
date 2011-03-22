@@ -32,7 +32,7 @@ SearchQuery::SearchQuery(const DNASequence &shortRead) {
 SearchQuery::SearchQuery(const U2AssemblyRead &shortRead) {
     dna = false;
     dnaRead = NULL;
-    assRead = new U2AssemblyRead(shortRead);
+    assRead = shortRead;
 }
 
 SearchQuery::~SearchQuery() {

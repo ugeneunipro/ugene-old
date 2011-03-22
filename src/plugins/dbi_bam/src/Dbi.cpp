@@ -635,7 +635,7 @@ U2AssemblyRead AssemblyDbi::getReadById(U2DataId rowId, U2OpStatus &os) {
                 throw Exception(opStatus.getError());
             }
         }
-        U2AssemblyRead result;
+        U2AssemblyRead result(new U2AssemblyReadData());
         {
             U2OpStatusImpl opStatus;
             result = getReadById(rowId, packedRow, opStatus);
@@ -746,10 +746,10 @@ quint64 AssemblyDbi::getMaxEndPos(U2DataId assemblyId, U2OpStatus &os) {
 }
 
 U2AssemblyRead AssemblyDbi::alignmentToRead(const Alignment &alignment) {
-    U2AssemblyRead row;
-    row.leftmostPos = alignment.getPosition();
-    row.readSequence = alignment.getSequence();
-    row.complementary = (alignment.getFlags() & Alignment::Reverse);
+    U2AssemblyRead row(new U2AssemblyReadData());
+    row->leftmostPos = alignment.getPosition();
+    row->readSequence = alignment.getSequence();
+    row->complementary = (alignment.getFlags() & Alignment::Reverse);
     foreach(const Alignment::CigarOperation &cigarOperation, alignment.getCigar()) {
         U2CigarOp cigarOp = U2CigarOp_Invalid;
         switch(cigarOperation.getOperation()) {
@@ -783,7 +783,7 @@ U2AssemblyRead AssemblyDbi::alignmentToRead(const Alignment &alignment) {
         default:
             assert(false);
         }
-        row.cigar.append(U2CigarToken(cigarOp, cigarOperation.getLength()));
+        row->cigar.append(U2CigarToken(cigarOp, cigarOperation.getLength()));
     }
     return row;
 }
@@ -796,8 +796,8 @@ U2AssemblyRead AssemblyDbi::getReadById(U2DataId rowId, qint64 packedRow, U2OpSt
     try {
         reader.seek(VirtualOffset((quint64)rowId));
         U2AssemblyRead row = alignmentToRead(reader.readAlignment());
-        row.id = rowId;
-        row.packedViewRow = packedRow;
+        row->id = rowId;
+        row->packedViewRow = packedRow;
         return row;
     } catch(const Exception &e) {
         os.setError(e.getMessage());
@@ -810,7 +810,7 @@ QList<U2AssemblyRead> AssemblyDbi::getReadsByIds(QList<U2DataId> rowIds, QList<q
         QList<U2AssemblyRead> result;
         for(int index = 0;index < rowIds.size();index++) {
             assert(dbi.getEntityTypeById(rowIds[index]) == U2Type::AssemblyRead);
-            U2AssemblyRead read;
+            U2AssemblyRead read(new U2AssemblyReadData());
             {
                 U2OpStatusImpl opStatus;
                 read = getReadById(rowIds[index], packedRows[index], opStatus);

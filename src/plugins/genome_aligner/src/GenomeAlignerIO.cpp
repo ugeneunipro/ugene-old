@@ -202,11 +202,11 @@ GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(U2AssemblyDbi *_wDbi, U2Assembly 
 }
 
 void GenomeAlignerDbiWriter::write(SearchQuery *seq, quint32 offset) {
-    U2AssemblyRead read;
-    read.readSequence = seq->constSequence();
-    read.leftmostPos = offset;
-    read.cigar.append(U2CigarToken(U2CigarOp_M, seq->length()));
-    read.packedViewRow = currentRow;
+    U2AssemblyRead read(new U2AssemblyReadData());
+    read->readSequence = seq->constSequence();
+    read->leftmostPos = offset;
+    read->cigar.append(U2CigarToken(U2CigarOp_M, seq->length()));
+    read->packedViewRow = currentRow;
     currentRow++;
 
     reads.append(read);

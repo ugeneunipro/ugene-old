@@ -61,7 +61,7 @@ public:
 private:
     bool dna;
     DNASequence *dnaRead;
-    U2AssemblyRead *assRead;
+    U2AssemblyRead assRead;
 };
 
 } //U2

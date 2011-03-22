@@ -23,6 +23,7 @@
 #define _U2_ASSEMBLY_H_
 
 #include <U2Core/U2Sequence.h>
+#include <QtCore/QSharedData>
 
 namespace U2 {
 
@@ -53,10 +54,10 @@ public:
 /** 
     Row of assembly: sequence, leftmost position and CIGAR
 */
-class U2CORE_EXPORT U2AssemblyRead : public U2Entity {
+class U2CORE_EXPORT U2AssemblyReadData : public U2Entity, public QSharedData {
 public:
-    U2AssemblyRead() : sequenceId(0), leftmostPos(0), packedViewRow(0){}
-    U2AssemblyRead(U2DataId id) : U2Entity(id), sequenceId(0), leftmostPos(0), packedViewRow(0){}
+    U2AssemblyReadData() : sequenceId(0), leftmostPos(0), packedViewRow(0){}
+    U2AssemblyReadData(U2DataId id) : U2Entity(id), sequenceId(0), leftmostPos(0), packedViewRow(0){}
 
     /** 
         Sequence ID of the read.
@@ -91,6 +92,8 @@ public:
     bool                complementary;
     // TODO: add paired read info
 };
+
+typedef QSharedDataPointer<U2AssemblyReadData> U2AssemblyRead;
 
 /**                                           
     Assembly representation
