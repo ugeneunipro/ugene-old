@@ -46,7 +46,7 @@ public:
 class U2CORE_EXPORT U2MsaRow {
 public:
     U2DataId        rowId;
-    qint64          sequenceId;
+    U2DataId        sequenceId;
     QList<U2MsaGap> gaps;
 };
 

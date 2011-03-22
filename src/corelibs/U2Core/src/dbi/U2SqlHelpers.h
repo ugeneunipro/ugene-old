@@ -53,19 +53,25 @@ public:
         Removes from the table all records with 'field' == id 
         Checks 'expectedRowCount' the same way as 'update' method
     */
-    static qint64 remove(const QString& table, const QString& field, U2DataId id, qint64 expectedRows, DbRef* db, U2OpStatus& os);
+    static qint64 remove(const QString& table, const QString& field, const U2DataId& id, qint64 expectedRows, DbRef* db, U2OpStatus& os);
     
     /** Converts internal database id to U2DataId*/
-    static U2DataId toU2DataId(qint64 id, U2DataType type);
+    static U2DataId toU2DataId(qint64 id, U2DataType type, const QByteArray& dbExtra = QByteArray());
 
     /** Converts U2DataId to internal database id*/
-    static quint64 toDbiId(U2DataId id);
+    static quint64 toDbiId(const U2DataId& id);
 
     /** Extracts type info from U2DataId */
-    static U2DataType toType(U2DataId id);
+    static U2DataType toType(const U2DataId& id);
+
+    /** Extracts table info from U2DataId */
+    static QByteArray toDbExtra(const U2DataId& id);
 
     /** Adds limit operator to the sql query */
     static void addLimit(QString& sql, qint64 offset, qint64 count);
+
+    /** Return textual representation of the id */
+    static QString text(const U2DataId& id);
 };
 
 /** Common localization messages for SQLiteDBI*/
@@ -117,7 +123,7 @@ public:
     // param binding methods
 
     /** Binds U2DataId  */
-    void bindDataId(int idx, U2DataId val);
+    void bindDataId(int idx, const U2DataId& val);
 
     /** Binds U2DataType */
     void bindType(int idx, U2DataType type);
@@ -141,7 +147,7 @@ public:
     //////////////////////////////////////////////////////////////////////////
     // result retrieval methods
 
-    U2DataId getDataId(int column, U2DataType type) const;
+    U2DataId getDataId(int column, U2DataType type, const QByteArray& dbExtra = QByteArray()) const;
 
     U2DataType getDataType(int column) const;
 
@@ -160,8 +166,11 @@ public:
     //////////////////////////////////////////////////////////////////////////
     // Utility methods
 
+    /** Executes update and returns last row id*/
+    qint64 insert();
+
     /** Executes update and returns last row id converted to U2DataId using type info*/
-    U2DataId insert(U2DataType type);
+    U2DataId insert(U2DataType type, const QByteArray& dbExtra = QByteArray());
 
     /** Executes query */
     void execute();
@@ -180,10 +189,10 @@ public:
     qint64 selectInt64(qint64 defaultValue);
 
     /** Selects a single U2DataId value */
-    U2DataId selectDataId(U2DataType type);
+    U2DataId selectDataId(U2DataType type, const QByteArray& dbExtra = QByteArray());
 
     /** Select list of ids and adds 'type' parameter to construct U2DataId */
-    QList<U2DataId> selectDataIds(U2DataType type);
+    QList<U2DataId> selectDataIds(U2DataType type, const QByteArray& dbExtra = QByteArray());
 
     /** Select id(col=0), type(col=1) pairs  and constructs U2DataId */
     QList<U2DataId> selectDataIdsExt();
@@ -204,8 +213,9 @@ public:
     DbRef*          getDb() const {return db;}
 
 private:
-    /** Returns last insert row id converted to U2DataId using type info */
-    U2DataId getLastRowId(U2DataType type);
+    /** Returns last insert row*/
+    qint64 getLastRowId();
+
     void prepare();
 
 

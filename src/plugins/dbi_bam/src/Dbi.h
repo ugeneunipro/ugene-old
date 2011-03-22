@@ -130,8 +130,6 @@ public:
 
     virtual QList<U2AssemblyRead> getReadsAt(const U2DataId& assemblyId, const U2Region &r, qint64 offset, qint64 count, U2OpStatus &os);
 
-    virtual U2AssemblyRead getReadById(const U2DataId& rowId, U2OpStatus &os);
-
     virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os);
 
     virtual QList<U2AssemblyRead> getReadsByRow(const U2DataId& assemblyId, const U2Region &r, qint64 minRow, qint64 maxRow, U2OpStatus &os);
@@ -139,6 +137,9 @@ public:
     virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os);
 
     static U2AssemblyRead alignmentToRead(const Alignment &alignment);
+
+    U2AssemblyRead getReadById(const U2DataId& rowId, U2OpStatus &os);
+
 private:
     qint64 getMaxReadLength(const U2DataId& assemblyId, const U2Region &r);
     U2AssemblyRead getReadById(const U2DataId& rowId, qint64 packedRow, U2OpStatus &os);

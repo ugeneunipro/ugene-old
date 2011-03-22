@@ -251,6 +251,8 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         SQLiteQuery("PRAGMA main.locking_mode = EXCLUSIVE", db, os).execute();
         SQLiteQuery("PRAGMA temp_store = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA journal_mode = MEMORY", db, os).execute();
+        SQLiteQuery("PRAGMA cache_size = 10000", db, os).execute();
+        //SQLiteQuery("PRAGMA page_size = 65536", db, os).execute();
         
         
         // check if the opened database is valid UGENE sqlite dbi

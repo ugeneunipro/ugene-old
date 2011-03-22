@@ -226,14 +226,6 @@ QList<U2AssemblyRead> SQLiteAssemblyDbi::getReadsAt(const U2DataId& assemblyId, 
     return readRows(q, os);
 }
 
-U2AssemblyRead SQLiteAssemblyDbi::getReadById(const U2DataId& rowId, U2OpStatus& os){
-    U2AssemblyRead row(new U2AssemblyReadData());
-    SQLiteQuery q("SELECT " + getReadFields() + "  FROM AssemblyRead WHERE id = ?1", db, os);
-    q.bindDataId(1, rowId);
-    readRow(row, q, os);
-    return row;
-}
-
 qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     QString readsTable = getReadsTableName(assemblyId);
     qint64 maxReadLen = getMaximumReadLengthInRegion(assemblyId, r, os);
@@ -313,7 +305,7 @@ void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2Da
         if (os.hasError()) {
             break;
         }
-        if (sequenceId != 0) { 
+        if (!sequenceId.isEmpty()) { 
             objDbi->removeParent(assemblyId, sequenceId, true, os);
             if (os.hasError()) {
                 break;
@@ -329,7 +321,7 @@ void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, QList<U2AssemblyRea
     if (os.hasError()) {
         return;
     }
-
+    QByteArray tableName = "AssemblyRead_X";
     GTIMER(c1, t1, "SQLiteAssemblyDbi::addReads");
     SQLiteTransaction t(db, os);
     QString readsTable = getReadsTableName(assemblyId);
@@ -352,7 +344,7 @@ void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, QList<U2AssemblyRea
         flags = flags | (row->complementary ? (1 << BIT_COMPLEMENTARY_STRAND) : 0);
         flags = flags | (dnaExt ? (1 << BIT_EXT_DNA_ALPHABET) : 0 );
         
-        if (row->sequenceId != 0) {
+        if (!row->sequenceId.isEmpty()) {
             U2Sequence rowSeq = getRootDbi()->getSequenceDbi()->getSequenceObject(row->sequenceId, os);
             if (os.hasError()) {
                 break;
@@ -396,7 +388,8 @@ void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, QList<U2AssemblyRea
             insertQ.bindText(7, cigarText);
         }
 
-        row->id = insertQ.insert(U2Type::AssemblyRead);
+        row->id = insertQ.insert(U2Type::AssemblyRead, tableName);
+        //insertQ.execute();
         maxReadLength = qMax(maxReadLength, effectiveRowLength);
     }
     

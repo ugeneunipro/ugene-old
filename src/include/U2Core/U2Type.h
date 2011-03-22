@@ -33,10 +33,10 @@ namespace U2 {
 
     U2DataType - data types supported by U2Dbi
     U2DataId - object ids associated with Data by U2Dbi. 
-    Note that U2DataId == 0 check must be suppoted by DBI to check empty fields.
+    Note that U2DataId == empty check must be suppoted by DBI to check empty fields.
 */
 typedef quint16 U2DataType;
-typedef quint64 U2DataId;
+typedef QByteArray U2DataId;
 
 /** 
     ID of the DBI Factory. Defines type of the DBI driver.

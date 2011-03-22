@@ -85,7 +85,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
 
     U2DataType type = getRootDbi()->getEntityTypeById(objectId);
     if (!U2Type::isObjectType(type)) {
-        os.setError(SQLiteL10N::tr("Not an object! Id: %1, type: %2").arg(objectId).arg(type));
+        os.setError(SQLiteL10N::tr("Not an object! Id: %1, type: %2").arg(SQLiteUtils::text(objectId)).arg(type));
         return false;
     }
     qint64 folderId = SQLiteQuery("SELECT id FROM Folder WHERE path = '"+folder+"'", db, os).selectInt64();
@@ -100,7 +100,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
         return false;
     }
     if (nRecords == 0) {
-        os.setError(SQLiteL10N::tr("Object: %1 not found in folder: %2").arg(objectId).arg(folder));
+        os.setError(SQLiteL10N::tr("Object: %1 not found in folder: %2").arg(SQLiteUtils::text(objectId)).arg(folder));
         return false;
     }
     QStringList folders = getObjectFolders(objectId, os);
@@ -147,7 +147,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
             //TODO: removeCrossDatabaseReferenceObject(objectId.id);
             break;
         default:
-            os.setError(SQLiteL10N::tr("Unknown object type! Id: %1, type: %2").arg(objectId).arg(type));
+            os.setError(SQLiteL10N::tr("Unknown object type! Id: %1, type: %2").arg(SQLiteUtils::text(objectId)).arg(type));
     }
     if (os.hasError()) {
         return false;

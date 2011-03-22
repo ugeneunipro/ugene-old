@@ -139,12 +139,15 @@ QHash<QString, QString> Dbi::getDbiMetaInfo(U2OpStatus &os) {
 }
 
 U2DataType Dbi::getEntityTypeById(const U2DataId& id) const {
-    if(0 == id) {
+    if(id.isEmpty()) {
         return U2Type::Unknown;
-    } else if((quint64)id <= (quint64)assembliesCount) {
-        return U2Type::Assembly;
     } else {
-        return U2Type::AssemblyRead;
+        quint64 dbId = SQLiteUtils::toDbiId(id);
+        if(dbId <= (quint64)assembliesCount) {
+            return U2Type::Assembly;
+        } else {
+            return U2Type::AssemblyRead;
+        }
     }
 }
 
@@ -512,7 +515,8 @@ U2Assembly AssemblyDbi::getAssemblyObject(const U2DataId& id, U2OpStatus &os) {
         U2Assembly result;
         result.id = id;
         result.dbiId = dbi.getDbiId();
-        result.visualName = reader.getHeader().getReferences()[id - 1].getName();
+        quint64 dbiDataId = SQLiteUtils::toDbiId(id);
+        result.visualName = reader.getHeader().getReferences()[dbiDataId - 1].getName();
         return result;
     } catch(const Exception &e) {
         os.setError(e.getMessage());
@@ -532,7 +536,7 @@ qint64 AssemblyDbi::countReadsAt(const U2DataId& assemblyId, const U2Region &r, 
         {
             U2OpStatusImpl opStatus;
             SQLiteQuery q("SELECT COUNT(*) FROM assemblyReads WHERE assemblyId = ?1 AND startPosition < ?2 AND startPosition > ?3 AND endPosition > ?4;", &dbRef, opStatus);
-            q.bindInt64(1, assemblyId);
+            q.bindDataId(1, assemblyId);
             q.bindInt64(2, r.endPos());
             q.bindInt64(3, r.startPos - getMaxReadLength(assemblyId, r));
             q.bindInt64(4, r.startPos);
@@ -589,13 +593,13 @@ QList<U2AssemblyRead> AssemblyDbi::getReadsAt(const U2DataId& assemblyId, const 
         {
             U2OpStatusImpl opStatus;
             SQLiteQuery q("SELECT id, packedRow FROM assemblyReads WHERE assemblyId = ?1 AND startPosition < ?2 AND startPosition > ?3 AND endPosition > ?4", offset, count, &dbRef, opStatus);
-            q.bindInt64(1, assemblyId);
+            q.bindDataId(1, assemblyId);
             q.bindInt64(2, r.endPos());
             q.bindInt64(3, r.startPos - getMaxReadLength(assemblyId, r));
             q.bindInt64(4, r.startPos);
 
             while(q.step()) {
-                rowIds.append(q.getInt64(0));
+                rowIds.append(SQLiteUtils::toU2DataId(q.getInt64(0), U2Type::AssemblyRead));
                 packedRows.append(q.getInt64(1));
             }
             if(opStatus.hasError()) {
@@ -629,7 +633,7 @@ U2AssemblyRead AssemblyDbi::getReadById(const U2DataId& rowId, U2OpStatus &os) {
         {
             U2OpStatusImpl opStatus;
             SQLiteQuery q("SELECT packedRow FROM assemblyReads WHERE id = ?1;", &dbRef, opStatus);
-            q.bindInt64(1, rowId);
+            q.bindDataId(1, rowId);
             packedRow = q.getInt64(0);
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());
@@ -662,7 +666,7 @@ qint64 AssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region &
         {
             U2OpStatusImpl opStatus;
             SQLiteQuery q("SELECT MAX(packedRow) FROM assemblyReads WHERE assemblyId = ?1 AND startPosition < ?2 AND startPosition > ?3 AND endPosition > ?4;", &dbRef, opStatus);
-            q.bindInt64(1, assemblyId);
+            q.bindDataId(1, assemblyId);
             q.bindInt64(2, r.endPos());
             q.bindInt64(3, r.startPos - getMaxReadLength(assemblyId, r));
             q.bindInt64(4, r.startPos);
@@ -691,14 +695,14 @@ QList<U2AssemblyRead> AssemblyDbi::getReadsByRow(const U2DataId& assemblyId, con
         {
             U2OpStatusImpl opStatus;
             SQLiteQuery q("SELECT id, packedRow FROM assemblyReads WHERE assemblyId = ?1 AND startPosition < ?2 AND startPosition > ?3 AND endPosition > ?4 AND packedRow >= ?5 AND packedRow <= ?6;", &dbRef, opStatus);
-            q.bindInt64(1, assemblyId);
+            q.bindDataId(1, assemblyId);
             q.bindInt64(2, r.endPos());
             q.bindInt64(3, r.startPos - getMaxReadLength(assemblyId, r));
             q.bindInt64(4, r.startPos);
             q.bindInt64(5, minRow);
             q.bindInt64(6, maxRow);
             while(q.step()) {
-                rowIds.append(q.getInt64(0));
+                rowIds.append(q.getDataId(0, U2Type::AssemblyRead));
                 packedRows.append(q.getInt64(1));
             }
             if(opStatus.hasError()) {
@@ -732,7 +736,7 @@ quint64 AssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os) {
         {
             U2OpStatusImpl opStatus;
             SQLiteQuery q("SELECT maxEndPos FROM assemblies WHERE id = ?1;", &dbRef, opStatus);
-            q.bindInt64(1, assemblyId);
+            q.bindDataId(1, assemblyId);
             result = q.selectInt64();
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());
@@ -789,12 +793,14 @@ U2AssemblyRead AssemblyDbi::alignmentToRead(const Alignment &alignment) {
 }
 
 qint64 AssemblyDbi::getMaxReadLength(const U2DataId& assemblyId, const U2Region &/*r*/) {
-    return maxReadLengths[assemblyId - 1];
+    qint64 dbDataId = SQLiteUtils::toDbiId(assemblyId);
+    return maxReadLengths[dbDataId - 1];
 }
 
 U2AssemblyRead AssemblyDbi::getReadById(const U2DataId& rowId, qint64 packedRow, U2OpStatus &os) {
     try {
-        reader.seek(VirtualOffset((quint64)rowId));
+        quint64 dbDataId = (quint64)SQLiteUtils::toDbiId(rowId);
+        reader.seek(VirtualOffset(dbDataId));
         U2AssemblyRead row = alignmentToRead(reader.readAlignment());
         row->id = rowId;
         row->packedViewRow = packedRow;

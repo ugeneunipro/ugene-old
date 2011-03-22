@@ -137,7 +137,7 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     QByteArray rightCrop;
     SQLiteQuery rightQ("SELECT send FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2", db, os);
     rightQ.bindDataId(1, sequenceId);
-    rightQ.bindDataId(2, regionToReplace.endPos());
+    rightQ.bindInt64(2, regionToReplace.endPos());
     qint64 cropRightPos = rightQ.selectInt64(-1);
     if (os.hasError()) {
         return;

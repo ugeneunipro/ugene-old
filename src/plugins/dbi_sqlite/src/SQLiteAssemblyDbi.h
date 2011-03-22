@@ -48,9 +48,6 @@ public:
     /** Return 'count' rows starting with 'offset' that intersect given region */
     virtual QList<U2AssemblyRead> getReadsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os);
     
-    /** Return assembly row structure by id */
-    virtual U2AssemblyRead getReadById(const U2DataId& rowId, U2OpStatus& os);
-
     /** 
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'

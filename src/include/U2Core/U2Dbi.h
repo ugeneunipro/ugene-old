@@ -594,9 +594,6 @@ public:
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
     virtual QList<U2AssemblyRead> getReadsAt(const U2DataId& assemblyId, const U2Region& r, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
-    /** Return assembly row structure by id */
-    virtual U2AssemblyRead getReadById(const U2DataId& rowId, U2OpStatus& os) = 0;
-
     /** 
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
