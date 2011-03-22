@@ -66,6 +66,8 @@
 
 ################################################################
 Section "Build"
+    !include "FileFunc.nsh"
+
     SectionIn 1 2 RO
     SetOutPath $INSTDIR
     
@@ -147,13 +149,16 @@ Section "Build"
     File /r /x .svn "includes\imageformats\*.*"
 
     SetOutPath $INSTDIR
-
+    
+    ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+    IntFmt $0 "0x%08X" $0
+    
     # Write the uninstall keys for Windows
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "DisplayName" "${FullProductName} ${PrintableVersion}"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "UninstallString" "$INSTDIR\Uninst.exe"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "Publisher" "Unipro"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "DisplayVersion" "${PrintableVersion}"
-    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "EstimatedSize" 59000
+    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "EstimatedSize" "$0"
     WriteUninstaller "$INSTDIR\Uninst.exe"
 
 
