@@ -37,7 +37,6 @@ SearchQuery::SearchQuery(const U2AssemblyRead &shortRead) {
 
 SearchQuery::~SearchQuery() {
     delete dnaRead;
-    delete assRead;
 }
 
 QString SearchQuery::getName() {
