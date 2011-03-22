@@ -428,6 +428,7 @@ void DotPlotWidget::sl_showSaveImageDialog() {
     }
 
     QImage image(width(), height(), QImage::Format_RGB32);
+    image.fill(palette().color(QPalette::Window).rgb());
     QPainter p(&image);
 
     drawAll(p);
