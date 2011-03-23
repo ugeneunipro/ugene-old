@@ -46,8 +46,9 @@ U2DataId SQLiteUtils::toU2DataId(qint64 id, U2DataType type, const QByteArray& d
     }
     assert(sizeof(U2DataType)==2);
     int extraLen = dbExtra.size();
+    int len = DATAID_MIN_LEN + extraLen;
 #if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
-    QByteArray res(DATAID_MIN_LEN + extraLen, Qt::Uninitialized);
+    QByteArray res(len, Qt::Uninitialized);
 #else
     QByteArray result(len, (char)0);
 #endif
