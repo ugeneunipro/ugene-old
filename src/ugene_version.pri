@@ -1,7 +1,7 @@
 # This file contains UGENE version info
 
 # product version
-UGENE_VERSION=1.9.2-dev
+UGENE_VERSION=1.9.2
 
 # int version levels for executables
 UGENE_VER_MAJOR=1
