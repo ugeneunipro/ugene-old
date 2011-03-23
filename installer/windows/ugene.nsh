@@ -73,6 +73,7 @@ Section "Build"
     
     # Remove old install
     RMDir /r "$INSTDIR/plugins"
+    Delete "$INSTDIR/ugene.exe"
 
     SetOverwrite IfNewer
     File "${ReleaseBuildDir}\ugeneui.exe"
