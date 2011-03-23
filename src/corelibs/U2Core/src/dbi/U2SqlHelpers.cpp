@@ -50,7 +50,7 @@ U2DataId SQLiteUtils::toU2DataId(qint64 id, U2DataType type, const QByteArray& d
 #if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
     QByteArray res(len, Qt::Uninitialized);
 #else
-    QByteArray result(len, (char)0);
+    QByteArray res(len, (char)0);
 #endif
     char* data = res.data();
     ((qint64*)(data + DB_ID_OFFSET))[0] = id;
