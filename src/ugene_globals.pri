@@ -39,6 +39,7 @@ CONFIG(x64) {
     DEFINES += UGENE_X86
 }
 
+macx : DEFINES += RUN_WORKFLOW_IN_THREADS
 
 # uncomment when building on Cell BE
 # UGENE_CELL = 1
