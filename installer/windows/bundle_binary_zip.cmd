@@ -46,15 +46,12 @@ copy %RELEASE_DIR%\U2View.dll  %OUTPUT_DIR%
 
 REM copy plugins
 call %INSTALL_DIR%/copy_plugin.cmd annotator
-call %INSTALL_DIR%/copy_plugin.cmd assembly_browser
 call %INSTALL_DIR%/copy_plugin.cmd ball
 call %INSTALL_DIR%/copy_plugin.cmd biostruct3d_view
 call %INSTALL_DIR%/copy_plugin.cmd bowtie
 call %INSTALL_DIR%/copy_plugin.cmd chroma_view
 call %INSTALL_DIR%/copy_plugin.cmd circular_view
 call %INSTALL_DIR%/copy_plugin.cmd cuda_support
-call %INSTALL_DIR%/copy_plugin.cmd dbi_sqlite
-call %INSTALL_DIR%/copy_plugin.cmd dbi_bam
 call %INSTALL_DIR%/copy_plugin.cmd dna_export
 call %INSTALL_DIR%/copy_plugin.cmd dna_graphpack
 call %INSTALL_DIR%/copy_plugin.cmd dna_stat

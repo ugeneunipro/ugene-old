@@ -72,8 +72,8 @@ Section "Build"
     SetOutPath $INSTDIR
     
     # Remove old install
-    RMDir /r "$INSTDIR/plugins"
-    Delete "$INSTDIR/ugene.exe"
+    RMDir /r "$INSTDIR\plugins"
+    Delete "$INSTDIR\ugene.exe"
 
     SetOverwrite IfNewer
     File "${ReleaseBuildDir}\ugeneui.exe"
@@ -107,7 +107,6 @@ Section "Build"
     File /r /x .svn "includes\plugins\*.*"
 
     !insertmacro AddPlugin annotator
-    !insertmacro AddPlugin assembly_browser
     !insertmacro AddPlugin ball
     !insertmacro AddPlugin biostruct3d_view
     !insertmacro AddPlugin bowtie
@@ -116,8 +115,6 @@ Section "Build"
     !insertmacro AddPlugin remote_service
     !insertmacro AddPlugin cuda_support
     !insertmacro AddPlugin opencl_support
-    !insertmacro AddPlugin dbi_bam
-    !insertmacro AddPlugin dbi_sqlite
     !insertmacro AddPlugin dna_export
     !insertmacro AddPlugin dna_graphpack
     !insertmacro AddPlugin dna_stat
