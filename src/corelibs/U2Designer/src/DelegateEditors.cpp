@@ -189,6 +189,11 @@ void URLLineEdit::sl_onBrowse() {
     setFocus();
 }
 
+void URLLineEdit::focusOutEvent ( QFocusEvent * event ) {
+    emit si_finished();
+}
+
+
 /********************************
 * URLDelegate
 ********************************/
@@ -215,13 +220,21 @@ QWidget *URLDelegate::createEditor(QWidget *parent,
     layout->addWidget(toolButton);
 
     currentEditor = widget;
-    connect(documentURLEdit, SIGNAL(editingFinished()), SLOT(sl_commit()));
-    
+    connect(documentURLEdit, SIGNAL(si_finished()), SLOT(sl_commit()));
     return widget;
 }
 
 void URLDelegate::sl_commit() {
-    emit commitData(currentEditor);
+    URLLineEdit *edit = static_cast<URLLineEdit*>(sender());
+    //sender()->disconnect(this);
+    if(edit->text() != text) {
+        text = edit->text();
+        if (currentEditor) {
+            emit commitData(currentEditor);
+        }
+        //currentEditor->setFocusPolicy(Qt::NoFocus);
+    }
+    //connect(sender(), SIGNAL(editingFinished()), SLOT(sl_commit()));
 }
 
 void URLDelegate::setEditorData(QWidget *editor,
@@ -425,6 +438,10 @@ void StingListEdit::sl_onExpand()
     }
 }
 
+void StingListEdit::focusOutEvent ( QFocusEvent * event ) {
+    emit si_finished();
+}
+
 /* class ListEditDelegate : public PropertyDelegate */
 
 const QString StringListDelegate::EDITOR("ListLineEdit");
@@ -451,12 +468,13 @@ QWidget* StringListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
     layout->addWidget(button);
 
     currentEditor = widget;
-    connect(edit, SIGNAL(editingFinished()), SLOT(sl_commit()));
+    connect(edit, SIGNAL(si_finished()), SLOT(sl_commit()));
 
     return widget;
 }
 
 void StringListDelegate::sl_commit() {
+    //sender()->disconnect(this);
     emit commitData(currentEditor);
 }
 
@@ -521,6 +539,7 @@ QWidget *StringSelectorDelegate::createEditor(QWidget *parent, const QStyleOptio
 }
 
 void StringSelectorDelegate::sl_commit() {
+    //sender()->disconnect(this);
     emit commitData(currentEditor);
 }
 

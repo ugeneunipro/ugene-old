@@ -67,8 +67,13 @@ class U2DESIGNER_EXPORT URLLineEdit : public QLineEdit {
 public:
     URLLineEdit(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QWidget *parent)
         : QLineEdit(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), saveFile(saveFile) {}
+protected:
+    void focusOutEvent ( QFocusEvent * event );
 private slots:
     void sl_onBrowse();
+
+signals:
+    void si_finished();
     
 private:
     QString FileFilter;
@@ -105,7 +110,8 @@ protected:
     bool    isPath;
     bool    showButton;
     bool    saveFile; // sets when you need only 1 file for reading (is set with multi=false)
-    mutable QWidget * currentEditor;
+    mutable QWidget* currentEditor;
+    QString text;
 };
 
 class U2DESIGNER_EXPORT SpinBoxDelegate : public PropertyDelegate {
@@ -230,6 +236,12 @@ class U2DESIGNER_EXPORT StingListEdit : public QLineEdit {
 
 public:
     StingListEdit(QWidget *parent) : QLineEdit(parent) {}
+
+protected:
+    void focusOutEvent(QFocusEvent *event);
+
+signals:
+    void si_finished();
 
 private slots:
     void sl_onExpand();
