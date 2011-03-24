@@ -42,6 +42,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/DNAInfo.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/SWResultFilterRegistry.h>
@@ -344,6 +345,10 @@ QString SWWorker::readPatternsFromFile(const QString url) {
                 assert(go != NULL);
                 const DNASequence& dna = ((DNASequenceObject*)go)->getDNASequence();
                 pattern += QString(dna.constData()) + ";";
+                patternNames[dna.constData()] = dna.getName();
+                if(!dna.info[DNAInfo::FASTA_HDR].toString().isEmpty()) {
+                    fastaHeaders[dna.constData()] = dna.info[DNAInfo::FASTA_HDR].toString();
+                }
             }
 
         } else {
@@ -501,7 +506,17 @@ void SWWorker::sl_taskFinished(Task* t) {
         SmithWatermanReportCallbackImpl* rcb = callbacks.take(sub);
         assert(rcb != NULL);
         if(rcb) {
-            annData << rcb->getAnotations();
+            foreach(SharedAnnotationData a, rcb->getAnotations()) {
+                QString pattern = patterns.value(sub);
+                if(!patternNames[pattern].isEmpty()) {
+                    a->qualifiers.push_back(U2Qualifier("pattern_name", patternNames[pattern]));
+                }
+                if(!fastaHeaders[pattern].isEmpty()) {
+                    a->qualifiers.push_back(U2Qualifier("fasta_header", fastaHeaders[pattern]));
+                }
+                annData << a;
+            }
+            //annData << rcb->getAnotations();
         }
         ptrns << patterns.value(sub);
     }

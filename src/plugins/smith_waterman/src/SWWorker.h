@@ -71,6 +71,8 @@ private:
     CommunicationChannel *input, *output;
     QMap<Task*, SmithWatermanReportCallbackImpl*> callbacks;
     QMap<Task*, QByteArray> patterns;
+    QMap<QString, QString> patternNames;
+    QMap<QString, QString> fastaHeaders;
 }; 
 
 class SWWorkerFactory : public DomainFactory {
