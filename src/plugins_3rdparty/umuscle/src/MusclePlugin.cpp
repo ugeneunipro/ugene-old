@@ -191,11 +191,17 @@ void MuscleMSAEditorContext::sl_align() {
     }
     
     Task * muscleTask = NULL;
+// if not defined -> we have two options, otherwise run in threads
+#ifndef RUN_WORKFLOW_IN_THREADS
     if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
         muscleTask = new MuscleGObjectRunFromSchemaTask(obj, s);
     } else {
         muscleTask = new MuscleGObjectTask(obj, s);
     }
+#else
+    muscleTask = new MuscleGObjectTask(obj, s);
+#endif // RUN_WORKFLOW_IN_THREADS
+    assert(muscleTask != NULL);
     AppContext::getTaskScheduler()->registerTopLevelTask( muscleTask );
 }
 

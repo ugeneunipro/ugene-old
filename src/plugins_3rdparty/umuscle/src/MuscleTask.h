@@ -147,6 +147,7 @@ private:
     MuscleTaskSettings  config;
 };
 
+#ifndef RUN_WORKFLOW_IN_THREADS
 /**
  * runs muscle from cmdline schema in separate process
  * using data/schemas_private/muscle.uwl schema
@@ -187,6 +188,8 @@ private:
     WorkflowRunSchemaForTask * runSchemaTask;
     StateLock* lock;
 };
+
+#endif // RUN_WORKFLOW_IN_THREADS
 
 }//namespace
 #endif

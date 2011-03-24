@@ -191,11 +191,16 @@ void KalignMSAEditorContext::sl_align() {
     }
     
     Task * kalignTask = NULL;
+#ifndef RUN_WORKFLOW_IN_THREADS
     if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
         kalignTask = new KalignGObjectRunFromSchemaTask(obj, s);
     } else {
         kalignTask = new KalignGObjectTask(obj, s);
     }
+#else
+    kalignTask = new KalignGObjectTask(obj, s);
+#endif // RUN_WORKFLOW_IN_THREADS
+    assert(kalignTask != NULL);
     AppContext::getTaskScheduler()->registerTopLevelTask( kalignTask );
 }
 

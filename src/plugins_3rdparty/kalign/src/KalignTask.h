@@ -97,6 +97,7 @@ public:
     KalignTaskSettings          config;
 };
 
+#ifndef RUN_WORKFLOW_IN_THREADS
 /**
 * runs kalign from cmdline schema in separate process
 * using data/schemas_private/kalign.uwl schema
@@ -134,6 +135,8 @@ private:
     WorkflowRunSchemaForTask * runSchemaTask;
     QString objName;
 };
+
+#endif // RUN_WORKFLOW_IN_THREADS
 
 class KalignMainTask : public MSAAlignTask {
     Q_OBJECT

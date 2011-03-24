@@ -190,14 +190,19 @@ KalignMainTask::KalignMainTask(MAlignmentObject* _obj, const MSAAlignTaskSetting
     config.secret = _config.getCustomValue(OPTION_BONUS_SCORE, -1).toDouble();
     
     Task * kalignTask = NULL;
+#ifndef RUN_WORKFLOW_IN_THREADS
     if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
         kalignTask = new KalignGObjectRunFromSchemaTask(_obj, config);
     } else {
         kalignTask = new KalignGObjectTask(_obj, config);
     }
+#else
+    kalignTask = new KalignGObjectTask(_obj, config);
+#endif // RUN_WORKFLOW_IN_THREADS
     addSubTask(kalignTask);
 }
 
+#ifndef RUN_WORKFLOW_IN_THREADS
 ///////////////////////////////////
 //KalignGObjectRunFromSchemaTask
 KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * o, const KalignTaskSettings & c) :
@@ -298,5 +303,7 @@ QVariantMap KalignGObjectRunFromSchemaTask::getSchemaData() const {
 bool KalignGObjectRunFromSchemaTask::saveOutput() const {
     return true;
 }
+
+#endif // RUN_WORKFLOW_IN_THREADS
 
 } //namespace

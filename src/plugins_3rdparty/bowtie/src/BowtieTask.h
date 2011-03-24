@@ -91,6 +91,7 @@ private:
 	QString indexPath;
 };
 
+#ifndef RUN_WORKFLOW_IN_THREADS
 /**
  runs bowtie in separate process
  if building index needed: it builds in current process
@@ -115,6 +116,7 @@ private:
     QString             indexPath;
     
 }; // BowtieRunFromSchemaTask
+#endif // RUN_WORKFLOW_IN_THREADS
 
 class BowtieTLSTask : public TLSTask {
 	Q_OBJECT

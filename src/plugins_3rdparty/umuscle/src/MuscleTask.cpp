@@ -468,11 +468,16 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
             config.regionToAlign = U2Region(0, mAObject->getLength());
         }
 
+#ifndef RUN_WORKFLOW_IN_THREADS
         if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
             muscleGObjectTask = new MuscleGObjectRunFromSchemaTask(mAObject, config);
         } else {
             muscleGObjectTask = new MuscleGObjectTask(mAObject, config);
         }
+#else
+        muscleGObjectTask = new MuscleGObjectTask(mAObject, config);
+#endif // RUN_WORKFLOW_IN_THREADS
+        assert(muscleGObjectTask != NULL);
         res.append(muscleGObjectTask);
     }else if(subTask == muscleGObjectTask){
         saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath)),config.inputFilePath);
@@ -503,6 +508,8 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
 Task::ReportResult MuscleWithExtFileSpecifySupportTask::report(){
     return ReportResult_Finished;
 }
+
+#ifndef RUN_WORKFLOW_IN_THREADS
 
 //////////////////////////////////
 //MuscleGObjectRunFromSchemaTask
@@ -629,5 +636,7 @@ DocumentFormatId MuscleGObjectRunFromSchemaTask::inputFileFormat() const {
 bool MuscleGObjectRunFromSchemaTask::saveOutput() const {
     return true;
 }
+
+#endif // RUN_WORKFLOW_IN_THREADS
 
 } //namespace

@@ -493,7 +493,11 @@ Task(tr("Monitoring execution of workflow schema"), TaskFlag_NoRun), schemaPath(
     QString cmdlineUgenePath(WorkflowSettings::getCmdlineUgenePath());
     assert(!cmdlineUgenePath.isEmpty());
     proc->start(cmdlineUgenePath, args);
-    proc->waitForStarted();
+    bool startedSuccessfully = proc->waitForStarted();
+    if(!startedSuccessfully) {
+        setError(tr("Cannot start process '%1'").arg(cmdlineUgenePath));
+        return;
+    }
 }
 
 WorkflowRunInProcessMonitorTask::~WorkflowRunInProcessMonitorTask() {

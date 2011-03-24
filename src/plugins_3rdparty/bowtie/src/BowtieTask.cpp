@@ -57,11 +57,15 @@ BowtieBaseTask::BowtieBaseTask(const DnaAssemblyToRefTaskSettings & c, bool jbi)
 // old task is invoked
 // wait for better testing
 // planned release: 1.9.3
-    /*if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
-        sub = new BowtieRunFromSchemaTask(settings, justBuildIndex);
-    } else {
-        sub = new BowtieTask(settings, justBuildIndex);
-    }*/
+//#ifndef RUN_WORKFLOW_IN_THREADS
+//    if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+//        sub = new BowtieRunFromSchemaTask(settings, justBuildIndex);
+//    } else {
+//        sub = new BowtieTask(settings, justBuildIndex);
+//    }
+//#else
+//    sub = new BowtieTask(settings, justBuildIndex);
+//#endif // RUN_WORKFLOW_IN_THREADS
     sub = new BowtieTask(settings, justBuildIndex);
     addSubTask(sub);
 }
@@ -195,6 +199,7 @@ Task::ReportResult BowtieTask::report() {
     return ReportResult_Finished;
 }
 
+#ifndef RUN_WORKFLOW_IN_THREADS
 /************************************************************************/
 /* BowtieRunFromSchemaTask                                              */
 /************************************************************************/
@@ -315,6 +320,7 @@ QVariantMap BowtieRunFromSchemaTask::getSchemaData() const {
 bool BowtieRunFromSchemaTask::saveOutput() const {
     return false;
 }
+#endif // RUN_WORKFLOW_IN_THREADS
 
 /************************************************************************/
 /* BowtieTLSTask                                                        */
