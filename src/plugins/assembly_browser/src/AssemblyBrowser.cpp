@@ -56,6 +56,7 @@
 namespace U2 {
 
 const double AssemblyBrowser::ZOOM_MULT = 1.25;
+const double AssemblyBrowser::INITIAL_ZOOM_FACTOR= 1.;
 
 //==============================================================================
 // AssemblyModel
@@ -132,8 +133,9 @@ QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus&
 
 AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
-gobject(o), model(0), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0), zoomInAction(NULL), zoomOutAction(NULL),
-posSelectorAction(NULL), posSelector(NULL) {
+gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), 
+zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0) 
+{
     initFont();
     setupActions();
     
@@ -144,11 +146,6 @@ posSelectorAction(NULL), posSelector(NULL) {
         model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus)));
         sl_assemblyLoaded();
     }
-}
-
-
-bool AssemblyBrowser::onCloseEvent() {
-    return true;
 }
 
 QWidget * AssemblyBrowser::createWidget() {
@@ -341,57 +338,58 @@ void AssemblyBrowser::sl_assemblyLoaded() {
     checkAndLogError(dbiOpStatus);
 
     model->addAssembly(assmDbi, assm);
-//     createWidgets();
-//     ui->update();
 }
 
 void AssemblyBrowser::sl_zoomIn() {
-    qint64 oldWidth = basesCanBeVisible();
-    //qint64 oldHeight = rowsCanBeVisible();
-    
+    qint64 oldWidth = basesVisible();
     int oldCellSize = getCellWidth();
-    if(!oldCellSize) {
+
+    if(!oldCellSize) { 
+        //if cells are not visible -> simply decrease the zoomFactor
         zoomFactor /= ZOOM_MULT;
-    } else {
+    } else { 
+        //single decreasing of the zoomFactor not always changes the cell size
+        //so we have to do it in the cycle, until cells grow
         double oldZoomFactor = zoomFactor;
         int cellWidth = 0;
         do {
             zoomFactor /= ZOOM_MULT;
             cellWidth = getCellWidth();
         } while(oldCellSize == cellWidth);
+        //can't zoom endlessly
         if(cellWidth > MAX_CELL_WIDTH) {
             zoomFactor = oldZoomFactor;
         } 
     }
     
-    setXOffsetInAssembly(getXOffsetInAssembly() + (oldWidth - basesCanBeVisible()) / 2);
-    /*qint64 newHeight = rowsCanBeVisible();
-    qint64 newY = getYOffsetInAssembly() + (oldHeight - newHeight) / 2;
-    setOffsetsInAssembly(newX, newY);*/
+    //zooming to the center of the screen
+    qint64 newX = getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2;
+    setXOffsetInAssembly(newX);
     
     updateActions();
     emit si_zoomOperationPerformed();
 }
 
 void AssemblyBrowser::sl_zoomOut() {
-    qint64 oldWidth = basesCanBeVisible();
-    //qint64 oldHeight = rowsCanBeVisible();
-    
+    qint64 oldWidth = basesVisible();
     int oldCellSize = getCellWidth();
-    if(zoomFactor * ZOOM_MULT > 1.) {
-        zoomFactor = 1.;
+
+    if(zoomFactor * ZOOM_MULT > INITIAL_ZOOM_FACTOR) { //initial zoom factor
+        zoomFactor = INITIAL_ZOOM_FACTOR;
     } else if(!oldCellSize) {
+        //if cells are not visible -> simply increase the zoomFactor
         zoomFactor *= ZOOM_MULT;
     } else {
+        //single increasing of the zoomFactor not always changes the cell size
+        //so we have to do it in the cycle
         do {
             zoomFactor *= ZOOM_MULT;
         } while(oldCellSize && getCellWidth() == oldCellSize);
     }
     
-    setXOffsetInAssembly(getXOffsetInAssembly() + (oldWidth - basesCanBeVisible()) / 2);
-    /*qint64 newHeight = rowsCanBeVisible();
-    qint64 newY = getYOffsetInAssembly() + (oldHeight - newHeight) / 2;
-    setOffsetsInAssembly(newX, newY);*/
+    //zooming out of the center
+    qint64 newX =  getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2;
+    setXOffsetInAssembly(newX);
     
     updateActions();
     emit si_zoomOperationPerformed();
@@ -410,11 +408,8 @@ void AssemblyBrowser::setupActions() {
 }
 
 void AssemblyBrowser::updateActions() {
-    bool enable = 1. != zoomFactor;
+    bool enable = INITIAL_ZOOM_FACTOR != zoomFactor;
     zoomOutAction->setEnabled(enable);
-    /*if(posSelectorAction != NULL) {
-        posSelectorAction->setEnabled(enable);
-    }*/
     if(posSelector != NULL) {
         posSelector->setEnabled(enable);
     }

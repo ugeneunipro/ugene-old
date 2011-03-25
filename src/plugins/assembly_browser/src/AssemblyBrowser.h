@@ -121,7 +121,6 @@ signals:
     void si_offsetsChanged();
 
 protected:
-    bool onCloseEvent();
     virtual QWidget * createWidget();
 
 private slots:
@@ -156,7 +155,9 @@ private:
     QAction * posSelectorAction;
     PositionSelector * posSelector;
     
+    const static double INITIAL_ZOOM_FACTOR;
     const static double ZOOM_MULT;
+
     const static int MAX_CELL_WIDTH = 300;
     const static int LETTER_VISIBLE_WIDTH = 7;
     const static int CELL_VISIBLE_WIDTH = 1;
