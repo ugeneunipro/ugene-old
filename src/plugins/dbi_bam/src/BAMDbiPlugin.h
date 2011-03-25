@@ -28,13 +28,13 @@
 namespace U2 {
 namespace BAM {
 
-class BAMDbiPlugin : public Plugin
-{
+class BAMDbiPlugin : public Plugin {
     Q_OBJECT
 public:
     BAMDbiPlugin();
 private slots:
     void sl_converter();
+    void sl_addDbFileToProject(Task*);
 };
 
 } // namespace BAM

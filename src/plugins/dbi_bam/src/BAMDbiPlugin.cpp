@@ -24,6 +24,9 @@
 #include <QtGui/QMessageBox>
 #include <U2Core/AppContext.h>
 #include <U2Core/DbiDocumentFormat.h>
+#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/AddDocumentTask.h>
+#include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
 #include "Dbi.h"
 #include "Exception.h"
@@ -59,14 +62,43 @@ void BAMDbiPlugin::sl_converter() {
         if(!AppContext::getDbiRegistry()->getRegisteredDbiFactories().contains("SQLiteDbi")) {
             throw Exception(tr("SQLite DBI plugin is not loaded"));
         }
-        ConvertToSQLiteDialog convertDialog;
+        ConvertToSQLiteDialog convertDialog(AppContext::getProject() != NULL);
         if(QDialog::Accepted == convertDialog.exec()) {
             ConvertToSQLiteTask *task = new ConvertToSQLiteTask(convertDialog.getSourceUrl(), convertDialog.getDestinationUrl());
+            if(convertDialog.addToProject()) {
+                connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_addDbFileToProject(Task*)));
+            }
             AppContext::getTaskScheduler()->registerTopLevelTask(task);
         }
     } catch(const Exception &e) {
         QMessageBox::critical(NULL, tr("Error"), e.getMessage());
     }
+}
+
+void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
+    ConvertToSQLiteTask * convertToBAMTask = qobject_cast<ConvertToSQLiteTask*>(task);
+    if(convertToBAMTask == NULL) {
+        assert(false);
+        return;
+    }
+    if(convertToBAMTask->hasErrors() || convertToBAMTask->isCanceled()) {
+        return;
+    }
+    GUrl url = convertToBAMTask->getDestinationUrl();
+    assert(!url.isEmpty());
+    DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById("usqlite");
+    if(df == NULL) {
+        assert(false);
+        return;
+    }
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url.getURLString()));
+    assert(iof != NULL);
+    Document * doc = new Document(df, iof, url);
+    AddDocumentTask * addTask = new AddDocumentTask(doc);
+    LoadUnloadedDocumentAndOpenViewTask * openViewTask = new LoadUnloadedDocumentAndOpenViewTask(doc);
+    openViewTask->addSubTask(addTask);
+    openViewTask->setMaxParallelSubtasks(1);
+    AppContext::getTaskScheduler()->registerTopLevelTask(openViewTask);
 }
 
 } // namespace BAM

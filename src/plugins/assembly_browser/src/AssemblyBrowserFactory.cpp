@@ -96,7 +96,7 @@ void OpenAssemblyBrowserTask::open() {
     if (stateInfo.hasErrors() || (documentsToLoad.isEmpty() && selectedObjects.isEmpty())) {
         return;
     }
-
+    
     if (selectedObjects.isEmpty()) {
         assert(1 == documentsToLoad.size());
         Document* doc = documentsToLoad.first();
@@ -117,20 +117,15 @@ void OpenAssemblyBrowserTask::open() {
             return;
         }
     }
-
+    
     foreach(QPointer<GObject> po, selectedObjects) {
         AssemblyObject* o = qobject_cast<AssemblyObject*>(po);
-        AssemblyBrowser* view = new AssemblyBrowser(o);
-
+        assert(o);
         viewName = GObjectViewUtils::genUniqueViewName(o->getDocument(), o);
-        uiLog.details(tr("Opening Assembly Browser for object: %1").arg(o->getGObjectName()));
-
         AssemblyBrowser * v = new AssemblyBrowser(o);
         GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);
-
         AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
     }
 }
-
 
 } //ns

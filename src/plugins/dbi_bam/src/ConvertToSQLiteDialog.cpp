@@ -21,23 +21,33 @@
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#include <U2Misc/DialogUtils.h>
 #include "BAMDbiPlugin.h"
 #include "ConvertToSQLiteDialog.h"
 
 namespace U2 {
 namespace BAM {
 
-ConvertToSQLiteDialog::ConvertToSQLiteDialog():
-    QDialog(NULL)
-{
+ConvertToSQLiteDialog::ConvertToSQLiteDialog(bool hasProject) : QDialog(QApplication::activeWindow()) {
     ui.setupUi(this);
+    
+    if(!hasProject) {
+        ui.addToProjectBox->setChecked(false);
+        ui.addToProjectBox->setVisible(false);
+    }
+    setMaximumHeight(layout()->minimumSize().height());
 }
 
 const GUrl &ConvertToSQLiteDialog::getSourceUrl()const {
     return sourceUrl;
 }
+
 const GUrl &ConvertToSQLiteDialog::getDestinationUrl()const {
     return destinationUrl;
+}
+
+bool ConvertToSQLiteDialog::addToProject() const {
+    return ui.addToProjectBox->isChecked();
 }
 
 void ConvertToSQLiteDialog::accept() {
@@ -57,10 +67,15 @@ void ConvertToSQLiteDialog::accept() {
     }
 }
 
+static const QString DIR_HELPER_DOMAIN("ConvertToSQLiteDialog");
 void U2::BAM::ConvertToSQLiteDialog::on_sourceUrlButton_clicked() {
-    QString returnedValue = QFileDialog::getOpenFileName(this, BAMDbiPlugin::tr("Source BAM File"), QString(), BAMDbiPlugin::tr("BAM Files (*.bam);;All Files (*)"));
-    if(!returnedValue.isEmpty()) {
-        ui.sourceUrlEdit->setText(returnedValue);
+    LastOpenDirHelper helper(DIR_HELPER_DOMAIN);
+    helper.url = QFileDialog::getOpenFileName(this, BAMDbiPlugin::tr("Source BAM File"), helper.dir, 
+        BAMDbiPlugin::tr("BAM Files (*.bam);;All Files (*)"));
+    if(!helper.url.isEmpty()) {
+        ui.sourceUrlEdit->setText(helper.url);
+        QFileInfo fi(helper.url);
+        ui.destinationUrlEdit->setText(fi.absoluteDir().path() + "/" + fi.completeBaseName() + ".ugenedb");
     }
 }
 

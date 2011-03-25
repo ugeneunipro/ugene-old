@@ -34,11 +34,12 @@ class ConvertToSQLiteDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ConvertToSQLiteDialog();
+    ConvertToSQLiteDialog(bool hasProject);
 
     const GUrl &getSourceUrl()const;
     const GUrl &getDestinationUrl()const;
-
+    bool        addToProject() const;
+    
 public slots:
     virtual void accept();
 

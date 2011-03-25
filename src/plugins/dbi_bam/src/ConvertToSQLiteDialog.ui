@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
-    <height>95</height>
+    <width>497</width>
+    <height>127</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,6 +47,16 @@
       <widget class="QToolButton" name="destinationUrlButton">
        <property name="text">
         <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="addToProjectBox">
+       <property name="text">
+        <string>Add to project</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

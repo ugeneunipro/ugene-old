@@ -78,15 +78,17 @@ private:
 };
 
 class AssemblyBrowserUi;
+class PositionSelector;
 
 class AssemblyBrowser : public GObjectView {
     Q_OBJECT
 public:
     AssemblyBrowser(AssemblyObject * o);
-
-    virtual void setupMDIToolbar(QToolBar* tb);
-    virtual void setupViewMenu(QMenu* n);
-
+    
+    // from GObjectView
+    virtual void buildStaticToolbar(QToolBar* tb);
+    virtual void buildStaticMenu(QMenu* m);
+    
     int getCellWidth() const;
     qint64 calcPixelCoord(qint64 asmCoord) const;
     qint64 calcAsmCoord(qint64 pixCoord) const;
@@ -110,7 +112,8 @@ public:
 
     void setXOffsetInAssembly(qint64 x); 
     void setYOffsetInAssembly(qint64 y);
-
+    void setOffsetsInAssembly(qint64 x, qint64 y);
+    
     void adjustOffsets(qint64 dx, qint64 dy);
 
 signals:
@@ -124,7 +127,8 @@ protected:
 private slots:
     void sl_loadAssembly();
     void sl_assemblyLoaded();
-
+    void sl_onPosChangeRequest(int);
+    
 public slots:
     void sl_zoomIn();
     void sl_zoomOut();
@@ -147,10 +151,11 @@ private:
     qint64 xOffsetInAssembly;
     qint64 yOffsetInAssembly;
 
-    QAction * openAssemblyAction;
     QAction * zoomInAction;
     QAction * zoomOutAction;
-
+    QAction * posSelectorAction;
+    PositionSelector * posSelector;
+    
     const static double ZOOM_MULT;
     const static int MAX_CELL_WIDTH = 300;
     const static int LETTER_VISIBLE_WIDTH = 7;

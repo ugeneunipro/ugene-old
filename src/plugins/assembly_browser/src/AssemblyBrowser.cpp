@@ -46,8 +46,10 @@
 #include <U2Core/U2Dbi.h>
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/Timer.h>
+#include <U2Gui/GUIUtils.h>
 
 #include <U2Misc/DialogUtils.h>
+#include <U2Misc/PositionSelector.h>
 
 #include <memory>
 
@@ -130,12 +132,14 @@ QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus&
 
 AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
-gobject(o), model(0), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0) {
+gobject(o), model(0), zoomFactor(1.), xOffsetInAssembly(0), yOffsetInAssembly(0), zoomInAction(NULL), zoomOutAction(NULL),
+posSelectorAction(NULL), posSelector(NULL) {
     initFont();
     setupActions();
-    updateActions();
-
+    
     if(gobject) {
+        objects.append(o);
+        requiredObjects.append(o);
         const U2DataRef& ref= gobject->getDbiRef();
         model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus)));
         sl_assemblyLoaded();
@@ -152,17 +156,30 @@ QWidget * AssemblyBrowser::createWidget() {
     return ui;
 }
 
-
-void AssemblyBrowser::setupMDIToolbar(QToolBar* tb) {
-//    tb->addAction(openAssemblyAction);
+void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(zoomInAction);
     tb->addAction(zoomOutAction);
+    
+    U2OpStatusImpl st;
+    posSelector = new PositionSelector(tb, 1, model->getModelLength(st));
+    if(!checkAndLogError(st)) {
+        connect(posSelector, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
+        tb->addSeparator();
+        tb->addWidget(posSelector);
+    }
+    updateActions();
+    GObjectView::buildStaticToolbar(tb);
 }
 
-void AssemblyBrowser::setupViewMenu(QMenu* n) {
-//    n->addAction(openAssemblyAction);
-    n->addAction(zoomInAction);
-    n->addAction(zoomOutAction);
+void AssemblyBrowser::sl_onPosChangeRequest(int pos) {
+    setXOffsetInAssembly(pos);
+}
+
+void AssemblyBrowser::buildStaticMenu(QMenu* m) {
+    m->addAction(zoomInAction);
+    m->addAction(zoomOutAction);
+    GObjectView::buildStaticMenu(m);
+    GUIUtils::disableEmptySubmenus(m);
 }
 
 int AssemblyBrowser::getCellWidth() const {
@@ -236,6 +253,12 @@ void AssemblyBrowser::setXOffsetInAssembly(qint64 x) {
 }
 
 void AssemblyBrowser::setYOffsetInAssembly(qint64 y) {
+    yOffsetInAssembly = y;
+    emit si_offsetsChanged();
+}
+
+void AssemblyBrowser::setOffsetsInAssembly(qint64 x, qint64 y) {
+    xOffsetInAssembly = x;
     yOffsetInAssembly = y;
     emit si_offsetsChanged();
 }
@@ -323,6 +346,9 @@ void AssemblyBrowser::sl_assemblyLoaded() {
 }
 
 void AssemblyBrowser::sl_zoomIn() {
+    qint64 oldWidth = basesCanBeVisible();
+    //qint64 oldHeight = rowsCanBeVisible();
+    
     int oldCellSize = getCellWidth();
     if(!oldCellSize) {
         zoomFactor /= ZOOM_MULT;
@@ -337,12 +363,20 @@ void AssemblyBrowser::sl_zoomIn() {
             zoomFactor = oldZoomFactor;
         } 
     }
-
+    
+    setXOffsetInAssembly(getXOffsetInAssembly() + (oldWidth - basesCanBeVisible()) / 2);
+    /*qint64 newHeight = rowsCanBeVisible();
+    qint64 newY = getYOffsetInAssembly() + (oldHeight - newHeight) / 2;
+    setOffsetsInAssembly(newX, newY);*/
+    
     updateActions();
     emit si_zoomOperationPerformed();
 }
 
 void AssemblyBrowser::sl_zoomOut() {
+    qint64 oldWidth = basesCanBeVisible();
+    //qint64 oldHeight = rowsCanBeVisible();
+    
     int oldCellSize = getCellWidth();
     if(zoomFactor * ZOOM_MULT > 1.) {
         zoomFactor = 1.;
@@ -353,6 +387,12 @@ void AssemblyBrowser::sl_zoomOut() {
             zoomFactor *= ZOOM_MULT;
         } while(oldCellSize && getCellWidth() == oldCellSize);
     }
+    
+    setXOffsetInAssembly(getXOffsetInAssembly() + (oldWidth - basesCanBeVisible()) / 2);
+    /*qint64 newHeight = rowsCanBeVisible();
+    qint64 newY = getYOffsetInAssembly() + (oldHeight - newHeight) / 2;
+    setOffsetsInAssembly(newX, newY);*/
+    
     updateActions();
     emit si_zoomOperationPerformed();
 }
@@ -362,18 +402,22 @@ void AssemblyBrowser::initFont() {
 }
 
 void AssemblyBrowser::setupActions() {
-    openAssemblyAction = new QAction(tr("Load assembly"), this);
-    connect(openAssemblyAction, SIGNAL(triggered()), SLOT(sl_loadAssembly()));
-
-    zoomInAction = new QAction(tr("Zoom in"), this);
+    zoomInAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom In"), this);
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomIn()));
 
-    zoomOutAction = new QAction(tr("Zoom out"), this);
+    zoomOutAction = new QAction(QIcon(":core/images/zoom_out.png"), tr("Zoom Out"), this);
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOut()));
 }
 
 void AssemblyBrowser::updateActions() {
-    zoomOutAction->setEnabled(1. != zoomFactor);
+    bool enable = 1. != zoomFactor;
+    zoomOutAction->setEnabled(enable);
+    /*if(posSelectorAction != NULL) {
+        posSelectorAction->setEnabled(enable);
+    }*/
+    if(posSelector != NULL) {
+        posSelector->setEnabled(enable);
+    }
 }
 
 //==============================================================================
@@ -403,6 +447,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
 
     //    readsLayout->addWidget(densityGraph);
     readsLayout->addWidget(referenceArea, 0, 0);
+    
     readsLayout->addWidget(ruler, 1, 0);
 
     readsLayout->addWidget(readsArea, 2, 0);

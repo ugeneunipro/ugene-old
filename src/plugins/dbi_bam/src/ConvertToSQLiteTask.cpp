@@ -152,5 +152,9 @@ void ConvertToSQLiteTask::run() {
     }
 }
 
+const GUrl &ConvertToSQLiteTask::getDestinationUrl() const {
+    return destinationUrl;
+}
+
 } // namespace BAM
 } // namespace U2

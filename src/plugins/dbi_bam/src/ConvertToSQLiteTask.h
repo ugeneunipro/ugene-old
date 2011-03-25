@@ -28,13 +28,14 @@
 namespace U2 {
 namespace BAM {
 
-class ConvertToSQLiteTask : public Task
-{
+class ConvertToSQLiteTask : public Task {
+    Q_OBJECT
 public:
     ConvertToSQLiteTask(const GUrl &sourceUrl, const GUrl &destinationUrl);
-
     virtual void run();
-
+    
+    const GUrl &getDestinationUrl() const;
+    
 private:
     GUrl sourceUrl;
     GUrl destinationUrl;

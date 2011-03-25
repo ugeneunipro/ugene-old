@@ -207,9 +207,8 @@ void AssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
     }
     
     if(moveModel) {
-        browser->setXOffsetInAssembly(newXoffset);
-        browser->setYOffsetInAssembly(newYoffset);
-    } 
+        browser->setOffsetsInAssembly(newXoffset, newYoffset);
+    }
 }
 
 void AssemblyOverview::paintEvent(QPaintEvent * e) {
