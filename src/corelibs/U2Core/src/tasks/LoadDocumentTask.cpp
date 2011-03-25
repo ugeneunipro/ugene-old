@@ -181,12 +181,17 @@ bool LoadUnloadedDocumentTask::addLoadingSubtask(Task* t, const LoadDocumentTask
 
 LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u, 
                                    IOAdapterFactory* i, const QVariantMap& map, const LoadDocumentTaskConfig& _config)
-: Task("", TaskFlag_None), format(f), url(u), iof(i), hints(map), result(NULL), config(_config)
+: Task("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), result(NULL), config(_config)
 {
     setTaskName(tr("Read document: '%1'").arg(u.fileName()));
  
     tpm = Progress_Manual;
     assert(iof!=NULL);
+    format = AppContext::getDocumentFormatRegistry()->getFormatById(f);
+    if(format == NULL) {
+        setError(tr("Invalid document format %1").arg(f));
+        return;
+    }
 }
 
 LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
@@ -216,14 +221,22 @@ void LoadDocumentTask::cleanup() {
 }
 
 void LoadDocumentTask::prepare() {
-    QFileInfo file(url.getURLString());
-    qint64 memUseMB = file.size()/(1024*1024);
-    if(iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
-        memUseMB *= 2.5; //Need to calculate compress level
+    if(hasErrors() || isCanceled()) {
+        return;
+    }
+    
+    qint64 memUseMB = 0;
+    if(!format->getFlags().testFlag(DocumentFormatFlag_DoNotLoadsMemory)) { // document is fully loaded to memory
+        QFileInfo file(url.getURLString());
+        qint64 memUseMB = file.size()/(1024*1024);
+        if(iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
+            memUseMB *= 2.5; //Need to calculate compress level
+        }
     }
     if(memUseMB < 30) {
         memUseMB = 30;
     }
+    
     coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
     QString error;
     Project *p = AppContext::getProject();
@@ -238,19 +251,17 @@ void LoadDocumentTask::prepare() {
 }
 
 void LoadDocumentTask::run() {
-    DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(format);
-    if (f == NULL) {
-        setError(tr("Invalid document format %1").arg(format));
+    if(hasErrors() || isCanceled()) {
         return;
     }
     if (config.createDoc && iof->isResourceAvailable(url) == TriState_No) {
         if (iof->isIOModeSupported(IOAdapterMode_Write)) {
-            result = f->createNewDocument(iof, url, hints);
+            result = format->createNewDocument(iof, url, hints);
         } else {
             setError(tr("Document not found %1").arg(url.getURLString()));
         }
     } else {
-        result = f->loadDocument(iof, url, stateInfo, hints);
+        result = format->loadDocument(iof, url, stateInfo, hints);
     }
     if (config.checkObjRef.isValid() && !hasErrors()) {
         processObjRef();
@@ -258,7 +269,6 @@ void LoadDocumentTask::run() {
     assert(isCanceled() || result!=NULL || hasErrors());
     assert(result == NULL || result->isLoaded());
 }
-
 
 Task::ReportResult LoadDocumentTask::report() {
     if (stateInfo.hasErrors() || isCanceled()) {

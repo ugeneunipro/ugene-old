@@ -40,6 +40,7 @@ DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFo
     formatName = _formatName;
     supportedObjectTypes+=GObjectTypes::ASSEMBLY;
     formatFlags|=DocumentFormatFlag_NoPack;
+    formatFlags|=DocumentFormatFlag_DoNotLoadsMemory;
 }    
 
 

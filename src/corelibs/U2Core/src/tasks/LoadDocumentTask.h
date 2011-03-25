@@ -110,7 +110,7 @@ public:
 private:
     void processObjRef();
 
-    DocumentFormatId        format;
+    DocumentFormat*         format;
     const GUrl              url;
     IOAdapterFactory*       iof;
     QVariantMap             hints;

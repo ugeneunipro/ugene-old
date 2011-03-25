@@ -62,6 +62,8 @@ enum DocumentFormatFlag {
     DocumentFormatFlag_SingleObjectFormat   = 1<<2,
     // Document can't be read from packed stream. Used for database files
     DocumentFormatFlag_NoPack               = 1<<3,
+    // Document is not fully loaded to memory. Used for database files
+    DocumentFormatFlag_DoNotLoadsMemory     = 1<<4
 };
 
 
