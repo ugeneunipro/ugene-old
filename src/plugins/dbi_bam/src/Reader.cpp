@@ -202,7 +202,7 @@ Alignment Reader::readAlignment() {
                     totalLength += cigar[index].getLength();
                 }
             }
-            if(length != totalLength) {
+            if((alignment.getReferenceId() == -1 && totalLength != 0) || (alignment.getReferenceId() != -1 && length != totalLength)) {
                 throw InvalidFormatException(BAMDbiPlugin::tr("Cigar length mismatch"));
             }
         }
@@ -587,7 +587,8 @@ void Reader::readHeader() {
                 }
                 if(fields.contains("M5")) {
                     QByteArray value = fields["M5"];
-                    if(!QRegExp("[0-9A-F]+").exactMatch(value)) {
+                    //[a-f] is a workaround (not matching to SAM-1.3 spec) to open 1000 Genomes project BAMs
+                    if(!QRegExp("[0-9A-Fa-f]+").exactMatch(value)) { 
                         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid SQ-M5 value: %1").arg(QString(value)));
                     }
                     reference->setMd5(fields["M5"]);
