@@ -124,7 +124,7 @@ QString QDLinkStatement::toString() const {
 //QDDocument
 //////////////////////////////////////////////////////////////////////////
 static const QString COMMENT_PATTERN = "\\\\\\\\|#([^\n]*)\n";
-static const QString SINGLE_ID_PATTERN = "(?:[a-zA-Z]|_|-)+[0-9_]*";
+static const QString SINGLE_ID_PATTERN = "(?:[a-zA-Z]+)(?:[a-zA-Z0-9]|_|(?:-(?!-)))*";
 const QString QDDocument::ID_PATTERN = "(" + SINGLE_ID_PATTERN + "(?:\\." + SINGLE_ID_PATTERN + ")*)";
 //static const QString VAL_PATTERN = "((?:\"[^\"]+\")|[^\\s\"]+)";
 static const QString VAL_PATTERN = "((?:\"[^\"]+\")|[^\\s;]+)";
