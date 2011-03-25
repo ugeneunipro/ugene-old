@@ -169,6 +169,12 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
 }
 
 void AssemblyBrowser::sl_onPosChangeRequest(int pos) {
+    U2OpStatusImpl st;
+    qint64 modelLen = model->getModelLength(st);
+    assert(pos <= modelLen);
+    if(pos > modelLen - basesCanBeVisible()) {
+        pos = modelLen - basesCanBeVisible();
+    }
     setXOffsetInAssembly(pos);
 }
 
