@@ -78,6 +78,9 @@ public:
 
     void setAngle(int angle);
     void updateMinHeight();
+
+    //used by export to file function
+    void paint(QPainter& p);
 signals:
     void si_wheelMoved(int);
     void si_zoomInDisabled(bool);
@@ -132,6 +135,7 @@ protected:
     virtual U2Region getAnnotationYRange(Annotation* a, int ri, const AnnotationSettings* as) const;
     void buildAnnotationItem(DrawAnnotationPass pass, Annotation* a, bool selected = false, const AnnotationSettings* as = NULL);
     virtual void drawAnnotations(QPainter& p);
+    void paintContent(QPainter& p);
     void buildAnnotationLabel(const QFont& font, Annotation* a, const AnnotationSettings* as);
     void drawSequenceName(QPainter& p);
     void drawRuler(QPainter& p);

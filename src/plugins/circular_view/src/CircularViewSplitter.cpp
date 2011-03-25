@@ -153,30 +153,33 @@ void CircularViewSplitter::sl_export() {
     filter += "\n"+ tr("Portable document (*.pdf *.ps)");
     LastOpenDirHelper lod("image");
     lod.url = QFileDialog::getSaveFileName(this, tr("Export circular view to image"), lod.dir, filter);
+    QPainter painter;
+    CircularView* cv = circularViewList.last();
     if (!lod.url.isEmpty()) {
         bool result = false;
-        QRegion bounds(rect());
         if (lod.url.endsWith(".svg", Qt::CaseInsensitive)) {
-            QSvgGenerator svg;
-            svg.setFileName(lod.url);
-            svg.setSize(rect().size());
-            QPainter painter(&svg);
-            painter.setRenderHint(QPainter::Antialiasing);
-            render(&painter, QPoint(), bounds);
+            QSvgGenerator generator;
+            generator.setFileName(lod.url);
+            generator.setSize(cv->size());
+            generator.setViewBox(rect());
+            
+            painter.begin(&generator);
+            cv->paint(painter);
             result = painter.end();
         } else if (lod.url.endsWith(".pdf", Qt::CaseInsensitive) || lod.url.endsWith(".ps", Qt::CaseInsensitive)) {
             QPrinter printer;
             printer.setOutputFileName(lod.url);
-            QPainter painter(&printer);
+
             painter.setRenderHint(QPainter::Antialiasing);
-            render(&painter, QPoint(), bounds);
+            painter.begin(&printer);
+            cv->paint(painter);
             result = painter.end();
         } else {
-            QPixmap pixmap(rect().size());
-            QPainter painter(&pixmap);
+            QPixmap pixmap(cv->size());
             painter.fillRect(pixmap.rect(), Qt::white);
             painter.setRenderHint(QPainter::Antialiasing);
-            render(&painter, QPoint(), bounds);
+            painter.begin(&pixmap);
+            cv->paint(painter);
             result = painter.end() & pixmap.save(lod.url);
         }
         if (!result) {

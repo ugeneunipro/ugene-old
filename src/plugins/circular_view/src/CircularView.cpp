@@ -397,6 +397,10 @@ qreal CircularView::coordToAngle(const QPoint point) {
     return arcsin;
 }
 
+void CircularView::paint( QPainter& p ) {
+    ra->paintContent(p);
+}
+
 /************************************************************************/
 /* CircularViewRenderArea                                               */
 /************************************************************************/
@@ -446,6 +450,26 @@ void CircularViewRenderArea::adaptNumberOfLabels(int h) {
     maxDisplayingLabels = int(h/lblHeight);
 }
 
+void CircularViewRenderArea::paintContent( QPainter& p ) {
+    int viewSize = qMin(circularView->height(), circularView->width());
+    uiLog.details(tr("circular view size %1 %2").arg(circularView->width()).arg(circularView->height()));
+    verticalOffset = parentWidget()->height()/2;
+    if (outerEllipseSize + (regionY.count()-1)*ellipseDelta + VIEW_MARGIN > viewSize) {
+        verticalOffset += rulerEllipseSize/2;
+    }
+    
+    p.fillRect(0, 0, width(), height(), Qt::white);
+    p.save();
+    p.translate(parentWidget()->width()/2, verticalOffset);
+
+    drawRuler(p);
+    drawAnnotations(p);
+    drawSequenceName(p);
+    drawAnnotationsSelection(p);
+    drawSequenceSelection(p);
+    drawMarker(p);
+    p.restore();
+}
 
 void CircularViewRenderArea::drawAll(QPaintDevice* pd) {
     QPainter p(pd);
