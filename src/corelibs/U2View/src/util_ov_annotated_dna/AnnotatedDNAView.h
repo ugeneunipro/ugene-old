@@ -129,8 +129,6 @@ public:
 
     void updateAutoAnnotations();
 
-    QList<GObject*> getAutoAnnotationsGObjects();
-
     // Tries to add object to the view. Uses GUI functions to ask user if some data if needed
     // Returns error message if failed.
     // If object is unloaded - intitiates async object loading

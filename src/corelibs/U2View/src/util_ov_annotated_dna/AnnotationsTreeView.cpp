@@ -39,6 +39,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationSelection.h>
+#include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/GUIUtils.h>
@@ -111,7 +112,8 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
     connect(ctx, SIGNAL(si_buildPopupMenu(GObjectView*, QMenu*)), SLOT(sl_onBuildPopupMenu(GObjectView*, QMenu*)));
     connect(ctx, SIGNAL(si_annotationObjectAdded(AnnotationTableObject*)), SLOT(sl_onAnnotationObjectAdded(AnnotationTableObject*)));
     connect(ctx, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject*)), SLOT(sl_onAnnotationObjectRemoved(AnnotationTableObject*)));
-    foreach(AnnotationTableObject* obj, ctx->getAnnotationObjects(true)) {
+    QList<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
+    foreach(AnnotationTableObject* obj, aObjs) {
         sl_onAnnotationObjectAdded(obj);
     }
     connectAnnotationSelection();
@@ -419,6 +421,7 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded(AnnotationTableObject* obj)
     TreeSorter ts(this);
     
     assert(findGroupItem(obj->getRootGroup()) == NULL);
+    
     AVGroupItem* groupItem = buildGroupTree(NULL, obj->getRootGroup());
     tree->addTopLevelItem(groupItem);
     connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation*>&)), SLOT(sl_onAnnotationsAdded(const QList<Annotation*>&)));
@@ -865,10 +868,9 @@ void AnnotationsTreeView::sl_removeObjectFromView() {
         objects.append(gItem->group->getGObject());
     }
 
-    QList<GObject*> aaObjs= ctx->getAutoAnnotationsGObjects();
     foreach(GObject* obj, objects) {
         assert(obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE);
-        if (aaObjs.contains(obj)) {
+        if (AutoAnnotationsSupport::isAutoAnnotation(obj)) {
             continue;
         }
         ctx->removeObject(obj);
@@ -930,7 +932,17 @@ void AnnotationsTreeView::updateState() {
     QList<QTreeWidgetItem*> items = tree->selectedItems();
     
     QList<AVGroupItem*> topLevelGroups = selectGroupItems(items, TriState_Unknown, TriState_Yes);
-    removeObjectsFromViewAction->setEnabled(!topLevelGroups.isEmpty());
+   
+    bool hasAutoAnnotationObjects = false;
+    foreach (AVGroupItem* item, topLevelGroups) {
+        AnnotationTableObject* aObj = item->getAnnotationTableObject();
+        if (AutoAnnotationsSupport::isAutoAnnotation(aObj)) {
+            hasAutoAnnotationObjects = true;
+            break;
+        }
+    }
+    
+    removeObjectsFromViewAction->setEnabled(!topLevelGroups.isEmpty() && !hasAutoAnnotationObjects);
     
     QList<AVGroupItem*> nonRootModGroups = selectGroupItems(items, TriState_No, TriState_No);
     QList<AVAnnotationItem*> modAnnotations = selectAnnotationItems(items, TriState_No);
@@ -1774,6 +1786,7 @@ void AVGroupItem::updateVisual() {
         }
         setText(0, text);
         setIcon(0, getDocumentIcon());
+        GUIUtils::setMutedLnF(this, aobj->getAnnotations().count() == 0, false);
     } else { // usual groups with annotations
         int na = group->getAnnotations().size();
         int ng = group->getSubgroups().size();

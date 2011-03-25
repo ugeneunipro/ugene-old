@@ -29,6 +29,7 @@
 
 namespace U2 {
 
+const QString AutoAnnotationObject::AUTO_ANNOTATION_HINT("auto-annotation object");
 
 AutoAnnotationsUpdater::AutoAnnotationsUpdater( const QString& nm, const QString& gName )
 : groupName(gName), name(nm)
@@ -87,13 +88,27 @@ AutoAnnotationsSupport::~AutoAnnotationsSupport()
     qDeleteAll(aaUpdaters);
 }
 
+bool AutoAnnotationsSupport::isAutoAnnotation( const AnnotationTableObject* obj )
+{
+    return obj->getGHintsMap().value(AutoAnnotationObject::AUTO_ANNOTATION_HINT).toBool();
+}
+
+bool AutoAnnotationsSupport::isAutoAnnotation( const GObject* obj )
+{
+    bool isAnnotationObject = obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE;
+    bool hasAutoAnnotationHint = obj->getGHintsMap().value(AutoAnnotationObject::AUTO_ANNOTATION_HINT).toBool();
+    return isAnnotationObject && hasAutoAnnotationHint;
+}
 
 
 //////////////////////////////////////////////////////////////////////////
 
 AutoAnnotationObject::AutoAnnotationObject( DNASequenceObject* obj ) : dnaObj(obj)
 {
-    aobj = new AnnotationTableObject(AutoAnnotationsSupport::tr("Auto-annotations [%1 | %2]").arg(obj->getDocument()->getName()).arg(obj->getSequenceName()));
+    QVariantMap hints;
+    hints.insert(AUTO_ANNOTATION_HINT, true);
+    aobj = new AnnotationTableObject(AutoAnnotationsSupport::tr("Auto-annotations [%1 | %2]")
+        .arg(obj->getDocument()->getName()).arg(obj->getSequenceName()), hints);
     aaSupport = AppContext::getAutoAnnotationsSupport();
     stateLock = new StateLock("Auto-annotation objects can not be modified");
     connect(aaSupport, SIGNAL(si_updateAutoAnnotationsGroupRequired(const QString&) ), SLOT(updateGroup(const QString&))  );

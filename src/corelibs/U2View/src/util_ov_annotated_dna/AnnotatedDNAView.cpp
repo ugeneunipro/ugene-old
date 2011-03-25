@@ -1011,19 +1011,6 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged()
 
 }
 
-QList<GObject*> AnnotatedDNAView::getAutoAnnotationsGObjects()
-{
-    QList<GObject*> result; 
-    
-    QList<AutoAnnotationObject*> aaObjs = autoAnnotationsMap.values();
-    foreach (AutoAnnotationObject* aa, aaObjs) {
-        result.append(aa->getAnnotationObject());
-    }
-
-    return result;
-}
-
-
 
 
 }//namespace

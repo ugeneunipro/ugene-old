@@ -27,6 +27,7 @@
 
 namespace U2 {
 
+class GObject;
 class AnnotationTableObject;
 class DNASequenceObject;
 class DNAAlphabet;
@@ -44,6 +45,7 @@ class U2CORE_EXPORT AutoAnnotationObject : public QObject
 {
     Q_OBJECT
 public:
+    static const QString AUTO_ANNOTATION_HINT;
     AutoAnnotationObject(DNASequenceObject* obj);
     ~AutoAnnotationObject();
     AnnotationTableObject* getAnnotationObject() const { return aobj; }
@@ -97,6 +99,8 @@ public:
     AutoAnnotationsUpdater* findUpdaterByGroupName(const QString& groupName);
     AutoAnnotationsUpdater* findUpdaterByName(const QString& name);
     void updateAnnotationsByGroup(const QString& groupName);
+    static bool isAutoAnnotation(const AnnotationTableObject* obj);
+    static bool isAutoAnnotation(const GObject* obj);
 signals:
     void si_updateAutoAnnotationsGroupRequired(const QString& groupName);
 private:
