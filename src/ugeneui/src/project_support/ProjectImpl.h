@@ -59,7 +59,7 @@ public:
 
 	virtual void removeDocument(Document* d, bool autodelete = true);
 
-    virtual bool lockResoureces(int sizeMB, const QString & url, QString &error);
+    virtual bool lockResources(int sizeMB, const QString & url, QString &error);
 
 	virtual Document* findDocumentByURL(const QString& url) const;
 	

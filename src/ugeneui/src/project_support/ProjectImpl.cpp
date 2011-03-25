@@ -125,7 +125,7 @@ void ProjectImpl::addDocument(Document* d) {
 	setModified(true);
 }
 
-bool ProjectImpl::lockResoureces(int sizeMB, const QString & url, QString& error) {
+bool ProjectImpl::lockResources(int sizeMB, const QString & url, QString& error) {
     if(resourceTracker->isAvailable(sizeMB)) {
         Document *doc = findDocumentByURL(url);
         if(doc) { 

@@ -228,7 +228,7 @@ void LoadDocumentTask::prepare() {
     QString error;
     Project *p = AppContext::getProject();
     if(p) {
-        if(!AppContext::getProject()->lockResoureces(memUseMB, url.getURLString(), error)) {
+        if(!AppContext::getProject()->lockResources(memUseMB, url.getURLString(), error)) {
             stateInfo.setError(error);
         }
     } else {

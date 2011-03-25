@@ -71,7 +71,7 @@ public:
 
     Q_INVOKABLE virtual Document* findDocumentByURL(const GUrl& url) const  = 0;
 
-    virtual bool lockResoureces(int sizeMB, const QString & url, QString &error) = 0;
+    virtual bool lockResources(int sizeMB, const QString & url, QString &error) = 0;
 
     virtual const QList<GObjectViewState*>& getGObjectViewStates() const =0;
 
