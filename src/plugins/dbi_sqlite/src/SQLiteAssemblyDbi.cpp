@@ -32,6 +32,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 
+#include <memory>
+
 namespace U2 {
 
 SQLiteAssemblyDbi::SQLiteAssemblyDbi(SQLiteDbi* dbi) : U2AssemblyDbi(dbi), SQLiteChildDBICommon(dbi) {

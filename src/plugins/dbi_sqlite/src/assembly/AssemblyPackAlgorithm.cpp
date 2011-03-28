@@ -20,7 +20,10 @@
  */
 
 #include "AssemblyPackAlgorithm.h"
+
 #include <U2Core/Timer.h>
+
+#include <memory>
 
 namespace U2 {
 
