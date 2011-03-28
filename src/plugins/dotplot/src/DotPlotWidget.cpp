@@ -1574,7 +1574,8 @@ QString DotPlotWidget::makeToolTipText() const{
     }
 
     int shownLen = 20;
-    QString text ="HIT:  len: ";
+    QString text ="HIT:  len: %1, match: %2, %: %3\n";
+    QString coord = "Coordinates(beg.): x: %1 y: %2\n";
     QString upLineSeq ="";
     QString middleLineSeq = "";
     QString downLineSeq = "";
@@ -1588,13 +1589,13 @@ QString DotPlotWidget::makeToolTipText() const{
         }
     }
 
-    text.append(QString("%1").arg(nearestRepeat->len));
-    text.append(", match: ");
+    text = text.arg(nearestRepeat->len).arg(match).arg((float)(match/(float)nearestRepeat->len)*100);
 
-    text.append(QString("%1").arg(match));
-    text.append(QString(", %: %1").arg((float)(match/(float)nearestRepeat->len)*100));
 
-    text.append("\nS1:     ");
+    coord = coord.arg(nearestRepeat->x).arg(nearestRepeat->y);
+    text.append(coord);
+
+    text.append("S1:     ");
 
     for(int i = 0; i < nearestRepeat->len && i<shownLen; i++){
         if(seqX.at(nearestRepeat->x +i) == seqY.at(nearestRepeat->y +i)){
@@ -1607,10 +1608,12 @@ QString DotPlotWidget::makeToolTipText() const{
     }
 
     text.append(upLineSeq);
-    text.append("...\nCons: ");
+    text.append("...\n");
+    text.append("Cons: ");
 
     text.append(middleLineSeq);
-    text.append("...\nS2:     ");
+    text.append("...\n");
+    text.append("S2:     ");
     text.append(downLineSeq);
     text.append("...");
 

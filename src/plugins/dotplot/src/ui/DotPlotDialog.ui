@@ -398,6 +398,24 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>xAxisCombo</tabstop>
+  <tabstop>yAxisCombo</tabstop>
+  <tabstop>directCheckBox</tabstop>
+  <tabstop>invertedCheckBox</tabstop>
+  <tabstop>directColorButton</tabstop>
+  <tabstop>directDefaultColorButton</tabstop>
+  <tabstop>invertedColorButton</tabstop>
+  <tabstop>invertedDefaultColorButton</tabstop>
+  <tabstop>algoCheck</tabstop>
+  <tabstop>algoCombo</tabstop>
+  <tabstop>minLenBox</tabstop>
+  <tabstop>minLenHeuristicsButton</tabstop>
+  <tabstop>identityBox</tabstop>
+  <tabstop>hundredPercentButton</tabstop>
+  <tabstop>startButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

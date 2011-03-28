@@ -237,15 +237,15 @@
  <tabstops>
   <tabstop>firstFileEdit</tabstop>
   <tabstop>openFirstButton</tabstop>
-  <tabstop>secondFileEdit</tabstop>
-  <tabstop>openSecondButton</tabstop>
-  <tabstop>startButton</tabstop>
-  <tabstop>cancelButton</tabstop>
   <tabstop>mergeFirstCheckBox</tabstop>
   <tabstop>gapFirst</tabstop>
+  <tabstop>oneSequenceCheckBox</tabstop>
+  <tabstop>secondFileEdit</tabstop>
+  <tabstop>openSecondButton</tabstop>
   <tabstop>mergeSecondCheckBox</tabstop>
   <tabstop>gapSecond</tabstop>
-  <tabstop>oneSequenceCheckBox</tabstop>
+  <tabstop>startButton</tabstop>
+  <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -256,8 +256,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>416</x>
-     <y>518</y>
+     <x>382</x>
+     <y>223</y>
     </hint>
     <hint type="destinationlabel">
      <x>273</x>
@@ -272,8 +272,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>499</x>
-     <y>518</y>
+     <x>465</x>
+     <y>223</y>
     </hint>
     <hint type="destinationlabel">
      <x>273</x>
