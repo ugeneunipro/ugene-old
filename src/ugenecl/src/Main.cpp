@@ -147,13 +147,6 @@ static void setScriptsSearchPath() {
 static void setDataSearchPaths() {
     //set search paths for data files
     QStringList dataSearchPaths;
-#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && defined( UGENE_DATA_DIR )
-    //using directory which is set during installation process on linux
-    QString ugene_data_dir( UGENE_DATA_DIR );
-    if( QDir(ugene_data_dir).exists() ) {
-        dataSearchPaths.push_back( QString(UGENE_DATA_DIR) );
-    }
-#endif
     const static char * RELATIVE_DATA_DIR = "/data";
     const static char * RELATIVE_DEV_DATA_DIR = "/../../data";
     //on windows data is normally located in the application directory
@@ -167,6 +160,15 @@ static void setDataSearchPaths() {
     if( dataSearchPaths.empty() ) {
         dataSearchPaths.push_back("/");
     }
+
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && defined( UGENE_DATA_DIR )
+    //using directory which is set during installation process on linux
+    QString ugene_data_dir( UGENE_DATA_DIR );
+    if( QDir(ugene_data_dir).exists() ) {
+        dataSearchPaths.push_back( QString(UGENE_DATA_DIR) );
+    }
+#endif
+
     QDir::setSearchPaths( PATH_PREFIX_DATA, dataSearchPaths );
     //now data files may be opened using QFile( "data:some_data_file" )
 }
