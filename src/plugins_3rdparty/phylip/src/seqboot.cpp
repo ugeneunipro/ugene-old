@@ -494,8 +494,10 @@ void seq_allocrest()
 void seq_freerest()
 {
   /* Free bookkeeping arrays */
-  if (alleles)
-    free(alleles);
+    if (alleles){
+        free(alleles);
+        alleles = NULL;
+    }
   free(oldweight);
   free(weight);
   if (categories)
@@ -507,7 +509,9 @@ void seq_freerest()
   free(where);
   free(how_many);
   free(factor);
+  factor = NULL;
   free(factorr);
+  factorr = NULL;
   free(nayme);
 }
 
@@ -531,6 +535,9 @@ void freenew(void)
 
   free(newwhere);
   free(newhowmany);
+
+  newwhere = NULL;
+  newhowmany = NULL;
 }
 
 
@@ -546,6 +553,7 @@ void allocnewer(long newergroups, long newersites)
   if (newerwhere != NULL) {
     if (newergroups > curnewergroups) {
       free(newerwhere);
+      newerwhere = NULL;
       free(newerhowmany);
       for (i = 0; i < spp; i++)
         free(charorder[i]);
@@ -588,11 +596,16 @@ void freenewer()
 
   if (newerwhere) {
     free(newerwhere);
+    newerwhere = NULL;
     free(newerhowmany);
+    newerhowmany = NULL;
+
     free(newerfactor);
+    newerfactor = NULL;
     for (i = 0; i < spp; i++)
       free(charorder[i]);
     free(charorder);
+    charorder = NULL;
   }
 }
 
@@ -805,7 +818,7 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
     if (data == genefreqs) {
       for (i = 0; i < (newergroups); i++)
         printf(" %3ld", alleles[factorr[newerwhere[i] - 1] - 1]);
-      putchar('\n');
+      //putchar('\n');
     }
   }
   l = 1;
@@ -842,11 +855,11 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
         }
         if (nexus)
           printf( "  ");
-        for (k = 0; k < n2; k++)
+        /*for (k = 0; k < n2; k++)
           if (nexus && (nayme[j][k] == ' ') && (k < n2))
             putchar('_');
           else
-            putchar(nayme[j][k]);
+            putchar(nayme[j][k]);*/
         if (rewrite && xml)
           printf( "</name>\n      <data>");
       } else {
@@ -854,11 +867,11 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
           printf("      ");
         }
       }
-      if (!xml) {
-        for (k = 0; k < nmlngth-n2; k++)
-          printf( " "); 
-        printf( " "); 
-      }
+//       if (!xml) {
+//         for (k = 0; k < nmlngth-n2; k++)
+//           printf( " "); 
+//         printf( " "); 
+//       }
       for (k = l - 1; k < m; k++) {
         if (permute && j + 1 == 1)
           sppermute(newerfactor[n]);    /* we can assume chars not permuted */
@@ -889,7 +902,7 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
       if (rewrite && xml) {
         printf("</data>\n   </sequence>\n");
       }
-      putchar('\n');
+      //putchar('\n');
       if(j >= mavect[rep]->getNumRows()){
         U2::MAlignmentRow curR(ma.getRow(j).getName(), curAr);
         mavect[rep]->addRow(curR);
@@ -900,8 +913,8 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
       
     }
     if (interleaved) {
-      if ((m <= newersites) && (newersites > 60))
-        putchar('\n');
+//       if ((m <= newersites) && (newersites > 60))
+//         putchar('\n');
       l += 60;
       m += 60;
     }
@@ -914,6 +927,7 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
   for (i = 0; i < (newergroups); i++)
     free(sppord[i]);
   free(sppord);
+  sppord = NULL;
 }  /* writedata */
 
 

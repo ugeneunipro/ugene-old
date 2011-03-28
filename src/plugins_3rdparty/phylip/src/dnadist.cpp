@@ -1273,7 +1273,7 @@ void makedists()
       U2::TaskStateInfo* ts = U2::getTaskInfo();
       if (ts->cancelFlag != 0) {
           ugene_exit("Task canceled!");
-      } else {
+      } else if(!U2::isBootstr()){
           cur_prog += step;
           ts->progress = int (cur_prog);   
       }

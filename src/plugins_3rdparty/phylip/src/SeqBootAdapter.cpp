@@ -45,14 +45,11 @@ SeqBoot::~SeqBoot(){
 }
 
 void SeqBoot::clearGenratedSequences(){
-//     for(int i = 0; i < generatedSeq.size(); i++){
-//         for (int j = 0; j < seqRowCount; j++){
-//             delete[] generatedSeq[i][j];
-//         }
-//         delete generatedSeq[i];
-//     }
-//     generatedSeq.clear();
-//     
+    for(int i = 0; i < generatedSeq.size(); i++){
+            delete generatedSeq[i];
+    }
+    generatedSeq.clear();
+    
 }
 
 QString SeqBoot::getTmpFileTemplate(){
@@ -70,101 +67,11 @@ void SeqBoot::initGenerSeq(int reps, int rowC, int seqLen){
     generatedSeq = QVector<MAlignment*>(reps);
     this->seqLen = seqLen;
     seqRowCount = rowC;
-    
         
     for(int i = 0; i < reps; i++){
         generatedSeq[i] = new MAlignment(QString("bootstrap %1").arg(reps), malignment->getAlphabet());
-        
-        /*for (int j = 0; j < rowC; j++){
-            //QByteArray* ba = new QByteArray('0' ,seqLen);
-            QByteArray* ba = new QByteArray();
-            MAlignmentRow* tmpR = new MAlignmentRow(malignment->getRowNames()[j], *ba);
-            
-            generatedSeq[i]->addRow(*tmpR);
-        }*/
-        //generatedSeq[i]->setLength(seqLen);
     }
     
-}
-
-void SeqBoot::generateDistMatrixes(const CreatePhyTreeSettings& settings){
-    
-}
-
-void SeqBoot::consInit(){
-    /* Initial settings */
-    ibmpc          = IBMCRT;
-    ansi           = ANSICRT;
-    didreroot      = false;
-    firsttree      = true;
-    spp            = malignment->getNumRows() ;
-    col            = 0 ;
-    /* This is needed so functions in cons.c work */
-    tree_pairing   = NO_PAIRING ;  
-    
-    strict = false;
-    mr = false;
-    mre = true;
-    ml = false;
-    mlfrac = 0.5;
-    noroot = true;
-    numopts = 0;
-    outgrno_cons = 1;
-    outgropt_cons = false;
-    trout = false;
-    prntsets = false;
-    progress = false;
-    treeprint_cons = false;
-
-    ntrees = 0.0;
-    maxgrp = 32767;   /* initial size of set hash table */
-    lasti  = -1;
-
-    int i, j, k;
-    long tip_count = spp;
-     /* do allocation first *****************************************/
-    grouping  = (group_type **)  Malloc(maxgrp*sizeof(group_type *));
-    lengths  = (double *)  Malloc(maxgrp*sizeof(double));
-
-    timesseen_changes = (double*)Malloc(maxgrp*sizeof(double));
-    for (i = 0; i < maxgrp; i++)
-    timesseen_changes[i] = 0.0;
-
-    for (i = 0; i < maxgrp; i++)
-    grouping[i] = NULL;
-
-    order     = (long **) Malloc(maxgrp*sizeof(long *));
-    for (i = 0; i < maxgrp; i++)
-    order[i] = NULL;
-
-    timesseen = (double **)Malloc(maxgrp*sizeof(double *));
-    for (i = 0; i < maxgrp; i++)
-    timesseen[i] = NULL;
-
-    nayme = (naym *)Malloc(tip_count*sizeof(naym));
-    hashp = (hashtype)Malloc(sizeof(namenode) * NUM_BUCKETS);
-    for (i=0;i<NUM_BUCKETS;i++) {
-      hashp[i] = NULL;
-    }
-    setsz = (long)ceil((double)tip_count/(double)SETBITS);
-
-    fullset = (group_type *)Malloc(setsz * sizeof(group_type));
-    for (j = 0; j < setsz; j++)
-    fullset[j] = 0L;
-    k = 0;
-    for (j = 1; j <= tip_count; j++) {
-    if (j == ((k+1)*SETBITS+1)) k++;
-    fullset[k] |= 1L << (j - k*SETBITS - 1);
-    }
-  /* end allocation **********************************************/
-
-    firsttree = true;
-    grbg = NULL;
-
-}
-
-void SeqBoot::consensus(){
-    consInit();   
 }
 
 const MAlignment& SeqBoot::getMSA(int pos) const {
@@ -179,7 +86,6 @@ void SeqBoot::generateSequencesFromAlignment( const MAlignment& ma, const Create
 
     malignment = &ma;
     int replicates = settings.replicates;
-    
     
     seqboot_getoptions();
     
@@ -220,18 +126,6 @@ void SeqBoot::generateSequencesFromAlignment( const MAlignment& ma, const Create
     
     bootwrite(generatedSeq, *malignment);
 
-    /*for(int i = 0; i < generatedSeq.size(); i++){
-        for (int j = 0; j < generatedSeq[i]->getNumRows(); j++){
-            for(int k = 0 ; k < generatedSeq[i]->getLength(); k++){
-                putchar(generatedSeq[i]->getRow(j).chatAt(k));
-            }
-            putchar('\n');
-        }
-        putchar('\n');
-        putchar('\n');
-        putchar('\n');
-    }*/
-
     freenewer();
     freenew();
     seq_freerest();
@@ -241,15 +135,7 @@ void SeqBoot::generateSequencesFromAlignment( const MAlignment& ma, const Create
     if (nodef)
         matrix_double_delete(nodef, spp);
 
-//     for(int i = 0; i < reps; i++){
-//         for(int j = 0; j < generatedSeq[i]->getNumRows(); j++){
-//             const MAlignmentRow& curR = generatedSeq[i]->getRow(j);
-//             curR.setName("3");
-//         }
-//     }
-
     //clearGenratedSequences();
-    
 }
 
 } //namespace

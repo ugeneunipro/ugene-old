@@ -19,6 +19,7 @@
 namespace U2 {
 
 static TaskStateInfo* ts = NULL;
+static bool isBootstrap = false;
   
 TaskStateInfo* getTaskInfo() 
 { 
@@ -28,6 +29,13 @@ TaskStateInfo* getTaskInfo()
   
 void setTaskInfo(TaskStateInfo* info) {
     ts = info;
+}
+
+bool isBootstr(){
+    return isBootstrap;
+}
+void setBootstr(bool bootstr){
+    isBootstrap = bootstr;
 }
 
 

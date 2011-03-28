@@ -38,6 +38,9 @@ namespace U2 {
     TaskStateInfo* getTaskInfo();
     void setTaskInfo(TaskStateInfo* ts);
 
+    bool isBootstr();
+    void setBootstr(bool bootstr);
+
 }
 
 

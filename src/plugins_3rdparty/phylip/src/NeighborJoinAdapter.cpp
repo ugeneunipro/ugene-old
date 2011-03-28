@@ -33,17 +33,9 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Task.h>
 
-//#include <QtGui/QPushButton>
 #include <QtCore/QVector>
 #include <QtCore/QString>
 #include <QTemporaryFile>
-
-//#include <algorithm>
-//#include <exception>
-//#include <iostream>
-//#include <memory>
-
-
 
 
 namespace U2 {
@@ -125,8 +117,8 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
     if(s.bootstrap){ //bootstrapping and creating a consensus tree
         try {
             setTaskInfo(&ti);
-            ti.setStateDesc("Generating trees");
-
+            setBootstr(true);
+            ti.setStateDesc("Generating sequences");
 
             std::auto_ptr<SeqBoot> seqBoot(new SeqBoot);
 
@@ -141,8 +133,8 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
             }
 
             seqBoot->generateSequencesFromAlignment(ma,s);
-            
-            seqBoot->consInit();
+
+            ti.setStateDesc("Calculating trees");
 
             bool initial = true;
             for (int i = 0; i < s.replicates; i++){
@@ -213,6 +205,7 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
         try {   
                     
             setTaskInfo(&ti);
+            setBootstr(false);
             
             std::auto_ptr<DistanceMatrix> distanceMatrix(new DistanceMatrix);
             distanceMatrix->calculateOutOfAlignment(ma,s);

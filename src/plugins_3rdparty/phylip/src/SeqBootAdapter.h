@@ -43,13 +43,8 @@ private:
    
 public:
     QString getTmpFileTemplate();
-//    QVector<sequence>& getGeneratedSequences() const {return generatedSeq;}
     void clearGenratedSequences(); //to free memory
     void generateSequencesFromAlignment( const MAlignment& ma, const CreatePhyTreeSettings& settings );
-    void generateDistMatrixes(const CreatePhyTreeSettings& settings);
-    void consInit();
-
-    void consensus();
 
     const MAlignment& getMSA(int pos) const;
 
@@ -57,8 +52,6 @@ public:
 
     SeqBoot();
     ~SeqBoot();
-
-    
 };
 
 
