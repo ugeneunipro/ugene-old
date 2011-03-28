@@ -58,7 +58,8 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
     minLen(100), identity(100),
     pixMapUpdateNeeded(true), deleteDotPlotFlag(false), dotPlotTask(NULL), pixMap(NULL), miniMap(NULL),
     nearestRepeat(NULL),
-    sharedSeqX(NULL), sharedSeqY(NULL)
+    sharedSeqX(NULL), sharedSeqY(NULL),
+    clearedByRepitSel(false)
 {
     dotPlotDirectResultsListener = new DotPlotResultsListener();
     dotPlotInverseResultsListener = new DotPlotResultsListener();
@@ -403,14 +404,20 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
 
     DNASequenceSelection *dnaSelection = qobject_cast<DNASequenceSelection*>(sen);
     if (dnaSelection) {
+       
         const DNASequenceObject *selectedSequence = dnaSelection->getSequenceObject();
-                if (selectedSequence == sequenceX->getSequenceGObject()) {
+            if (selectedSequence == sequenceX->getSequenceGObject()) {
+                if(!nearestSelecting)
+                    clearedByRepitSel = false;
                 selectionX = s;
             }
 
             if (selectedSequence == sequenceY->getSequenceObject()) {
+                if(!nearestSelecting)
+                    clearedByRepitSel = false;
                 selectionY = s;
             }
+
 
         update();
     }
@@ -1060,13 +1067,16 @@ void DotPlotWidget::drawRectCorrect(QPainter &p, QRectF r) const {
 }
 
 // part of the sequence is selected, show it
-void DotPlotWidget::drawSelection(QPainter &p) const {
+void DotPlotWidget::drawSelection(QPainter &p) const{
 
     if (!sequenceX || !sequenceY) {
         return;
     }
 
     if (!(selectionX || selectionY)) {
+        return;
+    }
+    if(clearedByRepitSel){
         return;
     }
 
@@ -1391,13 +1401,11 @@ void DotPlotWidget::selectNearestRepeat(const QPointF &p) {
     }
 
     nearestSelecting = true;
-    // There is only one sequence view, can't select two places there
-    if (sequenceX != sequenceY) {
-        sequencesCoordsSelection(
-            QPoint(nearestRepeat->x, nearestRepeat->y),
-            QPoint(nearestRepeat->x + nearestRepeat->len, nearestRepeat->y + nearestRepeat->len)
-        );
-    }
+    sequencesCoordsSelection(
+        QPoint(nearestRepeat->x, nearestRepeat->y),
+        QPoint(nearestRepeat->x + nearestRepeat->len, nearestRepeat->y + nearestRepeat->len)
+    );
+
 
     foreach (ADVSequenceWidget *w, dnaView->getSequenceWidgets()) {
         foreach (ADVSequenceObjectContext *s, w->getSequenceContexts()) {
@@ -1703,6 +1711,7 @@ void DotPlotWidget::mouseMoveEvent(QMouseEvent *e) {
 
     if (selecting) {
         if ((clickedFirst.x() != clickedSecond.x()) && (clickedFirst.y() != clickedSecond.y())) {
+            clearedByRepitSel = false;
             sequencesMouseSelection(clickedFirst, clickedSecond);
         }
     }
@@ -1769,8 +1778,10 @@ void DotPlotWidget::mouseReleaseEvent(QMouseEvent *e) {
                 if(!timer->isActive()){
                      timer->start();
                 }
-                selectNearestRepeat(clickedFirst);
                 sequenceClearSelection();
+                clearedByRepitSel = true;
+                selectNearestRepeat(clickedFirst);
+                
             }
         }
         shifting = false;
@@ -1842,6 +1853,7 @@ void DotPlotWidget::updateCursor(){
 
 void DotPlotWidget::clearRepeatSelection(){
     nearestRepeat = NULL; 
+    clearedByRepitSel = true;
     update();
 }
 } // namespace

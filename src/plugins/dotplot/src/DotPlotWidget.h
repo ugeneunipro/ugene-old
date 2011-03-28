@@ -158,7 +158,7 @@ private:
     QColor dotPlotNearestRepeatColor;
 
     QByteArray sharedSeqX, sharedSeqY;
-    //PanView::ZoomUseObject *zoomUseX, *zoomUseY;
+    bool clearedByRepitSel;
 
 
     void pixMapUpdate();
