@@ -69,6 +69,9 @@ void missingnameRecurs(node *p);
 
 #ifndef OLDC
 /* function prototypes */
+void consens_starter(const char* filename);
+void consens_free_res();
+
 void initconsnode(node **, node **, node *, long, long, long *, long *,
                   initops, pointarray, pointarray, Phylip_Char *, Phylip_Char *, FILE *);
 void   compress(long *);

@@ -3,10 +3,13 @@
 
 #include "phylip.h"
 
+#include <QString>
+
+
 
 /* function prototypes */
 int  neighbour_main(double** rawMatrix, int ssp);
-void neighbour_init(int num);
+void neighbour_init(int num, const QString& filename = NULL);
 const tree* neighbour_calc_tree(); 
 void neighbour_free_resources();
 naym* getNayme();

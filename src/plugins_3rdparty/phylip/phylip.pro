@@ -32,5 +32,4 @@ SOURCES += src/dist.cpp \
 	   src/seqboot.cpp \
 	   src/SeqBootAdapter.cpp \
 	   src/SeqBootModelWidget.cpp \
-	   src/cons.cpp \
-	   src/consense.cpp
+	   src/cons.cpp 

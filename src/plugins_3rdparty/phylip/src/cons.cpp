@@ -148,6 +148,118 @@ void namesClearTable(void) {
 }
 /* end hash table code */
 
+void consens_starter(const char* filename){
+     /* Local variables added by Dan F. */
+  pattern_elm  ***pattern_array;
+  long trees_in = 0;
+  long i, j;
+  long tip_count = 0;
+  node *p, *q;
+  intree = fopen(filename, "rb");
+  if(!intree){
+      exxit(-1);
+  }
+
+  /* Initial settings */
+  ibmpc          = IBMCRT;
+  ansi           = ANSICRT;
+  didreroot      = false;
+  firsttree      = true;
+  spp            = 0 ;
+  col            = 0 ;
+  /* This is needed so functions in cons.c work */
+  tree_pairing   = NO_PAIRING ;  
+
+  strict = false;
+  mr = false;
+  mre = true;
+  ml = false;
+  mlfrac = 0.5;
+  noroot = true;
+  numopts = 0;
+  outgrno_cons = 1;
+  outgropt_cons = false;
+  trout = false;
+  prntsets = true;
+  progress = false;
+  treeprint_cons = false;
+
+  ntrees = 0.0;
+  maxgrp = 32767;   /* initial size of set hash table */
+  lasti  = -1;
+
+  trees_in = countsemic(&intree);
+  countcomma(&intree,&tip_count);
+  tip_count++; /* countcomma does a raw comma count, tips is one greater */
+
+
+  /* Read the tree file and put together grouping, order, and timesseen */
+  read_groups (&pattern_array, trees_in, tip_count, intree);
+  /* Compute the consensus tree. */
+
+  nodep_cons      = (pointarray)Malloc(2*(1+spp)*sizeof(node *));
+  for (i = 0; i < spp; i++) {
+    nodep_cons[i] = (node *)Malloc(sizeof(node));
+    for (j = 0; j < MAXNCH; j++)
+      nodep_cons[i]->nayme[j] = '\0';
+    strncpy(nodep_cons[i]->nayme, nayme[i], MAXNCH);
+  }
+  for (i = spp; i < 2*(1+spp); i++)
+    nodep_cons[i] = NULL;
+  consensus(pattern_array, trees_in);
+  printf("\n");
+
+  /*if (progress)
+    printf("Output written to file \"%s\"\n\n", outfilename);
+  for (i = 0; i < spp; i++)
+    free(nodep_cons[i]);
+  for (i = spp; i < 2*(1 + spp); i++) {
+    if (nodep_cons[i] != NULL) {
+      p = nodep_cons[i]->next;
+      do {
+        q = p->next;
+        free(p);
+        p = q;
+      } while (p != nodep_cons[i]);
+      free(p);
+    }
+  }
+  free(nodep_cons);
+  FClose(intree);*/
+
+#ifdef MAC
+  fixmacfile(outfilename);
+
+#endif
+printf("Done.\n\n");
+}
+
+void consens_free_res(){
+    node *p, *q;
+    for (int i = 0; i < spp; i++)
+        free(nodep_cons[i]);
+    for (int i = spp; i < 2*(1 + spp); i++) {
+        if (nodep_cons[i] != NULL) {
+            p = nodep_cons[i]->next;
+            do {
+                q = p->next;
+                free(p);
+                p = q;
+            } while (p != nodep_cons[i]);
+            free(p);
+        }
+    }
+    free(nodep_cons);
+    FClose(intree);
+
+#ifdef MAC
+    fixmacfile(outfilename);
+
+#endif
+    printf("Done.\n\n");
+}
+
+
 void initconsnode(node **p, node **grbg, node *q, long len, long nodei,
                         long *ntips, long *parens, initops whichinit,
                         pointarray treenode, pointarray nodep, Phylip_Char *str,
@@ -182,12 +294,12 @@ void initconsnode(node **p, node **grbg, node *q, long len, long nodei,
     (*p)->tip = true;
     strncpy ((*p)->nayme, str, MAXNCH);
     if (firsttree && prntsets) {
-      fprintf(outfile, "  %ld. ", *ntips);
-      for (i = 0; i < len; i++)
-        putc(str[i], outfile);
-      putc('\n', outfile);
-      if ((*ntips > 0) && (((*ntips) % 10) == 0))
-        putc('\n', outfile);
+//      fprintf(outfile, "  %ld. ", *ntips);
+      //for (i = 0; i < len; i++)
+//        putc(str[i], outfile);
+    //  putc('\n', outfile);
+      //if ((*ntips > 0) && (((*ntips) % 10) == 0))
+    //    putc('\n', outfile);
     }
     (*p)->v = 0;
     break;
@@ -404,10 +516,10 @@ void printset(long n)
   long i, j, k, size;
   boolean noneprinted;
 
-  fprintf(outfile, "\nSet (species in order)   ");
+  printf("\nSet (species in order)   ");
   for (i = 1; i <= spp - 25; i++)
-    putc(' ', outfile);
-  fprintf(outfile, "  How many times out of %7.2f\n\n", ntrees);
+    putchar(' ');
+  printf("  How many times out of %7.2f\n\n", ntrees);
   noneprinted = true;
   for (i = 0; i < n; i++) {
     if ((timesseen[i] != NULL) && (*timesseen[i] > 0)) {
@@ -424,20 +536,20 @@ void printset(long n)
         for (j = 1; j <= spp; j++) {
           if (j == ((k+1)*SETBITS+1)) k++;
           if (((1L << (j - 1 - k*SETBITS)) & grouping[i][k]) != 0)
-            putc('*', outfile);
+            putchar('*');
           else
-            putc('.', outfile);
+            putchar('.');
           if (j % 10 == 0)
-            putc(' ', outfile);
+            putchar(' ');
         }
         for (j = 1; j <= 23 - spp; j++)
-          putc(' ', outfile);
-        fprintf(outfile, "    %5.2f\n", *timesseen[i]);
+          putchar(' ');
+        printf("    %5.2f\n", *timesseen[i]);
       }
     }
   }
   if (noneprinted)
-    fprintf(outfile, " NONE\n");
+    printf(" NONE\n");
 }  /* printset */
 
 
@@ -753,12 +865,12 @@ void printree()
     putc('\n', outfile);
   }
   if (noroot) {
-    fprintf(outfile, "\n  remember:");
+    printf("\n  remember:");
     if (didreroot)
-      fprintf(outfile, " (though rerooted by outgroup)");
-    fprintf(outfile, " this is an unrooted tree!\n");
+      printf(" (though rerooted by outgroup)");
+    printf(" this is an unrooted tree!\n");
   }
-  putc('\n', outfile);
+  putchar('\n');
 }  /* printree */
 
 
@@ -846,7 +958,7 @@ void consensus(pattern_elm ***pattern_array, long trees_in)
   tipy = 1;
   coordinates(root, &tipy);
   if (prntsets) {
-    fprintf(outfile, "\nSets included in the consensus tree\n");
+    printf("\nSets included in the consensus tree\n");
     printset(n);
     for (i = 0; i < n2; i++) {
       if (!grouping[i]) {
@@ -857,25 +969,25 @@ void consensus(pattern_elm ***pattern_array, long trees_in)
       *timesseen[i] = *times2[i];
     }
     n = n2;
-    fprintf(outfile, "\n\nSets NOT included in consensus tree:");
+    printf("\n\nSets NOT included in consensus tree:");
     if (n2 == 0)
-      fprintf(outfile, " NONE\n");
+      printf(" NONE\n");
     else {
-      putc('\n', outfile);
+      putchar('\n');
       printset(n);
     }
   }
-  putc('\n', outfile);
+  putchar('\n');
   if (strict)
-    fprintf(outfile, "\nStrict consensus tree\n");
+    printf("\nStrict consensus tree\n");
   if (mre)
-    fprintf(outfile, "\nExtended majority rule consensus tree\n");
+    printf("\nExtended majority rule consensus tree\n");
   if (ml) {
-    fprintf(outfile, "\nM  consensus tree (l = %4.2f)\n", mlfrac);
-    fprintf(outfile, " l\n");
+    printf("\nM  consensus tree (l = %4.2f)\n", mlfrac);
+    printf(" l\n");
   }
   if (mr)
-    fprintf(outfile, "\nMajority rule consensus tree\n");
+    printf("\nMajority rule consensus tree\n");
   printree();
   free(nayme);  
   for (i = 0; i < maxgrp; i++)

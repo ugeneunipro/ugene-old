@@ -22,6 +22,10 @@
 #include "U2Core/global.h"
 #include <U2Core/DNAAlphabet.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
+
 #include <QtCore/QByteArray>
 #include <QtCore/QSharedData>
 #include <QtCore/QTime>
@@ -50,6 +54,17 @@ void SeqBoot::clearGenratedSequences(){
 //     generatedSeq.clear();
 //     
 }
+
+QString SeqBoot::getTmpFileTemplate(){
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath();
+    if(path.isEmpty()){
+        return path;
+    }else{
+        path+="/bootstrXXXXXX";
+        return path;
+    }
+}
+
 
 void SeqBoot::initGenerSeq(int reps, int rowC, int seqLen){
     generatedSeq = QVector<MAlignment*>(reps);
@@ -97,7 +112,7 @@ void SeqBoot::consInit(){
     outgrno_cons = 1;
     outgropt_cons = false;
     trout = false;
-    prntsets = true;
+    prntsets = false;
     progress = false;
     treeprint_cons = false;
 

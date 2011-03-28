@@ -5,7 +5,7 @@
    charged for it and provided that this copyright notice is not removed. */
 
 #include <float.h>
-
+#include <QString>
 #include "dist.h"
 
 #ifndef OLDC
@@ -60,7 +60,7 @@ void neighbor_getoptions()
   outgrno = 1;
   outgropt = false;
   replicates = false;
-  trout = false;
+  trout = true;
   upper = false;
   printdata = false;
   progress = true;
@@ -586,7 +586,7 @@ void maketree()
 }  /* maketree */
 
 
-void neighbour_init(int num) 
+void neighbour_init(int num, const QString& filename) 
 {
     int argc = 1;                
     char* argv[] = { "Neighbor" };
@@ -598,9 +598,12 @@ void neighbour_init(int num)
     mulsets = false;
     datasets = 1;
     neighbor_doinit_modified();
+    if(filename == NULL){
+        trout = false;
+    }
     if (trout) {
         //openfile(&outtree,OUTTREE,"output tree file", "w",argv[0],outtreename);
-        outtree = fopen("outtree", "w");
+        outtree = fopen(filename.toStdString().c_str(), "a");
     }
 
 }

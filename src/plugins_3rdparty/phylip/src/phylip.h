@@ -264,8 +264,8 @@ MALLOCRETURN    *mymalloc(long);
 /*** Static memory parameters ***/
 
 #define FNMLNGTH        200  /* length of array to store a file name */
-#define nmlngth         10   /* number of characters in species name    */
-#define MAXNCH          20   /* must be greater than or equal to nmlngth */
+#define nmlngth         20   /* number of characters in species name    */
+#define MAXNCH          30   /* must be greater than or equal to nmlngth */
 #define maxcategs       9    /* maximum number of site types */
 #define maxcategs2     11    /* maximum number of site types + 2 */
 #define point           "."
