@@ -99,7 +99,7 @@ public:
 
     QList<Task*> onSubTaskFinished(Task* subTask) {
         if (subTask->isCanceled()) {
-            setError("Shutdown is canceled by user");
+            stateInfo.cancelFlag = true;
             return QList<Task*>();
         }
         coreLog.trace("Closing views");
@@ -190,7 +190,8 @@ void ShutdownTask::prepare() {
 QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     
-    if (isCanceled() || subTask->hasErrors()) {
+    stateInfo.cancelFlag = subTask->isCanceled();
+    if (isCanceled() || subTask->hasErrors() ) {
         mw->setShutDownInProcess(false);
         return res; //stop shutdown process
     }
