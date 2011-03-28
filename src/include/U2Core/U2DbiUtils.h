@@ -60,7 +60,7 @@ private: //TODO
 */
 template<class T> class BufferedDbiIterator : public U2DbiIterator<T> {
 public:
-    BufferedDbiIterator(const QList<T>& _buffer, const T& _errValue) : buffer(_buffer), pos(0), errValue(_errValue) {}
+    BufferedDbiIterator(const QList<T>& _buffer, const T& _errValue = T()) : buffer(_buffer), pos(0), errValue(_errValue) {}
 
     /** returns true if there are more reads to iterate*/
     virtual bool hasNext() {
@@ -68,7 +68,7 @@ public:
     }
 
     /** returns next read and shifts one element*/
-    virtual const T& next() {
+    virtual T next() {
         if (!hasNext()) {
             return errValue;
         }
@@ -78,7 +78,7 @@ public:
     }
 
     /** returns next read without shifting*/
-    virtual const T& peek() {
+    virtual T peek() {
         if (!hasNext()) {
             return errValue;
         }
@@ -89,7 +89,7 @@ public:
 private:
     QList<T>    buffer;
     int         pos;
-    const T&    errValue;
+    T           errValue;
 };
 
 

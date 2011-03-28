@@ -169,6 +169,21 @@ public:
 };
 
 
+/** Template class for DBI iterators */
+template<class T> class U2DbiIterator {
+public:
+    virtual ~U2DbiIterator(){}
+
+    /** returns true if there are more reads to iterate*/
+    virtual bool hasNext() = 0;
+
+    /** returns next read and shifts one element*/
+    virtual T next() = 0;
+
+    /** returns next read without shifting*/
+    virtual T peek() = 0;
+};
+
 } //namespace
 
 #endif

@@ -209,6 +209,10 @@ public:
     void setError(const QString& err) {os.setError(err);}
     
     bool hasError() const {return os.hasError();}
+
+    void setOpStatus(U2OpStatus& _os) {os = _os;}
+
+    U2OpStatus& getOpStatus() {return  os;}
     
     DbRef*          getDb() const {return db;}
 
@@ -220,7 +224,7 @@ private:
 
 
     DbRef*          db;
-    U2OpStatus&  os;
+    U2OpStatus&     os;
     sqlite3_stmt*   st;
     QString         sql;
 };
@@ -234,6 +238,75 @@ public:
 private:
     DbRef* db;
     U2OpStatus& os;
+};
+
+/** Data loader adapter for SqlQueryIterator */
+template <class T> class SqlRSLoader {
+public:
+    virtual ~SqlRSLoader(){}
+    virtual T load(SQLiteQuery* q) = 0;
+};
+
+/** SQL query result set iterator */
+template<class T> class SqlRSIterator : public U2DbiIterator<T> {
+public:
+    SqlRSIterator(SQLiteQuery* q, SqlRSLoader<T>* l, const T& d, U2OpStatus& o) 
+        : query(q), loader(l), defaultValue(d), os(o), endOfStream(false) 
+    {
+        fetchNext();
+    }
+    
+    virtual ~SqlRSIterator() {
+        delete loader;
+        delete query;
+    }
+
+    virtual bool hasNext() {
+        return !endOfStream;
+    }
+    virtual T next() {
+        if (endOfStream) {
+            assert(0);
+            return defaultValue;
+        }
+        currentResult = nextResult;
+        fetchNext();
+        return currentResult;
+    }
+    virtual T peek() {
+        if (endOfStream) {
+            assert(0);
+            return defaultValue;
+        }
+        return nextResult;
+
+    }
+private:
+    void fetchNext() {
+        if (!query->step()) {
+            endOfStream = true;        
+            return;
+        }
+        nextResult = loader->load(query);
+    }
+
+    SQLiteQuery*    query;
+    SqlRSLoader<T>* loader;
+    T               defaultValue;
+    U2OpStatus&     os;
+    bool            endOfStream;
+    T               nextResult;
+    T               currentResult;
+};
+
+class SqlDataIdRSLoader : public SqlRSLoader<U2DataId> {
+public:
+    SqlDataIdRSLoader(U2DataType _type, const QByteArray& _dbExra = QByteArray()) : type(_type), dbExtra(_dbExra){}
+    U2DataId load(SQLiteQuery* q) { return q->getDataId(0, type, dbExtra);}
+
+protected:    
+    U2DataType type;
+    QByteArray dbExtra;
 };
 
 } //namespace

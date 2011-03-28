@@ -25,8 +25,6 @@
 #include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2DbiRegistry.h>
 
-#include <QtCore/QFlag>
-
 struct sqlite3;
 
 namespace U2 {
@@ -34,15 +32,26 @@ namespace U2 {
 class SQLiteObjectDbi;
 class DbRef;
 
-enum SQLiteDbiFlag {
-    SQLiteDbiFlag_AssemblyReadsCompression1 = 1
-};
-
-typedef QFlags<SQLiteDbiFlag> SQLiteDbiFlags;
 
 // Names of SQLiteDbi flags
-#define SQLITE_DBI_OPTION_ASSEMBLY_READ_COMPRESSION1_FLAG "assembly-reads-compression-1"
 #define SQLITE_DBI_OPTION_UGENE_VERSION    "ugene-version"
+
+
+/** Name of the init property used to indicate assembly reads storage method for all new assemblies */
+#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY "assembly-reads-elen-method"
+/** Asks to store all reads in a single table. Not optimal if read effective length varies */
+#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE "single-table"
+/** Asks to store all reads in 6 tables. Number is a maximum effective length of the read to be stored in the table (default)*/
+#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_4 "50-100-700-U"
+/** Asks to use RTree index to store reads. This method is simple but not very efficient in terms of space/insert time */
+#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE "rtree"
+
+/** Name of the property used to indicate compression algorithm for reads data */
+#define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_KEY "assembly-reads-compression-method"
+/** No compression is applied. Best for manual DB browsing  (default)*/
+#define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_NO_COMPRESSION "no-compression"
+/** CIGAR and sequence are packed using bits compression and stored as a single BLOB */
+#define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_BITS_1 "compress-bits-1"
 
 // Values of SQLiteDbi flags
 #define SQLITE_DBI_VALUE_MEMORY_DB_URL ":memory:"
@@ -90,16 +99,14 @@ public:
 
     SQLiteObjectDbi* getSQLiteObjectDbi() const;
 
-    bool isAssemblyReadsCompressionEnabled() const {return flags.testFlag(SQLiteDbiFlag_AssemblyReadsCompression1);}
-
     /** Returns properties used to initialized the database */
     virtual QHash<QString, QString> getInitProperties() const {return initProperties;}
 
 private:
     void setState(U2DbiState state);
 
-    QString getFlag(const QString& name, U2OpStatus& os) const;
-    void addFlag(const QString& name, const QString& value, U2OpStatus& os);
+    QString getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const;
+    void setProperty(const QString& name, const QString& value, U2OpStatus& os);
 
     void populateDefaultSchema(U2OpStatus& os);
     void internalInit(U2OpStatus& os);
@@ -111,8 +118,7 @@ private:
     U2SequenceDbi*      sequenceDbi;
     U2MsaDbi*           msaRDbi;
     U2AssemblyDbi*      assemblyDbi;
-    SQLiteDbiFlags      flags;
-
+    
     friend class SQLiteObjectDbi;
     friend class SQLiteSequenceDbi;
     friend class SQLiteAssemblyDbi;

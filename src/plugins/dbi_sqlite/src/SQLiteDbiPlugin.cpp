@@ -60,7 +60,7 @@ static QList<U2AssemblyRead> generateReads(int n, int rlen, int slen) {
     return res;
 }
 
-//#define TEST_SQLITE_DBI
+#define TEST_SQLITE_DBI
 
 SQLiteDbiPlugin::SQLiteDbiPlugin() : Plugin(tr("SQLite format support"), tr("Adds support for SQLite format to UGENE")) {
     AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());
@@ -91,7 +91,7 @@ SQLiteDbiPlugin::SQLiteDbiPlugin() : Plugin(tr("SQLite format support"), tr("Add
     //    dbi.getAssemblyRWDbi()->createAssemblyObject(as, "/", NULL, os);
     //    dbi.getAssemblyRWDbi()->addReads(as.id, rows, os);
 
-        U2AssemblyReadsIteratorImpl it(rows);
+        BufferedDbiIterator<U2AssemblyRead> it(rows);
         dbi.getAssemblyDbi()->createAssemblyObject(as, "/", &it, os);
     }
     qint64 t1 = GTimer::currentTimeMicros();

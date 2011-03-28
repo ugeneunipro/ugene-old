@@ -37,8 +37,6 @@ namespace U2 {
 
 SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     db = new DbRef();
-    flags = 0;
-
     objectDbi = new SQLiteObjectDbi(this);
     sequenceDbi = new SQLiteSequenceDbi(this);
     msaRDbi = new SQLiteMsaRDbi(this);
@@ -57,14 +55,20 @@ SQLiteDbi::~SQLiteDbi() {
 }
 
 
-QString SQLiteDbi::getFlag(const QString& name, U2OpStatus& os) const {
+QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const {
     SQLiteQuery q("SELECT value FROM Meta WHERE name = ?1", db, os);
     q.bindText(1, name);
-    q.step();
-    return q.getCString(0);
+    bool found = q.step();
+    if (os.hasError()) {
+        return QString();
+    }
+    if (found) {
+        return q.getString(0);
+    }
+    return defaultValue;
 }
 
-void SQLiteDbi::addFlag(const QString& name, const QString& value, U2OpStatus& os) {
+void SQLiteDbi::setProperty(const QString& name, const QString& value, U2OpStatus& os) {
     if (os.hasError()) {
         return;
     }
@@ -166,22 +170,20 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
 
 
     // assembly object
-    // reference    - reference sequence id
-    // lextra       - extra info about max read length in assembly. Different strategies can be used here. Depends on DBI version
-    CT("Assembly", "object INTEGER, reference INTEGER, lextra INTEGER NOT NULL, "
-                    " FOREIGN KEY(object) REFERENCES Object(id), "
-                    " FOREIGN KEY(reference) REFERENCES Sequence(object)");
+    // reference            - reference sequence id
+    // elen_method          - method used to handle effective length property
+    // compression_method   - method used to handle compression of reads data
+    CT("Assembly", "object INTEGER, reference INTEGER, elen_method TEXT NOT NULL, compression_method TEXT NOT NULL, "
+        " FOREIGN KEY(object) REFERENCES Object(id), "
+        " FOREIGN KEY(reference) REFERENCES Sequence(object)");
 
-    addFlag(SQLITE_DBI_OPTION_UGENE_VERSION, Version::ugeneVersion().text, os);
 
-    if (initProperties[SQLITE_DBI_OPTION_ASSEMBLY_READ_COMPRESSION1_FLAG] == U2_DBI_VALUE_ON) {
-        addFlag(SQLITE_DBI_OPTION_ASSEMBLY_READ_COMPRESSION1_FLAG, U2_DBI_VALUE_ON, os);
-    }
+    setProperty(SQLITE_DBI_OPTION_UGENE_VERSION, Version::ugeneVersion().text, os);
 
 }
 
 void SQLiteDbi::internalInit(U2OpStatus& os){
-    QString dbUgeneVersionText = getFlag(SQLITE_DBI_OPTION_UGENE_VERSION, os);
+    QString dbUgeneVersionText = getProperty(SQLITE_DBI_OPTION_UGENE_VERSION, "", os);
     if (os.hasError()) {
         return;
     }
@@ -194,12 +196,7 @@ void SQLiteDbi::internalInit(U2OpStatus& os){
     if (dbUgeneVersion > currentVersion) {
         coreLog.info(SQLiteL10n::tr("Warning! Database of version %1 was created with a newer UGENE version: %2. Not all database features are supported!").arg(currentVersion.text).arg(dbUgeneVersion.text));
     }
-    QString readsCompression1 = getFlag(SQLITE_DBI_OPTION_ASSEMBLY_READ_COMPRESSION1_FLAG, os);
-    if (readsCompression1 == U2_DBI_VALUE_ON) {
-        coreLog.trace(QString("SQLiteDbi: enabling reads compression mode: %1").arg(url));
-        flags|=SQLiteDbiFlag_AssemblyReadsCompression1;
-    }
-
+    
     // set up features list
     features.insert(U2DbiFeature_ReadSequence);
     features.insert(U2DbiFeature_ReadMsa);

@@ -23,10 +23,12 @@
 #define _U2_SQLITE_ASSEMBLY_DBI_H_
 
 #include "SQLiteDbi.h"
+#include <U2Core/U2SqlHelpers.h>
 
 namespace U2 {
 
 class SQLiteQuery;
+class AssemblyAdapter;
 
 class SQLiteAssemblyDbi : public U2AssemblyDbi, public SQLiteChildDBICommon {
 
@@ -86,30 +88,44 @@ public:
     virtual void pack(const U2DataId& assemblyId, U2OpStatus& os);
 
 private:
-    QList<U2AssemblyRead> readRows(SQLiteQuery& q, U2OpStatus& os);
-    
-    void readRow(U2AssemblyRead& row, SQLiteQuery& q, U2OpStatus& os);
-
-    void createReadsTable(const U2DataId& id, U2OpStatus& os);
-    
-    void createReadsIndexes(const U2DataId& id, U2OpStatus& os);
-
-    QString getReadsTableName(const U2DataId& id);
-
-    qint64 getMaximumReadLengthInRegion(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
-    
-    void setMaximumReadLengthInRegion(const U2DataId& assemblyId, const U2Region& r, int val, U2OpStatus& os);
-
-    void unpackSequenceAndCigar(qint64 flags, const QByteArray& data, QByteArray& sequence, QByteArray& cigar, U2OpStatus& os);
-
-    QString getReadFields() const;
-
-    /** Symbols used in different alphabets */
-    QByteArray dnaAlpha, dnaExtAlpha, cigarAlpha;
-    
-    /** Positional symbol numbers in alphabets */
-    QVector<int> dnaAlphaNums, dnaExtAlphaNums, cigarAlphaNums;
+    /** Return assembly storage adapter for the given assembly */
+    AssemblyAdapter* getAdapter(const U2DataId& assemblyId, U2OpStatus& os);
 };
+
+// reserved for future use;
+class AssemblyCompressor {
+};
+
+
+class AssemblyAdapter {
+public:
+    AssemblyAdapter(const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
+    
+    virtual void createReadsTables(U2OpStatus& os) = 0;
+    virtual void createReadsIndexes(U2OpStatus& os) = 0;
+
+    virtual qint64 countReads(const U2Region& r, U2OpStatus& os) = 0;
+
+    virtual qint64 getMaxPackedRow(const U2Region& r, U2OpStatus& os) = 0;
+    virtual quint64 getMaxEndPos(U2OpStatus& os) = 0;
+
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os) const = 0;
+    virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
+    
+    virtual void addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os) = 0;
+    virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
+
+    virtual void pack(U2OpStatus& os) = 0;
+
+    virtual int getInsertGroupSize() const {return 100*1000;}
+
+protected:
+    U2DataId                    assemblyId;
+    const AssemblyCompressor*   compressor;
+    DbRef*                      db;
+    U2OpStatus&                 os;
+};
+
 
 
 } //namespace

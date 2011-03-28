@@ -581,21 +581,6 @@ public:
     virtual U2AssemblyRead next(U2OpStatus& os) = 0;
 };
 
-/** Template class for DBI iterators */
-template<class T> class U2DbiIterator {
-public:
-    virtual ~U2DbiIterator(){}
-
-    /** returns true if there are more reads to iterate*/
-    virtual bool hasNext() = 0;
-
-    /** returns next read and shifts one element*/
-    virtual const T& next() = 0;
-
-    /** returns next read without shifting*/
-    virtual const T& peek() = 0;
-};
-
 
 /**
     An interface to obtain  access to assembly data

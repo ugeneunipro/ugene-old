@@ -7,6 +7,7 @@ TEMPLATE = lib
 CONFIG +=thread debug_and_release
 INCLUDEPATH += src
 DEFINES+=SQLITE_ENABLE_COLUMN_METADATA
+DEFINES+=SQLITE_ENABLE_RTREE
 LIBS += -L../../_release
 
 !debug_and_release|build_pass {
