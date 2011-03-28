@@ -83,10 +83,24 @@ void AssemblyOverview::drawAll() {
     }
 }
 
+static inline bool onePixelRect(const QRect & r) {
+    return r.width() <=2 && r.height() <= 15;
+}
+
+static const int CROSS_HALF_SIZE = 3;
+static const QPoint CROSS_LEFT_CORNER(CROSS_HALF_SIZE, CROSS_HALF_SIZE);
+static const QPoint CROSS_RIGHT_CORNER(CROSS_HALF_SIZE, -CROSS_HALF_SIZE);
+
 void AssemblyOverview::drawSelection(QPainter & p) {
     cachedSelection = calcCurrentSelection();
-    p.fillRect(cachedSelection, QColor(230, 230, 230, 180));
-    p.drawRect(cachedSelection.adjusted(0, 0, -1, -1));
+    if(onePixelRect(cachedSelection)) {
+        QPoint c = cachedSelection.center();
+        p.drawLine(c - CROSS_LEFT_CORNER, c + CROSS_LEFT_CORNER);
+        p.drawLine(c - CROSS_RIGHT_CORNER, c + CROSS_RIGHT_CORNER);
+    } else {
+        p.fillRect(cachedSelection, QColor(230, 230, 230, 180));
+        p.drawRect(cachedSelection.adjusted(0, 0, -1, -1));
+    }
 }
 
 namespace {
