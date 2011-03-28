@@ -101,7 +101,7 @@
     <message>
         <location filename="../src/phyltree/ui/BranchSettingsDialog.ui" line="105"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OK</translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/BranchSettingsDialog.ui" line="112"/>
@@ -136,7 +136,7 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="73"/>
         <source>Reference sequence</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Srovnávací sekvence:</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="97"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="154"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Začít</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="90"/>
@@ -186,7 +186,7 @@
     <message>
         <location filename="../src/phyltree/ui/ButtonSettingsDialog.ui" line="88"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OK</translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/ButtonSettingsDialog.ui" line="95"/>
@@ -878,60 +878,44 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>ObjectViewTask</name>
-    <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="166"/>
-        <source>No sequence info found!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
-        <location filename="../src/util_ov_phyltree/CreateBranchesTask.h" line="15"/>
+        <location filename="../src/util_ov_phyltree/CreateBranchesTask.h" line="36"/>
         <source>Generating tree view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="258"/>
-        <source>Set root</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="262"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="276"/>
         <source>Swap siblings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="265"/>
-        <source>Zoom to</source>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="986"/>
+        <source>Expand</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="267"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="281"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="988"/>
         <source>Collapse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="270"/>
-        <source>Change settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerUtils.cpp" line="30"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerUtils.cpp" line="51"/>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Uložit jako</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerUtils.cpp" line="39"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerUtils.cpp" line="60"/>
         <source>Replace file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nahradit soubor</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerUtils.cpp" line="40"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerUtils.cpp" line="61"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Soubor %1 již existuje.
+Chcete jej nahradit?</translation>
     </message>
 </context>
 <context>
@@ -1203,7 +1187,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/phyltree/ui/TextSettingsDialog.ui" line="170"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OK</translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/TextSettingsDialog.ui" line="177"/>
@@ -1212,9 +1196,32 @@ Do you want to replace it?</source>
     </message>
 </context>
 <context>
+    <name>TreeSettingsDialog</name>
+    <message>
+        <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="14"/>
+        <source>Tree Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="60"/>
+        <source>Width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="67"/>
+        <source>Height (Rectangular):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="77"/>
+        <source>Tree View:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::ADVAnnotationCreation</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVAnnotationCreation.cpp" line="60"/>
+        <location filename="../src/util_ov_annotated_dna/ADVAnnotationCreation.cpp" line="81"/>
         <source>New annotation...</source>
         <translation>Nová poznámka...</translation>
     </message>
@@ -1222,50 +1229,46 @@ Do you want to replace it?</source>
 <context>
     <name>U2::ADVClipboard</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="36"/>
+        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="58"/>
         <source>Copy sequence</source>
         <translation>Kopírovat sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="39"/>
+        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="61"/>
         <source>Copy translation</source>
         <translation>Kopírovat překlad</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="42"/>
+        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="64"/>
         <source>Copy complement sequence</source>
         <translation>Kopírovat doplňkovou sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="45"/>
+        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="67"/>
         <source>Copy complement translation</source>
         <translation>Kopírovat doplňkový překlad</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="48"/>
+        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="70"/>
         <source>Copy annotation sequence</source>
         <translation>Kopírovat poznámkovou sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="49"/>
+        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="71"/>
         <source>Copy annotation sequence translation</source>
         <translation>Kopírovat překlad poznámkové sekvence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="84"/>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="108"/>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="137"/>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="167"/>
+        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="104"/>
         <source>Error!</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="167"/>
         <source>No sequence selected</source>
-        <translation>Nebyla vybrána žádná sekvence</translation>
+        <translation type="obsolete">Nebyla vybrána žádná sekvence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="315"/>
+        <location filename="../src/util_ov_annotated_dna/ADVClipboard.cpp" line="228"/>
         <source>Copy</source>
         <translation>Kopírovat</translation>
     </message>
@@ -1277,7 +1280,7 @@ Do you want to replace it?</source>
         <translation type="obsolete">Create annotations task</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVAnnotationCreation.cpp" line="27"/>
+        <location filename="../src/util_ov_annotated_dna/ADVAnnotationCreation.cpp" line="48"/>
         <source>Create annotations task</source>
         <translation>Vytvořit úlohu poznámky</translation>
     </message>
@@ -1289,7 +1292,7 @@ Do you want to replace it?</source>
         <translation type="obsolete">Amino translation</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSequenceObjectContext.cpp" line="95"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSequenceObjectContext.cpp" line="116"/>
         <source>Amino translation</source>
         <translation>Přepis amino</translation>
     </message>
@@ -1297,57 +1300,57 @@ Do you want to replace it?</source>
 <context>
     <name>U2::ADVSingleSequenceHeaderWidget</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="864"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="886"/>
         <source>Toggle view</source>
         <translation>Přepnout pohled</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="868"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="890"/>
         <source>Remove sequence</source>
         <translation>Odstranit sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="815"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="837"/>
         <source>Alphabet: &lt;b&gt;%1&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="816"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="838"/>
         <source> Sequence size: &lt;b&gt;%1&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="817"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="839"/>
         <source> File:&amp;nbsp;&lt;b&gt;%1&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="946"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="968"/>
         <source>raw</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="949"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="971"/>
         <source>amino</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="954"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="976"/>
         <source>dna</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="956"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="978"/>
         <source>dna ext.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="958"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="980"/>
         <source>rna</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="960"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="982"/>
         <source>rna ext.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1371,124 +1374,124 @@ Do you want to replace it?</source>
         <translation type="obsolete">Zoom to range</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="74"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="95"/>
         <source>Create new ruler...</source>
         <translation>Vytvořit nové pravítko...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="405"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="427"/>
         <source>Rulers...</source>
         <translation>Pravítka...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="415"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="437"/>
         <source>Remove &apos;%1&apos;</source>
         <translation>Odstranit &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="56"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="77"/>
         <source>Select sequence region...</source>
         <translation>Vybrat oblast sekvence...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="62"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="83"/>
         <source>Sequence region...</source>
         <translation>Oblast sekvence...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="65"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="86"/>
         <source>Sequence between selected annotations</source>
         <translation>Sekvence mezi vybranými poznámkami</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="68"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="89"/>
         <source>Sequence around selected annotations</source>
         <translation>Sekvence okolo vybraných poznámek</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="71"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="92"/>
         <source>Zoom to range..</source>
         <translation>Přiblížit na rozsah...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="314"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="336"/>
         <source>Zoom</source>
         <translation>Zvětšení</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="391"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="413"/>
         <source>Select</source>
         <translation>Vybrat</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="474"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="496"/>
         <source>Select range</source>
         <translation>Vybrat rozsah</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="534"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="556"/>
         <source>Zoom to range</source>
         <translation>Přiblížit na rozsah...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="676"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="698"/>
         <source>Replace file</source>
         <translation>Nahradit soubor</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="677"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="699"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
         <translation>Soubor %1 již existuje.
 Chcete jej nahradit?</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="762"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="784"/>
         <source>Show all views</source>
         <translation>Ukázat všechny pohledy</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="762"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="784"/>
         <source>Hide all views</source>
         <translation>Skrýt všechny pohledy</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="763"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="785"/>
         <source>Show zoom view</source>
         <translation>Ukázat pohled se zvětšením</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="763"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="785"/>
         <source>Hide zoom view</source>
         <translation>Skrýt pohled se zvětšením</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="764"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="786"/>
         <source>Show details view</source>
         <translation>Ukázat pohled s podrobnostmi</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="764"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="786"/>
         <source>Hide details view</source>
         <translation>Skrýt pohled s podrobnostmi</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="765"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="787"/>
         <source>Show overview</source>
         <translation>Ukázat přehled</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="765"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="787"/>
         <source>Hide overview</source>
         <translation>Skrýt přehled</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="137"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="159"/>
         <source>Capture screen</source>
         <translation>Zachytit obrazovku</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="657"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="679"/>
         <source>Save As</source>
         <translation>Uložit jako</translation>
     </message>
@@ -1496,105 +1499,115 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::ADVSyncViewManager</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="364"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="414"/>
         <source>Hide all sequences</source>
         <translation>Skrýt všechny sekvence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="364"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="414"/>
         <source>Show all sequences</source>
         <translation>Ukázat všechny sekvence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="365"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="415"/>
         <source>Hide all zoom views</source>
         <translation>Skrýt všechny pohledy se zvětšením</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="365"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="415"/>
         <source>Show all zoom views</source>
         <translation>Ukázat všechny pohledy se zvětšením</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="367"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="417"/>
         <source>Hide all overviews</source>
         <translation>Skrýt všechny přehledy</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="367"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="417"/>
         <source>Show all overviews</source>
         <translation>Ukázat všechny přehledy</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="366"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="416"/>
         <source>Hide all details</source>
         <translation>Skrýt všechny podrobnosti</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="366"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="416"/>
         <source>Show all details</source>
         <translation>Ukázat všechny podrobnosti</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="19"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="41"/>
         <source>Lock scales: visible range start</source>
         <translation>Zamknout stupnice: začátek viditelného rozsahu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="23"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="45"/>
         <source>Lock scales: selected sequence</source>
         <translation>Zamknout stupnice: vybraná sekvence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="27"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="49"/>
         <source>Lock scales: selected annotation</source>
         <translation>Zamknout stupnice: vybraná poznámka</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="37"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="59"/>
         <source>Adjust scales: visible range start</source>
         <translation>Přizpůsobit stupnice: začátek viditelného rozsahu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="40"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="62"/>
         <source>Adjust scales: selected sequence</source>
         <translation>Přizpůsobit stupnice: vybraná sekvence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="43"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="65"/>
         <source>Adjust scales: selected annotation</source>
         <translation>Přizpůsobit stupnice: vybraná poznámka</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="46"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="68"/>
         <source>Lock scales</source>
         <translation>Zamknout stupnice</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="50"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="72"/>
         <source>Adjust scales</source>
         <translation>Přizpůsobit stupnice</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="83"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="118"/>
         <source>Toggle views</source>
         <translation>Přepnout pohledy</translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="575"/>
+        <source>Hide %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="577"/>
+        <source>Show %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::AnnotatedDNAView</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="97"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="123"/>
         <source>Find pattern...</source>
         <translation>Najít vzor</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="79"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="105"/>
         <source>Annotations highlighting...</source>
         <translation>Zvýraznění poznámek...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="82"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="108"/>
         <source>Go to position...</source>
         <translation>Jít na...</translation>
     </message>
@@ -1603,82 +1616,82 @@ Chcete jej nahradit?</translation>
         <translation type="obsolete">Insert subsequence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="105"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="131"/>
         <source>Remove subsequence...</source>
         <translation>Odstranit podsekvence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="108"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="134"/>
         <source>Replace subsequence...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="111"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="137"/>
         <source>Selected sequence from view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="236"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="264"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="376"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="408"/>
         <source>Analyze</source>
         <translation>Provést rozbor</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="386"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="418"/>
         <source>Add</source>
         <translation>Přidat</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="392"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="424"/>
         <source>Export</source>
         <translation>Vyvést</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="398"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="430"/>
         <source>Align</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zarovnat</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="404"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="436"/>
         <source>Remove</source>
         <translation>Odstranit</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="414"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="446"/>
         <source>Edit sequence</source>
         <translation>Upravit sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="626"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="659"/>
         <source>Select sequence to associate annotations with:</source>
         <translation>Vybrat sekvenci, se kterou se mají poznámky spojit:</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="642"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="675"/>
         <source>No sequence object found for annotations</source>
         <translation>Pro poznámky nebyl nalezen žádný předmět sekvence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="569"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="602"/>
         <source>Disable &apos;%1&apos; highlighting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="102"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="128"/>
         <source>Insert subsequence...</source>
         <translation>Přidat podsekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="571"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="604"/>
         <source>Enable &apos;%1&apos; highlighting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="702"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="735"/>
         <source>Go To</source>
         <translation>Jít na</translation>
     </message>
@@ -1686,7 +1699,7 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::AnnotatedDNAViewFactory</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewFactory.cpp" line="26"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewFactory.cpp" line="47"/>
         <source>Sequence view</source>
         <translation>Pohled na sekvenci</translation>
     </message>
@@ -1694,157 +1707,165 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::AnnotationsTreeView</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="69"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="91"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="69"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="91"/>
         <source>Value</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="112"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="135"/>
         <source>Objects with annotations...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="115"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="138"/>
         <source>Selected objects with annotations from view</source>
         <translation type="unfinished">Vybraný předmět z pohledu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="121"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="144"/>
         <source>Selected annotations and qualifiers</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="127"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="917"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="150"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="956"/>
         <source>Copy qualifier text</source>
         <translation>Kopírovat text modifikátoru</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="130"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="921"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="153"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="960"/>
         <source>Copy qualifier URL</source>
         <translation>Kopírovat adresu (URL) modifikátoru</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="133"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="926"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="156"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="965"/>
         <source>Toggle column</source>
         <translation>Přepnout sloupec modifikátoru</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="136"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="159"/>
         <source>Hide column</source>
         <translation>Skrýt sloupec modifikátoru</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="140"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="659"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="163"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="684"/>
         <source>Copy column text</source>
         <translation>Kopírovat text sloupce</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="143"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="673"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="166"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="698"/>
         <source>copy column URL</source>
         <translation>Kopírovat adresu (URL) sloupce</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="146"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="169"/>
         <source>Edit item</source>
         <translation>Přidat položku</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="152"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="175"/>
         <source>Edit qualifier</source>
         <translation>Upravit modifikátor</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="158"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="181"/>
         <source>View qualifier</source>
         <translation>Zobrazit modifikátor</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="164"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="187"/>
         <source>Qualifier...</source>
         <translation>Modifikátor...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="665"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="690"/>
         <source>Copy column &apos;%1&apos; text</source>
         <translation>Kopírovat text sloupce &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="668"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="693"/>
         <source>Copy &apos;%1&apos; annotation location</source>
         <translation>Kopírovat umístění poznámky &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="677"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="702"/>
         <source>Copy column &apos;%1&apos; URL</source>
         <translation>Kopírovat adresu (URL) sloupce &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="699"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="927"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="724"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="966"/>
         <source>Hide &apos;%1&apos; column</source>
         <translation>Skrýt sloupec &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="917"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="956"/>
         <source>Copy qualifier &apos;%1&apos; value</source>
         <translation>Kopírovat text modifikátoru &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="921"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="960"/>
         <source>Copy qualifier &apos;%1&apos; URL</source>
         <translation>Kopírovat adresu (URL) modifikátoru &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="927"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="966"/>
         <source>Add &apos;%1&apos; column</source>
         <translation>Přidat sloupec &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="1538"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="1577"/>
         <source>Rename group</source>
         <translation>Přejmenovat skupinu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="1580"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="1615"/>
         <source>Rename qualifier</source>
         <translation>Přejmenovat modifikátor</translation>
     </message>
 </context>
 <context>
-    <name>U2::BuildIndexDialog</name>
+    <name>U2::AutoAnnotationsADVAction</name>
     <message>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="42"/>
-        <source>Open reference sequence</source>
+        <location filename="../src/util_ov_annotated_dna/AutoAnnotationUtils.cpp" line="34"/>
+        <source>Automatic annotation highlighting</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>U2::BuildIndexDialog</name>
     <message>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="53"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="63"/>
+        <source>Open reference sequence</source>
+        <translation type="unfinished">Otevřít srovnávací sekvenci</translation>
+    </message>
+    <message>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="74"/>
         <source>Set index file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="133"/>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="135"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="154"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="156"/>
         <source>Build index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="133"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="154"/>
         <source>Reference sequence url is not set!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adresa (URL) srovnávací sekvence není nastavena!</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="135"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="156"/>
         <source>Index file name is not set!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1852,28 +1873,28 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::CreateFileIndexDialog</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="117"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="138"/>
         <source>Select files</source>
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="132"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="153"/>
         <source>Select index file to create</source>
         <translation>Vybrat soubor rejstříku k vytvoření</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="146"/>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="151"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="167"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="172"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="146"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="167"/>
         <source>No input files supplied!</source>
         <translation>Neplatný název vstupního souboru!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="151"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="172"/>
         <source>Invalid output file name!</source>
         <translation>Neplatný název výstupního souboru!</translation>
     </message>
@@ -1881,36 +1902,46 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::CreatePhyTreeDialogController</name>
     <message>
-        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="45"/>
+        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="48"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="45"/>
+        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="48"/>
         <source>File name is empty</source>
         <translation>Název souboru je prázdný</translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="59"/>
+        <source>Memory error risk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="59"/>
+        <source>For that alignment phylip dnadistance modul will require more memory than you have in the system. It may cause crash</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::CreateRulerDialogController</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="25"/>
+        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="46"/>
         <source>New ruler</source>
         <translation>Nové pravítko</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="58"/>
-        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="63"/>
+        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="79"/>
+        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="84"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="58"/>
+        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="79"/>
         <source>Ruler name is empty!</source>
         <translation>Název pravítka je prázdný!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="63"/>
+        <location filename="../src/util_ov_annotated_dna/CreateRulerDialogController.cpp" line="84"/>
         <source>Ruler with the same name is already exists!</source>
         <translation>Pravítko se stejným názvem již existuje!</translation>
     </message>
@@ -1918,22 +1949,22 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::CreateSubalignimentDialogController</name>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="85"/>
+        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="106"/>
         <source>Select file to save...</source>
         <translation>Vybrat soubor pro uložení...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="114"/>
+        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="135"/>
         <source>Directory to save is not exists</source>
         <translation>Cílový adresář neexistuje</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="118"/>
+        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="139"/>
         <source>No path specified</source>
         <translation>Nezadána žádná cesta</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="132"/>
+        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="153"/>
         <source>Start position must be greater than end position</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1942,7 +1973,7 @@ Chcete jej nahradit?</translation>
         <translation type="obsolete">No path specified</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="122"/>
+        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="143"/>
         <source>Filename to save is empty</source>
         <translation>Název souboru pro uložení je prázdný</translation>
     </message>
@@ -1951,12 +1982,12 @@ Chcete jej nahradit?</translation>
         <translation type="obsolete">Start position must be integer</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="138"/>
+        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="159"/>
         <source>Entered region not contained in current sequence</source>
         <translation>Zadaná oblast není obsažena v nynější sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="145"/>
+        <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="166"/>
         <source>You must select at least one sequence</source>
         <translation>Musíte vybrat alespoň jednu sekvenci</translation>
     </message>
@@ -1964,24 +1995,16 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::CreateSubalignimentTask</name>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentTask.cpp" line="24"/>
-        <source>Extract selected as MSA task</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentTask.cpp" line="75"/>
         <source>Document is locked</source>
-        <translation>Dokument je uzamknut</translation>
+        <translation type="obsolete">Dokument je uzamknut</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentTask.cpp" line="52"/>
         <source>Unable to detect format by file extension</source>
-        <translation>Podle souborové přípony formát zjistit nelze</translation>
+        <translation type="obsolete">Podle souborové přípony formát zjistit nelze</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/CreateSubalignimentTask.cpp" line="96"/>
         <source>Save document and open view</source>
-        <translation>Uložit dokument a otevřít zobrazení</translation>
+        <translation type="obsolete">Uložit dokument a otevřít zobrazení</translation>
     </message>
 </context>
 <context>
@@ -1995,12 +2018,12 @@ Chcete jej nahradit?</translation>
         <translation type="obsolete">Show amino translations</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/DetView.cpp" line="31"/>
+        <location filename="../src/util_ov_annotated_dna/DetView.cpp" line="55"/>
         <source>Show complement strand</source>
         <translation>Ukázat doplňkový řetězec</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/DetView.cpp" line="34"/>
+        <location filename="../src/util_ov_annotated_dna/DetView.cpp" line="58"/>
         <source>Show amino translations</source>
         <translation>Ukázat amino přepis</translation>
     </message>
@@ -2008,45 +2031,45 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::DnaAssemblyDialog</name>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="57"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="87"/>
         <source>Add short reads</source>
         <translation>Přidat krátká čtení</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="71"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="101"/>
         <source>Open reference sequence</source>
         <translation>Otevřít srovnávací sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="86"/>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="92"/>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="95"/>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="98"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="116"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="122"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="125"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="128"/>
         <source>DNA Assembly</source>
         <translation>Shromáždění DNA</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="87"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="117"/>
         <source>Index file name is not set!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="93"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="123"/>
         <source>Reference sequence url is not set!</source>
         <translation>Adresa (URL) srovnávací sekvence není nastavena!</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="96"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="126"/>
         <source>Result alignment file name is not set!</source>
         <translation>Název souboru pro výsledné zarovnání není nastaven!</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="99"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="129"/>
         <source>Short reads list is empty!</source>
         <translation>Seznam krátkých čtení je prázdný!</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="140"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="170"/>
         <source>Set result alignment file name</source>
         <translation>Nastavit název souboru pro výsledné zarovnání</translation>
     </message>
@@ -2054,29 +2077,29 @@ Chcete jej nahradit?</translation>
 <context>
     <name>U2::DnaAssemblySupport</name>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="31"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="48"/>
         <source>DNA assembly</source>
         <translation>Shromáždění DNA</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="33"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="50"/>
         <source>Align short reads...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="38"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="55"/>
         <source>Build index...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="48"/>
-        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="72"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="65"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="94"/>
         <source>DNA Assembly</source>
         <translation>Shromáždění DNA</translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="49"/>
-        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="73"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="66"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyUtils.cpp" line="95"/>
         <source>There are no algorithms for DNA assembly available.
 Please, check your plugin list.</source>
         <translation>Nejsou dostupné žádné algoritmy pro shromáždění DNA.
@@ -2094,28 +2117,28 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Invalid location!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="39"/>
+        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="60"/>
         <source>Location is empty!</source>
         <translation>Umístění je prázdné!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="41"/>
+        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="62"/>
         <source>Invalid location!</source>
         <translation>Umístění je neplatné!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="63"/>
-        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="65"/>
+        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="79"/>
+        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="81"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="63"/>
+        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="79"/>
         <source>Wrong annotation name!</source>
         <translation>Chybný název poznámky!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="65"/>
+        <location filename="../src/util_ov_annotated_dna/EditAnnotationDialogController.cpp" line="81"/>
         <source>New annotation locations is out of sequence bounds!</source>
         <translation>Cílová oblast je mimo hranice sekvence!</translation>
     </message>
@@ -2175,85 +2198,85 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Results list contains results from the previous search. Clear?</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="163"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="184"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="163"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="184"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="185"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="206"/>
         <source>Progress %1%. Current position %2 </source>
         <translation>Postup %1%. Současná %2 </translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="187"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="208"/>
         <source>Results found %1</source>
         <translation>Nalezené výsledky %1</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="243"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="264"/>
         <source>Question?</source>
         <translation>Otázka?</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="243"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="264"/>
         <source>The end of the search region is reached. Restart?</source>
         <translation>Dosaženo konce prohledávané oblasti. Začít znovu?</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="353"/>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="361"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="374"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="382"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="353"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="374"/>
         <source>Search pattern is empty</source>
         <translation>Vzor pro hledání je prázdný</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="361"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="382"/>
         <source>Pattern length is greater than search range</source>
         <translation>Délka vzoru je větší než prohledávaný rozsah</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="383"/>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="393"/>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="403"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="404"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="414"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="424"/>
         <source>Warning!</source>
         <translation>Varování!</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="383"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="404"/>
         <source>Search pattern contains symbols that are out of the active alphabet range. Continue anyway?</source>
         <translation>Vzor pro hledání obsahuje symboly, které jsou mimo činný abecední rozsah. Přesto pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="393"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="414"/>
         <source>The seach settings were changed from the last search. Clean old results?</source>
         <translation>nastavení pro hledání bylo od posledního hledání změněno. Smazat staré výsledky?</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="403"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="424"/>
         <source>Results list contains results from the previous search. Clear?</source>
         <translation>Seznam s výsledky obsahuje výsledky z předchozího hledání. Smazat?</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="621"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="642"/>
         <source>yes</source>
         <translation>Ano</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="622"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="643"/>
         <source>no</source>
         <translation>Ne</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="623"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="644"/>
         <source>[%1 %2]    translation: %3    complement: %4</source>
         <translation>[%1 %2]    překlad: %3    doplněk: %4</translation>
     </message>
@@ -2262,7 +2285,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">[%1 %2]    translation: %3    complement: %4</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="611"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="632"/>
         <source>%1 overlaps filtered, %2 results left.</source>
         <translation>%1překrytí filtrováno, %2 zbývajících výsledků.</translation>
     </message>
@@ -2278,12 +2301,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">%1 [%2, %3], Window: %4, Step %5</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/GSequenceGraphView.cpp" line="21"/>
+        <location filename="../src/util_ov_annotated_dna/GSequenceGraphView.cpp" line="42"/>
         <source>Graph settings</source>
         <translation>Nastavení grafu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/GSequenceGraphView.cpp" line="140"/>
+        <location filename="../src/util_ov_annotated_dna/GSequenceGraphView.cpp" line="161"/>
         <source>%1 [%2, %3], Window: %4, Step %5</source>
         <translation>%1 [%2, %3], Okno: %4, Krok %5</translation>
     </message>
@@ -2291,73 +2314,124 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::GSequenceLineViewAnnotated</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/GSequenceLineViewAnnotated.cpp" line="630"/>
+        <location filename="../src/util_ov_annotated_dna/GSequenceLineViewAnnotated.cpp" line="658"/>
         <source>etc ...</source>
         <translation>a tak dále...</translation>
     </message>
 </context>
 <context>
+    <name>U2::MSAAlignDialog</name>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="98"/>
+        <source>Align MSA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="99"/>
+        <source>Select input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="100"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="101"/>
+        <source>Align</source>
+        <translation type="unfinished">Zarovnat</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="102"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="110"/>
+        <source>Set result alignment file name</source>
+        <translation type="unfinished">Nastavit název souboru pro výsledné zarovnání</translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="179"/>
+        <source>MSA Align</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="180"/>
+        <source>Result alignment file name is not set!</source>
+        <translation type="unfinished">Název souboru pro výsledné zarovnání není nastaven!</translation>
+    </message>
+</context>
+<context>
+    <name>U2::MSAAlignFileTask</name>
+    <message>
+        <location filename="../src/util_msa_align/MSAAlignUtils.cpp" line="63"/>
+        <source>input_format_error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::MSAColorSchemeRegistry</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="652"/>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="666"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="673"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="687"/>
         <source>No colors</source>
         <translation>Žádné barvy</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="656"/>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="670"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="677"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="691"/>
         <source>UGENE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="660"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="681"/>
         <source>Jalview</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="662"/>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="700"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="683"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="721"/>
         <source>Percentage Identity</source>
         <translation>Procentní identická rovnost</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="674"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="695"/>
         <source>Zappo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="678"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="699"/>
         <source>Tailor</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="682"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="703"/>
         <source>Hydrophobicity</source>
         <translation>Nesmáčivost</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="686"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="707"/>
         <source>Helix propensity</source>
         <translation>Sklon šroubovice</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="690"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="711"/>
         <source>Strand propensity</source>
         <translation>Sklon řetězce</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="694"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="715"/>
         <source>Turn propensity</source>
         <translation>Sklon otočení</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="698"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="719"/>
         <source>Buried index</source>
         <translation>Schovaný rejstřík</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="702"/>
+        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="723"/>
         <source>Clustal X</source>
         <translation></translation>
     </message>
@@ -2365,27 +2439,27 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::MSAEditor</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="75"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="96"/>
         <source>Zoom In</source>
         <translation>Přiblížit</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="78"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="99"/>
         <source>Zoom Out</source>
         <translation>Oddálit</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="81"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="102"/>
         <source>Zoom To Selection</source>
         <translation>Přiblížit na výběr</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="84"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="105"/>
         <source>Reset Zoom</source>
         <translation>Nastavit zvětšení znovu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="93"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="114"/>
         <source>Export as image</source>
         <translation>Vyvést jako obrázek</translation>
     </message>
@@ -2406,12 +2480,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Advanced</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="385"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="406"/>
         <source>Add</source>
         <translation>Přidat</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="460"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="481"/>
         <source>Export alignment image</source>
         <translation>Vyvést obrázek se zarovnáním</translation>
     </message>
@@ -2420,67 +2494,67 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Error!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="353"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="374"/>
         <source>View</source>
         <translation>Pohled</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="87"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="108"/>
         <source>Change Font</source>
         <translation>Změnit písmo</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="90"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="111"/>
         <source>Build Tree</source>
         <translation>Postavit strom</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="210"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="231"/>
         <source>Calculate phy tree</source>
         <translation>Vypočítat fylogenetický strom</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="211"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="232"/>
         <source>No algorithms for building phylogenetic tree are available.</source>
         <translation>Nejsou dostupné žádné algoritmy pro postavení fylogenetického stromu.</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="287"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="308"/>
         <source>Select font for alignment</source>
         <translation>Vybrat písmo pro zarovnání</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="338"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="359"/>
         <source>Copy</source>
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="343"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="364"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="348"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="369"/>
         <source>Export</source>
         <translation type="unfinished">Vyvést</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="361"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="382"/>
         <source>Align</source>
         <translation>Zarovnat</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="367"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="388"/>
         <source>Tree</source>
         <translation>Strom</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="374"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="395"/>
         <source>Advanced</source>
         <translation>Pokročilé</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="379"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="400"/>
         <source>Statistics</source>
         <translation>Statistika</translation>
     </message>
@@ -2492,17 +2566,17 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Copy consensus line</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorConsensusArea.cpp" line="45"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorConsensusArea.cpp" line="66"/>
         <source>Copy consensus</source>
         <translation>Kopírovat shodu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorConsensusArea.cpp" line="48"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorConsensusArea.cpp" line="69"/>
         <source>Copy consensus with gaps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorConsensusArea.cpp" line="51"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorConsensusArea.cpp" line="72"/>
         <source>Consensus mode...</source>
         <translation>Režim shody...</translation>
     </message>
@@ -2514,12 +2588,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Open multiple views</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorFactory.cpp" line="23"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorFactory.cpp" line="44"/>
         <source>Alignment editor</source>
         <translation>Editor zarovnání</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorFactory.cpp" line="78"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorFactory.cpp" line="99"/>
         <source>Open multiple views</source>
         <translation>Otevřít více pohledů</translation>
     </message>
@@ -2527,7 +2601,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::MSAEditorNameList</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorNameList.cpp" line="26"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorNameList.cpp" line="47"/>
         <source>Edit sequence name</source>
         <translation>Upravit název sekvence</translation>
     </message>
@@ -2536,17 +2610,17 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Copy current sequence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorNameList.cpp" line="29"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorNameList.cpp" line="50"/>
         <source>Copy current sequence</source>
         <translation>Kopírovat nynější sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorNameList.cpp" line="456"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorNameList.cpp" line="477"/>
         <source>Rename</source>
         <translation>Přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorNameList.cpp" line="457"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorNameList.cpp" line="478"/>
         <source>New sequence name:</source>
         <translation>Nový název sekvence:</translation>
     </message>
@@ -2554,7 +2628,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::MSAEditorOffsetsViewController</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorOffsetsView.cpp" line="42"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorOffsetsView.cpp" line="63"/>
         <source>Show offsets</source>
         <translation>Ukázat posuny</translation>
     </message>
@@ -2566,12 +2640,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Delete gap</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="58"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="81"/>
         <source>Remove selection</source>
         <translation>Smazat výběr</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="63"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="86"/>
         <source>Copy selection</source>
         <translation>Kopírovat výběr</translation>
     </message>
@@ -2593,67 +2667,67 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Go to position..</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="83"/>
-        <source>Extract selected as MSA...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="92"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="115"/>
         <source>Go to position...</source>
         <translation>Jít na místo...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="101"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="124"/>
         <source>Remove all gaps</source>
         <translation>Odstranit všechny mezery</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="104"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="127"/>
         <source>Sequence from file...</source>
         <translation>Sekvence ze souboru...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="107"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="130"/>
         <source>Sequence from current project...</source>
         <translation>Sekvence z nynějšího projektu...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="110"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="133"/>
         <source>Sort sequences by name</source>
         <translation>Třídit sekvence podle názvu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="113"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="136"/>
         <source>Replace selected rows with reverse-complement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="1261"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="1294"/>
         <source>Open file with sequences</source>
         <translation>Otevřít soubor se sekvencemi</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="1043"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="1070"/>
         <source>Go To</source>
         <translation>Jít na</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="71"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="94"/>
         <source>Remove columns of gaps...</source>
         <translation>Smazat sloupce z mezer...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="76"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="99"/>
         <source>Fill selection with gaps</source>
         <translation>Vložit mezeru</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="87"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="106"/>
+        <source>Save subalignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="110"/>
         <source>Insert column of gaps</source>
         <translation>Vložit sloupec z mezer</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="999"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="1026"/>
         <source>Colors</source>
         <translation>Barvy</translation>
     </message>
@@ -2661,52 +2735,52 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::MSAEditorStatusWidget</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="20"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="41"/>
         <source>Find:</source>
         <translation>Hledat:</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="23"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="44"/>
         <source>Find backward &lt;b&gt;(SHIFT + Enter)&lt;/b&gt;</source>
         <translation>Hledat zpět &lt;b&gt;(SHIFT + Enter)&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="27"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="48"/>
         <source>Find forward &lt;b&gt;(Enter)&lt;/b&gt;</source>
         <translation>Hledat vpřed &lt;b&gt;(Enter)&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="65"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="86"/>
         <source>Find in alignment</source>
         <translation>Najít v zarovnání</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="79"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="100"/>
         <source>Alignment object is locked</source>
         <translation>Předmět zarovnání je zamčen</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="79"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="100"/>
         <source>Alignment object is not locked</source>
         <translation>Předmět zarovnání není zamčen</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="88"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="109"/>
         <source>Ln %1 / %2</source>
         <translation>Řádek %1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="91"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="112"/>
         <source>Line %1 of %2</source>
         <translation>Řádek %1 z %2</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="94"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="115"/>
         <source>Col %1 / %2</source>
         <translation>Sloupec %1 z %2</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="97"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorStatusBar.cpp" line="118"/>
         <source>Column %1 of %2</source>
         <translation>Sloupec %1 z %2</translation>
     </message>
@@ -2714,7 +2788,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::MSAEditorUI</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="506"/>
+        <location filename="../src/util_ov_msaedit/MSAEditor.cpp" line="529"/>
         <source>Consensus</source>
         <translation>Shoda</translation>
     </message>
@@ -2738,45 +2812,53 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Invalid cutoff values</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="66"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="87"/>
         <source>Cutoff for minimum and maximum values</source>
         <translation>Nejzazší hranice pro nejnižší a nejvyšší hodnoty</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="84"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="105"/>
         <source>Minimum:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="85"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="106"/>
         <source>Maximum:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="115"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="136"/>
         <source>Invalid cutoff values</source>
         <translation>Neplatné nejnižší a nejvyšší hodnoty</translation>
     </message>
 </context>
 <context>
+    <name>U2::ObjectViewTask</name>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="187"/>
+        <source>No sequence info found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::OpenAnnotatedDNAViewTask</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="96"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="117"/>
         <source>Sequences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="125"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="146"/>
         <source>Maximum number of objects per view reached: %1</source>
         <translation>Byl dosažen největší možný počet předmětů na pohled: %1</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="129"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="150"/>
         <source>Sequence object not available! URL %1, name %2</source>
         <translation>Není dostupný předmět se sekvencí! Adresa (URL) %1, název %2</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="133"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="154"/>
         <source>No sequence objects found</source>
         <translation>Nebyly nalezeny žádné předměty se sekvencemi</translation>
     </message>
@@ -2784,12 +2866,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::OpenMSAEditorTask</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorTasks.cpp" line="64"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorTasks.cpp" line="85"/>
         <source>Multiple alignment object not found</source>
         <translation>Předmět s více zarovnáními nebyl nalezen</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorTasks.cpp" line="69"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorTasks.cpp" line="90"/>
         <source>Opening MSA editor for object: %1</source>
         <translation>Otevírá se editor MSA pro předmět: %1</translation>
     </message>
@@ -2801,7 +2883,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::OpenSavedAnnotatedDNAViewTask</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="205"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="226"/>
         <source>DNA sequence object not found: %1</source>
         <translation>Předmět se sekvencí DNA nebyl nalezen %1</translation>
     </message>
@@ -2813,7 +2895,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::OpenSavedMSAEditorTask</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorTasks.cpp" line="114"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorTasks.cpp" line="135"/>
         <source>DNA sequence object not found: %1</source>
         <translation>Předmět se sekvencí DNA nebyl nalezen %1</translation>
     </message>
@@ -2825,7 +2907,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::OpenSavedTextObjectViewTask</name>
     <message>
-        <location filename="../src/util_ov_textview/SimpleTextObjectViewTasks.cpp" line="50"/>
+        <location filename="../src/util_ov_textview/SimpleTextObjectViewTasks.cpp" line="71"/>
         <source>Text object &apos;%1&apos; is not found</source>
         <translation>Předmět s textem &apos;%1&apos; nenalezen</translation>
     </message>
@@ -2837,7 +2919,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">DNA sequence object not found: %1</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerTasks.cpp" line="110"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerTasks.cpp" line="131"/>
         <source>DNA sequence object not found: %1</source>
         <translation>Předmět se sekvencí DNA nebyl nalezen: %1</translation>
     </message>
@@ -2845,12 +2927,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::OpenTreeViewerTask</name>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerTasks.cpp" line="63"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerTasks.cpp" line="84"/>
         <source>Phylogenetic tree object not found</source>
         <translation>Předmět s fylogenetickým stromem nebyl nalezen</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerTasks.cpp" line="68"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerTasks.cpp" line="89"/>
         <source>Opening tree viewer for object %1</source>
         <translation>Otevírá se prohlížeč stromu pro předmět: %1</translation>
     </message>
@@ -2858,17 +2940,17 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::OpenUIndexViewerTask</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="20"/>
+        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="41"/>
         <source>Index object is null</source>
         <translation>Předmět rejstříku je nulový</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="27"/>
+        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="48"/>
         <source>Document is null or loaded</source>
         <translation>Dokument je nulový nebo nahraný</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="53"/>
+        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="74"/>
         <source>Opening index viewer for object %1</source>
         <translation>Otevírá se prohlížeč rejstříku pro předmět: %1</translation>
     </message>
@@ -2876,17 +2958,17 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::Overview</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/Overview.cpp" line="35"/>
+        <location filename="../src/util_ov_annotated_dna/Overview.cpp" line="57"/>
         <source>Toggle annotation density graph</source>
         <translation>Přepnout nákres hustoty poznámek</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/Overview.cpp" line="294"/>
+        <location filename="../src/util_ov_annotated_dna/Overview.cpp" line="367"/>
         <source>Position </source>
         <translation>Poloha</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/Overview.cpp" line="304"/>
+        <location filename="../src/util_ov_annotated_dna/Overview.cpp" line="377"/>
         <source>Annotation density </source>
         <translation>Hustota poznámek </translation>
     </message>
@@ -2914,42 +2996,42 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Zoom to whole sequence</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="84"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="106"/>
         <source>Zoom in</source>
         <translation>Přiblížit</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="87"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="109"/>
         <source>Zoom out</source>
         <translation>Oddálit</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="90"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="112"/>
         <source>Zoom to selection</source>
         <translation>Přiblížit na výběr</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="93"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="115"/>
         <source>Zoom to whole sequence</source>
         <translation>Oddálit na celou sekvenci</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="96"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="118"/>
         <source>Show main ruler</source>
         <translation>Ukázat hlavní pravítko</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="101"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="123"/>
         <source>Show custom rulers</source>
         <translation>Ukázat vlastní pravítka</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="400"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="425"/>
         <source>range change request: [%1, %2]</source>
         <translation>Požadavek na změnu rozsahu: [%1, %2]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="665"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="696"/>
         <source>empty</source>
         <translation>prázdný</translation>
     </message>
@@ -2957,7 +3039,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::PanViewRenderArea</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="760"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="791"/>
         <source>[%1 %2]</source>
         <translation></translation>
     </message>
@@ -2965,12 +3047,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::SecStructDialog</name>
     <message>
-        <location filename="../src/util_sec_struct_predict/SecStructDialog.cpp" line="41"/>
+        <location filename="../src/util_sec_struct_predict/SecStructDialog.cpp" line="65"/>
         <source>Region</source>
         <translation>Oblast</translation>
     </message>
     <message>
-        <location filename="../src/util_sec_struct_predict/SecStructDialog.cpp" line="42"/>
+        <location filename="../src/util_sec_struct_predict/SecStructDialog.cpp" line="66"/>
         <source>Structure Type</source>
         <translation>Typ stavby</translation>
     </message>
@@ -2978,7 +3060,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::SecStructPredictViewAction</name>
     <message>
-        <location filename="../src/util_sec_struct_predict/SecStructPredictUtils.cpp" line="16"/>
+        <location filename="../src/util_sec_struct_predict/SecStructPredictUtils.cpp" line="37"/>
         <source>Predict secondary structure...</source>
         <translation>Předpovědět druhotnou stavbu...</translation>
     </message>
@@ -2990,12 +3072,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Open multiple views task</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_textview/SimpleTextObjectView.cpp" line="28"/>
+        <location filename="../src/util_ov_textview/SimpleTextObjectView.cpp" line="49"/>
         <source>Text editor</source>
         <translation>Textový editor</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_textview/SimpleTextObjectView.cpp" line="53"/>
+        <location filename="../src/util_ov_textview/SimpleTextObjectView.cpp" line="74"/>
         <source>Open multiple views task</source>
         <translation>Úkol otevření více pohledů</translation>
     </message>
@@ -3003,8 +3085,7 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::SmithWatermanDialog</name>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="220"/>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="529"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="242"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
@@ -3013,8 +3094,8 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">No matrix registry.</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="34"/>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="35"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="53"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="54"/>
         <source>No substitution matrices found.</source>
         <translation>Nenalezeny žádné nahrazovací matice.</translation>
     </message>
@@ -3027,62 +3108,62 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">No algorithm registry.</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="42"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="61"/>
         <source>No filter registry found.</source>
         <translation>Žádný zápis filtru.</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="49"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="68"/>
         <source>No algorithm registry found.</source>
         <translation>Žádný zápis algoritmu.</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="86"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="108"/>
         <source>Enter pattern here</source>
         <translation>Zde zadejte vzor</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="88"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="110"/>
         <source>Pattern length: %1</source>
         <translation>Délka vzoru: %1</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="164"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="186"/>
         <source>Matrix not found.</source>
         <translation>Matice nenalezena.</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="237"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="259"/>
         <source>SmithWatermanTask</source>
         <translation>Úkol Smith-Waterman</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="290"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="312"/>
         <source>Algorithm is not found.</source>
         <translation>Algoritmus nenalezen.</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="302"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="324"/>
         <source>Matrix %1 is not found.</source>
         <translation>Matice %1 nenalezena.</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="345"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="367"/>
         <source>Filter is not found.</source>
         <translation>Filtr nenalezen.</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="360"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="382"/>
         <source>Internal error</source>
         <translation>Vnitřní chyba</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="366"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="388"/>
         <source>Pattern is empty</source>
         <translation>Vzor je prázdný</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="379"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="401"/>
         <source>Pattern contains unknown symbol</source>
         <translation>Vzor obsahuje neznámý symbol</translation>
     </message>
@@ -3099,38 +3180,25 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Distributed run on many machines is not supported yet. Select 1 machine</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="279"/>
+        <location filename="../src/util_smith_waterman/SmithWatermanDialog.cpp" line="301"/>
         <source>Complement translation is not found.</source>
         <translation>Doplňkový překlad nenalezen.</translation>
     </message>
 </context>
 <context>
-    <name>U2::SmithWatermanSchemaTask</name>
-    <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanSchemaTask.cpp" line="20"/>
-        <source>SmithWatermanSchemaTask</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_smith_waterman/SmithWatermanSchemaTask.cpp" line="79"/>
-        <source>Unable to create temporary files</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>U2::SubstMatrixDialog</name>
     <message>
-        <location filename="../src/util_smith_waterman/SubstMatrixDialog.cpp" line="15"/>
+        <location filename="../src/util_smith_waterman/SubstMatrixDialog.cpp" line="36"/>
         <source>Scoring matrix: %1</source>
         <translation>Výsledková matice: %1</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SubstMatrixDialog.cpp" line="19"/>
+        <location filename="../src/util_smith_waterman/SubstMatrixDialog.cpp" line="40"/>
         <source>min score:</source>
         <translation>Nejmenší výsledek:</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/SubstMatrixDialog.cpp" line="20"/>
+        <location filename="../src/util_smith_waterman/SubstMatrixDialog.cpp" line="41"/>
         <source>max score:</source>
         <translation>Největší výsledek:</translation>
     </message>
@@ -3138,52 +3206,82 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::TreeViewer</name>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="112"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="139"/>
         <source>Show sequence names</source>
         <translation>Ukázat názvy sekvencí</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="115"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="142"/>
         <source>Show distance labels</source>
         <translation>Ukázat štítky vzdáleností</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="119"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="146"/>
         <source>Print tree</source>
         <translation>Vytisknout strom</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="122"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="149"/>
         <source>Capture tree</source>
         <translation>Zachytit strom</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="123"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="150"/>
         <source>Export tree in SVG</source>
         <translation>Vyvést strom jako SVG</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="125"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="152"/>
         <source>Align name labels</source>
         <translation>Zarovnat štítky s názvy</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="129"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="156"/>
         <source>Rectangular layout</source>
         <translation>Obdélníkové rozvržení</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="132"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="159"/>
         <source>Circular layout</source>
         <translation>Kruhové rozvržení</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="134"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="161"/>
         <source>Unrooted layout</source>
         <translation>Vytržené rozvržení</translation>
     </message>
     <message>
         <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="164"/>
+        <source>Branch settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="165"/>
+        <source>Text settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="166"/>
+        <source>Tree settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="168"/>
+        <source>Zoom in</source>
+        <translation type="unfinished">Přiblížit</translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="169"/>
+        <source>Zoom out</source>
+        <translation type="unfinished">Oddálit</translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="170"/>
+        <source>Reset zooming</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="199"/>
         <source>Layout</source>
         <translation>Rozvržení</translation>
     </message>
@@ -3191,12 +3289,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::TreeViewerFactory</name>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerFactory.cpp" line="22"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerFactory.cpp" line="43"/>
         <source>Phylogenetic tree viewer</source>
         <translation>Prohlížeč fylogenetického stromu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerFactory.cpp" line="75"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerFactory.cpp" line="96"/>
         <source>Open multiple views</source>
         <translation>Otevřít více pohledů</translation>
     </message>
@@ -3204,17 +3302,17 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::UIndexExportToNewFileDialogImpl</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="25"/>
+        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="46"/>
         <source>Select file to export</source>
         <translation>Vybrat soubor k vyvedení</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="35"/>
+        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="56"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="35"/>
+        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="56"/>
         <source>Illegal file name</source>
         <translation>Neplatný název souboru</translation>
     </message>
@@ -3222,23 +3320,23 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::UIndexSupport</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="40"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="61"/>
         <source>Index large file(s)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="60"/>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="70"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="81"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="91"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="60"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="81"/>
         <source>Cannot write output file: unknown io adapter for %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="70"/>
+        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="91"/>
         <source>Cannot read input file: unknown io adapter for %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3250,97 +3348,97 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::UIndexViewHeaderItemWidgetImpl</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="18"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="39"/>
         <source>[All values] filter</source>
         <translation>Filtr [Všechny hodnoty]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="19"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="40"/>
         <source>[Starts with] filter </source>
         <translation>Filtr [Začíná]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="20"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="41"/>
         <source>[Ends with] filter</source>
         <translation>Filtr [Končí]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="21"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="42"/>
         <source>[Contains] filter</source>
         <translation>Filtr [Obsahuje]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="22"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="43"/>
         <source>[Equal] filter</source>
         <translation>Filtr [Rovná se]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="23"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="44"/>
         <source>[Not equal] filter</source>
         <translation>Filtr [Nerovná se]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="24"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="45"/>
         <source>[Greater than] filter</source>
         <translation>Filtr [Větší než]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="25"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="46"/>
         <source>[Lower than] filter</source>
         <translation>Filtr [Menší než]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="26"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="47"/>
         <source>[In range] filter</source>
         <translation>Filtr [V rozsahu]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="46"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="67"/>
         <source>Select new key</source>
         <translation>Vybrat nový klíč</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="48"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="69"/>
         <source>Enter a filter value</source>
         <translation>Zadat hodnotu filtru</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="49"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="70"/>
         <source>Enter a string value</source>
         <translation>Zadat hodnotu řetězce</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="50"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="71"/>
         <source>Enter a number value</source>
         <translation>Zadat hodnotu čísla</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="51"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="72"/>
         <source>Enter a lower bound</source>
         <translation>Zadat spodní hranici</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="52"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="73"/>
         <source>Enter an upper bound</source>
         <translation>Zadat horní hranici</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="162"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="183"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="162"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="183"/>
         <source>The value can&apos;t be empty</source>
         <translation>Hodnota nemůže být prázdná</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="200"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="221"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="200"/>
+        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="221"/>
         <source>Upper bound must be greater than lower</source>
         <translation>Horní hranice musí být větší než spodní hranice</translation>
     </message>
@@ -3348,58 +3446,58 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::UIndexViewWidgetImpl</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="25"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="46"/>
         <source>column </source>
         <translation>sloupec </translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="17"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="38"/>
         <source>No filter selected</source>
         <translation>Nevybrán žádný filtr</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="18"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="39"/>
         <source>Document Format</source>
         <translation>Formát dokumentu</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="19"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="40"/>
         <source>URL</source>
         <translation>Adresa (URL)</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="20"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="41"/>
         <source>None</source>
         <translation>Žádná</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="21"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="42"/>
         <source>Hide column</source>
         <translation>Skrýt sloupec</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="22"/>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="319"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="43"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="340"/>
         <source>Remove column</source>
         <translation>Odstranit sloupec</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="23"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="44"/>
         <source>No hidden columns</source>
         <translation>Žádné skryté sloupce</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="24"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="45"/>
         <source>Show hidden columns:</source>
         <translation>Ukázat skryté sloupce:</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="26"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="47"/>
         <source>Add column</source>
         <translation>Přidat sloupec</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="174"/>
+        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="195"/>
         <source>Complex rule</source>
         <translation>Složené pravidlo</translation>
     </message>
@@ -3407,22 +3505,22 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::UIndexViewer</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="54"/>
+        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="75"/>
         <source>Export </source>
         <translation>Vyvést </translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="56"/>
+        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="77"/>
         <source>Save selection to a new file</source>
         <translation>Uložit výběr do souboru</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="86"/>
+        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="108"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="86"/>
+        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="108"/>
         <source>No items selected</source>
         <translation>Nevybrány žádné položky</translation>
     </message>
@@ -3430,12 +3528,12 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
 <context>
     <name>U2::UIndexViewerFactory</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerFactory.cpp" line="22"/>
+        <location filename="../src/util_ov_indexview/UIndexViewerFactory.cpp" line="43"/>
         <source>Index viewer</source>
         <translation>Prohlížeč rejstříku</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerFactory.cpp" line="69"/>
+        <location filename="../src/util_ov_indexview/UIndexViewerFactory.cpp" line="90"/>
         <source>Open multiple views</source>
         <translation>Otevřít více pohledů</translation>
     </message>
@@ -3455,17 +3553,17 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Error!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="130"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="151"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="131"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="152"/>
         <source>Ok</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="163"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="184"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
@@ -3489,22 +3587,22 @@ Prověřte, prosím, váš seznam s přídavnými moduly.</translation>
         <translation type="obsolete">Illegal step value</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="30"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="51"/>
         <source>Window:</source>
         <translation>Okno:</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="31"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="52"/>
         <source>Steps per window:</source>
         <translation>Kroků na okno:</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="51"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="72"/>
         <source>Illegal step value</source>
         <translation>Selhání ve výpočtu kroku</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="56"/>
+        <location filename="../src/util_ov_annotated_dna/WindowStepSelectorWidget.cpp" line="77"/>
         <source>Invalid step value</source>
         <translation>Neplatná hodnota kroku</translation>
     </message>

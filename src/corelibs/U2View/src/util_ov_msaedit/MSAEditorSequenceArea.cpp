@@ -103,7 +103,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     addAction(insSymAction);
 
 
-    createSubaligniment = new QAction(tr("Extract selected as MSA..."), this);
+    createSubaligniment = new QAction(tr("Save subalignment"), this);
     createSubaligniment->setShortcutContext(Qt::WidgetShortcut);
     connect(createSubaligniment, SIGNAL(triggered()), SLOT(sl_createSubaligniment()));
 
@@ -1009,9 +1009,13 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     assert(editMenu!=NULL);
     QList<QAction*> actions; 
-    actions << createSubaligniment << removeAllGapsAction;
+    actions << removeAllGapsAction;
     editMenu->insertActions(editMenu->isEmpty() ? NULL : editMenu->actions().first(), actions);
-
+    
+    QMenu * exportMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EXPORT);
+    assert(exportMenu != NULL);
+    exportMenu->addAction(createSubaligniment);
+    
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     copyMenu->addAction(copySelectionAction);
 
