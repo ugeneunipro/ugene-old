@@ -192,7 +192,7 @@ void SQLiteDbi::internalInit(U2OpStatus& os){
     Version dbUgeneVersion = Version::parseVersion(dbUgeneVersionText);
     Version currentVersion = Version::ugeneVersion();
     if (dbUgeneVersion > currentVersion) {
-        coreLog.info(SQLiteL10n::tr("Warning! Database was created with a newer UGENE version: %2. Not all database features are supported!"));
+        coreLog.info(SQLiteL10n::tr("Warning! Database of version %1 was created with a newer UGENE version: %2. Not all database features are supported!").arg(currentVersion.text).arg(dbUgeneVersion.text));
     }
     QString readsCompression1 = getFlag(SQLITE_DBI_OPTION_ASSEMBLY_READ_COMPRESSION1_FLAG, os);
     if (readsCompression1 == U2_DBI_VALUE_ON) {
