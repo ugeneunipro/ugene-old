@@ -221,7 +221,7 @@ U2AssemblyRead SingleTableAssemblyAdapterReadLoader::load(SQLiteQuery* q) {
 
 
 U2DbiIterator<PackAlgorithmData>* SingleTablePackAlgorithmAdapter::selectAllReads(U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, elen FROM" + readsTable, db, os);
+    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, elen FROM " + readsTable, db, os);
     return new SqlRSIterator<PackAlgorithmData>(q, new SingleTableAssemblyAdapterPackedReadLoader(), PackAlgorithmData(), os);
 }
 
@@ -230,7 +230,7 @@ SingleTablePackAlgorithmAdapter::~SingleTablePackAlgorithmAdapter() {
 }
 
 U2DbiIterator<U2DataId>* SingleTablePackAlgorithmAdapter::selectNotAssignedReads(U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, elen FROM" + readsTable + " WHERE prow = -1", db, os);
+    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, elen FROM " + readsTable + " WHERE prow = -1", db, os);
     return new SqlRSIterator<U2DataId>(q, new SqlDataIdRSLoader(U2Type::AssemblyRead), U2DataId(), os);
 }
 
