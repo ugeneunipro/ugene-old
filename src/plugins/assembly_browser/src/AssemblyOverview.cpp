@@ -45,7 +45,7 @@ redrawSelection(true), bgrRenderer(model), scribbling(false)
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     initSelectionRedraw();
-    bgrRenderer.render(size());
+    //bgrRenderer.render(size());
 }
 
 void AssemblyOverview::connectSlots() {
@@ -88,26 +88,27 @@ static inline bool onePixelRect(const QRect & r) {
 }
 
 static const int CROSS_HALF_SIZE = 3;
-static const QPoint CROSS_LEFT_CORNER(CROSS_HALF_SIZE, CROSS_HALF_SIZE);
-static const QPoint CROSS_RIGHT_CORNER(CROSS_HALF_SIZE, -CROSS_HALF_SIZE);
+static const QPoint CROSS_LEFT_CORNER(CROSS_HALF_SIZE, 0);
+static const QPoint CROSS_RIGHT_CORNER(0, CROSS_HALF_SIZE);
 
 void AssemblyOverview::drawSelection(QPainter & p) {
     cachedSelection = calcCurrentSelection();
     if(onePixelRect(cachedSelection)) {
         QPoint c = cachedSelection.center();
+        QPen oldPen = p.pen();
+        p.setPen(Qt::red);
         p.drawLine(c - CROSS_LEFT_CORNER, c + CROSS_LEFT_CORNER);
         p.drawLine(c - CROSS_RIGHT_CORNER, c + CROSS_RIGHT_CORNER);
+        p.setPen(oldPen);
     } else {
         p.fillRect(cachedSelection, QColor(230, 230, 230, 180));
         p.drawRect(cachedSelection.adjusted(0, 0, -1, -1));
     }
 }
 
-namespace {
-    void insertSpaceSeparators(QString & str) {
-        for(int i = str.length()-3; i > 0; i-=3) {
-            str.insert(i, " ");
-        }
+static void insertSpaceSeparators(QString & str) {
+    for(int i = str.length()-3; i > 0; i-=3) {
+        str.insert(i, " ");
     }
 }
 

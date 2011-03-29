@@ -26,6 +26,7 @@
 #include <U2Core/DbiDocumentFormat.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
 #include "Dbi.h"
@@ -86,18 +87,29 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
     }
     GUrl url = convertToBAMTask->getDestinationUrl();
     assert(!url.isEmpty());
-    DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById("usqlite");
-    if(df == NULL) {
+    Project * prj = AppContext::getProject();
+    if(prj == NULL) {
         assert(false);
         return;
     }
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url.getURLString()));
-    assert(iof != NULL);
-    Document * doc = new Document(df, iof, url);
-    AddDocumentTask * addTask = new AddDocumentTask(doc);
+    Document * doc = prj->findDocumentByURL(url);
+    AddDocumentTask * addTask = NULL;
+    if(doc == NULL) {
+        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url.getURLString()));
+        assert(iof != NULL);
+        DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById("usqlite");
+        if(df == NULL) {
+            assert(false);
+            return;
+        }
+        doc = new Document(df, iof, url);
+        addTask = new AddDocumentTask(doc);
+    }
     LoadUnloadedDocumentAndOpenViewTask * openViewTask = new LoadUnloadedDocumentAndOpenViewTask(doc);
-    openViewTask->addSubTask(addTask);
-    openViewTask->setMaxParallelSubtasks(1);
+    if(addTask != NULL) {
+        openViewTask->addSubTask(addTask);
+        openViewTask->setMaxParallelSubtasks(1);    
+    }
     AppContext::getTaskScheduler()->registerTopLevelTask(openViewTask);
 }
 

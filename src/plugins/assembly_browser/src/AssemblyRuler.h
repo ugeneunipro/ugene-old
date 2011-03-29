@@ -42,6 +42,9 @@ protected:
     void resizeEvent(QResizeEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
 
+public slots:
+    void sl_handleMoveToPos(const QPoint &);
+    
 private slots:
     void sl_redraw();
 
@@ -49,8 +52,9 @@ private:
     void connectSlots();
     void drawAll();
     void drawRuler(QPainter & p);
-    void drawCursor(QPainter & p);
-
+    void drawCurPos(QPainter & p);
+    qint64 calcAsmPosX(int pixPosX)const;
+    
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowser * browser;
@@ -58,10 +62,10 @@ private:
 
     QPixmap cachedView;
     bool redraw;
-
+    bool redrawCurPos;
+    int curPosX;
+    
 //    qint64 cursorPos
-
-    const static int FIXED_HEIGHT = 25;
 };
 
 } //ns

@@ -460,8 +460,9 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     mainLayout->addWidget(readsLayoutWidget);
 
     setLayout(mainLayout);  
-
+    
     connect(readsArea, SIGNAL(si_heightChanged()), overview, SLOT(sl_visibleAreaChanged()));
+    connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
 }
 
 bool checkAndLogError(const U2OpStatusImpl & status) {

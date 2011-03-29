@@ -44,6 +44,7 @@ ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), r
 {
     initRedraw();
     connectSlots();
+    setMouseTracking(true);
 }
 
 void AssemblyReadsArea::initRedraw() {
@@ -317,9 +318,9 @@ void AssemblyReadsArea::mouseReleaseEvent(QMouseEvent * e) {
 }
 
 void AssemblyReadsArea::mouseMoveEvent(QMouseEvent * e) {
+    emit si_mouseMovedToPos(e->pos());
     if((e->buttons() & Qt::LeftButton) && scribbling) {
         mouseMover.handleEvent(e->pos());
-
         int x_units = mouseMover.getXunits();
         int y_units = mouseMover.getYunits();
         browser->adjustOffsets(-x_units, -y_units);

@@ -19,20 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#include "AssemblyRuler.h"
 
 #include <math.h>
 
 #include <QtCore/QLine>
 #include <QtGui/QPainter>
-#include "AssemblyBrowser.h"
 
+#include <U2Core/FormatUtils.h>
+
+#include "AssemblyBrowser.h"
 #include "AssemblyReadsArea.h"
+#include "AssemblyRuler.h"
+
 namespace U2 {
 
+static const int FIXED_HEIGHT = 43;
+static const int AXIS_LINE_LEVEL = 6;
+static const int AXIS_BORDER_LOW_LEVEL = 20;
+static const int AXIS_BORDER_HIGH_LEVEL = 2;
+static const int SHORT_BORDER_LOW_LEVEL = 10;
+static const int SHORT_BORDER_HIGH_LEVEL = 5;
+static const int LONG_BORDER_LOW_LEVEL = 18;
+static const int LONG_BORDER_HIGH_LEVEL = 3;
+static const int OFFSET_LOW_LEVEL = LONG_BORDER_LOW_LEVEL + 2;
+static const int CUR_POS_LOW_LEVEL = OFFSET_LOW_LEVEL + 10;
+
 AssemblyRuler::AssemblyRuler(AssemblyBrowserUi * ui) :
-ui(ui), browser(ui->getWindow()), model(ui->getModel())
-{
+ui(ui), browser(ui->getWindow()), model(ui->getModel()), redrawCurPos(false), curPosX(0) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
@@ -51,52 +64,100 @@ void AssemblyRuler::drawAll() {
             redraw = false;
             drawRuler(p);
         }
+        QPixmap cachedViewCopy(cachedView);
+        if(redrawCurPos) {
+            QPainter p(&cachedViewCopy);
+            drawCurPos(p);
+            redrawCurPos = false;
+        }
         QPainter p(this);
-        p.drawPixmap(0, 0, cachedView);
+        p.drawPixmap(0, 0, cachedViewCopy);
     }
 }
 
-namespace {
-int numOfDigits(qint64 n) {
+qint64 AssemblyRuler::calcAsmPosX(int pixPosX) const {
+    int cellWidth = browser->getCellWidth();
+    if(cellWidth == 0) {
+        return browser->getXOffsetInAssembly() + browser->calcAsmCoord(curPosX);
+    }
+    return browser->getXOffsetInAssembly() + (double)pixPosX / cellWidth;
+}
+
+void AssemblyRuler::drawCurPos(QPainter & p) {
+    p.setPen(Qt::darkRed);
+    p.drawLine(curPosX, AXIS_BORDER_HIGH_LEVEL, curPosX, AXIS_BORDER_LOW_LEVEL);
+    qint64 posXInAsm = calcAsmPosX(curPosX);
+    U2OpStatusImpl status;
+    quint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(posXInAsm, 1), status);
+    checkAndLogError(status);
+    QString density = QString::number(readsPerXPixel);
+    QString str = QString::number(posXInAsm) + QString(" C%1").arg(readsPerXPixel);
+    int halfTextWidth = p.fontMetrics().width(str) / 2;
+    int textHeight = p.fontMetrics().height();
+    QRect offsetRect(QPoint(curPosX - halfTextWidth, CUR_POS_LOW_LEVEL), QPoint(curPosX + halfTextWidth, CUR_POS_LOW_LEVEL + textHeight));
+    p.drawText(offsetRect, Qt::AlignCenter, str);
+}
+
+static int numOfDigits(qint64 n) {
     assert(n >= 0);
     return QString::number(n).length();
 }
-}
 
 void AssemblyRuler::drawRuler(QPainter & p) {
-    //TODO just rewrite it all
-    p.setPen(Qt::gray);
+    p.setPen(Qt::black);
+    // write x axis and left and right borders
     {
-        int lineLevel = height() / 4;
-        int lowBorder = height() - 5;
-
-
-        p.drawLine(0, lineLevel, width(), lineLevel);
-
-        p.drawLine(0, 2, 0, lowBorder);
-        p.drawLine(width()-1, 2, width()-1, lowBorder);
+        // axis
+        p.drawLine(0, AXIS_LINE_LEVEL, width(), AXIS_LINE_LEVEL);
+        // borders
+        p.drawLine(0, AXIS_BORDER_HIGH_LEVEL, 0, AXIS_BORDER_LOW_LEVEL);
+        p.drawLine(width()-1, AXIS_BORDER_HIGH_LEVEL, width()-1, AXIS_BORDER_LOW_LEVEL);
     }
-
+    
     int lettersPerZ = browser->calcAsmCoord(50);
-    int interval = pow((double)10, (int)numOfDigits(lettersPerZ)-1);
+    int interval = pow((double)10, numOfDigits(lettersPerZ)-1);
     int pixInterval = browser->calcPixelCoord(interval);
     
     int globalOffset = browser->getXOffsetInAssembly();
-    int firstLetterToMark = (globalOffset + interval)/ interval * interval;
+    int firstLetterToMark = globalOffset/ interval * interval;
     int distToFLTM = firstLetterToMark - globalOffset;
 
     int end = browser->basesCanBeVisible();
-    int z = interval * 10;
+    int bigInterval = interval * 10;
     int halfCell = browser->getCellWidth() / 2;
+    int offsetRectRightBorder = 0;
     for(int i = distToFLTM; i < end; i+=interval) {
-        int lowBorder = (height() - 5) / 2;
-        int y = 5;
         int x_pix = ui->getReadsArea()->calcPainterOffset(i) + halfCell;
-        if((globalOffset + i) % z == 0) {
-            lowBorder = lowBorder * 2 - 2;
-            y = 3;
+        if((globalOffset + i) % bigInterval == 0) {
+            p.drawLine(x_pix, LONG_BORDER_HIGH_LEVEL, x_pix, LONG_BORDER_LOW_LEVEL);
+            QString offsetStr = FormatUtils::formatNumber(globalOffset + i);
+            int halfTextWidth = p.fontMetrics().width(offsetStr) / 2;
+            int textHeight = p.fontMetrics().height();
+            QRect offsetRect(QPoint(x_pix - halfTextWidth, OFFSET_LOW_LEVEL), QPoint(x_pix + halfTextWidth, OFFSET_LOW_LEVEL + textHeight));
+            if(offsetRect.left() > offsetRectRightBorder) {
+                p.drawText(offsetRect, Qt::AlignCenter, offsetStr);
+                offsetRectRightBorder = offsetRect.right() + 15;
+            }
+        } else {
+            p.drawLine(x_pix, SHORT_BORDER_HIGH_LEVEL, x_pix, SHORT_BORDER_LOW_LEVEL);
         }
-        p.drawLine(x_pix, y, x_pix, lowBorder);
+    }
+}
+
+void AssemblyRuler::sl_handleMoveToPos(const QPoint & pos) {
+    int cellWidth = browser->getCellWidth();
+    if(cellWidth == 0) {
+        curPosX = pos.x();
+        redrawCurPos = true;
+        update();
+    } else {
+        int cellNumOld = curPosX / cellWidth;
+        int cellNumNew = pos.x() / cellWidth;
+        if(cellNumOld != cellNumNew) {
+            curPosX = cellNumNew * cellWidth + cellWidth / 2;
+            redrawCurPos = true;
+            update();
+        }
     }
 }
 

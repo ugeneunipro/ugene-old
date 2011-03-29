@@ -66,7 +66,8 @@ public: //TODO move to assembly browser ?
 
 signals:
     void si_heightChanged();
-
+    void si_mouseMovedToPos(const QPoint &);
+    
 private slots:
     void sl_onHScrollMoved(int pos);
     void sl_onVScrollMoved(int pos);
