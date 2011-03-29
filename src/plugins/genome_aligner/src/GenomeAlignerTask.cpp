@@ -419,6 +419,7 @@ void ReadShortReadsSubTask::run() {
         }
 
         if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH > query->length()) {
+            delete query;
             continue;
         }
         if (minReadLength > query->length()) {

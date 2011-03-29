@@ -30,6 +30,7 @@ namespace U2 {
 
 #define ResType qint64
 class SearchContext;
+class SearchQuery;
 
 class GenomeAlignerIndex {
     friend class GenomeAlignerIndexTask;
@@ -41,8 +42,8 @@ public:
     int getPrefixSize() const;
     int findInCache(quint64 bitValue, quint64 bitFilter) const;
     void loadPart(int part);
-    void findInPart(QFile *refFile, const QByteArray &seq, int startPos, ResType firstResult,
-                    quint64 bitValue, QList<quint32> &results, SearchContext *settings);
+    void findInPart(QFile *refFile, int startPos, ResType firstResult,
+                    quint64 bitValue, SearchQuery *qu, SearchContext *settings);
     int findBit(quint64 bitValue, quint64 bitFilter);
     ResType *findBitOpenCL(quint64 *bitValues, int size, quint64 bitFilter);
     QFile *openRefFile();
@@ -75,6 +76,10 @@ private:
     void deserialize(TaskStateInfo &ti);
     bool openIndexFile();
     void createMemCache();
+    inline bool isValidPos(quint32 offset, int startPos, int length, quint32 &fisrtSymbol, const QList<quint32> &results);
+    inline bool compare(const char *sourceSeq, const QByteArray &querySeq, int startPos,
+        int w, int bits, int &c, int CMAX, int restBits);
+    inline void fullBitMaskOptimization(int CMAX, quint64 bitValue, quint64 bitMaskValue, int restBits, int w, int &bits, int &c);
 
     static const QString HEADER;
     static const QString PARAMETERS;

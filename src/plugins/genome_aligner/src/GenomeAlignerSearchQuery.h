@@ -57,6 +57,7 @@ public:
 
     QList<CacheResult> cacheResults; //must be sorted by numberOfPart
     QList<quint32> results;
+    QList<quint32> mismatchCounts;
 
 private:
     bool dna;

@@ -40,16 +40,10 @@ bitMaskTaskCount(-1), partTaskCount(-1)
     positionsAtReadV = NULL;
     bitMaskResults = NULL;
     currentPart = 0;
-    maxPtMismatches = settings->ptMismatches;
-    maxNMismatches = settings->nMismatches;
     partLoaded = false;
 }
 
 void GenomeAlignerFindTask::prepare() {
-    if (settings->bestMode) {
-        settings->nMismatches = 0;
-        settings->ptMismatches = 0;
-    }
     settings->w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
         settings->nMismatches, settings->ptMismatches, settings->minReadLength, settings->maxReadLength);
     settings->bitFilter = ((quint64)0 - 1)<<(62 - settings->w*2);
@@ -62,19 +56,19 @@ void GenomeAlignerFindTask::prepare() {
 
 void GenomeAlignerFindTask::prepareBitValues() {
     taskLog.details("start to calculate bitValues");
-    int CMAX = maxNMismatches;
+    int CMAX = settings->nMismatches;
     int W = 0;
     int q = 0;
 
     SearchQuery *qu;
     int readNum = 0;
     int w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
-        maxNMismatches, maxPtMismatches, settings->minReadLength, settings->maxReadLength);
+        settings->nMismatches, settings->ptMismatches, settings->minReadLength, settings->maxReadLength);
     for (QueryIter it=settings->queries.begin(); it!=settings->queries.end(); it++, readNum++) {
         qu = *it;
         W = qu->length();
         if (!settings->absMismatches) {
-            CMAX = (W * maxPtMismatches) / MAX_PERCENTAGE;
+            CMAX = (W * settings->ptMismatches) / MAX_PERCENTAGE;
         }
         q = W / (CMAX + 1);
         assert(q >= w);
@@ -144,29 +138,6 @@ QList<Task*> GenomeAlignerFindTask::onSubTaskFinished(Task *subTask) {
                     }
                 }
                 return subTasks;
-            }
-            if (settings->bestMode) {
-                if (!(settings->absMismatches?
-                    settings->nMismatches>=maxNMismatches :
-                    settings->ptMismatches>=maxPtMismatches)) {
-                    if (settings->absMismatches) {
-                        settings->nMismatches++;
-                    } else {
-                        settings->ptMismatches += 3;
-                        if (settings->ptMismatches > maxPtMismatches) {
-                            settings->ptMismatches = maxPtMismatches;
-                        }
-                    }
-                    if (settings->nMismatches > maxNMismatches
-                        || settings->ptMismatches > maxPtMismatches) {
-                            return subTasks;
-                    }
-                    settings->w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
-                        settings->nMismatches, settings->ptMismatches, settings->minReadLength, settings->maxReadLength);
-                    settings->bitFilter = ((quint64)0 - 1)<<(62 - settings->w*2);
-                    currentPart = 0;
-                    return findInBitMask(currentPart);
-                }
             }
         }
         return subTasks;
@@ -346,7 +317,10 @@ void FindInBitMaskSubTask::run() {
     QMutex &m = parent->getPartLoadMutex();
     m.lock();
     if (!parent->isPartLoaded()) {
+        taskLog.details(QString("loading part %1").arg(part));
         index->loadPart(part);
+        parent->setPartLoaded();
+        taskLog.details(QString("finish to load part %1").arg(part));
     }
     m.unlock();
     
@@ -387,11 +361,12 @@ void FindInPartSubTask::run() {
     int last = first + length;
     for (int i=first; i<last; i++) {
         int readNum = readNumbers[i];
-        if (!settings->queries.at(readNum)->results.isEmpty() && settings->bestMode) {
-            continue;
+        if (settings->bestMode && !settings->queries.at(readNum)->mismatchCounts.isEmpty()) {
+            if (0 == settings->queries.at(readNum)->mismatchCounts.first()) {
+                continue;
+            }
         }
-        index->findInPart(refFile, settings->queries.at(readNum)->constSequence(), positionsAtRead[i],
-            bitMaskResults[i], bitValues[i], settings->queries.at(readNum)->results, settings);
+        index->findInPart(refFile, positionsAtRead[i], bitMaskResults[i], bitValues[i], settings->queries.at(readNum), settings);
     }
     refFile->close();
     delete refFile;

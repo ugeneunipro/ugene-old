@@ -71,6 +71,7 @@ public:
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     QMutex &getPartLoadMutex() {return partLoadMutex;}
     bool isPartLoaded() const {return partLoaded;}
+    void setPartLoaded() {partLoaded = true;}
 
 private:
     FindInPartSubTask *findInPartTask;
@@ -85,8 +86,6 @@ private:
     int currentPart;
     int bitMaskTaskCount;
     int partTaskCount;
-    int maxPtMismatches;
-    int maxNMismatches;
     bool partLoaded;
     QMutex partLoadMutex;
 

@@ -340,15 +340,18 @@ void GenomeAlignerIndex::loadPart(int part) {
     QByteArray b(BUFF_SIZE, '\0');
     char *buff = b.data();
     indexFile->seek(startIdx*elemSize);
-    int size = indexFile->read(buff, BUFF_SIZE);
-    int idx = 0;
+    qint64 size = indexFile->read(buff, BUFF_SIZE);
+    qint64 idx = 0;
     assert(size>0);
 
     for (quint32 i=0; i<loadedPartSize; i++, idx+=elemSize) {
         if (idx >= size) {
             size = indexFile->read(buff, BUFF_SIZE);
             idx = 0;
-            assert(size>0);
+            if (0==size) {
+                loadedPartSize = i;
+                break;
+            }
         }
         sArray[i] = qFromBigEndian<quint32>((uchar*)(buff+idx));
         bitMask[i] = qFromBigEndian<quint64>((uchar*)(buff+idx + sizeof(quint32)));
@@ -390,137 +393,341 @@ ResType *GenomeAlignerIndex::findBitOpenCL(quint64 *bitValues, int size, quint64
     return (ResType*)ans;
 }
 
-void GenomeAlignerIndex::findInPart(QFile *refFile, const QByteArray &querySeq, int startPos, ResType firstResult,
-                                    quint64 bitValue, QList<quint32> &results, SearchContext *settings) {
+void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, quint64 &bitFilter) {
+        if (settings->absMismatches) {
+            n++;
+        } else {
+            pt++;
+        }
+        if (n > settings->nMismatches
+            || pt > settings->ptMismatches) {
+                return;
+        }
+        w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
+            n, pt, settings->minReadLength, settings->maxReadLength);
+        bitFilter = ((quint64)0 - 1)<<(62 - w*2);
+}
+
+bool GenomeAlignerIndex::isValidPos(quint32 offset, int startPos, int length, quint32 &fisrtSymbol, const QList<quint32> &results) {
+    assert(offset>=0 && offset<objLens[objCount-1]);
+    fisrtSymbol = offset-startPos;
+    if (results.contains(fisrtSymbol)) {
+        return false;
+    }
+    int j = 0;
+    for (j=0; j<objCount; j++) {
+        if (offset < objLens[j]) {
+            break;
+        }
+    }
+    quint32 minBorder = j>0?objLens[j-1]:0;
+    if (fisrtSymbol < minBorder) {
+        return false;
+    }
+    if (offset + (length - startPos - 1) >= objLens[j]) {
+        return false;
+    }
+
+    return true;
+}
+
+bool GenomeAlignerIndex::compare(const char *sourceSeq, const QByteArray &querySeq, int startPos,
+                                 int w, int bits, int &c, int CMAX, int restBits) {
+    // forward collect
+    for (int i=startPos+w + bits/2; i<querySeq.length() && c <= CMAX; i++) {
+        c += (querySeq.at(i) == sourceSeq[i])?0:1;
+    }
+    if (c>CMAX) {
+        return false;
+    }
+    // backward collect
+    for (int i=startPos-1; i>=0 && c <= CMAX; i--) {
+        c += (querySeq.at(i) == sourceSeq[i])?0:1;
+    }
+    if (c <= CMAX) {
+        return true;
+    }
+    return false;
+}
+
+void GenomeAlignerIndex::fullBitMaskOptimization(int CMAX, quint64 bitValue, quint64 bitMaskValue, int restBits, int w, int &bits, int &c) {
+    if (CMAX > 0) {
+        quint64 tmpBM = bitMaskValue<<(2+2*w);
+        quint64 tmpBV = bitValue<<(2+2*w);
+        quint64 xorBM = (tmpBV ^ tmpBM);
+        xorBM >>= 2*w + 2 + (restBits - bits);
+
+        for (int i=0; i<bits && c<=CMAX; i+=2) {
+            if (1 == (xorBM&1)) {
+                xorBM >>=1;
+                c++;
+            } else {
+                xorBM >>=1;
+                if (1 == (xorBM&1)) {
+                    c++;
+                }
+            }
+            xorBM >>= 1;
+        }
+    } else {
+        bits = 0;
+    }
+}
+
+//this method contains big copy-paste but it works very fast because of it.
+void GenomeAlignerIndex::findInPart(QFile *refFile, int startPos, ResType firstResult,
+                                    quint64 bitValue, SearchQuery *qu, SearchContext *settings) {
     assert(NULL != refFile && refFile->isOpen());
     if (firstResult < 0) {
         return;
     }
 
-    quint32 offset = 0;
-    quint32 minBorder = 0;
-    quint32 fisrtSymbol = 0;
     quint64 tmpBM = 0;
     quint64 tmpBV = 0;
-    //quint64 m = 0;
-    //quint64 v = 0;
     quint64 xorBM = 0;
-    int j = 0;
-    int CMAX = settings->nMismatches;
-    int restBits = qMax(0, 2*(charsInMask - settings->w));
-    //int matchLen = restBits/(CMAX + 1);
-    if (!settings->absMismatches) {
-        CMAX = (querySeq.length() * settings->ptMismatches) / MAX_PERCENTAGE;
+    quint32 fisrtSymbol = 0;
+    const QByteArray &querySeq = qu->constSequence();
+    QList<quint32> &results = qu->results;
+    QByteArray buf(querySeq.length(), '\0');
+    char *refBuff = buf.data();
+    int lastResult = firstResult;
+    int n = settings->nMismatches;
+    int pt = settings->ptMismatches;
+    int w = settings->w;
+    quint64 bitFilter = settings->bitFilter;
+
+    if (settings->bestMode) {
+        n = 0;
+        pt = 0;
+        w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
+            n, pt, settings->minReadLength, settings->maxReadLength);
+        bitFilter = ((quint64)0 - 1)<<(62 - w*2);
     }
-    for (int k=firstResult; (bitValue&settings->bitFilter)==(bitMask[k]&settings->bitFilter); k++) {
-        offset = sArray[k];
-        assert(offset>=0 && offset<objLens[objCount-1]);
-        fisrtSymbol = offset-startPos;
-        if (results.contains(fisrtSymbol)) {
-            continue;
+    QVector<QByteArray> reads;
+
+    while (n <= settings->nMismatches && pt <= settings->ptMismatches) {
+        int CMAX = n;
+        int restBits = qMax(0, 2*(charsInMask - w));
+        if (!settings->absMismatches) {
+            CMAX = (querySeq.length() * pt) / MAX_PERCENTAGE;
         }
-        for (j=0; j<objCount; j++) {
-            if (offset < objLens[j]) {
+
+        if (settings->bestMode) {
+            if (!qu->mismatchCounts.isEmpty() && qu->mismatchCounts.first() <= (quint32)CMAX) {
                 break;
             }
-        }
-        minBorder = j>0?objLens[j-1]:0;
-        if (fisrtSymbol < minBorder) {
-            continue;
-        }
-        if (offset + (querySeq.length() - startPos - 1) >= objLens[j]) {
-            continue;
-        }
-
-        int c = 0;
-        //full bitMask optimization
-        int bits = qMin(2*(querySeq.length() - startPos - settings->w), restBits);
-        if (CMAX > 0) {
-            /*if (bits >= matchLen) {
-                tmpBM = bitMask[k]<<(2+2*settings->w);
-                tmpBV = bitValue<<(2+2*settings->w);
-                bool match = false;
-
-                for (int i=0; i+matchLen<=bits; i+=matchLen) {
-                    m = tmpBM >> (64-matchLen);
-                    v = tmpBV >> (64-matchLen);
-                    if (m == v) {
-                        match = true;
-                        break;
-                    }
-                    tmpBM <<= matchLen;
-                    tmpBV <<= matchLen;
-                }
-                if (!match) {
+            //search in the vector
+            QVector<QByteArray>::iterator it = reads.begin();
+            for (int k=firstResult; it!=reads.end(); k++, it++) {
+                if ("" == *it) {
                     continue;
                 }
-                bits = 0;
-            } else {
-                bits = 0;
-            }*/
-            tmpBM = bitMask[k]<<(2+2*settings->w);
-            tmpBV = bitValue<<(2+2*settings->w);
-            xorBM = (tmpBV ^ tmpBM);
-            xorBM >>= 2*settings->w + 2 + (restBits - bits);
-
-            for (int i=0; i<bits && c<=CMAX; i+=2) {
-                if (1 == (xorBM&1)) {
-                    xorBM >>=1;
-                    c++;
-                } else {
-                    xorBM >>=1;
-                    if (1 == (xorBM&1)) {
-                        c++;
+                if (!isValidPos(sArray[k], startPos, querySeq.length(), fisrtSymbol, results)) {
+                    continue;
+                }
+                int c = 0;
+                if (compare((*it).constData(), querySeq, startPos, w, 0, c, CMAX, restBits)) {
+                    if (settings->bestMode) {
+                        qu->results.clear();
+                        qu->mismatchCounts.clear();
+                    }
+                    qu->results.append(fisrtSymbol);
+                    qu->mismatchCounts.append(c);
+                    if (settings->bestMode) {
+                        break;
                     }
                 }
-                xorBM >>= 1;
             }
-            if (c>CMAX) {
+
+            if (!results.isEmpty()) {
+                break;
+            }
+
+            //search in the candidates before vector
+            for (int k=firstResult-1; (k>=0) && (bitValue&bitFilter)==(bitMask[k]&bitFilter); k--) {
+                firstResult--;
+                if (!isValidPos(sArray[k], startPos, querySeq.length(), fisrtSymbol, results)) {
+                    if (settings->bestMode) {
+                        reads.prepend(QByteArray(""));
+                    }
+                    continue;
+                }
+
+                int c = 0;
+                int bits = qMin(2*(querySeq.length() - startPos - w), restBits);
+                /*fullBitMaskOptimization(CMAX, bitValue, bitMask[k], restBits, w, bits, c);
+                if (c>CMAX) {
+                    if (settings->bestMode) {
+                        reads.prepend(QByteArray(""));
+                    }
+                    continue;
+                }*/
+                if (CMAX > 0) {
+                    tmpBM = bitMask[k]<<(2+2*settings->w);
+                    tmpBV = bitValue<<(2+2*settings->w);
+                    xorBM = (tmpBV ^ tmpBM);
+                    xorBM >>= 2*settings->w + 2 + (restBits - bits);
+
+                    for (int i=0; i<bits && c<=CMAX; i+=2) {
+                        if (1 == (xorBM&1)) {
+                            xorBM >>=1;
+                            c++;
+                        } else {
+                            xorBM >>=1;
+                            if (1 == (xorBM&1)) {
+                                c++;
+                            }
+                        }
+                        xorBM >>= 1;
+                    }
+                    if (c>CMAX) {
+                        if (settings->bestMode) {
+                            reads.prepend(QByteArray(""));
+                        }
+                        continue;
+                    }
+                } else {
+                    bits = 0;
+                }
+
+                refFile->seek(fisrtSymbol);
+                refFile->read(refBuff, querySeq.length());
+
+                if (settings->bestMode) {
+                    reads.prepend(buf);
+                }
+
+                if (compare(refBuff, querySeq, startPos, w, bits, c, CMAX, restBits)) {
+                    if (settings->bestMode) {
+                        qu->results.clear();
+                        qu->mismatchCounts.clear();
+                    }
+                    qu->results.append(fisrtSymbol);
+                    qu->mismatchCounts.append(c);
+                    if (settings->bestMode) {
+                        break;
+                    }
+                }
+            }
+            if (!results.isEmpty()) {
+                break;
+            }
+        }
+
+        //search in the candidates after vector
+        for (int k=lastResult; (k<loadedPartSize) && (bitValue&bitFilter)==(bitMask[k]&bitFilter); k++) {
+            lastResult++;
+            if (!isValidPos(sArray[k], startPos, querySeq.length(), fisrtSymbol, results)) {
+                if (settings->bestMode) {
+                    reads.append(QByteArray(""));
+                }
                 continue;
             }
-        } else {
-            bits = 0;
-        }
 
-        //unchecked optimization of disk reads count
-        /*GTIMER(c3, t3, "optimization");
-        quint64 window = getBitValue(querySeq.constData()+startPos+settings->w, 30);
-        int res = findBit(window, settings->bitFilter);
-        bool found = false;
-        for (int j=res; (window&settings->bitFilter)==(bitMask[j]&settings->bitFilter); j++) {
-            if (sArray[j] == offset+settings->w) {
-                found = true;
-                break;
+            int c = 0;
+            int bits = qMin(2*(querySeq.length() - startPos - w), restBits);
+            //fullBitMaskOptimization(CMAX, bitValue, bitMask[k], restBits, w, bits, c);
+            /*if (c>CMAX) {
+                if (settings->bestMode) {
+                    reads.append(QByteArray(""));
+                }
+                continue;
+            }*/
+            if (CMAX > 0) {
+                tmpBM = bitMask[k]<<(2+2*settings->w);
+                tmpBV = bitValue<<(2+2*settings->w);
+                xorBM = (tmpBV ^ tmpBM);
+                xorBM >>= 2*settings->w + 2 + (restBits - bits);
+
+                for (int i=0; i<bits && c<=CMAX; i+=2) {
+                    if (1 == (xorBM&1)) {
+                        xorBM >>=1;
+                        c++;
+                    } else {
+                        xorBM >>=1;
+                        if (1 == (xorBM&1)) {
+                            c++;
+                        }
+                    }
+                    xorBM >>= 1;
+                }
+                if (c>CMAX) {
+                    if (settings->bestMode) {
+                        reads.append(QByteArray(""));
+                    }
+                    continue;
+                }
+            } else {
+                bits = 0;
             }
-        }
-        if (!found) {
-            continue;
-        }
-        t3.stop();*/
 
+            refFile->seek(fisrtSymbol);
+            refFile->read(refBuff, querySeq.length());
 
-        refFile->seek(fisrtSymbol);
-        QByteArray buf(querySeq.length(), '\0');
-        char *refBuff = buf.data();
-        refFile->read(refBuff, querySeq.length());
-        // forward collect
-        for (int i=startPos+settings->w + bits/2; i<querySeq.length() && c <= CMAX; i++) {
-            c += (querySeq.at(i) == refBuff[i])?0:1;
-        }
-        if (c>CMAX) {
-            continue;
-        }
-        // backward collect
-        for (int i=startPos-1; i>=0 && c <= CMAX; i--) {
-            c += (querySeq.at(i) == refBuff[i])?0:1;
-        }
-        if ( (c <= CMAX) && (!results.contains(fisrtSymbol))) {
-            results.append(fisrtSymbol);
             if (settings->bestMode) {
-                break;
+                reads.append(buf);
+            }
+
+            if (compare(refBuff, querySeq, startPos, w, bits, c, CMAX, restBits)) {
+                if (settings->bestMode) {
+                    qu->results.clear();
+                    qu->mismatchCounts.clear();
+                }
+                qu->results.append(fisrtSymbol);
+                qu->mismatchCounts.append(c);
+                if (settings->bestMode) {
+                    break;
+                }
             }
         }
+        if (!results.isEmpty()) {
+            break;
+        }
+
+        changeMismatchesCount(settings, n, pt, w, bitFilter);
     }
 }
 
 } //U2
+
+//optimizations of findInPart
+//full bitMask usage
+/*quint64 m = 0;
+quint64 v = 0;
+int matchLen = restBits/(CMAX + 1);
+if (bits >= matchLen) {
+tmpBM = bitMask[k]<<(2+2*settings->w);
+tmpBV = bitValue<<(2+2*settings->w);
+bool match = false;
+
+for (int i=0; i+matchLen<=bits; i+=matchLen) {
+m = tmpBM >> (64-matchLen);
+v = tmpBV >> (64-matchLen);
+if (m == v) {
+match = true;
+break;
+}
+tmpBM <<= matchLen;
+tmpBV <<= matchLen;
+}
+if (!match) {
+continue;
+}
+bits = 0;
+} else {
+bits = 0;
+}*/
+
+//unchecked optimization of disk reads count
+/*quint64 window = getBitValue(querySeq.constData()+startPos+settings->w, 30);
+int res = findBit(window, settings->bitFilter);
+bool found = false;
+for (int j=res; (window&settings->bitFilter)==(bitMask[j]&settings->bitFilter); j++) {
+if (sArray[j] == offset+settings->w) {
+found = true;
+break;
+}
+}
+if (!found) {
+continue;
+}*/
