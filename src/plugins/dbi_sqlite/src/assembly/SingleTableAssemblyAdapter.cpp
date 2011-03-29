@@ -30,27 +30,10 @@
 
 namespace U2 {
 
-    
-/** This bit indicates that DNA Ext alphabet is used*/
-#define BIT_EXT_DNA_ALPHABET        0
-
-/** This bit indicates that read is located on complement thread */
-#define BIT_COMPLEMENTARY_STRAND    1
-
-
-static bool isExtendedAlphabet(qint64 flags) {
-    return flags & BIT_EXT_DNA_ALPHABET;
-}
-
-static bool isComplementaryRead(qint64 flags) {
-    return flags & BIT_COMPLEMENTARY_STRAND;
-}
-
-
 SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
                                                        const AssemblyCompressor* compressor, 
                                                        DbRef* db, U2OpStatus& os)
-: AssemblyAdapter(assemblyId, compressor, db, os)
+                                                       : AssemblyAdapter(assemblyId, compressor, db, os)
 {
     dbi = _dbi;
     readsTable = QString("AssemblyRead_S%1").arg(SQLiteUtils::toDbiId(assemblyId));
@@ -69,11 +52,11 @@ void SingleTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
     SQLiteQuery(q.arg(readsTable), db, os).execute();
 }
 
-#define RANGE_CONDITION_STABLE QString(" (gstart < ?1 AND gstart + elen > ?2) ")
-#define READ_FIELDS_STABLE QString(" id, sequence, prow, data, gstart, elen, flags, cigar ")
+#define RANGE_CONDITION_CHECK   QString(" (gstart < ?1 AND gstart + elen > ?2) ")
+#define ALL_READ_FIELDS         QString(" id, sequence, prow, data, gstart, elen, flags, cigar ")
 
 qint64 SingleTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
-    QString qStr = QString("SELECT COUNT(*) FROM %1 WHERE " + RANGE_CONDITION_STABLE).arg(readsTable);
+    QString qStr = QString("SELECT COUNT(*) FROM %1 WHERE " + RANGE_CONDITION_CHECK).arg(readsTable);
     SQLiteQuery q(qStr, db, os);
     q.bindInt64(1, r.endPos());
     q.bindInt64(2, r.startPos);
@@ -81,7 +64,7 @@ qint64 SingleTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os)
 }
 
 qint64 SingleTableAssemblyAdapter::getMaxPackedRow(const U2Region& r, U2OpStatus& os) {
-    SQLiteQuery q(QString("SELECT MAX(prow) FROM %1 WHERE " + RANGE_CONDITION_STABLE).arg(readsTable), db, os);
+    SQLiteQuery q(QString("SELECT MAX(prow) FROM %1 WHERE " + RANGE_CONDITION_CHECK).arg(readsTable), db, os);
     q.bindInt64(1, r.endPos());
     q.bindInt64(2, r.startPos);
     return q.selectInt64();
@@ -92,7 +75,7 @@ quint64 SingleTableAssemblyAdapter::getMaxEndPos(U2OpStatus& os) {
 }
 
 U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os) const {
-    QString qStr = QString("SELECT " + READ_FIELDS_STABLE + " FROM %1 WHERE " + RANGE_CONDITION_STABLE).arg(readsTable);
+    QString qStr = QString("SELECT " + ALL_READ_FIELDS + " FROM %1 WHERE " + RANGE_CONDITION_CHECK).arg(readsTable);
     SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
     q->bindInt64(1, r.endPos());
     q->bindInt64(2, r.startPos);
@@ -100,8 +83,8 @@ U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReads(const U2Regi
 }
 
 U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
-    QString qStr = QString("SELECT " + READ_FIELDS_STABLE + " FROM %1 WHERE " + RANGE_CONDITION_STABLE + " AND (prow >= ?2 AND p < ?3)")
-                    .arg(readsTable);
+    QString qStr = QString("SELECT " + ALL_READ_FIELDS + " FROM %1 WHERE " + RANGE_CONDITION_CHECK + " AND (prow >= ?3 AND prow < ?4)")
+        .arg(readsTable);
     SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
     q->bindInt64(1, r.endPos());
     q->bindInt64(2, r.startPos);
@@ -141,7 +124,7 @@ void SingleTableAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatu
         }
         int effectiveRowLength = rowLen + U2AssemblyUtils::getCigarExtraLength(row->cigar);
 
-        
+
         insertQ.reset();
         insertQ.bindDataId(1, row->sequenceId);
         insertQ.bindInt64(2, row->packedViewRow);
@@ -198,7 +181,7 @@ U2AssemblyRead SingleTableAssemblyAdapterReadLoader::load(SQLiteQuery* q) {
     read->leftmostPos= q->getInt64(4);
     read->effectiveLen = q->getInt64(5);
     int flags = q->getInt64(6);
-    read->complementary = isComplementaryRead(flags);
+    read->complementary = SQLiteAssemblyUtils::isComplementaryRead(flags);
     QByteArray cigar = q->getCString(7);
     if (q->hasError()) {
         return U2AssemblyRead();

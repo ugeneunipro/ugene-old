@@ -77,6 +77,7 @@ SQLiteDbiPlugin::SQLiteDbiPlugin() : Plugin(tr("SQLite format support"), tr("Add
     //props[U2_DBI_OPTION_URL] = SQLITE_DBI_VALUE_MEMORY_DB_URL;
     //props[SQLITE_DBI_OPTION_ASSEMBLY_READ_COMPRESSION1_FLAG] = U2_DBI_VALUE_ON;
     props[U2_DBI_OPTION_CREATE] = U2_DBI_VALUE_ON;
+    //props[SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_KEY] = SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE;
     dbi.init(props, QVariantMap(), os);
     dbi.getDbRef()->useTransaction = true;
 

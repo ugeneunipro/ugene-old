@@ -22,6 +22,7 @@
 #include "SQLiteAssemblyDbi.h"
 #include "SQLiteObjectDbi.h"
 #include "assembly/SingleTableAssemblyAdapter.h"
+#include "assembly/RTreeAssemblyAdapter.h"
 
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -55,8 +56,8 @@ AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpS
         res = new SingleTableAssemblyAdapter(dbi, assemblyId, NULL, db, os);
 //    } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_4) {
 //        res = new MultitableAssemblyAdapter(assemblyId, NULL, QVector<int>() << 50 << 200 << 700 << U2_DBI_NO_LIMIT, db, os);
-//    } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE) {
-//        res = new RTreeAssemblyAdapter(assemblyId, NULL, db, os);
+    } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE) {
+        res = new RTreeAssemblyAdapter(dbi, assemblyId, NULL, db, os);
     } else {
         os.setError(SQLiteL10N::tr("Unsupported reads storage type: %1").arg(elen));
         return NULL;

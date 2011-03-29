@@ -38,7 +38,7 @@ class DbRef;
 
 
 /** Name of the init property used to indicate assembly reads storage method for all new assemblies */
-#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY "assembly-reads-elen-method"
+#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY "sqlite-assembly-reads-elen-method"
 /** Asks to store all reads in a single table. Not optimal if read effective length varies */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE "single-table"
 /** Asks to store all reads in 6 tables. Number is a maximum effective length of the read to be stored in the table (default)*/
@@ -47,7 +47,7 @@ class DbRef;
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE "rtree"
 
 /** Name of the property used to indicate compression algorithm for reads data */
-#define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_KEY "assembly-reads-compression-method"
+#define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_KEY "sqlite-assembly-reads-compression-method"
 /** No compression is applied. Best for manual DB browsing  (default)*/
 #define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_NO_COMPRESSION "no-compression"
 /** CIGAR and sequence are packed using bits compression and stored as a single BLOB */
@@ -109,7 +109,7 @@ private:
     void setProperty(const QString& name, const QString& value, U2OpStatus& os);
 
     void populateDefaultSchema(U2OpStatus& os);
-    void internalInit(U2OpStatus& os);
+    void internalInit(const QHash<QString, QString>& props, U2OpStatus& os);
 
     QString             url;
     DbRef*              db;

@@ -102,7 +102,7 @@ public:
     AssemblyAdapter(const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
     
     virtual void createReadsTables(U2OpStatus& os) = 0;
-    virtual void createReadsIndexes(U2OpStatus& os) = 0;
+    virtual void createReadsIndexes(U2OpStatus& ) {}
 
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os) = 0;
 
@@ -127,6 +127,22 @@ protected:
 };
 
 
+/** This bit indicates that DNA Ext alphabet is used*/
+#define BIT_EXT_DNA_ALPHABET        0
+
+/** This bit indicates that read is located on complement thread */
+#define BIT_COMPLEMENTARY_STRAND    1
+
+class SQLiteAssemblyUtils {
+public:
+    static bool isExtendedAlphabet(qint64 flags) {
+        return flags & BIT_EXT_DNA_ALPHABET;
+    }
+
+    static bool isComplementaryRead(qint64 flags) {
+        return flags & BIT_COMPLEMENTARY_STRAND;
+    }
+};
 
 } //namespace
 

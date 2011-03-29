@@ -72,10 +72,14 @@ void SQLiteDbi::setProperty(const QString& name, const QString& value, U2OpStatu
     if (os.hasError()) {
         return;
     }
-    SQLiteQuery q("INSERT INTO Meta(name, value) VALUES (?1, ?2)", db, os);
-    q.bindText(1, name);
-    q.bindText(2, value);
-    q.execute();
+    SQLiteQuery q1("DELETE FROM Meta WHERE name = ?1", db, os);
+    q1.bindText(1, name);
+    q1.execute();
+
+    SQLiteQuery q2("INSERT INTO Meta(name, value) VALUES (?1, ?2)", db, os);
+    q2.bindText(1, name);
+    q2.bindText(2, value);
+    q2.execute();
 }
 
 static int isEmptyCallback(void *o, int argc, char **argv, char **column) {
@@ -179,10 +183,9 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
 
 
     setProperty(SQLITE_DBI_OPTION_UGENE_VERSION, Version::ugeneVersion().text, os);
-
 }
 
-void SQLiteDbi::internalInit(U2OpStatus& os){
+void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& os){
     QString dbUgeneVersionText = getProperty(SQLITE_DBI_OPTION_UGENE_VERSION, "", os);
     if (os.hasError()) {
         return;
@@ -196,7 +199,14 @@ void SQLiteDbi::internalInit(U2OpStatus& os){
     if (dbUgeneVersion > currentVersion) {
         coreLog.info(SQLiteL10n::tr("Warning! Database of version %1 was created with a newer UGENE version: %2. Not all database features are supported!").arg(currentVersion.text).arg(dbUgeneVersion.text));
     }
-    
+
+    foreach(const QString& key, props.keys()) {
+        if (key.startsWith("sqlite-")) {
+            setProperty(key, props.value(key), os);
+        }
+    }
+
+
     // set up features list
     features.insert(U2DbiFeature_ReadSequence);
     features.insert(U2DbiFeature_ReadMsa);
@@ -267,7 +277,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         } 
 
         dbiId = url;
-        internalInit(os);
+        internalInit(props, os);
         // OK, initialization complete
 
     } while (0);
