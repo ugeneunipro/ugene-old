@@ -43,7 +43,7 @@ RTreeAssemblyAdapter::RTreeAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& asse
 
 void RTreeAssemblyAdapter::createReadsTables(U2OpStatus& os) {
     static QString q1 = "CREATE TABLE %1 (id INTEGER PRIMARY KEY AUTOINCREMENT, sequence INTEGER NOT NULL, prow INTEGER NOT NULL, "
-        "data BLOB NOT NULL, flags INTEGER NOT NULL, cigar TEXT NOT NULL, gstart INTEGER, gend INTEGER)";
+        "data BLOB NOT NULL, flags INTEGER NOT NULL, cigar TEXT NOT NULL)";
 
     static QString q2 = "CREATE VIRTUAL TABLE %1 USING rtree(id, gstart, gend)";
 
@@ -58,23 +58,23 @@ void RTreeAssemblyAdapter::createReadsTables(U2OpStatus& os) {
 }
 
 #define RANGE_CONDITION_CHECK   QString(" (i.gstart < ?1 AND i.gend > ?2) ")
-#define ALL_READ_FIELDS         QString(" r.id, r.sequence, r.prow, r.data, i.gstart, i.gend, r.flags, r.cigar, r.gstart, r.gend ")
+#define ALL_READ_FIELDS         QString(" r.id, r.sequence, r.prow, r.data, i.gstart, i.gend, r.flags, r.cigar ")
 #define SAME_IDX                QString(" (i.id == r.id) ")
 #define FROM_2TABLES            QString(" FROM %1 AS r, %2 AS i ")
 
 qint64 RTreeAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
     QString qStr = QString("SELECT COUNT(*) FROM %1 AS i WHERE " + RANGE_CONDITION_CHECK).arg(indexTable);
     SQLiteQuery q(qStr, db, os);
-    q.bindDouble(1, (double)r.endPos());
-    q.bindDouble(2, (double)r.startPos);
+    q.bindInt64(1, r.endPos());
+    q.bindInt64(2, r.startPos);
     return q.selectInt64();
 }
 
 qint64 RTreeAssemblyAdapter::getMaxPackedRow(const U2Region& r, U2OpStatus& os) {
     SQLiteQuery q(QString("SELECT MAX(r.prow) "+FROM_2TABLES+" WHERE " + SAME_IDX + " AND (" + RANGE_CONDITION_CHECK + ")")
         .arg(readsTable).arg(indexTable), db, os);
-    q.bindDouble(1, (double)r.endPos());
-    q.bindDouble(2, (double)r.startPos);
+    q.bindInt64(1, r.endPos());
+    q.bindInt64(2, r.startPos);
     return q.selectInt64();
 }
 
@@ -83,19 +83,20 @@ quint64 RTreeAssemblyAdapter::getMaxEndPos(U2OpStatus& os) {
 }
 
 U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os) const {
-    QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + RANGE_CONDITION_CHECK).arg(readsTable).arg(indexTable);
+    QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + SAME_IDX + " AND "+ RANGE_CONDITION_CHECK )
+        .arg(readsTable).arg(indexTable);
     SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
-    q->bindDouble(1, (double)r.endPos());
-    q->bindDouble(2, (double)r.startPos);
+    q->bindInt64(1, r.endPos());
+    q->bindInt64(2, r.startPos);
     return new SqlRSIterator<U2AssemblyRead>(q, new RTreeAssemblyAdapterReadLoader(), U2AssemblyRead(), os);
 }
 
 U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
-    QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + RANGE_CONDITION_CHECK + " AND (r.prow >= ?3 AND r.prow < ?4)")
-                    .arg(readsTable).arg(indexTable);
+    QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + SAME_IDX + " AND "+ RANGE_CONDITION_CHECK + 
+                        " AND (r.prow >= ?3 AND r.prow < ?4)").arg(readsTable).arg(indexTable);
     SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
-    q->bindDouble(1, (double)r.endPos());
-    q->bindDouble(2, (double)r.startPos);
+    q->bindInt64(1, r.endPos());
+    q->bindInt64(2, r.startPos);
     q->bindInt64(3, minRow);
     q->bindInt64(4, maxRow);
     return new SqlRSIterator<U2AssemblyRead>(q, new RTreeAssemblyAdapterReadLoader(), U2AssemblyRead(), os);
@@ -103,7 +104,7 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByRow(const U2Regio
 
 void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    QString q1 = "INSERT INTO %1(sequence, prow, flags, data, cigar, gstart, gend) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)";
+    QString q1 = "INSERT INTO %1(sequence, prow, flags, data, cigar) VALUES (?1, ?2, ?3, ?4, ?5)";
     SQLiteQuery insertRQ(q1.arg(readsTable), db, os);
 
     QString q2 = "INSERT INTO %1(id, gstart, gend) VALUES (?1, ?2, ?3)";
@@ -144,9 +145,7 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os)
         insertRQ.bindInt64(3, flags);
         insertRQ.bindBlob(4, row->readSequence, false);
         insertRQ.bindText(5, cigarText);
-        insertRQ.bindInt64(6, row->leftmostPos);
-        insertRQ.bindInt64(7, row->leftmostPos + row->effectiveLen);
-
+        
         row->id = insertRQ.insert(U2Type::AssemblyRead);
 
         if (os.hasError()) {
@@ -154,8 +153,8 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os)
         }
         insertIQ.reset();
         insertIQ.bindDataId(1, row->id);
-        insertIQ.bindDouble(2, (double)row->leftmostPos);
-        insertIQ.bindDouble(3, (double)row->leftmostPos + row->effectiveLen);
+        insertIQ.bindInt64(2, row->leftmostPos);
+        insertIQ.bindInt64(3, row->leftmostPos + row->effectiveLen);
         insertIQ.execute();
     }
 }
@@ -201,13 +200,12 @@ U2AssemblyRead RTreeAssemblyAdapterReadLoader::load(SQLiteQuery* q) {
         return U2AssemblyRead();
     }
     read->readSequence = q->getBlob(3);
-    read->leftmostPos = (qint64)q->getDouble(4);
-    read->effectiveLen = ((qint64)q->getDouble(5)) - read->leftmostPos;
+    read->leftmostPos = q->getInt64(4);
+    qint64 endPos = q->getInt64(5);
+    read->effectiveLen = endPos - read->leftmostPos;
     int flags = q->getInt64(6);
     read->complementary = SQLiteAssemblyUtils::isComplementaryRead(flags);
     QByteArray cigar = q->getCString(7);
-    qint64 gstart = q->getInt64(8);
-    qint64 gend = q->getInt64(9);
     if (q->hasError()) {
         return U2AssemblyRead();
     }
@@ -217,8 +215,9 @@ U2AssemblyRead RTreeAssemblyAdapterReadLoader::load(SQLiteQuery* q) {
         q->setError(err);
         return U2AssemblyRead();
     }
+
 #ifdef _DEBUG
-    //additional check to ensure that db stores correct info
+    //additional check to ensure that db contains correct info
     if (read->sequenceId.isEmpty()) {
         qint64 effectiveLengthFromCigar = read->readSequence.length() + U2AssemblyUtils::getCigarExtraLength(read->cigar);
         assert(effectiveLengthFromCigar == read->effectiveLen);
