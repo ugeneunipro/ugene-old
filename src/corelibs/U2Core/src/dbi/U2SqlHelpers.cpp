@@ -205,6 +205,14 @@ qint64 SQLiteQuery::getInt64(int column) const {
     return sqlite3_column_int64(st, column);
 }
 
+double SQLiteQuery::getDouble(int column) const {
+    if (hasError()) {
+        return -1;
+    }
+    assert(st!=NULL);
+    return sqlite3_column_double(st, column);
+}
+
 U2DataId SQLiteQuery::getDataId(int column, U2DataType type, const QByteArray& dbExtra) const {
     if (hasError()) {
         return 0;
@@ -280,6 +288,18 @@ void SQLiteQuery::bindInt32(int idx, qint32 val) {
     int rc = sqlite3_bind_int(st, idx, val);    
     if (rc != SQLITE_OK) {
         setError(SQLiteL10n::tr("Error binding int32 value! Query: '%1', idx: %2, value: %3").arg(sql).arg(idx).arg(val));
+        return;
+    }
+}
+
+void SQLiteQuery::bindDouble(int idx, double val) {
+    if (hasError()) {
+        return;
+    }
+    assert(st!=NULL);
+    int rc = sqlite3_bind_double(st, idx, val);    
+    if (rc != SQLITE_OK) {
+        setError(SQLiteL10n::tr("Error binding int64 value! Query: '%1', idx: %2, value: %3").arg(sql).arg(idx).arg(val));
         return;
     }
 }

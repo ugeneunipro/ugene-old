@@ -134,6 +134,9 @@ public:
     /** Binds 64bit integer value*/
     void bindInt64(int idx, qint64 val);
 
+    /** Binds 64bit real value*/
+    void bindDouble(int idx, double val);
+
     /** Binds bool value */
     void bindBool(int idx, bool val);
 
@@ -154,6 +157,8 @@ public:
     int getInt32(int column) const;
 
     qint64 getInt64(int column) const;
+
+    double getDouble(int column) const;
 
     QString getString(int column) const;
 

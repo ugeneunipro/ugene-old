@@ -125,7 +125,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     SQLiteQuery q("INSERT INTO Assembly(object, reference, elen_method, compression_method) VALUES(?1, ?2, ?3, ?4)", db, os);
     q.bindDataId(1, assembly.id);
     q.bindDataId(2, assembly.referenceId);
-    q.bindText(3, dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE, os));
+    q.bindText(3, dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE, os));
     q.bindText(4, SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_NO_COMPRESSION);
     q.execute();
 

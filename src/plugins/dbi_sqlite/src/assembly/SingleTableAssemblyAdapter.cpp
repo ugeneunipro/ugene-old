@@ -123,14 +123,14 @@ void SingleTableAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatu
             dnaExt = false;//TODO: isExtAlphabet(row.readSequence);
         }
         int effectiveRowLength = rowLen + U2AssemblyUtils::getCigarExtraLength(row->cigar);
-
+        row->effectiveLen = effectiveRowLength;
 
         insertQ.reset();
         insertQ.bindDataId(1, row->sequenceId);
         insertQ.bindInt64(2, row->packedViewRow);
         insertQ.bindInt64(3, flags);
         insertQ.bindInt64(4, row->leftmostPos);
-        insertQ.bindInt64(5, effectiveRowLength);;
+        insertQ.bindInt64(5, row->effectiveLen);
         insertQ.bindBlob(6, row->readSequence, false);
         insertQ.bindText(7, cigarText);
 
