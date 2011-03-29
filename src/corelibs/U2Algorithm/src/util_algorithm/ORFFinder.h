@@ -84,6 +84,16 @@ enum ORFAlgorithmStrand {
     ORFAlgorithmStrand_Complement
 };
 
+struct U2ALGORITHM_EXPORT ORFSettingsKeys {
+public:
+    static const QString STRAND;
+    static const QString GENETIC_CODE;
+    static const QString SEARCH_REGION;
+    static const QString MIN_LEN;
+    static const QString MUST_FIT;
+    static const QString MUST_INIT;
+    static const QString ALLOW_ALT_START;
+};
 
 class U2ALGORITHM_EXPORT ORFAlgorithmSettings {
 public:
@@ -98,15 +108,16 @@ public:
         ) : strand(strand), complementTT(complementTT), proteinTT(proteinTT),
         searchRegion(searchRegion), minLen(minLen), mustFit(mustFit), 
         mustInit(mustInit), allowAltStart(allowAltStart) {}
-
-    ORFAlgorithmStrand strand;
-    DNATranslation*     complementTT;
-    DNATranslation*     proteinTT;
-    U2Region             searchRegion;
-    int                 minLen;
-    bool                mustFit;
-    bool                mustInit;
-    bool                allowAltStart;
+    
+    ORFAlgorithmStrand      strand;
+    DNATranslation*         complementTT;
+    DNATranslation*         proteinTT;
+    U2Region                searchRegion;
+    int                     minLen;
+    bool                    mustFit;
+    bool                    mustInit;
+    bool                    allowAltStart;
+    static const QString    ANNOTATION_GROUP_NAME;
 };
 
 

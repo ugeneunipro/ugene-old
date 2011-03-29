@@ -100,8 +100,6 @@ void FindEnzymesToAnnotationsTask::run() {
 
 Task::ReportResult FindEnzymesToAnnotationsTask::report()
 {
-    propagateSubtaskError();
-    
     if (isCanceled() || hasErrors()) {
         return ReportResult_Finished;
     }
@@ -328,6 +326,8 @@ void FindSingleEnzymeTask::cleanup() {
     results.clear();
 }
 
+//////////////////////////////////////////////////////////////////////////
+// find enzymes auto annotation updater
 
 FindEnzymesAutoAnnotationUpdater::FindEnzymesAutoAnnotationUpdater()
 : AutoAnnotationsUpdater(tr("Restriction Sites"), ANNOTATION_GROUP_ENZYME)
@@ -365,14 +365,9 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
     if (!location->isEmpty()) {
         cfg.excludedRegions = location->regions;
     }
-
-    const DNASequence& dna = aa->getSeqObject()->getDNASequence();
     
-    if (!dna.alphabet->isNucleic()) {
-        return NULL;
-    }
-
     AnnotationTableObject* aObj = aa->getAnnotationObject();
+    const DNASequence& dna = aa->getSeqObject()->getDNASequence();
     Task* task = new FindEnzymesToAnnotationsTask(aObj, dna, selectedEnzymes, cfg );
 
     return task;

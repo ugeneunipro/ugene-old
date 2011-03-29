@@ -34,6 +34,16 @@
 
 namespace U2 {
 
+const QString ORFSettingsKeys::STRAND("orf_finder/strand");
+const QString ORFSettingsKeys::ALLOW_ALT_START("orf_finder/allow_alt_start");
+const QString ORFSettingsKeys::GENETIC_CODE("orf_finder/genetic_code");
+const QString ORFSettingsKeys::MIN_LEN("orf_finder/min_length");
+const QString ORFSettingsKeys::MUST_FIT("orf_finder/must_fit");
+const QString ORFSettingsKeys::MUST_INIT("orf_finder/must_init");
+const QString ORFSettingsKeys::SEARCH_REGION("orf_finder/region");
+
+const QString ORFAlgorithmSettings::ANNOTATION_GROUP_NAME("orf");
+
 static bool isDirect(ORFAlgorithmStrand s) {
     return s == ORFAlgorithmStrand_Both || s == ORFAlgorithmStrand_Direct;
 }

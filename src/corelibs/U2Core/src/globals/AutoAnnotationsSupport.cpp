@@ -160,6 +160,13 @@ void AutoAnnotationObject::update( AutoAnnotationsUpdater* updater )
         root->removeSubgroup(sub);
         lock();
     }
+    
+    // check constraints
+    AutoAnnotationConstraints cns;
+    cns.alphabet = dnaObj->getAlphabet();
+    if (!updater->checkConstraints(cns)) {
+        return;
+    }
 
     if (enabledGroups.contains(updater->getGroupName())) {
         // create update tasks

@@ -253,7 +253,7 @@ void ORFDialog::sl_onSaveAnnotations() {
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
-    m.data->name = "orf";
+    m.data->name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLen();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
