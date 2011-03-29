@@ -21,6 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
 
@@ -41,6 +42,9 @@ AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnn
     setMenu(menu);
     
     updateMenu();
+
+    GObject* aobj = aaObj->getAnnotationObject();
+    connect(aobj, SIGNAL(si_lockedStateChanged()), SLOT(sl_autoAnnotationLockStateChanged()));
 
 }
 
@@ -97,6 +101,15 @@ AutoAnnotationsADVAction::~AutoAnnotationsADVAction()
 QList<QAction*> AutoAnnotationsADVAction::getToggleActions()
 {
     return menu->actions();
+}
+
+void AutoAnnotationsADVAction::sl_autoAnnotationLockStateChanged()
+{
+    if (aaObj->isLocked() ) {
+        setEnabled(true);
+    } else {
+        setEnabled(false);
+    }
 }
 
 

@@ -24,6 +24,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Settings.h>
+#include <U2Core/RemoveAnnotationsTask.h>
 
 #include "AutoAnnotationsSupport.h"
 
@@ -152,14 +153,6 @@ void AutoAnnotationObject::updateGroup( const QString& groupName )
 
 void AutoAnnotationObject::update( AutoAnnotationsUpdater* updater )
 {
-    // cleanup 
-    AnnotationGroup* root = aobj->getRootGroup();
-    AnnotationGroup* sub = root->getSubgroup(updater->getGroupName(), false);
-    if (sub != NULL) {
-        unlock();
-        root->removeSubgroup(sub);
-        lock();
-    }
     
     // check constraints
     AutoAnnotationConstraints cns;
@@ -168,18 +161,29 @@ void AutoAnnotationObject::update( AutoAnnotationsUpdater* updater )
         return;
     }
 
+    QList<Task*> subTasks;
+    
+    // cleanup 
+    AnnotationGroup* root = aobj->getRootGroup();
+    AnnotationGroup* sub = root->getSubgroup(updater->getGroupName(), false);
+    if (sub != NULL) {
+        Task* t = new RemoveAnnotationsTask(aobj, updater->getGroupName());
+        subTasks.append(t);
+    }
+
+    // update
     if (enabledGroups.contains(updater->getGroupName())) {
         // create update tasks
         Task* t = updater->createAutoAnnotationsUpdateTask(this);
-        if (t == NULL) {
-            return;
+        if (t != NULL) {
+            subTasks.append(t);
         }
-
-        // envelope to unlock annotation object
-        AutoAnnotationsUpdateTask* updateTask = new AutoAnnotationsUpdateTask(this, t);
-
-        AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
     }
+
+    // envelope to unlock annotation object
+    AutoAnnotationsUpdateTask* updateTask = new AutoAnnotationsUpdateTask(this, subTasks);
+    AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
+
 }
 
 void AutoAnnotationObject::setGroupEnabled( const QString& groupName, bool enabled )
@@ -191,11 +195,16 @@ void AutoAnnotationObject::setGroupEnabled( const QString& groupName, bool enabl
     }
 }
 
+bool AutoAnnotationObject::isLocked()
+{
+ return aobj->isStateLocked();
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 
-AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaObj, Task* updateTask ) :
-    Task("Auto-annotations update task", TaskFlags_NR_FOSCOE), aa(aaObj), subtask(updateTask)
+AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaObj, QList<Task*> updateTasks ) :
+    Task("Auto-annotations update task", TaskFlags_NR_FOSCOE), aa(aaObj), subTasks(updateTasks)
 {
        
 }
@@ -203,7 +212,9 @@ AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaOb
 void AutoAnnotationsUpdateTask::prepare()
 {
     aa->unlock();
-    addSubTask(subtask);
+    foreach(Task* subtask, subTasks) {
+        addSubTask(subtask);
+    }
 }
 
 AutoAnnotationsUpdateTask::~AutoAnnotationsUpdateTask()

@@ -51,6 +51,7 @@ public:
     AnnotationTableObject* getAnnotationObject() const { return aobj; }
     DNASequenceObject* getSeqObject() const {return dnaObj; }
     void setGroupEnabled(const QString& groupName, bool enabled);
+    bool isLocked();
     void lock();
     void unlock();
     void update();
@@ -109,12 +110,12 @@ private:
 
 class U2CORE_EXPORT AutoAnnotationsUpdateTask : public Task {
 public:
-    AutoAnnotationsUpdateTask(AutoAnnotationObject* aaObj, Task* subtask); 
+    AutoAnnotationsUpdateTask(AutoAnnotationObject* aaObj, QList<Task*> subtasks); 
     virtual void prepare();
     virtual ~AutoAnnotationsUpdateTask(); 
 protected:
     AutoAnnotationObject* aa;
-    Task* subtask;
+    QList<Task*> subTasks;
 };
 
 

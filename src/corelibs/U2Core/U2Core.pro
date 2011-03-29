@@ -110,6 +110,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/LoadDocumentTask.h \
            src/tasks/LoadRemoteDocumentTask.h \
            src/tasks/MultiTask.h \
+           src/tasks/RemoveAnnotationsTask.h \
            src/tasks/RemoveDocumentTask.h \
            src/tasks/RemovePartFromSequenceTask.h \
            src/tasks/ReplacePartOfSequenceTask.h \
@@ -223,6 +224,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/LoadDocumentTask.cpp \
            src/tasks/LoadRemoteDocumentTask.cpp \
            src/tasks/MultiTask.cpp \
+           src/tasks/RemoveAnnotationsTask.cpp \
            src/tasks/RemoveDocumentTask.cpp \
            src/tasks/RemovePartFromSequenceTask.cpp \
            src/tasks/ReplacePartOfSequenceTask.cpp \

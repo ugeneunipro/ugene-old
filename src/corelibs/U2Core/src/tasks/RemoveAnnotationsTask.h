@@ -19,32 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_AUTO_ANNOTATION_UTILS_H_
-#define _U2_AUTO_ANNOTATION_UTILS_H_
+#ifndef _U2_REMOVE_ANNOTATIONS_TASK_H_
+#define _U2_REMOVE_ANNOTATIONS_TASK_H_
 
-#include "ADVSingleSequenceWidget.h"
+#include <U2Core/Task.h>
+
+#include <U2Core/AnnotationTableObject.h>
 
 namespace U2 {
 
-class MWMDIWindow;
-class AutoAnnotationObject;
-
-class AutoAnnotationsADVAction : public ADVSequenceWidgetAction {
+class U2CORE_EXPORT RemoveAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    AutoAnnotationsADVAction(ADVSequenceWidget* widget, AutoAnnotationObject* aaObj);
-    ~AutoAnnotationsADVAction();
-    QList<QAction*> getToggleActions();
-private slots:
-    void sl_toggle(bool toggled);
-    void sl_autoAnnotationLockStateChanged();
+    // Removes annotations of specified group, handles multiple annotaions ( > 10 000).
+    // Also handles situations with locked objects.
+    RemoveAnnotationsTask(AnnotationTableObject* ao, const QString& groupName);
+    void prepare();
+    ReportResult report();
+
 private:
-    void updateMenu();
-    AutoAnnotationObject* aaObj;
-    QMenu* menu;
+    QPointer<AnnotationTableObject> aobj;
+    AnnotationGroup*                subGroup;
+    QString                         groupName;
+    QList<Annotation*>              toDelete;
+    int                             pos;
 };
 
+}//namespace
 
-}
-
-#endif // _U2_AUTO_ANNOTATION_UTILS_H_
+#endif // _U2_REMOVE_ANNOTATIONS_TASK_H_
