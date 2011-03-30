@@ -599,13 +599,11 @@ bool QDElement::sceneEvent(QEvent *event) {
                         }
                     }
 
-                    prepareGeometryChange();
-
                     //update
                     updateDescription();
-                    qs->update(qs->rulerArea());
                     updateFootnotes();
                     qs->setModified(true);
+                    qs->update();
                 }
             }
         }
@@ -744,9 +742,6 @@ void QDElement::updateFootnotes() {
         fn->updatePos();
     }
     view->setViewportUpdateMode(mode);
-    QRectF area = qs->footnotesArea();
-    area.setTop(qs->annotationsArea().bottom());
-    qs->update(area);
 }
 
 void QDElement::sl_onHoverLink(const QString &link) {
