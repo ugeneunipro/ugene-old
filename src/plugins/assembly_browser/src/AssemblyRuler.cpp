@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-
+#include "AssemblyRuler.h"
 
 #include <math.h>
 
@@ -29,24 +29,25 @@
 #include <U2Core/FormatUtils.h>
 
 #include "AssemblyBrowser.h"
-#include "AssemblyReadsArea.h"
-#include "AssemblyRuler.h"
+#include "AssemblyReadsArea.h" //TODO get rid of cross-widget dependencies ?
 
 namespace U2 {
 
-static const int FIXED_HEIGHT = 43;
-static const int AXIS_LINE_LEVEL = 6;
-static const int AXIS_BORDER_LOW_LEVEL = 20;
-static const int AXIS_BORDER_HIGH_LEVEL = 2;
-static const int SHORT_BORDER_LOW_LEVEL = 10;
-static const int SHORT_BORDER_HIGH_LEVEL = 5;
-static const int LONG_BORDER_LOW_LEVEL = 18;
-static const int LONG_BORDER_HIGH_LEVEL = 3;
-static const int OFFSET_LOW_LEVEL = LONG_BORDER_LOW_LEVEL + 2;
-static const int CUR_POS_LOW_LEVEL = OFFSET_LOW_LEVEL + 10;
+static const int FIXED_HEIGHT = 36;
+static const int AXIS_LINE_Y = 6;
+
+//see drawRuler() for details about short/long/border notches
+//these are Y coords of all of the notches
+static const int BORDER_NOTCH_START = 2;
+static const int BORDER_NOTCH_END = 20;
+static const int SHORT_NOTCH_START = 5;
+static const int SHORT_NOTCH_END = 10;
+static const int LONG_NOTCH_START = 3;
+static const int LONG_NOTCH_END = 18;
+static const int LABELS_END = LONG_NOTCH_END + 2;
 
 AssemblyRuler::AssemblyRuler(AssemblyBrowserUi * ui) :
-ui(ui), browser(ui->getWindow()), model(ui->getModel()), redrawCurPos(false), curPosX(0) {
+ui(ui), browser(ui->getWindow()), model(ui->getModel()), redrawCursor(false), cursorPos(0) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
@@ -67,10 +68,10 @@ void AssemblyRuler::drawAll() {
             drawRuler(p);
         }
         QPixmap cachedViewCopy(cachedView);
-        if(redrawCurPos) {
+        if(redrawCursor) {
             QPainter p(&cachedViewCopy);
-            redrawCurPos = false;
-            drawCurPos(p);
+            redrawCursor = false;
+            drawCursor(p);
         }
         QPainter p(this);
         p.drawPixmap(0, 0, cachedViewCopy);
@@ -80,68 +81,115 @@ void AssemblyRuler::drawAll() {
 qint64 AssemblyRuler::calcAsmPosX(int pixPosX) const {
     int cellWidth = browser->getCellWidth();
     if(cellWidth == 0) {
-        return browser->getXOffsetInAssembly() + browser->calcAsmCoord(curPosX);
+        return browser->getXOffsetInAssembly() + browser->calcAsmCoord(cursorPos);
     }
     return browser->getXOffsetInAssembly() + (double)pixPosX / cellWidth;
 }
 
-void AssemblyRuler::drawCurPos(QPainter & p) {
+namespace {
+    int numOfDigits(qint64 n) {
+        assert(n >= 0);
+        return QString::number(n).length();
+    }
+
+    // 6031769.1k -> 6 031 769.1k
+    QString insertSpaceSeparators(QString str) {
+        for(int i = str.length()-3; i > 0; i-=3) {
+            if(str.at(i).isDigit() && i > 0 && str.at(i-1).isDigit()) {
+                str.insert(i, " ");
+            }
+        }
+        return str;
+    }
+}
+
+void AssemblyRuler::drawCursor(QPainter & p) {
+    //1. draw the cursor itself
     p.setPen(Qt::darkRed);
-    p.drawLine(curPosX, AXIS_BORDER_HIGH_LEVEL, curPosX, AXIS_BORDER_LOW_LEVEL);
-    qint64 posXInAsm = calcAsmPosX(curPosX);
+    p.drawLine(cursorPos, BORDER_NOTCH_START, cursorPos, BORDER_NOTCH_END);
+    p.drawLine(cursorPos+1, BORDER_NOTCH_START, cursorPos+1, BORDER_NOTCH_END);
+
+    //2. extract coverage info on current position
+    qint64 posXInAsm = calcAsmPosX(cursorPos);
     U2OpStatusImpl status;
     quint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(posXInAsm, 1), status);
     checkAndLogError(status);
-    QString density = QString::number(readsPerXPixel);
-    QString str = QString::number(posXInAsm) + QString(" C%1").arg(readsPerXPixel);
-    int halfTextWidth = p.fontMetrics().width(str) / 2;
-    int textHeight = p.fontMetrics().height();
-    QRect offsetRect(QPoint(curPosX - halfTextWidth, CUR_POS_LOW_LEVEL), QPoint(curPosX + halfTextWidth, CUR_POS_LOW_LEVEL + textHeight));
-    p.drawText(offsetRect, Qt::AlignCenter, str);
-}
 
-static int numOfDigits(qint64 n) {
-    assert(n >= 0);
-    return QString::number(n).length();
+    //3. format the string 
+    QString cursorLabel = insertSpaceSeparators(QString::number(posXInAsm)) + QString(" C%1").arg(readsPerXPixel);
+    int textWidth = p.fontMetrics().width(cursorLabel);
+    int textHeight = p.fontMetrics().height();
+    QRect offsetRect(cursorPos - textWidth/2, LABELS_END, textWidth, textHeight);
+
+    //4. draw cached labels. Skip labels intersecting the cursor label
+    assert(cachedLabelsRects.size() == cachedLabels.size());
+    for(int i = 0; i < cachedLabels.size(); i++) {
+        if(!cachedLabelsRects.at(i).intersects(offsetRect)) {
+            p.drawImage(cachedLabelsRects.at(i), cachedLabels.at(i));
+        }
+    }
+
+    //5. draw cursor label
+    p.drawText(offsetRect, Qt::AlignCenter, cursorLabel);
 }
 
 void AssemblyRuler::drawRuler(QPainter & p) {
+    cachedLabelsRects.clear(); 
+    cachedLabels.clear();
     p.setPen(Qt::black);
-    // write x axis and left and right borders
+
+    // draw the axis + left and right border notches
     {
         // axis
-        p.drawLine(0, AXIS_LINE_LEVEL, width(), AXIS_LINE_LEVEL);
+        p.drawLine(0, AXIS_LINE_Y, width(), AXIS_LINE_Y);
         // borders
-        p.drawLine(0, AXIS_BORDER_HIGH_LEVEL, 0, AXIS_BORDER_LOW_LEVEL);
-        p.drawLine(width()-1, AXIS_BORDER_HIGH_LEVEL, width()-1, AXIS_BORDER_LOW_LEVEL);
+        p.drawLine(0, BORDER_NOTCH_START, 0, BORDER_NOTCH_END);
+        p.drawLine(width()-1, BORDER_NOTCH_START, width()-1, BORDER_NOTCH_END);
     }
     
     int lettersPerZ = browser->calcAsmCoord(50);
-    int interval = pow((double)10, numOfDigits(lettersPerZ)-1);
+    int interval = pow((double)10, numOfDigits(lettersPerZ)-1); //interval between notches
     int pixInterval = browser->calcPixelCoord(interval);
     
     int globalOffset = browser->getXOffsetInAssembly();
-    int firstLetterToMark = globalOffset/ interval * interval;
-    int distToFLTM = firstLetterToMark - globalOffset;
+    qint64 firstLetterWithNotch = globalOffset/ interval * interval;
 
+    int start = firstLetterWithNotch - globalOffset;
     int end = browser->basesCanBeVisible();
-    int bigInterval = interval * 10;
+
+    int bigInterval = interval * 10; //interval between long notches
     int halfCell = browser->getCellWidth() / 2;
-    int offsetRectRightBorder = 0;
-    for(int i = distToFLTM; i < end; i+=interval) {
+    int lastLabelRight = 0; //used to skip intersecting labels
+
+    //iterate over notches to draw
+    for(int i = start; i < end; i+=interval) {
         int x_pix = ui->getReadsArea()->calcPainterOffset(i) + halfCell;
+        //draw long notches + labels for "big interval"
         if((globalOffset + i) % bigInterval == 0) {
-            p.drawLine(x_pix, LONG_BORDER_HIGH_LEVEL, x_pix, LONG_BORDER_LOW_LEVEL);
-            QString offsetStr = FormatUtils::formatNumber(globalOffset + i);
-            int halfTextWidth = p.fontMetrics().width(offsetStr) / 2;
+            //draw long notch
+            p.drawLine(x_pix, LONG_NOTCH_START, x_pix, LONG_NOTCH_END);
+
+            //draw labels
+            QString offsetStr = insertSpaceSeparators(FormatUtils::formatNumber(globalOffset + i));
+            int textWidth = p.fontMetrics().width(offsetStr);
             int textHeight = p.fontMetrics().height();
-            QRect offsetRect(QPoint(x_pix - halfTextWidth, OFFSET_LOW_LEVEL), QPoint(x_pix + halfTextWidth, OFFSET_LOW_LEVEL + textHeight));
-            if(offsetRect.left() > offsetRectRightBorder) {
-                p.drawText(offsetRect, Qt::AlignCenter, offsetStr);
-                offsetRectRightBorder = offsetRect.right() + 15;
+            QRect offsetRect(x_pix - textWidth/2, LABELS_END, textWidth, textHeight);
+
+            if(offsetRect.left() > lastLabelRight) {
+                //render image with label and cache it. all images will be drawn on mouseMove event
+                QImage img(textWidth, textHeight, QImage::Format_ARGB32);
+                QPainter labelPainter(&img);
+                img.fill(Qt::transparent);
+                labelPainter.drawText(QRect(0, 0, textWidth, textHeight), Qt::AlignCenter, offsetStr);
+
+                lastLabelRight = offsetRect.right() + 15; //prevent intersecting or too close labels
+
+                cachedLabelsRects.append(offsetRect);
+                cachedLabels.append(img);
             }
         } else {
-            p.drawLine(x_pix, SHORT_BORDER_HIGH_LEVEL, x_pix, SHORT_BORDER_LOW_LEVEL);
+            //draw short notches 
+            p.drawLine(x_pix, SHORT_NOTCH_START, x_pix, SHORT_NOTCH_END);
         }
     }
 }
@@ -149,15 +197,16 @@ void AssemblyRuler::drawRuler(QPainter & p) {
 void AssemblyRuler::sl_handleMoveToPos(const QPoint & pos) {
     int cellWidth = browser->getCellWidth();
     if(cellWidth == 0) {
-        curPosX = pos.x();
-        redrawCurPos = true;
+        cursorPos = pos.x();
+        redrawCursor = true;
         update();
     } else {
-        int cellNumOld = curPosX / cellWidth;
+        //redraw cursor only if it points to the new cell
+        int cellNumOld = cursorPos / cellWidth;
         int cellNumNew = pos.x() / cellWidth;
         if(cellNumOld != cellNumNew) {
-            curPosX = cellNumNew * cellWidth + cellWidth / 2;
-            redrawCurPos = true;
+            cursorPos = cellNumNew * cellWidth + cellWidth / 2;
+            redrawCursor = true;
             update();
         }
     }
@@ -181,6 +230,7 @@ void AssemblyRuler::mouseMoveEvent(QMouseEvent * e) {
 void AssemblyRuler::sl_redraw() {
     cachedView = QPixmap (size());
     redraw = true;
+    redrawCursor = true;
     update();
 }
 

@@ -32,6 +32,10 @@ class AssemblyBrowserUi;
 class AssemblyBrowser;
 class AssemblyModel;
 
+/**
+ * Ruler widget provides auto-adjustable scale, labeled notches and a 
+ * mouse-tracking cursor showing the current coordinate in assembly.
+ */
 class AssemblyRuler : public QWidget {
     Q_OBJECT
 public:
@@ -52,20 +56,24 @@ private:
     void connectSlots();
     void drawAll();
     void drawRuler(QPainter & p);
-    void drawCurPos(QPainter & p);
-    qint64 calcAsmPosX(int pixPosX)const;
+    void drawCursor(QPainter & p);
+    qint64 calcAsmPosX(int pixPosX) const; //TODO: move to assembly browser ?
     
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowser * browser;
     QSharedPointer<AssemblyModel> model;
 
-    QPixmap cachedView;
     bool redraw;
-    bool redrawCurPos;
-    int curPosX;
-    
-//    qint64 cursorPos
+    QPixmap cachedView;
+
+    bool redrawCursor;
+    int cursorPos; //x-coord of the cursor on the widget
+
+    //cached ruler labels. Rendered once in paintEvent,
+    //used on each cursor redraw
+    QList<QRect> cachedLabelsRects;
+    QList<QImage> cachedLabels;
 };
 
 } //ns
