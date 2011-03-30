@@ -22,6 +22,10 @@
 
 #include <U2Core/DNASequence.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/Settings.h>
 
 #include "ORFMarkerTask.h"
 
@@ -56,7 +60,8 @@ Task::ReportResult U2::FindORFsToAnnotationsTask::report()
     }
     
     if (aObj->isStateLocked()) {
-        return ReportResult_CallMeAgain;
+        setError(tr("Annotation obj %1 is locked for modifications").arg(aObj->getGObjectName()));
+        return ReportResult_Finished;
     }
     
     QList<Annotation*> annotations;
@@ -81,19 +86,23 @@ ORFAutoAnnotationsUpdater::ORFAutoAnnotationsUpdater()
 
 Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
-    ORFAlgorithmSettings cfg;
-    
-    /*
-    QString locationStr = AppContext::getSettings()->getValue(NON_CUT_REGION, "").toString();
-    U2Location location;
-    Genbank::LocationParser::parseLocation(qPrintable(locationStr), locationStr.length(), location);
-    if (!location->isEmpty()) {
-        cfg.excludedRegions = location->regions;
-    }
-    */
-    
     AnnotationTableObject* aObj = aa->getAnnotationObject();
     DNASequenceObject* dnaObj = aa->getSeqObject();
+    DNAAlphabet* al = dnaObj->getAlphabet();
+
+    assert(al != NULL);
+
+    QString defaultTranslId = AppContext::getDNATranslationRegistry()->getDNATranslationIds().first();
+    QString translId = AppContext::getSettings()->getValue(ORFSettingsKeys::AMINO_TRANSL, defaultTranslId).toString();
+    
+    ORFAlgorithmSettings cfg;
+    
+    cfg.complementTT = GObjectUtils::findComplementTT(dnaObj);
+    cfg.proteinTT = AppContext::getDNATranslationRegistry()->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, translId);
+    cfg.minLen = AppContext::getSettings()->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
+    cfg.searchRegion = AppContext::getSettings()->getValue(ORFSettingsKeys::SEARCH_REGION, 
+        QVariant::fromValue(U2Region(0, dnaObj->getSequenceLen()))).value<U2Region>();
+    
     Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getDNASequence(), cfg );
 
     return task;

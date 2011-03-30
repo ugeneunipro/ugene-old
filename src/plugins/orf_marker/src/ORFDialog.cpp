@@ -36,6 +36,7 @@
 
 #include <U2Core/TextUtils.h>
 #include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/AutoAnnotationsSupport.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -57,7 +58,6 @@ namespace U2 {
 
 /* TRANSLATOR U2::ORFDialog */ 
 
-#define SETTINGS_ORF_LEN "orf_marker/min_len"
 
 class ORFListItem : public QTreeWidgetItem {
 public:
@@ -78,24 +78,22 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     
     initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
     
+    initSettings();
+
     int seqLen = ctx->getSequenceLen();
-    
     sbRangeStart->setMinimum(1);
     sbRangeStart->setMaximum(seqLen);
-       
     sbRangeEnd->setMinimum(1);
     sbRangeEnd->setMaximum(seqLen);
-
-    sbRangeStart->setValue(initialSelection.isEmpty() ? 1 : initialSelection.startPos + 1);
-    sbRangeEnd->setValue(initialSelection.isEmpty() ? seqLen : initialSelection.endPos());
+    sbRangeStart->setValue(1);
+    sbRangeEnd->setValue(seqLen);
     
     resultsTree->setSortingEnabled(true);
     resultsTree->sortByColumn(0);
 
     timer = new QTimer(this);
 
-    sbMinLen->setValue(AppContext::getSettings()->getValue(SETTINGS_ORF_LEN, "100").toInt());
-
+    
     connectGUI();
     updateState();
 
@@ -179,10 +177,8 @@ void ORFDialog::sl_translationChanged() {
 
 void ORFDialog::connectGUI() {
     //buttons
-    connect(pbSaveAnnotations, SIGNAL(clicked()), SLOT(sl_onSaveAnnotations()));
     connect(pbClearList, SIGNAL(clicked()), SLOT(sl_onClearList()));
     connect(pbFindAll, SIGNAL(clicked()), SLOT(sl_onFindAll()));
-    connect(pbClose, SIGNAL(clicked()), SLOT(sl_onClose()));
     
     //results list
     connect(resultsTree, SIGNAL(itemActivated(QTreeWidgetItem*, int)), SLOT(sl_onResultActivated(QTreeWidgetItem*, int)));
@@ -202,14 +198,12 @@ void ORFDialog::updateState() {
     bool hasCompl = ctx->getComplementTT()!=NULL;
 
     bool hasResults = resultsTree->topLevelItemCount() > 0;
-    pbSaveAnnotations->setEnabled(hasResults);
     pbClearList->setEnabled(hasResults);
     
     pbFindAll->setEnabled(!hasActiveTask);
-    pbSaveAnnotations->setEnabled(!hasActiveTask);
     pbClearList->setEnabled(!hasActiveTask);
-    pbClose->setText(hasActiveTask ? tr("cancel_button") : tr("close_button"));  
-
+    buttonBox->setEnabled(!hasActiveTask);
+    
     rbBoth->setEnabled(!hasActiveTask && hasCompl);
     rbDirect->setEnabled(!hasActiveTask);
     rbComplement->setEnabled(!hasActiveTask && hasCompl);
@@ -229,7 +223,7 @@ void ORFDialog::updateStatus() {
         message = tr("progress_%1%").arg(task->getProgress());
     }
     message += tr("%1_results_found.").arg(resultsTree->topLevelItemCount());
-    statusBar->setText(message);
+    statusLabel->setText(message);
 }
 
 bool ORFDialog::eventFilter(QObject *obj, QEvent *ev) {
@@ -294,14 +288,10 @@ void ORFDialog::sl_onFindAll() {
 void ORFDialog::reject() {
     if (task!=NULL) {
         task->cancel();
-        return;
     }
     QDialog::reject();
 }
 
-void ORFDialog::sl_onClose() {
-    reject();
-}
 
 U2Region ORFDialog::getCompleteSearchRegion() const {
     return U2Region(sbRangeStart->value()-1, sbRangeEnd->value() - sbRangeStart->value() + 1);
@@ -318,9 +308,6 @@ void ORFDialog::runTask() {
     s.mustInit = ckInit->isChecked();
     s.allowAltStart = ckAlt->isChecked();
     s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
-    if (s.minLen > 0) {
-        AppContext::getSettings()->setValue(SETTINGS_ORF_LEN, s.minLen);
-    }
     
     //setup search region
     s.searchRegion = getCompleteSearchRegion();
@@ -396,6 +383,44 @@ void ORFDialog::sl_onRangeToPanView() {
 void ORFDialog::sl_onRangeToSequence() {
     sbRangeStart->setValue(1);
     sbRangeEnd->setValue(ctx->getSequenceLen());
+}
+
+void ORFDialog::accept()
+{
+    if (task!=NULL) {
+        task->cancel();
+    }
+    
+    saveSettings();
+    AppContext::getAutoAnnotationsSupport()->updateAnnotationsByGroup(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
+
+
+    QDialog::accept();
+
+}
+
+
+void ORFDialog::initSettings()
+{
+    ckFit->setChecked(AppContext::getSettings()->getValue(ORFSettingsKeys::MUST_FIT, false).toBool());
+    ckInit->setChecked(AppContext::getSettings()->getValue(ORFSettingsKeys::MUST_INIT, true).toBool());
+    ckAlt->setChecked(AppContext::getSettings()->getValue(ORFSettingsKeys::ALLOW_ALT_START, false).toBool());
+    sbMinLen->setValue(AppContext::getSettings()->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt());
+}
+
+
+void ORFDialog::saveSettings()
+{
+    ORFAlgorithmStrand strand = rbBoth->isChecked() ? ORFAlgorithmStrand_Both : (rbDirect->isChecked() ? ORFAlgorithmStrand_Direct : ORFAlgorithmStrand_Complement);
+    U2Region searchRegion = getCompleteSearchRegion();
+    AppContext::getSettings()->setValue(ORFSettingsKeys::STRAND, strand);
+    AppContext::getSettings()->setValue(ORFSettingsKeys::AMINO_TRANSL, ctx->getAminoTT()->getTranslationId());
+    AppContext::getSettings()->setValue(ORFSettingsKeys::MUST_FIT, ckFit->isChecked());
+    AppContext::getSettings()->setValue(ORFSettingsKeys::MUST_INIT, ckInit->isChecked());
+    AppContext::getSettings()->setValue(ORFSettingsKeys::ALLOW_ALT_START, ckAlt->isChecked());
+    AppContext::getSettings()->setValue(ORFSettingsKeys::MIN_LEN, sbMinLen->value());
+    AppContext::getSettings()->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(searchRegion));
+
 }
 
 

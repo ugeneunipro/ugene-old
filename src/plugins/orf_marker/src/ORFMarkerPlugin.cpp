@@ -23,7 +23,7 @@
 #include "ORFDialog.h"
 #include "ORFWorker.h"
 #include "ORFQuery.h"
-
+#include "ORFMarkerTask.h"
 
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Gui/GUIUtils.h>
@@ -44,7 +44,7 @@
 #include <U2Test/GTestFrameworkComponents.h>
 
 #include <U2Core/AppContext.h>
-
+#include <U2Core/AutoAnnotationsSupport.h>
 
 namespace U2 {
 
@@ -57,6 +57,8 @@ ORFMarkerPlugin::ORFMarkerPlugin() : Plugin(tr("orfname"), tr("orfdesc")), viewC
     if (AppContext::getMainWindow()) {
         viewCtx = new ORFViewContext(this);
         viewCtx->init();
+        AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(new ORFAutoAnnotationsUpdater );
+
     }
 
     LocalWorkflow::ORFWorkerFactory::init();

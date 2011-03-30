@@ -23,6 +23,7 @@
 #define _U2_AUTO_ANNOTATIONS_SUPPORT_H_
 
 #include <QtCore/QSet>
+#include <QtCore/QMutex>
 #include <U2Core/Task.h>
 
 namespace U2 {
@@ -55,10 +56,10 @@ public:
     void lock();
     void unlock();
     void update();
-    void update(AutoAnnotationsUpdater* updater);
 public slots:
     void updateGroup(const QString& groupName);
 private:
+    void handleUpdate(QList<AutoAnnotationsUpdater*> updaters);
     DNASequenceObject* dnaObj;
     AnnotationTableObject*  aobj;
     AutoAnnotationsSupport* aaSupport;

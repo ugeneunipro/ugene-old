@@ -138,51 +138,58 @@ void AutoAnnotationObject::unlock() {
 void AutoAnnotationObject::update()
 {
     QList<AutoAnnotationsUpdater*> aaUpdaters = aaSupport->getAutoAnnotationUpdaters();
-    foreach( AutoAnnotationsUpdater* updater, aaUpdaters) {
-        update(updater);  
-    }
+    handleUpdate(aaUpdaters);
 }
 
 void AutoAnnotationObject::updateGroup( const QString& groupName )
 {
     AutoAnnotationsUpdater* updater = aaSupport->findUpdaterByGroupName(groupName);
     if (updater != NULL) {
-        update(updater);
+        QList<AutoAnnotationsUpdater*> updaters;
+        updaters << updater;
+        handleUpdate(updaters);
     }
 }
 
-void AutoAnnotationObject::update( AutoAnnotationsUpdater* updater )
+void AutoAnnotationObject::handleUpdate( QList<AutoAnnotationsUpdater*> updaters )
 {
     
-    // check constraints
-    AutoAnnotationConstraints cns;
-    cns.alphabet = dnaObj->getAlphabet();
-    if (!updater->checkConstraints(cns)) {
-        return;
-    }
-
     QList<Task*> subTasks;
     
-    // cleanup 
-    AnnotationGroup* root = aobj->getRootGroup();
-    AnnotationGroup* sub = root->getSubgroup(updater->getGroupName(), false);
-    if (sub != NULL) {
-        Task* t = new RemoveAnnotationsTask(aobj, updater->getGroupName());
-        subTasks.append(t);
-    }
-
-    // update
-    if (enabledGroups.contains(updater->getGroupName())) {
-        // create update tasks
-        Task* t = updater->createAutoAnnotationsUpdateTask(this);
-        if (t != NULL) {
+    
+    foreach (AutoAnnotationsUpdater* updater, updaters) {
+        
+        // check constraints
+        AutoAnnotationConstraints cns;
+        cns.alphabet = dnaObj->getAlphabet();
+        if (!updater->checkConstraints(cns)) {
+            continue;
+        }
+        
+        // cleanup 
+        AnnotationGroup* root = aobj->getRootGroup();
+        AnnotationGroup* sub = root->getSubgroup(updater->getGroupName(), false);
+        if (sub != NULL) {
+            Task* t = new RemoveAnnotationsTask(aobj, updater->getGroupName());
             subTasks.append(t);
         }
+
+        // update
+        if (enabledGroups.contains(updater->getGroupName())) {
+            // create update tasks
+            Task* t = updater->createAutoAnnotationsUpdateTask(this);
+            if (t != NULL) {
+                subTasks.append(t);
+            }
+        }
+
     }
 
     // envelope to unlock annotation object
-    AutoAnnotationsUpdateTask* updateTask = new AutoAnnotationsUpdateTask(this, subTasks);
-    AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
+    if (!subTasks.isEmpty()) {
+        AutoAnnotationsUpdateTask* updateTask = new AutoAnnotationsUpdateTask(this, subTasks);
+        AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
+    }
 
 }
 
@@ -206,7 +213,7 @@ bool AutoAnnotationObject::isLocked()
 AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaObj, QList<Task*> updateTasks ) :
     Task("Auto-annotations update task", TaskFlags_NR_FOSCOE), aa(aaObj), subTasks(updateTasks)
 {
-       
+
 }
 
 void AutoAnnotationsUpdateTask::prepare()

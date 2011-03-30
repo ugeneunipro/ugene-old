@@ -87,7 +87,7 @@ enum ORFAlgorithmStrand {
 struct U2ALGORITHM_EXPORT ORFSettingsKeys {
 public:
     static const QString STRAND;
-    static const QString GENETIC_CODE;
+    static const QString AMINO_TRANSL;
     static const QString SEARCH_REGION;
     static const QString MIN_LEN;
     static const QString MUST_FIT;

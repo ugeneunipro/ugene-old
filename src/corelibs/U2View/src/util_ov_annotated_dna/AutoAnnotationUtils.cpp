@@ -42,10 +42,10 @@ AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnn
     setMenu(menu);
     
     updateMenu();
-
-    GObject* aobj = aaObj->getAnnotationObject();
-    connect(aobj, SIGNAL(si_lockedStateChanged()), SLOT(sl_autoAnnotationLockStateChanged()));
-
+        
+    connect(aaObj->getAnnotationObject(), SIGNAL(si_lockedStateChanged()), SLOT(sl_autoAnnotationLockStateChanged()));
+    
+    aaObj->update();
 }
 
 
@@ -69,10 +69,10 @@ void AutoAnnotationsADVAction::updateMenu()
         bool checked = updater->isCheckedByDefault();
         toggleAction->setChecked(checked);
         aaObj->setGroupEnabled(updater->getGroupName(), checked);
-        aaObj->update(updater);
         connect( toggleAction, SIGNAL(toggled(bool)), SLOT(sl_toggle(bool)) );
         menu->addAction(toggleAction);
     }
+    
     menu->update();
 }
 
@@ -86,7 +86,7 @@ void AutoAnnotationsADVAction::sl_toggle( bool toggled )
     if (updater != NULL) {
         QString groupName = updater->getGroupName();
         aaObj->setGroupEnabled(groupName, toggled);
-        aaObj->update(updater);
+        aaObj->updateGroup(groupName);
         updater->setCheckedByDefault(toggled);
     }
 }

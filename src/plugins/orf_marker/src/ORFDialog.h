@@ -48,6 +48,7 @@ public:
 
 public slots:
     virtual void reject();
+    virtual void accept();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *ev);
@@ -58,7 +59,6 @@ private slots:
     void sl_onSaveAnnotations();
     void sl_onClearList();
     void sl_onFindAll();
-    void sl_onClose();
     void sl_onRangeToSelection();
     void sl_onRangeToPanView();
     void sl_onRangeToSequence();
@@ -75,6 +75,8 @@ private:
     void updateState();
     void updateStatus();
     void tunePercentBox();
+    void initSettings();
+    void saveSettings();
     
     void runTask();
 
