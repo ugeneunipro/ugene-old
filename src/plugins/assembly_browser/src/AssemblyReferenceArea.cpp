@@ -22,6 +22,7 @@
 #include "AssemblyReferenceArea.h"
 
 #include <QtGui/QPainter>
+#include <QtGui/QMouseEvent>
 #include <U2Core/Timer.h>
 #include "AssemblyBrowser.h"
 
@@ -33,6 +34,7 @@ ui(ui_), browser(ui_->getWindow()), model(ui_->getModel())
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
+    setMouseTracking(true);
 }
 
 void AssemblyReferenceArea::connectSlots() {
@@ -102,6 +104,11 @@ void AssemblyReferenceArea::paintEvent(QPaintEvent * e) {
 void AssemblyReferenceArea::resizeEvent(QResizeEvent * e) {
     sl_redraw();
     QWidget::resizeEvent(e);
+}
+
+void AssemblyReferenceArea::mouseMoveEvent(QMouseEvent * e) {
+    emit si_mouseMovedToPos(e->pos());
+    QWidget::mouseMoveEvent(e);
 }
 
 void AssemblyReferenceArea::sl_redraw() {

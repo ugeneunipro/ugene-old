@@ -41,7 +41,11 @@ public:
 protected:
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
-
+    void mouseMoveEvent(QMouseEvent * e);
+    
+signals:
+    void si_mouseMovedToPos(const QPoint &);
+    
 private slots:
     void sl_redraw();
 

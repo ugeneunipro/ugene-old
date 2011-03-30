@@ -24,6 +24,7 @@
 
 #include <QtCore/QLine>
 #include <QtGui/QPainter>
+#include <QtGui/QMouseEvent>
 
 #include <U2Core/FormatUtils.h>
 
@@ -49,6 +50,7 @@ ui(ui), browser(ui->getWindow()), model(ui->getModel()), redrawCurPos(false), cu
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
+    setMouseTracking(true);
 }
 
 void AssemblyRuler::connectSlots() {
@@ -67,8 +69,8 @@ void AssemblyRuler::drawAll() {
         QPixmap cachedViewCopy(cachedView);
         if(redrawCurPos) {
             QPainter p(&cachedViewCopy);
-            drawCurPos(p);
             redrawCurPos = false;
+            drawCurPos(p);
         }
         QPainter p(this);
         p.drawPixmap(0, 0, cachedViewCopy);
@@ -172,6 +174,7 @@ void AssemblyRuler::resizeEvent(QResizeEvent * e) {
 }
 
 void AssemblyRuler::mouseMoveEvent(QMouseEvent * e) {
+    sl_handleMoveToPos(e->pos());
     QWidget::mouseMoveEvent(e);
 }
 
