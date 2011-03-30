@@ -40,8 +40,8 @@ void DNAStatWorkerFactory::init() {
     }
 
     Descriptor desc( ACTOR_ID,
-        DNAStatWorker::tr("DNA statistic"), 
-        DNAStatWorker::tr("Evaluate statistic for DNA sequences") );
+        DNAStatWorker::tr("DNA statistics"), 
+        DNAStatWorker::tr("Evaluates statistics for DNA sequences") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 
     proto->setPrompter( new DNAStatWorkerPrompter() );
@@ -53,7 +53,7 @@ void DNAStatWorkerFactory::init() {
 }
 
 QString DNAStatWorkerPrompter::composeRichDoc() {
-    return tr("Evaluate GC-Content and GC3-Content");
+    return tr("Evaluates GC-Content and GC3-Content");
 }
 
 

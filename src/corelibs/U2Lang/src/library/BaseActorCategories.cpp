@@ -44,7 +44,7 @@ const Descriptor BaseActorCategories::CATEGORY_BASIC() {
 }
 
 const Descriptor BaseActorCategories::CATEGORY_STATISTIC() {
-    return Descriptor("st", tr("Statistic"), "");
+    return Descriptor("st", tr("Statistics"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_ALIGNMENT() { 
