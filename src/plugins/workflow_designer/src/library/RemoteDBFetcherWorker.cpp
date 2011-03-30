@@ -112,8 +112,13 @@ bool RemoteDBFetcherWorker::isReady()
 }
 
 Task* RemoteDBFetcherWorker::tick() {
+    if(!QDir(fullPathDir).exists()) {
+        if(!QDir().mkpath(fullPathDir)) {
+            return new FailTask(tr("Cannot create directory '%1'").arg(fullPathDir));
+        }
+    }
+    
     Task *ret = 0;
-
     // fetch and load next file
     QString seqId = "";
     while (seqId.isEmpty()) {
