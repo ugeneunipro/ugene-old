@@ -43,6 +43,10 @@ const Descriptor BaseActorCategories::CATEGORY_BASIC() {
     return Descriptor("c", tr("Basic analysis"), "");
 }
 
+const Descriptor BaseActorCategories::CATEGORY_STATISTIC() {
+    return Descriptor("st", tr("Statistic"), "");
+}
+
 const Descriptor BaseActorCategories::CATEGORY_ALIGNMENT() { 
     return Descriptor("d", tr("Multiple sequence alignment"), "");
 }

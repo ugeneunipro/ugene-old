@@ -35,6 +35,7 @@
 #include "SequencesToMSAWorker.h"
 #include "FilterAnnotationsWorker.h"
 #include "CDSearchWorker.h"
+#include "StatisticWorkers.h"
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -289,6 +290,7 @@ void CoreLib::init() {
     FilterAnnotationsWorkerFactory::init();
     SequencesToMSAWorkerFactory::init();
     CDSearchWorkerFactory::init();
+    DNAStatWorkerFactory::init();
     initUsersWorkers();
 }
 
