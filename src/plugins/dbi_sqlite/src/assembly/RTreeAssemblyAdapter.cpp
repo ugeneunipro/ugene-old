@@ -240,7 +240,7 @@ U2AssemblyRead RTreeAssemblyAdapterReadLoader::load(SQLiteQuery* q) {
 
 
 U2DbiIterator<PackAlgorithmData>* RTreePackAlgorithmAdapter::selectAllReads(U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, gend FROM " + indexTable, db, os);
+    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, gend FROM " + indexTable + " ORDER BY gstart", db, os);
     return new SqlRSIterator<PackAlgorithmData>(q, new RTreeAssemblyAdapterPackedReadLoader(), PackAlgorithmData(), os);
 }
 

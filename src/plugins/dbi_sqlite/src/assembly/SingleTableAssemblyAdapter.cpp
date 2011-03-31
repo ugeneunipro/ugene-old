@@ -204,7 +204,7 @@ U2AssemblyRead SingleTableAssemblyAdapterReadLoader::load(SQLiteQuery* q) {
 
 
 U2DbiIterator<PackAlgorithmData>* SingleTablePackAlgorithmAdapter::selectAllReads(U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, elen FROM " + readsTable, db, os);
+    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, elen FROM " + readsTable + " ORDER BY gstart", db, os);
     return new SqlRSIterator<PackAlgorithmData>(q, new SingleTableAssemblyAdapterPackedReadLoader(), PackAlgorithmData(), os);
 }
 
