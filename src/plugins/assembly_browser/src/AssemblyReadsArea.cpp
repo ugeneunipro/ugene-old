@@ -96,10 +96,10 @@ void ReadsHint::setCigar(const QString & ci) {
     cigarLabel->setText(tr("<b>Cigar</b>: %1").arg(cigar));
 }
 
-void ReadsHint::setStrand(bool compl) {
+void ReadsHint::setStrand(bool onCompl) {
     const QString DIRECT_STR(tr("direct"));
     const QString COMPL_STR(tr("complement"));
-    strandLabel->setText(tr("<b>Strand</b>: %1").arg(compl ? COMPL_STR : DIRECT_STR));
+    strandLabel->setText(tr("<b>Strand</b>: %1").arg(onCompl ? COMPL_STR : DIRECT_STR));
 }
 
 bool ReadsHint::eventFilter(QObject *, QEvent * event) {

@@ -46,10 +46,11 @@ public:
     
 public:
     ReadsHint(QWidget * p);
+
     void setLength(qint64 len);
     void setFromTo(qint64 from, qint64 to);
-    void setCigar(const QString & cigar);
-    void setStrand(bool compl);
+    void setCigar(const QString & ci);
+    void setStrand(bool onCompl);
     
     
 protected:
