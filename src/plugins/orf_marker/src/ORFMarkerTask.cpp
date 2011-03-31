@@ -92,13 +92,15 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
 
     assert(al != NULL);
 
-    QString defaultTranslId = AppContext::getDNATranslationRegistry()->getDNATranslationIds().first();
-    QString translId = AppContext::getSettings()->getValue(ORFSettingsKeys::AMINO_TRANSL, defaultTranslId).toString();
-    
     ORFAlgorithmSettings cfg;
     
     cfg.complementTT = GObjectUtils::findComplementTT(dnaObj);
-    cfg.proteinTT = AppContext::getDNATranslationRegistry()->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, translId);
+    QString translId = AppContext::getSettings()->getValue(ORFSettingsKeys::AMINO_TRANSL, "").toString();
+    if (translId.isEmpty()) {
+        cfg.proteinTT = GObjectUtils::findAminoTT(dnaObj,false);
+    } else {
+        cfg.proteinTT = AppContext::getDNATranslationRegistry()->lookupTranslation(translId);
+    }
     cfg.minLen = AppContext::getSettings()->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
     cfg.searchRegion = AppContext::getSettings()->getValue(ORFSettingsKeys::SEARCH_REGION, 
         QVariant::fromValue(U2Region(0, dnaObj->getSequenceLen()))).value<U2Region>();
