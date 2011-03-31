@@ -19,6 +19,10 @@ public:
     virtual void cleanup() {};
 
 private:
+    float calcGCContent(const QByteArray &seq);
+    float calcGC1Content(const QByteArray &seq);
+    float calcGC2Content(const QByteArray &seq);
+    float calcGC3Content(const QByteArray &seq);
     CommunicationChannel *input, *output;
 };
 

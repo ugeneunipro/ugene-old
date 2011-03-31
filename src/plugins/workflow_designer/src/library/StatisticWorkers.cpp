@@ -19,6 +19,11 @@ namespace LocalWorkflow {
 
 const QString DNAStatWorkerFactory::ACTOR_ID("dna-stats");
 
+const QString GCCONTENT("gc-content");
+const QString GC1CONTENT("gc1-content");
+const QString GC2CONTENT("gc2-content");
+const QString GC3CONTENT("gc3-content");
+
 void DNAStatWorkerFactory::init() {
     QList<PortDescriptor*> portDescs; 
     QList<Attribute*> attribs;
@@ -38,6 +43,15 @@ void DNAStatWorkerFactory::init() {
         portDescs << new PortDescriptor( inDesc, DataTypePtr(new MapDataType("filter.anns", inputMap)), /*input*/ true );
         portDescs << new PortDescriptor( outDesc, DataTypePtr(new MapDataType("filter.anns", outputMap)), /*input*/false, /*multi*/true );
     }
+
+    attribs << new Attribute(Descriptor(GCCONTENT, DNAStatWorker::tr("GC-content"), DNAStatWorker::tr("Evaluate GC-content")), 
+        BaseTypes::BOOL_TYPE(),false, true);
+    attribs << new Attribute(Descriptor(GC1CONTENT, DNAStatWorker::tr("GC1-content"), DNAStatWorker::tr("Evaluate GC1-content")), 
+        BaseTypes::BOOL_TYPE(),false, true);
+    attribs << new Attribute(Descriptor(GC2CONTENT, DNAStatWorker::tr("GC2-content"), DNAStatWorker::tr("Evaluate GC2-content")), 
+        BaseTypes::BOOL_TYPE(),false, true);
+    attribs << new Attribute(Descriptor(GC3CONTENT, DNAStatWorker::tr("GC3-content"), DNAStatWorker::tr("Evaluate GC3-content")), 
+        BaseTypes::BOOL_TYPE(),false, true);
 
     Descriptor desc( ACTOR_ID,
         DNAStatWorker::tr("DNA statistics"), 
@@ -75,34 +89,36 @@ Task* DNAStatWorker::tick() {
         return new FailTask(tr("Sequence must be nucleotide"));
     }
 
-    int gc = 0;
-    for(int i = 0; i < dna.seq.size(); i++) {
-        if(QRegExp("[cCgG]").exactMatch(QString(dna.seq.at(i)))){
-            gc++;
-        }
-    }
-    float gcContent = (float)gc/dna.seq.size();
-
-    int gc3 = 0;
-    for(int i = 2; i < dna.seq.size(); i+=3) {
-        if(QRegExp("[cCgG]").exactMatch(QString(dna.seq.at(i)))){
-            gc3++;
-        }
-    }
-    float gc3Content = (float)gc3/dna.seq.size()*3;
-
     QList<SharedAnnotationData> res;
     SharedAnnotationData gcAnn(new AnnotationData());
-    gcAnn->name = "statistic";
-    gcAnn->qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
+    gcAnn->name = "statistics";
     gcAnn->location->regions << U2Region( 0, dna.seq.size() - 1);
-    res << gcAnn;
 
-    SharedAnnotationData gc3Ann(new AnnotationData());
-    gc3Ann->name = "statistic";
-    gc3Ann->qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
-    gc3Ann->location->regions << U2Region( 0, dna.seq.size() - 1);
-    res << gc3Ann;
+    if(actor->getParameter(GCCONTENT)->getAttributeValue<bool>()) {
+        float gcContent = calcGCContent(dna.seq);
+        gcAnn->qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
+    }
+
+    if(actor->getParameter(GC1CONTENT)->getAttributeValue<bool>()) {
+        float gc1Content = calcGC1Content(dna.seq);
+        gcAnn->qualifiers.push_back(U2Qualifier("gc1-content", QString::number(gc1Content*100) + "%"));
+    }
+
+    if(actor->getParameter(GC2CONTENT)->getAttributeValue<bool>()) {
+        float gc2Content = calcGC2Content(dna.seq);
+        gcAnn->qualifiers.push_back(U2Qualifier("gc2-content", QString::number(gc2Content*100) + "%"));
+    }
+
+    if(actor->getParameter(GC3CONTENT)->getAttributeValue<bool>()) {
+        float gc3Content = calcGC3Content(dna.seq);
+        gcAnn->qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
+    }
+
+    if(gcAnn->qualifiers.isEmpty()) {
+        return new FailTask(tr("No statistics was selected"));
+    }
+
+    res << gcAnn;
 
     QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
     output->put( Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v) );
@@ -117,6 +133,49 @@ bool DNAStatWorker::isDone() {
     return input->isEnded();
 }
 
+float DNAStatWorker::calcGCContent(const QByteArray &seq) {
+    int gc = 0;
+    for(int i = 0; i < seq.size(); i++) {
+        if(QRegExp("[cCgG]").exactMatch(QString(seq.at(i)))){
+            gc++;
+        }
+    }
+    float gcContent = (float)gc/seq.size();
+    return gcContent;
+}
+
+float DNAStatWorker::calcGC1Content(const QByteArray &seq) {
+    int gc1 = 0;
+    for(int i = 0; i < seq.size(); i+=3) {
+        if(QRegExp("[cCgG]").exactMatch(QString(seq.at(i)))){
+            gc1++;
+        }
+    }
+    float gc1Content = (float)gc1/seq.size()*3;
+    return gc1Content;
+}
+
+float DNAStatWorker::calcGC2Content(const QByteArray &seq) {
+    int gc2 = 0;
+    for(int i = 1; i < seq.size(); i+=3) {
+        if(QRegExp("[cCgG]").exactMatch(QString(seq.at(i)))){
+            gc2++;
+        }
+    }
+    float gc2Content = (float)gc2/seq.size()*3;
+    return gc2Content;
+}
+
+float DNAStatWorker::calcGC3Content(const QByteArray &seq) {
+    int gc3 = 0;
+    for(int i = 2; i < seq.size(); i+=3) {
+        if(QRegExp("[cCgG]").exactMatch(QString(seq.at(i)))){
+            gc3++;
+        }
+    }
+    float gc3Content = (float)gc3/seq.size()*3;
+    return gc3Content;
+}
 
 } //LocalWorkflow
 } //U2
