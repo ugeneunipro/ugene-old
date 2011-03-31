@@ -66,94 +66,6 @@ namespace U2 {
 
 #define SETTINGS_ROOT QString("projecview/")
 
-#define UPDATER_TIMEOUT 1000
-
-DocumentUpdater::DocumentUpdater(QObject* p) : QObject(p), lastUpdateTime(QDateTime::currentDateTime()) {
-    QTimer* timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(sl_update()));
-    timer->start(UPDATER_TIMEOUT);
-}
-
-void DocumentUpdater::sl_update() {
-    Project* prj = AppContext::getProject();
-    assert(prj);
-
-    QList<Document*> outdatedDocs;
-
-    foreach(Document* doc, prj->getDocuments()) {
-        if (!doc->isLoaded()) {
-            continue;
-        }
-
-        QFileInfo fi(doc->getURLString());
-        QDateTime modificationTime = fi.lastModified();
-
-        int days = modificationTime.daysTo(lastUpdateTime);
-        qint64 msDelta = modificationTime.time().msecsTo(lastUpdateTime.time());
-
-        if ( days < 0 || (days == 0 && msDelta < 0) ) {
-            outdatedDocs.append(doc);
-        }
-    }
-
-    lastUpdateTime = QDateTime::currentDateTime();
-
-    if (outdatedDocs.isEmpty()) {
-        return;
-    }
-
-    Task* loadTask = new Task(tr("Reload documents task"), TaskFlag_NoRun);
-
-    QList<GObjectViewState*> states;
-    QList<GObjectViewWindow*> viewWindows;
-
-    foreach(Document* doc, outdatedDocs) {
-        QMessageBox::StandardButton btn = QMessageBox::question(0, tr("Ugene"),
-            tr("Document '%1' was modified. Do you wish to reload it?").arg(doc->getName()),
-            QMessageBox::Yes | QMessageBox::No);
-
-        if (btn == QMessageBox::Yes) {
-            QList<GObjectViewWindow*> viewWnds = GObjectViewUtils::findViewsWithAnyOfObjects(doc->getObjects());
-            foreach(GObjectViewWindow* vw, viewWnds) {
-                if (viewWindows.contains(vw)) {
-                    continue;
-                }
-                viewWindows.append(vw);
-                GObjectViewFactoryId id = vw->getViewFactoryId();
-                QVariantMap stateData = vw->getObjectView()->saveState();
-                if (stateData.isEmpty()) {
-                    continue;
-                }
-                states << new GObjectViewState(id, vw->getViewName(), "", stateData);
-            }
-
-            doc->unload();
-            loadTask->addSubTask(new LoadUnloadedDocumentTask(doc));
-        }
-    }
-
-    Task* updateViewTask = new Task(tr("Restore state task"), TaskFlag_NoRun);
-
-    foreach(GObjectViewState* state, states) {
-        GObjectViewWindow* view = GObjectViewUtils::findViewByName(state->getViewName());
-        if (view!=NULL) {
-            assert(view->isPersistent());
-            AppContext::getMainWindow()->getMDIManager()->activateWindow(view);
-            updateViewTask->addSubTask(view->getObjectView()->updateViewTask(state->getStateName(), state->getStateData()));
-        } else {
-            GObjectViewFactory* f = AppContext::getObjectViewFactoryRegistry()->getFactoryById(state->getViewFactoryId());
-            assert(f!=NULL);
-            updateViewTask->addSubTask(f->createViewTask(state->getViewName(), state->getStateData()));
-        }
-        delete state;
-    }
-
-    QList<Task*> subs;
-    subs << loadTask << updateViewTask;
-    Task* t = new MultiTask(tr("Reload documents and restore view state task"), subs);
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
-}
-
 ProjectViewWidget::ProjectViewWidget() {
     setupUi(this);
     groupModeMenu = new QMenu(tr("Group mode"), this);
@@ -165,8 +77,6 @@ ProjectViewWidget::ProjectViewWidget() {
     setObjectName(DOCK_PROJECT_VIEW);
     setWindowTitle(tr("Project"));
     setWindowIcon(QIcon(":ugene/images/project.png"));
-
-    updater = new DocumentUpdater(this);
 }
 
 static ProjectTreeGroupMode getLastGroupMode() {

@@ -41,23 +41,11 @@ class EnableProjectViewTask;
 class DisableProjectViewTask;
 class ProjectViewWidgetFactory;
 
-class DocumentUpdater : public QObject {
-    Q_OBJECT
-public:
-    DocumentUpdater(QObject* p=NULL);
-private slots:
-    void sl_update();
-private:
-    QDateTime lastUpdateTime;
-};
-
 class ProjectViewWidget : public QWidget, public Ui_ProjectViewWidget {
     Q_OBJECT
 public:
     ProjectViewWidget();
     QMenu*      groupModeMenu;
-private:
-    DocumentUpdater* updater;
 };
 
 class ProjectViewImpl: public ProjectView , public LoadDocumentTaskProvider {
