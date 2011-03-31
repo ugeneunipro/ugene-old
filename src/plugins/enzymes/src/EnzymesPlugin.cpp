@@ -75,7 +75,7 @@ EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"),
 
     }
 
-    EnzymesSelectorWidget::initSettings();
+    EnzymesSelectorWidget::setupSettings();
     FindEnzymesDialog::initDefaultSettings();
 
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();

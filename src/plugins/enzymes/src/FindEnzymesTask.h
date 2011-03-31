@@ -53,15 +53,15 @@ class FindEnzymesTask;
 
 struct FindEnzymesTaskConfig {
     FindEnzymesTaskConfig(): maxResults(0x7FFFFFFF), minHitCount(1),
-        maxHitCount(INT_MAX), circular(false), autoUpdateTask(false) {}; 
-    QVector<U2Region> excludedRegions;
-    QString groupName;
-    int maxResults;
-    int minHitCount;
-    int maxHitCount;
-    bool circular;
-    bool autoUpdateTask;
-
+        maxHitCount(INT_MAX), circular(false), isAutoAnnotationUpdateTask(false) {}; 
+    QVector<U2Region>   excludedRegions;
+    QString             groupName;
+    int                 maxResults;
+    int                 minHitCount;
+    int                 maxHitCount;
+    bool                circular;
+    bool                isAutoAnnotationUpdateTask;
+ 
 };
 
 class FindEnzymesToAnnotationsTask : public Task {

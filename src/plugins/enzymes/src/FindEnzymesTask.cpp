@@ -47,6 +47,10 @@ FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject
 {
     GCOUNTER( cvar, tvar, "FindEnzymesToAnnotationsTask" );
     seqRange = U2Region(0, seq.length());
+    if (enzymes.count() == 0 ) {
+        stateInfo.setError(tr("No enzymes selected."));
+        return;
+    }
     fTask = new FindEnzymesTask(seq, seqRange, enzymes, cfg.maxResults, cfg.circular);
     addSubTask(fTask);
 }
@@ -114,7 +118,7 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
         aObj->addAnnotations(annotations, groupName);
     }
  
-    if (aObj->getAnnotations().isEmpty() && !cfg.autoUpdateTask) {
+    if (aObj->getAnnotations().isEmpty() && !cfg.isAutoAnnotationUpdateTask) {
         // no results found -> delete empty annotation document
         Project* proj = AppContext::getProject();
         if (proj!=NULL) {
@@ -338,9 +342,12 @@ FindEnzymesAutoAnnotationUpdater::FindEnzymesAutoAnnotationUpdater()
 Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
     const QList<SEnzymeData> enzymeList =  EnzymesIO::getDefaultEnzymesList();
-    QString selStr = AppContext::getSettings()->getValue(LAST_SELECTION_KEY).toString();
+    QString selStr = AppContext::getSettings()->getValue(LAST_SELECTION).toString();
+    if (selStr.isEmpty()) {
+        selStr = COMMON_ENZYMES;
+    }
+    
     QStringList lastSelection = selStr.split(SEP);
-
     QList<SEnzymeData> selectedEnzymes;
     foreach (const QString id, lastSelection) {
         foreach (const SEnzymeData& enzyme, enzymeList) {
@@ -354,16 +361,18 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
     U2Region range = aa->getSeqObject()->getSequenceRange();
     cfg.circular = aa->getSeqObject()->isCircular();
     cfg.groupName = getGroupName();
-    cfg.autoUpdateTask = true;
+    cfg.isAutoAnnotationUpdateTask = true;
     cfg.minHitCount = AppContext::getSettings()->getValue(MIN_HIT_VALUE, 1).toInt();
     cfg.maxHitCount = AppContext::getSettings()->getValue(MAX_HIT_VALUE, INT_MAX).toInt();
     cfg.maxResults = AppContext::getSettings()->getValue(MAX_RESULTS, 500000).toInt();
 
     QString locationStr = AppContext::getSettings()->getValue(NON_CUT_REGION, "").toString();
-    U2Location location;
-    Genbank::LocationParser::parseLocation(qPrintable(locationStr), locationStr.length(), location);
-    if (!location->isEmpty()) {
-        cfg.excludedRegions = location->regions;
+    
+    QVector<U2Region> excludedRegions = 
+        AppContext::getSettings()->getValue(NON_CUT_REGION, QVariant::fromValue(QVector<U2Region>()) ).value< QVector<U2Region> >();
+    
+    if (!excludedRegions.isEmpty()) {
+        cfg.excludedRegions = excludedRegions;
     }
     
     AnnotationTableObject* aObj = aa->getAnnotationObject();

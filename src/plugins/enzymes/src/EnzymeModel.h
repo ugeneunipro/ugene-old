@@ -56,13 +56,14 @@ class DNAAlphabet;
 
 #define DATA_DIR_KEY        "enzymes"
 #define DATA_FILE_KEY       "plugin_enzymes/lastFile"
-#define LAST_SELECTION_KEY  "plugin_enzymes/selection"
+#define LAST_SELECTION      "plugin_enzymes/selection"
 #define ENABLE_HIT_COUNT    "plugin_enzymes/enable_hit_count"
 #define MAX_HIT_VALUE       "plugin_enzymes/max_hit_value"
 #define MIN_HIT_VALUE       "plugin_enzymes/min_hit_value"
 #define NON_CUT_REGION      "plugin_enzymes/non_cut_region"
 #define MAX_RESULTS         "plugin_enzymes/max_results"
 #define SEP                 ","
+#define COMMON_ENZYMES      "ClaI,BamHI,BglII,DraI,EcoRI,EcoRV,HindIII,PstI,SalI,SmaI,XmaI"
 
 class EnzymeData: public QSharedData {
 public:

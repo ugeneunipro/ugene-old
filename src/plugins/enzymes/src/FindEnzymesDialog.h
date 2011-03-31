@@ -44,8 +44,9 @@ public:
     EnzymesSelectorWidget();
     ~EnzymesSelectorWidget();
 
-    static void initSettings();
+    static void setupSettings();
     static void saveSettings();
+    static void initSelection();
     static QList<SEnzymeData> getLoadedEnzymes();
     QList<SEnzymeData> getSelectedEnzymes();
     int getNumSelected();

@@ -97,7 +97,7 @@ EnzymesSelectorWidget::~EnzymesSelectorWidget() {
     saveSettings();
 }
 
-void EnzymesSelectorWidget::initSettings() {
+void EnzymesSelectorWidget::setupSettings() {
     QString dir = DialogUtils::getLastOpenFileDir(DATA_DIR_KEY);
     if (dir.isEmpty() || !QDir(dir).exists()) {
         dir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/enzymes/";
@@ -108,8 +108,7 @@ void EnzymesSelectorWidget::initSettings() {
         lastEnzFile = dir + DEFAULT_ENZYMES_FILE;
         AppContext::getSettings()->setValue(DATA_FILE_KEY, lastEnzFile);
     }
-    QString selStr = AppContext::getSettings()->getValue(LAST_SELECTION_KEY).toString();
-    lastSelection = selStr.split(SEP).toSet();
+    initSelection();
 }
 
 QList<SEnzymeData> EnzymesSelectorWidget::getSelectedEnzymes() {
@@ -394,7 +393,16 @@ int EnzymesSelectorWidget::getNumSelected()
 void EnzymesSelectorWidget::saveSettings()
 {
     QStringList sl(lastSelection.toList());
-    AppContext::getSettings()->setValue(LAST_SELECTION_KEY, sl.join(SEP));
+    AppContext::getSettings()->setValue(LAST_SELECTION, sl.join(SEP));
+}
+
+void EnzymesSelectorWidget::initSelection()
+{
+    QString selStr = AppContext::getSettings()->getValue(LAST_SELECTION).toString();
+    if (selStr.isEmpty()) {
+        selStr = COMMON_ENZYMES;
+    }
+    lastSelection = selStr.split(SEP).toSet();
 }
 
 FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
@@ -455,6 +463,8 @@ void FindEnzymesDialog::accept() {
     }
     
     saveSettings();
+    
+    
     AppContext::getAutoAnnotationsSupport()->updateAnnotationsByGroup(ANNOTATION_GROUP_ENZYME);
    
 
@@ -464,6 +474,7 @@ void FindEnzymesDialog::accept() {
 
 void FindEnzymesDialog::initSettings()
 {
+    EnzymesSelectorWidget::initSelection();
     bool useHitCountControl = AppContext::getSettings()->getValue(ENABLE_HIT_COUNT, false).toBool();
     int minHitValue = AppContext::getSettings()->getValue(MIN_HIT_VALUE, 1).toInt();
     int maxHitValue = AppContext::getSettings()->getValue(MAX_HIT_VALUE, 2).toInt();
@@ -484,8 +495,13 @@ void FindEnzymesDialog::initSettings()
     excludeRegionBox->setChecked(excludeRegionOn);
 
     filterGroupBox->setChecked(useHitCountControl);
-    minHitSB->setValue(minHitValue);
-    maxHitSB->setValue(maxHitValue);    
+    if (useHitCountControl) {
+        minHitSB->setValue(minHitValue);
+        maxHitSB->setValue(maxHitValue);
+    } else {
+        minHitSB->setValue(1);
+        maxHitSB->setValue(2);
+    }
 }
 
 void FindEnzymesDialog::saveSettings()
@@ -508,8 +524,7 @@ void FindEnzymesDialog::saveSettings()
             range.append(r);
         }
     }
-    QString locationStr = Genbank::LocationParser::buildLocationString(range);
-    AppContext::getSettings()->setValue(NON_CUT_REGION, locationStr );
+    AppContext::getSettings()->setValue(NON_CUT_REGION, QVariant::fromValue(range) );
     
     enzSel->saveSettings();
 
