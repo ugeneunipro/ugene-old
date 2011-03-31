@@ -26,8 +26,10 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QScrollBar>
+#include <QtGui/QLabel>
 #include <QtCore/QSharedPointer>
 
+#include <U2Core/U2Assembly.h>
 #include "AssemblyCellRenderer.h"
 
 namespace U2 {
@@ -35,6 +37,30 @@ namespace U2 {
 class AssemblyBrowser;
 class AssemblyBrowserUi;
 class AssemblyModel;
+class AssemblyReadsArea;
+
+class ReadsHint : public QFrame {
+    Q_OBJECT
+public:
+    static const QPoint OFFSET_FROM_CURSOR;
+    
+public:
+    ReadsHint(QWidget * p);
+    void setLength(qint64 len);
+    void setFromTo(qint64 from, qint64 to);
+    void setCigar(const QString & cigar);
+    void setStrand(bool compl);
+    
+    
+protected:
+    bool eventFilter(QObject *, QEvent *);
+    
+private:
+    QLabel * fromToLabel;
+    QLabel * lengthLabel;
+    QLabel * cigarLabel;
+    QLabel * strandLabel;
+};
 
 class AssemblyReadsArea: public QWidget {
     Q_OBJECT
@@ -48,7 +74,7 @@ protected:
     void mousePressEvent(QMouseEvent * e);
     void mouseReleaseEvent(QMouseEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
-
+    
 private:
     void initRedraw();
     void connectSlots();
@@ -58,11 +84,9 @@ private:
     void drawAll();
     void drawDensityGraph(QPainter & p);
     void drawReads(QPainter & p);
-
+    void drawHint(QPainter & p);
+    
     int calcFontPointSize() const;
-
-public: //TODO move to assembly browser ? 
-    qint64 calcPainterOffset(qint64 xAsmCoord) const;
 
 signals:
     void si_heightChanged();
@@ -73,7 +97,7 @@ private slots:
     void sl_onVScrollMoved(int pos);
     void sl_zoomOperationPerformed();
     void sl_redraw();
-
+    
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowser * browser;
@@ -85,11 +109,28 @@ private:
 
     QScrollBar * hBar;
     QScrollBar * vBar;
-
-    class MouseMover {
+    
+    class ReadsCache {
     public:
-        MouseMover() : cellWidth(0) {};
-        MouseMover(int cellWidth_, QPoint initPos) : lastPos(initPos), cellWidth(cellWidth_ ? cellWidth_ : 1){}
+        bool isEmpty() const {
+            return data.isEmpty();
+        }
+        QList<U2AssemblyRead> data;
+        U2Region visibleBases;
+        U2Region visibleRows;
+        int letterWidth;
+        qint64 xOffsetInAssembly;
+        qint64 yOffsetInAssembly;
+    };
+    ReadsCache cachedReads;
+    QPoint curPos;
+    bool redrawHint;
+    ReadsHint hint;
+    
+    class ReadsMover {
+    public:
+        ReadsMover() : cellWidth(0) {};
+        ReadsMover(int cellWidth_, QPoint initPos) : lastPos(initPos), cellWidth(cellWidth_ ? cellWidth_ : 1){}
         void handleEvent(QPoint newPos) {
             assert(cellWidth);
             QPoint diff_ = newPos - lastPos;
@@ -115,7 +156,7 @@ private:
     };
 
     bool scribbling;
-    MouseMover mouseMover;
+    ReadsMover mover;
 };
 
 } //ns

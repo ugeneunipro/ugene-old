@@ -163,7 +163,7 @@ void AssemblyRuler::drawRuler(QPainter & p) {
 
     //iterate over notches to draw
     for(int i = start; i < end; i+=interval) {
-        int x_pix = ui->getReadsArea()->calcPainterOffset(i) + halfCell;
+        int x_pix = browser->calcPainterOffset(i) + halfCell;
         //draw long notches + labels for "big interval"
         if((globalOffset + i) % bigInterval == 0) {
             //draw long notch

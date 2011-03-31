@@ -205,6 +205,15 @@ qint64 AssemblyBrowser::calcPixelCoord(qint64 xAsmCoord) const {
     return xPixelCoord;
 }
 
+qint64 AssemblyBrowser::calcPainterOffset(qint64 xAsmCoord) const {
+    qint64 letterWidth = getCellWidth();
+    if(!(letterWidth > 0)) {
+        return calcPixelCoord(xAsmCoord);
+    }
+    qint64 result = letterWidth * xAsmCoord;
+    return result;
+}
+
 qint64 AssemblyBrowser::basesCanBeVisible() const {
     int width = ui->getReadsArea()->width();
     qint64 letterWidth = getCellWidth();
