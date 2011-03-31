@@ -45,7 +45,7 @@ void RTreeAssemblyAdapter::createReadsTables(U2OpStatus& os) {
     static QString q1 = "CREATE TABLE %1 (id INTEGER PRIMARY KEY AUTOINCREMENT, sequence INTEGER NOT NULL, prow INTEGER NOT NULL, "
         "data BLOB NOT NULL, flags INTEGER NOT NULL, cigar TEXT NOT NULL)";
 
-    static QString q2 = "CREATE VIRTUAL TABLE %1 USING rtree(id, gstart, gend)";
+    static QString q2 = "CREATE VIRTUAL TABLE %1 USING rtree_i32(id, gstart, gend)";
 
     SQLiteQuery(q1.arg(readsTable), db, os).execute();
     if (os.hasError()) {
@@ -156,6 +156,18 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os)
         insertIQ.bindInt64(2, row->leftmostPos);
         insertIQ.bindInt64(3, row->leftmostPos + row->effectiveLen);
         insertIQ.execute();
+
+//#define U2_SQLITE_CHECK_RTREE_
+#ifdef U2_SQLITE_CHECK_RTREE_
+// Consistency check. To be removed after all known rtree issues are resolved
+        qint64 dbId = SQLiteUtils::toDbiId(row->id);
+        SQLiteQuery cq("SELECT gstart, gend FROM " + indexTable + " WHERE id = " + QString::number(dbId), db, os);
+        cq.step();
+        qint64 cstart =  cq.getInt64(0);
+        qint64 cend =  cq.getInt64(1);
+        assert(cstart == row->leftmostPos);
+        assert(cend == row->leftmostPos + row->effectiveLen);
+#endif
     }
 }
 
