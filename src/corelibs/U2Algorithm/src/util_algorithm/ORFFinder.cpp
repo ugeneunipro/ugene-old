@@ -43,6 +43,9 @@ const QString ORFSettingsKeys::MUST_INIT("orf_finder/must_init");
 const QString ORFSettingsKeys::SEARCH_REGION("orf_finder/region");
 
 const QString ORFAlgorithmSettings::ANNOTATION_GROUP_NAME("orf");
+const QString ORFAlgorithmSettings::STRAND_BOTH("both strands");
+const QString ORFAlgorithmSettings::STRAND_DIRECT("direct");
+const QString ORFAlgorithmSettings::STRAND_COMPL("complement");
 
 static bool isDirect(ORFAlgorithmStrand s) {
     return s == ORFAlgorithmStrand_Both || s == ORFAlgorithmStrand_Direct;
@@ -165,6 +168,30 @@ void ORFFindAlgorithm::find(
         }
     }
 
+}
+
+
+QString ORFAlgorithmSettings::getStrandStringId(ORFAlgorithmStrand strand)
+{
+    if (strand == ORFAlgorithmStrand_Direct) {
+        return STRAND_DIRECT;
+    } else if (strand == ORFAlgorithmStrand_Complement) {
+        return STRAND_COMPL;
+    } else {
+        assert (strand == ORFAlgorithmStrand_Both );
+        return STRAND_BOTH;
+    }
+}
+
+ORFAlgorithmStrand ORFAlgorithmSettings::getStrandByStringId( const QString& id )
+{
+    if (id == STRAND_DIRECT) {
+        return ORFAlgorithmStrand_Direct;
+    } else if (id == STRAND_COMPL) {
+        return ORFAlgorithmStrand_Complement;
+    } else {
+        return ORFAlgorithmStrand_Both;
+    }
 }
 
 }//namespace

@@ -33,6 +33,8 @@
 #include <QtGui/QCloseEvent>
 #include <QtCore/QTimer>
 
+#include <U2Algorithm/ORFAlgorithmTask.h>
+
 namespace U2 {
 
 class ADVSequenceObjectContext;
@@ -83,6 +85,7 @@ private:
     void importResults();
 
     U2Region getCompleteSearchRegion() const;
+    ORFAlgorithmStrand getAlgStrand() const;
 
 private:
     ADVSequenceObjectContext* ctx;

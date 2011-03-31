@@ -20,7 +20,6 @@
  */
 
 #include "ORFDialog.h"
-#include <U2Algorithm/ORFAlgorithmTask.h>
 
 
 #include <U2Core/DNASequenceObject.h>
@@ -301,7 +300,7 @@ void ORFDialog::runTask() {
     assert(task == NULL);
     
     ORFAlgorithmSettings s;
-    s.strand = rbBoth->isChecked() ? ORFAlgorithmStrand_Both : (rbDirect->isChecked() ? ORFAlgorithmStrand_Direct : ORFAlgorithmStrand_Complement);
+    s.strand = getAlgStrand();
     s.complementTT = ctx->getComplementTT();
     s.proteinTT = ctx->getAminoTT();
     s.mustFit = ckFit->isChecked();
@@ -406,12 +405,22 @@ void ORFDialog::initSettings()
     ckInit->setChecked(AppContext::getSettings()->getValue(ORFSettingsKeys::MUST_INIT, true).toBool());
     ckAlt->setChecked(AppContext::getSettings()->getValue(ORFSettingsKeys::ALLOW_ALT_START, false).toBool());
     sbMinLen->setValue(AppContext::getSettings()->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt());
+    QString strandId = AppContext::getSettings()->getValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::STRAND_BOTH).toString();
+    ORFAlgorithmStrand strand = ORFAlgorithmSettings::getStrandByStringId(strandId);
+    if (strand == ORFAlgorithmStrand_Direct) {
+        rbDirect->setChecked(true);
+    } else if (strand == ORFAlgorithmStrand_Complement) {
+        rbComplement->setChecked(true);
+    } else {
+        rbBoth->setChecked(true);
+    }
+
 }
 
 
 void ORFDialog::saveSettings()
 {
-    ORFAlgorithmStrand strand = rbBoth->isChecked() ? ORFAlgorithmStrand_Both : (rbDirect->isChecked() ? ORFAlgorithmStrand_Direct : ORFAlgorithmStrand_Complement);
+    ORFAlgorithmStrand strand = getAlgStrand();
     U2Region searchRegion = getCompleteSearchRegion();
     AppContext::getSettings()->setValue(ORFSettingsKeys::STRAND, strand);
     AppContext::getSettings()->setValue(ORFSettingsKeys::AMINO_TRANSL, ctx->getAminoTT()->getTranslationId());
@@ -420,7 +429,14 @@ void ORFDialog::saveSettings()
     AppContext::getSettings()->setValue(ORFSettingsKeys::ALLOW_ALT_START, ckAlt->isChecked());
     AppContext::getSettings()->setValue(ORFSettingsKeys::MIN_LEN, sbMinLen->value());
     AppContext::getSettings()->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(searchRegion));
+    AppContext::getSettings()->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(strand));
 
+}
+
+U2::ORFAlgorithmStrand ORFDialog::getAlgStrand() const
+{
+    return rbBoth->isChecked() ? ORFAlgorithmStrand_Both : 
+        (rbDirect->isChecked() ? ORFAlgorithmStrand_Direct : ORFAlgorithmStrand_Complement);
 }
 
 

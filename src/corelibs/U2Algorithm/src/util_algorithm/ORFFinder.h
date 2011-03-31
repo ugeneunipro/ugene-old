@@ -109,15 +109,22 @@ public:
         searchRegion(searchRegion), minLen(minLen), mustFit(mustFit), 
         mustInit(mustInit), allowAltStart(allowAltStart) {}
     
-    ORFAlgorithmStrand      strand;
-    DNATranslation*         complementTT;
-    DNATranslation*         proteinTT;
-    U2Region                searchRegion;
-    int                     minLen;
-    bool                    mustFit;
-    bool                    mustInit;
-    bool                    allowAltStart;
-    static const QString    ANNOTATION_GROUP_NAME;
+    ORFAlgorithmStrand          strand;
+    DNATranslation*             complementTT;
+    DNATranslation*             proteinTT;
+    U2Region                    searchRegion;
+    int                         minLen;
+    bool                        mustFit;
+    bool                        mustInit;
+    bool                        allowAltStart;
+    static const QString        ANNOTATION_GROUP_NAME;
+    // strand string ids
+    static const QString        STRAND_DIRECT;
+    static const QString        STRAND_COMPL;
+    static const QString        STRAND_BOTH; 
+    static QString              getStrandStringId(ORFAlgorithmStrand strand);
+    static ORFAlgorithmStrand   getStrandByStringId(const QString& id);
+
 };
 
 

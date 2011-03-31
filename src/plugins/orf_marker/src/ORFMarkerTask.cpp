@@ -101,6 +101,9 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
     } else {
         cfg.proteinTT = AppContext::getDNATranslationRegistry()->lookupTranslation(translId);
     }
+    QString strandId = AppContext::getSettings()->getValue(ORFSettingsKeys::STRAND,
+        ORFAlgorithmSettings::STRAND_BOTH).toString();
+    cfg.strand = ORFAlgorithmSettings::getStrandByStringId(strandId);
     cfg.minLen = AppContext::getSettings()->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
     cfg.searchRegion = AppContext::getSettings()->getValue(ORFSettingsKeys::SEARCH_REGION, 
         QVariant::fromValue(U2Region(0, dnaObj->getSequenceLen()))).value<U2Region>();
