@@ -213,7 +213,7 @@ bool AutoAnnotationObject::isLocked()
 AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaObj, QList<Task*> updateTasks ) :
     Task("Auto-annotations update task", TaskFlags_NR_FOSCOE), aa(aaObj), subTasks(updateTasks)
 {
-
+    setMaxParallelSubtasks(1);
 }
 
 void AutoAnnotationsUpdateTask::prepare()
