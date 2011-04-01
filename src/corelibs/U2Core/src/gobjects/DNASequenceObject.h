@@ -29,6 +29,8 @@
 
 namespace U2 {
 
+class U2SequenceDbi;
+
 class  U2CORE_EXPORT DNASequenceObject: public GObject {
     Q_OBJECT
 public:
@@ -62,12 +64,15 @@ public:
 
     void setCircular(bool val);
 
+    U2SequenceDbi* asDbi() const {return dbi;}
+
 signals:
     void si_sequenceChanged();
 
 protected:
     DNASequence     dnaSeq;
-    U2Region         seqRange;
+    U2Region        seqRange;
+    U2SequenceDbi*  dbi;
 };
 
 class U2CORE_EXPORT DNASequenceObjectConstraints : public GObjectConstraints   {
