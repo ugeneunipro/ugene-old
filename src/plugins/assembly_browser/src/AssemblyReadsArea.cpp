@@ -376,9 +376,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
     if(!hint.isVisible()) {
         hint.show();
     }
-    //QRect hintRectOwn = hint.rect().moveTo(QCursor::pos() + ReadsHint::OFFSET_FROM_CURSOR);
     QRect readsAreaRect(mapToGlobal(rect().topLeft()), mapToGlobal(rect().bottomRight()));
-    //QRect hintRect(hint.mapToGlobal(hint.rect().topLeft()), hint.mapToGlobal(hint.rect().bottomRight()));
     QRect hintRect = hint.rect(); hintRect.moveTo(QCursor::pos() + ReadsHint::OFFSET_FROM_CURSOR);
     QPoint offset(0, 0);
     if(hintRect.right() > readsAreaRect.right()) {

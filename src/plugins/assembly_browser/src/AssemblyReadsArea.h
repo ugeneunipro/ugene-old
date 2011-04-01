@@ -39,6 +39,7 @@ class AssemblyBrowserUi;
 class AssemblyModel;
 class AssemblyReadsArea;
 
+// hint that is shown under cursor for current read
 class ReadsHint : public QFrame {
     Q_OBJECT
 public:
@@ -51,7 +52,6 @@ public:
     void setFromTo(qint64 from, qint64 to);
     void setCigar(const QString & ci);
     void setStrand(bool onCompl);
-    
     
 protected:
     bool eventFilter(QObject *, QEvent *);
@@ -107,10 +107,11 @@ private:
     bool redraw;
     QPixmap cachedView;
     AssemblyCellRenderer cellRenderer;
-
+    
     QScrollBar * hBar;
     QScrollBar * vBar;
     
+    // caches reads that are visible on a screen
     class ReadsCache {
     public:
         bool isEmpty() const {
@@ -128,6 +129,7 @@ private:
     bool redrawHint;
     ReadsHint hint;
     
+    // needed to move by-letter when scribbling
     class ReadsMover {
     public:
         ReadsMover() : cellWidth(0) {};
