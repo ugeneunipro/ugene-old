@@ -147,16 +147,44 @@ bool CircularViewSplitter::isEmpty() {
     return circularViewList.isEmpty();
 }
 
+bool noValidExtension(const QString& url) {
+    QFileInfo fi(url);
+    if (fi.suffix().isEmpty()) {
+        return true;
+    }
+
+    QStringList validExtensions;
+    validExtensions << "png" << "bmp" << "jpg" << "jpeg" << "ppm" <<
+        "xbm" << "xpm" << "svg" << "pdf" << "ps";
+
+    if (!validExtensions.contains(fi.suffix())) {
+        return true;
+    }
+
+    return false;
+}
+
 void CircularViewSplitter::sl_export() {
-    QString filter = tr("Raster image (*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm)");
-    filter += "\n" + tr("Vector image (*.svg)");
-    filter += "\n"+ tr("Portable document (*.pdf *.ps)");
+    QString rasterExt = tr("Raster image (*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm)");
+    QString vectorExt = tr("Vector image (*.svg)");
+    QString pdfExt = tr("Portable document (*.pdf *.ps)");
+    QString filter = rasterExt + ";;" + vectorExt + ";;" + pdfExt;
     LastOpenDirHelper lod("image");
-    lod.url = QFileDialog::getSaveFileName(this, tr("Export circular view to image"), lod.dir, filter);
+    QString selectedFilter;
+    lod.url = QFileDialog::getSaveFileName(this, tr("Export circular view to image"), lod.dir, filter, &selectedFilter);
     QPainter painter;
     CircularView* cv = circularViewList.last();
     if (!lod.url.isEmpty()) {
         bool result = false;
+        if (noValidExtension(lod.url)) {
+            if (selectedFilter == vectorExt) {
+                lod.url += ".svg";
+            } else if (selectedFilter == pdfExt) {
+                lod.url += ".pdf";
+            } else {
+                lod.url += ".png";
+            }
+        }
         if (lod.url.endsWith(".svg", Qt::CaseInsensitive)) {
             QSvgGenerator generator;
             generator.setFileName(lod.url);
