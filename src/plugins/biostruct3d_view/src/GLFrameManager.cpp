@@ -86,8 +86,8 @@ void GLFrame::rotateCamera(const Vector3D& rotAxis, float rotAngle )
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glRotatef(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z );
-    glMultMatrixf(rotMatrix.getData());
-    glGetFloatv( GL_MODELVIEW_MATRIX, rotMatrix.getData());
+    glMultMatrixf(rotMatrix.data());
+    glGetFloatv( GL_MODELVIEW_MATRIX, rotMatrix.data());
 }
 
 #define ZOOM_FACTOR_ID "ZOOM_FACTOR"

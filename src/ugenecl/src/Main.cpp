@@ -44,6 +44,7 @@
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/SWResultFilterRegistry.h>
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/CMDLineCoreOptions.h>
@@ -404,6 +405,9 @@ int main(int argc, char **argv)
     CDSearchFactoryRegistry* cdsfr = new CDSearchFactoryRegistry();
     appContext->setCDSearchFactoryRegistry(cdsfr);
     
+    StructuralAlignmentAlgorithmRegistry *saar = new StructuralAlignmentAlgorithmRegistry();
+    appContext->setStructuralAlignmentAlgorithmRegistry(saar);
+
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
     // show help if need
@@ -535,6 +539,9 @@ int main(int argc, char **argv)
 
     delete cdsfr;
     appContext->setCDSearchFactoryRegistry(NULL);
+
+    appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
+    delete saar;
 
     return rc;
 }

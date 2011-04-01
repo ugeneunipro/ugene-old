@@ -56,7 +56,7 @@ public:
     void updateViewPort();
     void updateGL() { glWidget->updateGL(); }
     GLfloat getZoomFactor() const { return zoomFactor; }
-    float* getRotationMatrix() { return rotMatrix.getData(); }
+    float* getRotationMatrix() { return rotMatrix.data(); }
     void rotateCamera(const Vector3D& rotAxis, float rotAngle);
 
     const Vector3D getCameraPosition()const;

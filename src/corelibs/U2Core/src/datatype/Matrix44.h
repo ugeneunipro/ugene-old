@@ -23,28 +23,34 @@
 #define _U2_MATRIX_44_H_
 
 #include <U2Core/global.h>
+#include <QVector>
 
 namespace U2 {
 
 class U2CORE_EXPORT Matrix44 {
 public:
-    float m[16];
-
-public:
     Matrix44();
+    Matrix44(const float *data);
+    Matrix44(const Matrix44 &other);
+
+    Matrix44& operator= (const Matrix44 &other);
 
     void loadZero();
     void loadIdentity();
 
-    float* getData() { return m; }
+    void transpose();
+
+    float* data();
+    const float* data() const;
 
     float& operator[] (unsigned int i);
     float operator[] (unsigned int i) const;
 
-    Matrix44& operator= (const Matrix44 &m);
-
-    void load(QVariantList values);
+    void load(const QVariantList &values);
     QVariantList store();
+
+private:
+    QVector<float> m;
 };  // class Matrix44
 
 }   // namespace U2

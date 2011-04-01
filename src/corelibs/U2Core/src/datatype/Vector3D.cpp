@@ -21,6 +21,8 @@
 
 #include "Vector3D.h"
 
+#include <U2Core/Matrix44.h>
+
 namespace U2 { 
 
 Vector3D::Vector3D(double xi, double yi, double zi)
@@ -124,6 +126,17 @@ Vector3D operator / (const Vector3D& v, double f)
 Vector3D& Vector3D::operator /= (double f)
 {
     x/=f; y/=f; z/=f;
+    return *this;
+}
+
+Vector3D& Vector3D::dot(const Matrix44 &m) {
+    const Vector3D tmp = *this;
+    const float *mdata = m.data();
+
+    x = tmp.x*mdata[0] + tmp.y*mdata[1] + tmp.z*mdata[2] + mdata[3];
+    y = tmp.x*mdata[4] + tmp.y*mdata[5] + tmp.z*mdata[6] + mdata[7];
+    z = tmp.x*mdata[8] + tmp.y*mdata[9] + tmp.z*mdata[10] + mdata[11];
+
     return *this;
 }
 

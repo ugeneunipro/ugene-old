@@ -57,6 +57,7 @@ SUBDIRS += \
           src/plugins/query_designer \
           src/plugins/external_tool_support \
           src/plugins/remote_service \
+	  src/plugins/structural_aligner \
           src/plugins/CoreTests
 
 use_cuda() {

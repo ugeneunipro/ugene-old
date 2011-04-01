@@ -29,6 +29,8 @@
 namespace U2
 {
 
+class Matrix44;
+
 class U2CORE_EXPORT Vector3D {
 public:
     double x, y, z;
@@ -44,6 +46,7 @@ public:
     Vector3D& operator -= (const Vector3D& v);
     Vector3D& operator *= (double f);
     Vector3D& operator /= (double f);
+    Vector3D& dot(const Matrix44 &m);
     void set(double xs, double ys, double zs);
     double length(void) const;
     double lengthSquared(void) const;

@@ -25,6 +25,7 @@
 #include <U2Core/Vector3D.h>
 #include <U2Core/global.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/Matrix44.h>
 
 #include <QtCore/QString>
 #include <QtCore/QList>
@@ -159,7 +160,9 @@ public:
     static QString SecStructTypeQualifierName;
 
 public:
-    BioStruct3D() {}
+    BioStruct3D();
+    /** This is not deep copy constructor */
+    BioStruct3D(const BioStruct3D &other);
 
     QMap <int, SharedMolecule> moleculeMap;
     QMap <int, AtomCoordSet> modelMap;
@@ -168,12 +171,11 @@ public:
     QList<Bond> interMolecularBonds;
     QString descr;
     QByteArray pdbId;
-    double maxDistFromCenter;
-    Vector3D rotationCenter;
 
     // Const member functions
-    Vector3D getCenter() const { return rotationCenter; }
-    double getMaxDistFromCenter()  const { return maxDistFromCenter; }
+    double getRadius()  const { return radius; }
+    const Vector3D& getCenter() const { return rotationCenter; }
+
     QByteArray getRawSequenceByChainId(int id) const;
     int getNumberOfAtoms() const;
     int getNumberOfResidues() const;
@@ -184,6 +186,10 @@ public:
     void calcCenterAndMaxDistance();
     void generateAnnotations();
 
+    /** Biostruct 3D model should be transforemd with this matrix */
+    void setTransform(const Matrix44 &m) { transform = m; }
+    const Matrix44& getTransform() const { return transform; }
+
 public:
     // Static methods
     static const QString getSecStructTypeName(SecondaryStructure::Type type);
@@ -191,6 +197,14 @@ public:
 private:
     void generateChainAnnotations();
     void generateSecStructureAnnotations();
+
+private:
+    BioStruct3D& operator= (const BioStruct3D&);
+
+private:
+    double radius;
+    Vector3D rotationCenter;
+    Matrix44 transform;
 };
 
 //! Shared data for BioStruct3DSelection

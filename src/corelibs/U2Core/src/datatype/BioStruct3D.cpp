@@ -26,6 +26,8 @@
 
 namespace U2 { 
 
+/* class BioStruct3D */
+
 QString BioStruct3D::MoleculeAnnotationTag("chain_info");
 QString BioStruct3D::AlphaHelixAnnotationTag("alpha_helix");
 QString BioStruct3D::BetaStrandAnnotationTag("beta_strand");
@@ -34,13 +36,33 @@ QString BioStruct3D::ChainIdQualifierName("chain_id");
 QString BioStruct3D::SecStructAnnotationTag("sec_struct");
 QString BioStruct3D::SecStructTypeQualifierName("sec_struct_type");
 
+BioStruct3D::BioStruct3D()
+        : moleculeMap(), modelMap(),
+        annotations(), secondaryStructures(),
+        interMolecularBonds(),
+        descr(), pdbId(),
+        radius(0), rotationCenter(),
+        transform()
+{
+    transform.loadIdentity();
+}
+
+BioStruct3D::BioStruct3D(const BioStruct3D &other)
+    : moleculeMap(other.moleculeMap), modelMap(other.modelMap),
+    annotations(other.annotations), secondaryStructures(other.secondaryStructures),
+    interMolecularBonds(other.interMolecularBonds),
+    descr(other.descr), pdbId(other.pdbId),
+    radius(other.radius), rotationCenter(other.rotationCenter),
+    transform(other.transform)
+{
+}
 
 void BioStruct3D::calcCenterAndMaxDistance() {
 
     Vector3D siteSum;
     Vector3D center;
     double dist;
-    maxDistFromCenter = 0.0;
+    radius = 0.0;
     int numberOfAtoms = 0;
     // loop trough all atoms twice - once to get average center, then once to
     // find max distance from this center
@@ -55,8 +77,8 @@ void BioStruct3D::calcCenterAndMaxDistance() {
                     }
                     else {
                         dist = (site - center).length();
-                        if (dist > maxDistFromCenter){
-                            maxDistFromCenter = dist;
+                        if (dist > radius){
+                            radius = dist;
                         }
                     }
                 }
@@ -72,7 +94,7 @@ void BioStruct3D::calcCenterAndMaxDistance() {
         }
 
     }
-    algoLog.trace(QString("center: (%1,%2,%3)\n maxDistFromCenter: %4").arg(center.x).arg(center.y).arg(center.z).arg(maxDistFromCenter) );
+    algoLog.trace(QString("center: (%1,%2,%3)\n maxDistFromCenter: %4").arg(center.x).arg(center.y).arg(center.z).arg(radius) );
 
     rotationCenter = center;
 

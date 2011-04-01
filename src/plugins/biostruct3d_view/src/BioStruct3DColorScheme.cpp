@@ -69,12 +69,17 @@ void BioStruct3DColorSchemeRegistry::registerFactories() {
     REGISTER_FACTORY(ChainsColorScheme);
     REGISTER_FACTORY(SecStructColorScheme);
     REGISTER_FACTORY(ChemicalElemColorScheme);
+#ifdef _DEBUG
+    REGISTER_FACTORY(SingleColorScheme);
+#endif
 }
 
 
 const QString ChainsColorScheme::schemeName(QObject::tr("chain colors"));
 const QString ChemicalElemColorScheme::schemeName(QObject::tr("chemical element colors"));
 const QString SecStructColorScheme::schemeName(QObject::tr("secondary structure colors"));
+const QString SingleColorScheme::schemeName("One color (for debug only)");
+
 
 
 /*class BioStruct3DColorScheme */
@@ -166,19 +171,21 @@ const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObjec
 
     // bug-2857: GObject relations shoud be used
     Document *doc = biostruct->getDocument();
-    foreach (GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE) ) {
-        AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(obj);
-        assert(ao);
+    if (doc) {
+        foreach (GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE) ) {
+            AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(obj);
+            assert(ao);
 
-        foreach(Annotation* a, ao->getAnnotations()) {
-            QString name = a->getAnnotationName();
-            if (name.startsWith(BioStruct3D::MoleculeAnnotationTag)) {
-                bool Ok = false;
-                int chainId = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&Ok);
-                assert(Ok && chainId != 0);
+            foreach(Annotation* a, ao->getAnnotations()) {
+                QString name = a->getAnnotationName();
+                if (name.startsWith(BioStruct3D::MoleculeAnnotationTag)) {
+                    bool Ok = false;
+                    int chainId = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&Ok);
+                    assert(Ok && chainId != 0);
 
-                AnnotationSettings* as = asr->getAnnotationSettings(name);
-                colorMap.insert(chainId, as->color);
+                    AnnotationSettings* as = asr->getAnnotationSettings(name);
+                    colorMap.insert(chainId, as->color);
+                }
             }
         }
     }
@@ -190,11 +197,12 @@ ChainsColorScheme::ChainsColorScheme(const BioStruct3DObject *biostruct)
         : BioStruct3DColorScheme(biostruct)
 {
     const QMap<int, QColor> chainColors = getChainColors(biostruct);
-    Q_ASSERT(!chainColors.empty());
-    QMapIterator<int, QColor> i(chainColors);
-    while (i.hasNext()) {
-        i.next();
-        chainColorMap.insert(i.key(), Color4f(i.value()));
+    if (!chainColors.empty()) {
+        QMapIterator<int, QColor> i(chainColors);
+        while (i.hasNext()) {
+            i.next();
+            chainColorMap.insert(i.key(), Color4f(i.value()));
+        }
     }
 }
 
@@ -217,16 +225,18 @@ const QMap<QString, QColor> SecStructColorScheme::getSecStructAnnotationColors(c
 
     // bug-2857: GObject relations shoud be used
     Document *doc = biostruct->getDocument();
-    foreach (GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE) ) {
-        AnnotationTableObject *ao = qobject_cast<AnnotationTableObject*>(obj);
-        assert(ao);
+    if (doc) {
+        foreach (GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE) ) {
+            AnnotationTableObject *ao = qobject_cast<AnnotationTableObject*>(obj);
+            assert(ao);
 
-        foreach(Annotation *a, ao->getAnnotations()) {
-            QString name = a->getAnnotationName();
-            if (name == BioStruct3D::SecStructAnnotationTag) {
-                QString ssName = a->getQualifiers().first().value;
-                AnnotationSettings* as = asr->getAnnotationSettings(ssName);
-                colors.insert(ssName, as->color);
+            foreach(Annotation *a, ao->getAnnotations()) {
+                QString name = a->getAnnotationName();
+                if (name == BioStruct3D::SecStructAnnotationTag) {
+                    QString ssName = a->getQualifiers().first().value;
+                    AnnotationSettings* as = asr->getAnnotationSettings(ssName);
+                    colors.insert(ssName, as->color);
+                }
             }
         }
     }
@@ -239,31 +249,32 @@ SecStructColorScheme::SecStructColorScheme(const BioStruct3DObject *biostruct)
 {
     defaultAtomColor = Color4f(0.5f,0.9f,0.9f);
     const QMap<QString, QColor> secStrucColors = getSecStructAnnotationColors(biostruct);
-    QMapIterator<QString, QColor> i(secStrucColors);
-    while (i.hasNext()) {
-        i.next();
-        secStrucColorMap.insert(i.key().toAscii(), Color4f(i.value()));
-    }
-
-    foreach (const SharedSecondaryStructure& struc, biostruct->getBioStruct3D().secondaryStructures) {
-        for (int index = struc->startSequenceNumber; index <= struc->endSequenceNumber; ++index ) {
-            QByteArray type = BioStruct3D::getSecStructTypeName(struc->type).toAscii();
-            Q_ASSERT( secStrucColorMap.contains(type));
-            Q_ASSERT( struc->chainIndex != 0);
-            molMap[struc->chainIndex].strucResidueTable.insert(index, type);
+    if (!secStrucColors.isEmpty()) {
+        QMapIterator<QString, QColor> i(secStrucColors);
+        while (i.hasNext()) {
+            i.next();
+            secStrucColorMap.insert(i.key().toAscii(), Color4f(i.value()));
         }
-    }
-    
-#ifdef _DEBUG
-    // Verify indices with biostruct3d 
-    const BioStruct3D& bioStruc = biostruct->getBioStruct3D();
-    QMapIterator<int,MolStructs> iter(molMap);
-    while (iter.hasNext()) {
-        iter.next();
-        assert(bioStruc.moleculeMap.contains(iter.key()));
-    }
-#endif
 
+        foreach (const SharedSecondaryStructure& struc, biostruct->getBioStruct3D().secondaryStructures) {
+            for (int index = struc->startSequenceNumber; index <= struc->endSequenceNumber; ++index ) {
+                QByteArray type = BioStruct3D::getSecStructTypeName(struc->type).toAscii();
+                Q_ASSERT( secStrucColorMap.contains(type));
+                Q_ASSERT( struc->chainIndex != 0);
+                molMap[struc->chainIndex].strucResidueTable.insert(index, type);
+            }
+        }
+
+    #ifdef _DEBUG
+        // Verify indices with biostruct3d
+        const BioStruct3D& bioStruc = biostruct->getBioStruct3D();
+        QMapIterator<int,MolStructs> iter(molMap);
+        while (iter.hasNext()) {
+            iter.next();
+            assert(bioStruc.moleculeMap.contains(iter.key()));
+        }
+    #endif
+    }
 }
 
 Color4f SecStructColorScheme::getSchemeAtomColor( const SharedAtom& atom ) const
@@ -282,5 +293,22 @@ Color4f SecStructColorScheme::getSchemeAtomColor( const SharedAtom& atom ) const
     return c;
 }
 
+/* class SingleColorScheme : public BioStruct3DColorScheme */
+QVector<Color4f> SingleColorScheme::colors;
 
-} //namespace
+void SingleColorScheme::createColors() {
+    if (colors.isEmpty()) {
+        colors.append(Color4f(0.4f,0.9f,0.4f));
+        colors.append(Color4f(0.9f,0.4f,0.4f));
+        colors.append(Color4f(0.4f,0.4f,0.9f));
+    }
+}
+
+SingleColorScheme::SingleColorScheme(const BioStruct3DObject *biostruct) : BioStruct3DColorScheme(biostruct)
+{
+    createColors();
+    static int idx = 0;
+    defaultAtomColor = colors[(idx++) % colors.size()];
+}
+
+}   // namespace U2

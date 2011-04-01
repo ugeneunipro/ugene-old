@@ -27,8 +27,6 @@
 #include "SettingsDialog.h"
 #include "MolecularSurfaceRenderer.h"
 
-#include "StructuralAlignmentDialog.h"
-
 #include <U2Core/BioStruct3D.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -51,9 +49,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Algorithm/StructuralAlignmentAlgorithm.h>
-#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
-#include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QMessageBox>
@@ -61,8 +56,17 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QImageWriter>
 #include <QtCore/QTime>
+#include <QtOpenGL>
+
+#include <GL/gl.h>
 
 #include "gl2ps/gl2ps.h"
+
+// bug-2855
+#include "StructuralAlignmentDialog.h"
+#include <U2Algorithm/StructuralAlignmentAlgorithm.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
 
 // disable "unsafe functions" deprecation warnings on MS VS
 #ifdef Q_OS_WIN
@@ -152,13 +156,10 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
     loadColorSchemes();
     loadGLRenderers();
 
-    /*setupRenderer(currentGLRendererName);
-    setupColorScheme(currentColorSchemeName);*/
-
     // Set view settings
     // shoud be separate function
     float scaleFactor = 2.5;
-    float maxDistFromCenter = contexts.first().biostruct->getMaxDistFromCenter();
+    float maxDistFromCenter = contexts.first().biostruct->getRadius();
     float camZ = scaleFactor * maxDistFromCenter;
 
     cameraClipNear = (camZ - maxDistFromCenter) * 0.66f;
@@ -354,7 +355,20 @@ void BioStruct3DGLWidget::drawAll()
     clock_t t1 =  clock();
 
     foreach (const BioStruct3DRendererContext &ctx, contexts) {
+        glPushMatrix();
+
+#ifdef GL_VERSION_1_3
+        glMultTransposeMatrixf(ctx.biostruct->getTransform().data());
+#else
+        // on OpenGL versions below 1.3 glMultTransposeMatrix not suported
+        // see http://www.opengl.org/resources/faq/technical/extensions.htm
+        Matrix44 colmt = ctx.biostruct->getTransform();
+        colmt.transpose();
+        glMultMatrixf(colmt.data());
+#endif
+
         ctx.renderer->drawBioStruct3D();
+        glPopMatrix();
     }
 
     if(NULL != molSurface.get())
@@ -1298,11 +1312,8 @@ void BioStruct3DGLWidget::addBiostruct(BioStruct3DObject *obj) {
     contexts.append(ctx);
 }
 
-void BioStruct3DGLWidget::sl_alignWith() {
-    // bug-2855 This code is here temporary only for testing,
-    // and should be removed bebore release
+static QList<BioStruct3DObject*> findAvailableBioStructs() {
     QList<BioStruct3DObject*> biostructs;
-
     Project *proj = AppContext::getProject();
     if (proj) {
         foreach (Document *doc, proj->getDocuments()) {
@@ -1314,10 +1325,16 @@ void BioStruct3DGLWidget::sl_alignWith() {
             }
         }
     }
+    return biostructs;
+}
+
+void BioStruct3DGLWidget::sl_alignWith() {
+    // bug-2855 This code is here temporary only for testing,
+    QList<BioStruct3DObject*> biostructs = findAvailableBioStructs();
 
     StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
     if (reg->getFactoriesIds().isEmpty()) {
-        QMessageBox::warning(0, "Error", "No available algorithms");
+        QMessageBox::warning(0, "Error", "No available algorithms, make sure that structural_aligner plugin loaded");
         return;
     }
 
@@ -1325,22 +1342,37 @@ void BioStruct3DGLWidget::sl_alignWith() {
     StructuralAlignmentAlgorithm *alg = fac->create();
     assert(alg);
 
-    int refModel = contexts.first().shownModelsIndexes.first();
+    int refModelIdx = contexts.first().shownModelsIndexes.first();
+    int refModel = contexts.first().biostruct->modelMap.keys().at(refModelIdx);
+
     StructuralAlignmentDialog dlg(biostructs, contexts.first().obj, refModel);
     if (dlg.exec() == QDialog::Accepted) {
         BioStruct3DObject *refo = static_cast<BioStruct3DObject*>( dlg.reference->itemData(dlg.reference->currentIndex()).value<void*>() );
         BioStruct3DObject *alto = static_cast<BioStruct3DObject*>( dlg.alter->itemData(dlg.alter->currentIndex()).value<void*>() );
 
+        alto = qobject_cast<BioStruct3DObject*>(alto->clone());
+
         const BioStruct3D &ref = refo->getBioStruct3D();
         const BioStruct3D &alt = alto->getBioStruct3D();
 
+        if (ref.getNumberOfAtoms() != alt.getNumberOfAtoms()) {
+            QMessageBox::warning(0, "Error", "Structures should have the same length");
+            return;
+        }
+
         int altModel = dlg.altModel->itemData(dlg.altModel->currentIndex()).value<int>();
 
-        //StructuralAlignment result = alg->align(ref, alt);
+        StructuralAlignment result = alg->align(ref, alt, refModel, altModel);
+        algoLog.trace(QString("Structural alignment done: rmsd = %1").arg(result.rmsd));
+
         addBiostruct(alto);
-        contexts.last().shownModelsIndexes = QList<int>() << altModel;
+        int altModelIdx = contexts.last().biostruct->modelMap.keys().indexOf(altModel);
+        contexts.last().shownModelsIndexes = QList<int>() << altModelIdx;
         contexts.last().renderer->getShownModelsIndexes() = contexts.last().shownModelsIndexes;
         contexts.last().renderer->updateShownModels();
+
+        const Matrix44 &mt = result.transform;
+        const_cast<BioStruct3D*>(contexts.last().biostruct)->setTransform(mt);
     }
 }
 } // namespace U2
