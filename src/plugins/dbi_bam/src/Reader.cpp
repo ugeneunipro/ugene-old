@@ -184,7 +184,7 @@ Alignment Reader::readAlignment() {
                     }
                 }
                 if(Alignment::CigarOperation::SoftClip == cigar[index].getOperation()) {
-                    if((index > 1) && (index < cigarLength - 2)) {
+                    /*if((index > 1) && (index < cigarLength - 2)) {
                         throw InvalidFormatException(BAMDbiPlugin::tr("Misplaced soft clip in the cigar"));
                     }
                     if((1 == index) && (Alignment::CigarOperation::HardClip != cigar[0].getOperation())) {
@@ -192,7 +192,7 @@ Alignment Reader::readAlignment() {
                     }
                     if((cigarLength - 2 == index) && (Alignment::CigarOperation::HardClip != cigar[cigarLength - 1].getOperation())) {
                         throw InvalidFormatException(BAMDbiPlugin::tr("Misplaced soft clip in the cigar"));
-                    }
+                    }*/
                 }
                 if((Alignment::CigarOperation::AlignmentMatch == cigar[index].getOperation()) ||
                    (Alignment::CigarOperation::Insertion == cigar[index].getOperation()) ||
@@ -202,7 +202,7 @@ Alignment Reader::readAlignment() {
                     totalLength += cigar[index].getLength();
                 }
             }
-            if((alignment.getReferenceId() == -1 && totalLength != 0) || (alignment.getReferenceId() != -1 && length != totalLength)) {
+            if(!cigar.isEmpty() && length != totalLength) {
                 throw InvalidFormatException(BAMDbiPlugin::tr("Cigar length mismatch"));
             }
         }
@@ -262,10 +262,8 @@ Alignment Reader::readAlignment() {
         int bytesRead = 0;
         while(bytesRead < toRead) {
             QByteArray tag = readBytes(2);
-            foreach(QChar character, tag) {
-                if(!character.isLetter()) {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field tag: %1").arg(QString(tag)));
-                }
+            if(!QRegExp("[A-Za-z][A-Za-z0-9]").exactMatch(tag)) {
+                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field tag: %1").arg(QString(tag)));
             }
             char type = readChar();
             bytesRead += 3;

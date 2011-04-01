@@ -85,6 +85,10 @@ void ReadsHint::setFromTo(qint64 from, qint64 to) {
 
 void ReadsHint::setCigar(const QString & ci) {
     QString cigar;
+    if(ci.isEmpty()) {
+        cigar = tr("no information");
+    }
+    
     for(int i = 0; i < ci.size(); ++i) {
         QChar ch = ci.at(i);
         if(ch.isNumber()) {

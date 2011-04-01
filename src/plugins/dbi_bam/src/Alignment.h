@@ -58,17 +58,18 @@ public:
         Operation operation;
     };
     enum Flag {
-        Fragmented,
-        FragmentsAligned,
-        Unmapped,
-        NextUnmapped,
-        Reverse,
-        NextReverse,
-        FirstInTemplate,
-        LastInTemplate,
-        SecondaryAlignment,
-        FailsChecks,
-        Duplicate
+        None = 0, 
+        Fragmented = 1 << 0,
+        FragmentsAligned = 1 << 1,
+        Unmapped = 1 << 2,
+        NextUnmapped = 1 << 3,
+        Reverse = 1 << 4,
+        NextReverse = 1 << 5,
+        FirstInTemplate = 1 << 6,
+        LastInTemplate = 1 << 7,
+        SecondaryAlignment = 1 << 8,
+        FailsChecks = 1 << 9,
+        Duplicate = 1 << 10
     };
     Q_DECLARE_FLAGS(Flags, Flag)
     Alignment();
