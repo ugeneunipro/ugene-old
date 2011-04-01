@@ -141,7 +141,7 @@ public:
     void bindBool(int idx, bool val);
 
     /** Binds text string */
-    void bindText(int idx, const QString& val);
+    void bindString(int idx, const QString& val);
 
     /** Binds BLOB */
     void bindBlob(int idx, const QByteArray& blob, bool transient = true);

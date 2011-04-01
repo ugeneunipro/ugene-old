@@ -73,13 +73,13 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
 
 
 void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) {
-    sequence.id = SQLiteObjectDbi::createObject(U2Type::Sequence, folder, sequence.visualName, db, os);
+    sequence.id = SQLiteObjectDbi::createObject(U2Type::Sequence, folder, sequence.visualName, SQLiteDbiObjectRank_TopLevel, db, os);
     if (os.hasError()) {
         return;
     }
     SQLiteQuery q("INSERT INTO Sequence(object, alphabet) VALUES(?1, ?2)", db, os);
     q.bindDataId(1, sequence.id);
-    q.bindText(2, sequence.alphabet.id);
+    q.bindString(2, sequence.alphabet.id);
     q.execute();
 }
 

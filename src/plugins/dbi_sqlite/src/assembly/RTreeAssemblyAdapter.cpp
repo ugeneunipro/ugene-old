@@ -144,7 +144,7 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os)
         insertRQ.bindInt64(2, row->packedViewRow);
         insertRQ.bindInt64(3, flags);
         insertRQ.bindBlob(4, row->readSequence, false);
-        insertRQ.bindText(5, cigarText);
+        insertRQ.bindString(5, cigarText);
         
         row->id = insertRQ.insert(U2Type::AssemblyRead);
 

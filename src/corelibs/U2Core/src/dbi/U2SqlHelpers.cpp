@@ -266,7 +266,7 @@ void SQLiteQuery::bindType(int idx, U2DataType type) {
     bindInt64(idx, type);
 }
 
-void SQLiteQuery::bindText(int idx, const QString& val) {
+void SQLiteQuery::bindString(int idx, const QString& val) {
     if (hasError()) {
         return;
     }

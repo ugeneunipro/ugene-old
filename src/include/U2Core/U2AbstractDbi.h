@@ -62,6 +62,8 @@ public:
     virtual U2AssemblyDbi* getAssemblyDbi() {return NULL;}
 
     virtual U2AttributeDbi* getAttributeDbi()  {return NULL;}
+    
+    virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
 
 protected:
     U2DbiState                  state;
@@ -206,7 +208,7 @@ protected:
 };
 
 /** Default no-op implementation for write  methods of U2AttributeDbi */
-class U2SimpleAttributeDbi: public U2AttributeDbi{
+class U2SimpleAttributeDbi: public U2AttributeDbi {
 protected:
     U2SimpleAttributeDbi(U2Dbi* rootDbi) : U2AttributeDbi(rootDbi) {}
     
@@ -244,6 +246,17 @@ protected:
 
     virtual void createRangeReal64StatAttribute(U2RangeReal64StatAttribute&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
+    }
+};
+
+class U2SimpleCrossDatabaseReferenceDbi: public U2CrossDatabaseReferenceDbi {
+public:
+    virtual U2CrossDatabaseReference getCrossReference(const U2DataId&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteCrossDatabaseReferences, getRootDbi(), os);
+    }
+
+    virtual void updateCrossReference(const U2CrossDatabaseReference&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteCrossDatabaseReferences, getRootDbi(), os);
     }
 };
 

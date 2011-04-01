@@ -132,7 +132,7 @@ void SingleTableAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatu
         insertQ.bindInt64(4, row->leftmostPos);
         insertQ.bindInt64(5, row->effectiveLen);
         insertQ.bindBlob(6, row->readSequence, false);
-        insertQ.bindText(7, cigarText);
+        insertQ.bindString(7, cigarText);
 
         row->id = insertQ.insert(U2Type::AssemblyRead);
     }

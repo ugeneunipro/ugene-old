@@ -39,6 +39,7 @@ namespace U2 {
 class U2ObjectDbi;
 class U2SequenceDbi;
 class U2AnnotationDbi;
+class U2CrossDatabaseReferenceDbi;
 class U2MsaDbi;
 class U2AssemblyDbi;
 class U2AttributeDbi;
@@ -83,9 +84,9 @@ enum U2CORE_EXPORT U2DbiFeature {
     U2DbiFeature_ReadSequenceAnnotations      = 4,
     /** DBI supports read methods for attributes */
     U2DbiFeature_ReadAttributes               = 5,
+    /** DBI supports read methods for remote objects  */
+    U2DbiFeature_ReadCrossDatabaseReferences  = 6,
 
-    /** DBI supports cross database references */
-    U2DbiFeature_WriteCrossDatabaseReferences = 100,
     /** DBI supports changing/storing sequences */
     U2DbiFeature_WriteSequence                = 101,
     /** DBI supports changing/storing multiple sequence alignments */
@@ -96,6 +97,8 @@ enum U2CORE_EXPORT U2DbiFeature {
     U2DbiFeature_WriteSequenceAnnotations     = 104,
     /** DBI supports changing/storing attributes */
     U2DbiFeature_WriteAttributes              = 105,
+    /** DBI supports cross database references */
+    U2DbiFeature_WriteCrossDatabaseReferences = 106,
 
     /** DBI supports removal of objects */
     U2DbiFeature_RemoveObjects                = 200,
@@ -226,6 +229,12 @@ public:
         Not NULL only if U2DbiFeature_ReadAttributes supported
     */
     virtual U2AttributeDbi* getAttributeDbi()  = 0;
+
+    /** 
+        Cross database references handling routines 
+        Not NULL only if U2DbiFeature_ReadCrossDatabaseReferences supported
+    */
+    virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi() = 0;
 };
 
 /** 
@@ -353,6 +362,31 @@ public:
         Requires: U2DbiFeature_ChangeFolders feature support
     */
     virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, U2OpStatus& os) = 0;
+
+};
+
+class U2CORE_EXPORT U2CrossDatabaseReferenceDbi : public U2ChildDbi {
+protected:
+    U2CrossDatabaseReferenceDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
+public:
+    /**
+        Adds new remote object to database.
+        Sets local object id assigned to the new value
+        Requires: U2DbiFeature_WriteCrossDatabaseReferences
+    */
+    virtual void createCrossReference(U2CrossDatabaseReference& reference, U2OpStatus& os) = 0;
+
+    /**
+        Loads remote object information from DB
+        Requires: U2DbiFeature_ReadCrossDatabaseReferences
+    */
+    virtual U2CrossDatabaseReference getCrossReference(const U2DataId& objectId, U2OpStatus& os) = 0;
+
+    /**
+        Updates all fields of cross database reference object
+        Requires: U2DbiFeature_WriteCrossDatabaseReferences
+    */
+    virtual void updateCrossReference(const U2CrossDatabaseReference& reference, U2OpStatus& os) = 0;
 };
 
 /**

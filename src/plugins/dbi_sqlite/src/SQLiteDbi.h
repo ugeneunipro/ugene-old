@@ -53,6 +53,17 @@ class DbRef;
 /** CIGAR and sequence are packed using bits compression and stored as a single BLOB */
 #define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_BITS_1 "compress-bits-1"
 
+
+/** Indicates object life-cycle and storage location */
+enum SQLiteDbiObjectRank {
+    /** Object  is stored in this database and is top-level (included into some folder) */
+    SQLiteDbiObjectRank_TopLevel = 1,
+    /** Object  is stored in this database and is not top-level, it is a child of another object */
+    SQLiteDbiObjectRank_Child = 2,
+    /** Object  is stored in another database, see CrossDbiReference table for details */
+    SQLiteDbiObjectRank_Remote = 3
+};
+
 // Values of SQLiteDbi flags
 #define SQLITE_DBI_VALUE_MEMORY_DB_URL ":memory:"
 
@@ -94,6 +105,8 @@ public:
     virtual U2SequenceDbi* getSequenceDbi()  {return sequenceDbi;}
 
     virtual U2AssemblyDbi* getAssemblyDbi()  {return assemblyDbi;}
+    
+    virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return crossDbi;}
 
     DbRef*    getDbRef() const {return db;}
 
@@ -111,15 +124,17 @@ private:
     void populateDefaultSchema(U2OpStatus& os);
     void internalInit(const QHash<QString, QString>& props, U2OpStatus& os);
 
-    QString             url;
-    DbRef*              db;
+    QString                         url;
+    DbRef*                          db;
 
-    U2ObjectDbi*        objectDbi;
-    U2SequenceDbi*      sequenceDbi;
-    U2MsaDbi*           msaRDbi;
-    U2AssemblyDbi*      assemblyDbi;
+    U2ObjectDbi*                    objectDbi;
+    U2SequenceDbi*                  sequenceDbi;
+    U2MsaDbi*                       msaRDbi;
+    U2AssemblyDbi*                  assemblyDbi;
+    U2CrossDatabaseReferenceDbi*    crossDbi;
     
     friend class SQLiteObjectDbi;
+    friend class SQLiteCrossDatabaseReferenceDbi;
     friend class SQLiteSequenceDbi;
     friend class SQLiteAssemblyDbi;
     friend class SQLiteMsaDbi;

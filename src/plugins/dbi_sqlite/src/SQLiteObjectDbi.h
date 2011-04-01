@@ -133,7 +133,7 @@ public:
         Creates new object of the specified type. Puts it into the 'folder'
         Returns result object data id
     */
-    static U2DataId createObject(U2DataType type, const QString& folder, const QString& objectName, DbRef* db, U2OpStatus& os);
+    static U2DataId createObject(U2DataType type, const QString& folder, const QString& objectName, SQLiteDbiObjectRank rank, DbRef* db, U2OpStatus& os);
 
     /** 
         Returns internal database folder id 
@@ -166,6 +166,31 @@ private:
     void onFolderUpdated(const QString& folder);
 };
 
+
+class SQLiteCrossDatabaseReferenceDbi : public U2CrossDatabaseReferenceDbi, public SQLiteChildDBICommon {
+public:
+    SQLiteCrossDatabaseReferenceDbi(SQLiteDbi* dbi);
+
+    /**
+        Adds new remote object to database./**
+        Adds new remote object to database.
+        Sets local object id assigned to the new value
+        Requires: U2DbiFeature_WriteCrossDatabaseReferences
+    */
+    virtual void createCrossReference(U2CrossDatabaseReference& reference, U2OpStatus& os);
+
+    /**
+        Loads remote object information from DB
+        Requires: U2DbiFeature_ReadCrossDatabaseReferences
+    */
+    virtual U2CrossDatabaseReference getCrossReference(const U2DataId& objectId, U2OpStatus& os);
+
+    /**
+        Updates all fields of cross database reference object
+        Requires: U2DbiFeature_WriteCrossDatabaseReferences
+    */
+    virtual void updateCrossReference(const U2CrossDatabaseReference& reference, U2OpStatus& os);
+};
 
 } //namespace
 

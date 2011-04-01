@@ -155,16 +155,12 @@ public:
 */
 class U2CORE_EXPORT U2CrossDatabaseReference : public U2Object {
 public:
+    U2CrossDatabaseReference() {}
+    U2CrossDatabaseReference(U2DataId id, QString dbId, qint64 version) : U2Object(id, dbId, version) {}
+
 
     // remote data element id;
     U2DataRef   dataRef; 
-
-
-    /** 
-        Version(mod-count) of the content stored for remote object in this database 
-        For example: for a sequence object this value can be increased with any new annotation modification
-    */
-    qint64          localContentVersion;
 
 };
 

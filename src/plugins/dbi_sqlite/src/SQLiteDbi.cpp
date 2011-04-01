@@ -41,6 +41,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     sequenceDbi = new SQLiteSequenceDbi(this);
     msaRDbi = new SQLiteMsaRDbi(this);
     assemblyDbi = new SQLiteAssemblyDbi(this);
+    crossDbi = new SQLiteCrossDatabaseReferenceDbi(this);
 }
 
 SQLiteDbi::~SQLiteDbi() {
@@ -48,6 +49,7 @@ SQLiteDbi::~SQLiteDbi() {
     delete sequenceDbi;
     delete msaRDbi;
     delete assemblyDbi;
+    delete crossDbi;
     if (db->handle != NULL) {
         sqlite3_close(db->handle);
     }
@@ -57,7 +59,7 @@ SQLiteDbi::~SQLiteDbi() {
 
 QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const {
     SQLiteQuery q("SELECT value FROM Meta WHERE name = ?1", db, os);
-    q.bindText(1, name);
+    q.bindString(1, name);
     bool found = q.step();
     if (os.hasError()) {
         return QString();
@@ -73,12 +75,12 @@ void SQLiteDbi::setProperty(const QString& name, const QString& value, U2OpStatu
         return;
     }
     SQLiteQuery q1("DELETE FROM Meta WHERE name = ?1", db, os);
-    q1.bindText(1, name);
+    q1.bindString(1, name);
     q1.execute();
 
     SQLiteQuery q2("INSERT INTO Meta(name, value) VALUES (?1, ?2)", db, os);
-    q2.bindText(1, name);
-    q2.bindText(2, value);
+    q2.bindString(1, name);
+    q2.bindString(2, value);
     q2.execute();
 }
 
@@ -118,10 +120,10 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     CT("Meta", "name TEXT NOT NULL, value TEXT NOT NULL"); 
     
     // objects table - stores IDs and types for all objects. It also stores 'top_level' flag to simplify queries
-    // top_level = 1 if object is placed into some folder.
+    // rank: see SQLiteDbiObjectRank
     // name is a visual name of the object shown to user.
     CT("Object", " id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
-        "version INTEGER NOT NULL DEFAULT 1, top_level INTEGER NOT NULL, "
+        "version INTEGER NOT NULL DEFAULT 1, rank INTEGER NOT NULL, "
         "name TEXT NOT NULL");
     
     // parent-child object relation
@@ -182,6 +184,14 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
         " FOREIGN KEY(reference) REFERENCES Sequence(object)");
 
 
+    // cross database reference object
+    // factory - remote dbi factory
+    // dbi - remote dbi id (url)
+    // rid  - remote object id
+    // version - remove object version
+   CT("CrossDatabaseReference", "object INTEGER, factory TEXT NOT NULL, dbi TEXT NOT NULL, rid BLOB NOT NULL, version INTEGER NOT NULL, "
+        " FOREIGN KEY(object) REFERENCES Object(id)");
+
     setProperty(SQLITE_DBI_OPTION_UGENE_VERSION, Version::ugeneVersion().text, os);
 }
 
@@ -217,8 +227,9 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_AssemblyReadsPacking);
     features.insert(U2DbiFeature_RemoveObjects);
     features.insert(U2DbiFeature_ChangeFolders);
+    features.insert(U2DbiFeature_ReadCrossDatabaseReferences);
+    features.insert(U2DbiFeature_WriteCrossDatabaseReferences);
 }
-
 
 void SQLiteDbi::setState(U2DbiState s) {
     state = s;
