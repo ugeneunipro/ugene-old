@@ -116,6 +116,8 @@ QT_END_NAMESPACE
 #undef USE_CRASHHANDLER
 #endif
 
+
+
 namespace U2 {
 
 static void registerCoreServices() {

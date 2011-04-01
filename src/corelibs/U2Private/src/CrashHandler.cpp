@@ -36,14 +36,21 @@ namespace U2 {
 PVOID CrashHandler::handler = NULL;
 PVOID CrashHandler::handler2 = NULL;
 
+addExceptionHandler CrashHandler::addHandlerFunc = NULL;
+removeExceptionHandler CrashHandler::removeHandlerFunc = NULL;
+
 
 LONG CrashHandler::CrashHandlerFuncThird(PEXCEPTION_POINTERS pExceptionInfo ) {
     exit(1);
 }
 
 LONG CrashHandler::CrashHandlerFuncSecond(PEXCEPTION_POINTERS pExceptionInfo ) {
-    RemoveVectoredExceptionHandler(handler2);
-    AddVectoredExceptionHandler(1, CrashHandlerFuncThird);
+    if(removeHandlerFunc != NULL) {
+        removeHandlerFunc(handler2);
+    }
+    if(addHandlerFunc != NULL) {
+        addHandlerFunc(1, CrashHandlerFuncThird);
+    }
     QString path = QCoreApplication::applicationDirPath() + "/ugenem.exe";
     static QMutex mutex;
     QMutexLocker lock(&mutex);
@@ -105,7 +112,10 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
             break;
         default: /*error = "Unknown exception";*/ return EXCEPTION_EXECUTE_HANDLER;
     }
-    RemoveVectoredExceptionHandler(handler);
+    if(removeHandlerFunc != NULL) {
+        removeHandlerFunc(handler);
+    }
+    //RemoveVectoredExceptionHandler(handler);
     //handler2 = AddVectoredExceptionHandler(1, CrashHandlerFuncSecond);
     if(pExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_STACK_OVERFLOW) {
 #if defined(Q_OS_WIN32)
@@ -164,7 +174,25 @@ void CrashHandler::releaseReserve() {
 
 void CrashHandler::setupHandler() {
 #if defined( Q_OS_WIN )
-    handler = AddVectoredExceptionHandler(1, CrashHandlerFunc);
+    addHandlerFunc = NULL;
+    removeHandlerFunc = NULL;
+    HMODULE h = LoadLibrary(TEXT("kernel32.dll"));
+    if(h != NULL) {
+        FARPROC func = GetProcAddress(h, "AddVectoredExceptionHandler");
+        if(func != NULL) {
+            addHandlerFunc = (addExceptionHandler)func;
+        }
+
+        func = GetProcAddress(h, "RemoveVectoredExceptionHandler");
+        if(func != NULL) {
+            removeHandlerFunc = (removeExceptionHandler)func;
+        }
+    }
+    if(addHandlerFunc != NULL) {
+        addHandlerFunc(1, CrashHandlerFunc);
+    }
+    //handler = AddVectoredExceptionHandler(1, CrashHandlerFunc);
+    
 #elif defined( Q_OS_MAC)
     return; //TODO: implement crash hander for MAC OS
 #else

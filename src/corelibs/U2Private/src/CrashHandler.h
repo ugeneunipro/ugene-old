@@ -57,6 +57,11 @@ struct ExceptionInfo {
     QString errorType;
 };
 
+#if defined( Q_OS_WIN )
+typedef PVOID (__stdcall* addExceptionHandler)( __in ULONG, __in PVECTORED_EXCEPTION_HANDLER);
+typedef PVOID (__stdcall* removeExceptionHandler)(__in PVOID);
+#endif
+
 class U2PRIVATE_EXPORT CrashHandler {
 public:
     CrashHandler() {}
@@ -68,6 +73,9 @@ public:
 
     static PVOID handler;
     static PVOID handler2;
+
+    static addExceptionHandler addHandlerFunc;
+    static removeExceptionHandler removeHandlerFunc;
 #else
     static void signalHandler(int signo, siginfo_t *info, void *context);
     static struct sigaction sa;
