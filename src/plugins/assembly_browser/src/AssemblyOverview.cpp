@@ -288,34 +288,34 @@ void AssemblyOverviewRenderTask::run() {
     p.fillRect(result.rect(), Qt::white);
 
     U2OpStatusImpl status;
-    quint64 alignmentLen = model->getModelLength(status);
+    qint64 alignmentLen = model->getModelLength(status);
     if(status.hasError()) {
         stateInfo.setError(status.getError());
         return;
     }
 
-    quint64 widgetWidth = result.width();
-    quint64 widgetHeight = result.height();
+    qint64 widgetWidth = result.width();
+    qint64 widgetHeight = result.height();
 
     //FIXME can be zero
-    quint64 lettersPerXPixel = alignmentLen / widgetWidth;
+    double lettersPerXPixel = double(alignmentLen) / widgetWidth;
 
     QVector<quint64> readsPerXPixels(widgetWidth);
-    quint64 maxReadsPerXPixels = 0;
-    quint64 start = 0; 
-    //TODO progress
+    qint64 maxReadsPerXPixels = 0;
+    qint64 start = 0;
+
     for(int i = 0 ; i < widgetWidth; ++i) {
         if(stateInfo.cancelFlag) {
             return;
         }
         stateInfo.progress = double(i) / widgetWidth * 100.;
-        quint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(start, lettersPerXPixel), status);
+        qint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(start, qRound64(lettersPerXPixel)), status);
         if(status.hasError()) {
             stateInfo.setError(status.getError());
             return;
         }
         readsPerXPixels[i] = readsPerXPixel;
-        start += lettersPerXPixel;
+        start = lettersPerXPixel * i;
         if(maxReadsPerXPixels < readsPerXPixel) {
             maxReadsPerXPixels = readsPerXPixel;
         }
@@ -326,7 +326,7 @@ void AssemblyOverviewRenderTask::run() {
     //double readsPerYPixel = double(logMax) / widgetHeight; 
 
     for(int i = 0 ; i < widgetWidth; ++i) {
-        quint64 columnPixels = qint64(double(readsPerXPixels[i]) / readsPerYPixel + 0.5);
+        qint64 columnPixels = qint64(double(readsPerXPixels[i]) / readsPerYPixel + 0.5);
         //quint64 columnPixels = qint64(double(log((double)readsPerXPixels[i])) / readsPerYPixel + 0.5);
         int grayCoeff = 255 - int(double(255) / maxReadsPerXPixels * readsPerXPixels[i] + 0.5);
         //int grayCoeff = 255 - int(double(255) / logMax * log((double)readsPerXPixels[i]) + 0.5);
