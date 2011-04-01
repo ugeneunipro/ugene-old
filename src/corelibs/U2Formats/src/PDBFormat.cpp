@@ -275,7 +275,7 @@ bool PDBFormat::PDBParser::seqResContains(char chainIdentifier, int residueIndex
         return true;
     }
     
-    if (!seqResMap.contains(chainIdentifier)) {
+    if (!seqResMap.contains(chainIdentifier) || residueIndex == 0) {
         return false;
     } 
     QByteArray sequence = seqResMap.value(chainIdentifier);
