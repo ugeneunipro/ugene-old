@@ -22,12 +22,14 @@
 #include "DbiDocumentFormat.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AssemblyObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2DbiRegistry.h>
-#include <U2Core/AssemblyObject.h>
+#include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2ObjectDbi.h>
 
 namespace U2 {
 
@@ -40,7 +42,7 @@ DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFo
     formatName = _formatName;
     supportedObjectTypes+=GObjectTypes::ASSEMBLY;
     formatFlags|=DocumentFormatFlag_NoPack;
-    formatFlags|=DocumentFormatFlag_DoNotLoadsMemory;
+    formatFlags|=DocumentFormatFlag_NoFullMemoryLoad;
 }    
 
 

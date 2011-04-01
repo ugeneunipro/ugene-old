@@ -72,6 +72,7 @@ public:
 };
 
 
+
 /** Helper class with default impl for all methods */
 } //namespace
 

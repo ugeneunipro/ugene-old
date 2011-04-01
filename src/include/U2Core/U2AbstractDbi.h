@@ -28,10 +28,18 @@
 
 #include <U2Core/U2DbiUtils.h>
 
+#include <U2Core/U2AnnotationsDbi.h>
+#include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2MsaDbi.h>
+#include <U2Core/U2CrossDatabaseReferenceDbi.h>
+#include <U2Core/U2ObjectDbi.h>
+
 
 namespace U2 {
 
-    /** Default (empty) implementation for optional DBI methods */
+/** Default (empty) implementation for optional DBI methods */
 class U2AbstractDbi : public U2Dbi {
 public:
     U2AbstractDbi(const U2DbiFactoryId& fid) {

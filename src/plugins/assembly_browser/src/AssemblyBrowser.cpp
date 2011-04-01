@@ -43,7 +43,9 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/Log.h>
-#include <U2Core/U2Dbi.h>
+#include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/Timer.h>
 #include <U2Gui/GUIUtils.h>

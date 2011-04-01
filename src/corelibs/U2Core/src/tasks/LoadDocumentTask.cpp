@@ -226,7 +226,7 @@ void LoadDocumentTask::prepare() {
     }
     
     qint64 memUseMB = 0;
-    if(!format->getFlags().testFlag(DocumentFormatFlag_DoNotLoadsMemory)) { // document is fully loaded to memory
+    if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad)) { // document is fully loaded to memory
         QFileInfo file(url.getURLString());
         qint64 memUseMB = file.size()/(1024*1024);
         if(iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {

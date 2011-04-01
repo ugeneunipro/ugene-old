@@ -34,6 +34,7 @@
 #include <U2Core/Timer.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2AssemblyDbi.h>
 
 #include <U2Algorithm/FindAlgorithmTask.h>
 #include <U2Algorithm/SArrayIndex.h>

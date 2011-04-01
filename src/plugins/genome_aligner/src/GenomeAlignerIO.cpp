@@ -19,13 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include "GenomeAlignerIO.h"
+
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
+#include <U2Core/U2AssemblyDbi.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Formats/DocumentFormatUtils.h>
-#include "GenomeAlignerIO.h"
-
-#include <U2Core/Counter.h>
 
 namespace U2 {
 
