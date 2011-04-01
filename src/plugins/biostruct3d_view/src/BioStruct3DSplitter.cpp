@@ -343,7 +343,7 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
     // Build header menu
     
     QLabel* activeWidgetLabel = new QLabel(this);
-    activeWidgetLabel->setText(tr("active_widget:"));
+    activeWidgetLabel->setText(tr("Active view:"));
     toolbar->addWidget(activeWidgetLabel);
 
     activeWidgetBox = new QComboBox(this);
@@ -351,14 +351,14 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
     connect(splitter, SIGNAL(si_bioStruct3DGLWidgetAdded(BioStruct3DGLWidget* )), this, SLOT(sl_addBioStruct3DGLWidget(BioStruct3DGLWidget*)));
     
     restoreDefaultsButton = new QToolButton(this);
-    restoreDefaultsButton->setToolTip(tr("restore_defaults"));
+    restoreDefaultsButton->setToolTip(tr("Restore Default View"));
     restoreDefaultsButton->setIcon(QIcon(":biostruct3d_view/images/restore.png"));
     restoreDefaultsButton->setFixedWidth(20);
     toolbar->addWidget(restoreDefaultsButton);
     connect(restoreDefaultsButton, SIGNAL(pressed()), this, SLOT(sl_restoreDefaults()));
     
     zoomInButton = new QToolButton(this);
-    zoomInButton->setToolTip(tr("zoom_in"));
+    zoomInButton->setToolTip(tr("Zoom In"));
     zoomInButton->setIcon(QIcon(":core/images/zoom_in.png"));
     zoomInButton->setFixedWidth(20);
     toolbar->addWidget(zoomInButton);
@@ -367,21 +367,21 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
 
     zoomOutButton = new QToolButton(this);
     zoomOutButton->setIcon(QIcon(":core/images/zoom_out.png"));
-    zoomOutButton->setToolTip(tr("zoom_out"));
+    zoomOutButton->setToolTip(tr("Zoom Out"));
     zoomOutButton->setFixedWidth(20);
     toolbar->addWidget(zoomOutButton);
     connect(zoomOutButton, SIGNAL(pressed()), this, SLOT(sl_zoomOut()));
 
     syncLockButton = new QToolButton(this);
     syncLockButton->setIcon(QIcon(":biostruct3d_view/images/lock.png"));
-    syncLockButton->setToolTip(tr("Multiple view synchronization lock"));
+    syncLockButton->setToolTip(tr("Synchronize 3D Structure Views"));
     syncLockButton->setFixedWidth(20);
     syncLockButton->setCheckable(true);
     toolbar->addWidget(syncLockButton);
     connect(syncLockButton, SIGNAL(toggled(bool)), this, SLOT(sl_toggleSyncLock(bool)));
     
     displayMenuButton = new QToolButton(this);
-    displayMenuButton->setText(tr("display"));
+    displayMenuButton->setText(tr("Display"));
     toolbar->addWidget(displayMenuButton);
     connect(displayMenuButton, SIGNAL(pressed()), this, SLOT(sl_showDisplayMenu()));
     
@@ -479,7 +479,7 @@ void SplitterHeaderWidget::sl_showSettingsMenu()
 
 void SplitterHeaderWidget::sl_restoreDefaults()
 {
-    BioStruct3DGLWidget* w = getActiveWidget();    
+    BioStruct3DGLWidget* w = getActiveWidget();
     w->restoreDefaultSettigns();
 }
 
@@ -494,7 +494,7 @@ void SplitterHeaderWidget::sl_addBioStruct3DGLWidget( BioStruct3DGLWidget* glWid
     glWidget->installEventFilter(this);
 
     // Add show widget action
-    QString actionName( tr("show_%1").arg(pdbId) );
+    QString actionName( tr("Show %1").arg(pdbId) );
     QAction* action = new QAction(actionName, glWidget);
     action->setCheckable(true);
     action->setChecked(true);

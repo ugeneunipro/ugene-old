@@ -75,9 +75,9 @@ void BioStruct3DColorSchemeRegistry::registerFactories() {
 }
 
 
-const QString ChainsColorScheme::schemeName(QObject::tr("chain colors"));
-const QString ChemicalElemColorScheme::schemeName(QObject::tr("chemical element colors"));
-const QString SecStructColorScheme::schemeName(QObject::tr("secondary structure colors"));
+const QString ChainsColorScheme::schemeName(QObject::tr("Molecular Chains"));
+const QString ChemicalElemColorScheme::schemeName(QObject::tr("Chemical Elements"));
+const QString SecStructColorScheme::schemeName(QObject::tr("Secondary Structure"));
 const QString SingleColorScheme::schemeName("One color (for debug only)");
 
 

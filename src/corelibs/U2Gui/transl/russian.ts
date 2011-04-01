@@ -562,7 +562,7 @@
     <name>ProjectTreeItemSelectorDialogBase</name>
     <message>
         <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="13"/>
-        <source>Select item</source>
+        <source>Select Item</source>
         <translation>Выбор элемента</translation>
     </message>
     <message>
@@ -572,7 +572,7 @@
     </message>
     <message>
         <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="43"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation>Готово</translation>
     </message>
     <message>

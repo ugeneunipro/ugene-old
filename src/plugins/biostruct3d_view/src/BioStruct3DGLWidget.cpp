@@ -957,7 +957,7 @@ void BioStruct3DGLWidget::createSelectModelsActions() {
         selectModelActions->setExclusive(true);
         connect(selectModelsExclusiveAction, SIGNAL(triggered()), this, SLOT(sl_selectModelsExclusive()));
 
-        selectAllModelsAction = new QAction(tr("Select all"), this);
+        selectAllModelsAction = new QAction(tr("Select All"), this);
         connect(selectAllModelsAction, SIGNAL(triggered()), this, SLOT(sl_selectAllModels()));
     }
 }
@@ -1014,13 +1014,13 @@ void BioStruct3DGLWidget::createActions()
     spinAction->setCheckable(true);
     connect(spinAction, SIGNAL(triggered()), this, SLOT(sl_acitvateSpin()));
 
-    settingsAction = new QAction(tr("Settings"), this);
+    settingsAction = new QAction(tr("Settings..."), this);
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(sl_settings()));
 
-    closeAction = new QAction(tr("close_action"), this);
+    closeAction = new QAction(tr("Close"), this);
     connect(closeAction, SIGNAL(triggered()), this, SLOT(sl_closeWidget()));
 
-    exportImageAction = new QAction(tr("Export image"), this);
+    exportImageAction = new QAction(tr("Export Image..."), this);
     connect(exportImageAction, SIGNAL(triggered()), this, SLOT(sl_exportImage()));
 
     alignWithAction = new QAction(tr("Align With..."), this);
@@ -1045,11 +1045,11 @@ void BioStruct3DGLWidget::createSelectModelsMenu() {
 void BioStruct3DGLWidget::createMenus()
 {
     // Renderer selection
-    selectRendererMenu = new QMenu(tr("Render style"));
+    selectRendererMenu = new QMenu(tr("Render Style"));
     selectRendererMenu->addActions(rendererActions->actions());
 
     // Color scheme selection
-    selectColorSchemeMenu = new QMenu(tr("Color Scheme"));
+    selectColorSchemeMenu = new QMenu(tr("Coloring Scheme"));
     selectColorSchemeMenu->addActions(colorSchemeActions->actions());
 
     // Molecular surface

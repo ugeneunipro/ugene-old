@@ -34,7 +34,7 @@
 
 namespace U2 { 
 
-const QString BallAndStickGLRenderer::ID(QObject::tr("Ball-and-stick"));
+const QString BallAndStickGLRenderer::ID(QObject::tr("Ball-and-Stick"));
 
 BallAndStickGLRenderer::BallAndStickGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
     : BioStruct3DGLRenderer(struc,s,shownModels,widget), dl(0)

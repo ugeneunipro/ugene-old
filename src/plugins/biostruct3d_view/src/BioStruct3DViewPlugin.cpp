@@ -76,7 +76,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 }
 
 BioStruct3DViewPlugin::BioStruct3DViewPlugin()
-        : Plugin(tr("biostruct3d_view_plugin"), tr("biostruct3d_view_plugin_desc"))
+        : Plugin(tr("3D Structure Viewer"), tr("Visualizes 3D structures of biological molecules."))
 {
     // Init plugin view context
     viewContext = new BioStruct3DViewContext(this);
@@ -170,7 +170,7 @@ QAction* BioStruct3DViewContext::getClose3DViewAction(GObjectView* view) {
             return a;
         }
     }
-    QAction* a = new GObjectViewAction(this, view, tr("Close 3D view"));
+    QAction* a = new GObjectViewAction(this, view, tr("Close 3D Structure Viewer"));
     connect(a, SIGNAL(triggered()), SLOT(sl_close3DView()));
     resources.append(a);
     return a;

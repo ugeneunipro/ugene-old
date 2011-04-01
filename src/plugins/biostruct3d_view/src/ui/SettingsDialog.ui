@@ -6,74 +6,77 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>291</width>
-    <height>389</height>
+    <width>297</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Settings</string>
   </property>
   <property name="Size" stdset="0">
-   <string>10</string>
+   <string notr="true">10</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <widget class="QPushButton" name="setBackgroundColorButton">
      <property name="text">
-      <string>Set backgroung color</string>
+      <string>Set background color...</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QPushButton" name="setSelectionColorButton">
      <property name="text">
-      <string>Set selection color</string>
+      <string>Set selection color...</string>
      </property>
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Detail level:</string>
+    <widget class="QSplitter" name="splitter_4">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Detail level</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="renderDetailLevelSlider">
+      <property name="minimum">
+       <number>50</number>
+      </property>
+      <property name="maximum">
+       <number>200</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QSlider" name="renderDetailLevelSlider">
-     <property name="minimum">
-      <number>50</number>
-     </property>
-     <property name="maximum">
-      <number>200</number>
-     </property>
+    <widget class="QSplitter" name="splitter_3">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
+     <widget class="QLabel" name="shadingLabel">
+      <property name="text">
+       <string>Unselected regions shading</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="shadingSlider">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="QLabel" name="shadingLabel">
-     <property name="text">
-      <string>Backplane regions shading</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
     <widget class="QGroupBox" name="anaglyphViewGroupBox">
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>200</height>
+       <height>170</height>
       </size>
      </property>
      <property name="title">
@@ -93,7 +96,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="1" column="0">
        <widget class="QSlider" name="eyesShiftSlider">
         <property name="minimum">
          <number>0</number>
@@ -110,16 +113,38 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="glassesColorLabel">
-        <property name="text">
-         <string>Glasses color:</string>
+       <widget class="QSplitter" name="splitter_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
+        <widget class="QLabel" name="glassesColorLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Glasses colors</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="glassesColorSchemeComboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="glassesColorSchemeComboBox"/>
-      </item>
-      <item row="3" column="0" colspan="2">
+      <item row="3" column="0">
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
          <widget class="QLabel" name="leftEyeColorLabel">
@@ -225,7 +250,7 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item row="5" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -238,10 +263,13 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="0">
-    <widget class="QSlider" name="shadingSlider">
+   <item row="6" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

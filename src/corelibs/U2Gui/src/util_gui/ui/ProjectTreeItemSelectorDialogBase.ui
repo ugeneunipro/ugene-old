@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Select item</string>
+   <string>Select Item</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
@@ -40,7 +40,7 @@
      <item>
       <widget class="QPushButton" name="okButton" >
        <property name="text" >
-        <string>Ok</string>
+        <string>OK</string>
        </property>
        <property name="default" >
         <bool>true</bool>

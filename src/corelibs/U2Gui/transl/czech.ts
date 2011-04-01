@@ -681,12 +681,8 @@
 <context>
     <name>ProjectTreeItemSelectorDialogBase</name>
     <message>
-        <source>title</source>
-        <translation type="obsolete">Select item</translation>
-    </message>
-    <message>
         <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="13"/>
-        <source>Select item</source>
+        <source>Select Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -696,21 +692,13 @@
     </message>
     <message>
         <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="43"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="53"/>
         <source>Cancel</source>
         <translation type="unfinished">Cancel</translation>
-    </message>
-    <message>
-        <source>ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>cancel</source>
-        <translation type="obsolete">Cancel</translation>
     </message>
 </context>
 <context>

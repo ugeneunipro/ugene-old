@@ -44,13 +44,13 @@ void BioStruct3DSettingsDialog::setWidget(BioStruct3DGLWidget *glWidget)
 
 void BioStruct3DSettingsDialog::initColorSchemes()
 {
-    glassesColorSchemes.insert(0, GlassesColorScheme(QString("Custom"), QColor(0, 0, 0), QColor(0, 0, 0)));
+    glassesColorSchemes.insert(0, GlassesColorScheme(QString(tr("Custom")), QColor(0, 0, 0), QColor(0, 0, 0)));
 
-    glassesColorSchemes.append(GlassesColorScheme(QString("Red - Blue"), QColor(255, 0, 0), QColor(0, 0, 255)));
-    glassesColorSchemes.append(GlassesColorScheme(QString("Cyan - Red"), QColor(0, 255, 255), QColor(255, 0, 0)));
-    glassesColorSchemes.append(GlassesColorScheme(QString("Red - Dark Cyan"), QColor(255, 0, 0), QColor(0, 139, 139)));
-    glassesColorSchemes.append(GlassesColorScheme(QString("Red - Green"), QColor(255, 0, 0), QColor(0, 150, 0)));
-    glassesColorSchemes.append(GlassesColorScheme(QString("Magneta - Green"), QColor(255, 0, 150), QColor(0, 150, 0)));
+    glassesColorSchemes.append(GlassesColorScheme(QString(tr("Red - Blue")), QColor(255, 0, 0), QColor(0, 0, 255)));
+    glassesColorSchemes.append(GlassesColorScheme(QString(tr("Cyan - Red")), QColor(0, 255, 255), QColor(255, 0, 0)));
+    glassesColorSchemes.append(GlassesColorScheme(QString(tr("Red - Dark Cyan")), QColor(255, 0, 0), QColor(0, 139, 139)));
+    glassesColorSchemes.append(GlassesColorScheme(QString(tr("Red - Green")), QColor(255, 0, 0), QColor(0, 150, 0)));
+    glassesColorSchemes.append(GlassesColorScheme(QString(tr("Magenta - Green")), QColor(255, 0, 150), QColor(0, 150, 0)));
 
     foreach (const GlassesColorScheme &scheme, glassesColorSchemes)
         BioStruct3DSettingsDialog::glassesColorSchemeComboBox->addItem(scheme.name);

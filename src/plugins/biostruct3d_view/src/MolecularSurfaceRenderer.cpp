@@ -65,7 +65,7 @@ void MolecularSurfaceRendererRegistry::registerFactories() {
 
 
 const QString DotsRenderer::ID(QObject::tr("Dots"));
-const QString ConvexMapRenderer::ID(QObject::tr("ConvexMap"));
+const QString ConvexMapRenderer::ID(QObject::tr("Convex Map"));
 
 /* class DotsRenderer : public MolecularSurfaceRenderer */
 void DotsRenderer::drawSurface( MolecularSurface& surface )
