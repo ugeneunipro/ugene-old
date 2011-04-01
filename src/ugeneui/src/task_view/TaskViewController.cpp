@@ -446,7 +446,7 @@ QString TVReportWindow::prepareReportHTML(Task* t) {
     QString status = t->hasErrors() ? tr("Failed") : t->isCanceled() ? tr("Canceled") : tr("Finished");
     report+="<tr><td width=200><b>"+tr("status")+"</b></td><td>" +status+ "</td></tr>";
     if (t->hasErrors()) {
-    report+="<tr><td><b>"+tr("error:")+"</b></td><td>" + t->getError()+ "</td></tr>";
+    report+="<tr><td><b>"+tr("error:")+"</b></td><td>" + t->getError().replace('|',"&#124;") + "</td></tr>";
     }
 
     int msecs = GTimer::millisBetween(t->getTimeInfo().startTime, t->getTimeInfo().finishTime);
@@ -459,7 +459,7 @@ QString TVReportWindow::prepareReportHTML(Task* t) {
     report+="</td></tr><tr><td>";
 
 
-    report+=t->generateReport()+"<br>";
+    report+=t->generateReport().replace('|',"&#124;")+"<br>";
     report+="</td></tr></table>";
     return report;
 }
