@@ -73,6 +73,7 @@ public:
 
     /** SCO (non-object, non-root) types */
     static const U2DataType Annotation              = 1000;
+    static const U2DataType AnnotationGroup         = 1001;
     
     /**  Assembly read */
     static const U2DataType AssemblyRead            = 1100;

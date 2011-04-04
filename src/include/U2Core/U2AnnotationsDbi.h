@@ -28,7 +28,6 @@
 
 namespace U2 {
 
-
 /**
     An interface to obtain 'read' access to sequence annotations
 */
@@ -37,51 +36,71 @@ protected:
     U2AnnotationDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
 public:
+
     /** 
-        Returns number of annotations for the given sequence object  that belongs to the group specified
-        If group name is empty - all annotations are counted
+        Returns group by path. Path construction algorithm: parent-name2 + "/" + parent-name1 +  "/" + ... + "/" + groupName 
     */
-    virtual qint64 countAnnotations(const U2DataId& sequenceId, const QString& group,  U2OpStatus& os) = 0;
+    virtual U2AnnotationGroup getGroupByPath(const U2DataId& sequenceId, const QString& path, U2OpStatus& os) =0;
     
+    /** Returns all subgroups of the given group */
+    virtual QList<U2AnnotationGroup> getSubgroups(const U2DataId& groupId, U2OpStatus& os) = 0;
+
+    /** Reads annotation group by id */
+    virtual U2AnnotationGroup getGroup(const U2DataId& groupId, U2OpStatus& os) = 0;
+    
+    /**
+        Creates new group. If group already exists - returns existing instance
+        Requires: U2DbiFeature_WriteAnnotation feature support
+    */
+    virtual U2AnnotationGroup createGroup(const U2DataId& sequenceId, const QString& path, U2OpStatus& os) = 0;    
+
+    /**
+        Changes group path.
+        If destination group is already exists operation fails.
+        Requires: U2DbiFeature_WriteAnnotation feature support
+    */
+    virtual U2AnnotationGroup moveGroup(const U2DataId& groupId, const QString& newPath, U2OpStatus& os) = 0;    
+
     /** 
         Returns number of annotations for the given sequence object in the given region.
         Counts all annotations whose location intersects the region.
+        If region is [0, U2_DBI_NO_LIMIT] - returns all annotation for the given sequence
     */
-    virtual qint64 countAnnotations(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) = 0;
+    virtual qint64 countSequenceAnnotations(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) = 0;
 
     /** 
-        Returns annotations for the given sequence object that belongs to the group specified
-        If group is empty searches globally in all groups
-        Orders result by qualifier if not empty
-        The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. 
-    */
-    virtual QList<U2DataId> getAnnotations(const U2DataId& sequenceId, const QString& group, const QString& orderByQualifier,
-                                            qint64 offset, qint64 count, U2OpStatus& os) = 0;
-    
-    /** 
-        Returns annotations for the given sequence object in the given region.
+        Returns number of annotations in the given sequence group object in the given region.
         Counts all annotations whose location intersects the region.
-        Orders result by qualifier if not empty.
-        The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. 
+        If region is [0, U2_DBI_NO_LIMIT] - returns all annotation for the given sequence
     */
-    virtual QList<U2DataId> getAnnotations(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, 
-                                            qint64 offset, qint64 count, U2OpStatus& os) = 0;
+    virtual qint64 countGroupAnnotations(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) = 0;
+
+
+    /** 
+        Returns annotations for the given sequence object
+        Orders result by qualifier if not empty
+    */
+    virtual U2DbiIterator<U2DataId> getAnnotationsBySequence(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, U2OpStatus& os) = 0;
+    
+
+    /** 
+        Returns annotations for the given group
+        Orders result by qualifier if not empty
+    */
+    virtual U2DbiIterator<U2DataId> getAnnotationsByGroup(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, U2OpStatus& os) = 0;
 
     /** Reads annotation entity by id */
     virtual U2Annotation getAnnotation(const U2DataId& annotationId, U2OpStatus& os) = 0;
 
+    /** Returns groups this annotation belongs to */
+    virtual QList<U2DataId> getAnnotationGroups(const U2DataId& annotationId, U2OpStatus& os) = 0;
 
-    /** 
-        Adds new annotation. Assigns Id to annotation 
-        Requires: U2DbiFeature_WriteAnnotation feature support
-    */
-    virtual void createAnnotation(U2Annotation& a, U2OpStatus& os) = 0;
 
     /** 
         Adds list of new annotations. Assigns Ids to annotations added 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void createAnnotations(QList<U2Annotation>& annotations, U2OpStatus& os) = 0;
+    virtual void createAnnotations(QList<U2Annotation>& annotations, const U2DataId& group, U2OpStatus& os) = 0;
 
     
     /** 
@@ -124,14 +143,15 @@ public:
         Adds annotation to the specified group 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */    
-    virtual void addToGroup(const U2DataId& annotationId, const QString& group, U2OpStatus& os) = 0; 
+    virtual void addToGroup(const U2DataId& groupId, const U2DataId& annotationId, U2OpStatus& os) = 0; 
     
     /** 
         Removes annotation from the specified group 
         If annotation belongs to no group, it is removed
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void removeFromGroup(const U2DataId& annotationId, const QString& group, U2OpStatus& os) = 0; 
+    virtual void removeFromGroup(const U2DataId& groupId, const U2DataId& annotationId, U2OpStatus& os) = 0; 
+    
 };
 
 } //namespace

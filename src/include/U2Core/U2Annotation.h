@@ -220,16 +220,42 @@ public:
     /** Annotation related qualifiers (textual properties) */
     QVector<U2Qualifier>    qualifiers;
 
-    /** 
-        Groups (folders) this annotation must is shown in. 
-        Annotation must belong to at least one group, otherwise it is automatically removed.
-    */
-    QStringList             groups;
-
     /** Version of the annotation. Same as modification count */
     qint64                  version;
 };
 
+
+/** 
+    Group of the annotations represents a tree-like hierarchy of annotations
+    related to some sequence.
+    Group holds references to annotation and one annotation can be included into multiple groups
+    If an annotation does not belong to any group -> the annotation must be removed by DBI
+*/
+
+class U2CORE_EXPORT U2AnnotationGroup : public U2Entity {
+public:
+    /** Parent group for this group */
+    U2DataId            parentGroupId;
+    
+    /** Object (sequence) this group is related to */
+    U2DataId            sequenceId;
+
+    /** Group name, may contain any readable characters except '/' symbol used to separate group path */
+    QString             name;
+
+    /** 
+        Group path 
+        Path construction algorithm: parent-name2 + "/" + parent-name1 +  "/" + ... + "/" + groupName 
+        Note: group path includes current group name
+    */
+    QString             path;
+
+    /** Modification counter of group fields, content and annotation names included into the group */
+    qint64              localVersion;
+
+    /** Modification counter updated any (any depth) child group is modified */
+    qint64              globalVersion;
+};
 
 //////////////////////////////////////////////////////////////////////////
 // functions impl

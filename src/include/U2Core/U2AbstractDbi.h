@@ -174,6 +174,14 @@ class U2SimpleAnnotationDbi: public U2AnnotationDbi {
 protected:
     U2SimpleAnnotationDbi(U2Dbi* rootDbi) : U2AnnotationDbi(rootDbi) {}
 
+    virtual U2AnnotationGroup createGroup(const U2DataId&, const QString&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+    }
+    
+    virtual U2AnnotationGroup moveGroup(const U2DataId&, const QString&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+    }
+
     virtual void createAnnotation(U2Annotation&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
     }
@@ -206,11 +214,11 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
     }
 
-    virtual void addToGroup(const U2DataId&, const QString&, U2OpStatus& os) {
+    virtual void addToGroup(const U2DataId&, const U2DataId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
     }
     
-    virtual void removeFromGroup(const U2DataId&, const QString&, U2OpStatus& os) {
+    virtual void removeFromGroup(const U2DataId&, const U2DataId, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
     }
 };
