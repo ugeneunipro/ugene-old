@@ -1837,7 +1837,7 @@ Chcete jej nahradit?</translation>
     <name>U2::AutoAnnotationsADVAction</name>
     <message>
         <location filename="../src/util_ov_annotated_dna/AutoAnnotationUtils.cpp" line="34"/>
-        <source>Automatic annotation highlighting</source>
+        <source>Automatic Annotations Highlighting</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -32,7 +32,7 @@
 namespace U2 {
 
 AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnnotationObject* obj) 
-: ADVSequenceWidgetAction("AutoAnnotationUpdateAction", tr("Automatic annotation highlighting")), aaObj(obj)
+: ADVSequenceWidgetAction("AutoAnnotationUpdateAction", tr("Automatic Annotations Highlighting")), aaObj(obj)
 {
     seqWidget = v;
     addToBar = true;

@@ -112,7 +112,7 @@
     <message>
         <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="41"/>
         <source>Highlight</source>
-        <translation>Подсветка</translation>
+        <translation>Маркировка</translation>
     </message>
     <message>
         <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="69"/>

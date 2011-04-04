@@ -1479,7 +1479,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="105"/>
         <source>Annotations highlighting...</source>
-        <translation>Подсветка аннотаций...</translation>
+        <translation>Маркировка аннотаций...</translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="108"/>
@@ -1724,8 +1724,8 @@ Do you want to replace it?</source>
     <name>U2::AutoAnnotationsADVAction</name>
     <message>
         <location filename="../src/util_ov_annotated_dna/AutoAnnotationUtils.cpp" line="34"/>
-        <source>Automatic annotation highlighting</source>
-        <translation type="unfinished"></translation>
+        <source>Automatic Annotations Highlighting</source>
+        <translation>Автомаркировка аннотаций</translation>
     </message>
 </context>
 <context>
