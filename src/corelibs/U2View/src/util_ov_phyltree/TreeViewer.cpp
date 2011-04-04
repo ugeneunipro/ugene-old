@@ -396,15 +396,7 @@ void TreeViewerUI::updateTreeSettings(){
     while (!stack.empty()) {
         GraphicsBranchItem *item = stack.pop();
         if(item!=root){
-            qreal coef  = qMax(1.0, TreeViewerUI::SIZE_COEF*treeSettings.width_coef);
-            if(treeSettings.type == TreeSettings::PHYLO_TYPE){
-                item->setWidth(qAbs(item->getDist()) * getScale()* coef);
-               
-            }else if (treeSettings.type == TreeSettings::CLADO_TYPE){
-                //if (item->getNameText() != NULL) {
-                    item->setWidth(avgW * getScale()* coef);
-                //}
-            }
+         
             if(layout == TreeLayout_Rectangular){
                 GraphicsRectangularBranchItem *rectItem = dynamic_cast<GraphicsRectangularBranchItem*>(item);
                 if(rectItem){
@@ -412,6 +404,15 @@ void TreeViewerUI::updateTreeSettings(){
                 }
                 
             }
+			qreal coef  = qMax(1.0, TreeViewerUI::SIZE_COEF*treeSettings.width_coef);
+			if(treeSettings.type == TreeSettings::PHYLO_TYPE){
+				item->setWidth(qAbs(item->getDist()) * getScale()* coef);
+
+			}else if (treeSettings.type == TreeSettings::CLADO_TYPE){
+				//if (item->getNameText() != NULL) {
+				item->setWidth(avgW * getScale()* coef);
+				//}
+			}
         }
         foreach (QGraphicsItem* ci, item->childItems()) {
             GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(ci);
