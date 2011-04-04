@@ -332,7 +332,21 @@ void TreeViewerUI::updateSettings(const TextSettings &settings) {
 void TreeViewerUI::updateSettings(const TreeSettings &settings) {
 
     treeSettings = settings;
-    updateTreeSettings();
+	if(layout!=TreeLayout_Rectangular){
+		TreeLayout tmpL = layout;
+		layout = TreeLayout_Rectangular;
+		switch(tmpL){
+			case TreeLayout_Circular:
+				sl_circularLayoutTriggered();
+				break;
+			case TreeLayout_Unrooted:
+				sl_unrootedLayoutTriggered();
+				break;
+		}
+	}else{
+		updateTreeSettings();
+	}
+
 }
 
 void TreeViewerUI::sl_setSettingsTriggered() {
@@ -392,10 +406,10 @@ void TreeViewerUI::updateTreeSettings(){
     }
     
     QStack<GraphicsBranchItem*> stack;
-    stack.push(root);
+    stack.push(rectRoot);
     while (!stack.empty()) {
         GraphicsBranchItem *item = stack.pop();
-        if(item!=root){
+        if(item!=rectRoot){
          
             if(layout == TreeLayout_Rectangular){
                 GraphicsRectangularBranchItem *rectItem = dynamic_cast<GraphicsRectangularBranchItem*>(item);
@@ -721,6 +735,7 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
         scene()->addItem(root);
         defaultZoom();
         updateRect();
+		updateTreeSettings();
         fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
     }
 }
@@ -730,6 +745,7 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
         swapAction->setEnabled(false);
 
         layout = TreeLayout_Circular;
+		updateTreeSettings();
         layoutTask = new CreateCircularBranchesTask(rectRoot);
         connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
@@ -742,6 +758,7 @@ void TreeViewerUI::sl_unrootedLayoutTriggered() {
         swapAction->setEnabled(false);
 
         layout = TreeLayout_Unrooted;
+		updateTreeSettings();
         layoutTask = new CreateUnrootedBranchesTask(rectRoot);
         connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
@@ -954,8 +971,6 @@ void TreeViewerUI::redrawRectangularLayout(){
 
         qreal scale = qMin(minDistScale, maxDistScale);
         setScale(scale);
-
-        updateTreeSettings();
     }
     
 }
