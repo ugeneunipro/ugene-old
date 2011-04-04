@@ -102,11 +102,13 @@ Task::ReportResult SaveDocumentTask::report() {
     if (url == doc->getURL() && iof == doc->getIOAdapterFactory()) {
         doc->makeClean();
     }
+    if (doc) {
+        doc->setLastUpdateTime();
+    }
     if (flags.testFlag(SaveDoc_DestroyAfter)) {
         doc->unload();
         delete doc;
     }
-    doc->setLastUpdateTime();
     return Task::ReportResult_Finished;
 }
 
