@@ -147,7 +147,7 @@ bool DocumentFormat::isObjectOpSupported(const Document* d, DocObjectOp op, GObj
 
 Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, const QList<UnloadedObjectInfo>& unloadedObjects,
                    const QVariantMap& hints, const QString& instanceModLockDesc)
-: StateLockableTreeItem(), df(_df), io(_io), url(_url)
+                   : StateLockableTreeItem(), df(_df), io(_io), url(_url)
 {
     ctxState = new GHintsDefaultImpl(hints);
 
@@ -161,7 +161,7 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
 
 Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
                    const QList<GObject*>& _objects, const QVariantMap& hints, const QString& instanceModLockDesc)
-: StateLockableTreeItem(), df(_df), io(_io), url(_url)
+                   : StateLockableTreeItem(), df(_df), io(_io), url(_url)
 {
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
@@ -324,6 +324,7 @@ void Document::loadFrom(const Document* d) {
     }
 
     ctxState->setMap(d->getGHints()->getMap());
+    lastUpdateTime = d->getLastUpdateTime();
 
     //copy instance modlocks if any
     StateLock* mLock = modLocks[DocumentModLock_FORMAT_AS_INSTANCE];
@@ -556,5 +557,13 @@ void Document::fromScriptValue(const QScriptValue &object, Document* &out)
 {
     out = qobject_cast<Document*>(object.toQObject()); 
 };
+
+void Document::setLastUpdateTime() {
+    QFileInfo fi(getURLString());
+    if (fi.exists()) {
+        lastUpdateTime = fi.lastModified();
+    }
+}
+
 }//namespace
 

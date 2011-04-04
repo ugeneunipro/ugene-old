@@ -275,6 +275,7 @@ Task::ReportResult LoadDocumentTask::report() {
         return ReportResult_Finished;
     }
     assert(result!=NULL);
+    result->setLastUpdateTime();
     return ReportResult_Finished;
 }
 

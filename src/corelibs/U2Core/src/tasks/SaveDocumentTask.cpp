@@ -106,6 +106,7 @@ Task::ReportResult SaveDocumentTask::report() {
         doc->unload();
         delete doc;
     }
+    doc->setLastUpdateTime();
     return Task::ReportResult_Finished;
 }
 

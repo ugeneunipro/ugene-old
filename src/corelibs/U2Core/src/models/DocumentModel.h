@@ -303,6 +303,10 @@ public:
 
     bool isModified() const { return isTreeItemModified(); }
 
+    void setLastUpdateTime();
+
+    const QDateTime& getLastUpdateTime() const { return lastUpdateTime; }
+
     static void setupToEngine(QScriptEngine *engine);
 private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Document* const &in);
@@ -326,6 +330,7 @@ protected:
     QString             name; /* display name == short pathname, excluding the path */
     QList<GObject*>     objects;
     GHints*             ctxState;
+    QDateTime           lastUpdateTime;
     
     StateLock*          modLocks[DocumentModLock_NUM_LOCKS];
 

@@ -66,6 +66,146 @@ namespace U2 {
 
 #define SETTINGS_ROOT QString("projecview/")
 
+#define UPDATER_TIMEOUT 1000
+
+DocumentUpdater::DocumentUpdater(QObject* p) : QObject(p) {
+    QTimer* timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(sl_update()));
+    timer->start(UPDATER_TIMEOUT);
+}
+
+void DocumentUpdater::sl_update() {
+    Project* prj = AppContext::getProject();
+    assert(prj);
+
+    // don't check documents currently used by save/load tasks
+    QList<Document*> docs2check = prj->getDocuments();
+    excludeDocuments(AppContext::getTaskScheduler()->getTopLevelTasks(), docs2check);
+
+    // build list of documents which files were modified between calls to sl_update()
+    QList<Document*> outdatedDocs;
+    foreach(Document* doc, docs2check) {
+        if (!doc->isLoaded()) {
+            continue;
+        }
+
+        QFileInfo fi(doc->getURLString());
+        QDateTime updTime = doc->getLastUpdateTime();
+
+        // last update time is updated by save/load tasks
+        // if it's a null the document was not loaded or saved => reload is pointless
+        // if it's not a null and file not exists => file was deleted (don't reload)
+        if (updTime.isNull() || !fi.exists()) {
+            continue;
+        }
+        if (fi.lastModified() != updTime) { // file was modified
+            outdatedDocs.append(doc);
+        }
+    }
+    
+    // query user what documents he wants to reload
+    // reloaded document modification time will be updated in load task
+    QList<Document*> need2reload;
+    QListIterator<Document*> iter(outdatedDocs);
+    while (iter.hasNext()) {
+        Document* doc = iter.next();
+        QMessageBox::StandardButton btn = QMessageBox::question(
+            QApplication::activeWindow(),
+            tr("UGENE"),
+            tr("Document '%1' was modified. Do you wish to reload it?").arg(doc->getName()),
+            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
+
+        switch (btn) {
+            case QMessageBox::Yes:
+                need2reload.append(doc);
+                break;
+            case QMessageBox::YesToAll:
+                need2reload.append(doc);
+                while (iter.hasNext()) {
+                    doc = iter.next();
+                    need2reload.append(doc);
+                }
+                break;
+            case QMessageBox::No:
+                doc->setLastUpdateTime();
+                break;
+            case QMessageBox::NoToAll:
+                doc->setLastUpdateTime();
+                while (iter.hasNext()) {
+                    doc = iter.next();
+                    doc->setLastUpdateTime();
+                }
+                break;
+        }
+    }
+
+    if (need2reload.isEmpty()) {
+        return;
+    }
+
+    // setup multi task : reload documents + reopen views
+
+    Task* loadTask = new Task(tr("Reload documents task"), TaskFlag_NoRun);
+
+    QList<GObjectViewState*> states;
+    QList<GObjectViewWindow*> viewWindows;
+
+    foreach(Document* doc, need2reload) {
+        QList<GObjectViewWindow*> viewWnds = GObjectViewUtils::findViewsWithAnyOfObjects(doc->getObjects());
+        foreach(GObjectViewWindow* vw, viewWnds) {
+            if (viewWindows.contains(vw)) {
+                continue;
+            }
+            viewWindows.append(vw);
+            GObjectViewFactoryId id = vw->getViewFactoryId();
+            QVariantMap stateData = vw->getObjectView()->saveState();
+            if (stateData.isEmpty()) {
+                continue;
+            }
+            states << new GObjectViewState(id, vw->getViewName(), "", stateData);
+        }
+
+        doc->unload();
+        loadTask->addSubTask(new LoadUnloadedDocumentTask(doc));
+    }
+
+    Task* updateViewTask = new Task(tr("Restore state task"), TaskFlag_NoRun);
+
+    foreach(GObjectViewState* state, states) {
+        GObjectViewWindow* view = GObjectViewUtils::findViewByName(state->getViewName());
+        if (view!=NULL) {
+            assert(view->isPersistent());
+            AppContext::getMainWindow()->getMDIManager()->activateWindow(view);
+            updateViewTask->addSubTask(view->getObjectView()->updateViewTask(state->getStateName(), state->getStateData()));
+        } else {
+            GObjectViewFactory* f = AppContext::getObjectViewFactoryRegistry()->getFactoryById(state->getViewFactoryId());
+            assert(f!=NULL);
+            updateViewTask->addSubTask(f->createViewTask(state->getViewName(), state->getStateData()));
+        }
+        delete state;
+    }
+
+    QList<Task*> subs;
+    subs << loadTask << updateViewTask;
+    Task* t = new MultiTask(tr("Reload documents and restore view state task"), subs);
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+}
+
+void DocumentUpdater::excludeDocuments(const QList<Task*>& tasks, QList<Document*>& documents) {
+    foreach(Task* task, tasks) {
+        excludeDocuments(task->getSubtasks(), documents);
+        SaveDocumentTask* saveTask = qobject_cast<SaveDocumentTask*>(task);
+        if (saveTask) {
+            documents.removeAll(saveTask->getDocument());
+        } else {
+            LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(task);
+            if (loadTask) {
+                documents.removeAll(loadTask->getDocument());
+            }
+        }
+    }
+}
+
 ProjectViewWidget::ProjectViewWidget() {
     setupUi(this);
     groupModeMenu = new QMenu(tr("Group mode"), this);
@@ -77,6 +217,8 @@ ProjectViewWidget::ProjectViewWidget() {
     setObjectName(DOCK_PROJECT_VIEW);
     setWindowTitle(tr("Project"));
     setWindowIcon(QIcon(":ugene/images/project.png"));
+
+    updater = new DocumentUpdater(this);
 }
 
 static ProjectTreeGroupMode getLastGroupMode() {
