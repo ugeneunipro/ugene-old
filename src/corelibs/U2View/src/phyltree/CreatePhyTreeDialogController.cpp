@@ -56,13 +56,13 @@ void CreatePhyTreeDialogController::sl_okClicked(){
     }
 
     if(estimateResources()){
-		QMessageBox mb(QMessageBox::Warning, tr("Memory error risk"), tr("For that alignment phylip dnadistance modul will require more memory than you have in the system. It may cause crash. Do you want to continue?"), QMessageBox::Ok|QMessageBox::Cancel);
-		if(mb.exec() == QMessageBox::Ok){
-			QDialog::accept();
-		}
-	}else{
-		QDialog::accept();
-	}
+        QMessageBox mb(QMessageBox::Warning, tr("Memory error risk"), tr("For that alignment phylip dnadistance modul will require more memory than you have in the system. It may cause crash. Do you want to continue?"), QMessageBox::Ok|QMessageBox::Cancel);
+        if(mb.exec() == QMessageBox::Ok){
+            QDialog::accept();
+        }
+    }else{
+        QDialog::accept();
+    }
 
     
 

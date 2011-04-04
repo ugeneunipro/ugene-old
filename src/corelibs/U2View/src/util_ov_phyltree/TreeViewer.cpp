@@ -621,6 +621,7 @@ void TreeViewerUI::sl_swapTriggered() {
         }
     }
     redrawRectangularLayout(); 
+    updateTreeSettings();
 }
 
 void TreeViewerUI::collapseSelected() {
