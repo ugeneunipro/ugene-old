@@ -26,6 +26,7 @@
 #include <U2Core/Timer.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
+#include <U2Core/U2AnnotationUtils.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Core/AnnotationData.h>
@@ -550,6 +551,12 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter& p
     if (a->getLocation()->isSingleRegion()) {
         return;
     }
+    
+    
+    if (U2AnnotationUtils::isSplitted(a->getLocation(), getGSequenceLineViewAnnotated()->getSequenceRange())) {
+        return;
+    }
+
     const GSequenceLineViewAnnotated::DrawSettings& drawSettings = getGSequenceLineViewAnnotated()->getDrawSettings();
     const U2Region& visibleRange = view->getVisibleRange();
     int dx1 = 0;

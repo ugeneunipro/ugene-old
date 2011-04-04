@@ -73,9 +73,6 @@ public:
 
     static void             updateRelationsURL(GObject* o, const GUrl& fromURL, const GUrl& toURL);
     
-    // checks value of "SPLIT" qualifier for circular DNA
-    static bool             annotationHasNegativeSplit(Annotation* a);
-
     static void             replaceAnnotationQualfier(Annotation* a, const QString& name, const QString& newVal, bool create = false);
 
 };

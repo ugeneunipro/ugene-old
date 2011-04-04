@@ -202,6 +202,17 @@ class GTest_CheckAnnotationsNamesInTwoObjects : public GTest {
     QString secondDocContextName;
 };
 
+class GTest_CreateTmpAnnotationObject : public GTest {
+    Q_OBJECT
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CreateTmpAnnotationObject, "create-tmp-annotation-object");
+
+    ReportResult report();
+    void cleanup();
+    QString objContextName;
+    AnnotationTableObject* aobj;
+
+};
+
 class AnnotationTableObjectTest {
 public:
     static QList<XMLTestFactory*> createTestFactories();

@@ -91,10 +91,6 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
         QList<Annotation*> annotations = aObj->getAnnotations();
         foreach (Annotation* a, annotations) {
             if (isDNAFragment(a)) {
-                // Skip negative split
-                if (GObjectUtils::annotationHasNegativeSplit(a)) {
-                    continue;
-                }
                 // Find related sequence object
                 DNASequenceObject* dnaObj = NULL;
                 QList<GObjectRelation> relations = aObj->getObjectRelations();
@@ -128,16 +124,7 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
 QVector<U2Region> DNAFragment::getFragmentRegions() const
 {
     assert(!isEmpty());
-    QVector<U2Region> result = annotatedFragment->getRegions();
-    QString split = annotatedFragment->findFirstQualifierValue(QUALIFIER_SPLIT);
-    if (!split.isEmpty()) {
-        int splitVal = split.toInt();
-        U2Region oldRegion = result.first();
-        U2Region addRegion(0, splitVal - oldRegion.length);
-        result.append(addRegion);
-    }
-
-    return result;
+    return annotatedFragment->getRegions();
 }
 
 QString DNAFragment::getName() const
@@ -160,14 +147,13 @@ QString DNAFragment::getSequenceName() const
 QByteArray DNAFragment::getSequence() const
 {
     assert(!isEmpty());
-    const U2Region& region = annotatedFragment->getLocation()->regions[0];
-    QByteArray seq = dnaObj->getSequence().mid(region.startPos, region.length);
-    QString split = annotatedFragment->findFirstQualifierValue(QUALIFIER_SPLIT);
-    if (!split.isEmpty()) {
-        int splitVal = split.toInt();
-        QByteArray addSeq = dnaObj->getSequence().mid(0, splitVal - region.length);
-        seq.append(addSeq);
+    QByteArray seq;
+    const U2Location& location = annotatedFragment->getLocation();
+    foreach (const U2Region& region, location->regions) {
+        seq += dnaObj->getSequence().mid(region.startPos, region.length);
     }
+    
+    assert(!seq.isEmpty());
 
     if (reverseCompl) {
         DNAAlphabet* al = dnaObj->getAlphabet();
@@ -195,10 +181,13 @@ const DNAFragmentTerminus& DNAFragment::getRightTerminus() const
     return rightTerm;
 }
 
+/*
 bool DNAFragment::isSplitted() const
 {
-    return !annotatedFragment->findFirstQualifierValue(QUALIFIER_SPLIT).isEmpty();
+    
+    return false; //!annotatedFragment->findFirstQualifierValue(QUALIFIER_SPLIT).isEmpty();
 }
+*/
 
 void DNAFragment::setInverted( bool inverted /*= true*/ )
 {
@@ -210,16 +199,13 @@ void DNAFragment::setInverted( bool inverted /*= true*/ )
 void DNAFragment::setLeftTermType( const QByteArray& termType )
 {
     QString qName = QUALIFIER_LEFT_TYPE;
-    if (reverseCompl) {
-        qName = isSplitted() ?  QUALIFIER_SPLIT_TYPE : QUALIFIER_RIGHT_TYPE;
-    }
     GObjectUtils::replaceAnnotationQualfier(annotatedFragment, qName, termType);
     updateLeftTerm();
 }
 
 void DNAFragment::setRightTermType( const QByteArray& termType )
 {
-    QString qName = isSplitted() ?  QUALIFIER_SPLIT_TYPE : QUALIFIER_RIGHT_TYPE;
+    QString qName = QUALIFIER_RIGHT_TYPE;
     if (reverseCompl) {
         qName = QUALIFIER_LEFT_TYPE;
     }
@@ -239,7 +225,7 @@ void DNAFragment::setLeftOverhang( const QByteArray& overhang )
      QByteArray qName(QUALIFIER_LEFT_OVERHANG);
      if (reverseCompl) {
          toRevCompl(buf);
-         qName = isSplitted() ?  QUALIFIER_SPLIT_OVERHANG : QUALIFIER_RIGHT_OVERHANG;
+         qName = QUALIFIER_RIGHT_OVERHANG;
      } 
      
      setOverhang(qName, buf);
@@ -249,7 +235,7 @@ void DNAFragment::setLeftOverhang( const QByteArray& overhang )
 void DNAFragment::setRightOverhang( const QByteArray& overhang )
 {
     QByteArray buf(overhang);
-    QByteArray qName(isSplitted() ?  QUALIFIER_SPLIT_OVERHANG : QUALIFIER_RIGHT_OVERHANG);
+    QByteArray qName(QUALIFIER_RIGHT_OVERHANG);
     if (reverseCompl) {
         toRevCompl(buf);
         qName = QUALIFIER_LEFT_OVERHANG;
@@ -305,15 +291,9 @@ void DNAFragment::updateLeftTerm()
 void DNAFragment::updateRightTerm()
 {
     assert(annotatedFragment != NULL);
-    if (isSplitted()) {
-        rightTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_SPLIT_TERM).toAscii();
-        rightTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_SPLIT_OVERHANG).toAscii();
-        rightTerm.termType = annotatedFragment->findFirstQualifierValue(QUALIFIER_SPLIT_TYPE).toAscii();
-    } else {
-        rightTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TERM).toAscii();
-        rightTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_OVERHANG).toAscii();
-        rightTerm.termType = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toAscii();
-    }
+    rightTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TERM).toAscii();
+    rightTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_OVERHANG).toAscii();
+    rightTerm.termType = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toAscii();
 }
 
 void DNAFragment::toRevCompl( QByteArray& seq )

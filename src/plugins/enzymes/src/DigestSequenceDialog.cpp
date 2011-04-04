@@ -164,14 +164,9 @@ void DigestSequenceDialog::searchForAnnotatedEnzymes(ADVSequenceObjectContext* c
         QSet<Annotation*> reSites;
         grp->findAllAnnotationsInGroupSubTree(reSites);
         foreach (Annotation* a, reSites) {
-            if ( GObjectUtils::annotationHasNegativeSplit(a) ) {
-                continue;
-            }
             QString enzymeId = a->getAnnotationName();
-            foreach (const U2Region& reg, a->getRegions()) {
-                annotatedEnzymes.insertMulti(enzymeId, reg );
-                availableEnzymes.insert(enzymeId);
-            }
+            annotatedEnzymes.insertMulti(enzymeId, a->getRegions().first() );
+            availableEnzymes.insert(enzymeId);
         }
 
     }

@@ -212,5 +212,18 @@ int U2AnnotationUtils::getRegionFrame(int sequenceLen, U2Strand strand, bool ord
     return frame;
 }
 
+bool U2AnnotationUtils::isSplitted( const U2Location& location, const U2Region& seqRange )
+{
+    QVector<U2Region> regions = location->regions;
+    if (regions.size() != 2) {
+        return false;
+    }
+    if ( regions[0].endPos() == seqRange.endPos() && regions[1].startPos == seqRange.startPos) {
+        return true; 
+    }
+    
+    return false;
+}
+
 
 } //namespace

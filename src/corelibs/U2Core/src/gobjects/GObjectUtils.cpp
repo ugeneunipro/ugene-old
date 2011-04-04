@@ -237,20 +237,6 @@ void GObjectUtils::updateRelationsURL(GObject* o, const QString& fromURL, const 
     }
 }
 
-bool GObjectUtils::annotationHasNegativeSplit( Annotation* a )
-{
-    QString split = a->findFirstQualifierValue("SPLIT");
-
-    if (!split.isEmpty()) {
-        int splitValue = split.toInt();
-        if (splitValue < 0) {
-           return true;
-        }
-    }
-
-    return false;
-}
-
 void GObjectUtils::replaceAnnotationQualfier( Annotation* a, const QString& name, const QString& newVal, bool create )
 {
     QVector<U2Qualifier> quals;

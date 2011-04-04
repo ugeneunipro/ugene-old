@@ -29,6 +29,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
+#include <U2Core/U2AnnotationUtils.h>
 #include <U2View/ADVSequenceWidget.h>
 
 #include <U2Core/DNASequenceSelection.h>
@@ -231,34 +232,17 @@ void CircularView::setAngle(int angle) {
 }
 
 void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection* selection, const QList<Annotation*>& added, const QList<Annotation*>& removed) {
-    QList<Annotation*> toAdd;
+    
     foreach (Annotation* a, added) {
-        const QString splitStr = a->findFirstQualifierValue("SPLIT");
-        if (splitStr.isEmpty()) {
-            continue;
-        }
-        int curSplit = splitStr.toInt();
-        QList<Annotation*> another;
-        AnnotationTableObject* aObj = a->getGObject();
-        foreach (Annotation* target, aObj->getAnnotations()) {
-            if (target->getAnnotationName() == a->getAnnotationName()) {
-                if (target == a) {
-                    continue;
-                }
-                int newSplit = target->findFirstQualifierValue("SPLIT").toInt();
-                if ( qAbs(newSplit) == qAbs(curSplit)) {
-                    // found other split
-                    toAdd.append( target );
-                    break;
-                }
-            }
+        bool splitted =  U2AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange()); 
+        int locationIdx = selection->getAnnotationData(a)->locationIdx;
+        if (splitted && locationIdx != -1) {
+            // set locationIdx = -1 to make sure whole annotation region is selected
+            selection->addToSelection(a);
+            return;
         }
     }
     
-    foreach(Annotation* a, toAdd) {
-        selection->addToSelection(a);
-    }
-
     GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged(selection, added, removed);
     renderArea->update();
 }
@@ -832,9 +816,27 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
 
     QList<CircurlarAnnotationRegionItem*> regions;
 
+    bool splitted = U2AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange());
+    bool splittedItemIsReady = false;
+
     foreach(const U2Region& r, location) {
+        
+        int totalLen = 0;
+
+        if (splitted) {
+            if (!splittedItemIsReady) {
+                totalLen = r.length + location[1].length;
+                splittedItemIsReady = true;
+            } else {
+                break;
+            }
+        } else {
+            totalLen = r.length;
+        }
+
         float startAngle = (float)r.startPos / (float)seqLen * 360;
-        float spanAngle = (float)r.length / (float)seqLen * 360;
+        float spanAngle = (float)totalLen / (float)seqLen * 360;
+
 
         //cut annotation border if dna is linear
         if(!circularView->isCircularTopology()) {
@@ -842,21 +844,6 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
         }
         
         startAngle+=rotationDegree;
-
-        QVector<U2Qualifier> quals;
-        a->findQualifiers("SPLIT", quals);
-        if(!quals.isEmpty()) {
-            int totalLen = quals.at(0).value.toInt();
-            if (totalLen >= 0) {
-                if(totalLen > seqLen) {
-                    totalLen = seqLen;
-                }
-                spanAngle = (float)totalLen / (float)seqLen * 360;
-            }
-            else {
-                return;
-            }
-        }
         
         QPainterPath path;
         QRect outerRect(-outerEllipseSize/2 - yLevel * ellipseDelta/2, -outerEllipseSize/2 - yLevel * ellipseDelta/2, outerEllipseSize + yLevel * ellipseDelta, outerEllipseSize + yLevel * ellipseDelta);
@@ -864,7 +851,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
         QRect middleRect(-middleEllipseSize/2 - yLevel * ellipseDelta/2, -middleEllipseSize/2 - yLevel * ellipseDelta/2, middleEllipseSize + yLevel * ellipseDelta, middleEllipseSize + yLevel * ellipseDelta);
         arrowLength = qMin(arrowLength, ARROW_LENGTH);
         float dAlpha = 360 * arrowLength / (float)PI / (outerEllipseSize + innerEllipseSize + yLevel*ellipseDelta);
-        bool isShort = r.length / (float)seqLen * 360 < dAlpha;
+        bool isShort = totalLen / (float)seqLen * 360 < dAlpha;
 
         float regionLen = spanAngle*PI/180 * outerRect.height()/2;
         if(regionLen < REGION_MIN_LEN) {
@@ -918,10 +905,14 @@ void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, Annotation*
     }
 
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
+    bool splitted = U2AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange());
 
     int seqLen = ctx->getSequenceLen();
     const QVector<U2Region>& location = a->getRegions();
     for(int r = 0; r < location.count(); r++) {
+        if (splitted && r != 0) {
+            break;
+        }
         CircularAnnotationLabel* label = new CircularAnnotationLabel(a, r, seqLen, font, this);
         labelList.append(label);
         CircurlarAnnotationRegionItem* ri = circItems[a]->getRegions()[r];

@@ -87,7 +87,14 @@ AnnotationData* DigestSequenceTask::createFragment( int pos1, const QString& enz
                                                    int pos2, const QString& enzymeId2, const QByteArray& rightOverhang )
 {
     AnnotationData* ad = new AnnotationData();
-    ad->location->regions.append(U2Region(pos1, pos2 - pos1 ));
+    assert(pos1 != pos2 );
+    if (pos1  < pos2) {
+        ad->location->regions.append(U2Region(pos1, pos2 - pos1 ));
+    } else {
+        ad->location->regions.append(U2Region(pos1, seqRange.endPos() - pos1 ));
+        ad->location->regions.append(U2Region(seqRange.startPos, pos2 - seqRange.startPos ));
+    }
+    
     ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TERM, enzymeId1));
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, enzymeId2));
     ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftOverhang));
@@ -127,9 +134,6 @@ void DigestSequenceTask::findCutSites()
         QList<Annotation*> anns;
         foreach (Annotation* a, sourceObj->getAnnotations()) {
             if (a->getAnnotationName() == enzyme->id) {
-                if (GObjectUtils::annotationHasNegativeSplit(a) ) {
-                    continue;
-                }
                 anns.append(a);
             }
         }
@@ -141,7 +145,6 @@ void DigestSequenceTask::findCutSites()
         
         foreach (Annotation * a, anns) {
             const QVector<U2Region>& location = a->getRegions();
-            assert(location.size() == 1);
             int cutPos = location.first().startPos;
             cutSiteMap.insertMulti(cutPos, enzyme);
         }
@@ -235,28 +238,18 @@ void DigestSequenceTask::run()
     } else {
         int lCutLen = qAbs(ldiff - lastCutter->cutComplement);
         QByteArray lastLeftOverhang = dnaObj->getSequence().mid(lastCutPos - lCutLen, lCutLen);
-        AnnotationData* ad1 = createFragment(seqRange.startPos, QString(), QByteArray(), firstCutPos, firstCutter->id, firstRightOverhang );
-        AnnotationData* ad2 = createFragment(lastCutPos, lastCutter->id, lastLeftOverhang, seqRange.endPos(), QString(), QByteArray());
-
         if (isCircular) {
-            int split_size = (seqRange.length - lastCutPos) + firstCutPos; 
-
-            // For splitted fragments only the one with positive split is valid
-            ad1->qualifiers.append( U2Qualifier(QUALIFIER_SPLIT, QString("%1").arg(-split_size)) );
-            ad1->name = QString("Fragment 1");
-
-            ad2->qualifiers.append( U2Qualifier(QUALIFIER_SPLIT, QString("%1").arg(split_size)) );
-            ad2->qualifiers.append( U2Qualifier(QUALIFIER_SPLIT_TERM, firstCutter->id) );
-            ad2->qualifiers.append( U2Qualifier(QUALIFIER_SPLIT_OVERHANG, firstRightOverhang) );
-            ad2->qualifiers.append( U2Qualifier(QUALIFIER_SPLIT_TYPE, OVERHANG_TYPE_STICKY) );
-            ad2->name = ad1->name;
+            AnnotationData* ad = createFragment(lastCutPos, lastCutter->id, lastLeftOverhang, firstCutPos, firstCutter->id, firstRightOverhang );
+            ad->name = QString("Fragment 1");
+            results.append(SharedAnnotationData(ad));
         } else {
+            AnnotationData* ad1 = createFragment(seqRange.startPos, QString(), QByteArray(), firstCutPos, firstCutter->id, firstRightOverhang );
+            AnnotationData* ad2 = createFragment(lastCutPos, lastCutter->id, lastLeftOverhang, seqRange.endPos(), QString(), QByteArray());
             ad1->name = QString("Fragment 1");
             ad2->name = QString("Fragment %1").arg(count);
+            results.append(SharedAnnotationData(ad1));
+            results.append(SharedAnnotationData(ad2));
         }
-
-        results.append(SharedAnnotationData(ad1));
-        results.append(SharedAnnotationData(ad2));
     }
 
 }

@@ -203,37 +203,20 @@ QList<SharedAnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QStri
     foreach(const FindEnzymesAlgResult& r, results) {
         if (r.enzyme->id == enzymeId) {
             if (circular && r.pos + r.enzyme->seq.size() > seqlen) {
-                AnnotationData* ad1 = new AnnotationData();
-                ad1->name = r.enzyme->id;
                 if (seqlen < r.pos) {
-                    delete ad1;
                     continue;
                 }
-                ad1->location->regions << U2Region(r.pos, seqlen - r.pos);
+                AnnotationData* ad = new AnnotationData();
+                ad->name = r.enzyme->id;
+                ad->location->regions << U2Region(r.pos, seqlen - r.pos);
+                ad->location->regions << U2Region(0, r.enzyme->seq.size() - (seqlen - r.pos));
                 if (!dbxrefStr.isEmpty()) {
-                    ad1->qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
+                    ad->qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
                 }
                 if (!cutStr.isEmpty()) {
-                    ad1->qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
+                    ad->qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
                 }
-                ad1->qualifiers.append(U2Qualifier("SPLIT", QString("%1").arg(r.enzyme->seq.size())));
-                AnnotationData* ad2 = new AnnotationData();
-                ad2->name = r.enzyme->id;
-                if (r.enzyme->seq.size() < (seqlen - r.pos)) {
-                    delete ad1;
-                    delete ad2;
-                    continue;
-                }
-                ad2->location->regions << U2Region(0, r.enzyme->seq.size() - (seqlen - r.pos));
-                if (!dbxrefStr.isEmpty()) {
-                    ad2->qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
-                }
-                if (!cutStr.isEmpty()) {
-                    ad2->qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
-                }
-                ad2->qualifiers.append(U2Qualifier("SPLIT", QString("%1").arg(-r.enzyme->seq.size())));
-                res.append(SharedAnnotationData(ad1));
-                res.append(SharedAnnotationData(ad2));
+                res.append(SharedAnnotationData(ad));
             } else {
                 AnnotationData* ad = new AnnotationData();
                 ad->name = r.enzyme->id;

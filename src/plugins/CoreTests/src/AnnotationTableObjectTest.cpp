@@ -925,6 +925,38 @@ void GTest_FindAnnotationByLocation::cleanup() {
     }
 }
 
+//---------------------------------------------------------------
+
+void GTest_CreateTmpAnnotationObject::init(XMLTestFormat *tf, const QDomElement& el) {
+    Q_UNUSED(tf);
+
+    aobj = NULL;
+    objContextName = el.attribute(NAME_ATTR);
+    if (objContextName.isEmpty()) {
+        failMissingValue(NAME_ATTR);
+        return;
+    }
+}
+
+Task::ReportResult GTest_CreateTmpAnnotationObject::report() {
+    if (hasErrors()) {
+        return ReportResult_Finished;
+    }
+    
+    aobj =  new AnnotationTableObject(objContextName); 
+
+    if (aobj != NULL) {
+        addContext(objContextName, aobj);
+    }
+    return ReportResult_Finished;
+}
+
+void GTest_CreateTmpAnnotationObject::cleanup() {
+    if (aobj!=NULL && !objContextName.isEmpty()) {
+        removeContext(objContextName);
+    }
+    delete aobj;
+}
 
 //---------------------------------------------------------------
 QList<XMLTestFactory*> AnnotationTableObjectTest::createTestFactories() {
@@ -942,6 +974,7 @@ QList<XMLTestFactory*> AnnotationTableObjectTest::createTestFactories() {
     res.append(GTest_CheckAnnotationsQualifiersInTwoObjects::createFactory());
     res.append(GTest_CheckAnnotationsNamesInTwoObjects::createFactory());
     res.append(GTest_CheckAnnotationSequence::createFactory());
+    res.append(GTest_CreateTmpAnnotationObject::createFactory());
     return res;
 }
 

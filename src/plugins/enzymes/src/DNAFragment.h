@@ -54,7 +54,6 @@ private:
     QList<AnnotationTableObject*> relatedAnnotations;
     // reverse complement
     bool reverseCompl;
-    bool isSplitted() const;
     void updateTerms();
     void updateLeftTerm();
     void updateRightTerm();

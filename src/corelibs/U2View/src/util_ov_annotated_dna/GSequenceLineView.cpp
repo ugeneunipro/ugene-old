@@ -440,6 +440,11 @@ void GSequenceLineView::sl_sequenceChanged(){
     completeUpdate();
 }
 
+const U2Region& GSequenceLineView::getSequenceRange() const
+{
+    return ctx->getSequenceObject()->getSequenceRange();
+}
+
 //////////////////////////////////////////////////////////////////////////
 /// GSequenceLineViewRenderArea
 

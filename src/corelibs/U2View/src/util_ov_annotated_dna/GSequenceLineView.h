@@ -71,6 +71,7 @@ public:
 
     ADVSequenceObjectContext* getSequenceContext() const {return ctx;}
 
+    const U2Region& getSequenceRange() const;
 
     virtual void setStartPos(int pos);
 

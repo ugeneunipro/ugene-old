@@ -353,10 +353,11 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
     if (a->location->isEmpty()) {
         si.setError(EMBLGenbankAbstractDocument::tr("Error parsing location"));
         return SharedAnnotationData();
-    } 
-    if (a->location->isMultiRegion()) {
-        qSort(a->location->regions);
     }
+    // omit sorting because of splitted annotations 
+    /*if (a->location->isMultiRegion()) {
+        qSort(a->location->regions);
+    }*/
     if (offset!=0) {
         U2Region::shift(offset, a->location->regions);
     }

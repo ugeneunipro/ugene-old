@@ -62,6 +62,11 @@ public:
 
     /** returns translation frame[0,1,2] the region is placed on */
     static int getRegionFrame(int sequenceLen, U2Strand strand, bool order, int region, const QVector<U2Region>& location);
+    
+    /** Returns true if annotation location is splitted by sequence "edges".
+    For example, location JOIN(N..SeqSize - 1, 0..M) is splitted. **/
+    static  bool isSplitted(const U2Location& location, const U2Region& seqRange);
+
 
 };
 

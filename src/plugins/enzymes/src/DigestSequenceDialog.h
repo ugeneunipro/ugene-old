@@ -69,7 +69,7 @@ private:
     CreateAnnotationWidgetController*   ac;
     QSet<QString>                       availableEnzymes;
     QSet<QString>                       selectedEnzymes;
-    QMap<QString,U2Region>               annotatedEnzymes;
+    QMap<QString,U2Region>              annotatedEnzymes;
     QList<SEnzymeData>                  enzymesBase;
     
 };
