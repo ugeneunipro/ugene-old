@@ -55,6 +55,7 @@ public:
     
 protected:
     bool eventFilter(QObject *, QEvent *);
+    void leaveEvent(QEvent * e);
     
 private:
     QLabel * fromToLabel;
@@ -75,6 +76,9 @@ protected:
     void mousePressEvent(QMouseEvent * e);
     void mouseReleaseEvent(QMouseEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
+    void leaveEvent(QEvent * e);
+    void hideEvent(QHideEvent * e);
+    bool event(QEvent * e);
     
 private:
     void initRedraw();

@@ -118,6 +118,14 @@ bool ReadsHint::eventFilter(QObject *, QEvent * event) {
     }
 }
 
+void ReadsHint::leaveEvent(QEvent * e) {
+    QWidget * p = qobject_cast<QWidget*>(parent());
+    QPoint curInParentCoords = p->mapFromGlobal(QCursor::pos());
+    if(!p->rect().contains(curInParentCoords)) {
+        hide();
+    }
+}
+
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
 ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true), hBar(hBar_), vBar(vBar_), 
 redrawHint(false), hint(this)
@@ -486,6 +494,25 @@ void AssemblyReadsArea::mouseMoveEvent(QMouseEvent * e) {
     curPos = e->pos();
     redrawHint = true;
     update();
+}
+
+void AssemblyReadsArea::leaveEvent(QEvent * e) {
+    QPoint curInHintCoords = hint.mapFromGlobal(QCursor::pos());
+    if(!hint.rect().contains(curInHintCoords)) {
+        hint.hide();
+    }
+}
+
+void AssemblyReadsArea::hideEvent(QHideEvent * e) {
+    hint.hide();
+}
+
+bool AssemblyReadsArea::event(QEvent * e) {
+    if(e->type() == QEvent::WindowDeactivate) {
+        hint.hide();
+        redrawHint = false;
+    }
+    return QWidget::event(e);
 }
 
 void AssemblyReadsArea::sl_onHScrollMoved(int pos) {
