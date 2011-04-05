@@ -39,6 +39,9 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/DNATranslation.h>
+
 
 #include "MSAAlignUtils.h"
 #include "MSAAlignDialog.h"
@@ -138,6 +141,100 @@ const MAlignmentObject* MSAAlignFileTask::getAlignResult() {
 
     return qobject_cast<MAlignmentObject*> (objs.first());
 }
+
+//////////////////////////////////////////////////////////////////////////
+/// TranslateMSA2AminoTask
+
+
+TranslateMSA2AminoTask::TranslateMSA2AminoTask( MAlignmentObject* obj )
+: Task("TranslateMSA2AminoTask", TaskFlags_FOSCOE), maObj(obj)
+{
+    assert(maObj != NULL);
+    assert(maObj->getAlphabet()->isNucleic());
+
+    translations = AppContext::getDNATranslationRegistry()->lookupTranslation(maObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO);
+
+}
+
+void TranslateMSA2AminoTask::run()
+{
+    assert(!translations.isEmpty());
+
+    if (translations.isEmpty()) {
+        setError(tr("Unable to find suitable translation for %1").arg(maObj->getGObjectName()));
+        return;
+    }
+
+    DNATranslation* transl = translations.first();
+
+    QList<DNASequence> lst = MSAUtils::ma2seq(maObj->getMAlignment(), true);
+    MAlignment resultMa(maObj->getMAlignment().getName(),transl->getDstAlphabet()) ;
+
+    foreach (const DNASequence& dna, lst) {    
+        QByteArray buf;
+        buf.reserve(dna.length() / 3);
+        transl->translate(dna.seq.constData(), dna.length(), buf.data(), buf.length());
+        buf.replace("*","X");
+        MAlignmentRow row(dna.getName(), buf);  
+        resultMa.addRow(row);
+    }
+
+    maObj->setMAlignment(resultMa);
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+/// MSAAlignMultiTask
+
+MSAAlignMultiTask::MSAAlignMultiTask( MAlignmentObject* obj, const MSAAlignTaskSettings& s )
+: Task ("MSAAlignMultiTask",TaskFlags_FOSCOE), settings(s), maObj(obj)
+{
+    setMaxParallelSubtasks(1);  
+}
+
+void MSAAlignMultiTask::prepare()
+{
+    if (settings.useAminoMode == true) {
+        assert(maObj->getAlphabet()->isNucleic());
+        bufMA = maObj->getMAlignment();
+        addSubTask(new TranslateMSA2AminoTask(maObj));
+    }
+
+    QString algName = settings.algName;
+    MSAAlignAlgorithmEnv* env = AppContext::getMSAAlignAlgRegistry()->getAlgorithm(algName);
+    assert(env);
+    if (env == NULL) {
+        setError(tr("Multiple alignment algorithm %1 is not found").arg(algName));
+        return;
+    }
+    Task* alignTask = env->getTaskFactory()->createTaskInstance(maObj, settings);
+    addSubTask(alignTask);
+
+}
+
+Task::ReportResult MSAAlignMultiTask::report()
+{
+
+    return ReportResult_Finished;
+}
+
+void MSAAlignMultiTask::run()
+{
+    if ( hasErrors() || isCanceled() ) {
+        return;
+    }
+    
+    if (bufMA.isEmpty()) {
+        return;
+    }
+    
+    // TODO: perform back translation
+    
+
+}
+
+
 
 } // U2
 

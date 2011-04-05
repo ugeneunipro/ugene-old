@@ -36,6 +36,39 @@ class LoadDocumentTask;
 class SaveDocumentTask;
 class AddDocumentTask;
 class MAlignmentObject;
+class DNATranslation;
+
+
+class TranslateMSA2AminoTask : public Task {
+    Q_OBJECT
+public:
+    TranslateMSA2AminoTask(MAlignmentObject* obj );
+    void run();
+private:
+    MAlignmentObject* maObj;
+    QList<DNATranslation*> translations;
+};
+
+/**
+ Multi task converts alignment object to amino representation if possible.
+ This allows to: 
+ 1) speed up alignment 
+ 2) avoid errors of inserting gaps within codon boundaries  
+*/
+
+class U2VIEW_EXPORT MSAAlignMultiTask : public Task {
+    Q_OBJECT
+public:
+    MSAAlignMultiTask(MAlignmentObject* obj, const MSAAlignTaskSettings& settings);
+    virtual void prepare();
+    virtual void run();
+    virtual ReportResult report();
+protected:
+    const MSAAlignTaskSettings& settings;
+    MAlignmentObject* maObj;
+    MAlignment bufMA;
+};
+
 
 class U2VIEW_EXPORT MSAAlignFileTask : public Task {
     Q_OBJECT

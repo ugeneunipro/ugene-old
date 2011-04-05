@@ -35,16 +35,18 @@ class Document;
 
 class U2ALGORITHM_EXPORT MSAAlignTaskSettings {
 public:
-    MSAAlignTaskSettings() {}
+    MSAAlignTaskSettings() : loadResultDocument(false), useAminoMode(false) {}
     GUrl resultFileName;
     QString algName;
     bool loadResultDocument;
+    bool useAminoMode;
     void setCustomSettings(const QMap<QString, QVariant>& settings);
     QVariant getCustomValue(const QString& optionName, const QVariant& defaultVal) const;
     void setCustomValue(const QString& optionName, const QVariant& val);
 private:
     QMap<QString, QVariant> customSettings;
 };
+
 
 class U2ALGORITHM_EXPORT MSAAlignTask : public Task {
     Q_OBJECT
@@ -55,6 +57,7 @@ protected:
     const MSAAlignTaskSettings& settings;
     MAlignmentObject* obj;
 };
+
 
 class U2ALGORITHM_EXPORT MSAAlignTaskFactory {
 public:
