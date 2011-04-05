@@ -261,17 +261,21 @@ bool AssemblyBrowser::areLettersVisible() const {
     return getCellWidth() >= LETTER_VISIBLE_WIDTH;
 }
 
+// TODO: add asserts with max coords
 void AssemblyBrowser::setXOffsetInAssembly(qint64 x) {
+    assert(x >= 0);
     xOffsetInAssembly = x;
     emit si_offsetsChanged();
 }
 
 void AssemblyBrowser::setYOffsetInAssembly(qint64 y) {
+    assert(y >= 0);
     yOffsetInAssembly = y;
     emit si_offsetsChanged();
 }
 
 void AssemblyBrowser::setOffsetsInAssembly(qint64 x, qint64 y) {
+    assert(x >= 0 && y >= 0);
     xOffsetInAssembly = x;
     yOffsetInAssembly = y;
     emit si_offsetsChanged();
@@ -405,7 +409,8 @@ void AssemblyBrowser::sl_zoomOut() {
     }
     
     //zooming out of the center
-    qint64 newX =  getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2;
+    // qMax needed for not to set negative x coord: UGENE-105
+    qint64 newX =  qMax((qint64)0, getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2);
     setXOffsetInAssembly(newX);
     
     updateActions();
