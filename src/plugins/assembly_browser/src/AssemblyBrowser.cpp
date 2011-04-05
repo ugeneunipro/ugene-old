@@ -27,6 +27,7 @@
 #include "AssemblyDensityGraph.h"
 #include "AssemblyRuler.h"
 #include "AssemblyReadsArea.h"
+#include "AssemblyBrowserSettings.h"
 
 #include <U2Core/U2Type.h>
 #include <U2Core/U2DbiUtils.h>
@@ -39,6 +40,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QScrollBar>
+#include <QtGui/QToolButton>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -136,7 +138,7 @@ QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus&
 AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), 
-zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0) 
+zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0)
 {
     initFont();
     setupActions();
@@ -152,6 +154,7 @@ zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0)
 
 QWidget * AssemblyBrowser::createWidget() {
     ui = new AssemblyBrowserUi(this);
+    updateOverviewTypeActions();
     return ui;
 }
 
@@ -166,7 +169,18 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addSeparator();
         tb->addWidget(posSelector);
     }
-    updateActions();
+    tb->addSeparator();
+    updateActionsForZoomOut();
+    
+    QToolButton * overviewScaleTypeToolButton = new QToolButton(tb);
+    QMenu * scaleTypeMenu = new QMenu(tr("Scale type"), ui);
+    foreach(QAction * a, overviewScaleTypeActions) {
+        scaleTypeMenu->addAction(a);
+    }
+    overviewScaleTypeToolButton->setDefaultAction(scaleTypeMenu->menuAction());
+    overviewScaleTypeToolButton->setPopupMode(QToolButton::InstantPopup);
+    tb->addWidget(overviewScaleTypeToolButton);
+    
     GObjectView::buildStaticToolbar(tb);
 }
 
@@ -387,7 +401,7 @@ void AssemblyBrowser::sl_zoomIn() {
     qint64 newX = getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2;
     setXOffsetInAssembly(newX);
     
-    updateActions();
+    updateActionsForZoomOut();
     emit si_zoomOperationPerformed();
 }
 
@@ -413,7 +427,7 @@ void AssemblyBrowser::sl_zoomOut() {
     qint64 newX =  qMax((qint64)0, getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2);
     setXOffsetInAssembly(newX);
     
-    updateActions();
+    updateActionsForZoomOut();
     emit si_zoomOperationPerformed();
 }
 
@@ -427,14 +441,46 @@ void AssemblyBrowser::setupActions() {
 
     zoomOutAction = new QAction(QIcon(":core/images/zoom_out.png"), tr("Zoom Out"), this);
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOut()));
+    
+    QAction * linearScaleAction = new QAction(tr("Linear"), this);
+    linearScaleAction->setCheckable(true);
+    QAction * logScaleAction = new QAction(tr("Logarithmic"), this);
+    logScaleAction->setCheckable(true);
+    connect(linearScaleAction, SIGNAL(triggered()), SLOT(sl_changeOverviewType()));
+    connect(logScaleAction, SIGNAL(triggered()), SLOT(sl_changeOverviewType()));
+    overviewScaleTypeActions << linearScaleAction << logScaleAction;
 }
 
-void AssemblyBrowser::updateActions() {
+void AssemblyBrowser::sl_changeOverviewType() {
+    QAction * a = qobject_cast<QAction*>(sender());
+    if(a == NULL) {
+        assert(false);
+        return;
+    }
+    
+    AssemblyBrowserSettings::OverviewScaleType t(AssemblyBrowserSettings::Scale_Linear);
+    if(a == overviewScaleTypeActions[1]) {
+        t = AssemblyBrowserSettings::Scale_Logarithmic;
+    } else if(a != overviewScaleTypeActions[0]) {
+        assert(false);
+    }
+    
+    ui->getOverview()->setScaleType(t);
+    updateOverviewTypeActions();
+}
+
+void AssemblyBrowser::updateActionsForZoomOut() {
     bool enable = INITIAL_ZOOM_FACTOR != zoomFactor;
     zoomOutAction->setEnabled(enable);
     if(posSelector != NULL) {
         posSelector->setEnabled(enable);
     }
+}
+
+void AssemblyBrowser::updateOverviewTypeActions() {
+    AssemblyBrowserSettings::OverviewScaleType t(ui->getOverview()->getScaleType());
+    overviewScaleTypeActions[0]->setChecked(t == AssemblyBrowserSettings::Scale_Linear);
+    overviewScaleTypeActions[1]->setChecked(t == AssemblyBrowserSettings::Scale_Logarithmic);
 }
 
 //==============================================================================

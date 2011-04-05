@@ -32,6 +32,7 @@
 
 #include "AssemblyBrowser.h"
 #include "AssemblyReadsArea.h"
+#include "AssemblyBrowserSettings.h"
 
 namespace U2 {
 
@@ -40,7 +41,7 @@ namespace U2 {
 //==============================================================================
 
 AssemblyOverview::AssemblyOverview(AssemblyBrowserUi * ui_): ui(ui_), browser(ui->getWindow()), model(ui_->getModel()), 
-redrawSelection(true), bgrRenderer(model), scribbling(false)
+redrawSelection(true), bgrRenderer(model, this), scribbling(false), scaleType(AssemblyBrowserSettings::getOverviewScaleType())
 {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
@@ -273,13 +274,25 @@ void AssemblyOverview::sl_redraw() {
     update();
 }
 
+void AssemblyOverview::setScaleType(AssemblyBrowserSettings::OverviewScaleType t) {
+    AssemblyBrowserSettings::setOverviewScaleType(t);
+    if(scaleType != t) {
+        scaleType = t;
+        bgrRenderer.render(size());
+    }
+}
+
+AssemblyBrowserSettings::OverviewScaleType AssemblyOverview::getScaleType() const {
+    return scaleType;
+}
 
 //==============================================================================
 // AssemblyOverviewRenderTask
 //==============================================================================
 
-AssemblyOverviewRenderTask::AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model_, QSize imageSize) :
-Task(tr("Assembly overview renderer"), TaskFlag_None), model(model_), result(imageSize, QImage::Format_ARGB32_Premultiplied) {
+AssemblyOverviewRenderTask::AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model_, QSize imageSize, 
+                                                       AssemblyBrowserSettings::OverviewScaleType scT) :
+Task(tr("Assembly overview renderer"), TaskFlag_None), model(model_), result(imageSize, QImage::Format_ARGB32_Premultiplied), scaleType(scT) {
     tpm = Progress_Manual;
 }
 
@@ -320,19 +333,36 @@ void AssemblyOverviewRenderTask::run() {
             maxReadsPerXPixels = readsPerXPixel;
         }
     }
-
-    //static double logMax = log((double)maxReadsPerXPixels);
-    double readsPerYPixel = double(maxReadsPerXPixels) / widgetHeight; 
-    //double readsPerYPixel = double(logMax) / widgetHeight; 
-
+    
+    static double logMax = .0;
+    double readsPerYPixel = .0;
+    switch(scaleType) {
+    case AssemblyBrowserSettings::Scale_Linear:
+        readsPerYPixel = double(maxReadsPerXPixels) / widgetHeight; 
+        break;
+    case AssemblyBrowserSettings::Scale_Logarithmic:
+        logMax = log((double)maxReadsPerXPixels);
+        readsPerYPixel = double(logMax) / widgetHeight; 
+        break;
+    default:
+        assert(false);
+    }
+    
     for(int i = 0 ; i < widgetWidth; ++i) {
-        qint64 columnPixels = qint64(double(readsPerXPixels[i]) / readsPerYPixel + 0.5);
-        //quint64 columnPixels = qint64(double(log((double)readsPerXPixels[i])) / readsPerYPixel + 0.5);
-        int grayCoeff = 255 - int(double(255) / maxReadsPerXPixels * readsPerXPixels[i] + 0.5);
-        //int grayCoeff = 255 - int(double(255) / logMax * log((double)readsPerXPixels[i]) + 0.5);
-        QColor c = QColor(grayCoeff, grayCoeff, grayCoeff);
-        p.setPen(c);
-
+        quint64 columnPixels = 0;
+        int grayCoeff = 0;
+        switch(scaleType) {
+        case AssemblyBrowserSettings::Scale_Linear:
+            columnPixels = qint64(double(readsPerXPixels[i]) / readsPerYPixel + 0.5);
+            grayCoeff = 255 - int(double(255) / maxReadsPerXPixels * readsPerXPixels[i] + 0.5);
+            break;
+        case AssemblyBrowserSettings::Scale_Logarithmic:
+            columnPixels = qint64(double(log((double)readsPerXPixels[i])) / readsPerYPixel + 0.5);
+            grayCoeff = 255 - int(double(255) / logMax * log((double)readsPerXPixels[i]) + 0.5);
+            break;
+        }
+        
+        p.setPen(QColor(grayCoeff, grayCoeff, grayCoeff));
         p.drawLine(i, 0, i, columnPixels);
     }
     p.setPen(Qt::gray);
@@ -343,8 +373,8 @@ void AssemblyOverviewRenderTask::run() {
 // BackgroundRenderer
 //==============================================================================
 
-BackgroundRenderer::BackgroundRenderer(QSharedPointer<AssemblyModel> model_) : 
-renderTask(0), model(model_), redrawRunning(false), redrawNeeded(true) 
+BackgroundRenderer::BackgroundRenderer(QSharedPointer<AssemblyModel> model_, AssemblyOverview * p) :
+renderTask(0), model(model_), redrawRunning(false), redrawNeeded(true), parent(p)
 {
 }
 
@@ -358,7 +388,7 @@ void BackgroundRenderer::render(const QSize & size_)  {
         }
         redrawRunning = true;
         redrawNeeded = false;
-        renderTask = new AssemblyOverviewRenderTask(model, size);
+        renderTask = new AssemblyOverviewRenderTask(model, size, parent->getScaleType());
         connect(renderTask, SIGNAL(si_stateChanged()), SLOT(sl_redrawFinished()));
         AppContext::getTaskScheduler()->registerTopLevelTask(renderTask);
     }

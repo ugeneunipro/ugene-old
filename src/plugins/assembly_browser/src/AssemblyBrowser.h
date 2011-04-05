@@ -128,6 +128,7 @@ private slots:
     void sl_loadAssembly();
     void sl_assemblyLoaded();
     void sl_onPosChangeRequest(int);
+    void sl_changeOverviewType();
     
 public slots:
     void sl_zoomIn();
@@ -136,7 +137,8 @@ public slots:
 private:
     void initFont();
     void setupActions();
-    void updateActions();
+    void updateActionsForZoomOut();
+    void updateOverviewTypeActions();
     void clear();
 
     AssemblyBrowserUi * ui;
@@ -155,6 +157,7 @@ private:
     QAction * zoomOutAction;
     QAction * posSelectorAction;
     PositionSelector * posSelector;
+    QList<QAction*> overviewScaleTypeActions;
     
     const static double INITIAL_ZOOM_FACTOR;
     const static double ZOOM_MULT;
@@ -180,7 +183,8 @@ public:
     inline AssemblyBrowser * getWindow() const {return browser;}
 
     inline AssemblyReadsArea * getReadsArea() const {return readsArea;}
-
+    inline AssemblyOverview * getOverview() const {return overview;}
+    
 private:
     AssemblyOverview * overview;        
     AssemblyReferenceArea * referenceArea;

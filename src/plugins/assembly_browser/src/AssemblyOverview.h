@@ -28,6 +28,8 @@
 
 #include <U2Core/Task.h>
 
+#include "AssemblyBrowserSettings.h"
+
 namespace U2 {
 
 class AssemblyModel;
@@ -35,18 +37,21 @@ class AssemblyModel;
 class AssemblyOverviewRenderTask: public Task {
     Q_OBJECT
 public:
-    AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model, QSize imageSize);
+    AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model, QSize imageSize, AssemblyBrowserSettings::OverviewScaleType scaleType);
     virtual void run();
     inline QImage getResult() const {return result;};
 private:
     QSharedPointer<AssemblyModel> model;
     QImage result;
+    AssemblyBrowserSettings::OverviewScaleType scaleType;
 };
+
+class AssemblyOverview;
 
 class BackgroundRenderer: public QObject {
     Q_OBJECT
 public:
-    BackgroundRenderer(QSharedPointer<AssemblyModel> model_);
+    BackgroundRenderer(QSharedPointer<AssemblyModel> model_, AssemblyOverview * parent);
     void render(const QSize & size_);
     QImage getImage() const;
 signals:
@@ -60,6 +65,7 @@ private:
     QSize size;
     bool redrawRunning;
     bool redrawNeeded;
+    AssemblyOverview * parent;
 };
 
 class AssemblyBrowserUi;
@@ -70,7 +76,10 @@ class AssemblyOverview: public QWidget {
     Q_OBJECT
 public:
     AssemblyOverview(AssemblyBrowserUi * ui);
-
+    
+    void setScaleType(AssemblyBrowserSettings::OverviewScaleType t);
+    AssemblyBrowserSettings::OverviewScaleType getScaleType()const;
+    
 protected:
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
@@ -110,6 +119,8 @@ private:
     BackgroundRenderer bgrRenderer;
 
     bool scribbling;
+    
+    AssemblyBrowserSettings::OverviewScaleType scaleType;
 
     const static int FIXED_HEIGHT = 100;
 };
