@@ -49,6 +49,10 @@
 
 namespace U2 {
 
+
+//////////////////////////////////////////////////////////////////////////
+/// MSAAlignFileTask
+
 MSAAlignFileTask::MSAAlignFileTask( const MSAAlignTaskSettings& s, bool view)
 : Task("MSAAlignMultiTask", TaskFlags_NR_FOSCOE), settings(s), alignTask(NULL), 
 addDocumentTask(NULL), loadDocumentTask(NULL), doc(NULL), openView(view), obj(NULL)
@@ -145,7 +149,6 @@ const MAlignmentObject* MSAAlignFileTask::getAlignResult() {
 //////////////////////////////////////////////////////////////////////////
 /// TranslateMSA2AminoTask
 
-
 TranslateMSA2AminoTask::TranslateMSA2AminoTask( MAlignmentObject* obj )
 : Task("TranslateMSA2AminoTask", TaskFlags_FOSCOE), maObj(obj)
 {
@@ -195,8 +198,7 @@ MSAAlignMultiTask::MSAAlignMultiTask( MAlignmentObject* obj, const MSAAlignTaskS
 
 void MSAAlignMultiTask::prepare()
 {
-    if (settings.useAminoMode == true) {
-        assert(maObj->getAlphabet()->isNucleic());
+    if (settings.useAminoMode == true && maObj->getAlphabet()->isNucleic()) {
         bufMA = maObj->getMAlignment();
         addSubTask(new TranslateMSA2AminoTask(maObj));
     }
@@ -229,7 +231,29 @@ void MSAAlignMultiTask::run()
         return;
     }
     
-    // TODO: perform back translation
+    // applying a gap map
+
+    const MAlignment& newMA = maObj->getMAlignment();
+    const QList<MAlignmentRow>& rows = newMA.getRows();
+    int rowIdx = 0;
+    
+    // TODO:
+    // if the rows where rearranged we need to find each one.
+    // However, what if the rows have equal names?
+    // Do we have to keep MAP<old seq, new seq> in memory? 
+
+    /*foreach (const MAlignmentRow& row, rows) {
+        int rowIdx = MSAUtils::getRowIndexByName(bufMA, row.getName());
+        if (rowIdx == -1) {
+            return;
+        }
+        const MAlignmentRow& bufRow = bufMA.getRow(rowIdx);
+        for (int pos =0; pos < row.getCoreEnd(); ++pos) {
+            char c = bufMA.charAt(rowIdx, pos);
+
+        }
+    */
+
     
 
 }

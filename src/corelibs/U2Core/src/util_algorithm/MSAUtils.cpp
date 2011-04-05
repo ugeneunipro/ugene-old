@@ -117,4 +117,18 @@ bool MSAUtils::checkPackedModelSymmetry(MAlignment& ali, TaskStateInfo& ti) {
     return true;
 }
 
+int MSAUtils::getRowIndexByName( const MAlignment& ma, const QString& name )
+{
+    int idx = 0;
+    
+    foreach(const MAlignmentRow& row, ma.getRows()) {
+        if (row.getName() == name) {
+            return idx; 
+        }
+        ++idx;
+    }
+
+    return -1;
+}
+
 }//namespace

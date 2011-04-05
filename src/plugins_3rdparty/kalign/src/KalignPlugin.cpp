@@ -116,11 +116,11 @@ KalignPlugin::KalignPlugin()
 void KalignPlugin::sl_runKalignTask() {
     //Call select input file and setup settings dialog
     MSAAlignAlgRegistry* registry = AppContext::getMSAAlignAlgRegistry();    
-    MSAAlignDialog dlg(KalignMainTask::taskName, QApplication::activeWindow());
-    if (dlg.exec()) {
+    MSAAlignDialog dlg(KalignMainTask::taskName, true, QApplication::activeWindow());
+    if (dlg.exec() == QDialog::Accepted) {
         MSAAlignTaskSettings s;
         s.algName = dlg.getAlgorithmName();
-        s.resultFileName = dlg.getResultFileName();
+        s.resultFileName = dlg.getFileName();
         assert(!s.resultFileName.isEmpty());
         s.setCustomSettings(dlg.getCustomSettings());
         s.loadResultDocument = true;

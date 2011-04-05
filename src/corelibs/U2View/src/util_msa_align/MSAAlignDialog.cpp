@@ -31,96 +31,42 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Misc/DialogUtils.h>
 
+
 #include "MSAAlignDialog.h"
+#include <ui/ui_PerformAlignmentDialog.h>
+
 #include "MSAAlignGUIExtension.h"
+
+
+
 
 namespace U2 {
 
-MSAAlignDialog::MSAAlignDialog(const QString& _algorithmName, QWidget* p)
-    : QDialog(p), algorithmName(_algorithmName), customGUI(NULL), algoEnv(NULL)
+MSAAlignDialog::MSAAlignDialog(const QString& _algorithmName, bool useFileMenu ,QWidget* p)
+    : QDialog(p), algorithmName(_algorithmName), customGUI(NULL), algoEnv(NULL), openFileMode(useFileMenu)
 {
-    setupUi(this);        
-    addGuiExtension();        
-    connect(selectFileNameButton, SIGNAL(clicked()), SLOT(sl_onFileNameButtonClicked()));
-}
-
-void MSAAlignDialog::setupUi(QDialog *msaAlignDialog) {
-        
-    if (msaAlignDialog->objectName().isEmpty()) {
-        msaAlignDialog->setObjectName(QString::fromUtf8("MSAAlignDialog"));
+    ui = new Ui_performAlignmentDialog;
+    ui->setupUi(this);
+    if (!useFileMenu) {
+        ui->inputLabel->setVisible(false);
+        ui->fileNameEdit->setVisible(false);
+        ui->browseButton->setVisible(false);
     }
-    msaAlignDialog->resize(430, 130);
-    msaAlignDialog->setMinimumSize(QSize(430, 130));
-    verticalLayout = new QVBoxLayout(msaAlignDialog);
-    fileSelectBox = new QGroupBox(msaAlignDialog);
-    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(fileSelectBox->sizePolicy().hasHeightForWidth());
-    fileSelectBox->setSizePolicy(sizePolicy);
-    horizontalLayout = new QHBoxLayout(fileSelectBox);
-    resultFileNameEdit = new QLineEdit(fileSelectBox);
-    horizontalLayout->addWidget(resultFileNameEdit);
 
-    selectFileNameButton = new QPushButton(fileSelectBox);
-    QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    sizePolicy1.setHorizontalStretch(0);
-    sizePolicy1.setVerticalStretch(0);
-    sizePolicy1.setHeightForWidth(selectFileNameButton->sizePolicy().hasHeightForWidth());
-    selectFileNameButton->setSizePolicy(sizePolicy1);
-    selectFileNameButton->setMinimumSize(QSize(25, 19));
-    selectFileNameButton->setMaximumSize(QSize(25, 19));
-
-    horizontalLayout->addWidget(selectFileNameButton);
-
-    horizontalLayout->setStretch(0, 1);
-
-    verticalLayout->addWidget(fileSelectBox);
-
-    verticalSpacer = new QSpacerItem(20, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-    verticalLayout->addItem(verticalSpacer);
-
-    buttonFrame = new QFrame(msaAlignDialog);
-    sizePolicy.setHeightForWidth(buttonFrame->sizePolicy().hasHeightForWidth());
-    buttonFrame->setSizePolicy(sizePolicy);
-    horizontalLayout_2 = new QHBoxLayout(buttonFrame);
-    horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    horizontalLayout_2->addItem(horizontalSpacer);
-    alignButton = new QPushButton(buttonFrame);
-    horizontalLayout_2->addWidget(alignButton);
-    cancelButton = new QPushButton(buttonFrame);
-    horizontalLayout_2->addWidget(cancelButton);
-
-    verticalLayout->addWidget(buttonFrame);
-
-    msaAlignDialog->setWindowTitle(tr("Align MSA"));
-    fileSelectBox->setTitle(tr("Select input file"));
-    selectFileNameButton->setText(tr("..."));
-    alignButton->setText(tr("Align"));
-    cancelButton->setText(tr("Cancel"));
-
-    QObject::connect(alignButton, SIGNAL(clicked()), msaAlignDialog, SLOT(accept()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), msaAlignDialog, SLOT(reject()));
+    addGuiExtension();        
+    connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_onFileNameButtonClicked()));
 }
+
 
 void MSAAlignDialog::sl_onFileNameButtonClicked() {
     LastOpenDirHelper lod;
     lod.url = QFileDialog::getOpenFileName(this, tr("Set result alignment file name"), lod.dir, 
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if (!lod.url.isEmpty()) {
-        GUrl result = lod.url;
-        if (result.lastFileSuffix().isEmpty()) {
-            result = QString( "%1.srfa" ).arg( result.getURLString() );
-        }
-        resultFileNameEdit->setText(result.getURLString());
+        ui->fileNameEdit->setText(lod.url);
     }
 }
 
-const QString MSAAlignDialog::getResultFileName() {
-    return resultFileNameEdit->text();
-}
 
 const QString MSAAlignDialog::getAlgorithmName() {
     return algorithmName;
@@ -135,7 +81,7 @@ QMap<QString, QVariant> MSAAlignDialog::getCustomSettings() {
 }
 
 void MSAAlignDialog::addGuiExtension() {
-    static const int insertPos = verticalLayout->count() - 2;
+    static const int insertPos = 1;
 
     // cleanup previous extension
     if (customGUI != NULL) {
@@ -160,11 +106,12 @@ void MSAAlignDialog::addGuiExtension() {
         int extensionMinHeight = customGUI->sizeHint().height();
         customGUI->setMinimumWidth(extensionMinWidth);
         customGUI->setMinimumHeight(extensionMinHeight);
-        verticalLayout->insertWidget(insertPos, customGUI);
+        ui->globalLayout->insertWidget(insertPos, customGUI);
         // adjust sizes
         setMinimumHeight(customGUI->minimumHeight() + minimumHeight());
         if (minimumWidth() < customGUI->minimumWidth()) {
-            setMinimumWidth(customGUI->minimumWidth());
+            QMargins margins = layout()->contentsMargins();
+            setMinimumWidth(customGUI->minimumWidth() + margins.left() + margins.right());
         };
         if (!customGUI->windowTitle().isEmpty()) {
             setWindowTitle(customGUI->windowTitle());
@@ -175,12 +122,17 @@ void MSAAlignDialog::addGuiExtension() {
 }
 
 void MSAAlignDialog::accept() {    
-    if (resultFileNameEdit->text().isEmpty() ) {
-        QMessageBox::information(this, tr("MSA Align"),
-            tr("Result alignment file name is not set!") );
-    } else {
-        QDialog::accept();
+    if ( openFileMode && ui->fileNameEdit->text().isEmpty() ) {
+        QMessageBox::warning(this, windowTitle(), tr("The input file url is empty.\nPlease select file to align."));
+        return;
     }
+    
+    QDialog::accept();
+}
+
+const QString MSAAlignDialog::getFileName()
+{
+    return ui->fileNameEdit->text();
 }
 
 } // U2

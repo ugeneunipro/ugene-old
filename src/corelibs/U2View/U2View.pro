@@ -97,6 +97,7 @@ FORMS += src/phyltree/ui/BranchSettingsDialog.ui \
          src/util_dna_assembly/ui/AssemblyToRefDialog.ui \
          src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
          src/util_find_dialog/ui/FindDialogUI.ui \
+         src/util_msa_align/ui/PerformAlignmentDialog.ui \
          src/util_ov_annotated_dna/ui/CreateRulerDialog.ui \
          src/util_ov_annotated_dna/ui/EditAnnotationDialog.ui \
          src/util_ov_indexview/ui/CreateFileIndexDialog.ui \

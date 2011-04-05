@@ -42,6 +42,9 @@ public:
 
     static QList<DNASequence> ma2seq(const MAlignment& ma, bool trimGaps);
 
+    // Returns row index or -1 if name is not present
+    static int getRowIndexByName(const MAlignment& ma, const QString& name);
+
     //checks that alignment is not empty and all packed sequence parts has equal length
     static bool checkPackedModelSymmetry(MAlignment& ali, TaskStateInfo& ti);
 };
