@@ -136,11 +136,11 @@ protected:
 class SQLiteAssemblyUtils {
 public:
     static bool isExtendedAlphabet(qint64 flags) {
-        return flags & BIT_EXT_DNA_ALPHABET;
+        return flags & (1 << BIT_EXT_DNA_ALPHABET);
     }
 
     static bool isComplementaryRead(qint64 flags) {
-        return flags & BIT_COMPLEMENTARY_STRAND;
+        return flags & (1 << BIT_COMPLEMENTARY_STRAND);
     }
 };
 
