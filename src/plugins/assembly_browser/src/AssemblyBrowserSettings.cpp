@@ -30,6 +30,7 @@ namespace U2 {
 
 static const QString SETTINGS_PREFIX("assembly_browser/");
 static const QString SCALE_TYPE(SETTINGS_PREFIX + "scale_type");
+static const QString SHOW_RULER_COORDS(SETTINGS_PREFIX + "show_coords_on_ruler");
 
 AssemblyBrowserSettings::OverviewScaleType AssemblyBrowserSettings::getOverviewScaleType() {
     return OverviewScaleType(AppContext::getSettings()->getValue(SCALE_TYPE, Scale_Linear).value<int>());
@@ -37,6 +38,14 @@ AssemblyBrowserSettings::OverviewScaleType AssemblyBrowserSettings::getOverviewS
 
 void AssemblyBrowserSettings::setOverviewScaleType(OverviewScaleType t) {
     AppContext::getSettings()->setValue(SCALE_TYPE, t);
+}
+
+bool AssemblyBrowserSettings::getShowCoordsOnRuler() {
+    return AppContext::getSettings()->getValue(SHOW_RULER_COORDS, true).value<bool>();
+}
+
+void AssemblyBrowserSettings::setShowCoordsOnRuler(bool what) {
+    AppContext::getSettings()->setValue(SHOW_RULER_COORDS, what);
 }
 
 } // U2

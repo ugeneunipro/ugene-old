@@ -129,6 +129,7 @@ private slots:
     void sl_assemblyLoaded();
     void sl_onPosChangeRequest(int);
     void sl_changeOverviewType();
+    void sl_onShowCoordsOnRulerChanged();
     
 public slots:
     void sl_zoomIn();
@@ -158,6 +159,7 @@ private:
     QAction * posSelectorAction;
     PositionSelector * posSelector;
     QList<QAction*> overviewScaleTypeActions;
+    QAction * showCoordsOnRulerAction;
     
     const static double INITIAL_ZOOM_FACTOR;
     const static double ZOOM_MULT;
@@ -184,6 +186,7 @@ public:
 
     inline AssemblyReadsArea * getReadsArea() const {return readsArea;}
     inline AssemblyOverview * getOverview() const {return overview;}
+    inline AssemblyRuler * getRuler() const {return ruler;}
     
 private:
     AssemblyOverview * overview;        

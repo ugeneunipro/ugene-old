@@ -33,6 +33,9 @@ public:
     static OverviewScaleType getOverviewScaleType();
     static void setOverviewScaleType(OverviewScaleType t);
     
+    static bool getShowCoordsOnRuler();
+    static void setShowCoordsOnRuler(bool what);
+    
 }; // AssemblyBrowserSettings
 
 } // U2

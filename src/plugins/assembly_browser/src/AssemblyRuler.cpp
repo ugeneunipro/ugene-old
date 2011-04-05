@@ -30,6 +30,7 @@
 
 #include "AssemblyBrowser.h"
 #include "AssemblyReadsArea.h" //TODO get rid of cross-widget dependencies ?
+#include "AssemblyBrowserSettings.h"
 
 namespace U2 {
 
@@ -47,7 +48,8 @@ static const int LONG_NOTCH_END = 18;
 static const int LABELS_END = LONG_NOTCH_END + 2;
 
 AssemblyRuler::AssemblyRuler(AssemblyBrowserUi * ui) :
-ui(ui), browser(ui->getWindow()), model(ui->getModel()), redrawCursor(false), cursorPos(0) {
+ui(ui), browser(ui->getWindow()), model(ui->getModel()), redrawCursor(false), cursorPos(0), 
+showCoords(AssemblyBrowserSettings::getShowCoordsOnRuler()) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
@@ -108,7 +110,7 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     p.setPen(Qt::darkRed);
     p.drawLine(cursorPos, BORDER_NOTCH_START, cursorPos, BORDER_NOTCH_END);
     p.drawLine(cursorPos+1, BORDER_NOTCH_START, cursorPos+1, BORDER_NOTCH_END);
-
+    
     //2. extract coverage info on current position
     qint64 posXInAsm = calcAsmPosX(cursorPos);
     U2OpStatusImpl status;
@@ -120,17 +122,20 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     int textWidth = p.fontMetrics().width(cursorLabel);
     int textHeight = p.fontMetrics().height();
     QRect offsetRect(cursorPos - textWidth/2, LABELS_END, textWidth, textHeight);
-
-    //4. draw cached labels. Skip labels intersecting the cursor label
+    
+    //4. draw cursor label
+    p.drawText(offsetRect, Qt::AlignCenter, cursorLabel);
+    if(!showCoords) {
+        return;
+    }
+    
+    //5. draw cached labels. Skip labels intersecting the cursor label
     assert(cachedLabelsRects.size() == cachedLabels.size());
     for(int i = 0; i < cachedLabels.size(); i++) {
         if(!cachedLabelsRects.at(i).intersects(offsetRect)) {
             p.drawImage(cachedLabelsRects.at(i), cachedLabels.at(i));
         }
     }
-
-    //5. draw cursor label
-    p.drawText(offsetRect, Qt::AlignCenter, cursorLabel);
 }
 
 void AssemblyRuler::drawRuler(QPainter & p) {
@@ -232,6 +237,16 @@ void AssemblyRuler::sl_redraw() {
     redraw = true;
     redrawCursor = true;
     update();
+}
+
+void AssemblyRuler::setShowCoordsOnRuler(bool sh) {
+    AssemblyBrowserSettings::setShowCoordsOnRuler(sh);
+    showCoords = sh;
+    update();
+}
+
+bool AssemblyRuler::getShowCoordsOnRuler() const {
+    return showCoords;
 }
 
 }

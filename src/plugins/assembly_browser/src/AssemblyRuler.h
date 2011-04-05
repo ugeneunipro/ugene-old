@@ -41,6 +41,9 @@ class AssemblyRuler : public QWidget {
 public:
     AssemblyRuler(AssemblyBrowserUi * ui);
 
+    void setShowCoordsOnRuler(bool showCoords);
+    bool getShowCoordsOnRuler()const;
+    
 protected:
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
@@ -74,6 +77,8 @@ private:
     //used on each cursor redraw
     QList<QRect> cachedLabelsRects;
     QList<QImage> cachedLabels;
+    
+    bool showCoords;
 };
 
 } //ns

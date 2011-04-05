@@ -138,7 +138,7 @@ QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus&
 AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), 
-zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0)
+zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0)
 {
     initFont();
     setupActions();
@@ -155,6 +155,7 @@ zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0)
 QWidget * AssemblyBrowser::createWidget() {
     ui = new AssemblyBrowserUi(this);
     updateOverviewTypeActions();
+    showCoordsOnRulerAction->setChecked(ui->getRuler()->getShowCoordsOnRuler());
     return ui;
 }
 
@@ -180,6 +181,8 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
     overviewScaleTypeToolButton->setDefaultAction(scaleTypeMenu->menuAction());
     overviewScaleTypeToolButton->setPopupMode(QToolButton::InstantPopup);
     tb->addWidget(overviewScaleTypeToolButton);
+    
+    tb->addAction(showCoordsOnRulerAction);
     
     GObjectView::buildStaticToolbar(tb);
 }
@@ -449,6 +452,15 @@ void AssemblyBrowser::setupActions() {
     connect(linearScaleAction, SIGNAL(triggered()), SLOT(sl_changeOverviewType()));
     connect(logScaleAction, SIGNAL(triggered()), SLOT(sl_changeOverviewType()));
     overviewScaleTypeActions << linearScaleAction << logScaleAction;
+    
+    showCoordsOnRulerAction = new QAction(QIcon(":core/images/ruler.png"), tr("Show data on ruler"), this);
+    showCoordsOnRulerAction->setCheckable(true);
+    connect(showCoordsOnRulerAction, SIGNAL(triggered()), SLOT(sl_onShowCoordsOnRulerChanged()));
+}
+
+void AssemblyBrowser::sl_onShowCoordsOnRulerChanged() {
+    bool showRulerCoords = showCoordsOnRulerAction->isChecked();
+    ui->getRuler()->setShowCoordsOnRuler(showRulerCoords);
 }
 
 void AssemblyBrowser::sl_changeOverviewType() {
