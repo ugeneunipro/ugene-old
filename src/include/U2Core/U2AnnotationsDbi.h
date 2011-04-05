@@ -80,14 +80,14 @@ public:
         Returns annotations for the given sequence object
         Orders result by qualifier if not empty
     */
-    virtual U2DbiIterator<U2DataId> getAnnotationsBySequence(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2DataId>* getAnnotationsBySequence(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, U2OpStatus& os) = 0;
     
 
     /** 
         Returns annotations for the given group
         Orders result by qualifier if not empty
     */
-    virtual U2DbiIterator<U2DataId> getAnnotationsByGroup(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2DataId>* getAnnotationsByGroup(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, U2OpStatus& os) = 0;
 
     /** Reads annotation entity by id */
     virtual U2Annotation getAnnotation(const U2DataId& annotationId, U2OpStatus& os) = 0;
