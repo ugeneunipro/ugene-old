@@ -242,6 +242,8 @@ void AssemblyRuler::sl_redraw() {
 void AssemblyRuler::setShowCoordsOnRuler(bool sh) {
     AssemblyBrowserSettings::setShowCoordsOnRuler(sh);
     showCoords = sh;
+    redraw = true;
+    redrawCursor = true;
     update();
 }
 
