@@ -4,6 +4,7 @@ include (dbi_bam.pri)
 HEADERS += \
     src/BAMDbiPlugin.h \
     src/BAMFormat.h \
+    src/CigarValidator.h \
     src/Exception.h \
     src/IOException.h \
     src/InvalidFormatException.h \
@@ -23,6 +24,7 @@ HEADERS += \
 SOURCES += \
     src/BAMDbiPlugin.cpp \
     src/BAMFormat.cpp \
+    src/CigarValidator.cpp \
     src/Exception.cpp \
     src/IOException.cpp \
     src/InvalidFormatException.cpp \

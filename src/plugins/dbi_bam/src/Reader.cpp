@@ -19,9 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/Log.h>
+
 #include "BAMDbiPlugin.h"
 #include "InvalidFormatException.h"
 #include "Reader.h"
+#include "CigarValidator.h"
 
 namespace U2 {
 namespace BAM {
@@ -176,32 +179,10 @@ Alignment Reader::readAlignment() {
             cigar.append(Alignment::CigarOperation(operatonLength, operation));
         }
         {
+            // Validation of the CIGAR string.
             int totalLength = 0;
-            for(int index = 0;index < cigarLength;index++) {
-                if(Alignment::CigarOperation::HardClip == cigar[index].getOperation()) {
-                    if((index > 0) && (index < cigarLength - 1)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("Hard clip in the middle of cigar"));
-                    }
-                }
-                if(Alignment::CigarOperation::SoftClip == cigar[index].getOperation()) {
-                    /*if((index > 1) && (index < cigarLength - 2)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("Misplaced soft clip in the cigar"));
-                    }
-                    if((1 == index) && (Alignment::CigarOperation::HardClip != cigar[0].getOperation())) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("Misplaced soft clip in the cigar"));
-                    }
-                    if((cigarLength - 2 == index) && (Alignment::CigarOperation::HardClip != cigar[cigarLength - 1].getOperation())) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("Misplaced soft clip in the cigar"));
-                    }*/
-                }
-                if((Alignment::CigarOperation::AlignmentMatch == cigar[index].getOperation()) ||
-                   (Alignment::CigarOperation::Insertion == cigar[index].getOperation()) ||
-                   (Alignment::CigarOperation::SoftClip == cigar[index].getOperation()) ||
-                   (Alignment::CigarOperation::SequenceMatch == cigar[index].getOperation()) ||
-                   (Alignment::CigarOperation::SequenceMismatch == cigar[index].getOperation())) {
-                    totalLength += cigar[index].getLength();
-                }
-            }
+            CigarValidator validator(cigar);
+            validator.validate(&totalLength);
             if(!cigar.isEmpty() && length != totalLength) {
                 throw InvalidFormatException(BAMDbiPlugin::tr("Cigar length mismatch"));
             }
