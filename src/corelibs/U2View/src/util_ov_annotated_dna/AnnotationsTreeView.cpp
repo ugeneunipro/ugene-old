@@ -783,6 +783,16 @@ void AnnotationsTreeView::adjustMenu(QMenu* m) const {
     assert(removeMenu!=NULL);
     removeMenu->addAction(removeObjectsFromViewAction);
     removeMenu->addAction(removeAnnsAndQsAction);
+
+    bool enabled = false;
+    foreach (QAction* action, removeMenu->actions()) {
+        if (action->isEnabled()) {
+            enabled = true;
+            break;
+        }
+    }
+    removeMenu->setEnabled(enabled);
+
 }
 
 void AnnotationsTreeView::sl_onAddAnnotationObjectToView() {
@@ -943,7 +953,7 @@ void AnnotationsTreeView::updateState() {
     }
     
     removeObjectsFromViewAction->setEnabled(!topLevelGroups.isEmpty() && !hasAutoAnnotationObjects);
-    
+
     QList<AVGroupItem*> nonRootModGroups = selectGroupItems(items, TriState_No, TriState_No);
     QList<AVAnnotationItem*> modAnnotations = selectAnnotationItems(items, TriState_No);
     QList<AVQualifierItem*>  modQualifiers = selectQualifierItems(items, TriState_No);
