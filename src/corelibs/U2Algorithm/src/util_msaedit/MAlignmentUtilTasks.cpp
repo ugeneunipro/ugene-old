@@ -19,32 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-
 #include <U2Core/AppContext.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Algorithm/MSAAlignAlgRegistry.h>
-#include <U2Core/ProjectModel.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/GObjectSelection.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/AddDocumentTask.h>
-#include <U2Gui/OpenViewTask.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/DNATranslation.h>
 
 
-#include "MSAAlignUtils.h"
-#include "MSAAlignDialog.h"
+#include "MAlignmentUtilTasks.h"
 
 
 namespace U2 {

@@ -329,7 +329,6 @@ QList<Task*> KAlignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTa
     if(subTask==loadDocumentTask){
         currentDocument=loadDocumentTask->takeDocument();
         assert(currentDocument!=NULL);
-        assert(currentDocument->getObjects().length()==1);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
         assert(mAObject!=NULL);
 #ifndef RUN_WORKFLOW_IN_THREADS

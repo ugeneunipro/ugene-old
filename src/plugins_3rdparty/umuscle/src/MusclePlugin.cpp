@@ -31,7 +31,6 @@
 #include <U2View/MSAEditorFactory.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/GObjectTypes.h>
-#include <U2View/MSAAlignUtils.h>
 #include <U2Lang/WorkflowSettings.h>
 
 #include <U2Core/GAutoDeleteList.h>

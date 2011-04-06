@@ -9,8 +9,8 @@ HEADERS += src/molecular_geometry/GeomUtils.h \
            src/phyltree/PhyTreeGenerator.h \
            src/phyltree/PhyTreeGeneratorRegistry.h \
            src/phyltree/PhyTreeGeneratorTask.h \
-           src/registry/CudaGpuRegistry.h \
            src/registry/CDSearchTaskFactoryRegistry.h \
+           src/registry/CudaGpuRegistry.h \
            src/registry/DnaAssemblyAlgRegistry.h \
            src/registry/DnaAssemblyTask.h \
            src/registry/MSAAlignAlgRegistry.h \
@@ -59,6 +59,7 @@ HEADERS += src/molecular_geometry/GeomUtils.h \
            src/util_msa_distance/MSADistanceAlgorithmHammingRevCompl.h \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.h \
            src/util_msaedit/CreateSubalignmentTask.h \
+           src/util_msaedit/MAlignmentUtilTasks.h \
            src/util_repeat_finder/RepeatFinderSettings.h \
            src/util_repeat_finder/RepeatFinderTaskFactory.h \
            src/util_weight_matrix/BuiltInPWMConversionAlgorithms.h \
@@ -120,6 +121,7 @@ SOURCES += src/molecular_geometry/GeomUtils.cpp \
            src/util_msa_distance/MSADistanceAlgorithmHammingRevCompl.cpp \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.cpp \
            src/util_msaedit/CreateSubalignmentTask.cpp \
+           src/util_msaedit/MAlignmentUtilTasks.cpp \
            src/util_weight_matrix/BuiltInPWMConversionAlgorithms.cpp \
            src/util_weight_matrix/PWMConversionAlgorithm.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmBVH.cpp \

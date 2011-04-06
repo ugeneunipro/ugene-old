@@ -31,7 +31,6 @@
 #include <U2Core/Task.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
-#include <U2View/MSAAlignUtils.h>
 #include <U2View/MSAAlignDialog.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/GObjectTypes.h>

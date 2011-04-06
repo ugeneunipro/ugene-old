@@ -19,31 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MSA_ALIGN_UTILS_H_
-#define _U2_MSA_ALIGN_UTILS_H_
+#ifndef _U2_MALIGNMENT_UTIL_TASKS
+#define _U2_MALIGNMENT_UTIL_TASKS
 
 #include <U2Core/global.h>
-#include <U2Core/GUrl.h>
 #include <U2Core/Task.h>
-
-#include <U2Algorithm/MSAAlignTask.h>
+#include <U2Core/MAlignmentObject.h>
 
 namespace U2 {
 
-class MSAAlignTaskSettings;
-class Document;
-class LoadDocumentTask;
-class SaveDocumentTask;
-class AddDocumentTask;
-class MAlignmentObject;
 class DNATranslation;
-class StateLock;
 
 /**
  Performs in-place translation of malignment object
 */
 
-class TranslateMSA2AminoTask : public Task {
+class U2ALGORITHM_EXPORT TranslateMSA2AminoTask : public Task {
     Q_OBJECT
 public:
     TranslateMSA2AminoTask(MAlignmentObject* obj );
@@ -56,7 +47,12 @@ private:
     QList<DNATranslation*> translations;
 };
 
-class U2VIEW_EXPORT MAlignmentGObjectTask : public Task {
+
+/**
+ Wrapper for multiple alginment task
+*/
+
+class U2ALGORITHM_EXPORT MAlignmentGObjectTask : public Task {
     Q_OBJECT
 public:
     MAlignmentGObjectTask(const QString& taskName, TaskFlags f, MAlignmentObject* maobj)
@@ -75,7 +71,7 @@ protected:
  2) avoid errors of inserting gaps within codon boundaries  
 */
 
-class U2VIEW_EXPORT MSAAlignMultiTask : public Task {
+class U2ALGORITHM_EXPORT MSAAlignMultiTask : public Task {
     Q_OBJECT
 public:
     MSAAlignMultiTask(MAlignmentObject* obj, MAlignmentGObjectTask* alignTask, bool convertToAmino);
@@ -93,4 +89,4 @@ protected:
 
 } // U2
 
-#endif // _U2_MSA_ALIGN_TASK_H_
+#endif // _U2_MALIGNMENT_UTIL_TASKS

@@ -27,7 +27,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Lang/RunSchemaForTask.h>
-#include <U2View/MSAAlignUtils.h>
+#include <U2Algorithm/MAlignmentUtilTasks.h>
 
 class MuscleContext;
 

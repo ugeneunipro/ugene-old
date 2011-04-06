@@ -91,7 +91,6 @@
 #include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2View/UIndexSupport.h>
 #include <U2View/DnaAssemblyUtils.h>
-#include <U2View/MSAAlignUtils.h>
 #include <U2Lang/QueryDesignerRegistry.h>
 #include <U2Core/LogCache.h>
 #include <U2Gui/LogView.h>

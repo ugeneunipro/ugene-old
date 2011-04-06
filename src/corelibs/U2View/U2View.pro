@@ -15,7 +15,6 @@ HEADERS += src/WebWindow.h \
            src/util_find_dialog/FindDialog.h \
            src/util_msa_align/MSAAlignDialog.h \
            src/util_msa_align/MSAAlignGUIExtension.h \
-           src/util_msa_align/MSAAlignUtils.h \
            src/util_ov_annotated_dna/ADVAnnotationCreation.h \
            src/util_ov_annotated_dna/ADVClipboard.h \
            src/util_ov_annotated_dna/ADVConstants.h \
@@ -122,7 +121,6 @@ SOURCES += src/WebWindow.cpp \
            src/util_dna_assembly/DnaAssemblyUtils.cpp \
            src/util_find_dialog/FindDialog.cpp \
            src/util_msa_align/MSAAlignDialog.cpp \
-           src/util_msa_align/MSAAlignUtils.cpp \
            src/util_ov_annotated_dna/ADVAnnotationCreation.cpp \
            src/util_ov_annotated_dna/ADVClipboard.cpp \
            src/util_ov_annotated_dna/ADVGraphModel.cpp \
