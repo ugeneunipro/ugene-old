@@ -133,6 +133,7 @@ redrawHint(false), hint(this)
     initRedraw();
     connectSlots();
     setMouseTracking(true);
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 void AssemblyReadsArea::initRedraw() {
@@ -158,9 +159,9 @@ void AssemblyReadsArea::setupHScrollBar() {
 
     hBar->setSingleStep(1);
     hBar->setPageStep(numVisibleBases);
-
+    
     hBar->setDisabled(numVisibleBases == assemblyLen);
-
+    
     connect(hBar, SIGNAL(valueChanged(int)), SLOT(sl_onHScrollMoved(int)));
 }
 
@@ -515,6 +516,50 @@ bool AssemblyReadsArea::event(QEvent * e) {
     return QWidget::event(e);
 }
 
+void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
+    int k = e->key();
+    if(k == Qt::Key_Left || k == Qt::Key_Right) {
+        if(hBar->isEnabled()) {
+            int step = e->modifiers() & Qt::ControlModifier ? hBar->pageStep() : hBar->singleStep();
+            step = k == Qt::Key_Left ? -step : step;
+            hBar->setValue(hBar->value() + step);
+            e->accept();
+        }
+    } else if(k == Qt::Key_Up || k == Qt::Key_Down) {
+        if(vBar->isEnabled()) {
+            int step = e->modifiers() & Qt::ControlModifier ? vBar->pageStep() : vBar->singleStep();
+            step = k == Qt::Key_Up ? -step : step;
+            vBar->setValue(vBar->value() + step);
+            e->accept();    
+        }
+    } else if(k == Qt::Key_Home) {
+        if(hBar->isEnabled()) {
+            hBar->setValue(0);
+            e->accept();
+        }
+    } else if(k == Qt::Key_End) {
+        if(hBar->isEnabled()) {
+            U2OpStatusImpl status;
+            hBar->setValue(model->getModelLength(status));
+            checkAndLogError(status);
+            e->accept();
+        }
+    } else if(k == Qt::Key_Plus) {
+        browser->sl_zoomIn();
+        e->accept();
+    } else if(k == Qt::Key_Minus) {
+        browser->sl_zoomOut();
+        e->accept();
+    } else if(k == Qt::Key_G && (e->modifiers() & Qt::ControlModifier)) {
+        browser->setFocusToPosSelector();
+        e->accept();
+    }
+    
+    if(!e->isAccepted()) {
+        QWidget::keyPressEvent(e);
+    }
+}
+
 void AssemblyReadsArea::sl_onHScrollMoved(int pos) {
     browser->setXOffsetInAssembly(pos);
 }
@@ -530,6 +575,10 @@ void AssemblyReadsArea::sl_zoomOperationPerformed() {
 void AssemblyReadsArea::sl_redraw() {
     initRedraw();
     update();
+}
+
+void AssemblyReadsArea::sl_hideHint() {
+    hint.hide();
 }
 
 } //ns

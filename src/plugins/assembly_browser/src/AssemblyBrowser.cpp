@@ -195,6 +195,7 @@ void AssemblyBrowser::sl_onPosChangeRequest(int pos) {
         pos = modelLen - basesCanBeVisible();
     }
     setXOffsetInAssembly(pos);
+    ui->getReadsArea()->setFocus();
 }
 
 void AssemblyBrowser::buildStaticMenu(QMenu* m) {
@@ -307,6 +308,10 @@ void AssemblyBrowser::adjustOffsets(qint64 dx, qint64 dy) {
     yOffsetInAssembly = qMax(qMin(yOffsetInAssembly + dy, modelHeight - rowsVisible()), qint64(0));
 
     emit si_offsetsChanged();
+}
+
+void AssemblyBrowser::setFocusToPosSelector() {
+    posSelector->getPosEdit()->setFocus();
 }
 
 void AssemblyBrowser::sl_loadAssembly() {
@@ -538,6 +543,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     connect(readsArea, SIGNAL(si_heightChanged()), overview, SLOT(sl_visibleAreaChanged()));
     connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
     connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
+    connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
 }
 
 bool checkAndLogError(const U2OpStatusImpl & status) {

@@ -79,6 +79,7 @@ protected:
     void leaveEvent(QEvent * e);
     void hideEvent(QHideEvent * e);
     bool event(QEvent * e);
+    void keyPressEvent(QKeyEvent * e);
     
 private:
     void initRedraw();
@@ -96,6 +97,9 @@ private:
 signals:
     void si_heightChanged();
     void si_mouseMovedToPos(const QPoint &);
+    
+public slots:
+    void sl_hideHint();    
     
 private slots:
     void sl_onHScrollMoved(int pos);

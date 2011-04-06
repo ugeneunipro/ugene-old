@@ -116,7 +116,9 @@ public:
     void setOffsetsInAssembly(qint64 x, qint64 y);
     
     void adjustOffsets(qint64 dx, qint64 dy);
-
+    
+    void setFocusToPosSelector();
+    
 signals:
     void si_zoomOperationPerformed();
     void si_offsetsChanged();
