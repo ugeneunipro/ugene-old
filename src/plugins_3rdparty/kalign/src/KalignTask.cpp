@@ -170,41 +170,12 @@ Task::ReportResult KalignGObjectTask::report() {
     return ReportResult_Finished;
 }
 
-////////////////////////////////////////
-//KalignMainTask
 
-const QString KalignMainTask::taskName(tr("Kalign"));
-const QString KalignMainTask::OPTION_GAP_OPEN_PENALTY = "open-pen";
-const QString KalignMainTask::OPTION_GAP_EXTENSION_PENALTY = "ext-pen";
-const QString KalignMainTask::OPTION_TERMINAL_GAP_PENALTY = "term-pen";
-const QString KalignMainTask::OPTION_BONUS_SCORE = "bonus";
-
-KalignMainTask::KalignMainTask(MAlignmentObject* _obj, const MSAAlignTaskSettings & _config)
-: MSAAlignTask(_obj, _config, TaskFlags_NR_FOSCOE)
-{
-    GCOUNTER( cvar, tvar, "KalignMainTask" );
-    KalignTaskSettings config;
-    config.gapOpenPenalty = _config.getCustomValue(OPTION_GAP_OPEN_PENALTY, -1).toDouble();
-    config.gapExtenstionPenalty = _config.getCustomValue(OPTION_GAP_EXTENSION_PENALTY, -1).toDouble();
-    config.termGapPenalty = _config.getCustomValue(OPTION_TERMINAL_GAP_PENALTY, -1).toDouble();
-    config.secret = _config.getCustomValue(OPTION_BONUS_SCORE, -1).toDouble();
-    
-    Task * kalignTask = NULL;
-#ifndef RUN_WORKFLOW_IN_THREADS
-    if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
-        kalignTask = new KalignGObjectRunFromSchemaTask(_obj, config);
-    } else {
-        kalignTask = new KalignGObjectTask(_obj, config);
-    }
-#else
-    kalignTask = new KalignGObjectTask(_obj, config);
-#endif // RUN_WORKFLOW_IN_THREADS
-    addSubTask(kalignTask);
-}
-
-#ifndef RUN_WORKFLOW_IN_THREADS
 ///////////////////////////////////
 //KalignGObjectRunFromSchemaTask
+
+#ifndef RUN_WORKFLOW_IN_THREADS
+
 KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * o, const KalignTaskSettings & c) :
 Task("", TaskFlags_NR_FOSCOE), obj(o), config(c), lock(NULL), runSchemaTask(NULL), objName(o->getDocument()->getName()) {
     setTaskName(tr("KALIGN align '%1' in separate process").arg(objName));
@@ -305,5 +276,97 @@ bool KalignGObjectRunFromSchemaTask::saveOutput() const {
 }
 
 #endif // RUN_WORKFLOW_IN_THREADS
+
+//////////////////////////////////////////////////////////////////////////
+/// KAlignWithExtFileSpecifySupportTask
+
+
+KAlignWithExtFileSpecifySupportTask::KAlignWithExtFileSpecifySupportTask( const KalignTaskSettings& _config )
+:  Task("Run KAlign alignment task on external file", TaskFlags_NR_FOSCOE), config(_config)
+{
+    mAObject = NULL;
+    currentDocument = NULL;
+    saveDocumentTask = NULL;
+    loadDocumentTask = NULL;
+    kalignGObjectTask = NULL;
+}
+
+void KAlignWithExtFileSpecifySupportTask::prepare()
+{
+    DocumentFormatConstraints c;
+    c.checkRawData = true;
+    c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
+    c.rawData = BaseIOAdapters::readFileHeader(config.inputFilePath);
+    QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
+    if (formats.isEmpty()) {
+        stateInfo.setError(  tr("input_format_error") );
+        return;
+    }
+
+    DocumentFormatId alnFormat = formats.first();
+    loadDocumentTask=
+        new LoadDocumentTask(alnFormat,
+        config.inputFilePath,
+        AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath)));
+    addSubTask(loadDocumentTask);
+}
+
+Task::ReportResult KAlignWithExtFileSpecifySupportTask::report()
+{
+    return ReportResult_Finished;
+}
+
+QList<Task*> KAlignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTask )
+{
+    QList<Task*> res;
+    if(subTask->hasErrors()) {
+        stateInfo.setError(subTask->getError());
+        return res;
+    }
+    if(hasErrors() || isCanceled()) {
+        return res;
+    }
+    if(subTask==loadDocumentTask){
+        currentDocument=loadDocumentTask->takeDocument();
+        assert(currentDocument!=NULL);
+        assert(currentDocument->getObjects().length()==1);
+        mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
+        assert(mAObject!=NULL);
+#ifndef RUN_WORKFLOW_IN_THREADS
+        if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+            kalignGObjectTask = new KalignGObjectRunFromSchemaTask(mAObject, config);
+        } else {
+            kalignGObjectTask = new KalignGObjectTask(mAObject, config);
+        }
+#else
+        kalignGObjectTask = new KAlignGObjectTask(mAObject, config);
+#endif // RUN_WORKFLOW_IN_THREADS
+        assert(kalignGObjectTask != NULL);
+        res.append(kalignGObjectTask);
+    }else if(subTask == kalignGObjectTask){
+        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath)),config.inputFilePath);
+        res.append(saveDocumentTask);
+    }else if(subTask==saveDocumentTask){
+        Project* proj = AppContext::getProject();
+        if (proj == NULL) {
+            res.append(AppContext::getProjectLoader()->openProjectTask(currentDocument->getURLString(), false));
+        } else {
+            bool docAlreadyInProject=false;
+            foreach(Document* doc, proj->getDocuments()){
+                if(doc->getURL() == currentDocument->getURL()){
+                    docAlreadyInProject=true;
+                }
+            }
+            if (docAlreadyInProject) {
+                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
+            } else {
+                // Add document to project
+                res.append(new AddDocumentTask(currentDocument));
+                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
+            }
+        }
+    }
+    return res;
+}
 
 } //namespace

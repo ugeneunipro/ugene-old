@@ -56,9 +56,6 @@ public:
     float   termGapPenalty;
     float   secret;
     QString inputFilePath;
-    //used only for KalignTaskOp_DoAlign
-    //bool            alignRegion;
-    //U2Region         regionToAlign;
 };
 
 class KalignTask : public TLSTask {
@@ -138,17 +135,24 @@ private:
 
 #endif // RUN_WORKFLOW_IN_THREADS
 
-class KalignMainTask : public MSAAlignTask {
-    Q_OBJECT
-    MSA_ALIGN_TASK_FACTORY(KalignMainTask)
-public:
-    static const QString OPTION_GAP_OPEN_PENALTY; 
-    static const QString OPTION_GAP_EXTENSION_PENALTY;
-    static const QString OPTION_TERMINAL_GAP_PENALTY; 
-    static const QString OPTION_BONUS_SCORE;
 
-    KalignMainTask(MAlignmentObject* obj, const MSAAlignTaskSettings & config);
+class KAlignWithExtFileSpecifySupportTask : public Task {
+public:
+    KAlignWithExtFileSpecifySupportTask(const KalignTaskSettings& config);
+    void prepare();
+    Task::ReportResult report();
+
+    QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    MAlignmentObject*   mAObject;
+    Document*           currentDocument;
+
+    SaveDocumentTask*   saveDocumentTask;
+    LoadDocumentTask*   loadDocumentTask;
+    Task*               kalignGObjectTask;
+    KalignTaskSettings  config;
 };
+
 
 }//namespace
 

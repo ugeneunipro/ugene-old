@@ -148,6 +148,16 @@
         </property>
        </spacer>
       </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="translateCheckBox">
+        <property name="toolTip">
+         <string>Translating alignment to amino allows to avoid errors of inserting gaps within codon boundaries.</string>
+        </property>
+        <property name="text">
+         <string>Translate to amino when aligning</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

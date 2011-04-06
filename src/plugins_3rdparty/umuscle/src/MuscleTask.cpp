@@ -337,7 +337,7 @@ Task::ReportResult MuscleAddSequencesToProfileTask::report() {
 // MuscleGObjectTask
 
 MuscleGObjectTask::MuscleGObjectTask(MAlignmentObject* _obj, const MuscleTaskSettings& _config) 
-: Task("", TaskFlags_NR_FOSCOE), obj(_obj), lock(NULL), muscleTask(NULL), config(_config)
+: MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE,_obj), lock(NULL), muscleTask(NULL), config(_config)
 {
     QString aliName = obj->getDocument()->getName();
     QString tn;
@@ -517,7 +517,7 @@ static const QString LOCK_NAME("muscle state lock");
 static const QString MUSCLE_SCHEMA_NAME("muscle");
 
 MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject * o, const MuscleTaskSettings & c) :
-Task("", TaskFlags_NR_FOSCOE), obj(o), objName(o->getDocument()->getName()), config(c), runSchemaTask(NULL), lock(NULL){
+MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE, o), objName(o->getDocument()->getName()), config(c), runSchemaTask(NULL), lock(NULL){
     assertConfig();
     assert(!objName.isEmpty());
     

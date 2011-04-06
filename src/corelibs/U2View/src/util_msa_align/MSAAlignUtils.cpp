@@ -49,103 +49,6 @@
 
 namespace U2 {
 
-
-//////////////////////////////////////////////////////////////////////////
-/// MSAAlignFileTask
-
-MSAAlignFileTask::MSAAlignFileTask( const MSAAlignTaskSettings& s, bool view)
-: Task("MSAAlignMultiTask", TaskFlags_NR_FOSCOE), settings(s), alignTask(NULL), 
-addDocumentTask(NULL), loadDocumentTask(NULL), doc(NULL), openView(view), obj(NULL)
-{
-
-}
-
-void MSAAlignFileTask::prepare() {
-    DocumentFormatConstraints c;
-    c.checkRawData = true;
-    c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
-    c.rawData = BaseIOAdapters::readFileHeader(settings.resultFileName);
-    QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
-    if (formats.isEmpty()) {
-        stateInfo.setError(  tr("input_format_error") );
-        return;
-    }
-
-    DocumentFormatId alnFormat = formats.first();
-    loadDocumentTask=
-        new LoadDocumentTask(alnFormat,
-        settings.resultFileName,
-        AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.resultFileName)));
-    addSubTask(loadDocumentTask);
-}
-
-Task::ReportResult MSAAlignFileTask::report() {
-    return ReportResult_Finished;
-}
-
-QList<Task*> MSAAlignFileTask::onSubTaskFinished( Task* subTask ) {
-    QList<Task*> res;
-    if (subTask->hasErrors() || isCanceled()) {
-        return res;
-    }
-
-    if(subTask==loadDocumentTask){
-        doc = loadDocumentTask->getDocument()->clone();
-        assert(doc != NULL);
-        assert(doc->getObjects().length() == 1);
-        obj = qobject_cast<MAlignmentObject*>(doc->getObjects().first());
-        assert(obj != NULL);
-        QString algName = settings.algName;
-        MSAAlignAlgorithmEnv* env= AppContext::getMSAAlignAlgRegistry()->getAlgorithm(algName);
-        assert(env);
-        if (env == NULL) {
-            setError(QString("Algorithm %1 is not found").arg(algName));
-            return res;
-        }
-        alignTask = env->getTaskFactory()->createTaskInstance(obj, settings);
-        res.append(alignTask);        
-    } else if(subTask == alignTask){
-        saveDocumentTask = new SaveDocumentTask(doc, 
-            AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.resultFileName)),
-            settings.resultFileName);
-        res.append(saveDocumentTask);
-    } else if(subTask==saveDocumentTask){
-        Project* proj = AppContext::getProject();
-        if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openProjectTask(doc->getURLString(), false));
-        } else {
-            bool docAlreadyInProject=false;
-            foreach(Document* d, proj->getDocuments()){
-                if(doc->getURL() == d->getURL()){
-                    docAlreadyInProject=true;
-                }
-            }
-            if (docAlreadyInProject) {
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
-            } else {
-                // Add document to project
-                res.append(new AddDocumentTask(doc));
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
-            }
-        }
-    }
-
-    return res;
-}
-
-const MAlignmentObject* MSAAlignFileTask::getAlignResult() {
-    if ( doc == NULL ) {
-        return NULL;
-    }
-
-    QList<GObject*> objs = doc->getObjects();
-    if ( objs.size() == 0 ) {
-        return NULL;
-    }
-
-    return qobject_cast<MAlignmentObject*> (objs.first());
-}
-
 //////////////////////////////////////////////////////////////////////////
 /// TranslateMSA2AminoTask
 
@@ -156,7 +59,6 @@ TranslateMSA2AminoTask::TranslateMSA2AminoTask( MAlignmentObject* obj )
     assert(maObj->getAlphabet()->isNucleic());
 
     translations = AppContext::getDNATranslationRegistry()->lookupTranslation(maObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO);
-
 }
 
 void TranslateMSA2AminoTask::run()
@@ -171,52 +73,59 @@ void TranslateMSA2AminoTask::run()
     DNATranslation* transl = translations.first();
 
     QList<DNASequence> lst = MSAUtils::ma2seq(maObj->getMAlignment(), true);
-    MAlignment resultMa(maObj->getMAlignment().getName(),transl->getDstAlphabet()) ;
+    resultMA = MAlignment(maObj->getMAlignment().getName(),transl->getDstAlphabet()) ;
 
     foreach (const DNASequence& dna, lst) {    
-        QByteArray buf;
-        buf.reserve(dna.length() / 3);
-        transl->translate(dna.seq.constData(), dna.length(), buf.data(), buf.length());
+        int buflen = dna.length() / 3;
+        QByteArray buf(buflen,'\0');
+        transl->translate(dna.seq.constData(), dna.length(), buf.data(), buflen);
         buf.replace("*","X");
         MAlignmentRow row(dna.getName(), buf);  
-        resultMa.addRow(row);
+        resultMA.addRow(row);
     }
 
-    maObj->setMAlignment(resultMa);
+    
 
+}
+
+Task::ReportResult TranslateMSA2AminoTask::report()
+{
+    if (!resultMA.isEmpty()) {
+        maObj->setMAlignment(resultMA);
+    }
+
+    return ReportResult_Finished;
 }
 
 
 //////////////////////////////////////////////////////////////////////////
 /// MSAAlignMultiTask
 
-MSAAlignMultiTask::MSAAlignMultiTask( MAlignmentObject* obj, const MSAAlignTaskSettings& s )
-: Task ("MSAAlignMultiTask",TaskFlags_FOSCOE), settings(s), maObj(obj)
+MSAAlignMultiTask::MSAAlignMultiTask( MAlignmentObject* obj, MAlignmentGObjectTask* t, bool toAmino )
+: Task ("MSAAlignMultiTask",TaskFlags_FOSCOE), alignTask(t), maObj(obj), clonedObj(NULL), convertToAmino(toAmino)
 {
-    setMaxParallelSubtasks(1);  
+    setMaxParallelSubtasks(1);
 }
 
 void MSAAlignMultiTask::prepare()
 {
-    if (settings.useAminoMode == true && maObj->getAlphabet()->isNucleic()) {
-        bufMA = maObj->getMAlignment();
-        addSubTask(new TranslateMSA2AminoTask(maObj));
+    if (convertToAmino == true && maObj->getAlphabet()->isNucleic()) {
+        clonedObj = qobject_cast<MAlignmentObject*> ( maObj->clone() );
+        alignTask->setMAObject(clonedObj);
+        bufMA = clonedObj->getMAlignment();
+        addSubTask(new TranslateMSA2AminoTask(clonedObj));
     }
 
-    QString algName = settings.algName;
-    MSAAlignAlgorithmEnv* env = AppContext::getMSAAlignAlgRegistry()->getAlgorithm(algName);
-    assert(env);
-    if (env == NULL) {
-        setError(tr("Multiple alignment algorithm %1 is not found").arg(algName));
-        return;
-    }
-    Task* alignTask = env->getTaskFactory()->createTaskInstance(maObj, settings);
     addSubTask(alignTask);
 
 }
 
 Task::ReportResult MSAAlignMultiTask::report()
 {
+
+    if (!bufMA.isEmpty() && convertToAmino) {
+        maObj->setMAlignment(bufMA);
+    }
 
     return ReportResult_Finished;
 }
@@ -227,35 +136,33 @@ void MSAAlignMultiTask::run()
         return;
     }
     
-    if (bufMA.isEmpty()) {
+    if (bufMA.isEmpty() || !convertToAmino) {
         return;
     }
     
     // applying a gap map
-
-    const MAlignment& newMA = maObj->getMAlignment();
+    assert(clonedObj != NULL);
+    const MAlignment& newMA = clonedObj->getMAlignment();
     const QList<MAlignmentRow>& rows = newMA.getRows();
-    int rowIdx = 0;
     
-    // TODO:
-    // if the rows where rearranged we need to find each one.
+    // If the rows where rearranged we need to find index of each one.
     // However, what if the rows have equal names?
-    // Do we have to keep MAP<old seq, new seq> in memory? 
+    // Do we have to keep some MAP<old seq, new seq> in memory? 
 
-    /*foreach (const MAlignmentRow& row, rows) {
+    foreach (const MAlignmentRow& row, rows) {
         int rowIdx = MSAUtils::getRowIndexByName(bufMA, row.getName());
         if (rowIdx == -1) {
-            return;
+            setError(tr("Can not find row %1 in original alignment.").arg(row.getName()));
         }
-        const MAlignmentRow& bufRow = bufMA.getRow(rowIdx);
         for (int pos =0; pos < row.getCoreEnd(); ++pos) {
-            char c = bufMA.charAt(rowIdx, pos);
-
+            char c = newMA.charAt(rowIdx, pos);
+            if (c == MAlignment_GapChar) {
+                bufMA.insertChars(rowIdx,pos,MAlignment_GapChar,3);
+            }
         }
-    */
-
+    }
+    bufMA.trim();
     
-
 }
 
 

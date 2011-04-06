@@ -22,6 +22,7 @@
 #include "MuscleAlignDialogController.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QToolButton>
@@ -38,6 +39,7 @@ MuscleAlignDialogController::MuscleAlignDialogController(QWidget* w, const MAlig
 
     rangeEndSB->setMaximum(ma.getLength());
     rangeEndSB->setValue(ma.getLength());
+    translateCheckBox->setEnabled(ma.getAlphabet()->isNucleic());
 
     if (settings.alignRegion) {
         customRangeRB->setChecked(true);
@@ -129,6 +131,7 @@ MuscleAlignWithExtFileSpecifyDialogController::MuscleAlignWithExtFileSpecifyDial
     assert(parentLayout);
     parentLayout->insertWidget(0, inputFileGroupBox);
     alignButton->setEnabled(false);
+    translateCheckBox->setEnabled(false);
 
     //we don`t know length of MA, need check this at task
     rangeStartSB->setValue(0);
@@ -229,6 +232,11 @@ void MuscleAlignDialogController::initPresets() {
     presets.qlist.append(new DefaultModePreset());
     presets.qlist.append(new LargeModePreset());
     presets.qlist.append(new RefineModePreset());
+}
+
+bool MuscleAlignDialogController::translateToAmino()
+{
+    return translateCheckBox->isChecked();
 }
 
 

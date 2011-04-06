@@ -27,6 +27,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Lang/RunSchemaForTask.h>
+#include <U2View/MSAAlignUtils.h>
 
 class MuscleContext;
 
@@ -108,14 +109,14 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
 
     ReportResult report();
-
+    
     QPointer<MAlignmentObject>  maObj;
     LoadDocumentTask*           loadTask;
     MMode                       mode;
 };
 
 //locks MAlignment object and propagate MuscleTask results to it
-class  MuscleGObjectTask : public Task {
+class  MuscleGObjectTask : public MAlignmentGObjectTask {
     Q_OBJECT
 public:
     MuscleGObjectTask(MAlignmentObject* obj, const MuscleTaskSettings& config);
@@ -124,7 +125,6 @@ public:
     virtual void prepare();
     ReportResult report();
 
-    QPointer<MAlignmentObject>  obj;
     StateLock*                  lock;
     MuscleTask*                 muscleTask;
     MuscleTaskSettings          config;
@@ -160,7 +160,7 @@ private:
  * max-iterations - muscle iterations number parameter
  * range - muscle align region parameter
  */
-class MuscleGObjectRunFromSchemaTask : public Task, public WorkflowRunSchemaForTaskCallback {
+class MuscleGObjectRunFromSchemaTask : public MAlignmentGObjectTask, public WorkflowRunSchemaForTaskCallback {
     Q_OBJECT
 public:
     MuscleGObjectRunFromSchemaTask(MAlignmentObject * obj, const MuscleTaskSettings & config);
@@ -182,7 +182,6 @@ private:
     void assertConfig();
     
 private:
-    QPointer<MAlignmentObject> obj;
     QString objName;
     MuscleTaskSettings config;
     WorkflowRunSchemaForTask * runSchemaTask;

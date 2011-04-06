@@ -71,13 +71,6 @@ KalignPlugin::KalignPlugin()
 {
 
     bool guiMode = AppContext::getMainWindow()!=NULL;
-    MSAAlignAlgRegistry* registry = AppContext::getMSAAlignAlgRegistry();
-
-    MSAAlignGUIExtensionsFactory* guiFactory = guiMode ? new KalignGuiExtFactory(): NULL;
-    MSAAlignAlgorithmEnv* algo = new MSAAlignAlgorithmEnv(KalignMainTask::taskName, new KalignMainTask::Factory(), guiFactory);
-    bool res = registry->registerAlgorithm(algo);
-    Q_UNUSED(res);
-    assert(res);    
 
     if (guiMode) {
         ctx = new KalignMSAEditorContext(this);
@@ -114,19 +107,19 @@ KalignPlugin::KalignPlugin()
 }
 
 void KalignPlugin::sl_runKalignTask() {
+    
     //Call select input file and setup settings dialog
-    MSAAlignAlgRegistry* registry = AppContext::getMSAAlignAlgRegistry();    
-    MSAAlignDialog dlg(KalignMainTask::taskName, true, QApplication::activeWindow());
-    if (dlg.exec() == QDialog::Accepted) {
-        MSAAlignTaskSettings s;
-        s.algName = dlg.getAlgorithmName();
-        s.resultFileName = dlg.getFileName();
-        assert(!s.resultFileName.isEmpty());
-        s.setCustomSettings(dlg.getCustomSettings());
-        s.loadResultDocument = true;
-        Task* alignTask = new MSAAlignFileTask(s);
-        AppContext::getTaskScheduler()->registerTopLevelTask(alignTask);
+    KalignTaskSettings s;
+    KalignWithExtFileSpecifyDialogController dlg(QApplication::activeWindow(), s);
+
+    int rc = dlg.exec();
+    if (rc != QDialog::Accepted) {
+        return;
     }
+
+    Task * kalignTask = new KAlignWithExtFileSpecifySupportTask(s);
+    AppContext::getTaskScheduler()->registerTopLevelTask( kalignTask );
+    
 }
 
 KalignPlugin::~KalignPlugin() {

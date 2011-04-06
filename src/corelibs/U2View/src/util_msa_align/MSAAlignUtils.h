@@ -37,17 +37,36 @@ class SaveDocumentTask;
 class AddDocumentTask;
 class MAlignmentObject;
 class DNATranslation;
+class StateLock;
 
+/**
+ Performs in-place translation of malignment object
+*/
 
 class TranslateMSA2AminoTask : public Task {
     Q_OBJECT
 public:
     TranslateMSA2AminoTask(MAlignmentObject* obj );
+    const MAlignment& getTaskResult() { return resultMA; }
     void run();
+    ReportResult report();
 private:
+    MAlignment resultMA;
     MAlignmentObject* maObj;
     QList<DNATranslation*> translations;
 };
+
+class U2VIEW_EXPORT MAlignmentGObjectTask : public Task {
+    Q_OBJECT
+public:
+    MAlignmentGObjectTask(const QString& taskName, TaskFlags f, MAlignmentObject* maobj)
+        : Task(taskName, f), obj(maobj) {}
+    void setMAObject(MAlignmentObject* maobj) { obj = maobj; }
+    MAlignmentObject* getMAObject() { return obj; }
+protected:
+    QPointer<MAlignmentObject> obj;
+};
+
 
 /**
  Multi task converts alignment object to amino representation if possible.
@@ -59,36 +78,18 @@ private:
 class U2VIEW_EXPORT MSAAlignMultiTask : public Task {
     Q_OBJECT
 public:
-    MSAAlignMultiTask(MAlignmentObject* obj, const MSAAlignTaskSettings& settings);
+    MSAAlignMultiTask(MAlignmentObject* obj, MAlignmentGObjectTask* alignTask, bool convertToAmino);
     virtual void prepare();
     virtual void run();
     virtual ReportResult report();
 protected:
-    const MSAAlignTaskSettings& settings;
-    MAlignmentObject* maObj;
+    MAlignmentGObjectTask* alignTask;
+    MAlignmentObject *maObj, *clonedObj;
+    bool convertToAmino;
     MAlignment bufMA;
+
 };
 
-
-class U2VIEW_EXPORT MSAAlignFileTask : public Task {
-    Q_OBJECT
-public:
-    MSAAlignFileTask(const MSAAlignTaskSettings& settings, bool viewResult = false);
-    virtual void prepare();
-    virtual ReportResult report();
-    QList<Task*> onSubTaskFinished(Task* subTask);
-    const MAlignmentObject* getAlignResult();
-
-private:
-    MSAAlignTaskSettings settings;
-    MSAAlignTask* alignTask;
-    AddDocumentTask* addDocumentTask;
-    LoadDocumentTask* loadDocumentTask;
-    SaveDocumentTask* saveDocumentTask;
-    MAlignmentObject* obj;
-    Document* doc;
-    bool openView;
-}; 
 
 } // U2
 

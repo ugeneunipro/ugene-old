@@ -31,6 +31,7 @@
 #include <U2View/MSAEditorFactory.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2View/MSAAlignUtils.h>
 #include <U2Lang/WorkflowSettings.h>
 
 #include <U2Core/GAutoDeleteList.h>
@@ -190,7 +191,8 @@ void MuscleMSAEditorContext::sl_align() {
         return;
     }
     
-    Task * muscleTask = NULL;
+    
+    MAlignmentGObjectTask* muscleTask = NULL;
 // if not defined -> we have two options, otherwise run in threads
 #ifndef RUN_WORKFLOW_IN_THREADS
     if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
@@ -202,7 +204,9 @@ void MuscleMSAEditorContext::sl_align() {
     muscleTask = new MuscleGObjectTask(obj, s);
 #endif // RUN_WORKFLOW_IN_THREADS
     assert(muscleTask != NULL);
-    AppContext::getTaskScheduler()->registerTopLevelTask( muscleTask );
+    
+    MSAAlignMultiTask* alignTask = new MSAAlignMultiTask(obj, muscleTask, dlg.translateToAmino());
+    AppContext::getTaskScheduler()->registerTopLevelTask( alignTask );
 }
 
 void MuscleMSAEditorContext::sl_alignSequencesToProfile() {
