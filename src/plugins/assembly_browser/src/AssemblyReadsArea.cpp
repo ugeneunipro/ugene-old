@@ -351,14 +351,16 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
 }
 
 void AssemblyReadsArea::drawHint(QPainter & p) {
-    int cellWidth = browser->getCellWidth();
-    if(cachedReads.isEmpty() || cellWidth == 0) {
+    if(scribbling) { // do not redraw hint while scribbling
+        return;
+    }
+    if(cachedReads.isEmpty() || cachedReads.letterWidth == 0) {
         hint.hide();
         return;
     }
     
-    qint64 asmX = cachedReads.xOffsetInAssembly + (double)curPos.x() / cellWidth;
-    qint64 asmY = cachedReads.yOffsetInAssembly + (double)curPos.y() / cellWidth;
+    qint64 asmX = cachedReads.xOffsetInAssembly + (double)curPos.x() / cachedReads.letterWidth;
+    qint64 asmY = cachedReads.yOffsetInAssembly + (double)curPos.y() / cachedReads.letterWidth;
     
     // find assembly read we stay on
     U2AssemblyRead read;
