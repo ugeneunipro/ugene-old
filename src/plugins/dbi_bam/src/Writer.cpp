@@ -284,12 +284,43 @@ void Writer::writeRead(const Alignment &alignment) {
             case 'C':
                 value = 2;
                 break;
+            case 'M':
+                value = 3;
+                break;
             case 'G':
                 value = 4;
+                break;
+            case 'R':
+                value = 5;
+                break;
+            case 'S':
+                value = 6;
+                break;
+            case 'V':
+                value = 7;
                 break;
             case 'T':
                 value = 8;
                 break;
+            case 'W':
+                value = 9;
+                break;
+            case 'Y':
+                value = 10;
+                break;
+            case 'H':
+                value = 11;
+                break;
+            case 'K':
+                value = 12;
+                break;
+            case 'D':
+                value = 13;
+                break;
+            case 'B':
+                value = 14;
+                break;
+            case 'X':
             case 'N':
                 value = 15;
                 break;

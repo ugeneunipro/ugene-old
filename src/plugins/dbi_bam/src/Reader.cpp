@@ -209,17 +209,47 @@ Alignment Reader::readAlignment() {
             case 2:
                 sequence[index] = 'C';
                 break;
+            case 3:
+                sequence[index] = 'M';
+                break;
             case 4:
                 sequence[index] = 'G';
                 break;
+            case 5:
+                sequence[index] = 'R';
+                break;
+            case 6:
+                sequence[index] = 'S';
+                break;
+            case 7:
+                sequence[index] = 'V';
+                break;
             case 8:
                 sequence[index] = 'T';
+                break;
+            case 9:
+                sequence[index] = 'W';
+                break;
+            case 10:
+                sequence[index] = 'Y';
+                break;
+            case 11:
+                sequence[index] = 'H';
+                break;
+            case 12:
+                sequence[index] = 'K';
+                break;
+            case 13:
+                sequence[index] = 'D';
+                break;
+            case 14:
+                sequence[index] = 'B';
                 break;
             case 15:
                 sequence[index] = 'N';
                 break;
             default:
-                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid sequence character code: %1").arg(value));
+                assert(false);
             }
         }
         alignment.setSequence(sequence);
