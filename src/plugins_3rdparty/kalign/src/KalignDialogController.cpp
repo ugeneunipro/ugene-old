@@ -22,6 +22,7 @@
 #include "KalignDialogController.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Misc/DialogUtils.h>
 
 #include <QtGui/QMessageBox>
@@ -51,44 +52,45 @@ KalignDialogController::KalignDialogController(QWidget* w, const MAlignment& _ma
 {
     setupUi(this);
 	setupUiExt();
+    translateCheckBox->setEnabled(ma.getAlphabet()->isNucleic());
 }
 
 void KalignDialogController::setupUiExt() {
-	gridLayout_2->removeWidget(gapOpenSpinBox);
+	gridLayout->removeWidget(gapOpenSpinBox);
 	delete gapOpenSpinBox;
 	gapOpenSpinBox = new QClearableDoubleSpinBox();
 	gapOpenSpinBox->setObjectName(QString::fromUtf8("gapOpenSpinBox"));
 	gapOpenSpinBox->setEnabled(false);
 	gapOpenSpinBox->setValue(53.9);
     gapOpenSpinBox->setMinimumSize(80, 0);
-	gridLayout_2->addWidget(gapOpenSpinBox, 1, 1, 1, 1);
+	gridLayout->addWidget(gapOpenSpinBox, 0, 1, 1, 1);
 
-	gridLayout_2->removeWidget(gapExtensionPenaltySpinBox);
+	gridLayout->removeWidget(gapExtensionPenaltySpinBox);
 	delete gapExtensionPenaltySpinBox;
 	gapExtensionPenaltySpinBox = new QClearableDoubleSpinBox();
 	gapExtensionPenaltySpinBox->setObjectName(QString::fromUtf8("gapExtensionPenaltySpinBox"));
 	gapExtensionPenaltySpinBox->setEnabled(false);
 	gapExtensionPenaltySpinBox->setValue(8.52);
     gapExtensionPenaltySpinBox->setMinimumSize(80, 0);
-	gridLayout_2->addWidget(gapExtensionPenaltySpinBox, 2, 1, 1, 1);
+	gridLayout->addWidget(gapExtensionPenaltySpinBox, 1, 1, 1, 1);
 
-	gridLayout_2->removeWidget(terminalGapSpinBox);
+	gridLayout->removeWidget(terminalGapSpinBox);
 	delete terminalGapSpinBox;
 	terminalGapSpinBox = new QClearableDoubleSpinBox();
 	terminalGapSpinBox->setObjectName(QString::fromUtf8("terminalGapSpinBox"));
 	terminalGapSpinBox->setEnabled(false);
 	terminalGapSpinBox->setValue(4.42);
     terminalGapSpinBox->setMinimumSize(80, 0);
-	gridLayout_2->addWidget(terminalGapSpinBox, 3, 1, 1, 1);
+	gridLayout->addWidget(terminalGapSpinBox, 2, 1, 1, 1);
 
-	gridLayout_2->removeWidget(bonusScoreSpinBox);
+	gridLayout->removeWidget(bonusScoreSpinBox);
 	delete bonusScoreSpinBox;
 	bonusScoreSpinBox = new QClearableDoubleSpinBox();
 	bonusScoreSpinBox->setObjectName(QString::fromUtf8("bonusScoreSpinBox"));
 	bonusScoreSpinBox->setEnabled(false);
 	bonusScoreSpinBox->setValue(0.02);
     bonusScoreSpinBox->setMinimumSize(80, 0);
-	gridLayout_2->addWidget(bonusScoreSpinBox, 4, 1, 1, 1);
+	gridLayout->addWidget(bonusScoreSpinBox, 3, 1, 1, 1);
 
 	QObject::connect(gapOpenCheckBox, SIGNAL(clicked(bool)), gapOpenSpinBox, SLOT(setEnabled(bool)));
 	QObject::connect(gapExtensionPenaltyCheckBox, SIGNAL(clicked(bool)), gapExtensionPenaltySpinBox, SLOT(setEnabled(bool)));
@@ -109,6 +111,11 @@ void KalignDialogController::accept() {
 	}
 
     QDialog::accept();
+}
+
+bool KalignDialogController::translateToAmino()
+{
+    return translateCheckBox->isEnabled();
 }
 
 ////////////////////////////////////////
@@ -138,40 +145,41 @@ KalignWithExtFileSpecifyDialogController::KalignWithExtFileSpecifyDialogControll
     assert(parentLayout);
     parentLayout->insertWidget(0, inputFileGroupBox);
     alignButton->setEnabled(false);
+    translateCheckBox->setEnabled(false);
 }
 
 void KalignWithExtFileSpecifyDialogController::setupUiExt() {
-	gridLayout_2->removeWidget(gapOpenSpinBox);
+	gridLayout->removeWidget(gapOpenSpinBox);
 	delete gapOpenSpinBox;
 	gapOpenSpinBox = new QClearableDoubleSpinBox();
 	gapOpenSpinBox->setObjectName(QString::fromUtf8("gapOpenSpinBox"));
 	gapOpenSpinBox->setEnabled(false);
 	gapOpenSpinBox->setValue(53.9);
-	gridLayout_2->addWidget(gapOpenSpinBox, 1, 1, 1, 1);
+	gridLayout->addWidget(gapOpenSpinBox, 0, 1, 1, 1);
 
-	gridLayout_2->removeWidget(gapExtensionPenaltySpinBox);
+	gridLayout->removeWidget(gapExtensionPenaltySpinBox);
 	delete gapExtensionPenaltySpinBox;
 	gapExtensionPenaltySpinBox = new QClearableDoubleSpinBox();
 	gapExtensionPenaltySpinBox->setObjectName(QString::fromUtf8("gapExtensionPenaltySpinBox"));
 	gapExtensionPenaltySpinBox->setEnabled(false);
 	gapExtensionPenaltySpinBox->setValue(8.52);
-	gridLayout_2->addWidget(gapExtensionPenaltySpinBox, 2, 1, 1, 1);
+	gridLayout->addWidget(gapExtensionPenaltySpinBox, 1, 1, 1, 1);
 
-	gridLayout_2->removeWidget(terminalGapSpinBox);
+	gridLayout->removeWidget(terminalGapSpinBox);
 	delete terminalGapSpinBox;
 	terminalGapSpinBox = new QClearableDoubleSpinBox();
 	terminalGapSpinBox->setObjectName(QString::fromUtf8("terminalGapSpinBox"));
 	terminalGapSpinBox->setEnabled(false);
 	terminalGapSpinBox->setValue(4.42);
-	gridLayout_2->addWidget(terminalGapSpinBox, 3, 1, 1, 1);
+	gridLayout->addWidget(terminalGapSpinBox, 2, 1, 1, 1);
 
-	gridLayout_2->removeWidget(bonusScoreSpinBox);
+	gridLayout->removeWidget(bonusScoreSpinBox);
 	delete bonusScoreSpinBox;
 	bonusScoreSpinBox = new QClearableDoubleSpinBox();
 	bonusScoreSpinBox->setObjectName(QString::fromUtf8("bonusScoreSpinBox"));
 	bonusScoreSpinBox->setEnabled(false);
 	bonusScoreSpinBox->setValue(0.02);
-	gridLayout_2->addWidget(bonusScoreSpinBox, 4, 1, 1, 1);
+	gridLayout->addWidget(bonusScoreSpinBox, 3, 1, 1, 1);
 
 	QObject::connect(gapOpenCheckBox, SIGNAL(clicked(bool)), gapOpenSpinBox, SLOT(setEnabled(bool)));
 	QObject::connect(gapExtensionPenaltyCheckBox, SIGNAL(clicked(bool)), gapExtensionPenaltySpinBox, SLOT(setEnabled(bool)));

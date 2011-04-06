@@ -118,7 +118,7 @@ TLSContext* KalignTask::createContextInstance()
 // KalignGObjectTask
 
 KalignGObjectTask::KalignGObjectTask(MAlignmentObject* _obj, const KalignTaskSettings& _config) 
-: Task("", TaskFlags_NR_FOSCOE), obj(_obj), lock(NULL), kalignTask(NULL), config(_config)
+: MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE, _obj), lock(NULL), kalignTask(NULL), config(_config)
 {
     QString aliName = obj->getDocument()->getName();
     QString tn;
@@ -177,7 +177,7 @@ Task::ReportResult KalignGObjectTask::report() {
 #ifndef RUN_WORKFLOW_IN_THREADS
 
 KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * o, const KalignTaskSettings & c) :
-Task("", TaskFlags_NR_FOSCOE), obj(o), config(c), lock(NULL), runSchemaTask(NULL), objName(o->getDocument()->getName()) {
+MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE,o), config(c), lock(NULL), runSchemaTask(NULL), objName(o->getDocument()->getName()) {
     setTaskName(tr("KALIGN align '%1' in separate process").arg(objName));
     setUseDescriptionFromSubtask(true);
     setVerboseLogMode(true);

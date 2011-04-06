@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
-    <height>222</height>
+    <width>523</width>
+    <height>251</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,10 +19,20 @@
      <property name="title">
       <string>Advanced options</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="12" column="0">
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="1" column="1">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="gapOpenCheckBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Gap open penalty</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
          <widget class="QDoubleSpinBox" name="gapOpenSpinBox">
           <property name="enabled">
            <bool>false</bool>
@@ -38,7 +48,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
+        <item row="0" column="2">
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -52,16 +62,6 @@
          </spacer>
         </item>
         <item row="1" column="0">
-         <widget class="QCheckBox" name="gapOpenCheckBox">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Gap open penalty</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
          <widget class="QCheckBox" name="gapExtensionPenaltyCheckBox">
           <property name="enabled">
            <bool>true</bool>
@@ -71,7 +71,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="1" column="1">
          <widget class="QDoubleSpinBox" name="gapExtensionPenaltySpinBox">
           <property name="enabled">
            <bool>false</bool>
@@ -87,7 +87,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
+        <item row="1" column="2">
          <spacer name="horizontalSpacer_4">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -100,7 +100,7 @@
           </property>
          </spacer>
         </item>
-        <item row="3" column="0">
+        <item row="2" column="0">
          <widget class="QCheckBox" name="terminalGapCheckBox">
           <property name="enabled">
            <bool>true</bool>
@@ -110,7 +110,7 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="2" column="1">
          <widget class="QDoubleSpinBox" name="terminalGapSpinBox">
           <property name="enabled">
            <bool>false</bool>
@@ -126,7 +126,7 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="2">
+        <item row="2" column="2">
          <spacer name="horizontalSpacer_5">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -139,7 +139,7 @@
           </property>
          </spacer>
         </item>
-        <item row="4" column="0">
+        <item row="3" column="0">
          <widget class="QCheckBox" name="bonusScoreCheckBox">
           <property name="enabled">
            <bool>true</bool>
@@ -149,7 +149,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="3" column="1">
          <widget class="QDoubleSpinBox" name="bonusScoreSpinBox">
           <property name="enabled">
            <bool>false</bool>
@@ -165,7 +165,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="2">
+        <item row="3" column="2">
          <spacer name="horizontalSpacer_6">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -180,7 +180,14 @@
         </item>
        </layout>
       </item>
-      <item row="13" column="0">
+      <item>
+       <widget class="QCheckBox" name="translateCheckBox">
+        <property name="text">
+         <string>Translate to amino when aligning</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label">
         <property name="text">
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;

@@ -28,7 +28,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TLSTask.h>
 #include <U2Lang/RunSchemaForTask.h>
-#include <U2Algorithm/MSAAlignTask.h>
+#include <U2Algorithm/MAlignmentUtilTasks.h>
 
 #define KALIGN_CONTEXT_ID "kalign"
 
@@ -79,7 +79,7 @@ protected:
 };
 
 //locks MAlignment object and propagate KalignTask results to it
-class  KalignGObjectTask : public Task {
+class  KalignGObjectTask : public MAlignmentGObjectTask {
     Q_OBJECT
 public:
     KalignGObjectTask(MAlignmentObject* obj, const KalignTaskSettings& config);
@@ -88,7 +88,6 @@ public:
     virtual void prepare();
     ReportResult report();
 
-    QPointer<MAlignmentObject>  obj;
     StateLock*                  lock;
     KalignTask*                 kalignTask;
     KalignTaskSettings          config;
@@ -107,7 +106,7 @@ public:
 * gap-open-penalty - kalign parameter
 * gap-terminal-penalty - kalign parameter
 */
-class KalignGObjectRunFromSchemaTask : public Task, public WorkflowRunSchemaForTaskCallback {
+class KalignGObjectRunFromSchemaTask : public MAlignmentGObjectTask, public WorkflowRunSchemaForTaskCallback {
     Q_OBJECT
 public:
     KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & config);
@@ -126,7 +125,6 @@ public:
     virtual bool saveOutput() const;
     
 private:
-    QPointer<MAlignmentObject> obj;
     StateLock * lock;
     KalignTaskSettings config;
     WorkflowRunSchemaForTask * runSchemaTask;
