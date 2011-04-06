@@ -33,7 +33,7 @@ class WorkflowMetaDialog : public QDialog, public Ui_WorkflowMetaDialog {
     Q_OBJECT
 
 public:
-    WorkflowMetaDialog(const Workflow::Metadata& meta);
+    WorkflowMetaDialog(QWidget * p, const Workflow::Metadata& meta);
 
 public:
     Workflow::Metadata meta;

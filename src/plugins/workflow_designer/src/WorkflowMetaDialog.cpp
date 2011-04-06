@@ -29,7 +29,7 @@
 
 namespace U2 {
 
-WorkflowMetaDialog::WorkflowMetaDialog(const Metadata& meta): meta(meta) {
+WorkflowMetaDialog::WorkflowMetaDialog(QWidget * p, const Metadata& meta): QDialog(p), meta(meta) {
     setupUi(this);
 
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_onBrowse()));

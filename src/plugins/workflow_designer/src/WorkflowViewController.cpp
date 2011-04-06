@@ -1174,7 +1174,7 @@ void WorkflowView::sl_exportScene() {
 
 void WorkflowView::sl_saveScene() {
     if (meta.url.isEmpty()) {
-        WorkflowMetaDialog md(meta);
+        WorkflowMetaDialog md(this, meta);
         int rc = md.exec();
         if (rc != QDialog::Accepted) {
             return;
@@ -1188,7 +1188,7 @@ void WorkflowView::sl_saveScene() {
 }
 
 void WorkflowView::sl_saveSceneAs() {
-    WorkflowMetaDialog md(meta);
+    WorkflowMetaDialog md(this, meta);
     int rc = md.exec();
     if (rc != QDialog::Accepted) {
         return;
