@@ -92,6 +92,7 @@ public:
     int getCellWidth() const;
     qint64 calcPixelCoord(qint64 asmCoord) const;
     qint64 calcAsmCoord(qint64 pixCoord) const;
+    qint64 calcAsmPosX(qint64 pixPosX) const;
     qint64 calcPainterOffset(qint64 xAsmCoord) const;
     
     qint64 basesCanBeVisible() const;

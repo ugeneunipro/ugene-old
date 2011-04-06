@@ -560,6 +560,20 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
     }
 }
 
+void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
+    //1. move reads area center to mouse
+    qint64 xOffset = browser->getXOffsetInAssembly();
+    qint64 cursorXoffset = browser->calcAsmPosX(e->pos().x());
+    qint64 windowHalf = xOffset + qRound64((double)browser->basesCanBeVisible() / 2);
+    browser->setXOffsetInAssembly(qMax((qint64)0, xOffset + cursorXoffset - windowHalf));
+    
+    //2. zoom in
+    static const int howManyZoom = 2;
+    for(int i = 0; i < howManyZoom; ++i) {
+        browser->sl_zoomIn();
+    }
+}
+
 void AssemblyReadsArea::sl_onHScrollMoved(int pos) {
     browser->setXOffsetInAssembly(pos);
 }

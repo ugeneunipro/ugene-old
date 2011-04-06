@@ -80,6 +80,7 @@ protected:
     void hideEvent(QHideEvent * e);
     bool event(QEvent * e);
     void keyPressEvent(QKeyEvent * e);
+    void mouseDoubleClickEvent(QMouseEvent * e);
     
 private:
     void initRedraw();

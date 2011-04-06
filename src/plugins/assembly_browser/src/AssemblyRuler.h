@@ -60,7 +60,6 @@ private:
     void drawAll();
     void drawRuler(QPainter & p);
     void drawCursor(QPainter & p);
-    qint64 calcAsmPosX(int pixPosX) const; //TODO: move to assembly browser ?
     
 private:
     AssemblyBrowserUi * ui;

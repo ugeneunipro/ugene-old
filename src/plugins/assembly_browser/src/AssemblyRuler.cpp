@@ -80,14 +80,6 @@ void AssemblyRuler::drawAll() {
     }
 }
 
-qint64 AssemblyRuler::calcAsmPosX(int pixPosX) const {
-    int cellWidth = browser->getCellWidth();
-    if(cellWidth == 0) {
-        return browser->getXOffsetInAssembly() + browser->calcAsmCoord(cursorPos);
-    }
-    return browser->getXOffsetInAssembly() + (double)pixPosX / cellWidth;
-}
-
 namespace {
     int numOfDigits(qint64 n) {
         assert(n >= 0);
@@ -112,7 +104,7 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     p.drawLine(cursorPos+1, BORDER_NOTCH_START, cursorPos+1, BORDER_NOTCH_END);
     
     //2. extract coverage info on current position
-    qint64 posXInAsm = calcAsmPosX(cursorPos);
+    qint64 posXInAsm = browser->calcAsmPosX(cursorPos);
     U2OpStatusImpl status;
     quint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(posXInAsm, 1), status);
     checkAndLogError(status);

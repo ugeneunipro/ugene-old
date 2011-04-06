@@ -217,6 +217,14 @@ qint64 AssemblyBrowser::calcAsmCoord(qint64 xPixCoord) const {
     return xAsmCoord;
 }
 
+qint64 AssemblyBrowser::calcAsmPosX(qint64 pixPosX) const {
+    int cellWidth = getCellWidth();
+    if(cellWidth == 0) {
+        return xOffsetInAssembly + calcAsmCoord(pixPosX);
+    }
+    return xOffsetInAssembly + (double)pixPosX / cellWidth;
+}
+
 qint64 AssemblyBrowser::calcPixelCoord(qint64 xAsmCoord) const {
     U2OpStatusImpl status;
     qint64 modelLen = model->getModelLength(status);
