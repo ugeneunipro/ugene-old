@@ -73,7 +73,8 @@ void ShortReadIterator::advanceToNextToken() {
 }
 
 bool ShortReadIterator::isInsertion() {
-    return U2CigarOp_I == cigar.at(offsetInCigar).op;
+    return U2CigarOp_I == cigar.at(offsetInCigar).op || 
+        U2CigarOp_S == cigar.at(offsetInCigar).op;
 }
 
 bool ShortReadIterator::isDeletion() {

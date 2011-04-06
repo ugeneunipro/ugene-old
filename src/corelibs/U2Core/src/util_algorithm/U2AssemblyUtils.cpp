@@ -45,6 +45,10 @@ U2CigarOp U2AssemblyUtils::char2Cigar(char c, QString& err) {
             return U2CigarOp_P; // padded
         case 'S':
             return U2CigarOp_S; // soft-clipped
+        case '=':
+            return U2CigarOp_EQ; // sequence match
+        case 'X':
+            return U2CigarOp_X; // sequence mismatch
     }
     err = tr("Invalid CIGAR op: '%1'!").arg(c);
     return U2CigarOp_Invalid;
@@ -60,6 +64,8 @@ char U2AssemblyUtils::cigar2Char(U2CigarOp op) {
             case U2CigarOp_N: c = 'N'; break;
             case U2CigarOp_P: c = 'P'; break;
             case U2CigarOp_S: c = 'S'; break;
+            case U2CigarOp_EQ: c = '='; break;
+            case U2CigarOp_X: c = 'X'; break;
             default: assert(0); c = '?';
     }
     return c;
@@ -102,10 +108,11 @@ QByteArray U2AssemblyUtils::cigar2String(const QList<U2CigarToken>& cigar) {
 qint64 U2AssemblyUtils::getCigarExtraLength(const QList<U2CigarToken>& cigar) {
     qint64 res = 0;
     foreach(const U2CigarToken& t, cigar) {
-        //TODO: recheck and test
-        //TODO: add handling of other operations 
         switch(t.op) {
-            case U2CigarOp_I: res-=t.count; break;
+            case U2CigarOp_I:
+            case U2CigarOp_S:
+                res-=t.count; 
+                break;
             case U2CigarOp_D: 
             case U2CigarOp_N: 
                 res+=t.count; 
@@ -116,14 +123,12 @@ qint64 U2AssemblyUtils::getCigarExtraLength(const QList<U2CigarToken>& cigar) {
 }
 
 static QByteArray prepareCigarChars() {
-    return QByteArray("0123456789DIHMNPS");
+    return QByteArray("0123456789DIHMNPS=X");
 }
 
 QByteArray U2AssemblyUtils::getCigarAlphabetChars() {
     static QByteArray res = prepareCigarChars();
     return res;
 }
-
-
 
 } //namespace
