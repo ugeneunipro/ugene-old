@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-#define TAIL_SIZE 10000
+#define TAIL_SIZE 50000
 
 static qint64 selectProw(qint64* tails, qint64 start, qint64 end ){
     for (int i = 0; i < TAIL_SIZE; i++) {
@@ -47,7 +47,6 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2OpStatus& os) 
 
     GTIMER(c1, t1, "AssemblyPackAlgorithm::pack");
     QVarLengthArray<qint64, TAIL_SIZE> tails;
-    tails.resize(0);
     qFill(tails.data(), tails.data() + TAIL_SIZE, -1);
     std::auto_ptr< U2DbiIterator<PackAlgorithmData> > allReadsIterator(adapter.selectAllReads(os));
     while (allReadsIterator->hasNext() && !os.hasError()) {
