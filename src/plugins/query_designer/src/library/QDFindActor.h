@@ -38,7 +38,6 @@ public:
     QString getText() const;
     Task* getAlgorithmTask(const QVector<U2Region>& location);
     QColor defaultColor() const { return QColor(0xff,0xf8,0); }
-    bool hasStrand() const { return false; }
 private slots:
     void sl_onFindTaskFinished(Task* t);
 private:

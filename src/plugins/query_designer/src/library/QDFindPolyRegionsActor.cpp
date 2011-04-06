@@ -27,6 +27,8 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/TextUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/BaseTypes.h>
@@ -42,7 +44,7 @@ void FindPolyRegionsTask::find(const char* seq,
                                QVector<U2Region>& result)
 {
     assert(len <= seqLen);
-    qreal reqChNumReal = len*percent/100;
+    qreal reqChNumReal = len*percent/100.0;
     qint64 reqChNum = reqChNumReal;
     if ( reqChNumReal > reqChNum ) {
         ++reqChNum;
@@ -90,16 +92,34 @@ void FindPolyRegionsTask::find(const char* seq,
 }
 
 void FindPolyRegionsTask::run() {
-    find(sequence_.seq.constData(), sequence_.seq.length(), settings_.ch, settings_.percent, settings_.minLen, resultRegions);
+    if (settings_.strand == QDStrand_DirectOnly || settings_.strand == QDStrand_Both) {
+        find(sequence_.seq.constData(), sequence_.seq.length(), settings_.ch,
+            settings_.percent, settings_.minLen, directResults);
+    }
+
+    if(settings_.strand == QDStrand_ComplementOnly || settings_.strand == QDStrand_Both) {
+        assert(settings_.complTT);
+        char ch = settings_.ch;
+        TextUtils::translate(settings_.complTT->getOne2OneMapper(), &ch, 1);
+        find(sequence_.seq.constData(), sequence_.seq.length(), ch,
+            settings_.percent, settings_.minLen, compResults);
+    }
 }
 
 QList<SharedAnnotationData> FindPolyRegionsTask::getResultAsAnnotations() const {
     QList<SharedAnnotationData> res;
-    foreach(U2Region r, resultRegions) {
+    res += createAnnotations(directResults, settings_.offset, U2Strand::Direct);
+    res += createAnnotations(compResults, settings_.offset, U2Strand::Complementary);
+    return res;
+}
+
+QList<SharedAnnotationData> FindPolyRegionsTask::createAnnotations(const QVector<U2Region>& regions, qint64 offset, U2Strand::Direction strand) {
+    QList<SharedAnnotationData> res;
+    foreach(U2Region r, regions) {
         SharedAnnotationData d(new AnnotationData());
-        r.startPos+=settings_.offset;
+        r.startPos += offset;
         d->location->regions.append(r);
-        d->location->strand = U2Strand::Direct;
+        d->location->strand = strand;
         res.append(d);
     }
     return res;
@@ -117,14 +137,11 @@ QDFindPolyActor::QDFindPolyActor( QDActorPrototype const* proto ) : QDActor(prot
 }
 
 int QDFindPolyActor::getMinResultLen() const {
-    return 5;
+    return cfg->getParameter(MIN_LEN_ATTR)->getAttributeValue<int>();
 }
 
 int QDFindPolyActor::getMaxResultLen() const {
-    if (getScheme()->getDNA()) {
-        return getScheme()->getDNA()->getSequenceLen();
-    }
-    return INT_MAX;
+    return cfg->getParameter(MAX_LEN_ATTR)->getAttributeValue<int>();
 }
 
 QString QDFindPolyActor::getText() const {
@@ -134,6 +151,17 @@ QString QDFindPolyActor::getText() const {
 Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
     DNASequence sequence = scheme->getDNA()->getDNASequence();
     FindPolyRegionsSettings settings;
+
+    settings.strand = getStrandToRun();
+    if (settings.strand != QDStrand_DirectOnly) {
+        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(scheme->getDNA()->getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+        if (!compTTs.isEmpty()) {
+            settings.complTT = compTTs.first();
+        } else {
+            QString err = tr("Could not find complement translation");
+            return new FailTask(err);
+        }
+    }
 
     QString baseStr = cfg->getParameter(BASE_ATTR)->getAttributeValue<QString>();
 
@@ -177,6 +205,9 @@ void QDFindPolyActor::sl_onTaskFinished(Task* t) {
     FindPolyRegionsTask* fprt = qobject_cast<FindPolyRegionsTask*>(t);
     QList<SharedAnnotationData> annotations = fprt->getResultAsAnnotations();
     foreach(SharedAnnotationData d, annotations) {
+        if (d->location->regions.first().length > getMaxResultLen()) {
+            continue;
+        }
         QDResultUnit ru(new QDResultUnitData);
         ru->region = d->location->regions.first();
         ru->strand = d->location->strand;
@@ -212,8 +243,8 @@ QDFindPolyActorPrototype::QDFindPolyActorPrototype() {
 
     attributes << new Attribute(bd, BaseTypes::STRING_TYPE(), true);
     attributes << new Attribute(pd, BaseTypes::NUM_TYPE(), true, QVariant(90));
-    attributes << new Attribute(mind, BaseTypes::NUM_TYPE(), true);
-    attributes << new Attribute(maxd, BaseTypes::NUM_TYPE(), true);
+    attributes << new Attribute(mind, BaseTypes::NUM_TYPE(), false, QVariant(50));
+    attributes << new Attribute(maxd, BaseTypes::NUM_TYPE(), false, QVariant(1000));
 
     QMap<QString, PropertyDelegate*> delegates;
 

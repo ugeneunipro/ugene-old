@@ -30,13 +30,17 @@
 
 namespace U2 {
 
+class DNATranslation;
+
 class FindPolyRegionsSettings {
 public:
     char ch;
     int percent;
     qint64 minLen;
     qint64 offset;
-    FindPolyRegionsSettings() : ch('A'), percent(0.9f), minLen(0), offset(0) {}
+    DNATranslation* complTT;
+    QDStrandOption strand;
+    FindPolyRegionsSettings() : ch('A'), percent(0.9f), minLen(0), offset(0), complTT(NULL) {}
 };
 
 class FindPolyRegionsTask : public Task {
@@ -54,10 +58,12 @@ private:
         qint64 len,
         QVector<U2Region>& result
         );
+    static QList<SharedAnnotationData> createAnnotations(const QVector<U2Region>& regions, qint64 offset, U2Strand::Direction strand);
 private:
     FindPolyRegionsSettings settings_;
     DNASequence sequence_;
-    QVector<U2Region> resultRegions;
+    QVector<U2Region> directResults;
+    QVector<U2Region> compResults;
 };
 
 class QDFindPolyActor : public QDActor {
@@ -69,7 +75,6 @@ public:
     QString getText() const;
     Task* getAlgorithmTask(const QVector<U2Region>& location);
     QColor defaultColor() const { return QColor(0xff, 0xc6, 0); }
-    virtual bool hasStrand() const { return false; }
 private slots:
     void sl_onTaskFinished(Task*);
 };

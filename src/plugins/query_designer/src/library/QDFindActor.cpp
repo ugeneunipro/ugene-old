@@ -26,6 +26,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/DNATranslation.h>
 
 #include <U2Lang/BaseTypes.h>
 
@@ -65,6 +66,28 @@ Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = new Task(tr("Find"), TaskFlag_NoRun);
     settings.sequence = scheme->getDNA()->getSequence();
     settings.pattern = cfg->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().toAscii().toUpper();
+
+    switch(getStrandToRun()) {
+        case QDStrand_Both:
+            settings.strand = FindAlgorithmStrand_Both;
+            break;
+        case QDStrand_DirectOnly:
+            settings.strand = FindAlgorithmStrand_Direct;
+            break;
+        case QDStrand_ComplementOnly:
+            settings.strand = FindAlgorithmStrand_Complement;
+            break;
+    }
+
+    if (settings.strand != FindAlgorithmStrand_Direct) {
+        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(scheme->getDNA()->getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+        if (!compTTs.isEmpty()) {
+            settings.complementTT = compTTs.first();
+        } else {
+            QString err = tr("%1: can not find complement translation.").arg(getParameters()->getLabel());
+            return new FailTask(err);
+        }
+    }
 
     if (settings.pattern.isEmpty()) {
         QString err = tr("%1: pattern is empty.").arg(getParameters()->getLabel());
