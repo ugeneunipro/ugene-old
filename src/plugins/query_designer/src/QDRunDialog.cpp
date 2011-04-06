@@ -265,6 +265,10 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
             SaveDocumentTask* saveTask = new SaveDocumentTask(doc, SaveDoc_DestroyAfter, QSet<QString>());
             st.append(saveTask);
         } else {
+            Document* sameUrlDoc = proj->findDocumentByURL(url);
+            if (sameUrlDoc) {
+                proj->removeDocument(sameUrlDoc);
+            }
             st.append(new AddDocumentTask(doc));
             assert(inDoc && inDoc->isLoaded());
             if (proj && proj->getDocuments().contains(inDoc)) {
