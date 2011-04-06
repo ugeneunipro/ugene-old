@@ -58,8 +58,6 @@
 #include <QtCore/QTime>
 #include <QtOpenGL>
 
-#include <GL/gl.h>
-
 #include "gl2ps/gl2ps.h"
 
 // bug-2855
