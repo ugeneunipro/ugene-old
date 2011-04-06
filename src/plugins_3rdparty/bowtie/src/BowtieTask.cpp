@@ -152,16 +152,18 @@ void BowtieTask::prepare()
         
         indexPath = settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName();
         Task * buildTask = NULL;
-#ifndef RUN_WORKFLOW_IN_THREADS
-        if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
-            buildTask = new BowtieBuildRunFromSchemaTask(indexURL, indexPath);
-        } else {
-            buildTask = new BowtieBuildTask(indexURL, indexPath);
-        }
-#else
-        buildTask = new BowtieBuildTask(indexURL, indexPath);
-#endif // RUN_WORKFLOW_IN_THREADS
+// commented due to problems on linux
+//#ifndef RUN_WORKFLOW_IN_THREADS
+//        if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+//            buildTask = new BowtieBuildRunFromSchemaTask(indexURL, indexPath);
+//        } else {
+//            buildTask = new BowtieBuildTask(indexURL, indexPath);
+//        }
+//#else
+//        buildTask = new BowtieBuildTask(indexURL, indexPath);
+//#endif // RUN_WORKFLOW_IN_THREADS
         
+        buildTask = new BowtieBuildTask(indexURL, indexPath);
         assert(buildTask != NULL);
         buildTask->setSubtaskProgressWeight(0.6);
 		addSubTask(buildTask);
