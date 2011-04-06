@@ -43,15 +43,34 @@ class BowtieTLSTask;
 class BowtieTask;
 class BowtieBuildTask;
 
+class BowtieBuildTask : public TLSTask {
+    Q_OBJECT
+public:
+    BowtieBuildTask(QString refPath, QString outEbwtPath);
+
+    // from Task
+    virtual Task::ReportResult report();
+    
+    QString getEbwtPath() const {return outEbwtPath;}
+    
+protected:
+    void _run();
+    TLSContext* createContextInstance();
+private:
+    static QMutex mutex;
+    QString refPath;
+    QString outEbwtPath;
+};
+
 class BowtieBaseTask : public DnaAssemblyToReferenceTask {
     Q_OBJECT
-    DNA_ASSEMBLEY_TO_REF_TASK_FACTORY(BowtieBaseTask)
+        DNA_ASSEMBLEY_TO_REF_TASK_FACTORY(BowtieBaseTask)
 public:
     BowtieBaseTask(const DnaAssemblyToRefTaskSettings & config, bool justBuildIndex = false);
     virtual ReportResult report();
 private:
     DnaAssemblyToReferenceTask * sub;
-    
+
 };
 
 class BowtieTask : public DnaAssemblyToReferenceTask {
@@ -80,14 +99,17 @@ public:
     
     static const QString INDEX_REGEXP_STR;
     
+public:
     BowtieTask(const DnaAssemblyToRefTaskSettings & config, bool justBuildIndex = false);
-	QList<Task*> onSubTaskFinished(Task* subTask);
-	void prepare();
+	
+    // from Task
+    void prepare();
     ReportResult report();
+    
+public:
     int numHits;
+        
 private:
-    BowtieTLSTask* tlsTask;
-	BowtieBuildTask* buildTask;
 	QString indexPath;
 };
 
@@ -116,6 +138,22 @@ private:
     QString             indexPath;
     
 }; // BowtieRunFromSchemaTask
+
+class BowtieBuildRunFromSchemaTask : public Task, public WorkflowRunSchemaForTaskCallback {
+    Q_OBJECT
+public:
+    BowtieBuildRunFromSchemaTask(const QString & refPath, const QString & outEbwtPath);
+    
+    //from WorkflowRunSchemaForTaskCallback
+    virtual bool saveInput() const;
+    virtual QVariantMap getSchemaData() const;
+    virtual bool saveOutput() const;
+    
+private:
+    QString reference;
+    QString ebwt;
+    
+}; // BowtieBuildRunFromSchemaTask
 #endif // RUN_WORKFLOW_IN_THREADS
 
 class BowtieTLSTask : public TLSTask {
@@ -140,22 +178,6 @@ protected:
 	TLSContext* createContextInstance() {return taskContext;};
 private:
 	int id;
-};
-
-class BowtieBuildTask : public TLSTask {
-	Q_OBJECT
-public:
-	BowtieBuildTask(QString refPath, QString outEbwtPath);
-	
-	Task::ReportResult report();
-	QString getEbwtPath() const { return outEbwtPath; }
-protected:
-	void _run();
-	TLSContext* createContextInstance();
-private:
-	static QMutex mutex;
-	QString refPath;
-	QString outEbwtPath;
 };
 
 }//namespace

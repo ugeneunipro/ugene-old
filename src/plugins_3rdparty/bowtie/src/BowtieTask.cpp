@@ -54,19 +54,15 @@ const QString BowtieBaseTask::taskName("Bowtie");
 BowtieBaseTask::BowtieBaseTask(const DnaAssemblyToRefTaskSettings & c, bool jbi) 
 : DnaAssemblyToReferenceTask(c, TaskFlags_NR_FOSCOE, jbi), sub(NULL) {
     haveResults = true;
-// old task is invoked
-// wait for better testing
-// planned release: 1.9.3
-//#ifndef RUN_WORKFLOW_IN_THREADS
-//    if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
-//        sub = new BowtieRunFromSchemaTask(settings, justBuildIndex);
-//    } else {
-//        sub = new BowtieTask(settings, justBuildIndex);
-//    }
-//#else
-//    sub = new BowtieTask(settings, justBuildIndex);
-//#endif // RUN_WORKFLOW_IN_THREADS
+#ifndef RUN_WORKFLOW_IN_THREADS
+    if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+        sub = new BowtieRunFromSchemaTask(settings, justBuildIndex);
+    } else {
+        sub = new BowtieTask(settings, justBuildIndex);
+    }
+#else
     sub = new BowtieTask(settings, justBuildIndex);
+#endif // RUN_WORKFLOW_IN_THREADS
     addSubTask(sub);
 }
 
@@ -106,8 +102,6 @@ BowtieTask::BowtieTask(const DnaAssemblyToRefTaskSettings & _config, bool _justB
 : DnaAssemblyToReferenceTask(_config, TaskFlags_NR_FOSCOE, _justBuildIndex)
 {
     GCOUNTER( cvar, tvar, "BowtieTask" );
-	tlsTask = NULL;
-	buildTask = NULL;
     numHits = 0;
     setMaxParallelSubtasks(1);
     haveResults = true;
@@ -155,8 +149,21 @@ void BowtieTask::prepare()
 			return;
 		}
 		fileSize = file.size();
-		buildTask = new BowtieBuildTask(indexURL, settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName()); 
-		buildTask->setSubtaskProgressWeight(0.6);
+        
+        indexPath = settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName();
+        Task * buildTask = NULL;
+#ifndef RUN_WORKFLOW_IN_THREADS
+        if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+            buildTask = new BowtieBuildRunFromSchemaTask(indexURL, indexPath);
+        } else {
+            buildTask = new BowtieBuildTask(indexURL, indexPath);
+        }
+#else
+        buildTask = new BowtieBuildTask(indexURL, indexPath);
+#endif // RUN_WORKFLOW_IN_THREADS
+        
+        assert(buildTask != NULL);
+        buildTask->setSubtaskProgressWeight(0.6);
 		addSubTask(buildTask);
 	}
 
@@ -168,22 +175,10 @@ void BowtieTask::prepare()
  	qint64 memUseMB = (fileSize *  4 + SHORT_READ_AVG_LENGTH*10 ) / 1024 / 1024 + 100;
  	TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB, true);
  	taskResources.append(memUsg);
-
-	tlsTask = new BowtieTLSTask();
+    
+	BowtieTLSTask * tlsTask = new BowtieTLSTask();
 	tlsTask->setSubtaskProgressWeight(0.4);
 	addSubTask(tlsTask);	
-}
-
-QList<Task*> BowtieTask::onSubTaskFinished(Task* subTask) {
-	Q_UNUSED(subTask);
-	QList<Task*> res;
-	if(hasErrors() || subTask->hasErrors()) {
-		return res;
-	}
-    if(subTask == buildTask) {
-		indexPath = static_cast<BowtieBuildTask*>(subTask)->getEbwtPath();
-    }
-	return res;
 }
 
 Task::ReportResult BowtieTask::report() {
@@ -320,6 +315,33 @@ QVariantMap BowtieRunFromSchemaTask::getSchemaData() const {
 bool BowtieRunFromSchemaTask::saveOutput() const {
     return false;
 }
+
+/************************************************************************/
+/* BowtieBuildRunFromSchemaTask                                         */
+/************************************************************************/
+
+static const QString BOWTIE_BUILD_SCHEMA_NAME("bowtie-build");
+
+BowtieBuildRunFromSchemaTask::BowtieBuildRunFromSchemaTask(const QString & r, const QString & e) : 
+Task(tr("Bowtie build in separate process"), TaskFlags_NR_FOSCOE), reference(r), ebwt(e) {
+    addSubTask(new WorkflowRunSchemaForTask(BOWTIE_BUILD_SCHEMA_NAME, this));
+}
+
+bool BowtieBuildRunFromSchemaTask::saveInput() const {
+    return false;
+}
+
+QVariantMap BowtieBuildRunFromSchemaTask::getSchemaData() const {
+    QVariantMap res;
+    res["reference"] = qVariantFromValue(reference);
+    res["ebwt"] = qVariantFromValue(ebwt);
+    return res;
+}
+
+bool BowtieBuildRunFromSchemaTask::saveOutput() const {
+    return false;
+}
+
 #endif // RUN_WORKFLOW_IN_THREADS
 
 /************************************************************************/

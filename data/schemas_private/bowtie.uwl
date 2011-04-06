@@ -1,5 +1,5 @@
 #!UGENE_WORKFLOW
-#Schema is used to run kalign in separate process
+#Schema is used to run bowtie in separate process
 
 workflow "Bowtie assembly"{
 
