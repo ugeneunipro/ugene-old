@@ -141,6 +141,11 @@ void GraphicsBranchItem::initText(qreal d) {
         --i;
     str.truncate(i + 1);
 
+    //test
+    if(d == 0){
+        str = "";
+    }
+    //test
     distanceText = new QGraphicsSimpleTextItem(str);
     distanceText->setFont(TreeViewerUtils::getFont());
     distanceText->setBrush(Qt::darkGray);
