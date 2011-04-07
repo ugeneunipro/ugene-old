@@ -64,7 +64,7 @@ char U2AssemblyUtils::cigar2Char(U2CigarOp op) {
             case U2CigarOp_N: c = 'N'; break;
             case U2CigarOp_P: c = 'P'; break;
             case U2CigarOp_S: c = 'S'; break;
-            case U2CigarOp_EQ: c = '='; break;
+            case U2CigarOp_EQ:c = '='; break;
             case U2CigarOp_X: c = 'X'; break;
             default: assert(0); c = '?';
     }

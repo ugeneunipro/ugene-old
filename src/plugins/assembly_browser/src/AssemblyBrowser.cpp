@@ -592,13 +592,7 @@ qint64 countReadLength(qint64 realLen, const QList<U2CigarToken> & cigar) {
 }
 
 QByteArray getReadSequence(U2Dbi * dbi, const U2AssemblyRead & read, U2OpStatus & os) {
-    if(!read->sequenceId.isEmpty()){
-        assert(dbi);
-        U2Sequence seq = dbi->getSequenceDbi()->getSequenceObject(read->sequenceId, os);
-        return dbi->getSequenceDbi()->getSequenceData(read->sequenceId, U2Region(0, seq.length), os);
-    } else {
-        return read->readSequence;
-    }
+    return read->readSequence;
 }
 
 

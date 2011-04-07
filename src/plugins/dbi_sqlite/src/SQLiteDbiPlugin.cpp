@@ -50,11 +50,11 @@ static QList<U2AssemblyRead> generateReads(int n, int rlen, int slen) {
         r->leftmostPos = 0;
         r->readSequence.resize(rlen);
         for (int j = 0; j < rlen; j++) {
-            //char c =  acgt[qrand() % 4];
-            char c =  'A';
+            char c =  acgt[qrand() % 4];
+            //char c =  'A';
             r->readSequence[j] = c;
         }
-        
+        r->name = r->readSequence.mid(0, 15);
         res.append(r);
     }
     return res;
@@ -77,7 +77,8 @@ SQLiteDbiPlugin::SQLiteDbiPlugin() : Plugin(tr("SQLite format support"), tr("Add
     //props[U2_DBI_OPTION_URL] = SQLITE_DBI_VALUE_MEMORY_DB_URL;
     //props[SQLITE_DBI_OPTION_ASSEMBLY_READ_COMPRESSION1_FLAG] = U2_DBI_VALUE_ON;
     props[U2_DBI_OPTION_CREATE] = U2_DBI_VALUE_ON;
-    //props[SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_KEY] = SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE;
+    //props[SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY] = SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE;
+    //props[SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY] = SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE;
     dbi.init(props, QVariantMap(), os);
     dbi.getDbRef()->useTransaction = true;
 

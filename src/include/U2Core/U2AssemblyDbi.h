@@ -73,6 +73,12 @@ public:
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
 
     /** 
+        Return reads with a specified name. Used to find paired reads that must have equal names 
+        Note: iterator instance must be deallocated by caller method
+    */
+    virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os) = 0;
+
+    /** 
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
     */

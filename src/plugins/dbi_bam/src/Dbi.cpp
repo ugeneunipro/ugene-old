@@ -696,6 +696,11 @@ U2DbiIterator<U2AssemblyRead>* AssemblyDbi::getReadsByRow(const U2DataId& assemb
     }
 }
 
+U2DbiIterator<U2AssemblyRead>* AssemblyDbi::getReadsByName(const U2DataId&, const QByteArray&, U2OpStatus& os) {
+    os.setError("Operation not supported: BAM::AssemblyDbi::getReadsByName");
+    return NULL;
+}
+
 quint64 AssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os) {
     try {
         if(U2DbiState_Ready != dbi.getState()) {

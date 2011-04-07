@@ -57,6 +57,13 @@ public:
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
 
     /** 
+        Return reads with a specified name. Used to find paired reads that must have equal names 
+        Note: iterator instance must be deallocated by caller method
+    */
+    virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os);
+
+
+    /** 
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
     */
@@ -102,7 +109,7 @@ public:
     AssemblyAdapter(const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
     
     virtual void createReadsTables(U2OpStatus& os) = 0;
-    virtual void createReadsIndexes(U2OpStatus& ) {}
+    virtual void createReadsIndexes(U2OpStatus& ) = 0;
 
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os) = 0;
 
@@ -111,6 +118,7 @@ public:
 
     virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os) const = 0;
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os) = 0;
     
     virtual void addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os) = 0;
     virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
@@ -133,6 +141,15 @@ protected:
 /** This bit indicates that read is located on complement thread */
 #define BIT_COMPLEMENTARY_STRAND    1
 
+/** This bit indicates that read is a paired read */
+#define BIT_PAIRED_READ             2
+
+/** Compression method for assembly data */
+enum SQLiteAssemblyDataMethod {
+    /** Merges Name, Sequence, Cigar and Quality values into single byte array separated by '\n' character. Merge prefix is '0'*/
+    SQLiteAssemblyDataMethod_NSCQ = 1
+};
+
 class SQLiteAssemblyUtils {
 public:
     static bool isExtendedAlphabet(qint64 flags) {
@@ -142,6 +159,24 @@ public:
     static bool isComplementaryRead(qint64 flags) {
         return flags & (1 << BIT_COMPLEMENTARY_STRAND);
     }
+
+    static bool isPairedRead(qint64 flags) {
+        return flags & (1 << BIT_PAIRED_READ);
+    }
+
+    static QByteArray packData(SQLiteAssemblyDataMethod method, const QByteArray& name, const QByteArray& seq, 
+        const QByteArray& cigarText, const QByteArray& qualityString, U2OpStatus& os);
+    
+    static void unpackData(const QByteArray& packed, QByteArray& name, QByteArray& sequence, QByteArray& cigarText, QByteArray& qualityString, U2OpStatus& os);
+};
+
+class SQLiteAssemblyNameFilter : public SqlRSFilter<U2AssemblyRead> {
+public:
+    SQLiteAssemblyNameFilter(const QByteArray& expectedName) : name (expectedName) {}
+    virtual bool filter(const U2AssemblyRead& r)  {return name == r->name;}
+protected:
+    QByteArray name;
+
 };
 
 } //namespace

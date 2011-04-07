@@ -35,6 +35,7 @@ public:
     RTreeAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
 
     virtual void createReadsTables(U2OpStatus& os);
+    virtual void createReadsIndexes(U2OpStatus& os);
 
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os);
 
@@ -43,6 +44,7 @@ public:
 
     virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os) const;
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
+    virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os);
 
     virtual void addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os);

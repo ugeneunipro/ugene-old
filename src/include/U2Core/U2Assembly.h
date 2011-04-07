@@ -103,15 +103,12 @@ public:
 */
 class U2CORE_EXPORT U2AssemblyReadData : public U2Entity, public QSharedData {
 public:
-    U2AssemblyReadData() : sequenceId(0), leftmostPos(0), effectiveLen(0), packedViewRow(0){}
+    U2AssemblyReadData() : leftmostPos(0), effectiveLen(0), 
+        packedViewRow(0), mappingQuality(255), complementary(false), paired(false){}
 
-    /** 
-        Sequence ID of the read.
-        Note: read can have no U2Sequence representation!
-        and be embedded into the U2AssemblyRead. 
-        In this case sequenceId == 0
-    */
-    U2DataId            sequenceId;
+
+    /** Name of the read, ASCII string */
+    QByteArray          name;
     
     /**  
         Left-most position of the read 
@@ -136,10 +133,18 @@ public:
         The array is not empty only if sequence is embedded into the read
     */
     QByteArray          readSequence;
+
+    /** Quality string */
+    QByteArray          quality;
     
+    /** Mapping quality */
+    quint8              mappingQuality;
+
     /** If true read is must be processed as complementary read */
     bool                complementary;
-    // TODO: add paired read info
+
+    /** If true read is paired */
+    bool                paired;
 };
 
 typedef QSharedDataPointer<U2AssemblyReadData> U2AssemblyRead;

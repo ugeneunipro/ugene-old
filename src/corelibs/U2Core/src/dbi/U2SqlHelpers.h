@@ -252,16 +252,24 @@ public:
     virtual T load(SQLiteQuery* q) = 0;
 };
 
+/** Filter for SqlRSIterator. Checks if value must be filtered out from the result */
+template <class T> class SqlRSFilter {
+public:
+    virtual ~SqlRSFilter(){}
+    virtual bool filter(const T&) = 0;
+};
+
 /** SQL query result set iterator */
 template<class T> class SqlRSIterator : public U2DbiIterator<T> {
 public:
-    SqlRSIterator(SQLiteQuery* q, SqlRSLoader<T>* l, const T& d, U2OpStatus& o) 
-        : query(q), loader(l), defaultValue(d), os(o), endOfStream(false) 
+    SqlRSIterator(SQLiteQuery* q, SqlRSLoader<T>* l, SqlRSFilter<T>* f, const T& d, U2OpStatus& o) 
+        : query(q), loader(l), filter(f), defaultValue(d), os(o), endOfStream(false) 
     {
         fetchNext();
     }
     
     virtual ~SqlRSIterator() {
+        delete filter;
         delete loader;
         delete query;
     }
@@ -288,15 +296,18 @@ public:
     }
 private:
     void fetchNext() {
-        if (!query->step()) {
-            endOfStream = true;        
-            return;
-        }
-        nextResult = loader->load(query);
+        do {
+            if (!query->step()) {
+                endOfStream = true;        
+                return;
+            }
+            nextResult = loader->load(query);
+        } while (filter != NULL && filter->filter(nextResult));
     }
 
     SQLiteQuery*    query;
     SqlRSLoader<T>* loader;
+    SqlRSFilter<T>* filter;
     T               defaultValue;
     U2OpStatus&     os;
     bool            endOfStream;

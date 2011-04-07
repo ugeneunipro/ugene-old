@@ -102,6 +102,14 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& 
     return a->getReadsByRow(r, minRow, maxRow, os);
 }
 
+U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os)  {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsByName -> calls");
+    GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsByName");
+    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    return a->getReadsByName(name, os);
+}
+
+
 qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
     return a->getMaxPackedRow(r, os);
@@ -182,6 +190,103 @@ void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2OpStatus& os) {
 AssemblyAdapter::AssemblyAdapter(const U2DataId& _assemblyId, const AssemblyCompressor* _compressor, DbRef* _db, U2OpStatus& _os) 
 :assemblyId(_assemblyId), compressor(_compressor), db(_db), os(_os)
 {
+}
+
+//////////////////////////////////////////////////////////////////////////
+// SQLiteAssemblyUtils
+
+QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const QByteArray& name, const QByteArray& seq, const QByteArray& cigarText, 
+                           const QByteArray& qualityString, U2OpStatus& os)
+{
+    assert(method == SQLiteAssemblyDataMethod_NSCQ);
+    if (method != SQLiteAssemblyDataMethod_NSCQ) {
+        os.setError(SQLiteL10N::tr("Packing method is not supported: %1").arg(method));
+        return QByteArray();
+    }
+    int nBytes = 1 + name.length() + 1  + seq.length() + 1 + cigarText.length() + 1 + qualityString.length();
+#if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
+    QByteArray res(nBytes, Qt::Uninitialized);
+#else
+    QByteArray res(nBytes, char(0));
+#endif
+    char* data = res.data();
+    int pos = 0;
+    
+    // packing type
+    data[pos] = '0';
+    pos++;
+
+    // name
+    qMemCopy(data + pos, name.constData(), name.length());
+    pos+=name.length();
+    data[pos] = '\n';
+    pos++;
+
+    // sequence
+    qMemCopy(data + pos, seq.constData(), seq.length());
+    pos+=seq.length();
+    data[pos] = '\n';
+    pos++;
+
+    // cigar
+    qMemCopy(data + pos, cigarText.constData(), cigarText.length());
+    pos+=cigarText.length();
+    data[pos] = '\n';
+    pos++;
+
+    // quality
+    qMemCopy(data + pos, qualityString.constData(), qualityString.length());
+
+//#define _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
+#ifdef _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
+    QByteArray n, s, c, q;
+    unpackData(res, n, s, c, q, os);
+    assert(n == name);
+    assert(s == seq);
+    assert(c == cigarText);
+    assert(q == qualityString);
+#endif
+    return res;
+}
+
+void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& name, QByteArray& sequence, QByteArray& cigarText, QByteArray& qualityString, U2OpStatus& os) {
+    if (packedData.isEmpty()) {
+        os.setError(SQLiteL10N::tr("Packed data is empty!"));
+        return;
+    }
+    const char* data = packedData.constData();
+    if (data[0] != '0') {
+        os.setError(SQLiteL10N::tr("Packing method prefix is not supported: %1").arg(data));
+        return;
+    }
+    int nameStart = 1;
+    int nameEnd = packedData.indexOf('\n', nameStart);
+    if (nameEnd == -1) {
+        os.setError(SQLiteL10N::tr("Data is corrupted, no name end marker found: %1").arg(data));
+        return;
+    }
+    name.append(QByteArray(data + nameStart, nameEnd - nameStart));
+
+    int sequenceStart = nameEnd + 1;
+    int sequenceEnd = packedData.indexOf('\n', sequenceStart);
+    if (sequenceEnd == -1) {
+        os.setError(SQLiteL10N::tr("Data is corrupted, no sequence end marker found: %1").arg(data));
+        return;
+    }
+    sequence.append(data + sequenceStart, sequenceEnd - sequenceStart);
+    
+    int cigarStart = sequenceEnd + 1;
+    int cigarEnd = packedData.indexOf('\n', cigarStart);
+    if (sequenceEnd == -1) {
+        os.setError(SQLiteL10N::tr("Data is corrupted, no CIGAR end marker found: %1").arg(data));
+        return;
+    }
+    cigarText.append(data + cigarStart, cigarEnd - cigarStart);
+
+    int qualityStart = cigarEnd + 1;
+    if (qualityStart < packedData.length()) {
+        qualityString.append(data + qualityStart, packedData.length() - qualityStart);
+    }
 }
 
 } //namespace

@@ -129,6 +129,8 @@ public:
     virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
 
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
+    
+    virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os);
 
     virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os);
 
