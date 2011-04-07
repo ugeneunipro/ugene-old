@@ -28,8 +28,6 @@
 #include <QtGui/QCursor>
 #include <QtGui/QResizeEvent>
 #include <QtGui/QWheelEvent>
-#include <QtGui/QBoxLayout>
-#include <QtGui/QApplication>
 
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/Counter.h>
@@ -40,91 +38,6 @@
 #include "ShortReadIterator.h"
 
 namespace U2 {
-
-const QPoint ReadsHint::OFFSET_FROM_CURSOR(13, 13);
-static const int HINT_MAX_WIDTH = 200;
-
-ReadsHint::ReadsHint(QWidget * p): QFrame(p), fromToLabel(new QLabel(this)),
-lengthLabel(new QLabel(this)), cigarLabel(new QLabel(this)), strandLabel(new QLabel(this)) {
-    QBoxLayout * top = new QVBoxLayout(this);
-    top->setMargin(2);
-    setLayout(top);
-    top->addWidget(fromToLabel);
-    top->addWidget(lengthLabel);
-    top->addWidget(cigarLabel);
-    top->addWidget(strandLabel);
-    
-    installEventFilter(this);
-    fromToLabel->installEventFilter(this);
-    lengthLabel->installEventFilter(this);
-    cigarLabel->installEventFilter(this);
-    strandLabel->installEventFilter(this);
-    
-    {
-        QPalette p(palette());
-        p.setColor(QPalette::Background, QColor(245, 245, 206));
-        setPalette(p);
-    }
-    
-    setWindowFlags(Qt::ToolTip);
-    setWindowOpacity(0.8);
-    setMaximumHeight(layout()->minimumSize().height());
-    setMaximumWidth(HINT_MAX_WIDTH);
-    setMouseTracking(true);
-    setLineWidth(1);
-    setFrameShape(QFrame::Box);
-}
-
-void ReadsHint::setLength(qint64 len) {
-    lengthLabel->setText(tr("<b>Length</b>: %1").arg(len));
-}
-
-void ReadsHint::setFromTo(qint64 from, qint64 to) {
-    fromToLabel->setText(tr("<b>From</b> %1 <b>to</b> %2").arg(from).arg(to));
-}
-
-void ReadsHint::setCigar(const QString & ci) {
-    QString cigar;
-    if(ci.isEmpty()) {
-        cigar = tr("no information");
-    }
-    
-    for(int i = 0; i < ci.size(); ++i) {
-        QChar ch = ci.at(i);
-        if(ch.isNumber()) {
-            cigar.append(ch);
-        } else {
-            cigar.append(QString("<font color='#0000FF'>%1</font>").arg(ch));
-        }
-    }
-    cigarLabel->setText(tr("<b>Cigar</b>: %1").arg(cigar));
-}
-
-void ReadsHint::setStrand(bool onCompl) {
-    const QString DIRECT_STR(tr("direct"));
-    const QString COMPL_STR(tr("complement"));
-    strandLabel->setText(tr("<b>Strand</b>: %1").arg(onCompl ? COMPL_STR : DIRECT_STR));
-}
-
-bool ReadsHint::eventFilter(QObject *, QEvent * event) {
-    QMouseEvent * e = dynamic_cast<QMouseEvent*>(event);
-    if(e != NULL) {
-        QWidget * p = qobject_cast<QWidget*>(parent());
-        QMouseEvent eventToParent(e->type(), p->mapFromGlobal(QCursor::pos()), e->button(), e->buttons(), e->modifiers());
-        QApplication::sendEvent(p, &eventToParent);
-        return true;
-    } else {
-        return false;
-    }
-}
-
-void ReadsHint::leaveEvent(QEvent * e) {
-    QWidget * p = qobject_cast<QWidget*>(parent());
-    QPoint curInParentCoords = p->mapFromGlobal(QCursor::pos());
-    if(!p->rect().contains(curInParentCoords)) {
-        hide();
-    }
-}
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
 ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true), hBar(hBar_), vBar(vBar_), 
@@ -218,6 +131,9 @@ void AssemblyReadsArea::drawAll() {
 
 void AssemblyReadsArea::drawDensityGraph(QPainter & p) {
     GTIMER(c1, t1, "AssemblyReadsArea::drawDensityGraph");
+    
+    cachedReads.clear();
+    
     p.fillRect(rect(), Qt::gray);
     //p.fillRect(rect(), Qt::white);
 
@@ -392,7 +308,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
         hint.show();
     }
     QRect readsAreaRect(mapToGlobal(rect().topLeft()), mapToGlobal(rect().bottomRight()));
-    QRect hintRect = hint.rect(); hintRect.moveTo(QCursor::pos() + ReadsHint::OFFSET_FROM_CURSOR);
+    QRect hintRect = hint.rect(); hintRect.moveTo(QCursor::pos() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR);
     QPoint offset(0, 0);
     if(hintRect.right() > readsAreaRect.right()) {
         offset -= QPoint(hintRect.right() - readsAreaRect.right(), 0);
@@ -400,7 +316,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
     if(hintRect.bottom() > readsAreaRect.bottom()) {
         offset -= QPoint(0, hintRect.bottom() - readsAreaRect.bottom());
     }
-    QPoint newPos = QCursor::pos() + ReadsHint::OFFSET_FROM_CURSOR + offset;
+    QPoint newPos = QCursor::pos() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR + offset;
     if(hint.pos() != newPos) {
         hint.move(newPos);
     }

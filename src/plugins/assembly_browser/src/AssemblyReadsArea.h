@@ -26,11 +26,11 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QScrollBar>
-#include <QtGui/QLabel>
 #include <QtCore/QSharedPointer>
 
 #include <U2Core/U2Assembly.h>
 #include "AssemblyCellRenderer.h"
+#include "AssemblyReadsAreaHint.h"
 
 namespace U2 {
 
@@ -38,31 +38,6 @@ class AssemblyBrowser;
 class AssemblyBrowserUi;
 class AssemblyModel;
 class AssemblyReadsArea;
-
-// hint that is shown under cursor for current read
-class ReadsHint : public QFrame {
-    Q_OBJECT
-public:
-    static const QPoint OFFSET_FROM_CURSOR;
-    
-public:
-    ReadsHint(QWidget * p);
-
-    void setLength(qint64 len);
-    void setFromTo(qint64 from, qint64 to);
-    void setCigar(const QString & ci);
-    void setStrand(bool onCompl);
-    
-protected:
-    bool eventFilter(QObject *, QEvent *);
-    void leaveEvent(QEvent * e);
-    
-private:
-    QLabel * fromToLabel;
-    QLabel * lengthLabel;
-    QLabel * cigarLabel;
-    QLabel * strandLabel;
-};
 
 class AssemblyReadsArea: public QWidget {
     Q_OBJECT
@@ -126,6 +101,14 @@ private:
         bool isEmpty() const {
             return data.isEmpty();
         }
+        void clear() {
+            data.clear();
+            visibleBases = U2Region();
+            visibleRows = U2Region();
+            letterWidth = 0;
+            xOffsetInAssembly = 0;
+            yOffsetInAssembly = 0;
+        }
         QList<U2AssemblyRead> data;
         U2Region visibleBases;
         U2Region visibleRows;
@@ -136,7 +119,7 @@ private:
     ReadsCache cachedReads;
     QPoint curPos;
     bool redrawHint;
-    ReadsHint hint;
+    AssemblyReadsAreaHint hint;
     
     // needed to move by-letter when scribbling
     class ReadsMover {
