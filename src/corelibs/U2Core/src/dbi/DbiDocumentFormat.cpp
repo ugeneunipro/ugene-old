@@ -75,11 +75,22 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle.dbi->getEntityTypeById(id);
         switch (objectType) {
-            case U2Type::Assembly: 
-                ref.entityId = id;
-                 
-                objects.append(new AssemblyObject(ref, "Assembly_" + QString::number(assemblyNumber++), QVariantMap()));
-                break;
+            case U2Type::Assembly:
+                {
+                    ref.entityId = id;
+                    U2OpStatusImpl status;
+                    QString name = handle.dbi->getAssemblyDbi()->getAssemblyObject(id, status).visualName;
+                    if(status.hasError()) {
+                        coreLog.error(status.getError());
+                        break;
+                    }
+                    if(name.isEmpty()) {
+                        assert(false);
+                        name = "Assembly_" + QString::number(assemblyNumber++);
+                    }
+                    objects.append(new AssemblyObject(ref, name, QVariantMap()));
+                    break;
+                }
             default: // do nothing
                 break;
         }
