@@ -107,9 +107,12 @@ OpenSavedMSAEditorTask::OpenSavedMSAEditorTask(const QString& viewName, const QV
     GObjectReference ref = state.getMSAObject();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
     if (doc == NULL) {
-        stateIsIllegal = true;
-        stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
-        return;
+        doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject());
+        if (!doc) {
+            stateIsIllegal = true;
+            stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
+            return;
+        }
     }
     if (!doc->isLoaded()) {
         documentsToLoad.append(doc);

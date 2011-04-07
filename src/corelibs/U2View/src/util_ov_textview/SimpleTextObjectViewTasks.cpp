@@ -49,9 +49,12 @@ OpenSavedTextObjectViewTask::OpenSavedTextObjectViewTask(const QString& vname, c
     QString documentUrl = SimpleTextObjectView::getDocumentUrl(stateData);
     doc = AppContext::getProject()->findDocumentByURL(documentUrl);
     if (doc.isNull()) {
-        stateIsIllegal = true;
-        stateInfo.setError(L10N::errorDocumentNotFound(documentUrl));
-        return;
+        doc = createDocumentAndAddToProject(documentUrl, AppContext::getProject());
+        if (!doc) {
+            stateIsIllegal = true;
+            stateInfo.setError(L10N::errorDocumentNotFound(documentUrl));
+            return;
+        }
     }
     if (!doc->isLoaded()) {
         documentsToLoad.append(doc);

@@ -26,6 +26,9 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/GObject.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/ProjectModel.h>
 
 namespace U2 {
 
@@ -90,6 +93,18 @@ Task::ReportResult ObjectViewTask::report() {
     return ReportResult_Finished;
 }
 
+Document* ObjectViewTask::createDocumentAndAddToProject( const QString& docUrl, Project* p ) {
+    assert(p);
+    QFileInfo fi(docUrl);
+    if (!fi.exists()) {
+        return NULL;
+    }
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(docUrl));
+    QList<DocumentFormat*> dfs = DocumentUtils::detectFormat(docUrl);
+    Document* doc = new Document( dfs.first(), iof, GUrl(docUrl) );
+    p->addDocument(doc);
+    return doc;
+}
 //////////////////////////////////////////////////////////////////////////
 // AddToViewTask
 

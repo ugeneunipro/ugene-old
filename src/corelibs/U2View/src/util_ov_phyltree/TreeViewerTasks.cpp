@@ -104,9 +104,12 @@ OpenSavedTreeViewerTask::OpenSavedTreeViewerTask(const QString& viewName, const 
     GObjectReference ref = state.getPhyObject();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
     if (doc == NULL) {
-        stateIsIllegal = true;
-        stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
-        return;
+        doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject());
+        if (!doc) {
+            stateIsIllegal = true;
+            stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
+            return;
+        }
     }
     if (!doc->isLoaded()) {
         documentsToLoad.append(doc);

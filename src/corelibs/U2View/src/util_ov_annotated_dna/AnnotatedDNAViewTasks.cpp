@@ -171,11 +171,15 @@ static QSet<Document*> selectDocuments(Project* p, const QList<GObjectReference>
         Document* doc = p->findDocumentByURL(r.docUrl);
         if (doc!=NULL) {
             res.insert(doc);
+        } else {
+            doc = ObjectViewTask::createDocumentAndAddToProject(r.docUrl, p);
+            if (doc) {
+                res.insert(doc);
+            }
         }
     }
     return res;
 }
-
 
 OpenSavedAnnotatedDNAViewTask::OpenSavedAnnotatedDNAViewTask(const QString& viewName, const QVariantMap& stateData) 
 : ObjectViewTask(AnnotatedDNAViewFactory::ID, viewName, stateData)
@@ -190,10 +194,14 @@ OpenSavedAnnotatedDNAViewTask::OpenSavedAnnotatedDNAViewTask(const QString& view
     foreach(const GObjectReference& ref, refs) {
         Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
         if (doc == NULL) {
-            stateIsIllegal = true;
-            stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
-            return;
+            doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject());
+            if (!doc) {
+                stateIsIllegal = true;
+                stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
+                return;
+            }
         }
+        
         if (!doc->isLoaded()) {
             documentsToLoad.append(doc);
         }
@@ -215,6 +223,7 @@ void OpenSavedAnnotatedDNAViewTask::open() {
     QList<DNASequenceObject*> sequenceObjects;
     foreach(const GObjectReference& ref, state.getSequenceObjects()) {
         Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
+        bool l = doc->isLoaded();
         if (doc == NULL) {
             stateIsIllegal = true;
             stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
