@@ -171,7 +171,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addWidget(posSelector);
     }
     tb->addSeparator();
-    updateActionsForZoomOut();
+    updateZoomingActions(true);
     
     QToolButton * overviewScaleTypeToolButton = new QToolButton(tb);
     QMenu * scaleTypeMenu = new QMenu(tr("Scale type"), ui);
@@ -203,6 +203,14 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
     m->addAction(zoomOutAction);
     GObjectView::buildStaticMenu(m);
     GUIUtils::disableEmptySubmenus(m);
+}
+
+bool AssemblyBrowser::canAddObject(GObject* obj) {
+    return false;
+}
+
+QString AssemblyBrowser::addObject(GObject* o) {
+    return "";
 }
 
 int AssemblyBrowser::getCellWidth() const {
@@ -392,9 +400,13 @@ void AssemblyBrowser::sl_assemblyLoaded() {
 }
 
 void AssemblyBrowser::sl_zoomIn() {
+    if(!zoomInAction->isEnabled()) { // cannot perform zoom
+        return;
+    }
     qint64 oldWidth = basesVisible();
     int oldCellSize = getCellWidth();
-
+    
+    bool enableZoomIn = true;
     if(!oldCellSize) { 
         //if cells are not visible -> simply decrease the zoomFactor
         zoomFactor /= ZOOM_MULT;
@@ -402,26 +414,39 @@ void AssemblyBrowser::sl_zoomIn() {
         //single decreasing of the zoomFactor not always changes the cell size
         //so we have to do it in the cycle, until cells grow
         double oldZoomFactor = zoomFactor;
-        int cellWidth = 0;
-        do {
-            zoomFactor /= ZOOM_MULT;
-            cellWidth = getCellWidth();
-        } while(oldCellSize == cellWidth);
-        //can't zoom endlessly
-        if(cellWidth > MAX_CELL_WIDTH) {
-            zoomFactor = oldZoomFactor;
-        } 
+        int cellWidth = zoomInFromSize(oldCellSize);
+        assert(cellWidth <= MAX_CELL_WIDTH);
+        
+        // decide if on next zoom cellWidth will increase max width
+        double curZoomFactor = zoomFactor;
+        if(zoomInFromSize(getCellWidth()) > MAX_CELL_WIDTH) {
+            enableZoomIn = false;
+        }
+        zoomFactor = curZoomFactor;
     }
     
     //zooming to the center of the screen
     qint64 newX = getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2;
     setXOffsetInAssembly(newX);
     
-    updateActionsForZoomOut();
+    updateZoomingActions(enableZoomIn);
     emit si_zoomOperationPerformed();
 }
 
+int AssemblyBrowser::zoomInFromSize(int oldCellSize) {
+    assert(oldCellSize > 0);
+    int cellWidth = 0;
+    do {
+        zoomFactor /= ZOOM_MULT;
+        cellWidth = getCellWidth();
+    } while(oldCellSize == cellWidth);
+    return cellWidth;
+}
+
 void AssemblyBrowser::sl_zoomOut() {
+    if(!zoomOutAction->isEnabled()) { // cannot perform zoom
+        return;
+    }
     qint64 oldWidth = basesVisible();
     int oldCellSize = getCellWidth();
 
@@ -443,7 +468,7 @@ void AssemblyBrowser::sl_zoomOut() {
     qint64 newX =  qMax((qint64)0, getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2);
     setXOffsetInAssembly(newX);
     
-    updateActionsForZoomOut();
+    updateZoomingActions(true);
     emit si_zoomOperationPerformed();
 }
 
@@ -466,7 +491,7 @@ void AssemblyBrowser::setupActions() {
     connect(logScaleAction, SIGNAL(triggered()), SLOT(sl_changeOverviewType()));
     overviewScaleTypeActions << linearScaleAction << logScaleAction;
     
-    showCoordsOnRulerAction = new QAction(QIcon(":core/images/ruler.png"), tr("Show data on ruler"), this);
+    showCoordsOnRulerAction = new QAction(QIcon(":core/images/ruler.png"), tr("Show coordinates on ruler"), this);
     showCoordsOnRulerAction->setCheckable(true);
     connect(showCoordsOnRulerAction, SIGNAL(triggered()), SLOT(sl_onShowCoordsOnRulerChanged()));
 }
@@ -494,12 +519,13 @@ void AssemblyBrowser::sl_changeOverviewType() {
     updateOverviewTypeActions();
 }
 
-void AssemblyBrowser::updateActionsForZoomOut() {
-    bool enable = INITIAL_ZOOM_FACTOR != zoomFactor;
-    zoomOutAction->setEnabled(enable);
+void AssemblyBrowser::updateZoomingActions(bool enableZoomIn) {
+    bool enableZoomOut = INITIAL_ZOOM_FACTOR != zoomFactor;
+    zoomOutAction->setEnabled(enableZoomOut);
     if(posSelector != NULL) {
-        posSelector->setEnabled(enable);
+        posSelector->setEnabled(enableZoomOut);
     }
+    zoomInAction->setEnabled(enableZoomIn);
 }
 
 void AssemblyBrowser::updateOverviewTypeActions() {

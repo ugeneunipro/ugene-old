@@ -88,6 +88,8 @@ public:
     // from GObjectView
     virtual void buildStaticToolbar(QToolBar* tb);
     virtual void buildStaticMenu(QMenu* m);
+    virtual bool canAddObject(GObject* obj);
+    virtual QString addObject(GObject* o);
     
     int getCellWidth() const;
     qint64 calcPixelCoord(qint64 asmCoord) const;
@@ -141,10 +143,11 @@ public slots:
 private:
     void initFont();
     void setupActions();
-    void updateActionsForZoomOut();
+    void updateZoomingActions(bool enableZoomIn);
     void updateOverviewTypeActions();
     void clear();
-
+    int zoomInFromSize(int oldCellSize);
+    
     AssemblyBrowserUi * ui;
 
     AssemblyObject * gobject;
