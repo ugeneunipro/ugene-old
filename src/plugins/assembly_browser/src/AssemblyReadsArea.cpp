@@ -249,7 +249,8 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             for(int x_pix_offset = 0; cigarIt.hasNext(); x_pix_offset += cachedReads.letterWidth) {
                 GTIMER(c2, t2, "AssemblyReadsArea::drawReads -> cycle through one read");
                 char c = cigarIt.nextLetter();
-                if(!defaultColorScheme.contains(c)) { //TODO: smarter analysis. Don't forget about '=' symbol
+                if(!defaultColorScheme.contains(c)) {
+                    //TODO: smarter analysis. Don't forget about '=' symbol and IUPAC codes
                     c = 'N';
                 }
                 QPoint cellStart(x_pix_start + x_pix_offset, y_pix_start);

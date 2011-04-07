@@ -205,7 +205,7 @@ private:
 };
 
 /**
- * Dumps error to log and returns true if status contains an error.
+ * Dumps error to log and returns true if status contains an erro.r 
  */
 bool checkAndLogError(const U2OpStatusImpl & status);
 

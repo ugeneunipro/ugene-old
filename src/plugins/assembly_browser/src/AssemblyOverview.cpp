@@ -37,16 +37,100 @@
 namespace U2 {
 
 //==============================================================================
+// AssemblyOverviewRenderTask
+//==============================================================================
+
+AssemblyOverviewRenderTask::AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model_, const QSize & imageSize_, 
+    AssemblyBrowserSettings::OverviewScaleType scT) :
+BackgroundRenderTask(tr("Assembly overview renderer"), TaskFlag_None), model(model_), imageSize(imageSize_), scaleType(scT) {
+    tpm = Progress_Manual;
+}
+
+void AssemblyOverviewRenderTask::run() {
+    result = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
+
+    QPainter p(&result);
+    p.fillRect(result.rect(), Qt::white);
+
+    U2OpStatusImpl status;
+    qint64 alignmentLen = model->getModelLength(status);
+    if(status.hasError()) {
+        stateInfo.setError(status.getError());
+        return;
+    }
+
+    qint64 widgetWidth = result.width();
+    qint64 widgetHeight = result.height();
+
+    //FIXME can be zero
+    double lettersPerXPixel = double(alignmentLen) / widgetWidth;
+
+    QVector<quint64> readsPerXPixels(widgetWidth);
+    qint64 maxReadsPerXPixels = 0;
+    qint64 start = 0;
+
+    for(int i = 0 ; i < widgetWidth; ++i) {
+        if(stateInfo.cancelFlag) {
+            return;
+        }
+        stateInfo.progress = double(i) / widgetWidth * 100.;
+        qint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(start, qRound64(lettersPerXPixel)), status);
+        if(status.hasError()) {
+            stateInfo.setError(status.getError());
+            return;
+        }
+        readsPerXPixels[i] = readsPerXPixel;
+        start = lettersPerXPixel * i;
+        if(maxReadsPerXPixels < readsPerXPixel) {
+            maxReadsPerXPixels = readsPerXPixel;
+        }
+    }
+
+    static double logMax = .0;
+    double readsPerYPixel = .0;
+    switch(scaleType) {
+    case AssemblyBrowserSettings::Scale_Linear:
+        readsPerYPixel = double(maxReadsPerXPixels) / widgetHeight; 
+        break;
+    case AssemblyBrowserSettings::Scale_Logarithmic:
+        logMax = log((double)maxReadsPerXPixels);
+        readsPerYPixel = double(logMax) / widgetHeight; 
+        break;
+    default:
+        assert(false);
+    }
+
+    for(int i = 0 ; i < widgetWidth; ++i) {
+        quint64 columnPixels = 0;
+        int grayCoeff = 0;
+        switch(scaleType) {
+        case AssemblyBrowserSettings::Scale_Linear:
+            columnPixels = qint64(double(readsPerXPixels[i]) / readsPerYPixel + 0.5);
+            grayCoeff = 255 - int(double(255) / maxReadsPerXPixels * readsPerXPixels[i] + 0.5);
+            break;
+        case AssemblyBrowserSettings::Scale_Logarithmic:
+            columnPixels = qint64(double(log((double)readsPerXPixels[i])) / readsPerYPixel + 0.5);
+            grayCoeff = 255 - int(double(255) / logMax * log((double)readsPerXPixels[i]) + 0.5);
+            break;
+        }
+
+        p.setPen(QColor(grayCoeff, grayCoeff, grayCoeff));
+        p.drawLine(i, 0, i, columnPixels);
+    }
+    p.setPen(Qt::gray);
+    p.drawRect(result.rect().adjusted(0,0,-1,-1));
+}
+
+//==============================================================================
 // AssemblyOverview
 //==============================================================================
 
 AssemblyOverview::AssemblyOverview(AssemblyBrowserUi * ui_): ui(ui_), browser(ui->getWindow()), model(ui_->getModel()), 
-redrawSelection(true), bgrRenderer(model, this), scribbling(false), scaleType(AssemblyBrowserSettings::getOverviewScaleType())
+redrawSelection(true), scribbling(false), scaleType(AssemblyBrowserSettings::getOverviewScaleType())
 {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     initSelectionRedraw();
-    //bgrRenderer.render(size());
 }
 
 void AssemblyOverview::connectSlots() {
@@ -102,6 +186,9 @@ void AssemblyOverview::drawSelection(QPainter & p) {
         p.drawLine(c - CROSS_RIGHT_CORNER, c + CROSS_RIGHT_CORNER);
         p.setPen(oldPen);
     } else {
+        if(cachedSelection.width() < 5 || cachedSelection.height() < 5) {
+            p.setPen(Qt::red);
+        }
         p.fillRect(cachedSelection, QColor(230, 230, 230, 180));
         p.drawRect(cachedSelection.adjusted(0, 0, -1, -1));
     }
@@ -235,7 +322,7 @@ void AssemblyOverview::paintEvent(QPaintEvent * e) {
 void AssemblyOverview::resizeEvent(QResizeEvent * e) {
     cachedSelection = calcCurrentSelection();
     moveSelectionToPos(cachedSelection.center(), false);
-    bgrRenderer.render(size());
+    bgrRenderer.render(new AssemblyOverviewRenderTask(model, size(), scaleType));
     sl_redraw();
     QWidget::resizeEvent(e);
 }
@@ -278,146 +365,12 @@ void AssemblyOverview::setScaleType(AssemblyBrowserSettings::OverviewScaleType t
     AssemblyBrowserSettings::setOverviewScaleType(t);
     if(scaleType != t) {
         scaleType = t;
-        bgrRenderer.render(size());
+        bgrRenderer.render(new AssemblyOverviewRenderTask(model, size(), scaleType));
     }
 }
 
 AssemblyBrowserSettings::OverviewScaleType AssemblyOverview::getScaleType() const {
     return scaleType;
-}
-
-//==============================================================================
-// AssemblyOverviewRenderTask
-//==============================================================================
-
-AssemblyOverviewRenderTask::AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model_, QSize imageSize, 
-                                                       AssemblyBrowserSettings::OverviewScaleType scT) :
-Task(tr("Assembly overview renderer"), TaskFlag_None), model(model_), result(imageSize, QImage::Format_ARGB32_Premultiplied), scaleType(scT) {
-    tpm = Progress_Manual;
-}
-
-void AssemblyOverviewRenderTask::run() {
-    QPainter p(&result);
-    p.fillRect(result.rect(), Qt::white);
-
-    U2OpStatusImpl status;
-    qint64 alignmentLen = model->getModelLength(status);
-    if(status.hasError()) {
-        stateInfo.setError(status.getError());
-        return;
-    }
-
-    qint64 widgetWidth = result.width();
-    qint64 widgetHeight = result.height();
-
-    //FIXME can be zero
-    double lettersPerXPixel = double(alignmentLen) / widgetWidth;
-
-    QVector<quint64> readsPerXPixels(widgetWidth);
-    qint64 maxReadsPerXPixels = 0;
-    qint64 start = 0;
-
-    for(int i = 0 ; i < widgetWidth; ++i) {
-        if(stateInfo.cancelFlag) {
-            return;
-        }
-        stateInfo.progress = double(i) / widgetWidth * 100.;
-        qint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(start, qRound64(lettersPerXPixel)), status);
-        if(status.hasError()) {
-            stateInfo.setError(status.getError());
-            return;
-        }
-        readsPerXPixels[i] = readsPerXPixel;
-        start = lettersPerXPixel * i;
-        if(maxReadsPerXPixels < readsPerXPixel) {
-            maxReadsPerXPixels = readsPerXPixel;
-        }
-    }
-    
-    static double logMax = .0;
-    double readsPerYPixel = .0;
-    switch(scaleType) {
-    case AssemblyBrowserSettings::Scale_Linear:
-        readsPerYPixel = double(maxReadsPerXPixels) / widgetHeight; 
-        break;
-    case AssemblyBrowserSettings::Scale_Logarithmic:
-        logMax = log((double)maxReadsPerXPixels);
-        readsPerYPixel = double(logMax) / widgetHeight; 
-        break;
-    default:
-        assert(false);
-    }
-    
-    for(int i = 0 ; i < widgetWidth; ++i) {
-        quint64 columnPixels = 0;
-        int grayCoeff = 0;
-        switch(scaleType) {
-        case AssemblyBrowserSettings::Scale_Linear:
-            columnPixels = qint64(double(readsPerXPixels[i]) / readsPerYPixel + 0.5);
-            grayCoeff = 255 - int(double(255) / maxReadsPerXPixels * readsPerXPixels[i] + 0.5);
-            break;
-        case AssemblyBrowserSettings::Scale_Logarithmic:
-            columnPixels = qint64(double(log((double)readsPerXPixels[i])) / readsPerYPixel + 0.5);
-            grayCoeff = 255 - int(double(255) / logMax * log((double)readsPerXPixels[i]) + 0.5);
-            break;
-        }
-        
-        p.setPen(QColor(grayCoeff, grayCoeff, grayCoeff));
-        p.drawLine(i, 0, i, columnPixels);
-    }
-    p.setPen(Qt::gray);
-    p.drawRect(result.rect().adjusted(0,0,-1,-1));
-}
-
-//==============================================================================
-// BackgroundRenderer
-//==============================================================================
-
-BackgroundRenderer::BackgroundRenderer(QSharedPointer<AssemblyModel> model_, AssemblyOverview * p) :
-renderTask(0), model(model_), redrawRunning(false), redrawNeeded(true), parent(p)
-{
-}
-
-void BackgroundRenderer::render(const QSize & size_)  {
-    size = size_;
-    if(!model->isEmpty()) {
-        if(redrawRunning) {
-            assert(renderTask);
-            redrawNeeded = true;
-            return;
-        }
-        redrawRunning = true;
-        redrawNeeded = false;
-        renderTask = new AssemblyOverviewRenderTask(model, size, parent->getScaleType());
-        connect(renderTask, SIGNAL(si_stateChanged()), SLOT(sl_redrawFinished()));
-        AppContext::getTaskScheduler()->registerTopLevelTask(renderTask);
-    }
-}
-
-QImage BackgroundRenderer::getImage() const {
-    if(redrawRunning) {
-        return QImage();
-    }
-    assert(!renderTask);
-    return result;
-}
-
-void BackgroundRenderer::sl_redrawFinished() {
-    assert(renderTask == sender());
-    if(Task::State_Finished != renderTask->getState()) {
-        return;
-    }
-    assert(redrawRunning);
-    redrawRunning = false;
-    if(redrawNeeded) {
-        render(size);
-        redrawRunning = true;
-        redrawNeeded = false;
-    } else {
-        result = renderTask->getResult();
-        emit(si_rendered());
-        renderTask = 0;
-    }
 }
 
 } //ns

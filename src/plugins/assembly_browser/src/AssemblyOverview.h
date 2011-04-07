@@ -24,53 +24,28 @@
 
 #include <QtCore/QSharedPointer>
 #include <QtGui/QWidget>
-#include <QtGui/QPixmap>
-
-#include <U2Core/Task.h>
 
 #include "AssemblyBrowserSettings.h"
+#include "BackgroundRenderer.h"
 
 namespace U2 {
 
 class AssemblyModel;
-
-class AssemblyOverviewRenderTask: public Task {
-    Q_OBJECT
-public:
-    AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model, QSize imageSize, AssemblyBrowserSettings::OverviewScaleType scaleType);
-    virtual void run();
-    inline QImage getResult() const {return result;};
-private:
-    QSharedPointer<AssemblyModel> model;
-    QImage result;
-    AssemblyBrowserSettings::OverviewScaleType scaleType;
-};
-
-class AssemblyOverview;
-
-class BackgroundRenderer: public QObject {
-    Q_OBJECT
-public:
-    BackgroundRenderer(QSharedPointer<AssemblyModel> model_, AssemblyOverview * parent);
-    void render(const QSize & size_);
-    QImage getImage() const;
-signals:
-    void si_rendered();
-private slots:
-    void sl_redrawFinished();
-private:
-    AssemblyOverviewRenderTask * renderTask;
-    QImage result;
-    QSharedPointer<AssemblyModel> model;
-    QSize size;
-    bool redrawRunning;
-    bool redrawNeeded;
-    AssemblyOverview * parent;
-};
-
 class AssemblyBrowserUi;
 class AssemblyBrowser;
 class AssemblyOverviewRenderTask;
+
+class AssemblyOverviewRenderTask: public BackgroundRenderTask {
+    Q_OBJECT
+public:
+    AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model, const QSize & imageSize, AssemblyBrowserSettings::OverviewScaleType scaleType);
+    virtual void run();
+private:
+    QSharedPointer<AssemblyModel> model;
+    QSize imageSize;
+    AssemblyBrowserSettings::OverviewScaleType scaleType;
+};
+
 
 class AssemblyOverview: public QWidget {
     Q_OBJECT
