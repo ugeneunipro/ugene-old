@@ -1259,10 +1259,6 @@ Do you wish to create this directory?</source>
         <source>Open &apos;%1&apos;</source>
         <translation>Открытие окна &apos;%1&apos;</translation>
     </message>
-    <message>
-        <source>No sequence info found!</source>
-        <translation type="obsolete">Информация о последовательности не найдена!</translation>
-    </message>
 </context>
 <context>
     <name>U2::ObjectViewTreeController</name>

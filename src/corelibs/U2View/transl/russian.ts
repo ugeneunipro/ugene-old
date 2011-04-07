@@ -742,13 +742,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>ObjectViewTask</name>
-    <message>
-        <source>No sequence info found!</source>
-        <translation type="obsolete">Информация о последовательности не найдена!</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../src/util_ov_phyltree/CreateBranchesTask.h" line="36"/>
@@ -2650,7 +2643,7 @@ Please, check your plugin list.</source>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="187"/>
         <source>No sequence info found!</source>
-        <translation type="unfinished">Информация о последовательности не найдена!</translation>
+        <translation>Информация о последовательности не найдена!</translation>
     </message>
 </context>
 <context>

@@ -2454,7 +2454,7 @@ Please, check your plugin list.</source>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="187"/>
         <source>No sequence info found!</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
