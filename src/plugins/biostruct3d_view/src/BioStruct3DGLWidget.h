@@ -118,8 +118,7 @@ public:
     const QString getPDBId() const { return contexts.first().biostruct->pdbId; }
 
     //! @return BioStruct3DObject name.
-    // unused
-    //const QString getBioStruct3DObjectName() const;
+    const QString getBioStruct3DObjectName() const { return contexts.first().obj->getGObjectName(); }
 
     /*!
     * @return Menu containing display actions: renderers, color schemes etc.
@@ -359,8 +358,7 @@ public:
     static const QString PLUGIN_NAME;
     static const QString COLOR_SCHEME_NAME;
     static const QString RENDERER_NAME;
-    // unused
-    //static const QString OBJECT_ID_NAME;
+    static const QString OBJECT_ID_NAME;
 
     static const QString SELECTION_COLOR_NAME;
 

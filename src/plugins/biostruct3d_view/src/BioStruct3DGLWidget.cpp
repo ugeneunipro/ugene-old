@@ -92,8 +92,7 @@ const QString BioStruct3DGLWidget::PRODUCT_NAME("Unipro Ugene");
 const QString BioStruct3DGLWidget::PLUGIN_NAME("BioStruct3D Viewer Plugin");
 const QString BioStruct3DGLWidget::COLOR_SCHEME_NAME("ColorScheme");
 const QString BioStruct3DGLWidget::RENDERER_NAME("GLRenderer");
-// unused
-//const QString BioStruct3DGLWidget::OBJECT_ID_NAME("OBJECT_ID");
+const QString BioStruct3DGLWidget::OBJECT_ID_NAME("OBJECT_ID");
 
 const QString BioStruct3DGLWidget::SELECTION_COLOR_NAME("SelectionColor");
 
@@ -551,8 +550,7 @@ QVariantMap BioStruct3DGLWidget::getState()
 
     state[COLOR_SCHEME_NAME] = QVariant::fromValue(currentColorSchemeName);
     state[RENDERER_NAME] = QVariant::fromValue(currentGLRendererName);
-    // unused
-    //state[OBJECT_ID_NAME] = QVariant::fromValue(getBioStruct3DObjectName());
+    state[OBJECT_ID_NAME] = QVariant::fromValue(getBioStruct3DObjectName());
 
     state[BACKGROUND_COLOR_NAME] = QVariant::fromValue(backgroundColor);
     state[SELECTION_COLOR_NAME] = QVariant::fromValue(selectionColor);
