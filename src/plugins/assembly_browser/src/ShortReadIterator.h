@@ -26,28 +26,62 @@
 
 namespace U2 {
 
-//TODO: enable handling for all CIGAR tokens. 
+//TODO: remove hard-coded '-' gap symbol. Allow custom gap symbols ?
+
+/**
+ * Iterator for Next-Gen Sequencing short reads based on CIGAR model 
+ * (see enum U2CigarOp for details about CIGAR operations). Provides transparent
+ * iterations through read sequence, skipping clipping/padding/insertions and 
+ * returning special symbols when going through deletions or skipped regions.
+ *
+ * Handling of CIGAR operations:
+ * 1. Hard clips (H) and padding (P) operations are silently skipped.
+ * 2. Soft clips (S) and insertions (I) do present in read sequence. So this operations
+ *    are skipped together with the corresponding letters of the sequence.
+ * 3. Deletions (D) and skipped regions (N) are 'virtual letters'. Iterator returns gap
+ *    symbol when iterating through them.
+ * 4. Matches/mismatches (M/=/X) are treated normally.
+ */
 class ShortReadIterator {
 public:
+    /**
+     * Constructs iterator from raw data and CIGAR model. Iterations can be started
+     * form any position using startPos argument.
+     */
     ShortReadIterator(const QByteArray & read_, QList<U2CigarToken> cigar_, int startPos = 0); 
 
+    /**
+     * Returns true if the next letter is a match (mismatch) or deletion/skip.
+     * If the read ends with clipping/insertion/etc hasNext() returns false.
+     */
     bool hasNext() const;
 
+    /**
+     * Returns next letter for match/mismatch or gap symbol for deletion/skip.
+     */
     char nextLetter();
 
 private:
     void advanceToNextToken();
-    void skipInsertion();
-    bool isInsertion();
-    bool isDeletion();
 
-    int offsetInRead;
+    void skip();
+    void skipInsertion();
+    void skipPaddingAndHardClip();
+
+    bool isMatch() const;
+    bool isInsertion() const;
+    bool isDeletion() const;
+    bool isPaddingOrHardClip() const;
+
+    int offsetInRead; 
     const QByteArray & read;
 
-    int offsetInToken; // offset in token
-    int offsetInCigar;  //
+    int offsetInToken;
+    int offsetInCigar;
     QList<U2CigarToken> cigar;
 };
+
+extern void shortReadIteratorSmokeTest();
 
 } //ns
 #endif 
