@@ -115,6 +115,12 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     int textWidth = p.fontMetrics().width(cursorLabel);
     int textHeight = p.fontMetrics().height();
     QRect offsetRect(cursorPos - textWidth/2, LABELS_END, textWidth, textHeight);
+    if(offsetRect.left() < 0) {
+        offsetRect.moveLeft(0);
+    }
+    if(offsetRect.right() > width() - 1) {
+        offsetRect.moveRight(width() - 1);
+    }
     
     //4. draw cursor label
     p.drawText(offsetRect, Qt::AlignCenter, cursorLabel);
