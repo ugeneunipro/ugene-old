@@ -301,7 +301,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
     
     // set hint info
     hint.setLength(len);
-    hint.setFromTo(read->leftmostPos, read->leftmostPos + len - 1);
+    hint.setFromTo(read->leftmostPos + 1, read->leftmostPos + len);
     hint.setCigar(U2AssemblyUtils::cigar2String(read->cigar));
     hint.setStrand(read->complementary);
     if(!hint.isVisible()) {
@@ -480,10 +480,11 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
 
 void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
     //1. move reads area center to mouse
+    // move x
     qint64 xOffset = browser->getXOffsetInAssembly();
     qint64 cursorXoffset = browser->calcAsmPosX(e->pos().x());
-    qint64 windowHalf = xOffset + qRound64((double)browser->basesCanBeVisible() / 2);
-    browser->setXOffsetInAssembly(qMax((qint64)0, xOffset + cursorXoffset - windowHalf));
+    qint64 windowHalfX = xOffset + qRound64((double)browser->basesCanBeVisible() / 2);
+    browser->setXOffsetInAssembly(qMax((qint64)0, xOffset + cursorXoffset - windowHalfX));
     
     //2. zoom in
     static const int howManyZoom = 2;

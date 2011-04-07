@@ -138,7 +138,7 @@ void AssemblyOverview::drawCoordLabels(QPainter & p) {
     qint64 from = browser->getXOffsetInAssembly();
     qint64 to = qMin(browser->getXOffsetInAssembly() + browser->basesCanBeVisible(), model->getModelLength(status));
 
-    QString fromText = QString::number(from);
+    QString fromText = QString::number(from + 1); // because of 1-based coords
     QString toText = QString::number(to);
     QString diff = QString::number(to - from);
 

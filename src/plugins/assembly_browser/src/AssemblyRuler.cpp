@@ -110,7 +110,8 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     checkAndLogError(status);
 
     //3. format the string 
-    QString cursorLabel = insertSpaceSeparators(QString::number(posXInAsm)) + QString(" C%1").arg(readsPerXPixel);
+    // pos + 1 because of 1-based coords
+    QString cursorLabel = insertSpaceSeparators(QString::number(posXInAsm + 1)) + QString(" C%1").arg(readsPerXPixel);
     int textWidth = p.fontMetrics().width(cursorLabel);
     int textHeight = p.fontMetrics().height();
     QRect offsetRect(cursorPos - textWidth/2, LABELS_END, textWidth, textHeight);
@@ -149,8 +150,11 @@ void AssemblyRuler::drawRuler(QPainter & p) {
     int pixInterval = browser->calcPixelCoord(interval);
     
     int globalOffset = browser->getXOffsetInAssembly();
-    qint64 firstLetterWithNotch = globalOffset/ interval * interval;
-
+    qint64 firstLetterWithNotch = globalOffset - 1;
+    while((firstLetterWithNotch + 1) % interval != 0) {
+        ++firstLetterWithNotch;
+    }
+    
     int start = firstLetterWithNotch - globalOffset;
     int end = browser->basesCanBeVisible();
 
@@ -162,12 +166,13 @@ void AssemblyRuler::drawRuler(QPainter & p) {
     for(int i = start; i < end; i+=interval) {
         int x_pix = browser->calcPainterOffset(i) + halfCell;
         //draw long notches + labels for "big interval"
-        if((globalOffset + i) % bigInterval == 0) {
+        int oneBasedOffset = globalOffset + i + 1;
+        if(oneBasedOffset == 1 || oneBasedOffset % bigInterval == 0) {
             //draw long notch
             p.drawLine(x_pix, LONG_NOTCH_START, x_pix, LONG_NOTCH_END);
 
             //draw labels
-            QString offsetStr = insertSpaceSeparators(FormatUtils::formatNumber(globalOffset + i));
+            QString offsetStr = insertSpaceSeparators(FormatUtils::formatNumber(oneBasedOffset));
             int textWidth = p.fontMetrics().width(offsetStr);
             int textHeight = p.fontMetrics().height();
             QRect offsetRect(x_pix - textWidth/2, LABELS_END, textWidth, textHeight);
