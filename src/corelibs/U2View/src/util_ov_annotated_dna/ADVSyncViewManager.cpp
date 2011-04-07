@@ -466,17 +466,16 @@ void ADVSyncViewManager::sl_onSelectionChanged( LRegionsSelection* sel, const QV
         }
 
         int offset = focusedW->getVisibleRange().startPos - w->getVisibleRange().startPos;
-        if (offset < 0) {
-            offset = -offset;
-        }
-
+        
         DNASequenceSelection* selection = w->getSequenceSelection();
         selection->clear();
         foreach(U2Region r, added) {
             r.startPos -= offset;
+
             if (r.startPos < 0) {
                 r.startPos = 0;
             }
+
             if (r.endPos() > w->getSequenceLen()) {
                 r.length = w->getSequenceLen() - r.startPos;
             }
