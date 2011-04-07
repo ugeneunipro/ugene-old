@@ -22,6 +22,8 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <U2Misc/DialogUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/DocumentUtils.h>
 #include "BAMDbiPlugin.h"
 #include "ConvertToSQLiteDialog.h"
 
@@ -75,7 +77,11 @@ void U2::BAM::ConvertToSQLiteDialog::on_sourceUrlButton_clicked() {
     if(!helper.url.isEmpty()) {
         ui.sourceUrlEdit->setText(helper.url);
         QFileInfo fi(helper.url);
-        ui.destinationUrlEdit->setText(fi.absoluteDir().path() + "/" + fi.completeBaseName() + ".ugenedb");
+        QString destCandidate = fi.absoluteDir().path() + "/" + fi.completeBaseName() + ".ugenedb";
+        if(QFileInfo(destCandidate).exists()) {
+            destCandidate = GUrlUtils::rollFileName(destCandidate, DocumentUtils::getNewDocFileNameExcludesHint());
+        }
+        ui.destinationUrlEdit->setText(destCandidate);
     }
 }
 
