@@ -338,7 +338,7 @@ QList<Task*> KAlignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTa
             kalignGObjectTask = new KalignGObjectTask(mAObject, config);
         }
 #else
-        kalignGObjectTask = new KAlignGObjectTask(mAObject, config);
+        kalignGObjectTask = new KalignGObjectTask(mAObject, config);
 #endif // RUN_WORKFLOW_IN_THREADS
         assert(kalignGObjectTask != NULL);
         res.append(kalignGObjectTask);
