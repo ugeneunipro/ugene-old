@@ -27,7 +27,6 @@
 #include <QtCore/QSharedPointer>
 #include <QtCore/QByteArray>
 #include <U2Core/U2Dbi.h>
-#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2Assembly.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -35,47 +34,9 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
 
+#include "AssemblyModel.h"
+
 namespace U2 {
-
-class AssemblyModel {
-public:
-    //TODO refactor 
-    AssemblyModel(const DbiHandle & dbiHandle);
-
-    bool isEmpty() const;
-
-    QList<U2AssemblyRead> getReadsFromAssembly(int assIdx, const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os);
-
-    qint64 countReadsInAssembly(int assIdx, const U2Region & r, U2OpStatus & os);
-
-    qint64 getModelLength(U2OpStatus & os);
-
-    qint64 getModelHeight(U2OpStatus & os);
-
-    void addAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
-
-    bool hasReference() const;
-
-    void setReference(U2SequenceDbi * dbi, const U2Sequence & seq);
-
-    QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
-
-    const DbiHandle & getDbiHandle() const {return dbiHandle;}
-
-private:
-    const static qint64 NO_VAL = -1;
-    //TODO: track model changes and invalidate caches accordingly
-    qint64 cachedModelLength;
-    qint64 cachedModelHeight;
-
-    U2Sequence reference;
-    U2SequenceDbi * referenceDbi;
-
-    QList<U2Assembly> assemblies;
-    QList<U2AssemblyDbi *> assemblyDbis;
-
-    DbiHandle dbiHandle; 
-};
 
 class AssemblyBrowserUi;
 class PositionSelector;
@@ -136,7 +97,6 @@ protected:
     virtual bool eventFilter(QObject*, QEvent*);
     
 private slots:
-    void sl_loadAssembly();
     void sl_assemblyLoaded();
     void sl_onPosChangeRequest(int);
     void sl_changeOverviewType();

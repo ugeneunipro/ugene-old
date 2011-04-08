@@ -13,7 +13,8 @@ HEADERS += src/AssemblyBrowser.h \
            src/ShortReadIterator.h \
            src/AssemblyBrowserFactory.h \
            src/AssemblyBrowserSettings.h \
-           src/BackgroundRenderer.h 
+           src/BackgroundRenderer.h \
+           src/AssemblyModel.h
 SOURCES += src/AssemblyBrowser.cpp \
            src/AssemblyBrowserPlugin.cpp \
            src/AssemblyDensityGraph.cpp \
@@ -26,4 +27,5 @@ SOURCES += src/AssemblyBrowser.cpp \
            src/ShortReadIterator.cpp \
            src/AssemblyBrowserFactory.cpp \
            src/AssemblyBrowserSettings.cpp \
-           src/BackgroundRenderer.cpp 
+           src/BackgroundRenderer.cpp \
+           src/AssemblyModel.cpp
