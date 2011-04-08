@@ -317,6 +317,9 @@ void MAlignmentRow::setName(const QString& newName) {
 }
 
 bool MAlignmentRow::operator==(const MAlignmentRow& row) const {
+    if (row.name != this->name) {
+        return false;
+    }
     if (offset == row.offset && sequence == row.sequence) {
         return true;
     }
