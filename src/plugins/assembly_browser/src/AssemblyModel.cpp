@@ -24,6 +24,8 @@
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2SequenceDbi.h>
 
+#include <memory>
+
 namespace U2 {
 
 //==============================================================================
