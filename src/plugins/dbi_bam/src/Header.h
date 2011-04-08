@@ -117,17 +117,20 @@ public:
     const QList<Reference> &getReferences()const;
     const QList<ReadGroup> &getReadGroups()const;
     const QList<Program> &getPrograms()const;
+    const QString& getText()const;
     void setFormatVersion(const Version &formatVersion);
     void setSortingOrder(SortingOrder sortingOrder);
     void setReferences(const QList<Reference> &references);
     void setReadGroups(const QList<ReadGroup> &readGroups);
     void setPrograms(const QList<Program> &programs);
+    void setText(const QString& text);
 private:
     Version formatVersion;
     SortingOrder sortingOrder;
     QList<Reference> references;
     QList<ReadGroup> readGroups;
     QList<Program> programs;
+    QString text;
 };
 
 } // namespace BAM

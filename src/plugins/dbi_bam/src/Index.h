@@ -31,6 +31,7 @@ namespace BAM {
 class Index
 {
 public:
+    Index() {}
     class ReferenceIndex {
     public:
         class Chunk {
@@ -42,11 +43,21 @@ public:
             VirtualOffset start;
             VirtualOffset end;
         };
-        ReferenceIndex(const QList<QList<Chunk> > &bins, const QList<VirtualOffset> &intervals);
-        const QList<QList<Chunk> > &getBins()const;
+
+        class Bin {
+        public:
+            Bin(unsigned int bin, QList<Chunk> chunks);
+            const QList<Chunk> &getChunks() const;
+            const unsigned int getBin() const;
+        private:
+            unsigned int bin;
+            QList<Chunk> chunks;
+        };
+        ReferenceIndex(const QList<Bin> &bins, const QList<VirtualOffset> &intervals);
+        const QList<Bin> &getBins()const;
         const QList<VirtualOffset> &getIntervals()const;
     private:
-        QList<QList<Chunk> > bins;
+        QList<Bin> bins;
         QList<VirtualOffset> intervals;
     };
     Index(const QList<ReferenceIndex> &referenceIndices);

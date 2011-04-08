@@ -30,13 +30,14 @@
 namespace U2 {
 namespace BAM {
 
+QT_FORWARD_DECLARE_CLASS(BAMInfo)
+
 class ConvertToSQLiteDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ConvertToSQLiteDialog(bool hasProject);
+    ConvertToSQLiteDialog(const GUrl& sourceUrl, bool hasProject, BAMInfo& bamInfo);
 
-    const GUrl &getSourceUrl()const;
     const GUrl &getDestinationUrl()const;
     bool        addToProject() const;
     
@@ -45,13 +46,15 @@ public slots:
 
 private slots:
     void on_destinationUrlButton_clicked();
-    void on_sourceUrlButton_clicked();
+    void sl_contigCheckChanged(QTableWidgetItem * item);
+    void sl_bamInfoButtonClicked();
 
 private:
     Ui::ConvertToSQLiteDialog ui;
 
-    GUrl sourceUrl;
     GUrl destinationUrl;
+    GUrl sourceUrl;
+    BAMInfo &bamInfo;
     
     bool askIfDestFileExist;
 };

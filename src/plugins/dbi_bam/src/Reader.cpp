@@ -699,6 +699,7 @@ void Reader::readHeader() {
         header.setReferences(references);
         header.setReadGroups(readGroups);
         header.setPrograms(programs);
+        header.setText(text);
     }
 }
 

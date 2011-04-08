@@ -34,7 +34,9 @@ public:
     BAMDbiPlugin();
 private slots:
     void sl_converter();
+    void sl_infoLoaded(Task*);
     void sl_addDbFileToProject(Task*);
+    
 };
 
 } // namespace BAM

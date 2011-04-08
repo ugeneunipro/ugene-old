@@ -24,21 +24,26 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/GUrl.h>
+#include "LoadBamInfoTask.h"
+
+
 
 namespace U2 {
+
 namespace BAM {
 
 class ConvertToSQLiteTask : public Task {
     Q_OBJECT
 public:
-    ConvertToSQLiteTask(const GUrl &sourceUrl, const GUrl &destinationUrl);
+    ConvertToSQLiteTask(const GUrl &sourceUrl, const GUrl &destinationUrl, BAMInfo& bamInfo);
     virtual void run();
     
     const GUrl &getDestinationUrl() const;
     
-private:
-    GUrl sourceUrl;
-    GUrl destinationUrl;
+private:    
+    const GUrl sourceUrl;
+    const GUrl destinationUrl;
+    BAMInfo bamInfo;
 };
 
 } // namespace BAM

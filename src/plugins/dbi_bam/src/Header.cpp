@@ -221,6 +221,10 @@ const QList<Header::Program> &Header::getPrograms()const {
     return programs;
 }
 
+const QString &Header::getText()const {
+    return text;
+}
+
 void Header::setFormatVersion(const Version &formatVersion) {
     this->formatVersion = formatVersion;
 }
@@ -239,6 +243,10 @@ void Header::setReadGroups(const QList<ReadGroup> &readGroups) {
 
 void Header::setPrograms(const QList<Program> &programs) {
     this->programs = programs;
+}
+
+void Header::setText(const QString& text) {
+    this->text = text;
 }
 
 } // namespace BAM

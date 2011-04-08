@@ -20,7 +20,8 @@ HEADERS += \
     src/BaiWriter.h \
     src/Dbi.h \
     src/ConvertToSQLiteTask.h \
-    src/ConvertToSQLiteDialog.h
+    src/ConvertToSQLiteDialog.h \
+    src/LoadBamInfoTask.h
 SOURCES += \
     src/BAMDbiPlugin.cpp \
     src/BAMFormat.cpp \
@@ -40,7 +41,7 @@ SOURCES += \
     src/BaiWriter.cpp \
     src/Dbi.cpp \
     src/ConvertToSQLiteTask.cpp \
-    src/ConvertToSQLiteDialog.cpp
-
+    src/ConvertToSQLiteDialog.cpp \
+    src/LoadBamInfoTask.cpp
 FORMS += \
     src/ConvertToSQLiteDialog.ui

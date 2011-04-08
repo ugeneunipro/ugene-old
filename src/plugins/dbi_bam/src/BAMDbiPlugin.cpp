@@ -22,6 +22,8 @@
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMainWindow>
 #include <U2Core/AppContext.h>
 #include <U2Core/DbiDocumentFormat.h>
 #include <U2Core/TaskSignalMapper.h>
@@ -29,11 +31,13 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Misc/DialogUtils.h>
 #include "Dbi.h"
 #include "Exception.h"
 #include "ConvertToSQLiteDialog.h"
 #include "ConvertToSQLiteTask.h"
 #include "BAMDbiPlugin.h"
+#include "LoadBamInfoTask.h"
 
 namespace U2 {
 namespace BAM {
@@ -63,16 +67,35 @@ void BAMDbiPlugin::sl_converter() {
         if(!AppContext::getDbiRegistry()->getRegisteredDbiFactories().contains("SQLiteDbi")) {
             throw Exception(tr("SQLite DBI plugin is not loaded"));
         }
-        ConvertToSQLiteDialog convertDialog(AppContext::getProject() != NULL);
-        if(QDialog::Accepted == convertDialog.exec()) {
-            ConvertToSQLiteTask *task = new ConvertToSQLiteTask(convertDialog.getSourceUrl(), convertDialog.getDestinationUrl());
-            if(convertDialog.addToProject()) {
-                connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_addDbFileToProject(Task*)));
-            }
+        LastOpenDirHelper lod;
+        QString fileName = QFileDialog::getOpenFileName(AppContext::getMainWindow()->getQMainWindow(), tr("Open BAM file"), lod.dir, tr("BAM Files (*.bam)"));
+        if(fileName != NULL) {
+            lod.url = fileName;
+            GUrl sourceUrl(fileName);
+            LoadBamInfoTask* task = new LoadBamInfoTask(sourceUrl);
+            connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_infoLoaded(Task*)));
             AppContext::getTaskScheduler()->registerTopLevelTask(task);
         }
     } catch(const Exception &e) {
         QMessageBox::critical(NULL, tr("Error"), e.getMessage());
+    }
+}
+
+void BAMDbiPlugin::sl_infoLoaded(Task* task) {
+    LoadBamInfoTask* loadBamInfoTask = qobject_cast<LoadBamInfoTask*>(task);
+    const GUrl& sourceUrl = loadBamInfoTask->getSourceUrl();
+    BAMInfo& bamInfo = loadBamInfoTask->getInfo();
+    if(bamInfo.getHeader().getReferences().count() == 0) {
+        task->setError(tr("BAM file does not contains any alignment"));
+        return;
+    }
+    ConvertToSQLiteDialog convertDialog(sourceUrl, AppContext::getProject() != NULL, bamInfo);
+    if(QDialog::Accepted == convertDialog.exec()) {
+        ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, convertDialog.getDestinationUrl(), loadBamInfoTask->getInfo());
+        if(convertDialog.addToProject()) {
+            connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_addDbFileToProject(Task*)));
+        }
+        AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 }
 

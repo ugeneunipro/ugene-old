@@ -49,24 +49,23 @@ Index BaiReader::readIndex() {
         if(binsNumber < 0) {
             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid number of bins: %1").arg(binsNumber));
         }
-        QList<QList<Index::ReferenceIndex::Chunk> > bins;
-        for(int i = 0;i < 37500;i++) {
-            bins.append(QList<Index::ReferenceIndex::Chunk>());
-        }
+        QList<Index::ReferenceIndex::Bin> bins;
         for(int binId = 0;binId < binsNumber;binId++) {
             unsigned int bin = readUint32();
             int chunksNumber = readInt32();
             if(chunksNumber < 0) {
                 throw InvalidFormatException(BAMDbiPlugin::tr("Invalid number of chunks: %1").arg(chunksNumber));
             }
+            QList<Index::ReferenceIndex::Chunk> chunks;
             for(int chunkId = 0;chunkId < chunksNumber;chunkId++) {
                 VirtualOffset chunkBegin(readUint64());
                 VirtualOffset chunkEnd(readUint64());
                 if(chunkEnd < chunkBegin) {
                     throw InvalidFormatException(BAMDbiPlugin::tr("Invalid chunk"));
                 }
-                bins[bin].append(Index::ReferenceIndex::Chunk(chunkBegin, chunkEnd));
+                chunks.append(Index::ReferenceIndex::Chunk(chunkBegin, chunkEnd));
             }
+            bins.append(Index::ReferenceIndex::Bin(bin, chunks));
         }
         int intervalsNumber = readInt32();
         if(intervalsNumber < 0) {

@@ -39,15 +39,27 @@ VirtualOffset Index::ReferenceIndex::Chunk::getEnd()const {
     return end;
 }
 
+// Index::ReferenceIndex::Bin 
+
+Index::ReferenceIndex::Bin::Bin(unsigned int _bin, QList<Chunk> _chunks) : bin(_bin), chunks(_chunks) {}
+
+const unsigned int Index::ReferenceIndex::Bin::getBin() const {
+    return bin;
+}
+
+const QList<Index::ReferenceIndex::Chunk>& Index::ReferenceIndex::Bin::getChunks() const {
+    return chunks;
+}
+
 // Index::ReferenceIndex
 
-Index::ReferenceIndex::ReferenceIndex(const QList<QList<Chunk> > &bins, const QList<VirtualOffset> &intervals):
+Index::ReferenceIndex::ReferenceIndex(const QList<Bin> &bins, const QList<VirtualOffset> &intervals):
     bins(bins),
     intervals(intervals)
 {
 }
 
-const QList<QList<Index::ReferenceIndex::Chunk> > &Index::ReferenceIndex::getBins()const {
+const QList<Index::ReferenceIndex::Bin> &Index::ReferenceIndex::getBins()const {
     return bins;
 }
 

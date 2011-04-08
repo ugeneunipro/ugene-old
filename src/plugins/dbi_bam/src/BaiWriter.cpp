@@ -35,19 +35,13 @@ void BaiWriter::writeIndex(const Index &index) {
     writeBytes(QByteArray("BAI\001"));
     writeInt32(index.getReferenceIndices().size());
     foreach(const Index::ReferenceIndex &referenceIndex, index.getReferenceIndices()) {
-        int binsNumber = 0;
-        foreach(const QList<Index::ReferenceIndex::Chunk> &bin, referenceIndex.getBins()) {
-            if(!bin.isEmpty()) {
-                binsNumber++;
-            }
-        }
         writeInt32(referenceIndex.getBins().size());
-        for(int binId = 0;binId < referenceIndex.getBins().size();binId++) {
-            const QList<Index::ReferenceIndex::Chunk> &bin = referenceIndex.getBins()[binId];
-            if(!bin.isEmpty()) {
-                writeUint32(binId);
-                writeInt32(bin.size());
-                foreach(const Index::ReferenceIndex::Chunk &chunk, bin) {
+        for(int i = 0;i< referenceIndex.getBins().size();i++) {
+            const Index::ReferenceIndex::Bin &bin = referenceIndex.getBins()[i];
+            if(!bin.getChunks().isEmpty()) {
+                writeUint32(bin.getBin());
+                writeInt32(bin.getChunks().size());
+                foreach(const Index::ReferenceIndex::Chunk &chunk, bin.getChunks()) {
                     writeUint64(chunk.getStart().getPackedOffset());
                     writeUint64(chunk.getEnd().getPackedOffset());
                 }
