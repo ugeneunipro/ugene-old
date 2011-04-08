@@ -32,7 +32,7 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Misc/DialogUtils.h>
 
-#include "EnzymeModel.h"
+#include <U2Algorithm/EnzymeModel.h>
 #include "CreateFragmentDialog.h"
 
 namespace U2 {

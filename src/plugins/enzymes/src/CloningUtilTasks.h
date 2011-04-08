@@ -22,7 +22,7 @@
 #ifndef _U2_CLONING_UTIL_TASKS_H_
 #define _U2_CLONING_UTIL_TASKS_H_
 
-#include "EnzymeModel.h"
+#include <U2Algorithm/EnzymeModel.h>
 #include "DNAFragment.h"
 
 #include <limits>

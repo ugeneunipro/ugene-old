@@ -27,7 +27,7 @@
 
 #include <ui/ui_DigestSequenceDialog.h>
 
-#include "EnzymeModel.h"
+#include <U2Algorithm/EnzymeModel.h>
 #include "EnzymesQuery.h"
 
 #include <QtGui/QTreeWidget>

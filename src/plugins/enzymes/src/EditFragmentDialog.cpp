@@ -28,7 +28,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Task.h>
 
-#include "EnzymeModel.h"
+#include <U2Algorithm/EnzymeModel.h>
 #include "EnzymesIO.h"
 #include "EditFragmentDialog.h"
 

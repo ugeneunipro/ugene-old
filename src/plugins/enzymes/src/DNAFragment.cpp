@@ -30,7 +30,7 @@
 #include <U2Core/DNATranslation.h>
 
 
-#include "EnzymeModel.h"
+#include <U2Algorithm/EnzymeModel.h>
 #include "DNAFragment.h"
 
 namespace U2 {

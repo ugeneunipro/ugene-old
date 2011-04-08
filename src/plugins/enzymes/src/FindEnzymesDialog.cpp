@@ -55,7 +55,7 @@
 namespace U2 {
 
 
-static Logger log(ULOG_ENZYME_PLUGIN);
+static Logger log(ULOG_ENZYMES);
 
 QList<SEnzymeData>   EnzymesSelectorWidget::loadedEnzymes;
 QSet<QString>        EnzymesSelectorWidget::lastSelection;
@@ -86,7 +86,7 @@ EnzymesSelectorWidget::EnzymesSelectorWidget() {
     connect(enzymeInfo, SIGNAL(clicked()), SLOT(sl_openDBPage()));
 
     if (loadedEnzymes.isEmpty()) {
-        QString lastUsedFile = AppContext::getSettings()->getValue(DATA_FILE_KEY).toString();
+        QString lastUsedFile = AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString();
         loadFile(lastUsedFile);
     } else {
         setEnzymesList(loadedEnzymes);
@@ -98,15 +98,15 @@ EnzymesSelectorWidget::~EnzymesSelectorWidget() {
 }
 
 void EnzymesSelectorWidget::setupSettings() {
-    QString dir = DialogUtils::getLastOpenFileDir(DATA_DIR_KEY);
+    QString dir = DialogUtils::getLastOpenFileDir(EnzymeSettings::DATA_DIR_KEY);
     if (dir.isEmpty() || !QDir(dir).exists()) {
         dir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/enzymes/";
-        DialogUtils::setLastOpenFileDir(dir, DATA_DIR_KEY);
+        DialogUtils::setLastOpenFileDir(dir, EnzymeSettings::DATA_DIR_KEY);
     }
-    QString lastEnzFile = AppContext::getSettings()->getValue(DATA_FILE_KEY).toString();
+    QString lastEnzFile = AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString();
     if (lastEnzFile.isEmpty() || !QFile::exists(lastEnzFile)) {
         lastEnzFile = dir + DEFAULT_ENZYMES_FILE;
-        AppContext::getSettings()->setValue(DATA_FILE_KEY, lastEnzFile);
+        AppContext::getSettings()->setValue(EnzymeSettings::DATA_FILE_KEY, lastEnzFile);
     }
     initSelection();
 }
@@ -130,7 +130,7 @@ QList<SEnzymeData> EnzymesSelectorWidget::getSelectedEnzymes() {
 QList<SEnzymeData> EnzymesSelectorWidget::getLoadedEnzymes() {
     if (loadedEnzymes.isEmpty()) {
         TaskStateInfo ti;
-        QString lastUsedFile = AppContext::getSettings()->getValue(DATA_FILE_KEY).toString();
+        QString lastUsedFile = AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString();
         loadedEnzymes = EnzymesIO::readEnzymes(lastUsedFile, ti);
     }
     return loadedEnzymes;
@@ -155,10 +155,10 @@ void EnzymesSelectorWidget::loadFile(const QString& url) {
         return;
     }
     if (!enzymes.isEmpty()) {
-        if (AppContext::getSettings()->getValue(DATA_FILE_KEY).toString() != url) {
+        if (AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString() != url) {
             lastSelection.clear();
         }
-        AppContext::getSettings()->setValue(DATA_FILE_KEY, url);
+        AppContext::getSettings()->setValue(EnzymeSettings::DATA_FILE_KEY, url);
     }
 
     setEnzymesList(enzymes);
@@ -166,7 +166,7 @@ void EnzymesSelectorWidget::loadFile(const QString& url) {
 
 void EnzymesSelectorWidget::saveFile(const QString& url) {
     TaskStateInfo ti;
-    QString source = AppContext::getSettings()->getValue(DATA_FILE_KEY).toString();
+    QString source = AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString();
 
     GTIMER(c1,t1,"FindEnzymesDialog::saveFile [EnzymesIO::writeEnzymes]");
 
@@ -271,7 +271,7 @@ void EnzymesSelectorWidget::updateStatus() {
 }
 
 void EnzymesSelectorWidget::sl_selectFile() {
-    LastOpenDirHelper dir(DATA_DIR_KEY);
+    LastOpenDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
     dir.url = QFileDialog::getOpenFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
     if (!dir.url.isEmpty()) {
         loadFile(dir.url);
@@ -345,7 +345,7 @@ void EnzymesSelectorWidget::sl_inverseSelection() {
 }
 
 void EnzymesSelectorWidget::sl_saveSelectionToFile() {
-    LastOpenDirHelper dir(DATA_DIR_KEY);
+    LastOpenDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
     dir.url = QFileDialog::getSaveFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
     if (!dir.url.isEmpty()) {
         saveFile(dir.url);
@@ -393,16 +393,16 @@ int EnzymesSelectorWidget::getNumSelected()
 void EnzymesSelectorWidget::saveSettings()
 {
     QStringList sl(lastSelection.toList());
-    AppContext::getSettings()->setValue(LAST_SELECTION, sl.join(SEP));
+    AppContext::getSettings()->setValue(EnzymeSettings::LAST_SELECTION, sl.join(ENZYME_LIST_SEPARATOR));
 }
 
 void EnzymesSelectorWidget::initSelection()
 {
-    QString selStr = AppContext::getSettings()->getValue(LAST_SELECTION).toString();
+    QString selStr = AppContext::getSettings()->getValue(EnzymeSettings::LAST_SELECTION).toString();
     if (selStr.isEmpty()) {
-        selStr = COMMON_ENZYMES;
+        selStr = EnzymeSettings::COMMON_ENZYMES;
     }
-    lastSelection = selStr.split(SEP).toSet();
+    lastSelection = selStr.split(ENZYME_LIST_SEPARATOR).toSet();
 }
 
 FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
@@ -475,11 +475,11 @@ void FindEnzymesDialog::accept() {
 void FindEnzymesDialog::initSettings()
 {
     EnzymesSelectorWidget::initSelection();
-    bool useHitCountControl = AppContext::getSettings()->getValue(ENABLE_HIT_COUNT, false).toBool();
-    int minHitValue = AppContext::getSettings()->getValue(MIN_HIT_VALUE, 1).toInt();
-    int maxHitValue = AppContext::getSettings()->getValue(MAX_HIT_VALUE, 2).toInt();
+    bool useHitCountControl = AppContext::getSettings()->getValue(EnzymeSettings::ENABLE_HIT_COUNT, false).toBool();
+    int minHitValue = AppContext::getSettings()->getValue(EnzymeSettings::MIN_HIT_VALUE, 1).toInt();
+    int maxHitValue = AppContext::getSettings()->getValue(EnzymeSettings::MAX_HIT_VALUE, 2).toInt();
     
-    QString exludedRegionStr = AppContext::getSettings()->getValue(NON_CUT_REGION, "").toString();
+    QString exludedRegionStr = AppContext::getSettings()->getValue(EnzymeSettings::NON_CUT_REGION, "").toString();
     bool excludeRegionOn = false;
     if (!exludedRegionStr.isEmpty()) {
         U2Location location;
@@ -506,13 +506,13 @@ void FindEnzymesDialog::initSettings()
 
 void FindEnzymesDialog::saveSettings()
 {
-    AppContext::getSettings()->setValue(ENABLE_HIT_COUNT, filterGroupBox->isChecked());
+    AppContext::getSettings()->setValue(EnzymeSettings::ENABLE_HIT_COUNT, filterGroupBox->isChecked());
     if (filterGroupBox->isChecked()) {
-        AppContext::getSettings()->setValue(MIN_HIT_VALUE, minHitSB->value());
-        AppContext::getSettings()->setValue(MAX_HIT_VALUE, maxHitSB->value());
+        AppContext::getSettings()->setValue(EnzymeSettings::MIN_HIT_VALUE, minHitSB->value());
+        AppContext::getSettings()->setValue(EnzymeSettings::MAX_HIT_VALUE, maxHitSB->value());
     } else {
-        AppContext::getSettings()->setValue(MIN_HIT_VALUE, 1);
-        AppContext::getSettings()->setValue(MAX_HIT_VALUE, INT_MAX);
+        AppContext::getSettings()->setValue(EnzymeSettings::MIN_HIT_VALUE, 1);
+        AppContext::getSettings()->setValue(EnzymeSettings::MAX_HIT_VALUE, INT_MAX);
     }
 
     QVector<U2Region> range;
@@ -524,7 +524,7 @@ void FindEnzymesDialog::saveSettings()
             range.append(r);
         }
     }
-    AppContext::getSettings()->setValue(NON_CUT_REGION, QVariant::fromValue(range) );
+    AppContext::getSettings()->setValue(EnzymeSettings::NON_CUT_REGION, QVariant::fromValue(range) );
     
     enzSel->saveSettings();
 
@@ -532,7 +532,7 @@ void FindEnzymesDialog::saveSettings()
 
 void FindEnzymesDialog::initDefaultSettings()
 {
-    AppContext::getSettings()->setValue(NON_CUT_REGION, "" );
+    AppContext::getSettings()->setValue(EnzymeSettings::NON_CUT_REGION, "" );
 }
 
 void FindEnzymesDialog::sl_onFillRangeButtonClicked()

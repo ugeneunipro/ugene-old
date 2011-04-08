@@ -36,7 +36,7 @@ namespace U2 {
 
 /* TRANSLATOR U2::FindEnzymesTask */
 
-static Logger log(ULOG_ENZYME_PLUGIN);
+static Logger log(ULOG_ENZYMES);
 
 //////////////////////////////////////////////////////////////////////////
 // enzymes -> annotations
@@ -325,12 +325,12 @@ FindEnzymesAutoAnnotationUpdater::FindEnzymesAutoAnnotationUpdater()
 Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
     const QList<SEnzymeData> enzymeList =  EnzymesIO::getDefaultEnzymesList();
-    QString selStr = AppContext::getSettings()->getValue(LAST_SELECTION).toString();
+    QString selStr = AppContext::getSettings()->getValue(EnzymeSettings::LAST_SELECTION).toString();
     if (selStr.isEmpty()) {
-        selStr = COMMON_ENZYMES;
+        selStr = EnzymeSettings::COMMON_ENZYMES;
     }
     
-    QStringList lastSelection = selStr.split(SEP);
+    QStringList lastSelection = selStr.split(ENZYME_LIST_SEPARATOR);
     QList<SEnzymeData> selectedEnzymes;
     foreach (const QString id, lastSelection) {
         foreach (const SEnzymeData& enzyme, enzymeList) {
@@ -345,14 +345,14 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
     cfg.circular = aa->getSeqObject()->isCircular();
     cfg.groupName = getGroupName();
     cfg.isAutoAnnotationUpdateTask = true;
-    cfg.minHitCount = AppContext::getSettings()->getValue(MIN_HIT_VALUE, 1).toInt();
-    cfg.maxHitCount = AppContext::getSettings()->getValue(MAX_HIT_VALUE, INT_MAX).toInt();
-    cfg.maxResults = AppContext::getSettings()->getValue(MAX_RESULTS, 500000).toInt();
+    cfg.minHitCount = AppContext::getSettings()->getValue(EnzymeSettings::MIN_HIT_VALUE, 1).toInt();
+    cfg.maxHitCount = AppContext::getSettings()->getValue(EnzymeSettings::MAX_HIT_VALUE, INT_MAX).toInt();
+    cfg.maxResults = AppContext::getSettings()->getValue(EnzymeSettings::MAX_RESULTS, 500000).toInt();
 
-    QString locationStr = AppContext::getSettings()->getValue(NON_CUT_REGION, "").toString();
+    QString locationStr = AppContext::getSettings()->getValue(EnzymeSettings::NON_CUT_REGION, "").toString();
     
     QVector<U2Region> excludedRegions = 
-        AppContext::getSettings()->getValue(NON_CUT_REGION, QVariant::fromValue(QVector<U2Region>()) ).value< QVector<U2Region> >();
+        AppContext::getSettings()->getValue(EnzymeSettings::NON_CUT_REGION, QVariant::fromValue(QVector<U2Region>()) ).value< QVector<U2Region> >();
     
     if (!excludedRegions.isEmpty()) {
         cfg.excludedRegions = excludedRegions;

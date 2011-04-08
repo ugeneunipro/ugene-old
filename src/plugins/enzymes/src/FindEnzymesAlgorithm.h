@@ -22,7 +22,7 @@
 #ifndef _U2_FIND_ENZYMES_ALGO_H_
 #define _U2_FIND_ENZYMES_ALGO_H_
 
-#include "EnzymeModel.h"
+#include <U2Algorithm/EnzymeModel.h>
 
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>

@@ -34,6 +34,7 @@ HEADERS += src/molecular_geometry/GeomUtils.h \
            src/util_algorithm/BinaryFindOpenCL.h \
            src/util_algorithm/BitsTable.h \
            src/util_algorithm/DynTable.h \
+           src/util_algorithm/EnzymeModel.h \
            src/util_algorithm/FindAlgorithm.h \
            src/util_algorithm/FindAlgorithmTask.h \
            src/util_algorithm/ORFAlgorithmTask.h \
@@ -99,6 +100,7 @@ SOURCES += src/molecular_geometry/GeomUtils.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.cpp \
            src/util_algorithm/BinaryFindOpenCL.cpp \
            src/util_algorithm/BitsTable.cpp \
+           src/util_algorithm/EnzymeModel.cpp \
            src/util_algorithm/FindAlgorithm.cpp \
            src/util_algorithm/FindAlgorithmTask.cpp \
            src/util_algorithm/ORFAlgorithmTask.cpp \

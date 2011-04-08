@@ -22,7 +22,7 @@
 #ifndef _U2_ENZYMES_QUERY_H_
 #define _U2_ENZYMES_QUERY_H_
 
-#include "EnzymeModel.h"
+#include <U2Algorithm/EnzymeModel.h>
 #include "FindEnzymesDialog.h"
 #include <ui/ui_EnzymesSelectorDialog.h>
 

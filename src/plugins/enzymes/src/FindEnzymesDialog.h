@@ -27,7 +27,7 @@
 #include <ui/ui_EnzymesSelectorWidget.h>
 #include <ui/ui_FindEnzymesDialog.h>
 
-#include "EnzymeModel.h"
+#include <U2Algorithm/EnzymeModel.h>
 
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTreeWidgetItem>

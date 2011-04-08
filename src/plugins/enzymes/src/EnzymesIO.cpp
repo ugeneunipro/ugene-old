@@ -32,7 +32,7 @@
 
 namespace U2 {
 
-static Logger log(ULOG_ENZYME_PLUGIN);
+static Logger log(ULOG_ENZYMES);
 
 QString EnzymesIO::getFileDialogFilter() {
     return DialogUtils::prepareFileFilter(tr("Bairoch format"), QStringList("bairoch"));

@@ -7,7 +7,6 @@ HEADERS += src/CloningUtilTasks.h \
            src/DigestSequenceDialog.h \
            src/DNAFragment.h \
            src/EditFragmentDialog.h \
-           src/EnzymeModel.h \
            src/EnzymesIO.h \
            src/EnzymesPlugin.h \
            src/EnzymesQuery.h \

@@ -27,9 +27,11 @@
 #include <QtCore/QString>
 #include <QtCore/QByteArray>
 
+#include <U2Core/global.h>
+
 namespace U2 {
 
-#define ULOG_ENZYME_PLUGIN QString("Plugin: Enzymes")
+#define ULOG_ENZYMES QString("Restriction Enzymes")
 
 class DNAAlphabet;
 
@@ -46,22 +48,23 @@ class DNAAlphabet;
 #define ANNOTATION_GROUP_FRAGMENTS      "fragments"
 #define ANNOTATION_GROUP_ENZYME         "enzyme"
 
-#define ENZYME_CUT_UNKNOWN 0x7FFFFF
+#define ENZYME_CUT_UNKNOWN              0x7FFFFF
+#define ENZYME_LIST_SEPARATOR           ","
 
-// Enzymes plugin settings
+class U2ALGORITHM_EXPORT EnzymeSettings {
+public:
+    static const QString DATA_DIR_KEY;
+    static const QString DATA_FILE_KEY;
+    static const QString LAST_SELECTION;
+    static const QString ENABLE_HIT_COUNT;
+    static const QString MAX_HIT_VALUE;
+    static const QString MIN_HIT_VALUE;
+    static const QString NON_CUT_REGION;
+    static const QString MAX_RESULTS;
+    static const QString COMMON_ENZYMES;
+};
 
-#define DATA_DIR_KEY        "enzymes"
-#define DATA_FILE_KEY       "plugin_enzymes/lastFile"
-#define LAST_SELECTION      "plugin_enzymes/selection"
-#define ENABLE_HIT_COUNT    "plugin_enzymes/enable_hit_count"
-#define MAX_HIT_VALUE       "plugin_enzymes/max_hit_value"
-#define MIN_HIT_VALUE       "plugin_enzymes/min_hit_value"
-#define NON_CUT_REGION      "plugin_enzymes/non_cut_region"
-#define MAX_RESULTS         "plugin_enzymes/max_results"
-#define SEP                 ","
-#define COMMON_ENZYMES      "ClaI,BamHI,BglII,DraI,EcoRI,EcoRV,HindIII,PstI,SalI,SmaI,XmaI"
-
-class EnzymeData: public QSharedData {
+class U2ALGORITHM_EXPORT EnzymeData : public QSharedData {
 public:
     inline EnzymeData();
 
@@ -75,11 +78,6 @@ public:
     DNAAlphabet*    alphabet;
 };
 
-EnzymeData::EnzymeData() {
-    cutDirect = ENZYME_CUT_UNKNOWN;
-    cutComplement = ENZYME_CUT_UNKNOWN;
-    alphabet = NULL;
-}
 
 typedef QSharedDataPointer<EnzymeData> SEnzymeData;
 
