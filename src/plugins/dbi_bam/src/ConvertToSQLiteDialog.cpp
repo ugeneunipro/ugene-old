@@ -30,7 +30,7 @@
 namespace U2 {
 namespace BAM {
 
-ConvertToSQLiteDialog::ConvertToSQLiteDialog(bool hasProject) : QDialog(QApplication::activeWindow()) {
+ConvertToSQLiteDialog::ConvertToSQLiteDialog(bool hasProject) : QDialog(QApplication::activeWindow()), askIfDestFileExist(true) {
     ui.setupUi(this);
     
     if(!hasProject) {
@@ -65,6 +65,15 @@ void ConvertToSQLiteDialog::accept() {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
         QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destinaiton URL must point to a local file"));
     } else {
+        if(askIfDestFileExist && QFileInfo(destinationUrl.getURLString()).exists()) {
+            QMessageBox::StandardButtons fl = QMessageBox::Yes | QMessageBox::No;
+            QString msg = tr("%1 already exists\nOverwrite it?").arg(destinationUrl.getURLString());
+            QMessageBox::StandardButton btn = QMessageBox::question(this, tr("Existing file"), msg, fl, QMessageBox::Yes);
+            if(btn == QMessageBox::No) {
+                ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
+                return;
+            }
+        }
         QDialog::accept();
     }
 }
@@ -91,6 +100,9 @@ void U2::BAM::ConvertToSQLiteDialog::on_destinationUrlButton_clicked() {
     QString returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination SQLite File"), dir, BAMDbiPlugin::tr("SQLite Files (*.ugenedb);;All Files (*)"));
     if(!returnedValue.isEmpty()) {
         ui.destinationUrlEdit->setText(returnedValue);
+        if(QFileInfo(returnedValue).exists()) { // means that user clicked to overwrite file
+            askIfDestFileExist = false;
+        }
     }
 }
 

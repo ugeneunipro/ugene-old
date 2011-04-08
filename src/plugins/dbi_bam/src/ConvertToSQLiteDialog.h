@@ -52,6 +52,8 @@ private:
 
     GUrl sourceUrl;
     GUrl destinationUrl;
+    
+    bool askIfDestFileExist;
 };
 
 } // namespace BAM
