@@ -728,9 +728,14 @@ quint64 AssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os) {
 
 U2AssemblyRead AssemblyDbi::alignmentToRead(const Alignment &alignment) {
     U2AssemblyRead row(new U2AssemblyReadData());
+    row->name = alignment.getName();
     row->leftmostPos = alignment.getPosition();
+    row->effectiveLen = Alignment::computeLength(alignment);
     row->readSequence = alignment.getSequence();
+    row->quality = alignment.getQuality();
+    row->mappingQuality = alignment.getMapQuality();
     row->complementary = (alignment.getFlags() & Alignment::Reverse);
+    row->paired = (alignment.getFlags() & Alignment::Fragmented);
     foreach(const Alignment::CigarOperation &cigarOperation, alignment.getCigar()) {
         U2CigarOp cigarOp = U2CigarOp_Invalid;
         switch(cigarOperation.getOperation()) {
