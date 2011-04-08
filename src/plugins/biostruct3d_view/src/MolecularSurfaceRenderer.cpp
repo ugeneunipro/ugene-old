@@ -20,6 +20,7 @@
  */
 
 #include "MolecularSurfaceRenderer.h"
+#include <GraphicUtils.h>
 #include <U2Algorithm/MolecularSurface.h>
 #include <QtOpenGL>
 
@@ -70,10 +71,13 @@ const QString ConvexMapRenderer::ID(QObject::tr("Convex Map"));
 /* class DotsRenderer : public MolecularSurfaceRenderer */
 void DotsRenderer::drawSurface( MolecularSurface& surface )
 {
+    GLboolean ligting = glIsEnabled(GL_LIGHTING);
     glDisable(GL_LIGHTING);
-    glBegin(GL_POINTS);
+
     glPointSize(1.0f);
     glColor3f(1.0f, 1.0f, 1.0f);
+
+    glBegin(GL_POINTS);
     foreach(const Face& face, surface.getFaces()) {
         float vct[3][3] = {
             {face.v[0].x,face.v[0].y,face.v[0].z},
@@ -84,13 +88,14 @@ void DotsRenderer::drawSurface( MolecularSurface& surface )
         glVertex3fv(vct[1]);
         glVertex3fv(vct[2]);
 
-/*        glVertex3f(face.v[0].x, face.v[0].y, face.v[0].z);
+        /*glVertex3f(face.v[0].x, face.v[0].y, face.v[0].z);
         glVertex3f(face.v[1].x, face.v[1].y, face.v[1].z);
-        glVertex3f(face.v[2].x, face.v[2].y, face.v[2].z);
-        */
+        glVertex3f(face.v[2].x, face.v[2].y, face.v[2].z);*/
     }
-    glEnd( );
-    glEnable(GL_LIGHTING);
+    glEnd();
+
+    if (ligting) glEnable(GL_LIGHTING);
+    CHECK_GL_ERROR;
 }
 
 
@@ -110,6 +115,7 @@ void ConvexMapRenderer::drawSurface( MolecularSurface& surface )
         glVertex3f(face.v[2].x, face.v[2].y, face.v[2].z);
     }
     glEnd( );
+    CHECK_GL_ERROR;
 }
 
 } // namespace

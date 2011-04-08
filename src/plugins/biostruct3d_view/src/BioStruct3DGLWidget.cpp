@@ -371,11 +371,15 @@ void BioStruct3DGLWidget::drawAll()
     if(NULL != molSurface.get())
     {
         glEnable(GL_CULL_FACE);
+
         glCullFace(GL_FRONT);
         surfaceRenderer->drawSurface(*molSurface);
+
         glCullFace(GL_BACK);
         surfaceRenderer->drawSurface(*molSurface);
+
         glDisable(GL_CULL_FACE);
+        CHECK_GL_ERROR;
     }
 
     glDisable(GL_LIGHTING);
