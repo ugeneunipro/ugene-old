@@ -1277,6 +1277,12 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
 
         maObj->removeRegion(selection.x(), selection.y(), selection.width(), selection.height(), true);
     }
+    if (selection.height() == 1 && selection.width() == 1) {
+        if (isInRange(selection.topLeft())) {
+            return;
+        }
+    }
+
     cancelSelection();
     
 }
