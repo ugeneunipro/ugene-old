@@ -145,7 +145,7 @@ void AssemblyReadsArea::drawDensityGraph(QPainter & p) {
     quint64 widgetWidth = width();
     quint64 widgetHeight = height();
 
-    quint64 lettersPerXPixel =  browser->calcAsmCoord(1);
+    quint64 lettersPerXPixel =  browser->calcAsmCoordX(1);
 
     //???
     //FIXME
@@ -480,31 +480,27 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
 }
 
 void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
-    //1. move reads area center to mouse
-    // move x
-    if(hBar->isEnabled()) {
-        qint64 xOffset = browser->getXOffsetInAssembly();
-        qint64 cursorXoffset = browser->calcAsmPosX(e->pos().x());
-        qint64 windowHalfX = xOffset + qRound64((double)browser->basesCanBeVisible() / 2);
-        browser->setXOffsetInAssembly(qMax((qint64)0, xOffset + cursorXoffset - windowHalfX));
-    }
-    // move y
-    if(vBar->isEnabled()) {
-        int cellWidth = browser->getCellWidth();
-        if(cellWidth > 0) {
-            qint64 yOffset = browser->getYOffsetInAssembly();
-            qint64 cursorYoffset = yOffset + (double)e->pos().y() / cellWidth;
-            qint64 windowHalfY = yOffset + qRound64((double)browser->rowsCanBeVisible() / 2);
-            browser->setYOffsetInAssembly(qMax((qint64)0, yOffset + cursorYoffset - windowHalfY));
-        } else {
-            assert(false);
-        }
-    }
+    qint64 cursorXoffset = browser->calcAsmPosX(e->pos().x());
+    qint64 cursorYoffset = browser->calcAsmPosY(e->pos().y());
     
-    //2. zoom in
+    //1. zoom in
     static const int howManyZoom = 1;
     for(int i = 0; i < howManyZoom; ++i) {
         browser->sl_zoomIn();
+    }
+    
+    //2. move cursor offset to center
+    // move x
+    if(hBar->isEnabled()) {
+        qint64 xOffset = browser->getXOffsetInAssembly();
+        qint64 windowHalfX = xOffset + qRound64((double)browser->basesCanBeVisible() / 2);
+        browser->setXOffsetInAssembly(browser->normalizeXoffset(xOffset + cursorXoffset - windowHalfX));
+    }
+    // move y
+    if(vBar->isEnabled()) {
+        qint64 yOffset = browser->getYOffsetInAssembly();
+        qint64 windowHalfY = yOffset + qRound64((double)browser->rowsCanBeVisible() / 2);
+        browser->setYOffsetInAssembly(browser->normalizeYoffset(yOffset + cursorYoffset - windowHalfY));
     }
 }
 

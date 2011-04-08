@@ -310,7 +310,7 @@ void AssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
     }
     
     if(moveModel) {
-        browser->setOffsetsInAssembly(newXoffset, newYoffset);
+        browser->setOffsetsInAssembly(browser->normalizeXoffset(newXoffset), browser->normalizeYoffset(newYoffset));
     }
 }
 

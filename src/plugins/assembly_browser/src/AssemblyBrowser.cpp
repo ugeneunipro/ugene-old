@@ -31,6 +31,7 @@
 
 #include <U2Core/U2Type.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
@@ -41,6 +42,8 @@
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QScrollBar>
 #include <QtGui/QToolButton>
+#include <QtCore/QEvent>
+#include <QtGui/QDropEvent>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -149,14 +152,55 @@ zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoo
         const U2DataRef& ref= gobject->getDbiRef();
         model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus)));
         sl_assemblyLoaded();
-    }
+    }   
 }
 
 QWidget * AssemblyBrowser::createWidget() {
     ui = new AssemblyBrowserUi(this);
     updateOverviewTypeActions();
     showCoordsOnRulerAction->setChecked(ui->getRuler()->getShowCoordsOnRuler());
+    ui->installEventFilter(this);
+    ui->setAcceptDrops(true);
     return ui;
+}
+
+bool AssemblyBrowser::eventFilter(QObject* o, QEvent* e) {
+    if(o == ui) {
+        if (e->type() == QEvent::DragEnter || e->type() == QEvent::Drop) {
+            QDropEvent* de = (QDropEvent*)e;
+            const QMimeData* md = de->mimeData();
+            const GObjectMimeData* gomd = qobject_cast<const GObjectMimeData*>(md);
+            if (gomd != NULL) {
+                if (e->type() == QEvent::DragEnter) {
+                    de->acceptProposedAction();
+                } else {
+                    QString err = tryAddObject(gomd->objPtr.data());
+                    if(!err.isEmpty()) {
+                        QMessageBox::critical(ui, tr("Error!"), err);
+                    }
+                }
+            }
+        } 
+    }
+    return false;
+}
+
+QString AssemblyBrowser::tryAddObject(GObject * obj) {
+    DNASequenceObject * seqObj = qobject_cast<DNASequenceObject*>(obj);
+    if(seqObj == NULL) {
+        return tr("Only sequence can be added to assembly browser");
+    }
+    
+    U2SequenceDbi * seqDbi = seqObj->asDbi();
+    assert(seqDbi != NULL);
+    U2OpStatusImpl status;
+    U2Sequence u2SeqObj = seqDbi->getSequenceObject(seqObj->getGObjectName().toAscii(), status);
+    if(status.hasError()) {
+        return status.getError();
+    }
+    model->setReference(seqDbi, u2SeqObj);
+    ui->getReferenceArea()->update();
+    return "";
 }
 
 void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
@@ -188,13 +232,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
 }
 
 void AssemblyBrowser::sl_onPosChangeRequest(int pos) {
-    U2OpStatusImpl st;
-    qint64 modelLen = model->getModelLength(st);
-    assert(pos <= modelLen);
-    if(pos > modelLen - basesCanBeVisible()) {
-        pos = modelLen - basesCanBeVisible();
-    }
-    setXOffsetInAssembly(pos);
+    setXOffsetInAssembly(normalizeXoffset(pos));
     ui->getReadsArea()->setFocus();
 }
 
@@ -205,19 +243,11 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
     GUIUtils::disableEmptySubmenus(m);
 }
 
-bool AssemblyBrowser::canAddObject(GObject* obj) {
-    return false;
-}
-
-QString AssemblyBrowser::addObject(GObject* o) {
-    return "";
-}
-
 int AssemblyBrowser::getCellWidth() const {
     return calcPixelCoord(1);
 }
 
-qint64 AssemblyBrowser::calcAsmCoord(qint64 xPixCoord) const {
+qint64 AssemblyBrowser::calcAsmCoordX(qint64 xPixCoord) const {
     U2OpStatusImpl status;
     qint64 modelLen = model->getModelLength(status);
     qint64 width = ui->getReadsArea()->width();
@@ -225,12 +255,28 @@ qint64 AssemblyBrowser::calcAsmCoord(qint64 xPixCoord) const {
     return xAsmCoord;
 }
 
+qint64 AssemblyBrowser::calcAsmCoordY(qint64 pixCoord)const {
+    U2OpStatusImpl status;
+    qint64 modelHeight = model->getModelHeight(status);
+    checkAndLogError(status);
+    qint64 h = ui->getReadsArea()->height();
+    return (double(modelHeight) / h * getZoomFactor() * double(pixCoord)) + 0.5;
+}
+
 qint64 AssemblyBrowser::calcAsmPosX(qint64 pixPosX) const {
     int cellWidth = getCellWidth();
     if(cellWidth == 0) {
-        return xOffsetInAssembly + calcAsmCoord(pixPosX);
+        return xOffsetInAssembly + calcAsmCoordX(pixPosX);
     }
     return xOffsetInAssembly + (double)pixPosX / cellWidth;
+}
+
+qint64 AssemblyBrowser::calcAsmPosY(qint64 pixPosY) const {
+    int cellWidth = getCellWidth();
+    if(cellWidth == 0) {
+        return yOffsetInAssembly + calcAsmCoordY(pixPosY);
+    }
+    return yOffsetInAssembly + (double)pixPosY / cellWidth;
 }
 
 qint64 AssemblyBrowser::calcPixelCoord(qint64 xAsmCoord) const {
@@ -254,7 +300,7 @@ qint64 AssemblyBrowser::basesCanBeVisible() const {
     int width = ui->getReadsArea()->width();
     qint64 letterWidth = getCellWidth();
     if(0 == letterWidth) {
-        return calcAsmCoord(width);
+        return calcAsmCoordX(width);
     }
     qint64 result = width / letterWidth + !!(width % letterWidth);
     return result;
@@ -270,7 +316,7 @@ qint64 AssemblyBrowser::rowsCanBeVisible() const {
     int height = ui->getReadsArea()->height();
     qint64 letterWidth = getCellWidth();
     if(0 == letterWidth) {
-        return calcAsmCoord(height);
+        return calcAsmCoordX(height);
     }
     qint64 result = height / letterWidth + !!(height % letterWidth);
     return result;
@@ -295,21 +341,50 @@ bool AssemblyBrowser::areLettersVisible() const {
     return getCellWidth() >= LETTER_VISIBLE_WIDTH;
 }
 
-// TODO: add asserts with max coords
+qint64 AssemblyBrowser::normalizeXoffset(qint64 x) const {
+    if(x < 0) {
+        return 0;
+    }
+    U2OpStatusImpl st;
+    qint64 xMax = model->getModelLength(st) - qMax((qint64)1, basesCanBeVisible());
+    checkAndLogError(st);
+    if(x > xMax) {
+        return xMax;
+    }
+    return x;
+}
+
+qint64 AssemblyBrowser::normalizeYoffset(qint64 y) const {
+    if(y < 0) {
+        return 0;
+    }
+    U2OpStatusImpl st;
+    qint64 yMax = model->getModelHeight(st) - qMax((qint64)1, rowsCanBeVisible());
+    checkAndLogError(st);
+    if(y > yMax) {
+        return yMax;
+    }
+    return y;
+}
+
 void AssemblyBrowser::setXOffsetInAssembly(qint64 x) {
-    assert(x >= 0);
+    U2OpStatusImpl st; Q_UNUSED(st);
+    assert(x >= 0 && x < model->getModelLength(st));
     xOffsetInAssembly = x;
     emit si_offsetsChanged();
 }
 
 void AssemblyBrowser::setYOffsetInAssembly(qint64 y) {
-    assert(y >= 0);
+    U2OpStatusImpl st; Q_UNUSED(st);
+    assert(y >= 0 && y < model->getModelHeight(st));
     yOffsetInAssembly = y;
     emit si_offsetsChanged();
 }
 
 void AssemblyBrowser::setOffsetsInAssembly(qint64 x, qint64 y) {
-    assert(x >= 0 && y >= 0);
+    U2OpStatusImpl st; Q_UNUSED(st);
+    assert(x >= 0 && x < model->getModelLength(st));
+    assert(y >= 0 && y < model->getModelHeight(st));
     xOffsetInAssembly = x;
     yOffsetInAssembly = y;
     emit si_offsetsChanged();
@@ -426,8 +501,7 @@ void AssemblyBrowser::sl_zoomIn() {
     }
     
     //zooming to the center of the screen
-    qint64 newX = getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2;
-    setXOffsetInAssembly(newX);
+    setXOffsetInAssembly(normalizeXoffset(getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2));
     
     updateZoomingActions(enableZoomIn);
     emit si_zoomOperationPerformed();
@@ -464,9 +538,7 @@ void AssemblyBrowser::sl_zoomOut() {
     }
     
     //zooming out of the center
-    // qMax needed for not to set negative x coord: UGENE-105
-    qint64 newX =  qMax((qint64)0, getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2);
-    setXOffsetInAssembly(newX);
+    setXOffsetInAssembly(normalizeXoffset(getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2));
     
     updateZoomingActions(true);
     emit si_zoomOperationPerformed();

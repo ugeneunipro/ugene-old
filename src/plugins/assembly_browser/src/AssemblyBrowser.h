@@ -88,13 +88,16 @@ public:
     // from GObjectView
     virtual void buildStaticToolbar(QToolBar* tb);
     virtual void buildStaticMenu(QMenu* m);
-    virtual bool canAddObject(GObject* obj);
-    virtual QString addObject(GObject* o);
+    
+    // returns error string
+    QString tryAddObject(GObject * obj);
     
     int getCellWidth() const;
     qint64 calcPixelCoord(qint64 asmCoord) const;
-    qint64 calcAsmCoord(qint64 pixCoord) const;
+    qint64 calcAsmCoordX(qint64 pixCoord) const;
+    qint64 calcAsmCoordY(qint64 pixCoord) const;
     qint64 calcAsmPosX(qint64 pixPosX) const;
+    qint64 calcAsmPosY(qint64 pixPosY) const;
     qint64 calcPainterOffset(qint64 xAsmCoord) const;
     
     qint64 basesCanBeVisible() const;
@@ -117,6 +120,8 @@ public:
     void setXOffsetInAssembly(qint64 x); 
     void setYOffsetInAssembly(qint64 y);
     void setOffsetsInAssembly(qint64 x, qint64 y);
+    qint64 normalizeXoffset(qint64 x)const;
+    qint64 normalizeYoffset(qint64 y)const;
     
     void adjustOffsets(qint64 dx, qint64 dy);
     
@@ -128,7 +133,8 @@ signals:
 
 protected:
     virtual QWidget * createWidget();
-
+    virtual bool eventFilter(QObject*, QEvent*);
+    
 private slots:
     void sl_loadAssembly();
     void sl_assemblyLoaded();
@@ -193,6 +199,7 @@ public:
     inline AssemblyReadsArea * getReadsArea() const {return readsArea;}
     inline AssemblyOverview * getOverview() const {return overview;}
     inline AssemblyRuler * getRuler() const {return ruler;}
+    inline AssemblyReferenceArea * getReferenceArea() const {return referenceArea;}
     
 private:
     AssemblyOverview * overview;        

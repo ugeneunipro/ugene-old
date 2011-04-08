@@ -151,7 +151,7 @@ void AssemblyRuler::drawRuler(QPainter & p) {
         p.drawLine(width()-1, BORDER_NOTCH_START, width()-1, BORDER_NOTCH_END);
     }
     
-    int lettersPerZ = browser->calcAsmCoord(50);
+    int lettersPerZ = browser->calcAsmCoordX(50);
     int interval = pow((double)10, numOfDigits(lettersPerZ)-1); //interval between notches
     int pixInterval = browser->calcPixelCoord(interval);
     
