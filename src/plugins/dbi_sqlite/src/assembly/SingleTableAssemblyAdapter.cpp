@@ -213,11 +213,6 @@ SingleTablePackAlgorithmAdapter::~SingleTablePackAlgorithmAdapter() {
     delete updateQuery;
 }
 
-U2DbiIterator<U2DataId>* SingleTablePackAlgorithmAdapter::selectNotAssignedReads(U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, elen FROM " + readsTable + " WHERE prow = -1", db, os);
-    return new SqlRSIterator<U2DataId>(q, new SqlDataIdRSLoader(U2Type::AssemblyRead), NULL, U2DataId(), os);
-}
-
 void SingleTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os) {
     if (updateQuery == NULL) {
         updateQuery = new SQLiteQuery("UPDATE " + readsTable + " SET prow = ?1 WHERE id = ?2", db, os);

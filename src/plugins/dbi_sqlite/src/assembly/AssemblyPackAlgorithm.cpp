@@ -49,21 +49,20 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2OpStatus& os) 
     QVarLengthArray<qint64, TAIL_SIZE> tails;
     qFill(tails.data(), tails.data() + TAIL_SIZE, -1);
     std::auto_ptr< U2DbiIterator<PackAlgorithmData> > allReadsIterator(adapter.selectAllReads(os));
+    int peakEnd = -1; // used to assign prow for reads when TAIL_SIZE is not enough
+    int peakRow = TAIL_SIZE;
     while (allReadsIterator->hasNext() && !os.hasError()) {
         const PackAlgorithmData& read = allReadsIterator->next();
         int prow = selectProw(tails.data(), read.leftmostPos, read.leftmostPos + read.effectiveLen);
+        if (prow == -1) {
+            if (read.leftmostPos > peakEnd) {
+                peakRow = TAIL_SIZE;
+            }
+            prow = peakRow;
+            peakRow++;
+            peakEnd = read.leftmostPos + read.effectiveLen;
+        }
         adapter.assignProw(read.readId, prow, os);
-    }
-    if (os.hasError()) {
-        return;
-    }
-
-    // now process all unassigned reads with simple algorithm: increment their row
-    int prow = TAIL_SIZE;
-    std::auto_ptr< U2DbiIterator<U2DataId> > notAssignedIterator(adapter.selectNotAssignedReads(os));
-    while (notAssignedIterator->hasNext() && !os.hasError()) {
-        U2DataId readId = notAssignedIterator->next();
-        adapter.assignProw(readId, prow++, os);
     }
 }
 

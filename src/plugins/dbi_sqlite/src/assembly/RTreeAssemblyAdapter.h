@@ -69,7 +69,6 @@ public:
     ~RTreePackAlgorithmAdapter();
 
     virtual U2DbiIterator<PackAlgorithmData>* selectAllReads(U2OpStatus& os);
-    virtual U2DbiIterator<U2DataId>* selectNotAssignedReads(U2OpStatus& os);
     virtual void assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os);
 private:
     DbRef*          db;

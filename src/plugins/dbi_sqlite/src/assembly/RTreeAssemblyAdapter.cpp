@@ -240,12 +240,6 @@ RTreePackAlgorithmAdapter::~RTreePackAlgorithmAdapter() {
     delete updateQuery;
 }
 
-U2DbiIterator<U2DataId>* RTreePackAlgorithmAdapter::selectNotAssignedReads(U2OpStatus& os) {
-    QString qStr = QString("SELECT i.id, i.gstart, i.gend " + FROM_2TABLES + " WHERE r.prow = -1 AND " + SAME_IDX).arg(readsTable).arg(indexTable);
-    SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
-    return new SqlRSIterator<U2DataId>(q, new SqlDataIdRSLoader(U2Type::AssemblyRead), NULL, U2DataId(), os);
-}
-
 void RTreePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os) {
     if (updateQuery == NULL) {
         updateQuery = new SQLiteQuery("UPDATE " + readsTable + " SET prow = ?1 WHERE id = ?2", db, os);
