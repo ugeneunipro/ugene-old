@@ -66,7 +66,7 @@ public:
 
 class U2ALGORITHM_EXPORT EnzymeData : public QSharedData {
 public:
-    inline EnzymeData();
+    EnzymeData(); 
 
     QString         id;
     QString         accession;
