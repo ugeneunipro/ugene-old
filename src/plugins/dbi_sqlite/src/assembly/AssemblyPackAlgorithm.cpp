@@ -46,13 +46,14 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2OpStatus& os) 
     //  if all elements are used -> assign -1 to read and postprocess it later
 
     GTIMER(c1, t1, "AssemblyPackAlgorithm::pack");
+    quint64 t0 = GTimer::currentTimeMicros();
     QVarLengthArray<qint64, TAIL_SIZE> tails;
     qFill(tails.data(), tails.data() + TAIL_SIZE, -1);
     std::auto_ptr< U2DbiIterator<PackAlgorithmData> > allReadsIterator(adapter.selectAllReads(os));
     int peakEnd = -1; // used to assign prow for reads when TAIL_SIZE is not enough
     int peakRow = TAIL_SIZE;
-    while (allReadsIterator->hasNext() && !os.hasError()) {
-        const PackAlgorithmData& read = allReadsIterator->next();
+    while (allReadsIterator->hasNext() && !os.isCoR()) {
+        PackAlgorithmData read = allReadsIterator->next();
         int prow = selectProw(tails.data(), read.leftmostPos, read.leftmostPos + read.effectiveLen);
         if (prow == -1) {
             if (read.leftmostPos > peakEnd) {
@@ -64,6 +65,8 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2OpStatus& os) 
         }
         adapter.assignProw(read.readId, prow, os);
     }
+    t1.stop();
+    perfLog.trace(QString("Assembly pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
 }
 
 } //namespace

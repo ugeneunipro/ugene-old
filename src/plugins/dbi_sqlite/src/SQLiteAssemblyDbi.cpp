@@ -23,6 +23,7 @@
 #include "SQLiteObjectDbi.h"
 #include "assembly/SingleTableAssemblyAdapter.h"
 #include "assembly/RTreeAssemblyAdapter.h"
+#include "assembly/MultiTableAssemblyAdapter.h"
 
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -53,9 +54,9 @@ AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpS
 
     AssemblyAdapter* res = NULL;
     if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE) {
-        res = new SingleTableAssemblyAdapter(dbi, assemblyId, NULL, db, os);
-//    } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_4) {
-//        res = new MultitableAssemblyAdapter(assemblyId, NULL, QVector<int>() << 50 << 200 << 700 << U2_DBI_NO_LIMIT, db, os);
+        res = new SingleTableAssemblyAdapter(dbi, assemblyId, "", NULL, db, os);
+    } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1) {
+        res = new MultiTableAssemblyAdapter(dbi, assemblyId, NULL, MultiTableAssemblyAdapterMode_4Tables, db, os);
     } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE) {
         res = new RTreeAssemblyAdapter(dbi, assemblyId, NULL, db, os);
     } else {
@@ -117,7 +118,7 @@ qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Re
 
 
 
-quint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) {
+qint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) {
     std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
     return a->getMaxEndPos(os);
 }
@@ -131,6 +132,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     }
     
     QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE, os);
+    //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1, os);
 
     SQLiteQuery q("INSERT INTO Assembly(object, reference, elen_method, compression_method) VALUES(?1, ?2, ?3, ?4)", db, os);
     q.bindDataId(1, assembly.id);
@@ -301,5 +303,54 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& n
         qualityString.append(data + qualityStart, packedData.length() - qualityStart);
     }
 }
+
+//////////////////////////////////////////////////////////////////////////
+// read loader
+U2AssemblyRead SimpleAssemblyReadLoader::load(SQLiteQuery* q) {
+    U2AssemblyRead read(new U2AssemblyReadData());
+
+    read->id = q->getDataId(0, U2Type::AssemblyRead);
+    read->packedViewRow = q->getInt64(1);
+    if (q->hasError()) {
+        return U2AssemblyRead();
+    }
+    read->leftmostPos= q->getInt64(2);
+    read->effectiveLen = q->getInt64(3);
+    int flags = q->getInt64(4);
+    read->complementary = SQLiteAssemblyUtils::isComplementaryRead(flags);
+    read->paired = SQLiteAssemblyUtils::isPairedRead(flags);
+    read->mappingQuality = (quint8)q->getInt32(5);
+    QByteArray data = q->getBlob(6);
+    if (q->hasError()) {
+        return U2AssemblyRead();
+    }
+    QByteArray cigarText;
+    SQLiteAssemblyUtils::unpackData(data, read->name, read->readSequence, cigarText, read->quality, q->getOpStatus());
+    if (q->hasError()) {
+        return U2AssemblyRead();
+    }
+    QString err;
+    read->cigar = U2AssemblyUtils::parseCigar(cigarText, err);
+    if (!err.isEmpty()) {
+        q->setError(err);
+        return U2AssemblyRead();
+    }
+#ifdef _DEBUG
+    //additional check to ensure that db stores correct info
+    qint64 effectiveLengthFromCigar = read->readSequence.length() + U2AssemblyUtils::getCigarExtraLength(read->cigar);
+    assert(effectiveLengthFromCigar == read->effectiveLen);
+#endif
+    return read;
+}
+
+
+PackAlgorithmData SimpleAssemblyReadPackedDataLoader::load(SQLiteQuery* q) {
+    PackAlgorithmData data;
+    data.readId = q->getDataId(0, U2Type::AssemblyRead);
+    data.leftmostPos = q->getInt64(1);
+    data.effectiveLen = q->getInt64(2);
+    return data;
+}
+
 
 } //namespace

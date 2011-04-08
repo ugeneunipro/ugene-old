@@ -42,7 +42,7 @@ class DbRef;
 /** Asks to store all reads in a single table. Not optimal if read effective length varies */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE "single-table"
 /** Asks to store all reads in 6 tables. Number is a maximum effective length of the read to be stored in the table (default)*/
-#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_4 "50-100-700-U"
+#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1 "50-100-700-U"
 /** Asks to use RTree index to store reads. This method is simple but not very efficient in terms of space/insert time */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE "rtree"
 

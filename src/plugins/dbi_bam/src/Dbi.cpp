@@ -701,7 +701,7 @@ U2DbiIterator<U2AssemblyRead>* AssemblyDbi::getReadsByName(const U2DataId&, cons
     return NULL;
 }
 
-quint64 AssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os) {
+qint64 AssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os) {
     try {
         if(U2DbiState_Ready != dbi.getState()) {
             throw Exception(BAMDbiPlugin::tr("Invalid DBI state"));

@@ -86,7 +86,7 @@ public:
 
 
     /** Count 'length of assembly' - position of the rightmost base of all reads */
-    virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) = 0;
+    virtual qint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) = 0;
 
 
     /** 
@@ -106,14 +106,14 @@ public:
         Automatically removes affected sequences that are not anymore accessible from folders
         Requires: U2DbiFeature_WriteAssembly feature support
     */
-    virtual void removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
+    virtual void removeReads(const U2DataId& assemblyId, const QList<U2DataId>& readIds, U2OpStatus& os) = 0;
 
     /**  
         Adds sequences to assembly
         Reads got their ids assigned.
         Requires: U2DbiFeature_WriteAssembly feature support
     */
-    virtual void addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) = 0;
+    virtual void addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& reads, U2OpStatus& os) = 0;
 
     /**  
         Packs assembly rows: assigns packedViewRow value for every read in assembly 

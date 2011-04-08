@@ -25,6 +25,8 @@
 #include "SQLiteDbi.h"
 #include <U2Core/U2SqlHelpers.h>
 
+#include "assembly/AssemblyPackAlgorithm.h"
+
 namespace U2 {
 
 class SQLiteQuery;
@@ -70,7 +72,7 @@ public:
     virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
 
     /** Count 'length of assembly' - position of the rightmost base of all reads */
-    virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os);
+    virtual qint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os);
 
 
     /** 
@@ -121,9 +123,9 @@ public:
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os) = 0;
 
     virtual qint64 getMaxPackedRow(const U2Region& r, U2OpStatus& os) = 0;
-    virtual quint64 getMaxEndPos(U2OpStatus& os) = 0;
+    virtual qint64 getMaxEndPos(U2OpStatus& os) = 0;
 
-    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os) const = 0;
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os) = 0;
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os) = 0;
     
@@ -185,6 +187,18 @@ protected:
     QByteArray name;
 
 };
+
+class SimpleAssemblyReadLoader: public SqlRSLoader<U2AssemblyRead> {
+public:
+    U2AssemblyRead load(SQLiteQuery* q);
+};
+
+class SimpleAssemblyReadPackedDataLoader : public SqlRSLoader<PackAlgorithmData> {
+public:
+    virtual PackAlgorithmData load(SQLiteQuery* q);
+};
+
+
 
 } //namespace
 

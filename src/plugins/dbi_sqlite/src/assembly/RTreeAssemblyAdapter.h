@@ -40,14 +40,14 @@ public:
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os);
 
     virtual qint64 getMaxPackedRow(const U2Region& r, U2OpStatus& os);
-    virtual quint64 getMaxEndPos(U2OpStatus& os);
+    virtual qint64 getMaxEndPos(U2OpStatus& os);
 
-    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os) const;
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os);
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os);
 
-    virtual void addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os);
-    virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os);
+    virtual void addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os);
+    virtual void removeReads(const QList<U2DataId>& readIds, U2OpStatus& os);
 
     virtual void pack(U2OpStatus& os);
 
@@ -57,10 +57,6 @@ protected:
     QString     indexTable;
 };
 
-class RTreeAssemblyAdapterReadLoader : public SqlRSLoader<U2AssemblyRead> {
-public:
-    U2AssemblyRead load(SQLiteQuery* q);
-};
 
 class RTreePackAlgorithmAdapter : public PackAlgorithmAdapter {
 public:
@@ -75,11 +71,6 @@ private:
     QString         readsTable;
     QString         indexTable;
     SQLiteQuery*    updateQuery;
-};
-
-class RTreeAssemblyAdapterPackedReadLoader : public SqlRSLoader<PackAlgorithmData> {
-public:
-    virtual PackAlgorithmData load(SQLiteQuery* q);
 };
 
 } //namespace

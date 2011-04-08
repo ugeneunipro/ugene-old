@@ -23,6 +23,7 @@
 
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2OpStatus.h>
 
 #include <memory>
 
@@ -45,6 +46,8 @@ bool AssemblyModel::isEmpty() const {
 
 QList<U2AssemblyRead> AssemblyModel::getReadsFromAssembly(int assIdx, const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os) {
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > it(assemblyDbis.at(assIdx)->getReadsByRow(assemblies.at(assIdx).id, r, minRow, maxRow, os));
+    //TODO: handle error
+    assert(!os.hasError());
     return U2DbiUtils::toList(it.get());
 }
 

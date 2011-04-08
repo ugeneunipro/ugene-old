@@ -134,7 +134,7 @@ public:
 
     virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os);
 
-    virtual quint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os);
+    virtual qint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os);
 
     static U2AssemblyRead alignmentToRead(const Alignment &alignment);
 

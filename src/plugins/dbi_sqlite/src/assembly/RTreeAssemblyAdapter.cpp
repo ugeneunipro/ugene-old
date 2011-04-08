@@ -88,17 +88,17 @@ qint64 RTreeAssemblyAdapter::getMaxPackedRow(const U2Region& r, U2OpStatus& os) 
     return q.selectInt64();
 }
 
-quint64 RTreeAssemblyAdapter::getMaxEndPos(U2OpStatus& os) {
+qint64 RTreeAssemblyAdapter::getMaxEndPos(U2OpStatus& os) {
     return SQLiteQuery(QString("SELECT MAX(gend) FROM %1").arg(indexTable), db, os).selectInt64();
 }
 
-U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os) const {
+U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os) {
     QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + SAME_IDX + " AND "+ RANGE_CONDITION_CHECK )
         .arg(readsTable).arg(indexTable);
     SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
     q->bindInt64(1, r.endPos());
     q->bindInt64(2, r.startPos);
-    return new SqlRSIterator<U2AssemblyRead>(q, new RTreeAssemblyAdapterReadLoader(), NULL, U2AssemblyRead(), os);
+    return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), NULL, U2AssemblyRead(), os);
 }
 
 U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
@@ -109,7 +109,7 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByRow(const U2Regio
     q->bindInt64(2, r.startPos);
     q->bindInt64(3, minRow);
     q->bindInt64(4, maxRow);
-    return new SqlRSIterator<U2AssemblyRead>(q, new RTreeAssemblyAdapterReadLoader(), NULL, U2AssemblyRead(), os);
+    return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), NULL, U2AssemblyRead(), os);
 }
 
 U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByName(const QByteArray& name, U2OpStatus& os) {
@@ -117,12 +117,12 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByName(const QByteA
     SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
     int hash = qHash(name);
     q->bindInt64(1, hash);
-    return new SqlRSIterator<U2AssemblyRead>(q, new RTreeAssemblyAdapterReadLoader(), 
+    return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), 
         new SQLiteAssemblyNameFilter(name), U2AssemblyRead(), os);
 }
 
 
-void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os) {
+void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     QString q1 = "INSERT INTO %1(name, prow, flags, mq, data) VALUES (?1, ?2, ?3, ?4, ?5)";
     SQLiteQuery insertRQ(q1.arg(readsTable), db, os);
@@ -130,60 +130,60 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os)
     QString q2 = "INSERT INTO %1(id, gstart, gend) VALUES (?1, ?2, ?3)";
     SQLiteQuery insertIQ(q2.arg(indexTable), db, os);
 
-    for (int i = 0, n = rows.size(); i < n && !os.isCoR(); i++) {
-        U2AssemblyRead& row = rows[i];
+    for (int i = 0, n = reads.size(); i < n && !os.isCoR(); i++) {
+        U2AssemblyRead& read = reads[i];
         bool dnaExt = false; //TODO
         
-        QByteArray cigarText = U2AssemblyUtils::cigar2String(row->cigar);
+        QByteArray cigarText = U2AssemblyUtils::cigar2String(read->cigar);
 
         int flags = 0;
-        flags = flags | (row->complementary ? (1 << BIT_COMPLEMENTARY_STRAND) : 0);
+        flags = flags | (read->complementary ? (1 << BIT_COMPLEMENTARY_STRAND) : 0);
         flags = flags | (dnaExt ? (1 << BIT_EXT_DNA_ALPHABET) : 0 );
-        flags = flags | (row->paired ? (1 << BIT_PAIRED_READ) : 0 );
+        flags = flags | (read->paired ? (1 << BIT_PAIRED_READ) : 0 );
 
-        int rowLen = row->readSequence.length();
-        int effectiveRowLength = rowLen + U2AssemblyUtils::getCigarExtraLength(row->cigar);
-        row->effectiveLen = effectiveRowLength;
+        int readLen = read->readSequence.length();
+        int effectiveReadLength = readLen + U2AssemblyUtils::getCigarExtraLength(read->cigar);
+        read->effectiveLen = effectiveReadLength;
         
-        int hash = qHash(row->name);
+        int hash = qHash(read->name);
         insertRQ.reset();
         insertRQ.bindInt64(1, hash);
-        insertRQ.bindInt64(2, row->packedViewRow);
+        insertRQ.bindInt64(2, read->packedViewRow);
         insertRQ.bindInt64(3, flags);
-        insertRQ.bindInt32(4, row->mappingQuality);
-        QByteArray packedData = SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod_NSCQ, row->name, row->readSequence, cigarText, row->quality, os);
+        insertRQ.bindInt32(4, read->mappingQuality);
+        QByteArray packedData = SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod_NSCQ, read->name, read->readSequence, cigarText, read->quality, os);
         insertRQ.bindBlob(5, packedData, false);
 
-        row->id = insertRQ.insert(U2Type::AssemblyRead);
+        read->id = insertRQ.insert(U2Type::AssemblyRead);
 
         if (os.hasError()) {
             break;
         }
         insertIQ.reset();
-        insertIQ.bindDataId(1, row->id);
-        insertIQ.bindInt64(2, row->leftmostPos);
-        insertIQ.bindInt64(3, row->leftmostPos + row->effectiveLen);
+        insertIQ.bindDataId(1, read->id);
+        insertIQ.bindInt64(2, read->leftmostPos);
+        insertIQ.bindInt64(3, read->leftmostPos + read->effectiveLen);
         insertIQ.execute();
 
 //#define U2_SQLITE_CHECK_RTREE_
 #ifdef U2_SQLITE_CHECK_RTREE_
 // Consistency check. To be removed after all known rtree issues are resolved
-        qint64 dbId = SQLiteUtils::toDbiId(row->id);
+        qint64 dbId = SQLiteUtils::toDbiId(read->id);
         SQLiteQuery cq("SELECT gstart, gend FROM " + indexTable + " WHERE id = " + QString::number(dbId), db, os);
         cq.step();
         qint64 cstart =  cq.getInt64(0);
         qint64 cend =  cq.getInt64(1);
-        assert(cstart == row->leftmostPos);
-        assert(cend == row->leftmostPos + row->effectiveLen);
+        assert(cstart == read->leftmostPos);
+        assert(cend == read->leftmostPos + read->effectiveLen);
 #endif
     }
 }
 
-void RTreeAssemblyAdapter::removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os) {
+void RTreeAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2OpStatus& os) {
     SQLiteObjectDbi* objDbi = dbi->getSQLiteObjectDbi();
-    foreach(U2DataId rowId, rowIds) {
-        SQLiteUtils::remove(readsTable, "id", rowId, 1, db, os);
-        SQLiteUtils::remove(indexTable, "id", rowId, 1, db, os);
+    foreach(const U2DataId& readId, readIds) {
+        SQLiteUtils::remove(readsTable, "id", readId, 1, db, os);
+        SQLiteUtils::remove(indexTable, "id", readId, 1, db, os);
     }
     SQLiteObjectDbi::incrementVersion(assemblyId, db, os);
 }
@@ -193,47 +193,10 @@ void RTreeAssemblyAdapter::pack(U2OpStatus& os) {
     AssemblyPackAlgorithm::pack(packAdapter, os);
 }
 
-//TODO: reuse single table adapter code.
-U2AssemblyRead RTreeAssemblyAdapterReadLoader::load(SQLiteQuery* q) {
-    U2AssemblyRead read(new U2AssemblyReadData());
-
-    read->id = q->getDataId(0, U2Type::AssemblyRead);
-    read->packedViewRow = q->getInt64(1);
-    if (q->hasError()) {
-        return U2AssemblyRead();
-    }
-    read->leftmostPos = q->getInt64(2);
-    qint64 endPos = q->getInt64(3);
-    read->effectiveLen = endPos - read->leftmostPos;
-    int flags = q->getInt64(4);
-    read->complementary = SQLiteAssemblyUtils::isComplementaryRead(flags);
-    read->paired = SQLiteAssemblyUtils::isPairedRead(flags);
-    read->mappingQuality = (quint8)q->getInt32(5);
-    QByteArray data = q->getCString(6);
-    
-    QByteArray cigarText;
-    SQLiteAssemblyUtils::unpackData(data, read->name, read->readSequence, cigarText, read->quality, q->getOpStatus());
-    if (q->hasError()) {
-        return U2AssemblyRead();
-    }
-    QString err;
-    read->cigar = U2AssemblyUtils::parseCigar(cigarText, err);
-    if (!err.isEmpty()) {
-        q->setError(err);
-        return U2AssemblyRead();
-    }
-#ifdef _DEBUG
-    //additional check to ensure that db contains correct info
-    qint64 effectiveLengthFromCigar = read->readSequence.length() + U2AssemblyUtils::getCigarExtraLength(read->cigar);
-    assert(effectiveLengthFromCigar == read->effectiveLen);
-#endif
-    return read;
-}
-
 
 U2DbiIterator<PackAlgorithmData>* RTreePackAlgorithmAdapter::selectAllReads(U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, gend FROM " + indexTable + " ORDER BY gstart", db, os);
-    return new SqlRSIterator<PackAlgorithmData>(q, new RTreeAssemblyAdapterPackedReadLoader(), NULL, PackAlgorithmData(), os);
+    SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, gend - gstart FROM " + indexTable + " ORDER BY gstart", db, os);
+    return new SqlRSIterator<PackAlgorithmData>(q, new SimpleAssemblyReadPackedDataLoader(), NULL, PackAlgorithmData(), os);
 }
 
 RTreePackAlgorithmAdapter::~RTreePackAlgorithmAdapter() {
@@ -250,14 +213,5 @@ void RTreePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 prow, 
     updateQuery->bindDataId(2, readId);
     updateQuery->execute();
 }
-
-PackAlgorithmData RTreeAssemblyAdapterPackedReadLoader::load(SQLiteQuery* q) {
-    PackAlgorithmData data;
-    data.readId = q->getDataId(0, U2Type::AssemblyRead);
-    data.leftmostPos = q->getInt64(1);
-    data.effectiveLen = q->getInt64(2) - data.leftmostPos;
-    return data;
-}
-
 
 } //namespace

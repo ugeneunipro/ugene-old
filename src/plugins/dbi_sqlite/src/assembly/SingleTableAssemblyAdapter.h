@@ -32,7 +32,8 @@ namespace U2 {
 
 class SingleTableAssemblyAdapter : public AssemblyAdapter {
 public:
-    SingleTableAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
+    SingleTableAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, const QString& tableSuffix, 
+        const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
 
     virtual void createReadsTables(U2OpStatus& os);
     virtual void createReadsIndexes(U2OpStatus& os);
@@ -40,25 +41,31 @@ public:
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os);
 
     virtual qint64 getMaxPackedRow(const U2Region& r, U2OpStatus& os);
-    virtual quint64 getMaxEndPos(U2OpStatus& os);
+    virtual qint64 getMaxEndPos(U2OpStatus& os);
 
-    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os) const;
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os);
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os);
 
-    virtual void addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os);
-    virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os);
+    virtual void addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os);
+    virtual void removeReads(const QList<U2DataId>& readIds, U2OpStatus& os);
 
     virtual void pack(U2OpStatus& os);
 
+    const QString& getReadsTableName() const {return readsTable;}
+    
+    void enableRangeTableMode(int minLength, int maxLength);
+
 protected:
+    void bindRegion(SQLiteQuery& q, const U2Region& r, bool forCount = false);
+
     SQLiteDbi*  dbi;
     QString     readsTable;
-};
-
-class SingleTableAssemblyAdapterReadLoader : public SqlRSLoader<U2AssemblyRead> {
-public:
-    U2AssemblyRead load(SQLiteQuery* q);
+    QString     rangeConditionCheck;
+    QString     rangeConditionCheckForCount;
+    int         minReadLength; // used in range mode
+    int         maxReadLength; // used in range mode
+    bool        rangeMode;     // flag to show that range mode is in use
 };
 
 class SingleTablePackAlgorithmAdapter : public PackAlgorithmAdapter {
@@ -74,10 +81,6 @@ private:
     SQLiteQuery*    updateQuery;
 };
 
-class SingleTableAssemblyAdapterPackedReadLoader : public SqlRSLoader<PackAlgorithmData> {
-public:
-    virtual PackAlgorithmData load(SQLiteQuery* q);
-};
 
 } //namespace
 
