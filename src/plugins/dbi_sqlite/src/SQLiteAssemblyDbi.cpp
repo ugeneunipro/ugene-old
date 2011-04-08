@@ -165,7 +165,20 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
 
     a->createReadsIndexes(os);
 }
+ 
+void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
+    SQLiteTransaction(db, os);
     
+    SQLiteQuery q1("UPDATE Assembly SET reference = ?1 WHERE object = ?2", db, os);
+    q1.bindDataId(1, assembly.referenceId);
+    q1.bindDataId(2, assembly.id);
+    q1.execute();
+
+    SQLiteQuery q2("UPDATE Object SET version = version + 1 WHERE id = ?2", db, os);
+    q2.bindDataId(1, assembly.id);
+    q2.execute();
+}
+
 void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
     SQLiteObjectDbi* objDbi = dbi->getSQLiteObjectDbi();
     std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));

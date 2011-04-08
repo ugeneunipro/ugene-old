@@ -156,6 +156,10 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 
+    virtual void updateAssemblyObject(U2Assembly&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
+    }
+
     virtual void removeReads(const U2DataId&, const QList<U2DataId>&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }

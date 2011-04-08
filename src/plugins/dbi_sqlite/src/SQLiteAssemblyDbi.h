@@ -80,6 +80,13 @@ public:
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os);
 
     /** 
+        Updates assembly object fields 
+        Requires: U2DbiFeature_WriteAssembly feature support
+    */
+    virtual void updateAssemblyObject(U2Assembly&, U2OpStatus& os);
+
+
+    /** 
         Removes sequences from assembly
         Automatically removes affected sequences that are not anymore accessible from folders
     */
