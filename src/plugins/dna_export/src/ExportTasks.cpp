@@ -62,7 +62,9 @@ QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask ) {
         clonedDoc->loadFrom(doc); // doc was loaded in a separate thread -> clone all GObjects
         assert(!clonedDoc->isTreeItemModified());
         assert(clonedDoc->isLoaded());
-        clonedDoc->setModified(doc->isModified());
+        if (!clonedDoc->isStateLocked()) {
+            clonedDoc->setModified(doc->isModified());
+        }
         subTasks.append(new AddDocumentTask(clonedDoc));
         subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(clonedDoc));           
     }
