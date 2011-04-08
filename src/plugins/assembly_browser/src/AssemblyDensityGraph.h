@@ -23,10 +23,13 @@
 #define __ASSEMBLY_DENSITY_GRAPH_H__
 
 #include <QtGui/QWidget>
+#include <QtCore/QSharedPointer>
 
 namespace U2 {
 
 class AssemblyBrowserUi;
+class AssemblyBrowser;
+class AssemblyModel;
 
 class AssemblyDensityGraph: public QWidget {
     Q_OBJECT
@@ -34,10 +37,28 @@ public:
     AssemblyDensityGraph(AssemblyBrowserUi * ui);
 protected:
     void paintEvent(QPaintEvent * e);
+    void resizeEvent(QResizeEvent * e);
+    void mouseMoveEvent(QMouseEvent * e);
+
+signals:
+    void si_mouseMovedToPos(const QPoint &);
+
+private slots:
+    void sl_redraw();
+
 private:
+    void connectSlots();
     void drawAll();
+    void drawGraph(QPainter & p);
+
 
     AssemblyBrowserUi * ui;
+    AssemblyBrowser * browser;
+    QSharedPointer<AssemblyModel> model;
+
+    QPixmap cachedView;
+    bool redraw;
+    const static int FIXED_HEIGHT = 25;
 };
 
 } //ns
