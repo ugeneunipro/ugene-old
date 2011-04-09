@@ -116,6 +116,9 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
         return;
     }
     Document * doc = prj->findDocumentByURL(url);
+    if(doc != NULL && doc->isLoaded()) {
+        return;
+    }
     AddDocumentTask * addTask = NULL;
     if(doc == NULL) {
         IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url.getURLString()));

@@ -196,7 +196,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     // 0. Get reads from the database
     U2OpStatusImpl status;
     qint64 t = GTimer::currentTimeMicros();
-    cachedReads.data = model->getReadsFromAssembly(0, cachedReads.visibleBases, cachedReads.visibleRows.startPos, 
+    cachedReads.data = model->getReadsFromAssembly(cachedReads.visibleBases, cachedReads.visibleRows.startPos, 
                                                    cachedReads.visibleRows.endPos(), status);
     t = GTimer::currentTimeMicros() - t;
     uiLog.info(QString("Database access time: %1").arg(double(t) / 1000 / 1000));
@@ -494,13 +494,13 @@ void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
     if(hBar->isEnabled()) {
         qint64 xOffset = browser->getXOffsetInAssembly();
         qint64 windowHalfX = xOffset + qRound64((double)browser->basesCanBeVisible() / 2);
-        browser->setXOffsetInAssembly(browser->normalizeXoffset(xOffset + cursorXoffset - windowHalfX));
+        browser->setXOffsetInAssembly(browser->normalizeXoffset(xOffset + cursorXoffset - windowHalfX + 1));
     }
     // move y
     if(vBar->isEnabled()) {
         qint64 yOffset = browser->getYOffsetInAssembly();
         qint64 windowHalfY = yOffset + qRound64((double)browser->rowsCanBeVisible() / 2);
-        browser->setYOffsetInAssembly(browser->normalizeYoffset(yOffset + cursorYoffset - windowHalfY));
+        browser->setYOffsetInAssembly(browser->normalizeYoffset(yOffset + cursorYoffset - windowHalfY + 1));
     }
 }
 

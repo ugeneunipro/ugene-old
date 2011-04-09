@@ -49,10 +49,7 @@ public:
     // from GObjectView
     virtual void buildStaticToolbar(QToolBar* tb);
     virtual void buildStaticMenu(QMenu* m);
-    
-    // returns error string
-    QString tryAddObject(GObject * obj);
-    
+      
     int getCellWidth() const;
     qint64 calcPixelCoord(qint64 asmCoord) const;
     qint64 calcAsmCoordX(qint64 pixCoord) const;
@@ -94,7 +91,7 @@ signals:
 
 protected:
     virtual QWidget * createWidget();
-    virtual bool eventFilter(QObject*, QEvent*);
+    //virtual bool eventFilter(QObject*, QEvent*);
     
 private slots:
     void sl_assemblyLoaded();
@@ -113,7 +110,9 @@ private:
     void updateOverviewTypeActions();
     void clear();
     int zoomInFromSize(int oldCellSize);
-    
+    // returns error string
+    //QString tryAddObject(GObject * obj);
+
     AssemblyBrowserUi * ui;
 
     AssemblyObject * gobject;

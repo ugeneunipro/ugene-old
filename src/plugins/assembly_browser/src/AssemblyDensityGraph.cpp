@@ -67,7 +67,7 @@ void AssemblyDensityGraph::drawGraph(QPainter & p) {
         for(int ibase = 0; ibase < visibleBases; ++ibase) {
             U2OpStatusImpl os;
             qint64 base = xStart + ibase;
-            qint64 density = model->countReadsInAssembly(0, U2Region(base, 1), os);
+            qint64 density = model->countReadsInAssembly(U2Region(base, 1), os);
             if(checkAndLogError(os)) {
                 break;
             }

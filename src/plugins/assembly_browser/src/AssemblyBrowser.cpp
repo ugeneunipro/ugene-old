@@ -94,44 +94,69 @@ QWidget * AssemblyBrowser::createWidget() {
     return ui;
 }
 
-bool AssemblyBrowser::eventFilter(QObject* o, QEvent* e) {
-    if(o == ui) {
-        if (e->type() == QEvent::DragEnter || e->type() == QEvent::Drop) {
-            QDropEvent* de = (QDropEvent*)e;
-            const QMimeData* md = de->mimeData();
-            const GObjectMimeData* gomd = qobject_cast<const GObjectMimeData*>(md);
-            if (gomd != NULL) {
-                if (e->type() == QEvent::DragEnter) {
-                    de->acceptProposedAction();
-                } else {
-                    QString err = tryAddObject(gomd->objPtr.data());
-                    if(!err.isEmpty()) {
-                        QMessageBox::critical(ui, tr("Error!"), err);
-                    }
-                }
-            }
-        } 
-    }
-    return false;
-}
-
-QString AssemblyBrowser::tryAddObject(GObject * obj) {
-    DNASequenceObject * seqObj = qobject_cast<DNASequenceObject*>(obj);
-    if(seqObj == NULL) {
-        return tr("Only sequence can be added to assembly browser");
-    }
-    
-    U2SequenceDbi * seqDbi = seqObj->asDbi();
-    assert(seqDbi != NULL);
-    U2OpStatusImpl status;
-    U2Sequence u2SeqObj = seqDbi->getSequenceObject(seqObj->getGObjectName().toAscii(), status);
-    if(status.hasError()) {
-        return status.getError();
-    }
-    model->setReference(seqDbi, u2SeqObj);
-    ui->getReferenceArea()->update();
-    return "";
-}
+//bool AssemblyBrowser::eventFilter(QObject* o, QEvent* e) {
+//    if(o == ui) {
+//        if (e->type() == QEvent::DragEnter || e->type() == QEvent::Drop) {
+//            QDropEvent* de = (QDropEvent*)e;
+//            const QMimeData* md = de->mimeData();
+//            const GObjectMimeData* gomd = qobject_cast<const GObjectMimeData*>(md);
+//            if (gomd != NULL) {
+//                if (e->type() == QEvent::DragEnter) {
+//                    de->acceptProposedAction();
+//                } else {
+//                    QString err = tryAddObject(gomd->objPtr.data());
+//                    if(!err.isEmpty()) {
+//                        QMessageBox::critical(ui, tr("Error!"), err);
+//                    }
+//                }
+//            }
+//        } 
+//    }
+//    return false;
+//}
+//
+//QString AssemblyBrowser::tryAddObject(GObject * obj) {
+//    DNASequenceObject * seqObj = qobject_cast<DNASequenceObject*>(obj);
+//    if(seqObj == NULL) {
+//        return tr("Only sequence object can be added to assembly browser");
+//    }
+//    
+//    U2SequenceDbi * seqDbi = seqObj->asDbi();
+//    assert(seqDbi != NULL);
+//    U2OpStatusImpl status;
+//    QString seqObjName = seqObj->getGObjectName();
+//    U2Sequence u2SeqObj = seqDbi->getSequenceObject(seqObjName.toAscii(), status);
+//    if(status.hasError()) {
+//        return status.getError();
+//    }
+//    
+//    QStringList errs;
+//    qint64 modelLen = model->getModelLength(status);
+//    if(u2SeqObj.length != modelLen) {
+//        errs << tr("- Reference sequence is %1 than assembly").arg(u2SeqObj.length < modelLen ? tr("lesser") : tr("bigger"));
+//    }
+//    if(seqObjName != gobject->getGObjectName()) {
+//        errs << tr("- Reference and assembly names not match");
+//    }
+//    
+//    bool setRef = true;
+//    if(!errs.isEmpty()) {
+//        errs << tr("\n  Continue?");
+//        QMessageBox::StandardButtons fl = QMessageBox::Ok | QMessageBox::Cancel;
+//        QMessageBox::StandardButton btn = QMessageBox::question(ui, tr("Errors"), errs.join("\n"), fl, QMessageBox::Ok);
+//        setRef = btn == QMessageBox::Ok;
+//    }
+//    if(setRef) {
+//        model->setReference(seqDbi, u2SeqObj);
+//        ui->getReferenceArea()->update();
+//        QMessageBox::StandardButtons fl = QMessageBox::Yes | QMessageBox::No;
+//        QMessageBox::StandardButton btn = QMessageBox::question(ui, tr("Question"), tr("Associate assembly with '%1'?").arg(seqObjName), fl, QMessageBox::Yes);
+//        if(QMessageBox::Yes == btn) {
+//            model->associateWithReference();
+//        }
+//    }
+//    return "";
+//}
 
 void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(zoomInAction);
@@ -348,7 +373,7 @@ void AssemblyBrowser::sl_assemblyLoaded() {
     U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(objectId, dbiOpStatus);
     checkAndLogError(dbiOpStatus);
 
-    model->addAssembly(assmDbi, assm);
+    model->setAssembly(assmDbi, assm);
 }
 
 void AssemblyBrowser::sl_zoomIn() {

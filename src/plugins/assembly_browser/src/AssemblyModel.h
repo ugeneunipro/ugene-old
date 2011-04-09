@@ -33,15 +33,15 @@ public:
 
     bool isEmpty() const;
 
-    QList<U2AssemblyRead> getReadsFromAssembly(int assIdx, const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os);
+    QList<U2AssemblyRead> getReadsFromAssembly(const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os);
 
-    qint64 countReadsInAssembly(int assIdx, const U2Region & r, U2OpStatus & os);
+    qint64 countReadsInAssembly(const U2Region & r, U2OpStatus & os);
 
     qint64 getModelLength(U2OpStatus & os);
 
     qint64 getModelHeight(U2OpStatus & os);
 
-    void addAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
+    void setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
 
     bool hasReference() const;
 
@@ -50,7 +50,9 @@ public:
     QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
 
     const DbiHandle & getDbiHandle() const {return dbiHandle;}
-
+    
+    void associateWithReference();
+    
 private:
     const static qint64 NO_VAL = -1;
     //TODO: track model changes and invalidate caches accordingly
@@ -59,10 +61,10 @@ private:
 
     U2Sequence reference;
     U2SequenceDbi * referenceDbi;
-
-    QList<U2Assembly> assemblies;
-    QList<U2AssemblyDbi *> assemblyDbis;
-
+    
+    U2Assembly assembly;
+    U2AssemblyDbi * assemblyDbi;
+    
     DbiHandle dbiHandle; 
 }; // AssemblyModel
 

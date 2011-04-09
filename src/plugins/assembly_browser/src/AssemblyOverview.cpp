@@ -74,7 +74,7 @@ void AssemblyOverviewRenderTask::run() {
             return;
         }
         stateInfo.progress = double(i) / widgetWidth * 100.;
-        qint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(start, qRound64(lettersPerXPixel)), status);
+        qint64 readsPerXPixel = model->countReadsInAssembly(U2Region(start, qRound64(lettersPerXPixel)), status);
         if(status.hasError()) {
             stateInfo.setError(status.getError());
             return;
