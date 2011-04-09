@@ -20,6 +20,7 @@
  */
 
 #include "AssemblyReadsAreaHint.h"
+#include "AssemblyReadsArea.h"
 
 #include <QtGui/QBoxLayout>
 #include <QtGui/QMouseEvent>
@@ -105,10 +106,10 @@ bool AssemblyReadsAreaHint::eventFilter(QObject *, QEvent * event) {
 }
 
 void AssemblyReadsAreaHint::leaveEvent(QEvent * e) {
-    QWidget * p = qobject_cast<QWidget*>(parent());
+    AssemblyReadsArea * p = qobject_cast<AssemblyReadsArea*>(parent());
     QPoint curInParentCoords = p->mapFromGlobal(QCursor::pos());
     if(!p->rect().contains(curInParentCoords)) {
-        hide();
+        p->sl_hideHint();
     }
 }
 

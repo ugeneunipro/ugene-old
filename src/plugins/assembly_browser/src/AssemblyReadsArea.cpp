@@ -272,7 +272,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
         return;
     }
     if(cachedReads.isEmpty() || cachedReads.letterWidth == 0) {
-        hint.hide();
+        sl_hideHint();
         return;
     }
     
@@ -296,7 +296,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
         }
     }
     if(!found) {
-        hint.hide();
+        sl_hideHint();
         return;
     }
     
@@ -419,17 +419,17 @@ void AssemblyReadsArea::mouseMoveEvent(QMouseEvent * e) {
 void AssemblyReadsArea::leaveEvent(QEvent * e) {
     QPoint curInHintCoords = hint.mapFromGlobal(QCursor::pos());
     if(!hint.rect().contains(curInHintCoords)) {
-        hint.hide();
+        sl_hideHint();
     }
 }
 
 void AssemblyReadsArea::hideEvent(QHideEvent * e) {
-    hint.hide();
+    sl_hideHint();
 }
 
 bool AssemblyReadsArea::event(QEvent * e) {
     if(e->type() == QEvent::WindowDeactivate) {
-        hint.hide();
+        sl_hideHint();
         redrawHint = false;
     }
     return QWidget::event(e);
@@ -529,6 +529,8 @@ void AssemblyReadsArea::sl_redraw() {
 
 void AssemblyReadsArea::sl_hideHint() {
     hint.hide();
+    update();
+    
 }
 
 } //ns
