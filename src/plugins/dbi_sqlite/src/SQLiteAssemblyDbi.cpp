@@ -315,7 +315,8 @@ U2AssemblyRead SimpleAssemblyReadLoader::load(SQLiteQuery* q) {
         return U2AssemblyRead();
     }
     read->leftmostPos= q->getInt64(2);
-    read->effectiveLen = q->getInt64(3);
+    qint64 endPos = q->getInt64(3);
+    read->effectiveLen = endPos - read->leftmostPos;
     int flags = q->getInt64(4);
     read->complementary = SQLiteAssemblyUtils::isComplementaryRead(flags);
     read->paired = SQLiteAssemblyUtils::isPairedRead(flags);
