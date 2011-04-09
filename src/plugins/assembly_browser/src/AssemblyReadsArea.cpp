@@ -472,6 +472,12 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
     } else if(k == Qt::Key_G && (e->modifiers() & Qt::ControlModifier)) {
         browser->setFocusToPosSelector();
         e->accept();
+    } else if(k == Qt::Key_PageUp || k == Qt::Key_PageDown) {
+        if(vBar->isEnabled()) {
+            int step = k == Qt::Key_PageUp ? -vBar->pageStep() : vBar->pageStep();
+            vBar->setValue(vBar->value() + step);
+            e->accept();
+        }
     }
     
     if(!e->isAccepted()) {
