@@ -83,10 +83,14 @@ void MultiTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
     }
 }
 
+#define MAX_READS_TO_USE_PRECISE_COUNT 100
 qint64 MultiTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
     qint64 sum = 0;
     foreach(MTASingleTableAdapter* a, tableAdapters) {
         int n = a->singleTableAdapter->countReads(r, os);
+        if (n < MAX_READS_TO_USE_PRECISE_COUNT) {
+            n = a->singleTableAdapter->countReadsPrecise(r, os);    
+        }
         if (os.hasError()) {
             break;
         }
@@ -287,8 +291,14 @@ MTAReadsIterator::~MTAReadsIterator() {
 bool MTAReadsIterator::hasNext() {
     bool res = currentRange < iterators.size();
     if (res) {
-        U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
-        res = it->hasNext();
+        do {
+            U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
+            res = it->hasNext();
+            if (res) {
+                break;
+            }
+            currentRange++;
+        }  while (currentRange < iterators.size());
     }
     return res;
 }

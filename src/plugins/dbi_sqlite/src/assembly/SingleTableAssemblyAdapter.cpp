@@ -32,10 +32,10 @@ namespace U2 {
 // ?1 -> end of the region
 // ?2 -> start of the region  (- max read size)
 // ?3 -> real start of the region
-#define DEFAULT_RANGE_CONDITION_CHECK   QString(" (gstart < ?1 AND gstart + elen > ?2) ")
-#define RTM_RANGE_CONDITION_CHECK        QString(" ((gstart >= ?2 AND gstart < ?1) AND gstart + elen > ?3) ")
-#define RTM_RANGE_CONDITION_CHECK_COUNT  QString("  (gstart >= ?2 AND gstart < ?1) ")
-#define ALL_READ_FIELDS                 QString(" id, prow, gstart, elen, flags, mq, data")
+#define DEFAULT_RANGE_CONDITION_CHECK       QString(" (gstart < ?1 AND gstart + elen > ?2) ")
+#define RTM_RANGE_CONDITION_CHECK           QString(" ((gstart < ?1 AND gstart > ?2) AND gstart + elen > ?3) ")
+#define RTM_RANGE_CONDITION_CHECK_COUNT     QString("  (gstart < ?1 AND gstart > ?2) ")
+#define ALL_READ_FIELDS                     QString(" id, prow, gstart, elen, flags, mq, data")
 
 
 SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, const QString& tableSuffix,
@@ -48,6 +48,8 @@ SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2
     rangeConditionCheckForCount = DEFAULT_RANGE_CONDITION_CHECK;
     readsTable = QString("AssemblyRead_S%1%2").arg(SQLiteUtils::toDbiId(assemblyId)).arg(tableSuffix);
     rangeMode = false;
+    minReadLength = 0;
+    maxReadLength = 0;
 }
 
 void SingleTableAssemblyAdapter::enableRangeTableMode(int minLen, int maxLen) {
@@ -83,17 +85,34 @@ void SingleTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
 }
 
 void SingleTableAssemblyAdapter::bindRegion(SQLiteQuery& q, const U2Region& r, bool forCount) {
-    q.bindInt64(1, r.endPos());
-    q.bindInt64(2, r.startPos - r.length);
-    if (rangeMode && !forCount) {
-        q.bindInt64(3, r.startPos);
+    if (rangeMode) {
+        q.bindInt64(1, r.endPos());
+        q.bindInt64(2, r.startPos - maxReadLength);
+        if (!forCount) {
+            q.bindInt64(3, r.startPos);
+        }
+    } else {
+        q.bindInt64(1, r.endPos());
+        q.bindInt64(2, r.startPos);
     }
+    
 }
 
 qint64 SingleTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
     QString qStr = QString("SELECT COUNT(*) FROM %1 WHERE " + rangeConditionCheckForCount).arg(readsTable);
     SQLiteQuery q(qStr, db, os);
     bindRegion(q, r, true);
+    return q.selectInt64();
+}
+
+qint64 SingleTableAssemblyAdapter::countReadsPrecise(const U2Region& r, U2OpStatus& os) {
+    if (!rangeMode) {
+        return countReads(r, os);
+    }
+    //here we use not-optimized rangeConditionCheck but not rangeConditionCheckForCount
+    QString qStr = QString("SELECT COUNT(*) FROM %1 WHERE " + rangeConditionCheck).arg(readsTable);
+    SQLiteQuery q(qStr, db, os);
+    bindRegion(q, r, false);
     return q.selectInt64();
 }
 

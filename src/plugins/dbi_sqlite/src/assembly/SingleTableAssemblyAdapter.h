@@ -39,6 +39,7 @@ public:
     virtual void createReadsIndexes(U2OpStatus& os);
 
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os);
+    virtual qint64 countReadsPrecise(const U2Region& r, U2OpStatus& os);
 
     virtual qint64 getMaxPackedRow(const U2Region& r, U2OpStatus& os);
     virtual qint64 getMaxEndPos(U2OpStatus& os);
