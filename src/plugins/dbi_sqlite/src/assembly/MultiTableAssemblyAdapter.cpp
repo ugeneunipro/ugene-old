@@ -90,7 +90,6 @@ void MultiTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
 
 qint64 MultiTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
     qint64 sum = 0;
-    int i = 0;
     // use more sensitive algorithm for smaller regions 
     // and not-very sensitive for huge regions
     int nReadsToUseNotPreciseAlgorithms = 1000 / (r.length + 1);
@@ -103,7 +102,6 @@ qint64 MultiTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) 
             break;
         }
         sum+=n;
-        i++;
     }
     return sum;
 }
