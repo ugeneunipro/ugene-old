@@ -23,27 +23,104 @@
 
 #include <U2Core/DNAAlphabet.h>
 
+#include <QtCore/QTime>
+
 namespace U2 {
 
+
+QString ConsensusModelTypes::M1("M1");
+QString ConsensusModelTypes::Strict("Strict");
+QString ConsensusModelTypes::MajorityRuleExt("Majority Rule (extended)");
+QString ConsensusModelTypes::MajorityRule("Majority Rule");
+
+
+QList<QString> ConsensusModelTypes::getConsensusModelTypes()
+{
+    static QList<QString> list;
+    if (list.isEmpty()) {
+        list.append(ConsensusModelTypes::MajorityRuleExt);
+        list.append(ConsensusModelTypes::Strict);
+        list.append(ConsensusModelTypes::MajorityRule);
+        list.append(ConsensusModelTypes::M1);
+    }
+
+    return list;
+}
 
 SeqBootModelWidget::SeqBootModelWidget(QWidget* parent, const MAlignment& ma) : CreatePhyTreeWidget(parent)
 {
     setupUi(this);
+
+    seedSpinBox->setValue(getRandomSeed());
     
     connect(bootstrapCheckBox, SIGNAL(clicked()), SLOT(sl_onCheckBox()));
- 
+
+    ConsModeComboBox->addItems( ConsensusModelTypes::getConsensusModelTypes() );
+    connect(ConsModeComboBox, SIGNAL(currentIndexChanged(const QString&)), SLOT(sl_onModelChanged(const QString&))); 
 }
 
 void SeqBootModelWidget::fillSettings( CreatePhyTreeSettings& settings )
 {
     settings.bootstrap = bootstrapCheckBox->isChecked();
     settings.replicates = repsSpinBox->value();
+    settings.seed = seedSpinBox->value();
+    settings.fraction = FractionSpinBox->value();
+    settings.consensusID = ConsModeComboBox->currentText();
+}
+
+#define SEED_MIN 5
+#define SEED_MAX 32765
+int SeqBootModelWidget::getRandomSeed(){
+    int seed = 0;
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    seed = qAbs(qrand()); 
+
+    while(!checkSeed(seed)){
+        seed++;
+        if(seed >=SEED_MAX){
+            seed = SEED_MIN;
+        }
+    }
+    
+    return seed;
+}
+bool SeqBootModelWidget::checkSeed(int seed){
+    return (seed >= SEED_MIN) && (seed <=SEED_MAX) && ((seed-1)%4 == 0);
 }
 
 void SeqBootModelWidget::sl_onCheckBox() {
    label2->setEnabled(bootstrapCheckBox->isChecked());
    repsSpinBox->setEnabled(bootstrapCheckBox->isChecked());
+
+   label3->setEnabled(bootstrapCheckBox->isChecked());
+   seedSpinBox->setEnabled(bootstrapCheckBox->isChecked());
+
+   label4->setEnabled(bootstrapCheckBox->isChecked());
+   ConsModeComboBox->setEnabled(bootstrapCheckBox->isChecked());
+
+   label5->setEnabled(bootstrapCheckBox->isChecked() && ConsModeComboBox->currentText() == ConsensusModelTypes::M1);
+   FractionSpinBox->setEnabled(bootstrapCheckBox->isChecked() && ConsModeComboBox->currentText() == ConsensusModelTypes::M1); 
 }
+
+void SeqBootModelWidget::sl_onModelChanged(const QString& modelName) {
+    if (modelName == ConsensusModelTypes::M1) {
+        label5->setEnabled(true);
+        FractionSpinBox->setEnabled(true); 
+    } else {
+        label5->setEnabled(false);
+        FractionSpinBox->setEnabled(false);
+    }
+    if(modelName == ConsensusModelTypes::Strict){
+        FractionSpinBox->setValue(1.0);
+    }
+    if(modelName == ConsensusModelTypes::MajorityRule){
+        FractionSpinBox->setValue(0.5);
+    }
+    if(modelName == ConsensusModelTypes::MajorityRuleExt){
+        FractionSpinBox->setValue(0.5);
+    }
+}
+
 
 
 

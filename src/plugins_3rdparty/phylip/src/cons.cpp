@@ -1,7 +1,6 @@
 #include "phylip.h"
 #include "cons.h"
 
-
 int tree_pairing;
 
 extern Phylip_Char outfilename[FNMLNGTH], intreename[FNMLNGTH], intree2name[FNMLNGTH], outtreename[FNMLNGTH];
@@ -38,6 +37,7 @@ void reorient(node* n);
 
 
 hashtype hashp;
+
 
 /**
  * namesGetBucket - return the bucket for a given name
@@ -148,7 +148,8 @@ void namesClearTable(void) {
 }
 /* end hash table code */
 
-void consens_starter(const char* filename){
+void consens_starter( const char* filename, double fraction, bool _strict, bool _mre, bool _mr, bool _m1 )
+{
      /* Local variables added by Dan F. */
   pattern_elm  ***pattern_array;
   long trees_in = 0;
@@ -170,11 +171,11 @@ void consens_starter(const char* filename){
   /* This is needed so functions in cons.c work */
   tree_pairing   = NO_PAIRING ;  
 
-  strict = false;
-  mr = false;
-  mre = true;
-  ml = false;
-  mlfrac = 0.5;
+  strict = _strict;
+  mr = _mr;
+  mre = _mre;
+  ml = _m1;
+  mlfrac = fraction;
   noroot = true;
   numopts = 0;
   outgrno_cons = 1;

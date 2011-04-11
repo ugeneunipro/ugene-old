@@ -23,7 +23,7 @@
 
 namespace U2{
 
-CreatePhyTreeSettings::CreatePhyTreeSettings() : algorithmId(""), matrixId(""), useGammaDistributionRates(false), bootstrap(false)
+CreatePhyTreeSettings::CreatePhyTreeSettings() : algorithmId(""), matrixId(""), consensusID(""), useGammaDistributionRates(false), bootstrap(false)
 {
 
 }

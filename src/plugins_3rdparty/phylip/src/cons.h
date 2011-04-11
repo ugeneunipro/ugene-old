@@ -1,5 +1,6 @@
 #pragma once
 
+
 #define OVER_C             8
 #define ADJACENT_PAIRS    1
 #define CORR_IN_1_AND_2   2
@@ -58,6 +59,8 @@ typedef namenode **hashtype;
 
 extern hashtype hashp;
 
+
+
 long namesGetBucket(plotstring);
 void namesAdd(plotstring);
 boolean namesSearch(plotstring);
@@ -69,7 +72,7 @@ void missingnameRecurs(node *p);
 
 #ifndef OLDC
 /* function prototypes */
-void consens_starter(const char* filename);
+void consens_starter(const char* filename, double fraction, bool _strict, bool _mre, bool _mr, bool _m1);
 void consens_free_res();
 
 void initconsnode(node **, node **, node *, long, long, long *, long *,

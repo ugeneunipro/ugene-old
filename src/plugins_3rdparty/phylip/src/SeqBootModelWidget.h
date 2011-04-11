@@ -24,11 +24,19 @@
 
 #include <U2View/CreatePhyTreeWidget.h>
 #include "ui/ui_SeqBootModel.h"
-
 #include <U2Core/MAlignment.h>
 
 
 namespace U2{
+
+class ConsensusModelTypes {
+public:
+    static QString M1;
+    static QString Strict;
+    static QString MajorityRuleExt;
+    static QString MajorityRule;
+    static QList<QString> getConsensusModelTypes();
+};
 
 class SeqBootModelWidget : public CreatePhyTreeWidget, Ui_SeqBootModel {
     Q_OBJECT
@@ -36,8 +44,15 @@ class SeqBootModelWidget : public CreatePhyTreeWidget, Ui_SeqBootModel {
 public:
     SeqBootModelWidget(QWidget* parent, const MAlignment& ma);
     virtual void fillSettings(CreatePhyTreeSettings& settings);
+
+    int getCurSeed() {return seedSpinBox->value();}
+    int getRandomSeed();
+    bool checkSeed(int seed);
+
 private slots:
     void sl_onCheckBox();
+    void sl_onModelChanged(const QString& modelName);
+
 
 
 };

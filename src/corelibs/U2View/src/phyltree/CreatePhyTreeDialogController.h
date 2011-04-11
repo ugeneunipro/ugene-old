@@ -35,6 +35,7 @@ private:
     Ui_CreatePhyTree* ui;
 
     bool estimateResources(); 
+    bool checkSeed(int seed);
 };
 
 }

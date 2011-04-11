@@ -40,6 +40,10 @@ public:
     double ttRatio; // transition transversion ratio
     bool bootstrap;
     int replicates;
+    int seed;
+    double fraction;
+    QString consensusID;
+
 };
 
 }

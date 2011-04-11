@@ -51,8 +51,16 @@ void CreatePhyTreeDialogController::sl_okClicked(){
     }
     settings.fileUrl = ui->fileNameEdit->text();
 
+
     foreach (CreatePhyTreeWidget* widget, childWidgets) {
         widget->fillSettings(settings);
+    }
+
+    if(settings.bootstrap){
+        if(!checkSeed(settings.seed)){
+            QMessageBox::warning(this, tr("Warning"), tr("Seed must be of the form 4n+1. That is, it leaves a remainder of 1 when divided by 4"));
+            return;
+        }
     }
 
     if(estimateResources()){
@@ -137,6 +145,12 @@ bool CreatePhyTreeDialogController::estimateResources(){
         return false;
     }
 
+}
+
+#define SEED_MIN 5
+#define SEED_MAX 32765
+bool CreatePhyTreeDialogController::checkSeed(int seed){
+    return (seed >= SEED_MIN) && (seed <=SEED_MAX) && ((seed-1)%4 == 0);
 }
 
 }

@@ -182,7 +182,17 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
             ti.progress = 99;
             ti.setStateDesc("Calculating consensus tree");
 
-            consens_starter(tmpFile.fileName().toStdString().c_str());
+            if(s.consensusID == ConsensusModelTypes::Strict){
+                consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, true, false, false, false);
+            }else if(s.consensusID == ConsensusModelTypes::MajorityRuleExt){
+                consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, false, true, false, false);
+            }else if(s.consensusID == ConsensusModelTypes::MajorityRule){
+                consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, false, false, true, false);
+            }else if(s.consensusID == ConsensusModelTypes::M1){
+                consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, false, false, false, true);
+            }else{
+                assert(0);
+            }
 
             PhyNode* rootPhy = new PhyNode();
             bool njoin = true;

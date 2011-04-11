@@ -111,8 +111,7 @@ void SeqBoot::generateSequencesFromAlignment( const MAlignment& ma, const Create
         }
     }
 
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-    long inseed = qAbs(qrand());
+    long inseed = settings.seed;
     inseed = inseed%2 != 0 ? inseed : inseed+1;
     for (int j = 0; j <= 5; j++)
         seed_boot[j] = 0;
@@ -123,6 +122,7 @@ void SeqBoot::generateSequencesFromAlignment( const MAlignment& ma, const Create
         inseed /= 64;
         i++;
     } while (inseed != 0);
+
     
     bootwrite(generatedSeq, *malignment);
 
