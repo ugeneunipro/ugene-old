@@ -51,6 +51,7 @@ private slots:
     void sl_saveAsScript();
     void sl_nameChanged(const QString&);
     void sl_scriptChanged();
+    void sl_cursorPositionChanged();
 
 private:
     void updateState();

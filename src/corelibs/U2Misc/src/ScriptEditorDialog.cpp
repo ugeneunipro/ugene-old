@@ -29,6 +29,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtScript/QScriptEngine>
+#include <QtGui/QMouseEvent>
 
 namespace U2 {
 
@@ -54,6 +55,7 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget* w, const QString& roHeaderText, 
     connect(ui->saveAsButton, SIGNAL(clicked()), SLOT(sl_saveAsScript()));
     connect(ui->scriptPathEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_nameChanged(const QString&)));
     connect(ui->scriptEdit, SIGNAL(textChanged()), SLOT(sl_scriptChanged()));
+    connect(ui->scriptEdit, SIGNAL(cursorPositionChanged()), SLOT(sl_cursorPositionChanged()));
 
     updateState();
 }
@@ -171,6 +173,10 @@ QString ScriptEditorDialog::getScriptText() const
     return ui->scriptEdit->toPlainText();
 }
 
+void ScriptEditorDialog::sl_cursorPositionChanged(){
+    int lineNumber = ui->scriptEdit->textCursor().block().blockNumber();
+    ui->lineInfo->setText("Line: " + QString::number(lineNumber + 1));
+}
 //////////////////////////////////////////////////////////////////////////
 // Script highlighter
 ScriptHighlighter::ScriptHighlighter(QTextDocument *parent)

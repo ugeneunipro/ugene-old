@@ -51,7 +51,19 @@ static const QString IN_PORT_ID("in");
 static const QString OUT_PORT_ID("out");
 
 static QScriptValue debugOut(QScriptContext *ctx, QScriptEngine *)  {
-    scriptLog.details(ctx->argument(0).toString());
+    QString msg = "";
+    if(ctx->argument(0).isNumber()) {
+        msg = QString::number(ctx->argument(0).toInt32());
+    } else if(ctx->argument(0).isString()) {
+        msg = ctx->argument(0).toString();
+    } else if(ctx->argument(0).isBool()) {
+        if(ctx->argument(0).toBool()) {
+            msg = "true";
+        } else {
+            msg = "false";
+        }
+    }
+    scriptLog.details(msg);
     return 0;
 }
 
@@ -101,6 +113,7 @@ void ScriptWorkerTask::run() {
     QScriptValue scriptResultValue = ScriptTask::runScript(engine, scriptVars, script->getScriptText(), stateInfo);
     result = scriptResultValue.toVariant();
     if(engine->hasUncaughtException()) {
+        result = engine->uncaughtException().toVariant();
         stateInfo.setError(tr("Error in line ") + QString::number(engine->uncaughtExceptionLineNumber()) + ":" + result.toString().split(":").last());
     }
 

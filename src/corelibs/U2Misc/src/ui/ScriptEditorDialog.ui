@@ -108,6 +108,13 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="lineInfo">
+       <property name="text">
+        <string>Line:</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>
@@ -145,22 +152,6 @@
     <hint type="destinationlabel">
      <x>199</x>
      <y>105</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>clearButton</sender>
-   <signal>clicked()</signal>
-   <receiver>scriptEdit</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>47</x>
-     <y>317</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>252</x>
-     <y>217</y>
     </hint>
    </hints>
   </connection>
