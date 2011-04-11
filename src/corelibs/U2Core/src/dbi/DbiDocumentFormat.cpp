@@ -51,6 +51,17 @@ Document* DbiDocumentFormat::createNewDocument(IOAdapterFactory* io, const QStri
     return d;
 }
 
+static void renameObjectsIfNamesEqual(QList<GObject*> & objs) {
+    for(int i = 0; i < objs.size(); ++i) {
+        int howManyEquals = 0;
+        for(int j = i + 1; j < objs.size(); ++j) {
+            if(objs[i]->getGObjectName() == objs[j]->getGObjectName()) {
+                objs[j]->setGObjectName(QString("%1 %2").arg(objs[j]->getGObjectName()).arg(++howManyEquals));
+            }
+        }
+    }
+}
+
 Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, const QVariantMap& fs, DocumentLoadMode) {
     //1. open db
     //2. read all assembly & sequence objects
@@ -71,7 +82,6 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
     U2DataRef ref;
     ref.dbiId = url;
     ref.factoryId = id;
-    int assemblyNumber = 0;
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle.dbi->getEntityTypeById(id);
         switch (objectType) {
@@ -86,7 +96,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
                     }
                     if(name.isEmpty()) {
                         assert(false);
-                        name = "Assembly_" + QString::number(assemblyNumber++);
+                        name = "Assembly";
                     }
                     objects.append(new AssemblyObject(ref, name, QVariantMap()));
                     break;
@@ -95,7 +105,8 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
                 break;
         }
     }
-
+    renameObjectsIfNamesEqual(objects);
+    
     Document* d = new Document(this, io->getFactory(), io->getURL(), objects, fs);
     return d;
 }

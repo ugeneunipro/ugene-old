@@ -12,8 +12,7 @@ namespace U2 {
 // BackgroundRenderTask
 //==============================================================================
 BackgroundRenderTask::BackgroundRenderTask(const QString& _name, TaskFlags f) : 
-Task(_name, f | TaskFlag_NoAutoDelete) 
-{
+Task(_name, f) {
 }
 
 //==============================================================================
@@ -42,7 +41,7 @@ QImage BackgroundRenderer::getImage() const {
     if(redrawRunning) {
         return QImage();
     }
-    return renderTask->getResult();
+    return result;
 }
 
 void BackgroundRenderer::sl_redrawFinished() {
@@ -59,10 +58,10 @@ void BackgroundRenderer::sl_redrawFinished() {
         redrawRunning = true;
         redrawNeeded = false;
     } else {
+        assert(renderTask == senderr);
         result = renderTask->getResult();
         emit(si_rendered());
     }
 }
-
 
 }

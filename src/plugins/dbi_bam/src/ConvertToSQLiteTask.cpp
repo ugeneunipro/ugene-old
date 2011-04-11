@@ -81,9 +81,6 @@ void ConvertToSQLiteTask::run() {
 
         assert(destinationUrl.isLocalFile());
         bool append = QFile::exists(destinationUrl.getURLString());
-        /*if(QFile::exists(destinationUrl.getURLString())) {
-            QFile::remove(destinationUrl.getURLString());
-        }*/
         std::auto_ptr<U2Dbi> sqliteDbi(AppContext::getDbiRegistry()->getDbiFactoryById("SQLiteDbi")->createDbi());
         {
             QHash<QString, QString> properties;

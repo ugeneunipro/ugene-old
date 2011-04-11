@@ -30,7 +30,8 @@ public:
 signals:
     void si_rendered();
     private slots:
-        void sl_redrawFinished();
+    void sl_redrawFinished();
+    
 private:
     BackgroundRenderTask * renderTask;
     QImage result;

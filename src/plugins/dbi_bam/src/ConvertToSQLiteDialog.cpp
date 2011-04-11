@@ -26,6 +26,9 @@
 #include <U2Misc/DialogUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Gui/ObjectViewModel.h>
 #include "BAMDbiPlugin.h"
 #include "BaiReader.h"
 #include "ConvertToSQLiteDialog.h"
@@ -143,13 +146,32 @@ void ConvertToSQLiteDialog::accept() {
             QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("At least one contig must be selected."));
             return;
         }
+        Project * prj = AppContext::getProject();
+        if(prj != NULL) {
+            Document * destDoc = prj->findDocumentByURL(destinationUrl);
+            if(destDoc != NULL && destDoc->isLoaded() && !GObjectViewUtils::findViewsWithAnyOfObjects(destDoc->getObjects()).isEmpty()) {
+                QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("There is opened view with destination file.\n"
+                                                                            "Close it or choose different file"));
+                ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
+                return;
+            }
+        }
         if(QFile::exists(destinationUrl.getURLString())) {
             int result = QMessageBox::question(this, windowTitle(), 
-                BAMDbiPlugin::tr("Destination file already exists.\nTo overwrite the file, press 'Replace'.\nTo append data to existing file press 'Append'."), 
-                BAMDbiPlugin::tr("Replace"), BAMDbiPlugin::tr("Append"), BAMDbiPlugin::tr("Cancel"), 2);
+                                               BAMDbiPlugin::tr("Destination file already exists.\n"
+                                                                "To overwrite the file, press 'Replace'.\n"
+                                                                "To append data to existing file press 'Append'."), 
+                                               BAMDbiPlugin::tr("Replace"), 
+                                               BAMDbiPlugin::tr("Append"), 
+                                               BAMDbiPlugin::tr("Cancel"), 2);
             switch(result) {
                 case 0: 
-                    QFile::remove(destinationUrl.getURLString());
+                    {
+                        bool ok = QFile::remove(destinationUrl.getURLString());
+                        if(!ok) {
+                            coreLog.error(BAMDbiPlugin::tr("Destination file '%1' cannot be removed").arg(destinationUrl.getURLString()));
+                        }    
+                    }
                 case 1:
                     QDialog::accept();
                     break;

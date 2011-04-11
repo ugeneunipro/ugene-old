@@ -47,8 +47,8 @@ static const int LONG_NOTCH_START = 3;
 static const int LONG_NOTCH_END = 18;
 static const int LABELS_END = LONG_NOTCH_END + 2;
 
-AssemblyRuler::AssemblyRuler(AssemblyBrowserUi * ui) :
-ui(ui), browser(ui->getWindow()), model(ui->getModel()), redrawCursor(false), cursorPos(0), 
+AssemblyRuler::AssemblyRuler(AssemblyBrowserUi * ui_) :
+QWidget(ui_), ui(ui_), browser(ui->getWindow()), model(ui->getModel()), redrawCursor(false), cursorPos(0), 
 showCoords(AssemblyBrowserSettings::getShowCoordsOnRuler()) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();

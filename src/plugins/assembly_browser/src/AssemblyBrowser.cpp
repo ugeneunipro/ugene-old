@@ -520,7 +520,8 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
 
     overview = new AssemblyOverview(this);        
     referenceArea = new AssemblyReferenceArea(this);
-    densityGraph = new AssemblyDensityGraph(this);
+    //densityGraph = new AssemblyDensityGraph(this);
+    densityGraph = NULL;
     ruler = new AssemblyRuler(this);
     readsArea  = new AssemblyReadsArea(this, readsHBar, readsVBar);
 
@@ -533,7 +534,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     readsLayout->setMargin(0);
     readsLayout->setSpacing(0);
 
-    //    readsLayout->addWidget(densityGraph);
+    //readsLayout->addWidget(densityGraph);
     readsLayout->addWidget(referenceArea, 0, 0);
     
     readsLayout->addWidget(ruler, 1, 0);

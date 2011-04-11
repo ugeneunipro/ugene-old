@@ -40,9 +40,8 @@
 namespace U2 {
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
-ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true), hBar(hBar_), vBar(vBar_), 
-redrawHint(false), hint(this)
-{
+QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true), hBar(hBar_), vBar(vBar_), 
+redrawHint(false), hint(this) {
     initRedraw();
     connectSlots();
     setMouseTracking(true);

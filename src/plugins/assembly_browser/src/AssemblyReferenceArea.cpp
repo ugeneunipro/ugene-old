@@ -29,8 +29,7 @@
 namespace U2 {
 
 AssemblyReferenceArea::AssemblyReferenceArea(AssemblyBrowserUi * ui_) : 
-ui(ui_), browser(ui_->getWindow()), model(ui_->getModel())
-{
+QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();

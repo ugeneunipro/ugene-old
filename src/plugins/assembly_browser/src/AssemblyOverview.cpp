@@ -125,9 +125,8 @@ void AssemblyOverviewRenderTask::run() {
 // AssemblyOverview
 //==============================================================================
 
-AssemblyOverview::AssemblyOverview(AssemblyBrowserUi * ui_): ui(ui_), browser(ui->getWindow()), model(ui_->getModel()), 
-redrawSelection(true), scribbling(false), scaleType(AssemblyBrowserSettings::getOverviewScaleType())
-{
+AssemblyOverview::AssemblyOverview(AssemblyBrowserUi * ui_): QWidget(ui_), ui(ui_), browser(ui->getWindow()), 
+model(ui_->getModel()), redrawSelection(true), scribbling(false), scaleType(AssemblyBrowserSettings::getOverviewScaleType()) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     initSelectionRedraw();
