@@ -69,12 +69,14 @@ public:
     int getReadRange(qint64 readLength) const;
     int getReadRange(const U2DataId& id) const;
     const QList<MTASingleTableAdapter*>& getTableAdapters() const {return tableAdapters;}
+    const QList<QByteArray>& getIdExtrasPerRange() const {return idExtras;}
 
 protected:
     void addTableAdapter(int minLen, int maxLen, const U2DataId& assemblyId, const AssemblyCompressor* compressor, bool last, U2OpStatus& os);
 
     SQLiteDbi*                      dbi;
     QList<MTASingleTableAdapter*>   tableAdapters;
+    QList<QByteArray>               idExtras;
 };
 
 
@@ -93,7 +95,7 @@ private:
 // Class that multiplexes multiple read iterators into 1
 class MTAReadsIterator : public U2DbiIterator<U2AssemblyRead> {
 public:
-    MTAReadsIterator(QList< U2DbiIterator<U2AssemblyRead>* >& iterators, const MultiTableAssemblyAdapter* a);
+    MTAReadsIterator(QList< U2DbiIterator<U2AssemblyRead>* >& iterators, const QList<QByteArray>& idExtras);
 
     virtual ~MTAReadsIterator();
 
@@ -104,15 +106,15 @@ public:
     virtual U2AssemblyRead peek();
 
 private:
-    const MultiTableAssemblyAdapter*        multiTableAdapter;
     QList<U2DbiIterator<U2AssemblyRead>*>   iterators;
     int                                     currentRange;
+    QList<QByteArray>                       idExtras;
 };
 
 // Class that multiplexes multiple read packed data iterators into 1 and supports ordering
 class MTAPackAlgorithmDataIterator : public U2DbiIterator<PackAlgorithmData> {
 public:
-    MTAPackAlgorithmDataIterator(QList< U2DbiIterator<PackAlgorithmData>* >& iterators, const MultiTableAssemblyAdapter* a);
+    MTAPackAlgorithmDataIterator(QList< U2DbiIterator<PackAlgorithmData>* >& iterators, const QList<QByteArray>& idExtras);
 
     virtual ~MTAPackAlgorithmDataIterator();
 
@@ -125,9 +127,9 @@ public:
 private:
     void fetchNextData();
 
-    const MultiTableAssemblyAdapter*            multiTableAdapter;
     QList<U2DbiIterator<PackAlgorithmData>*>    iterators;
     PackAlgorithmData                           nextData;
+    QList<QByteArray>                           idExtras;
 };
 
 } //namespace

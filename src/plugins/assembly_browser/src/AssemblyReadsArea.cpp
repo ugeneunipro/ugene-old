@@ -198,7 +198,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     cachedReads.data = model->getReadsFromAssembly(cachedReads.visibleBases, cachedReads.visibleRows.startPos, 
                                                    cachedReads.visibleRows.endPos(), status);
     t = GTimer::currentTimeMicros() - t;
-    uiLog.info(QString("Database access time: %1").arg(double(t) / 1000 / 1000));
+    perfLog.trace(QString("Database access time: %1").arg(double(t) / 1000 / 1000));
     if(checkAndLogError(status)) {
         return;
     }

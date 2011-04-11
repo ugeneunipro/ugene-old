@@ -62,6 +62,7 @@ void MultiTableAssemblyAdapter::addTableAdapter(int minLen, int maxLen, const U2
     QByteArray idExtra;
     idExtra.append(char('0' + tableAdapters.size()));
     tableAdapters << new MTASingleTableAdapter(adapter, U2Region(minLen, maxLen - minLen), idExtra);
+    idExtras << idExtra;
 }
 
 void MultiTableAssemblyAdapter::createReadsTables(U2OpStatus& os) {
@@ -107,6 +108,7 @@ qint64 MultiTableAssemblyAdapter::getMaxPackedRow(const U2Region& r, U2OpStatus&
 }
 
 qint64 MultiTableAssemblyAdapter::getMaxEndPos(U2OpStatus& os) {
+    //TODO: optimize by using gstart + maxReadLen for first n-1 tables
     qint64 max = 0;
     foreach(MTASingleTableAdapter* a, tableAdapters) {
         qint64 n = a->singleTableAdapter->getMaxEndPos(os);
@@ -130,7 +132,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReads(const U2Regio
         qDeleteAll(iterators);
         return NULL;
     } 
-    return new MTAReadsIterator(iterators, this);
+    return new MTAReadsIterator(iterators, idExtras);
 }
 
 U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
@@ -145,7 +147,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByRow(const U2
         qDeleteAll(iterators);
         return NULL;
     } 
-    return new MTAReadsIterator(iterators, this);
+    return new MTAReadsIterator(iterators, idExtras);
 }
 
 U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByName(const QByteArray& name, U2OpStatus& os) {
@@ -160,7 +162,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByName(const Q
         qDeleteAll(iterators);
         return NULL;
     } 
-    return new MTAReadsIterator(iterators, this);
+    return new MTAReadsIterator(iterators, idExtras);
 }
 
 int MultiTableAssemblyAdapter::getReadRange(const U2DataId& id) const {
@@ -258,7 +260,7 @@ U2DbiIterator<PackAlgorithmData>* MultiTablePackAlgorithmAdapter::selectAllReads
     foreach(SingleTablePackAlgorithmAdapter* a, packAdapters) {
         iterators << a->selectAllReads(os);
     }
-    return new MTAPackAlgorithmDataIterator(iterators, multiTableAdapter);
+    return new MTAPackAlgorithmDataIterator(iterators, multiTableAdapter->getIdExtrasPerRange());
 }
 
 MultiTablePackAlgorithmAdapter::~MultiTablePackAlgorithmAdapter() {
@@ -273,8 +275,8 @@ void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 p
 //////////////////////////////////////////////////////////////////////////
 // MTAReadsIterator
 
-MTAReadsIterator::MTAReadsIterator(QList< U2DbiIterator<U2AssemblyRead>* >& i, const MultiTableAssemblyAdapter* a)
-: iterators (i), currentRange(0), multiTableAdapter(a)
+MTAReadsIterator::MTAReadsIterator(QList< U2DbiIterator<U2AssemblyRead>* >& i, const QList<QByteArray>& ie)
+: iterators (i), currentRange(0), idExtras(ie)
 {
 }
 
@@ -298,8 +300,8 @@ U2AssemblyRead MTAReadsIterator::next() {
             U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
             if (it->hasNext()) {
                 res = it->next();
-                MTASingleTableAdapter* ma = multiTableAdapter->getTableAdapters().at(currentRange);
-                res->id = addTable2Id(res->id, ma->idExtra);
+                const QByteArray& idExtra = idExtras.at(currentRange);;
+                res->id = addTable2Id(res->id, idExtra);
                 break;
             }
             currentRange++;
@@ -315,8 +317,8 @@ U2AssemblyRead MTAReadsIterator::peek() {
             U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
             if (it->hasNext()) {
                 res = it->peek();
-                MTASingleTableAdapter* ma = multiTableAdapter->getTableAdapters().at(currentRange);
-                res->id = addTable2Id(res->id, ma->idExtra);
+                const QByteArray& idExtra = idExtras.at(currentRange);;
+                res->id = addTable2Id(res->id, idExtra);
                 break;
             }
             currentRange++;
@@ -328,8 +330,8 @@ U2AssemblyRead MTAReadsIterator::peek() {
 //////////////////////////////////////////////////////////////////////////
 // MTAPackAlgorithmDataIterator
 
-MTAPackAlgorithmDataIterator::MTAPackAlgorithmDataIterator(QList< U2DbiIterator<PackAlgorithmData>* >& i, const MultiTableAssemblyAdapter* ma)
-:   multiTableAdapter(ma), iterators (i)
+MTAPackAlgorithmDataIterator::MTAPackAlgorithmDataIterator(QList< U2DbiIterator<PackAlgorithmData>* >& i, const QList<QByteArray>& ie)
+:  iterators (i), idExtras(ie)
 {
     fetchNextData();
 }
@@ -369,8 +371,8 @@ void MTAPackAlgorithmDataIterator::fetchNextData() {
     nextData = bestCandidate;
     if (!nextData.readId.isEmpty()) {
         iterators[bestRange]->next();
-        MTASingleTableAdapter* ma = multiTableAdapter->getTableAdapters().at(bestRange);
-        nextData.readId = addTable2Id(nextData.readId, ma->idExtra);
+        const QByteArray& idExtra = idExtras.at(bestRange);
+        nextData.readId = addTable2Id(nextData.readId, idExtra);
     }
 }
 

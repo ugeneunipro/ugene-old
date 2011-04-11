@@ -119,8 +119,13 @@ qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Re
 
 
 qint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) {
+    quint64 t0 = GTimer::currentTimeMicros();
+
     std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
-    return a->getMaxEndPos(os);
+    quint64 res = a->getMaxEndPos(os);
+    
+    perfLog.trace(QString("Assembly get max end pos: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
+    return res;
 }
 
 
@@ -131,8 +136,8 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
         return;
     }
     
-    QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE, os);
-    //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1, os);
+    //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE, os);
+    QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1, os);
     //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE, os);
 
     SQLiteQuery q("INSERT INTO Assembly(object, reference, elen_method, compression_method) VALUES(?1, ?2, ?3, ?4)", db, os);
@@ -316,8 +321,7 @@ U2AssemblyRead SimpleAssemblyReadLoader::load(SQLiteQuery* q) {
         return U2AssemblyRead();
     }
     read->leftmostPos= q->getInt64(2);
-    qint64 endPos = q->getInt64(3);
-    read->effectiveLen = endPos - read->leftmostPos;
+    read->effectiveLen = q->getInt64(3);
     int flags = q->getInt64(4);
     read->complementary = SQLiteAssemblyUtils::isComplementaryRead(flags);
     read->paired = SQLiteAssemblyUtils::isPairedRead(flags);

@@ -31,7 +31,7 @@
 namespace U2 {
 
 #define RANGE_CONDITION_CHECK   QString(" (i.gstart < ?1 AND i.gend > ?2) ")
-#define ALL_READ_FIELDS         QString(" r.id, r.prow, i.gstart, i.gend, r.flags, r.mq, r.data")
+#define ALL_READ_FIELDS         QString(" r.id, r.prow, i.gstart, i.gend - i.gstart, r.flags, r.mq, r.data")
 #define SAME_IDX                QString(" (i.id == r.id) ")
 #define FROM_2TABLES            QString(" FROM %1 AS r, %2 AS i ")
 
