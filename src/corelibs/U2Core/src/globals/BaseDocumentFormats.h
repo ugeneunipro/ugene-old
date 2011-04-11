@@ -32,6 +32,7 @@ public:
     static const DocumentFormatId PLAIN_FASTA;
     static const DocumentFormatId PLAIN_GENBANK;
     static const DocumentFormatId PLAIN_EMBL;
+    static const DocumentFormatId PLAIN_SWISS_PROT;
     static const DocumentFormatId ABIF;
     static const DocumentFormatId SCF;
     static const DocumentFormatId RAW_DNA_SEQUENCE;

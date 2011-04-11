@@ -27,6 +27,7 @@ const DocumentFormatId BaseDocumentFormats::PLAIN_TEXT("text");
 const DocumentFormatId BaseDocumentFormats::PLAIN_FASTA("fasta");
 const DocumentFormatId BaseDocumentFormats::PLAIN_GENBANK("genbank");
 const DocumentFormatId BaseDocumentFormats::PLAIN_EMBL("embl");
+const DocumentFormatId BaseDocumentFormats::PLAIN_SWISS_PROT("swiss-prot");
 const DocumentFormatId BaseDocumentFormats::ABIF("abi");
 const DocumentFormatId BaseDocumentFormats::SCF("scf");
 const DocumentFormatId BaseDocumentFormats::PLAIN_PDB("pdb");

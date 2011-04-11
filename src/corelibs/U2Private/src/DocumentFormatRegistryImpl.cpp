@@ -42,6 +42,7 @@
 #include <U2Formats/MegaFormat.h>
 #include <U2Formats/ACEFormat.h>
 #include <U2Formats/PDWFormat.h>
+#include <U2Formats/SwissProtPlainTextFormat.h>
 
 namespace U2 {
 
@@ -110,6 +111,9 @@ void DocumentFormatRegistryImpl::init() {
 
     EMBLPlainTextFormat* em = new EMBLPlainTextFormat(this);
     registerFormat(em);
+
+    SwissProtPlainTextFormat* sp = new SwissProtPlainTextFormat(this);
+    registerFormat(sp);
 
     ABIFormat* abi = new ABIFormat(this);
     registerFormat(abi);

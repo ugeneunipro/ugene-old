@@ -66,6 +66,9 @@ FormatDetectionResult EMBLPlainTextFormat::checkRawData(const QByteArray& rawDat
     }
     bool tokenMatched = TextUtils::equals("ID   ", data, 5);
     if (tokenMatched) {
+        if(QString(rawData).contains(QRegExp("\\d+ AA."))){
+            return FormatDetection_NotMatched;
+        }
         return FormatDetection_HighSimilarity;
     }
     return FormatDetection_NotMatched;
