@@ -419,7 +419,7 @@ void SQLiteCrossDatabaseReferenceDbi::createCrossReference(U2CrossDatabaseRefere
     q.bindDataId(1, reference.id);
     q.bindString(2, reference.dataRef.factoryId);
     q.bindString(3, reference.dataRef.dbiId);
-    q.bindString(4, reference.dataRef.entityId);
+    q.bindBlob(4, reference.dataRef.entityId);
     q.bindInt64(5, reference.dataRef.version);
     q.execute();
 }
