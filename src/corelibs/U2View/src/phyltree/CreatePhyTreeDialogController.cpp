@@ -58,7 +58,8 @@ void CreatePhyTreeDialogController::sl_okClicked(){
 
     if(settings.bootstrap){
         if(!checkSeed(settings.seed)){
-            QMessageBox::warning(this, tr("Warning"), tr("Seed must be of the form 4n+1. That is, it leaves a remainder of 1 when divided by 4"));
+            //QMessageBox::warning(this, tr("Warning"), tr("The seed must be of the form 4n+1. That is, it leaves a remainder of 1 when divided by 4"));
+            QMessageBox::warning(this, tr("Warning"), tr("The seed must be odd."));
             return;
         }
     }
@@ -147,10 +148,10 @@ bool CreatePhyTreeDialogController::estimateResources(){
 
 }
 
-#define SEED_MIN 5
-#define SEED_MAX 32765
+#define SEED_MIN 0
+#define SEED_MAX 32767
 bool CreatePhyTreeDialogController::checkSeed(int seed){
-    return (seed >= SEED_MIN) && (seed <=SEED_MAX) && ((seed-1)%4 == 0);
+    return (seed > SEED_MIN) && (seed <SEED_MAX) && (seed%2 == 1);
 }
 
 }

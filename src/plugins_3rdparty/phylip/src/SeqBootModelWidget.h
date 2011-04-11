@@ -50,7 +50,6 @@ public:
     bool checkSeed(int seed);
 
 private slots:
-    void sl_onCheckBox();
     void sl_onModelChanged(const QString& modelName);
 
 

@@ -50,18 +50,17 @@ QList<QString> ConsensusModelTypes::getConsensusModelTypes()
 SeqBootModelWidget::SeqBootModelWidget(QWidget* parent, const MAlignment& ma) : CreatePhyTreeWidget(parent)
 {
     setupUi(this);
+    BootstrapGroupBox->setChecked(false);
 
     seedSpinBox->setValue(getRandomSeed());
     
-    connect(bootstrapCheckBox, SIGNAL(clicked()), SLOT(sl_onCheckBox()));
-
     ConsModeComboBox->addItems( ConsensusModelTypes::getConsensusModelTypes() );
     connect(ConsModeComboBox, SIGNAL(currentIndexChanged(const QString&)), SLOT(sl_onModelChanged(const QString&))); 
 }
 
 void SeqBootModelWidget::fillSettings( CreatePhyTreeSettings& settings )
 {
-    settings.bootstrap = bootstrapCheckBox->isChecked();
+    settings.bootstrap = BootstrapGroupBox->isChecked();
     settings.replicates = repsSpinBox->value();
     settings.seed = seedSpinBox->value();
     settings.fraction = FractionSpinBox->value();
@@ -88,19 +87,6 @@ bool SeqBootModelWidget::checkSeed(int seed){
     return (seed >= SEED_MIN) && (seed <=SEED_MAX) && ((seed-1)%4 == 0);
 }
 
-void SeqBootModelWidget::sl_onCheckBox() {
-   label2->setEnabled(bootstrapCheckBox->isChecked());
-   repsSpinBox->setEnabled(bootstrapCheckBox->isChecked());
-
-   label3->setEnabled(bootstrapCheckBox->isChecked());
-   seedSpinBox->setEnabled(bootstrapCheckBox->isChecked());
-
-   label4->setEnabled(bootstrapCheckBox->isChecked());
-   ConsModeComboBox->setEnabled(bootstrapCheckBox->isChecked());
-
-   label5->setEnabled(bootstrapCheckBox->isChecked() && ConsModeComboBox->currentText() == ConsensusModelTypes::M1);
-   FractionSpinBox->setEnabled(bootstrapCheckBox->isChecked() && ConsModeComboBox->currentText() == ConsensusModelTypes::M1); 
-}
 
 void SeqBootModelWidget::sl_onModelChanged(const QString& modelName) {
     if (modelName == ConsensusModelTypes::M1) {
