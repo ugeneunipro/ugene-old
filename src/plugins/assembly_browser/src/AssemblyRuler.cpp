@@ -85,16 +85,6 @@ namespace {
         assert(n >= 0);
         return QString::number(n).length();
     }
-
-    // 6031769.1k -> 6 031 769.1k
-    QString insertSpaceSeparators(QString str) {
-        for(int i = str.length()-3; i > 0; i-=3) {
-            if(str.at(i).isDigit() && i > 0 && str.at(i-1).isDigit()) {
-                str.insert(i, " ");
-            }
-        }
-        return str;
-    }
 }
 
 void AssemblyRuler::drawCursor(QPainter & p) {
@@ -111,7 +101,7 @@ void AssemblyRuler::drawCursor(QPainter & p) {
 
     //3. format the string 
     // pos + 1 because of 1-based coords
-    QString cursorLabel = insertSpaceSeparators(QString::number(posXInAsm + 1)) + QString(" C%1").arg(readsPerXPixel);
+    QString cursorLabel = FormatUtils::formatNumberWithSeparators(posXInAsm + 1) + QString(" C%1").arg(readsPerXPixel);
     int textWidth = p.fontMetrics().width(cursorLabel);
     int textHeight = p.fontMetrics().height();
     QRect offsetRect(cursorPos - textWidth/2, LABELS_END, textWidth, textHeight);
@@ -178,7 +168,7 @@ void AssemblyRuler::drawRuler(QPainter & p) {
             p.drawLine(x_pix, LONG_NOTCH_START, x_pix, LONG_NOTCH_END);
 
             //draw labels
-            QString offsetStr = insertSpaceSeparators(FormatUtils::formatNumber(oneBasedOffset));
+            QString offsetStr = FormatUtils::formatNumberWithSeparators(oneBasedOffset);
             int textWidth = p.fontMetrics().width(offsetStr);
             int textHeight = p.fontMetrics().height();
             QRect offsetRect(x_pix - textWidth/2, LABELS_END, textWidth, textHeight);

@@ -66,6 +66,20 @@ QString FormatUtils::formatNumber(int num) {
     return QString::number(num);
 }
 
+// 6031769.1k -> 6 031 769.1k
+static QString insertSpaceSeparators(QString str) {
+    for(int i = str.length()-3; i > 0; i-=3) {
+        if(str.at(i).isDigit() && i > 0 && str.at(i-1).isDigit()) {
+            str.insert(i, " ");
+        }
+    }
+    return str;
+}
+
+QString FormatUtils::formatNumberWithSeparators(int num) {
+    return insertSpaceSeparators(formatNumber(num));
+}
+
 QString FormatUtils::getShortMonthName( int num )
 {
     switch (num) {

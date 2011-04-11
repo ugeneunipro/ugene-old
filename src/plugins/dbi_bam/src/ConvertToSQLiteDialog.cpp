@@ -28,6 +28,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/FormatUtils.h>
 #include <U2Gui/ObjectViewModel.h>
 #include "BAMDbiPlugin.h"
 #include "BaiReader.h"
@@ -59,7 +60,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, bool hasPro
             checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);            
             checkbox->setText(ref.getName());
             ui.tableWidget->setItem(i, 0, checkbox);
-            QTableWidgetItem* item = new QTableWidgetItem(QString::number(ref.getLength()));
+            QTableWidgetItem* item = new QTableWidgetItem(FormatUtils::formatNumberWithSeparators(ref.getLength()));
             item->setFlags(Qt::ItemIsEnabled);
             ui.tableWidget->setItem(i, 1, item);
             ui.tableWidget->setCellWidget(i, 2, new QLabel("<a href=\"" + ref.getUri().getURLString() + "\">" + ref.getUri().getURLString() + "</a>"));
