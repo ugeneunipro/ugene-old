@@ -54,7 +54,7 @@ AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpS
 
     AssemblyAdapter* res = NULL;
     if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE) {
-        res = new SingleTableAssemblyAdapter(dbi, assemblyId, "", NULL, db, os);
+        res = new SingleTableAssemblyAdapter(dbi, assemblyId, 'S', "", NULL, db, os);
     } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1) {
         res = new MultiTableAssemblyAdapter(dbi, assemblyId, NULL, MultiTableAssemblyAdapterMode_4Tables, db, os);
     } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE) {

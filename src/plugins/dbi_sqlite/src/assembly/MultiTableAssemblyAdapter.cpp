@@ -42,9 +42,14 @@ MultiTableAssemblyAdapter::MultiTableAssemblyAdapter(SQLiteDbi* _dbi, const U2Da
         os.setError(SQLiteL10N::tr("Unsupported multi-table mode for assembly reads. Mode: %1").arg(mode));
     }
     addTableAdapter(0, 50, assemblyId, compressor, false, os);
-    addTableAdapter(50, 100, assemblyId, compressor, false, os);
-    addTableAdapter(100, 700, assemblyId, compressor, false, os);
-    addTableAdapter(700, INT_MAX, assemblyId, compressor, true, os);
+    addTableAdapter(50, 200, assemblyId, compressor, false, os);
+    addTableAdapter(200, 800, assemblyId, compressor, false, os);
+    addTableAdapter(800, 4000, assemblyId, compressor, false, os);
+    addTableAdapter(4000, 16000, assemblyId, compressor, false, os);
+    addTableAdapter(16000, 64000, assemblyId, compressor, false, os);
+    addTableAdapter(64000, 256000, assemblyId, compressor, false, os);
+    addTableAdapter(256000, 1024000, assemblyId, compressor, false, os);
+    addTableAdapter(1024000, INT_MAX, assemblyId, compressor, false, os);
 }
 
 MultiTableAssemblyAdapter::~MultiTableAssemblyAdapter() {
@@ -55,7 +60,7 @@ void MultiTableAssemblyAdapter::addTableAdapter(int minLen, int maxLen, const U2
                                                 const AssemblyCompressor* compressor, bool last, U2OpStatus& os) 
 {
     QString tableSuffix  = QString("_%1_%2").arg(minLen).arg(last ? QString("U") : QString::number(maxLen));
-    SingleTableAssemblyAdapter* adapter = new SingleTableAssemblyAdapter(dbi, assemblyId, tableSuffix, compressor, db, os);
+    SingleTableAssemblyAdapter* adapter = new SingleTableAssemblyAdapter(dbi, assemblyId, 'M', tableSuffix, compressor, db, os);
     if (!last) {
         adapter->enableRangeTableMode(minLen, maxLen);
     }
@@ -83,18 +88,22 @@ void MultiTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
     }
 }
 
-#define MAX_READS_TO_USE_PRECISE_COUNT 100
 qint64 MultiTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
     qint64 sum = 0;
+    int i = 0;
+    // use more sensitive algorithm for smaller regions 
+    // and not-very sensitive for huge regions
+    int nReadsToUseNotPreciseAlgorithms = 1000 / (r.length + 1);
     foreach(MTASingleTableAdapter* a, tableAdapters) {
         int n = a->singleTableAdapter->countReads(r, os);
-        if (n < MAX_READS_TO_USE_PRECISE_COUNT) {
+        if (n != 0 && n < nReadsToUseNotPreciseAlgorithms) {
             n = a->singleTableAdapter->countReadsPrecise(r, os);    
         }
         if (os.hasError()) {
             break;
         }
         sum+=n;
+        i++;
     }
     return sum;
 }

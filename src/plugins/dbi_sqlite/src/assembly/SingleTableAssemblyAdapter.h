@@ -32,7 +32,7 @@ namespace U2 {
 
 class SingleTableAssemblyAdapter : public AssemblyAdapter {
 public:
-    SingleTableAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, const QString& tableSuffix, 
+    SingleTableAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, char tablePrefix, const QString& tableSuffix,
         const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
 
     virtual void createReadsTables(U2OpStatus& os);

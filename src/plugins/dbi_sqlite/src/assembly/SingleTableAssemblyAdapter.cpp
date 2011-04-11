@@ -38,7 +38,8 @@ namespace U2 {
 #define ALL_READ_FIELDS                     QString(" id, prow, gstart, elen, flags, mq, data")
 
 
-SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, const QString& tableSuffix,
+SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
+                                                       char tablePrefix, const QString& tableSuffix, 
                                                        const AssemblyCompressor* compressor, 
                                                        DbRef* db, U2OpStatus& os)
                                                        : AssemblyAdapter(assemblyId, compressor, db, os)
@@ -46,7 +47,7 @@ SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2
     dbi = _dbi;
     rangeConditionCheck  = DEFAULT_RANGE_CONDITION_CHECK;
     rangeConditionCheckForCount = DEFAULT_RANGE_CONDITION_CHECK;
-    readsTable = QString("AssemblyRead_S%1%2").arg(SQLiteUtils::toDbiId(assemblyId)).arg(tableSuffix);
+    readsTable = QString("AssemblyRead_%1%2%3").arg(tablePrefix).arg(SQLiteUtils::toDbiId(assemblyId)).arg(tableSuffix);
     rangeMode = false;
     minReadLength = 0;
     maxReadLength = 0;
