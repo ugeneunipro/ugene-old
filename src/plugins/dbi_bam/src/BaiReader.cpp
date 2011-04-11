@@ -60,9 +60,10 @@ Index BaiReader::readIndex() {
             for(int chunkId = 0;chunkId < chunksNumber;chunkId++) {
                 VirtualOffset chunkBegin(readUint64());
                 VirtualOffset chunkEnd(readUint64());
-                if(chunkEnd < chunkBegin) {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid chunk"));
-                }
+                // Some index files fail this check.
+//                if(chunkEnd < chunkBegin) {
+//                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid chunk"));
+//                }
                 chunks.append(Index::ReferenceIndex::Chunk(chunkBegin, chunkEnd));
             }
             bins.append(Index::ReferenceIndex::Bin(bin, chunks));
