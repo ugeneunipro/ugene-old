@@ -92,7 +92,7 @@ Task* DNAStatWorker::tick() {
     QList<SharedAnnotationData> res;
     SharedAnnotationData gcAnn(new AnnotationData());
     gcAnn->name = "statistics";
-    gcAnn->location->regions << U2Region( 0, dna.seq.size() - 1);
+    gcAnn->location->regions << U2Region( 0, dna.seq.size());
 
     if(actor->getParameter(GCCONTENT)->getAttributeValue<bool>()) {
         float gcContent = calcGCContent(dna.seq);
