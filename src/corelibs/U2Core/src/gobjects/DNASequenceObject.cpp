@@ -26,6 +26,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2AbstractDbi.h>
+#include <U2Core/Timer.h>
 
 namespace U2 {
     
@@ -49,11 +50,12 @@ public:
     }
     
     QByteArray getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os)  {
+        GTIMER(c1, t1, "DNASequenceObjectSequenceDbiWrapper::getSequenceData");
         QByteArray id = seqObj->getGObjectName().toUtf8();
         if (sequenceId != id) {
             return QByteArray();
         }
-        return seqObj->getSequence().mid(region.startPos, region.endPos());
+        return seqObj->getSequence().mid(region.startPos, region.length);
     }
 
 private:
