@@ -21,6 +21,7 @@
 
 #include "AssemblyReadsAreaHint.h"
 #include "AssemblyReadsArea.h"
+#include "ShortReadIterator.h"
 
 #include <QtGui/QBoxLayout>
 #include <QtGui/QMouseEvent>
@@ -32,34 +33,51 @@ const QPoint AssemblyReadsAreaHint::OFFSET_FROM_CURSOR(13, 13);
 static const int HINT_MAX_WIDTH = 200;
 
 AssemblyReadsAreaHint::AssemblyReadsAreaHint(QWidget * p): QFrame(p), fromToLabel(new QLabel(this)),
-    lengthLabel(new QLabel(this)), cigarLabel(new QLabel(this)), strandLabel(new QLabel(this)) {
-        QBoxLayout * top = new QVBoxLayout(this);
-        top->setMargin(2);
-        setLayout(top);
-        top->addWidget(fromToLabel);
-        top->addWidget(lengthLabel);
-        top->addWidget(cigarLabel);
-        top->addWidget(strandLabel);
+lengthLabel(new QLabel(this)), cigarLabel(new QLabel(this)), strandLabel(new QLabel(this)), nameLabel(new QLabel(this)),
+seqLabel(new QLabel(this)){
+    QBoxLayout * top = new QVBoxLayout(this);
+    top->setMargin(2);
+    setLayout(top);
+    top->addWidget(nameLabel);
+    top->addWidget(fromToLabel);
+    top->addWidget(lengthLabel);
+    top->addWidget(cigarLabel);
+    top->addWidget(strandLabel);
+    top->addWidget(seqLabel);
 
-        installEventFilter(this);
-        fromToLabel->installEventFilter(this);
-        lengthLabel->installEventFilter(this);
-        cigarLabel->installEventFilter(this);
-        strandLabel->installEventFilter(this);
-
-        {
-            QPalette p(palette());
-            p.setColor(QPalette::Background, QColor(245, 245, 206));
-            setPalette(p);
-        }
-
-        setWindowFlags(Qt::ToolTip);
-        setWindowOpacity(0.8);
-        setMaximumHeight(layout()->minimumSize().height());
-        setMaximumWidth(HINT_MAX_WIDTH);
-        setMouseTracking(true);
-        setLineWidth(1);
-        setFrameShape(QFrame::Box);
+    installEventFilter(this);
+    nameLabel->installEventFilter(this);
+    fromToLabel->installEventFilter(this);
+    lengthLabel->installEventFilter(this);
+    cigarLabel->installEventFilter(this);
+    strandLabel->installEventFilter(this);
+    seqLabel->installEventFilter(this);
+    
+    nameLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    fromToLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    lengthLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    cigarLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    strandLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    seqLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    
+    nameLabel->setWordWrap(true);
+    
+    {
+        QPalette p(palette());
+        p.setColor(QPalette::Background, QColor(245, 245, 206));
+        setPalette(p);
+    }
+    
+    setWindowFlags(Qt::ToolTip);
+#ifndef Q_OS_LINUX
+    setWindowOpacity(0.8);
+#endif // Q_OS_LINUX
+    setMaximumHeight(layout()->minimumSize().height());
+    setMaximumWidth(HINT_MAX_WIDTH);
+    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    setMouseTracking(true);
+    setLineWidth(1);
+    setFrameShape(QFrame::Box);
 }
 
 void AssemblyReadsAreaHint::setLength(qint64 len) {
@@ -91,6 +109,50 @@ void AssemblyReadsAreaHint::setStrand(bool onCompl) {
     const QString DIRECT_STR(tr("direct"));
     const QString COMPL_STR(tr("complement"));
     strandLabel->setText(tr("<b>Strand</b>: %1").arg(onCompl ? COMPL_STR : DIRECT_STR));
+}
+
+void AssemblyReadsAreaHint::setName(const QByteArray & n) {
+    assert(n.size() <= 255); // sam format
+    nameLabel->setText(tr("<b>%1</b>").arg(QString(n)));
+    /*QString name(n);
+    QRegExp rx("\\w+");
+    int pos = 0;
+    QList<QPair<int, int> > wordsIndxs;
+    while((pos = rx.indexIn(name, pos)) != -1) {
+        QString word = rx.cap();
+        wordsIndxs << QPair(oldPos, rx.matchedLength());
+        pos += rx.matchedLength();
+    }*/
+    
+}
+
+void AssemblyReadsAreaHint::setRawSequence(const QByteArray & s) {
+    QString bytes(s);
+    QString headTransl = tr("Raw sequence: ");
+    assert(headTransl.size() < 30);
+    QString head = QString("<table><tr><td><b>%1</b></td>").arg(headTransl);
+    QString str = head;
+    const int rowSize = LETTER_MAX_COUNT - headTransl.size();
+    const int ROWS_MAX_NUM = 4;
+    for(int i = 0; i < ROWS_MAX_NUM; ++i) {
+        QString what = QString("<td><pre>%1</pre>").arg(bytes.mid(i * rowSize, rowSize));
+        if(i == ROWS_MAX_NUM - 1 && ROWS_MAX_NUM * rowSize < bytes.size()) {
+            what.append("...");
+        }
+        what.append("</td>");
+        if(i == 0) {
+            what.append("</tr>");
+        } else {
+            what.prepend("<tr><td>&nbsp;</td>");
+            what.append("</tr>");
+        }
+        str.append(what);
+        if((i + 1) * rowSize >= bytes.size()) {
+            break;
+        }
+    }
+    str.append("</table>");
+    seqLabel->setText(str);
 }
 
 bool AssemblyReadsAreaHint::eventFilter(QObject *, QEvent * event) {

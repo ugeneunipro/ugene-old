@@ -25,6 +25,8 @@
 #include <QtGui/QFrame>
 #include <QtGui/QLabel>
 
+#include <U2Core/U2Assembly.h>
+
 namespace U2 {
 
 // hint that is shown under cursor for current read
@@ -32,7 +34,8 @@ class AssemblyReadsAreaHint : public QFrame {
     Q_OBJECT
 public:
     static const QPoint OFFSET_FROM_CURSOR;
-
+    static const int LETTER_MAX_COUNT = 60;
+    
 public:
     AssemblyReadsAreaHint(QWidget * p);
 
@@ -40,7 +43,9 @@ public:
     void setFromTo(qint64 from, qint64 to);
     void setCigar(const QString & ci);
     void setStrand(bool onCompl);
-
+    void setName(const QByteArray & name);
+    void setRawSequence(const QByteArray & seq);
+    
 protected:
     bool eventFilter(QObject *, QEvent *);
     void leaveEvent(QEvent * e);
@@ -50,6 +55,8 @@ private:
     QLabel * lengthLabel;
     QLabel * cigarLabel;
     QLabel * strandLabel;
+    QLabel * nameLabel;
+    QLabel * seqLabel;
     
 }; // AssemblyReadsAreaHint
 

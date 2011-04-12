@@ -300,10 +300,13 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
     }
     
     // set hint info
+    hint.setName(read->name);
     hint.setLength(len);
     hint.setFromTo(read->leftmostPos + 1, read->leftmostPos + len);
     hint.setCigar(U2AssemblyUtils::cigar2String(read->cigar));
     hint.setStrand(read->complementary);
+    hint.setRawSequence(read->readSequence);
+    
     if(!hint.isVisible()) {
         hint.show();
     }
