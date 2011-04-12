@@ -93,8 +93,12 @@ void LogDriver::setLogCmdlineHelp() {
             "\n\nBy default, loglevel=\"ERROR\"." ),
         tr( "\"<category1>=<level1> [<category2>=<level2> ...]\" | <level>" ));
 
+    CMDLineHelpProvider *coloredOutput = new CMDLineHelpProvider(
+        LogDriver::COLOR_OUTPUT_CMD_OPTION, tr("Enables colored output."));
+
     cmdLineRegistry->registerCMDLineHelpProvider( logFormat );
     cmdLineRegistry->registerCMDLineHelpProvider( logLevel );
+    cmdLineRegistry->registerCMDLineHelpProvider(coloredOutput);
 }
 
 void LogDriver::setLogSettings() {
@@ -203,9 +207,11 @@ void LogDriver::setCmdLineSettings() {
     Settings * settings = AppContext::getSettings();
     assert( NULL != settings );
 
-    /*if (cmdLineRegistry->hasParameter( COLOR_OUTPUT_CMD_OPTION )) {
-        settings.enableColor = true;
-    }*/
+    if (cmdLineRegistry->hasParameter( COLOR_OUTPUT_CMD_OPTION )) {
+        colored = true;
+    } else {
+        colored = false;
+    }
     if (cmdLineRegistry->hasParameter( CMDLineCoreOptions::TEAMCITY_OUTPUT )) {
         settings->setValue( LOG_SETTINGS_ROOT + "teamcityOut", true );
     }
@@ -256,7 +262,7 @@ void LogDriver::sl_onMessage(const LogMessage& msg) {
     if(AppContext::getSettings()->getValue(TSB_SETTINGS_ROOT + "showTaskStatusBar", true).toBool()){
         printf("                                                                               \r");//80 spaces for remove TaskStatusBar
     }
-    if(!AppContext::getSettings()->getValue(LOG_SETTINGS_ROOT + "colorOut", false).toBool()){
+    if(!colored/*AppContext::getSettings()->getValue(LOG_SETTINGS_ROOT + "colorOut", false).toBool()*/){
         printf("%s \n", buf);
     }else{
 #ifdef Q_OS_WIN32

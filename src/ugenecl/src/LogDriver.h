@@ -64,6 +64,7 @@ private slots:
 
 private:
     bool printToConsole;
+    bool colored;
 
 };
 
