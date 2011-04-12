@@ -343,6 +343,7 @@ void PluginViewerController::updateState() {
     ui.infoView->clear();
     PlugViewTreeItem* item = static_cast<PlugViewTreeItem*>(ui.treeWidget->currentItem());
     if (item == NULL) {
+        ui.infoView->setText(tr("Select a plugin to view more information about it."));
         return;
     }
     QString text;
@@ -413,12 +414,26 @@ void PlugViewPluginItem::updateVisual() {
         : PluginViewerController::tr("item_state_on");
 
     setData(2, Qt::DisplayRole, state);
-    setData(3, Qt::DisplayRole, plugin->getDescription());
+    QString desc=QString(plugin->getDescription()).replace("\n"," ");
+    setData(3, Qt::DisplayRole, desc);
 
     setIcon(showServices ? 0 : 1, QIcon(":ugene/images/plugins.png"));
 
     GUIUtils::setMutedLnF(this, toRemove);
-    
+    if(!plugin->getDescription().contains("\n") && desc.length() > 80){
+        for(int i=80;i<desc.length();){
+            i=desc.lastIndexOf(" ", i);
+            desc.replace(i,1,"\n");
+            i+=80;
+        }
+        setToolTip(1, desc);
+        setToolTip(2, desc);
+        setToolTip(3, desc);
+    }else{
+        setToolTip(1,plugin->getDescription());
+        setToolTip(2,plugin->getDescription());
+        setToolTip(3,plugin->getDescription());
+    }
 }
 
 PlugViewServiceItem::PlugViewServiceItem(PlugViewPluginItem *parent, Service* s) : PlugViewTreeItem(parent), service(s) {
