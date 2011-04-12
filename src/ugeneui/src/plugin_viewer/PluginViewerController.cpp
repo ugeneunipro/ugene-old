@@ -87,6 +87,10 @@ void PluginViewerController::createWindow() {
     MWMDIManager* mdiManager = AppContext::getMainWindow()->getMDIManager();
     mdiManager->addMDIWindow(mdiWindow);
 
+    if(ui.treeWidget->topLevelItemCount() > 0){
+        ui.treeWidget->setCurrentItem(ui.treeWidget->findItems("",Qt::MatchContains).first());
+    }
+
     updateState();
 }
 
