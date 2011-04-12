@@ -930,6 +930,11 @@ void ProjectViewImpl::sl_saveCopy() {
         foreach(GObject* go, objs){
             if(df->isObjectOpSupported(dd, DocumentFormat::DocObjectOp_Add, go->getGObjectType())){
                 GObject *cl = go->clone();
+                if (cl->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT){
+                    QString name=QFileInfo(dialog.getDocumentURL()).baseName();
+                    cl->setGObjectName(name);
+                    cl->setModified(false);
+                }
                 dd->addObject(cl);
             }
         }
