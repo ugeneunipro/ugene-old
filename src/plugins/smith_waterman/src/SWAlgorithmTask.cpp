@@ -251,7 +251,7 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
 void SWAlgorithmTask::removeResultFromOverlap(QList<PairAlignSequences> & res) {     
     for (int i = 0; i < res.size() - 1; i++) {
         for (int j = i + 1; j < res.size(); j++) {
-            if (res.at(i).intervalSeq1 == res.at(j).intervalSeq1) {
+            if (res.at(i).intervalSeq1 == res.at(j).intervalSeq1 && res.at(i).isDNAComplemented == res.at(j).isDNAComplemented) {
                 if (res.at(i).score > res.at(j).score) {
                     res.removeAt(j);
                     j--;
