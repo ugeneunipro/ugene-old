@@ -35,7 +35,8 @@ class DNAExportPlugin : public Plugin {
     Q_OBJECT
 public:
     DNAExportPlugin();
-
+private slots:
+    void sl_generateSequence();
 };
 
 class DNAExportService: public Service {

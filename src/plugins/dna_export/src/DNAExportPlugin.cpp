@@ -27,6 +27,8 @@
 #include "ExportAlignmentViewItems.h"
 #include "ImportQualityScoresWorker.h"
 #include "WriteAnnotationsWorker.h"
+#include "DNASequenceGeneratorDialog.h"
+#include "GenerateDNAWorker.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GAutoDeleteList.h>
@@ -44,6 +46,10 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and import support for DNA & protein sequences")) {
     if (AppContext::getMainWindow()) {
         services.push_back(new DNAExportService());
+        QAction* a = new QAction(tr("Generate Sequence..."), this);
+        connect(a, SIGNAL(triggered()), SLOT(sl_generateSequence()));
+        QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
+        toolsMenu->addAction(a);
     }
 
     //tests
@@ -61,6 +67,12 @@ DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and imp
     
     LocalWorkflow::ImportPhredQualityWorkerFactory::init();
     LocalWorkflow::WriteAnnotationsWorkerFactory::init();
+    LocalWorkflow::GenerateDNAWorkerFactory::init();
+}
+
+void DNAExportPlugin::sl_generateSequence() {
+    DNASequenceGeneratorDialog dlg;
+    dlg.exec();
 }
 
 //////////////////////////////////////////////////////////////////////////

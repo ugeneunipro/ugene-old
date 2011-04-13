@@ -23,7 +23,10 @@ HEADERS += src/CSVColumnConfiguration.h \
            src/ImportAnnotationsFromCSVTask.h \
            src/ImportQualityScoresTask.h \
            src/ImportQualityScoresWorker.h \
-           src/WriteAnnotationsWorker.h
+           src/WriteAnnotationsWorker.h \
+           src/DNASequenceGenerator.h \
+           src/DNASequenceGeneratorDialog.h \
+           src/GenerateDNAWorker.h
 FORMS += src/ui/CSVColumnConfigurationDialog.ui \
          src/ui/ExportAnnotationsDialog.ui \
          src/ui/ExportChromatogramDialog.ui \
@@ -32,7 +35,9 @@ FORMS += src/ui/CSVColumnConfigurationDialog.ui \
          src/ui/ExportSequences2MSADialog.ui \
          src/ui/ExportSequencesDialog.ui \
          src/ui/GetSequenceByIdDialog.ui \
-         src/ui/ImportAnnotationsFromCSVDialog.ui
+         src/ui/ImportAnnotationsFromCSVDialog.ui \
+         src/ui/DNASequenceGeneratorDialog.ui \
+         src/ui/BaseContentDialog.ui
 SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/DNAExportPlugin.cpp \
            src/DNAExportPluginTests.cpp \
@@ -54,5 +59,8 @@ SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/ImportAnnotationsFromCSVTask.cpp \
            src/ImportQualityScoresTask.cpp \
            src/ImportQualityScoresWorker.cpp \
-           src/WriteAnnotationsWorker.cpp
+           src/WriteAnnotationsWorker.cpp \
+           src/DNASequenceGenerator.cpp \
+           src/DNASequenceGeneratorDialog.cpp \
+           src/GenerateDNAWorker.cpp
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
