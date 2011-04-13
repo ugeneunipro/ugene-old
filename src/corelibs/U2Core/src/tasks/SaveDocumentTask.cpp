@@ -56,7 +56,6 @@ SaveDocumentTask::SaveDocumentTask(Document* _doc, SaveDocFlags f, const QSet<QS
 doc(_doc), iof(doc->getIOAdapterFactory()), url(doc->getURL()), flags(f), excludeFileNames(_excludeFileNames)
 {
     assert(doc!=NULL);
-    lock = new StateLock(getTaskName());
 }
 
 
