@@ -36,7 +36,7 @@ namespace U2 {
 namespace BAM {
 
 ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl, BAMInfo& _bamInfo):
-    Task(tr("Convert BAM to UGENE database (%1)").arg(destinationUrl.fileName()), TaskFlag_None),
+    Task(tr("Convert BAM to UGENE database (%1)").arg(_destinationUrl.fileName()), TaskFlag_None),
     sourceUrl(_sourceUrl),
     destinationUrl(_destinationUrl),
     bamInfo(_bamInfo)
