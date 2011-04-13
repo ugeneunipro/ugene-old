@@ -32,8 +32,8 @@
 
 #include "RestrictionMapWidget.h"
 
-#define     ENZYME_FOLDER_ITEM_TYPE     22
-#define     ENZYME_ITEM_TYPE            23
+#define     ENZYME_FOLDER_ITEM_TYPE     1022
+#define     ENZYME_ITEM_TYPE            1023
 
 namespace U2 {
 
@@ -51,15 +51,39 @@ EnzymeItem::EnzymeItem( const QString& location, Annotation* a )
 ///EnzymeFolderItem
 
 EnzymeFolderItem::EnzymeFolderItem( const QString& name )
-: QTreeWidgetItem(QStringList(name), ENZYME_FOLDER_ITEM_TYPE)
+: QTreeWidgetItem(ENZYME_FOLDER_ITEM_TYPE), enzymeName(name)
 {
-
+    setText(0, QString("%1 : %2 %3").arg(name).arg(0).arg("sites"));
 }
 void EnzymeFolderItem::addEnzymeItem( Annotation* enzAnn )
 {
     QString location = Genbank::LocationParser::buildLocationString(enzAnn->data());
     addChild(new EnzymeItem(location, enzAnn) );
     setIcon(0, QIcon(":circular_view/images/folder.png"));    
+    int count = childCount();
+    QString site = count == 1 ? RestrctionMapWidget::tr("site") : RestrctionMapWidget::tr("sites");
+    setText(0, QString("%1 : %2 %3").arg(getName()).arg(count).arg(site));
+
+}
+
+void EnzymeFolderItem::removeEnzymeItem( Annotation* enzAnn )
+{
+    int count = childCount();
+    for (int i = 0; i < count; ++i) {
+        EnzymeItem* item = static_cast<EnzymeItem*> ( child(i) );
+        if (item->getEnzymeAnnotation() == enzAnn) {
+            removeChild(item);
+            QString site = --count == 1 ? RestrctionMapWidget::tr("site") : RestrctionMapWidget::tr("sites");
+            setText(0, QString("%1 : %2 %3").arg(getName()).arg(count).arg(site));
+            if (count == 0) {
+                setIcon(0, QIcon(":circular_view/images/empty_folder.png"));  
+            }
+            break;
+        }
+    }
+
+
+    
 }
 
 
@@ -78,13 +102,8 @@ RestrctionMapWidget::RestrctionMapWidget( ADVSequenceObjectContext* context, QWi
     treeWidget->setColumnCount(1);
     treeWidget->setHeaderLabel(tr("Restriction Sites Map"));
     connect(treeWidget,SIGNAL(itemSelectionChanged()), SLOT(sl_itemSelectionChanged()));
-
-
+    
     layout->addWidget(treeWidget);
-
-    connect(AppContext::getAutoAnnotationsSupport(), 
-        SIGNAL(si_updateAutoAnnotationsGroupRequired(const QString& )), 
-        SLOT(sl_onAutoAnotationsUpdate(const QString&)));
 
     registerAnnotationObjects();
     updateTreeWidget();
@@ -126,10 +145,21 @@ void RestrctionMapWidget::sl_onAnnotationsAdded( const QList<Annotation*>& anns 
                folderItem->addEnzymeItem(a);
         }        
     }
+
+    //TODO: enable "intelligent" sorting by reimplementing custom AbstractModel
+    // Take into account number of items in each enzymes folder
+    treeWidget->sortItems(0, Qt::AscendingOrder);
+
 }
 
 void RestrctionMapWidget::sl_onAnnotationsRemoved( const QList<Annotation*>& anns )
 {
+    foreach (Annotation* a, anns) {
+        EnzymeFolderItem* folderItem = findEnzymeFolderByName(a->getAnnotationName());
+        if (folderItem) {
+            folderItem->removeEnzymeItem(a);
+        }        
+    }   
 
 }
 
@@ -138,20 +168,14 @@ EnzymeFolderItem* RestrctionMapWidget::findEnzymeFolderByName( const QString& en
     int count = treeWidget->topLevelItemCount();
     
     for (int i = 0; i < count; i++) {
-        QTreeWidgetItem* item = treeWidget->topLevelItem(i);
-        if (item->text(0) == enzymeName) {
-            return static_cast<EnzymeFolderItem*> ( item );
+        assert(treeWidget->topLevelItem(i)->type() == ENZYME_FOLDER_ITEM_TYPE);
+        EnzymeFolderItem* item = static_cast<EnzymeFolderItem*> ( treeWidget->topLevelItem(i) );
+        if (item->getName() == enzymeName) {
+            return item;
         }
     }
 
     return NULL;
-}
-
-void RestrctionMapWidget::sl_onAutoAnotationsUpdate( const QString& groupName )
-{
-    if (groupName == ANNOTATION_GROUP_ENZYME) {
-        updateTreeWidget();
-    }
 }
 
 void RestrctionMapWidget::sl_itemSelectionChanged()
@@ -168,7 +192,6 @@ void RestrctionMapWidget::sl_itemSelectionChanged()
 
 
 }
-
 
 
 }//namespace

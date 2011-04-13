@@ -43,9 +43,12 @@ private:
 
 class EnzymeFolderItem : public QTreeWidgetItem
 {
+    QString enzymeName;
 public:
     EnzymeFolderItem(const QString& name);
     void addEnzymeItem(Annotation* enzAnn);
+    void removeEnzymeItem(Annotation* enzAnn);
+    const QString& getName() const { return enzymeName; } 
 };
 
 
@@ -58,7 +61,6 @@ public:
 private slots:
     void sl_onAnnotationsAdded(const QList<Annotation*>& anns);
     void sl_onAnnotationsRemoved(const QList<Annotation*>& anns);
-    void sl_onAutoAnotationsUpdate(const QString& groupName);
     void sl_itemSelectionChanged();
 private:
     ADVSequenceObjectContext* ctx;
