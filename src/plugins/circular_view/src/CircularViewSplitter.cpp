@@ -21,6 +21,7 @@
 
 #include "CircularViewSplitter.h"
 #include "CircularView.h"
+#include "RestrictionMapWidget.h"
 
 #include <U2Core/L10n.h>
 #include <U2Core/GObject.h>
@@ -39,6 +40,7 @@
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
 #include <QtGui/QMessageBox>
+#include <QtGui/QTreeWidget>
 
 #include <QtGui/QApplication>
 
@@ -66,6 +68,14 @@ CircularViewSplitter::CircularViewSplitter(AnnotatedDNAView* view) : ADVSplitWid
     tbExport->setToolTip(tr("Save circular view as image"));
     tbExport->setFixedSize(20,20);
 
+    tbToggleRestrictionMap = new QToolButton(this);
+    tbToggleRestrictionMap->setIcon(QIcon(":/circular_view/images/side_list.png"));
+    tbToggleRestrictionMap->setToolTip(tr("Show/hide restriction sites map"));
+    tbToggleRestrictionMap->setFixedSize(20,20);
+    tbToggleRestrictionMap->setCheckable(true);
+    tbToggleRestrictionMap->setChecked(true);
+    connect(tbToggleRestrictionMap, SIGNAL(toggled(bool)),SLOT(sl_toggleRestrictionMap(bool)));
+
     toolBar = new HBar(this);
     toolBar->setOrientation(Qt::Vertical);
 
@@ -73,6 +83,8 @@ CircularViewSplitter::CircularViewSplitter(AnnotatedDNAView* view) : ADVSplitWid
     toolBar->addWidget(tbZoomOut);
     toolBar->addWidget(tbFitInView);
     toolBar->addWidget(tbExport);
+    toolBar->addWidget(tbToggleRestrictionMap);
+
     connect(tbExport, SIGNAL(pressed()), SLOT(sl_export()));
 
     splitter = new QSplitter(Qt::Horizontal);
@@ -123,6 +135,14 @@ void CircularViewSplitter::addView(CircularView* view) {
 
     circularViewList.append(view);
     splitter->insertWidget(0, view);
+    
+    RestrctionMapWidget* rmapWidget = new RestrctionMapWidget(view->getSequenceContext(),this);
+    splitter->insertWidget(1, rmapWidget);
+    restrictionMapWidgets.append(rmapWidget);
+    
+    splitter->setStretchFactor(0,10);
+    splitter->setStretchFactor(1,1);
+    
     adaptSize();
     connect(view, SIGNAL(si_wheelMoved(int)), SLOT(sl_moveSlider(int)));
 }
@@ -281,6 +301,13 @@ void CircularViewSplitter::sl_updateZoomOutAction( bool disabled) {
 
 void CircularViewSplitter::sl_updateFitInViewAction( bool disabled) {
     tbFitInView->setDisabled(disabled);
+}
+
+void CircularViewSplitter::sl_toggleRestrictionMap( bool toggle)
+{
+    foreach (QWidget* w, restrictionMapWidgets) {
+        w->setVisible(toggle);
+    }
 }
 
 } //namespace U2

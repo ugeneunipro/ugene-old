@@ -1,13 +1,15 @@
 include (circular_view.pri)
 
 # Input
-HEADERS += src/CircularView.h \
+HEADERS += src/CircularItems.h \
+           src/CircularView.h \
            src/CircularViewPlugin.h \
-           src/CircularItems.h \
-           src/CircularViewSplitter.h
-SOURCES += src/CircularView.cpp \
+           src/CircularViewSplitter.h \
+           src/RestrictionMapWidget.h
+SOURCES += src/CircularItems.cpp \
+           src/CircularView.cpp \
            src/CircularViewPlugin.cpp \
-           src/CircularItems.cpp \
-           src/CircularViewSplitter.cpp
+           src/CircularViewSplitter.cpp \
+           src/RestrictionMapWidget.cpp
 RESOURCES += circular_view.qrc
-TRANSLATIONS += transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

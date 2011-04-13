@@ -61,6 +61,7 @@ protected slots:
     void sl_updateZoomInAction(bool);
     void sl_updateZoomOutAction(bool);
     void sl_updateFitInViewAction(bool);
+    void sl_toggleRestrictionMap(bool);
 private:
     QSplitter* splitter;
     HBar* toolBar;    
@@ -70,8 +71,10 @@ private:
     QToolButton* tbZoomOut;
     QToolButton* tbFitInView;
     QToolButton* tbExport;
+    QToolButton* tbToggleRestrictionMap;
 
     QList<CircularView*> circularViewList;
+    QList<QWidget*> restrictionMapWidgets;
 };
 
 } //namespace U2
