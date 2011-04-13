@@ -3,6 +3,7 @@ include (structural_aligner.pri)
 # Input
 HEADERS +=  src/StructuralAlignerPlugin.h \
             src/StructuralAlignerPtools.h \
+            src/StructuralAlignerTests.h \
             # ptools includes
             src/ptools/atom.h \
             src/ptools/atomselection.h \
@@ -19,6 +20,7 @@ HEADERS +=  src/StructuralAlignerPlugin.h \
 
 SOURCES +=  src/StructuralAlignerPlugin.cpp \
             src/StructuralAlignerPtools.cpp \
+            src/StructuralAlignerTests.cpp \
             # ptools sources
             src/ptools/atom.cpp \
             src/ptools/atomselection.cpp \

@@ -12,17 +12,20 @@ using std::auto_ptr;
 
 namespace U2 {
 
-static PTools::Rigidbody* createRigidBody(const BioStruct3D &biostruct, int chainId = 0, int modelId = 0)
+static PTools::Rigidbody* createRigidBody(const BioStruct3D &biostruct, int /*chainId = 0*/, int /*modelId = 0*/)
 {
+    // chainId and modelId ignored for now
+    // all chains and first model taken
+
     PTools::Rigidbody *body = new PTools::Rigidbody();
 
     // all chains taken
     foreach (const SharedMolecule &mol, biostruct.moleculeMap.values()) {
-
-        // first model taken if modelId == 0
         // this function uses modelId - key from BioStruct3D::modelMap
-        int idx = biostruct.modelMap.keys().indexOf(modelId);
-        const Molecule3DModel &model = mol->models[idx];
+        //int idx = biostruct.modelMap.keys().indexOf(modelId);
+        //const Molecule3DModel &model = mol->models[idx];
+        // first model taken
+        const Molecule3DModel &model = mol->models.first();
 
         // Built in assumtion that order of atoms match order of residues
         foreach (const SharedAtom &atom, model.atoms)
