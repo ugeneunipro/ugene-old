@@ -43,13 +43,11 @@ QWidget(p), preferred(0)
     }
     connect(ui->alphabetBox, SIGNAL(currentIndexChanged(const QString&)), SLOT(sl_currentindexChanged(const QString&)));
 }
-
 QByteArray SeqPasterWidgetController::getNormSequence(DNAAlphabet * alph, const QByteArray & seq, bool replace, QChar replaceChar) {
     assert(alph != NULL);
     QByteArray ret;
-    QByteArray seqTrimmed=QString(seq).remove(QRegExp("\\s")).toAscii();
     if(alph->getId() == BaseDNAAlphabetIds::RAW()){
-        foreach(QChar c, seqTrimmed){
+        foreach(QChar c, seq){
             QChar::Category cat = c.category();
             if((cat != QChar::Separator_Space) &&
                 (cat != QChar::Other_Control)){
@@ -58,8 +56,8 @@ QByteArray SeqPasterWidgetController::getNormSequence(DNAAlphabet * alph, const 
         }
     }else{
         QByteArray alphabetSymbols = alph->getAlphabetChars(true);
-        for(int i = 0; i < seqTrimmed.size(); i++){
-            QChar c = seqTrimmed.at(i);
+        for(int i = 0; i < seq.size(); i++){
+            QChar c = seq.at(i);
             if(alphabetSymbols.indexOf(c) > -1){
                 ret.append(c);
             }else{
@@ -82,6 +80,7 @@ QString SeqPasterWidgetController::validate(){
     }
     
     QByteArray seq = ((ui->sequenceEdit->document())->toPlainText()).toUtf8();
+    seq=QString(seq).remove(QRegExp("\\s")).toAscii();
     DNAAlphabetRegistry *r = AppContext::getDNAAlphabetRegistry();
     DNAAlphabet *alph = NULL;
     if(ui->useCustomSettingsBox->isChecked()){
