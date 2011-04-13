@@ -32,6 +32,7 @@ SUBDIRS += \
           src/plugins_3rdparty/psipred \
           src/plugins_3rdparty/phylip \
           src/plugins_3rdparty/kalign \
+          src/plugins_3rdparty/ptools \
           src/plugins/assembly_browser \
           src/plugins/biostruct3d_view \
           src/plugins/chroma_view \
@@ -57,7 +58,6 @@ SUBDIRS += \
           src/plugins/query_designer \
           src/plugins/external_tool_support \
           src/plugins/remote_service \
-	  src/plugins/structural_aligner \
           src/plugins/CoreTests
 
 use_cuda() {

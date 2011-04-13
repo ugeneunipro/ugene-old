@@ -1,9 +1,9 @@
-include (structural_aligner.pri)
+include (ptools.pri)
 
 # Input
-HEADERS +=  src/StructuralAlignerPlugin.h \
-            src/StructuralAlignerPtools.h \
-            src/StructuralAlignerTests.h \
+HEADERS +=  src/PToolsPlugin.h \
+            src/PToolsAligner.h \
+            src/PToolsTests.h \
             # ptools includes
             src/ptools/atom.h \
             src/ptools/atomselection.h \
@@ -18,9 +18,9 @@ HEADERS +=  src/StructuralAlignerPlugin.h \
             src/ptools/screw.h \
             src/ptools/superpose.h
 
-SOURCES +=  src/StructuralAlignerPlugin.cpp \
-            src/StructuralAlignerPtools.cpp \
-            src/StructuralAlignerTests.cpp \
+SOURCES +=  src/PToolsPlugin.cpp \
+            src/PToolsAligner.cpp \
+            src/PToolsTests.cpp \
             # ptools sources
             src/ptools/atom.cpp \
             src/ptools/atomselection.cpp \

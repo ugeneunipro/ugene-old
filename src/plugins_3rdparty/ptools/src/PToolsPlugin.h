@@ -19,38 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_STRUCTURAL_ALIGNER_TESTS_H_
-#define _U2_STRUCTURAL_ALIGNER_TESTS_H_
+#ifndef _U2_PTOOLS_PLUGIN_H_
+#define _U2_PTOOLS_PLUGIN_H_
 
-#include "StructuralAlignerPtools.h"
-
+#include <U2Core/PluginModel.h>
 #include <U2Test/XMLTestUtils.h>
 
 namespace U2 {
 
-class Gtest_StructuralAlignerTask : public GTest {
+class PToolsPlugin : public Plugin {
     Q_OBJECT
 
 public:
-    static const QString REFO_ATTR;
-    static const QString MOBO_ATTR;
-    static const QString RMSD_ATTR;
-    static const QString ACCURACY_ATTR;
-    static const QString TRANSFORM_ATTR;
+    PToolsPlugin();
+    ~PToolsPlugin();
 
+};  // class PToolsPlugin
+
+class StructualAlignerTests {
 public:
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(Gtest_StructuralAlignerTask, "plugin_sa-align-and-compare", TaskFlags_FOSCOE);
-
-    void run();
-    Task::ReportResult report();
-
-private:
-    QString refName, mobName;
-    StructuralAlignment result, expected;
-    double accuracy;
-};  // class Gtest_StructuralAlignerTask
+    static QList<XMLTestFactory*> createTestFactories();
+};  // class StructualAlignerTests
 
 }   // namespace U2
 
-#endif  // #ifndef _U2_STRUCTURAL_ALIGNER_TESTS_H_
-
+#endif  // #ifndef _U2_PTOOLS_PLUGIN_H_

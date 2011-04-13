@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "StructuralAlignerTests.h"
+#include "PToolsTests.h"
 
 #include <U2Core/BioStruct3DObject.h>
 
@@ -27,15 +27,15 @@
 
 namespace U2 {
 
-/* class Gtest_StructuralAlignerTask : public GTest */
+/* class Gtest_PToolsAlignerTask : public GTest */
 
-const QString Gtest_StructuralAlignerTask::REFO_ATTR("refo");
-const QString Gtest_StructuralAlignerTask::MOBO_ATTR("mobo");
-const QString Gtest_StructuralAlignerTask::RMSD_ATTR("rmsd");
-const QString Gtest_StructuralAlignerTask::ACCURACY_ATTR("accuracy");
-const QString Gtest_StructuralAlignerTask::TRANSFORM_ATTR("transform");
+const QString Gtest_PToolsAlignerTask::REFO_ATTR("refo");
+const QString Gtest_PToolsAlignerTask::MOBO_ATTR("mobo");
+const QString Gtest_PToolsAlignerTask::RMSD_ATTR("rmsd");
+const QString Gtest_PToolsAlignerTask::ACCURACY_ATTR("accuracy");
+const QString Gtest_PToolsAlignerTask::TRANSFORM_ATTR("transform");
 
-void Gtest_StructuralAlignerTask::init(XMLTestFormat*, const QDomElement& el) {
+void Gtest_PToolsAlignerTask::init(XMLTestFormat*, const QDomElement& el) {
     {
         refName = el.attribute(REFO_ATTR);
         if (refName.isEmpty()) {
@@ -103,7 +103,7 @@ void Gtest_StructuralAlignerTask::init(XMLTestFormat*, const QDomElement& el) {
     }
 }
 
-void Gtest_StructuralAlignerTask::run() {
+void Gtest_PToolsAlignerTask::run() {
     BioStruct3DObject   *refo = getContext<BioStruct3DObject>(this, refName),
                         *mobo = getContext<BioStruct3DObject>(this, mobName);
 
@@ -120,7 +120,7 @@ void Gtest_StructuralAlignerTask::run() {
 
     const BioStruct3D &ref = refo->getBioStruct3D(), &mob = mobo->getBioStruct3D();
 
-    result = StructuralAlignerPtools().align(ref, mob, 1, 1);
+    result = PToolsAligner().align(ref, mob, 1, 1);
 }
 
 /** Compare alignment results with given accuracy  */
@@ -160,7 +160,7 @@ static QString alignmentToStr(const StructuralAlignment &al, double acc = 0) {
     return res;
 }
 
-Task::ReportResult Gtest_StructuralAlignerTask::report() {
+Task::ReportResult Gtest_PToolsAlignerTask::report() {
     if (!isEqual(result, expected, accuracy)) {
         QString msg = QString("Alignment results are not equal with accuracy %1 \n").arg(accuracy);
         msg += " Calculated - \n" + alignmentToStr(result, accuracy);
