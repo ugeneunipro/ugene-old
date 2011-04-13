@@ -137,6 +137,7 @@ void BuildIndexDialog::buildIndexUrl(const GUrl& refUrl ) {
 	QString extension("");
 	if (NULL != customGUI) {
 		extension = customGUI->getIndexFileExtension();
+        customGUI->buildIndexUrl(refUrl);
 	}
 	GUrl url;
 	if (extension.isEmpty()) {

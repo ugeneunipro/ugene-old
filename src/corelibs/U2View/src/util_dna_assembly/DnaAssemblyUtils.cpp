@@ -102,6 +102,7 @@ void DnaAssemblySupport::sl_showBuildIndexDialog()
         s.refSeqUrl = dlg.getRefSeqUrl();
         s.algName = dlg.getAlgorithmName();
         s.resultFileName = dlg.getIndexFileName();
+        s.indexFileName = dlg.getIndexFileName();
         s.setCustomSettings( dlg.getCustomSettings() );
         s.loadResultDocument = false;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, false, true);

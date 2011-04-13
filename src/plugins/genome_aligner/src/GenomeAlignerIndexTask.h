@@ -26,6 +26,7 @@
 #include <U2Algorithm/BitsTable.h>
 #include <QVector>
 #include <QFile>
+#include "GenomeAlignerIndex.h"
 
 namespace U2 {
 
@@ -34,10 +35,11 @@ class DNASequenceObject;
 
 class GenomeAlignerIndexSettings {
 public:
-    QString indexFileName;
-    QString refFileName;
-    bool    deserializeFromFile;
-    bool    openCL;
+    QString     indexFileName;
+    QString     refFileName;
+    bool        justBuildIndex;
+    bool        openCL;
+    int         seqPartSize;            //in Mb
 };
 
 class GenomeAlignerIndexTask: public Task {
@@ -52,21 +54,14 @@ public:
     GenomeAlignerIndex    *index;
 
 private:
-    char            *seq;           //reference sequence
-    quint32         seqLength;      //reference sequence's length
+    SAType          seqLength;      //reference sequence's length
     int             w;              //window size
     QString         baseFileName;   //base of the index's file name
-    quint32         indexLength;    //count of index's elements
-    quint32         *sArray;
-    quint64         *bitMask;
     BitsTable       bt;
     const quint32*  bitTable;
     int             bitCharLen;
-    QVector<QFile*>   tempFiles;
-    QFile           *newRefFile;
-    quint64         bitFilter;
-    char            *buffer;
-    quint32         *objLens;
+    BMType          bitFilter;
+    SAType          *objLens;
     int             objCount;
     char            unknownChar;
 
@@ -75,23 +70,14 @@ private:
 
     GenomeAlignerIndexSettings settings;
 
-    quint32 PART_SIZE; //*12 = ~500 Mb
-    static const int BUFF_SIZE = 6291456; //6Mb. Must be divided by 12
+    quint32 MAX_ELEM_COUNT_IN_MEMORY;
+    static const int BUFF_SIZE = 6291456; //6Mb. Must be divided by 8
     static double MEMORY_DIVISION;
+    static const int MEM_FOR_READS = 400; //Mb for aligning reads
 
 
 private:
-    void buildPart(quint32 *idx, int *curObj, quint32 *arrLen);
-    void sort(quint64* x, int off, int len);
-    inline qint64 compare(const quint64 *x1, const quint64 *x2) const;
-    inline void swap(quint64 *x1, quint64 *x2) const;
-    inline quint32 med3(quint64 *x, quint32 a, quint32 b, quint32 c);
-    inline void vecswap(quint64 *x1, quint64 *x2, quint32 n);
-    void writePart(QFile *file, quint32 arrLen);
-    void mergeSort();
     void reformatSequence();
-    quint32 initPart(quint32 *idx, int *curObj, quint32 *arrLen, QByteArray &refPart);
-    void calculateMemForAligning();
 };
 
 } //U2

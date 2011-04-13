@@ -50,7 +50,6 @@ private:
     QString refSeqUrl;
     QString indexFileName;
     GUrl resultFileName;
-    bool newIndex;
 };
 
 

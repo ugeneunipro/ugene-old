@@ -25,70 +25,162 @@ namespace U2 {
 
 SearchQuery::SearchQuery(const DNASequence &shortRead) {
     dna = true;
-    dnaRead = new DNASequence(shortRead);
-    assRead = NULL;
+    seqLength = shortRead.length();
+    nameLength = shortRead.getName().length();
+    seq = new char[seqLength+1];
+    name = new char[nameLength+1];
+    qstrcpy(seq, shortRead.constData());
+    qstrcpy(name, shortRead.getName().toAscii().constData());
+    if (shortRead.hasQualityScores()) {
+        quality = new DNAQuality(shortRead.quality);
+    } else {
+        quality = NULL;
+    }
+    //assRead = NULL;
 }
 
 SearchQuery::SearchQuery(const U2AssemblyRead &shortRead) {
     dna = false;
-    dnaRead = NULL;
-    assRead = shortRead;
+    seq = NULL;
+    name = NULL;
+    quality = NULL;
+    //assRead = shortRead;
 }
 
 SearchQuery::~SearchQuery() {
-    delete dnaRead;
+    delete seq;
+    delete name;
+    delete quality;
 }
 
-QString SearchQuery::getName() {
+QString SearchQuery::getName() const {
     if (dna) {
-        return dnaRead->getName();
+        return QString(name);
     } else {
-        return "";
+        return NULL;
     }
 }
 
-int SearchQuery::length() {
+int SearchQuery::length() const {
     if (dna) {
-        return dnaRead->length();
+        return seqLength;
     } else {
-        return assRead->readSequence.length();
+        return NULL;//assRead->readSequence.length();
+    }
+}
+
+int SearchQuery::getNameLength() const {
+    if (dna) {
+        return nameLength;
+    } else {
+        return NULL;//assRead->readSequence.length();
     }
 }
 
 char *SearchQuery::data() {
     if (dna) {
-        return dnaRead->seq.data();
+        return seq;
     } else {
-        return assRead->readSequence.data();
+        return NULL;//assRead->readSequence.data();
     }
 }
 
-const char *SearchQuery::constData() {
+const char *SearchQuery::constData() const {
     if (dna) {
-        return dnaRead->constData();
+        return seq;
     } else {
-        return assRead->readSequence.constData();
+        return NULL;//assRead->readSequence.constData();
     }
 }
-const QByteArray &SearchQuery::constSequence() {
+const QByteArray SearchQuery::constSequence() const {
     if (dna) {
-        return dnaRead->constSequence();
+        return QByteArray(seq);
     } else {
-        return assRead->readSequence;
+        return NULL;//assRead->readSequence;
     }
 }
 
-bool SearchQuery::hasQuality() {
+bool SearchQuery::hasQuality() const {
     if (dna) {
-        return dnaRead->hasQualityScores();
+        return NULL != quality;
     } else {
         return false;
     }
 }
 
-const DNAQuality &SearchQuery::getQuality() {
+const DNAQuality &SearchQuery::getQuality() const {
     assert(dna);
-    return dnaRead->quality;
+    return *quality;
+}
+
+bool SearchQuery::haveResult() const {
+    return !results.isEmpty();
+}
+
+bool SearchQuery::haveMCount() const {
+    return !mismatchCounts.isEmpty();
+}
+
+void SearchQuery::addResult(SAType result, quint32 mCount) {
+    results.append(result);
+    mismatchCounts.append(mCount);
+}
+
+void SearchQuery::clear() {
+    results.clear();
+    mismatchCounts.clear();
+}
+
+SAType SearchQuery::firstResult() const {
+    return results.first();
+}
+
+quint32 SearchQuery::firstMCount() const {
+    return mismatchCounts.first();
+}
+
+bool SearchQuery::contains(SAType result) const {
+    return results.contains(result);
+}
+
+QVector<SAType> &SearchQuery::getResults() {
+    return results;
+}
+
+const quint64 SearchQueryContainer::reallocSize = 100;
+SearchQueryContainer::SearchQueryContainer() {
+    queries = NULL;
+    allocated = 0;
+    length = 0;
+}
+
+SearchQueryContainer::~SearchQueryContainer() {
+    delete[] queries;
+    allocated = 0;
+    length = 0;
+}
+
+void SearchQueryContainer::append(SearchQuery *qu) {
+    if (length == allocated) {
+        queries = (SearchQuery**)qRealloc(queries, (allocated + reallocSize)*sizeof(SearchQuery*));
+        allocated += reallocSize;
+    }
+
+    queries[length] = qu;
+    length++;
+}
+
+void SearchQueryContainer::clear() {
+
+}
+
+quint64 SearchQueryContainer::size() {
+    return length;
+}
+
+SearchQuery *SearchQueryContainer::at(quint64 pos) {
+    assert(pos <= size());
+    return queries[pos];
 }
 
 } //U2

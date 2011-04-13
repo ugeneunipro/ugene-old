@@ -51,11 +51,7 @@ public:
     bool openCL;
     int minReadLength;
     int maxReadLength;
-    quint64 bitFilter;
-    QVector<quint64> bitValuesV;
-    QVector<int> readNumbersV;
-    QVector<int> positionsAtReadV;
-    int *partNumbers;
+    BMType bitFilter;
     QVector<SearchQuery*> queries;
 };
 
@@ -69,48 +65,34 @@ public:
     virtual void run();
     virtual void prepare();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
-    QMutex &getPartLoadMutex() {return partLoadMutex;}
-    bool isPartLoaded() const {return partLoaded;}
-    void setPartLoaded() {partLoaded = true;}
+    QMutex &getPartLoadMutex() {return mutex;}
+    void loadPart(int part);
+    void getDataForBitMaskSearch(int &first, int &length);
+    void getDataForPartSearch(int &first, int &length);
 
 private:
-    FindInPartSubTask *findInPartTask;
-    PrepareVectorsSubTask *prepVecTask;
     GenomeAlignerIndex *index;
     SearchContext *settings;
-    int memCacheTaskCount;
-    QVector<quint64> *bitValuesV;
-    QVector<int> *readNumbersV;
-    QVector<int> *positionsAtReadV;
+    QVector<BMType> bitValuesV;
+    QVector<int> readNumbersV;
+    QVector<int> positionsAtReadV;
     ResType *bitMaskResults;
     int currentPart;
     int bitMaskTaskCount;
     int partTaskCount;
     bool partLoaded;
-    QMutex partLoadMutex;
+    QMutex mutex;
+    int nextElementToGive;
 
-    void findInMemCache();
     QList<Task*> findInBitMask(int part);
     QList<Task*> findInPart(int part);
     void prepareBitValues();
-    void prepareVectors();
+
+    static const int BITMASK_SEARCH_DATA_SIZE;
+    static const int PART_SEARCH_DATA_SIZE;
 };
 
 typedef QVector<SearchQuery*>::iterator QueryIter;
-
-class FindInMemCacheSubTask : public Task {
-    Q_OBJECT
-public:
-    FindInMemCacheSubTask(GenomeAlignerIndex *index,
-                          SearchContext *settings,
-                          int first, int length);
-    virtual void run();
-private:
-    GenomeAlignerIndex *index;
-    SearchContext *settings;
-    int first;
-    int length;
-};
 
 class FindInBitMaskSubTask : public Task {
     Q_OBJECT
@@ -118,8 +100,7 @@ public:
     FindInBitMaskSubTask(GenomeAlignerIndex *index,
                          SearchContext *settings,
                          int part,
-                         int first, int length,
-                         quint64 *bitValues,
+                         BMType *bitValues,
                          int *readNumbers,
                          ResType **bitMaskResults);
     virtual void run();
@@ -127,9 +108,7 @@ private:
     GenomeAlignerIndex *index;
     SearchContext *settings;
     int part;
-    int first;
-    int length;
-    quint64 *bitValues;
+    BMType *bitValues;
     int *readNumbers;
     ResType **bitMaskResults;
 };
@@ -139,8 +118,7 @@ class FindInPartSubTask : public Task {
 public:
     FindInPartSubTask(GenomeAlignerIndex *index,
                       SearchContext *settings,
-                      int first, int length,
-                      quint64 *bitValues,
+                      BMType *bitValues,
                       int *readNumbers,
                       int *positionsAtRead,
                       ResType *bitMaskResults);
@@ -148,19 +126,10 @@ public:
 private:
     GenomeAlignerIndex *index;
     SearchContext *settings;
-    int first;
-    int length;
-    quint64 *bitValues;
+    BMType *bitValues;
     int *readNumbers;
     int *positionsAtRead;
     ResType *bitMaskResults;
-};
-
-class PrepareVectorsSubTask : public Task {
-    Q_OBJECT
-public:
-    PrepareVectorsSubTask();
-    virtual void run();
 };
 
 } //U2

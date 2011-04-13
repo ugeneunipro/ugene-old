@@ -142,7 +142,8 @@ void GenomeAlignerWorker::init() {
     index = ports.value(INDEX_PORT_ID);
     output = ports.value(BasePorts::OUT_MSA_PORT_ID());
 
-    settings.setCustomValue(GenomeAlignerTask::OPTION_PREBUILT_INDEX, true);
+    //TODO: PREBUILT INDEX
+    //settings.setCustomValue(GenomeAlignerTask::OPTION_PREBUILT_INDEX, true);
     bool absMismatches = actor->getParameter(ABS_OR_PERC_MISMATCHES_ATTR)->getAttributeValue<bool>();
     settings.setCustomValue(GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES, absMismatches);
     int nMismatches = actor->getParameter(MISMATCHES_ATTR)->getAttributeValue<int>();
@@ -174,7 +175,8 @@ Task* GenomeAlignerWorker::tick() {
         writer = new GenomeAlignerMAlignmentWriter();
 
         QString indexFile = index->get().getData().toMap().value(INDEX_SLOT.getId()).value<QString>();
-        settings.setCustomValue(GenomeAlignerTask::OPTION_INDEX_URL, indexFile);
+        //TODO: index file
+        //settings.setCustomValue(GenomeAlignerTask::OPTION_INDEX_URL, indexFile);
         settings.setCustomValue(GenomeAlignerTask::OPTION_READS_READER, QVariant::fromValue(GenomeAlignerReaderContainer(reader)));
         settings.setCustomValue(GenomeAlignerTask::OPTION_READS_WRITER, QVariant::fromValue(GenomeAlignerWriterContainer(writer)));
         Task* t = new GenomeAlignerTask(settings);

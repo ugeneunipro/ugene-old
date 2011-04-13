@@ -32,14 +32,15 @@ class GenomeAlignerSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_Ge
 public:
     GenomeAlignerSettingsWidget(QWidget* parent);
     virtual QMap<QString,QVariant> getDnaAssemblyCustomSettings();
-    virtual bool isIndexOk();
+    virtual bool isParametersOk(QString &error);
     virtual void buildIndexUrl(const GUrl& url);
 
 private slots:
-    void sl_onSetIndexFileNameButtonClicked();
-    void sl_onOpenPrebuildIndexFileNameButtonClicked();
+    void sl_onSetIndexDirButtonClicked();
+    void sl_onPartSliderChanged(int value);
+    void sl_onReadSliderChanged(int value);
 private:
-    QString refUrl;
+    int systemSize;
 };
 
 }

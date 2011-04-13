@@ -24,6 +24,7 @@
 
 #include <U2Core/DNASequence.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include "GenomeAlignerIndexPart.h"
 
 #define ResType qint64
 
@@ -46,23 +47,52 @@ public:
     SearchQuery(const U2AssemblyRead &shortRead);
     ~SearchQuery();
 
-    DNASequence &getSequence() {return *dnaRead;} //tmp method
-    QString getName();
-    int length();
+    QString getName() const;
+    int length() const;
+    int getNameLength() const;
     char *data();
-    const char *constData();
-    const QByteArray &constSequence();
-    bool hasQuality();
-    const DNAQuality &getQuality();
+    const char *constData() const;
+    const QByteArray constSequence() const;
+    bool hasQuality() const;
+    const DNAQuality &getQuality() const;
 
-    QList<CacheResult> cacheResults; //must be sorted by numberOfPart
-    QList<quint32> results;
-    QList<quint32> mismatchCounts;
+    bool haveResult() const;
+    bool haveMCount() const;
+    void addResult(SAType result, quint32 mCount);
+    void clear();
+    SAType firstResult() const;
+    quint32 firstMCount() const;
+    bool contains(SAType result) const;
+    QVector<SAType> &getResults();
 
 private:
+    //U2AssemblyRead assRead;
+    DNAQuality *quality;
+    char *seq;
+    char *name;
+    quint32 seqLength; 
+    quint32 nameLength;
     bool dna;
-    DNASequence *dnaRead;
-    U2AssemblyRead assRead;
+
+    QVector<SAType> results;
+    QVector<quint32> mismatchCounts;
+};
+
+class SearchQueryContainer {
+public:
+    SearchQueryContainer();
+    ~SearchQueryContainer();
+    void append(SearchQuery *qu);
+    void clear();
+    quint64 size();
+    SearchQuery *at(quint64 pos);
+
+private:
+    SearchQuery **queries;
+    quint64 length;
+    quint64 allocated;
+
+    static const quint64 reallocSize;
 };
 
 } //U2

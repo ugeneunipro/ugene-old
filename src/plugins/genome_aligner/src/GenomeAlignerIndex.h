@@ -25,6 +25,7 @@
 #include <U2Core/Task.h>
 #include <U2Algorithm/BitsTable.h>
 #include <QtCore/QFile>
+#include "GenomeAlignerIndexPart.h"
 
 namespace U2 {
 
@@ -38,57 +39,62 @@ public:
     GenomeAlignerIndex();
     ~GenomeAlignerIndex();
 
-    quint64 getBitValue(const char *seq, int length) const;
-    int getPrefixSize() const;
-    int findInCache(quint64 bitValue, quint64 bitFilter) const;
+    BMType getBitValue(const char *seq, int length) const;
     void loadPart(int part);
-    void findInPart(QFile *refFile, int startPos, ResType firstResult,
-                    quint64 bitValue, SearchQuery *qu, SearchContext *settings);
-    int findBit(quint64 bitValue, quint64 bitFilter);
-    ResType *findBitOpenCL(quint64 *bitValues, int size, quint64 bitFilter);
-    QFile *openRefFile();
+    void findInPart(int startPos, ResType firstResult, BMType bitValue, SearchQuery *qu, SearchContext *settings);
+    ResType findBit(BMType bitValue, BMType bitFilter);
+    ResType *findBitOpenCL(BMType *bitValues, int size, quint64 BMType);
     QString getSeqName() const {return seqObjName;}
-    int getPartsInMemCache() const {return partsInMemCache;}
+    int getPartCount() const {return indexPart.partCount;}
 
 private:
-    const char      *seq;           //reference sequence
     quint32         seqLength;      //reference sequence's length
+    int             seqPartSize;    //in Mb
     int             w;              //window size
     QString         baseFileName;   //base of the file name
-    quint32         indexLength;    //count of index's elements
-    quint32         *sArray;
-    quint64         *bitMask;
-    quint32         loadedPartSize;
     quint32         *memIdx;
     quint64         *memBM;
     BitsTable       bt;
     const quint32*  bitTable;
     int             bitCharLen;
-    QFile           *indexFile;
-    QFile           *refFile;
+    BMType          bitFilter;
     int             partsInMemCache;
     quint32         *objLens;
     int             objCount;
     QString         seqObjName;
     int             currentPart;
+    IndexPart       indexPart;
+    bool            build;
+    char            unknownChar;
 
-    void serialize(const QString &refFileName, TaskStateInfo &ti);
-    void deserialize(TaskStateInfo &ti);
-    bool openIndexFile();
-    void createMemCache();
-    inline bool isValidPos(quint32 offset, int startPos, int length, quint32 &fisrtSymbol, const QList<quint32> &results);
-    inline bool compare(const char *sourceSeq, const QByteArray &querySeq, int startPos,
-        int w, int bits, int &c, int CMAX, int restBits);
-    inline void fullBitMaskOptimization(int CMAX, quint64 bitValue, quint64 bitMaskValue, int restBits, int w, int &bits, int &c);
+    void serialize(const QString &refFileName);
+    bool deserialize(QByteArray &error);
+    bool openIndexFiles();
+    inline bool isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu);
+    inline bool compare(const char *sourceSeq, const QByteArray &querySeq, int startPos, int w, int &c, int CMAX);
+    inline void fullBitMaskOptimization(int CMAX, BMType bitValue, BMType bitMaskValue, int restBits, int w, int &bits, int &c);
+    inline bool find(SAType &offset, SAType &firstSymbol, int &startPos, SearchQuery *qu, bool &bestMode, int &CMAX, bool valid);
 
     static const QString HEADER;
     static const QString PARAMETERS;
+
+    /*build*/
+    SAType          *sArray;
+    BMType          *bitMask;
+    void buildPart(SAType start, SAType length, SAType &arrLen);
+    void initSArray(SAType start, SAType length, SAType &arrLen);
+    void sort(BMType *x, int off, int len);
+    inline qint64 compare(const BMType *x1, const BMType *x2) const;
+    inline void swap(BMType *x1, BMType *x2) const;
+    inline quint32 med3(BMType *x, quint32 a, quint32 b, quint32 c);
+    inline void vecswap(BMType *x1, BMType *x2, quint32 n);
 
 public:
     static const QString HEADER_EXTENSION;
     static const QString SARRAY_EXTENSION;
     static const QString REF_INDEX_EXTENSION;
     static const int charsInMask;
+    static const int overlapSize;
 };
 
 } //U2

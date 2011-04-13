@@ -4,6 +4,7 @@ include (genome_aligner.pri)
 HEADERS += src/BuildSArraySettingsWidget.h \
            src/GenomeAlignerFindTask.h \
            src/GenomeAlignerIndex.h \
+           src/GenomeAlignerIndexPart.h \
            src/GenomeAlignerIndexTask.h \
            src/GenomeAlignerIO.h \
            src/GenomeAlignerPlugin.h \
@@ -16,6 +17,7 @@ FORMS += src/ui/GenomeAlignerSettings.ui \
 SOURCES += src/BuildSArraySettingsWidget.cpp \
            src/GenomeAlignerFindTask.cpp \
            src/GenomeAlignerIndex.cpp \
+           src/GenomeAlignerIndexPart.cpp \
            src/GenomeAlignerIndexTask.cpp \
            src/GenomeAlignerIO.cpp \
            src/GenomeAlignerPlugin.cpp \

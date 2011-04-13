@@ -56,11 +56,12 @@ public:
     static const QString OPTION_IF_ABS_MISMATCHES;
     static const QString OPTION_MISMATCHES;
     static const QString OPTION_PERCENTAGE_MISMATCHES;
-    static const QString OPTION_PREBUILT_INDEX;
-    static const QString OPTION_INDEX_URL;
+    static const QString OPTION_INDEX_DIR;
     static const QString OPTION_QUAL_THRESHOLD;
     static const QString OPTION_BEST;
     static const QString OPTION_DBI_IO;
+    static const QString OPTION_READS_MEMORY_SIZE;
+    static const QString OPTION_SEQ_PART_SIZE;
     static const int MIN_SHORT_READ_LENGTH = 30;
     static const int MIN_BIT_MASK_LENGTH = 14; //2*7, where 7 = min chars in bitMask
     static const int MAX_BIT_MASK_LENGTH = 31; //to aloid +- overflow
@@ -79,7 +80,6 @@ private:
     bool justBuildIndex;
     uint windowSize, bunchSize, nMismatches, ptMismatches;
     bool absMismatches;
-    bool prebuiltIdx;
     bool bestMode;
     bool openCL;
     bool dbiIO;
@@ -87,6 +87,8 @@ private:
     bool alignReversed;
     GenomeAlignerIndex *index;
     int qualityThreshold;
+    int readMemSize;
+    int seqPartSize;
     QVector<SearchQuery*> queries;
     SearchQuery *lastQuery;
 
@@ -100,8 +102,7 @@ public:
                           GenomeAlignerReader *seqReader,
                           QVector<SearchQuery*> &queries,
                           const DnaAssemblyToRefTaskSettings& settings,
-                          quint64 freeMemorySize,
-                          quint64 freeGPUSize);
+                          quint64 freeMemorySize);
     virtual void run();
 
     uint bunchSize;
@@ -114,9 +115,8 @@ private:
     QVector<SearchQuery*> &queries;
     const DnaAssemblyToRefTaskSettings &settings;
     quint64 freeMemorySize;
-    quint64 freeGPUSize;
 
-    static const int ONE_SEARCH_QUERY_SIZE = 700; //~700 bytes for one search query
+    static const int ONE_SEARCH_QUERY_SIZE = 38; //~38 bytes for one search query?
 };
 
 class WriteAlignedReadsSubTask : public Task {

@@ -116,9 +116,6 @@ void GTest_DnaAssemblyToReferenceTask::prepare()
     resultFileName = GUrlUtils::rollFileName(dir+"/"+GUrl(refSeqUrl).baseFileName() + "_" + id + "_aligned.sam",DocumentUtils::getNewDocFileNameExcludesHint());
     if (indexFileName.isEmpty()) {
         indexFileName = GUrlUtils::rollFileName(dir+"/"+GUrl(refSeqUrl).baseFileName() + "_index_" + id,DocumentUtils::getNewDocFileNameExcludesHint());
-        newIndex = true;
-    } else {
-        newIndex = false;
     }
 
     DnaAssemblyToRefTaskSettings settings;
@@ -161,12 +158,7 @@ Task::ReportResult GTest_DnaAssemblyToReferenceTask::report()
 void GTest_DnaAssemblyToReferenceTask::cleanup()
 {
     // cleanup temporary files
-    
-    if (newIndex) {
-        QFile::remove(indexFileName + ".idx");
-        QFile::remove(indexFileName + ".ref");
-        QFile::remove(indexFileName + ".sarr");
-    }
+
     QDir dir(env->getVar("TEMP_DATA_DIR"));
     dir.remove(resultFileName.getURLString());
     QDir::root().rmpath(env->getVar("TEMP_DATA_DIR"));

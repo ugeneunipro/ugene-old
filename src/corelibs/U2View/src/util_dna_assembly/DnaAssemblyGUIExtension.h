@@ -39,7 +39,7 @@ class DnaAssemblyAlgorithmMainWidget : public QWidget {
 public:
     DnaAssemblyAlgorithmMainWidget(QWidget* parent) : QWidget(parent) {}
     virtual QMap<QString,QVariant> getDnaAssemblyCustomSettings() = 0;
-    virtual bool isIndexOk() = 0;
+    virtual bool isParametersOk(QString &error) = 0;
     virtual void buildIndexUrl(const GUrl& url) = 0;
 };
 
@@ -48,6 +48,7 @@ public:
     DnaAssemblyAlgorithmBuildIndexWidget(QWidget* parent) : QWidget(parent) {}
     virtual QMap<QString,QVariant> getBuildIndexCustomSettings() = 0;
     virtual QString getIndexFileExtension() = 0;
+    virtual void buildIndexUrl(const GUrl& url) = 0;
 };
 
 class DnaAssemblyGUIExtensionsFactory {

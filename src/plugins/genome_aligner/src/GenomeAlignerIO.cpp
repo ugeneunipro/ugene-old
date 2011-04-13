@@ -59,8 +59,8 @@ GenomeAlignerUrlWriter::GenomeAlignerUrlWriter(const GUrl &resultFile, const QSt
     writtenReadsCount = 0;
 }
 
-void GenomeAlignerUrlWriter::write(SearchQuery *seq, quint32 offset) {
-    seqWriter.writeNextAlignedRead(offset, seq->getSequence());
+void GenomeAlignerUrlWriter::write(SearchQuery *seq, SAType offset) {
+    seqWriter.writeNextAlignedRead(offset, DNASequence(seq->getName(), seq->constSequence()));
     writtenReadsCount++;
 }
 
@@ -115,7 +115,7 @@ MAlignment& GenomeAlignerMAlignmentWriter::getResult() {
     return result;
 }
 
-void GenomeAlignerMAlignmentWriter::write(SearchQuery *seq, quint32 offset) {
+void GenomeAlignerMAlignmentWriter::write(SearchQuery *seq, SAType offset) {
     MAlignmentRow row;
     row.setName(seq->getName());
     row.setSequence(seq->constSequence(), offset);
@@ -204,7 +204,7 @@ GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(U2AssemblyDbi *_wDbi, U2Assembly 
     currentRow = maxRow;
 }
 
-void GenomeAlignerDbiWriter::write(SearchQuery *seq, quint32 offset) {
+void GenomeAlignerDbiWriter::write(SearchQuery *seq, SAType offset) {
     U2AssemblyRead read(new U2AssemblyReadData());
     read->readSequence = seq->constSequence();
     read->leftmostPos = offset;

@@ -24,6 +24,7 @@
 
 
 #include "GenomeAlignerSearchQuery.h"
+#include "GenomeAlignerIndexPart.h"
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GUrl.h>
@@ -53,7 +54,7 @@ public:
 
 class GenomeAlignerWriter {
 public:
-    virtual void write(SearchQuery *seq, quint32 offset) = 0;
+    virtual void write(SearchQuery *seq, SAType offset) = 0;
     virtual void close() = 0;
     virtual void setReferenceName(const QString &refName) = 0;
     quint64 getWrittenReadsCount() const {return writtenReadsCount;}
@@ -100,7 +101,7 @@ private:
 class GenomeAlignerUrlWriter : public GenomeAlignerWriter {
 public:
     GenomeAlignerUrlWriter(const GUrl &resultFile, const QString &refName);
-    inline void write(SearchQuery *seq, quint32 offset);
+    inline void write(SearchQuery *seq, SAType offset);
     void close();
     void setReferenceName(const QString &refName);
 private:
@@ -126,7 +127,7 @@ private:
 class GenomeAlignerMAlignmentWriter : public GenomeAlignerWriter {
 public:
     GenomeAlignerMAlignmentWriter();
-    inline void write(SearchQuery *seq, quint32 offset);
+    inline void write(SearchQuery *seq, SAType offset);
     void close();
     void setReferenceName(const QString &refName);
     MAlignment &getResult();
@@ -164,7 +165,7 @@ private:
 class GenomeAlignerDbiWriter : public GenomeAlignerWriter {
 public:
     GenomeAlignerDbiWriter(U2AssemblyDbi *wDbi, U2Assembly assembly);
-    inline void write(SearchQuery *seq, quint32 offset);
+    inline void write(SearchQuery *seq, SAType offset);
     void close();
     void setReferenceName(const QString &) {};
 private:

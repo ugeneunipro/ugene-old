@@ -19,26 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#include "GenomeAlignerSettingsWidget.h"
 #include "GenomeAlignerTask.h"
 
-#include <U2Misc/DialogUtils.h>
-#include <U2Core/GUrl.h>
-#include <QtGui/QFileDialog>
 #include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/GUrl.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <U2Algorithm/OpenCLGpuRegistry.h>
+#include <QtGui/QFileDialog>
+#include <U2Misc/DialogUtils.h>
+
+#include "GenomeAlignerSettingsWidget.h"
 
 
 namespace U2 {
 
-GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaAssemblyAlgorithmMainWidget(parent), refUrl("") {
+static const int MIN_READ_SIZE = 10;
+static const int MIN_PART_SIZE = 1;
+static const int DEFAULT_PART_SIZE = 10;
+
+GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaAssemblyAlgorithmMainWidget(parent) {
     setupUi(this);
     layout()->setContentsMargins(0,0,0,0);
-    prebuiltIndexFileButton->setEnabled(false);
-    prebuiltIndexFileEdit->setEnabled(false);
 
-    connect(buildIndexFileButton, SIGNAL(clicked()), SLOT(sl_onSetIndexFileNameButtonClicked()));
-    connect(prebuiltIndexFileButton, SIGNAL(clicked()), SLOT(sl_onOpenPrebuildIndexFileNameButtonClicked()));
+    connect(buildIndexFileButton, SIGNAL(clicked()), SLOT(sl_onSetIndexDirButtonClicked()));
+    connect(partSlider, SIGNAL(valueChanged(int)), SLOT(sl_onPartSliderChanged(int)));
+    connect(readSlider, SIGNAL(valueChanged(int)), SLOT(sl_onReadSliderChanged(int)));
 
     buildIndexFileButton->toggle();
     if (AppContext::getOpenCLGpuRegistry()->empty()) {
@@ -47,6 +54,19 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
     } else {
         gpuBox->setChecked(true);
     }
+
+    systemSize = AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB();
+    partSlider->setEnabled(false);
+    readSlider->setMinimum(MIN_READ_SIZE);
+    readSlider->setMaximum(systemSize);
+    readSlider->setValue(systemSize*2/3);
+
+    indexDirEdit->setText(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath());
+
+    partSizeLabel->setText(QByteArray::number(partSlider->value()) + " Mb");
+    indexSizeLabel->setText(QByteArray::number(partSlider->value()*13) + " Mb");
+    totalSizeLabel->setText(QByteArray::number(partSlider->value()*13 + readSlider->value()) + " Mb");
+    systemSizeLabel->setText(QByteArray::number(systemSize) + " Mb");
 }
 
 QMap<QString,QVariant> GenomeAlignerSettingsWidget::getDnaAssemblyCustomSettings() {
@@ -54,15 +74,12 @@ QMap<QString,QVariant> GenomeAlignerSettingsWidget::getDnaAssemblyCustomSettings
     
     settings.insert(GenomeAlignerTask::OPTION_ALIGN_REVERSED, reverseBox->isChecked());
     settings.insert(GenomeAlignerTask::OPTION_OPENCL, gpuBox->isChecked());
-    settings.insert(GenomeAlignerTask::OPTION_PREBUILT_INDEX, prebuiltIndexRadioButton->isChecked());
     settings.insert(GenomeAlignerTask::OPTION_BEST, firstMatchBox->isChecked());
+    settings.insert(GenomeAlignerTask::OPTION_READS_MEMORY_SIZE, readSlider->value());
+    settings.insert(GenomeAlignerTask::OPTION_SEQ_PART_SIZE, partSlider->value());
+    settings.insert(GenomeAlignerTask::OPTION_INDEX_DIR, indexDirEdit->text());
     if (omitQualitiesBox->isChecked()) {
         settings.insert(GenomeAlignerTask::OPTION_QUAL_THRESHOLD, qualThresholdBox->value() );
-    }
-    if (buildIndexRadioButton->isChecked()) {
-        settings.insert(GenomeAlignerTask::OPTION_INDEX_URL, buildIndexFileEdit->text());
-    } else {
-        settings.insert(GenomeAlignerTask::OPTION_INDEX_URL, prebuiltIndexFileEdit->text());
     }
     if (groupBox_mismatches->isChecked()) {
         settings.insert(GenomeAlignerTask::OPTION_MISMATCHES, mismatchesAllowedSpinBox->value());
@@ -78,41 +95,49 @@ QMap<QString,QVariant> GenomeAlignerSettingsWidget::getDnaAssemblyCustomSettings
 }
 
 void GenomeAlignerSettingsWidget::buildIndexUrl(const GUrl& url) {
-    refUrl = url.getURLString();
-    buildIndexFileEdit->setText(url.dirPath() + "/" + url.baseFileName());// + "." + GenomeAlignerTask::INDEX_EXTENSION);
-    prebuiltIndexFileEdit->setText(url.dirPath() + "/" + url.baseFileName());
-}
-
-bool GenomeAlignerSettingsWidget::isIndexOk() {
-    if (buildIndexRadioButton->isChecked()) {
-        return !buildIndexFileEdit->text().isEmpty();
-    } else {
-        return !prebuiltIndexFileEdit->text().isEmpty();
+    QString refUrl = url.getURLString();
+    QFile file(refUrl);
+    if (file.exists()) {
+        int fileSize = 1 + (int)(file.size()/(1024*1024));
+        int maxPartSize = qMin(fileSize, systemSize - MIN_READ_SIZE);
+        partSlider->setMinimum(MIN_PART_SIZE);
+        partSlider->setMaximum(maxPartSize);
+        partSlider->setEnabled(true);
+        partSlider->setValue(qMin(maxPartSize, DEFAULT_PART_SIZE));
     }
 }
 
-void GenomeAlignerSettingsWidget::sl_onSetIndexFileNameButtonClicked() {
+bool GenomeAlignerSettingsWidget::isParametersOk(QString &error) {
+    if (systemSize < readSlider->value() + 13*partSlider->value()) {
+        error = "There is no enough memory for the aligning on your computer. Try to reduce a memory size for short reads or for the reference fragment.";
+        return false;
+    }
+
+    return true;
+}
+
+void GenomeAlignerSettingsWidget::sl_onSetIndexDirButtonClicked() {
     LastOpenDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Set index file name"), lod.dir);
+
+    lod.url = QFileDialog::getExistingDirectory(this, tr("Set index files directory"), indexDirEdit->text());
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
-        /*if (result.lastFileSuffix().isEmpty()) {
-            result = QString( "%1.%2" ).arg( result.getURLString() ).arg(GenomeAlignerTask::INDEX_EXTENSION);
-        }*/
-        buildIndexFileEdit->setText(result.getURLString());
+        indexDirEdit->setText(result.getURLString());
     }
 }
 
-void GenomeAlignerSettingsWidget::sl_onOpenPrebuildIndexFileNameButtonClicked() {
-    LastOpenDirHelper lod;
-    QString filter;
+void GenomeAlignerSettingsWidget::sl_onPartSliderChanged(int value) {
+    partSizeLabel->setText(QByteArray::number(value) + " Mb");
+    indexSizeLabel->setText(QByteArray::number(value*13) + " Mb");
 
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open index file"), lod.dir, filter);
-    if (lod.url.isEmpty()) {
-        return;
-    }
+    readSlider->setMaximum(systemSize - 13*value);
 
-    prebuiltIndexFileEdit->setText(lod.url);
+    totalSizeLabel->setText(QByteArray::number(value*13 + readSlider->value()) + " Mb");
+}
+
+void GenomeAlignerSettingsWidget::sl_onReadSliderChanged(int value) {
+    readSizeLabel->setText(QByteArray::number(value) + " Mb");
+    totalSizeLabel->setText(QByteArray::number(partSlider->value()*13 + value) + " Mb");
 }
 
 } //namespace

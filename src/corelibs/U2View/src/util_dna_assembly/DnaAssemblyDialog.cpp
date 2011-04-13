@@ -112,9 +112,9 @@ void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
 
 void DnaAssemblyDialog::accept() {
     if (NULL != customGUI) {
-        if (!customGUI->isIndexOk()) {
-            QMessageBox::information(this, tr("DNA Assembly"),
-                tr("Index file name is not set!") );
+        QString error;
+        if (!customGUI->isParametersOk(error)) {
+            QMessageBox::information(this, tr("DNA Assembly"), error);
             return;
         }
     }

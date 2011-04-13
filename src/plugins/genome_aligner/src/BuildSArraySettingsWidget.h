@@ -33,6 +33,11 @@ public:
     BuildSArraySettingsWidget(QWidget* parent);
     virtual QMap<QString,QVariant> getBuildIndexCustomSettings();
     virtual QString getIndexFileExtension();
+    virtual void buildIndexUrl(const GUrl& url);
+private slots:
+    void sl_onPartSliderChanged(int value);
+private:
+    int systemSize;
 };
 
 }

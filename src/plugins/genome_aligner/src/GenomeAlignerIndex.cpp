@@ -19,15 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "GenomeAlignerIndex.h"
-
-#include <QtCore/QFile>
+#include <U2Core/Timer.h>
+#include <U2Core/Counter.h>
 #include <U2Algorithm/BinaryFindOpenCL.h>
+#include <QtCore/QFile>
 #include <QtEndian>
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerTask.h"
-#include <U2Core/Timer.h>
-#include <U2Core/Counter.h>
+
+#include "GenomeAlignerIndex.h"
 
 namespace U2 {
 
@@ -37,60 +37,47 @@ const QString GenomeAlignerIndex::REF_INDEX_EXTENSION("ref");
 const QString GenomeAlignerIndex::HEADER("#UGENE suffix array index\n");
 const QString GenomeAlignerIndex::PARAMETERS("#file \"%1\", sequence's length = %2, w = %3\n");
 const int GenomeAlignerIndex::charsInMask = 31;
-const QString COMMENT1("#sequence length, window size, index size, bitChar's length, count of sequences\n");
+const int GenomeAlignerIndex::overlapSize = 10000;
+const QString COMMENT1("#sequence length, window size, bitChar's length, seqPartSize, count of sequences\n");
 const QString COMMENT2("#reference name\n");
 const QString COMMENT3("#offsets of sequences in the reference\n");
+const QString COMMENT4("#seqStart, seqLength, saStart, saLength\n");
 
 GenomeAlignerIndex::GenomeAlignerIndex()
-: seq(NULL), sArray(NULL), bitMask(NULL), memIdx(NULL),
-memBM(NULL), indexFile(NULL), refFile(NULL), objLens(NULL)
+: memIdx(NULL), memBM(NULL), objLens(NULL)
 {
     bitTable = bt.getBitMaskCharBits(DNAAlphabet_NUCL);
     bitCharLen = bt.getBitMaskCharBitsNum(DNAAlphabet_NUCL);
     seqLength = 0;
     w = 0;
-    indexLength = 0;
-    loadedPartSize = 0;
     partsInMemCache = 0;
     objCount = 0;
     currentPart = -1;
+    build = true;
+    seqPartSize = -1;
 }
 
 GenomeAlignerIndex::~GenomeAlignerIndex() {
-    if (NULL != indexFile) {
-        indexFile->close();
-        delete indexFile;
-        indexFile = NULL;
-    }
-    if (NULL != refFile) {
-        refFile->close();
-        delete refFile;
-        refFile = NULL;
-    }
-    delete[] sArray;
-    delete[] bitMask;
     delete[] memIdx;
     delete[] memBM;
-    delete[] seq;
     delete[] objLens;
 }
 
-void GenomeAlignerIndex::serialize(const QString &refFileName, TaskStateInfo &ti) {
+void GenomeAlignerIndex::serialize(const QString &refFileName) {
     QString indexFileName = baseFileName + QString(".") + HEADER_EXTENSION;
     QFile file(indexFileName);
     if (!file.open(QIODevice::WriteOnly)) {
-        ti.setError(QString("Can't open %1 for writing").arg(indexFileName));
         return;
     }
 
     QByteArray data;
     data = HEADER.toAscii();
     data += PARAMETERS.arg(refFileName).arg(seqLength).arg(w).toAscii();
-    data += COMMENT1 + COMMENT2 + COMMENT3;
+    data += COMMENT1 + COMMENT2 + COMMENT3 + COMMENT4;
     data += QByteArray::number(seqLength, 10) + ", ";
     data += QByteArray::number(w, 10) + ", ";
-    data += QByteArray::number(indexLength, 10) + ", ";
     data += QByteArray::number(bitCharLen, 10) + ", ";
+    data += QByteArray::number(seqPartSize, 10) + ", ";
     data += QByteArray::number(objCount, 10) + "\n";
     data += seqObjName + "\n";
     for (int i=0; i<objCount; i++) {
@@ -127,12 +114,12 @@ inline quint32 getNextInt(QByteArray &data, bool &eol, bool &intErr) {
     return result.toUInt();
 }
 
-void GenomeAlignerIndex::deserialize(TaskStateInfo &ti) {
+bool GenomeAlignerIndex::deserialize(QByteArray &error) {
     QString indexFileName = baseFileName + QString(".") + HEADER_EXTENSION;
     QFile file(indexFileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        ti.setError("Can't open file-index");
-        return;
+        error = "Can't open file-index.";
+        return false;
     }
     QByteArray data;
     bool eol = false;
@@ -143,25 +130,29 @@ void GenomeAlignerIndex::deserialize(TaskStateInfo &ti) {
     } while (data.length() > 0 && '#' == data[0]);
 
     if (0 == data.length()) {
-        ti.setError("Empty parameters' line in the file-index");
-        return;
+        error = "Empty parameters' line in the file-index.";
+        file.close();
+        return false;
     }
     seqLength = getNextInt(data, eol, intErr);
     w = getNextInt(data, eol, intErr);
-    indexLength = getNextInt(data, eol, intErr);
     int bitCharLen = getNextInt(data, eol, intErr);
+    seqPartSize = getNextInt(data, eol, intErr);
     if (eol) {
-        ti.setError("Too little amount of parameters in the file-index");
-        return;
+        error = "Too little amount of parameters in the file-index.";
+        file.close();
+        return false;
     }
     objCount = getNextInt(data, eol, intErr);
     if (intErr) {
-        ti.setError("Bad integer for some parameter in the file-index");
-        return;
+        error = "Bad integer for some parameter in the file-index.";
+        file.close();
+        return false;
     }
     if (objCount <= 0) {
-        ti.setError("Count of sequences must be >0");
-        return;
+        error = "Count of sequences must be >0.";
+        file.close();
+        return false;
     }
 
     seqObjName = file.readLine().trimmed();
@@ -173,110 +164,43 @@ void GenomeAlignerIndex::deserialize(TaskStateInfo &ti) {
         objLens[i] = getNextInt(data, eol, intErr);
         if (i<objCount-1) {
             if (eol) {
-                ti.setError("Too little amount of parameters in the file-index");
-                return;
+                error = "Too little amount of parameters in the file-index.";
+                file.close();
+                return false;
             }
         }
     }
     if (intErr) {
-        ti.setError("Bad integer for some parameter in the file-index");
-        return;
+        error = "Bad integer for some parameter in the file-index.";
+        file.close();
+        return false;
     }
 
-    if (w <= 0 || indexLength <= 0) {
-        ti.setError("Negative index's parameters");
-        return;
+    if (w <= 0) {
+        error = "Negative index's parameters.";
+        file.close();
+        return false;
     }
 
     if (this->bitCharLen != bitCharLen) {
-        ti.setError("This index was built for a sequence with another sequence type");
-        return;
+        error = "This index was built for a sequence with another sequence type.";
+        file.close();
+        return false;
     } else {
         this->bitCharLen = bitCharLen;
     }
+
+    file.close();
+    return true;
 }
 
-bool GenomeAlignerIndex::openIndexFile() {
-    indexFile = new QFile(baseFileName+QString(".")+GenomeAlignerIndex::SARRAY_EXTENSION);
-
-    return indexFile->open(QIODevice::ReadOnly);
+bool GenomeAlignerIndex::openIndexFiles() {
+    indexPart.refFile = new QFile(baseFileName+QString(".")+GenomeAlignerIndex::REF_INDEX_EXTENSION);
+    return indexPart.refFile->open(QIODevice::ReadOnly);
 }
 
-QFile *GenomeAlignerIndex::openRefFile() {
-    QFile *refFile = new QFile(baseFileName+QString(".")+GenomeAlignerIndex::REF_INDEX_EXTENSION);
-
-    if (refFile->open(QIODevice::ReadOnly)) {
-        return refFile;
-    } else {
-        delete refFile;
-        return NULL;
-    }
-}
-
-
-void GenomeAlignerIndex::createMemCache() {
-    memIdx = new quint32[2*partsInMemCache];
-    memBM = new quint64[2*partsInMemCache];
-    int elemSize = sizeof(quint32) + sizeof(quint64);
-    quint32 partSize =  indexLength/partsInMemCache;
-    QByteArray b(2*elemSize, '\0');
-    char *buff = b.data();
-
-    assert(NULL != indexFile && indexFile->isOpen());
-    indexFile->seek(0);
-
-    indexFile->read(buff, elemSize);
-    quint32 idx = 0;
-    memIdx[0] = idx;
-    memBM[0] = qFromBigEndian<quint64>((uchar*)(buff+sizeof(quint32)));
-    bool foundBorder = false;
-    int maxPartSize = 0;
-    int curPartSize = 0;
-    quint64 bitFilter = ((quint64)0 - 1)<<(62 - GenomeAlignerTask::MIN_BIT_MASK_LENGTH);
-    for (int i=0; i<partsInMemCache; i++) {
-        foundBorder = false;
-        if (partsInMemCache-1 == i) {
-            curPartSize = (indexLength-1) - idx + 1;
-            idx = indexLength - 1;
-        } else {
-            curPartSize = partSize;
-            idx += partSize-1;
-        }
-        indexFile->seek(idx*elemSize);
-        indexFile->read(buff, elemSize);
-        memIdx[2*i+1] = idx;
-        memBM[2*i+1] = qFromBigEndian<quint64>((uchar*)(buff + sizeof(quint32)));
-        idx++;
-        if (partsInMemCache-1 == i) {
-            if (curPartSize > maxPartSize) {
-                maxPartSize = curPartSize;
-            }
-            continue;
-        }
-        while (!foundBorder && idx < indexLength) {
-            indexFile->read(buff, elemSize);
-            memIdx[2*i+2] = idx;
-            memBM[2*i+2] = qFromBigEndian<quint64>((uchar*)(buff + sizeof(quint32)));
-            if ((memBM[2*i+1]&bitFilter) != (memBM[2*i+2]&bitFilter)) {
-                foundBorder = true;
-            } else {
-                curPartSize++;
-            }
-        }
-        if (idx == indexLength) {
-            partsInMemCache = i+1;
-        }
-        if (curPartSize > maxPartSize) {
-            maxPartSize = curPartSize;
-        }
-    }
-
-    sArray = new quint32[maxPartSize];
-    bitMask = new quint64[maxPartSize];
-}
-
-quint64 GenomeAlignerIndex::getBitValue(const char *seq, int length) const {
-    quint64 bitValue = 0;
+BMType GenomeAlignerIndex::getBitValue(const char *seq, int length) const {
+    BMType bitValue = 0;
     for (int i = 0; i < length; i++) {
         bitValue = (bitValue << bitCharLen) | bitTable[uchar(*(seq+i))];
     }
@@ -286,83 +210,39 @@ quint64 GenomeAlignerIndex::getBitValue(const char *seq, int length) const {
     return bitValue;
 }
 
-int GenomeAlignerIndex::getPrefixSize() const {
-    return w;
-}
-
-int GenomeAlignerIndex::findInCache(quint64 bitValue, quint64 bitFilter) const {
-    int low = 0;
-    int high = 2*partsInMemCache-1;
-    quint64 *a = memBM;
-    int preAnswer = -1;
-    while (low <= high) {
-        int mid = (low + high) >> 1;
-        qint64 rc = (a[mid] & bitFilter) - (bitValue&bitFilter);
-        if (rc < 0) {
-            if (1 < high - mid) {
-                low = mid + 1;
-            } else {
-                if (1 == high%2 && (a[high]&bitFilter) >= (bitValue&bitFilter)) {
-                    preAnswer = high >> 1;
-                } else if (0 == high%2 && (a[high]&bitFilter) <= (bitValue&bitFilter)) {
-                    preAnswer = high >> 1;
-                }
-                break;
-            }
-        } else if (rc > 0) {
-            if (1 < mid - low) {
-                high = mid - 1;
-            } else {
-                if (0 == low%2 && (a[low]&bitFilter) <= (bitValue&bitFilter)) {
-                    preAnswer = low >> 1;
-                } else if (1 == low%2 && (a[low]&bitFilter) >= (bitValue&bitFilter)) {
-                    preAnswer = low >> 1;
-                }
-                break;
-            }
-        } else {
-            preAnswer = mid >> 1;
-            break;
-        }
-    }
-
-    return preAnswer;
-}
-
 void GenomeAlignerIndex::loadPart(int part) {
-    assert(part < partsInMemCache);
-
-    quint32 startIdx = memIdx[2*part];
-    loadedPartSize = memIdx[2*part+1] - startIdx + 1;
-    int elemSize = sizeof(quint32) + sizeof(quint64);
-
-    int BUFF_SIZE = 1024*1024*elemSize;
-    QByteArray b(BUFF_SIZE, '\0');
-    char *buff = b.data();
-    indexFile->seek(startIdx*elemSize);
-    qint64 size = indexFile->read(buff, BUFF_SIZE);
-    qint64 idx = 0;
-    assert(size>0);
-
-    for (quint32 i=0; i<loadedPartSize; i++, idx+=elemSize) {
-        if (idx >= size) {
-            size = indexFile->read(buff, BUFF_SIZE);
-            idx = 0;
-            if (0==size) {
-                loadedPartSize = i;
-                break;
-            }
-        }
-        sArray[i] = qFromBigEndian<quint32>((uchar*)(buff+idx));
-        bitMask[i] = qFromBigEndian<quint64>((uchar*)(buff+idx + sizeof(quint32)));
-    }
     currentPart = part;
+    if (build) {
+        GTIMER(c, v, "GenomeAlignerIndex::build");
+        GCOUNTER(c1, v1, "GenomeAlignerIndex::build");
+        SAType arrLen = 0;
+        sArray = indexPart.sArray;
+        bitMask = indexPart.bitMask;
+        buildPart(indexPart.seqStarts[part], indexPart.seqLengths[part], arrLen);
+        indexPart.saLengths[part] = arrLen;
+        indexPart.currentPart = part;
+        sort(bitMask, 0, arrLen);
+        GTIMER(c2, v2, "GenomeAlignerIndex::writePart");
+        indexPart.writePart(part, arrLen);
+        v2.stop();
+        sArray = NULL;
+        bitMask = NULL;
+
+        if (part == indexPart.partCount - 1) {
+            build = false;
+            serialize(baseFileName + "." + REF_INDEX_EXTENSION);
+        }
+    } else {
+        GTIMER(c, v, "GenomeAlignerIndex::load");
+        GCOUNTER(c1, v1, "GenomeAlignerIndex::load");
+        indexPart.load(part);
+    }
 }
 
-int GenomeAlignerIndex::findBit(quint64 bitValue, quint64 bitFilter) {
+ResType GenomeAlignerIndex::findBit(BMType bitValue, BMType bitFilter) {
     int low = 0;
-    int high = loadedPartSize - 1;
-    quint64 *a = bitMask;
+    int high = indexPart.getLoadedPartSize() - 1;
+    BMType *a = indexPart.bitMask;
     qint64 rc = 0;
     while (low <= high) {
         int mid = (low + high) / 2;
@@ -383,17 +263,17 @@ int GenomeAlignerIndex::findBit(quint64 bitValue, quint64 bitFilter) {
     return -1;
 }
 
-ResType *GenomeAlignerIndex::findBitOpenCL(quint64 *bitValues, int size, quint64 bitFilter) {
+ResType *GenomeAlignerIndex::findBitOpenCL(BMType *bitValues, int size, BMType bitFilter) {
     taskLog.details(QString("Binary search on GPU of %1 Mb search-values in %2 Mb base values")
-        .arg((8*size)/(1024*1024)).arg((8*loadedPartSize)/(1024*1024)));
-    BinaryFindOpenCL bf((NumberType*)bitMask, loadedPartSize, (NumberType*)bitValues, size, bitFilter);
+        .arg((8*size)/(1024*1024)).arg((8*indexPart.getLoadedPartSize())/(1024*1024)));
+    BinaryFindOpenCL bf((NumberType*)indexPart.bitMask, indexPart.getLoadedPartSize(), (NumberType*)bitValues, size, bitFilter);
 
     NumberType *ans = bf.launch();
 
     return (ResType*)ans;
 }
 
-void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, quint64 &bitFilter) {
+void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, BMType &bitFilter) {
         if (settings->absMismatches) {
             n++;
         } else {
@@ -408,10 +288,10 @@ void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, qui
         bitFilter = ((quint64)0 - 1)<<(62 - w*2);
 }
 
-bool GenomeAlignerIndex::isValidPos(quint32 offset, int startPos, int length, quint32 &fisrtSymbol, const QList<quint32> &results) {
+bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu) {
     assert(offset>=0 && offset<objLens[objCount-1]);
     fisrtSymbol = offset-startPos;
-    if (results.contains(fisrtSymbol)) {
+    if (qu->contains(fisrtSymbol)) {
         return false;
     }
     int j = 0;
@@ -420,7 +300,7 @@ bool GenomeAlignerIndex::isValidPos(quint32 offset, int startPos, int length, qu
             break;
         }
     }
-    quint32 minBorder = j>0?objLens[j-1]:0;
+    SAType minBorder = j>0?objLens[j-1]:0;
     if (fisrtSymbol < minBorder) {
         return false;
     }
@@ -431,10 +311,9 @@ bool GenomeAlignerIndex::isValidPos(quint32 offset, int startPos, int length, qu
     return true;
 }
 
-bool GenomeAlignerIndex::compare(const char *sourceSeq, const QByteArray &querySeq, int startPos,
-                                 int w, int bits, int &c, int CMAX, int restBits) {
+bool GenomeAlignerIndex::compare(const char *sourceSeq, const QByteArray &querySeq, int startPos, int w, int &c, int CMAX) {
     // forward collect
-    for (int i=startPos+w + bits/2; i<querySeq.length() && c <= CMAX; i++) {
+    for (int i=startPos+w; i<querySeq.length() && c <= CMAX; i++) {
         c += (querySeq.at(i) == sourceSeq[i])?0:1;
     }
     if (c>CMAX) {
@@ -450,11 +329,11 @@ bool GenomeAlignerIndex::compare(const char *sourceSeq, const QByteArray &queryS
     return false;
 }
 
-void GenomeAlignerIndex::fullBitMaskOptimization(int CMAX, quint64 bitValue, quint64 bitMaskValue, int restBits, int w, int &bits, int &c) {
+void GenomeAlignerIndex::fullBitMaskOptimization(int CMAX, BMType bitValue, BMType bitMaskValue, int restBits, int w, int &bits, int &c) {
     if (CMAX > 0) {
-        quint64 tmpBM = bitMaskValue<<(2+2*w);
-        quint64 tmpBV = bitValue<<(2+2*w);
-        quint64 xorBM = (tmpBV ^ tmpBM);
+        BMType tmpBM = bitMaskValue<<(2+2*w);
+        BMType tmpBV = bitValue<<(2+2*w);
+        BMType xorBM = (tmpBV ^ tmpBM);
         xorBM >>= 2*w + 2 + (restBits - bits);
 
         for (int i=0; i<bits && c<=CMAX; i+=2) {
@@ -474,27 +353,41 @@ void GenomeAlignerIndex::fullBitMaskOptimization(int CMAX, quint64 bitValue, qui
     }
 }
 
+bool GenomeAlignerIndex::find(SAType &offset, SAType &firstSymbol, int &startPos, SearchQuery *qu, bool &bestMode, int &CMAX, bool valid) {
+    const QByteArray &querySeq = qu->constSequence();
+    if (!valid && !isValidPos(offset, startPos, querySeq.length(), firstSymbol, qu)) {
+        return false;
+    }
+
+    const char *refBuff = &(indexPart.seq[firstSymbol - indexPart.getLoadedSeqStart()]);
+
+    int c = 0;
+    if (compare(refBuff, querySeq, startPos, w, c, CMAX)) {
+        if (bestMode) {
+            qu->clear();
+        }
+        qu->addResult(firstSymbol, c);
+        return true;
+    }
+
+    return false;
+}
+
 //this method contains big copy-paste but it works very fast because of it.
-void GenomeAlignerIndex::findInPart(QFile *refFile, int startPos, ResType firstResult,
-                                    quint64 bitValue, SearchQuery *qu, SearchContext *settings) {
-    assert(NULL != refFile && refFile->isOpen());
+void GenomeAlignerIndex::findInPart(int startPos, ResType firstResult, BMType bitValue, SearchQuery *qu, SearchContext *settings) {
     if (firstResult < 0) {
         return;
     }
 
-    quint64 tmpBM = 0;
-    quint64 tmpBV = 0;
-    quint64 xorBM = 0;
-    quint32 fisrtSymbol = 0;
+    SAType fisrtSymbol = 0;
+    SAType offset = 0;
     const QByteArray &querySeq = qu->constSequence();
-    QList<quint32> &results = qu->results;
-    QByteArray buf(querySeq.length(), '\0');
-    char *refBuff = buf.data();
+    char *refBuff = NULL;
     int lastResult = firstResult;
     int n = settings->nMismatches;
     int pt = settings->ptMismatches;
     int w = settings->w;
-    quint64 bitFilter = settings->bitFilter;
+    BMType bitFilter = settings->bitFilter;
 
     if (settings->bestMode) {
         n = 0;
@@ -503,9 +396,10 @@ void GenomeAlignerIndex::findInPart(QFile *refFile, int startPos, ResType firstR
             n, pt, settings->minReadLength, settings->maxReadLength);
         bitFilter = ((quint64)0 - 1)<<(62 - w*2);
     }
-    QVector<QByteArray> reads;
+    QVector<qint64> reads;
 
     while (n <= settings->nMismatches && pt <= settings->ptMismatches) {
+        bool lastIteration = (settings->absMismatches) ? (n == settings->nMismatches) : (pt == settings->ptMismatches);
         int CMAX = n;
         int restBits = qMax(0, 2*(charsInMask - w));
         if (!settings->absMismatches) {
@@ -513,174 +407,98 @@ void GenomeAlignerIndex::findInPart(QFile *refFile, int startPos, ResType firstR
         }
 
         if (settings->bestMode) {
-            if (!qu->mismatchCounts.isEmpty() && qu->mismatchCounts.first() <= (quint32)CMAX) {
+            if (qu->haveMCount() && qu->firstMCount() <= (quint32)CMAX) {
                 break;
             }
             //search in the vector
-            QVector<QByteArray>::iterator it = reads.begin();
-            for (int k=firstResult; it!=reads.end(); k++, it++) {
-                if ("" == *it) {
+            for (QVector<qint64>::iterator it = reads.begin(); it!=reads.end(); it++) {
+                if (-1 == *it) {
                     continue;
                 }
-                if (!isValidPos(sArray[k], startPos, querySeq.length(), fisrtSymbol, results)) {
+                fisrtSymbol = *it;
+                if (qu->contains(fisrtSymbol)) {
                     continue;
                 }
                 int c = 0;
-                if (compare((*it).constData(), querySeq, startPos, w, 0, c, CMAX, restBits)) {
+                refBuff = &(indexPart.seq[fisrtSymbol - indexPart.getLoadedSeqStart()]);
+                if (compare(refBuff, querySeq, startPos, w, c, CMAX)) {
                     if (settings->bestMode) {
-                        qu->results.clear();
-                        qu->mismatchCounts.clear();
+                        qu->clear();
                     }
-                    qu->results.append(fisrtSymbol);
-                    qu->mismatchCounts.append(c);
+                    qu->addResult(fisrtSymbol, c);
                     if (settings->bestMode) {
                         break;
                     }
                 }
             }
 
-            if (!results.isEmpty()) {
+            if (qu->haveResult()) {
                 break;
             }
 
             //search in the candidates before vector
-            for (int k=firstResult-1; (k>=0) && (bitValue&bitFilter)==(bitMask[k]&bitFilter); k--) {
+            for (int k=firstResult-1; (k>=0) && (bitValue&bitFilter)==(indexPart.bitMask[k]&bitFilter); k--) {
                 firstResult--;
-                if (!isValidPos(sArray[k], startPos, querySeq.length(), fisrtSymbol, results)) {
-                    if (settings->bestMode) {
-                        reads.prepend(QByteArray(""));
-                    }
-                    continue;
+                if (!isValidPos(indexPart.sArray[k] + indexPart.getLoadedSeqStart(), startPos, querySeq.length(),
+                    fisrtSymbol, qu)) {
+                        if (!lastIteration) {
+                            reads.append(-1);
+                        }
+                        continue;
+                }
+
+                refBuff = &(indexPart.seq[fisrtSymbol - indexPart.getLoadedSeqStart()]);
+
+                if (!lastIteration) {
+                    reads.append(fisrtSymbol);
                 }
 
                 int c = 0;
-                int bits = qMin(2*(querySeq.length() - startPos - w), restBits);
-                /*fullBitMaskOptimization(CMAX, bitValue, bitMask[k], restBits, w, bits, c);
-                if (c>CMAX) {
+                if (compare(refBuff, querySeq, startPos, w, c, CMAX)) {
                     if (settings->bestMode) {
-                        reads.prepend(QByteArray(""));
+                        qu->clear();
                     }
-                    continue;
-                }*/
-                if (CMAX > 0) {
-                    tmpBM = bitMask[k]<<(2+2*settings->w);
-                    tmpBV = bitValue<<(2+2*settings->w);
-                    xorBM = (tmpBV ^ tmpBM);
-                    xorBM >>= 2*settings->w + 2 + (restBits - bits);
-
-                    for (int i=0; i<bits && c<=CMAX; i+=2) {
-                        if (1 == (xorBM&1)) {
-                            xorBM >>=1;
-                            c++;
-                        } else {
-                            xorBM >>=1;
-                            if (1 == (xorBM&1)) {
-                                c++;
-                            }
-                        }
-                        xorBM >>= 1;
-                    }
-                    if (c>CMAX) {
-                        if (settings->bestMode) {
-                            reads.prepend(QByteArray(""));
-                        }
-                        continue;
-                    }
-                } else {
-                    bits = 0;
-                }
-
-                refFile->seek(fisrtSymbol);
-                refFile->read(refBuff, querySeq.length());
-
-                if (settings->bestMode) {
-                    reads.prepend(buf);
-                }
-
-                if (compare(refBuff, querySeq, startPos, w, bits, c, CMAX, restBits)) {
-                    if (settings->bestMode) {
-                        qu->results.clear();
-                        qu->mismatchCounts.clear();
-                    }
-                    qu->results.append(fisrtSymbol);
-                    qu->mismatchCounts.append(c);
+                    qu->addResult(fisrtSymbol, c);
                     if (settings->bestMode) {
                         break;
                     }
                 }
             }
-            if (!results.isEmpty()) {
+            if (qu->haveResult()) {
                 break;
             }
         }
 
         //search in the candidates after vector
-        for (int k=lastResult; (k<loadedPartSize) && (bitValue&bitFilter)==(bitMask[k]&bitFilter); k++) {
+        for (SAType k=lastResult; (k<indexPart.getLoadedPartSize()) && (bitValue&bitFilter)==(indexPart.bitMask[k]&bitFilter); k++) {
             lastResult++;
-            if (!isValidPos(sArray[k], startPos, querySeq.length(), fisrtSymbol, results)) {
-                if (settings->bestMode) {
-                    reads.append(QByteArray(""));
+            offset = indexPart.sArray[k] + indexPart.getLoadedSeqStart();
+            if (!isValidPos(indexPart.sArray[k] + indexPart.getLoadedSeqStart(), startPos, querySeq.length(),
+                fisrtSymbol, qu)) {
+                if (!lastIteration) {
+                    reads.append(-1);
                 }
                 continue;
+            }
+
+            refBuff = &(indexPart.seq[fisrtSymbol - indexPart.getLoadedSeqStart()]);
+
+            if (!lastIteration) {
+                reads.append(fisrtSymbol);
             }
 
             int c = 0;
-            int bits = qMin(2*(querySeq.length() - startPos - w), restBits);
-            //fullBitMaskOptimization(CMAX, bitValue, bitMask[k], restBits, w, bits, c);
-            /*if (c>CMAX) {
+            if (compare(refBuff, querySeq, startPos, w, c, CMAX)) {
                 if (settings->bestMode) {
-                    reads.append(QByteArray(""));
+                    qu->clear();
                 }
-                continue;
-            }*/
-            if (CMAX > 0) {
-                tmpBM = bitMask[k]<<(2+2*settings->w);
-                tmpBV = bitValue<<(2+2*settings->w);
-                xorBM = (tmpBV ^ tmpBM);
-                xorBM >>= 2*settings->w + 2 + (restBits - bits);
-
-                for (int i=0; i<bits && c<=CMAX; i+=2) {
-                    if (1 == (xorBM&1)) {
-                        xorBM >>=1;
-                        c++;
-                    } else {
-                        xorBM >>=1;
-                        if (1 == (xorBM&1)) {
-                            c++;
-                        }
-                    }
-                    xorBM >>= 1;
-                }
-                if (c>CMAX) {
-                    if (settings->bestMode) {
-                        reads.append(QByteArray(""));
-                    }
-                    continue;
-                }
-            } else {
-                bits = 0;
-            }
-
-            refFile->seek(fisrtSymbol);
-            refFile->read(refBuff, querySeq.length());
-
-            if (settings->bestMode) {
-                reads.append(buf);
-            }
-
-            if (compare(refBuff, querySeq, startPos, w, bits, c, CMAX, restBits)) {
-                if (settings->bestMode) {
-                    qu->results.clear();
-                    qu->mismatchCounts.clear();
-                }
-                qu->results.append(fisrtSymbol);
-                qu->mismatchCounts.append(c);
+                qu->addResult(fisrtSymbol, c);
                 if (settings->bestMode) {
                     break;
                 }
             }
         }
-        if (!results.isEmpty()) {
+        if (qu->haveResult()) {
             break;
         }
 
@@ -688,46 +506,207 @@ void GenomeAlignerIndex::findInPart(QFile *refFile, int startPos, ResType firstR
     }
 }
 
+/*build index*/
+void GenomeAlignerIndex::buildPart(SAType start, SAType length, SAType &arrLen) {
+    initSArray(start, length, arrLen);
+    const char *seq = indexPart.seq;
+    SAType *arunner = sArray;
+    BMType *mrunner = bitMask;
+    BMType bitValue = 0;
+    SAType expectedNext = 0;
+    quint32 wCharsInMask1 = w - 1;
+
+    for (BMType *end = mrunner + arrLen; mrunner < end; arunner++, mrunner++) {
+        const char* s = seq + *arunner;
+        if (*arunner == expectedNext && expectedNext != 0) { //pop first bit, push wCharsInMask1 char to the mask
+            bitValue = ((bitValue << bitCharLen) | bitTable[uchar(*(s + wCharsInMask1))]) & bitFilter;
+#ifdef _DEBUG
+            // double check that optimization doesn't break anything
+            BMType bitValue2 = getBitValue(s, w);
+            assert(bitValue == bitValue2);
+#endif
+        } else {
+            //recompute the mask if we have some symbols skipped
+            bitValue = getBitValue(s, w);
+        }
+        expectedNext = (s + 1) - seq;
+        *mrunner = bitValue;
+    }
+}
+
+void GenomeAlignerIndex::initSArray(SAType start, SAType length, SAType &arrLen) {
+    indexPart.refFile->seek(start);
+    qint64 l = indexPart.refFile->read(indexPart.seq, length);
+    if (length != l) {
+        //setError("Index .ref file is corrupted.");
+        return;
+    }
+    const char *seq = indexPart.seq;
+
+    SAType *arunner = sArray;
+    SAType idx = start;
+    SAType seqIdx = 0;
+    SAType tmpIdx = 0;
+
+    int curObj = 0;
+    for (; curObj<objCount; curObj++) {
+        if (idx < objLens[curObj]) {
+            break;
+        }
+    }
+    assert(curObj < objCount);
+
+    bool goodSuff = false;
+    arrLen = 0;
+    SAType last = start + length - w;
+    for (quint32 i=0; idx <= last; i++) { //initializing sArray and arrLen
+        if (idx > (objLens[curObj]-w) && idx < objLens[curObj]) {
+            seqIdx += objLens[curObj] - idx;
+            idx = objLens[curObj];
+            curObj++;
+            goodSuff = false;
+        }
+        if (idx >= seqLength || seqIdx >= length) {
+            break;
+        }
+
+        if (goodSuff) {
+            if (seq[seqIdx + w-1]==unknownChar) {
+                goodSuff = false;
+                seqIdx += w;
+                idx += w;
+                i--;
+                continue;
+            }
+        }
+        if (!goodSuff) {
+            int goodChars = 0;
+            tmpIdx = idx;
+            SAType j = seqIdx;
+            for (; j<length && goodChars<w; j++) {
+                if (tmpIdx == objLens[curObj]) {
+                    j += objLens[curObj] - tmpIdx;
+                    tmpIdx = objLens[curObj];
+                    curObj++;
+                    goodChars = 0;
+                    j--;
+                    continue;
+                }
+                if (seq[j]!=unknownChar) {
+                    goodChars++;
+                } else {
+                    goodChars = 0;
+                }
+                tmpIdx++;
+            }
+
+            idx = tmpIdx - goodChars;
+            seqIdx = j - w;
+            if (goodChars != w) {
+                break;
+            }
+            goodSuff = true;
+        }
+
+        *arunner = idx - start; //-start for positioning at a part of the sequence
+        arrLen++;
+        idx++;
+        arunner++;
+        seqIdx++;
+    }
+}
+
+//Stable sort of sequences
+void GenomeAlignerIndex::sort(BMType *x, int off, int len) {
+    // Insertion sort on smallest arrays
+    if (len < 7) {
+        for (int i=off; i<len+off; i++){
+            for (int j=i; j > off && compare(x+j-1,x+j)>0; j--) {
+                swap(x+j, x+j-1);
+            }
+        }
+        return;
+    }
+
+    // Choose a partition element, v
+    quint32 m = off + len / 2;       // Small arrays, middle element
+    if (len > 7) {
+        quint32 l = off;
+        quint32 n = off + len - 1;
+        if (len > 40) {        // Big arrays, pseudo median of 9
+            quint32 s = len / 8;
+            l = med3(x, l,     l+s, l+2*s);
+            m = med3(x, m-s,   m,   m+s);
+            n = med3(x, n-2*s, n-s, n);
+        }
+        m = med3(x, l, m, n); // Mid-size, med of 3
+    }
+    BMType *v = x + m;
+
+    // Establish Invariant: v* (<v)* (>v)* v*
+    int a = off, b = a, c = off + len - 1, d = c;
+    while(true) {
+        qint64 cr;
+        while (b <= c && (cr = compare(v, x+b)) >=0 ) {
+            if (cr == 0) {
+                (x+b==v) && (v=x+a);//save middle pos value
+                swap(x+a++,x+b);
+            }
+            b++;
+        }
+        while (c >= b && (cr = compare(x+c, v)) >=0 ) {
+            if (cr == 0) {
+                (x+c==v) && (v=x+d);//save middle pos value
+                swap(x+c, x+d--);
+            }
+            c--;
+        }
+        if (b > c) {
+            break;
+        }
+        swap(x+b++, x+c--);
+    }
+
+    // Swap partition elements back to middle
+    int s, n = off + len;
+    s = qMin(a-off, b-a  ); vecswap(x+off, x+b-s, s);
+    s = qMin(d-c,   n-d-1); vecswap(x+b,   x+n-s, s);
+
+    // Recursively sort non-partition-elements
+    if ((s = b-a) > 1) {
+        sort(x, off, s);
+    }
+    if ((s = d-c) > 1) {
+        sort(x, n-s, s);
+    }
+}
+
+qint64 GenomeAlignerIndex::compare(const BMType *x1, const BMType *x2) const {
+    return *x1-*x2;
+}
+
+void GenomeAlignerIndex::swap(BMType *x1, BMType *x2) const {
+    assert(x1 - bitMask >= 0 && x1 - bitMask < (qint64)indexPart.saLengths[indexPart.currentPart]);
+    assert(x2 - bitMask >= 0 && x2 - bitMask < (qint64)indexPart.saLengths[indexPart.currentPart]);
+
+    SAType *a1 = sArray+(x1-bitMask);
+    SAType *a2 = sArray+(x2-bitMask);
+    qSwap(*x1, *x2);
+    qSwap(*a1, *a2);
+}
+
+quint32 GenomeAlignerIndex::med3(BMType *x, quint32 a, quint32 b, quint32 c) {
+    qint64 bc = compare(x+b, x+c);
+    qint64 ac = compare(x+a, x+c);
+    return compare(x+a, x+b) < 0 ?
+        (bc < 0 ? b : ac < 0 ? c : a) :
+        (bc > 0 ? b : ac > 0 ? c : a);
+}
+
+void GenomeAlignerIndex::vecswap(BMType *x1, BMType *x2, quint32 n) {
+    for (quint32 i=0; i<n; i++) {
+        swap(x1+i, x2+i);
+    }
+}
+
 } //U2
-
-//optimizations of findInPart
-//full bitMask usage
-/*quint64 m = 0;
-quint64 v = 0;
-int matchLen = restBits/(CMAX + 1);
-if (bits >= matchLen) {
-tmpBM = bitMask[k]<<(2+2*settings->w);
-tmpBV = bitValue<<(2+2*settings->w);
-bool match = false;
-
-for (int i=0; i+matchLen<=bits; i+=matchLen) {
-m = tmpBM >> (64-matchLen);
-v = tmpBV >> (64-matchLen);
-if (m == v) {
-match = true;
-break;
-}
-tmpBM <<= matchLen;
-tmpBV <<= matchLen;
-}
-if (!match) {
-continue;
-}
-bits = 0;
-} else {
-bits = 0;
-}*/
-
-//unchecked optimization of disk reads count
-/*quint64 window = getBitValue(querySeq.constData()+startPos+settings->w, 30);
-int res = findBit(window, settings->bitFilter);
-bool found = false;
-for (int j=res; (window&settings->bitFilter)==(bitMask[j]&settings->bitFilter); j++) {
-if (sArray[j] == offset+settings->w) {
-found = true;
-break;
-}
-}
-if (!found) {
-continue;
-}*/

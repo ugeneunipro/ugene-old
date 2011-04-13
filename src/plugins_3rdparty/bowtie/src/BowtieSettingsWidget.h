@@ -33,7 +33,7 @@ public:
     BowtieSettingsWidget(QWidget* parent);
     virtual QMap<QString,QVariant> getDnaAssemblyCustomSettings();
 	virtual void buildIndexUrl(const GUrl& url) {};
-	virtual bool isIndexOk() {return true;};
+    virtual bool isParametersOk(QString&) {return true;}
 };
 
 }

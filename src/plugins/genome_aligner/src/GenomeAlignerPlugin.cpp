@@ -58,9 +58,9 @@ class GenomeAlignerGuiExtFactory : public DnaAssemblyGUIExtensionsFactory {
 public:
     GenomeAlignerGuiExtFactory(){};
     DnaAssemblyAlgorithmMainWidget* createMainWidget(QWidget* parent) {return new GenomeAlignerSettingsWidget(parent);}
-    DnaAssemblyAlgorithmBuildIndexWidget* createBuildIndexWidget(QWidget* parent) {assert(0); return NULL;}
+    DnaAssemblyAlgorithmBuildIndexWidget* createBuildIndexWidget(QWidget* parent) {return new BuildSArraySettingsWidget(parent);}
     bool hasMainWidget() {return true;}
-    bool hasBuildIndexWidget() {return false;}
+    bool hasBuildIndexWidget() {return true;}
 };
 
 GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE genome aligner"), tr("Assembly DNA to reference sequence") ) {
