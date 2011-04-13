@@ -290,6 +290,9 @@ void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, BMT
 
 bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu) {
     assert(offset>=0 && offset<objLens[objCount-1]);
+    if ((qint64)offset < startPos) {
+        return false;
+    }
     fisrtSymbol = offset-startPos;
     if (qu->contains(fisrtSymbol)) {
         return false;
