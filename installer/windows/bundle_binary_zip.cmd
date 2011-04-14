@@ -77,6 +77,11 @@ call %INSTALL_DIR%/copy_plugin.cmd smith_waterman
 call %INSTALL_DIR%/copy_plugin.cmd umuscle
 call %INSTALL_DIR%/copy_plugin.cmd weight_matrix
 call %INSTALL_DIR%/copy_plugin.cmd workflow_designer
+call %INSTALL_DIR%/copy_plugin.cmd dbi_sqlite
+call %INSTALL_DIR%/copy_plugin.cmd dbi_bam
+call %INSTALL_DIR%/copy_plugin.cmd assembly_browser
+
+
 
 cd %INSTALL_DIR%
 zip -r %BINARY_ZIPFILE% ugene-%U_VERSION%\*
