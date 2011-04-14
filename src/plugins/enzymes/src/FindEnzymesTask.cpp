@@ -43,17 +43,24 @@ static Logger log(ULOG_ENZYMES);
 
 FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const DNASequence& seq, 
                                                            const QList<SEnzymeData>& _enzymes, const FindEnzymesTaskConfig& config)
-: Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), enzymes(_enzymes), aObj(aobj), cfg(config)
+: Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), dna(seq), enzymes(_enzymes), aObj(aobj), cfg(config)
 {
     GCOUNTER( cvar, tvar, "FindEnzymesToAnnotationsTask" );
     seqRange = U2Region(0, seq.length());
-    if (enzymes.count() == 0 ) {
+   
+}
+
+
+void FindEnzymesToAnnotationsTask::prepare()
+{
+     if (enzymes.count() == 0 ) {
         stateInfo.setError(tr("No enzymes selected."));
         return;
     }
-    fTask = new FindEnzymesTask(seq, seqRange, enzymes, cfg.maxResults, cfg.circular);
+    fTask = new FindEnzymesTask(dna, seqRange, enzymes, cfg.maxResults, cfg.circular);
     addSubTask(fTask);
 }
+
 
 void FindEnzymesToAnnotationsTask::run() {
 

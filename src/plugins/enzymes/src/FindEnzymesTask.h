@@ -69,11 +69,12 @@ class FindEnzymesToAnnotationsTask : public Task {
 public:
     FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const DNASequence& seq, 
         const QList<SEnzymeData>& enzymes, const FindEnzymesTaskConfig& cfg);
-    
+    void prepare();
     void run();
     ReportResult report();
     
 private:
+    const DNASequence&                  dna;
     QList<SEnzymeData>                  enzymes;
     QMap<QString,SharedAnnotationData>  resultMap;
     U2Region                            seqRange;

@@ -224,9 +224,11 @@ void AutoAnnotationsUpdateTask::prepare()
     }
 }
 
-AutoAnnotationsUpdateTask::~AutoAnnotationsUpdateTask()
+
+Task::ReportResult AutoAnnotationsUpdateTask::report()
 {
     aa->lock();
+    return ReportResult_Finished;
 }
 
 

@@ -113,7 +113,7 @@ class U2CORE_EXPORT AutoAnnotationsUpdateTask : public Task {
 public:
     AutoAnnotationsUpdateTask(AutoAnnotationObject* aaObj, QList<Task*> subtasks); 
     virtual void prepare();
-    virtual ~AutoAnnotationsUpdateTask(); 
+    ReportResult report();
 protected:
     AutoAnnotationObject* aa;
     QList<Task*> subTasks;
