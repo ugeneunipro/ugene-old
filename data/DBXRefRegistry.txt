@@ -148,7 +148,7 @@ SPTREMBL|http://www.ebi.ac.uk/uniprot/unisave/?query=%1&search=Go||SWISS-PROT pr
 
 SubtiList|||Bacillus subtilis genome sequencing project
 
-SWISS-PROT|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.fasta|The Universal Protein Resource (UniProt) is a comprehensive resource for protein sequence and annotation data.
+SWISS-PROT|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.txt|The Universal Protein Resource (UniProt) is a comprehensive resource for protein sequence and annotation data.
 
 taxon|||NCBI's taxonomic identifier
 
@@ -156,9 +156,9 @@ TIGRFAM|||TIGR protein families
 
 UNILIB|||Unified Library Database, a library-level view of the EST and SAGE libraries present in dbEST, UniGene and SAGEmap
 
-UniProtKB/Swiss-Prot|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.fasta|section of the UniProt Knowledgebase, containing annotated records
+UniProtKB/Swiss-Prot|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.txt|section of the UniProt Knowledgebase, containing annotated records
 
-UniProtKB/TrEMBL|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.fasta|section of the UniProt Knowledgebase, containing computationally analysed records waiting for full manual annotation
+UniProtKB/TrEMBL|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.txt|section of the UniProt Knowledgebase, containing computationally analysed records waiting for full manual annotation
 
 UniSTS|http://www.ncbi.nlm.nih.gov/genome/sts/sts.cgi?uid=%1||NCBI UniSTS is a comprehensive database of sequence tagged sites (STSs) derived from STS-based maps and other experiments.
 
