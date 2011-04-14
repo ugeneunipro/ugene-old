@@ -576,6 +576,7 @@ void BioStruct3DGLWidget::setState( const QVariantMap& state )
     if (state.isEmpty()) {
         return;
     }
+    glFrame->makeCurrent();
     glFrame->setState(state);
 
     backgroundColor = state.value(BACKGROUND_COLOR_NAME, DEFAULT_BACKGROUND_COLOR).value<QColor>();
