@@ -25,6 +25,8 @@ class BackgroundRenderer: public QObject {
     Q_OBJECT
 public:
     BackgroundRenderer();
+    ~BackgroundRenderer();
+
     void render(BackgroundRenderTask * task);
     QImage getImage() const;
 signals:

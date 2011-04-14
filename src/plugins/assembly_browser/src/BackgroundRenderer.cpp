@@ -24,6 +24,12 @@ renderTask(0), redrawRunning(false), redrawNeeded(true)
 {
 }
 
+BackgroundRenderer::~BackgroundRenderer() {
+    if(renderTask != NULL && renderTask->isRunning()) {
+        renderTask->cancel();
+    }
+}
+
 void BackgroundRenderer::render(BackgroundRenderTask * task)  {
     renderTask = task;
     if(redrawRunning) {
@@ -60,6 +66,7 @@ void BackgroundRenderer::sl_redrawFinished() {
     } else {
         assert(renderTask == senderr);
         result = renderTask->getResult();
+        renderTask = NULL;
         emit(si_rendered());
     }
 }
