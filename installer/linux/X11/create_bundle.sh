@@ -153,6 +153,9 @@ add-plugin weight_matrix
 add-plugin dotplot
 add-plugin remote_service
 add-plugin external_tool_support
+add-plugin dbi_sqlite
+add-plugin dbi_bam
+add-plugin assembly_browser
 
 if [ "$1" == "-test" ]; then
   add-plugin test_runner
