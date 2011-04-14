@@ -1,0 +1,524 @@
+ID   TNFA_HUMAN              Reviewed;         233 AA.
+AC   P01375; O43647; Q9P1Q2; Q9UIV3;
+DT   21-JUL-1986, integrated into UniProtKB/Swiss-Prot.
+DT   21-JUL-1986, sequence version 1.
+DT   05-APR-2011, entry version 159.
+DE   RecName: Full=Tumor necrosis factor;
+DE   AltName: Full=Cachectin;
+DE   AltName: Full=TNF-alpha;
+DE   AltName: Full=Tumor necrosis factor ligand superfamily member 2;
+DE            Short=TNF-a;
+DE   Contains:
+DE     RecName: Full=Tumor necrosis factor, membrane form;
+DE   Contains:
+DE     RecName: Full=Tumor necrosis factor, soluble form;
+DE   Flags: Precursor;
+GN   Name=TNF; Synonyms=TNFA, TNFSF2;
+OS   Homo sapiens (Human).
+OC   Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+OC   Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini;
+OC   Catarrhini; Hominidae; Homo.
+OX   NCBI_TaxID=9606;
+RN   [1]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA].
+RX   MEDLINE=87217060; PubMed=3555974;
+RA   Nedospasov S.A., Shakhov A.N., Turetskaya R.L., Mett V.A.,
+RA   Azizov M.M., Georgiev G.P., Korobko V.G., Dobrynin V.N.,
+RA   Filippov S.A., Bystrov N.S., Boldyreva E.F., Chuvpilo S.A.,
+RA   Chumakov A.M., Shingarova L.N., Ovchinnikov Y.A.;
+RT   "Tandem arrangement of genes coding for tumor necrosis factor (TNF-
+RT   alpha) and lymphotoxin (TNF-beta) in the human genome.";
+RL   Cold Spring Harb. Symp. Quant. Biol. 51:611-624(1986).
+RN   [2]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA / MRNA].
+RX   MEDLINE=85086244; PubMed=6392892; DOI=10.1038/312724a0;
+RA   Pennica D., Nedwin G.E., Hayflick J.S., Seeburg P.H., Derynck R.,
+RA   Palladino M.A., Kohr W.J., Aggarwal B.B., Goeddel D.V.;
+RT   "Human tumour necrosis factor: precursor structure, expression and
+RT   homology to lymphotoxin.";
+RL   Nature 312:724-729(1984).
+RN   [3]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA / MRNA].
+RX   MEDLINE=85137898; PubMed=3883195; DOI=10.1038/313803a0;
+RA   Shirai T., Yamaguchi H., Ito H., Todd C.W., Wallace R.B.;
+RT   "Cloning and expression in Escherichia coli of the gene for human
+RT   tumour necrosis factor.";
+RL   Nature 313:803-806(1985).
+RN   [4]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA / MRNA].
+RX   MEDLINE=86016093; PubMed=2995927; DOI=10.1093/nar/13.17.6361;
+RA   Nedwin G.E., Naylor S.L., Sakaguchi A.Y., Smith D.H.,
+RA   Jarrett-Nedwin J., Pennica D., Goeddel D.V., Gray P.W.;
+RT   "Human lymphotoxin and tumor necrosis factor genes: structure,
+RT   homology and chromosomal localization.";
+RL   Nucleic Acids Res. 13:6361-6373(1985).
+RN   [5]
+RP   NUCLEOTIDE SEQUENCE [MRNA].
+RX   MEDLINE=85142190; PubMed=3856324; DOI=10.1126/science.3856324;
+RA   Wang A.M., Creasey A.A., Ladner M.B., Lin L.S., Strickler J.,
+RA   van Arsdell J.N., Yamamoto R., Mark D.F.;
+RT   "Molecular cloning of the complementary DNA for human tumor necrosis
+RT   factor.";
+RL   Science 228:149-154(1985).
+RN   [6]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA].
+RX   MEDLINE=86030296; PubMed=3932069;
+RX   DOI=10.1111/j.1432-1033.1985.tb09226.x;
+RA   Marmenout A., Fransen L., Tavernier J., van der Heyden J., Tizard R.,
+RA   Kawashima E., Shaw A., Johnson M.J., Semon D., Mueller R.,
+RA   Ruysschaert M.-R., van Vliet A., Fiers W.;
+RT   "Molecular cloning and expression of human tumor necrosis factor and
+RT   comparison with mouse tumor necrosis factor.";
+RL   Eur. J. Biochem. 152:515-522(1985).
+RN   [7]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA].
+RX   MEDLINE=93272029; PubMed=8499947; DOI=10.1038/ng0293-137;
+RA   Iris F.J.M., Bougueleret L., Prieur S., Caterina D., Primas G.,
+RA   Perrot V., Jurka J., Rodriguez-Tome P., Claverie J.-M., Dausset J.,
+RA   Cohen D.;
+RT   "Dense Alu clustering and a potential new member of the NF kappa B
+RT   family within a 90 kilobase HLA class III segment.";
+RL   Nat. Genet. 3:137-145(1993).
+RN   [8]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA].
+RX   MEDLINE=99218514; PubMed=10202016;
+RA   Neville M.J., Campbell R.D.;
+RT   "A new member of the Ig superfamily and a V-ATPase G subunit are among
+RT   the predicted products of novel genes close to the TNF locus in the
+RT   human MHC.";
+RL   J. Immunol. 162:4745-4754(1999).
+RN   [9]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE GENOMIC DNA].
+RX   PubMed=14656967; DOI=10.1101/gr.1736803;
+RA   Xie T., Rowen L., Aguado B., Ahearn M.E., Madan A., Qin S.,
+RA   Campbell R.D., Hood L.;
+RT   "Analysis of the gene-dense major histocompatibility complex class III
+RT   region and its comparison to mouse.";
+RL   Genome Res. 13:2621-2636(2003).
+RN   [10]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE GENOMIC DNA].
+RA   Shiina S., Tamiya G., Oka A., Inoko H.;
+RT   "Homo sapiens 2,229,817bp genomic DNA of 6p21.3 HLA class I region.";
+RL   Submitted (SEP-1999) to the EMBL/GenBank/DDBJ databases.
+RN   [11]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE GENOMIC DNA].
+RA   Shiina T., Ota M., Katsuyama Y., Hashimoto N., Inoko H.;
+RT   "Genome diversity in HLA: a new strategy for detection of genetic
+RT   polymorphisms in expressed genes within the HLA class III and class I
+RT   regions.";
+RL   Submitted (JUL-2002) to the EMBL/GenBank/DDBJ databases.
+RN   [12]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA].
+RG   SeattleSNPs variation discovery resource;
+RL   Submitted (DEC-2001) to the EMBL/GenBank/DDBJ databases.
+RN   [13]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA], AND VARIANT LEU-84.
+RG   NIEHS SNPs program;
+RL   Submitted (JAN-2003) to the EMBL/GenBank/DDBJ databases.
+RN   [14]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE MRNA].
+RC   TISSUE=Blood;
+RX   PubMed=15489334; DOI=10.1101/gr.2596504;
+RG   The MGC Project Team;
+RT   "The status, quality, and expansion of the NIH full-length cDNA
+RT   project: the Mammalian Gene Collection (MGC).";
+RL   Genome Res. 14:2121-2127(2004).
+RN   [15]
+RP   PROTEIN SEQUENCE OF 77-99, AND GLYCOSYLATION AT SER-80.
+RX   PubMed=8631363; DOI=10.1111/j.1432-1033.1996.00431.x;
+RA   Takakura-Yamamoto R., Yamamoto S., Fukuda S., Kurimoto M.;
+RT   "O-glycosylated species of natural human tumor-necrosis factor-
+RT   alpha.";
+RL   Eur. J. Biochem. 235:431-437(1996).
+RN   [16]
+RP   NUCLEOTIDE SEQUENCE [MRNA] OF 77-233.
+RA   Jang J.S., Kim B.E.;
+RL   Submitted (JAN-1998) to the EMBL/GenBank/DDBJ databases.
+RN   [17]
+RP   NUCLEOTIDE SEQUENCE [MRNA] OF 84-214.
+RC   TISSUE=Prostatic carcinoma;
+RA   Shao C., Yan W., Zhu F., Yue W., Chai Y., Zhao Z., Wang C.;
+RL   Submitted (MAR-2000) to the EMBL/GenBank/DDBJ databases.
+RN   [18]
+RP   PHOSPHORYLATION (MEMBRANE FORM).
+RX   MEDLINE=96170872; PubMed=8597870;
+RA   Pocsik E., Duda E., Wallach D.;
+RT   "Phosphorylation of the 26 kDa TNF precursor in monocytic cells and in
+RT   transfected HeLa cells.";
+RL   J. Inflamm. 45:152-160(1995).
+RN   [19]
+RP   PHOSPHORYLATION BY CK1, AND DEPHOSPHORYLATION.
+RX   MEDLINE=99221647; PubMed=10205166; DOI=10.1093/emboj/18.8.2119;
+RA   Watts A.D., Hunt N.H., Wanigasekara Y., Bloomfield G., Wallach D.,
+RA   Roufogalis B.D., Chaudhri G.;
+RT   "A casein kinase I motif present in the cytoplasmic domain of members
+RT   of the tumour necrosis factor ligand family is implicated in 'reverse
+RT   signalling'.";
+RL   EMBO J. 18:2119-2126(1999).
+RN   [20]
+RP   MUTAGENESIS.
+RX   MEDLINE=91184128; PubMed=2009860;
+RA   Ostade X.V., Tavernier J., Prange T., Fiers W.;
+RT   "Localization of the active site of human tumour necrosis factor
+RT   (hTNF) by mutational analysis.";
+RL   EMBO J. 10:827-836(1991).
+RN   [21]
+RP   MYRISTOYLATION AT LYS-19 AND LYS-20.
+RX   MEDLINE=93018820; PubMed=1402651; DOI=10.1084/jem.176.4.1053;
+RA   Stevenson F.T., Bursten S.L., Locksley R.M., Lovett D.H.;
+RT   "Myristyl acylation of the tumor necrosis factor alpha precursor on
+RT   specific lysine residues.";
+RL   J. Exp. Med. 176:1053-1062(1992).
+RN   [22]
+RP   CLEAVAGE BY ADAM17.
+RX   MEDLINE=97186575; PubMed=9034191; DOI=10.1038/385733a0;
+RA   Moss M.L., Jin S.-L.C., Milla M.E., Burkhart W., Carter H.L.,
+RA   Chen W.-J., Clay W.C., Didsbury J.R., Hassler D., Hoffman C.R.,
+RA   Kost T.A., Lambert M.H., Leesnitzer M.A., McCauley P., McGeehan G.,
+RA   Mitchell J., Moyer M., Pahel G., Rocque W., Overton L.K., Schoenen F.,
+RA   Seaton T., Su J.-L., Warner J., Willard D., Becherer J.D.;
+RT   "Cloning of a disintegrin metalloproteinase that processes precursor
+RT   tumour-necrosis factor-alpha.";
+RL   Nature 385:733-736(1997).
+RN   [23]
+RP   X-RAY CRYSTALLOGRAPHY (2.9 ANGSTROMS).
+RX   MEDLINE=89159409; PubMed=2922050; DOI=10.1038/338225a0;
+RA   Jones E.Y., Stuart D.I., Walker N.P.;
+RT   "Structure of tumour necrosis factor.";
+RL   Nature 338:225-228(1989).
+RN   [24]
+RP   X-RAY CRYSTALLOGRAPHY (2.9 ANGSTROMS).
+RX   MEDLINE=91193276; PubMed=1964681;
+RA   Jones E.Y., Stuart D.I., Walker N.P.;
+RT   "The structure of tumour necrosis factor -- implications for
+RT   biological function.";
+RL   J. Cell Sci. Suppl. 13:11-18(1990).
+RN   [25]
+RP   X-RAY CRYSTALLOGRAPHY (2.6 ANGSTROMS).
+RX   MEDLINE=90008932; PubMed=2551905;
+RA   Eck M.J., Sprang S.R.;
+RT   "The structure of tumor necrosis factor-alpha at 2.6-A resolution.
+RT   Implications for receptor binding.";
+RL   J. Biol. Chem. 264:17595-17605(1989).
+RN   [26]
+RP   X-RAY CRYSTALLOGRAPHY (2.3 ANGSTROMS) OF MUTANT ARG-107.
+RX   MEDLINE=98147459; PubMed=9488135; DOI=10.1093/protein/10.10.1101;
+RA   Reed C., Fu Z.Q., Wu J., Xue Y.N., Harrison R.W., Chen M.J.,
+RA   Weber I.T.;
+RT   "Crystal structure of TNF-alpha mutant R31D with greater affinity for
+RT   receptor R1 compared with R2.";
+RL   Protein Eng. 10:1101-1107(1997).
+RN   [27]
+RP   X-RAY CRYSTALLOGRAPHY (1.8 ANGSTROMS) OF MUTANT SER-3.
+RX   MEDLINE=98113178; PubMed=9442056; DOI=10.1074/jbc.273.4.2153;
+RA   Cha S.S., Kim J.S., Cho H.S., Shin N.K., Jeong W., Shin H.C.,
+RA   Kim Y.J., Hahn J.H., Oh B.H.;
+RT   "High resolution crystal structure of a human tumor necrosis factor-
+RT   alpha mutant with low systemic toxicity.";
+RL   J. Biol. Chem. 273:2153-2160(1998).
+RN   [28]
+RP   INVOLVEMENT IN PSORIATIC ARTHRITIS SUSCEPTIBILITY.
+RX   PubMed=12746914; DOI=10.1002/art.10935;
+RA   Balding J., Kane D., Livingstone W., Mynett-Johnson L., Bresnihan B.,
+RA   Smith O., FitzGerald O.;
+RT   "Cytokine gene polymorphisms: association with psoriatic arthritis
+RT   susceptibility and severity.";
+RL   Arthritis Rheum. 48:1408-1413(2003).
+RN   [29]
+RP   INVOLVEMENT IN SUSCEPTIBILITY TO HBV INFECTION.
+RX   PubMed=12915457; DOI=10.1093/hmg/ddg262;
+RA   Kim Y.J., Lee H.-S., Yoon J.-H., Kim C.Y., Park M.H., Kim L.H.,
+RA   Park B.L., Shin H.D.;
+RT   "Association of TNF-alpha promoter polymorphisms with the clearance of
+RT   hepatitis B virus infection.";
+RL   Hum. Mol. Genet. 12:2541-2546(2003).
+CC   -!- FUNCTION: Cytokine that binds to TNFRSF1A/TNFR1 and
+CC       TNFRSF1B/TNFBR. It is mainly secreted by macrophages and can
+CC       induce cell death of certain tumor cell lines. It is potent
+CC       pyrogen causing fever by direct action or by stimulation of
+CC       interleukin-1 secretion and is implicated in the induction of
+CC       cachexia, Under certain conditions it can stimulate cell
+CC       proliferation and induce cell differentiation.
+CC   -!- SUBUNIT: Homotrimer.
+CC   -!- INTERACTION:
+CC       P19438:TNFRSF1A; NbExp=1; IntAct=EBI-359977, EBI-299451;
+CC   -!- SUBCELLULAR LOCATION: Cell membrane; Single-pass type II membrane
+CC       protein.
+CC   -!- SUBCELLULAR LOCATION: Tumor necrosis factor, soluble form:
+CC       Secreted.
+CC   -!- PTM: The soluble form derives from the membrane form by
+CC       proteolytic processing.
+CC   -!- PTM: The membrane form, but not the soluble form, is
+CC       phosphorylated on serine residues. Dephosphorylation of the
+CC       membrane form occurs by binding to soluble TNFRSF1A/TNFR1.
+CC   -!- PTM: O-glycosylated; glycans contain galactose, N-
+CC       acetylgalactosamine and N-acetylneuraminic acid.
+CC   -!- POLYMORPHISM: Genetic variations in TNF influence susceptibility
+CC       to hepatitis B virus (HBV) infection [MIM:610424].
+CC   -!- DISEASE: Genetic variations in TNF are a cause of susceptibility
+CC       psoriatic arthritis (PSORAS) [MIM:607507]. PSORAS is an
+CC       inflammatory, seronegative arthritis associated with psoriasis. It
+CC       is a heterogeneous disorder ranging from a mild, non-destructive
+CC       disease to a severe, progressive, erosive arthropathy. Five types
+CC       of psoriatic arthritis have been defined: asymmetrical
+CC       oligoarthritis characterized by primary involvement of the small
+CC       joints of the fingers or toes; asymmetrical arthritis which
+CC       involves the joints of the extremities; symmetrical polyarthritis
+CC       characterized by a rheumatoidlike pattern that can involve hands,
+CC       wrists, ankles, and feet; arthritis mutilans, which is a rare but
+CC       deforming and destructive condition; arthritis of the sacroiliac
+CC       joints and spine (psoriatic spondylitis).
+CC   -!- SIMILARITY: Belongs to the tumor necrosis factor family.
+CC   -!- SEQUENCE CAUTION:
+CC       Sequence=AAF71992.1; Type=Frameshift; Positions=91, 157;
+CC       Sequence=CAA75070.1; Type=Erroneous gene model prediction;
+CC   -!- WEB RESOURCE: Name=Wikipedia; Note=Tumor necrosis factor alpha
+CC       entry;
+CC       URL="http://en.wikipedia.org/wiki/Tumor_necrosis_factor-alpha";
+CC   -!- WEB RESOURCE: Name=Atlas of Genetics and Cytogenetics in Oncology
+CC       and Haematology;
+CC       URL="http://atlasgeneticsoncology.org/Genes/TNFaID319.html";
+CC   -!- WEB RESOURCE: Name=NIEHS-SNPs;
+CC       URL="http://egp.gs.washington.edu/data/tnf/";
+CC   -!- WEB RESOURCE: Name=SeattleSNPs;
+CC       URL="http://pga.gs.washington.edu/data/tnf/";
+CC   -!- WEB RESOURCE: Name=SHMPD; Note=The Singapore human mutation and
+CC       polymorphism database;
+CC       URL="http://shmpd.bii.a-star.edu.sg/gene.php?genestart=A&genename=TNF";
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   EMBL; M16441; AAA61200.1; -; Genomic_DNA.
+DR   EMBL; X02910; CAA26669.1; -; Genomic_DNA.
+DR   EMBL; X01394; CAA25650.1; -; mRNA.
+DR   EMBL; M10988; AAA61198.1; -; mRNA.
+DR   EMBL; M26331; AAA36758.1; -; Genomic_DNA.
+DR   EMBL; Z15026; CAA78745.1; -; Genomic_DNA.
+DR   EMBL; Y14768; CAA75070.1; ALT_SEQ; Genomic_DNA.
+DR   EMBL; AF129756; AAD18091.1; -; Genomic_DNA.
+DR   EMBL; BA000025; BAB63396.1; -; Genomic_DNA.
+DR   EMBL; AB088112; BAC54944.1; -; Genomic_DNA.
+DR   EMBL; AY066019; AAL47581.1; -; Genomic_DNA.
+DR   EMBL; AY214167; AAO21132.1; -; Genomic_DNA.
+DR   EMBL; BC028148; AAH28148.1; -; mRNA.
+DR   EMBL; AF043342; AAC03542.1; -; mRNA.
+DR   EMBL; AF098751; AAF71992.1; ALT_FRAME; mRNA.
+DR   IPI; IPI00001671; -.
+DR   PIR; A93585; QWHUN.
+DR   RefSeq; NP_000585.2; NM_000594.2.
+DR   UniGene; Hs.241570; -.
+DR   PDB; 1A8M; X-ray; 2.30 A; A/B/C=77-233.
+DR   PDB; 1TNF; X-ray; 2.60 A; A/B/C=77-233.
+DR   PDB; 2AZ5; X-ray; 2.10 A; A/B/C/D=86-233.
+DR   PDB; 2E7A; X-ray; 1.80 A; A/B/C=77-233.
+DR   PDB; 2TUN; X-ray; 3.10 A; A/B/C/D/E/F=77-233.
+DR   PDB; 2ZJC; X-ray; 2.50 A; A/B/C=77-233.
+DR   PDB; 2ZPX; X-ray; 2.83 A; A/B/C=77-233.
+DR   PDB; 3ALQ; X-ray; 3.00 A; A/B/C/D/E/F=77-233.
+DR   PDB; 3IT8; X-ray; 2.80 A; A/B/C/G/H/I=82-233.
+DR   PDB; 3L9J; X-ray; 2.10 A; T=85-233.
+DR   PDB; 4TSV; X-ray; 1.80 A; A=84-233.
+DR   PDB; 5TSW; X-ray; 2.50 A; A/B/C/D/E/F=84-233.
+DR   PDBsum; 1A8M; -.
+DR   PDBsum; 1TNF; -.
+DR   PDBsum; 2AZ5; -.
+DR   PDBsum; 2E7A; -.
+DR   PDBsum; 2TUN; -.
+DR   PDBsum; 2ZJC; -.
+DR   PDBsum; 2ZPX; -.
+DR   PDBsum; 3ALQ; -.
+DR   PDBsum; 3IT8; -.
+DR   PDBsum; 3L9J; -.
+DR   PDBsum; 4TSV; -.
+DR   PDBsum; 5TSW; -.
+DR   ProteinModelPortal; P01375; -.
+DR   SMR; P01375; 85-233.
+DR   DIP; DIP-2895N; -.
+DR   IntAct; P01375; 32.
+DR   MINT; MINT-1131842; -.
+DR   STRING; P01375; -.
+DR   GlycoSuiteDB; P01375; -.
+DR   PRIDE; P01375; -.
+DR   Ensembl; ENST00000376122; ENSP00000365290; ENSG00000204490.
+DR   Ensembl; ENST00000383496; ENSP00000372988; ENSG00000206439.
+DR   Ensembl; ENST00000412275; ENSP00000392858; ENSG00000228321.
+DR   Ensembl; ENST00000420425; ENSP00000410668; ENSG00000228849.
+DR   Ensembl; ENST00000443707; ENSP00000389492; ENSG00000230108.
+DR   Ensembl; ENST00000448781; ENSP00000389490; ENSG00000223952.
+DR   Ensembl; ENST00000449264; ENSP00000398698; ENSG00000232810.
+DR   GeneID; 7124; -.
+DR   KEGG; hsa:7124; -.
+DR   UCSC; uc003nui.1; human.
+DR   CTD; 7124; -.
+DR   GeneCards; GC06P031330; -.
+DR   HGNC; HGNC:11892; TNF.
+DR   MIM; 191160; gene.
+DR   MIM; 607507; phenotype.
+DR   MIM; 610424; phenotype.
+DR   neXtProt; NX_P01375; -.
+DR   Orphanet; 40050; Adult psoriatic arthritis.
+DR   eggNOG; prNOG05738; -.
+DR   HOGENOM; HBG125617; -.
+DR   HOVERGEN; HBG012516; -.
+DR   InParanoid; P01375; -.
+DR   OMA; KAGGPQG; -.
+DR   OrthoDB; EOG4JWVFT; -.
+DR   PhylomeDB; P01375; -.
+DR   Pathway_Interaction_DB; amb2_neutrophils_pathway; amb2 Integrin signaling.
+DR   Pathway_Interaction_DB; angiopoietinreceptor_pathway; Angiopoietin receptor Tie2-mediated signaling.
+DR   Pathway_Interaction_DB; nfat_tfpathway; Calcineurin-regulated NFAT-dependent transcription in lymphocytes.
+DR   Pathway_Interaction_DB; nfkappabcanonicalpathway; Canonical NF-kappaB pathway.
+DR   Pathway_Interaction_DB; caspase_pathway; Caspase cascade in apoptosis.
+DR   Pathway_Interaction_DB; anthraxpathway; Cellular roles of Anthrax toxin.
+DR   Pathway_Interaction_DB; ceramidepathway; Ceramide signaling pathway.
+DR   Pathway_Interaction_DB; cd8tcrdownstreampathway; Downstream signaling in naive CD8+ T cells.
+DR   Pathway_Interaction_DB; hivnefpathway; HIV-1 Nef: Negative effector of Fas and TNF-alpha.
+DR   Pathway_Interaction_DB; il23pathway; IL23-mediated signaling events.
+DR   Pathway_Interaction_DB; il27pathway; IL27-mediated signaling events.
+DR   Pathway_Interaction_DB; rxr_vdr_pathway; RXR and RAR hetrodimerization with other nuclear receptor.
+DR   Pathway_Interaction_DB; hdac_classi_pathway; Signaling events mediated by HDAC Class I.
+DR   Pathway_Interaction_DB; tnfpathway; TNF receptor signaling pathway.
+DR   Reactome; REACT_578; Apoptosis.
+DR   DrugBank; DB00051; Adalimumab.
+DR   DrugBank; DB00640; Adenosine.
+DR   DrugBank; DB01427; Amrinone.
+DR   DrugBank; DB01076; Atorvastatin.
+DR   DrugBank; DB00608; Chloroquine.
+DR   DrugBank; DB01407; Clenbuterol.
+DR   DrugBank; DB00005; Etanercept.
+DR   DrugBank; DB01296; Glucosamine.
+DR   DrugBank; DB00065; Infliximab.
+DR   DrugBank; DB00704; Naltrexone.
+DR   DrugBank; DB01411; Pranlukast.
+DR   DrugBank; DB01366; Procaterol.
+DR   DrugBank; DB01232; Saquinavir.
+DR   DrugBank; DB00641; Simvastatin.
+DR   DrugBank; DB01041; Thalidomide.
+DR   NextBio; 27879; -.
+DR   PMAP-CutDB; P01375; -.
+DR   CleanEx; HS_TNF; -.
+DR   Genevestigator; P01375; -.
+DR   GermOnline; ENSG00000204490; Homo sapiens.
+DR   GO; GO:0009897; C:external side of plasma membrane; ISS:BHF-UCL.
+DR   GO; GO:0005615; C:extracellular space; IDA:BHF-UCL.
+DR   GO; GO:0005887; C:integral to plasma membrane; IDA:BHF-UCL.
+DR   GO; GO:0045121; C:membrane raft; IDA:BHF-UCL.
+DR   GO; GO:0001891; C:phagocytic cup; ISS:BHF-UCL.
+DR   GO; GO:0055037; C:recycling endosome; ISS:BHF-UCL.
+DR   GO; GO:0005125; F:cytokine activity; IDA:BHF-UCL.
+DR   GO; GO:0042802; F:identical protein binding; IDA:BHF-UCL.
+DR   GO; GO:0010843; F:promoter binding; IDA:UniProtKB.
+DR   GO; GO:0016563; F:transcription activator activity; IDA:UniProtKB.
+DR   GO; GO:0016564; F:transcription repressor activity; IDA:UniProtKB.
+DR   GO; GO:0005164; F:tumor necrosis factor receptor binding; IDA:BHF-UCL.
+DR   GO; GO:0006919; P:activation of caspase activity; IDA:BHF-UCL.
+DR   GO; GO:0000187; P:activation of MAPK activity; IDA:BHF-UCL.
+DR   GO; GO:0000185; P:activation of MAPKKK activity; IDA:BHF-UCL.
+DR   GO; GO:0006916; P:anti-apoptosis; IDA:BHF-UCL.
+DR   GO; GO:0002439; P:chronic inflammatory response to antigenic stimulus; IMP:BHF-UCL.
+DR   GO; GO:0060555; P:induction of necroptosis by extracellular signals; IDA:BHF-UCL.
+DR   GO; GO:0050901; P:leukocyte tethering or rolling; IDA:BHF-UCL.
+DR   GO; GO:0070265; P:necrotic cell death; IDA:BHF-UCL.
+DR   GO; GO:0061048; P:negative regulation of branching involved in lung morphogenesis; IDA:UniProtKB.
+DR   GO; GO:0002740; P:negative regulation of cytokine secretion involved in immune response; IDA:BHF-UCL.
+DR   GO; GO:0045599; P:negative regulation of fat cell differentiation; NAS:BHF-UCL.
+DR   GO; GO:0032582; P:negative regulation of gene-specific transcription; IDA:UniProtKB.
+DR   GO; GO:0032715; P:negative regulation of interleukin-6 production; IDA:BHF-UCL.
+DR   GO; GO:0050995; P:negative regulation of lipid catabolic process; IDA:BHF-UCL.
+DR   GO; GO:0010888; P:negative regulation of lipid storage; NAS:BHF-UCL.
+DR   GO; GO:0045071; P:negative regulation of viral genome replication; IDA:BHF-UCL.
+DR   GO; GO:0060559; P:positive regulation of calcidiol 1-monooxygenase activity; IDA:BHF-UCL.
+DR   GO; GO:0045080; P:positive regulation of chemokine biosynthetic process; IDA:BHF-UCL.
+DR   GO; GO:0032722; P:positive regulation of chemokine production; IDA:BHF-UCL.
+DR   GO; GO:0050715; P:positive regulation of cytokine secretion; IDA:BHF-UCL.
+DR   GO; GO:0070374; P:positive regulation of ERK1 and ERK2 cascade; NAS:BHF-UCL.
+DR   GO; GO:0031622; P:positive regulation of fever generation; ISS:BHF-UCL.
+DR   GO; GO:0043193; P:positive regulation of gene-specific transcription; IDA:UniProtKB.
+DR   GO; GO:0034116; P:positive regulation of heterotypic cell-cell adhesion; IDA:BHF-UCL.
+DR   GO; GO:0043123; P:positive regulation of I-kappaB kinase/NF-kappaB cascade; IDA:BHF-UCL.
+DR   GO; GO:0051044; P:positive regulation of membrane protein ectodomain proteolysis; IDA:BHF-UCL.
+DR   GO; GO:0042346; P:positive regulation of NF-kappaB import into nucleus; IDA:BHF-UCL.
+DR   GO; GO:0051092; P:positive regulation of NF-kappaB transcription factor activity; IDA:UniProtKB.
+DR   GO; GO:0051533; P:positive regulation of NFAT protein import into nucleus; IDA:MGI.
+DR   GO; GO:0045429; P:positive regulation of nitric oxide biosynthetic process; IDA:BHF-UCL.
+DR   GO; GO:0045672; P:positive regulation of osteoclast differentiation; IDA:BHF-UCL.
+DR   GO; GO:0033138; P:positive regulation of peptidyl-serine phosphorylation; IDA:BHF-UCL.
+DR   GO; GO:0031334; P:positive regulation of protein complex assembly; IDA:BHF-UCL.
+DR   GO; GO:0043243; P:positive regulation of protein complex disassembly; IDA:BHF-UCL.
+DR   GO; GO:0048661; P:positive regulation of smooth muscle cell proliferation; IDA:BHF-UCL.
+DR   GO; GO:0045944; P:positive regulation of transcription from RNA polymerase II promoter; IGI:MGI.
+DR   GO; GO:0060557; P:positive regulation of vitamin D biosynthetic process; IDA:BHF-UCL.
+DR   GO; GO:0000060; P:protein import into nucleus, translocation; IDA:UniProtKB.
+DR   GO; GO:0032800; P:receptor biosynthetic process; IDA:BHF-UCL.
+DR   GO; GO:0050796; P:regulation of insulin secretion; IDA:BHF-UCL.
+DR   GO; GO:0051384; P:response to glucocorticoid stimulus; IDA:BHF-UCL.
+DR   GO; GO:0009651; P:response to salt stress; TAS:BHF-UCL.
+DR   GO; GO:0009615; P:response to virus; IDA:BHF-UCL.
+DR   GO; GO:0030730; P:sequestering of triglyceride; IDA:BHF-UCL.
+DR   GO; GO:0006927; P:transformed cell apoptosis; IDA:BHF-UCL.
+DR   GO; GO:0033209; P:tumor necrosis factor-mediated signaling pathway; IMP:BHF-UCL.
+DR   InterPro; IPR006053; TNF_a/b/c.
+DR   InterPro; IPR002959; TNF_alpha.
+DR   InterPro; IPR021184; TNF_CS.
+DR   InterPro; IPR006052; TNF_family.
+DR   InterPro; IPR008983; Tumour_necrosis_fac-like.
+DR   Gene3D; G3DSA:2.60.120.40; Tumour_necrosis_fac-like; 1.
+DR   Pfam; PF00229; TNF; 1.
+DR   PRINTS; PR01234; TNECROSISFCT.
+DR   PRINTS; PR01235; TNFALPHA.
+DR   SMART; SM00207; TNF; 1.
+DR   SUPFAM; SSF49842; TNF_like; 1.
+DR   PROSITE; PS00251; TNF_1; 1.
+DR   PROSITE; PS50049; TNF_2; 1.
+PE   1: Evidence at protein level;
+KW   3D-structure; Cell membrane; Complete proteome; Cytokine;
+KW   Direct protein sequencing; Disulfide bond; Glycoprotein; Lipoprotein;
+KW   Membrane; Myristate; Phosphoprotein; Polymorphism; Secreted;
+KW   Signal-anchor; Transmembrane; Transmembrane helix.
+FT   CHAIN         1    233       Tumor necrosis factor, membrane form.
+FT                                /FTId=PRO_0000034423.
+FT   CHAIN        77    233       Tumor necrosis factor, soluble form.
+FT                                /FTId=PRO_0000034424.
+FT   TOPO_DOM      1     35       Cytoplasmic (Potential).
+FT   TRANSMEM     36     56       Helical; Signal-anchor for type II
+FT                                membrane protein; (Potential).
+FT   TOPO_DOM     57    233       Extracellular (Potential).
+FT   SITE         76     77       Cleavage; by ADAM17.
+FT   MOD_RES       2      2       Phosphoserine; by CK1.
+FT   LIPID        19     19       N6-myristoyl lysine.
+FT   LIPID        20     20       N6-myristoyl lysine.
+FT   CARBOHYD     80     80       O-linked (GalNAc...); in soluble form.
+FT   DISULFID    145    177
+FT   VARIANT      84     84       P -> L (in dbSNP:rs4645843).
+FT                                /FTId=VAR_019378.
+FT   VARIANT      94     94       A -> T (in dbSNP:rs1800620).
+FT                                /FTId=VAR_011927.
+FT   MUTAGEN     105    105       L->S: Low activity.
+FT   MUTAGEN     108    108       R->W: Biologically inactive.
+FT   MUTAGEN     112    112       L->F: Biologically inactive.
+FT   MUTAGEN     160    160       A->V: Biologically inactive.
+FT   MUTAGEN     162    162       S->F: Biologically inactive.
+FT   MUTAGEN     167    167       V->A,D: Biologically inactive.
+FT   MUTAGEN     222    222       E->K: Biologically inactive.
+FT   CONFLICT     63     63       F -> S (in Ref. 5; AAA61198).
+FT   CONFLICT     84     86       PSD -> VNR (in Ref. 17).
+FT   CONFLICT    183    183       E -> R (in Ref. 16; AAC03542).
+FT   STRAND      106    108
+FT   STRAND      121    125
+FT   STRAND      130    144
+FT   STRAND      152    159
+FT   STRAND      161    163
+FT   STRAND      167    174
+FT   STRAND      177    179
+FT   STRAND      183    185
+FT   STRAND      189    202
+FT   STRAND      207    213
+FT   HELIX       215    217
+FT   STRAND      223    229
+SQ   SEQUENCE   233 AA;  25644 MW;  3DF90F96C9031FFE CRC64;
+     MSTESMIRDV ELAEEALPKK TGGPQGSRRC LFLSLFSFLI VAGATTLFCL LHFGVIGPQR
+     EEFPRDLSLI SPLAQAVRSS SRTPSDKPVA HVVANPQAEG QLQWLNRRAN ALLANGVELR
+     DNQLVVPSEG LYLIYSQVLF KGQGCPSTHV LLTHTISRIA VSYQTKVNLL SAIKSPCQRE
+     TPEGAEAKPW YEPIYLGGVF QLEKGDRLSA EINRPDYLDF AESGQVYFGI IAL
+//
