@@ -39,12 +39,12 @@ class DbRef;
 
 /** Name of the init property used to indicate assembly reads storage method for all new assemblies */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY "sqlite-assembly-reads-elen-method"
-/** Asks to store all reads in a single table. Not optimal if read effective length varies */
+/** Stores all reads in a single table. Not optimal if read effective length varies */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE "single-table"
-/** Asks to store all reads in 6 tables. Number is a maximum effective length of the read to be stored in the table (default)*/
+/** Store all reads in N tables sorted by effective read length */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1 "50-100-700-U"
-/** Asks to use RTree index to store reads. This method is simple but not very efficient in terms of space/insert time */
-#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE "rtree"
+/** Uses RTree index to store reads. This method is simple but not very efficient in terms of space/insert time */
+#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE "rtree2d"
 
 /** Name of the property used to indicate compression algorithm for reads data */
 #define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_KEY "sqlite-assembly-reads-compression-method"
