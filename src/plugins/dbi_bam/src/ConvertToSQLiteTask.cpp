@@ -44,8 +44,8 @@ ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &_sourceUrl, const GUrl &_de
     tpm = Progress_Manual;
 }
 
-static void flushReads(U2Dbi* sqliteDbi, QList<U2Assembly>& assemblies, QList<QList<U2AssemblyRead> >& reads) {
-    for(int index = 0;index < assemblies.size();index++) {
+static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap<int, QList<U2AssemblyRead> >& reads) {
+    foreach(int index, assemblies.keys()) {
         if(!reads[index].isEmpty()) {
             U2OpStatusImpl opStatus;
             sqliteDbi->getAssemblyDbi()->addReads(assemblies[index].id, reads[index], opStatus);
@@ -55,8 +55,8 @@ static void flushReads(U2Dbi* sqliteDbi, QList<U2Assembly>& assemblies, QList<QL
         }
     }
     reads.clear();
-    for(int index = 0;index < assemblies.size();index++) {
-        reads.append(QList<U2AssemblyRead>());            
+    foreach(int index, assemblies.keys()) {
+        reads.insert(index, QList<U2AssemblyRead>());            
     }
 }
 
@@ -101,7 +101,7 @@ void ConvertToSQLiteTask::run() {
                 }
             }
         }
-        QList<U2Assembly> assemblies;
+        QMap<int, U2Assembly> assemblies;
         for(int i=0; i < reader->getHeader().getReferences().count(); i++) {
             if(bamInfo.isReferenceSelected(i)) {
                 const Header::Reference &reference = reader->getHeader().getReferences().at(i);
@@ -114,14 +114,14 @@ void ConvertToSQLiteTask::run() {
                         throw Exception(opStatus.getError());
                     }
                 }
-                assemblies.append(assembly);
+                assemblies.insert(i, assembly);
             }
         }
         static const int FIRST_STAGE_PERCENT = 60;
         static const int SECOND_STAGE_PERCENT = 40;
-        QList<QList<U2AssemblyRead> > reads;
-        for(int index = 0;index < assemblies.size();index++) {
-            reads.append(QList<U2AssemblyRead>());            
+        QMap<int, QList<U2AssemblyRead> > reads;
+        foreach(int index, assemblies.keys()) {
+            reads.insert(index, QList<U2AssemblyRead>());            
         }
 
         if(bamInfo.hasIndex()) {
@@ -211,7 +211,7 @@ void ConvertToSQLiteTask::run() {
                 stateInfo.progress = ioAdapter->getProgress()*FIRST_STAGE_PERCENT/100;
             }
         }
-        for(int index = 0;index < assemblies.size();index++) {
+        foreach(int index, assemblies.keys()) {
             {
                 U2OpStatusImpl opStatus;
                 sqliteDbi->getAssemblyDbi()->pack(assemblies[index].id, opStatus);

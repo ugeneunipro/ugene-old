@@ -89,7 +89,7 @@ void BAMDbiPlugin::sl_infoLoaded(Task* task) {
         task->setError(tr("BAM file does not contains any alignment"));
         return;
     }
-    ConvertToSQLiteDialog convertDialog(sourceUrl, AppContext::getProject() != NULL, bamInfo);
+    ConvertToSQLiteDialog convertDialog(sourceUrl, bamInfo);
     if(QDialog::Accepted == convertDialog.exec()) {
         GUrl destUrl = convertDialog.getDestinationUrl();
         ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, destUrl, loadBamInfoTask->getInfo());
@@ -113,7 +113,9 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
     assert(!url.isEmpty());
     Project * prj = AppContext::getProject();
     if(prj == NULL) {
-        assert(false);
+        QList<GUrl> list;
+        list.append(url);
+        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openProjectTask(list, false));
         return;
     }
     Document * doc = prj->findDocumentByURL(url);

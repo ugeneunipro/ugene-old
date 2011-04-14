@@ -36,7 +36,7 @@ class ConvertToSQLiteDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ConvertToSQLiteDialog(const GUrl& sourceUrl, bool hasProject, BAMInfo& bamInfo);
+    ConvertToSQLiteDialog(const GUrl& sourceUrl, BAMInfo& bamInfo);
 
     const GUrl &getDestinationUrl()const;
     bool        addToProject() const;
@@ -48,6 +48,9 @@ private slots:
     void on_destinationUrlButton_clicked();
     void sl_contigCheckChanged(QTableWidgetItem * item);
     void sl_bamInfoButtonClicked();
+    void sl_selectAll();
+    void sl_unselectAll();
+    void sl_inverseSelection();
 
 private:
     Ui::ConvertToSQLiteDialog ui;

@@ -45,7 +45,7 @@ public:
     inline const Header& getHeader() { return header; }
     void setIndex(Index& index) { this->index = index; _hasIndex = true; }
     void setHeader(const Header& header) { this->header = header; selected.clear(); for(int i=0; i< header.getReferences().count(); i++) { selected.append(true); } }
-    
+
 private:
     Header header;
     QList<bool> selected;
@@ -60,7 +60,7 @@ public:
     void run();
     inline BAMInfo& getInfo() { return bamInfo; }
     const GUrl& getSourceUrl() const;
-private:
+private:    
     const GUrl sourceUrl;
     BAMInfo bamInfo;
 };

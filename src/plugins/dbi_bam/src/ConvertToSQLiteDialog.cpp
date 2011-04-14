@@ -23,6 +23,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QTextEdit>
+#include <QtGui/QDesktopWidget>
 #include <U2Misc/DialogUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
@@ -38,16 +39,23 @@
 namespace U2 {
 namespace BAM {
 
-ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, bool hasProject, BAMInfo& _bamInfo) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
+ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
     ui.setupUi(this);
     
-    if(!hasProject) {
-        ui.addToProjectBox->setChecked(false);
-        ui.addToProjectBox->setVisible(false);
-    }
-
     connect(ui.bamInfoButton, SIGNAL(clicked()), SLOT(sl_bamInfoButtonClicked()));
 
+    QMenu* selectMenu = new QMenu(ui.selectButton);
+    QAction* selectAll = new QAction(BAMDbiPlugin::tr("Select all"), ui.selectButton); 
+    QAction* unselectAll = new QAction(BAMDbiPlugin::tr("Select none"), ui.selectButton); 
+    QAction* inverseSelection = new QAction(BAMDbiPlugin::tr("Inverse selection"), ui.selectButton); 
+    connect(selectAll, SIGNAL(triggered()), SLOT(sl_selectAll()));
+    connect(unselectAll, SIGNAL(triggered()), SLOT(sl_unselectAll()));
+    connect(inverseSelection, SIGNAL(triggered()), SLOT(sl_inverseSelection()));
+    selectMenu->addAction(selectAll);
+    selectMenu->addAction(unselectAll);
+    selectMenu->addAction(inverseSelection);
+    ui.selectButton->setMenu(selectMenu);
+    
     ui.tableWidget->setColumnCount(3);
     ui.tableWidget->setRowCount(bamInfo.getHeader().getReferences().count());
     QStringList header; header << BAMDbiPlugin::tr("Contig name") << BAMDbiPlugin::tr("Length") << BAMDbiPlugin::tr("URI");
@@ -74,44 +82,121 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, bool hasPro
     connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_contigCheckChanged(QTableWidgetItem*)));
 }
 
+void ConvertToSQLiteDialog::sl_selectAll() {
+    for(int i=0; i<bamInfo.getSelected().count(); i++) {
+        ui.tableWidget->item(i, 0)->setCheckState(Qt::Checked);
+    }
+}
+
+void ConvertToSQLiteDialog::sl_unselectAll() {
+    for(int i=0; i<bamInfo.getSelected().count(); i++) {
+        ui.tableWidget->item(i, 0)->setCheckState(Qt::Unchecked);
+    }
+}
+void ConvertToSQLiteDialog::sl_inverseSelection() {
+    for(int i=0; i<bamInfo.getSelected().count(); i++) {
+        QTableWidgetItem* item = ui.tableWidget->item(i, 0);
+        item->setCheckState(item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+    }
+}
+
 void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
     const Header& header = bamInfo.getHeader();
     QDialog dialog(this);
-    QList<QPair<QString, QString> > list;
-    QString sort;
-    switch(header.getSortingOrder()) {
-        case Header::Unsorted: sort = BAMDbiPlugin::tr("Unsorted"); break;
-        case Header::Unknown: sort = BAMDbiPlugin::tr("Unknown"); break;
-        case Header::Coordinate: sort = BAMDbiPlugin::tr("Coordinate"); break;
-        case Header::QueryName: sort = BAMDbiPlugin::tr("Query name"); break;
-    }
-    list << QPair<QString, QString>(BAMDbiPlugin::tr("Format Version"), header.getFormatVersion().text) 
-        << QPair<QString, QString>(BAMDbiPlugin::tr("Sorting order"), sort);
-
-    foreach(const Header::Program& prog, header.getPrograms()) {
-        list << QPair<QString, QString>(BAMDbiPlugin::tr("Program"), "Name: " + prog.getName() + ", Version: " + prog.getVersion() + ", Command: " + prog.getCommandLine());
-    }
-
-    QTableWidget* table = new QTableWidget();
-    table->setColumnCount(2);
-    table->setHorizontalHeaderLabels(QStringList() << BAMDbiPlugin::tr("Property name") << BAMDbiPlugin::tr("Value"));
-    table->horizontalHeader()->setStretchLastSection(true);
-    table->setRowCount(list.count());
+    dialog.setWindowTitle(BAMDbiPlugin::tr("%1 file info").arg(sourceUrl.getURLString()));    
+    /*QTextEdit* textEdit = new QTextEdit();
+    QString text = header.getText();
+    textEdit->setPlainText(text.replace("\t@", "\n@"));
+    textEdit->setReadOnly(true);
+    textEdit->setLineWrapMode(QTextEdit::NoWrap);
     dialog.setLayout(new QVBoxLayout());
-    dialog.layout()->addWidget(table);
+    dialog.layout()->addWidget(textEdit);*/    
+    dialog.setLayout(new QVBoxLayout());    
+    
+    {
+        QTableWidget* table = new QTableWidget();
+        table->setColumnCount(2);
+        table->setHorizontalHeaderLabels(QStringList() << BAMDbiPlugin::tr("Property name") << BAMDbiPlugin::tr("Value"));
+        table->horizontalHeader()->setStretchLastSection(true);                
+        table->verticalHeader()->setVisible(false);
+
+        QList<QPair<QString, QString> > list;
+        QString sort;
+        switch(header.getSortingOrder()) {
+            case Header::Unsorted: sort = BAMDbiPlugin::tr("Unsorted"); break;
+            case Header::Unknown: sort = BAMDbiPlugin::tr("Unknown"); break;
+            case Header::Coordinate: sort = BAMDbiPlugin::tr("Coordinate"); break;
+            case Header::QueryName: sort = BAMDbiPlugin::tr("Query name"); break;
+        }
+
+        list << QPair<QString, QString>(BAMDbiPlugin::tr("URL"), sourceUrl.getURLString()) 
+            << QPair<QString, QString>(BAMDbiPlugin::tr("Format Version"), header.getFormatVersion().text) 
+            << QPair<QString, QString>(BAMDbiPlugin::tr("Sorting order"), sort);
+
+        table->setRowCount(list.count());
+        {
+            for(int i=0; i<list.count(); i++) {
+                const QPair<QString, QString>& pair = list.at(i);
+                QTableWidgetItem* item = new QTableWidgetItem(pair.first);
+                item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+                table->setItem(i, 0, item);
+                item = new QTableWidgetItem(pair.second);
+                item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+                table->setItem(i, 1, item);
+            }
+        }
+        dialog.layout()->addWidget(table);
+    }
 
     {
-        for(int i=0; i<list.count(); i++) {
-            const QPair<QString, QString>& pair = list.at(i);
-            QTableWidgetItem* item = new QTableWidgetItem(pair.first);
-            item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-            table->setItem(i, 0, item);
-            item = new QTableWidgetItem(pair.second);
-            item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-            table->setItem(i, 1, item);
+        QTableWidget* table = new QTableWidget();
+        table->setColumnCount(9);
+        table->setHorizontalHeaderLabels(QStringList() << BAMDbiPlugin::tr("Sequencing center") << BAMDbiPlugin::tr("Description") << BAMDbiPlugin::tr("Date") 
+            << BAMDbiPlugin::tr("Library") << BAMDbiPlugin::tr("Programs") << BAMDbiPlugin::tr("Predicted median insert size") << BAMDbiPlugin::tr("Platform/technology") 
+            << BAMDbiPlugin::tr("Platform unit") << BAMDbiPlugin::tr("Sample"));
+        table->horizontalHeader()->setStretchLastSection(true);
+        
+        int i=0;
+        foreach(const Header::ReadGroup& rg, header.getReadGroups()) {
+            QStringList rgList;
+            rgList << QString(rg.getSequencingCenter()) << QString(rg.getDescription()) << QString(rg.getDate().toString()) << QString(rg.getLibrary()) 
+                << QString(rg.getPlatform()) << QString(rg.getPredictedInsertSize()) << QString(rg.getPlatform()) << QString(rg.getPlatformUnit()) << QString(rg.getSample());
+            int j=0;
+            foreach(const QString& s, rgList) {
+                QTableWidgetItem* item = new QTableWidgetItem(s);
+                item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+                table->setItem(i, j, item);
+                j++;
+            }
+            i++;
         }
+        dialog.layout()->addWidget(new QLabel(BAMDbiPlugin::tr("Read groups:")));
+        dialog.layout()->addWidget(table);
     }
-    
+
+    {
+        QTableWidget* table = new QTableWidget();
+        table->setColumnCount(4);
+        table->setHorizontalHeaderLabels(QStringList() << BAMDbiPlugin::tr("Name") << BAMDbiPlugin::tr("Version") << BAMDbiPlugin::tr("Command") << BAMDbiPlugin::tr("Previous ID"));
+        table->horizontalHeader()->setStretchLastSection(true);
+
+        int i=0;
+        foreach(const Header::Program& pg, header.getPrograms()) {
+            QStringList pgList;
+            pgList << QString(pg.getName()) << QString(pg.getVersion()) << QString(pg.getCommandLine()) << QString(pg.getPreviousId());
+            int j=0;
+            foreach(const QString& s, pgList) {
+                QTableWidgetItem* item = new QTableWidgetItem(s);
+                item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+                table->setItem(i, j, item);
+                j++;
+            }
+            i++;
+        }
+        dialog.layout()->addWidget(new QLabel(BAMDbiPlugin::tr("Programs:")));
+        dialog.layout()->addWidget(table);
+    }        
+    dialog.resize(qMin(600, QApplication::desktop()->screenGeometry().width()), dialog.sizeHint().height());
     dialog.exec();
 }
 
