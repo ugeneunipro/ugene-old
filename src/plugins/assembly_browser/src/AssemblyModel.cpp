@@ -45,6 +45,11 @@ namespace U2 {
 AssemblyModel::AssemblyModel(const DbiHandle & dbiHandle_) : 
 cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), dbiHandle(dbiHandle_), assemblyDbi(0), 
 refSeqDbiHandle(0), loadingReference(false), refDoc(0) {
+    Project * prj = AppContext::getProject();
+    if(prj != NULL) {
+        connect(prj, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_referenceDocRemoved(Document*)));
+        connect(prj, SIGNAL(si_documentAdded(Document*)), SLOT(sl_referenceDocAdded(Document*)));
+    }
 }
 
 AssemblyModel::~AssemblyModel() {
@@ -116,14 +121,13 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
         }
 
         // 2. find project and load reference doc to project
-        QString url = crossRef.dataRef.dbiId;
         Project * prj = AppContext::getProject();
         if(prj == NULL) {
             assert(false);
             coreLog.error(tr("To show reference opened project needed"));
             return;
         }
-        refDoc = prj->findDocumentByURL(url);
+        refDoc = prj->findDocumentByURL(crossRef.dataRef.dbiId);
         Task * t = NULL;
         if( refDoc != NULL ) { // document already in project, load if it is not loaded
             if(refDoc->isLoaded()) {
@@ -132,44 +136,81 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
                 t = new LoadUnloadedDocumentTask(refDoc);
             }
         } else { // no document at project -> create doc, add it to project and load it
-            // hack: factoryId in FileDbi looks like FileDbi_formatId
-            DocumentFormatId fid = crossRef.dataRef.factoryId.mid(crossRef.dataRef.factoryId.indexOf("_") + 1);
-            DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
-            if(df == NULL) {
-                coreLog.error(tr("Internal error: unknown document format '%1'").arg(fid));
+            t = createLoadReferenceAndAddtoProjectTask(crossRef);
+            if(t == NULL) {
                 return;
             }
-            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
-            if(iof == NULL) {
-                assert(false);
-                coreLog.error(tr("Internal error: cannot open file '%1' for reading").arg(url));
-                return;
-            }
-            refDoc = new Document(df, iof, url);
-            t = new LoadUnloadedDocumentTask(refDoc);
-            t->addSubTask(new AddDocumentTask(refDoc));
-            t->setMaxParallelSubtasks(1);
         }
         
-        assert(refDoc != NULL);
-        // 3. watch for document removed from project and load-unload
+        // 3. watch load-unload doc
         connect(refDoc, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
-        connect(prj, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_referenceDocRemoved(Document*)));
+        
+        // 4. run task and wait for finished in referenceLoaded()
         if(t != NULL) {
-            // 4. run task and wait for finished in referenceLoaded()
-            connect(new TaskSignalMapper(t), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_referenceLoaded()));
-            loadingReference = true;
-            emit si_referenceChanged();
-            AppContext::getTaskScheduler()->registerTopLevelTask(t);
+            startLoadReferenceTask(t);
         }
     }
+}
+
+Task * AssemblyModel::createLoadReferenceAndAddtoProjectTask(const U2CrossDatabaseReference& ref) {
+    // hack: factoryId in FileDbi looks like FileDbi_formatId
+    DocumentFormatId fid = ref.dataRef.factoryId.mid(ref.dataRef.factoryId.indexOf("_") + 1);
+    DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
+    if(df == NULL) {
+        coreLog.error(tr("Internal error: unknown document format '%1'").arg(fid));
+        return NULL;
+    }
+    QString url = ref.dataRef.dbiId;
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    if(iof == NULL) {
+        assert(false);
+        coreLog.error(tr("Internal error: cannot open file '%1' for reading").arg(url));
+        return NULL;
+    }
+    refDoc = new Document(df, iof, url);
+    Task * t = new LoadUnloadedDocumentTask(refDoc);
+    t->addSubTask(new AddDocumentTask(refDoc));
+    t->setMaxParallelSubtasks(1);
+    return t;
+}
+
+void AssemblyModel::startLoadReferenceTask(Task * t) {
+    assert(t != NULL);
+    connect(new TaskSignalMapper(t), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_referenceLoaded()));
+    loadingReference = true;
+    emit si_referenceChanged();
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 // when reference doc removed from project
 void AssemblyModel::sl_referenceDocRemoved(Document* d) {
     if(d != NULL && d == refDoc) {
+        refDoc->disconnect(SIGNAL(si_loadedStateChanged()));
         cleanup();
         emit si_referenceChanged();
+    }
+}
+
+// when reference doc added to project
+void AssemblyModel::sl_referenceDocAdded(Document * d) {
+    if(d == NULL) {
+        assert(false); 
+        return;
+    }
+    if(refDoc.isNull() && !assembly.referenceId.isEmpty()) {
+        U2OpStatusImpl status;
+        U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, status);
+        checkAndLogError(status);
+        if(status.hasError()) {
+            return;
+        }
+        if(ref.dataRef.dbiId == d->getURLString()) {
+            if(!d->isLoaded()) {
+                startLoadReferenceTask(new LoadUnloadedDocumentTask(refDoc = d));
+            } else {
+                assert(false);
+            }
+        }
     }
 }
 
@@ -222,9 +263,15 @@ bool AssemblyModel::hasReference() const {
 }
 
 void AssemblyModel::setReference(U2SequenceDbi * dbi, const U2Sequence & seq) {
-    emit si_referenceChanged();
+    if(refDoc.isNull()) {
+        Project * p = AppContext::getProject();
+        if(p != NULL) {
+            refDoc = p->findDocumentByURL(seq.dbiId);
+        }
+    }
     reference = seq;
     referenceDbi = dbi;
+    emit si_referenceChanged();
 }
 
 QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus& os) {

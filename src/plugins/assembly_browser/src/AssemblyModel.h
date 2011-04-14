@@ -62,6 +62,8 @@ public:
     
 private:
     void cleanup();
+    void startLoadReferenceTask(Task * t);
+    Task * createLoadReferenceAndAddtoProjectTask(const U2CrossDatabaseReference& ref);
     
 signals:
     void si_referenceChanged();
@@ -70,6 +72,7 @@ private slots:
     void sl_referenceLoaded();
     void sl_referenceDocLoadedStateChanged();
     void sl_referenceDocRemoved(Document*);
+    void sl_referenceDocAdded(Document *);
     
 private:
     const static qint64 NO_VAL = -1;
