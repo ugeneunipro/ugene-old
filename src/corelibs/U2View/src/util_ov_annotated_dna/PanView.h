@@ -27,6 +27,7 @@
 #include <QtGui/QFont>
 #include <QtGui/QAction>
 #include <QtGui/QScrollBar>
+#include <QtGui/QToolButton>
 
 namespace U2 {
 
@@ -78,6 +79,8 @@ public:
     virtual QAction* getZoomToSelectionAction() const {return zoomToSelectionAction;}
 
     virtual QAction* getZoomToSequenceAction() const {return zoomToSequenceAction;}
+
+    QToolButton* getPanViewActions() const {return panViewToolButton;}
 
     // [0..seqLen)
     virtual void setVisibleRange(const U2Region& reg, bool signal = true);
@@ -137,7 +140,7 @@ private slots:
     void sl_toggleMainRulerVisibility(bool visible);
     void sl_toggleCustomRulersVisibility(bool visible);
 
-private:
+public:
     void setSelection(const U2Region& r);
     void centerRow(int row);
     int  calculateNumRowBarSteps() const;
@@ -161,6 +164,10 @@ private:
     QAction*            zoomToSequenceAction;
     QAction*            toggleMainRulerAction;
     QAction*            toggleCustomRulersAction;
+    QAction*            increasePanViewHeight;
+    QAction*            decreasePanViewHeight;
+    QAction*            showAllAnnotations;
+    QToolButton*        panViewToolButton;
 
     PVRowsManager*      rowsManager;
     QScrollBar*         rowBar;
@@ -185,11 +192,19 @@ public:
     virtual U2Region getAnnotationYRange(Annotation* a, int region, const AnnotationSettings* as) const;
 
     bool updateNumVisibleRows();
+    bool canIncreaseLines();
+    bool canDecreaseLines();
+    bool isAllLinesShown();
 
 protected:
     virtual void drawAll(QPaintDevice* pd);
     virtual void drawAnnotations(QPainter& p);
     virtual void drawSequence(QPainter& p);
+
+private slots:
+    void sl_increaseLines();
+    void sl_decreaseLines();
+    void sl_maxLines();
 
 private:
     int getSelectionLine() const {return numLines - 1;}
@@ -218,13 +233,14 @@ private:
     void drawRuler(QPainter& p);
     void drawCustomRulers(QPainter& p);
     void drawSequenceSelection(QPainter& p);
-
+    
     PanView*            panView;
     int                 numLines;       // number of visible lines
     int                 rowLinesOffset; // row number on the first row line
 
     bool                showMainRuler;
     bool                showCustomRulers;
+    bool                fromActions;
     QList<RulerInfo>    customRulers;
 };
 
