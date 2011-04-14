@@ -25,49 +25,56 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/U2AbstractDbi.h>
 #include <U2Core/Timer.h>
 
 namespace U2 {
-    
-class DNASequenceObjectSequenceDbiWrapper: public QObject, public U2SimpleSequenceDbi {
-public:
-    DNASequenceObjectSequenceDbiWrapper(DNASequenceObject* _seqObj) : QObject(_seqObj), U2SimpleSequenceDbi(NULL), seqObj(_seqObj){
-    }
 
-    U2Sequence getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os)  {
-        QByteArray id = seqObj->getGObjectName().toUtf8();
-        if (sequenceId != id) {
-            return U2Sequence();
-        }
-        Document* doc = seqObj->getDocument();
-        QString docUrl = (doc == NULL) ? QString("") : doc->getURLString();
-        U2Sequence res(id, docUrl, 0);
-        res.alphabet = seqObj->getAlphabet()->getId();
-        res.length = seqObj->getSequenceLen();
-        res.circular = seqObj->isCircular();
-        return res;
-    }
-    
-    QByteArray getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os)  {
-        GTIMER(c1, t1, "DNASequenceObjectSequenceDbiWrapper::getSequenceData");
-        QByteArray id = seqObj->getGObjectName().toUtf8();
-        if (sequenceId != id) {
-            return QByteArray();
-        }
-        return seqObj->getSequence().mid(region.startPos, region.length);
-    }
+DNASequenceObjectSequenceDbiWrapper::DNASequenceObjectSequenceDbiWrapper(const QList<DNASequenceObject*> & _seqObjs, U2Dbi * root)
+: QObject(_seqObjs.first()), U2SimpleSequenceDbi(root), seqObjs(_seqObjs){
+}
 
-private:
-    DNASequenceObject* seqObj;
-};
+static DNASequenceObject* findObjById(const U2DataId & seqId, const QList<DNASequenceObject*> & objs) {
+    foreach(DNASequenceObject* obj, objs) {
+        if(obj->getGObjectName().toUtf8() == seqId) {
+            return obj;
+        }
+    }
+    return NULL;
+}
+
+U2Sequence DNASequenceObjectSequenceDbiWrapper::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os)  {
+    DNASequenceObject * seqObj = findObjById(sequenceId, seqObjs);
+    if(seqObj == NULL) {
+        return U2Sequence();
+    }
+    Document* doc = seqObj->getDocument();
+    QString docUrl = (doc == NULL) ? QString("") : doc->getURLString();
+    U2Sequence res(seqObj->getGObjectName().toUtf8(), docUrl, 0);
+    res.alphabet = seqObj->getAlphabet()->getId();
+    res.length = seqObj->getSequenceLen();
+    res.circular = seqObj->isCircular();
+    return res;
+}
+
+QByteArray DNASequenceObjectSequenceDbiWrapper::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os)  {
+    GTIMER(c1, t1, "DNASequenceObjectSequenceDbiWrapper::getSequenceData");
+    DNASequenceObject * seqObj = findObjById(sequenceId, seqObjs);
+    if(seqObj == NULL) {
+        return QByteArray();
+    }
+    return seqObj->getSequence().mid(region.startPos, region.length);
+}
 
 DNASequenceObject::DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap) 
-: GObject(GObjectTypes::SEQUENCE, name, hintsMap), dnaSeq(seq)
+: GObject(GObjectTypes::SEQUENCE, name, hintsMap), dnaSeq(seq), dbi(NULL)
 {
     assert(dnaSeq.alphabet!=NULL);
     seqRange = U2Region(0, dnaSeq.seq.length());
-    dbi = new DNASequenceObjectSequenceDbiWrapper(this);
+    dbi = new DNASequenceObjectSequenceDbiWrapper(QList<DNASequenceObject*>() << this, NULL);
+}
+
+DNASequenceObject::~DNASequenceObject() {
+    delete dbi;
 }
 
 GObject* DNASequenceObject::clone() const {

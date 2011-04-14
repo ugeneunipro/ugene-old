@@ -338,9 +338,7 @@ void Document::loadFrom(const Document* d) {
         modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = new StateLock(dLock->getUserDesc());
         lockState(modLocks[DocumentModLock_FORMAT_AS_INSTANCE]);
     }
-
-    setLoaded(true); 
-
+    
     QList<GObject*> objects = d->getObjects();
     foreach(GObject* origObj, objects) {
         GObject* clonedObj = origObj->clone();
@@ -355,6 +353,8 @@ void Document::loadFrom(const Document* d) {
         }
         _addObject(clonedObj, true);
     }
+    
+    setLoaded(true); 
     
     //TODO: rebind local objects relations if url!=d.url
     setModified(false);

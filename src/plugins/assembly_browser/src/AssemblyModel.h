@@ -22,15 +22,20 @@
 #ifndef __U2_ASSEMBLY_BROWSER_MODEL_H__
 #define __U2_ASSEMBLY_BROWSER_MODEL_H__
 
+#include <QtCore/QPointer>
 #include <U2Core/U2DbiUtils.h>
 
 namespace U2 {
 
-class AssemblyModel {
+class Document;
+
+class AssemblyModel : public QObject {
+    Q_OBJECT
 public:
     //TODO refactor 
     AssemblyModel(const DbiHandle & dbiHandle);
-
+    ~AssemblyModel();
+    
     bool isEmpty() const;
 
     QList<U2AssemblyRead> getReadsFromAssembly(const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os);
@@ -51,7 +56,20 @@ public:
 
     const DbiHandle & getDbiHandle() const {return dbiHandle;}
     
-    void associateWithReference();
+    void associateWithReference(const U2CrossDatabaseReference & ref);
+    
+    bool isLoadingReference()const { return loadingReference; }
+    
+private:
+    void cleanup();
+    
+signals:
+    void si_referenceChanged();
+    
+private slots:
+    void sl_referenceLoaded();
+    void sl_referenceDocLoadedStateChanged();
+    void sl_referenceDocRemoved(Document*);
     
 private:
     const static qint64 NO_VAL = -1;
@@ -61,11 +79,15 @@ private:
 
     U2Sequence reference;
     U2SequenceDbi * referenceDbi;
+    DbiHandle * refSeqDbiHandle;
+    QPointer<Document> refDoc;
     
     U2Assembly assembly;
     U2AssemblyDbi * assemblyDbi;
     
     DbiHandle dbiHandle; 
+
+    bool loadingReference;
 }; // AssemblyModel
 
 } // U2

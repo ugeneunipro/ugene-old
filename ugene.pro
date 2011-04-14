@@ -39,6 +39,7 @@ SUBDIRS += \
           src/plugins/circular_view \
           src/plugins/annotator \
           src/plugins/dbi_sqlite \
+          src/plugins/dbi_file \
           src/plugins/dbi_bam \
           src/plugins/dna_export \
           src/plugins/dna_stat \

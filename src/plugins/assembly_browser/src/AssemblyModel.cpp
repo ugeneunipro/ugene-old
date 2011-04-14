@@ -25,6 +25,14 @@
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2CrossDatabaseReferenceDbi.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/TaskSignalMapper.h>
 
 #include <memory>
 
@@ -35,7 +43,22 @@ namespace U2 {
 //==============================================================================
 
 AssemblyModel::AssemblyModel(const DbiHandle & dbiHandle_) : 
-cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), dbiHandle(dbiHandle_), assemblyDbi(0) {
+cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), dbiHandle(dbiHandle_), assemblyDbi(0), 
+refSeqDbiHandle(0), loadingReference(false), refDoc(0) {
+}
+
+AssemblyModel::~AssemblyModel() {
+    cleanup();
+}
+
+void AssemblyModel::cleanup() {
+    if(refSeqDbiHandle != NULL) {
+        delete refSeqDbiHandle;
+        refSeqDbiHandle = NULL;
+        referenceDbi = NULL;
+        reference.length = 0;
+        refDoc = NULL;
+    }
 }
 
 bool AssemblyModel::isEmpty() const {
@@ -83,16 +106,115 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
     
     // check if have reference
     if(!assembly.referenceId.isEmpty()) {
-        U2SequenceDbi * seqDbi = dbiHandle.dbi->getSequenceDbi();
-        if(seqDbi != NULL) {
-            U2OpStatusImpl status;
-            U2Sequence refSeq = seqDbi->getSequenceObject(assembly.referenceId, status);
-            checkAndLogError(status);
-            setReference(seqDbi, refSeq);
-        } else {
+        // 1. get cross reference by ref id
+        U2CrossDatabaseReferenceDbi * crossDbi = dbiHandle.dbi->getCrossDatabaseReferenceDbi();
+        U2OpStatusImpl status;
+        U2CrossDatabaseReference crossRef = crossDbi->getCrossReference(assembly.referenceId, status);
+        checkAndLogError(status); 
+        if(status.hasError()) {
+            return;
+        }
+
+        // 2. find project and load reference doc to project
+        QString url = crossRef.dataRef.dbiId;
+        Project * prj = AppContext::getProject();
+        if(prj == NULL) {
             assert(false);
+            coreLog.error(tr("To show reference opened project needed"));
+            return;
+        }
+        refDoc = prj->findDocumentByURL(url);
+        Task * t = NULL;
+        if( refDoc != NULL ) { // document already in project, load if it is not loaded
+            if(refDoc->isLoaded()) {
+                sl_referenceLoaded();
+            } else {
+                t = new LoadUnloadedDocumentTask(refDoc);
+            }
+        } else { // no document at project -> create doc, add it to project and load it
+            // hack: factoryId in FileDbi looks like FileDbi_formatId
+            DocumentFormatId fid = crossRef.dataRef.factoryId.mid(crossRef.dataRef.factoryId.indexOf("_") + 1);
+            DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
+            if(df == NULL) {
+                coreLog.error(tr("Internal error: unknown document format '%1'").arg(fid));
+                return;
+            }
+            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+            if(iof == NULL) {
+                assert(false);
+                coreLog.error(tr("Internal error: cannot open file '%1' for reading").arg(url));
+                return;
+            }
+            refDoc = new Document(df, iof, url);
+            t = new LoadUnloadedDocumentTask(refDoc);
+            t->addSubTask(new AddDocumentTask(refDoc));
+            t->setMaxParallelSubtasks(1);
+        }
+        
+        assert(refDoc != NULL);
+        // 3. watch for document removed from project and load-unload
+        connect(refDoc, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
+        connect(prj, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_referenceDocRemoved(Document*)));
+        if(t != NULL) {
+            // 4. run task and wait for finished in referenceLoaded()
+            connect(new TaskSignalMapper(t), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_referenceLoaded()));
+            loadingReference = true;
+            emit si_referenceChanged();
+            AppContext::getTaskScheduler()->registerTopLevelTask(t);
         }
     }
+}
+
+// when reference doc removed from project
+void AssemblyModel::sl_referenceDocRemoved(Document* d) {
+    if(d != NULL && d == refDoc) {
+        cleanup();
+        emit si_referenceChanged();
+    }
+}
+
+// when load-unload document
+void AssemblyModel::sl_referenceDocLoadedStateChanged() {
+    Document * doc = qobject_cast<Document*>(sender());
+    if(doc == NULL) {
+        assert(false);
+        return;
+    }
+    
+    if(doc->isLoaded()) {
+        if(!loadingReference) {
+            refDoc = doc;
+            sl_referenceLoaded();
+        }
+    } else { // refDoc unloaded
+        cleanup();
+        emit si_referenceChanged();
+    }
+}
+
+// document is loaded and in the project -> create dbi handle and set reference
+void AssemblyModel::sl_referenceLoaded() {
+    U2OpStatusImpl status;
+    U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, status);
+    cleanup();
+    refSeqDbiHandle = new DbiHandle(ref.dataRef.factoryId, ref.dataRef.dbiId, false, status);
+    checkAndLogError(status);
+    if(status.hasError()) {
+        cleanup();
+        return;
+    }
+    U2SequenceDbi * seqDbi = refSeqDbiHandle->dbi->getSequenceDbi();
+    if(seqDbi != NULL) {
+        U2Sequence refSeq = seqDbi->getSequenceObject(ref.dataRef.entityId, status);
+        checkAndLogError(status); 
+        if(status.hasError()) {
+            return;
+        }
+        setReference(seqDbi, refSeq);
+    } else {
+        assert(false);
+    }
+    loadingReference = false;
 }
 
 bool AssemblyModel::hasReference() const {
@@ -100,19 +222,24 @@ bool AssemblyModel::hasReference() const {
 }
 
 void AssemblyModel::setReference(U2SequenceDbi * dbi, const U2Sequence & seq) {
-    //TODO emit signal ??
+    emit si_referenceChanged();
     reference = seq;
     referenceDbi = dbi;
 }
 
 QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus& os) {
+    if(refDoc.isNull() || !refDoc->isLoaded()) {
+        assert(false);
+        return QByteArray();
+    }
     return referenceDbi->getSequenceData(reference.id, region, os);
 }
 
-void AssemblyModel::associateWithReference() {
+void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref) {
     assert(hasReference());
     assert(assemblyDbi != NULL);
-    assembly.referenceId = reference.id;
+    // save cross reference id to assembly
+    assembly.referenceId = ref.id;
     U2OpStatusImpl status;
     assemblyDbi->updateAssemblyObject(assembly, status);
     checkAndLogError(status);

@@ -91,7 +91,8 @@ void BAMDbiPlugin::sl_infoLoaded(Task* task) {
     }
     ConvertToSQLiteDialog convertDialog(sourceUrl, AppContext::getProject() != NULL, bamInfo);
     if(QDialog::Accepted == convertDialog.exec()) {
-        ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, convertDialog.getDestinationUrl(), loadBamInfoTask->getInfo());
+        GUrl destUrl = convertDialog.getDestinationUrl();
+        ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, destUrl, loadBamInfoTask->getInfo());
         if(convertDialog.addToProject()) {
             connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_addDbFileToProject(Task*)));
         }

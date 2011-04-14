@@ -71,7 +71,11 @@ public:
 
     virtual U2AttributeDbi* getAttributeDbi()  {return NULL;}
     
+    virtual U2ObjectDbi* getObjectDbi()  {return NULL;}
+    
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
+    
+    virtual U2DataType getEntityTypeById(const U2DataId& id) const {return U2Type::Unknown;}
 
 protected:
     U2DbiState                  state;

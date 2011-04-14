@@ -42,7 +42,7 @@ void AssemblyReferenceArea::connectSlots() {
 }
 
 void AssemblyReferenceArea::drawAll() {
-    if(!model->isEmpty() && model->hasReference()) {
+    if(!model->isEmpty() && (model->hasReference() || model->isLoadingReference())) {
         if (redraw) {
             cachedView.fill(Qt::transparent);
             QPainter p(&cachedView);
@@ -56,7 +56,12 @@ void AssemblyReferenceArea::drawAll() {
 
 void AssemblyReferenceArea::drawReference(QPainter & p) {
     GTIMER(c1, t1, "AssemblyReferenceArea::drawReference");
-
+    
+    if(model->isLoadingReference()) {
+        p.drawText(rect(), Qt::AlignCenter, tr("Reference is loading..."));
+        return;
+    }
+    
     if(browser->areCellsVisible()) {
         p.fillRect(rect(), Qt::white);
 

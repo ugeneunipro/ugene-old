@@ -91,7 +91,7 @@ signals:
 
 protected:
     virtual QWidget * createWidget();
-    //virtual bool eventFilter(QObject*, QEvent*);
+    virtual bool eventFilter(QObject*, QEvent*);
     
 private slots:
     void sl_assemblyLoaded();
@@ -111,7 +111,7 @@ private:
     void clear();
     int zoomInFromSize(int oldCellSize);
     // returns error string
-    //QString tryAddObject(GObject * obj);
+    QString tryAddObject(GObject * obj);
 
     AssemblyBrowserUi * ui;
 

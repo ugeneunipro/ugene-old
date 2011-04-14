@@ -26,6 +26,7 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/U2AbstractDbi.h>
 
 namespace U2 {
 
@@ -35,7 +36,8 @@ class  U2CORE_EXPORT DNASequenceObject: public GObject {
     Q_OBJECT
 public:
     DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap = QVariantMap());
-
+    ~DNASequenceObject();
+    
     const U2Region& getSequenceRange() const {return seqRange;}
 
     const QByteArray& getSequence() const {return dnaSeq.seq;}
@@ -83,6 +85,17 @@ public:
     DNAAlphabetType alphabetType;
 };
 
+class U2CORE_EXPORT DNASequenceObjectSequenceDbiWrapper: public QObject, public U2SimpleSequenceDbi {
+public:
+    DNASequenceObjectSequenceDbiWrapper(const QList<DNASequenceObject*> & _seqObjs, U2Dbi * root);
+    
+    U2Sequence getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os);
+
+    QByteArray getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os);
+
+private:
+    QList<DNASequenceObject*> seqObjs;
+};
 
 }//namespace
 

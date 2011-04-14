@@ -114,16 +114,6 @@ void AssemblyReadsAreaHint::setStrand(bool onCompl) {
 void AssemblyReadsAreaHint::setName(const QByteArray & n) {
     assert(n.size() <= 255); // sam format
     nameLabel->setText(tr("<b>%1</b>").arg(QString(n)));
-    /*QString name(n);
-    QRegExp rx("\\w+");
-    int pos = 0;
-    QList<QPair<int, int> > wordsIndxs;
-    while((pos = rx.indexIn(name, pos)) != -1) {
-        QString word = rx.cap();
-        wordsIndxs << QPair(oldPos, rx.matchedLength());
-        pos += rx.matchedLength();
-    }*/
-    
 }
 
 void AssemblyReadsAreaHint::setRawSequence(const QByteArray & s) {
