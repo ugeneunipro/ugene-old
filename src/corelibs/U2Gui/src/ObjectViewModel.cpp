@@ -235,6 +235,7 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     QWidget* viewWidget = v->getWidget();
+    viewWidget->setParent(this);
     layout->addWidget(viewWidget);
     setLayout(layout);
     setWindowIcon(viewWidget->windowIcon());

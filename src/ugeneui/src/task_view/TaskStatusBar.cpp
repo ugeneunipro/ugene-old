@@ -97,6 +97,7 @@ TaskStatusBar::TaskStatusBar() {
     taskProgressBar->setFixedHeight(16);
     l->insertWidget(2, taskProgressBar);
 
+    setObjectName("taskStatusBar");
     updateState();
 }
 

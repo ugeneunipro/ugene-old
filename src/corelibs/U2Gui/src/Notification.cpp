@@ -134,7 +134,7 @@ void Notification::mousePressEvent(QMouseEvent *ev) {
         if(action) {
             action->trigger();
         } else if(!timer.isActive()){
-            QDialog dlg;
+            QDialog dlg(AppContext::getMainWindow()->getQMainWindow());
             QVBoxLayout vLayout;
             QHBoxLayout hLayout;
             QPushButton ok;

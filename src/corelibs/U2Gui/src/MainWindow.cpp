@@ -29,6 +29,7 @@ static int windowCounter = 0;
 MWMDIWindow::MWMDIWindow(const QString& windowName) : windowId(++windowCounter) 
 { 
     setWindowTitle(windowName);
+    setObjectName(windowName);
 }
 
 } //namespace

@@ -57,7 +57,7 @@ QMenu* MWMenuManagerImpl::createTopLevelMenu(const QString& sysName, const QStri
 		menuBefore = getTopLevelMenu(MWMENU_TOOLS);
 	}
 	qmenu = new QMenu(title, menuBar);
-    //qmenu->setObjectName(sysName);//??? need refactoring...
+    qmenu->setObjectName(sysName);//??? need refactoring...
 	qmenu->menuAction()->setObjectName(sysName);
 	int insertPos = toplevelMenus.indexOf(menuBefore) + 1;
 	if (insertPos == 0) {
@@ -85,6 +85,7 @@ bool MWMenuManagerImpl::eventFilter(QObject *obj, QEvent *event) {
 #endif
             //updateTopLevelMenuVisibility(menu);
 	}
+
 	return QObject::eventFilter(obj, event);
 }
 

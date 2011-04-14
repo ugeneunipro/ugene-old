@@ -73,6 +73,7 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
 : QObject(parent), mode(m) {
 
     markActiveView = NULL;
+    setObjectName("ProjectTreeController");
 
     tree = _tree;
     tree->setSelectionMode(mode.allowMultipleSelection ? QAbstractItemView::ExtendedSelection : QAbstractItemView::SingleSelection);

@@ -83,6 +83,7 @@ public:
         saar = NULL;
         guiMode = false;
         activeWindow = "";
+        tb = NULL;
     }
 
     ~AppContextImpl();
@@ -233,6 +234,8 @@ public:
         activeWindow = name;
     }
 
+    void setGUITestBase(GUITestBase *_tb) {assert(tb == NULL || _tb == NULL); tb = _tb;}
+
     static AppContextImpl* getApplicationContext();
 
 protected:
@@ -288,6 +291,7 @@ protected:
     virtual AutoAnnotationsSupport*         _getAutoAnnotationsSupport() const { return aaSupport; }
     virtual CDSearchFactoryRegistry*        _getCDSFactoryRegistry() const { return cdsfr; }
     virtual U2DbiRegistry *                 _getDbiRegistry() const { return dbiRegistry; }
+    virtual GUITestBase*                    _getGUITestBase() const {return tb;}
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -346,6 +350,7 @@ private:
     StructuralAlignmentAlgorithmRegistry* saar;
     AutoAnnotationsSupport* aaSupport;
     U2DbiRegistry *dbiRegistry;
+    GUITestBase *tb;
     bool guiMode;
     QString activeWindow;
 

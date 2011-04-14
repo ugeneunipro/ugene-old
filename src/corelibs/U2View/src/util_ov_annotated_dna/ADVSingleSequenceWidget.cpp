@@ -103,7 +103,6 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     headerWidget->installEventFilter(this);
     linesLayout->addWidget(headerWidget);
 
-
     init();
 }
 
@@ -166,6 +165,7 @@ void ADVSingleSequenceWidget::init() {
     //hBar->addAction(panView->getZoomToSelectionAction());
     hBar->addAction(zoomToRangeAction);
     hBar->addAction(panView->getZoomToSequenceAction());
+    hBar->addWidget(panView->getPanViewActions());
 
     updateSelectionActions();
 

@@ -194,6 +194,7 @@ void MWMDIManagerImpl::addMDIWindow(MWMDIWindow* w) {
         assert(0); //must never happen
 		return;
 	}
+    w->setParent(mdiArea);
 	QMdiSubWindow* qw = mdiArea->addSubWindow(w);
 	qw->setWindowTitle(w->windowTitle());
     QIcon icon = w->windowIcon();

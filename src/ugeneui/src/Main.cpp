@@ -102,6 +102,8 @@
 #include <U2Formats/DocumentFormatUtils.h>
 #include <U2Test/XMLTestFormat.h>
 #include <project_support/ProjectTasksGui.h>
+#include <U2Test/GUITestService.h>
+#include <U2Test/GUITestBase.h>
 
 /* TRANSLATOR U2::AppContextImpl */
 
@@ -453,11 +455,15 @@ int main(int argc, char **argv)
 
     AutoAnnotationsSupport* aaSupport = new AutoAnnotationsSupport();
     appContext->setAutoAnnotationsSupport(aaSupport);
+
+    GUITestBase *tb = new GUITestBase();
+    appContext->setGUITestBase(tb);
     
 #ifndef RUN_WORKFLOW_IN_THREADS
     CheckCmdlineUgeneUtils::setCmdlineUgenePath();
 #endif // RUN_WORKFLOW_IN_THREADS
     
+    if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_TEST)) {
     QStringList urls = CMDLineRegistryUtils::getPureValues();
     if( !urls.isEmpty() ) {
         QList<GUrl> gurls;
@@ -478,8 +484,10 @@ int main(int argc, char **argv)
                 new TaskStarter(t), SLOT(registerTask()));
         }
     }
+    }
     
     registerCoreServices();
+    GUITestService *guiTestService = new GUITestService();
     
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
         Shtirlitz::wakeup();
@@ -498,6 +506,9 @@ int main(int argc, char **argv)
     Workflow::WorkflowEnv::shutdown();
     
     delete dcu;
+
+    appContext->setGUITestBase(NULL);
+    delete tb;
     
     appContext->setVirtualFileSystemRegistry( NULL );
     delete vfsReg;

@@ -36,6 +36,7 @@ const ServiceType Service_DNAExport             = 11;
 const ServiceType Service_TestRunner            = 12;
 const ServiceType Service_ScriptRegistry        = 13;
 const ServiceType Service_ExternalToolSupport   = 14;
+const ServiceType Service_GUITesting            = 15;
 
 const ServiceType Service_MinCoreServiceId = 500;
 const ServiceType Service_MaxCoreServiceId = 1000;
