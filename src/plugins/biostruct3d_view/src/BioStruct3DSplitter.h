@@ -84,15 +84,10 @@ public:
     /*!
     * @return Current active view.
     */ 
-    BioStruct3DGLWidget* getActiveWidget();
     const QList<QAction* > getSettingsMenuActions() const;
     /*!
     * @return ADVDNAView splitter, parent widget for BioStruct3DSplitter.
     */ 
-    QSplitter* getParentSplitter();
-    /*!
-    * @return Number of visible splitter child widgets.
-    */
     int getNumVisibleWidgets();
     /*!
     * @return If number of visible children is null, sets splitter view collapsed, else restores it.
@@ -102,6 +97,13 @@ public:
     * @return GLFrameManager for splitter child widgets.
     */
     GLFrameManager* getGLFrameManager();
+    /*!
+    *Removes widgets, updates context
+    */
+    void removeBioStruct3DGLWidget(BioStruct3DGLWidget* widget);
+    /*!
+    * This is used to close 3D split widget from toolbar 
+    */
     QAction* getCloseSplitterAction() { return closeAction; }
     /*!
     * QWidget virtual function, returns preferred widget size.
@@ -121,23 +123,22 @@ public:
     bool removeObject(BioStruct3DObject* obj);
 
 signals:
-    void si_bioStruct3DGLWidgetAdded(BioStruct3DGLWidget* w);
+    void si_bioStruct3DGLWidgetAdded(BioStruct3DGLWidget* widget);
+    void si_bioStruct3DGLWidgetRemoved(BioStruct3DGLWidget* widget);
 
-private slots:
-    //void sl_toggleBioStruct3DWidget(bool show);
-    //void sl_closeBioStruct3DGlWidget(BioStruct3DGLWidget* glWidget);
-    
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     bool eventFilter(QObject* o, QEvent* e);
 
 private:
+    QSplitter* getParentSplitter();
     QMultiMap<BioStruct3DObject*, BioStruct3DGLWidget*> biostrucViewMap;
     std::auto_ptr<GLFrameManager> glFrameManager;
     QSplitter*  splitter;
     QSplitter*  parentSplitter;
     QAction*    closeAction;
+    QList<QAction*> toggleActions;
     int         splitterHeight;
     bool        isViewCollapsed;
     
@@ -180,12 +181,8 @@ class SplitterHeaderWidget : public QWidget {
 
 public:
     SplitterHeaderWidget(BioStruct3DSplitter* splitter);
-    QMap<BioStruct3DGLWidget*, QAction*> showWidgetActionMap;
-    void updateToolbar();
-    void enableToolbar();
-    void updateWidgetBox();
 
-public:    
+private:    
     BioStruct3DSplitter* splitter;
     QToolButton* widgetStateMenuButton;
     QToolButton* addModelButton;
@@ -197,17 +194,17 @@ public:
     QToolButton* zoomOutButton;
     QToolButton* syncLockButton;
     QComboBox* activeWidgetBox;
-    QList<BioStruct3DGLWidget*> widgets;
     QMap<QAction*,QString> webActionMap;
-
+    QList<QAction*> toggleActions;
+    
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
     
-    void sl_addBioStruct3DGLWidget(BioStruct3DGLWidget* glWidget);
+    void sl_bioStruct3DGLWidgetAdded(BioStruct3DGLWidget* glWidget);
+    void sl_bioStruct3DGLWidgetRemoved(BioStruct3DGLWidget* glWidget);
     void sl_toggleBioStruct3DWidget(bool visible);
-    void sl_closeWidget3DGLWidget(BioStruct3DGLWidget* glWidget);
     void sl_toggleSyncLock(bool on);
     void sl_addModel();
     void sl_showStateMenu();
@@ -222,6 +219,9 @@ private slots:
 
 private:
     BioStruct3DGLWidget* getActiveWidget();
+    void updateToolbar();
+    void updateActiveWidgetBox();
+    void enableToolbar();
     void registerWebUrls();
     void setActiveView(BioStruct3DGLWidget* glWidget);
 

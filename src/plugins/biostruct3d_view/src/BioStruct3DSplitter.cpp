@@ -100,16 +100,36 @@ BioStruct3DGLWidget* BioStruct3DSplitter::addBioStruct3DGLWidget( BioStruct3DObj
     // Add widget to splitter
     biostrucViewMap.insert(bioStructObj, glWidget);
     splitter->addWidget(glWidget);
-
     emit si_bioStruct3DGLWidgetAdded(glWidget);
-
+    
     return glWidget;
 }
 
+
+void BioStruct3DSplitter::removeBioStruct3DGLWidget( BioStruct3DGLWidget* glw )
+{
+    // safe to remove widgets from map - it will be deleted later when
+    // splitter is deleted
+    QMutableMapIterator<BioStruct3DObject*, BioStruct3DGLWidget*> i(biostrucViewMap);
+    while (i.hasNext()) {
+        if (i.next().value() == glw) {
+            i.remove();
+            break;
+        }
+
+    }
+    
+    glFrameManager->removeGLWidgetFrame(glw);
+    emit si_bioStruct3DGLWidgetRemoved(glw);
+    
+}
+
+
+
 bool BioStruct3DSplitter::eventFilter(QObject* o, QEvent* e) {
     Q_UNUSED(o); Q_UNUSED(e);
-#ifdef Q_WS_X11
     BioStruct3DGLWidget* glw = qobject_cast<BioStruct3DGLWidget*>(o);
+#ifdef Q_WS_X11
     //first variant of fix of QT4 bug: GL widget is frozen after minimize/maximize
     if (e->type() == QEvent::Hide) {
         glw->makeCurrent(); //these 2 lines can be removed
@@ -121,6 +141,12 @@ bool BioStruct3DSplitter::eventFilter(QObject* o, QEvent* e) {
     //  ((QGLContext*)glw->context())->create();
     }
 #endif
+    if (e->type() == QEvent::Close && glw != NULL) {
+        removeBioStruct3DGLWidget(glw); 
+        if (biostrucViewMap.isEmpty()) {
+            closeAction->trigger();
+        }
+    }
     return false;
 }
 
@@ -128,6 +154,17 @@ void BioStruct3DSplitter::addObject(BioStruct3DObject* bioStructObj) {
     setVisible(true);
     addBioStruct3DGLWidget(bioStructObj);
 }
+
+bool BioStruct3DSplitter::removeObject(BioStruct3DObject* obj) {
+    QList<BioStruct3DGLWidget*> toDelete = biostrucViewMap.values(obj);
+    foreach(BioStruct3DGLWidget* glw, toDelete) {
+        removeBioStruct3DGLWidget(glw);
+    }
+    biostrucViewMap.remove(obj);
+    bool isEmpty = biostrucViewMap.isEmpty();
+    return isEmpty;
+}
+
 
 void BioStruct3DSplitter::dragEnterEvent(QDragEnterEvent *event) 
 {
@@ -152,9 +189,9 @@ void BioStruct3DSplitter::dropEvent(QDropEvent *event)
 
 }
 
-#define SPLITTER_STATE_MAP_NAME  "BIOSTRUCT3DSPLITTER_MAP"
-#define WIDGET_STATE_LIST_NAME  "WIDGET_STATE_MAP"
-#define OBJECT_ID_NAME "OBJECT_ID"
+#define SPLITTER_STATE_MAP_NAME     "BIOSTRUCT3DSPLITTER_MAP"
+#define WIDGET_STATE_LIST_NAME      "WIDGET_STATE_MAP"
+#define OBJECT_ID_NAME              "OBJECT_ID"
 
 BioStruct3DSplitter::~BioStruct3DSplitter() {
     uiLog.trace("BioStruct3DSplitter deleted");
@@ -178,13 +215,22 @@ void BioStruct3DSplitter::saveState( QVariantMap& m )
 
 void BioStruct3DSplitter::updateState( const QVariantMap& m )
 {
-    const QVariantList glWidgetStateList = m.value(SPLITTER_STATE_MAP_NAME).toMap().value(WIDGET_STATE_LIST_NAME).toList();
+    const QVariantMap splitterStateMap = m.value(SPLITTER_STATE_MAP_NAME).toMap();
+    const QVariantList glWidgetStateList = splitterStateMap.value(WIDGET_STATE_LIST_NAME).toList();
     
-    foreach (BioStruct3DGLWidget* glWidget, biostrucViewMap) {
-        delete glWidget;
+    // do nothing if the widget was closed
+    if (glWidgetStateList.isEmpty()) {
+        return;
     }
-    biostrucViewMap.clear();
-      
+    
+    QList<BioStruct3DGLWidget*> usedWidgets;
+    
+    foreach (BioStruct3DGLWidget* widget, biostrucViewMap.values()) {
+        widget->hide();
+        removeBioStruct3DGLWidget(widget);
+    }
+     
+    setVisible(true);
     QListIterator<QVariant> iter(glWidgetStateList);
     iter.toBack();
     while (iter.hasPrevious()) {
@@ -196,18 +242,9 @@ void BioStruct3DSplitter::updateState( const QVariantMap& m )
         BioStruct3DGLWidget* glWidget = addBioStruct3DGLWidget(obj);
         glWidget->setState(state);
     }
-}
+    
+    splitter->update();
 
-bool BioStruct3DSplitter::removeObject(BioStruct3DObject* obj) {
-    QMultiMap<BioStruct3DObject*, BioStruct3DGLWidget*>::iterator i = biostrucViewMap.find(obj);
-    while (i != biostrucViewMap.end() && i.key() == obj) {
-        BioStruct3DGLWidget* child = (*i);
-        delete child;
-        ++i;
-    }
-    biostrucViewMap.remove(obj);
-    bool isEmpty = biostrucViewMap.isEmpty();
-    return isEmpty;
 }
 
 
@@ -316,6 +353,13 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(10,0,0,0);
     layout->setSpacing(10);
+    
+    connect(splitter, SIGNAL(si_bioStruct3DGLWidgetAdded(BioStruct3DGLWidget* )), 
+        SLOT(sl_bioStruct3DGLWidgetAdded(BioStruct3DGLWidget*)));
+    
+    connect(splitter, SIGNAL(si_bioStruct3DGLWidgetRemoved(BioStruct3DGLWidget* )), 
+        SLOT(sl_bioStruct3DGLWidgetRemoved(BioStruct3DGLWidget*)));
+
 
     // Menu toolbar
     HBar* toolbar = new HBar(this);
@@ -348,7 +392,6 @@ SplitterHeaderWidget::SplitterHeaderWidget(BioStruct3DSplitter* sp) : splitter(s
 
     activeWidgetBox = new QComboBox(this);
     toolbar->addWidget(activeWidgetBox);
-    connect(splitter, SIGNAL(si_bioStruct3DGLWidgetAdded(BioStruct3DGLWidget* )), this, SLOT(sl_addBioStruct3DGLWidget(BioStruct3DGLWidget*)));
     
     restoreDefaultsButton = new QToolButton(this);
     restoreDefaultsButton->setToolTip(tr("Restore Default View"));
@@ -417,8 +460,7 @@ void SplitterHeaderWidget::sl_showStateMenu()
     QMenu m;
     
     
-    foreach(BioStruct3DGLWidget* widget, widgets) {
-        QAction* action = showWidgetActionMap.value(widget);
+    foreach(QAction* action, toggleActions) {
         m.addAction(action);
     }
     
@@ -483,32 +525,41 @@ void SplitterHeaderWidget::sl_restoreDefaults()
     w->restoreDefaultSettigns();
 }
 
-void SplitterHeaderWidget::sl_addBioStruct3DGLWidget( BioStruct3DGLWidget* glWidget )
+void SplitterHeaderWidget::sl_bioStruct3DGLWidgetAdded( BioStruct3DGLWidget* glWidget )
 {
     int index = activeWidgetBox->count() + 1;
     const char* pdbId = glWidget->getBioStruct3D().pdbId.constData();
     
     QString name = QString("%1: %2").arg(index).arg(pdbId) ;
     activeWidgetBox->addItem(name);
-    connect(glWidget, SIGNAL(si_widgetClosed(BioStruct3DGLWidget*)), this, SLOT(sl_closeWidget3DGLWidget(BioStruct3DGLWidget*)));
+    activeWidgetBox->setCurrentIndex(index - 1);
     glWidget->installEventFilter(this);
-
+    
     // Add show widget action
     QString actionName( tr("Show %1").arg(pdbId) );
     QAction* action = new QAction(actionName, glWidget);
     action->setCheckable(true);
     action->setChecked(true);
     connect(action, SIGNAL(triggered(bool)), SLOT(sl_toggleBioStruct3DWidget(bool)));
-    showWidgetActionMap.insert(glWidget, action);
+    toggleActions.append(action);
 
-    widgets.append(glWidget);
     enableToolbar();
+}
+
+void SplitterHeaderWidget::sl_bioStruct3DGLWidgetRemoved( BioStruct3DGLWidget* glWidget )
+{
+    glWidget->disconnect(this);
+    updateActiveWidgetBox();
+    updateToolbar();
+    foreach (QAction* action, toggleActions) {
+        if (action->parent() == glWidget) {
+            toggleActions.removeOne(action);
+        }
+    }
 }
 
 bool SplitterHeaderWidget::eventFilter(QObject *obj, QEvent *event)
 {   
-
-    
     
     if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::Wheel) {
         BioStruct3DGLWidget* glWidget = qobject_cast<BioStruct3DGLWidget*>(obj);
@@ -525,27 +576,13 @@ bool SplitterHeaderWidget::eventFilter(QObject *obj, QEvent *event)
 BioStruct3DGLWidget* SplitterHeaderWidget::getActiveWidget()
 {
     int idx = activeWidgetBox->currentIndex();
-    BioStruct3DGLWidget* glWidget = widgets[idx];
-    glWidget->makeCurrent();
-    return glWidget;
+    GLFrameManager* manager = splitter->getGLFrameManager();
+    GLFrame* frame = manager->getGLFrames().at(idx);
+    frame->makeCurrent();
+        
+    return qobject_cast<BioStruct3DGLWidget*>(frame->getGLWidget());
 }
 
-void SplitterHeaderWidget::sl_closeWidget3DGLWidget(BioStruct3DGLWidget* glWidget) {
-    int index = widgets.indexOf(glWidget);
-    assert(index >= 0);
-    widgets.removeAt(index);
-    activeWidgetBox->removeItem(index);
-    splitter->getGLFrameManager()->removeGLWidgetFrame(glWidget);
-    updateWidgetBox();
-    showWidgetActionMap.remove(glWidget);
-    if (widgets.isEmpty()) {
-        // TODO: maybe it's possible not to close splitter?
-        //splitter->adaptSize(0);
-        splitter->getCloseSplitterAction()->trigger();
-        return;
-    }
-    updateToolbar();
-}
 
 void SplitterHeaderWidget::enableToolbar() {
     activeWidgetBox->setEnabled(true);
@@ -559,30 +596,30 @@ void SplitterHeaderWidget::enableToolbar() {
 }
 
 
-void SplitterHeaderWidget::updateWidgetBox() {
+void SplitterHeaderWidget::updateActiveWidgetBox() {
     activeWidgetBox->clear();
     int index = 0;
+    QList<BioStruct3DGLWidget*> widgets = splitter->getChildWidgets();
     foreach(BioStruct3DGLWidget* widget, widgets) {
         ++index;
         const char* pdbId = widget->getBioStruct3D().pdbId.constData();
         QString name = QString("%1: %2").arg(index).arg(pdbId);
         activeWidgetBox->addItem(name);
     }
+    
 
 }
 
 void SplitterHeaderWidget::updateToolbar() {
-    int numVisibleWidgets = 0;
-    foreach (BioStruct3DGLWidget* w, widgets) {
-        numVisibleWidgets += w->isVisible() ? 1 : 0;
-    }
-    activeWidgetBox->setEnabled(numVisibleWidgets > 0);
-    restoreDefaultsButton->setEnabled(numVisibleWidgets > 0);
-    zoomInButton->setEnabled(numVisibleWidgets > 0);
-    zoomOutButton->setEnabled(numVisibleWidgets > 0);
+    int numVisibleWidgets = splitter->getNumVisibleWidgets();
+        
+    activeWidgetBox->setEnabled(true);
+    restoreDefaultsButton->setEnabled(true);
+    zoomInButton->setEnabled(true);
+    zoomOutButton->setEnabled(true);
     syncLockButton->setEnabled(numVisibleWidgets > 1);
-    displayMenuButton->setEnabled(numVisibleWidgets);
-    widgetStateMenuButton->setEnabled(!widgets.isEmpty());
+    displayMenuButton->setEnabled(true);
+    widgetStateMenuButton->setEnabled(!splitter->getChildWidgets().isEmpty());
 }
 
 void SplitterHeaderWidget::sl_toggleBioStruct3DWidget( bool show )
@@ -648,8 +685,6 @@ void SplitterHeaderWidget::sl_showWebMenu()
 
 void SplitterHeaderWidget::registerWebUrls()
 {
-//    QSignalMapper *signalMapper = new QSignalMapper(this);
-//    connect(signalMapper, SIGNAL(mapped(const QString &)), this, SLOT(sl_openBioStructUrl(const QString&)));
     
     DBLinksFile linksFile;
     if (!linksFile.load()) {
@@ -662,13 +697,6 @@ void SplitterHeaderWidget::registerWebUrls()
         webActionMap.insert(webAction, link.url);
         connect(webAction, SIGNAL(triggered(bool)), this, SLOT(sl_openBioStructUrl()));
     }
-
-    //connect(signalMapper, SIGNAL(mapped(const QString &)), this, SLOT(sl_openBioStructUrl(const QString&)));
-    
-    //connect(signalMapper, SIGNAL(mapped(const QString &)),
-    //    this, SIGNAL(triggered(const QString &)));
-
-
 
 }
 
@@ -688,9 +716,10 @@ void SplitterHeaderWidget::sl_openBioStructUrl()
 void SplitterHeaderWidget::setActiveView( BioStruct3DGLWidget* glWidget )
 {
     int index = 0;
-    foreach (BioStruct3DGLWidget* widget, widgets) {
-        if (widget == glWidget ) {
-            widget->makeCurrent();
+    QList<GLFrame*> frames = splitter->getGLFrameManager()->getGLFrames();
+    foreach (GLFrame* frame, frames) {
+        if ( frame->getGLWidget() == glWidget ) {
+            frame->makeCurrent();
             activeWidgetBox->setCurrentIndex(index);
             break;
         }
@@ -701,8 +730,12 @@ void SplitterHeaderWidget::setActiveView( BioStruct3DGLWidget* glWidget )
 
 void SplitterHeaderWidget::sl_toggleSyncLock( bool toggle )
 {
+    QList<BioStruct3DGLWidget*> widgets = splitter->getChildWidgets();
     splitter->getGLFrameManager()->setSyncLock(toggle, widgets[0]);
 }
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // DBLinksFile
 

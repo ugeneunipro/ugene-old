@@ -130,12 +130,13 @@ void BioStruct3DViewContext::onObjectAdded(GObjectView* view, GObject* obj) {
     }
     
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
+    BioStruct3DSplitter* splitter = NULL;
     if (splitterMap.contains(view)) {
-        BioStruct3DSplitter* splitter = splitterMap.value(view);
-        splitter->addObject(obj3d);
-        return;
+        splitter = splitterMap.value(view);
+    } else {
+        splitter = new BioStruct3DSplitter(getClose3DViewAction(view), av);
     }
-    BioStruct3DSplitter* splitter = new BioStruct3DSplitter(getClose3DViewAction(view), av);
+
     av->insertWidgetIntoSplitter(splitter);
     splitter->addObject(obj3d);
     splitterMap.insert(view,splitter);
@@ -149,17 +150,18 @@ void BioStruct3DViewContext::onObjectRemoved(GObjectView* v, GObject* obj) {
      BioStruct3DSplitter* splitter = splitterMap.value(v);
      bool close = splitter->removeObject(obj3d);
      if (close) {
-         remove3DView(v, splitter);
+         splitter->close();
+         //unregister3DView(v,splitter);
      }
 }
 
-void BioStruct3DViewContext::remove3DView(GObjectView* view, BioStruct3DSplitter* splitter) {
-   
+void BioStruct3DViewContext::unregister3DView(GObjectView* view, BioStruct3DSplitter* splitter) {
     assert(splitter->getChildWidgets().isEmpty());
+    splitter->close();
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
     av->unregisterSplitWidget(splitter);
     splitterMap.remove(view);
-    delete splitter;
+    splitter->deleteLater();
 }
 
 QAction* BioStruct3DViewContext::getClose3DViewAction(GObjectView* view) {
@@ -185,17 +187,20 @@ void BioStruct3DViewContext::sl_close3DView() {
             ov->removeObject(obj);
         }
     }
-//     assert(get3DView(action->getObjectView(), false) == NULL);
 }
 
 void BioStruct3DViewContext::sl_windowClosing(MWMDIWindow* w) {
     GObjectViewWindow *gvw = qobject_cast<GObjectViewWindow*>(w);
     if (gvw) {
         GObjectView *view = gvw->getObjectView();
+        AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
+        // safe to remove: splitter will be deleted with ADV
         splitterMap.remove(view);
     }
 
     GObjectViewWindowContext::sl_windowClosing(w);
 }
+
+
 
 }//namespace

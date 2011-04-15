@@ -57,7 +57,7 @@ public:
 protected:
     virtual void initViewContext(GObjectView* view);
 
-    void remove3DView(GObjectView* view, BioStruct3DSplitter* view3d);
+    void unregister3DView(GObjectView* view, BioStruct3DSplitter* view3d);
 
     QAction* getClose3DViewAction(GObjectView* view);
 
