@@ -84,6 +84,7 @@ void AboutDialogController::installTWidget() {
     QHBoxLayout* l = (QHBoxLayout*)frame->layout();
     l->insertWidget(0, pan);
     l->insertWidget(0, tWidget);
+    tWidget->setObjectName("tetris_widget");
     QRect cRect = frame->contentsRect();
     int height = tWidget->heightForWidth(cRect.width());
     tWidget->setFixedSize(cRect.width() * cRect.height() / height, cRect.height());
@@ -148,6 +149,7 @@ void AboutDialogController::mousePressEvent(QMouseEvent *e) {
 }
 
 AWidget::AWidget() {
+    setObjectName("about_widget");
     setMouseTracking(true);
 
     QImage image(":ugene/images/about.png");

@@ -18,10 +18,20 @@ GUITestService::GUITestService(QObject *parent): Service(Service_GUITesting, tr(
     TestProjectView *test1 = new TestProjectView("E:/Files/_1.003.fa", "E:/Files/_1.002.fa", "3INS chain 3 sequence", "Add object to view test");
     TestTaskView *test2 = new TestTaskView("E:/Files/ecoli.gbk", "Cancel task test");
     ComplexTest *test3 = new ComplexTest("E:/Files/_1.002.fa", "Lock-unlock test");
-    tb->registerTest(test1);
-    tb->registerTest(test2);
-    tb->registerTest(test3);
-    tb->registerTest(new LongTest());
+    Test1AboutDialog* test1AboutDialog=new Test1AboutDialog("AboutDialog_test1");
+    Test2AboutDialog* test2AboutDialog=new Test2AboutDialog("AboutDialog_test2");
+    Test3AboutDialog* test3AboutDialog=new Test3AboutDialog("AboutDialog_test3");
+    Test4AboutDialog* test4AboutDialog=new Test4AboutDialog("AboutDialog_test4");
+    Test5AboutDialog* test5AboutDialog=new Test5AboutDialog("AboutDialog_test5");
+//    tb->registerTest(test1);
+//    tb->registerTest(test2);
+//    tb->registerTest(test3);
+    tb->registerTest(test1AboutDialog);
+    tb->registerTest(test2AboutDialog);
+    tb->registerTest(test3AboutDialog);
+    tb->registerTest(test4AboutDialog);
+    tb->registerTest(test5AboutDialog);
+//    tb->registerTest(new LongTest());
 }
 
 void GUITestService::sl_registerSevice() {

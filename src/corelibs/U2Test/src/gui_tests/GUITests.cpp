@@ -50,6 +50,10 @@ QWidget* GUITest::findWidgetByTitle(const QString &title) const {
 
 void GUITest::moveTo(const QString &widgetName, const QPoint &_pos) {
     QWidget * w = findWidgetByName(widgetName);
+    assert(w != NULL);
+    if(!w->isVisible()) {
+        return;
+    }
     QPoint pos = _pos;
     if(pos.isNull()) {
         pos = w->rect().center();
@@ -57,7 +61,8 @@ void GUITest::moveTo(const QString &widgetName, const QPoint &_pos) {
 
     QPoint begin = QCursor::pos();
     QPoint end = w->mapToGlobal(pos);
-
+    QCursor::setPos(end);
+    return;
     float k = (float)(end.ry() - begin.ry())/(end.rx() - begin.rx());
     float b = begin.ry() - k * begin.rx();
 
@@ -68,13 +73,13 @@ void GUITest::moveTo(const QString &widgetName, const QPoint &_pos) {
     if(x1 < x2) {
         for(int i = x1; i <= x2; i++) {
             int y = k*i + b;
-            sleep(1);
+            sleep(10);
             QCursor::setPos(i, y);
         }
     } else {
         for(int i = x1; i >= x2; i--) {
             int y = k*i + b;
-            sleep(1);
+            sleep(10);
             QCursor::setPos(i, y);
         }
     }
@@ -364,9 +369,9 @@ void GUITest::clickMenu(const QString &menuName, const QString &parentMenu, bool
     QPoint pos = parMenu->actionGeometry(curAction).center();
     QCursor::setPos(parMenu->mapToGlobal(pos));
     QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, pos, Qt::LeftButton, Qt::LeftButton, 0);
-    sendEvent(parMenu, me);
+    sendEvent(curAction, me);
     QMouseEvent *me1 = new QMouseEvent(QEvent::MouseButtonRelease, pos, Qt::LeftButton, Qt::LeftButton, 0);
-    sendEvent(parMenu, me1);
+    sendEvent(curAction, me1);
 }
 
 void GUITest::contextMenu(const QString &widgetName, const QPoint &_pos) {

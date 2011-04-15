@@ -11,6 +11,7 @@
 #include "GUITests.h"
 #include "GUITestLauncher.h"
 #include "ProjectViewTests.h"
+#include "AboutDialogTests.h"
 
 
 namespace U2 {
@@ -37,9 +38,6 @@ private:
     TestLauncher *testLauncher;
     QList<GUITest*> testsToRun;
 };
-
-
-
 
 class TestProjectView: public ProjectViewTests {
 public:
