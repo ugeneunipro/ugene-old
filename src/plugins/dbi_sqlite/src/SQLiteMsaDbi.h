@@ -67,6 +67,8 @@ public:
     /** Return 'count' sequences starting with 'offset' alignment that that have non-gap character at the given coord */
     virtual QList<U2DataId> getSequencesWithoutGapAt(const U2DataId& msaId, qint64 coord, qint32 offset, qint32 count, U2OpStatus& os);
 
+    virtual void initSqlSchema(U2OpStatus& os);
+
 };
 
 

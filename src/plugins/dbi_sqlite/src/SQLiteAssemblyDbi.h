@@ -103,6 +103,8 @@ public:
     /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
     virtual void pack(const U2DataId& assemblyId, U2OpStatus& os);
 
+    virtual void initSqlSchema(U2OpStatus& os);
+
 private:
     /** Return assembly storage adapter for the given assembly */
     AssemblyAdapter* getAdapter(const U2DataId& assemblyId, U2OpStatus& os);

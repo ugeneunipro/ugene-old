@@ -39,7 +39,10 @@ void SQLiteUtils::addLimit(QString& sql, qint64 offset, qint64 count) {
 #define DB_EXTRA_OFFSET 10
 #define DATAID_MIN_LEN  10
 
-static QByteArray emptyId;
+static U2DataId     emptyId;
+static QByteArray   emptyBlob;
+static QString      emptyString;
+
 U2DataId SQLiteUtils::toU2DataId(qint64 id, U2DataType type, const QByteArray& dbExtra) {
     if (id == 0) {
         return emptyId;
@@ -222,6 +225,20 @@ U2DataId SQLiteQuery::getDataId(int column, U2DataType type, const QByteArray& d
     return res;
 }
 
+U2DataId SQLiteQuery::getDataIdExt(int column) const {
+    if (hasError()) {
+        return emptyId;
+    }
+    assert(st!=NULL);
+    U2DataType type = getInt32(column + 1);
+    if (type == U2Type::Unknown) {
+        return emptyId;
+    }
+    QByteArray dbExtra = getBlob(column + 2);
+    U2DataId res = SQLiteUtils::toU2DataId(getInt64(column), type, dbExtra);
+    return res;
+}
+
 
 U2DataType SQLiteQuery::getDataType(int column) const {
     if (hasError()) {
@@ -233,7 +250,7 @@ U2DataType SQLiteQuery::getDataType(int column) const {
 
 QString SQLiteQuery::getString(int column) const {
     if (hasError()) {
-        return QString();
+        return emptyString;
     }
     assert(st!=NULL);
     return QString::fromUtf8((const char*)sqlite3_column_text(st, column));
@@ -241,7 +258,7 @@ QString SQLiteQuery::getString(int column) const {
 
 QByteArray SQLiteQuery::getCString(int column) const {
     if (hasError()) {
-        return emptyId;
+        return emptyBlob;
     }
     assert(st!=NULL);
     return QByteArray((const char*)sqlite3_column_text(st, column));
@@ -249,10 +266,14 @@ QByteArray SQLiteQuery::getCString(int column) const {
 
 QByteArray SQLiteQuery::getBlob(int column) const {
     if (hasError()) {
-        return emptyId;
+        return emptyBlob;
     }
     assert(st!=NULL);
-    QByteArray res(static_cast<const char *>(sqlite3_column_blob(st, column)), sqlite3_column_bytes(st, column));
+    int nBytes = sqlite3_column_bytes(st, column);
+    if (nBytes == 0) {
+        return emptyBlob;
+    }
+    QByteArray res(static_cast<const char *>(sqlite3_column_blob(st, column)), nBytes);
     return res;
 }
 
@@ -417,9 +438,7 @@ QList<U2DataId> SQLiteQuery::selectDataIds(U2DataType type, const QByteArray& db
 QList<U2DataId> SQLiteQuery::selectDataIdsExt() {
     QList<U2DataId> res;
     while(step()) {
-        U2DataType type = getDataType(1);
-        QByteArray dbExtra = getCString(2);
-        U2DataId id = getDataId(0, type, dbExtra);
+        U2DataId id = getDataIdExt(0);
         res.append(id);
     }
     return res;

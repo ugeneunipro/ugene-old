@@ -76,6 +76,7 @@ public:
 
 /** Common localization messages for SQLiteDBI*/
 class U2CORE_EXPORT SQLiteL10n : public QObject {
+    Q_OBJECT
 public:
     static QString queryError(const QString& err);
     static QString tooManyResults();
@@ -151,6 +152,8 @@ public:
     // result retrieval methods
 
     U2DataId getDataId(int column, U2DataType type, const QByteArray& dbExtra = QByteArray()) const;
+    
+    U2DataId getDataIdExt(int column) const;
 
     U2DataType getDataType(int column) const;
 

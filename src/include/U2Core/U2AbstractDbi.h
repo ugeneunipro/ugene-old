@@ -240,15 +240,11 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }
     
-    virtual void createInt32Attribute(U2Int32Attribute&, U2OpStatus& os) {
+    virtual void createIntegerAttribute(U2IntegerAttribute&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }
 
-    virtual void createInt64Attribute(U2Int64Attribute&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
-    }
-
-    virtual void createReal64Attribute(U2Real64Attribute&, U2OpStatus& os) {
+    virtual void createRealAttribute(U2RealAttribute&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }
 
@@ -257,18 +253,6 @@ protected:
     }
 
     virtual void createByteArrayAttribute(U2ByteArrayAttribute&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
-    }
-
-    virtual void createDateTimeAttribute(U2DateTimeAttribute&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
-    }
-
-    virtual void createRangeInt32StatAttribute(U2RangeInt32StatAttribute&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
-    }
-
-    virtual void createRangeReal64StatAttribute(U2RangeReal64StatAttribute&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }
 };

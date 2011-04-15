@@ -157,10 +157,14 @@ public:
     /** Ensures that corresponding parent record exists in db. Adds record if not exists */
     void ensureParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os);
 
+    virtual void initSqlSchema(U2OpStatus& os);
+
 private:
 
     /** Removes object from database, returns 'true' if object is completely erased */
     bool removeObjectImpl(const U2DataId& id, const QString& folder, U2OpStatus& os);
+
+    void removeObjectAttributes(const U2DataId& id, U2OpStatus& os);
 
     /** Updates versions */
     void onFolderUpdated(const QString& folder);
@@ -190,6 +194,8 @@ public:
         Requires: U2DbiFeature_WriteCrossDatabaseReferences
     */
     virtual void updateCrossReference(const U2CrossDatabaseReference& reference, U2OpStatus& os);
+
+    virtual void initSqlSchema(U2OpStatus& os);
 };
 
 } //namespace

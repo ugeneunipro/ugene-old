@@ -22,10 +22,38 @@
 #include "SQLiteObjectDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
+#include <U2Core/U2AttributeDbi.h>
 
 namespace U2 {
 
 SQLiteObjectDbi::SQLiteObjectDbi(SQLiteDbi* dbi) : U2ObjectDbi(dbi), SQLiteChildDBICommon(dbi) {
+
+}
+
+void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
+    if (os.hasError()) {
+        return;
+    }
+
+    // objects table - stores IDs and types for all objects. It also stores 'top_level' flag to simplify queries
+    // rank: see SQLiteDbiObjectRank
+    // name is a visual name of the object shown to user.
+    SQLiteQuery("CREATE TABLE Object (id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
+                                    "version INTEGER NOT NULL DEFAULT 1, rank INTEGER NOT NULL, name TEXT NOT NULL)", db, os).execute();
+
+    // parent-child object relation
+    SQLiteQuery("CREATE TABLE Parent (parent INTEGER, child INTEGER, "
+                       "FOREIGN KEY(parent) REFERENCES Object(id), "
+                       "FOREIGN KEY(child) REFERENCES Object(id) )", db, os).execute();
+
+    // folders 
+    SQLiteQuery("CREATE TABLE Folder (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT UNIQUE NOT NULL,  "
+                                    "vlocal INTEGER NOT NULL DEFAULT 1, vglobal INTEGER NOT NULL DEFAULT 1 )", db, os).execute();
+
+    // folder-object relation
+    SQLiteQuery("CREATE TABLE FolderContent (folder INTEGER, object INTEGER, "
+                        "FOREIGN KEY(folder) REFERENCES Folder(id),"
+                        "FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
 
 }
 
@@ -124,9 +152,11 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
     }
 
     // now erase object
+
     // remove all attributes first
 
-    //TODO: removeObjectAttributes();
+    removeObjectAttributes(objectId, os);
+
     if (os.hasError()) {
         return false;
     }
@@ -155,6 +185,12 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
     }
     SQLiteUtils::remove("Object", "id", objectId, 1, db, os);
     return !os.hasError();
+}
+
+void SQLiteObjectDbi::removeObjectAttributes(const U2DataId& id, U2OpStatus& os) {
+    U2AttributeDbi* attributeDbi = dbi->getAttributeDbi();
+    QList<U2DataId> attributes = attributeDbi->getObjectAttributes(id, os);
+    attributeDbi->removeAttributes(attributes, os);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -408,6 +444,21 @@ SQLiteCrossDatabaseReferenceDbi::SQLiteCrossDatabaseReferenceDbi(SQLiteDbi* dbi)
 : U2CrossDatabaseReferenceDbi(dbi), SQLiteChildDBICommon(dbi)
 {
 }
+
+void SQLiteCrossDatabaseReferenceDbi::initSqlSchema(U2OpStatus& os) {
+    if (os.hasError()) {
+        return;
+    }
+    // cross database reference object
+    // factory - remote dbi factory
+    // dbi - remote dbi id (url)
+    // rid  - remote object id
+    // version - remove object version
+    SQLiteQuery("CREATE TABLE CrossDatabaseReference (object INTEGER, factory TEXT NOT NULL, dbi TEXT NOT NULL, "
+                            "rid BLOB NOT NULL, version INTEGER NOT NULL, "
+                            " FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
+}
+
 
 void SQLiteCrossDatabaseReferenceDbi::createCrossReference(U2CrossDatabaseReference& reference, U2OpStatus& os) {
     reference.id = SQLiteObjectDbi::createObject(U2Type::Assembly, QString(), reference.visualName,  SQLiteDbiObjectRank_TopLevel, db, os);

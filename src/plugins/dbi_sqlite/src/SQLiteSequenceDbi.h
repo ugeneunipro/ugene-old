@@ -56,6 +56,8 @@ public:
     */
     virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os);
 
+    virtual void initSqlSchema(U2OpStatus& os);
+
 };
 
 

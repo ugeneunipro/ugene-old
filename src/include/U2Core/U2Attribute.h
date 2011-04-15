@@ -37,6 +37,8 @@ namespace U2 {
 */
 class U2CORE_EXPORT U2Attribute : public U2Entity {
 public:
+    U2Attribute() : version(0) {}
+    
     /** parent object id */
     U2DataId    objectId;
 
@@ -50,21 +52,17 @@ public:
     QString     name;
 };
 
-/** 32 bit signed integer attribute */
-class U2CORE_EXPORT U2Int32Attribute : public U2Attribute {
-public:
-    qint32 value;
-};
-
 /** 64 bit signed integer attribute */
-class U2CORE_EXPORT U2Int64Attribute : public U2Attribute {
+class U2CORE_EXPORT U2IntegerAttribute : public U2Attribute {
 public:
+    U2IntegerAttribute() : value(0) {}
     qint64 value;
 };
 
 /** 64 bit real attribute */
-class U2CORE_EXPORT U2Real64Attribute : public U2Attribute {
+class U2CORE_EXPORT U2RealAttribute : public U2Attribute {
 public:
+    U2RealAttribute() : value(0.0) {}
     double value;
 };
 
@@ -79,33 +77,6 @@ class U2CORE_EXPORT U2ByteArrayAttribute: public U2Attribute {
 public:
     QByteArray value;
 };
-
-/** Date time attribute */
-class U2CORE_EXPORT U2DateTimeAttribute: public U2Attribute {
-public:
-    QDateTime value;
-};
-
-/** 
-    Base class for all range attributes: defines a range this attribute is contains info for
-*/
-class U2CORE_EXPORT U2RangeStatAttribute : public U2Attribute {
-public:
-    U2Region region;
-};
-
-/** Range attribute with 32-bit integers content. Defines 32-bit integer value for every point in the range */
-class U2CORE_EXPORT U2RangeInt32StatAttribute: public U2RangeStatAttribute {
-public:
-    QVector<qint32> values;
-};
-
-/** Range attribute with 64-bit real content. Defines 64-bit real value for every point in the range */
-class U2CORE_EXPORT U2RangeReal64StatAttribute: public U2RangeStatAttribute {
-public:
-    QVector<double> values;
-};
-
 
 } //namespace
 

@@ -41,6 +41,20 @@ namespace U2 {
 SQLiteAssemblyDbi::SQLiteAssemblyDbi(SQLiteDbi* dbi) : U2AssemblyDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
+
+void SQLiteAssemblyDbi::initSqlSchema(U2OpStatus& os) {
+    if (os.hasError()) {
+        return;
+    }
+    // assembly object
+    // reference            - reference sequence id
+    // elen_method          - method used to handle effective length property
+    // compression_method   - method used to handle compression of reads data
+    SQLiteQuery("CREATE TABLE Assembly (object INTEGER, reference INTEGER, elen_method TEXT NOT NULL, compression_method TEXT NOT NULL, "
+        " FOREIGN KEY(object) REFERENCES Object(id), "
+        " FOREIGN KEY(reference) REFERENCES Sequence(object) )", db, os).execute();
+}
+
 AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpStatus& os) {
     SQLiteQuery q("SELECT elen_method, compression_method FROM Assembly WHERE object = ?1", db, os);
     q.bindDataId(1, assemblyId);
@@ -188,7 +202,6 @@ void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& o
 }
 
 void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
-    SQLiteObjectDbi* objDbi = dbi->getSQLiteObjectDbi();
     std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
     a->removeReads(rowIds, os);
 }

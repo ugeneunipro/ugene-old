@@ -30,6 +30,11 @@ struct sqlite3;
 namespace U2 {
 
 class SQLiteObjectDbi;
+class SQLiteSequenceDbi;
+class SQLiteMsaRDbi;
+class SQLiteAssemblyDbi;
+class SQLiteCrossDatabaseReferenceDbi;
+class SQLiteAttributeDbi;
 class DbRef;
 
 
@@ -100,13 +105,15 @@ public:
     virtual U2DataType getEntityTypeById(const U2DataId& id) const;
 
 
-    virtual U2ObjectDbi* getObjectDbi()  {return objectDbi;}
+    virtual U2ObjectDbi* getObjectDbi();
 
-    virtual U2SequenceDbi* getSequenceDbi()  {return sequenceDbi;}
+    virtual U2SequenceDbi* getSequenceDbi();
 
-    virtual U2AssemblyDbi* getAssemblyDbi()  {return assemblyDbi;}
+    virtual U2AssemblyDbi* getAssemblyDbi();
     
-    virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return crossDbi;}
+    virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi();
+
+    virtual U2AttributeDbi* getAttributeDbi();
 
     DbRef*    getDbRef() const {return db;}
 
@@ -124,20 +131,22 @@ private:
     void populateDefaultSchema(U2OpStatus& os);
     void internalInit(const QHash<QString, QString>& props, U2OpStatus& os);
 
-    QString                         url;
-    DbRef*                          db;
+    QString                             url;
+    DbRef*                              db;
 
-    U2ObjectDbi*                    objectDbi;
-    U2SequenceDbi*                  sequenceDbi;
-    U2MsaDbi*                       msaRDbi;
-    U2AssemblyDbi*                  assemblyDbi;
-    U2CrossDatabaseReferenceDbi*    crossDbi;
+    SQLiteObjectDbi*                    objectDbi;
+    SQLiteSequenceDbi*                  sequenceDbi;
+    SQLiteMsaRDbi*                      msaDbi;
+    SQLiteAssemblyDbi*                  assemblyDbi;
+    SQLiteCrossDatabaseReferenceDbi*    crossDbi;
+    SQLiteAttributeDbi*                 attributeDbi;
     
     friend class SQLiteObjectDbi;
     friend class SQLiteCrossDatabaseReferenceDbi;
     friend class SQLiteSequenceDbi;
     friend class SQLiteAssemblyDbi;
-    friend class SQLiteMsaDbi;
+    friend class SQLiteMsaRDbi;
+    friend class SQLiteAttributeDbi;
 };
 
 class SQLiteDbiFactory : public U2DbiFactory {
@@ -162,6 +171,8 @@ class SQLiteChildDBICommon {
 public:
     SQLiteChildDBICommon(SQLiteDbi* dbi) : dbi(dbi), db (dbi->getDbRef()){}
     virtual ~SQLiteChildDBICommon(){}
+
+    virtual void initSqlSchema(U2OpStatus& os) = 0;
 
 protected:
     SQLiteDbi*  dbi;

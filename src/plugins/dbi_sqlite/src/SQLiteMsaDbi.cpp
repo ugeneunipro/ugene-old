@@ -28,6 +28,35 @@ namespace U2 {
 SQLiteMsaRDbi::SQLiteMsaRDbi(SQLiteDbi* dbi) : U2SimpleMsaDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
+void SQLiteMsaRDbi::initSqlSchema(U2OpStatus& os) {
+    if (os.hasError()) {
+        return;
+    }
+    // msa object
+    SQLiteQuery(" CREATE TABLE Msa (object INTEGER, length INTEGER NOT NULL, alphabet TEXT NOT NULL, sequenceCount INTEGER NOT NULL, "
+        " FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
+
+    // msa object row
+    // msa      - msa object id
+    // sequence - sequence object id
+    // pos      - positional number of row in msa
+    // gstart   - offset of the first non-gap sequence element. Same as gstart of the first MsaRowGap
+    // gend     - offset of the last non-gap sequence element. Same as gend of the last MsaRowGap
+    SQLiteQuery("CREATE TABLE MsaRow (msa INTEGER, sequence INTEGER, pos INTEGER NOT NULL, gstart INTEGER NOT NULL, gend INTEGER NOT NULL, "
+        " FOREIGN KEY(msa) REFERENCES Msa(object), "
+        " FOREIGN KEY(sequence) REFERENCES Msa(object) )", db, os).execute();
+
+    // gap info for msa row: 
+    //  gstart  - global (in msa) start of non-gap region
+    //  gend    - global (in msa) end of non-gap region
+    //  sstart  - local (in sequence) start of non-gap region
+    //  send    - local (in sequence) end of non-gap region
+    // Note! there is invariant: gend - gstart == send - sstart
+    SQLiteQuery("CREATE TABLE MsaRowGap (msa INTEGER, sequence INTEGER, gstart INTEGER NOT NULL, gend INTEGER NOT NULL, "
+        " sstart INTEGER NOT NULL, send INTEGER NOT NULL, "
+        " FOREIGN KEY(msa) REFERENCES MsaRow(msa), "
+        " FOREIGN KEY(sequence) REFERENCES MsaRow(sequence) )", db, os).execute();
+}
 
 U2Msa SQLiteMsaRDbi::getMsaObject(const U2DataId& msaId, U2OpStatus& os) {
     U2Msa res(msaId, dbi->getDbiId(), 0);

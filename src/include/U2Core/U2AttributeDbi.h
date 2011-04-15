@@ -33,21 +33,18 @@ namespace U2 {
 */
 class U2CORE_EXPORT U2DbiSortConfig {
 public:
-    U2DbiSortConfig() : ascending(true), ignoreFolder(true) {}
+    U2DbiSortConfig() : ascending(true) {}
 
     /** Sort column*/
     QString     sortColumnName;
     
-    /** Type of the sort column */
+    /** Type of the sort column: Integer, Real or String attribute type*/
     U2DataType  columnType;
     
     /** Tells  if sorting is ascending or descending */
     bool        ascending;
     
-    /** Ignore folder information during sorting. If 'false' only objects from the given folders are sorted and put into result-set*/
-    bool        ignoreFolder;
-    
-    /** Folder to localize sorting  */
+    /** Folder to localize sorting. If empty all folders are processed  */
     QString     folder;
 };
 
@@ -68,14 +65,11 @@ public:
     /** Returns all attribute ids for the given object */
     virtual QList<U2DataId> getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, U2OpStatus& os) = 0;
 
-    /** Loads int32 attribute by id */
-    virtual U2Int32Attribute getInt32Attribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
+    /** Loads integer attribute by id */
+    virtual U2IntegerAttribute getIntegerAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
-    /** Loads int64 attribute by id */
-    virtual U2Int64Attribute getInt64Attribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
-
-    /** Loads real64 attribute by id */
-    virtual U2Real64Attribute getReal64Attribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
+    /** Loads real attribute by id */
+    virtual U2RealAttribute getRealAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Loads String attribute by id */
     virtual U2StringAttribute getStringAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
@@ -83,42 +77,29 @@ public:
     /** Loads byte attribute by id */
     virtual U2ByteArrayAttribute getByteArrayAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
     
-    /** Loads date-time attribute by id */
-    virtual U2DateTimeAttribute getDateTimeAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
-
-    /** Loads range int32-values attribute by id */
-    virtual U2RangeInt32StatAttribute getRangeInt32StatAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
-
-    /** Loads range real64-values attribute by id */
-    virtual U2RangeReal64StatAttribute getRangeReal64StatAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
-
-    /** Sorts all objects in database according to U2DbiSortConfig provided  */
+    /** Sorts all objects in database according to U2DbiSortConfig provided  
+        Requires U2DbiFeature_AttributeSorting support
+    */
     virtual QList<U2DataId> sort(const U2DbiSortConfig& sc, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
 
     /** 
-        Removes attribute from database 
+        Removes attributes from database 
         Requires U2DbiFeature_WriteAttribute feature support
     */
-    virtual void removeAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
+    virtual void removeAttributes(const QList<U2DataId>& attributeIds, U2OpStatus& os) = 0;
     
-    /** 
-        Creates int32 attribute in database. ObjectId must be already set in attribute and present in the same database 
-        Requires U2DbiFeature_WriteAttribute feature support
-    */
-    virtual void createInt32Attribute(U2Int32Attribute& a, U2OpStatus& os) = 0;
-
     /** 
         Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database 
         Requires U2DbiFeature_WriteAttribute feature support
     */    
-    virtual void createInt64Attribute(U2Int64Attribute& a, U2OpStatus& os) = 0;
+    virtual void createIntegerAttribute(U2IntegerAttribute& a, U2OpStatus& os) = 0;
 
     /** 
         Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database 
         Requires U2DbiFeature_WriteAttribute feature support
     */    
-    virtual void createReal64Attribute(U2Real64Attribute& a, U2OpStatus& os) = 0;
+    virtual void createRealAttribute(U2RealAttribute& a, U2OpStatus& os) = 0;
 
     /** 
         Creates String attribute in database. ObjectId must be already set in attribute and present in the same database 
@@ -131,24 +112,7 @@ public:
         Requires U2DbiFeature_WriteAttribute feature support
     */    
     virtual void createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpStatus& os) = 0;
-
-    /** 
-        Creates Date-time attribute in database. ObjectId must be already set in attribute and present in the same database 
-        Requires U2DbiFeature_WriteAttribute feature support   
-     */    
-    virtual void createDateTimeAttribute(U2DateTimeAttribute& a, U2OpStatus& os) = 0;
-
-    /** 
-        Creates range int32-values attribute in database. ObjectId must be already set in attribute and present in the same database 
-        Requires U2DbiFeature_WriteAttribute feature support
-     */    
-    virtual void createRangeInt32StatAttribute(U2RangeInt32StatAttribute& a, U2OpStatus& os) = 0;
-
-    /** 
-        Creates range real32-values attribute in database. ObjectId must be already set in attribute and present in the same database 
-        Requires U2DbiFeature_WriteAttribute feature support
-     */    
-    virtual void createRangeReal64StatAttribute(U2RangeReal64StatAttribute& a, U2OpStatus& os) = 0;
+    
 };
 
 

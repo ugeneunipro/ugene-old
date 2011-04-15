@@ -30,6 +30,21 @@ namespace U2 {
 SQLiteSequenceDbi::SQLiteSequenceDbi(SQLiteDbi* dbi) : U2SequenceDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
+void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
+    if (os.hasError()) {
+        return;
+    }
+    // sequence object
+    SQLiteQuery("CREATE TABLE Sequence (object INTEGER, length INTEGER NOT NULL DEFAULT 0, alphabet TEXT NOT NULL, "
+                            "circular INTEGER NOT NULL DEFAULT 0, "
+                             "FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
+
+    // part of the sequence, starting with 'sstart'(inclusive) and ending at 'send'(not inclusive)
+    SQLiteQuery("CREATE TABLE SequenceData (sequence INTEGER, sstart INTEGER NOT NULL, send INTEGER NOT NULL, data BLOB NOT NULL, "
+        "FOREIGN KEY(sequence) REFERENCES Sequence(object) )", db, os).execute();
+
+}
+
 U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) {
     U2Sequence res(sequenceId, dbi->getDbiId(), 0);
     SQLiteQuery q("SELECT Sequence.length, Sequence.alphabet, Sequence.circular, Object.version FROM Sequence, Object "

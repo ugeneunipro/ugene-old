@@ -2,6 +2,7 @@ include (dbi_sqlite.pri)
 
 # Input
 HEADERS += src/SQLiteAssemblyDbi.h \
+           src/SQLiteAttributeDbi.h \
            src/SQLiteDbi.h \
            src/SQLiteDbiPlugin.h \
            src/SQLiteMsaDbi.h \
@@ -12,6 +13,7 @@ HEADERS += src/SQLiteAssemblyDbi.h \
            src/assembly/RTreeAssemblyAdapter.h \
            src/assembly/SingleTableAssemblyAdapter.h
 SOURCES += src/SQLiteAssemblyDbi.cpp \
+           src/SQLiteAttributeDbi.cpp \
            src/SQLiteDbi.cpp \
            src/SQLiteDbiPlugin.cpp \
            src/SQLiteMsaDbi.cpp \

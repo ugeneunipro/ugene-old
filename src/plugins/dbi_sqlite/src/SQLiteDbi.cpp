@@ -24,6 +24,7 @@
 #include "SQLiteSequenceDbi.h"
 #include "SQLiteMsaDbi.h"
 #include "SQLiteAssemblyDbi.h"
+#include "SQLiteAttributeDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/Log.h>
@@ -39,23 +40,46 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     db = new DbRef();
     objectDbi = new SQLiteObjectDbi(this);
     sequenceDbi = new SQLiteSequenceDbi(this);
-    msaRDbi = new SQLiteMsaRDbi(this);
+    msaDbi = new SQLiteMsaRDbi(this);
     assemblyDbi = new SQLiteAssemblyDbi(this);
     crossDbi = new SQLiteCrossDatabaseReferenceDbi(this);
+    attributeDbi = new SQLiteAttributeDbi(this);
 }
 
 SQLiteDbi::~SQLiteDbi() {
     delete objectDbi;
     delete sequenceDbi;
-    delete msaRDbi;
+    delete msaDbi;
     delete assemblyDbi;
     delete crossDbi;
+    delete attributeDbi;
     if (db->handle != NULL) {
         sqlite3_close(db->handle);
     }
     delete db;
 }
 
+
+
+U2ObjectDbi* SQLiteDbi::getObjectDbi()  {
+    return objectDbi;
+}
+
+U2SequenceDbi* SQLiteDbi::getSequenceDbi()  {
+    return sequenceDbi;
+}
+
+U2AssemblyDbi* SQLiteDbi::getAssemblyDbi()  {
+    return assemblyDbi;
+}
+
+U2CrossDatabaseReferenceDbi* SQLiteDbi::getCrossDatabaseReferenceDbi()  {
+    return crossDbi;
+}
+
+U2AttributeDbi* SQLiteDbi::getAttributeDbi() {
+    return attributeDbi;
+}
 
 QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const {
     SQLiteQuery q("SELECT value FROM Meta WHERE name = ?1", db, os);
@@ -117,80 +141,14 @@ static bool isEmpty(DbRef* db, U2OpStatus& os) {
 
 void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     // meta table, stores general db info
-    CT("Meta", "name TEXT NOT NULL, value TEXT NOT NULL"); 
+    SQLiteQuery("CREATE TABLE Meta(name TEXT NOT NULL, value TEXT NOT NULL)", db, os).execute();
     
-    // objects table - stores IDs and types for all objects. It also stores 'top_level' flag to simplify queries
-    // rank: see SQLiteDbiObjectRank
-    // name is a visual name of the object shown to user.
-    CT("Object", " id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
-        "version INTEGER NOT NULL DEFAULT 1, rank INTEGER NOT NULL, "
-        "name TEXT NOT NULL");
-    
-    // parent-child object relation
-    CT("Parent", "parent INTEGER, child INTEGER, "
-                 "FOREIGN KEY(parent) REFERENCES Object(id), "
-                 "FOREIGN KEY(child) REFERENCES Object(id) ");
-
-    // folders 
-    CT("Folder", "id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT UNIQUE NOT NULL,  "
-                 "vlocal INTEGER NOT NULL DEFAULT 1, vglobal INTEGER NOT NULL DEFAULT 1");
-
-    // folder-object relation
-    CT("FolderContent", "folder INTEGER, object INTEGER, "
-                        "FOREIGN KEY(folder) REFERENCES Folder(id),"
-                        "FOREIGN KEY(object) REFERENCES Object(id) ");
-
-    // sequence object
-    CT("Sequence", "object INTEGER, length INTEGER NOT NULL DEFAULT 0, alphabet TEXT NOT NULL, "
-                   "circular INTEGER NOT NULL DEFAULT 0, "
-                   "FOREIGN KEY(object) REFERENCES Object(id) ");
-
-    // part of the sequence, starting with 'sstart'(inclusive) and ending at 'send'(not inclusive)
-    CT("SequenceData", "sequence INTEGER, sstart INTEGER NOT NULL, send INTEGER NOT NULL, data BLOB NOT NULL, "
-                        "FOREIGN KEY(sequence) REFERENCES Sequence(object) ");
-
-    // msa object
-    CT("Msa", "object INTEGER, length INTEGER NOT NULL, alphabet TEXT NOT NULL, sequenceCount INTEGER NOT NULL, "
-              " FOREIGN KEY(object) REFERENCES Object(id) ");
-
-    // msa object row
-    // msa      - msa object id
-    // sequence - sequence object id
-    // pos      - positional number of row in msa
-    // gstart   - offset of the first non-gap sequence element. Same as gstart of the first MsaRowGap
-    // gend     - offset of the last non-gap sequence element. Same as gend of the last MsaRowGap
-    CT("MsaRow", "msa INTEGER, sequence INTEGER, pos INTEGER NOT NULL, gstart INTEGER NOT NULL, gend INTEGER NOT NULL, "
-                " FOREIGN KEY(msa) REFERENCES Msa(object), "
-                " FOREIGN KEY(sequence) REFERENCES Msa(object) ");
-
-    // gap info for msa row: 
-    //  gstart  - global (in msa) start of non-gap region
-    //  gend    - global (in msa) end of non-gap region
-    //  sstart  - local (in sequence) start of non-gap region
-    //  send    - local (in sequence) end of non-gap region
-    // Note! there is invariant: gend - gstart == send - sstart
-    CT("MsaRowGap", "msa INTEGER, sequence INTEGER, gstart INTEGER NOT NULL, gend INTEGER NOT NULL, "
-                    " sstart INTEGER NOT NULL, send INTEGER NOT NULL, "
-                    " FOREIGN KEY(msa) REFERENCES MsaRow(msa), "
-                    " FOREIGN KEY(sequence) REFERENCES MsaRow(sequence)");
-
-
-    // assembly object
-    // reference            - reference sequence id
-    // elen_method          - method used to handle effective length property
-    // compression_method   - method used to handle compression of reads data
-    CT("Assembly", "object INTEGER, reference INTEGER, elen_method TEXT NOT NULL, compression_method TEXT NOT NULL, "
-        " FOREIGN KEY(object) REFERENCES Object(id), "
-        " FOREIGN KEY(reference) REFERENCES Sequence(object)");
-
-
-    // cross database reference object
-    // factory - remote dbi factory
-    // dbi - remote dbi id (url)
-    // rid  - remote object id
-    // version - remove object version
-   CT("CrossDatabaseReference", "object INTEGER, factory TEXT NOT NULL, dbi TEXT NOT NULL, rid BLOB NOT NULL, version INTEGER NOT NULL, "
-        " FOREIGN KEY(object) REFERENCES Object(id)");
+    objectDbi->initSqlSchema(os);
+    sequenceDbi->initSqlSchema(os);
+    msaDbi->initSqlSchema(os);
+    assemblyDbi->initSqlSchema(os);
+    crossDbi->initSqlSchema(os);
+    attributeDbi->initSqlSchema(os);
 
     setProperty(SQLITE_DBI_OPTION_UGENE_VERSION, Version::ugeneVersion().text, os);
 }
@@ -229,6 +187,9 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_ChangeFolders);
     features.insert(U2DbiFeature_ReadCrossDatabaseReferences);
     features.insert(U2DbiFeature_WriteCrossDatabaseReferences);
+    features.insert(U2DbiFeature_ReadAttributes);
+    features.insert(U2DbiFeature_WriteAttributes);
+
 }
 
 void SQLiteDbi::setState(U2DbiState s) {

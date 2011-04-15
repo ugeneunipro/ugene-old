@@ -81,15 +81,11 @@ public:
     /**  MSA */
     static const U2DataType MsaRow                  = 1200;
 
-    /**  Attribute types. Note: we support only limited types of primitive attributes */
-    static const U2DataType AttributeInt32            = 2002;
-    static const U2DataType AttributeInt64            = 2003;
-    static const U2DataType AttributeReal64           = 2011;
-    static const U2DataType AttributeString           = 2020;
-    static const U2DataType AttributeByteArray        = 2021;
-    static const U2DataType AttributeDateTime         = 2021;
-    static const U2DataType AttributeRangeInt32Stat   = 2032;
-    static const U2DataType AttributeRangeReal64Stat  = 2041;
+    /**  Attribute types */
+    static const U2DataType AttributeInteger          = 2001;
+    static const U2DataType AttributeReal             = 2002;
+    static const U2DataType AttributeString           = 2003;
+    static const U2DataType AttributeByteArray        = 2004;
 
     static bool isObjectType(U2DataType type) {return type > 0 && type < 999;}
 
