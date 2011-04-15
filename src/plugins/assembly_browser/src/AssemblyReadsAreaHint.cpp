@@ -44,7 +44,10 @@ seqLabel(new QLabel(this)){
     top->addWidget(cigarLabel);
     top->addWidget(strandLabel);
     top->addWidget(seqLabel);
-
+    
+    setMaximumHeight(layout()->minimumSize().height());
+    setMaximumWidth(HINT_MAX_WIDTH);
+    
     installEventFilter(this);
     nameLabel->installEventFilter(this);
     fromToLabel->installEventFilter(this);
@@ -68,12 +71,13 @@ seqLabel(new QLabel(this)){
         setPalette(p);
     }
     
+// hack: tooltip do not works on linux, popup do not work on windows
+#ifdef Q_OS_WIN
     setWindowFlags(Qt::ToolTip);
-#ifndef Q_OS_LINUX
+#else
+    setWindowFlags(Qt::Popup);
+#endif
     setWindowOpacity(0.8);
-#endif // Q_OS_LINUX
-    setMaximumHeight(layout()->minimumSize().height());
-    setMaximumWidth(HINT_MAX_WIDTH);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     setMouseTracking(true);
     setLineWidth(1);
