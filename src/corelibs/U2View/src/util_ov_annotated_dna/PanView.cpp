@@ -118,19 +118,19 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     panViewToolButton = new QToolButton();
     
     QMenu *menu = new QMenu();
-    increasePanViewHeight = new QAction(tr("Increase number of rows"), menu);
+    increasePanViewHeight = new QAction(tr("+1 row"), menu);
     connect(increasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_increaseLines()));
-    decreasePanViewHeight = new QAction(tr("Decrease number of rows"), menu);
+    decreasePanViewHeight = new QAction(tr("-1 row"), menu);
     connect(decreasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decreaseLines()));
-    showAllAnnotations = new QAction(tr("Set rows to maximum"), this);
+    showAllAnnotations = new QAction(tr("Show all available rows"), this);
     connect(showAllAnnotations, SIGNAL(triggered()), renderArea, SLOT(sl_maxLines()));
-    menu->addAction(showAllAnnotations);
-    menu->addAction(increasePanViewHeight);
     menu->addAction(decreasePanViewHeight);
+    menu->addAction(increasePanViewHeight);
+    menu->addAction(showAllAnnotations);
     panViewToolButton->setPopupMode(QToolButton::InstantPopup);
     panViewToolButton->setMenu(menu);
-    panViewToolButton->setIcon(QIcon(":/core/images/zoom_whole.png"));
-    panViewToolButton->setToolTip(tr("Zoom view options"));
+    panViewToolButton->setIcon(QIcon(":/core/images/zoom_rows.png"));
+    panViewToolButton->setToolTip(tr("Increases/decreases number of annotation rows visible in Zoom view"));
 
     toggleMainRulerAction = new QAction(tr("Show main ruler"), this);
     toggleMainRulerAction->setCheckable(true);
@@ -347,6 +347,7 @@ void PanView::updateActions() {
     increasePanViewHeight->setEnabled(((PanViewRenderArea*)renderArea)->canIncreaseLines());
     decreasePanViewHeight->setEnabled(((PanViewRenderArea*)renderArea)->canDecreaseLines());
     showAllAnnotations->setEnabled(!((PanViewRenderArea*)renderArea)->isAllLinesShown());
+    panViewToolButton->setEnabled(isVisible() && (increasePanViewHeight->isEnabled() || decreasePanViewHeight->isEnabled() || showAllAnnotations->isEnabled()));
 }
 
 void PanView::sl_zoomInAction() {
@@ -550,6 +551,7 @@ void PanView::hideEvent( QHideEvent *ev ){
     zoomOutAction->setDisabled(true);
     zoomToSelectionAction->setDisabled(true);
     zoomToSequenceAction->setDisabled(true);
+    panViewToolButton->setDisabled(true);
     QWidget::hideEvent(ev);
 }
 
