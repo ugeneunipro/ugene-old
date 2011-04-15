@@ -1,7 +1,6 @@
 #!/bin/sh
 
 appname=ugenecl
-params=""
 
 # Check if '-ui' parameter is present. 
 # If it does exclude it from the list of parameters
@@ -11,10 +10,8 @@ for i in $*
 do
     if [ "$i" = "-ui" ]; then
         appname=ugeneui
-    else
-        params="${params} $i"
+    	shift
     fi
-#    shift
 done
 
 dirname=$(dirname `readlink -f $0`)
@@ -28,4 +25,4 @@ fi
 LD_LIBRARY_PATH=$dirname
 export LD_LIBRARY_PATH
 
-$dirname/$appname $params
+$dirname/$appname "$@"

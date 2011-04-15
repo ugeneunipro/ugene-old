@@ -1,7 +1,6 @@
 #!/bin/sh
 
 appname=ugenecld
-params=""
 
 # Check if '-ui' parameter is present. 
 # If it does exclude it from the list of parameters
@@ -11,10 +10,8 @@ until [ -z "$1" ]  # Until all parameters used up...
 do
     if [ "$1" == "-ui" ]; then
         appname=ugeneuid
-    else
-        params="${params} $1"
+        shift
     fi
-    shift
 done
 
 dirname=`dirname $0`
@@ -28,4 +25,4 @@ LD_LIBRARY_PATH=$dirname
 export LD_LIBRARY_PATH
 
 
-$dirname/$appname $params
+$dirname/$appname "$@"
