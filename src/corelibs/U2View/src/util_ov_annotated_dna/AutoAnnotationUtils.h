@@ -35,6 +35,10 @@ public:
     AutoAnnotationsADVAction(ADVSequenceWidget* widget, AutoAnnotationObject* aaObj);
     ~AutoAnnotationsADVAction();
     QList<QAction*> getToggleActions();
+    AutoAnnotationObject* getAAObj() {return aaObj; }
+    QAction* findToggleAction(const QString& groupName);
+    static const QString ACTION_NAME;
+
 private slots:
     void sl_toggle(bool toggled);
     void sl_autoAnnotationLockStateChanged();
@@ -44,6 +48,12 @@ private:
     QMenu* menu;
 };
 
+class U2VIEW_EXPORT AutoAnnotationUtils {
+public:
+    static AutoAnnotationsADVAction* findAutoAnnotationADVAction(ADVSequenceObjectContext* ctx);
+    static QAction* findAutoAnnotationsToggleAction(ADVSequenceObjectContext* ctx, const QString& name);
+    static void triggerAutoAnnotationsUpdate(ADVSequenceObjectContext* ctx, const QString& aaGroupName);
+};
 
 }
 

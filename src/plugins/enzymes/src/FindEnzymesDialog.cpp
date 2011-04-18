@@ -35,6 +35,7 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
+#include <U2View/AutoAnnotationUtils.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Formats/GenbankLocationParser.h>
@@ -464,10 +465,8 @@ void FindEnzymesDialog::accept() {
     
     saveSettings();
     
+    AutoAnnotationUtils::triggerAutoAnnotationsUpdate(seqCtx, ANNOTATION_GROUP_ENZYME);
     
-    AppContext::getAutoAnnotationsSupport()->updateAnnotationsByGroup(ANNOTATION_GROUP_ENZYME);
-   
-
     QDialog::accept();
 }
 

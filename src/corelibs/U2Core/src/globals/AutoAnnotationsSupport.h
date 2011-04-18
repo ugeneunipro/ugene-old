@@ -56,7 +56,6 @@ public:
     void lock();
     void unlock();
     void update();
-public slots:
     void updateGroup(const QString& groupName);
 private:
     void handleUpdate(QList<AutoAnnotationsUpdater*> updaters);
@@ -100,11 +99,8 @@ public:
     QList<AutoAnnotationsUpdater*> getAutoAnnotationUpdaters();
     AutoAnnotationsUpdater* findUpdaterByGroupName(const QString& groupName);
     AutoAnnotationsUpdater* findUpdaterByName(const QString& name);
-    void updateAnnotationsByGroup(const QString& groupName);
     static bool isAutoAnnotation(const AnnotationTableObject* obj);
     static bool isAutoAnnotation(const GObject* obj);
-signals:
-    void si_updateAutoAnnotationsGroupRequired(const QString& groupName);
 private:
     QList<AutoAnnotationsUpdater*> aaUpdaters;
 };

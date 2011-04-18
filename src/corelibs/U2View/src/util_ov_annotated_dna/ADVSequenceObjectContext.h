@@ -59,8 +59,9 @@ public:
     DNASequenceSelection*   getSequenceSelection() const {return selection;}
     
     QSet<AnnotationTableObject*> getAnnotationObjects(bool includeAutoAnnotations = false) const;
+    QSet<AnnotationTableObject*> getAutoAnnotationObjects() const { return autoAnnotations; }
     QList<GObject*> getAnnotationGObjects() const;
-
+    
     QMenu* createTranslationsMenu();
     void setAminoTranslation(const QString& tid);
 

@@ -79,10 +79,6 @@ void AutoAnnotationsSupport::registerAutoAnnotationsUpdater( AutoAnnotationsUpda
 }
 
 
-void AutoAnnotationsSupport::updateAnnotationsByGroup( const QString& groupName )
-{
-    emit si_updateAutoAnnotationsGroupRequired(groupName);
-}
 
 AutoAnnotationsSupport::~AutoAnnotationsSupport()
 {
@@ -112,7 +108,6 @@ AutoAnnotationObject::AutoAnnotationObject( DNASequenceObject* obj ) : dnaObj(ob
         .arg(obj->getDocument()->getName()).arg(obj->getSequenceName()), hints);
     aaSupport = AppContext::getAutoAnnotationsSupport();
     stateLock = new StateLock("Auto-annotation objects can not be modified");
-    connect(aaSupport, SIGNAL(si_updateAutoAnnotationsGroupRequired(const QString&) ), SLOT(updateGroup(const QString&))  );
     lock();
 }
 
@@ -155,7 +150,7 @@ void AutoAnnotationObject::handleUpdate( QList<AutoAnnotationsUpdater*> updaters
 {
     
     QList<Task*> subTasks;
-    
+    QStringList groupNames;
     
     foreach (AutoAnnotationsUpdater* updater, updaters) {
         
@@ -182,9 +177,10 @@ void AutoAnnotationObject::handleUpdate( QList<AutoAnnotationsUpdater*> updaters
                 subTasks.append(t);
             }
         }
-
+        
+        groupNames.append(updater->getGroupName());
     }
-
+    
     // envelope to unlock annotation object
     if (!subTasks.isEmpty()) {
         AutoAnnotationsUpdateTask* updateTask = new AutoAnnotationsUpdateTask(this, subTasks);

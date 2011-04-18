@@ -29,14 +29,12 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
-
 #include <U2Core/DNATranslationImpl.h>
 #include <U2Core/DNASequenceSelection.h>
-
 #include <U2Core/TextUtils.h>
 #include <U2Core/CreateAnnotationTask.h>
-#include <U2Core/AutoAnnotationsSupport.h>
 
+#include <U2View/AutoAnnotationUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSingleSequenceWidget.h>
@@ -391,7 +389,7 @@ void ORFDialog::accept()
     }
     
     saveSettings();
-    AppContext::getAutoAnnotationsSupport()->updateAnnotationsByGroup(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
+    AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
 
 
     QDialog::accept();

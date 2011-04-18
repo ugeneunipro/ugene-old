@@ -31,8 +31,12 @@
 
 namespace U2 {
 
+const QString AutoAnnotationsADVAction::ACTION_NAME("AutoAnnotationUpdateAction");
+
+#define AUTO_ANNOTATION_GROUP_NAME "AutoAnnotatationGroupName"
+
 AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnnotationObject* obj) 
-: ADVSequenceWidgetAction("AutoAnnotationUpdateAction", tr("Automatic Annotations Highlighting")), aaObj(obj)
+: ADVSequenceWidgetAction(ACTION_NAME, tr("Automatic Annotations Highlighting")), aaObj(obj)
 {
     seqWidget = v;
     addToBar = true;
@@ -63,6 +67,7 @@ void AutoAnnotationsADVAction::updateMenu()
     }
     foreach (AutoAnnotationsUpdater* updater, updaters) {
         QAction* toggleAction = new QAction(updater->getName(), this);
+        toggleAction->setProperty(AUTO_ANNOTATION_GROUP_NAME, updater->getGroupName());
         bool enabled = updater->checkConstraints(constraints);
         toggleAction->setEnabled(enabled);
         toggleAction->setCheckable(true);
@@ -112,5 +117,77 @@ void AutoAnnotationsADVAction::sl_autoAnnotationLockStateChanged()
     }
 }
 
+QAction* AutoAnnotationsADVAction::findToggleAction( const QString& groupName )
+{
+    QList<QAction*> toggleActions = menu->actions();
+    foreach(QAction* tAction, toggleActions) {
+        if (tAction->property(AUTO_ANNOTATION_GROUP_NAME) == groupName) {
+            return tAction;
+        }
+    }
+    return NULL;
+}
+
+QAction* AutoAnnotationUtils::findAutoAnnotationsToggleAction( ADVSequenceObjectContext* ctx, const QString& groupName )
+{
+    foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
+         ADVSequenceWidgetAction* advAction = w->getADVSequenceWidgetAction(AutoAnnotationsADVAction::ACTION_NAME);
+         if (advAction == NULL) {
+             continue;
+         }
+         AutoAnnotationsADVAction* aaAction = qobject_cast<AutoAnnotationsADVAction*> (advAction);
+         assert(aaAction != NULL);
+         QList<QAction*> toggleActions = aaAction->getToggleActions();
+         foreach(QAction* tAction, toggleActions) {
+             if (tAction->property(AUTO_ANNOTATION_GROUP_NAME) == groupName) {
+                 return tAction;
+             }
+         }
+    }
+
+    return NULL;
+
+}
+
+
+
+void AutoAnnotationUtils::triggerAutoAnnotationsUpdate( ADVSequenceObjectContext* ctx, const QString& aaGroupName )
+{
+    AutoAnnotationsADVAction* aaAction = findAutoAnnotationADVAction( ctx );
+    
+    assert(aaAction != NULL);
+    if (aaAction) {
+        
+        QAction* updateAction = aaAction->findToggleAction(aaGroupName);
+        assert (updateAction != NULL);
+        
+        if (!updateAction) {
+            return;
+        }
+
+        if (!updateAction->isChecked()) {
+            updateAction->trigger();
+        } else {
+            AutoAnnotationsUpdater* updater = AppContext::getAutoAnnotationsSupport()->findUpdaterByGroupName(aaGroupName);
+            if (updater != NULL) {
+                aaAction->getAAObj()->updateGroup(aaGroupName);
+            }
+        }
+    }
+}
+
+AutoAnnotationsADVAction* AutoAnnotationUtils::findAutoAnnotationADVAction( ADVSequenceObjectContext* ctx )
+{
+    foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
+        ADVSequenceWidgetAction* advAction = w->getADVSequenceWidgetAction(AutoAnnotationsADVAction::ACTION_NAME);
+        if (advAction == NULL) {
+            continue;
+        } else {
+            return qobject_cast<AutoAnnotationsADVAction*>(advAction);
+        }
+    }
+
+    return NULL;
+}
 
 } //namespace

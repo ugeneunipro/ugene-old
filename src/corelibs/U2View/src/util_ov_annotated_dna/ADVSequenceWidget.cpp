@@ -37,9 +37,8 @@ void ADVSequenceWidget::addADVSequenceWidgetAction(ADVSequenceWidgetAction* acti
 }
 
 ADVSequenceWidgetAction* ADVSequenceWidget::getADVSequenceWidgetAction(const QString& objName) const {
-    Q_UNUSED(objName);
     foreach(ADVSequenceWidgetAction* action, wActions) {
-        if (action->objectName() == objectName()) {
+        if (action->objectName() == objName) {
             return action;
         }
     }
