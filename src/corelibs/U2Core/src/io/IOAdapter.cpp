@@ -147,7 +147,7 @@ bool IOAdapter::isEof() {
     return 0 == ret;
 }
 
-qint64 IOAdapter::readLine( char* buff, qint64 maxSize, bool* terminatorFound /*= 0*/ ) {
+qint64 IOAdapter::readLine( char* buff, qint64 maxSize, bool* terminatorFound /* = 0*/ ) {
     bool b = false;
     if (!terminatorFound) {
         terminatorFound = &b;

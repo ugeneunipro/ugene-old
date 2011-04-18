@@ -4,22 +4,22 @@
 <context>
     <name>Document</name>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="377"/>
+        <location filename="../src/models/DocumentModel.cpp" line="379"/>
         <source>Document is not loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="390"/>
+        <location filename="../src/models/DocumentModel.cpp" line="392"/>
         <source>IO adapter does not support write operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="396"/>
+        <location filename="../src/models/DocumentModel.cpp" line="398"/>
         <source>No write support for document format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="466"/>
+        <location filename="../src/models/DocumentModel.cpp" line="468"/>
         <source>Locked by user</source>
         <translation type="unfinished"></translation>
     </message>
@@ -277,7 +277,7 @@
 <context>
     <name>U2::AutoAnnotationsSupport</name>
     <message>
-        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="111"/>
+        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="107"/>
         <source>Auto-annotations [%1 | %2]</source>
         <translation type="unfinished"></translation>
     </message>

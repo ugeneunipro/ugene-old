@@ -1644,7 +1644,7 @@ Do you want to replace it?</source>
 <context>
     <name>U2::AutoAnnotationsADVAction</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AutoAnnotationUtils.cpp" line="35"/>
+        <location filename="../src/util_ov_annotated_dna/AutoAnnotationUtils.cpp" line="39"/>
         <source>Automatic Annotations Highlighting</source>
         <translation></translation>
     </message>

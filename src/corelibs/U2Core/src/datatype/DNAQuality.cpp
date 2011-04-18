@@ -28,7 +28,7 @@ static const QString SANGER("Sanger");
 static const QString ILLUMINA("Illumina 1.3+");
 static const QString SOLEXA("Solexa/Illumina 1.0");
 
-DNAQuality::DNAQuality( const QByteArray& qualScore, DNAQualityType t /*= DNAQualityType_Sanger*/ )
+DNAQuality::DNAQuality( const QByteArray& qualScore, DNAQualityType t /* = DNAQualityType_Sanger*/ )
 : qualCodes(qualScore), type(t)
 {
 

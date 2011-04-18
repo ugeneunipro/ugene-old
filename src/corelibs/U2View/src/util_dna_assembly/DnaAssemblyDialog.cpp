@@ -39,7 +39,7 @@ QList<QString> DnaAssemblyDialog::shortReads;
 QString DnaAssemblyDialog::genomePath;
 QString DnaAssemblyDialog::methodName;
 
-DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWidget* p /*= NULL*/ )
+DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWidget* p /* = NULL*/ )
 : QDialog(p), assemblyRegistry(registry), customGUI(NULL)
 {
     setupUi(this);

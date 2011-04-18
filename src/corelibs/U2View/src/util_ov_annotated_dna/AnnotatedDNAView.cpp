@@ -978,7 +978,7 @@ void AnnotatedDNAView::sl_removeSelectedSequenceObject() {
     removeObject(so);
 }
 
-QList<AnnotationTableObject*> AnnotatedDNAView::getAnnotationObjects( bool includeAutoAnnotations /*= false*/ ) const
+QList<AnnotationTableObject*> AnnotatedDNAView::getAnnotationObjects( bool includeAutoAnnotations /* = false*/ ) const
 {
     QList<AnnotationTableObject*> result = annotations;
     if (includeAutoAnnotations) {
