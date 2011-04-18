@@ -601,8 +601,8 @@ void BioStruct3DGLWidget::setState( const QVariantMap& state )
         setupColorScheme(currentColorSchemeName);
     }
 
-    //unselectedShadingLevel = state.value(SHADING_LEVEL_NAME, DEFAULT_SHADING_LEVEL).value<int>();
-    //setUnselectedShadingLevel(unselectedShadingLevel);
+    unselectedShadingLevel = state.value(SHADING_LEVEL_NAME, DEFAULT_SHADING_LEVEL).value<int>();
+    setUnselectedShadingLevel(unselectedShadingLevel);
 
     if (previousGLRendererName != currentGLRendererName) {
         setupRenderer(currentGLRendererName);
@@ -1019,7 +1019,7 @@ void BioStruct3DGLWidget::createActions()
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(sl_settings()));
 
     closeAction = new QAction(tr("Close"), this);
-    connect(closeAction, SIGNAL(triggered()), this, SLOT(sl_closeWidget()));
+    connect(closeAction, SIGNAL(triggered()), this, SLOT(close()));
 
     exportImageAction = new QAction(tr("Export Image..."), this);
     connect(exportImageAction, SIGNAL(triggered()), this, SLOT(sl_exportImage()));
@@ -1236,10 +1236,6 @@ void BioStruct3DGLWidget::sl_settings()
 
 }
 
-void BioStruct3DGLWidget::sl_closeWidget()
-{
-    close();
-}
 
 void BioStruct3DGLWidget::sl_exportImage()
 {

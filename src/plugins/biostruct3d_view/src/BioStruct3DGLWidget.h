@@ -153,9 +153,6 @@ public:
     void setBackgroundColor(QColor backgroundColor);
     float sumCorrectColors(float a, float b);
 
-signals:
-    void si_widgetClosed(BioStruct3DGLWidget* w);
-
 protected:
 
     /*!
@@ -333,7 +330,6 @@ private slots:
      void sl_onAnnotationSelectionChanged(AnnotationSelection* thiz, const QList<Annotation*>& added, const QList<Annotation*>& removed);
      void sl_updateAnnimation();
      void sl_settings();
-     void sl_closeWidget();
      void sl_exportImage();
      void sl_alignWith();
 
