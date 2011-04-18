@@ -80,9 +80,10 @@ void GObject::setObjectRelations(const QList<GObjectRelation>& list) {
     hints->set(RELATED_OBJECTS_KEY, QVariant::fromValue<QList<GObjectRelation> >(list));
 }
 
-QList<GObjectRelation> GObject::findRelatedObjectsByRole(const QString& role) {
+QList<GObjectRelation> GObject::findRelatedObjectsByRole(const QString& role) const {
     QList<GObjectRelation> res;
-    foreach(const GObjectRelation& ref, getObjectRelations()) {
+    QList<GObjectRelation> relations = getObjectRelations();
+    foreach(const GObjectRelation& ref, relations) {
         if (ref.role == role) {
             res.append(ref);
         }
@@ -90,7 +91,7 @@ QList<GObjectRelation> GObject::findRelatedObjectsByRole(const QString& role) {
     return res;
 }
 
-QList<GObjectRelation> GObject::findRelatedObjectsByType(const GObjectType& objType) {
+QList<GObjectRelation> GObject::findRelatedObjectsByType(const GObjectType& objType) const {
     QList<GObjectRelation> res;
     foreach(const GObjectRelation& rel, getObjectRelations()) {
         if (rel.ref.objType == objType) {

@@ -24,5 +24,6 @@
 namespace U2 {
 
 const QString GObjectRelationRole::SEQUENCE("sequence");
+const QString GObjectRelationRole::ANNOTATION_TABLE("annotation_table");
 
 }

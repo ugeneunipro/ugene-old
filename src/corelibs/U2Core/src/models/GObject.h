@@ -68,9 +68,9 @@ public:
 
     void setObjectRelations(const QList<GObjectRelation>& obj);
 
-    QList<GObjectRelation> findRelatedObjectsByRole(const QString& role);
+    QList<GObjectRelation> findRelatedObjectsByRole(const QString& role) const;
     
-    QList<GObjectRelation> findRelatedObjectsByType(const GObjectType& objType);
+    QList<GObjectRelation> findRelatedObjectsByType(const GObjectType& objType) const;
     
     void addObjectRelation(const GObjectRelation& ref);
     

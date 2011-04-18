@@ -941,6 +941,7 @@ Document* PDBFormat::createDocumentFromBioStruct3D( BioStruct3D &bioStruct, Docu
         AnnotationTableObject* ao = i.key();
         ao->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
         biostrucObj->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
+        biostrucObj->addObjectRelation(ao, GObjectRelationRole::ANNOTATION_TABLE);
     }
 
     return doc;

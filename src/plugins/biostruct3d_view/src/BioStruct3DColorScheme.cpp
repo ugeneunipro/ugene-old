@@ -26,6 +26,10 @@
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FeatureColors.h>
+
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
 
 #include <QtCore/QObject>
 #include <QtAlgorithms>
@@ -165,26 +169,32 @@ ChemicalElemColorScheme::ChemicalElemColorScheme(const BioStruct3DObject *biostr
 
 /* class ChainsColorScheme : public BioStruct3DColorScheme */
 
-const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObject *biostruct) {
+const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObject *biostrucObj) {
     QMap<int, QColor> colorMap;
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-
-    // bug-2857: GObject relations shoud be used
-    Document *doc = biostruct->getDocument();
+    
+    Document *doc = biostrucObj->getDocument();
+    QList<GObjectRelation> relations = biostrucObj->findRelatedObjectsByRole(GObjectRelationRole::ANNOTATION_TABLE);
+    
     if (doc) {
-        foreach (GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE) ) {
+        
+        QList<GObject*> aObjs;
+        foreach(GObjectRelation r, relations) {
+             aObjs += GObjectUtils::selectObjectByReference(r.ref, doc->getObjects(), UOF_LoadedOnly );
+        } 
+
+        foreach (GObject* obj, aObjs ) {
             AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(obj);
             assert(ao);
 
             foreach(Annotation* a, ao->getAnnotations()) {
                 QString name = a->getAnnotationName();
                 if (name.startsWith(BioStruct3D::MoleculeAnnotationTag)) {
-                    bool Ok = false;
-                    int chainId = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&Ok);
-                    assert(Ok && chainId != 0);
-
-                    AnnotationSettings* as = asr->getAnnotationSettings(name);
-                    colorMap.insert(chainId, as->color);
+                    bool ok = false;
+                    int chainId = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&ok);
+                    assert(ok && chainId != 0);
+                    QColor color = FeatureColors::genLightColor(QString("chain_%1").arg(chainId));
+                    colorMap.insert(chainId, color);
                 }
             }
         }

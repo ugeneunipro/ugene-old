@@ -29,6 +29,7 @@ namespace U2 {
 class U2CORE_EXPORT GObjectRelationRole {
 public:
     static const QString SEQUENCE;
+    static const QString ANNOTATION_TABLE;
 };
 
 }//namespace

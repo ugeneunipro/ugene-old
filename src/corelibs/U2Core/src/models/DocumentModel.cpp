@@ -347,7 +347,9 @@ void Document::loadFrom(const Document* d) {
         if (info.type == clonedObj->getGObjectType()) {
             QVariantMap mergedHints = clonedObj->getGHintsMap();
             foreach(const QString& k, info.hints.keys()) {
-                mergedHints.insert(k, info.hints.value(k));
+                if (!mergedHints.contains(k)) {
+                    mergedHints.insert(k, info.hints.value(k));
+                }
             }
             clonedObj->getGHints()->setMap(mergedHints);
         }
