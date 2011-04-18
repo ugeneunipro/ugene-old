@@ -29,6 +29,7 @@ namespace U2 {
 
 class ADVSequenceObjectContext;
 class AnnotationTableObject;
+class AnnotationGroup;
 class Annotation;
 
 class EnzymeItem : public QTreeWidgetItem
@@ -61,6 +62,7 @@ public:
 private slots:
     void sl_onAnnotationsAdded(const QList<Annotation*>& anns);
     void sl_onAnnotationsRemoved(const QList<Annotation*>& anns);
+    void sl_onAnnotationsGroupCreated(AnnotationGroup* g);
     void sl_itemSelectionChanged();
 private:
     ADVSequenceObjectContext* ctx;
