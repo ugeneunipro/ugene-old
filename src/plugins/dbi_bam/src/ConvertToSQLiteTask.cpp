@@ -126,6 +126,8 @@ void ConvertToSQLiteTask::run() {
 
         if(bamInfo.hasIndex()) {
 
+            stateInfo.setStateDesc(BAMDbiPlugin::tr("Preparing BAM index"));
+
             const QList<Index::ReferenceIndex> &refIndices = bamInfo.getIndex().getReferenceIndices();
             QList<Index::ReferenceIndex::Chunk> sortedChunks;
             for(int i=0, i_c = refIndices.count(); i < i_c; i++) {
@@ -156,6 +158,11 @@ void ConvertToSQLiteTask::run() {
                 }
             }
 
+            qint64 totalChunksLength = 0;
+            foreach(const Index::ReferenceIndex::Chunk& chunk, sortedChunks) {
+                totalChunksLength += chunk.getEnd().getCoffset() - chunk.getStart().getCoffset();
+            }
+
 #ifdef _DEBUG
             for(int i = 0; i < sortedChunks.count() - 1; i++) {
                 const Index::ReferenceIndex::Chunk& left = sortedChunks.at(i);
@@ -165,39 +172,56 @@ void ConvertToSQLiteTask::run() {
                 assert(left.getEnd() < right.getStart());
             }
 #endif
-            
             int readsCount = 0;
+            int totalReads = 0;
+            qint64 readLength = 0;
+
+            stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
 
             foreach(const Index::ReferenceIndex::Chunk& chunk, sortedChunks) {
                 reader->seek(chunk.getStart());
+                qint64 chunkLen = chunk.getEnd().getCoffset() - chunk.getStart().getCoffset();
                 while(!reader->isEof() && reader->getOffset() < chunk.getEnd()) {
                     Alignment alignment = reader->readAlignment();
                     if(-1 != alignment.getReferenceId() && bamInfo.isReferenceSelected(alignment.getReferenceId())) {
                         reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
-                        readsCount++;
-                        if(readsCount >= 16384) {
+                        if(++readsCount >= 16384) {
                             readsCount = 0;
-                            if(isCanceled()) {
-                                throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
-                            }
                             flushReads(sqliteDbi.get(), assemblies, reads);
-                            stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
                         }
                     }
+                    if(++totalReads > 1000) {
+                        
+                        if(isCanceled()) {
+                            throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
+                        }
+                        stateInfo.progress = FIRST_STAGE_PERCENT * (readLength + reader->getOffset().getCoffset() - chunk.getStart().getCoffset()) / totalChunksLength;
+                        totalReads = 0;
+                    }
                 }
+                readLength += chunkLen;
             }
             
             flushReads(sqliteDbi.get(), assemblies, reads);
             stateInfo.progress = FIRST_STAGE_PERCENT;
         } else {
+            stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
             while(!reader->isEof()) {
                 {
                     int readsCount = 0;
+                    int totalReads = 0;
                     while(!reader->isEof()) {
                         Alignment alignment = reader->readAlignment();
                         if(-1 != alignment.getReferenceId() && bamInfo.isReferenceSelected(alignment.getReferenceId())) {
                             reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
                             readsCount++;
+                        }
+                        if(++totalReads > 1000) {
+                            if(isCanceled()) {
+                                throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
+                            }
+                            stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
+                            totalReads = 0;
                         }
                         if(readsCount >= 16384) {
                             break;
@@ -211,18 +235,24 @@ void ConvertToSQLiteTask::run() {
                 stateInfo.progress = ioAdapter->getProgress()*FIRST_STAGE_PERCENT/100;
             }
         }
-        foreach(int index, assemblies.keys()) {
-            {
-                U2OpStatusImpl opStatus;
-                sqliteDbi->getAssemblyDbi()->pack(assemblies[index].id, opStatus);
-                if(opStatus.hasError()) {
-                    throw Exception(opStatus.getError());
+
+        stateInfo.setStateDesc(BAMDbiPlugin::tr("Packing assemblies"));
+
+        {
+            int i = 0;
+            foreach(int index, assemblies.keys()) {
+                {
+                    U2OpStatusImpl opStatus;
+                    sqliteDbi->getAssemblyDbi()->pack(assemblies[index].id, opStatus);
+                    if(opStatus.hasError()) {
+                        throw Exception(opStatus.getError());
+                    }
                 }
+                if(isCanceled()) {
+                    throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
+                }
+                stateInfo.progress = FIRST_STAGE_PERCENT + (++i)*SECOND_STAGE_PERCENT/assemblies.size();
             }
-            if(isCanceled()) {
-                throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
-            }
-            stateInfo.progress = FIRST_STAGE_PERCENT + (index + 1)*SECOND_STAGE_PERCENT/assemblies.size();
         }
         {
             U2OpStatusImpl opStatus;
@@ -230,7 +260,8 @@ void ConvertToSQLiteTask::run() {
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());
             }
-        }
+            stateInfo.setStateDesc(BAMDbiPlugin::tr("Done. Releasing resources"));
+        }                
     } catch(const Exception &e) {
         setError(e.getMessage());
         assert(destinationUrl.isLocalFile());
