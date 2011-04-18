@@ -48,11 +48,11 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 	return plug;
 }
 
-const QString PhylipPlugin::PHYLIP_NEIGHBOUR_JOIN("Phylip Neighbor Join");
+const QString PhylipPlugin::PHYLIP_NEIGHBOUR_JOIN("PHYLIP Neighbor Joining");
 
 PhylipPlugin::PhylipPlugin() 
-: Plugin(tr("Phylip plugin"), tr("PHYLIP(the PHYLogeny Inference Package) is a package of programs for inferring phylogenies (evolutionary trees).\nOriginal version"
-                                 "at:http://evolution.genetics.washington.edu/phylip.html"))
+: Plugin(tr("PHYLIP"), tr("PHYLIP (the PHYLogeny Inference Package) is a package of programs for inferring phylogenies (evolutionary trees)."
+         " Original version at: http://evolution.genetics.washington.edu/phylip.html"))
 {
 
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();

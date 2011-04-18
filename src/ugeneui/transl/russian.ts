@@ -282,8 +282,8 @@
     <name>PluginViewWidget</name>
     <message>
         <location filename="../src/plugin_viewer/ui/PluginViewerWidget.ui" line="13"/>
-        <source>plugin_viewer_widget_caption</source>
-        <translation></translation>
+        <source>Plugin Viewer</source>
+        <translation>Управление модулями</translation>
     </message>
     <message>
         <location filename="../src/plugin_viewer/ui/PluginViewerWidget.ui" line="41"/>

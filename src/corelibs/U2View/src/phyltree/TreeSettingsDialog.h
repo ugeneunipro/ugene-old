@@ -26,22 +26,19 @@
 
 namespace U2 {
 
-
-class TreeSettings {
+struct TreeSettings
+{
 public:
     TreeSettings();
 
-    QString type;
+    enum TREE_TYPE { PHYLOGRAM, CLADOGRAM };
+
+    TREE_TYPE type;
     int width_coef;
     int height_coef;
 
-    static QString default_type;
     static int default_width_coef;
     static int default_height_coef;
-
-    static const QString CLADO_TYPE;
-    static const QString PHYLO_TYPE;
-
 };
 
 class TreeSettingsDialog : public QDialog, public Ui_TreeSettingsDialog{

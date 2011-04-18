@@ -59,8 +59,11 @@ class TreeViewer: public GObjectView {
 public:
     TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangularBranchItem* root, qreal scale);
 
-    void createActions();
+    //from GObjectView
     virtual void buildStaticToolbar(QToolBar* tb);
+    virtual void buildStaticMenu(QMenu* m);
+
+    void createActions();
 
     virtual QVariantMap saveState();
     virtual Task* updateViewTask(const QString& stateName, const QVariantMap& stateData);
@@ -103,25 +106,27 @@ protected:
 
 
 private:
-    QAction*            printAction;
-    QAction*            contAction;
-    QAction*            nameLabelsAction;
-    QAction*            distanceLabelsAction;
-    QAction*            captureTreeAction;
-    QAction*            exportAction;
+    QAction*            treeSettingsAction;
+
+    QActionGroup*       layoutGroup;
     QAction*            rectangularLayoutAction;
     QAction*            circularLayoutAction;
     QAction*            unrootedLayoutAction;
+
+    QAction*            branchesSettingsAction;
+
+    QAction*            nameLabelsAction;
+    QAction*            distanceLabelsAction;
     QAction*            textSettingsAction;
-    QAction*            treeSettingsAction;
-    QAction*			branchesSettingsAction;
+    QAction*            contAction;
+
     QAction*            zoomToSelAction;
     QAction*            zoomOutAction;
     QAction*            zoomToAllAction;
-    QMenu*              labelsMenu;
-    QMenu*              captureMenu;
-    QMenu*              layoutMenu;
-    QToolBar*           buttonToolBar;
+
+    QAction*            printAction;
+    QAction*            captureTreeAction;
+    QAction*            exportAction;
 
     TreeViewerUI*       ui;
     QByteArray          state;
@@ -129,7 +134,9 @@ private:
     GraphicsRectangularBranchItem* root;
     qreal               scale;
 
-
+    void setupLayoutSettingsMenu(QMenu* m);
+    void setupShowLabelsMenu(QMenu* m);
+    void setupCameraMenu(QMenu* m);
 };
 
 class TreeViewerUI: public QGraphicsView {

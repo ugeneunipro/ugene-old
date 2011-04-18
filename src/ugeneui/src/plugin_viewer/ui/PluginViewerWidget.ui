@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>plugin_viewer_widget_caption</string>
+   <string>Plugin Viewer</string>
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >

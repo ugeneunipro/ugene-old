@@ -33,3 +33,4 @@ SOURCES += src/dist.cpp \
 	   src/SeqBootAdapter.cpp \
 	   src/SeqBootModelWidget.cpp \
 	   src/cons.cpp 
+TRANSLATIONS += transl/english.ts transl/russian.ts

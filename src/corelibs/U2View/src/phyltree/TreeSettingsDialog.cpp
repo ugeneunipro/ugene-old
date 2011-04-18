@@ -21,21 +21,17 @@
 
 #include "TreeSettingsDialog.h"
 
+#include <U2Core/L10n.h>
+
 namespace U2 {
 
-const QString TreeSettings::CLADO_TYPE = QString("Cladogram");
-const QString TreeSettings::PHYLO_TYPE = QString("Phylogram");
-
-QString TreeSettings::default_type = TreeSettings::PHYLO_TYPE;
 int TreeSettings::default_width_coef = 1;
 int TreeSettings::default_height_coef = 1;
 
 TreeSettings::TreeSettings() {
-
-    type = default_type;
     width_coef = default_width_coef;
     height_coef = default_height_coef;
-   
+    type = PHYLOGRAM;
 }
 
 TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout)
@@ -48,18 +44,37 @@ TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &tree
 
     heightSlider->setEnabled(isRectLayout);
 
-    treeViewCombo->addItem(TreeSettings::CLADO_TYPE);
-    treeViewCombo->addItem(TreeSettings::PHYLO_TYPE);
+    treeViewCombo->addItem(L10N::treePhylogram());
+    treeViewCombo->addItem(L10N::treeCladogram());
 
-    treeViewCombo->setCurrentIndex(treeViewCombo->findText(settings.type));
+    switch ( settings.type )
+    {
+    case TreeSettings::PHYLOGRAM:
+        treeViewCombo->setCurrentIndex(treeViewCombo->findText(L10N::treePhylogram()));
+        break;
+    case TreeSettings::CLADOGRAM:
+        treeViewCombo->setCurrentIndex(treeViewCombo->findText(L10N::treeCladogram()));
+        break;
+    default:
+        assert(false && "Unexpected tree type value.");
+        break;
+    }
+    
 }
 
 void TreeSettingsDialog::accept() {
     changedSettings.height_coef = heightSlider->value();
     changedSettings.width_coef = widthlSlider->value();
 
-    changedSettings.type = treeViewCombo->currentText();
-        
+    if (treeViewCombo->currentText() == L10N::treePhylogram())
+    {
+        changedSettings.type = TreeSettings::PHYLOGRAM;
+    } else if (treeViewCombo->currentText() == L10N::treeCladogram()) {
+        changedSettings.type = TreeSettings::CLADOGRAM;
+    } else {
+        assert(false && "Unexpected tree type value");
+    }
+
     settings = changedSettings;
     QDialog::accept();
 }

@@ -93,5 +93,6 @@
         <file>images/pushpin_fixed.png</file>
         <file>images/close_2.png</file>
         <file>images/dna_helix.png</file>
+        <file>images/tree_layout.png</file>
     </qresource>
 </RCC>

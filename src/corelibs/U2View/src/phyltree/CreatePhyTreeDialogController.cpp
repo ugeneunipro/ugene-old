@@ -45,7 +45,7 @@ void CreatePhyTreeDialogController::sl_okClicked(){
     
     settings.algorithmId = ui->algorithmBox->currentText();
     if (ui->fileNameEdit->text().isEmpty()) {
-        QMessageBox::warning(this, tr("Warning"), tr("File name is empty"));
+        QMessageBox::warning(this, tr("Warning"), tr("Please, input the file name."));
         ui->fileNameEdit->setFocus();
         return;
     }
@@ -58,28 +58,26 @@ void CreatePhyTreeDialogController::sl_okClicked(){
 
     if(settings.bootstrap){
         if(!checkSeed(settings.seed)){
-            //QMessageBox::warning(this, tr("Warning"), tr("The seed must be of the form 4n+1. That is, it leaves a remainder of 1 when divided by 4"));
             QMessageBox::warning(this, tr("Warning"), tr("The seed must be odd."));
             return;
         }
     }
 
     if(estimateResources()){
-        QMessageBox mb(QMessageBox::Warning, tr("Memory error risk"), tr("For that alignment phylip dnadistance modul will require more memory than you have in the system. It may cause crash. Do you want to continue?"), QMessageBox::Ok|QMessageBox::Cancel);
+        QMessageBox mb(QMessageBox::Warning, tr("Warning"), 
+            tr("There is insufficient memory to run PHYLIP dnadist for the alignment."
+            " It may cause an error. Do you want to continue?"), QMessageBox::Ok|QMessageBox::Cancel);
         if(mb.exec() == QMessageBox::Ok){
             QDialog::accept();
         }
     }else{
         QDialog::accept();
     }
-
-    
-
 }
 
 void CreatePhyTreeDialogController::insertContrWidget( int pos, CreatePhyTreeWidget* widget )
 {
-    ui->verticalLayout->insertWidget(pos,widget);
+    ui->verticalLayout->insertWidget(pos, widget);
     childWidgets.append(widget);
     
     // adjust sizes

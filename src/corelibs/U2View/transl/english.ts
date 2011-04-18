@@ -85,17 +85,17 @@
     <name>BranchSettingsDialog</name>
     <message>
         <location filename="../src/phyltree/ui/BranchSettingsDialog.ui" line="14"/>
-        <source>Branch settings</source>
+        <source>Branch Settings</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/BranchSettingsDialog.ui" line="22"/>
-        <source>Color:</source>
+        <source>Color</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/BranchSettingsDialog.ui" line="61"/>
-        <source>Thickness:</source>
+        <source>Line Weight</source>
         <translation></translation>
     </message>
     <message>
@@ -300,31 +300,31 @@ p, li { white-space: pre-wrap; }
     <name>CreatePhyTree</name>
     <message>
         <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="26"/>
-        <source>Create Phylogenetic Tree</source>
+        <source>Build Phylogenetic Tree</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="37"/>
-        <source>Choose algorithm:</source>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="39"/>
+        <source>Tree building method</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="51"/>
-        <source>Path to file:</source>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="53"/>
+        <source>Save tree to</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="61"/>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="63"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="98"/>
-        <source>OK</source>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="105"/>
+        <source>Build</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="105"/>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="112"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -702,6 +702,14 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>ObjectViewTask</name>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="191"/>
+        <source>No sequence info found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../src/util_ov_phyltree/CreateBranchesTask.h" line="36"/>
@@ -709,20 +717,20 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="276"/>
-        <source>Swap siblings</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="359"/>
+        <source>Swap Siblings</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="986"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1091"/>
         <source>Expand</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="281"/>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="988"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="364"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1093"/>
         <source>Collapse</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_phyltree/TreeViewerUtils.cpp" line="51"/>
@@ -964,27 +972,27 @@ Do you want to replace it?</source>
     <name>TextSettingsDialog</name>
     <message>
         <location filename="../src/phyltree/ui/TextSettingsDialog.ui" line="14"/>
-        <source>Text settings</source>
+        <source>Labels Formatting</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/TextSettingsDialog.ui" line="22"/>
-        <source>Color:</source>
+        <source>Color</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/TextSettingsDialog.ui" line="29"/>
-        <source>Size:</source>
+        <source>Size</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/TextSettingsDialog.ui" line="71"/>
-        <source>Font:</source>
+        <source>Font</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/TextSettingsDialog.ui" line="81"/>
-        <source>Attributes:</source>
+        <source>Attributes</source>
         <translation></translation>
     </message>
     <message>
@@ -1023,22 +1031,32 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="14"/>
         <source>Tree Settings</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="60"/>
-        <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <source>Width</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="67"/>
-        <source>Height (Rectangular):</source>
-        <translation type="unfinished"></translation>
+        <source>Height (Rectangular)</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="77"/>
-        <source>Tree View:</source>
-        <translation type="unfinished"></translation>
+        <source>Tree View</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="117"/>
+        <source>OK</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/ui/TreeSettingsDialog.ui" line="124"/>
+        <source>Cancel</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1199,7 +1217,7 @@ Do you want to replace it?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="159"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSingleSequenceWidget.cpp" line="158"/>
         <source>Capture screen</source>
         <translation></translation>
     </message>
@@ -1378,12 +1396,12 @@ Do you want to replace it?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="575"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="574"/>
         <source>Hide %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="577"/>
+        <location filename="../src/util_ov_annotated_dna/ADVSyncViewManager.cpp" line="576"/>
         <source>Show %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1523,19 +1541,19 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="150"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="956"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="966"/>
         <source>Copy qualifier text</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="153"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="960"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="970"/>
         <source>Copy qualifier URL</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="156"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="965"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="975"/>
         <source>Toggle column</source>
         <translation></translation>
     </message>
@@ -1593,32 +1611,32 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="724"/>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="966"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="976"/>
         <source>Hide &apos;%1&apos; column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="956"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="966"/>
         <source>Copy qualifier &apos;%1&apos; value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="960"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="970"/>
         <source>Copy qualifier &apos;%1&apos; URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="966"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="976"/>
         <source>Add &apos;%1&apos; column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="1577"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="1587"/>
         <source>Rename group</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="1615"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotationsTreeView.cpp" line="1625"/>
         <source>Rename qualifier</source>
         <translation></translation>
     </message>
@@ -1626,7 +1644,7 @@ Do you want to replace it?</source>
 <context>
     <name>U2::AutoAnnotationsADVAction</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AutoAnnotationUtils.cpp" line="34"/>
+        <location filename="../src/util_ov_annotated_dna/AutoAnnotationUtils.cpp" line="35"/>
         <source>Automatic Annotations Highlighting</source>
         <translation></translation>
     </message>
@@ -1644,18 +1662,18 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="154"/>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="156"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="155"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="157"/>
         <source>Build index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="154"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="155"/>
         <source>Reference sequence url is not set!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="156"/>
+        <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="157"/>
         <source>Index file name is not set!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1693,23 +1711,25 @@ Do you want to replace it?</source>
     <name>U2::CreatePhyTreeDialogController</name>
     <message>
         <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="48"/>
+        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="61"/>
+        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="67"/>
         <source>Warning</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="48"/>
-        <source>File name is empty</source>
+        <source>Please, input the file name.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="59"/>
-        <source>Memory error risk</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="61"/>
+        <source>The seed must be odd.</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="59"/>
-        <source>For that alignment phylip dnadistance modul will require more memory than you have in the system. It may cause crash</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/phyltree/CreatePhyTreeDialogController.cpp" line="68"/>
+        <source>There is insufficient memory to run PHYLIP dnadist for the alignment. It may cause an error. Do you want to continue?</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1800,17 +1820,12 @@ Do you want to replace it?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="116"/>
+        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="117"/>
         <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="122"/>
         <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="125"/>
         <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="128"/>
         <source>DNA Assembly</source>
         <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="117"/>
-        <source>Index file name is not set!</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/DnaAssemblyDialog.cpp" line="123"/>
@@ -2000,7 +2015,7 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::GSequenceLineViewAnnotated</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/GSequenceLineViewAnnotated.cpp" line="658"/>
+        <location filename="../src/util_ov_annotated_dna/GSequenceLineViewAnnotated.cpp" line="665"/>
         <source>etc ...</source>
         <translation></translation>
     </message>
@@ -2008,51 +2023,14 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::MSAAlignDialog</name>
     <message>
-        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="98"/>
-        <source>Align MSA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="99"/>
-        <source>Select input file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="100"/>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="101"/>
-        <source>Align</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="102"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="110"/>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="63"/>
         <source>Set result alignment file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="179"/>
-        <source>MSA Align</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="180"/>
-        <source>Result alignment file name is not set!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::MSAAlignFileTask</name>
-    <message>
-        <location filename="../src/util_msa_align/MSAAlignUtils.cpp" line="63"/>
-        <source>input_format_error</source>
+        <location filename="../src/util_msa_align/MSAAlignDialog.cpp" line="126"/>
+        <source>The input file url is empty.
+Please select file to align.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2360,7 +2338,7 @@ Please, check your plugin list.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="1294"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorSequenceArea.cpp" line="1300"/>
         <source>Open file with sequences</source>
         <translation></translation>
     </message>
@@ -2450,14 +2428,6 @@ Please, check your plugin list.</source>
     </message>
 </context>
 <context>
-    <name>U2::ObjectViewTask</name>
-    <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="187"/>
-        <source>No sequence info found!</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>U2::OpenAnnotatedDNAViewTask</name>
     <message>
         <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="117"/>
@@ -2496,7 +2466,7 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::OpenSavedAnnotatedDNAViewTask</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="226"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp" line="235"/>
         <source>DNA sequence object not found: %1</source>
         <translation></translation>
     </message>
@@ -2504,7 +2474,7 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::OpenSavedMSAEditorTask</name>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorTasks.cpp" line="135"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorTasks.cpp" line="138"/>
         <source>DNA sequence object not found: %1</source>
         <translation></translation>
     </message>
@@ -2512,7 +2482,7 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::OpenSavedTextObjectViewTask</name>
     <message>
-        <location filename="../src/util_ov_textview/SimpleTextObjectViewTasks.cpp" line="71"/>
+        <location filename="../src/util_ov_textview/SimpleTextObjectViewTasks.cpp" line="74"/>
         <source>Text object &apos;%1&apos; is not found</source>
         <translation></translation>
     </message>
@@ -2520,7 +2490,7 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::OpenSavedTreeViewerTask</name>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerTasks.cpp" line="131"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerTasks.cpp" line="134"/>
         <source>DNA sequence object not found: %1</source>
         <translation></translation>
     </message>
@@ -2597,22 +2567,42 @@ Please, check your plugin list.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="118"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="121"/>
+        <source>+1 row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="123"/>
+        <source>-1 row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="125"/>
+        <source>Show all available rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="133"/>
+        <source>Increases/decreases number of annotation rows visible in Zoom view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="135"/>
         <source>Show main ruler</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="123"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="140"/>
         <source>Show custom rulers</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="425"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="448"/>
         <source>range change request: [%1, %2]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="696"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="721"/>
         <source>empty</source>
         <translation></translation>
     </message>
@@ -2620,7 +2610,7 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::PanViewRenderArea</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="791"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="816"/>
         <source>[%1 %2]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2759,83 +2749,96 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::TreeViewer</name>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="139"/>
-        <source>Show sequence names</source>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="138"/>
+        <source>Tree Settings...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="142"/>
-        <source>Show distance labels</source>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="143"/>
+        <source>Rectangular</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="146"/>
-        <source>Print tree</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="149"/>
-        <source>Capture tree</source>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="147"/>
+        <source>Circular</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="150"/>
-        <source>Export tree in SVG</source>
+        <source>Unrooted</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="152"/>
-        <source>Align name labels</source>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="154"/>
+        <source>Branch Settings...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="156"/>
-        <source>Rectangular layout</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="159"/>
-        <source>Circular layout</source>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="157"/>
+        <source>Show Names</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="161"/>
-        <source>Unrooted layout</source>
+        <source>Show Distances</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="164"/>
-        <source>Branch settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="165"/>
-        <source>Text settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="166"/>
-        <source>Tree settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="168"/>
-        <source>Zoom in</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="169"/>
-        <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <source>Formatting...</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="170"/>
-        <source>Reset zooming</source>
-        <translation type="unfinished"></translation>
+        <source>Align Labels</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="199"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="174"/>
+        <source>Zoom In</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="175"/>
+        <source>Zoom Out</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="176"/>
+        <source>Reset Zooming</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="179"/>
+        <source>Print Tree...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="182"/>
+        <source>Screen Capture...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="183"/>
+        <source>As SVG...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="210"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="257"/>
         <source>Layout</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="223"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="268"/>
+        <source>Show Labels</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="243"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="286"/>
+        <source>Export Tree Image</source>
         <translation></translation>
     </message>
 </context>
@@ -3195,6 +3198,43 @@ Please, check your plugin list.</source>
         <location filename="../src/util_ov_indexview/ui/UIndexViewWidget.ui" line="38"/>
         <source>&gt;</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>performAlignmentDialog</name>
+    <message>
+        <location filename="../src/util_msa_align/ui/PerformAlignmentDialog.ui" line="20"/>
+        <source>Align</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/ui/PerformAlignmentDialog.ui" line="26"/>
+        <source>Base options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/ui/PerformAlignmentDialog.ui" line="34"/>
+        <source>Select input file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/ui/PerformAlignmentDialog.ui" line="44"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/ui/PerformAlignmentDialog.ui" line="53"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Translating alignment to amino allows to avoid errors of inserting gaps within codon boundaries.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msa_align/ui/PerformAlignmentDialog.ui" line="60"/>
+        <source>Translate to amino when aligning </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -54,6 +54,10 @@ public:
     }
     static QString errorDocumentNotFound(const GUrl& url) { return tr("Document not found: %1").arg(url.getURLString());}
     static QString suffixBp() { return tr(" bp");}
+
+    // phylogenetic tree settings
+    static QString treePhylogram() { return tr("Phylogram"); }
+    static QString treeCladogram() { return tr("Cladogram"); }
 };
 
 }//ns

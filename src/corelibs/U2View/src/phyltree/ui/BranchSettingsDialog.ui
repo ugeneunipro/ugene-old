@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Branch settings</string>
+   <string>Branch Settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -19,7 +19,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Color:</string>
+        <string>Color</string>
        </property>
       </widget>
      </item>
@@ -58,7 +58,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Thickness:</string>
+        <string>Line Weight</string>
        </property>
       </widget>
      </item>

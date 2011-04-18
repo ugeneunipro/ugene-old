@@ -41,6 +41,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/L10n.h>
 
+#include <U2Gui/GUIUtils.h>
+
 #include <U2Misc/HBar.h>
 #include <U2Misc/DialogUtils.h>
 #include <U2View/CreatePhyTreeDialogController.h>
@@ -66,25 +68,22 @@ namespace U2 {
 
 TreeViewer::TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangularBranchItem* _root, qreal s):
     GObjectView(TreeViewerFactory::ID, viewName),
-    printAction(NULL),
-    contAction(NULL),
-    nameLabelsAction(NULL),
-    distanceLabelsAction(NULL),
-    captureTreeAction(NULL),
-    exportAction(NULL),
+    treeSettingsAction(NULL),
+    layoutGroup(NULL),
     rectangularLayoutAction(NULL),
     circularLayoutAction(NULL),
     unrootedLayoutAction(NULL),
-    labelsMenu(NULL),
-    captureMenu(NULL),
-    layoutMenu(NULL),
-    textSettingsAction(NULL),
-    treeSettingsAction(NULL),
     branchesSettingsAction(NULL),
+    nameLabelsAction(NULL),
+    distanceLabelsAction(NULL),
+    textSettingsAction(NULL),
+    contAction(NULL),
     zoomToSelAction(NULL),
     zoomToAllAction(NULL),
     zoomOutAction(NULL),
-    buttonToolBar(NULL),
+    printAction(NULL),
+    captureTreeAction(NULL),
+    exportAction(NULL),
     ui(NULL),
     root(_root),
     scale(s)
@@ -135,81 +134,165 @@ Task* TreeViewer::updateViewTask(const QString& stateName, const QVariantMap& st
 }
 
 void TreeViewer::createActions() {
-    labelsMenu = new QMenu();
-    nameLabelsAction = labelsMenu->addAction(tr("Show sequence names"));
+    // Tree Settings
+    treeSettingsAction = new QAction(QIcon(":core/images/phylip.png"), tr("Tree Settings..."), ui);
+
+    // Layout
+    layoutGroup = new QActionGroup(ui);
+
+    rectangularLayoutAction = new QAction(tr("Rectangular"), layoutGroup);
+    rectangularLayoutAction->setCheckable(true);
+    rectangularLayoutAction->setChecked(true);
+
+    circularLayoutAction = new QAction(tr("Circular"), layoutGroup);
+    circularLayoutAction->setCheckable(true);
+
+    unrootedLayoutAction = new QAction(tr("Unrooted"), layoutGroup);
+    unrootedLayoutAction->setCheckable(true);
+
+    // Branch Settings
+    branchesSettingsAction = new QAction(QIcon(":core/images/color_wheel.png"), tr("Branch Settings..."), ui);
+
+    // Show Labels
+    nameLabelsAction = new QAction(tr("Show Names"), ui);
     nameLabelsAction->setCheckable(true);
     nameLabelsAction->setChecked(true);
-    distanceLabelsAction = labelsMenu->addAction(tr("Show distance labels"));
+
+    distanceLabelsAction = new QAction(tr("Show Distances"), ui);
     distanceLabelsAction->setCheckable(true);
     distanceLabelsAction->setChecked(true);
 
-    printAction = new QAction(QIcon(":/core/images/printer.png"), tr("Print tree"), ui);
+    // Formatting
+    textSettingsAction = new QAction(QIcon(":core/images/font.png"), tr("Formatting..."), ui);
 
-    captureMenu = new QMenu();
-    captureTreeAction = captureMenu->addAction(tr("Capture tree"));
-    exportAction = captureMenu->addAction(tr("Export tree in SVG"));
-
-    contAction = new QAction(QIcon(":core/images/align_tree_labels.png"), tr("Align name labels"), ui);
+    // Align Labels
+    // Note: the icon is truncated to 15 px height to look properly in the main menu when it is checked
+    contAction = new QAction(QIcon(":core/images/align_tree_labels.png"), tr("Align Labels"), ui);
     contAction->setCheckable(true);
 
-    layoutMenu = new QMenu();
-    rectangularLayoutAction = layoutMenu->addAction(tr("Rectangular layout"));
-    rectangularLayoutAction->setCheckable(true);
-    rectangularLayoutAction->setChecked(true);
-    circularLayoutAction = layoutMenu->addAction(tr("Circular layout"));
-    circularLayoutAction->setCheckable(true);
-    unrootedLayoutAction = layoutMenu->addAction(tr("Unrooted layout"));
-    unrootedLayoutAction->setCheckable(true);
+    // Zooming
+    zoomToSelAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom In") , ui);
+    zoomOutAction = new QAction(QIcon(":core/images/zoom_out.png"), tr("Zoom Out"), ui);
+    zoomToAllAction = new QAction(QIcon(":core/images/zoom_whole.png"), tr("Reset Zooming"), ui);
 
-    branchesSettingsAction = new QAction(QIcon(":core/images/color_wheel.png"), tr("Branch settings"), ui);
-    textSettingsAction = new QAction(QIcon(":core/images/font.png"), tr("Text settings"), ui);
-    treeSettingsAction = new QAction(QIcon(":core/images/phylip.png"), tr("Tree settings"), ui);
+    // Print Tree
+    printAction = new QAction(QIcon(":/core/images/printer.png"), tr("Print Tree..."), ui);
 
-    zoomToSelAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom in") , ui);
-    zoomOutAction = new QAction(QIcon(":core/images/zoom_out.png"), tr("Zoom out"), ui);
-    zoomToAllAction = new QAction(QIcon(":core/images/zoom_whole.png"), tr("Reset zooming"), ui);
-
-    QActionGroup* layoutGroup = new QActionGroup(ui);
-    rectangularLayoutAction->setActionGroup(layoutGroup);
-    circularLayoutAction->setActionGroup(layoutGroup);
-    unrootedLayoutAction->setActionGroup(layoutGroup);
+    // Screen Capture
+    captureTreeAction = new QAction(tr("Screen Capture..."), ui);
+    exportAction = new QAction(tr("As SVG..."), ui);
 }
 
-void TreeViewer::buildStaticToolbar(QToolBar* tb) {
-    QToolButton* button = new QToolButton();
-    button->setPopupMode(QToolButton::InstantPopup);
-    QAction* defaultAction = new QAction(QIcon(":/core/images/text_ab.png"), "", button);
-    button->setDefaultAction(defaultAction);
-    button->setMenu(labelsMenu);
-    tb->addWidget(button);
+void TreeViewer::setupLayoutSettingsMenu(QMenu* m)
+{
+    m->addActions(layoutGroup->actions());
+}
 
-    tb->addAction(printAction);
+void TreeViewer::setupShowLabelsMenu(QMenu* m)
+{
+    m->addAction(nameLabelsAction);
+    m->addAction(distanceLabelsAction);
+}
 
-    button = new QToolButton();
-    button->setPopupMode(QToolButton::InstantPopup);
-    defaultAction = new QAction(QIcon(":/core/images/cam2.png"), "", button);
-    button->setDefaultAction(defaultAction);
-    button->setMenu(captureMenu);
-    tb->addWidget(button);
+void TreeViewer::setupCameraMenu(QMenu* m)
+{
+    m->addAction(captureTreeAction);
+    m->addAction(exportAction);
+}
 
+void TreeViewer::buildStaticToolbar(QToolBar* tb) 
+{
+    // Tree Settings
+    tb->addAction(treeSettingsAction);
+
+    // Layout
+    QToolButton* layoutButton = new QToolButton(tb);
+    QMenu* layoutMenu = new QMenu(tr("Layout"), ui);
+    setupLayoutSettingsMenu(layoutMenu);
+    layoutButton->setDefaultAction(layoutMenu->menuAction());
+    layoutButton->setPopupMode(QToolButton::InstantPopup);
+    layoutButton->setIcon(QIcon(":core/images/tree_layout.png"));
+    tb->addWidget(layoutButton);
+
+    // Branch Settings
+    tb->addAction(branchesSettingsAction);
+
+    // Labels and Text Settings
+    tb->addSeparator();
+    QToolButton* showLabelsButton = new QToolButton();
+    QMenu* showLabelsMenu = new QMenu(tr("Show Labels"), ui);
+    setupShowLabelsMenu(showLabelsMenu);
+    showLabelsButton->setDefaultAction(showLabelsMenu->menuAction());
+    showLabelsButton->setPopupMode(QToolButton::InstantPopup);
+    showLabelsButton->setIcon(QIcon(":/core/images/text_ab.png"));
+    tb->addWidget(showLabelsButton);
+
+    tb->addAction(textSettingsAction);
     tb->addAction(contAction);
-
-    button = new QToolButton();
-    button->setPopupMode(QToolButton::InstantPopup);
-    defaultAction = new QAction(tr("Layout"), button);
-    button->setDefaultAction(defaultAction);
-    button->setMenu(layoutMenu);
-    tb->addWidget(button);
-
+    // Zooming
+    tb->addSeparator();
     tb->addAction(zoomToSelAction);
     tb->addAction(zoomOutAction);
     tb->addAction(zoomToAllAction);
 
-    tb->addAction(branchesSettingsAction);
-    tb->addAction(textSettingsAction);
-    tb->addAction(treeSettingsAction);
+    // Print and Capture
+    tb->addSeparator();
+    tb->addAction(printAction);
+
+    QToolButton* cameraButton = new QToolButton();
+    QMenu* cameraMenu = new QMenu(tr("Export Tree Image"), ui);
+    setupCameraMenu(cameraMenu);
+    cameraButton->setDefaultAction(cameraMenu->menuAction());
+    cameraButton->setPopupMode(QToolButton::InstantPopup);
+    cameraButton->setIcon(QIcon(":/core/images/cam2.png"));
+    tb->addWidget(cameraButton);
 }
 
+void TreeViewer::buildStaticMenu(QMenu* m)
+{
+    // Tree Settings
+    m->addAction(treeSettingsAction);
+
+    // Layout
+    QMenu* layoutMenu = new QMenu(tr("Layout"), ui);
+    setupLayoutSettingsMenu(layoutMenu);
+    layoutMenu->setIcon(QIcon(":core/images/tree_layout.png"));
+    m->addMenu(layoutMenu);
+
+    // Branch Settings
+    m->addAction(branchesSettingsAction);
+
+    // Labels and Text Settings
+    m->addSeparator();
+
+    QMenu* labelsMenu = new QMenu(tr("Show Labels"), ui);
+    setupShowLabelsMenu(labelsMenu);
+    labelsMenu->setIcon(QIcon(":/core/images/text_ab.png"));
+    m->addMenu(labelsMenu);
+
+    m->addAction(textSettingsAction);
+
+    m->addAction(contAction);
+    // Zooming
+    m->addSeparator();
+    m->addAction(zoomToSelAction);
+    m->addAction(zoomOutAction);
+    m->addAction(zoomToAllAction);
+
+    // Print and Capture
+    m->addSeparator();
+    m->addAction(printAction);
+
+    QMenu* cameraMenu = new QMenu(tr("Export Tree Image"), ui);
+    setupCameraMenu(cameraMenu);
+    cameraMenu->setIcon(QIcon(":/core/images/cam2.png"));
+    m->addMenu(cameraMenu);
+
+    m->addSeparator();
+
+    GObjectView::buildStaticMenu(m);
+    GUIUtils::disableEmptySubmenus(m);
+}
 
 QWidget* TreeViewer::createWidget() {
     assert(ui == NULL);
@@ -273,7 +356,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
 
     //chrootAction->setEnabled(false); //not implemented yet
 
-    swapAction = buttonPopup->addAction(QObject::tr("Swap siblings"));
+    swapAction = buttonPopup->addAction(QObject::tr("Swap Siblings"));
     connect(swapAction, SIGNAL(triggered(bool)), SLOT(sl_swapTriggered()));
 
     buttonPopup->addAction(zoomToAction);
@@ -332,20 +415,20 @@ void TreeViewerUI::updateSettings(const TextSettings &settings) {
 void TreeViewerUI::updateSettings(const TreeSettings &settings) {
 
     treeSettings = settings;
-	if(layout!=TreeLayout_Rectangular){
-		TreeLayout tmpL = layout;
-		layout = TreeLayout_Rectangular;
-		switch(tmpL){
-			case TreeLayout_Circular:
-				sl_circularLayoutTriggered();
-				break;
-			case TreeLayout_Unrooted:
-				sl_unrootedLayoutTriggered();
-				break;
-		}
-	}else{
-		updateTreeSettings();
-	}
+    if(layout!=TreeLayout_Rectangular){
+        TreeLayout tmpL = layout;
+        layout = TreeLayout_Rectangular;
+        switch(tmpL){
+            case TreeLayout_Circular:
+                sl_circularLayoutTriggered();
+                break;
+            case TreeLayout_Unrooted:
+                sl_unrootedLayoutTriggered();
+                break;
+        }
+    }else{
+        updateTreeSettings();
+    }
 
 }
 
@@ -398,7 +481,7 @@ void TreeViewerUI::updateTextSettings(){
 void TreeViewerUI::updateTreeSettings(){
 
     qreal avgW = 0;
-    if(treeSettings.type == TreeSettings::CLADO_TYPE){
+    if(treeSettings.type == TreeSettings::CLADOGRAM){
         avgW = avgWidth(); 
         legend->setVisible(false);
     }else{
@@ -416,17 +499,22 @@ void TreeViewerUI::updateTreeSettings(){
                 if(rectItem){
                     rectItem->setHeightCoef(treeSettings.height_coef);
                 }
-                
             }
-			qreal coef  = qMax(1.0, TreeViewerUI::SIZE_COEF*treeSettings.width_coef);
-			if(treeSettings.type == TreeSettings::PHYLO_TYPE){
-				item->setWidth(qAbs(item->getDist()) * getScale()* coef);
 
-			}else if (treeSettings.type == TreeSettings::CLADO_TYPE){
-				//if (item->getNameText() != NULL) {
-				item->setWidth(avgW * getScale()* coef);
-				//}
-			}
+            qreal coef  = qMax(1.0, TreeViewerUI::SIZE_COEF*treeSettings.width_coef);
+
+            switch (treeSettings.type)
+            {
+            case TreeSettings::PHYLOGRAM:
+                item->setWidth(qAbs(item->getDist()) * getScale()* coef);
+                break;
+            case TreeSettings::CLADOGRAM:
+                item->setWidth(avgW * getScale()* coef);
+                break;
+            default:
+                assert(false && "Unexpected tree type value");
+                break;
+            }
         }
         foreach (QGraphicsItem* ci, item->childItems()) {
             GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(ci);
@@ -436,7 +524,7 @@ void TreeViewerUI::updateTreeSettings(){
         }
     }
     updateRect();
-    scene()->update();  
+    scene()->update();
 
     if(contEnabled){
         QStack<GraphicsBranchItem*> stack;
