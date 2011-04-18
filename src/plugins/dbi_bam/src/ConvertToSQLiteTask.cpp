@@ -101,6 +101,7 @@ void ConvertToSQLiteTask::run() {
                 }
             }
         }
+        U2AttributeDbi * attributeDbi = sqliteDbi->getAttributeDbi();
         QMap<int, U2Assembly> assemblies;
         for(int i=0; i < reader->getHeader().getReferences().count(); i++) {
             if(bamInfo.isReferenceSelected(i)) {
@@ -114,6 +115,32 @@ void ConvertToSQLiteTask::run() {
                         throw Exception(opStatus.getError());
                     }
                 }
+                // set assembly
+                if(attributeDbi != NULL) {
+                    U2OpStatusImpl status;
+                    {
+                        U2IntegerAttribute lenAttr;
+                        lenAttr.objectId = assembly.id;
+                        lenAttr.name = "reference_length_attribute";
+                        lenAttr.version = 1;
+                        lenAttr.value = reference.getLength();
+                        attributeDbi->createIntegerAttribute(lenAttr, status);
+                        if(status.hasError()) {
+                            throw Exception(status.getError());
+                        }
+                    }
+                    if(!reference.getMd5().isEmpty()) {
+                        U2ByteArrayAttribute md5Attr;
+                        md5Attr.objectId = assembly.id;
+                        md5Attr.name = "reference_md5_attribute";
+                        md5Attr.version = 1;
+                        md5Attr.value = reference.getMd5();
+                        attributeDbi->createByteArrayAttribute(md5Attr, status);
+                        if(status.hasError()) {
+                            throw Exception(status.getError());
+                        }
+                    }
+                }
                 assemblies.insert(i, assembly);
             }
         }
@@ -125,7 +152,6 @@ void ConvertToSQLiteTask::run() {
         }
 
         if(bamInfo.hasIndex()) {
-
             stateInfo.setStateDesc(BAMDbiPlugin::tr("Preparing BAM index"));
 
             const QList<Index::ReferenceIndex> &refIndices = bamInfo.getIndex().getReferenceIndices();

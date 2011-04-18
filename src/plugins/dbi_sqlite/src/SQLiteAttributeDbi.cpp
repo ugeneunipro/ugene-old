@@ -78,7 +78,7 @@ QList<U2DataId> SQLiteAttributeDbi::getObjectAttributes(const U2DataId& objectId
 QList<U2DataId> SQLiteAttributeDbi::getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, U2OpStatus& os) {
     SQLiteQuery q("SELECT id, type, '' FROM Attribute WHERE object = ?1 AND child = ?2", db, os);
     q.bindDataId(1, objectId);
-    q.bindDataId(1, childId);
+    q.bindDataId(2, childId);
     return q.selectDataIdsExt();
 }
 
@@ -233,7 +233,7 @@ void SQLiteAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatu
 
     SQLiteQuery q("INSERT INTO IntegerAttribute(attribute, value) VALUES(?1, ?2)", db, os);
     q.bindInt64(1, id);
-    q.bindInt64(1, a.value);
+    q.bindInt64(2, a.value);
     q.execute();
 }
 
@@ -250,7 +250,7 @@ void SQLiteAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os)
 
     SQLiteQuery q("INSERT INTO RealAttribute(attribute, value) VALUES(?1, ?2)", db, os);
     q.bindInt64(1, id);
-    q.bindDouble(1, a.value);
+    q.bindDouble(2, a.value);
     q.execute();
 }
 
@@ -267,7 +267,7 @@ void SQLiteAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus&
 
     SQLiteQuery q("INSERT INTO StringAttribute(attribute, value) VALUES(?1, ?2)", db, os);
     q.bindInt64(1, id);
-    q.bindString(1, a.value);
+    q.bindString(2, a.value);
     q.execute();
 }
 
@@ -284,7 +284,7 @@ void SQLiteAttributeDbi::createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpS
 
     SQLiteQuery q("INSERT INTO ByteArrayAttribute(attribute, value) VALUES(?1, ?2)", db, os);
     q.bindInt64(1, id);
-    q.bindBlob(1, a.value, false);
+    q.bindBlob(2, a.value, false);
     q.execute();
 }
 

@@ -43,7 +43,9 @@ public:
     qint64 countReadsInAssembly(const U2Region & r, U2OpStatus & os);
 
     qint64 getModelLength(U2OpStatus & os);
-
+    
+    QByteArray getReferenceMd5();
+    
     qint64 getModelHeight(U2OpStatus & os);
 
     void setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
@@ -91,6 +93,9 @@ private:
     DbiHandle dbiHandle; 
 
     bool loadingReference;
+    
+    QByteArray referenceMd5;
+    bool md5Retrieved;
 }; // AssemblyModel
 
 } // U2

@@ -24,6 +24,7 @@
 
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
 #include <U2Core/AppContext.h>
@@ -44,7 +45,7 @@ namespace U2 {
 
 AssemblyModel::AssemblyModel(const DbiHandle & dbiHandle_) : 
 cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), dbiHandle(dbiHandle_), assemblyDbi(0), 
-refSeqDbiHandle(0), loadingReference(false), refDoc(0) {
+refSeqDbiHandle(0), loadingReference(false), refDoc(0), md5Retrieved(false) {
     Project * prj = AppContext::getProject();
     if(prj != NULL) {
         connect(prj, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_referenceDocRemoved(Document*)));
@@ -81,14 +82,57 @@ qint64 AssemblyModel::countReadsInAssembly(const U2Region & r, U2OpStatus & os) 
 
 qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
     if(NO_VAL == cachedModelLength) {
-        //TODO: length must be calculated as length of the reference sequence or
-        //if there is no reference, as maximum of all assembly lengths in the model
-        qint64 refLen = hasReference() ? reference.length : 0;
-        qint64 assLen = assemblyDbi->getMaxEndPos(assembly.id, os);
-        cachedModelLength = qMax(refLen, assLen);
-        //dbiHandle.dbi->getAttributeDbi()->getInt32Attribute("reference_length");
+        // try to set length from attributes
+        U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
+        U2OpStatusImpl status;
+        static const QByteArray REFERENCE_ATTRIBUTE_NAME("reference_length_attribute");
+        if(attributeDbi != NULL && attributeDbi->getAvailableAttributeNames(status).contains(REFERENCE_ATTRIBUTE_NAME)) {
+            QList<U2DataId> assAttrs = attributeDbi->getObjectAttributes(assembly.id, status);
+            if(!status.hasError()) {
+                foreach(const U2DataId & dataId, assAttrs) {
+                    U2OpStatusImpl st;
+                    U2IntegerAttribute lenAttrCandidate = attributeDbi->getIntegerAttribute(dataId, st);
+                    if(st.hasError()) {continue;}
+                    if(lenAttrCandidate.name == REFERENCE_ATTRIBUTE_NAME) {
+                        cachedModelLength = lenAttrCandidate.value;
+                        break;
+                    }
+                }
+            }
+        }
+        // if cannot from attributes -> set from reference or max end pos
+        if(cachedModelLength == NO_VAL) {
+            checkAndLogError(status);
+            qint64 refLen = hasReference() ? reference.length : 0;
+            qint64 assLen = assemblyDbi->getMaxEndPos(assembly.id, status);
+            cachedModelLength = qMax(refLen, assLen);
+        }
     }
     return cachedModelLength;
+}
+
+QByteArray AssemblyModel::getReferenceMd5() {
+    if(!md5Retrieved) {
+        md5Retrieved = true;
+        U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
+        U2OpStatusImpl status;
+        static const QByteArray MD5_ATTRIBUTE_NAME("reference_md5_attribute");
+        if(attributeDbi != NULL && attributeDbi->getAvailableAttributeNames(status).contains(MD5_ATTRIBUTE_NAME)) {
+            QList<U2DataId> assAttrs = attributeDbi->getObjectAttributes(assembly.id, status);
+            if(!status.hasError()) {
+                foreach(const U2DataId & dataId, assAttrs) {
+                    U2OpStatusImpl st;
+                    U2ByteArrayAttribute md5AttrCandidate = attributeDbi->getByteArrayAttribute(dataId, st);
+                    if(st.hasError()) {continue;}
+                    if(md5AttrCandidate.name == MD5_ATTRIBUTE_NAME) {
+                        referenceMd5 = md5AttrCandidate.value;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return referenceMd5;
 }
 
 qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {

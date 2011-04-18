@@ -63,7 +63,7 @@ void AssemblyReferenceArea::drawReference(QPainter & p) {
     }
     
     if(browser->areCellsVisible()) {
-        p.fillRect(rect(), Qt::white);
+        p.fillRect(rect(), Qt::transparent);
 
         qint64 xOffsetInAss = browser->getXOffsetInAssembly();
         U2Region visibleRegion(xOffsetInAss,  browser->basesCanBeVisible());

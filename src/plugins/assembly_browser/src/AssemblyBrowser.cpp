@@ -148,6 +148,17 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         errs << tr("- Reference and assembly names not match");
     }
     
+    // commented: waiting for fix
+    //QByteArray refMd5 = model->getReferenceMd5();
+    //if(!refMd5.isEmpty()) {
+    //    //QByteArray data = QString(seqObj->getSequence()).remove("-").toUpper().toUtf8();
+    //    QByteArray data = QString(seqObj->getSequence()).toUpper().toUtf8();
+    //    QByteArray seqObjMd5 = QCryptographicHash::hash(data, QCryptographicHash::Md5).toHex();
+    //    if(seqObjMd5 != refMd5) {
+    //        errs << tr("- Reference MD5 not match with MD5 written in assembly");
+    //    }
+    //}
+    
     bool setRef = true;
     if(!errs.isEmpty()) {
         errs << tr("\n  Continue?");
@@ -317,7 +328,7 @@ qint64 AssemblyBrowser::normalizeXoffset(qint64 x) const {
         return 0;
     }
     U2OpStatusImpl st;
-    qint64 xMax = model->getModelLength(st) - qMax((qint64)1, basesCanBeVisible());
+    qint64 xMax = model->getModelLength(st) - qMax((qint64)1, basesCanBeVisible() - 1);
     checkAndLogError(st);
     if(x > xMax && xMax >= 0) {
         return xMax;
@@ -330,7 +341,7 @@ qint64 AssemblyBrowser::normalizeYoffset(qint64 y) const {
         return 0;
     }
     U2OpStatusImpl st;
-    qint64 yMax = model->getModelHeight(st) - qMax((qint64)1, rowsCanBeVisible());
+    qint64 yMax = model->getModelHeight(st) - qMax((qint64)1, rowsCanBeVisible() - 2);
     checkAndLogError(st);
     if(y > yMax && yMax >= 0) {
         return yMax;
@@ -366,9 +377,10 @@ void AssemblyBrowser::adjustOffsets(qint64 dx, qint64 dy) {
     qint64 modelLen = model->getModelLength(status);
     qint64 modelHeight = model->getModelHeight(status);
 
-    xOffsetInAssembly = qMax(qMin(xOffsetInAssembly + dx, modelLen - basesVisible()), qint64(0));
-    yOffsetInAssembly = qMax(qMin(yOffsetInAssembly + dy, modelHeight - rowsVisible()), qint64(0));
-
+    /*xOffsetInAssembly = qMax(qMin(xOffsetInAssembly + dx, modelLen - basesVisible()), qint64(0));
+    yOffsetInAssembly = qMax(qMin(yOffsetInAssembly + dy, modelHeight - rowsVisible()), qint64(0));*/
+    xOffsetInAssembly = normalizeXoffset(xOffsetInAssembly + dx);
+    yOffsetInAssembly = normalizeYoffset(yOffsetInAssembly + dy);
     emit si_offsetsChanged();
 }
 

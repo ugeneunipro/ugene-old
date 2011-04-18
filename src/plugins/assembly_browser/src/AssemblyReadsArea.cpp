@@ -66,7 +66,7 @@ void AssemblyReadsArea::setupHScrollBar() {
     qint64 numVisibleBases = browser->basesVisible();
 
     hBar->setMinimum(0);
-    hBar->setMaximum(assemblyLen - numVisibleBases); // what if too long ???
+    hBar->setMaximum(assemblyLen - numVisibleBases + 1); // what if too long ???
     hBar->setSliderPosition(browser->getXOffsetInAssembly());
 
     hBar->setSingleStep(1);
@@ -85,7 +85,7 @@ void AssemblyReadsArea::setupVScrollBar() {
     qint64 numVisibleRows = browser->rowsVisible();
 
     vBar->setMinimum(0);
-    vBar->setMaximum(assemblyHeight - numVisibleRows); //FIXME what if too long ???
+    vBar->setMaximum(assemblyHeight - numVisibleRows + 2); //FIXME what if too long ???
     vBar->setSliderPosition(browser->getYOffsetInAssembly());
 
     vBar->setSingleStep(1);
