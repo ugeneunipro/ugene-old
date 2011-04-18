@@ -520,10 +520,12 @@ void ExtendedProcStyle::loadState(QDomElement& el) {
 }
 
 
-HintItem::HintItem( const QString & text, QGraphicsItem * parent) : QGraphicsTextItem(text, parent) 
-{
-    setFlag(QGraphicsItem::ItemIsMovable);
+HintItem::HintItem( const QString & text, QGraphicsItem * parent)
+: QGraphicsTextItem(text, parent), dragging(false) {
     setFlag(QGraphicsItem::ItemIsSelectable);
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+#endif
     document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
     setTextWidth(qMin(3*R, document()->idealWidth()));
     QRectF tb = boundingRect();
@@ -540,10 +542,53 @@ QVariant HintItem::itemChange( GraphicsItemChange change, const QVariant & value
         parentItem()->setSelected(true);
         return false;
     }
+    if (change == ItemPositionChange) {
+        QPointF newPos = value.toPointF();
+        if (scene()) {
+            QRectF bound = boundingRect();
+            QRectF sceneRect = scene()->sceneRect();
+            // scene topLeft in parent coords
+            QPointF tl = mapToParent(mapFromScene(sceneRect.topLeft()));
+            sceneRect.moveTopLeft(tl);
+
+            qreal x0 = sceneRect.left() - bound.left();
+            qreal x1 = sceneRect.left() + sceneRect.width() - bound.right();
+            qreal y0 = sceneRect.top() - bound.top();
+            qreal y1 = sceneRect.top() + sceneRect.height() - bound.bottom();
+
+            newPos.setX( qBound(x0, newPos.x(), x1) );
+            newPos.setY( qBound(y0, newPos.y(), y1) );
+        }
+        return newPos;
+    }
     if (change == ItemPositionHasChanged) {
         parentItem()->update();
+        if (scene()) {
+            foreach(QGraphicsView* v, scene()->views()) {
+                v->ensureVisible(this, 0, 0);
+            }
+        }
     }
     return QGraphicsItem::itemChange(change, value);
+}
+
+void HintItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton) {
+        if (!dragging) {
+            initPos = pos();
+            dragging = true;
+        }
+        
+        QPointF delta = event->screenPos() - event->buttonDownScreenPos(Qt::LeftButton);
+        setPos(initPos + delta);
+    } else {
+        event->ignore();
+    }
+}
+
+void HintItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
+    dragging = false;
+    QGraphicsTextItem::mouseReleaseEvent(event);
 }
 
 }//namespace

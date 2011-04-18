@@ -121,6 +121,11 @@ public:
     HintItem(const QString & text, QGraphicsItem * parent);
 protected:
     virtual QVariant itemChange ( GraphicsItemChange change, const QVariant & value );
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+private:
+    QPointF initPos;
+    bool dragging;
 };
 
 }//namespace

@@ -264,8 +264,6 @@ void WorkflowProcessItem::paint(QPainter *painter,
     }
 }
 
-#define MAX_SCENE_SIZE 1500
-
 QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVariant & value ) 
 {
     switch(change) {
@@ -291,10 +289,9 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
             QRectF sceneRect = scene()->sceneRect();
 
             qreal x0 = sceneRect.left() - bound.left();
-            qreal x1 = sceneRect.left() + MAX_SCENE_SIZE - bound.right();
-
+            qreal x1 = sceneRect.left() + sceneRect.width() - bound.right();
             qreal y0 = sceneRect.top() - bound.top();
-            qreal y1 = sceneRect.top() + MAX_SCENE_SIZE - bound.bottom();
+            qreal y1 = sceneRect.top() + sceneRect.height() - bound.bottom();
 
             newPos.setX( qBound(x0, newPos.x(), x1) );
             newPos.setY( qBound(y0, newPos.y(), y1) );
@@ -321,13 +318,6 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
             }
             WorkflowScene * sc = qobject_cast<WorkflowScene*>(scene());
             if(sc != NULL) {
-                //resize scene rect if necessary
-                QRectF itemRect = boundingRect();
-                QPointF tl = mapToScene(itemRect.topLeft());
-                itemRect.moveTopLeft(tl);
-                QRectF newSceneRect = sc->sceneRect().united(itemRect);
-                sc->setSceneRect(newSceneRect);
-                
                 if (!sc->views().isEmpty()) {
                     foreach(QGraphicsView* view, sc->views()) {
                         view->ensureVisible(this, 0, 0);
@@ -779,10 +769,28 @@ void WorkflowPortItem::paint(QPainter *painter,
         if (sticky) {
             pen.setColor(stickyLight);
         }
+        //put drag point inside of the scene rect
+        QPointF pp = dragPoint;
+        QRectF scRect = scene()->sceneRect();
+        QList<QLineF> sceneEdges;
+        sceneEdges << QLineF(scRect.topLeft(), scRect.topRight())
+            << QLineF(scRect.topRight(), scRect.bottomRight())
+            << QLineF(scRect.bottomLeft(), scRect.bottomRight())
+            << QLineF(scRect.topLeft(), scRect.bottomLeft());
+        QLineF arr(mapToScene(dragPoint), mapToScene(p1));
+        QPointF crossPt;
+        bool crossed = false;
+        foreach(QLineF scEdge, sceneEdges) {
+            if (scEdge.intersect(arr, &crossPt) == QLineF::BoundedIntersection) {
+                pp = mapFromScene(crossPt);
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
         if (port->isInput())
-            drawArrow(painter, pen, dragPoint, p1);
+            drawArrow(painter, pen, pp, p1);
         else
-            drawArrow(painter, pen, p1, dragPoint);
+            drawArrow(painter, pen, p1, pp);
     } 
     else if (option->state & QStyle::State_Selected) {
         QPen pen;
@@ -791,7 +799,6 @@ void WorkflowPortItem::paint(QPainter *painter,
         painter->setPen(pen);
         painter->drawRoundedRect(boundingRect(), 30, 30, Qt::RelativeSize);
     }
-
 }
 
 void WorkflowPortItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event ) {
@@ -831,7 +838,18 @@ void WorkflowPortItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event ) {
         setOrientation(angle);
     } 
     if (dragging) {
-        dragPoint = rotating ? mapFromScene(event->scenePos()) : event->pos();
+        foreach(QGraphicsView* v, scene()->views()) {
+            QRectF r(0,0,5,5);
+            r.moveCenter(mapToScene(dragPoint));
+            v->ensureVisible(r,0,0);
+        }
+        /*dragPoint = rotating ? mapFromScene(event->scenePos()) : event->pos();*/
+        if (rotating) {
+            dragPoint += event->scenePos() - event->lastScenePos();
+        } else {
+            dragPoint += event->pos() - event->lastPos();
+        }
+            
         WorkflowPortItem* preferable = findNearbyBindingCandidate(event->scenePos());
         if (preferable) {
             dragPoint = preferable->head(this);
