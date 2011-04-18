@@ -35,22 +35,24 @@ namespace BAM {
 class BAMInfo {
 public:
 
-    BAMInfo() : _hasIndex(false) {}
-    BAMInfo(const BAMInfo& src) : header(src.header), selected(src.selected), index(src.index), _hasIndex(src._hasIndex) {}
+    BAMInfo() : _hasIndex(false), unmappedSelected(false) {}
+    BAMInfo(const BAMInfo& src) : header(src.header), selected(src.selected), index(src.index), _hasIndex(src._hasIndex), unmappedSelected(src.unmappedSelected) {}
 
     inline QList<bool>& getSelected() { return selected; }
     inline bool hasIndex() { return _hasIndex; }
-    inline bool isReferenceSelected(int id) { return selected.at(id); } 
+    inline bool isReferenceSelected(int id) { if(id == -1) return unmappedSelected; else return selected.at(id); } 
     inline Index& getIndex() { return index; }
     inline const Header& getHeader() { return header; }
+    inline bool isUnmappedSelected() { return unmappedSelected; }
     void setIndex(Index& index) { this->index = index; _hasIndex = true; }
     void setHeader(const Header& header) { this->header = header; selected.clear(); for(int i=0; i< header.getReferences().count(); i++) { selected.append(true); } }
-
+    void setUnmappedSelected(bool unmappedSelected) { this->unmappedSelected = unmappedSelected; }
 private:
     Header header;
     QList<bool> selected;
     Index index;
     bool _hasIndex;
+    bool unmappedSelected;
 };
 
 class LoadBamInfoTask : public Task {

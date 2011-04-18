@@ -83,20 +83,18 @@ void BAMDbiPlugin::sl_converter() {
 
 void BAMDbiPlugin::sl_infoLoaded(Task* task) {
     LoadBamInfoTask* loadBamInfoTask = qobject_cast<LoadBamInfoTask*>(task);
-    const GUrl& sourceUrl = loadBamInfoTask->getSourceUrl();
-    BAMInfo& bamInfo = loadBamInfoTask->getInfo();
-    if(bamInfo.getHeader().getReferences().count() == 0) {
-        task->setError(tr("BAM file does not contains any alignment"));
-        return;
-    }
-    ConvertToSQLiteDialog convertDialog(sourceUrl, bamInfo);
-    if(QDialog::Accepted == convertDialog.exec()) {
-        GUrl destUrl = convertDialog.getDestinationUrl();
-        ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, destUrl, loadBamInfoTask->getInfo());
-        if(convertDialog.addToProject()) {
-            connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_addDbFileToProject(Task*)));
+    if(!loadBamInfoTask->hasErrors()) {
+        const GUrl& sourceUrl = loadBamInfoTask->getSourceUrl();
+        BAMInfo& bamInfo = loadBamInfoTask->getInfo();
+        ConvertToSQLiteDialog convertDialog(sourceUrl, bamInfo);
+        if(QDialog::Accepted == convertDialog.exec()) {
+            GUrl destUrl = convertDialog.getDestinationUrl();
+            ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, destUrl, loadBamInfoTask->getInfo());
+            if(convertDialog.addToProject()) {
+                connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_addDbFileToProject(Task*)));
+            }
+            AppContext::getTaskScheduler()->registerTopLevelTask(task);
         }
-        AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 }
 

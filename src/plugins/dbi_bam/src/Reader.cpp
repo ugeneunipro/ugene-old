@@ -520,8 +520,7 @@ void Reader::readHeader() {
                             fieldTag = tokens[index].mid(0, colonIndex);
                             fieldValue = tokens[index].mid(colonIndex + 1);
                         } else if("PG" == recordTag) { // workaround for invalid headers produced by some programs
-                            fieldTag = "ID";
-                            fieldValue = tokens[index];
+                            continue;
                         } else {
                             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header field: %1").arg(QString(tokens[index])));
                         }

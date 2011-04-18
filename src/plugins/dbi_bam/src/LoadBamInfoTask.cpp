@@ -77,7 +77,7 @@ void LoadBamInfoTask::run() {
         }
 
         bamInfo.setHeader(reader->getHeader());
-    } catch (Exception ex) {
+    } catch(const Exception &ex) {
         stateInfo.setError(ex.getMessage());
     }
 }

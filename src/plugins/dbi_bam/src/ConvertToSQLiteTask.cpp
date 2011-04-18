@@ -144,6 +144,18 @@ void ConvertToSQLiteTask::run() {
                 assemblies.insert(i, assembly);
             }
         }
+        if(bamInfo.isUnmappedSelected()) {
+            U2Assembly assembly;
+            assembly.visualName = QString("Unmapped");
+            {
+                U2OpStatusImpl opStatus;
+                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, opStatus);
+                if(opStatus.hasError()) {
+                    throw Exception(opStatus.getError());
+                }
+            }
+            assemblies.insert(-1, assembly);
+        }
         static const int FIRST_STAGE_PERCENT = 60;
         static const int SECOND_STAGE_PERCENT = 40;
         QMap<int, QList<U2AssemblyRead> > reads;
@@ -151,7 +163,9 @@ void ConvertToSQLiteTask::run() {
             reads.insert(index, QList<U2AssemblyRead>());            
         }
 
-        if(bamInfo.hasIndex()) {
+        QStringList progressIndicators = QStringList() << ".  " << ".. " << "...";
+        if(bamInfo.hasIndex() && !bamInfo.isUnmappedSelected()) {
+
             stateInfo.setStateDesc(BAMDbiPlugin::tr("Preparing BAM index"));
 
             const QList<Index::ReferenceIndex> &refIndices = bamInfo.getIndex().getReferenceIndices();
@@ -163,7 +177,16 @@ void ConvertToSQLiteTask::run() {
                     unsigned int minBin = lastBin > 0 ? (lastBin > 8 ? (lastBin > 72 ? (lastBin > 584 ? (lastBin > 4680 ? 4681 : 585) : 73) : 9) : 1) : 0;
                     foreach(const Index::ReferenceIndex::Bin bin, bins) {
                         if(bin.getBin() >= minBin) {
-                            sortedChunks.append(bin.getChunks());
+                            foreach(const Index::ReferenceIndex::Chunk& chunk, bin.getChunks()) {
+                                if(chunk.getStart() < chunk.getEnd()) {
+                                    sortedChunks.append(chunk);
+                                } else {
+                                    coreLog.error(BAMDbiPlugin::tr("Skip invalid chunk: bin %1, chunk begin %2, chunk end %3").arg(bin.getBin())
+                                        .arg(chunk.getStart().getPackedOffset())
+                                        .arg(chunk.getEnd().getPackedOffset()));
+                                }
+                            }
+                            
                         }
                     }
                 }
@@ -200,45 +223,47 @@ void ConvertToSQLiteTask::run() {
 #endif
             int readsCount = 0;
             int totalReads = 0;
-            qint64 readLength = 0;
-
+            int progressUpdates = 0;
+            qint64 readLength = 0;            
             stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
-
             foreach(const Index::ReferenceIndex::Chunk& chunk, sortedChunks) {
                 reader->seek(chunk.getStart());
                 qint64 chunkLen = chunk.getEnd().getCoffset() - chunk.getStart().getCoffset();
                 while(!reader->isEof() && reader->getOffset() < chunk.getEnd()) {
                     Alignment alignment = reader->readAlignment();
-                    if(-1 != alignment.getReferenceId() && bamInfo.isReferenceSelected(alignment.getReferenceId())) {
+                    if(bamInfo.isReferenceSelected(alignment.getReferenceId())) {
                         reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
                         if(++readsCount >= 16384) {
                             readsCount = 0;
+                            stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
                             flushReads(sqliteDbi.get(), assemblies, reads);
+                            stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
                         }
                     }
-                    if(++totalReads > 1000) {
-                        
+                    if(++totalReads > 1000) {                        
                         if(isCanceled()) {
                             throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
                         }
                         stateInfo.progress = FIRST_STAGE_PERCENT * (readLength + reader->getOffset().getCoffset() - chunk.getStart().getCoffset()) / totalChunksLength;
+                        stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading %1").arg(progressIndicators.at(progressUpdates++ % 3)));
                         totalReads = 0;
                     }
                 }
                 readLength += chunkLen;
             }
-            
+            stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
             flushReads(sqliteDbi.get(), assemblies, reads);
             stateInfo.progress = FIRST_STAGE_PERCENT;
         } else {
-            stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
             while(!reader->isEof()) {
                 {
+                    stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
                     int readsCount = 0;
                     int totalReads = 0;
+                    int progressUpdates = 0;
                     while(!reader->isEof()) {
                         Alignment alignment = reader->readAlignment();
-                        if(-1 != alignment.getReferenceId() && bamInfo.isReferenceSelected(alignment.getReferenceId())) {
+                        if(bamInfo.isReferenceSelected(alignment.getReferenceId())) {
                             reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
                             readsCount++;
                         }
@@ -247,6 +272,7 @@ void ConvertToSQLiteTask::run() {
                                 throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
                             }
                             stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
+                            stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading %1").arg(progressIndicators.at(progressUpdates++ % 3)));
                             totalReads = 0;
                         }
                         if(readsCount >= 16384) {
@@ -254,6 +280,7 @@ void ConvertToSQLiteTask::run() {
                         }
                     }
                 }
+                stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
                 flushReads(sqliteDbi.get(), assemblies, reads);
                 if(isCanceled()) {
                     throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
