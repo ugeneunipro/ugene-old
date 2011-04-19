@@ -245,7 +245,8 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             
             //iterate over letters of the read
             ShortReadIterator cigarIt(readSequence, read->cigar, firstVisibleBase);
-            for(int x_pix_offset = 0; cigarIt.hasNext(); x_pix_offset += cachedReads.letterWidth) {
+            int basesPainted = 0;
+            for(int x_pix_offset = 0; cigarIt.hasNext() && basesPainted++ < readVisibleBases.length; x_pix_offset += cachedReads.letterWidth) {
                 GTIMER(c2, t2, "AssemblyReadsArea::drawReads -> cycle through one read");
                 char c = cigarIt.nextLetter();
                 if(!defaultColorScheme.contains(c)) {
