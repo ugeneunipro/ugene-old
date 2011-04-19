@@ -62,7 +62,7 @@ public:
 class U2CORE_EXPORT LocalFileAdapter: public IOAdapter {
     Q_OBJECT
 public:
-    LocalFileAdapter(LocalFileAdapterFactory* f, QObject* o = NULL);
+    LocalFileAdapter(LocalFileAdapterFactory* f, QObject* o = NULL, bool bufferOptimization = false);
     ~LocalFileAdapter() {if (isOpen()) close();}
 
     virtual bool open(const GUrl& url, IOAdapterMode m);
@@ -86,6 +86,13 @@ public:
     
 private:
     QFile* f;
+
+    bool bufferOptimization;
+    QByteArray buffer;
+    char *bufData;
+    qint64 bufLen;
+    qint64 currentPos;
+    static const quint64 BUF_SIZE;
 };
 
 

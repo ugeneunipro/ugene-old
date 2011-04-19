@@ -41,7 +41,20 @@ IOAdapter* GzippedLocalFileAdapterFactory::createIOAdapter() {
     return new ZlibAdapter(new LocalFileAdapter(this));
 }
 
-LocalFileAdapter::LocalFileAdapter(LocalFileAdapterFactory* factory, QObject* o) : IOAdapter(factory, o), f(NULL) {
+const quint64 LocalFileAdapter::BUF_SIZE = 1024*1024;
+
+LocalFileAdapter::LocalFileAdapter(LocalFileAdapterFactory* factory, QObject* o, bool b)
+: IOAdapter(factory, o), f(NULL), bufferOptimization(b)
+{
+    bufferOptimization = true;
+    if (bufferOptimization) {
+        buffer = QByteArray(BUF_SIZE, '\0');
+        bufData = buffer.data();
+    } else {
+        bufData = NULL;
+    }
+    bufLen = 0;
+    currentPos = 0;
 }
 
 
@@ -79,7 +92,25 @@ void LocalFileAdapter::close() {
 
 qint64 LocalFileAdapter::readBlock(char* data, qint64 size) {
     assert(isOpen());
-    qint64 l = f->read(data, size);
+    qint64 l = 0;
+    if (bufferOptimization) {
+        qint64 copySize = 0;
+        while (l < size) {
+            if (currentPos == bufLen) {
+                bufLen = f->read(bufData, BUF_SIZE);
+                currentPos = 0;
+            }
+            copySize = qMin(bufLen - currentPos, size - l);
+            if (0 == copySize) {
+                break;
+            }
+            memcpy(data, bufData + currentPos, copySize);
+            l += copySize;
+            currentPos += copySize;
+        }
+    } else {
+        l = f->read(data, size);
+    }
     return l;
 }
 
@@ -94,14 +125,32 @@ bool LocalFileAdapter::skip(qint64 nBytes) {
     if (!isOpen()) {
         return false;
     }
-    qint64 p = f->pos();
-    return f->seek(p+nBytes);
+    if (bufferOptimization) {
+        qint64 newPos = currentPos + nBytes;
+        if (newPos < 0 || newPos >= bufLen) {
+            qint64 p = f->pos();
+            bool res = f->seek((p - bufLen + currentPos) + nBytes);
+
+            bufLen = 0;
+            currentPos = 0;
+            return res;
+        } else {
+            currentPos = newPos;
+            return true;
+        }
+    } else {
+        qint64 p = f->pos();
+        return f->seek(p+nBytes);
+    }
 }
 
 qint64 LocalFileAdapter::left() const {
     assert(isOpen());
     qint64 p = f->pos();
     qint64 len = f->size();
+    if (bufferOptimization) {
+        p -= bufLen - currentPos;
+    }
     return len - p;
 }
 
@@ -111,7 +160,11 @@ int LocalFileAdapter::getProgress() const {
 }
 
 qint64 LocalFileAdapter::bytesRead() const {
-    return f->pos();
+    qint64 p = f->pos();
+    if (bufferOptimization) {
+        p -= bufLen - currentPos;
+    }
+    return p;
 }
 
 GUrl LocalFileAdapter::getURL() const {
