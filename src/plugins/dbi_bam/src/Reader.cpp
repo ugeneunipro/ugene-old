@@ -613,7 +613,7 @@ void Reader::readHeader() {
                     QByteArray value = fields["SN"];
                     readGroupsMap.insert(value, readGroups.size());
                 } else {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("RG record without ID field"));
+                    fields.insert("ID", "-1");
                 }
                 if(fields.contains("CN")) {
                     readGroup.setSequencingCenter(fields["CN"]);
@@ -663,11 +663,10 @@ void Reader::readHeader() {
                 readGroups.append(readGroup);
             } else if("PG" == recordTag) {
                 Header::Program program;
-                if(fields.contains("ID")) {
-                    programsMap.insert(fields["ID"], programs.size());
-                } else {
-                    throw InvalidFormatException(BAMDbiPlugin::tr("PG record without ID field"));
+                if(!fields.contains("ID")) {
+                    fields.insert("ID", QByteArray::number(programs.size()));
                 }
+                programsMap.insert(fields["ID"], programs.size());
                 if(fields.contains("PN")) {
                     program.setName(fields["PN"]);
                 }

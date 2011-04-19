@@ -55,9 +55,10 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     selectMenu->addAction(unselectAll);
     selectMenu->addAction(inverseSelection);
     ui.selectButton->setMenu(selectMenu);
+    ui.indexNotAvailableLabel->setVisible(!bamInfo.hasIndex());
     
     ui.tableWidget->setColumnCount(3);
-    ui.tableWidget->setRowCount(bamInfo.getHeader().getReferences().count() + 1);
+    ui.tableWidget->setRowCount(bamInfo.getHeader().getReferences().count());
     QStringList header; header << BAMDbiPlugin::tr("Contig name") << BAMDbiPlugin::tr("Length") << BAMDbiPlugin::tr("URI");
     ui.tableWidget->setHorizontalHeaderLabels(header);
     ui.tableWidget->horizontalHeader()->setStretchLastSection(true);    
@@ -75,17 +76,8 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
             checkbox->setCheckState(Qt::Checked);
             i++;
         }
-        QTableWidgetItem* checkbox = new QTableWidgetItem();
-        checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);            
-        checkbox->setText(BAMDbiPlugin::tr("Unmapped reads"));
-        ui.tableWidget->setItem(i, 0, checkbox);
-        QTableWidgetItem* item = new QTableWidgetItem();
-        item->setFlags(Qt::ItemIsEnabled);
-        ui.tableWidget->setItem(i, 1, item);
-        ui.tableWidget->setCellWidget(i, 2, new QLabel(""));
-        checkbox->setCheckState(Qt::Unchecked);
-        i++;
     }
+    ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
     ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.baseFileName() + ".ugenedb");
     ui.sourceUrlView->setText(sourceUrl.getURLString());
     ui.okButton->setFocus();
@@ -93,18 +85,18 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
 }
 
 void ConvertToSQLiteDialog::sl_selectAll() {
-    for(int i=0; i<bamInfo.getSelected().count() + 1; i++) {
+    for(int i=0; i<bamInfo.getSelected().count(); i++) {
         ui.tableWidget->item(i, 0)->setCheckState(Qt::Checked);
     }
 }
 
 void ConvertToSQLiteDialog::sl_unselectAll() {
-    for(int i=0; i<bamInfo.getSelected().count() + 1; i++) {
+    for(int i=0; i<bamInfo.getSelected().count(); i++) {
         ui.tableWidget->item(i, 0)->setCheckState(Qt::Unchecked);
     }
 }
 void ConvertToSQLiteDialog::sl_inverseSelection() {
-    for(int i=0; i<bamInfo.getSelected().count() + 1; i++) {
+    for(int i=0; i<bamInfo.getSelected().count(); i++) {
         QTableWidgetItem* item = ui.tableWidget->item(i, 0);
         item->setCheckState(item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
     }
@@ -211,12 +203,7 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
 }
 
 void ConvertToSQLiteDialog::sl_contigCheckChanged(QTableWidgetItem * item) {
-    if(item->row() == bamInfo.getSelected().count()) {
-        bamInfo.setUnmappedSelected(item->checkState() == Qt::Checked);
-    } else {
-        bamInfo.getSelected()[item->row()] = (item->checkState() == Qt::Checked);
-    }
-    
+    bamInfo.getSelected()[item->row()] = (item->checkState() == Qt::Checked);
 }
 
 const GUrl &ConvertToSQLiteDialog::getDestinationUrl()const {
@@ -229,6 +216,7 @@ bool ConvertToSQLiteDialog::addToProject() const {
 
 void ConvertToSQLiteDialog::accept() {
     destinationUrl = GUrl(ui.destinationUrlEdit->text());
+    bamInfo.setUnmappedSelected(ui.importUnmappedBox->checkState() == Qt::Checked);
     if(destinationUrl.isEmpty()) {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
         QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destinaiton URL is not specified"));
@@ -247,13 +235,14 @@ void ConvertToSQLiteDialog::accept() {
             QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("At least one contig must be selected."));
             return;
         }
-        if(selected && bamInfo.isUnmappedSelected()) {
-            if(QMessageBox::Cancel == QMessageBox::question(this, windowTitle(), BAMDbiPlugin::tr("With importing unmapped reads is not possible to use an index. Importing may takes a long time.\nContinue?"),
+        if(bamInfo.hasIndex() && selected && bamInfo.isUnmappedSelected()) {
+            if(QMessageBox::Cancel == QMessageBox::question(this, windowTitle(), BAMDbiPlugin::tr("With importing unmapped reads is not possible to use an index. Import may takes a long time.\nContinue?"),
                 QMessageBox::Ok, QMessageBox::Cancel)) 
             {
                 return;
             }
         }
+        
         Project * prj = AppContext::getProject();
         if(prj != NULL) {
             Document * destDoc = prj->findDocumentByURL(destinationUrl);
