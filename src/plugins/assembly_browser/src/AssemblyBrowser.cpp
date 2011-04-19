@@ -214,7 +214,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
 }
 
 void AssemblyBrowser::sl_onPosChangeRequest(int pos) {
-    setXOffsetInAssembly(normalizeXoffset(pos));
+    setXOffsetInAssembly(normalizeXoffset(pos - 1));
     ui->getReadsArea()->setFocus();
 }
 
