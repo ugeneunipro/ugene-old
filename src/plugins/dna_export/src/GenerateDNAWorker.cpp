@@ -34,6 +34,8 @@
 
 #include <U2Designer/DelegateEditors.h>
 
+#include <U2Gui/GUIUtils.h>
+
 #include <U2Core/L10n.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/AppContext.h>
@@ -136,6 +138,9 @@ void GenerateDNAWorkerFactory::init() {
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     proto->setPrompter(new GenerateDNAPrompter());
     proto->setEditor(new DelegateEditor(delegates));
+    if(AppContext::isGUIMode()) {
+        proto->setIcon(GUIUtils::createRoundIcon(QColor(85,85,255), 22));
+    }
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATASRC(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
