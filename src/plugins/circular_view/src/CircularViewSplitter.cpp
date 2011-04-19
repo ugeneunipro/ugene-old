@@ -43,6 +43,7 @@
 #include <QtGui/QTreeWidget>
 
 #include <QtGui/QApplication>
+#include <QDomDocument>
 
 
 namespace U2 {
@@ -214,6 +215,36 @@ void CircularViewSplitter::sl_export() {
             painter.begin(&generator);
             cv->paint(painter);
             result = painter.end();
+            //fix for UGENE-76
+            QDomDocument doc("svg");
+            QFile file(lod.url);
+            bool ok=file.open(QIODevice::ReadOnly);
+            if (!ok && !result){
+               result=false;
+            }
+            ok=doc.setContent(&file);
+            if (!ok && !result) {
+                file.close();
+                result=false;
+            }
+            if(result){
+                file.close();
+                QDomNodeList radialGradients=doc.elementsByTagName("radialGradient");
+                for(int i=0;i<radialGradients.length();i++){
+                    if(radialGradients.at(i).isElement()){
+                        QDomElement tag=radialGradients.at(i).toElement();
+                        if(tag.hasAttribute("xml:id")){
+                            QString id=tag.attribute("xml:id");
+                            tag.removeAttribute("xml:id");
+                            tag.setAttribute("id",id);
+                        }
+                    }
+                }
+                file.open(QIODevice::WriteOnly);
+                file.write(doc.toByteArray());
+                file.close();
+            }
+            //end of fix UGENE-76
         } else if (lod.url.endsWith(".pdf", Qt::CaseInsensitive) || lod.url.endsWith(".ps", Qt::CaseInsensitive)) {
             QPrinter printer;
             printer.setOutputFileName(lod.url);
