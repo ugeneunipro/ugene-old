@@ -78,6 +78,7 @@ public:
     void addGLFrame(GLFrame* frame);
     GLFrame* getGLWidgetFrame(QGLWidget* widget);
     void removeGLWidgetFrame(QGLWidget* widget);
+    void clear();
     QList<GLFrame*> getGLFrames();
     QList<GLFrame*> getActiveGLFrameList(GLFrame* currentFrame, bool syncModeOn);
 

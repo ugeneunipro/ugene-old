@@ -191,4 +191,10 @@ QList<GLFrame*> GLFrameManager::getActiveGLFrameList( GLFrame* currentFrame, boo
         return lst;
     }
 }
+
+void GLFrameManager::clear()
+{
+    widgetFrameMap.clear();
+}
+
 } //namespace

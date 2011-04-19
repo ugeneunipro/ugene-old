@@ -138,6 +138,7 @@ private:
     QSplitter*  splitter;
     QSplitter*  parentSplitter;
     QAction*    closeAction;
+    QLayout*    layout;
     QList<QAction*> toggleActions;
     int         splitterHeight;
     bool        isViewCollapsed;

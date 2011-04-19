@@ -62,7 +62,7 @@ BioStruct3DSplitter::BioStruct3DSplitter(QAction* _closeAction, AnnotatedDNAView
 {
     closeAction = _closeAction;
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    layout = new QVBoxLayout;
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,3,0);
     splitter = new QSplitter(Qt::Horizontal);
@@ -121,7 +121,8 @@ void BioStruct3DSplitter::removeBioStruct3DGLWidget( BioStruct3DGLWidget* glw )
     
     glFrameManager->removeGLWidgetFrame(glw);
     emit si_bioStruct3DGLWidgetRemoved(glw);
-    
+   
+    glw->deleteLater();
 }
 
 
@@ -151,8 +152,10 @@ bool BioStruct3DSplitter::eventFilter(QObject* o, QEvent* e) {
 }
 
 void BioStruct3DSplitter::addObject(BioStruct3DObject* bioStructObj) {
-    setVisible(true);
-    addBioStruct3DGLWidget(bioStructObj);
+    if (!biostrucViewMap.contains(bioStructObj)) {
+        setVisible(true);
+        addBioStruct3DGLWidget(bioStructObj);
+    }
 }
 
 bool BioStruct3DSplitter::removeObject(BioStruct3DObject* obj) {
@@ -223,13 +226,13 @@ void BioStruct3DSplitter::updateState( const QVariantMap& m )
         return;
     }
     
-    QList<BioStruct3DGLWidget*> usedWidgets;
-    
     foreach (BioStruct3DGLWidget* widget, biostrucViewMap.values()) {
         widget->hide();
         removeBioStruct3DGLWidget(widget);
     }
-     
+    
+    assert(biostrucViewMap.isEmpty());
+    
     setVisible(true);
     QListIterator<QVariant> iter(glWidgetStateList);
     iter.toBack();
@@ -240,6 +243,9 @@ void BioStruct3DSplitter::updateState( const QVariantMap& m )
         if (obj == NULL)
             continue;
         BioStruct3DGLWidget* glWidget = addBioStruct3DGLWidget(obj);
+        if (!dnaView->getObjects().contains(obj)) {
+            dnaView->addObject(obj);
+        }
         glWidget->setState(state);
     }
     
