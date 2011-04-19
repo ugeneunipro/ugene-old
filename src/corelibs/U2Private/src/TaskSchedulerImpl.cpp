@@ -375,6 +375,8 @@ void TaskSchedulerImpl::prepareNewTasks() {
         if (task->hasErrors() || task->isCanceled()) {//check if its canceled or has errors
             propagateStateToParent(task);
             //forget about this task
+            TaskInfo ti(task, 0);
+            promoteTask(&ti, Task::State_Finished);
             if (task->isTopLevelTask()) {
                 unregisterTopLevelTask(task);
             }
