@@ -350,23 +350,27 @@ qint64 AssemblyBrowser::normalizeYoffset(qint64 y) const {
 }
 
 void AssemblyBrowser::setXOffsetInAssembly(qint64 x) {
-    U2OpStatusImpl st; Q_UNUSED(st);
-    assert(x >= 0 && x < model->getModelLength(st));
+    U2OpStatusImpl st;
+    qint64 len = model->getModelLength(st); Q_UNUSED(len);
+    assert(x >= 0 && (x < len || len == 0)); // len == 0 in case of empty model
     xOffsetInAssembly = x;
     emit si_offsetsChanged();
 }
 
 void AssemblyBrowser::setYOffsetInAssembly(qint64 y) {
-    U2OpStatusImpl st; Q_UNUSED(st);
-    assert(y >= 0 && y < model->getModelHeight(st));
+    U2OpStatusImpl st;
+    qint64 height = model->getModelHeight(st); Q_UNUSED(height);
+    assert(y >= 0 && (y < height || height == 0));
     yOffsetInAssembly = y;
     emit si_offsetsChanged();
 }
 
 void AssemblyBrowser::setOffsetsInAssembly(qint64 x, qint64 y) {
     U2OpStatusImpl st; Q_UNUSED(st);
-    assert(x >= 0 && x < model->getModelLength(st));
-    assert(y >= 0 && y < model->getModelHeight(st));
+    qint64 len = model->getModelLength(st); Q_UNUSED(len);
+    qint64 height = model->getModelHeight(st); Q_UNUSED(height);
+    assert(x >= 0 && (x < len || len == 0));
+    assert(y >= 0 && (y < height || height == 0));
     xOffsetInAssembly = x;
     yOffsetInAssembly = y;
     emit si_offsetsChanged();
@@ -377,8 +381,6 @@ void AssemblyBrowser::adjustOffsets(qint64 dx, qint64 dy) {
     qint64 modelLen = model->getModelLength(status);
     qint64 modelHeight = model->getModelHeight(status);
 
-    /*xOffsetInAssembly = qMax(qMin(xOffsetInAssembly + dx, modelLen - basesVisible()), qint64(0));
-    yOffsetInAssembly = qMax(qMin(yOffsetInAssembly + dy, modelHeight - rowsVisible()), qint64(0));*/
     xOffsetInAssembly = normalizeXoffset(xOffsetInAssembly + dx);
     yOffsetInAssembly = normalizeYoffset(yOffsetInAssembly + dy);
     emit si_offsetsChanged();

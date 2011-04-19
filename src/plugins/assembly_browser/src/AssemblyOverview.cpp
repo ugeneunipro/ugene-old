@@ -268,8 +268,7 @@ QRect AssemblyOverview::calcCurrentSelection() const {
 
 //prevents selection from crossing widget borders. 
 //Tries to move selection center to pos.
-void AssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
-{
+void AssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel ) {
     const QRect & thisRect = rect();
     QRect newSelection(cachedSelection);
     newSelection.moveCenter(pos);
@@ -291,18 +290,20 @@ void AssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
         }
         newSelection.translate(-dx, -dy);
     }
-
+    
     U2OpStatusImpl status;
+    qint64 length = model->getModelLength(status);
+    qint64 height = model->getModelHeight(status);
     qint64 newXoffset = 0;
     qint64 newYoffset = 0;
     if(dx) {
-        newXoffset = (dx < 0) ? 0 : model->getModelLength(status) - browser->basesVisible();
+        newXoffset = (dx < 0) ? 0 : length - browser->basesVisible();
         moveModel = true;
     } else {
         newXoffset = calcXAssemblyCoord(newSelection.x());
     }
     if(dy) {
-        newYoffset = (dy < 0) ? 0 : model->getModelHeight(status) - browser->rowsVisible();
+        newYoffset = (dy < 0) ? 0 : height - browser->rowsVisible();
         moveModel = true;
     } else {
         newYoffset = calcYAssemblyCoord(newSelection.y());
