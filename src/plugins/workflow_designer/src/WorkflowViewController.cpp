@@ -836,11 +836,16 @@ void WorkflowView::localHostLaunch() {
     }
     
     WorkflowAbstractRunner * t = NULL;
+#ifndef RUN_WORKFLOW_IN_THREADS
     if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
         t = new WorkflowRunInProcessTask(sh, scene->getIterations());
     } else {
         t = new WorkflowRunTask(sh, scene->getIterations());
     }
+#else
+    t = new WorkflowRunTask(sh, scene->getIterations());
+#endif // RUN_WORKFLOW_IN_THREADS
+
     t->setReportingEnabled(true);
     if (WorkflowSettings::monitorRun()) {
         unlockAction->setChecked(false);
