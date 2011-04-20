@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 appname=ugenecld
 
@@ -6,15 +6,20 @@ appname=ugenecld
 # If it does exclude it from the list of parameters
 # and use ugeneui instead of ugenecl
 
-until [ -z "$1" ]  # Until all parameters used up...
+params=()
+
+while [[ $# -gt 0 ]];
 do
-    if [ "$1" == "-ui" ]; then
+    if [ "$1" = "-ui" ]; then
         appname=ugeneuid
-        shift
+    else
+        params+=("$1")
     fi
+    shift
 done
 
-dirname=`dirname $0`
+dirname=$(dirname `readlink -f $0`)
+
 tmp="${dirname#?}"
 
 if [ "${dirname%$tmp}" != "/" ]; then
@@ -24,5 +29,4 @@ fi
 LD_LIBRARY_PATH=$dirname
 export LD_LIBRARY_PATH
 
-
-$dirname/$appname "$@"
+$dirname/$appname "${params[@]}"
