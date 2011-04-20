@@ -103,37 +103,39 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
 
     zoomUsing = 0;
 
-    zoomInAction = new QAction(QIcon(":/core/images/zoom_in.png"), tr("Zoom in"), this);
+    zoomInAction = new QAction(QIcon(":/core/images/zoom_in.png"), tr("Zoom In"), this);
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomInAction()));
 
-    zoomOutAction = new QAction(QIcon(":/core/images/zoom_out.png"), tr("Zoom out"), this);
+    zoomOutAction = new QAction(QIcon(":/core/images/zoom_out.png"), tr("Zoom Out"), this);
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOutAction()));
 
-    zoomToSelectionAction= new QAction(QIcon(":/core/images/zoom_sel.png"), tr("Zoom to selection"), this);
+    zoomToSelectionAction= new QAction(QIcon(":/core/images/zoom_sel.png"), tr("Zoom to Selection"), this);
     connect(zoomToSelectionAction, SIGNAL(triggered()), SLOT(sl_zoomToSelection()));
 
-    zoomToSequenceAction = new QAction(QIcon(":/core/images/zoom_whole.png"), tr("Zoom to whole sequence"), this);
+    zoomToSequenceAction = new QAction(QIcon(":/core/images/zoom_whole.png"), tr("Zoom to Whole Sequence"), this);
     connect(zoomToSequenceAction, SIGNAL(triggered()), SLOT(sl_zoomToSequence()));
 
     panViewToolButton = new QToolButton();
     
     QMenu *menu = new QMenu();
-    showAllAnnotations = new QAction(tr("Show all available rows"), menu);
+    showAllAnnotations = new QAction(tr("Show All Rows"), menu);
     showAllAnnotations->setCheckable(true);
     connect(showAllAnnotations, SIGNAL(triggered(bool)), renderArea, SLOT(sl_maxLines(bool)));
-    increasePanViewHeight = new QAction(tr("+1 row"), menu);
+
+    increasePanViewHeight = new QAction(tr("+1 Row"), menu);
     connect(increasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_increaseLines()));
-    decreasePanViewHeight = new QAction(tr("-1 row"), menu);
-    connect(decreasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decreaseLines()));
-    //connect(decreasePanViewHeight, SIGNAL(triggered()), showAllAnnotations, SLOT(trigger()));
-    increase5PanViewHeight = new QAction(tr("+5 rows"), menu);
+
+    decreasePanViewHeight = new QAction(tr("-1 Row"), menu);
+    connect(decreasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decreaseLines()));    
+
+    increase5PanViewHeight = new QAction(tr("+5 Rows"), menu);
     connect(increase5PanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_increase5Lines()));
-    decrease5PanViewHeight = new QAction(tr("-5 rows"), menu);
+
+    decrease5PanViewHeight = new QAction(tr("-5 Rows"), menu);
     connect(decrease5PanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decrease5Lines()));
-    //connect(decrease5PanViewHeight, SIGNAL(triggered()), showAllAnnotations, SLOT(trigger()));
-    resetAnnotations = new QAction(tr("Reset rows number"), menu);
+    
+    resetAnnotations = new QAction(tr("Reset Rows Number"), menu);
     connect(resetAnnotations, SIGNAL(triggered()), renderArea, SLOT(sl_resetToDefault()));
-    //connect(resetAnnotations, SIGNAL(triggered()), showAllAnnotations, SLOT(trigger()));
    
     menu->addAction(showAllAnnotations);
     menu->addAction(increase5PanViewHeight);
@@ -145,14 +147,14 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     panViewToolButton->setPopupMode(QToolButton::InstantPopup);
     panViewToolButton->setMenu(menu);
     panViewToolButton->setIcon(QIcon(":/core/images/zoom_rows.png"));
-    panViewToolButton->setToolTip(tr("Increases/decreases number of annotation rows visible in Zoom view"));
+    panViewToolButton->setToolTip(tr("Manage Rows in Zoom View"));
 
-    toggleMainRulerAction = new QAction(tr("Show main ruler"), this);
+    toggleMainRulerAction = new QAction(tr("Show Main Ruler"), this);
     toggleMainRulerAction->setCheckable(true);
     toggleMainRulerAction->setChecked(getRenderArea()->showMainRuler);
     connect(toggleMainRulerAction, SIGNAL(triggered(bool)), SLOT(sl_toggleMainRulerVisibility(bool)));
 
-    toggleCustomRulersAction = new QAction(tr("Show custom rulers"), this);
+    toggleCustomRulersAction = new QAction(tr("Show Custom Rulers"), this);
     toggleCustomRulersAction->setCheckable(true);
     toggleCustomRulersAction->setChecked(getRenderArea()->showCustomRulers);
     toggleCustomRulersAction->setEnabled(!getRenderArea()->customRulers.isEmpty());

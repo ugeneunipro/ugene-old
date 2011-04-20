@@ -758,13 +758,13 @@ p, li { white-space: pre-wrap; }
         <translation>Поменять ветви местами</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1091"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1103"/>
         <source>Expand</source>
         <translation>Раскрыть</translation>
     </message>
     <message>
         <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="364"/>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1093"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1105"/>
         <source>Collapse</source>
         <translation>Скрыть</translation>
     </message>
@@ -1514,47 +1514,47 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="264"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="266"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="408"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="410"/>
         <source>Analyze</source>
         <translation>Анализировать</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="418"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="420"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="424"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="426"/>
         <source>Export</source>
         <translation>Экспорт</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="430"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="432"/>
         <source>Align</source>
         <translation type="unfinished">Выровнять</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="436"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="438"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="446"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="448"/>
         <source>Edit sequence</source>
         <translation>Редактировать последовательность</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="659"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="661"/>
         <source>Select sequence to associate annotations with:</source>
         <translation>Установить связь аннотаций с последовательностью:</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="675"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="677"/>
         <source>No sequence object found for annotations</source>
         <translation>Не найдена связанная с аннотациями последовательность</translation>
     </message>
@@ -1567,17 +1567,17 @@ Do you want to replace it?</source>
         <translation type="obsolete">Переключить подсветку &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="602"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="604"/>
         <source>Disable &apos;%1&apos; highlighting</source>
         <translation>Не использовать подсветку для &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="604"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="606"/>
         <source>Enable &apos;%1&apos; highlighting</source>
         <translation>Задействовать подсветку для &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="735"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="738"/>
         <source>Go To</source>
         <translation>Выбор позиции</translation>
     </message>
@@ -2760,61 +2760,76 @@ Please select file to align.</source>
     <name>U2::PanView</name>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="106"/>
-        <source>Zoom in</source>
+        <source>Zoom In</source>
         <translation>Приблизить</translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="109"/>
-        <source>Zoom out</source>
+        <source>Zoom Out</source>
         <translation>Отдалить</translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="112"/>
-        <source>Zoom to selection</source>
+        <source>Zoom to Selection</source>
         <translation>Масштабировать по выделению</translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="115"/>
-        <source>Zoom to whole sequence</source>
+        <source>Zoom to Whole Sequence</source>
         <translation>Масштабировать ко всей последовательности</translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="121"/>
-        <source>+1 row</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="123"/>
-        <source>-1 row</source>
-        <translation type="unfinished"></translation>
+        <source>Show All Rows</source>
+        <translation>Показывать все ряды</translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="125"/>
-        <source>Show all available rows</source>
-        <translation type="unfinished"></translation>
+        <source>+1 Row</source>
+        <translation>+1 ряд</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="133"/>
-        <source>Increases/decreases number of annotation rows visible in Zoom view</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="128"/>
+        <source>-1 Row</source>
+        <translation>-1 ряд</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="135"/>
-        <source>Show main ruler</source>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="131"/>
+        <source>+5 Rows</source>
+        <translation>+5 рядов</translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="134"/>
+        <source>-5 Rows</source>
+        <translation>-5 рядов</translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="137"/>
+        <source>Reset Rows Number</source>
+        <translation>Восстановить количество рядов</translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="150"/>
+        <source>Manage Rows in Zoom View</source>
+        <translation>Управление рядами в масштабируемом представлении</translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="152"/>
+        <source>Show Main Ruler</source>
         <translation>Показывать основную шкалу</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="140"/>
-        <source>Show custom rulers</source>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="157"/>
+        <source>Show Custom Rulers</source>
         <translation>Показывать дополнительные шкалы</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="448"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="469"/>
         <source>range change request: [%1, %2]</source>
         <translation>Изменён видимый диапазон: [%1, %2]</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="721"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="743"/>
         <source>empty</source>
         <translation>&lt;пусто&gt;</translation>
     </message>
@@ -2822,7 +2837,7 @@ Please select file to align.</source>
 <context>
     <name>U2::PanViewRenderArea</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="816"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="838"/>
         <source>[%1 %2]</source>
         <translation></translation>
     </message>

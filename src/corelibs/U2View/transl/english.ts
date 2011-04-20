@@ -722,13 +722,13 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1091"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1103"/>
         <source>Expand</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="364"/>
-        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1093"/>
+        <location filename="../src/util_ov_phyltree/TreeViewer.cpp" line="1105"/>
         <source>Collapse</source>
         <translation></translation>
     </message>
@@ -1444,62 +1444,62 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="264"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="266"/>
         <source>Error!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="408"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="410"/>
         <source>Analyze</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="418"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="420"/>
         <source>Add</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="424"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="426"/>
         <source>Export</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="430"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="432"/>
         <source>Align</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="436"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="438"/>
         <source>Remove</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="446"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="448"/>
         <source>Edit sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="602"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="604"/>
         <source>Disable &apos;%1&apos; highlighting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="604"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="606"/>
         <source>Enable &apos;%1&apos; highlighting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="659"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="661"/>
         <source>Select sequence to associate annotations with:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="675"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="677"/>
         <source>No sequence object found for annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="735"/>
+        <location filename="../src/util_ov_annotated_dna/AnnotatedDNAView.cpp" line="738"/>
         <source>Go To</source>
         <translation></translation>
     </message>
@@ -2548,61 +2548,76 @@ Please select file to align.</source>
     <name>U2::PanView</name>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="106"/>
-        <source>Zoom in</source>
+        <source>Zoom In</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="109"/>
-        <source>Zoom out</source>
+        <source>Zoom Out</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="112"/>
-        <source>Zoom to selection</source>
+        <source>Zoom to Selection</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="115"/>
-        <source>Zoom to whole sequence</source>
+        <source>Zoom to Whole Sequence</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="121"/>
-        <source>+1 row</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="123"/>
-        <source>-1 row</source>
-        <translation type="unfinished"></translation>
+        <source>Show All Rows</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="125"/>
-        <source>Show all available rows</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="133"/>
-        <source>Increases/decreases number of annotation rows visible in Zoom view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="135"/>
-        <source>Show main ruler</source>
+        <source>+1 Row</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="140"/>
-        <source>Show custom rulers</source>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="128"/>
+        <source>-1 Row</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="448"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="131"/>
+        <source>+5 Rows</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="134"/>
+        <source>-5 Rows</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="137"/>
+        <source>Reset Rows Number</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="150"/>
+        <source>Manage Rows in Zoom View</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="152"/>
+        <source>Show Main Ruler</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="157"/>
+        <source>Show Custom Rulers</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="469"/>
         <source>range change request: [%1, %2]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="721"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="743"/>
         <source>empty</source>
         <translation></translation>
     </message>
@@ -2610,7 +2625,7 @@ Please select file to align.</source>
 <context>
     <name>U2::PanViewRenderArea</name>
     <message>
-        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="816"/>
+        <location filename="../src/util_ov_annotated_dna/PanView.cpp" line="838"/>
         <source>[%1 %2]</source>
         <translation type="unfinished"></translation>
     </message>
