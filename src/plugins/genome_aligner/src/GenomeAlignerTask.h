@@ -91,6 +91,8 @@ private:
     int seqPartSize;
     QVector<SearchQuery*> queries;
     SearchQuery *lastQuery;
+    quint64 readsCount;
+    quint64 readsAligned;
 
     void setupCreateIndexTask();
 };
@@ -122,11 +124,12 @@ private:
 class WriteAlignedReadsSubTask : public Task {
     Q_OBJECT
 public:
-    WriteAlignedReadsSubTask(GenomeAlignerWriter *seqWriter, QVector<SearchQuery*> &queries);
+    WriteAlignedReadsSubTask(GenomeAlignerWriter *seqWriter, QVector<SearchQuery*> &queries, quint64 &readsAligned);
     virtual void run();
 private:
     GenomeAlignerWriter *seqWriter;
     QVector<SearchQuery*> &queries;
+    quint64 &readsAligned;
 };
 
 } //namespace

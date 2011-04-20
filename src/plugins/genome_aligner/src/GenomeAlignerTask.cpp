@@ -72,6 +72,8 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
 {
     GCOUNTER(cvar,tvar, "GenomeAlignerTask");
     haveResults = true;
+    readsCount = 0;
+    readsAligned = 0;
 }
 
 GenomeAlignerTask::~GenomeAlignerTask() {
@@ -195,6 +197,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
             return subTasks;
         }
 
+        readsCount += queries.count();
         taskLog.details(QString("Reading (and comlementing) of %1 short-reads  time: %2")
             .arg(readTask->bunchSize).arg((double)time/(1000*1000)));
         SearchContext s;
@@ -214,7 +217,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
 
     if (subTask == findTask) {
         taskLog.details(QString("Bunch of reads search time: %1").arg((double)time/(1000*1000)));
-        writeTask = new WriteAlignedReadsSubTask(seqWriter, queries);
+        writeTask = new WriteAlignedReadsSubTask(seqWriter, queries, readsAligned);
         writeTask->setSubtaskProgressWeight(0.33f);
         subTasks.append(writeTask);
         return subTasks;
@@ -262,6 +265,9 @@ Task::ReportResult GenomeAlignerTask::report() {
         return ReportResult_Finished;
     }
     seqWriter->close();
+    if (readsCount > 0) { 
+        taskLog.details(tr("%1% reads aligned.").arg(100*(double)readsAligned/readsCount));
+    }
     
     return ReportResult_Finished;
 }
@@ -395,18 +401,20 @@ void ReadShortReadsSubTask::run() {
     }
 }
 
-WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries)
-: Task("WriteAlignedReadsSubTask", TaskFlag_None), seqWriter(_seqWriter), queries(_queries)
+WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries, quint64 &r)
+: Task("WriteAlignedReadsSubTask", TaskFlag_None), seqWriter(_seqWriter), queries(_queries), readsAligned(r)
 {
 
 }
 
 void WriteAlignedReadsSubTask::run() {
-    QList<SAType> repeats;
     foreach (SearchQuery *qu, queries) {
         QVector<SAType> findResults = qu->getResults();
-        foreach (SAType offset, findResults) {
-            seqWriter->write(qu, offset);
+        if (!findResults.isEmpty()) {
+            readsAligned++;
+            foreach (SAType offset, findResults) {
+                seqWriter->write(qu, offset);
+            }
         }
     }
 }
