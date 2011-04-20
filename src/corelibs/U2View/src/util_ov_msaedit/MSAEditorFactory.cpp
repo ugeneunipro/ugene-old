@@ -65,7 +65,12 @@ Task* MSAEditorFactory::createViewTask(const MultiGSelection& multiSelection, bo
     foreach(Document* doc, docsWithMSA) {
         QList<GObject*> docObjs = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT, UOF_LoadedAndUnloaded);
         if (!docObjs.isEmpty()) {
-            msaObjects+=docObjs;
+            foreach(GObject* obj, docObjs){
+                if(!msaObjects.contains(obj)){
+                    msaObjects.append(obj);
+                }
+            }
+            
         } else {
             resTasks.append(new OpenMSAEditorTask(doc));
             if (resTasks.size() == MAX_VIEWS) {

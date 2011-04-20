@@ -62,7 +62,11 @@ Task* TreeViewerFactory::createViewTask(const MultiGSelection& multiSelection, b
     foreach(Document* doc, docsWithPhy) {
         QList<GObject*> docObjs = doc->findGObjectByType(GObjectTypes::PHYLOGENETIC_TREE, UOF_LoadedAndUnloaded);
         if (!docObjs.isEmpty()) {
-            phyObjects += docObjs;
+            foreach(GObject* obj, docObjs){
+                if(!phyObjects.contains(obj)){
+                    phyObjects.append(obj);
+                }
+            }
         } else {
             resTasks.append(new OpenTreeViewerTask(doc));
             if (resTasks.size() == MAX_VIEWS) {
