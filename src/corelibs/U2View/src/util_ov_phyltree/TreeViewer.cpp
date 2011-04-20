@@ -793,6 +793,7 @@ void TreeViewerUI::sl_contTriggered(bool on) {
                     }
                 }
             } else {
+                
                 qreal nWidth = 0;
                 if(on){
                     qreal scW = scene()->sceneRect().width();
@@ -804,6 +805,17 @@ void TreeViewerUI::sl_contTriggered(bool on) {
                         nWidth -= textBRW + GraphicsBranchItem::TextSpace;
                     }
                 }
+// 
+//                 //test
+//                 QGraphicsItem* pitem =  item->parentItem();
+//                 GraphicsBranchItem* grPItem = dynamic_cast<GraphicsBranchItem*>(pitem);
+//                 if(grPItem){
+//                     if(grPItem->getDistanceText()!= NULL && grPItem->getDistanceText()->text() == ""){
+//                         nWidth+=8;
+//                     }
+//                 }
+//                 //test
+
                 item->setWidth(nWidth);
             }
         }
@@ -1005,7 +1017,7 @@ void TreeViewerUI::sl_treeSettingsTriggered(){
 void TreeViewerUI::sl_zoomToSel(){
     QList<QGraphicsItem*> selectedItems = this->scene()->selectedItems();
     if(selectedItems.isEmpty()){
-         zooming(2.0); 
+         zooming(ZOOM_COEF); 
     }else{
         GraphicsButtonItem *topButton = NULL;
         foreach (QGraphicsItem *graphItem, selectedItems) {
@@ -1017,7 +1029,7 @@ void TreeViewerUI::sl_zoomToSel(){
             }
         }
         if(!topButton){
-            zooming(2.0);
+            zooming(ZOOM_COEF);
         }else{
             defaultZoom();
             QGraphicsItem *topItem = topButton->parentItem();
@@ -1032,7 +1044,7 @@ void TreeViewerUI::sl_zoomToSel(){
      
 }
 void TreeViewerUI::sl_zoomOut(){
-    zooming(0.5);
+    zooming(1.0/(float)ZOOM_COEF);
 }
 void TreeViewerUI::sl_zoomToAll(){
     defaultZoom();
