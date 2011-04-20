@@ -166,6 +166,9 @@ public:
     QAction*            toggleCustomRulersAction;
     QAction*            increasePanViewHeight;
     QAction*            decreasePanViewHeight;
+    QAction*            increase5PanViewHeight;
+    QAction*            decrease5PanViewHeight;
+    QAction*            resetAnnotations;
     QAction*            showAllAnnotations;
     QToolButton*        panViewToolButton;
 
@@ -195,6 +198,7 @@ public:
     bool canIncreaseLines();
     bool canDecreaseLines();
     bool isAllLinesShown();
+    bool isDefaultSize();
 
 protected:
     virtual void drawAll(QPaintDevice* pd);
@@ -204,7 +208,10 @@ protected:
 private slots:
     void sl_increaseLines();
     void sl_decreaseLines();
-    void sl_maxLines();
+    void sl_increase5Lines();
+    void sl_decrease5Lines();
+    void sl_resetToDefault();
+    void sl_maxLines(bool);
 
 private:
     int getSelectionLine() const {return numLines - 1;}
@@ -237,6 +244,7 @@ private:
     PanView*            panView;
     int                 numLines;       // number of visible lines
     int                 rowLinesOffset; // row number on the first row line
+    bool                showAllLines;
 
     bool                showMainRuler;
     bool                showCustomRulers;

@@ -158,6 +158,7 @@ QWidget* AnnotatedDNAView::createWidget() {
     scrollArea->setObjectName("annotated_DNA_scrollarea");
     scrollArea->setWidgetResizable(true);
     mainSplitter->addWidget(scrollArea);
+    mainSplitter->setCollapsible(mainSplitter->indexOf(scrollArea), false);
     mainSplitter->setStretchFactor(mainSplitter->count()-1, 5);
     
     scrolledWidget = new QWidget(scrollArea);
@@ -176,6 +177,7 @@ QWidget* AnnotatedDNAView::createWidget() {
     annotationsView = new AnnotationsTreeView(this);
     annotationsView->setObjectName("annotations_tree_view");
     mainSplitter->addWidget(annotationsView);
+    mainSplitter->setCollapsible(mainSplitter->indexOf(annotationsView), false);
     mainSplitter->setStretchFactor(mainSplitter->count()-1, 1);
 
     scrolledWidget->setLayout(scrolledWidgetLayout);
@@ -692,6 +694,7 @@ QString AnnotatedDNAView::addObject(GObject* o) {
         //if mainSplitter==NULL -> its view initialization and widgets will be added later
         if (mainSplitter!=NULL && !isChildWidgetObject(dnaObj)) { 
             ADVSingleSequenceWidget* block = new ADVSingleSequenceWidget(sc, this);
+            block->setObjectName("ADV_single_sequence_widget_" + QString::number(seqViews.count()));
             addSequenceWidget(block);
         }
         addRelatedAnnotations(sc);
