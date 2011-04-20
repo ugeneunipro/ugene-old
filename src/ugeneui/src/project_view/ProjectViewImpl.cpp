@@ -43,6 +43,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/UnloadDocumentTask.h>
 
 #include <U2Gui/AddNewDocumentDialogController.h>
 #include <U2Gui/AddExistingDocumentDialogController.h>
@@ -143,9 +144,9 @@ void DocumentUpdater::sl_update() {
         return;
     }
 
-    // setup multi task : reload documents + reopen views
+    // setup multi task : reload documents + open views
 
-    Task* loadTask = new Task(tr("Reload documents task"), TaskFlag_NoRun);
+    Task* reloadTask = new Task(tr("Reload documents task"), TaskFlag_NoRun);
 
     QList<GObjectViewState*> states;
     QList<GObjectViewWindow*> viewWindows;
@@ -157,16 +158,31 @@ void DocumentUpdater::sl_update() {
                 continue;
             }
             viewWindows.append(vw);
+
             GObjectViewFactoryId id = vw->getViewFactoryId();
             QVariantMap stateData = vw->getObjectView()->saveState();
             if (stateData.isEmpty()) {
                 continue;
             }
             states << new GObjectViewState(id, vw->getViewName(), "", stateData);
+
+            vw->closeView();
         }
 
-        doc->unload();
-        loadTask->addSubTask(new LoadUnloadedDocumentTask(doc));
+        QString unloadErr = UnloadDocumentTask::checkSafeUnload(doc);
+        if (!unloadErr.isEmpty()) {
+            QMessageBox::warning(QApplication::activeWindow(),
+                tr("UGENE"),
+                tr("Unable to unload '%1'").arg(doc->getName())
+                );
+            doc->setLastUpdateTime();
+            continue;
+        }
+
+        QList<Task*> subs;
+        subs << new UnloadDocumentTask(doc, false);
+        subs << new LoadUnloadedDocumentTask(doc);
+        reloadTask->addSubTask(new MultiTask(tr("Reload '%1' task").arg(doc->getName()), subs));
     }
 
     Task* updateViewTask = new Task(tr("Restore state task"), TaskFlag_NoRun);
@@ -186,7 +202,7 @@ void DocumentUpdater::sl_update() {
     }
 
     QList<Task*> subs;
-    subs << loadTask << updateViewTask;
+    subs << reloadTask << updateViewTask;
     Task* t = new MultiTask(tr("Reload documents and restore view state task"), subs);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
