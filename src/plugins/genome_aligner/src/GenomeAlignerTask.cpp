@@ -304,6 +304,7 @@ freeMemorySize(m)
 }
 
 void ReadShortReadsSubTask::run() {
+    GTIMER(cvar, tvar, "ReadSubTask");
     foreach (SearchQuery *qu, queries) {
         delete qu;
     }
@@ -382,8 +383,8 @@ void ReadShortReadsSubTask::run() {
         foreach (SearchQuery *qu, queries) {
             QByteArray reversed(qu->constSequence());
             TextUtils::reverse(reversed.data(), reversed.count());
-            SearchQuery *rQu = new SearchQuery(DNASequence(QString("%1 rev").arg(qu->getName()), reversed, NULL));
-            transl->translate(rQu->data(), rQu->length());
+            SearchQuery *rQu = new SearchQuery(new DNASequence(QString("%1 rev").arg(qu->getName()), reversed, NULL));
+            transl->translate(const_cast<char*>(rQu->constData()), rQu->length());
             if (rQu->constSequence() != qu->constSequence()) {
                 queries.append(rQu);
                 ++bunchSize;

@@ -39,6 +39,10 @@ public:
     virtual const QString& getFormatName() const {return formatName;}
 
     virtual Document* loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
+
+    virtual GObject *loadObject( IOAdapter* io, TaskStateInfo& ti);
+
+    virtual DNASequence *loadSequence( IOAdapter* io, TaskStateInfo& ti);
     
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
 

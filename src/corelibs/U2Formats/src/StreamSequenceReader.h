@@ -28,6 +28,7 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/Task.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequence.h>
 
 #include <memory>
 
@@ -56,7 +57,7 @@ class U2FORMATS_EXPORT StreamSequenceReader {
     };
     QList<ReaderContext> readers;
     int currentReaderIndex;
-    std::auto_ptr<Document> currentDoc;
+    std::auto_ptr<DNASequence> currentSeq;
     bool errorOccured;
     bool lookupPerformed;
     QString errorMessage;
@@ -70,7 +71,7 @@ public:
     bool hasErrors() { return errorOccured; }
     int getProgress();
     QString getErrorMessage();
-    const DNASequenceObject* getNextSequenceObject();
+    DNASequence* getNextSequenceObject();
 };
 
 

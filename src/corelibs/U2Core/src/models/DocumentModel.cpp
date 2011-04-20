@@ -59,6 +59,16 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, T
     return doc;
 }
 
+GObject* DocumentFormat::loadObject(IOAdapter*, TaskStateInfo& ti) {
+    ti.setError("This document format is not support streaming reading mode");
+    return NULL;
+}
+
+DNASequence* DocumentFormat::loadSequence(IOAdapter*, TaskStateInfo& ti) {
+    ti.setError("This document format is not support streaming reading mode");
+    return NULL;
+}
+
 void DocumentFormat::storeDocument( Document* , TaskStateInfo& ts, IOAdapter* ) {
     assert(0);
     ts.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName()));

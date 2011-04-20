@@ -23,16 +23,16 @@
 
 namespace U2 {
 
-SearchQuery::SearchQuery(const DNASequence &shortRead) {
+SearchQuery::SearchQuery(const DNASequence *shortRead) {
     dna = true;
-    seqLength = shortRead.length();
-    nameLength = shortRead.getName().length();
+    seqLength = shortRead->length();
+    nameLength = shortRead->getName().length();
     seq = new char[seqLength+1];
     name = new char[nameLength+1];
-    qstrcpy(seq, shortRead.constData());
-    qstrcpy(name, shortRead.getName().toAscii().constData());
-    if (shortRead.hasQualityScores()) {
-        quality = new DNAQuality(shortRead.quality);
+    qstrcpy(seq, shortRead->constData());
+    qstrcpy(name, shortRead->getName().toAscii().constData());
+    if (shortRead->hasQualityScores()) {
+        quality = new DNAQuality(shortRead->quality);
     } else {
         quality = NULL;
     }

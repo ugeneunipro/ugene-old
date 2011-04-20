@@ -23,20 +23,16 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/Timer.h>
 
 #include "StreamSequenceReader.h"
 
 namespace U2 {
 
-const DNASequenceObject* StreamSequenceReader::getNextSequenceObject()
+DNASequence* StreamSequenceReader::getNextSequenceObject()
 {
     if (hasNext()) {
-        
-        QList<GObject*> objs = currentDoc->findGObjectByType(GObjectTypes::SEQUENCE);
-        if (objs.size() != 1) {
-            return NULL;
-        }
-        DNASequenceObject* result =  qobject_cast<DNASequenceObject*>(objs.first());
+        DNASequence* result = currentSeq.get();
         lookupPerformed = false;
 
         return result;
@@ -46,7 +42,7 @@ const DNASequenceObject* StreamSequenceReader::getNextSequenceObject()
 }
 
 StreamSequenceReader::StreamSequenceReader()
-: currentReaderIndex(-1), currentDoc(NULL), errorOccured(false), lookupPerformed(false)
+: currentReaderIndex(-1), currentSeq(NULL), errorOccured(false), lookupPerformed(false)
 {
 
 }
@@ -58,27 +54,26 @@ bool StreamSequenceReader::hasNext()
     }
 
     if (!lookupPerformed) {
-    
         if (currentReaderIndex < 0 || currentReaderIndex >= readers.count()) {
             return false;
         }
         
-        lookupPerformed = true;
         ReaderContext ctx = readers.at(currentReaderIndex);
-        
-        Document* newDoc = ctx.format->loadDocument(ctx.io, taskInfo, QVariantMap(), DocumentLoadMode_SingleObject);
-        currentDoc.reset(newDoc);
-        int progress = ctx.io->getProgress();
-        if (progress == 100 && currentReaderIndex + 1 < readers.count()) {
-            ++currentReaderIndex;    
+
+        DNASequence *newSeq = ctx.format->loadSequence(ctx.io, taskInfo);
+        currentSeq.reset(newSeq);
+        if (NULL == newSeq) {
+            ++currentReaderIndex;
+        } else {
+            lookupPerformed = true;
         }
     }
 
-    if (currentDoc.get() == NULL) {
+    if (currentSeq.get() == NULL) {
         return false;
     }
 
-    return ( currentDoc->getObjects().size() == 1 );
+    return true;
 }
 
 bool StreamSequenceReader::init( const QList<GUrl>& urls )

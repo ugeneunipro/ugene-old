@@ -33,7 +33,7 @@ namespace LocalWorkflow {
 class BowtieCommunicationChanelReader : public BowtieReadsReader {
 public:
 	BowtieCommunicationChanelReader(CommunicationChannel* reads);
-	DNASequence read();
+	DNASequence *read();
 	bool isEnd();
 private:
 	CommunicationChannel* reads;

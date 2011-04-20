@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/GUrl.h>
+#include <U2Core/DNASequence.h>
 #include "StateLockableDataModel.h"
 
 #include <U2Core/UnloadedObject.h>
@@ -123,6 +124,16 @@ public:
 
     /** A method for compatibility with old code : creates IO adapter and loads document in DocumentLoadMode_Whole  */
     virtual Document* loadDocument(IOAdapterFactory* iof, const GUrl& url, TaskStateInfo& ti, const QVariantMap& hints);
+
+    /** Loads single object in streaming mode. 
+    Note! this function is available only if format supports streaming mode 
+    */
+    virtual GObject* loadObject( IOAdapter* io, TaskStateInfo& ti);
+
+    /** Loads single dna sequence in streaming mode. 
+    Note! this function is available only if format supports streaming mode and sequences as an stored data type
+    */
+    virtual DNASequence* loadSequence( IOAdapter* io, TaskStateInfo& ti);
 
     virtual void storeDocument(Document* d, TaskStateInfo& ts, IOAdapterFactory* io = NULL, const GUrl& newDocURL = GUrl());
     

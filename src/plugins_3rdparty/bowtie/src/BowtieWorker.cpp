@@ -76,8 +76,8 @@ bool BowtieCommunicationChanelReader::isEnd() {
 	return !reads->hasMessage() || reads->isEnded();
 }
 
-DNASequence BowtieCommunicationChanelReader::read() {
-    return reads->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+DNASequence *BowtieCommunicationChanelReader::read() {
+    return new DNASequence(reads->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>());
 }
 
 /************************************************************************/

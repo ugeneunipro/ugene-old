@@ -43,7 +43,7 @@ public:
 
 class SearchQuery {
 public:
-    SearchQuery(const DNASequence &shortRead);
+    SearchQuery(const DNASequence *shortRead);
     SearchQuery(const U2AssemblyRead &shortRead);
     ~SearchQuery();
 

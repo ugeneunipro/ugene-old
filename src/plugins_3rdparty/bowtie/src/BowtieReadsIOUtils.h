@@ -33,7 +33,7 @@ namespace U2 {
 
 class BowtieReadsReader {
 public:
-	virtual DNASequence read()=0;
+	virtual DNASequence *read()=0;
 	virtual bool isEnd()=0;
 };
 

@@ -172,20 +172,19 @@ void GenomeAlignerIndexTask::reformatSequence() {
     bool firstSeq = true;
     while (seqReader.hasNext()) {
         objCount++;
-        const DNASequenceObject *obj = seqReader.getNextSequenceObject();
-        if (NULL == obj) {
+        const DNASequence *seq = seqReader.getNextSequenceObject();
+        if (NULL == seq) {
             setError("Reference object type must be a sequence, but not a multiple alignment");
             return;
         }
-        if (DNAAlphabet_NUCL != obj->getAlphabet()->getType()) {
+        if (DNAAlphabet_NUCL != seq->alphabet->getType()) {
             setError("Unsupported file format: alphabet type is not NUCL");
             return;
         }
-        const DNASequence &seq = obj->getDNASequence();
-        seqLens.append(seq.length());
-        newRefFile.write(seq.constData());
+        seqLens.append(seq->length());
+        newRefFile.write(seq->constData());
         if (firstSeq) {
-            index->seqObjName = seq.getName() + QString("_and_others");
+            index->seqObjName = seq->getName() + QString("_and_others");
             firstSeq = false;
         }
     }

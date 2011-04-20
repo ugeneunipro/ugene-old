@@ -46,7 +46,7 @@ bool GenomeAlignerUrlReader::isEnd() {
 }
 
 SearchQuery *GenomeAlignerUrlReader::read() {
-    return new SearchQuery(reader.getNextSequenceObject()->getDNASequence());
+    return new SearchQuery(reader.getNextSequenceObject());
 }
 
 /************************************************************************/
@@ -92,7 +92,7 @@ bool GenomeAlignerCommunicationChanelReader::isEnd() {
 SearchQuery *GenomeAlignerCommunicationChanelReader::read() {
     DNASequence seq = reads->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
     
-    return new SearchQuery(seq);
+    return new SearchQuery(&seq);
 }
 
 GenomeAlignerCommunicationChanelReader::~GenomeAlignerCommunicationChanelReader() {

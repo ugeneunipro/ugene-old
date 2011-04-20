@@ -45,7 +45,7 @@ namespace U2 {
 class BowtieUrlReadsReader : public U2::BowtieReadsReader {
 public:
 	BowtieUrlReadsReader(const QList<U2::GUrl>& dnaList);
-	U2::DNASequence read();
+	U2::DNASequence *read();
 	bool isEnd();
 private:
 	bool initOk;

@@ -31,6 +31,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/AppContext.h>
 
 /* TRANSLATOR U2::FastqFormat */
 
@@ -318,4 +319,76 @@ void FastqFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io )
     }
     }
 }
+
+GObject *FastqFormat::loadObject(IOAdapter *io, TaskStateInfo &ti) {
+    DNASequence *seq = loadSequence(io, ti);
+    if (ti.hasErrors()) {
+        return NULL;
+    }
+
+    return new DNASequenceObject(seq->getName(), *seq);
+}
+
+
+DNASequence *FastqFormat::loadSequence(IOAdapter* io, TaskStateInfo& ti) {
+    if( NULL == io || !io->isOpen() ) {
+        ti.setError(L10N::badArgument("IO adapter"));
+        return NULL;
+    }
+
+    QByteArray readBuff, secondBuff;
+    QByteArray sequence;
+    QByteArray qualityScores;
+    int predictedSize = 1000;
+    sequence.reserve(predictedSize);
+    qualityScores.reserve(predictedSize);
+
+    //read header
+    if (!readLine(readBuff, io, ti)) {
+        return NULL;
+    }
+    if (readBuff[0]!= '@') {
+        ti.setError("Not a valid FASTQ file. The @ identifier is not found.");
+        return NULL;
+    }
+
+    //read sequence
+    if(!readUntil(sequence, io, ti, SEQ_QUAL_SEPARATOR)) {
+        return NULL;
+    }
+    int seqLen = sequence.size();
+
+    // read +<seqname>
+    secondBuff.reserve(readBuff.size());
+    if (!readLine(secondBuff, io, ti)) {
+        return NULL;
+    }
+    if (secondBuff[0]!= '+' || (secondBuff.size() != 1 && secondBuff.size() != readBuff.size())
+     || (readBuff.size() == secondBuff.size() && strncmp(readBuff.data()+1, secondBuff.data()+1, readBuff.size() - 1))) {
+        ti.setError("Not a valid FASTQ file");
+        return NULL;
+    }
+
+    // read qualities
+    if(!readBlock(qualityScores, io, ti, seqLen) ) {
+        return NULL;
+    }
+
+    if ( qualityScores.length() != sequence.length() ) {
+        ti.setError("Not a valid FASTQ file. Bad quality scores: inconsistent size.");
+    }
+
+    QByteArray headerLine = QByteArray::fromRawData(readBuff.data()+1, readBuff.length()-1);
+    DNASequence *seq = new DNASequence(headerLine, sequence);
+    seq->quality = DNAQuality(qualityScores);
+    seq->alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+    assert(seq->alphabet!=NULL);
+
+    if (!seq->alphabet->isCaseSensitive()) {
+        TextUtils::translate(TextUtils::UPPER_CASE_MAP, const_cast<char*>(seq->seq.constData()), seq->seq.length());
+    }
+
+    return seq;
+}
+
 }//namespace

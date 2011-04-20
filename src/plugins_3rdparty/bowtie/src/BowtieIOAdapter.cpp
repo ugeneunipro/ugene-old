@@ -46,9 +46,9 @@ bool BowtieUrlReadsReader::isEnd() {
 	return !reader.hasNext();
 }
 
-U2::DNASequence BowtieUrlReadsReader::read() {
+U2::DNASequence *BowtieUrlReadsReader::read() {
     BowtieContext::getContext()->ti.progress = reader.getProgress();
-	return reader.getNextSequenceObject()->getDNASequence();
+	return reader.getNextSequenceObject();
 }
 
 /************************************************************************/
@@ -80,7 +80,7 @@ DNASequencesPatternSource::DNASequencesPatternSource( uint32_t seed, U2::BowtieR
 
 void DNASequencesPatternSource::nextReadImpl( ReadBuf& r, uint32_t& patid )
 {
-  U2::DNASequence dna;
+  U2::DNASequence *dna;
    
   {
     QMutexLocker lock(&mutex);
@@ -89,7 +89,7 @@ void DNASequencesPatternSource::nextReadImpl( ReadBuf& r, uint32_t& patid )
        return;
     }
     ++readCnt_;
-    dna = reader->read();
+    dna = new U2::DNASequence(*reader->read());
   }
        
   
@@ -99,8 +99,8 @@ void DNASequencesPatternSource::nextReadImpl( ReadBuf& r, uint32_t& patid )
   BowtieContext::Search* ctx = BowtieContext::getSearchContext();
   bool doquals = false; //TODO: quals
 
-  int nameLen = dna.getName().length();
-  strcpy(r.nameBuf, dna.getName().toAscii().constData());
+  int nameLen = dna->getName().length();
+  strcpy(r.nameBuf, dna->getName().toAscii().constData());
   _setBegin(r.name, r.nameBuf);
   _setLength(r.name, nameLen);
 
@@ -111,8 +111,8 @@ void DNASequencesPatternSource::nextReadImpl( ReadBuf& r, uint32_t& patid )
 	  _setLength(r.name, nameLen);
   }
 
-  const char* row = dna.seq.constData();
-  const int seqLen = dna.length();
+  const char* row = dna->seq.constData();
+  const int seqLen = dna->length();
   if(seqLen+1 > 1024) {
       tooManySeqChars(r.name);
   }
@@ -128,12 +128,12 @@ void DNASequencesPatternSource::nextReadImpl( ReadBuf& r, uint32_t& patid )
     r.patBufFw[i] = charToDna5[(int)c];
   }
   if(!doquals) {
-	  if(!dna.quality.isEmpty()) {
-		  switch(dna.quality.type) {
+	  if(!dna->quality.isEmpty()) {
+		  switch(dna->quality.type) {
 			  case U2::DnaQualityType_Solexa: 
-				  for(int i=0;i<seqLen;i++) r.qualBuf[i] = solexaToPhred(dna.quality.getValue(i)+33); break;
+				  for(int i=0;i<seqLen;i++) r.qualBuf[i] = solexaToPhred(dna->quality.getValue(i)+33); break;
 			  case U2::DNAQualityType_Sanger: 
-				  for(int i=0;i<seqLen;i++) r.qualBuf[i] = dna.quality.getValue(i)+33; break;
+				  for(int i=0;i<seqLen;i++) r.qualBuf[i] = dna->quality.getValue(i)+33; break;
 			  default: for(int i=0;i<seqLen;i++) r.qualBuf[i] = 'I';
 		  }
 	  } else {
