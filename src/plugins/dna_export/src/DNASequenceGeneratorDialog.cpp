@@ -88,6 +88,7 @@ void DNASequenceGeneratorDialog::sl_configureContent() {
 
 void DNASequenceGeneratorDialog::sl_generate() {
     DNASequenceGeneratorConfig cfg;
+    cfg.addToProj = addToProjCBox->isChecked();
     cfg.length = lengthSpin->value();
     cfg.numSeqs = seqNumSpin->value();
     cfg.useRef = referenceButton->isChecked();

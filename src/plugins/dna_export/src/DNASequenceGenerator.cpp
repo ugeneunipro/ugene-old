@@ -31,6 +31,8 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/ProjectModel.h>
 
+#include <U2Gui/OpenViewTask.h>
+
 #include <U2Misc/DialogUtils.h>
 
 
@@ -154,7 +156,7 @@ EvaluateBaseContentTask* DNASequenceGeneratorTask::createEvaluationTask(Document
 }
 
 DNASequenceGeneratorTask::DNASequenceGeneratorTask(const DNASequenceGeneratorConfig& cfg_)
-: Task(tr("Generate sequence task"), TaskFlag_NoRun), cfg(cfg_), loadRefTask(NULL), evalTask(NULL), generateTask(NULL) {
+: Task(tr("Generate sequence task"), TaskFlag_NoRun), cfg(cfg_), loadRefTask(NULL), evalTask(NULL), generateTask(NULL), saveTask(NULL), addToProj(false) {
     if (cfg.useReference()) {
         // do not load reference file if it is already in project and has loaded state
         const QString& docUrl = cfg.getReferenceUrl();
@@ -233,10 +235,23 @@ QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
                 sequences.append(dnaObj);
             }
             Document* doc = new Document(cfg.getDocumentFormat(), io, GUrl(cfg.getOutUrlString()), sequences);
-
-            SaveDocumentTask* saveTask = new SaveDocumentTask(doc, SaveDoc_Overwrite & SaveDoc_DestroyAfter);
+            
+            Document* d = AppContext::getProject()->findDocumentByURL(cfg.getOutUrlString());
+            if (d == NULL) {
+                addToProj = cfg.addToProj;
+                AppContext::getProject()->addDocument(doc);
+            }
+            
+            SaveDocFlags saveFlags = SaveDoc_Overwrite;
+            if (!addToProj) {
+                saveFlags &= SaveDoc_DestroyAfter;
+            }
+            saveTask = new SaveDocumentTask(doc, saveFlags);
             tasks.append(saveTask);
         }
+    } else if (saveTask == subTask && addToProj) {
+        Document* doc = saveTask->getDocument();
+        tasks << new OpenViewTask(doc);
     }
     return tasks;
 }

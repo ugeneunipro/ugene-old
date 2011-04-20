@@ -34,11 +34,12 @@ class MAlignment;
 class DNAAlphabet;
 class DocumentFormat;
 class LoadDocumentTask;
+class SaveDocumentTask;
 
 class DNASequenceGeneratorConfig {
 public:
     DNASequenceGeneratorConfig()
-        : saveDoc(true), format(NULL), alphabet(NULL), length(NULL), numSeqs(1), useRef(true) {}
+        : addToProj(false), saveDoc(true), format(NULL), alphabet(NULL), length(NULL), numSeqs(1), useRef(true) {}
 
     DNAAlphabet* getAlphabet() const { assert(alphabet); return alphabet; }
 
@@ -58,6 +59,7 @@ public:
 
     DocumentFormat* getDocumentFormat() const { return format; }
 
+    bool addToProj;
     bool saveDoc;
     // output url
     QString outUrl;
@@ -138,7 +140,9 @@ private:
     LoadDocumentTask* loadRefTask;
     EvaluateBaseContentTask* evalTask;
     GenerateDNASequenceTask* generateTask;
+    SaveDocumentTask* saveTask;
     QList<DNASequence> results;
+    bool addToProj;
 };
 
 } //namespace
