@@ -20,7 +20,7 @@ Task(_name, f) {
 //==============================================================================
 
 BackgroundRenderer::BackgroundRenderer() :
-renderTask(0), redrawRunning(false), redrawNeeded(true)
+renderTask(0)
 {
 }
 
@@ -31,20 +31,16 @@ BackgroundRenderer::~BackgroundRenderer() {
 }
 
 void BackgroundRenderer::render(BackgroundRenderTask * task)  {
+    if(renderTask) {
+        renderTask->cancel();
+    }
     renderTask = task;
-    if(redrawRunning) {
-        assert(renderTask);
-        redrawNeeded = true;
-        return;
-    }    
-    redrawRunning = true;
-    redrawNeeded = false;
     connect(renderTask, SIGNAL(si_stateChanged()), SLOT(sl_redrawFinished()));
     AppContext::getTaskScheduler()->registerTopLevelTask(renderTask);
 }
 
 QImage BackgroundRenderer::getImage() const {
-    if(redrawRunning) {
+    if(renderTask != NULL) {
         return QImage();
     }
     return result;
@@ -53,22 +49,15 @@ QImage BackgroundRenderer::getImage() const {
 void BackgroundRenderer::sl_redrawFinished() {
     BackgroundRenderTask * senderr = qobject_cast<BackgroundRenderTask*>(sender());
     assert(senderr);
+    if(renderTask != senderr) {
+        return;
+    }
     if(Task::State_Finished != senderr->getState()) {
         return;
     }
-    assert(redrawRunning);
-    redrawRunning = false;
-    if(redrawNeeded) {
-        assert(renderTask != senderr);
-        render(renderTask);
-        redrawRunning = true;
-        redrawNeeded = false;
-    } else {
-        assert(renderTask == senderr);
-        result = renderTask->getResult();
-        renderTask = NULL;
-        emit(si_rendered());
-    }
+    result = renderTask->getResult();
+    renderTask = NULL;
+    emit(si_rendered());
 }
 
 }

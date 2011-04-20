@@ -58,9 +58,6 @@ signals:
 private:
     BackgroundRenderTask * renderTask;
     QImage result;
-    QSize size;
-    bool redrawRunning;
-    bool redrawNeeded;
 };
 
 
