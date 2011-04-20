@@ -506,9 +506,19 @@ void TreeViewerUI::updateTreeSettings(){
             switch (treeSettings.type)
             {
             case TreeSettings::PHYLOGRAM:
+                if(item->getDistanceText() != NULL){
+                    if(item->getDistanceText()->text() == "0"){
+                        item->setDistanceText("");
+                    }
+                }
                 item->setWidth(qAbs(item->getDist()) * getScale()* coef);
                 break;
             case TreeSettings::CLADOGRAM:
+                if(item->getDistanceText() != NULL){
+                    if(item->getDistanceText()->text() == ""){
+                        item->setDistanceText("0");
+                    }
+                }
                 item->setWidth(avgW * getScale()* coef);
                 break;
             default:

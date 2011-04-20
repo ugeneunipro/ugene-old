@@ -73,6 +73,7 @@ public:
     QGraphicsSimpleTextItem* getNameText() const { return nameText; }
     qreal getWidth() const { return width; }
     qreal getDist() const { return dist; }
+    void setDistanceText(const QString& text);
     void setWidthW(qreal w) { width = w; }
     void setWidth(qreal w);
     void setDist (qreal d) { dist = d; }

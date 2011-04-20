@@ -141,8 +141,8 @@ void GraphicsBranchItem::initText(qreal d) {
         --i;
     str.truncate(i + 1);
 
-    //test
-    if(d == 0){
+    //it doesn't show zeroes by default. only in cladogramm mode
+    if(str == "0"){
         str = "";
     }
     //test
@@ -216,6 +216,12 @@ GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
     }
     setPen(pen1);
     setBrush(settings.branchColor);
+}
+
+void GraphicsBranchItem::setDistanceText(const QString& text){
+    if(distanceText){
+        distanceText->setText(text);
+    }
 }
 
 void GraphicsBranchItem::setWidth(qreal w) {
