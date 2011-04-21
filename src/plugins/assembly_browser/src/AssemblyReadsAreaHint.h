@@ -49,6 +49,7 @@ public:
 protected:
     bool eventFilter(QObject *, QEvent *);
     void leaveEvent(QEvent * e);
+    void mouseMoveEvent(QMouseEvent * e);
 
 private:
     QLabel * fromToLabel;

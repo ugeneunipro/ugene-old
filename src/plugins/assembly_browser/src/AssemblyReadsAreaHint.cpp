@@ -169,4 +169,10 @@ void AssemblyReadsAreaHint::leaveEvent(QEvent * e) {
     }
 }
 
+void AssemblyReadsAreaHint::mouseMoveEvent(QMouseEvent * e) {
+    AssemblyReadsArea * p = qobject_cast<AssemblyReadsArea*>(parent());
+    p->sl_hideHint();
+    QFrame::mouseMoveEvent(e);
+}
+
 } // U2
