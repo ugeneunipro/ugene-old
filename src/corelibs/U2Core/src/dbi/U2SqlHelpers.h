@@ -72,6 +72,9 @@ public:
 
     /** Return textual representation of the id */
     static QString text(const U2DataId& id);
+    
+    /** Checks if the table exists in database */
+    static bool isTableExists(const QString& tableName, DbRef* db, U2OpStatus& os);
 };
 
 /** Common localization messages for SQLiteDBI*/
@@ -214,7 +217,7 @@ public:
     // Query info methods
     const QString& getQueryText() const {return sql;}
 
-    void setError(const QString& err) {os.setError(err);}
+    void setError(const QString& err);
     
     bool hasError() const {return os.hasError();}
 

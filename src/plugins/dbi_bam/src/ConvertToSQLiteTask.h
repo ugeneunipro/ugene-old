@@ -22,10 +22,10 @@
 #ifndef _U2_BAM_CONVERT_TO_SQLITE_TASK_H_
 #define _U2_BAM_CONVERT_TO_SQLITE_TASK_H_
 
-#include <U2Core/Task.h>
-#include <U2Core/GUrl.h>
 #include "LoadBamInfoTask.h"
 
+#include <U2Core/Task.h>
+#include <U2Core/GUrl.h>
 
 
 namespace U2 {

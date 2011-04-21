@@ -46,7 +46,7 @@ public:
     U2DataId    childId;
 
     /** parent object version this attribute is related to. If <=0 -> any is OK. */
-    qint32      version;
+    qint64      version;
     
     /* Name of the attribute */
     QString     name;

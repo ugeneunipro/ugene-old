@@ -41,6 +41,9 @@ namespace U2 {
 SQLiteAssemblyDbi::SQLiteAssemblyDbi(SQLiteDbi* dbi) : U2AssemblyDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
+SQLiteAssemblyDbi::~SQLiteAssemblyDbi() {
+    assert(adaptersById.isEmpty());
+}
 
 void SQLiteAssemblyDbi::initSqlSchema(U2OpStatus& os) {
     if (os.hasError()) {
@@ -48,35 +51,53 @@ void SQLiteAssemblyDbi::initSqlSchema(U2OpStatus& os) {
     }
     // assembly object
     // reference            - reference sequence id
-    // elen_method          - method used to handle effective length property
-    // compression_method   - method used to handle compression of reads data
-    SQLiteQuery("CREATE TABLE Assembly (object INTEGER, reference INTEGER, elen_method TEXT NOT NULL, compression_method TEXT NOT NULL, "
+    // imethod - indexing method - method used to handle read location
+    // cmethod - method used to handle compression of reads data
+    // idata - additional indexing method data
+    // cdata - additional compression method data
+    SQLiteQuery("CREATE TABLE Assembly (object INTEGER, reference INTEGER, imethod TEXT NOT NULL, cmethod TEXT NOT NULL, "
+        "idata BLOB, cdata BLOB, " 
         " FOREIGN KEY(object) REFERENCES Object(id), "
         " FOREIGN KEY(reference) REFERENCES Sequence(object) )", db, os).execute();
 }
 
+void SQLiteAssemblyDbi::shutdown(U2OpStatus& os) {
+    foreach(AssemblyAdapter* a, adaptersById.values()) {
+        a->shutdown(os);
+        delete a;
+    }
+    adaptersById.clear();
+}
+
 AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpStatus& os) {
-    SQLiteQuery q("SELECT elen_method, compression_method FROM Assembly WHERE object = ?1", db, os);
+    qint64 sqliteId = SQLiteUtils::toDbiId(assemblyId);
+    AssemblyAdapter* res = adaptersById.value(sqliteId);
+    if (res != NULL) {
+        return res;
+    }
+    
+    SQLiteQuery q("SELECT imethod, cmethod FROM Assembly WHERE object = ?1", db, os);
     q.bindDataId(1, assemblyId);
     if (!q.step()) {
         return NULL;
     }
-    QString elen = q.getString(0);
-    assert(!elen.isEmpty());
+    QString indexMethod = q.getString(0);
+    QByteArray idata = q.getBlob(2);
+    assert(!indexMethod.isEmpty());
     //TODO    QString comp = q.getString(1);
 
 
-    AssemblyAdapter* res = NULL;
-    if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE) {
+    if (indexMethod == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE) {
         res = new SingleTableAssemblyAdapter(dbi, assemblyId, 'S', "", NULL, db, os);
-    } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1) {
-        res = new MultiTableAssemblyAdapter(dbi, assemblyId, NULL, MultiTableAssemblyAdapterMode_4Tables, db, os);
-    } else if (elen == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE) {
+    } else if (indexMethod == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1) {
+        res = new MultiTableAssemblyAdapter(dbi, assemblyId, NULL, db, os);
+    } else if (indexMethod == SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE) {
         res = new RTreeAssemblyAdapter(dbi, assemblyId, NULL, db, os);
     } else {
-        os.setError(SQLiteL10N::tr("Unsupported reads storage type: %1").arg(elen));
+        os.setError(SQLiteL10N::tr("Unsupported reads storage type: %1").arg(indexMethod));
         return NULL;
     }
+    adaptersById[sqliteId] = res;
     return res;
 }
 
@@ -98,7 +119,7 @@ U2Assembly SQLiteAssemblyDbi::getAssemblyObject(const U2DataId& assemblyId, U2Op
 qint64 SQLiteAssemblyDbi::countReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::countReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::countReadsAt");
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     return a->countReads(r, os);
 }
 
@@ -106,27 +127,27 @@ qint64 SQLiteAssemblyDbi::countReads(const U2DataId& assemblyId, const U2Region&
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     return a->getReads(r, os);
 }
 
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     return a->getReadsByRow(r, minRow, maxRow, os);
 }
 
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os)  {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsByName -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsByName");
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     return a->getReadsByName(name, os);
 }
 
 
 qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     return a->getMaxPackedRow(r, os);
 }
 
@@ -135,7 +156,7 @@ qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Re
 qint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os) {
     quint64 t0 = GTimer::currentTimeMicros();
 
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     quint64 res = a->getMaxEndPos(os);
     
     perfLog.trace(QString("Assembly get max end pos: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
@@ -154,7 +175,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1, os);
     //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE, os);
 
-    SQLiteQuery q("INSERT INTO Assembly(object, reference, elen_method, compression_method) VALUES(?1, ?2, ?3, ?4)", db, os);
+    SQLiteQuery q("INSERT INTO Assembly(object, reference, imethod, cmethod) VALUES(?1, ?2, ?3, ?4)", db, os);
     q.bindDataId(1, assembly.id);
     q.bindDataId(2, assembly.referenceId);
     q.bindString(3, elenMethod);
@@ -162,7 +183,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     q.execute();
 
 
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assembly.id, os));
+    AssemblyAdapter* a = getAdapter(assembly.id, os);
     if (os.hasError()) {
         return;
     }
@@ -180,13 +201,14 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
                 reads.append(it->next());
             }
             if (!reads.isEmpty()) {
-                a->addReads(reads, os);
+                a->addReadsInternal(reads, true, os);
             }
         } while (it->hasNext() && !os.hasError());
     }
 
     a->createReadsIndexes(os);
 }
+
  
 void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
     SQLiteTransaction(db, os);
@@ -202,28 +224,32 @@ void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& o
 }
 
 void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     a->removeReads(rowIds, os);
 }
 
 void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) {
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     a->addReads(rows, os);
 }
 
 
 /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
 void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2OpStatus& os) {
-    std::auto_ptr<AssemblyAdapter> a(getAdapter(assemblyId, os));
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
     a->pack(os);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // AssemblyAdapter
 
-AssemblyAdapter::AssemblyAdapter(const U2DataId& _assemblyId, const AssemblyCompressor* _compressor, DbRef* _db, U2OpStatus& _os) 
-:assemblyId(_assemblyId), compressor(_compressor), db(_db), os(_os)
+AssemblyAdapter::AssemblyAdapter(const U2DataId& _assemblyId, const AssemblyCompressor* _compressor, DbRef* _db) 
+:assemblyId(_assemblyId), compressor(_compressor), db(_db)
 {
+}
+
+void AssemblyAdapter::addReadsInternal(QList<U2AssemblyRead>& reads, bool , U2OpStatus& os) {
+    addReads(reads, os);
 }
 
 //////////////////////////////////////////////////////////////////////////

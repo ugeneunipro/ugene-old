@@ -145,7 +145,7 @@ void SQLiteAttributeDbi::readAttribute(SQLiteQuery& q, U2Attribute& attr) {
     attr.id = q.getDataIdExt(1);
     attr.objectId = q.getDataIdExt(4);
     attr.childId = q.getDataIdExt(7);
-    attr.version = q.getInt32(10);
+    attr.version = q.getInt64(10);
     attr.name = q.getString(11);
 }
 
@@ -213,7 +213,7 @@ qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, U
     q.bindType(5, SQLiteUtils::toType(attr.childId));
     q.bindBlob(6, SQLiteUtils::toDbExtra(attr.objectId));
     q.bindBlob(7, SQLiteUtils::toDbExtra(attr.childId));
-    q.bindInt32(8, attr.version);
+    q.bindInt64(8, attr.version);
     q.bindString(9, attr.name);
     
     return q.insert();

@@ -27,30 +27,27 @@
 
 #include <U2Core/U2SqlHelpers.h>
 
+#include <QtCore/QReadWriteLock>
+
 namespace U2 {
 
 class MTASingleTableAdapter {
 public:
-    MTASingleTableAdapter(SingleTableAssemblyAdapter* a, const U2Region& r, const QByteArray& extra) 
-        : singleTableAdapter(a), readsRange(r), idExtra(extra) {}
+    /** Wrapper over 1 table in database. If singleTableAdapter == NULL the table was not created yet */
+    MTASingleTableAdapter(SingleTableAssemblyAdapter* a, int _rowPos, int _elenPos, const QByteArray& extra) 
+        : singleTableAdapter(a), rowPos(_rowPos), elenPos(_elenPos), idExtra(extra) {}
 
     SingleTableAssemblyAdapter* singleTableAdapter;
-    U2Region                    readsRange;
+    int                         rowPos;
+    int                         elenPos;
     QByteArray                  idExtra;
-};
-enum MultiTableAssemblyAdapterMode {
-    MultiTableAssemblyAdapterMode_4Tables
 };
 
 class MultiTableAssemblyAdapter : public AssemblyAdapter {
 public:
-    MultiTableAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, const AssemblyCompressor* compressor, 
-        MultiTableAssemblyAdapterMode mode, DbRef* ref, U2OpStatus& os);
+    MultiTableAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
 
     ~MultiTableAssemblyAdapter();
-
-    virtual void createReadsTables(U2OpStatus& os);
-    virtual void createReadsIndexes(U2OpStatus& os);
 
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os);
 
@@ -62,40 +59,94 @@ public:
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os);
 
     virtual void addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os);
+    virtual void addReadsInternal(QList<U2AssemblyRead>& reads, bool delayedIndex, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& readIds, U2OpStatus& os);
 
     virtual void pack(U2OpStatus& os);
 
-    int getReadRange(qint64 readLength) const;
-    int getReadRange(const U2DataId& id) const;
-    const QList<MTASingleTableAdapter*>& getTableAdapters() const {return tableAdapters;}
-    const QList<QByteArray>& getIdExtrasPerRange() const {return idExtras;}
+    virtual void createReadsIndexes(U2OpStatus& os);
+
+    int getElenRangePosByLength(qint64 readLength) const;
+    int getElenRangePosById(const U2DataId& id) const;
+    int getNumberOfElenRanges() const {return elenRanges.size();}
+    
+    int getRowRangePosByRow(quint64 row) const;
+    int getRowRangePosById(const U2DataId& id) const;
+
+    const QVector<MTASingleTableAdapter*>& getAdapters() const {return adapters;}
+    const QVector<QByteArray>& getIdExtrasPerRange() const {return idExtras;}
+    
+    DbRef* getDbRef() const {return dbi->getDbRef();}
+
+    MTASingleTableAdapter* getAdapterByRowAndElenRange(int rowRange, int elenRange, bool createIfNotExits, U2OpStatus& os);
 
 protected:
-    void addTableAdapter(int minLen, int maxLen, const U2DataId& assemblyId, const AssemblyCompressor* compressor, bool last, U2OpStatus& os);
 
-    SQLiteDbi*                      dbi;
-    QList<MTASingleTableAdapter*>   tableAdapters;
-    QList<QByteArray>               idExtras;
+    QString getTableSuffix(int rowRange, int elenRange);
+    static QByteArray getIdExtra(int rowRange, int elenRange);
+
+
+    void addTableAdapter(int minLen, int maxLen, const U2DataId& assemblyId, const AssemblyCompressor* compressor, bool last, U2OpStatus& os);
+    
+    /** Checks if table info must be re-read from DB and calls re-read if needed */
+    void syncTables(U2OpStatus& os);
+    
+    /** For an empty assembly analyzes reads data and calculate ranges */
+    void initTables(QList<U2AssemblyRead>& reads, U2OpStatus& os);
+
+    /** Re-reads table info from DB */
+    void rereadTables(const QByteArray& idata, U2OpStatus& os);
+
+    void clearTableAdaptersInfo();
+
+    MTASingleTableAdapter* createAdapter(int rowRange, int elenRange, U2OpStatus& os);
+
+    void initAdaptersGrid(int nRows, int nRanges);
+
+    SQLiteDbi*                                  dbi;
+    
+    /** All non-NUL adapters */
+    QVector<MTASingleTableAdapter*>             adapters;
+
+    /** outer dim -> prow, inner dim -> elen */
+    QVector< QVector<MTASingleTableAdapter*> >  adaptersGrid;
+
+    /** id extras for every table, same hierarchy with tableAdapters */
+    QVector<QByteArray>                         idExtras;
+    
+    /** assembly object version adapters are used for */
+    qint32                                      version;
+    
+    /** effective length ranges */
+    QVector<U2Region>                           elenRanges;
+
+    /** prow range per table */
+    qint32                                      rowsPerRange;
+    
+    //TODO: add read-locks into all methods
+    QReadWriteLock                              tablesSyncLock;
 };
 
 
 class MultiTablePackAlgorithmAdapter : public PackAlgorithmAdapter {
 public:
-    MultiTablePackAlgorithmAdapter(DbRef* db, MultiTableAssemblyAdapter* a); 
+    MultiTablePackAlgorithmAdapter(MultiTableAssemblyAdapter* a); 
     ~MultiTablePackAlgorithmAdapter();
     
     virtual U2DbiIterator<PackAlgorithmData>* selectAllReads(U2OpStatus& os);
     virtual void assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os);
 private:
-    MultiTableAssemblyAdapter*              multiTableAdapter;
-    QList<SingleTablePackAlgorithmAdapter*> packAdapters;
+    void ensureGridSize(int nRows);
+
+    MultiTableAssemblyAdapter*                              multiTableAdapter;
+    QVector<SingleTablePackAlgorithmAdapter*>               packAdapters;
+    QVector< QVector<SingleTablePackAlgorithmAdapter*> >    packAdaptersGrid;
 };
 
 // Class that multiplexes multiple read iterators into 1
 class MTAReadsIterator : public U2DbiIterator<U2AssemblyRead> {
 public:
-    MTAReadsIterator(QList< U2DbiIterator<U2AssemblyRead>* >& iterators, const QList<QByteArray>& idExtras);
+    MTAReadsIterator(QVector< U2DbiIterator<U2AssemblyRead>* >& iterators, const QVector<QByteArray>& idExtras);
 
     virtual ~MTAReadsIterator();
 
@@ -106,15 +157,15 @@ public:
     virtual U2AssemblyRead peek();
 
 private:
-    QList<U2DbiIterator<U2AssemblyRead>*>   iterators;
+    QVector<U2DbiIterator<U2AssemblyRead>*> iterators;
     int                                     currentRange;
-    QList<QByteArray>                       idExtras;
+    QVector<QByteArray>                     idExtras;
 };
 
 // Class that multiplexes multiple read packed data iterators into 1 and supports ordering
 class MTAPackAlgorithmDataIterator : public U2DbiIterator<PackAlgorithmData> {
 public:
-    MTAPackAlgorithmDataIterator(QList< U2DbiIterator<PackAlgorithmData>* >& iterators, const QList<QByteArray>& idExtras);
+    MTAPackAlgorithmDataIterator(QVector< U2DbiIterator<PackAlgorithmData>* >& iterators, const QVector<QByteArray>& idExtras);
 
     virtual ~MTAPackAlgorithmDataIterator();
 
@@ -127,9 +178,9 @@ public:
 private:
     void fetchNextData();
 
-    QList<U2DbiIterator<PackAlgorithmData>*>    iterators;
-    PackAlgorithmData                           nextData;
-    QList<QByteArray>                           idExtras;
+    QVector<U2DbiIterator<PackAlgorithmData>*>      iterators;
+    PackAlgorithmData                               nextData;
+    QVector<QByteArray>                             idExtras;
 };
 
 } //namespace

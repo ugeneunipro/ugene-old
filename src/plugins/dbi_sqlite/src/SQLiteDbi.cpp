@@ -47,15 +47,14 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
 }
 
 SQLiteDbi::~SQLiteDbi() {
+    assert(db->handle == NULL);
+
     delete objectDbi;
     delete sequenceDbi;
     delete msaDbi;
     delete assemblyDbi;
     delete crossDbi;
     delete attributeDbi;
-    if (db->handle != NULL) {
-        sqlite3_close(db->handle);
-    }
     delete db;
 }
 
@@ -196,6 +195,11 @@ void SQLiteDbi::setState(U2DbiState s) {
     state = s;
 }
 
+QString SQLiteDbi::getLastErrorMessage(int rc) {
+    QString err = db->handle == NULL ? QString(" error-code: %1").arg(rc) : QString(sqlite3_errmsg(db->handle));
+    return err;
+}
+
 void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U2OpStatus& os) {
     if (db->handle != NULL) {
         os.setError(SQLiteL10N::tr("Database is already opened!"));
@@ -221,7 +225,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         QByteArray file = url.toUtf8();
         int rc = sqlite3_open_v2(file.constData(), &db->handle, flags, NULL);
         if (rc != SQLITE_OK) {
-            QString err = db == NULL ? QString(" error-code: %1").arg(rc) : QString(sqlite3_errmsg(db->handle));
+            QString err = getLastErrorMessage(rc);
             os.setError(SQLiteL10N::tr("Error opening SQLite database: %1!").arg(err));
             break;
         }
@@ -251,7 +255,9 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         dbiId = url;
         internalInit(props, os);
         // OK, initialization complete
-
+        if (!os.hasError()) {
+            ioLog.trace(QString("SQLite: initialized: %1\n").arg(url));
+        }
     } while (0);
     
     if (os.hasError()) {
@@ -273,8 +279,22 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
         return QVariantMap();
     }
     
+    objectDbi->shutdown(os);
+    sequenceDbi->shutdown(os);
+    msaDbi->shutdown(os);
+    assemblyDbi->shutdown(os);
+    crossDbi->shutdown(os);
+    attributeDbi->shutdown(os);
+    
     setState(U2DbiState_Stopping);
-    sqlite3_close(db->handle);
+    int rc = sqlite3_close(db->handle);
+    
+    if (rc != SQLITE_OK) {
+        ioLog.error(SQLiteL10N::tr("Failed to close database: %1, err: %2").arg(url).arg(getLastErrorMessage(rc)));
+    }
+
+    ioLog.trace(QString("SQLite: shutting down: %1\n").arg(url));
+
     db->handle = NULL;
     url.clear();
     initProperties.clear();

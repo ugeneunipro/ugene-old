@@ -41,15 +41,18 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-static QList<U2AssemblyRead> generateReads(int n, int rlen, int slen) {
+static QList<U2AssemblyRead> generateReads(int nReads, const U2Region& elenRange, int refSeqLen) {
     static const char* acgt = "ACGT";
     QList<U2AssemblyRead> res;
-    for (int i = 0; i < n ; i++) {
+    qint64 readSeqLen = qMin(qint64(30), elenRange.startPos);
+    for (int i = 0; i < nReads ; i++) {
         U2AssemblyRead r(new U2AssemblyReadData());
-        r->cigar << U2CigarToken(U2CigarOp_M, rlen-2) << U2CigarToken(U2CigarOp_I, 1) << U2CigarToken(U2CigarOp_M, 1);
-        r->leftmostPos = 0;
-        r->readSequence.resize(rlen);
-        for (int j = 0; j < rlen; j++) {
+        int elen =  elenRange.startPos + (qrand() % elenRange.length);
+        int delta = elen - readSeqLen;
+        r->cigar << U2CigarToken(U2CigarOp_M, readSeqLen-2) << U2CigarToken(U2CigarOp_D, delta) << U2CigarToken(U2CigarOp_M, 2);
+        r->leftmostPos = qrand() % (refSeqLen - elen);
+        r->readSequence.resize(readSeqLen);
+        for (int j = 0; j < readSeqLen; j++) {
             char c =  acgt[qrand() % 4];
             //char c =  'A';
             r->readSequence[j] = c;
@@ -84,8 +87,9 @@ SQLiteDbiPlugin::SQLiteDbiPlugin() : Plugin(tr("SQLite format support"), tr("Add
     dbi.getDbRef()->useTransaction = true;
 
     int nReads = 100*1000;
-    int seqLen = 1000*1000, rowLen = 50;
-    QList<U2AssemblyRead> rows = generateReads(nReads, rowLen, seqLen);
+    int seqLen = 1000*1000;
+    U2Region lenRange(30, 500);
+    QList<U2AssemblyRead> rows = generateReads(nReads, lenRange, seqLen);
     dbi.getObjectDbi()->createFolder("/", os);
     qint64 t0 = GTimer::currentTimeMicros();
     {

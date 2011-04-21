@@ -42,15 +42,19 @@ SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2
                                                        char tablePrefix, const QString& tableSuffix, 
                                                        const AssemblyCompressor* compressor, 
                                                        DbRef* db, U2OpStatus& os)
-                                                       : AssemblyAdapter(assemblyId, compressor, db, os)
+                                                       : AssemblyAdapter(assemblyId, compressor, db)
 {
     dbi = _dbi;
     rangeConditionCheck  = DEFAULT_RANGE_CONDITION_CHECK;
     rangeConditionCheckForCount = DEFAULT_RANGE_CONDITION_CHECK;
-    readsTable = QString("AssemblyRead_%1%2%3").arg(tablePrefix).arg(SQLiteUtils::toDbiId(assemblyId)).arg(tableSuffix);
+    readsTable = getReadsTableName(assemblyId, tablePrefix, tableSuffix);
     rangeMode = false;
     minReadLength = 0;
     maxReadLength = 0;
+}
+
+QString SingleTableAssemblyAdapter::getReadsTableName(const U2DataId& assemblyId, char prefix, const QString& suffix) {
+    return QString("AssemblyRead_%1%2_%3").arg(prefix).arg(SQLiteUtils::toDbiId(assemblyId)).arg(suffix);;
 }
 
 void SingleTableAssemblyAdapter::enableRangeTableMode(int minLen, int maxLen) {
@@ -70,18 +74,17 @@ void SingleTableAssemblyAdapter::createReadsTables(U2OpStatus& os) {
     // flags - read flags
     // mq - mapping quality
     // data - packed data: CIGAR, read sequence, quality string
-    static QString q = "CREATE TABLE %1 (id INTEGER PRIMARY KEY AUTOINCREMENT, name INTEGER NOT NULL, prow INTEGER NOT NULL, "
+    static QString q = "CREATE TABLE IF NOT EXISTS %1 (id INTEGER PRIMARY KEY AUTOINCREMENT, name INTEGER NOT NULL, prow INTEGER NOT NULL, "
         "gstart INTEGER NOT NULL, elen INTEGER NOT NULL, flags INTEGER NOT NULL, mq INTEGER NOT NULL, data BLOB NOT NULL)";
 
     SQLiteQuery(q.arg(readsTable), db, os).execute();
 }
 
 void SingleTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
-    //TODO: check if we can have a benefit with 2-column index here: gstart + elen
-    static QString q1 = "CREATE INDEX %1_gstart ON %1(gstart)";
+    static QString q1 = "CREATE INDEX IF NOT EXISTS %1_gstart ON %1(gstart)";
     SQLiteQuery(q1.arg(readsTable), db, os).execute();
     
-    static QString q2 = "CREATE INDEX %1_name ON %1(name)";
+    static QString q2 = "CREATE INDEX IF NOT EXISTS %1_name ON %1(name)";
     SQLiteQuery(q2.arg(readsTable), db, os).execute();
 }
 

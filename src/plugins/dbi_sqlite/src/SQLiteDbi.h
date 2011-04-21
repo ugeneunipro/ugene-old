@@ -47,7 +47,7 @@ class DbRef;
 /** Stores all reads in a single table. Not optimal if read effective length varies */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE "single-table"
 /** Store all reads in N tables sorted by effective read length */
-#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1 "50-100-700-U"
+#define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1 "multi-table-v1"
 /** Uses RTree index to store reads. This method is simple but not very efficient in terms of space/insert time */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE "rtree2d"
 
@@ -123,6 +123,8 @@ public:
     virtual QHash<QString, QString> getInitProperties() const {return initProperties;}
 
 private:
+    QString getLastErrorMessage(int rc);
+
     void setState(U2DbiState state);
 
     QString getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const;
@@ -173,6 +175,7 @@ public:
     virtual ~SQLiteChildDBICommon(){}
 
     virtual void initSqlSchema(U2OpStatus& os) = 0;
+    virtual void shutdown(U2OpStatus&) {};
 
 protected:
     SQLiteDbi*  dbi;

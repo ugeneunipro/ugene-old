@@ -39,7 +39,7 @@ namespace U2 {
 RTreeAssemblyAdapter::RTreeAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
                                             const AssemblyCompressor* compressor,
                                             DbRef* db, U2OpStatus& os)
-: AssemblyAdapter(assemblyId, compressor, db, os)
+: AssemblyAdapter(assemblyId, compressor, db)
 {
     dbi = _dbi;
     readsTable = QString("AssemblyRead_R%1").arg(SQLiteUtils::toDbiId(assemblyId));

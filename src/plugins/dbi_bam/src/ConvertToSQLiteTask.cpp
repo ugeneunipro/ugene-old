@@ -19,11 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <memory>
-#include <U2Core/U2Dbi.h>
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/AppContext.h>
 #include "IOException.h"
 #include "Reader.h"
 #include "Index.h"
@@ -31,6 +26,13 @@
 #include "BAMDbiPlugin.h"
 #include "ConvertToSQLiteTask.h"
 #include "LoadBamInfoTask.h"
+
+#include <U2Core/U2Dbi.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/AppContext.h>
+
+#include <memory>
 
 namespace U2 {
 namespace BAM {
@@ -81,26 +83,22 @@ void ConvertToSQLiteTask::run() {
 
         assert(destinationUrl.isLocalFile());
         bool append = QFile::exists(destinationUrl.getURLString());
-        std::auto_ptr<U2Dbi> sqliteDbi(AppContext::getDbiRegistry()->getDbiFactoryById("SQLiteDbi")->createDbi());
-        {
-            QHash<QString, QString> properties;
-            properties["url"] = destinationUrl.getURLString();
-            properties["create"] = "1";
-            U2OpStatusImpl opStatus;
-            sqliteDbi->init(properties, QVariantMap(), opStatus);
+        
+        U2OpStatusImpl opStatus;
+
+        DbiHandle dbiHandle("SQLiteDbi", destinationUrl.getURLString(), true, opStatus);
+        U2Dbi* sqliteDbi = dbiHandle.dbi;
+        if(opStatus.hasError()) {
+            throw Exception(opStatus.getError());
+        }
+
+        if(!append) {
+            sqliteDbi->getObjectDbi()->createFolder("/", opStatus);
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());
             }
         }
-        {
-            if(!append) {
-                U2OpStatusImpl opStatus;
-                sqliteDbi->getObjectDbi()->createFolder("/", opStatus);
-                if(opStatus.hasError()) {
-                    throw Exception(opStatus.getError());
-                }
-            }
-        }
+
         U2AttributeDbi * attributeDbi = sqliteDbi->getAttributeDbi();
         QMap<int, U2Assembly> assemblies;
         for(int i=0; i < reader->getHeader().getReferences().count(); i++) {
@@ -236,7 +234,7 @@ void ConvertToSQLiteTask::run() {
                         if(++readsCount >= 16384) {
                             readsCount = 0;
                             stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
-                            flushReads(sqliteDbi.get(), assemblies, reads);
+                            flushReads(sqliteDbi, assemblies, reads);
                             stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
                         }
                     }
@@ -252,7 +250,7 @@ void ConvertToSQLiteTask::run() {
                 readLength += chunkLen;
             }
             stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
-            flushReads(sqliteDbi.get(), assemblies, reads);
+            flushReads(sqliteDbi, assemblies, reads);
             stateInfo.progress = FIRST_STAGE_PERCENT;
         } else {
             while(!reader->isEof()) {
@@ -281,15 +279,15 @@ void ConvertToSQLiteTask::run() {
                     }
                 }
                 stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
-                flushReads(sqliteDbi.get(), assemblies, reads);
-                if(isCanceled()) {
+                flushReads(sqliteDbi, assemblies, reads);
+                if (isCanceled()) {
                     throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
                 }
                 stateInfo.progress = ioAdapter->getProgress()*FIRST_STAGE_PERCENT/100;
             }
         }
 
-        stateInfo.setStateDesc(BAMDbiPlugin::tr("Packing assemblies"));
+        stateInfo.setStateDesc(BAMDbiPlugin::tr("Packing reads"));
 
         {
             int i = 0;
@@ -307,14 +305,6 @@ void ConvertToSQLiteTask::run() {
                 stateInfo.progress = FIRST_STAGE_PERCENT + (++i)*SECOND_STAGE_PERCENT/assemblies.size();
             }
         }
-        {
-            U2OpStatusImpl opStatus;
-            sqliteDbi->shutdown(opStatus);
-            if(opStatus.hasError()) {
-                throw Exception(opStatus.getError());
-            }
-            stateInfo.setStateDesc(BAMDbiPlugin::tr("Done. Releasing resources"));
-        }                
     } catch(const Exception &e) {
         setError(e.getMessage());
         assert(destinationUrl.isLocalFile());

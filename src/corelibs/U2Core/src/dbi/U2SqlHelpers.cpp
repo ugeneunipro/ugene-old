@@ -21,6 +21,8 @@
 
 #include "U2SqlHelpers.h"
 
+#include <U2Core/Log.h>
+
 #include <sqlite3.h>
 
 namespace U2 {
@@ -82,7 +84,7 @@ QByteArray SQLiteUtils::toDbExtra(const U2DataId& id) {
     if (id.size() < DATAID_MIN_LEN) {
         return emptyId;
     }
-    return QByteArray(id.constData() + DB_EXTRA_OFFSET);
+    return QByteArray(id.constData() + DB_EXTRA_OFFSET, id.length() - DB_EXTRA_OFFSET);
 }
 
 qint64 SQLiteUtils::remove(const QString& table, const QString& field, const U2DataId& id, qint64 expectedRows, DbRef* db, U2OpStatus& os) {
@@ -95,6 +97,12 @@ qint64 SQLiteUtils::remove(const QString& table, const QString& field, const U2D
 QString SQLiteUtils::text(const U2DataId& id) {
     QString res = QString("[Id: %1, Type: %2, Extra: %3]").arg(toDbiId(id)).arg(int(toType(id))).arg(toDbExtra(id).constData());
     return res;
+}
+
+bool SQLiteUtils::isTableExists(const QString& tableName, DbRef* db, U2OpStatus& os) {
+    SQLiteQuery q("SELECT name FROM sqlite_master WHERE type='table' AND name=?1", db, os);
+    q.bindString(1, tableName);
+    return q.step();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -110,11 +118,30 @@ QString SQLiteL10n::tooManyResults() {
 //////////////////////////////////////////////////////////////////////////
 // Query
 
+//#define U2_TRACE_SQLITE_QUERIES
+
+#ifdef U2_TRACE_SQLITE_QUERIES
+static int nActiveQueries = 0;
+
+static void traceQueryPrepare(const QString& q) {
+    nActiveQueries++;
+    ioLog.trace(QString("SQLite new query! Active queries: %1, Q: %2").arg(nActiveQueries).arg(q));
+}
+
+static void traceQueryDestroy(const QString& q) {
+    nActiveQueries--;
+    ioLog.trace(QString("SQLite destroying query! Active queries: %1, Q: %2").arg(nActiveQueries).arg(q));
+}
+#endif
 
 SQLiteQuery::SQLiteQuery(const QString& _sql, DbRef* d, U2OpStatus& _os) 
 : db(d), os(_os), st(NULL), sql(_sql)
 {
     prepare();
+
+#ifdef U2_TRACE_SQLITE_QUERIES
+    traceQueryPrepare(sql);
+#endif
 }
 
 SQLiteQuery::SQLiteQuery(const QString& _sql, qint64 offset, qint64 count, DbRef* d, U2OpStatus& _os)
@@ -122,6 +149,17 @@ SQLiteQuery::SQLiteQuery(const QString& _sql, qint64 offset, qint64 count, DbRef
 {
     SQLiteUtils::addLimit(sql, offset, count);
     prepare();
+
+#ifdef U2_TRACE_SQLITE_QUERIES
+    traceQueryPrepare(sql);
+#endif
+}
+
+void SQLiteQuery::setError(const QString& err) {
+    if (!os.hasError()) {
+        os.setError(err);
+    } 
+    ioLog.trace(err);
 }
 
 void SQLiteQuery::prepare() {
@@ -140,11 +178,14 @@ void SQLiteQuery::prepare() {
 SQLiteQuery::~SQLiteQuery() {
     if (st != NULL) {
         int rc = sqlite3_finalize(st);
-        if (rc != SQLITE_OK && !os.hasError()) {
-            setError(SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
+        if (rc != SQLITE_OK) {
+            setError(QString("SQLite: Error finalizing statement: ") + SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
             return;
         }
     }
+#ifdef U2_TRACE_SQLITE_QUERIES
+    traceQueryDestroy(sql);
+#endif
 }
 
 
@@ -157,13 +198,13 @@ bool SQLiteQuery::reset(bool clearBindings) {
     if (clearBindings) {
         int rc = sqlite3_clear_bindings(st);
         if (rc != SQLITE_OK) {
-            setError(SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
+            setError(QString("SQLite: Error clearing statement bindings: ") + SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
             return false;
         }
     }
     int rc = sqlite3_reset(st);
     if (rc != SQLITE_OK) {
-        setError(SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
+        setError(QString("SQLite: Error reseting statement: ") + SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
         return false;
     }
     return true;

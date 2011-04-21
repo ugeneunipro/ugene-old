@@ -36,6 +36,7 @@ class SQLiteAssemblyDbi : public U2AssemblyDbi, public SQLiteChildDBICommon {
 
 public:
     SQLiteAssemblyDbi(SQLiteDbi* dbi);
+    ~SQLiteAssemblyDbi();
 
     /** Reads assembly objects by id */
     virtual U2Assembly getAssemblyObject(const U2DataId& assemblyId, U2OpStatus& os);
@@ -104,10 +105,14 @@ public:
     virtual void pack(const U2DataId& assemblyId, U2OpStatus& os);
 
     virtual void initSqlSchema(U2OpStatus& os);
+    virtual void shutdown(U2OpStatus& os);
 
 private:
     /** Return assembly storage adapter for the given assembly */
     AssemblyAdapter* getAdapter(const U2DataId& assemblyId, U2OpStatus& os);
+    
+    /** Adapters by database assembly id */
+    QHash<qint64, AssemblyAdapter*> adaptersById;
 };
 
 // reserved for future use;
@@ -117,10 +122,11 @@ class AssemblyCompressor {
 
 class AssemblyAdapter {
 public:
-    AssemblyAdapter(const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
+    AssemblyAdapter(const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref);
     
-    virtual void createReadsTables(U2OpStatus& os) = 0;
-    virtual void createReadsIndexes(U2OpStatus& ) = 0;
+    virtual void createReadsTables(U2OpStatus& os) {};
+    virtual void createReadsIndexes(U2OpStatus& ) {};
+    virtual void shutdown(U2OpStatus& ) {};
 
     virtual qint64 countReads(const U2Region& r, U2OpStatus& os) = 0;
 
@@ -132,6 +138,7 @@ public:
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os) = 0;
     
     virtual void addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os) = 0;
+    virtual void addReadsInternal(QList<U2AssemblyRead>& reads, bool delayedIndex, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
 
     virtual void pack(U2OpStatus& os) = 0;
@@ -142,7 +149,6 @@ protected:
     U2DataId                    assemblyId;
     const AssemblyCompressor*   compressor;
     DbRef*                      db;
-    U2OpStatus&                 os;
 };
 
 

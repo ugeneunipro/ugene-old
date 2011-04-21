@@ -52,7 +52,9 @@ DbiHandle::DbiHandle(U2DbiFactoryId id, const QString& url,  bool create, U2OpSt
 }
 
 DbiHandle::DbiHandle(const DbiHandle & dbiHandle_) : dbi(dbiHandle_.dbi), os(dbiHandle_.os) {
-    AppContext::getDbiRegistry()->getGlobalDbiPool()->addRef(dbi, os);
+    if (dbi != NULL) {
+        AppContext::getDbiRegistry()->getGlobalDbiPool()->addRef(dbi, os);
+    }
 }
 
 DbiHandle::~DbiHandle() {

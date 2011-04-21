@@ -57,6 +57,7 @@ public:
     
     void enableRangeTableMode(int minLength, int maxLength);
 
+    static QString getReadsTableName(const U2DataId& assemblyId, char prefix, const QString& suffix);
 protected:
     void bindRegion(SQLiteQuery& q, const U2Region& r, bool forCount = false);
 

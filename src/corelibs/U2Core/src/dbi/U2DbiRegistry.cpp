@@ -19,8 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Log.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatus.h>
 
 namespace U2 {
@@ -59,6 +60,8 @@ U2DbiPool::U2DbiPool(QObject* p) : QObject(p) {
 U2Dbi* U2DbiPool::openDbi(U2DbiFactoryId id, const QString& url, bool create, U2OpStatus& os) {
     QMutexLocker m(&lock);
 
+    ioLog.trace(QString("DbiPool: Opening DBI. Url: %1, factory: %2").arg(url).arg(id));
+
     U2Dbi* dbi = NULL;
     if (url.isEmpty()) {
         os.setError(tr("No URL provided!"));
@@ -93,26 +96,28 @@ U2Dbi* U2DbiPool::openDbi(U2DbiFactoryId id, const QString& url, bool create, U2
 
 void U2DbiPool::addRef(U2Dbi * dbi, U2OpStatus & os) {
     QMutexLocker m(&lock);
+
     QString url = dbi->getInitProperties().value(U2_DBI_OPTION_URL);
     if (!dbiByUrl.contains(url)) {    
         os.setError(tr("DbiPool: DBI not found! URL: %1").arg(url));
         return;
     }
     assert(dbiCountersByUrl[url] > 0);
-    dbiCountersByUrl[url]++;
+    int cnt = ++dbiCountersByUrl[url];
+    ioLog.trace(QString("DbiPool: Increasing reference count. Url: %1, ref-count: %2").arg(url).arg(cnt));
 }
 
 void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
     QMutexLocker m(&lock);
+
     QString url = dbi->getInitProperties().value(U2_DBI_OPTION_URL);
     if (!dbiByUrl.contains(url)) {    
         os.setError(tr("DbiPool: DBI not found! URL: %1").arg(url));
         return;
     }
-    int cnt = dbiCountersByUrl[url];
-    cnt--;
+    int cnt = --dbiCountersByUrl[url];
+    ioLog.trace(QString("DbiPool: decreasing reference count. Url: %1, ref-count: %2").arg(url).arg(cnt));
     if (cnt > 0) {
-        dbiCountersByUrl[url] = cnt;
         return;
     }
     dbi->shutdown(os);
@@ -120,6 +125,7 @@ void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
 
     dbiByUrl.remove(url);
     dbiCountersByUrl.remove(url);
+    ioLog.trace(QString("DBIPool: resource is released. Url: %1").arg(url));
 }
 
 
