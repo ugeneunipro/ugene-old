@@ -79,13 +79,13 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 uHMMPlugin::uHMMPlugin() : Plugin(tr("uhmm_plugin"), tr("uhmm_plugin_desc")), ctxMSA(NULL), ctxADV(NULL)
 {
     if (AppContext::getMainWindow()) {
-        QAction* buildAction = new QAction(tr("hmmbuild"), this);
+        QAction* buildAction = new QAction(tr("Build HMM2 profile"), this);
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
 
-        QAction* calibrateAction = new QAction(tr("hmmcalibrate"), this);
+        QAction* calibrateAction = new QAction(tr("Calibrate profile with HMM2"), this);
         connect(calibrateAction, SIGNAL(triggered()), SLOT(sl_calibrate()));
         
-        QAction* searchAction = new QAction(tr("hmmsearch"), this);
+        QAction* searchAction = new QAction(tr("Search with HMM2"), this);
         connect(searchAction, SIGNAL(triggered()), SLOT(sl_search()));
 
         QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);

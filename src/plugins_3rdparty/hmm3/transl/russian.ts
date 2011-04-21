@@ -581,6 +581,21 @@
         <translation type="unfinished">Инструменты работы с HMM профайлами. Модуль основан на пакете HMMER3.0b3: анализ биологических последовательностей при помощи скрытых марковских моделей (HMM). Домашняя страница проекта: http://hmmer.janelia.org/</translation>
     </message>
     <message>
+        <location filename="../src/uHMM3Plugin.cpp" line="104"/>
+        <source>Build HMM3 profile</source>
+        <translation>Построить профайл с помощью HMM3</translation>
+    </message>
+    <message>
+        <location filename="../src/uHMM3Plugin.cpp" line="108"/>
+        <source>Search with HMM3</source>
+        <translation>Искать сигналы HMM3</translation>
+    </message>
+    <message>
+        <location filename="../src/uHMM3Plugin.cpp" line="112"/>
+        <source>Search with HMM3 phmmer</source>
+        <translation>Искать сигналы HMM3 phmmer</translation>
+    </message>
+    <message>
         <source>HMM3 tools</source>
         <translation type="obsolete">HMM3 (Скрытые модели Маркова)</translation>
     </message>
@@ -595,19 +610,16 @@
         <translation type="unfinished">HMMER3 (Скрытые Модели Маркова)</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="104"/>
         <source>build profile</source>
-        <translation type="unfinished">Построить HMM профайл</translation>
+        <translation type="obsolete">Построить HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="108"/>
         <source>search HMM signals</source>
-        <translation type="unfinished">Искать сигналы HMM</translation>
+        <translation type="obsolete">Искать сигналы HMM</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="112"/>
         <source>phmmer search</source>
-        <translation type="unfinished">Поиск phmmer</translation>
+        <translation type="obsolete">Поиск phmmer</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="169"/>

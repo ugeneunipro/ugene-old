@@ -187,7 +187,7 @@
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="87"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="90"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="93"/>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="85"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="88"/>
         <source>fixed_tip</source>
         <translation>Фиксированная длина случайных последовательностей, положительное число разумной величины.
 По умолчанию, генерируются последовательности с нормальным (Гауссовым) распределением по длине.</translation>
@@ -199,7 +199,7 @@
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="147"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="150"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="153"/>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="87"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="90"/>
         <source>mean_tip</source>
         <translation>Средняя длина синтетических последовательностей.
 Положительное число, 325 по умолчанию</translation>
@@ -211,7 +211,7 @@
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="207"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="210"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="213"/>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="89"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="92"/>
         <source>num_tip</source>
         <translation>Количество синтетических последовательностей.
 Значение по умолчанию (5000) было эмпирически определено как компромисс между точностью и временем вычисления</translation>
@@ -223,7 +223,7 @@
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="261"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="264"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="267"/>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="91"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="94"/>
         <source>sd_tip</source>
         <translation>Стандартное отклонение длины синтетической последовательности.
 Должно быть больше нуля, по умолчанию 200.</translation>
@@ -235,7 +235,7 @@
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="315"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="318"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="321"/>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="93"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="96"/>
         <source>seed_tip</source>
         <translation>Случайная затравка положительным целым числом. 
 По умолчанию используется текущее время в миллисекундах для каждого запуска,что приводит к небольшим и незначительным различиям при каждой калибровке одного и того же профайла.
@@ -286,7 +286,7 @@
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="203"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="206"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="209"/>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="68"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="69"/>
         <source>e_value_as_nsec_tip</source>
         <translation>Считать Е-величину как если бы имелась база из &lt;n&gt; последовательностей</translation>
     </message>
@@ -312,7 +312,7 @@
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="128"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="131"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="134"/>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="70"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="71"/>
         <source>results_score_cutoff_tip</source>
         <translation>Помогает исключить мало-вероятные сигналы</translation>
     </message>
@@ -328,7 +328,7 @@
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="219"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="222"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="225"/>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="69"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="70"/>
         <source>results_evalue_cutoff_tip</source>
         <translation>Отбрасывание результатов по Е-величине помогает исключить мало-вероятные сигналы</translation>
     </message>
@@ -356,17 +356,17 @@
 <context>
     <name>U2::HMMADVContext</name>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="235"/>
+        <location filename="../src/uHMMPlugin.cpp" line="255"/>
         <source>Search with HMM model...</source>
         <translation type="unfinished">HMMER2: поиск сигналов хмм-модели...</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="252"/>
+        <location filename="../src/uHMMPlugin.cpp" line="272"/>
         <source>error</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="252"/>
+        <location filename="../src/uHMMPlugin.cpp" line="272"/>
         <source>no_sequence_found</source>
         <translation>Не выбрана последовательность</translation>
     </message>
@@ -696,80 +696,80 @@
 <context>
     <name>U2::HMMIO</name>
     <message>
-        <location filename="../src/HMMIO.cpp" line="192"/>
-        <location filename="../src/HMMIO.cpp" line="208"/>
-        <location filename="../src/HMMIO.cpp" line="368"/>
-        <location filename="../src/HMMIO.cpp" line="374"/>
-        <location filename="../src/HMMIO.cpp" line="400"/>
-        <location filename="../src/HMMIO.cpp" line="431"/>
-        <location filename="../src/HMMIO.cpp" line="456"/>
+        <location filename="../src/HMMIO.cpp" line="213"/>
+        <location filename="../src/HMMIO.cpp" line="229"/>
+        <location filename="../src/HMMIO.cpp" line="389"/>
+        <location filename="../src/HMMIO.cpp" line="395"/>
+        <location filename="../src/HMMIO.cpp" line="421"/>
+        <location filename="../src/HMMIO.cpp" line="452"/>
+        <location filename="../src/HMMIO.cpp" line="477"/>
         <source>illegal line</source>
         <translation>Ошибка формата</translation>
     </message>
     <message>
-        <location filename="../src/HMMIO.cpp" line="196"/>
+        <location filename="../src/HMMIO.cpp" line="217"/>
         <source>file_format_is_not_supported</source>
         <translation>Формат не поддерживается</translation>
     </message>
     <message>
-        <location filename="../src/HMMIO.cpp" line="225"/>
-        <location filename="../src/HMMIO.cpp" line="351"/>
-        <location filename="../src/HMMIO.cpp" line="355"/>
+        <location filename="../src/HMMIO.cpp" line="246"/>
+        <location filename="../src/HMMIO.cpp" line="372"/>
+        <location filename="../src/HMMIO.cpp" line="376"/>
         <source>value is illegal %1</source>
         <translation>Некорректное значение: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/HMMIO.cpp" line="254"/>
-        <location filename="../src/HMMIO.cpp" line="259"/>
-        <location filename="../src/HMMIO.cpp" line="266"/>
-        <location filename="../src/HMMIO.cpp" line="271"/>
-        <location filename="../src/HMMIO.cpp" line="278"/>
-        <location filename="../src/HMMIO.cpp" line="283"/>
-        <location filename="../src/HMMIO.cpp" line="290"/>
-        <location filename="../src/HMMIO.cpp" line="296"/>
-        <location filename="../src/HMMIO.cpp" line="305"/>
-        <location filename="../src/HMMIO.cpp" line="310"/>
-        <location filename="../src/HMMIO.cpp" line="322"/>
+        <location filename="../src/HMMIO.cpp" line="275"/>
+        <location filename="../src/HMMIO.cpp" line="280"/>
+        <location filename="../src/HMMIO.cpp" line="287"/>
+        <location filename="../src/HMMIO.cpp" line="292"/>
+        <location filename="../src/HMMIO.cpp" line="299"/>
+        <location filename="../src/HMMIO.cpp" line="304"/>
+        <location filename="../src/HMMIO.cpp" line="311"/>
+        <location filename="../src/HMMIO.cpp" line="317"/>
+        <location filename="../src/HMMIO.cpp" line="326"/>
         <location filename="../src/HMMIO.cpp" line="331"/>
-        <location filename="../src/HMMIO.cpp" line="336"/>
-        <location filename="../src/HMMIO.cpp" line="380"/>
-        <location filename="../src/HMMIO.cpp" line="385"/>
-        <location filename="../src/HMMIO.cpp" line="389"/>
+        <location filename="../src/HMMIO.cpp" line="343"/>
+        <location filename="../src/HMMIO.cpp" line="352"/>
+        <location filename="../src/HMMIO.cpp" line="357"/>
+        <location filename="../src/HMMIO.cpp" line="401"/>
         <location filename="../src/HMMIO.cpp" line="406"/>
         <location filename="../src/HMMIO.cpp" line="410"/>
-        <location filename="../src/HMMIO.cpp" line="415"/>
-        <location filename="../src/HMMIO.cpp" line="422"/>
-        <location filename="../src/HMMIO.cpp" line="437"/>
-        <location filename="../src/HMMIO.cpp" line="446"/>
-        <location filename="../src/HMMIO.cpp" line="462"/>
-        <location filename="../src/HMMIO.cpp" line="470"/>
-        <location filename="../src/HMMIO.cpp" line="476"/>
-        <location filename="../src/HMMIO.cpp" line="481"/>
+        <location filename="../src/HMMIO.cpp" line="427"/>
+        <location filename="../src/HMMIO.cpp" line="431"/>
+        <location filename="../src/HMMIO.cpp" line="436"/>
+        <location filename="../src/HMMIO.cpp" line="443"/>
+        <location filename="../src/HMMIO.cpp" line="458"/>
+        <location filename="../src/HMMIO.cpp" line="467"/>
+        <location filename="../src/HMMIO.cpp" line="483"/>
+        <location filename="../src/HMMIO.cpp" line="491"/>
+        <location filename="../src/HMMIO.cpp" line="497"/>
+        <location filename="../src/HMMIO.cpp" line="502"/>
         <source>invalid_file_structure_near_%1</source>
         <translation>Некорректная структура файла вблизи &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/HMMIO.cpp" line="359"/>
+        <location filename="../src/HMMIO.cpp" line="380"/>
         <source>value is not set for %1</source>
         <translation>Не установлено значение для &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/HMMIO.cpp" line="495"/>
+        <location filename="../src/HMMIO.cpp" line="516"/>
         <source>no // symbol found</source>
         <translation>Не найден маркер конца структуры: &apos;//&apos;</translation>
     </message>
     <message>
-        <location filename="../src/HMMIO.cpp" line="49"/>
+        <location filename="../src/HMMIO.cpp" line="70"/>
         <source>alphabet_not_set</source>
         <translation>Не установлен алфавит</translation>
     </message>
     <message>
-        <location filename="../src/HMMIO.cpp" line="316"/>
+        <location filename="../src/HMMIO.cpp" line="337"/>
         <source>ALPH must precede NULE in HMM save files</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/HMMIO.cpp" line="613"/>
+        <location filename="../src/HMMIO.cpp" line="634"/>
         <source>HMM models</source>
         <translation>Профайлы HMM</translation>
     </message>
@@ -781,7 +781,7 @@
         <translation type="obsolete">Построить HMM профайл ...</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="193"/>
+        <location filename="../src/uHMMPlugin.cpp" line="213"/>
         <source>Build HMMER2 profile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -789,7 +789,7 @@
 <context>
     <name>U2::HMMReadTask</name>
     <message>
-        <location filename="../src/HMMIO.cpp" line="628"/>
+        <location filename="../src/HMMIO.cpp" line="649"/>
         <source>Read HMM profile &apos;%1&apos;</source>
         <translation>Чтение HMM профайла &apos;%1&apos;</translation>
     </message>
@@ -875,17 +875,17 @@
         <translation>Параллельный поиск HMM сигналов</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="221"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="220"/>
         <source>invalid_hmm_alphabet_type</source>
         <translation>Неправильный алфавит HMM профайла</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="225"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="224"/>
         <source>invalid_sequence_alphabet_type</source>
         <translation>Неправильный алфавит последовательности</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="253"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="252"/>
         <source>can_t_find_amino</source>
         <translation>Не найдена таблица аминокислотной трансляции для выбранной последовательности</translation>
     </message>
@@ -946,7 +946,7 @@
 <context>
     <name>U2::HMMWriteTask</name>
     <message>
-        <location filename="../src/HMMIO.cpp" line="648"/>
+        <location filename="../src/HMMIO.cpp" line="669"/>
         <source>Write HMM profile &apos;%1&apos;</source>
         <translation>Запись HMM профайла &apos;%1&apos;</translation>
     </message>
@@ -954,27 +954,27 @@
 <context>
     <name>U2::LocalWorkflow::HMMBuildPrompter</name>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="171"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="174"/>
         <source>For each MSA from &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation>Для каждого выравнивания из &lt;u&gt;%1&lt;/u&gt;,</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="175"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="178"/>
         <source> and calibrate</source>
         <translation> и калибровать</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="177"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="180"/>
         <source>default</source>
         <translation>настройки по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="177"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="180"/>
         <source>custom</source>
         <translation>выбранные настройки</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="179"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="182"/>
         <source>%1 build%2 HMM profile using &lt;u&gt;%3&lt;/u&gt; settings.</source>
         <translation>%1 построить%2 HMM профайл используя &lt;u&gt;%3&lt;/u&gt;.</translation>
     </message>
@@ -982,118 +982,118 @@
 <context>
     <name>U2::LocalWorkflow::HMMBuildWorker</name>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="260"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="263"/>
         <source>Built HMM profile</source>
         <translation>Построен профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="266"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="269"/>
         <source>Calibrated HMM profile</source>
         <translation>Откалиброван профайл HMM.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="111"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="114"/>
         <source>HMM build</source>
         <translation>Построить HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="62"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="65"/>
         <source>HMM profile</source>
         <translation>Профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="72"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="75"/>
         <source>HMM strategy</source>
         <translation>Стратегия HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="73"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="76"/>
         <source>Profile name</source>
         <translation>Имя профайла</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="80"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="83"/>
         <source>Calibrate profile</source>
         <translation>Калибровать</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="82"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="85"/>
         <source>Parallel calibration</source>
         <translation>Параллельная калибрация</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="84"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="87"/>
         <source>Fixed length of samples</source>
         <translation>Фиксированная длина сэмплов</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="86"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="89"/>
         <source>Mean length of samples</source>
         <translation>Средняя длина сэмплов</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="88"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="91"/>
         <source>Number of samples</source>
         <translation>Число сэмплов</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="90"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="93"/>
         <source>Standard deviation</source>
         <translation>Стандартное отклонение</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="92"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="95"/>
         <source>Random seed</source>
         <translation>Затравка</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="204"/>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="205"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="207"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="208"/>
         <source>Incorrect value for seed parameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="218"/>
-        <source>Value for attribute name is empty, &apos;%1&apos; used</source>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="221"/>
+        <source>Schema name not specified. Using default value: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="60"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="63"/>
         <source>Input MSA</source>
         <translation>Входное выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="61"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="64"/>
         <source>Input multiple sequence alignment for building statistical model.</source>
         <translation>Множественное выравнивание последовательностей для построения статистической модели.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="62"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="65"/>
         <source>Produced HMM profile</source>
         <translation>Произведённый профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="72"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="75"/>
         <source>Specifies kind of alignments you want to allow</source>
         <translation>Выбор типа искомого выравнивания.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="73"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="76"/>
         <source>Descriptive name of the HMM profile</source>
         <translation>Описательное имя целевого профайла HMM.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="80"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="83"/>
         <source>Enables/disables optional profile calibration.&lt;p&gt;An empirical HMM calibration costs time but it only has to be done once per model, and can greatly increase the sensitivity of a database search.</source>
         <translation>Включить/выключить калибрацию профайлов. &lt;p&gt;Однократная калибрация случайными синтетическими последовательностями занимает некоторое время, но может существенно улучшить чувствительность поиска.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="83"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="86"/>
         <source>Number of parallel threads that the calibration will run in.</source>
         <translation>Число потоков для параллельной калибрации.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="111"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="114"/>
         <source>Builds a HMM profile from a multiple sequence alignment.&lt;p&gt;The HMM profile is a statistical model which captures position-specific information about how conserved each column of the alignment is, and which residues are likely.</source>
         <translation>Строит профайлы HMM по входящим множественным выравниваниям. &lt;p&gt;</translation>
     </message>
@@ -1105,34 +1105,34 @@
 <context>
     <name>U2::LocalWorkflow::HMMLib</name>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="49"/>
+        <location filename="../src/HMMIOWorker.cpp" line="71"/>
         <source>HMMER2 tools</source>
         <translation>Программы HMMER2</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="41"/>
-        <location filename="../src/HMMIOWorker.cpp" line="47"/>
+        <location filename="../src/HMMIOWorker.cpp" line="63"/>
+        <location filename="../src/HMMIOWorker.cpp" line="69"/>
         <source>HMM Profile</source>
         <translation>Профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="111"/>
-        <location filename="../src/HMMIOWorker.cpp" line="128"/>
+        <location filename="../src/HMMIOWorker.cpp" line="133"/>
+        <location filename="../src/HMMIOWorker.cpp" line="150"/>
         <source>HMM profile</source>
         <translation>Профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="112"/>
+        <location filename="../src/HMMIOWorker.cpp" line="134"/>
         <source>Location</source>
         <translation>Адрес</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="135"/>
+        <location filename="../src/HMMIOWorker.cpp" line="157"/>
         <source>Read HMM profile</source>
         <translation>Читать HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="122"/>
+        <location filename="../src/HMMIOWorker.cpp" line="144"/>
         <source>Write HMM profile</source>
         <translation>Сохранить HMM профайл</translation>
     </message>
@@ -1141,27 +1141,27 @@
         <translation type="obsolete">Адрес файла данных.</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="111"/>
+        <location filename="../src/HMMIOWorker.cpp" line="133"/>
         <source>Input HMM profile</source>
         <translation>Входной профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="112"/>
+        <location filename="../src/HMMIOWorker.cpp" line="134"/>
         <source>Location hint for the target file.</source>
         <translation>Адрес файла для записи</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="122"/>
+        <location filename="../src/HMMIOWorker.cpp" line="144"/>
         <source>Saves all input HMM profiles to specified location.</source>
         <translation>Сохраняет все входящие профайлы HMM в указанный файл.</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="135"/>
+        <location filename="../src/HMMIOWorker.cpp" line="157"/>
         <source>Reads HMM profiles from file(s). The files can be local or Internet URLs.</source>
         <translation>Считывает профайлы HMM из одного или нескольких файлов. Файлы могут быть локальными или адресами Интернет.</translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="128"/>
+        <location filename="../src/HMMIOWorker.cpp" line="150"/>
         <source>Loaded HMM profile</source>
         <translation>Загруженный профайл HMM</translation>
     </message>
@@ -1169,7 +1169,7 @@
 <context>
     <name>U2::LocalWorkflow::HMMReadPrompter</name>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="147"/>
+        <location filename="../src/HMMIOWorker.cpp" line="169"/>
         <source>Read HMM profile(s) from %1</source>
         <translation>Загрузить HMM профайл(ы) из %1</translation>
     </message>
@@ -1177,7 +1177,7 @@
 <context>
     <name>U2::LocalWorkflow::HMMReader</name>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="211"/>
+        <location filename="../src/HMMIOWorker.cpp" line="232"/>
         <source>Loaded HMM profile from %1</source>
         <translation>Загружен HMM профайл из %1</translation>
     </message>
@@ -1185,27 +1185,27 @@
 <context>
     <name>U2::LocalWorkflow::HMMSearchPrompter</name>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="120"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="121"/>
         <source>For each sequence from &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation>Для каждой последовательности из &lt;u&gt;%1&lt;/u&gt;,</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="124"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="125"/>
         <source>Use &lt;u&gt;default&lt;/u&gt; settings.</source>
         <translation>Использовать настройки &lt;u&gt;по умолчанию&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="124"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="125"/>
         <source>Use &lt;u&gt;custom&lt;/u&gt; settings.</source>
         <translation>Использовать &lt;u&gt;указанные&lt;/u&gt; настройки.</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="126"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="127"/>
         <source>%1 search HMM signals %2. %3&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>
         <translation>%1 искать HMM сигналы %2. %3&lt;br&gt;Выдать список найденных регионов аннотированных как &lt;u&gt;%4&lt;/u&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="121"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="122"/>
         <source>using all profiles provided by &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation>со всеми профайлами из &lt;u&gt;%1&lt;/u&gt;,</translation>
     </message>
@@ -1213,92 +1213,92 @@
 <context>
     <name>U2::LocalWorkflow::HMMSearchWorker</name>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="187"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="189"/>
         <source>Bad sequence supplied to input: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="212"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="214"/>
         <source>Found %1 HMM signals</source>
         <translation>Найдено %1 сигналов HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="49"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="50"/>
         <source>HMM profile</source>
         <translation>HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="50"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="51"/>
         <source>Input sequence</source>
         <translation>Входная последовательность</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="52"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="53"/>
         <source>HMM annotations</source>
         <translation>Аннотации</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="67"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="68"/>
         <source>Result annotation</source>
         <translation>Имя аннотации</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="68"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="69"/>
         <source>Number of seqs</source>
         <translation>Число последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="69"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="70"/>
         <source>Filter by high E-value</source>
         <translation>Фильтр на большие Е</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="70"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="71"/>
         <source>Filter by low score</source>
         <translation>Фильтр на малые веса</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="78"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="79"/>
         <source>HMM search</source>
         <translation>Поиск HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="154"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="152"/>
+        <source>Power of e-value must be less or equal to zero. Using default value: 1e-1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="161"/>
         <source>Value for attribute name is empty, default name used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="165"/>
-        <source>Incorrect value: e-value must be greater then zero</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="183"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="185"/>
         <source>Search HMM signals in %1</source>
         <translation>Поиск HMM сигналов в последовательности &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="49"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="50"/>
         <source>HMM profile(s) to search with.</source>
         <translation>HMM профайлы для поиска.</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="51"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="52"/>
         <source>An input sequence (nucleotide or protein) to search in.</source>
         <translation>Входная последовательность для поиска (протеиновая или нуклеотидная).</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="53"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="54"/>
         <source>Annotations marking found similar sequence regions.</source>
         <translation>Аннотации размечающие найденные регионы совпадения с HMM.</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="67"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="68"/>
         <source>A name of the result annotations.</source>
         <translation>Имя аннотации для разметки результатов.</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="79"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="80"/>
         <source>Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence</source>
         <translation>Ищет значимые совпадения с указанными HMM профайлами в каждой входной последовательности и выдаёт набор аннотированных регионов. Профайлов может быть несколько, поиск отработает для каждого профайла и выдаст общий набор аннотаций для каждой последовательности.</translation>
     </message>
@@ -1306,7 +1306,12 @@
 <context>
     <name>U2::LocalWorkflow::HMMWritePrompter</name>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="157"/>
+        <location filename="../src/HMMIOWorker.cpp" line="175"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/HMMIOWorker.cpp" line="178"/>
         <source>Save HMM profile(s) from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Сохранить HMM профайл(ы) из &lt;u&gt;%1&lt;/u&gt; в &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
@@ -1314,17 +1319,17 @@
 <context>
     <name>U2::LocalWorkflow::HMMWriter</name>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="231"/>
+        <location filename="../src/HMMIOWorker.cpp" line="252"/>
         <source>Empty HMM passed for writing to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="231"/>
+        <location filename="../src/HMMIOWorker.cpp" line="252"/>
         <source>Unspecified URL for writing HMM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="246"/>
+        <location filename="../src/HMMIOWorker.cpp" line="267"/>
         <source>Writing HMM profile to %1</source>
         <translation>Запись HMM профайла &apos;%1&apos;</translation>
     </message>
@@ -1338,61 +1343,73 @@
     </message>
 </context>
 <context>
+    <name>U2::UHMMSearch</name>
+    <message>
+        <location filename="../src/u_search/uhmmsearch_cell.cpp" line="31"/>
+        <source>UHMMSearch</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::uHMMPlugin</name>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="58"/>
+        <location filename="../src/uHMMPlugin.cpp" line="79"/>
         <source>uhmm_plugin</source>
         <translation type="unfinished">HMM2</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="58"/>
+        <location filename="../src/uHMMPlugin.cpp" line="79"/>
         <source>uhmm_plugin_desc</source>
         <translation type="unfinished">Основан на пакете HMMER 2.3.2: анализ биологических последовательностей при помощи скрытых марковских моделей (HMM).
 Домашняя страница проекта: http://hmmer.janelia.org/.
 Включает в себя оригинальные оптимизированные версии алгоритмов</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="64"/>
         <source>hmmcalibrate</source>
-        <translation>Калибровать HMM профайл</translation>
+        <translation type="obsolete">Калибровать HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="61"/>
         <source>hmmbuild</source>
-        <translation>Построить HMM профайл</translation>
+        <translation type="obsolete">Построить HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="67"/>
         <source>hmmsearch</source>
-        <translation>Искать сигналы HMM</translation>
+        <translation type="obsolete">Искать сигналы HMM</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="74"/>
+        <location filename="../src/uHMMPlugin.cpp" line="82"/>
+        <source>Build HMM2 profile</source>
+        <translation>Построить профайл с помощью HMM2</translation>
+    </message>
+    <message>
+        <location filename="../src/uHMMPlugin.cpp" line="85"/>
+        <source>Calibrate profile with HMM2</source>
+        <translation>Калибровать профайл с помощью HMM2</translation>
+    </message>
+    <message>
+        <location filename="../src/uHMMPlugin.cpp" line="88"/>
+        <source>Search with HMM2</source>
+        <translation>Искать сигналы HMM2</translation>
+    </message>
+    <message>
+        <location filename="../src/uHMMPlugin.cpp" line="94"/>
         <source>HMMER tools</source>
         <translation>HMMER (Скрытые модели Маркова)</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="172"/>
+        <location filename="../src/uHMMPlugin.cpp" line="192"/>
         <source>error</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="172"/>
+        <location filename="../src/uHMMPlugin.cpp" line="192"/>
         <source>neither_annotatedview_nor_pv_selection_found</source>
         <translation>Сначала выберите последовательность</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="78"/>
+        <location filename="../src/uHMMPlugin.cpp" line="98"/>
         <source>HMMER2 tools</source>
         <translation>HMMER2 (Скрытые Модели Маркова)</translation>
-    </message>
-</context>
-<context>
-    <name>UHMMSearch</name>
-    <message>
-        <location filename="../src/u_search/uhmmsearch_cell.cpp" line="31"/>
-        <source>UHMMSearch</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

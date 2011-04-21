@@ -585,6 +585,21 @@
         <translation type="unfinished">HMM profile tools. Plugin is based on HMMER 3.0b3 package: freely distributable implementation of profile HMM software for protein sequence analysis. Home page of project: http://hmmer.janelia.org/</translation>
     </message>
     <message>
+        <location filename="../src/uHMM3Plugin.cpp" line="104"/>
+        <source>Build HMM3 profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/uHMM3Plugin.cpp" line="108"/>
+        <source>Search with HMM3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/uHMM3Plugin.cpp" line="112"/>
+        <source>Search with HMM3 phmmer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>HMM3 tools</source>
         <translation type="obsolete">HMM3 (Hidden Markov models)</translation>
     </message>
@@ -599,19 +614,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="104"/>
         <source>build profile</source>
-        <translation type="unfinished">Build profile</translation>
+        <translation type="obsolete">Build profile</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="108"/>
         <source>search HMM signals</source>
-        <translation type="unfinished">Search HMM signals</translation>
+        <translation type="obsolete">Search HMM signals</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="112"/>
         <source>phmmer search</source>
-        <translation type="unfinished">Phmmer search</translation>
+        <translation type="obsolete">Phmmer search</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="169"/>
