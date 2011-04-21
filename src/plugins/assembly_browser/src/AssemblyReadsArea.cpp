@@ -391,7 +391,7 @@ void AssemblyReadsArea::wheelEvent(QWheelEvent * e) {
 }
 
 void AssemblyReadsArea::mousePressEvent(QMouseEvent * e) {
-    if(e->button() == Qt::LeftButton) {
+    if(browser->getCellWidth() != 0 && e->button() == Qt::LeftButton) {
         scribbling = true;
         setCursor(Qt::ClosedHandCursor);
         mover = ReadsMover(browser->getCellWidth(), e->pos());
