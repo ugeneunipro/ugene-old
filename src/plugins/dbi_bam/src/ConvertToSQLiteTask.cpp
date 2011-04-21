@@ -115,7 +115,7 @@ void ConvertToSQLiteTask::run() {
                         throw Exception(opStatus.getError());
                     }
                 }
-                // set assembly
+                // set contig's properties to attributes
                 if(attributeDbi != NULL) {
                     U2OpStatusImpl status;
                     {

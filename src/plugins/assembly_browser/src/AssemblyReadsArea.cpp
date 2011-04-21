@@ -318,7 +318,8 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
         offset -= QPoint(hintRect.right() - readsAreaRect.right(), 0);
     }
     if(hintRect.bottom() > readsAreaRect.bottom()) {
-        offset -= QPoint(0, hintRect.bottom() - readsAreaRect.bottom());
+        offset -= QPoint(0, hintRect.bottom() - readsAreaRect.bottom()); // move hint bottom to reads area
+        offset -= QPoint(0, readsAreaRect.bottom() - QCursor::pos().y() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR.y());
     }
     QPoint newPos = QCursor::pos() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR + offset;
     if(hint.pos() != newPos) {
