@@ -161,7 +161,7 @@ void AutoAnnotationUtils::triggerAutoAnnotationsUpdate( ADVSequenceObjectContext
 {
     AutoAnnotationsADVAction* aaAction = findAutoAnnotationADVAction( ctx );
     
-    if (aaAction->isDisabled()) {
+    if (!aaAction->isEnabled()) {
         return;
     }
 
