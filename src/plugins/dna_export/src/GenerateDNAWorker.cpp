@@ -104,14 +104,14 @@ void GenerateDNAWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap lenMap;
-        lenMap["minimum"] = 10;
+        lenMap["minimum"] = 1;
         lenMap["maximum"] = INT_MAX;
         lenMap["suffix"] = L10N::suffixBp();
         delegates[LENGHT_ATTR] = new SpinBoxDelegate(lenMap);
 
         QVariantMap countMap;
         countMap["minimum"] = 1;
-        countMap["maximum"] = 1000;
+        countMap["maximum"] = 99;
         delegates[SEQ_NUM_ATTR] = new SpinBoxDelegate(countMap);
 
         QVariantMap contentMap;
@@ -138,10 +138,7 @@ void GenerateDNAWorkerFactory::init() {
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     proto->setPrompter(new GenerateDNAPrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    if(AppContext::isGUIMode()) {
-        proto->setIcon(GUIUtils::createRoundIcon(QColor(85,85,255), 22));
-    }
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATASRC(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_STATISTIC(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new GenerateDNAWorkerFactory());
