@@ -195,7 +195,7 @@ static void dumpSchemaMetadata(Metadata * meta) {
 
 static void dumpSchemaCmdlineParameters( Schema * schema ) {
     assert(schema != NULL);
-    fprintf(stdout, "\nParameters:\n");
+    fprintf(stdout, "Parameters:\n");
     foreach( Actor * actor, schema->getProcesses() ) {
         assert(actor != NULL);
         QMap<QString, QString>::const_iterator it = actor->getParamAliases().constBegin();

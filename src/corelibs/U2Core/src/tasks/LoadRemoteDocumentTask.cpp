@@ -76,6 +76,7 @@ LoadRemoteDocumentTask::LoadRemoteDocumentTask( const QString& accId, const QStr
 Task("LoadRemoteDocument", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL),
 loadDocumentTask(NULL), doc(NULL), accNumber(accId), dbName(dbNm) {
     
+    RemoteDBRegistry::getRemoteDBRegistry().convertAlias(dbName);
     sourceUrl = GUrl(RemoteDBRegistry::getRemoteDBRegistry().getURL(accId, dbName));
     
     if (sourceUrl.isHyperLink()) {
@@ -92,6 +93,7 @@ LoadRemoteDocumentTask::LoadRemoteDocumentTask(const QString & accId, const QStr
 Task("LoadRemoteDocument", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL), 
 loadDocumentTask(NULL), doc(NULL), accNumber(accId), dbName(dbNm) {
     
+    RemoteDBRegistry::getRemoteDBRegistry().convertAlias(dbName);
     sourceUrl = GUrl(RemoteDBRegistry::getRemoteDBRegistry().getURL(accId, dbName));
     if( sourceUrl.isHyperLink() ) {
         fileName = sourceUrl.fileName();
@@ -374,13 +376,19 @@ void LoadDataFromEntrezTask::run()
     loop->exec();
     ioLog.trace("Download finished.");
     
+    QByteArray result = downloadReply->readAll();
+    if ( ( result.size() < 100 ) && result.contains("Nothing has been found")) {
+        setError(tr("Sequence with ID=%1 is not found.").arg(accNumber));
+        return;
+    }
+
     QFile downloadedFile(fullPath);
     if (!downloadedFile.open(QIODevice::WriteOnly)) {
         stateInfo.setError("Cannot open file to write!");
         return;
     }
     
-    downloadedFile.write(downloadReply->readAll());
+    downloadedFile.write(result);
     downloadedFile.close();
 }
 
@@ -459,12 +467,6 @@ bool ESearchResultHandler::fatalError( const QXmlParseException &exception )
 {
     Q_UNUSED(exception);
     assert(0);
-//     QMessageBox::information( NULL, QObject::tr("SAX Bookmarks"),
-//         QObject::tr("Parse error at line %1, column %2:\n"
-//         "%3")
-//         .arg(exception.lineNumber())
-//         .arg(exception.columnNumber())
-//         .arg(exception.message()));
     return false;
 
 }
@@ -475,6 +477,12 @@ RemoteDBRegistry::RemoteDBRegistry()
 {
     queryDBs.insert(GENBANK_DNA,  GENBANK_NUCLEOTIDE_ID);
     queryDBs.insert(GENBANK_PROTEIN, GENBANK_PROTEIN_ID);
+
+    aliases.insert("genbank", GENBANK_DNA);
+    aliases.insert("genbank-protein", GENBANK_PROTEIN);
+    aliases.insert("pdb", PDB);
+    aliases.insert("swissprot", SWISS_PROT);
+    aliases.insert("uniprot", UNIPROTKB_SWISS_PROT);
     
     const QMap<QString,DBXRefInfo>& entries = AppContext::getDBXRefRegistry()->getEntries();
     foreach(const DBXRefInfo& info, entries.values()) {
@@ -523,6 +531,14 @@ QString RemoteDBRegistry::getHint( const QString& dbName )
         return hints.value(dbName);
     } else {
         return QObject::tr("Use %1 unique identifier.").arg(dbName);
+    }
+
+}
+
+void RemoteDBRegistry::convertAlias( QString& dbName )
+{
+    if (aliases.contains(dbName)) {
+        dbName = aliases.value(dbName);
     }
 
 }

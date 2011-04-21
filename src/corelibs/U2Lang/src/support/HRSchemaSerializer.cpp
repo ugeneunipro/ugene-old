@@ -464,7 +464,7 @@ void HRSchemaSerializer::parseHeader(Tokenizer & tokenizer, Metadata * meta) {
     }
     QString desc;
     while(tokenizer.look().startsWith(SERVICE_SYM)) {
-        desc += tokenizer.take().mid(SERVICE_SYM.size());
+        desc += tokenizer.take().mid(SERVICE_SYM.size()) + HRSchemaSerializer::NEW_LINE;
     }
     setIfNotNull<QString>(desc, meta == NULL ? NULL : &meta->comment);
 }

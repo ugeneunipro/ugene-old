@@ -47,9 +47,11 @@ class U2CORE_EXPORT RemoteDBRegistry {
     QMap<QString,QString> queryDBs;
     QMap<QString,QString> httpDBs;
     QMap<QString,QString> hints;
+    QMap<QString,QString> aliases;
 public:
     QString getURL(const QString& accId, const QString& dbName);
     QString getDbEntrezName(const QString& dbName);
+    void convertAlias(QString& dbName);
     QList<QString> getDBs();
     QString getHint(const QString& dbName);
     //TODO: move this to AppContext
