@@ -189,8 +189,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
 
 void SQLiteObjectDbi::removeObjectAttributes(const U2DataId& id, U2OpStatus& os) {
     U2AttributeDbi* attributeDbi = dbi->getAttributeDbi();
-    QList<U2DataId> attributes = attributeDbi->getObjectAttributes(id, os);
-    attributeDbi->removeAttributes(attributes, os);
+    attributeDbi->removeObjectAttributes(id, os);
 }
 
 //////////////////////////////////////////////////////////////////////////

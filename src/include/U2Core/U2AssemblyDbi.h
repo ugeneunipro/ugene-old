@@ -57,6 +57,8 @@ public:
         Note: 'near' here means that DBI is not forced to return precise number of reads that intersects the region
         and some deviations is allowed in order to apply performance optimizations. 
 
+        Note2: Use U2_ASSEMBLY_REGION_MAX to count all reads in assembly in effective way
+
     */
     virtual qint64 countReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) = 0;
 

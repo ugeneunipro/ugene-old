@@ -240,6 +240,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util_algorithm/SequenceUtils.cpp \
            src/util_algorithm/U2AnnotationUtils.cpp \
            src/util_algorithm/U2AssemblyUtils.cpp \
+           src/util_algorithm/U2AttributeUtils.cpp \
            src/util_algorithm/U2Bits.cpp \
            src/util_text/FormatUtils.cpp \
            src/util_text/TextUtils.cpp

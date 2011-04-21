@@ -46,6 +46,7 @@ void SQLiteAttributeDbi::initSqlSchema(U2OpStatus& os) {
         " version INTEGER NOT NULL, name TEXT NOT NULL, "
         " FOREIGN KEY(object) REFERENCES Object(id), FOREIGN KEY(child) REFERENCES Object(id) )" , db, os).execute();
 
+    //TODO: check if index is efficient for gettting attribute for specific object
     SQLiteQuery("CREATE INDEX Attribute_name on Attribute(name)" , db, os).execute();
     
     SQLiteQuery("CREATE TABLE IntegerAttribute (attribute INTEGER, value INTEGER NOT NULL, "
@@ -68,17 +69,30 @@ QStringList SQLiteAttributeDbi::getAvailableAttributeNames(U2OpStatus& os) {
 }
 
 /** Returns all attribute ids for the given object */
-QList<U2DataId> SQLiteAttributeDbi::getObjectAttributes(const U2DataId& objectId, U2OpStatus& os) {
-    SQLiteQuery q("SELECT id, type, '' FROM Attribute WHERE object = ?1", db, os);
+QList<U2DataId> SQLiteAttributeDbi::getObjectAttributes(const U2DataId& objectId, const QString& name, U2OpStatus& os) {
+    if (name.isEmpty()) {
+        SQLiteQuery q("SELECT id, type, '' FROM Attribute WHERE object = ?1 ORDER BY id", db, os);
+        q.bindDataId(1, objectId);
+        return q.selectDataIdsExt();
+    } 
+    SQLiteQuery q("SELECT id, type, '' FROM Attribute WHERE object = ?1 AND name = ?2 ORDER BY id", db, os);
     q.bindDataId(1, objectId);
+    q.bindString(2, name);
     return q.selectDataIdsExt();
 }
 
 /** Returns all attribute ids for the given object */
-QList<U2DataId> SQLiteAttributeDbi::getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, U2OpStatus& os) {
-    SQLiteQuery q("SELECT id, type, '' FROM Attribute WHERE object = ?1 AND child = ?2", db, os);
+QList<U2DataId> SQLiteAttributeDbi::getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, const QString& name, U2OpStatus& os) {
+    if (name.isEmpty()) {
+        SQLiteQuery q("SELECT id, type, '' FROM Attribute WHERE object = ?1 AND child = ?2 ORDER BY id", db, os);
+        q.bindDataId(1, objectId);
+        q.bindDataId(2, childId);
+        return q.selectDataIdsExt();
+    } 
+    SQLiteQuery q("SELECT id, type, '' FROM Attribute WHERE object = ?1 AND child = ?2 AND name = ?3 ORDER BY id", db, os);
     q.bindDataId(1, objectId);
     q.bindDataId(2, childId);
+    q.bindString(3, name);
     return q.selectDataIdsExt();
 }
 
@@ -201,6 +215,14 @@ void SQLiteAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U
         }
     }
 }
+
+void SQLiteAttributeDbi::removeObjectAttributes(const U2DataId& objectId, U2OpStatus& os)  {
+    QList<U2DataId> attributes = getObjectAttributes(objectId, "", os);
+    if (!attributes.isEmpty()) {
+        removeAttributes(attributes, os);
+    }
+}
+    
 
 qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, U2OpStatus& os) {
     SQLiteQuery q("INSERT INTO Attribute(type, object, child, otype, ctype, oextra, cextra, version, name) "

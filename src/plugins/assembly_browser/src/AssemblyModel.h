@@ -44,7 +44,7 @@ public:
 
     qint64 getModelLength(U2OpStatus & os);
     
-    QByteArray getReferenceMd5();
+    QByteArray getReferenceMd5(U2OpStatus & os);
     
     qint64 getModelHeight(U2OpStatus & os);
 

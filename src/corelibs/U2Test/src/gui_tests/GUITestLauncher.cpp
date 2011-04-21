@@ -35,6 +35,7 @@ Task::ReportResult LaunchTestTask::report() {
         }
         exit(0);
     }
+    return ReportResult_Finished;
 }
 
 void TestLauncher::run() {

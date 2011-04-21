@@ -236,10 +236,14 @@ class U2SimpleAttributeDbi: public U2AttributeDbi {
 protected:
     U2SimpleAttributeDbi(U2Dbi* rootDbi) : U2AttributeDbi(rootDbi) {}
     
-    virtual void removeAttribute(const U2DataId&, U2OpStatus& os) {
+    virtual void removeAttributes(const QList<U2DataId>&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }
-    
+
+    virtual void removeObjectAttributes(const U2DataId&, U2OpStatus& os)  {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
+    }
+        
     virtual void createIntegerAttribute(U2IntegerAttribute&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }

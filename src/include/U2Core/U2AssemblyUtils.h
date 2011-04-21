@@ -23,9 +23,11 @@
 #define _U2_ASSEMBLY_UTILS_H_
 
 #include <U2Core/U2Assembly.h>
-#include <U2Core/U2Dbi.h>
 
 namespace U2 {
+
+#define U2_ASSEMBLY_REGION_MAX U2Region(0, LLONG_MAX)
+
 
 /**                                           
     U2Assembly and related structures utility functions
@@ -71,9 +73,6 @@ public:
     static QByteArray getCigarAlphabetChars();
 };
 
-
-
-/** Helper class with default impl for all methods */
 } //namespace
 
 

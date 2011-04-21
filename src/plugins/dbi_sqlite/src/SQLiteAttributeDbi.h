@@ -37,10 +37,10 @@ public:
     virtual QStringList getAvailableAttributeNames(U2OpStatus& os);
     
     /** Returns all attribute ids for the given object */
-    virtual QList<U2DataId> getObjectAttributes(const U2DataId& objectId, U2OpStatus& os);
+    virtual QList<U2DataId> getObjectAttributes(const U2DataId& objectId, const QString& name, U2OpStatus& os);
 
     /** Returns all attribute ids for the given object */
-    virtual QList<U2DataId> getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, U2OpStatus& os);
+    virtual QList<U2DataId> getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, const QString& name, U2OpStatus& os);
 
     /** Loads int64 attribute by id */
     virtual U2IntegerAttribute getIntegerAttribute(const U2DataId& attributeId, U2OpStatus& os);
@@ -64,6 +64,12 @@ public:
         Requires U2DbiFeature_WriteAttribute feature support
     */
     virtual void removeAttributes(const QList<U2DataId>& attributeIds, U2OpStatus& os);
+ 
+    /** 
+        Removes all attributes associated with the object
+        Requires U2DbiFeature_WriteAttribute feature support
+    */
+    virtual void removeObjectAttributes(const U2DataId& objectId, U2OpStatus& os);
     
     /** 
         Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database 

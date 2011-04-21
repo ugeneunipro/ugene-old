@@ -73,6 +73,9 @@ void RTreeAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
 }
 
 qint64 RTreeAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
+    if (r == U2_ASSEMBLY_REGION_MAX) {
+        return SQLiteQuery(QString("SELECT COUNT(*) FROM %1").arg(readsTable), db, os).selectInt64();
+    }
     QString qStr = QString("SELECT COUNT(*) FROM %1 AS i WHERE " + RANGE_CONDITION_CHECK).arg(indexTable);
     SQLiteQuery q(qStr, db, os);
     q.bindInt64(1, r.endPos());

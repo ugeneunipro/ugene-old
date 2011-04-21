@@ -34,6 +34,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2AttributeUtils.h>
 
 #include <memory>
 
@@ -86,19 +87,8 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         U2OpStatusImpl status;
         static const QByteArray REFERENCE_ATTRIBUTE_NAME("reference_length_attribute");
-        if(attributeDbi != NULL && attributeDbi->getAvailableAttributeNames(status).contains(REFERENCE_ATTRIBUTE_NAME)) {
-            QList<U2DataId> assAttrs = attributeDbi->getObjectAttributes(assembly.id, status);
-            if(!status.hasError()) {
-                foreach(const U2DataId & dataId, assAttrs) {
-                    U2OpStatusImpl st;
-                    U2IntegerAttribute lenAttrCandidate = attributeDbi->getIntegerAttribute(dataId, st);
-                    if(st.hasError()) {continue;}
-                    if(lenAttrCandidate.name == REFERENCE_ATTRIBUTE_NAME) {
-                        cachedModelLength = lenAttrCandidate.value;
-                        break;
-                    }
-                }
-            }
+        if(attributeDbi != NULL) {
+            cachedModelLength = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, REFERENCE_ATTRIBUTE_NAME, NO_VAL, os);
         }
         // if cannot from attributes -> set from reference or max end pos
         if(cachedModelLength == NO_VAL) {
@@ -111,25 +101,13 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
     return cachedModelLength;
 }
 
-QByteArray AssemblyModel::getReferenceMd5() {
+QByteArray AssemblyModel::getReferenceMd5(U2OpStatus& os) {
     if(!md5Retrieved) {
         md5Retrieved = true;
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        U2OpStatusImpl status;
         static const QByteArray MD5_ATTRIBUTE_NAME("reference_md5_attribute");
-        if(attributeDbi != NULL && attributeDbi->getAvailableAttributeNames(status).contains(MD5_ATTRIBUTE_NAME)) {
-            QList<U2DataId> assAttrs = attributeDbi->getObjectAttributes(assembly.id, status);
-            if(!status.hasError()) {
-                foreach(const U2DataId & dataId, assAttrs) {
-                    U2OpStatusImpl st;
-                    U2ByteArrayAttribute md5AttrCandidate = attributeDbi->getByteArrayAttribute(dataId, st);
-                    if(st.hasError()) {continue;}
-                    if(md5AttrCandidate.name == MD5_ATTRIBUTE_NAME) {
-                        referenceMd5 = md5AttrCandidate.value;
-                        break;
-                    }
-                }
-            }
+        if (attributeDbi != NULL) {
+            referenceMd5 = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, MD5_ATTRIBUTE_NAME, QByteArray(), os);
         }
     }
     return referenceMd5;

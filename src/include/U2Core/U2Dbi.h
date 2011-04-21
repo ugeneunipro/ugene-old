@@ -251,6 +251,7 @@ protected:
     
     virtual ~U2ChildDbi(){}
 
+public:
     U2Dbi* getRootDbi() const { return rootDbi; }
 
 private:

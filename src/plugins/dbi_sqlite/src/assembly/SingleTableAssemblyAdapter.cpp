@@ -103,6 +103,9 @@ void SingleTableAssemblyAdapter::bindRegion(SQLiteQuery& q, const U2Region& r, b
 }
 
 qint64 SingleTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
+    if (r == U2_ASSEMBLY_REGION_MAX) {
+        return SQLiteQuery(QString("SELECT COUNT(*) FROM %1").arg(readsTable), db, os).selectInt64();
+    }
     QString qStr = QString("SELECT COUNT(*) FROM %1 WHERE " + rangeConditionCheckForCount).arg(readsTable);
     SQLiteQuery q(qStr, db, os);
     bindRegion(q, r, true);

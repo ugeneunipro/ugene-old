@@ -237,14 +237,16 @@ QByteArray MultiTableAssemblyAdapter::getIdExtra(int rowPos, int elenPos) {
 }
 
 
+
 qint64 MultiTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
+    bool all = r == U2_ASSEMBLY_REGION_MAX;
     qint64 sum = 0;
     // use more sensitive algorithm for smaller regions 
     // and not-very sensitive for huge regions
     int nReadsToUseNotPreciseAlgorithms = 1000 / (r.length + 1);
     foreach(MTASingleTableAdapter* a, adapters) {
         int n = a->singleTableAdapter->countReads(r, os);
-        if (n != 0 && n < nReadsToUseNotPreciseAlgorithms) {
+        if (n != 0 && !all && n < nReadsToUseNotPreciseAlgorithms) {
             n = a->singleTableAdapter->countReadsPrecise(r, os);    
         }
         if (os.hasError()) {

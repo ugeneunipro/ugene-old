@@ -230,7 +230,7 @@ void CircularViewSplitter::sl_export() {
             if(result){
                 file.close();
                 QDomNodeList radialGradients=doc.elementsByTagName("radialGradient");
-                for(int i=0;i<radialGradients.length();i++){
+                for(uint i=0;i<radialGradients.length();i++){
                     if(radialGradients.at(i).isElement()){
                         QDomElement tag=radialGradients.at(i).toElement();
                         if(tag.hasAttribute("xml:id")){
