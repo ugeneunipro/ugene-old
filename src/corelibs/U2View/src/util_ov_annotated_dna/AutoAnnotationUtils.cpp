@@ -36,7 +36,7 @@ const QString AutoAnnotationsADVAction::ACTION_NAME("AutoAnnotationUpdateAction"
 #define AUTO_ANNOTATION_GROUP_NAME "AutoAnnotatationGroupName"
 
 AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnnotationObject* obj) 
-: ADVSequenceWidgetAction(ACTION_NAME, tr("Automatic Annotations Highlighting")), aaObj(obj)
+: ADVSequenceWidgetAction(ACTION_NAME, tr("Automatic Annotations Highlighting")), aaObj(obj), updatesCount(0)
 {
     seqWidget = v;
     addToBar = true;
@@ -45,10 +45,11 @@ AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnn
     setIcon(QIcon(":core/images/predefined_annotation_groups.png"));
     setMenu(menu);
     
+    connect(aaObj, SIGNAL(si_updateStarted()), SLOT(sl_autoAnnotationUpdateStarted()));
+    connect(aaObj, SIGNAL(si_updateFinshed()), SLOT(sl_autoAnnotationUpdateFinished()));
+
     updateMenu();
         
-    connect(aaObj->getAnnotationObject(), SIGNAL(si_lockedStateChanged()), SLOT(sl_autoAnnotationLockStateChanged()));
-    
     aaObj->update();
 }
 
@@ -108,15 +109,6 @@ QList<QAction*> AutoAnnotationsADVAction::getToggleActions()
     return menu->actions();
 }
 
-void AutoAnnotationsADVAction::sl_autoAnnotationLockStateChanged()
-{
-    if (aaObj->isLocked() ) {
-        setEnabled(true);
-    } else {
-        setEnabled(false);
-    }
-}
-
 QAction* AutoAnnotationsADVAction::findToggleAction( const QString& groupName )
 {
     QList<QAction*> toggleActions = menu->actions();
@@ -126,6 +118,20 @@ QAction* AutoAnnotationsADVAction::findToggleAction( const QString& groupName )
         }
     }
     return NULL;
+}
+
+void AutoAnnotationsADVAction::sl_autoAnnotationUpdateStarted()
+{
+    setEnabled(false);
+    updatesCount++;
+}
+
+void AutoAnnotationsADVAction::sl_autoAnnotationUpdateFinished()
+{
+    updatesCount--;
+    if (updatesCount == 0) {
+        setEnabled(true);
+    }
 }
 
 QAction* AutoAnnotationUtils::findAutoAnnotationsToggleAction( ADVSequenceObjectContext* ctx, const QString& groupName )
@@ -155,6 +161,10 @@ void AutoAnnotationUtils::triggerAutoAnnotationsUpdate( ADVSequenceObjectContext
 {
     AutoAnnotationsADVAction* aaAction = findAutoAnnotationADVAction( ctx );
     
+    if (aaAction->isDisabled()) {
+        return;
+    }
+
     assert(aaAction != NULL);
     if (aaAction) {
         

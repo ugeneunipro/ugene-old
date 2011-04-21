@@ -41,11 +41,13 @@ public:
 
 private slots:
     void sl_toggle(bool toggled);
-    void sl_autoAnnotationLockStateChanged();
+    void sl_autoAnnotationUpdateStarted();
+    void sl_autoAnnotationUpdateFinished();
 private:
     void updateMenu();
     AutoAnnotationObject* aaObj;
     QMenu* menu;
+    int updatesCount;
 };
 
 class U2VIEW_EXPORT AutoAnnotationUtils {

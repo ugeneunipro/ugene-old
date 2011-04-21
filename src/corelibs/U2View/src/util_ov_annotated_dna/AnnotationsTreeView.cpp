@@ -1838,7 +1838,9 @@ void AVGroupItem::updateAnnotations(const QString& nameFilter, ATVAnnUpdateFlags
 
 bool AVGroupItem::isReadonly() const {
     //documents names are not editable
-    return group->getParentGroup() == NULL ? true: group->getGObject()->isStateLocked();
+    GObject* obj = group->getGObject();
+    bool readOnly = obj->isStateLocked() || AutoAnnotationsSupport::isAutoAnnotation(obj);
+    return group->getParentGroup() == NULL ? true : readOnly;
 }
 
 void AVGroupItem::findAnnotationItems(QList<AVAnnotationItem*>& result, Annotation* a) const {

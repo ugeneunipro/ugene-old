@@ -109,27 +109,11 @@ AutoAnnotationObject::AutoAnnotationObject( DNASequenceObject* obj ) : dnaObj(ob
         .arg(obj->getDocument()->getName()).arg(obj->getSequenceName()), hints);
     aobj->addObjectRelation(dnaObj, GObjectRelationRole::SEQUENCE);
     aaSupport = AppContext::getAutoAnnotationsSupport();
-    stateLock = new StateLock("Auto-annotation objects can not be modified");
-    lock();
 }
 
 AutoAnnotationObject::~AutoAnnotationObject()
 {
-    unlock();
     delete aobj;
-    delete stateLock;
-}
-
-void AutoAnnotationObject::lock() {
-    if (!aobj->isStateLocked()) {
-        aobj->lockState(stateLock);
-    }
-}
-
-void AutoAnnotationObject::unlock() {
-    if (aobj->isStateLocked()) {
-        aobj->unlockState(stateLock);
-    }
 }
 
 void AutoAnnotationObject::update()
@@ -200,10 +184,15 @@ void AutoAnnotationObject::setGroupEnabled( const QString& groupName, bool enabl
     }
 }
 
-bool AutoAnnotationObject::isLocked()
+void AutoAnnotationObject::emitStateChange( bool started )
 {
- return aobj->isStateLocked();
+    if (started) {
+        emit si_updateStarted();
+    } else {
+        emit si_updateFinshed();
+    }
 }
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -216,7 +205,7 @@ AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaOb
 
 void AutoAnnotationsUpdateTask::prepare()
 {
-    aa->unlock();
+    aa->emitStateChange(true);
     foreach(Task* subtask, subTasks) {
         addSubTask(subtask);
     }
@@ -225,7 +214,7 @@ void AutoAnnotationsUpdateTask::prepare()
 
 Task::ReportResult AutoAnnotationsUpdateTask::report()
 {
-    aa->lock();
+    aa->emitStateChange(false);
     return ReportResult_Finished;
 }
 
