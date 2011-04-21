@@ -761,10 +761,10 @@ U2AssemblyRead AssemblyDbi::alignmentToRead(const Alignment &alignment) {
             cigarOp = U2CigarOp_P;
             break;
         case Alignment::CigarOperation::SequenceMatch:
-            cigarOp = U2CigarOp_M;
+            cigarOp = U2CigarOp_EQ;
             break;
         case Alignment::CigarOperation::SequenceMismatch:
-            cigarOp = U2CigarOp_M;
+            cigarOp = U2CigarOp_X;
             break;
         default:
             assert(false);
