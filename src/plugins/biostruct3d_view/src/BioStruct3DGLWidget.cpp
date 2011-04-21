@@ -532,18 +532,22 @@ int BioStruct3DGLWidget::getChainIdForAnnotationObject(AnnotationTableObject* ao
     if ( this->chainIdCache.contains(ao) ) {
         return chainIdCache.value(ao);
     } else {
-        int chainID = -1;
         QList<GObjectRelation> relations = ao->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);
         assert(relations.count() == 1);
+        if (relations.count() < 1) {
+            return -1;
+        }
         GObjectRelation relation = relations.first();
         Document *biostrucDoc = contexts.first().obj->getDocument();
         GObject* obj = biostrucDoc->findGObjectByName(relation.ref.objName);
         DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
         if (seqObj) {
-            chainID = getSequenceChainId(seqObj);
+            int chainID = getSequenceChainId(seqObj);
             chainIdCache.insert(ao, chainID);
-        } 
-        return chainID;
+            return chainID;
+        } else {
+            return -1;
+        }
     }
 }
 

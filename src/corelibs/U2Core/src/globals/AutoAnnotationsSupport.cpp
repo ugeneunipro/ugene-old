@@ -25,6 +25,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Settings.h>
 #include <U2Core/RemoveAnnotationsTask.h>
+#include <U2Core/GObjectRelationRoles.h>
 
 #include "AutoAnnotationsSupport.h"
 
@@ -106,6 +107,7 @@ AutoAnnotationObject::AutoAnnotationObject( DNASequenceObject* obj ) : dnaObj(ob
     hints.insert(AUTO_ANNOTATION_HINT, true);
     aobj = new AnnotationTableObject(AutoAnnotationsSupport::tr("Auto-annotations [%1 | %2]")
         .arg(obj->getDocument()->getName()).arg(obj->getSequenceName()), hints);
+    aobj->addObjectRelation(dnaObj, GObjectRelationRole::SEQUENCE);
     aaSupport = AppContext::getAutoAnnotationsSupport();
     stateLock = new StateLock("Auto-annotation objects can not be modified");
     lock();
