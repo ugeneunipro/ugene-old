@@ -402,7 +402,7 @@ bool FindDialog::checkState(bool forSingleShot) {
         assert(t!=NULL);
         al = t->getDstAlphabet();
     }
-    bool alphabetIsOk = TextUtils::fits(al->getMap(), pattern.toLocal8Bit().data(), pattern.size());
+    bool alphabetIsOk = TextUtils::fits(al->getMap(), pattern.toLocal8Bit().data(), pattern.size()) || useAmbiguousBasesBox->isChecked();
     if (!alphabetIsOk) {
         int res = QMessageBox::warning(this, tr("Warning!"), tr("Search pattern contains symbols that are out of the active alphabet range. Continue anyway?"), QMessageBox::Yes, QMessageBox::No);
         if (res == QMessageBox::No) {

@@ -527,52 +527,42 @@ void FindAlgorithm::find(
     }
 }
 
+QMap<char,char> getAmbiguousBaseMap() {
+   
+    // Source: http://www.ncbi.nlm.nih.gov/blast/fasta.shtml
+    // Unknown symbol is zero: no match
+    
+    QMap<char,char> map;
 
-char encodeAmbiguousChar(char c) {
-    switch (c) {
-        case 'A':
-            return 0x01; // Bitmask: 00000001
-        case 'C':
-            return 0x02; // Bitmask: 00000010
-        case 'G':
-            return 0x04; // Bitmask: 00000100
-        case 'T':
-            return 0x08; // Bitmask: 00001000
-        case 'M':
-            return 0x03; // Bitmask: 00000011
-        case 'R':
-            return 0x05; // Bitmask: 00000101
-        case 'W':
-            return 0x09; // Bitmask: 00001001
-        case 'S':
-            return 0x06; // Bitmask: 00000110
-        case 'Y':
-            return 0x0A; // Bitmask: 00001010
-        case 'K':
-            return 0x0C; // Bitmask: 00001100
-        case 'V':
-            return 0x07; // Bitmask: 00000111
-        case 'H':
-            return 0x0B; // Bitmask: 00001011
-        case 'D':
-            return 0x0D; // Bitmask: 00001101
-        case 'B':
-            return 0x0E; // Bitmask: 00001110
-        case 'N':
-            return 0x0F; // Bitmask: 00001111
-        default:
-            return 0x00; // Unknown symbol: no match
-    }
-} 
+    map.insert('A', 0x01); // Bitmask: 00000001
+    map.insert('C', 0x02); // Bitmask: 00000010
+    map.insert('G', 0x04); // Bitmask: 00000100
+    map.insert('T', 0x08); // Bitmask: 00001000
+    map.insert('U', 0x08); // Bitmask: 00001000
+    map.insert('M', 0x03); // Bitmask: 00000011
+    map.insert('R', 0x05); // Bitmask: 00000101
+    map.insert('W', 0x09); // Bitmask: 00001001
+    map.insert('S', 0x06); // Bitmask: 00000110
+    map.insert('Y', 0x0A); // Bitmask: 00001010
+    map.insert('K', 0x0C); // Bitmask: 00001100
+    map.insert('V', 0x07); // Bitmask: 00000111
+    map.insert('H', 0x0B); // Bitmask: 00001011
+    map.insert('D', 0x0D); // Bitmask: 00001101
+    map.insert('B', 0x0E); // Bitmask: 00001110
+    map.insert('N', 0x0F); // Bitmask: 00001111
+    map.insert('X', 0x0F); // Bitmask: 00001111
+   
+    return map;
+}
 
 
 bool AmbiguousBaseComparator::operator()( char a, char b ) const
 {
-    char c1 = encodeAmbiguousChar(a);
-    char c2 = encodeAmbiguousChar(b);
-    
-    // compare bit masks
+    static QMap<char,char> codeMap = getAmbiguousBaseMap();
 
+    char c1 = codeMap.value(a);
+    char c2 = codeMap.value(b);
+ 
     return c1 & c2;
 }
 
