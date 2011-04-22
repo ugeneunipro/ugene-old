@@ -33,6 +33,7 @@
 #include <U2Core/Counter.h>
 #include <U2Core/Timer.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "AssemblyBrowser.h"
 #include "ShortReadIterator.h"
@@ -139,9 +140,9 @@ void AssemblyReadsArea::drawDensityGraph(QPainter & p) {
 
     U2OpStatusImpl status;
     quint64 alignmentLen = model->getModelLength(status);
-    if(checkAndLogError(status)) {
-        return;
-    }
+    
+    SAFE_POINT_OP(status,);
+
     quint64 widgetWidth = width();
     quint64 widgetHeight = height();
 
@@ -200,7 +201,8 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
                                                    cachedReads.visibleRows.endPos(), status);
     t = GTimer::currentTimeMicros() - t;
     perfLog.trace(QString("Database access time: %1").arg(double(t) / 1000 / 1000));
-    if(checkAndLogError(status)) {
+    if (status.hasError()) {
+        LOG_OP(status);
         return;
     }
     
@@ -224,8 +226,8 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
         GTIMER(c3, t3, "AssemblyReadsArea::drawReads -> cycle through all reads");
 
         const U2AssemblyRead & read = it.next();
-        QByteArray readSequence = getReadSequence(0, read, status); //TODO: dbi
-        U2Region readBases(read->leftmostPos, countReadLength(readSequence.length(), read->cigar));
+        QByteArray readSequence = read->readSequence;
+        U2Region readBases(read->leftmostPos, U2AssemblyUtils::getEffectiveReadLength(read));
 
         U2Region readVisibleBases = readBases.intersect(cachedReads.visibleBases);
         U2Region xToDrawRegion(readVisibleBases.startPos - cachedReads.xOffsetInAssembly, readVisibleBases.length);
@@ -287,7 +289,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
     QListIterator<U2AssemblyRead> it(cachedReads.data);
     while(it.hasNext()) {
         const U2AssemblyRead & r = it.next();
-        len = countReadLength(r->readSequence.length(), r->cigar);
+        len = U2AssemblyUtils::getEffectiveReadLength(r);
         if(r->packedViewRow == asmY ) {
             if(asmX >= r->leftmostPos && asmX < r->leftmostPos + len) {
                 read = r;
@@ -466,7 +468,7 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
         if(hBar->isEnabled()) {
             U2OpStatusImpl status;
             hBar->setValue(model->getModelLength(status));
-            checkAndLogError(status);
+            LOG_OP(status);
             e->accept();
         }
     } else if(k == Qt::Key_Plus) {

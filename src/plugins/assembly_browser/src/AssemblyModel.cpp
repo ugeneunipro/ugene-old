@@ -35,6 +35,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2AttributeUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <memory>
 
@@ -92,7 +93,7 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
         }
         // if cannot from attributes -> set from reference or max end pos
         if(cachedModelLength == NO_VAL) {
-            checkAndLogError(status);
+            LOG_OP(status);
             qint64 refLen = hasReference() ? reference.length : 0;
             qint64 assLen = assemblyDbi->getMaxEndPos(assembly.id, status);
             cachedModelLength = qMax(refLen, assLen);
@@ -137,18 +138,12 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
         U2CrossDatabaseReferenceDbi * crossDbi = dbiHandle.dbi->getCrossDatabaseReferenceDbi();
         U2OpStatusImpl status;
         U2CrossDatabaseReference crossRef = crossDbi->getCrossReference(assembly.referenceId, status);
-        checkAndLogError(status); 
-        if(status.hasError()) {
-            return;
-        }
-
+        SAFE_POINT_OP(status,); 
+        
         // 2. find project and load reference doc to project
         Project * prj = AppContext::getProject();
-        if(prj == NULL) {
-            assert(false);
-            coreLog.error(tr("To show reference opened project needed"));
-            return;
-        }
+        SAFE_POINT(prj!=NULL, tr("No active project found!"), );
+
         refDoc = prj->findDocumentByURL(crossRef.dataRef.dbiId);
         Task * t = NULL;
         if( refDoc != NULL ) { // document already in project, load if it is not loaded
@@ -159,9 +154,7 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
             }
         } else { // no document at project -> create doc, add it to project and load it
             t = createLoadReferenceAndAddtoProjectTask(crossRef);
-            if(t == NULL) {
-                return;
-            }
+            SAFE_POINT(t, "Failed to load reference sequence!",);
         }
         
         // 3. watch load-unload doc
@@ -178,17 +171,13 @@ Task * AssemblyModel::createLoadReferenceAndAddtoProjectTask(const U2CrossDataba
     // hack: factoryId in FileDbi looks like FileDbi_formatId
     DocumentFormatId fid = ref.dataRef.factoryId.mid(ref.dataRef.factoryId.indexOf("_") + 1);
     DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
-    if(df == NULL) {
-        coreLog.error(tr("Internal error: unknown document format '%1'").arg(fid));
-        return NULL;
-    }
+    SAFE_POINT(df, QString("Document format is not supported? %1").arg(fid), NULL);
+    
     QString url = ref.dataRef.dbiId;
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
-    if(iof == NULL) {
-        assert(false);
-        coreLog.error(tr("Internal error: cannot open file '%1' for reading").arg(url));
-        return NULL;
-    }
+    IOAdapterId iofId = BaseIOAdapters::url2io(url);
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(iofId);
+    SAFE_POINT(iof, QString("IO-factory is unknown? %1, url: %2").arg(iofId).arg(url), NULL);
+
     refDoc = new Document(df, iof, url);
     Task * t = new LoadUnloadedDocumentTask(refDoc);
     t->addSubTask(new AddDocumentTask(refDoc));
@@ -215,17 +204,13 @@ void AssemblyModel::sl_referenceDocRemoved(Document* d) {
 
 // when reference doc added to project
 void AssemblyModel::sl_referenceDocAdded(Document * d) {
-    if(d == NULL) {
-        assert(false); 
-        return;
-    }
+    SAFE_POINT(d, "Reference document is NULL!", );
+
     if(refDoc.isNull() && !assembly.referenceId.isEmpty()) {
         U2OpStatusImpl status;
         U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, status);
-        checkAndLogError(status);
-        if(status.hasError()) {
-            return;
-        }
+        SAFE_POINT_OP(status,);
+        
         if(ref.dataRef.dbiId == d->getURLString()) {
             if(!d->isLoaded()) {
                 startLoadReferenceTask(new LoadUnloadedDocumentTask(refDoc = d));
@@ -239,10 +224,7 @@ void AssemblyModel::sl_referenceDocAdded(Document * d) {
 // when load-unload document
 void AssemblyModel::sl_referenceDocLoadedStateChanged() {
     Document * doc = qobject_cast<Document*>(sender());
-    if(doc == NULL) {
-        assert(false);
-        return;
-    }
+    SAFE_POINT(doc, "Reference document is NULL!", );
     
     if(doc->isLoaded()) {
         if(!loadingReference) {
@@ -261,18 +243,16 @@ void AssemblyModel::sl_referenceLoaded() {
     U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, status);
     cleanup();
     refSeqDbiHandle = new DbiHandle(ref.dataRef.factoryId, ref.dataRef.dbiId, false, status);
-    checkAndLogError(status);
     if(status.hasError()) {
+        LOG_OP(status);
         cleanup();
         return;
     }
     U2SequenceDbi * seqDbi = refSeqDbiHandle->dbi->getSequenceDbi();
     if(seqDbi != NULL) {
         U2Sequence refSeq = seqDbi->getSequenceObject(ref.dataRef.entityId, status);
-        checkAndLogError(status); 
-        if(status.hasError()) {
-            return;
-        }
+        SAFE_POINT_OP(status,);
+        
         setReference(seqDbi, refSeq);
     } else {
         assert(false);
@@ -297,10 +277,8 @@ void AssemblyModel::setReference(U2SequenceDbi * dbi, const U2Sequence & seq) {
 }
 
 QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus& os) {
-    if(refDoc.isNull() || !refDoc->isLoaded()) {
-        assert(false);
-        return QByteArray();
-    }
+    SAFE_POINT(!refDoc.isNull() && refDoc->isLoaded(), "Reference document is not ready!", QByteArray());
+
     return referenceDbi->getSequenceData(reference.id, region, os);
 }
 
@@ -311,7 +289,7 @@ void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref)
     assembly.referenceId = ref.id;
     U2OpStatusImpl status;
     assemblyDbi->updateAssemblyObject(assembly, status);
-    checkAndLogError(status);
+    LOG_OP(status);
 }
 
 } // U2

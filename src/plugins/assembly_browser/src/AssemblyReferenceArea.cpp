@@ -24,6 +24,8 @@
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
+
 #include "AssemblyBrowser.h"
 
 namespace U2 {
@@ -70,10 +72,8 @@ void AssemblyReferenceArea::drawReference(QPainter & p) {
 
         U2OpStatusImpl status;
         QByteArray visibleSequence = model->getReferenceRegion(visibleRegion, status);
-        if(checkAndLogError(status)) {
-            return;
-        }
-
+        SAFE_POINT_OP(status,);
+        
         int letterWidth = browser->getCellWidth();
         int letterHeight = FIXED_HEIGHT;
 

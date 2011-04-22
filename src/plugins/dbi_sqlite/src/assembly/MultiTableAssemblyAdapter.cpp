@@ -26,6 +26,7 @@
 
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SqlHelpers.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -339,23 +340,22 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByName(const Q
 
 int MultiTableAssemblyAdapter::getElenRangePosById(const U2DataId& id) const {
     QByteArray extra = SQLiteUtils::toDbExtra(id);
-    assert(extra.size() == 4);
-    if (extra.size() != 4) {
-        return -1;
-    } 
+
+    SAFE_POINT(extra.size() == 4, QString("Illegal assembly read ID extra part! HEX: %1").arg(extra.toHex().constData()), -1);
+
     const qint16* data = (const qint16*)extra.constData();
     return int(data[1]);
 }
 
 int MultiTableAssemblyAdapter::getElenRangePosByLength(qint64 readLength) const {
-    for (int i = 0, nRanges = elenRanges.size(); i < nRanges; i++) {
+    int nElenRanges = elenRanges.size();
+    for (int i = 0; i < nElenRanges; i++) {
         const U2Region& r = elenRanges[i];
         if (r.contains(readLength)) {
             return i;
         }
     }
-    assert(0);
-    return elenRanges.size() - 1;
+    FAIL(QString("Read length does not fit any range: %1, number of ranges: %2").arg(readLength).arg(nElenRanges), nElenRanges - 1);
 }
 
 int MultiTableAssemblyAdapter::getRowRangePosByRow(quint64 row) const {
@@ -364,10 +364,9 @@ int MultiTableAssemblyAdapter::getRowRangePosByRow(quint64 row) const {
 
 int MultiTableAssemblyAdapter::getRowRangePosById(const U2DataId& id) const {
     QByteArray extra = SQLiteUtils::toDbExtra(id);
-    assert(extra.size() == 4);
-    if (extra.size() != 4) {
-        return -1;
-    } 
+    
+    SAFE_POINT(extra.size() == 4, QString("Extra part size of assembly read ID is not correct! HEX(Extra): %1").arg(extra.toHex().constData()), -1);
+
     const qint16* data = (const qint16*)extra.constData();
     return int(data[0]);
 }
@@ -461,10 +460,12 @@ void MultiTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2Op
     QHash<MTASingleTableAdapter*, QList<U2DataId> > readsByAdapter;
     for (int i = 0; i < nReads; i++) {
         const U2DataId& readId = readIds[i];
-        int rowRange = getRowRangePosById(readId);
+        int rowPos = getRowRangePosById(readId);
         int elenPos = getElenRangePosById(readId);
-        MTASingleTableAdapter* a = getAdapterByRowAndElenRange(rowRange, elenPos, false, os);
-        assert(a !=NULL);
+        MTASingleTableAdapter* a = getAdapterByRowAndElenRange(rowPos, elenPos, false, os);
+        
+        SAFE_POINT(a != NULL, QString("No table adapter was found! row: %1, elen: %2").arg(rowPos).arg(elenPos),);
+
         if (!readsByAdapter.contains(a)) {
             readsByAdapter[a] = QList<U2DataId>();
         }

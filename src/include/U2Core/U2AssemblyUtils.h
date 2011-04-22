@@ -67,6 +67,9 @@ public:
     */
     static qint64 getCigarExtraLength(const QList<U2CigarToken>& cigar);
 
+    /** Returns read effective length: sequence length + CIGAR */
+    static qint64 getEffectiveReadLength(const U2AssemblyRead& read);
+
     /** 
         Returns all characters that may appear in CIGAR string
     */

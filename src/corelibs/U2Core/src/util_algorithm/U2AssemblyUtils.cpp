@@ -105,6 +105,10 @@ QByteArray U2AssemblyUtils::cigar2String(const QList<U2CigarToken>& cigar) {
     return res;
 }
 
+qint64 U2AssemblyUtils::getEffectiveReadLength(const U2AssemblyRead& read) {
+    return read->readSequence.length() + getCigarExtraLength(read->cigar);
+}
+
 qint64 U2AssemblyUtils::getCigarExtraLength(const QList<U2CigarToken>& cigar) {
     qint64 res = 0;
     foreach(const U2CigarToken& t, cigar) {

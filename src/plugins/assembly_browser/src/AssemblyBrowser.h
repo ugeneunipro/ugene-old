@@ -172,20 +172,6 @@ private:
     AssemblyBrowser * browser;
 };
 
-/**
- * Dumps error to log and returns true if status contains an erro.r 
- */
-bool checkAndLogError(const U2OpStatusImpl & status);
-
-/**
- * Returns read length calculated with respect to CIGAR.
- */
-qint64 countReadLength(qint64 realLen, const QList<U2CigarToken> & cigar);
-
-/**
- * Returns read sequence. If read has no embedded sequence -> gets it from dbi.
- */
-QByteArray getReadSequence(U2Dbi * dbi, const U2AssemblyRead & read, U2OpStatus & os);
 
 } //ns
 

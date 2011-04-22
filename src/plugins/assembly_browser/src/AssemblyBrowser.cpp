@@ -178,7 +178,7 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
             crossDbRef.dataRef.version = 1;
             crossDbRef.dataRef.factoryId = "FileDbi_" + seqDoc->getDocumentFormatId();
             crossDbi->createCrossReference(crossDbRef, status);
-            checkAndLogError(status);
+            LOG_OP(status);
             model->associateWithReference(crossDbRef);
         }
     }
@@ -191,7 +191,8 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
     
     U2OpStatusImpl st;
     posSelector = new PositionSelector(tb, 1, model->getModelLength(st));
-    if(!checkAndLogError(st)) {
+    if(st.hasError()) {
+        LOG_OP(st);
         connect(posSelector, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
         tb->addSeparator();
         tb->addWidget(posSelector);
@@ -242,7 +243,7 @@ qint64 AssemblyBrowser::calcAsmCoordX(qint64 xPixCoord) const {
 qint64 AssemblyBrowser::calcAsmCoordY(qint64 pixCoord)const {
     U2OpStatusImpl status;
     qint64 modelHeight = model->getModelHeight(status);
-    checkAndLogError(status);
+    LOG_OP(status);
     qint64 h = ui->getReadsArea()->height();
     return (double(modelHeight) / h * getZoomFactor() * double(pixCoord)) + 0.5;
 }
@@ -331,7 +332,7 @@ qint64 AssemblyBrowser::normalizeXoffset(qint64 x) const {
     }
     U2OpStatusImpl st;
     qint64 xMax = model->getModelLength(st) - qMax((qint64)1, basesCanBeVisible() - 1);
-    checkAndLogError(st);
+    LOG_OP(st);
     if(x > xMax && xMax >= 0) {
         return xMax;
     }
@@ -344,7 +345,7 @@ qint64 AssemblyBrowser::normalizeYoffset(qint64 y) const {
     }
     U2OpStatusImpl st;
     qint64 yMax = model->getModelHeight(st) - qMax((qint64)1, rowsCanBeVisible() - 2);
-    checkAndLogError(st);
+    LOG_OP(st);
     if(y > yMax && yMax >= 0) {
         return yMax;
     }
@@ -395,7 +396,7 @@ void AssemblyBrowser::setFocusToPosSelector() {
 void AssemblyBrowser::sl_assemblyLoaded() {
     assert(model);
     GTIMER(c1, t1, "AssemblyBrowser::sl_assemblyLoaded");
-    checkAndLogError(dbiOpStatus);
+    LOG_OP(dbiOpStatus);
     U2Dbi * dbi = model->getDbiHandle().dbi;
     assert(U2DbiState_Ready == dbi->getState());
 
@@ -403,7 +404,7 @@ void AssemblyBrowser::sl_assemblyLoaded() {
 
     U2DataId objectId = gobject->getDbiRef().entityId;
     U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(objectId, dbiOpStatus);
-    checkAndLogError(dbiOpStatus);
+    LOG_OP(dbiOpStatus);
 
     model->setAssembly(assmDbi, assm);
 }
@@ -605,21 +606,6 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
     connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
     connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
-}
-
-bool checkAndLogError(const U2OpStatusImpl & status) {
-    if(status.hasError()) {
-        uiLog.error(AssemblyBrowser::tr(QString("Assembly Browser -> Database Error: " + status.getError()).toAscii().data()));
-    }
-    return status.hasError();
-}
-
-qint64 countReadLength(qint64 realLen, const QList<U2CigarToken> & cigar) {
-    return realLen + U2AssemblyUtils::getCigarExtraLength(cigar);
-}
-
-QByteArray getReadSequence(U2Dbi * dbi, const U2AssemblyRead & read, U2OpStatus & os) {
-    return read->readSequence;
 }
 
 } //ns

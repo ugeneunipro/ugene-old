@@ -4,6 +4,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/SelectionUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "AssemblyBrowser.h"
 
@@ -53,7 +54,7 @@ Task * AssemblyBrowserFactory::createViewTask(const MultiGSelection & multiSelec
             if (o->getGObjectType() == GObjectTypes::UNLOADED) {
                 resTasks.append(new OpenAssemblyBrowserTask(qobject_cast<UnloadedObject*>(o)));
             } else {
-                assert(o->getGObjectType() == GObjectTypes::ASSEMBLY);
+                SAFE_POINT(o->getGObjectType() == GObjectTypes::ASSEMBLY, "Invalid assembly object!", NULL);
                 resTasks.append(new OpenAssemblyBrowserTask(qobject_cast<AssemblyObject*>(o)));
             }
         }
@@ -120,7 +121,9 @@ void OpenAssemblyBrowserTask::open() {
     
     foreach(QPointer<GObject> po, selectedObjects) {
         AssemblyObject* o = qobject_cast<AssemblyObject*>(po);
-        assert(o);
+        
+        SAFE_POINT(o, "Invalid assembly object!", );
+
         viewName = GObjectViewUtils::genUniqueViewName(o->getDocument(), o);
         AssemblyBrowser * v = new AssemblyBrowser(o);
         GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);

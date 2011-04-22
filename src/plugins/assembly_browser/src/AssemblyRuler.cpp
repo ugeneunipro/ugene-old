@@ -96,7 +96,7 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     qint64 posXInAsm = browser->calcAsmPosX(cursorPos);
     U2OpStatusImpl status;
     quint64 readsPerXPixel = model->countReadsInAssembly(U2Region(posXInAsm, 1), status);
-    checkAndLogError(status);
+    LOG_OP(status);
 
     //3. format the string 
     // pos + 1 because of 1-based coords

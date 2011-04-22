@@ -54,10 +54,9 @@ void AssemblyOverviewRenderTask::run() {
     QPainter p(&result);
     p.fillRect(result.rect(), Qt::white);
 
-    U2OpStatusImpl status;
+    U2OpTaskStatus status(&stateInfo);
     qint64 alignmentLen = model->getModelLength(status);
-    if(status.hasError()) {
-        stateInfo.setError(status.getError());
+    if (status.hasError()) {
         return;
     }
 
@@ -77,8 +76,7 @@ void AssemblyOverviewRenderTask::run() {
         }
         stateInfo.progress = double(i) / widgetWidth * 100.;
         qint64 readsPerXPixel = model->countReadsInAssembly(U2Region(start, qRound64(lettersPerXPixel)), status);
-        if(status.hasError()) {
-            stateInfo.setError(status.getError());
+        if (status.hasError()) {
             return;
         }
         readsPerXPixels[i] = readsPerXPixel;
