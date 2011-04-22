@@ -74,7 +74,7 @@ const double AssemblyBrowser::INITIAL_ZOOM_FACTOR= 1.;
 AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), 
-zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0)
+zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0)
 {
     initFont();
     setupActions();
@@ -209,6 +209,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
     tb->addWidget(overviewScaleTypeToolButton);
     
     tb->addAction(showCoordsOnRulerAction);
+    tb->addAction(saveScreenShotAction);
     
     GObjectView::buildStaticToolbar(tb);
 }
@@ -221,6 +222,7 @@ void AssemblyBrowser::sl_onPosChangeRequest(int pos) {
 void AssemblyBrowser::buildStaticMenu(QMenu* m) {
     m->addAction(zoomInAction);
     m->addAction(zoomOutAction);
+    m->addAction(saveScreenShotAction);
     GObjectView::buildStaticMenu(m);
     GUIUtils::disableEmptySubmenus(m);
 }
@@ -498,6 +500,25 @@ void AssemblyBrowser::setupActions() {
     showCoordsOnRulerAction = new QAction(QIcon(":core/images/ruler.png"), tr("Show coordinates on ruler"), this);
     showCoordsOnRulerAction->setCheckable(true);
     connect(showCoordsOnRulerAction, SIGNAL(triggered()), SLOT(sl_onShowCoordsOnRulerChanged()));
+    
+    saveScreenShotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
+    connect(saveScreenShotAction, SIGNAL(triggered()), SLOT(sl_saveScreenshot()));
+}
+
+void AssemblyBrowser::sl_saveScreenshot() {
+    // 1. get url and format
+    QPair<QString, QString> saveFileAndFormat = DialogUtils::selectFileForScreenShot(ui);
+    QString filename = saveFileAndFormat.first;
+    if(saveFileAndFormat.first.isEmpty()) {
+        return;
+    }
+    QString format = saveFileAndFormat.second;
+    assert(!format.isEmpty());
+    
+    // 2. save file
+    QRect screenRect(0, 0, 0, 0);
+    screenRect.setBottomRight(ui->geometry().bottomRight());
+    QPixmap::grabWidget(ui, screenRect).save(filename, format.toAscii().constData());
 }
 
 void AssemblyBrowser::sl_onShowCoordsOnRulerChanged() {

@@ -98,6 +98,7 @@ private slots:
     void sl_onPosChangeRequest(int);
     void sl_changeOverviewType();
     void sl_onShowCoordsOnRulerChanged();
+    void sl_saveScreenshot();
     
 public slots:
     void sl_zoomIn();
@@ -131,6 +132,7 @@ private:
     PositionSelector * posSelector;
     QList<QAction*> overviewScaleTypeActions;
     QAction * showCoordsOnRulerAction;
+    QAction * saveScreenShotAction;
     
     const static double INITIAL_ZOOM_FACTOR;
     const static double ZOOM_MULT;

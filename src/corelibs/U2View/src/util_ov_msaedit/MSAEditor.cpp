@@ -471,19 +471,12 @@ void MSAEditor::calcFontPixelToPointSizeCoef() {
 }
 
 void MSAEditor::sl_saveScreenshot() {
-    QMap<QString, QString> filters;
-    filters[ "PNG - Portable Network Graphics (*.png)" ] = "png";
-    filters[ "JPG/JPEG format (*.jpg)" ] = "jpg";
-    filters[ "TIF - Tagged Image File format (*.tiff)" ] = "tiff";
-
-    LastOpenDirHelper lod("image");
-    QString selectedFilter;
-    lod.url = QFileDialog::getSaveFileName(ui, tr("Export alignment image"), lod.dir, QStringList(filters.keys()).join(";;"), &selectedFilter);
-    if (lod.url.isEmpty()) {
+    QPair<QString, QString> saveFileAndFormat = DialogUtils::selectFileForScreenShot(ui);
+    if(saveFileAndFormat.first.isEmpty()) {
         return;
     }
-    QString format = filters.value(selectedFilter);
-    ui->saveScreenshot(lod.url, format);
+    assert(!saveFileAndFormat.second.isEmpty());
+    ui->saveScreenshot(saveFileAndFormat.first, saveFileAndFormat.second);
 }
 
 //////////////////////////////////////////////////////////////////////////

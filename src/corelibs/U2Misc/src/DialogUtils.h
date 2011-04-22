@@ -55,7 +55,8 @@ public:
     static QString getLastOpenFileDir(const QString& toolType = QString(), const QString& defaultVal = QString());
 
     static void setLastOpenFileDir(const QString& ld, const QString& toolType = QString());
-
+    
+    static QPair<QString, QString> selectFileForScreenShot(QWidget * parent);
 };
 
 class U2MISC_EXPORT LastOpenDirHelper {

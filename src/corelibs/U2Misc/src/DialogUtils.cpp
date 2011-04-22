@@ -138,6 +138,17 @@ QString DialogUtils::prepareDocumentsFileFilterByObjType(const GObjectType& t, b
     return prepareDocumentsFileFilter(c, any);
 }
 
+QPair<QString, QString> DialogUtils::selectFileForScreenShot(QWidget * parent) {
+    QMap<QString, QString> filters;
+    filters[ "PNG - Portable Network Graphics (*.png)" ] = "png";
+    filters[ "JPG/JPEG format (*.jpg)" ] = "jpg";
+    filters[ "TIF - Tagged Image File format (*.tiff)" ] = "tiff";
+
+    LastOpenDirHelper lod("image");
+    QString selectedFilter;
+    lod.url = QFileDialog::getSaveFileName(parent, tr("Export alignment image"), lod.dir, QStringList(filters.keys()).join(";;"), &selectedFilter);
+    return QPair<QString, QString>(lod.url, filters.value(selectedFilter));
+}
 
 #define SETTINGS_ROOT QString("gui/")
 
