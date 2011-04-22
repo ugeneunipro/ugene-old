@@ -69,7 +69,6 @@ private:
     bool redraw;
     QPixmap cachedView;
 
-    bool redrawCursor;
     int cursorPos; //x-coord of the cursor on the widget
 
     //cached ruler labels. Rendered once in paintEvent,

@@ -29,6 +29,7 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Timer.h>
 
 #include "AssemblyBrowser.h"
 #include "AssemblyReadsArea.h"
@@ -47,6 +48,7 @@ BackgroundRenderTask(tr("Assembly overview renderer"), TaskFlag_None), model(mod
 }
 
 void AssemblyOverviewRenderTask::run() {
+    GTIMER(c1, t1, "AssemblyOverviewRenderTask::run");
     result = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
 
     QPainter p(&result);
@@ -144,6 +146,7 @@ void AssemblyOverview::initSelectionRedraw() {
 }
 
 void AssemblyOverview::drawAll() {
+    GTIMER(c1, t1, "AssemblyOverview::drawAll");
     if(!model->isEmpty()) {
         QImage bgr = bgrRenderer.getImage();
         if(bgr.isNull()) {

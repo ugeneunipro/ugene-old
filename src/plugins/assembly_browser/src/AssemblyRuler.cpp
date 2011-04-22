@@ -48,7 +48,7 @@ static const int LONG_NOTCH_END = 18;
 static const int LABELS_END = LONG_NOTCH_END + 2;
 
 AssemblyRuler::AssemblyRuler(AssemblyBrowserUi * ui_) :
-QWidget(ui_), ui(ui_), browser(ui->getWindow()), model(ui->getModel()), redrawCursor(false), cursorPos(0), 
+QWidget(ui_), ui(ui_), browser(ui->getWindow()), model(ui->getModel()), cursorPos(0), 
 showCoords(AssemblyBrowserSettings::getShowCoordsOnRuler()) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
@@ -70,9 +70,8 @@ void AssemblyRuler::drawAll() {
             drawRuler(p);
         }
         QPixmap cachedViewCopy(cachedView);
-        if(redrawCursor) {
+        {
             QPainter p(&cachedViewCopy);
-            redrawCursor = false;
             drawCursor(p);
         }
         QPainter p(this);
@@ -196,7 +195,7 @@ void AssemblyRuler::sl_handleMoveToPos(const QPoint & pos) {
     int cellWidth = browser->getCellWidth();
     if(cellWidth == 0) {
         cursorPos = pos.x();
-        redrawCursor = true;
+        redraw = true;
         update();
     } else {
         //redraw cursor only if it points to the new cell
@@ -204,7 +203,7 @@ void AssemblyRuler::sl_handleMoveToPos(const QPoint & pos) {
         int cellNumNew = pos.x() / cellWidth;
         if(cellNumOld != cellNumNew) {
             cursorPos = cellNumNew * cellWidth + cellWidth / 2;
-            redrawCursor = true;
+            redraw = true;
             update();
         }
     }
@@ -228,7 +227,6 @@ void AssemblyRuler::mouseMoveEvent(QMouseEvent * e) {
 void AssemblyRuler::sl_redraw() {
     cachedView = QPixmap (size());
     redraw = true;
-    redrawCursor = true;
     update();
 }
 
@@ -236,7 +234,6 @@ void AssemblyRuler::setShowCoordsOnRuler(bool sh) {
     AssemblyBrowserSettings::setShowCoordsOnRuler(sh);
     showCoords = sh;
     redraw = true;
-    redrawCursor = true;
     update();
 }
 

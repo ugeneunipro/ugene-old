@@ -103,6 +103,7 @@ void AssemblyReadsArea::setupVScrollBar() {
 }
 
 void AssemblyReadsArea::drawAll() {
+    GTIMER(c1, t1, "AssemblyReadsArea::drawAll");
     if(!model->isEmpty()) {
         if (redraw) {
             cachedView.fill();
@@ -432,7 +433,8 @@ void AssemblyReadsArea::hideEvent(QHideEvent * e) {
 }
 
 bool AssemblyReadsArea::event(QEvent * e) {
-    if(e->type() == QEvent::WindowDeactivate) {
+    QEvent::Type t = e->type();
+    if(t == QEvent::WindowDeactivate) {
         sl_hideHint();
         redrawHint = false;
     }
