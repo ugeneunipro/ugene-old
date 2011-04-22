@@ -315,7 +315,8 @@ static void find_subst(
     int maxErr,
     int& stopFlag, 
     int& percentsCompleted, 
-    int& currentPos) 
+    int& currentPos,
+    const CharComparator& cmp = SimpleComparator()) 
 {
     assert(complTT == NULL || complTT->isOne2One());
     
@@ -359,7 +360,7 @@ static void find_subst(
             FindAlgorithmResult& res = ctx.res; 
             bool match = true;
             for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
-                if( seq[i+j] != p[j] && ++curErr > maxErr ) {
+                if( !cmp(seq[i+j],p[j]) && ++curErr > maxErr ) {
                     match = false;
                     break;
                 }
@@ -398,6 +399,7 @@ void FindAlgorithm::find(
                          DNATranslation* complTT, // if complTT!=NULL -> sequence is complemented before comparison with pattern
                          FindAlgorithmStrand strand, // if not direct there complTT must not be NULL
                          bool insDel,
+                         bool useAmbiguousBases,
                          const char* seq, 
                          int seqLen, 
                          const U2Region& range,  
@@ -413,6 +415,12 @@ void FindAlgorithm::find(
     assert(complTT == NULL || complTT->isOne2One());
     assert(patternLen > maxErr);    
 
+    if (useAmbiguousBases) {
+        find_subst( rl, aminoTT, complTT, strand, seq, range, pattern, patternLen,
+            singleShot, maxErr, stopFlag, percentsCompleted, currentPos, AmbiguousBaseComparator() );
+        return;
+    }
+    
     if( !insDel ) {
         find_subst( rl, aminoTT, complTT, strand, seq, range, pattern, patternLen,
             singleShot, maxErr, stopFlag, percentsCompleted, currentPos );
@@ -517,6 +525,55 @@ void FindAlgorithm::find(
             rl->onResult(context[i].res);
         }
     }
+}
+
+
+char encodeAmbiguousChar(char c) {
+    switch (c) {
+        case 'A':
+            return 0x01; // Bitmask: 00000001
+        case 'C':
+            return 0x02; // Bitmask: 00000010
+        case 'G':
+            return 0x04; // Bitmask: 00000100
+        case 'T':
+            return 0x08; // Bitmask: 00001000
+        case 'M':
+            return 0x03; // Bitmask: 00000011
+        case 'R':
+            return 0x05; // Bitmask: 00000101
+        case 'W':
+            return 0x09; // Bitmask: 00001001
+        case 'S':
+            return 0x06; // Bitmask: 00000110
+        case 'Y':
+            return 0x0A; // Bitmask: 00001010
+        case 'K':
+            return 0x0C; // Bitmask: 00001100
+        case 'V':
+            return 0x07; // Bitmask: 00000111
+        case 'H':
+            return 0x0B; // Bitmask: 00001011
+        case 'D':
+            return 0x0D; // Bitmask: 00001101
+        case 'B':
+            return 0x0E; // Bitmask: 00001110
+        case 'N':
+            return 0x0F; // Bitmask: 00001111
+        default:
+            return 0x00; // Unknown symbol: no match
+    }
+} 
+
+
+bool AmbiguousBaseComparator::operator()( char a, char b ) const
+{
+    char c1 = encodeAmbiguousChar(a);
+    char c2 = encodeAmbiguousChar(b);
+    
+    // compare bit masks
+
+    return c1 & c2;
 }
 
 }//namespace

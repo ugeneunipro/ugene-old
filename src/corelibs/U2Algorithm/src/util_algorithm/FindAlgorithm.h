@@ -93,18 +93,36 @@ public:
         const U2Region& searchRegion = U2Region(),
         bool singleShot = false,
         int maxErr = 0,
-        bool insDelAlg = false
+        bool insDel = false, 
+        bool ambBases = false
 ) : pattern(pattern), strand(strand), complementTT(complementTT), proteinTT(proteinTT),
-searchRegion(searchRegion), singleShot(singleShot), maxErr(maxErr), insDelAlg(insDelAlg){}
+searchRegion(searchRegion), singleShot(singleShot), maxErr(maxErr), insDelAlg(insDel), useAmbiguousBases (ambBases) {}
 
     QByteArray          pattern;
     FindAlgorithmStrand strand;
     DNATranslation*     complementTT;
     DNATranslation*     proteinTT;
-    U2Region             searchRegion;
+    U2Region            searchRegion;
     bool                singleShot;
     int                 maxErr;
     bool                insDelAlg;
+    bool                useAmbiguousBases;
+};
+
+
+class CharComparator {
+public:
+    virtual bool operator() (char a, char b) const = 0;
+};
+
+class SimpleComparator : public CharComparator {
+public:
+    virtual bool operator() (char a, char b) const { return a == b; }
+};
+
+class AmbiguousBaseComparator : public CharComparator {
+public:
+    virtual bool operator() (char a, char b) const;
 };
 
 
@@ -118,12 +136,13 @@ public:
         DNATranslation* complTT, // if complTT!=NULL -> sequence is complemented before comparison with pattern
         FindAlgorithmStrand strand, // if not direct there complTT must not be NULL
         bool insDel,
+        bool supportAmbigiousBases,
         const char* sequence, 
         int seqLen, 
         const U2Region& range,  
         const char* pattern, 
         int patternLen, 
-        bool singleShot, 
+        bool singleShot,
         int maxErr, 
         int& stopFlag, 
         int& percentsCompleted, 
@@ -142,6 +161,7 @@ public:
                 config.complementTT,
                 config.strand,
                 config.insDelAlg,
+                config.useAmbiguousBases,
                 sequence,
                 seqLen,
                 config.searchRegion,

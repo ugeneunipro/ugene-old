@@ -43,6 +43,7 @@ void FindAlgorithmTask::run() {
         config.complementTT,
         config.strand,
         config.insDelAlg,
+        config.useAmbiguousBases,
         config.sequence.constData(),
         config.sequence.size(),
         config.searchRegion,

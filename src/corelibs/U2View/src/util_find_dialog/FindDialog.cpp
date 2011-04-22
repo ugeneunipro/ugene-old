@@ -115,6 +115,9 @@ FindDialog::FindDialog(ADVSequenceObjectContext* context): QDialog(context->getA
     leFind->setFocus();
     lbResult->setSortingEnabled(true);
 
+    DNAAlphabet* al = ctx->getSequenceObject()->getAlphabet();
+    useAmbiguousBasesBox->setEnabled(al->isNucleic());
+
     timer = new QTimer(this);
 
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
@@ -482,6 +485,7 @@ void FindDialog::runTask(bool singleShot) {
     s.maxErr = getMaxErr();
     
     s.insDelAlg = rbInsDelAlg->isChecked();
+    s.useAmbiguousBases = useAmbiguousBasesBox->isChecked();
 
     //setup search region
     s.searchRegion = getCompleteSearchRegion();
