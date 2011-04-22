@@ -34,6 +34,8 @@ SectionGroup "${un}Associate file extensions"
   !insertmacro AssociateExtSection "${un}" ".em"     "EMBL file"                    "1"
   !insertmacro AssociateExtSection "${un}" ".emb"    "EMBL file"                    "1"
   !insertmacro AssociateExtSection "${un}" ".embl"   "EMBL file"                    "1"
+;Swiss-Prot format
+  !insertmacro AssociateExtSection "${un}" ".sw"     "Swiss-Prot file"              "1"
 
 ;FASTA format
   !insertmacro AssociateExtSection "${un}" ".fa"     "FASTA sequence file"          "1"
