@@ -325,7 +325,9 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
         bool instanceLock = docElement.attribute("format-lock").toInt() != 0;
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioAdapterId);
         DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(format);
-        assert(df!=NULL);
+        if(df == NULL) { // this can happen when close ugene on startup
+            continue;
+        }
         QVariantMap fs = string2Map(docElement.text(), true);
 
         QList<UnloadedObjectInfo> unloadedObjects;
