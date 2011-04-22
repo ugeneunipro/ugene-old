@@ -115,7 +115,10 @@ void RestrctionMapWidget::updateTreeWidget()
 {
     treeWidget->clear();
 
-    QString selection = AppContext::getSettings()->getValue(EnzymeSettings::LAST_SELECTION, EnzymeSettings::COMMON_ENZYMES).toString();
+    QString selection = AppContext::getSettings()->getValue(EnzymeSettings::LAST_SELECTION).toString();
+    if (selection.isEmpty()) {
+        selection = EnzymeSettings::COMMON_ENZYMES;
+    }
     QStringList selectedEnzymes = selection.split(ENZYME_LIST_SEPARATOR, QString::SkipEmptyParts);
 
     QList<QTreeWidgetItem*> items;

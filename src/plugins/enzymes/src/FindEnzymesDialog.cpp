@@ -394,7 +394,9 @@ int EnzymesSelectorWidget::getNumSelected()
 void EnzymesSelectorWidget::saveSettings()
 {
     QStringList sl(lastSelection.toList());
-    AppContext::getSettings()->setValue(EnzymeSettings::LAST_SELECTION, sl.join(ENZYME_LIST_SEPARATOR));
+    if (!sl.isEmpty()) {
+        AppContext::getSettings()->setValue(EnzymeSettings::LAST_SELECTION, sl.join(ENZYME_LIST_SEPARATOR));
+    }
 }
 
 void EnzymesSelectorWidget::initSelection()
@@ -446,7 +448,17 @@ void FindEnzymesDialog::accept() {
     QList<SEnzymeData> selectedEnzymes = enzSel->getSelectedEnzymes();
     
     if (selectedEnzymes.isEmpty()) {
-        QMessageBox::critical(this, tr("Error!"), tr("No enzymes selected!"));
+        int ret = QMessageBox::question(this, windowTitle(), 
+            tr("<html><body align=\"center\">No enzymes are selected!\
+                Do you want to turn off <br>enzymes annotations highlighting?</body></html>"),
+            QMessageBox::Yes, QMessageBox::No );
+        if (ret == QMessageBox::Yes) {
+            QAction* toggleAction = AutoAnnotationUtils::findAutoAnnotationsToggleAction(seqCtx, ANNOTATION_GROUP_ENZYME);
+            if (toggleAction) {
+                toggleAction->setChecked(false);
+            }
+            QDialog::accept();
+        }
         return;
     }
     
