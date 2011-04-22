@@ -55,6 +55,7 @@ static const QString PATTERN_ATTR("pattern");
 static const QString ERR_ATTR("max-mismatches-num");
 static const QString ALGO_ATTR("allow-ins-del");
 static const QString AMINO_ATTR("amino");
+static const QString AMBIGUOUS_ATTR("ambiguous");
 
 const QString FindWorkerFactory::ACTOR_ID("search");
 
@@ -102,6 +103,12 @@ void FindWorkerFactory::init() {
             FindWorker::tr("Allow Insertions/Deletions"),
             FindWorker::tr("Takes into account possibility of insertions/deletions"
                 " when searching. By default substitutions are only considered."));
+                
+        Descriptor ambigd(AMBIGUOUS_ATTR,
+            FindWorker::tr("Support ambiguous bases"),
+            FindWorker::tr("Performs correct handling of ambiguous bases. When this option"
+            " is activated insertions and deletions are not considered. "));
+
 
         Descriptor amd(AMINO_ATTR,
             FindWorker::tr("Search in Translation"),
@@ -113,7 +120,9 @@ void FindWorkerFactory::init() {
         a << new Attribute(ed, BaseTypes::NUM_TYPE(), false, 0);
         a << new Attribute(BaseAttributes::STRAND_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::STRAND_BOTH());
         a << new Attribute(ald, BaseTypes::BOOL_TYPE(), false, false);
+        a << new Attribute(ambigd, BaseTypes::BOOL_TYPE(), false, false);
         a << new Attribute(amd, BaseTypes::BOOL_TYPE(), false, false);
+        
     }
     
     Descriptor desc(ACTOR_ID,
@@ -256,6 +265,8 @@ Task* FindWorker::tick() {
     // other parameters
     cfg.maxErr = actor->getParameter(ERR_ATTR)->getAttributeValue<int>();
     cfg.insDelAlg = actor->getParameter(ALGO_ATTR)->getAttributeValue<bool>();
+    cfg.useAmbiguousBases = actor->getParameter(AMBIGUOUS_ATTR)->getAttributeValue<bool>();
+
     resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
     
     // translations
