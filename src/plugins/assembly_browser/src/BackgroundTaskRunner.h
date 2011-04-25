@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __BACKGROUND_RENDERER_H__
-#define __BACKGROUND_RENDERER_H__
+#ifndef __BACKGROUND_TASK_RUNNER_H__
+#define __BACKGROUND_TASK_RUNNER_H__
 
 #include <U2Core/Task.h>
 

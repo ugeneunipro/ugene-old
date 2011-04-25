@@ -29,7 +29,7 @@
 
 #include "AssemblyBrowserSettings.h"
 #include "CoverageInfo.h"
-#include "BackgroundRenderer.h"
+#include "BackgroundTaskRunner.h"
 
 namespace U2 {
 

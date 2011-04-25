@@ -12,7 +12,7 @@ HEADERS += src/AssemblyBrowser.h \
            src/ShortReadIterator.h \
            src/AssemblyBrowserFactory.h \
            src/AssemblyBrowserSettings.h \
-           src/BackgroundRenderer.h \
+           src/BackgroundTaskRunner.h \
            src/AssemblyModel.h \
            src/ZoomableAssemblyOverview.h \
            src/CoverageInfo.h 
@@ -27,7 +27,7 @@ SOURCES += src/AssemblyBrowser.cpp \
            src/ShortReadIterator.cpp \
            src/AssemblyBrowserFactory.cpp \
            src/AssemblyBrowserSettings.cpp \
-           src/BackgroundRenderer.cpp \
+           src/BackgroundTaskRunner.cpp \
            src/AssemblyModel.cpp \
            src/ZoomableAssemblyOverview.cpp \
            src/CoverageInfo.cpp

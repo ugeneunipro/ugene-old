@@ -27,7 +27,7 @@
 
 #include <U2Core/U2Region.h>
 
-#include "BackgroundRenderer.h"
+#include "BackgroundTaskRunner.h"
 #include "AssemblyModel.h"
 
 namespace U2 {

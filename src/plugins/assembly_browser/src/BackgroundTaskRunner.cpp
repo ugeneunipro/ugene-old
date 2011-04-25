@@ -1,4 +1,4 @@
-#include "BackgroundRenderer.h"
+#include "BackgroundTaskRunner.h"
 
 namespace U2 {
 
