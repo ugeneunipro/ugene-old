@@ -516,7 +516,7 @@ void AssemblyBrowser::setupActions() {
 }
 
 void AssemblyBrowser::sl_showContigInfo() {
-    QDialog dlg(ui);
+    QDialog dlg(ui, Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
     dlg.setWindowTitle(tr("'%1' contig information").arg(gobject->getGObjectName()));
     dlg.setLayout(new QVBoxLayout());
     QLabel * infoLabel = new QLabel();
@@ -544,7 +544,8 @@ void AssemblyBrowser::sl_showContigInfo() {
     }
     dlg.layout()->addWidget(infoLabel);
     
-    dlg.resize(qMin(200, QApplication::desktop()->screenGeometry().width()), dlg.sizeHint().height());
+    //dlg.resize(qMin(250, QApplication::desktop()->screenGeometry().width()), dlg.sizeHint().height());
+    dlg.resize(300, dlg.sizeHint().height());
     dlg.setMaximumHeight(dlg.layout()->minimumSize().height());
     dlg.exec();
 }
