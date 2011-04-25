@@ -2,6 +2,7 @@ include (genome_aligner.pri)
 
 # Input
 HEADERS += src/BuildSArraySettingsWidget.h \
+           src/GenomeAlignerCMDLineTask.h \
            src/GenomeAlignerFindTask.h \
            src/GenomeAlignerIndex.h \
            src/GenomeAlignerIndexPart.h \
@@ -12,9 +13,9 @@ HEADERS += src/BuildSArraySettingsWidget.h \
            src/GenomeAlignerSettingsWidget.h \
            src/GenomeAlignerTask.h \
            src/GenomeAlignerWorker.h
-FORMS += src/ui/GenomeAlignerSettings.ui \
-         src/ui/BuildSuffixArraySettings.ui
+FORMS += src/ui/BuildSuffixArraySettings.ui src/ui/GenomeAlignerSettings.ui
 SOURCES += src/BuildSArraySettingsWidget.cpp \
+           src/GenomeAlignerCMDLineTask.cpp \
            src/GenomeAlignerFindTask.cpp \
            src/GenomeAlignerIndex.cpp \
            src/GenomeAlignerIndexPart.cpp \
@@ -25,3 +26,4 @@ SOURCES += src/BuildSArraySettingsWidget.cpp \
            src/GenomeAlignerSettingsWidget.cpp \
            src/GenomeAlignerTask.cpp \
            src/GenomeAlignerWorker.cpp
+TRANSLATIONS += transl/english.ts transl/russian.ts

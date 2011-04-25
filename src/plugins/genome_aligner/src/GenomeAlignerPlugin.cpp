@@ -22,9 +22,13 @@
 #include "GenomeAlignerPlugin.h"
 #include "GenomeAlignerTask.h"
 #include "GenomeAlignerSettingsWidget.h"
+#include "GenomeAlignerCMDLineTask.h"
 #include "BuildSArraySettingsWidget.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/CMDLineRegistry.h>
+#include <U2Core/CMDLineHelpProvider.h>
+#include <U2Core/TaskStarter.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -40,6 +44,7 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
 }
 
 const QString GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE_ID("gai");
+const QString GenomeAlignerPlugin::RUN_GENOME_ALIGNER("genome-aligner");
 
 DataTypePtr GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE()
 {
@@ -73,14 +78,51 @@ GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE genome aligner"),
     bool res = registry->registerAlgorithm(algo);
     Q_UNUSED(res);
     assert(res);
-
+   
     LocalWorkflow::GenomeAlignerWorkerFactory::init();
     LocalWorkflow::GenomeAlignerBuildWorkerFactory::init();
     LocalWorkflow::GenomeAlignerIndexReaderWorkerFactory::init();
+
+    registerCMDLineHelp();
+    processCMDLineOptions();
 }
 
 GenomeAlignerPlugin::~GenomeAlignerPlugin() {
 }
+
+void GenomeAlignerPlugin::processCMDLineOptions()
+{
+    CMDLineRegistry * cmdlineReg = AppContext::getCMDLineRegistry();
+    assert(cmdlineReg != NULL);
+
+    if (cmdlineReg->hasParameter( RUN_GENOME_ALIGNER ) ) {
+        Task * t = new GenomeAlignerCMDLineTask();
+        connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
+    }
+}
+
+void GenomeAlignerPlugin::registerCMDLineHelp()
+{
+    CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
+    assert( NULL != cmdLineRegistry );
+
+    CMDLineHelpProvider * taskSection = new CMDLineHelpProvider(
+        RUN_GENOME_ALIGNER,
+        tr("UGENE Short Reads Aligner"),
+        tr("UGENE Genome Aligner is an efficient and fast tool for short read alignment."
+        "It has 2 work modes: build index and align short reads (default mode).\nIf there is no "
+        "index available for reference sequence it will be built on the fly.\n"
+        "\nUsage: ugene --genome-aligner { --option[=argument] }\n"
+        "\nExamples\n--------\n\n"
+        "Build index for reference sequence:\n"
+        "ugene --genome-aligner --build-index --reference=/path/to/ref --index=/path/to/index/file\n"
+        "\nAlign short reads using existing index:\n"
+        "ugene --genome-aligner --short-reads=/path/to/reads --result=/path/to/result\n")
+       );
+
+    cmdLineRegistry->registerCMDLineHelpProvider( taskSection );
+}
+
 
 
 } //namespace

@@ -19,28 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GENOME_ALIGNER_PLUGIN_H_
-#define _U2_GENOME_ALIGNER_PLUGIN_H_
+#ifndef _U2_GENOME_ALIGNER_CMDLINE_TASK_H_
+#define _U2_GENOME_ALIGNER_CMDLINE_TASK_H_
 
-#include <U2Core/PluginModel.h>
-#include <U2Lang/Datatype.h>
+#include <U2Core/Task.h>
+#include <U2Core/GUrl.h>
+#include <U2Algorithm/DnaAssemblyTask.h>
 
 namespace U2 {
 
-class GenomeAlignerPlugin : public Plugin  {
+class GenomeAlignerCMDLineTask : public Task {
     Q_OBJECT
-private:
-    void registerCMDLineHelp();
-    void processCMDLineOptions();
 public:
-    GenomeAlignerPlugin();
-    ~GenomeAlignerPlugin();
+    GenomeAlignerCMDLineTask();
+    virtual ~GenomeAlignerCMDLineTask();
+    virtual void prepare();
+private:
+    DnaAssemblyToRefTaskSettings settings;
+    QString indexPath, resultPath, refPath;
+    bool onlyBuildIndex;
+    QList<GUrl> shortReadUrls;
 
-    static const QString GENOME_ALIGNER_INDEX_TYPE_ID;
-    static const QString RUN_GENOME_ALIGNER;
-    static DataTypePtr GENOME_ALIGNER_INDEX_TYPE();
-};
+}; // GenomeAlignerCMDLineTask
 
 } //namespace
 
-#endif // _U2_GENOME_ALIGNER_PLUGIN_H_
+#endif // _U2_GENOME_ALIGNER_CMDLINE_TASK_H_
