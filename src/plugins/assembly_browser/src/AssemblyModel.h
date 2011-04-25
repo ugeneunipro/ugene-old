@@ -46,6 +46,10 @@ public:
     
     QByteArray getReferenceMd5(U2OpStatus & os);
     
+    QByteArray getReferenceSpecies(U2OpStatus & os);
+    
+    QString getReferenceUri(U2OpStatus & os);
+    
     qint64 getModelHeight(U2OpStatus & os);
 
     void setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
@@ -61,6 +65,8 @@ public:
     void associateWithReference(const U2CrossDatabaseReference & ref);
     
     bool isLoadingReference()const { return loadingReference; }
+    
+    qint64 getReadsNumber(U2OpStatus & os);
     
 private:
     void cleanup();
@@ -96,6 +102,14 @@ private:
     
     QByteArray referenceMd5;
     bool md5Retrieved;
+    
+    qint64 cachedReadsNumber;
+    
+    QByteArray referenceSpecies;
+    bool speciesRetrieved;
+
+    QString referenceUri;
+    bool uriRetrieved;
 }; // AssemblyModel
 
 } // U2

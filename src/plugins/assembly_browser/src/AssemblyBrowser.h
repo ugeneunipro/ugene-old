@@ -99,6 +99,7 @@ private slots:
     void sl_changeOverviewType();
     void sl_onShowCoordsOnRulerChanged();
     void sl_saveScreenshot();
+    void sl_showContigInfo();
     
 public slots:
     void sl_zoomIn();
@@ -133,6 +134,7 @@ private:
     QList<QAction*> overviewScaleTypeActions;
     QAction * showCoordsOnRulerAction;
     QAction * saveScreenShotAction;
+    QAction * showInfoAction;
     
     const static double INITIAL_ZOOM_FACTOR;
     const static double ZOOM_MULT;

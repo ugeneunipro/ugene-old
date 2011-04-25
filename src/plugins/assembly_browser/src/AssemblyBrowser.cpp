@@ -33,6 +33,7 @@
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/FormatUtils.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
@@ -45,6 +46,8 @@
 #include <QtGui/QToolButton>
 #include <QtCore/QEvent>
 #include <QtGui/QDropEvent>
+#include <QtGui/QApplication>
+#include <QtGui/QDesktopWidget>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -74,7 +77,8 @@ const double AssemblyBrowser::INITIAL_ZOOM_FACTOR= 1.;
 AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), 
-zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0)
+zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
+showInfoAction(0)
 {
     initFont();
     setupActions();
@@ -211,6 +215,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
     
     tb->addAction(showCoordsOnRulerAction);
     tb->addAction(saveScreenShotAction);
+    tb->addAction(showInfoAction);
     
     GObjectView::buildStaticToolbar(tb);
 }
@@ -224,6 +229,7 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
     m->addAction(zoomInAction);
     m->addAction(zoomOutAction);
     m->addAction(saveScreenShotAction);
+    m->addAction(showInfoAction);
     GObjectView::buildStaticMenu(m);
     GUIUtils::disableEmptySubmenus(m);
 }
@@ -504,6 +510,43 @@ void AssemblyBrowser::setupActions() {
     
     saveScreenShotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     connect(saveScreenShotAction, SIGNAL(triggered()), SLOT(sl_saveScreenshot()));
+    
+    showInfoAction = new QAction(QIcon(":ugene/images/task_report.png"), tr("Show information about contig"), this);
+    connect(showInfoAction, SIGNAL(triggered()), SLOT(sl_showContigInfo()));
+}
+
+void AssemblyBrowser::sl_showContigInfo() {
+    QDialog dlg(ui);
+    dlg.setWindowTitle(tr("'%1' contig information").arg(gobject->getGObjectName()));
+    dlg.setLayout(new QVBoxLayout());
+    QLabel * infoLabel = new QLabel();
+    {
+        U2OpStatusImpl st;
+        QString text = "<table>";
+        text += QString("<tr><td><b>Name:&nbsp;</b></td><td>%1</td></tr>").arg(gobject->getGObjectName());
+        text += QString("<tr><td><b>Length:&nbsp;</b></td><td>%1</td></tr>").arg(FormatUtils::formatNumberWithSeparators(model->getModelLength(st)));
+        text += QString("<tr><td><b>Number of reads:&nbsp;</b></td><td>%1</td></tr>").arg(FormatUtils::formatNumberWithSeparators(model->getReadsNumber(st)));
+        QByteArray md5 = model->getReferenceMd5(st);
+        if(!md5.isEmpty()) {
+            text += QString("<tr><td><b>MD5:&nbsp;</b></td><td>%1</td></tr>").arg(QString(md5));
+        }
+        QByteArray species = model->getReferenceSpecies(st);
+        if(!species.isEmpty()) {
+            text += QString("<tr><td><b>Species:&nbsp;</b></td><td>%1</td></tr>").arg(QString(species));
+        }
+        QString uri = model->getReferenceUri(st);
+        if(!uri.isEmpty()) {
+            text += QString("<tr><td><b>URI:&nbsp;</b></td><td>%1</td></tr>").arg(uri);
+        }
+        text += "</table>";
+        infoLabel->setText(text);
+        infoLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    }
+    dlg.layout()->addWidget(infoLabel);
+    
+    dlg.resize(qMin(200, QApplication::desktop()->screenGeometry().width()), dlg.sizeHint().height());
+    dlg.setMaximumHeight(dlg.layout()->minimumSize().height());
+    dlg.exec();
 }
 
 void AssemblyBrowser::sl_saveScreenshot() {

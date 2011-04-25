@@ -138,6 +138,28 @@ void ConvertToSQLiteTask::run() {
                             throw Exception(status.getError());
                         }
                     }
+                    if(!reference.getSpecies().isEmpty()) {
+                        U2ByteArrayAttribute speciesAttr;
+                        speciesAttr.objectId = assembly.id;
+                        speciesAttr.name = "reference_species_attribute";
+                        speciesAttr.version = 1;
+                        speciesAttr.value = reference.getSpecies();
+                        attributeDbi->createByteArrayAttribute(speciesAttr, status);
+                        if(status.hasError()) {
+                            throw Exception(status.getError());
+                        }
+                    }
+                    if(!reference.getUri().isEmpty()) {
+                        U2StringAttribute uriAttr;
+                        uriAttr.objectId = assembly.id;
+                        uriAttr.name = "reference_uri_attribute";
+                        uriAttr.version = 1;
+                        uriAttr.value = reference.getUri().getURLString();
+                        attributeDbi->createStringAttribute(uriAttr, status);
+                        if(status.hasError()) {
+                            throw Exception(status.getError());
+                        }
+                    }
                 }
                 assemblies.insert(i, assembly);
             }

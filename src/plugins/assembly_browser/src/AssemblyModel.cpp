@@ -47,7 +47,8 @@ namespace U2 {
 
 AssemblyModel::AssemblyModel(const DbiHandle & dbiHandle_) : 
 cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), dbiHandle(dbiHandle_), assemblyDbi(0), 
-refSeqDbiHandle(0), loadingReference(false), refDoc(0), md5Retrieved(false) {
+refSeqDbiHandle(0), loadingReference(false), refDoc(0), md5Retrieved(false), cachedReadsNumber(NO_VAL), speciesRetrieved(false),
+uriRetrieved(false){
     Project * prj = AppContext::getProject();
     if(prj != NULL) {
         connect(prj, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_referenceDocRemoved(Document*)));
@@ -116,12 +117,7 @@ QByteArray AssemblyModel::getReferenceMd5(U2OpStatus& os) {
 
 qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
     if(NO_VAL == cachedModelHeight) {
-        // TODO: get rid of this? Use predefined max value?
-        qint64 zeroAsmLen = assemblyDbi->getMaxEndPos(assembly.id, os); 
-        //TODO: model height should be calculated as sum of all assemblies ? 
-        //Or consider refactoring to getHeightOfAssembly(int assIdx, ...)
-        cachedModelHeight = assemblyDbi->getMaxPackedRow(assembly.id, U2Region(0, zeroAsmLen), os);
-        return cachedModelHeight;
+        cachedModelHeight = assemblyDbi->getMaxPackedRow(assembly.id, U2Region(0, getModelLength(os)), os);
     }
     return cachedModelHeight;
 }
@@ -290,6 +286,37 @@ void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref)
     U2OpStatusImpl status;
     assemblyDbi->updateAssemblyObject(assembly, status);
     LOG_OP(status);
+}
+
+qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
+    if(cachedReadsNumber == NO_VAL) {
+        cachedReadsNumber = assemblyDbi->countReads(assembly.id, U2Region(0, getModelLength(os)), os);
+    }
+    return cachedReadsNumber;
+}
+
+QByteArray AssemblyModel::getReferenceSpecies(U2OpStatus & os) {
+    if(!speciesRetrieved) {
+        speciesRetrieved = true;
+        U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
+        static const QByteArray SPECIES_ATTRIBUTE_NAME("reference_species_attribute");
+        if (attributeDbi != NULL) {
+            referenceSpecies = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, SPECIES_ATTRIBUTE_NAME, QByteArray(), os);
+        }
+    }
+    return referenceSpecies;
+}
+
+QString AssemblyModel::getReferenceUri(U2OpStatus & os) {
+    if(!uriRetrieved) {
+        uriRetrieved = true;
+        U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
+        static const QByteArray URI_ATTRIBUTE_NAME("reference_uri_attribute");
+        if(attributeDbi != NULL) {
+            referenceUri = U2AttributeUtils::findStringAttribute(attributeDbi, assembly.id, URI_ATTRIBUTE_NAME, QString(), os);
+        }
+    }
+    return referenceUri;
 }
 
 } // U2
