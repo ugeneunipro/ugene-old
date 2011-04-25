@@ -339,6 +339,9 @@ qint64 AssemblyBrowser::normalizeXoffset(qint64 x) const {
     U2OpStatusImpl st;
     qint64 xMax = model->getModelLength(st) - qMax((qint64)1, basesCanBeVisible() - 1);
     LOG_OP(st);
+    if(xMax < 0) {
+        return 0;
+    }
     if(x > xMax && xMax >= 0) {
         return xMax;
     }
@@ -352,6 +355,9 @@ qint64 AssemblyBrowser::normalizeYoffset(qint64 y) const {
     U2OpStatusImpl st;
     qint64 yMax = model->getModelHeight(st) - qMax((qint64)1, rowsCanBeVisible() - 2);
     LOG_OP(st);
+    if(yMax < 0) {
+        return 0;
+    }
     if(y > yMax && yMax >= 0) {
         return yMax;
     }
