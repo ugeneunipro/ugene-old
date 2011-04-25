@@ -46,7 +46,7 @@ const quint64 LocalFileAdapter::BUF_SIZE = 1024*1024;
 LocalFileAdapter::LocalFileAdapter(LocalFileAdapterFactory* factory, QObject* o, bool b)
 : IOAdapter(factory, o), f(NULL), bufferOptimization(b)
 {
-    bufferOptimization = true;
+    //bufferOptimization = true;
     if (bufferOptimization) {
         buffer = QByteArray(BUF_SIZE, '\0');
         bufData = buffer.data();
