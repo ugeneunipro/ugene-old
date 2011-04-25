@@ -19,13 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __ASSEMBLY_OVERVIEW_H__
-#define __ASSEMBLY_OVERVIEW_H__
+#ifndef __ZOOMABLE_ASSEMBLY_OVERVIEW_H__
+#define __ZOOMABLE_ASSEMBLY_OVERVIEW_H__
 
 #include <QtCore/QSharedPointer>
 #include <QtGui/QWidget>
 
+#include <U2Core/U2Region.h>
+
 #include "AssemblyBrowserSettings.h"
+#include "CoverageInfo.h"
 #include "BackgroundRenderer.h"
 
 namespace U2 {
@@ -33,24 +36,12 @@ namespace U2 {
 class AssemblyModel;
 class AssemblyBrowserUi;
 class AssemblyBrowser;
-class AssemblyOverviewRenderTask;
 
-class AssemblyOverviewRenderTask: public BackgroundRenderTask {
+
+class ZoomableAssemblyOverview: public QWidget {
     Q_OBJECT
 public:
-    AssemblyOverviewRenderTask(QSharedPointer<AssemblyModel> model, const QSize & imageSize, AssemblyBrowserSettings::OverviewScaleType scaleType);
-    virtual void run();
-private:
-    QSharedPointer<AssemblyModel> model;
-    QSize imageSize;
-    AssemblyBrowserSettings::OverviewScaleType scaleType;
-};
-
-
-class AssemblyOverview: public QWidget {
-    Q_OBJECT
-public:
-    AssemblyOverview(AssemblyBrowserUi * ui);
+    ZoomableAssemblyOverview(AssemblyBrowserUi * ui, bool zoomable = false);
     
     void setScaleType(AssemblyBrowserSettings::OverviewScaleType t);
     AssemblyBrowserSettings::OverviewScaleType getScaleType()const;
@@ -61,29 +52,44 @@ protected:
     void mousePressEvent(QMouseEvent * me);
     void mouseMoveEvent(QMouseEvent * me);
     void mouseReleaseEvent(QMouseEvent * me);
+    void wheelEvent(QWheelEvent * e);
 
 private slots:
     void sl_visibleAreaChanged();
     void sl_redraw();
+    void sl_zoomIn(const QPoint & pos);
+    void sl_zoomOut(const QPoint & pos);
 
 private:
-    qint64 calcXAssemblyCoord(int x);
-    qint64 calcYAssemblyCoord(int y);
+    qint64 calcXAssemblyCoord(int x) const;
+    qint64 calcYAssemblyCoord(int y) const;
 
     QRect calcCurrentSelection() const;
+    U2Region calcVisibleAssemblyRange() const;
     void moveSelectionToPos(QPoint pos, bool moveModel = true);
+    void checkedMoveVisibleRange(qint64 newStartPos);
+    void checkedSetVisibleRange(qint64 newStartPos, qint64 newLen);
 
     void connectSlots();
     void initSelectionRedraw();
 
     void drawAll();
+    void drawBackground(QPainter & p);
     void drawSelection(QPainter & p);
     void drawCoordLabels(QPainter & p);
+
+    void launchCoverageCalculation();
 
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowser * browser;
     QSharedPointer<AssemblyModel> model;
+
+    bool zoomable;
+public:
+    U2Region visibleRange;
+private:
+    double zoomFactor;
 
     QRect cachedSelection;
 
@@ -91,13 +97,17 @@ private:
     bool redrawSelection;
 
     QPixmap cachedBackground;
-    BackgroundRenderer bgrRenderer;
+    bool redrawBackground;
+    BackgroundTaskRunner<CoverageInfo> coverageTaskRunner;
 
-    bool scribbling;
-    
+    bool selectionScribbling;
+    bool visibleRangeScribbling;
+    QPoint visibleRangeLastPos;
+
     AssemblyBrowserSettings::OverviewScaleType scaleType;
 
-    const static int FIXED_HEIGHT = 100;
+    const static int FIXED_HEIGHT = 70;
+    const static double ZOOM_MULT;
 };
 
 } //ns

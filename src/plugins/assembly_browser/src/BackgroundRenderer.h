@@ -22,42 +22,98 @@
 #ifndef __BACKGROUND_RENDERER_H__
 #define __BACKGROUND_RENDERER_H__
 
-#include <QtCore/QSharedPointer>
-#include <QtGui/QPixmap>
-
 #include <U2Core/Task.h>
-
-#include "AssemblyBrowserSettings.h"
 
 namespace U2 {
 
-class AssemblyModel;
-
-class BackgroundRenderTask : public Task {
-    Q_OBJECT
+/**
+ * Simple template task which allows to grab its result.
+ * Intended to be used as a base class for tasks for BackgroundTaskRunner.
+ */
+template<class Result>
+class BackgroundTask : public Task {
 public:
-    inline QImage getResult() const {return result;};
+    inline Result getResult() const {return result;};
 protected:
-    BackgroundRenderTask(const QString& _name, TaskFlags f);
-    QImage result;
+    BackgroundTask(const QString& _name, TaskFlags f) : Task(_name, f){};
+    Result result;
 };
 
-class BackgroundRenderer: public QObject {
+
+/**
+ * Stub containing Q_OBJECT macro, signals&slots. Classes with signal/slot related
+ * stuff can't be templates, so everything needed for BackgroundTaskRunner is moved here
+ */
+class BackgroundTaskRunner_base: public QObject {
     Q_OBJECT
 public:
-    BackgroundRenderer();
-    ~BackgroundRenderer();
-
-    void render(BackgroundRenderTask * task);
-    QImage getImage() const;
+    virtual ~BackgroundTaskRunner_base();
+    virtual void emitFinished();
 signals:
-    void si_rendered();
-    private slots:
-    void sl_redrawFinished();
-    
+    void si_finished();
+private slots:
+    virtual void sl_finished() = 0;
+};
+
+/**
+ * Simple manager for background tasks. 
+ * Allows running only one background task at a time, canceling previous task
+ * when the new one is queued with run(). Emits si_finished() (defined in the base)
+ * when the queued task is finished. Cancels current task in destructor.
+ */
+template<class Result>
+class BackgroundTaskRunner : public BackgroundTaskRunner_base {
+public:
+    BackgroundTaskRunner() : task(0) {}
+
+    virtual ~BackgroundTaskRunner() {
+        if(task) {
+            task->cancel();
+        }
+    }
+
+    void run(BackgroundTask<Result> * newTask)  {
+        if(task) {
+            task->cancel();
+        }
+        task = newTask;
+        connect(task, SIGNAL(si_stateChanged()), SLOT(sl_finished()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    }
+
+    inline Result getResult() const {
+        if(task) {
+            return Result();
+        }
+        return result;
+    }
+
+    inline bool isFinished() {
+        return !task;
+    }
+
 private:
-    BackgroundRenderTask * renderTask;
-    QImage result;
+    virtual void sl_finished() {
+        BackgroundTask<Result> * senderr = dynamic_cast<BackgroundTask<Result>*>(sender());
+        assert(senderr);
+        if(task != senderr) {
+            return;
+        }
+        if(Task::State_Finished != senderr->getState()) {
+            return;
+        }
+        result = task->getResult();
+        task = NULL;
+        emitFinished();
+    }
+
+private:
+    BackgroundTask<Result> * task;
+    Result result;
+
+private:
+    BackgroundTaskRunner(const BackgroundTaskRunner &);
+    BackgroundTaskRunner operator=(const BackgroundTaskRunner &);
 };
 
 

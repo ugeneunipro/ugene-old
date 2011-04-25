@@ -4,7 +4,6 @@ include (assembly_browser.pri)
 HEADERS += src/AssemblyBrowser.h \
            src/AssemblyBrowserPlugin.h \
            src/AssemblyDensityGraph.h \
-           src/AssemblyOverview.h \
            src/AssemblyReadsArea.h \
            src/AssemblyReadsAreaHint.h \
            src/AssemblyReferenceArea.h \
@@ -14,11 +13,12 @@ HEADERS += src/AssemblyBrowser.h \
            src/AssemblyBrowserFactory.h \
            src/AssemblyBrowserSettings.h \
            src/BackgroundRenderer.h \
-           src/AssemblyModel.h
+           src/AssemblyModel.h \
+           src/ZoomableAssemblyOverview.h \
+           src/CoverageInfo.h 
 SOURCES += src/AssemblyBrowser.cpp \
            src/AssemblyBrowserPlugin.cpp \
            src/AssemblyDensityGraph.cpp \
-           src/AssemblyOverview.cpp \
            src/AssemblyReadsArea.cpp \
            src/AssemblyReadsAreaHint.cpp \
            src/AssemblyReferenceArea.cpp \
@@ -28,4 +28,6 @@ SOURCES += src/AssemblyBrowser.cpp \
            src/AssemblyBrowserFactory.cpp \
            src/AssemblyBrowserSettings.cpp \
            src/BackgroundRenderer.cpp \
-           src/AssemblyModel.cpp
+           src/AssemblyModel.cpp \
+           src/ZoomableAssemblyOverview.cpp \
+           src/CoverageInfo.cpp

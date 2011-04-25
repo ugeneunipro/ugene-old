@@ -34,7 +34,9 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
 
+#include "ZoomableAssemblyOverview.h"
 #include "AssemblyModel.h"
+
 
 namespace U2 {
 
@@ -80,11 +82,11 @@ public:
     void setOffsetsInAssembly(qint64 x, qint64 y);
     qint64 normalizeXoffset(qint64 x)const;
     qint64 normalizeYoffset(qint64 y)const;
-    
+
     void adjustOffsets(qint64 dx, qint64 dy);
-    
+
     void setFocusToPosSelector();
-    
+
 signals:
     void si_zoomOperationPerformed();
     void si_offsetsChanged();
@@ -115,6 +117,7 @@ private:
     // returns error string
     QString tryAddObject(GObject * obj);
 
+private:
     AssemblyBrowserUi * ui;
 
     AssemblyObject * gobject;
@@ -146,6 +149,7 @@ private:
 
 
 class AssemblyOverview;
+class ZoomableAssemblyOverview;
 class AssemblyReferenceArea;
 class AssemblyDensityGraph;
 class AssemblyRuler;
@@ -160,12 +164,12 @@ public:
     inline AssemblyBrowser * getWindow() const {return browser;}
 
     inline AssemblyReadsArea * getReadsArea() const {return readsArea;}
-    inline AssemblyOverview * getOverview() const {return overview;}
+    inline ZoomableAssemblyOverview * getOverview() const {return zoomableOverview;}
     inline AssemblyRuler * getRuler() const {return ruler;}
     inline AssemblyReferenceArea * getReferenceArea() const {return referenceArea;}
     
 private:
-    AssemblyOverview * overview;        
+    ZoomableAssemblyOverview * zoomableOverview;
     AssemblyReferenceArea * referenceArea;
     AssemblyDensityGraph * densityGraph;
     AssemblyRuler * ruler;

@@ -22,7 +22,7 @@
 #include "AssemblyBrowser.h"
 
 #include "AssemblyBrowserFactory.h"
-#include "AssemblyOverview.h"
+#include "ZoomableAssemblyOverview.h"
 #include "AssemblyReferenceArea.h"
 #include "AssemblyDensityGraph.h"
 #include "AssemblyRuler.h"
@@ -613,7 +613,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     QScrollBar * readsHBar = new QScrollBar(Qt::Horizontal);
     QScrollBar * readsVBar = new QScrollBar(Qt::Vertical);
 
-    overview = new AssemblyOverview(this);        
+    zoomableOverview = new ZoomableAssemblyOverview(this); //zooming temporarily disabled -iefremov
     referenceArea = new AssemblyReferenceArea(this);
     //densityGraph = new AssemblyDensityGraph(this);
     densityGraph = NULL;
@@ -623,7 +623,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->setMargin(0);
     mainLayout->setSpacing(2);
-    mainLayout->addWidget(overview);
+    mainLayout->addWidget(zoomableOverview);
 
     QGridLayout * readsLayout = new QGridLayout();
     readsLayout->setMargin(0);
@@ -644,7 +644,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
 
     setLayout(mainLayout);  
     
-    connect(readsArea, SIGNAL(si_heightChanged()), overview, SLOT(sl_visibleAreaChanged()));
+    connect(readsArea, SIGNAL(si_heightChanged()), zoomableOverview, SLOT(sl_visibleAreaChanged()));
     connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
     connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
     connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
