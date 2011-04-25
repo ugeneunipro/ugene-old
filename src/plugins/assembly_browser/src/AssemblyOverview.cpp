@@ -218,7 +218,8 @@ void AssemblyOverview::drawCoordLabels(QPainter & p) {
     QRect grtRect = QRect(0, 0, fontMetrics.width(globalRegionText), fontMetrics.height());
     grtRect.translate(xoffset, rect().height() - yoffset - grtRect.height());
     if(rect().contains(grtRect)) {
-        p.setPen(Qt::gray);
+        p.fillRect(grtRect, QColor(255, 255, 255, 180));
+        p.setPen(Qt::darkRed);
         p.drawText(grtRect, Qt::AlignCenter, globalRegionText);
     }
 
@@ -237,7 +238,8 @@ void AssemblyOverview::drawCoordLabels(QPainter & p) {
     QRect srtRect = QRect(0, 0, fontMetrics.width(selectedRegionText), fontMetrics.height());
     srtRect.translate(rect().width() - srtRect.width() - xoffset, rect().height() - yoffset - grtRect.height());
     if(rect().contains(srtRect) && !srtRect.intersects(grtRect)) {
-        p.setPen(Qt::gray);
+        p.fillRect(srtRect, QColor(255, 255, 255, 180));
+        p.setPen(Qt::darkRed);
         p.drawText(srtRect, /*Qt::AlignCenter, */selectedRegionText);
     }
 }
