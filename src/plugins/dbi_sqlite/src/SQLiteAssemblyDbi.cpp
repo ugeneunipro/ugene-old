@@ -147,8 +147,13 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByName(const U2DataId&
 
 
 qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
+    quint64 t0 = GTimer::currentTimeMicros();
+    
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    return a->getMaxPackedRow(r, os);
+    qint64 res = a->getMaxPackedRow(r, os);
+    
+    perfLog.trace(QString("Assembly get max packed row: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
+    return res;
 }
 
 
@@ -364,6 +369,7 @@ U2AssemblyRead SimpleAssemblyReadLoader::load(SQLiteQuery* q) {
     int flags = q->getInt64(4);
     read->complementary = SQLiteAssemblyUtils::isComplementaryRead(flags);
     read->paired = SQLiteAssemblyUtils::isPairedRead(flags);
+    read->mapped = SQLiteAssemblyUtils::isMappedRead(flags);
     read->mappingQuality = (quint8)q->getInt32(5);
     QByteArray data = q->getBlob(6);
     if (q->hasError()) {

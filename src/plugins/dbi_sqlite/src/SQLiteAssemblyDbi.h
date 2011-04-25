@@ -161,6 +161,9 @@ protected:
 /** This bit indicates that read is a paired read */
 #define BIT_PAIRED_READ             2
 
+/** This bit indicates that read is a mapped read */
+#define BIT_MAPPED_READ             3
+
 /** Compression method for assembly data */
 enum SQLiteAssemblyDataMethod {
     /** Merges Name, Sequence, Cigar and Quality values into single byte array separated by '\n' character. Merge prefix is '0'*/
@@ -180,7 +183,11 @@ public:
     static bool isPairedRead(qint64 flags) {
         return flags & (1 << BIT_PAIRED_READ);
     }
-
+    
+    static bool isMappedRead(qint64 flags) {
+        return flags & (1 << BIT_MAPPED_READ);
+    }
+    
     static QByteArray packData(SQLiteAssemblyDataMethod method, const QByteArray& name, const QByteArray& seq, 
         const QByteArray& cigarText, const QByteArray& qualityString, U2OpStatus& os);
     

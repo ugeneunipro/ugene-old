@@ -145,6 +145,9 @@ public:
 
     /** If true read is paired */
     bool                paired;
+    
+    /** If true read is mapped */
+    bool mapped;
 };
 
 typedef QSharedDataPointer<U2AssemblyReadData> U2AssemblyRead;
