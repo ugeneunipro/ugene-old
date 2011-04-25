@@ -22,6 +22,8 @@
 #include "SeqBootModelWidget.h"
 
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/Settings.h>
 
 #include <QtCore/QTime>
 
@@ -47,6 +49,12 @@ QList<QString> ConsensusModelTypes::getConsensusModelTypes()
     return list;
 }
 
+#define SEQ_BOOT_BOTTSTR_PATH "/bootstr"
+#define SEQ_BOOT_REPL_PATH "/replicates"
+#define SEQ_BOOT_SEED_PATH "/seed"
+#define SEQ_BOOT_FRACTION_PATH "/fraction"
+#define SEQ_BOOT_CONSENSUSID_PATH "/consensusID"
+
 SeqBootModelWidget::SeqBootModelWidget(QWidget* parent, const MAlignment& ma) : CreatePhyTreeWidget(parent)
 {
     setupUi(this);
@@ -56,6 +64,20 @@ SeqBootModelWidget::SeqBootModelWidget(QWidget* parent, const MAlignment& ma) : 
     
     ConsModeComboBox->addItems( ConsensusModelTypes::getConsensusModelTypes() );
     connect(ConsModeComboBox, SIGNAL(currentIndexChanged(const QString&)), SLOT(sl_onModelChanged(const QString&))); 
+
+    BootstrapGroupBox->setChecked(AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_BOTTSTR_PATH, false).toBool());
+    repsSpinBox->setValue(AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_REPL_PATH, 100).toInt());
+    seedSpinBox->setValue(AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_SEED_PATH, getRandomSeed()).toInt());
+    FractionSpinBox->setValue(AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_FRACTION_PATH, 0.5).toDouble());
+
+    QString consModelName = AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_CONSENSUSID_PATH, ConsModeComboBox->itemText(0)).toString();
+
+    for(int i = 0; i<ConsModeComboBox->count(); i++){
+        if(ConsModeComboBox->itemText(i) == consModelName){
+            ConsModeComboBox->setCurrentIndex(i);
+            break;
+        }
+    }
 }
 
 void SeqBootModelWidget::fillSettings( CreatePhyTreeSettings& settings )
@@ -65,6 +87,29 @@ void SeqBootModelWidget::fillSettings( CreatePhyTreeSettings& settings )
     settings.seed = seedSpinBox->value();
     settings.fraction = FractionSpinBox->value();
     settings.consensusID = ConsModeComboBox->currentText();
+}
+
+void SeqBootModelWidget::storeSettings(){
+    AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_BOTTSTR_PATH, BootstrapGroupBox->isChecked());
+    AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_REPL_PATH, repsSpinBox->value());
+    AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_SEED_PATH, seedSpinBox->value());
+    AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_FRACTION_PATH, FractionSpinBox->value());
+    AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_CONSENSUSID_PATH, ConsModeComboBox->currentText());
+    
+}
+void SeqBootModelWidget::restoreDefault(){
+    AppContext::getSettings()->remove(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_BOTTSTR_PATH);
+    AppContext::getSettings()->remove(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_REPL_PATH);
+    AppContext::getSettings()->remove(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_SEED_PATH);
+    AppContext::getSettings()->remove(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_FRACTION_PATH);
+    AppContext::getSettings()->remove(CreatePhyTreeWidget::settingsPath + SEQ_BOOT_CONSENSUSID_PATH);
+
+
+    BootstrapGroupBox->setChecked(false);
+    repsSpinBox->setValue(100);
+    seedSpinBox->setValue(getRandomSeed());
+    FractionSpinBox->setValue(0.5);
+    ConsModeComboBox->setCurrentIndex(0);
 }
 
 #define SEED_MIN 5

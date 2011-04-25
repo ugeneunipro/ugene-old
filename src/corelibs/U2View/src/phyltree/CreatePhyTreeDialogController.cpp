@@ -13,6 +13,7 @@
 #include <U2Misc/DialogUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/Settings.h>
 #include <U2Core/AppResources.h>
 
 #include <QtGui/qfiledialog.h>
@@ -34,11 +35,22 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     GUrl url = GUrlUtils::rollFileName(msaURL.dirPath() + "/" + msaURL.baseFileName() + ".nwk", DocumentUtils::getNewDocFileNameExcludesHint());
     connect(ui->okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseClicked()));
+    connect(ui->storeSettings, SIGNAL(clicked()), SLOT(sl_onStoreSettings()));
+    connect(ui->restoreSettings, SIGNAL(clicked()), SLOT(sl_onRestoreDefault()));
     
     ui->fileNameEdit->setText(url.getURLString());
     PhyTreeGenerator* generator = registry->getGenerator(nameList.at(0));
     generator->setupCreatePhyTreeUI(this, msa);
     ui->verticalLayout->activate();
+
+    QString algName = AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + "/algorithm", ui->algorithmBox->itemText(0)).toString();
+    
+    for(int i = 0; i<ui->algorithmBox->count(); i++){
+        if(ui->algorithmBox->itemText(i) == algName){
+            ui->algorithmBox->setCurrentIndex(i);
+            break;
+        }
+    }
 }
 
 void CreatePhyTreeDialogController::sl_okClicked(){
@@ -120,6 +132,7 @@ bool CreatePhyTreeDialogController::estimateResources(){
 
     appMemMb = s->getMaxMemorySizeInMB();
 
+    //****description******
     //dnadist_makevalues()
 //     for (i = 0; i < spp; i++) {
 //         nodep[i]->x = (phenotype)Malloc(endsite*sizeof(ratelike));
@@ -150,6 +163,22 @@ bool CreatePhyTreeDialogController::estimateResources(){
 #define SEED_MAX 32767
 bool CreatePhyTreeDialogController::checkSeed(int seed){
     return (seed > SEED_MIN) && (seed <SEED_MAX) && (seed%2 == 1);
+}
+
+void CreatePhyTreeDialogController::sl_onStoreSettings(){
+    AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + "/algorithm", ui->algorithmBox->currentText());
+
+    foreach (CreatePhyTreeWidget* widget, childWidgets) {
+        widget->storeSettings();
+    }
+}
+void CreatePhyTreeDialogController::sl_onRestoreDefault(){
+    AppContext::getSettings()->remove(CreatePhyTreeWidget::settingsPath + "/algorithm");
+    ui->algorithmBox->setCurrentIndex(0);
+
+    foreach (CreatePhyTreeWidget* widget, childWidgets) {
+        widget->restoreDefault();
+    }
 }
 
 }

@@ -26,6 +26,8 @@ public:
 private slots:
     void sl_okClicked();
     void sl_browseClicked();
+    void sl_onStoreSettings();
+    void sl_onRestoreDefault();
     
 private:
     int rightMargin;

@@ -44,6 +44,8 @@ class SeqBootModelWidget : public CreatePhyTreeWidget, Ui_SeqBootModel {
 public:
     SeqBootModelWidget(QWidget* parent, const MAlignment& ma);
     virtual void fillSettings(CreatePhyTreeSettings& settings);
+    virtual void storeSettings();
+    virtual void restoreDefault();
 
     int getCurSeed() {return seedSpinBox->value();}
     int getRandomSeed();

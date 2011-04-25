@@ -319,12 +319,22 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="105"/>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="74"/>
+        <source>Remember Settings</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="81"/>
+        <source>Restore Default</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="120"/>
         <source>Build</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="112"/>
+        <location filename="../src/phyltree/ui/CreatePhyTreeDialog.ui" line="127"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -2229,7 +2239,7 @@ Please select file to align.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAEditorFactory.cpp" line="99"/>
+        <location filename="../src/util_ov_msaedit/MSAEditorFactory.cpp" line="104"/>
         <source>Open multiple views</source>
         <translation></translation>
     </message>
@@ -2865,7 +2875,7 @@ Please select file to align.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_phyltree/TreeViewerFactory.cpp" line="96"/>
+        <location filename="../src/util_ov_phyltree/TreeViewerFactory.cpp" line="100"/>
         <source>Open multiple views</source>
         <translation></translation>
     </message>

@@ -26,6 +26,8 @@
 #include "ui/ui_DistMatrixModel.h"
 
 #include <U2Core/MAlignment.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/Settings.h>
 
 
 namespace U2{
@@ -36,6 +38,8 @@ class DistMatrixModelWidget : public CreatePhyTreeWidget, Ui_DistMatrixModel {
 public:
     DistMatrixModelWidget(QWidget* parent, const MAlignment& ma);
     virtual void fillSettings(CreatePhyTreeSettings& settings);
+    virtual void storeSettings();
+    virtual void restoreDefault();
 private slots:
     void sl_onModelChanged(const QString& modelName);
 

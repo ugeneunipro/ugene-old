@@ -31,9 +31,14 @@ namespace U2{
     class U2VIEW_EXPORT CreatePhyTreeWidget : public QWidget 
     {
     public:
+        static const QString settingsPath;
         CreatePhyTreeWidget(QWidget* parent) : QWidget(parent) { }
         virtual void fillSettings(CreatePhyTreeSettings& settings) {Q_UNUSED(settings); } 
+        virtual void storeSettings() {;}
+        virtual void restoreDefault() {;}
     };
+
+ 
 }
 
 #endif
