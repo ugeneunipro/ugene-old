@@ -62,7 +62,7 @@
     Dumps the message to the error-level log. Asserts in debug mode.
 */
 #define SAFE_POINT_OP(os, result)  \
-    if (!os.hasError()) { \
+    if (os.hasError()) { \
         coreLog.error(QString("Trying to recover from error: %1 at %2:%3").arg(os.getError()).arg(__FILE__).arg(__LINE__)); \
         assert(0); \
         return result; \
