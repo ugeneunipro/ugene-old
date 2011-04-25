@@ -267,6 +267,12 @@ void AssemblyModel::setReference(U2SequenceDbi * dbi, const U2Sequence & seq) {
             refDoc = p->findDocumentByURL(seq.dbiId);
         }
     }
+    if(refDoc.isNull()) {
+        Project * p = AppContext::getProject();
+        if(p != NULL) {
+            refDoc = p->findDocumentByURL(seq.dbiId);
+        }
+    }
     reference = seq;
     referenceDbi = dbi;
     emit si_referenceChanged();
