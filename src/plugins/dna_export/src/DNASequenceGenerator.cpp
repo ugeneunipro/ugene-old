@@ -156,7 +156,8 @@ EvaluateBaseContentTask* DNASequenceGeneratorTask::createEvaluationTask(Document
 }
 
 DNASequenceGeneratorTask::DNASequenceGeneratorTask(const DNASequenceGeneratorConfig& cfg_)
-: Task(tr("Generate sequence task"), TaskFlag_NoRun), cfg(cfg_), loadRefTask(NULL), evalTask(NULL), generateTask(NULL), saveTask(NULL), addToProj(false) {
+: Task(tr("Generate sequence task"), TaskFlag_NoRun), cfg(cfg_), loadRefTask(NULL),
+evalTask(NULL), generateTask(NULL), saveTask(NULL) {
     if (cfg.useReference()) {
         // do not load reference file if it is already in project and has loaded state
         const QString& docUrl = cfg.getReferenceUrl();
@@ -235,23 +236,34 @@ QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
                 sequences.append(dnaObj);
             }
             Document* doc = new Document(cfg.getDocumentFormat(), io, GUrl(cfg.getOutUrlString()), sequences);
-            
-            Document* d = AppContext::getProject()->findDocumentByURL(cfg.getOutUrlString());
-            if (d == NULL) {
-                addToProj = cfg.addToProj;
-                AppContext::getProject()->addDocument(doc);
-            }
-            
-            SaveDocFlags saveFlags = SaveDoc_Overwrite;
-            if (!addToProj) {
-                saveFlags &= SaveDoc_DestroyAfter;
-            }
-            saveTask = new SaveDocumentTask(doc, saveFlags);
+            saveTask = new SaveDocumentTask(doc, SaveDoc_Overwrite);
             tasks.append(saveTask);
         }
-    } else if (saveTask == subTask && addToProj) {
+    } else if (saveTask == subTask) {
         Document* doc = saveTask->getDocument();
-        tasks << new OpenViewTask(doc);
+        if (!cfg.addToProj) {
+            doc->unload();
+            delete doc;
+        } else {
+            Project* prj = AppContext::getProject();
+            if (prj) {
+                Document* d = prj->findDocumentByURL(doc->getURL());
+                if (d==NULL) {
+                    prj->addDocument(doc);
+                    tasks << new OpenViewTask(doc);
+                } else {
+                    // if document with same url is already exists in project
+                    // it will be reloaded by DocumentUpdater => delete this instance
+                    doc->unload();
+                    delete doc;
+                }
+            } else {
+                tasks << AppContext::getProjectLoader()->openProjectTask(doc->getURLString(), false);
+                // open project task will load supplied url
+                doc->unload();
+                delete doc;
+            }
+        }
     }
     return tasks;
 }

@@ -142,7 +142,6 @@ private:
     GenerateDNASequenceTask* generateTask;
     SaveDocumentTask* saveTask;
     QList<DNASequence> results;
-    bool addToProj;
 };
 
 } //namespace
