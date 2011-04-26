@@ -37,39 +37,33 @@ class U2ALGORITHM_EXPORT OpenCLHelper {
 
 public:
 
-#ifdef Q_OS_WIN
-    #define CALLING_CONVENTION __stdcall
-#else
-    #define CALLING_CONVENTION
-#endif  
-
-    typedef cl_int ( CALLING_CONVENTION *clGetPlatformIDs_f)(
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clGetPlatformIDs_f)(
         cl_uint num_entries,
         cl_platform_id *platforms,
-        cl_uint *num_platforms);
+        cl_uint *num_platforms) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clGetPlatformInfo_f)(
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clGetPlatformInfo_f)(
         cl_platform_id platform,
         cl_platform_info param_name,
         size_t param_value_size,
         void *param_value,
-        size_t *param_value_size_ret);
+        size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clGetDeviceIDs_f)(
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clGetDeviceIDs_f)(
         cl_platform_id platform,
         cl_device_type device_type,
         cl_uint num_entries,
         cl_device_id *devices,
-        cl_uint *num_devices);
+        cl_uint *num_devices) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clGetDeviceInfo_f)(
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clGetDeviceInfo_f)(
         cl_device_id device,
         cl_device_info param_name,
         size_t param_value_size,
         void *param_value,
-        size_t *param_value_size_ret);
+        size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_context ( CALLING_CONVENTION *clCreateContext_f)(
+    typedef CL_API_ENTRY cl_context ( CL_API_CALL *clCreateContext_f)(
         const cl_context_properties *properties,
         cl_uint num_devices,
         const cl_device_id *devices,
@@ -77,48 +71,48 @@ public:
         const void *private_info, size_t cb,
         void *user_data),
         void *user_data,
-        cl_int *errcode_ret);
+        cl_int *errcode_ret) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_mem ( CALLING_CONVENTION *clCreateBuffer_f)(
+    typedef CL_API_ENTRY cl_mem ( CL_API_CALL *clCreateBuffer_f)(
         cl_context context,
         cl_mem_flags flags,
         size_t size,
         void *host_ptr,
-        cl_int *errcode_ret);
+        cl_int *errcode_ret) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_program ( CALLING_CONVENTION *clCreateProgramWithSource_f)(
+    typedef CL_API_ENTRY cl_program ( CL_API_CALL *clCreateProgramWithSource_f)(
         cl_context context,
         cl_uint count,
         const char **strings,
         const size_t *lengths,
-        cl_int *errcode_ret);
+        cl_int *errcode_ret) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clGetProgramBuildInfo_f)(
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clGetProgramBuildInfo_f)(
         cl_program program,
         cl_device_id device,
         cl_program_build_info param_name,
         size_t param_value_size,
         void *param_value,
-        size_t *param_value_size_ret);
+        size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_kernel ( CALLING_CONVENTION *clCreateKernel_f)(
+    typedef CL_API_ENTRY cl_kernel ( CL_API_CALL *clCreateKernel_f)(
         cl_program program,
         const char *kernel_name,
-        cl_int *errcode_ret);
+        cl_int *errcode_ret) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clSetKernelArg_f)(
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clSetKernelArg_f)(
         cl_kernel kernel,
         cl_uint arg_index,
         size_t arg_size,
-        const void *arg_value);
+        const void *arg_value) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_command_queue ( CALLING_CONVENTION *clCreateCommandQueue_f)(
+    typedef CL_API_ENTRY cl_command_queue ( CL_API_CALL *clCreateCommandQueue_f)(
         cl_context context,
         cl_device_id device,
         cl_command_queue_properties properties,
-        cl_int *errcode_ret);
+        cl_int *errcode_ret) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clEnqueueNDRangeKernel_f)(
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clEnqueueNDRangeKernel_f)(
         cl_command_queue command_queue,
         cl_kernel kernel,
         cl_uint work_dim,
@@ -127,13 +121,13 @@ public:
         const size_t *local_work_size,
         cl_uint num_events_in_wait_list,
         const cl_event *event_wait_list,
-        cl_event *event);
+        cl_event *event) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clWaitForEvents_f)(
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clWaitForEvents_f)(
         cl_uint num_events,
-        const cl_event *event_list);
+        const cl_event *event_list) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clEnqueueReadBuffer_f)(cl_command_queue command_queue,
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clEnqueueReadBuffer_f)(cl_command_queue command_queue,
         cl_mem buffer,
         cl_bool blocking_read,
         size_t offset,
@@ -141,29 +135,29 @@ public:
         void *ptr,
         cl_uint num_events_in_wait_list,
         const cl_event *event_wait_list,
-        cl_event *event);
+        cl_event *event) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clFinish_f)(cl_command_queue command_queue);
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clFinish_f)(cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clReleaseEvent_f)(cl_event event);
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clReleaseEvent_f)(cl_event event) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clReleaseKernel_f)(cl_kernel kernel);
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clReleaseKernel_f)(cl_kernel kernel) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clReleaseProgram_f)(cl_program program);
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clReleaseProgram_f)(cl_program program) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clReleaseCommandQueue_f)(cl_command_queue command_queue);
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clReleaseCommandQueue_f)(cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clReleaseContext_f)(cl_context context);
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clReleaseContext_f)(cl_context context) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clReleaseMemObject_f)(cl_mem memobj);
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clReleaseMemObject_f)(cl_mem memobj) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef cl_int ( CALLING_CONVENTION *clBuildProgram_f)(cl_program program,
+    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clBuildProgram_f)(cl_program program,
         cl_uint num_devices,
         const cl_device_id *device_list,
         const char *options,
         void (CL_CALLBACK *pfn_notify)(cl_program program,
         void *user_data),
-        void *user_data);
+        void *user_data) CL_API_SUFFIX__VERSION_1_1;
 
     clGetPlatformIDs_f clGetPlatformIDs_p;
     clGetPlatformInfo_f clGetPlatformInfo_p;
