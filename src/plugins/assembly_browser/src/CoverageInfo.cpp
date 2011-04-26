@@ -43,6 +43,9 @@ void CalcCoverageInfoTask::run() {
     qint64 start = settings.visibleRange.startPos;
 
     for(int i = 0 ; i < numOfRegions; ++i) {
+        //jump to next region
+        start = settings.visibleRange.startPos + basesPerRegion * i;
+
         //check cancel and update progress
         if(stateInfo.cancelFlag) {
             return;
@@ -57,10 +60,7 @@ void CalcCoverageInfoTask::run() {
             return;
         }
         result.coverageInfo[i] = readsPerRegion;
-
-        //jump to next region
-        start = settings.visibleRange.startPos + basesPerRegion * i;
-
+                      
         //update min and max
         if(maxReadsPerRegion < readsPerRegion) {
             maxReadsPerRegion = readsPerRegion;
