@@ -290,7 +290,7 @@ void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, BMT
 
 bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu) {
     assert(offset>=0 && offset<objLens[objCount-1]);
-    if ((qint64)offset < startPos) {
+    if ((qint64)offset - indexPart.getLoadedSeqStart() < startPos) {
         return false;
     }
     fisrtSymbol = offset-startPos;
@@ -475,7 +475,6 @@ void GenomeAlignerIndex::findInPart(int startPos, ResType firstResult, BMType bi
         //search in the candidates after vector
         for (SAType k=lastResult; (k<indexPart.getLoadedPartSize()) && (bitValue&bitFilter)==(indexPart.bitMask[k]&bitFilter); k++) {
             lastResult++;
-            offset = indexPart.sArray[k] + indexPart.getLoadedSeqStart();
             if (!isValidPos(indexPart.sArray[k] + indexPart.getLoadedSeqStart(), startPos, querySeq.length(),
                 fisrtSymbol, qu)) {
                 if (!lastIteration) {
