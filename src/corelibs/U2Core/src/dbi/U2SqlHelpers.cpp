@@ -156,10 +156,10 @@ SQLiteQuery::SQLiteQuery(const QString& _sql, qint64 offset, qint64 count, DbRef
 }
 
 void SQLiteQuery::setError(const QString& err) {
+    ioLog.trace("SQL: error: " + err + " in query: " + sql);
     if (!os.hasError()) {
         os.setError(err);
     } 
-    ioLog.trace(err);
 }
 
 void SQLiteQuery::prepare() {
@@ -222,7 +222,7 @@ bool SQLiteQuery::step() {
     } else if (rc == SQLITE_ROW) {
         return true;
     }
-    setError(SQLiteL10n::tr("Unexpected query result code: %1").arg(rc));
+    setError(SQLiteL10n::tr("Unexpected query result code: %1 (%2)").arg(rc).arg(sqlite3_errmsg(db->handle)));
     return false;
 }
 

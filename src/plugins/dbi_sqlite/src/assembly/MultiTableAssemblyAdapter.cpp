@@ -27,6 +27,8 @@
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/Timer.h>
 
 namespace U2 {
 
@@ -413,12 +415,7 @@ void MultiTableAssemblyAdapter::addReadsInternal(QList<U2AssemblyRead>& reads, b
         if (os.hasError()) {
             break;
         }
-        if (!delayedIndex) {
-            //create index tables if needed
-            adapter->singleTableAdapter->createReadsIndexes(os);
-        }
-
-
+     
         //now back-map all reads to initial list
         const QVector<int>& idxMap = readsIndex[i];
         for (int j = 0, n = rangeReads.size(); j < n && !os.isCoR(); j++) {
@@ -427,6 +424,10 @@ void MultiTableAssemblyAdapter::addReadsInternal(QList<U2AssemblyRead>& reads, b
             r->id = addTable2Id(r->id, adapter->idExtra);
             reads[idx] = r;
         }
+    }
+
+    if (!delayedIndex) {
+        createReadsIndexes(os);
     }
 }
 
@@ -481,6 +482,20 @@ void MultiTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2Op
 void MultiTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     MultiTablePackAlgorithmAdapter packAdapter(this);
     AssemblyPackAlgorithm::pack(packAdapter, stat, os);
+
+    quint64 t0 = GTimer::currentTimeMicros();
+
+    packAdapter.migrateAll(os);
+
+    perfLog.trace(QString("Assembly: table migration pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
+
+    t0 = GTimer::currentTimeMicros();
+
+    // if new tables created during the pack algorithm -> create indexes
+    createReadsIndexes(os);
+
+    perfLog.trace(QString("Assembly: re-indexing pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -513,6 +528,10 @@ MultiTablePackAlgorithmAdapter::~MultiTablePackAlgorithmAdapter() {
     qDeleteAll(packAdapters);
 }
 
+// Number of migration cached before migration process is forced from within of pack algorithm
+// If this number is not reached during the pack -> migration is done after the pack
+#define MAX_MIGRATION_QUEUE_SIZE (500*1000)
+
 void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os) {
     int elenPos = multiTableAdapter->getElenRangePosById(readId);
     int oldRowPos = multiTableAdapter->getRowRangePosById(readId);
@@ -521,18 +540,100 @@ void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 p
     SingleTablePackAlgorithmAdapter* sa = NULL;
     if (newRowPos == oldRowPos) {
         sa = packAdaptersGrid[oldRowPos][elenPos];
-    } else {
-        ensureGridSize(newRowPos + 1);
-        sa = packAdaptersGrid[newRowPos][elenPos];
-        if (sa == NULL) {
-            MTASingleTableAdapter* a = multiTableAdapter->getAdapterByRowAndElenRange(newRowPos, elenPos, true, os);
-            sa = new SingleTablePackAlgorithmAdapter(multiTableAdapter->getDbRef(), a->singleTableAdapter->getReadsTableName());
-            packAdapters << sa;
-            packAdaptersGrid[newRowPos][elenPos] = sa;
-        }
+        sa->assignProw(readId, prow, os);
+        return;
     }
-    sa->assignProw(readId, prow, os);
+    ensureGridSize(newRowPos + 1);
+    
+    sa = packAdaptersGrid[newRowPos][elenPos];
+    MTASingleTableAdapter* oldA = multiTableAdapter->getAdapterByRowAndElenRange(oldRowPos, elenPos, false, os);
+    MTASingleTableAdapter* newA = multiTableAdapter->getAdapterByRowAndElenRange(newRowPos, elenPos, true, os);
+    
+    SAFE_POINT(oldA!=NULL, QString("Can't find reads table adapter: row: %1, elen: %2").arg(oldRowPos).arg(elenPos) ,);
+    SAFE_POINT(newA!=NULL, QString("Can't find reads table adapter: row: %1, elen: %2").arg(newRowPos).arg(elenPos) ,);
+    SAFE_POINT_OP(os,);
+    
+    if (sa == NULL) {
+        sa = new SingleTablePackAlgorithmAdapter(multiTableAdapter->getDbRef(), newA->singleTableAdapter->getReadsTableName());
+        packAdapters << sa;
+        packAdaptersGrid[newRowPos][elenPos] = sa;
+    }
+
+    QVector<ReadTableMigrationData>& newTableData = migrations[newA];
+    newTableData.append(ReadTableMigrationData(SQLiteUtils::toDbiId(readId), oldA, prow));
+    if (newTableData.size() > MAX_MIGRATION_QUEUE_SIZE) {
+        migrate(newA, newTableData, os);
+        newTableData.clear();
+    }
 }
+
+void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, U2OpStatus& os) {
+    SAFE_POINT_OP(os,);
+    //delete reads from old tables, and insert into new one
+    QHash<MTASingleTableAdapter*, QVector<ReadTableMigrationData>> readsByOldTable;
+    foreach(const ReadTableMigrationData& d, data) {
+        readsByOldTable[d.oldTable].append(d);
+    }
+    DbRef* db = multiTableAdapter->getDbRef();
+    foreach(MTASingleTableAdapter* oldA, readsByOldTable.keys()) {
+
+        const QVector<ReadTableMigrationData>& migData  = readsByOldTable[oldA];
+        QString oldTable = oldA->singleTableAdapter->getReadsTableName();
+        QString newTable = newA->singleTableAdapter->getReadsTableName();
+        QString idsTable = "tmp_mig_" + oldTable; //TODO
+
+#ifdef _DEBUG
+        qint64 nOldReads1 = SQLiteQuery("SELECT COUNT(*) FROM " + oldTable, db, os).selectInt64();
+        qint64 nNewReads1 = SQLiteQuery("SELECT COUNT(*) FROM " + newTable, db, os).selectInt64();
+        int readsMoved = migData.size();
+        int rowsPerRange = multiTableAdapter->getRowsPerRange();
+        U2Region newProwRegion(newA->rowPos * rowsPerRange, rowsPerRange);
+#endif
+
+        { //nested block is needed to ensure all queries are finalized
+
+            SQLiteQuery(QString("CREATE TEMPORARY TABLE %1(id INTEGER PRIMARY KEY, prow INTEGER NOT NULL)").arg(idsTable), db, os).execute();
+            SQLiteQuery insertIds(QString("INSERT INTO %1(id, prow) VALUES(?1, ?2)").arg(idsTable), db, os);
+            foreach(const ReadTableMigrationData& d, migData) {
+                insertIds.reset(false);
+                insertIds.bindInt64(1, d.readId);
+                insertIds.bindInt32(2, d.newProw);
+                assert(newProwRegion.contains(d.newProw));
+                insertIds.execute();
+                if (os.hasError()) {
+                    break;
+                }
+            }
+
+            SQLiteQuery(QString("INSERT INTO %1(prow, name, gstart, elen, flags, mq, data) "
+                "SELECT %3.prow, name, gstart, elen, flags, mq, data FROM %2, %3 WHERE %2.id = %3.id")
+                .arg(newTable).arg(oldTable).arg(idsTable), db, os).execute();
+
+            SQLiteQuery(QString("DELETE FROM %1 WHERE id IN (SELECT id FROM %2)").arg(oldTable).arg(idsTable), db, os).execute();
+
+        }
+        U2OpStatusImpl osStub; // using stub here -> this operation must be performed even if any of internal queries failed
+        SQLiteQuery(QString("DROP TABLE IF EXISTS %1").arg(idsTable), db, osStub).execute();
+
+#ifdef _DEBUG
+        qint64 nOldReads2 = SQLiteQuery("SELECT COUNT(*) FROM " + oldTable, db, os).selectInt64();
+        qint64 nNewReads2 = SQLiteQuery("SELECT COUNT(*) FROM " + newTable, db, os).selectInt64();
+        assert(nOldReads1 + nNewReads1 == nOldReads2 + nNewReads2);
+        assert(nNewReads1 + readsMoved == nNewReads2);
+#endif
+
+    }
+}
+
+void MultiTablePackAlgorithmAdapter::migrateAll(U2OpStatus& os) {
+    SAFE_POINT_OP(os,);
+    foreach(MTASingleTableAdapter* newTable, migrations.keys()) {
+        const QVector<ReadTableMigrationData>& data = migrations[newTable];
+        migrate(newTable, data, os);
+    }
+    migrations.clear();
+}
+
 
 
 void MultiTablePackAlgorithmAdapter::ensureGridSize(int nRows) {

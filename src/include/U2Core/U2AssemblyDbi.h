@@ -94,7 +94,8 @@ public:
         Creates new empty assembly object. Reads iterator can be NULL 
         Requires: U2DbiFeature_WriteAssembly feature support
     */
-    virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) = 0;
+    virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  
+        U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) = 0;
 
     /** 
         Updates assembly object fields 

@@ -88,6 +88,7 @@ void SingleTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
     SQLiteQuery(q2.arg(readsTable), db, os).execute();
 }
 
+
 void SingleTableAssemblyAdapter::bindRegion(SQLiteQuery& q, const U2Region& r, bool forCount) {
     if (rangeMode) {
         q.bindInt64(1, r.endPos());
@@ -215,6 +216,7 @@ void SingleTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2O
 void SingleTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     SingleTablePackAlgorithmAdapter packAdapter(db, readsTable);
     AssemblyPackAlgorithm::pack(packAdapter, stat, os);
+    createReadsIndexes(os);
 }
 
 //////////////////////////////////////////////////////////////////////////

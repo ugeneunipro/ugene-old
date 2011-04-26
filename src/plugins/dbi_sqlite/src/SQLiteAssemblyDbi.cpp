@@ -134,8 +134,16 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assem
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
+    
+    quint64 t0 = GTimer::currentTimeMicros();
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    return a->getReadsByRow(r, minRow, maxRow, os);
+
+    U2DbiIterator<U2AssemblyRead>* res = a->getReadsByRow(r, minRow, maxRow, os);
+
+    t2.stop();
+    perfLog.trace(QString("Assembly: reads 2D select time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
+
+    return res;
 }
 
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os)  {
@@ -152,7 +160,7 @@ qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Re
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     qint64 res = a->getMaxPackedRow(r, os);
     
-    perfLog.trace(QString("Assembly get max packed row: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
+    perfLog.trace(QString("Assembly: get max packed row: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
     return res;
 }
 
@@ -164,13 +172,14 @@ qint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& o
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     quint64 res = a->getMaxEndPos(os);
     
-    perfLog.trace(QString("Assembly get max end pos: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
+    perfLog.trace(QString("Assembly: get max end pos: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
     return res;
 }
 
 
 
-void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {
+void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) 
+{
     assembly.id = SQLiteObjectDbi::createObject(U2Type::Assembly, folder, assembly.visualName,  SQLiteDbiObjectRank_TopLevel, db, os);
     if (os.hasError()) {
         return;
@@ -210,7 +219,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
             }
         } while (it->hasNext() && !os.hasError());
     }
-
+    
     a->createReadsIndexes(os);
 }
 
@@ -241,15 +250,22 @@ void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, QList<U2AssemblyRea
 
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     a->addReads(rows, os);
-    
+
+    t2.stop();
     perfLog.trace(QString("Assembly: %1 reads added in %2 seconds").arg(rows.size()).arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
 
 /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
 void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2AssemblyPackStat& stat, U2OpStatus& os) {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::pack");
+    GTIMER(c2, t2, "SQLiteAssemblyDbi::pack");
+
+    quint64 t0 = GTimer::currentTimeMicros();
+
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     a->pack(stat, os);
+    perfLog.trace(QString("Assembly: full pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -87,14 +87,15 @@ SQLiteDbiPlugin::SQLiteDbiPlugin() : Plugin(tr("SQLite format support"), tr("Add
     dbi.getDbRef()->useTransaction = true;
 
     int nReads = 100*1000;
-    int seqLen = 1000*1000;
+    int seqLen = 100*1000;
     U2Region lenRange(30, 500);
     QList<U2AssemblyRead> rows = generateReads(nReads, lenRange, seqLen);
     dbi.getObjectDbi()->createFolder("/", os);
     qint64 t0 = GTimer::currentTimeMicros();
-    {
-        U2Assembly as;
+    U2Assembly as;
 
+    {
+    
     //    dbi.getAssemblyRWDbi()->createAssemblyObject(as, "/", NULL, os);
     //    dbi.getAssemblyRWDbi()->addReads(as.id, rows, os);
 
@@ -103,11 +104,22 @@ SQLiteDbiPlugin::SQLiteDbiPlugin() : Plugin(tr("SQLite format support"), tr("Add
     }
     qint64 t1 = GTimer::currentTimeMicros();
     float nSeconds = float((t1-t0)/(1000*1000.0));
-    perfLog.info(QString("Rate: %1/second").arg(int(nReads/nSeconds)));
+    perfLog.info(QString("Insert rate: %1/second").arg(int(nReads/nSeconds)));
     if (os.hasError()) {
         coreLog.error(os.getError());
     }
-   
+
+    bool pack = true;
+    if (pack) {
+        U2AssemblyPackStat stat;
+        qint64 t0 = GTimer::currentTimeMicros();
+        dbi.getAssemblyDbi()->pack(as.id, stat, os);
+        qint64 t1 = GTimer::currentTimeMicros();
+        float nSeconds = float((t1-t0)/(1000*1000.0));
+        perfLog.info(QString("Pack rate: %1/second").arg(int(nReads/nSeconds)));
+
+    }
+
     dbi.shutdown(os);
 #endif
 

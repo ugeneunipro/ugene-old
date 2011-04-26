@@ -57,9 +57,7 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
             }
         }
     }
-    for(int i=0; i<reads.values().count(); i++) {
-        reads.values()[i].clear();
-    }
+    reads.clear();
 }
 
 static bool chunkLessThan(const Index::ReferenceIndex::Chunk &c1, const Index::ReferenceIndex::Chunk &c2) {
@@ -245,7 +243,7 @@ void ConvertToSQLiteTask::run() {
             }
 #endif
             int readsCount = 0;
-            int totalReads = 0;
+            int progressUpdateCounter = 0;
             int progressUpdates = 0;
             qint64 readLength = 0;            
             stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
@@ -263,13 +261,13 @@ void ConvertToSQLiteTask::run() {
                             stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
                         }
                     }
-                    if(++totalReads > 1000) {                        
+                    if(++progressUpdateCounter > 1000) {                        
                         if(isCanceled()) {
                             throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
                         }
                         stateInfo.progress = FIRST_STAGE_PERCENT * (readLength + reader->getOffset().getCoffset() - chunk.getStart().getCoffset()) / totalChunksLength;
                         stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading %1").arg(progressIndicators.at(progressUpdates++ % 3)));
-                        totalReads = 0;
+                        progressUpdateCounter = 0;
                     }
                 }
                 readLength += chunkLen;
@@ -279,28 +277,23 @@ void ConvertToSQLiteTask::run() {
             stateInfo.progress = FIRST_STAGE_PERCENT;
         } else {
             while(!reader->isEof()) {
-                {
-                    stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
-                    int readsCount = 0;
-                    int totalReads = 0;
-                    int progressUpdates = 0;
-                    while(!reader->isEof()) {
-                        Alignment alignment = reader->readAlignment();
-                        if(bamInfo.isReferenceSelected(alignment.getReferenceId())) {
-                            reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
-                            readsCount++;
+                stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
+                int readsCount = 0;
+                int progressUpdateCounter = 0;
+                int progressUpdates = 0;
+                while(!reader->isEof() && readsCount < READS_CHUNK_SIZE) {
+                    Alignment alignment = reader->readAlignment();
+                    if(bamInfo.isReferenceSelected(alignment.getReferenceId())) {
+                        reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
+                        readsCount++;
+                    }
+                    if (++progressUpdateCounter > 1000) {
+                        if (isCanceled()) {
+                            throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
                         }
-                        if(++totalReads > 1000) {
-                            if(isCanceled()) {
-                                throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
-                            }
-                            stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
-                            stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading %1").arg(progressIndicators.at(progressUpdates++ % 3)));
-                            totalReads = 0;
-                        }
-                        if(readsCount >= 16384) {
-                            break;
-                        }
+                        stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
+                        stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading %1").arg(progressIndicators.at(progressUpdates++ % 3)));
+                        progressUpdateCounter = 0;
                     }
                 }
                 stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));

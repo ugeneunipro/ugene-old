@@ -39,16 +39,19 @@ static qint64 selectProw(qint64* tails, qint64 start, qint64 end ){
     return -1;
 }
 
+#define PACK_TRACE_CHECKPOINT 100000
+
 void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackStat& stat, U2OpStatus& os) {
     //Algorithm idea: 
     //  select * reads ordered by start position
     //  keep tack (tail) of used rows to assign packed row for reads (N elements)
     //  if all elements are used -> assign -1 to read and postprocess it later
 
-    stat.maxProw = 0;
-
     GTIMER(c1, t1, "AssemblyPackAlgorithm::pack");
     quint64 t0 = GTimer::currentTimeMicros();
+    int nPacked = 0;
+
+    stat.maxProw = 0;
     QVarLengthArray<qint64, TAIL_SIZE> tails;
     qFill(tails.data(), tails.data() + TAIL_SIZE, -1);
     std::auto_ptr< U2DbiIterator<PackAlgorithmData> > allReadsIterator(adapter.selectAllReads(os));
@@ -67,9 +70,14 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
         }
         adapter.assignProw(read.readId, prow, os);
         stat.maxProw = qMax(prow, stat.maxProw);
+        
+        if ((++nPacked % PACK_TRACE_CHECKPOINT) == 0) {
+            perfLog.trace(QString("Assembly: number packed reads so far: %1").arg(nPacked));
+        }
     }
+
     t1.stop();
-    perfLog.trace(QString("Assembly pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
+    perfLog.trace(QString("Assembly: algorithm pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
 } //namespace

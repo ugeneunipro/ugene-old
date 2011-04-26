@@ -72,6 +72,7 @@ public:
     
     int getRowRangePosByRow(quint64 row) const;
     int getRowRangePosById(const U2DataId& id) const;
+    int getRowsPerRange() const {return rowsPerRange;}
 
     const QVector<MTASingleTableAdapter*>& getAdapters() const {return adapters;}
     const QVector<QByteArray>& getIdExtrasPerRange() const {return idExtras;}
@@ -84,7 +85,6 @@ protected:
 
     QString getTableSuffix(int rowRange, int elenRange);
     static QByteArray getIdExtra(int rowRange, int elenRange);
-
 
     void addTableAdapter(int minLen, int maxLen, const U2DataId& assemblyId, const AssemblyCompressor* compressor, bool last, U2OpStatus& os);
     
@@ -127,6 +127,16 @@ protected:
     QReadWriteLock                              tablesSyncLock;
 };
 
+class ReadTableMigrationData {
+public:
+    ReadTableMigrationData() : readId (-1), oldTable(NULL), newProw(-1){}
+    ReadTableMigrationData(qint64 oldId, MTASingleTableAdapter* oldT, int newP) 
+        : readId(oldId), oldTable(oldT), newProw(newP) {}
+    
+    qint64                  readId;
+    MTASingleTableAdapter*  oldTable;
+    int                     newProw;
+};
 
 class MultiTablePackAlgorithmAdapter : public PackAlgorithmAdapter {
 public:
@@ -135,12 +145,17 @@ public:
     
     virtual U2DbiIterator<PackAlgorithmData>* selectAllReads(U2OpStatus& os);
     virtual void assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os);
+
+    void migrateAll(U2OpStatus& os);
+    void migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, U2OpStatus& os);
+
 private:
     void ensureGridSize(int nRows);
 
     MultiTableAssemblyAdapter*                              multiTableAdapter;
     QVector<SingleTablePackAlgorithmAdapter*>               packAdapters;
     QVector< QVector<SingleTablePackAlgorithmAdapter*> >    packAdaptersGrid;
+    QHash<MTASingleTableAdapter*, QVector<ReadTableMigrationData> > migrations;
 };
 
 // Class that multiplexes multiple read iterators into 1
