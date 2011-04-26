@@ -59,12 +59,21 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
             throw IOException(BAMDbiPlugin::tr("Can't open file '%1'").arg(url.getURLString()));
         }
         reader.reset(new Reader(*ioAdapter));
-        sqliteUrl = GUrl(url.getURLString() + ".sqlite"); // FIXME: store .sqlite files in the user's home directory
+        QFileInfo fileInfo(url.getURLString());
+        sqliteUrl = GUrl(QDir::temp().absoluteFilePath(url.fileName() + "." + QString::number(fileInfo.lastModified().toTime_t()) + "." + QString::number(fileInfo.size()) + ".sqlite"));
+        bool exists = false;
+        if(QFile::exists(sqliteUrl.getURLString())) {
+            exists = true;
+        }
+
         if(SQLITE_OK != sqlite3_open(sqliteUrl.getURLString().toUtf8().constData(), &dbRef.handle)) {
             throw IOException(BAMDbiPlugin::tr("Can't open index database"));
         }
+
         dbRef.useTransaction = true;
-        buildIndex(os);
+        if(!exists) { 
+            buildIndex(os);
+        }
         assembliesCount = reader->getHeader().getReferences().size();
         objectDbi.reset(new ObjectDbi(*this, dbRef, assembliesCount));
         {
