@@ -80,7 +80,6 @@ QMutex BowtieBuildTask::mutex;
 const QString BowtieTask::OPTION_READS_READER = "rreader";
 const QString BowtieTask::OPTION_READS_WRITER = "rwriter";
 
-const QString BowtieTask::OPTION_PREBUILT_INDEX = "prebuilt";
 const QString BowtieTask::OPTION_N_MISMATCHES = "n-mismatches";
 const QString BowtieTask::OPTION_V_MISMATCHES = "v-mismatches";
 const QString BowtieTask::OPTION_MAQERR = "maqerr";
@@ -124,7 +123,7 @@ void BowtieTask::prepare()
 	QString indexURL(settings.refSeqUrl.getURLString());
 	QRegExp rx(INDEX_REGEXP_STR);
     int fileSize = 0;
-	if(settings.getCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, false).toBool()) {
+	if(settings.prebuiltIndex) {
         assert(justBuildIndex == false);
 		if(rx.indexIn(indexURL) != -1) {
 			indexPath = rx.cap(1);
@@ -210,7 +209,7 @@ BowtieRunFromSchemaTask::BowtieRunFromSchemaTask(const DnaAssemblyToRefTaskSetti
 void BowtieRunFromSchemaTask::prepare() {
     QRegExp rx(BowtieTask::INDEX_REGEXP_STR);
     QString indexURL(settings.refSeqUrl.getURLString());
-    bool hasPrebuiltIndex = settings.getCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, false).toBool();
+    bool hasPrebuiltIndex = settings.prebuiltIndex;
     if(justBuildIndex || !hasPrebuiltIndex) {
         if(rx.indexIn(indexURL) != -1) {
             setError(BowtieBuildTask::tr("attempt to build ebwt index from ebwt index \"%1\"").arg(indexURL));

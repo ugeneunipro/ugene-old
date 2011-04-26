@@ -74,6 +74,7 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     haveResults = true;
     readsCount = 0;
     readsAligned = 0;
+    prebuiltIndex = false;
 }
 
 GenomeAlignerTask::~GenomeAlignerTask() {
@@ -113,7 +114,12 @@ void GenomeAlignerTask::prepare() {
     qualityThreshold = settings.getCustomValue(OPTION_QUAL_THRESHOLD, 0).toInt();
     bestMode = settings.getCustomValue(OPTION_BEST, false).toBool();
     seqPartSize = settings.getCustomValue(OPTION_SEQ_PART_SIZE, 10).toInt();
-    readMemSize = settings.getCustomValue(OPTION_READS_MEMORY_SIZE, 100).toInt();
+    readMemSize = settings.getCustomValue(OPTION_READS_MEMORY_SIZE, 10).toInt();
+    prebuiltIndex = settings.prebuiltIndex;
+
+    if (prebuiltIndex) {
+        indexFileName = settings.refSeqUrl.dirPath() + "/" + settings.refSeqUrl.baseFileName();
+    }
 
     //TODO: make correct code for common option "indexFileName"
     if (!settings.indexFileName.isEmpty()) {
@@ -139,6 +145,13 @@ void GenomeAlignerTask::prepare() {
         setupCreateIndexTask();
         addSubTask(createIndexTask);
     }
+
+    qint64 memUseMB = seqPartSize*13;
+    if (!justBuildIndex) {
+        memUseMB += readMemSize;
+    }
+    TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB/1024/1024, true);
+    taskResources.append(memUsg);
 }
 
 QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
@@ -246,6 +259,7 @@ void GenomeAlignerTask::setupCreateIndexTask() {
     s.indexFileName = indexFileName;
     s.justBuildIndex = justBuildIndex;
     s.seqPartSize = seqPartSize;
+    s.prebuiltIndex = prebuiltIndex;
     createIndexTask = new GenomeAlignerIndexTask(s);
     createIndexTask->setSubtaskProgressWeight(0.0f);
 }

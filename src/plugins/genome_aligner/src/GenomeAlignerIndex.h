@@ -26,6 +26,7 @@
 #include <U2Algorithm/BitsTable.h>
 #include <QtCore/QFile>
 #include "GenomeAlignerIndexPart.h"
+#include "GenomeAlignerSettingsWidget.h"
 
 namespace U2 {
 
@@ -35,6 +36,7 @@ class SearchQuery;
 
 class GenomeAlignerIndex {
     friend class GenomeAlignerIndexTask;
+    friend class GenomeAlignerSettingsWidget;
 public:
     GenomeAlignerIndex();
     ~GenomeAlignerIndex();

@@ -40,6 +40,7 @@ public:
     bool        justBuildIndex;
     bool        openCL;
     int         seqPartSize;            //in Mb
+    bool        prebuiltIndex;
 };
 
 class GenomeAlignerIndexTask: public Task {
@@ -72,7 +73,6 @@ private:
 
     quint32 MAX_ELEM_COUNT_IN_MEMORY;
     static const int BUFF_SIZE = 6291456; //6Mb. Must be divided by 8
-    static double MEMORY_DIVISION;
     static const int MEM_FOR_READS = 400; //Mb for aligning reads
 
 

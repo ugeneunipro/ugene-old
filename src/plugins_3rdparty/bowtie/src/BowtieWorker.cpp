@@ -238,7 +238,7 @@ void BowtieWorker::init() {
     reads = ports.value(BasePorts::IN_SEQ_PORT_ID());
 	ebwt = ports.value(EBWT_PORT);
 	output = ports.value(BasePorts::OUT_MSA_PORT_ID());
-	settings.setCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, true);
+	settings.prebuiltIndex = true;
 	settings.setCustomValue(BowtieTask::OPTION_N_MISMATCHES, actor->getParameter(N_MODE_MISMATCHES_ATTR)->getAttributeValue<int>());
 	settings.setCustomValue(BowtieTask::OPTION_V_MISMATCHES, actor->getParameter(V_MODE_MISMATCHES_ATTR)->getAttributeValue<int>());
 	settings.setCustomValue(BowtieTask::OPTION_MAQERR, actor->getParameter(MAQERR_ATTR)->getAttributeValue<int>());

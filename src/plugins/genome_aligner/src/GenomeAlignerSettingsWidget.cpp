@@ -20,6 +20,7 @@
  */
 
 #include "GenomeAlignerTask.h"
+#include "GenomeAlignerIndex.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
@@ -94,17 +95,39 @@ QMap<QString,QVariant> GenomeAlignerSettingsWidget::getDnaAssemblyCustomSettings
     return settings;
 }
 
-void GenomeAlignerSettingsWidget::buildIndexUrl(const GUrl& url) {
-    QString refUrl = url.getURLString();
-    QFile file(refUrl);
-    if (file.exists()) {
-        int fileSize = 1 + (int)(file.size()/(1024*1024));
-        int maxPartSize = qMin(fileSize, systemSize - MIN_READ_SIZE);
+bool GenomeAlignerSettingsWidget::buildIndexUrl(const GUrl& url, bool prebuiltIndex, QString &error) {
+    if (prebuiltIndex) {
+        GenomeAlignerIndex index;
+        index.baseFileName = url.dirPath() + "/" + url.baseFileName();
+        QByteArray e;
+        bool res = index.deserialize(e);
+        if (!res || url.lastFileSuffix() != GenomeAlignerIndex::HEADER_EXTENSION) {
+            error = tr("This index file is corrupted. Try to create it another time.");
+            return false;
+        }
+
         partSlider->setMinimum(MIN_PART_SIZE);
-        partSlider->setMaximum(maxPartSize);
+        partSlider->setMaximum(index.seqPartSize);
         partSlider->setEnabled(true);
-        partSlider->setValue(qMin(maxPartSize, DEFAULT_PART_SIZE));
+        partSlider->setValue(index.seqPartSize);
+    } else {
+        QString refUrl = url.getURLString();
+        QFile file(refUrl);
+        if (file.exists()) {
+            int fileSize = 1 + (int)(file.size()/(1024*1024));
+            int maxPartSize = qMin(fileSize*13, systemSize - MIN_READ_SIZE)/13;
+            partSlider->setMinimum(MIN_PART_SIZE);
+            partSlider->setMaximum(maxPartSize);
+            partSlider->setEnabled(true);
+            partSlider->setValue(qMin(maxPartSize, DEFAULT_PART_SIZE));
+        }
     }
+
+    return true;
+}
+
+void GenomeAlignerSettingsWidget::prebuiltIndex(bool value) {
+    indexTab->setEnabled(!value);
 }
 
 bool GenomeAlignerSettingsWidget::isParametersOk(QString &error) {
@@ -114,6 +137,23 @@ bool GenomeAlignerSettingsWidget::isParametersOk(QString &error) {
     }
 
     return true;
+}
+
+bool GenomeAlignerSettingsWidget::isIndexOk(QString &error, GUrl refName) {
+    GenomeAlignerIndex index;
+    index.baseFileName = indexDirEdit->text() + "/" + refName.baseFileName();
+    QByteArray e;
+    bool res = index.deserialize(e);
+    if (!res) {
+        return true;
+    }
+    if (index.seqPartSize == partSlider->value()) {
+        return true;
+    }
+    error = tr("The index directory has already contain the prebuilt index. But its reference fragmentation parameter is %1 and it doesn't equal to \
+the parameter you have chosen (%2).\n\nPress \"Ok\" to delete this index file and create a new during the aligning.\nPress \"Cancel\" to change this parameter \
+or the index directory.").arg(index.seqPartSize).arg(partSlider->value());
+    return false;
 }
 
 void GenomeAlignerSettingsWidget::sl_onSetIndexDirButtonClicked() {
@@ -130,7 +170,11 @@ void GenomeAlignerSettingsWidget::sl_onPartSliderChanged(int value) {
     partSizeLabel->setText(QByteArray::number(value) + " Mb");
     indexSizeLabel->setText(QByteArray::number(value*13) + " Mb");
 
-    readSlider->setMaximum(systemSize - 13*value);
+    if (systemSize - 13*value >= MIN_READ_SIZE) { 
+        readSlider->setMaximum(systemSize - 13*value);
+    } else {
+        readSlider->setMaximum(MIN_READ_SIZE);
+    }
 
     totalSizeLabel->setText(QByteArray::number(value*13 + readSlider->value()) + " Mb");
 }

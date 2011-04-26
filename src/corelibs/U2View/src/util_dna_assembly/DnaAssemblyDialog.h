@@ -41,6 +41,7 @@ public:
     const QList<GUrl> getShortReadUrls();
     const QString getAlgorithmName();
     const QString getResultFileName();
+    const bool isPrebuiltIndex();
     QMap<QString,QVariant> getCustomSettings();
 
 protected:
@@ -52,6 +53,7 @@ private slots:
     void sl_onRemoveShortReadsButtonClicked();
     void sl_onSetResultFileNameButtonClicked();
     void sl_onAlgorithmChanged(const QString &text);
+    void sl_onPrebuiltIndexBoxClicked();
 
 private:
     const DnaAssemblyAlgRegistry* assemblyRegistry;
@@ -59,6 +61,7 @@ private:
     static QString genomePath;
     static QList<QString> shortReads;
     static QString methodName;
+    static bool prebuiltIndex;
     void updateState();
     void addGuiExtension();
     void buildResultUrl(const GUrl& url);

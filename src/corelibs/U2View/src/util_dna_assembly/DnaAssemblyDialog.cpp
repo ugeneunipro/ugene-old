@@ -38,6 +38,7 @@ namespace U2 {
 QList<QString> DnaAssemblyDialog::shortReads;
 QString DnaAssemblyDialog::genomePath;
 QString DnaAssemblyDialog::methodName;
+bool DnaAssemblyDialog::prebuiltIndex = false;
 
 DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWidget* p /* = NULL*/ )
 : QDialog(p), assemblyRegistry(registry), customGUI(NULL)
@@ -58,18 +59,22 @@ DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWi
         }
     }
     shortReadsList->installEventFilter(this);
+    prebuiltIndexCheckBox->setChecked(prebuiltIndex);
     sl_onAlgorithmChanged(methodNamesBox->currentText());
+    sl_onPrebuiltIndexBoxClicked();
     connect(addShortreadsButton, SIGNAL(clicked()), SLOT(sl_onAddShortReadsButtonClicked()) );
     connect(removeShortReadsButton, SIGNAL(clicked()), SLOT(sl_onRemoveShortReadsButtonClicked()));
     connect(setResultFileNameButton, SIGNAL(clicked()), SLOT(sl_onSetResultFileNameButtonClicked()));
     connect(addRefButton, SIGNAL(clicked()), SLOT(sl_onAddRefButtonClicked()) );
     connect(methodNamesBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_onAlgorithmChanged(const QString &)));
+    connect(prebuiltIndexCheckBox, SIGNAL(clicked()), SLOT(sl_onPrebuiltIndexBoxClicked()));
     
     if (!genomePath.isEmpty()) {
         refSeqEdit->setText(genomePath);
         buildResultUrl(genomePath);
         if (NULL != customGUI) {
-            customGUI->buildIndexUrl(genomePath);
+            QString error;
+            customGUI->buildIndexUrl(genomePath, prebuiltIndex, error);
         }
     }
     foreach(const QString& read, shortReads) {
@@ -106,7 +111,10 @@ void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
     refSeqEdit->setText(lod.url);
     buildResultUrl(lod.url);
     if (NULL != customGUI) {
-        customGUI->buildIndexUrl(lod.url);
+        QString error;
+        if (!customGUI->buildIndexUrl(lod.url, prebuiltIndex, error)) {
+            QMessageBox::information(this, "DNA Assembly", error);
+        }
     }
 } 
 
@@ -116,6 +124,12 @@ void DnaAssemblyDialog::accept() {
         if (!customGUI->isParametersOk(error)) {
             QMessageBox::information(this, tr("DNA Assembly"), error);
             return;
+        }
+        if (!customGUI->isIndexOk(error, refSeqEdit->text())) {
+            QMessageBox::StandardButton res = QMessageBox::warning(this, tr("DNA Assembly"), error, QMessageBox::Ok | QMessageBox::Cancel);
+            if (QMessageBox::Cancel == res) {
+                return;
+            }
         }
     }
     if (refSeqEdit->text().isEmpty()) {
@@ -182,8 +196,27 @@ void DnaAssemblyDialog::sl_onAlgorithmChanged(const QString &text) {
     updateState();
 }
 
+void DnaAssemblyDialog::sl_onPrebuiltIndexBoxClicked() {
+    prebuiltIndex = prebuiltIndexCheckBox->isChecked();
+
+    if (customGUI != NULL) {
+        customGUI->prebuiltIndex(prebuiltIndex);
+        if (refSeqEdit->text().isEmpty()) {
+            return;
+        }
+        QString error;
+        if (!customGUI->buildIndexUrl(refSeqEdit->text(), prebuiltIndex, error)) {
+            QMessageBox::information(this, "DNA Assembly", error);
+        }
+    }
+}
+
 const QString DnaAssemblyDialog::getResultFileName() {
     return resultFileNameEdit->text();
+}
+
+const bool DnaAssemblyDialog::isPrebuiltIndex() {
+    return prebuiltIndexCheckBox->isChecked();
 }
 
 QMap<QString, QVariant> DnaAssemblyDialog::getCustomSettings() {
@@ -225,7 +258,8 @@ void DnaAssemblyDialog::addGuiExtension() {
             setMinimumWidth(customGUI->minimumWidth());
         };
         if (!refSeqEdit->text().isEmpty()) {
-            customGUI->buildIndexUrl(refSeqEdit->text());
+            QString error;
+            customGUI->buildIndexUrl(refSeqEdit->text(), prebuiltIndex, error);
         }
         customGUI->show();
     } else {

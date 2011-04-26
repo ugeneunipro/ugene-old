@@ -75,6 +75,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         s.resultFileName = dlg.getResultFileName();
         s.setCustomSettings( dlg.getCustomSettings() );
         s.shortReadUrls = dlg.getShortReadUrls();
+        s.prebuiltIndex = dlg.isPrebuiltIndex();
         s.loadResultDocument = true;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, true);
 
@@ -105,6 +106,7 @@ void DnaAssemblySupport::sl_showBuildIndexDialog()
         s.indexFileName = dlg.getIndexFileName();
         s.setCustomSettings( dlg.getCustomSettings() );
         s.loadResultDocument = false;
+        s.prebuiltIndex = false;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, false, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }

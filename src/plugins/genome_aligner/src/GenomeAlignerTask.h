@@ -85,6 +85,7 @@ private:
     bool dbiIO;
     QString indexFileName;
     bool alignReversed;
+    bool prebuiltIndex;
     GenomeAlignerIndex *index;
     int qualityThreshold;
     int readMemSize;

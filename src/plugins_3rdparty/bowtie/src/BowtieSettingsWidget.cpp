@@ -55,7 +55,6 @@ QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() {
         settings.insert(BowtieTask::OPTION_SEED, seedlenSpinBox->value());
     }
 
-	settings.insert(BowtieTask::OPTION_PREBUILT_INDEX, prebuiltIndexCheckBox->isChecked());
 	settings.insert(BowtieTask::OPTION_NOFW, nofwCheckBox->isChecked());
 	settings.insert(BowtieTask::OPTION_NORC, norcCheckBox->isChecked());
 	settings.insert(BowtieTask::OPTION_TRYHARD, tryhardCheckBox->isChecked());

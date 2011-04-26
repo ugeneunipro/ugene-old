@@ -33,7 +33,9 @@ public:
     GenomeAlignerSettingsWidget(QWidget* parent);
     virtual QMap<QString,QVariant> getDnaAssemblyCustomSettings();
     virtual bool isParametersOk(QString &error);
-    virtual void buildIndexUrl(const GUrl& url);
+    virtual bool buildIndexUrl(const GUrl& url, bool prebuiltIndex, QString &error);
+    virtual void prebuiltIndex(bool value);
+    virtual bool isIndexOk(QString &error, GUrl refName);
 
 private slots:
     void sl_onSetIndexDirButtonClicked();

@@ -49,6 +49,7 @@ public:
     QString indexFileName;
     QString algName;
     bool loadResultDocument;
+    bool prebuiltIndex;
     
 private:
     QMap<QString, QVariant> customSettings;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>484</width>
-    <height>400</height>
+    <width>430</width>
+    <height>350</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -104,6 +104,13 @@
       <widget class="QToolButton" name="setResultFileNameButton">
        <property name="text">
         <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="prebuiltIndexCheckBox">
+       <property name="text">
+        <string>Prebuilt index</string>
        </property>
       </widget>
      </item>

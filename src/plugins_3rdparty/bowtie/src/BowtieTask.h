@@ -81,7 +81,6 @@ public:
 	static const QString OPTION_READS_READER; 
 	static const QString OPTION_READS_WRITER;
 
-	static const QString OPTION_PREBUILT_INDEX; 
 	static const QString OPTION_N_MISMATCHES; 
 	static const QString OPTION_V_MISMATCHES; 
 	static const QString OPTION_MAQERR; // -e ( e>=1, default 70)

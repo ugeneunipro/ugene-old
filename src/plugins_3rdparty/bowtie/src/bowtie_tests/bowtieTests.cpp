@@ -213,7 +213,7 @@ void GTest_Bowtie::prepare() {
     
     config.shortReadUrls.append(readsFileUrl);
     config.refSeqUrl = GUrl(env->getVar("COMMON_DATA_DIR")+"/"+indexName);
-    config.setCustomValue(BowtieTask::OPTION_PREBUILT_INDEX, usePrebuildIndex);
+    config.prebuiltIndex = usePrebuildIndex;
     config.resultFileName = GUrl(tmpDataDir+"/"+QString::number(getTaskId()));
     config.algName = BOWTIE_ALG_NAME;
     config.loadResultDocument = true;

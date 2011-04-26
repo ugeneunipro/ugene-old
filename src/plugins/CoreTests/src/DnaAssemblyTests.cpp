@@ -114,11 +114,14 @@ void GTest_DnaAssemblyToReferenceTask::prepare()
     }
     QString id = QString::number(rand());
     resultFileName = GUrlUtils::rollFileName(dir+"/"+GUrl(refSeqUrl).baseFileName() + "_" + id + "_aligned.sam",DocumentUtils::getNewDocFileNameExcludesHint());
+    DnaAssemblyToRefTaskSettings settings;
     if (indexFileName.isEmpty()) {
         indexFileName = GUrlUtils::rollFileName(dir+"/"+GUrl(refSeqUrl).baseFileName() + "_index_" + id,DocumentUtils::getNewDocFileNameExcludesHint());
+        settings.prebuiltIndex = false;
+    } else {
+        settings.prebuiltIndex = true;
     }
 
-    DnaAssemblyToRefTaskSettings settings;
     settings.loadResultDocument = true;
     settings.algName = algName;
     settings.refSeqUrl = refSeqUrl;

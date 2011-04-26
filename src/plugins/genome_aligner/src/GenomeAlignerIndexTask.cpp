@@ -35,8 +35,6 @@
 
 namespace U2 {
 
-double GenomeAlignerIndexTask::MEMORY_DIVISION = 2.0/3.0;
-
 GenomeAlignerIndexTask::GenomeAlignerIndexTask(const GenomeAlignerIndexSettings &settings)
 : Task("Building genome aligner's index", TaskFlag_None), objLens(NULL),  unknownChar('N')
 {
@@ -80,23 +78,38 @@ SAType getPartLength(SAType seqLength, int parts, int curPart) {
 void GenomeAlignerIndexTask::run() {
     QByteArray error;
     bool res = index->deserialize(error);
-    if (!res) {
-        algoLog.details(error + " Index file is corrupted. I will try to create a new index file.");
-    }
-    index->build = !(res && (index->seqPartSize == settings.seqPartSize));
-    if (!index->build) {
-        index->build = !QFile::exists(baseFileName + QString(".") + GenomeAlignerIndex::REF_INDEX_EXTENSION);
-        seqLength = index->seqLength;
-    }
-    if (index->build) {
-        reformatSequence();
-        if (isCanceled() || hasErrors()) {
+    if (settings.prebuiltIndex) {
+        index->build = false;
+        if (!res) {
+            setError("Index file is corrupted. Try to create index another time.");
             return;
         }
-        seqLength = objLens[objCount-1];
-        index->seqLength = seqLength;
-        index->w = w;
-        index->seqPartSize = settings.seqPartSize;
+        QString refName = baseFileName + QString(".") + GenomeAlignerIndex::REF_INDEX_EXTENSION;
+        if (!QFile::exists(refName)) {
+            setError(tr("File %1 is not found. Try to create index another time.").arg(refName));
+            return;
+        }
+        seqLength = index->seqLength;
+        settings.seqPartSize = index->seqPartSize;
+    } else {
+        if (!res) {
+            algoLog.details(error + " Index file is corrupted. I will try to create a new index file.");
+        }
+        index->build = !(res && (index->seqPartSize == settings.seqPartSize));
+        if (!index->build) {
+            index->build = !QFile::exists(baseFileName + QString(".") + GenomeAlignerIndex::REF_INDEX_EXTENSION);
+            seqLength = index->seqLength;
+        }
+        if (index->build) {
+            reformatSequence();
+            if (isCanceled() || hasErrors()) {
+                return;
+            }
+            seqLength = objLens[objCount-1];
+            index->seqLength = seqLength;
+            index->w = w;
+            index->seqPartSize = settings.seqPartSize;
+        }
     }
 
     MAX_ELEM_COUNT_IN_MEMORY = settings.seqPartSize*1024*1024;
@@ -124,7 +137,17 @@ void GenomeAlignerIndexTask::run() {
         index->indexPart.seqLengths[i] = length;
         index->indexPart.partFiles[i] = new QFile(baseFileName + "." + QByteArray::number(i) + "." + GenomeAlignerIndex::SARRAY_EXTENSION);
         if (!index->build) {
-            index->build = !index->indexPart.partFiles[i]->exists();
+            if (!index->build && !index->indexPart.partFiles[i]->exists()) {
+                if (settings.prebuiltIndex) {
+                    setError(tr("File %1 is not found. Try to create index another time.").arg(index->indexPart.partFiles[i]->fileName()));
+                    return;
+                }
+                index->build = true;
+            } else {
+                index->build = false;
+            }
+        } else {
+            index->indexPart.partFiles[i]->remove();
         }
     }
 
