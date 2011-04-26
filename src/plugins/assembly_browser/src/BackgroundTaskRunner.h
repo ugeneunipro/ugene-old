@@ -23,6 +23,7 @@
 #define __BACKGROUND_TASK_RUNNER_H__
 
 #include <U2Core/Task.h>
+#include <U2Core/AppContext.h>
 
 namespace U2 {
 

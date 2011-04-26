@@ -27,7 +27,7 @@
 namespace U2 {
 
 CalcCoverageInfoTask::CalcCoverageInfoTask(const CalcCoverageInfoTaskSettings & settings_) :
-BackgroundTask("Calculate assembly coverage", TaskFlag_None), settings(settings_) 
+BackgroundTask<CoverageInfo>("Calculate assembly coverage", TaskFlag_None), settings(settings_)
 {
     tpm = Progress_Manual;
 };
