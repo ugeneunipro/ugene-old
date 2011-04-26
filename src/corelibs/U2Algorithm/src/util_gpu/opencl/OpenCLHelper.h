@@ -190,21 +190,23 @@ public:
     clReleaseContext_f clReleaseContext_p;
     clReleaseMemObject_f clReleaseMemObject_p;
 
-
-
-
     enum OpenCLHelperError {
         Error_NoError,
         Error_NoDriverLib,
         Error_BadDriverLib,
     };
 
-    bool isLoaded() {return (status == Error_NoError);}
+    bool isLoaded() const {return (status == Error_NoError);}
 
-    QString getErrorString();
+    QString getErrorString() const;
 
     OpenCLHelper();
     ~OpenCLHelper();
+
+private:
+    OpenCLHelper& operator=( const OpenCLHelper &s );
+    OpenCLHelper(const OpenCLHelper &);
+
 private:
     OpenCLHelperError status;
     QLibrary openclLib;

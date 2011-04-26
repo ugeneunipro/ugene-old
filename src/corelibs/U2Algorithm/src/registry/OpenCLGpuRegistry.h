@@ -23,7 +23,10 @@
 #define __OPEN_CL_GPU_REGISTRY_H__
 
 #include <QtCore/QHash>
+
+#include <U2Algorithm/OpenCLHelper.h>
 #include <U2Core/global.h>
+
 
 namespace U2 {
 
@@ -100,9 +103,12 @@ public:
 
     bool empty() const { return gpus.empty(); }
 
+    const OpenCLHelper& getOpenCLHelper() {return openCLHelper;}
+
 private:
     void saveGpusSettings() const;
     QHash< OpenCLGpuId, OpenCLGpuModel * > gpus;
+    OpenCLHelper openCLHelper;
 };
 
 } //namespace

@@ -124,7 +124,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     cl_uint clNumDevices = 1;
     cl_device_id deviceId = (cl_device_id) AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getId();
 
-    OpenCLHelper openCLHelper;
+    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
     if (!openCLHelper.isLoaded()) {
         coreLog.error(openCLHelper.getErrorString());
         return;
@@ -432,7 +432,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 SmithWatermanAlgorithmOPENCL::~SmithWatermanAlgorithmOPENCL() {
     algoLog.details(QObject::tr("Starting cleanup OpenCL resources"));
 
-    OpenCLHelper openCLHelper;
+    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
 
     cl_int err = CL_SUCCESS;
 

@@ -53,11 +53,10 @@ namespace U2 {
     const static char * clReleaseContext_n ("clReleaseContext");
     const static char * clReleaseMemObject_n ("clReleaseMemObject");
 
-    OpenCLHelper::OpenCLHelper()  {
+    OpenCLHelper::OpenCLHelper() : openclLib( OPENCL_DRIVER_LIB )  {
 
         coreLog.details( QObject::tr("Loading OPENCL driver library") );
 
-        QLibrary openclLib( OPENCL_DRIVER_LIB );
         openclLib.load();
         if( !openclLib.isLoaded() ) {
             coreLog.details( QObject::tr("Cannot load OpenCL library. Error while loading %1").arg(openclLib.fileName()) );
@@ -227,9 +226,10 @@ namespace U2 {
     }
 
     OpenCLHelper::~OpenCLHelper() {
+        openclLib.unload();
     }
 
-    QString OpenCLHelper::getErrorString() {
+    QString OpenCLHelper::getErrorString() const {
         switch (status) {
             case Error_NoDriverLib: {
                 return QObject::tr("Cannot load library: %1").arg(OPENCL_DRIVER_LIB);

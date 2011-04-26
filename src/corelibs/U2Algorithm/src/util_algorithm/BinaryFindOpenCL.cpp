@@ -63,7 +63,7 @@ NumberType* BinaryFindOpenCL::launch() {
     cl_uint clNumDevices = 1;
     cl_device_id deviceId = (cl_device_id) AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getId();
 
-    OpenCLHelper openCLHelper;
+    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
     if (!openCLHelper.isLoaded()) {
         coreLog.error(openCLHelper.getErrorString());
         return 0;
@@ -221,7 +221,7 @@ void BinaryFindOpenCL::prepareBinarySearch(const NumberType* arr, int lowerBound
 BinaryFindOpenCL::~BinaryFindOpenCL() {
     algoLog.details(QObject::tr("clear OpenCL resources"));
     cl_int err = CL_SUCCESS;
-    OpenCLHelper openCLHelper;
+    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
 
     if (clKernel) {
             err = openCLHelper.clReleaseKernel_p(clKernel);

@@ -90,7 +90,7 @@ QString OpenCLSupportPlugin::getSettingsErrorString( OpenCLSupportError err ) {
 OpenCLSupportPlugin::OpenCLSupportError OpenCLSupportPlugin::obtainGpusInfo( QString & errStr )
 {
     //load driver library
-    OpenCLHelper openCLHelper;
+    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
     if (!openCLHelper.isLoaded()) {
         errStr = openCLHelper.getErrorString();
         return Error_BadDriverLib;
