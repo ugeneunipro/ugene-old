@@ -72,11 +72,12 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
             QTableWidgetItem* item = new QTableWidgetItem(FormatUtils::formatNumberWithSeparators(ref.getLength()));
             item->setFlags(Qt::ItemIsEnabled);
             ui.tableWidget->setItem(i, 1, item);
-            ui.tableWidget->setCellWidget(i, 2, new QLabel("<a href=\"" + ref.getUri().getURLString() + "\">" + ref.getUri().getURLString() + "</a>"));
+            ui.tableWidget->setCellWidget(i, 2, new QLabel("<a href=\"" + ref.getUri() + "\">" + ref.getUri() + "</a>"));
             checkbox->setCheckState(Qt::Checked);
             i++;
         }
     }
+    ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 3);
     ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
     ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.baseFileName() + ".ugenedb");
     ui.sourceUrlView->setText(sourceUrl.getURLString());

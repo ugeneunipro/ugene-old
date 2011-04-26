@@ -48,20 +48,20 @@ public:
         const QByteArray &getAssemblyId()const;
         const QByteArray &getMd5()const;
         const QByteArray &getSpecies()const;
-        const GUrl &getUri()const;
+        const QString &getUri()const;
         void setName(const QByteArray &name);
         void setLength(int length);
         void setAssemblyId(const QByteArray &assemblyId);
         void setMd5(const QByteArray &md5);
         void setSpecies(const QByteArray &species);
-        void setUri(const GUrl &uri);
+        void setUri(const QString &uri);
     private:
         QByteArray name;
         int length;
         QByteArray assemblyId;
         QByteArray md5;
         QByteArray species;
-        GUrl uri;
+        QString uri;
     };
     class ReadGroup {
     public:

@@ -79,7 +79,7 @@ void Writer::writeHeader(const Header &header) {
                 appendField(headerText, "SP", reference.getSpecies());
             }
             if(!reference.getUri().isEmpty()) {
-                appendField(headerText, "UR", reference.getUri().getURLString().toAscii());
+                appendField(headerText, "UR", reference.getUri().toAscii());
             }
             headerText.append("\n");
         }

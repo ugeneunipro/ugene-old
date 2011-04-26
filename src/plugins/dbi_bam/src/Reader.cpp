@@ -605,7 +605,7 @@ void Reader::readHeader() {
                     reference->setSpecies(fields["SP"]);
                 }
                 if(fields.contains("UR")) {
-                    reference->setUri(GUrl(fields["UR"]));
+                    reference->setUri(fields["UR"]);
                 }
             } else if("RG" == recordTag) {
                 Header::ReadGroup readGroup;

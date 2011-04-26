@@ -154,7 +154,7 @@ void ConvertToSQLiteTask::run() {
                         uriAttr.objectId = assembly.id;
                         uriAttr.name = "reference_uri_attribute";
                         uriAttr.version = 1;
-                        uriAttr.value = reference.getUri().getURLString();
+                        uriAttr.value = reference.getUri();
                         attributeDbi->createStringAttribute(uriAttr, status);
                         if(status.hasError()) {
                             throw Exception(status.getError());

@@ -53,7 +53,7 @@ const QByteArray &Header::Reference::getSpecies()const {
     return species;
 }
 
-const GUrl &Header::Reference::getUri()const {
+const QString &Header::Reference::getUri()const {
     return uri;
 }
 
@@ -77,7 +77,7 @@ void Header::Reference::setSpecies(const QByteArray &species) {
     this->species = species;
 }
 
-void Header::Reference::setUri(const GUrl &uri) {
+void Header::Reference::setUri(const QString &uri) {
     this->uri = uri;
 }
 
