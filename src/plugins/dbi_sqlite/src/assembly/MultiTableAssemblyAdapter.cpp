@@ -530,7 +530,11 @@ MultiTablePackAlgorithmAdapter::~MultiTablePackAlgorithmAdapter() {
 
 // Number of migration cached before migration process is forced from within of pack algorithm
 // If this number is not reached during the pack -> migration is done after the pack
-#define MAX_MIGRATION_QUEUE_SIZE (500*1000)
+// TODO: there is an error in migration process: remove from old table is blocked by read iterator
+//       until this issue is fixed assemblies with > MAX_MIGRATION_QUEUE_SIZE moved reads will fail to pack
+//       need to consider different isolation level or post-pack removal
+
+#define MAX_MIGRATION_QUEUE_SIZE (10*1000*1000)
 
 void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os) {
     int elenPos = multiTableAdapter->getElenRangePosById(readId);
