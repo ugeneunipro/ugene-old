@@ -184,7 +184,8 @@ Alignment Reader::readAlignment() {
             CigarValidator validator(cigar);
             validator.validate(&totalLength);
             if(!cigar.isEmpty() && length != totalLength) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("Cigar length mismatch"));
+                cigar.clear(); //Ignore invalid cigar
+                //throw InvalidFormatException(BAMDbiPlugin::tr("Cigar length mismatch"));
             }
         }
         alignment.setCigar(cigar);
@@ -493,7 +494,7 @@ void Reader::readHeader() {
         QList<Header::ReadGroup> readGroups;
         QList<Header::Program> programs;
         QList<QByteArray> previousProgramIds;
-        foreach(const QByteArray &line, text.split('\n')) {
+        foreach(const QByteArray &line, text.replace('\r', QString("")).split('\n')) {
             if(line.isEmpty()) {
                 continue;
             }

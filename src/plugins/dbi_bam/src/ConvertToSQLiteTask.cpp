@@ -56,9 +56,8 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
             }
         }
     }
-    reads.clear();
-    foreach(int index, assemblies.keys()) {
-        reads.insert(index, QList<U2AssemblyRead>());            
+    for(int i=0; i<reads.values().count(); i++) {
+        reads.values()[i].clear();
     }
 }
 
@@ -193,6 +192,9 @@ void ConvertToSQLiteTask::run() {
             for(int i=0, i_c = refIndices.count(); i < i_c; i++) {
                 if(bamInfo.isReferenceSelected(i)) {
                     const QList<Index::ReferenceIndex::Bin>& bins = refIndices.at(i).getBins();
+                    if(bins.isEmpty()) {
+                        continue;
+                    }
                     unsigned int lastBin = bins.last().getBin();
                     unsigned int minBin = lastBin > 0 ? (lastBin > 8 ? (lastBin > 72 ? (lastBin > 584 ? (lastBin > 4680 ? 4681 : 585) : 73) : 9) : 1) : 0;
                     foreach(const Index::ReferenceIndex::Bin bin, bins) {

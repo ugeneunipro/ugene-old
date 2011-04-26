@@ -267,7 +267,8 @@ void ConvertToSQLiteDialog::accept() {
                     {
                         bool ok = QFile::remove(destinationUrl.getURLString());
                         if(!ok) {
-                            coreLog.error(BAMDbiPlugin::tr("Destination file '%1' cannot be removed").arg(destinationUrl.getURLString()));
+                            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination file '%1' cannot be removed").arg(destinationUrl.getURLString()));
+                            return;
                         }    
                     }
                 case 1:

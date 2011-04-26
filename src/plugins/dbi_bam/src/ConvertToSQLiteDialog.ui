@@ -64,17 +64,17 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="importUnmappedBox">
-     <property name="text">
-      <string>Import unmapped reads</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <property name="spacing">
       <number>0</number>
      </property>
+     <item>
+      <widget class="QCheckBox" name="importUnmappedBox">
+       <property name="text">
+        <string>Import unmapped reads</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">

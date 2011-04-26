@@ -70,13 +70,18 @@ void LoadBamInfoTask::run() {
         std::auto_ptr<Reader> reader(new Reader(*ioAdapter));
         std::auto_ptr<BaiReader> baiReader(new BaiReader(*ioIndexAdapter));
         
+        bamInfo.setHeader(reader->getHeader());
+
         Index index;
         if(hasIndex) {
             index = baiReader->readIndex();
+            if(index.getReferenceIndices().count() != reader->getHeader().getReferences().size()) {
+                throw Exception("Invalid index");
+            }
             bamInfo.setIndex(index);
         }
 
-        bamInfo.setHeader(reader->getHeader());
+        
     } catch(const Exception &ex) {
         stateInfo.setError(ex.getMessage());
     }
