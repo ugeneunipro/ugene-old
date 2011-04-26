@@ -39,11 +39,13 @@ static qint64 selectProw(qint64* tails, qint64 start, qint64 end ){
     return -1;
 }
 
-void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2OpStatus& os) {
+void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackStat& stat, U2OpStatus& os) {
     //Algorithm idea: 
     //  select * reads ordered by start position
     //  keep tack (tail) of used rows to assign packed row for reads (N elements)
     //  if all elements are used -> assign -1 to read and postprocess it later
+
+    stat.maxProw = 0;
 
     GTIMER(c1, t1, "AssemblyPackAlgorithm::pack");
     quint64 t0 = GTimer::currentTimeMicros();
@@ -64,6 +66,7 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2OpStatus& os) 
             peakEnd = read.leftmostPos + read.effectiveLen;
         }
         adapter.assignProw(read.readId, prow, os);
+        stat.maxProw = qMax(prow, stat.maxProw);
     }
     t1.stop();
     perfLog.trace(QString("Assembly pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));

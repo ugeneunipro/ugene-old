@@ -51,7 +51,7 @@ public:
     virtual void addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& readIds, U2OpStatus& os);
 
-    virtual void pack(U2OpStatus& os);
+    virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os);
 
     const QString& getReadsTableName() const {return readsTable;}
     

@@ -393,7 +393,7 @@ void MultiTableAssemblyAdapter::addReadsInternal(QList<U2AssemblyRead>& reads, b
     
     QVector < QList<U2AssemblyRead> > readsByRange(nElens); //reads sorted by range
     QVector< QVector<int> > readsIndex(nElens); // back-mapping of read index to original 'reads' list
-    for (int i = 0; i < nReads; i++) {
+    for (int i = 0; i < nReads && !os.isCoR(); i++) {
         U2AssemblyRead& read = reads[i];
         int readLen = read->readSequence.length();
         read->effectiveLen = readLen + U2AssemblyUtils::getCigarExtraLength(read->cigar);
@@ -403,7 +403,7 @@ void MultiTableAssemblyAdapter::addReadsInternal(QList<U2AssemblyRead>& reads, b
         readsIndex[elenPos] << i;
         
     }
-    for (int i = 0; i < nElens; i++) {
+    for (int i = 0; i < nElens && !os.isCoR(); i++) {
         QList<U2AssemblyRead>& rangeReads = readsByRange[i];
         if (rangeReads.isEmpty()) {
             continue;
@@ -421,7 +421,7 @@ void MultiTableAssemblyAdapter::addReadsInternal(QList<U2AssemblyRead>& reads, b
 
         //now back-map all reads to initial list
         const QVector<int>& idxMap = readsIndex[i];
-        for (int j = 0, n = rangeReads.size(); j < n; j++) {
+        for (int j = 0, n = rangeReads.size(); j < n && !os.isCoR(); j++) {
             int idx = idxMap[j];
             U2AssemblyRead& r  = rangeReads[j];
             r->id = addTable2Id(r->id, adapter->idExtra);
@@ -478,9 +478,9 @@ void MultiTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2Op
     }
 }
 
-void MultiTableAssemblyAdapter::pack(U2OpStatus& os) {
+void MultiTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     MultiTablePackAlgorithmAdapter packAdapter(this);
-    AssemblyPackAlgorithm::pack(packAdapter, os);
+    AssemblyPackAlgorithm::pack(packAdapter, stat, os);
 }
 
 //////////////////////////////////////////////////////////////////////////

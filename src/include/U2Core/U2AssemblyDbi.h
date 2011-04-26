@@ -38,7 +38,6 @@ public:
     virtual U2AssemblyRead next(U2OpStatus& os) = 0;
 };
 
-
 /**
     An interface to obtain  access to assembly data
 */
@@ -121,10 +120,10 @@ public:
         Packs assembly rows: assigns packedViewRow value for every read in assembly 
         Requires: U2DbiFeature_WriteAssembly and U2DbiFeature_AssemblyReadsPacking features support
     */
-    virtual void pack(const U2DataId& assemblyId, U2OpStatus& os) = 0;
+    virtual void pack(const U2DataId& assemblyId, U2AssemblyPackStat& stats, U2OpStatus& os) = 0;
 
 };
-    
+
 } //namespace
 
 #endif

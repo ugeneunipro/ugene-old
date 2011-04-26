@@ -34,6 +34,7 @@
 
 #include <memory>
 
+#define READS_CHUNK_SIZE (250*1000)
 namespace U2 {
 namespace BAM {
 
@@ -255,7 +256,7 @@ void ConvertToSQLiteTask::run() {
                     Alignment alignment = reader->readAlignment();
                     if(bamInfo.isReferenceSelected(alignment.getReferenceId())) {
                         reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
-                        if(++readsCount >= 16384) {
+                        if(++readsCount >= READS_CHUNK_SIZE) {
                             readsCount = 0;
                             stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
                             flushReads(sqliteDbi, assemblies, reads);
@@ -318,7 +319,8 @@ void ConvertToSQLiteTask::run() {
             foreach(int index, assemblies.keys()) {
                 {
                     U2OpStatusImpl opStatus;
-                    sqliteDbi->getAssemblyDbi()->pack(assemblies[index].id, opStatus);
+                    U2AssemblyPackStat stat;
+                    sqliteDbi->getAssemblyDbi()->pack(assemblies[index].id, stat, opStatus);
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }

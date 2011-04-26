@@ -212,9 +212,9 @@ void SingleTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2O
     SQLiteObjectDbi::incrementVersion(assemblyId, db, os);
 }
 
-void SingleTableAssemblyAdapter::pack(U2OpStatus& os) {
+void SingleTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     SingleTablePackAlgorithmAdapter packAdapter(db, readsTable);
-    AssemblyPackAlgorithm::pack(packAdapter, os);
+    AssemblyPackAlgorithm::pack(packAdapter, stat, os);
 }
 
 //////////////////////////////////////////////////////////////////////////

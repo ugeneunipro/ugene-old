@@ -62,7 +62,7 @@ public:
     virtual void addReadsInternal(QList<U2AssemblyRead>& reads, bool delayedIndex, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& readIds, U2OpStatus& os);
 
-    virtual void pack(U2OpStatus& os);
+    virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os);
 
     virtual void createReadsIndexes(U2OpStatus& os);
 

@@ -234,15 +234,22 @@ void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2Da
 }
 
 void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::addReads");
+    GTIMER(c2, t2, "SQLiteAssemblyDbi::addReads");
+
+    quint64 t0 = GTimer::currentTimeMicros();
+
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     a->addReads(rows, os);
+    
+    perfLog.trace(QString("Assembly: %1 reads added in %2 seconds").arg(rows.size()).arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
 
 /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
-void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2OpStatus& os) {
+void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2AssemblyPackStat& stat, U2OpStatus& os) {
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    a->pack(os);
+    a->pack(stat, os);
 }
 
 //////////////////////////////////////////////////////////////////////////

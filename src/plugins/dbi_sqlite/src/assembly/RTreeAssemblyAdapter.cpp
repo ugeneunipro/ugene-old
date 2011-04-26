@@ -193,9 +193,9 @@ void RTreeAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2OpStatu
     SQLiteObjectDbi::incrementVersion(assemblyId, db, os);
 }
 
-void RTreeAssemblyAdapter::pack(U2OpStatus& os) {
+void RTreeAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     RTreePackAlgorithmAdapter packAdapter(db, readsTable, indexTable);
-    AssemblyPackAlgorithm::pack(packAdapter, os);
+    AssemblyPackAlgorithm::pack(packAdapter, stat, os);
 }
 
 

@@ -44,7 +44,7 @@ public:
     
 class AssemblyPackAlgorithm {
 public:
-    static void pack(PackAlgorithmAdapter& adapter, U2OpStatus& os);
+    static void pack(PackAlgorithmAdapter& adapter, U2AssemblyPackStat& stat, U2OpStatus& os);
 };
 
 

@@ -172,7 +172,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 
-    virtual void pack(const U2DataId&, U2OpStatus& os) {
+    virtual void pack(const U2DataId&, U2AssemblyPackStat&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_AssemblyReadsPacking, getRootDbi(), os);
     }
 };

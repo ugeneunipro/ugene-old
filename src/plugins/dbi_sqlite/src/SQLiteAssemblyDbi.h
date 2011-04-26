@@ -102,7 +102,7 @@ public:
     virtual void addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os);
 
     /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
-    virtual void pack(const U2DataId& assemblyId, U2OpStatus& os);
+    virtual void pack(const U2DataId& assemblyId, U2AssemblyPackStat& stat, U2OpStatus& os);
 
     virtual void initSqlSchema(U2OpStatus& os);
     virtual void shutdown(U2OpStatus& os);
@@ -141,7 +141,7 @@ public:
     virtual void addReadsInternal(QList<U2AssemblyRead>& reads, bool delayedIndex, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
 
-    virtual void pack(U2OpStatus& os) = 0;
+    virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os) = 0;
 
     virtual int getInsertGroupSize() const {return 100*1000;}
 

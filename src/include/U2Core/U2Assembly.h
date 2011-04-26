@@ -163,6 +163,13 @@ public:
     U2DataId        referenceId;
 };
 
+/** Statistics information collected during the reads packing algorithm */
+class U2AssemblyPackStat {
+public:
+    U2AssemblyPackStat() : maxProw(0) {}
+    int maxProw;
+};
+
 
 } //namespace
 

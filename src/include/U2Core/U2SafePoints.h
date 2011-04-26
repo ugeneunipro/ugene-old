@@ -33,15 +33,6 @@
 #include <U2Core/Log.h>
 #include <assert.h>
 
-/** 
-    Check And Trace utility. Checks the condition and traces to log if check failed 
-*/
-#define CAT(condition, message) \
-    if (!(condition)) { \
-        coreLog.error(QString("Internal check error: %1 at %2:%3").arg(message).arg(__FILE__).arg(__LINE__)); \
-        assert(condition); \
-    } \
-
 
 /** 
     Recover utility. Must be used when code tries to recover from invalid internal state
@@ -70,7 +61,8 @@
 
 
 /** 
-    FAIL utility. Same as SAFE_POINT but uses unconditional fail
+    FAIL utility. Same as SAFE_POINT but uses unconditional fail.
+    Can be used in code that must be unreachable
 */
 #define FAIL(message, result)  \
     coreLog.error(QString("Trying to recover from error: %1 at %2:%3").arg(message).arg(__FILE__).arg(__LINE__)); \
