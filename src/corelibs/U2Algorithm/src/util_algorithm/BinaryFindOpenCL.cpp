@@ -170,6 +170,11 @@ NumberType* BinaryFindOpenCL::launch() {
     err = openCLHelper.clWaitForEvents_p(1, &clEvent1);
     if (hasOPENCLError(err, "clWaitForEvents 1")) return 0;
 
+    if (clEvent1) {
+        err = openCLHelper.clReleaseEvent_p (clEvent1);
+        if (hasOPENCLError(err, "clReleaseEvent 1 failed")) return 0;
+    }
+
     NumberType* outputArray = new NumberType[outputArraySize];
     err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, buf_findMeArray, CL_FALSE, 0, sizeof(NumberType) * outputArraySize, outputArray, 0, NULL, &clEvent2);
     if (hasOPENCLError(err, "clCommandQueue")) {
@@ -181,6 +186,11 @@ NumberType* BinaryFindOpenCL::launch() {
     if (hasOPENCLError(err, "clWaitForEvents")) {
         delete[] outputArray;
         return 0;
+    }
+
+    if (clEvent2) {
+        err = openCLHelper.clReleaseEvent_p (clEvent2);
+        if (hasOPENCLError(err, "clReleaseEvent 2 failed")) return 0;
     }
 
     time_t time2 = time(NULL);
@@ -213,14 +223,6 @@ BinaryFindOpenCL::~BinaryFindOpenCL() {
     cl_int err = CL_SUCCESS;
     OpenCLHelper openCLHelper;
 
-    if (clEvent1) {
-            err = openCLHelper.clReleaseEvent_p(clEvent1);
-            hasOPENCLError(err, "clReleaseEvent failed");
-    }
-    if (clEvent2) {
-            err = openCLHelper.clReleaseEvent_p(clEvent2);
-            hasOPENCLError(err, "clReleaseEvent failed");
-    }
     if (clKernel) {
             err = openCLHelper.clReleaseKernel_p(clKernel);
             hasOPENCLError(err, "clReleaseEvent failed");

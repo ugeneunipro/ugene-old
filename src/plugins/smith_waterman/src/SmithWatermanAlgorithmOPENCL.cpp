@@ -339,6 +339,11 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
         err = openCLHelper.clWaitForEvents_p(1, &clEvent);
         if (hasOPENCLError(err, "clWaitForEvents failed")) return;
 
+        if (clEvent) {
+            err = openCLHelper.clReleaseEvent_p (clEvent);
+            if (hasOPENCLError(err, "clReleaseEvent 1 failed")) return;
+        }
+
         //revert arrays
         hDataTmpBuf = hDataRecBuf;
         hDataRecBuf = hDataUpBuf;
@@ -378,11 +383,21 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     err = openCLHelper.clWaitForEvents_p(1, &clEvent);
     if (hasOPENCLError(err, "clWaitForEvents failed")) return;
 
+    if (clEvent) {
+        err = openCLHelper.clReleaseEvent_p (clEvent);
+        if (hasOPENCLError(err, "clReleaseEvent 2 failed")) return;
+    }
+
     err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, directionsMaxBuf, CL_FALSE, 0, sizeof(ScoreType) * (sizeRow), g_directionsRec, 0, NULL, &clEvent);
     if (hasOPENCLError(err, "clEnqueueReadBuffer failed")) return;
 
     err = openCLHelper.clWaitForEvents_p(1, &clEvent);
     if (hasOPENCLError(err, "clWaitForEvents failed")) return;
+
+    if (clEvent) {
+        err = openCLHelper.clReleaseEvent_p (clEvent);
+        if (hasOPENCLError(err, "clReleaseEvent 3 failed")) return;
+    }
 
     err = openCLHelper.clFinish_p(clCommandQueue);
     if (hasOPENCLError(err, "clFinish failed")) return;
@@ -421,10 +436,6 @@ SmithWatermanAlgorithmOPENCL::~SmithWatermanAlgorithmOPENCL() {
 
     cl_int err = CL_SUCCESS;
 
-    if (clEvent) {
-        err = openCLHelper.clReleaseEvent_p (clEvent);  
-        hasOPENCLError(err, "clReleaseEvent failed");
-    }
     if (clKernel) {
         err = openCLHelper.clReleaseKernel_p (clKernel);
         hasOPENCLError(err, "clReleaseEvent failed");
