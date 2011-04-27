@@ -36,6 +36,7 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AssemblyUtils.h>
 
 #include <memory>
 
@@ -299,7 +300,16 @@ void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref)
 
 qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
     if(cachedReadsNumber == NO_VAL) {
-        cachedReadsNumber = assemblyDbi->countReads(assembly.id, U2Region(0, getModelLength(os)), os);
+        U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
+        U2OpStatusImpl os;
+        static const QByteArray READS_COUNT_ATTRIBUTE_NAME("count_reads_attribute");
+        if(attributeDbi != NULL) {
+            cachedReadsNumber = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, READS_COUNT_ATTRIBUTE_NAME, NO_VAL, os);
+        }
+        if(cachedReadsNumber == NO_VAL) {
+            LOG_OP(os);
+            cachedReadsNumber = assemblyDbi->countReads(assembly.id, U2_ASSEMBLY_REGION_MAX, os);
+        }
     }
     return cachedReadsNumber;
 }

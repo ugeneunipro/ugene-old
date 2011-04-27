@@ -530,8 +530,8 @@ void AssemblyBrowser::sl_showContigInfo() {
         U2OpStatusImpl st;
         QString text = "<table>";
         text += QString("<tr><td><b>Name:&nbsp;</b></td><td>%1</td></tr>").arg(gobject->getGObjectName());
-        text += QString("<tr><td><b>Length:&nbsp;</b></td><td>%1</td></tr>").arg(FormatUtils::formatNumberWithSeparators(model->getModelLength(st)));
-        text += QString("<tr><td><b>Number of reads:&nbsp;</b></td><td>%1</td></tr>").arg(FormatUtils::formatNumberWithSeparators(model->getReadsNumber(st)));
+        text += QString("<tr><td><b>Length:&nbsp;</b></td><td>%1</td></tr>").arg(FormatUtils::insertSeparators(model->getModelLength(st)));
+        text += QString("<tr><td><b>Number of reads:&nbsp;</b></td><td>%1</td></tr>").arg(FormatUtils::insertSeparators(model->getReadsNumber(st)));
         QByteArray md5 = model->getReferenceMd5(st);
         if(!md5.isEmpty()) {
             text += QString("<tr><td><b>MD5:&nbsp;</b></td><td>%1</td></tr>").arg(QString(md5));
@@ -550,7 +550,6 @@ void AssemblyBrowser::sl_showContigInfo() {
     }
     dlg.layout()->addWidget(infoLabel);
     
-    //dlg.resize(qMin(250, QApplication::desktop()->screenGeometry().width()), dlg.sizeHint().height());
     dlg.resize(300, dlg.sizeHint().height());
     dlg.setMaximumHeight(dlg.layout()->minimumSize().height());
     dlg.exec();

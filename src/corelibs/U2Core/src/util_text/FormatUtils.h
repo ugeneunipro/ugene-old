@@ -35,6 +35,7 @@ public:
 
     static QString formatNumber(int num);
     static QString formatNumberWithSeparators(int num);
+    static QString insertSeparators(int num);
     
     // QDate::getShortMonthName() returns date in local translation
     // This is English version of this function, required by EMBL and Genbank 

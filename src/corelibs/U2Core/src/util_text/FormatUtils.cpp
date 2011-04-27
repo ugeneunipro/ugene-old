@@ -80,6 +80,10 @@ QString FormatUtils::formatNumberWithSeparators(int num) {
     return insertSpaceSeparators(formatNumber(num));
 }
 
+QString FormatUtils::insertSeparators(int num) {
+    return insertSpaceSeparators(QString::number(num));
+}
+
 QString FormatUtils::getShortMonthName( int num )
 {
     switch (num) {

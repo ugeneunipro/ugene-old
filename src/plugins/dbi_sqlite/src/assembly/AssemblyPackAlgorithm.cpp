@@ -75,7 +75,8 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
             perfLog.trace(QString("Assembly: number packed reads so far: %1").arg(nPacked));
         }
     }
-
+    stat.readsCount = nPacked;
+    
     t1.stop();
     perfLog.trace(QString("Assembly: algorithm pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }

@@ -317,15 +317,31 @@ void ConvertToSQLiteTask::run() {
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }
-                    U2IntegerAttribute maxProwAttr;
-                    maxProwAttr.objectId = assemblies[index].id;
-                    maxProwAttr.name = "max_prow_attribute";
-                    maxProwAttr.version = 1;
-                    maxProwAttr.value = stat.maxProw;
-                    attributeDbi->createIntegerAttribute(maxProwAttr, opStatus);
-                    if(opStatus.hasError()) {
-                        throw Exception(opStatus.getError());
+                    if(attributeDbi != NULL) {
+                        {
+                            U2IntegerAttribute maxProwAttr;
+                            maxProwAttr.objectId = assemblies[index].id;
+                            maxProwAttr.name = "max_prow_attribute";
+                            maxProwAttr.version = 1;
+                            maxProwAttr.value = stat.maxProw;
+                            attributeDbi->createIntegerAttribute(maxProwAttr, opStatus);
+                            if(opStatus.hasError()) {
+                                throw Exception(opStatus.getError());
+                            }
+                        }
+                        {
+                            U2IntegerAttribute countReadsAttr;
+                            countReadsAttr.objectId = assemblies[index].id;
+                            countReadsAttr.name = "count_reads_attribute";
+                            countReadsAttr.version = 1;
+                            countReadsAttr.value = stat.readsCount;
+                            attributeDbi->createIntegerAttribute(countReadsAttr, opStatus);
+                            if(opStatus.hasError()) {
+                                throw Exception(opStatus.getError());
+                            }
+                        }
                     }
+                    
                 }
                 if(isCanceled()) {
                     throw Exception(BAMDbiPlugin::tr("Task was cancelled"));

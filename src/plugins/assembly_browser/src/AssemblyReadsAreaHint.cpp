@@ -126,7 +126,7 @@ void AssemblyReadsAreaHint::setName(const QByteArray & n) {
 
 void AssemblyReadsAreaHint::setRawSequence(const QByteArray & s) {
     QString bytes(s);
-    QString headTransl = tr("Raw sequence:&nbsp;");
+    QString headTransl = tr("Read sequence:&nbsp;");
     assert(headTransl.size() < 30);
     QString head = QString("<table cellspacing='0'><tr><td><b>%1</b></td>").arg(headTransl);
     QString str = head;
