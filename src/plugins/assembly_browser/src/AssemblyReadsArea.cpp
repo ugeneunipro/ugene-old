@@ -39,6 +39,7 @@
 
 #include "AssemblyBrowser.h"
 #include "ShortReadIterator.h"
+#include "ZoomableAssemblyOverview.h"
 
 namespace U2 {
 
