@@ -212,6 +212,13 @@ Task* BaseDocWriter::tick() {
         doc = docs.value(anUrl);
         if (!doc) {
             IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+            int count = ++counter[anUrl];
+            if(!append && count > 1) {
+                anUrl = GUrlUtils::prepareFileName(anUrl, count, format->getSupportedDocumentFileExtensions());
+            } else {
+                assert(count == 1);
+                anUrl = GUrlUtils::ensureFileExt(anUrl, format->getSupportedDocumentFileExtensions()).getURLString();
+            }
             doc = new Document(format, iof, anUrl);
             doc->setLoaded(true);
             docs.insert(anUrl, doc);
@@ -242,14 +249,14 @@ Task* BaseDocWriter::processDocs()
         it.next();
         Document* doc = it.value();
         QString anUrl = it.key();
-        int count = ++counter[anUrl];
-        if (!append && count != 1) {
+        //int count = ++counter[anUrl];
+        /*if (!append && count != 1) {
             anUrl = GUrlUtils::prepareFileName(anUrl, count, format->getSupportedDocumentFileExtensions());
         } else {
             assert(count == 1);
             anUrl = GUrlUtils::ensureFileExt(anUrl, format->getSupportedDocumentFileExtensions()).getURLString();
-        }
-        doc->setURL(anUrl);
+        }*/
+        //doc->setURL(anUrl);
         ioLog.details(tr("Writing to %1 [%2]").arg(anUrl).arg(format->getFormatName()));
         tlist << new SaveDocumentTask(doc, SaveDocFlags(fileMode), DocumentUtils::getNewDocFileNameExcludesHint());
     }
