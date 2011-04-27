@@ -106,11 +106,6 @@ public:
     //! Destructor.
     ~BioStruct3DGLWidget();
 
-    /*!
-    * @return Contexts for corresponding biostruct3d primary structure (sequences).
-    */
-    const QList<ADVSequenceObjectContext*> getSequenceContexts() const;
-
     //! @return BioStruct3D const reference.
     const BioStruct3D& getBioStruct3D() const { return *(contexts.first().biostruct); }
 
@@ -326,12 +321,16 @@ private slots:
      void sl_selectGLRenderer(QAction* action);
      void sl_updateRenderSettings(const QStringList& list);
      void sl_acitvateSpin();
-     void sl_onSequenceSelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed);
-     void sl_onAnnotationSelectionChanged(AnnotationSelection* thiz, const QList<Annotation*>& added, const QList<Annotation*>& removed);
      void sl_updateAnnimation();
      void sl_settings();
      void sl_exportImage();
      void sl_alignWith();
+
+     // slots for handling sequence selection
+     void sl_onSequenceAddedToADV(ADVSequenceObjectContext *ctx);
+     void sl_onSequenceRemovedFromADV(ADVSequenceObjectContext *ctx);
+     void sl_onSequenceSelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed);
+     void sl_onAnnotationSelectionChanged(AnnotationSelection* thiz, const QList<Annotation*>& added, const QList<Annotation*>& removed);
 
      // slots for select/deselect shown models actions
      // they affects only first biostruct

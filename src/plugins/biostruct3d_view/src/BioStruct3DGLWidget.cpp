@@ -496,32 +496,64 @@ void BioStruct3DGLWidget::setLightPosition( const Vector3D& pos )
     lightPostion[3] = 1.0;
 }
 
-const QList<ADVSequenceObjectContext*> BioStruct3DGLWidget::getSequenceContexts() const
+void BioStruct3DGLWidget::sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>& added, const QList<Annotation*>& removed )
 {
-    return dnaView->getSequenceContexts();
+    if (!isVisible())
+        return;
+
+    QVector<U2Region> empty;
+
+    const BioStruct3D &biostruct = *contexts.first().biostruct;
+    BioStruct3DColorScheme *scheme = contexts.first().colorScheme.data();
+
+    foreach (Annotation* annotation, added) {
+        if (annotation->getLocation()->isEmpty()) {
+            continue;
+        }
+
+        AnnotationTableObject* ao = annotation->getGObject();
+        int chainId  = getChainIdForAnnotationObject(ao);
+        if (chainId != -1) {
+            assert(biostruct.moleculeMap.contains(chainId));
+            scheme->updateSelectionRegion(chainId, annotation->getRegions(), empty);
+        }
+    }
+
+    foreach (Annotation* annotation, removed) {
+        if (annotation->getLocation()->isEmpty() ) {
+            continue;
+        }
+        AnnotationTableObject* ao = annotation->getGObject();
+        int chainId = getChainIdForAnnotationObject(ao);
+        if (chainId != -1) {
+            assert(biostruct.moleculeMap.contains(chainId));
+            scheme->updateSelectionRegion(chainId, empty, annotation->getRegions());
+        }
+    }
+
+    updateAllColorSchemes();
+    update();
 }
 
-void BioStruct3DGLWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed)
+void BioStruct3DGLWidget::sl_onSequenceSelectionChanged(LRegionsSelection *s, const QVector<U2Region> &added, const QVector<U2Region> &removed)
 {
     if (!isVisible())
         return;
 
     DNASequenceSelection* selection = qobject_cast<DNASequenceSelection*>(s);
     const DNASequenceObject* seqObj = selection->getSequenceObject();
-    
-    const BioStruct3D &biostruct = *contexts.first().biostruct;
+    assert(seqObj);
 
-    // bug-2857: GObject relations shoud be used
-    if (!seqObj->getGObjectName().startsWith(biostruct.pdbId)) {
-        return;
-    }
-    
-    if (seqObj) {
-        // TODO: this is correct only for first biostruct
+    const BioStruct3DRendererContext &ctx = contexts.first();
+
+    // check that biostruct and sequence objects are from the same doucment
+    // apropriate relation check must be here
+    if (seqObj->getDocument() == ctx.obj->getDocument()) {
         int chainId = getSequenceChainId(seqObj);
-        assert(biostruct.moleculeMap.contains(chainId));
+        assert(ctx.biostruct->moleculeMap.contains(chainId));
 
-        contexts.first().colorScheme->updateSelectionRegion(chainId, added, removed);
+        ctx.colorScheme->updateSelectionRegion(chainId, added, removed);
+
         updateAllColorSchemes();
         update();
     }
@@ -1082,16 +1114,48 @@ void BioStruct3DGLWidget::connectExternalSignals()
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     connect(asr, SIGNAL(si_annotationSettingsChanged(const QStringList& )), this, SLOT(sl_updateRenderSettings(const QStringList& )) );
 
-    const QList<ADVSequenceObjectContext*> seqContexts = getSequenceContexts();
+    const QList<ADVSequenceObjectContext*> seqContexts = dnaView->getSequenceContexts();
+
     foreach (ADVSequenceObjectContext* ctx, seqContexts) {
         connect(ctx->getSequenceSelection(),
             SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
             SLOT(sl_onSequenceSelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
+    }
 
-        connect(dnaView->getAnnotationsSelection(),
+    // BUG-247 does annotations selections should be handled by BioStruct3DGLWidget,
+    // since changing of annotation selection changes sequence selection automatically?
+    connect(dnaView->getAnnotationsSelection(),
             SIGNAL(si_selectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)),
             SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)));
-    }
+
+    connect(dnaView,
+            SIGNAL(si_sequenceAdded(ADVSequenceObjectContext*)),
+            SLOT(sl_onSequenceAddedToADV(ADVSequenceObjectContext*)));
+
+    connect(dnaView,
+            SIGNAL(si_sequenceRemoved(ADVSequenceObjectContext*)),
+            SLOT(sl_onSequenceRemovedFromADV(ADVSequenceObjectContext*)));
+}
+
+void BioStruct3DGLWidget::sl_onSequenceAddedToADV(ADVSequenceObjectContext *ctx) {
+    connect(ctx->getSequenceSelection(),
+            SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
+            SLOT(sl_onSequenceSelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
+
+
+    // BUG-247 without this disconnect - connect sele selections work wrong,
+    // also see comments in void BioStruct3DGLWidget::connectExternalSignals()
+    disconnect(dnaView->getAnnotationsSelection(),  SIGNAL(si_selectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)),
+               this,                                SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)));
+
+    connect(dnaView->getAnnotationsSelection(),
+            SIGNAL(si_selectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)),
+            SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection* , const QList<Annotation*>&, const QList<Annotation*>&)));
+}
+
+void BioStruct3DGLWidget::sl_onSequenceRemovedFromADV(ADVSequenceObjectContext *ctx) {
+    disconnect(ctx->getSequenceSelection(), SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
+               this,                        SLOT(sl_onSequenceSelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
 }
 
 void BioStruct3DGLWidget::sl_selectColorScheme(QAction* action) {
@@ -1109,47 +1173,6 @@ void BioStruct3DGLWidget::sl_updateRenderSettings(const QStringList& list )
 {
     Q_UNUSED(list);
     sl_selectColorScheme(colorSchemeActions->checkedAction());
-}
-
-void BioStruct3DGLWidget::sl_onAnnotationSelectionChanged( AnnotationSelection* as, const QList<Annotation*>& added, const QList<Annotation*>& removed )
-{
-    Q_UNUSED(as);
-    if (!isVisible())
-        return;
-
-    QVector<U2Region> empty;
-    QList<GObject*> seqObjects = dnaView->getSequenceGObjectsWithContexts();
-
-    const BioStruct3D &biostruct = *contexts.first().biostruct;
-    BioStruct3DColorScheme *scheme = contexts.first().colorScheme.data();
-
-    foreach (Annotation* annotation, added) {
-        if (annotation->getLocation()->isEmpty()) { //TODO: there must be no such annotations!
-            continue;
-        }
-
-        AnnotationTableObject* ao = annotation->getGObject();
-        int chainId  = getChainIdForAnnotationObject(ao);
-        if (chainId != -1) {
-            assert(biostruct.moleculeMap.contains(chainId));
-            scheme->updateSelectionRegion(chainId, annotation->getRegions(), empty);
-        }
-    }
-
-    foreach (Annotation* annotation, removed) {
-        if (annotation->getLocation()->isEmpty() ) { //TODO: there must be no such annotations!
-            continue;
-        }
-        AnnotationTableObject* ao = annotation->getGObject();
-        int chainId = getChainIdForAnnotationObject(ao);
-        if (chainId != -1) {
-            assert(biostruct.moleculeMap.contains(chainId));
-            scheme->updateSelectionRegion(chainId, empty, annotation->getRegions());
-        }
-    }
-
-    updateAllColorSchemes();
-    update();
 }
 
 void BioStruct3DGLWidget::sl_acitvateSpin()
@@ -1240,7 +1263,6 @@ void BioStruct3DGLWidget::sl_settings()
 
 }
 
-
 void BioStruct3DGLWidget::sl_exportImage()
 {
     ExportImageDialog dialog(this);
@@ -1313,6 +1335,7 @@ void BioStruct3DGLWidget::addBiostruct(BioStruct3DObject *obj) {
 }
 
 static QList<BioStruct3DObject*> findAvailableBioStructs() {
+    // use this GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE);
     QList<BioStruct3DObject*> biostructs;
     Project *proj = AppContext::getProject();
     if (proj) {
