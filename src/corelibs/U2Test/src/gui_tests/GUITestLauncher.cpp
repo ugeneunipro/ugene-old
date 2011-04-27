@@ -21,21 +21,21 @@ void LaunchTestTask::run() {
 
 void LaunchTestTask::prepare() {
     if(!t) {
-        coreLog.error(tr("Empty test"));
+        printf(tr("GUITesting:Empty test").toUtf8().data());
+        //coreLog.info(tr("GUITesting:Empty test"));
         exit(0);
     }
 }
 
 Task::ReportResult LaunchTestTask::report() {
-    if(!hasErrors()) {
-        if(t->isSuccessful()) {
-            coreLog.info(tr("Success"));
-        } else {
-            coreLog.info(t->getError());
-        }
-        exit(0);
+    if(t->isSuccessful()) {
+        printf(tr("GUITesting:Success").toUtf8().data());
+        //coreLog.info(tr("GUITesting:Success"));
+    } else {
+        printf(QString(tr("GUITesting:") + t->getError()).toUtf8().data());
+        //coreLog.info(QString(tr("GUITesting:") + t->getError()).toUtf8().data());
     }
-    return ReportResult_Finished;
+    exit(0);
 }
 
 void TestLauncher::run() {
@@ -62,9 +62,14 @@ void TestLauncher::run() {
         } else if(process.exitStatus() == QProcess::CrashExit) {
             results[t->getName()] = tr("UGENE crashed");
         } else {
-            QString msg;
-            while(process.canReadLine()) {
-                msg = process.readLine().data();
+            QString msg = "";
+            QByteArray output = process.readAllStandardOutput();
+            QTextStream stream(&output, QIODevice::ReadOnly);
+            while(!stream.atEnd() && msg.isEmpty()) {
+                QString str = stream.readLine();
+                if(str.contains("GUITesting")) {
+                    msg = str.split(":").last();
+                }
             }
             results[t->getName()] = msg;
             finishedTest++;

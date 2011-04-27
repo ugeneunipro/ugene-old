@@ -23,9 +23,9 @@ GUITestService::GUITestService(QObject *parent): Service(Service_GUITesting, tr(
     Test3AboutDialog* test3AboutDialog=new Test3AboutDialog("AboutDialog_test3");
     Test4AboutDialog* test4AboutDialog=new Test4AboutDialog("AboutDialog_test4");
     Test5AboutDialog* test5AboutDialog=new Test5AboutDialog("AboutDialog_test5");
-//    tb->registerTest(test1);
-//    tb->registerTest(test2);
-//    tb->registerTest(test3);
+    /*tb->registerTest(test1);
+    tb->registerTest(test2);
+    tb->registerTest(test3);*/
     tb->registerTest(test1AboutDialog);
     tb->registerTest(test2AboutDialog);
     tb->registerTest(test3AboutDialog);
@@ -41,7 +41,6 @@ void GUITestService::sl_registerSevice() {
         GUITestBase *tb = AppContext::getGUITestBase();
         GUITest *t = tb->findTestByName(cmdLine->getParameterValue("gui-test"));
         if(t) {
-            //testLauncher->launchWithinProcess(t);
             LaunchTestTask *task = new LaunchTestTask(t);
             AppContext::getTaskScheduler()->registerTopLevelTask(task);
         }
@@ -50,10 +49,6 @@ void GUITestService::sl_registerSevice() {
     }
 }
 
-void GUITestService::sl_showWindow() {
-    AppContext::getTaskScheduler()->registerTopLevelTask(testLauncher);
-    //view->show();
-}
 
 void GUITestService::serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged) {
     if (!enabledStateChanged) {
@@ -61,10 +56,10 @@ void GUITestService::serviceStateChangedCallback(ServiceState oldState, bool ena
     }
 
     if (isEnabled()) {
-        testLauncher = new TestLauncher();
+        testLauncher = NULL;
         runTestsAction = new QAction(tr("GUI testing"), this);
         runTestsAction->setObjectName("action_guitest");
-        connect(runTestsAction, SIGNAL(triggered()), new TaskStarter(testLauncher), SLOT(registerTask()));
+        connect(runTestsAction, SIGNAL(triggered()), SLOT(sl_registerTask()));
         AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(runTestsAction);
     } else {
         assert(runTestsAction!=NULL);
@@ -76,17 +71,22 @@ void GUITestService::serviceStateChangedCallback(ServiceState oldState, bool ena
     }
 }
 
+void GUITestService::sl_registerTask() {
+    testLauncher = new TestLauncher();
+    AppContext::getTaskScheduler()->registerTopLevelTask(testLauncher);
+}
+
 //Test examples
 void TestProjectView::execute() {
     openFile(path1);
     openFile(path2);
 
-    sleep(2000);
     if(!isWidgetExists(projectViewName)) {
         keyClick("left_dock_bar", Qt::Key_1, Qt::AltModifier);
+        waitForWidget(projectViewName, true);
     }
-    sleep(1000);
     addObjectToView("[s] " + seqName);
+    waitForWidget("ADV_single_sequence_widget_1", true);
 }
 
 void TestProjectView::checkResult() {
@@ -104,14 +104,14 @@ void TestProjectView::checkResult() {
 
 void TestTaskView::execute() {
     OpenDocumentTest t(path, "tttt");
-    //t.moveToThread(QApplication::instance()->thread());
     t.launch();
     if(!isWidgetExists(taskViewWidgetName)) {
         keyClick("bottom_dock_bar", Qt::Key_2, Qt::AltModifier);
+        waitForWidget("bottom_dock_bar", true);
     }
-    sleep(1000);
+    waitForTreeItem("Open project/document", taskViewWidgetName, true);
     cancelTask("Open project/document");
-    sleep(500);
+    waitForTreeItem("Open project/document", taskViewWidgetName, false);
 }
 
 void TestTaskView::checkResult() {
@@ -125,9 +125,9 @@ void LockDocumentTest::execute(){
     moveTo(projectViewName, pos);
     mouseClickOnItem(projectViewName, Qt::LeftButton, pos);
     contextMenuOnItem(projectViewName, pos);
-    sleep(1000);
-    clickMenu("Lock document for editing","", true);
-    sleep(1000);
+    waitForMenuWithAction("Lock document for editing");
+    clickContextMenu("Lock document for editing");
+    sleep(50);
 }
 
 void LockDocumentTest::checkResult() {
@@ -148,9 +148,9 @@ void UnlockDocumentTest::execute(){
     moveTo(projectViewName, pos);
     mouseClickOnItem(projectViewName, Qt::LeftButton, pos);
     contextMenuOnItem(projectViewName, pos);
-    sleep(1000);
-    clickMenu("Unlock document for editing","", true);
-    sleep(1000);
+    waitForMenuWithAction("Unlock document for editing");
+    clickContextMenu("Unlock document for editing");
+    sleep(50);
 }
 
 void UnlockDocumentTest::checkResult() {
@@ -171,6 +171,7 @@ void ComplexTest::execute() {
     sleep(1000);
     if(!isWidgetExists(projectViewName)) {
         keyClick("left_dock_bar", Qt::Key_1, Qt::AltModifier);
+        waitForWidget("left_dock_bar", true);
     }
     LockDocumentTest lock(path.split("/").last(), "lock");
     UnlockDocumentTest unlock(path.split("/").last(), "unlock");

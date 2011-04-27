@@ -234,9 +234,11 @@ void MainWindowImpl::prepareGUI() {
 	menuManager = new MWMenuManagerImpl(this, mw->menuBar());
 
 	exitAction->setObjectName(ACTION__EXIT);
+    exitAction->setParent(mw);
     menuManager->getTopLevelMenu(MWMENU_FILE)->addAction(exitAction);
 
     aboutAction->setObjectName(ACTION__ABOUT);
+    aboutAction->setParent(mw);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(checkUpdateAction);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(downloadManualAction);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(visitWebAction);

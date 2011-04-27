@@ -2,6 +2,7 @@
 #define _U2_GUI_TESTS_H_
 
 #include <U2Core/global.h>
+#include <U2Core/Log.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
 #include <QtGui>
@@ -57,8 +58,13 @@ protected:
     void moveTo(const QString &widgetName, const QPoint &pos = QPoint());
     void mouseClick(const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
     void mouseDbClick(const QString &widgetName, const QPoint &pos = QPoint());
-    void mousePress(const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
+    void mousePress(const QString &widgetName, Qt::MouseButton button,const QPoint &pos = QPoint());
     void mouseRelease(const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
+
+    void mouseClick(QWidget *w, Qt::MouseButton button, const QPoint &pos = QPoint());
+    void mouseDbClick(QWidget *w, const QPoint &pos = QPoint());
+    void mousePress(QWidget *w, Qt::MouseButton button, const QPoint &pos = QPoint());
+    void mouseRelease(QWidget *w, Qt::MouseButton button, const QPoint &pos = QPoint());
 
     //keyboard
     Qt::Key asciiToKey(char ascii);
@@ -67,9 +73,15 @@ protected:
     void keyClick(const QString &widgetName, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
     void keySequence(const QString &widgetName, const QString &sequence, Qt::KeyboardModifiers modifiers = 0);
 
+    void keyPress(QWidget *w, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
+    void keyRelease(QWidget *w, int key, Qt::KeyboardModifiers modifiers = 0);
+    void keyClick(QWidget *w, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
+    void keySequence(QWidget *w, const QString &sequence, Qt::KeyboardModifiers modifiers = 0);
+
     //menu
     void expandTopLevelMenu(const QString &menuName, const QString &parentMenu);
-    void clickMenu(const QString &menuName, const QString &parentMenu, bool context = false);
+    void clickMenu(const QString &menuName, const QString &parentMenu);
+    void clickContextMenu(const QString &menuName);
     void contextMenu(const QString &widgetName, const QPoint &pos = QPoint());
 
     //tree model
@@ -92,6 +104,12 @@ protected:
     void sendEvent(QObject *obj, QEvent *e);
     void sleep(int msec);
 
+    //functions for wait result
+    bool waitForWidget(const QString& widgetName, bool show);
+    bool waitForTreeItem(const QString &itemName, const QString &treeName, bool show);
+    bool waitForMenuWithAction(const QString &actionName);
+    bool waitForTask(Task *t);
+
 protected:
     TestStatus ts;
 
@@ -100,9 +118,15 @@ signals:
 
 private slots:
     void sl_runTask(Task *t);
-
+    void sl_eventProcessed(QEvent *e) {
+        if(e == sentEvent) {
+            waitForEvent = true;
+        }
+    }
 private:
     QString name;
+    bool waitForEvent;
+    QEvent *sentEvent;
     class Waiter: public QThread {
     public:
         static void await(int mseconds) {

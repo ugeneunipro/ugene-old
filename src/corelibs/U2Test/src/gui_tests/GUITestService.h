@@ -30,8 +30,8 @@ protected:
     virtual void serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged);
    
 public slots:
-    void sl_showWindow();
     void sl_registerSevice();
+    void sl_registerTask();
 
 private:
     QAction *runTestsAction;

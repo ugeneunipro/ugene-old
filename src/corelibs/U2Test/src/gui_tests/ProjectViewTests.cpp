@@ -14,6 +14,7 @@ void ProjectViewTests::openFile(const QString &path) {
     Task *t = AppContext::getProjectLoader()->openProjectTask(path, false);
     t->moveToThread(QApplication::instance()->thread());
     emit runTask(t);
+    //waitForTask(t);
 }
 
 void ProjectViewTests::addObjectToView(const QString &objectName) {
@@ -23,11 +24,9 @@ void ProjectViewTests::addObjectToView(const QString &objectName) {
     moveTo(projectViewName, pos);
     mousePressOnItem(projectViewName, Qt::LeftButton, pos);
     contextMenuOnItem(projectViewName, pos);
-    sleep(500);
-    clickMenu("Add to view", "context_menu", true);
-    sleep(500);
-    clickMenu("Add to view: _1 3INS chain 2 sequence", "context_menu", true);
-    sleep(2000);
+    clickContextMenu("Add to view");
+    waitForMenuWithAction("Add to view: _1 3INS chain 2 sequence");
+    clickContextMenu("Add to view: _1 3INS chain 2 sequence");
 }
 
 void ProjectViewTests::openDocumentInView(const QString &objectName) {
@@ -38,9 +37,9 @@ void ProjectViewTests::openDocumentInView(const QString &objectName) {
     mousePressOnItem(projectViewName, Qt::LeftButton, pos);
     contextMenuOnItem(projectViewName, pos);
     sleep(500);
-    clickMenu("Open view", "context_menu", true);
+    clickContextMenu("Open view");
     sleep(500);
-    clickMenu("Open new view: Sequence view", "context_menu", true);
+    clickContextMenu("Open new view: Sequence view");
     sleep(2000);
 }
 
@@ -59,8 +58,8 @@ void TaskViewTest::cancelTask(const QString &taskName) {
     moveTo(taskViewWidgetName, pos);
     mouseClickOnItem(taskViewWidgetName, Qt::LeftButton, pos);
     contextMenuOnItem(taskViewWidgetName, pos);
-    sleep(500);
-    clickMenu("Cancel task", "", true);
+    //sleep(500);
+    clickContextMenu("Cancel task");
     
 }
 

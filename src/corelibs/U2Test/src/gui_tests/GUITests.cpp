@@ -4,6 +4,8 @@
 
 namespace U2 {
 
+#define WAIT_TIMEOUT    2000
+
 void GUITest::launch(){
     moveToThread(QApplication::instance()->thread());
     execute();
@@ -31,8 +33,12 @@ QWidget* GUITest::findWidgetByName(const QString &widgetName, const QString &par
 
 bool GUITest::isWidgetExists(const QString &widgetName) const {
     QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
-    QWidget *w = mw->findChild<QWidget*>(widgetName);
-    return (w != NULL);
+    if(mw) {
+        QWidget *w = mw->findChild<QWidget*>(widgetName);
+        return (w != NULL && w->isVisible());
+    } else {
+        throw TestException(tr("No main window"));
+    }
 }
 
 QWidget* GUITest::findWidgetByTitle(const QString &title) const {
@@ -126,20 +132,89 @@ void GUITest::mouseDbClick(const QString &widgetName, const QPoint &_pos) {
 void GUITest::keyPress(const QString &widgetName, int key, Qt::KeyboardModifiers modifiers, const QString &text) {
     QWidget *w = findWidgetByName(widgetName);
     QKeyEvent *ke = new QKeyEvent(QEvent::KeyPress, key, modifiers, text);
-    QCoreApplication::postEvent(w, ke);
-    QCoreApplication::processEvents();
+    sendEvent(w, ke);
 }
 
 void GUITest::keyRelease(const QString &widgetName, int key, Qt::KeyboardModifiers modifiers) {
     QWidget *w = findWidgetByName(widgetName);
     QKeyEvent *ke = new QKeyEvent(QEvent::KeyRelease, key, modifiers);
-    QCoreApplication::postEvent(w, ke);
-    QCoreApplication::processEvents();
+    sendEvent(w, ke);
+    //QCoreApplication::postEvent(w, ke);
+    //QCoreApplication::processEvents();
 }
 
 void GUITest::keyClick(const QString &widgetName, int key, Qt::KeyboardModifiers modifiers, const QString &text) {
     keyPress(widgetName, key, modifiers, text);
     keyRelease(widgetName, key, modifiers);
+}
+
+void GUITest::mousePress(QWidget *w, Qt::MouseButton button, const QPoint &_pos) {
+    if(w == NULL) {
+        throw TestException(tr("widget is NULL"));
+    }
+    QPoint pos = _pos;
+    if(pos.isNull()) {
+        pos = w->rect().center();
+    }
+
+    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, pos, button, button, 0); 
+    sendEvent(w, me);
+}
+
+void GUITest::mouseRelease(QWidget *w, Qt::MouseButton button, const QPoint &_pos) {
+    if(w == NULL) {
+        throw TestException(tr("widget is NULL"));
+    }
+    QPoint pos = _pos;
+    if(pos.isNull()) {
+        pos = w->rect().center();
+    }
+
+    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonRelease, pos, button, button, 0); 
+    sendEvent(w, me);
+}
+
+void GUITest::mouseClick(QWidget *w, Qt::MouseButton button, const QPoint &_pos) {
+    mousePress(w, button, _pos);
+    mouseRelease(w, button, _pos);
+}
+
+void GUITest::mouseDbClick(QWidget *w, const QPoint &_pos) {
+    if(w == NULL) {
+        throw TestException(tr("widget is NULL"));
+    }
+    QPoint pos = _pos;
+    if(pos.isNull()) {
+        pos = w->rect().center();
+    }
+
+    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonDblClick, pos, Qt::LeftButton, Qt::LeftButton, 0);
+    sendEvent(w, me);
+}
+
+void GUITest::keyPress(QWidget *w, int key, Qt::KeyboardModifiers modifiers, const QString &text) {
+    if(w == NULL) {
+        throw TestException(tr("widget is NULL"));
+    }
+    QKeyEvent *ke = new QKeyEvent(QEvent::KeyPress, key, modifiers, text);
+    sendEvent(w, ke);
+    /*QCoreApplication::postEvent(w, ke);
+    QCoreApplication::processEvents();*/
+}
+
+void GUITest::keyRelease(QWidget *w, int key, Qt::KeyboardModifiers modifiers) {
+    if(w == NULL) {
+        throw TestException(tr("widget is NULL"));
+    }
+    QKeyEvent *ke = new QKeyEvent(QEvent::KeyRelease, key, modifiers);
+    sendEvent(w, ke);
+    /*QCoreApplication::postEvent(w, ke);
+    QCoreApplication::processEvents();*/
+}
+
+void GUITest::keyClick(QWidget *w, int key,  Qt::KeyboardModifiers modifiers, const QString &text) {
+    keyPress(w, key, modifiers, text);
+    keyRelease(w, key, modifiers);
 }
 
 Qt::Key GUITest::asciiToKey(char ascii) { // = asciiToKey(char ascii) from QTest
@@ -325,19 +400,28 @@ void GUITest::keySequence(const QString &widgetName, const QString &sequence, Qt
     }
 }
 
+void GUITest::keySequence(QWidget *w, const QString &sequence, Qt::KeyboardModifiers modifiers) {
+    for(int i = 0; i< sequence.length();i++) {
+        keyClick(w, asciiToKey(sequence.at(i).toLatin1()), modifiers, QString(sequence.at(i).toLatin1()));
+    }
+}
+
 void GUITest::expandTopLevelMenu(const QString &menuName, const QString &parentMenu) {
     QMenuBar *parMenu = static_cast<QMenuBar*>(findWidgetByName(parentMenu));
     if(!parMenu->isVisible()) {
         return;
     }
-    QList<QAction*> actions = parMenu->actions();
+
+    QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
+    QAction *curAction = mw->findChild<QAction*>(menuName);
+    /*QList<QAction*> actions = parMenu->actions();
     QAction *curAction = NULL;
     foreach(QAction *a, actions) {
         if(a->text() == menuName) {
             curAction = a;
             break;
         }
-    }
+    }*/
     if(!curAction) {
         throw TestException(tr("Can't find action %1").arg(menuName));
     }
@@ -347,13 +431,40 @@ void GUITest::expandTopLevelMenu(const QString &menuName, const QString &parentM
     mouseClick(parentMenu, Qt::LeftButton, pos);
 }
 
-void GUITest::clickMenu(const QString &menuName, const QString &parentMenu, bool context) {
+void GUITest::clickMenu(const QString &menuName, const QString &parentMenu) {
     QMenu* parMenu;
-    if(!context) {
-        parMenu = (QMenu*)findWidgetByName(parentMenu);
-    } else {
-        parMenu = getContextMenu();
+    parMenu = (QMenu*)findWidgetByName(parentMenu);
+    if(parMenu == NULL) {
+        throw TestException(tr("Menu %1 not found").arg(parentMenu));
     }
+
+    QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
+    QAction *curAction = mw->findChild<QAction*>(menuName);
+   /* QList<QAction*> actions = parMenu->actions();
+    QAction *curAction = NULL;
+    foreach(QAction *a, actions) {
+        if(a->text() == menuName) {
+            curAction = a;
+            break;
+        }
+    }*/
+    if(!curAction) {
+        throw TestException(tr("Can't find action %1").arg(menuName));
+    }
+
+    QPoint pos = parMenu->actionGeometry(curAction).center();
+    moveTo(parentMenu, pos);
+    mouseClick(parentMenu, Qt::LeftButton, pos);
+}
+
+void GUITest::clickContextMenu(const QString &menuName) {
+    QMenu* parMenu;
+    parMenu = getContextMenu();
+
+    if(parMenu == NULL) {
+        throw TestException(tr("Context menu not found"));
+    }
+
     QList<QAction*> actions = parMenu->actions();
     QAction *curAction = NULL;
     foreach(QAction *a, actions) {
@@ -369,9 +480,9 @@ void GUITest::clickMenu(const QString &menuName, const QString &parentMenu, bool
     QPoint pos = parMenu->actionGeometry(curAction).center();
     QCursor::setPos(parMenu->mapToGlobal(pos));
     QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, pos, Qt::LeftButton, Qt::LeftButton, 0);
-    sendEvent(curAction, me);
+    sendEvent(parMenu, me);
     QMouseEvent *me1 = new QMouseEvent(QEvent::MouseButtonRelease, pos, Qt::LeftButton, Qt::LeftButton, 0);
-    sendEvent(curAction, me1);
+    sendEvent(parMenu, me1);
 }
 
 void GUITest::contextMenu(const QString &widgetName, const QPoint &_pos) {
@@ -382,13 +493,42 @@ void GUITest::contextMenu(const QString &widgetName, const QPoint &_pos) {
     }
 
     QContextMenuEvent *cme = new QContextMenuEvent(QContextMenuEvent::Mouse, pos);
-    mousePress(widgetName, Qt::RightButton, pos); //Select item in tree
+    //mousePress(widgetName, Qt::RightButton, pos); //Select item in tree
     sendEvent(w, cme);
+    while(getContextMenu() == NULL) {
+        sleep(1);
+    }
 }
 
 void GUITest::sendEvent(QObject *obj, QEvent *e) {
-    QCoreApplication::postEvent(obj, e, Qt::HighEventPriority);
-    QCoreApplication::processEvents();
+   // if(res == ResultNone) {
+    e->setAccepted(true);
+        QCoreApplication::postEvent(obj, e);
+        QCoreApplication::processEvents();
+        int count = 0;
+        /*while(e->isAccepted() && count < WAIT_TIMEOUT) {
+            sleep(1);
+            count++;
+        }
+        if(count < WAIT_TIMEOUT) {
+            coreLog.info("event processed");
+        }*/
+   /* } else {
+        waitForEvent = false;
+        sentEvent = e;
+        connect(QApplication::instance(), SIGNAL(si_eventProcessed(QEvent*)), SLOT(sl_eventProcessed(QEvent*)));
+        QCoreApplication::postEvent(obj, e);
+        QCoreApplication::processEvents();
+        int counter = 0;
+        while(!waitForEvent && counter < WAIT_TIMEOUT) {
+            sleep(1);
+            counter++;
+        }
+        disconnect(QApplication::instance(), SIGNAL(si_eventProcessed(QEvent*)), this, SLOT(sl_eventProcessed(QEvent*)));
+        if(counter >= WAIT_TIMEOUT) {
+            throw TestException(tr("Can't wait for result"));
+        }
+    }*/
 }
 
 void GUITest::sleep( int msec ){
@@ -442,8 +582,11 @@ void GUITest::contextMenuOnItem(const QString &widgetName, const QPoint &_pos) {
     }
 
     QContextMenuEvent *cme = new QContextMenuEvent(QContextMenuEvent::Mouse, pos);
-    mousePress(widgetName, Qt::RightButton, pos); //Select item in tree
+    //mousePressOnItem(widgetName, Qt::LeftButton, pos); //Select item in tree
     sendEvent(w->viewport(), cme);
+    while(getContextMenu() == NULL) {
+        sleep(1);
+    }
 }
 
 QPoint GUITest::getItemPosition(const QString &itemName, const QString &treeName) {
@@ -471,7 +614,7 @@ void GUITest::sl_runTask(Task *t) {
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
-void GUITest::expandTreeItem( const QString &itemName, const QString &treeName ){
+void GUITest::expandTreeItem( const QString &itemName, const QString &treeName){
     QTreeWidget *tree = static_cast<QTreeWidget*>(findWidgetByName(treeName));
     if(tree->findItems(itemName, Qt::MatchExactly | Qt::MatchRecursive).isEmpty()) {
         throw TestException(tr("Item %1 not found").arg(itemName));
@@ -483,7 +626,59 @@ void GUITest::expandTreeItem( const QString &itemName, const QString &treeName )
     keyClick(tree->viewport()->objectName(), Qt::Key_Direction_R);    
 }
 
+bool GUITest::waitForWidget( const QString& widgetName, bool show ){
+    int count = 0;
+    bool visible = false;
+    do {
+        if(isWidgetExists(widgetName)) {
+            visible = findWidgetByName(widgetName)->isVisible();
+        } else {
+            visible = false;
+        }
+        sleep(1);
+        count++;
+    } while(/*isWidgetExists(widgetName) != show && */visible != show && count < WAIT_TIMEOUT);
+    return count < WAIT_TIMEOUT;
+}
 
+bool GUITest::waitForTreeItem( const QString& itemName, const QString& treeName, bool show ){
+    int count = 0;
+    do {
+        sleep(1);
+        count++;
+    } while(isItemExists(itemName, treeName) != show && count < WAIT_TIMEOUT);
+    return count < WAIT_TIMEOUT;
+}
+
+bool GUITest::waitForMenuWithAction(const QString &actionName) {
+    int count = 0;
+    bool fl = false;
+    while(!fl && count < WAIT_TIMEOUT){
+        QMenu* menu = getContextMenu();
+        if(menu) {
+            QList<QAction*> actions = menu->actions();
+            foreach(QAction *a, actions) {
+                 coreLog.info(a->text());
+                if(a->text() == actionName) {
+                    fl = true;
+                    break;
+                }
+            }
+        }
+        sleep(1);
+        count++;
+    } 
+    return count < WAIT_TIMEOUT;
+}
+
+bool GUITest::waitForTask( Task *t ){
+    int count = 0;
+    while(!t->isRunning() && count < WAIT_TIMEOUT) {
+        //count++;
+        sleep(1);
+    }
+    return count < WAIT_TIMEOUT;
+}
 
 
 }

@@ -9,12 +9,14 @@ namespace U2 {
 ///////////////////////////////////////////////////////////////////////////////
 //util methods for testing AboutDialog
 void AboutDialogTests::openDialogByMenu() {
-    expandTopLevelMenu("&Help","mw_menu_bar");
-    sleep(1000);
-    clickMenu("&About", MWMENU_HELP);
+    expandTopLevelMenu(MWMENU_HELP,"mw_menu_bar");
+    waitForMenuWithAction("&About");
+    clickMenu(ACTION__ABOUT, MWMENU_HELP);
+    waitForWidget("AboutDialog", true);
 }
 void AboutDialogTests::openDialogByShortcut() {
     keyClick("mw_menu_bar", Qt::Key_F1);
+    waitForWidget("AboutDialog", true);
 }
 QPoint AboutDialogTests::getButtonPos(const QString& buttonObjName){
     QDialog* dialog=getActiveDialog();
@@ -27,13 +29,12 @@ QPoint AboutDialogTests::getButtonPos(const QString& buttonObjName){
 //Test 1: Open dialog with shortcut. Check Title and buttons.
 void Test1AboutDialog::execute(){
     openDialogByShortcut();
-    sleep(1000);
 }
 void Test1AboutDialog::checkResult(){
     if(!isWidgetExists("AboutDialog")){
         throw TestException(tr("Not found AboutDialog"));
     }
-    QDialog* dialog=getActiveDialog();
+    QWidget* dialog = findWidgetByName("AboutDialog");
     if(dialog->windowTitle() != "About UGENE"){
         throw TestException(tr("Wrong AboutDialog title"));
     }
@@ -47,27 +48,22 @@ void Test1AboutDialog::checkResult(){
 //Test 2: Open dialog by menu.
 void Test2AboutDialog::execute(){
     openDialogByMenu();
-    sleep(1000);
 }
 void Test2AboutDialog::checkResult(){
     if(!isWidgetExists("AboutDialog")){
         throw TestException(tr("Not found AboutDialog"));
     }
-    sleep(500);
 }
 //Test 3: Close with butoon "Close"
 void Test3AboutDialog::execute(){
     openDialogByShortcut();
-    sleep(1000);
     if(!isWidgetExists("AboutDialog")){
         throw TestException(tr("Not found AboutDialog"));
     }
-    sleep(1000);
     QPoint pos=getButtonPos("close_button");
     moveTo("AboutDialog",pos);
-    sleep(1000);
     mouseClick("close_button",Qt::LeftButton);
-    sleep(2000);
+    waitForWidget("AboutDialog", false);
 }
 void Test3AboutDialog::checkResult(){
     if(isWidgetExists("AboutDialog")){
@@ -77,78 +73,74 @@ void Test3AboutDialog::checkResult(){
 //Test 4: Check that tetris game started/stoped by mouse click. Close with shortcut "Escape"
 void Test4AboutDialog::execute(){
     openDialogByShortcut();
-    sleep(1000);
     if(!isWidgetExists("AboutDialog")){
         throw TestException(tr("Not found AboutDialog"));
     }
-    sleep(1000);
-    QDialog* dialog=getActiveDialog();
+    QWidget* dialog=findWidgetByName("AboutDialog");
     moveTo("AboutDialog");
-    sleep(1000);
+    waitForWidget("about_widget", true);
     mouseClick("about_widget",Qt::LeftButton);
-    sleep(1000);
+    waitForWidget("tetris_widget", true);
     if(dialog->windowTitle() != "Have fun ;-)"){
         throw TestException(tr("Wrong AboutDialog title"));
     }
     moveTo("tetris_widget");
-    sleep(1000);
     mouseClick("tetris_widget",Qt::LeftButton);//"tetris_widget"
-    sleep(1000);
+    waitForWidget("tetris_widget", false);
     if(dialog->windowTitle() != "About UGENE"){
         throw TestException(tr("Wrong AboutDialog title"));
     }
     keyClick("AboutDialog",Qt::Key_Escape);
-    sleep(1000);
+    waitForWidget("AboutDialog", false);
 }
 void Test4AboutDialog::checkResult(){
     if(isWidgetExists("AboutDialog")){
         throw TestException(tr("About Dialog not closed. 'Escape' shortcut not work"));
     }
-    sleep(500);
 }
 //Test 5: Check that tetris game worked. Close with shortcut "Escape"
 void Test5AboutDialog::execute(){
     openDialogByShortcut();
-    sleep(1000);
     if(!isWidgetExists("AboutDialog")){
         throw TestException(tr("Not found AboutDialog"));
     }
-    sleep(1000);
-    QDialog* dialog=getActiveDialog();
+    QWidget* dialog = findWidgetByName("AboutDialog");
     moveTo("AboutDialog");
-    sleep(1000);
     keyClick("AboutDialog",Qt::Key_T);
-    sleep(1000);
+    waitForWidget("tetris_widget", true);
     if(dialog->windowTitle() != "Have fun ;-)"){
         throw TestException(tr("Wrong AboutDialog title"));
     }
     //TODO: check that tetris block moved
     keyClick("tetris_widget",Qt::Key_Space);
-    sleep(100);
+    //sleep(100);
     for(int i=0;i<10;i++){
         keyClick("tetris_widget",Qt::Key_Up);
-        sleep(100);
+        //sleep(50);
     }
     for(int i=0;i<5;i++){
         keyClick("tetris_widget",Qt::Key_Left);
-        sleep(100);
+        //sleep(50);
     }
     for(int i=0;i<10;i++){
         keyClick("tetris_widget",Qt::Key_Down);
-        sleep(100);
+        //sleep(50);
     }
     for(int i=0;i<5;i++){
         keyClick("tetris_widget",Qt::Key_Right);
-        sleep(100);
+        //sleep(50);
     }
-    sleep(1000);
     keyClick("AboutDialog",Qt::Key_T);
-    sleep(1000);
+    coreLog.info("wait tetris begin");
+    waitForWidget("tetris_widget", false);
+    coreLog.info("wait tetris");
     if(dialog->windowTitle() != "About UGENE"){
         throw TestException(tr("Wrong AboutDialog title"));
     }
     keyClick("AboutDialog",Qt::Key_Escape);
-    sleep(1000);
+    coreLog.info("key click");
+    waitForWidget("AboutDialog", false);
+    coreLog.info("wait about dialog");
 }
 void Test5AboutDialog::checkResult(){
     if(isWidgetExists("AboutDialog")){
