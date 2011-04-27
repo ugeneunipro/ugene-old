@@ -65,7 +65,7 @@ const QString GenomeAlignerTask::OPTION_READS_MEMORY_SIZE("reads_mem_size");
 const QString GenomeAlignerTask::OPTION_SEQ_PART_SIZE("seq_part_size");
 
 GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settings, bool _justBuildIndex )
-: DnaAssemblyToReferenceTask(settings, TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported, _justBuildIndex),
+: DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled, _justBuildIndex),
 loadDbiTask(NULL), createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), seqReader(NULL),
 seqWriter(NULL), handle(NULL),
 justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQuery(NULL)
@@ -74,18 +74,11 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     haveResults = true;
     readsCount = 0;
     readsAligned = 0;
-    prebuiltIndex = false;
-}
-
-GenomeAlignerTask::~GenomeAlignerTask() {
-    foreach (SearchQuery *qu, queries) {
-        delete qu;
-    }
-    delete index;
-    delete handle;
-}
-
-void GenomeAlignerTask::prepare() {
+    shortreadLoadTime = 0;
+    resultWriteTime = 0;
+    searchTime = 0;
+    indexLoadTime = 0;
+    
     dbiIO = false;//settings.getCustomValue(OPTION_DBI_IO, true).toBool();
     if (!justBuildIndex && !dbiIO) {
         seqReader = settings.getCustomValue(OPTION_READS_READER, qVariantFromValue(GenomeAlignerReaderContainer()))
@@ -130,6 +123,27 @@ void GenomeAlignerTask::prepare() {
         indexFileName = indexDir + "/" + settings.refSeqUrl.baseFileName();
     }
 
+    qint64 memUseMB = seqPartSize*13;
+    if (!justBuildIndex) {
+        memUseMB += readMemSize;
+    }
+    TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB, true);
+    taskResources.append(memUsg);
+    if (openCL) {
+        TaskResourceUsage gpuUsg(RESOURCE_OPENCL_GPU, 1, true);
+        taskResources.append(gpuUsg);
+    }
+}
+
+GenomeAlignerTask::~GenomeAlignerTask() {
+    foreach (SearchQuery *qu, queries) {
+        delete qu;
+    }
+    delete index;
+    delete handle;
+}
+
+void GenomeAlignerTask::prepare() {
     if (!justBuildIndex && dbiIO) {
         assert(settings.shortReadUrls.size() > 0);
         QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(settings.shortReadUrls.first());
@@ -145,13 +159,6 @@ void GenomeAlignerTask::prepare() {
         setupCreateIndexTask();
         addSubTask(createIndexTask);
     }
-
-    qint64 memUseMB = seqPartSize*13;
-    if (!justBuildIndex) {
-        memUseMB += readMemSize;
-    }
-    TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB/1024/1024, true);
-    taskResources.append(memUsg);
 }
 
 QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
@@ -196,6 +203,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     if (subTask == createIndexTask || subTask == writeTask) {
         if (subTask == writeTask) {
             taskLog.details(QString("Results writing time: %1").arg((double)time/(1000*1000)));
+            resultWriteTime += time;
         }
         // Read next bunch of sequences
         readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, queries, settings, readMemSize*1024*1024);
@@ -205,6 +213,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     }
     
     if (subTask == readTask) {
+        shortreadLoadTime += time;
         if (queries.count() == 0) {
             // no more reads to align
             return subTasks;
@@ -230,6 +239,8 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
 
     if (subTask == findTask) {
         taskLog.details(QString("Bunch of reads search time: %1").arg((double)time/(1000*1000)));
+        searchTime += time;
+        indexLoadTime += findTask->getIndexLoadTime();
         writeTask = new WriteAlignedReadsSubTask(seqWriter, queries, readsAligned);
         writeTask->setSubtaskProgressWeight(0.33f);
         subTasks.append(writeTask);
@@ -279,15 +290,17 @@ Task::ReportResult GenomeAlignerTask::report() {
         return ReportResult_Finished;
     }
     seqWriter->close();
-    if (readsCount > 0) { 
-        taskLog.details(tr("%1% reads aligned.").arg(100*(double)readsAligned/readsCount));
+    if (readsCount > 0) {
+        taskLog.info(tr("The aligning is finished."));
+        taskLog.info(tr("Whole working time = %1.").arg(QTime(0, 0, (GTimer::currentTimeMicros() - inf.startTime)/(1000*1000)).toString()));
+        taskLog.info(tr("%1% reads aligned.").arg(100*(double)readsAligned/readsCount));
+        taskLog.info(tr("Short-reads loading time = %1.").arg(QTime(0, 0, (shortreadLoadTime/(1000*1000))).toString()));
+        taskLog.info(tr("Result writing time = %1.").arg(QTime(0, 0, (resultWriteTime/(1000*1000))).toString()));
+        taskLog.info(tr("Aligning time = %1 (Index loading time = %2)").arg(QTime(0, 0, (searchTime/(1000*1000))).toString())
+        .arg(QTime(0, 0, (indexLoadTime)).toString()));
     }
     
     return ReportResult_Finished;
-}
-
-void GenomeAlignerTask::run() {
-    
 }
 
 int GenomeAlignerTask::calculateWindowSize(bool absMismatches, int nMismatches, int ptMismatches, int minReadLength, int maxReadLength) {

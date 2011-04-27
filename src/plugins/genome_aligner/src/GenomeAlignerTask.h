@@ -27,6 +27,7 @@
 #include <U2Formats/StreamSequenceWriter.h>
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIO.h"
+#include "GenomeAlignerIndexPart.h"
 
 namespace U2 {
 
@@ -45,7 +46,6 @@ public:
     GenomeAlignerTask(const DnaAssemblyToRefTaskSettings& settings, bool justBuildIndex = false);
     ~GenomeAlignerTask();
     virtual void prepare();
-    virtual void run();
     virtual ReportResult report();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     QString getIndexPath();
@@ -63,8 +63,6 @@ public:
     static const QString OPTION_READS_MEMORY_SIZE;
     static const QString OPTION_SEQ_PART_SIZE;
     static const int MIN_SHORT_READ_LENGTH = 30;
-    static const int MIN_BIT_MASK_LENGTH = 14; //2*7, where 7 = min chars in bitMask
-    static const int MAX_BIT_MASK_LENGTH = 31; //to aloid +- overflow
     static int calculateWindowSize(bool absMismatches, int nMismatches, int ptMismatches, int minReadLength, int maxReadLength);
 
     DNA_ASSEMBLEY_TO_REF_TASK_FACTORY(GenomeAlignerTask)
@@ -92,8 +90,14 @@ private:
     int seqPartSize;
     QVector<SearchQuery*> queries;
     SearchQuery *lastQuery;
+
+    //statistics
     quint64 readsCount;
     quint64 readsAligned;
+    qint64 shortreadLoadTime;
+    qint64 resultWriteTime;
+    qint64 searchTime;
+    qint64 indexLoadTime;
 
     void setupCreateIndexTask();
 };

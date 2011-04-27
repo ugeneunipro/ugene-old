@@ -27,6 +27,7 @@
 #include <QtCore/QFile>
 #include "GenomeAlignerIndexPart.h"
 #include "GenomeAlignerSettingsWidget.h"
+#include "GenomeAlignerFindTask.h"
 
 namespace U2 {
 
@@ -37,6 +38,7 @@ class SearchQuery;
 class GenomeAlignerIndex {
     friend class GenomeAlignerIndexTask;
     friend class GenomeAlignerSettingsWidget;
+    friend class GenomeAlignerFindTask;
 public:
     GenomeAlignerIndex();
     ~GenomeAlignerIndex();
@@ -48,6 +50,7 @@ public:
     ResType *findBitOpenCL(BMType *bitValues, int size, quint64 BMType);
     QString getSeqName() const {return seqObjName;}
     int getPartCount() const {return indexPart.partCount;}
+    SAType getSArraySize() const {return indexPart.saLengths[currentPart];}
 
 private:
     quint32         seqLength;      //reference sequence's length

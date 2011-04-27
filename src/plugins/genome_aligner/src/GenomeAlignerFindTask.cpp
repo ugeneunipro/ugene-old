@@ -29,6 +29,8 @@
 #include "GenomeAlignerIndex.h"
 #include "GenomeAlignerTask.h"
 
+#include <time.h>
+
 namespace U2 {
 
 const int GenomeAlignerFindTask::BITMASK_SEARCH_DATA_SIZE = 100000;
@@ -37,11 +39,13 @@ const int GenomeAlignerFindTask::PART_SEARCH_DATA_SIZE = 100000;
 GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, const SearchContext &s)
 : Task("GenomeAlignerFindTask", TaskFlag_None),
 index(i), settings(new SearchContext(s)), bitMaskResults(NULL),
-bitMaskTaskCount(-1), partTaskCount(-1)
+bitMaskTaskCount(-1), partTaskCount(-1), startS(NULL), endS(NULL)
 {
     currentPart = 0;
     partLoaded = false;
     nextElementToGive = 0;
+    nextElementToCalculateBitmask = 0;
+    indexLoadTime = 0;
 }
 
 void GenomeAlignerFindTask::prepare() {
@@ -157,6 +161,9 @@ QList<Task*> GenomeAlignerFindTask::findInBitMask(int part) {
         subTasks.append(subTask);
     }
 
+    startS.reset(new QSemaphore(bitMaskTaskCount));
+    endS.reset(new QSemaphore(bitMaskTaskCount));
+
     return subTasks;
 }
 
@@ -184,14 +191,45 @@ QList<Task*> GenomeAlignerFindTask::findInPart(int part) {
 }
 
 void GenomeAlignerFindTask::loadPart(int part) {
+    //some parts are commented because of not understandable performance leak
+
+    //SAType first = 0;
+    //SAType length = 0;
+
     mutex.lock();
     if (!partLoaded) {
         taskLog.details(QString("loading part %1").arg(part));
+        time_t loadStartTime = time(NULL);
         index->loadPart(part);
+        indexLoadTime += time(NULL) - loadStartTime;
         partLoaded = true;
         taskLog.details(QString("finish to load part %1").arg(part));
+        //endS->acquire(bitMaskTaskCount);
+        //startS->acquire(bitMaskTaskCount);
+        //nextElementToCalculateBitmask = 0;
     }
+
+    //SAType bitMaskSize = index->getSArraySize();
+    //first = nextElementToCalculateBitmask;
+    //SAType partSize = bitMaskSize/bitMaskTaskCount + 1;
+
+    //if (first >= bitMaskSize) {
+    //    length = 0;
+    //} else if (first + partSize > bitMaskSize) {
+    //    length = bitMaskSize - first;
+    //} else {
+    //    length = partSize;
+    //}
+    //nextElementToCalculateBitmask += length;
     mutex.unlock();
+
+    //SAType last = first + length;
+    //index->indexPart.createBitmask((int)first, (int)last);
+    //startS->release(1);
+    //if (startS->available() == bitMaskTaskCount) {
+    //    endS->release(bitMaskTaskCount);
+    //}
+    //endS->acquire(1);
 }
 
 void GenomeAlignerFindTask::getDataForBitMaskSearch(int &first, int &length) {

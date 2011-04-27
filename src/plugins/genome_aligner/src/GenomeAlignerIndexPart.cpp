@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/Timer.h>
+#include <U2Algorithm/BitsTable.h>
 #include <QtEndian>
 
 #include "GenomeAlignerIndexPart.h"
@@ -108,6 +109,22 @@ void IndexPart::load(int part) {
             sArray[i] = qFromLittleEndian<quint32>((uchar*)(sArray + i));
             bitMask[i] = qFromLittleEndian<quint64>((uchar*)(bitMask + i));
         }
+    }
+    //createBitmask(0, saLengths[currentPart]);
+}
+
+void IndexPart::createBitmask(int start, int last) {
+    BMType bitValue = 0;
+    char *s = NULL;
+    static BitsTable bt;
+    static const quint32 *bitTable = bt.getBitMaskCharBits(DNAAlphabet_NUCL);
+    for (int i=start; i<last; i++) {
+        bitValue = 0;
+        s = seq + sArray[i];
+        for (int j = 0; j < MAX_BIT_MASK_LENGTH; j++) {
+            bitValue = (bitValue << 2) | bitTable[uchar(*(s+j))];
+        }
+        bitMask[i] = bitValue;
     }
 }
 

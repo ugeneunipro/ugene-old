@@ -27,6 +27,7 @@
 
 typedef quint64 BMType;
 typedef quint32 SAType;
+#define MAX_BIT_MASK_LENGTH 31
 
 namespace U2 {
 class GenomeAlignerIndexTask;
@@ -47,6 +48,7 @@ public:
     void load(int part);
     void build(int part);
     void writePart(int part, quint32 arrLen);
+    void createBitmask(int start, int last);
 private:
     int             partCount;
     int             currentPart;

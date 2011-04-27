@@ -39,7 +39,7 @@ GenomeAlignerIndexTask::GenomeAlignerIndexTask(const GenomeAlignerIndexSettings 
 : Task("Building genome aligner's index", TaskFlag_None), objLens(NULL),  unknownChar('N')
 {
     baseFileName = settings.indexFileName;
-    w = 31; // to avoid +- overflow
+    w = MAX_BIT_MASK_LENGTH;
 
     bitTable = bt.getBitMaskCharBits(DNAAlphabet_NUCL);
     bitCharLen = bt.getBitMaskCharBitsNum(DNAAlphabet_NUCL);

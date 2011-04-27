@@ -32,6 +32,8 @@
 #include <QtCore/QMutex>
 #include <QVector>
 #include <QMutex>
+#include <QSemaphore>
+#include <memory>
 
 #define ResType qint64
 
@@ -69,6 +71,7 @@ public:
     void loadPart(int part);
     void getDataForBitMaskSearch(int &first, int &length);
     void getDataForPartSearch(int &first, int &length);
+    qint64 getIndexLoadTime() const {return indexLoadTime;}
 
 private:
     GenomeAlignerIndex *index;
@@ -82,7 +85,11 @@ private:
     int partTaskCount;
     bool partLoaded;
     QMutex mutex;
+    std::auto_ptr<QSemaphore> startS;
+    std::auto_ptr<QSemaphore> endS;
     int nextElementToGive;
+    SAType nextElementToCalculateBitmask;
+    qint64 indexLoadTime;
 
     QList<Task*> findInBitMask(int part);
     QList<Task*> findInPart(int part);
