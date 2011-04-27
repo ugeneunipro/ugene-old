@@ -41,8 +41,8 @@
 namespace U2 {
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
-QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true), hBar(hBar_), vBar(vBar_), 
-redrawHint(false), hint(this) {
+QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true),
+hBar(hBar_), vBar(vBar_), hintData(this) {
     initRedraw();
     connectSlots();
     setMouseTracking(true);
@@ -120,9 +120,9 @@ void AssemblyReadsArea::drawAll() {
             setupVScrollBar();
         }
         QPixmap cachedViewCopy(cachedView);
-        if(redrawHint) {
+        if(hintData.redrawHint) {
             QPainter p(&cachedViewCopy);
-            redrawHint = false;
+            hintData.redrawHint = false;
             drawHint(p);
         }
         QPainter p(this);
@@ -271,31 +271,23 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
 }
 
 void AssemblyReadsArea::drawHint(QPainter & p) {
-    if(scribbling) { // do not redraw hint while scribbling
-        return;
-    }
-    if(cachedReads.isEmpty() || cachedReads.letterWidth == 0) {
+    if(cachedReads.isEmpty() || cachedReads.letterWidth == 0 || scribbling) {
         sl_hideHint();
         return;
     }
     
+    // 1. find assembly read we stay on
     qint64 asmX = cachedReads.xOffsetInAssembly + (double)curPos.x() / cachedReads.letterWidth;
     qint64 asmY = cachedReads.yOffsetInAssembly + (double)curPos.y() / cachedReads.letterWidth;
-    
-    // find assembly read we stay on
     U2AssemblyRead read;
     bool found = false;
-    qint64 len = 0;
     QListIterator<U2AssemblyRead> it(cachedReads.data);
     while(it.hasNext()) {
         const U2AssemblyRead & r = it.next();
-        len = U2AssemblyUtils::getEffectiveReadLength(r);
-        if(r->packedViewRow == asmY ) {
-            if(asmX >= r->leftmostPos && asmX < r->leftmostPos + len) {
-                read = r;
-                found = true;
-                break;
-            }
+        if(r->packedViewRow == asmY && asmX >= r->leftmostPos && asmX < r->leftmostPos + U2AssemblyUtils::getEffectiveReadLength(r)) {
+            read = r;
+            found = true;
+            break;
         }
     }
     if(!found) {
@@ -303,19 +295,16 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
         return;
     }
     
-    // set hint info
-    hint.setName(read->name);
-    hint.setLength(len);
-    hint.setFromTo(read->leftmostPos + 1, read->leftmostPos + len);
-    hint.setCigar(U2AssemblyUtils::cigar2String(read->cigar));
-    hint.setStrand(read->complementary);
-    hint.setRawSequence(read->readSequence);
-    
-    if(!hint.isVisible()) {
-        hint.show();
+    // 2. set hint info
+    if(read->id != hintData.curReadId) {
+        hintData.curReadId = read->id;
+        hintData.hint.setData(read);
     }
+    
+    // 3. move hint if needed
     QRect readsAreaRect(mapToGlobal(rect().topLeft()), mapToGlobal(rect().bottomRight()));
-    QRect hintRect = hint.rect(); hintRect.moveTo(QCursor::pos() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR);
+    QRect hintRect = hintData.hint.rect(); 
+    hintRect.moveTo(QCursor::pos() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR);
     QPoint offset(0, 0);
     if(hintRect.right() > readsAreaRect.right()) {
         offset -= QPoint(hintRect.right() - readsAreaRect.right(), 0);
@@ -325,12 +314,15 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
         offset -= QPoint(0, readsAreaRect.bottom() - QCursor::pos().y() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR.y());
     }
     QPoint newPos = QCursor::pos() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR + offset;
-    if(hint.pos() != newPos) {
-        hint.move(newPos);
+    if(hintData.hint.pos() != newPos) {
+        hintData.hint.move(newPos);
+    }
+    if(!hintData.hint.isVisible()) {
+        hintData.hint.show();
     }
     
-    // paint frame around read
-    U2Region readBases(read->leftmostPos, len);
+    // 4. paint frame around read
+    U2Region readBases(read->leftmostPos, U2AssemblyUtils::getEffectiveReadLength(read));
     U2Region readVisibleBases = readBases.intersect(cachedReads.visibleBases);
     assert(!readVisibleBases.isEmpty());
     U2Region xToDrawRegion(readVisibleBases.startPos - cachedReads.xOffsetInAssembly, readVisibleBases.length);
@@ -419,13 +411,13 @@ void AssemblyReadsArea::mouseMoveEvent(QMouseEvent * e) {
         browser->adjustOffsets(-x_units, -y_units);
     }
     curPos = e->pos();
-    redrawHint = true;
+    hintData.redrawHint = true;
     update();
 }
 
 void AssemblyReadsArea::leaveEvent(QEvent * e) {
-    QPoint curInHintCoords = hint.mapFromGlobal(QCursor::pos());
-    if(!hint.rect().contains(curInHintCoords)) {
+    QPoint curInHintCoords = hintData.hint.mapFromGlobal(QCursor::pos());
+    if(!hintData.hint.rect().contains(curInHintCoords)) {
         sl_hideHint();
     }
 }
@@ -438,7 +430,7 @@ bool AssemblyReadsArea::event(QEvent * e) {
     QEvent::Type t = e->type();
     if(t == QEvent::WindowDeactivate) {
         sl_hideHint();
-        redrawHint = false;
+        hintData.redrawHint = false;
     }
     return QWidget::event(e);
 }
@@ -536,7 +528,7 @@ void AssemblyReadsArea::sl_redraw() {
 }
 
 void AssemblyReadsArea::sl_hideHint() {
-    hint.hide();
+    hintData.hint.hide();
     update();
     
 }

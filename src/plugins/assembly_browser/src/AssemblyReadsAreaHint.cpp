@@ -23,6 +23,8 @@
 #include "AssemblyReadsArea.h"
 #include "ShortReadIterator.h"
 
+#include <U2Core/U2AssemblyUtils.h>
+
 #include <QtGui/QBoxLayout>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QApplication>
@@ -44,6 +46,8 @@ seqLabel(new QLabel(this)){
     top->addWidget(cigarLabel);
     top->addWidget(strandLabel);
     top->addWidget(seqLabel);
+    top->setSpacing(0);
+    top->setSizeConstraint(QLayout::SetMinimumSize);
     
     setMaximumHeight(layout()->minimumSize().height());
     setMaximumWidth(HINT_MAX_WIDTH);
@@ -122,18 +126,18 @@ void AssemblyReadsAreaHint::setName(const QByteArray & n) {
 
 void AssemblyReadsAreaHint::setRawSequence(const QByteArray & s) {
     QString bytes(s);
-    QString headTransl = tr("Raw sequence: ");
+    QString headTransl = tr("Raw sequence:&nbsp;");
     assert(headTransl.size() < 30);
-    QString head = QString("<table><tr><td><b>%1</b></td>").arg(headTransl);
+    QString head = QString("<table cellspacing='0'><tr><td><b>%1</b></td>").arg(headTransl);
     QString str = head;
     const int rowSize = LETTER_MAX_COUNT - headTransl.size();
     const int ROWS_MAX_NUM = 4;
     for(int i = 0; i < ROWS_MAX_NUM; ++i) {
-        QString what = QString("<td><pre>%1</pre>").arg(bytes.mid(i * rowSize, rowSize));
+        QString what = QString("<td><pre>%1").arg(bytes.mid(i * rowSize, rowSize));
         if(i == ROWS_MAX_NUM - 1 && ROWS_MAX_NUM * rowSize < bytes.size()) {
             what.append("...");
         }
-        what.append("</td>");
+        what.append("</pre></td>");
         if(i == 0) {
             what.append("</tr>");
         } else {
@@ -173,6 +177,18 @@ void AssemblyReadsAreaHint::mouseMoveEvent(QMouseEvent * e) {
     AssemblyReadsArea * p = qobject_cast<AssemblyReadsArea*>(parent());
     p->sl_hideHint();
     QFrame::mouseMoveEvent(e);
+}
+
+void AssemblyReadsAreaHint::setData(const U2AssemblyRead& r) {
+    setName(r->name);
+    {
+        qint64 len = U2AssemblyUtils::getEffectiveReadLength(r);
+        setLength(len);
+        setFromTo(r->leftmostPos + 1, r->leftmostPos + len);
+    }
+    setCigar(U2AssemblyUtils::cigar2String(r->cigar));
+    setStrand(r->complementary);
+    setRawSequence(r->readSequence);
 }
 
 } // U2

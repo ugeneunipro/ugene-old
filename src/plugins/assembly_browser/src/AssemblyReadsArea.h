@@ -118,8 +118,13 @@ private:
     };
     ReadsCache cachedReads;
     QPoint curPos;
-    bool redrawHint;
-    AssemblyReadsAreaHint hint;
+    
+    struct HintData {
+        HintData(QWidget * p) : redrawHint(false), hint(p) {}
+        bool redrawHint;
+        AssemblyReadsAreaHint hint;
+        U2DataId curReadId;
+    } hintData;
     
     // needed to move by-letter when scribbling
     class ReadsMover {

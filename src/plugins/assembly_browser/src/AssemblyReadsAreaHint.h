@@ -39,18 +39,21 @@ public:
 public:
     AssemblyReadsAreaHint(QWidget * p);
 
-    void setLength(qint64 len);
-    void setFromTo(qint64 from, qint64 to);
-    void setCigar(const QString & ci);
-    void setStrand(bool onCompl);
-    void setName(const QByteArray & name);
-    void setRawSequence(const QByteArray & seq);
+    void setData(const U2AssemblyRead& r);
     
 protected:
     bool eventFilter(QObject *, QEvent *);
     void leaveEvent(QEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
 
+private:
+    void setLength(qint64 len);
+    void setFromTo(qint64 from, qint64 to);
+    void setCigar(const QString & ci);
+    void setStrand(bool onCompl);
+    void setName(const QByteArray & name);
+    void setRawSequence(const QByteArray & seq);    
+    
 private:
     QLabel * fromToLabel;
     QLabel * lengthLabel;
