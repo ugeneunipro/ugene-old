@@ -117,7 +117,16 @@ QByteArray AssemblyModel::getReferenceMd5(U2OpStatus& os) {
 
 qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
     if(NO_VAL == cachedModelHeight) {
-        cachedModelHeight = assemblyDbi->getMaxPackedRow(assembly.id, U2Region(0, getModelLength(os)), os);
+        U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
+        U2OpStatusImpl os;
+        static const QByteArray MAX_PROW_ATTRIBUTE_NAME("max_prow_attribute");
+        if(attributeDbi != NULL) {
+            cachedModelHeight = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, MAX_PROW_ATTRIBUTE_NAME, NO_VAL, os);
+        }
+        if(cachedModelHeight == NO_VAL) {
+            LOG_OP(os);
+            cachedModelHeight = assemblyDbi->getMaxPackedRow(assembly.id, U2Region(0, getModelLength(os)), os);
+        }
     }
     return cachedModelHeight;
 }
