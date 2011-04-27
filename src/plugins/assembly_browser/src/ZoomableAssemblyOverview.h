@@ -45,7 +45,12 @@ public:
     
     void setScaleType(AssemblyBrowserSettings::OverviewScaleType t);
     AssemblyBrowserSettings::OverviewScaleType getScaleType()const;
-    
+    void checkedSetVisibleRange(qint64 newStartPos, qint64 newLen);
+
+signals:
+    void si_visibleRangeChanged(const U2Region &);
+    void si_coverageReady();
+
 protected:
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
@@ -68,8 +73,7 @@ private:
     U2Region calcVisibleAssemblyRange() const;
     void moveSelectionToPos(QPoint pos, bool moveModel = true);
     void checkedMoveVisibleRange(qint64 newStartPos);
-    void checkedSetVisibleRange(qint64 newStartPos, qint64 newLen);
-
+    
     void connectSlots();
     void initSelectionRedraw();
 
@@ -86,9 +90,7 @@ private:
     QSharedPointer<AssemblyModel> model;
 
     bool zoomable;
-public:
     U2Region visibleRange;
-private:
     double zoomFactor;
 
     QRect cachedSelection;

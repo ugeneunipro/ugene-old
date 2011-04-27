@@ -42,8 +42,10 @@ public:
 
     qint64 countReadsInAssembly(const U2Region & r, U2OpStatus & os);
 
+    U2Region getGlobalRegion();
+
     qint64 getModelLength(U2OpStatus & os);
-    
+
     QByteArray getReferenceMd5(U2OpStatus & os);
     
     QByteArray getReferenceSpecies(U2OpStatus & os);

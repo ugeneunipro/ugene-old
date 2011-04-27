@@ -64,7 +64,7 @@ private:
     void setupVScrollBar();
 
     void drawAll();
-    void drawDensityGraph(QPainter & p);
+    void drawWelcomeScreen(QPainter & p);
     void drawReads(QPainter & p);
     void drawHint(QPainter & p);
     
@@ -75,13 +75,14 @@ signals:
     void si_mouseMovedToPos(const QPoint &);
     
 public slots:
-    void sl_hideHint();    
+    void sl_hideHint();  
+    void sl_redraw();
     
 private slots:
+    void sl_coveredRegionClicked(const QString & link);
     void sl_onHScrollMoved(int pos);
     void sl_onVScrollMoved(int pos);
     void sl_zoomOperationPerformed();
-    void sl_redraw();
     
 private:
     AssemblyBrowserUi * ui;
@@ -92,6 +93,7 @@ private:
     QPixmap cachedView;
     AssemblyCellRenderer cellRenderer;
     
+    QLabel coveredRegionsLabel;
     QScrollBar * hBar;
     QScrollBar * vBar;
     

@@ -26,6 +26,7 @@
 
 #include <QtCore/QSharedPointer>
 #include <QtCore/QByteArray>
+#include <QtCore/QListIterator>
 #include <U2Core/U2Dbi.h>
 #include <U2Core/U2Assembly.h>
 #include <U2Core/AssemblyObject.h>
@@ -34,9 +35,8 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
 
-#include "ZoomableAssemblyOverview.h"
 #include "AssemblyModel.h"
-
+#include "CoveredRegionsManager.h"
 
 namespace U2 {
 
@@ -51,7 +51,10 @@ public:
     // from GObjectView
     virtual void buildStaticToolbar(QToolBar* tb);
     virtual void buildStaticMenu(QMenu* m);
-      
+    
+    void setGlobalCoverageInfo(const CoverageInfo & info);
+    QList<CoveredRegion> getCoveredRegions() const;
+
     int getCellWidth() const;
     qint64 calcPixelCoord(qint64 asmCoord) const;
     qint64 calcAsmCoordX(qint64 pixCoord) const;
@@ -102,9 +105,10 @@ private slots:
     void sl_onShowCoordsOnRulerChanged();
     void sl_saveScreenshot();
     void sl_showContigInfo();
+    void sl_navigateToRegion(const U2Region & region);
     
 public slots:
-    void sl_zoomIn();
+    void sl_zoomIn(bool showBases = false);
     void sl_zoomOut();
 
 private:
@@ -130,6 +134,8 @@ private:
     qint64 xOffsetInAssembly;
     qint64 yOffsetInAssembly;
 
+    CoveredRegionsManager coveredRegionsManager;
+    
     QAction * zoomInAction;
     QAction * zoomOutAction;
     QAction * posSelectorAction;
@@ -169,7 +175,7 @@ public:
     inline AssemblyReferenceArea * getReferenceArea() const {return referenceArea;}
     
 private:
-    ZoomableAssemblyOverview * zoomableOverview;
+    ZoomableAssemblyOverview * zoomableOverview;        
     AssemblyReferenceArea * referenceArea;
     AssemblyDensityGraph * densityGraph;
     AssemblyRuler * ruler;

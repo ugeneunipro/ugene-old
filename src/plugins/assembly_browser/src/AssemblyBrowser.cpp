@@ -82,7 +82,7 @@ showInfoAction(0)
 {
     initFont();
     setupActions();
-    
+ 
     if(gobject) {
         objects.append(o);
         requiredObjects.append(o);
@@ -195,8 +195,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
     
     U2OpStatusImpl st;
     posSelector = new PositionSelector(tb, 1, model->getModelLength(st));
-    if(st.hasError()) {
-        LOG_OP(st);
+    if(!st.hasError()) {
         connect(posSelector, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
         tb->addSeparator();
         tb->addWidget(posSelector);
@@ -232,6 +231,23 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
     m->addAction(showInfoAction);
     GObjectView::buildStaticMenu(m);
     GUIUtils::disableEmptySubmenus(m);
+}
+
+void AssemblyBrowser::setGlobalCoverageInfo(const CoverageInfo & info) {
+    if(info.coverageInfo.size() <= coveredRegionsManager.getSize()) {
+        return;
+    }
+    U2OpStatusImpl os;
+    U2Region globalRegion(0, model->getModelLength(os));
+    coveredRegionsManager = CoveredRegionsManager(globalRegion, info.coverageInfo);
+    coveredRegionsManager.setDesiredCoverageLevel(info.averageCoverage * 10);
+}
+
+QList<CoveredRegion> AssemblyBrowser::getCoveredRegions() const {
+    if(!coveredRegionsManager.isEmpty()) {
+        return coveredRegionsManager.getCoveredRegions();
+    }
+    return QList<CoveredRegion>();
 }
 
 int AssemblyBrowser::getCellWidth() const {
@@ -421,7 +437,22 @@ void AssemblyBrowser::sl_assemblyLoaded() {
     model->setAssembly(assmDbi, assm);
 }
 
-void AssemblyBrowser::sl_zoomIn() {
+
+void AssemblyBrowser::sl_navigateToRegion(const U2Region & region) {
+    //if cells are not visible -> make them visible
+    if(!areCellsVisible()) {
+        sl_zoomIn(true /*showBases*/);
+    }
+
+    //if visible area does not contain reads area -> shift reads area
+    if(xOffsetInAssembly < region.startPos) {
+        setXOffsetInAssembly(region.startPos);
+    } else if(xOffsetInAssembly > region.endPos()-region.length) {
+        setXOffsetInAssembly(region.endPos()-region.length);
+    }
+}
+
+void AssemblyBrowser::sl_zoomIn(bool showBases/*=false*/) {
     if(!zoomInAction->isEnabled()) { // cannot perform zoom
         return;
     }
@@ -430,8 +461,12 @@ void AssemblyBrowser::sl_zoomIn() {
     
     bool enableZoomIn = true;
     if(!oldCellSize) { 
-        //if cells are not visible -> simply decrease the zoomFactor
-        zoomFactor /= ZOOM_MULT;
+        //if cells are not visible -> check showBases
+        if(showBases) {
+            zoomInFromSize(0); //zoom in until bases are visible
+        } else {
+            zoomFactor /= ZOOM_MULT; //just a single zoomIn
+        }
     } else { 
         //single decreasing of the zoomFactor not always changes the cell size
         //so we have to do it in the cycle, until cells grow
@@ -455,7 +490,7 @@ void AssemblyBrowser::sl_zoomIn() {
 }
 
 int AssemblyBrowser::zoomInFromSize(int oldCellSize) {
-    assert(oldCellSize > 0);
+    assert(oldCellSize >= 0);
     int cellWidth = 0;
     do {
         zoomFactor /= ZOOM_MULT;
@@ -490,6 +525,7 @@ void AssemblyBrowser::sl_zoomOut() {
     updateZoomingActions(true);
     emit si_zoomOperationPerformed();
 }
+
 
 void AssemblyBrowser::initFont() {
     font.setStyleHint(QFont::SansSerif, QFont::PreferAntialias);
@@ -619,7 +655,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     QScrollBar * readsHBar = new QScrollBar(Qt::Horizontal);
     QScrollBar * readsVBar = new QScrollBar(Qt::Vertical);
 
-    zoomableOverview = new ZoomableAssemblyOverview(this); //zooming temporarily disabled -iefremov
+    zoomableOverview = new ZoomableAssemblyOverview(this, true); //zooming temporarily disabled -iefremov
     referenceArea = new AssemblyReferenceArea(this);
     //densityGraph = new AssemblyDensityGraph(this);
     densityGraph = NULL;
@@ -641,12 +677,13 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     readsLayout->addWidget(ruler, 1, 0);
 
     readsLayout->addWidget(readsArea, 2, 0);
-    readsLayout->addWidget(readsVBar, 2, 1, 2, 1);
-    readsLayout->addWidget(readsHBar, 3, 0);
+    readsLayout->addWidget(readsVBar, 2, 1, 1, 1);
+    //readsLayout->addWidget(readsHBar, 3, 0);
 
     QWidget * readsLayoutWidget = new QWidget;
     readsLayoutWidget->setLayout(readsLayout);
     mainLayout->addWidget(readsLayoutWidget);
+    mainLayout->addWidget(readsHBar);
 
     setLayout(mainLayout);  
     
@@ -655,6 +692,8 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
     connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
     connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
+    connect(zoomableOverview, SIGNAL(si_visibleRangeChanged(const U2Region &)), browser, SLOT(sl_navigateToRegion(const U2Region &)));
+    connect(zoomableOverview, SIGNAL(si_coverageReady()), readsArea, SLOT(sl_redraw()));
 }
 
 } //ns

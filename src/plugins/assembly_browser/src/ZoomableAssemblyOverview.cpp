@@ -56,6 +56,7 @@ scaleType(AssemblyBrowserSettings::getOverviewScaleType()) {
 
 void ZoomableAssemblyOverview::connectSlots() {
     connect(&coverageTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
+    connect(&coverageTaskRunner, SIGNAL(si_finished()), SIGNAL(si_coverageReady()));
     connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_visibleAreaChanged()));
     connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
 }
@@ -95,6 +96,9 @@ void ZoomableAssemblyOverview::drawAll() {
 
 void ZoomableAssemblyOverview::drawBackground(QPainter & p) {
     CoverageInfo ci = coverageTaskRunner.getResult();
+    if(visibleRange == model->getGlobalRegion()) {
+        browser->setGlobalCoverageInfo(ci);
+    }
 
     const int widgetHeight = height();
     const int widgetWidth = width();
@@ -315,8 +319,11 @@ void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64
     U2OpStatusImpl os;
     qint64 modelLen = model->getModelLength(os);
     assert(newLen <= modelLen);
-    visibleRange.length = newLen;
-    checkedMoveVisibleRange(newStartPos);
+    if(newLen != visibleRange.length || newStartPos != visibleRange.startPos) {
+        visibleRange.length = newLen;
+        checkedMoveVisibleRange(newStartPos);
+        emit si_visibleRangeChanged(visibleRange);
+    }
 }
 
 void ZoomableAssemblyOverview::paintEvent(QPaintEvent * e) {

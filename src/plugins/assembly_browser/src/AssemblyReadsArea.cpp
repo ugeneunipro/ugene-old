@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <math.h>
 
+#include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QCursor>
 #include <QtGui/QResizeEvent>
@@ -34,6 +35,7 @@
 #include <U2Core/Timer.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/FormatUtils.h>
 
 #include "AssemblyBrowser.h"
 #include "ShortReadIterator.h"
@@ -42,7 +44,10 @@ namespace U2 {
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
 QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true),
-hBar(hBar_), vBar(vBar_), hintData(this) {
+coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this) {
+    QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
+    coveredRegionsLayout->addWidget(&coveredRegionsLabel);
+    setLayout(coveredRegionsLayout);
     initRedraw();
     connectSlots();
     setMouseTracking(true);
@@ -57,6 +62,7 @@ void AssemblyReadsArea::initRedraw() {
 void AssemblyReadsArea::connectSlots() {
     connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_zoomOperationPerformed()));
     connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
+    connect(&coveredRegionsLabel, SIGNAL(linkActivated(const QString&)), SLOT(sl_coveredRegionClicked(const QString&)));
 }   
 
 void AssemblyReadsArea::setupHScrollBar() {
@@ -67,14 +73,14 @@ void AssemblyReadsArea::setupHScrollBar() {
     qint64 numVisibleBases = browser->basesVisible();
 
     hBar->setMinimum(0);
-    hBar->setMaximum(assemblyLen - numVisibleBases + 1); // what if too long ???
+    hBar->setMaximum(assemblyLen - numVisibleBases + 1); //TODO: remove +1
     hBar->setSliderPosition(browser->getXOffsetInAssembly());
 
     hBar->setSingleStep(1);
     hBar->setPageStep(numVisibleBases);
-    
+
     hBar->setDisabled(numVisibleBases == assemblyLen);
-    
+
     connect(hBar, SIGNAL(valueChanged(int)), SLOT(sl_onHScrollMoved(int)));
 }
 
@@ -86,7 +92,7 @@ void AssemblyReadsArea::setupVScrollBar() {
     qint64 numVisibleRows = browser->rowsVisible();
 
     vBar->setMinimum(0);
-    vBar->setMaximum(assemblyHeight - numVisibleRows + 2); //FIXME what if too long ???
+    vBar->setMaximum(assemblyHeight - numVisibleRows + 2); //TODO: remove +2
     vBar->setSliderPosition(browser->getYOffsetInAssembly());
 
     vBar->setSingleStep(1);
@@ -107,12 +113,12 @@ void AssemblyReadsArea::drawAll() {
     GTIMER(c1, t1, "AssemblyReadsArea::drawAll");
     if(!model->isEmpty()) {
         if (redraw) {
-            cachedView.fill();
+            cachedView.fill(Qt::transparent);
             QPainter p(&cachedView);
             redraw = false;
-            
+
             if(!browser->areReadsVisible()) {
-                drawDensityGraph(p);
+                drawWelcomeScreen(p);
             } else {
                 drawReads(p);
             }
@@ -130,82 +136,67 @@ void AssemblyReadsArea::drawAll() {
     }
 }
 
-void AssemblyReadsArea::drawDensityGraph(QPainter & p) {
+void AssemblyReadsArea::drawWelcomeScreen(QPainter & p) {
     GTIMER(c1, t1, "AssemblyReadsArea::drawDensityGraph");
-    
+
     cachedReads.clear();
-    
-    p.fillRect(rect(), Qt::gray);
-    //p.fillRect(rect(), Qt::white);
+    QString text = tr("Zoom in to see the reads");
 
-    U2OpStatusImpl status;
-    quint64 alignmentLen = model->getModelLength(status);
-    
-    SAFE_POINT_OP(status,);
+    QList<CoveredRegion> coveredRegions = browser->getCoveredRegions();
+    if(!coveredRegions.empty()) {
+        text += tr(" or choose one of the well-covered regions:<br><br>");
+        QString coveredRegionsText = "<table align=\"center\" cellspacing=\"2\">";
+        /*
+        * |   | Region | Coverage |
+        * | 1 | [x,y]  | z        |
+        */
+        coveredRegionsText += tr("<tr><td></td><td>Region</td><td>Coverage</td></tr>");
+        for(int i = 0; i < coveredRegions.size(); ++i) {
+            const CoveredRegion & cr = coveredRegions.at(i);
+            QString crStart = FormatUtils::splitThousands(cr.region.startPos);
+            QString crEnd = FormatUtils::splitThousands(cr.region.endPos());
+            QString crCoverage = FormatUtils::splitThousands(cr.coverage);
+            coveredRegionsText += "<tr>";
+            coveredRegionsText += QString("<td align=\"right\">%1&nbsp;&nbsp;</td>").arg(i+1);
+            coveredRegionsText += QString("<td><a href=\"%1\">[%2 - %3]</a></td>").arg(i).arg(crStart).arg(crEnd);
+            coveredRegionsText += tr("<td align=\"center\">%4</td>").arg(crCoverage);
+            coveredRegionsText += "</tr>";
+        }
+        coveredRegionsText += "</table>";
+        text += coveredRegionsText;
+    }
+    coveredRegionsLabel.setText(text);
+    coveredRegionsLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    coveredRegionsLabel.show();
 
-    quint64 widgetWidth = width();
-    quint64 widgetHeight = height();
-
-    quint64 lettersPerXPixel =  browser->calcAsmCoordX(1);
-
-    //???
-    //FIXME
-    p.drawText(rect(), Qt::AlignCenter, "Density graph may be here");
-    // TODO don't duplicate the code with ass. overview and ass. density graph
-//     QVector<quint64> readsPerXPixels(widgetWidth);
-//     quint64 maxReadsPerXPixels = 0;
-//     quint64 start = browser->getXOffsetInAssembly(); 
-//     for(int i = 0 ; i < widgetWidth; ++i) {
-//         quint64 readsPerXPixel = model->countReadsInAssembly(0, U2Region(start, lettersPerXPixel), status);
-//         if(checkAndLogError(status)) {
-//             return;
-//         }
-//         readsPerXPixels[i] = readsPerXPixel;
-//         start += lettersPerXPixel;
-// 
-//         if(maxReadsPerXPixels < readsPerXPixel) {
-//             maxReadsPerXPixels = readsPerXPixel;
-//         }
-//     }
-// 
-//     static double logMax = log((double)maxReadsPerXPixels);
-//     //double readsPerYPixel = double(maxReadsPerXPixels) / widgetHeight; 
-//     double readsPerYPixel = double(logMax) / widgetHeight; 
-//     for(int i = 0 ; i < widgetWidth; ++i) {
-//         //quint64 columnPixels = qint64(double(readsPerXPixels[i]) / readsPerYPixel + 0.5);
-//         quint64 columnPixels = qint64(double(log((double)readsPerXPixels[i])) / readsPerYPixel + 0.5);
-//         int grayCoeff = 255 - int(double(255) / logMax * log((double)readsPerXPixels[i]) + 0.5);
-//         QColor c = QColor(grayCoeff, grayCoeff, grayCoeff);
-//         p.setPen(c);
-// 
-//         p.drawLine(i, 0, i, columnPixels);
-//    }
+    //p.drawText(rect(), Qt::AlignCenter, );
 }
 
 void AssemblyReadsArea::drawReads(QPainter & p) {
     GTIMER(c1, t1, "AssemblyReadsArea::drawReads");
+    coveredRegionsLabel.hide();
 
     p.setFont(browser->getFont());
     p.fillRect(rect(), Qt::white);
 
     cachedReads.xOffsetInAssembly = browser->getXOffsetInAssembly();
     cachedReads.yOffsetInAssembly = browser->getYOffsetInAssembly();
-    
+
     cachedReads.visibleBases = U2Region(cachedReads.xOffsetInAssembly, browser->basesCanBeVisible());
     cachedReads.visibleRows = U2Region(cachedReads.yOffsetInAssembly, browser->rowsCanBeVisible());
-    
+
     // 0. Get reads from the database
     U2OpStatusImpl status;
     qint64 t = GTimer::currentTimeMicros();
     cachedReads.data = model->getReadsFromAssembly(cachedReads.visibleBases, cachedReads.visibleRows.startPos, 
-                                                   cachedReads.visibleRows.endPos(), status);
+        cachedReads.visibleRows.endPos(), status);
     t = GTimer::currentTimeMicros() - t;
     perfLog.trace(QString("Assembly: reads 2D load time: %1").arg(double(t) / 1000 / 1000));
     if (status.hasError()) {
         LOG_OP(status);
         return;
     }
-    
+
     // 1. Render cells using AssemblyCellRenderer
     cachedReads.letterWidth = browser->getCellWidth();
 
@@ -245,7 +236,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             int firstVisibleBase = readVisibleBases.startPos - readBases.startPos; 
             int x_pix_start = browser->calcPainterOffset(xToDrawRegion.startPos);
             int y_pix_start = browser->calcPainterOffset(yToDrawRegion.startPos);
-            
+
             //iterate over letters of the read
             ShortReadIterator cigarIt(readSequence, read->cigar, firstVisibleBase);
             int basesPainted = 0;
@@ -275,7 +266,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
         sl_hideHint();
         return;
     }
-    
+
     // 1. find assembly read we stay on
     qint64 asmX = cachedReads.xOffsetInAssembly + (double)curPos.x() / cachedReads.letterWidth;
     qint64 asmY = cachedReads.yOffsetInAssembly + (double)curPos.y() / cachedReads.letterWidth;
@@ -294,13 +285,13 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
         sl_hideHint();
         return;
     }
-    
+
     // 2. set hint info
     if(read->id != hintData.curReadId) {
         hintData.curReadId = read->id;
         hintData.hint.setData(read);
     }
-    
+
     // 3. move hint if needed
     QRect readsAreaRect(mapToGlobal(rect().topLeft()), mapToGlobal(rect().bottomRight()));
     QRect hintRect = hintData.hint.rect(); 
@@ -320,21 +311,21 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
     if(!hintData.hint.isVisible()) {
         hintData.hint.show();
     }
-    
+
     // 4. paint frame around read
     U2Region readBases(read->leftmostPos, U2AssemblyUtils::getEffectiveReadLength(read));
     U2Region readVisibleBases = readBases.intersect(cachedReads.visibleBases);
     assert(!readVisibleBases.isEmpty());
     U2Region xToDrawRegion(readVisibleBases.startPos - cachedReads.xOffsetInAssembly, readVisibleBases.length);
-    
+
     U2Region readVisibleRows = U2Region(read->packedViewRow, 1).intersect(cachedReads.visibleRows);
     U2Region yToDrawRegion(readVisibleRows.startPos - cachedReads.yOffsetInAssembly, readVisibleRows.length);
     assert(!readVisibleRows.isEmpty());
-    
+
     assert(browser->areCellsVisible());
     int x_pix_start = browser->calcPainterOffset(xToDrawRegion.startPos);
     int y_pix_start = browser->calcPainterOffset(yToDrawRegion.startPos);
-    
+
     p.setPen(Qt::darkRed);
     QPoint l(x_pix_start, y_pix_start);
     QPoint r(x_pix_start + readVisibleBases.length * cachedReads.letterWidth, y_pix_start);
@@ -479,7 +470,7 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
             e->accept();
         }
     }
-    
+
     if(!e->isAccepted()) {
         QWidget::keyPressEvent(e);
     }
@@ -488,13 +479,13 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
 void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
     qint64 cursorXoffset = browser->calcAsmPosX(e->pos().x());
     qint64 cursorYoffset = browser->calcAsmPosY(e->pos().y());
-    
+
     //1. zoom in
     static const int howManyZoom = 1;
     for(int i = 0; i < howManyZoom; ++i) {
         browser->sl_zoomIn();
     }
-    
+
     //2. move cursor offset to center
     // move x
     if(hBar->isEnabled()) {
@@ -508,6 +499,14 @@ void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
         qint64 windowHalfY = yOffset + qRound64((double)browser->rowsCanBeVisible() / 2);
         browser->setYOffsetInAssembly(browser->normalizeYoffset(yOffset + cursorYoffset - windowHalfY + 1));
     }
+}
+
+void AssemblyReadsArea::sl_coveredRegionClicked(const QString & link) {
+    bool ok;
+    int i = link.toInt(&ok);
+    assert(ok);
+    CoveredRegion cr = browser->getCoveredRegions().at(i);
+    ui->getOverview()->checkedSetVisibleRange(cr.region.startPos, cr.region.length);
 }
 
 void AssemblyReadsArea::sl_onHScrollMoved(int pos) {
@@ -530,7 +529,8 @@ void AssemblyReadsArea::sl_redraw() {
 void AssemblyReadsArea::sl_hideHint() {
     hintData.hint.hide();
     update();
-    
+
 }
+
 
 } //ns
