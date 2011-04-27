@@ -574,7 +574,7 @@ void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 p
 void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, U2OpStatus& os) {
     SAFE_POINT_OP(os,);
     //delete reads from old tables, and insert into new one
-    QHash<MTASingleTableAdapter*, QVector<ReadTableMigrationData>> readsByOldTable;
+    QHash<MTASingleTableAdapter*, QVector<ReadTableMigrationData> > readsByOldTable;
     foreach(const ReadTableMigrationData& d, data) {
         readsByOldTable[d.oldTable].append(d);
     }
