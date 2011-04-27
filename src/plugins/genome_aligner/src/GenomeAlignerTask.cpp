@@ -292,12 +292,12 @@ Task::ReportResult GenomeAlignerTask::report() {
     seqWriter->close();
     if (readsCount > 0) {
         taskLog.info(tr("The aligning is finished."));
-        taskLog.info(tr("Whole working time = %1.").arg(QTime(0, 0, (GTimer::currentTimeMicros() - inf.startTime)/(1000*1000)).toString()));
+        taskLog.info(tr("Whole working time = %1.").arg((GTimer::currentTimeMicros() - inf.startTime)/(1000*1000)));
         taskLog.info(tr("%1% reads aligned.").arg(100*(double)readsAligned/readsCount));
-        taskLog.info(tr("Short-reads loading time = %1.").arg(QTime(0, 0, (shortreadLoadTime/(1000*1000))).toString()));
-        taskLog.info(tr("Result writing time = %1.").arg(QTime(0, 0, (resultWriteTime/(1000*1000))).toString()));
-        taskLog.info(tr("Aligning time = %1 (Index loading time = %2)").arg(QTime(0, 0, (searchTime/(1000*1000))).toString())
-        .arg(QTime(0, 0, (indexLoadTime)).toString()));
+        taskLog.info(tr("Short-reads loading time = %1.").arg((shortreadLoadTime/(1000*1000))));
+        taskLog.info(tr("Result writing time = %1.").arg(resultWriteTime/(1000*1000)));
+        taskLog.info(tr("Aligning time = %1 (Index loading time = %2)").arg(searchTime/(1000*1000))
+        .arg(indexLoadTime));
     }
     
     return ReportResult_Finished;
@@ -367,8 +367,9 @@ void ReadShortReadsSubTask::run() {
         if (NULL == query) {
             if (!seqReader->isEnd()) {
                 setError("Short-reads object type must be a sequence, but not a multiple alignment");
+                return;
             }
-            return;
+            break;
         }
 
         if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH > query->length()) {

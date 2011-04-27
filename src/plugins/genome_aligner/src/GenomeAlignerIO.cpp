@@ -166,23 +166,13 @@ SearchQuery *GenomeAlignerDbiReader::read() {
     if (dbiIterator.get() == NULL) {
         dbiIterator.reset(rDbi->getReads(assembly.id, wholeAssembly, status));
     }
-    if (currentRead == reads.end()) {
-        for (int i=0; i < readBunchSize && dbiIterator->hasNext(); i++) {
-            reads.append(dbiIterator->next());
-        }
-        if (reads.isEmpty()) {
-            end = true;
-            return NULL;
-        }
-        currentRead = reads.begin();
+    if (dbiIterator->hasNext()) {
+        U2AssemblyRead read = dbiIterator->next();
+        return new SearchQuery(read);
+    } else {
+        end = true;
+        return NULL;
     }
-    
-    U2AssemblyRead &read = *currentRead;
-
-    currentRead++;
-    readNumber++;
-    
-    return new SearchQuery(read);
 }
 
 bool GenomeAlignerDbiReader::isEnd() {
@@ -224,6 +214,7 @@ void GenomeAlignerDbiWriter::close() {
         wDbi->addReads(assembly.id, reads, status);
         reads.clear();
     }
+    wDbi->updateAssemblyObject(assembly, status);
 
 
     /* TODO: what this all about?
