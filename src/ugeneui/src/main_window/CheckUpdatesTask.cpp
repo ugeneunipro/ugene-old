@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Version.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/Settings.h>
 #include <U2Core/NetworkConfiguration.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/GUIUtils.h>
@@ -31,12 +32,15 @@
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
+#include <QtGui/QMainWindow>
 
 namespace U2 {
 
-CheckUpdatesTask::CheckUpdatesTask() 
+
+CheckUpdatesTask::CheckUpdatesTask(bool startUp) 
 :Task(tr("Check for updates"), TaskFlag_None)
 {
+    runOnStartup = startUp;
     setVerboseLogMode(true);
 }
 
@@ -65,27 +69,50 @@ Task::ReportResult CheckUpdatesTask::report() {
     if (hasErrors()) {
         return ReportResult_Finished;
     }
+
     Version v = Version::ugeneVersion();
     QString thisVersion = v.text;
-    QString message = "<table><tr><td>"+tr("Your version:") + "</td><td><b>"+thisVersion+"</b></td></tr>";
-    message+="<tr><td>" + tr("Latest version:") + "</td><td><b>"+siteVersion+"</b></td></tr></table>";
-    bool needUpdate = thisVersion != siteVersion;
-    if (!needUpdate) {
-        message += "<p>" + tr("You have the latest  version");
-    }
-    
-    QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-    QMessageBox box(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, p);
-    box.addButton(QMessageBox::Ok);
-    QAbstractButton* updateButton = NULL;
-    
-    if (needUpdate) {
-        updateButton = box.addButton(tr("Visit web site"), QMessageBox::ActionRole);
-    }
-    box.exec();
 
-    if (box.clickedButton() == updateButton) {
-        GUIUtils::runWebBrowser("http://ugene.unipro.ru/download.html");
+    if(runOnStartup) {
+        QString baseVersion = v.text.remove("-dev", Qt::CaseInsensitive);
+        Settings *s = AppContext::getSettings();
+        if(siteVersion > thisVersion || (baseVersion == siteVersion && thisVersion.contains("dev"))) {
+            QString message = tr("Newer version available. You can download it from our site.");
+            QMessageBox box(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, 
+                AppContext::getMainWindow()->getQMainWindow());
+            box.addButton(QMessageBox::Cancel);
+            QPushButton *siteButton = box.addButton(tr("Visit web site"), QMessageBox::ActionRole);
+            QPushButton *dontAsk = box.addButton(tr("Don't ask again"), QMessageBox::ActionRole);
+
+            box.exec();
+
+            if(box.clickedButton() == siteButton) {
+                GUIUtils::runWebBrowser("http://ugene.unipro.ru/download.html");
+            } else if(box.clickedButton() == dontAsk) {
+                AppContext::getSettings()->setValue(ASK_VESRION_SETTING, false);
+            }
+        }
+    } else {    
+        QString message = "<table><tr><td>"+tr("Your version:") + "</td><td><b>"+thisVersion+"</b></td></tr>";
+        message+="<tr><td>" + tr("Latest version:") + "</td><td><b>"+siteVersion+"</b></td></tr></table>";
+        bool needUpdate = thisVersion != siteVersion;
+        if (!needUpdate) {
+            message += "<p>" + tr("You have the latest version");
+        }
+        
+        QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
+        QMessageBox box(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, p);
+        box.addButton(QMessageBox::Ok);
+        QAbstractButton* updateButton = NULL;
+        
+        if (needUpdate) {
+            updateButton = box.addButton(tr("Visit web site"), QMessageBox::ActionRole);
+        }
+        box.exec();
+
+        if (box.clickedButton() == updateButton) {
+            GUIUtils::runWebBrowser("http://ugene.unipro.ru/download.html");
+        }
     }
     return ReportResult_Finished;    
 }

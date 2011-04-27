@@ -34,6 +34,7 @@
 #include "plugin_viewer/PluginViewerImpl.h"
 #include "project_support/ProjectLoaderImpl.h"
 #include "main_window/MainWindowImpl.h"
+#include "main_window/CheckUpdatesTask.h"
 #include "project_view/ProjectViewImpl.h"
 
 #include "task_view/TaskViewController.h"
@@ -204,7 +205,6 @@ public:
 #endif
         return res;
     }
-
 };
 
 int main(int argc, char **argv) 
@@ -330,7 +330,7 @@ int main(int argc, char **argv)
     MainWindowImpl* mw = new MainWindowImpl();
     appContext->setMainWindow(mw);
     mw->show();
-
+   
     AppSettingsGUI* appSettingsGUI = new AppSettingsGUIImpl();
     appContext->setAppSettingsGUI(appSettingsGUI);
 
@@ -496,6 +496,9 @@ int main(int argc, char **argv)
     //3 run QT GUI
     t1.stop();
     coreLog.info(AppContextImpl::tr("UGENE started"));
+    if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
+        ts->registerTopLevelTask(new CheckUpdatesTask(true));
+    }
     int rc = app.exec();
 
     //4 deallocate resources

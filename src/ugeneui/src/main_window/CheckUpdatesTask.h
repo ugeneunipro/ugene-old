@@ -26,15 +26,18 @@
 
 namespace U2 {
 
+#define ASK_VESRION_SETTING QString("user_apps/ask_update")
+
 class CheckUpdatesTask : public Task {
     Q_OBJECT
 
 public:
-    CheckUpdatesTask();
+    CheckUpdatesTask(bool startUp = false);
     void run();
     ReportResult report();
 
     QString siteVersion;
+    bool runOnStartup;
 };
 
 
