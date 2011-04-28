@@ -43,18 +43,9 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     ui.setupUi(this);
     
     connect(ui.bamInfoButton, SIGNAL(clicked()), SLOT(sl_bamInfoButtonClicked()));
-
-    QMenu* selectMenu = new QMenu(ui.selectButton);
-    QAction* selectAll = new QAction(BAMDbiPlugin::tr("Select all"), ui.selectButton); 
-    QAction* unselectAll = new QAction(BAMDbiPlugin::tr("Select none"), ui.selectButton); 
-    QAction* inverseSelection = new QAction(BAMDbiPlugin::tr("Inverse selection"), ui.selectButton); 
-    connect(selectAll, SIGNAL(triggered()), SLOT(sl_selectAll()));
-    connect(unselectAll, SIGNAL(triggered()), SLOT(sl_unselectAll()));
-    connect(inverseSelection, SIGNAL(triggered()), SLOT(sl_inverseSelection()));
-    selectMenu->addAction(selectAll);
-    selectMenu->addAction(unselectAll);
-    selectMenu->addAction(inverseSelection);
-    ui.selectButton->setMenu(selectMenu);
+    connect(ui.selectAllToolButton, SIGNAL(clicked()), SLOT(sl_selectAll()));
+    connect(ui.selectNoneToolButton, SIGNAL(clicked()), SLOT(sl_unselectAll()));
+    connect(ui.inverseSelectionToolButton, SIGNAL(clicked()), SLOT(sl_inverseSelection()));
     ui.indexNotAvailableLabel->setVisible(!bamInfo.hasIndex());
     
     ui.tableWidget->setColumnCount(3);
@@ -77,7 +68,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
             i++;
         }
     }
-    ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 3);
+    ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 5);
     ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
     ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb");
     ui.sourceUrlView->setText(sourceUrl.getURLString());
