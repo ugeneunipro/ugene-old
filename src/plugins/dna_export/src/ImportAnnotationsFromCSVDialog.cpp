@@ -56,11 +56,11 @@ namespace U2 {
 #define SKIP_LINES_PREFIX    QString("skip_lines_prefix")
 
 ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w) 
-: QDialog(w)
+: QWizard(w)
 {
     setupUi(this);
     connect(readFileButton, SIGNAL(clicked()), SLOT(sl_readFileClicked()));
-    connect(previewButton, SIGNAL(clicked()), SLOT(sl_previewClicked()));
+    //connect(previewButton, SIGNAL(clicked()), SLOT(sl_previewClicked()));
     connect(guessButton, SIGNAL(clicked()), SLOT(sl_guessSeparatorClicked()));
     connect(scriptButton, SIGNAL(clicked()), SLOT(sl_scriptSeparatorClicked()));
     connect(separatorEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_separatorChanged(const QString&)));
@@ -116,6 +116,8 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
     connect(removeQuotesCheck, SIGNAL(toggled(bool)),SLOT(sl_removeQuotesToggled(bool)));
     connect(separatorsModeCheck, SIGNAL(toggled(bool)), SLOT(sl_separatorsModeToggled(bool)));
     connect(linesToSkipBox, SIGNAL(valueChanged(int)), SLOT(sl_linesToSkipChanged(int)));
+
+    setButtonText(NextButton, tr("Preview"));
 }
 
 void ImportAnnotationsFromCSVDialog::accept() {
