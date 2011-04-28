@@ -228,7 +228,7 @@ U2DbiIterator<PackAlgorithmData>* SingleTablePackAlgorithmAdapter::selectAllRead
 }
 
 SingleTablePackAlgorithmAdapter::~SingleTablePackAlgorithmAdapter() {
-    delete updateQuery;
+    releaseDbResources();
 }
 
 void SingleTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os) {
@@ -242,5 +242,9 @@ void SingleTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 
     updateQuery->execute();
 }
 
+void SingleTablePackAlgorithmAdapter::releaseDbResources() {
+    delete updateQuery;
+    updateQuery = NULL;
+}
 
 } //namespace

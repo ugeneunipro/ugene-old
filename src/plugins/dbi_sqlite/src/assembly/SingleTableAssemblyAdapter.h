@@ -77,6 +77,8 @@ public:
 
     virtual U2DbiIterator<PackAlgorithmData>* selectAllReads(U2OpStatus& os);
     virtual void assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os);
+
+    void releaseDbResources();
 private:
     DbRef*          db;
     QString         readsTable;

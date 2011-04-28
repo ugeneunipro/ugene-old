@@ -91,11 +91,14 @@ protected:
     /** Checks if table info must be re-read from DB and calls re-read if needed */
     void syncTables(U2OpStatus& os);
     
-    /** For an empty assembly analyzes reads data and calculate ranges */
+    /** For a new and empty assembly analyzes reads data and calculate ranges */
     void initTables(QList<U2AssemblyRead>& reads, U2OpStatus& os);
 
     /** Re-reads table info from DB */
     void rereadTables(const QByteArray& idata, U2OpStatus& os);
+
+    /** Flushes tables info into database */
+    void flushTables(U2OpStatus& os);
 
     void clearTableAdaptersInfo();
 
@@ -146,6 +149,7 @@ public:
     virtual U2DbiIterator<PackAlgorithmData>* selectAllReads(U2OpStatus& os);
     virtual void assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os);
 
+    void releaseDbResources();
     void migrateAll(U2OpStatus& os);
     void migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, U2OpStatus& os);
 

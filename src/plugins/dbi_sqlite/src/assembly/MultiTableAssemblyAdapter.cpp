@@ -86,7 +86,8 @@ void MultiTableAssemblyAdapter::initTables(QList<U2AssemblyRead>& reads, U2OpSta
     if (os.hasError()) {
         return;
     }
-    assert(elenRanges.isEmpty());
+    SAFE_POINT(elenRanges.isEmpty(), "Effective ranges are already initialized!", );
+
     int nReads = reads.size();
     if (false && nReads > 1000) {
     /*    // get reads distribution first
@@ -104,25 +105,10 @@ void MultiTableAssemblyAdapter::initTables(QList<U2AssemblyRead>& reads, U2OpSta
         starts << 50 << 200 << 800 << 4*1000 << 25*1000 << 100*1000 << 500*1000 << 2*1000*1000;
         elenRanges << toRange( starts);
     }
-    
-    QByteArray idata;
-    for(int i = 0; i < elenRanges.size(); i++) {
-        int rangeStart = elenRanges[i].startPos;
-        if (!idata.isEmpty()) {
-            idata.append(',');
-        }
-        idata.append(QByteArray::number(rangeStart));
-    }
-    idata.append('|').append(QByteArray::number(rowsPerRange)).append(',').append(QByteArray::number(1));
 
-    SQLiteQuery q("UPDATE Assembly SET idata = ?1 WHERE object = ?2", db, os);
-    q.bindBlob(1, idata);
-    q.bindDataId(2, assemblyId);
-    q.execute();
-    if (os.hasError()) {
-        return;
-    }
     initAdaptersGrid(1, elenRanges.size());
+
+    flushTables(os);
 }
 
 void MultiTableAssemblyAdapter::rereadTables(const QByteArray& idata, U2OpStatus& os) {
@@ -191,6 +177,24 @@ void MultiTableAssemblyAdapter::rereadTables(const QByteArray& idata, U2OpStatus
         }
     }
 }
+
+void MultiTableAssemblyAdapter::flushTables(U2OpStatus& os)  {
+    QByteArray idata;
+    for(int i = 0; i < elenRanges.size(); i++) {
+        int rangeStart = elenRanges[i].startPos;
+        if (!idata.isEmpty()) {
+            idata.append(',');
+        }
+        idata.append(QByteArray::number(rangeStart));
+    }
+    idata.append('|').append(QByteArray::number(rowsPerRange)).append(',').append(QByteArray::number(adaptersGrid.size()));
+
+    SQLiteQuery q("UPDATE Assembly SET idata = ?1 WHERE object = ?2", db, os);
+    q.bindBlob(1, idata);
+    q.bindDataId(2, assemblyId);
+    q.execute();
+}
+
 
 QString MultiTableAssemblyAdapter::getTableSuffix(int rowPos, int elenPos) {
     U2Region eRegion = elenRanges[elenPos];
@@ -263,14 +267,17 @@ qint64 MultiTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) 
 qint64 MultiTableAssemblyAdapter::getMaxPackedRow(const U2Region& r, U2OpStatus& os) {
     qint64 max = 0;
     // process only hi row adapters
-    for (int rowPos = adaptersGrid.size(); --rowPos>=0 && max == 0;) {
+    int nRows = adaptersGrid.size();
+    for (int rowPos = nRows; --rowPos>=0 && max == 0;) {
         QVector<MTASingleTableAdapter*> elenAdapters = adaptersGrid.at(rowPos);
-        for (int elenPos = 0, nRanges = elenAdapters.size(); elenPos < nRanges; elenPos++) {
+        for (int elenPos = 0, nElens = elenAdapters.size(); elenPos < nElens; elenPos++) {
             MTASingleTableAdapter* a = elenAdapters.at(elenPos);
             if (a == NULL) {
                 continue;
             }
+            assert(a->rowPos == rowPos);
             qint64 n = a->singleTableAdapter->getMaxPackedRow(r, os);
+            assert(U2Region(rowsPerRange * rowPos, rowsPerRange).contains(n));
             max = qMax(max, n);
         }
     }
@@ -481,21 +488,21 @@ void MultiTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2Op
 
 void MultiTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     MultiTablePackAlgorithmAdapter packAdapter(this);
+
     AssemblyPackAlgorithm::pack(packAdapter, stat, os);
+    packAdapter.releaseDbResources();
 
     quint64 t0 = GTimer::currentTimeMicros();
-
     packAdapter.migrateAll(os);
-
     perfLog.trace(QString("Assembly: table migration pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 
-    t0 = GTimer::currentTimeMicros();
 
+    t0 = GTimer::currentTimeMicros();
     // if new tables created during the pack algorithm -> create indexes
     createReadsIndexes(os);
-
     perfLog.trace(QString("Assembly: re-indexing pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 
+    flushTables(os);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -571,6 +578,12 @@ void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 p
     }
 }
 
+void MultiTablePackAlgorithmAdapter::releaseDbResources() {
+    foreach(SingleTablePackAlgorithmAdapter* a, packAdapters) {
+        a->releaseDbResources();
+    }
+}
+
 void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, U2OpStatus& os) {
     SAFE_POINT_OP(os,);
     //delete reads from old tables, and insert into new one
@@ -582,6 +595,9 @@ void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const 
     foreach(MTASingleTableAdapter* oldA, readsByOldTable.keys()) {
 
         const QVector<ReadTableMigrationData>& migData  = readsByOldTable[oldA];
+        if (migData.isEmpty()) {
+            continue;
+        }
         QString oldTable = oldA->singleTableAdapter->getReadsTableName();
         QString newTable = newA->singleTableAdapter->getReadsTableName();
         QString idsTable = "tmp_mig_" + oldTable; //TODO
@@ -593,6 +609,9 @@ void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const 
         int rowsPerRange = multiTableAdapter->getRowsPerRange();
         U2Region newProwRegion(newA->rowPos * rowsPerRange, rowsPerRange);
 #endif
+
+        perfLog.trace(QString("Starting reads migration from %1 to %2 number of reads: %3").arg(oldTable).arg(newTable).arg(migData.size()));
+        quint64 t0 = GTimer::currentTimeMicros();
 
         { //nested block is needed to ensure all queries are finalized
 
@@ -618,6 +637,8 @@ void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const 
         }
         U2OpStatusImpl osStub; // using stub here -> this operation must be performed even if any of internal queries failed
         SQLiteQuery(QString("DROP TABLE IF EXISTS %1").arg(idsTable), db, osStub).execute();
+
+        perfLog.trace(QString("Reads migration from %1 to %2 finished, time %3 seconds").arg(oldTable).arg(newTable).arg((GTimer::currentTimeMicros() - t0)/float(1000*1000)));
 
 #ifdef _DEBUG
         qint64 nOldReads2 = SQLiteQuery("SELECT COUNT(*) FROM " + oldTable, db, os).selectInt64();
