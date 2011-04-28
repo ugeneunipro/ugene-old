@@ -60,6 +60,7 @@
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/ExportImageDialog.h>
 
 #include <U2Misc/DialogUtils.h>
 #include <U2Misc/PositionSelector.h>
@@ -592,19 +593,8 @@ void AssemblyBrowser::sl_showContigInfo() {
 }
 
 void AssemblyBrowser::sl_saveScreenshot() {
-    // 1. get url and format
-    QPair<QString, QString> saveFileAndFormat = DialogUtils::selectFileForScreenShot(ui);
-    QString filename = saveFileAndFormat.first;
-    if(saveFileAndFormat.first.isEmpty()) {
-        return;
-    }
-    QString format = saveFileAndFormat.second;
-    assert(!format.isEmpty());
-    
-    // 2. save file
-    QRect screenRect(0, 0, 0, 0);
-    screenRect.setBottomRight(ui->geometry().bottomRight());
-    QPixmap::grabWidget(ui, screenRect).save(filename, format.toAscii().constData());
+    ExportImageDialog dialog(ui);
+    dialog.exec();
 }
 
 void AssemblyBrowser::sl_onShowCoordsOnRulerChanged() {

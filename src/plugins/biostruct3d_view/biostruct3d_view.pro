@@ -7,7 +7,7 @@ HEADERS += src/BallAndStickGLRenderer.h \
            src/BioStruct3DGLWidget.h \
            src/BioStruct3DSplitter.h \
            src/BioStruct3DViewPlugin.h \
-           src/ExportImageDialog.h \
+           src/ExportImage3DGLDialog.h \
            src/GLFrameManager.h \
            src/GraphicUtils.h \
            src/MolecularSurfaceRenderer.h \
@@ -18,8 +18,7 @@ HEADERS += src/BallAndStickGLRenderer.h \
            src/StructuralAlignmentDialog.h \
            src/gl2ps/gl2ps.h
 
-FORMS +=   src/ui/ExportImageDialog.ui \
-           src/ui/SettingsDialog.ui \
+FORMS +=   src/ui/SettingsDialog.ui \
            src/ui/StructuralAlignmentDialog.ui
 
 SOURCES += src/BallAndStickGLRenderer.cpp \
@@ -28,7 +27,7 @@ SOURCES += src/BallAndStickGLRenderer.cpp \
            src/BioStruct3DGLWidget.cpp \
            src/BioStruct3DSplitter.cpp \
            src/BioStruct3DViewPlugin.cpp \
-           src/ExportImageDialog.cpp \
+           src/ExportImage3DGLDialog.cpp \
            src/GLFrameManager.cpp \
            src/GraphicUtils.cpp \
            src/MolecularSurfaceRenderer.cpp \

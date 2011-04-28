@@ -111,7 +111,6 @@ protected slots:
     void sl_resetZoom(); 
     void sl_buildTree();
     void sl_openTree();
-    void sl_saveScreenshot();
 
 protected:
     virtual QWidget* createWidget();
@@ -170,8 +169,9 @@ public:
 
     QAction* getUndoAction() const;
     QAction* getRedoAction() const;
-   
-    void saveScreenshot(const QString& filename, const QString& format);
+
+public slots:
+    void sl_saveScreenshot();
 
 private:
     MSAEditor*                      editor;

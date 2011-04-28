@@ -5,7 +5,7 @@ include( ../../ugene_lib_common.pri )
 
 UGENE_RELATIVE_DESTDIR = ''
 
-QT += network xml
+QT += network xml svg
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2GUI_DLL
 INCLUDEPATH += ../U2Private/src
 

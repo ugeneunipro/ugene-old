@@ -45,6 +45,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/ExportImageDialog.h>
 #include <U2Core/Log.h>
 #include <U2Core/Settings.h>
 #include <U2Core/DocumentModel.h>
@@ -1143,38 +1144,8 @@ void WorkflowView::sl_onSelectionChanged() {
 void WorkflowView::sl_exportScene() {
     propertyEditor->commit();
 
-    // TODO more export options and features
-    QString dir = AppContext::getSettings()->getValue(LAST_DIR, QString("")).toString();
-    QString filter = tr("Raster image (*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm)");
-    filter += "\n" + tr("Vector image (*.svg)");
-    filter += "\n"+ tr("Portable document (*.pdf *.ps)");
-    QString selectedFilter = "";//AppContext::getSettings()->getValue(LAST_FILE_FILTER, QString("")).toString();
-    QString url = QFileDialog::getSaveFileName(0, tr("Export workflow schema to image"), dir, filter,&selectedFilter);
-    if (!url.isEmpty()) {
-        AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
-        uiLog.details(tr("Saving scene image to file: %1").arg(url));
-
-        QPoint renderPoint = infoSplitter->mapToParent(sceneView->mapToParent(sceneView->viewport()->rect().topLeft()));
-        QSize renderSize = sceneView->viewport()->rect().size();
-        QRect rect(renderPoint, renderSize);
-
-        if (url.endsWith(".svg", Qt::CaseInsensitive)) {
-            QSvgGenerator svg;
-            svg.setFileName(url);
-            svg.setSize(renderSize);
-            QPainter painter(&svg);
-            render(&painter,QPoint(), rect);
-            painter.end();
-        } else if (url.endsWith(".pdf", Qt::CaseInsensitive) || url.endsWith(".ps", Qt::CaseInsensitive)) {
-            QPrinter printer;
-            printer.setOutputFileName(url);
-            render(&printer, QPoint(), rect);
-        } else {
-            QPixmap pixmap(renderSize);
-            render(&pixmap, QPoint(), rect);
-            pixmap.save(url);
-        }
-    }
+    ExportImageDialog dialog(sceneView->viewport(),sceneView->viewport()->rect(),true,true);
+    dialog.exec();
 }
 
 void WorkflowView::sl_saveScene() {

@@ -41,6 +41,7 @@
 #include <U2Misc/RangeSelector.h>
 #include <U2Misc/PositionSelector.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/ExportImageDialog.h>
 #include <U2Misc/DialogUtils.h>
 #include <U2Misc/HBar.h>
 
@@ -663,52 +664,13 @@ void ADVSingleSequenceWidget::sl_closeView()
 }
 void ADVSingleSequenceWidget::sl_saveScreenshot()
 {
-    LastOpenDirHelper lod(IMAGE_DIR);
-    QRect* screenRect = new QRect(linesLayout->itemAt(1)->geometry().topLeft().x(),
+    QRect screenRect = QRect(linesLayout->itemAt(1)->geometry().topLeft().x(),
                                   linesLayout->itemAt(1)->geometry().topLeft().y(),
                                   this->geometry().bottomRight().x(),
                                   this->geometry().bottomRight().y());
-    QPixmap curPixMap = QPixmap::grabWidget(this, *screenRect);
-    QMap<QString, QString> filters;
-    filters[ "PNG - Portable Network Graphics (*.png)" ] = "png";
-    filters[ "JPG/JPEG format (*.jpg)" ] = "jpg";
-    filters[ "TIF - Tagged Image File format (*.tiff)" ] = "tiff";
+    ExportImageDialog dialog(this, screenRect);
+    dialog.exec();
 
-    QString initialPath = lod.dir + "/untitled";
-    QString selectedFormat;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
-        initialPath, QStringList(filters.keys()).join(";;"), &selectedFormat);
-    lod.url = fileName;
-    
-    if (!fileName.isEmpty()) {
-        bool formatAppend = true;
-        foreach( const QString & format, filters.values() ) {
-            if( fileName.endsWith("." + format) ){
-                formatAppend = false;
-                break;
-            }
-        }
-        if( formatAppend ) {
-            assert( filters.contains(selectedFormat) );
-            fileName.append( "." + filters[selectedFormat] );
-            
-            if( QFile::exists(fileName) ) {
-                QMessageBox::StandardButtons b = 
-                        QMessageBox::warning( 
-                                0, tr("Replace file"), 
-                                tr("%1 already exists.\nDo you want to replace it?").arg(fileName),
-                                QMessageBox::Yes|QMessageBox::No);
-                if( QMessageBox::Yes != b ) {
-                    return;
-                }
-            }
-        }
-        bool result = curPixMap.save(fileName);
-        if (!result) {
-            QMessageBox::critical(this, L10N::errorTitle(), L10N::errorImageSave(fileName, selectedFormat));
-            return;
-        }
-    }
 }
 
 void ADVSingleSequenceWidget::closeView() {

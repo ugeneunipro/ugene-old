@@ -23,7 +23,7 @@
 #include "BioStruct3DGLRender.h"
 #include "BioStruct3DColorScheme.h"
 #include "GLFrameManager.h"
-#include "ExportImageDialog.h"
+#include "ExportImage3DGLDialog.h"
 #include "SettingsDialog.h"
 #include "MolecularSurfaceRenderer.h"
 
@@ -1265,7 +1265,7 @@ void BioStruct3DGLWidget::sl_settings()
 
 void BioStruct3DGLWidget::sl_exportImage()
 {
-    ExportImageDialog dialog(this);
+    ExportImage3DGLDialog dialog(this);
     dialog.exec();
 }
 

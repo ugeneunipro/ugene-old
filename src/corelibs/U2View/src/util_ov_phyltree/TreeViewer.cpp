@@ -42,6 +42,7 @@
 #include <U2Core/L10n.h>
 
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/ExportImageDialog.h>
 
 #include <U2Misc/HBar.h>
 #include <U2Misc/DialogUtils.h>
@@ -180,7 +181,7 @@ void TreeViewer::createActions() {
 
     // Screen Capture
     captureTreeAction = new QAction(tr("Screen Capture..."), ui);
-    exportAction = new QAction(tr("As SVG..."), ui);
+    exportAction = new QAction(tr("Whole Tree as SVG..."), ui);
 }
 
 void TreeViewer::setupLayoutSettingsMenu(QMenu* m)
@@ -750,20 +751,8 @@ void TreeViewerUI::sl_collapseTriggered() {
 }
 
 void TreeViewerUI::sl_captureTreeTriggered() {
-    QString format = QString(TreeViewerUtils::IMAGE_FILTERS).section(";;", 4, 4);
-    QString fileName = phyObject->getDocument()->getName();
-    TreeViewerUtils::saveImageDialog(TreeViewerUtils::IMAGE_FILTERS, fileName, format);
-    if (!fileName.isEmpty()) {
-        QImage image(scene()->sceneRect().toRect().size(), QImage::Format_RGB32);
-        image.fill(0xFFFFFFFF);
-        QPainter painter(&image);
-        paint(painter);
-        bool result = image.save(fileName, format.toAscii().constData());
-        if (!result) {
-            QMessageBox::critical(this, L10N::errorTitle(), L10N::errorImageSave(fileName, format));
-            return;
-        }
-    }
+    ExportImageDialog dialog(this,this->rect(),false,true,phyObject->getDocument()->getName());
+    dialog.exec();
 }
 
 void TreeViewerUI::sl_exportTriggered() {

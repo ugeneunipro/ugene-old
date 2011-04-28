@@ -40,6 +40,7 @@
 
 #include <U2Core/MultiTask.h>
 #include <U2View/PanView.h>
+#include <U2Gui/ExportImageDialog.h>
 
 
 #include <QtGui/QMouseEvent>
@@ -426,20 +427,8 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
 
 // save dotplot as image
 void DotPlotWidget::sl_showSaveImageDialog() {
-
-    LastOpenDirHelper lod("Dotplot");
-    lod.url = QFileDialog::getSaveFileName(NULL, tr("Save Dotplot image"), lod.dir, tr("Image Files (*.png *.jpg *.bmp)"));
-
-    if (lod.url.length() <= 0) {
-        return; // Cancel button pressed
-    }
-
-    QImage image(width(), height(), QImage::Format_RGB32);
-    image.fill(palette().color(QPalette::Window).rgb());
-    QPainter p(&image);
-
-    drawAll(p);
-    image.save(lod.url);
+    ExportImageDialog dialog(this, this->rect());
+    dialog.exec();
 }
 
 // save dotplot into a dotplot file, return true if successful

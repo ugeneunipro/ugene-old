@@ -19,47 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EXPORT_IMAGE_DIALOG_H_
-#define _U2_EXPORT_IMAGE_DIALOG_H_
+#ifndef _U2_EXPORT_IMAGE_3DGL_DIALOG_H_
+#define _U2_EXPORT_IMAGE_3DGL_DIALOG_H_
 
-#include <U2Misc/DialogUtils.h>
-
-#include <QtCore/QList>
-#include <QtCore/QString>
-
-#include "ui_ExportImageDialog.h"
+#include <U2Gui/ExportImageDialog.h>
 
 namespace U2 {
 
 class BioStruct3DGLWidget;
 
-class ExportImageDialog : public QDialog, private Ui::ImageExportForm
+class ExportImage3DGLDialog : public ExportImageDialog
 {
     Q_OBJECT
 
 public:
-    ExportImageDialog(BioStruct3DGLWidget* widget);
+    ExportImage3DGLDialog(BioStruct3DGLWidget* widget);
 
-public slots:
-    virtual void accept();
-
-private slots:
-    void sl_onBrowseButtonClick();
-    void sl_onFormatsBoxItemChanged(const QString& text);
+    virtual bool exportToSVG();
+    virtual bool exportToPDF();
+    virtual bool exportToBitmap();
 
 private:
-    void setupComponents();
-    void setSizeControlsEnabled(bool enabled);
-
-    static bool isVectorGraphicFormat(const QString& formatName);
-    static int getVectorFormatIdByName(const QString& formatName);
-
-private:
-    QList<QString> supportedFormats;
     BioStruct3DGLWidget* glWidget;
-
-    LastOpenDirHelper lod;
-}; // class ExportImageDialog
+}; // class ExportImage3DGLDialog
 
 } // namespace
 

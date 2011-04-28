@@ -22,6 +22,7 @@
 #include "CircularViewSplitter.h"
 #include "CircularView.h"
 #include "RestrictionMapWidget.h"
+#include "ExportImageCircularViewDialog.h"
 
 #include <U2Core/L10n.h>
 #include <U2Core/GObject.h>
@@ -35,7 +36,6 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
-#include <QtSvg/QSvgGenerator>
 #include <QtGui/QPrinter>
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
@@ -43,7 +43,6 @@
 #include <QtGui/QTreeWidget>
 
 #include <QtGui/QApplication>
-#include <QDomDocument>
 
 
 namespace U2 {
@@ -186,85 +185,9 @@ bool noValidExtension(const QString& url) {
 }
 
 void CircularViewSplitter::sl_export() {
-    QString rasterExt = tr("Raster image (*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm)");
-    QString vectorExt = tr("Vector image (*.svg)");
-    QString pdfExt = tr("Portable document (*.pdf *.ps)");
-    QString filter = rasterExt + ";;" + vectorExt + ";;" + pdfExt;
-    LastOpenDirHelper lod("image");
-    QString selectedFilter;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Export circular view to image"), lod.dir, filter, &selectedFilter);
-    QPainter painter;
     CircularView* cv = circularViewList.last();
-    if (!lod.url.isEmpty()) {
-        bool result = false;
-        if (noValidExtension(lod.url)) {
-            if (selectedFilter == vectorExt) {
-                lod.url += ".svg";
-            } else if (selectedFilter == pdfExt) {
-                lod.url += ".pdf";
-            } else {
-                lod.url += ".png";
-            }
-        }
-        if (lod.url.endsWith(".svg", Qt::CaseInsensitive)) {
-            QSvgGenerator generator;
-            generator.setFileName(lod.url);
-            generator.setSize(cv->size());
-            generator.setViewBox(rect());
-            
-            painter.begin(&generator);
-            cv->paint(painter);
-            result = painter.end();
-            //fix for UGENE-76
-            QDomDocument doc("svg");
-            QFile file(lod.url);
-            bool ok=file.open(QIODevice::ReadOnly);
-            if (!ok && !result){
-               result=false;
-            }
-            ok=doc.setContent(&file);
-            if (!ok && !result) {
-                file.close();
-                result=false;
-            }
-            if(result){
-                file.close();
-                QDomNodeList radialGradients=doc.elementsByTagName("radialGradient");
-                for(uint i=0;i<radialGradients.length();i++){
-                    if(radialGradients.at(i).isElement()){
-                        QDomElement tag=radialGradients.at(i).toElement();
-                        if(tag.hasAttribute("xml:id")){
-                            QString id=tag.attribute("xml:id");
-                            tag.removeAttribute("xml:id");
-                            tag.setAttribute("id",id);
-                        }
-                    }
-                }
-                file.open(QIODevice::WriteOnly);
-                file.write(doc.toByteArray());
-                file.close();
-            }
-            //end of fix UGENE-76
-        } else if (lod.url.endsWith(".pdf", Qt::CaseInsensitive) || lod.url.endsWith(".ps", Qt::CaseInsensitive)) {
-            QPrinter printer;
-            printer.setOutputFileName(lod.url);
-
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.begin(&printer);
-            cv->paint(painter);
-            result = painter.end();
-        } else {
-            QPixmap pixmap(cv->size());
-            painter.fillRect(pixmap.rect(), Qt::white);
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.begin(&pixmap);
-            cv->paint(painter);
-            result = painter.end() & pixmap.save(lod.url);
-        }
-        if (!result) {
-            QMessageBox::critical(this, L10N::errorTitle(), tr("Unexpected error while exporting image!"));
-        }
-    }
+    ExportImageCVDialog dialog(cv);
+    dialog.exec();
     tbExport->setDown(false);
 }
 

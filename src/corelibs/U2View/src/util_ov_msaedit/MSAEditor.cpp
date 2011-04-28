@@ -34,6 +34,7 @@
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/ExportImageDialog.h>
 #include <U2Misc/DialogUtils.h>
 #include <U2Core/AppContext.h>
 
@@ -110,9 +111,6 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
 
     buildTreeAction = new QAction(QIcon(":/core/images/phylip.png"), tr("Build Tree"), this);
     connect(buildTreeAction, SIGNAL(triggered()), SLOT(sl_buildTree()));
-
-    saveScreenshotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
-    connect(saveScreenshotAction, SIGNAL(triggered()), SLOT(sl_saveScreenshot()));
 
     Settings* s = AppContext::getSettings();
     zoomFactor = DEFAULT_ZOOM_FACTOR;
@@ -419,6 +417,8 @@ QWidget* MSAEditor::createWidget() {
     assert(ui == NULL);
     ui = new MSAEditorUI(this);
     connect(ui , SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
+    saveScreenshotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
+    connect(saveScreenshotAction, SIGNAL(triggered()), ui, SLOT(sl_saveScreenshot()));
     return ui;
 }
 
@@ -468,15 +468,6 @@ void MSAEditor::calcFontPixelToPointSizeCoef() {
     QFontInfo info(font);
     fontPixelToPointSize = (float) info.pixelSize() / (float) info.pointSize();
     
-}
-
-void MSAEditor::sl_saveScreenshot() {
-    QPair<QString, QString> saveFileAndFormat = DialogUtils::selectFileForScreenShot(ui);
-    if(saveFileAndFormat.first.isEmpty()) {
-        return;
-    }
-    assert(!saveFileAndFormat.second.isEmpty());
-    ui->saveScreenshot(saveFileAndFormat.first, saveFileAndFormat.second);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -572,11 +563,9 @@ QAction* MSAEditorUI::getRedoAction() const {
     return undoFWK->getRedoAction();
 }
 
-void MSAEditorUI::saveScreenshot(const QString& filename, const QString& format) {
-    QRect screenRect(0, 0, 0, 0);
-    screenRect.setBottomRight(seqArea->parentWidget()->geometry().bottomRight());
-    QPixmap curPixMap = QPixmap::grabWidget(this, screenRect);
-    curPixMap.save(filename, format.toAscii().constData());
+void MSAEditorUI::sl_saveScreenshot(){
+    ExportImageDialog dialog(this);
+    dialog.exec();
 }
 
 MSALabelWidget::MSALabelWidget(const MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a) 

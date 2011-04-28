@@ -29,6 +29,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util_gui/DownloadRemoteFileDialog.h \
            src/util_gui/EditQualifierDialog.h \
            src/util_gui/EditSequenceDialogController.h \
+           src/util_gui/ExportImageDialog.h \
            src/util_gui/GObjectComboBoxController.h \
            src/util_gui/GUIUtils.h \
            src/util_gui/ObjectViewTreeController.h \
@@ -50,6 +51,7 @@ FORMS += src/util_gui/ui/AddExistingDocumentDialog.ui \
          src/util_gui/ui/DownloadRemoteFileDialog.ui \
          src/util_gui/ui/EditQualifierDialog.ui \
          src/util_gui/ui/EditSequenceDialog.ui \
+         src/util_gui/ui/ExportImageDialog.ui \
          src/util_gui/ui/FormatSettingsDialog.ui \
          src/util_gui/ui/MultipartDocFormatConfiguratorWidget.ui \
          src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui \
@@ -77,6 +79,7 @@ SOURCES += src/MainWindow.cpp \
            src/util_gui/DownloadRemoteFileDialog.cpp \
            src/util_gui/EditQualifierDialog.cpp \
            src/util_gui/EditSequenceDialogController.cpp \
+           src/util_gui/ExportImageDialog.cpp \
            src/util_gui/GObjectComboBoxController.cpp \
            src/util_gui/GUIUtils.cpp \
            src/util_gui/ObjectViewTreeController.cpp \
