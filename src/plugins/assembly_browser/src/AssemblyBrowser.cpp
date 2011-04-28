@@ -694,6 +694,7 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
     connect(zoomableOverview, SIGNAL(si_visibleRangeChanged(const U2Region &)), browser, SLOT(sl_navigateToRegion(const U2Region &)));
     connect(zoomableOverview, SIGNAL(si_coverageReady()), readsArea, SLOT(sl_redraw()));
+    connect(referenceArea, SIGNAL(si_unassociateReference()), browser->getModel().data(), SLOT(sl_unassociateReference()));
 }
 
 } //ns

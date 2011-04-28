@@ -23,6 +23,7 @@
 #define __ASSEMBLY_REFERENCE_AREA_H__
 
 #include <QtGui/QWidget>
+#include <QtGui/QMenu>
 #include <QtCore/QSharedPointer>
 
 #include "AssemblyCellRenderer.h"
@@ -42,9 +43,11 @@ protected:
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
+    void mousePressEvent(QMouseEvent* e);
     
 signals:
     void si_mouseMovedToPos(const QPoint &);
+    void si_unassociateReference();
     
 private slots:
     void sl_redraw();
@@ -64,6 +67,8 @@ private:
     AssemblyCellRenderer cellRenderer;
 
     const static int FIXED_HEIGHT = 25;
+
+    QMenu * referenceAreaMenu;
 };
 
 } //ns

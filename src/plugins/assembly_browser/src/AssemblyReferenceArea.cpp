@@ -31,11 +31,15 @@
 namespace U2 {
 
 AssemblyReferenceArea::AssemblyReferenceArea(AssemblyBrowserUi * ui_) : 
-QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()) {
+QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), referenceAreaMenu(new QMenu(this)) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
     setMouseTracking(true);
+    
+    // setup menu
+    QAction * unassociateReferenceAction = referenceAreaMenu->addAction(tr("Remove association with assembly"));
+    connect(unassociateReferenceAction, SIGNAL(triggered()), SIGNAL(si_unassociateReference()));
 }
 
 void AssemblyReferenceArea::connectSlots() {
@@ -119,6 +123,12 @@ void AssemblyReferenceArea::sl_redraw() {
     cachedView = QPixmap(size());
     redraw = true;
     update();
+}
+
+void AssemblyReferenceArea::mousePressEvent(QMouseEvent* e) {
+    if(e->button() == Qt::RightButton && model->hasReference()) {
+        referenceAreaMenu->exec(QCursor::pos());
+    }
 }
 
 } //ns

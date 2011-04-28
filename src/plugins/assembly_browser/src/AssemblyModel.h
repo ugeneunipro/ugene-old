@@ -83,6 +83,7 @@ private slots:
     void sl_referenceDocLoadedStateChanged();
     void sl_referenceDocRemoved(Document*);
     void sl_referenceDocAdded(Document *);
+    void sl_unassociateReference();
     
 private:
     const static qint64 NO_VAL = -1;

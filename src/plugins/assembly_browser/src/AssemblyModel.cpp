@@ -344,4 +344,15 @@ QString AssemblyModel::getReferenceUri(U2OpStatus & os) {
     return referenceUri;
 }
 
+void AssemblyModel::sl_unassociateReference() {
+    if(!assembly.id.isEmpty()) {
+        assembly.referenceId.clear();
+        U2OpStatusImpl status;
+        assemblyDbi->updateAssemblyObject(assembly, status);
+        LOG_OP(status);
+        cleanup();
+        emit si_referenceChanged();
+    }
+}
+
 } // U2
