@@ -32,7 +32,7 @@ class Ui_ImageExportForm;
 
 namespace U2 {
 
-class ExportImageDialog : public QDialog
+class U2GUI_EXPORT ExportImageDialog : public QDialog
 {
     Q_OBJECT
 
