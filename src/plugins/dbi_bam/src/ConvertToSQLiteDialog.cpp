@@ -79,7 +79,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     }
     ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 3);
     ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
-    ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.baseFileName() + ".ugenedb");
+    ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb");
     ui.sourceUrlView->setText(sourceUrl.getURLString());
     ui.okButton->setFocus();
     connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_contigCheckChanged(QTableWidgetItem*)));
