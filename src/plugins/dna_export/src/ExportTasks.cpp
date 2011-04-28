@@ -34,6 +34,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Core/MAlignmentObject.h>
 
@@ -56,6 +57,14 @@ QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask ) {
     if (subTask == exportTask && !subTask->hasError()) {
         Document* doc = exportTask->getDocument();
         const GUrl& fullPath = doc->getURL();
+        Project* prj = AppContext::getProject();
+        if (prj) {
+            Document* sameURLdoc = prj->findDocumentByURL(fullPath);
+            if (sameURLdoc) {
+                taskLog.trace(tr("Document is already added to the project %1").arg(doc->getURL().getURLString()));
+                return subTasks;
+            }
+        }
         DocumentFormat* format = doc->getDocumentFormat();
         IOAdapterFactory * iof = doc->getIOAdapterFactory();
         Document* clonedDoc = new Document(format, iof, fullPath);
