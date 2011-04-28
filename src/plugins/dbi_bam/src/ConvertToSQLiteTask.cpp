@@ -60,9 +60,7 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
             }
         }
     }
-    for(int i=0; i<reads.values().count(); i++) {
-        reads.values()[i].clear();
-    }
+    reads.clear();
 }
 
 class BAMDbiIterator : public U2DbiIterator<U2AssemblyRead> {
@@ -141,6 +139,10 @@ private:
     VirtualOffset offset;
 };
 
+static bool chunkLessThan(const Index::ReferenceIndex::Chunk &c1, const Index::ReferenceIndex::Chunk &c2) {
+    return c1.getStart() < c2.getStart();
+}
+
 void ConvertToSQLiteTask::run() {
     try {
         if(!destinationUrl.isLocalFile()) {
@@ -189,11 +191,11 @@ void ConvertToSQLiteTask::run() {
                     if(bins.isEmpty()) {
                         continue;
                     }
-                    unsigned int lastBin = bins.last().getBin();
-                    unsigned int minBin = lastBin > 0 ? (lastBin > 8 ? (lastBin > 72 ? (lastBin > 584 ? (lastBin > 4680 ? 4681 : 585) : 73) : 9) : 1) : 0;
+                    //unsigned int lastBin = bins.last().getBin();
+                    //unsigned int minBin = lastBin > 0 ? (lastBin > 8 ? (lastBin > 72 ? (lastBin > 584 ? (lastBin > 4680 ? 4681 : 585) : 73) : 9) : 1) : 0;
                     QList<Index::ReferenceIndex::Chunk> refChunks;
                     foreach(const Index::ReferenceIndex::Bin bin, bins) {
-                        if(bin.getBin() >= minBin) {
+                        //if(bin.getBin() >= minBin) {
                             foreach(const Index::ReferenceIndex::Chunk& chunk, bin.getChunks()) {
                                 if(chunk.getStart() < chunk.getEnd()) {
                                     refChunks.append(chunk);
@@ -204,6 +206,21 @@ void ConvertToSQLiteTask::run() {
                                         .arg(chunk.getEnd().getPackedOffset()));
                                 }
                             }
+                        //}
+                    }
+
+                    qSort(refChunks.begin(), refChunks.end(), chunkLessThan);
+
+                    for(int j = 0; j < refChunks.count() - 1; ) {
+                        const Index::ReferenceIndex::Chunk& left = refChunks.at(j);
+                        const Index::ReferenceIndex::Chunk& right = refChunks.at(j + 1);
+                        if(left.getEnd() >= right.getStart()) {
+                            // merge
+                            Index::ReferenceIndex::Chunk chunk(left.getStart(), right.getEnd());
+                            refChunks.replace(j, chunk);
+                            refChunks.removeAt(j + 1);
+                        } else {
+                            j++;
                         }
                     }
                     chunks.insert(i, refChunks);
