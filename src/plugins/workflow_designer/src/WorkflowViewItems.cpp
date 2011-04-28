@@ -156,6 +156,18 @@ QRectF WorkflowProcessItem::boundingRect(void) const {
     return brect;
 }
 
+QRectF WorkflowProcessItem::portsBoundingRect() const {
+    QRectF rect; // null rect
+    foreach(WorkflowPortItem* p, getPortItems()) {
+        QRectF pBound = p->boundingRect();
+        QPointF pCenter = pBound.center();
+        pCenter = p->mapToItem(this, pCenter);
+        pBound.moveCenter(pCenter);
+        rect |= pBound;
+    }
+    return rect;
+}
+
 QPainterPath WorkflowProcessItem::shape () const {
     return currentStyle->shape();
 }
@@ -285,13 +297,13 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
         // value is the new position.
         QPointF newPos = value.toPointF();
         if (scene() && pos() != QPointF(0,0)) {
-            QRectF bound = boundingRect() | childrenBoundingRect();
+            QRectF bound = boundingRect() | childrenBoundingRect() | portsBoundingRect();
             QRectF sceneRect = scene()->sceneRect();
 
             qreal x0 = sceneRect.left() - bound.left();
-            qreal x1 = sceneRect.left() + sceneRect.width() - bound.right();
+            qreal x1 = sceneRect.left() + sceneRect.width() - bound.right() - 10; //extra space for scroll bars
             qreal y0 = sceneRect.top() - bound.top();
-            qreal y1 = sceneRect.top() + sceneRect.height() - bound.bottom();
+            qreal y1 = sceneRect.top() + sceneRect.height() - bound.bottom() - 10;
 
             newPos.setX( qBound(x0, newPos.x(), x1) );
             newPos.setY( qBound(y0, newPos.y(), y1) );
@@ -320,7 +332,14 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
             if(sc != NULL) {
                 if (!sc->views().isEmpty()) {
                     foreach(QGraphicsView* view, sc->views()) {
-                        view->ensureVisible(this, 0, 0);
+                        QRectF itemRect = boundingRect() | childrenBoundingRect();
+                        // ports are not the child items atm
+                        // unite with their bounds
+                        itemRect |= portsBoundingRect();
+                        QPointF itemCenter = itemRect.center();
+                        itemCenter = mapToScene(itemCenter);
+                        itemRect.moveCenter(itemCenter);
+                        view->ensureVisible(itemRect, 0, 0);
                     }
                 }
                 sc->setModified(true);

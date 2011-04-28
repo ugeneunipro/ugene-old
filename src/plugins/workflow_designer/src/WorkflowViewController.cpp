@@ -272,6 +272,12 @@ void WorkflowView::sl_rescaleScene(const QString &scale)
     scene->views().at(0)->resetMatrix();
     scene->views().at(0)->translate(oldMatrix.dx(), oldMatrix.dy());
     scene->views().at(0)->scale(newScale, newScale);
+    QRectF rect = scene->sceneRect();
+    qreal w = rect.width()/newScale;
+    qreal h = rect.height()/newScale;
+    rect.setWidth(w);
+    rect.setHeight(h);
+    scene->setSceneRect(rect);
 }
 
 

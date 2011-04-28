@@ -89,6 +89,7 @@ public:
     WorkflowPortItem* getPort(const QString& id) const;
     QList<WorkflowPortItem*> getPortItems() const {return ports;}
     QRectF boundingRect(void) const;
+    QRectF portsBoundingRect() const;
     QPainterPath shape () const;
 
     virtual void setStyle(StyleId);
