@@ -133,6 +133,13 @@ void EnzymesPlugin::sl_onOpenDigestSequenceDialog()
 
     }
 
+    if (!view->getSequenceInFocus()->getSequenceObject()->getAlphabet()->isNucleic()) {
+        QMessageBox::information(QApplication::activeWindow(), openDigestSequenceDialog->text(),
+            tr("Can not digest into fragments non-nucleic sequence.") );
+        return;
+
+    }
+
     DigestSequenceDialog dlg(view->getSequenceInFocus(), QApplication::activeWindow());
     dlg.exec();
         
@@ -222,6 +229,12 @@ void EnzymesADVContext::sl_search() {
 void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m )
 {
     
+    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
+    assert(av!=NULL);
+    if (!av->getSequenceInFocus()->getAlphabet()->isNucleic()) {
+        return;
+    }
+        
     QMenu* cloningMenu = new QMenu(tr("Cloning"), m);
     cloningMenu->addActions(cloningActions);
     
