@@ -75,7 +75,7 @@ public:
 
     QList<GObject*> loadObjects();
 
-    bool hasErrors() { return !errors.isEmpty(); }
+    bool hasError() { return !errors.isEmpty(); }
     bool hasWarnings() { return !warnings.isEmpty(); }
 
     const QStringList& getErrors() const { return errors; }

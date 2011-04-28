@@ -191,7 +191,7 @@ QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     
     stateInfo.cancelFlag = subTask->isCanceled();
-    if (isCanceled() || subTask->hasErrors() ) {
+    if (isCanceled() || subTask->hasError() ) {
         mw->setShutDownInProcess(false);
         return res; //stop shutdown process
     }
@@ -205,7 +205,7 @@ QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult ShutdownTask::report() {
-    if (propagateSubtaskError() || hasErrors() || isCanceled()) {
+    if (propagateSubtaskError() || hasError() || isCanceled()) {
         setErrorNotificationSuppression(true);
         return Task::ReportResult_Finished;
     }

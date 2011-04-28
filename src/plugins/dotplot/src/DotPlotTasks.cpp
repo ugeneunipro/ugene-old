@@ -243,7 +243,7 @@ void DotPlotLoadDocumentsTask::prepare() {
         docs << doc;
     }
 
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     doc = loadFile(secondFile, secondGap);
@@ -293,7 +293,7 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
 DotPlotLoadDocumentsTask::~DotPlotLoadDocumentsTask() {
 
     // error while loading documents
-    if (hasErrors()) {
+    if (hasError()) {
         Project *project = AppContext::getProject();
 
         // skip added to the project documents

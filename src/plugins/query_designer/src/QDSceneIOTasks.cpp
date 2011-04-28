@@ -90,7 +90,7 @@ QList<Task*> QDLoadSceneTask::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult QDLoadSceneTask::report() {
-    if (!stateInfo.hasErrors()) {
+    if (!stateInfo.hasError()) {
         QDSceneSerializer::doc2scene(scene, docs);
     }
     return Task::ReportResult_Finished;
@@ -120,7 +120,7 @@ QList<Task*> QDLoadSchemeTask::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult QDLoadSchemeTask::report() {
-    if (!stateInfo.hasErrors()) {
+    if (!stateInfo.hasError()) {
         QDSceneSerializer::doc2scheme(docs, scheme);
     }
     return Task::ReportResult_Finished;

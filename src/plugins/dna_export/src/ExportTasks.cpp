@@ -53,7 +53,7 @@ AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask(AbstractExportTask* t)
 
 QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
-    if (subTask == exportTask && !subTask->hasErrors()) {
+    if (subTask == exportTask && !subTask->hasError()) {
         Document* doc = exportTask->getDocument();
         const GUrl& fullPath = doc->getURL();
         DocumentFormat* format = doc->getDocumentFormat();
@@ -259,7 +259,7 @@ void ExportDNAChromatogramTask::prepare()
     }
     
     SCFFormat::exportDocumentToSCF(settings.url, cd, dna, stateInfo);
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
 

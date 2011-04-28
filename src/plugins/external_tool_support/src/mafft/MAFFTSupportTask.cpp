@@ -91,7 +91,7 @@ void MAFFTSupportTask::prepare(){
 }
 QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         if(subTask==loadTemporyDocumentTask){
             if(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->isValid()){
                 stateInfo.setError(tr("Can not open output file: ")+subTask->getError());
@@ -107,7 +107,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
         }
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==saveTemporaryDocumentTask){
@@ -214,11 +214,11 @@ void MAFFTWithExtFileSpecifySupportTask::prepare(){
 }
 QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==loadDocumentTask){

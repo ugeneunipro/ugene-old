@@ -77,7 +77,7 @@ static void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti) {
         ti.progress = io->getProgress();
     }
     writer.close();
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
     if (seq.size() == 0) {
@@ -92,7 +92,7 @@ Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, c
     QList<GObject*> objects;
     load(io, objects, ti);
     
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return NULL;
     }
 

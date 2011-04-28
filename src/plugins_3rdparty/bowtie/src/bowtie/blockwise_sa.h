@@ -509,7 +509,7 @@ void KarkkainenBlockwiseSA<TStr>::buildSamples() {
 				}
 				localProgress = (4 - limit + ten/10.0) / 5.0;
 				ctx->ti.progress = (ctx->build.secondEbwtRound ? 50.0:0.0) + ((ctx->build.doubleEbwt) ? 0.5:1.0 ) * (10 + 30 * localProgress);
-				ctx->ti.setStateDesc(QString("Binary sorting into buckets: %1%").arg(ten*10));
+				ctx->ti.setDescription(QString("Binary sorting into buckets: %1%").arg(ten*10));
 				for(uint32_t i = iten; i < itenNext && i < len; i++) {
 					uint32_t r = binarySASearch(t, i, _sampleSuffs);
 					if(r == 0xffffffff) continue; // r was one of the samples
@@ -523,7 +523,7 @@ void KarkkainenBlockwiseSA<TStr>::buildSamples() {
 					}
 				}
 			}
-			ctx->ti.setStateDesc(QString("Binary sorting into buckets: 100%"));
+			ctx->ti.setDescription(QString("Binary sorting into buckets: 100%"));
 			VMSG_NL("  100%");
 		}
 		// Check for large buckets and mergeable pairs of small buckets
@@ -535,7 +535,7 @@ void KarkkainenBlockwiseSA<TStr>::buildSamples() {
 		{
 			Timer timer(cout, "  Splitting and merging time: ", this->verbose());
 			VMSG_NL("Splitting and merging");
-			ctx->ti.setStateDesc(QString("Splitting and merging"));
+			ctx->ti.setDescription(QString("Splitting and merging"));
 			for(int64_t i = 0; i < numBuckets; i++) {
 				uint32_t mergedSz = bsz + 1;
 				assert(bucketSzs[i] == 0 || bucketReps[i] != 0xffffffff);
@@ -578,7 +578,7 @@ void KarkkainenBlockwiseSA<TStr>::buildSamples() {
 		}
 		// Otherwise, continue until no more buckets need to be
 		// split
-		ctx->ti.setStateDesc(QString("Split %1, merged %2; iterating...").arg(added).arg(merged));
+		ctx->ti.setDescription(QString("Split %1, merged %2; iterating...").arg(added).arg(merged));
 		VMSG_NL("Split " << added << ", merged " << merged << "; iterating...");
 	}
 	ctx->ti.progress = (ctx->build.secondEbwtRound ? 50.0:0.0) + ( ctx->build.doubleEbwt ? 0.5:1.0 ) * 30;
@@ -785,7 +785,7 @@ void KarkkainenBlockwiseSA<TStr>::nextBlock() {
 	typedef typename Value<TStr>::Type TAlphabet;
 	String<uint32_t>& bucket = this->_itrBucket;
 	BowtieContext* ctx = BowtieContext::getContext();
-	ctx->ti.setStateDesc(QString("Getting block %1 of %2").arg(_cur+1).arg(length(_sampleSuffs)+1));
+	ctx->ti.setDescription(QString("Getting block %1 of %2").arg(_cur+1).arg(length(_sampleSuffs)+1));
 	VMSG_NL("Getting block " << (_cur+1) << " of " << length(_sampleSuffs)+1);
 	assert(_built);
 	assert_gt(_dcV, 3);

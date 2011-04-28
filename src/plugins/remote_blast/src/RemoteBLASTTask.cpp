@@ -47,12 +47,12 @@ Task( tr("RemoteBLASTTask"), TaskFlags_NR_FOSCOE ), offsInGlobalSeq(_qoffs), aob
 QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     
-    if(subTask->hasErrors() && subTask == queryTask) {
+    if(subTask->hasError() && subTask == queryTask) {
         stateInfo.setError(subTask->getError());
         return res;
     }
 
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 

@@ -127,7 +127,7 @@ void GTest_FindEnzymes::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_FindEnzymes::prepare() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     
@@ -147,7 +147,7 @@ void GTest_FindEnzymes::prepare() {
 
 QList<Task*> GTest_FindEnzymes::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
     if (subTask!=loadTask || loadTask->enzymes.isEmpty()) {
@@ -176,7 +176,7 @@ QList<Task*> GTest_FindEnzymes::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult GTest_FindEnzymes::report() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return Task::ReportResult_Finished;
     }
     //for each enzyme from resultsPerEnzyme check that all annotations are present
@@ -262,7 +262,7 @@ void GTest_DigestIntoFragments::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_DigestIntoFragments::prepare() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
 
@@ -286,7 +286,7 @@ void GTest_DigestIntoFragments::prepare() {
 
 QList<Task*> GTest_DigestIntoFragments::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
     if (subTask!=loadTask || loadTask->enzymes.isEmpty()) {
@@ -359,7 +359,7 @@ void GTest_LigateFragments::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_LigateFragments::prepare() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
 
@@ -432,11 +432,11 @@ void GTest_LigateFragments::prepareFragmentsList()
 
 Task::ReportResult GTest_LigateFragments::report()
 {
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
 
-    if (ligateTask != NULL && ligateTask->hasErrors()) {
+    if (ligateTask != NULL && ligateTask->hasError()) {
         stateInfo.setError( ligateTask->getError() );
     } else if (!resultDocName.isEmpty()) {
         addContext( resultDocName, ligateTask->getResultDocument() );

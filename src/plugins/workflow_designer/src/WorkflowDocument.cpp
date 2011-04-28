@@ -173,7 +173,7 @@ OpenWorkflowViewTask::OpenWorkflowViewTask(Document* doc)
 }
 
 void OpenWorkflowViewTask::open() {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
     if (!documentsToLoad.isEmpty()) {

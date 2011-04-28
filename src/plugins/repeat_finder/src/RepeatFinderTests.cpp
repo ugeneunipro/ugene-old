@@ -146,7 +146,7 @@ static QString getAlgName(RFAlgorithm alg) {
 }
 
 void GTest_FindSingleSequenceRepeatsTask::prepare() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     DNASequenceObject * seqObj = getContext<DNASequenceObject>(this, seq);
@@ -209,7 +209,7 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
 }
 
 void GTest_FindSingleSequenceRepeatsTask::run() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     QVector<RFResult> expectedResults;
@@ -286,7 +286,7 @@ void GTest_FindTandemRepeatsTask::init(XMLTestFormat *tf, const QDomElement& el)
 }
 
 void GTest_FindTandemRepeatsTask::prepare() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     //this->getContext(this,"")
@@ -322,7 +322,7 @@ void GTest_FindTandemRepeatsTask::prepare() {
 }
 
 void GTest_FindTandemRepeatsTask::run() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     QList<Tandem> expectedResults;
@@ -424,7 +424,7 @@ void GTest_FindRealTandemRepeatsTask::init(XMLTestFormat *tf, const QDomElement&
 }
 
 void GTest_FindRealTandemRepeatsTask::prepare() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     DNASequenceObject * seqObj = getContext<DNASequenceObject>(this, sequence);
@@ -454,7 +454,7 @@ void GTest_FindRealTandemRepeatsTask::prepare() {
 }
 
 void GTest_FindRealTandemRepeatsTask::run() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     QList<Tandem> expectedResults;
@@ -568,7 +568,7 @@ void GTest_SArrayBasedFindTask::init(XMLTestFormat *tf, const QDomElement& el) {
 
 void GTest_SArrayBasedFindTask::prepare()
 {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     DNASequenceObject * seqObj = getContext<DNASequenceObject>(this, seqObjName);
@@ -594,7 +594,7 @@ void GTest_SArrayBasedFindTask::prepare()
     
     index = new SArrayIndex(seqObj->getSequence().constData(), seqObj->getSequenceLen(), prefixSize, stateInfo, unknownChar, bitMask, bitCharLen);
     
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     
@@ -611,7 +611,7 @@ void GTest_SArrayBasedFindTask::prepare()
 
 void GTest_SArrayBasedFindTask::run()
 {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     

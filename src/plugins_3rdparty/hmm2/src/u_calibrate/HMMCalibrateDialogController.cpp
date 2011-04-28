@@ -116,7 +116,7 @@ void HMMCalibrateDialogController::sl_onStateChanged() {
     }
     task->disconnect(this);
     const TaskStateInfo& si = task->getStateInfo();
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         statusLabel->setText(tr("calibration_finished_with_errors_%1").arg(si.getError()));
     } else if (task->isCanceled()) {
         statusLabel->setText(tr("calibration_canceled"));

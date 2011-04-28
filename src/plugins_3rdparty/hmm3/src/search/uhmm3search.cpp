@@ -54,7 +54,7 @@ UHMM3SearchResult UHMM3Search::search( const P7_HMM* hmm, const char* sq, int sq
     UHMM3SearchResult  res;
     QByteArray errStr;
     
-    if( tsi.hasErrors() || tsi.cancelFlag ) {
+    if( tsi.hasError() || tsi.cancelFlag ) {
         return res;
     }
     if( NULL == hmm ) {

@@ -66,7 +66,7 @@ void GTest_QDSchedulerTest::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_QDSchedulerTest::prepare() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     Document* seqDoc = getContext<Document>(this, seqName);

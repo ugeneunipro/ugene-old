@@ -109,7 +109,7 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
     TaskStateInfo ti;
     QVariantMap hints;
     Document *doc = format->loadDocument(iof, inFile, ti, hints);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
 
@@ -136,7 +136,7 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
             replaceLogo(ma);
         } else {
             PFMatrix pfm = WeightMatrixIO::readPFMatrix(iof, lod.url, ti);
-            if (ti.hasErrors()) {
+            if (ti.hasError()) {
                 logoArea->hide();
                 return;
             }
@@ -304,7 +304,7 @@ void PWMBuildDialogController::sl_onStateChanged() {
     }
     task->disconnect(this);
     const TaskStateInfo& si = task->getStateInfo();
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         statusLabel->setText(tr("Build finished with errors: %1").arg(si.getError()));
         lastURL = "";
     } else if (task->isCanceled()) {
@@ -321,7 +321,7 @@ void PWMBuildDialogController::sl_onStateChanged() {
 
 void PWMBuildDialogController::sl_onProgressChanged() {
     assert(task==sender());
-    statusLabel->setText(tr("Running state %1 progress %2%").arg(task->getStateInfo().getStateDesc()).arg(task->getProgress()));
+    statusLabel->setText(tr("Running state %1 progress %2%").arg(task->getStateInfo().getDescription()).arg(task->getProgress()));
 }
 
 void PWMBuildDialogController::reject() {
@@ -359,14 +359,14 @@ void PFMatrixBuildTask::run() {
         stateInfo.setError(  tr("Alignment is not nucleic") );
         return;
     }
-    stateInfo.setStateDesc( tr("Calculating frequencies of nucleotids") );
+    stateInfo.setDescription( tr("Calculating frequencies of nucleotids") );
     if (settings.type == PM_MONONUCLEOTIDE) {
         m = PFMatrix(ma, PFM_MONONUCLEOTIDE);
     } else {
         m = PFMatrix(ma, PFM_DINUCLEOTIDE);
     }
     stateInfo.progress+=50;
-    if (stateInfo.hasErrors() || isCanceled()) {
+    if (stateInfo.hasError() || isCanceled()) {
         return;
     }
     return;
@@ -409,7 +409,7 @@ PFMatrixBuildToFileTask::PFMatrixBuildToFileTask(const QString& inFile, const QS
     loadTask = new LoadDocumentTask(format, inFile, iof);
     loadTask->setSubtaskProgressWeight(0.03F);
     stateInfo.progress = 0;
-    stateInfo.setStateDesc(tr("Loading alignment"));
+    stateInfo.setDescription(tr("Loading alignment"));
     addSubTask(loadTask);
 }
 
@@ -418,7 +418,7 @@ QList<Task*> PFMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
     if (isCanceled()) {
         return res;
     }
-    if (subTask->getStateInfo().hasErrors()) {
+    if (subTask->getStateInfo().hasError()) {
         stateInfo.setError(  subTask->getStateInfo().getError() );
         return res;
     }
@@ -484,7 +484,7 @@ void PWMatrixBuildTask::run() {
             tempMatrix = PFMatrix::convertDi2Mono(tempMatrix);
         }
         stateInfo.progress+=40;
-        if (stateInfo.hasErrors() || isCanceled()) {
+        if (stateInfo.hasError() || isCanceled()) {
             return;
         }
     } else {
@@ -507,7 +507,7 @@ void PWMatrixBuildTask::run() {
             tempMatrix = PFMatrix(ma, PFM_DINUCLEOTIDE);
         }
         stateInfo.progress+=40;
-        if (stateInfo.hasErrors() || isCanceled()) {
+        if (stateInfo.hasError() || isCanceled()) {
             return;
         }
     }
@@ -539,7 +539,7 @@ PWMatrixBuildToFileTask::PWMatrixBuildToFileTask(const QString& inFile, const QS
     loadTask = new LoadDocumentTask(format, inFile, iof);
     loadTask->setSubtaskProgressWeight(0.03F);
     stateInfo.progress = 0;
-    stateInfo.setStateDesc(tr("Loading alignment"));
+    stateInfo.setDescription(tr("Loading alignment"));
     addSubTask(loadTask);
 }
 
@@ -548,7 +548,7 @@ QList<Task*> PWMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
     if (isCanceled()) {
         return res;
     }
-    if (subTask->getStateInfo().hasErrors()) {
+    if (subTask->getStateInfo().hasError()) {
         stateInfo.setError(  subTask->getStateInfo().getError() );
         return res;
     }

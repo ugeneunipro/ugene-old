@@ -122,7 +122,7 @@ void ScriptWorkerTask::run() {
     }
 
     if( stateInfo.cancelFlag ) {
-        if( !stateInfo.hasErrors() ) {
+        if( !stateInfo.hasError() ) {
             stateInfo.setError("Script task canceled");
         }
     }
@@ -271,7 +271,7 @@ Task *ScriptWorker::tick() {
 
 void ScriptWorker::sl_taskFinished() {
     ScriptWorkerTask *t = qobject_cast<ScriptWorkerTask*>(sender());
-    if (t->getState() != Task::State_Finished || t->hasErrors()) {
+    if (t->getState() != Task::State_Finished || t->hasError()) {
         return;
     }
 

@@ -169,7 +169,7 @@ void GTest_FindAnnotationByName::init(XMLTestFormat *tf, const QDomElement& el) 
 }
 
 Task::ReportResult GTest_FindAnnotationByName::report() {
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
     GObject *obj = getContext<GObject>(this, objContextName);
@@ -879,7 +879,7 @@ void GTest_FindAnnotationByLocation::init(XMLTestFormat *tf, const QDomElement& 
 }
 
 Task::ReportResult GTest_FindAnnotationByLocation::report() {
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
     GObject *obj = getContext<GObject>(this, objContextName);
@@ -939,7 +939,7 @@ void GTest_CreateTmpAnnotationObject::init(XMLTestFormat *tf, const QDomElement&
 }
 
 Task::ReportResult GTest_CreateTmpAnnotationObject::report() {
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
     

@@ -267,7 +267,7 @@ bool DigestSequenceDialog::loadEnzymesFile( )
     } else {
         enzymesBase = EnzymesIO::readEnzymes(url, ti);
     }
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
        ioLog.error(QString("Failed loading enzymes file: %1").arg(url));
        return false;
     }

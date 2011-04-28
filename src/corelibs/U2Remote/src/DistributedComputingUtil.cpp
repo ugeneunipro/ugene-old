@@ -107,13 +107,13 @@ UpdateActiveTasks::~UpdateActiveTasks() {
 }
 
 void UpdateActiveTasks::run() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     
     QList<qint64> taskIds;
     taskIds = machine->getActiveTasks(stateInfo);
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
 

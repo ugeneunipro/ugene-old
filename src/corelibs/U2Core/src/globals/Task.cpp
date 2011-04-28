@@ -20,7 +20,9 @@
  */
 
 #include "Task.h"
+
 #include <U2Core/AppResources.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -41,15 +43,16 @@ Task::Task(const QString& _name, TaskFlags f) {
     progressWeightAsSubtask = 1;
     maxParallelSubtasks = MAX_PARALLEL_SUBTASKS_SERIAL;
     timeOut = 0;
+    insidePrepare = false;
 }
 
 void Task::setMaxParallelSubtasks(int n) {
-    assert(n>=0);
+    SAFE_POINT(n >= 0, QString("max parallel subtasks must be >=0, value passed: %1").arg(n),);
     maxParallelSubtasks = n;
 }
 
 void Task::setTaskName(const QString& _taskName) {
-    assert(isNew());
+    SAFE_POINT(isNew(), "Can only change name for new tasks!",);
     taskName = _taskName;
 }
 
@@ -64,8 +67,9 @@ void Task::cancel() {
 
 
 void Task::addSubTask(Task* sub) {
-    assert(sub->parentTask==NULL);
-    assert(state == State_New);
+    SAFE_POINT(sub->parentTask==NULL, "Task already has a parent!",);
+    SAFE_POINT(state == State_New, "Parents can be assigned to tasks in NEW state only!",);
+    
     sub->parentTask = this;
     subtasks.append(sub); 
     emit si_subtaskAdded(sub);
@@ -80,27 +84,26 @@ void Task::cleanup()    {
 }
 
 bool Task::propagateSubtaskError() {
-    if (hasErrors()) {
+    if (hasError()) {
         return true;
     }
     Task* badChild = getSubtaskWithErrors();
     if (badChild) {
         stateInfo.setError(stateInfo.getError() + badChild->getError());
     }
-    return stateInfo.hasErrors();
+    return stateInfo.hasError();
 }
 
 Task* Task::getSubtaskWithErrors() const  {
     foreach(Task* sub, getSubtasks()) {
-        if (sub->hasErrors()) {
+        if (sub->hasError()) {
             return sub;
         }
     }
     return NULL;
 }
 
-QList<Task*> Task::onSubTaskFinished(Task* subTask){ 
-    Q_UNUSED(subTask); 
+QList<Task*> Task::onSubTaskFinished(Task*){ 
     static QList<Task*> stub; 
     return stub; 
 }
@@ -121,18 +124,27 @@ void Task::setMinimizeSubtaskErrorText(bool v) {
     setFlag(TaskFlag_MinimizeSubtaskErrorText, v);
 }
 
+void Task::addTaskResource(const TaskResourceUsage& r) {
+    SAFE_POINT(state == Task::State_New, QString("Can't add task resource in current state: %1)").arg(getState()),);    
+    SAFE_POINT(!insidePrepare || !r.prepareStageLock, "Can't add prepare-time resource from within prepare function call!",);    
+    SAFE_POINT(!r.locked, QString("Resource is already locked, resource id: %1").arg(r.resourceId),);
+    taskResources.append(r);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // task scheduler
 
 void TaskScheduler::addSubTask(Task* t, Task* sub) {
-    assert(sub->getParentTask() == NULL);
+    SAFE_POINT(sub->getParentTask() == NULL, "Task already has a parent!",);
+
     sub->parentTask = t;
     t->subtasks.append(sub);
     emit t->si_subtaskAdded(sub);
 }
 
 void TaskScheduler::setTaskState(Task* t, Task::State newState) { 
-    assert(t->getState() < newState); 
+    SAFE_POINT(t->getState() < newState, QString("Illegal task state change! Current state: %1, new state: %2").arg(t->getState()).arg(newState),);
+
     t->state = newState; 
     
     emit t->si_stateChanged();
@@ -140,8 +152,11 @@ void TaskScheduler::setTaskState(Task* t, Task::State newState) {
 }
 
 void TaskScheduler::setTaskStateDesc(Task* t, const QString& desc) { 
-    t->stateInfo.setStateDesc(desc);
+    t->stateInfo.setDescription(desc);
 }
 
+void TaskScheduler::setTaskInsidePrepare(Task* t, bool val) {
+    t->insidePrepare = val;
+}
 
 }//namespace

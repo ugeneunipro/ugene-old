@@ -462,7 +462,7 @@ Task::ReportResult GTest_PDBFormatStressTest::report()
 {
 
     foreach (Task* task, getSubtasks()) {
-        if (task->hasErrors()) {
+        if (task->hasError()) {
             stateInfo.setError(stateInfo.getError()+fileNames.value(task) + "(" + task->getError() + ");   ");
         }
     }
@@ -526,7 +526,7 @@ Task::ReportResult GTest_ASNFormatStressTest::report()
 {
 
     foreach (Task* task, getSubtasks()) {
-        if (task->hasErrors()) {
+        if (task->hasError()) {
             stateInfo.setError(stateInfo.getError()+fileNames.value(task) + "(" + task->getError() + ");   ");
         }
     }

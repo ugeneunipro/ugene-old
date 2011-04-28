@@ -136,7 +136,7 @@ void HMMSearchDialogController::sl_onStateChanged() {
     }
     searchTask->disconnect(this);
     const TaskStateInfo& si = searchTask->getStateInfo();
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         statusLabel->setText(tr("search_finished_with_errors_%1").arg(si.getError()));
     } else {
         statusLabel->setText(tr("search_finished_successfuly"));
@@ -181,7 +181,7 @@ QList<Task*> HMMSearchToAnnotationsTask::onSubTaskFinished(Task* subTask) {
 
     QList<Task*> res;
 
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
     
@@ -198,7 +198,7 @@ QList<Task*> HMMSearchToAnnotationsTask::onSubTaskFinished(Task* subTask) {
         searchTask = new HMMSearchTask(hmm, dnaSequence, settings);
         res.append(searchTask);
     } else if (createAnnotationsTask == NULL){
-        assert(searchTask->isFinished() && !searchTask->hasErrors());
+        assert(searchTask->isFinished() && !searchTask->hasError());
         QList<SharedAnnotationData> annotations = searchTask->getResultsAsAnnotations(aname);
         if (!annotations.isEmpty()) {
             createAnnotationsTask = new CreateAnnotationsTask(aobj, agroup, annotations);
@@ -215,7 +215,7 @@ QString HMMSearchToAnnotationsTask::generateReport() const {
     res+="<table>";
     res+="<tr><td width=200><b>" + tr("HMM profile used") + "</b></td><td>" + QFileInfo(hmmFile).absoluteFilePath() + "</td></tr>";
 
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         res+="<tr><td width=200><b>" + tr("Task was not finished") + "</b></td><td></td></tr>";
         res+="</table>";
         return res;

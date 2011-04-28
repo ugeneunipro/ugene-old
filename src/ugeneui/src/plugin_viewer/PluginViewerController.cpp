@@ -280,7 +280,7 @@ void PluginViewerController::sl_addPlugin() {
 void PluginViewerController::sl_taskStateChanged() {
     Task* t = qobject_cast<Task*>(sender());
     assert(t!=NULL);
-    if (t->isFinished() && t->hasErrors()) {
+    if (t->isFinished() && t->hasError()) {
         QMessageBox::critical(ui.treeWidget, tr("add_plugin_error_caption"), t->getError());
     }
 }

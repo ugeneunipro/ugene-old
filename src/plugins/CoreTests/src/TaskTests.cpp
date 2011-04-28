@@ -618,7 +618,7 @@ void GTest_Wait::run() {
 }
 
 Task::ReportResult GTest_Wait::report() {
-    if (!hasErrors() && (condition!=WaitCond_None && !waitOk)) {
+    if (!hasError() && (condition!=WaitCond_None && !waitOk)) {
         setError(QString("Wait condition was not met: cond: %1, state: %2").arg(waitCondString).arg(waitStateString));
     }
     return ReportResult_Finished;

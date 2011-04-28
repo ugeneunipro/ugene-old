@@ -60,8 +60,8 @@ public:
     virtual int getProgress() const {return progress;}
     virtual void setProgress(int v)  {progress = v;}
 
-    virtual QString getStatusDesc() const {return statusDesc;}
-    virtual void setStatusDesc(const QString& desc)  {statusDesc = desc;}
+    virtual QString getDescription() const {return statusDesc;}
+    virtual void setDescription(const QString& desc)  {statusDesc = desc;}
 
 private:
     /** Keeps error message if operation failed */
@@ -79,27 +79,6 @@ private:
     /** If true, operation result was checked by user */
     mutable bool    checked;
 #endif
-};
-
-/** Default helper stub for U2OpStatus */
-class U2CORE_EXPORT U2OpTaskStatus: public U2OpStatus {
-public:
-    U2OpTaskStatus(TaskStateInfo* i) : ti(i)  {}
-    virtual void setError(const QString & err)  {ti->setError(err);}
-    virtual QString getError() const  {return ti->getError();}
-    virtual bool hasError() const {return ti->hasErrors();}
-
-    virtual bool isCanceled() const {return ti->cancelFlag != 0;}
-    virtual void setCanceled(bool v)  {ti->cancelFlag = v;};
-
-    virtual int getProgress() const  {return ti->progress;}
-    virtual void setProgress(int v)  {ti->progress = v;}
-
-    virtual QString getStatusDesc() const {return ti->getStateDesc();}
-    virtual void setStatusDesc(const QString& desc)  {ti->setStateDesc(desc);}
-
-private:
-    TaskStateInfo* ti;
 };
 
 /** Logs operation status error using specified log category */

@@ -143,10 +143,10 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
 
     assert(headers.size() == mergedMapping.size());
 
-    if (!ti.hasErrors() && !ti.cancelFlag && merge && !headers.isEmpty()) {
+    if (!ti.hasError() && !ti.cancelFlag && merge && !headers.isEmpty()) {
         DocumentFormatUtils::addMergedSequenceObject(objects, docUrl, headers, sequence, mergedMapping);
     }
-    if (!ti.hasErrors() && !ti.cancelFlag && objects.isEmpty()) {
+    if (!ti.hasError() && !ti.cancelFlag && objects.isEmpty()) {
         ti.setError(Document::tr("Document is empty."));
     }
 
@@ -170,7 +170,7 @@ Document* FastaFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
 
     QString lockReason;
     load(io, io->getURL(), objects, ti, gapSize, predictedSize, lockReason, mode);
-    if (ti.hasErrors() || ti.cancelFlag) {
+    if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);
         return NULL;
     }
@@ -226,7 +226,7 @@ void FastaFormat::storeDocument( Document* doc, TaskStateInfo& ts, IOAdapter* io
 
 GObject *FastaFormat::loadObject(IOAdapter *io, TaskStateInfo &ti) {
     DNASequence *seq = loadSequence(io, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return NULL;
     }
 

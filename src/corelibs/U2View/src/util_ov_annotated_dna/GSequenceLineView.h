@@ -89,7 +89,7 @@ public:
 
     virtual GSequenceLineView* getFrameView() const {return frameView;}
     
-    virtual void setConherentRangeView(GSequenceLineView* rangeView);
+    virtual void setCoherentRangeView(GSequenceLineView* rangeView);
 
     virtual GSequenceLineView* getConherentRangeView() const {return coherentRangeView;}
 

@@ -61,16 +61,16 @@ void RemoveAnnotationsTask::prepare()
 Task::ReportResult RemoveAnnotationsTask::report() {
     GTIMER(c1,t1,"RemoveAnnotationsTask::report");
     
-    if (hasErrors() || isCanceled() )  {
+    if (hasError() || isCanceled() )  {
         return ReportResult_Finished;
     }
     
     
     if (aobj->isStateLocked()) {
-        stateInfo.setStateDesc(tr("Waiting for object lock released"));
+        stateInfo.setDescription(tr("Waiting for object lock released"));
         return ReportResult_CallMeAgain;
     }
-    stateInfo.setStateDesc("");
+    stateInfo.setDescription("");
     
     int size = toDelete.size();
     if (size == 0) {

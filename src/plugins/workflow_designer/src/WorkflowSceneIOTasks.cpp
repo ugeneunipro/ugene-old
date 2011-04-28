@@ -57,7 +57,7 @@ SaveWorkflowSceneTask::SaveWorkflowSceneTask(WorkflowScene* s, const Metadata& m
 }
 
 void SaveWorkflowSceneTask::run() {
-    if(hasErrors()) {
+    if(hasError()) {
         return;
     }
     
@@ -72,7 +72,7 @@ void SaveWorkflowSceneTask::run() {
 }
 
 Task::ReportResult SaveWorkflowSceneTask::report() {
-    if (!stateInfo.hasErrors() && !scene.isNull()) {
+    if (!stateInfo.hasError() && !scene.isNull()) {
         scene->setModified(false);
     }
     return ReportResult_Finished;
@@ -105,7 +105,7 @@ void LoadWorkflowSceneTask::run() {
 }
 
 Task::ReportResult LoadWorkflowSceneTask::report() {
-    if(hasErrors()) {
+    if(hasError()) {
         return ReportResult_Finished;
     }
     

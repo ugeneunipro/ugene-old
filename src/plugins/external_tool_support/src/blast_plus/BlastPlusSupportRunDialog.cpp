@@ -298,7 +298,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(co
 }
 void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLoadTaskStateChanged(){
     LoadDocumentTask* s=qobject_cast<LoadDocumentTask*>(sender());
-    if((s->isFinished())&&(!s->hasErrors())){
+    if((s->isFinished())&&(!s->hasError())){
         int numOfSequences=0;
         foreach(GObject* gobj, s->getDocument()->getObjects()){
             if(gobj->getGObjectType()==GObjectTypes::SEQUENCE){

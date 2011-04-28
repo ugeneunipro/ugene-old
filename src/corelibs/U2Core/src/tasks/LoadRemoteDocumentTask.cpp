@@ -199,7 +199,7 @@ Task::ReportResult LoadRemoteDocumentTask::report()
 QList<Task*> LoadRemoteDocumentTask::onSubTaskFinished( Task* subTask )
 {
     QList<Task*> subTasks;
-    if (subTask->hasErrors()) {
+    if (subTask->hasError()) {
         if( subTask == copyDataTask || subTask == loadDataFromEntrezTask ) {
             setError(tr("Cannot find %1 in %2 database").arg(accNumber).arg(dbName) + ": " + subTask->getError());
         }
@@ -353,7 +353,7 @@ void LoadDataFromEntrezTask::run()
     if (resultIndex.isEmpty()) {
         stateInfo.setError("Result not found");
     }
-    if (stateInfo.hasErrors()  ) {
+    if (stateInfo.hasError()  ) {
         return;
     }
     

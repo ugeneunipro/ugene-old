@@ -151,7 +151,7 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
         return;
     }
 
-    if (loadTask->hasErrors())
+    if (loadTask->hasError())
     {
         loadTask->setError(tr("failed to load item '%1' from '%2' DB : %3").arg(loadTask->getAccNumber(), loadTask->getDBName(), loadTask->getError()));
         return;

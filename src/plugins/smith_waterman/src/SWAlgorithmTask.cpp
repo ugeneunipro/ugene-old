@@ -61,11 +61,9 @@ SWAlgorithmTask::SWAlgorithmTask(const SmithWatermanSettings& s,
 
     //acquiring resourses for GPU computations
     if( SW_cuda == algType ) {
-        TaskResourceUsage tru( RESOURCE_CUDA_GPU, 1, true /*prepareStage*/);
-        taskResources.append( tru );
+        addTaskResource(TaskResourceUsage( RESOURCE_CUDA_GPU, 1, true /*prepareStage*/));
     } else if( SW_opencl == algType ) {
-        TaskResourceUsage tru( RESOURCE_OPENCL_GPU, 1, true /*prepareStage*/);
-        taskResources.append( tru );
+        addTaskResource(TaskResourceUsage( RESOURCE_OPENCL_GPU, 1, true /*prepareStage*/));
     }
 
     int maxScore = calculateMaxScore(s.ptrn, s.pSm);    
@@ -335,7 +333,7 @@ Task::ReportResult SWAlgorithmTask::report() {
 
 QList<Task*> SWAlgorithmTask::onSubTaskFinished( Task* subTask ){
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 

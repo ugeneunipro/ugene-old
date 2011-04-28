@@ -232,7 +232,7 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
 
 
 Task::ReportResult DistanceMatrixMSAProfileTask::report() {
-    if (s.outFormat != DistanceMatrixMSAProfileOutputFormat_Show || hasErrors() || isCanceled()) {
+    if (s.outFormat != DistanceMatrixMSAProfileOutputFormat_Show || hasError() || isCanceled()) {
         return Task::ReportResult_Finished;
     }
     assert(!resultText.isEmpty());

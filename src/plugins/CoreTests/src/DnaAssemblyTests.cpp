@@ -139,7 +139,7 @@ void GTest_DnaAssemblyToReferenceTask::prepare()
 
 Task::ReportResult GTest_DnaAssemblyToReferenceTask::report()
 {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     

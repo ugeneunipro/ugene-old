@@ -88,14 +88,14 @@ PFMatrix WeightMatrixIO::readPFMatrix(IOAdapterFactory* iof, const QString& url,
         }
     }
     io->close();
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return matrix;
     }
 
     QTextStream reader(text);
     QString line;
 
-    while (!reader.atEnd() && !si.hasErrors()) {
+    while (!reader.atEnd() && !si.hasError()) {
         line = reader.readLine();
         if (line.isEmpty()) {
             continue;
@@ -129,7 +129,7 @@ PFMatrix WeightMatrixIO::readPFMatrix(IOAdapterFactory* iof, const QString& url,
         msize++;
     }
     
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return matrix;
     }
 
@@ -190,14 +190,14 @@ PWMatrix WeightMatrixIO::readPWMatrix(IOAdapterFactory* iof, const QString& url,
         }
     }
     io->close();
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return matrix;
     }
 
     QTextStream reader(text);
     QString line;
     
-    while (!reader.atEnd() && !si.hasErrors()) {
+    while (!reader.atEnd() && !si.hasError()) {
         line = reader.readLine();
         if (line.isEmpty()) {
             continue;
@@ -232,7 +232,7 @@ PWMatrix WeightMatrixIO::readPWMatrix(IOAdapterFactory* iof, const QString& url,
         msize++;
     }
     
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return matrix;
     }
 

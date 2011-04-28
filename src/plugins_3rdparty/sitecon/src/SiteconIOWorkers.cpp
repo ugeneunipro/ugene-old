@@ -219,7 +219,7 @@ void SiteconReader::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
     tasks.removeAll(t);
     if (output) {
-        if (!t->hasErrors()) {
+        if (!t->hasError()) {
             QVariant v = qVariantFromValue<SiteconModel>(t->getResult());
             output->put(Message(mtype, v));
         }

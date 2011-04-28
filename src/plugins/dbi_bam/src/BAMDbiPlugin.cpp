@@ -83,7 +83,7 @@ void BAMDbiPlugin::sl_converter() {
 
 void BAMDbiPlugin::sl_infoLoaded(Task* task) {
     LoadBamInfoTask* loadBamInfoTask = qobject_cast<LoadBamInfoTask*>(task);
-    if(!loadBamInfoTask->hasErrors()) {
+    if(!loadBamInfoTask->hasError()) {
         const GUrl& sourceUrl = loadBamInfoTask->getSourceUrl();
         BAMInfo& bamInfo = loadBamInfoTask->getInfo();
         ConvertToSQLiteDialog convertDialog(sourceUrl, bamInfo);
@@ -104,7 +104,7 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
         assert(false);
         return;
     }
-    if(convertToBAMTask->hasErrors() || convertToBAMTask->isCanceled()) {
+    if(convertToBAMTask->hasError() || convertToBAMTask->isCanceled()) {
         return;
     }
     GUrl url = convertToBAMTask->getDestinationUrl();

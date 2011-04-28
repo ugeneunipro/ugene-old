@@ -85,7 +85,7 @@ FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequ
     rfTask = NULL;
     startTime = GTimer::currentTimeMicros();
     if (settings.inverted) {
-        stateInfo.setStateDesc(tr("Rev-complementing sequence"));
+        stateInfo.setDescription(tr("Rev-complementing sequence"));
         assert(directSequence.alphabet->isNucleic());
         revComplTask = new RevComplSequenceTask(directSequence, settings.seqRegion);
         revComplTask->setSubtaskProgressWeight(0);
@@ -98,7 +98,7 @@ FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequ
 
 QList<Task*> FindRepeatsTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
     if (subTask == revComplTask) {
@@ -110,7 +110,7 @@ QList<Task*> FindRepeatsTask::onSubTaskFinished(Task* subTask) {
 }
 
 RFAlgorithmBase* FindRepeatsTask::createRFTask() {
-    stateInfo.setStateDesc(tr("Searching repeats ..."));
+    stateInfo.setDescription(tr("Searching repeats ..."));
 
     const char* seqX = directSequence.constData() + settings.seqRegion.startPos;
     const char* seqY = revComplTask == NULL ? seqX : revComplTask->complementSequence.constData();
@@ -130,14 +130,14 @@ RFAlgorithmBase* FindRepeatsTask::createRFTask() {
 
 void FindRepeatsTask::run() {
     if (settings.filterNested) {
-        stateInfo.setStateDesc(tr("Filtering nested results"));
+        stateInfo.setDescription(tr("Filtering nested results"));
         filterNestedRepeats();
     }
 }
 
 Task::ReportResult FindRepeatsTask::report() {
-    stateInfo.setStateDesc("");
-    if (hasErrors()) {
+    stateInfo.setDescription("");
+    if (hasError()) {
         return ReportResult_Finished;
     }
     quint64 endTime = GTimer::currentTimeMicros();
@@ -315,7 +315,7 @@ FindRepeatsToAnnotationsTask::FindRepeatsToAnnotationsTask(const FindRepeatsTask
 
 QList<Task*> FindRepeatsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 

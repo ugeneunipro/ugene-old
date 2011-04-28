@@ -239,7 +239,7 @@ void OpenProjectTask::prepare() {
 
 QList<Task*> OpenProjectTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         if (subTask == loadProjectTask) {
             return res;
         }
@@ -252,7 +252,7 @@ QList<Task*> OpenProjectTask::onSubTaskFinished(Task* subTask) {
             p->removeDocument(doc);
         }
     } 
-    if (!isCanceled() && subTask == loadProjectTask && !loadProjectTask->hasErrors()) {
+    if (!isCanceled() && subTask == loadProjectTask && !loadProjectTask->hasError()) {
         Project* p =  loadProjectTask->detachProject();
         res.append(new RegisterProjectServiceTask(p));
     }
@@ -377,7 +377,7 @@ void SaveOnlyProjectTask::_run(){
 }
 
 Task::ReportResult SaveOnlyProjectTask::report(){
-    if (!stateInfo.hasErrors() && url == proj->getProjectURL()) {
+    if (!stateInfo.hasError() && url == proj->getProjectURL()) {
         proj->setModified(false);
     }
     proj->unlockState(lock);
@@ -405,7 +405,7 @@ void LoadProjectTask::run() {
 }
 
 Task::ReportResult LoadProjectTask::report() {
-    if (!stateInfo.hasErrors()) {
+    if (!stateInfo.hasError()) {
         ProjectParserRegistry *ppr = ProjectParserRegistry::instance();
         ProjectParser *parser = ppr->getProjectParserByVersion(version);
         if(parser == NULL){
@@ -487,12 +487,8 @@ void ExportProjectTask::prepare(){
     ProjectFileUtils::saveProjectFile(stateInfo, pr, destinationDir + "/" + projectFile, urlRemap);
 }
 
-
-void GTest_LoadProject::init(XMLTestFormat* tf, const QDomElement& el) {
-    Q_UNUSED(tf);
-
-    TaskResourceUsage tru( RESOURCE_PROJECT, 1, true);
-    taskResources.append(tru);
+void GTest_LoadProject::init(XMLTestFormat*, const QDomElement& el) {
+    addTaskResource(TaskResourceUsage( RESOURCE_PROJECT, 1, true));
     projContextName = el.attribute("index");
     if(!el.attribute("load_from_temp").isEmpty()){
         url = env->getVar("TEMP_DATA_DIR") + "/" + el.attribute("url");
@@ -526,7 +522,7 @@ void GTest_LoadProject::prepare(){
 }
 
 Task::ReportResult GTest_LoadProject::report() {
-    if (loadTask!=NULL && loadTask->hasErrors()) {
+    if (loadTask!=NULL && loadTask->hasError()) {
         stateInfo.setError( loadTask->getError());
     } else if (!projContextName.isEmpty()) {
         addContext(projContextName, loadTask->getProject());
@@ -537,7 +533,7 @@ Task::ReportResult GTest_LoadProject::report() {
 
 QList<Task*> GTest_LoadProject::onSubTaskFinished( Task* subTask ){
     QList<Task*> subTasks;
-    if (subTask->hasErrors()) {
+    if (subTask->hasError()) {
         return subTasks;
     }
     if (subTask == mt) {
@@ -588,7 +584,7 @@ void GTest_ExportProject::prepare(){
 
 Task::ReportResult GTest_ExportProject::report(){
     if(exportTask!=NULL){
-        if (exportTask->hasErrors()) {
+        if (exportTask->hasError()) {
             stateInfo.setError(exportTask->getError());
         }
     }
@@ -696,7 +692,7 @@ void GTest_LoadDocumentFromProject::cleanup(){
 
 Task::ReportResult GTest_LoadDocumentFromProject::report(){
     if(loadTask!=NULL){
-        if(!loadTask->hasErrors()){
+        if(!loadTask->hasError()){
             addContext(documentFileName, loadedDoc);
             contextAdded = true;
         }

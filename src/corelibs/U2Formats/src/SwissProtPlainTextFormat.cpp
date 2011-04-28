@@ -111,8 +111,8 @@ bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) 
         hasLine = false;
         if (st->entry->name.isEmpty()) {
             readIdLine(st);
-            assert(si.hasErrors() || !st->entry->name.isEmpty());
-            if (si.hasErrors()) {
+            assert(si.hasError() || !st->entry->name.isEmpty());
+            if (si.hasError()) {
                 break;
             }
             continue;
@@ -197,7 +197,7 @@ bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) 
             st->entry->tags.insertMulti(lastTagName, st->value());
         }
     }
-    if (!st->isNull() && !si.hasErrors() && !si.cancelFlag) {
+    if (!st->isNull() && !si.hasError() && !si.cancelFlag) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Record is truncated."));
     }
 
@@ -207,7 +207,7 @@ bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
 
     IOAdapter* io = st->io;
     TaskStateInfo& si = st->si;
-    si.setStateDesc(tr("Reading sequence %1").arg(st->entry->name));
+    si.setDescription(tr("Reading sequence %1").arg(st->entry->name));
     int headerSeqLen = st->entry->seqLen;
     res.reserve(res.size() + headerSeqLen);
 
@@ -252,14 +252,14 @@ bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
 
         si.progress = io->getProgress();
     }
-    if (!si.hasErrors() && !si.cancelFlag && buff[0] != '/') {
+    if (!si.hasError() && !si.cancelFlag && buff[0] != '/') {
         si.setError(tr("Sequence is truncated"));
     }
     writer.close();
     return true;
 }
 void SwissProtPlainTextFormat::readAnnotations(ParserState *st, int offset){
-    st->si.setStateDesc(tr("Reading annotations %1").arg(st->entry->name));
+    st->si.setDescription(tr("Reading annotations %1").arg(st->entry->name));
     st->entry->hasAnnotationObjectFlag = true;
     do {
         int fplen = fPrefix.length();

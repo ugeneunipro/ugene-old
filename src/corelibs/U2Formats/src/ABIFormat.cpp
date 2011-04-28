@@ -80,7 +80,7 @@ Document* ABIFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
             break;
         }
     }
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return NULL;
     }
 
@@ -89,7 +89,7 @@ Document* ABIFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
     sf.pos = 0;
     sf.size = readBuff.size();
     Document* doc = parseABI(&sf, io, fs);
-    if (doc == NULL && !ti.hasErrors()) {
+    if (doc == NULL && !ti.hasError()) {
         ti.setError(tr("Not a valid ABIF file: %1").arg(io->toString()));
     }
     return doc;

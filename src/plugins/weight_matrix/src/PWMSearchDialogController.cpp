@@ -525,10 +525,10 @@ void PWMSearchDialogController::loadFile(QString filename) {
     TaskStateInfo siPFM;
     PWMatrix m;
     intermediate = WeightMatrixIO::readPFMatrix(iof, filename, siPFM);
-    if (siPFM.hasErrors()) {
+    if (siPFM.hasError()) {
         TaskStateInfo siPWM;    
         m = WeightMatrixIO::readPWMatrix(iof, filename, siPWM);
-        if (siPWM.hasErrors()) {
+        if (siPWM.hasError()) {
             QMessageBox::critical(this, L10N::errorTitle(), siPWM.getError());
             return;
         }

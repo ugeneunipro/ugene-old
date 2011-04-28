@@ -82,7 +82,7 @@ bool GenericMSAReader::isDone() {
 
 void GenericMSAReader::sl_taskFinished() {
     LoadMSATask* t = qobject_cast<LoadMSATask*>(sender());
-    if (!t->isFinished() || t->hasErrors()) {
+    if (!t->isFinished() || t->hasError()) {
         return;
     }
     foreach(MAlignment ma, t->results) {
@@ -125,7 +125,7 @@ void LoadMSATask::run() {
     ioLog.info(tr("Reading MSA from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
     Document *doc = format->loadDocument(iof, url, stateInfo, QVariantMap());
-    assert(isCanceled() || doc!=NULL || hasErrors());
+    assert(isCanceled() || doc!=NULL || hasError());
     assert(doc == NULL || doc->isLoaded());
     if (!isCanceled() && doc!=NULL && doc->isLoaded()) {
         if (format->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
@@ -164,7 +164,7 @@ void GenericSeqReader::init() {
 
 void GenericSeqReader::sl_taskFinished() {
     LoadSeqTask* t = qobject_cast<LoadSeqTask*>(sender());
-    if (!t->isFinished() || t->hasErrors()) {
+    if (!t->isFinished() || t->hasError()) {
         return;
     }
     foreach(const QVariantMap& m, t->results) {
@@ -199,7 +199,7 @@ void LoadSeqTask::run() {
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
     Document *doc = format->loadDocument(iof, url, stateInfo, cfg);
-    assert(isCanceled() || doc!=NULL || hasErrors());
+    assert(isCanceled() || doc!=NULL || hasError());
     assert(doc == NULL || doc->isLoaded());
     if (!isCanceled() && doc!=NULL && doc->isLoaded()) {
         const QSet<GObjectType>& types = format->getSupportedObjectTypes();

@@ -54,7 +54,7 @@ void GenomeAlignerFindTask::prepare() {
     settings->bitFilter = ((quint64)0 - 1)<<(62 - settings->w*2);
 
     prepareBitValues();
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return;
     }
 
@@ -104,7 +104,7 @@ void GenomeAlignerFindTask::run() {
 
 QList<Task*> GenomeAlignerFindTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> subTasks;
-    if (subTask->hasErrors() || isCanceled()) {
+    if (subTask->hasError() || isCanceled()) {
         return subTasks;
     }
 

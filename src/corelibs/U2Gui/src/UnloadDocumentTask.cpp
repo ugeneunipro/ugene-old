@@ -59,7 +59,7 @@ Task::ReportResult UnloadDocumentTask::report() {
     }
     propagateSubtaskError();
     QString errPrefix = tr("Document '%1' can't be unloaded: ").arg(doc->getName());
-    if (hasErrors()) {
+    if (hasError()) {
         assert(saveTask!=NULL);
         coreLog.error(errPrefix +  tr("save failed!"));
         return Task::ReportResult_Finished;

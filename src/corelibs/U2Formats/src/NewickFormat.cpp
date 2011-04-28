@@ -45,7 +45,7 @@ static QList<GObject*> parseTrees(IOAdapter* io, TaskStateInfo& si);
 
 Document* NewickFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
     QList<GObject*> objects = parseTrees(io, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         qDeleteAll(objects);
         return NULL;
     }
@@ -248,14 +248,14 @@ static QList<GObject*> parseTrees(IOAdapter *io, TaskStateInfo& si) {
             } 
             lastStr.clear();
         }
-        if (si.hasErrors() || si.cancelFlag) {
+        if (si.hasError() || si.cancelFlag) {
             delete rd;
             rd = NULL;
             break;
         }
         si.progress = io->getProgress();
     }
-    if (!si.hasErrors() && !si.cancelFlag) {
+    if (!si.hasError() && !si.cancelFlag) {
         if (!branchStack.isEmpty() || nodeStack.size()!=1) {
             delete rd;
             si.setError(NewickFormat::tr("Unexpected end of file"));

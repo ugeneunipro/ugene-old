@@ -129,7 +129,7 @@ void ImportPhredQualityScoresTask::prepare()
 QList<Task*> ImportPhredQualityScoresTask::onSubTaskFinished( Task* subTask )
 {
     QList<Task*> subTasks;
-    if ( subTask->hasErrors() || subTask->isCanceled() ) {
+    if ( subTask->hasError() || subTask->isCanceled() ) {
         return subTasks;
     }
 

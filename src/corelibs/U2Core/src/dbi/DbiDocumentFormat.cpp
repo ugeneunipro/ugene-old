@@ -67,15 +67,14 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
     //2. read all assembly & sequence objects
     //3. close db
     QString url = io->getURL().getURLString();
-    U2OpTaskStatus os(&ts);
-    DbiHandle handle(id, url, true, os);
-    if(os.isCoR()) {
+    DbiHandle handle(id, url, true, ts);
+    if(ts.isCoR()) {
         return NULL;
     }
     
     U2ObjectDbi* odbi = handle.dbi->getObjectDbi();
-    QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, os);
-    if (os.isCoR()) {
+    QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, ts);
+    if (ts.isCoR()) {
         return NULL;
     }
     QList<GObject*> objects;
@@ -115,10 +114,9 @@ void DbiDocumentFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter*
     // 1. get db
     // 2. call sync
     QString url = d->getURLString();
-    U2OpTaskStatus os(&ts);
-    DbiHandle handle(id, url, true, os);
-    if (!os.isCoR()) {
-        handle.dbi->flush(os);
+    DbiHandle handle(id, url, true, ts);
+    if (!ts.isCoR()) {
+        handle.dbi->flush(ts);
     }
 }
 

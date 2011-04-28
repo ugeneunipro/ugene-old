@@ -61,12 +61,12 @@ void RemoteServicePingTask::prepare() {
 void RemoteServicePingTask::run()
 {
     assert(machine.get() != NULL);
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return;
     }
 
     machine->initSession(stateInfo);
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
 

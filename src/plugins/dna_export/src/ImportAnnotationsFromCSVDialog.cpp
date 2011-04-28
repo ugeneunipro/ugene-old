@@ -419,7 +419,7 @@ void ImportAnnotationsFromCSVDialog::preview(bool silent) {
     int columnCount = 0;
     TaskStateInfo ti;
     QList<QStringList> lines = ReadCSVAsAnnotationsTask::parseLinesIntoTokens(text, parseOptions, columnCount, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         QMessageBox::critical(this, L10N::errorTitle(), ti.getError());
         return;
     }

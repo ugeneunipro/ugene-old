@@ -156,7 +156,7 @@ void RemoteTasksDialog::sl_onFetchFinished() {
         return;
     }
     
-    if (!fetchResultTask->hasErrors()) {
+    if (!fetchResultTask->hasError()) {
         QMessageBox::information(this, tr("Fetch data"), tr("Download finished successfully."));
     } else {
         QMessageBox::critical(this, tr("Fetch data error"), tr("Failed to download task result. %1").arg(fetchResultTask->getError()));
@@ -191,7 +191,7 @@ void RemoteTasksDialog::sl_onRemoveTaskFinished() {
         return;
     }
 
-    if (deleteRemoteDataTask->hasErrors()) {
+    if (deleteRemoteDataTask->hasError()) {
         QMessageBox::critical(this, tr("Error"), tr("Failed to download task result. %1").arg(deleteRemoteDataTask->getError()));
     }
 

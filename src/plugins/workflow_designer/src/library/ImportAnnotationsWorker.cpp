@@ -106,7 +106,7 @@ static QList<SharedAnnotationData> getAnnsFromDoc(Document* doc) {
 
 void ImportAnnotationsWorker::sl_docsLoaded(Task* ta) {
     MultiTask * t = qobject_cast<MultiTask*>(ta);
-    if(t == NULL || t->hasErrors()) {
+    if(t == NULL || t->hasError()) {
         return;
     }
     
@@ -114,7 +114,7 @@ void ImportAnnotationsWorker::sl_docsLoaded(Task* ta) {
     QList<Task*> loadSubs = t->getTasks();
     foreach(Task * s, loadSubs) {
         LoadDocumentTask * sub = qobject_cast<LoadDocumentTask*>(s);
-        if(sub == NULL || sub->hasErrors()) {
+        if(sub == NULL || sub->hasError()) {
             continue;
         }
         anns.append(getAnnsFromDoc(sub->getDocument()));

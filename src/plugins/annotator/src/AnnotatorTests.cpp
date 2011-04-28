@@ -154,7 +154,7 @@ void GTest_AnnotatorSearch::prepare() {
 
 Task::ReportResult GTest_AnnotatorSearch::report() {
     if(searchTask != NULL){
-        if (!searchTask->hasErrors()){
+        if (!searchTask->hasError()){
             QVector<U2Region> actualResults = searchTask->popResults();
             int actualSize = actualResults.size(), expectedSize = expectedResults.size();
             if (actualSize != expectedSize) {

@@ -36,6 +36,7 @@ public:
     static QString warningTitle() { return tr("Warning!");}
     static QString badArgument(const QString& name) { return tr("Internal error, bad argument: %1").arg(name);}
     static QString outOfMemory() {return tr("Out of memory!");}
+    static QString internalError() {return tr("Internal error!");}
 
     // messages to work with files
     static QString errorOpeningFileRead(const GUrl& url) { return tr("Error opening URL for read: '%1'").arg(url.getURLString());}

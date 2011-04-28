@@ -61,10 +61,10 @@ void HMMSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& si)
     } catch (HMMException e) {
         stateInfo.setError(  e.error );
     }
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         stateInfo.setError(  si.getError() );
     }
-    if (sresults.isEmpty()  || stateInfo.cancelFlag || stateInfo.hasErrors()) {
+    if (sresults.isEmpty()  || stateInfo.cancelFlag || stateInfo.hasError()) {
         TaskLocalData::freeHMMContext(t->getTaskId());
         return;
     }
@@ -122,7 +122,7 @@ static bool HMMSearchResult_LessThan(const HMMSearchTaskResult& r1, const HMMSea
 }
 
 Task::ReportResult HMMSearchTask::report() {
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
 

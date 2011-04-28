@@ -120,7 +120,7 @@ void GTest_SW_CheckRegion::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 Task::ReportResult GTest_SW_CheckRegion::report() {
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
     QVector<U2Region> chunks = SequenceWalkerTask::splitRange(region, chunkSize, overlap, extraLen, reventNorm);

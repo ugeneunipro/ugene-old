@@ -167,7 +167,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateI
         ti.progress = io->getProgress();
     }
     MSAUtils::checkPackedModelSymmetry(al, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
     DocumentFormatUtils::assignAlphabet(al);
@@ -184,7 +184,7 @@ Document* ClustalWAlnFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, cons
     QList<GObject*> objects;
     load(io, objects, ti);
     
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         qDeleteAll( objects );
         return NULL;
     }

@@ -53,7 +53,7 @@ bool StdResidueDictionary::load( const QString& fileName )
     TaskStateInfo ti;
     ASNFormat::AsnParser asnParser(io.get(),ti);
     AsnNode* rootElem = asnParser.loadAsnTree(); 
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
        return false;
     }
     

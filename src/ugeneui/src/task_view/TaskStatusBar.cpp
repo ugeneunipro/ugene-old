@@ -107,10 +107,10 @@ void TaskStatusBar::sl_newReport(Task* task) {
         QAction *action = new QAction("action", this);
         action->setData(QVariant(task->getTaskName() + "|" + QString::number(task->getTaskId()) + "|" + TVReportWindow::prepareReportHTML(task)));
         connect(action, SIGNAL(triggered()), SLOT(sl_showReport()));
-        NotificationType nType = task->hasErrors()? Error_Not : Report_Not;
+        NotificationType nType = task->hasError()? Error_Not : Report_Not;
         Notification *t = new Notification(tr("%1Report for task: '%2'").arg(time).arg(task->getTaskName()), nType, action);
         nStack->addNotification(t);
-    } else if (task->hasErrors() && !task->isErrorNotificationSuppressed()) {
+    } else if (task->hasError() && !task->isErrorNotificationSuppressed()) {
         Notification *t = new Notification(tr("%1'%2' task failed: %3").arg(time).arg(task->getTaskName()).arg(task->getError()), Error_Not);
         nStack->addNotification(t);
     }
@@ -154,7 +154,7 @@ void TaskStatusBar::updateState() {
         return;
     }
 
-    QString desc = taskToTrack->getStateInfo().getStateDesc();
+    QString desc = taskToTrack->getStateInfo().getDescription();
     QString text = tr("running_task_%1").arg(taskToTrack->getTaskName());
     if (taskToTrack->isCanceled() && !taskToTrack->isFinished()) {
         QString cancelStr = tr("canceling...");

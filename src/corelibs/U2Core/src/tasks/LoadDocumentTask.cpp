@@ -98,7 +98,7 @@ Task::ReportResult LoadUnloadedDocumentTask::report() {
         propagateSubtaskError();
     }
 
-    if (hasErrors()) {
+    if (hasError()) {
         coreLog.error(tr("Error: %1").arg(stateInfo.getError()));
         if (!resName.isEmpty()) {
             clearResourceUse();
@@ -221,7 +221,7 @@ void LoadDocumentTask::cleanup() {
 }
 
 void LoadDocumentTask::prepare() {
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return;
     }
     
@@ -240,18 +240,17 @@ void LoadDocumentTask::prepare() {
     coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
     QString error;
     Project *p = AppContext::getProject();
-    if(p) {
+    if (p) {
         if(!AppContext::getProject()->lockResources(memUseMB, url.getURLString(), error)) {
             stateInfo.setError(error);
         }
     } else {
-        TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB, false);
-        taskResources.append(memUsg);
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
     }
 }
 
 void LoadDocumentTask::run() {
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return;
     }
     if (config.createDoc && iof->isResourceAvailable(url) == TriState_No) {
@@ -263,15 +262,15 @@ void LoadDocumentTask::run() {
     } else {
         result = format->loadDocument(iof, url, stateInfo, hints);
     }
-    if (config.checkObjRef.isValid() && !hasErrors()) {
+    if (config.checkObjRef.isValid() && !hasError()) {
         processObjRef();
     }
-    assert(isCanceled() || result!=NULL || hasErrors());
+    assert(isCanceled() || result!=NULL || hasError());
     assert(result == NULL || result->isLoaded());
 }
 
 Task::ReportResult LoadDocumentTask::report() {
-    if (stateInfo.hasErrors() || isCanceled()) {
+    if (stateInfo.hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     assert(result!=NULL);

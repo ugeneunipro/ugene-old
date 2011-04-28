@@ -129,7 +129,7 @@ void GTest_SecStructPredictTask::prepare()
 
 Task::ReportResult GTest_SecStructPredictTask::report()
 {
-    if (task!=NULL && task->hasErrors()) {
+    if (task!=NULL && task->hasError()) {
         stateInfo.setError( task->getError());
     } else if (!resultsTableContextName.isEmpty()) {
         QList<SharedAnnotationData> results = task->getResults();

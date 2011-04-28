@@ -339,7 +339,7 @@ Document* SAMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
         objects.append(new MAlignmentObject(defaultMA));
     }
 
-    if (ti.hasErrors() || ti.cancelFlag) {
+    if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);
         return NULL;
     }

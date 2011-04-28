@@ -97,10 +97,10 @@ QString WorkflowRunTask::generateReport() const {
     res+=QString("<tr><th>%1</th><th>%2</th><th>%3</th></tr>").arg(tr("Iterations")).arg(tr("Status")).arg(tr("Details"));
     foreach(Task* sub, getSubtasks()) {
         QString name = Qt::escape(sub->getTaskName());
-        QString status = sub->hasErrors() ? tr("Failed") : sub->isCanceled() ? tr("Canceled") : tr("Finished");
+        QString status = sub->hasError() ? tr("Failed") : sub->isCanceled() ? tr("Canceled") : tr("Finished");
         QString error = Qt::escape(sub->getError()).replace("\n", "<br>");
             //AppContext::getTaskScheduler()->getStateName(sub);
-        if (sub->hasErrors()) {
+        if (sub->hasError()) {
             name = "<font color='red'>"+name+"</font>";
             status = "<font color='red'>"+status+"</font>";
         } else if (sub->isCanceled()) {
@@ -111,7 +111,7 @@ QString WorkflowRunTask::generateReport() const {
         res+=QString("<tr><td>%1</td><td>%2</td><td>%3</td></tr>").arg(name).arg(status).arg(error);
 
         QStringList links = (static_cast<WorkflowIterationRunTask*>(sub))->getFiles();
-        if(!links.isEmpty() && !sub->hasErrors()) {
+        if(!links.isEmpty() && !sub->hasError()) {
             res += QString("<tr><td><i>%1</i></td></tr>").arg(tr("Output files:"));
         
             foreach(const QString &link, links) {
@@ -152,7 +152,7 @@ int WorkflowRunTask::getMsgPassed(Link* l) {
 
 Task::ReportResult WorkflowRunTask::report() {
     propagateSubtaskError();
-    if(hasErrors() && AppContext::getCMDLineRegistry()->hasParameter(OUTPUT_ERROR_OPTION)) {
+    if(hasError() && AppContext::getCMDLineRegistry()->hasParameter(OUTPUT_ERROR_OPTION)) {
         coreLog.info(QString("%1%2%1").arg(ERROR_KEYWORD).arg(getError()));
     }
     return ReportResult_Finished;
@@ -189,7 +189,7 @@ WorkflowIterationRunTask::~WorkflowIterationRunTask() {
 }
 
 void WorkflowIterationRunTask::prepare() {
-    if( hasErrors() || isCanceled() ) {
+    if( hasError() || isCanceled() ) {
         return;
     }
     
@@ -234,7 +234,7 @@ void WorkflowIterationRunTask::prepare() {
 
 QList<Task*> WorkflowIterationRunTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> tasks;
-    if (subTask->hasErrors()) {
+    if (subTask->hasError()) {
         emit si_ticked();
         propagateSubtaskError();
         return tasks;
@@ -270,7 +270,7 @@ Task::ReportResult WorkflowIterationRunTask::report() {
     if (scheduler) {
         scheduler->cleanup();
         if (!scheduler->isDone()) {
-            if(!hasErrors() && !isCanceled()) {
+            if(!hasError() && !isCanceled()) {
                 setError(tr("No workers are ready, while not all workers are done. Schema is broken?"));
             }
         }
@@ -373,9 +373,9 @@ QString WorkflowRunInProcessTask::generateReport() const {
     res+=QString("<tr><th>%1</th><th>%2</th><th>%3</th></tr>").arg(tr("Iterations")).arg(tr("Status")).arg(tr("Details"));
     foreach(Task* sub, getSubtasks()) {
         QString name = Qt::escape(sub->getTaskName());
-        QString status = sub->hasErrors() ? tr("Failed") : sub->isCanceled() ? tr("Canceled") : tr("Finished");
+        QString status = sub->hasError() ? tr("Failed") : sub->isCanceled() ? tr("Canceled") : tr("Finished");
         QString error = Qt::escape(sub->getError()).replace("\n", "<br>");
-        if (sub->hasErrors()) {
+        if (sub->hasError()) {
             name = "<font color='red'>"+name+"</font>";
             status = "<font color='red'>"+status+"</font>";
         } else if (sub->isCanceled()) {
@@ -385,7 +385,7 @@ QString WorkflowRunInProcessTask::generateReport() const {
         }
         res+=QString("<tr><td>%1</td><td>%2</td><td>%3</td></tr>").arg(name).arg(status).arg(error);
         QStringList links = (qobject_cast<WorkflowIterationRunInProcessTask*>(sub))->getFiles();
-        if(!links.isEmpty() && !sub->hasErrors()) {
+        if(!links.isEmpty() && !sub->hasError()) {
             res += QString("<tr><td><i>%1</i></td></tr>").arg(tr("Output files:"));
             foreach(const QString &link, links) {
                 res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
@@ -426,7 +426,7 @@ WorkflowIterationRunInProcessTask::~WorkflowIterationRunInProcessTask() {
 QList<Task*> WorkflowIterationRunInProcessTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     propagateSubtaskError();
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(saveSchemaTask == subTask) {
@@ -583,7 +583,7 @@ void WorkflowRunInProcessMonitorTask::sl_onReadStandardOutput() {
 
 Task::ReportResult WorkflowRunInProcessMonitorTask::report() {
     assert(proc != NULL);
-    if(hasErrors()) {
+    if(hasError()) {
         return ReportResult_Finished;
     }
     if(isCanceled()) {

@@ -169,7 +169,7 @@ GetDocumentFromIndexTask::~GetDocumentFromIndexTask() {
 }
 
 void GetDocumentFromIndexTask::run() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     UIndex::ItemSection itemSec = index.items[docNum];
@@ -181,7 +181,7 @@ void GetDocumentFromIndexTask::run() {
     
     IOAdapter* ioAdapt = getOpenedIOAdapter( itemSec, ioSec);
     if( NULL == ioAdapt ) {
-        assert( stateInfo.hasErrors() );
+        assert( stateInfo.hasError() );
         return;
     }
     assert( ioAdapt->isOpen() );
@@ -193,13 +193,13 @@ void GetDocumentFromIndexTask::run() {
     }
     
     doc = df->loadDocument( ioAdapt, stateInfo, QVariantMap(), DocumentLoadMode_SingleObject );
-    assert( isCanceled() || NULL != doc || hasErrors() );
+    assert( isCanceled() || NULL != doc || hasError() );
     assert( NULL == doc || doc->isLoaded() );
     delete ioAdapt;
 }
 
 Task::ReportResult GetDocumentFromIndexTask::report() {
-    if ( stateInfo.hasErrors() || isCanceled() ) {
+    if ( stateInfo.hasError() || isCanceled() ) {
         return ReportResult_Finished;
     }
     assert( NULL != doc );

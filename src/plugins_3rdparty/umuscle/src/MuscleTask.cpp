@@ -102,13 +102,13 @@ MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
         addSubTask(parallelSubTask);
         tru.prepareStageLock = true;
     }
-    taskResources.append(tru);
+    addTaskResource(tru);
 }
 
 void MuscleTask::run() {
     TaskLocalData::bindToMuscleTLSContext(ctx);
 
-    assert(!hasErrors());
+    assert(!hasError());
     
     switch(config.op) {
         case MuscleTaskOp_Align:
@@ -124,7 +124,7 @@ void MuscleTask::run() {
             doProfile2Profile();
             break;
     }
-    if (!hasErrors() && !isCanceled()) {
+    if (!hasError() && !isCanceled()) {
         assert(resultMA.getAlphabet() != NULL);
     }
     TaskLocalData::detachMuscleTLSContext();
@@ -138,11 +138,11 @@ void MuscleTask::doAlign(bool refine) {
         } else {
             MuscleAdapter::align(inputSubMA, resultSubMA, stateInfo, true);
         }
-        if (hasErrors()) {
+        if (hasError()) {
             return;
         }
     } 
-    assert(!hasErrors());
+    assert(!hasError());
     if(!isCanceled()) {
         assert(!resultSubMA.isEmpty());
         if (config.alignRegion && config.regionToAlign.length != inputMA.getLength()) {
@@ -272,12 +272,12 @@ MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObjec
 QList<Task*> MuscleAddSequencesToProfileTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
 
-    if (subTask != loadTask || isCanceled() || hasErrors()) {
+    if (subTask != loadTask || isCanceled() || hasError()) {
         return res;
     }
 
     propagateSubtaskError();
-    if (hasErrors()) {
+    if (hasError()) {
         return res;
     }
 
@@ -327,7 +327,7 @@ QList<Task*> MuscleAddSequencesToProfileTask::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult MuscleAddSequencesToProfileTask::report() {
-    if (!hasErrors()) {
+    if (!hasError()) {
         propagateSubtaskError();
     }
     return ReportResult_Finished;
@@ -389,7 +389,7 @@ Task::ReportResult MuscleGObjectTask::report() {
         lock = NULL;
     }
     propagateSubtaskError();
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     assert(!obj.isNull());
@@ -444,11 +444,11 @@ void MuscleWithExtFileSpecifySupportTask::prepare(){
 
 QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==loadDocumentTask){
@@ -572,7 +572,7 @@ Task::ReportResult MuscleGObjectRunFromSchemaTask::report() {
     }
     
     propagateSubtaskError();
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     

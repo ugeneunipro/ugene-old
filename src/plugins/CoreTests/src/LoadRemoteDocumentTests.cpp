@@ -81,7 +81,7 @@ namespace U2 {
 
     Task::ReportResult GTest_LoadRemoteDocumentTask::report(){
         if(t != NULL){
-            if(!t->hasErrors()){
+            if(!t->hasError()){
                 QFile expectedFile(expectedDoc), actualFile(t->getLocalUrl());
                 expectedFile.open(QIODevice::ReadOnly), actualFile.open(QIODevice::ReadOnly);
                 QByteArray expectedContent(expectedFile.readAll()), actualContent(actualFile.readAll());

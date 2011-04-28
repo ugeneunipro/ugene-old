@@ -71,7 +71,7 @@ QList<Task*> TestRunnerTask::onSubTaskFinished(Task* subTask) {
         GTestState* testState = stateByTest.value(test);
         assert(testState!=NULL);
         assert(testState->isNew());
-        if (test->hasErrors()) {
+        if (test->hasError()) {
             testState->setFailed(test->getStateInfo().getError());
             teamcityLog.info(QString("##teamcity[testStarted name='%1 : %2']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName()));
             teamcityLog.info(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName(),QString(testState->getErrorMessage()).replace("'","|'").replace('\n',' ')));
@@ -88,7 +88,7 @@ QList<Task*> TestRunnerTask::onSubTaskFinished(Task* subTask) {
     } else {
         finishedTests++;
         GTestState* testState = loader->testState;
-        if (loader->hasErrors()) {
+        if (loader->hasError()) {
             testState->setFailed(loader->getStateInfo().getError());
             teamcityLog.info(QString("##teamcity[testStarted name='%1 : %2']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName()));
             teamcityLog.info(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName(),QString(testState->getErrorMessage()).replace("'","|'").replace('\n',' ')));

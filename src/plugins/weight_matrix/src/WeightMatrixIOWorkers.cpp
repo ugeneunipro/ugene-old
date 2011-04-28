@@ -226,7 +226,7 @@ void PWMatrixReader::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
     tasks.removeAll(t);
     if (output) {
-        if (!t->hasErrors()) {
+        if (!t->hasError()) {
             QVariant v = qVariantFromValue<PWMatrix>(t->getResult());
             output->put(Message(mtype, v));
         }
@@ -442,7 +442,7 @@ void PFMatrixReader::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
     tasks.removeAll(t);
     if (output) {
-        if (!t->hasErrors()) {
+        if (!t->hasError()) {
             QVariant v = qVariantFromValue<PFMatrix>(t->getResult());
             output->put(Message(mtype, v));
         }

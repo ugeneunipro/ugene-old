@@ -70,7 +70,7 @@ Document* SCFFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
         }
     }
 
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return NULL;
     }
 
@@ -79,7 +79,7 @@ Document* SCFFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
     sf.pos = 0;
     sf.size = readBuff.size();
     Document* doc = parseSCF(&sf, io->getFactory(), url, fs);
-    if (doc == NULL && !ti.hasErrors()) {
+    if (doc == NULL && !ti.hasError()) {
         ti.setError(tr("Not a valid SCF file: %1").arg(url.getURLString()));
     }
     return doc;

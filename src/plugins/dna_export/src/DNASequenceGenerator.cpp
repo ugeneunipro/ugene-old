@@ -191,7 +191,7 @@ evalTask(NULL), generateTask(NULL), saveTask(NULL) {
 
 QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> tasks;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return tasks;
     }
 

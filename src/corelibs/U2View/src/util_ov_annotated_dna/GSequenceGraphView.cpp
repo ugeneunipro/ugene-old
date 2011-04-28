@@ -48,7 +48,7 @@ GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx
     renderArea = new GSequenceGraphViewRA(this);
 
     visibleRange = baseView->getVisibleRange();
-    setConherentRangeView(baseView);
+    setCoherentRangeView(baseView);
     setFrameView(baseView->getFrameView());
 
     //process double clicks as centering requests

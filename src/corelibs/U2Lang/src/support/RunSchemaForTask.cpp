@@ -125,7 +125,7 @@ void WorkflowRunSchemaForTask::setSchemaSettings(const QVariantMap & data) {
 QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
     propagateSubtaskError();
     QList<Task*> res;
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     
@@ -168,7 +168,7 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
     case RUN_SCHEMA:
         {
             setSchemaSettings();
-            if(hasErrors()) {
+            if(hasError()) {
                 return res;
             }
             runSchemaTask = new WorkflowRunInProcessTask(schema, schema.getIterations());

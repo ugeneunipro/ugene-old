@@ -245,7 +245,7 @@ Task::ReportResult TestStarter::report() {
     int numPassed=0, numFailed=0;    
     uiLog.info(tr("Testing report:"));
     uiLog.info(tr("---------------"));
-    if (ttask->isFinished() && !ttask->hasErrors()) {
+    if (ttask->isFinished() && !ttask->hasError()) {
         foreach(GTestState* t, ttask->getStateByTestMap()) {
             uiLog.info(tr("State: %1 - Test %2:%3 %4").arg(t->isPassed() ? "pass" : "FAIL").arg(t->getTestRef()->getSuite()->getName()).arg(t->getTestRef()->getShortName()).arg(t->isPassed() ? "" : "- Details: "+t->getErrorMessage()));
             if(t->isPassed()){

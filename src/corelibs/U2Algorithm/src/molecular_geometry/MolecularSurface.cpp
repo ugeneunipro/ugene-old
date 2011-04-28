@@ -122,15 +122,14 @@ qint64 MolecularSurface::estimateMemoryUsage( int numberOfAtoms )
 MolecularSurfaceCalcTask::MolecularSurfaceCalcTask( const QString& surfaceTypeName, const QList<SharedAtom>& _atoms )
     :Task(tr("Molecular surface calculation"), TaskFlag_None), typeName(surfaceTypeName), atoms(_atoms)
 {
-    MolecularSurfaceFactory *factory=
-        AppContext::getMolecularSurfaceFactoryRegistry()->getSurfaceFactory(typeName);
+    MolecularSurfaceFactory *factory= AppContext::getMolecularSurfaceFactoryRegistry()->getSurfaceFactory(typeName);
     molSurface = factory->createInstance();
 
     qint64 memUseMB = (molSurface->estimateMemoryUsage(atoms.size())) / 1024 / 1024;
     algoLog.trace(QString("Estimated memory usage: %1 MB").arg(memUseMB));
-    TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB, true);
-    taskResources.append(memUsg);
-
+    
+    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, true));
+    
     tpm = Progress_Manual;
     
 }

@@ -49,7 +49,7 @@ QList<SEnzymeData> EnzymesIO::readEnzymes(const QString& url, TaskStateInfo& ti)
     }
     
     EnzymeFileFormat f = detectFileFormat(url);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return res;
     }
     switch(f) {
@@ -96,7 +96,7 @@ void EnzymesIO::writeEnzymes(const QString& url, const QString& source, const QS
     }
     
     EnzymeFileFormat f = detectFileFormat(source);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
     switch(f) {

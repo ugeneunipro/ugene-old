@@ -111,7 +111,7 @@ void ShutdownTask::prepare() {
 QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
 
-    if (isCanceled() || subTask->hasErrors()) {
+    if (isCanceled() || subTask->hasError()) {
         return res; //stop shutdown process
     }
 

@@ -480,7 +480,7 @@ Document* ACEFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
     QList <GObject*> objs;
     load(io, objs, ti);
 
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         qDeleteAll(objs);
         return NULL;
     }

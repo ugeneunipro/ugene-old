@@ -85,22 +85,22 @@ void GTest_UHMM3Phmmer::init( XMLTestFormat *tf, const QDomElement& el ) {
     UHMM3SearchSettings searchSettings;
     setDefaultUHMM3SearchSettings( &searchSettings );
     GTest_UHMM3Search::setSearchTaskSettings( searchSettings, el, settigsStateInfo );
-    if( settigsStateInfo.hasErrors() ) { return; }
+    if( settigsStateInfo.hasError() ) { return; }
     settings.setSearchSettings( searchSettings );
     
     UHMM3BuildSettings buildSettings;
     setDefaultUHMM3BuildSettings( &buildSettings );
     GTest_UHMMER3Build::setBuildSettings( buildSettings, el, settigsStateInfo );
     settings.setBuildSettings( buildSettings );
-    if( settigsStateInfo.hasErrors() ) { return; }
+    if( settigsStateInfo.hasError() ) { return; }
     
     setDoubleOption( settings.popen, el.attribute( GAP_OPEN_PROBAB_OPTION_TAG ), scoringSystemStateInfo );
-    if( scoringSystemStateInfo.hasErrors() ) { return; }
+    if( scoringSystemStateInfo.hasError() ) { return; }
     setDoubleOption( settings.pextend, el.attribute( GAP_EXTEND_PROBAB_OPTION_TAG ), scoringSystemStateInfo );
-    if( scoringSystemStateInfo.hasErrors() ) { return; }
+    if( scoringSystemStateInfo.hasError() ) { return; }
     setSubstMatrixOption( settings.substMatr, el.attribute( SUBST_MATR_NAME_OPTION_TAG ), scoringSystemStateInfo );
     assert( settings.substMatr.isEmpty() );
-    if( scoringSystemStateInfo.hasErrors() ) { return; }
+    if( scoringSystemStateInfo.hasError() ) { return; }
     
     chunk = UHMM3SWPhmmerTask::DEFAULT_CHUNK_SIZE;
     QString chunkStr = el.attribute(SEARCH_CHUNK_OPTION_TAG);
@@ -114,7 +114,7 @@ void GTest_UHMM3Phmmer::init( XMLTestFormat *tf, const QDomElement& el ) {
 }
 
 void GTest_UHMM3Phmmer::setAndCheckArgs() {
-    assert( !stateInfo.hasErrors() );
+    assert( !stateInfo.hasError() );
     
     if( queryFilename.isEmpty() ) {
         stateInfo.setError( L10N::badArgument( "query sequence filename" ) );
@@ -133,20 +133,20 @@ void GTest_UHMM3Phmmer::setAndCheckArgs() {
         return;
     }
     
-    if( settigsStateInfo.hasErrors() ) {
+    if( settigsStateInfo.hasError() ) {
         stateInfo.setError( settigsStateInfo.getError() );
         return;
     }
-    if( scoringSystemStateInfo.hasErrors() ) {
+    if( scoringSystemStateInfo.hasError() ) {
         stateInfo.setError( scoringSystemStateInfo.getError() );
         return;
     }
 }
 
 void GTest_UHMM3Phmmer::prepare() {
-    assert( !hasErrors() && NULL == phmmerTask );
+    assert( !hasError() && NULL == phmmerTask );
     setAndCheckArgs();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return;
     }
     loadDbTask = LoadDocumentTask::getDefaultLoadDocTask(dbFilename);
@@ -159,14 +159,14 @@ void GTest_UHMM3Phmmer::prepare() {
 
 QList<Task*> GTest_UHMM3Phmmer::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         setError(subTask->getError());
         return res;
     }
     
     if( loadDbTask == subTask ) {
         DNASequence dbSeq = UHMM3PhmmerTask::getSequenceFromDocument( loadDbTask->getDocument(), stateInfo );
-        if( hasErrors() ) {
+        if( hasError() ) {
             setError(getError());
         }
         phmmerTask = new UHMM3SWPhmmerTask( queryFilename, dbSeq, settings, chunk );
@@ -178,12 +178,12 @@ QList<Task*> GTest_UHMM3Phmmer::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult GTest_UHMM3Phmmer::report() {
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ReportResult_Finished;
     }
     assert( NULL != phmmerTask );
     
-    if( !phmmerTask->isCanceled() && !phmmerTask->hasErrors() ) {
+    if( !phmmerTask->isCanceled() && !phmmerTask->hasError() ) {
         addContext( taskCtxName, phmmerTask );
         ctxAdded = true;
     }
@@ -231,9 +231,9 @@ void GTest_UHMM3PhmmerCompare::setAndCheckArgs() {
 }
 
 Task::ReportResult GTest_UHMM3PhmmerCompare::report() {
-    assert( !hasErrors() );
+    assert( !hasError() );
     setAndCheckArgs();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ReportResult_Finished;
     }
     
@@ -246,7 +246,7 @@ Task::ReportResult GTest_UHMM3PhmmerCompare::report() {
         stateInfo.setError( "undefined_error_occurred" );
     }
     
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ReportResult_Finished;
     }
     

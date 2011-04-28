@@ -31,7 +31,7 @@ namespace U2 {
 CreateRectangularBranchesTask::CreateRectangularBranchesTask(PhyNode *n): size(0), current(0), node(n) {}
 
 GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(PhyNode *node) {
-    if (isCanceled() || stateInfo.hasErrors())
+    if (isCanceled() || stateInfo.hasError())
         return NULL;
 
 

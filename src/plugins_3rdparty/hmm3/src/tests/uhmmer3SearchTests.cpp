@@ -64,7 +64,7 @@ const QString GTest_UHMM3Search::SEED_OPTION_TAG             = "seed";
 const QString GTest_UHMM3Search::REMOTE_MACHINE_VAR          = "MACHINE";
 
 static void setDoubleOption( double& num, const QDomElement& el, const QString& optionName, TaskStateInfo& si ) {
-    if( si.hasErrors() ) {
+    if( si.hasError() ) {
         return;
     }
     QString numStr = el.attribute( optionName );
@@ -82,7 +82,7 @@ static void setDoubleOption( double& num, const QDomElement& el, const QString& 
 }
 
 static void setUseBitCutoffsOption( int& ret, const QDomElement& el, const QString& opName, TaskStateInfo& si ) {
-    if( si.hasErrors() ) {
+    if( si.hasError() ) {
         return;
     }
 
@@ -100,7 +100,7 @@ static void setUseBitCutoffsOption( int& ret, const QDomElement& el, const QStri
 }
 
 static void setBooleanOption( int& ret, const QDomElement& el, const QString& opName, TaskStateInfo& si ) {
-    if( si.hasErrors() ) {
+    if( si.hasError() ) {
         return;
     }
     QString str = el.attribute( opName ).toLower();
@@ -113,7 +113,7 @@ static void setBooleanOption( int& ret, const QDomElement& el, const QString& op
 }
 
 static void setIntegerOption( int& num, const QDomElement& el, const QString& optionName, TaskStateInfo& si ) {
-    if( si.hasErrors() ) {
+    if( si.hasError() ) {
         return;
     }
     QString numStr = el.attribute( optionName );
@@ -210,7 +210,7 @@ void GTest_UHMM3Search::init( XMLTestFormat *tf, const QDomElement& el ) {
 }
 
 void GTest_UHMM3Search::setAndCheckArgs() {
-    assert( !stateInfo.hasErrors() );
+    assert( !stateInfo.hasError() );
     if( hmmFilename.isEmpty() ) {
         stateInfo.setError( "hmm_filename_is_empty" );
         return;
@@ -259,9 +259,9 @@ void GTest_UHMM3Search::setAndCheckArgs() {
 }
 
 void GTest_UHMM3Search::prepare() {
-    assert( !hasErrors() );
+    assert( !hasError() );
     setAndCheckArgs();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return;
     }
 
@@ -290,7 +290,7 @@ QList< Task* > GTest_UHMM3Search::onSubTaskFinished( Task * sub ) {
     if( NULL == loadHmmTask ) {
         return res;
     }
-    if( loadHmmTask->hasErrors() ) {
+    if( loadHmmTask->hasError() ) {
         setError( loadHmmTask->getError() );
         return res;
     }
@@ -301,11 +301,11 @@ QList< Task* > GTest_UHMM3Search::onSubTaskFinished( Task * sub ) {
 }
 
 Task::ReportResult GTest_UHMM3Search::report() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return ReportResult_Finished;
     }
     assert( NULL != searchTaskToCtx );
-    if( !searchTaskToCtx->hasErrors() && !searchTaskToCtx->isCanceled() ) {
+    if( !searchTaskToCtx->hasError() && !searchTaskToCtx->isCanceled() ) {
         addContext( searchTaskCtxName, searchTaskToCtx );
         ctxAdded = true;
     }
@@ -591,7 +591,7 @@ void GTest_UHMM3SearchCompare::init( XMLTestFormat *tf, const QDomElement& el ) 
 }
 
 void GTest_UHMM3SearchCompare::setAndCheckArgs() {
-    assert( !hasErrors() );
+    assert( !hasError() );
 
     if( searchTaskCtxName.isEmpty() ) {
         stateInfo.setError( "search_task_ctx_name_is_empty" );
@@ -707,9 +707,9 @@ UHMM3SearchResult GTest_UHMM3SearchCompare::getOriginalSearchResult( const QStri
 }
 
 Task::ReportResult GTest_UHMM3SearchCompare::report() {
-    assert( !hasErrors() );
+    assert( !hasError() );
     setAndCheckArgs();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ReportResult_Finished;
     }
     
@@ -722,7 +722,7 @@ Task::ReportResult GTest_UHMM3SearchCompare::report() {
         stateInfo.setError( "undefined_error_occurred" );
     }
 
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ReportResult_Finished;
     }
 

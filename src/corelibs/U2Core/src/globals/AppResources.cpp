@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QThread>
 
@@ -51,9 +52,6 @@ AppResourcePool::AppResourcePool() {
 
     projectResouce = new AppResource(RESOURCE_PROJECT, 1, tr("Project"));
     registerResource(projectResouce);
-
-    phyTreeResource = new AppResource(RESOURCE_PHYTREE, 1, tr("Phytree"));
-        registerResource(phyTreeResource);
 }
 
 AppResourcePool::~AppResourcePool() {
@@ -61,20 +59,23 @@ AppResourcePool::~AppResourcePool() {
 }
 
 void AppResourcePool::setIdealThreadCount(int n) {
-    assert(n > 0 && n <= threadResource->maxUse);
+    SAFE_POINT(n > 0 && n <= threadResource->maxUse, QString("Invalid ideal threads count: %1").arg(n),);
+
     n = qBound(1, n, threadResource->maxUse);
     idealThreadCount = n;
     AppContext::getSettings()->setValue(SETTINGS_ROOT + "idealThreadCount", idealThreadCount);
 }
 
 void AppResourcePool::setMaxThreadCount(int n) {
-    assert(n >= 1);
+    SAFE_POINT(n >= 1, QString("Invalid max threads count: %1").arg(n),);
+    
     threadResource->maxUse = qMax(idealThreadCount, n);
     AppContext::getSettings()->setValue(SETTINGS_ROOT + "maxThreadCount", threadResource->maxUse );
 }
 
 void AppResourcePool::setMaxMemorySizeInMB(int n) {
-    assert(n >= MIN_MEMORY_SIZE);
+    SAFE_POINT(n >= MIN_MEMORY_SIZE, QString("Invalid max memory size: %1").arg(n),);
+
     memResource->maxUse = qMax(n, MIN_MEMORY_SIZE);
     AppContext::getSettings()->setValue(SETTINGS_ROOT + "maxMem", memResource->maxUse);
 }
@@ -134,7 +135,8 @@ bool AppResourcePool::isSSE2Enabled() {
 }
 
 void AppResourcePool::registerResource(AppResource* r) {
-    assert(!resources.contains(r->resourceId));
+    SAFE_POINT(!resources.contains(r->resourceId), QString("Duplicate resource: ").arg(r->resourceId),);
+
     resources[r->resourceId] = r;
 }
 

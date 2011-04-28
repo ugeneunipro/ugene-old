@@ -102,7 +102,7 @@ void GenomeAlignerIndexTask::run() {
         }
         if (index->build) {
             reformatSequence();
-            if (isCanceled() || hasErrors()) {
+            if (isCanceled() || hasError()) {
                 return;
             }
             seqLength = objLens[objCount-1];

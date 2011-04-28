@@ -98,11 +98,11 @@ void ClustalWSupportTask::prepare(){
 }
 QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==saveTemporaryDocumentTask){
@@ -228,11 +228,11 @@ void ClustalWWithExtFileSpecifySupportTask::prepare(){
 }
 QList<Task*> ClustalWWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==loadDocumentTask){

@@ -55,7 +55,7 @@ void U2::FindORFsToAnnotationsTask::run()
 Task::ReportResult U2::FindORFsToAnnotationsTask::report()
 {
     
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return ReportResult_Finished;
     }
     

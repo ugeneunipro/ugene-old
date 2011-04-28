@@ -66,7 +66,7 @@ OpenMSAEditorTask::OpenMSAEditorTask(Document* doc)
 }
 
 void OpenMSAEditorTask::open() {
-    if (stateInfo.hasErrors() || (msaObject.isNull() && documentsToLoad.isEmpty())) {
+    if (stateInfo.hasError() || (msaObject.isNull() && documentsToLoad.isEmpty())) {
         return;
     }
     if (msaObject.isNull()) {
@@ -121,7 +121,7 @@ OpenSavedMSAEditorTask::OpenSavedMSAEditorTask(const QString& viewName, const QV
 }
 
 void OpenSavedMSAEditorTask::open() {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
     MSAEditorState state(stateData);

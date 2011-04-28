@@ -93,7 +93,7 @@ QVector<PositionStats> SiteconAlgorithm::calculateDispersionAndAverage(const MAl
         }
         matrix.append(posResult);
     }
-    if (ts.cancelFlag || ts.hasErrors()) {
+    if (ts.cancelFlag || ts.hasError()) {
         matrix.clear();
         return matrix;
     } 

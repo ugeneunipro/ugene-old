@@ -153,10 +153,10 @@ QList<Task*> WorkflowRunFromCMDLineBase::onSubTaskFinished( Task* subTask ) {
     QList<Task*> res;
 
     propagateSubtaskError();
-    if( hasErrors() || isCanceled() ) {
+    if( hasError() || isCanceled() ) {
         return res;
     }
-    assert( !hasErrors() ); // if error, we won't be here
+    assert( !hasError() ); // if error, we won't be here
 
     if( loadTask == subTask ) {
         Schema * schema = loadTask->getSchema();

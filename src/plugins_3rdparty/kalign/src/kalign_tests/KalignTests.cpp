@@ -124,13 +124,13 @@ MAlignment Kalign_Load_Align_Compare_Task::dna_to_ma(QList<GObject*> dnaSeqs) {
 QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
     Q_UNUSED(subTask);
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 
     if (subTask == loadTask1) {
         Document *doc = loadTask1->getDocument();
-        if(loadTask1->hasErrors()) {
+        if(loadTask1->hasError()) {
             return res;
         }
         assert(doc!=NULL);
@@ -143,7 +143,7 @@ QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
         }
 
         const MAlignment &mailgn = dna_to_ma(list);
-        if(hasErrors()) {
+        if(hasError()) {
             return res;
         }
 
@@ -159,7 +159,7 @@ QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
         this->connect(kalignTask,SIGNAL(si_progressChanged()),SLOT(sl_kalignProgressChg()));
     }
     else if (subTask == kalignTask) {
-        if(kalignTask->hasErrors()) {
+        if(kalignTask->hasError()) {
             setError( kalignTask->getError() );
             return res;
         }
@@ -168,11 +168,11 @@ QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
         ma1->setMAlignment( localKalign->resultMA );
     }
     else if (subTask == loadTask2) {
-        if (loadTask2->hasErrors()) {
+        if (loadTask2->hasError()) {
             return res;
         }
         Document *doc = loadTask2->getDocument();
-        if(loadTask2->hasErrors()) {
+        if(loadTask2->hasError()) {
             return res;
         }
         assert(doc!=NULL);
@@ -185,7 +185,7 @@ QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
         }
 
         const MAlignment &mailgn = dna_to_ma(list);
-        if(hasErrors()) {
+        if(hasError()) {
             return res;
         }
 
@@ -234,7 +234,7 @@ void Kalign_Load_Align_Compare_Task::cleanup() {
 
 Task::ReportResult Kalign_Load_Align_Compare_Task::report() {
     propagateSubtaskError();
-    if(hasErrors()) {
+    if(hasError()) {
         stateInfo.setError(  QString("input file \"%1\", pattern file \"%2\":\n").arg(str_inFileURL).arg(str_patFileURL) + stateInfo.getError() );
     }
     return ReportResult_Finished;
@@ -374,13 +374,13 @@ MAlignment GTest_Kalign_Load_Align_QScore::dna_to_ma(QList<GObject*> dnaSeqs) {
 QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
     Q_UNUSED(subTask);
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 
     if (subTask == loadTask1) {
         Document *doc = loadTask1->getDocument();
-        if(loadTask1->hasErrors()) {
+        if(loadTask1->hasError()) {
             return res;
         }
         assert(doc!=NULL);
@@ -393,7 +393,7 @@ QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         }
 
         const MAlignment &mailgn = dna_to_ma(list);
-        if(hasErrors()) {
+        if(hasError()) {
             return res;
         }
 
@@ -409,7 +409,7 @@ QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         this->connect(kalignTask,SIGNAL(si_progressChanged()),SLOT(sl_kalignProgressChg()));
     }
     else if (subTask == kalignTask) {
-        if(kalignTask->hasErrors()) {
+        if(kalignTask->hasError()) {
             setError( kalignTask->getError() );
             return res;
         }
@@ -418,11 +418,11 @@ QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         ma1->setMAlignment( localKalign->resultMA );
     }
     else if (subTask == loadTask2) {
-        if (loadTask2->hasErrors()) {
+        if (loadTask2->hasError()) {
             return res;
         }
         Document *doc = loadTask2->getDocument();
-        if(loadTask2->hasErrors()) {
+        if(loadTask2->hasError()) {
             return res;
         }
         assert(doc!=NULL);
@@ -435,7 +435,7 @@ QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         }
 
         const MAlignment &mailgn = dna_to_ma(list);
-        if(hasErrors()) {
+        if(hasError()) {
             return res;
         }
 
@@ -451,7 +451,7 @@ QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
 
 void GTest_Kalign_Load_Align_QScore::run() {
     double qscore = QScore(ma1->getMAlignment(), ma2->getMAlignment(), stateInfo);
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
 

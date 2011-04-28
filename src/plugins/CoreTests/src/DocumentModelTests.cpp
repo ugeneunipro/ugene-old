@@ -87,7 +87,7 @@ void GTest_LoadDocument::cleanup() {
 }
 
 Task::ReportResult GTest_LoadDocument::report() {
-    if (loadTask!=NULL && loadTask->hasErrors()) {
+    if (loadTask!=NULL && loadTask->hasError()) {
         stateInfo.setError( loadTask->getError());
     } else if (!docContextName.isEmpty()) {
         addContext(docContextName, loadTask->getDocument());
@@ -160,7 +160,7 @@ void GTest_LoadBrokenDocument::init(XMLTestFormat* tf, const QDomElement& el) {
 
 Task::ReportResult GTest_LoadBrokenDocument::report() {
     Document* doc = loadTask->getDocument();
-    if (doc == NULL && loadTask->hasErrors()) {
+    if (doc == NULL && loadTask->hasError()) {
         return ReportResult_Finished;
     }
     stateInfo.setError(QString("file read without errors"));

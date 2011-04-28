@@ -132,7 +132,7 @@ static bool objLessThan(const DNASequenceObject* o1 , const DNASequenceObject* o
 
 
 void OpenAnnotatedDNAViewTask::open() {
-    if (stateInfo.hasErrors() || sequenceObjectRefs.isEmpty()) {
+    if (stateInfo.hasError() || sequenceObjectRefs.isEmpty()) {
         return;
     }
     QList<DNASequenceObject*> seqObjects;
@@ -216,7 +216,7 @@ OpenSavedAnnotatedDNAViewTask::OpenSavedAnnotatedDNAViewTask(const QString& view
 }
 
 void OpenSavedAnnotatedDNAViewTask::open() {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
     AnnotatedDNAViewState state(stateData);

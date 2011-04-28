@@ -118,7 +118,7 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
         try {
             setTaskInfo(&ti);
             setBootstr(true);
-            ti.setStateDesc("Generating sequences");
+            ti.setDescription("Generating sequences");
 
             std::auto_ptr<SeqBoot> seqBoot(new SeqBoot);
 
@@ -134,7 +134,7 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
 
             seqBoot->generateSequencesFromAlignment(ma,s);
 
-            ti.setStateDesc("Calculating trees");
+            ti.setDescription("Calculating trees");
 
             bool initial = true;
             for (int i = 0; i < s.replicates; i++){
@@ -180,7 +180,7 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
                 neighbour_free_resources();
             }
             ti.progress = 99;
-            ti.setStateDesc("Calculating consensus tree");
+            ti.setDescription("Calculating consensus tree");
 
             if(s.consensusID == ConsensusModelTypes::Strict){
                 consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, true, false, false, false);

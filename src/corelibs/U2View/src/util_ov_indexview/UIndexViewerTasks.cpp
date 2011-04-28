@@ -58,7 +58,7 @@ OpenUIndexViewerTask::OpenUIndexViewerTask( UnloadedObject* obj )
 }
 
 void OpenUIndexViewerTask::open() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     if( uindObj.isNull() ) {

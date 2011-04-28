@@ -125,7 +125,7 @@ void GTest_NeighborJoin::prepare() {
 }
 
 Task::ReportResult GTest_NeighborJoin::report() {
-    if (!task->hasErrors()) {
+    if (!task->hasError()) {
         const PhyTree computedTree = task->getResult();
         const PhyTree& treeFromDoc = treeObjFromDoc->getTree(); 
         bool same = PhyTreeObject::treesAreAlike(computedTree, treeFromDoc);

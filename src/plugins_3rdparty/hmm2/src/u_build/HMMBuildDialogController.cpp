@@ -125,7 +125,7 @@ void HMMBuildDialogController::sl_onStateChanged() {
     }
     task->disconnect(this);
     const TaskStateInfo& si = task->getStateInfo();
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         statusLabel->setText(tr("build_finished_with_errors_%1").arg(si.getError()));
     } else if (task->isCanceled()) {
         statusLabel->setText(tr("build_canceled"));
@@ -198,7 +198,7 @@ settings(s), outFile(_outFile), ma(_ma), loadTask(NULL), buildTask(NULL)
 QList<Task*> HMMBuildToFileTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 
@@ -233,12 +233,12 @@ void HMMBuildToFileTask::run() {
 }
 
 void HMMBuildToFileTask::_run() {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
     assert(buildTask!=NULL);
     assert(buildTask->getState() == Task::State_Finished);
-    if (buildTask->getStateInfo().hasErrors()) {
+    if (buildTask->getStateInfo().hasError()) {
         stateInfo.setError(  buildTask->getStateInfo().getError() );
         return;
     }
@@ -256,7 +256,7 @@ QString HMMBuildToFileTask::generateReport() const {
     res+="<table>";
     res+="<tr><td width=200><b>" + tr("Source alignment") + "</b></td><td>" + (loadTask ==  NULL ? settings.name : loadTask->getURL().getURLString()) + "</td></tr>";
     res+="<tr><td><b>" + tr("Profile name") + "</b></td><td>" + settings.name + "</td></tr>";
-    if (hasErrors()) {
+    if (hasError()) {
         res+="<tr><td width=200><b>" + tr("Task was not finished") + "</b></td><td></td></tr>";
         res+="</table>";
         return res;
@@ -335,7 +335,7 @@ void HMMBuildTask::_run() {
         stateInfo.setError(  e.error );
     }
     
-    assert(hmm!=NULL || stateInfo.hasErrors());
+    assert(hmm!=NULL || stateInfo.hasError());
     
     MSAFree(msa);
 }

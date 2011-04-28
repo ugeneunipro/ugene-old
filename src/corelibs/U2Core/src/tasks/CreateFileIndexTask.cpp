@@ -133,7 +133,7 @@ void CreateFileIndexTask::readOneUrl( const QString& url, IOAdapterFactory* inpu
     assert( !url.isEmpty() && NULL != inputFactory && 0 <= num );
     UIndex::IOSection ioSec;
     fillIOSec( ioSec, url, inputFactory, num );
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     ind.ios.append( ioSec );
@@ -158,7 +158,7 @@ void CreateFileIndexTask::readOneUrl( const QString& url, IOAdapterFactory* inpu
         
         qint64 startOff = io->bytesRead();
         std::auto_ptr<Document> doc(df->loadDocument(io.get(), stateInfo, QVariantMap(), DocumentLoadMode_SingleObject));
-        if (hasErrors() || isCanceled()) {
+        if (hasError() || isCanceled()) {
             return;
         }
         assert(doc.get()!=NULL);
@@ -189,7 +189,7 @@ void CreateFileIndexTask::readInputUrls() {
             continue;
         }
         readOneUrl( inputUrls[i], inputFactories[i], i );
-        if( stateInfo.hasErrors() || stateInfo.cancelFlag ) {
+        if( stateInfo.hasError() || stateInfo.cancelFlag ) {
             return;
         }
     }
@@ -208,11 +208,11 @@ void CreateFileIndexTask::writeOutputUrl() {
 }
 
 void CreateFileIndexTask::run() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     readInputUrls();
-    if( stateInfo.hasErrors() || stateInfo.cancelFlag ) {
+    if( stateInfo.hasError() || stateInfo.cancelFlag ) {
         return;
     }
     stateInfo.progress = 0;

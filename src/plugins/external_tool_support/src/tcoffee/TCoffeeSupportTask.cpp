@@ -91,11 +91,11 @@ void TCoffeeSupportTask::prepare(){
 }
 QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==saveTemporaryDocumentTask){
@@ -204,11 +204,11 @@ void TCoffeeWithExtFileSpecifySupportTask::prepare(){
 }
 QList<Task*> TCoffeeWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==loadDocumentTask){

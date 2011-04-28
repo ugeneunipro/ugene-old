@@ -94,7 +94,7 @@ static void adjustRelations(AnnotationTableObject* ao) {
 
 QList<Task*> ImportAnnotationsFromCSVTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> result;
-    if (hasErrors() || subTask == addTask) {
+    if (hasError() || subTask == addTask) {
         return result;
     }
 
@@ -359,7 +359,7 @@ QStringList ReadCSVAsAnnotationsTask::parseLineIntoTokens(const QString& line, c
     vars[LINE_VAR] = QScriptValue(&engine, line);
     vars[LINE_NUM_VAR] = QScriptValue(&engine, lineNum);
     QScriptValue scriptResult = ScriptTask::runScript(&engine, vars, config.parsingScript, ti);
-    if (ti.cancelFlag || ti.hasErrors()) {
+    if (ti.cancelFlag || ti.hasError()) {
         return result;
     }
     if (scriptResult.isString()) {

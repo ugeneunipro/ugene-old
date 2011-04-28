@@ -98,7 +98,7 @@ static bool readUntil(QByteArray & target, IOAdapter * io, TaskStateInfo & ti, c
         currentLine.clear();
         int howMany = 0;
         readLine(currentLine, io, ti, false, &howMany);
-        if( ti.hasErrors() ) {
+        if( ti.hasError() ) {
             return false;
         } else if( currentLine.startsWith(separator) ) {
             io->skip(-1 * (howMany));
@@ -118,7 +118,7 @@ static bool readBlock( QByteArray & block, IOAdapter * io, TaskStateInfo & ti, q
     while( block.size() < size ) {
         QByteArray curBlock;
         readLine(curBlock, io, ti);
-        if(ti.hasErrors()) {
+        if(ti.hasError()) {
             return false;
         } else if( curBlock.isEmpty() ) {
             ti.setError( "Unexpected end of file" );
@@ -215,7 +215,7 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
 
      assert(headers.size() == mergedMapping.size());
 
-     if (!ti.hasErrors() && !ti.cancelFlag && merge && !headers.isEmpty()) {
+     if (!ti.hasError() && !ti.cancelFlag && merge && !headers.isEmpty()) {
          DocumentFormatUtils::addMergedSequenceObject(objects, docUrl, headers, sequence, mergedMapping);
      }
 
@@ -239,7 +239,7 @@ Document* FastqFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
     QString lockReason;
     load( io, io->getURL(), objects, ti, gapSize, predictedSize, lockReason, mode);
 
-    if (ti.hasErrors() || ti.cancelFlag) {
+    if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);
         return NULL;
     }
@@ -322,7 +322,7 @@ void FastqFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io )
 
 GObject *FastqFormat::loadObject(IOAdapter *io, TaskStateInfo &ti) {
     DNASequence *seq = loadSequence(io, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return NULL;
     }
 

@@ -63,7 +63,7 @@ OpenSavedTextObjectViewTask::OpenSavedTextObjectViewTask(const QString& vname, c
 }
 
 void OpenSavedTextObjectViewTask::open() {
-    if (stateInfo.hasErrors() || doc.isNull()) {
+    if (stateInfo.hasError() || doc.isNull()) {
         return;
     }
     assert(doc->isLoaded());
@@ -82,7 +82,7 @@ void OpenSavedTextObjectViewTask::open() {
 }
 
 void OpenSimpleTextObjectViewTask::open() {
-    if (stateInfo.hasErrors() || doc.isNull()) {
+    if (stateInfo.hasError() || doc.isNull()) {
         return;
     }
     assert(doc->isLoaded());

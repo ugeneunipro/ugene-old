@@ -92,7 +92,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
         }
     }
     io->close();
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return model;
     }
 
@@ -108,7 +108,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
     QSet<int> passedPropsSDev;
     QSet<int> passedPropsWeight;
 
-    while (!reader.atEnd() && !si.hasErrors()) {
+    while (!reader.atEnd() && !si.hasError()) {
         line = reader.readLine();
         if (line.isEmpty()) {
             continue;
@@ -231,7 +231,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                             break;
                         }
                     }
-                    if (si.hasErrors()) {
+                    if (si.hasError()) {
                         break;
                     }
                     if (idx == -1) {
@@ -301,7 +301,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
         }
     }
     
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return model;
     }
 

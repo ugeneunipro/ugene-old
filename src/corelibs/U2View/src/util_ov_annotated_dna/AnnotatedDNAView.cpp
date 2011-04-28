@@ -1008,7 +1008,7 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged()
         return;
     }
 
-    if (t->getState() == Task::State_Finished && !(t->hasErrors() || t->isCanceled()) ) {
+    if (t->getState() == Task::State_Finished && !(t->hasError() || t->isCanceled()) ) {
         updateAutoAnnotations();
     }
 

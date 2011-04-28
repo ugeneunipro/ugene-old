@@ -113,7 +113,7 @@ AnnotationData* DigestSequenceTask::createFragment( int pos1, const QString& enz
 
 Task::ReportResult DigestSequenceTask::report()
 {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
 
@@ -154,7 +154,7 @@ void DigestSequenceTask::findCutSites()
 
 void DigestSequenceTask::run()
 {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
 
@@ -370,7 +370,7 @@ void LigateFragmentsTask::prepare()
         if (cfg.checkOverhangs ) {
              if (!prevFragment.isEmpty()) {
                 processOverhangs(prevFragment, dnaFragment, overhangAddition );
-                if (stateInfo.hasErrors()) {
+                if (stateInfo.hasError()) {
                     return;
                 }
              }
@@ -398,7 +398,7 @@ void LigateFragmentsTask::prepare()
         const DNAFragment& last = fragmentList.last();
         QByteArray overhangAddition;
         processOverhangs(last, first, overhangAddition);
-        if (stateInfo.hasErrors()) {
+        if (stateInfo.hasError()) {
             return;
         }
         resultSeq.append(overhangAddition);
@@ -617,7 +617,7 @@ void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<Ann
 
 void LigateFragmentsTask::cleanup()
 {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         qDeleteAll(annotations);    
     }
 }

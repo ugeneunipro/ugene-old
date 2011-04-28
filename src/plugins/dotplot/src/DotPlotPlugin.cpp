@@ -92,7 +92,7 @@ void DotPlotViewContext::sl_loadTaskStateChanged(Task* task) {
         return;
     }
 
-    if (loadTask->getStateInfo().hasErrors()) {
+    if (loadTask->getStateInfo().hasError()) {
         DotPlotDialogs::filesOpenError();
         return;
     }

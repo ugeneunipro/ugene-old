@@ -264,7 +264,7 @@ void GTest_RemoveAlignmentRegion::prepare(){
 
 Task::ReportResult GTest_RemoveAlignmentRegion::report(){
     
-    if (!hasErrors()) {
+    if (!hasError()) {
         
         maobj->removeRegion(startBase, startSeq, width, height, true);
         MAlignment actual = maobj->getMAlignment(),
@@ -352,7 +352,7 @@ Task::ReportResult GTest_AddSequenceToAlignment::report(){
 
     propagateSubtaskError();
     
-    if (!hasErrors()) {
+    if (!hasError()) {
 
         const MAlignment& actual = maobj->getMAlignment();
         const MAlignment& expected = expectedMaobj->getMAlignment();

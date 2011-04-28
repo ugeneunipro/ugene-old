@@ -1200,7 +1200,7 @@ void WorkflowView::sl_loadScene() {
 
 void WorkflowView::sl_xmlSchemaLoaded(Task* t) {
     assert(t != NULL);
-    if(!t->hasErrors()) {
+    if(!t->hasError()) {
         QMessageBox::warning(this, tr("Warning!"), XML_SCHEMA_WARNING);
     } else {
         QMessageBox::warning(this, tr("Warning!"), XML_SCHEMA_APOLOGIZE);

@@ -182,7 +182,7 @@ void SiteconSearchDialogController::sl_selectModelFile() {
     TaskStateInfo si;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(lod.url));
     SiteconModel m = SiteconIO::readModel(iof, lod.url, si);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         QMessageBox::critical(this, tr("error"), si.getError());
         return;
     }

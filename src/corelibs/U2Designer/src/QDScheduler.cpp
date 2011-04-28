@@ -84,7 +84,7 @@ QDScheduler::~QDScheduler() {
 
 QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
     QList<Task*> subs;
-    if (subTask->hasErrors()) {
+    if (subTask->hasError()) {
         propagateSubtaskError();
         return subs;
     }
@@ -715,7 +715,7 @@ QDTask::QDTask(QDStep* _step, QDResultLinker* _linker)
 
 QList<Task*> QDTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> subs;
-    if (subTask->hasErrors()) {
+    if (subTask->hasError()) {
         propagateSubtaskError();
         return subs;
     }

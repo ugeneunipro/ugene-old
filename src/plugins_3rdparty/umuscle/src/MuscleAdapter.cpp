@@ -59,7 +59,7 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
 
     setupAlphaAndScore(ma.getAlphabet(), ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
 
@@ -208,7 +208,7 @@ void MuscleAdapter::refineUnsafe(const MAlignment& ma, MAlignment& res, TaskStat
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
 
     setupAlphaAndScore(ma.getAlphabet(), ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
     MSA msa;
@@ -296,7 +296,7 @@ void MuscleAdapter::align2ProfilesUnsafe(const MAlignment& ma1, const MAlignment
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
 
     setupAlphaAndScore(al, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
     
@@ -316,10 +316,10 @@ void MuscleAdapter::align2ProfilesUnsafe(const MAlignment& ma1, const MAlignment
     gauto_array<ProfPos> ProfOut;
 
     PWPath Path; unsigned uLengthOut;
-    ti.setStateDesc(tr("Aligning profiles"));
+    ti.setDescription(tr("Aligning profiles"));
     AlignTwoProfs(Prof1.data, uLength1, 1.0, Prof2.data, uLength2, 1.0, Path, &ProfOut.data, &uLengthOut);
     
-    ti.setStateDesc(tr("Building output"));
+    ti.setDescription(tr("Building output"));
     MSA msaOut;
     AlignTwoMSAsGivenPath(Path, msa1, msa2, msaOut);
     msa1.Clear();//save memory
@@ -480,7 +480,7 @@ void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, c
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
     
     setupAlphaAndScore(al, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
     
@@ -498,7 +498,7 @@ void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, c
     QVector<AlignedSeq> alignedSeqs;
     int dp = ti.progress;
     for (int i=0, n = unalignedSeqs.getNumRows(); i < n; i++) {
-        ti.setStateDesc(tr("Aligning sequence %1 of %2").arg(QString::number(i+1)).arg(QString::number(n)));
+        ti.setDescription(tr("Aligning sequence %1 of %2").arg(QString::number(i+1)).arg(QString::number(n)));
         ti.progress = dp + i*(95-dp)/n;
         const MAlignmentRow& useq = unalignedSeqs.getRow(i);
         Seq seq; seq.FromString(useq.getCore().constData(), useq.getName().toLocal8Bit().constData());
@@ -530,7 +530,7 @@ void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, c
     QByteArray seqPath2CurrentMSA;
     for (int i=0, n = alignedSeqs.size(); i < n; i++) {
         if (i%10 == 9) {
-            ti.setStateDesc(tr("Merging results: %1 of %2").arg(QString::number(i+1)).arg(QString::number(n)));
+            ti.setDescription(tr("Merging results: %1 of %2").arg(QString::number(i+1)).arg(QString::number(n)));
         }
         seqPath2CurrentMSA.clear();
         const AlignedSeq& aseq = alignedSeqs[i];

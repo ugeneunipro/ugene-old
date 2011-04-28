@@ -145,11 +145,11 @@ inline QString Attribute::getAttributeValue() const {
     // FIXME: report errors!
     // FIXME: write to log
     if( tsi.cancelFlag ) {
-        if( !tsi.hasErrors() ) {
+        if( !tsi.hasError() ) {
             tsi.setError("Script task canceled");
         }
     }
-    if(tsi.hasErrors()) {
+    if(tsi.hasError()) {
         return QString();
     }
     if( scriptResult.isString() ) {
@@ -178,11 +178,11 @@ inline int Attribute::getAttributeValue() const {
     QScriptValue scriptResult = ScriptTask::runScript(&engine, scriptVars, scriptData.getScriptText(), tsi);
 
     if( tsi.cancelFlag ) {
-        if( !tsi.hasErrors() ) {
+        if( !tsi.hasError() ) {
             tsi.setError("Script task canceled");
         }
     }
-    if(tsi.hasErrors()) {
+    if(tsi.hasError()) {
         return 0;
     }
     if( scriptResult.isNumber() ) {

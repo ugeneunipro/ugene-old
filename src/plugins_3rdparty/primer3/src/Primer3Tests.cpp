@@ -432,7 +432,7 @@ Task::ReportResult GTest_Primer3::report()
 {
     QList<PrimerPair> currentBestPairs = task->getBestPairs();
 
-    if(task->hasErrors() && (expectedBestPairs.size() > 0))
+    if(task->hasError() && (expectedBestPairs.size() > 0))
     {
         stateInfo.setError(task->getError());
         return ReportResult_Finished;

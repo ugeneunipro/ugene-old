@@ -58,7 +58,7 @@ Task::ReportResult DnaAssemblyMultiTask::report() {
 
 QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
-    if (subTask->hasErrors() || isCanceled()) {
+    if (subTask->hasError() || isCanceled()) {
         return subTasks;
     }
 
@@ -111,7 +111,7 @@ const MAlignmentObject* DnaAssemblyMultiTask::getAssemblyResult() {
 
 QString DnaAssemblyMultiTask::generateReport() const {
     QString res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return QString("Assembly task finished with error: %1").arg(getError());
     }
 

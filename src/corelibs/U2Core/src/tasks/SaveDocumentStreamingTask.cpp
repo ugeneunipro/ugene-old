@@ -47,14 +47,14 @@ SaveDocumentStreamingTask::~SaveDocumentStreamingTask() {
 }
 
 void SaveDocumentStreamingTask::prepare() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     doc->lockState( lock );
 }
 
 void SaveDocumentStreamingTask::run() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     DocumentFormat* df = doc->getDocumentFormat();

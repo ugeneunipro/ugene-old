@@ -130,7 +130,7 @@ static void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti) {
         return;
     }
 
-     if (!ti.hasErrors() && !ti.cancelFlag) {
+     if (!ti.hasError() && !ti.cancelFlag) {
          MAlignmentObject* obj = new MAlignmentObject(ma);
          objects.append(obj);
      }

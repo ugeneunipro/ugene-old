@@ -162,7 +162,7 @@ void ExportSequenceTask::run() {
         if (config.strand == TriState_No || config.strand == TriState_Unknown) { 
             r1Items.append(toRevComplement(ei0, stateInfo));
         }
-        if (hasErrors()) {
+        if (hasError()) {
             return;
         }
      
@@ -176,7 +176,7 @@ void ExportSequenceTask::run() {
             } else {
                 r2Items.append(ei1);
             }
-            if (hasErrors()) {
+            if (hasError()) {
                 return;
             }
         }
@@ -250,7 +250,7 @@ ExportAnnotationSequenceTask::ExportAnnotationSequenceTask(const ExportAnnotatio
 
 QList<Task*> ExportAnnotationSequenceTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (subTask == extractSubTask && !extractSubTask->hasErrors() && !isCanceled()) {
+    if (subTask == extractSubTask && !extractSubTask->hasError() && !isCanceled()) {
         exportSubTask = new ExportSequenceTask(config.exportSequenceSettings);
         res.append(exportSubTask);  
     }

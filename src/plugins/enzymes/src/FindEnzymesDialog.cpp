@@ -147,7 +147,7 @@ void EnzymesSelectorWidget::loadFile(const QString& url) {
         GTIMER(c1,t1,"FindEnzymesDialog::loadFile [EnzymesIO::readEnzymes]");
         enzymes = EnzymesIO::readEnzymes(url, ti);
     }
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         if (isVisible()) {
             QMessageBox::critical(NULL, tr("Error"), ti.getError());
         } else  {
@@ -185,7 +185,7 @@ void EnzymesSelectorWidget::saveFile(const QString& url) {
 
     EnzymesIO::writeEnzymes(url, source, enzymes, ti);
 
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         if (isVisible()) {
             QMessageBox::critical(NULL, tr("Error"), ti.getError());
         } else  {

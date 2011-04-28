@@ -47,7 +47,7 @@ RFSArrayWKAlgorithm::RFSArrayWKAlgorithm(RFResultsListener* rl, const char* seqX
 
 void RFSArrayWKAlgorithm::prepare() {
     RFAlgorithmBase::prepare();
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     // ARRAY_SIZE is smaller than SEARCH_SIZE. Allocate diags only for ARRAY_SIZE elements ->

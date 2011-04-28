@@ -37,7 +37,7 @@ void TaskSignalMapper::sl_taskStateChanged() {
                 break;
             case Task::State_Finished:
                 emit si_taskFinished(t);
-                if (t->hasErrors() || t->hasSubtasksWithErrors()) {
+                if (t->hasError() || t->hasSubtasksWithErrors()) {
                     emit si_taskFailed(t);
                 } else {
                     emit si_taskSucceeded(t);

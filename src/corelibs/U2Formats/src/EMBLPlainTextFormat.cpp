@@ -135,8 +135,8 @@ bool EMBLPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
         hasLine = false;
         if (st->entry->name.isEmpty()) {
             readIdLine(st);
-            assert(si.hasErrors() || !st->entry->name.isEmpty());
-            if (si.hasErrors()) {
+            assert(si.hasError() || !st->entry->name.isEmpty());
+            if (si.hasError()) {
                 break;
             }
             continue;
@@ -217,7 +217,7 @@ bool EMBLPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
             st->entry->tags.insertMulti(lastTagName, st->value());
         }
     }
-    if (!st->isNull() && !si.hasErrors() && !si.cancelFlag) {
+    if (!st->isNull() && !si.hasError() && !si.cancelFlag) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Record is truncated."));
     }
 

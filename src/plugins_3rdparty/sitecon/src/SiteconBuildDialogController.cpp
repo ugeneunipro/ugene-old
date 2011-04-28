@@ -139,7 +139,7 @@ void SiteconBuildDialogController::sl_onStateChanged() {
     }
     task->disconnect(this);
     const TaskStateInfo& si = task->getStateInfo();
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         statusLabel->setText(tr("build_finished_with_errors_%1").arg(si.getError()));
     } else if (task->isCanceled()) {
         statusLabel->setText(tr("build_canceled"));
@@ -153,7 +153,7 @@ void SiteconBuildDialogController::sl_onStateChanged() {
 
 void SiteconBuildDialogController::sl_onProgressChanged() {
     assert(task==sender());
-    statusLabel->setText(tr("running_state_%1_progress_%2%").arg(task->getStateInfo().getStateDesc()).arg(task->getProgress()));
+    statusLabel->setText(tr("running_state_%1_progress_%2%").arg(task->getStateInfo().getDescription()).arg(task->getProgress()));
 }
 
 void SiteconBuildDialogController::reject() {
@@ -208,26 +208,26 @@ void SiteconBuildTask::run() {
     SiteconAlgorithm::calculateACGTContent(ma, settings);
     settings.numSequencesInAlignment = ma.getNumRows();
     m.settings = settings;
-    stateInfo.setStateDesc(tr("calculating_ave_disp_matrix"));
+    stateInfo.setDescription(tr("calculating_ave_disp_matrix"));
     m.matrix = SiteconAlgorithm::calculateDispersionAndAverage(ma, settings, stateInfo);
-    if (stateInfo.hasErrors() || isCanceled()) {
+    if (stateInfo.hasError() || isCanceled()) {
         return;
     }
-    stateInfo.setStateDesc(tr("calculating_weights"));
+    stateInfo.setDescription(tr("calculating_weights"));
     SiteconAlgorithm::calculateWeights(ma, m.matrix, m.settings, false, stateInfo);
-    if (stateInfo.hasErrors() || isCanceled()) {
+    if (stateInfo.hasError() || isCanceled()) {
         return;
     }
     stateInfo.progress+=5;
-    stateInfo.setStateDesc(tr("calculating_firstTypeErr"));
+    stateInfo.setDescription(tr("calculating_firstTypeErr"));
     m.err1 = SiteconAlgorithm::calculateFirstTypeError(ma, settings, stateInfo);
-    if (stateInfo.hasErrors() || isCanceled()) {
+    if (stateInfo.hasError() || isCanceled()) {
         return;
     }
     stateInfo.progress+=10;
-    stateInfo.setStateDesc(tr("calculating_second_type_err"));
+    stateInfo.setDescription(tr("calculating_second_type_err"));
     m.err2 = SiteconAlgorithm::calculateSecondTypeError(m.matrix, settings, stateInfo);
-    if (stateInfo.hasErrors() || isCanceled()) {
+    if (stateInfo.hasError() || isCanceled()) {
         return;
     }
 }
@@ -251,7 +251,7 @@ SiteconBuildToFileTask::SiteconBuildToFileTask(const QString& inFile, const QStr
     loadTask = new LoadDocumentTask(format, inFile, iof);
     loadTask->setSubtaskProgressWeight(0.03F);
     stateInfo.progress = 0;
-    stateInfo.setStateDesc(tr("loading_ali"));
+    stateInfo.setDescription(tr("loading_ali"));
     addSubTask(loadTask);
 }
 
@@ -260,7 +260,7 @@ QList<Task*> SiteconBuildToFileTask::onSubTaskFinished(Task* subTask) {
     if (isCanceled()) {
         return res;
     }
-    if (subTask->getStateInfo().hasErrors()) {
+    if (subTask->getStateInfo().hasError()) {
         stateInfo.setError(  subTask->getStateInfo().getError() );
         return res;
     }

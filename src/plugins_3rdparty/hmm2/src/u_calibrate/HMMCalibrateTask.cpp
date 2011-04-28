@@ -59,7 +59,7 @@ QList<Task*> HMMCalibrateParallelTask::onSubTaskFinished(Task* subTask) {
 }
 
 void HMMCalibrateParallelTask::run() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     
@@ -174,7 +174,7 @@ void HMMCalibrateToFileTask::prepare() {
 QList<Task*> HMMCalibrateToFileTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
     if (subTask == readTask) {
@@ -199,7 +199,7 @@ QString HMMCalibrateToFileTask::generateReport() const {
     res+="<table>";
     res+="<tr><td width=200><b>" + tr("Source profile") + "</b></td><td>" + QFileInfo(inFile).absoluteFilePath() + "</td></tr>";
 
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         res+="<tr><td width=200><b>" + tr("Task was not finished") + "</b></td><td></td></tr>";
         res+="</table>";
         return res;

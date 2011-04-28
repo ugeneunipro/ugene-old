@@ -46,7 +46,7 @@ Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), annName(_an), annG
 
 QList<Task*> FindTandemsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 
@@ -157,7 +157,7 @@ QList<Task*> TandemFinder::onSubTaskFinished(Task* subTask){
 }
 
 void TandemFinder::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti){
-    if(ti.hasErrors()){return;}
+    if(ti.hasError()){return;}
     quint64 offs = t->getRegionSequence() - t->getGlobalConfig().seq;
     QMutexLocker lock(&subtasksQueue); //TODO: fix me
     regionTasks.append(new TandemFinder_Region(regionCount++, t->getRegionSequence(), t->getRegionSequenceLen(), offs, settings));
@@ -214,8 +214,7 @@ ConcreteTandemFinder::ConcreteTandemFinder(QString taskName, const char* _sequen
             suffArrMemory = seqSize*sizeof(quint32)*2;
         }
         suffArrMemory = qMax(suffArrMemory/(1024*1024),1); //in Mb
-        TaskResourceUsage resUsage(RESOURCE_MEMORY, suffArrMemory, true);
-        taskResources.append(resUsage);
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, suffArrMemory, true));
 }
 
 void ConcreteTandemFinder::prepare(){

@@ -164,7 +164,7 @@ void BowtieTask::prepare()
         
         buildTask = new BowtieBuildTask(indexURL, indexPath);
         assert(buildTask != NULL);
-        buildTask->setSubtaskProgressWeight(0.6);
+        buildTask->setSubtaskProgressWeight(0.6f);
 		addSubTask(buildTask);
 	}
 
@@ -174,16 +174,15 @@ void BowtieTask::prepare()
     
     static const int SHORT_READ_AVG_LENGTH = 1000;
  	qint64 memUseMB = (fileSize *  4 + SHORT_READ_AVG_LENGTH*10 ) / 1024 / 1024 + 100;
- 	TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB, true);
- 	taskResources.append(memUsg);
-    
+ 	addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, true));
+ 	
 	BowtieTLSTask * tlsTask = new BowtieTLSTask();
 	tlsTask->setSubtaskProgressWeight(0.4);
 	addSubTask(tlsTask);	
 }
 
 Task::ReportResult BowtieTask::report() {
-	if(hasErrors()) {
+	if(hasError()) {
 		return ReportResult_Finished;
 	}
 	if (justBuildIndex) {
@@ -241,7 +240,7 @@ QList<Task*> BowtieRunFromSchemaTask::onSubTaskFinished(Task* subTask) {
         return res;
     }
     propagateSubtaskError();
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     
@@ -253,7 +252,7 @@ QList<Task*> BowtieRunFromSchemaTask::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult BowtieRunFromSchemaTask::report() {
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     QFileInfo fi(settings.resultFileName.getURLString());
@@ -439,8 +438,7 @@ BowtieBuildTask::BowtieBuildTask( QString _refPath, QString _outEbwtPath )
 	}
 	qint64 memUseMB = file.size() * 3 / 1024 / 1024 + 100;
 	coreLog.trace(QString("bowtie-build:Memory resourse %1").arg(memUseMB));
-	TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB);
-	taskResources.append(memUsg);
+	addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB));
 }
 
 TLSContext* BowtieBuildTask::createContextInstance() {

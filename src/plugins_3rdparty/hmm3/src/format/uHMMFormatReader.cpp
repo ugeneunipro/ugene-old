@@ -326,7 +326,7 @@ const QString UHMMFormatReader::HMMER2_VERSION_HEADER           = "HMMER2";
 const QString UHMMFormatReader::HMMER3_VERSION_HEADER           = "HMMER3";
 
 UHMMFormatReader::UHMMFormatReader( IOAdapter * i, TaskStateInfo & tsi ) : io( i ), ti( tsi ) {
-    if( ti.hasErrors() || ti.cancelFlag ) {
+    if( ti.hasError() || ti.cancelFlag ) {
         return;
     }
     
@@ -348,7 +348,7 @@ UHMMFormatReader::HMMER_VERSIONS UHMMFormatReader::getVersion( const QByteArray 
 }
 
 P7_HMM * UHMMFormatReader::getNextHmm() {
-    if( ti.hasErrors() || ti.cancelFlag ) {
+    if( ti.hasError() || ti.cancelFlag ) {
         return NULL;
     }
     
@@ -614,7 +614,7 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
     }
     esl_alphabet_Destroy( abc );
     
-    if( ti.hasErrors() ) {
+    if( ti.hasError() ) {
         p7_hmm_Destroy( hmm );
         return NULL;
     }
@@ -895,7 +895,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
     p7_bg_Destroy(bg);
     esl_alphabet_Destroy( abc );
     
-    if( ti.hasErrors() ) {
+    if( ti.hasError() ) {
         p7_hmm_Destroy( hmm );
         return NULL;
     }

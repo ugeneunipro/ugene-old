@@ -60,7 +60,7 @@ ExportToNewFileFromIndexTask::~ExportToNewFileFromIndexTask() {
 void ExportToNewFileFromIndexTask::prepare() {
     io = getOpenedIOAdapter(exportFilename);
     if( NULL == io ) {
-        assert( stateInfo.hasErrors() );
+        assert( stateInfo.hasError() );
         return;
     }
     
@@ -73,7 +73,7 @@ void ExportToNewFileFromIndexTask::prepare() {
         }
         subs << new GetDocumentFromIndexTask( index, docInd );
     }
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         qDeleteAll( subs );
         return;
     }
@@ -139,7 +139,7 @@ QList< Task* > ExportToNewFileFromIndexTask::saveDocTaskFinished( SaveDocumentSt
 
 QList< Task* > ExportToNewFileFromIndexTask::onSubTaskFinished( Task* subTask ) {
     assert( NULL != subTask );
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return QList< Task* >();
     }
     GetDocumentFromIndexTask* getDocTask = qobject_cast< GetDocumentFromIndexTask* >( subTask );

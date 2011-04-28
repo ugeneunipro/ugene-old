@@ -72,7 +72,7 @@ namespace U2 {
 
 
     void RetrieveRemoteMachineInfoTask::run() {
-        if( hasErrors() || isCanceled() ) {
+        if( hasError() || isCanceled() ) {
             return;
         }
         assert( NULL != machine );
@@ -87,7 +87,7 @@ namespace U2 {
         if( pingTask->isCanceled() ) {
             pingTask->setError( tr( "Ping task is canceled by user" ) );
         }
-        if( pingTask->hasErrors() ) {
+        if( pingTask->hasError() ) {
             setError( tr( "Ping task finished with error: " ) + pingTask->getError() );
             pingOK = false;
             return ReportResult_Finished;
@@ -148,7 +148,7 @@ namespace U2 {
         }
         processEncodedMachines( http.syncGet( PUBLIC_MACHINES_KEEPER_PAGE ) );
 
-        if (hasErrors()) {
+        if (hasError()) {
             rsLog.error(tr("Failed to retrieve public machines, error: %1").arg(getError()));
         } else {
             rsLog.info(tr("Found %1 public machines").arg(publicMachines.size()));
@@ -195,7 +195,7 @@ namespace U2 {
     }
 
     void SaveRemoteMachineSettings::run() {
-        if(hasErrors() || isCanceled()) {
+        if(hasError() || isCanceled()) {
             return;
         }
         QFile out(filename);

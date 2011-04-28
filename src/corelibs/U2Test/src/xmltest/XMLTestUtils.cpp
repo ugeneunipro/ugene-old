@@ -53,7 +53,7 @@ void XMLMultiTest::init(XMLTestFormat *tf, const QDomElement& el) {
 
         subs.append(subTest);
     }
-    if (!hasErrors()) {
+    if (!hasError()) {
         foreach(Task* t, subs) {
             addSubTask(t);
         }
@@ -62,7 +62,7 @@ void XMLMultiTest::init(XMLTestFormat *tf, const QDomElement& el) {
 
 
 Task::ReportResult XMLMultiTest::report() {
-    if (!hasErrors()) {
+    if (!hasError()) {
         Task* t = getSubtaskWithErrors();
         if (t!=NULL) {
             stateInfo.setError(t->getError());

@@ -103,7 +103,7 @@ qint64 RemoteServiceMachine::runTask(TaskStateInfo& si, const QString & taskFact
     }    
 
     initSession(si);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return taskId;
     }
     
@@ -115,7 +115,7 @@ qint64 RemoteServiceMachine::runTask(TaskStateInfo& si, const QString & taskFact
     
     RunRemoteTaskRequest request(session.get(), schema, inUrls);
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return taskId;
     }
     UctpElementData elData = replyData.value(UctpElements::TASK);
@@ -156,7 +156,7 @@ static QString getElementValueByNameAttr(const QString& name, const QList<UctpEl
     GetRemoteTaskPropertyRequest request(session.get(), taskId, properties);
 
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return state;
     }
 
@@ -182,7 +182,7 @@ int RemoteServiceMachine::getTaskProgress(TaskStateInfo& si, qint64 taskId) {
     
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
     
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return res;
     }
 
@@ -206,7 +206,7 @@ void RemoteServiceMachine::getTaskResult(TaskStateInfo& si, qint64 taskId, const
         GetRemoteTaskResultRequst request(session.get(), taskId);
 
         QMap<QString,UctpElementData> replyData = sendRequest(si, request);
-        if (si.hasErrors()) {
+        if (si.hasError()) {
             return;
         }
 
@@ -237,7 +237,7 @@ QString RemoteServiceMachine::getTaskErrorMessage(TaskStateInfo& si, qint64 task
     GetRemoteTaskPropertyRequest request(session.get(), taskId, properties);
 
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return res;
     }
 
@@ -256,13 +256,13 @@ void RemoteServiceMachine::ping(TaskStateInfo& si) {
 QString RemoteServiceMachine::getServerName(TaskStateInfo& si) {
     QString res;
     initSession(si);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return res;
     }
      
     GetGlobalPropertyRequest request(session.get(), BaseGlobalProperties::HOST_NAME);
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return res;
     }
     UctpElementData elData = replyData.value(UctpElements::PROPERTY);
@@ -275,14 +275,14 @@ QString RemoteServiceMachine::getServerName(TaskStateInfo& si) {
 void RemoteServiceMachineReplyHandler::sl_onReplyFinished(QNetworkReply* reply ) {
     assert(reply != NULL);
     assert(eventLoop != NULL);
-    si->setStateDesc("");
+    si->setDescription("");
     if (reply->error() == QNetworkReply::NoError) {
         bool parseOk = protocolHandler->parseReply(reply, command, *replyData);
         if (!parseOk) {
             si->setError(QString(tr("Failed to parse server response. %1")).arg(protocolHandler->getErrorText()));
         }
     } else {
-        if(!si->hasErrors()) {
+        if(!si->hasError()) {
             si->setError(reply->errorString());
         }
     }
@@ -292,14 +292,14 @@ void RemoteServiceMachineReplyHandler::sl_onReplyFinished(QNetworkReply* reply )
 
 void RemoteServiceMachineReplyHandler::sl_onUploadProgress(qint64 bytesSent, qint64 bytesTotal) {
     if(bytesTotal != -1) {
-        si->setStateDesc(RemoteServiceMachineReplyHandler::tr("Uploading %1%").arg((int)(bytesSent / (float)bytesTotal * 100)));
+        si->setDescription(RemoteServiceMachineReplyHandler::tr("Uploading %1%").arg((int)(bytesSent / (float)bytesTotal * 100)));
     }
     inactiveCount = 0;
 }
 
 void RemoteServiceMachineReplyHandler::sl_onDownloadProgress(qint64 bytesSent, qint64 bytesTotal) {
     if(bytesTotal != -1) {
-        si->setStateDesc(RemoteServiceMachineReplyHandler::tr("Downloading %1%").arg((int)(bytesSent / (float)bytesTotal * 100)));
+        si->setDescription(RemoteServiceMachineReplyHandler::tr("Downloading %1%").arg((int)(bytesSent / (float)bytesTotal * 100)));
     }
     inactiveCount = 0;
 }
@@ -391,7 +391,7 @@ void RemoteServiceMachine::initSession(TaskStateInfo& si) {
     InitSessionRequest request(userName, pass);
     
     QMap<QString,UctpElementData> replyData =  sendRequest(si, request);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return;
     }
     UctpElementData elData = replyData.value(UctpElements::SESSION);
@@ -433,7 +433,7 @@ void RemoteServiceMachine::getTaskProperties( TaskStateInfo& si, qint64 taskId, 
     GetRemoteTaskPropertyRequest request( session.get(), taskId, properties.keys());
 
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return;
     }
     QList<UctpElementData> propertyList = replyData.values(UctpElements::PROPERTY);
@@ -456,14 +456,14 @@ QList<qint64> RemoteServiceMachine::getFinishedTasks(TaskStateInfo& si) {
 QList<qint64> RemoteServiceMachine::getTasksList( TaskStateInfo& si, const QByteArray& taskState) {
     QList<qint64> res;
     initSession(si);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return res;
     }   
 
     GetGlobalPropertyRequest request( session.get(), taskState);
 
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         return res;
     }
     QList<UctpElementData> propertyList = replyData.values(UctpElements::PROPERTY);

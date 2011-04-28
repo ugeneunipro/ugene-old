@@ -867,7 +867,7 @@ void TreeViewerUI::sl_unrootedLayoutTriggered() {
 }
 
 void TreeViewerUI::sl_layoutRecomputed() {
-    if (layoutTask->getState() != Task::State_Finished || layoutTask->hasErrors()) {
+    if (layoutTask->getState() != Task::State_Finished || layoutTask->hasError()) {
         return;
     }
 

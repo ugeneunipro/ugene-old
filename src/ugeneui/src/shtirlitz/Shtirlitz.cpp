@@ -263,7 +263,7 @@ Task("Shtirlitz task", TaskFlag_None), report(_report) {
 }
 
 void ShtirlitzTask::run() {
-    stateInfo.setStateDesc( tr("Connecting to remote server") );
+    stateInfo.setDescription( tr("Connecting to remote server") );
 
     //Creating QHttp object and enabling proxy if needed.
     SyncHTTP http( QUrl(DESTINATION_URL_KEEPER_SRV).host() );

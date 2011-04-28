@@ -243,19 +243,19 @@ void GTest_uHMMERSearch::prepare() {
 QList<Task*> GTest_uHMMERSearch::onSubTaskFinished(Task* subTask) {
     Q_UNUSED(subTask);
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 
 
     if(saveTask && saveTask->isFinished()) {
-        if (saveTask->hasErrors()) {
+        if (saveTask->hasError()) {
             stateInfo.setError(  "SaveDocumentTask: "+saveTask->getError() );
         }
         return res;
     } else if(searchTask!=NULL && searchTask->isFinished()) {
 
-        if (searchTask->hasErrors()) {
+        if (searchTask->hasError()) {
             stateInfo.setError(  searchTask->getError() );
             return res;
         }
@@ -358,7 +358,7 @@ void GTest_uHMMERBuild::init(XMLTestFormat* tf, const QDomElement& el) {
 
 Task::ReportResult GTest_uHMMERBuild::report() {
     propagateSubtaskError();
-    if(buildTask->hasErrors())  {
+    if(buildTask->hasError())  {
         stateInfo.setError(  buildTask->getError() );
     }
     return ReportResult_Finished;
@@ -550,7 +550,7 @@ void GTest_uHMMERCalibrate::init(XMLTestFormat* tf, const QDomElement& el) {
 
 Task::ReportResult GTest_uHMMERCalibrate::report() {
     propagateSubtaskError();
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return ReportResult_Finished;
     }
     for(int i=0; i < nCalibrates; i++){

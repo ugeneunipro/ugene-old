@@ -68,7 +68,7 @@ public:
     ~StreamSequenceReader();
     bool init(const QList<GUrl>& urls);
     bool hasNext();
-    bool hasErrors() { return errorOccured; }
+    bool hasError() { return errorOccured; }
     int getProgress();
     QString getErrorMessage();
     DNASequence* getNextSequenceObject();

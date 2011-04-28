@@ -147,7 +147,7 @@ leftOverlap(lo), rightOverlap(ro)
     // get resources
     QList< TaskResourceUsage > resources = t->getCallback()->getResources( this );
     foreach( const TaskResourceUsage & resource, resources ) {
-        taskResources.append( resource );
+        addTaskResource(resource);
     }
 }
 
@@ -188,7 +188,7 @@ void SequenceWalkerSubtask::prepareLocalRegion() {
 }
 
 void SequenceWalkerSubtask::run() {
-    assert(!t->hasErrors());
+    assert(!t->hasError());
     t->getCallback()->onRegion(this, stateInfo);
 }
 

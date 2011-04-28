@@ -120,7 +120,7 @@ objView(v), viewName(v->getName()), objRef(obj), objDoc(obj->getDocument())
 }
 
 Task::ReportResult AddToViewTask::report() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     if (objDoc == NULL) {

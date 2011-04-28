@@ -223,7 +223,7 @@ void QDRunDialogTask::setupQuery(Document* doc) {
 
 QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> st;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return st;
     }
     if (subTask == openProjTask) {

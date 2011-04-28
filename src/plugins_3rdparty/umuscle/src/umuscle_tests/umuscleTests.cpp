@@ -189,8 +189,8 @@ void GTest_uMuscle::prepare() {
 }
 
 Task::ReportResult GTest_uMuscle::report() {
-    if (!hasErrors()) {
-        if(mTask->hasErrors()) {
+    if (!hasError()) {
+        if(mTask->hasError()) {
             stateInfo.setError(  mTask->getError() );
             return ReportResult_Finished;
         }
@@ -325,7 +325,7 @@ void GTest_uMuscleAddUnalignedSequenceToProfile::init(XMLTestFormat *tf, const Q
 }
 
 void GTest_uMuscleAddUnalignedSequenceToProfile::prepare() {
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     Document* aliDoc = getContext<Document>(this, aliDocName);
@@ -378,7 +378,7 @@ void GTest_uMuscleAddUnalignedSequenceToProfile::prepare() {
 
 Task::ReportResult GTest_uMuscleAddUnalignedSequenceToProfile::report() {
     propagateSubtaskError();
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
     MAlignment ma = aliObj->getMAlignment();
@@ -515,13 +515,13 @@ MAlignment GTest_Muscle_Load_Align_QScore::dna_to_ma(QList<GObject*> dnaSeqs) {
 QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
     Q_UNUSED(subTask);
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 
     if (subTask == loadTask1) {
         Document *doc = loadTask1->getDocument();
-        if(loadTask1->hasErrors()) {
+        if(loadTask1->hasError()) {
             return res;
         }
         assert(doc!=NULL);
@@ -534,7 +534,7 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         }
 
         const MAlignment &mailgn = dna_to_ma(list);
-        if(hasErrors()) {
+        if(hasError()) {
             return res;
         }
 
@@ -550,7 +550,7 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         this->connect(muscleTask,SIGNAL(si_progressChanged()),SLOT(sl_muscleProgressChg()));
     }
     else if (subTask == muscleTask) {
-        if(muscleTask->hasErrors()) {
+        if(muscleTask->hasError()) {
             setError( muscleTask->getError() );
             return res;
         }
@@ -561,11 +561,11 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         
     }
     else if (subTask == loadTask2) {
-        if (loadTask2->hasErrors()) {
+        if (loadTask2->hasError()) {
             return res;
         }
         Document *doc = loadTask2->getDocument();
-        if(loadTask2->hasErrors()) {
+        if(loadTask2->hasError()) {
             return res;
         }
         assert(doc!=NULL);
@@ -578,7 +578,7 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
         }
 
         const MAlignment &mailgn = dna_to_ma(list);
-        if(hasErrors()) {
+        if(hasError()) {
             return res;
         }
 
@@ -597,7 +597,7 @@ void GTest_Muscle_Load_Align_QScore::run() {
     const QList<MAlignmentRow> &alignedSeqs2 = ma2->getMAlignment().getRows();
 
     double qscore = QScore(ma1->getMAlignment(), ma2->getMAlignment(), stateInfo);
-    if(stateInfo.hasErrors()) {
+    if(stateInfo.hasError()) {
         return;
     }
 
@@ -659,13 +659,13 @@ MAlignment Muscle_Load_Align_Compare_Task::dna_to_ma(QList<GObject*> dnaSeqs) {
 
 QList<Task*> Muscle_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
 
     if (subTask == loadTask1) {
         Document *doc = loadTask1->getDocument();
-        if(loadTask1->hasErrors()) {
+        if(loadTask1->hasError()) {
             return res;
         }
         assert(doc!=NULL);
@@ -678,7 +678,7 @@ QList<Task*> Muscle_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
         }
 
         const MAlignment &mailgn = dna_to_ma(list);
-        if(hasErrors()) {
+        if(hasError()) {
             return res;
         }
 
@@ -695,7 +695,7 @@ QList<Task*> Muscle_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
         this->connect(muscleTask,SIGNAL(si_progressChanged()),SLOT(sl_muscleProgressChg()));
     }
     else if (subTask == muscleTask) {
-        if(muscleTask->hasErrors()) {
+        if(muscleTask->hasError()) {
             setError( muscleTask->getError() );
             return res;
         }
@@ -705,11 +705,11 @@ QList<Task*> Muscle_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
 
     }
     else if (subTask == loadTask2) {
-        if (loadTask2->hasErrors()) {
+        if (loadTask2->hasError()) {
             return res;
         }
         Document *doc = loadTask2->getDocument();
-        if(loadTask2->hasErrors()) {
+        if(loadTask2->hasError()) {
             return res;
         }
         assert(doc!=NULL);
@@ -722,7 +722,7 @@ QList<Task*> Muscle_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
         }
 
         const MAlignment &mailgn = dna_to_ma(list);
-        if(hasErrors()) {
+        if(hasError()) {
             return res;
         }
 
@@ -773,7 +773,7 @@ void Muscle_Load_Align_Compare_Task::cleanup() {
 
 Task::ReportResult Muscle_Load_Align_Compare_Task::report() {
     propagateSubtaskError();
-    if(hasErrors()) {
+    if(hasError()) {
         stateInfo.setError(  QString("input file \"%1\", pattern file \"%2\":\n").arg(str_inFileURL).arg(str_patFileURL) + stateInfo.getError() );
     }
     return ReportResult_Finished;
@@ -889,7 +889,7 @@ void GTest_uMusclePacketTest::prepare() {
 
 Task::ReportResult GTest_uMusclePacketTest::report() {
     propagateSubtaskError();
-    if (!hasErrors()) {
+    if (!hasError()) {
         algoLog.trace(QString("uMusclePacketTest: \"%1\" accomplished. Time elapsed: %2 ms").arg(inDirName).arg(timer.elapsed()));
     }
     return ReportResult_Finished;

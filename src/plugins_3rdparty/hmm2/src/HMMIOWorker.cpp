@@ -222,7 +222,7 @@ void HMMReader::sl_taskFinished() {
     HMMReadTask* t = qobject_cast<HMMReadTask*>(sender());
     if (t->getState() != Task::State_Finished) return;
     if (output) {
-        if (!t->hasErrors()) {
+        if (!t->hasError()) {
             QVariant v = qVariantFromValue<plan7_s*>(t->getHMM());
             output->put(Message(HMMLib::HMM_PROFILE_TYPE(), v));
         }

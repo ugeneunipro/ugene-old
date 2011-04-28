@@ -245,7 +245,7 @@ void MSAEditor::sl_buildTree() {
 }
 
 void MSAEditor::sl_openTree() {
-    if (treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasErrors()) {
+    if (treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError()) {
         return;
     }
 

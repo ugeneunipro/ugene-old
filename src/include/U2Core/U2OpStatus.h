@@ -48,8 +48,8 @@ public:
     virtual int getProgress() const = 0;
     virtual void setProgress(int v)  = 0;
 
-    virtual QString getStatusDesc() const = 0;
-    virtual void setStatusDesc(const QString& desc)  = 0;
+    virtual QString getDescription() const = 0;
+    virtual void setDescription(const QString& desc)  = 0;
 };
 
 } //namespace

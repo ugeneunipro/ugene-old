@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2OpStatus.h>
 
 #include <QtCore/QDateTime>
 #include <QtCore/QStringList>
@@ -50,7 +51,7 @@ class TaskScheduler;
     Holds task state info about current error and progress 
     Error variable is protected by RW lock to ensure safe multi-threaded updates
 */
-class U2CORE_EXPORT TaskStateInfo {
+class U2CORE_EXPORT TaskStateInfo : public U2OpStatus {
 public:
     TaskStateInfo() : progress(-1), cancelFlag(false), hasErr(false), lock(QReadWriteLock::NonRecursive) {}
     
@@ -58,16 +59,23 @@ public:
     int    progress;
     int    cancelFlag;
     
-    bool hasErrors() const {return hasErr;}
-    QString getError() const {QReadLocker r(&lock); return error;}
-    void setError(const QString& err) {QWriteLocker w(&lock); error =  err; hasErr = !error.isEmpty();}
+    
+    virtual bool hasError() const {return hasErr;}
+    virtual QString getError() const {QReadLocker r(&lock); return error;}
+    virtual void setError(const QString& err) {QWriteLocker w(&lock); error =  err; hasErr = !error.isEmpty();}
 
-    QString getStateDesc() const {QReadLocker r(&lock); return stateDesc;}
-    void setStateDesc(const QString& desc) {QWriteLocker w(&lock); stateDesc = desc;}
+    virtual bool isCanceled() const {return cancelFlag;}
+    virtual void setCanceled(bool v)  {cancelFlag = v;}
+
+    virtual int getProgress() const {return progress;}
+    virtual void setProgress(int v)  {progress = v;}
+
+    virtual QString getDescription() const {QReadLocker r(&lock); return desc;}
+    virtual void setDescription(const QString& _desc) {QWriteLocker w(&lock); desc = _desc;}
 
 private:
     bool hasErr; 
-    QString stateDesc;
+    QString desc;
     QString error;
 
 private:
@@ -196,7 +204,7 @@ public:
 
     void addSubTask(Task* sub);
 
-    bool hasErrors() const {return stateInfo.hasErrors();}
+    bool hasError() const {return stateInfo.hasError();}
 
     QString getError() const {return stateInfo.getError();}
 
@@ -270,9 +278,13 @@ public:
 
     void setMinimizeSubtaskErrorText(bool v);
     
-    void setTimeOut(int sec) {timeOut=sec;}
-    
-    int getTimeOut() { return timeOut;}
+    /** Number of seconds to be passed to mark task as failed by timeout */
+    void setTimeOut(int sec) {timeOut = sec;}
+
+    /** Number of seconds to be passed to mark task as failed by timeout */
+    int getTimeOut() const { return timeOut;}
+
+    void addTaskResource(const TaskResourceUsage& r);
 
 signals:
     void si_subtaskAdded(Task* sub);
@@ -294,7 +306,6 @@ protected:
     ProgressManagement  tpm;
 
     float               progressWeightAsSubtask;
-    TaskResources       taskResources;
     int                 maxParallelSubtasks;
 
 private:
@@ -308,7 +319,9 @@ private:
     Task*               parentTask;
     QList<Task*>        subtasks;
     qint64              taskId;
-    int                 timeOut;
+    int                 timeOut; //number of seconds to be passed before tasks is timed out
+    TaskResources       taskResources;
+    bool                insidePrepare;
 };
 
 
@@ -354,6 +367,8 @@ protected:
     void setTaskState(Task* t, Task::State newState);
 
     void setTaskStateDesc(Task* t, const QString& desc);
+
+    void setTaskInsidePrepare(Task* t, bool val);
 
 signals:
     void si_topLevelTaskRegistered(Task*);

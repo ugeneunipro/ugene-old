@@ -65,7 +65,7 @@ OpenTreeViewerTask::OpenTreeViewerTask(Document* doc)
 }
 
 void OpenTreeViewerTask::open() {
-    if (stateInfo.hasErrors() || (phyObject.isNull() && documentsToLoad.isEmpty())) {
+    if (stateInfo.hasError() || (phyObject.isNull() && documentsToLoad.isEmpty())) {
         return;
     }
     if (phyObject.isNull()) {
@@ -117,7 +117,7 @@ OpenSavedTreeViewerTask::OpenSavedTreeViewerTask(const QString& viewName, const 
 }
 
 void OpenSavedTreeViewerTask::open() {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
     TreeViewerState state(stateData);

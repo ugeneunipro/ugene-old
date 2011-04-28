@@ -63,7 +63,7 @@ void LoadWorkflowTask::run() {
 }
 
 Task::ReportResult LoadWorkflowTask::report() {
-    if(stateInfo.hasErrors()) {
+    if(stateInfo.hasError()) {
         return ReportResult_Finished;
     }
     
@@ -113,7 +113,7 @@ Task(tr("Save workflow schema task"), TaskFlag_None), url(meta.url) {
 }
 
 void SaveWorkflowTask::run() {
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return;
     }
     

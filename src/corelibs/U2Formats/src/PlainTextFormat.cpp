@@ -68,7 +68,7 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const 
         ti.progress = io->getProgress();
     }
     
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return NULL;
     }
 

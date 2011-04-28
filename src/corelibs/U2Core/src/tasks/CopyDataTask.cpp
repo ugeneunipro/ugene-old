@@ -73,7 +73,7 @@ void CopyDataTask::run() {
         count = from->readBlock( buff.data(), BUFFSIZE );
     }
     if( count < 0 || count_w < 0 ) {
-        if (!stateInfo.hasErrors()) {
+        if (!stateInfo.hasError()) {
             stateInfo.setError(tr("IO adapter error"));
         }
     }

@@ -221,7 +221,7 @@ void GTest_UHMMER3Build::setBuildSettings( UHMM3BuildSettings & settings, const 
 }
 
 void GTest_UHMMER3Build::setAndCheckArgs() {
-    if( hasErrors() ) {
+    if( hasError() ) {
         return;
     }
 
@@ -243,7 +243,7 @@ void GTest_UHMMER3Build::setAndCheckArgs() {
 
 void GTest_UHMMER3Build::prepare() {
     setAndCheckArgs();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return;
     }
 
@@ -252,7 +252,7 @@ void GTest_UHMMER3Build::prepare() {
 }
 
 Task::ReportResult GTest_UHMMER3Build::report() {
-    if( buildTask->hasErrors() ) {
+    if( buildTask->hasError() ) {
         if( delOutFile ) {
             QFile::remove( outFile );
         }
@@ -359,9 +359,9 @@ static bool compareStr( const QString& s1, const QString& s2 ) {
 }
 
 Task::ReportResult GTest_CompareHmmFiles::report() {
-    assert( !hasErrors() );
+    assert( !hasError() );
     setAndCheckArgs();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ReportResult_Finished;
     }
 

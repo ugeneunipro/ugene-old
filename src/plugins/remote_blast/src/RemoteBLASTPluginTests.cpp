@@ -204,7 +204,7 @@ void GTest_RemoteBLAST::prepare() {
 
 Task::ReportResult GTest_RemoteBLAST::report() {
     QStringList result;
-    if(task->hasErrors()) {
+    if(task->hasError()) {
         stateInfo.setError("");
         return ReportResult_Finished;
     }

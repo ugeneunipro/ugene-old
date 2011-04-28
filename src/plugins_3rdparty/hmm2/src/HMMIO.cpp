@@ -364,7 +364,7 @@ void HMMIO::readHMM2(IOAdapterFactory* iof, const QString& url, TaskStateInfo& s
                 break;
             }
         }
-        if (si.hasErrors()) {
+        if (si.hasError()) {
             break;
         }
         // partial check for mandatory fields
@@ -505,7 +505,7 @@ void HMMIO::readHMM2(IOAdapterFactory* iof, const QString& url, TaskStateInfo& s
             hmm->end[k] = ascii2prob(s, 1.0);
 
         } // end loop over main model
-        if (si.hasErrors()) {
+        if (si.hasError()) {
             break;
         }
 
@@ -517,7 +517,7 @@ void HMMIO::readHMM2(IOAdapterFactory* iof, const QString& url, TaskStateInfo& s
                 break;
             }
         } while (strncmp(buffer, "//", 2) != 0);
-        if (si.hasErrors()) {
+        if (si.hasError()) {
             break;
         }
 
@@ -530,7 +530,7 @@ void HMMIO::readHMM2(IOAdapterFactory* iof, const QString& url, TaskStateInfo& s
     
     io->close();
     
-    if (si.hasErrors()) {
+    if (si.hasError()) {
         if (hmm  != NULL) {
             FreePlan7(hmm);
         }

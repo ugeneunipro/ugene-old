@@ -78,7 +78,7 @@ UHMM3BuildTask::UHMM3BuildTask( const UHMM3BuildSettings& aset, const MAlignment
     int power = ( 0 <= msaSzInMB && msaSzInMB <= 0.5 ) ? 20 : ( 0.5 < msaSzInMB && msaSzInMB <= 1 ) ? 10 : 
         ( 1 < msaSzInMB && msaSzInMB <= 10 ) ? 7 : ( 10 < msaSzInMB && msaSzInMB <= 30 ) ? 5 : 4;
     int howManyMem = qMax( 1, (int)( power * msaSzInMB ) );
-    taskResources.append( TaskResourceUsage( RESOURCE_MEMORY, howManyMem ) );
+    addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
     log.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
 }
 
@@ -116,7 +116,7 @@ P7_HMM * UHMM3BuildTask::takeHMM() {
 
 void UHMM3BuildTask::run() {
     hmm = UHMM3Build::build( msa, settings, stateInfo );
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         delHmm();
     }
 }
@@ -227,10 +227,10 @@ QList< Task* > UHMM3BuildToFileTask::onSubTaskFinished( Task* sub ) {
     QList< Task* > res;
     
     assert( NULL != sub );
-    if( hasErrors() ) {
+    if( hasError() ) {
         return res;
     }
-    if( sub->hasErrors() ) {
+    if( sub->hasError() ) {
         stateInfo.setError( sub->getError() );
         return res;
     }
@@ -258,7 +258,7 @@ QList< Task* > UHMM3BuildToFileTask::onSubTaskFinished( Task* sub ) {
         int howMany = buildTasks.removeAll( curBuildTask );
         assert( 1 == howMany );
         
-        if( curBuildTask->hasErrors() || curBuildTask->isCanceled() ) {
+        if( curBuildTask->hasError() || curBuildTask->isCanceled() ) {
             return res; /* nothing to do */
         }
         
@@ -324,7 +324,7 @@ QString UHMM3BuildToFileTask::generateReport() const {
     }
     res += "</td></tr>";
 
-    if( hasErrors() ) {
+    if( hasError() ) {
         res += "<tr><td width=200><b>" + tr( "Task finished with error: '%1'" ).arg( getError() ) + "</b></td><td></td></tr>";
     }
     res += "</table>";

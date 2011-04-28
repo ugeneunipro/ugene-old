@@ -58,7 +58,7 @@ BlastPlusSupportCommonTask::BlastPlusSupportCommonTask(const BlastTaskSettings& 
     tmpDoc=NULL;
     saveTemporaryDocumentTask=NULL;
     sequenceObject=NULL;
-    taskResources.append(TaskResourceUsage(RESOURCE_THREAD, settings.numberOfProcessors));
+    addTaskResource(TaskResourceUsage(RESOURCE_THREAD, settings.numberOfProcessors));
 }
 
 void BlastPlusSupportCommonTask::prepare(){
@@ -107,11 +107,11 @@ void BlastPlusSupportCommonTask::prepare(){
 }
 QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==saveTemporaryDocumentTask){
@@ -373,11 +373,11 @@ void BlastPlusSupportMultiTask::prepare(){
 }
 QList<Task*> BlastPlusSupportMultiTask::onSubTaskFinished(Task *subTask){
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     BlastPlusSupportCommonTask* s=qobject_cast<BlastPlusSupportCommonTask*>(subTask);
@@ -397,7 +397,7 @@ QList<Task*> BlastPlusSupportMultiTask::onSubTaskFinished(Task *subTask){
     return res;
 }
 Task::ReportResult BlastPlusSupportMultiTask::report(){
-    if(!hasErrors()){
+    if(!hasError()){
         if(doc->getObjects().length() > 0){
             AppContext::getProject()->addDocument(doc);
         }else{

@@ -64,7 +64,7 @@ void FindEnzymesToAnnotationsTask::prepare()
 
 void FindEnzymesToAnnotationsTask::run() {
 
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return;
     }
 
@@ -111,7 +111,7 @@ void FindEnzymesToAnnotationsTask::run() {
 
 Task::ReportResult FindEnzymesToAnnotationsTask::report()
 {
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return ReportResult_Finished;
     }
 
@@ -242,14 +242,14 @@ QList<SharedAnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QStri
 }
 
 Task::ReportResult FindEnzymesTask::report() {
-    if (!hasErrors() && !isCanceled()) {
+    if (!hasError() && !isCanceled()) {
         log.info(tr("Found %1 restriction sites").arg(results.count()));
     }
     return ReportResult_Finished;
 }
 
 void FindEnzymesTask::cleanup() {
-    if (hasErrors()) {
+    if (hasError()) {
         results.clear();
     }
 }

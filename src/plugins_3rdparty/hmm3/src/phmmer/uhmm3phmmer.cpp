@@ -161,7 +161,7 @@ UHMM3SearchResult UHMM3Phmmer::phmmer( const char * p_querySq, int querySqLen, c
     int              status     = eslOK;
     QByteArray       errStr;
     
-    if( ti.hasErrors() ) {
+    if( ti.hasError() ) {
         return res;
     }
     if( NULL == p_querySq || 0 >= querySqLen ) {

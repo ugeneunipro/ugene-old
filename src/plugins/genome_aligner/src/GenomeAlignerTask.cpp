@@ -127,18 +127,14 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     if (!justBuildIndex) {
         memUseMB += readMemSize;
     }
-    TaskResourceUsage memUsg(RESOURCE_MEMORY, memUseMB, true);
-    taskResources.append(memUsg);
+    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, true));
     if (openCL) {
-        TaskResourceUsage gpuUsg(RESOURCE_OPENCL_GPU, 1, true);
-        taskResources.append(gpuUsg);
+        addTaskResource(TaskResourceUsage(RESOURCE_OPENCL_GPU, 1, true));
     }
 }
 
 GenomeAlignerTask::~GenomeAlignerTask() {
-    foreach (SearchQuery *qu, queries) {
-        delete qu;
-    }
+    qDeleteAll(queries);
     delete index;
     delete handle;
 }
@@ -163,7 +159,7 @@ void GenomeAlignerTask::prepare() {
 
 QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return subTasks;
     }
 
@@ -277,7 +273,7 @@ void GenomeAlignerTask::setupCreateIndexTask() {
 
 Task::ReportResult GenomeAlignerTask::report() {
     TaskTimeInfo inf=getTimeInfo();
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
 

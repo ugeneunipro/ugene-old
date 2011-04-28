@@ -49,7 +49,7 @@ Document* MegaFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVari
     QList <GObject*> objs;
     load(io, objs, ti);
 
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         qDeleteAll(objs);
         return NULL;
     }
@@ -251,11 +251,11 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskState
     bool lastIteration=false;
 
     readHeader(io, line, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
     readTitle(io, line, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
 
@@ -273,13 +273,13 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskState
                 break;
             }
         }
-        if (ti.hasErrors()) {
+        if (ti.hasError()) {
             return;
         }
 
         //read the sequence
         eof=readSequence(io, line, ti, value, &lastIteration);
-        if (ti.hasErrors()) {
+        if (ti.hasError()) {
             return;
         }
         if (0==sequenceIdx && value.contains(MEGA_IDENTICAL)) {
@@ -318,7 +318,7 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskState
     }
 
     checkModel(al, ti);
-    if (ti.hasErrors()) {
+    if (ti.hasError()) {
         return;
     }
 
@@ -530,7 +530,7 @@ bool MegaFormat::readSequence(U2::IOAdapter *io, QByteArray &line, U2::TaskState
              || -1==separatorIdx) {
                 line=line.mid(commentIdx);
                 eof=skipComments(io, line, ti);
-                if (ti.hasErrors()) {
+                if (ti.hasError()) {
                     return eof;
                 }
                 line=line.simplified();

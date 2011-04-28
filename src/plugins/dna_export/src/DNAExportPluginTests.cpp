@@ -160,7 +160,7 @@ void GTest_ExportNucleicToAminoAlignmentTask::init(XMLTestFormat *tf, const QDom
 }
 
 void GTest_ExportNucleicToAminoAlignmentTask::prepare() {
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     Document* doc = getContext<Document>(this, inputFile);
@@ -190,7 +190,7 @@ void GTest_ExportNucleicToAminoAlignmentTask::prepare() {
 QList<Task*> GTest_ExportNucleicToAminoAlignmentTask::onSubTaskFinished(Task* subTask) {
     Q_UNUSED(subTask);
     QList<Task*> res;
-    if (hasErrors() || subTask->hasErrors() || isCanceled()) {
+    if (hasError() || subTask->hasError() || isCanceled()) {
         return res;
     }
 
@@ -219,7 +219,7 @@ QList<Task*> GTest_ExportNucleicToAminoAlignmentTask::onSubTaskFinished(Task* su
 
 Task::ReportResult GTest_ExportNucleicToAminoAlignmentTask::report() {
     propagateSubtaskError();
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
 

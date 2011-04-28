@@ -27,13 +27,25 @@
 
 namespace U2 {
 
-#define RESOURCE_THREAD 1
-#define RESOURCE_MEMORY 2
-#define RESOURCE_CUDA_GPU 3
-#define RESOURCE_OPENCL_GPU 4
-#define RESOURCE_PROJECT 5
-#define RESOURCE_PHYTREE 6
+/** Thread resource - number of threads */
+#define RESOURCE_THREAD     1
 
+/** Memory resource - amount of memory in megabytes */
+#define RESOURCE_MEMORY     2
+
+/** CUDA GPU resource - ensures that device is busy or not*/
+#define RESOURCE_CUDA_GPU   3
+
+/** OPENCL GPU resource - ensures that device is busy or not*/
+#define RESOURCE_OPENCL_GPU 4
+
+/** 
+    Project resource. There is 1 project active in the system and if the resource is locked  
+    no project load/unload operation is possible
+*/
+#define RESOURCE_PROJECT    5
+
+    
 class U2CORE_EXPORT AppResource {
 public:
     AppResource(): resourceId(9), currentUse(0), maxUse(0){}

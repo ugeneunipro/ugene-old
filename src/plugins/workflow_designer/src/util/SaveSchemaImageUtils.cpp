@@ -53,7 +53,7 @@ ProduceSchemaImageLinkTask::~ProduceSchemaImageLinkTask() {
 }
 
 void ProduceSchemaImageLinkTask::prepare() {
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return;
     }
     
@@ -67,7 +67,7 @@ QList<Task*> ProduceSchemaImageLinkTask::onSubTaskFinished(Task* subTask) {
     assert(loadTask != NULL);
     
     QList<Task*> res;
-    if( loadTask->hasErrors() || loadTask->isCanceled() ) {
+    if( loadTask->hasError() || loadTask->isCanceled() ) {
         return res;
     }
     

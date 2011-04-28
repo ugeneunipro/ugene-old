@@ -57,7 +57,7 @@ CreateAnnotationsTask::CreateAnnotationsTask(const GObjectReference& r, const QS
 
 Task::ReportResult CreateAnnotationsTask::report() {
     GTIMER(c1,t1,"CreateAnnotationsTask::report");
-    if (hasErrors() || isCanceled() || aData.size() == 0)  {
+    if (hasError() || isCanceled() || aData.size() == 0)  {
         return ReportResult_Finished;
     }
     AnnotationTableObject* ao = NULL;
@@ -73,10 +73,10 @@ Task::ReportResult CreateAnnotationsTask::report() {
     }
 
     if (ao->isStateLocked()) {
-        stateInfo.setStateDesc(tr("Waiting for object lock released"));
+        stateInfo.setDescription(tr("Waiting for object lock released"));
         return ReportResult_CallMeAgain;
     }
-    stateInfo.setStateDesc("");
+    stateInfo.setDescription("");
     
     int brk = qMin(pos+10000, aData.size());
     for (int i = pos; i < brk; i++)

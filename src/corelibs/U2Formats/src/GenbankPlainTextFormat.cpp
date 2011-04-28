@@ -119,7 +119,7 @@ bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
         }
         if (st->isNull()) {
             readIdLine(st);
-            assert(si.hasErrors() || !st->entry->name.isEmpty());
+            assert(si.hasError() || !st->entry->name.isEmpty());
             continue;
         }
         if (st->hasKey("FEATURES") && st->readNextLine()) {
@@ -194,7 +194,7 @@ bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
             st->entry->tags.insertMulti(lastTagName, st->value());
         }
     }
-    if (!st->isNull() && !si.hasErrors() && !si.cancelFlag) {
+    if (!st->isNull() && !si.hasError() && !si.cancelFlag) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Record is truncated."));
     }
 
@@ -379,7 +379,7 @@ void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IO
         // write annotations
         if (!aos.isEmpty()) {
             writeAnnotations(io, aos, si);
-            if (si.hasErrors()) {
+            if (si.hasError()) {
                 return;
             }
         }
@@ -387,7 +387,7 @@ void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IO
         if (so) {
             //todo: store sequence alphabet!
             writeSequence(io, so, si);
-            if (si.hasErrors()) {
+            if (si.hasError()) {
                 return;
             }
         }
@@ -540,7 +540,7 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, TaskStateInfo& 
         //write qualifiers
         foreach (const U2Qualifier& q, a->getQualifiers()) {
             writeQualifier(q.name, q.value, io, si, spaceLine);
-            if (si.hasErrors()) {
+            if (si.hasError()) {
                 return;
             }
         }

@@ -68,14 +68,13 @@ KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config)
     resultSubMA.setAlphabet(inputSubMA.getAlphabet());
     tpm = Task::Progress_Manual;
     quint64 mem = inputMA.getNumRows() * sizeof(float);
-    TaskResourceUsage tru(RESOURCE_MEMORY,  (mem * mem + 3 * mem) / (1024 * 1024));
-    taskResources.append(tru);
+    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,  (mem * mem + 3 * mem) / (1024 * 1024)));
 }
 
 void KalignTask::_run() {
-    assert(!hasErrors());
+    assert(!hasError());
     doAlign(); 
-    if (!hasErrors() && !isCanceled()) {
+    if (!hasError() && !isCanceled()) {
         assert(resultMA.getAlphabet()!=NULL);
     }
 }
@@ -83,7 +82,7 @@ void KalignTask::_run() {
 void KalignTask::doAlign() {
     assert(resultSubMA.isEmpty());
     KalignAdapter::align(inputSubMA, resultSubMA, stateInfo);
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     resultMA = resultSubMA;
@@ -156,7 +155,7 @@ Task::ReportResult KalignGObjectTask::report() {
         lock = NULL;
     }
     propagateSubtaskError();
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     assert(!obj.isNull());
@@ -214,7 +213,7 @@ Task::ReportResult KalignGObjectRunFromSchemaTask::report() {
     }
     
     propagateSubtaskError();
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     
@@ -319,11 +318,11 @@ Task::ReportResult KAlignWithExtFileSpecifySupportTask::report()
 QList<Task*> KAlignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTask )
 {
     QList<Task*> res;
-    if(subTask->hasErrors()) {
+    if(subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return res;
     }
     if(subTask==loadDocumentTask){

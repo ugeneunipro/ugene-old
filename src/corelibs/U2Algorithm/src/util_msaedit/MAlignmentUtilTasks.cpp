@@ -114,7 +114,7 @@ Task::ReportResult MSAAlignMultiTask::report()
 
 void MSAAlignMultiTask::run()
 {
-    if ( hasErrors() || isCanceled() ) {
+    if ( hasError() || isCanceled() ) {
         return;
     }
     

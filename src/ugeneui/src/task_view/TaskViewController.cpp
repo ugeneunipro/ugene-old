@@ -348,7 +348,7 @@ void TaskViewDockWidget::sl_onStateChanged(Task* t) {
         return;
     }
     if (t->isFinished()) {
-        ti->wasError = t->hasErrors();
+        ti->wasError = t->hasError();
         ti->wasCanceled = t->isCanceled();
     }
     ti->updateVisual();
@@ -444,9 +444,9 @@ QString TVReportWindow::prepareReportHTML(Task* t) {
     report+="<tr><td>";
 
     report+="<table>";
-    QString status = t->hasErrors() ? tr("Failed") : t->isCanceled() ? tr("Canceled") : tr("Finished");
+    QString status = t->hasError() ? tr("Failed") : t->isCanceled() ? tr("Canceled") : tr("Finished");
     report+="<tr><td width=200><b>"+tr("status")+"</b></td><td>" +status+ "</td></tr>";
-    if (t->hasErrors()) {
+    if (t->hasError()) {
     report+="<tr><td><b>"+tr("error:")+"</b></td><td>" + t->getError().replace('|',"&#124;") + "</td></tr>";
     }
 
@@ -520,14 +520,14 @@ void TVTreeItem::updateVisual() {
                 state = TaskViewDockWidget::tr("Canceling...");
             }
         } else {
-            state = task->getStateInfo().getStateDesc();
+            state = task->getStateInfo().getDescription();
             if (state.isEmpty() || task->isFinished()) {
                 state = AppContext::getTaskScheduler()->getStateName(task);
             }
         }
 
         setText(TVColumns_Desc, state);
-        if (task->hasErrors()) {
+        if (task->hasError()) {
             setToolTip(TVColumns_Name, task->getStateInfo().getError());
             setToolTip(TVColumns_Desc, task->getStateInfo().getError());
         }

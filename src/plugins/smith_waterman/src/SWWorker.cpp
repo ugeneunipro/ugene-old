@@ -334,7 +334,7 @@ QString SWWorker::readPatternsFromFile(const QString url) {
     QVariantMap hints;
     TaskStateInfo stateInfo;
     Document *doc = format->loadDocument(io, stateInfo, hints);
-//    assert(isCanceled() || doc!=NULL || hasErrors());
+//    assert(isCanceled() || doc!=NULL || hasError());
     assert(doc == NULL || doc->isLoaded());
     if (doc!=NULL && doc->isLoaded()) {
         const QSet<GObjectType>& types = format->getSupportedObjectTypes();

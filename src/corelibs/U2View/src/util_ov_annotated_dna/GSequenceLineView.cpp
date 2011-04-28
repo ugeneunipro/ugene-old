@@ -23,11 +23,13 @@
 
 #include "ADVSequenceObjectContext.h"
 
-#include <U2Gui/ObjectViewModel.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Misc/GScrollBar.h>
 
+#include <U2Gui/ObjectViewModel.h>
 #include <QtGui/QTextEdit>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QApplication>
@@ -123,7 +125,7 @@ void GSequenceLineView::sl_onScrollBarMoved(int pos) {
 }
 
 void GSequenceLineView::setSelection(const U2Region& r) {
-    assert(r.startPos >=0 && r.endPos() <= seqLen);
+    SAFE_POINT(r.startPos >=0 && r.endPos() <= seqLen, QString("Selection is out of range! [%2, len: %3]").arg(r.startPos).arg(r.length),);
     ctx->getSequenceSelection()->clear();
     if (r.length!=0) {
         ctx->getSequenceSelection()->addRegion(r);
@@ -131,14 +133,14 @@ void GSequenceLineView::setSelection(const U2Region& r) {
 }
 
 void GSequenceLineView::addSelection(const U2Region& r) {
-    assert(r.startPos >=0 && r.endPos() <= seqLen);
+    SAFE_POINT(r.startPos >=0 && r.endPos() <= seqLen, QString("Selection is out of range! [%2, len: %3]").arg(r.startPos).arg(r.length),);
     if (r.length!=0) {
         ctx->getSequenceSelection()->addRegion(r);
     }
 }
 
 void GSequenceLineView::removeSelection(const U2Region& r) {
-    assert(r.startPos >=0 && r.endPos() <= seqLen);
+    SAFE_POINT(r.startPos >=0 && r.endPos() <= seqLen, QString("Selection is out of range! [%2, len: %3]").arg(r.startPos).arg(r.length),);
     if (r.length!=0) {
         ctx->getSequenceSelection()->removeRegion(r);
     }
@@ -162,7 +164,8 @@ void GSequenceLineView::mousePressEvent(QMouseEvent* me) {
     }
 
     lastPressPos = renderArea->coordToPos(renderAreaPos.x());
-    assert(lastPressPos >= visibleRange.startPos && lastPressPos <= visibleRange.endPos());
+
+    SAFE_POINT(lastPressPos >= visibleRange.startPos && lastPressPos <= visibleRange.endPos(), "Last mouse press position is out of visible range!",);
 
     if (!ignoreMouseSelectionEvents) {
         ctx->getSequenceSelection()->clear();
@@ -278,7 +281,8 @@ void GSequenceLineView::keyPressEvent(QKeyEvent *e) {
 }
 
 void GSequenceLineView::setCenterPos(int centerPos) {
-    assert(centerPos <= seqLen && centerPos >= 0);
+    SAFE_POINT(centerPos <= seqLen && centerPos >= 0, QString("Center pos is out of sequence range! value: %1").arg(centerPos),);
+
     int newPos = qMax(qint64(0), centerPos - visibleRange.length/2);
     setStartPos(newPos);
 }
@@ -369,7 +373,8 @@ bool GSequenceLineView::eventFilter(QObject *object, QEvent *event) {
 
 
 void GSequenceLineView::setFrameView(GSequenceLineView* _frameView) {
-    assert((frameView == NULL) != (_frameView==NULL));
+    SAFE_POINT((frameView == NULL) != (_frameView==NULL), "Failed to set frame view!",);
+
     if (_frameView == NULL) {
         frameView->disconnect(this);
         frameView->removeEventFilter(this);
@@ -381,8 +386,8 @@ void GSequenceLineView::setFrameView(GSequenceLineView* _frameView) {
     connect(frameView, SIGNAL(si_visibleRangeChanged()), SLOT(sl_onFrameRangeChanged()));
 }
 
-void GSequenceLineView::setConherentRangeView(GSequenceLineView* _rangeView) {
-    assert((coherentRangeView == NULL) != (_rangeView==NULL));
+void GSequenceLineView::setCoherentRangeView(GSequenceLineView* _rangeView) {
+    SAFE_POINT((coherentRangeView == NULL) != (_rangeView==NULL), "Failed to set coherent view!",);
     if (_rangeView == NULL) {
         coherentRangeView->disconnect(this);
         coherentRangeView = NULL;
@@ -413,9 +418,9 @@ void GSequenceLineView::sl_onCoherentRangeViewRangeChanged() {
 }
 
 void GSequenceLineView::setVisibleRange(const U2Region& newRange, bool signal) {
-    assert(newRange.startPos >=0 && newRange.endPos()<=seqLen);
+    SAFE_POINT(newRange.startPos >=0 && newRange.endPos() <= seqLen, "Failed to update visible range. Range is out of the sequence range!",);
     
-    if (newRange==visibleRange) {
+    if (newRange == visibleRange) {
         return;
     }
     if (featureFlags.testFlag(GSLV_FF_SupportsCustomRange)) {

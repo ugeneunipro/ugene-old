@@ -50,7 +50,7 @@ Document* GFFFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
 
     load(io, objects, ti);
 
-    if (ti.hasErrors() || ti.cancelFlag) {
+    if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);
         return NULL;
     }

@@ -310,7 +310,7 @@ void RemoteMachineMonitorDialogImpl::sl_retrieveInfoTaskStateChanged() {
     RemoteMachineItemInfo & itemInfo = machinesItemsByOrder[row];
     
     bool pingOk = retrieveInfoTask->isPingOk();
-    bool authOk = !retrieveInfoTask->hasErrors();
+    bool authOk = !retrieveInfoTask->hasError();
 
     treeItem->setIcon( 2, pingOk ? PING_YES : PING_NO);
     treeItem->setIcon( 3, authOk ? PING_YES : PING_NO);
@@ -386,7 +386,7 @@ void RemoteMachineMonitorDialogImpl::sl_getPublicMachinesTaskStateChanged() {
         
     QList< RemoteMachineSettings* > newMachines = getPublicMachinesTask->takePublicMachines();
 
-    if( getPublicMachinesTask->hasErrors()) {
+    if( getPublicMachinesTask->hasError()) {
         QMessageBox::critical(this, tr("Info"), tr("Error during remote machines request: %1").arg(getPublicMachinesTask->getError()));
     } else if ( newMachines.isEmpty() ) {
         QMessageBox::information(this, tr("Info"), tr("No public machines found"));

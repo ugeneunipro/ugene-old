@@ -243,14 +243,14 @@ void SArrayIndexSerializer::deserialize(SArrayIndex *index, const QString &index
     int pos = 0;
     int bytes = len;
     readArray(file, buff, &len, &pos, &bytes, &lineIdx, index->sArray, index->arrLen, ti);
-    if (ti.cancelFlag || ti.hasErrors()) {
+    if (ti.cancelFlag || ti.hasError()) {
         file.close();
         return;
     }
 
     index->bitMask = new quint32[index->arrLen];
     readArray(file, buff, &len, &pos, &bytes, &lineIdx, index->bitMask, index->arrLen, ti);
-    if (ti.cancelFlag || ti.hasErrors()) {
+    if (ti.cancelFlag || ti.hasError()) {
         file.close();
         return;
     }

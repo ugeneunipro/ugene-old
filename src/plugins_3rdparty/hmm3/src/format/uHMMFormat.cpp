@@ -37,14 +37,14 @@ using namespace U2;
 const QString UHMMFormat::WRITE_FAILED  = UHMMFormat::tr( "write_to_file_failed" );
 
 static void loadOne( IOAdapter* io, QList< GObject* >& objects, TaskStateInfo& si ) {
-    if( si.hasErrors() || si.cancelFlag) {
+    if( si.hasError() || si.cancelFlag) {
         return;
     }
     
     UHMMFormatReader reader( io, si );
     P7_HMM * hmm = reader.getNextHmm();
     
-    if( si.hasErrors() ) {
+    if( si.hasError() ) {
         assert( NULL == hmm );
         return;
     }
@@ -58,7 +58,7 @@ static void loadOne( IOAdapter* io, QList< GObject* >& objects, TaskStateInfo& s
 static void loadAll( IOAdapter* io, QList< GObject* >& objects, TaskStateInfo& ti ) {
     assert( NULL != io && io->isOpen() );
     
-    while( !io->isEof() && !ti.hasErrors() && !ti.cancelFlag ) {
+    while( !io->isEof() && !ti.hasError() && !ti.cancelFlag ) {
         loadOne( io, objects, ti );
     }
 }
@@ -146,7 +146,7 @@ static void writeHMMProb( IOAdapter* io, int fieldwidth, float p ) {
 static void saveOne( IOAdapter* io, const P7_HMM* hmm, TaskStateInfo& ti ) {
     assert( NULL != hmm );
     assert( NULL != io && io->isOpen() );
-    assert( !ti.hasErrors() );
+    assert( !ti.hasError() );
     
     try {
         int k = 0;
@@ -295,7 +295,7 @@ static void saveAll( IOAdapter* io, const QList< GObject* >& objects, TaskStateI
     
     foreach( const P7_HMM* hmm, hmms ) {
         saveOne( io, hmm, ti );
-        if( ti.hasErrors() || ti.cancelFlag ) {
+        if( ti.hasError() || ti.cancelFlag ) {
             return;
         }
     }
@@ -326,7 +326,7 @@ Document* UHMMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVar
     } else {
         loadOne(io, objects, ti);
     }
-    if( ti.hasErrors() || ti.cancelFlag ) {
+    if( ti.hasError() || ti.cancelFlag ) {
         qDeleteAll( objects );
         return NULL;
     }

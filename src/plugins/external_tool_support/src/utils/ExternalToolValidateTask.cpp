@@ -90,7 +90,7 @@ void ExternalToolValidateTask::run(){
     }
 }
 Task::ReportResult ExternalToolValidateTask::report(){
-    if(!isValid && !stateInfo.hasErrors()){
+    if(!isValid && !stateInfo.hasError()){
         stateInfo.setError(tr("It is possible that the specified executable file for  %1 tool is invalid. Can not find expected message.").arg(toolName));
     }
     return ReportResult_Finished;

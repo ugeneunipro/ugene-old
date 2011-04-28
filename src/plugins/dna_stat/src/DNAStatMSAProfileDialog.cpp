@@ -112,7 +112,7 @@ DNAStatMSAProfileTask::DNAStatMSAProfileTask(const DNAStatMSAProfileTaskSettings
 
 void DNAStatMSAProfileTask::run() {
     computeStats();
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     
@@ -240,7 +240,7 @@ void DNAStatMSAProfileTask::run() {
 }
 
 Task::ReportResult DNAStatMSAProfileTask::report() {
-    if (s.outFormat != DNAStatMSAProfileOutputFormat_Show || hasErrors() || isCanceled()) {
+    if (s.outFormat != DNAStatMSAProfileOutputFormat_Show || hasError() || isCanceled()) {
         return Task::ReportResult_Finished;
     }
     assert(!resultText.isEmpty());

@@ -107,7 +107,7 @@ void RemoteWorkflowRunTask::dumpSchema(const QString& fileName, const QByteArray
 
 void RemoteWorkflowRunTask::prepare()
 {
-    if( hasErrors() || isCanceled() ) {
+    if( hasError() || isCanceled() ) {
         return;
     }
 
@@ -189,7 +189,7 @@ void RemoteWorkflowRunTask::prepare()
 void RemoteWorkflowRunTask::run() {
     if (!taskIsActive) {
         taskId = machine->runTask(stateInfo, CoreLibConstants::WORKFLOW_ON_CLOUD_TASK_ID, taskSettings);
-        if (hasErrors()) {
+        if (hasError()) {
             return;
         }
     }
@@ -214,7 +214,7 @@ void RemoteWorkflowRunTask::sl_remoteTaskTimerUpdate()  {
 
     State state = State_Running;
     state = machine->getTaskState(stateInfo, taskId);
-    if (hasErrors()) {
+    if (hasError()) {
         eventLoop->exit();
         return;
     }
@@ -223,7 +223,7 @@ void RemoteWorkflowRunTask::sl_remoteTaskTimerUpdate()  {
         rsLog.trace("Workflow task finished on remote host.");
         if (!outputUrls.isEmpty()) {
             machine->getTaskResult(stateInfo, taskId, outputUrls, TASK_OUTPUT_DIR);
-            if (hasErrors()) {
+            if (hasError()) {
                 eventLoop->exit();
                 return;
             }
@@ -235,7 +235,7 @@ void RemoteWorkflowRunTask::sl_remoteTaskTimerUpdate()  {
     }
 
     int progress = machine->getTaskProgress(stateInfo, taskId);
-    if (hasErrors()) {
+    if (hasError()) {
         eventLoop->exit();
         return;
     }
@@ -246,7 +246,7 @@ void RemoteWorkflowRunTask::sl_remoteTaskTimerUpdate()  {
 
 
 Task::ReportResult RemoteWorkflowRunTask::report() {
-    if (!hasErrors() && !isCanceled()) {
+    if (!hasError() && !isCanceled()) {
         rsLog.details("Remote task finished successfully");
     }
     return ReportResult_Finished;

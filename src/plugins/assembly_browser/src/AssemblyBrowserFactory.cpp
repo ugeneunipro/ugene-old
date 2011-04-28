@@ -94,7 +94,7 @@ OpenAssemblyBrowserTask::OpenAssemblyBrowserTask(Document * doc) : ObjectViewTas
 }
 
 void OpenAssemblyBrowserTask::open() {
-    if (stateInfo.hasErrors() || (documentsToLoad.isEmpty() && selectedObjects.isEmpty())) {
+    if (stateInfo.hasError() || (documentsToLoad.isEmpty() && selectedObjects.isEmpty())) {
         return;
     }
     

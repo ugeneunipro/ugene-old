@@ -204,7 +204,7 @@ void EnableServiceTask::prepare() {
 
 Task::ReportResult EnableServiceTask::report() {
     sr->activeServiceTasks.removeAll(this);
-    if (stateInfo.hasErrors() || s->isEnabled()) {
+    if (stateInfo.hasError() || s->isEnabled()) {
         return ReportResult_Finished;
     }
     bool success = !propagateSubtaskError();
@@ -263,7 +263,7 @@ void UnregisterServiceTask::prepare() {
 }
 
 Task::ReportResult UnregisterServiceTask::report() {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return ReportResult_Finished;
     }
     if (s->isDisabled()) {
@@ -321,7 +321,7 @@ void DisableServiceTask::prepare() {
 
 Task::ReportResult DisableServiceTask::report() {
     sr->activeServiceTasks.removeAll(this);
-    if (stateInfo.hasErrors() || s->isDisabled()) {
+    if (stateInfo.hasError() || s->isDisabled()) {
         return ReportResult_Finished;
     }
     if (propagateSubtaskError()) {

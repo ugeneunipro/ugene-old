@@ -31,16 +31,16 @@
 
 namespace U2 { 
 
-	class MAlignment;
-	class TaskStateInfo;
+class MAlignment;
+class TaskStateInfo;
 
-	class NeighborJoinAdapter : public PhyTreeGenerator {
-	public:
-        PhyTree calculatePhyTree(const MAlignment& ma, const CreatePhyTreeSettings& s, TaskStateInfo& ti);
-        virtual void setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma);
-    private:
-        static QMutex runLock;
-	};
+class NeighborJoinAdapter : public PhyTreeGenerator {
+public:
+    PhyTree calculatePhyTree(const MAlignment& ma, const CreatePhyTreeSettings& s, TaskStateInfo& ti);
+    virtual void setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma);
+private:
+    static QMutex runLock;
+};
 
 }//namespace
 

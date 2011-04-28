@@ -109,17 +109,17 @@ UHMM3SWSearchTask::UHMM3SWSearchTask( const QString& hF, const DNASequence& seq,
 }
 
 SequenceWalkerTask* UHMM3SWSearchTask::getSWSubtask() {
-    assert( !hasErrors() );
+    assert( !hasError() );
     assert( NULL != hmm );
     
     bool ok = checkAlphabets( hmm->abc->type, sequence.alphabet );
     if( !ok ) {
-        assert( hasErrors() );
+        assert( hasError() );
         return NULL;
     }
     ok = setTranslations( hmm->abc->type, sequence.alphabet );
     if( !ok ) {
-        assert( hasErrors() );
+        assert( hasError() );
         return NULL;
     }
     
@@ -140,14 +140,14 @@ SequenceWalkerTask* UHMM3SWSearchTask::getSWSubtask() {
 }
 
 void UHMM3SWSearchTask::prepare() {
-    if( hasErrors() ) {
+    if( hasError() ) {
         return;
     }
     
     if( NULL != hmm ) {
         swTask = getSWSubtask();
         if( NULL == swTask ) {
-            assert( hasErrors() );
+            assert( hasError() );
             return;
         }
         addSubTask( swTask );
@@ -162,7 +162,7 @@ void UHMM3SWSearchTask::prepare() {
 QList< Task* > UHMM3SWSearchTask::onSubTaskFinished( Task* subTask ) {
     assert( NULL != subTask );
     QList< Task* > res;
-    if( subTask->hasErrors() ) {
+    if( subTask->hasError() ) {
         stateInfo.setError(subTask->getError());
         return res;
     }
@@ -171,7 +171,7 @@ QList< Task* > UHMM3SWSearchTask::onSubTaskFinished( Task* subTask ) {
         hmm = UHMM3Utilities::getHmmFromDocument( loadHmmTask->getDocument(), stateInfo );
         swTask = getSWSubtask();
         if( NULL == swTask ) {
-            assert( hasErrors() );
+            assert( hasError() );
             return res;
         }
         res << swTask;
@@ -186,7 +186,7 @@ QList< Task* > UHMM3SWSearchTask::onSubTaskFinished( Task* subTask ) {
 
 void UHMM3SWSearchTask::onRegion( SequenceWalkerSubtask* t, TaskStateInfo& ti ) {
     assert( NULL != t );
-    if( stateInfo.hasErrors() || ti.hasErrors() ) {
+    if( stateInfo.hasError() || ti.hasError() ) {
         return;
     }
     
@@ -197,7 +197,7 @@ void UHMM3SWSearchTask::onRegion( SequenceWalkerSubtask* t, TaskStateInfo& ti ) 
     int wholeSeqSz = t->getGlobalConfig().seqSize;
     wholeSeqSz = t->isAminoTranslated() ? (wholeSeqSz / 3) : wholeSeqSz;
     UHMM3SearchResult generalRes = UHMM3Search::search( hmm, seq, seqLen, settings.inner, ti, wholeSeqSz );
-    if( ti.hasErrors() ) {
+    if( ti.hasError() ) {
         UHMM3SearchTaskLocalStorage::freeTaskContext( t->getTaskId() );
         return;
     }
@@ -318,7 +318,7 @@ UHMM3SWSearchTask::uhmm3SearchDomainResultLessThan(const UHMM3SWSearchTaskDomain
 }
 
 Task::ReportResult UHMM3SWSearchTask::report() {
-    if(hasErrors()) {
+    if(hasError()) {
         return ReportResult_Finished;
     }
     processOverlaps(overlaps, results, hmm->M / 2);
@@ -327,7 +327,7 @@ Task::ReportResult UHMM3SWSearchTask::report() {
 }
 
 bool UHMM3SWSearchTask::checkAlphabets( int hmmAl, DNAAlphabet* seqAl ) {
-    assert( !hasErrors() );
+    assert( !hasError() );
     assert( NULL != seqAl );
     assert( 0 <= hmmAl );
     
@@ -350,7 +350,7 @@ bool UHMM3SWSearchTask::checkAlphabets( int hmmAl, DNAAlphabet* seqAl ) {
 }
 
 bool UHMM3SWSearchTask::setTranslations( int hmmAl, DNAAlphabet* seqAl ) {
-    assert( !hasErrors() );
+    assert( !hasError() );
     assert( NULL != seqAl );
     assert( 0 <= hmmAl );
     
@@ -470,14 +470,14 @@ void UHMM3SearchTask::addMemResource() {
     assert( 0 < seqLen && NULL != hmm && 0 < hmm->M );
     
     int howManyMem = countSearchMemInMB( seqLen, hmm->M );
-    taskResources.append( TaskResourceUsage( RESOURCE_MEMORY, howManyMem ) );
+    addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
     log.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
 }
 
 QList< Task* > UHMM3SearchTask::onSubTaskFinished( Task* subTask ) {
     assert( NULL != subTask );
     QList< Task* > res;
-    if( subTask->hasErrors() || subTask->isCanceled() ) {
+    if( subTask->hasError() || subTask->isCanceled() ) {
         stateInfo.setError( subTask->getError() );
         return res;
     }
@@ -498,7 +498,7 @@ UHMM3SearchResult UHMM3SearchTask::getResult() const {
 }
 
 void UHMM3SearchTask::run() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     assert( NULL != hmm );
@@ -543,7 +543,7 @@ loadSequenceTask( NULL ), searchTask( NULL ), createAnnotationsTask( NULL ) {
     if( sequence.isNull() ) {
         stateInfo.setError( L10N::badArgument( tr("dna sequence" ) ) );
     }
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     setTaskName( tr( "HMMER3 search task with '%1' profile" ).arg( hmmfile ) );
@@ -565,7 +565,7 @@ loadSequenceTask( NULL ), searchTask( NULL ), createAnnotationsTask( NULL ) {
     if( seqFile.isEmpty() ) {
         stateInfo.setError( L10N::badArgument( tr( "Sequence file" ) ) );
     }
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     setTaskName( tr( "HMMER3 search task with '%1' profile" ).arg( hmmfile ) );
@@ -584,7 +584,7 @@ QString UHMM3SWSearchToAnnotationsTask::generateReport() const {
     res += "<table>";
     res+="<tr><td width=200><b>" + tr("HMM profile used") + "</b></td><td>" + QFileInfo( hmmfile ).absoluteFilePath() + "</td></tr>";
     
-    if( hasErrors() || isCanceled() ) {
+    if( hasError() || isCanceled() ) {
         res += "<tr><td width=200><b>" + tr("Task was not finished") + "</b></td><td></td></tr>";
         res += "</table>";
         return res;
@@ -629,11 +629,11 @@ void UHMM3SWSearchToAnnotationsTask::setSequence() {
 QList< Task* > UHMM3SWSearchToAnnotationsTask::onSubTaskFinished( Task * subTask ) {
     QMutexLocker locker( &mtx );
     QList< Task* > res;
-    if( hasErrors() ) {
+    if( hasError() ) {
         return res;
     }
     assert( NULL != subTask );
-    if( subTask->hasErrors() ) {
+    if( subTask->hasError() ) {
         stateInfo.setError( subTask->getError() );
         return res;
     }
@@ -645,7 +645,7 @@ QList< Task* > UHMM3SWSearchToAnnotationsTask::onSubTaskFinished( Task * subTask
     
     if( loadSequenceTask == subTask ) {
         setSequence();
-        if( hasErrors() ) {
+        if( hasError() ) {
             return res;
         }
         searchTask = new UHMM3SWSearchTask( hmmfile, sequence, searchSettings );

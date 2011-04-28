@@ -39,7 +39,7 @@ RFDiagonalAlgorithmWK::RFDiagonalAlgorithmWK(RFResultsListener* rl, const char* 
 
 void RFDiagonalAlgorithmWK::prepare(){
     RFAlgorithmBase::prepare();
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     int nThreads = getNumParallelSubtasks();

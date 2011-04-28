@@ -89,7 +89,7 @@ Document* ASNFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
     }
     ti.progress = 80;
     
-    if (ti.hasErrors() || ti.cancelFlag) {
+    if (ti.hasError() || ti.cancelFlag) {
         return NULL;
     }
     ioLog.trace(QString("BioStruct3D loaded from ASN tree (%1)").arg(io->toString()));

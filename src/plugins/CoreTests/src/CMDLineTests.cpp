@@ -126,7 +126,7 @@ static QString getErrorMsg(const QString & str) {
 }
 
 Task::ReportResult GTest_RunCMDLine::report() {
-    if( hasErrors() || isCanceled() ) {
+    if( hasError() || isCanceled() ) {
         return ReportResult_Finished;
     }
     assert( proc != NULL );

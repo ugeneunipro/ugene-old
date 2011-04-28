@@ -95,7 +95,7 @@ Task::ReportResult SaveDocumentTask::report() {
         delete lock;
         lock = NULL;
     }
-    if (hasErrors() || doc.isNull()) {
+    if (hasError() || doc.isNull()) {
         return ReportResult_Finished;
     }
     if (url == doc->getURL() && iof == doc->getIOAdapterFactory()) {
@@ -177,7 +177,7 @@ SaveCopyAndAddToProjectTask::SaveCopyAndAddToProjectTask(Document* doc, IOAdapte
 }
 
 Task::ReportResult SaveCopyAndAddToProjectTask::report() {
-    if (hasErrors() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     Project* p = AppContext::getProject();

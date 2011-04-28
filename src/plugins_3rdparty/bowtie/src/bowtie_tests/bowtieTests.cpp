@@ -225,13 +225,13 @@ void GTest_Bowtie::prepare() {
 QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
 	Q_UNUSED(subTask);
 	QList<Task*> res;
-	if (hasErrors() || subTask->hasErrors() || isCanceled()) {
+	if (hasError() || subTask->hasError() || isCanceled()) {
 		subTaskFailed = true;
 		return res;
 	}
 		
 	if(subTask == bowtieTask) {
-		if(bowtieTask->hasErrors()) {
+		if(bowtieTask->hasError()) {
 			subTaskFailed = true;
 			return res;
 		}
@@ -261,7 +261,7 @@ QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
 		res << patternLoadTask;
 
 	} else if(subTask == patternLoadTask) {
-		if(patternLoadTask->hasErrors()) {
+		if(patternLoadTask->hasError()) {
 			subTaskFailed = true;
 			return res;
 		}

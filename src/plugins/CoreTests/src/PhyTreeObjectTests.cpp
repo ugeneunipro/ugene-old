@@ -103,7 +103,7 @@ Task::ReportResult GTest_CalculateTreeFromAligment::report()
         return ReportResult_Finished;
     }
 
-    if (!task->hasErrors()) {
+    if (!task->hasError()) {
         PhyTree tree = task->getResult();
         PhyTreeObject* obj = new PhyTreeObject(tree, treeObjContextName);
         addContext(treeObjContextName,obj);
@@ -211,7 +211,7 @@ void GTest_CheckPhyNodeBranchDistance::init(XMLTestFormat *tf, const QDomElement
 
 Task::ReportResult GTest_CheckPhyNodeBranchDistance::report()
 {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return ReportResult_Finished;
     }
 

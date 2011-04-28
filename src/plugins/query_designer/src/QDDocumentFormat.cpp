@@ -149,7 +149,7 @@ OpenQDViewTask::OpenQDViewTask( Document* doc ) : ObjectViewTask(QDViewFactory::
 }
 
 void OpenQDViewTask::open() {
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
     if (!documentsToLoad.isEmpty()) {

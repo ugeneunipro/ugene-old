@@ -82,7 +82,7 @@ RFSArrayWAlgorithm::RFSArrayWAlgorithm(RFResultsListener* rl, const char* seqX, 
 
 void RFSArrayWAlgorithm::prepare() {
     RFAlgorithmBase::prepare();
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
 

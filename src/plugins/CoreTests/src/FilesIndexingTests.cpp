@@ -163,7 +163,7 @@ void GTest_CreateFileIndex::init( XMLTestFormat* tf, const QDomElement& el ) {
 }
 
 void GTest_CreateFileIndex::prepare() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     if( !tmpInput ) {
@@ -254,7 +254,7 @@ void GTest_GenerateFileTest::prepare() {
 }
 
 void GTest_GenerateFileTest::run() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     assert( !inputUrls.isEmpty() && !numbers.isEmpty() );
@@ -269,7 +269,7 @@ void GTest_GenerateFileTest::run() {
     }
     outFile->setAutoRemove( true );
     IOAdapter* tmpFileIO = getOpenedIOAdapter( outFile->fileName(), IOAdapterMode_Write, stateInfo );
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         assert( NULL == tmpFileIO );
         return;
     }
@@ -284,7 +284,7 @@ void GTest_GenerateFileTest::run() {
         QString curUrl = inputUrls[i];
         for( j = 0; j < curNum; ++j ) {
             IOAdapter* curIO = getOpenedIOAdapter( curUrl, IOAdapterMode_Read, stateInfo );
-            if( stateInfo.hasErrors() ) {
+            if( stateInfo.hasError() ) {
                 assert( NULL == curIO );
                 delete tmpFileIO;
                 return;
@@ -303,7 +303,7 @@ void GTest_GenerateFileTest::run() {
 }
 
 Task::ReportResult GTest_GenerateFileTest::report(){
-    if( !stateInfo.hasErrors() ) {
+    if( !stateInfo.hasError() ) {
         addContext( outCtxName, outFile );
         ctxAdded = true;
     }
@@ -360,7 +360,7 @@ void GTest_GetDocFromIndexTest::init(XMLTestFormat *tf, const QDomElement& el ) 
 }
 
 void GTest_GetDocFromIndexTest::prepare() {
-    if( stateInfo.hasErrors() ) {
+    if( stateInfo.hasError() ) {
         return;
     }
     Document* indDoc = getContext< Document >( this, indDocName );
@@ -388,7 +388,7 @@ Task::ReportResult GTest_GetDocFromIndexTest::report() {
         stateInfo.setError(QString( "creating_get_document_from_index_task_failed" ));
         return ReportResult_Finished;
     }
-    if( getDocTask->hasErrors() ) {
+    if( getDocTask->hasError() ) {
         stateInfo.setError(getDocTask->getError());
     }
     else {

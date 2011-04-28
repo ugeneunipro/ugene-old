@@ -78,7 +78,7 @@ ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSeq
     ra = static_cast<ChromatogramViewRenderArea *>(renderArea);
     scaleBar->setValue(ra->height()-ra->getHeightAreaBC()+ra->addUpIfQVL);
 
-    setConherentRangeView(cv);
+    setCoherentRangeView(cv);
     
     mP = new QMenu(this);
 

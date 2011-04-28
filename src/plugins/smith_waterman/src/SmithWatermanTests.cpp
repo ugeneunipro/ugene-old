@@ -272,7 +272,7 @@ bool GTest_SmithWatermnan::toInt(QString & str, int & num) {
 Task::ReportResult GTest_SmithWatermnan::report() {
     
     propagateSubtaskError();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ReportResult_Finished;
     }
     
@@ -398,7 +398,7 @@ void GTest_SmithWatermnanPerf::prepare() {
 
 Task::ReportResult GTest_SmithWatermnanPerf::report() {
     propagateSubtaskError();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ReportResult_Finished;
     }
 

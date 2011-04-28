@@ -53,7 +53,7 @@ ADVCreateAnnotationsTask::ADVCreateAnnotationsTask(AnnotatedDNAView* _ctx, const
 }
 
 Task::ReportResult ADVCreateAnnotationsTask::report() {
-    if (!hasErrors() && !ctx.isNull()) {
+    if (!hasError() && !ctx.isNull()) {
         Annotation* a = t->getAnnotations().first();
         assert(a!=NULL);
 
@@ -65,7 +65,7 @@ Task::ReportResult ADVCreateAnnotationsTask::report() {
                 setError(err);
             }
         }
-        if (!hasErrors()) {
+        if (!hasError()) {
             ctx->getAnnotationsSelection()->clear();
             ctx->getAnnotationsSelection()->addToSelection(a);
         }

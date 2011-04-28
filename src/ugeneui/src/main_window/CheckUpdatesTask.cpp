@@ -48,7 +48,7 @@ CheckUpdatesTask::CheckUpdatesTask(bool startUp)
 #define PAGE_NAME QString("/current_version.html")
 
 void CheckUpdatesTask::run() {
-    stateInfo.setStateDesc(tr("Connecting to updates server"));
+    stateInfo.setDescription(tr("Connecting to updates server"));
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
     bool isProxy = nc->isProxyUsed(QNetworkProxy::HttpProxy);
     bool isException = nc->getExceptionsList().contains(SITE_URL);
@@ -57,7 +57,7 @@ void CheckUpdatesTask::run() {
         http.setProxy(nc->getProxy(QNetworkProxy::HttpProxy));
     }
     siteVersion = http.syncGet(PAGE_NAME);
-    stateInfo.setStateDesc(QString());
+    stateInfo.setDescription(QString());
 
     if (http.error() != QHttp::NoError) {
         stateInfo.setError(  tr("Connection error: %1").arg(http.errorString()) );
@@ -66,7 +66,7 @@ void CheckUpdatesTask::run() {
 }
 
 Task::ReportResult CheckUpdatesTask::report() {
-    if (hasErrors()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
 

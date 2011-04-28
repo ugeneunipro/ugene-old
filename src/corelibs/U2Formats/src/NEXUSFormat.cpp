@@ -582,7 +582,7 @@ bool NEXUSParser::readTreesContents(Context&) {
                 warnings.append(QString("Tree '%1' weights set by default (1.0)").arg(treeName));
             }
 
-            if (hasErrors()) {
+            if (hasError()) {
                 // clean up
                 PhyNode *n = nodeStack.pop();
                 delete n;  // PhyNode::~PhyNode() is recursive
@@ -631,7 +631,7 @@ QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, TaskStateInfo &ti) {
     NEXUSParser parser(io, ti);
     QList<GObject*> objects = parser.loadObjects();
     
-    if (parser.hasErrors()) {
+    if (parser.hasError()) {
         QByteArray msg = "NEXUSParser: ";
         msg += parser.getErrors().first();
         ti.setError(tr(msg.data()));
@@ -644,7 +644,7 @@ Document* NEXUSFormat::loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVar
     assert(io && "IO must exist");
 
     QList<GObject*> objects = loadObjects(io, ti);
-    if (ti.hasErrors())
+    if (ti.hasError())
     {
         qDeleteAll(objects);
         return 0;

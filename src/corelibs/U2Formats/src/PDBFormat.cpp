@@ -88,7 +88,7 @@ Document* PDBFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
     clock_t t2 =  clock();
     perfLog.trace("PDB file parsing time: " + QString::number((float)( t2 - t1)/ CLOCKS_PER_SEC ));
     
-    if (ti.hasErrors() || ti.cancelFlag) {
+    if (ti.hasError() || ti.cancelFlag) {
         return NULL;
     }
     io->close();
@@ -176,7 +176,7 @@ void PDBFormat::PDBParser::parseBioStruct3D( BioStruct3D& biostruct, TaskStateIn
     char* buf = readBuff.data();
     qint64 len = 0;
 
-    while (!ti.cancelFlag && !ti.hasErrors()) {
+    while (!ti.cancelFlag && !ti.hasError()) {
 
         bool lineOk = true;
 
@@ -238,7 +238,7 @@ void PDBFormat::PDBParser::parseBioStruct3D( BioStruct3D& biostruct, TaskStateIn
         }
     }
     
-    if (ti.cancelFlag || ti.hasErrors()) {
+    if (ti.cancelFlag || ti.hasError()) {
         return;
     }
 

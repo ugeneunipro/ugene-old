@@ -119,7 +119,7 @@ void UHMM3PhmmerTask::addMemResource() {
     assert( !db.isNull() && !query.isNull() );
     
     int howManyMem = countPhmmerMemInMB( db.length(), query.length() );
-    taskResources.append( TaskResourceUsage( RESOURCE_MEMORY, howManyMem ) );
+    addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
     log.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
 }
 
@@ -152,23 +152,23 @@ QList< Task* > UHMM3PhmmerTask::onSubTaskFinished( Task* subTask ) {
     QMutexLocker locker( &loadTasksMtx );
     QList< Task* > ret;
     assert( NULL != subTask );
-    if( hasErrors() ) {
+    if( hasError() ) {
         return ret;
     }
-    if( subTask->hasErrors() ) {
+    if( subTask->hasError() ) {
         stateInfo.setError( subTask->getError() );
         return ret;
     }
     
     if( loadQueryTask == subTask ) {
         query = getSequenceFromDocument( loadQueryTask->getDocument(), stateInfo );
-        if( hasErrors() ) {
+        if( hasError() ) {
             stateInfo.setError( getError() + tr( "query sequence" ) );
         }
         loadQueryTask = NULL;
     } else if( loadDbTask == subTask ) {
         db = getSequenceFromDocument( loadDbTask->getDocument(), stateInfo );
-        if( hasErrors() ) {
+        if( hasError() ) {
             stateInfo.setError( getError() + tr( "db sequence" ) );
         }
         loadDbTask = NULL;
@@ -206,7 +206,7 @@ QList< SharedAnnotationData > UHMM3PhmmerTask::getResultsAsAnnotations( const QS
 }
 
 void UHMM3PhmmerTask::run() {
-    if( hasErrors() ) {
+    if( hasError() ) {
         return;
     }
     
@@ -245,14 +245,14 @@ UHMM3SWPhmmerTask::UHMM3SWPhmmerTask(const QString & qF, const DNASequence & db,
 QList<Task*> UHMM3SWPhmmerTask::onSubTaskFinished(Task* subTask) {
     assert(subTask != NULL);
     QList<Task*> res;
-    if( subTask->hasErrors() ) {
+    if( subTask->hasError() ) {
         stateInfo.setError(subTask->getError());
         return res;
     }
     
     if( loadQueryTask == subTask ) {
         querySeq = UHMM3PhmmerTask::getSequenceFromDocument( loadQueryTask->getDocument(), stateInfo );
-        if( hasErrors() ) {
+        if( hasError() ) {
             setError(getError() + tr( "querySeq sequence" ));
         }
         swTask = getSWSubtask();
@@ -264,7 +264,7 @@ QList<Task*> UHMM3SWPhmmerTask::onSubTaskFinished(Task* subTask) {
 }
 
 void UHMM3SWPhmmerTask::checkAlphabets() {
-    assert(!hasErrors());
+    assert(!hasError());
     if(dbSeq.alphabet->isRaw()) {
         setError(tr("Invalid db sequence alphabet: %1").arg(dbSeq.alphabet->getName()));
         return;
@@ -276,7 +276,7 @@ void UHMM3SWPhmmerTask::checkAlphabets() {
 }
 
 void UHMM3SWPhmmerTask::setTranslations() {
-    assert(!hasErrors());
+    assert(!hasError());
     if(dbSeq.alphabet->isNucleic()) {
         DNATranslationRegistry* transReg = AppContext::getDNATranslationRegistry();
         assert( NULL != transReg );
@@ -300,15 +300,15 @@ void UHMM3SWPhmmerTask::setTranslations() {
 }
 
 SequenceWalkerTask * UHMM3SWPhmmerTask::getSWSubtask() {
-    assert(!hasErrors());
+    assert(!hasError());
     assert(querySeq.length());
     
     checkAlphabets();
-    if(hasErrors()) {
+    if(hasError()) {
         return NULL;
     }
     setTranslations();
-    if(hasErrors()) {
+    if(hasError()) {
         return NULL;
     }
     
@@ -329,7 +329,7 @@ SequenceWalkerTask * UHMM3SWPhmmerTask::getSWSubtask() {
 
 void UHMM3SWPhmmerTask::onRegion(SequenceWalkerSubtask * t, TaskStateInfo & ti) {
     assert(t != NULL);
-    if(hasErrors() || ti.hasErrors() || isCanceled() || ti.cancelFlag) {
+    if(hasError() || ti.hasError() || isCanceled() || ti.cancelFlag) {
         return;
     }
     
@@ -343,7 +343,7 @@ void UHMM3SWPhmmerTask::onRegion(SequenceWalkerSubtask * t, TaskStateInfo & ti) 
     wholeSeqSz = isAmino ? (wholeSeqSz / 3) : wholeSeqSz;
     UHMM3SearchResult generalRes = UHMM3Phmmer::phmmer(querySeq.seq.constData(), querySeq.length(), 
                                                        seq, seqLen, settings, stateInfo, wholeSeqSz);
-    if( ti.hasErrors() ) {
+    if( ti.hasError() ) {
         UHMM3SearchTaskLocalStorage::freeTaskContext( t->getTaskId() );
         return;
     }
@@ -354,7 +354,7 @@ void UHMM3SWPhmmerTask::onRegion(SequenceWalkerSubtask * t, TaskStateInfo & ti) 
 }
 
 Task::ReportResult UHMM3SWPhmmerTask::report() {
-    if(hasErrors()) {
+    if(hasError()) {
         return ReportResult_Finished;
     }
     UHMM3SWSearchTask::processOverlaps(overlaps, results, querySeq.length() / 2);
@@ -425,7 +425,7 @@ queryfile( qfile ), dbSeq( db ), annotationObj( o ), annGroup( gr ), annName( na
 phmmerTask( NULL ), createAnnotationsTask( NULL ) {
     
     checkArgs();
-    if( hasErrors() ) {
+    if( hasError() ) {
         return;
     }
     setTaskName( tr( "HMM Phmmer search %1 sequence with %2 database" ).arg( queryfile ).arg( dbSeq.getName() ) );
@@ -436,10 +436,10 @@ phmmerTask( NULL ), createAnnotationsTask( NULL ) {
 QList< Task* > UHMM3PhmmerToAnnotationsTask::onSubTaskFinished( Task * subTask ) {
     assert( NULL != subTask );
     QList< Task* > res;
-    if( hasErrors() ) {
+    if( hasError() ) {
         return res;
     }
-    if( subTask->hasErrors() ) {
+    if( subTask->hasError() ) {
         stateInfo.setError( subTask->getError() );
         return res;
     }
@@ -468,7 +468,7 @@ QString UHMM3PhmmerToAnnotationsTask::generateReport() const {
     res += "<table>";
     res+="<tr><td width=200><b>" + tr("Query sequence") + "</b></td><td>" + QFileInfo( queryfile ).absoluteFilePath() + "</td></tr>";
     
-    if( hasErrors() || isCanceled() ) {
+    if( hasError() || isCanceled() ) {
         res += "<tr><td width=200><b>" + tr("Task was not finished") + "</b></td><td></td></tr>";
         res += "</table>";
         return res;

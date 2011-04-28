@@ -126,7 +126,7 @@ void PDWFormat::load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects
 
     }
 
-    if (!ti.hasErrors() && !ti.cancelFlag && objects.isEmpty()) {
+    if (!ti.hasError() && !ti.cancelFlag && objects.isEmpty()) {
         ti.setError(Document::tr("Document is empty."));
     }
 }
@@ -148,7 +148,7 @@ Document* PDWFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
     
     load(io, io->getURL(), objects, ti, dnaObj, aObj);
 
-    if (ti.hasErrors() || ti.cancelFlag) {
+    if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);
         return NULL;
     }

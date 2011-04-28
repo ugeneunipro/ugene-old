@@ -62,7 +62,7 @@ Document* EMBLGenbankAbstractDocument::loadDocument(IOAdapter* io, TaskStateInfo
     QString writeLockReason;
     load(io, objects, fs, ti, writeLockReason, mode);
 
-    if (ti.hasErrors() || ti.cancelFlag) {
+    if (ti.hasError() || ti.cancelFlag) {
         return NULL;
     }
 
@@ -104,7 +104,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
     ParserState st(getFormatId() == BaseDocumentFormats::PLAIN_GENBANK ? 12 : 5, io, NULL, si);
     st.buff = readBuffer.data();
 
-    for (int i=0; !si.hasErrors() && !si.cancelFlag; i++) {
+    for (int i=0; !si.hasError() && !si.cancelFlag; i++) {
         if (!merge) {
             sequence.clear();
         } else if (sequence.size() > 0) {
@@ -114,7 +114,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
 
         EMBLGenbankDataEntry data;
         st.entry = &data;
-        si.setStateDesc(tr("Reading entry header"));
+        si.setDescription(tr("Reading entry header"));
         if (!readEntry(sequence, &st)) {
             break;
         }
@@ -157,7 +157,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
             assert(data.features.isEmpty());
         }
         
-        if (!si.hasErrors() && !si.cancelFlag) {
+        if (!si.hasError() && !si.cancelFlag) {
             int sequenceLen = sequence.size() - sequenceStart;
             QString sequenceName = genObjectName(usedNames, data.name, data.tags, i+1, GObjectTypes::SEQUENCE);
             if (merge && sequenceLen == 0 && annotationsObject!=NULL) {
@@ -182,7 +182,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
         }
     }
     
-    if (!si.hasErrors() && !si.cancelFlag && merge && !contigs.isEmpty()) {
+    if (!si.hasError() && !si.cancelFlag && merge && !contigs.isEmpty()) {
         assert(sequence.size() > gapSize);
         assert(qEqual(sequence.constEnd() - gapSize, sequence.constEnd(), gapSequence.constBegin()));
         sequence.resize(sequence.size() - gapSize);//remove last gap
@@ -194,7 +194,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
         }
     }
 
-    if (!si.hasErrors() && !si.cancelFlag && objects.isEmpty()) {
+    if (!si.hasError() && !si.cancelFlag && objects.isEmpty()) {
         si.setError(U2::Document::tr("Document is empty."));
     }
 
@@ -422,7 +422,7 @@ bool EMBLGenbankAbstractDocument::readSequence(QByteArray& res, ParserState* st)
     // FIXME use ParserState instead
     IOAdapter* io = st->io;
     TaskStateInfo& si = st->si;
-    si.setStateDesc(tr("Reading sequence %1").arg(st->entry->name));
+    si.setDescription(tr("Reading sequence %1").arg(st->entry->name));
     int headerSeqLen = st->entry->seqLen;
     res.reserve(res.size() + headerSeqLen);
 
@@ -492,7 +492,7 @@ bool EMBLGenbankAbstractDocument::readSequence(QByteArray& res, ParserState* st)
 
         si.progress = io->getProgress();
     }
-    if (!si.hasErrors() && !si.cancelFlag && buff[0] != '/') {
+    if (!si.hasError() && !si.cancelFlag && buff[0] != '/') {
         si.setError(tr("Sequence is truncated"));
     }
     writer.close();
@@ -500,7 +500,7 @@ bool EMBLGenbankAbstractDocument::readSequence(QByteArray& res, ParserState* st)
 }
 
 void EMBLGenbankAbstractDocument::readAnnotations(ParserState* st, int offset) {
-    st->si.setStateDesc(tr("Reading annotations %1").arg(st->entry->name));
+    st->si.setDescription(tr("Reading annotations %1").arg(st->entry->name));
     st->entry->hasAnnotationObjectFlag = true;
     do {
         if (st->hasKey("XX") && getFormatId() == BaseDocumentFormats::PLAIN_EMBL) {
@@ -543,7 +543,7 @@ QString ParserState::value() const {
 
 bool ParserState::readNextLine(bool emptyOK)
 {
-    if (si.cancelFlag || si.hasErrors()) {
+    if (si.cancelFlag || si.hasError()) {
         len = 0;
         return false;
     }

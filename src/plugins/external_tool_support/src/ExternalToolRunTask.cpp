@@ -56,14 +56,14 @@ ExternalToolRunTask::~ExternalToolRunTask(){
 }
 
 void ExternalToolRunTask::prepare(){
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return;
     }
     algoLog.trace("Program executable: "+program);
     algoLog.trace("Program arguments: "+arguments.join(" "));
 }
 void ExternalToolRunTask::run(){
-    if(hasErrors() || isCanceled()) {
+    if(hasError() || isCanceled()) {
         return;
     }
     externalToolProcess=new QProcess();//???

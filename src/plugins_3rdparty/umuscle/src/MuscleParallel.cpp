@@ -121,7 +121,7 @@ void MusclePrepareTask::alignPrepareUnsafe()
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
 
     setupAlphaAndScore(workpool->ma.getAlphabet(), stateInfo);
-    if (stateInfo.hasErrors()) {
+    if (stateInfo.hasError()) {
         return;
     }
 
@@ -241,7 +241,7 @@ void MusclePrepareTask::refinePrepareUnsafe() {
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
 
     setupAlphaAndScore(workpool->ma.getAlphabet(), workpool->ti);
-    if (workpool->ti.hasErrors()) {
+    if (workpool->ti.hasError()) {
         return;
     }
     MSA &msa = workpool->a;
@@ -304,7 +304,7 @@ void ProgressiveAlignTask::_run() {
     if (!workpool->res.isEmpty())  {
         return;// no more need in align
     }
-	if (workpool->ti.hasErrors())  {
+	if (workpool->ti.hasError())  {
 		return; // cancel on error
 	}
     MuscleContext* ctx = workpool->ctx;

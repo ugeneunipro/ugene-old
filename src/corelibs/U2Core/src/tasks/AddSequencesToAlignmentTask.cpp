@@ -51,7 +51,7 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
     QList<Task*> subTasks;
 
     propagateSubtaskError();
-    if ( (subTask != loadTask )|| (isCanceled()) || (hasErrors()) ) {
+    if ( (subTask != loadTask )|| (isCanceled()) || (hasError()) ) {
         return subTasks;
     }
 

@@ -225,7 +225,7 @@ bool RemoteBLASTWorker::isDone() {
 
 void RemoteBLASTWorker::sl_taskFinished() {
     RemoteBLASTTask * t = qobject_cast<RemoteBLASTTask*>(sender());
-    if (t->getState() != Task::State_Finished || t->hasErrors()) {
+    if (t->getState() != Task::State_Finished || t->hasError()) {
         return;
     }
 

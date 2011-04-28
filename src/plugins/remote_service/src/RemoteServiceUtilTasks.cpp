@@ -44,27 +44,27 @@ GetUserTasksInfoTask::GetUserTasksInfoTask( RemoteServiceMachine* m )
 
 void GetUserTasksInfoTask::run() {
     assert(machine != NULL);
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return;
     }
 
     rsLog.details(tr("Retrieving remote tasks list for: %1").arg(machine->getSettings()->getName()));
 
     machine->initSession(stateInfo);
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     }
     
     QList<qint64> runningTaskIds;
     runningTaskIds = machine->getActiveTasks(stateInfo);
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     } 
     rsLog.details(tr("Found %1 active remote tasks").arg(runningTaskIds.size()));
     
     QList<qint64> finishedTaskIds;
     finishedTaskIds = machine->getFinishedTasks(stateInfo);
-    if (hasErrors()) {
+    if (hasError()) {
         return;
     } 
 
@@ -74,7 +74,7 @@ void GetUserTasksInfoTask::run() {
     
     foreach(qint64 taskId, taskIds) {
         machine->getTaskProperties(stateInfo, taskId, properties);
-        if (hasErrors()) {
+        if (hasError()) {
             break;
         }
 
@@ -95,7 +95,7 @@ FetchRemoteTaskResultTask::FetchRemoteTaskResultTask( RemoteServiceMachine* m, c
 
 void FetchRemoteTaskResultTask::run() {
     assert(machine != NULL);
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return;
     }
 
@@ -111,7 +111,7 @@ DeleteRemoteDataTask::DeleteRemoteDataTask( RemoteServiceMachine* m, qint64 id )
 
 void DeleteRemoteDataTask::run() {
     assert(machine != NULL);
-    if (isCanceled() || hasErrors()) {
+    if (isCanceled() || hasError()) {
         return;
     }
 

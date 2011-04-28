@@ -95,7 +95,7 @@ private:
     void fill() {
         bufferCount = 0;
         bufferIndex = 0;
-        ti.setStateDesc(BAMDbiPlugin::tr("Reading"));
+        ti.setDescription(BAMDbiPlugin::tr("Reading"));
         while(chunkIndex < chunks.count() && bufferCount < BUFFER_SIZE) {
             const Index::ReferenceIndex::Chunk& chunk = chunks.at(chunkIndex);
             VirtualOffset start = offset <= chunk.getStart() ? chunk.getStart() : offset;
@@ -121,7 +121,7 @@ private:
             }
             readLength += reader->getOffset().getCoffset() - start.getCoffset();        
         }
-        ti.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
+        ti.setDescription(BAMDbiPlugin::tr("Saving reads"));
     }
 
     static const int BUFFER_SIZE = 100 * 1000;
@@ -320,7 +320,7 @@ void ConvertToSQLiteTask::run() {
             }
 
             while(!reader->isEof()) {
-                stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
+                stateInfo.setDescription(BAMDbiPlugin::tr("Reading"));
                 int readsCount = 0;
                 int progressUpdateCounter = 0;
                 int progressUpdates = 0;
@@ -335,11 +335,11 @@ void ConvertToSQLiteTask::run() {
                             throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
                         }
                         stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
-                        stateInfo.setStateDesc(BAMDbiPlugin::tr("Reading"));
+                        stateInfo.setDescription(BAMDbiPlugin::tr("Reading"));
                         progressUpdateCounter = 0;
                     }
                 }
-                stateInfo.setStateDesc(BAMDbiPlugin::tr("Saving reads"));
+                stateInfo.setDescription(BAMDbiPlugin::tr("Saving reads"));
                 flushReads(sqliteDbi, assemblies, reads);
                 if (isCanceled()) {
                     throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
@@ -350,7 +350,7 @@ void ConvertToSQLiteTask::run() {
 
         //Packing
         {
-            stateInfo.setStateDesc(BAMDbiPlugin::tr("Packing reads"));
+            stateInfo.setDescription(BAMDbiPlugin::tr("Packing reads"));
             int i = 0;
             foreach(int index, assemblies.keys()) {
                 {
