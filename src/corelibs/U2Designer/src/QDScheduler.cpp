@@ -274,7 +274,7 @@ QVector<U2Region> QDResultLinker::findLocation(QDStep* step) {
     QDActor* actor = step->getActor();
     const QList<QDSchemeUnit*>& units = actor->getSchemeUnits();
     foreach(QDResultGroup* candidate, candidates) {
-        bool complement = candidate->strand == U2Strand::Complementary;
+        bool complement = candidate->strand == QDStrand_ComplementOnly;
         QVector<U2Region> actorLocation;
         foreach(QDSchemeUnit* su, units) {
             U2Region suRegion = scheme->getDNA()->getSequenceRange();
