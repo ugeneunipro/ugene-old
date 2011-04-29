@@ -35,8 +35,8 @@ public:
     virtual ~GenomeAlignerCMDLineTask();
     virtual void prepare();
 private:
-    int mismatchCount, memSize;
-    bool useCuda;
+    int mismatchCount, memSize, refSize;
+    bool useCuda, useOpenCL;
     bool alignRevCompl;
     DnaAssemblyToRefTaskSettings settings;
     QString indexPath, resultPath, refPath;

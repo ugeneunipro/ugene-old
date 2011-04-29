@@ -36,15 +36,20 @@ namespace U2 {
 #define OPTION_REFERENCE    "reference"
 #define OPTION_MEMSIZE      "memsize"
 #define OPTION_CUDA         "use-cuda"
+#define OPTION_USE_OPENCL   "use-opencl"
+#define OPTION_REF_FRAG     "ref-size"
 
-GenomeAlignerCMDLineTask::GenomeAlignerCMDLineTask()
+
+ GenomeAlignerCMDLineTask::GenomeAlignerCMDLineTask()
 :Task( tr( "Run genome aligner from command line" ), TaskFlags_NR_FOSCOE), onlyBuildIndex(false)
 {
     memSize = 1000;
     mismatchCount = 0;
+    refSize = 10;
     alignRevCompl = false;
     useCuda = false;
-    
+    useOpenCL = false;
+
     // parse options
        
     QList<StringPair> options = AppContext::getCMDLineRegistry()->getParameters();
@@ -65,8 +70,17 @@ GenomeAlignerCMDLineTask::GenomeAlignerCMDLineTask()
             }
         } else if (opt.first == OPTION_CUDA) {
             useCuda = true;
+            useOpenCL = false;
+        } else if (opt.first == OPTION_USE_OPENCL) {
+            useOpenCL = true;
+            useCuda = false;
+        } else if (opt.first == OPTION_REF_FRAG) {
+            refSize = opt.second.toInt();
+            assert(refSize != 0);
+            if (refSize == 0) {
+                refSize = 10;
+            }
         }
-            
     }
         
     coreLog.info( tr( "Finished parsing genome aligner options." ) );
@@ -115,6 +129,8 @@ void GenomeAlignerCMDLineTask::prepare()
     settings.setCustomValue(GenomeAlignerTask::OPTION_READS_MEMORY_SIZE, memSize);
     settings.setCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, alignRevCompl);
     settings.setCustomValue(GenomeAlignerTask::OPTION_USE_CUDA, useCuda);
+    settings.setCustomValue(GenomeAlignerTask::OPTION_OPENCL, useOpenCL);
+    settings.setCustomValue(GenomeAlignerTask::OPTION_SEQ_PART_SIZE, refSize);
 
 
     GenomeAlignerTask* task = new GenomeAlignerTask(settings, onlyBuildIndex);
