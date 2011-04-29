@@ -88,6 +88,14 @@ void SingleTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
     SQLiteQuery(q2.arg(readsTable), db, os).execute();
 }
 
+void SingleTableAssemblyAdapter::dropReadsIndexes(U2OpStatus& os) {
+    static QString q1 = "DROP INDEX IF EXISTS %1_gstart";
+    SQLiteQuery(q1.arg(readsTable), db, os).execute();
+
+    static QString q2 = "DROP INDEX IF EXISTS %1_name";
+    SQLiteQuery(q2.arg(readsTable), db, os).execute();
+}
+
 
 void SingleTableAssemblyAdapter::bindRegion(SQLiteQuery& q, const U2Region& r, bool forCount) {
     if (rangeMode) {

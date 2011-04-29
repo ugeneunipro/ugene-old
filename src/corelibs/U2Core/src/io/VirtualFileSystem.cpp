@@ -19,14 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-
-#include <cassert>
-#include <QtCore/QFile>
+#include "VirtualFileSystem.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/U2SafePoints.h>
 
-#include "VirtualFileSystem.h"
+#include <QtCore/QFile>
+
+#include <cassert>
+#include <memory>
 
 namespace U2 {
 
@@ -56,13 +58,10 @@ bool VirtualFileSystem::createFile( const QString & filename, const QByteArray &
 
 bool VirtualFileSystem::mapFile( const QString & filename, const QString & filePath ) {
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( filePath ) );
-    assert( NULL != iof );
-    IOAdapter * io( iof->createIOAdapter() );
-    if( NULL == io ) {
-        return false;
-    }
+    SAFE_POINT(iof != NULL, QString("Failed to find IO adapter factory: %1").arg(filePath), false);
+    
+    std::auto_ptr<IOAdapter> io( iof->createIOAdapter() );
     if( !io->open( filePath, IOAdapterMode_Read ) ) {
-        delete io;
         return false;
     }
     
@@ -71,8 +70,6 @@ bool VirtualFileSystem::mapFile( const QString & filename, const QString & fileP
         QByteArray bytesBlock( READ_BLOCK_SZ, '\0' );
         qint64 howMany = io->readBlock( bytesBlock.data(), READ_BLOCK_SZ );
         if( -1 == howMany ) {
-            io->close();
-            delete io;
             return false;
         } else if( 0 == howMany) {
             assert( io->isEof() );
@@ -82,8 +79,6 @@ bool VirtualFileSystem::mapFile( const QString & filename, const QString & fileP
     }
     
     modifyFile( filename, bytes );
-    io->close();
-    delete io;
     return true;
 }
 
@@ -93,19 +88,14 @@ bool VirtualFileSystem::mapBack( const QString & filename, const QString & fileP
     }
     
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( filePath ) );
-    assert( NULL != iof );
-    IOAdapter * io( iof->createIOAdapter() );
-    if( NULL == io ) {
-        return false;
-    }
+    SAFE_POINT(iof != NULL, QString("Failed to find IO adapter factory: %1").arg(filePath), false);
+
+    std::auto_ptr<IOAdapter> io( iof->createIOAdapter() );
     if( !io->open( filePath, IOAdapterMode_Write ) ) {
-        delete io;
         return false;
     }
     
     io->writeBlock( files[filename] );
-    io->close();
-    delete io;
     return true;
 }
 
@@ -160,7 +150,8 @@ VirtualFileSystemRegistry::~VirtualFileSystemRegistry() {
 }
 
 bool VirtualFileSystemRegistry::registerFileSystem( VirtualFileSystem * entry ) {
-    assert( NULL != entry );
+    SAFE_POINT(entry != NULL, "FS is NULL!", false);
+    
     QString id = entry->getId();
     if( registry.contains( id ) ) {
         return false;

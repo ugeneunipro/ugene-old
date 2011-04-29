@@ -22,6 +22,7 @@
 #include "UnloadedObject.h"
 
 #include <U2Core/GHints.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -44,7 +45,7 @@ GObject* UnloadedObject::clone() const {
 }
 
 void UnloadedObject::setLoadedObjectType(const GObjectType& lot) {
-    assert(lot!=GObjectTypes::UNLOADED);
+    SAFE_POINT(lot!=GObjectTypes::UNLOADED, "Unloaded object can't be a reference to another unloaded object!",);
     loadedObjectType = lot;
 }
 

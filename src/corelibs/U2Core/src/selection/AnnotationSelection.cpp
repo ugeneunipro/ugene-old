@@ -24,6 +24,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 
 namespace U2 {
@@ -79,7 +80,7 @@ void AnnotationSelection::removeObjectAnnotations(AnnotationTableObject* obj) {
 }
 
 void AnnotationSelection::addToSelection(Annotation* a, int locationIdx) {
-    assert(locationIdx >=-1 && locationIdx < a->getRegions().size());
+    SAFE_POINT(locationIdx >=-1 && locationIdx < a->getRegions().size(), "Invalid location index!",);
 
     int nRegionsBefore = 0;
     foreach(const AnnotationSelectionData& asd, selection) {

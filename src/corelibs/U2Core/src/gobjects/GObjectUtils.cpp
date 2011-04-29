@@ -34,6 +34,7 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -61,8 +62,9 @@ GObject* GObjectUtils::selectOne(const QList<GObject*>& objects, GObjectType typ
 
 
 QList<GObject*> GObjectUtils::findAllObjects(UnloadedObjectFilter f, GObjectType t) {
-    assert(AppContext::getProject()!=NULL);
     QList<GObject*> res;
+    SAFE_POINT(AppContext::getProject()!=NULL, "No active project found", res);
+
     foreach(Document* doc, AppContext::getProject()->getDocuments()) {
         if (t.isEmpty()) {
             if (doc->isLoaded() || f == UOF_LoadedAndUnloaded) {

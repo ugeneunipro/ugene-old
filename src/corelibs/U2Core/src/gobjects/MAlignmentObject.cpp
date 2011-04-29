@@ -23,6 +23,7 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/U2SafePoints.h>
 #include <util_algorithm/MSAUtils.h>
 
 namespace U2 {
@@ -35,7 +36,8 @@ GObject* MAlignmentObject::clone() const {
 
 
 void MAlignmentObject::insertGap(int seqNum, int pos, int nGaps) {
-    assert(!isStateLocked());
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+
     MAlignment maBefore = msa;
     int length = msa.getLength();
     for(int i = 0; i < seqNum; i++) {
@@ -54,9 +56,9 @@ void MAlignmentObject::insertGap(int seqNum, int pos, int nGaps) {
 }
 
 void MAlignmentObject::insertGap(int pos, int nGaps) {
-    assert(nGaps > 0);
-    assert(!isStateLocked());
-
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+    SAFE_POINT(nGaps > 0, "Invalid number of gaps!",);
+    
     MAlignment maBefore = msa;
     QByteArray gap(nGaps, MAlignment_GapChar);
     for (int i=0, n = msa.getNumRows(); i < n; i++) {
@@ -70,9 +72,8 @@ void MAlignmentObject::insertGap(int pos, int nGaps) {
     emit si_alignmentChanged(maBefore, mi);
 }
 
-void MAlignmentObject::insertGap( U2Region seqences, int pos, int nGaps )
-{
-    assert(!isStateLocked());
+void MAlignmentObject::insertGap( U2Region seqences, int pos, int nGaps ) {
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
     MAlignment maBefore = msa;
     int length = msa.getLength();
     int startSeq = seqences.startPos;
@@ -98,7 +99,7 @@ void MAlignmentObject::insertGap( U2Region seqences, int pos, int nGaps )
 }
 
 int MAlignmentObject::deleteGap(int seqNum, int pos, int maxGaps) {
-    assert(!isStateLocked());
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", 0);
 
     MAlignment maBefore = msa;
 
@@ -125,7 +126,7 @@ int MAlignmentObject::deleteGap(int seqNum, int pos, int maxGaps) {
 }
 
 int MAlignmentObject::deleteGap(int pos, int maxGaps) {
-    assert(!isStateLocked());
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", 0);
 
     MAlignment maBefore = msa;
     //find min gaps in all sequences starting from pos
@@ -163,7 +164,8 @@ int MAlignmentObject::deleteGap(int pos, int maxGaps) {
 
 
 void MAlignmentObject::addRow(const DNASequence& seq, int seqIdx) {
-    assert(!isStateLocked());
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+
     MAlignment maBefore = msa;
 
     DNAAlphabet* newAlphabet = DNAAlphabet::deriveCommonAlphabet(seq.alphabet, getAlphabet());
@@ -180,7 +182,7 @@ void MAlignmentObject::addRow(const DNASequence& seq, int seqIdx) {
 }
 
 void MAlignmentObject::removeRow(int seqNum) {
-    assert(!isStateLocked());
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
     MAlignment maBefore = msa;
     msa.removeRow(seqNum);
@@ -194,7 +196,7 @@ void MAlignmentObject::removeRow(int seqNum) {
 
 
 void MAlignmentObject::setMAlignment(const MAlignment& newMa) {
-    assert(!isStateLocked());
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
     MAlignment maBefore = msa;
 
@@ -213,7 +215,8 @@ void MAlignmentObject::setGObjectName(const QString& newName) {
 }
 
 void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool changeAlignment) {
-    assert(!isStateLocked());
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+
     MAlignment maBefore = msa;
 
     msa.removeRegion(startPos, startRow, nBases, nRows, removeEmptyRows);
@@ -228,9 +231,9 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
 }
 
 void MAlignmentObject::renameRow( int seqNum, const QString& newName ) {
-    assert(seqNum >= 0 && seqNum < msa.getNumRows());
-    assert(!isStateLocked());
-    assert(!newName.isEmpty());
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+    SAFE_POINT(seqNum >= 0 && seqNum < msa.getNumRows(), QString("Invalid sequence number: %1").arg(seqNum), );
+    SAFE_POINT(!newName.isEmpty(), "New sequence name is empty!",);
 
     const QString& curName = msa.getRow(seqNum).getName();
     if (curName == newName) {
@@ -245,9 +248,9 @@ void MAlignmentObject::renameRow( int seqNum, const QString& newName ) {
     emit si_alignmentChanged(maBefore, mi);
 }
 
-void MAlignmentObject::crop( U2Region window, const QSet<QString>& rowNames )
-{
-    assert(!isStateLocked());
+void MAlignmentObject::crop( U2Region window, const QSet<QString>& rowNames ) {
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+
     MAlignment maBefore = msa;
 
     msa.crop(window, rowNames);

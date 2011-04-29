@@ -22,11 +22,13 @@
 #include "AnnotationTableObject.h"
 #include "GObjectTypes.h"
 #include "DNASequenceObject.h"
+
 #include <U2Core/Timer.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
-#include <QtCore/QBitArray>
+#include <U2Core/U2SafePoints.h>
 
+#include <QtCore/QBitArray>
 // for Qt::escape
 #include <QtGui/QTextDocument>
 
@@ -209,7 +211,7 @@ void Annotation::setAnnotationName(const QString& newName) {
     if (newName == d->name) {
         return;
     }
-    assert(!newName.isEmpty());
+    SAFE_POINT(!newName.isEmpty(), "Annotation name is empty!",);
     QString oldName = d->name;
     d->name = newName;
     if (obj!=NULL) {
@@ -323,7 +325,7 @@ void AnnotationGroup::addAnnotation(Annotation* a) {
         return;
     }
 
-    assert(a->getGObject() == obj);
+    SAFE_POINT(a->getGObject() == obj, "Illegal object!",);
     assert(/*!annotations.contains(a) && */! a->groups.contains(this));
 
     obj->setModified(true);
@@ -362,7 +364,7 @@ void AnnotationGroup::removeAnnotations(const QList<Annotation*>& ans) {
 void AnnotationGroup::removeAnnotation(Annotation* a) {
     assert(annotations.contains(a) && a->groups.contains(this));
     if (a->groups.size() == 1) {
-        assert(a->groups.first() == this);
+        SAFE_POINT(a->groups.first() == this, "Illegal group!",);
         obj->removeAnnotation(a);
     } else {
         annotations.removeOne(a);
@@ -425,10 +427,8 @@ AnnotationGroup* AnnotationGroup::getSubgroup(const QString& path, bool create) 
 }
 
 void AnnotationGroup::removeSubgroup(AnnotationGroup* g) {
-    assert(g->getParentGroup() == this);
-    if (g->getParentGroup() != this) {
-        return;
-    }
+    SAFE_POINT(g->getParentGroup() == this, "Illegal parent group!",);
+    
     obj->setModified(true);
     g->clear();
     subgroups.removeOne(g);
@@ -570,7 +570,8 @@ GObject* AnnotationTableObject::clone() const {
 }
 
 void AnnotationTableObject::addAnnotation(Annotation* a, const QString& groupName) {
-    assert(a->obj == NULL);
+    SAFE_POINT(a->obj == NULL, "Annotation belongs to another object", );
+
     a->obj = this;
     const QString& aName = a->getAnnotationName();
     AnnotationGroup* defaultGroup = rootGroup->getSubgroup(groupName.isEmpty() ? aName : groupName, true); 
@@ -582,7 +583,7 @@ void AnnotationTableObject::addAnnotation(Annotation* a, const QString& groupNam
 }
 
 void AnnotationTableObject::addAnnotation(Annotation* a, QStringList& groupsNames) {
-    assert(a->obj == NULL);
+    SAFE_POINT(a->obj == NULL, "Annotation belongs to another object", );
     if(groupsNames.isEmpty()){
         addAnnotation(a);
         return;
@@ -656,7 +657,7 @@ void AnnotationTableObject::removeAnnotation(Annotation* a) {
 }
 
 void AnnotationTableObject::_removeAnnotation(Annotation* a) {
-    assert(a->getGObject() == this);
+    SAFE_POINT(a->getGObject() == this, "Illegal annotation object!",);
     a->obj = NULL;
     annotations.removeOne(a);
     foreach(AnnotationGroup* ag, a->getGroups()) {
@@ -675,7 +676,8 @@ void AnnotationTableObject::selectAnnotationsByName(const QString& name, QList<A
 
 bool AnnotationTableObject::checkConstraints(const GObjectConstraints* c) const {
     const AnnotationTableObjectConstraints* ac = qobject_cast<const AnnotationTableObjectConstraints*>(c);
-    assert(ac!=NULL);
+    SAFE_POINT(ac != NULL, "Illegal constraints type!", false);
+
     int fitSize = ac->sequenceSizeToFit;
     foreach(Annotation* a, annotations) {
         foreach(const U2Region& r, a->getRegions()) {

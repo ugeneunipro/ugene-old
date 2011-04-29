@@ -21,6 +21,7 @@
 
 #include "LocalFileAdapter.h"
 #include "ZlibAdapter.h"
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -59,8 +60,9 @@ LocalFileAdapter::LocalFileAdapter(LocalFileAdapterFactory* factory, QObject* o,
 
 
 bool LocalFileAdapter::open(const GUrl& url, IOAdapterMode m) {
-    assert(!isOpen());
-    assert(f==NULL);
+    SAFE_POINT(!isOpen(), "Adapter is already opened!", false);
+    SAFE_POINT(f == NULL, "QFile is not null!", false);
+
     if (url.isEmpty()) {
         return false;
     }
@@ -81,17 +83,14 @@ bool LocalFileAdapter::open(const GUrl& url, IOAdapterMode m) {
 }
 
 void LocalFileAdapter::close() {
-    assert(isOpen());
-    if (!isOpen()) {
-        return;
-    }
+    SAFE_POINT(isOpen(), "Adapter is not opened!",);
     f->close();
     delete f;
     f = NULL;
 }
 
 qint64 LocalFileAdapter::readBlock(char* data, qint64 size) {
-    assert(isOpen());
+    SAFE_POINT(isOpen(), "Adapter is not opened!",-1);
     qint64 l = 0;
     if (bufferOptimization) {
         qint64 copySize = 0;
@@ -115,16 +114,13 @@ qint64 LocalFileAdapter::readBlock(char* data, qint64 size) {
 }
 
 qint64 LocalFileAdapter::writeBlock(const char* data, qint64 size) {
-    assert(isOpen());
+    SAFE_POINT(isOpen(), "Adapter is not opened!",-1);
     qint64 l = f->write(data, size);
     return l;
 }
 
 bool LocalFileAdapter::skip(qint64 nBytes) {
-    assert(isOpen());
-    if (!isOpen()) {
-        return false;
-    }
+    SAFE_POINT(isOpen(), "Adapter is not opened!",false);
     if (bufferOptimization) {
         qint64 newPos = currentPos + nBytes;
         if (newPos < 0 || newPos >= bufLen) {
@@ -145,7 +141,7 @@ bool LocalFileAdapter::skip(qint64 nBytes) {
 }
 
 qint64 LocalFileAdapter::left() const {
-    assert(isOpen());
+    SAFE_POINT(isOpen(), "Adapter is not opened!",-1);
     qint64 p = f->pos();
     qint64 len = f->size();
     if (bufferOptimization) {
@@ -155,7 +151,7 @@ qint64 LocalFileAdapter::left() const {
 }
 
 int LocalFileAdapter::getProgress() const {
-    assert(isOpen());
+    SAFE_POINT(isOpen(), "Adapter is not opened!",false);
     return int(100 * float(bytesRead()) / f->size());
 }
 

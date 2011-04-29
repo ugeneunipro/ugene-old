@@ -19,10 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include "VFSAdapter.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
 
-#include "VFSAdapter.h"
 
 namespace U2 {
 
@@ -39,15 +40,16 @@ VFSAdapter::VFSAdapter(VFSAdapterFactory* factory, QObject* o) : IOAdapter(facto
 
 
 bool VFSAdapter::open(const GUrl& _url, IOAdapterMode m) {
-    assert(!isOpen());
-    assert(buffer == NULL);
-    
+    SAFE_POINT(!isOpen(), "Adapter is already opened!", false);
+    SAFE_POINT(buffer == NULL, "Buffers is not null!", false);
+
     // assume that all membuf adapters work with files in some vfs
     if( !_url.getURLString().startsWith( VirtualFileSystem::URL_PREFIX ) ) {
         return false; // not a file in vfs
     }
     VirtualFileSystemRegistry * vfsReg = AppContext::getVirtualFileSystemRegistry();
-    assert( NULL != vfsReg );
+    SAFE_POINT(vfsReg != NULL, "VirtualFileSystemRegistry not found!", false);
+
     QStringList urlArgs = _url.getURLString().mid( VirtualFileSystem::URL_PREFIX.size() ).
         split( VirtualFileSystem::URL_NAME_SEPARATOR, QString::SkipEmptyParts );
     if( 2 != urlArgs.size() ) { // urlArgs - vfsname and filename
@@ -76,10 +78,8 @@ bool VFSAdapter::open(const GUrl& _url, IOAdapterMode m) {
 }
 
 void VFSAdapter::close() {
-    assert(isOpen());
-    if (!isOpen()) {
-        return;
-    }
+    SAFE_POINT(isOpen(), "Adapter is not opened!",);
+
     delete buffer;
     buffer = NULL;
     url = GUrl("", GUrl_VFSFile);
@@ -96,23 +96,22 @@ qint64 VFSAdapter::writeBlock(const char* data, qint64 size) {
 }
 
 bool VFSAdapter::skip(qint64 nBytes) {
-    assert(isOpen());
-    if (!isOpen()) {
-        return false;
-    }
+    SAFE_POINT(isOpen(), "Adapter is not opened!", false);
+
     qint64 p = buffer->pos();
     return buffer->seek(p+nBytes);
 }
 
 qint64 VFSAdapter::left() const {
-    assert(isOpen());
+    SAFE_POINT(isOpen(), "Adapter is not opened!", -1);
+
     qint64 p = buffer->pos();
     qint64 len = buffer->size();
     return len - p;
 }
 
 int VFSAdapter::getProgress() const {
-    assert(isOpen());
+    SAFE_POINT(isOpen(), "Adapter is not opened!", -1);
     return int(100 * float(buffer->pos()) / buffer->size());
 }
 

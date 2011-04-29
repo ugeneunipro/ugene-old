@@ -102,7 +102,7 @@ void MultiTableAssemblyAdapter::initTables(QList<U2AssemblyRead>& reads, U2OpSta
         // TODO:*/
     } else {
         QVector<int> starts;
-        starts << 50 << 200 << 800 << 4*1000 << 25*1000 << 100*1000 << 500*1000 << 2*1000*1000;
+        starts << 50 << 100 << 200 << 400 << 800 << 4*1000 << 25*1000 << 100*1000 << 500*1000 << 2*1000*1000;
         elenRanges << toRange( starts);
     }
 
@@ -535,14 +535,6 @@ MultiTablePackAlgorithmAdapter::~MultiTablePackAlgorithmAdapter() {
     qDeleteAll(packAdapters);
 }
 
-// Number of migration cached before migration process is forced from within of pack algorithm
-// If this number is not reached during the pack -> migration is done after the pack
-// TODO: there is an error in migration process: remove from old table is blocked by read iterator
-//       until this issue is fixed assemblies with > MAX_MIGRATION_QUEUE_SIZE moved reads will fail to pack
-//       need to consider different isolation level or post-pack removal
-
-#define MAX_MIGRATION_QUEUE_SIZE (10*1000*1000)
-
 void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os) {
     int elenPos = multiTableAdapter->getElenRangePosById(readId);
     int oldRowPos = multiTableAdapter->getRowRangePosById(readId);
@@ -572,10 +564,7 @@ void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 p
 
     QVector<ReadTableMigrationData>& newTableData = migrations[newA];
     newTableData.append(ReadTableMigrationData(SQLiteUtils::toDbiId(readId), oldA, prow));
-    if (newTableData.size() > MAX_MIGRATION_QUEUE_SIZE) {
-        migrate(newA, newTableData, os);
-        newTableData.clear();
-    }
+    //TODO: add mem check here!
 }
 
 void MultiTablePackAlgorithmAdapter::releaseDbResources() {
@@ -584,7 +573,7 @@ void MultiTablePackAlgorithmAdapter::releaseDbResources() {
     }
 }
 
-void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, U2OpStatus& os) {
+void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, qint64 migratedBefore, qint64 totalMigrationCount, U2OpStatus& os) {
     SAFE_POINT_OP(os,);
     //delete reads from old tables, and insert into new one
     QHash<MTASingleTableAdapter*, QVector<ReadTableMigrationData> > readsByOldTable;
@@ -610,7 +599,7 @@ void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const 
         U2Region newProwRegion(newA->rowPos * rowsPerRange, rowsPerRange);
 #endif
 
-        perfLog.trace(QString("Starting reads migration from %1 to %2 number of reads: %3").arg(oldTable).arg(newTable).arg(migData.size()));
+        perfLog.trace(QString("Assembly: running reads migration from %1 to %2 number of reads: %3").arg(oldTable).arg(newTable).arg(migData.size()));
         quint64 t0 = GTimer::currentTimeMicros();
 
         { //nested block is needed to ensure all queries are finalized
@@ -638,7 +627,10 @@ void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const 
         U2OpStatusImpl osStub; // using stub here -> this operation must be performed even if any of internal queries failed
         SQLiteQuery(QString("DROP TABLE IF EXISTS %1").arg(idsTable), db, osStub).execute();
 
-        perfLog.trace(QString("Reads migration from %1 to %2 finished, time %3 seconds").arg(oldTable).arg(newTable).arg((GTimer::currentTimeMicros() - t0)/float(1000*1000)));
+        qint64 nMigrated = migratedBefore + migData.size();
+        perfLog.trace(QString("Assembly: reads migration from %1 to %2 finished, time %3 seconds, progress: %4/%5 (%6%)")
+            .arg(oldTable).arg(newTable).arg((GTimer::currentTimeMicros() - t0)/float(1000*1000))
+            .arg(nMigrated).arg(totalMigrationCount).arg(100*nMigrated/totalMigrationCount));
 
 #ifdef _DEBUG
         qint64 nOldReads2 = SQLiteQuery("SELECT COUNT(*) FROM " + oldTable, db, os).selectInt64();
@@ -652,9 +644,35 @@ void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const 
 
 void MultiTablePackAlgorithmAdapter::migrateAll(U2OpStatus& os) {
     SAFE_POINT_OP(os,);
+    
+    qint64 nReadsToMigrate = 0;
     foreach(MTASingleTableAdapter* newTable, migrations.keys()) {
         const QVector<ReadTableMigrationData>& data = migrations[newTable];
-        migrate(newTable, data, os);
+        nReadsToMigrate+=data.size();
+    }
+    if (nReadsToMigrate == 0) {
+        return;
+    }
+    qint64 nReadsTotal = multiTableAdapter->countReads(U2_ASSEMBLY_REGION_MAX, os);
+    qint64 migrationPercent = nReadsToMigrate * 100 / nReadsTotal;
+
+    perfLog.trace(QString("Assembly: starting reads migration process. Reads to migrate: %1, total: %2 (%3%)").arg(nReadsToMigrate).arg(nReadsTotal).arg(migrationPercent));
+
+#define MAX_PERCENT_TO_REINDEX 20
+    if (migrationPercent > MAX_PERCENT_TO_REINDEX) {
+        perfLog.trace("Assembly: dropping old indexes first");
+        foreach(MTASingleTableAdapter* adapter, multiTableAdapter->getAdapters()) {
+            adapter->singleTableAdapter->dropReadsIndexes(os);
+        }
+        perfLog.trace("Assembly: indexes are dropped");
+    }
+    
+    SAFE_POINT_OP(os, );
+    int nMigrated = 0;
+    foreach(MTASingleTableAdapter* newTable, migrations.keys()) {
+        const QVector<ReadTableMigrationData>& data = migrations[newTable];
+        migrate(newTable, data, nMigrated, nReadsToMigrate, os);
+        nMigrated+=data.size();
     }
     migrations.clear();
 }

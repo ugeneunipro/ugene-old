@@ -38,6 +38,20 @@ public:
     virtual U2AssemblyRead next(U2OpStatus& os) = 0;
 };
 
+/** Additional reads info used during reads import into assembly */
+class U2AssemblyReadsImportInfo {
+public:
+    U2AssemblyReadsImportInfo() : sortedByStartPos(false), packReads(false){}
+    /** Tells if imported reads are sorted by leftmost pos*/
+    bool sortedByStartPos;
+
+    /* Tells if reads must be packed by prow during the import */
+    bool packReads;
+    
+    /* Place where to save pack statistics */
+    U2AssemblyPackStat packStat;
+};
+
 /**
     An interface to obtain  access to assembly data
 */
@@ -95,7 +109,7 @@ public:
         Requires: U2DbiFeature_WriteAssembly feature support
     */
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  
-        U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) = 0;
+        U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& importInfo, U2OpStatus& os) = 0;
 
     /** 
         Updates assembly object fields 

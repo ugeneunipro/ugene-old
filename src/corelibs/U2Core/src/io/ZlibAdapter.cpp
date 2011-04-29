@@ -24,6 +24,8 @@
 
 #include "ZlibAdapter.h"
 
+#include <U2Core/U2SafePoints.h>
+
 //using 3rd-party zlib (not included in ugene bundle) on *nix
 #if defined(Q_OS_LINUX) || defined(Q_OS_UNIX) 
 #include <zlib.h> 
@@ -38,14 +40,14 @@ namespace {
 using namespace U2;
 
 // used in GZipIndex building
-void setIfYouCan( bool what, bool* to ) {
+static void setIfYouCan( bool what, bool* to ) {
     if( NULL != to ) {
         *to = what;
     }
 }
 // used in GZipIndex building
-void addAccessPoint( GZipIndex& index, int bits, qint64 in, qint64 out, quint32 left, char* wnd ) {
-    assert( NULL != wnd );
+static void addAccessPoint( GZipIndex& index, int bits, qint64 in, qint64 out, quint32 left, char* wnd ) {
+    SAFE_POINT(wnd != NULL, "Window is NULL!",);
     
     QByteArray window;
     GZipIndexAccessPoint next;
@@ -282,10 +284,8 @@ bool ZlibAdapter::open(const GUrl& url, IOAdapterMode m ) {
 
 qint64 ZlibAdapter::readBlock(char* data, qint64 size) 
 {
-    if (!isOpen() || z->isCompressing()) {
-        assert(0 && "not ready to read");
-        return false;
-    }
+    SAFE_POINT(!isOpen() || z->isCompressing(), "Not ready to read!", -1);
+
     // first use data put back to buffer if any
     int cached = 0;
     if (rewinded != 0) {
@@ -308,20 +308,15 @@ qint64 ZlibAdapter::readBlock(char* data, qint64 size)
 }
 
 qint64 ZlibAdapter::writeBlock(const char* data, qint64 size) {
-    if (!isOpen() || !z->isCompressing()) {
-        assert(0 && "not ready to write");
-        return false;
-    }
+    SAFE_POINT(!isOpen() || !z->isCompressing(), "Not ready to write!", -1);
+    
     qint64 l = z->compress(data, size);
     return l;
 }
 
 bool ZlibAdapter::skip(qint64 nBytes) {
-    if (!isOpen() || z->isCompressing()) {
-        assert(0 && "not ready to seek");
-        return false;
-    }
-    assert(buf);
+    SAFE_POINT(!isOpen() || z->isCompressing(), "Not ready to seef!", false);
+    SAFE_POINT(buf != NULL, "Buffer is NULL!", false);
     nBytes -= rewinded;
     if (nBytes <= 0) {
         if (-nBytes <= buf->length()) {
@@ -354,7 +349,7 @@ qint64 ZlibAdapter::bytesRead() const {
 
 // based on zran.c ( example from zlib Copyright (C) 2005 Mark Adler )
 GZipIndex ZlibAdapter::buildGzipIndex( IOAdapter* io, qint64 span, bool* ok ) {
-    assert( NULL != io && io->isOpen() );
+    SAFE_POINT( NULL != io && io->isOpen(), "Adapter is not opened!", GZipIndex());
 
     int ret = 0;
     qint64 totin  = 0;        // our own total counters

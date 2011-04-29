@@ -25,6 +25,7 @@
 
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/UnloadedObject.h>
+#include <U2Core/U2SafePoints.h>
 
 
 namespace U2 {
@@ -61,7 +62,7 @@ void GObject::setGObjectName(const QString& newName) {
         return;
     }
 
-    assert(getDocument()==NULL || getDocument()->findGObjectByName(newName)==NULL);
+    SAFE_POINT(getDocument()==NULL || getDocument()->findGObjectByName(newName)==NULL, "Duplicate object name!",);
 
     QString oldName = name;
     name = newName; 
@@ -102,7 +103,7 @@ QList<GObjectRelation> GObject::findRelatedObjectsByType(const GObjectType& objT
 }
 
 void GObject::addObjectRelation(const GObjectRelation& rel) {
-    assert(rel.isValid());
+    SAFE_POINT(rel.isValid(), "Object relation is not valid!", );
     removeObjectRelation(rel);
     QList<GObjectRelation> list = getObjectRelations();
     list.append(rel);

@@ -23,6 +23,7 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -41,7 +42,8 @@ QString GUrlUtils::getUncompressedExtension(const GUrl& url) {
 }
 
 GUrl GUrlUtils::ensureFileExt(const GUrl& url, const QStringList& typeExt) {
-    assert(!typeExt.isEmpty());
+    SAFE_POINT(!typeExt.isEmpty(), "Type extension is empty!", GUrl());
+    
     if( url.isVFSFile() ) {
         return url;
     }

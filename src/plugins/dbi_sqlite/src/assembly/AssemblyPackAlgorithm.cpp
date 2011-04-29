@@ -72,10 +72,10 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
         stat.maxProw = qMax(prow, stat.maxProw);
         
         if ((++nPacked % PACK_TRACE_CHECKPOINT) == 0) {
-            perfLog.trace(QString("Assembly: number packed reads so far: %1").arg(nPacked));
+            perfLog.trace(QString("Assembly: number packed reads so far: %1 of %2 (%3%)").arg(nPacked).arg(stat.readsCount).arg(100*nPacked/stat.readsCount));
         }
     }
-    stat.readsCount = nPacked;
+    assert(stat.readsCount = nPacked);
     
     t1.stop();
     perfLog.trace(QString("Assembly: algorithm pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));

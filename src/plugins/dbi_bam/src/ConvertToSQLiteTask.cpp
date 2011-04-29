@@ -237,11 +237,12 @@ void ConvertToSQLiteTask::run() {
                 U2Assembly assembly;
                 assembly.visualName = reference.getName();
                 U2OpStatusImpl opStatus;
+                U2AssemblyReadsImportInfo importInfo;
                 if(chunks.isEmpty()) {
-                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, opStatus);
+                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
                 } else {                    
                     BAMDbiIterator iter(i, reader.get(), chunks[i], totalChunksLength, readLength, stateInfo);
-                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &iter, opStatus);
+                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &iter, importInfo, opStatus);
                 }
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
@@ -305,7 +306,8 @@ void ConvertToSQLiteTask::run() {
             assembly.visualName = QString("Unmapped");
             {
                 U2OpStatusImpl opStatus;
-                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, opStatus);
+                U2AssemblyReadsImportInfo importInfo;
+                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }

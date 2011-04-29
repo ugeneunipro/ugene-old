@@ -151,10 +151,10 @@ public:
 
     void releaseDbResources();
     void migrateAll(U2OpStatus& os);
-    void migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, U2OpStatus& os);
 
 private:
     void ensureGridSize(int nRows);
+    void migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, qint64 migratedBefore, qint64 totalMigrationCount, U2OpStatus& os);
 
     MultiTableAssemblyAdapter*                              multiTableAdapter;
     QVector<SingleTablePackAlgorithmAdapter*>               packAdapters;

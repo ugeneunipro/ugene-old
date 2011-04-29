@@ -26,6 +26,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -84,7 +85,7 @@ GObject* DNASequenceObject::clone() const {
 }
 
 void DNASequenceObject::setBase(int pos, char base) {
-    assert(pos >=0 && pos < dnaSeq.length());
+    SAFE_POINT(pos >=0 && pos < dnaSeq.length(), "Position is out of range!",);
     dnaSeq.seq[pos] = base;
     setModified(true);
 }

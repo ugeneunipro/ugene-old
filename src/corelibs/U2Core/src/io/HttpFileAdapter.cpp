@@ -24,6 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QUrl>
 #include <QtCore/QMutex>
@@ -68,8 +69,8 @@ http(0), badstate(false), is_downloaded(false), downloaded(0), total(0)
 }
 
 bool HttpFileAdapter::open(const GUrl& url_, IOAdapterMode m) {
-    Q_UNUSED(m);
-    assert(m==IOAdapterMode_Read);
+    SAFE_POINT (m == IOAdapterMode_Read, QString("Illegal IO mode: %1").arg(m), false);
+
     QUrl url( url_.getURLString().trimmed() );
     if( !url.isValid() ) {
         return false;
@@ -90,13 +91,12 @@ bool HttpFileAdapter::open(const GUrl& url_, IOAdapterMode m) {
 
 bool HttpFileAdapter::open( const QString& host, const QString & what, const QNetworkProxy & p, quint16 port, bool https )
 {
-    assert( !isOpen() );
+    SAFE_POINT(!isOpen(), "Adapter is already opened!", false);
+
     if( http ) {
         close();
     }
-    http = new QHttp( host, 
-        https ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttp,
-        port );
+    http = new QHttp( host,  https ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttp, port );
 
     //printf( "using proxy: %s on port %d\n", p.hostName().toStdString().c_str(), p.port() );
     http->setProxy( p );
@@ -119,7 +119,8 @@ bool HttpFileAdapter::open( const QString& host, const QString & what, const QNe
 }
 
 void HttpFileAdapter::close() {
-    assert(isOpen());
+    SAFE_POINT(isOpen(), "Adapter is not opened!", );
+
     if (!isOpen()) {
         return;
     }
@@ -133,10 +134,7 @@ void HttpFileAdapter::close() {
 
 qint64 HttpFileAdapter::readBlock(char* data, qint64 size) 
 {
-    assert(isOpen());
-    if (!isOpen()) {
-        return 0;
-    }
+    SAFE_POINT(isOpen(), "Adapter is not opened!", 0);
     if( badstate ) {
         return -1;
     }
@@ -160,17 +158,14 @@ qint64 HttpFileAdapter::readBlock(char* data, qint64 size)
     return size;
 }
 
-qint64 HttpFileAdapter::writeBlock(const char* data, qint64 size) {
-    Q_UNUSED(data); Q_UNUSED(size);
-    assert( false );
+qint64 HttpFileAdapter::writeBlock(const char* , qint64) {
+    SAFE_POINT(0, "Operation is not supported!",0);
     return 0;
 }
 
 bool HttpFileAdapter::skip(qint64 nBytes) {
-     assert(isOpen());
-     if (!isOpen()) {
-         return false;
-     }
+    SAFE_POINT(isOpen(), "Adapter is not opened!", false);
+
     nBytes = waitData( nBytes );
     rwmut.lock();
 
@@ -317,8 +312,7 @@ int HttpFileAdapter::getProgress() const
     return (total ? (int)( 100 * (float)downloaded / total ) : -1);
 }
 
-void HttpFileAdapter::state( int state )
-{
+void HttpFileAdapter::state( int state ) {
     Q_UNUSED(state);
 //    printf("downloading state: %d\n", state);
 }
