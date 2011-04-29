@@ -38,7 +38,6 @@ public:
     QString     indexFileName;
     QString     refFileName;
     bool        justBuildIndex;
-    bool        openCL;
     int         seqPartSize;            //in Mb
     bool        prebuiltIndex;
 };

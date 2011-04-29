@@ -48,6 +48,7 @@ public:
     void findInPart(int startPos, ResType firstResult, BMType bitValue, SearchQuery *qu, SearchContext *settings);
     ResType findBit(BMType bitValue, BMType bitFilter);
     ResType *findBitOpenCL(BMType *bitValues, int size, quint64 BMType);
+    ResType *findBitValuesUsingCUDA(BMType *bitValues, int size, BMType filter);
     QString getSeqName() const {return seqObjName;}
     int getPartCount() const {return indexPart.partCount;}
     SAType getSArraySize() const {return indexPart.saLengths[currentPart];}

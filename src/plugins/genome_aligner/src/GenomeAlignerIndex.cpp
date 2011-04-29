@@ -26,8 +26,8 @@
 #include <QtEndian>
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerTask.h"
-
 #include "GenomeAlignerIndex.h"
+#include "SuffixSearchCUDA.h"
 
 namespace U2 {
 
@@ -271,6 +271,25 @@ ResType *GenomeAlignerIndex::findBitOpenCL(BMType *bitValues, int size, BMType b
     NumberType *ans = bf.launch();
 
     return (ResType*)ans;
+}
+
+ResType * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValues, int size, BMType bitFilter )
+{
+    ResType* result = NULL;
+#ifdef GA_BUILD_WITH_CUDA 
+    taskLog.details(QString("Binary search using CUDA on GPU of %1 Mb search-values in %2 Mb base values")
+        .arg((8*size)/(1024*1024)).arg((8*indexPart.getLoadedPartSize())/(1024*1024)));
+
+    // estimate memory size?
+    SuffixSearchCUDA ss;
+    
+    result = (ResType*)ss.runSearch( indexPart.bitMask, 
+        indexPart.getLoadedPartSize(), bitValues, size, bitFilter);
+         
+#endif // GA_BUILD_WITH_CUDA
+    
+    return result;
+
 }
 
 void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, BMType &bitFilter) {
@@ -710,5 +729,6 @@ void GenomeAlignerIndex::vecswap(BMType *x1, BMType *x2, quint32 n) {
         swap(x1+i, x2+i);
     }
 }
+
 
 } //U2

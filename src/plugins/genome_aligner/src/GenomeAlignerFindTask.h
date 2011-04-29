@@ -51,6 +51,7 @@ public:
     bool absMismatches;
     bool bestMode;
     bool openCL;
+    bool useCUDA;
     int minReadLength;
     int maxReadLength;
     BMType bitFilter;

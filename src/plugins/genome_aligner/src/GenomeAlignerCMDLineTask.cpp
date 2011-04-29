@@ -34,12 +34,19 @@ namespace U2 {
 #define OPTION_RESULT       "result"
 #define OPTION_BUILD_INDEX  "build-index"
 #define OPTION_REFERENCE    "reference"
+#define OPTION_MEMSIZE      "memsize"
+#define OPTION_CUDA         "use-cuda"
 
 GenomeAlignerCMDLineTask::GenomeAlignerCMDLineTask()
 :Task( tr( "Run genome aligner from command line" ), TaskFlags_NR_FOSCOE), onlyBuildIndex(false)
 {
-    // parse options
+    memSize = 1000;
+    mismatchCount = 0;
+    alignRevCompl = false;
+    useCuda = false;
     
+    // parse options
+       
     QList<StringPair> options = AppContext::getCMDLineRegistry()->getParameters();
     
     foreach (const StringPair& opt, options ) {
@@ -56,6 +63,8 @@ GenomeAlignerCMDLineTask::GenomeAlignerCMDLineTask()
             foreach(const QString& url, urls) {
                 shortReadUrls.append(url);
             }
+        } else if (opt.first == OPTION_CUDA) {
+            useCuda = true;
         }
             
     }
@@ -91,11 +100,22 @@ void GenomeAlignerCMDLineTask::prepare()
     if (resultPath.isEmpty()) {
         resultPath =  QDir::current().path() + "/output.sam";
     }
+    if (onlyBuildIndex && indexPath.isEmpty()) {
+        GUrl refUrl(refPath);
+        indexPath = refUrl.dirPath() + "/" + refUrl.baseFileName(); 
+    }
+
 
     settings.resultFileName = resultPath;
     settings.shortReadUrls = shortReadUrls;
     settings.refSeqUrl = refPath;
     settings.indexFileName = indexPath;
+    settings.loadResultDocument = false;
+    settings.setCustomValue(GenomeAlignerTask::OPTION_MISMATCHES, mismatchCount);
+    settings.setCustomValue(GenomeAlignerTask::OPTION_READS_MEMORY_SIZE, memSize);
+    settings.setCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, alignRevCompl);
+    settings.setCustomValue(GenomeAlignerTask::OPTION_USE_CUDA, useCuda);
+
 
     GenomeAlignerTask* task = new GenomeAlignerTask(settings, onlyBuildIndex);
     addSubTask(task);

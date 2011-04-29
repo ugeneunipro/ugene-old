@@ -53,6 +53,7 @@ public:
     static const QString OPTION_READS_WRITER;
     static const QString OPTION_ALIGN_REVERSED;
     static const QString OPTION_OPENCL;
+    static const QString OPTION_USE_CUDA;
     static const QString OPTION_IF_ABS_MISMATCHES;
     static const QString OPTION_MISMATCHES;
     static const QString OPTION_PERCENTAGE_MISMATCHES;
@@ -80,6 +81,7 @@ private:
     bool absMismatches;
     bool bestMode;
     bool openCL;
+    bool useCUDA;
     bool dbiIO;
     QString indexFileName;
     bool alignReversed;

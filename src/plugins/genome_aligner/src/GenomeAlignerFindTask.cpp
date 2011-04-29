@@ -92,7 +92,7 @@ void GenomeAlignerFindTask::prepareBitValues() {
             positionsAtReadV.push_back(i);
         }
     }
-    if (!settings->openCL) {
+    if (!settings->openCL && !settings->useCUDA) {
         bitMaskResults = new ResType[bitValuesV.size()];
     }
     taskLog.details("finish to calculate bitValues");
@@ -148,10 +148,10 @@ QList<Task*> GenomeAlignerFindTask::findInBitMask(int part) {
 
     partLoaded = false;
     nextElementToGive = 0;
-    if (settings->openCL) {
+    if (settings->openCL || settings->useCUDA) {
         bitMaskTaskCount = 1;
     } else {
-        bitMaskTaskCount = nThreads;
+        bitMaskTaskCount = 1; //nThreads;
     }
 
     for (int i=0; i<bitMaskTaskCount; i++) {
@@ -233,7 +233,7 @@ void GenomeAlignerFindTask::loadPart(int part) {
 }
 
 void GenomeAlignerFindTask::getDataForBitMaskSearch(int &first, int &length) {
-    if (settings->openCL) {
+    if (settings->openCL || settings->useCUDA) {
         first = 0;
         length = bitValuesV.size();
         return;
@@ -307,7 +307,14 @@ void FindInBitMaskSubTask::run() {
             setError("OpenCL binary find error");
             return;
         }
-    } else {
+    }else if (settings->useCUDA) {
+        delete[] *bitMaskResults;
+        *bitMaskResults = index->findBitValuesUsingCUDA(bitValues, length, settings->bitFilter);
+        if (NULL == *bitMaskResults) {
+            setError("CUDA binary search error");
+            return;
+        }
+    }else {
         while (length > 0) {
             int end = first + length;
             ResType *bmr = *bitMaskResults;

@@ -54,6 +54,7 @@ const QString GenomeAlignerTask::OPTION_READS_READER("rreader");
 const QString GenomeAlignerTask::OPTION_READS_WRITER("rwriter");
 const QString GenomeAlignerTask::OPTION_ALIGN_REVERSED("align_reversed");
 const QString GenomeAlignerTask::OPTION_OPENCL("use_gpu_optimization");
+const QString GenomeAlignerTask::OPTION_USE_CUDA("use_cuda");
 const QString GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES("if_absolute_mismatches_value");
 const QString GenomeAlignerTask::OPTION_MISMATCHES("mismatches_allowed");
 const QString GenomeAlignerTask::OPTION_PERCENTAGE_MISMATCHES("mismatches_percentage_allowed");
@@ -101,6 +102,7 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
 
     alignReversed = settings.getCustomValue(OPTION_ALIGN_REVERSED, true).toBool();
     openCL = settings.getCustomValue(OPTION_OPENCL, false).toBool();
+    useCUDA = settings.getCustomValue(OPTION_USE_CUDA, false).toBool();
     absMismatches = settings.getCustomValue(OPTION_IF_ABS_MISMATCHES, true).toBool();
     nMismatches = settings.getCustomValue(OPTION_MISMATCHES, 0).toInt();
     ptMismatches = settings.getCustomValue(OPTION_PERCENTAGE_MISMATCHES, 0).toInt();
@@ -216,7 +218,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         }
 
         readsCount += queries.count();
-        taskLog.details(QString("Reading (and comlementing) of %1 short-reads  time: %2")
+        taskLog.details(QString("Reading (and complementing) of %1 short-reads  time: %2")
             .arg(readTask->bunchSize).arg((double)time/(1000*1000)));
         SearchContext s;
         s.absMismatches = absMismatches;
@@ -225,6 +227,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         s.bestMode = bestMode;
         s.queries = queries;
         s.openCL = openCL;
+        s.useCUDA = useCUDA;
         s.minReadLength = readTask->minReadLength;
         s.maxReadLength = readTask->maxReadLength;
         findTask = new GenomeAlignerFindTask(index, s);
@@ -262,7 +265,6 @@ static bool isDnaQualityAboveThreshold(const DNAQuality &dna, int threshold) {
 void GenomeAlignerTask::setupCreateIndexTask() {
     GenomeAlignerIndexSettings s;
     s.refFileName = settings.refSeqUrl.getURLString();
-    s.openCL = openCL;
     s.indexFileName = indexFileName;
     s.justBuildIndex = justBuildIndex;
     s.seqPartSize = seqPartSize;
