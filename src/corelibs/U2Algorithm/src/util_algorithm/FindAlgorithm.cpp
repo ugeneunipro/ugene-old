@@ -302,6 +302,102 @@ static void findInAmino_subst(
     currentPos = range.endPos();
 }
 
+char* getAmbiguousBaseMap() {
+
+    // Source: http://www.ncbi.nlm.nih.gov/blast/fasta.shtml
+    // Unknown symbol is zero: no match
+
+    const int SIZE = 128;
+    static char map[SIZE];
+
+    for (int i = 0; i < SIZE; i++) {
+        map[i] = 0x00;
+    }
+
+    map['A'] = 0x01; // Bitmask: 00000001
+    map['C'] = 0x02; // Bitmask: 00000010
+    map['G'] = 0x04; // Bitmask: 00000100
+    map['T'] = 0x08; // Bitmask: 00001000
+    map['U'] = 0x08; // Bitmask: 00001000
+    map['M'] = 0x03; // Bitmask: 00000011
+    map['R'] = 0x05; // Bitmask: 00000101
+    map['W'] = 0x09; // Bitmask: 00001001
+    map['S'] = 0x06; // Bitmask: 00000110
+    map['Y'] = 0x0A; // Bitmask: 00001010
+    map['K'] = 0x0C; // Bitmask: 00001100
+    map['V'] = 0x07; // Bitmask: 00000111
+    map['H'] = 0x0B; // Bitmask: 00001011
+    map['D'] = 0x0D; // Bitmask: 00001101
+    map['B'] = 0x0E; // Bitmask: 00001110
+    map['N'] = 0x0F; // Bitmask: 00001111
+    map['X'] = 0x0F; // Bitmask: 00001111
+
+    return &map[0];
+}
+
+
+inline bool cmpAmbiguous( char a, char b){
+    static char* charMap = getAmbiguousBaseMap();
+
+    assert( a >= 0 && a < 128);
+    assert( b >= 0 && b < 128);
+
+    char c1 = charMap[a];
+    char c2 = charMap[b];
+
+    return c1 & c2;
+}
+
+void find_subst_ambiguous( FindAlgorithmStrand strand, const U2Region &range, int patternLen, int& stopFlag, int &leftTillPercent, 
+                     int &currentPos, StrandContext context[], const char* seq, int maxErr, FindAlgorithmResultsListener* rl, 
+                     int &percentsCompleted, int onePercentLen, bool singleShot )
+{
+    
+    int conStart = isDirect(strand)? 0 : 1;
+    int conEnd =  isComplement(strand) ? 2 : 1;
+    assert(conStart < conEnd);
+    for (int i=range.startPos, end = range.endPos(); i < end - patternLen + 1 && !stopFlag; i++, leftTillPercent--) {
+        currentPos = i;
+        for (int ci = conStart; ci < conEnd; ci++) {
+            StrandContext& ctx = context[ci];
+            const char* p = ctx.pattern;
+            FindAlgorithmResult& res = ctx.res; 
+            bool match = true;
+            for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
+                if( !cmpAmbiguous(seq[i+j],p[j]) && ++curErr > maxErr ) {
+                    match = false;
+                    break;
+                }
+            }
+
+            if( match ) {
+                ++currentPos;
+                res.region.startPos = i;
+                res.region.length = patternLen;
+                res.err = 0;
+                res.strand = (ci == 1) ? U2Strand::Complementary : U2Strand::Direct;
+
+                rl->onResult(res);
+                //                res.clear();
+            }
+
+            if (leftTillPercent == 0) {
+                percentsCompleted = qMin(percentsCompleted+1,100);
+                leftTillPercent = onePercentLen;
+            }
+        }//strand
+        if( singleShot ) {
+            for( int j = conStart; j < conEnd; ++j ) {
+                if( !context[j].res.isEmpty() ) {
+                    return;
+                }
+            }
+        }
+    } //base pos
+    currentPos = range.endPos();
+}
+
+
 static void find_subst(
     FindAlgorithmResultsListener* rl, 
     DNATranslation* aminoTT, 
@@ -311,12 +407,12 @@ static void find_subst(
     const U2Region& range,  
     const char* pattern, 
     int patternLen, 
-    bool singleShot, 
+    bool singleShot,
+    bool useAmbiguousBases,
     int maxErr,
     int& stopFlag, 
     int& percentsCompleted, 
-    int& currentPos,
-    const CharComparator& cmp = SimpleComparator()) 
+    int& currentPos) 
 {
     assert(complTT == NULL || complTT->isOne2One());
     
@@ -343,11 +439,16 @@ static void find_subst(
         StrandContext(0, 0, false, pattern), 
         StrandContext(0, 0, false, complPattern)
     };
-
+    
     int onePercentLen = range.length/100;
     int leftTillPercent = onePercentLen;
     percentsCompleted = 0;
     currentPos = range.startPos;
+
+    if (useAmbiguousBases) {
+        find_subst_ambiguous(strand, range, patternLen, stopFlag, leftTillPercent, 
+            currentPos, context, seq, maxErr, rl, percentsCompleted, onePercentLen, singleShot);
+    }
 
     int conStart = isDirect(strand)? 0 : 1;
     int conEnd =  isComplement(strand) ? 2 : 1;
@@ -360,7 +461,7 @@ static void find_subst(
             FindAlgorithmResult& res = ctx.res; 
             bool match = true;
             for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
-                if( !cmp(seq[i+j],p[j]) && ++curErr > maxErr ) {
+                if( seq[i+j] != p[j] && ++curErr > maxErr ) {
                     match = false;
                     break;
                 }
@@ -415,15 +516,9 @@ void FindAlgorithm::find(
     assert(complTT == NULL || complTT->isOne2One());
     assert(patternLen > maxErr);    
 
-    if (useAmbiguousBases) {
-        find_subst( rl, aminoTT, complTT, strand, seq, range, pattern, patternLen,
-            singleShot, maxErr, stopFlag, percentsCompleted, currentPos, AmbiguousBaseComparator() );
-        return;
-    }
-    
     if( !insDel ) {
         find_subst( rl, aminoTT, complTT, strand, seq, range, pattern, patternLen,
-            singleShot, maxErr, stopFlag, percentsCompleted, currentPos );
+            singleShot, useAmbiguousBases, maxErr, stopFlag, percentsCompleted, currentPos );
         return;
     }
 
@@ -527,43 +622,9 @@ void FindAlgorithm::find(
     }
 }
 
-QMap<char,char> getAmbiguousBaseMap() {
-   
-    // Source: http://www.ncbi.nlm.nih.gov/blast/fasta.shtml
-    // Unknown symbol is zero: no match
-    
-    QMap<char,char> map;
-
-    map.insert('A', 0x01); // Bitmask: 00000001
-    map.insert('C', 0x02); // Bitmask: 00000010
-    map.insert('G', 0x04); // Bitmask: 00000100
-    map.insert('T', 0x08); // Bitmask: 00001000
-    map.insert('U', 0x08); // Bitmask: 00001000
-    map.insert('M', 0x03); // Bitmask: 00000011
-    map.insert('R', 0x05); // Bitmask: 00000101
-    map.insert('W', 0x09); // Bitmask: 00001001
-    map.insert('S', 0x06); // Bitmask: 00000110
-    map.insert('Y', 0x0A); // Bitmask: 00001010
-    map.insert('K', 0x0C); // Bitmask: 00001100
-    map.insert('V', 0x07); // Bitmask: 00000111
-    map.insert('H', 0x0B); // Bitmask: 00001011
-    map.insert('D', 0x0D); // Bitmask: 00001101
-    map.insert('B', 0x0E); // Bitmask: 00001110
-    map.insert('N', 0x0F); // Bitmask: 00001111
-    map.insert('X', 0x0F); // Bitmask: 00001111
-   
-    return map;
-}
 
 
-bool AmbiguousBaseComparator::operator()( char a, char b ) const
-{
-    static QMap<char,char> codeMap = getAmbiguousBaseMap();
 
-    char c1 = codeMap.value(a);
-    char c2 = codeMap.value(b);
- 
-    return c1 & c2;
-}
+
 
 }//namespace

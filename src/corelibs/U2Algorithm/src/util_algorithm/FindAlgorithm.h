@@ -110,22 +110,6 @@ searchRegion(searchRegion), singleShot(singleShot), maxErr(maxErr), insDelAlg(in
 };
 
 
-class CharComparator {
-public:
-    virtual bool operator() (char a, char b) const = 0;
-};
-
-class SimpleComparator : public CharComparator {
-public:
-    virtual bool operator() (char a, char b) const { return a == b; }
-};
-
-class AmbiguousBaseComparator : public CharComparator {
-public:
-    virtual bool operator() (char a, char b) const;
-};
-
-
 class U2ALGORITHM_EXPORT FindAlgorithm {
 public:
     // Note: pattern is never affected by either aminoTT or complTT
@@ -175,6 +159,7 @@ public:
     }
 
 };
+
 
 }//namespace
 
