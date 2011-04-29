@@ -230,7 +230,12 @@ GObjectType ProjectTreeController::getLoadedObjectType(GObject* obj) const {
 }
 
 
-#define MAX_OBJECTS_TO_AUTOEXPAND 50
+// if objects number in document < MAX_OBJECTS_TO_AUTOEXPAND - document content will be automatically expanded on loading
+#define MAX_OBJECTS_TO_AUTOEXPAND 20
+// if documents number in project < MAX_DOCUMENTS_TO_AUTOEXPAND - document content will be automatically expanded on loading
+#define MAX_DOCUMENTS_TO_AUTOEXPAND 20
+
+
 
 void ProjectTreeController::buildDocumentTree(Document* d) {
     TreeUpdateHelper h(itemsToUpdate);
@@ -548,11 +553,13 @@ void ProjectTreeController::sl_onRemoveSelectedDocuments() {
 
 void ProjectTreeController::sl_onLoadSelectedDocuments() {
     QSet<Document*> docsInSelection = getDocsInSelection(true);//mode.groupMode != ProjectTreeGroupMode_ByDocument);
+    QList<Document*> docsToLoad;
     foreach(Document* d, docsInSelection) {
         if (!d->isLoaded() && LoadUnloadedDocumentTask::findActiveLoadingTask(d)==NULL) {
-            runLoadDocumentTask(d);
+            docsToLoad.append(d);
         }
     }
+    runLoadDocumentTasks(docsToLoad);
 }
 
 void ProjectTreeController::sl_onUnloadSelectedDocuments() {
@@ -567,14 +574,19 @@ void ProjectTreeController::sl_onUnloadSelectedDocuments() {
 }
 
 
-void ProjectTreeController::runLoadDocumentTask(Document* d) {
-    Task* t = NULL;
+void ProjectTreeController::runLoadDocumentTasks(const QList<Document*>& docs) {
+    QList<Task*> tasks;
     if (mode.loadTaskProvider!=NULL) {
-        t = mode.loadTaskProvider->createLoadDocumentTask(d);
+        tasks = mode.loadTaskProvider->createLoadDocumentTasks(docs);
     } else {
-        t = new LoadUnloadedDocumentTask(d);
+        foreach(Document* d, docs) {
+            tasks << new LoadUnloadedDocumentTask(d);
+        }
     }
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    foreach(Task* t, tasks) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    }
+
 }
 
 void ProjectTreeController::sl_onDocumentAddedToProject(Document* d) {
@@ -700,7 +712,7 @@ void ProjectTreeController::sl_onDocumentLoadedStateChanged() {
             docItem = NULL;
         }
     }
-    if (docItem!=NULL && d->getObjects().size() < MAX_OBJECTS_TO_AUTOEXPAND) {
+    if (docItem != NULL && d->getObjects().size() < MAX_OBJECTS_TO_AUTOEXPAND && AppContext::getProject()->getDocuments().size() < MAX_DOCUMENTS_TO_AUTOEXPAND) {
         docItem->setExpanded(d->isLoaded());
     }
 	updateActions();

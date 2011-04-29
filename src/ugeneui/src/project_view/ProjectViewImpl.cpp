@@ -564,9 +564,20 @@ void ProjectViewImpl::sl_onDocTreePopupMenuRequested(QMenu& m) {
     emit si_onDocTreePopupMenuRequested(m);
 }
 
-
-Task* ProjectViewImpl::createLoadDocumentTask(Document* doc) const {
-    return new LoadUnloadedDocumentAndOpenViewTask(doc);
+#define MAX_DOCS_TO_OPEN_VIEWS 5
+QList<Task*> ProjectViewImpl::createLoadDocumentTasks(const QList<Document*>& docs) const {
+    bool openViews = docs.size() <= MAX_DOCS_TO_OPEN_VIEWS;
+    QList<Task*> res;
+    foreach(Document* doc, docs) {
+        Task* t = NULL;
+        if (openViews) {
+            t = new LoadUnloadedDocumentAndOpenViewTask(doc);
+        } else {
+            t = new LoadUnloadedDocumentTask(doc);
+        }
+        res.append(t);
+    }
+    return res;
 }
 
 //TODO: selection could be modified before slot activation!

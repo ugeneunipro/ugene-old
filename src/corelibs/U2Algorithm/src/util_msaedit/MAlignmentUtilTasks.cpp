@@ -102,9 +102,7 @@ void MSAAlignMultiTask::prepare()
 
 }
 
-Task::ReportResult MSAAlignMultiTask::report()
-{
-
+Task::ReportResult MSAAlignMultiTask::report() {
     if (!bufMA.isEmpty() && convertToAmino) {
         maObj->setMAlignment(bufMA);
     }
@@ -112,8 +110,7 @@ Task::ReportResult MSAAlignMultiTask::report()
     return ReportResult_Finished;
 }
 
-void MSAAlignMultiTask::run()
-{
+void MSAAlignMultiTask::run() {
     if ( hasError() || isCanceled() ) {
         return;
     }
@@ -135,6 +132,7 @@ void MSAAlignMultiTask::run()
         int rowIdx = MSAUtils::getRowIndexByName(bufMA, row.getName());
         if (rowIdx == -1) {
             setError(tr("Can not find row %1 in original alignment.").arg(row.getName()));
+            return;
         }
         for (int pos =0; pos < row.getCoreEnd(); ++pos) {
             char c = newMA.charAt(rowIdx, pos);

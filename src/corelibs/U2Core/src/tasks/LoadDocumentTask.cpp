@@ -225,27 +225,26 @@ void LoadDocumentTask::prepare() {
         return;
     }
     
-    qint64 memUseMB = 0;
+    int memUseMB = 0;
     if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad)) { // document is fully loaded to memory
         QFileInfo file(url.getURLString());
-        qint64 memUseMB = file.size()/(1024*1024);
-        if(iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
+        memUseMB = file.size() / (1024*1024);
+        if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
             memUseMB *= 2.5; //Need to calculate compress level
         }
+        coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
     }
-    if(memUseMB < 30) {
-        memUseMB = 30;
-    }
-    
-    coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
-    QString error;
-    Project *p = AppContext::getProject();
-    if (p) {
-        if(!AppContext::getProject()->lockResources(memUseMB, url.getURLString(), error)) {
-            stateInfo.setError(error);
+
+    if (memUseMB > 0) {
+        QString error;
+        Project *p = AppContext::getProject();
+        if (p) {
+            if(!AppContext::getProject()->lockResources(memUseMB, url.getURLString(), error)) {
+                stateInfo.setError(error);
+            }
+        } else {
+            addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
         }
-    } else {
-        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
     }
 }
 

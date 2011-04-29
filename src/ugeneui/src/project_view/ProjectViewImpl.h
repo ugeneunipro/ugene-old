@@ -80,7 +80,7 @@ public:
 
 	QAction* getAddExistingDocumentAction() const {return addExistingDocumentAction;}
 
-    virtual Task* createLoadDocumentTask(Document* doc) const;
+    virtual QList<Task*> createLoadDocumentTasks(const QList<Document*>& docs) const;
 
     void highlightItem(Document*);
 

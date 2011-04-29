@@ -49,7 +49,7 @@ class GObjectView;
 class U2GUI_EXPORT LoadDocumentTaskProvider {
 public:
     virtual ~LoadDocumentTaskProvider(){};
-    virtual Task* createLoadDocumentTask(Document* doc) const = 0;
+    virtual QList<Task*> createLoadDocumentTasks(const QList<Document*>& docs) const = 0;
 };
 
 enum ProjectTreeGroupMode {
@@ -184,7 +184,7 @@ private:
 	void buildTree();
 	void buildDocumentTree(Document* d);
     void flattenDocumentItem(ProjViewDocumentItem* docItem);
-    void runLoadDocumentTask(Document* d);
+    void runLoadDocumentTasks(const QList<Document*>& docs);
     GObjectType getLoadedObjectType(GObject* obj) const;
     void filterItemsRecursive(ProjViewItem* pi);
     QSet<Document*>  getDocsInSelection(bool deriveFromObjects);

@@ -183,6 +183,8 @@ void OpenProjectTask::prepare() {
             rpt->setSubtaskProgressWeight(0);
             addSubTask(rpt);
         }
+#define MAX_DOCS_TO_OPEN_VIEWS 5
+        bool openView = urlList.size() < MAX_DOCS_TO_OPEN_VIEWS;
         foreach(const GUrl& _url, urlList) {
             if (_url.lastFileSuffix() == PROJECT_FILE_PURE_EXT) {
                 // skip extra project files
@@ -229,8 +231,7 @@ void OpenProjectTask::prepare() {
                     continue;
                 }
             }
-
-            if (getSubtasks().size() < 50) {
+            if (openView) { // view is opened for first document only
                 addSubTask(new LoadUnloadedDocumentAndOpenViewTask(doc));
             }
         }
