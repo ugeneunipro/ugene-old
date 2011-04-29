@@ -22,6 +22,7 @@
 #include "WorkflowViewItems.h"
 #include "ItemViewStyle.h"
 #include "WorkflowViewController.h"
+#include "HRSceneSerializer.h"
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/ActorModel.h>
@@ -52,6 +53,7 @@ namespace U2 {
 WorkflowProcessItem::WorkflowProcessItem(Actor* prc) : process(prc) {
     setToolTip(process->getProto()->getDocumentation());
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 #endif
@@ -660,6 +662,7 @@ WorkflowBusItem* WorkflowPortItem::tryBind(WorkflowPortItem* otherPit) {
         otherPit->flows << dit;
         WorkflowScene * sc = qobject_cast<WorkflowScene*>(scene());
         assert(sc != NULL);
+        
         sc->addItem(dit);
         sc->setModified(true);
         dit->updatePos();
