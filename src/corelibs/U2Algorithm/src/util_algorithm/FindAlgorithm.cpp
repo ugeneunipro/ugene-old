@@ -302,7 +302,7 @@ static void findInAmino_subst(
     currentPos = range.endPos();
 }
 
-char* getAmbiguousBaseMap() {
+static char* createAmbiguousBaseMap() {
 
     // Source: http://www.ncbi.nlm.nih.gov/blast/fasta.shtml
     // Unknown symbol is zero: no match
@@ -337,7 +337,7 @@ char* getAmbiguousBaseMap() {
 
 
 inline bool cmpAmbiguous( char a, char b){
-    static char* charMap = getAmbiguousBaseMap();
+    static char* charMap = createAmbiguousBaseMap();
 
     assert( a >= 0 && a < 128);
     assert( b >= 0 && b < 128);
@@ -348,53 +348,26 @@ inline bool cmpAmbiguous( char a, char b){
     return c1 & c2;
 }
 
-void find_subst_ambiguous( FindAlgorithmStrand strand, const U2Region &range, int patternLen, int& stopFlag, int &leftTillPercent, 
-                     int &currentPos, StrandContext context[], const char* seq, int maxErr, FindAlgorithmResultsListener* rl, 
-                     int &percentsCompleted, int onePercentLen, bool singleShot )
-{
-    
-    int conStart = isDirect(strand)? 0 : 1;
-    int conEnd =  isComplement(strand) ? 2 : 1;
-    assert(conStart < conEnd);
-    for (int i=range.startPos, end = range.endPos(); i < end - patternLen + 1 && !stopFlag; i++, leftTillPercent--) {
-        currentPos = i;
-        for (int ci = conStart; ci < conEnd; ci++) {
-            StrandContext& ctx = context[ci];
-            const char* p = ctx.pattern;
-            FindAlgorithmResult& res = ctx.res; 
-            bool match = true;
-            for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
-                if( !cmpAmbiguous(seq[i+j],p[j]) && ++curErr > maxErr ) {
-                    match = false;
-                    break;
-                }
-            }
-
-            if( match ) {
-                ++currentPos;
-                res.region.startPos = i;
-                res.region.length = patternLen;
-                res.err = 0;
-                res.strand = (ci == 1) ? U2Strand::Complementary : U2Strand::Direct;
-
-                rl->onResult(res);
-                //                res.clear();
-            }
-
-            if (leftTillPercent == 0) {
-                percentsCompleted = qMin(percentsCompleted+1,100);
-                leftTillPercent = onePercentLen;
-            }
-        }//strand
-        if( singleShot ) {
-            for( int j = conStart; j < conEnd; ++j ) {
-                if( !context[j].res.isEmpty() ) {
-                    return;
-                }
-            }
+inline bool match_pattern(const char* seq, const char* p, int start, int patternLen, int maxErr ) {
+    bool match = true;
+    for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
+        if( seq[start+j] != p[j] && ++curErr > maxErr ) {
+            match = false;
+            break;
         }
-    } //base pos
-    currentPos = range.endPos();
+    }
+    return match;
+}
+
+inline bool match_pattern_ambiguous(const char* seq, const char* p, int start, int patternLen, int maxErr ) {
+    bool match = true;
+    for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
+        if( !cmpAmbiguous(seq[start+j],p[j]) && ++curErr > maxErr ) {
+            match = false;
+            break;
+        }
+    }
+    return match;
 }
 
 
@@ -445,11 +418,6 @@ static void find_subst(
     percentsCompleted = 0;
     currentPos = range.startPos;
 
-    if (useAmbiguousBases) {
-        find_subst_ambiguous(strand, range, patternLen, stopFlag, leftTillPercent, 
-            currentPos, context, seq, maxErr, rl, percentsCompleted, onePercentLen, singleShot);
-    }
-
     int conStart = isDirect(strand)? 0 : 1;
     int conEnd =  isComplement(strand) ? 2 : 1;
     assert(conStart < conEnd);
@@ -459,14 +427,13 @@ static void find_subst(
             StrandContext& ctx = context[ci];
             const char* p = ctx.pattern;
             FindAlgorithmResult& res = ctx.res; 
+            
             bool match = true;
-            for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
-                if( seq[i+j] != p[j] && ++curErr > maxErr ) {
-                    match = false;
-                    break;
-                }
+            if (useAmbiguousBases) {
+                match = match_pattern_ambiguous(seq, p, i, patternLen, maxErr);
+            } else {
+                match = match_pattern(seq, p, i, patternLen, maxErr);
             }
-
             if( match ) {
                 ++currentPos;
                 res.region.startPos = i;
