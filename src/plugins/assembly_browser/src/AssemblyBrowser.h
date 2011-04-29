@@ -134,6 +134,7 @@ private:
     qint64 xOffsetInAssembly;
     qint64 yOffsetInAssembly;
 
+    CoverageInfo coverageInfo;
     CoveredRegionsManager coveredRegionsManager;
     
     QAction * zoomInAction;

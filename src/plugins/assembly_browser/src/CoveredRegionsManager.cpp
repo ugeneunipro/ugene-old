@@ -20,27 +20,57 @@
  */
 
 #include "CoveredRegionsManager.h"
+#include <algorithm>
+#include <iterator>
 
 namespace U2 {
 
-void CoveredRegionsManager::setDesiredCoverageLevel(int loi) {
-    levelOfInterest = loi;
-    findCoveredRegions();
-}
+CoveredRegionsManager::CoveredRegionsManager(const U2Region & visibleRegion_, const QVector<qint64> & coverageInfo) :
+visibleRegion(visibleRegion_)  {
+    assert(!coverageInfo.empty());
+    assert(!visibleRegion.isEmpty());
 
-void CoveredRegionsManager::findCoveredRegions() {
-    coveredRegions.clear();
-    double step = double(visibleRegion.length)/coverageInfo.size();
+    //convert coverage info to covered regions
+    //splitting visible region to coverageInfo.size() "covered" regions
+    double step = double(visibleRegion.length)/coverageInfo.size(); //precise length of the region
     for(int i = 0; i < coverageInfo.size(); ++i) {
-        qint64 * p = &coverageInfo[0];
-        U2Region region(step*i, qint64(step));
-        //coreLog.info(QString("region: (%1, %2), coverage: %3").arg(region.startPos, region.endPos(), coverageInfo[i]));
-        if(coverageInfo[i] >= levelOfInterest) {
-            //    U2Region region(step*i, qint64(step));
-            CoveredRegion coveredRegion(region, coverageInfo[i]);
-            coveredRegions.push_back(coveredRegion);
+        U2Region region(step*i, qint64(step)); 
+        CoveredRegion coveredRegion(region, coverageInfo[i]);
+        allRegions.push_back(coveredRegion);
+    }
+
+};
+
+QList<CoveredRegion> CoveredRegionsManager::getCoveredRegions(qint64 coverageLevel) const {
+    QList<CoveredRegion> coveredRegions;
+    foreach(CoveredRegion cr, allRegions) {
+        if(cr.coverage >= coverageLevel) {
+            coveredRegions.push_back(cr);
         }
     }
+    return coveredRegions;
+}
+
+QList<CoveredRegion> CoveredRegionsManager::getTopCoveredRegions(int topMax, qint64 coverageLevel/*=0*/) const {
+    assert(topMax > 0);
+    QMultiMap<qint64, CoveredRegion> topCovered;
+
+    int end = qMin(topMax, allRegions.size());
+    for(int i = 0; i < end; ++i) {
+        const CoveredRegion & cr = allRegions.at(i);
+        if(cr.coverage >= coverageLevel) {
+            topCovered.insert(cr.coverage, cr);
+        }
+        if(topCovered.size() > topMax) {
+            topCovered.erase(topCovered.begin());
+        }
+    }
+    assert(topCovered.size() <= topMax);
+    QList<CoveredRegion> topCoveredList = topCovered.values();
+    QList<CoveredRegion> result;
+    //reverse copy, since topCoveredList is sorted in the ascending order
+    std::copy(topCoveredList.begin(), topCoveredList.end(), std::front_inserter(result));
+    return result;
 }
 
 }

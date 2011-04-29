@@ -234,19 +234,19 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
     GUIUtils::disableEmptySubmenus(m);
 }
 
-void AssemblyBrowser::setGlobalCoverageInfo(const CoverageInfo & info) {
-    if(info.coverageInfo.size() <= coveredRegionsManager.getSize()) {
+void AssemblyBrowser::setGlobalCoverageInfo(const CoverageInfo & newInfo) {
+    if(newInfo.coverageInfo.size() <= coveredRegionsManager.getSize()) {
         return;
     }
     U2OpStatusImpl os;
     U2Region globalRegion(0, model->getModelLength(os));
-    coveredRegionsManager = CoveredRegionsManager(globalRegion, info.coverageInfo);
-    coveredRegionsManager.setDesiredCoverageLevel(info.averageCoverage * 10);
+    coveredRegionsManager = CoveredRegionsManager(globalRegion, newInfo.coverageInfo);
+    coverageInfo = newInfo;
 }
 
 QList<CoveredRegion> AssemblyBrowser::getCoveredRegions() const {
     if(!coveredRegionsManager.isEmpty()) {
-        return coveredRegionsManager.getCoveredRegions();
+        return coveredRegionsManager.getTopCoveredRegions(10, 1);
     }
     return QList<CoveredRegion>();
 }

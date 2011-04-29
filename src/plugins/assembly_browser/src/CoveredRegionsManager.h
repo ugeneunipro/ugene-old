@@ -27,40 +27,44 @@
 
 namespace U2 {
 
+/**
+ * Wrapper for region and its coverage. Here coverage is number of reads 
+ * intersecting the region.
+ */
 struct CoveredRegion {
     CoveredRegion(const U2Region & region_, qint64 coverage_) : region(region_), coverage(coverage_) {}
     U2Region region;
     qint64 coverage;
 };
 
+
+/**
+ * Simple holder of coverage information, provides methods to select well-covered regions.
+ */
 class CoveredRegionsManager {
 public:
-    CoveredRegionsManager() : levelOfInterest(0) {
+    CoveredRegionsManager() {}
+    CoveredRegionsManager(const U2Region & visibleRegion_, const QVector<qint64> & coverageInfo_);
 
-    }
-    CoveredRegionsManager(const U2Region & visibleRegion_, const QVector<qint64> & coverageInfo_) :
-    visibleRegion(visibleRegion_), coverageInfo(coverageInfo_), levelOfInterest(0) {
-    };
-
-    inline bool isEmpty() const {return coverageInfo.empty();}
-
-    void setDesiredCoverageLevel(int coverageLevel);
+    inline bool isEmpty() const {return allRegions.empty();}
 
     inline int getSize() const {
-        return coverageInfo.size();
+        return allRegions.size();
     }
 
-    inline QList<CoveredRegion> getCoveredRegions() const {
-        return coveredRegions;
-    }
+    /**
+     * Returns list of regions with coverage >= coverageLevel.
+     */
+    QList<CoveredRegion> getCoveredRegions(qint64 coverageLevel) const;
+
+    /**
+     * Returns topSize most covered regions with topSize >= coverageLevel.
+     */
+    QList<CoveredRegion> getTopCoveredRegions(int topSize, qint64 coverageLevel=0) const;
 
 private:
-    void findCoveredRegions();
-
     U2Region visibleRegion;
-    QVector<qint64> coverageInfo;
-    qint64 levelOfInterest;
-    QList<CoveredRegion> coveredRegions;
+    QList<CoveredRegion> allRegions;
 };
 
 
