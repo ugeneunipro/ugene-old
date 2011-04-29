@@ -35,6 +35,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DbiDocumentFormat.h>
 
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
@@ -87,6 +88,11 @@ void DocumentUpdater::sl_update() {
     QList<Document*> outdatedDocs;
     foreach(Document* doc, docs2check) {
         if (!doc->isLoaded()) {
+            continue;
+        }
+
+        DbiDocumentFormat* dbiFormat = qobject_cast<DbiDocumentFormat*>(doc->getDocumentFormat());
+        if (dbiFormat) {
             continue;
         }
 
