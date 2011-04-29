@@ -74,7 +74,7 @@ Document *BAMFormat::loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVaria
             }
             while(!reader.isEof() && !ti.cancelFlag) {
                 Alignment alignment = reader.readAlignment();
-                if(!(alignment.getFlags() & Alignment::Unmapped) &&
+                if(!(alignment.getFlags() & Unmapped) &&
                    !alignment.getSequence().isEmpty() &&
                    !alignment.getCigar().isEmpty() &&
                    (-1 != alignment.getPosition()) &&

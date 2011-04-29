@@ -137,12 +137,9 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os
         bool dnaExt = false; //TODO
         
         QByteArray cigarText = U2AssemblyUtils::cigar2String(read->cigar);
-
-        int flags = 0;
-        flags = flags | (read->complementary ? (1 << BIT_COMPLEMENTARY_STRAND) : 0);
-        flags = flags | (dnaExt ? (1 << BIT_EXT_DNA_ALPHABET) : 0 );
-        flags = flags | (read->paired ? (1 << BIT_PAIRED_READ) : 0 );
-        flags = flags | (read->mapped ? (1 << BIT_MAPPED_READ) : 0);
+        
+        qint64 flags = read->flags;
+        flags = flags | (dnaExt ? DnaExtAlphabet : 0);
         
         int readLen = read->readSequence.length();
         int effectiveReadLength = readLen + U2AssemblyUtils::getCigarExtraLength(read->cigar);

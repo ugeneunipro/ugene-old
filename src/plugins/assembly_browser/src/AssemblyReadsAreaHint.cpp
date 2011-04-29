@@ -187,7 +187,7 @@ void AssemblyReadsAreaHint::setData(const U2AssemblyRead& r) {
         setFromTo(r->leftmostPos + 1, r->leftmostPos + len);
     }
     setCigar(U2AssemblyUtils::cigar2String(r->cigar));
-    setStrand(r->complementary);
+    setStrand(ReadFlagsUtils::isComplementaryRead(r->flags));
     setRawSequence(r->readSequence);
 }
 

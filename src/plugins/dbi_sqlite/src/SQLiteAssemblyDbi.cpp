@@ -389,10 +389,7 @@ U2AssemblyRead SimpleAssemblyReadLoader::load(SQLiteQuery* q) {
     }
     read->leftmostPos= q->getInt64(2);
     read->effectiveLen = q->getInt64(3);
-    int flags = q->getInt64(4);
-    read->complementary = SQLiteAssemblyUtils::isComplementaryRead(flags);
-    read->paired = SQLiteAssemblyUtils::isPairedRead(flags);
-    read->mapped = SQLiteAssemblyUtils::isMappedRead(flags);
+    read->flags = q->getInt64(4);
     read->mappingQuality = (quint8)q->getInt32(5);
     QByteArray data = q->getBlob(6);
     if (q->hasError()) {

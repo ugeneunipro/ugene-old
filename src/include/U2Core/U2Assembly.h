@@ -99,12 +99,53 @@ public:
 };
 
 /** 
+    assembly read flags
+*/
+enum ReadFlag {
+    None = 0, 
+    Fragmented = 1 << 0,
+    FragmentsAligned = 1 << 1,
+    Unmapped = 1 << 2,
+    NextUnmapped = 1 << 3,
+    Reverse = 1 << 4,
+    NextReverse = 1 << 5,
+    FirstInTemplate = 1 << 6,
+    LastInTemplate = 1 << 7,
+    SecondaryAlignment = 1 << 8,
+    FailsChecks = 1 << 9,
+    Duplicate = 1 << 10,
+    DnaExtAlphabet = 1 << 16
+};
+
+/** 
+    Utility class to work with flags
+ */
+class ReadFlagsUtils {
+public:
+    static bool isExtendedAlphabet(qint64 flags) {
+        return flags & DnaExtAlphabet;
+    }
+
+    static bool isComplementaryRead(qint64 flags) {
+        return flags & Reverse;
+    }
+
+    static bool isPairedRead(qint64 flags) {
+        return flags & Fragmented;
+    }
+
+    static bool isMappedRead(qint64 flags) {
+        return !(flags & Unmapped);
+    }
+};
+
+/** 
     Row of assembly: sequence, leftmost position and CIGAR
 */
 class U2CORE_EXPORT U2AssemblyReadData : public U2Entity, public QSharedData {
 public:
     U2AssemblyReadData() : leftmostPos(0), effectiveLen(0), 
-        packedViewRow(0), mappingQuality(255), complementary(false), paired(false){}
+        packedViewRow(0), mappingQuality(255){}
 
 
     /** Name of the read, ASCII string */
@@ -139,15 +180,9 @@ public:
     
     /** Mapping quality */
     quint8              mappingQuality;
-
-    /** If true read is must be processed as complementary read */
-    bool                complementary;
-
-    /** If true read is paired */
-    bool                paired;
     
-    /** If true read is mapped */
-    bool mapped;
+    /** Read flags */
+    qint64 flags;
 };
 
 typedef QSharedDataPointer<U2AssemblyReadData> U2AssemblyRead;
@@ -170,7 +205,6 @@ public:
     int maxProw;
     qint64 readsCount;
 };
-
 
 } //namespace
 

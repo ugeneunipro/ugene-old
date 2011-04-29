@@ -71,40 +71,40 @@ Alignment Reader::readAlignment() {
     {
         quint32 value = readUint32();
         {
-            Alignment::Flags flags;
+            qint64 flags = 0;
             int flagsValue = value >> 16;
             if(flagsValue & 0x1) {
-                flags |= Alignment::Fragmented;
+                flags |= Fragmented;
             }
             if(flagsValue & 0x2) {
-                flags |= Alignment::FragmentsAligned;
+                flags |= FragmentsAligned;
             }
             if(flagsValue & 0x4) {
-                flags |= Alignment::Unmapped;
+                flags |= Unmapped;
             }
             if(flagsValue & 0x8) {
-                flags |= Alignment::NextUnmapped;
+                flags |= NextUnmapped;
             }
             if(flagsValue & 0x10) {
-                flags |= Alignment::Reverse;
+                flags |= Reverse;
             }
             if(flagsValue & 0x20) {
-                flags |= Alignment::NextReverse;
+                flags |= NextReverse;
             }
             if(flagsValue & 0x40) {
-                flags |= Alignment::FirstInTemplate;
+                flags |= FirstInTemplate;
             }
             if(flagsValue & 0x80) {
-                flags |= Alignment::LastInTemplate;
+                flags |= LastInTemplate;
             }
             if(flagsValue & 0x100) {
-                flags |= Alignment::SecondaryAlignment;
+                flags |= SecondaryAlignment;
             }
             if(flagsValue & 0x200) {
-                flags |= Alignment::FailsChecks;
+                flags |= FailsChecks;
             }
             if(flagsValue & 0x400) {
-                flags |= Alignment::Duplicate;
+                flags |= Duplicate;
             }
             alignment.setFlags(flags);
         }
@@ -130,7 +130,7 @@ Alignment Reader::readAlignment() {
     }
     {
         int templateLength = readInt32();
-        if(!(alignment.getFlags() & Alignment::Fragmented)) {
+        if(!(alignment.getFlags() & Fragmented)) {
             if(0 != templateLength) {
                 throw InvalidFormatException(BAMDbiPlugin::tr("Invalid template length of a sigle-fragment template: %1").arg(templateLength));
             }

@@ -195,37 +195,37 @@ void Writer::writeRead(const Alignment &alignment) {
     writeUint32((alignment.getBin() << 16) | ((alignment.getMapQuality() << 8) & 0xff) | ((alignment.getName().size() + 1) & 0xff));
     {
         int flagsValue = 0;
-        if(alignment.getFlags() & Alignment::Fragmented) {
+        if(alignment.getFlags() & Fragmented) {
             flagsValue |= 0x1;
         }
-        if(alignment.getFlags() & Alignment::FragmentsAligned) {
+        if(alignment.getFlags() & FragmentsAligned) {
             flagsValue |= 0x2;
         }
-        if(alignment.getFlags() & Alignment::Unmapped) {
+        if(alignment.getFlags() & Unmapped) {
             flagsValue |= 0x4;
         }
-        if(alignment.getFlags() & Alignment::NextUnmapped) {
+        if(alignment.getFlags() & NextUnmapped) {
             flagsValue |= 0x8;
         }
-        if(alignment.getFlags() & Alignment::Reverse) {
+        if(alignment.getFlags() & Reverse) {
             flagsValue |= 0x10;
         }
-        if(alignment.getFlags() & Alignment::NextReverse) {
+        if(alignment.getFlags() & NextReverse) {
             flagsValue |= 0x20;
         }
-        if(alignment.getFlags() & Alignment::FirstInTemplate) {
+        if(alignment.getFlags() & FirstInTemplate) {
             flagsValue |= 0x40;
         }
-        if(alignment.getFlags() & Alignment::LastInTemplate) {
+        if(alignment.getFlags() & LastInTemplate) {
             flagsValue |= 0x80;
         }
-        if(alignment.getFlags() & Alignment::SecondaryAlignment) {
+        if(alignment.getFlags() & SecondaryAlignment) {
             flagsValue |= 0x100;
         }
-        if(alignment.getFlags() & Alignment::FailsChecks) {
+        if(alignment.getFlags() & FailsChecks) {
             flagsValue |= 0x200;
         }
-        if(alignment.getFlags() & Alignment::Duplicate) {
+        if(alignment.getFlags() & Duplicate) {
             flagsValue |= 0x400;
         }
         writeUint32((flagsValue << 16) | (alignment.getCigar().size() & 0xffff));

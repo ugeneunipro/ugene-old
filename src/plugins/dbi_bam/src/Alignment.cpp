@@ -77,7 +77,7 @@ int Alignment::getMapQuality()const {
     return mapQuality;
 }
 
-Alignment::Flags Alignment::getFlags()const {
+qint64 Alignment::getFlags()const {
     return flags;
 }
 
@@ -129,7 +129,7 @@ void Alignment::setMapQuality(int mapQuality) {
     this->mapQuality = mapQuality;
 }
 
-void Alignment::setFlags(Flags flags) {
+void Alignment::setFlags(qint64 flags) {
     this->flags = flags;
 }
 
