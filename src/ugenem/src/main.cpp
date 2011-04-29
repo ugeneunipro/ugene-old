@@ -21,20 +21,44 @@
 
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
-
+#include <QtCore/QTextStream>
 #include "SendReportDialog.h"
+#ifdef Q_OS_LINUX
+#include <X11/Xlib.h>
+#endif
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
+int main(int argc, char *argv[]){
     QString message;
     if(argc > 1) {
         message = QString::fromUtf8(QByteArray::fromBase64(argv[1]));
     } else {
         message = "";
     }
+#ifdef Q_OS_LINUX
+    if(XOpenDisplay(NULL) == NULL) {
+        QCoreApplication a(argc, argv);
+        QTextStream stream(stdin);
+        QTextStream cout(stdout);
+        printf("UGENE crashed. Would you like to send crash report to developer team? (y/n)\n");
+        QString str = stream.readLine();
+        printf("\n%s", str.toUtf8().data());
+        if(str == "y" || str == "Y") {
+            ReportSender sender;
+            sender.parse(message);
+            sender.send("");
+        }
+    } else {
+        QApplication a(argc, argv);
+        SendReportDialog dlg(message);
+        dlg.setWindowIcon(QIcon(":ugenem/images/crash_icon.png"));
+        dlg.exec();
+    }
+#else
+    QApplication a(argc, argv);
     SendReportDialog dlg(message);
     dlg.setWindowIcon(QIcon(":ugenem/images/crash_icon.png"));
     dlg.exec();
+#endif
     return 0;
+
 }

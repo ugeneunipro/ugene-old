@@ -42,28 +42,37 @@ public:
     SyncHTTP(const QString& hostName, quint16 port=80, QObject* parent=0);
     QString syncGet(const QString& path);
     QString syncPost(const QString& path, const QByteArray &data);
-protected slots:
-    virtual void finished(int idx, bool err);
+    protected slots:
+        virtual void finished(int idx, bool err);
 
 private:
     int requestID;
     QEventLoop loop;
 };
 
+class ReportSender {
+public:
+    ReportSender(): report("") {}
+    void parse(const QString &str);
+    bool send(const QString &additionalInfo);
+    QString getOSVersion();
+    QString getReport() const {return report;}
+
+private:
+    QString report;
+};
 
 class SendReportDialog:public QDialog, public Ui_Dialog{
     Q_OBJECT
 public:
     SendReportDialog(const QString &report, QDialog *d = NULL);
-    void parse(const QString &report);
 
 private slots:
-    void sl_onOKclicked();
-    void sl_onMaximumMessageSizeReached();
+        void sl_onOKclicked();
+        void sl_onMaximumMessageSizeReached();
 
-private:
-    QString getOSVersion();
-    QString htmlReport;
+public:
+    ReportSender sender;
 };
 
 

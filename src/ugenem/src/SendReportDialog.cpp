@@ -27,15 +27,84 @@
 #define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest.html"
 
 
-SendReportDialog::SendReportDialog(const QString &report, QDialog *d): QDialog(d){
-    setupUi(this);
-    if(report.isEmpty()) {
-        htmlReport = "Unhandled error occurred while running UGENE";
+void ReportSender::parse(const QString &htmlReport) {
+    report = "Exception with code ";
+
+    QStringList list = htmlReport.split("|");
+    if(list.size()== 7) {
+        report += list.takeFirst() + " - ";
+        report += list.takeFirst() + "\n\n";
+
+        report += "Operation system: ";
+        report += getOSVersion() + "\n\n";
+
+        report += "UGENE version: ";
+        report += list.takeFirst() + "\n\n";
+
+        report += "ActiveWindow: ";
+        report += list.takeFirst() + "\n\n";
+
+        report += "TaskLog:\n";
+        report += list.takeFirst() + "\n";
+
+        report += "Task tree:\n";
+        report += list.takeFirst() + "\n";
+
+#if defined (Q_OS_WIN) 
+        report += list.takeLast();
+#endif
     } else {
-        parse(report);
+        foreach(const QString& str, list) {
+            report += str + "\n";
+        }
     }
-    errorEdit->setText(htmlReport);
-    connect(additionalInfoTextEdit,SIGNAL(textChanged()), SLOT(sl_onMaximumMessageSizeReached()));
+
+    QFile fp("/tmp/UGENEstacktrace.txt");
+    if(fp.open(QIODevice::ReadOnly)) {
+        QByteArray stacktrace = fp.readAll();
+        report += "Stack trace:\n";
+        report += stacktrace.data();
+    }
+}
+
+bool ReportSender::send(const QString &additionalInfo) {
+    report += additionalInfo;
+    SyncHTTP http(QUrl(HOST_URL).host());
+    QString reportsPath = http.syncGet( DESTINATION_URL_KEEPER_PAGE );
+    if( reportsPath.isEmpty() ) {
+        return false;
+    }
+    if( QHttp::NoError != http.error() ) {
+        return false;
+    }
+
+    SyncHTTP http2( QUrl(reportsPath).host() );
+    report.replace(' ', "_");
+    report.replace('\n', "|");
+    report.replace('\t', "<t>");
+    report.replace("#", "");
+    report.replace("*", "<p>");
+    report.replace("?", "-");
+    report.replace("~", "%7E");
+    report.replace("&", "<amp>");
+    QString fullPath = reportsPath;
+    fullPath += "?data=";
+    fullPath += report.toUtf8();
+    QString res = http2.syncGet(fullPath); 
+    if( QHttp::NoError != http.error() ) {
+        return false;
+    }
+
+    return true;
+}
+
+SendReportDialog::SendReportDialog(const QString &report, QDialog *d): 
+QDialog(d){
+    setupUi(this);
+    sender.parse(report);
+    errorEdit->setText(sender.getReport());
+    connect(additionalInfoTextEdit,SIGNAL(textChanged()), 
+SLOT(sl_onMaximumMessageSizeReached()));
     connect(sendButton, SIGNAL(clicked()), SLOT(sl_onOKclicked()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
 }
@@ -45,7 +114,7 @@ void SendReportDialog::sl_onMaximumMessageSizeReached(){
         msgBox.setWindowTitle(tr("Warning"));
         msgBox.setText(tr("The \"Additional information\" message is too long."));
         msgBox.setInformativeText(tr("You can also send the description of the problem to UGENE team"
-                                     "by e-mail <a href=\"mailto:ugene@unipro.ru\">ugene@unipro.ru</a>."));
+                                     "by e-mail <ahref=\"mailto:ugene@unipro.ru\">ugene@unipro.ru</a>."));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
@@ -54,6 +123,7 @@ void SendReportDialog::sl_onMaximumMessageSizeReached(){
 }
 void SendReportDialog::sl_onOKclicked() {
 
+    QString htmlReport = "";
     if(!emailLineEdit->text().isEmpty()){
         htmlReport += "\nUser email: ";
         htmlReport += emailLineEdit->text() + "\n";
@@ -63,68 +133,13 @@ void SendReportDialog::sl_onOKclicked() {
         htmlReport += "\nAdditional info: \n";
         htmlReport += additionalInfoTextEdit->toPlainText() + "\n";
     }
-
-    SyncHTTP http(QUrl(HOST_URL).host());
-    QString reportsPath = http.syncGet( DESTINATION_URL_KEEPER_PAGE );
-    if( reportsPath.isEmpty() ) {
-        return;
-    } 
-    if( QHttp::NoError != http.error() ) {
-        return;
-    }
-
-    //Checking proxy again, for the new url
-    SyncHTTP http2( QUrl(reportsPath).host() );
-    htmlReport.replace(' ', "_");
-    htmlReport.replace('\n', "|");
-    htmlReport.replace('\t', "<t>");
-    htmlReport.replace("#", "");
-    htmlReport.replace("*", "<p>");
-    htmlReport.replace("?", "-");
-    htmlReport.replace("~", "%7E");
-    htmlReport.replace("&", "<amp>");
-    QString fullPath = reportsPath;
-    fullPath += "?data=";
-    fullPath += htmlReport.toUtf8();
-    QString res = http2.syncGet(fullPath); //TODO: consider using POST method?
-    if( QHttp::NoError != http.error() ) {
-        return;
-    }
-    accept();
-}
-
-void SendReportDialog::parse(const QString &report) {
-    htmlReport = "Exception with code ";
-    
-    QStringList list = report.split("|");
-    if(list.size()== 6) {
-        htmlReport += list.takeFirst() + " - ";
-        htmlReport += list.takeFirst() + "\n\n";
-
-        htmlReport += "Operation system: ";
-        htmlReport += getOSVersion() + "\n\n";
-
-        htmlReport += "UGENE version: ";
-        htmlReport += list.takeFirst() + "\n\n";
-
-        htmlReport += "ActiveWindow: ";
-        htmlReport += list.takeFirst() + "\n\n";
-
-        htmlReport += "TaskLog:\n";
-        htmlReport += list.takeFirst() + "\n";
-
-        htmlReport += "Task tree:\n";
-        htmlReport += list.takeFirst();
-    }
-    QFile fp("/tmp/UGENEstacktrace.txt");
-    if(fp.open(QIODevice::ReadOnly)) {
-        QByteArray stacktrace = fp.readAll();
-        htmlReport += "Stack trace:\n";
-        htmlReport += stacktrace.data();
+    if(sender.send(htmlReport)) {
+        accept();
     }
 }
 
-QString SendReportDialog::getOSVersion() {
+
+QString ReportSender::getOSVersion() {
     QString result;
 #if defined(Q_OS_WIN32)
     result = "Windows x86";
@@ -141,7 +156,8 @@ QString SendReportDialog::getOSVersion() {
 }
 
 
-SyncHTTP::SyncHTTP(const QString& hostName, quint16 port, QObject* parent)
+SyncHTTP::SyncHTTP(const QString& hostName, quint16 port, QObject* 
+parent)
 : QHttp(hostName,port,parent), requestID(-1)
 {
     connect(this,SIGNAL(requestFinished(int,bool)),SLOT(finished(int,bool)));
@@ -154,7 +170,8 @@ QString SyncHTTP::syncGet(const QString& path) {
     return QString(to.data());
 }
 
-QString SyncHTTP::syncPost(const QString& path, const QByteArray& data) {
+QString SyncHTTP::syncPost(const QString& path, const QByteArray& data) 
+{
     QBuffer to;
     requestID = post(path, data, &to);
     loop.exec();
