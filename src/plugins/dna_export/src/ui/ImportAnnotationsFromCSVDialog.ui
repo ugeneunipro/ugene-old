@@ -6,14 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>618</width>
-    <height>429</height>
+    <width>636</width>
+    <height>447</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import annotations from CSV</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <property name="wizardStyle">
+   <enum>QWizard::ClassicStyle</enum>
+  </property>
   <widget class="QWizardPage" name="wizardPage1">
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -306,6 +315,9 @@
    </layout>
   </widget>
   <widget class="QWizardPage" name="wizardPage2">
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_7">
