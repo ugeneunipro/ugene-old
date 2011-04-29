@@ -55,8 +55,7 @@ QList<CoveredRegion> CoveredRegionsManager::getTopCoveredRegions(int topMax, qin
     assert(topMax > 0);
     QMultiMap<qint64, CoveredRegion> topCovered;
 
-    int end = qMin(topMax, allRegions.size());
-    for(int i = 0; i < end; ++i) {
+    for(int i = 0; i < allRegions.size(); ++i) {
         const CoveredRegion & cr = allRegions.at(i);
         if(cr.coverage >= coverageLevel) {
             topCovered.insert(cr.coverage, cr);
