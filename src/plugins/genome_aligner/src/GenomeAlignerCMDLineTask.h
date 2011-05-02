@@ -34,6 +34,7 @@ public:
     GenomeAlignerCMDLineTask();
     virtual ~GenomeAlignerCMDLineTask();
     virtual void prepare();
+    static QString getArgumentsDescritption();
 private:
     int mismatchCount, memSize, refSize;
     bool useCuda, useOpenCL;

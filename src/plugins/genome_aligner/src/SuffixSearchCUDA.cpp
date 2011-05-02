@@ -44,11 +44,6 @@ quint64* U2::SuffixSearchCUDA::runSearch( const quint64* numbers, const int numb
     quint64* results = new quint64[querySize];
     cudaMemcpy(results, queryListDev, querySize * sizeof(quint64), cudaMemcpyDeviceToHost);
     
-    /*for (int i = 0; i < querySize; ++i) {
-        printf("results[%d] = %d", i, results[i]);
-    }*/
-
-
     cudaFree((void **)&numbersListDev); 
     cudaFree((void **)&queryListDev); 
 

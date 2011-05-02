@@ -113,12 +113,15 @@ void GenomeAlignerPlugin::registerCMDLineHelp()
         "It has 2 work modes: build index and align short reads (default mode).\nIf there is no "
         "index available for reference sequence it will be built on the fly.\n"
         "\nUsage: ugene --genome-aligner { --option[=argument] }\n"
+        "\nOptions\n--------\n\n%1"
         "\nExamples\n--------\n\n"
         "Build index for reference sequence:\n"
-        "ugene --genome-aligner --build-index --reference=/path/to/ref --index=/path/to/index/file\n"
+        "ugene --genome-aligner --build-index --reference=/path/to/ref\n"
         "\nAlign short reads using existing index:\n"
-        "ugene --genome-aligner --short-reads=/path/to/reads --result=/path/to/result\n")
-       );
+        "ugene --genome-aligner --reference=/path/to/ref"
+        " --short-reads=/path/to/reads --result=/path/to/result\n")
+        .arg( GenomeAlignerCMDLineTask::getArgumentsDescritption() )
+          );
 
     cmdLineRegistry->registerCMDLineHelpProvider( taskSection );
 }

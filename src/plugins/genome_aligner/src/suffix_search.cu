@@ -13,7 +13,7 @@ __global__ void binarySearch(NumberType array[], int arraySize,
 	
 	while (left <= right)
 	{
-		int mid = (left + right) / 2;
+		int mid = (left + right) >> 1;
 		NumberType midValue = array[mid];
 		if(midValue > target) {
 			right = mid - 1;

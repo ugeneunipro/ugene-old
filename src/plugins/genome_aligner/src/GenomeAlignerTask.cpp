@@ -112,11 +112,6 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     readMemSize = settings.getCustomValue(OPTION_READS_MEMORY_SIZE, 10).toInt();
     prebuiltIndex = settings.prebuiltIndex;
 
-    if (prebuiltIndex) {
-        indexFileName = settings.refSeqUrl.dirPath() + "/" + settings.refSeqUrl.baseFileName();
-    }
-
-    //TODO: make correct code for common option "indexFileName"
     if (!settings.indexFileName.isEmpty()) {
         indexFileName = settings.indexFileName;
     } else {
@@ -124,6 +119,9 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
         QString indexDir = settings.getCustomValue(OPTION_INDEX_DIR, tempDir).toString();
         indexFileName = indexDir + "/" + settings.refSeqUrl.baseFileName();
     }
+    taskLog.details(tr("Genome Aligner settings"));
+    taskLog.details(tr("Index file name: %1").arg(indexFileName));
+    taskLog.details(tr("Use prebuilt index: %2").arg(prebuiltIndex));
 
     qint64 memUseMB = seqPartSize*13;
     if (!justBuildIndex) {

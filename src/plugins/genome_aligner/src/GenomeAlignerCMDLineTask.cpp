@@ -114,17 +114,16 @@ void GenomeAlignerCMDLineTask::prepare()
     if (resultPath.isEmpty()) {
         resultPath =  QDir::current().path() + "/output.sam";
     }
-    if (onlyBuildIndex && indexPath.isEmpty()) {
-        GUrl refUrl(refPath);
-        indexPath = refUrl.dirPath() + "/" + refUrl.baseFileName(); 
-    }
-
-
+    
     settings.resultFileName = resultPath;
     settings.shortReadUrls = shortReadUrls;
     settings.refSeqUrl = refPath;
     settings.indexFileName = indexPath;
     settings.loadResultDocument = false;
+    if (onlyBuildIndex) {
+        settings.prebuiltIndex = false;
+    }
+
     settings.setCustomValue(GenomeAlignerTask::OPTION_MISMATCHES, mismatchCount);
     settings.setCustomValue(GenomeAlignerTask::OPTION_READS_MEMORY_SIZE, memSize);
     settings.setCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, alignRevCompl);
@@ -136,6 +135,21 @@ void GenomeAlignerCMDLineTask::prepare()
     GenomeAlignerTask* task = new GenomeAlignerTask(settings, onlyBuildIndex);
     addSubTask(task);
 
+}
+
+QString GenomeAlignerCMDLineTask::getArgumentsDescritption()
+{
+    QString desc;
+    desc += tr("  --%1    Use this flag to only build index for reference sequence.\n\n").arg(OPTION_BUILD_INDEX);
+    desc += tr("  --%1    Path to reference genome sequence\n\n").arg(OPTION_REFERENCE);
+    desc += tr("  --%1    Path to short-reads data in FASTA or FASTQ format\n\n").arg(OPTION_SHORTREADS);
+    desc += tr("  --%1    Path to prebuilt index. If not set, index is searched in system temporary directory.\n\n").arg(OPTION_INDEX_PATH);
+    desc += tr("  --%1    Path to output alignment in SAM format\n\n").arg(OPTION_RESULT);
+    desc += tr("  --%1    Memory size (in Mbs) reserved for short-reads. The bigger value the faster algorithm works. Default value depends on available system memory.\n\n").arg(OPTION_MEMSIZE);
+    desc += tr("  --%1    Index fragmentation size (in Mbs). Small fragments better fit into RAM, allowing to load more short reads. Default value is 10.\n").arg(OPTION_REF_FRAG);
+
+
+    return desc;
 }
 
 

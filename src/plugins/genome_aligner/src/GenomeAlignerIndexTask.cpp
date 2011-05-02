@@ -93,7 +93,7 @@ void GenomeAlignerIndexTask::run() {
         settings.seqPartSize = index->seqPartSize;
     } else {
         if (!res) {
-            algoLog.details(error + " Index file is corrupted. I will try to create a new index file.");
+            algoLog.details(error + " Index file is not defined. I will try to create a new index file.");
         }
         index->build = !(res && (index->seqPartSize == settings.seqPartSize));
         if (!index->build) {
