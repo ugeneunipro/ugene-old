@@ -73,6 +73,7 @@ private slots:
     void sl_itemSelectionChanged();
     void sl_onPathEditWidgetClick();
     void sl_onBrowseToolKitPath();
+    void sl_onBrowseToolPackPath();
 private:
     QMap<QString, ExternalToolInfo> externalToolsInfo;
     mutable int buttonsWidth;

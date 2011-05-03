@@ -44,16 +44,14 @@ public:
     QString getToolName()  { return toolName; }
     QString getToolPath()  { return program; }
     QString getToolVersion()  { return version; }
-public slots:
-    void sl_onReadyToReadLog();
-    void sl_onReadyToReadErrLog();
+
 private:
-    void checkVersion(const QString& partOfLog, bool isOut);
+    void parseLog();
+    void checkVersion(const QString& partOfLog);
 
     QStringList arguments;
     QString     program;
     QProcess*   externalToolProcess;
-    char*       logData;
     QString     toolName;
     QString     expectedMessage;
     QRegExp     checkVersionRegExp;

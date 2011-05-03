@@ -111,6 +111,7 @@ QWidget* ExternalToolSupportSettingsPageWidget::createPathEditor(QWidget *parent
 }
 void ExternalToolSupportSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     ExternalToolSupportSettingsPageState* state = qobject_cast<ExternalToolSupportSettingsPageState*>(s);
+    connect(selectToolPackButton, SIGNAL(clicked()), this, SLOT(sl_onBrowseToolPackPath()));
 
     foreach(ExternalTool* tool, state->externalTools){
         ExternalToolInfo info;
@@ -282,7 +283,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
     LastOpenDirHelper lod("toolkit path");
     QString dir;
 
-    lod.url = dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    lod.url = dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory With Executables"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
         assert(treeWidget->selectedItems().isEmpty()==0);
         QString toolKitName=treeWidget->selectedItems().first()->text(0);
@@ -304,6 +305,44 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                         ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(item->text(0), path);
                         connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
                         AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
+                    }
+                }
+            }
+        }
+    }
+}
+void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
+    LastOpenDirHelper lod("toolpack path");
+    QString dirPath;
+
+    lod.url = dirPath = QFileDialog::getExistingDirectory(this, tr("Choose Directory With External Tools Pack"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!dirPath.isEmpty()) {
+        QDir dir=QDir(dirPath);
+        QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems("",Qt::MatchContains|Qt::MatchRecursive);
+        assert(listOfItems.length()!=0);
+        foreach(QString dirName, dir.entryList(QDir::Dirs)){
+            foreach(QTreeWidgetItem* item, listOfItems){
+                if(AppContext::getExternalToolRegistry()->getByName(item->text(0)) != NULL){
+                    QString toolKitName=AppContext::getExternalToolRegistry()->getByName(item->text(0))->getToolKitName();
+                    if(toolKitName=="BLAST" && dirName.contains(toolKitName,Qt::CaseInsensitive) && dirName.contains("BLAST+",Qt::CaseInsensitive)){
+
+                    }else{
+                        if(dirName.contains(toolKitName,Qt::CaseInsensitive)){
+                            QWidget* itemWid=treeWidget->itemWidget(item,1);
+                            PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
+                            if(lineEdit->text().isEmpty()){
+                                QString path=QDir::toNativeSeparators(dirPath+"/"+dirName+"/bin/"+AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName());
+                                lineEdit->setText(path);
+                                lineEdit->setModified(false);
+                                externalToolsInfo[item->text(0)].path=path;
+                                QToolButton* clearToolPathButton = itemWid->findChild<QToolButton*>("ClearToolPathButton");
+                                assert(clearToolPathButton);
+                                clearToolPathButton->setEnabled(true);
+                                ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(item->text(0), path);
+                                connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
+                                AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
+                            }
+                        }
                     }
                 }
             }
