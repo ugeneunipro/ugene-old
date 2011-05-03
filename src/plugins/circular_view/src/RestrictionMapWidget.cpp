@@ -104,9 +104,10 @@ RestrctionMapWidget::RestrctionMapWidget( ADVSequenceObjectContext* context, QWi
     connect(treeWidget,SIGNAL(itemSelectionChanged()), SLOT(sl_itemSelectionChanged()));
     
     layout->addWidget(treeWidget);
-
+    
     registerAnnotationObjects();
     updateTreeWidget();
+    initTreeWidget();
 
 }
 
@@ -200,6 +201,21 @@ void RestrctionMapWidget::sl_onAnnotationsGroupCreated( AnnotationGroup* g )
 {
     if (g->getGroupName() == ANNOTATION_GROUP_ENZYME) {
         updateTreeWidget();
+    }
+}
+
+void RestrctionMapWidget::initTreeWidget()
+{
+    QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
+    foreach (AnnotationTableObject* obj, aObjs) {
+        QList<Annotation*> anns = obj->getAnnotations();
+        foreach(Annotation* a, anns) {
+            QString aName = a->getAnnotationName();
+            EnzymeFolderItem* folderItem = findEnzymeFolderByName(aName);
+            if (folderItem) {
+                folderItem->addEnzymeItem(a);
+            }        
+        }
     }
 }
 

@@ -134,16 +134,16 @@ void CircularViewSplitter::addView(CircularView* view) {
     connect(view, SIGNAL(si_fitInViewDisabled(bool)), SLOT(sl_updateFitInViewAction(bool)));
 
     circularViewList.append(view);
-    splitter->insertWidget(0, view);
     
     RestrctionMapWidget* rmapWidget = new RestrctionMapWidget(view->getSequenceContext(),this);
-    splitter->insertWidget(1, rmapWidget);
     restrictionMapWidgets.append(rmapWidget);
+
+    splitter->addWidget(view);
+    splitter->addWidget(rmapWidget);
     
-    splitter->setStretchFactor(0,10);
-    splitter->setStretchFactor(1,1);
+    splitter->setStretchFactor(splitter->indexOf(view), 10);
+    splitter->setStretchFactor(splitter->indexOf(rmapWidget), 1);
     
-    adaptSize();
     connect(view, SIGNAL(si_wheelMoved(int)), SLOT(sl_moveSlider(int)));
 }
 
@@ -200,6 +200,7 @@ void CircularViewSplitter::sl_horSliderMoved(int newVal) {
 void CircularViewSplitter::adaptSize() {
 
     QWidget* widget = parentWidget();
+    
     Q_ASSERT(widget != NULL);
     QSplitter* parentSplitter = qobject_cast<QSplitter* > (widget);
 

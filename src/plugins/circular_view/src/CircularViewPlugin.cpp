@@ -119,7 +119,6 @@ CircularViewSplitter* CircularViewContext::getView(GObjectView* view, bool creat
     if (create) {
         AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
         circularView = new CircularViewSplitter(av);
-        av->insertWidgetIntoSplitter(circularView);
         resources.append(circularView);
         viewResources.insert(view, resources);
 
@@ -178,6 +177,8 @@ void CircularViewContext::sl_showCircular() {
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), true);
         a->view = new CircularView(sw, sw->getSequenceContext());
         splitter->addView(a->view);
+        sw->getAnnotatedDNAView()->insertWidgetIntoSplitter(splitter);
+        splitter->adaptSize();
     } else {
         a->setText(tr("Show circular view"));
         assert(a->view!=NULL);

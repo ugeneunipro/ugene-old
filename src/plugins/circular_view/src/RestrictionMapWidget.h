@@ -70,6 +70,7 @@ private:
     EnzymeFolderItem* findEnzymeFolderByName(const QString& enzymeName);
     void registerAnnotationObjects();
     void updateTreeWidget();
+    void initTreeWidget();
 
 };
 
