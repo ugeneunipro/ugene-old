@@ -36,9 +36,9 @@ public:
     virtual void prepare();
     static QString getArgumentsDescritption();
 private:
-    int mismatchCount, memSize, refSize;
+    int mismatchCount, ptMismatchCount, memSize, refSize, qualityThreshold;
     bool useCuda, useOpenCL;
-    bool alignRevCompl;
+    bool alignRevCompl, bestMode;
     DnaAssemblyToRefTaskSettings settings;
     QString indexPath, resultPath, refPath;
     bool onlyBuildIndex;

@@ -38,7 +38,8 @@ namespace U2 {
 GenomeAlignerIndexTask::GenomeAlignerIndexTask(const GenomeAlignerIndexSettings &settings)
 : Task("Building genome aligner's index", TaskFlag_None), objLens(NULL),  unknownChar('N')
 {
-    baseFileName = settings.indexFileName;
+    GUrl i = settings.indexFileName;
+    baseFileName = i.dirPath() + "/" + i.baseFileName();
     w = MAX_BIT_MASK_LENGTH;
 
     bitTable = bt.getBitMaskCharBits(DNAAlphabet_NUCL);
