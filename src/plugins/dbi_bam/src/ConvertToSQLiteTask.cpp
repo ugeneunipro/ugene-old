@@ -33,6 +33,7 @@
 #include <U2Core/AppContext.h>
 
 #include <memory>
+#include <time.h>
 
 namespace U2 {
 namespace BAM {
@@ -66,7 +67,7 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
 class BAMDbiIterator : public U2DbiIterator<U2AssemblyRead> {
 public:
     BAMDbiIterator(int referenceId, Reader* _reader, QList<Index::ReferenceIndex::Chunk> _chunks, qint64 _totalChunksLength, qint64& _readLength, TaskStateInfo& _ti)
-        : refId(referenceId), reader(_reader), chunks(_chunks), totalChunksLength(_totalChunksLength), readLength(_readLength), chunksLength(0), ti(_ti), bufferIndex(0), bufferCount(0), chunkIndex(0), offset(0, 0)
+        : refId(referenceId), reader(_reader), chunks(_chunks), totalChunksLength(_totalChunksLength), readLength(_readLength), chunksLength(0), ti(_ti), bufferIndex(0), bufferCount(0), chunkIndex(0), offset(0, 0), readsCount(0), readTime(0)
     {
         foreach(const Index::ReferenceIndex::Chunk& chunk, chunks) {
             chunksLength += chunk.getEnd().getCoffset() - chunk.getStart().getCoffset();
@@ -90,12 +91,22 @@ public:
         return buffer[bufferIndex];
     }
 
+    qint64 getImportedCount() {
+        return readsCount;
+    }
+
+    time_t getReadTime() {
+        return readTime;
+    }
+
 private:
 
     void fill() {
         bufferCount = 0;
         bufferIndex = 0;
+        int statusUpdateCount = 0;
         ti.setDescription(BAMDbiPlugin::tr("Reading"));
+        time_t startTime = time(0);
         while(chunkIndex < chunks.count() && bufferCount < BUFFER_SIZE) {
             const Index::ReferenceIndex::Chunk& chunk = chunks.at(chunkIndex);
             VirtualOffset start = offset <= chunk.getStart() ? chunk.getStart() : offset;
@@ -105,14 +116,20 @@ private:
                     throw IOException(BAMDbiPlugin::tr("Unexpected end of file"));
                 }
                 
-                Alignment alignment = reader->readAlignment();
-                if(alignment.getReferenceId() == refId) {
-                    buffer[bufferCount++] = AssemblyDbi::alignmentToRead(alignment);
+                Reader::AlignmentReader aReader = reader->getAlignmentReader();
+                if(aReader.getId() == refId) {
+                    buffer[bufferCount++] = AssemblyDbi::alignmentToRead(aReader.read());
+                } else {
+                    aReader.skip();
                 }
-                if(ti.cancelFlag) {
-                    throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
+
+                if(++statusUpdateCount > 1000) {
+                    if(ti.cancelFlag) {
+                        throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
+                    }
+                    ti.progress = FIRST_STAGE_PERCENT * (readLength + reader->getOffset().getCoffset() - start.getCoffset()) / totalChunksLength;
+                    ti.setDescription(BAMDbiPlugin::tr("Reading (%1 reads)").arg(QString::number(bufferCount)));
                 }
-                ti.progress = FIRST_STAGE_PERCENT * (readLength + reader->getOffset().getCoffset() - start.getCoffset()) / totalChunksLength;
             }
             offset = reader->getOffset();
             if(offset == chunk.getEnd()) {
@@ -121,6 +138,8 @@ private:
             }
             readLength += reader->getOffset().getCoffset() - start.getCoffset();        
         }
+        readTime += time(0) - startTime;
+        readsCount += bufferCount;
         ti.setDescription(BAMDbiPlugin::tr("Saving reads"));
     }
 
@@ -137,6 +156,8 @@ private:
     int bufferIndex;
     int chunkIndex;
     VirtualOffset offset;
+    qint64 readsCount;
+    time_t readTime;
 };
 
 static bool chunkLessThan(const Index::ReferenceIndex::Chunk &c1, const Index::ReferenceIndex::Chunk &c2) {
@@ -145,6 +166,9 @@ static bool chunkLessThan(const Index::ReferenceIndex::Chunk &c1, const Index::R
 
 void ConvertToSQLiteTask::run() {
     try {
+
+        time_t startTime = time(0);
+
         if(!destinationUrl.isLocalFile()) {
             throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
@@ -175,7 +199,6 @@ void ConvertToSQLiteTask::run() {
                 throw Exception(opStatus.getError());
             }
         }
-
         
         QMap<int, U2Assembly> assemblies;        
         QMap<int, QList<Index::ReferenceIndex::Chunk> > chunks;
@@ -229,6 +252,8 @@ void ConvertToSQLiteTask::run() {
         }
 
         U2AttributeDbi * attributeDbi = sqliteDbi->getAttributeDbi();
+        qint64 totalReadsImported = 0;
+        time_t totalReadTime = 0;
 
         for(int i=0; i < reader->getHeader().getReferences().count(); i++) {
             if(bamInfo.isReferenceSelected(i)) {
@@ -243,6 +268,8 @@ void ConvertToSQLiteTask::run() {
                 } else {                    
                     BAMDbiIterator iter(i, reader.get(), chunks[i], totalChunksLength, readLength, stateInfo);
                     sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &iter, importInfo, opStatus);
+                    totalReadsImported += iter.getImportedCount();
+                    totalReadTime += iter.getReadTime();
                 }
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
@@ -327,20 +354,23 @@ void ConvertToSQLiteTask::run() {
                 int progressUpdateCounter = 0;
                 int progressUpdates = 0;
                 while(!reader->isEof() && readsCount < READS_CHUNK_SIZE) {
-                    Alignment alignment = reader->readAlignment();
-                    if(bamInfo.isReferenceSelected(alignment.getReferenceId())) {
-                        reads[alignment.getReferenceId()].append(AssemblyDbi::alignmentToRead(alignment));
+                    Reader::AlignmentReader aReader = reader->getAlignmentReader();
+                    if(bamInfo.isReferenceSelected(aReader.getId())) {
+                        reads[aReader.getId()].append(AssemblyDbi::alignmentToRead(aReader.read()));
                         readsCount++;
+                    } else {
+                        aReader.skip();
                     }
                     if (++progressUpdateCounter > 1000) {
                         if (isCanceled()) {
                             throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
                         }
                         stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
-                        stateInfo.setDescription(BAMDbiPlugin::tr("Reading"));
+                        stateInfo.setDescription(BAMDbiPlugin::tr("Reading (%1 reads)").arg(QString::number(readsCount)));
                         progressUpdateCounter = 0;
                     }
                 }
+                totalReadsImported += readsCount;
                 stateInfo.setDescription(BAMDbiPlugin::tr("Saving reads"));
                 flushReads(sqliteDbi, assemblies, reads);
                 if (isCanceled()) {
@@ -348,9 +378,10 @@ void ConvertToSQLiteTask::run() {
                 }
                 stateInfo.progress = ioAdapter->getProgress()*FIRST_STAGE_PERCENT/100;
             }
-        }
+        }        
 
         //Packing
+        time_t packStart = time(0);
         {
             stateInfo.setDescription(BAMDbiPlugin::tr("Packing reads"));
             int i = 0;
@@ -394,6 +425,11 @@ void ConvertToSQLiteTask::run() {
                 stateInfo.progress = FIRST_STAGE_PERCENT + (++i)*SECOND_STAGE_PERCENT/assemblies.size();
             }
         }
+        time_t packTime = time(0) - packStart;
+        time_t totalTime = time(0) - startTime;
+        
+        bamLog.trace(QString("BAM %1: imported %2 reads, total time %3 s, read time %4 s, pack time %5").arg(sourceUrl.fileName()).arg(QString::number(totalReadsImported)).arg(QString::number(totalTime)).arg(QString::number(totalReadTime)).arg(QString::number(packTime)));
+
     } catch(const Exception &e) {
         setError(e.getMessage());
         assert(destinationUrl.isLocalFile());

@@ -29,32 +29,19 @@
 namespace U2 {
 namespace BAM {
 
-Reader::Reader(IOAdapter &ioAdapter):
-        ioAdapter(ioAdapter),
-        reader(ioAdapter)
-{
-    readHeader();
+Reader::AlignmentReader::AlignmentReader(Reader* _reader, int _id, int _blockSize) : id(_id), blockSize(_blockSize), r(_reader) {
+    
 }
 
-const Header &Reader::getHeader()const {
-    return header;
+int Reader::AlignmentReader::getId() {
+    return id;
 }
 
-Alignment Reader::readAlignment() {
+Alignment Reader::AlignmentReader::read() {
     Alignment alignment;
-    int blockSize = readInt32();
-    if(blockSize < 0) {
-        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid block size: %1").arg(blockSize));
-    }
+    alignment.setReferenceId(id);
     {
-        int referenceId = readInt32();
-        if((referenceId < -1) || (referenceId >= header.getReferences().size())) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid reference id: %1").arg(referenceId));
-        }
-        alignment.setReferenceId(referenceId);
-    }
-    {
-        int position = readInt32();
+        int position = r->readInt32();
         if(position < -1) {
             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid read position: %1").arg(position));
         }
@@ -62,14 +49,14 @@ Alignment Reader::readAlignment() {
     }
     int nameLength = 0;
     {
-        quint32 value = readUint32();
+        quint32 value = r->readUint32();
         alignment.setBin(value >> 16);
         alignment.setMapQuality((value >> 8) & 0xff);
         nameLength = value & 0xff;
     }
     int cigarLength = 0;
     {
-        quint32 value = readUint32();
+        quint32 value = r->readUint32();
         {
             qint64 flags = 0;
             int flagsValue = value >> 16;
@@ -110,26 +97,26 @@ Alignment Reader::readAlignment() {
         }
         cigarLength = value & 0xffff;
     }
-    int length = readInt32();
+    int length = r->readInt32();
     if(length < 0) {
         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid read length: %1").arg(length));
     }
     {
-        int nextReferenceId = readInt32();
-        if((nextReferenceId < -1) || (nextReferenceId >= header.getReferences().size())) {
+        int nextReferenceId = r->readInt32();
+        if((nextReferenceId < -1) || (nextReferenceId >= r->header.getReferences().size())) {
             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid mate reference id: %1").arg(nextReferenceId));
         }
         alignment.setNextReferenceId(nextReferenceId);
     }
     {
-        int nextPosition = readInt32();
+        int nextPosition = r->readInt32();
         if(nextPosition < -1) {
             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid mate position: %1").arg(nextPosition));
         }
         alignment.setNextPosition(nextPosition);
     }
     {
-        int templateLength = readInt32();
+        int templateLength = r->readInt32();
         if(!(alignment.getFlags() & Fragmented)) {
             if(0 != templateLength) {
                 throw InvalidFormatException(BAMDbiPlugin::tr("Invalid template length of a sigle-fragment template: %1").arg(templateLength));
@@ -137,12 +124,12 @@ Alignment Reader::readAlignment() {
         }
         alignment.setTemplateLength(templateLength);
     }
-    alignment.setName(readBytes(nameLength - 1));
-    readChar();
+    alignment.setName(r->readBytes(nameLength - 1));
+    r->readChar();
     {
         QList<Alignment::CigarOperation> cigar;
         for(int index = 0;index < cigarLength;index++) {
-            quint32 value = readUint32();
+            quint32 value = r->readUint32();
             Alignment::CigarOperation::Operation operation;
             switch(value & 0xf) {
             case 0:
@@ -192,7 +179,7 @@ Alignment Reader::readAlignment() {
     }
     {
         QByteArray sequence(length, '\0');
-        QByteArray packedSequence = readBytes((length + 1)/2);
+        QByteArray packedSequence = r->readBytes((length + 1)/2);
         for(int index = 0;index < length;index++) {
             int value = 0;
             if(0 == (index%2)) {
@@ -256,7 +243,7 @@ Alignment Reader::readAlignment() {
         alignment.setSequence(sequence);
     }
     if(length > 0) {
-        QByteArray quality = readBytes(length);
+        QByteArray quality = r->readBytes(length);
         bool hasQuality = false;
         for(int index = 0;index < quality.size();index++) {
             if(0xff != (unsigned char)quality[index]) {
@@ -273,56 +260,56 @@ Alignment Reader::readAlignment() {
         int toRead = blockSize - 32 - nameLength - 4*cigarLength - (length + 1)/2 - length;
         int bytesRead = 0;
         while(bytesRead < toRead) {
-            QByteArray tag = readBytes(2);
+            QByteArray tag = r->readBytes(2);
             if(!QRegExp("[A-Za-z][A-Za-z0-9]").exactMatch(tag)) {
                 throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field tag: %1").arg(QString(tag)));
             }
-            char type = readChar();
+            char type = r->readChar();
             bytesRead += 3;
             QVariant value;
             switch(type) {
             case 'A':
-                value = readChar();
+                value = r->readChar();
                 bytesRead += 1;
                 break;
             case 'c':
-                value = (int)readInt8();
+                value = (int)r->readInt8();
                 bytesRead += 1;
                 break;
             case 'C':
-                value = (int)readUint8();
+                value = (int)r->readUint8();
                 bytesRead += 1;
                 break;
             case 's':
-                value = (int)readInt16();
+                value = (int)r->readInt16();
                 bytesRead += 2;
                 break;
             case 'S':
-                value = (int)readUint16();
+                value = (int)r->readUint16();
                 bytesRead += 2;
                 break;
             case 'i':
-                value = (int)readInt32();
+                value = (int)r->readInt32();
                 bytesRead += 4;
                 break;
             case 'I':
-                value = (int)readUint32();
+                value = (int)r->readUint32();
                 bytesRead += 4;
                 break;
             case 'f':
-                value = readFloat32();
+                value = r->readFloat32();
                 bytesRead += 4;
                 break;
             case 'Z':
                 {
-                    QByteArray string = readString();
+                    QByteArray string = r->readString();
                     value = string;
                     bytesRead += string.size() + 1;
                     break;
                 }
             case 'H':
                 {
-                    QByteArray hexString = readString();
+                    QByteArray hexString = r->readString();
                     if(0 != (hexString.size()%2)) {
                         throw InvalidFormatException(BAMDbiPlugin::tr("Odd hex string length: %1").arg(hexString.size()));
                     }
@@ -353,6 +340,37 @@ Alignment Reader::readAlignment() {
         alignment.setOptionalFields(optionalFields);
     }
     return alignment;
+}
+
+void Reader::AlignmentReader::skip() {
+    r->reader.skip(blockSize - 4);
+}
+
+Reader::Reader(IOAdapter &ioAdapter):
+        ioAdapter(ioAdapter),
+        reader(ioAdapter)
+{
+    readHeader();
+}
+
+const Header &Reader::getHeader()const {
+    return header;
+}
+
+Reader::AlignmentReader Reader::getAlignmentReader() {
+    int blockSize = readInt32();
+    if(blockSize < 0) {
+        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid block size: %1").arg(blockSize));
+    }
+    int referenceId = readInt32();
+    if((referenceId < -1) || (referenceId >= header.getReferences().size())) {
+        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid reference id: %1").arg(referenceId));
+    }
+    return AlignmentReader(this, referenceId, blockSize);
+}
+
+Alignment Reader::readAlignment() {
+    return getAlignmentReader().read();
 }
 
 bool Reader::isEof()const {

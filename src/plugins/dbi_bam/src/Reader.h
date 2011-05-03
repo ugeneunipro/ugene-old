@@ -32,9 +32,23 @@ namespace BAM {
 class Reader
 {
 public:
+
+    class AlignmentReader {
+    public:
+        AlignmentReader(Reader* reader, int id, int blockSize);
+        int getId();
+        Alignment read();
+        void skip();
+    private:
+        int id;
+        int blockSize;
+        Reader* r;
+    };
+
     Reader(IOAdapter &ioAdapter);
     const Header &getHeader()const;
     Alignment readAlignment();
+    AlignmentReader getAlignmentReader();
     bool isEof()const;
     VirtualOffset getOffset()const;
     void seek(VirtualOffset offset);
@@ -58,6 +72,7 @@ private:
     QHash<QByteArray, int> programsMap;
     IOAdapter &ioAdapter;
     BgzfReader reader;
+friend class AlignmentReader;
 };
 
 } // namespace BAM

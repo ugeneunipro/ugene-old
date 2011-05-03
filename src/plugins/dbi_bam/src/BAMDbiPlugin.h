@@ -24,9 +24,13 @@
 
 #include <U2Core/PluginModel.h>
 #include <U2Core/U2Dbi.h>
+#include <U2Core/Log.h>
 
 namespace U2 {
 namespace BAM {
+
+#define ULOG_BAM_DBI_PLUGIN "bam-dbi"
+static Logger bamLog(ULOG_BAM_DBI_PLUGIN);
 
 class BAMDbiPlugin : public Plugin {
     Q_OBJECT
