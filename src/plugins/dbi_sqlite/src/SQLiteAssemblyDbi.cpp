@@ -206,7 +206,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     SAFE_POINT_OP(os,);
     
     if (it != NULL) {
-        a->addReads(it, importInfo, os);
+        addReads(a, it, importInfo, os);
         SAFE_POINT_OP(os,);
     }
 
@@ -233,18 +233,23 @@ void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2Da
     a->removeReads(rowIds, os);
 }
 
-void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {
+void SQLiteAssemblyDbi::addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::addReads");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::addReads");
 
     quint64 t0 = GTimer::currentTimeMicros();
 
-    AssemblyAdapter* a = getAdapter(assemblyId, os);
-    U2AssemblyReadsImportInfo ii;
     a->addReads(it, ii, os);
 
     t2.stop();
-    perfLog.trace(QString("Assembly: %1 reads added in %2 seconds").arg(ii.nReads).arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
+    perfLog.trace(QString("Assembly: %1 reads added in %2 seconds. Auto-packing: %3")
+        .arg(ii.nReads).arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)).arg(ii.packStat.readsCount > 0 ? "yes" : "no"));
+}
+
+void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
+    U2AssemblyReadsImportInfo ii;
+    addReads(a, it, ii, os);
 }
 
 

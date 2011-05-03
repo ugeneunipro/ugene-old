@@ -108,6 +108,8 @@ public:
     virtual void shutdown(U2OpStatus& os);
 
 private:
+    virtual void addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
+
     /** Return assembly storage adapter for the given assembly */
     AssemblyAdapter* getAdapter(const U2DataId& assemblyId, U2OpStatus& os);
     

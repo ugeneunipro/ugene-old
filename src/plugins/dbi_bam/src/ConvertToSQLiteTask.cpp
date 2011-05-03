@@ -367,7 +367,7 @@ void ConvertToSQLiteTask::run() {
                             throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
                         }
                         stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
-                        stateInfo.setDescription(BAMDbiPlugin::tr("Reading (%1 reads)").arg(QString::number(readsCount)));
+                        stateInfo.setDescription(readsCount == 0 ? BAMDbiPlugin::tr("Positioning...")  : BAMDbiPlugin::tr("Reading (%1 reads)").arg(QString::number(readsCount)));
                         progressUpdateCounter = 0;
                     }
                 }
