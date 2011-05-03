@@ -55,7 +55,8 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
     foreach(int index, assemblies.keys()) {
         if(!reads[index].isEmpty()) {
             U2OpStatusImpl opStatus;
-            sqliteDbi->getAssemblyDbi()->addReads(assemblies[index].id, reads[index], opStatus);
+            BufferedDbiIterator<U2AssemblyRead> readsIterator(reads[index]);
+            sqliteDbi->getAssemblyDbi()->addReads(assemblies[index].id, &readsIterator, opStatus);
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());
             }

@@ -168,7 +168,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 
-    virtual void addReads(const U2DataId&, QList<U2AssemblyRead>&, U2OpStatus& os) {
+    virtual void addReads(const U2DataId&, U2DbiIterator<U2AssemblyRead>*, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 

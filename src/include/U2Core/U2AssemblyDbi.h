@@ -41,13 +41,11 @@ public:
 /** Additional reads info used during reads import into assembly */
 class U2AssemblyReadsImportInfo {
 public:
-    U2AssemblyReadsImportInfo() : sortedByStartPos(false), packReads(false){}
-    /** Tells if imported reads are sorted by leftmost pos*/
-    bool sortedByStartPos;
-
-    /* Tells if reads must be packed by prow during the import */
-    bool packReads;
+    U2AssemblyReadsImportInfo() : nReads(0) {}
     
+    /** Number of reads added during import */
+    qint64 nReads;
+
     /* Place where to save pack statistics */
     U2AssemblyPackStat packStat;
 };
@@ -105,7 +103,10 @@ public:
 
 
     /** 
-        Creates new empty assembly object. Reads iterator can be NULL 
+        Creates new empty assembly object. Reads iterator can be NULL.
+        If iterator is not NULL adapter can automatically try to pack reads. If pack is performed, the corresponding
+        structure is filled with  pack statistics.
+
         Requires: U2DbiFeature_WriteAssembly feature support
     */
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  
@@ -129,7 +130,7 @@ public:
         Reads got their ids assigned.
         Requires: U2DbiFeature_WriteAssembly feature support
     */
-    virtual void addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& reads, U2OpStatus& os) = 0;
+    virtual void addReads(const U2DataId& assemblyId, U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) = 0;
 
     /**  
         Packs assembly rows: assigns packedViewRow value for every read in assembly 

@@ -99,7 +99,7 @@ public:
         Adds sequences to assembly
         Reads got their ids assigned.
     */
-    virtual void addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os);
+    virtual void addReads(const U2DataId& assemblyId, U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os);
 
     /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
     virtual void pack(const U2DataId& assemblyId, U2AssemblyPackStat& stat, U2OpStatus& os);
@@ -137,8 +137,8 @@ public:
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os) = 0;
     
-    virtual void addReads(QList<U2AssemblyRead>& rows, U2OpStatus& os) = 0;
-    virtual void addReadsInternal(QList<U2AssemblyRead>& reads, bool delayedIndex, U2OpStatus& os);
+    virtual void addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) = 0;
+    
     virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
 
     virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os) = 0;

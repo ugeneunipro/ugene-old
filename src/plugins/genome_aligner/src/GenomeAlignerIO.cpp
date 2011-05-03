@@ -204,14 +204,16 @@ void GenomeAlignerDbiWriter::write(SearchQuery *seq, SAType offset) {
 
     reads.append(read);
     if (reads.size() >= readBunchSize) {
-        wDbi->addReads(assembly.id, reads, status);
+        BufferedDbiIterator<U2AssemblyRead> readsIterator(reads);
+        wDbi->addReads(assembly.id, &readsIterator, status);
         reads.clear();
     }
 }
 
 void GenomeAlignerDbiWriter::close() {
     if (reads.size() > 0) {
-        wDbi->addReads(assembly.id, reads, status);
+        BufferedDbiIterator<U2AssemblyRead> readsIterator(reads);
+        wDbi->addReads(assembly.id, &readsIterator, status);
         reads.clear();
     }
     wDbi->updateAssemblyObject(assembly, status);

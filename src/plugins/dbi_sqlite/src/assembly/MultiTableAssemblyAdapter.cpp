@@ -385,56 +385,58 @@ static U2DataId addTable2Id(const U2DataId& id, const QByteArray& idExtra) {
     return res;
 }
 
-void MultiTableAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os) {
-    addReadsInternal(reads, false, os);
+#define NREADS_AT_ONCE 250000
+
+static QList<U2AssemblyRead> fetchReads(U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {
+    QList<U2AssemblyRead> res;
+    for (int i = 0; i < NREADS_AT_ONCE && it->hasNext(); i++) {
+        U2AssemblyRead read = it->next();
+        if (os.hasError()) {
+            break;
+        }
+        res << read;
+    }
+    return res;
 }
 
-void MultiTableAssemblyAdapter::addReadsInternal(QList<U2AssemblyRead>& reads, bool delayedIndex, U2OpStatus& os) {
-    if (adaptersGrid.isEmpty()) {
+void MultiTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) {
+    bool empty = adaptersGrid.isEmpty();
+    QList<U2AssemblyRead> reads = fetchReads(it, os);
+    if (empty) {
         initTables(reads, os);
         if (os.hasError()) {
             return;
         }
     }
-    int nReads = reads.size();
-    int nElens = elenRanges.size();
-    
-    QVector < QList<U2AssemblyRead> > readsByRange(nElens); //reads sorted by range
-    QVector< QVector<int> > readsIndex(nElens); // back-mapping of read index to original 'reads' list
-    for (int i = 0; i < nReads && !os.isCoR(); i++) {
-        U2AssemblyRead& read = reads[i];
-        int readLen = read->readSequence.length();
-        read->effectiveLen = readLen + U2AssemblyUtils::getCigarExtraLength(read->cigar);
-        int elenPos = getElenRangePosByLength(read->effectiveLen);
-        read->packedViewRow = 0;
-        readsByRange[elenPos] << read;
-        readsIndex[elenPos] << i;
-        
-    }
-    for (int i = 0; i < nElens && !os.isCoR(); i++) {
-        QList<U2AssemblyRead>& rangeReads = readsByRange[i];
-        if (rangeReads.isEmpty()) {
-            continue;
+    for (int readsChunk = 0; !os.isCoR() && !reads.isEmpty(); readsChunk++) {
+        int nReads = reads.size();
+        int nElens = elenRanges.size();
+        QVector < QList<U2AssemblyRead> > readsByRange(nElens); //reads sorted by range
+        for (int i = 0; i < nReads && !os.isCoR(); i++) {
+            U2AssemblyRead& read = reads[i];
+            int readLen = read->readSequence.length();
+            read->effectiveLen = readLen + U2AssemblyUtils::getCigarExtraLength(read->cigar);
+            int elenPos = getElenRangePosByLength(read->effectiveLen);
+            read->packedViewRow = 0;
+            readsByRange[elenPos] << read;
         }
-        MTASingleTableAdapter* adapter = getAdapterByRowAndElenRange(0, i, true, os);
-        adapter->singleTableAdapter->addReads(rangeReads, os);
-        if (os.hasError()) {
-            break;
+        for (int i = 0; i < nElens && !os.isCoR(); i++) {
+            QList<U2AssemblyRead>& rangeReads = readsByRange[i];
+            if (rangeReads.isEmpty()) {
+                continue;
+            }
+            MTASingleTableAdapter* adapter = getAdapterByRowAndElenRange(0, i, true, os);
+            U2AssemblyReadsImportInfo rangeReadsImportInfo;
+            BufferedDbiIterator<U2AssemblyRead> rangeReadsIterator(rangeReads);
+            adapter->singleTableAdapter->addReads(&rangeReadsIterator, rangeReadsImportInfo, os);
+            if (os.hasError()) {
+                break;
+            }
         }
-     
-        //now back-map all reads to initial list
-        const QVector<int>& idxMap = readsIndex[i];
-        for (int j = 0, n = rangeReads.size(); j < n && !os.isCoR(); j++) {
-            int idx = idxMap[j];
-            U2AssemblyRead& r  = rangeReads[j];
-            r->id = addTable2Id(r->id, adapter->idExtra);
-            reads[idx] = r;
-        }
+        ii.nReads+=nReads;
+        reads = fetchReads(it, os);
     }
-
-    if (!delayedIndex) {
-        createReadsIndexes(os);
-    }
+    createReadsIndexes(os);
 }
 
 MTASingleTableAdapter* MultiTableAssemblyAdapter::getAdapterByRowAndElenRange(int rowPos, int elenPos, bool createIfNotExits, U2OpStatus& os) {

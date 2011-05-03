@@ -124,7 +124,7 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByName(const QByteA
 }
 
 
-void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os) {
+void RTreeAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) {
     static QString q1 = "INSERT INTO %1(name, flags, mq, data) VALUES (?1, ?2, ?3, ?4)";
     static QString q2 = "INSERT INTO %1(id, gstart, gend, prow1, prow2) VALUES (?1, ?2, ?3, ?4, ?5)";
 
@@ -132,8 +132,9 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os
     SQLiteQuery insertRQ(q1.arg(readsTable), db, os);
     SQLiteQuery insertIQ(q2.arg(indexTable), db, os);
 
-    for (int i = 0, n = reads.size(); i < n && !os.isCoR(); i++) {
-        U2AssemblyRead& read = reads[i];
+    while (it->hasNext()) {
+        U2AssemblyRead read = it->next();
+
         bool dnaExt = false; //TODO
         
         QByteArray cigarText = U2AssemblyUtils::cigar2String(read->cigar);
@@ -153,7 +154,7 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os
         QByteArray packedData = SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod_NSCQ, read->name, read->readSequence, cigarText, read->quality, os);
         insertRQ.bindBlob(4, packedData, false);
 
-        read->id = insertRQ.insert(U2Type::AssemblyRead);
+        insertRQ.insert();
 
         if (os.hasError()) {
             break;
@@ -166,6 +167,8 @@ void RTreeAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os
         insertIQ.bindInt64(5, read->packedViewRow);
 
         insertIQ.execute();
+
+        ii.nReads++;
 
 //#define U2_SQLITE_CHECK_RTREE_
 #ifdef U2_SQLITE_CHECK_RTREE_

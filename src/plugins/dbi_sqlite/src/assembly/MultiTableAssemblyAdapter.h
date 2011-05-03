@@ -58,8 +58,7 @@ public:
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os);
 
-    virtual void addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os);
-    virtual void addReadsInternal(QList<U2AssemblyRead>& reads, bool delayedIndex, U2OpStatus& os);
+    virtual void addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& readIds, U2OpStatus& os);
 
     virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os);

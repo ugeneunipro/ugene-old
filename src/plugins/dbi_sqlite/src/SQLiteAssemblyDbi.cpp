@@ -27,6 +27,7 @@
 
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SqlHelpers.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QVarLengthArray>
 
@@ -184,9 +185,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
                                              U2OpStatus& os) 
 {
     assembly.id = SQLiteObjectDbi::createObject(U2Type::Assembly, folder, assembly.visualName,  SQLiteDbiObjectRank_TopLevel, db, os);
-    if (os.hasError()) {
-        return;
-    }
+    SAFE_POINT_OP(os,);
     
     //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE, os);
     QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1, os);
@@ -198,34 +197,21 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     q.bindString(3, elenMethod);
     q.bindString(4, SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_NO_COMPRESSION);
     q.execute();
-
+    SAFE_POINT_OP(os,);
 
     AssemblyAdapter* a = getAdapter(assembly.id, os);
-    if (os.hasError()) {
-        return;
-    }
+    SAFE_POINT_OP(os,);
 
     a->createReadsTables(os);
-    if (os.hasError()) {
-        return;
+    SAFE_POINT_OP(os,);
+    
+    if (it != NULL) {
+        a->addReads(it, importInfo, os);
+        SAFE_POINT_OP(os,);
     }
 
-    int insertGroupSize = a->getInsertGroupSize();
-    if (it != NULL) {
-        do {
-            QList<U2AssemblyRead>  reads;
-            for (int i = 0; i < insertGroupSize && it->hasNext() && !os.hasError(); i++) {
-                reads.append(it->next());
-            }
-            if (!reads.isEmpty()) {
-                a->addReadsInternal(reads, true, os);
-            }
-        } while (it->hasNext() && !os.hasError());
-    }
-    if (importInfo.packReads) {
-        pack(assembly.id, importInfo.packStat, os);
-    }
     a->createReadsIndexes(os);
+    SAFE_POINT_OP(os,);
 }
 
  
@@ -247,17 +233,18 @@ void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2Da
     a->removeReads(rowIds, os);
 }
 
-void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, QList<U2AssemblyRead>& rows, U2OpStatus& os) {
+void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::addReads");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::addReads");
 
     quint64 t0 = GTimer::currentTimeMicros();
 
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    a->addReads(rows, os);
+    U2AssemblyReadsImportInfo ii;
+    a->addReads(it, ii, os);
 
     t2.stop();
-    perfLog.trace(QString("Assembly: %1 reads added in %2 seconds").arg(rows.size()).arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
+    perfLog.trace(QString("Assembly: %1 reads added in %2 seconds").arg(ii.nReads).arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
 
@@ -280,10 +267,6 @@ void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2AssemblyPackStat& sta
 AssemblyAdapter::AssemblyAdapter(const U2DataId& _assemblyId, const AssemblyCompressor* _compressor, DbRef* _db) 
 :assemblyId(_assemblyId), compressor(_compressor), db(_db)
 {
-}
-
-void AssemblyAdapter::addReadsInternal(QList<U2AssemblyRead>& reads, bool , U2OpStatus& os) {
-    addReads(reads, os);
 }
 
 //////////////////////////////////////////////////////////////////////////

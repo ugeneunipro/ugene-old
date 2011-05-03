@@ -27,16 +27,23 @@
 
 namespace U2 {
 
-#define TAIL_SIZE 50000
 
 static qint64 selectProw(qint64* tails, qint64 start, qint64 end ){
-    for (int i = 0; i < TAIL_SIZE; i++) {
+    for (int i = 0; i < PACK_TAIL_SIZE; i++) {
         if (tails[i] < start) {
             tails[i] = end;
             return i;
         }
     }
     return -1;
+}
+
+PackAlgorithmContext::PackAlgorithmContext() {
+    maxProw  = 0;
+    nReads =  0;
+    peakEnd = -1;
+    peakRow = PACK_TAIL_SIZE;
+    tails.resize(PACK_TAIL_SIZE);
 }
 
 #define PACK_TRACE_CHECKPOINT 100000
@@ -52,25 +59,16 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
     int nPacked = 0;
 
     stat.maxProw = 0;
-    QVarLengthArray<qint64, TAIL_SIZE> tails;
-    qFill(tails.data(), tails.data() + TAIL_SIZE, -1);
+    QVarLengthArray<qint64, PACK_TAIL_SIZE> tails;
+    qFill(tails.data(), tails.data() + PACK_TAIL_SIZE, -1);
     std::auto_ptr< U2DbiIterator<PackAlgorithmData> > allReadsIterator(adapter.selectAllReads(os));
-    int peakEnd = -1; // used to assign prow for reads when TAIL_SIZE is not enough
-    int peakRow = TAIL_SIZE;
+    PackAlgorithmContext ctx;
     while (allReadsIterator->hasNext() && !os.isCoR()) {
         PackAlgorithmData read = allReadsIterator->next();
-        int prow = selectProw(tails.data(), read.leftmostPos, read.leftmostPos + read.effectiveLen);
-        if (prow == -1) {
-            if (read.leftmostPos > peakEnd) {
-                peakRow = TAIL_SIZE;
-            }
-            prow = peakRow;
-            peakRow++;
-            peakEnd = read.leftmostPos + read.effectiveLen;
-        }
+        int prow = packRead(U2Region(read.leftmostPos, read.effectiveLen), ctx, os);
         adapter.assignProw(read.readId, prow, os);
-        stat.maxProw = qMax(prow, stat.maxProw);
-        
+        stat.maxProw = ctx.maxProw;
+
         if ((++nPacked % PACK_TRACE_CHECKPOINT) == 0) {
             perfLog.trace(QString("Assembly: number packed reads so far: %1 of %2 (%3%)").arg(nPacked).arg(stat.readsCount).arg(100*nPacked/stat.readsCount));
         }
@@ -79,6 +77,20 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
     
     t1.stop();
     perfLog.trace(QString("Assembly: algorithm pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
+}
+
+int AssemblyPackAlgorithm::packRead(const U2Region& reg, PackAlgorithmContext& ctx, U2OpStatus& os) {
+    int prow = selectProw(ctx.tails.data(), reg.startPos, reg.endPos());
+    if (prow == -1) {
+        if (reg.startPos > ctx.peakEnd) {
+            ctx.peakRow = PACK_TAIL_SIZE;
+        }
+        prow = ctx.peakRow;
+        ctx.peakRow++;
+        ctx.peakEnd = reg.endPos();
+    }
+    ctx.maxProw = qMax(prow, ctx.maxProw);
+    return prow;
 }
 
 } //namespace

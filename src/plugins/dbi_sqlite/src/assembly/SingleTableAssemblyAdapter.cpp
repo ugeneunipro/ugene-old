@@ -169,12 +169,12 @@ U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReadsByName(const 
         new SQLiteAssemblyNameFilter(name), U2AssemblyRead(), os);
 }
 
-void SingleTableAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStatus& os) {
+void SingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     QString q = "INSERT INTO %1(name, prow, flags, gstart, elen, mq, data) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)";
     SQLiteQuery insertQ(q.arg(readsTable), db, os);
-    for (int i = 0, n = reads.size(); i < n && !os.isCoR(); i++) {
-        U2AssemblyRead& read = reads[i];
+    while (it->hasNext()) {
+        U2AssemblyRead read = it->next();
         bool dnaExt = false; //TODO:
         
         QByteArray cigarText = U2AssemblyUtils::cigar2String(read->cigar);
@@ -201,7 +201,9 @@ void SingleTableAssemblyAdapter::addReads(QList<U2AssemblyRead>& reads, U2OpStat
         QByteArray packedData = SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod_NSCQ, read->name, read->readSequence, cigarText, read->quality, os);
         insertQ.bindBlob(7, packedData, false);
         
-        read->id = insertQ.insert(U2Type::AssemblyRead);
+        insertQ.insert();
+
+        ii.nReads++;
     }
 }
 
