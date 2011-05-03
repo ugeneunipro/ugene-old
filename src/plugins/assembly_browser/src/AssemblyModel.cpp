@@ -66,10 +66,10 @@ void AssemblyModel::cleanup() {
     if(refSeqDbiHandle != NULL) {
         delete refSeqDbiHandle;
         refSeqDbiHandle = NULL;
-        referenceDbi = NULL;
-        reference.length = 0;
-        refDoc = NULL;
     }
+    referenceDbi = NULL;
+    reference.length = 0;
+    refDoc = NULL;
 }
 
 bool AssemblyModel::isEmpty() const {
@@ -276,6 +276,10 @@ bool AssemblyModel::hasReference() const {
     return (bool)referenceDbi;
 }
 
+bool AssemblyModel::referenceAssociated() const {
+    return !assembly.referenceId.isEmpty();
+}
+
 void AssemblyModel::setReference(U2SequenceDbi * dbi, const U2Sequence & seq) {
     if(refDoc.isNull()) {
         Project * p = AppContext::getProject();
@@ -345,7 +349,7 @@ QString AssemblyModel::getReferenceUri(U2OpStatus & os) {
 }
 
 void AssemblyModel::sl_unassociateReference() {
-    if(!assembly.id.isEmpty()) {
+    if(!assembly.referenceId.isEmpty()) {
         assembly.referenceId.clear();
         U2OpStatusImpl status;
         assemblyDbi->updateAssemblyObject(assembly, status);

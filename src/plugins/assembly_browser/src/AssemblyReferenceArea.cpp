@@ -126,7 +126,7 @@ void AssemblyReferenceArea::sl_redraw() {
 }
 
 void AssemblyReferenceArea::mousePressEvent(QMouseEvent* e) {
-    if(e->button() == Qt::RightButton && model->hasReference()) {
+    if(e->button() == Qt::RightButton && model->referenceAssociated()) {
         referenceAreaMenu->exec(QCursor::pos());
     }
 }

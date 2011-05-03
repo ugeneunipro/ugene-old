@@ -57,7 +57,8 @@ public:
     void setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
 
     bool hasReference() const;
-
+    bool referenceAssociated()const;
+    
     void setReference(U2SequenceDbi * dbi, const U2Sequence & seq);
 
     QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
