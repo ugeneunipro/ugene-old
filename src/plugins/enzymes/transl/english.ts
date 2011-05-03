@@ -188,7 +188,7 @@
     <name>CreateFragmentDialog</name>
     <message>
         <location filename="../src/ui/CreateFragmentDialog.ui" line="14"/>
-        <source>Create DNA fragment</source>
+        <source>Create DNA Fragment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
