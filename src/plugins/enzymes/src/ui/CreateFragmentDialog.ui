@@ -188,12 +188,16 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="okButton">
+       <property name="text">
+        <string>OK</string>
        </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
+        <string>Cancel</string>
        </property>
       </widget>
      </item>
@@ -204,50 +208,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>CreateFragmentDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>CreateFragmentDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>leftEndBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>lCustomOverhangEdit</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>123</x>
-     <y>98</y>
+     <x>135</x>
+     <y>152</y>
     </hint>
     <hint type="destinationlabel">
-     <x>123</x>
-     <y>104</y>
+     <x>145</x>
+     <y>142</y>
     </hint>
    </hints>
   </connection>
@@ -258,12 +230,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>356</x>
-     <y>98</y>
+     <x>456</x>
+     <y>152</y>
     </hint>
     <hint type="destinationlabel">
-     <x>356</x>
-     <y>104</y>
+     <x>446</x>
+     <y>142</y>
     </hint>
    </hints>
   </connection>
@@ -274,12 +246,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>228</x>
-     <y>42</y>
+     <x>267</x>
+     <y>80</y>
     </hint>
     <hint type="destinationlabel">
-     <x>335</x>
-     <y>42</y>
+     <x>357</x>
+     <y>82</y>
     </hint>
    </hints>
   </connection>
@@ -290,12 +262,44 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>228</x>
-     <y>42</y>
+     <x>267</x>
+     <y>80</y>
     </hint>
     <hint type="destinationlabel">
-     <x>436</x>
-     <y>42</y>
+     <x>447</x>
+     <y>82</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>okButton</sender>
+   <signal>pressed()</signal>
+   <receiver>CreateFragmentDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>336</x>
+     <y>216</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>138</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>pressed()</signal>
+   <receiver>CreateFragmentDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>411</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>209</x>
+     <y>221</y>
     </hint>
    </hints>
   </connection>

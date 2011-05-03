@@ -189,7 +189,7 @@ bool DNAFragment::isSplitted() const
 }
 */
 
-void DNAFragment::setInverted( bool inverted /*= true*/ )
+void DNAFragment::setInverted( bool inverted /* = true*/ )
 {
     QString val = inverted ? "yes" : "no";
     GObjectUtils::replaceAnnotationQualfier(annotatedFragment, QUALIFIER_INVERTED, val, true);

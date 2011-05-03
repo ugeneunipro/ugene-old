@@ -97,9 +97,9 @@ EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"),
 
 void EnzymesPlugin::createToolsMenu()
 {
-    openDigestSequenceDialog = new QAction(tr("Digest Into Fragments"), this);
-    openConstructMoleculeDialog = new QAction(tr("Construct Molecule"), this);
-    openCreateFragmentDialog = new QAction("Create Fragment", this);
+    openDigestSequenceDialog = new QAction(tr("Digest into Fragments..."), this);
+    openConstructMoleculeDialog = new QAction(tr("Construct Molecule..."), this);
+    openCreateFragmentDialog = new QAction(tr("Create Fragment..."), this);
     
     QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
     

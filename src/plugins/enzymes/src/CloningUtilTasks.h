@@ -87,6 +87,7 @@ struct LigateFragmentsTaskConfig {
 class DNAAlphabet;
 
 class LigateFragmentsTask : public Task {
+    Q_OBJECT
 public:
     LigateFragmentsTask(const QList<DNAFragment>& fragments, const LigateFragmentsTaskConfig& cfg );
     Document* getResultDocument() {return resultDoc; }

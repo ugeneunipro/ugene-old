@@ -50,10 +50,10 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     
     addAnnotationWidget();
     searchForAnnotatedEnzymes(ctx);
-    if (annotatedEnzymes.isEmpty()) {
-        searchForEnzymesRadioButton->setChecked(true);
-        useExistingRadioButton->setEnabled(false);
-    }
+    //if (annotatedEnzymes.isEmpty()) {
+    //    searchForEnzymesRadioButton->setChecked(true);
+    //    useExistingRadioButton->setEnabled(false);
+    //}
     
     availableEnzymeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     selectedEnzymeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -62,8 +62,8 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     connect(addAllButton, SIGNAL(clicked()), SLOT(sl_addAllPushButtonClicked()));
     connect(removeButton, SIGNAL(clicked()), SLOT(sl_removePushButtonClicked()));
     connect(clearButton, SIGNAL(clicked()), SLOT(sl_clearPushButtonClicked()));
-    connect(searchSettingsButton, SIGNAL(clicked()), SLOT(sl_searchSettingsPushButtonClicked()));
-    connect(useExistingRadioButton, SIGNAL(toggled(bool)), SLOT(sl_useAnnotatedRegionsSelected(bool)));
+//    connect(searchSettingsButton, SIGNAL(clicked()), SLOT(sl_searchSettingsPushButtonClicked()));
+//    connect(useExistingRadioButton, SIGNAL(toggled(bool)), SLOT(sl_useAnnotatedRegionsSelected(bool)));
     
     updateAvailableEnzymeWidget();
     seqNameLabel->setText(dnaObj->getGObjectName());
@@ -120,11 +120,11 @@ void DigestSequenceDialog::accept()
     assert(aObj != NULL);
     
     DigestSequenceTask* task = NULL;
-    if (searchForEnzymesRadioButton->isChecked()) {
-        task = new DigestSequenceTask(dnaObj, aObj, resultEnzymes); 
-    } else {
-        task = new DigestSequenceTask(dnaObj, sourceObj, aObj, resultEnzymes);
-    }
+    //if (searchForEnzymesRadioButton->isChecked()) {
+    //    task = new DigestSequenceTask(dnaObj, aObj, resultEnzymes); 
+    //} else {
+    //    task = new DigestSequenceTask(dnaObj, sourceObj, aObj, resultEnzymes);
+    //}
 
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     

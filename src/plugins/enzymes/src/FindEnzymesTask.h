@@ -134,6 +134,7 @@ private:
 };
 
 class FindEnzymesAutoAnnotationUpdater : public AutoAnnotationsUpdater {
+    Q_OBJECT
 public:
     FindEnzymesAutoAnnotationUpdater();
     Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa);
