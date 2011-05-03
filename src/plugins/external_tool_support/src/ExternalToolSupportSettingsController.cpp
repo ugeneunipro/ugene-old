@@ -25,6 +25,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Misc/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
 #include <QtGui>
 #include <blast/BlastAllSupport.h>
 #include <blast/FormatDBSupport.h>
@@ -109,10 +110,13 @@ QWidget* ExternalToolSupportSettingsPageWidget::createPathEditor(QWidget *parent
 
     return widget;
 }
+void ExternalToolSupportSettingsPageWidget::sl_linkActivated(QString url){
+    GUIUtils::runWebBrowser(url);
+}
 void ExternalToolSupportSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     ExternalToolSupportSettingsPageState* state = qobject_cast<ExternalToolSupportSettingsPageState*>(s);
     connect(selectToolPackButton, SIGNAL(clicked()), this, SLOT(sl_onBrowseToolPackPath()));
-
+    connect(linkLabel,SIGNAL(linkActivated(QString)),this,SLOT(sl_linkActivated(QString)));
     foreach(ExternalTool* tool, state->externalTools){
         ExternalToolInfo info;
         info.name=tool->getName();

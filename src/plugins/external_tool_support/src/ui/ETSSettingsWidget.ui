@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>428</width>
-    <height>528</height>
+    <width>444</width>
+    <height>582</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -37,7 +37,17 @@
         <item>
          <widget class="QLabel" name="selectToolPackLabel">
           <property name="text">
-           <string>You can select path for external tools pack</string>
+           <string>You can select path for</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="linkLabel">
+          <property name="toolTip">
+           <string>Check lastest version of external tools package</string>
+          </property>
+          <property name="text">
+           <string>&lt;a href=&quot;http://ugene.unipro.ru/external.html&quot;&gt;external tools package&lt;/a&gt;</string>
           </property>
          </widget>
         </item>
