@@ -1,0 +1,84 @@
+#!UGENE_WORKFLOW
+#Convert input sequence into its reverse, complement or reverse-complement counterpart and write result sequence to file
+
+workflow revcompl{
+
+    reverse-complement {
+        type:reverse-complement;
+        name:"Reverse Complement";
+        op-type:reverse-complement;
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read sequence";
+        merge-gap:10;
+        mode:0;
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write sequence";
+        accumulate:true;
+        document-format:fasta;
+        write-mode:2;
+    }
+
+    read-sequence.sequence->reverse-complement.in-sequence.sequence
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    reverse-complement.sequence->write-sequence.in-sequence.sequence
+
+    .iteration "Default iteration"{
+        id:4;
+
+        reverse-complement {
+            op-type:reverse-complement;
+        }
+    }
+    .meta {
+        aliases {
+            reverse-complement.op-type:type;
+            read-sequence.url-in:in;
+            write-sequence.document-format:format;
+            write-sequence.url-out:out;
+        }
+        help {
+            type:"Type of operation. Reverse-complement by default, 'norev' for complement only and 'nocompl' for reverse only";
+            in:"Input file";
+            format:"Output file format";
+            out:"Output file";
+        }
+        visual {
+            reverse-complement {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Reverse Complement</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Converts a sequence from from <span style=' text-decoration: underline;'>Read sequence</span> into its reverse-complement counterpart</p></body></html>";
+                tooltip:"Converts input sequence into its reverse, complement or reverse-complement counterpart";
+                pos:"-525 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-sequence.angle:360;
+            }
+            read-sequence {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-705 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            read-sequence.out-sequence->reverse-complement.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            write-sequence {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Reverse Complement</span> to <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
+                tooltip:"Writes all supplied sequences to file(s) in selected format.";
+                pos:"-285 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            reverse-complement.out-sequence->write-sequence.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+
