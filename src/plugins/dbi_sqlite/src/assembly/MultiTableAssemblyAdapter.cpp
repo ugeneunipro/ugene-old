@@ -156,14 +156,13 @@ void MultiTableAssemblyAdapter::rereadTables(const QByteArray& idata, U2OpStatus
         os.setError(SQLiteL10n::tr("Failed to parse packed row range info %1").arg(idata.constData()));     
         return;
     }
-    int maxProw = prowTokens.at(1).toInt(&parseOk);
-    if (maxProw < 0 || !parseOk) {
+    int nRows = prowTokens.at(1).toInt(&parseOk);
+    if (nRows < 0 || !parseOk) {
         os.setError(SQLiteL10n::tr("Failed to parse packed row range info %1").arg(idata.constData()));
         return;
     }
-
+    
     // ok, all regions parsed, now create adapters
-    int nRows = maxProw / prange + ((maxProw % prange) == 0 ? 0 : 1);
     int nElens = elenRanges.size();
     initAdaptersGrid(nRows, nElens);
     for (int rowPos = 0; rowPos < nRows; rowPos++) {
