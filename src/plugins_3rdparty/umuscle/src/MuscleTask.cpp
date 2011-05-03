@@ -46,6 +46,7 @@
 #include "muscle/muscle.h" 
 #include "muscle/muscle_context.h" 
 
+#define MUSCLE_LOCK_REASON "Muscle lock"
 
 namespace U2 {
 
@@ -375,7 +376,7 @@ void MuscleGObjectTask::prepare() {
         return;
     }
 
-    lock = new StateLock("muscle_lock");
+    lock = new StateLock(MUSCLE_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
     muscleTask = new MuscleTask(obj->getMAlignment(), config);
 
@@ -546,8 +547,6 @@ void MuscleGObjectRunFromSchemaTask::assertConfig() {
     assert(config.profile.isEmpty());
 }
 
-static const QString MUSCLE_LOCK_REASON("Muscle task lock");
-
 void MuscleGObjectRunFromSchemaTask::prepare() {
     if (obj.isNull()) {
         stateInfo.setError(tr("Object '%1' removed").arg(objName));
@@ -558,7 +557,7 @@ void MuscleGObjectRunFromSchemaTask::prepare() {
         return;
     }
     
-    lock = new StateLock(MUSCLE_LOCK_REASON);
+    lock = new StateLock(MUSCLE_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
     runSchemaTask = new WorkflowRunSchemaForTask(MUSCLE_SCHEMA_NAME, this);
     addSubTask(runSchemaTask);

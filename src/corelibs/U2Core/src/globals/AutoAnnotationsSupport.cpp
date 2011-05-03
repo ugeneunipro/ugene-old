@@ -26,6 +26,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/RemoveAnnotationsTask.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "AutoAnnotationsSupport.h"
 
@@ -198,13 +199,18 @@ void AutoAnnotationObject::emitStateChange( bool started )
 //////////////////////////////////////////////////////////////////////////
 
 AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaObj, QList<Task*> updateTasks ) :
-    Task("Auto-annotations update task", TaskFlags_NR_FOSCOE), aa(aaObj), subTasks(updateTasks)
+    Task("Auto-annotations update task", TaskFlags_NR_FOSCOE), aa(aaObj), lock(NULL), subTasks(updateTasks)
 {
     setMaxParallelSubtasks(1);
 }
 
 void AutoAnnotationsUpdateTask::prepare()
 {
+    SAFE_POINT(aa != NULL, tr("Empty auto-annotation object"), );
+    
+    lock = new StateLock("Auto-annotations update", StateLockFlag_LiveLock);
+    aa->getSeqObject()->lockState(lock);
+    
     aa->emitStateChange(true);
     foreach(Task* subtask, subTasks) {
         addSubTask(subtask);
@@ -214,7 +220,16 @@ void AutoAnnotationsUpdateTask::prepare()
 
 Task::ReportResult AutoAnnotationsUpdateTask::report()
 {
-    aa->emitStateChange(false);
+    if (aa != NULL ) {
+        aa->emitStateChange(false);
+    }
+
+    if (lock != NULL) {
+        aa->getSeqObject()->unlockState(lock);
+        delete lock;
+    }
+    
+    
     return ReportResult_Finished;
 }
 

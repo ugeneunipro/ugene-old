@@ -113,6 +113,7 @@ public:
     ReportResult report();
 protected:
     AutoAnnotationObject* aa;
+    StateLock* lock;
     QList<Task*> subTasks;
 };
 

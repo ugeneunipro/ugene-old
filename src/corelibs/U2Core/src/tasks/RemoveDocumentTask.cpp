@@ -60,6 +60,8 @@ void RemoveMultipleDocumentsTask::prepare() {
             addSubTask(new SaveMiltipleDocuments(modifiedDocs, useGUI));
         }
     }
+   
+
 }
 
 
@@ -84,13 +86,20 @@ Task::ReportResult RemoveMultipleDocumentsTask::report() {
     if (p->isStateLocked()) {
         return Task::ReportResult_CallMeAgain;
     }
-
+    
     foreach(Document* doc, docPtrs) {
-        if (doc!=NULL) {
-            p->removeDocument(doc);
+        if ( doc != NULL ) {
+            // check for "stay-alive" locked objects 
+            if ( doc->hasLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock) ) {
+                setError( tr("Cannot remove document %1, since it is locked by some task.").arg(doc->getName()) );
+                continue;
+            } else {
+                p->removeDocument(doc);
+            }
         }
     }
-
+    
+    
     return Task::ReportResult_Finished;
 }
 

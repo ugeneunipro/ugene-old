@@ -52,6 +52,8 @@ extern "C" kalign_context *getKalignContext() {
 
 namespace U2 {
 
+static const QString KALIGN_LOCK_REASON("Kalign lock");
+
 void KalignTaskSettings::reset() {
     gapExtenstionPenalty = -1;
     gapOpenPenalty = -1;
@@ -141,7 +143,7 @@ void KalignGObjectTask::prepare() {
         return;
     }
 
-    lock = new StateLock("kalign_lock");
+    lock = new StateLock(KALIGN_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
     kalignTask = new KalignTask(obj->getMAlignment(), config);
 
@@ -186,7 +188,6 @@ KalignGObjectRunFromSchemaTask::~KalignGObjectRunFromSchemaTask() {
     assert(lock == NULL);
 }
 
-static const QString KALIGN_LOCK_REASON("Kalign lock");
 static const QString KALIGN_SCHEMA_NAME("kalign");
 
 void KalignGObjectRunFromSchemaTask::prepare() {
@@ -199,7 +200,7 @@ void KalignGObjectRunFromSchemaTask::prepare() {
         return;
     }
     
-    lock = new StateLock(KALIGN_LOCK_REASON);
+    lock = new StateLock(KALIGN_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
     runSchemaTask = new WorkflowRunSchemaForTask(KALIGN_SCHEMA_NAME, this);
     addSubTask(runSchemaTask);
