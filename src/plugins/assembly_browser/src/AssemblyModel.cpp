@@ -257,7 +257,8 @@ void AssemblyModel::sl_referenceLoaded() {
     refSeqDbiHandle = new DbiHandle(ref.dataRef.factoryId, ref.dataRef.dbiId, false, status);
     if(status.hasError()) {
         LOG_OP(status);
-        cleanup();
+        sl_unassociateReference();
+        loadingReference = false;
         return;
     }
     U2SequenceDbi * seqDbi = refSeqDbiHandle->dbi->getSequenceDbi();
