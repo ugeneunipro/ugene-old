@@ -73,16 +73,14 @@ void BioStruct3DColorSchemeRegistry::registerFactories() {
     REGISTER_FACTORY(ChainsColorScheme);
     REGISTER_FACTORY(SecStructColorScheme);
     REGISTER_FACTORY(ChemicalElemColorScheme);
-#ifdef _DEBUG
-    REGISTER_FACTORY(SingleColorScheme);
-#endif
+    REGISTER_FACTORY(SimpleColorScheme);
 }
 
 
 const QString ChainsColorScheme::schemeName(QObject::tr("Molecular Chains"));
 const QString ChemicalElemColorScheme::schemeName(QObject::tr("Chemical Elements"));
 const QString SecStructColorScheme::schemeName(QObject::tr("Secondary Structure"));
-const QString SingleColorScheme::schemeName("One color (for debug only)");
+const QString SimpleColorScheme::schemeName(QObject::tr("Simple colors"));
 
 
 
@@ -303,18 +301,23 @@ Color4f SecStructColorScheme::getSchemeAtomColor( const SharedAtom& atom ) const
     return c;
 }
 
-/* class SingleColorScheme : public BioStruct3DColorScheme */
-QVector<Color4f> SingleColorScheme::colors;
+/* class SimpleColorScheme : public BioStruct3DColorScheme */
+QVector<Color4f> SimpleColorScheme::colors;
 
-void SingleColorScheme::createColors() {
+void SimpleColorScheme::createColors() {
     if (colors.isEmpty()) {
-        colors.append(Color4f(0.4f,0.9f,0.4f));
-        colors.append(Color4f(0.9f,0.4f,0.4f));
-        colors.append(Color4f(0.4f,0.4f,0.9f));
+        // rainbow colors
+        colors.append( Color4f(QColor(0xff,0x00,0x00)) );
+        colors.append( Color4f(QColor(0xff,0x7f,0x00)) );
+        colors.append( Color4f(QColor(0xff,0xff,0x00)) );
+        colors.append( Color4f(QColor(0x00,0xff,0x00)) );
+        colors.append( Color4f(QColor(0x00,0xff,0xff)) );
+        colors.append( Color4f(QColor(0x00,0x00,0xff)) );
+        colors.append( Color4f(QColor(0x8b,0x00,0xff)) );
     }
 }
 
-SingleColorScheme::SingleColorScheme(const BioStruct3DObject *biostruct) : BioStruct3DColorScheme(biostruct)
+SimpleColorScheme::SimpleColorScheme(const BioStruct3DObject *biostruct) : BioStruct3DColorScheme(biostruct)
 {
     createColors();
     static int idx = 0;

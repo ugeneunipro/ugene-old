@@ -160,16 +160,16 @@ public:
 };  // class SecStructColorScheme
 
 /** One color scheme for debug purposes */
-class SingleColorScheme : public BioStruct3DColorScheme {
-    SingleColorScheme(const BioStruct3DObject *biostruct);
+class SimpleColorScheme : public BioStruct3DColorScheme {
+    SimpleColorScheme(const BioStruct3DObject *biostruct);
 
 private:
     static QVector<Color4f> colors;
     static void createColors();
 
 public:
-    COLOR_SCHEME_FACTORY(SingleColorScheme)
-};  // class SingleColorScheme
+    COLOR_SCHEME_FACTORY(SimpleColorScheme)
+};  // class SimpleColorScheme
 
 }   // namespace U2
 
