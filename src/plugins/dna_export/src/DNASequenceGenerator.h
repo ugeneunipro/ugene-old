@@ -79,6 +79,8 @@ public:
     QString refUrl;
     // char frequencies
     QMap<char, qreal> content;
+    //window size
+    int window;
 };
 
 class DNASequenceGenerator {
@@ -114,7 +116,7 @@ private:
 class GenerateDNASequenceTask : public Task {
     Q_OBJECT
 public:
-    GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int count_);
+    GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int window_, int count_);
 
     void run();
 
@@ -123,6 +125,7 @@ public:
 private:
     QMap<char, qreal> baseContent;
     int length;
+    int window;
     int count;
     QList< QByteArray > result;
 };

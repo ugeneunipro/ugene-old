@@ -101,6 +101,8 @@ public:
     
     bool isEmpty() const;
     bool isEmptyString() const;
+    bool isVisible(QVariantMap &values) const;
+    void setRelation(const QString& attrName, const QVariant &attrValue);
     
 private:
     template<typename T> T getAttributeValueWithoutScript() const {
@@ -121,6 +123,10 @@ private:
     // script text and variable values for script evaluating
     // script variables get values only in runtime
     AttributeScript     scriptData;
+
+    bool hasRelation;
+    QString relatedAttribute;
+    QVariant relatedAttributeValue;
     
 }; // Attribute
 

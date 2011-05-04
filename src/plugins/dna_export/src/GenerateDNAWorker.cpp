@@ -58,6 +58,9 @@ static const QString A_PERCENT_ATTR("percent-a");
 static const QString C_PERCENT_ATTR("percent-c");
 static const QString G_PERCENT_ATTR("percent-g");
 static const QString T_PERCENT_ATTR("percent-t");
+static const QString ALGORITHM("algorithm");
+static const QString WINDOW_SIZE("window-size");
+static const QString GC_SKEW("gc-skew");
 
 const QString GenerateDNAWorkerFactory::ACTOR_ID("generate-dna");
 
@@ -90,15 +93,38 @@ void GenerateDNAWorkerFactory::init() {
         Descriptor cpd(C_PERCENT_ATTR, GenerateDNAWorker::tr("C"), GenerateDNAWorker::tr("Cytosine content."));
         Descriptor gpd(G_PERCENT_ATTR, GenerateDNAWorker::tr("G"), GenerateDNAWorker::tr("Guanine content."));
         Descriptor tpd(T_PERCENT_ATTR, GenerateDNAWorker::tr("T"), GenerateDNAWorker::tr("Thymine content."));
+        Descriptor alg(ALGORITHM, GenerateDNAWorker::tr("Algorithm"),GenerateDNAWorker::tr("Algorithm for generating"));
+        Descriptor wnd(WINDOW_SIZE, GenerateDNAWorker::tr("Window size"), GenerateDNAWorker::tr("Size of window where set content"));
+        Descriptor gcSkew(GC_SKEW, GenerateDNAWorker::tr("GC Skew"), GenerateDNAWorker::tr("GC Skew"));
 
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, 1000);
         a << new Attribute(nd, BaseTypes::NUM_TYPE(), false, 1);
         a << new Attribute(cd, BaseTypes::STRING_TYPE(), false, ContentIds::MANUAL);
+        a << new Attribute(alg, BaseTypes::STRING_TYPE(), false, "GC Content");
+        a << new Attribute(wnd, BaseTypes::NUM_TYPE(), true, 1000);
         a << new Attribute(rd, BaseTypes::STRING_TYPE(), false);
-        a << new Attribute(apd, BaseTypes::NUM_TYPE(), false, 25);
+        /*a << new Attribute(apd, BaseTypes::NUM_TYPE(), false, 25);
         a << new Attribute(cpd, BaseTypes::NUM_TYPE(), false, 25);
         a << new Attribute(gpd, BaseTypes::NUM_TYPE(), false, 25);
         a << new Attribute(tpd, BaseTypes::NUM_TYPE(), false, 25);
+        a << new Attribute(gcSkew, BaseTypes::NUM_TYPE(), false, 0.25);*/
+
+        Attribute *aAttr = new Attribute(apd, BaseTypes::NUM_TYPE(), false, 25);
+        Attribute *cAttr = new Attribute(cpd, BaseTypes::NUM_TYPE(), false, 25);
+        Attribute *gAttr = new Attribute(gpd, BaseTypes::NUM_TYPE(), false, 25);
+        Attribute *tAttr = new Attribute(tpd, BaseTypes::NUM_TYPE(), false, 25);
+        aAttr->setRelation(ALGORITHM, "GC Content");
+        cAttr->setRelation(ALGORITHM, "GC Content");
+        gAttr->setRelation(ALGORITHM, "GC Content");
+        tAttr->setRelation(ALGORITHM, "GC Content");
+        a << aAttr;
+        a << cAttr;
+        a << gAttr;
+        a << tAttr;
+
+        Attribute *attr = new Attribute(gcSkew, BaseTypes::NUM_TYPE(), false, 0.25);
+        attr->setRelation(ALGORITHM, "GC Skew");
+        a << attr;
     }
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -129,6 +155,11 @@ void GenerateDNAWorkerFactory::init() {
         delegates[C_PERCENT_ATTR] = new SpinBoxDelegate(percentMap);
         delegates[G_PERCENT_ATTR] = new SpinBoxDelegate(percentMap);
         delegates[T_PERCENT_ATTR] = new SpinBoxDelegate(percentMap);
+
+        QVariantMap algMap;
+        algMap["GC Content"] = "GC Content";
+        algMap["GC Skew"] = "GC Skew";
+        delegates[ALGORITHM] = new ComboBoxDelegate(algMap);
     }
 
     Descriptor desc(ACTOR_ID, GenerateDNAWorker::tr("Generate DNA"),
@@ -187,28 +218,53 @@ Task* GenerateDNAWorker::tick() {
             return new FailTask(err);
         }
     } else {
-        int percentA = actor->getParameter(A_PERCENT_ATTR)->getAttributeValue<int>();
-        int percentC = actor->getParameter(C_PERCENT_ATTR)->getAttributeValue<int>();
-        int percentG = actor->getParameter(G_PERCENT_ATTR)->getAttributeValue<int>();
-        int percentT = actor->getParameter(T_PERCENT_ATTR)->getAttributeValue<int>();
-        if (percentA<0 || percentC<0 || percentG<0 || percentT<0) {
-            QString err = tr("Base content must be between 0 and 100");
-            return new FailTask(err);
+        if(actor->getParameter(ALGORITHM)->getAttributeValue<QString>() == "GC Skew") {
+            int percentA = qrand();
+            int percentC = qrand();
+            int percentT = qrand();
+            int percentG = qrand();
+            int sum = percentA + percentC + percentG + percentT;
+            percentA = (float)percentA / sum * 100;
+            percentG = (float)percentG / sum * 100;
+            percentC = (float)percentC / sum * 100;
+            percentT = (float)percentT / sum * 100;
+            int CG = percentG + percentG;
+            float gcSkew = actor->getParameter(GC_SKEW)->getAttributeValue<float>();
+            percentC = (1 - gcSkew)* CG / 2;
+            percentG = percentC + gcSkew * CG;
+            if(percentC < 0 || percentC > 100 || percentG < 0 || percentG > 100) {
+                return new FailTask("Wrong GC Skew value");
+            }
+
+            cfg.content['A'] = percentA / 100.0;
+            cfg.content['C'] = percentC / 100.0;
+            cfg.content['G'] = percentG / 100.0;
+            cfg.content['T'] = percentT / 100.0;
+        } else {
+            int percentA = actor->getParameter(A_PERCENT_ATTR)->getAttributeValue<int>();
+            int percentC = actor->getParameter(C_PERCENT_ATTR)->getAttributeValue<int>();
+            int percentG = actor->getParameter(G_PERCENT_ATTR)->getAttributeValue<int>();
+            int percentT = actor->getParameter(T_PERCENT_ATTR)->getAttributeValue<int>();
+            if (percentA<0 || percentC<0 || percentG<0 || percentT<0) {
+                QString err = tr("Base content must be between 0 and 100");
+                return new FailTask(err);
+            }
+            int total = percentA + percentC + percentG + percentT;
+            if (total > 100) {
+                QString err = tr("Total content percentage is more than 100");
+                return new FailTask(err);
+            }
+            cfg.content['A'] = percentA / 100.0;
+            cfg.content['C'] = percentC / 100.0;
+            cfg.content['G'] = percentG / 100.0;
+            cfg.content['T'] = percentT / 100.0;
         }
-        int total = percentA + percentC + percentG + percentT;
-        if (total > 100) {
-            QString err = tr("Total content percentage is more than 100");
-            return new FailTask(err);
-        }
-        cfg.content['A'] = percentA / 100.0;
-        cfg.content['C'] = percentC / 100.0;
-        cfg.content['G'] = percentG / 100.0;
-        cfg.content['T'] = percentT / 100.0;
 
         cfg.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     }
     
     cfg.length = actor->getParameter(LENGHT_ATTR)->getAttributeValue<int>();
+    cfg.window = actor->getParameter(WINDOW_SIZE)->getAttributeValue<int>();
 
     if (cfg.length < 10) {
         QString err = "'length' parameter value must be not less than 10";

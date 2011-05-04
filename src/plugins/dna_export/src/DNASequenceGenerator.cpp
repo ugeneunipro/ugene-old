@@ -184,7 +184,7 @@ evalTask(NULL), generateTask(NULL), saveTask(NULL) {
             return;
         }
     } else {
-        generateTask = new GenerateDNASequenceTask(cfg.getContent(), cfg.getLength(), cfg.getNumberOfSequences());
+        generateTask = new GenerateDNASequenceTask(cfg.getContent(), cfg.getLength(), cfg.window, cfg.getNumberOfSequences());
         addSubTask(generateTask);
     }
 }
@@ -207,7 +207,7 @@ QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
     } else if (subTask == evalTask) {
         cfg.alphabet = evalTask->getAlphabet();
         QMap<char, qreal> content = evalTask->getResult();
-        generateTask = new GenerateDNASequenceTask(content, cfg.getLength(), cfg.getNumberOfSequences());
+        generateTask = new GenerateDNASequenceTask(content, cfg.getLength(), cfg.window, cfg.getNumberOfSequences());
         tasks.append(generateTask);
     } else if (subTask == generateTask) {
         QList< QByteArray > seqs = generateTask->getResult();
@@ -288,14 +288,24 @@ void EvaluateBaseContentTask::run() {
 }
 
 // GenerateTask
-GenerateDNASequenceTask::GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int count_)
-: Task(tr("Generate DNA sequence task"), TaskFlag_None), baseContent(baseContent_), length(length_), count(count_) {
+GenerateDNASequenceTask::GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int window_, int count_)
+: Task(tr("Generate DNA sequence task"), TaskFlag_None), baseContent(baseContent_), length(length_), window(window_), count(count_) {
 }
 
 void GenerateDNASequenceTask::run() {
     for (int i=0; i<count; i++) {
         QByteArray seq;
-        DNASequenceGenerator::generateSequence(baseContent, length, seq);
+        QByteArray tmp;
+        if(window > length) {
+            window = length;
+        }
+        for(int i = 0; i< length/window; i++) {
+            DNASequenceGenerator::generateSequence(baseContent, window, tmp);
+            seq.append(tmp);
+        }
+        DNASequenceGenerator::generateSequence(baseContent, length % window, tmp);
+        seq.append(tmp);
+
         result.append(seq);
     }
 }

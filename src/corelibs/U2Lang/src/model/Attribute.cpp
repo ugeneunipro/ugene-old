@@ -32,7 +32,7 @@ namespace U2 {
  *  Attribute
  *************************************/
 Attribute::Attribute(const Descriptor& d, const DataTypePtr t, bool req, const QVariant & defaultValue )
-: Descriptor(d), type(t), required(req), value(defaultValue) {
+: Descriptor(d), type(t), required(req), value(defaultValue), hasRelation(false) {
     debugCheckAttributeId();
 }
 
@@ -112,6 +112,20 @@ bool Attribute::isEmpty() const {
 
 bool Attribute::isEmptyString() const {
     return value.type() == QVariant::String && getAttributeValue<QString>().isEmpty();
+}
+
+bool Attribute::isVisible(QVariantMap &values) const {
+    if(hasRelation) {
+        return (values.value(relatedAttribute) == relatedAttributeValue);
+    } else {
+        return true;
+    }
+}
+
+void Attribute::setRelation(const QString& attrName, const QVariant &attrValue) {
+    hasRelation = true;
+    relatedAttribute = attrName;
+    relatedAttributeValue = attrValue;
 }
 
 /*************************************

@@ -156,10 +156,45 @@ int ActorCfgModel::rowCount( const QModelIndex & parent ) const {
         return 0;
     }
 
-    return attrs.isEmpty() || parent.isValid() ? 0 : attrs.size();
+    /*int x = iterationIdx;
+    if(x < 0) {
+        return 0;
+    }
+    if (x >= iterations.size()) {
+        //FIXME: handle error
+        x = 0;
+    }
+    QVariantMap& cfg = iterations[x].cfg[subject->getId()]
+
+    int rows = 0;
+    foreach(Attribute *a, attrs) {
+        if(a->isVisible(cfg)) {
+            rows++;
+        }
+    }*/
+
+    return attrs.isEmpty() || parent.isValid() ? 0 : attrs.size()/*rows*/;
 }
 
 Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
+    int x = iterationIdx;
+    if (x >= iterations.size()) {
+        //FIXME: handle error
+        x = 0;
+    }
+    QVariantMap& cfg = iterations[x].cfg[subject->getId()];
+    if(cfg.isEmpty()) {
+        foreach(Attribute *a, attrs) {
+            cfg[a->getId()] = a->getAttributePureValue();
+        }
+    }
+
+    Attribute *currentAttribute = attrs.at(index.row());
+    if(! currentAttribute->isVisible(cfg)) {
+        return 0;
+    }
+
+
     int col = index.column();
     int row = index.row();
     switch(col) {
@@ -236,8 +271,37 @@ bool ActorCfgModel::setAttributeValue( const Attribute * attr, QVariant & attrVa
     return isDefaultVal;
 }
 
+Attribute* ActorCfgModel::getAttributeByRow(int row) const{
+    int x = iterationIdx;
+    if (x >= iterations.size()) {
+        //FIXME: handle error
+        x = 0;
+    }
+    QVariantMap& cfg = iterations[x].cfg[subject->getId()];
+
+    QList<Attribute*>visibleAttrs;
+    foreach(Attribute* a, attrs) {
+        if(a->isVisible(cfg)) {
+            visibleAttrs << a;
+        }
+    }
+    return visibleAttrs.at(row);
+}
+
 QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
     const Attribute *currentAttribute = attrs.at(index.row());
+    //const Attribute *currentAttribute = getAttributeByRow(index.row());
+
+    /*int x = iterationIdx;
+    if (x >= iterations.size()) {
+        //FIXME: handle error
+        x = 0;
+    }
+    QVariantMap& cfg = iterations[x].cfg[subject->getId()];
+
+    if(! currentAttribute->isVisible(cfg)) {
+        return QVariant();
+    }*/
     if (role == DescriptorRole) { // descriptor that will be shown in under editor. 'propDoc' in WorkflowEditor
         return qVariantFromValue<Descriptor>(*currentAttribute);
     }
@@ -333,6 +397,7 @@ QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
 bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, int role ) {
     int col = index.column();
     Attribute* editingAttribute = attrs[index.row()];
+    //Attribute *editingAttribute = getAttributeByRow(index.row());
     assert(editingAttribute != NULL);
     
     switch(col) {
