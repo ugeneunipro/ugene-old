@@ -126,6 +126,8 @@ void DigestSequenceDialog::accept()
     //    task = new DigestSequenceTask(dnaObj, sourceObj, aObj, resultEnzymes);
     //}
 
+    task = new DigestSequenceTask(dnaObj, sourceObj, aObj, resultEnzymes);
+
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     
     QDialog::accept();
