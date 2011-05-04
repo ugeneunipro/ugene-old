@@ -33,6 +33,7 @@ Notification::Notification(const QString &message, NotificationType _type, QActi
     close = new QLabel(this);
     QBoxLayout *h = new QHBoxLayout(this);
     setLayout(h);
+    counter = 1;
 
     QFontMetrics metrics(font());
     setText(metrics.elidedText(message, Qt::ElideRight, width()-50));
@@ -187,7 +188,7 @@ bool Notification::eventFilter(QObject *watched, QEvent *event) {
 }
 
 void Notification::showNotification(int x, int y) {
-    counter = 0;
+    timeCounter = 0;
     timer.setInterval(20);
     connect(&timer, SIGNAL(timeout()), SLOT(sl_timeout()));
     timer.start();
@@ -209,8 +210,8 @@ void Notification::dissapear() {
 void Notification::sl_timeout() {
     QRect rect = geometry();
     if(rect.height() >= TT_HEIGHT) {
-        ++counter;
-        if(counter > 100) {
+        ++timeCounter;
+        if(timeCounter > 100) {
             dissapear();
         }
     } else {        
@@ -225,6 +226,14 @@ QString Notification::getText() const {
 
 NotificationType Notification::getType() const {
     return type;
+}
+
+void Notification::increaseCounter(){
+    counter++;
+    QFontMetrics metrics(font());
+    QString addText = "(" + QString::number(counter) + ")";
+    int cWidth = metrics.width(addText);
+    setText(metrics.elidedText(text, Qt::ElideRight, width()-50 - cWidth ) + addText);
 }
 
 NotificationStack::NotificationStack(QObject *o /* = NULL */): QObject(o), notificationPosition(0), notificationNumber(0) {
@@ -249,13 +258,26 @@ bool NotificationStack::hasError() const {
 }
 
 void NotificationStack::addNotification(Notification *t) {
+    foreach(Notification *nt, notificationsOnScreen) {
+        if(nt->getText() == t->getText()) {
+            nt->increaseCounter();
+            delete t;
+            return;
+        }
+    }
+
     if(notifications.count() >= MAX_NOTIFICATION) {
         Notification *toRemove = notifications.takeAt(0);
-        w->removeNotification(toRemove);
-        toRemove->deleteLater();
+        if(!notificationsOnScreen.removeOne(toRemove)) {
+            if(notificationsOnScreen.contains(toRemove)) {
+                notificationsOnScreen.removeOne(toRemove);
+                toRemove->deleteLater();
+            }
+        }
     }
 
     notifications.append(t);
+    notificationsOnScreen.append(t);
     emit si_changed();
     
     connect(t, SIGNAL(si_delete()), this, SLOT(sl_delete()), Qt::DirectConnection);
@@ -276,6 +298,7 @@ void NotificationStack::sl_notificationDissapear() {
     t->show();
     t->setParent(w);
     w->addNotification(t);
+    notificationsOnScreen.removeOne(t);
 }
 
 void NotificationStack::sl_delete() {

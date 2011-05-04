@@ -67,6 +67,7 @@ public:
     QString getText() const;
     NotificationType getType() const;
     virtual bool eventFilter( QObject * watched, QEvent * event ); 
+    void increaseCounter();
 
 private slots:
     void sl_timeout();
@@ -91,6 +92,8 @@ private:
 
     QString text;
     NotificationType type;
+    int timeCounter;
+    //counter for duplicate notifications
     int counter;
 };
 
@@ -120,6 +123,7 @@ private:
     NotificationWidget *w;
 
     QList<Notification *> notifications;
+    QList<Notification *> notificationsOnScreen;
     int notificationPosition;
     int notificationNumber;
 };

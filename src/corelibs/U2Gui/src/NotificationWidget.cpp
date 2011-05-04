@@ -171,8 +171,10 @@ void NotificationWidget::addNotification(QWidget *w) {
     layout->insertWidget(0, w);
 }
 
-void NotificationWidget::removeNotification(QWidget *w) {
-    assert(layout->indexOf(w) != -1); //Can't delete notification that isn't in stack
+bool NotificationWidget::removeNotification(QWidget *w) {
+    if(layout->indexOf(w) == -1) { //Can't delete notification that isn't in stack 
+        return false;
+    }
     layout->removeWidget(w);
     w->close();
     delete w;
@@ -185,6 +187,7 @@ void NotificationWidget::removeNotification(QWidget *w) {
     if(notificationCount == 1) {
         close();
     }
+    return true;
 }
 
 }

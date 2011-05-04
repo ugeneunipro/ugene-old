@@ -72,7 +72,7 @@ public:
     NotificationWidget(QWidget *w = NULL);
     Header *titleBar() const;
     void addNotification(QWidget *w);
-    void removeNotification(QWidget *w);
+    bool removeNotification(QWidget *w);
     void setFixed(bool val);
 
 protected:
