@@ -122,7 +122,7 @@ void CircularViewSplitter::saveState( QVariantMap& m ) {
     //TODO:
 }
 
-void CircularViewSplitter::addView(CircularView* view) {
+void CircularViewSplitter::addView(CircularView* view, RestrctionMapWidget* rmapWidget) {
     tbFitInView->setDisabled(true);
     tbZoomOut->setDisabled(true);
     connect(tbZoomIn, SIGNAL(pressed()), view, SLOT(sl_zoomIn()));
@@ -134,8 +134,6 @@ void CircularViewSplitter::addView(CircularView* view) {
     connect(view, SIGNAL(si_fitInViewDisabled(bool)), SLOT(sl_updateFitInViewAction(bool)));
 
     circularViewList.append(view);
-    
-    RestrctionMapWidget* rmapWidget = new RestrctionMapWidget(view->getSequenceContext(),this);
     restrictionMapWidgets.append(rmapWidget);
 
     splitter->addWidget(view);
@@ -159,8 +157,9 @@ void CircularViewSplitter::sl_moveSlider(int delta) {
     horScroll->setSliderPosition(newPos);
 }
 
-void CircularViewSplitter::removeView(CircularView* view) {
+void CircularViewSplitter::removeView(CircularView* view, RestrctionMapWidget* rmapWidget) {
     circularViewList.removeAll(view);
+    restrictionMapWidgets.removeAll(rmapWidget);
 }
 
 bool CircularViewSplitter::isEmpty() {

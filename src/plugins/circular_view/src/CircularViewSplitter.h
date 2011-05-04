@@ -38,6 +38,7 @@ namespace U2 {
 
 class CircularViewHeaderWidget;
 class HBar;
+class RestrctionMapWidget;
 
 class CircularViewSplitter : public ADVSplitWidget{
     Q_OBJECT
@@ -48,9 +49,9 @@ public:
     virtual bool acceptsGObject(GObject*) {return false;}
     virtual void updateState(const QVariantMap& m);
     virtual void saveState(QVariantMap& m);
-    void addView(CircularView* view);
+    void addView(CircularView* view, RestrctionMapWidget* rmapWidget);
     void adaptSize();
-    void removeView(CircularView* view);
+    void removeView(CircularView* view, RestrctionMapWidget* rmapWidget);
     bool isEmpty();
     const QList<CircularView*>& getViewList() const { return circularViewList; }
 protected slots:
@@ -74,7 +75,7 @@ private:
     QToolButton* tbToggleRestrictionMap;
 
     QList<CircularView*> circularViewList;
-    QList<QWidget*> restrictionMapWidgets;
+    QList<RestrctionMapWidget*> restrictionMapWidgets;
 };
 
 } //namespace U2

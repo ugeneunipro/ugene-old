@@ -35,6 +35,7 @@ namespace U2 {
 
 class CircularViewSplitter;
 class CircularView;
+class RestrctionMapWidget;
 
 class CircularViewPlugin : public Plugin {
     Q_OBJECT
@@ -68,6 +69,7 @@ public:
     CircularViewAction();
     ~CircularViewAction();
     CircularView* view;
+    RestrctionMapWidget* rmapWidget;
 };
 
 } //namespace

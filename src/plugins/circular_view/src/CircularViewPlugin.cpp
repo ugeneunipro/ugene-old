@@ -22,6 +22,7 @@
 #include "CircularViewPlugin.h"
 #include "CircularView.h"
 #include "CircularViewSplitter.h"
+#include "RestrictionMapWidget.h"
 
 #include <U2Core/GObject.h>
 #include <U2Core/DocumentModel.h>
@@ -176,7 +177,8 @@ void CircularViewContext::sl_showCircular() {
         assert(a->view == NULL);
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), true);
         a->view = new CircularView(sw, sw->getSequenceContext());
-        splitter->addView(a->view);
+        a->rmapWidget=new RestrctionMapWidget(sw->getSequenceContext(),splitter);
+        splitter->addView(a->view,a->rmapWidget);
         sw->getAnnotatedDNAView()->insertWidgetIntoSplitter(splitter);
         splitter->adaptSize();
     } else {
@@ -184,8 +186,9 @@ void CircularViewContext::sl_showCircular() {
         assert(a->view!=NULL);
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), false);
         if(splitter != NULL) {
-            splitter->removeView(a->view);
+            splitter->removeView(a->view,a->rmapWidget);
             delete a->view;
+            delete a->rmapWidget;
             if(splitter->isEmpty()) {
                 removeCircularView(sw->getAnnotatedDNAView());
             }
