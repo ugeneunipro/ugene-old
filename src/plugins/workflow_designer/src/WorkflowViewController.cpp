@@ -311,6 +311,7 @@ void WorkflowView::createActions() {
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
     
     saveAsAction = new QAction(tr("&Save schema as..."), this);
+    saveAsAction->setIcon(QIcon(":workflow_designer/images/filesaveas.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
 
@@ -614,6 +615,7 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(newAction);
     tb->addAction(loadAction);
     tb->addAction(saveAction);
+    tb->addAction(saveAsAction);
     tb->addSeparator();
     tb->addAction(validateAction);
     tb->addAction(runAction);
