@@ -37,6 +37,7 @@
 #include "CDSearchWorker.h"
 #include "StatisticWorkers.h"
 #include "ReverseComplementWorker.h"
+#include "MSA2SequenceWorker.h"
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -287,6 +288,7 @@ void CoreLib::init() {
     RemoteDBFetcherFactory::init();
     SequenceSplitWorkerFactory::init();
     Text2SequenceWorkerFactory::init();
+    Alignment2SequenceWorkerFactory::init();
     ImportAnnotationsWorkerFactory::init();
     FilterAnnotationsWorkerFactory::init();
     SequencesToMSAWorkerFactory::init();

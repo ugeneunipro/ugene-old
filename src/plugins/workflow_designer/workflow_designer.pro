@@ -40,6 +40,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/CDSearchWorker.h \
 		   src/library/StatisticWorkers.h \
 		   src/library/ReverseComplementWorker.h \
+		   src/library/MSA2SequenceWorker.h \
            src/util/SaveSchemaImageUtils.h 
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
@@ -86,6 +87,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/CDSearchWorker.cpp \
 		   src/library/StatisticWorkers.cpp \
 		   src/library/ReverseComplementWorker.cpp \
+		   src/library/MSA2SequenceWorker.cpp \
            src/util/SaveSchemaImageUtils.cpp 
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

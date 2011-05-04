@@ -184,14 +184,23 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
     }
     QVariantMap& cfg = iterations[x].cfg[subject->getId()];
     if(cfg.isEmpty()) {
+        QVariantMap def;
         foreach(Attribute *a, attrs) {
-            cfg[a->getId()] = a->getAttributePureValue();
+            def[a->getId()] = a->getAttributePureValue();
         }
-    }
-
-    Attribute *currentAttribute = attrs.at(index.row());
-    if(! currentAttribute->isVisible(cfg)) {
-        return 0;
+        Attribute *currentAttribute = attrs.at(index.row());
+        if(! currentAttribute->isVisible(def)) {
+            return 0;
+        }
+    } else {
+        QVariantMap map;
+        foreach(Attribute *a, attrs) {
+            map[a->getId()] = cfg[a->getId()];
+        }
+        Attribute *currentAttribute = attrs.at(index.row());
+        if(! currentAttribute->isVisible(map)) {
+            return 0;
+        }
     }
 
 
