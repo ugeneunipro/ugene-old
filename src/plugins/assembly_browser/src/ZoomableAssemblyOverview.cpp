@@ -27,6 +27,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QLabel>
+#include <QtGui/QMenu>
 
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
@@ -50,8 +51,30 @@ scaleType(AssemblyBrowserSettings::getOverviewScaleType()) {
     visibleRange.startPos = 0;
     visibleRange.length = model->getModelLength(os);
     setFixedHeight(FIXED_HEIGHT);
+    setMouseTracking(true);
     connectSlots();
+    setupActions();
+    setContextMenuPolicy(Qt::DefaultContextMenu);
     initSelectionRedraw();
+}
+
+void ZoomableAssemblyOverview::setupActions() {
+    QAction * zoomInAction = new QAction(tr("Zoom in"), this);
+    QAction * zoomOutAction = new QAction(tr("Zoom out"), this);
+    QAction * zoomIn100xActon = new QAction(tr("Zoom in 100x"), this);
+    QAction * restoreGlobalOverviewAction = new QAction(tr("Restore global overview"), this);
+
+    connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomInContextMenu()));
+    connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOutContextMenu()));
+    connect(zoomIn100xActon, SIGNAL(triggered()), SLOT(sl_zoom100xContextMenu()));
+    connect(restoreGlobalOverviewAction, SIGNAL(triggered()), SLOT(sl_restoreGlobalOverview()));
+
+    contextMenu = new QMenu(this);
+
+    contextMenu->addAction(zoomInAction);
+    contextMenu->addAction(zoomOutAction);
+    contextMenu->addAction(zoomIn100xActon);
+    contextMenu->addAction(restoreGlobalOverviewAction);
 }
 
 void ZoomableAssemblyOverview::connectSlots() {
@@ -320,10 +343,15 @@ void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64
     qint64 modelLen = model->getModelLength(os);
     assert(newLen <= modelLen);
     if(newLen != visibleRange.length || newStartPos != visibleRange.startPos) {
-        visibleRange.length = newLen;
+        visibleRange.length = qMax(newLen, (qint64)width());
         checkedMoveVisibleRange(newStartPos);
+
         emit si_visibleRangeChanged(visibleRange);
     }
+}
+
+void ZoomableAssemblyOverview::checkedSetVisibleRange(const U2Region & newRegion) {
+    checkedSetVisibleRange(newRegion.startPos, newRegion.length);
 }
 
 void ZoomableAssemblyOverview::paintEvent(QPaintEvent * e) {
@@ -340,14 +368,16 @@ void ZoomableAssemblyOverview::resizeEvent(QResizeEvent * e) {
 }
 
 void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
+    //background scribbling
+    if(me->button() == Qt::MiddleButton) {
+        visibleRangeScribbling = true;
+        visibleRangeLastPos = me->pos();
+        setCursor(Qt::ClosedHandCursor);
+    } 
+
     if (me->button() == Qt::LeftButton) {
-        //background scribbling
-        if(me->modifiers() & Qt::ControlModifier) {
-            visibleRangeScribbling = true;
-            visibleRangeLastPos = me->pos();
-        } 
         //zoom in
-        else if(me->modifiers() & Qt::AltModifier) {
+        if(me->modifiers() & Qt::AltModifier) {
             QPoint pos = me->pos();
             int left_pix = qMax(0, pos.x() - 2);
             int right_pix = qMin(width(), pos.x() + 2);
@@ -373,7 +403,7 @@ void ZoomableAssemblyOverview::mouseMoveEvent(QMouseEvent * me) {
         moveSelectionToPos(me->pos());
     } 
     //background scribbling (Ctrl-Click)
-    else if((me->buttons() & Qt::LeftButton) && (me->modifiers() & Qt::ControlModifier) && visibleRangeScribbling){
+    else if((me->buttons() & Qt::MiddleButton) && visibleRangeScribbling){
         int pixelDiff = visibleRangeLastPos.x() - me->pos().x();
         qint64 asmDiff = calcXAssemblyCoord(pixelDiff);
         checkedMoveVisibleRange(asmDiff);
@@ -385,8 +415,11 @@ void ZoomableAssemblyOverview::mouseMoveEvent(QMouseEvent * me) {
 void ZoomableAssemblyOverview::mouseReleaseEvent(QMouseEvent * me) {
     if(me->button() == Qt::LeftButton && selectionScribbling) {
         selectionScribbling = false;
-    } if((me->buttons() & Qt::LeftButton) && (me->modifiers() & Qt::ControlModifier) && visibleRangeScribbling){
+        return;
+    } 
+    if((me->button() == Qt::MiddleButton) && visibleRangeScribbling){
         visibleRangeScribbling = false;
+        setCursor(Qt::ArrowCursor);
     }
     QWidget::mouseReleaseEvent(me);
 }
@@ -407,6 +440,14 @@ void ZoomableAssemblyOverview::wheelEvent(QWheelEvent * e) {
         }
     }
     QWidget::wheelEvent(e);
+}
+
+void ZoomableAssemblyOverview::contextMenuEvent(QContextMenuEvent * e) {
+    contextMenu->move(e->globalPos());
+    contextMenu->show();
+    contextMenuPos = e->pos();
+
+    QWidget::contextMenuEvent(e);
 }
 
 void ZoomableAssemblyOverview::sl_visibleAreaChanged() {
@@ -447,6 +488,31 @@ void ZoomableAssemblyOverview::sl_zoomIn(const QPoint & pos) {
 
     //4. set new values and update widget
     checkedSetVisibleRange(newStart,newLen);
+    sl_redraw();
+}
+
+void ZoomableAssemblyOverview::sl_zoomInContextMenu() {
+    sl_zoomIn(contextMenuPos);
+}
+
+void ZoomableAssemblyOverview::sl_zoomOutContextMenu() {
+    sl_zoomOut(contextMenuPos);
+}
+
+void ZoomableAssemblyOverview::sl_zoom100xContextMenu() {
+    QPoint pos = contextMenuPos;
+    int left_pix = qMax(0, pos.x() - 2);
+    int right_pix = qMin(width(), pos.x() + 2);
+
+    qint64 left_asm = calcXAssemblyCoord(left_pix);
+    qint64 right_asm = calcXAssemblyCoord(right_pix);
+    checkedSetVisibleRange(left_asm, right_asm-left_asm);
+    sl_redraw();
+
+}
+
+void ZoomableAssemblyOverview::sl_restoreGlobalOverview() {
+    checkedSetVisibleRange(model->getGlobalRegion());
     sl_redraw();
 }
 

@@ -31,6 +31,8 @@
 #include "CoverageInfo.h"
 #include "BackgroundTaskRunner.h"
 
+class QMenu;
+
 namespace U2 {
 
 class AssemblyModel;
@@ -46,6 +48,7 @@ public:
     void setScaleType(AssemblyBrowserSettings::OverviewScaleType t);
     AssemblyBrowserSettings::OverviewScaleType getScaleType()const;
     void checkedSetVisibleRange(qint64 newStartPos, qint64 newLen);
+    void checkedSetVisibleRange(const U2Region & newRegion);
 
 signals:
     void si_visibleRangeChanged(const U2Region &);
@@ -58,12 +61,18 @@ protected:
     void mouseMoveEvent(QMouseEvent * me);
     void mouseReleaseEvent(QMouseEvent * me);
     void wheelEvent(QWheelEvent * e);
+    void contextMenuEvent(QContextMenuEvent * e);
 
 private slots:
     void sl_visibleAreaChanged();
     void sl_redraw();
     void sl_zoomIn(const QPoint & pos);
     void sl_zoomOut(const QPoint & pos);
+
+    void sl_zoomInContextMenu();
+    void sl_zoomOutContextMenu();
+    void sl_zoom100xContextMenu();
+    void sl_restoreGlobalOverview();
 
 private:
     qint64 calcXAssemblyCoord(int x) const;
@@ -74,6 +83,7 @@ private:
     void moveSelectionToPos(QPoint pos, bool moveModel = true);
     void checkedMoveVisibleRange(qint64 newStartPos);
     
+    void setupActions();
     void connectSlots();
     void initSelectionRedraw();
 
@@ -88,6 +98,9 @@ private:
     AssemblyBrowserUi * ui;
     AssemblyBrowser * browser;
     QSharedPointer<AssemblyModel> model;
+
+    QMenu * contextMenu;
+    QPoint contextMenuPos;
 
     bool zoomable;
     U2Region visibleRange;
