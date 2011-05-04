@@ -33,22 +33,14 @@ using std::auto_ptr;
 
 namespace U2 {
 
-static PTools::Rigidbody* createRigidBody(const BioStruct3D &biostruct, int /*chainId = 0*/, int /*modelId = 0*/)
+static PTools::Rigidbody* createRigidBody(const BioStruct3D &biostruct, QList<int> chainIds, int modelId)
 {
-    // chainId and modelId ignored for now
-    // all chains and first model taken
-
     PTools::Rigidbody *body = new PTools::Rigidbody();
 
-    // all chains taken
-    foreach (const SharedMolecule &mol, biostruct.moleculeMap.values()) {
-        // this function uses modelId - key from BioStruct3D::modelMap
-        //int idx = biostruct.modelMap.keys().indexOf(modelId);
-        //const Molecule3DModel &model = mol->models[idx];
-        // first model taken
-        const Molecule3DModel &model = mol->models.first();
+    foreach (int chainId, chainIds) {
+        const Molecule3DModel &model = biostruct.getModelByName(chainId, modelId);
 
-        // Built in assumtion that order of atoms match order of residues
+        // built in assumtion that order of atoms in BioStruct3D matches order of residues
         foreach (const SharedAtom &atom, model.atoms)
         {
             PTools::Atomproperty pproperty;
@@ -68,12 +60,17 @@ static PTools::Rigidbody* createRigidBody(const BioStruct3D &biostruct, int /*ch
 }
 
 /* class PToolsAligner : public StructuralAlignmentAlgorithm */
-StructuralAlignment PToolsAligner::align(const BioStruct3D &ref, const BioStruct3D &alt, int refModel /*= 0*/, int altModel /*= 0*/)
+StructuralAlignment PToolsAligner::align(const BioStruct3D &ref, const BioStruct3D &alt, int refModel /*= -1*/, int altModel /*= -1*/)
 {
-    StructuralAlignment result = {0, Matrix44()};
+    StructuralAlignment result;
     try {
-        auto_ptr<PTools::Rigidbody> prefBody(createRigidBody(ref, 0, refModel));
-        auto_ptr<PTools::Rigidbody> paltBody(createRigidBody(alt, 0, altModel));
+        // by default first model used
+        refModel = (refModel == -1) ? ref.getModelsNames().first() : refModel;
+        altModel = (altModel == -1) ? alt.getModelsNames().first() : altModel;
+
+        // all chains used
+        auto_ptr<PTools::Rigidbody> prefBody(createRigidBody(ref, ref.moleculeMap.keys(), refModel));
+        auto_ptr<PTools::Rigidbody> paltBody(createRigidBody(alt, alt.moleculeMap.keys(), altModel));
 
         Superpose_t presult = PTools::superpose(*prefBody, *paltBody);
 

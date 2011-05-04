@@ -1063,7 +1063,7 @@ void BioStruct3DGLWidget::createActions()
     alignWithAction = new QAction(tr("Align With..."), this);
     connect(alignWithAction, SIGNAL(triggered()), this, SLOT(sl_alignWith()));
     // bug-2855 Disabled for now
-    alignWithAction->setVisible(false);
+    //alignWithAction->setVisible(false);
 
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
 }
@@ -1335,29 +1335,23 @@ void BioStruct3DGLWidget::addBiostruct(BioStruct3DObject *obj) {
 }
 
 static QList<BioStruct3DObject*> findAvailableBioStructs() {
-    // use this GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE);
+    QList<GObject*> objs = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::BIOSTRUCTURE_3D);
     QList<BioStruct3DObject*> biostructs;
-    Project *proj = AppContext::getProject();
-    if (proj) {
-        foreach (Document *doc, proj->getDocuments()) {
-            assert(doc);
-            if (doc->isLoaded()) {
-                foreach (GObject *obj, doc->findGObjectByType(GObjectTypes::BIOSTRUCTURE_3D)) {
-                    biostructs << qobject_cast<BioStruct3DObject*>(obj);
-                }
-            }
-        }
+    foreach (GObject *obj, objs) {
+        BioStruct3DObject *bso = qobject_cast<BioStruct3DObject*> (obj);
+        assert(bso);
+        biostructs << bso;
     }
+
     return biostructs;
 }
 
 void BioStruct3DGLWidget::sl_alignWith() {
-    // bug-2855 This code is here temporary only for testing,
     QList<BioStruct3DObject*> biostructs = findAvailableBioStructs();
 
     StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
     if (reg->getFactoriesIds().isEmpty()) {
-        QMessageBox::warning(0, "Error", "No available algorithms, make sure that structural_aligner plugin loaded");
+        QMessageBox::warning(0, "Error", "No available algorithms, make sure that ptools plugin loaded");
         return;
     }
 
@@ -1366,9 +1360,9 @@ void BioStruct3DGLWidget::sl_alignWith() {
     assert(alg);
 
     int refModelIdx = contexts.first().shownModelsIndexes.first();
-    int refModel = contexts.first().biostruct->modelMap.keys().at(refModelIdx);
+    int refModelName = contexts.first().biostruct->getModelsNames().at(refModelIdx);
 
-    StructuralAlignmentDialog dlg(biostructs, contexts.first().obj, refModel);
+    StructuralAlignmentDialog dlg(biostructs, contexts.first().obj, refModelName);
     if (dlg.exec() == QDialog::Accepted) {
         BioStruct3DObject *refo = static_cast<BioStruct3DObject*>( dlg.reference->itemData(dlg.reference->currentIndex()).value<void*>() );
         BioStruct3DObject *alto = static_cast<BioStruct3DObject*>( dlg.alter->itemData(dlg.alter->currentIndex()).value<void*>() );
@@ -1383,13 +1377,13 @@ void BioStruct3DGLWidget::sl_alignWith() {
             return;
         }
 
-        int altModel = dlg.altModel->itemData(dlg.altModel->currentIndex()).value<int>();
+        int altModelName = dlg.altModel->itemData(dlg.altModel->currentIndex()).value<int>();
 
-        StructuralAlignment result = alg->align(ref, alt, refModel, altModel);
+        StructuralAlignment result = alg->align(ref, alt, refModelName, altModelName);
         algoLog.trace(QString("Structural alignment done: rmsd = %1").arg(result.rmsd));
 
         addBiostruct(alto);
-        int altModelIdx = contexts.last().biostruct->modelMap.keys().indexOf(altModel);
+        int altModelIdx = contexts.last().biostruct->getModelsNames().indexOf(altModelName);
         contexts.last().shownModelsIndexes = QList<int>() << altModelIdx;
         contexts.last().renderer->getShownModelsIndexes() = contexts.last().shownModelsIndexes;
         contexts.last().renderer->updateShownModels();

@@ -29,7 +29,7 @@ namespace U2 {
 
 class PToolsAligner : public StructuralAlignmentAlgorithm {
 public:
-    virtual StructuralAlignment align(const BioStruct3D &ref, const BioStruct3D &alt, int refModel = 0, int altModel = 0);
+    virtual StructuralAlignment align(const BioStruct3D &ref, const BioStruct3D &alt, int refModel = -1, int altModel = -1);
 };  // class PToolsAligner
 
 class PToolsAlignerFactory : public StructuralAlignmentAlgorithmFactory {

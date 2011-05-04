@@ -120,7 +120,7 @@ void Gtest_PToolsAlignerTask::run() {
 
     const BioStruct3D &ref = refo->getBioStruct3D(), &mob = mobo->getBioStruct3D();
 
-    result = PToolsAligner().align(ref, mob, 1, 1);
+    result = PToolsAligner().align(ref, mob, -1, -1);
 }
 
 /** Compare alignment results with given accuracy  */
