@@ -230,6 +230,20 @@ QByteArray BioStruct3D::getRawSequenceByChainId( int id ) const
     return sequence;
 }
 
+const QList<int> BioStruct3D::getModelsNames() const {
+    return modelMap.keys();
+}
+
+const Molecule3DModel BioStruct3D::getModelByName(int moleculeId, int name) const {
+    int index = modelMap.keys().indexOf(name);
+    assert(index != -1 && "invalid model id");
+    return getModelByIndex(moleculeId, index);
+}
+
+const Molecule3DModel BioStruct3D::getModelByIndex(int moleculeId, int index) const {
+    return moleculeMap[moleculeId]->models[index];
+}
+
 /* class U2CORE_EXPORT BioStruct3DSelection */
 
 BioStruct3DSelection::BioStruct3DSelection(const BioStruct3D &biostruct_)

@@ -136,8 +136,7 @@ public:
     QMap<int, SharedResidue> residueMap;
 
     // this list used by biostrct renderers
-    // its indexes differ(sic!) from modelIds in QMap <int, AtomCoordSet> BioStruct3D::modelMap;
-    // but length, order of map and list believed to be equal
+    // its indexes are NOT model ids taken from PDB
     QList<Molecule3DModel> models;
 
     QList<SharedAnnotationData> annotations;
@@ -181,6 +180,19 @@ public:
     int getNumberOfResidues() const;
     const SharedAtom getAtomById(int index, int modelIndex) const;
     const SharedResidue getResidueById(int chainIndex, int residueIndex) const;
+
+    // Theese three methods need to solve confusion between model ids (same as in PDB)
+    // and internal model indexes, both  are used in UGENE
+    // model ids should be used for user interface, and one fine day may become a strings
+    // model index numbers used by internal UGENE parts, and shoud be consequent int values from 0
+    /** @returns list of model ids (same as in PDB), that can be not consequent */
+    const QList<int> getModelsNames() const;
+
+    /** @returns molecule model by it's model id (same as in PDB) */
+    const Molecule3DModel getModelByName(int moleculeId, int name) const;
+
+    /** @returns model by it's index number in our data structure */
+    const Molecule3DModel getModelByIndex(int moleculeId, int index) const;
 
     // Modifiers
     void calcCenterAndMaxDistance();
