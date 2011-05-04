@@ -16,7 +16,8 @@ HEADERS += src/AssemblyBrowser.h \
            src/AssemblyModel.h \
            src/ZoomableAssemblyOverview.h \
            src/CoverageInfo.h \
-           src/CoveredRegionsManager.h
+           src/CoveredRegionsManager.h \
+           src/ExportReadsDialog.h
 SOURCES += src/AssemblyBrowser.cpp \
            src/AssemblyBrowserPlugin.cpp \
            src/AssemblyDensityGraph.cpp \
@@ -32,4 +33,6 @@ SOURCES += src/AssemblyBrowser.cpp \
            src/AssemblyModel.cpp \
            src/ZoomableAssemblyOverview.cpp \
            src/CoverageInfo.cpp \
-           src/CoveredRegionsManager.cpp
+           src/CoveredRegionsManager.cpp \
+           src/ExportReadsDialog.cpp
+FORMS +=   src/ui/ExportReadsDialog.ui

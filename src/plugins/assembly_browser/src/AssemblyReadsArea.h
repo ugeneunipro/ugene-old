@@ -26,6 +26,7 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QScrollBar>
+#include <QtGui/QMenu>
 #include <QtCore/QSharedPointer>
 
 #include <U2Core/U2Assembly.h>
@@ -69,7 +70,11 @@ private:
     void drawHint(QPainter & p);
     
     int calcFontPointSize() const;
-
+    
+    bool findReadUnderMouse(U2AssemblyRead & read);
+    void updateMenuActions();
+    void exportReads(const QList<U2AssemblyRead> & reads);
+    
 signals:
     void si_heightChanged();
     void si_mouseMovedToPos(const QPoint &);
@@ -83,6 +88,9 @@ private slots:
     void sl_onHScrollMoved(int pos);
     void sl_onVScrollMoved(int pos);
     void sl_zoomOperationPerformed();
+    void sl_onCopyReadData();
+    void sl_onExportRead();
+    void sl_onExportReadsOnScreen();
     
 private:
     AssemblyBrowserUi * ui;
@@ -155,10 +163,12 @@ private:
         QPoint lastPos;
         QPoint diff;
         int cellWidth;
-    };
-
+    } mover;
     bool scribbling;
-    ReadsMover mover;
+    
+    QMenu * readMenu;
+    QAction * copyDataAction;
+    QAction * exportReadAction;
 };
 
 } //ns

@@ -29,6 +29,8 @@
 #include <QtGui/QCursor>
 #include <QtGui/QResizeEvent>
 #include <QtGui/QWheelEvent>
+#include <QtGui/QApplication>
+#include <QtGui/QClipboard>
 
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/Counter.h>
@@ -36,16 +38,23 @@
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/FormatUtils.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include "AssemblyBrowser.h"
 #include "ShortReadIterator.h"
 #include "ZoomableAssemblyOverview.h"
+#include "ExportReadsDialog.h"
 
 namespace U2 {
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
 QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true),
-coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this) {
+coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), readMenu(new QMenu(this)), copyDataAction(NULL), 
+exportReadAction(NULL) {
     QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
     coveredRegionsLayout->addWidget(&coveredRegionsLabel);
     setLayout(coveredRegionsLayout);
@@ -53,6 +62,15 @@ coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this) {
     connectSlots();
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
+
+    //setup menu
+    copyDataAction = readMenu->addAction(tr("Copy read information to clipboard"));
+    connect(copyDataAction, SIGNAL(triggered()), SLOT(sl_onCopyReadData()));
+    QMenu * exportMenu = readMenu->addMenu(tr("Export"));
+    exportReadAction = exportMenu->addAction("Current read");
+    connect(exportReadAction, SIGNAL(triggered()), SLOT(sl_onExportRead()));
+    QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
+    connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
 }
 
 void AssemblyReadsArea::initRedraw() {
@@ -262,16 +280,9 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     }    
 }
 
-void AssemblyReadsArea::drawHint(QPainter & p) {
-    if(cachedReads.isEmpty() || cachedReads.letterWidth == 0 || scribbling) {
-        sl_hideHint();
-        return;
-    }
-
-    // 1. find assembly read we stay on
+bool AssemblyReadsArea::findReadUnderMouse(U2AssemblyRead & read) {
     qint64 asmX = cachedReads.xOffsetInAssembly + (double)curPos.x() / cachedReads.letterWidth;
     qint64 asmY = cachedReads.yOffsetInAssembly + (double)curPos.y() / cachedReads.letterWidth;
-    U2AssemblyRead read;
     bool found = false;
     QListIterator<U2AssemblyRead> it(cachedReads.data);
     while(it.hasNext()) {
@@ -282,11 +293,23 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
             break;
         }
     }
-    if(!found) {
+    return found;
+}
+
+void AssemblyReadsArea::drawHint(QPainter & p) {
+    if(cachedReads.isEmpty() || cachedReads.letterWidth == 0 || scribbling) {
         sl_hideHint();
         return;
     }
 
+    // 1. find assembly read we stay on
+    U2AssemblyRead read;
+    bool found = findReadUnderMouse(read);
+    if(!found) {
+        sl_hideHint();
+        return;
+    }
+    
     // 2. set hint info
     if(read->id != hintData.curReadId) {
         hintData.curReadId = read->id;
@@ -378,10 +401,15 @@ void AssemblyReadsArea::wheelEvent(QWheelEvent * e) {
 }
 
 void AssemblyReadsArea::mousePressEvent(QMouseEvent * e) {
+    curPos = e->pos();
     if(browser->getCellWidth() != 0 && e->button() == Qt::LeftButton) {
         scribbling = true;
         setCursor(Qt::ClosedHandCursor);
-        mover = ReadsMover(browser->getCellWidth(), e->pos());
+        mover = ReadsMover(browser->getCellWidth(), curPos);
+    }
+    if(e->button() == Qt::RightButton) {
+        updateMenuActions();
+        readMenu->exec(QCursor::pos());
     }
     QWidget::mousePressEvent(e);
 }
@@ -530,8 +558,62 @@ void AssemblyReadsArea::sl_redraw() {
 void AssemblyReadsArea::sl_hideHint() {
     hintData.hint.hide();
     update();
-
 }
 
+void AssemblyReadsArea::sl_onCopyReadData() {
+    U2AssemblyRead read;
+    bool found = findReadUnderMouse(read);
+    if(!found) {
+        return;
+    }
+    QApplication::clipboard()->setText(AssemblyReadsAreaHint::getReadDataAsString(read));
+}
+
+void AssemblyReadsArea::updateMenuActions() {
+    U2AssemblyRead read;
+    bool found = findReadUnderMouse(read);
+    copyDataAction->setEnabled(found);
+    exportReadAction->setEnabled(found);
+}
+
+void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
+    ExportReadsDialog dlg(this, QList<DocumentFormatId>() << BaseDocumentFormats::PLAIN_FASTA << BaseDocumentFormats::FASTQ);
+    int ret = dlg.exec();
+    if(ret == QDialog::Accepted) {
+        ExportReadsDialogModel model = dlg.getModel();
+        assert(!model.filepath.isEmpty());
+        DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(model.format);
+        if(df == NULL) {
+            assert(false);
+            return;
+        }
+        QList<GObject*> objs;
+        foreach(const U2AssemblyRead & r, reads) {
+            DNAAlphabet * al = AppContext::getDNAAlphabetRegistry()->findAlphabet(r->readSequence);
+            DNASequence seq = DNASequence(r->readSequence, al);
+            seq.quality = DNAQuality(r->quality, DNAQualityType_Sanger);
+            objs << new DNASequenceObject(r->name, seq);
+        }
+        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(model.filepath));
+        Document * doc = new Document(df, iof, model.filepath, objs);
+        SaveDocFlags fl;
+        fl |= SaveDoc_Overwrite;
+        fl |= SaveDoc_DestroyAfter;
+        AppContext::getTaskScheduler()->registerTopLevelTask(new SaveDocumentTask(doc, fl));
+    }
+}
+
+void AssemblyReadsArea::sl_onExportRead() {
+    U2AssemblyRead read;
+    bool found = findReadUnderMouse(read);
+    if(!found) {
+        return;
+    }
+    exportReads(QList<U2AssemblyRead>() << read);
+}
+
+void AssemblyReadsArea::sl_onExportReadsOnScreen() {
+    exportReads(cachedReads.data);
+}
 
 } //ns

@@ -34,18 +34,11 @@ namespace U2 {
 const QPoint AssemblyReadsAreaHint::OFFSET_FROM_CURSOR(13, 13);
 static const int HINT_MAX_WIDTH = 200;
 
-AssemblyReadsAreaHint::AssemblyReadsAreaHint(QWidget * p): QFrame(p), fromToLabel(new QLabel(this)),
-lengthLabel(new QLabel(this)), cigarLabel(new QLabel(this)), strandLabel(new QLabel(this)), nameLabel(new QLabel(this)),
-seqLabel(new QLabel(this)){
+AssemblyReadsAreaHint::AssemblyReadsAreaHint(QWidget * p): QFrame(p), label(new QLabel(this)) {
     QBoxLayout * top = new QVBoxLayout(this);
     top->setMargin(2);
     setLayout(top);
-    top->addWidget(nameLabel);
-    top->addWidget(fromToLabel);
-    top->addWidget(lengthLabel);
-    top->addWidget(cigarLabel);
-    top->addWidget(strandLabel);
-    top->addWidget(seqLabel);
+    top->addWidget(label);
     top->setSpacing(0);
     top->setSizeConstraint(QLayout::SetMinimumSize);
     
@@ -53,21 +46,8 @@ seqLabel(new QLabel(this)){
     setMaximumWidth(HINT_MAX_WIDTH);
     
     installEventFilter(this);
-    nameLabel->installEventFilter(this);
-    fromToLabel->installEventFilter(this);
-    lengthLabel->installEventFilter(this);
-    cigarLabel->installEventFilter(this);
-    strandLabel->installEventFilter(this);
-    seqLabel->installEventFilter(this);
-    
-    nameLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    fromToLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    lengthLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    cigarLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    strandLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    seqLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    
-    nameLabel->setWordWrap(true);
+    label->installEventFilter(this);
+    label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     
     {
         QPalette p(palette());
@@ -88,20 +68,12 @@ seqLabel(new QLabel(this)){
     setFrameShape(QFrame::Box);
 }
 
-void AssemblyReadsAreaHint::setLength(qint64 len) {
-    lengthLabel->setText(tr("<b>Length</b>: %1").arg(len));
-}
-
-void AssemblyReadsAreaHint::setFromTo(qint64 from, qint64 to) {
-    fromToLabel->setText(tr("<b>From</b> %1 <b>to</b> %2").arg(from).arg(to));
-}
-
-void AssemblyReadsAreaHint::setCigar(const QString & ci) {
-    QString cigar;
+static QString getCigarString(const QString & ci) {
     if(ci.isEmpty()) {
-        cigar = tr("no information");
+        return AssemblyReadsAreaHint::tr("no information");
     }
-
+    
+    QString cigar;
     for(int i = 0; i < ci.size(); ++i) {
         QChar ch = ci.at(i);
         if(ch.isNumber()) {
@@ -110,47 +82,76 @@ void AssemblyReadsAreaHint::setCigar(const QString & ci) {
             cigar.append(QString("<font color='#0000FF'>%1</font>").arg(ch));
         }
     }
-    cigarLabel->setText(tr("<b>Cigar</b>: %1").arg(cigar));
+    return cigar;
 }
 
-void AssemblyReadsAreaHint::setStrand(bool onCompl) {
-    const QString DIRECT_STR(tr("direct"));
-    const QString COMPL_STR(tr("complement"));
-    strandLabel->setText(tr("<b>Strand</b>: %1").arg(onCompl ? COMPL_STR : DIRECT_STR));
+static const QString DIRECT_STR(AssemblyReadsAreaHint::tr("direct"));
+static const QString COMPL_STR(AssemblyReadsAreaHint::tr("complement"));
+
+QString getReadSequence(const QByteArray & bytes) {
+    QString ret(bytes);
+    if(ret.size() < AssemblyReadsAreaHint::LETTER_MAX_COUNT) {
+        return ret;
+    }
+    return ret.mid(0, AssemblyReadsAreaHint::LETTER_MAX_COUNT) + "...";
 }
 
-void AssemblyReadsAreaHint::setName(const QByteArray & n) {
-    assert(n.size() <= 255); // sam format
-    nameLabel->setText(tr("<b>%1</b>").arg(QString(n)));
+QString AssemblyReadsAreaHint::getReadDataAsString(const U2AssemblyRead & r) {
+    QString ret;
+    ret += QString("> %1\n").arg(QString(r->name));
+    ret += QString("%1\n\n").arg(QString(r->readSequence));
+    {
+        qint64 len = U2AssemblyUtils::getEffectiveReadLength(r);
+        ret += QString("From %1 to %2\n").arg(r->leftmostPos + 1).arg(r->leftmostPos + len);
+        ret += QString("Length: %1\n").arg(len);
+    }
+    ret += QString("Cigar: %1\n").arg(QString(U2AssemblyUtils::cigar2String(r->cigar)));
+    {
+        bool onCompl = ReadFlagsUtils::isComplementaryRead(r->flags);
+        ret += QString("Strand: %1\n").arg(onCompl ? COMPL_STR : DIRECT_STR);
+    }
+    return ret;
 }
 
-void AssemblyReadsAreaHint::setRawSequence(const QByteArray & s) {
-    QString bytes(s);
-    QString headTransl = tr("Read sequence:&nbsp;");
-    assert(headTransl.size() < 30);
-    QString head = QString("<table cellspacing='0'><tr><td><b>%1</b></td>").arg(headTransl);
-    QString str = head;
-    const int rowSize = LETTER_MAX_COUNT - headTransl.size();
-    const int ROWS_MAX_NUM = 4;
-    for(int i = 0; i < ROWS_MAX_NUM; ++i) {
-        QString what = QString("<td><pre>%1").arg(bytes.mid(i * rowSize, rowSize));
-        if(i == ROWS_MAX_NUM - 1 && ROWS_MAX_NUM * rowSize < bytes.size()) {
-            what.append("...");
-        }
-        what.append("</pre></td>");
-        if(i == 0) {
-            what.append("</tr>");
+QString getReadNameWrapped(QString n) {
+    QString ret;
+    while(!n.isEmpty()) {
+        n = n.trimmed();
+        if(n.size() > AssemblyReadsAreaHint::LETTER_MAX_COUNT) {
+            QString sub = n.mid(0, AssemblyReadsAreaHint::LETTER_MAX_COUNT);
+            int pos = sub.lastIndexOf(QRegExp("\\s+"));
+            if(pos == -1) {
+                pos = sub.size();
+            } 
+            ret += sub.mid(0, pos) + "<br>";
+            n = n.mid(pos);
         } else {
-            what.prepend("<tr><td>&nbsp;</td>");
-            what.append("</tr>");
-        }
-        str.append(what);
-        if((i + 1) * rowSize >= bytes.size()) {
-            break;
+            ret += n;
+            n.clear();
         }
     }
-    str.append("</table>");
-    seqLabel->setText(str);
+    return ret;
+}
+
+void AssemblyReadsAreaHint::setData(const U2AssemblyRead& r) {
+    QString text;
+    text += "<table cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"20%\">";
+    text += QString("<tr><td><b>%1</b></td></tr>").arg(getReadNameWrapped(r->name));
+    {
+        qint64 len = U2AssemblyUtils::getEffectiveReadLength(r);
+        text += QString("<tr><td><b>From</b>&nbsp;%1&nbsp;<b>to</b>&nbsp;%2</td></tr>").arg(r->leftmostPos + 1).
+                                                                                                    arg(r->leftmostPos + len);
+        text += QString("<tr><td><b>Length</b>:&nbsp;%1</td></tr>").arg(len);
+    }
+    text += QString("<tr><td><b>Cigar</b>:&nbsp;%1</td></tr>").arg(getCigarString(U2AssemblyUtils::cigar2String(r->cigar)));
+    {
+        bool onCompl = ReadFlagsUtils::isComplementaryRead(r->flags);
+        text += QString("<tr><td><b>Strand</b>:&nbsp;%1</td></tr>").arg(onCompl ? COMPL_STR : DIRECT_STR);
+    }
+    text += QString("<tr><td><b>Read sequence</b>:&nbsp;%1</td></tr>").arg(getReadSequence(r->readSequence));
+    text += "</table>";
+    label->setText(text);
+    setMaximumHeight(layout()->minimumSize().height());
 }
 
 bool AssemblyReadsAreaHint::eventFilter(QObject *, QEvent * event) {
@@ -177,18 +178,6 @@ void AssemblyReadsAreaHint::mouseMoveEvent(QMouseEvent * e) {
     AssemblyReadsArea * p = qobject_cast<AssemblyReadsArea*>(parent());
     p->sl_hideHint();
     QFrame::mouseMoveEvent(e);
-}
-
-void AssemblyReadsAreaHint::setData(const U2AssemblyRead& r) {
-    setName(r->name);
-    {
-        qint64 len = U2AssemblyUtils::getEffectiveReadLength(r);
-        setLength(len);
-        setFromTo(r->leftmostPos + 1, r->leftmostPos + len);
-    }
-    setCigar(U2AssemblyUtils::cigar2String(r->cigar));
-    setStrand(ReadFlagsUtils::isComplementaryRead(r->flags));
-    setRawSequence(r->readSequence);
 }
 
 } // U2

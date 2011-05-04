@@ -19,38 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __U2_ASSEMBLY_READS_AREA_HINT_H__
-#define __U2_ASSEMBLY_READS_AREA_HINT_H__
+#ifndef _U2_EXPORT_READS_DIALOG_H__
+#define _U2_EXPORT_READS_DIALOG_H__
 
-#include <QtGui/QFrame>
-#include <QtGui/QLabel>
+#include <U2Core/global.h>
 
-#include <U2Core/U2Assembly.h>
+#include <ui/ui_ExportReadsDialog.h>
+#include <QtGui/QDialog>
 
 namespace U2 {
 
-// hint that is shown under cursor for current read
-class AssemblyReadsAreaHint : public QFrame {
+struct ExportReadsDialogModel {
+    QString filepath;
+    DocumentFormatId format;
+};
+
+class ExportReadsDialog : public QDialog, Ui_ExportReadsDialog {
     Q_OBJECT
 public:
-    static const QPoint OFFSET_FROM_CURSOR;
-    static const int LETTER_MAX_COUNT = 60;
-    static QString getReadDataAsString(const U2AssemblyRead & r);
+    ExportReadsDialog(QWidget * p, const QList<DocumentFormatId> & formats);
     
-public:
-    AssemblyReadsAreaHint(QWidget * p);
-    void setData(const U2AssemblyRead& r);
+    virtual void accept();
     
-protected:
-    bool eventFilter(QObject *, QEvent *);
-    void leaveEvent(QEvent * e);
-    void mouseMoveEvent(QMouseEvent * e);
+    ExportReadsDialogModel getModel() const;
+
+private slots:
+    void sl_selectFile();
     
 private:
-    QLabel * label;
+    QString filter;
     
-}; // AssemblyReadsAreaHint
+}; // ExportReadsDialog
 
 } // U2
 
-#endif // __U2_ASSEMBLY_READS_AREA_HINT_H__
+#endif // _U2_EXPORT_READS_DIALOG_H__
