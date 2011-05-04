@@ -337,13 +337,17 @@ void ZoomableAssemblyOverview::checkedMoveVisibleRange(qint64 newStartPos) {
     launchCoverageCalculation();
 }
 
+qint64 ZoomableAssemblyOverview::minimalOverviewedLen() const {
+    return width(); //1 letter == 1 pixel. We are not going to draw more than one pixel per letter
+}
+
 void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64 newLen) {
     if(!zoomable) return;
     U2OpStatusImpl os;
     qint64 modelLen = model->getModelLength(os);
     assert(newLen <= modelLen);
     if(newLen != visibleRange.length || newStartPos != visibleRange.startPos) {
-        visibleRange.length = qMax(newLen, (qint64)width());
+        visibleRange.length = qMax(newLen, minimalOverviewedLen());
         checkedMoveVisibleRange(newStartPos);
 
         emit si_visibleRangeChanged(visibleRange);
@@ -369,7 +373,7 @@ void ZoomableAssemblyOverview::resizeEvent(QResizeEvent * e) {
 
 void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
     //background scribbling
-    if(me->button() == Qt::MiddleButton) {
+    if(me->button() == Qt::MidButton) {
         visibleRangeScribbling = true;
         visibleRangeLastPos = me->pos();
         setCursor(Qt::ClosedHandCursor);
@@ -403,7 +407,7 @@ void ZoomableAssemblyOverview::mouseMoveEvent(QMouseEvent * me) {
         moveSelectionToPos(me->pos());
     } 
     //background scribbling (Ctrl-Click)
-    else if((me->buttons() & Qt::MiddleButton) && visibleRangeScribbling){
+    else if((me->buttons() & Qt::MidButton) && visibleRangeScribbling){
         int pixelDiff = visibleRangeLastPos.x() - me->pos().x();
         qint64 asmDiff = calcXAssemblyCoord(pixelDiff);
         checkedMoveVisibleRange(asmDiff);
@@ -417,7 +421,7 @@ void ZoomableAssemblyOverview::mouseReleaseEvent(QMouseEvent * me) {
         selectionScribbling = false;
         return;
     } 
-    if((me->button() == Qt::MiddleButton) && visibleRangeScribbling){
+    if((me->button() == Qt::MidButton) && visibleRangeScribbling){
         visibleRangeScribbling = false;
         setCursor(Qt::ArrowCursor);
     }
@@ -468,6 +472,16 @@ void ZoomableAssemblyOverview::sl_zoomIn(const QPoint & pos) {
     qint64 newLen = visibleRange.length / ZOOM_MULT + 0.5;
     if(newLen < browser->basesCanBeVisible()) {
         newLen = browser->basesCanBeVisible();
+    }
+
+    qint64 oldLen = visibleRange.length;
+    qint64 minLen = minimalOverviewedLen();
+    if(newLen < minLen) {
+        newLen = minLen;
+    }
+
+    if(oldLen == newLen) {
+        return;
     }
 
     //2. count new start position of the visible region

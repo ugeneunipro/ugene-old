@@ -82,7 +82,8 @@ private:
     U2Region calcVisibleAssemblyRange() const;
     void moveSelectionToPos(QPoint pos, bool moveModel = true);
     void checkedMoveVisibleRange(qint64 newStartPos);
-    
+    qint64 minimalOverviewedLen() const;
+
     void setupActions();
     void connectSlots();
     void initSelectionRedraw();
