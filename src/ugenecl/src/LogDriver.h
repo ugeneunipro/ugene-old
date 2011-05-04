@@ -57,11 +57,11 @@ public:
 private:
     void setCmdLineSettings();
     QString getEffectiveCategory(const LogMessage& msg) const;
+    QString getLevelName(int i) const;
     
 private slots:
     void sl_onMessage(const LogMessage& msg);
     QString prepareText(const LogMessage& msg) const;
-
 private:
     bool printToConsole;
     bool colored;

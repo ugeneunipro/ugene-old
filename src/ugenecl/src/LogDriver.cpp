@@ -101,6 +101,21 @@ void LogDriver::setLogCmdlineHelp() {
     cmdLineRegistry->registerCMDLineHelpProvider(coloredOutput);
 }
 
+QString LogDriver::getLevelName(int i) const{
+    switch(i) {
+        case 0:
+            return "TRACE";
+        case 1:
+            return "DETAILS";
+        case 2:
+            return "INFO";
+        case 3:
+            return "ERROR";
+        default:
+            return "";
+    }
+}
+
 void LogDriver::setLogSettings() {
     CMDLineRegistry *cmd = AppContext::getCMDLineRegistry();
     if(cmd->hasParameter(CMDLineCoreOptions::LOG_FORMAT)) {
@@ -156,7 +171,7 @@ void LogDriver::setLogSettings() {
     if(cats.size() == 1) {
         int minLevel = 10;
         for (int i=0; i<LogLevel_NumLevels; i++) {
-            if(LogCategories::getLocalizedLevelName((LogLevel)i) == logLevel) {
+            if(getLevelName((LogLevel)i) == logLevel) {
                 minLevel = i;
             } 
         }
@@ -183,7 +198,7 @@ void LogDriver::setLogSettings() {
                 QString level = cats[ind + 1];
                 int minLevel = 10;
                 for (int i=0; i<LogLevel_NumLevels; i++) {
-                    if(LogCategories::getLocalizedLevelName((LogLevel)i) == level) {
+                    if(getLevelName((LogLevel)i) == level) {
                         cs.activeLevelFlag[i] = true;
                         minLevel = i;
                     } else {
