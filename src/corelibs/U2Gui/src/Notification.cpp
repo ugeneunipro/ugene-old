@@ -259,7 +259,7 @@ bool NotificationStack::hasError() const {
 
 void NotificationStack::addNotification(Notification *t) {
     foreach(Notification *nt, notificationsOnScreen) {
-        if(nt->getText() == t->getText()) {
+        if(nt->getText().split("]")[1] == t->getText().split("]")[1]) { //there is always minimum one ']' symbol
             nt->increaseCounter();
             delete t;
             return;
