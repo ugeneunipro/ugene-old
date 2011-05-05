@@ -50,8 +50,11 @@ public:
     BaseContentDialog(QMap<char, qreal>& percentMap_, QWidget* p=NULL);
 private slots:
     void sl_save();
+    void sl_baseClicked();
+    void sl_gcSkewClicked();
 private:
     QMap<char, qreal>& percentMap;
+    float gcSkew;
 };
 
 } //namespace

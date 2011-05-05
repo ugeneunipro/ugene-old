@@ -97,6 +97,7 @@ void DNASequenceGeneratorDialog::sl_generate() {
     cfg.sequenceName = "Sequence ";
     cfg.format = saveGroupContoller->getFormatToSave();
     cfg.content = content;
+    cfg.window = windowSpinBox->value();
     if (!cfg.useRef) {
         cfg.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     }
@@ -129,14 +130,76 @@ BaseContentDialog::BaseContentDialog(QMap<char, qreal>& percentMap_, QWidget* p)
     percentCSpin->setValue(percentMap.value('C')*100.0);
     percentGSpin->setValue(percentMap.value('G')*100.0);
     percentTSpin->setValue(percentMap.value('T')*100.0);
+    gcSkew = (percentMap.value('G') - percentMap.value('C'))/(percentMap.value('G') + percentMap.value('C'));
+    percentGCSpin->setValue(gcSkew);
+    
     connect(saveButton, SIGNAL(clicked()), SLOT(sl_save()));
+    connect(baseContentRadioButton, SIGNAL(clicked()), SLOT(sl_baseClicked()));
+    connect(gcSkewRadioButton, SIGNAL(clicked()), SLOT(sl_gcSkewClicked()));
+    baseContentRadioButton->setChecked(true);
+    percentASpin->setEnabled(true);
+    percentCSpin->setEnabled(true);
+    percentTSpin->setEnabled(true);
+    percentGSpin->setEnabled(true);
+    percentGCSpin->setEnabled(false);
+}
+
+void BaseContentDialog::sl_baseClicked() {
+    percentASpin->setEnabled(true);
+    percentCSpin->setEnabled(true);
+    percentTSpin->setEnabled(true);
+    percentGSpin->setEnabled(true);
+    percentGCSpin->setEnabled(false);
+}
+
+void BaseContentDialog::sl_gcSkewClicked() {
+    percentASpin->setEnabled(false);
+    percentCSpin->setEnabled(false);
+    percentTSpin->setEnabled(false);
+    percentGSpin->setEnabled(false);
+    percentGCSpin->setEnabled(true);
 }
 
 void BaseContentDialog::sl_save() {
-    float percentA = percentASpin->value();
-    float percentC = percentCSpin->value();
-    float percentG = percentGSpin->value();
-    float percentT = percentTSpin->value();
+    float percentA;
+    float percentC;
+    float percentG;
+    float percentT;
+    if(baseContentRadioButton->isChecked()) {
+        percentA = percentASpin->value();
+        percentC = percentCSpin->value();
+        percentG = percentGSpin->value();
+        percentT = percentTSpin->value();
+    } else {
+        int percentAi = qrand();
+        int percentCi = qrand();
+        int percentTi = qrand();
+        int percentGi = qrand();
+        int sum = percentAi + percentCi + percentGi + percentTi;
+        percentAi = (float)percentAi / sum * 100;
+        percentGi = (float)percentGi / sum * 100;
+        percentCi = (float)percentCi / sum * 100;
+        percentTi = (float)percentTi / sum * 100;
+        int CG = percentGi + percentCi;
+        gcSkew = percentGCSpin->value();
+        percentCi = (1 - gcSkew)* CG / 2;
+        percentGi = percentCi + gcSkew * CG;
+        if(percentCi < 0 || percentCi > 100 || percentGi < 0 || percentGi > 100) {
+            QMessageBox::critical(this, tr("Base content"), tr("Incorrect GC Skew value"));
+            return;
+        }
+        sum = percentAi + percentCi + percentGi + percentTi;
+        percentAi += 100 - sum;
+
+        percentA = percentAi;
+        percentC = percentCi;
+        percentG = percentGi;
+        percentT = percentTi;
+        percentASpin->setValue(percentAi);
+        percentCSpin->setValue(percentCi);
+        percentGSpin->setValue(percentGi);
+        percentTSpin->setValue(percentTi);
+    }
     float total = percentA + percentC + percentG + percentT;
     if (total != 100) {
         QMessageBox::critical(this, tr("Base content"), tr("Total percentage has to be 100 %"));
