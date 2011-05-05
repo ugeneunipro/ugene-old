@@ -57,6 +57,7 @@ protected:
     bool event(QEvent * e);
     void keyPressEvent(QKeyEvent * e);
     void mouseDoubleClickEvent(QMouseEvent * e);
+    bool eventFilter(QObject *obj, QEvent *ev);
     
 private:
     void initRedraw();

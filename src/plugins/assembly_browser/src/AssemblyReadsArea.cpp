@@ -62,7 +62,9 @@ exportReadAction(NULL) {
     connectSlots();
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
-
+    
+    coveredRegionsLabel.installEventFilter(this);
+    
     //setup menu
     copyDataAction = readMenu->addAction(tr("Copy read information to clipboard"));
     connect(copyDataAction, SIGNAL(triggered()), SLOT(sl_onCopyReadData()));
@@ -502,6 +504,19 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
 
     if(!e->isAccepted()) {
         QWidget::keyPressEvent(e);
+    }
+}
+
+bool AssemblyReadsArea::eventFilter(QObject *obj, QEvent *ev) {
+    if(obj == &coveredRegionsLabel) {
+        if(ev->type() == QEvent::MouseMove) {
+            QWidget::event(ev);
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return QWidget::eventFilter(obj, ev);
     }
 }
 
