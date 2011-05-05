@@ -650,7 +650,8 @@ void Reader::readHeader() {
                         if(date.isValid()) {
                             readGroup.setDate(date);
                         } else {
-                            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid RG-DT field value: %1").arg(QString(value)));
+                            //Allow anything.
+                            //throw InvalidFormatException(BAMDbiPlugin::tr("Invalid RG-DT field value: %1").arg(QString(value)));
                         }
                     }
                 }
