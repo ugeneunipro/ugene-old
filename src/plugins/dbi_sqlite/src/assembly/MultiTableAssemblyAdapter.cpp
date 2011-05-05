@@ -546,6 +546,9 @@ MultiTablePackAlgorithmAdapter::MultiTablePackAlgorithmAdapter(MultiTableAssembl
         if (packAdaptersGrid.size() <= a->rowPos) {
             packAdaptersGrid.resize(a->rowPos + 1);
         }
+        if(packAdaptersGrid[a->rowPos].size() <= a->elenPos) {
+            packAdaptersGrid[a->rowPos].resize(a->elenPos + 1);
+        }
         packAdaptersGrid[a->rowPos][a->elenPos] = sa;
     }
 }
