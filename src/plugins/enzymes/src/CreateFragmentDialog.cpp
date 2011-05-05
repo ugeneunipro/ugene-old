@@ -95,7 +95,7 @@ void CreateFragmentDialog::accept()
     } 
 
     if (rightEndBox->isChecked()) {
-        rightOverhang = lCustomOverhangEdit->text();
+        rightOverhang = rCustomOverhangEdit->text();
         DNAAlphabet* alph = AppContext::getDNAAlphabetRegistry()->findAlphabet(rightOverhang.toAscii());
         if (!alph->isNucleic()) {
             QMessageBox::warning(this, windowTitle(),tr("3'overhang contains unsupported symbols!"));
