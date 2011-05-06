@@ -189,6 +189,15 @@ static const QPoint CROSS_RIGHT_CORNER(0, CROSS_HALF_SIZE);
 
 void ZoomableAssemblyOverview::drawSelection(QPainter & p) {
     cachedSelection = calcCurrentSelection();
+    //if selection is TOO small - enlarge it a bit
+    if(0 == cachedSelection.width())  {
+        cachedSelection.setWidth(1);
+    }
+    if(0 == cachedSelection.height()) {
+        cachedSelection.setHeight(1);
+    }
+
+    //cached selection can be outside the visible range, so intersect it with it
     QRect selectionToDraw = rect().intersect(cachedSelection);
     if(selectionToDraw.isNull()) {
         return;
