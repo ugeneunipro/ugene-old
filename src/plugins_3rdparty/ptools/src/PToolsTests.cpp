@@ -118,9 +118,10 @@ void Gtest_PToolsAlignerTask::run() {
         return;
     }
 
-    const BioStruct3D &ref = refo->getBioStruct3D(), &mob = mobo->getBioStruct3D();
+    StructuralAlignmentTaskSettings settings = {    BioStruct3DReference(refo, refo->getBioStruct3D().moleculeMap.keys()),
+                                                    BioStruct3DReference(mobo, mobo->getBioStruct3D().moleculeMap.keys()) };
 
-    result = PToolsAligner().align(ref, mob, -1, -1);
+    result = PToolsAligner().align(settings);
 }
 
 /** Compare alignment results with given accuracy  */

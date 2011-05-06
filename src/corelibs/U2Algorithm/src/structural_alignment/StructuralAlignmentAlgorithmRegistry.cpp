@@ -50,4 +50,9 @@ QList<QString> StructuralAlignmentAlgorithmRegistry::getFactoriesIds() const {
     return factories.keys();
 }
 
+StructuralAlignmentTask* StructuralAlignmentAlgorithmRegistry::createStructuralAlignmentTask(const QString &algorithm, const StructuralAlignmentTaskSettings &settings) {
+    StructuralAlignmentTask *t = new StructuralAlignmentTask(getAlgorithmFactory(algorithm)->create(), settings);
+    return t;
+}
+
 }   // namespace U2

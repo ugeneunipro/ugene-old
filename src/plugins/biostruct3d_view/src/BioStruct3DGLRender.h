@@ -104,10 +104,13 @@ public:
     //! @returns current color scheme.
     const BioStruct3DColorScheme *getColorScheme() const { return colorScheme; }
 
-    //! @returns shown models indexes list reference.
-    //! indexes are just index numbers of models, NOT modelIds
-    QList<int>& getShownModelsIndexes() { return shownModels; }
+    /** @returns shown models indexes list reference.
+      * indexes are just index numbers of models, NOT modelIds
+      */
+    const QList<int>& getShownModelsIndexes() const { return shownModels; }
 
+    /** Sets shown models models list. */
+    void setShownModelsIndexes(const QList<int> &_shownModels) { shownModels = _shownModels; }
 
 protected:
     const BioStruct3D& bioStruct;

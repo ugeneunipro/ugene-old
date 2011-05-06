@@ -111,7 +111,7 @@ protected:
     Color4f defaultAtomColor;
     Color4f selectionColor;
 
-    BioStruct3DSelection selection;
+    BioStruct3DChainSelection selection;
 
 private:
     float unselectedShading;

@@ -28,6 +28,8 @@
 namespace U2 {
 
 class StructuralAlignmentAlgorithmFactory;
+class StructuralAlignmentTask;
+class StructuralAlignmentTaskSettings;
 
 class U2ALGORITHM_EXPORT StructuralAlignmentAlgorithmRegistry : public QObject {
     Q_OBJECT
@@ -38,6 +40,8 @@ public:
 
     void registerAlgorithmFactory(StructuralAlignmentAlgorithmFactory *factory, const QString &id);
     StructuralAlignmentAlgorithmFactory* getAlgorithmFactory(const QString &id);
+
+    StructuralAlignmentTask* createStructuralAlignmentTask(const QString &algorithm, const StructuralAlignmentTaskSettings &settings);
 
     QList<QString> getFactoriesIds() const;
 

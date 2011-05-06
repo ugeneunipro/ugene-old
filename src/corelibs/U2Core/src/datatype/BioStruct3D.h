@@ -220,24 +220,24 @@ private:
 };
 
 //! Shared data for BioStruct3DSelection
-class BioStruct3DSelectionData : public QSharedData {
+class BioStruct3DChainSelectionData : public QSharedData {
 public:
-    BioStruct3DSelectionData() : QSharedData() {}
-    BioStruct3DSelectionData(const BioStruct3DSelectionData &other) : QSharedData(), selection(other.selection) {}
+    BioStruct3DChainSelectionData() : QSharedData() {}
+    BioStruct3DChainSelectionData(const BioStruct3DChainSelectionData &other) : QSharedData(), selection(other.selection) {}
 
-    ~BioStruct3DSelectionData() {}
+    ~BioStruct3DChainSelectionData() {}
 
     // <chainId, residueId> presented in map believed to be selected
     // can be optimized on assumption that residue ids are continual
     QMultiMap<int, int> selection;
 
-};  // class BioStruct3DSelectionData
+};  // class BioStruct3DChainSelectionData
 
-//! Represents part of BioStruct3D.
-class U2CORE_EXPORT BioStruct3DSelection {
+//! Represents residue chain selection on BioStruct3D.
+class U2CORE_EXPORT BioStruct3DChainSelection {
 public:
-    BioStruct3DSelection(const BioStruct3D &biostruct);
-    BioStruct3DSelection(const BioStruct3DSelection &other);
+    BioStruct3DChainSelection(const BioStruct3D &biostruct);
+    BioStruct3DChainSelection(const BioStruct3DChainSelection &other);
 
     const BioStruct3D &getBioStruct3D() const { return biostruct; }
 
@@ -255,8 +255,8 @@ public:
 
 private:
     const BioStruct3D &biostruct;
-    QSharedDataPointer<BioStruct3DSelectionData> data;
-};  // class U2CORE_EXPORT BioStruct3DSelection
+    QSharedDataPointer<BioStruct3DChainSelectionData> data;
+};  // class U2CORE_EXPORT BioStruct3DChainSelection
 
 } // namespace U2
 

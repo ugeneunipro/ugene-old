@@ -24,21 +24,68 @@
 
 #include <U2Core/global.h>
 #include <U2Core/Matrix44.h>
+#include <U2Core/Task.h>
+#include <U2Core/BioStruct3DObject.h>
+
+#include <memory>
 
 namespace U2 {
 
 class BioStruct3D;
 
+/** Reference to a part of BioStruct3D */
+class U2ALGORITHM_EXPORT BioStruct3DReference {
+public:
+    BioStruct3DReference(const BioStruct3DObject *_obj, const QList<int> &_chains, int _modelId = -1)
+            : obj(_obj), chains(_chains), modelId(_modelId)
+    {
+        if (modelId == -1) {
+            modelId = obj->getBioStruct3D().modelMap.keys().first();
+        }
+    }
+
+    const BioStruct3DObject *obj;
+    QList<int> chains;
+
+    // -1 means all models
+    int modelId;
+};  // class BioStruct3DReference
+
+struct U2ALGORITHM_EXPORT StructuralAlignmentTaskSettings {
+    BioStruct3DReference ref, alt;
+};  // struct StructuralAlignmentTaskSettings
+
+/** Structural alignment algorithm result */
 class U2ALGORITHM_EXPORT StructuralAlignment {
 public:
     double rmsd;
     Matrix44 transform;
 };  // class StructuralAlignment
 
+/** Structural alignment algorithm abstract interface */
 class U2ALGORITHM_EXPORT StructuralAlignmentAlgorithm {
 public:
-    virtual StructuralAlignment align(const BioStruct3D &ref, const BioStruct3D &alt, int refModel = 0, int altModel = 0) = 0;
+    virtual StructuralAlignment align(const StructuralAlignmentTaskSettings &settings) = 0;
 };  // class StructuralAlignmentAlgorithm
+
+/** Task wrapper for structural alignment algorithm */
+class U2ALGORITHM_EXPORT StructuralAlignmentTask : public Task {
+    Q_OBJECT
+
+public:
+    StructuralAlignmentTask(StructuralAlignmentAlgorithm *algorithm, const StructuralAlignmentTaskSettings &settings);
+
+    virtual void run();
+
+    StructuralAlignment getResult() const { return result; }
+    StructuralAlignmentTaskSettings getSettings() const { return settings; }
+
+private:
+    std::auto_ptr<StructuralAlignmentAlgorithm> algorithm;
+    StructuralAlignmentTaskSettings settings;
+
+    StructuralAlignment result;
+};  // class StructuralAlignmentTask
 
 }   // namespace U2
 

@@ -40,6 +40,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Counter.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
 #include <U2Algorithm/MolecularSurface.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -65,6 +66,8 @@
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
+
+#include <memory>
 
 // disable "unsafe functions" deprecation warnings on MS VS
 #ifdef Q_OS_WIN
@@ -748,7 +751,7 @@ void BioStruct3DGLWidget::showModel(int modelId, bool show) {
     else if (!show) {
         ctx.shownModelsIndexes.removeAll(idx);
     }
-    ctx.renderer->getShownModelsIndexes() = ctx.shownModelsIndexes;
+    ctx.renderer->setShownModelsIndexes(ctx.shownModelsIndexes);
 }
 
 void BioStruct3DGLWidget::showAllModels(bool show) {
@@ -761,7 +764,7 @@ void BioStruct3DGLWidget::showAllModels(bool show) {
             ctx.shownModelsIndexes.append(i);            
         }
     }
-    ctx.renderer->getShownModelsIndexes() = ctx.shownModelsIndexes;
+    ctx.renderer->setShownModelsIndexes(ctx.shownModelsIndexes);
 }
 
 void BioStruct3DGLWidget::sl_selectModel(QAction *action) {
@@ -1313,7 +1316,7 @@ void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
     updateGL();
 }
 
-void BioStruct3DGLWidget::addBiostruct(BioStruct3DObject *obj) {
+void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj) {
     assert(obj);
 
     BioStruct3DRendererContext ctx(obj);
@@ -1355,10 +1358,6 @@ void BioStruct3DGLWidget::sl_alignWith() {
         return;
     }
 
-    StructuralAlignmentAlgorithmFactory *fac = reg->getAlgorithmFactory(reg->getFactoriesIds().first());
-    StructuralAlignmentAlgorithm *alg = fac->create();
-    assert(alg);
-
     int refModelIdx = contexts.first().shownModelsIndexes.first();
     int refModelName = contexts.first().biostruct->getModelsNames().at(refModelIdx);
 
@@ -1379,18 +1378,42 @@ void BioStruct3DGLWidget::sl_alignWith() {
 
         int altModelName = dlg.altModel->itemData(dlg.altModel->currentIndex()).value<int>();
 
-        StructuralAlignment result = alg->align(ref, alt, refModelName, altModelName);
-        algoLog.trace(QString("Structural alignment done: rmsd = %1").arg(result.rmsd));
+        StructuralAlignmentTaskSettings settings = { BioStruct3DReference(refo, ref.moleculeMap.keys(), refModelName),
+                                                     BioStruct3DReference(alto, alt.moleculeMap.keys(), altModelName) };
 
-        addBiostruct(alto);
+        StructuralAlignmentTask *task = reg->createStructuralAlignmentTask(reg->getFactoriesIds().first(), settings);
+
+        TaskSignalMapper *taskMapper = new TaskSignalMapper(task);
+        connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onAlignTaskFinished(Task*)));
+
+        AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    }
+}
+
+void BioStruct3DGLWidget::sl_onAlignTaskFinished(Task *task) {
+    if (!task->hasError()) {
+        StructuralAlignmentTask *saTask = qobject_cast<StructuralAlignmentTask*> (task);
+        assert(saTask && "Task shoud have type StructuralAlignmentTask");
+
+        StructuralAlignment result = saTask->getResult();
+        StructuralAlignmentTaskSettings settings = saTask->getSettings();
+
+        addBiostruct(settings.alt.obj);
+
+        int altModelName = settings.alt.modelId;
         int altModelIdx = contexts.last().biostruct->getModelsNames().indexOf(altModelName);
         contexts.last().shownModelsIndexes = QList<int>() << altModelIdx;
-        contexts.last().renderer->getShownModelsIndexes() = contexts.last().shownModelsIndexes;
+        contexts.last().renderer->setShownModelsIndexes(contexts.last().shownModelsIndexes);
         contexts.last().renderer->updateShownModels();
 
         const Matrix44 &mt = result.transform;
         const_cast<BioStruct3D*>(contexts.last().biostruct)->setTransform(mt);
+
+        glFrame->makeCurrent();
+        update();
     }
 }
+
+
 } // namespace U2
 

@@ -59,9 +59,10 @@ class MolecularSurface;
 class MolecularSurfaceRenderer;
 class U2Region;
 
+/** Each biostruct added to scene should be represented by context */
 class BioStruct3DRendererContext {
 public:
-    BioStruct3DRendererContext(BioStruct3DObject *obj)
+    BioStruct3DRendererContext(const BioStruct3DObject *obj)
             : obj(obj), biostruct(&obj->getBioStruct3D())
     {}
 
@@ -207,8 +208,8 @@ private:
     void createMenus();
 
     // view logic
-    //! Adds biostruct to scene.
-    void addBiostruct(BioStruct3DObject *biostruct);
+    //! Adds biostruct object to scene.
+    void addBiostruct(const BioStruct3DObject *biostruct);
 
     //! Creates renderers for all biostructs.
     void setupRenderer(const QString &name);
@@ -324,7 +325,10 @@ private slots:
      void sl_updateAnnimation();
      void sl_settings();
      void sl_exportImage();
+
+     // structural alignment relalated slots
      void sl_alignWith();
+     void sl_onAlignTaskFinished(Task *task);
 
      // slots for handling sequence selection
      void sl_onSequenceAddedToADV(ADVSequenceObjectContext *ctx);

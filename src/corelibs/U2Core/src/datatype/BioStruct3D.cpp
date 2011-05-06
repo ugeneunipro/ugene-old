@@ -244,21 +244,21 @@ const Molecule3DModel BioStruct3D::getModelByIndex(int moleculeId, int index) co
     return moleculeMap[moleculeId]->models[index];
 }
 
-/* class U2CORE_EXPORT BioStruct3DSelection */
+/* class U2CORE_EXPORT BioStruct3DChainSelection */
 
-BioStruct3DSelection::BioStruct3DSelection(const BioStruct3D &biostruct_)
-        : biostruct(biostruct_), data(new BioStruct3DSelectionData())
+BioStruct3DChainSelection::BioStruct3DChainSelection(const BioStruct3D &biostruct_)
+        : biostruct(biostruct_), data(new BioStruct3DChainSelectionData())
 {}
 
-BioStruct3DSelection::BioStruct3DSelection(const BioStruct3DSelection &other)
+BioStruct3DChainSelection::BioStruct3DChainSelection(const BioStruct3DChainSelection &other)
         : biostruct(other.biostruct), data(other.data)
 {}
 
-bool BioStruct3DSelection::inSelection(int chainId, int residueId) const {
+bool BioStruct3DChainSelection::inSelection(int chainId, int residueId) const {
     return data->selection.contains(chainId, residueId);
 }
 
-void BioStruct3DSelection::add(int chain, const U2Region &region) {
+void BioStruct3DChainSelection::add(int chain, const U2Region &region) {
     int start = biostruct.moleculeMap[chain]->residueMap.begin().key();
     for (int i = region.startPos; i < region.endPos(); ++i) {
         if (!data->selection.contains(chain, start + i)) {
@@ -268,31 +268,31 @@ void BioStruct3DSelection::add(int chain, const U2Region &region) {
     }
 }
 
-void BioStruct3DSelection::add(int chain, const QVector<U2Region> &regions) {
+void BioStruct3DChainSelection::add(int chain, const QVector<U2Region> &regions) {
     foreach (const U2Region &region, regions) {
         add(chain, region);
     }
 }
 
-void BioStruct3DSelection::remove(int chain, const U2Region &region) {
+void BioStruct3DChainSelection::remove(int chain, const U2Region &region) {
     int start = biostruct.moleculeMap[chain]->residueMap.begin().key();
     for (int i = region.startPos; i < region.endPos(); ++i) {
         data->selection.remove(chain, start + i);
     }
 }
 
-void BioStruct3DSelection::remove(int chain, const QVector<U2Region> &regions) {
+void BioStruct3DChainSelection::remove(int chain, const QVector<U2Region> &regions) {
     foreach (const U2Region &region, regions) {
         remove(chain, region);
     }
 }
 
-void BioStruct3DSelection::update(int chain, const U2Region &add, const U2Region &remove) {
+void BioStruct3DChainSelection::update(int chain, const U2Region &add, const U2Region &remove) {
     this->add(chain, add);
     this->remove(chain, remove);
 }
 
-void BioStruct3DSelection::update(int chain, const QVector<U2Region> &adds, const QVector<U2Region> &removes) {
+void BioStruct3DChainSelection::update(int chain, const QVector<U2Region> &adds, const QVector<U2Region> &removes) {
     add(chain, adds);
     remove(chain, removes);
 }

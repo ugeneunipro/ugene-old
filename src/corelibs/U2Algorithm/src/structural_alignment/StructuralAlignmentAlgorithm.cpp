@@ -22,4 +22,15 @@
 #include "StructuralAlignmentAlgorithm.h"
 
 namespace U2 {
+
+/* class U2ALGORITHM_EXPORT StructuralAlignmentTask : public Task */
+StructuralAlignmentTask::StructuralAlignmentTask(StructuralAlignmentAlgorithm *_algorithm, const StructuralAlignmentTaskSettings &_settings)
+        : Task("StructuralAlignmentTask", TaskFlag_None), algorithm(_algorithm), settings(_settings)
+{
+}
+
+void StructuralAlignmentTask::run() {
+    result = algorithm->align(settings);
+}
+
 }   // namespace U2
