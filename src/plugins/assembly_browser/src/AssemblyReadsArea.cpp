@@ -548,7 +548,8 @@ void AssemblyReadsArea::sl_coveredRegionClicked(const QString & link) {
     int i = link.toInt(&ok);
     assert(ok);
     CoveredRegion cr = browser->getCoveredRegions().at(i);
-    ui->getOverview()->checkedSetVisibleRange(cr.region.startPos, cr.region.length);
+    ui->getOverview()->checkedSetVisibleRange(cr.region);
+    browser->navigateToRegion(cr.region);
 }
 
 void AssemblyReadsArea::sl_onHScrollMoved(int pos) {

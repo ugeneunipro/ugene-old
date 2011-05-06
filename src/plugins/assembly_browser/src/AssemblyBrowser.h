@@ -87,6 +87,8 @@ public:
 
     void adjustOffsets(qint64 dx, qint64 dy);
 
+    void navigateToRegion(const U2Region & region);
+
     // utility functions for zooming
     void zoomIn(const QPoint & pos);
     void zoomOut(const QPoint & pos);
@@ -116,7 +118,6 @@ private slots:
     void sl_onShowCoordsOnRulerChanged();
     void sl_saveScreenshot();
     void sl_showContigInfo();
-    void sl_navigateToRegion(const U2Region & region);
     
 private:
     void initFont();

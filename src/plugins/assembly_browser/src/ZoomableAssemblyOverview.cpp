@@ -178,12 +178,13 @@ static const QPoint CROSS_RIGHT_CORNER(0, CROSS_HALF_SIZE);
 
 void ZoomableAssemblyOverview::drawSelection(QPainter & p) {
     cachedSelection = calcCurrentSelection();
-    if(cachedSelection.isNull()) {
+    QRect selectionToDraw = rect().intersect(cachedSelection);
+    if(selectionToDraw.isNull()) {
         return;
     }
-    if(isRectVerySmall(cachedSelection)) {
+    if(isRectVerySmall(selectionToDraw)) {
         //draw red cross
-        QPoint c = cachedSelection.center();
+        QPoint c = selectionToDraw.center();
         QPen oldPen = p.pen();
         p.setPen(Qt::red);
         p.drawLine(c - CROSS_LEFT_CORNER, c + CROSS_LEFT_CORNER);
@@ -191,12 +192,12 @@ void ZoomableAssemblyOverview::drawSelection(QPainter & p) {
         p.setPen(oldPen);
     } else {
         //draw transparent rectangle
-        if(cachedSelection.width() < 5 || cachedSelection.height() < 5) {
+        if(selectionToDraw.width() < 5 || selectionToDraw.height() < 5) {
             //red borders if rect is thin
             p.setPen(Qt::red);
         }
-        p.fillRect(cachedSelection, QColor(230, 230, 230, 180));
-        p.drawRect(cachedSelection.adjusted(0, 0, -1, -1));
+        p.fillRect(selectionToDraw, QColor(230, 230, 230, 180));
+        p.drawRect(selectionToDraw.adjusted(0, 0, -1, -1));
     }
 }
 
@@ -274,6 +275,8 @@ QRect ZoomableAssemblyOverview::calcCurrentSelection() const {
     int w = rect().width();
     int h = rect().height();
 
+//    qint64 x_ass_start = qMax(0, browser->getXOffsetInAssembly()-visibleRange.startPos);
+
     int x_pix_start = (double(w) / visibleRange.length * (browser->getXOffsetInAssembly()-visibleRange.startPos)) + 0.5;
     int y_pix_start = double(h) / model->getModelHeight(status) * browser->getYOffsetInAssembly() + 0.5;
     int pix_width = (double(w) / visibleRange.length * browser->basesVisible()) + 0.5;
@@ -294,17 +297,17 @@ void ZoomableAssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
     int dx = 0;
 
     if(!thisRect.contains(newSelection)) {
-        QRect uneeon = rect().united(newSelection);
+        QRect uneeon = thisRect.united(newSelection);
         if(uneeon.bottom() > thisRect.height()) {
             dy = uneeon.bottom() - thisRect.height();
         } else if(uneeon.top() < 0) {
             dy = uneeon.top();
         }
-        if(uneeon.right() > thisRect.right()) {
-            dx = uneeon.right() - thisRect.right();
-        } else if(uneeon.left() < 0) {
-            dx = uneeon.left();
-        }
+//         if(uneeon.right() > thisRect.right()) {
+//             dx = uneeon.right() - thisRect.right();
+//         } else if(uneeon.left() < 0) {
+//             dx = uneeon.left();
+//         }
         newSelection.translate(-dx, -dy);
     }
 
@@ -312,11 +315,12 @@ void ZoomableAssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
     qint64 newXoffset = 0;
     qint64 newYoffset = 0;
     if(dx) {
-        newXoffset = (dx < 0) ? visibleRange.startPos : visibleRange.endPos() - browser->basesVisible();
+        newXoffset = (dx < 0) ? 0 : model->getModelLength(status) - browser->basesVisible();
         moveModel = true;
     } else {
         newXoffset = calcXAssemblyCoord(newSelection.x());
     }
+    printf("x: %lld\n", newXoffset);
     if(dy) {
         newYoffset = (dy < 0) ? 0 : model->getModelHeight(status) - browser->rowsVisible();
         moveModel = true;
@@ -394,7 +398,12 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
         //selection scribbling
         else { 
             selectionScribbling = true;
-            moveSelectionToPos(me->pos());
+            if(!cachedSelection.contains(me->pos())) {
+                selectionDiff = QPoint();
+                moveSelectionToPos(me->pos());
+            } else {
+                selectionDiff = me->pos() - cachedSelection.center();
+            }
         }
     } 
 
@@ -404,7 +413,7 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
 void ZoomableAssemblyOverview::mouseMoveEvent(QMouseEvent * me) {
     //selection scribbling
     if((me->buttons() & Qt::LeftButton) && selectionScribbling) {
-        moveSelectionToPos(me->pos());
+        moveSelectionToPos(me->pos() - selectionDiff);
     } 
     //background scribbling (Ctrl-Click)
     else if((me->buttons() & Qt::MidButton) && visibleRangeScribbling){

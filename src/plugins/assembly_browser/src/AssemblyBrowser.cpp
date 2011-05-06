@@ -439,7 +439,7 @@ void AssemblyBrowser::sl_assemblyLoaded() {
 }
 
 
-void AssemblyBrowser::sl_navigateToRegion(const U2Region & region) {
+void AssemblyBrowser::navigateToRegion(const U2Region & region) {
     //if cells are not visible -> make them visible
     if(!areCellsVisible()) {
         while(!areCellsVisible()) {
@@ -722,7 +722,6 @@ AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(brows
     connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
     connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
     connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
-    connect(zoomableOverview, SIGNAL(si_visibleRangeChanged(const U2Region &)), browser, SLOT(sl_navigateToRegion(const U2Region &)));
     connect(zoomableOverview, SIGNAL(si_coverageReady()), readsArea, SLOT(sl_redraw()));
     connect(referenceArea, SIGNAL(si_unassociateReference()), browser->getModel().data(), SLOT(sl_unassociateReference()));
 }

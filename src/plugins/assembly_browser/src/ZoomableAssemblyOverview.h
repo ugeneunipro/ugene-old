@@ -117,6 +117,7 @@ private:
     BackgroundTaskRunner<CoverageInfo> coverageTaskRunner;
 
     bool selectionScribbling;
+    QPoint selectionDiff;
     bool visibleRangeScribbling;
     QPoint visibleRangeLastPos;
 
