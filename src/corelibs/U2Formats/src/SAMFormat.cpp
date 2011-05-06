@@ -426,24 +426,26 @@ bool SAMFormat::getSectionTags( QByteArray &line, const QByteArray &sectionName,
     return true;
 }
 
-bool SAMFormat::storeAlignedRead( int offset, const DNASequence& read, IOAdapter* io, const QString& refName, int refLength, bool first )
+bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter* io, const QByteArray& refName, int refLength, bool first)
 {
-   
     static const QByteArray TAB = "\t";
+    static const QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
+    static const QByteArray mapq("255"); //255 indicating the mapping quality is not available
+    static const QByteArray mrnm("*");
+    static const QByteArray mpos("0");
+    static const QByteArray isize("0");
+    static const QString rowData = "%1" + TAB + flag + TAB + "%2" + TAB + "%3" + TAB + mapq + TAB + "%4M" + TAB + mrnm
+        + TAB + mpos + TAB + isize + TAB + "%5" + TAB + "%6" + "\n";
     
     if( NULL == io || !io->isOpen() ) {
-        //ts.setError(L10N::badArgument("IO adapter"));
         return false;
     }
-
-    QByteArray block;
-    QByteArray rname = QString(refName).replace(QRegExp("\\s|\\t"), "_").toAscii();
-
     
     if (first) {
+        QByteArray block;
         block.append(SECTION_HEADER).append(TAB).append("VN:").append(VERSION).append("\n");   
         block.append(SECTION_SEQUENCE).append(TAB).append(TAG_SEQUENCE_NAME).append(":");
-        block.append(rname).append(TAB);
+        block.append(refName).append(TAB);
         block.append(TAG_SEQUENCE_LENGTH).append(":").append(QByteArray::number(refLength)).append("\n");
         if (io->writeBlock( block ) != block.length()) {
             return false;
@@ -456,21 +458,15 @@ bool SAMFormat::storeAlignedRead( int offset, const DNASequence& read, IOAdapter
         qname = "contig";
     }
 
-    QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
-    QByteArray pos = QByteArray::number(offset+1);
-    QByteArray mapq("255"); //255 indicating the mapping quality is not available
-    QByteArray cigar;
-    QByteArray mrnm("*");
-    QByteArray mpos("0");
-    QByteArray isize("0");
-    QByteArray seq;
-    QByteArray qual = read.hasQualityScores() ? QByteArray() : QByteArray("*");
+    QByteArray qual = read.hasQualityScores() ? read.quality.qualCodes : QByteArray("*");
+    QString row = rowData.arg(qname.constData())
+        .arg(refName.constData())
+        .arg(offset+1)
+        .arg(read.seq.length())
+        .arg(read.seq.constData())
+        .arg(qual.constData());
 
-    prepareRead(read.seq, read.quality.qualCodes, seq, qual, cigar);
-
-    block = qname + TAB + flag + TAB + rname + TAB + pos + TAB + mapq + TAB + cigar + TAB + mrnm
-        + TAB + mpos + TAB + isize + TAB + seq + TAB + qual + "\n";
-    if (io->writeBlock( block ) != block.length()) {
+    if (io->writeBlock(row.toAscii()) != row.length()) {
         return false;
     }
 

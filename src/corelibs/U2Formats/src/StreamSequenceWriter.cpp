@@ -43,8 +43,9 @@ bool StreamContigWriter::writeNextAlignedRead( int offset, const DNASequence& se
 }
 
 StreamContigWriter::StreamContigWriter(const GUrl& url, const QString& refName , int refLength ) 
-: numSeqWritten(0), refSeqLength(refLength), refSeqName(refName)
+: numSeqWritten(0), refSeqLength(refLength)
 {
+    refSeqName = QString(refName).replace(QRegExp("\\s|\\t"), "_").toAscii();
     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
     format = qobject_cast<SAMFormat*> (f);
     assert(format != NULL);

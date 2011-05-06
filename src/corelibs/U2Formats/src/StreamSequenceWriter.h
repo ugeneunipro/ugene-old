@@ -46,14 +46,14 @@ class U2FORMATS_EXPORT StreamContigWriter {
     SAMFormat* format;
     int numSeqWritten;
     int refSeqLength;
-    QString refSeqName;
+    QByteArray refSeqName;
 
 public:
     StreamContigWriter(const GUrl& url, const QString& refName = QString(), int refLength = 0);
     ~StreamContigWriter();
     bool writeNextAlignedRead(int offset, const DNASequence& seq);
     void setRefSeqLength(int l) { refSeqLength = l;}
-    void setRefSeqName(const QString& name ) { refSeqName = name; }
+    void setRefSeqName(const QString& name ) { refSeqName = QString(name).replace(QRegExp("\\s|\\t"), "_").toAscii(); }
     int getNumSeqWritten() { return numSeqWritten; }
     void close();
 };
