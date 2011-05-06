@@ -154,7 +154,7 @@ QList<Task*> GenomeAlignerFindTask::findInBitMask(int part) {
     if (settings->openCL || settings->useCUDA) {
         bitMaskTaskCount = 1;
     } else {
-        bitMaskTaskCount = 1; //nThreads;
+        bitMaskTaskCount = nThreads;
     }
 
     for (int i=0; i<bitMaskTaskCount; i++) {
@@ -302,6 +302,7 @@ void FindInBitMaskSubTask::run() {
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
     parent->loadPart(part);
     parent->getDataForBitMaskSearch(first, length);
+    SearchQuery **q = settings->queries.data();
     
     taskLog.details(QString("start to find in bitMask"));
     if (settings->openCL) {
@@ -325,7 +326,7 @@ void FindInBitMaskSubTask::run() {
 
             for (int i=first; i<end; i++) {
                 int readNum = readNumbers[i];
-                if (settings->queries.at(readNum)->haveResult() && settings->bestMode) {
+                if (settings->bestMode && q[readNum]->haveResult()) {
                     continue;
                 }
                 bmr[i] = index->findBit(bitValues[i], settings->bitFilter);
@@ -349,18 +350,19 @@ void FindInPartSubTask::run() {
     int length = 0;
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
     parent->getDataForPartSearch(first, length);
+    SearchQuery **q = settings->queries.data();
 
     taskLog.details(QString("start to find in part"));
     while (length > 0) {
         int last = first + length;
         for (int i=first; i<last; i++) {
             int readNum = readNumbers[i];
-            if (settings->bestMode && settings->queries.at(readNum)->haveMCount()) {
-                if (0 == settings->queries.at(readNum)->firstMCount()) {
+            if (settings->bestMode && q[readNum]->haveMCount()) {
+                if (0 == q[readNum]->firstMCount()) {
                     continue;
                 }
             }
-            index->findInPart(positionsAtRead[i], bitMaskResults[i], bitValues[i], settings->queries.at(readNum), settings);
+            index->findInPart(positionsAtRead[i], bitMaskResults[i], bitValues[i], q[readNum], settings);
         }
         parent->getDataForPartSearch(first, length);
     }

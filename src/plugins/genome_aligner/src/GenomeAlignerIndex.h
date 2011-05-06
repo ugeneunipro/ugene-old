@@ -76,8 +76,8 @@ private:
     void serialize(const QString &refFileName);
     bool deserialize(QByteArray &error);
     bool openIndexFiles();
-    inline bool isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu);
-    inline bool compare(const char *sourceSeq, const QByteArray &querySeq, int startPos, int w, int &c, int CMAX);
+    inline bool isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu, SAType &loadedSeqStart);
+    inline bool compare(const char *sourceSeq, const char *querySeq, int startPos, int w, int &c, int CMAX, int length);
     inline void fullBitMaskOptimization(int CMAX, BMType bitValue, BMType bitMaskValue, int restBits, int w, int &bits, int &c);
     inline bool find(SAType &offset, SAType &firstSymbol, int &startPos, SearchQuery *qu, bool &bestMode, int &CMAX, bool valid);
 

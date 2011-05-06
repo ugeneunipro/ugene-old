@@ -307,9 +307,9 @@ void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, BMT
         bitFilter = ((quint64)0 - 1)<<(62 - w*2);
 }
 
-bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu) {
+bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu, SAType &loadedSeqStart) {
     assert(offset>=0 && offset<objLens[objCount-1]);
-    if ((qint64)offset - indexPart.getLoadedSeqStart() < startPos) {
+    if ((qint64)offset - loadedSeqStart < startPos) {
         return false;
     }
     fisrtSymbol = offset-startPos;
@@ -333,17 +333,17 @@ bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAT
     return true;
 }
 
-bool GenomeAlignerIndex::compare(const char *sourceSeq, const QByteArray &querySeq, int startPos, int w, int &c, int CMAX) {
+bool GenomeAlignerIndex::compare(const char *sourceSeq, const char *querySeq, int startPos, int w, int &c, int CMAX, int length) {
     // forward collect
-    for (int i=startPos+w; i<querySeq.length() && c <= CMAX; i++) {
-        c += (querySeq.at(i) == sourceSeq[i])?0:1;
+    for (int i=startPos+w; i<length && c <= CMAX; i++) {
+        c += (querySeq[i] == sourceSeq[i])?0:1;
     }
     if (c>CMAX) {
         return false;
     }
     // backward collect
     for (int i=startPos-1; i>=0 && c <= CMAX; i--) {
-        c += (querySeq.at(i) == sourceSeq[i])?0:1;
+        c += (querySeq[i] == sourceSeq[i])?0:1;
     }
     if (c <= CMAX) {
         return true;
@@ -377,14 +377,15 @@ void GenomeAlignerIndex::fullBitMaskOptimization(int CMAX, BMType bitValue, BMTy
 
 bool GenomeAlignerIndex::find(SAType &offset, SAType &firstSymbol, int &startPos, SearchQuery *qu, bool &bestMode, int &CMAX, bool valid) {
     const QByteArray &querySeq = qu->constSequence();
-    if (!valid && !isValidPos(offset, startPos, querySeq.length(), firstSymbol, qu)) {
+    SAType loadedPartSize = indexPart.getLoadedPartSize();
+    if (!valid && !isValidPos(offset, startPos, querySeq.length(), firstSymbol, qu, loadedPartSize)) {
         return false;
     }
 
     const char *refBuff = &(indexPart.seq[firstSymbol - indexPart.getLoadedSeqStart()]);
 
     int c = 0;
-    if (compare(refBuff, querySeq, startPos, w, c, CMAX)) {
+    if (compare(refBuff, querySeq.constData(), startPos, w, c, CMAX, querySeq.length())) {
         if (bestMode) {
             qu->clear();
         }
@@ -405,125 +406,52 @@ void GenomeAlignerIndex::findInPart(int startPos, ResType firstResult, BMType bi
     SAType offset = 0;
     const QByteArray &querySeq = qu->constSequence();
     char *refBuff = NULL;
-    int lastResult = firstResult;
-    int n = settings->nMismatches;
-    int pt = settings->ptMismatches;
     int w = settings->w;
     BMType bitFilter = settings->bitFilter;
 
-    if (settings->bestMode) {
-        n = 0;
-        pt = 0;
-        w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
-            n, pt, settings->minReadLength, settings->maxReadLength);
-        bitFilter = ((quint64)0 - 1)<<(62 - w*2);
+    int CMAX = settings->nMismatches;
+    if (!settings->absMismatches) {
+        CMAX = (querySeq.length() * settings->ptMismatches) / MAX_PERCENTAGE;
     }
-    QVector<qint64> reads;
 
-    while (n <= settings->nMismatches && pt <= settings->ptMismatches) {
-        bool lastIteration = (settings->absMismatches) ? (n == settings->nMismatches) : (pt == settings->ptMismatches);
-        int CMAX = n;
-        int restBits = qMax(0, 2*(charsInMask - w));
-        if (!settings->absMismatches) {
-            CMAX = (querySeq.length() * pt) / MAX_PERCENTAGE;
+    int bestC = CMAX + 1;
+    SAType bestResult = 0;
+    bool found = false;
+    if (settings->bestMode && qu->haveResult()) {
+        bestC = qu->firstMCount();
+        bestResult = qu->firstResult();
+        CMAX = bestC - 1;
+    }
+    SAType loadedPartSize = indexPart.getLoadedPartSize();
+    SAType loadedSeqStart = indexPart.getLoadedSeqStart();
+    for (SAType k=firstResult; (k<loadedPartSize) && (bitValue&bitFilter)==(indexPart.bitMask[k]&bitFilter); k++) {
+        if (!isValidPos(indexPart.sArray[k] + loadedSeqStart, startPos, querySeq.length(),
+            fisrtSymbol, qu, loadedSeqStart)) {
+            continue;
         }
 
-        if (settings->bestMode) {
-            if (qu->haveMCount() && qu->firstMCount() <= (quint32)CMAX) {
-                break;
-            }
-            //search in the vector
-            for (QVector<qint64>::iterator it = reads.begin(); it!=reads.end(); it++) {
-                if (-1 == *it) {
-                    continue;
-                }
-                fisrtSymbol = *it;
-                if (qu->contains(fisrtSymbol)) {
-                    continue;
-                }
-                int c = 0;
-                refBuff = &(indexPart.seq[fisrtSymbol - indexPart.getLoadedSeqStart()]);
-                if (compare(refBuff, querySeq, startPos, w, c, CMAX)) {
-                    if (settings->bestMode) {
-                        qu->clear();
-                    }
-                    qu->addResult(fisrtSymbol, c);
-                    if (settings->bestMode) {
-                        break;
-                    }
-                }
-            }
+        refBuff = &(indexPart.seq[fisrtSymbol - loadedSeqStart]);
 
-            if (qu->haveResult()) {
-                break;
-            }
+        int c = 0;
+        if (compare(refBuff, querySeq.constData(), startPos, w, c, CMAX, querySeq.length())) {
+            if (settings->bestMode) {
+                found = true;
+                bestC = c;
+                bestResult = fisrtSymbol;
+                CMAX = bestC - 1;
 
-            //search in the candidates before vector
-            for (int k=firstResult-1; (k>=0) && (bitValue&bitFilter)==(indexPart.bitMask[k]&bitFilter); k--) {
-                firstResult--;
-                if (!isValidPos(indexPart.sArray[k] + indexPart.getLoadedSeqStart(), startPos, querySeq.length(),
-                    fisrtSymbol, qu)) {
-                        if (!lastIteration) {
-                            reads.append(-1);
-                        }
-                        continue;
-                }
-
-                refBuff = &(indexPart.seq[fisrtSymbol - indexPart.getLoadedSeqStart()]);
-
-                if (!lastIteration) {
-                    reads.append(fisrtSymbol);
-                }
-
-                int c = 0;
-                if (compare(refBuff, querySeq, startPos, w, c, CMAX)) {
-                    if (settings->bestMode) {
-                        qu->clear();
-                    }
-                    qu->addResult(fisrtSymbol, c);
-                    if (settings->bestMode) {
-                        break;
-                    }
-                }
-            }
-            if (qu->haveResult()) {
-                break;
-            }
-        }
-
-        //search in the candidates after vector
-        for (SAType k=lastResult; (k<indexPart.getLoadedPartSize()) && (bitValue&bitFilter)==(indexPart.bitMask[k]&bitFilter); k++) {
-            lastResult++;
-            if (!isValidPos(indexPart.sArray[k] + indexPart.getLoadedSeqStart(), startPos, querySeq.length(),
-                fisrtSymbol, qu)) {
-                if (!lastIteration) {
-                    reads.append(-1);
-                }
-                continue;
-            }
-
-            refBuff = &(indexPart.seq[fisrtSymbol - indexPart.getLoadedSeqStart()]);
-
-            if (!lastIteration) {
-                reads.append(fisrtSymbol);
-            }
-
-            int c = 0;
-            if (compare(refBuff, querySeq, startPos, w, c, CMAX)) {
-                if (settings->bestMode) {
-                    qu->clear();
-                }
-                qu->addResult(fisrtSymbol, c);
-                if (settings->bestMode) {
+                if (0 == c) {
                     break;
+                } else {
+                    continue;
                 }
             }
+            qu->addResult(fisrtSymbol, c);
         }
-        if (qu->haveResult()) {
-            break;
-        }
-
-        changeMismatchesCount(settings, n, pt, w, bitFilter);
+    }
+    if (settings->bestMode && found) {
+        qu->clear();
+        qu->addResult(bestResult, bestC);
     }
 }
 
