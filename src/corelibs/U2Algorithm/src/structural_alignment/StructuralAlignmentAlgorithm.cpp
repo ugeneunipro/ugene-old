@@ -23,14 +23,56 @@
 
 namespace U2 {
 
+/* class U2ALGORITHM_EXPORT BioStruct3DReference */
+QString BioStruct3DReference::print() const {
+    QString s = obj->getGObjectName();
+
+    s += " chains [";
+    foreach (int chain, chains) {
+        s += QString::number(chain) + ",";
+    }
+    s.chop(1);
+    s += "]";
+
+    s += QString(" model %3").arg(modelId);
+    return s;
+}
+
 /* class U2ALGORITHM_EXPORT StructuralAlignmentTask : public Task */
 StructuralAlignmentTask::StructuralAlignmentTask(StructuralAlignmentAlgorithm *_algorithm, const StructuralAlignmentTaskSettings &_settings)
-        : Task("StructuralAlignmentTask", TaskFlag_None), algorithm(_algorithm), settings(_settings)
+        : Task("StructuralAlignmentTask", TaskFlag(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)), algorithm(_algorithm), settings(_settings)
 {
 }
 
 void StructuralAlignmentTask::run() {
     result = algorithm->align(settings);
+}
+
+Task::ReportResult StructuralAlignmentTask::report() {
+    return ReportResult_Finished;
+}
+
+QString StructuralAlignmentTask::generateReport() const {
+    QString res;
+    res += QString("Structural alignment finished on <b>%1</b> (reference) vs <b>%2</b>").arg(settings.ref.print(), settings.alt.print()) + "<br><br>";
+    res += QString("<b>RMSD</b> = %1").arg(result.rmsd);
+
+    res += "<table><tr><td>";
+        res += "<b>Transform</b> = ";
+    res += "</td><td>";
+        res += "<table>";
+            res += "<tr>";
+            for (int i = 0; i < 16; ++i) {
+                res += "<td>" + QString::number(result.transform[i]) + "</td>";
+                if ((i+1) % 4 == 0 && i < 15) {
+                    res += "<\tr><tr>";
+                }
+            }
+            res += "</tr>";
+        res += "</table>";
+    res += "</td></tr></table>";
+
+    return res;
 }
 
 }   // namespace U2

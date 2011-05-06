@@ -34,6 +34,7 @@ namespace U2 {
 class BioStruct3D;
 
 /** Reference to a part of BioStruct3D */
+// Maybe this class shoud be merged with BioStruct3DChainSelection
 class U2ALGORITHM_EXPORT BioStruct3DReference {
 public:
     BioStruct3DReference(const BioStruct3DObject *_obj, const QList<int> &_chains, int _modelId = -1)
@@ -43,6 +44,9 @@ public:
             modelId = obj->getBioStruct3D().modelMap.keys().first();
         }
     }
+
+    /** Pretty print structure reference description */
+    QString print() const;
 
     const BioStruct3DObject *obj;
     QList<int> chains;
@@ -76,6 +80,8 @@ public:
     StructuralAlignmentTask(StructuralAlignmentAlgorithm *algorithm, const StructuralAlignmentTaskSettings &settings);
 
     virtual void run();
+    Task::ReportResult report();
+    QString generateReport() const;
 
     StructuralAlignment getResult() const { return result; }
     StructuralAlignmentTaskSettings getSettings() const { return settings; }
