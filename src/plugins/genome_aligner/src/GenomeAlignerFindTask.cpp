@@ -46,6 +46,8 @@ bitMaskTaskCount(-1), partTaskCount(-1), startS(NULL), endS(NULL)
     nextElementToGive = 0;
     nextElementToCalculateBitmask = 0;
     indexLoadTime = 0;
+    wholeBitmaskTime = 0;
+    startBitmaskTime = 0;
 }
 
 void GenomeAlignerFindTask::prepare() {
@@ -99,7 +101,7 @@ void GenomeAlignerFindTask::prepareBitValues() {
 }
 
 void GenomeAlignerFindTask::run() {
-
+    taskLog.details(tr("Bit mask time = %1").arg(wholeBitmaskTime));
 }
 
 QList<Task*> GenomeAlignerFindTask::onSubTaskFinished(Task *subTask) {
@@ -112,6 +114,7 @@ QList<Task*> GenomeAlignerFindTask::onSubTaskFinished(Task *subTask) {
         bitMaskTaskCount--;
     }
     if (0 == bitMaskTaskCount && !isCanceled()) {
+        wholeBitmaskTime += time(NULL) - startBitmaskTime;
         bitMaskTaskCount = -1;
         return findInPart(currentPart);
     }
@@ -204,6 +207,7 @@ void GenomeAlignerFindTask::loadPart(int part) {
         indexLoadTime += time(NULL) - loadStartTime;
         partLoaded = true;
         taskLog.details(QString("finish to load part %1").arg(part));
+        startBitmaskTime = time(NULL);
         //endS->acquire(bitMaskTaskCount);
         //startS->acquire(bitMaskTaskCount);
         //nextElementToCalculateBitmask = 0;

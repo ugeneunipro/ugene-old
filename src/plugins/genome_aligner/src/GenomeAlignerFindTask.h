@@ -91,6 +91,8 @@ private:
     int nextElementToGive;
     SAType nextElementToCalculateBitmask;
     qint64 indexLoadTime;
+    time_t wholeBitmaskTime;
+    time_t startBitmaskTime;
 
     QList<Task*> findInBitMask(int part);
     QList<Task*> findInPart(int part);

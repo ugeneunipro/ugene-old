@@ -102,7 +102,7 @@ bool GenomeAlignerSettingsWidget::buildIndexUrl(const GUrl& url, bool prebuiltIn
         QByteArray e;
         bool res = index.deserialize(e);
         if (!res || url.lastFileSuffix() != GenomeAlignerIndex::HEADER_EXTENSION) {
-            error = tr("This index file is corrupted. Try to create it another time.");
+            error = tr("This index file is corrupted. Please, load a valid index file.");
             return false;
         }
 
@@ -141,19 +141,33 @@ bool GenomeAlignerSettingsWidget::isParametersOk(QString &error) {
 
 bool GenomeAlignerSettingsWidget::isIndexOk(QString &error, GUrl refName) {
     GenomeAlignerIndex index;
-    index.baseFileName = indexDirEdit->text() + "/" + refName.baseFileName();
+    if (indexTab->isEnabled()) { //prebuiltIndex is not checked
+        index.baseFileName = indexDirEdit->text() + "/" + refName.baseFileName();
+    } else {
+        index.baseFileName = refName.dirPath() + "/" + refName.baseFileName();
+    }
+
     QByteArray e;
     bool res = index.deserialize(e);
-    if (!res) {
-        return true;
-    }
-    if (index.seqPartSize == partSlider->value()) {
-        return true;
-    }
-    error = tr("The index directory has already contain the prebuilt index. But its reference fragmentation parameter is %1 and it doesn't equal to \
+
+    if (indexTab->isEnabled()) { //prebuiltIndex is not checked
+        if (!res) {
+            return true;
+        }
+        if (index.seqPartSize == partSlider->value()) {
+            return true;
+        }
+        error = tr("The index directory has already contain the prebuilt index. But its reference fragmentation parameter is %1 and it doesn't equal to \
 the parameter you have chosen (%2).\n\nPress \"Ok\" to delete this index file and create a new during the aligning.\nPress \"Cancel\" to change this parameter \
 or the index directory.").arg(index.seqPartSize).arg(partSlider->value());
-    return false;
+        return false;
+    } else {
+        if (!res || refName.lastFileSuffix() != GenomeAlignerIndex::HEADER_EXTENSION) {
+            error = tr("This index file is corrupted. Please, load a valid index file.");
+            return false;
+        }
+        return true;
+    }
 }
 
 void GenomeAlignerSettingsWidget::sl_onSetIndexDirButtonClicked() {

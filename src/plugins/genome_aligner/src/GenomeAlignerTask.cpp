@@ -112,13 +112,18 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     readMemSize = settings.getCustomValue(OPTION_READS_MEMORY_SIZE, 10).toInt();
     prebuiltIndex = settings.prebuiltIndex;
 
-    if (!settings.indexFileName.isEmpty()) {
-        indexFileName = settings.indexFileName;
+    if (settings.indexFileName.isEmpty()) {
+        if (prebuiltIndex) {
+            indexFileName = settings.refSeqUrl.dirPath() + "/" + settings.refSeqUrl.baseFileName();
+        } else {
+            QString tempDir = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath();
+            QString indexDir = settings.getCustomValue(OPTION_INDEX_DIR, tempDir).toString();
+            indexFileName = indexDir + "/" + settings.refSeqUrl.baseFileName() + "." + GenomeAlignerIndex::HEADER_EXTENSION;
+        }
     } else {
-        QString tempDir = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath();
-        QString indexDir = settings.getCustomValue(OPTION_INDEX_DIR, tempDir).toString();
-        indexFileName = indexDir + "/" + settings.refSeqUrl.baseFileName() + "." + GenomeAlignerIndex::HEADER_EXTENSION;
+        indexFileName = settings.indexFileName;
     }
+
     taskLog.details(tr("Genome Aligner settings"));
     taskLog.details(tr("Index file name: %1").arg(indexFileName));
     taskLog.details(tr("Use prebuilt index: %2").arg(prebuiltIndex));

@@ -126,6 +126,12 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_alignOptions">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>129</height>
+          </size>
+         </property>
          <property name="toolTip">
           <string>Set short reads aligning options.</string>
          </property>

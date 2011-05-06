@@ -126,8 +126,13 @@ void DnaAssemblyDialog::accept() {
             return;
         }
         if (!customGUI->isIndexOk(error, refSeqEdit->text())) {
-            QMessageBox::StandardButton res = QMessageBox::warning(this, tr("DNA Assembly"), error, QMessageBox::Ok | QMessageBox::Cancel);
-            if (QMessageBox::Cancel == res) {
+            if (!prebuiltIndex) {
+                QMessageBox::StandardButton res = QMessageBox::warning(this, tr("DNA Assembly"), error, QMessageBox::Ok | QMessageBox::Cancel);
+                if (QMessageBox::Cancel == res) {
+                    return;
+                }
+            } else {
+                QMessageBox::information(this, tr("DNA Assembly"), error);
                 return;
             }
         }
