@@ -331,7 +331,6 @@ void ZoomableAssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
     } else {
         newXoffset = calcXAssemblyCoord(newSelection.x());
     }
-    printf("x: %lld\n", newXoffset);
     if(dy) {
         newYoffset = (dy < 0) ? 0 : model->getModelHeight(status) - browser->rowsVisible();
         moveModel = true;
