@@ -55,7 +55,7 @@ public:
     void setGlobalCoverageInfo(const CoverageInfo & info);
     QList<CoveredRegion> getCoveredRegions() const;
 
-    int getCellWidth() const;
+    // asm coords <-> pix coords functions
     qint64 calcPixelCoord(qint64 asmCoord) const;
     qint64 calcAsmCoordX(qint64 pixCoord) const;
     qint64 calcAsmCoordY(qint64 pixCoord) const;
@@ -63,6 +63,8 @@ public:
     qint64 calcAsmPosY(qint64 pixPosY) const;
     qint64 calcPainterOffset(qint64 xAsmCoord) const;
     
+    // cells utility functions
+    int getCellWidth() const;
     qint64 basesCanBeVisible() const;
     qint64 rowsCanBeVisible() const;
 
@@ -73,13 +75,10 @@ public:
     bool areCellsVisible() const;
     bool areLettersVisible() const;
 
-    inline QSharedPointer<AssemblyModel> getModel() const {return model;}
-    inline double getZoomFactor() const {return zoomFactor;}
-    inline QFont getFont() const {return font;}
-
+    // offsets in assembly
     inline qint64 getXOffsetInAssembly() const {return xOffsetInAssembly; }
     inline qint64 getYOffsetInAssembly() const {return yOffsetInAssembly; }
-
+    
     void setXOffsetInAssembly(qint64 x); 
     void setYOffsetInAssembly(qint64 y);
     void setOffsetsInAssembly(qint64 x, qint64 y);
@@ -88,11 +87,23 @@ public:
 
     void adjustOffsets(qint64 dx, qint64 dy);
 
+    // utility functions for zooming
+    void zoomIn(const QPoint & pos);
+    void zoomOut(const QPoint & pos);
+    bool canPerformZoomIn() const {return zoomInAction->isEnabled();}
+    bool canPerformZoomOut() const {return zoomOutAction->isEnabled();}
+    int zoomInFromSize(int oldCellSize);
+    int zoomOutFromSize(int oldCellSize);
+    void updateZoomingActions();
+    
+    // other
+    inline QSharedPointer<AssemblyModel> getModel() const {return model;}
+    inline QFont getFont() const {return font;}
     void setFocusToPosSelector();
-
+    
 signals:
-    void si_zoomOperationPerformed();
     void si_offsetsChanged();
+    void si_zoomOperationPerformed();
 
 protected:
     virtual QWidget * createWidget();
@@ -107,17 +118,11 @@ private slots:
     void sl_showContigInfo();
     void sl_navigateToRegion(const U2Region & region);
     
-public slots:
-    void sl_zoomIn(bool showBases = false);
-    void sl_zoomOut();
-
 private:
     void initFont();
     void setupActions();
-    void updateZoomingActions(bool enableZoomIn);
     void updateOverviewTypeActions();
     void clear();
-    int zoomInFromSize(int oldCellSize);
     // returns error string
     QString tryAddObject(GObject * obj);
 
@@ -146,10 +151,10 @@ private:
     QAction * saveScreenShotAction;
     QAction * showInfoAction;
     
+    const static int MAX_CELL_WIDTH = 300;
     const static double INITIAL_ZOOM_FACTOR;
     const static double ZOOM_MULT;
 
-    const static int MAX_CELL_WIDTH = 300;
     const static int LETTER_VISIBLE_WIDTH = 7;
     const static int CELL_VISIBLE_WIDTH = 1;
 }; 

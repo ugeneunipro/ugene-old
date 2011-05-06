@@ -44,7 +44,7 @@ class AssemblyReadsArea: public QWidget {
     Q_OBJECT
 public:
     AssemblyReadsArea(AssemblyBrowserUi * ui, QScrollBar * hBar, QScrollBar * vBar);
-
+    
 protected:
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
@@ -75,7 +75,7 @@ private:
     bool findReadUnderMouse(U2AssemblyRead & read);
     void updateMenuActions();
     void exportReads(const QList<U2AssemblyRead> & reads);
-    
+        
 signals:
     void si_heightChanged();
     void si_mouseMovedToPos(const QPoint &);

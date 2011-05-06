@@ -202,7 +202,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addWidget(posSelector);
     }
     tb->addSeparator();
-    updateZoomingActions(true);
+    updateZoomingActions();
     
     QToolButton * overviewScaleTypeToolButton = new QToolButton(tb);
     QMenu * scaleTypeMenu = new QMenu(tr("Scale type"), ui);
@@ -259,7 +259,7 @@ qint64 AssemblyBrowser::calcAsmCoordX(qint64 xPixCoord) const {
     U2OpStatusImpl status;
     qint64 modelLen = model->getModelLength(status);
     qint64 width = ui->getReadsArea()->width();
-    qint64 xAsmCoord = (double(modelLen) / width * getZoomFactor() * double(xPixCoord)) + 0.5;
+    qint64 xAsmCoord = (double(modelLen) / width * zoomFactor * double(xPixCoord)) + 0.5;
     return xAsmCoord;
 }
 
@@ -268,7 +268,7 @@ qint64 AssemblyBrowser::calcAsmCoordY(qint64 pixCoord)const {
     qint64 modelHeight = model->getModelHeight(status);
     LOG_OP(status);
     qint64 h = ui->getReadsArea()->height();
-    return (double(modelHeight) / h * getZoomFactor() * double(pixCoord)) + 0.5;
+    return (double(modelHeight) / h * zoomFactor * double(pixCoord)) + 0.5;
 }
 
 qint64 AssemblyBrowser::calcAsmPosX(qint64 pixPosX) const {
@@ -291,7 +291,7 @@ qint64 AssemblyBrowser::calcPixelCoord(qint64 xAsmCoord) const {
     U2OpStatusImpl status;
     qint64 modelLen = model->getModelLength(status);
     qint64 width = ui->getReadsArea()->width();
-    qint64 xPixelCoord = (double(width) / modelLen * double(xAsmCoord)) / getZoomFactor() + 0.5;
+    qint64 xPixelCoord = (double(width) / modelLen * double(xAsmCoord)) / zoomFactor + 0.5;
     return xPixelCoord;
 }
 
@@ -442,9 +442,11 @@ void AssemblyBrowser::sl_assemblyLoaded() {
 void AssemblyBrowser::sl_navigateToRegion(const U2Region & region) {
     //if cells are not visible -> make them visible
     if(!areCellsVisible()) {
-        sl_zoomIn(true /*showBases*/);
+        while(!areCellsVisible()) {
+            zoomIn(QPoint());
+        }
     }
-
+    
     //if visible area does not contain reads area -> shift reads area
     if(xOffsetInAssembly < region.startPos) {
         setXOffsetInAssembly(region.startPos);
@@ -452,81 +454,6 @@ void AssemblyBrowser::sl_navigateToRegion(const U2Region & region) {
         setXOffsetInAssembly(region.endPos()-region.length);
     }
 }
-
-void AssemblyBrowser::sl_zoomIn(bool showBases/*=false*/) {
-    if(!zoomInAction->isEnabled()) { // cannot perform zoom
-        return;
-    }
-    qint64 oldWidth = basesVisible();
-    int oldCellSize = getCellWidth();
-    
-    bool enableZoomIn = true;
-    if(!oldCellSize) { 
-        //if cells are not visible -> check showBases
-        if(showBases) {
-            zoomInFromSize(0); //zoom in until bases are visible
-        } else {
-            zoomFactor /= ZOOM_MULT; //just a single zoomIn
-        }
-    } else { 
-        //single decreasing of the zoomFactor not always changes the cell size
-        //so we have to do it in the cycle, until cells grow
-        double oldZoomFactor = zoomFactor;
-        int cellWidth = zoomInFromSize(oldCellSize);
-        assert(cellWidth <= MAX_CELL_WIDTH);
-        
-        // decide if on next zoom cellWidth will increase max width
-        double curZoomFactor = zoomFactor;
-        if(zoomInFromSize(getCellWidth()) > MAX_CELL_WIDTH) {
-            enableZoomIn = false;
-        }
-        zoomFactor = curZoomFactor;
-    }
-    
-    //zooming to the center of the screen
-    setXOffsetInAssembly(normalizeXoffset(getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2));
-    
-    updateZoomingActions(enableZoomIn);
-    emit si_zoomOperationPerformed();
-}
-
-int AssemblyBrowser::zoomInFromSize(int oldCellSize) {
-    assert(oldCellSize >= 0);
-    int cellWidth = 0;
-    do {
-        zoomFactor /= ZOOM_MULT;
-        cellWidth = getCellWidth();
-    } while(oldCellSize == cellWidth);
-    return cellWidth;
-}
-
-void AssemblyBrowser::sl_zoomOut() {
-    if(!zoomOutAction->isEnabled()) { // cannot perform zoom
-        return;
-    }
-    qint64 oldWidth = basesVisible();
-    int oldCellSize = getCellWidth();
-
-    if(zoomFactor * ZOOM_MULT > INITIAL_ZOOM_FACTOR) { //initial zoom factor
-        zoomFactor = INITIAL_ZOOM_FACTOR;
-    } else if(!oldCellSize) {
-        //if cells are not visible -> simply increase the zoomFactor
-        zoomFactor *= ZOOM_MULT;
-    } else {
-        //single increasing of the zoomFactor not always changes the cell size
-        //so we have to do it in the cycle
-        do {
-            zoomFactor *= ZOOM_MULT;
-        } while(oldCellSize && getCellWidth() == oldCellSize);
-    }
-    
-    //zooming out of the center
-    setXOffsetInAssembly(normalizeXoffset(getXOffsetInAssembly() + (oldWidth - basesVisible()) / 2));
-    
-    updateZoomingActions(true);
-    emit si_zoomOperationPerformed();
-}
-
 
 void AssemblyBrowser::initFont() {
     font.setStyleHint(QFont::SansSerif, QFont::PreferAntialias);
@@ -620,19 +547,132 @@ void AssemblyBrowser::sl_changeOverviewType() {
     updateOverviewTypeActions();
 }
 
-void AssemblyBrowser::updateZoomingActions(bool enableZoomIn) {
+void AssemblyBrowser::updateZoomingActions() {
     bool enableZoomOut = INITIAL_ZOOM_FACTOR != zoomFactor;
     zoomOutAction->setEnabled(enableZoomOut);
     if(posSelector != NULL) {
         posSelector->setEnabled(enableZoomOut);
     }
-    zoomInAction->setEnabled(enableZoomIn);
+    
+    // decide if on next zoom cellWidth will increase max width
+    {
+        bool enableZoomIn = false;
+        double curZoomFactor = zoomFactor;
+        enableZoomIn = !(zoomInFromSize(getCellWidth()) > MAX_CELL_WIDTH);
+        zoomFactor = curZoomFactor;
+        zoomInAction->setEnabled(enableZoomIn);
+    }
 }
 
 void AssemblyBrowser::updateOverviewTypeActions() {
     AssemblyBrowserSettings::OverviewScaleType t(ui->getOverview()->getScaleType());
     overviewScaleTypeActions[0]->setChecked(t == AssemblyBrowserSettings::Scale_Linear);
     overviewScaleTypeActions[1]->setChecked(t == AssemblyBrowserSettings::Scale_Logarithmic);
+}
+
+void AssemblyBrowser::zoomIn(const QPoint & pos) {
+    if(!canPerformZoomIn()) {
+        return;
+    }
+    
+    qint64 oldWidth = basesCanBeVisible();
+    qint64 posXAsmCoord = calcAsmPosX(pos.x());
+    qint64 posYAsmCoord = calcAsmPosY(pos.y());
+    
+    // zoom in
+    {
+        int oldCellSize = getCellWidth();
+        if(!oldCellSize) { 
+            zoomFactor /= ZOOM_MULT;
+        } else { 
+            int cellWidth = zoomInFromSize(oldCellSize);
+            assert(cellWidth <= MAX_CELL_WIDTH);
+        }
+    }
+    
+    // calc new x offset
+    qint64 newXOff = 0;
+    qint64 newYOff = yOffsetInAssembly;
+    int cellWidth = getCellWidth();
+    if(!pos.isNull() && cellWidth != 0) {
+        newXOff = posXAsmCoord - pos.x() / cellWidth;
+        if(rowsVisible() == rowsCanBeVisible()) {
+            newYOff = posYAsmCoord - pos.y() / cellWidth;
+        }
+    } else {
+        //zooming to the center of the screen
+        newXOff = normalizeXoffset(xOffsetInAssembly + (oldWidth - basesCanBeVisible()) / 2);
+    }
+    setXOffsetInAssembly(newXOff);
+    setYOffsetInAssembly(newYOff);
+    
+    updateZoomingActions();
+    emit si_zoomOperationPerformed();
+}
+
+void AssemblyBrowser::zoomOut(const QPoint & pos) {
+    if(!canPerformZoomOut()) {
+        return;
+    }
+
+    qint64 oldWidth = basesVisible();
+    qint64 posXAsmCoord = calcAsmPosX(pos.x());
+    qint64 posYAsmCoord = calcAsmPosY(pos.y());
+    
+    // zoom out
+    {
+        int oldCellSize = getCellWidth();
+        if(zoomFactor * ZOOM_MULT > INITIAL_ZOOM_FACTOR) { // next zoom to far
+            zoomFactor = INITIAL_ZOOM_FACTOR;
+        } else if(!oldCellSize) {
+            zoomFactor *= ZOOM_MULT;
+        } else {
+            zoomOutFromSize(oldCellSize);
+        }
+    }
+    
+    // calc new x offset
+    qint64 newXOff = 0;
+    qint64 newYOff = yOffsetInAssembly;
+    int cellWidth = getCellWidth();
+    if(!pos.isNull() && cellWidth != 0) {
+        newXOff = posXAsmCoord - pos.x() / cellWidth;
+        if(rowsVisible() == rowsCanBeVisible()) {
+            newYOff = posYAsmCoord - pos.y() / cellWidth;
+        }
+    } else {
+        //zooming out of the center
+        newXOff = normalizeXoffset(xOffsetInAssembly + (oldWidth - basesCanBeVisible()) / 2);
+    }
+    setXOffsetInAssembly(newXOff);
+    setYOffsetInAssembly(newYOff);
+    
+    updateZoomingActions();
+    emit si_zoomOperationPerformed();
+}
+
+int AssemblyBrowser::zoomInFromSize(int oldCellSize) {
+    assert(oldCellSize >= 0);
+    //single decreasing of the zoomFactor not always changes the cell size
+    //so we have to do it in the cycle, until cells grow
+    int cellWidth = 0;
+    do {
+        zoomFactor /= ZOOM_MULT;
+        cellWidth = getCellWidth();
+    } while(oldCellSize == cellWidth);
+    return cellWidth;
+}
+
+int AssemblyBrowser::zoomOutFromSize(int oldCellSize) {
+    assert(oldCellSize);
+    //single increasing of the zoomFactor not always changes the cell size
+    //so we have to do it in the cycle
+    int cellWidth = 0;
+    do {
+        zoomFactor *= ZOOM_MULT;
+        cellWidth = getCellWidth();
+    } while(cellWidth == oldCellSize);
+    return cellWidth;
 }
 
 //==============================================================================
