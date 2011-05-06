@@ -90,8 +90,6 @@ public:
     void navigateToRegion(const U2Region & region);
 
     // utility functions for zooming
-    void zoomIn(const QPoint & pos);
-    void zoomOut(const QPoint & pos);
     bool canPerformZoomIn() const {return zoomInAction->isEnabled();}
     bool canPerformZoomOut() const {return zoomOutAction->isEnabled();}
     int zoomInFromSize(int oldCellSize);
@@ -102,7 +100,11 @@ public:
     inline QSharedPointer<AssemblyModel> getModel() const {return model;}
     inline QFont getFont() const {return font;}
     void setFocusToPosSelector();
-    
+
+public slots:
+    void sl_zoomIn(const QPoint & pos = QPoint());
+    void sl_zoomOut(const QPoint & pos = QPoint());
+
 signals:
     void si_offsetsChanged();
     void si_zoomOperationPerformed();

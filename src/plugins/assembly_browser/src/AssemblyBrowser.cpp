@@ -443,7 +443,7 @@ void AssemblyBrowser::navigateToRegion(const U2Region & region) {
     //if cells are not visible -> make them visible
     if(!areCellsVisible()) {
         while(!areCellsVisible()) {
-            zoomIn(QPoint());
+            sl_zoomIn();
         }
     }
     
@@ -570,7 +570,7 @@ void AssemblyBrowser::updateOverviewTypeActions() {
     overviewScaleTypeActions[1]->setChecked(t == AssemblyBrowserSettings::Scale_Logarithmic);
 }
 
-void AssemblyBrowser::zoomIn(const QPoint & pos) {
+void AssemblyBrowser::sl_zoomIn(const QPoint & pos) {
     if(!canPerformZoomIn()) {
         return;
     }
@@ -610,7 +610,7 @@ void AssemblyBrowser::zoomIn(const QPoint & pos) {
     emit si_zoomOperationPerformed();
 }
 
-void AssemblyBrowser::zoomOut(const QPoint & pos) {
+void AssemblyBrowser::sl_zoomOut(const QPoint & pos) {
     if(!canPerformZoomOut()) {
         return;
     }

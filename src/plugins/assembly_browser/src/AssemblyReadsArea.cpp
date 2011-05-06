@@ -393,9 +393,9 @@ void AssemblyReadsArea::wheelEvent(QWheelEvent * e) {
     if(Qt::NoButton == e->buttons()) {
         for(int i = 0; i < numSteps; ++i) {
             if(positive) {
-                browser->zoomIn(curPos);
+                browser->sl_zoomIn(curPos);
             } else {
-                browser->zoomOut(curPos);
+                browser->sl_zoomOut(curPos);
             }
         }
     }
@@ -486,10 +486,10 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
             e->accept();
         }
     } else if(k == Qt::Key_Plus) {
-        browser->zoomIn(QPoint());
+        browser->sl_zoomIn();
         e->accept();
     } else if(k == Qt::Key_Minus) {
-        browser->zoomOut(QPoint());
+        browser->sl_zoomOut();
         e->accept();
     } else if(k == Qt::Key_G && (e->modifiers() & Qt::ControlModifier)) {
         browser->setFocusToPosSelector();
@@ -525,7 +525,7 @@ void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
     //1. zoom in
     static const int howManyZoom = 1;
     for(int i = 0; i < howManyZoom; ++i) {
-        browser->zoomIn(QPoint());
+        browser->sl_zoomIn();
     }
 
     //2. move cursor offset to center
