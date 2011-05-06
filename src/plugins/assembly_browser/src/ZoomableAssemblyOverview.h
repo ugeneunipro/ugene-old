@@ -81,10 +81,14 @@ private:
     QRect calcCurrentSelection() const;
     U2Region calcVisibleAssemblyRange() const;
     void moveSelectionToPos(QPoint pos, bool moveModel = true);
+    
+    void zoomToPixRange(int x_pix_start, int x_pix_end);
     void checkedMoveVisibleRange(qint64 newStartPos);
     qint64 minimalOverviewedLen() const;
+    bool canZoomToRange(const U2Region & range) const;
 
     void setupActions();
+    void updateActions();
     void connectSlots();
     void initSelectionRedraw();
 
@@ -102,6 +106,12 @@ private:
 
     QMenu * contextMenu;
     QPoint contextMenuPos;
+
+    //context menu actions
+    QAction * zoomInAction;
+    QAction * zoomOutAction;
+    QAction * zoomIn100xActon;
+    QAction * restoreGlobalOverviewAction;
 
     bool zoomable;
     U2Region visibleRange;

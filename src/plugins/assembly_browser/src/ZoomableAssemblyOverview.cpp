@@ -59,10 +59,10 @@ scaleType(AssemblyBrowserSettings::getOverviewScaleType()) {
 }
 
 void ZoomableAssemblyOverview::setupActions() {
-    QAction * zoomInAction = new QAction(tr("Zoom in"), this);
-    QAction * zoomOutAction = new QAction(tr("Zoom out"), this);
-    QAction * zoomIn100xActon = new QAction(tr("Zoom in 100x"), this);
-    QAction * restoreGlobalOverviewAction = new QAction(tr("Restore global overview"), this);
+    zoomInAction = new QAction(tr("Zoom in"), this);
+    zoomOutAction = new QAction(tr("Zoom out"), this);
+    zoomIn100xActon = new QAction(tr("Zoom in 100x"), this);
+    restoreGlobalOverviewAction = new QAction(tr("Restore global overview"), this);
 
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomInContextMenu()));
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOutContextMenu()));
@@ -75,6 +75,17 @@ void ZoomableAssemblyOverview::setupActions() {
     contextMenu->addAction(zoomOutAction);
     contextMenu->addAction(zoomIn100xActon);
     contextMenu->addAction(restoreGlobalOverviewAction);
+    updateActions();
+}
+
+void ZoomableAssemblyOverview::updateActions() {
+    bool showingGlobalRegion = model->getGlobalRegion() == visibleRange;
+    zoomOutAction->setDisabled(showingGlobalRegion);
+    restoreGlobalOverviewAction->setDisabled(showingGlobalRegion);
+
+    bool cantZoomIn = visibleRange.length == minimalOverviewedLen();
+    zoomIn100xActon->setDisabled(cantZoomIn);
+    zoomInAction->setDisabled(cantZoomIn);
 }
 
 void ZoomableAssemblyOverview::connectSlots() {
@@ -333,6 +344,13 @@ void ZoomableAssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
     }
 }
 
+void ZoomableAssemblyOverview::zoomToPixRange(int x_pix_start, int x_pix_end) {
+    qint64 left_asm = calcXAssemblyCoord(x_pix_start);
+    qint64 right_asm = calcXAssemblyCoord(x_pix_end);
+    checkedSetVisibleRange(left_asm, right_asm-left_asm);
+    sl_redraw();
+}
+
 void ZoomableAssemblyOverview::checkedMoveVisibleRange(qint64 newStartPos) {
     if(!zoomable) return;
     U2OpStatusImpl os;
@@ -343,6 +361,10 @@ void ZoomableAssemblyOverview::checkedMoveVisibleRange(qint64 newStartPos) {
 
 qint64 ZoomableAssemblyOverview::minimalOverviewedLen() const {
     return width(); //1 letter == 1 pixel. We are not going to draw more than one pixel per letter
+}
+
+bool ZoomableAssemblyOverview::canZoomToRange(const U2Region & range)const {
+    return minimalOverviewedLen() != range.length;
 }
 
 void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64 newLen) {
@@ -389,11 +411,7 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
             QPoint pos = me->pos();
             int left_pix = qMax(0, pos.x() - 2);
             int right_pix = qMin(width(), pos.x() + 2);
-
-            qint64 left_asm = calcXAssemblyCoord(left_pix);
-            qint64 right_asm = calcXAssemblyCoord(right_pix);
-            checkedSetVisibleRange(left_asm, right_asm-left_asm);
-            sl_redraw();
+            zoomToPixRange(left_pix, right_pix);
         }
         //selection scribbling
         else { 
@@ -456,6 +474,7 @@ void ZoomableAssemblyOverview::wheelEvent(QWheelEvent * e) {
 }
 
 void ZoomableAssemblyOverview::contextMenuEvent(QContextMenuEvent * e) {
+    updateActions();
     contextMenu->move(e->globalPos());
     contextMenu->show();
     contextMenuPos = e->pos();
@@ -479,9 +498,9 @@ void ZoomableAssemblyOverview::sl_zoomIn(const QPoint & pos) {
 
     //1. count new length of the visible region
     qint64 newLen = visibleRange.length / ZOOM_MULT + 0.5;
-    if(newLen < browser->basesCanBeVisible()) {
-        newLen = browser->basesCanBeVisible();
-    }
+//     if(newLen < browser->basesCanBeVisible()) {
+//         newLen = browser->basesCanBeVisible();
+//     }
 
     qint64 oldLen = visibleRange.length;
     qint64 minLen = minimalOverviewedLen();
@@ -526,12 +545,7 @@ void ZoomableAssemblyOverview::sl_zoom100xContextMenu() {
     QPoint pos = contextMenuPos;
     int left_pix = qMax(0, pos.x() - 2);
     int right_pix = qMin(width(), pos.x() + 2);
-
-    qint64 left_asm = calcXAssemblyCoord(left_pix);
-    qint64 right_asm = calcXAssemblyCoord(right_pix);
-    checkedSetVisibleRange(left_asm, right_asm-left_asm);
-    sl_redraw();
-
+    zoomToPixRange(left_pix, right_pix);
 }
 
 void ZoomableAssemblyOverview::sl_restoreGlobalOverview() {
