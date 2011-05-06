@@ -208,8 +208,10 @@ private:
     void createMenus();
 
     // view logic
-    //! Adds biostruct object to scene.
-    void addBiostruct(const BioStruct3DObject *biostruct);
+    /** Adds biostruct object to scene.
+      * @param shownModels is a modelId list (same as in PDB)
+      */
+    void addBiostruct(const BioStruct3DObject *biostruct, const QList<int> &shownModels = QList<int>());
 
     //! Creates renderers for all biostructs.
     void setupRenderer(const QString &name);
@@ -328,7 +330,7 @@ private slots:
 
      // structural alignment relalated slots
      void sl_alignWith();
-     void sl_onAlignTaskFinished(Task *task);
+     void sl_onAlignmentDone(Task*);
 
      // slots for handling sequence selection
      void sl_onSequenceAddedToADV(ADVSequenceObjectContext *ctx);
@@ -371,6 +373,5 @@ public:
 };
 
 } //namespace
-
 
 #endif // _U2_OPENGL_WIDGET_H

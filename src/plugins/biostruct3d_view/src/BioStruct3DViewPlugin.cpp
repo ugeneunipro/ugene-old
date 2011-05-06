@@ -193,7 +193,6 @@ void BioStruct3DViewContext::sl_windowClosing(MWMDIWindow* w) {
     GObjectViewWindow *gvw = qobject_cast<GObjectViewWindow*>(w);
     if (gvw) {
         GObjectView *view = gvw->getObjectView();
-        AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
         // safe to remove: splitter will be deleted with ADV
         splitterMap.remove(view);
     }

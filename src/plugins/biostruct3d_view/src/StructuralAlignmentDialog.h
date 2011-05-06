@@ -26,15 +26,18 @@
 
 namespace U2 {
 
+class StructuralAlignmentTask;
 class BioStruct3DObject;
-
 
 class StructuralAlignmentDialog : public QDialog, public Ui::StructuralAlignmentDialog
 {
     Q_OBJECT
 
 public:
-    StructuralAlignmentDialog(const QList<BioStruct3DObject*> biostructs, const BioStruct3DObject *fixedRef = 0, int fixedRefModel = 0, QWidget *parent = 0);
+    StructuralAlignmentDialog(const BioStruct3DObject *fixedRef = 0, int fixedRefModel = 0, QWidget *parent = 0);
+
+    /** @returns set up StructuralAlignmentTask */
+    StructuralAlignmentTask* getTask() { return task; }
 
 public slots:
     virtual void accept();
@@ -45,6 +48,9 @@ private slots:
 private:
     static void createModelList(QComboBox *biostruct, int idx, QComboBox *model);
     void createModelLists();
+
+private:
+    StructuralAlignmentTask *task;
 };
 
 }   // namespace U2

@@ -61,22 +61,8 @@ static PTools::Rigidbody* createRigidBody(const BioStruct3D &biostruct, QList<in
     return body;
 }
 
-/** Pretty print structure reference description for logging */
-static QString printSettingsRef(const BioStruct3DReference &ref) {
-    QString s = ref.obj->getGObjectName();
-
-    s += " chains ";
-    foreach (int chain, ref.chains) {
-        s += QString::number(chain) + ",";
-    }
-    s.chop(1);
-
-    s += QString(" model %3").arg(ref.modelId);
-    return s;
-}
-
 StructuralAlignment PToolsAligner::align(const StructuralAlignmentTaskSettings &settings) {
-    algoLog.trace(QString("PToolsAligner started on %1 (reference) vs %2").arg(printSettingsRef(settings.ref), printSettingsRef(settings.alt)));
+    algoLog.trace(QString("PToolsAligner started on %1 (reference) vs %2").arg(settings.ref.print(), settings.alt.print()));
 
     StructuralAlignment result;
     try {

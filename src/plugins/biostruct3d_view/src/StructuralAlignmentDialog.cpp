@@ -23,14 +23,35 @@
 
 #include <U2Core/GObject.h>
 #include <U2Core/BioStruct3DObject.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/AppContext.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithm.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
+
+#include <QMessageBox>
 
 namespace U2 {
 
 /* class StructuralAlignmentDialog : public QDialog, public Ui::StructuralAlignmentDialog */
-StructuralAlignmentDialog::StructuralAlignmentDialog(const QList<BioStruct3DObject*> biostructs, const BioStruct3DObject *fixedRef/* = 0*/, int fixedRefModel/* = 0*/, QWidget *parent/* = 0*/)
-    : QDialog(parent)
+
+static QList<BioStruct3DObject*> findAvailableBioStructs() {
+    QList<GObject*> objs = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::BIOSTRUCTURE_3D);
+    QList<BioStruct3DObject*> biostructs;
+    foreach (GObject *obj, objs) {
+        BioStruct3DObject *bso = qobject_cast<BioStruct3DObject*> (obj);
+        assert(bso);
+        biostructs << bso;
+    }
+
+    return biostructs;
+}
+
+StructuralAlignmentDialog::StructuralAlignmentDialog(const BioStruct3DObject *fixedRef/* = 0*/, int fixedRefModel/* = 0*/, QWidget *parent/* = 0*/)
+        : QDialog(parent), task(0)
 {
     setupUi(this);
+
+    QList<BioStruct3DObject*> biostructs = findAvailableBioStructs();
 
     foreach (BioStruct3DObject *bs, biostructs) {
         reference->addItem(bs->getGObjectName(), qVariantFromValue((void*)bs));
@@ -85,6 +106,36 @@ void StructuralAlignmentDialog::sl_biostructChanged(int idx) {
 }
 
 void StructuralAlignmentDialog::accept() {
+    StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
+    if (reg->getFactoriesIds().isEmpty()) {
+        QMessageBox::warning(0, "Error", "No available algorithms, make sure that ptools plugin loaded");
+        return;
+    }
+
+    BioStruct3DObject *refo = static_cast<BioStruct3DObject*>( reference->itemData(reference->currentIndex()).value<void*>() );
+    BioStruct3DObject *alto = static_cast<BioStruct3DObject*>( alter->itemData(alter->currentIndex()).value<void*>() );
+
+    alto = qobject_cast<BioStruct3DObject*>(alto->clone());
+
+    const BioStruct3D &ref = refo->getBioStruct3D();
+    const BioStruct3D &alt = alto->getBioStruct3D();
+
+    if (ref.getNumberOfAtoms() != alt.getNumberOfAtoms()) {
+        QMessageBox::warning(0, "Error", "Structures should have the same length");
+        return;
+    }
+
+    int altModelName = altModel->itemData(altModel->currentIndex()).value<int>();
+    int refModelName = refModel->itemData(refModel->currentIndex()).value<int>();
+
+    // TODO: option for selecting chains
+    StructuralAlignmentTaskSettings settings = { BioStruct3DReference(refo, ref.moleculeMap.keys(), refModelName),
+                                                 BioStruct3DReference(alto, alt.moleculeMap.keys(), altModelName) };
+
+
+    // TODO: option for selecting algorithm
+    task = reg->createStructuralAlignmentTask(reg->getFactoriesIds().first(), settings);
+
     QDialog::accept();
 }
 

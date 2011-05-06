@@ -39,7 +39,7 @@ public:
     static const QString TRANSFORM_ATTR;
 
 public:
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(Gtest_PToolsAlignerTask, "ptools-align-and-compare", TaskFlags_FOSCOE);
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(Gtest_PToolsAlignerTask, "ptools-align-and-compare", TaskFlags_FOSCOE)
 
     void run();
     Task::ReportResult report();

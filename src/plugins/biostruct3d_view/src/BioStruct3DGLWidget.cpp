@@ -34,7 +34,6 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/BioStruct3DObject.h>
-#include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
@@ -61,11 +60,8 @@
 
 #include "gl2ps/gl2ps.h"
 
-// bug-2855
 #include "StructuralAlignmentDialog.h"
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
-#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
-#include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
 
 #include <memory>
 
@@ -1316,13 +1312,25 @@ void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
     updateGL();
 }
 
-void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj) {
+void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList<int> &shownModels /*= QList<int>()*/) {
     assert(obj);
-
     BioStruct3DRendererContext ctx(obj);
 
-    // initially show only first model
-    ctx.shownModelsIndexes.append(0);
+    // show only first model if model list is empty
+    QList<int> shownModelsIdx;
+
+    if (shownModels.isEmpty()) {
+        shownModelsIdx << 0;
+    }
+    else {
+        // convert modelIds to model index numbers
+        const BioStruct3D &bs = obj->getBioStruct3D();
+        foreach (int modelId, shownModels) {
+            int idx = bs.getModelsNames().indexOf(modelId);
+            assert(idx != -1 && "No such modelId in biostruct");
+            shownModelsIdx << idx;
+        }
+    }
 
     BioStruct3DColorScheme *colorScheme = BioStruct3DColorSchemeRegistry::createColorScheme(currentColorSchemeName, ctx.obj);
     assert(colorScheme);
@@ -1330,6 +1338,7 @@ void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj) {
     ctx.colorScheme->setSelectionColor(selectionColor);
     ctx.colorScheme->setUnselectedShadingLevel((double)unselectedShadingLevel/100.0);
 
+    ctx.shownModelsIndexes = shownModelsIdx;
     BioStruct3DGLRenderer *renderer = BioStruct3DGLRendererRegistry::createRenderer(currentGLRendererName, *ctx.biostruct, ctx.colorScheme.data(), ctx.shownModelsIndexes, this);
     assert(renderer);
     ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(renderer);
@@ -1337,60 +1346,23 @@ void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj) {
     contexts.append(ctx);
 }
 
-static QList<BioStruct3DObject*> findAvailableBioStructs() {
-    QList<GObject*> objs = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::BIOSTRUCTURE_3D);
-    QList<BioStruct3DObject*> biostructs;
-    foreach (GObject *obj, objs) {
-        BioStruct3DObject *bso = qobject_cast<BioStruct3DObject*> (obj);
-        assert(bso);
-        biostructs << bso;
-    }
-
-    return biostructs;
-}
-
 void BioStruct3DGLWidget::sl_alignWith() {
-    QList<BioStruct3DObject*> biostructs = findAvailableBioStructs();
+    const BioStruct3DRendererContext &ctx = contexts.first();
+    int currentModelId = ctx.biostruct->getModelsNames().at(ctx.renderer->getShownModelsIndexes().first());
 
-    StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
-    if (reg->getFactoriesIds().isEmpty()) {
-        QMessageBox::warning(0, "Error", "No available algorithms, make sure that ptools plugin loaded");
-        return;
-    }
-
-    int refModelIdx = contexts.first().shownModelsIndexes.first();
-    int refModelName = contexts.first().biostruct->getModelsNames().at(refModelIdx);
-
-    StructuralAlignmentDialog dlg(biostructs, contexts.first().obj, refModelName);
+    StructuralAlignmentDialog dlg(contexts.first().obj, currentModelId);
     if (dlg.exec() == QDialog::Accepted) {
-        BioStruct3DObject *refo = static_cast<BioStruct3DObject*>( dlg.reference->itemData(dlg.reference->currentIndex()).value<void*>() );
-        BioStruct3DObject *alto = static_cast<BioStruct3DObject*>( dlg.alter->itemData(dlg.alter->currentIndex()).value<void*>() );
-
-        alto = qobject_cast<BioStruct3DObject*>(alto->clone());
-
-        const BioStruct3D &ref = refo->getBioStruct3D();
-        const BioStruct3D &alt = alto->getBioStruct3D();
-
-        if (ref.getNumberOfAtoms() != alt.getNumberOfAtoms()) {
-            QMessageBox::warning(0, "Error", "Structures should have the same length");
-            return;
-        }
-
-        int altModelName = dlg.altModel->itemData(dlg.altModel->currentIndex()).value<int>();
-
-        StructuralAlignmentTaskSettings settings = { BioStruct3DReference(refo, ref.moleculeMap.keys(), refModelName),
-                                                     BioStruct3DReference(alto, alt.moleculeMap.keys(), altModelName) };
-
-        StructuralAlignmentTask *task = reg->createStructuralAlignmentTask(reg->getFactoriesIds().first(), settings);
+        Task *task = dlg.getTask();
+        assert(task && "If dialog accepded it must return valid task");
 
         TaskSignalMapper *taskMapper = new TaskSignalMapper(task);
-        connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onAlignTaskFinished(Task*)));
+        connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onAlignmentDone(Task*)));
 
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 }
 
-void BioStruct3DGLWidget::sl_onAlignTaskFinished(Task *task) {
+void BioStruct3DGLWidget::sl_onAlignmentDone(Task *task) {
     if (!task->hasError()) {
         StructuralAlignmentTask *saTask = qobject_cast<StructuralAlignmentTask*> (task);
         assert(saTask && "Task shoud have type StructuralAlignmentTask");
@@ -1398,22 +1370,15 @@ void BioStruct3DGLWidget::sl_onAlignTaskFinished(Task *task) {
         StructuralAlignment result = saTask->getResult();
         StructuralAlignmentTaskSettings settings = saTask->getSettings();
 
-        addBiostruct(settings.alt.obj);
-
-        int altModelName = settings.alt.modelId;
-        int altModelIdx = contexts.last().biostruct->getModelsNames().indexOf(altModelName);
-        contexts.last().shownModelsIndexes = QList<int>() << altModelIdx;
-        contexts.last().renderer->setShownModelsIndexes(contexts.last().shownModelsIndexes);
-        contexts.last().renderer->updateShownModels();
-
         const Matrix44 &mt = result.transform;
-        const_cast<BioStruct3D*>(contexts.last().biostruct)->setTransform(mt);
+        const_cast<BioStruct3D*>(&settings.alt.obj->getBioStruct3D())->setTransform(mt);
+
+        addBiostruct(settings.alt.obj, QList<int>() << settings.alt.modelId);
 
         glFrame->makeCurrent();
         update();
     }
 }
-
 
 } // namespace U2
 
