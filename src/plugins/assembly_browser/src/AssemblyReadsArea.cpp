@@ -459,7 +459,7 @@ bool AssemblyReadsArea::event(QEvent * e) {
 
 void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
     int k = e->key();
-    if(k == Qt::Key_Left || k == Qt::Key_Right) {
+    if(browser->getCellWidth() != 0 && (k == Qt::Key_Left || k == Qt::Key_Right)) {
         if(hBar->isEnabled()) {
             int step = e->modifiers() & Qt::ControlModifier ? hBar->pageStep() : hBar->singleStep();
             step = k == Qt::Key_Left ? -step : step;
@@ -511,10 +511,8 @@ bool AssemblyReadsArea::eventFilter(QObject *obj, QEvent *ev) {
     if(obj == &coveredRegionsLabel) {
         if(ev->type() == QEvent::MouseMove) {
             QWidget::event(ev);
-            return true;
-        } else {
-            return false;
         }
+        return false;
     } else {
         return QWidget::eventFilter(obj, ev);
     }
