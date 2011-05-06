@@ -101,7 +101,7 @@ public:
     
     bool isEmpty() const;
     bool isEmptyString() const;
-    bool isVisible(QVariantMap &values) const;
+    bool isVisible(const QVariantMap &values) const;
     void setRelation(const QString& attrName, const QVariant &attrValue);
     
 private:

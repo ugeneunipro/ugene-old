@@ -98,6 +98,11 @@ void DNASequenceGeneratorDialog::sl_generate() {
     cfg.format = saveGroupContoller->getFormatToSave();
     cfg.content = content;
     cfg.window = windowSpinBox->value();
+    if(cfg.window > cfg.length) {
+        QMessageBox::critical(this, tr("DNA Sequence Generator"), tr("Windows size bigger than sequence length"));
+        return;
+    }
+        
     if (!cfg.useRef) {
         cfg.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     }

@@ -114,7 +114,7 @@ bool Attribute::isEmptyString() const {
     return value.type() == QVariant::String && getAttributeValue<QString>().isEmpty();
 }
 
-bool Attribute::isVisible(QVariantMap &values) const {
+bool Attribute::isVisible(const QVariantMap &values) const {
     if(hasRelation) {
         return (values.value(relatedAttribute) == relatedAttributeValue);
     } else {

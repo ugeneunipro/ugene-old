@@ -182,7 +182,7 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
         //FIXME: handle error
         x = 0;
     }
-    QVariantMap& cfg = iterations[x].cfg[subject->getId()];
+    QVariantMap cfg = iterations[x].cfg[subject->getId()];
     if(cfg.isEmpty()) {
         QVariantMap def;
         foreach(Attribute *a, attrs) {
@@ -195,7 +195,11 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
     } else {
         QVariantMap map;
         foreach(Attribute *a, attrs) {
-            map[a->getId()] = cfg[a->getId()];
+            if(cfg.contains(a->getId())) {
+                map[a->getId()] = cfg[a->getId()];
+            } else {
+                map[a->getId()] = a->getAttributePureValue();
+            }
         }
         Attribute *currentAttribute = attrs.at(index.row());
         if(! currentAttribute->isVisible(map)) {
