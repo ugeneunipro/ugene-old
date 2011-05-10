@@ -44,7 +44,7 @@
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIndexTask.h"
 #include "GenomeAlignerIndex.h"
-
+#include "SuffixSearchCUDA.h"
 #include "GenomeAlignerTask.h"
 
 namespace U2 {
@@ -68,7 +68,7 @@ const QString GenomeAlignerTask::OPTION_SEQ_PART_SIZE("seq_part_size");
 GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settings, bool _justBuildIndex )
 : DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled, _justBuildIndex),
 loadDbiTask(NULL), createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), seqReader(NULL),
-seqWriter(NULL), handle(NULL),
+seqWriter(NULL),
 justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQuery(NULL)
 {
     GCOUNTER(cvar,tvar, "GenomeAlignerTask");
@@ -135,13 +135,14 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, true));
     if (openCL) {
         addTaskResource(TaskResourceUsage(RESOURCE_OPENCL_GPU, 1, true));
+    } else if (useCUDA) {
+        addTaskResource(TaskResourceUsage(RESOURCE_CUDA_GPU, 1 ,true));
     }
 }
 
 GenomeAlignerTask::~GenomeAlignerTask() {
     qDeleteAll(queries);
     delete index;
-    delete handle;
 }
 
 void GenomeAlignerTask::prepare() {
@@ -178,7 +179,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         }
         AssemblyObject *assObj = qobject_cast<AssemblyObject*>(objects.first());
         U2OpStatusImpl status;
-        handle = new DbiHandle(assObj->getDbiRef().factoryId, assObj->getDbiRef().dbiId, status);
+        handle = QSharedPointer<DbiHandle>(new DbiHandle(assObj->getDbiRef().factoryId, assObj->getDbiRef().dbiId, status));
         U2Dbi *dbi = handle->dbi;
         U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(assObj->getDbiRef().entityId, status);
         seqReader = new GenomeAlignerDbiReader(dbi->getAssemblyDbi(), assm);
@@ -207,7 +208,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
             resultWriteTime += time;
         }
         // Read next bunch of sequences
-        readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, queries, settings, readMemSize*1024*1024);
+        readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, queries,  settings, readMemSize*1024*1024);
         readTask->setSubtaskProgressWeight(0.33f);
         subTasks.append(readTask);
         return subTasks;
@@ -349,7 +350,7 @@ void ReadShortReadsSubTask::run() {
     bunchSize = 0;
     qint64 m = freeMemorySize;
     bool alignReversed = settings.getCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, true).toBool();
-    bool openCL = settings.getCustomValue(GenomeAlignerTask::OPTION_OPENCL, false).toBool();
+    bool useCuda = settings.getCustomValue(GenomeAlignerTask::OPTION_USE_CUDA, false).toBool();
     bool absMismatches = settings.getCustomValue(GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES, true).toBool();
     int nMismatches = settings.getCustomValue(GenomeAlignerTask::OPTION_MISMATCHES, 0).toInt();
     int ptMismatches = settings.getCustomValue(GenomeAlignerTask::OPTION_PERCENTAGE_MISMATCHES, 0).toInt();
@@ -428,6 +429,7 @@ void ReadShortReadsSubTask::run() {
             }
         }
     }
+   
 }
 
 WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries, quint64 &r)

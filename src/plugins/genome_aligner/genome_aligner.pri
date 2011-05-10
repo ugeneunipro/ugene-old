@@ -21,7 +21,7 @@ use_cuda() {
     LIBS += -L$$UGENE_CUDA_LIB_DIR -lcudart
     INCLUDEPATH += $$UGENE_CUDA_INC_DIR
     
-    GA_NVCC_FLAGS =
+    GA_NVCC_FLAGS = -G -g
 
 #TODO: win 64?
     !win32  {

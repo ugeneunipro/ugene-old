@@ -52,6 +52,7 @@ public:
     QString getSeqName() const {return seqObjName;}
     int getPartCount() const {return indexPart.partCount;}
     SAType getSArraySize() const {return indexPart.saLengths[currentPart];}
+    IndexPart& getLoadedPart() { return indexPart; }
 
 private:
     quint32         seqLength;      //reference sequence's length

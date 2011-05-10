@@ -28,6 +28,7 @@
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIndex.h"
 #include "GenomeAlignerTask.h"
+#include "SuffixSearchCUDA.h"
 
 #include <time.h>
 
@@ -59,8 +60,14 @@ void GenomeAlignerFindTask::prepare() {
     if (isCanceled() || hasError()) {
         return;
     }
-
+    
     currentPart = 0;
+    
+    if (settings->useCUDA) {
+        //proceed to run function
+        return;
+    }
+    
     QList<Task*> subTasks = findInBitMask(currentPart);
     foreach (Task *subTask, subTasks) {
         addSubTask(subTask);
@@ -72,24 +79,21 @@ void GenomeAlignerFindTask::prepareBitValues() {
     int CMAX = settings->nMismatches;
     int W = 0;
     int q = 0;
-
-    SearchQuery *qu;
     int readNum = 0;
-    int w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
-        settings->nMismatches, settings->ptMismatches, settings->minReadLength, settings->maxReadLength);
     for (QueryIter it=settings->queries.begin(); it!=settings->queries.end(); it++, readNum++) {
-        qu = *it;
+        SearchQuery *qu = *it;
         W = qu->length();
         if (!settings->absMismatches) {
             CMAX = (W * settings->ptMismatches) / MAX_PERCENTAGE;
         }
         q = W / (CMAX + 1);
-        assert(q >= w);
+        assert(q >= settings->w);
 
         const char* querySeq = qu->constData();
-        for (int i = 0; i < W - w + 1; i+=q) {
+        for (int i = 0; i < W - settings->w + 1; i+=q) {
             const char *seq = querySeq + i;
-            bitValuesV.push_back(index->getBitValue(seq, qMin(GenomeAlignerIndex::charsInMask, W - i)));
+            BMType bv = index->getBitValue(seq, qMin(GenomeAlignerIndex::charsInMask, W - i));
+            bitValuesV.push_back(bv);
             readNumbersV.push_back(readNum);
             positionsAtReadV.push_back(i);
         }
@@ -101,7 +105,26 @@ void GenomeAlignerFindTask::prepareBitValues() {
 }
 
 void GenomeAlignerFindTask::run() {
-    taskLog.details(tr("Bit mask time = %1").arg(wholeBitmaskTime));
+    if (settings->useCUDA) {
+        
+        GenomeAlignerCUDAHelper cudaHelper;
+        
+        cudaHelper.loadShortReads(settings->queries, stateInfo);
+        if (hasError()) {
+            return;
+        }
+
+        for (int part = 0; part < index->getPartCount(); ++part) {
+            loadPart(part);
+            cudaHelper.alignReads(index->getLoadedPart(),settings, stateInfo);
+            if (hasError()) {
+                return;
+            }
+        }
+
+    } else {
+        taskLog.details(tr("Bit mask time = %1").arg(wholeBitmaskTime));
+    }
 }
 
 QList<Task*> GenomeAlignerFindTask::onSubTaskFinished(Task *subTask) {
@@ -147,8 +170,11 @@ QList<Task*> GenomeAlignerFindTask::findInBitMask(int part) {
         return subTasks;
     }
     int nThreads = AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
+#ifdef _DEBUG
+    setMaxParallelSubtasks(1);
+#else
     setMaxParallelSubtasks(nThreads);
-
+#endif
     partLoaded = false;
     nextElementToGive = 0;
     if (settings->openCL || settings->useCUDA) {

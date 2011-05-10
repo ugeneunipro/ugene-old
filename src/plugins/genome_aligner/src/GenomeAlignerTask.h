@@ -22,6 +22,8 @@
 #ifndef _U2_GENOME_ALIGNER_TASK_H_
 #define _U2_GENOME_ALIGNER_TASK_H_
 
+#include <QtCore/QSharedPointer>
+
 #include <U2Algorithm/DnaAssemblyTask.h>
 #include <U2Formats/StreamSequenceReader.h>
 #include <U2Formats/StreamSequenceWriter.h>
@@ -75,7 +77,7 @@ private:
     WriteAlignedReadsSubTask *writeTask;
     GenomeAlignerReader *seqReader;
     GenomeAlignerWriter *seqWriter;
-    DbiHandle *handle;
+    QSharedPointer<DbiHandle> handle;
     bool justBuildIndex;
     uint windowSize, bunchSize, nMismatches, ptMismatches;
     bool absMismatches;

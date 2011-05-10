@@ -45,6 +45,8 @@ class PrepareVectorsSubTask;
 
 class SearchContext {
 public:
+    SearchContext(): w(-1), ptMismatches(0), nMismatches(0), absMismatches(0), bestMode(false),
+        openCL(false), useCUDA(0), minReadLength(-1), maxReadLength(-1) {}
     int w;
     int ptMismatches;
     int nMismatches;

@@ -18,16 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-
-
-#ifdef GA_BUILD_WITH_CUDA
-
 #ifndef _U2_SUFFIX_SEARCH_CUDA_H_
 #define _U2_SUFFIX_SEARCH_CUDA_H_
 
 #include <qglobal.h>
+#include <QVector>
 
 namespace U2 {
+
+#ifdef GA_BUILD_WITH_CUDA
 
 class SuffixSearchCUDA {
 public:
@@ -40,8 +39,31 @@ private:
 
 };
 
-#endif //_U2_SUFFIX_SEARCH_CUDA_H_
+#endif
+
+class SearchContext;
+class IndexPart;
+class SearchQuery;
+class TaskStateInfo;
+
+class GenomeAlignerCUDAHelper {
+public:
+    GenomeAlignerCUDAHelper( );
+    ~GenomeAlignerCUDAHelper();
+    void loadShortReads(QVector<SearchQuery*>& queries,TaskStateInfo& stateInfo);
+    void alignReads(IndexPart& indexPart, SearchContext* context, TaskStateInfo& stateInfo);
+    qint64 estimateMemoryUsage();
+private:
+    int bufSizeMB;
+    int readsNumber, suffixSize, seqSize;
+    // device data
+    char*   seqDev, *readsDev;
+    int     *readSizesDev,*readOffsetsDev;
+    quint32 *results, *resultsDev, *sArrayDev;
+    quint64 *bmArrayDev;
+};
+
 
 } //namespace
 
-#endif
+#endif //_U2_SUFFIX_SEARCH_CUDA_H_
