@@ -187,7 +187,7 @@ void TaskSchedulerImpl::processNewSubtasks() {
 
         int nParallel = ti->task->getNumParallelSubtasks();
         int nNew = ti->newSubtasks.size();
-        int nToRun = qMin(nParallel, nNew) - ti->numActiveSubtasks();
+        int nToRun = qMin(nParallel - ti->numActiveSubtasks(), nNew);
         int nRun = 0;
         for (int j=0; j < nToRun; j++) {
             Task* newSub = ti->newSubtasks[j];
