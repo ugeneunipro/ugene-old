@@ -96,7 +96,8 @@ private:
     void drawBackground(QPainter & p);
     void drawSelection(QPainter & p);
     void drawCoordLabels(QPainter & p);
-
+    void drawZoomToRegion(QPainter & p);
+    
     void launchCoverageCalculation();
 
 private:
@@ -132,7 +133,13 @@ private:
     QPoint visibleRangeLastPos;
 
     AssemblyBrowserSettings::OverviewScaleType scaleType;
-
+    
+    struct ZoomToRegionSelector {
+        ZoomToRegionSelector() : scribbling(false) {}
+        bool scribbling;
+        QPoint startPos;
+    } zoomToRegionSelector;
+    
     const static int FIXED_HEIGHT = 70;
     const static double ZOOM_MULT;
 };

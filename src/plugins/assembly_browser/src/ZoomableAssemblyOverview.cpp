@@ -123,9 +123,32 @@ void ZoomableAssemblyOverview::drawAll() {
             drawCoordLabels(p);
             redrawSelection = false;
         }
+        QPixmap cachedViewCopy(cachedView);
+        if(zoomToRegionSelector.scribbling) {
+            QPainter p(&cachedViewCopy);
+            drawZoomToRegion(p);
+        }
         QPainter p(this);
-        p.drawPixmap(0, 0, cachedView);
+        p.drawPixmap(0, 0, cachedViewCopy);
     }
+}
+
+void ZoomableAssemblyOverview::drawZoomToRegion(QPainter & p) {
+    if(!zoomToRegionSelector.scribbling) {
+        assert(false);
+        return;
+    }
+    QPoint topLeft;
+    QPoint bottomRight;
+    int curX = mapFromGlobal(QCursor::pos()).x();
+    if(zoomToRegionSelector.startPos.x() <= curX) {
+        topLeft = QPoint(zoomToRegionSelector.startPos.x(), 0);
+        bottomRight = QPoint(curX, height());
+    } else {
+        topLeft = QPoint(curX, 0);
+        bottomRight = QPoint(zoomToRegionSelector.startPos.x(), height());
+    }
+    p.fillRect(QRect(topLeft, bottomRight), QColor(128, 0, 0, 100));
 }
 
 void ZoomableAssemblyOverview::drawBackground(QPainter & p) {
@@ -353,6 +376,7 @@ void ZoomableAssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
 }
 
 void ZoomableAssemblyOverview::zoomToPixRange(int x_pix_start, int x_pix_end) {
+    assert(x_pix_start <= x_pix_end);
     qint64 left_asm = calcXAssemblyCoord(x_pix_start);
     qint64 right_asm = calcXAssemblyCoord(x_pix_end);
     checkedSetVisibleRange(left_asm, right_asm-left_asm);
@@ -381,7 +405,17 @@ void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64
     qint64 modelLen = model->getModelLength(os);
     assert(newLen <= modelLen);
     if(newLen != visibleRange.length || newStartPos != visibleRange.startPos) {
-        visibleRange.length = qMax(newLen, minimalOverviewedLen());
+        qint64 minLen = minimalOverviewedLen();
+        qint64 minLenDiff = 0;
+        if(newLen < minLen) {
+            minLenDiff = minLen - newLen;
+        }
+        //shift start pos to keep needed region in the center, if
+        //requested length is smaller than minimal allowed length
+        newStartPos -= minLenDiff / 2;
+
+        newStartPos = qMax((qint64)0, newStartPos);
+        visibleRange.length = qMax(newLen, minLen);
         checkedMoveVisibleRange(newStartPos);
 
         emit si_visibleRangeChanged(visibleRange);
@@ -421,8 +455,13 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
             int right_pix = qMin(width(), pos.x() + 2);
             zoomToPixRange(left_pix, right_pix);
         }
+        // select region
+        else if(me->modifiers() & Qt::ShiftModifier) {
+            zoomToRegionSelector.scribbling = true;
+            zoomToRegionSelector.startPos = me->pos();
+        } 
         //selection scribbling
-        else { 
+        else {
             selectionScribbling = true;
             if(!cachedSelection.contains(me->pos())) {
                 selectionDiff = QPoint();
@@ -431,8 +470,8 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
                 selectionDiff = me->pos() - cachedSelection.center();
             }
         }
-    } 
-
+    }
+    
     QWidget::mousePressEvent(me);
 }
 
@@ -448,14 +487,31 @@ void ZoomableAssemblyOverview::mouseMoveEvent(QMouseEvent * me) {
         checkedMoveVisibleRange(asmDiff);
         visibleRangeLastPos = me->pos();
     }
+    
+    if(zoomToRegionSelector.scribbling) {
+        sl_redraw();
+    }
+    
     QWidget::mouseMoveEvent(me);
 }
 
 void ZoomableAssemblyOverview::mouseReleaseEvent(QMouseEvent * me) {
-    if(me->button() == Qt::LeftButton && selectionScribbling) {
-        selectionScribbling = false;
+    if(me->button() == Qt::LeftButton) {
+        if(selectionScribbling) {
+            selectionScribbling = false;
+        }
+        if(zoomToRegionSelector.scribbling) {
+            zoomToRegionSelector.scribbling = false;
+            QPoint curPoint = me->pos();
+            int regionStartPix = qMin(zoomToRegionSelector.startPos.x(), curPoint.x());
+            int regionEndPix = qMax(zoomToRegionSelector.startPos.x(), curPoint.x());
+            if(regionEndPix != regionStartPix) {
+                zoomToPixRange(qMax(0, regionStartPix), qMin(width(), regionEndPix));
+                update();
+            }
+        }
         return;
-    } 
+    }
     if((me->button() == Qt::MidButton) && visibleRangeScribbling){
         visibleRangeScribbling = false;
         setCursor(Qt::ArrowCursor);
