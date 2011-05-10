@@ -293,6 +293,7 @@ GenerateDNASequenceTask::GenerateDNASequenceTask(const QMap<char, qreal>& baseCo
 }
 
 void GenerateDNASequenceTask::run() {
+    qsrand(QDateTime::currentDateTime().toTime_t());
     for (int i=0; i<count; i++) {
         QByteArray seq;
         QByteArray tmp;
