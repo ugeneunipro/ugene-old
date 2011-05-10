@@ -42,6 +42,7 @@ public:
     LoadSeqTask(QString url, const QVariantMap& cfg, DNASelector* sel) 
         : Task(tr("Read sequences from %1").arg(url), TaskFlag_None),
         url(url), selector(sel), cfg(cfg) {}
+    virtual void prepare();
     virtual void run();
 
     QString url;
@@ -54,6 +55,7 @@ class LoadMSATask : public Task {
     Q_OBJECT
 public:
     LoadMSATask(QString url) : Task(tr("Read MSA from %1").arg(url), TaskFlag_None), url(url) {}
+    virtual void prepare();
     virtual void run();
 
     QString url;

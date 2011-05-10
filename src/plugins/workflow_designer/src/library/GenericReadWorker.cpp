@@ -24,6 +24,7 @@
 #include "CoreLib.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/Log.h>
@@ -96,6 +97,21 @@ void GenericMSAReader::sl_taskFinished() {
 /**************************
  * LoadMSATask
  **************************/
+void LoadMSATask::prepare() {
+    int memUseMB = 0;
+    QFileInfo file(url);
+    memUseMB = file.size() / (1024*1024);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
+        memUseMB *= 2.5; //Need to calculate compress level
+    }
+    coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
+
+    if (memUseMB > 0) {
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
+    }
+}
+
 void LoadMSATask::run() {
     QFileInfo fi(url);
     if(!fi.exists()){
@@ -175,6 +191,21 @@ void GenericSeqReader::sl_taskFinished() {
 /**************************
  * LoadSeqTask
  **************************/
+void LoadSeqTask::prepare() {
+    int memUseMB = 0;
+    QFileInfo file(url);
+    memUseMB = file.size() / (1024*1024);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
+        memUseMB *= 2.5; //Need to calculate compress level
+    }
+    coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
+
+    if (memUseMB > 0) {
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
+    }
+}
+
 void LoadSeqTask::run() {
     QFileInfo fi(url);
     if(!fi.exists()){
