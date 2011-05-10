@@ -134,8 +134,8 @@ public:
         return flags & Fragmented;
     }
 
-    static bool isMappedRead(qint64 flags) {
-        return !(flags & Unmapped);
+    static bool isUnmappedRead(qint64 flags) {
+        return flags & Unmapped;
     }
 };
 

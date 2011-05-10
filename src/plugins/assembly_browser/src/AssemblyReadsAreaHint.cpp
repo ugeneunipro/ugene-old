@@ -149,6 +149,9 @@ void AssemblyReadsAreaHint::setData(const U2AssemblyRead& r) {
         text += QString("<tr><td><b>Strand</b>:&nbsp;%1</td></tr>").arg(onCompl ? COMPL_STR : DIRECT_STR);
     }
     text += QString("<tr><td><b>Read sequence</b>:&nbsp;%1</td></tr>").arg(getReadSequence(r->readSequence));
+    if(ReadFlagsUtils::isUnmappedRead(r->flags)) {
+        text += QString("<tr><td><b><font color=\"red\">%1</font></b></td></tr>").arg(tr("Unmapped"));
+    }
     text += "</table>";
     label->setText(text);
     setMaximumHeight(layout()->minimumSize().height());

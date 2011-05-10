@@ -259,7 +259,11 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             int y_pix_start = browser->calcPainterOffset(yToDrawRegion.startPos);
 
             //iterate over letters of the read
-            ShortReadIterator cigarIt(readSequence, read->cigar, firstVisibleBase);
+            QList<U2CigarToken> cigar(read->cigar); // hack: to show reads without cigar but with mapped position
+            if(cigar.isEmpty()) {
+                cigar << U2CigarToken(U2CigarOp_M, readSequence.size());
+            }
+            ShortReadIterator cigarIt(readSequence, cigar, firstVisibleBase);
             int basesPainted = 0;
             for(int x_pix_offset = 0; cigarIt.hasNext() && basesPainted++ < readVisibleBases.length; x_pix_offset += cachedReads.letterWidth) {
                 GTIMER(c2, t2, "AssemblyReadsArea::drawReads -> cycle through one read");
