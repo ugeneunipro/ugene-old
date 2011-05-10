@@ -70,6 +70,7 @@ public:
     bool isLoadingReference()const { return loadingReference; }
     
     qint64 getReadsNumber(U2OpStatus & os);
+    bool hasReads(U2OpStatus & os);
     
 private:
     void cleanup();

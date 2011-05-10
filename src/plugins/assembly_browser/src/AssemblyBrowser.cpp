@@ -95,10 +95,13 @@ showInfoAction(0)
 
 QWidget * AssemblyBrowser::createWidget() {
     ui = new AssemblyBrowserUi(this);
-    updateOverviewTypeActions();
-    showCoordsOnRulerAction->setChecked(ui->getRuler()->getShowCoordsOnRuler());
-    ui->installEventFilter(this);
-    ui->setAcceptDrops(true);
+    U2OpStatusImpl os;
+    if(model->hasReads(os)) {
+        updateOverviewTypeActions();
+        showCoordsOnRulerAction->setChecked(ui->getRuler()->getShowCoordsOnRuler());
+        ui->installEventFilter(this);
+        ui->setAcceptDrops(true);
+    }
     return ui;
 }
 
@@ -191,32 +194,34 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
 }
 
 void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
-    tb->addAction(zoomInAction);
-    tb->addAction(zoomOutAction);
-    
-    U2OpStatusImpl st;
-    posSelector = new PositionSelector(tb, 1, model->getModelLength(st));
-    if(!st.hasError()) {
-        connect(posSelector, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
+    U2OpStatusImpl os;
+    if(model->hasReads(os)) {
+        tb->addAction(zoomInAction);
+        tb->addAction(zoomOutAction);
+
+        U2OpStatusImpl st;
+        posSelector = new PositionSelector(tb, 1, model->getModelLength(st));
+        if(!st.hasError()) {
+            connect(posSelector, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
+            tb->addSeparator();
+            tb->addWidget(posSelector);
+        }
         tb->addSeparator();
-        tb->addWidget(posSelector);
+        updateZoomingActions();
+
+        QToolButton * overviewScaleTypeToolButton = new QToolButton(tb);
+        QMenu * scaleTypeMenu = new QMenu(tr("Scale type"), ui);
+        foreach(QAction * a, overviewScaleTypeActions) {
+            scaleTypeMenu->addAction(a);
+        }
+        overviewScaleTypeToolButton->setDefaultAction(scaleTypeMenu->menuAction());
+        overviewScaleTypeToolButton->setPopupMode(QToolButton::InstantPopup);
+        tb->addWidget(overviewScaleTypeToolButton);
+
+        tb->addAction(showCoordsOnRulerAction);
+        tb->addAction(saveScreenShotAction);
+        tb->addAction(showInfoAction);
     }
-    tb->addSeparator();
-    updateZoomingActions();
-    
-    QToolButton * overviewScaleTypeToolButton = new QToolButton(tb);
-    QMenu * scaleTypeMenu = new QMenu(tr("Scale type"), ui);
-    foreach(QAction * a, overviewScaleTypeActions) {
-        scaleTypeMenu->addAction(a);
-    }
-    overviewScaleTypeToolButton->setDefaultAction(scaleTypeMenu->menuAction());
-    overviewScaleTypeToolButton->setPopupMode(QToolButton::InstantPopup);
-    tb->addWidget(overviewScaleTypeToolButton);
-    
-    tb->addAction(showCoordsOnRulerAction);
-    tb->addAction(saveScreenShotAction);
-    tb->addAction(showInfoAction);
-    
     GObjectView::buildStaticToolbar(tb);
 }
 
@@ -226,10 +231,13 @@ void AssemblyBrowser::sl_onPosChangeRequest(int pos) {
 }
 
 void AssemblyBrowser::buildStaticMenu(QMenu* m) {
-    m->addAction(zoomInAction);
-    m->addAction(zoomOutAction);
-    m->addAction(saveScreenShotAction);
-    m->addAction(showInfoAction);
+    U2OpStatusImpl os;
+    if(model->hasReads(os)) {
+        m->addAction(zoomInAction);
+        m->addAction(zoomOutAction);
+        m->addAction(saveScreenShotAction);
+        m->addAction(showInfoAction);
+    }
     GObjectView::buildStaticMenu(m);
     GUIUtils::disableEmptySubmenus(m);
 }
@@ -679,51 +687,64 @@ int AssemblyBrowser::zoomOutFromSize(int oldCellSize) {
 // AssemblyBrowserUi
 //==============================================================================
 
-AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(browser_) {
-    setMinimumSize(300, 200);
+AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(browser_), zoomableOverview(0), 
+referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
+    U2OpStatusImpl os;
+    if(browser->getModel()->hasReads(os)) { // has mapped reads -> show rich visualization
+        setMinimumSize(300, 200);
 
-    QScrollBar * readsHBar = new QScrollBar(Qt::Horizontal);
-    QScrollBar * readsVBar = new QScrollBar(Qt::Vertical);
+        QScrollBar * readsHBar = new QScrollBar(Qt::Horizontal);
+        QScrollBar * readsVBar = new QScrollBar(Qt::Vertical);
 
-    zoomableOverview = new ZoomableAssemblyOverview(this, true); //zooming temporarily disabled -iefremov
-    referenceArea = new AssemblyReferenceArea(this);
-    //densityGraph = new AssemblyDensityGraph(this);
-    densityGraph = NULL;
-    ruler = new AssemblyRuler(this);
-    readsArea  = new AssemblyReadsArea(this, readsHBar, readsVBar);
+        zoomableOverview = new ZoomableAssemblyOverview(this, true); //zooming temporarily disabled -iefremov
+        referenceArea = new AssemblyReferenceArea(this);
+        //densityGraph = new AssemblyDensityGraph(this);
+        densityGraph = NULL;
+        ruler = new AssemblyRuler(this);
+        readsArea  = new AssemblyReadsArea(this, readsHBar, readsVBar);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setMargin(0);
-    mainLayout->setSpacing(2);
-    mainLayout->addWidget(zoomableOverview);
+        QVBoxLayout *mainLayout = new QVBoxLayout();
+        mainLayout->setMargin(0);
+        mainLayout->setSpacing(2);
+        mainLayout->addWidget(zoomableOverview);
 
-    QGridLayout * readsLayout = new QGridLayout();
-    readsLayout->setMargin(0);
-    readsLayout->setSpacing(0);
+        QGridLayout * readsLayout = new QGridLayout();
+        readsLayout->setMargin(0);
+        readsLayout->setSpacing(0);
 
-    //readsLayout->addWidget(densityGraph);
-    readsLayout->addWidget(referenceArea, 0, 0);
-    
-    readsLayout->addWidget(ruler, 1, 0);
+        //readsLayout->addWidget(densityGraph);
+        readsLayout->addWidget(referenceArea, 0, 0);
 
-    readsLayout->addWidget(readsArea, 2, 0);
-    readsLayout->addWidget(readsVBar, 2, 1, 1, 1);
-    //readsLayout->addWidget(readsHBar, 3, 0);
+        readsLayout->addWidget(ruler, 1, 0);
 
-    QWidget * readsLayoutWidget = new QWidget;
-    readsLayoutWidget->setLayout(readsLayout);
-    mainLayout->addWidget(readsLayoutWidget);
-    mainLayout->addWidget(readsHBar);
+        readsLayout->addWidget(readsArea, 2, 0);
+        readsLayout->addWidget(readsVBar, 2, 1, 1, 1);
+        //readsLayout->addWidget(readsHBar, 3, 0);
 
-    setLayout(mainLayout);  
-    
-    connect(readsArea, SIGNAL(si_heightChanged()), zoomableOverview, SLOT(sl_visibleAreaChanged()));
-    connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
-    connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
-    connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
-    connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
-    connect(zoomableOverview, SIGNAL(si_coverageReady()), readsArea, SLOT(sl_redraw()));
-    connect(referenceArea, SIGNAL(si_unassociateReference()), browser->getModel().data(), SLOT(sl_unassociateReference()));
+        QWidget * readsLayoutWidget = new QWidget;
+        readsLayoutWidget->setLayout(readsLayout);
+        mainLayout->addWidget(readsLayoutWidget);
+        mainLayout->addWidget(readsHBar);
+
+        setLayout(mainLayout);  
+
+        connect(readsArea, SIGNAL(si_heightChanged()), zoomableOverview, SLOT(sl_visibleAreaChanged()));
+        connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
+        connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
+        connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
+        connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
+        connect(zoomableOverview, SIGNAL(si_coverageReady()), readsArea, SLOT(sl_redraw()));
+        connect(referenceArea, SIGNAL(si_unassociateReference()), browser->getModel().data(), SLOT(sl_unassociateReference()));
+    } 
+    // do not how to show them
+    else {
+        QVBoxLayout * mainLayout = new QVBoxLayout();
+        QString msg = tr("Assembly has no mapped reads. Nothing to visualize.");
+        QLabel * infoLabel = new QLabel(QString("<table align=\"center\"><tr><td>%1</td></tr></table>").arg(msg));
+        infoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        mainLayout->addWidget(infoLabel);
+        setLayout(mainLayout);
+    }
 }
 
 } //ns

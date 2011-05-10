@@ -325,6 +325,10 @@ qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
     return cachedReadsNumber;
 }
 
+bool AssemblyModel::hasReads(U2OpStatus & os) {
+    return getReadsNumber(os) != 0;
+}
+
 QByteArray AssemblyModel::getReferenceSpecies(U2OpStatus & os) {
     if(!speciesRetrieved) {
         speciesRetrieved = true;
