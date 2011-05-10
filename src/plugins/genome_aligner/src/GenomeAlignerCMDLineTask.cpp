@@ -103,6 +103,8 @@ namespace U2 {
             }
         } else if (opt.first == OPTION_REVERSE) {
             alignRevCompl = true;
+        } else if (opt.first == OPTION_MEMSIZE) {
+            memSize = opt.second.toInt();
         } else if (opt.first == OPTION_BEST_MODE) {
             bestMode = true;
         } else if (opt.first == OPTION_OMIT) {

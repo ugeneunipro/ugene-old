@@ -21,7 +21,7 @@ use_cuda() {
     LIBS += -L$$UGENE_CUDA_LIB_DIR -lcudart
     INCLUDEPATH += $$UGENE_CUDA_INC_DIR
     
-    GA_NVCC_FLAGS = -G -g
+    GA_NVCC_FLAGS = 
 
 #TODO: win 64?
     !win32  {
@@ -32,7 +32,7 @@ use_cuda() {
     GA_CUDA_FILES += src/suffix_search.cu
 
     nvzz.output = $$OBJECTS_DIR/${QMAKE_FILE_BASE}$$QMAKE_EXT_OBJ
-    nvzz.commands = $$UGENE_NVCC $$SW2_NVCC_FLAGS -c -I\"$$UGENE_CUDA_INC_DIR\" $$GA_CUDA_INCLUDEPATH -I$$QMAKE_INCDIR_QT \
+    nvzz.commands = $$UGENE_NVCC $$GA_NVCC_FLAGS -c -I\"$$UGENE_CUDA_INC_DIR\" $$GA_CUDA_INCLUDEPATH -I$$QMAKE_INCDIR_QT \
                     -L\"$$UGENE_CUDA_LIB_DIR\" $$GA_CUDA_LIBS \
                     -o ${QMAKE_FILE_OUT} \
                     ${QMAKE_FILE_NAME}
@@ -43,3 +43,4 @@ use_cuda() {
 
     DEFINES += GA_BUILD_WITH_CUDA
 }
+

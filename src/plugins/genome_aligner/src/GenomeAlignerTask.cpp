@@ -349,6 +349,7 @@ void ReadShortReadsSubTask::run() {
     queries.clear();
     bunchSize = 0;
     qint64 m = freeMemorySize;
+    taskLog.details(QString("Memory size is %1").arg(m));
     bool alignReversed = settings.getCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, true).toBool();
     bool useCuda = settings.getCustomValue(GenomeAlignerTask::OPTION_USE_CUDA, false).toBool();
     bool absMismatches = settings.getCustomValue(GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES, true).toBool();
@@ -440,7 +441,7 @@ WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWrit
 
 void WriteAlignedReadsSubTask::run() {
     foreach (SearchQuery *qu, queries) {
-        QVector<SAType> findResults = qu->getResults();
+        const QVector<SAType> &findResults = qu->getResults();
         if (!findResults.isEmpty()) {
             readsAligned++;
             foreach (SAType offset, findResults) {
