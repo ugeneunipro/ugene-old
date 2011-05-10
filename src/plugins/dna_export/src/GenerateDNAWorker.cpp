@@ -160,6 +160,12 @@ void GenerateDNAWorkerFactory::init() {
         algMap["GC Content"] = "GC Content";
         algMap["GC Skew"] = "GC Skew";
         delegates[ALGORITHM] = new ComboBoxDelegate(algMap);
+
+        QVariantMap gcMap;
+        gcMap["minimum"] = -1;
+        gcMap["maximum"] = 1;
+        gcMap["singleStep"] = 0.01;
+        delegates[GC_SKEW] = new DoubleSpinBoxDelegate(gcMap);
     }
 
     Descriptor desc(ACTOR_ID, GenerateDNAWorker::tr("Generate DNA"),
