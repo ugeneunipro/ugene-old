@@ -32,6 +32,7 @@ namespace U2 {
 struct ExportReadsDialogModel {
     QString filepath;
     DocumentFormatId format;
+    bool addToProject;
 };
 
 class ExportReadsDialog : public QDialog, Ui_ExportReadsDialog {

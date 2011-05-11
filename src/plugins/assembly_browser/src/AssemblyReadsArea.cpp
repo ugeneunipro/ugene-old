@@ -43,6 +43,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/AddDocumentTask.h>
 
 #include "AssemblyBrowser.h"
 #include "ShortReadIterator.h"
@@ -617,7 +618,16 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
         SaveDocFlags fl;
         fl |= SaveDoc_Overwrite;
         fl |= SaveDoc_DestroyAfter;
-        AppContext::getTaskScheduler()->registerTopLevelTask(new SaveDocumentTask(doc, fl));
+        SaveDocumentTask * saveDocTask = new SaveDocumentTask(doc, fl);
+        Task * t = NULL;
+        if(!model.addToProject) { // only saving
+            t = saveDocTask;
+        } else { // save, add doc
+            t = new AddDocumentTask(new Document(df, iof, model.filepath)); // new doc because doc will be deleted
+            t->addSubTask(saveDocTask);
+            t->setMaxParallelSubtasks(1);
+        }
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
 }
 

@@ -68,6 +68,7 @@ ExportReadsDialogModel ExportReadsDialog::getModel() const {
     ExportReadsDialogModel ret;
     ret.filepath = filepathLineEdit->text();
     ret.format = documentFormatComboBox->currentText();
+    ret.addToProject = addToProjectCheckBox->isChecked();
     return ret;
 }
 
