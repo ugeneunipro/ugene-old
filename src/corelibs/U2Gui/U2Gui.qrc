@@ -94,5 +94,6 @@
         <file>images/close_2.png</file>
         <file>images/dna_helix.png</file>
         <file>images/tree_layout.png</file>
+        <file>images/notch.png</file>
     </qresource>
 </RCC>

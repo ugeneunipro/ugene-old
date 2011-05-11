@@ -485,7 +485,7 @@ void AssemblyBrowser::setupActions() {
     connect(logScaleAction, SIGNAL(triggered()), SLOT(sl_changeOverviewType()));
     overviewScaleTypeActions << linearScaleAction << logScaleAction;
     
-    showCoordsOnRulerAction = new QAction(QIcon(":core/images/ruler.png"), tr("Show coordinates on ruler"), this);
+    showCoordsOnRulerAction = new QAction(QIcon(":core/images/notch.png"), tr("Show coordinates on ruler"), this);
     showCoordsOnRulerAction->setCheckable(true);
     connect(showCoordsOnRulerAction, SIGNAL(triggered()), SLOT(sl_onShowCoordsOnRulerChanged()));
     
