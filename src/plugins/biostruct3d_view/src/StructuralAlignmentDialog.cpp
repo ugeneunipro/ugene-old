@@ -34,6 +34,8 @@ namespace U2 {
 
 /* class StructuralAlignmentDialog : public QDialog, public Ui::StructuralAlignmentDialog */
 
+const QString StructuralAlignmentDialog::ALL_CHAINS = "All chains";
+
 static QList<BioStruct3DObject*> findAvailableBioStructs() {
     QList<GObject*> objs = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::BIOSTRUCTURE_3D);
     QList<BioStruct3DObject*> biostructs;
@@ -59,6 +61,7 @@ StructuralAlignmentDialog::StructuralAlignmentDialog(const BioStruct3DObject *fi
     }
 
     createModelLists();
+    createChainLists();
 
     if (fixedRef) {
         int idx = reference->findData(qVariantFromValue((void*)fixedRef));
@@ -76,6 +79,9 @@ StructuralAlignmentDialog::StructuralAlignmentDialog(const BioStruct3DObject *fi
 
     connect(reference, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_biostructChanged(int)));
     connect(alter, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_biostructChanged(int)));
+
+    connect(refChain, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_chainChanged(int)));
+    connect(altChain, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_chainChanged(int)));
 }
 
 void StructuralAlignmentDialog::createModelLists() {
@@ -91,17 +97,59 @@ void StructuralAlignmentDialog::createModelList(QComboBox *biostruct, int idx, Q
     }
 }
 
+void StructuralAlignmentDialog::createChainLists() {
+    createChainList(reference, reference->currentIndex(), refChain);
+    createChainList(alter, alter->currentIndex(), altChain);
+}
+
+void StructuralAlignmentDialog::createChainList(QComboBox *biostruct, int idx, QComboBox *chain) {
+    BioStruct3DObject *bso = static_cast<BioStruct3DObject*>( biostruct->itemData(idx).value<void*>() );
+
+    chain->clear();
+    chain->addItem(ALL_CHAINS);
+
+    foreach (const int chainId, bso->getBioStruct3D().moleculeMap.keys()) {
+        chain->addItem(QString::number(chainId), qVariantFromValue(chainId));
+    }
+}
+
 void StructuralAlignmentDialog::sl_biostructChanged(int idx) {
     QObject *combo = sender();
 
     if (combo == reference) {
         createModelList(reference, idx, refModel);
+        createChainList(reference, idx, refChain);
     }
     else if (combo == alter) {
         createModelList(alter, idx, altModel);
+        createChainList(alter, idx, altChain);
     }
     else {
         assert(!"this handler only for reference and alter combos");
+    }
+}
+
+void StructuralAlignmentDialog::sl_chainChanged(int idx) {
+    QObject *combo = sender();
+
+    if (combo == refChain) {
+        if (refChain->currentText() == ALL_CHAINS) {
+            refRegion->setDisabled(true);
+        }
+        else {
+            refRegion->setEnabled(true);
+        }
+    }
+    else if (combo == altChain) {
+        if (altChain->currentText() == ALL_CHAINS) {
+            altRegion->setDisabled(true);
+        }
+        else {
+            altRegion->setEnabled(true);
+        }
+    }
+    else {
+        assert(!"this handler only for refChain and altChain combos");
     }
 }
 

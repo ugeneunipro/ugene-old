@@ -43,14 +43,21 @@ public slots:
     virtual void accept();
 
 private slots:
-    virtual void sl_biostructChanged(int idx);
+    void sl_biostructChanged(int idx);
+    void sl_chainChanged(int idx);
     
 private:
-    static void createModelList(QComboBox *biostruct, int idx, QComboBox *model);
+    void createModelList(QComboBox *biostruct, int idx, QComboBox *model);
     void createModelLists();
+
+    void createChainList(QComboBox *biostruct, int idx, QComboBox *chain);
+    void createChainLists();
 
 private:
     StructuralAlignmentTask *task;
+
+private:
+    static const QString ALL_CHAINS;
 };
 
 }   // namespace U2
