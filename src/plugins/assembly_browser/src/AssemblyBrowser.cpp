@@ -209,14 +209,15 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addSeparator();
         updateZoomingActions();
 
-        QToolButton * overviewScaleTypeToolButton = new QToolButton(tb);
+        // commented because do not know if log scale is needed
+        /*QToolButton * overviewScaleTypeToolButton = new QToolButton(tb);
         QMenu * scaleTypeMenu = new QMenu(tr("Scale type"), ui);
         foreach(QAction * a, overviewScaleTypeActions) {
             scaleTypeMenu->addAction(a);
         }
         overviewScaleTypeToolButton->setDefaultAction(scaleTypeMenu->menuAction());
         overviewScaleTypeToolButton->setPopupMode(QToolButton::InstantPopup);
-        tb->addWidget(overviewScaleTypeToolButton);
+        tb->addWidget(overviewScaleTypeToolButton);*/
 
         tb->addAction(showCoordsOnRulerAction);
         tb->addAction(saveScreenShotAction);
