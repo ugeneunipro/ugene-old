@@ -149,6 +149,8 @@ Task::ReportResult GTest_DnaAssemblyToReferenceTask::report()
         return ReportResult_Finished;
     }
     const MAlignment& aln = obj->getMAlignment();
+    const_cast<MAlignment&>(aln).sortRowsByName();
+    const_cast<MAlignment&>(expectedObj->getMAlignment()).sortRowsByName();
     
     if (aln != expectedObj->getMAlignment()) {
         setError("Expected and result alignments don't match");

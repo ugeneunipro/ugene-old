@@ -59,11 +59,15 @@ public:
     bool haveResult() const;
     bool haveMCount() const;
     void addResult(SAType result, quint32 mCount);
+    void addOveplapResult(SAType result);
+    void onPartChanged();
     void clear();
     SAType firstResult() const;
     quint32 firstMCount() const;
     bool contains(SAType result) const;
     QVector<SAType> &getResults();
+    bool isWroteResult() const {return wroteResult;}
+    void writeResult() {wroteResult = true;}
 
 private:
     //U2AssemblyRead assRead;
@@ -73,8 +77,10 @@ private:
     quint32 seqLength; 
     quint32 nameLength;
     bool dna;
+    bool wroteResult;
 
     QVector<SAType> results;
+    QVector<SAType> overlapResults;
     QVector<quint32> mismatchCounts;
 };
 

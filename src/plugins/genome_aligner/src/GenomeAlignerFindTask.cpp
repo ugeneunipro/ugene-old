@@ -37,9 +37,9 @@ namespace U2 {
 const int GenomeAlignerFindTask::BITMASK_SEARCH_DATA_SIZE = 100000;
 const int GenomeAlignerFindTask::PART_SEARCH_DATA_SIZE = 100000;
 
-GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, const SearchContext &s)
+GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, const SearchContext &s, GenomeAlignerWriteTask *w)
 : Task("GenomeAlignerFindTask", TaskFlag_None),
-index(i), settings(new SearchContext(s)), bitMaskResults(NULL),
+index(i), writeTask(w), settings(new SearchContext(s)), bitMaskResults(NULL),
 bitMaskTaskCount(-1), partTaskCount(-1), startS(NULL), endS(NULL)
 {
     currentPart = 0;
@@ -206,7 +206,7 @@ QList<Task*> GenomeAlignerFindTask::findInPart(int part) {
 
     nextElementToGive = 0;
     for (int i=0; i<partTaskCount; i++) {
-        FindInPartSubTask *subTask = new FindInPartSubTask(index, settings,
+        FindInPartSubTask *subTask = new FindInPartSubTask(index, writeTask, settings,
                                                            bitValuesV.data(),
                                                            readNumbersV.data(),
                                                            positionsAtReadV.data(),
@@ -296,7 +296,7 @@ void GenomeAlignerFindTask::getDataForPartSearch(int &first, int &length) {
 
     int *rn = readNumbersV.data();
     int it = first + length;
-    for (int last=it - 1; it<bitValuesCount;) {
+    for (int last=it-1; it<bitValuesCount;) {
         if (rn[last] == rn[it]) {
             it++;
             length++;
@@ -363,12 +363,11 @@ void FindInBitMaskSubTask::run() {
     taskLog.details(QString("finish to find in bitMask"));
 }
 
-FindInPartSubTask::FindInPartSubTask(GenomeAlignerIndex *i, SearchContext *s,
-    BMType *bv, int *rn, int *par, ResType *bmr)
-: Task("FindInPartSubTask", TaskFlag_None), index(i), settings(s),
+FindInPartSubTask::FindInPartSubTask(GenomeAlignerIndex *i, GenomeAlignerWriteTask *w,
+    SearchContext *s, BMType *bv, int *rn, int *par, ResType *bmr)
+: Task("FindInPartSubTask", TaskFlag_None), index(i), writeTask(w), settings(s),
 bitValues(bv), readNumbers(rn), positionsAtRead(par), bitMaskResults(bmr)
 {
-
 }
 
 void FindInPartSubTask::run() {
@@ -377,7 +376,7 @@ void FindInPartSubTask::run() {
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
     parent->getDataForPartSearch(first, length);
     SearchQuery **q = settings->queries.data();
-
+        
     taskLog.details(QString("start to find in part"));
     while (length > 0) {
         int last = first + length;
@@ -389,6 +388,22 @@ void FindInPartSubTask::run() {
                 }
             }
             index->findInPart(positionsAtRead[i], bitMaskResults[i], bitValues[i], q[readNum], settings);
+            if (!settings->bestMode && q[readNum]->haveResult()) {
+                if ((i == last - 1) || (readNumbers[i+1] != readNum)) {
+                    writeTask->addResult(q[readNum]);
+                    q[readNum]->onPartChanged();
+                }
+            } else if (q[readNum]->haveResult()) {
+                if (0 == q[readNum]->firstMCount()) {
+                    writeTask->addResult(q[readNum]);
+                    continue;
+                }
+                if (index->getLoadedPart().getCurrentPart() == index->getPartCount() - 1) {
+                    if (q[readNum]->haveResult() && ((i == last - 1) || (readNumbers[i+1] != readNum))) {
+                        writeTask->addResult(q[readNum]);
+                    }
+                }
+            }
         }
         parent->getDataForPartSearch(first, length);
     }

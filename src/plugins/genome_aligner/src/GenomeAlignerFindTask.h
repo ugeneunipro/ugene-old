@@ -23,6 +23,7 @@
 #define _U2_GENOME_ALIGNER_FIND_TASK_H_
 
 #include "GenomeAlignerSearchQuery.h"
+#include "GenomeAlignerWriteTask.h"
 
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
@@ -65,7 +66,7 @@ class GenomeAlignerFindTask : public Task {
     Q_OBJECT
     friend class PrepareVectorsSubTask;
 public:
-    GenomeAlignerFindTask(GenomeAlignerIndex *i, const SearchContext &s);
+    GenomeAlignerFindTask(GenomeAlignerIndex *i, const SearchContext &s, GenomeAlignerWriteTask *writeTask);
     ~GenomeAlignerFindTask();
     virtual void run();
     virtual void prepare();
@@ -78,6 +79,7 @@ public:
 
 private:
     GenomeAlignerIndex *index;
+    GenomeAlignerWriteTask *writeTask;
     SearchContext *settings;
     QVector<BMType> bitValuesV;
     QVector<int> readNumbersV;
@@ -129,6 +131,7 @@ class FindInPartSubTask : public Task {
     Q_OBJECT
 public:
     FindInPartSubTask(GenomeAlignerIndex *index,
+                      GenomeAlignerWriteTask *writeTask,
                       SearchContext *settings,
                       BMType *bitValues,
                       int *readNumbers,
@@ -137,6 +140,7 @@ public:
     virtual void run();
 private:
     GenomeAlignerIndex *index;
+    GenomeAlignerWriteTask *writeTask;
     SearchContext *settings;
     BMType *bitValues;
     int *readNumbers;

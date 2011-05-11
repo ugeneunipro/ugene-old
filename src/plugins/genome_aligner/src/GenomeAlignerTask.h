@@ -30,6 +30,7 @@
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIO.h"
 #include "GenomeAlignerIndexPart.h"
+#include "GenomeAlignerWriteTask.h"
 
 namespace U2 {
 
@@ -44,6 +45,7 @@ class DbiHandle;
 
 class GenomeAlignerTask : public DnaAssemblyToReferenceTask {
     Q_OBJECT
+    friend class ReadShortReadsSubTask;
 public:
     GenomeAlignerTask(const DnaAssemblyToRefTaskSettings& settings, bool justBuildIndex = false);
     ~GenomeAlignerTask();
@@ -75,6 +77,7 @@ private:
     ReadShortReadsSubTask *readTask;
     GenomeAlignerFindTask *findTask;
     WriteAlignedReadsSubTask *writeTask;
+    GenomeAlignerWriteTask *pWriteTask;
     GenomeAlignerReader *seqReader;
     GenomeAlignerWriter *seqWriter;
     QSharedPointer<DbiHandle> handle;

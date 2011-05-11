@@ -20,11 +20,13 @@
  */
 
 #include "GenomeAlignerSearchQuery.h"
+#include <U2Core/Log.h>
 
 namespace U2 {
 
 SearchQuery::SearchQuery(const DNASequence *shortRead) {
     dna = true;
+    wroteResult = false;
     seqLength = shortRead->length();
     nameLength = shortRead->getName().length();
     seq = new char[seqLength+1];
@@ -41,6 +43,7 @@ SearchQuery::SearchQuery(const DNASequence *shortRead) {
 
 SearchQuery::SearchQuery(const U2AssemblyRead &shortRead) {
     dna = false;
+    wroteResult = false;
     seq = NULL;
     name = NULL;
     quality = NULL;
@@ -126,6 +129,16 @@ void SearchQuery::addResult(SAType result, quint32 mCount) {
     mismatchCounts.append(mCount);
 }
 
+void SearchQuery::addOveplapResult(SAType result) {
+    overlapResults.append(result);
+}
+
+void SearchQuery::onPartChanged() {
+    clear();
+    results += overlapResults;
+    overlapResults.clear();
+}
+
 void SearchQuery::clear() {
     results.clear();
     mismatchCounts.clear();
@@ -140,7 +153,7 @@ quint32 SearchQuery::firstMCount() const {
 }
 
 bool SearchQuery::contains(SAType result) const {
-    return results.contains(result);
+    return (results.contains(result) || overlapResults.contains(result));
 }
 
 QVector<SAType> &SearchQuery::getResults() {

@@ -45,6 +45,7 @@ public:
     SAType getLoadedPartSize();
     SAType getMaxLength();
     SAType getLoadedSeqStart();
+    int getCurrentPart() {return currentPart;}
     void load(int part);
     void build(int part);
     void writePart(int part, quint32 arrLen);

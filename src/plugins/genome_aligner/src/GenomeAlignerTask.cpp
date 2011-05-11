@@ -67,7 +67,7 @@ const QString GenomeAlignerTask::OPTION_SEQ_PART_SIZE("seq_part_size");
 
 GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settings, bool _justBuildIndex )
 : DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled, _justBuildIndex),
-loadDbiTask(NULL), createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), seqReader(NULL),
+loadDbiTask(NULL), createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), pWriteTask(NULL), seqReader(NULL),
 seqWriter(NULL),
 justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQuery(NULL)
 {
@@ -160,6 +160,12 @@ void GenomeAlignerTask::prepare() {
     } else {
         setupCreateIndexTask();
         addSubTask(createIndexTask);
+        if (!justBuildIndex) {
+            setMaxParallelSubtasks(10);
+            pWriteTask = new GenomeAlignerWriteTask(seqWriter);
+            //AppContext::getTaskScheduler()->registerTopLevelTask(pWriteTask);
+            addSubTask(pWriteTask);
+        }
     }
 }
 
@@ -202,7 +208,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         taskLog.details(QString("Genome aligner index creation time: %1").arg((double)time/(1000*1000)));
     }
 
-    if (subTask == createIndexTask || subTask == writeTask) {
+    if (subTask == createIndexTask || subTask == findTask) {
         if (subTask == writeTask) {
             taskLog.details(QString("Results writing time: %1").arg((double)time/(1000*1000)));
             resultWriteTime += time;
@@ -218,6 +224,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         shortreadLoadTime += time;
         if (queries.count() == 0) {
             // no more reads to align
+            pWriteTask->setFinished();
             return subTasks;
         }
 
@@ -234,25 +241,14 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         s.useCUDA = useCUDA;
         s.minReadLength = readTask->minReadLength;
         s.maxReadLength = readTask->maxReadLength;
-        findTask = new GenomeAlignerFindTask(index, s);
+        findTask = new GenomeAlignerFindTask(index, s, pWriteTask);
         findTask->setSubtaskProgressWeight(0.33f);
         subTasks.append(findTask);
         return subTasks;
     }
 
-    if (subTask == findTask) {
-        taskLog.details(QString("Bunch of reads search time: %1").arg((double)time/(1000*1000)));
-        searchTime += time;
-        indexLoadTime += findTask->getIndexLoadTime();
-        writeTask = new WriteAlignedReadsSubTask(seqWriter, queries, readsAligned);
-        writeTask->setSubtaskProgressWeight(0.33f);
-        subTasks.append(writeTask);
-        return subTasks;
-    }
-
     return subTasks;
 }
-
 
 static bool isDnaQualityAboveThreshold(const DNAQuality &dna, int threshold) {
     assert(!dna.isEmpty());
@@ -295,11 +291,11 @@ Task::ReportResult GenomeAlignerTask::report() {
     if (readsCount > 0) {
         taskLog.info(tr("The aligning is finished."));
         taskLog.info(tr("Whole working time = %1.").arg((GTimer::currentTimeMicros() - inf.startTime)/(1000*1000)));
-        taskLog.info(tr("%1% reads aligned.").arg(100*(double)readsAligned/readsCount));
+        /*taskLog.info(tr("%1% reads aligned.").arg(100*(double)readsAligned/readsCount));
         taskLog.info(tr("Short-reads loading time = %1.").arg((shortreadLoadTime/(1000*1000))));
         taskLog.info(tr("Result writing time = %1.").arg(resultWriteTime/(1000*1000)));
         taskLog.info(tr("Aligning time = %1 (Index loading time = %2)").arg(searchTime/(1000*1000))
-        .arg(indexLoadTime));
+        .arg(indexLoadTime));*/
     }
     
     return ReportResult_Finished;
@@ -340,6 +336,8 @@ freeMemorySize(m)
 
 void ReadShortReadsSubTask::run() {
     GTIMER(cvar, tvar, "ReadSubTask");
+    GenomeAlignerTask *parent = static_cast<GenomeAlignerTask*>(getParentTask());
+    parent->pWriteTask->flush();
     foreach (SearchQuery *qu, queries) {
         delete qu;
     }

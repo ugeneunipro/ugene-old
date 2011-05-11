@@ -424,6 +424,10 @@ void GenomeAlignerIndex::findInPart(int startPos, ResType firstResult, BMType bi
     }
     SAType loadedPartSize = indexPart.getLoadedPartSize();
     SAType loadedSeqStart = indexPart.getLoadedSeqStart();
+    quint64 rightOverlapStart = (quint64)loadedSeqStart + (quint64)indexPart.seqLengths[indexPart.currentPart];
+    if (indexPart.currentPart != indexPart.partCount - 1) {
+        rightOverlapStart -= 2*overlapSize;
+    }
     for (SAType k=firstResult; (k<loadedPartSize) && (bitValue&bitFilter)==(indexPart.bitMask[k]&bitFilter); k++) {
         if (!isValidPos(indexPart.sArray[k] + loadedSeqStart, startPos, querySeq.length(),
             fisrtSymbol, qu, loadedSeqStart)) {
@@ -446,7 +450,11 @@ void GenomeAlignerIndex::findInPart(int startPos, ResType firstResult, BMType bi
                     continue;
                 }
             }
-            qu->addResult(fisrtSymbol, c);
+            if (fisrtSymbol >= rightOverlapStart) {
+                qu->addOveplapResult(fisrtSymbol);
+            } else {
+                qu->addResult(fisrtSymbol, c);
+            }
         }
     }
     if (settings->bestMode && found) {
