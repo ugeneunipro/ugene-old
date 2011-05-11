@@ -30,7 +30,7 @@ namespace U2 {
 
 static qint64 selectProw(qint64* tails, qint64 start, qint64 end ){
     for (int i = 0; i < PACK_TAIL_SIZE; i++) {
-        if (tails[i] < start) {
+        if (tails[i] <= start) {
             tails[i] = end;
             return i;
         }
