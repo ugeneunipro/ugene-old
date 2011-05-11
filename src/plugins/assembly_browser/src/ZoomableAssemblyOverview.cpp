@@ -227,7 +227,7 @@ void ZoomableAssemblyOverview::drawSelection(QPainter & p) {
     }
     if(isRectVerySmall(selectionToDraw)) {
         //draw red cross
-        QPoint c = selectionToDraw.center();
+        QPoint c = selectionToDraw.center();  
         QPen oldPen = p.pen();
         p.setPen(Qt::red);
         p.drawLine(c - CROSS_LEFT_CORNER, c + CROSS_LEFT_CORNER);

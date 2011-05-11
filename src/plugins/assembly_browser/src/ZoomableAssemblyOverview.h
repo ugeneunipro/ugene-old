@@ -47,8 +47,10 @@ public:
     
     void setScaleType(AssemblyBrowserSettings::OverviewScaleType t);
     AssemblyBrowserSettings::OverviewScaleType getScaleType()const;
+
     void checkedSetVisibleRange(qint64 newStartPos, qint64 newLen);
     void checkedSetVisibleRange(const U2Region & newRegion);
+    inline U2Region getVisibleRange() const {return visibleRange;}
 
 signals:
     void si_visibleRangeChanged(const U2Region &);
