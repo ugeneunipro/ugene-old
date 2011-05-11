@@ -104,11 +104,15 @@ QString AssemblyReadsAreaHint::getReadDataAsString(const U2AssemblyRead & r) {
         qint64 len = U2AssemblyUtils::getEffectiveReadLength(r);
         ret += QString("From %1 to %2\n").arg(r->leftmostPos + 1).arg(r->leftmostPos + len);
         ret += QString("Length: %1\n").arg(len);
+        ret += QString("Row: %1\n").arg(r->packedViewRow + 1);
     }
     ret += QString("Cigar: %1\n").arg(QString(U2AssemblyUtils::cigar2String(r->cigar)));
     {
         bool onCompl = ReadFlagsUtils::isComplementaryRead(r->flags);
         ret += QString("Strand: %1\n").arg(onCompl ? COMPL_STR : DIRECT_STR);
+    }
+    if(ReadFlagsUtils::isUnmappedRead(r->flags)) {
+        ret += "Unmapped\n";
     }
     return ret;
 }
@@ -139,8 +143,10 @@ void AssemblyReadsAreaHint::setData(const U2AssemblyRead& r) {
     text += QString("<tr><td><b>%1</b></td></tr>").arg(getReadNameWrapped(r->name));
     {
         qint64 len = U2AssemblyUtils::getEffectiveReadLength(r);
-        text += QString("<tr><td><b>From</b>&nbsp;%1&nbsp;<b>to</b>&nbsp;%2</td></tr>").arg(r->leftmostPos + 1).
-                                                                                                    arg(r->leftmostPos + len);
+        text += QString("<tr><td><b>From</b>&nbsp;%1&nbsp;<b>to</b>&nbsp;%2&nbsp;<b>Row</b>:&nbsp;%3</td></tr>").
+            arg(r->leftmostPos + 1).
+            arg(r->leftmostPos + len).
+            arg(r->packedViewRow + 1);
         text += QString("<tr><td><b>Length</b>:&nbsp;%1</td></tr>").arg(len);
     }
     text += QString("<tr><td><b>Cigar</b>:&nbsp;%1</td></tr>").arg(getCigarString(U2AssemblyUtils::cigar2String(r->cigar)));
