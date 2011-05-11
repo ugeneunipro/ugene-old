@@ -45,6 +45,9 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
         
     seqObj = ctx->getSequenceObject();
     seqSelection = ctx->getSequenceSelection();
+    if (!seqSelection->isEmpty()) {
+        seqSelectionButton->setChecked(true);
+    }
     relatedAnnotations = ctx->getAnnotationObjects(true).toList();
     
     startBox->setMaximum(seqObj->getSequenceLen());

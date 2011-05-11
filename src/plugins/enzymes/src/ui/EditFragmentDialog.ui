@@ -40,7 +40,7 @@
            <item>
             <widget class="QRadioButton" name="lStickyButton">
              <property name="text">
-              <string>Sticky</string>
+              <string>Overhang</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -59,6 +59,9 @@
         </item>
         <item>
          <widget class="QCheckBox" name="lCustomOverhangBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string>Custom overhang:</string>
           </property>
@@ -103,7 +106,7 @@
            <item>
             <widget class="QRadioButton" name="rStickyButton">
              <property name="text">
-              <string>Sticky</string>
+              <string>Overhang</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -122,6 +125,9 @@
         </item>
         <item>
          <widget class="QCheckBox" name="rCustomOverhangBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string>Custom overhang:</string>
           </property>
@@ -303,6 +309,38 @@
     <hint type="destinationlabel">
      <x>360</x>
      <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lBluntButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lCustomOverhangBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>106</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>106</x>
+     <y>125</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rBluntButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>rCustomOverhangBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>307</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>307</x>
+     <y>125</y>
     </hint>
    </hints>
   </connection>

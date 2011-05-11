@@ -42,6 +42,8 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
 {
     
     setupUi(this);
+    connect(lBluntButton, SIGNAL(toggled(bool)), SLOT(sl_onLeftBluntButtonToogled(bool)));
+    connect(rBluntButton, SIGNAL(toggled(bool)), SLOT(sl_onRightBluntButtonToggled(bool)));
 
     static const int REGION_LEN = 10;
     
@@ -97,6 +99,10 @@ void EditFragmentDialog::accept()
     dnaFragment.setRightTermType(rTermType);
     
     if (lCustomOverhangBox->isChecked()) {
+        if (lCustomOverhangEdit->text().isEmpty()) {
+            QMessageBox::warning(this, windowTitle(), tr("Left overhang is empty. Please enter the overhang or set blunt 5'Terminus."));
+            return;
+        }
         if (!isValidOverhang(lCustomOverhangEdit->text())) {
             QMessageBox::warning(this, windowTitle(), tr("Invalid left overhang: unsupported alphabet!"));
             lCustomOverhangEdit->setFocus();
@@ -127,24 +133,16 @@ void EditFragmentDialog::updatePreview()
 
     preview += tr("Fragment of %1%2<br>").arg(dnaFragment.getSequenceDocName()).arg(invertedStr);
 
-    const QString uLeftOverhang = lCustomOverhangEdit->text().toUpper();
-    const QString bRightOverhang = rCustomOverhangEdit->text().toUpper();
-
-    QByteArray urOverhangData = rBluntButton->isChecked() ? bRightOverhang.toAscii() : QByteArray();
-    transl->translate(urOverhangData.data(), urOverhangData.length());
-    const QString uRightOverhang(urOverhangData.toUpper());
-
-    QByteArray blOverhangData = lBluntButton->isChecked() ? uLeftOverhang.toAscii() : QByteArray();
-    transl->translate(blOverhangData.data(), blOverhangData.length());
-    const QString bLeftOverhang(blOverhangData.toUpper());
-
+    const QString uLeftOverhang = lBluntButton->isChecked() ? QByteArray() : lCustomOverhangEdit->text().toUpper();
+    const QString bRightOverhang = rBluntButton->isChecked() ? QByteArray() : rCustomOverhangEdit->text().toUpper();
+    
     preview+=("<table cellspacing=\"10\" >");
     preview += tr("<tr> <td align=\"center\"> 5'End </td><td></td> <td align=\"center\"> 3'End </td> </tr>");
 
     preview += QString("<tr> <td align=\"center\" >%1</td><td align=\"center\" >%2</td><td align=\"center\" >%3</td> </tr>").
-        arg(uLeftOverhang).arg(seq).arg(uRightOverhang);
+        arg(uLeftOverhang).arg(seq).arg(QString());
     preview += QString("<tr> <td align=\"center\" >%1</td><td align=\"center\" >%2</td><td align=\"center\" >%3</td> </tr>").
-        arg(bLeftOverhang).arg(trseq).arg(bRightOverhang);
+        arg(QString()).arg(trseq).arg(bRightOverhang);
 
 
     preview+=("</table>");
@@ -220,6 +218,20 @@ void EditFragmentDialog::resetRightOverhang()
     QByteArray overhang = dnaFragment.getSourceSequence().mid(startPos, fragLen);
 
     rCustomOverhangEdit->setText(overhang);
+}
+
+void EditFragmentDialog::sl_onLeftBluntButtonToogled( bool toogle )
+{
+    bool enabled = lCustomOverhangBox->isChecked() && !toogle;
+    lCustomOverhangEdit->setEnabled(enabled);
+    lResetButton->setEnabled(enabled);
+}
+
+void EditFragmentDialog::sl_onRightBluntButtonToggled( bool toggle )
+{
+    bool enabled = rCustomOverhangBox->isChecked() && !toggle;
+    rCustomOverhangEdit->setEnabled(enabled);
+    rResetButton->setEnabled(enabled);
 }
 
 
