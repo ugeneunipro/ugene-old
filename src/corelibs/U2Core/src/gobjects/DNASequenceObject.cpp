@@ -131,7 +131,7 @@ void DNASequenceObject::setQuality( const DNAQuality& quality )
 }
 
 DNASequenceObjectConstraints::DNASequenceObjectConstraints(QObject* p) 
-: GObjectConstraints(GObjectTypes::SEQUENCE, p)
+: GObjectConstraints(GObjectTypes::SEQUENCE, p), exactSequenceSize(-1)
 {
 }
 
