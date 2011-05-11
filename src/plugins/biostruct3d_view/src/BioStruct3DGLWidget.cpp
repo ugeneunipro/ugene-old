@@ -1376,9 +1376,8 @@ void BioStruct3DGLWidget::sl_alignWith() {
         connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onAlignmentDone(Task*)));
 
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
+        alignWithAction->setEnabled(false);
     }
-
-    alignWithAction->setEnabled(false);
 }
 
 void BioStruct3DGLWidget::sl_resetAlignment() {
