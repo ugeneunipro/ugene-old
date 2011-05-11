@@ -204,6 +204,12 @@ private:
     //! Creates menu for select/deselect shown models.
     void createSelectModelsMenu();
 
+    //! Creates actions for structural alignment
+    void createStrucluralAlignmentActions();
+
+    //! Creates menu for structural alignment
+    QMenu* createStructuralAlignmentMenu();
+
     void createActions();
     void createMenus();
 
@@ -303,7 +309,10 @@ private:
     QAction *settingsAction;
     QAction *closeAction;
     QAction *exportImageAction;
+
+    // structural alignment related actions
     QAction *alignWithAction;
+    QAction *resetAlignmentAction;
 
     // actions for select/deselect shown models
     QActionGroup *selectModelActions;
@@ -330,6 +339,7 @@ private slots:
 
      // structural alignment relalated slots
      void sl_alignWith();
+     void sl_resetAlignment();
      void sl_onAlignmentDone(Task*);
 
      // slots for handling sequence selection
@@ -372,6 +382,6 @@ public:
     static const QString EYES_SHIFT_NAME;
 };
 
-} //namespace
+}   // namespace U2
 
 #endif // _U2_OPENGL_WIDGET_H

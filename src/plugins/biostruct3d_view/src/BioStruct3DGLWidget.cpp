@@ -1059,12 +1059,17 @@ void BioStruct3DGLWidget::createActions()
     exportImageAction = new QAction(tr("Export Image..."), this);
     connect(exportImageAction, SIGNAL(triggered()), this, SLOT(sl_exportImage()));
 
-    alignWithAction = new QAction(tr("Align With..."), this);
-    connect(alignWithAction, SIGNAL(triggered()), this, SLOT(sl_alignWith()));
-    // bug-2855 Disabled for now
-    //alignWithAction->setVisible(false);
+    createStrucluralAlignmentActions();
 
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
+}
+
+void BioStruct3DGLWidget::createStrucluralAlignmentActions() {
+    alignWithAction = new QAction(tr("Align With..."), this);
+    connect(alignWithAction, SIGNAL(triggered()), this, SLOT(sl_alignWith()));
+
+    resetAlignmentAction = new QAction(tr("Reset"), this);
+    connect(resetAlignmentAction, SIGNAL(triggered()), this, SLOT(sl_resetAlignment()));
 }
 
 void BioStruct3DGLWidget::createSelectModelsMenu() {
@@ -1102,10 +1107,22 @@ void BioStruct3DGLWidget::createMenus()
 
     displayMenu->addMenu(surfaceMenu);
     displayMenu->addMenu(surfaceTypeMenu);
+
     displayMenu->addAction(spinAction);
     displayMenu->addAction(settingsAction);
     displayMenu->addAction(exportImageAction);
-    displayMenu->addAction(alignWithAction);
+
+    QMenu *saMenu = createStructuralAlignmentMenu();
+    displayMenu->addMenu(saMenu);
+}
+
+QMenu* BioStruct3DGLWidget::createStructuralAlignmentMenu() {
+    QMenu *saMenu = new QMenu(tr("Structural Alignment"));
+
+    saMenu->addAction(alignWithAction);
+    saMenu->addAction(resetAlignmentAction);
+
+    return saMenu;
 }
 
 void BioStruct3DGLWidget::connectExternalSignals()
@@ -1313,7 +1330,7 @@ void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
 }
 
 void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList<int> &shownModels /*= QList<int>()*/) {
-    assert(obj);
+    assert(contexts.size() < 2 && "Multiple models in one view is unsupported now");
     BioStruct3DRendererContext ctx(obj);
 
     // show only first model if model list is empty
@@ -1359,6 +1376,16 @@ void BioStruct3DGLWidget::sl_alignWith() {
         connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onAlignmentDone(Task*)));
 
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    }
+
+    alignWithAction->setEnabled(false);
+}
+
+void BioStruct3DGLWidget::sl_resetAlignment() {
+    assert(contexts.size() < 3 && "Multiple models in one view is unsupported now");
+    if (contexts.size() == 2) {
+        contexts.removeLast();
+        alignWithAction->setEnabled(true);
     }
 }
 
