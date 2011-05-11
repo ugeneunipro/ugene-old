@@ -236,7 +236,8 @@ void QDWorker::sl_taskFinished(Task* t) {
     if (output) {
         QDScheduler* sched = qobject_cast<QDScheduler*>(t);
         QList<SharedAnnotationData> res;
-        annObjToAnnDataList(sched->getSettings().annotationsObj, res);
+        AnnotationTableObject* ao = sched->getSettings().annotationsObj;
+        annObjToAnnDataList(ao, res);
         QVariant v = qVariantFromValue< QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
         if (input->isEnded()) {

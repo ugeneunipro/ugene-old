@@ -34,8 +34,6 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AnnotationTableObject.h>
 
-#include <QtGui/QMessageBox>
-
 
 namespace U2 {
 //QDScheduler
@@ -92,7 +90,6 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
         return subs;
     }
     if (linker->isCancelled()) {
-        QMessageBox::information(NULL, tr("Query Designer"), tr("No matches found."));
         return subs;
     }
     
