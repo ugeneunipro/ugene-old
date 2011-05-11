@@ -363,7 +363,9 @@ qint64 AssemblyBrowser::normalizeXoffset(qint64 x) const {
         return 0;
     }
     U2OpStatusImpl st;
-    qint64 xMax = model->getModelLength(st) - qMax((qint64)1, basesCanBeVisible() - 1);
+    // hack: first case is needed to show last column
+    qint64 maxWindowSize = areCellsVisible() ? basesCanBeVisible() - 1 : basesCanBeVisible();
+    qint64 xMax = model->getModelLength(st) - qMax((qint64)1, maxWindowSize);
     LOG_OP(st);
     if(xMax < 0) {
         return 0;
