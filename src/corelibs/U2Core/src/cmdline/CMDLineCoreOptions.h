@@ -34,6 +34,7 @@ class U2CORE_EXPORT CMDLineCoreOptions : public QObject {
 public:
     static const QString INI_FILE;
     static const QString SUITE_URLS;
+    static const QString API_TEST_URLS;
     static const QString TEST_REPORT;
     static const QString HELP;
     static const QString HELP_SHORT;

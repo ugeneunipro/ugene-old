@@ -30,6 +30,7 @@ namespace U2 {
 
 const QString CMDLineCoreOptions::INI_FILE      = "ini-file";
 const QString CMDLineCoreOptions::SUITE_URLS    = "test-suite";
+const QString CMDLineCoreOptions::API_TEST_URLS = "api-test-suite";
 const QString CMDLineCoreOptions::TEST_REPORT   = "test-report";
 const QString CMDLineCoreOptions::HELP          = "help";
 const QString CMDLineCoreOptions::HELP_SHORT    = "h";

@@ -26,6 +26,7 @@
 
 #include <U2Test/GTest.h>
 #include <U2Test/TestRunnerTask.h>
+#include <U2Test/APITestRunner.h>
 
 #include <QtXml/QtXml>
 #include <QtCore/QProcess>
@@ -262,6 +263,10 @@ Task::ReportResult TestStarter::report() {
         //printf("%s\n",QString("--------- Test run problem: " + ttask->getError()).toLocal8Bit());
     }
     return ReportResult_Finished;
+}
+
+void APITestStarter::launchAPITests() {
+    AppContext::getAPITestBase()->getRunner()->launchTests(suites);
 }
 
 }//namespace

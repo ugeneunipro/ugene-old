@@ -9,6 +9,7 @@ use_bundled_zlib() {
 SUBDIRS += \
           src/libs_3rdparty/qscore \
           src/libs_3rdparty/sqlite3 \
+          src/libs_3rdparty/gtest \
           src/corelibs/U2Core \
           src/corelibs/U2Test \
           src/corelibs/U2Algorithm \
@@ -59,7 +60,8 @@ SUBDIRS += \
           src/plugins/query_designer \
           src/plugins/external_tool_support \
           src/plugins/remote_service \
-          src/plugins/CoreTests
+          src/plugins/CoreTests \
+          src/plugins/api_tests
 
 use_cuda() {
     SUBDIRS += src/plugins/cuda_support

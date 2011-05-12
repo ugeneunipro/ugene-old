@@ -75,6 +75,7 @@
 #include <U2Remote/DistributedComputingUtil.h>
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Test/TestRunnerTask.h>
+#include <U2Test/APITestRunner.h>
 
 #include "ForeverTask.h"
 #include "LogDriver.h"
@@ -117,6 +118,17 @@ static bool openDocs() {
         envs->setVar(NUM_THREADS_VAR, AppContext::getSettings()->getValue(TR_SETTINGS_ROOT + NUM_THREADS_VAR,QString("5")).toString());
         
         QObject::connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(ts), SLOT(registerTask()));
+        ret = true;
+    }
+    return ret;
+}
+
+static bool startAPITests() {
+    bool ret = false;
+    QStringList suiteUrls = CMDLineRegistryUtils::getParameterValuesByWords( CMDLineCoreOptions::API_TEST_URLS );
+    if( suiteUrls.size() > 0 ) {
+        APITestStarter* ts = new APITestStarter(suiteUrls);
+        QObject::connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), ts, SLOT(launchAPITests()));
         ret = true;
     }
     return ret;
@@ -408,6 +420,9 @@ int main(int argc, char **argv)
     StructuralAlignmentAlgorithmRegistry *saar = new StructuralAlignmentAlgorithmRegistry();
     appContext->setStructuralAlignmentAlgorithmRegistry(saar);
 
+    APITestBase* atb = new APITestBase();
+    appContext->setAPITestBase(atb);
+
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
     // show help if need
@@ -429,6 +444,7 @@ int main(int argc, char **argv)
     }
     
     openDocs();
+    startAPITests();
     registerCoreServices();
     
     //3 run QT 
@@ -542,6 +558,9 @@ int main(int argc, char **argv)
 
     appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
     delete saar;
+
+    appContext->setAPITestBase(NULL);
+    delete atb;
 
     return rc;
 }
