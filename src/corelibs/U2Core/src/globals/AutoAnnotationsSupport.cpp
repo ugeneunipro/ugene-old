@@ -198,8 +198,10 @@ void AutoAnnotationObject::emitStateChange( bool started )
 
 //////////////////////////////////////////////////////////////////////////
 
+const QString AutoAnnotationsUpdateTask::NAME("Auto-annotations update task");
+
 AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaObj, QList<Task*> updateTasks ) :
-    Task("Auto-annotations update task", TaskFlags_NR_FOSCOE), aa(aaObj), lock(NULL), subTasks(updateTasks)
+    Task(NAME, TaskFlags_NR_FOSCOE), aa(aaObj), lock(NULL), subTasks(updateTasks)
 {
     setMaxParallelSubtasks(1);
 }

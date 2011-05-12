@@ -111,6 +111,7 @@ public:
     AutoAnnotationsUpdateTask(AutoAnnotationObject* aaObj, QList<Task*> subtasks); 
     virtual void prepare();
     ReportResult report();
+    static const QString NAME;
 protected:
     AutoAnnotationObject* aa;
     StateLock* lock;
