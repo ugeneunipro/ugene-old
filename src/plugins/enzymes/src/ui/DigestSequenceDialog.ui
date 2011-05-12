@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>502</width>
-    <height>404</height>
+    <height>431</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -171,6 +171,13 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="hintLabel">
+     <property name="text">
+      <string>&lt;hint label&gt;</string>
+     </property>
     </widget>
    </item>
    <item>

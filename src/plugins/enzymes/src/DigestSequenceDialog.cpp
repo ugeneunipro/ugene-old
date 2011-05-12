@@ -23,9 +23,11 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
@@ -39,8 +41,12 @@
 
 namespace U2 {
 
+const QString DigestSequenceDialog::WAIT_MESSAGE(tr("The restrictions sites are being updated. Please wait"));
+const QString DigestSequenceDialog::HINT_MESSAGE(tr("Hint: there are no available enzymes. Use \"Analyze->Find Restrictions Sites\" feature to find them."));
+
+
 DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidget* p )
-: QDialog(p),seqCtx(ctx)
+: QDialog(p),seqCtx(ctx), timer(NULL), animationCounter(0)
 {
     setupUi(this);
         
@@ -50,10 +56,6 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     
     addAnnotationWidget();
     searchForAnnotatedEnzymes(ctx);
-    //if (annotatedEnzymes.isEmpty()) {
-    //    searchForEnzymesRadioButton->setChecked(true);
-    //    useExistingRadioButton->setEnabled(false);
-    //}
     
     availableEnzymeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     selectedEnzymeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -62,13 +64,23 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     connect(addAllButton, SIGNAL(clicked()), SLOT(sl_addAllPushButtonClicked()));
     connect(removeButton, SIGNAL(clicked()), SLOT(sl_removePushButtonClicked()));
     connect(clearButton, SIGNAL(clicked()), SLOT(sl_clearPushButtonClicked()));
-//    connect(searchSettingsButton, SIGNAL(clicked()), SLOT(sl_searchSettingsPushButtonClicked()));
-//    connect(useExistingRadioButton, SIGNAL(toggled(bool)), SLOT(sl_useAnnotatedRegionsSelected(bool)));
     
     updateAvailableEnzymeWidget();
     seqNameLabel->setText(dnaObj->getGObjectName());
-    
 
+    QList<Task*> topLevelTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
+    foreach(Task* t, topLevelTasks) {
+        if (t->getTaskName() == AutoAnnotationsUpdateTask::NAME) {
+            connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
+            hintLabel->setText(WAIT_MESSAGE);
+            animationCounter = 0;
+            setUiEnabled(false);
+            timer = new QTimer();
+            connect(timer, SIGNAL(timeout()), SLOT(sl_timerUpdate()));
+            timer->start(400);
+        }
+    }
+        
 
 }
 
@@ -119,14 +131,7 @@ void DigestSequenceDialog::accept()
     AnnotationTableObject* aObj = m.getAnnotationObject();
     assert(aObj != NULL);
     
-    DigestSequenceTask* task = NULL;
-    //if (searchForEnzymesRadioButton->isChecked()) {
-    //    task = new DigestSequenceTask(dnaObj, aObj, resultEnzymes); 
-    //} else {
-    //    task = new DigestSequenceTask(dnaObj, sourceObj, aObj, resultEnzymes);
-    //}
-
-    task = new DigestSequenceTask(dnaObj, sourceObj, aObj, resultEnzymes);
+    DigestSequenceTask* task = new DigestSequenceTask(dnaObj, sourceObj, aObj, resultEnzymes);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     
@@ -190,6 +195,12 @@ void DigestSequenceDialog::updateAvailableEnzymeWidget()
         }
         availableEnzymeWidget->addItem(enzymeId + cutInfo);
     }
+
+    bool empty = availableEnzymes.isEmpty();
+    setUiEnabled(!empty);
+    if (empty) {
+        hintLabel->setText(HINT_MESSAGE);
+    }
 }
 
 
@@ -243,19 +254,6 @@ void DigestSequenceDialog::sl_clearPushButtonClicked()
    updateSelectedEnzymeWidget();
 }
 
-void DigestSequenceDialog::sl_searchSettingsPushButtonClicked()
-{
-    std::auto_ptr<QDialog> dlg( enzymesSelectorHandler.createSelectorDialog() );
-    int rt = dlg->exec();
-    if (rt == QDialog::Accepted) {
-        availableEnzymes.clear();
-        QStringList enzymes = enzymesSelectorHandler.getSelectedString(dlg.get()).split(",");
-        foreach (const QString& enzymeId, enzymes) {
-            availableEnzymes.insert(enzymeId);
-        }
-    }
-    updateAvailableEnzymeWidget();
-}
 
 bool DigestSequenceDialog::loadEnzymesFile( )
 {
@@ -277,16 +275,43 @@ bool DigestSequenceDialog::loadEnzymesFile( )
     return true;
 }
 
-void DigestSequenceDialog::sl_useAnnotatedRegionsSelected(bool toggle)
+void DigestSequenceDialog::sl_timerUpdate()
 {
-    availableEnzymes.clear();
-    annotatedEnzymes.clear();
-    if (toggle == true) {
-        searchForAnnotatedEnzymes(seqCtx);
+    const int MAX_COUNT = 5;
+    animationCounter++;
+    if (animationCounter > MAX_COUNT) {
+        animationCounter = 1;
     }
-    updateAvailableEnzymeWidget();
+    
+    QString dots;
+    dots.fill('.', animationCounter);
+    hintLabel->setText(WAIT_MESSAGE + dots);
+
 
 }
+
+void DigestSequenceDialog::sl_taskStateChanged()
+{
+    Task* task = qobject_cast<Task*> ( sender() );
+    SAFE_POINT(task != NULL, tr("Auto-annotations update task is NULL."),);
+    
+    if (task->getState() == Task::State_Finished) {
+        timer->stop();
+        hintLabel->setText(QString());
+        searchForAnnotatedEnzymes(seqCtx);
+        updateAvailableEnzymeWidget();
+    }
+}
+
+void DigestSequenceDialog::setUiEnabled( bool enabled )
+{
+    okButton->setEnabled(enabled);
+    addButton->setEnabled(enabled);
+    addAllButton->setEnabled(enabled);
+    removeButton->setEnabled(enabled);
+    clearButton->setEnabled(enabled);
+}
+
 
 
 

@@ -32,6 +32,7 @@
 
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTreeWidgetItem>
+#include <QtCore/QTimer>
 
 namespace U2 {
 
@@ -51,14 +52,15 @@ private slots:
     void sl_addAllPushButtonClicked();
     void sl_removePushButtonClicked();
     void sl_clearPushButtonClicked();
-    void sl_searchSettingsPushButtonClicked();
-    void sl_useAnnotatedRegionsSelected(bool toggle);
+    void sl_timerUpdate();
+    void sl_taskStateChanged();
     
 private:
     void addAnnotationWidget();
     void searchForAnnotatedEnzymes(ADVSequenceObjectContext* ctx);
     void updateAvailableEnzymeWidget();
     void updateSelectedEnzymeWidget();
+    void setUiEnabled(bool enabled);
     bool loadEnzymesFile();
     QList<SEnzymeData> findEnzymeDataById(const QString& id);
     
@@ -67,10 +69,14 @@ private:
     AnnotationTableObject*              sourceObj;
     EnzymesSelectorDialogHandler        enzymesSelectorHandler;
     CreateAnnotationWidgetController*   ac;
+    QTimer*                             timer;
     QSet<QString>                       availableEnzymes;
     QSet<QString>                       selectedEnzymes;
     QMap<QString,U2Region>              annotatedEnzymes;
     QList<SEnzymeData>                  enzymesBase;
+    int                                 animationCounter;
+    static const QString                WAIT_MESSAGE;
+    static const QString                HINT_MESSAGE;
     
 };
 
