@@ -228,6 +228,11 @@ private:
     //! Updates color scheme for all renderers.
     void updateAllColorSchemes();
 
+    /** Updates all renderers.
+      * Should be called from initializeGL for display list recreation
+      */
+    void updateAllRenderers();
+
     //! Show/hide selected model for first biostruct
     //! @param modelId - key from BioStruct3D::modelMap
     void showModel(int modelId, bool show);

@@ -48,11 +48,12 @@ BallAndStickGLRenderer::~BallAndStickGLRenderer() {
 }
 
 void BallAndStickGLRenderer::drawBioStruct3D() {
-    // BUG UGENE-45 this is quick fix for UGENE-27
-    // display list shoud be created elsewhere
-    createDisplayList();
     glCallList(dl);
     CHECK_GL_ERROR;
+}
+
+void BallAndStickGLRenderer::update() {
+    createDisplayList();
 }
 
 void BallAndStickGLRenderer::updateColorScheme() {

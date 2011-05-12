@@ -35,7 +35,8 @@ public:
     virtual ~BallAndStickGLRenderer();
 
     void drawBioStruct3D();
-    
+
+    virtual void update();
     virtual void updateColorScheme();
     virtual void updateShownModels();
 

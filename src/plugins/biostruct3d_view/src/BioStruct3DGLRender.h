@@ -92,6 +92,9 @@ public:
     //! Visualizes macromolecule.
     virtual void drawBioStruct3D() = 0;
 
+    //! Used to completely update model, for ex to recreate display lists.
+    virtual void update() {}
+
     //! Used to update current color scheme, whenever it is changed.
     virtual void updateColorScheme() = 0;
 

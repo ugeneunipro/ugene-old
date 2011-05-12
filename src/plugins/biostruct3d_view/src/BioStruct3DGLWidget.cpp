@@ -189,6 +189,8 @@ void BioStruct3DGLWidget::initializeGL()
     glLightfv(GL_LIGHT0, GL_POSITION, lightPostion);
     glEnable(GL_BLEND);                                         // Enable Blending
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    updateAllRenderers();
 }
 
 void BioStruct3DGLWidget::resizeGL(int width, int height)
@@ -681,6 +683,12 @@ void BioStruct3DGLWidget::setupRenderer(const QString &name) {
 void BioStruct3DGLWidget::updateAllColorSchemes() {
     foreach (const BioStruct3DRendererContext &ctx, contexts) {
         ctx.renderer->updateColorScheme();
+    }
+}
+
+void BioStruct3DGLWidget::updateAllRenderers() {
+    foreach (const BioStruct3DRendererContext &ctx, contexts) {
+        ctx.renderer->update();
     }
 }
 
