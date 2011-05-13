@@ -148,10 +148,7 @@ void ExportImageDialog::accept()
     setCursor(Qt::WaitCursor);
 
     if(rect.isEmpty()){
-        rect = QRect(widget->geometry().topLeft().x(),
-                                      widget->geometry().topLeft().y(),
-                                      widget->geometry().bottomRight().x(),
-                                      this->geometry().bottomRight().y());
+        rect = widget->rect();
     }
     bool result=false;
     if (isVectorGraphicFormat(format)) {
