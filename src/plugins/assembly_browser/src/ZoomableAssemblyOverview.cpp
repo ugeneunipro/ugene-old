@@ -262,8 +262,10 @@ void ZoomableAssemblyOverview::drawCoordLabels(QPainter & p) {
     //Prepare text
     QString visibleStartText = QString::number(visibleRange.startPos);
     QString visibleEndText = QString::number(visibleRange.endPos());
+    QString visibleDiffText = QString::number(visibleRange.length);
     insertSpaceSeparators(visibleStartText);
     insertSpaceSeparators(visibleEndText);
+    insertSpaceSeparators(visibleDiffText);
 
     //Prepare font
     QFont font;
@@ -271,7 +273,7 @@ void ZoomableAssemblyOverview::drawCoordLabels(QPainter & p) {
     QFontMetrics fontMetrics(font);
 
     //draw Visible Region
-    QString visibleRegionText = tr("%1 to %2 bp").arg(visibleStartText).arg(visibleEndText); 
+    QString visibleRegionText = tr("%1 to %2 (%3 bp)").arg(visibleStartText).arg(visibleEndText).arg(visibleDiffText); 
     QRect grtRect = QRect(0, 0, fontMetrics.width(visibleRegionText), fontMetrics.height());
     grtRect.translate(xoffset, rect().height() - yoffset - grtRect.height());
     if(rect().contains(grtRect)) {
