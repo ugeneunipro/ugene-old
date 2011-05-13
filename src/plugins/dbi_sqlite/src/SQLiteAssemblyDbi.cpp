@@ -266,6 +266,17 @@ void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2AssemblyPackStat& sta
     perfLog.trace(QString("Assembly: full pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
+void SQLiteAssemblyDbi::calculateCoverage(const U2DataId& assemblyId, const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::calculateCoverage");
+    GTIMER(c2, t2, "SQLiteAssemblyDbi::calculateCoverage");
+
+    quint64 t0 = GTimer::currentTimeMicros();
+
+    AssemblyAdapter* a = getAdapter(assemblyId, os);
+    a->calculateCoverage(region, c, os);
+    perfLog.trace(QString("Assembly: full coverage calculation time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
+}
+
 //////////////////////////////////////////////////////////////////////////
 // AssemblyAdapter
 
@@ -370,6 +381,25 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& n
         qualityString.append(data + qualityStart, packedData.length() - qualityStart);
     }
 }
+
+void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+    int csize = c.coverage.size();
+    SAFE_POINT(csize > 0, "illegal coverage vector size!", );
+
+    qint64* cdata = c.coverage.data();
+    double basesPerRange = double(r.length) / csize;
+    while (q.step() && !os.isCoR()) {
+        qint64 startPos = q.getInt64(0);
+        qint64 len = q.getInt64(1);
+        int firstCoverageIdx = (int)(startPos / basesPerRange);
+        int lastCoverageIdx = (int)((startPos + len ) / basesPerRange);
+        for (int i = firstCoverageIdx; i <= lastCoverageIdx && i < csize; i++) {
+            cdata[i]++;
+        }
+    }
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // read loader

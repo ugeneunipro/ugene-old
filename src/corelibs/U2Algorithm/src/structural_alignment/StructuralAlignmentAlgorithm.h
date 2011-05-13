@@ -34,7 +34,7 @@ namespace U2 {
 class BioStruct3D;
 
 /** Reference to a part of BioStruct3D */
-// Maybe this class shoud be merged with BioStruct3DChainSelection
+// Maybe this class must be merged with BioStruct3DChainSelection
 class U2ALGORITHM_EXPORT BioStruct3DReference {
 public:
     BioStruct3DReference(const BioStruct3DObject *_obj, const QList<int> &_chains, int _modelId = -1)
@@ -54,7 +54,8 @@ public:
     int modelId;
 };  // class BioStruct3DReference
 
-struct U2ALGORITHM_EXPORT StructuralAlignmentTaskSettings {
+class U2ALGORITHM_EXPORT StructuralAlignmentTaskSettings {
+public:
     BioStruct3DReference ref, alt;
 };  // struct StructuralAlignmentTaskSettings
 

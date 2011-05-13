@@ -204,8 +204,16 @@ public:
     U2AssemblyPackStat() : maxProw(0), readsCount(0) {}
     /** Maximum packed row value after pack algorithm */
     int maxProw;
-    /** Number of reads packen */
+    /** Number of reads packed */
     qint64 readsCount;
+};
+
+/** Statistics information collected during the reads packing algorithm */
+class U2AssemblyCoverageStat {
+public:
+    U2AssemblyCoverageStat() {}
+    
+    QVector<qint64> coverage;
 };
 
 } //namespace

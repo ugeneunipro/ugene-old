@@ -107,6 +107,8 @@ enum U2CORE_EXPORT U2DbiFeature {
     
     /** DBI provides optimized algorithm for assembly reads packing */
     U2DbiFeature_AssemblyReadsPacking         = 300,
+    /** DBI provides optimized algorithm for coverage calculation */
+    U2DbiFeature_AssemblyCoverageStat         = 301,
 
     /** DBI provides optimized algorithm for sorting attributes */
     U2DbiFeature_AttributeSorting             = 400,

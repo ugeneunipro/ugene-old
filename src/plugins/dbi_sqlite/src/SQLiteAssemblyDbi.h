@@ -104,6 +104,12 @@ public:
     /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
     virtual void pack(const U2DataId& assemblyId, U2AssemblyPackStat& stat, U2OpStatus& os);
 
+    /** 
+        Calculates coverage information for the given region. Saves result to 'c.coverage' vector. 
+        Note: Coverage window size depends on 'c.coverage' vector size passed to the method call.
+    */
+    virtual void calculateCoverage(const U2DataId& assemblyId, const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os);
+
     virtual void initSqlSchema(U2OpStatus& os);
     virtual void shutdown(U2OpStatus& os);
 
@@ -145,7 +151,7 @@ public:
 
     virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os) = 0;
 
-    virtual int getInsertGroupSize() const {return 100*1000;}
+    virtual void calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os) = 0;
 
 protected:
     U2DataId                    assemblyId;
@@ -166,6 +172,8 @@ public:
         const QByteArray& cigarText, const QByteArray& qualityString, U2OpStatus& os);
     
     static void unpackData(const QByteArray& packed, QByteArray& name, QByteArray& sequence, QByteArray& cigarText, QByteArray& qualityString, U2OpStatus& os);
+
+    static void calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os);
 };
 
 class SQLiteAssemblyNameFilter : public SqlRSFilter<U2AssemblyRead> {

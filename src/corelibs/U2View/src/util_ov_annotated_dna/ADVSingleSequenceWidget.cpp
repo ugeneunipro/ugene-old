@@ -944,11 +944,11 @@ QString ADVSingleSequenceHeaderWidget::getShortAlphabetName(DNAAlphabet* al) {
     if (id == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) {
         return tr("dna");
     } else if (id == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()) {
-        return tr("dna ext.");
+        return tr("dna ext");
     } else if (id == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()) {
         return tr("rna");
     } else if (id == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED()) {
-        return tr("rna ext.");
+        return tr("rna ext");
     }
     return "?";
 }

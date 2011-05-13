@@ -198,6 +198,22 @@ void RTreeAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     AssemblyPackAlgorithm::pack(packAdapter, stat, os);
 }
 
+void RTreeAssemblyAdapter::calculateCoverage(const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+    QString queryString = "SELECT gstart, gend - gstart FROM " + indexTable;
+    bool rangeArgs = false;
+    if (r != U2_ASSEMBLY_REGION_MAX) {
+        queryString+="AS i WHERE " + RANGE_CONDITION_CHECK;
+        rangeArgs = true;
+    }
+    SQLiteQuery q(queryString, db, os);
+    if (rangeArgs) {
+        q.bindInt64(1, r.endPos());
+        q.bindInt64(2, r.startPos);
+    }
+    SQLiteAssemblyUtils::calculateCoverage(q, r, c, os);
+
+}
+
 
 U2DbiIterator<PackAlgorithmData>* RTreePackAlgorithmAdapter::selectAllReads(U2OpStatus& os) {
     SQLiteQuery* q = new SQLiteQuery("SELECT id, gstart, gend - gstart FROM " + indexTable + " ORDER BY gstart", db, os);

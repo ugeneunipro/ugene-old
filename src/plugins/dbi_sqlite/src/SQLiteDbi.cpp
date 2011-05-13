@@ -182,6 +182,7 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     //features.insert(U2DbiFeature_WriteMsa);
     features.insert(U2DbiFeature_WriteAssembly);
     features.insert(U2DbiFeature_AssemblyReadsPacking);
+    features.insert(U2DbiFeature_AssemblyCoverageStat);
     features.insert(U2DbiFeature_RemoveObjects);
     features.insert(U2DbiFeature_ChangeFolders);
     features.insert(U2DbiFeature_ReadCrossDatabaseReferences);

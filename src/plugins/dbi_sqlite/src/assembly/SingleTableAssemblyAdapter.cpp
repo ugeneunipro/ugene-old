@@ -226,6 +226,20 @@ void SingleTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) 
     createReadsIndexes(os);
 }
 
+void SingleTableAssemblyAdapter::calculateCoverage(const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+    QString queryString = "SELECT gstart, elen FROM " + readsTable;
+    bool rangeArgs = false;
+    if (r != U2_ASSEMBLY_REGION_MAX) {
+        queryString+=" WHERE " + rangeConditionCheck;
+        rangeArgs = true;
+    }
+    SQLiteQuery q(queryString, db, os);
+    if (rangeArgs) {
+        bindRegion(q, r, false);
+    }
+    SQLiteAssemblyUtils::calculateCoverage(q, r, c, os);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // pack adapter
 

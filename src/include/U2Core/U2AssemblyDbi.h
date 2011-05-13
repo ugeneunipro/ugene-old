@@ -138,6 +138,12 @@ public:
     */
     virtual void pack(const U2DataId& assemblyId, U2AssemblyPackStat& stats, U2OpStatus& os) = 0;
 
+    /** 
+        Calculates coverage information for the given region. Saves result to 'c.coverage' vector. 
+        Note: Coverage window size depends on 'c.coverage' vector size passed to the method call.
+    */
+    virtual void calculateCoverage(const U2DataId& assemblyId, const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os) = 0;
+
 };
 
 } //namespace

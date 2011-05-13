@@ -175,6 +175,10 @@ protected:
     virtual void pack(const U2DataId&, U2AssemblyPackStat&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_AssemblyReadsPacking, getRootDbi(), os);
     }
+
+    virtual void calculateCoverage(const U2DataId&, const U2Region&, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_AssemblyCoverageStat, getRootDbi(), os);
+    }
 };
 
 /** Default no-op implementation for write  methods of U2AnnotationDbi */
