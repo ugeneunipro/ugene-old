@@ -79,7 +79,7 @@ static QString getCigarString(const QString & ci) {
         if(ch.isNumber()) {
             cigar.append(ch);
         } else {
-            cigar.append(QString("<font color='#0000FF'>%1</font>").arg(ch));
+            cigar.append(QString("<b>%1 </b>").arg(ch));
         }
     }
     return cigar;
