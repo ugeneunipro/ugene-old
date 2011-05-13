@@ -603,19 +603,14 @@ void AssemblyBrowser::sl_zoomIn(const QPoint & pos) {
     
     // calculate new offsets
     qint64 newXOff = 0;
-    qint64 newYOff = yOffsetInAssembly;
     int cellWidth = getCellWidth();
     if(!pos.isNull() && cellWidth != 0) {
         newXOff = posXAsmCoord - pos.x() / cellWidth;
-        if(rowsVisible() == rowsCanBeVisible()) {
-            newYOff = posYAsmCoord - pos.y() / cellWidth;
-        }
     } else {
         //zooming to the center of the screen
         newXOff = xOffsetInAssembly + (oldWidth - basesCanBeVisible()) / 2;
     }
     setXOffsetInAssembly(normalizeXoffset(newXOff));
-    setYOffsetInAssembly(normalizeYoffset(newYOff));
     
     updateZoomingActions();
     emit si_zoomOperationPerformed();
@@ -644,19 +639,14 @@ void AssemblyBrowser::sl_zoomOut(const QPoint & pos) {
     
     // calculate new offsets
     qint64 newXOff = 0;
-    qint64 newYOff = yOffsetInAssembly;
     int cellWidth = getCellWidth();
     if(!pos.isNull() && cellWidth != 0) {
         newXOff = posXAsmCoord - pos.x() / cellWidth;
-        if(rowsVisible() == rowsCanBeVisible()) {
-            newYOff = posYAsmCoord - pos.y() / cellWidth;
-        }
     } else {
         //zooming out of the center
         newXOff = xOffsetInAssembly + (oldWidth - basesCanBeVisible()) / 2;
     }
     setXOffsetInAssembly(normalizeXoffset(newXOff));
-    setYOffsetInAssembly(normalizeYoffset(newYOff));
     
     updateZoomingActions();
     emit si_zoomOperationPerformed();
