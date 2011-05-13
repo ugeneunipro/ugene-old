@@ -106,7 +106,7 @@ void EnzymesSelectorWidget::setupSettings() {
     }
     QString lastEnzFile = AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString();
     if (lastEnzFile.isEmpty() || !QFile::exists(lastEnzFile)) {
-        lastEnzFile = dir + DEFAULT_ENZYMES_FILE;
+        lastEnzFile = dir + "/" + DEFAULT_ENZYMES_FILE;
         AppContext::getSettings()->setValue(EnzymeSettings::DATA_FILE_KEY, lastEnzFile);
     }
     initSelection();

@@ -28,6 +28,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
 #include <U2Misc/DialogUtils.h>
+#include <U2Core/Settings.h>
 #include <memory>
 
 namespace U2 {
@@ -264,8 +265,12 @@ static QList<SEnzymeData> loadEnzymesData() {
     QList<SEnzymeData> res;
     TaskStateInfo ti;
 
-    QString dataDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/enzymes/";
-    QString url = dataDir + DEFAULT_ENZYMES_FILE;
+    QString url = AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString();
+    
+    if (url.isEmpty()) {
+        QString dataDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/enzymes/";
+        url = dataDir + DEFAULT_ENZYMES_FILE;
+    }
 
     if (QFileInfo(url).exists()) {
         res = EnzymesIO::readEnzymes(url, ti);
@@ -277,7 +282,7 @@ static QList<SEnzymeData> loadEnzymesData() {
 
 QList<SEnzymeData> EnzymesIO::getDefaultEnzymesList()
 {
-    static QList<SEnzymeData> data = loadEnzymesData();
+    QList<SEnzymeData> data = loadEnzymesData();
     return data;
 }
 

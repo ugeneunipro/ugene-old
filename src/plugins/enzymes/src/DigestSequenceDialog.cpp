@@ -28,6 +28,7 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/Settings.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
@@ -53,6 +54,7 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     dnaObj = qobject_cast<DNASequenceObject*>(ctx->getSequenceGObject());
     sourceObj = NULL;
     assert(dnaObj != NULL);
+    hintLabel->setText(QString());
     
     addAnnotationWidget();
     searchForAnnotatedEnzymes(ctx);
@@ -257,22 +259,9 @@ void DigestSequenceDialog::sl_clearPushButtonClicked()
 
 bool DigestSequenceDialog::loadEnzymesFile( )
 {
-    TaskStateInfo ti;
-   
-    QString dataDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/enzymes/";
-    QString url = dataDir + DEFAULT_ENZYMES_FILE;
     
-    if (!QFileInfo(url).exists()) {
-        ti.setError(  tr("File not exists: %1").arg(url) );
-    } else {
-        enzymesBase = EnzymesIO::readEnzymes(url, ti);
-    }
-    if (ti.hasError()) {
-       ioLog.error(QString("Failed loading enzymes file: %1").arg(url));
-       return false;
-    }
-
-    return true;
+    enzymesBase = EnzymesIO::getDefaultEnzymesList();
+    return !enzymesBase.isEmpty();
 }
 
 void DigestSequenceDialog::sl_timerUpdate()
