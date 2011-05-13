@@ -561,7 +561,8 @@ void Reader::readHeader() {
                 if(fields.contains("VN")) {
                     QByteArray value = fields["VN"];
                     if(!QRegExp("[0-9]+\\.[0-9]+").exactMatch(value)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("Invalid HD-VN value: %1").arg(QString(value)));
+                        //Do nothing to suppord malformed BAMs
+                        //throw InvalidFormatException(BAMDbiPlugin::tr("Invalid HD-VN value: %1").arg(QString(value)));
                     }
                     header.setFormatVersion(Version::parseVersion(value));
                 } else {
