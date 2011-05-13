@@ -501,7 +501,7 @@ void ADVSingleSequenceWidget::sl_onSelectRange() {
     if(selection->isEmpty()){
         rs=new RangeSelector(&dlg, 1, ctx->getSequenceLen(), ctx->getSequenceLen(), true);
     }else{
-        rs=new RangeSelector(&dlg, selection->getSelectedRegions().first().startPos, selection->getSelectedRegions().first().endPos(), ctx->getSequenceLen(), true);
+        rs=new RangeSelector(&dlg, selection->getSelectedRegions().first().startPos + 1, selection->getSelectedRegions().first().endPos(), ctx->getSequenceLen(), true);
     }
     int rc = dlg.exec();
     if (rc == QDialog::Accepted) {
