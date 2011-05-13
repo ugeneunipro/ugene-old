@@ -496,16 +496,23 @@ void ADVSingleSequenceWidget::sl_onSelectRange() {
     dlg.setModal(true);
     dlg.setWindowTitle(tr("Select range"));
     ADVSequenceObjectContext* ctx = getSequenceContext();
-    RangeSelector rs(&dlg, 1, ctx->getSequenceLen(), ctx->getSequenceLen(), true);
+    DNASequenceSelection* selection=ctx->getSequenceSelection();
+    RangeSelector* rs;
+    if(selection->isEmpty()){
+        rs=new RangeSelector(&dlg, 1, ctx->getSequenceLen(), ctx->getSequenceLen(), true);
+    }else{
+        rs=new RangeSelector(&dlg, selection->getSelectedRegions().first().startPos, selection->getSelectedRegions().first().endPos(), ctx->getSequenceLen(), true);
+    }
     int rc = dlg.exec();
     if (rc == QDialog::Accepted) {
-        U2Region r(rs.getStart() - 1, rs.getEnd() - rs.getStart() + 1);
+        U2Region r(rs->getStart() - 1, rs->getEnd() - rs->getStart() + 1);
         ctx->getSequenceSelection()->clear();
         getSequenceSelection()->addRegion(r);
         if (!detView->getVisibleRange().intersects(r)) {
             detView->setCenterPos(r.startPos);
         }
     }
+    delete rs;
 }
 
 QVector<U2Region> ADVSingleSequenceWidget::getSelectedAnnotationRegions(int max) {
