@@ -51,7 +51,6 @@ public:
     const BioStruct3DObject *obj;
     QList<int> chains;
 
-    // -1 means all models
     int modelId;
 };  // class BioStruct3DReference
 
