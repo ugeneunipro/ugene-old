@@ -67,6 +67,8 @@ GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceOb
 void GSequenceLineViewAnnotated::connectAnnotationObject(AnnotationTableObject* ao) {
     connect(ao, SIGNAL(si_onAnnotationsAdded(const QList<Annotation*>&)), SLOT(sl_onAnnotationsAdded(const QList<Annotation*>&)));
     connect(ao, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation*>&)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation*>&)));
+    connect(ao, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)), 
+        SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
     connect(ao, SIGNAL(si_onAnnotationModified(const AnnotationModification&)), SLOT(sl_onAnnotationsModified(const AnnotationModification&)));
 }
 
@@ -97,6 +99,27 @@ void GSequenceLineViewAnnotated::sl_onAnnotationsRemoved(const QList<Annotation*
     unregisterAnnotations(l);
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
+}
+
+void GSequenceLineViewAnnotated::sl_onAnnotationsInGroupRemoved(const QList<Annotation*>& l, AnnotationGroup*) {
+    /*unregisterAnnotations(l);
+    addUpdateFlags(GSLV_UF_AnnotationsChanged);
+    update();*/
+    AnnotationTableObject *aobj = static_cast<AnnotationTableObject*>(sender());
+   // aobj->releaseLocker();
+    ClearAnnotationsTask *task = new ClearAnnotationsTask(l, aobj, this);
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+}
+
+void ClearAnnotationsTask::run() {
+    view->unregisterAnnotations(l);
+}
+
+Task::ReportResult ClearAnnotationsTask::report() {
+    view->addUpdateFlags(GSLV_UF_AnnotationsChanged);
+    view->update();
+    aobj->releaseLocker();
+    return ReportResult_Finished;
 }
 
 void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged(AnnotationSelection* as, const QList<Annotation*>& _added, const QList<Annotation*>& _removed) {

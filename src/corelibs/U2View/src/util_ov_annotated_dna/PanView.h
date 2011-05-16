@@ -139,6 +139,10 @@ private slots:
 
     void sl_toggleMainRulerVisibility(bool visible);
     void sl_toggleCustomRulersVisibility(bool visible);
+    void sl_updateRows();
+
+signals:
+    void si_updateRows();
 
 public:
     void setSelection(const U2Region& r);

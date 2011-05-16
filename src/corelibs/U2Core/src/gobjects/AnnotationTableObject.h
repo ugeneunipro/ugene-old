@@ -27,6 +27,7 @@
 #include <U2Core/AnnotationData.h>
 
 #include <QtCore/QSet>
+#include <QtCore/QTimer>
 
 namespace U2 {
 
@@ -208,6 +209,44 @@ private:
 U2CORE_EXPORT QDataStream& operator>>(QDataStream& dataStream, AnnotationGroup* parentGroup);
 U2CORE_EXPORT QDataStream& operator<<(QDataStream& dataStream, const AnnotationGroup& group);
 
+class AnnotationsLocker: public QObject {
+    Q_OBJECT
+public:
+    void setToDelete(const QList<Annotation*>& _anns, AnnotationGroup *_parentGroup, int counter) {
+        anns = _anns;
+        parentGroup = _parentGroup;
+        deleteCounter = counter;
+        connect(&timer, SIGNAL(timeout()), SLOT(sl_timeout()));
+        timer.start(100);
+    }
+    void releaseLocker() {
+        if(deleteCounter) {
+            deleteCounter--;
+        }
+    }
+
+    bool isLocked() const {
+        return deleteCounter != 0;
+    }
+
+    private slots:
+        void sl_timeout() {
+            if(deleteCounter == 0) {
+                qDeleteAll(anns);
+                anns.clear();
+                parentGroup->getParentGroup()->removeSubgroup(parentGroup);
+                timer.stop();
+                timer.disconnect();
+            }
+        }
+    
+private:
+    QList<Annotation*> anns;
+    AnnotationGroup *parentGroup;
+    int deleteCounter;
+    QTimer timer;
+};
+
 class U2CORE_EXPORT AnnotationTableObject: public GObject {
     Q_OBJECT
     friend class Annotation;
@@ -237,6 +276,10 @@ public:
 
     bool checkConstraints(const GObjectConstraints* c) const;
 
+    void removeAnnotationsInGroup(const QList<Annotation*>& _annotations, AnnotationGroup *group);
+    void releaseLocker();
+    bool isLocked() const;
+
 protected:
 
     void emit_onAnnotationModified(const AnnotationModification& md) {emit si_onAnnotationModified(md);}
@@ -249,12 +292,14 @@ protected:
 
     QList<Annotation*>      annotations;
     AnnotationGroup*        rootGroup;
+    AnnotationsLocker       annLocker;
 
 signals:
     //annotations added to the object and have valid groups assigned
     void si_onAnnotationsAdded(const QList<Annotation*>& a);
     //annotations removed from the object and will be deleted, but still keeps references to groups and object
     void si_onAnnotationsRemoved(const QList<Annotation*>& a);
+    void si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*);
     void si_onAnnotationModified(const AnnotationModification& md);
 
     void si_onGroupCreated(AnnotationGroup*);

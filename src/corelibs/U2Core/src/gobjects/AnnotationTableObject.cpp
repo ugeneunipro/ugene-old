@@ -647,6 +647,30 @@ void AnnotationTableObject::removeAnnotations(const QList<Annotation*>& annotati
     qDeleteAll(annotations);
 }
 
+void AnnotationTableObject::removeAnnotationsInGroup(const QList<Annotation*>& _annotations, AnnotationGroup *group) {
+    annotations = annotations.toSet().subtract(_annotations.toSet()).toList();
+    foreach(Annotation* a, _annotations) {
+        a->obj = NULL;
+        foreach(AnnotationGroup* ag, a->getGroups()) {
+            ag->annotations.removeOne(a);
+        }
+    }
+    
+    int recv = receivers(SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
+    annLocker.setToDelete(_annotations, group, recv);
+    emit si_onAnnotationsInGroupRemoved(_annotations, group);
+    setModified(true);
+    //qDeleteAll(annotations);
+}
+
+void AnnotationTableObject::releaseLocker() {
+    annLocker.releaseLocker();
+}
+
+bool AnnotationTableObject::isLocked() const {
+    return annLocker.isLocked();
+}
+
 void AnnotationTableObject::removeAnnotation(Annotation* a) {
     QList<Annotation*> v; 
     v<<a;

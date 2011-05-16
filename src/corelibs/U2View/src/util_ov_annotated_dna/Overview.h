@@ -33,6 +33,7 @@ class PanView;
 class DetView;
 class OverviewRenderArea;
 class AnnotationModification;
+class AnnotationGroup;
 
 class Overview : public GSequenceLineView {
     Q_OBJECT
@@ -44,6 +45,7 @@ protected slots:
     void sl_tbToggled();
     void sl_annotationsAdded(const QList<Annotation*>& a);
     void sl_annotationsRemoved(const QList<Annotation*>& a);
+    void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*);
     void sl_annotationModified(const AnnotationModification& md);
     void sl_onAnnotationSettingsChanged(const QStringList& changedSettings);
     void sl_annotationObjectAdded(AnnotationTableObject* obj);

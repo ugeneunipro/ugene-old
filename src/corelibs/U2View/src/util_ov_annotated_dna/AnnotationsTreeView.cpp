@@ -432,6 +432,8 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded(AnnotationTableObject* obj)
     tree->addTopLevelItem(groupItem);
     connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation*>&)), SLOT(sl_onAnnotationsAdded(const QList<Annotation*>&)));
     connect(obj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation*>&)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation*>&)));
+    connect(obj, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)), 
+        SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
     connect(obj, SIGNAL(si_onAnnotationModified(const AnnotationModification&)), SLOT(sl_onAnnotationModified(const AnnotationModification&)));
 
     connect(obj, SIGNAL(si_onGroupCreated(AnnotationGroup*)), SLOT(sl_onGroupCreated(AnnotationGroup*)));
@@ -523,6 +525,59 @@ void AnnotationsTreeView::sl_onAnnotationsRemoved(const QList<Annotation*>& as) 
     sl_onItemSelectionChanged();
 }
 
+void AnnotationsTreeView::sl_onAnnotationsInGroupRemoved(const QList<Annotation*>& as, AnnotationGroup* group) {
+    AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject*>(sender());
+    RemoveItemsTask *task = new RemoveItemsTask(this, aObj, as, group);
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+}
+
+void RemoveItemsTask::prepare() {
+    TreeSorter ts(treeView);
+
+    treeView->tree->disconnect(treeView, SLOT(sl_onItemSelectionChanged()));
+    parentGroupItem = treeView->findGroupItem(parentGroup); 
+    parentGroupItem->setExpanded(false);
+    parentGroupItem->setDisabled(true);
+    parentGroupItem->setFlags(parentGroupItem->flags() ^ (Qt::ItemIsSelectable | Qt::ItemIsEditable));
+    //flags = parentGroupItem->flags();
+    //parentGroupItem->setFlags(0);
+
+    //AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject*>(sender());
+    assert(aObj != NULL);
+    
+}
+
+void RemoveItemsTask::run() {
+    AVGroupItem* groupItem = treeView->findGroupItem(aObj->getRootGroup());
+    delete parentGroupItem;
+    /*foreach(Annotation* a, as) {
+        assert(a->getGObject() == NULL);
+        QList<AVAnnotationItem*> aItems;
+        groupItem->findAnnotationItems(aItems, a);
+        assert(!aItems.isEmpty());
+        itemsToDelete.append(aItems);
+    }*/
+}
+
+Task::ReportResult RemoveItemsTask::report() {
+    //parentGroupItem->setFlags(flags);
+    /*foreach(AVAnnotationItem * aItem, itemsToDelete) {
+        (static_cast<AVGroupItem*>(aItem->parent()))->updateVisual();
+        delete aItem;
+    }*/
+   /* foreach(AVGroupItem* g, groupsToUpdate) {
+        g->updateVisual();
+    }*/
+    AVGroupItem* groupItem = treeView->findGroupItem(aObj->getRootGroup()); 
+    groupItem->updateVisual();
+
+    connect(treeView->tree, SIGNAL(itemSelectionChanged()), treeView, SLOT(sl_onItemSelectionChanged ()));
+
+    treeView->sl_onItemSelectionChanged();
+    aObj->releaseLocker();
+    return ReportResult_Finished;
+}
+
 void AnnotationsTreeView::sl_onAnnotationModified(const AnnotationModification& md) {
     switch(md.type) {
         case AnnotationModification_NameChanged: 
@@ -590,6 +645,9 @@ void AnnotationsTreeView::sl_onGroupCreated(AnnotationGroup* g) {
 
 void AnnotationsTreeView::sl_onGroupRemoved(AnnotationGroup* parent, AnnotationGroup* g) {
     AVGroupItem* pg  = findGroupItem(parent);
+    if(pg == NULL) {
+        return;
+    }
     assert(parent!=NULL && pg!=NULL);
     
     for(int i = 0, n = pg->childCount(); i < n; i++) {

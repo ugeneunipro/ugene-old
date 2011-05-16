@@ -171,6 +171,7 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     }
 
     connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), this, SLOT(sl_sequenceChanged()));
+    connect(this, SIGNAL(si_updateRows()), SLOT(sl_updateRows()));
 
     updateActions();
     updateRowBar();
@@ -215,7 +216,8 @@ void PanView::unregisterAnnotations(const QList<Annotation*>& l) {
             rowsManager->removeAnnotation(a);
         }
     }
-    updateRows();
+    emit si_updateRows();
+    //updateRows();
 }
 
 void PanView::updateRows() {
@@ -579,6 +581,10 @@ void PanView::hideEvent( QHideEvent *ev ){
 void PanView::showEvent( QShowEvent *ev ){
     QWidget::showEvent(ev);
     updateActions();
+}
+
+void PanView::sl_updateRows(){
+    updateRows();
 }
 
 //////////////////////////////////////////////////////////////////////////

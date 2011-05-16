@@ -24,12 +24,14 @@
 
 #include "GSequenceLineView.h"
 #include <U2Core/AnnotationSelection.h>
+#include <U2Core/Task.h>
 
 namespace U2 {
 
 class AnnotationTableObject;
 class AnnotationSettings;
 class AnnotationModification;
+class ClearAnnotationsTask;
 
 class U2VIEW_EXPORT GSequenceLineViewAnnotated : public GSequenceLineView {
     Q_OBJECT
@@ -68,6 +70,7 @@ protected slots:
 
     void sl_onAnnotationObjectAdded(AnnotationTableObject*);
     void sl_onAnnotationObjectRemoved(AnnotationTableObject*);
+    void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*);
     void sl_onAnnotationsAdded(const QList<Annotation*>&);
     void sl_onAnnotationsRemoved(const QList<Annotation*>&);
     virtual void sl_onAnnotationsModified(const AnnotationModification& md);
@@ -78,6 +81,8 @@ private:
 
 protected:
     DrawSettings    drawSettings;
+
+    friend class ClearAnnotationsTask;
 };
 
 
@@ -121,6 +126,19 @@ protected:
 
     QBrush gradientMaskBrush;
 
+};
+
+class ClearAnnotationsTask:public Task {
+public:
+    ClearAnnotationsTask(const QList<Annotation*>& _list, AnnotationTableObject *_aobj, GSequenceLineViewAnnotated *_view):
+      Task("Clear annotations", TaskFlag_None), l(_list), aobj(_aobj), view(_view) {}
+    void run();
+    Task::ReportResult report();
+
+private:
+    QList<Annotation *> l;
+    AnnotationTableObject *aobj;
+    GSequenceLineViewAnnotated *view;
 };
 
 } // namespace

@@ -53,46 +53,34 @@ void RemoveAnnotationsTask::prepare()
     subGroup->findAllAnnotationsInGroupSubTree(annotations);
     toDelete = annotations.toList();
 
+    GTIMER(c1,t1,"RemoveAnnotationsTask::report");
+    
+    if (hasError() || isCanceled() )  {
+        return ;
+    }
+    
+    
+    if (aobj->isStateLocked()) {
+        stateInfo.setDescription(tr("Waiting for object lock released"));
+        return ;
+    }
+    stateInfo.setDescription("");
+    
+    int size = toDelete.size();
+    if (size == 0) {
+        return ;
+    }
+
+    aobj->removeAnnotationsInGroup(toDelete, subGroup);
 }
 
 
 
 
 Task::ReportResult RemoveAnnotationsTask::report() {
-    GTIMER(c1,t1,"RemoveAnnotationsTask::report");
-    
-    if (hasError() || isCanceled() )  {
-        return ReportResult_Finished;
-    }
-    
-    
-    if (aobj->isStateLocked()) {
-        stateInfo.setDescription(tr("Waiting for object lock released"));
+    if(aobj->isLocked()) {
         return ReportResult_CallMeAgain;
     }
-    stateInfo.setDescription("");
-    
-    int size = toDelete.size();
-    if (size == 0) {
-        return ReportResult_Finished;
-    }
-
-    int brk = qMin(pos + 500, size);
-    for (int i = pos; i < brk; i++)
-    {
-        Annotation* a = toDelete.at(i);
-        aobj->removeAnnotation(a);       
-    }
-    GTIMER(c2,t2,"RemoveAnnotationsTask::report");
-    tpm = Progress_Manual;
-    stateInfo.progress = 100*brk/size;
-    if (brk != size) {
-        pos = brk;
-        return ReportResult_CallMeAgain;
-    }
-    
-    aobj->getRootGroup()->removeSubgroup(subGroup);
-
     return ReportResult_Finished;
 }
 

@@ -23,6 +23,7 @@
 #define _U2_ANNOTATIONS_TREE_VIEW_
 
 #include <U2Core/global.h>
+#include <U2Core/Task.h>
 
 #include <QtCore/QFlags>
 #include <QtCore/QTimer>
@@ -46,6 +47,7 @@ class AnnotationSelection;
 class AnnotationGroupSelection;
 class AnnotationModification;
 class GObjectView;
+class RemoveItemsTask;
 
 enum ATVAnnUpdateFlag {
     ATVAnnUpdateFlag_BaseColumns = 0x1,
@@ -85,6 +87,7 @@ private slots:
 
     void sl_onAnnotationsAdded(const QList<Annotation*>&);
     void sl_onAnnotationsRemoved(const QList<Annotation*>&);
+    void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*);
     void sl_onAnnotationModified(const AnnotationModification& md);
     void sl_annotationObjectModifiedStateChanged();
 
@@ -194,6 +197,8 @@ private:
     AVGroupItem*            dropDestination;
 
     static const QString annotationMimeType;
+
+    friend class RemoveItemsTask;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -274,6 +279,25 @@ public:
     const QString qValue;
 };
 
+class RemoveItemsTask: public Task  {
+public:
+    RemoveItemsTask(AnnotationsTreeView *_treeView, AnnotationTableObject *_aObj, const QList<Annotation *>& list, AnnotationGroup *gr):
+    Task("Remove items", TaskFlag_None), treeView(_treeView), aObj(_aObj), as(list), parentGroup(gr) {}
+    void prepare();
+    void run();
+    Task::ReportResult report();
+
+private:
+    AnnotationsTreeView *treeView;
+    AnnotationTableObject* aObj;
+    QList<Annotation *> as;
+    AnnotationGroup *parentGroup;
+
+    QSet<AVGroupItem*> groupsToUpdate;
+    AVGroupItem* parentGroupItem;
+    Qt::ItemFlags flags;
+    QList<AVAnnotationItem *> itemsToDelete;
+};
 
 }//namespace
 

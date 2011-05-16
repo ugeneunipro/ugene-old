@@ -68,6 +68,8 @@ Overview::Overview(QWidget *p, ADVSequenceObjectContext *ctx) : GSequenceLineVie
             SLOT(sl_annotationsAdded(const QList<Annotation*>&)));
         connect(at, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation*>&)),
             SLOT(sl_annotationsRemoved(const QList<Annotation*>&)));
+        connect(at, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)), 
+            SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
         connect(at, SIGNAL(si_onAnnotationModified(const AnnotationModification&)),
             SLOT(sl_annotationModified(const AnnotationModification&)));
         connect(AppContext::getAnnotationsSettingsRegistry(),
@@ -110,6 +112,13 @@ void Overview::sl_annotationsRemoved(const QList<Annotation*>& a) {
 
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
+}
+
+void Overview::sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*) {
+    addUpdateFlags(GSLV_UF_AnnotationsChanged);
+    update();
+    AnnotationTableObject *aobj = static_cast<AnnotationTableObject*>(sender());
+    aobj->releaseLocker();
 }
 
 void Overview::sl_annotationModified(const AnnotationModification& md) {
