@@ -352,6 +352,9 @@ void AnnotationsTreeView::sl_onAnnotationSelectionChanged(AnnotationSelection*, 
     foreach(Annotation* a, removed) {
         foreach(AnnotationGroup* g, a->getGroups()) {
             AVAnnotationItem* item = findAnnotationItem(g, a);
+            if (item == NULL) {
+                continue;
+            }
             if (item->isSelected()) {
                 item->setSelected(false);
             }
@@ -362,6 +365,9 @@ void AnnotationsTreeView::sl_onAnnotationSelectionChanged(AnnotationSelection*, 
     foreach(Annotation* a, added) {
         foreach(AnnotationGroup* g, a->getGroups()) {
             AVAnnotationItem* item = findAnnotationItem(g, a);
+            if (item == NULL) {
+                continue;
+            }
             if (!item->isSelected()) {
                 item->setSelected(true);
                 selectedItems.append(item);

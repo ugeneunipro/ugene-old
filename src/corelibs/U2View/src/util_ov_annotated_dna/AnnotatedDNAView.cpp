@@ -814,6 +814,8 @@ void AnnotatedDNAView::addAutoAnnotations( ADVSequenceObjectContext* seqCtx )
     seqCtx->addAutoAnnotationObject(aa->getAnnotationObject());
     autoAnnotationsMap.insert(seqCtx, aa);
 
+    emit si_annotationObjectAdded(aa->getAnnotationObject());
+
     foreach(ADVSequenceWidget* w, seqCtx->getSequenceWidgets()) {
         AutoAnnotationsADVAction* aaAction = new AutoAnnotationsADVAction(w, aa);
         w->addADVSequenceWidgetAction( aaAction );
