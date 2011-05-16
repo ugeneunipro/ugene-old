@@ -414,7 +414,7 @@ void AssemblyReadsArea::mousePressEvent(QMouseEvent * e) {
         setCursor(Qt::ClosedHandCursor);
         mover = ReadsMover(browser->getCellWidth(), curPos);
     }
-    if(e->button() == Qt::RightButton) {
+    if(e->button() == Qt::RightButton && browser->areCellsVisible()) {
         updateMenuActions();
         readMenu->exec(QCursor::pos());
     }
@@ -596,6 +596,7 @@ void AssemblyReadsArea::updateMenuActions() {
 }
 
 void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
+    assert(!reads.isEmpty());
     ExportReadsDialog dlg(this, QList<DocumentFormatId>() << BaseDocumentFormats::PLAIN_FASTA << BaseDocumentFormats::FASTQ);
     int ret = dlg.exec();
     if(ret == QDialog::Accepted) {
@@ -641,7 +642,9 @@ void AssemblyReadsArea::sl_onExportRead() {
 }
 
 void AssemblyReadsArea::sl_onExportReadsOnScreen() {
-    exportReads(cachedReads.data);
+    if(!cachedReads.data.isEmpty()) {
+        exportReads(cachedReads.data);
+    }
 }
 
 } //ns
