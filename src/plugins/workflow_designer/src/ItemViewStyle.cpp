@@ -354,7 +354,8 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
         resizing = NoResize;
         break;
     case QEvent::GraphicsSceneMouseMove:
-        if (resizing) {
+        
+        if (resizing && event->spontaneous()) {
             QGraphicsSceneMouseEvent* me = (static_cast<QGraphicsSceneMouseEvent *>(event));
             WorkflowSettings::setSnap2Grid(false);
             QPointF newPos;
@@ -408,7 +409,9 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
                     newPos.setY(newPos.y() - (b2.height() - bounds.height()));
 
                     qreal minHeight = R + MARGIN*2;
-                    if (b2.height() < minHeight) {
+
+                    WorkflowScene * sc = qobject_cast<WorkflowScene*>(owner->scene());
+                    if (b2.height() < minHeight || newPos.y() < sc->sceneRect().top()) {
                         return true;
                     }
 
