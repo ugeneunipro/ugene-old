@@ -141,6 +141,7 @@ Section "Build"
     !insertmacro AddPlugin dbi_bam
     !insertmacro AddPlugin dbi_sqlite
     !insertmacro AddPlugin assembly_browser
+    !insertmacro AddPlugin dbi_file
 
     
     SetOutPath $INSTDIR\tools
