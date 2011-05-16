@@ -374,11 +374,12 @@ Task* SWWorker::tick() {
     if(seq.isNull()) {
         return new FailTask(tr("Null sequence supplied to Smith-Waterman: %1").arg(seq.getName()));
     }
-    QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().toUpper();
+    QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>();
     if(QFile::exists(ptrnStr)) {
         ptrnStr = readPatternsFromFile(ptrnStr);
     }
     ptrnStr.remove(" ");
+    ptrnStr = ptrnStr.toUpper();
     QByteArray ptrnBytes = QString(ptrnStr).remove(PATTERN_DELIMITER).toAscii();
     if(!seq.alphabet->containsAll(ptrnBytes.constData(), ptrnBytes.length())) {
         algoLog.error(tr("Incorrect value: pattern alphabet doesn't match sequence alphabet "));
