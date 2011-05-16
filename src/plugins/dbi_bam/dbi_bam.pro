@@ -45,3 +45,5 @@ SOURCES += \
     src/LoadBamInfoTask.cpp
 FORMS += \
     src/ConvertToSQLiteDialog.ui
+
+TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

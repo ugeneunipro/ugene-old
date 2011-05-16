@@ -36,3 +36,5 @@ SOURCES += src/AssemblyBrowser.cpp \
            src/CoveredRegionsManager.cpp \
            src/ExportReadsDialog.cpp
 FORMS +=   src/ui/ExportReadsDialog.ui
+
+TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

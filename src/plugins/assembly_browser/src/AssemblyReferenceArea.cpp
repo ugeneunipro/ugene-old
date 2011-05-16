@@ -38,7 +38,7 @@ QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), refere
     setMouseTracking(true);
     
     // setup menu
-    QAction * unassociateReferenceAction = referenceAreaMenu->addAction(tr("Remove association with assembly"));
+    QAction * unassociateReferenceAction = referenceAreaMenu->addAction(tr("Unassociate"));
     connect(unassociateReferenceAction, SIGNAL(triggered()), SIGNAL(si_unassociateReference()));
 }
 

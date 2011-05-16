@@ -69,9 +69,12 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
         }
     }
     ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 5);
-    ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
+    {
+        // TODO: deal with unmapped reads
+        //ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
+    }
     ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb");
-    ui.sourceUrlView->setText(sourceUrl.getURLString());
+    ui.sourceUrlView->setText(QDir::cleanPath(sourceUrl.getURLString()));
     ui.okButton->setFocus();
     connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_contigCheckChanged(QTableWidgetItem*)));
 }
@@ -124,7 +127,7 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
         }
 
         list << QPair<QString, QString>(BAMDbiPlugin::tr("URL"), sourceUrl.getURLString()) 
-            << QPair<QString, QString>(BAMDbiPlugin::tr("Format Version"), header.getFormatVersion().text) 
+            << QPair<QString, QString>(BAMDbiPlugin::tr("Format version"), header.getFormatVersion().text) 
             << QPair<QString, QString>(BAMDbiPlugin::tr("Sorting order"), sort);
 
         table->setRowCount(list.count());
@@ -208,13 +211,14 @@ bool ConvertToSQLiteDialog::addToProject() const {
 
 void ConvertToSQLiteDialog::accept() {
     destinationUrl = GUrl(ui.destinationUrlEdit->text());
-    bamInfo.setUnmappedSelected(ui.importUnmappedBox->checkState() == Qt::Checked);
+    // TODO: deal with unmapped reads
+    //bamInfo.setUnmappedSelected(ui.importUnmappedBox->checkState() == Qt::Checked);
     if(destinationUrl.isEmpty()) {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
-        QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destinaiton URL is not specified"));
+        QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination URL is not specified"));
     } else if(!destinationUrl.isLocalFile()) {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
-        QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destinaiton URL must point to a local file"));
+        QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination URL must point to a local file"));
     } else {
         bool selected = false;
         foreach(const bool& i, bamInfo.getSelected()) {
@@ -224,16 +228,17 @@ void ConvertToSQLiteDialog::accept() {
             }
         }
         if(!selected && !bamInfo.isUnmappedSelected()) {
-            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("At least one contig must be selected."));
+            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Please select contigs to import"));
             return;
         }
-        if(bamInfo.hasIndex() && selected && bamInfo.isUnmappedSelected()) {
-            if(QMessageBox::Cancel == QMessageBox::question(this, windowTitle(), BAMDbiPlugin::tr("With importing unmapped reads is not possible to use an index. Import may takes a long time.\nContinue?"),
-                QMessageBox::Ok, QMessageBox::Cancel)) 
-            {
-                return;
-            }
-        }
+        // TODO: deal with unmapped reads
+//         if(bamInfo.hasIndex() && selected && bamInfo.isUnmappedSelected()) {
+//             if(QMessageBox::Cancel == QMessageBox::question(this, windowTitle(), BAMDbiPlugin::tr("With importing unmapped reads is not possible to use an index. Import may takes a long time.\nContinue?"),
+//                 QMessageBox::Ok, QMessageBox::Cancel)) 
+//             {
+//                 return;
+//             }
+//         }
         
         Project * prj = AppContext::getProject();
         if(prj != NULL) {
@@ -276,7 +281,7 @@ void ConvertToSQLiteDialog::accept() {
 static const QString DIR_HELPER_DOMAIN("ConvertToSQLiteDialog");
 void U2::BAM::ConvertToSQLiteDialog::on_destinationUrlButton_clicked() {
     QString dir = sourceUrl.dirPath() + "/" + sourceUrl.baseFileName();
-    QString returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination SQLite File"), dir, BAMDbiPlugin::tr("SQLite Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite);
+    QString returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite);
     if(!returnedValue.isEmpty()) {
         ui.destinationUrlEdit->setText(returnedValue);
     }

@@ -472,10 +472,10 @@ void AssemblyBrowser::initFont() {
 }
 
 void AssemblyBrowser::setupActions() {
-    zoomInAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom In"), this);
+    zoomInAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom in"), this);
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomIn()));
 
-    zoomOutAction = new QAction(QIcon(":core/images/zoom_out.png"), tr("Zoom Out"), this);
+    zoomOutAction = new QAction(QIcon(":core/images/zoom_out.png"), tr("Zoom out"), this);
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOut()));
     
     QAction * linearScaleAction = new QAction(tr("Linear"), this);
@@ -493,13 +493,13 @@ void AssemblyBrowser::setupActions() {
     saveScreenShotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     connect(saveScreenShotAction, SIGNAL(triggered()), SLOT(sl_saveScreenshot()));
     
-    showInfoAction = new QAction(QIcon(":ugene/images/task_report.png"), tr("Show information about contig"), this);
+    showInfoAction = new QAction(QIcon(":ugene/images/task_report.png"), tr("Show assembly information"), this);
     connect(showInfoAction, SIGNAL(triggered()), SLOT(sl_showContigInfo()));
 }
 
 void AssemblyBrowser::sl_showContigInfo() {
     QDialog dlg(ui, Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
-    dlg.setWindowTitle(tr("'%1' contig information").arg(gobject->getGObjectName()));
+    dlg.setWindowTitle(tr("'%1' Contig Information").arg(gobject->getGObjectName()));
     dlg.setLayout(new QVBoxLayout());
     QLabel * infoLabel = new QLabel();
     {
