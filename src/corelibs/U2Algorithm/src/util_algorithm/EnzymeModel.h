@@ -38,13 +38,18 @@ class DNAAlphabet;
 #define QUALIFIER_LEFT_TERM             "5'term"
 #define QUALIFIER_LEFT_OVERHANG         "5'overhang"
 #define QUALIFIER_LEFT_TYPE             "5'type"
+#define QUALIFIER_LEFT_STRAND           "5'strand"
 #define QUALIFIER_RIGHT_TERM            "3'term"
 #define QUALIFIER_RIGHT_OVERHANG        "3'overhang"
 #define QUALIFIER_RIGHT_TYPE            "3'type"
+#define QUALIFIER_RIGHT_STRAND          "3'strand"
 #define QUALIFIER_SOURCE                "fragment_source"
 #define QUALIFIER_INVERTED              "fragment_inverted"
 #define OVERHANG_TYPE_BLUNT             "blunt"
 #define OVERHANG_TYPE_STICKY            "sticky"
+#define OVERHANG_STRAND_DIRECT          "direct"
+#define OVERHANG_STRAND_COMPL           "rev-compl"
+
 #define ANNOTATION_GROUP_FRAGMENTS      "fragments"
 #define ANNOTATION_GROUP_ENZYME         "enzyme"
 
