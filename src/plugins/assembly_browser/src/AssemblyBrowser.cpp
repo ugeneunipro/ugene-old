@@ -652,6 +652,13 @@ void AssemblyBrowser::sl_zoomOut(const QPoint & pos) {
     emit si_zoomOperationPerformed();
 }
 
+void AssemblyBrowser::sl_zoomToReads() {
+    if(!areReadsVisible()) {
+        zoomInFromSize(0);
+        emit si_zoomOperationPerformed();
+    }
+}
+
 int AssemblyBrowser::zoomInFromSize(int oldCellSize) {
     assert(oldCellSize >= 0);
     //single decreasing of the zoomFactor not always changes the cell size

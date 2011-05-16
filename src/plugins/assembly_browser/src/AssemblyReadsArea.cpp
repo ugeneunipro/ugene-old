@@ -158,11 +158,13 @@ void AssemblyReadsArea::drawAll() {
     }
 }
 
+const static QString ZOOM_LINK("zoom");
+
 void AssemblyReadsArea::drawWelcomeScreen(QPainter & p) {
     GTIMER(c1, t1, "AssemblyReadsArea::drawDensityGraph");
 
     cachedReads.clear();
-    QString text = tr("Zoom in to see the reads");
+    QString text = tr("<a href=\"%1\">Zoom in to see the reads</a>").arg(ZOOM_LINK);
 
     QList<CoveredRegion> coveredRegions = browser->getCoveredRegions();
     if(!coveredRegions.empty()) {
@@ -549,12 +551,16 @@ void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
 }
 
 void AssemblyReadsArea::sl_coveredRegionClicked(const QString & link) {
-    bool ok;
-    int i = link.toInt(&ok);
-    assert(ok);
-    CoveredRegion cr = browser->getCoveredRegions().at(i);
-    ui->getOverview()->checkedSetVisibleRange(cr.region);
-    browser->navigateToRegion(ui->getOverview()->getVisibleRange());
+    if(ZOOM_LINK == link) {
+        browser->sl_zoomToReads();
+    } else {
+        bool ok;
+        int i = link.toInt(&ok);
+        assert(ok);
+        CoveredRegion cr = browser->getCoveredRegions().at(i);
+        ui->getOverview()->checkedSetVisibleRange(cr.region);
+        browser->navigateToRegion(ui->getOverview()->getVisibleRange());
+    }
 }
 
 void AssemblyReadsArea::sl_onHScrollMoved(int pos) {

@@ -89,13 +89,6 @@ public:
 
     void navigateToRegion(const U2Region & region);
 
-    // utility functions for zooming
-    bool canPerformZoomIn() const {return zoomInAction->isEnabled();}
-    bool canPerformZoomOut() const {return zoomOutAction->isEnabled();}
-    int zoomInFromSize(int oldCellSize);
-    int zoomOutFromSize(int oldCellSize);
-    void updateZoomingActions();
-    
     // other
     inline QSharedPointer<AssemblyModel> getModel() const {return model;}
     inline QFont getFont() const {return font;}
@@ -104,6 +97,7 @@ public:
 public slots:
     void sl_zoomIn(const QPoint & pos = QPoint());
     void sl_zoomOut(const QPoint & pos = QPoint());
+    void sl_zoomToReads();
 
 signals:
     void si_offsetsChanged();
@@ -128,6 +122,13 @@ private:
     void clear();
     // returns error string
     QString tryAddObject(GObject * obj);
+
+    // utility functions for zooming
+    bool canPerformZoomIn() const {return zoomInAction->isEnabled();}
+    bool canPerformZoomOut() const {return zoomOutAction->isEnabled();}
+    int zoomInFromSize(int oldCellSize);
+    int zoomOutFromSize(int oldCellSize);
+    void updateZoomingActions();
 
 private:
     AssemblyBrowserUi * ui;
