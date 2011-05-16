@@ -120,7 +120,8 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     //5. draw cached labels. Skip labels intersecting the cursor label
     assert(cachedLabelsRects.size() == cachedLabels.size());
     for(int i = 0; i < cachedLabels.size(); i++) {
-        if(!cachedLabelsRects.at(i).intersects(offsetRect)) {
+        const QRect & labelRect = cachedLabelsRects.at(i);
+        if(!labelRect.intersects(offsetRect) && rect().contains(labelRect)) {
             p.drawImage(cachedLabelsRects.at(i), cachedLabels.at(i));
         }
     }
