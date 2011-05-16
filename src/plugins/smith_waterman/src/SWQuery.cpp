@@ -245,7 +245,10 @@ SWQDActorFactory::SWQDActorFactory() {
         "<p>Under the hood is the well-known Smith-Waterman algorithm for performing local sequence alignment."));
 
     QStringList filterLst = AppContext::getSWResultFilterRegistry()->getFiltersIds();
-    QString defFilter = filterLst.isEmpty() ? QString() : filterLst.first();
+    QString defFilter = SWRF_EmptyFilter().getId();
+    if(!filterLst.contains(defFilter)) {
+        defFilter = AppContext::getSWResultFilterRegistry()->getDefaultFilterId();
+    }
 
     Descriptor pd(PATTERN_ATTR, QDSWActor::tr("Pattern"), QDSWActor::tr("A subsequence pattern to look for."));
     Descriptor scd(SCORE_ATTR, QDSWActor::tr("Min score"), QDSWActor::tr("The search stringency."));
