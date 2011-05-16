@@ -96,6 +96,7 @@ class U2CORE_EXPORT AutoAnnotationsSupport : public QObject
 public:
     ~AutoAnnotationsSupport();
     void registerAutoAnnotationsUpdater(AutoAnnotationsUpdater* updater);
+    void unregisterAutoAnnotationsUpdater(AutoAnnotationsUpdater* updater);
     QList<AutoAnnotationsUpdater*> getAutoAnnotationUpdaters();
     AutoAnnotationsUpdater* findUpdaterByGroupName(const QString& groupName);
     AutoAnnotationsUpdater* findUpdaterByName(const QString& name);

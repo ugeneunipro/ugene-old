@@ -3,7 +3,17 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectTypes.h>
 
+#include <fstream>
+#include <set>
+#include <iomanip>
+
 #include <QProgressDialog>
+#include <QtGui/QMessageBox>
+#include <QFile>
+#include <QFileDialog>
+#include <QTime>
+#include <QDomDocument>
+
 namespace U2 {
 
 const std::string ExpertDiscoveryData::FAMILY_LETTERS = "_LETTERS_";
@@ -11,19 +21,26 @@ const std::string ExpertDiscoveryData::FAMILY_LETTERS_METHOD = "EXPERT_DISCOVERY
 
 ExpertDiscoveryData::ExpertDiscoveryData (){
     recognizationBound = 0;
+    modified = false;
 }
 
 void ExpertDiscoveryData::setPosBase(const QList<GObject*> & objects){
 	foreach(GObject* obj, objects){
 		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-			posBase.addSequence(prerareSequence(obj));
+            Sequence& seq = prerareSequence(obj);
+            seq.setHasScore(false);
+            posBase.addSequence(seq);
+            recDataStorage.addSequence(QString::fromStdString(seq.getName()));
 		}
 	}
 }
 void ExpertDiscoveryData::setNegBase(const QList<GObject*> & objects){
 	foreach(GObject* obj, objects){
 		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-			negBase.addSequence(prerareSequence(obj));
+            Sequence& seq = prerareSequence(obj);
+            seq.setHasScore(false);
+			negBase.addSequence(seq);
+            recDataStorage.addSequence(QString::fromStdString(seq.getName()));
 		}
 	}
 }
@@ -31,7 +48,10 @@ void ExpertDiscoveryData::setNegBase(const QList<GObject*> & objects){
 void ExpertDiscoveryData::setConBase(const QList<GObject*> & objects){
 	foreach(GObject* obj, objects){
 		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-			conBase.addSequence(prerareSequence(obj));
+            Sequence& seq = prerareSequence(obj);
+            seq.setHasScore(false);
+			conBase.addSequence(seq);
+            recDataStorage.addSequence(QString::fromStdString(seq.getName()));
 		}
 	}
 }
@@ -85,6 +105,8 @@ void ExpertDiscoveryData::markupLetters(void){
 	if (conBase.getSize() != 0)
 		markupLetters(conBase, conAnn);
 
+    setModifed();
+
 }
 void ExpertDiscoveryData::markupLetters(SequenceBase& rBase, MarkingBase& rAnn){
 	std::string strFamilyName = ExpertDiscoveryData::FAMILY_LETTERS;
@@ -121,6 +143,8 @@ bool ExpertDiscoveryData::updateScore(Sequence& rSeq){
     rSeq.setScore(0);
     rSeq.setHasScore(false);
 
+    setModifed();
+
     // Evaluation of sequence score
     double dScore = 0;
     
@@ -147,6 +171,8 @@ void ExpertDiscoveryData::optimizeRecognizationBound(){
     }
     dPosScore /= posBase.getSize();
 
+    setModifed();
+
     double dNegScore = 0;
     for (int i=0; i<negBase.getSize(); i++)
     {
@@ -165,20 +191,14 @@ void ExpertDiscoveryData::setRecBound(){
         return;
     vector<double> vPosScore = posBase.getScores();
     vector<double> vNegScore = negBase.getScores();
-    /*CSetupRecBoundDlg dlg(m_dRecognizationBound, vPosScore, vNegScore, m_bLargeSequenceMode, m_nWindowSize);
-    if (dlg.DoModal() == IDOK) {
-        m_dRecognizationBound = dlg.GetRecognizationBound();
-        m_bLargeSequenceMode = dlg.LargeSequenceMode();
-        m_nWindowSize = dlg.GetWindowSize();
-        m_ControlBase.clearScores();
-        SetModifiedFlag();
-        CDocument::UpdateAllViews(NULL, -1);
-    }*/
+   
     ExpertDiscoverySetupRecBoundDialog dlg(recognizationBound, vPosScore, vNegScore);
     if(dlg.exec()){
         recognizationBound = dlg.getRecognizationBound();
         conBase.clearScores();
     }
+
+    setModifed();
 }
 bool ExpertDiscoveryData::updateScores(){
  
@@ -258,13 +278,14 @@ void ExpertDiscoveryData::switchSelection(EDProjectItem* pItem, bool upd){
         selectedSignals.RemoveSignal(pSignal);
     else {
         if (!pSignal->isPriorParamsDefined()) {
-            //onSetCurrentSignalParamsAsPrior(pPICS, bUpdate);
+            onSetCurrentSignalParamsAsPrior(pPICS, upd);
         }
 
         selectedSignals.AddSignal(pSignal);
     }
     clearScores();
 
+    setModifed();
 }
 
 bool ExpertDiscoveryData::isSignalSelected(const EDProjectItem* pItem){
@@ -290,6 +311,7 @@ void ExpertDiscoveryData::onSetCurrentSignalParamsAsPrior(EDPICS *pItem, bool bU
             //UpdateAllViews(NULL, CURRENT_ITEM_CHANGED, pItem);
             clearScores();
         }
+        setModifed();
     }
 }
 void ExpertDiscoveryData::onClearSignalPriorParams(EDPICS *pItem){
@@ -304,6 +326,456 @@ void ExpertDiscoveryData::onClearSignalPriorParams(EDPICS *pItem){
         pItem->update(false);
         //UpdateAllViews(NULL, CURRENT_ITEM_CHANGED, pItem);
         clearScores();
+        setModifed();
+    }
+}
+
+SequenceType ExpertDiscoveryData::getSequenceTypeByName(const QString& seqName){
+    if(posBase.getObjNo(seqName.toStdString().c_str()) != -1){
+        return POSITIVE_SEQUENCE;
+    }else if(negBase.getObjNo(seqName.toStdString().c_str()) != -1){
+        return NEGATIVE_SEQUENCE;
+    }else if(conBase.getObjNo(seqName.toStdString().c_str()) != -1){
+        return CONTROL_SEQUENCE;
+    }else{
+        return UNKNOWN_SEQUENCE;
+    }
+}
+
+bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secondF, const QString& thirdF, bool generateDescr){
+
+    clearScores();
+    posAnn.clear();
+    negAnn.clear();
+    desc.clear();
+ 
+    QString strPosName = firstF;
+    try {
+        if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
+            if (!loadAnnotation(posAnn, posBase, strPosName))
+                throw runtime_error("Failed");
+        }
+        else {
+            ifstream fPosAnn(strPosName.toStdString().c_str());  
+            posAnn.load(fPosAnn);
+        }
+     }
+     catch (exception& ex) {
+        posAnn.clear();
+        QString str = "Positive annotation: ";
+        str += ex.what();
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+        mb.exec();
+        return false;
+     }
+
+    QString strNegName = secondF;
+    try {
+        if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
+            if (!loadAnnotation(negAnn, negBase, strNegName))
+                throw runtime_error("Failed");
+        }
+        else {
+            ifstream fNegAnn(strNegName.toStdString().c_str());
+            negAnn.load(fNegAnn);
+        }
+    }
+    catch (exception& ex) {
+        posAnn.clear();
+        negAnn.clear();
+        QString str = "Negative annotation: ";
+        str += ex.what();
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+        mb.exec();
+        return false;
+    }
+
+    try {
+        if (generateDescr) {
+            if (!generateDescription())
+                throw runtime_error("Failed");
+        }
+        else {
+            ifstream fDesc( thirdF.toStdString().c_str() );
+            desc.load(fDesc);
+        }
+    }
+    catch (exception& ex) {
+        posAnn.clear();
+        negAnn.clear();
+        desc.clear();
+        QString str = "Description: ";
+        str += ex.what();
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+        mb.exec();
+        return false;
+    }
+
+    posBase.setMarking(posAnn);
+    negBase.setMarking(negAnn);
+
+    return true;
+}
+
+bool ExpertDiscoveryData::loadAnnotation(MarkingBase& base, const SequenceBase& seqBase, QString strFileName){
+
+    QDomDocument pDoc;
+    QFile xmlFile (strFileName);
+    if(!xmlFile.open(QIODevice::ReadOnly)){
+        return false;
+    }
+    if (!pDoc.setContent(&xmlFile)) {
+        xmlFile.close();
+        return false;
+    }
+    xmlFile.close();
+
+    QDomElement pFamilies = pDoc.documentElement();
+    if(pFamilies.tagName() != "markup"){
+        return false;
+    }
+
+    QDomNode pFamilyNode = pFamilies.firstChild();
+    while(!pFamilyNode.isNull()){
+        QDomElement pFamily = pFamilyNode.toElement();
+        if(pFamily.tagName() == "family"){
+            QString familyName = pFamily.attribute("name");
+            //family
+
+            QDomNode pSignalNode = pFamily.firstChild();
+            if(pSignalNode.toElement().tagName() != "signal"){
+                return false;
+            }
+            while(!pSignalNode.isNull()){
+                QDomElement pSignal = pSignalNode.toElement();
+                if(pSignal.tagName() == "signal"){
+                    QString signalName = pSignal.attribute("name");
+                    //signal
+
+                    QDomNode pSequenceNode = pSignal.firstChild();
+                    if(pSequenceNode.toElement().tagName() != "sequence"){
+                        return false;
+                    }
+                    while(!pSequenceNode.isNull()){
+                        QDomElement pSequence = pSequenceNode.toElement();
+                        if(pSequence.tagName() == "sequence"){
+                            QString sequenceId = pSequence.attribute("id");
+                            int cutPos = sequenceId.indexOf(">");
+                            if(cutPos >= 0){
+                                sequenceId = sequenceId.right(sequenceId.length() - cutPos - 1);
+                            }
+                            sequenceId = sequenceId.trimmed();
+                            
+                            //sequence
+
+                            int objN = seqBase.getObjNo(sequenceId.toStdString().c_str());
+                            if(objN >= 0){
+                                QDomNode pInstanceNode = pSequence.firstChild();
+                                if(pInstanceNode.toElement().tagName() != "instance"){
+                                    return false;
+                                }
+                                Marking mrk;
+                                try {
+                                    mrk = base.getMarking(objN);
+                                }
+                                catch (...) {}
+                                while(!pInstanceNode.isNull()){
+                                    QDomElement pInstance = pInstanceNode.toElement();
+                                    if(pInstance.tagName() == "instance"){
+                                        int startPos = pInstance.attribute("start").toInt() - 1;
+                                        int endPos = pInstance.attribute("end").toInt() - 1;
+                                        if (endPos >= startPos && startPos >= 0) {
+                                            mrk.set(signalName.toStdString(), familyName.toStdString(), DDisc::Interval(startPos, endPos));
+                                        }
+                                        //instance
+                                    }
+                                    pInstanceNode = pInstanceNode.nextSibling();
+                                }
+                                base.setMarking(objN, mrk);
+                            }
+                            
+                        }
+                        pSequenceNode = pSequenceNode.nextSibling();
+                    }
+                }
+                pSignalNode = pSignalNode.nextSibling();
+            }
+        }
+        pFamilyNode = pFamilyNode.nextSibling();
+    }
+    return true;  
+       
+}
+
+bool ExpertDiscoveryData::generateDescription(){
+    desc.clear();
+    SequenceBase* seqBase = &posBase;
+    MarkingBase* base = &posAnn; 
+    for (int k=0; k<2; k++) {
+        for (int i=0; i<seqBase->getSize(); i++) {
+            try {
+                Marking mrk = base->getMarking(i);
+                set<std::string> families = mrk.getFamilies();
+                set<std::string>::iterator i = families.begin();
+                while (i != families.end()) {
+                    set<std::string> edsignals = mrk.getSignals(*i);
+                    set<std::string>::iterator j = edsignals.begin();
+                    while (j != edsignals.end()) {
+                        MetaInfo mi;
+                        mi.setName(*j);
+                        mi.setMethodName("Generated");
+                        desc.insert((*i).c_str(), mi);
+                        j++;
+                    }
+                    i++;
+                }
+            }
+            catch (...) {}
+        }
+        seqBase = &negBase;
+        base = &negAnn;
+    }
+    return true;
+}
+
+void ExpertDiscoveryData::loadControlSequenceAnnotation(const QString& fileName){
+    ifstream in(fileName.toStdString().c_str());
+    if (!in.is_open()) {
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), "Can't open file");
+        mb.exec();
+    }
+    try {
+        conAnn.load(in);
+        conBase.setMarking(conAnn);
+    }
+    catch (exception& ) {
+        conBase.clearMarking();
+        conAnn.clear();
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), "Error loading control markup");
+        mb.exec();
+    }
+    if (isLettersMarkedUp() && conBase.getSize() != 0)
+        markupLetters(conBase, conAnn);
+}
+
+void ExpertDiscoveryData::cleanup(){
+    recDataStorage.clear();
+    selectedSignals.Clear();
+
+    posBase.clear();
+    negBase.clear();
+    conBase.clear();
+
+    desc.clear();
+    posAnn.clear();
+    negAnn.clear();
+    conAnn.clear();
+
+    clearSelectedSequencesList();
+
+}
+
+void ExpertDiscoveryData::addSequenceToSelected(EDPISequence* seq){
+    selSequences.append(seq);
+}
+void ExpertDiscoveryData::clearSelectedSequencesList(){
+    selSequences.clear();
+}
+bool ExpertDiscoveryData::isSequenceSelected(EDPISequence* seq){
+    return selSequences.contains(seq);
+}
+
+QList<EDPISequence*> ExpertDiscoveryData::getSelectetSequencesList(){
+    return selSequences;
+}
+
+void ExpertDiscoveryData::generateRecognitionReportFull(){
+    QFileDialog saveRepDialog;
+    saveRepDialog.setFileMode(QFileDialog::AnyFile);
+    saveRepDialog.setNameFilter(tr("Hypertext files (*.htm *.html)"));
+    saveRepDialog.setViewMode(QFileDialog::Detail);
+
+    if(saveRepDialog.exec()){
+        QStringList fileNames = saveRepDialog.selectedFiles();
+        if(fileNames.isEmpty()) return;
+
+        QString fileName = fileNames.first();
+        fileName = fileName+".htm";
+        ofstream out(fileName.toStdString().c_str());
+        if(!updateScores()){
+            return;
+        }
+        if(!out.is_open()){
+            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+            mb.exec();
+            return;
+        }
+
+        if(!generateRecognizationReportHeader(out) ||
+           !generateRecognizationReport(out, posBase, "Positive", false) ||
+           !generateRecognizationReport(out, negBase, "Negative", true) ||
+           (conBase.getSize() != 0 && !generateRecognizationReport(out, conBase, "Control", true)) ||
+           !generateRecognizationReportFooter(out))
+        {
+            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+            mb.exec();
+            return;
+        }
+
+    }
+}
+bool ExpertDiscoveryData::generateRecognizationReportHeader(ostream& out) const{
+    
+    out << "<HTML><HEAD><TITLE>ExpertDiscovery 2.0 and UGENE: Recognization report</TITLE></HEAD><BODY>" << endl
+        << "<H1>ExpertDiscovery 2.0 and UGENE: Recognization report</H1><BR>" << endl
+        << "<I>Report genrated at " << (QDateTime::currentDateTime().toString("hh:mm on dd/MM/yyyy").toStdString())
+        << "<BR>Recognization bound was set to " << recognizationBound
+        << "</I><BR><BR><BR>" << endl;
+    return true;
+}
+bool ExpertDiscoveryData::generateRecognizationReportFooter(ostream& out) const{
+    out << "</BODY></HTML>";
+    return true;
+}
+bool ExpertDiscoveryData::generateRecognizationReport(ostream& out, const SequenceBase& rBase, QString strName, bool bSuppressNulls){
+
+    if (&rBase == &posBase)
+    {
+        return generateRecognizationReportPositive(out, strName, bSuppressNulls);
+    }
+
+    if(rBase.getSize() == 0){
+        return true;
+    }
+
+    int nRecognized = 0;
+    int nNulls = 0;
+    for (int i=0; i<rBase.getSize(); i++)
+    {
+        Sequence& rSeq = const_cast<Sequence&>(rBase.getSequence(i));
+        updateScore(rSeq);
+        double dScore = rSeq.getScore();
+        if (dScore > recognizationBound) nRecognized++;
+        if (dScore == 0) nNulls++;
+    }
+    out << "<BR><H2>" << strName.toStdString() << " base</H2><BR>"
+        << "Total sequences: <I>" << rBase.getSize() << "</I><BR>"
+        << "Recognized sequences: <I>" << nRecognized << "</I><BR>";
+
+    if (bSuppressNulls)
+        out << "Sequences with zero score: <I>" << nNulls << "</I><BR>";
+
+    out	<< "Details: <BR>"
+        << "<TABLE border=1>"
+        << "<TR align=center><TD>Sequence No</TD><TD>Sequence Name</TD><TD>Score</TD><TD>Result</TD></TR>" << endl;
+
+    for (int i=0; i<rBase.getSize(); i++)
+    {
+        const Sequence& rSeq = rBase.getSequence(i);
+        if (bSuppressNulls && rSeq.getScore()==0) continue;
+        const char* result = (rSeq.getScore() >= recognizationBound)?"Recognized":"Not recognized";
+        out << "<TR align=center><TD>" << i+1 << "</TD>"
+            << "<TD>" << rSeq.getName() << "</TD>"
+            << "<TD>" << rSeq.getScore() << "</TD>"
+            << "<TD>" << result << "</TD></TR>" << endl;
+    }
+
+    out << "</TABLE><BR>";
+    return true;
+}
+
+bool ExpertDiscoveryData::generateRecognizationReportPositive(ostream& out, QString strName, bool bSuppressNulls){
+    const SequenceBase& rBase = posBase;
+   
+    int nRecognized = 0;
+    int nNulls = 0;
+    for (int i=0; i<rBase.getSize(); i++)
+    {
+        Sequence& rSeq = const_cast<Sequence&>(rBase.getSequence(i));
+        updateScore(rSeq);
+        double dScore = rSeq.getScore();
+        if (dScore > recognizationBound) nRecognized++;
+        if (dScore == 0) nNulls++;
+    }
+    out << "<BR><H2>" << strName.toStdString() << " base</H2><BR>"
+        << "Total sequences: <I>" << rBase.getSize() << "</I><BR>"
+        << "Recognized sequences: <I>" << nRecognized << "</I><BR>";
+
+    if (bSuppressNulls)
+        out << "Sequences with zero score: <I>" << nNulls << "</I><BR>";
+
+    out	<< "Details: <BR>"
+        << "<TABLE border=1>"
+        << "<TR align=center><TD>Sequence No</TD><TD>Sequence Name</TD><TD>Score</TD><TD>Result</TD><TD>FP_Learning</TD><TD>FP_Control</TD></TR>" << endl;
+
+    for (int i=0; i<rBase.getSize(); i++)
+    {
+        const Sequence& rSeq = rBase.getSequence(i);
+        if (bSuppressNulls && rSeq.getScore()==0) continue;
+        double fp_control = getSequencesCountWithScoreMoreThan(rSeq.getScore(), conBase) / (double) conBase.getSize();
+        double fp_learning = getSequencesCountWithScoreMoreThan(rSeq.getScore(), negBase) / (double) negBase.getSize();
+
+        const char* result = (rSeq.getScore() >= recognizationBound)?"Recognized":"Not recognized";
+        out << "<TR align=center><TD>" << i+1 << "</TD>"
+            << "<TD>" << rSeq.getName() << "</TD>"
+            << "<TD>" << rSeq.getScore() << "</TD>"
+            << "<TD>" << result << "</TD>"
+            << "<TD>" << setiosflags(ios::scientific) << fp_learning << "</TD>"
+            << "<TD>" << fp_control << resetiosflags(ios::scientific) << "</TD></TR>" << endl;
+    }
+
+    out << "</TABLE><BR>";
+    return true;
+}
+
+int ExpertDiscoveryData::getSequencesCountWithScoreMoreThan(double dScore, const SequenceBase& rBase) const{
+    int result = 0;
+    for (int i=0; i<rBase.getSize(); i++) {
+        const Sequence& rSeq = rBase.getSequence(i);
+        if (rSeq.getScore() > dScore)
+            result++;
+    }
+    return result;
+}
+
+void ExpertDiscoveryData::generateRecognizationReport(EDProjectItem* pItem){
+    EDPISequenceBase* pBase = dynamic_cast<EDPISequenceBase*>(pItem);
+    if (!pBase)
+    {
+        assert(0);
+        return;
+    }
+
+    QFileDialog saveRepDialog;
+    saveRepDialog.setFileMode(QFileDialog::AnyFile);
+    saveRepDialog.setNameFilter(tr("Hypertext files (*.htm *.html)"));
+    saveRepDialog.setViewMode(QFileDialog::Detail);
+
+    if(saveRepDialog.exec()){
+        QStringList fileNames = saveRepDialog.selectedFiles();
+        if(fileNames.isEmpty()) return;
+
+        QString fileName = fileNames.first();
+        fileName = fileName+".htm";
+        ofstream out(fileName.toStdString().c_str());
+        if(!updateScores()){
+            return;
+        }
+        if(!out.is_open()){
+            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+            mb.exec();
+            return;
+        }
+
+        if(!generateRecognizationReportHeader(out) ||
+            !generateRecognizationReport(out, pBase->getSequenceBase(), pBase->getName(), true) ||
+            !generateRecognizationReportFooter(out))
+        {
+            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+            mb.exec();
+            return;
+        }
+
     }
 }
 

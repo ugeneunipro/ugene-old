@@ -120,6 +120,26 @@ QAction* AutoAnnotationsADVAction::findToggleAction( const QString& groupName )
     return NULL;
 }
 
+void AutoAnnotationsADVAction::addUpdaterToMenu(AutoAnnotationsUpdater* updater){
+    AutoAnnotationConstraints constraints;
+    if (seqWidget->getSequenceContexts().count() > 0) {
+            constraints.alphabet = seqWidget->getSequenceContexts().first()->getAlphabet();
+    }
+
+    QAction* toggleAction = new QAction(updater->getName(), this);
+    toggleAction->setProperty(AUTO_ANNOTATION_GROUP_NAME, updater->getGroupName());
+    bool enabled = updater->checkConstraints(constraints);
+    toggleAction->setEnabled(enabled);
+    toggleAction->setCheckable(true);
+    bool checked = updater->isCheckedByDefault();
+    toggleAction->setChecked(checked);
+    aaObj->setGroupEnabled(updater->getGroupName(), checked);
+    connect( toggleAction, SIGNAL(toggled(bool)), SLOT(sl_toggle(bool)) );
+    menu->addAction(toggleAction);
+
+    menu->update();
+}
+
 void AutoAnnotationsADVAction::sl_autoAnnotationUpdateStarted()
 {
     setEnabled(false);

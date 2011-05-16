@@ -1003,6 +1003,16 @@ void AnnotatedDNAView::updateAutoAnnotations()
     }
 }
 
+void AnnotatedDNAView::addAutoAnnotationsUpdated(AutoAnnotationsUpdater* updater){
+    
+    foreach(ADVSequenceObjectContext* advContext, seqContexts){
+        AutoAnnotationsADVAction* autoAnnotAction = AutoAnnotationUtils::findAutoAnnotationADVAction(advContext);
+        if(autoAnnotAction){
+            autoAnnotAction->addUpdaterToMenu(updater);
+        }
+     }
+}
+
 void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged()
 {
     Task* t = qobject_cast<Task*> (sender());

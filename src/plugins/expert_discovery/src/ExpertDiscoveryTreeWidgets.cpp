@@ -374,6 +374,8 @@ EDPIPropertyTypeDistType::EDPIPropertyTypeDistType()
 ////////////////////////////////////////////////////////////
 EDProjectItem::EDProjectItem():QTreeWidgetItem(), mInf(NULL){
     setName("");
+    sortField = ED_FIELD_UNDEFINED;
+    sortOrd = ED_ORDER_DECREASING;
 }
 EDProjectItem::~EDProjectItem(){
     clearGroups();
@@ -416,6 +418,327 @@ const EDProjectItem* EDProjectItem::findItemConnectedTo(void *pData) const{
     }
     return NULL;
 
+}
+
+bool EDProjectItem::operator<(const QTreeWidgetItem &other) const{
+    const EDProjectItem* pItem1 = dynamic_cast<const EDProjectItem*>(this);
+    const EDProjectItem* pItem2 = dynamic_cast<const EDProjectItem*>(&other);
+
+    if(!pItem2 || !pItem1){
+         return QTreeWidgetItem::operator<(other);
+    }
+    EItemType type1 = pItem1->getType();
+    EItemType type2 = pItem2->getType();
+
+    if(sortOrd == ED_ORDER_DECREASING){
+       
+        if (type1 == PIT_CS && type2 == PIT_CS){
+            const EDProjectItem* pItem3;
+            pItem3 = pItem1;
+            pItem1 = pItem2;
+            pItem2 = pItem3;
+
+        }
+    }
+    if (type1 == PIT_CS && type2 == PIT_CS){
+        const Signal* pSnl1 = ((EDPICS*) pItem1)->getSignal();
+        const Signal* pSnl2 = ((EDPICS*) pItem2)->getSignal();
+        switch (sortField) {
+         case ED_FIELD_UNDEFINED: return QTreeWidgetItem::operator<(other);
+         case ED_FIELD_PROBABILITY: return (pSnl1->getPriorProbability()<pSnl2->getPriorProbability());
+         case ED_FIELD_COVERAGE: return (pSnl1->getPriorPosCoverage()<pSnl2->getPriorPosCoverage());
+         case ED_FIELD_FISHER: return (pSnl1->getPriorFisher()<pSnl2->getPriorFisher());
+         case ED_FIELD_NAME:
+         default: return pItem1->getName() < pItem2->getName();
+
+        }
+    }else if ( (type1 == PIT_CS_FOLDER || type1 == PIT_CS || type1 == PIT_MRK_ITEM) &&
+        (type2 == PIT_CS_FOLDER || type2 == PIT_CS || type2 == PIT_MRK_ITEM)) 
+    {
+        if ((int)type1 < (int)type2)
+            return false;
+        else 
+            if ((int)type1 > (int)type2)
+                return true;
+            else 
+                return pItem1->getName() < pItem2->getName();
+    }else return QTreeWidgetItem::operator<(other);;
+}
+/////////////////////////////////////////////////////////////////////////////////////
+
+EDPISequenceRoot::EDPISequenceRoot(ExpertDiscoveryData& edD) 
+:edData(edD)
+{
+    update(true);
+}
+
+EDPISequenceRoot::~EDPISequenceRoot() 
+{
+}
+
+EItemType EDPISequenceRoot::getType() const {
+    return PIT_SEQUENCEROOT;
+}
+
+void EDPISequenceRoot::update(bool bUpdateChildren)
+{
+    QString strName = "Sequences";
+    setName(strName);
+    clearGroups();
+
+    if (bUpdateChildren) {
+        takeChildren();
+        
+        addChild(new EDPIPosSequenceBase(edData.getPosSeqBase(), edData));
+        addChild(new EDPINegSequenceBase(edData.getNegSeqBase(), edData));	
+        //if (pDoc->GetControlSeqBase().getSize() != 0)
+            addChild(new EDPIControlSequenceBase(edData.getConSeqBase(), edData));
+    }
+}
+
+
+
+bool EDPISequenceRoot::isConnectedTo(void *pData) const
+{
+    return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+EDPISequenceBase::EDPISequenceBase(QString strName, const SequenceBase& rSeqBase, ExpertDiscoveryData& edD)
+: m_rSeqBase (rSeqBase)
+,edData(edD)
+{
+    //assert(strName != NULL);
+    setName(strName);
+    update(true);
+}
+
+void EDPISequenceBase::update(bool bUpdateChildren) 
+{
+    clearGroups();
+    takeChildren();
+
+    int nSize = m_rSeqBase.getSize();
+
+    QString strSize = "Size";
+    QString strGenInfo = "General information";
+    
+
+    EDPIProperty PropSize(strSize);
+    PropSize.setCallback(new Callback<const DDisc::SequenceBase, int>(&m_rSeqBase, &DDisc::SequenceBase::getSize));
+
+    EDPIPropertyGroup GenInfo(strGenInfo);
+    GenInfo.addProperty(PropSize);
+    addGroup(GenInfo);
+
+    if (bUpdateChildren) {
+        for (int id=0; id<nSize; id++)
+            addChild(new EDPISequence(m_rSeqBase, id, edData));
+    }
+}
+
+EDPISequenceBase::~EDPISequenceBase() 
+{
+}
+
+const SequenceBase& EDPISequenceBase::getSequenceBase() const 
+{
+    return m_rSeqBase;
+}
+
+bool EDPISequenceBase::isConnectedTo(void *pData) const
+{
+    return ((void*) &m_rSeqBase) == pData;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+EDPIPosSequenceBase::EDPIPosSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD) 
+: EDPISequenceBase("", rBase, edD) 
+{
+    QString strPosName = "Positive";
+    setName(strPosName);
+}
+
+EDPIPosSequenceBase::~EDPIPosSequenceBase() 
+{
+}
+
+void EDPIPosSequenceBase::update(bool bUpdateChildren) 
+{
+    EDPISequenceBase::update(bUpdateChildren);
+}
+
+EItemType EDPIPosSequenceBase::getType() const
+{
+    return PIT_POSSEQUENCEBASE;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+EDPINegSequenceBase::EDPINegSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD) 
+: EDPISequenceBase("", rBase, edD) 
+{
+    QString strNegName = "Negative";
+    setName(strNegName);
+}
+
+EDPINegSequenceBase::~EDPINegSequenceBase() 
+{
+}
+
+void EDPINegSequenceBase::update(bool bUpdateChildren) 
+{
+    EDPISequenceBase::update(bUpdateChildren);
+}
+
+EItemType EDPINegSequenceBase::getType() const
+{
+    return PIT_NEGSEQUENCEBASE;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+EDPIControlSequenceBase::EDPIControlSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD) 
+: EDPISequenceBase("", rBase, edD) 
+{
+    QString strControlName = "Control";
+    setName(strControlName);
+    update(true);
+}
+
+EDPIControlSequenceBase::~EDPIControlSequenceBase() 
+{
+}
+
+void EDPIControlSequenceBase::update(bool bUpdateChildren) 
+{
+    clearGroups();
+
+    int nSize = m_rSeqBase.getSize();
+
+    QString strSize = "Size";
+    QString strGenInfo = "General information";
+
+    EDPIProperty PropSize(strSize);
+    PropSize.setCallback(new Callback<const DDisc::SequenceBase, int>(&m_rSeqBase, &DDisc::SequenceBase::getSize));
+    EDPIPropertyGroup GenInfo(strGenInfo);
+    GenInfo.addProperty(PropSize);
+    addGroup(GenInfo);
+
+    if (bUpdateChildren) {
+        takeChildren();
+        for (int id=0; id<nSize; id++)
+            addChild(new EDPIControlSequence(m_rSeqBase, id, edData));
+    }
+}
+
+EItemType EDPIControlSequenceBase::getType() const
+{
+    return PIT_CONTROLSEQUENCEBASE;
+}
+
+////////////////////////////////////////////////////////
+
+EDPISequence::EDPISequence(const SequenceBase& rSeqBase, int id, ExpertDiscoveryData& edD)
+: m_id (id)
+, m_rSeq (rSeqBase.getSequence(id))
+, m_firstCall(true)
+,edData(edD)
+{
+    assert(id>=0 && id<rSeqBase.getSize());
+    update(true);
+}
+
+void EDPISequence::update(bool bUpdateChildren)
+{
+    setName( m_rSeq.getName().c_str() );
+    clearGroups();
+    takeChildren();
+
+    QString strName = "Name";
+    QString strLength = "Length";
+    QString strGenInfo = "Sequence info";
+    QString strRecognizationInfo = "Sequence recogn. data";
+    QString strScore = "Score";
+    QString strBound = "Bound";
+    QString strRecResult = "Result";
+    
+
+    EDPIProperty PropName(strName);
+    EDPIProperty PropSize(strLength);
+    PropName.setCallback(new Callback<const DDisc::Sequence, const std::string>(&m_rSeq, &DDisc::Sequence::getName));
+    PropSize.setCallback(new Callback<const DDisc::Sequence, size_t>(&m_rSeq, &DDisc::Sequence::getSize));
+    EDPIPropertyGroup GenInfo(strGenInfo);
+    GenInfo.addProperty(PropName);
+    GenInfo.addProperty(PropSize);
+    addGroup(GenInfo);
+
+    double dScore = m_rSeq.getScore();
+    double dBound = edData.getRecognizationBound();
+
+    EDPIProperty PropScore(strScore);
+    PropScore.setCallback(new Callback<EDPISequence, QString>(this, &EDPISequence::getScore));
+    EDPIProperty PropBound(strBound);
+    PropBound.setCallback(new Callback<ExpertDiscoveryData, double>(&edData, &ExpertDiscoveryData::getRecognizationBound));
+    EDPIProperty PropResult(strRecResult);
+    PropResult.setCallback(new Callback<EDPISequence, QString>(this, &EDPISequence::getResult));
+    EDPIPropertyGroup RecInfo(strRecognizationInfo);
+    RecInfo.addProperty(PropScore);
+    RecInfo.addProperty(PropBound);
+    RecInfo.addProperty(PropResult);
+    addGroup(RecInfo);
+    //}
+}
+
+QString EDPISequence::getScore() const
+{
+    if (getType() == PIT_CONTROLSEQUENCE)
+        return "0";
+    if (m_rSeq.isHasScore() || edData.updateScore(const_cast<Sequence&>(m_rSeq)))
+        return toString(m_rSeq.getScore());
+    return "0";
+}
+
+QString EDPISequence::getResult() const
+{
+    if (getType() == PIT_CONTROLSEQUENCE)
+        return "False";
+
+    if ((m_rSeq.isHasScore() || edData.updateScore(const_cast<Sequence&>(m_rSeq))) &&
+        m_rSeq.getScore() > edData.getRecognizationBound())
+        return "True";
+    else
+        return "False";
+}
+
+
+EDPISequence::~EDPISequence()
+{
+
+}
+
+EItemType EDPISequence::getType() const
+{
+    return PIT_SEQUENCE;
+}
+
+QString EDPISequence::getSequenceCode()
+{
+    return QString::fromStdString(m_rSeq.getSequence());
+}
+
+QString EDPISequence::getSequenceName()
+{
+    return QString::fromStdString(m_rSeq.getName());
+}
+
+bool EDPISequence::isConnectedTo(void *pData) const
+{
+    return ((void*) &m_rSeq) == pData;
 }
 ////////////////////////////////////////////////////////////
 
@@ -726,7 +1049,7 @@ bool EDPICS::isConnectedTo(void *pData) const{
 QString EDPICS::getPriorProbability() const{
     QString str = "%1";
     if (m_pSignal->getPriorProbability() != UNDEFINED_VALUE)
-        str.arg(m_pSignal->getPriorProbability());
+        str = str.arg(m_pSignal->getPriorProbability());
     else 
         str = "Undefined"; 
     return str;    
@@ -734,7 +1057,7 @@ QString EDPICS::getPriorProbability() const{
 QString EDPICS::getPriorFisher() const{
     QString str = "%1";
     if (m_pSignal->getPriorFisher() != UNDEFINED_VALUE)
-        str.arg(m_pSignal->getPriorFisher());
+        str = str.arg(m_pSignal->getPriorFisher());
     else 
         str = "Undefined"; 
     return str;    
@@ -742,7 +1065,7 @@ QString EDPICS::getPriorFisher() const{
 QString EDPICS::getPriorPosCoverage() const{
     QString str = "%1";
     if (m_pSignal->getPriorPosCoverage() != UNDEFINED_VALUE)
-        str.arg(m_pSignal->getPriorPosCoverage());
+        str = str.arg(m_pSignal->getPriorPosCoverage());
     else 
         str = "Undefined"; 
     return str;    
@@ -750,7 +1073,7 @@ QString EDPICS::getPriorPosCoverage() const{
 QString EDPICS::getPriorNegCoverage() const{
     QString str = "%1";
     if (m_pSignal->getPriorNegCoverage() != UNDEFINED_VALUE)
-        str.arg(m_pSignal->getPriorNegCoverage());
+        str = str.arg(m_pSignal->getPriorNegCoverage());
     else 
         str = "Undefined"; 
     return str;    

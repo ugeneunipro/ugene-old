@@ -28,6 +28,7 @@ namespace U2 {
 
 class MWMDIWindow;
 class AutoAnnotationObject;
+class AutoAnnotationsUpdater;
 
 class AutoAnnotationsADVAction : public ADVSequenceWidgetAction {
     Q_OBJECT
@@ -37,6 +38,7 @@ public:
     QList<QAction*> getToggleActions();
     AutoAnnotationObject* getAAObj() {return aaObj; }
     QAction* findToggleAction(const QString& groupName);
+    void addUpdaterToMenu(AutoAnnotationsUpdater* updater);
     static const QString ACTION_NAME;
 
 private slots:

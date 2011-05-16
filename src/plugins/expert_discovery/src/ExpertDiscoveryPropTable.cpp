@@ -8,6 +8,8 @@ namespace U2 {
 EDPropertiesTable::EDPropertiesTable(QWidget* parent)
 :QTableWidget(parent)
 ,curPItem(NULL)
+,isSeq(false)
+,seqOffset(0)
 {
     setColumnCount(2);   
 
@@ -18,8 +20,8 @@ EDPropertiesTable::EDPropertiesTable(QWidget* parent)
 
 void EDPropertiesTable::representPIProperties(EDProjectItem* pItem){
     curPItem = pItem;
-    clear();
-    setRowCount(0);
+   
+    cleanup();
 
     if(pItem == NULL){
         return;
@@ -44,16 +46,17 @@ void EDPropertiesTable::representPIProperties(EDProjectItem* pItem){
                  const EDPIPropertyTypeList* pType = dynamic_cast<const EDPIPropertyTypeList*>(rProp.getType());
                  pPropertyItem = new EDPropertyItem(rProp.getValue(), nGroup, nProp, pType, false);  
             }
-            setItem(rowCount()-1, 1, pPropertyItem);
+            int itemToSetPos = isSeq? rowCount() - 1 : seqOffset - 1;
+            setItem(itemToSetPos, 1, pPropertyItem);
 
         }
     }
 }
 
 void EDPropertiesTable::addNewGroup(const QString& name){
-    int rowC = rowCount();
-    insertRow(rowC);
-    setSpan(rowC, 0, 1, 2);
+    int rowPos = isSeq ? rowCount() : seqOffset;
+    insertRow(rowPos);
+    setSpan(rowPos, 0, 1, 2);
 
     QTableWidgetItem* item = new QTableWidgetItem();
     item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable);
@@ -64,19 +67,27 @@ void EDPropertiesTable::addNewGroup(const QString& name){
     font.setBold(true);
     item->setFont(font);
 
-    setItem(rowC, 0, item);
+    setItem(rowPos, 0, item);
+
+    if(!isSeq){
+        seqOffset++;
+    }
 }
 
 void EDPropertiesTable::addNewField(const QString& name){
-    int rowC = rowCount();
-    insertRow(rowC);   
+    int rowPos = isSeq ? rowCount() : seqOffset;
+    insertRow(rowPos);   
 
     QTableWidgetItem* item = new QTableWidgetItem();
     item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable);
     item->setText(name);
     item->setTextColor(Qt::black);
 
-    setItem(rowC, 0, item);
+    setItem(rowPos, 0, item);
+
+    if(!isSeq){
+        seqOffset++;
+    }
 }
 
 
@@ -106,7 +117,37 @@ EDPropertyItem::EDPropertyItem(const QString& val, int nGroup, int nProp, const 
 
 void EDPropertiesTable::sl_treeSelChanged(QTreeWidgetItem * tItem){
     EDProjectItem* pItem = dynamic_cast<EDProjectItem*>(tItem);
+
+//     if(pItem && (pItem->getType() == PIT_SEQUENCE || pItem->getType() ==PIT_CONTROLSEQUENCE)){
+//         isSeq = true;
+//     }else{
+//         isSeq = false;
+//     }
     representPIProperties(pItem);
+}
+
+void EDPropertiesTable::cleanup(){
+    if(isSeq){
+        int rowC = rowCount();
+        for(int i = seqOffset; i < rowC; i++){
+            removeRow(seqOffset);
+        }
+        seqOffset = rowCount();
+    }else{
+        for(int i = 0; i < seqOffset; i++){
+            removeRow(0);
+        }
+        seqOffset = 0;
+    }
+    
+}
+
+void EDPropertiesTable::clearAll(){
+    isSeq = false;
+    seqOffset = 0;
+    curPItem = NULL;
+    clear();
+    setRowCount(0);
 }
 
 void  EDPropertiesTable::sl_cellChanged(QTableWidgetItem* tItem){

@@ -53,6 +53,7 @@ class ADVSyncViewManager;
 class ADVObjectHandler;
 class ADVGlobalAction;
 class AutoAnnotationObject;
+class AutoAnnotationsUpdater;
 
 class U2VIEW_EXPORT AnnotatedDNAView : public GObjectView {
     Q_OBJECT
@@ -128,6 +129,8 @@ public:
     AnnotationsTreeView* getAnnotationsView() {return annotationsView;}
 
     void updateAutoAnnotations();
+
+    void addAutoAnnotationsUpdated(AutoAnnotationsUpdater* updater);
 
     // Tries to add object to the view. Uses GUI functions to ask user if some data if needed
     // Returns error message if failed.

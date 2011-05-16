@@ -21,6 +21,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
     negRecLineEdit->setText(QString("%1").arg(probNegRec));
 
     connect(recBoundSpinBox, SIGNAL(valueChanged ( double )), SLOT(sl_recBoundChaged(double)));
+    sl_recBoundChaged(recognizationBound);
 }
 
 void ExpertDiscoverySetupRecBoundDialog::accept(){

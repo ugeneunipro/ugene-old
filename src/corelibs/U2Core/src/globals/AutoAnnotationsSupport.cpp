@@ -80,7 +80,9 @@ void AutoAnnotationsSupport::registerAutoAnnotationsUpdater( AutoAnnotationsUpda
     aaUpdaters.append(updater);
 }
 
-
+void AutoAnnotationsSupport::unregisterAutoAnnotationsUpdater(AutoAnnotationsUpdater* updater){
+    aaUpdaters.removeOne(updater);
+}
 
 AutoAnnotationsSupport::~AutoAnnotationsSupport()
 {

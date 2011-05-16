@@ -1,5 +1,33 @@
 <RCC>
     <qresource prefix="/expert_discovery" >
+	<file>images/ExpertDiscoveryDoc.ico</file>
+	<file>images/control.ico</file>
+	<file>images/cs.ico</file>
+	<file>images/csroot.ico</file>
+	<file>images/distance.ico</file>
+	<file>images/ExpertDiscovery.ico</file>
+	<file>images/folder.ico</file>
+	<file>images/interval.ico</file>
+	<file>images/mrkroot.ico</file>
+	<file>images/negseq.ico</file>
+	<file>images/posseq.ico</file>
+	<file>images/repetition.ico</file>
+	<file>images/sequence.ico</file>
+	<file>images/sequences.ico</file>
+	<file>images/ts.ico</file>
+	<file>images/undefined.ico</file>
+	<file>images/extractSignals.ico</file>
+	<file>images/extractSignals2.ico</file>
+	<file>images/genRep.ico</file>
+	<file>images/loadControlsSeq.ico</file>
+	<file>images/loadControlsSeqAnnot.ico</file>
+	<file>images/loadMarkup.ico</file>
+	<file>images/newDoc.ico</file>
+	<file>images/optRecBound.ico</file>
+	<file>images/setRecBound.ico</file>
+	<file>images/fileopen.png</file>
+	<file>images/filenew.png</file>
+	<file>images/filesave.png</file>
       
     </qresource>
 </RCC>

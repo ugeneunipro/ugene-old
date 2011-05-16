@@ -10,9 +10,12 @@
 #include <set>
 
 #include <QObject>
+#include <QDataStream>
+
 
 namespace U2 {
 
+using std::set;
 using namespace DDisc;
 
 class CSFolder: public QObject{
@@ -115,8 +118,8 @@ protected:
     }
     EDProcessedSignal();
 private:
-    const EDProcessedSignal& operator=(const EDProcessedSignal&);
-    EDProcessedSignal(const EDProcessedSignal&);
+    //const EDProcessedSignal& operator=(const EDProcessedSignal&);
+    //EDProcessedSignal(const EDProcessedSignal&);
     void setYesRealizations(int iSequence, const Set& set) { 
         m_arYesRealizations[iSequence] = set;
     }
@@ -180,7 +183,8 @@ public:
     void RemoveSignal(const Signal* pSignal);
     const SignalList& GetSelectedSignals() const;
     bool IsSelected(const Signal *pSignal) const;
-    //void Serialize(CArchive& ar);
+    void save(QDataStream& ar, CSFolder& rootF);
+    void load(QDataStream& ar, CSFolder& rootF);
     void Clear() { m_SelectedSignals.clear(); }
 private:
     SignalList m_SelectedSignals;	
@@ -193,15 +197,15 @@ class RecognizationDataStorage
 public:
     ~RecognizationDataStorage();
     void clear();
-    void addSequence(Sequence* seq);
+    void addSequence(QString& seqName);
     bool getRecognizationData(RecognizationData& d, const Sequence* seq, const SelectedSignalsContainer& rSe);
     
 private:
     RecognizationData* getRecData(const Sequence* seq);
-    QMap<const Sequence*, RecognizationData*> recMap;
+    QMap<QString, RecognizationData*> recMap;
 };
 
-    
+   
 } //namespace
 
 #endif

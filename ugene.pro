@@ -59,6 +59,7 @@ SUBDIRS += \
           src/plugins/dotplot \
           src/plugins/query_designer \
           src/plugins/external_tool_support \
+	  src/plugins/expert_discovery \
           src/plugins/remote_service \
           src/plugins/CoreTests \
           src/plugins/api_tests

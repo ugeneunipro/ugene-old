@@ -1,6 +1,8 @@
 #pragma once
 
 #include "DDisc/Extractor.h"
+#include "DDisc/Sequence.h"
+#include "DDisc/MetaInfo.h"
 #include "ExpertDiscoveryData.h"
 #include "ExpertDiscoveryCSUtil.h"
 
@@ -12,6 +14,8 @@
 #include <U2Core/GObject.h>
 #include <U2Gui/ObjectViewTasks.h>
 #include <U2Core/GObjectReference.h>
+#include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/AnnotationData.h>
 
 
 
@@ -29,6 +33,8 @@ public:
     void prepare();
 
     QList<Document*> getDocuments() const {return docs;}
+
+    bool isGenerateNeg() {return generateNeg;}
 
 private:
     QString firstFile, secondFile;
@@ -64,6 +70,43 @@ private:
 	QList<Document*> docs;
 
     Document* loadFile(QString inFile);
+
+signals:
+    void si_stateChanged(Task* task);
+};
+
+class ExpertDiscoveryLoadPosNegMrkTask: public Task{
+    Q_OBJECT
+public:
+    ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, ExpertDiscoveryData& edData);
+
+    void run(){};
+    void prepare();
+
+private:
+    QString firstFile, secondFile, thirdFile;
+    bool generateDescr;
+
+    ExpertDiscoveryData& edData;
+    //Document* loadFile(QString inFile);
+
+signals:
+        void si_stateChanged(Task* task);
+};
+
+class ExpertDiscoveryLoadControlMrkTask: public Task{
+    Q_OBJECT
+public:
+    ExpertDiscoveryLoadControlMrkTask(QString firstF, ExpertDiscoveryData& edD );
+
+    void run(){};
+    void prepare();
+
+private:
+    QString firstFile;
+    ExpertDiscoveryData& edData;
+
+    //Document* loadFile(QString inFile);
 
 signals:
     void si_stateChanged(Task* task);
@@ -114,6 +157,7 @@ public:
 	enum Errors {ErrorOpen, NoErrors};
 
 	static void fileOpenError(const QString &filename = "");
+    static void markupLoadError();
 };
 
 class ExpertDiscoveryCreateViewTask: public ObjectViewTask{
@@ -128,6 +172,64 @@ public:
 private:
     QList<GObjectReference> sequenceObjectRefs;
     AnnotatedDNAView* adv;
+};
+
+class ExpertDiscoverySignalsAutoAnnotationUpdater : public AutoAnnotationsUpdater{
+public:
+    ExpertDiscoverySignalsAutoAnnotationUpdater();
+    Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa);
+    bool checkConstraints(const AutoAnnotationConstraints& constraints);
+
+    void setEDData(ExpertDiscoveryData* d){edData = d;}
+    void setEDProcSignals(const EDProcessedSignal* ps){curPS = ps;}
+private:
+    ExpertDiscoveryData* edData;
+    const EDProcessedSignal* curPS;
+
+};
+
+class ExpertDiscoveryToAnnotationTask : public Task{
+    Q_OBJECT
+public:
+    ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps);
+    void run();
+    ReportResult report();
+private:
+    void recDataToAnnotation();
+    void csToAnnotation(int seqNumberm, unsigned int seqLen);
+
+    const DNASequence&                  dna;
+    ExpertDiscoveryData*                edData;
+    const EDProcessedSignal*            curPS;
+    QList<SharedAnnotationData>         resultList;
+    U2Region                            seqRange;
+    QPointer<AnnotationTableObject>     aObj;
+    RecognizationData                   recData;
+    bool                                hasRecData;
+    bool                                isControl;
+    bool                                isPos;
+};
+
+class ExpertDiscoverySaveDocumentTask : public Task{
+    Q_OBJECT
+public:
+    ExpertDiscoverySaveDocumentTask(ExpertDiscoveryData& data, const QString& fileName);
+
+    void run();
+private:
+    ExpertDiscoveryData& edData;
+    QString filename;
+};
+
+class ExpertDiscoveryLoadDocumentTask : public Task{
+    Q_OBJECT
+public:
+    ExpertDiscoveryLoadDocumentTask(ExpertDiscoveryData& data, const QString& fileName);
+
+    void run();
+private:
+    ExpertDiscoveryData& edData;
+    QString filename;
 };
         
 }//namespace

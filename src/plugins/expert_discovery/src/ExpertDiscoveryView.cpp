@@ -2,17 +2,28 @@
 #include "ExpertDiscoveryTask.h"
 #include "ExpertDiscoveryPosNegDialog.h"
 #include "ExpertDiscoveryControlDialog.h"
+#include "ExpertDiscoveryPosNegMrkDialog.h"
+#include "ExpertDiscoveryControlMrkDialog.h"
 #include "ExpertDiscoveryExtSigWiz.h"
 #include "ExpertDiscoveryPlugin.h"
 
+#include <U2Misc/DialogUtils.h>
 #include <U2View/ADVUtils.h>
+#include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
+#include <U2View/AutoAnnotationUtils.h>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/ProjectModel.h>
-
 #include <U2Core/GObjectSelection.h>
+
+#include <QMessageBox>
+#include <QtGui/QFileDialog>
 
 
 namespace U2{
@@ -21,10 +32,29 @@ ExpertDiscoveryView::ExpertDiscoveryView(GObjectViewFactoryId factoryId, const Q
 :GObjectView(factoryId, viewName, p)
 ,wizzard(false)
 ,splitter(NULL)
-,currentAdv(NULL){
+,currentAdv(NULL)
+,edAutoAnnotationsUpdater(NULL)
+,curPS(NULL)
+,updatePS(false)
+,curEDsequence(NULL)
+,posUDoc(NULL)
+,negUDoc(NULL)
+,conUDoc(NULL)
+,extrTask(NULL){
 
     createActions();
 
+    edAutoAnnotationsUpdater = new ExpertDiscoverySignalsAutoAnnotationUpdater;
+    edAutoAnnotationsUpdater->setEDData(&d);
+    edAutoAnnotationsUpdater->setEDProcSignals(curPS);
+}
+
+ExpertDiscoveryView::~ExpertDiscoveryView(){
+    delete posUDoc;
+    delete negUDoc;
+    delete conUDoc;
+    delete curEDsequence;
+    delete splitter;
 }
 
 QWidget* ExpertDiscoveryView::createWidget(){
@@ -34,14 +64,14 @@ QWidget* ExpertDiscoveryView::createWidget(){
     signalsWidget->setHeaderLabel("Items");
 
     propWidget = new EDPropertiesTable(splitter);
+ 
+    QSplitter* verticalSplitter = new QSplitter(Qt::Vertical);
 
+    
+    verticalSplitter->addWidget(signalsWidget);
+    verticalSplitter->addWidget(propWidget);
 
-    //    seqWidget = new W
-
-
-    splitter->addWidget(signalsWidget);
-    splitter->addWidget(propWidget);
-    //  splitter->addWidget(seqWidget);
+    splitter->addWidget(verticalSplitter);
 
     QHBoxLayout* layout = new QHBoxLayout();
     layout->addWidget(splitter);
@@ -49,10 +79,18 @@ QWidget* ExpertDiscoveryView::createWidget(){
     layout->setMargin(0);
     layout->setContentsMargins(0, 0, 0, 0);
     //setLayout(layout);
-
-    connect(signalsWidget, SIGNAL( 	itemPressed ( QTreeWidgetItem * , int )), propWidget, SLOT(sl_treeSelChanged(QTreeWidgetItem *)));
-    connect(signalsWidget, SIGNAL( 	itemActivated ( QTreeWidgetItem * , int )), propWidget, SLOT(sl_treeSelChanged(QTreeWidgetItem *)));
-    connect(signalsWidget, SIGNAL( 	currentItemChanged ( QTreeWidgetItem * , QTreeWidgetItem * ) ), propWidget, SLOT(sl_treeSelChanged(QTreeWidgetItem *)));
+//old connect
+//     connect(signalsWidget, SIGNAL( 	itemClicked ( QTreeWidgetItem * , int )), propWidget, SLOT(sl_treeSelChanged(QTreeWidgetItem *)));
+//     connect(signalsWidget, SIGNAL( 	itemActivated ( QTreeWidgetItem * , int )), propWidget, SLOT(sl_treeSelChanged(QTreeWidgetItem *)));
+//     connect(signalsWidget, SIGNAL( 	currentItemChanged ( QTreeWidgetItem * , QTreeWidgetItem * ) ), propWidget, SLOT(sl_treeSelChanged(QTreeWidgetItem *)));
+//new connect
+    connect(signalsWidget, SIGNAL( 	itemClicked ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
+    connect(signalsWidget, SIGNAL( 	itemActivated ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
+    connect(signalsWidget, SIGNAL( 	currentItemChanged ( QTreeWidgetItem * , QTreeWidgetItem * ) ), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
+    connect(signalsWidget, SIGNAL( 	si_loadMarkup(bool ) ), SLOT(sl_treeWidgetMarkup(bool )));
+    connect(signalsWidget, SIGNAL( 	si_showSequence() ), SLOT(sl_showSequence()));
+    connect(signalsWidget, SIGNAL( 	si_addToShown() ), SLOT(sl_addToShown()));
+ 
     connect(propWidget, SIGNAL(si_propChanged(EDProjectItem*, const EDPIProperty*, QString )), signalsWidget, SLOT(sl_propChanged(EDProjectItem* , const EDPIProperty* , QString )));
 
     GObjectViewFactory* factory = AppContext::getObjectViewFactoryRegistry()->getFactoryById("ED");
@@ -69,43 +107,62 @@ QWidget* ExpertDiscoveryView::createWidget(){
     return splitter;
 }
 
-// void ExpertDiscoveryView::setupMDIToolbar(QToolBar* tb){
-//     tb->addAction(newDoc);
-//     tb->addAction(loadControlSeqAction);
-//     tb->addAction(extractSignalsAction);
-//     tb->addAction(setUpRecBound);
-//     tb->addAction(optimizeRecBound);
-// 
-// }
 
 void ExpertDiscoveryView::insertSeqView( QWidget* view ){
-   //seqWidget = view;  
-   //seqWidget = new ExpertDiscoveryADVSplitWidget(view);
-   //view->insertWidgetIntoSplitter(seqWidget);
-   splitter->addWidget(view);
+
+    splitter->addWidget(view);
+
 }
 
 void ExpertDiscoveryView::createActions(){
-    newDoc = new QAction(tr("New ED Document"), this);
-    //newDoc->setIcon();
+    newDoc = new QAction(tr("New ExpertDiscovery Document"), this);
+    newDoc->setIcon(QIcon(":expert_discovery/images/filenew.png"));
     connect(newDoc, SIGNAL(triggered()), SLOT(sl_newDoc()));
 
+    openDoc = new QAction(tr("Open ExpertDiscovery Document"), this);
+    openDoc->setIcon(QIcon(":expert_discovery/images/fileopen.png"));
+    connect(openDoc, SIGNAL(triggered()), SLOT(sl_openDoc()));
+
+    saveDoc = new QAction(tr("Save ExpertDiscovery Document"), this);
+    saveDoc->setIcon(QIcon(":expert_discovery/images/filesave.png"));
+    connect(saveDoc, SIGNAL(triggered()), SLOT(sl_saveDoc()));
+
+
     setUpRecBound = new QAction(tr("Set recognization bound"), this);
+    setUpRecBound->setIcon(QIcon(":expert_discovery/images/setRecBound.ico"));
     connect(setUpRecBound, SIGNAL(triggered()), SLOT(sl_setRecBound()));
     
     optimizeRecBound = new QAction(tr("Optimize recognization bound"), this);
+    optimizeRecBound->setIcon(QIcon(":expert_discovery/images/optRecBound.ico"));
     connect(optimizeRecBound, SIGNAL(triggered()), SLOT(sl_optimizeRecBound()));
 
     loadControlSeqAction = new QAction(tr("Load control sequences"), this);
+    loadControlSeqAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeq.ico"));
     connect(loadControlSeqAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryControlDialog()));
 
     extractSignalsAction = new QAction(tr("Extract signals"), this);
+    extractSignalsAction->setIcon(QIcon(":expert_discovery/images/extractSignals2.ico"));
     connect(extractSignalsAction, SIGNAL(triggered()), SLOT(sl_extractSignals()));
+
+    loadMarkupAction = new QAction(tr("Load markup"), this);
+    loadMarkupAction->setIcon(QIcon(":expert_discovery/images/loadMarkup.ico"));
+    connect(loadMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryPosNegMrkDialog()));
+
+    loadControlMarkupAction = new QAction(tr("Load control sequences markup"), this);
+    loadControlMarkupAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeqAnnot.ico"));
+    connect(loadControlMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryControlMrkDialog()));
+
+    generateFullReportAction = new QAction(tr("Generate recognition report"), this);
+    generateFullReportAction->setIcon(QIcon(":expert_discovery/images/genRep.ico"));
+    connect(generateFullReportAction, SIGNAL(triggered()), SLOT(sl_generateFullReport()));
 
     setUpRecBound->setEnabled(false);
     optimizeRecBound->setEnabled(false);
     loadControlSeqAction->setEnabled(false);
     extractSignalsAction->setEnabled(false);
+    loadMarkupAction->setEnabled(false);
+    loadControlMarkupAction->setEnabled(false);
+    generateFullReportAction->setEnabled(false);
     
 }
 
@@ -116,10 +173,101 @@ void ExpertDiscoveryView::sl_newDoc(){
     optimizeRecBound->setEnabled(false);
     loadControlSeqAction->setEnabled(false);
     extractSignalsAction->setEnabled(false);
+    loadMarkupAction->setEnabled(false);
+    loadControlMarkupAction->setEnabled(false);
+    generateFullReportAction->setEnabled(false);
 
     d.setRecBound(0);
+    d.cleanup();
 
-    sl_showExpertDiscoveryPosNegDialog();
+    propWidget->clearAll();
+    
+
+    if(currentAdv){
+        disconnect(currentAdv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), this,  SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
+        foreach(GObject* obj, objects){
+            removeObject(obj);
+        }
+
+        delete currentAdv->getWidget();
+        delete currentAdv;
+        currentAdv = NULL;
+    } 
+
+    edObjects.clear();
+
+    //EDPISequence*       curEDsequence;
+
+    curPS = NULL;
+    //bool updatePS;
+    signalsWidget->clearTree();
+    signalsWidget->updateTree(ED_UPDATE_ALL);
+
+    d.setModifed(false);
+   
+    sl_showExpertDiscoveryPosNegDialog(); 
+}
+
+void ExpertDiscoveryView::sl_openDoc(){
+
+
+    LastOpenDirHelper lod("ExpertDiscovery");
+    lod.url = QFileDialog::getOpenFileName(NULL, tr("Load ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
+
+    if (lod.url.length() <= 0) {
+        return;
+    }
+
+    d.cleanup();
+    propWidget->clearAll();
+
+
+    if(currentAdv){
+        disconnect(currentAdv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), this,  SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
+        foreach(GObject* obj, objects){
+            removeObject(obj);
+        }
+
+        delete currentAdv->getWidget();
+        delete currentAdv;
+        currentAdv = NULL;
+    } 
+
+    edObjects.clear();
+
+    curPS = NULL;
+    signalsWidget->clearTree();
+    signalsWidget->updateTree(ED_UPDATE_ALL);
+
+    Task* t = new ExpertDiscoveryLoadDocumentTask(d, lod.url);
+    connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_updateAll() ) );
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+}
+void ExpertDiscoveryView::sl_saveDoc(){
+
+    LastOpenDirHelper lod("ExpertDiscovery");
+    lod.url = QFileDialog::getSaveFileName(NULL, tr("Save ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
+
+    if (lod.url.length() <= 0) {
+        return;
+    }
+    
+    Task* t = new ExpertDiscoverySaveDocumentTask(d, lod.url);
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+}
+
+bool ExpertDiscoveryView::askForSave(){
+    if(!d.isModified()){
+        return false;
+    }
+
+    QMessageBox mb(QMessageBox::Question, tr("Save ExpertDiscovery document"), tr("Do you want to save current ExpertDiscovery document?"), QMessageBox::Yes|QMessageBox::No);
+    if(mb.exec()==QMessageBox::Yes)
+        return true;
+    else 
+        return false;
+
+
 }
 
 void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegDialog(){
@@ -138,8 +286,6 @@ void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegDialog(){
 	}
 	
 	AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
-
-	
 	
 }
 void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
@@ -148,7 +294,7 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
         return;
     }
 
-    if (loadTask->getStateInfo().hasErrors()) {
+    if (loadTask->getStateInfo().hasError()) {
 		ExpertDiscoveryErrors::fileOpenError();
         return;
     }
@@ -156,59 +302,100 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
 	QList <Document *> docs = loadTask->getDocuments();
 
 	Q_ASSERT(!docs.isEmpty());
-		Q_ASSERT(docs.count() > 1);
+    Q_ASSERT(docs.count() > 1);
 
-	Document * doc = docs.first();
-	d.setPosBase(doc->getObjects());
+	posUDoc = docs.first();
+	d.setPosBase(posUDoc->getObjects());
 
-    foreach(GObject* gobj, doc->getObjects()){
+    foreach(GObject* gobj, posUDoc->getObjects()){
+        //addObject(gobj);
+        edObjects.push_back(gobj);
+    }
+    if(posUDoc->isStateLocked()){
+        posUDoc = NULL;
+    }
+
+	negUDoc = docs.at(1);
+	d.setNegBase(negUDoc->getObjects());
+
+    foreach(GObject* gobj, negUDoc->getObjects()){
         //addObject(gobj);
         edObjects.push_back(gobj);
     }
 
-	doc = docs.at(1);
-	d.setNegBase(doc->getObjects());
-
-    foreach(GObject* gobj, doc->getObjects()){
-        //addObject(gobj);
-        edObjects.push_back(gobj);
+    if(negUDoc->isStateLocked()){
+        negUDoc = NULL;
     }
 
+    signalsWidget->updateSequenceBase(PIT_POSSEQUENCEBASE);
+    signalsWidget->updateSequenceBase(PIT_NEGSEQUENCEBASE);
 
 
-//     //do smth here to add annotDNAviews on the widget
-//     GObjectSelection os;
-// 
-//    // QList <Document *> docs = doc->getObjects();
-//     foreach (Document* doc1, docs) {
-//         os.addToSelection(doc1->getObjects());
-//     }
-// 
-//     MultiGSelection ms; 
-//     ms.addSelection(&os);
-// 
-//     GObjectViewFactoryRegistry* reg = AppContext::getObjectViewFactoryRegistry();
-//     GObjectViewFactory* f = reg->getFactoryById(AnnotatedDNAViewFactory::ID);
-// 
-//     bool canCreate = f->canCreateView(ms);
-//     if (canCreate) {
-//         Task* crView= f->createViewTask(ms, false);
-//         connect(crView,SIGNAL( si_stateChanged() ), SLOT( sl_testView() ) );
-//         AppContext::getTaskScheduler()->registerTopLevelTask(crView);
-//         //createdByWizard = true; // set flag that we need to show a dotplot settings dialog
-//     }
-    
     setUpRecBound->setEnabled(true);
     optimizeRecBound->setEnabled(true);
     loadControlSeqAction->setEnabled(true);
-    extractSignalsAction->setEnabled(true);
+    loadMarkupAction->setEnabled(true);
+    generateFullReportAction->setEnabled(true);
 
-    if(wizzard){
+    if(!loadTask->isGenerateNeg()){
         //markup
-        //sl_showExpertDiscoveryControlDialog();
+        sl_showExpertDiscoveryPosNegMrkDialog();
     }
 
     wizzard = false;
+}
+
+void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegMrkDialog(){
+    Task *tasks = new Task("Loading positive and negative sequences markups", TaskFlag_NoRun);
+
+    ExpertDiscoveryPosNegMrkDialog dialog(QApplication::activeWindow());
+    if (dialog.exec()) {
+        
+        ExpertDiscoveryLoadPosNegMrkTask *t = new ExpertDiscoveryLoadPosNegMrkTask(dialog.getFirstFileName(), dialog.getSecondFileName(), dialog.getThirdFileName(), dialog.isGenerateDescr(), d );
+        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadPosNegMrkTaskStateChanged() ) );
+        tasks->addSubTask(t);
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
+}
+void ExpertDiscoveryView::sl_loadPosNegMrkTaskStateChanged(){
+    ExpertDiscoveryLoadPosNegMrkTask *loadTask = qobject_cast<ExpertDiscoveryLoadPosNegMrkTask*>(sender());
+    if (!loadTask || !loadTask->isFinished()) {
+        return;
+    }
+
+    if (loadTask->getStateInfo().hasError()) {
+        ExpertDiscoveryErrors::markupLoadError();
+        return;
+    }
+
+    signalsWidget->updateMarkup();
+    extractSignalsAction->setEnabled(true);
+}
+
+void ExpertDiscoveryView::sl_showExpertDiscoveryControlMrkDialog(){
+    Task *tasks = new Task("Loading control sequences markups", TaskFlag_NoRun);
+
+    ExpertDiscoveryControlMrkDialog dialog(QApplication::activeWindow());
+    if (dialog.exec()) {
+
+        ExpertDiscoveryLoadControlMrkTask *t = new ExpertDiscoveryLoadControlMrkTask(dialog.getFirstFileName(), d );
+        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlMrkTaskStateChanged() ) );
+        tasks->addSubTask(t);
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
+}
+void ExpertDiscoveryView::sl_loadControlMrkTaskStateChanged(){
+    ExpertDiscoveryLoadControlMrkTask *loadTask = qobject_cast<ExpertDiscoveryLoadControlMrkTask*>(sender());
+    if (!loadTask || !loadTask->isFinished()) {
+        return;
+    }
+
+    if (loadTask->getStateInfo().hasError()) {
+        ExpertDiscoveryErrors::markupLoadError();
+        return;
+    }
 }
 
 void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
@@ -217,12 +404,14 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
     }
 
     if(currentAdv){
+        disconnect(currentAdv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), this,  SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
         foreach(GObject* obj, objects){
             removeObject(obj);
         }
 
         delete currentAdv->getWidget();
         delete currentAdv;
+        currentAdv = NULL;
     }    
         foreach(GObject* gobj, adv->getObjects()){
             addObject(gobj);
@@ -230,6 +419,11 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
         adv->setClosingInterface(closeInterface);
         currentAdv = adv;
         splitter->addWidget(adv->getWidget());
+        adv->addAutoAnnotationsUpdated(edAutoAnnotationsUpdater);
+        
+        connect(adv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
+
+        createEDSequence();
 }
 
 void ExpertDiscoveryView::sl_testView(){
@@ -238,7 +432,7 @@ void ExpertDiscoveryView::sl_testView(){
         return;
     }
 
-    if (loadTask->getStateInfo().hasErrors()) {
+    if (loadTask->getStateInfo().hasError()) {
         return;
     }
 
@@ -261,6 +455,32 @@ void ExpertDiscoveryView::sl_newViewTask(Task* t){
     connect(edTask,SIGNAL( si_stateChanged() ), SLOT( sl_testView() ) );
 }
 
+void ExpertDiscoveryView::sl_updateAll(){
+    ExpertDiscoveryLoadDocumentTask *loadTask = qobject_cast<ExpertDiscoveryLoadDocumentTask*>(sender());
+    if (!loadTask || !loadTask->isFinished()) {
+        return;
+    }
+
+    if (loadTask->getStateInfo().hasError()) {
+        return;
+    }
+    signalsWidget->updateTree(ED_CURRENT_ITEM_CHANGED,NULL);
+    signalsWidget->updateSequenceBase(PIT_POSSEQUENCEBASE);
+    signalsWidget->updateSequenceBase(PIT_NEGSEQUENCEBASE);
+    signalsWidget->updateSequenceBase(PIT_CONTROLSEQUENCEBASE);
+    signalsWidget->updateTree(ED_UPDATE_ALL);
+
+    bool enableActions = d.getPosSeqBase().getSize() != 0  || d.getNegSeqBase().getSize() != 0;
+    setUpRecBound->setEnabled(enableActions);
+    optimizeRecBound->setEnabled(enableActions);
+    loadControlSeqAction->setEnabled(enableActions);
+    extractSignalsAction->setEnabled(enableActions);
+    loadMarkupAction->setEnabled(enableActions);
+    loadControlMarkupAction->setEnabled(d.getConSeqBase().getSize() != 0);
+    generateFullReportAction->setEnabled(enableActions);
+
+}
+
 void ExpertDiscoveryView::sl_showExpertDiscoveryControlDialog(){
 	Task *tasks = new Task("Loading control sequences", TaskFlag_NoRun);
 
@@ -281,61 +501,59 @@ void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
         return;
     }
 
-    if (loadTask->getStateInfo().hasErrors()) {
+    if (loadTask->getStateInfo().hasError()) {
 		ExpertDiscoveryErrors::fileOpenError();
         return;
     }
 
-    
-
-	QList <Document *> docs = loadTask->getDocuments();
+    QList <Document *> docs = loadTask->getDocuments();
 
 	Q_ASSERT(!docs.isEmpty());
 
-	Document * doc = docs.first();
+	conUDoc = docs.first();
+    //conUDoc->setUserModLock(true);
 
     d.clearContrBase();
     d.clearContrAnnot();
 
-	d.setConBase(doc->getObjects());
+	d.setConBase(conUDoc->getObjects());
 
-    foreach(GObject* gobj, doc->getObjects()){
+    foreach(GObject* gobj, conUDoc->getObjects()){
         edObjects.push_back(gobj);
+    }
+
+    if(conUDoc->isStateLocked()){
+        conUDoc = NULL;
     }
 
     if (d.isLettersMarkedUp() && d.getConSeqBase().getSize() != 0)
         d.markupLetters(d.getConSeqBase(), d.getConMarkBase());
 
+    signalsWidget->updateSequenceBase(PIT_CONTROLSEQUENCEBASE);
+
+    loadControlMarkupAction->setEnabled(true);
+
 }
 
 void ExpertDiscoveryView::sl_newSignalReady(DDisc::Signal* signal, CSFolder* folder){
-    /*SetModifiedFlag();
-    CCSFolder *pFolder = (CCSFolder *) wParam;
-    Signal* pSignal = (Signal*) lParam;
-    pSignal->setName(pFolder->MakeUniqueSignalName().GetString());
-    pFolder->AddSignal(pSignal);
-    CProjectItem* pParent = FindItem(m_RootItem.FindItemConnectedTo(pFolder));
-    CPICS* pItem = new CPICS(pSignal);
-    pParent->AddSubitem(pItem);
-    UpdateAllViews(NULL, ITEM_ADDED, pItem);*/
     
-
     //void* p =  qVariantValue<void*>(signal);
     //Signal* pSignal = (Signal*) p;
    // signal->setName(folder->makeUniqueSignalName().toStdString());
     //folder->addSignal(signal);
 
     //test 
-     Signal* ps = signal;
+    Signal* ps = signal;
     CSFolder *pFolder = folder;
     ps->setName(pFolder->makeUniqueSignalName().toStdString());
     pFolder->addSignal(ps);
     EDProjectItem* pParent = signalsWidget->findEDItem(pFolder);
     EDPICS* pItem = new EDPICS(ps);
-    signalsWidget->addSubitem(pItem, pParent);    
+    signalsWidget->addSubitem(pItem, pParent);  
+    signalsWidget->updateSorting();
 
     //test
-    propWidget->representPIProperties(pParent);
+    //propWidget->representPIProperties(pItem);
     //test
     //propWidget->representPIProperties(NULL);
 
@@ -352,6 +570,7 @@ void ExpertDiscoveryView::sl_setRecBound(){
 void ExpertDiscoveryView::sl_extractSignals(){
 	Task *tasks = new Task("Extracting signals", TaskFlag_NoRun);
     ExpertDiscoverySignalExtractorTask *t = new ExpertDiscoverySignalExtractorTask(&d);
+    extrTask = t;
     connect(t, SIGNAL(si_newSignalReady(DDisc::Signal* , CSFolder* )), SLOT(sl_newSignalReady(DDisc::Signal* , CSFolder* )));
     tasks->addSubTask(t);
     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
@@ -359,96 +578,368 @@ void ExpertDiscoveryView::sl_extractSignals(){
 
 void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
 
-//     if (!signalsWidget->currentItem())
-//         return;
-// 
-//     switch (m_pCurrentItem->GetType()) {
-//    case PIT_CONTROLSEQUENCE:
-//        {
-//            if (pDoc->LargeSequenceMode())
-//                m_nWindowSize = pDoc->GetWindowSize();
-//            else 
-//                m_nWindowSize = 1;
-//            m_CurrentView = VIEW_SEQUENCE;
-//            OnDrawSequence(pDC);
-//            break;
-//        }
-//    case PIT_SEQUENCE:
-//        {
-//            m_nWindowSize = 1;
-//            m_CurrentView = VIEW_SEQUENCE;
-//            OnDrawSequence(pDC);
-//            break;
-//        }
-//    case PIT_POSSEQUENCEBASE:
-//    case PIT_NEGSEQUENCEBASE:
-//    case PIT_CONTROLSEQUENCEBASE:
-//        {
-//            m_CurrentView = VIEW_SEQUENCEBASE;
-//            CRect rect;
-//            GetClientRect(rect);
-//            rect.top   += 10;
-//            rect.right -= 10;
-//            rect.left  += 10;
-// 
-//            CFont *pOldFont = pDC->SelectObject(CFont::FromHandle((HFONT)GetStockObject(OEM_FIXED_FONT)));
-// 
-//            CPISequenceBase* pPI = (CPISequenceBase*) m_pCurrentItem;
-//            int nSeqNum = pPI->GetSubitemsNumber();
-//            SIZE szText;
-//            for (int nSeq=0; nSeq<nSeqNum; nSeq++) {
-//                CPISequence* pPISeq = (CPISequence*) pPI->GetSubitem(nSeq);
-//                CString strName = "> " + pPISeq->GetSequenceName();
-//                COLORREF crTextOld = pDC->SetTextColor(m_colorSeqName);
-//                do {
-//                    int nCharNum = 0;
-//                    GetTextExtentExPoint(pDC->GetSafeHdc(), strName, strName.GetLength(), rect.Width(),&nCharNum,NULL,&szText);
-//                    if (nCharNum == 0)
-//                        return;
-//                    pDC->TextOut(rect.left, rect.top, strName.Left(nCharNum));
-//                    rect.top += szText.cy + 3;
-//                    strName = strName.Right(strName.GetLength() - nCharNum);
-//                } while (!strName.IsEmpty());
-//                pDC->SetTextColor(crTextOld);
-// 
-//                CString strCode = pPISeq->GetSequenceCode();
-//                do {
-//                    int nCharNum = 0;
-//                    GetTextExtentExPoint(pDC->GetSafeHdc(), strCode, strCode.GetLength(), rect.Width(),&nCharNum,NULL,&szText);
-//                    if (nCharNum == 0)
-//                        return;
-//                    pDC->TextOut(rect.left, rect.top, strCode.Left(nCharNum));
-//                    rect.top += szText.cy + 3;
-//                    strCode = strCode.Right(strCode.GetLength() - nCharNum);
-//                } while (!strCode.IsEmpty());
-//                rect.top += 10;
-//            }
-//            pDC->SelectObject(pOldFont);
-//            SetScrollSizes(MM_TEXT, CSize(rect.Width(), rect.top + 10));
-//            break;
-//        }
-//    case PIT_CS:
-//    case PIT_CSN_WORD:
-//    case PIT_CSN_INTERVAL:
-//    case PIT_CSN_REPETITION:
-//    case PIT_CSN_DISTANCE:
-//    case PIT_CSN_MRK_ITEM:
-//    case PIT_MRK_ITEM:
-//        m_CurrentView = VIEW_CSN;
-//        OnDrawCSN(pDC);
-//        break;
-//    default:
-//        m_CurrentView = VIEW_NONE;
-//        SetScrollSizes(MM_TEXT, CSize(0,0));
-//     }
+    if(!tItem){
+        propWidget->sl_treeSelChanged(NULL);
+        return;
+    }
+
+    EDProjectItem* pItem = dynamic_cast<EDProjectItem*>(tItem);
+    if(!pItem){
+        propWidget->sl_treeSelChanged(NULL);
+        return;
+    }
+
+    switch(pItem->getType()){
+       case PIT_CS:
+       case PIT_CSN_WORD:
+       case PIT_CSN_INTERVAL:
+       case PIT_CSN_REPETITION:
+       case PIT_CSN_DISTANCE:
+       case PIT_CSN_MRK_ITEM:
+       case PIT_MRK_ITEM:
+           EDPICSNode* pPICSN = dynamic_cast<EDPICSNode*>(pItem);
+           if (curPS == pPICSN->getProcessedSignal(d)) {
+               updatePS = false;
+           }
+           else {
+               curPS = pPICSN->getProcessedSignal(d);
+               updatePS = true;
+           }
+
+           if (curPS == NULL) {
+               updatePS = false;
+               propWidget->sl_treeSelChanged(pItem);
+               return;
+           }
+
+           if(updatePS){
+                updateAnnotations();
+           }
+    }
+
     propWidget->sl_treeSelChanged(tItem);
+}
+
+void ExpertDiscoveryView::updateAnnotations(){
+    
+    if(!currentAdv){
+        return;
+    }
+
+    edAutoAnnotationsUpdater->setEDProcSignals(curPS);
+    AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
+
+    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
+        AutoAnnotationUtils::triggerAutoAnnotationsUpdate(sctx, "ExpertDiscover Signals");
+    }
+
+    AppContext::getAutoAnnotationsSupport()->unregisterAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
+    
+
+//     CEDDoc *pDoc = GetDocument();
+//     const SequenceBase& rYesBase = pDoc->GetPosSeqBase();
+//     const SequenceBase& rNoBase = pDoc->GetNegSeqBase();
+// 
+//     int nYesSeqNum = m_pPS->GetYesSequenceNumber();
+//     int nNoSeqNum = m_pPS->GetNoSequenceNumber();
+// 
+//     if (m_bUpdate) {
+//         int nHeight = nYesSeqNum + nNoSeqNum + 5;
+//         int nWidth = 0;
+//         for (int i=0; i<nYesSeqNum; i++) {
+//             const Sequence& rSeq = rYesBase.getSequence(i);
+//             if (nWidth < (int)rSeq.getSize()) nWidth = (int) rSeq.getSize();
+//         }
+//         for (int i=0; i<nNoSeqNum; i++) {
+//             const Sequence& rSeq = rNoBase.getSequence(i);
+//             if (nWidth < (int)rSeq.getSize()) nWidth = (int) rSeq.getSize();
+//         }
+// 
+//         CClientDC clientdc(this);
+//         OnPrepareDC(&clientdc);
+//         CDC dc;
+//         delete pBmp;
+//         pBmp = new CBitmap;
+//         pBmp->CreateCompatibleBitmap(&clientdc, nWidth, nHeight);
+//         pBmp->SetBitmapDimension(nWidth, nHeight);
+//         dc.CreateCompatibleDC(&clientdc);
+//         CBitmap* pOldBmp = dc.SelectObject(pBmp);
+//         CBrush white(RGB(255,255,255));
+//         CBrush* pOldBrush = dc.SelectObject(&white);
+//         dc.PatBlt(0,0,nWidth,nHeight, PATCOPY);
+//         dc.SelectObject(pOldBrush);
+//         for (int i=0; i<nYesSeqNum; i++) {
+//             const Set& set = m_pPS->GetYesRealizations(i);
+//             for (int j=0; j<(int)set.max_elem(); j++) {
+//                 COLORREF color = RGB(0,0,255);
+//                 if (set.is_set(j)) color = RGB(255,0,0);
+//                 dc.SetPixelV(j,i,color);
+//             }
+//         }
+// 
+//         int nNoOffset = nYesSeqNum + 5;
+//         for (int i=0; i<nNoSeqNum; i++) {
+//             const Set& set = m_pPS->GetNoRealizations(i);
+//             for (int j=0; j<(int)set.max_elem(); j++) {
+//                 COLORREF color = RGB(0,0,255);
+//                 if (set.is_set(j)) color = RGB(255,0,0);
+//                 dc.SetPixelV(j,i + nNoOffset,color);			
+//             }
+//         }
+// 
+//         dc.SelectObject(pOldBmp);
+//         m_bUpdate = false;
+//     }
+// 
+//     if (!m_bViewSequences) {
+//         CClientDC clientdc(this);
+//         OnPrepareDC(&clientdc);
+//         CDC dc;
+//         dc.CreateCompatibleDC(&clientdc);
+//         CBitmap* pOldBmp = dc.SelectObject(pBmp);
+//         int nWidth = pBmp->GetBitmapDimension().cx;
+//         int nHeight = pBmp->GetBitmapDimension().cy;	
+//         pDC->SetStretchBltMode(COLORONCOLOR);
+//         pDC->StretchBlt( 10, 10, nWidth*m_nBarSize, nHeight*m_nBarSize, &dc, 0, 0, nWidth, nHeight, SRCCOPY);
+//         dc.SelectObject(pOldBmp);
+//         SetScrollSizes(MM_TEXT, CSize(20+nWidth*m_nBarSize, 20+nHeight*m_nBarSize));
+//     }
+//     else {			
+//         CFont font;
+//         font.CreateFont(m_nBarSize, 0,0,0,FW_BOLD,FALSE,FALSE,0,DEFAULT_CHARSET,0,0,0,0,0);
+//         CFont *pOldFont = pDC->SelectObject(&font);
+// 
+//         int nOffsetX = 10;
+//         int nOffsetY = 10;
+//         size_t nMaxSize = 0;
+//         for (int i=0; i<nYesSeqNum; i++) {
+//             const Set& set = m_pPS->GetYesRealizations(i);
+//             const Sequence& rSeq = rYesBase.getSequence(i);
+//             if (nMaxSize < rSeq.getSize()) nMaxSize = rSeq.getSize();
+//             for (int j=0; j<(int)rSeq.getSize(); j++) {
+//                 COLORREF color = RGB(0,0,255);
+//                 if (set.is_set(j)) color = RGB(255,0,0);
+//                 char c = rSeq.getSequence()[j];
+//                 pDC->SetTextColor(color);
+//                 pDC->TextOut(nOffsetX + j*m_nBarSize,nOffsetY + i*m_nBarSize,&c,1);
+//             }
+//         }
+// 
+//         nOffsetY += (nYesSeqNum + 5) * m_nBarSize;
+// 
+//         for (int i=0; i<nNoSeqNum; i++) {
+//             const Set& set = m_pPS->GetNoRealizations(i);
+//             const Sequence& rSeq = rNoBase.getSequence(i);
+//             if (nMaxSize < rSeq.getSize()) nMaxSize = rSeq.getSize();
+//             for (int j=0; j<(int)rSeq.getSize(); j++) {
+//                 COLORREF color = RGB(0,0,255);
+//                 if (set.is_set(j)) color = RGB(255,0,0);
+//                 char c = rSeq.getSequence()[j];
+//                 pDC->SetTextColor(color);
+//                 pDC->TextOut(nOffsetX + j*m_nBarSize,nOffsetY + i*m_nBarSize,&c,1);
+//             }
+//         }
+// 
+//         nOffsetY += nNoSeqNum * m_nBarSize + 20;
+//         pDC->SelectObject(pOldFont);
+//         SetScrollSizes(MM_TEXT, CSize((int)nMaxSize*m_nBarSize+nOffsetX, nOffsetY));
+//     }    
+}
+
+void ExpertDiscoveryView::createEDSequence(){
+    if(!currentAdv){
+        return;
+    }
+
+    ADVSequenceObjectContext* seqInfocus =  currentAdv->getSequenceInFocus();
+    if(!seqInfocus){
+        return;
+    }
+    DNASequenceObject* dnaSeqObject = seqInfocus->getSequenceObject();
+    const QString& seqName = dnaSeqObject->getSequenceName();
+
+    SequenceType seqType = d.getSequenceTypeByName(seqName);
+
+    if(seqType != UNKNOWN_SEQUENCE && curEDsequence !=NULL){
+        delete curEDsequence;
+        curEDsequence = NULL;
+    }
+
+    switch(seqType){
+        case POSITIVE_SEQUENCE:
+            curEDsequence = new EDPISequence(d.getPosSeqBase(), d.getPosSeqBase().getObjNo(seqName.toStdString().c_str()), d);
+        break;
+
+        case NEGATIVE_SEQUENCE:
+            curEDsequence = new EDPISequence(d.getNegSeqBase(), d.getNegSeqBase().getObjNo(seqName.toStdString().c_str()), d);
+        break;
+
+        case CONTROL_SEQUENCE:
+            curEDsequence = new EDPIControlSequence(d.getConSeqBase(), d.getConSeqBase().getObjNo(seqName.toStdString().c_str()), d);
+        break;
+    }
+
+    updateEDSequenceProperties();
+
+}
+void ExpertDiscoveryView::updateEDSequenceProperties(){
+    if(!curEDsequence){
+        return;
+    }
+
+     propWidget->sl_treeSelChanged(curEDsequence);
+    
+}
+
+DNASequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* sItem){
+    DNASequenceObject* dnaSeqObj = NULL;
+    bool seqFound = false;
+    foreach(GObject* obj, edObjects){
+        dnaSeqObj = dynamic_cast<DNASequenceObject*>(obj);
+        if(dnaSeqObj){
+            if(dnaSeqObj->getSequenceName().compare(sItem->getSequenceName(), Qt::CaseInsensitive) == 0){
+                seqFound = true;
+                return dnaSeqObj;
+            }
+        }
+    }
+    if(!seqFound){ //add to edObjects
+        QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toAscii());
+        DNASequence dnaseq (sItem->getSequenceName(), seqarray);
+        dnaseq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+        DNASequenceObject* danseqob = new DNASequenceObject(sItem->getSequenceName(), dnaseq);
+        edObjects.append(danseqob);
+
+        SequenceType sType = d.getSequenceTypeByName(sItem->getSequenceName());
+        switch(sType){
+            case POSITIVE_SEQUENCE:
+                if(!posUDoc){
+                    posUDoc = createUDocument(sType);
+                    posUDoc->setName("Positive");
+                }
+                posUDoc->addObject(danseqob);
+                break;
+            case NEGATIVE_SEQUENCE:
+                if(!negUDoc){
+                    negUDoc = createUDocument(sType);
+                    negUDoc->setName("Negative");
+                }
+                negUDoc->addObject(danseqob);
+                break;
+            case CONTROL_SEQUENCE:
+                if(!conUDoc){
+                    conUDoc = createUDocument(sType);
+                    conUDoc->setName("Control");
+                }
+                conUDoc->addObject(danseqob);
+                break;
+            default:
+                return NULL;
+        }
+
+        return danseqob;
+    }   
+    return NULL;
+}
+
+Document* ExpertDiscoveryView::createUDocument(SequenceType sType){
+
+    QString baseName = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/ED";
+    switch(sType){
+        case POSITIVE_SEQUENCE:
+                baseName.append("_Positive");
+            break;
+        case NEGATIVE_SEQUENCE:
+                baseName.append("_Negative");
+            break;
+        case CONTROL_SEQUENCE:
+                baseName.append("_Control");
+            break;
+    }
+    QString suffix = QString(".fa");
+    baseName.append(suffix);
+    GUrl URL(baseName);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+    DocumentFormat* dformat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA);
+    Document* doc = new Document(dformat,iof,URL);
+    doc->setLoaded(true);
+
+    return doc;
+}
+
+void ExpertDiscoveryView::sl_sequenceItemSelChanged(ADVSequenceWidget* seqWidget){
+    createEDSequence();    
+}
+
+void ExpertDiscoveryView::sl_treeWidgetMarkup(bool isLetters){
+    if(isLetters){
+        extractSignalsAction->setEnabled(true);
+    }else{
+        sl_showExpertDiscoveryPosNegMrkDialog();
+    }
+}
+
+void ExpertDiscoveryView::sl_generateFullReport(){
+    if(d.getSelectedSignalsContainer().GetSelectedSignals().size() == 0){
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("No signals are selected to generate report"));
+        mb.exec();
+    }else{
+        d.generateRecognitionReportFull();
+    }
+}
+
+void ExpertDiscoveryView::sl_showSequence(){
+    EDPISequence* sItem = dynamic_cast<EDPISequence*>(signalsWidget->currentItem());
+    if(!sItem){
+        return;
+    }
+
+    DNASequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(sItem);
+    
+    QList<EDPISequence*> selSeqList = d.getSelectetSequencesList();
+    d.clearSelectedSequencesList();
+    foreach(EDPISequence* curS, selSeqList){
+        signalsWidget->updateItem(curS);
+    }
+    d.addSequenceToSelected(sItem);
+    QList<DNASequenceObject*> listdna;
+    listdna.append(dynamic_cast<DNASequenceObject*>(dnaSeqObj));
+    AnnotatedDNAView* danadv = new AnnotatedDNAView(dnaSeqObj->getSequenceName(),listdna);
+    initADVView(danadv);
+    signalsWidget->updateItem(sItem);
+}
+
+#define MAX_SEQUENCES_COUNT_ON_WIDGET 50
+void ExpertDiscoveryView::sl_addToShown(){
+    EDPISequence* sItem = dynamic_cast<EDPISequence*>(signalsWidget->currentItem());
+    if(!sItem){
+        return;
+    }
+
+    DNASequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(sItem);
+    if(currentAdv){
+        if(currentAdv->getSequenceContexts().size() < MAX_SEQUENCES_COUNT_ON_WIDGET){
+            //currentAdv->addObject(dnaSeqObj); 
+
+            //auto annotations bug
+
+            d.addSequenceToSelected(sItem);
+            QList<DNASequenceObject*> listdna;
+            listdna.append(dynamic_cast<DNASequenceObject*>(dnaSeqObj));
+            foreach(ADVSequenceObjectContext* curSoc, currentAdv->getSequenceContexts()){
+                listdna.append(curSoc->getSequenceObject());
+            }
+            AnnotatedDNAView* danadv = new AnnotatedDNAView(dnaSeqObj->getSequenceName(),listdna);
+            initADVView(danadv);
+            signalsWidget->updateItem(sItem);
+
+        }
+    }
 }
 
 ExpertDiscoveryADVSplitWidget::ExpertDiscoveryADVSplitWidget(AnnotatedDNAView* view): ADVSplitWidget(view){
     
 }
-
-
 
 
 ExpertDiscoveryViewWindow::ExpertDiscoveryViewWindow(GObjectView* view, const QString& viewName, bool persistent)
@@ -459,10 +950,38 @@ void ExpertDiscoveryViewWindow::setupMDIToolbar(QToolBar* tb){
     ExpertDiscoveryView* curEdView = dynamic_cast<ExpertDiscoveryView*>(view);
     assert(curEdView);
     tb->addAction(curEdView->getNewDocAction());
+    tb->addAction(curEdView->getOpenDocAction());
+    tb->addAction(curEdView->getSaveDocAction());
+    tb->addSeparator();
+    tb->addAction(curEdView->getLoadMarkupAction());
+    tb->addSeparator();
     tb->addAction(curEdView->getLoadControlSeqAction());
+    tb->addAction(curEdView->getLoadControlMarkupAction());
+    tb->addSeparator();
     tb->addAction(curEdView->getExtractSignalsAction());
+    tb->addSeparator();
     tb->addAction(curEdView->getSetUpRecBoundAction());
-    tb->addAction(curEdView->getOptimizeRecBoundAction());
+    tb->addAction(curEdView->getOptimizeRecBoundAction()); 
+    tb->addSeparator();
+    tb->addAction(curEdView->getGenerateFullReportAction());
+    
+}
+
+bool ExpertDiscoveryViewWindow::onCloseEvent(){
+    ExpertDiscoveryView* curEdView = dynamic_cast<ExpertDiscoveryView*>(view);
+    assert(curEdView);
+    Task* t = curEdView->getExtractTask();
+    if(t && (!t->isFinished() && !t->isCanceled())){
+        QMessageBox mb(QMessageBox::Critical, tr("Closing error"), tr("There are unfinished extracting tasks. Cancel them before closing"));
+        mb.exec();
+        return false;
+    }
+    if(curEdView->askForSave()){
+        curEdView->getSaveDocAction()->trigger();
+        return false;
+    }
+    
+    return true;
 }
 
 

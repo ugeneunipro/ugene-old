@@ -12,12 +12,18 @@ public:
     EDPropertiesTable(QWidget* parent);
 
     void representPIProperties(EDProjectItem* pItem);
+
+    void clearAll();
 	
 private:
     void addNewGroup(const QString& name);
     void addNewField(const QString& name);
 
+    void cleanup();
+
     EDProjectItem* curPItem;
+    bool isSeq;
+    int seqOffset;
 
 protected slots:
     void sl_cellChanged(QTableWidgetItem * tItem);

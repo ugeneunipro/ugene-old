@@ -6,6 +6,7 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Gui/MainWindow.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 
@@ -36,9 +37,14 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
     return NULL;
 }
 
-ExpertDiscoveryPlugin::ExpertDiscoveryPlugin() : Plugin( tr("Expert Discovery"), tr("Expert Discovery plugin") ),viewCtx(NULL) {
+ExpertDiscoveryPlugin::ExpertDiscoveryPlugin() : Plugin( tr("Expert Discovery"), tr("Expert Discovery plugin") ),viewCtx(NULL), delay(false) {
    
 	connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_initExpertDiscoveryViewCtx()));
+
+    windowId = 0;
+
+    ExpertDiscoveryViewFactory* edFactory = new ExpertDiscoveryViewFactory("ED", "ED", this);
+    AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(edFactory);
 
 }
 
@@ -48,8 +54,9 @@ void ExpertDiscoveryPlugin::sl_initExpertDiscoveryViewCtx() {
           Q_ASSERT(viewCtx);
           viewCtx->init();
 
+          //AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(new ExpertDiscoverySignalsAutoAnnotationUpdater );
           //change the icon
-          QAction* action = new QAction( tr("ExpertDiscovery"), this );
+          QAction* action = new QAction( QIcon(":expert_discovery/images/ExpertDiscovery.ico"), tr("ExpertDiscovery"), this );
           connect( action, SIGNAL( triggered() ), SLOT( sl_expertDiscoveryView() ) );
 
           AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS )->addAction( action );
@@ -58,26 +65,46 @@ void ExpertDiscoveryPlugin::sl_initExpertDiscoveryViewCtx() {
 
 void ExpertDiscoveryPlugin::sl_expertDiscoveryView(){
 
-    //test
-    ExpertDiscoveryViewFactory* edFactory = new ExpertDiscoveryViewFactory("ED", "ED", this);
-    AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(edFactory);
-    ExpertDiscoveryView* v = new ExpertDiscoveryView("ED", "EDView", this);
-    v->addObjectHandler(viewCtx);
-    ExpertDiscoveryViewWindow* wind = new ExpertDiscoveryViewWindow(v, "ExpertDiscovery");
-    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(wind);
-    AppContext::getMainWindow()->getMDIManager()->activateWindow(wind);
-    //test
-
-   /* ExpertDiscoveryView* view = new ExpertDiscoveryView;
-   // DNASequenceObject* dnaS = new DNASequenceObject("seq", DNASequence(QByteArray("AA"), AppContext::getDNAAlphabetRegistry()->getRegisteredAlphabets().first()));
-    //AnnotatedDNAView* viewObj = new AnnotatedDNAView("ADV",  QList<DNASequenceObject*>()<<dnaS);
-    //ExpertDiscoveryView* view = new ExpertDiscoveryView(viewObj, tr("Expert Discovery"));
-    ExpertDiscoveryViewCtx* edViewCtx = dynamic_cast<ExpertDiscoveryViewCtx*>(viewCtx);
-    if(edViewCtx){
-        edViewCtx->addView(view);
+ 
+    //create project here
+    if (!AppContext::getProject()) {
+        Task *tasks = new Task("Creating empty project", TaskFlag_NoRun);
+        QList<GUrl> emptyList;
+        Task* t = AppContext::getProjectLoader()->openProjectTask(emptyList, false);
+        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_expertDiscoveryViewDelay() ) );
+        tasks->addSubTask(t);        
+        AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
+        delay = true;
+    }else{
+        delay = false;
+        sl_expertDiscoveryViewDelay();
     }
-    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(view);
-    AppContext::getMainWindow()->getMDIManager()->activateWindow(view);*/
+ 
+}
+
+void ExpertDiscoveryPlugin::sl_expertDiscoveryViewDelay(){
+    if(delay){
+        if(!AppContext::getProject()){
+            return;
+        }
+        delay = false;
+    }
+
+    MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
+    MWMDIWindow* mdiWindow = mdi->getWindowById(windowId);
+    if (mdiWindow==NULL) {
+
+        ExpertDiscoveryView* v = new ExpertDiscoveryView("ED", "EDView", this);
+        v->addObjectHandler(viewCtx);
+        ExpertDiscoveryViewWindow* wind = new ExpertDiscoveryViewWindow(v, "ExpertDiscovery");
+        windowId = wind->getId();
+        AppContext::getMainWindow()->getMDIManager()->addMDIWindow(wind);
+        AppContext::getMainWindow()->getMDIManager()->activateWindow(wind);
+
+    }else{
+        AppContext::getMainWindow()->getMDIManager()->activateWindow(mdiWindow);
+    }
+    
 }
 
 const GObjectViewFactoryId ExpertDiscoveryViewFactory::ID("ED");

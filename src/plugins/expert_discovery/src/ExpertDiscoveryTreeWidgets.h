@@ -301,11 +301,22 @@ public:
 };
 ////////////////////////////////////////////////////
 
+enum EDSortParameters{
+    ED_ORDER_INCREASING,
+    ED_ORDER_DECREASING,
+    ED_FIELD_NAME,
+    ED_FIELD_PROBABILITY,
+    ED_FIELD_FISHER,
+    ED_FIELD_COVERAGE,
+    ED_FIELD_UNDEFINED
+};
+
 class EDProjectItem : public QObject, public QTreeWidgetItem
 {
 Q_OBJECT
 public:
     //CProjectItem(QTreeWidget * parent);
+  
     
     EDProjectItem();
     virtual ~EDProjectItem();
@@ -327,8 +338,16 @@ public:
     void setMetainfoBase(const MetaInfoBase* base){mInf = base;}
     const MetaInfoBase* getMinfo(){return mInf;}
 
+    virtual bool operator<(const QTreeWidgetItem &other) const;
+    void setSortField(EDSortParameters par) {sortField = par;}
+    void setSortOrd(EDSortParameters par) {sortOrd = par;}
+
+
 private:
     QString name;
+    EDSortParameters sortField;
+    EDSortParameters sortOrd;
+
 protected:
     void clearGroups();
 
@@ -341,6 +360,87 @@ private:
 
 signals:
     void si_getMetaInfoBase();
+};
+class ExpertDiscoveryData;
+
+class EDPISequenceRoot : public EDProjectItem
+{
+public:
+    EDPISequenceRoot(ExpertDiscoveryData& edD);
+    virtual ~EDPISequenceRoot();
+    EItemType getType() const;
+    virtual	void update(bool bUpdateChildren);
+    virtual bool isConnectedTo(void *pData) const;
+private:
+    ExpertDiscoveryData& edData;
+};
+
+class EDPISequenceBase : public EDProjectItem
+{
+public:
+    EDPISequenceBase(QString strName, const SequenceBase& , ExpertDiscoveryData& edD);
+    virtual ~EDPISequenceBase();
+    const SequenceBase& getSequenceBase() const;
+    virtual	void update(bool bUpdateChildren);
+    virtual bool isConnectedTo(void *pData) const;
+protected:
+    const SequenceBase& m_rSeqBase;
+    ExpertDiscoveryData& edData;
+};
+
+class EDPIPosSequenceBase : public EDPISequenceBase
+{
+public:
+    EDPIPosSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD);
+    virtual ~EDPIPosSequenceBase();
+    EItemType getType() const;
+    virtual	void update(bool bUpdateChildren);
+};
+
+class EDPINegSequenceBase : public EDPISequenceBase
+{
+public:
+    EDPINegSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD);
+    virtual ~EDPINegSequenceBase();
+    EItemType getType() const;
+    virtual	void update(bool bUpdateChildren);
+};
+
+class EDPIControlSequenceBase : public EDPISequenceBase
+{
+public:
+    EDPIControlSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD);
+    virtual ~EDPIControlSequenceBase();
+    EItemType getType() const;
+    virtual	void update(bool bUpdateChildren);
+};
+
+class EDPISequence : public EDProjectItem
+{
+public:
+    EDPISequence(const SequenceBase&, int id, ExpertDiscoveryData& edD);
+    virtual ~EDPISequence();
+    virtual EItemType getType() const;
+    QString getSequenceCode();
+    QString getSequenceName();
+    virtual	void update(bool bUpdateChildren);
+    virtual bool isConnectedTo(void *pData) const;
+    QString getScore() const;
+    QString getResult() const;
+private:
+    ExpertDiscoveryData& edData;
+    int m_id;
+    bool m_firstCall;
+    const Sequence& m_rSeq;
+};
+
+class EDPIControlSequence : public EDPISequence
+{
+public:
+    EDPIControlSequence(const SequenceBase& base, int id, ExpertDiscoveryData& edD)
+        : EDPISequence(base, id, edD) {}
+    virtual ~EDPIControlSequence() {}
+    virtual EItemType getType() const { return PIT_CONTROLSEQUENCE; }
 };
 
 class EDPICSDirectory : public EDProjectItem
@@ -367,7 +467,6 @@ public:
     //virtual CExtPopupMenuWnd*	CreatePopupMenu(HWND hWndCmdRecieve) const;
     virtual QString getName() const;
 };
-class ExpertDiscoveryData;
 class EDPICSNode : public EDProjectItem
 {
 public:

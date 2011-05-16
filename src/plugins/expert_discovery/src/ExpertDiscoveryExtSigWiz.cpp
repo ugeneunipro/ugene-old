@@ -210,7 +210,6 @@ void ExpertDiscoveryExtSigWiz::accept(){
             void* pointer = qVariantValue<void*>(variant);
             CSFolder* f = (CSFolder*) pointer;
             folder = f;
-
         }
 
         QWizard::accept();
@@ -262,11 +261,12 @@ void ExpertDiscoveryExtSigWiz::sl_selectionChanged (QTreeWidgetItem * current, Q
 //saving data to the deselected item
 
 	int curIndex = sigSetLayout->currentIndex();
+
 	if(previous== NULL){
 		return ;
 	}
 
-	if(previous != distItem && previous != intervItem && previous != repetItem && sigSet[curIndex]->isReadyToClose()){
+	if(previous != distItem && previous != intervItem && previous != repetItem && sigSet[curIndex]->isReadyToClose() && curIndex != T_UNDEFINED){
 		QVariant variant = previous->data(0, Qt::UserRole);
 		void* pointer = qVariantValue<void*>(variant);
 		Operation* pOp = (Operation*) pointer;

@@ -10,5 +10,6 @@
 //****************************************************************************
 
 #include "ExpertDiscoverySet.h"
-
+namespace U2{
 char Set::number_of_1[65536];
+}

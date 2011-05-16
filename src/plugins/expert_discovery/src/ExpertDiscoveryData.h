@@ -19,6 +19,7 @@ using namespace DDisc;
 
 class EDProjectItem;
 class EDPICS;
+class EDPISequence;
 
 const int ED_UPDATE_ALL			    = 0;
 const int ED_CURRENT_ITEM_CHANGED	= 1;
@@ -30,10 +31,13 @@ const int ED_UPDATE_CHILDREN		= 6;
 const int ED_PROPERTY_CHANGED		= 7;
 const int ED_MRK_UPDATE		        = 8;
 
+enum SequenceType {POSITIVE_SEQUENCE, NEGATIVE_SEQUENCE, CONTROL_SEQUENCE, UNKNOWN_SEQUENCE};
+
 class ExpertDiscoveryData : public QObject{
 	Q_OBJECT
 public:
-	static const std::string FAMILY_LETTERS;
+
+    static const std::string FAMILY_LETTERS;
 	static const std::string FAMILY_LETTERS_METHOD;
 
 	ExpertDiscoveryData ();
@@ -48,6 +52,7 @@ public:
 	void clearScores();
 
 	const MetaInfoBase& getDescriptionBase() const { return desc;}
+    MetaInfoBase& getDescriptionBaseNoConst() { return desc;}
 	SequenceBase& getPosSeqBase() {return posBase;}
 	SequenceBase& getNegSeqBase() {return negBase;}
     SequenceBase& getConSeqBase() {return conBase;}
@@ -75,8 +80,35 @@ public:
 
     void onSetCurrentSignalParamsAsPrior(EDPICS *pItem, bool bUpdate);
     void onClearSignalPriorParams(EDPICS *pItem);
+
+    SequenceType getSequenceTypeByName(const QString& seqName);
+
+    bool loadMarkup(const QString& firstF, const QString& secondF, const QString& thirdF, bool generateDescr);
+    bool loadAnnotation(MarkingBase& base, const SequenceBase& seqBase, QString strFileName);
+    bool generateDescription();
+    void loadControlSequenceAnnotation(const QString& fileName);
+
+    void cleanup();
+
+    void addSequenceToSelected(EDPISequence* seq);
+    void clearSelectedSequencesList();
+    bool isSequenceSelected(EDPISequence* seq);
+    QList<EDPISequence*> getSelectetSequencesList();
+
+    void generateRecognitionReportFull();
+    bool generateRecognizationReportHeader(ostream& out) const;
+    bool generateRecognizationReportFooter(ostream& out) const;
+    bool generateRecognizationReport(ostream& out, const SequenceBase& rBase, QString strName, bool bSuppressNulls);
+    bool generateRecognizationReportPositive(ostream& out, QString strName, bool bSuppressNulls);
+    int  getSequencesCountWithScoreMoreThan(double dScore, const SequenceBase& rBase) const;
+    void generateRecognizationReport(EDProjectItem* pItem);
+
+    bool isModified() {return modified;}
+    void setModifed(bool modFlag = true){modified = modFlag;}
     
     double recognizationBound;
+    RecognizationDataStorage recDataStorage;
+    QList<EDPISequence*> selSequences;
 private:
 	SequenceBase posBase;
 	SequenceBase negBase;
@@ -89,7 +121,7 @@ private:
 
     CSFolder        rootFolder;
 
-    RecognizationDataStorage recDataStorage;
+    bool modified;
 
 	inline Sequence prerareSequence(const GObject* obj) const;
 

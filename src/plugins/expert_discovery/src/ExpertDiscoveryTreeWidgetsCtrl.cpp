@@ -2,17 +2,27 @@
 
 
 
+ #include <QStandardItemModel>
 #include<QMessageBox>
 #include <QtGui/QMouseEvent>
 
 
 
 namespace U2 {
+
+// MyTreeWidget::MyTreeWidget(QWidget *parent)
+// :QTreeView(parent){
+//     QStandardItemModel* sm = new QStandardItemModel(this);
+//     setModel(sm );
+// }
  
 EDProjectTree::EDProjectTree(QWidget *parent, ExpertDiscoveryData &d)
 :QTreeWidget(parent)
 ,edData(d)
 ,root(edData.getRootFolder())
+,seqRoot(d)
+,sortField(ED_FIELD_PROBABILITY)
+,sortOrd(ED_ORDER_DECREASING)
 {
     createPopupsAndActions();
     updateTree(ED_UPDATE_ALL);
@@ -52,10 +62,23 @@ void EDProjectTree::updateTree(int flag, EDProjectItem* item){
 }
 
 void EDProjectTree::remake(){
-    //clear();
+    
+
+    addTopLevelItem(&seqRoot);
+    seqRoot.setText(0,"Sequences");
+    seqRoot.setIcon(0,QIcon(":expert_discovery/images/sequences.ico"));
+    seqRoot.setExpanded(true);
+    seqRoot.update(true);
+    for (int i = 0; i < seqRoot.childCount(); i++){
+        EDProjectItem* item = dynamic_cast<EDProjectItem*>(seqRoot.child(i));
+        if(item){
+            internalRemake(item, &seqRoot);
+        }
+    }
 
     addTopLevelItem(&mrkRoot);
     mrkRoot.setText(0,"Markup");
+    mrkRoot.setIcon(0,QIcon(":expert_discovery/images/mrkroot.ico"));
     mrkRoot.updMarkup(edData);
     for (int i = 0; i < mrkRoot.childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(mrkRoot.child(i));
@@ -66,13 +89,19 @@ void EDProjectTree::remake(){
 
     addTopLevelItem(&root);
     root.setText(0,"Complex signals");
+    root.setIcon(0,QIcon(":expert_discovery/images/csroot.ico"));
+    root.update(true);
     for (int i = 0; i < root.childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(root.child(i));
         if(item){
             internalRemake(item, &root);
         }
     }
+}
 
+void EDProjectTree::clearTree(){
+   root.takeChildren(); 
+   mrkRoot.takeChildren();
 }
 
 void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent){
@@ -89,6 +118,9 @@ void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent
         InternalRemake(hItem, pItem->GetSubitem(i));
     SortChildItems(hItem, m_sortingMode, m_order);   */
     subItem->setText(0, subItem->getName());
+    subItem->setIcon(0, getItemIcon(subItem));
+    subItem->setSortOrd(sortOrd);
+    subItem->setSortField(sortField);
 
     for(int i = 0; i < subItem->childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(subItem->child(i));
@@ -98,10 +130,14 @@ void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent
         }
         
     }
+    subItem->sortChildren(0, Qt::AscendingOrder);
 }
+
+
 
 void EDProjectTree::updateItem(EDProjectItem* pItem){
     pItem->setText(0, pItem->getName());
+    pItem->setIcon(0, getItemIcon(pItem));
     /*SetItemText(hItem, pItem->GetName());
     SortChildren(GetParentItem(hItem));
     int nImage = TypeToImage(pItem->GetType());
@@ -112,7 +148,19 @@ void EDProjectTree::updateItem(EDProjectItem* pItem){
     else
         curFont.setBold(false);
 
+    EDPISequence* seq = dynamic_cast<EDPISequence*>(pItem);
+    if(seq){
+        if(edData.isSequenceSelected(seq)){
+            curFont.setBold(true);
+        }
+        else{
+            curFont.setBold(false);
+        }
+    }
+    
     pItem->setFont(0, curFont);
+
+    
 }
 void EDProjectTree::updateItemState(EDProjectItem *pItem)
 {
@@ -136,6 +184,7 @@ void EDProjectTree::updateChildren(EDProjectItem* pItem){
         internalRemake(ch, pItem);
 
     }
+    pItem->sortChildren(0, Qt::AscendingOrder);
     //SortChildItems(hParent, m_sortingMode, m_order);*/
 }
 
@@ -148,6 +197,29 @@ void EDProjectTree::updateMarkup(){
             internalRemake(item, &mrkRoot);
         }
     }    
+}
+
+void EDProjectTree::updateSequenceBase(EItemType type){
+    if(type == PIT_SEQUENCEROOT){
+        seqRoot.update(true);
+        for (int i = 0; i < seqRoot.childCount(); i++){
+            EDProjectItem* item = dynamic_cast<EDProjectItem*>(seqRoot.child(i));
+            if(item){
+                    item->update(true);
+                    internalRemake(item, &seqRoot);
+            }
+        }  
+    }else{
+        for (int i = 0; i < seqRoot.childCount(); i++){
+            EDProjectItem* item = dynamic_cast<EDProjectItem*>(seqRoot.child(i));
+            if(item){
+                if(item->getType() == type){
+                    item->update(true);
+                    internalRemake(item, &seqRoot);
+                }
+            }
+        }  
+    }
 }
 
 void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop, QString newVal){
@@ -233,6 +305,16 @@ void EDProjectTree::mousePressEvent(QMouseEvent *e){
     QTreeWidget::mousePressEvent(e);
 }
 
+void EDProjectTree::mouseDoubleClickEvent(QMouseEvent *e){
+
+    QTreeWidgetItem* curItem = itemAt(e->pos());
+    setCurrentItem(curItem, 0);
+    
+    sl_showSequence();
+
+    QTreeWidget::mouseDoubleClickEvent(e);
+}
+
 QMenu* EDProjectTree::chosePopupMen(EDProjectItem* pItem){
     if(pItem->getType() == PIT_CS){
         EDPICS* pItem = dynamic_cast<EDPICS*>(currentItem());
@@ -261,10 +343,49 @@ QMenu* EDProjectTree::chosePopupMen(EDProjectItem* pItem){
         return popupMenuDirRoot;
     }else if(pItem->getType() == PIT_MRK_ROOT){
         markupLettersAction->setEnabled(!edData.isLettersMarkedUp() && (edData.getNegSeqBase().getSize() > 0) && (edData.getPosSeqBase().getSize() > 0) );
+        loadMarkupAction->setEnabled(edData.getPosSeqBase().getSize() > 0 && edData.getNegSeqBase().getSize() > 0);
         return popupMenuMrkRoot;  
+    }else if(pItem->getType() == PIT_SEQUENCE || pItem->getType() == PIT_CONTROLSEQUENCE){
+        return popupMenuSequence;
+    }else if(pItem->getType() == PIT_POSSEQUENCEBASE || pItem->getType() == PIT_NEGSEQUENCEBASE || pItem->getType() == PIT_CONTROLSEQUENCEBASE){
+        EDPISequenceBase* pBaseItem = dynamic_cast<EDPISequenceBase*>(pItem);
+        if (!pItem)
+        {
+            return NULL;
+        } 
+        generateReportAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
+        return popupMenuSequenceBase;
     }
     return NULL;
       
+}
+
+QIcon EDProjectTree::getItemIcon(EDProjectItem* pItem){
+    EItemType iType = pItem->getType();
+
+    switch (iType)
+    {
+        case PIT_SEQUENCEROOT: return QIcon(":expert_discovery/images/sequences.ico");
+        case PIT_POSSEQUENCEBASE: return QIcon(":expert_discovery/images/posseq.ico");
+        case PIT_NEGSEQUENCEBASE: return QIcon(":expert_discovery/images/negseq.ico");
+        case PIT_CONTROLSEQUENCEBASE: return QIcon(":expert_discovery/images/control.ico");
+        case PIT_SEQUENCE: return QIcon(":expert_discovery/images/sequence.ico");
+        case PIT_CONTROLSEQUENCE: return QIcon(":expert_discovery/images/sequence.ico");
+        case PIT_CS_ROOT: return QIcon(":expert_discovery/images/csroot.ico");
+        case PIT_CS_FOLDER: return QIcon(":expert_discovery/images/folder.ico");
+        case PIT_CS: return QIcon(":expert_discovery/images/cs.ico");
+        case PIT_CSN_UNDEFINED: return QIcon(":expert_discovery/images/undefined.ico");
+        case PIT_CSN_DISTANCE: return QIcon(":expert_discovery/images/distance.ico");
+        case PIT_CSN_REPETITION: return QIcon(":expert_discovery/images/repetition.ico");
+        case PIT_CSN_INTERVAL: return QIcon(":expert_discovery/images/interval.ico");
+        case PIT_CSN_MRK_ITEM: return QIcon(":expert_discovery/images/ts.ico");
+        case PIT_MRK_ITEM: return QIcon(":expert_discovery/images/ts.ico");
+        case PIT_MRK_ROOT: return QIcon(":expert_discovery/images/mrkroot.ico");
+        case PIT_MRK_FAMILY: return QIcon(":expert_discovery/images/folder.ico");
+        default: return QIcon();
+    }
+
+    return QIcon();
 }
 
 void EDProjectTree::createPopupsAndActions(){
@@ -300,8 +421,54 @@ void EDProjectTree::createPopupsAndActions(){
 
     markupLettersAction = new QAction(tr("Markup letters"), this);
     connect(markupLettersAction, SIGNAL(triggered(bool)), SLOT(sl_markupLetters()));
+
+    loadMarkupAction = new QAction(tr("Load markup"), this);
+    connect(loadMarkupAction, SIGNAL(triggered(bool)), SLOT(sl_loadMarkup()));
+
+    showSequenceAction = new QAction(tr("Show sequence"), this);
+    connect(showSequenceAction, SIGNAL(triggered(bool)), SLOT(sl_showSequence()));
+
+    addToShownAction = new QAction(tr("Add to shown"), this);
+    connect(addToShownAction, SIGNAL(triggered(bool)), SLOT(sl_addToShown()));
+
+    generateReportAction = new QAction(tr("Generate report"), this);
+    connect(generateReportAction, SIGNAL(triggered(bool)), SLOT(sl_generateReport()));
+
+    sortGroup = new QActionGroup(this);
+    sortOrdGroup = new QActionGroup(this);
+    sortFieldGroup = new QActionGroup(this);
+
+    connect(sortOrdGroup, SIGNAL(triggered(QAction* )), SLOT(sl_sortOrd(QAction* )));
+    connect(sortFieldGroup, SIGNAL(triggered(QAction* )), SLOT(sl_sortField(QAction* )));
+
+
+    sortOrdIncrAction = new QAction(tr("Increasing"), this);
+    sortOrdDecrAction = new QAction(tr("Decreasing"), this);
+
+    sortFieldCoverAction = new QAction(tr("Coverage"), this);
+    sortFieldFisherAction = new QAction(tr("Fisher"), this);
+    sortFieldNameAction = new QAction(tr("Name"), this);
+    sortFieldProbAction = new QAction(tr("Probability"), this);
+
+    sortOrdIncrAction->setCheckable(true);
+    sortOrdDecrAction->setCheckable(true);
+    sortOrdDecrAction->setChecked(true);
+
+    sortFieldCoverAction->setCheckable(true);
+    sortFieldFisherAction->setCheckable(true);
+    sortFieldNameAction->setCheckable(true);
+    sortFieldProbAction->setCheckable(true);
+    sortFieldProbAction->setChecked(true);
+
+    sortOrdGroup->addAction(sortOrdIncrAction);
+    sortOrdGroup->addAction(sortOrdDecrAction);
+
+    sortFieldGroup->addAction(sortFieldCoverAction);
+    sortFieldGroup->addAction(sortFieldFisherAction);
+    sortFieldGroup->addAction(sortFieldNameAction);
+    sortFieldGroup->addAction(sortFieldProbAction);
+
     
-   
  
     popupMenuCS = new QMenu(this);
     popupMenuCS->addAction(selDeselSigAction);
@@ -309,6 +476,7 @@ void EDProjectTree::createPopupsAndActions(){
     popupMenuCS->addSeparator();
     popupMenuCS->addAction(setCurPriorAction);
     popupMenuCS->addAction(clearCurPriorAction);
+    
 
     popupMenuDir = new QMenu(this);
     popupMenuDir->addAction(newFolderAction);
@@ -330,8 +498,26 @@ void EDProjectTree::createPopupsAndActions(){
     popupMenuDirRoot->addAction(setPriorAllSigAction);
     popupMenuDirRoot->addAction(clearPriorAllSigAction);
 
+    QMenu* sortMenu = new QMenu("Sort", this);
+    QMenu* fieldMenu = new QMenu("Field", this);
+    QMenu* ordMenu = new QMenu("Order", this);
+    fieldMenu->addActions(sortFieldGroup->actions());
+    ordMenu->addActions(sortOrdGroup->actions());
+    sortMenu->addMenu(ordMenu);
+    sortMenu->addMenu(fieldMenu);
+
+    popupMenuDirRoot->addMenu(sortMenu);
+ 
     popupMenuMrkRoot = new QMenu(this);
     popupMenuMrkRoot->addAction(markupLettersAction);
+    popupMenuMrkRoot->addAction(loadMarkupAction);
+
+    popupMenuSequence = new QMenu(this);
+    popupMenuSequence->addAction(showSequenceAction);
+    popupMenuSequence->addAction(addToShownAction);
+
+    popupMenuSequenceBase = new QMenu(this);
+    popupMenuSequenceBase->addAction(generateReportAction);
 }
 
 void EDProjectTree::sl_newFolder(){
@@ -348,7 +534,7 @@ void EDProjectTree::sl_newFolder(){
     EDPICSFolder* newFol = new EDPICSFolder(pNewFolder);
     pItem->addChild(dynamic_cast<EDProjectItem*>(newFol));
     updateTree(ED_UPDATE_CHILDREN, pItem);
-    //updateTree(ED_CURRENT_ITEM_CHANGED, pNewItem);
+    updateTree(ED_CURRENT_ITEM_CHANGED, newFol);
 }
 void EDProjectTree::sl_newSignal(){
 
@@ -407,6 +593,55 @@ void EDProjectTree::deleteSignal(EDPICS* pPI){
     updateTree(ED_CURRENT_ITEM_CHANGED, NULL);
     pItem->update(true);
     updateTree(ED_UPDATE_CHILDREN, pItem);
+
+}
+
+void EDProjectTree::updateSorting(){
+
+    
+    for (int i = 0; i < seqRoot.childCount(); i++){
+        EDProjectItem* item = dynamic_cast<EDProjectItem*>(seqRoot.child(i));
+        if(item){
+           item->setSortField(sortField); 
+           item->setSortOrd(sortOrd);
+           updateSortingRecurs(item);
+        }
+    }
+
+    for (int i = 0; i < mrkRoot.childCount(); i++){
+        EDProjectItem* item = dynamic_cast<EDProjectItem*>(mrkRoot.child(i));
+        if(item){
+            item->setSortField(sortField); 
+            item->setSortOrd(sortOrd); 
+            updateSortingRecurs(item);
+        }
+    }
+
+    for (int i = 0; i < root.childCount(); i++){
+        EDProjectItem* item = dynamic_cast<EDProjectItem*>(root.child(i));
+        if(item){
+            item->setSortField(sortField); 
+            item->setSortOrd(sortOrd);
+            updateSortingRecurs(item);
+        }
+    }
+    seqRoot.sortChildren(0, Qt::AscendingOrder);
+    mrkRoot.sortChildren(0, Qt::AscendingOrder);
+    root.sortChildren(0, Qt::AscendingOrder);
+   
+}
+
+void EDProjectTree::updateSortingRecurs(EDProjectItem* pItem){
+    
+    for (int i = 0; i < pItem->childCount(); i++){
+        EDProjectItem* item = dynamic_cast<EDProjectItem*>(pItem->child(i));
+        if(item){
+            item->setSortField(sortField); 
+            item->setSortOrd(sortOrd);
+            updateSortingRecurs(item);
+        }
+    }
+    pItem->sortChildren(0, Qt::AscendingOrder);
 
 }
 void EDProjectTree::sl_selAllSig(){
@@ -505,6 +740,17 @@ void EDProjectTree::sl_clearCurPrior(){
 void EDProjectTree::sl_markupLetters(){
     edData.markupLetters();
     updateMarkup();
+    emit si_loadMarkup(true);
+}
+
+void EDProjectTree::sl_loadMarkup(){
+    emit si_loadMarkup(false);
+}
+void EDProjectTree::sl_showSequence(){
+    emit si_showSequence();
+}
+void EDProjectTree::sl_addToShown(){
+    emit si_addToShown();
 }
 
 void EDProjectTree::sl_setMetainfoBase(){
@@ -516,5 +762,47 @@ void EDProjectTree::sl_setMetainfoBase(){
 
     item->setMetainfoBase(&edData.getDescriptionBase());
     
+}
+
+void EDProjectTree::sl_generateReport(){
+    EDPISequenceBase* pItem = dynamic_cast<EDPISequenceBase*>(currentItem());
+    if (!pItem)
+    {
+        return;
+    }
+    edData.generateRecognizationReport(pItem);
+}
+
+void EDProjectTree::sl_sortField(QAction* action){
+    EDSortParameters cursortField = ED_FIELD_UNDEFINED;
+    QString actName = action->text();
+    if(actName == tr("Coverage")){
+        cursortField = ED_FIELD_COVERAGE;
+    }else if(actName == tr("Fisher")){
+        cursortField = ED_FIELD_FISHER;
+    }else if(actName == tr("Name")){
+        cursortField = ED_FIELD_NAME;
+    }else if(actName == tr("Probability")){
+        cursortField = ED_FIELD_PROBABILITY;
+    }
+
+    if(cursortField != ED_FIELD_UNDEFINED){
+       sortField = cursortField;
+       updateSorting();
+    }
+}
+void EDProjectTree::sl_sortOrd(QAction* action){
+    EDSortParameters cursortField = ED_FIELD_UNDEFINED;
+    QString actName = action->text();
+    if(actName == tr("Increasing")){
+        cursortField = ED_ORDER_INCREASING;
+    }else if(actName == tr("Decreasing")){
+        cursortField = ED_ORDER_DECREASING;
+    }
+
+    if(cursortField != ED_FIELD_UNDEFINED){
+        sortOrd = cursortField;
+        updateSorting();
+    }
 }
 }//namespace

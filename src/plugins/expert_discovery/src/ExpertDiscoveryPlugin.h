@@ -15,9 +15,13 @@ public:
 private slots:
     void sl_initExpertDiscoveryViewCtx();
     void sl_expertDiscoveryView();
+    void sl_expertDiscoveryViewDelay();
 
 private:
     GObjectViewWindowContext* viewCtx;
+
+    bool delay;
+    int windowId;
 };
 
 

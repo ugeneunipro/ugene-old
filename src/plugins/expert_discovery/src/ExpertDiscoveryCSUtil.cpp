@@ -380,11 +380,11 @@ void EDProcessedSignal::makeStandardProcessing(Operation *pOp, const SequenceBas
     m_dFisher = fisher(a[0][0], a[0][1], a[1][0], a[1][1]);
     //str.Format("%E", m_dFisher);
     
-    addProperty("Fisher", QString("%1%2").arg(str).arg(m_dFisher));
+    addProperty("Fisher", QString("%1").arg(m_dFisher));
 
     m_dUl = ul(a[0][0], a[0][1], a[1][0], a[1][1]);
     //str.Format("%E", m_dUl);
-    addProperty("Ul", QString("%1%2").arg(str).arg(m_dUl));
+    addProperty("Ul", QString("%1").arg(m_dUl));
 
     rContext.destroy();
     sig.detach();
@@ -500,33 +500,29 @@ bool SelectedSignalsContainer::IsSelected(const Signal *pSignal) const
         return false;
 }
 
-/*void CSelectedSignalsContainer::Serialize(CArchive& ar)
-{
-    const CCSFolder& rRoot = GlobalGetDocument()->GetCSRoot();
-    if (ar.IsStoring()) {
-        SignalList::iterator it = m_SelectedSignals.begin();
-        int nSize = (int) m_SelectedSignals.size();
-        ar << nSize;
-        while (m_SelectedSignals.end() != it) {
-            CString strPath = rRoot.GetPathToSignal((*it));
-            ASSERT(!strPath.IsEmpty());
-            ar << strPath;
-            it++;
-        }
+void  SelectedSignalsContainer::save(QDataStream& ar, CSFolder& rootF){
+    SignalList::iterator it = m_SelectedSignals.begin();
+    int nSize = (int) m_SelectedSignals.size();
+    ar << nSize;
+    while (m_SelectedSignals.end() != it) {
+        QString strPath = rootF.getPathToSignal((*it));
+        assert(!strPath.isEmpty());
+        ar << strPath;
+        it++;
     }
-    else {
-        int nSize;
-        ar >> nSize;
-        for (int i=0; i<nSize; i++) {
-            CString strPath;
-            ar >> strPath;
-            const Signal* pSignal = rRoot.GetSignalByPath(strPath);
-            ASSERT(pSignal != NULL);
-            if (pSignal)
-                AddSignal(pSignal);
-        }
+}
+void  SelectedSignalsContainer::load(QDataStream& ar, CSFolder& rootF){
+    int nSize;
+    ar >> nSize;
+    for (int i=0; i<nSize; i++) {
+        QString strPath;
+        ar >> strPath;
+        const Signal* pSignal = rootF.getSignalByPath(strPath);
+        assert(pSignal != NULL);
+        if (pSignal)
+            AddSignal(pSignal);
     }
-}*/
+}
 
 RecognizationDataStorage::~RecognizationDataStorage(){
     clear();
@@ -538,15 +534,17 @@ void RecognizationDataStorage::clear(){
         }
     }
 
+    recMap.clear();
+
 }
-void RecognizationDataStorage::addSequence(Sequence* seq){
-    if (recMap.contains(seq)){
-        RecognizationData *d = recMap.value(seq);
+void RecognizationDataStorage::addSequence(QString& seqName){
+    if (recMap.contains(seqName)){
+        RecognizationData *d = recMap.value(seqName);
         if(d){
             delete d;
         }
     }
-    recMap.insert(seq, NULL);
+    recMap.insert(seqName, NULL);
 }
 bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, const Sequence* seq, const SelectedSignalsContainer& rSe){
  
@@ -588,7 +586,7 @@ bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, con
         context.destroy();
         iter++;
     }
-    RecognizationData* d = recMap.value(seq);
+    RecognizationData* d = recMap.value(QString::fromStdString(seq->getName()));
     if(d != NULL){
         delete d;
     }
@@ -598,11 +596,12 @@ bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, con
        
 }
 RecognizationData* RecognizationDataStorage::getRecData(const Sequence* seq){
-    if(!recMap.contains(seq) ){
+    if(!recMap.contains(QString::fromStdString(seq->getName())) ){
         return NULL;
     }else{
-        return recMap.value(seq);
+        return recMap.value(QString::fromStdString(seq->getName()));
     }
 }
+
 
 } //namespace

@@ -14,10 +14,14 @@
 #include <iostream>
 #include <assert.h>
 #include <map>
+#include <string.h>
+#include <cstring>
 using std::istream;
 using std::ostream;
 
-typedef __int64 SET_TYPE;
+//typedef __int64 SET_TYPE;
+namespace U2{
+typedef int SET_TYPE;
 
 // Representing bitset with fast size determination
 class Set {
@@ -241,4 +245,5 @@ inline std::string Set::association(int pos) const {
         return it->second;
     else
         return std::string();
+}
 }
