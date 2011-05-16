@@ -24,6 +24,7 @@
 #include <math.h>
 
 #include <QtCore/qglobal.h>
+#include <QtGui/QApplication>
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QLabel>
@@ -531,6 +532,8 @@ void ZoomableAssemblyOverview::wheelEvent(QWheelEvent * e) {
 
     // zoom
     if(Qt::NoButton == e->buttons()) {
+        QApplication::sendEvent(ui->getReadsArea(), e);
+    } if(e->modifiers() & Qt::ControlModifier) {
         for(int i = 0; i < numSteps; ++i) {
             if(positive) {
                 sl_zoomIn(e->pos());
