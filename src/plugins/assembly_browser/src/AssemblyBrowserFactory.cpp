@@ -28,6 +28,14 @@ bool AssemblyBrowserFactory::canCreateView(const MultiGSelection & multiSelectio
 
 #define MAX_VIEWS 5
 
+void addAsmObjs(QList<GObject*> & asmObjs, const QList<GObject*> & docObjs) {
+    foreach(GObject * go, docObjs) {
+        if(!asmObjs.contains(go)) {
+            asmObjs.append(go);
+        }
+    }
+}
+
 Task * AssemblyBrowserFactory::createViewTask(const MultiGSelection & multiSelection, bool single /* = false */) {
     QList<GObject*> asmObjects = SelectionUtils::findObjects(GObjectTypes::ASSEMBLY, &multiSelection, UOF_LoadedAndUnloaded);
     QSet<Document*> docsWithAsm = SelectionUtils::findDocumentsWithObjects(GObjectTypes::ASSEMBLY, 
@@ -37,7 +45,7 @@ Task * AssemblyBrowserFactory::createViewTask(const MultiGSelection & multiSelec
     foreach(Document* doc, docsWithAsm) {
         QList<GObject*> docObjs = doc->findGObjectByType(GObjectTypes::ASSEMBLY, UOF_LoadedAndUnloaded);
         if (!docObjs.isEmpty()) {
-            asmObjects+=docObjs;
+            addAsmObjs(asmObjects, docObjs);
         } else {
             resTasks.append(new OpenAssemblyBrowserTask(doc));
             if (resTasks.size() == MAX_VIEWS) {
