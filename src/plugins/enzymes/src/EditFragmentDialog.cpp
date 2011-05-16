@@ -63,8 +63,8 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
         trseq = QString("%1 ... %2").arg(leftSeqPart).arg(rightSeqPart);
     } 
 
-    const DNAFragmentTerminus& leftTerm = dnaFragment.getLeftTerminus();
-    const DNAFragmentTerminus& rightTerm = dnaFragment.getRightTerminus();
+    const DNAFragmentTerm& leftTerm = dnaFragment.getLeftTerminus();
+    const DNAFragmentTerm& rightTerm = dnaFragment.getRightTerminus();
 
     lCustomOverhangEdit->setText(leftTerm.overhang);
     lCustomOverhangEdit->setMaxLength(8);
@@ -81,10 +81,12 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
     connect(rBluntButton, SIGNAL(clicked()), SLOT(sl_updatePreview()));
     connect(lStickyButton, SIGNAL(clicked()), SLOT(sl_updatePreview()));
     connect(lBluntButton, SIGNAL(clicked()), SLOT(sl_updatePreview()));
+    connect(lDirectRadioButton, SIGNAL(clicked()), SLOT(sl_updatePreview()));
+    connect(lComplRadioButton, SIGNAL(clicked()), SLOT(sl_updatePreview()));
+    connect(rDirectRadioButton, SIGNAL(clicked()), SLOT(sl_updatePreview()));
+    connect(rComplRadioButton, SIGNAL(clicked()), SLOT(sl_updatePreview()));
     connect(lResetButton, SIGNAL(clicked()), SLOT(sl_onLeftResetClicked()));
     connect(rResetButton, SIGNAL(clicked()), SLOT(sl_onRightResetClicked()));
-    connect(lCustomOverhangEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_updatePreview()));
-    connect(rCustomOverhangEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_updatePreview()));
 
 
 
@@ -133,16 +135,28 @@ void EditFragmentDialog::updatePreview()
 
     preview += tr("Fragment of %1%2<br>").arg(dnaFragment.getSequenceDocName()).arg(invertedStr);
 
-    const QString uLeftOverhang = lBluntButton->isChecked() ? QByteArray() : lCustomOverhangEdit->text().toUpper();
-    const QString bRightOverhang = rBluntButton->isChecked() ? QByteArray() : rCustomOverhangEdit->text().toUpper();
-    
+    QString uLeftOverhang, bLeftOverhang, uRightOverhang, bRightOverhang;
+    if (!lBluntButton->isChecked()) {
+        uLeftOverhang = lDirectRadioButton->isChecked() ? lCustomOverhangEdit->text().toUpper() : QByteArray();
+        bRightOverhang = rComplRadioButton->isChecked() ? rCustomOverhangEdit->text().toUpper() : QByteArray();
+        if ( lComplRadioButton->isChecked() ) {
+            QByteArray buf = lCustomOverhangEdit->text().toAscii();
+            transl->translate(buf.data(), buf.size());
+            bLeftOverhang = buf;
+        }
+        if ( rDirectRadioButton->isChecked() ) {
+            QByteArray buf = rCustomOverhangEdit->text().toAscii();
+            transl->translate(buf.data(), buf.size());
+            uRightOverhang = buf;
+        }
+    }
     preview+=("<table cellspacing=\"10\" >");
     preview += tr("<tr> <td align=\"center\"> 5'End </td><td></td> <td align=\"center\"> 3'End </td> </tr>");
 
     preview += QString("<tr> <td align=\"center\" >%1</td><td align=\"center\" >%2</td><td align=\"center\" >%3</td> </tr>").
-        arg(uLeftOverhang).arg(seq).arg(QString());
+        arg(uLeftOverhang).arg(seq).arg(uRightOverhang);
     preview += QString("<tr> <td align=\"center\" >%1</td><td align=\"center\" >%2</td><td align=\"center\" >%3</td> </tr>").
-        arg(QString()).arg(trseq).arg(bRightOverhang);
+        arg(bLeftOverhang).arg(trseq).arg(bRightOverhang);
 
 
     preview+=("</table>");
@@ -220,19 +234,7 @@ void EditFragmentDialog::resetRightOverhang()
     rCustomOverhangEdit->setText(overhang);
 }
 
-void EditFragmentDialog::sl_onLeftBluntButtonToogled( bool toogle )
-{
-    bool enabled = lCustomOverhangBox->isChecked() && !toogle;
-    lCustomOverhangEdit->setEnabled(enabled);
-    lResetButton->setEnabled(enabled);
-}
 
-void EditFragmentDialog::sl_onRightBluntButtonToggled( bool toggle )
-{
-    bool enabled = rCustomOverhangBox->isChecked() && !toggle;
-    rCustomOverhangEdit->setEnabled(enabled);
-    rResetButton->setEnabled(enabled);
-}
 
 
 } // namespace

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>400</height>
+    <width>488</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -19,15 +19,15 @@
   <property name="windowTitle">
    <string>Edit Molecule Fragment</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_5">
+  <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
         <string>5' End</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QGroupBox" name="groupBox_2">
           <property name="title">
@@ -58,35 +58,54 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="lCustomOverhangBox">
-          <property name="enabled">
+         <widget class="QGroupBox" name="lCustomOverhangBox">
+          <property name="title">
+           <string>Custom overhang</string>
+          </property>
+          <property name="checkable">
            <bool>true</bool>
           </property>
-          <property name="text">
-           <string>Custom overhang:</string>
+          <property name="checked">
+           <bool>false</bool>
           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QRadioButton" name="lDirectRadioButton">
+               <property name="text">
+                <string>Direct</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="lComplRadioButton">
+               <property name="text">
+                <string>Complement</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLineEdit" name="lCustomOverhangEdit"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="lResetButton">
+               <property name="text">
+                <string>Reset</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLineEdit" name="lCustomOverhangEdit">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="lResetButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Reset</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
        </layout>
       </widget>
@@ -96,7 +115,7 @@
        <property name="title">
         <string>3' End</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
@@ -124,35 +143,57 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="rCustomOverhangBox">
-          <property name="enabled">
+         <widget class="QGroupBox" name="rCustomOverhangBox">
+          <property name="title">
+           <string>Custom overhang</string>
+          </property>
+          <property name="checkable">
            <bool>true</bool>
           </property>
-          <property name="text">
-           <string>Custom overhang:</string>
+          <property name="checked">
+           <bool>false</bool>
           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QRadioButton" name="rDirectRadioButton">
+               <property name="text">
+                <string>Direct</string>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="rComplRadioButton">
+               <property name="text">
+                <string>Complement</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLineEdit" name="rCustomOverhangEdit"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="rResetButton">
+               <property name="text">
+                <string>Reset</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLineEdit" name="rCustomOverhangEdit">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="rResetButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Reset</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
        </layout>
       </widget>
@@ -249,82 +290,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>lCustomOverhangBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>lCustomOverhangEdit</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>108</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>66</x>
-     <y>177</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lCustomOverhangBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>lResetButton</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>108</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>156</x>
-     <y>178</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rCustomOverhangBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>rCustomOverhangEdit</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>311</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>270</x>
-     <y>177</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rCustomOverhangBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>rResetButton</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>311</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>360</x>
-     <y>178</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>lBluntButton</sender>
    <signal>toggled(bool)</signal>
    <receiver>lCustomOverhangBox</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
+     <x>125</x>
      <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>125</y>
+     <x>125</x>
+     <y>160</y>
     </hint>
    </hints>
   </connection>
@@ -335,12 +312,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>307</x>
+     <x>362</x>
      <y>90</y>
     </hint>
     <hint type="destinationlabel">
-     <x>307</x>
-     <y>125</y>
+     <x>362</x>
+     <y>160</y>
     </hint>
    </hints>
   </connection>

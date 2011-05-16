@@ -48,8 +48,6 @@ private slots:
    void sl_onLeftResetClicked();
    void sl_onRightResetClicked();
    void sl_customOverhangSet(const QString& text);
-   void sl_onLeftBluntButtonToogled(bool toogle);
-   void sl_onRightBluntButtonToggled( bool toggle);
    
 
 };

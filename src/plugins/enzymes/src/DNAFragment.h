@@ -37,10 +37,14 @@ class Annotation;
 class GObject;
 
 
-struct DNAFragmentTerminus {
+struct DNAFragmentTerm {
+    DNAFragmentTerm(const QString& eId, const QByteArray& seq, bool directStrand) 
+        : enzymeId(eId.toAscii()), overhang(seq), isDirect(directStrand) {}
+    DNAFragmentTerm() : isDirect(true) {}
     QByteArray enzymeId; 
     QByteArray overhang;
     QByteArray termType;
+    bool isDirect; // overhang strand
 };
 
 class DNAFragment {
@@ -60,7 +64,7 @@ private:
     void toRevCompl(QByteArray& buf);
     void setTermType(const QByteArray& qName, const QByteArray& type);
     void setOverhang(const QByteArray& qName, const QByteArray& overhang);
-    DNAFragmentTerminus leftTerm, rightTerm;
+    DNAFragmentTerm leftTerm, rightTerm;
 
 public:
     DNAFragment() : annotatedFragment(NULL), dnaObj(NULL), reverseCompl(false) {}
@@ -77,8 +81,8 @@ public:
     bool isInverted() const { return reverseCompl; }
     DNAAlphabet* getAlphabet() const;
     const QByteArray& getSourceSequence() const;
-    const DNAFragmentTerminus& getLeftTerminus() const;
-    const DNAFragmentTerminus& getRightTerminus() const;
+    const DNAFragmentTerm& getLeftTerminus() const;
+    const DNAFragmentTerm& getRightTerminus() const;
     void setInverted(bool inverted = true);
     void setRightTermType( const QByteArray& termType );
     void setLeftTermType( const QByteArray& termType );

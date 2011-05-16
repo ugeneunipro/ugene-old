@@ -83,8 +83,8 @@ void DigestSequenceTask::prepare() {
         
 }
 
-AnnotationData* DigestSequenceTask::createFragment( int pos1, const QString& enzymeId1, const QByteArray& leftOverhang, 
-                                                   int pos2, const QString& enzymeId2, const QByteArray& rightOverhang )
+AnnotationData* DigestSequenceTask::createFragment( int pos1, const DNAFragmentTerm& leftTerm, 
+                                                   int pos2, const DNAFragmentTerm& rightTerm )
 {
     AnnotationData* ad = new AnnotationData();
     assert(pos1 != pos2 );
@@ -95,14 +95,20 @@ AnnotationData* DigestSequenceTask::createFragment( int pos1, const QString& enz
         ad->location->regions.append(U2Region(seqRange.startPos, pos2 - seqRange.startPos ));
     }
     
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TERM, enzymeId1));
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, enzymeId2));
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftOverhang));
-    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightOverhang));
+    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TERM, leftTerm.enzymeId));
+    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, rightTerm.enzymeId));
     
-    QString leftOverhangType = enzymeId1.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
+    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftTerm.overhang));
+    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightTerm.overhang));
+    
+    QString leftOverhangStrand = leftTerm.isDirect ? OVERHANG_STRAND_DIRECT : OVERHANG_STRAND_COMPL;
+    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_STRAND, leftOverhangStrand));
+    QString rightOverhangStrand = rightTerm.isDirect ? OVERHANG_STRAND_DIRECT : OVERHANG_STRAND_COMPL;
+    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_STRAND, rightOverhangStrand));
+    
+    QString leftOverhangType = leftTerm.enzymeId.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
     ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TYPE, leftOverhangType) );
-    QString rightOverhangType = enzymeId2.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
+    QString rightOverhangType = rightTerm.enzymeId.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TYPE, rightOverhangType) );
 
     ad->qualifiers.append(U2Qualifier(QUALIFIER_SOURCE, dnaObj->getGObjectName()));
@@ -166,6 +172,7 @@ void DigestSequenceTask::run()
 
     QMap<int,SEnzymeData>::const_iterator prev = cutSiteMap.constBegin(), current = cutSiteMap.constBegin();
     int count = 2;
+    const QByteArray& sourceSeq = dnaObj->getSequence();
 
     while ( (++current) != cutSiteMap.constEnd() )  {
         int pos1 = prev.key();
@@ -181,28 +188,31 @@ void DigestSequenceTask::run()
             U2Region region2(pos2, len2);
 
             if (region1.intersects(region2)) {
-                setError(tr("Unable to digest into fragments: intersecting enzymes %1 (%2..%3) and %4 (%5..%6)")
+                setError(tr("Unable to digest into fragments: intersecting restriction sites %1 (%2..%3) and %4 (%5..%6)")
                     .arg(enzyme1->id).arg(region1.startPos).arg(region1.endPos())
                     .arg(enzyme2->id).arg(region2.startPos).arg(region2.endPos()));
                 return;
             }
 
         }
+        
+        DNAFragmentTerm leftTerm;
+        int leftCutCompl = len1 - enzyme1->cutComplement;
+        int leftCutPos = pos1 + qMax(enzyme1->cutDirect, leftCutCompl);
+        int leftOverhangStart = pos1 + qMin(enzyme1->cutDirect, leftCutCompl);
+        leftTerm.overhang = sourceSeq.mid(leftOverhangStart, leftCutPos - leftOverhangStart);
+        leftTerm.enzymeId = enzyme1->id.toAscii();
+        leftTerm.isDirect = enzyme1->cutDirect < leftCutCompl; 
 
-        int diff1 = enzyme1->seq.length() - enzyme1->cutDirect;
-        int offset1 = enzyme1->cutComplement > diff1 ? diff1 : enzyme1->cutComplement;
-        pos1 = pos1 + len1 - offset1;
-        int cutLen1 = qAbs(diff1 - enzyme1->cutComplement);
-        QByteArray leftOverhang = dnaObj->getSequence().mid(pos1 - cutLen1, cutLen1);
+        DNAFragmentTerm rightTerm;
+        int rightCutCompl = len2 - enzyme2->cutComplement;
+        int rightCutPos = pos2 + qMin(enzyme2->cutDirect, rightCutCompl );
+        int rightOverhangStart = pos2 + qMax(enzyme2->cutDirect, rightCutCompl );
+        rightTerm.overhang = sourceSeq.mid(rightCutPos, rightOverhangStart - rightCutPos);
+        rightTerm.enzymeId = enzyme2->id.toAscii();
+        rightTerm.isDirect = enzyme2->cutDirect > rightCutCompl;
 
-        int diff2 = enzyme2->seq.length() - enzyme2->cutComplement;
-        int offset2 = enzyme1->cutDirect > diff2 ? diff2 : enzyme2->cutDirect;
-        pos2 += offset2;
-        QByteArray rightOverhang = dnaObj->getSequence().mid(pos2, qAbs(diff2 - enzyme2->cutDirect));
-
-
-        AnnotationData* ad = createFragment(pos1, enzyme1->id, leftOverhang,  pos2, enzyme2->id, rightOverhang);
-
+        AnnotationData* ad = createFragment(leftCutPos, leftTerm,  rightCutPos, rightTerm);
         ad->name = QString("Fragment %1").arg(count);
         results.append(SharedAnnotationData(ad));
         ++count;
@@ -212,39 +222,41 @@ void DigestSequenceTask::run()
 
     QMap<int,SEnzymeData>::const_iterator first = cutSiteMap.constBegin();
 
-    const QByteArray& sourceSeq = dnaObj->getSequence();
     const SEnzymeData& firstCutter = first.value();
+    int fcLen = firstCutter->seq.length();
+    int firstCutPos = first.key() + qMin(firstCutter->cutDirect, fcLen - firstCutter->cutComplement);
+    int rightOverhangStart = first.key() + qMax(firstCutter->cutDirect, fcLen - firstCutter->cutComplement);
+    bool rightOverhangIsDirect = firstCutter->cutDirect > fcLen - firstCutter->cutComplement;
+    QByteArray firstRightOverhang = sourceSeq.mid(firstCutPos, rightOverhangStart - firstCutPos);
+    
     const SEnzymeData& lastCutter = prev.value();
-    int firstCutPos = first.key();
-    int fdiff = firstCutter->seq.length() - firstCutter->cutComplement;
-    firstCutPos += firstCutter->cutDirect > fdiff ? fdiff : firstCutter->cutDirect;
-    QByteArray firstRightOverhang = dnaObj->getSequence().mid(firstCutPos, qAbs(fdiff - firstCutter->cutDirect));
-
-    int lastCutPos = prev.key();
-    int ldiff = lastCutter->seq.length() - lastCutter->cutDirect;
-    int loffset = lastCutter->cutComplement > ldiff ? ldiff : lastCutter->cutComplement;
-
-    lastCutPos = lastCutPos + lastCutter->seq.length() - loffset;
-
+    int lcLen = lastCutter->seq.length();
+    int lastCutPos = prev.key() + qMax(lastCutter->cutDirect, lcLen - lastCutter->cutComplement);
+    int leftOverhangStart = prev.key() + qMin(lastCutter->cutDirect, fcLen - lastCutter->cutComplement);
+    bool leftOverhangIsDirect = lastCutter->cutDirect < lcLen - lastCutter->cutComplement;
+    
     if (lastCutPos >= sourceSeq.length()) {
         // last restriction site is situated between sequence start and end
         assert(isCircular);
         int leftCutPos = lastCutPos - sourceSeq.length();
-        QByteArray leftOverhang = sourceSeq.mid(prev.key() + lastCutter->cutDirect) + sourceSeq.mid(0, leftCutPos);
+        QByteArray leftOverhang = sourceSeq.mid(leftOverhangStart) + sourceSeq.mid(0, leftCutPos);
         QByteArray rightOverhang = first == prev ? leftOverhang : firstRightOverhang;
-        AnnotationData* ad1 = createFragment(leftCutPos, lastCutter->id, leftOverhang, firstCutPos, firstCutter->id, rightOverhang );
+        AnnotationData* ad1 = createFragment(leftCutPos, DNAFragmentTerm(lastCutter->id, leftOverhang, leftOverhangIsDirect), 
+            firstCutPos, DNAFragmentTerm(firstCutter->id, rightOverhang, rightOverhangIsDirect) );
         ad1->name = QString("Fragment 1");
         results.append(SharedAnnotationData(ad1));
     } else {
-        int lCutLen = qAbs(ldiff - lastCutter->cutComplement);
-        QByteArray lastLeftOverhang = dnaObj->getSequence().mid(lastCutPos - lCutLen, lCutLen);
+        QByteArray lastLeftOverhang = sourceSeq.mid(leftOverhangStart, lastCutPos - leftOverhangStart);
         if (isCircular) {
-            AnnotationData* ad = createFragment(lastCutPos, lastCutter->id, lastLeftOverhang, firstCutPos, firstCutter->id, firstRightOverhang );
+            AnnotationData* ad = createFragment(lastCutPos, DNAFragmentTerm(lastCutter->id, lastLeftOverhang, leftOverhangIsDirect), 
+                firstCutPos, DNAFragmentTerm(firstCutter->id, firstRightOverhang,rightOverhangIsDirect) );
             ad->name = QString("Fragment 1");
             results.append(SharedAnnotationData(ad));
         } else {
-            AnnotationData* ad1 = createFragment(seqRange.startPos, QString(), QByteArray(), firstCutPos, firstCutter->id, firstRightOverhang );
-            AnnotationData* ad2 = createFragment(lastCutPos, lastCutter->id, lastLeftOverhang, seqRange.endPos(), QString(), QByteArray());
+            AnnotationData* ad1 = createFragment(seqRange.startPos, DNAFragmentTerm(), 
+                firstCutPos, DNAFragmentTerm(firstCutter->id, firstRightOverhang,rightOverhangIsDirect) );
+            AnnotationData* ad2 = createFragment(lastCutPos, DNAFragmentTerm(lastCutter->id, lastLeftOverhang, leftOverhangIsDirect), 
+                seqRange.endPos(), DNAFragmentTerm() );
             ad1->name = QString("Fragment 1");
             ad2->name = QString("Fragment %1").arg(count);
             results.append(SharedAnnotationData(ad1));

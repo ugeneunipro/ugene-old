@@ -58,8 +58,8 @@ private:
    
     void findCutSites(); 
     void saveResults();
-    AnnotationData* createFragment( int pos1, const QString& enzymeId1, const QByteArray& leftOverhang,
-                                    int pos2, const QString& enzymeId2, const QByteArray& rightOverhang );
+    AnnotationData* createFragment( int pos1, const DNAFragmentTerm& leftTerm,
+                                    int pos2, const DNAFragmentTerm& rightTerm );
     bool searchForRestrictionSites;
     bool isCircular;
     U2Region seqRange;

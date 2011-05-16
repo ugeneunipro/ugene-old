@@ -171,23 +171,15 @@ QString DNAFragment::getSequenceDocName() const
     return dnaObj->getDocument()->getName();
 }
 
-const DNAFragmentTerminus& DNAFragment::getLeftTerminus() const
+const DNAFragmentTerm& DNAFragment::getLeftTerminus() const
 {
     return leftTerm;
 }
 
-const DNAFragmentTerminus& DNAFragment::getRightTerminus() const
+const DNAFragmentTerm& DNAFragment::getRightTerminus() const
 {
     return rightTerm;
 }
-
-/*
-bool DNAFragment::isSplitted() const
-{
-    
-    return false; //!annotatedFragment->findFirstQualifierValue(QUALIFIER_SPLIT).isEmpty();
-}
-*/
 
 void DNAFragment::setInverted( bool inverted /* = true*/ )
 {
