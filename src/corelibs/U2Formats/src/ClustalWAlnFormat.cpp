@@ -51,15 +51,22 @@ ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFor
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 
-
-void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti) {
+void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& fs, TaskStateInfo& ti) {
     static int READ_BUFF_SIZE = 1024;
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
 
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
     const QBitArray& WHITES = TextUtils::WHITES;
-    MAlignment al( io->getURL().baseFileName());
+    
+    QStringList objectNames = fs.value(GOBJECT_NAMES_HINT).toStringList();
+    QString objName;
+    if (objectNames.size() == 1) {
+        objName = objectNames.first();
+    } else {
+        objName = io->getURL().baseFileName();
+    }
+    MAlignment al(objName);
     bool lineOk = false;
     bool firstBlock = true;
     int sequenceIdx = 0;
@@ -182,7 +189,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateI
 
 Document* ClustalWAlnFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
     QList<GObject*> objects;
-    load(io, objects, ti);
+    load(io, objects, fs, ti);
     
     if (ti.hasError()) {
         qDeleteAll( objects );

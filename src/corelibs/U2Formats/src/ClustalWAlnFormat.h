@@ -48,7 +48,7 @@ public:
 
 private:
     void save(IOAdapter* io, Document* doc, TaskStateInfo& ti);
-    void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti);
+    void load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& fs, TaskStateInfo& ti);
 
     QString formatName;
 };

@@ -277,6 +277,8 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
     if (rc != QDialog::Accepted) {
         return;
     }
+    QString objName = GUrl(d.url).baseFileName();
+    ma.setName(objName);
     Task* t = ExportUtils::wrapExportTask(new ExportAlignmentTask(ma, d.url, d.format), d.addToProjectFlag);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }

@@ -646,7 +646,7 @@ void ProjectTreeController::sl_lockedStateChanged() {
     ProjViewDocumentItem* di = findDocumentItem(doc);
     foreach(GObject* obj, doc->getObjects()) {
         ProjViewObjectItem* oi = findGObjectItem(di, obj);
-        if(oi->obj->getGObjectType() == GObjectTypes::SEQUENCE) {
+        if (oi != NULL && oi->obj->getGObjectType() == GObjectTypes::SEQUENCE) {
             oi->setFlags(oi->flags() ^ Qt::ItemIsEditable);
         }
     }

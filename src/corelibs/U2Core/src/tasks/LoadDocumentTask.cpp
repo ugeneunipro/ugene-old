@@ -74,7 +74,13 @@ void LoadUnloadedDocumentTask::prepare() {
     IOAdapterFactory* iof = unloadedDoc->getIOAdapterFactory();
     const GUrl& url = unloadedDoc->getURL();
     coreLog.details(tr("Starting load document from %1, document format %2").arg(url.getURLString()).arg(formatName));
-    subtask = new LoadDocumentTask(format, url, iof, unloadedDoc->getGHintsMap(), config);
+    QVariantMap hints = unloadedDoc->getGHintsMap();
+    QStringList nameHints;
+    foreach(GObject* obj, unloadedDoc->getObjects()) {
+        nameHints << obj->getGObjectName();
+    }
+    hints[GOBJECT_NAMES_HINT] = nameHints;
+    subtask = new LoadDocumentTask(format, url, iof, hints, config);
     addSubTask(subtask);
 
     resName = getResourceName(unloadedDoc);
