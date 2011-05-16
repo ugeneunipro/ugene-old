@@ -167,7 +167,9 @@ void AssemblyReadsArea::drawWelcomeScreen(QPainter & p) {
     QString text = tr("<a href=\"%1\">Zoom in to see the reads</a>").arg(ZOOM_LINK);
 
     QList<CoveredRegion> coveredRegions = browser->getCoveredRegions();
-    if(!coveredRegions.empty()) {
+    if(!browser->areCoveredRegionsReady()) {
+        text = tr("Please wait until overview rendering is finished, or <a href=\"%1\">zoom in to see the reads</a>");
+    } else if(!coveredRegions.empty()) {
         text += tr(" or choose one of the well-covered regions:<br><br>");
         QString coveredRegionsText = "<table align=\"center\" cellspacing=\"2\">";
         /*

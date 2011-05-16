@@ -54,6 +54,7 @@ public:
     
     void setGlobalCoverageInfo(const CoverageInfo & info);
     QList<CoveredRegion> getCoveredRegions() const;
+    inline bool areCoveredRegionsReady() const {return coverageReady;}
 
     // asm coords <-> pix coords functions
     qint64 calcPixelCoord(qint64 asmCoord) const;
@@ -145,6 +146,7 @@ private:
 
     CoverageInfo coverageInfo;
     CoveredRegionsManager coveredRegionsManager;
+    bool coverageReady;
     
     QAction * zoomInAction;
     QAction * zoomOutAction;

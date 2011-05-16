@@ -77,7 +77,7 @@ const double AssemblyBrowser::INITIAL_ZOOM_FACTOR= 1.;
 
 AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
-gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), 
+gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
 zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
 showInfoAction(0)
 {
@@ -244,6 +244,7 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
 }
 
 void AssemblyBrowser::setGlobalCoverageInfo(const CoverageInfo & newInfo) {
+    coverageReady = true;
     if(newInfo.coverageInfo.size() <= coveredRegionsManager.getSize()) {
         return;
     }
