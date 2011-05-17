@@ -47,11 +47,13 @@ public:
     void addResult(SearchQuery *qu);
     void flush();
     void setFinished();
+    quint64 getWrittenReadsCount() const {return readsWritten;}
 private:
     GenomeAlignerWriter *seqWriter;
     QVector<WriteData> results;
     bool end;
     bool writing;
+    quint64 readsWritten;
 
     QMutex listMutex;
     QMutex writeMutex;
@@ -59,6 +61,8 @@ private:
     QWaitCondition waiter;
 
     static const int MAX_LIST_SIZE = 1000;
+
+    inline void setReadWritten(SearchQuery *read, SearchQuery *revCompl);
 };
 } //namespace
 

@@ -43,8 +43,8 @@ public:
 
 class SearchQuery {
 public:
-    SearchQuery(const DNASequence *shortRead);
-    SearchQuery(const U2AssemblyRead &shortRead);
+    SearchQuery(const DNASequence *shortRead, SearchQuery *revCompl = NULL);
+    SearchQuery(const U2AssemblyRead &shortRead, SearchQuery *revCompl = NULL);
     ~SearchQuery();
 
     QString getName() const;
@@ -68,6 +68,8 @@ public:
     QVector<SAType> &getResults();
     bool isWroteResult() const {return wroteResult;}
     void writeResult() {wroteResult = true;}
+    SearchQuery *getRevCompl() {return revCompl;}
+    void setRevCompl(SearchQuery *rc) {revCompl = rc;}
 
 private:
     //U2AssemblyRead assRead;
@@ -78,6 +80,7 @@ private:
     quint32 nameLength;
     bool dna;
     bool wroteResult;
+    SearchQuery *revCompl;
 
     QVector<SAType> results;
     QVector<SAType> overlapResults;

@@ -296,12 +296,18 @@ void GenomeAlignerFindTask::getDataForPartSearch(int &first, int &length) {
 
     int *rn = readNumbersV.data();
     int it = first + length;
-    for (int last=it-1; it<bitValuesCount;) {
+    for (int last=it-1; it<bitValuesCount; it++) {
         if (rn[last] == rn[it]) {
-            it++;
             length++;
         } else {
-            break;
+            SearchQuery *lastQu = settings->queries.at(rn[last]);
+            SearchQuery *qu = settings->queries.at(rn[it]);
+            if (lastQu->getRevCompl() == qu) {
+                last = it;
+                length++;
+            } else {
+                break;
+            }
         }
     }
 
@@ -376,31 +382,50 @@ void FindInPartSubTask::run() {
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
     parent->getDataForPartSearch(first, length);
     SearchQuery **q = settings->queries.data();
+    SearchQuery *revCompl;
         
     taskLog.details(QString("start to find in part"));
     while (length > 0) {
         int last = first + length;
         for (int i=first; i<last; i++) {
             int readNum = readNumbers[i];
-            if (settings->bestMode && q[readNum]->haveMCount()) {
+            revCompl = q[readNum]->getRevCompl();
+
+            if (settings->bestMode) {
                 if (0 == q[readNum]->firstMCount()) {
+                    continue;
+                }
+                if (NULL != revCompl && 0 == revCompl->firstMCount()) {
                     continue;
                 }
             }
             index->findInPart(positionsAtRead[i], bitMaskResults[i], bitValues[i], q[readNum], settings);
+
             if (!settings->bestMode && q[readNum]->haveResult()) {
                 if ((i == last - 1) || (readNumbers[i+1] != readNum)) {
                     writeTask->addResult(q[readNum]);
                     q[readNum]->onPartChanged();
                 }
-            } else if (q[readNum]->haveResult()) {
+            } else if (settings->bestMode) {
                 if (0 == q[readNum]->firstMCount()) {
                     writeTask->addResult(q[readNum]);
                     continue;
                 }
                 if (index->getLoadedPart().getCurrentPart() == index->getPartCount() - 1) {
-                    if (q[readNum]->haveResult() && ((i == last - 1) || (readNumbers[i+1] != readNum))) {
-                        writeTask->addResult(q[readNum]);
+                    if (i == last - 1
+                        || (readNumbers[i+1] != readNum && q[readNumbers[i+1]] != revCompl)) {
+                        if (NULL == revCompl) {
+                            writeTask->addResult(q[readNum]);
+                        } else {
+                            int c = q[readNum]->firstMCount();
+                            int cRev = revCompl->firstMCount();
+
+                            if (c > cRev && c > 0) {
+                                writeTask->addResult(q[readNum]);
+                            } else if (cRev > c && cRev > 0) {
+                                writeTask->addResult(revCompl);
+                            }
+                        }
                     }
                 }
             }

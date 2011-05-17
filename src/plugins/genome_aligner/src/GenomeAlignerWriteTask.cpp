@@ -24,7 +24,8 @@
 namespace U2 {
 
 GenomeAlignerWriteTask::GenomeAlignerWriteTask(GenomeAlignerWriter *s)
-: Task("WriteAlignedReadsSubTask", TaskFlag_None), seqWriter(s), end(false), writing(false)
+: Task("WriteAlignedReadsSubTask", TaskFlag_None),
+seqWriter(s), end(false), writing(false), readsWritten(0)
 {
 }
 
@@ -54,6 +55,7 @@ void GenomeAlignerWriteTask::flush() {
     writeMutex.lock();
     foreach (WriteData data, results) {
         seqWriter->write(data.qu, data.offset);
+        setReadWritten(data.qu, data.qu->getRevCompl());
     }
     results.clear();
     writeMutex.unlock();
@@ -66,7 +68,6 @@ void GenomeAlignerWriteTask::run() {
         waiter.wait(&waitMutex);
         if (end) {
             writing = false;
-            listMutex.unlock();
             break;
         }
 
@@ -80,9 +81,20 @@ void GenomeAlignerWriteTask::run() {
         writeMutex.lock();
         foreach (WriteData data, newResults) {
             seqWriter->write(data.qu, data.offset);
+            setReadWritten(data.qu, data.qu->getRevCompl());
         }
         writeMutex.unlock();
     } while (!end);
+}
+
+void GenomeAlignerWriteTask::setReadWritten(SearchQuery *read, SearchQuery *revCompl) {
+    if (!read->isWroteResult()) {
+        readsWritten++;
+        read->writeResult();
+        if (NULL != revCompl) {
+            revCompl->writeResult();
+        }
+    }
 }
 
 } // U2

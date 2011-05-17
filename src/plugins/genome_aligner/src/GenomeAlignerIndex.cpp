@@ -417,11 +417,18 @@ void GenomeAlignerIndex::findInPart(int startPos, ResType firstResult, BMType bi
     int bestC = CMAX + 1;
     SAType bestResult = 0;
     bool found = false;
-    if (settings->bestMode && qu->haveResult()) {
-        bestC = qu->firstMCount();
-        bestResult = qu->firstResult();
-        CMAX = bestC - 1;
+    if (settings->bestMode) {
+        if (qu->haveResult()) {
+            bestC = qu->firstMCount();
+        }
+        if (NULL != qu->getRevCompl() && qu->getRevCompl()->haveResult()) {
+            int cRev = qu->getRevCompl()->firstMCount();
+            if (cRev < bestC) {
+                bestC = cRev;
+            }
+        }
     }
+    CMAX = bestC - 1;
     SAType loadedPartSize = indexPart.getLoadedPartSize();
     SAType loadedSeqStart = indexPart.getLoadedSeqStart();
     quint64 rightOverlapStart = (quint64)loadedSeqStart + (quint64)indexPart.seqLengths[indexPart.currentPart];

@@ -24,9 +24,10 @@
 
 namespace U2 {
 
-SearchQuery::SearchQuery(const DNASequence *shortRead) {
+SearchQuery::SearchQuery(const DNASequence *shortRead, SearchQuery *revCompl) {
     dna = true;
     wroteResult = false;
+    this->revCompl = revCompl;
     seqLength = shortRead->length();
     nameLength = shortRead->getName().length();
     seq = new char[seqLength+1];
@@ -41,9 +42,10 @@ SearchQuery::SearchQuery(const DNASequence *shortRead) {
     //assRead = NULL;
 }
 
-SearchQuery::SearchQuery(const U2AssemblyRead &shortRead) {
+SearchQuery::SearchQuery(const U2AssemblyRead &shortRead, SearchQuery *revCompl) {
     dna = false;
     wroteResult = false;
+    this->revCompl = revCompl;
     seq = NULL;
     name = NULL;
     quality = NULL;
@@ -54,6 +56,7 @@ SearchQuery::~SearchQuery() {
     delete seq;
     delete name;
     delete quality;
+    revCompl = NULL;
 }
 
 QString SearchQuery::getName() const {
@@ -149,6 +152,9 @@ SAType SearchQuery::firstResult() const {
 }
 
 quint32 SearchQuery::firstMCount() const {
+    if (mismatchCounts.isEmpty()) {
+        return -1;
+    }
     return mismatchCounts.first();
 }
 
