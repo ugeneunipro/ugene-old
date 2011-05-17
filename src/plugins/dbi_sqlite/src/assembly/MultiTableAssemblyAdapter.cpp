@@ -540,9 +540,9 @@ void MultiTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     flushTables(os);
 }
 
-void MultiTableAssemblyAdapter::calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+void MultiTableAssemblyAdapter::calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os, TaskStateInfo & ti) {
     foreach (MTASingleTableAdapter* a, adapters) {
-        a->singleTableAdapter->calculateCoverage(region, c, os);
+        a->singleTableAdapter->calculateCoverage(region, c, os, ti);
         if (os.isCoR()) {
             break;
         }

@@ -176,7 +176,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_AssemblyReadsPacking, getRootDbi(), os);
     }
 
-    virtual void calculateCoverage(const U2DataId&, const U2Region&, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+    virtual void calculateCoverage(const U2DataId&, const U2Region&, U2AssemblyCoverageStat& c, U2OpStatus& os, TaskStateInfo & ti) {
         U2DbiUtils::logNotSupported(U2DbiFeature_AssemblyCoverageStat, getRootDbi(), os);
     }
 };

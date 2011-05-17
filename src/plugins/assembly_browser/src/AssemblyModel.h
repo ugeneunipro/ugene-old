@@ -41,7 +41,8 @@ public:
     QList<U2AssemblyRead> getReadsFromAssembly(const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os);
 
     qint64 countReadsInAssembly(const U2Region & r, U2OpStatus & os);
-
+    void calculateCoverageStat(const U2Region & r, U2AssemblyCoverageStat & stat, U2OpStatus & os, TaskStateInfo & ti);
+    
     U2Region getGlobalRegion();
 
     qint64 getModelLength(U2OpStatus & os);

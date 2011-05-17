@@ -85,6 +85,10 @@ qint64 AssemblyModel::countReadsInAssembly(const U2Region & r, U2OpStatus & os) 
     return assemblyDbi->countReads(assembly.id, r, os);
 }
 
+void AssemblyModel::calculateCoverageStat(const U2Region & r, U2AssemblyCoverageStat & stat, U2OpStatus & os, TaskStateInfo & ti) {
+    return assemblyDbi->calculateCoverage(assembly.id, r, stat, os, ti);
+}
+
 U2Region AssemblyModel::getGlobalRegion() {
     U2OpStatusImpl os;
     return U2Region(0, getModelLength(os));

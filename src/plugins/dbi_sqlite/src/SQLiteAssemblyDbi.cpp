@@ -266,14 +266,14 @@ void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2AssemblyPackStat& sta
     perfLog.trace(QString("Assembly: full pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
-void SQLiteAssemblyDbi::calculateCoverage(const U2DataId& assemblyId, const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+void SQLiteAssemblyDbi::calculateCoverage(const U2DataId& assemblyId, const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os, TaskStateInfo & ti) {
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::calculateCoverage");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::calculateCoverage");
 
     quint64 t0 = GTimer::currentTimeMicros();
 
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    a->calculateCoverage(region, c, os);
+    a->calculateCoverage(region, c, os, ti);
     perfLog.trace(QString("Assembly: full coverage calculation time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
@@ -382,24 +382,31 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& n
     }
 }
 
-void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os, TaskStateInfo & ti) {
     int csize = c.coverage.size();
     SAFE_POINT(csize > 0, "illegal coverage vector size!", );
 
     qint64* cdata = c.coverage.data();
     double basesPerRange = double(r.length) / csize;
     while (q.step() && !os.isCoR()) {
+        if(ti.cancelFlag) {
+            return;
+        }
+        
         qint64 startPos = q.getInt64(0);
         qint64 len = q.getInt64(1);
-        int firstCoverageIdx = (int)(startPos / basesPerRange);
-        int lastCoverageIdx = (int)((startPos + len ) / basesPerRange);
+        U2Region readRegion(startPos, len);
+        U2Region readCroppedRegion = readRegion.intersect(r);
+        
+        int firstCoverageIdx = (int)((readCroppedRegion.startPos - r.startPos)/ basesPerRange);
+        int lastCoverageIdx = (int)((readCroppedRegion.startPos + len - r.startPos ) / basesPerRange);
         for (int i = firstCoverageIdx; i <= lastCoverageIdx && i < csize; i++) {
             cdata[i]++;
         }
+
+        ti.progress = (double(readCroppedRegion.startPos - r.startPos) / r.length) * 100;
     }
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////
 // read loader
