@@ -81,6 +81,7 @@ gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOf
 zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
 showInfoAction(0)
 {
+    GCOUNTER( cvar, tvar, "AssemblyBrowser:open" );
     initFont();
     setupActions();
  
@@ -190,6 +191,8 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
             model->associateWithReference(crossDbRef);
         }
     }
+
+    GCOUNTER( cvar, tvar, "AssemblyBrowser:associate_with_reference" );
     return "";
 }
 

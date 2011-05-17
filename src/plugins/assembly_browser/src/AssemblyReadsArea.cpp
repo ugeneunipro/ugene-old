@@ -604,6 +604,8 @@ void AssemblyReadsArea::updateMenuActions() {
 }
 
 void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
+    GCOUNTER( cvar, tvar, "AssemblyReadsArea:exportReads" );
+    
     assert(!reads.isEmpty());
     ExportReadsDialog dlg(this, QList<DocumentFormatId>() << BaseDocumentFormats::PLAIN_FASTA << BaseDocumentFormats::FASTQ);
     int ret = dlg.exec();
