@@ -82,7 +82,7 @@
      <item>
       <widget class="QPushButton" name="startButton">
        <property name="text">
-        <string>Next</string>
+        <string>Ok</string>
        </property>
        <property name="default">
         <bool>true</bool>

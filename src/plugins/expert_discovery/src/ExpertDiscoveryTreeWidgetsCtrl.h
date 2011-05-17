@@ -76,6 +76,15 @@ private:
     void createPopupsAndActions();
     QIcon getItemIcon(EDProjectItem* pItem);
 
+    void onCSNPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue);
+    void onDistancePropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue);
+    void onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue);
+    void onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue);
+    void onWordPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue);
+    void onMrkItemPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue);
+    Operation* createCSN(int ValueId) const;
+
+
     ExpertDiscoveryData &edData;
     EDPICSRoot root;
     EDPIMrkRoot mrkRoot;

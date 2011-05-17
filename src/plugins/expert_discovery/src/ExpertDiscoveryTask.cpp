@@ -240,8 +240,10 @@ QByteArray ExpertDiscoveryLoadPosNegTask::generateRandomSequence(const int* acgt
 }
 
 ExpertDiscoveryLoadPosNegMrkTask::ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, ExpertDiscoveryData& edD)
-: Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel))
+: Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel |TaskFlag_FailOnSubtaskError))
 ,edData(edD)
+,posDoc(NULL)
+,negDoc(NULL)
 {
     firstFile = firstF;
 
@@ -279,11 +281,12 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
             QList<DocumentFormat*> curFormats = DocumentUtils::detectFormat(firstFile);
             if(!curFormats.isEmpty()){
                 if(curFormats.first()->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
-//                     GUrl URL(strPosName);
-//                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
-// 
-//                     Document* doc = new Document(BaseDocumentFormats::PLAIN_GENBANK, iof, URL, QList<UnloadedObjectInfo>());
-//                     addSubTask(new LoadUnloadedDocumentTask(doc));
+                    GUrl URL(strPosName);
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+                    DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+
+                    posDoc = new Document(f , iof, URL, QList<UnloadedObjectInfo>());
+                    addSubTask(new LoadUnloadedDocumentTask(posDoc));
 
                 }else{
                     ifstream fPosAnn(strPosName.toStdString().c_str());  
@@ -298,6 +301,8 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
         str += ex.what();
         QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
         mb.exec();
+        setError(str);
+        return;
        // return false;
     }
 
@@ -311,11 +316,12 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
             QList<DocumentFormat*> curFormats = DocumentUtils::detectFormat(strNegName);
             if(!curFormats.isEmpty()){
                 if(curFormats.first()->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
-//                     GUrl URL(strPosName);
-//                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
-// 
-//                     Document* doc = new Document(BaseDocumentFormats::PLAIN_GENBANK, iof, URL, QList<UnloadedObjectInfo>());
-//                     addSubTask(new LoadUnloadedDocumentTask(doc));
+                    GUrl URL(strPosName);
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+                    DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+
+                    negDoc = new Document(f, iof, URL, QList<UnloadedObjectInfo>());
+                    addSubTask(new LoadUnloadedDocumentTask(negDoc));
                 }else{
                     ifstream fNegAnn(strNegName.toStdString().c_str());
                     edData.getNegMarkBase().load(fNegAnn);
@@ -331,7 +337,52 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
         str += ex.what();
         QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
         mb.exec();
+        setError(str);
+        return;
        // return false;
+    }
+
+   
+
+ //   return true;
+}
+
+
+Task::ReportResult ExpertDiscoveryLoadPosNegMrkTask::report(){
+    if (isCanceled() || hasError()) {
+        return ReportResult_Finished;
+    }
+
+    if(posDoc){
+        try {
+        if (!loadAnnotationFromUgeneDocument(edData.getPosMarkBase(), edData.getPosSeqBase(), posDoc))
+            throw std::exception();
+        }catch (exception& ex) {
+            edData.getPosMarkBase().clear();
+            QString str = "Positive annotation: ";
+            str += ex.what();
+            QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+            mb.exec();
+            setError(str);
+            return ReportResult_Finished;
+        }
+    }
+
+    if(negDoc){
+        try {
+             if (!loadAnnotationFromUgeneDocument(edData.getNegMarkBase(), edData.getNegSeqBase(), negDoc))
+                throw std::exception();
+            }
+            catch (exception& ex) {
+                edData.getPosMarkBase().clear();
+                edData.getNegMarkBase().clear();
+                QString str = "Negative annotation: ";
+                str += ex.what();
+                QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+                mb.exec();
+                setError(str);
+                return ReportResult_Finished;
+            }
     }
 
     try {
@@ -352,15 +403,69 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
         str += ex.what();
         QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
         mb.exec();
-   //     return false;
+        setError(str);
+        return ReportResult_Finished;
+        //     return false;
     }
 
     edData.getPosSeqBase().setMarking(edData.getPosMarkBase());
     edData.getNegSeqBase().setMarking(edData.getNegMarkBase());
 
- //   return true;
+    return ReportResult_Finished;
 }
 
+bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc){
+    QList<GObject*> seqList = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+    QList<GObject*> allSeqAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+
+    foreach(GObject* seqObj, seqList){
+
+        int objN = seqBase.getObjNo(seqObj->getGObjectName().toStdString().c_str());
+        if(objN < 0){
+            QString sequenceId = seqObj->getGObjectName();
+            int cutPos = sequenceId.indexOf("sequence");
+            if(cutPos >= 0){
+                sequenceId = sequenceId.left(cutPos);
+            }
+            sequenceId = sequenceId.trimmed();
+            objN = seqBase.getObjNo(sequenceId.toStdString().c_str());
+        }
+        if(objN >= 0){
+           Marking mrk;
+           try {
+               mrk = base.getMarking(objN);
+           }catch(...){}
+       
+            QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, 
+                GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, 
+                allSeqAnnotations, UOF_LoadedOnly);
+
+            foreach(GObject* ao, annotations) {
+                AnnotationTableObject* atobj = qobject_cast<AnnotationTableObject*>(ao);
+                if(atobj){
+                    const QList<Annotation*>& annotations =  atobj->getAnnotations();
+                    foreach(Annotation* a, annotations){
+                       const QVector<U2Region>& regions =  a->getRegions();
+                       foreach(U2Region reg, regions){
+                           reg.length;
+                           int startPos = reg.startPos;
+                           int endPos = reg.startPos + reg.length - 1;
+                           if (endPos >= startPos && startPos >= 0) {
+                               //mrk.set(signalName.toStdString(), familyName.toStdString(), DDisc::Interval(startPos, endPos));
+                               mrk.set(a->getAnnotationName().toStdString(), "UGENE Annotation", DDisc::Interval(startPos, endPos));
+                           }
+                       }
+                           
+                    }
+                }
+             }
+             base.setMarking(objN, mrk);
+        }
+
+    }
+
+    return true;
+}
 
 
 ExpertDiscoveryLoadControlMrkTask::ExpertDiscoveryLoadControlMrkTask(QString firstF, ExpertDiscoveryData& edD)
@@ -817,17 +922,70 @@ void ExpertDiscoveryToAnnotationTask::csToAnnotation(int seqNumber, unsigned int
 
     const Set& set = isPos? curPS->getYesRealizations(seqNumber) : curPS->getNoRealizations(seqNumber);
 
-    for(unsigned int i = 0; i <seqLen; i++){
+
+   
+    unsigned int i = 0;
+    unsigned int j = 0;
+    QString first_data = "";
+    QString second_data = "";
+    while(i < seqLen){
+        first_data = "";
         if(set.is_set(i)){
-            QString sigName = QString::fromStdString(set.association(i));
+            first_data = QString::fromStdString(set.association(i));
+        }
+
+        j = i+1;
+        while(j < seqLen){
+            second_data = "";
+            if(set.is_set(j)){
+                second_data = QString::fromStdString(set.association(i));
+            }
+            if(first_data != second_data || second_data.isEmpty()){
+                break;
+            }
+            j++;
+        }
+        if(!first_data.isEmpty()){
             SharedAnnotationData data;
             data = new AnnotationData;
             data->name = "signal";
-            data->location->regions << U2Region(i,1);
-            data->qualifiers.append(U2Qualifier("name", sigName));
+            data->location->regions << U2Region(i,j-i);
+            data->qualifiers.append(U2Qualifier("name", first_data));
             resultList.append(data);
         }
+
+        i = j;
     }
+//     QMap<QString, QList<U2Region>> sigMap;
+//     QList<U2Region> regions;
+//     for(unsigned int i = 0; i <seqLen; i++){
+//         if(set.is_set(i)){
+//             QString sigName = QString::fromStdString(set.association(i));
+//             if(!sigMap.contains(sigName)){
+//                 QList<U2Region> emptyList;
+//                 sigMap.insert(sigName, emptyList);
+//                 
+//             }
+// 
+//             sigMap[sigName].append(U2Region(i,1));
+//             //regions.append(U2Region(i,1));
+//            
+//             //data->location->regions << U2Region(i,1);  
+//         }
+//     }
+//     foreach(QString name, sigMap.keys()){
+//        // QString sigName = QString::fromStdString(set.association(i));
+//         SharedAnnotationData data;
+//         data = new AnnotationData;
+//         data->name = "signal";
+//         const QList<U2Region>& regions = sigMap.value(name);
+//         foreach(U2Region reg, regions){
+//             data->location->regions << reg;
+//         }
+//         
+//         data->qualifiers.append(U2Qualifier("name", name));
+//         resultList.append(data);
+//     }
 }
 
 void ExpertDiscoveryToAnnotationTask::recDataToAnnotation(){

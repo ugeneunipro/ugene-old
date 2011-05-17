@@ -2,6 +2,7 @@
 
 #include <ui/ui_ExpertDiscoveryAdvSetDialog.h>
 
+#include <QDoubleValidator>
 #include <QLineEdit>
 
 namespace U2 {

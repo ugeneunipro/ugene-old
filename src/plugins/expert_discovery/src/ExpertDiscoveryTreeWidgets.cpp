@@ -213,8 +213,7 @@ bool EDPIPropertyTypeUnsignedInt::isNumber() const
 
 bool EDPIPropertyTypeUnsignedInt::hasEdit() const
 {
-    //return true;
-    return false;
+    return true;
 }
 
 bool EDPIPropertyTypeUnsignedInt::hasPredefinedValues() const
@@ -882,8 +881,9 @@ EDPICSNode* EDPICSNode::createCSN( Operation *pOp )
             TS* pTS = dynamic_cast<TS*>(pOp);
             if (!pTS->isFromMarking())
                 return new EDPICSNTSWord(pTS);
-            else 
+            else{
                 return new EDPICSNTSMrkItem(pTS);
+            }
         }
     }
     assert(0);
@@ -1036,7 +1036,11 @@ void EDPICS::update(bool bupdateChildren){
             addChild(dynamic_cast<EDProjectItem*>( new EDPICSNUndefined() ));
         }
         else {
-            addChild( dynamic_cast<EDProjectItem*>(EDPICSNode::createCSN(m_pSignal->getSignal()) ));
+            EDProjectItem* ch = dynamic_cast<EDProjectItem*>(EDPICSNode::createCSN(m_pSignal->getSignal()));
+            emit si_getMetaInfoBase();
+            ch->setMetainfoBase(getMinfo());
+            addChild( ch );
+            ch->update(true);
         }
     }
 }
@@ -1412,7 +1416,7 @@ void EDPICSNTSWord::update(bool bupdateChildren)
 
     EDPIProperty PropWord(strWord);
     PropWord.setType(EDPIPropertyTypeString::getInstance());
-    PropType.setCallback(new Callback<EDPICSNTSWord, QString>(this, &EDPICSNTSWord::getPropWord));
+    PropWord.setCallback(new Callback<EDPICSNTSWord, QString>(this, &EDPICSNTSWord::getPropWord));
 
     EDPIPropertyGroup Editor(strEditor);
     Editor.addProperty(PropType);

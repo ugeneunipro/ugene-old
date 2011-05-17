@@ -510,6 +510,39 @@ bool ExpertDiscoveryData::loadAnnotation(MarkingBase& base, const SequenceBase& 
        
 }
 
+// bool ExpertDiscoveryData::loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc){
+// 
+//     foreach(GObject* obj, doc->getObjects()){
+//         GObject* objk1 = obj;
+//     }
+// //     int objN = seqBase.getObjNo(sequenceId.toStdString().c_str());
+// //     if(objN >= 0){
+// //         QDomNode pInstanceNode = pSequence.firstChild();
+// //         if(pInstanceNode.toElement().tagName() != "instance"){
+// //             return false;
+// //         }
+// //         Marking mrk;
+// //         try {
+// //             mrk = base.getMarking(objN);
+// //         }
+// //         catch (...) {}
+// //         while(!pInstanceNode.isNull()){
+// //             QDomElement pInstance = pInstanceNode.toElement();
+// //             if(pInstance.tagName() == "instance"){
+// //                 int startPos = pInstance.attribute("start").toInt() - 1;
+// //                 int endPos = pInstance.attribute("end").toInt() - 1;
+// //                 if (endPos >= startPos && startPos >= 0) {
+// //                     mrk.set(signalName.toStdString(), familyName.toStdString(), DDisc::Interval(startPos, endPos));
+// //                 }
+// //                 //instance
+// //             }
+// //             pInstanceNode = pInstanceNode.nextSibling();
+// //         }
+// //         base.setMarking(objN, mrk);
+// //     }
+//     return true;
+// }
+
 bool ExpertDiscoveryData::generateDescription(){
     desc.clear();
     SequenceBase* seqBase = &posBase;

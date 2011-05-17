@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Advanced extract parameters</string>
+   <string>Advanced Extract Parameters</string>
   </property>
   <property name="modal">
    <bool>true</bool>

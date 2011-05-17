@@ -3,6 +3,7 @@
 #include "ExpertDiscoveryTreeWidgets.h"
 
 #include <QTableWidget>
+#include <QComboBox>
 
 namespace U2 {
 
@@ -27,6 +28,8 @@ private:
 
 protected slots:
     void sl_cellChanged(QTableWidgetItem * tItem);
+    void sl_cellDataChanged(int row, int column);
+    void sl_comboEditTextChangerd(const QString& t);
 
 public slots:
     void sl_treeSelChanged(QTreeWidgetItem * tItem);
@@ -39,7 +42,21 @@ signals:
 class EDPropertyItem : public QTableWidgetItem{
 public:
     EDPropertyItem(const QString& val, int nGroup, int nProp, bool editable);
-    EDPropertyItem(const QString& val, int nGroup, int nProp, const EDPIPropertyTypeList* pType,  bool editable);
+    //EDPropertyItem(const QString& val, int nGroup, int nProp, const EDPIPropertyTypeList* pType,  bool editable);
+    int getGroup(){return nGroup;}
+    int getProp(){return nProp;}
+    QString getData() {return data;}
+    void setData(const QString& d){data = d;}
+private:
+    int nGroup;
+    int nProp;
+    QString data;
+};
+
+class EDPropertyItemList : public QComboBox{
+public:
+    //EDPropertyItem(const QString& val, int nGroup, int nProp, bool editable);
+    EDPropertyItemList(const QString& val, int nGroup, int nProp, const EDPIPropertyTypeList* pType,  bool editable);
     int getGroup(){return nGroup;}
     int getProp(){return nProp;}
     QString getData() {return data;}

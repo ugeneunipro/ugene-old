@@ -54,7 +54,7 @@ ExpertDiscoveryView::~ExpertDiscoveryView(){
     delete negUDoc;
     delete conUDoc;
     delete curEDsequence;
-    delete splitter;
+    //delete splitter;
 }
 
 QWidget* ExpertDiscoveryView::createWidget(){
@@ -128,11 +128,11 @@ void ExpertDiscoveryView::createActions(){
     connect(saveDoc, SIGNAL(triggered()), SLOT(sl_saveDoc()));
 
 
-    setUpRecBound = new QAction(tr("Set recognization bound"), this);
+    setUpRecBound = new QAction(tr("Set Recognition Bound"), this);
     setUpRecBound->setIcon(QIcon(":expert_discovery/images/setRecBound.ico"));
     connect(setUpRecBound, SIGNAL(triggered()), SLOT(sl_setRecBound()));
     
-    optimizeRecBound = new QAction(tr("Optimize recognization bound"), this);
+    optimizeRecBound = new QAction(tr("Optimize Recognition Bound"), this);
     optimizeRecBound->setIcon(QIcon(":expert_discovery/images/optRecBound.ico"));
     connect(optimizeRecBound, SIGNAL(triggered()), SLOT(sl_optimizeRecBound()));
 

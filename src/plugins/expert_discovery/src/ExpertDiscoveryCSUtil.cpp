@@ -152,11 +152,11 @@ namespace U2 {
 
     QString	CSFolder::makeUniqueSignalName() const
     {
-        QString strPrefix = tr("NewSignal");
+        QString strPrefix = "NewSignal";
         //if (!strPrefix.LoadString(IDS_PFX_SIGNAL)) ASSERT(0);
 
         int n = 0;
-        QString strResult = tr("NewSignal");
+        QString strResult = "NewSignal";
         while (getSignalIndexByName(strResult)>=0) {
             strResult = strPrefix + QString("%1").arg(n);
             n++;
@@ -166,11 +166,11 @@ namespace U2 {
 
     QString	CSFolder::makeUniqueFolderName() const
     {
-        QString strPrefix= tr("NewFolder");;
+        QString strPrefix= "NewFolder";
         //if (!strPrefix.LoadString(IDS_PFX_FOLDER)) ASSERT(0);
 
         int n = 0;
-        QString strResult = tr("NewFolder");;
+        QString strResult = "NewFolder";
         while (getFolderIndexByName(strResult)>=0) {
             strResult = strPrefix + QString("%1").arg(n);
             n++;

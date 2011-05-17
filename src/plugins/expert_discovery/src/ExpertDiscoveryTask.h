@@ -82,12 +82,17 @@ public:
 
     void run(){};
     void prepare();
+    ReportResult report();
 
 private:
     QString firstFile, secondFile, thirdFile;
     bool generateDescr;
 
     ExpertDiscoveryData& edData;
+    Document* posDoc;
+    Document* negDoc;
+
+    bool loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc);
     //Document* loadFile(QString inFile);
 
 signals:

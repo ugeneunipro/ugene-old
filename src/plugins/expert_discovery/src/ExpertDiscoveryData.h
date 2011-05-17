@@ -85,6 +85,7 @@ public:
 
     bool loadMarkup(const QString& firstF, const QString& secondF, const QString& thirdF, bool generateDescr);
     bool loadAnnotation(MarkingBase& base, const SequenceBase& seqBase, QString strFileName);
+    //bool loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc);
     bool generateDescription();
     void loadControlSequenceAnnotation(const QString& fileName);
 

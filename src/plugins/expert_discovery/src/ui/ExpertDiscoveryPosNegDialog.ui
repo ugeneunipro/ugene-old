@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>476</width>
-    <height>234</height>
+    <height>198</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Add Positive and Negative sequences</string>
+   <string>Positive and Negative sequences</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -136,7 +136,7 @@
      <item>
       <widget class="QPushButton" name="startButton">
        <property name="text">
-        <string>Next</string>
+        <string>Ok</string>
        </property>
        <property name="default">
         <bool>true</bool>

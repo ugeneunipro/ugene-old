@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Add Positive and Negative sequences markup</string>
+   <string>Positive and Negative sequences markup</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -157,7 +157,7 @@
      <item>
       <widget class="QPushButton" name="startButton">
        <property name="text">
-        <string>Next</string>
+        <string>Ok</string>
        </property>
        <property name="default">
         <bool>true</bool>

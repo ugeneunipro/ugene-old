@@ -10,11 +10,11 @@
     <x>0</x>
     <y>0</y>
     <width>447</width>
-    <height>506</height>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Extractor parameters setup</string>
+   <string>Extractor Parameters setup</string>
   </property>
   <property name="accessibleName">
    <string/>
@@ -190,7 +190,7 @@
     <string>Setup predicates</string>
    </property>
    <property name="subTitle">
-    <string>Please create some oredicates that will be used in complex signal construction process.</string>
+    <string>Please create some predicates that will be used in complex signal construction process.</string>
    </property>
    <attribute name="pageId">
     <string notr="true">2</string>

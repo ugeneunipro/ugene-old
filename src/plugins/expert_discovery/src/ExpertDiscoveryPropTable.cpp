@@ -15,6 +15,7 @@ EDPropertiesTable::EDPropertiesTable(QWidget* parent)
 
     verticalHeader()->hide();
     horizontalHeader()->hide();
+    //connect(this, SIGNAL(cellChanged ( int , int  )), SLOT(sl_cellDataChanged(int , int )));
     connect(this, SIGNAL(itemChanged ( QTableWidgetItem*  )), SLOT( sl_cellChanged(QTableWidgetItem*) ));
 }
 
@@ -38,17 +39,24 @@ void EDPropertiesTable::representPIProperties(EDProjectItem* pItem){
             const EDPIPropertyType* pType = rProp.getType();
             assert( pType != NULL );
             EDPropertyItem *pPropertyItem = NULL;
+            EDPropertyItemList *pPropertyItemList = NULL;
             addNewField(rProp.getName());
             if(!pType->hasPredefinedValues()){
                 pPropertyItem = new EDPropertyItem(rProp.getValue(), nGroup, nProp, pType->hasEdit());
             }
             else{
                  const EDPIPropertyTypeList* pType = dynamic_cast<const EDPIPropertyTypeList*>(rProp.getType());
-                 pPropertyItem = new EDPropertyItem(rProp.getValue(), nGroup, nProp, pType, false);  
+                 pPropertyItemList = new EDPropertyItemList(rProp.getValue(), nGroup, nProp, pType, pType->hasEdit());  
+                 connect (pPropertyItemList, SIGNAL(currentIndexChanged ( const QString& )), this, SLOT(sl_comboEditTextChangerd(const QString& )));
             }
-            int itemToSetPos = isSeq? rowCount() - 1 : seqOffset - 1;
-            setItem(itemToSetPos, 1, pPropertyItem);
 
+            int itemToSetPos = isSeq? rowCount() - 1 : seqOffset - 1;
+
+            if(!pType->hasPredefinedValues()){
+                setItem(itemToSetPos, 1, pPropertyItem);
+            }else{
+                setCellWidget(itemToSetPos, 1, pPropertyItemList);
+            }
         }
     }
 }
@@ -103,16 +111,52 @@ EDPropertyItem::EDPropertyItem(const QString& val, int nGroup, int nProp, bool e
     setText(val);
 }
 
-EDPropertyItem::EDPropertyItem(const QString& val, int nGroup, int nProp, const EDPIPropertyTypeList* pType,  bool editable)
-:QTableWidgetItem()
+// EDPropertyItem::EDPropertyItem(const QString& val, int nGroup, int nProp, const EDPIPropertyTypeList* pType,  bool editable)
+// :QTableWidgetItem()
+// {
+//     this->nGroup = nGroup;
+//     this->nProp = nProp;
+//     if(!editable){
+//         setFlags(Qt::ItemIsSelectable |Qt::ItemIsEditable);
+//     }
+//     setData(val);
+//     setText(val);
+// }
+
+// EDPropertyItem::EDPropertyItem(const QString& val, int nGroup, int nProp, bool editable)
+// :QTableWidgetItem()
+// {
+//     this->nGroup = nGroup;
+//     this->nProp = nProp;
+//     if(!editable){
+//         setFlags(Qt::ItemIsEditable);
+//     }
+//     setData(val);
+//     setText(val);
+// }
+
+EDPropertyItemList::EDPropertyItemList(const QString& val, int nGroup, int nProp, const EDPIPropertyTypeList* pType,  bool editable)
+:QComboBox()
 {
     this->nGroup = nGroup;
     this->nProp = nProp;
     if(!editable){
-        setFlags(Qt::ItemIsSelectable |Qt::ItemIsEditable);
+        //setFlags(Qt::ItemIsSelectable |Qt::ItemIsEditable);
+    }
+    for (int i = 0; i < pType->getValueNumber(); i ++){
+        insertItem(i, pType->getValue(i));
     }
     setData(val);
-    setText(val);
+    int curInd = pType->getValueId(val);
+    if(curInd == -1){
+        insertItem(0, val);
+        setCurrentIndex(0);
+    }else{
+        setCurrentIndex(curInd);
+    }
+    setEditable(editable);
+    //setFrame(false);
+    //setInsertPolicy(NoInsert);
 }
 
 void EDPropertiesTable::sl_treeSelChanged(QTreeWidgetItem * tItem){
@@ -171,6 +215,48 @@ void  EDPropertiesTable::sl_cellChanged(QTableWidgetItem* tItem){
         emit si_propChanged(curPItem, &rProp, strNewValue);
     }
     
+}
+
+void EDPropertiesTable::sl_cellDataChanged(int row, int column){
+    
+    QWidget* w =  cellWidget(row, column);
+    if(w == NULL){
+        return;
+    }
+
+    EDPropertyItemList* edPropItem = dynamic_cast<EDPropertyItemList*>(w);
+    if(!edPropItem){
+        return;
+    }
+
+    int nGroup = edPropItem->getGroup();
+    int nProp  = edPropItem->getProp();
+    const EDPIPropertyGroup& rGroup = curPItem->getGroup(nGroup);
+    const EDPIProperty& rProp = rGroup.getProperty(nProp);
+
+    QString strNewValue = edPropItem->currentText();
+    if(strNewValue!=edPropItem->getData()){
+        edPropItem->setData(strNewValue);
+        emit si_propChanged(curPItem, &rProp, strNewValue);
+    }
+}
+
+void EDPropertiesTable::sl_comboEditTextChangerd(const QString& t){
+    EDPropertyItemList* edPropItem = dynamic_cast<EDPropertyItemList*>(sender());
+    if(!edPropItem){
+        return;
+    }
+
+    int nGroup = edPropItem->getGroup();
+    int nProp  = edPropItem->getProp();
+    const EDPIPropertyGroup& rGroup = curPItem->getGroup(nGroup);
+    const EDPIProperty& rProp = rGroup.getProperty(nProp);
+
+    QString strNewValue = edPropItem->currentText();
+    if(strNewValue!=edPropItem->getData()){
+        edPropItem->setData(strNewValue);
+        emit si_propChanged(curPItem, &rProp, strNewValue);
+    } 
 }
 
 

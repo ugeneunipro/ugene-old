@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Setup Recognization bound</string>
+   <string>Setup Recognition Bound</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -22,7 +22,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Recognization Bound</string>
+        <string>Recognition Bound</string>
        </property>
       </widget>
      </item>
@@ -58,7 +58,7 @@
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Probability of negative sequence recognization:</string>
+           <string>Probability of negative sequence recognition:</string>
           </property>
          </widget>
         </item>
@@ -78,7 +78,7 @@
         <item>
          <widget class="QLineEdit" name="negRecLineEdit">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="readOnly">
            <bool>true</bool>
@@ -125,7 +125,7 @@
         <item>
          <widget class="QLineEdit" name="posRecLineEdit">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="readOnly">
            <bool>true</bool>
