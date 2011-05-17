@@ -50,7 +50,7 @@ public:
         data->name = name;
         data->location->regions << region;
         data->setStrand(strand);
-        data->qualifiers.append(U2Qualifier("error", QString::number(err)));
+        data->qualifiers.append(U2Qualifier("mismatches", QString::number(err)));
         return data;
     }
 

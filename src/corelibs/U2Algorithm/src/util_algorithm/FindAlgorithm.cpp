@@ -258,7 +258,8 @@ static void findInAmino_subst(
             const char * p = ctx.pattern;
             FindAlgorithmResult & res = ctx.res; 
             bool match = true;
-            for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
+            int curErr = 0;
+            for ( int j = 0; j < patternLen; j++ ) {
                 char rollchar = ctx.rollArr.get(j);
                 if( rollchar != p[j] && ++curErr > maxErr ) {
                     match = false;
@@ -278,7 +279,7 @@ static void findInAmino_subst(
                 currentPos += 1; 
                 res.region.startPos = i;
                 res.region.length = patternLenInNucl;
-                res.err = 0;
+                res.err = curErr;
                 res.strand = (ci == 1) ? U2Strand::Complementary : U2Strand::Direct;
                 res.translation = true;
 
@@ -348,9 +349,10 @@ inline bool cmpAmbiguous( char a, char b){
     return c1 & c2;
 }
 
-inline bool match_pattern(const char* seq, const char* p, int start, int patternLen, int maxErr ) {
+inline bool match_pattern(const char* seq, const char* p, int start, int patternLen, int maxErr, int& curErr ) {
     bool match = true;
-    for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
+    curErr = 0;
+    for ( int j = 0; j < patternLen; j++ ) {
         if( seq[start+j] != p[j] && ++curErr > maxErr ) {
             match = false;
             break;
@@ -359,9 +361,10 @@ inline bool match_pattern(const char* seq, const char* p, int start, int pattern
     return match;
 }
 
-inline bool match_pattern_ambiguous(const char* seq, const char* p, int start, int patternLen, int maxErr ) {
+inline bool match_pattern_ambiguous(const char* seq, const char* p, int start, int patternLen, int maxErr, int& curErr ) {
     bool match = true;
-    for ( int j = 0, curErr = 0; j < patternLen; j++ ) {
+    curErr = 0;
+    for ( int j = 0; j < patternLen; j++ ) {
         if( !cmpAmbiguous(seq[start+j],p[j]) && ++curErr > maxErr ) {
             match = false;
             break;
@@ -429,16 +432,17 @@ static void find_subst(
             FindAlgorithmResult& res = ctx.res; 
             
             bool match = true;
+            int curErr = 0;
             if (useAmbiguousBases) {
-                match = match_pattern_ambiguous(seq, p, i, patternLen, maxErr);
+                match = match_pattern_ambiguous(seq, p, i, patternLen, maxErr, curErr);
             } else {
-                match = match_pattern(seq, p, i, patternLen, maxErr);
+                match = match_pattern(seq, p, i, patternLen, maxErr, curErr);
             }
             if( match ) {
                 ++currentPos;
                 res.region.startPos = i;
                 res.region.length = patternLen;
-                res.err = 0;
+                res.err = curErr;
                 res.strand = (ci == 1) ? U2Strand::Complementary : U2Strand::Direct;
 
                 rl->onResult(res);
