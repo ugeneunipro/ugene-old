@@ -53,7 +53,7 @@ public:
 
     virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os);
 
-    virtual void calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os, TaskStateInfo & ti);
+    virtual void calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os);
 
     const QString& getReadsTableName() const {return readsTable;}
     

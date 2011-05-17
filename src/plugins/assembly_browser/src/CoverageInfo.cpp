@@ -45,10 +45,8 @@ void CalcCoverageInfoTask::run() {
     // calculate coverage
     U2AssemblyCoverageStat stat;
     stat.coverage.resize(settings.regions);
-    U2OpStatusImpl os;
-    settings.model->calculateCoverageStat(settings.visibleRange, stat, os, stateInfo);
-    if(os.hasError()) {
-        setError(os.getError());
+    settings.model->calculateCoverageStat(settings.visibleRange, stat, stateInfo);
+    if(hasError()) {
         return;
     }
     
