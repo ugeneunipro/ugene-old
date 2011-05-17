@@ -226,12 +226,23 @@ void SingleTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) 
     createReadsIndexes(os);
 }
 
+//used for heuristic inside of the func
+#define LOW_READS_COUNT_FOR_TOTAL 100000
+#define LOW_READS_COUNT_FOR_REGION 10000
+#define LOW_READS_K 10
 void SingleTableAssemblyAdapter::calculateCoverage(const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
     QString queryString = "SELECT gstart, elen FROM " + readsTable;
-    bool rangeArgs = false;
-    if (r != U2_ASSEMBLY_REGION_MAX) {
+    bool rangeArgs = true;
+
+    if (rangeMode) { //heuristic: do not use gstart index (spoils cache) if reads count is high
+        int nReadsTotal = countReads(U2_ASSEMBLY_REGION_MAX, os);
+        int nReadsInRegion = nReadsTotal < LOW_READS_COUNT_FOR_TOTAL ? 0 : countReads(r, os);
+        if (nReadsTotal < LOW_READS_COUNT_FOR_TOTAL || (nReadsInRegion > LOW_READS_COUNT_FOR_REGION && nReadsInRegion * LOW_READS_K > nReadsTotal)) {
+            rangeArgs = false;
+        }
+    }
+    if (rangeArgs) {
         queryString+=" WHERE " + rangeConditionCheck;
-        rangeArgs = true;
     }
     SQLiteQuery q(queryString, db, os);
     if (rangeArgs) {

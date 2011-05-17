@@ -389,14 +389,14 @@ void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U
     qint64* cdata = c.coverage.data();
     double basesPerRange = double(r.length) / csize;
     while (q.step() && !os.isCoR()) {
-        if(os.isCanceled()) {
-            return;
-        }
-        
         qint64 startPos = q.getInt64(0);
         qint64 len = q.getInt64(1);
         U2Region readRegion(startPos, len);
         U2Region readCroppedRegion = readRegion.intersect(r);
+
+        if (readCroppedRegion.isEmpty()) {
+            continue;
+        }
         
         int firstCoverageIdx = (int)((readCroppedRegion.startPos - r.startPos)/ basesPerRange);
         int lastCoverageIdx = (int)((readCroppedRegion.startPos + len - r.startPos ) / basesPerRange);
