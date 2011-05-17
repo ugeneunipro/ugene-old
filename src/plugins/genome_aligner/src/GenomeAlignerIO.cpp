@@ -119,7 +119,7 @@ void GenomeAlignerMAlignmentWriter::write(SearchQuery *seq, SAType offset) {
     MAlignmentRow row;
     row.setName(seq->getName());
     row.setSequence(seq->constSequence(), offset);
-    if (seq->getQuality().qualCodes.length() > 0) {
+    if (seq->hasQuality() && seq->getQuality().qualCodes.length() > 0) {
         row.setQuality(seq->getQuality());
     }
     result.addRow(row);

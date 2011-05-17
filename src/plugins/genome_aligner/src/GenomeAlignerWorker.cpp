@@ -99,7 +99,7 @@ void GenomeAlignerWorkerFactory::init() {
         GenomeAlignerWorker::tr("<html><body>Omit reads with qualities lower than the specified value. Reads that have no qualities are not omited.\
                                 <p>Set <b>\"0\"</b> to switch off this option.</p></body></html>"));
     Descriptor gpu(GPU_ATTR, GenomeAlignerWorker::tr("Use GPU-optimization"), 
-        GenomeAlignerWorker::tr("<html><body>Use GPU-calculatings while aligning reads. This option require OpenCL-enable GPU-device.</body></html>"));
+        GenomeAlignerWorker::tr("<html><body>Use GPU-calculatings while aligning reads. This option requires OpenCL-enable GPU-device.</body></html>"));
 
     a << new Attribute(absMismatches, BaseTypes::BOOL_TYPE(), true/*required*/, false);
     a << new Attribute(mismatches, BaseTypes::NUM_TYPE(), false, 0);
@@ -144,6 +144,7 @@ void GenomeAlignerWorker::init() {
 
     //TODO: PREBUILT INDEX
     //settings.setCustomValue(GenomeAlignerTask::OPTION_PREBUILT_INDEX, true);
+    settings.prebuiltIndex = true;
     bool absMismatches = actor->getParameter(ABS_OR_PERC_MISMATCHES_ATTR)->getAttributeValue<bool>();
     settings.setCustomValue(GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES, absMismatches);
     int nMismatches = actor->getParameter(MISMATCHES_ATTR)->getAttributeValue<int>();
@@ -175,8 +176,7 @@ Task* GenomeAlignerWorker::tick() {
         writer = new GenomeAlignerMAlignmentWriter();
 
         QString indexFile = index->get().getData().toMap().value(INDEX_SLOT.getId()).value<QString>();
-        //TODO: index file
-        //settings.setCustomValue(GenomeAlignerTask::OPTION_INDEX_URL, indexFile);
+        settings.refSeqUrl = indexFile;
         settings.setCustomValue(GenomeAlignerTask::OPTION_READS_READER, QVariant::fromValue(GenomeAlignerReaderContainer(reader)));
         settings.setCustomValue(GenomeAlignerTask::OPTION_READS_WRITER, QVariant::fromValue(GenomeAlignerWriterContainer(writer)));
         Task* t = new GenomeAlignerTask(settings);
@@ -324,9 +324,9 @@ void GenomeAlignerIndexReaderWorkerFactory::init() {
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("gen.al.index.reader.out", outM)), false /*input*/, true /*multi*/);
 
     Descriptor desc(ACTOR_ID, GenomeAlignerIndexReaderWorker::tr("Genome aligner index reader"), 
-       GenomeAlignerIndexReaderWorker::tr("Read a set of 3 files with suffixes .idx, .ref, .sarr. These files together constitute the index: they are all that is needed to align reads to that reference."));
+       GenomeAlignerIndexReaderWorker::tr("Read a set of several files with extensions .idx, .ref, .X.sarr. These files together constitute the index: they are all that is needed to align reads to that reference."));
     Descriptor index(INDEX_URL_ATTR, GenomeAlignerIndexReaderWorker::tr("Index"), 
-        GenomeAlignerIndexReaderWorker::tr("Select one of index files"));
+        GenomeAlignerIndexReaderWorker::tr("Select an index file with the .idx extension"));
 
     a << new Attribute(index, BaseTypes::STRING_TYPE(), true /*required*/, QString());
 
