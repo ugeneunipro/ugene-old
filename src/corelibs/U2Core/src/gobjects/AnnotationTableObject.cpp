@@ -31,6 +31,7 @@
 #include <QtCore/QBitArray>
 // for Qt::escape
 #include <QtGui/QTextDocument>
+#include <U2Core/AppContext.h>
 
 
 namespace U2 {
@@ -648,19 +649,42 @@ void AnnotationTableObject::removeAnnotations(const QList<Annotation*>& annotati
 }
 
 void AnnotationTableObject::removeAnnotationsInGroup(const QList<Annotation*>& _annotations, AnnotationGroup *group) {
-    annotations = annotations.toSet().subtract(_annotations.toSet()).toList();
+    /*annotations = annotations.toSet().subtract(_annotations.toSet()).toList();
     foreach(Annotation* a, _annotations) {
         a->obj = NULL;
         foreach(AnnotationGroup* ag, a->getGroups()) {
             ag->annotations.removeOne(a);
         }
-    }
-    
+    }*/
     int recv = receivers(SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
     annLocker.setToDelete(_annotations, group, recv);
+    DeleteAnnotationsFromObjectTask *task = new DeleteAnnotationsFromObjectTask(_annotations, this, group);
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    
+    /*int recv = receivers(SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
+    annLocker.setToDelete(_annotations, group, recv);
     emit si_onAnnotationsInGroupRemoved(_annotations, group);
-    setModified(true);
+    setModified(true);*/
     //qDeleteAll(annotations);
+}
+
+void DeleteAnnotationsFromObjectTask::run() {
+    /*aobj->annotations = aobj->annotations.toSet().subtract(anns.toSet()).toList();
+    foreach(Annotation* a, anns) {
+        a->obj = NULL;
+        foreach(AnnotationGroup* ag, a->getGroups()) {
+            ag->annotations.removeOne(a);
+        }
+    }*/
+    foreach(Annotation* a, anns) {
+        aobj->_removeAnnotation(a);
+    }
+}
+
+Task::ReportResult DeleteAnnotationsFromObjectTask::report() {
+    aobj->emit_onAnnotationsInGroupRemoved(anns, group);
+    aobj->setModified(true);
+    return ReportResult_Finished;
 }
 
 void AnnotationTableObject::releaseLocker() {

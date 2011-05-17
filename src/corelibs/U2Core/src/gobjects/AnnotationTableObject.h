@@ -247,6 +247,19 @@ private:
     QTimer timer;
 };
 
+class DeleteAnnotationsFromObjectTask: public Task {
+public:
+    DeleteAnnotationsFromObjectTask(const QList<Annotation *> _anns, AnnotationTableObject *_aobj, AnnotationGroup *_gr): 
+      Task(tr("Delete annotations from object task"), TaskFlag_None), anns(_anns), aobj(_aobj), group(_gr){}
+    void run();
+    Task::ReportResult report();
+
+private:
+    QList<Annotation *> anns;
+    AnnotationTableObject *aobj;
+    AnnotationGroup *group;
+};
+
 class U2CORE_EXPORT AnnotationTableObject: public GObject {
     Q_OBJECT
     friend class Annotation;
@@ -287,6 +300,7 @@ protected:
     void emit_onGroupCreated(AnnotationGroup* g) {emit si_onGroupCreated(g);}
     void emit_onGroupRemoved(AnnotationGroup* p, AnnotationGroup* g) {emit si_onGroupRemoved(p, g);}
     void emit_onGroupRenamed(AnnotationGroup* g, const QString& oldName) {emit si_onGroupRenamed(g, oldName);}
+    void emit_onAnnotationsInGroupRemoved(const QList<Annotation*>& l, AnnotationGroup* gr) {emit si_onAnnotationsInGroupRemoved(l, gr);}
 
     void _removeAnnotation(Annotation* a);
 
@@ -305,6 +319,8 @@ signals:
     void si_onGroupCreated(AnnotationGroup*);
     void si_onGroupRemoved(AnnotationGroup* p, AnnotationGroup* removed);
     void si_onGroupRenamed(AnnotationGroup*, const QString& oldName);
+
+    friend class DeleteAnnotationsFromObjectTask;
 };
 
 
