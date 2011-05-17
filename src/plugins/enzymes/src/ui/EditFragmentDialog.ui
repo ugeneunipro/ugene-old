@@ -84,7 +84,7 @@
              <item>
               <widget class="QRadioButton" name="lComplRadioButton">
                <property name="text">
-                <string>Complement</string>
+                <string>Reverse-complement</string>
                </property>
               </widget>
              </item>
@@ -162,17 +162,17 @@
                 <string>Direct</string>
                </property>
                <property name="checked">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QRadioButton" name="rComplRadioButton">
                <property name="text">
-                <string>Complement</string>
+                <string>Reverse-complement</string>
                </property>
                <property name="checked">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
              </item>

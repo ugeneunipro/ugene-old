@@ -91,7 +91,7 @@ void CreateFragmentDialog::accept()
         leftOverhang = lCustomOverhangEdit->text();
         DNAAlphabet* alph = AppContext::getDNAAlphabetRegistry()->findAlphabet(leftOverhang.toAscii());
         if (!alph->isNucleic()) {
-            QMessageBox::warning(this, windowTitle(),tr("5'overhang cotnains unsupported symbols!"));
+            QMessageBox::warning(this, windowTitle(),tr("5'overhang contains unsupported symbols!"));
             return;
         }
 
@@ -143,6 +143,16 @@ void CreateFragmentDialog::accept()
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, QString()));
     ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftOverhang) );
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightOverhang) );
+    QString leftOverhangStrand = OVERHANG_STRAND_DIRECT;
+    if (lComplButton->isChecked() && !leftOverhang.isEmpty()) {
+        leftOverhangStrand = OVERHANG_STRAND_COMPL; 
+    }
+    ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_STRAND, leftOverhangStrand) );
+    QString rightOverhangStrand = OVERHANG_STRAND_DIRECT;
+    if (rComplButton->isChecked() && !rightOverhang.isEmpty()) {
+        rightOverhangStrand = OVERHANG_STRAND_COMPL;
+    }
+    ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_STRAND, rightOverhangStrand) );
     QString leftOverhangType = leftOverhang.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
     ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TYPE, leftOverhangType) );
     QString rightOverhangType = rightOverhang.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;

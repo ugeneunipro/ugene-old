@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>248</height>
+    <width>475</width>
+    <height>261</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -106,6 +106,27 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QRadioButton" name="lDirectButton">
+                <property name="text">
+                 <string>Direct</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="lComplButton">
+                <property name="text">
+                 <string>Reverse-complement</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
              <widget class="QLineEdit" name="lCustomOverhangEdit">
               <property name="enabled">
                <bool>false</bool>
@@ -130,6 +151,27 @@
             <bool>false</bool>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QRadioButton" name="rDirectButton">
+                <property name="text">
+                 <string>Direct</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="rComplButton">
+                <property name="text">
+                 <string>Reverse-complement</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
             <item>
              <widget class="QLineEdit" name="rCustomOverhangEdit">
               <property name="enabled">

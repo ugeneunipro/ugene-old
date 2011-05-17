@@ -254,7 +254,7 @@ void DigestSequenceTask::run()
             results.append(SharedAnnotationData(ad));
         } else {
             AnnotationData* ad1 = createFragment(seqRange.startPos, DNAFragmentTerm(), 
-                firstCutPos, DNAFragmentTerm(firstCutter->id, firstRightOverhang,rightOverhangIsDirect) );
+                firstCutPos, DNAFragmentTerm(firstCutter->id, firstRightOverhang, rightOverhangIsDirect) );
             AnnotationData* ad2 = createFragment(lastCutPos, DNAFragmentTerm(lastCutter->id, lastLeftOverhang, leftOverhangIsDirect), 
                 seqRange.endPos(), DNAFragmentTerm() );
             ad1->name = QString("Fragment 1");
@@ -305,26 +305,12 @@ LigateFragmentsTask::LigateFragmentsTask( const QList<DNAFragment>& fragments, c
     GCOUNTER(cvar,tvar,"LigateFragments");
 }
 
-static bool overhangsAreConsistent(const QByteArray& start, const QByteArray& end, DNAAlphabet* alphabet ) {
-    DNATranslation* trans = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(alphabet);
-    
-    QByteArray compEnd(end);
-    trans->translate(compEnd.data(), end.length());
-    
-    if (compEnd == start) {
-       return true;
-    }
-
-    return false;
-}
-
-
 void LigateFragmentsTask::processOverhangs( const DNAFragment& prevFragment, const DNAFragment& curFragment, QByteArray& overhangAddition )
 {
-    QByteArray prevTermType = prevFragment.getRightTerminus().termType;
-    QByteArray curTermType = curFragment.getLeftTerminus().termType;
+    const DNAFragmentTerm& prevTerm = prevFragment.getRightTerminus();
+    const DNAFragmentTerm& curTerm = curFragment.getLeftTerminus();
 
-    if (prevTermType != curTermType) {
+    if (prevTerm.type != curTerm.type) {
         stateInfo.setError( tr("Fragments %1 and  %2 are inconsistent. Blunt and sticky ends incompatibility")
             .arg(prevFragment.getName()).arg(curFragment.getName()) );
         return;
@@ -333,15 +319,15 @@ void LigateFragmentsTask::processOverhangs( const DNAFragment& prevFragment, con
     QByteArray prevOverhang = prevFragment.getRightTerminus().overhang;
     QByteArray curOverhang = curFragment.getLeftTerminus().overhang;
 
-    if (prevTermType == OVERHANG_TYPE_STICKY) {
-        if (prevOverhang != curOverhang) {
+    if (prevTerm.type == OVERHANG_TYPE_STICKY) {
+        if (!overhangsAreConsistent(prevFragment.getRightTerminus(), curFragment.getLeftTerminus())) {
             stateInfo.setError( tr("Right overhang from %1 and left overhang from %2 are inconsistent.")
                 .arg(prevFragment.getName()).arg(curFragment.getName()) );
             return;
         } else {
             overhangAddition += curOverhang;
         }
-    } else if (prevTermType == OVERHANG_TYPE_BLUNT) {
+    } else if (prevTerm.type == OVERHANG_TYPE_BLUNT) {
         overhangAddition += prevOverhang + curOverhang;
     } else {
         assert(0);
@@ -350,6 +336,19 @@ void LigateFragmentsTask::processOverhangs( const DNAFragment& prevFragment, con
 }
 
 
+bool LigateFragmentsTask::overhangsAreConsistent( const DNAFragmentTerm& curTerm, const DNAFragmentTerm& prevTerm )
+{
+    QByteArray curOverhang = curTerm.overhang;
+    QByteArray prevOverhang = prevTerm.overhang;
+    
+    bool curStrand = curTerm.isDirect;
+    bool prevStrand = prevTerm.isDirect;
+    if (curStrand == prevStrand) {
+        return false;
+    }
+
+    return curOverhang == prevOverhang;
+}
 
 void LigateFragmentsTask::prepare()
 {
@@ -633,6 +632,8 @@ void LigateFragmentsTask::cleanup()
         qDeleteAll(annotations);    
     }
 }
+
+
 
 
 

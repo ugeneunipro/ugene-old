@@ -101,6 +101,7 @@ private:
     static Annotation* createFragmentAnnotation(const DNAFragment&, int startPos);
     void createDocument(const QByteArray& seq, const QList<Annotation*> annotations);
     void processOverhangs(const DNAFragment& leftFragment, const DNAFragment& rightFragment, QByteArray& overhangAddition);
+    bool overhangsAreConsistent(const DNAFragmentTerm& leftTerm, const DNAFragmentTerm& rightTerm);
 
     QList<DNAFragment> fragmentList;
     QList<Annotation*> annotations;

@@ -43,7 +43,7 @@ struct DNAFragmentTerm {
     DNAFragmentTerm() : isDirect(true) {}
     QByteArray enzymeId; 
     QByteArray overhang;
-    QByteArray termType;
+    QByteArray type;
     bool isDirect; // overhang strand
 };
 
@@ -88,7 +88,8 @@ public:
     void setLeftTermType( const QByteArray& termType );
     void setLeftOverhang( const QByteArray& overhang );
     void setRightOverhang( const QByteArray& overhang );
-
+    void setLeftOverhangStrand( bool direct);
+    void setRightOverhangStrand(bool direct);
 
     const QList<AnnotationTableObject*>& getRelatedAnnotations() const { return relatedAnnotations; }
     

@@ -195,6 +195,8 @@ void ConstructMoleculeDialog::sl_onRemoveButtonClicked()
 void ConstructMoleculeDialog::update()
 {
     static const QString BLUNT(tr("Blunt"));
+    static const QString FWD(tr("Fwd"));
+    static const QString REV(tr("Rev"));
 
     molConstructWidget->clear();
 
@@ -204,10 +206,22 @@ void ConstructMoleculeDialog::update()
         if (item != NULL) {
             QTreeWidgetItem* newItem = new QTreeWidgetItem(molConstructWidget);
             const DNAFragment& fragment = fragments.at(index);
-            newItem->setText(0, fragment.getLeftTerminus().termType == OVERHANG_TYPE_BLUNT ? BLUNT : fragment.getLeftTerminus().overhang);
+            if (fragment.getLeftTerminus().type == OVERHANG_TYPE_STICKY ){
+                newItem->setText(0, QString("%1 (%2)")
+                    .arg(QString(fragment.getLeftTerminus().overhang))
+                    .arg(fragment.getLeftTerminus().isDirect ? FWD : REV) );
+            } else {
+                newItem->setText(0, BLUNT);
+            }
             newItem->setToolTip(0, tr("5'overhang"));
             newItem->setText(1, item->text());
-            newItem->setText(2, fragment.getRightTerminus().termType == OVERHANG_TYPE_BLUNT ? BLUNT : fragment.getRightTerminus().overhang);
+            if (fragment.getRightTerminus().type == OVERHANG_TYPE_STICKY ) {
+                newItem->setText(2, QString("%1 (%2)")
+                    .arg( QString(fragment.getRightTerminus().overhang) )
+                    .arg( fragment.getRightTerminus().isDirect ? FWD : REV ) );
+            } else {
+                newItem->setText(2, BLUNT);
+            }
             newItem->setToolTip(2, tr("3'overhang"));
             newItem->setCheckState(3, fragment.isInverted() ? Qt::Checked : Qt::Unchecked);
             newItem->setText(3, fragment.isInverted() ? tr("yes") : tr("no"));
@@ -225,7 +239,19 @@ void ConstructMoleculeDialog::update()
         for(int i = 0; i < count; ++i) {
             QTreeWidgetItem* item = molConstructWidget->topLevelItem(i);
             if (prevItem != NULL) {
-                QColor color = prevItem->text(2) == item->text(0) ? Qt::green : Qt::red;
+                
+                QStringList prevItems = prevItem->text(2).split(" ");
+                QString prevOverhang = prevItems.at(0);
+                QString prevStrand = prevItems.count() > 1 ? prevItems.at(1) : QString();
+                QStringList items = item->text(0).split(" ");
+                QString overhang = items.at(0);
+                QString strand =  items.count() > 1 ? items.at(1) : QString();
+                
+                QColor color = Qt::red;
+                if (prevOverhang == overhang && strand != prevStrand) {
+                    color = Qt::green;
+                }
+
                 prevItem->setTextColor(2, color);
                 item->setTextColor(0, color);
             }

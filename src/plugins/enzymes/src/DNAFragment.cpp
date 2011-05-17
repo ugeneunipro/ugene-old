@@ -205,6 +205,22 @@ void DNAFragment::setRightTermType( const QByteArray& termType )
     updateTerms();
 }
 
+
+void DNAFragment::setLeftOverhangStrand( bool direct )
+{
+    QString qVal = direct ? OVERHANG_STRAND_DIRECT : OVERHANG_STRAND_COMPL;
+    GObjectUtils::replaceAnnotationQualfier(annotatedFragment, QUALIFIER_LEFT_STRAND, qVal);
+    updateTerms();
+}
+
+void DNAFragment::setRightOverhangStrand( bool direct )
+{
+    QString qVal = direct ? OVERHANG_STRAND_DIRECT : OVERHANG_STRAND_COMPL;
+    GObjectUtils::replaceAnnotationQualfier(annotatedFragment, QUALIFIER_RIGHT_STRAND, qVal);
+    updateTerms();
+}
+
+
 void DNAFragment::setOverhang( const QByteArray& qName, const QByteArray& overhang )
 {   
     GObjectUtils::replaceAnnotationQualfier(annotatedFragment, qName, overhang);
@@ -267,7 +283,9 @@ void DNAFragment::updateTerms()
 
     if (reverseCompl) {
         toRevCompl(leftTerm.overhang);
+        leftTerm.isDirect = !leftTerm.isDirect;
         toRevCompl(rightTerm.overhang);
+        rightTerm.isDirect = !rightTerm.isDirect;
         qSwap(leftTerm, rightTerm);
     }
 }
@@ -277,7 +295,9 @@ void DNAFragment::updateLeftTerm()
     assert(annotatedFragment != NULL);
     leftTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TERM).toAscii();
     leftTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_OVERHANG).toAscii();
-    leftTerm.termType = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TYPE).toAscii();
+    leftTerm.type = annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_TYPE).toAscii();
+    leftTerm.isDirect = 
+        annotatedFragment->findFirstQualifierValue(QUALIFIER_LEFT_STRAND) == OVERHANG_STRAND_DIRECT;
 }
 
 void DNAFragment::updateRightTerm()
@@ -285,7 +305,10 @@ void DNAFragment::updateRightTerm()
     assert(annotatedFragment != NULL);
     rightTerm.enzymeId = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TERM).toAscii();
     rightTerm.overhang = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_OVERHANG).toAscii();
-    rightTerm.termType = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toAscii();
+    rightTerm.type = annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toAscii();
+    rightTerm.isDirect = 
+        annotatedFragment->findFirstQualifierValue(QUALIFIER_RIGHT_STRAND) == OVERHANG_STRAND_DIRECT;
+
 }
 
 void DNAFragment::toRevCompl( QByteArray& seq )
