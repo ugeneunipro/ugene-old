@@ -81,6 +81,8 @@ public:
     QMap<char, qreal> content;
     //window size
     int window;
+    //seed to initialize qrand
+    int seed;
 };
 
 class DNASequenceGenerator {
@@ -116,7 +118,7 @@ private:
 class GenerateDNASequenceTask : public Task {
     Q_OBJECT
 public:
-    GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int window_, int count_);
+    GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int window_, int count_, int seed_);
 
     void run();
 
@@ -127,6 +129,7 @@ private:
     int length;
     int window;
     int count;
+    int seed;
     QList< QByteArray > result;
 };
 

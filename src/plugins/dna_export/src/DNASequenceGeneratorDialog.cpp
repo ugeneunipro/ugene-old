@@ -26,6 +26,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/Settings.h>
 
 #include <U2Gui/SaveDocumentGroupController.h>
 
@@ -36,6 +37,9 @@
 
 
 namespace U2 {
+
+#define ROOT_SETTING QString("dna_export/")
+#define GCSKEW_SETTING QString("gc_skew")
 
 static QMap<char, qreal> initContent() {
     QMap<char, qreal> res;
@@ -50,6 +54,7 @@ QMap<char, qreal> DNASequenceGeneratorDialog::content = initContent();
 
 DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) {
     setupUi(this);
+    seedSpinBox->setEnabled(false);
 
     referenceButton->setChecked(true);
     sl_refButtonToggled(true);
@@ -72,6 +77,15 @@ DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) 
     connect(generateButton, SIGNAL(clicked()), SLOT(sl_generate()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     connect(referenceButton, SIGNAL(toggled(bool)), SLOT(sl_refButtonToggled(bool)));
+    connect(seedCheckBox, SIGNAL(stateChanged (int)), SLOT(sl_stateChanged(int)));
+}
+
+void DNASequenceGeneratorDialog::sl_stateChanged(int state) {
+    if(state == Qt::Checked)  {
+        seedSpinBox->setEnabled(true);
+    } else {
+        seedSpinBox->setEnabled(false);
+    }
 }
 
 void DNASequenceGeneratorDialog::sl_browseReference() {
@@ -98,6 +112,11 @@ void DNASequenceGeneratorDialog::sl_generate() {
     cfg.format = saveGroupContoller->getFormatToSave();
     cfg.content = content;
     cfg.window = windowSpinBox->value();
+    if(seedCheckBox->isChecked()) {
+        cfg.seed = seedSpinBox->value();
+    } else {
+        cfg.seed = -1;
+    }
     if(cfg.window > cfg.length) {
         QMessageBox::critical(this, tr("DNA Sequence Generator"), tr("Windows size bigger than sequence length"));
         return;
@@ -135,18 +154,35 @@ BaseContentDialog::BaseContentDialog(QMap<char, qreal>& percentMap_, QWidget* p)
     percentCSpin->setValue(percentMap.value('C')*100.0);
     percentGSpin->setValue(percentMap.value('G')*100.0);
     percentTSpin->setValue(percentMap.value('T')*100.0);
-    gcSkew = (percentMap.value('G') - percentMap.value('C'))/(percentMap.value('G') + percentMap.value('C'));
+    gcSkew = ((float)((int)(percentMap.value('G')*100) - (int)(percentMap.value('C')*100)))
+        /((int)(percentMap.value('G')*100) + (int)(percentMap.value('C')*100));
+    int iGCSkew = (int)(gcSkew * 100);
+    gcSkew = (float(iGCSkew))/100.0;
     percentGCSpin->setValue(gcSkew);
+    gcSkewPrev = gcSkew;
     
     connect(saveButton, SIGNAL(clicked()), SLOT(sl_save()));
     connect(baseContentRadioButton, SIGNAL(clicked()), SLOT(sl_baseClicked()));
     connect(gcSkewRadioButton, SIGNAL(clicked()), SLOT(sl_gcSkewClicked()));
-    baseContentRadioButton->setChecked(true);
-    percentASpin->setEnabled(true);
-    percentCSpin->setEnabled(true);
-    percentTSpin->setEnabled(true);
-    percentGSpin->setEnabled(true);
-    percentGCSpin->setEnabled(false);
+    //baseContentRadioButton->setChecked(true);
+
+    Settings *s = AppContext::getSettings();
+    bool gc = s->getValue(ROOT_SETTING + GCSKEW_SETTING,false).toBool();
+    if(gc) {
+        percentASpin->setEnabled(false);
+        percentCSpin->setEnabled(false);
+        percentTSpin->setEnabled(false);
+        percentGSpin->setEnabled(false);
+        percentGCSpin->setEnabled(true);
+    } else {
+        percentASpin->setEnabled(true);
+        percentCSpin->setEnabled(true);
+        percentTSpin->setEnabled(true);
+        percentGSpin->setEnabled(true);
+        percentGCSpin->setEnabled(false);
+    }
+    baseContentRadioButton->setChecked(!gc);
+    gcSkewRadioButton->setChecked(gc);
 }
 
 void BaseContentDialog::sl_baseClicked() {
@@ -176,34 +212,42 @@ void BaseContentDialog::sl_save() {
         percentG = percentGSpin->value();
         percentT = percentTSpin->value();
     } else {
-        int percentAi = qrand();
-        int percentCi = qrand();
-        int percentTi = qrand();
-        int percentGi = qrand();
-        int sum = percentAi + percentCi + percentGi + percentTi;
-        percentAi = (float)percentAi / sum * 100;
-        percentGi = (float)percentGi / sum * 100;
-        percentCi = (float)percentCi / sum * 100;
-        percentTi = (float)percentTi / sum * 100;
-        int CG = percentGi + percentCi;
         gcSkew = percentGCSpin->value();
-        percentCi = (1 - gcSkew)* CG / 2;
-        percentGi = percentCi + gcSkew * CG;
-        if(percentCi < 0 || percentCi > 100 || percentGi < 0 || percentGi > 100) {
-            QMessageBox::critical(this, tr("Base content"), tr("Incorrect GC Skew value"));
-            return;
-        }
-        sum = percentAi + percentCi + percentGi + percentTi;
-        percentAi += 100 - sum;
+        if(gcSkew != gcSkewPrev) {
+            int percentAi = qrand();
+            int percentCi = qrand();
+            int percentTi = qrand();
+            int percentGi = qrand();
+            int sum = percentAi + percentCi + percentGi + percentTi;
+            percentAi = (float)percentAi / sum * 100;
+            percentGi = (float)percentGi / sum * 100;
+            percentCi = (float)percentCi / sum * 100;
+            percentTi = (float)percentTi / sum * 100;
+            int CG = percentGi + percentCi;
+            
+            percentCi = (1 - gcSkew)* CG / 2;
+            percentGi = percentCi + gcSkew * CG;
+            if(percentCi < 0 || percentCi > 100 || percentGi < 0 || percentGi > 100) {
+                QMessageBox::critical(this, tr("Base content"), tr("Incorrect GC Skew value"));
+                return;
+            }
+            sum = percentAi + percentCi + percentGi + percentTi;
+            percentAi += 100 - sum;
 
-        percentA = percentAi;
-        percentC = percentCi;
-        percentG = percentGi;
-        percentT = percentTi;
-        percentASpin->setValue(percentAi);
-        percentCSpin->setValue(percentCi);
-        percentGSpin->setValue(percentGi);
-        percentTSpin->setValue(percentTi);
+            percentA = percentAi;
+            percentC = percentCi;
+            percentG = percentGi;
+            percentT = percentTi;
+            percentASpin->setValue(percentAi);
+            percentCSpin->setValue(percentCi);
+            percentGSpin->setValue(percentGi);
+            percentTSpin->setValue(percentTi);  
+        } else {
+            percentA = percentASpin->value();
+            percentC = percentCSpin->value();
+            percentG = percentGSpin->value();
+            percentT = percentTSpin->value();
+        }
     }
     float total = percentA + percentC + percentG + percentT;
     if (total != 100) {
@@ -214,6 +258,11 @@ void BaseContentDialog::sl_save() {
     percentMap['C'] = percentC / 100.0;
     percentMap['G'] = percentG / 100.0;
     percentMap['T'] = percentT / 100.0;
+
+    Settings *s = AppContext::getSettings();
+    bool gc = s->getValue("dna_export/gc_skew",false).toBool();
+    s->setValue(ROOT_SETTING + GCSKEW_SETTING, gcSkewRadioButton->isChecked());
+
     accept();
 }
 

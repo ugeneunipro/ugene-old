@@ -184,7 +184,7 @@ evalTask(NULL), generateTask(NULL), saveTask(NULL) {
             return;
         }
     } else {
-        generateTask = new GenerateDNASequenceTask(cfg.getContent(), cfg.getLength(), cfg.window, cfg.getNumberOfSequences());
+        generateTask = new GenerateDNASequenceTask(cfg.getContent(), cfg.getLength(), cfg.window, cfg.getNumberOfSequences(), cfg.seed);
         addSubTask(generateTask);
     }
 }
@@ -207,7 +207,7 @@ QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
     } else if (subTask == evalTask) {
         cfg.alphabet = evalTask->getAlphabet();
         QMap<char, qreal> content = evalTask->getResult();
-        generateTask = new GenerateDNASequenceTask(content, cfg.getLength(), cfg.window, cfg.getNumberOfSequences());
+        generateTask = new GenerateDNASequenceTask(content, cfg.getLength(), cfg.window, cfg.getNumberOfSequences(), cfg.seed);
         tasks.append(generateTask);
     } else if (subTask == generateTask) {
         QList< QByteArray > seqs = generateTask->getResult();
@@ -288,12 +288,16 @@ void EvaluateBaseContentTask::run() {
 }
 
 // GenerateTask
-GenerateDNASequenceTask::GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int window_, int count_)
-: Task(tr("Generate DNA sequence task"), TaskFlag_None), baseContent(baseContent_), length(length_), window(window_), count(count_) {
+GenerateDNASequenceTask::GenerateDNASequenceTask(const QMap<char, qreal>& baseContent_, int length_, int window_, int count_, int seed_)
+: Task(tr("Generate DNA sequence task"), TaskFlag_None), baseContent(baseContent_), length(length_), window(window_), count(count_), seed(seed_) {
 }
 
 void GenerateDNASequenceTask::run() {
-    qsrand(QDateTime::currentDateTime().toTime_t());
+    if(seed < 0) {
+        qsrand(QDateTime::currentDateTime().toTime_t());
+    } else {
+        qsrand(seed);
+    }
     for (int i=0; i<count; i++) {
         QByteArray seq;
         QByteArray tmp;

@@ -39,6 +39,7 @@ private slots:
     void sl_configureContent();
     void sl_generate();
     void sl_refButtonToggled(bool checked);
+    void sl_stateChanged(int state);
 private:
     SaveDocumentGroupController* saveGroupContoller;
     static QMap<char, qreal> content;
@@ -55,6 +56,7 @@ private slots:
 private:
     QMap<char, qreal>& percentMap;
     float gcSkew;
+    float gcSkewPrev;
 };
 
 } //namespace

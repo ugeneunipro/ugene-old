@@ -61,6 +61,7 @@ static const QString T_PERCENT_ATTR("percent-t");
 static const QString ALGORITHM("algorithm");
 static const QString WINDOW_SIZE("window-size");
 static const QString GC_SKEW("gc-skew");
+static const QString SEED("seed");
 
 const QString GenerateDNAWorkerFactory::ACTOR_ID("generate-dna");
 
@@ -93,21 +94,19 @@ void GenerateDNAWorkerFactory::init() {
         Descriptor cpd(C_PERCENT_ATTR, GenerateDNAWorker::tr("C"), GenerateDNAWorker::tr("Cytosine content."));
         Descriptor gpd(G_PERCENT_ATTR, GenerateDNAWorker::tr("G"), GenerateDNAWorker::tr("Guanine content."));
         Descriptor tpd(T_PERCENT_ATTR, GenerateDNAWorker::tr("T"), GenerateDNAWorker::tr("Thymine content."));
-        Descriptor alg(ALGORITHM, GenerateDNAWorker::tr("Algorithm"),GenerateDNAWorker::tr("Algorithm for generating"));
-        Descriptor wnd(WINDOW_SIZE, GenerateDNAWorker::tr("Window size"), GenerateDNAWorker::tr("Size of window where set content"));
-        Descriptor gcSkew(GC_SKEW, GenerateDNAWorker::tr("GC Skew"), GenerateDNAWorker::tr("GC Skew"));
+        Descriptor alg(ALGORITHM, GenerateDNAWorker::tr("Algorithm"),GenerateDNAWorker::tr("Algorithm for generating."));
+        Descriptor wnd(WINDOW_SIZE, GenerateDNAWorker::tr("Window size"), GenerateDNAWorker::tr("Size of window where set content."));
+        Descriptor gcSkew(GC_SKEW, GenerateDNAWorker::tr("GC Skew"), GenerateDNAWorker::tr("GC Skew."));
+        Descriptor seed(SEED, GenerateDNAWorker::tr("Seed"), GenerateDNAWorker::tr("Value to initialize the random generator. " 
+            "By default (seed = -1) the generator is initialized with the system time."));
 
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, 1000);
         a << new Attribute(nd, BaseTypes::NUM_TYPE(), false, 1);
+        a << new Attribute(seed, BaseTypes::NUM_TYPE(), false, -1);
         a << new Attribute(cd, BaseTypes::STRING_TYPE(), false, ContentIds::MANUAL);
         a << new Attribute(alg, BaseTypes::STRING_TYPE(), false, "GC Content");
         a << new Attribute(wnd, BaseTypes::NUM_TYPE(), true, 1000);
         a << new Attribute(rd, BaseTypes::STRING_TYPE(), false);
-        /*a << new Attribute(apd, BaseTypes::NUM_TYPE(), false, 25);
-        a << new Attribute(cpd, BaseTypes::NUM_TYPE(), false, 25);
-        a << new Attribute(gpd, BaseTypes::NUM_TYPE(), false, 25);
-        a << new Attribute(tpd, BaseTypes::NUM_TYPE(), false, 25);
-        a << new Attribute(gcSkew, BaseTypes::NUM_TYPE(), false, 0.25);*/
 
         Attribute *aAttr = new Attribute(apd, BaseTypes::NUM_TYPE(), false, 25);
         Attribute *cAttr = new Attribute(cpd, BaseTypes::NUM_TYPE(), false, 25);
@@ -166,6 +165,12 @@ void GenerateDNAWorkerFactory::init() {
         gcMap["maximum"] = 1;
         gcMap["singleStep"] = 0.01;
         delegates[GC_SKEW] = new DoubleSpinBoxDelegate(gcMap);
+
+        QVariantMap seedMap;
+        seedMap["minimum"] = -1;
+        seedMap["maximum"] = 1000;
+        seedMap["singleStep"] = 1;
+        delegates[SEED] = new SpinBoxDelegate(seedMap);
     }
 
     Descriptor desc(ACTOR_ID, GenerateDNAWorker::tr("Generate DNA"),
@@ -216,6 +221,8 @@ Task* GenerateDNAWorker::tick() {
         QString err = tr("Unexpected value of 'content' parameter");
         return new FailTask(err);
     }
+
+    cfg.seed = actor->getParameter(SEED)->getAttributeValue<int>();
 
     if (cfg.useRef) {
         cfg.refUrl = actor->getParameter(REFERENCE_ATTR)->getAttributeValue<QString>();
