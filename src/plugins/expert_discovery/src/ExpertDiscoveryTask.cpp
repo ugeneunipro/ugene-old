@@ -273,7 +273,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
     try {
         if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
             if (!edData.loadAnnotation(edData.getPosMarkBase(), edData.getPosSeqBase(), strPosName))
-                throw runtime_error("Failed");
+                throw std::exception();
         }
         else {
             QList<DocumentFormat*> curFormats = DocumentUtils::detectFormat(firstFile);
@@ -305,7 +305,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
     try {
         if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
             if (!edData.loadAnnotation(edData.getNegMarkBase(), edData.getNegSeqBase(), strNegName))
-                throw runtime_error("Failed");
+                throw std::exception();
         }
         else {
             QList<DocumentFormat*> curFormats = DocumentUtils::detectFormat(strNegName);
@@ -337,7 +337,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
     try {
         if (generateDescr) {
             if (!edData.generateDescription())
-                throw runtime_error("Failed");
+                throw std::exception();
         }
         else {
             ifstream fDesc( thirdFile.toStdString().c_str() );

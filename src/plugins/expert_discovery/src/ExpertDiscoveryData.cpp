@@ -27,20 +27,22 @@ ExpertDiscoveryData::ExpertDiscoveryData (){
 void ExpertDiscoveryData::setPosBase(const QList<GObject*> & objects){
 	foreach(GObject* obj, objects){
 		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-            Sequence& seq = prerareSequence(obj);
+            Sequence seq = prerareSequence(obj);
             seq.setHasScore(false);
             posBase.addSequence(seq);
-            recDataStorage.addSequence(QString::fromStdString(seq.getName()));
+            QString name=QString::fromStdString(seq.getName());
+            recDataStorage.addSequence(name);
 		}
 	}
 }
 void ExpertDiscoveryData::setNegBase(const QList<GObject*> & objects){
 	foreach(GObject* obj, objects){
 		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-            Sequence& seq = prerareSequence(obj);
+            Sequence seq = prerareSequence(obj);
             seq.setHasScore(false);
-			negBase.addSequence(seq);
-            recDataStorage.addSequence(QString::fromStdString(seq.getName()));
+            negBase.addSequence(seq);
+            QString name=QString::fromStdString(seq.getName());
+            recDataStorage.addSequence(name);
 		}
 	}
 }
@@ -48,10 +50,11 @@ void ExpertDiscoveryData::setNegBase(const QList<GObject*> & objects){
 void ExpertDiscoveryData::setConBase(const QList<GObject*> & objects){
 	foreach(GObject* obj, objects){
 		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-            Sequence& seq = prerareSequence(obj);
+            Sequence seq = prerareSequence(obj);
             seq.setHasScore(false);
-			conBase.addSequence(seq);
-            recDataStorage.addSequence(QString::fromStdString(seq.getName()));
+            conBase.addSequence(seq);
+            QString name=QString::fromStdString(seq.getName());
+            recDataStorage.addSequence(name);
 		}
 	}
 }
@@ -353,7 +356,7 @@ bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secon
     try {
         if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
             if (!loadAnnotation(posAnn, posBase, strPosName))
-                throw runtime_error("Failed");
+                throw std::exception();
         }
         else {
             ifstream fPosAnn(strPosName.toStdString().c_str());  
@@ -373,7 +376,7 @@ bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secon
     try {
         if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
             if (!loadAnnotation(negAnn, negBase, strNegName))
-                throw runtime_error("Failed");
+                throw std::exception();
         }
         else {
             ifstream fNegAnn(strNegName.toStdString().c_str());
@@ -393,7 +396,7 @@ bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secon
     try {
         if (generateDescr) {
             if (!generateDescription())
-                throw runtime_error("Failed");
+                throw std::exception();
         }
         else {
             ifstream fDesc( thirdF.toStdString().c_str() );

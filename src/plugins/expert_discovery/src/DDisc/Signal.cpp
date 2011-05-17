@@ -2,9 +2,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "signal.h"
-#include "context.h"
-#include "sequence.h"
+#include "Signal.h"
+#include "Context.h"
+#include "Sequence.h"
 #include <stdexcept>
 #include <string.h>
 using namespace std;
@@ -56,7 +56,7 @@ inline size_t _Hash_value(_Init _Begin, _Init _End)
 template<class _Elem,
 class _Traits,
 class _Alloc> inline
-   int hash_value(const _STD basic_string<_Elem, _Traits, _Alloc>& _Str)
+   int hash_value(const basic_string<_Elem, _Traits, _Alloc>& _Str)
 {	// hash string to size_t value
    return (int)(_Hash_value(_Str.begin(), _Str.end()));
 }

@@ -224,7 +224,8 @@ bool ExpertDiscoveryExtSigWiz::checkD(const QLineEdit* lineE) const{
 	}
 	const QDoubleValidator* validator = qobject_cast<const QDoubleValidator*>(lineE->validator());
 	int pos = 0;
-	if(validator->validate(lineE->text(),pos)!=QValidator::Acceptable){
+        QString textValue=lineE->text();
+        if(validator->validate(textValue,pos)!=QValidator::Acceptable){
 		QString msg = QString("Entered value must be from %1 to %2").arg(validator->bottom()).arg(validator->top());
 		QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr(msg.toStdString().c_str()));
 		mb.exec();

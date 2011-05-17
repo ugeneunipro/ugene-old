@@ -19,7 +19,7 @@ HEADERS += 	src/ExpertDiscoveryPlugin.h \
 		src/ExpertDiscoveryTreeWidgets.h \
 		src/ExpertDiscoveryTreeWidgetsCtrl.h \
 		src/ExpertDiscoveryPersistent.h \
-	   	src/DDisc/Definitions.h \
+	   	src/DDisc/definitions.h \
 		src/DDisc/statmath.h \
 		src/DDisc/Signal.h  \
 		src/DDisc/Sequence.h  \

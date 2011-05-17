@@ -1,5 +1,6 @@
-#include "metainfo.h"
+#include "MetaInfo.h"
 #include <stdexcept>
+#include <string.h>
 using namespace std;
 
 namespace DDisc {

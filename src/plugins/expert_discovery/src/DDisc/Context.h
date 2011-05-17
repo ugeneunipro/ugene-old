@@ -1,6 +1,7 @@
 #if !defined(CONTEXT_H__INCLUDED_)
 #define      CONTEXT_H__INCLUDED_
 #include "definitions.h"
+#include "Signal.h"
 
 namespace DDisc {
 

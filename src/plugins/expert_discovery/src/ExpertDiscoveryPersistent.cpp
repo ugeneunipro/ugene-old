@@ -50,7 +50,7 @@ void EDPMSeqBase::load(QDataStream& ar, SequenceBase& rSeqBase){
 
 void EDPMMrkSignal::save(QDataStream& ar, Marking::IntervalSet& rMrk)
 {
-    ar << rMrk.size();
+    ar << (int)(rMrk.size());
     Marking::IntervalSet::iterator i = rMrk.begin();
     while (i!=rMrk.end()) {
         ar << (*i).getFrom();
@@ -75,7 +75,7 @@ void EDPMMrkSignal::load(QDataStream& ar, Marking::IntervalSet& rMrk){
 
 void EDPMMrkFamily::save(QDataStream& ar, Marking::FamilyMarking& rMrk)
 {
-    ar << rMrk.size();
+    ar << (int)(rMrk.size());
     Marking::FamilyMarking::iterator i = rMrk.begin();
     while (i!=rMrk.end()) {
         ar << QString::fromStdString(i->first);
@@ -100,7 +100,7 @@ void EDPMMrk::save(QDataStream& ar, Marking& rMrk)
 {
     Marking::MarkingData& rData = rMrk.marking;
    
-    ar << rData.size();
+    ar << (int)(rData.size());
     Marking::MarkingData::iterator i = rData.begin();
     while (i!=rData.end()) {
         ar << QString::fromStdString(i->first);
@@ -129,8 +129,9 @@ void EDPMMrkBase::save(QDataStream& ar, MarkingBase& rMrkBase, int nSeqCount)
         try {
             EDPMMrk::save(ar, rMrkBase.getMarking(i));
         }
-        catch (range_error) {
-            EDPMMrk::save(ar, Marking());
+        catch (exception& ex) {//TODO: check range_error
+            Marking m;
+            EDPMMrk::save(ar, m);
         }
     }
 }

@@ -2,9 +2,10 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "sequence.h"
+#include "Sequence.h"
 #include <stdexcept>
 #include <algorithm>
+#include <string.h>
 using namespace std;
 
 namespace DDisc {

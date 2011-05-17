@@ -2,8 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "context.h"
-#include "signal.h"
+#include "Context.h"
+#include "Signal.h"
 
 namespace DDisc {
 
