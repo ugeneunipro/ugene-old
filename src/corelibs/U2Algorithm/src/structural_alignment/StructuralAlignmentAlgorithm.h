@@ -33,7 +33,7 @@ namespace U2 {
 
 class BioStruct3D;
 
-/** Reference to a part of BioStruct3D */
+/** Reference to a subset of BioStruct3D */
 // Maybe this class must be merged with BioStruct3DChainSelection
 class U2ALGORITHM_EXPORT BioStruct3DReference {
 public:
