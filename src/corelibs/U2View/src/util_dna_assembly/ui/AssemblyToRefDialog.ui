@@ -109,6 +109,9 @@
      </item>
      <item row="2" column="0">
       <widget class="QCheckBox" name="prebuiltIndexCheckBox">
+       <property name="toolTip">
+        <string>Use an index file instead of a source reference sequence.</string>
+       </property>
        <property name="text">
         <string>Prebuilt index</string>
        </property>

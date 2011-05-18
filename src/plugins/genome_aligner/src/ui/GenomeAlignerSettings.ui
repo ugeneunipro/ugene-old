@@ -143,6 +143,9 @@
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="1" column="0">
              <widget class="QCheckBox" name="reverseBox">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="toolTip">
                <string>Use both the read and its reverse complement during aligning.</string>
               </property>
@@ -150,7 +153,7 @@
                <string>Align reverse complement reads</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -165,6 +168,9 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="text">
                <string>Use &quot;best&quot;-mode during the aligning</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -215,6 +221,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item row="0" column="0" colspan="3">
              <widget class="QCheckBox" name="gpuBox">
+              <property name="toolTip">
+               <string>Use an openCL-enabled GPU during the aligning.</string>
+              </property>
               <property name="text">
                <string>Use GPU-optimization</string>
               </property>
@@ -255,6 +264,13 @@ p, li { white-space: pre-wrap; }
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="QSlider" name="readSlider">
+              <property name="toolTip">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;You can change the amount of memory that will be used for keeping short-reads during the aligning. It is better to make it bigger.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -400,6 +416,13 @@ p, li { white-space: pre-wrap; }
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QSlider" name="partSlider">
+              <property name="toolTip">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This parameter influences on the amount of parts the reference will be divided. It is better to make it bigger, but it influences on the amount of memory used during the aligning.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>

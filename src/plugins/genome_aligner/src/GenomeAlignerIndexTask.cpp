@@ -174,6 +174,7 @@ void GenomeAlignerIndexTask::run() {
             index->build = true;
             index->loadPart(i);
             index->indexPart.partFiles[i]->close();
+            stateInfo.progress += 100/parts;
         }
     }
 }

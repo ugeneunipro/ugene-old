@@ -62,6 +62,7 @@ void GenomeAlignerWriteTask::flush() {
 }
 
 void GenomeAlignerWriteTask::run() {
+    stateInfo.setProgress(0);
     do {
         waitMutex.lock();
         writing = false;

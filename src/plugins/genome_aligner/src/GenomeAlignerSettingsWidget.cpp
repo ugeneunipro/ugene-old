@@ -51,9 +51,6 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
     buildIndexFileButton->toggle();
     if (AppContext::getOpenCLGpuRegistry()->empty()) {
         gpuBox->setEnabled(false);
-        gpuBox->setChecked(false);
-    } else {
-        gpuBox->setChecked(true);
     }
 
     systemSize = AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB();

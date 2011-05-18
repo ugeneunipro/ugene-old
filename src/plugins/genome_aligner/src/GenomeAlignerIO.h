@@ -50,6 +50,7 @@ public:
     virtual ~GenomeAlignerReader() {}
     virtual SearchQuery *read() = 0;
     virtual bool isEnd() = 0;
+    virtual int getProgress() = 0;
 };
 
 class GenomeAlignerWriter {
@@ -93,6 +94,7 @@ public:
     GenomeAlignerUrlReader(const QList<GUrl> &dnaList);
     inline SearchQuery *read();
     inline bool isEnd();
+    int getProgress();
 private:
     bool initOk;
     StreamSequenceReader reader;
@@ -119,6 +121,7 @@ public:
     ~GenomeAlignerCommunicationChanelReader();
     inline SearchQuery *read();
     inline bool isEnd();
+    int getProgress();
 private:
     CommunicationChannel* reads;
     DNASequenceObject *obj;
@@ -145,6 +148,7 @@ public:
     GenomeAlignerDbiReader(U2AssemblyDbi *rDbi, U2Assembly assembly);
     inline SearchQuery *read();
     inline bool isEnd();
+    int getProgress();
 private:
     bool end;
     DNASequenceObject *obj;

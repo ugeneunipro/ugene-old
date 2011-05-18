@@ -68,7 +68,9 @@ void GenomeAlignerFindTask::prepare() {
     for (int i=0; i<alignerTaskCount; i++) {
         waiterCount = 0;
         nextElementToGive = 0;
-        addSubTask(new ShortReadAligner(index, settings, writeTask));
+        Task *subTask = new ShortReadAligner(index, settings, writeTask);
+        subTask->setSubtaskProgressWeight(1.0f/alignerTaskCount);
+        addSubTask(subTask);
     }
 }
 
@@ -219,12 +221,15 @@ void ShortReadAligner::run() {
     ResType *bitMaskResults = NULL;
 
     for (int part=0; part < index->getPartCount(); part++) {
+        stateInfo.setProgress(100*part/index->getPartCount());
         parent->loadPartForAligning(part);
+        stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
         if (settings->openCL) {
             if (!parent->runOpenCLBinarySearch()) {
                 return;
             }
             bitMaskResults = parent->bitMaskResults;
+            stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
         }
 
         parent->getDataForAligning(first, length);

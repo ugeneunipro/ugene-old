@@ -81,6 +81,7 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     searchTime = 0;
     indexLoadTime = 0;
     shortreadIOTime = 0;
+    currentProgress = 0.0f;
     
     dbiIO = false;//settings.getCustomValue(OPTION_DBI_IO, true).toBool();
     if (!justBuildIndex && !dbiIO) {
@@ -165,6 +166,7 @@ void GenomeAlignerTask::prepare() {
         if (!justBuildIndex && !bestMode) {
             setMaxParallelSubtasks(3);
             pWriteTask = new GenomeAlignerWriteTask(seqWriter);
+            pWriteTask->setSubtaskProgressWeight(0.0f);
             addSubTask(pWriteTask);
         }
     }
@@ -218,6 +220,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
 
         if (bestMode) {
             writeTask  = new WriteAlignedReadsSubTask(seqWriter, queries, readsAligned);
+            writeTask->setSubtaskProgressWeight(0.0f);
             subTasks.append(writeTask);
             return subTasks;
         }
@@ -230,7 +233,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         }
         // Read next bunch of sequences
         readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, queries,  settings, readMemSize*1024*1024);
-        readTask->setSubtaskProgressWeight(0.33f);
+        readTask->setSubtaskProgressWeight(0.0f);
         subTasks.append(readTask);
         return subTasks;
     }
@@ -260,7 +263,8 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         s.minReadLength = readTask->minReadLength;
         s.maxReadLength = readTask->maxReadLength;
         findTask = new GenomeAlignerFindTask(index, s, pWriteTask);
-        findTask->setSubtaskProgressWeight(0.33f);
+        findTask->setSubtaskProgressWeight(seqReader->getProgress()/100.0f - currentProgress);
+        currentProgress = seqReader->getProgress()/100.0f;
         subTasks.append(findTask);
         return subTasks;
     }
@@ -288,7 +292,11 @@ void GenomeAlignerTask::setupCreateIndexTask() {
     s.seqPartSize = seqPartSize;
     s.prebuiltIndex = prebuiltIndex;
     createIndexTask = new GenomeAlignerIndexTask(s);
-    createIndexTask->setSubtaskProgressWeight(0.0f);
+    if (justBuildIndex) {
+        createIndexTask->setSubtaskProgressWeight(1.0f);
+    } else {
+        createIndexTask->setSubtaskProgressWeight(0.0f);
+    }
 }
 
 Task::ReportResult GenomeAlignerTask::report() {
@@ -357,6 +365,7 @@ freeMemorySize(m)
 }
 
 void ReadShortReadsSubTask::run() {
+    stateInfo.setProgress(0);
     GTIMER(cvar, tvar, "ReadSubTask");
     GenomeAlignerTask *parent = static_cast<GenomeAlignerTask*>(getParentTask());
     if (!parent->bestMode) {
@@ -465,6 +474,7 @@ void WriteAlignedReadsSubTask::setReadWritten(SearchQuery *read, SearchQuery *re
 }
 
 void WriteAlignedReadsSubTask::run() {
+    stateInfo.setProgress(0);
     SearchQuery *read = NULL;
     SearchQuery *revCompl = NULL;
     SearchQuery **q = queries.data();

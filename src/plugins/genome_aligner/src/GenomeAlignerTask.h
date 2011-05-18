@@ -106,6 +106,7 @@ private:
     qint64 searchTime;
     qint64 indexLoadTime;
     qint64 shortreadIOTime;
+    float currentProgress;
 
     void setupCreateIndexTask();
 };

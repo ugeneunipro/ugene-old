@@ -45,6 +45,10 @@ bool GenomeAlignerUrlReader::isEnd() {
     return !reader.hasNext();
 }
 
+int GenomeAlignerUrlReader::getProgress() {
+    return reader.getProgress();
+}
+
 SearchQuery *GenomeAlignerUrlReader::read() {
     return new SearchQuery(reader.getNextSequenceObject());
 }
@@ -87,6 +91,10 @@ GenomeAlignerCommunicationChanelReader::GenomeAlignerCommunicationChanelReader(C
 
 bool GenomeAlignerCommunicationChanelReader::isEnd() {
     return !reads->hasMessage() || reads->isEnded();
+}
+
+int GenomeAlignerCommunicationChanelReader::getProgress() {
+    return 100;
 }
 
 SearchQuery *GenomeAlignerCommunicationChanelReader::read() {
@@ -168,6 +176,7 @@ SearchQuery *GenomeAlignerDbiReader::read() {
     }
     if (dbiIterator->hasNext()) {
         U2AssemblyRead read = dbiIterator->next();
+        readNumber++;
         return new SearchQuery(read);
     } else {
         end = true;
@@ -177,6 +186,10 @@ SearchQuery *GenomeAlignerDbiReader::read() {
 
 bool GenomeAlignerDbiReader::isEnd() {
     return end;
+}
+
+int GenomeAlignerDbiReader::getProgress() {
+    return (int)(100*(double)readNumber/readsInAssembly);
 }
 
 /************************************************************************/

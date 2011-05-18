@@ -123,7 +123,7 @@ int StreamSequenceReader::getProgress()
     float factor = 1/readers.count();
     int progress = 0;
     for (int i = 0; i < readers.count(); ++i) {
-        progress += (int)( (readers[i].io->getProgress() / 100.0 )*factor) * 100;
+        progress += (int)(factor * readers[i].io->getProgress());
     }
 
     return progress;
