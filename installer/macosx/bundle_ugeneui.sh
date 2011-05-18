@@ -5,7 +5,7 @@ BUILD_DIR=./ugeneui_bundle
 RELEASE_DIR=../../src/_release
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
-PATH_TO_QT="/usr/local/Trolltech/Qt-4.6.2/lib"
+PATH_TO_QT="/usr/local/Trolltech/Qt-4.7.3/lib"
 
 source bundle_common.sh
 
