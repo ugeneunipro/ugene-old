@@ -20,6 +20,8 @@ REM copy executables
 copy %RELEASE_DIR%\ugeneui.exe %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenecl.exe %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenem.exe %OUTPUT_DIR%
+copy %RELEASE_DIR%\ugeneui.map %OUTPUT_DIR%
+copy %RELEASE_DIR%\ugenecl.map %OUTPUT_DIR%
 echo. > %OUTPUT_DIR%\UGENE.ini
 
 REM copy translations
@@ -43,6 +45,18 @@ copy %RELEASE_DIR%\U2Private.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Remote.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Test.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2View.dll  %OUTPUT_DIR%
+copy %RELEASE_DIR%\ugenedb.map %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Algorithm.map %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Core.map %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Designer.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Formats.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Gui.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Lang.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Misc.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Private.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Remote.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2Test.map  %OUTPUT_DIR%
+copy %RELEASE_DIR%\U2View.map  %OUTPUT_DIR%
 
 REM copy plugins
 call %INSTALL_DIR%/copy_plugin.cmd annotator
