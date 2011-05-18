@@ -889,13 +889,6 @@ void ProjectViewImpl::sl_onNameChanged(GObject *obj) {
             }
         }
     }
-
-    /*w->closeView();
-    GObjectSelection os; os.addToSelection(obj);
-    MultiGSelection ms; ms.addSelection(&os);
-    OpenViewContext* c = new OpenViewContext(this,ms,f);
-    assert(c->factory->canCreateView(c->selection));
-    AppContext::getTaskScheduler()->registerTopLevelTask(c->factory->createViewTask(c->selection));*/
 }
 
 void ProjectViewImpl::sl_onDocumentAdded(Document* d) {

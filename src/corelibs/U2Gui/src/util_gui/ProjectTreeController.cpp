@@ -405,13 +405,12 @@ void ProjectTreeController::sl_onItemChanged(QTreeWidgetItem * item, int column)
             
             if(itemText != prevName && editing) {
                 editing = false;
-                if(itemText.isEmpty()) {
-                    item->setText(column, prevName.prepend("[s] "));
-                    return;
-                }
-
                 obj->setGObjectName(itemText);
-                obj->getDocument()->setModified(true); 
+
+                //if (itemText.isEmpty()) {
+                //    item->setText(column, prevName.prepend("[s] "));
+                //    return;
+                // }
                 emit si_nameChanged(obj);
                 
             } 
