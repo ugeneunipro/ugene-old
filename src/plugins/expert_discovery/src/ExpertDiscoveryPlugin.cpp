@@ -56,7 +56,7 @@ void ExpertDiscoveryPlugin::sl_initExpertDiscoveryViewCtx() {
 
           //AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(new ExpertDiscoverySignalsAutoAnnotationUpdater );
           //change the icon
-          QAction* action = new QAction( QIcon(":expert_discovery/images/ExpertDiscovery.ico"), tr("ExpertDiscovery"), this );
+          QAction* action = new QAction(  tr("ExpertDiscovery (alpha)"), this );
           connect( action, SIGNAL( triggered() ), SLOT( sl_expertDiscoveryView() ) );
 
           AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS )->addAction( action );
