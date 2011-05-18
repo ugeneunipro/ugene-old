@@ -182,7 +182,7 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
         //FIXME: handle error
         x = 0;
     }
-    QVariantMap cfg = iterations[x].cfg[subject->getId()];
+    QVariantMap cfg = iterations[x].cfg.value(subject->getId());
     if(cfg.isEmpty()) {
         QVariantMap def;
         foreach(Attribute *a, attrs) {
