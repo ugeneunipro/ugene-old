@@ -594,6 +594,7 @@ PanViewRenderArea::PanViewRenderArea(PanView* d) : GSequenceLineViewAnnotatedRen
     showCustomRulers = true;
     fromActions = false;
     showAllLines = false;
+    defaultRows = true;
     numLines = 0;
 
     rowLinesOffset = 0;
@@ -959,7 +960,7 @@ bool PanViewRenderArea::updateNumVisibleRows() {
     if(showAllLines) {
         int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
         numLines =  getPanView()->getRowsManager()->getNumRows() + additionalLines;
-    } else if(!fromActions) {
+    } else if(defaultRows) {
         int annotationRows = getPanView()->getRowsManager()->getNumRows();
         int expectedRowsToShow = annotationRows + EXTRA_EMPTY_ROWS;
         int actualAnnotationsRowsToShow = qBound(MIN_VISIBLE_ROWS, expectedRowsToShow, MAX_VISIBLE_ROWS);
@@ -982,6 +983,7 @@ void PanViewRenderArea::sl_increaseLines(){
     if(numLines < getPanView()->getRowsManager()->getNumRows() + additionalLines) {
         numLines++;
         fromActions = true;
+        defaultRows = false;
         panView->updateRows();
     }
 }
@@ -993,6 +995,7 @@ void PanViewRenderArea::sl_decreaseLines(){
         panView->showAllAnnotations->setChecked(false);
         showAllLines = false;
         fromActions = true;
+        defaultRows = false;
         panView->updateRows();
     }
 }
@@ -1002,6 +1005,7 @@ void PanViewRenderArea::sl_increase5Lines(){
     if(numLines < getPanView()->getRowsManager()->getNumRows() + additionalLines) {
         numLines += qMin(5, getPanView()->getRowsManager()->getNumRows() + additionalLines - numLines);
         fromActions = true;
+        defaultRows = false;
         panView->updateRows();
     }
 }
@@ -1016,6 +1020,7 @@ void PanViewRenderArea::sl_decrease5Lines(){
         panView->showAllAnnotations->setChecked(false);
         showAllLines = false;
         fromActions = true;
+        defaultRows = false;
         panView->updateRows();
     }
 }
@@ -1026,6 +1031,7 @@ void PanViewRenderArea::sl_maxLines(bool checked){
         int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
         numLines =  getPanView()->getRowsManager()->getNumRows() + additionalLines;
         fromActions = true;
+        defaultRows = false;
         panView->updateRows();
     } else {
         showAllLines = false;
@@ -1038,6 +1044,7 @@ void PanViewRenderArea::sl_resetToDefault() {
     panView->showAllAnnotations->setChecked(false);
     showAllLines = false;
     fromActions = true;
+    defaultRows = false;
     panView->updateRows();
 }
 

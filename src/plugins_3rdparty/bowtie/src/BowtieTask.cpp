@@ -174,7 +174,7 @@ void BowtieTask::prepare()
     
     static const int SHORT_READ_AVG_LENGTH = 1000;
  	qint64 memUseMB = (fileSize *  4 + SHORT_READ_AVG_LENGTH*10 ) / 1024 / 1024 + 100;
- 	addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, true));
+ 	addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
  	
 	BowtieTLSTask * tlsTask = new BowtieTLSTask();
 	tlsTask->setSubtaskProgressWeight(0.4);

@@ -253,6 +253,7 @@ private:
     bool                showMainRuler;
     bool                showCustomRulers;
     bool                fromActions;
+    bool                defaultRows;
     QList<RulerInfo>    customRulers;
 };
 

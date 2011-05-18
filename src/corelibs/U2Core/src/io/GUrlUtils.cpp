@@ -60,7 +60,7 @@ GUrl GUrlUtils::ensureFileExt(const GUrl& url, const QStringList& typeExt) {
 
 
 bool GUrlUtils::renameFileWithNameRoll(const QString& original, TaskStateInfo& ti, const QSet<QString>& excludeList, Logger* log) {
-    QString rolled = GUrlUtils::rollFileName(original, "_copy", excludeList);
+    QString rolled = GUrlUtils::rollFileName(original, "_oldcopy", excludeList);
     if (rolled == original) {
         return true;
     }

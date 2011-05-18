@@ -183,7 +183,7 @@ void HttpRequestCDD::parseHit(QByteArray &b,ResponseBuffer &buf) {
         endLoc = to;
 
         b = buf.readLine();
-        b = buf.readLine();
+        //b = buf.readLine();
         ind = b.indexOf("Cdd:") + 4;
         for(int i = ind;b[i]!='<' && i < b.length();i++) {
             t[i-ind] = b[i];

@@ -63,8 +63,8 @@ const Descriptor BaseAttributes::READ_BY_LINES_ATTRIBUTE() {
 
 const Descriptor BaseAttributes::FILE_MODE_ATTRIBUTE() {
     return Descriptor(FILE_MODE_ATTR_ID, tr("Existing file"), tr("If a target file already exists, you can specify" 
-        "how it should be handled: either overwritten, renamed" 
-        " or appended (if supported by file format)."));
+        " how it should be handled: either overwritten, renamed" 
+        " or appended (if supported by file format). If Rename option is chosen existing file will be renamed."));
 }
 
 const Descriptor BaseAttributes::STRAND_ATTRIBUTE() {
