@@ -45,9 +45,9 @@ public:
 
     BMType getBitValue(const char *seq, int length) const;
     void loadPart(int part);
-    void findInPart(int startPos, ResType firstResult, BMType bitValue, SearchQuery *qu, SearchContext *settings);
-    ResType findBit(BMType bitValue, BMType bitFilter);
-    ResType *findBitOpenCL(BMType *bitValues, int size, quint64 BMType);
+    void alignShortRead(SearchQuery *qu, BMType bitValue, int startPos, ResType firstResult, SearchContext *settings);
+    ResType bitMaskBinarySearch(BMType bitValue, BMType bitFilter);
+    ResType *bitMaskBinarySearchOpenCL(BMType *bitValues, int size, quint64 BMType);
     ResType *findBitValuesUsingCUDA(BMType *bitValues, int size, BMType filter);
     QString getSeqName() const {return seqObjName;}
     int getPartCount() const {return indexPart.partCount;}

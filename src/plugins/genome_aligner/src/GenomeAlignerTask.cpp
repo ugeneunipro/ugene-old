@@ -173,7 +173,7 @@ void GenomeAlignerTask::prepare() {
 QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
     if (hasError() || isCanceled()) {
-        if (!bestMode) {
+        if (!justBuildIndex && !bestMode) {
             pWriteTask->setFinished();
         }
         return subTasks;

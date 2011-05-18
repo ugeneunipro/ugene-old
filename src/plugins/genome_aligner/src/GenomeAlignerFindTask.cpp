@@ -34,21 +34,18 @@
 
 namespace U2 {
 
-const int GenomeAlignerFindTask::BITMASK_SEARCH_DATA_SIZE = 100000;
-const int GenomeAlignerFindTask::PART_SEARCH_DATA_SIZE = 100000;
+const int GenomeAlignerFindTask::ALIGN_DATA_SIZE = 100000;
 
 GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, const SearchContext &s, GenomeAlignerWriteTask *w)
 : Task("GenomeAlignerFindTask", TaskFlag_None),
-index(i), writeTask(w), settings(new SearchContext(s)), bitMaskResults(NULL),
-bitMaskTaskCount(-1), partTaskCount(-1), startS(NULL), endS(NULL)
+index(i), writeTask(w), settings(new SearchContext(s)), bitMaskResults(NULL)
 {
-    currentPart = 0;
     partLoaded = false;
+    openCLFinished = false;
     nextElementToGive = 0;
-    nextElementToCalculateBitmask = 0;
     indexLoadTime = 0;
-    wholeBitmaskTime = 0;
-    startBitmaskTime = 0;
+    waiterCount = 0;
+    alignerTaskCount = 0;
 }
 
 void GenomeAlignerFindTask::prepare() {
@@ -60,17 +57,18 @@ void GenomeAlignerFindTask::prepare() {
     if (isCanceled() || hasError()) {
         return;
     }
-    
-    currentPart = 0;
-    
+
     if (settings->useCUDA) {
         //proceed to run function
         return;
     }
-    
-    QList<Task*> subTasks = findInBitMask(currentPart);
-    foreach (Task *subTask, subTasks) {
-        addSubTask(subTask);
+
+    alignerTaskCount = AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
+    setMaxParallelSubtasks(alignerTaskCount);
+    for (int i=0; i<alignerTaskCount; i++) {
+        waiterCount = 0;
+        nextElementToGive = 0;
+        addSubTask(new ShortReadAligner(index, settings, writeTask));
     }
 }
 
@@ -98,9 +96,6 @@ void GenomeAlignerFindTask::prepareBitValues() {
             positionsAtReadV.push_back(i);
         }
     }
-    if (!settings->openCL && !settings->useCUDA) {
-        bitMaskResults = new ResType[bitValuesV.size()];
-    }
     taskLog.details("finish to calculate bitValues");
 }
 
@@ -115,183 +110,49 @@ void GenomeAlignerFindTask::run() {
         }
 
         for (int part = 0; part < index->getPartCount(); ++part) {
-            loadPart(part);
+            index->loadPart(part);
             cudaHelper.alignReads(index->getLoadedPart(),settings, stateInfo);
             if (hasError()) {
                 return;
             }
         }
+    }
+}
 
+void GenomeAlignerFindTask::loadPartForAligning(int part) {
+    waitMutex.lock();
+    waiterCount++;
+    if (waiterCount != alignerTaskCount) {
+        waiter.wait(&waitMutex);
+        waiter.wakeOne();
     } else {
-        taskLog.details(tr("Bit mask time = %1").arg(wholeBitmaskTime));
+        waiterCount = 0;
+        partLoaded = false;
+        waiter.wakeOne();
     }
-}
+    waitMutex.unlock();
 
-QList<Task*> GenomeAlignerFindTask::onSubTaskFinished(Task *subTask) {
-    QList<Task*> subTasks;
-    if (subTask->hasError() || isCanceled()) {
-        return subTasks;
-    }
-
-    if (bitMaskTaskCount > 0) {
-        bitMaskTaskCount--;
-    }
-    if (0 == bitMaskTaskCount && !isCanceled()) {
-        wholeBitmaskTime += time(NULL) - startBitmaskTime;
-        bitMaskTaskCount = -1;
-        return findInPart(currentPart);
-    }
-
-    if (partTaskCount > 0) {
-        partTaskCount--;
-    }
-    if (0 == partTaskCount) {
-        partTaskCount = -1;
-        int partCount = index->getPartCount();
-        stateInfo.progress += 70/partCount;
-        currentPart++;
-        if (currentPart < partCount && !isCanceled()) {
-            subTasks = findInBitMask(currentPart);
-            if (subTasks.size() > 0) {
-                return subTasks;
-            }
-        }
-    }
-
-    return subTasks;
-}
-
-QList<Task*> GenomeAlignerFindTask::findInBitMask(int part) {
-    QList<Task*> subTasks;
-
-    int bitValuesCount = bitValuesV.size();
-    if (0 == bitValuesCount) {
-        bitMaskTaskCount = 0;
-        return subTasks;
-    }
-    int nThreads = AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
-#ifdef _DEBUG
-    setMaxParallelSubtasks(1);
-#else
-    setMaxParallelSubtasks(nThreads);
-#endif
-    partLoaded = false;
-    nextElementToGive = 0;
-    if (settings->openCL || settings->useCUDA) {
-        bitMaskTaskCount = 1;
-    } else {
-        bitMaskTaskCount = nThreads;
-    }
-
-    for (int i=0; i<bitMaskTaskCount; i++) {
-        FindInBitMaskSubTask *subTask = new FindInBitMaskSubTask(index, settings, part,
-            bitValuesV.data(), readNumbersV.data(), &bitMaskResults);
-        subTask->setSubtaskProgressWeight(0.4f/bitMaskTaskCount);
-        subTasks.append(subTask);
-    }
-
-    startS.reset(new QSemaphore(bitMaskTaskCount));
-    endS.reset(new QSemaphore(bitMaskTaskCount));
-
-    return subTasks;
-}
-
-QList<Task*> GenomeAlignerFindTask::findInPart(int part) {
-    QList<Task*> subTasks;
-
-    int bitValuesCount = bitValuesV.size();
-    int nThreads = AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
-    int partSize = bitValuesCount/nThreads;
-    partTaskCount = nThreads;
-
-    nextElementToGive = 0;
-    for (int i=0; i<partTaskCount; i++) {
-        FindInPartSubTask *subTask = new FindInPartSubTask(index, writeTask, settings,
-                                                           bitValuesV.data(),
-                                                           readNumbersV.data(),
-                                                           positionsAtReadV.data(),
-                                                           bitMaskResults);
-        int partsInMemCache = index->getPartCount();
-        subTask->setSubtaskProgressWeight(0.5f/(partTaskCount*partsInMemCache));
-        subTasks.append(subTask);
-    }
-
-    return subTasks;
-}
-
-void GenomeAlignerFindTask::loadPart(int part) {
-    //some parts are commented because of not understandable performance leak
-
-    //SAType first = 0;
-    //SAType length = 0;
-
-    mutex.lock();
+    QMutexLocker lock(&loadPartMutex);
     if (!partLoaded) {
         taskLog.details(QString("loading part %1").arg(part));
-        time_t loadStartTime = time(NULL);
         index->loadPart(part);
-        indexLoadTime += time(NULL) - loadStartTime;
         partLoaded = true;
+        openCLFinished = false;
         taskLog.details(QString("finish to load part %1").arg(part));
-        startBitmaskTime = time(NULL);
-        //endS->acquire(bitMaskTaskCount);
-        //startS->acquire(bitMaskTaskCount);
-        //nextElementToCalculateBitmask = 0;
     }
-
-    //SAType bitMaskSize = index->getSArraySize();
-    //first = nextElementToCalculateBitmask;
-    //SAType partSize = bitMaskSize/bitMaskTaskCount + 1;
-
-    //if (first >= bitMaskSize) {
-    //    length = 0;
-    //} else if (first + partSize > bitMaskSize) {
-    //    length = bitMaskSize - first;
-    //} else {
-    //    length = partSize;
-    //}
-    //nextElementToCalculateBitmask += length;
-    mutex.unlock();
-
-    //SAType last = first + length;
-    //index->indexPart.createBitmask((int)first, (int)last);
-    //startS->release(1);
-    //if (startS->available() == bitMaskTaskCount) {
-    //    endS->release(bitMaskTaskCount);
-    //}
-    //endS->acquire(1);
 }
 
-void GenomeAlignerFindTask::getDataForBitMaskSearch(int &first, int &length) {
-    if (settings->openCL || settings->useCUDA) {
-        first = 0;
-        length = bitValuesV.size();
-        return;
-    }
-    mutex.lock();
+void GenomeAlignerFindTask::getDataForAligning(int &first, int &length) {
+    QMutexLocker lock(&shortReadsMutex);
     int bitValuesCount = bitValuesV.size();
     first = nextElementToGive;
-    if (first >= bitValuesCount) {
-        length = 0;
-    } else if (first + BITMASK_SEARCH_DATA_SIZE > bitValuesCount) {
-        length = bitValuesCount - first;
-    } else {
-        length = BITMASK_SEARCH_DATA_SIZE;
-    }
-    nextElementToGive += length;
-    mutex.unlock();
-}
 
-void GenomeAlignerFindTask::getDataForPartSearch(int &first, int &length) {
-    mutex.lock();
-    int bitValuesCount = bitValuesV.size();
-    first = nextElementToGive;
     if (first >= bitValuesCount) {
         length = 0;
-    } else if (first + BITMASK_SEARCH_DATA_SIZE > bitValuesCount) {
+    } else if (first + ALIGN_DATA_SIZE > bitValuesCount) {
         length = bitValuesCount - first;
     } else {
-        length = BITMASK_SEARCH_DATA_SIZE;
+        length = ALIGN_DATA_SIZE;
     }
 
     int *rn = readNumbersV.data();
@@ -312,7 +173,25 @@ void GenomeAlignerFindTask::getDataForPartSearch(int &first, int &length) {
     }
 
     nextElementToGive += length;
-    mutex.unlock();
+}
+
+bool GenomeAlignerFindTask::runOpenCLBinarySearch() {
+    QMutexLocker lock(&openCLMutex);
+    if (!openCLFinished) {
+        openCLFinished = true;
+        delete[] bitMaskResults;
+        bitMaskResults = index->bitMaskBinarySearchOpenCL(bitValuesV.data(), bitValuesV.size(), settings->bitFilter);
+        if (NULL == bitMaskResults) {
+            setError("OpenCL binary find error");
+            return false;
+        }
+    }
+
+    if (NULL == bitMaskResults) {
+        return false;
+    }
+
+    return true;
 }
 
 GenomeAlignerFindTask::~GenomeAlignerFindTask() {
@@ -320,97 +199,67 @@ GenomeAlignerFindTask::~GenomeAlignerFindTask() {
     delete[] bitMaskResults;
 }
 
-FindInBitMaskSubTask::FindInBitMaskSubTask(GenomeAlignerIndex *i, SearchContext *s, int p,
-                                           BMType *bv, int *rn, ResType **bmr)
-: Task("FindInBitMaskSubTask", TaskFlag_None), index(i), settings(s), part(p),
-bitValues(bv), readNumbers(rn), bitMaskResults(bmr)
+ShortReadAligner::ShortReadAligner(GenomeAlignerIndex *i, SearchContext *s, GenomeAlignerWriteTask *w)
+: Task("ShortReadAligner", TaskFlag_None), index(i), settings(s), writeTask(w)
 {
-
 }
 
-void FindInBitMaskSubTask::run() {
-    int first = 0;
-    int length = 0;
+void ShortReadAligner::run() {
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
-    parent->loadPart(part);
-    parent->getDataForBitMaskSearch(first, length);
     SearchQuery **q = settings->queries.data();
-    
-    taskLog.details(QString("start to find in bitMask"));
-    if (settings->openCL) {
-        delete[] *bitMaskResults;
-        *bitMaskResults = index->findBitOpenCL(bitValues, length, settings->bitFilter);
-        if (NULL == *bitMaskResults) {
-            setError("OpenCL binary find error");
-            return;
+    SearchQuery *shortRead = NULL;
+    SearchQuery *revCompl = NULL;
+    int first = 0;
+    int last = 0;
+    int length = 0;
+    ResType bmr = 0;
+    const BMType *bitValues = parent->bitValuesV.constData();
+    const int *readNumbers = parent->readNumbersV.constData();
+    const int *par = parent->positionsAtReadV.constData();
+    ResType *bitMaskResults = NULL;
+
+    for (int part=0; part < index->getPartCount(); part++) {
+        parent->loadPartForAligning(part);
+        if (settings->openCL) {
+            if (!parent->runOpenCLBinarySearch()) {
+                return;
+            }
+            bitMaskResults = parent->bitMaskResults;
         }
-    }else if (settings->useCUDA) {
-        delete[] *bitMaskResults;
-        *bitMaskResults = index->findBitValuesUsingCUDA(bitValues, length, settings->bitFilter);
-        if (NULL == *bitMaskResults) {
-            setError("CUDA binary search error");
-            return;
-        }
-    }else {
+
+        parent->getDataForAligning(first, length);
         while (length > 0) {
-            int end = first + length;
-            ResType *bmr = *bitMaskResults;
-
-            for (int i=first; i<end; i++) {
+            last = first + length;
+            for (int i=first; i<last; i++) {
                 int readNum = readNumbers[i];
-                if (settings->bestMode && q[readNum]->haveResult()) {
-                    continue;
+                shortRead = q[readNum];
+                revCompl = shortRead->getRevCompl();
+                if (settings->bestMode) {
+                    if (0 == shortRead->firstMCount()) {
+                        continue;
+                    }
+                    if (NULL != revCompl && 0 == revCompl->firstMCount()) {
+                        continue;
+                    }
                 }
-                bmr[i] = index->findBit(bitValues[i], settings->bitFilter);
+
+                if (settings->openCL) {
+                    bmr = bitMaskResults[i];
+                } else {
+                    bmr = index->bitMaskBinarySearch(bitValues[i], settings->bitFilter);
+                }
+                index->alignShortRead(shortRead, bitValues[i], par[i], bmr, settings);
+
+                if (!settings->bestMode && shortRead->haveResult()) {
+                    if ((i == last - 1) || (readNumbers[i+1] != readNum)) {
+                        writeTask->addResult(shortRead);
+                        shortRead->onPartChanged();
+                    }
+                }
             }
-            parent->getDataForBitMaskSearch(first, length);
+            parent->getDataForAligning(first, length);
         }
     }
-    taskLog.details(QString("finish to find in bitMask"));
-}
-
-FindInPartSubTask::FindInPartSubTask(GenomeAlignerIndex *i, GenomeAlignerWriteTask *w,
-    SearchContext *s, BMType *bv, int *rn, int *par, ResType *bmr)
-: Task("FindInPartSubTask", TaskFlag_None), index(i), writeTask(w), settings(s),
-bitValues(bv), readNumbers(rn), positionsAtRead(par), bitMaskResults(bmr)
-{
-}
-
-void FindInPartSubTask::run() {
-    int first = 0;
-    int length = 0;
-    GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
-    parent->getDataForPartSearch(first, length);
-    SearchQuery **q = settings->queries.data();
-    SearchQuery *revCompl;
-        
-    taskLog.details(QString("start to find in part"));
-    while (length > 0) {
-        int last = first + length;
-        for (int i=first; i<last; i++) {
-            int readNum = readNumbers[i];
-            revCompl = q[readNum]->getRevCompl();
-
-            if (settings->bestMode) {
-                if (0 == q[readNum]->firstMCount()) {
-                    continue;
-                }
-                if (NULL != revCompl && 0 == revCompl->firstMCount()) {
-                    continue;
-                }
-            }
-            index->findInPart(positionsAtRead[i], bitMaskResults[i], bitValues[i], q[readNum], settings);
-
-            if (!settings->bestMode && q[readNum]->haveResult()) {
-                if ((i == last - 1) || (readNumbers[i+1] != readNum)) {
-                    writeTask->addResult(q[readNum]);
-                    q[readNum]->onPartChanged();
-                }
-            }
-        }
-        parent->getDataForPartSearch(first, length);
-    }
-    taskLog.details(QString("finish to find in part"));
 }
 
 } // U2

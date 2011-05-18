@@ -34,7 +34,7 @@ class Document;
 
 class U2ALGORITHM_EXPORT DnaAssemblyToRefTaskSettings {
 public:
-    DnaAssemblyToRefTaskSettings() {}
+    DnaAssemblyToRefTaskSettings() : prebuiltIndex(false), loadResultDocument(false) {}
     
     void setCustomSettings(const QMap<QString, QVariant>& settings);
     QVariant getCustomValue(const QString& optionName, const QVariant& defaultVal) const;

@@ -266,6 +266,8 @@ void GenomeAlignerBuildWorker::init() {
     output = ports.value(INDEX_OUT_PORT_ID);
     refSeqUrl = actor->getParameter(REFSEQ_URL_ATTR)->getAttributeValue<QString>();
     indexUrl = actor->getParameter(INDEX_URL_ATTR)->getAttributeValue<QString>();
+
+    settings.prebuiltIndex = false;
 }
 
 bool GenomeAlignerBuildWorker::isReady() {

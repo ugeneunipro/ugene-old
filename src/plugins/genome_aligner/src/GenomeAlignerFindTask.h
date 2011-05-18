@@ -64,17 +64,17 @@ public:
 #define MAX_PERCENTAGE 100
 class GenomeAlignerFindTask : public Task {
     Q_OBJECT
-    friend class PrepareVectorsSubTask;
+    friend class ShortReadAligner;
 public:
     GenomeAlignerFindTask(GenomeAlignerIndex *i, const SearchContext &s, GenomeAlignerWriteTask *writeTask);
     ~GenomeAlignerFindTask();
     virtual void run();
     virtual void prepare();
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
-    QMutex &getPartLoadMutex() {return mutex;}
-    void loadPart(int part);
-    void getDataForBitMaskSearch(int &first, int &length);
-    void getDataForPartSearch(int &first, int &length);
+
+    void loadPartForAligning(int part);
+    void getDataForAligning(int &first, int &length);
+    bool runOpenCLBinarySearch();
+
     qint64 getIndexLoadTime() const {return indexLoadTime;}
 
 private:
@@ -85,67 +85,36 @@ private:
     QVector<int> readNumbersV;
     QVector<int> positionsAtReadV;
     ResType *bitMaskResults;
-    int currentPart;
-    int bitMaskTaskCount;
-    int partTaskCount;
-    bool partLoaded;
-    QMutex mutex;
-    std::auto_ptr<QSemaphore> startS;
-    std::auto_ptr<QSemaphore> endS;
-    int nextElementToGive;
-    SAType nextElementToCalculateBitmask;
-    qint64 indexLoadTime;
-    time_t wholeBitmaskTime;
-    time_t startBitmaskTime;
 
-    QList<Task*> findInBitMask(int part);
-    QList<Task*> findInPart(int part);
+    int alignerTaskCount;
+    int waiterCount;
+    int nextElementToGive;
+    qint64 indexLoadTime;
+    bool partLoaded;
+    bool openCLFinished;
+
+    QMutex loadPartMutex;
+    QMutex shortReadsMutex;
+    QMutex waitMutex;
+    QWaitCondition waiter;
+    QMutex openCLMutex;
+
     void prepareBitValues();
 
-    static const int BITMASK_SEARCH_DATA_SIZE;
-    static const int PART_SEARCH_DATA_SIZE;
+    static const int ALIGN_DATA_SIZE;
 };
 
 typedef QVector<SearchQuery*>::iterator QueryIter;
 
-class FindInBitMaskSubTask : public Task {
+class ShortReadAligner : public Task {
     Q_OBJECT
 public:
-    FindInBitMaskSubTask(GenomeAlignerIndex *index,
-                         SearchContext *settings,
-                         int part,
-                         BMType *bitValues,
-                         int *readNumbers,
-                         ResType **bitMaskResults);
+    ShortReadAligner(GenomeAlignerIndex *index, SearchContext *settings, GenomeAlignerWriteTask *writeTask);
     virtual void run();
 private:
     GenomeAlignerIndex *index;
     SearchContext *settings;
-    int part;
-    BMType *bitValues;
-    int *readNumbers;
-    ResType **bitMaskResults;
-};
-
-class FindInPartSubTask : public Task {
-    Q_OBJECT
-public:
-    FindInPartSubTask(GenomeAlignerIndex *index,
-                      GenomeAlignerWriteTask *writeTask,
-                      SearchContext *settings,
-                      BMType *bitValues,
-                      int *readNumbers,
-                      int *positionsAtRead,
-                      ResType *bitMaskResults);
-    virtual void run();
-private:
-    GenomeAlignerIndex *index;
     GenomeAlignerWriteTask *writeTask;
-    SearchContext *settings;
-    BMType *bitValues;
-    int *readNumbers;
-    int *positionsAtRead;
-    ResType *bitMaskResults;
 };
 
 } //U2

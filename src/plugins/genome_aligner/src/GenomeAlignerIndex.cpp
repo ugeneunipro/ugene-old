@@ -239,7 +239,7 @@ void GenomeAlignerIndex::loadPart(int part) {
     }
 }
 
-ResType GenomeAlignerIndex::findBit(BMType bitValue, BMType bitFilter) {
+ResType GenomeAlignerIndex::bitMaskBinarySearch(BMType bitValue, BMType bitFilter) {
     int low = 0;
     int high = indexPart.getLoadedPartSize() - 1;
     BMType *a = indexPart.bitMask;
@@ -263,7 +263,7 @@ ResType GenomeAlignerIndex::findBit(BMType bitValue, BMType bitFilter) {
     return -1;
 }
 
-ResType *GenomeAlignerIndex::findBitOpenCL(BMType *bitValues, int size, BMType bitFilter) {
+ResType *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(BMType *bitValues, int size, BMType bitFilter) {
     taskLog.details(QString("Binary search on GPU of %1 Mb search-values in %2 Mb base values")
         .arg((8*size)/(1024*1024)).arg((8*indexPart.getLoadedPartSize())/(1024*1024)));
     BinaryFindOpenCL bf((NumberType*)indexPart.bitMask, indexPart.getLoadedPartSize(), (NumberType*)bitValues, size, bitFilter);
@@ -290,21 +290,6 @@ ResType * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValues, int siz
     
     return result;
 
-}
-
-void changeMismatchesCount(SearchContext *settings, int &n, int &pt, int &w, BMType &bitFilter) {
-        if (settings->absMismatches) {
-            n++;
-        } else {
-            pt++;
-        }
-        if (n > settings->nMismatches
-            || pt > settings->ptMismatches) {
-                return;
-        }
-        w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
-            n, pt, settings->minReadLength, settings->maxReadLength);
-        bitFilter = ((quint64)0 - 1)<<(62 - w*2);
 }
 
 bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu, SAType &loadedSeqStart) {
@@ -351,53 +336,9 @@ bool GenomeAlignerIndex::compare(const char *sourceSeq, const char *querySeq, in
     return false;
 }
 
-void GenomeAlignerIndex::fullBitMaskOptimization(int CMAX, BMType bitValue, BMType bitMaskValue, int restBits, int w, int &bits, int &c) {
-    if (CMAX > 0) {
-        BMType tmpBM = bitMaskValue<<(2+2*w);
-        BMType tmpBV = bitValue<<(2+2*w);
-        BMType xorBM = (tmpBV ^ tmpBM);
-        xorBM >>= 2*w + 2 + (restBits - bits);
-
-        for (int i=0; i<bits && c<=CMAX; i+=2) {
-            if (1 == (xorBM&1)) {
-                xorBM >>=1;
-                c++;
-            } else {
-                xorBM >>=1;
-                if (1 == (xorBM&1)) {
-                    c++;
-                }
-            }
-            xorBM >>= 1;
-        }
-    } else {
-        bits = 0;
-    }
-}
-
-bool GenomeAlignerIndex::find(SAType &offset, SAType &firstSymbol, int &startPos, SearchQuery *qu, bool &bestMode, int &CMAX, bool valid) {
-    const QByteArray &querySeq = qu->constSequence();
-    SAType loadedPartSize = indexPart.getLoadedPartSize();
-    if (!valid && !isValidPos(offset, startPos, querySeq.length(), firstSymbol, qu, loadedPartSize)) {
-        return false;
-    }
-
-    const char *refBuff = &(indexPart.seq[firstSymbol - indexPart.getLoadedSeqStart()]);
-
-    int c = 0;
-    if (compare(refBuff, querySeq.constData(), startPos, w, c, CMAX, querySeq.length())) {
-        if (bestMode) {
-            qu->clear();
-        }
-        qu->addResult(firstSymbol, c);
-        return true;
-    }
-
-    return false;
-}
-
 //this method contains big copy-paste but it works very fast because of it.
-void GenomeAlignerIndex::findInPart(int startPos, ResType firstResult, BMType bitValue, SearchQuery *qu, SearchContext *settings) {
+void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int startPos, ResType firstResult, SearchContext *settings)
+{
     if (firstResult < 0) {
         return;
     }
