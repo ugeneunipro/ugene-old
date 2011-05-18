@@ -12,7 +12,8 @@ HEADERS += src/AppContextImpl.h \
            src/private.h \
            src/ServiceRegistryImpl.h \
            src/SettingsImpl.h \
-           src/TaskSchedulerImpl.h
+           src/TaskSchedulerImpl.h \
+		   src/StackWalker.h 
 SOURCES += src/AppContextImpl.cpp \
            src/AppSettingsImpl.cpp \
            src/CrashHandler.cpp \
@@ -23,6 +24,7 @@ SOURCES += src/AppContextImpl.cpp \
            src/PluginSupportImpl.cpp \
            src/ServiceRegistryImpl.cpp \
            src/SettingsImpl.cpp \
-           src/TaskSchedulerImpl.cpp
+           src/TaskSchedulerImpl.cpp \
+		   src/StackWalker.cpp
 
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

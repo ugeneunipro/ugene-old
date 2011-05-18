@@ -24,6 +24,8 @@
 
 #if defined(USE_CRASHHANDLER)
 
+
+
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QProcess>
@@ -36,10 +38,12 @@
 #include <U2Core/LogCache.h>
 
 #include "private.h"
+#include "StackWalker.h"
 
 namespace U2 {
 
 #if defined( Q_OS_WIN )
+
 #include <windows.h>
     //LONG NTAPI CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo );
 #else 
@@ -76,6 +80,7 @@ public:
 
     static addExceptionHandler addHandlerFunc;
     static removeExceptionHandler removeHandlerFunc;
+    static StackWalker st;
 #else
     static void signalHandler(int signo, siginfo_t *info, void *context);
     static struct sigaction sa;

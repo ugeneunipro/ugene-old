@@ -12,6 +12,10 @@ win32 : CONFIG -= flat  #group the files within the source/header group dependin
 win32 : QMAKE_CXXFLAGS += /MP # use parallel build with nmake
 win32 : DEFINES+= _WINDOWS
 
+win32 : QMAKE_CFLAGS_RELEASE = -O2 -Oy- -MD
+win32 : QMAKE_CXXFLAGS_RELEASE = -O2 -Oy- -MD
+win32 : QMAKE_LFLAGS_RELEASE = /INCREMENTAL:NO /MAP /MAPINFO:EXPORT
+
 isEmpty( INSTALL_PREFIX )  : INSTALL_PREFIX  = /usr
 
 isEmpty( INSTALL_BINDIR )  : INSTALL_BINDIR  = $$INSTALL_PREFIX/bin

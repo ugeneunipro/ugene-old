@@ -22,6 +22,7 @@
 #if defined(USE_CRASHHANDLER)
 
 #include "CrashHandler.h"
+
 #include "TaskSchedulerImpl.h"
 #include <U2Core/Version.h>
 
@@ -31,10 +32,14 @@ namespace U2 {
 
 
 #if defined( Q_OS_WIN )
+
 #include <intrin.h>
+#include <dbghelp.h>
 
 PVOID CrashHandler::handler = NULL;
 PVOID CrashHandler::handler2 = NULL;
+
+StackWalker CrashHandler::st;
 
 addExceptionHandler CrashHandler::addHandlerFunc = NULL;
 removeExceptionHandler CrashHandler::removeHandlerFunc = NULL;
@@ -59,8 +64,6 @@ LONG CrashHandler::CrashHandlerFuncSecond(PEXCEPTION_POINTERS pExceptionInfo ) {
 }
 
 LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
-    
-    //SuspendThread(curThread);
     QString error;
     switch(pExceptionInfo->ExceptionRecord->ExceptionCode) {
         case EXCEPTION_ACCESS_VIOLATION: error = "Access violation";
@@ -114,7 +117,7 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
     }
     if(removeHandlerFunc != NULL) {
         removeHandlerFunc(handler);
-    }
+    }    
     //RemoveVectoredExceptionHandler(handler);
     //handler2 = AddVectoredExceptionHandler(1, CrashHandlerFuncSecond);
     if(pExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_STACK_OVERFLOW) {
@@ -126,10 +129,13 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
         __movsw(sp, &newSp, 1);*/
 
         QString anotherError = QString::number(EXCEPTION_STACK_OVERFLOW, 16) + "|Stack overflow"; //previous error was dropped in the stack unwinding 
+        st.ShowCallstack(GetCurrentThread(), pExceptionInfo->ContextRecord);
         runMonitorProcess(anotherError);
     }
 
-    runMonitorProcess(QString::number(pExceptionInfo->ExceptionRecord->ExceptionCode, 16) + "|" + error);
+    st.ShowCallstack(GetCurrentThread(), pExceptionInfo->ContextRecord);
+
+    runMonitorProcess(QString::number(pExceptionInfo->ExceptionRecord->ExceptionCode, 16) + "|" + error + "::" + QString::number((int)pExceptionInfo->ExceptionRecord->ExceptionAddress, 16));
     return EXCEPTION_EXECUTE_HANDLER;
 }
 
@@ -293,6 +299,12 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
     } else {
         message += "None|None";
     }
+
+#if defined (Q_OS_WIN)
+    message += "|" + st.getBuffer();
+#else
+    message += "|None";
+#endif
 
     static QMutex mutex;
     QMutexLocker lock(&mutex);
