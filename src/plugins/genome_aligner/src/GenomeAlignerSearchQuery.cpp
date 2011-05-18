@@ -21,6 +21,7 @@
 
 #include "GenomeAlignerSearchQuery.h"
 #include <U2Core/Log.h>
+#include <limits.h>
 
 namespace U2 {
 
@@ -153,7 +154,7 @@ SAType SearchQuery::firstResult() const {
 
 quint32 SearchQuery::firstMCount() const {
     if (mismatchCounts.isEmpty()) {
-        return -1;
+        return INT_MAX;
     }
     return mismatchCounts.first();
 }

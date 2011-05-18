@@ -105,6 +105,7 @@ private:
     qint64 resultWriteTime;
     qint64 searchTime;
     qint64 indexLoadTime;
+    qint64 shortreadIOTime;
 
     void setupCreateIndexTask();
 };
@@ -142,6 +143,8 @@ private:
     GenomeAlignerWriter *seqWriter;
     QVector<SearchQuery*> &queries;
     quint64 &readsAligned;
+
+    inline void setReadWritten(SearchQuery *read, SearchQuery *revCompl);
 };
 
 } //namespace

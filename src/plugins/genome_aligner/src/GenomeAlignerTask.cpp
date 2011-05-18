@@ -41,6 +41,7 @@
 #include <U2Algorithm/SArrayBasedFindTask.h>
 
 #include <U2Gui/Notification.h>
+#include <limits.h>
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIndexTask.h"
 #include "GenomeAlignerIndex.h"
@@ -79,6 +80,7 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     resultWriteTime = 0;
     searchTime = 0;
     indexLoadTime = 0;
+    shortreadIOTime = 0;
     
     dbiIO = false;//settings.getCustomValue(OPTION_DBI_IO, true).toBool();
     if (!justBuildIndex && !dbiIO) {
@@ -160,10 +162,9 @@ void GenomeAlignerTask::prepare() {
     } else {
         setupCreateIndexTask();
         addSubTask(createIndexTask);
-        if (!justBuildIndex) {
-            setMaxParallelSubtasks(10);
+        if (!justBuildIndex && !bestMode) {
+            setMaxParallelSubtasks(3);
             pWriteTask = new GenomeAlignerWriteTask(seqWriter);
-            //AppContext::getTaskScheduler()->registerTopLevelTask(pWriteTask);
             addSubTask(pWriteTask);
         }
     }
@@ -172,7 +173,9 @@ void GenomeAlignerTask::prepare() {
 QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
     if (hasError() || isCanceled()) {
-        pWriteTask->setFinished();
+        if (!bestMode) {
+            pWriteTask->setFinished();
+        }
         return subTasks;
     }
 
@@ -209,10 +212,21 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         taskLog.details(QString("Genome aligner index creation time: %1").arg((double)time/(1000*1000)));
     }
 
-    if (subTask == createIndexTask || subTask == findTask) {
-        if (subTask == findTask) {
-            taskLog.details(QString("Bunch of reads aligning time: %1").arg((double)time/(1000*1000)));
-            indexLoadTime += findTask->getIndexLoadTime();
+    if (subTask == findTask) {
+        taskLog.details(QString("Bunch of reads aligning time: %1").arg((double)time/(1000*1000)));
+        indexLoadTime += findTask->getIndexLoadTime();
+
+        if (bestMode) {
+            writeTask  = new WriteAlignedReadsSubTask(seqWriter, queries, readsAligned);
+            subTasks.append(writeTask);
+            return subTasks;
+        }
+    }
+
+    if (subTask == createIndexTask || subTask == findTask || subTask == writeTask) {
+        if (subTask == writeTask) {
+            resultWriteTime += time;
+            shortreadIOTime += time;
         }
         // Read next bunch of sequences
         readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, queries,  settings, readMemSize*1024*1024);
@@ -223,9 +237,12 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     
     if (subTask == readTask) {
         shortreadLoadTime += time;
+        shortreadIOTime += time;
         if (queries.count() == 0) {
             // no more reads to align
-            pWriteTask->setFinished();
+            if (!bestMode) {
+                pWriteTask->setFinished();
+            }
             return subTasks;
         }
 
@@ -292,9 +309,15 @@ Task::ReportResult GenomeAlignerTask::report() {
     if (readsCount > 0) {
         taskLog.info(tr("The aligning is finished."));
         taskLog.info(tr("Whole working time = %1.").arg((GTimer::currentTimeMicros() - inf.startTime)/(1000*1000)));
-        taskLog.info(tr("%1% reads aligned.").arg(100*(double)pWriteTask->getWrittenReadsCount()/readsCount));
+        if (bestMode) {
+            taskLog.info(tr("%1% reads aligned.").arg(100*(double)readsAligned/readsCount));
+            taskLog.info(tr("Short-reads loading time = %1").arg(shortreadLoadTime/(1000*1000)));
+            taskLog.info(tr("Results writing time = %1").arg(resultWriteTime/(1000*1000)));
+        } else {
+            taskLog.info(tr("%1% reads aligned.").arg(100*(double)pWriteTask->getWrittenReadsCount()/readsCount));
+        }
         taskLog.info(tr("Index loading time = %1").arg(indexLoadTime));
-        taskLog.info(tr("Short-reads IO time = %1").arg(shortreadLoadTime/(1000*1000)));
+        taskLog.info(tr("Short-reads IO time = %1").arg(shortreadIOTime/(1000*1000)));
     }
     
     return ReportResult_Finished;
@@ -336,7 +359,9 @@ freeMemorySize(m)
 void ReadShortReadsSubTask::run() {
     GTIMER(cvar, tvar, "ReadSubTask");
     GenomeAlignerTask *parent = static_cast<GenomeAlignerTask*>(getParentTask());
-    parent->pWriteTask->flush();
+    if (!parent->bestMode) {
+        parent->pWriteTask->flush();
+    }
     foreach (SearchQuery *qu, queries) {
         delete qu;
     }
@@ -357,6 +382,8 @@ void ReadShortReadsSubTask::run() {
     int n = 0;
 
     int i=0;
+    DNATranslation* transl = AppContext::getDNATranslationRegistry()->
+        lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);
     while(!seqReader->isEnd()) {
         SearchQuery *query = NULL;
         if (NULL == *lastQuery) {
@@ -407,8 +434,6 @@ void ReadShortReadsSubTask::run() {
         *lastQuery = NULL;
 
         if (alignReversed) {
-            DNATranslation* transl = AppContext::getDNATranslationRegistry()->
-                lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);
             QByteArray reversed(query->constSequence());
             TextUtils::reverse(reversed.data(), reversed.count());
             SearchQuery *rQu = new SearchQuery(new DNASequence(QString("%1_rev").arg(query->getName()), reversed, NULL), query);
@@ -429,13 +454,43 @@ WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWrit
 
 }
 
+void WriteAlignedReadsSubTask::setReadWritten(SearchQuery *read, SearchQuery *revCompl) {
+    if (!read->isWroteResult()) {
+        readsAligned++;
+        read->writeResult();
+        if (NULL != revCompl) {
+            revCompl->writeResult();
+        }
+    }
+}
+
 void WriteAlignedReadsSubTask::run() {
-    foreach (SearchQuery *qu, queries) {
-        const QVector<SAType> &findResults = qu->getResults();
-        if (!findResults.isEmpty()) {
+    SearchQuery *read = NULL;
+    SearchQuery *revCompl = NULL;
+    SearchQuery **q = queries.data();
+    int size = queries.size();
+
+    for (int i=0; i<size; i++) {
+        read = q[i];
+        revCompl = read->getRevCompl();
+
+        if (i<size-1 && revCompl == q[i+1]) {
+            continue;
+        }
+
+        if (NULL == revCompl && read->haveResult()) {
+            seqWriter->write(read, read->firstResult());
             readsAligned++;
-            foreach (SAType offset, findResults) {
-                seqWriter->write(qu, offset);
+        } else if (NULL != revCompl) {
+            int c = read->firstMCount();
+            int cRev = revCompl->firstMCount();
+
+            if (c <= cRev && c < INT_MAX) {
+                seqWriter->write(read, read->firstResult());
+                readsAligned++;
+            } else if (cRev < INT_MAX) {
+                seqWriter->write(revCompl, revCompl->firstResult());
+                readsAligned++;
             }
         }
     }

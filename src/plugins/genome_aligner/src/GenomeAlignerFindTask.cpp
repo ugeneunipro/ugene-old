@@ -406,28 +406,6 @@ void FindInPartSubTask::run() {
                     writeTask->addResult(q[readNum]);
                     q[readNum]->onPartChanged();
                 }
-            } else if (settings->bestMode) {
-                if (0 == q[readNum]->firstMCount()) {
-                    writeTask->addResult(q[readNum]);
-                    continue;
-                }
-                if (index->getLoadedPart().getCurrentPart() == index->getPartCount() - 1) {
-                    if (i == last - 1
-                        || (readNumbers[i+1] != readNum && q[readNumbers[i+1]] != revCompl)) {
-                        if (NULL == revCompl) {
-                            writeTask->addResult(q[readNum]);
-                        } else {
-                            int c = q[readNum]->firstMCount();
-                            int cRev = revCompl->firstMCount();
-
-                            if (c > cRev && c > 0) {
-                                writeTask->addResult(q[readNum]);
-                            } else if (cRev > c && cRev > 0) {
-                                writeTask->addResult(revCompl);
-                            }
-                        }
-                    }
-                }
             }
         }
         parent->getDataForPartSearch(first, length);

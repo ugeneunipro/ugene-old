@@ -56,6 +56,7 @@ const QString GPU_ATTR("gpu");
 const QString QUAL_ATTR("quality-threshold");
 const QString REFSEQ_URL_ATTR("url-reference");
 const QString INDEX_URL_ATTR("url-index");
+const QString REF_SIZE_ATTR("ref-size");
 
 /************************************************************************/
 /* Genome aligner                                                       */
@@ -106,7 +107,7 @@ void GenomeAlignerWorkerFactory::init() {
     a << new Attribute(ptMismatches, BaseTypes::NUM_TYPE(), false, 0);
     a << new Attribute(reverse, BaseTypes::BOOL_TYPE(), false/*required*/, true);
     a << new Attribute(best, BaseTypes::BOOL_TYPE(), false/*required*/, false);
-    a << new Attribute(qual, BaseTypes::BOOL_TYPE(), false/*required*/, -1);
+    a << new Attribute(qual, BaseTypes::NUM_TYPE(), false/*required*/, 0);
     a << new Attribute(gpu, BaseTypes::BOOL_TYPE(), false/*required*/, false);
 
     Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("UGENE genome aligner"), 
@@ -234,13 +235,16 @@ void GenomeAlignerBuildWorkerFactory::init() {
 
     Descriptor refseq(REFSEQ_URL_ATTR, GenomeAlignerBuildWorker::tr("Reference"), 
         GenomeAlignerBuildWorker::tr("Reference sequence url. The short reads will be aligned to this reference genome."));
-    Descriptor desc(ACTOR_ID, GenomeAlignerBuildWorker::tr("Genome aligner build indexer"), 
+    Descriptor desc(ACTOR_ID, GenomeAlignerBuildWorker::tr("Genome aligner index builder"), 
         GenomeAlignerBuildWorker::tr("GenomeAlignerBuild builds an index from a set of DNA sequences. GenomeAlignerBuild outputs a set of 3 files with suffixes .idx, .ref, .sarr. These files together constitute the index: they are all that is needed to align reads to that reference."));
     Descriptor index(INDEX_URL_ATTR, GenomeAlignerBuildWorker::tr("Index"), 
         GenomeAlignerBuildWorker::tr("Output index url."));
+    Descriptor refSize(REF_SIZE_ATTR, GenomeAlignerBuildWorker::tr("Reference fragmentation"), 
+        GenomeAlignerBuildWorker::tr("Reference fragmentation size"));
 
     a << new Attribute(refseq, BaseTypes::STRING_TYPE(), true /*required*/, QString());
     a << new Attribute(index, BaseTypes::STRING_TYPE(), true /*required*/, QString());
+    a << new Attribute(refSize, BaseTypes::NUM_TYPE(), true /*required*/, 10);
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 
@@ -278,8 +282,9 @@ Task* GenomeAlignerBuildWorker::tick() {
         return NULL;
     }
 
+
     settings.refSeqUrl = refSeqUrl;
-    settings.resultFileName = indexUrl;
+    settings.indexFileName = indexUrl.getURLString();
     Task* t = new GenomeAlignerTask(settings, true);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;
