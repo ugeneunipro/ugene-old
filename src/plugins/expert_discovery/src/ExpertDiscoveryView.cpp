@@ -513,6 +513,31 @@ void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
 	conUDoc = docs.first();
     //conUDoc->setUserModLock(true);
 
+    propWidget->clearAll();
+
+    if(currentAdv){
+        disconnect(currentAdv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), this,  SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
+        foreach(GObject* obj, objects){
+            removeObject(obj);
+        }
+
+        delete currentAdv->getWidget();
+        delete currentAdv;
+        currentAdv = NULL;
+    } 
+
+    d.clearSelectedSequencesList();
+
+    curPS = NULL;
+
+    foreach(GObject* gobj, edObjects){
+        SequenceType seqType = d.getSequenceTypeByName(gobj->getGObjectName());
+        if(seqType == CONTROL_SEQUENCE){
+            edObjects.removeOne(gobj);
+        }
+        edObjects.push_back(gobj);
+    }
+
     d.clearContrBase();
     d.clearContrAnnot();
 
@@ -561,10 +586,12 @@ void ExpertDiscoveryView::sl_newSignalReady(DDisc::Signal* signal, CSFolder* fol
 
 void ExpertDiscoveryView::sl_optimizeRecBound(){
     d.optimizeRecognizationBound();
+    propWidget->updateCurrentProperties();
 }
 
 void ExpertDiscoveryView::sl_setRecBound(){
     d.setRecBound();
+    propWidget->updateCurrentProperties();
 }
 
 void ExpertDiscoveryView::sl_extractSignals(){
@@ -586,6 +613,7 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
     EDProjectItem* pItem = dynamic_cast<EDProjectItem*>(tItem);
     if(!pItem){
         propWidget->sl_treeSelChanged(NULL);
+        curPS = NULL;
         return;
     }
 
@@ -596,7 +624,7 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
        case PIT_CSN_REPETITION:
        case PIT_CSN_DISTANCE:
        case PIT_CSN_MRK_ITEM:
-       case PIT_MRK_ITEM:
+       case PIT_MRK_ITEM:{
            EDPICSNode* pPICSN = dynamic_cast<EDPICSNode*>(pItem);
            if (curPS == pPICSN->getProcessedSignal(d)) {
                updatePS = false;
@@ -614,10 +642,44 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
 
            if(updatePS){
                 updateAnnotations();
+                updatePS = false;
            }
+           break;
+       }
+       default:
+           curPS = NULL;
     }
 
     propWidget->sl_treeSelChanged(tItem);
+
+
+
+//         else {
+//             if (m_pCurrentItem->GetType() == PIT_SEQUENCE || 
+//                 m_pCurrentItem->GetType() == PIT_CONTROLSEQUENCE) {
+//                     CEDDoc* pDoc = (CEDDoc*) GetDocument();
+//                     if (m_pCurrentItem->GetType() == PIT_CONTROLSEQUENCE && pDoc->LargeSequenceMode())
+//                         m_nWindowSize = pDoc->GetWindowSize();
+//                     else 
+//                         m_nWindowSize = 1;
+// 
+//                     CPISequence* pItem = dynamic_cast<CPISequence*>(m_pCurrentItem);
+//                     m_bHasRecognizationData = pItem->GetRecognizationData(m_RecognizationData);
+//                     if (m_bHasRecognizationData)
+//                     {
+//                         int size = (int) m_RecognizationData.size();
+//                         for (int i=0; i<size-m_nWindowSize+1; i++) {
+//                             for (int j=1; j<m_nWindowSize && i+j<size; j++)
+//                                 m_RecognizationData[i] += m_RecognizationData[i+j];
+//                         }
+//                         for (int i=1; i<m_nWindowSize; i++)
+//                             m_RecognizationData[size-i] = 0;
+//                     }
+//             }
+//         }
+//         Invalidate();
+//         return;
+//     }
 }
 
 void ExpertDiscoveryView::updateAnnotations(){
@@ -634,116 +696,6 @@ void ExpertDiscoveryView::updateAnnotations(){
     }
 
     AppContext::getAutoAnnotationsSupport()->unregisterAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
-    
-
-//     CEDDoc *pDoc = GetDocument();
-//     const SequenceBase& rYesBase = pDoc->GetPosSeqBase();
-//     const SequenceBase& rNoBase = pDoc->GetNegSeqBase();
-// 
-//     int nYesSeqNum = m_pPS->GetYesSequenceNumber();
-//     int nNoSeqNum = m_pPS->GetNoSequenceNumber();
-// 
-//     if (m_bUpdate) {
-//         int nHeight = nYesSeqNum + nNoSeqNum + 5;
-//         int nWidth = 0;
-//         for (int i=0; i<nYesSeqNum; i++) {
-//             const Sequence& rSeq = rYesBase.getSequence(i);
-//             if (nWidth < (int)rSeq.getSize()) nWidth = (int) rSeq.getSize();
-//         }
-//         for (int i=0; i<nNoSeqNum; i++) {
-//             const Sequence& rSeq = rNoBase.getSequence(i);
-//             if (nWidth < (int)rSeq.getSize()) nWidth = (int) rSeq.getSize();
-//         }
-// 
-//         CClientDC clientdc(this);
-//         OnPrepareDC(&clientdc);
-//         CDC dc;
-//         delete pBmp;
-//         pBmp = new CBitmap;
-//         pBmp->CreateCompatibleBitmap(&clientdc, nWidth, nHeight);
-//         pBmp->SetBitmapDimension(nWidth, nHeight);
-//         dc.CreateCompatibleDC(&clientdc);
-//         CBitmap* pOldBmp = dc.SelectObject(pBmp);
-//         CBrush white(RGB(255,255,255));
-//         CBrush* pOldBrush = dc.SelectObject(&white);
-//         dc.PatBlt(0,0,nWidth,nHeight, PATCOPY);
-//         dc.SelectObject(pOldBrush);
-//         for (int i=0; i<nYesSeqNum; i++) {
-//             const Set& set = m_pPS->GetYesRealizations(i);
-//             for (int j=0; j<(int)set.max_elem(); j++) {
-//                 COLORREF color = RGB(0,0,255);
-//                 if (set.is_set(j)) color = RGB(255,0,0);
-//                 dc.SetPixelV(j,i,color);
-//             }
-//         }
-// 
-//         int nNoOffset = nYesSeqNum + 5;
-//         for (int i=0; i<nNoSeqNum; i++) {
-//             const Set& set = m_pPS->GetNoRealizations(i);
-//             for (int j=0; j<(int)set.max_elem(); j++) {
-//                 COLORREF color = RGB(0,0,255);
-//                 if (set.is_set(j)) color = RGB(255,0,0);
-//                 dc.SetPixelV(j,i + nNoOffset,color);			
-//             }
-//         }
-// 
-//         dc.SelectObject(pOldBmp);
-//         m_bUpdate = false;
-//     }
-// 
-//     if (!m_bViewSequences) {
-//         CClientDC clientdc(this);
-//         OnPrepareDC(&clientdc);
-//         CDC dc;
-//         dc.CreateCompatibleDC(&clientdc);
-//         CBitmap* pOldBmp = dc.SelectObject(pBmp);
-//         int nWidth = pBmp->GetBitmapDimension().cx;
-//         int nHeight = pBmp->GetBitmapDimension().cy;	
-//         pDC->SetStretchBltMode(COLORONCOLOR);
-//         pDC->StretchBlt( 10, 10, nWidth*m_nBarSize, nHeight*m_nBarSize, &dc, 0, 0, nWidth, nHeight, SRCCOPY);
-//         dc.SelectObject(pOldBmp);
-//         SetScrollSizes(MM_TEXT, CSize(20+nWidth*m_nBarSize, 20+nHeight*m_nBarSize));
-//     }
-//     else {			
-//         CFont font;
-//         font.CreateFont(m_nBarSize, 0,0,0,FW_BOLD,FALSE,FALSE,0,DEFAULT_CHARSET,0,0,0,0,0);
-//         CFont *pOldFont = pDC->SelectObject(&font);
-// 
-//         int nOffsetX = 10;
-//         int nOffsetY = 10;
-//         size_t nMaxSize = 0;
-//         for (int i=0; i<nYesSeqNum; i++) {
-//             const Set& set = m_pPS->GetYesRealizations(i);
-//             const Sequence& rSeq = rYesBase.getSequence(i);
-//             if (nMaxSize < rSeq.getSize()) nMaxSize = rSeq.getSize();
-//             for (int j=0; j<(int)rSeq.getSize(); j++) {
-//                 COLORREF color = RGB(0,0,255);
-//                 if (set.is_set(j)) color = RGB(255,0,0);
-//                 char c = rSeq.getSequence()[j];
-//                 pDC->SetTextColor(color);
-//                 pDC->TextOut(nOffsetX + j*m_nBarSize,nOffsetY + i*m_nBarSize,&c,1);
-//             }
-//         }
-// 
-//         nOffsetY += (nYesSeqNum + 5) * m_nBarSize;
-// 
-//         for (int i=0; i<nNoSeqNum; i++) {
-//             const Set& set = m_pPS->GetNoRealizations(i);
-//             const Sequence& rSeq = rNoBase.getSequence(i);
-//             if (nMaxSize < rSeq.getSize()) nMaxSize = rSeq.getSize();
-//             for (int j=0; j<(int)rSeq.getSize(); j++) {
-//                 COLORREF color = RGB(0,0,255);
-//                 if (set.is_set(j)) color = RGB(255,0,0);
-//                 char c = rSeq.getSequence()[j];
-//                 pDC->SetTextColor(color);
-//                 pDC->TextOut(nOffsetX + j*m_nBarSize,nOffsetY + i*m_nBarSize,&c,1);
-//             }
-//         }
-// 
-//         nOffsetY += nNoSeqNum * m_nBarSize + 20;
-//         pDC->SelectObject(pOldFont);
-//         SetScrollSizes(MM_TEXT, CSize((int)nMaxSize*m_nBarSize+nOffsetX, nOffsetY));
-//     }    
 }
 
 void ExpertDiscoveryView::createEDSequence(){
@@ -918,23 +870,26 @@ void ExpertDiscoveryView::sl_addToShown(){
 
     DNASequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(sItem);
     if(currentAdv){
-        if(currentAdv->getSequenceContexts().size() < MAX_SEQUENCES_COUNT_ON_WIDGET){
-            //currentAdv->addObject(dnaSeqObj); 
-
-            //auto annotations bug
-
-            d.addSequenceToSelected(sItem);
-            QList<DNASequenceObject*> listdna;
-            listdna.append(dynamic_cast<DNASequenceObject*>(dnaSeqObj));
-            foreach(ADVSequenceObjectContext* curSoc, currentAdv->getSequenceContexts()){
-                listdna.append(curSoc->getSequenceObject());
-            }
-            AnnotatedDNAView* danadv = new AnnotatedDNAView(dnaSeqObj->getSequenceName(),listdna);
-            initADVView(danadv);
-            signalsWidget->updateItem(sItem);
-
+        if(currentAdv->getSequenceContexts().size() >= MAX_SEQUENCES_COUNT_ON_WIDGET){
+            return;
         }
     }
+    //currentAdv->addObject(dnaSeqObj); 
+
+    //auto annotations bug
+
+    d.addSequenceToSelected(sItem);
+    QList<DNASequenceObject*> listdna;
+    listdna.append(dynamic_cast<DNASequenceObject*>(dnaSeqObj));
+    if(currentAdv){
+        foreach(ADVSequenceObjectContext* curSoc, currentAdv->getSequenceContexts()){
+            listdna.append(curSoc->getSequenceObject());
+        }
+    }
+    AnnotatedDNAView* danadv = new AnnotatedDNAView(dnaSeqObj->getSequenceName(),listdna);
+    initADVView(danadv);
+    signalsWidget->updateItem(sItem);
+
 }
 
 ExpertDiscoveryADVSplitWidget::ExpertDiscoveryADVSplitWidget(AnnotatedDNAView* view): ADVSplitWidget(view){

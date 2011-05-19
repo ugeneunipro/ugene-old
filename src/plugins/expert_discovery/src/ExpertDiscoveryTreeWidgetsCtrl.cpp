@@ -310,7 +310,8 @@ void EDProjectTree::mouseDoubleClickEvent(QMouseEvent *e){
     QTreeWidgetItem* curItem = itemAt(e->pos());
     setCurrentItem(curItem, 0);
     
-    sl_showSequence();
+//    sl_showSequence();
+    sl_addToShown();
 
     QTreeWidget::mouseDoubleClickEvent(e);
 }
@@ -931,23 +932,23 @@ void EDProjectTree::deleteSignal(EDPICS* pPI){
 void EDProjectTree::updateSorting(){
 
     
-    for (int i = 0; i < seqRoot.childCount(); i++){
-        EDProjectItem* item = dynamic_cast<EDProjectItem*>(seqRoot.child(i));
-        if(item){
-           item->setSortField(sortField); 
-           item->setSortOrd(sortOrd);
-           updateSortingRecurs(item);
-        }
-    }
-
-    for (int i = 0; i < mrkRoot.childCount(); i++){
-        EDProjectItem* item = dynamic_cast<EDProjectItem*>(mrkRoot.child(i));
-        if(item){
-            item->setSortField(sortField); 
-            item->setSortOrd(sortOrd); 
-            updateSortingRecurs(item);
-        }
-    }
+//     for (int i = 0; i < seqRoot.childCount(); i++){
+//         EDProjectItem* item = dynamic_cast<EDProjectItem*>(seqRoot.child(i));
+//         if(item){
+//            item->setSortField(sortField); 
+//            item->setSortOrd(sortOrd);
+//            updateSortingRecurs(item);
+//         }
+//     }
+// 
+//     for (int i = 0; i < mrkRoot.childCount(); i++){
+//         EDProjectItem* item = dynamic_cast<EDProjectItem*>(mrkRoot.child(i));
+//         if(item){
+//             item->setSortField(sortField); 
+//             item->setSortOrd(sortOrd); 
+//             updateSortingRecurs(item);
+//         }
+//     }
 
     for (int i = 0; i < root.childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(root.child(i));
@@ -957,8 +958,8 @@ void EDProjectTree::updateSorting(){
             updateSortingRecurs(item);
         }
     }
-    seqRoot.sortChildren(0, Qt::AscendingOrder);
-    mrkRoot.sortChildren(0, Qt::AscendingOrder);
+//     seqRoot.sortChildren(0, Qt::AscendingOrder);
+//     mrkRoot.sortChildren(0, Qt::AscendingOrder);
     root.sortChildren(0, Qt::AscendingOrder);
    
 }

@@ -36,6 +36,8 @@ private:
 
 	bool check(const QLineEdit* lineE);
 
+    void hideParameters();
+
 protected slots:
 	void sl_checkCorrel();
 };

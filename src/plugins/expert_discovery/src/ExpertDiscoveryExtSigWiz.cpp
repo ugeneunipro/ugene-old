@@ -6,8 +6,9 @@
 
 namespace U2 {
 
-ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f)
-: QWizard(parent){
+ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f, int positiveSize)
+: QWizard(parent)
+,posSize(positiveSize){
 
 	setupUi(this);
 //1 page
@@ -56,6 +57,9 @@ ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f)
 //page 3
     folder = f;
     updateTree();
+
+    connect(this, SIGNAL(currentIdChanged ( int )), this, SLOT( sl_idChanged(int )));
+    hideParameters();
 }
 
 ExpertDiscoveryExtSigWiz::~ExpertDiscoveryExtSigWiz(){
@@ -137,21 +141,23 @@ void ExpertDiscoveryExtSigWiz::sl_deleteButton(){
 	delete item;
 }
 
-int ExpertDiscoveryExtSigWiz::nextId() const{
-	switch(currentId()){
-		case 1:
-			if(checkD(condProbLevEdit) && checkD(coverBoundEdit)
-				&& checkD(fishCritEdit) && checkD(levelBoundEdit)
-				&& checkD(samplesBoundEdit)){
-				return 2;
-			}else{
-				return 1;
-			}
-		case 2:
-			return 3;
-		default:
-			return -1;
-	}
+
+void ExpertDiscoveryExtSigWiz::sl_idChanged(int id){
+    switch (id){
+        case 2:
+            if(!(checkD(condProbLevEdit) && checkD(coverBoundEdit)
+                && checkD(fishCritEdit) && checkD(levelBoundEdit)
+                && checkD(samplesBoundEdit))){
+                    back();
+            }
+            break;
+        case 3:
+            if((intervItem->childCount() == 0 ) && (repetItem->childCount() == 0 ) && (distItem->childCount() == 0 ) && !notAlignedCheck->isChecked()){
+                back();
+                QMessageBox mb(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
+                mb.exec();
+            }
+    }
 }
 
 void ExpertDiscoveryExtSigWiz::accept(){
@@ -188,6 +194,14 @@ void ExpertDiscoveryExtSigWiz::accept(){
 		predicates.push_back(pOp);
 		delete item;
 	}
+
+    if(notAlignedCheck->isChecked()){
+        for(int i = 0; i < posSize; i++){
+            OpInterval *pOp = new OpInterval;
+            pOp->setInt(Interval(i, i));
+            predicates.push_back((Operation*)pOp);
+        }
+    }
     
     if(predicates.empty()){
         QMessageBox mb(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
@@ -216,6 +230,19 @@ void ExpertDiscoveryExtSigWiz::accept(){
     }
     
 	
+}
+
+void ExpertDiscoveryExtSigWiz::hideParameters(){
+    label_4->hide();
+    fishCritEdit->hide();
+    minimFishCritCheck->hide();
+    storeCheck->hide();
+    ulCritCheck->hide();
+    label_5->hide();
+    samplesBoundEdit->hide();
+    label_6->hide();
+    levelBoundEdit->hide();
+   
 }
 
 bool ExpertDiscoveryExtSigWiz::checkD(const QLineEdit* lineE) const{

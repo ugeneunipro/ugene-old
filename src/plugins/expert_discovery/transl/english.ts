@@ -277,6 +277,10 @@
         <source>Please create some predicates that will be used in complex signal construction process.</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Not aligned</source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>U2::DistanceSet</name>
@@ -424,24 +428,24 @@
         <translation></translation>
     </message>
     <message>
-        <source>Select signal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Deselect signal</source>
-        <translation type="unfinished"></translation>
+        <translation>Деселектировать сигнал</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation type="unfinished"></translation>
+        <translation>Сортировка</translation>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле</translation>
     </message>
     <message>
         <source>Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Порядок</translation>
+    </message>
+    <message>
+        <source>Select signal</source>
+        <translation>Селектировать сигнал</translation>
     </message>
 </context>
 <context>
@@ -639,8 +643,8 @@
         <translation></translation>
     </message>
     <message>
-        <source>ExpertDiscovery</source>
-        <translation></translation>
+        <source>Expert Discovery (alpha)</source>
+        <translation>Expert Discovery (альфа)</translation>
     </message>
 </context>
 <context>

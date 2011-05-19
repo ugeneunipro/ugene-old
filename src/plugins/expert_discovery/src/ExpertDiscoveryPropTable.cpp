@@ -61,6 +61,10 @@ void EDPropertiesTable::representPIProperties(EDProjectItem* pItem){
     }
 }
 
+void EDPropertiesTable::updateCurrentProperties(){
+    representPIProperties(curPItem);
+}
+
 void EDPropertiesTable::addNewGroup(const QString& name){
     int rowPos = isSeq ? rowCount() : seqOffset;
     insertRow(rowPos);

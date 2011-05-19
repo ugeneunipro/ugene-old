@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>447</width>
-    <height>554</height>
+    <height>465</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -218,9 +218,6 @@
          <attribute name="headerVisible">
           <bool>false</bool>
          </attribute>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
          <column>
           <property name="text">
            <string notr="true">1</string>
@@ -279,6 +276,13 @@
       </layout>
      </item>
      <item>
+      <widget class="QCheckBox" name="notAlignedCheck">
+       <property name="text">
+        <string>Not aligned</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QGroupBox" name="editorBox">
        <property name="title">
         <string>Editor</string>
@@ -305,9 +309,6 @@
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
      <widget class="QTreeWidget" name="treeFoldersWidget">
-      <attribute name="headerVisible">
-       <bool>false</bool>
-      </attribute>
       <attribute name="headerVisible">
        <bool>false</bool>
       </attribute>

@@ -54,6 +54,8 @@ ExpertDiscoveryAdvSetDialog::ExpertDiscoveryAdvSetDialog(QWidget *parent,
     minCorNegEdit->setValidator(dCorrelationValid);
     maxCorNegEdit->setValidator(dCorrelationValid);
 	connect( checkCorrel, SIGNAL(clicked()), SLOT(sl_checkCorrel()) );
+
+    hideParameters();
 }
 
 void ExpertDiscoveryAdvSetDialog::accept(){
@@ -104,6 +106,15 @@ bool ExpertDiscoveryAdvSetDialog::check(const QLineEdit* lineE){
 		return false;
 	}
 	return true;
+}
+
+void ExpertDiscoveryAdvSetDialog::hideParameters(){
+    groupBox_2->hide();
+    fishCritEdit->hide();
+    label->hide();
+    label_2->hide();
+    condProbEdit->hide();
+    checkCorrel->hide();
 }
 
 

@@ -308,7 +308,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
 
     QString strNegName = secondFile;
     try {
-        if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
+        if (strNegName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
             if (!edData.loadAnnotation(edData.getNegMarkBase(), edData.getNegSeqBase(), strNegName))
                 throw std::exception();
         }
@@ -316,7 +316,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
             QList<DocumentFormat*> curFormats = DocumentUtils::detectFormat(strNegName);
             if(!curFormats.isEmpty()){
                 if(curFormats.first()->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
-                    GUrl URL(strPosName);
+                    GUrl URL(strNegName);
                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
                     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
@@ -606,7 +606,7 @@ void ExpertDiscoverySignalExtractorTask::prepare(){
     //relocate
     //data->markupLetters();
 
-	ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder());
+	ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getPosSeqBase().getSize());
 	if(w.exec()){
 		PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
 		predicatBase->create(w.getPredicates());

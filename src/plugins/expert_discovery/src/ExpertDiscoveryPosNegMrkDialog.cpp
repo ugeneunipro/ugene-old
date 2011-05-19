@@ -20,7 +20,7 @@ ExpertDiscoveryPosNegMrkDialog::ExpertDiscoveryPosNegMrkDialog(QWidget *parent)
 
     oneSequenceCheckBox->click();
 
-	filter = DialogUtils::prepareFileFilter("Markup files", QStringList() << "xml");
+	filter = DialogUtils::prepareFileFilter("Markup files", QStringList() << "xml" << "gb");
 }
 
 void ExpertDiscoveryPosNegMrkDialog::accept(){

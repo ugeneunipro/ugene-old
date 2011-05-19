@@ -277,6 +277,10 @@
         <source>Please create some predicates that will be used in complex signal construction process.</source>
         <translation>Необходимо создать пердикаты, которые будут использоваться при конструировании комплексных сигналов.</translation>
     </message>
+    <message>
+        <source>Not aligned</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::CSFolder</name>
@@ -647,7 +651,11 @@
     </message>
     <message>
         <source>ExpertDiscovery</source>
-        <translation>ExpertDiscovery</translation>
+        <translation type="obsolete">ExpertDiscovery</translation>
+    </message>
+    <message>
+        <source>Expert Discovery (alpha)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

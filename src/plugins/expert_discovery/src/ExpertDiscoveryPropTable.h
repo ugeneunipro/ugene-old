@@ -13,6 +13,7 @@ public:
     EDPropertiesTable(QWidget* parent);
 
     void representPIProperties(EDProjectItem* pItem);
+    void updateCurrentProperties();
 
     void clearAll();
 	

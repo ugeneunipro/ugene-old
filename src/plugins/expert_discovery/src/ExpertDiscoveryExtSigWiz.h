@@ -31,10 +31,10 @@ struct State{
 	double	dUmBound;
 
 	void setDefaultState(){
-		dProbability	= 70;
+		dProbability	= 25;
 		dCoverage	= 25;
 		dFisher = 0.05;
-		dIntProbability = 50;
+		dIntProbability = 0;
 		dIntFisher = 0.2;
 		nMinComplexity = 0;
 		nMaxComplexity = 2;
@@ -45,7 +45,7 @@ struct State{
 		bCorrelationImportant = false;
 		bCheckFisherMinimization = false;
 		bStoreOnlyDifferent = true;
-		bUmEnabled = true;
+		bUmEnabled = false;
 		dUmBound = 0.05;
 		nUmSamplesBound = 50;
 	}
@@ -66,7 +66,7 @@ public:
 class ExpertDiscoveryExtSigWiz : public QWizard, public Ui_SignalsExtrWiz{
 	Q_OBJECT
 public:
-	ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f);
+    ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f, int positiveSize);
 	virtual ~ExpertDiscoveryExtSigWiz();
 	
 	double	getProbability() {return state.dProbability/100;}
@@ -91,10 +91,7 @@ public:
     void setFolder(CSFolder* f){folder = f;}
     CSFolder* getFolder(){return folder;}
 
-	virtual int nextId() const;
 	virtual void accept();
-
-
 
 protected slots:
 	void sl_advButton();
@@ -104,9 +101,12 @@ protected slots:
 	void sl_intervButton();
 	void sl_deleteButton();
 
+    void sl_idChanged(int id);
+
 	void sl_selectionChanged (QTreeWidgetItem * current, QTreeWidgetItem * previous);
 
 private:
+    int posSize;
 	State state;
 	std::vector<Operation*> predicates;
     CSFolder* folder;
@@ -120,6 +120,8 @@ private:
     void updateTree(const CSFolder* pFolder = NULL, QTreeWidgetItem* treeItem = NULL);
 
 	bool checkD(const QLineEdit* lineE) const;
+
+    void hideParameters();
 
 };
 
