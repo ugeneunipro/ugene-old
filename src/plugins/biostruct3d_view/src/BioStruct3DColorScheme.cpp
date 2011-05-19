@@ -169,7 +169,7 @@ ChemicalElemColorScheme::ChemicalElemColorScheme(const BioStruct3DObject *biostr
 
 const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObject *biostrucObj) {
     QMap<int, QColor> colorMap;
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
+    //AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     
     Document *doc = biostrucObj->getDocument();
     QList<GObjectRelation> relations = biostrucObj->findRelatedObjectsByRole(GObjectRelationRole::ANNOTATION_TABLE);

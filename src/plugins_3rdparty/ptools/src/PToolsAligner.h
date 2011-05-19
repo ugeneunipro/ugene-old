@@ -29,6 +29,7 @@ namespace U2 {
 
 class PToolsAligner : public StructuralAlignmentAlgorithm {
 public:
+    virtual QString validate(const StructuralAlignmentTaskSettings &settings);
     virtual StructuralAlignment align(const StructuralAlignmentTaskSettings &settings);
 };  // class PToolsAligner
 

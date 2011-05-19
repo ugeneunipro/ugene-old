@@ -118,8 +118,8 @@ void Gtest_PToolsAlignerTask::run() {
         return;
     }
 
-    StructuralAlignmentTaskSettings settings = {    BioStruct3DReference(refo, refo->getBioStruct3D().moleculeMap.keys()),
-                                                    BioStruct3DReference(mobo, mobo->getBioStruct3D().moleculeMap.keys()) };
+    StructuralAlignmentTaskSettings settings( BioStruct3DReference(refo, refo->getBioStruct3D().moleculeMap.keys(), refo->getBioStruct3D().modelMap.keys().first()),
+                                              BioStruct3DReference(mobo, mobo->getBioStruct3D().moleculeMap.keys(), mobo->getBioStruct3D().modelMap.keys().first()) );
 
     result = PToolsAligner().align(settings);
 }

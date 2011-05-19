@@ -38,12 +38,14 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
+static const QString PTOOLS_ID("PTools");
+
 /* class PToolsPlugin : public Plugin */
 
 PToolsPlugin::PToolsPlugin() : Plugin(tr("PTools"), tr("Structural alignment algorithm (Sippl MJ, Stegbuchner H) from PTools library"))
 {
     StructuralAlignmentAlgorithmFactory *ptools = new PToolsAlignerFactory();
-    AppContext::getStructuralAlignmentAlgorithmRegistry()->registerAlgorithmFactory(ptools, "ptools");
+    AppContext::getStructuralAlignmentAlgorithmRegistry()->registerAlgorithmFactory(ptools, PTOOLS_ID);
 
     // PToolsAligner tests
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();

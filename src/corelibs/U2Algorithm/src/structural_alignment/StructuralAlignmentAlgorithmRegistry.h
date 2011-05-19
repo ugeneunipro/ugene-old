@@ -27,6 +27,7 @@
 
 namespace U2 {
 
+class StructuralAlignmentAlgorithm;
 class StructuralAlignmentAlgorithmFactory;
 class StructuralAlignmentTask;
 class StructuralAlignmentTaskSettings;
@@ -41,6 +42,7 @@ public:
     void registerAlgorithmFactory(StructuralAlignmentAlgorithmFactory *factory, const QString &id);
     StructuralAlignmentAlgorithmFactory* getAlgorithmFactory(const QString &id);
 
+    StructuralAlignmentAlgorithm* createStructuralAlignmentAlgorithm(const QString &algorithm);
     StructuralAlignmentTask* createStructuralAlignmentTask(const QString &algorithm, const StructuralAlignmentTaskSettings &settings);
 
     QList<QString> getFactoriesIds() const;

@@ -50,6 +50,10 @@ QList<QString> StructuralAlignmentAlgorithmRegistry::getFactoriesIds() const {
     return factories.keys();
 }
 
+StructuralAlignmentAlgorithm* StructuralAlignmentAlgorithmRegistry::createStructuralAlignmentAlgorithm(const QString &algorithm) {
+    return getAlgorithmFactory(algorithm)->create();
+}
+
 StructuralAlignmentTask* StructuralAlignmentAlgorithmRegistry::createStructuralAlignmentTask(const QString &algorithm, const StructuralAlignmentTaskSettings &settings) {
     StructuralAlignmentTask *t = new StructuralAlignmentTask(getAlgorithmFactory(algorithm)->create(), settings);
     return t;

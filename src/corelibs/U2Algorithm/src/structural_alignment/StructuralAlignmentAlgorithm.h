@@ -25,23 +25,32 @@
 #include <U2Core/global.h>
 #include <U2Core/Matrix44.h>
 #include <U2Core/Task.h>
+#include <U2Core/BioStruct3D.h>
 #include <U2Core/BioStruct3DObject.h>
 
 #include <memory>
 
 namespace U2 {
 
-class BioStruct3D;
-
 /** Reference to a subset of BioStruct3D */
 // Maybe this class must be merged with BioStruct3DChainSelection
 class U2ALGORITHM_EXPORT BioStruct3DReference {
 public:
-    BioStruct3DReference(const BioStruct3DObject *_obj, const QList<int> &_chains, int _modelId = -1)
-            : obj(_obj), chains(_chains), modelId(_modelId)
+    BioStruct3DReference(const BioStruct3DObject *_obj, int _chainId, const U2Region &_chainRegion, int _modelId)
+            : obj(_obj), chains(), chainRegion(_chainRegion), modelId(_modelId)
     {
-        if (modelId == -1) {
-            modelId = obj->getBioStruct3D().modelMap.keys().first();
+        chains << _chainId;
+    }
+
+    BioStruct3DReference(const BioStruct3DObject *_obj, const QList<int> &_chains, int _modelId)
+            : obj(_obj), chains(_chains), chainRegion(), modelId(_modelId)
+    {
+        assert(obj);
+        // if one chain selected set region from start to end
+        if (chains.size() == 1) {
+            int chainId = chains.first();
+            int length = obj->getBioStruct3D().moleculeMap.value(chainId)->residueMap.size();
+            chainRegion = U2Region(0, length);
         }
     }
 
@@ -51,17 +60,22 @@ public:
     const BioStruct3DObject *obj;
     QList<int> chains;
 
+    // when more than one chain selected, region ignored
+    U2Region chainRegion;
+
     int modelId;
 };  // class BioStruct3DReference
 
 class U2ALGORITHM_EXPORT StructuralAlignmentTaskSettings {
 public:
+    StructuralAlignmentTaskSettings(const BioStruct3DReference &_ref, const BioStruct3DReference &_alt) : ref(_ref), alt(_alt) {}
     BioStruct3DReference ref, alt;
 };  // struct StructuralAlignmentTaskSettings
 
 /** Structural alignment algorithm result */
 class U2ALGORITHM_EXPORT StructuralAlignment {
 public:
+    StructuralAlignment() : rmsd(0.0), transform() {}
     double rmsd;
     Matrix44 transform;
 };  // class StructuralAlignment
@@ -69,6 +83,10 @@ public:
 /** Structural alignment algorithm abstract interface */
 class U2ALGORITHM_EXPORT StructuralAlignmentAlgorithm {
 public:
+    /** Test settings for algorithm specific constraints.
+      * @returns "" on ok and error descripton on fail
+      */
+    virtual QString validate(const StructuralAlignmentTaskSettings &settings) = 0;
     virtual StructuralAlignment align(const StructuralAlignmentTaskSettings &settings) = 0;
 };  // class StructuralAlignmentAlgorithm
 

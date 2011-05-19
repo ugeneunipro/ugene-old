@@ -27,12 +27,19 @@ namespace U2 {
 QString BioStruct3DReference::print() const {
     QString s = obj->getGObjectName();
 
-    s += " chains [";
-    foreach (int chain, chains) {
-        s += QString::number(chain) + ",";
+    if (chains.size() == 1) {
+        int chainId = chains.first();
+        s += QString(" chain %1").arg(chainId);
+        s += QString(" region %1..%2").arg(chainRegion.startPos + 1).arg(chainRegion.endPos());
     }
-    s.chop(1);
-    s += "]";
+    else {
+        s += " chains [";
+        foreach (int chain, chains) {
+            s += QString::number(chain) + ",";
+        }
+        s.chop(1);
+        s += "]";
+    }
 
     s += QString(" model %3").arg(modelId);
     return s;
@@ -40,9 +47,8 @@ QString BioStruct3DReference::print() const {
 
 /* class U2ALGORITHM_EXPORT StructuralAlignmentTask : public Task */
 StructuralAlignmentTask::StructuralAlignmentTask(StructuralAlignmentAlgorithm *_algorithm, const StructuralAlignmentTaskSettings &_settings)
-        : Task("StructuralAlignmentTask", TaskFlag(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)), algorithm(_algorithm), settings(_settings)
-{
-}
+        : Task("StructuralAlignmentTask", TaskFlag(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)), algorithm(_algorithm), settings(_settings), result()
+{}
 
 void StructuralAlignmentTask::run() {
     result = algorithm->align(settings);

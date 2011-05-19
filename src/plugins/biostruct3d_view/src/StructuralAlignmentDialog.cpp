@@ -20,12 +20,14 @@
  */
 
 #include "StructuralAlignmentDialog.h"
+#include "BioStruct3DSubsetEditor.h"
 
 #include <U2Core/GObject.h>
 #include <U2Core/BioStruct3DObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 
 #include <QMessageBox>
@@ -33,8 +35,6 @@
 namespace U2 {
 
 /* class StructuralAlignmentDialog : public QDialog, public Ui::StructuralAlignmentDialog */
-
-const QString StructuralAlignmentDialog::ALL_CHAINS = "All chains";
 
 static QList<BioStruct3DObject*> findAvailableBioStructs() {
     QList<GObject*> objs = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::BIOSTRUCTURE_3D);
@@ -48,143 +48,92 @@ static QList<BioStruct3DObject*> findAvailableBioStructs() {
     return biostructs;
 }
 
-StructuralAlignmentDialog::StructuralAlignmentDialog(const BioStruct3DObject *fixedRef/* = 0*/, int fixedRefModel/* = 0*/, QWidget *parent/* = 0*/)
+StructuralAlignmentDialog::StructuralAlignmentDialog(const BioStruct3DObject *fixedRef/* = 0*/, int fixedRefModel/* = -1*/, QWidget *parent/* = 0*/)
         : QDialog(parent), task(0)
 {
     setupUi(this);
 
-    QList<BioStruct3DObject*> biostructs = findAvailableBioStructs();
-
-    foreach (BioStruct3DObject *bs, biostructs) {
-        reference->addItem(bs->getGObjectName(), qVariantFromValue((void*)bs));
-        alter->addItem(bs->getGObjectName(), qVariantFromValue((void*)bs));
+    StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
+    foreach (const QString &id, reg->getFactoriesIds()) {
+        algorithmCombo->addItem(id, qVariantFromValue(id));
     }
 
-    createModelLists();
-    createChainLists();
+    QList<BioStruct3DObject*> biostructs = findAvailableBioStructs();
+    ref = new BioStruct3DSubsetEditor(biostructs, fixedRef, fixedRefModel);
+    mob = new BioStruct3DSubsetEditor(biostructs);
 
     if (fixedRef) {
-        int idx = reference->findData(qVariantFromValue((void*)fixedRef));
-        assert(idx != -1 && "Fixed ref must be in biostructs");
-        reference->setCurrentIndex(idx);
-        reference->setDisabled(true);
-        refModel->setDisabled(true);
+        ref->setBiostructDisabled();
+    }
+    if (fixedRefModel != -1) {
+        ref->setModelDisabled();
     }
 
-    if (fixedRefModel) {
-        int idx = refModel->findData(qVariantFromValue(fixedRefModel));
-        assert(idx != -1 && "Fixed ref model must be in ref biostruct");
-        refModel->setCurrentIndex(idx);
-    }
+    QVBoxLayout *refBox = new QVBoxLayout();
+    refBox->addWidget(ref);
+    refGroup->setLayout(refBox);
 
-    connect(reference, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_biostructChanged(int)));
-    connect(alter, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_biostructChanged(int)));
+    QVBoxLayout *altBox = new QVBoxLayout();
+    altBox->addWidget(mob);
+    altGroup->setLayout(altBox);
 
-    connect(refChain, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_chainChanged(int)));
-    connect(altChain, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_chainChanged(int)));
-}
-
-void StructuralAlignmentDialog::createModelLists() {
-    createModelList(reference, reference->currentIndex(), refModel);
-    createModelList(alter, alter->currentIndex(), altModel);
-}
-
-void StructuralAlignmentDialog::createModelList(QComboBox *biostruct, int idx, QComboBox *model) {
-    BioStruct3DObject *bso = static_cast<BioStruct3DObject*>( biostruct->itemData(idx).value<void*>() );
-    model->clear();
-    foreach (const int modelId, bso->getBioStruct3D().modelMap.keys()) {
-        model->addItem(QString::number(modelId), qVariantFromValue(modelId));
-    }
-}
-
-void StructuralAlignmentDialog::createChainLists() {
-    createChainList(reference, reference->currentIndex(), refChain);
-    createChainList(alter, alter->currentIndex(), altChain);
-}
-
-void StructuralAlignmentDialog::createChainList(QComboBox *biostruct, int idx, QComboBox *chain) {
-    BioStruct3DObject *bso = static_cast<BioStruct3DObject*>( biostruct->itemData(idx).value<void*>() );
-
-    chain->clear();
-    chain->addItem(ALL_CHAINS);
-
-    foreach (const int chainId, bso->getBioStruct3D().moleculeMap.keys()) {
-        chain->addItem(QString::number(chainId), qVariantFromValue(chainId));
-    }
-}
-
-void StructuralAlignmentDialog::sl_biostructChanged(int idx) {
-    QObject *combo = sender();
-
-    if (combo == reference) {
-        createModelList(reference, idx, refModel);
-        createChainList(reference, idx, refChain);
-    }
-    else if (combo == alter) {
-        createModelList(alter, idx, altModel);
-        createChainList(alter, idx, altChain);
-    }
-    else {
-        assert(!"this handler only for reference and alter combos");
-    }
-}
-
-void StructuralAlignmentDialog::sl_chainChanged(int idx) {
-    QObject *combo = sender();
-
-    if (combo == refChain) {
-        if (refChain->currentText() == ALL_CHAINS) {
-            refRegion->setDisabled(true);
-        }
-        else {
-            refRegion->setEnabled(true);
-        }
-    }
-    else if (combo == altChain) {
-        if (altChain->currentText() == ALL_CHAINS) {
-            altRegion->setDisabled(true);
-        }
-        else {
-            altRegion->setEnabled(true);
-        }
-    }
-    else {
-        assert(!"this handler only for refChain and altChain combos");
-    }
+    updateGeometry();
 }
 
 void StructuralAlignmentDialog::accept() {
+    if (algorithmCombo->count() < 1) {
+        return;
+    }
+
+    QString msg, err;
+    err = ref->validate();
+    if (!err.isEmpty()) {
+        msg += QString("Reference: ") + err + "\n";
+    }
+    err = mob->validate();
+    if (!err.isEmpty()) {
+        msg += QString("Mobile: ") + err + "\n";
+    }
+    if (!msg.isEmpty()) {
+        QMessageBox::warning(this, "Error", msg);
+        return;
+    }
+
+    BioStruct3DReference refSubset(ref->getSubset());
+    BioStruct3DReference mobSubset(mob->getSubset());
+
+    // Since we unable to change mob structure we clone the GObject
+    BioStruct3DObject *mobClone = qobject_cast<BioStruct3DObject*> (mobSubset.obj->clone());
+    mobSubset.obj = mobClone;
+
+    StructuralAlignmentTaskSettings settings(refSubset, mobSubset);
+
     StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
-    if (reg->getFactoriesIds().isEmpty()) {
-        QMessageBox::warning(0, "Error", "No available algorithms, make sure that ptools plugin loaded");
+
+    QString algorithmId = algorithmCombo->itemData(algorithmCombo->currentIndex()).value<QString>();
+    StructuralAlignmentAlgorithm *algorithm = reg->createStructuralAlignmentAlgorithm(algorithmId);
+
+    err = algorithm->validate(settings);
+    if (!err.isEmpty()) {
+        msg = QString("%1 validate failed: %2").arg(algorithmId).arg(err);
+        QMessageBox::warning(this, "Error", msg);
         return;
     }
 
-    BioStruct3DObject *refo = static_cast<BioStruct3DObject*>( reference->itemData(reference->currentIndex()).value<void*>() );
-    BioStruct3DObject *alto = static_cast<BioStruct3DObject*>( alter->itemData(alter->currentIndex()).value<void*>() );
-
-    alto = qobject_cast<BioStruct3DObject*>(alto->clone());
-
-    const BioStruct3D &ref = refo->getBioStruct3D();
-    const BioStruct3D &alt = alto->getBioStruct3D();
-
-    if (ref.getNumberOfAtoms() != alt.getNumberOfAtoms()) {
-        QMessageBox::warning(0, "Error", "Structures should have the same length");
-        return;
-    }
-
-    int altModelName = altModel->itemData(altModel->currentIndex()).value<int>();
-    int refModelName = refModel->itemData(refModel->currentIndex()).value<int>();
-
-    // TODO: option for selecting chains
-    StructuralAlignmentTaskSettings settings = { BioStruct3DReference(refo, ref.moleculeMap.keys(), refModelName),
-                                                 BioStruct3DReference(alto, alt.moleculeMap.keys(), altModelName) };
-
-
-    // TODO: option for selecting algorithm
-    task = reg->createStructuralAlignmentTask(reg->getFactoriesIds().first(), settings);
+    task = new StructuralAlignmentTask(algorithm, settings);
 
     QDialog::accept();
+}
+
+int StructuralAlignmentDialog::execIfAlgorithmAvailable() {
+    StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
+    if (reg->getFactoriesIds().isEmpty()) {
+        QMessageBox::warning(this, "Error", "No available algorithms, make sure that apropriate plugin loaded (for ex. PTools)");
+        return Rejected;
+    }
+    else {
+        return exec();
+    }
 }
 
 }   // namespace U2

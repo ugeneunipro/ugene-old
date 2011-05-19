@@ -23,6 +23,7 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/BioStruct3D.h>
+#include <U2Core/U2Region.h>
 
 #include "ptools/superpose.h"
 
@@ -35,30 +36,75 @@ namespace U2 {
 
 /* class PToolsAligner : public StructuralAlignmentAlgorithm */
 
-static PTools::Rigidbody* createRigidBody(const BioStruct3D &biostruct, QList<int> chainIds, int modelId)
-{
+static PTools::Rigidbody* createRigidBody(const BioStruct3DReference &subset) {
     PTools::Rigidbody *body = new PTools::Rigidbody();
+    const BioStruct3D &biostruct = subset.obj->getBioStruct3D();
 
-    foreach (int chainId, chainIds) {
-        const Molecule3DModel &model = biostruct.getModelByName(chainId, modelId);
+    foreach (int chainId, subset.chains) {
+        const Molecule3DModel &model = biostruct.getModelByName(chainId, subset.modelId);
+
+        U2Region region;
+        if (subset.chains.size() == 1) {
+            // take region associated with the single chain from the subset
+            region = subset.chainRegion;
+        }
+        else {
+            // take full chain
+            region = U2Region(0, biostruct.moleculeMap.value(chainId)->residueMap.size());
+        }
 
         // built in assumtion that order of atoms in BioStruct3D matches order of residues
+        int i = 0;
         foreach (const SharedAtom &atom, model.atoms)
         {
-            PTools::Atomproperty pproperty;
-            pproperty.SetType(atom->name.data());
-            pproperty.SetResidId(atom->residueIndex);
-            //pproperty.SetAtomId();
+            // take into account only CA atoms (backbone) because subsets may have different residues,
+            // i.e. different number of atoms on the same nuber of residues
+            if ( atom->name == "CA") {
+                if (i >= region.startPos && i < region.endPos()) {
+                    PTools::Atomproperty pproperty;
+                    pproperty.SetType(atom->name.data());
+                    pproperty.SetResidId(atom->residueIndex);
+                    //pproperty.SetAtomId();
 
-            const Vector3D &coord = atom->coord3d;
-            PTools::Coord3D pcoord(coord.x, coord.y, coord.z);
+                    const Vector3D &coord = atom->coord3d;
+                    PTools::Coord3D pcoord(coord.x, coord.y, coord.z);
 
-            PTools::Atom patom(pproperty, pcoord);
-            body->AddAtom(patom);
+                    PTools::Atom patom(pproperty, pcoord);
+                    body->AddAtom(patom);
+                }
+                ++i;
+            }
         }
     }
 
     return body;
+}
+
+/** @returns Number of residues (CA atoms) in subset */
+static int getSubsetSize(const BioStruct3DReference &subset) {
+    int res = 0;
+    if (subset.chains.size() == 1) {
+        // lenggth of region
+        res = subset.chainRegion.length;
+    }
+    else {
+        // lenghth of all chains
+        foreach (int chainId, subset.chains) {
+            int length = subset.obj->getBioStruct3D().moleculeMap.value(chainId)->residueMap.size();
+            res += length;
+        }
+    }
+
+    return res;
+}
+
+QString PToolsAligner::validate(const StructuralAlignmentTaskSettings &settings) {
+    int refSize = getSubsetSize(settings.ref), altSize = getSubsetSize(settings.alt);
+    if (refSize != altSize) {
+        return QString("structure subsets has different size (number of residues)");
+    }
+
+    return QString();
 }
 
 StructuralAlignment PToolsAligner::align(const StructuralAlignmentTaskSettings &settings) {
@@ -66,8 +112,13 @@ StructuralAlignment PToolsAligner::align(const StructuralAlignmentTaskSettings &
 
     StructuralAlignment result;
     try {
-        auto_ptr<PTools::Rigidbody> prefBody(createRigidBody(settings.ref.obj->getBioStruct3D(), settings.ref.chains, settings.ref.modelId));
-        auto_ptr<PTools::Rigidbody> paltBody(createRigidBody(settings.alt.obj->getBioStruct3D(), settings.ref.chains, settings.alt.modelId));
+        auto_ptr<PTools::Rigidbody> prefBody(createRigidBody(settings.ref));
+        auto_ptr<PTools::Rigidbody> paltBody(createRigidBody(settings.alt));
+
+        if (prefBody->Size() != paltBody->Size()) {
+            algoLog.error(QString("Failed to align, subsets turn to RigidBodies of a different size"));
+            return result;
+        }
 
         Superpose_t presult = PTools::superpose(*prefBody, *paltBody);
 

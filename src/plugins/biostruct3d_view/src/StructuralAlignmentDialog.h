@@ -28,13 +28,17 @@ namespace U2 {
 
 class StructuralAlignmentTask;
 class BioStruct3DObject;
+class BioStruct3DSubsetEditor;
 
 class StructuralAlignmentDialog : public QDialog, public Ui::StructuralAlignmentDialog
 {
     Q_OBJECT
 
 public:
-    StructuralAlignmentDialog(const BioStruct3DObject *fixedRef = 0, int fixedRefModel = 0, QWidget *parent = 0);
+    StructuralAlignmentDialog(const BioStruct3DObject *fixedRef = 0, int fixedRefModel = -1, QWidget *parent = 0);
+
+    /** Check if algorithm available and ::exec() */
+    int execIfAlgorithmAvailable();
 
     /** @returns set up StructuralAlignmentTask */
     StructuralAlignmentTask* getTask() { return task; }
@@ -42,22 +46,10 @@ public:
 public slots:
     virtual void accept();
 
-private slots:
-    void sl_biostructChanged(int idx);
-    void sl_chainChanged(int idx);
-    
-private:
-    void createModelList(QComboBox *biostruct, int idx, QComboBox *model);
-    void createModelLists();
-
-    void createChainList(QComboBox *biostruct, int idx, QComboBox *chain);
-    void createChainLists();
-
 private:
     StructuralAlignmentTask *task;
+    BioStruct3DSubsetEditor *ref, *mob;
 
-private:
-    static const QString ALL_CHAINS;
 };
 
 }   // namespace U2

@@ -1376,7 +1376,7 @@ void BioStruct3DGLWidget::sl_alignWith() {
     int currentModelId = ctx.biostruct->getModelsNames().at(ctx.renderer->getShownModelsIndexes().first());
 
     StructuralAlignmentDialog dlg(contexts.first().obj, currentModelId);
-    if (dlg.exec() == QDialog::Accepted) {
+    if (dlg.execIfAlgorithmAvailable() == QDialog::Accepted) {
         Task *task = dlg.getTask();
         assert(task && "If dialog accepded it must return valid task");
 
@@ -1393,6 +1393,9 @@ void BioStruct3DGLWidget::sl_resetAlignment() {
     if (contexts.size() == 2) {
         contexts.removeLast();
         alignWithAction->setEnabled(true);
+
+        glFrame->makeCurrent();
+        update();
     }
 }
 
