@@ -64,6 +64,15 @@ void ReportSender::parse(const QString &htmlReport) {
         QByteArray stacktrace = fp.readAll();
         report += "Stack trace:\n";
         report += stacktrace.data();
+        if(stacktrace.isEmpty()) {
+            QFile err("/tmp/UGENEerror");
+            if(err.open(QIODevice::ReadOnly)) {
+                stacktrace = fp.readAll();
+                report += stacktrace.data();
+                err.close();
+            }
+        }
+        fp.close();
     }
 }
 
