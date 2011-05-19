@@ -36,8 +36,8 @@ struct State{
 		dFisher = 0.05;
 		dIntProbability = 0;
 		dIntFisher = 0.2;
-		nMinComplexity = 0;
-		nMaxComplexity = 2;
+		nMinComplexity = 1;
+		nMaxComplexity = 5;
 		dMinPosCorrelation	= 0.5;
 		dMaxPosCorrelation	= 1;
 		dMinNegCorrelation	= -1;

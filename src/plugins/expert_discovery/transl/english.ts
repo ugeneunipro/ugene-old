@@ -644,7 +644,7 @@
     </message>
     <message>
         <source>Expert Discovery (alpha)</source>
-        <translation>Expert Discovery (альфа)</translation>
+        <translation></translation>
     </message>
 </context>
 <context>

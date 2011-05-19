@@ -233,10 +233,10 @@ void ExpertDiscoveryExtSigWiz::accept(){
 }
 
 void ExpertDiscoveryExtSigWiz::hideParameters(){
-    label_4->hide();
-    fishCritEdit->hide();
-    minimFishCritCheck->hide();
-    storeCheck->hide();
+  //  label_4->hide();
+ //   fishCritEdit->hide();
+ //   minimFishCritCheck->hide();
+//    storeCheck->hide();
     ulCritCheck->hide();
     label_5->hide();
     samplesBoundEdit->hide();
