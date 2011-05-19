@@ -83,6 +83,7 @@ signals:
     
 private slots:
     void sl_referenceLoaded();
+    void sl_referenceLoadingFailed();
     void sl_referenceDocLoadedStateChanged();
     void sl_referenceDocRemoved(Document*);
     void sl_referenceDocAdded(Document *);

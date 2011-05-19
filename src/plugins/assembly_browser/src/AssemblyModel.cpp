@@ -203,10 +203,17 @@ Task * AssemblyModel::createLoadReferenceAndAddtoProjectTask(const U2CrossDataba
 
 void AssemblyModel::startLoadReferenceTask(Task * t) {
     assert(t != NULL);
-    connect(new TaskSignalMapper(t), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_referenceLoaded()));
+    TaskSignalMapper * tsm = new TaskSignalMapper(t);
+    connect(tsm, SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_referenceLoaded()));
+    connect(tsm, SIGNAL(si_taskFailed(Task*)), SLOT(sl_referenceLoadingFailed()));
     loadingReference = true;
     emit si_referenceChanged();
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
+}
+
+void AssemblyModel::sl_referenceLoadingFailed() {
+    loadingReference = false;
+    emit si_referenceChanged(); // to update reference area
 }
 
 // when reference doc removed from project

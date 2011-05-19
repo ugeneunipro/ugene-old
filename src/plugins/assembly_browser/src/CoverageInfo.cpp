@@ -34,12 +34,13 @@ BackgroundTask<CoverageInfo>("Calculate assembly coverage", TaskFlag_None), sett
     tpm = Progress_Manual;
 };
 
+// see commented code below
 // to calc sum in QVector
-struct SumCounter {
-    qint64 sum;
-    SumCounter() : sum(0) {}
-    void operator()(qint64 x) {sum += x;}
-};
+//struct SumCounter {
+//    qint64 sum;
+//    SumCounter() : sum(0) {}
+//    void operator()(qint64 x) {sum += x;}
+//};
 
 void CalcCoverageInfoTask::run() {
     const int numOfRegions = settings.regions;
