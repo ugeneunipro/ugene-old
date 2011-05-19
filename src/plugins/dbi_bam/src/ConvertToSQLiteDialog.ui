@@ -82,7 +82,7 @@ p, li { white-space: pre-wrap; }
      <item>
       <widget class="QToolButton" name="inverseSelectionToolButton">
        <property name="text">
-        <string>Inverse Selection</string>
+        <string>Invert Selection</string>
        </property>
       </widget>
      </item>
