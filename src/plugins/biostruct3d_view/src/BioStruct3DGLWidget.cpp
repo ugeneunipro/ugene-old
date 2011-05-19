@@ -1377,6 +1377,8 @@ void BioStruct3DGLWidget::sl_alignWith() {
 
     StructuralAlignmentDialog dlg(contexts.first().obj, currentModelId);
     if (dlg.execIfAlgorithmAvailable() == QDialog::Accepted) {
+        sl_resetAlignment();
+
         Task *task = dlg.getTask();
         assert(task && "If dialog accepded it must return valid task");
 
@@ -1384,7 +1386,6 @@ void BioStruct3DGLWidget::sl_alignWith() {
         connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onAlignmentDone(Task*)));
 
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
-        alignWithAction->setEnabled(false);
     }
 }
 
@@ -1392,7 +1393,6 @@ void BioStruct3DGLWidget::sl_resetAlignment() {
     assert(contexts.size() < 3 && "Multiple models in one view is unsupported now");
     if (contexts.size() == 2) {
         contexts.removeLast();
-        alignWithAction->setEnabled(true);
 
         glFrame->makeCurrent();
         update();
