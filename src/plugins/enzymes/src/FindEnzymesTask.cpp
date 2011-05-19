@@ -304,7 +304,9 @@ void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti)
         return;
     }
     bool useExtendedComparator = enzyme->alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
-                                || dna.alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED();
+                                || dna.alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
+                                || dna.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
+                                || dna.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
   
     const SequenceWalkerConfig& c = t->getGlobalConfig();
     if (useExtendedComparator) {

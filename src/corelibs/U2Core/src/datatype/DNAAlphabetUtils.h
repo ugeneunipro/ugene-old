@@ -71,12 +71,17 @@ public:
 
 #define DNA_AL_EX_INDEX_SIZE ('Z'- ' ' + 1)
 
-//TODO: support RNA too
 class ExtendedDNAlphabetComparator : public DNAAlphabetComparator {
 public:
     ExtendedDNAlphabetComparator(DNAAlphabet* _al1, DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2) {
         assert(al1->isNucleic() && al2->isNucleic());
-        assert(al1->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() || al2->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+        assert(al1->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
+            || al2->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()
+            || al1->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
+            || al2->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
+            || al1->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED()
+            || al2->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED()
+            );
         buildIndex();
     }
 
@@ -117,6 +122,7 @@ void ExtendedDNAlphabetComparator::buildIndex() {
     index['C'-' '] = (1<<bit('C'));
     index['G'-' '] = (1<<bit('G'));
     index['T'-' '] = (1<<bit('T'));
+    index['U'-' '] = (1<<bit('T'));
     index['R'-' '] = (1<<bit('G')) | (1<<bit('A'));
     index['Y'-' '] = (1<<bit('C')) | (1<<bit('T'));
     index['M'-' '] = (1<<bit('A')) | (1<<bit('C'));
