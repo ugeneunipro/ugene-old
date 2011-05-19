@@ -42,6 +42,11 @@ class AssemblyReadsArea;
 
 class AssemblyReadsArea: public QWidget {
     Q_OBJECT
+    
+    // (hotkey, description) pairs
+    static const QList<QPair<QString, QString> > HOTKEY_DESCRIPTIONS;
+    static QList<QPair<QString, QString> > initHotkeyDescriptions();
+    
 public:
     AssemblyReadsArea(AssemblyBrowserUi * ui, QScrollBar * hBar, QScrollBar * vBar);
     
