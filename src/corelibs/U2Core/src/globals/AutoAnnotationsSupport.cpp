@@ -38,7 +38,7 @@ AutoAnnotationsUpdater::AutoAnnotationsUpdater( const QString& nm, const QString
 : groupName(gName), name(nm)
 {
     
-    checkedByDefault = AppContext::getSettings()->getValue(AUTO_ANNOTATION_SETTINGS + groupName, true).toBool();
+    checkedByDefault = AppContext::getSettings()->getValue(AUTO_ANNOTATION_SETTINGS + groupName, false).toBool();
 }
 
 AutoAnnotationsUpdater::~AutoAnnotationsUpdater()
