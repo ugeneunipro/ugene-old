@@ -186,7 +186,13 @@ Task* BlastAllWorker::tick() {
         AppContext::getAppSettings()->getUserAppsSettings()->setTemporaryDirPath(path);
     }
     DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-    
+    if(seq.alphabet->isAmino() && (cfg.programName == "blastn" || cfg.programName == "blastx" || cfg.programName == "tblastx")){
+        algoLog.error( tr("Sequence is amino, but search type is nucleic") );
+        return NULL;
+    }else if(seq.alphabet->isNucleic()&& (cfg.programName == "blastp" || cfg.programName == "tblastn")){
+        algoLog.error( tr("Sequence is nucleic, but search type is amino") );
+        return NULL;
+    }
     if( seq.length() < 1) {
         algoLog.error( tr("Empty sequence supplied to BLAST") );
         return NULL;
