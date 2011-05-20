@@ -195,17 +195,13 @@ void BioStruct3DGLWidget::initializeGL()
 
 void BioStruct3DGLWidget::resizeGL(int width, int height)
 {
-    glDeleteTextures(1, &anaglyphRenderTextureLeft);
-    glDeleteTextures(1, &anaglyphRenderTextureRight);
-    glDeleteTextures(1, &tempAnaglyphRenderTexture);
-
-    anaglyphRenderTextureLeft = getEmptyTexture(width, height);
-    anaglyphRenderTextureRight = getEmptyTexture(width, height);
-    tempAnaglyphRenderTexture =  getEmptyTexture(width, height);
-
-    hasGlErrors();
 
     if (firstResize && (width>0) && (height>0)) {
+
+        anaglyphRenderTextureLeft = getEmptyTexture(width, height);
+        anaglyphRenderTextureRight = getEmptyTexture(width, height);
+        tempAnaglyphRenderTexture =  getEmptyTexture(width, height);
+
         // test anaglyph mode
         anaglyph = true;
         draw(); // draw() checks for openGL errors and sets 'anaglyphAvailable' flag
@@ -215,6 +211,22 @@ void BioStruct3DGLWidget::resizeGL(int width, int height)
 
         firstResize = false;
     }
+
+    if (anaglyph) {
+        if (anaglyphRenderTextureLeft != NULL)
+            glDeleteTextures(1, &anaglyphRenderTextureLeft);
+        if (anaglyphRenderTextureRight != NULL)
+            glDeleteTextures(1, &anaglyphRenderTextureRight);
+        if (tempAnaglyphRenderTexture != NULL)
+            glDeleteTextures(1, &tempAnaglyphRenderTexture);
+
+        anaglyphRenderTextureLeft = getEmptyTexture(width, height);
+        anaglyphRenderTextureRight = getEmptyTexture(width, height);
+        tempAnaglyphRenderTexture =  getEmptyTexture(width, height);
+    }
+
+    hasGlErrors();
+
     glFrame->updateViewPort(width, height);
 }
 
