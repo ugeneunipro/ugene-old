@@ -38,6 +38,7 @@
 
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
+#include <U2Core/FailTask.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -160,8 +161,7 @@ Task* MAFFTWorker::tick() {
     
     MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
     if( msa.isEmpty() ) {
-        algoLog.error( tr("An empty MSA has been supplied to MAFFT.") );
-        return NULL;
+        return new FailTask(tr("An empty MSA has been supplied to MAFFT."));
     }
     Task* t = new MAFFTSupportTask(new MAlignmentObject(msa), cfg);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));

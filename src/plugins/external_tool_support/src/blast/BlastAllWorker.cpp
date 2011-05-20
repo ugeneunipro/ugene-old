@@ -37,6 +37,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
+#include <U2Core/FailTask.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -186,32 +187,22 @@ Task* BlastAllWorker::tick() {
         AppContext::getAppSettings()->getUserAppsSettings()->setTemporaryDirPath(path);
     }
     DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-    if(seq.alphabet->isAmino() && (cfg.programName == "blastn" || cfg.programName == "blastx" || cfg.programName == "tblastx")){
-        algoLog.error( tr("Sequence is amino, but search type is nucleic") );
-        return NULL;
-    }else if(seq.alphabet->isNucleic()&& (cfg.programName == "blastp" || cfg.programName == "tblastn")){
-        algoLog.error( tr("Sequence is nucleic, but search type is amino") );
-        return NULL;
-    }
     if( seq.length() < 1) {
-        algoLog.error( tr("Empty sequence supplied to BLAST") );
-        return NULL;
+        return new FailTask(tr("Empty sequence supplied to BLAST"));
     }
     cfg.querySequence=seq.seq;
 
     DNAAlphabet *alp = AppContext::getDNAAlphabetRegistry()->findAlphabet(seq.seq);
     cfg.alphabet=alp;
     //TO DO: Check alphabet
-    if(alp == AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::AMINO_DEFAULT())) {
+    if(seq.alphabet->isAmino()) {
         if(cfg.programName == "blastn" || cfg.programName == "blastx" || cfg.programName == "tblastx") {
-            algoLog.info(tr("Selected BLAST search with nucleotide input sequence"));
-            return NULL;
+            return new FailTask(tr("Selected BLAST search with nucleotide input sequence"));
         }
     }
     else {
         if(cfg.programName == "blastp" || cfg.programName == "tblastn") {
-            algoLog.info(tr("Selected BLAST search with amino acid input sequence"));
-            return NULL;
+            return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
         }
     }
     cfg.needCreateAnnotations=false;

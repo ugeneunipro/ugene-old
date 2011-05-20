@@ -37,6 +37,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/FailTask.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -248,8 +249,7 @@ Task* ClustalWWorker::tick() {
     MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
     
     if( msa.isEmpty() ) {
-        algoLog.error( tr("An empty MSA has been supplied to ClustalW.") );
-        return NULL;
+        return new FailTask(tr("An empty MSA has been supplied to ClustalW."));
     }
     Task* t = new ClustalWSupportTask(new MAlignmentObject(msa), cfg);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));

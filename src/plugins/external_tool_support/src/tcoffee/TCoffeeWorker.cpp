@@ -38,6 +38,7 @@
 
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
+#include <U2Core/FailTask.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -157,8 +158,7 @@ Task* TCoffeeWorker::tick() {
     MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
     
     if( msa.isEmpty() ) {
-        algoLog.error( tr("Empty msa supplied to tcoffee") );
-        return NULL;
+        return new FailTask(tr("Empty msa supplied to tcoffee"));
     }
     Task* t = new TCoffeeSupportTask(new MAlignmentObject(msa), cfg);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
