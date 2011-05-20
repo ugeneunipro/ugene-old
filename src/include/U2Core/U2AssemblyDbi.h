@@ -41,10 +41,13 @@ public:
 /** Additional reads info used during reads import into assembly */
 class U2AssemblyReadsImportInfo {
 public:
-    U2AssemblyReadsImportInfo() : nReads(0) {}
+    U2AssemblyReadsImportInfo() : nReads(0), packed(false) {}
     
     /** Number of reads added during import */
     qint64 nReads;
+
+    /** Specifies if assembly was packed at import time*/
+    bool packed;
 
     /* Place where to save pack statistics */
     U2AssemblyPackStat packStat;
