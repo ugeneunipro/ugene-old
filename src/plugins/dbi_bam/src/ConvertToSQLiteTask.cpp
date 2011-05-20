@@ -257,7 +257,7 @@ void ConvertToSQLiteTask::run() {
         U2AttributeDbi * attributeDbi = sqliteDbi->getAttributeDbi();
         qint64 totalReadsImported = 0;
         time_t totalReadTime = 0;
-
+        bool pack = true;
         for(int i=0; i < reader->getHeader().getReferences().count(); i++) {
             if(bamInfo.isReferenceSelected(i)) {
                 
@@ -273,6 +273,8 @@ void ConvertToSQLiteTask::run() {
                     sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &iter, importInfo, opStatus);
                     totalReadsImported += iter.getImportedCount();
                     totalReadTime += iter.getReadTime();
+                    pack = !importInfo.packed;
+                    assert(bamInfo.hasIndex());
                 }
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
@@ -385,7 +387,7 @@ void ConvertToSQLiteTask::run() {
 
         //Packing
         time_t packStart = time(0);
-        {
+        if (pack) {
             stateInfo.setDescription(BAMDbiPlugin::tr("Packing reads"));
             int i = 0;
             foreach(int index, assemblies.keys()) {
