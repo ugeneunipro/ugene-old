@@ -154,7 +154,7 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
                 service = "plain";
             }
             addParametr(request,ReqParams::service,service);
-            if(service=="phi-blast") {
+            if(service=="phi") {
                 QString phiPattern = el.attribute(PATTERN_ATTR);
                 addParametr(request,ReqParams::phiPattern,phiPattern);
             }
