@@ -1,11 +1,12 @@
 #!UGENE_QUERY
+#
 #Open Reading Frame surrounded by repeat units
 
 query RepeatsWithOrf {
 
 
-    Repeat { type: repeats; min-length: 10; identity:100; } 
-    ORF { type: orf; } 
+    Repeat { type: repeats; key: repeat_unit; min-length: 10; } 
+    ORF { type: orf; key: ORF; strand: direct; } 
 
     Repeat.left--ORF.unit { type: distance; distance_type: end-to-start; min: 0; max: 5000; }
     ORF.unit--Repeat.right { type: distance; distance_type: end-to-start; min: 0; max: 5000; }
@@ -14,7 +15,8 @@ query RepeatsWithOrf {
         visual{
                 Repeat.left { geometry: 35,30,229,120,120; } 
                 Repeat.right { geometry: 504,30,238,120,120; } 
-                ORF.unit { geometry: 302,150,166,160,160; } 
+                ORF.unit { geometry: 302,149,178,160,160; } 
         }
+        order { Repeat;ORF; }
     }
 }
