@@ -196,7 +196,7 @@ void AssemblyReadsArea::drawWelcomeScreen(QPainter & p) {
         * |   | Region | Coverage |
         * | 1 | [x,y]  | z        |
         */
-        coveredRegionsText += tr("<tr><td></td><td>Region</td><td>Coverage</td></tr>");
+        coveredRegionsText += tr("<tr><td></td><td>Region</td><td>Approx.&nbsp;coverage</td></tr>");
         for(int i = 0; i < coveredRegions.size(); ++i) {
             const CoveredRegion & cr = coveredRegions.at(i);
             QString crStart = FormatUtils::splitThousands(cr.region.startPos);
