@@ -237,7 +237,7 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
     char name_buf[512];
     name_buf[readlink(path.toAscii().data(), name_buf, 511)]=0;
     FILE *fp;
-    FIEL *err;
+    FILE *err;
     fp = freopen ("/tmp/UGENEstacktrace.txt","w+",stdout);
     err = freopen("/tmp/UGENEerror", "w+", stderr);
     int child_pid = fork();
