@@ -487,7 +487,9 @@ int main(int argc, char **argv)
     }
     
     registerCoreServices();
+#ifdef _DEBUG 
     GUITestService *guiTestService = new GUITestService();
+#endif
     
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
         Shtirlitz::wakeup();
