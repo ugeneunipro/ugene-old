@@ -109,45 +109,45 @@ void ExpertDiscoveryView::insertSeqView( QWidget* view ){
 }
 
 void ExpertDiscoveryView::createActions(){
-    newDoc = new QAction(tr("New ExpertDiscovery Document"), this);
+    newDoc = new QAction(tr("New Expert Discovery Document"), this);
     newDoc->setIcon(QIcon(":expert_discovery/images/filenew.png"));
     connect(newDoc, SIGNAL(triggered()), SLOT(sl_newDoc()));
 
-    openDoc = new QAction(tr("Open ExpertDiscovery Document"), this);
+    openDoc = new QAction(tr("Open Expert Discovery Document"), this);
     openDoc->setIcon(QIcon(":expert_discovery/images/fileopen.png"));
     connect(openDoc, SIGNAL(triggered()), SLOT(sl_openDoc()));
 
-    saveDoc = new QAction(tr("Save ExpertDiscovery Document"), this);
+    saveDoc = new QAction(tr("Save Expert Discovery Document"), this);
     saveDoc->setIcon(QIcon(":expert_discovery/images/filesave.png"));
     connect(saveDoc, SIGNAL(triggered()), SLOT(sl_saveDoc()));
 
 
     setUpRecBound = new QAction(tr("Set Recognition Bound"), this);
-    setUpRecBound->setIcon(QIcon(":expert_discovery/images/setRecBound.ico"));
+    setUpRecBound->setIcon(QIcon(":expert_discovery/images/setRecBound.png"));
     connect(setUpRecBound, SIGNAL(triggered()), SLOT(sl_setRecBound()));
     
     optimizeRecBound = new QAction(tr("Optimize Recognition Bound"), this);
-    optimizeRecBound->setIcon(QIcon(":expert_discovery/images/optRecBound.ico"));
+    optimizeRecBound->setIcon(QIcon(":expert_discovery/images/optRecBound.png"));
     connect(optimizeRecBound, SIGNAL(triggered()), SLOT(sl_optimizeRecBound()));
 
     loadControlSeqAction = new QAction(tr("Load control sequences"), this);
-    loadControlSeqAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeq.ico"));
+    loadControlSeqAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeq.png"));
     connect(loadControlSeqAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryControlDialog()));
 
     extractSignalsAction = new QAction(tr("Extract signals"), this);
-    extractSignalsAction->setIcon(QIcon(":expert_discovery/images/extractSignals2.ico"));
+    extractSignalsAction->setIcon(QIcon(":expert_discovery/images/extractSignals2.png"));
     connect(extractSignalsAction, SIGNAL(triggered()), SLOT(sl_extractSignals()));
 
     loadMarkupAction = new QAction(tr("Load markup"), this);
-    loadMarkupAction->setIcon(QIcon(":expert_discovery/images/loadMarkup.ico"));
+    loadMarkupAction->setIcon(QIcon(":expert_discovery/images/loadMarkup.png"));
     connect(loadMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryPosNegMrkDialog()));
 
     loadControlMarkupAction = new QAction(tr("Load control sequences markup"), this);
-    loadControlMarkupAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeqAnnot.ico"));
+    loadControlMarkupAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeqAnnot.png"));
     connect(loadControlMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryControlMrkDialog()));
 
     generateFullReportAction = new QAction(tr("Generate recognition report"), this);
-    generateFullReportAction->setIcon(QIcon(":expert_discovery/images/genRep.ico"));
+    generateFullReportAction->setIcon(QIcon(":expert_discovery/images/genRep.png"));
     connect(generateFullReportAction, SIGNAL(triggered()), SLOT(sl_generateFullReport()));
 
     setUpRecBound->setEnabled(false);

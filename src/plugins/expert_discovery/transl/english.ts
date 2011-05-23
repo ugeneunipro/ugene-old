@@ -210,10 +210,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>Coverege bound</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Fisher criteria level</source>
         <translation></translation>
     </message>
@@ -291,6 +287,10 @@
     </message>
     <message>
         <source>Aligned</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Coverage bound</source>
         <translation></translation>
     </message>
 </context>
@@ -765,18 +765,6 @@
 <context>
     <name>U2::ExpertDiscoveryView</name>
     <message>
-        <source>New ExpertDiscovery Document</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Open ExpertDiscovery Document</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Save ExpertDiscovery Document</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Load control sequences</source>
         <translation></translation>
     </message>
@@ -826,6 +814,18 @@
     </message>
     <message>
         <source>Optimize Recognition Bound</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>New Expert Discovery Document</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Open Expert Discovery Document</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Save Expert Discovery Document</source>
         <translation></translation>
     </message>
 </context>

@@ -1,30 +1,28 @@
 <RCC>
     <qresource prefix="/expert_discovery" >
-	<file>images/ExpertDiscoveryDoc.ico</file>
-	<file>images/control.ico</file>
-	<file>images/cs.ico</file>
-	<file>images/csroot.ico</file>
-	<file>images/distance.ico</file>
-	<file>images/ExpertDiscovery.ico</file>
-	<file>images/folder.ico</file>
-	<file>images/interval.ico</file>
-	<file>images/mrkroot.ico</file>
-	<file>images/negseq.ico</file>
-	<file>images/posseq.ico</file>
-	<file>images/repetition.ico</file>
-	<file>images/sequence.ico</file>
-	<file>images/sequences.ico</file>
-	<file>images/ts.ico</file>
-	<file>images/undefined.ico</file>
-	<file>images/extractSignals.ico</file>
-	<file>images/extractSignals2.ico</file>
-	<file>images/genRep.ico</file>
-	<file>images/loadControlsSeq.ico</file>
-	<file>images/loadControlsSeqAnnot.ico</file>
-	<file>images/loadMarkup.ico</file>
-	<file>images/newDoc.ico</file>
-	<file>images/optRecBound.ico</file>
-	<file>images/setRecBound.ico</file>
+	<file>images/control.png</file>
+	<file>images/cs.png</file>
+	<file>images/csroot.png</file>
+	<file>images/distance.png</file>
+	<file>images/folder.png</file>
+	<file>images/interval.png</file>
+	<file>images/mrkroot.png</file>
+	<file>images/negseq.png</file>
+	<file>images/posseq.png</file>
+	<file>images/repetition.png</file>
+	<file>images/sequence.png</file>
+	<file>images/sequences.png</file>
+	<file>images/ts.png</file>
+	<file>images/undefined.png</file>
+	<file>images/extractSignals.png</file>
+	<file>images/extractSignals2.png</file>
+	<file>images/genRep.png</file>
+	<file>images/loadControlsSeq.png</file>
+	<file>images/loadControlsSeqAnnot.png</file>
+	<file>images/loadMarkup.png</file>
+	<file>images/newDoc.png</file>
+	<file>images/optRecBound.png</file>
+	<file>images/setRecBound.png</file>
 	<file>images/fileopen.png</file>
 	<file>images/filenew.png</file>
 	<file>images/filesave.png</file>

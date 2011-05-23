@@ -57,7 +57,7 @@ void EDProjectTree::remake(){
 
     addTopLevelItem(&seqRoot);
     seqRoot.setText(0,"Sequences");
-    seqRoot.setIcon(0,QIcon(":expert_discovery/images/sequences.ico"));
+    seqRoot.setIcon(0,QIcon(":expert_discovery/images/sequences.png"));
     seqRoot.setExpanded(true);
     seqRoot.update(true);
     for (int i = 0; i < seqRoot.childCount(); i++){
@@ -69,7 +69,7 @@ void EDProjectTree::remake(){
 
     addTopLevelItem(&mrkRoot);
     mrkRoot.setText(0,"Markup");
-    mrkRoot.setIcon(0,QIcon(":expert_discovery/images/mrkroot.ico"));
+    mrkRoot.setIcon(0,QIcon(":expert_discovery/images/mrkroot.png"));
     mrkRoot.updMarkup(edData);
     for (int i = 0; i < mrkRoot.childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(mrkRoot.child(i));
@@ -80,7 +80,7 @@ void EDProjectTree::remake(){
 
     addTopLevelItem(&root);
     root.setText(0,"Complex signals");
-    root.setIcon(0,QIcon(":expert_discovery/images/csroot.ico"));
+    root.setIcon(0,QIcon(":expert_discovery/images/csroot.png"));
     root.update(true);
     for (int i = 0; i < root.childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(root.child(i));
@@ -339,24 +339,24 @@ QIcon EDProjectTree::getItemIcon(EDProjectItem* pItem){
 
     switch (iType)
     {
-        case PIT_SEQUENCEROOT: return QIcon(":expert_discovery/images/sequences.ico");
-        case PIT_POSSEQUENCEBASE: return QIcon(":expert_discovery/images/posseq.ico");
-        case PIT_NEGSEQUENCEBASE: return QIcon(":expert_discovery/images/negseq.ico");
-        case PIT_CONTROLSEQUENCEBASE: return QIcon(":expert_discovery/images/control.ico");
-        case PIT_SEQUENCE: return QIcon(":expert_discovery/images/sequence.ico");
-        case PIT_CONTROLSEQUENCE: return QIcon(":expert_discovery/images/sequence.ico");
-        case PIT_CS_ROOT: return QIcon(":expert_discovery/images/csroot.ico");
-        case PIT_CS_FOLDER: return QIcon(":expert_discovery/images/folder.ico");
-        case PIT_CS: return QIcon(":expert_discovery/images/cs.ico");
-        case PIT_CSN_UNDEFINED: return QIcon(":expert_discovery/images/undefined.ico");
-        case PIT_CSN_DISTANCE: return QIcon(":expert_discovery/images/distance.ico");
-        case PIT_CSN_REPETITION: return QIcon(":expert_discovery/images/repetition.ico");
-        case PIT_CSN_INTERVAL: return QIcon(":expert_discovery/images/interval.ico");
-        case PIT_CSN_MRK_ITEM: return QIcon(":expert_discovery/images/ts.ico");
-        case PIT_MRK_ITEM: return QIcon(":expert_discovery/images/ts.ico");
-        case PIT_CSN_WORD: return QIcon(":expert_discovery/images/ts.ico");
-        case PIT_MRK_ROOT: return QIcon(":expert_discovery/images/mrkroot.ico");
-        case PIT_MRK_FAMILY: return QIcon(":expert_discovery/images/folder.ico");
+        case PIT_SEQUENCEROOT: return QIcon(":expert_discovery/images/sequences.png");
+        case PIT_POSSEQUENCEBASE: return QIcon(":expert_discovery/images/posseq.png");
+        case PIT_NEGSEQUENCEBASE: return QIcon(":expert_discovery/images/negseq.png");
+        case PIT_CONTROLSEQUENCEBASE: return QIcon(":expert_discovery/images/control.png");
+        case PIT_SEQUENCE: return QIcon(":expert_discovery/images/sequence.png");
+        case PIT_CONTROLSEQUENCE: return QIcon(":expert_discovery/images/sequence.png");
+        case PIT_CS_ROOT: return QIcon(":expert_discovery/images/csroot.png");
+        case PIT_CS_FOLDER: return QIcon(":expert_discovery/images/folder.png");
+        case PIT_CS: return QIcon(":expert_discovery/images/cs.png");
+        case PIT_CSN_UNDEFINED: return QIcon(":expert_discovery/images/undefined.png");
+        case PIT_CSN_DISTANCE: return QIcon(":expert_discovery/images/distance.png");
+        case PIT_CSN_REPETITION: return QIcon(":expert_discovery/images/repetition.png");
+        case PIT_CSN_INTERVAL: return QIcon(":expert_discovery/images/interval.png");
+        case PIT_CSN_MRK_ITEM: return QIcon(":expert_discovery/images/ts.png");
+        case PIT_MRK_ITEM: return QIcon(":expert_discovery/images/ts.png");
+        case PIT_CSN_WORD: return QIcon(":expert_discovery/images/ts.png");
+        case PIT_MRK_ROOT: return QIcon(":expert_discovery/images/mrkroot.png");
+        case PIT_MRK_FAMILY: return QIcon(":expert_discovery/images/folder.png");
         default: return QIcon();
     }
 

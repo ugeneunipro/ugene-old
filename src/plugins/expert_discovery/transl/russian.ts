@@ -211,7 +211,7 @@
     </message>
     <message>
         <source>Coverege bound</source>
-        <translation>Порог покрытия</translation>
+        <translation type="obsolete">Порог покрытия</translation>
     </message>
     <message>
         <source>Fisher criteria level</source>
@@ -292,6 +292,10 @@
     <message>
         <source>Aligned</source>
         <translation>Выровненная выборка</translation>
+    </message>
+    <message>
+        <source>Coverage bound</source>
+        <translation>Порог покрытия</translation>
     </message>
 </context>
 <context>
@@ -789,15 +793,15 @@
     <name>U2::ExpertDiscoveryView</name>
     <message>
         <source>New ExpertDiscovery Document</source>
-        <translation>Создать новый лдокумент ExpertDiscovery</translation>
+        <translation type="obsolete">Создать новый лдокумент ExpertDiscovery</translation>
     </message>
     <message>
         <source>Open ExpertDiscovery Document</source>
-        <translation>Открыть документ ExpertDiscovery</translation>
+        <translation type="obsolete">Открыть документ ExpertDiscovery</translation>
     </message>
     <message>
         <source>Save ExpertDiscovery Document</source>
-        <translation>Сохранить документ ExpertDiscovery</translation>
+        <translation type="obsolete">Сохранить документ ExpertDiscovery</translation>
     </message>
     <message>
         <source>Load control sequences</source>
@@ -850,6 +854,18 @@
     <message>
         <source>Optimize Recognition Bound</source>
         <translation>Оптимизация порога распознования</translation>
+    </message>
+    <message>
+        <source>New Expert Discovery Document</source>
+        <translation>Создать новый документ Expert Discovery</translation>
+    </message>
+    <message>
+        <source>Open Expert Discovery Document</source>
+        <translation>Открыть документ Expert Discovery</translation>
+    </message>
+    <message>
+        <source>Save Expert Discovery Document</source>
+        <translation>Сохранить документ Expert Discovery</translation>
     </message>
 </context>
 <context>
