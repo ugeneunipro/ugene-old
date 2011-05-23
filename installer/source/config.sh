@@ -60,10 +60,6 @@ EXCLUDE_LIST=(
     "../../src/plugins/test_runner"
     "../../src/plugins/CoreTests"
     "../../src/plugins/perf_monitor"
-    "../../src/plugins/dbi_bam"
-    "../../src/plugins/dbi_file"
-    "../../src/plugins/dbi_sqlite"
-    "../../src/plugins/assembly_browser"
     "../../src/libs_3rdparty/openssl"
 )
 
