@@ -157,7 +157,7 @@ Section "Build"
     !insertmacro AddPlugin assembly_browser
     !insertmacro AddPlugin dbi_file
     !insertmacro AddPlugin expert_discovery
-
+    !insertmacro AddPlugin ptools
     
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"

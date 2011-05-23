@@ -96,6 +96,7 @@ call %INSTALL_DIR%/copy_plugin.cmd dbi_bam
 call %INSTALL_DIR%/copy_plugin.cmd assembly_browser
 call %INSTALL_DIR%/copy_plugin.cmd dbi_file
 call %INSTALL_DIR%/copy_plugin.cmd expert_discovery
+call %INSTALL_DIR%/copy_plugin.cmd ptools
 
 
 
