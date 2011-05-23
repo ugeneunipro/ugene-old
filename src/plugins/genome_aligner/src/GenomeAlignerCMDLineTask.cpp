@@ -182,7 +182,7 @@ QString GenomeAlignerCMDLineTask::getArgumentsDescritption()
     desc += tr("  --%1    Use this flag to only build index for reference sequence.\n\n").arg(OPTION_BUILD_INDEX, fieldSize);
     desc += tr("  --%1    Path to reference genome sequence\n\n").arg(OPTION_REFERENCE, fieldSize);
     desc += tr("  --%1    Path to short-reads data in FASTA or FASTQ format\n\n").arg(OPTION_SHORTREADS, fieldSize);
-    desc += tr("  --%1    Path to prebuilt index (base file name or with .idx extension). If not set, index is searched in system temporary directory.\n\n").arg(OPTION_INDEX_PATH, fieldSize);
+    desc += tr("  --%1    Path to prebuilt index (base file name or with .idx extension). If not set, index is searched in system temporary directory. If --build-index option is applied, index will be saved to specified path.\n\n").arg(OPTION_INDEX_PATH, fieldSize);
     desc += tr("  --%1    Path to output alignment in SAM format\n\n").arg(OPTION_RESULT, fieldSize);
     desc += tr("  --%1    Memory size (in Mbs) reserved for short-reads. The bigger value the faster algorithm works. Default value depends on available system memory.\n\n").arg(OPTION_MEMSIZE, fieldSize);
     desc += tr("  --%1    Index fragmentation size (in Mbs). Small fragments better fit into RAM, allowing to load more short reads. Default value is 10.\n\n").arg(OPTION_REF_FRAG, fieldSize);
