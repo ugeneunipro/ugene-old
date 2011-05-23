@@ -27,6 +27,7 @@ mkdir "${TARGET_EXE_DIR}/data"
 echo copying translations
 cp $RELEASE_DIR/transl_en.qm "$TARGET_EXE_DIR"
 cp $RELEASE_DIR/transl_ru.qm "$TARGET_EXE_DIR"
+cp -R ./qt_menu.nib "${TARGET_EXE_DIR}/../Resources"
 
 echo copying data dir
 
@@ -99,6 +100,8 @@ add-plugin opencl_support
 add-plugin dbi_sqlite
 add-plugin dbi_bam
 add-plugin assembly_browser
+add-plugin dbi_file
+add-plugin ptools
 
 if [ "$1" == "-test" ]
    then
