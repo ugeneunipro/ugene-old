@@ -5,43 +5,43 @@ typedef unsigned long long BMType;
 typedef unsigned int SAType;
 
 __global__ void binarySearch(BMType array[], int arraySize, 
-			BMType query[], int querySize) {
-	
-	unsigned int threadId = blockIdx.x * blockDim.x + threadIdx.x;
-	
-	int left = 0;
-	int right = arraySize - 1;
-	const BMType target = query[threadId];
-	
-	while (left <= right)
-	{
-		int mid = (left + right) >> 1;
-		BMType midValue = array[mid];
-		if(midValue > target) {
-			right = mid - 1;
-		} else if(midValue < target) {
-			left = mid + 1;
-		} else {
-			for (mid = mid - 1; mid >= 0; --mid ) {
-				if (array[mid] != target) {
-					break;
-				}
-			}
-			query[threadId] = mid + 1;
-			return; 
-		}
-	}
-	
-	query[threadId] = -1;
-		
+            BMType query[], int querySize) {
+
+    unsigned int threadId = blockIdx.x * blockDim.x + threadIdx.x;
+
+    int left = 0;
+    int right = arraySize - 1;
+    const BMType target = query[threadId];
+
+    while (left <= right)
+    {
+        int mid = (left + right) >> 1;
+        BMType midValue = array[mid];
+        if(midValue > target) {
+            right = mid - 1;
+        } else if(midValue < target) {
+            left = mid + 1;
+        } else {
+            for (mid = mid - 1; mid >= 0; --mid ) {
+                if (array[mid] != target) {
+                    break;
+                }
+            }
+            query[threadId] = mid + 1;
+            return;
+        }
+    }
+
+    query[threadId] = -1;
+
 }
 
 extern "C" void cudaBinarySearch(BMType* array, int arraySize, BMType* query, int querySize )
 {
-	printf("Starting binary search...\n");
-	binarySearch <<<querySize / 256 + 1, 256>>> (array, arraySize, query, querySize);	
-	cudaThreadSynchronize();
-	printf("Binary search is finished...\n");	
+    printf("Starting binary search...\n");
+    binarySearch <<<querySize / 256 + 1, 256>>> (array, arraySize, query, querySize);
+    cudaThreadSynchronize();
+    printf("Binary search is finished...\n");
 }
 
 
@@ -77,29 +77,29 @@ struct AlgSettings
 
 __device__ int lowerBound(BMType* bmArray, int bmArraySize, BMType target, BMType bitFilter) {
     int left = 0;
-	int right = bmArraySize - 1;
-	int result = -1;
+    int right = bmArraySize - 1;
+    int result = -1;
 
-	while (left <= right)
-	{
-		int mid = (left + right) >> 1;
-		long long rc = (bmArray[mid]&bitFilter) - (target&bitFilter);
-		if(rc > 0) {
-			right = mid - 1;
-		} else if(rc < 0) {
-			left = mid + 1;
-		} else {
-			for (mid = mid - 1; mid >= 0; --mid ) {
-				if ((bmArray[mid]&bitFilter) != (target&bitFilter)) {
-					break;
-				}
-			}
-			result = mid + 1;
-			break; 
-		}
-	}
-	
-	return result;
+    while (left <= right)
+    {
+        int mid = (left + right) >> 1;
+        long long rc = (bmArray[mid]&bitFilter) - (target&bitFilter);
+        if(rc > 0) {
+            right = mid - 1;
+        } else if(rc < 0) {
+            left = mid + 1;
+        } else {
+            for (mid = mid - 1; mid >= 0; --mid ) {
+                if ((bmArray[mid]&bitFilter) != (target&bitFilter)) {
+                    break;
+                }
+            }
+            result = mid + 1;
+            break;
+        }
+    }
+
+    return result;
 
 }
 
@@ -164,8 +164,8 @@ __global__ void alignReadsKernel(ShortReads reads,
                                AlgSettings s,
                                SAType* results)
 {
-	
-	const int CHARS_IN_MASK = 31;
+
+    const int CHARS_IN_MASK = 31;
     unsigned int threadId = blockIdx.x * blockDim.x + threadIdx.x;
     
     if (threadId >= reads.count) {
@@ -173,7 +173,7 @@ __global__ void alignReadsKernel(ShortReads reads,
     }
     
     int readOffset = reads.offsets[threadId];
-	int readSize = reads.sizes[threadId];
+    int readSize = reads.sizes[threadId];
 
     unsigned int bitTable[32];
     initBitTable(bitTable);
@@ -255,7 +255,7 @@ extern "C" void cudaAlignReads(char* readsData,
                                SAType* results)
 {
 
-	printf("Starting aligning reads with CUDA...\n");
+    printf("Starting aligning reads with CUDA...\n");
     
     ShortReads reads;
     reads.data = readsData;
@@ -280,7 +280,7 @@ extern "C" void cudaAlignReads(char* readsData,
     settings.w = w;
     //cudaPrintfInit(10*1024*1024);
 
-	alignReadsKernel <<<readsNumber / 256 + 1, 256>>> (reads, refSeq, refSeqSize, 
+    alignReadsKernel <<<readsNumber / 256 + 1, 256>>> (reads, refSeq, refSeqSize,
         sArray, bmArray, settings, results);
     //cudaPrintfDisplay(stdout, true);
     cudaThreadSynchronize();
