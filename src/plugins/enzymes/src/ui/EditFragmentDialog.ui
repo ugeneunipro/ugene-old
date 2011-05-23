@@ -25,7 +25,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
-        <string>5' End</string>
+        <string>Left Overhang</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -113,7 +113,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_3">
        <property name="title">
-        <string>3' End</string>
+        <string>Right Overhang</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>

@@ -96,7 +96,7 @@
          <item>
           <widget class="QGroupBox" name="leftEndBox">
            <property name="title">
-            <string>Include 5' End Overhang</string>
+            <string>Include Left Overhang</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -142,7 +142,7 @@
          <item>
           <widget class="QGroupBox" name="rightEndBox">
            <property name="title">
-            <string>Include 3' End Overhang</string>
+            <string>Include Right Overhang</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
