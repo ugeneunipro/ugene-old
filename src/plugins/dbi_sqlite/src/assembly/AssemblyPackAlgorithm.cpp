@@ -22,6 +22,7 @@
 #include "AssemblyPackAlgorithm.h"
 
 #include <U2Core/Timer.h>
+#include <U2Core/GAutoDeleteList.h>
 
 #include <memory>
 
@@ -59,8 +60,9 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
     int nPacked = 0;
 
     stat.maxProw = 0;
-    QVarLengthArray<qint64, PACK_TAIL_SIZE> tails;
-    qFill(tails.data(), tails.data() + PACK_TAIL_SIZE, -1);
+    gauto_array<qint64> tails(new qint64[PACK_TAIL_SIZE]);
+    qFill(tails.get(), tails.get() + PACK_TAIL_SIZE, -1);
+
     std::auto_ptr< U2DbiIterator<PackAlgorithmData> > allReadsIterator(adapter.selectAllReads(os));
     PackAlgorithmContext ctx;
     while (allReadsIterator->hasNext() && !os.isCoR()) {
