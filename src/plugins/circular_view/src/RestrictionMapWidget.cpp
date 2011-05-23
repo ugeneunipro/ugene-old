@@ -137,7 +137,9 @@ void RestrctionMapWidget::registerAnnotationObjects()
     foreach (AnnotationTableObject* ao, aObjs) {
         connect(ao, SIGNAL(si_onAnnotationsAdded(const QList<Annotation*>&)), SLOT(sl_onAnnotationsAdded(const QList<Annotation*>&)));
         connect(ao, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation*>&)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation*>&)));
+        connect(ao, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)), SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
         connect(ao, SIGNAL(si_onGroupCreated(AnnotationGroup* )), SLOT(sl_onAnnotationsGroupCreated(AnnotationGroup*)));
+        
     }   
 }
 
@@ -217,6 +219,19 @@ void RestrctionMapWidget::initTreeWidget()
             }        
         }
     }
+}
+
+void RestrctionMapWidget::sl_onAnnotationsInGroupRemoved( const QList<Annotation*>& anns, AnnotationGroup* group )
+{
+    if (group->getGroupName() != ANNOTATION_GROUP_ENZYME) {
+        return;
+    }
+    foreach (Annotation* a, anns) {
+        EnzymeFolderItem* folderItem = findEnzymeFolderByName(a->getAnnotationName());
+        if (folderItem) {
+            folderItem->removeEnzymeItem(a);
+        }        
+    }   
 }
 
 

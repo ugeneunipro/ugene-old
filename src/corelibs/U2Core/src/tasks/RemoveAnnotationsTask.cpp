@@ -78,6 +78,7 @@ void RemoveAnnotationsTask::prepare()
 
 
 Task::ReportResult RemoveAnnotationsTask::report() {
+    aobj->releaseLocker();
     if(aobj->isLocked()) {
         return ReportResult_CallMeAgain;
     }
