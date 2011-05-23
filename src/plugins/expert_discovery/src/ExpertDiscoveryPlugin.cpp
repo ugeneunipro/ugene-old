@@ -39,7 +39,7 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
 
 ExpertDiscoveryPlugin::ExpertDiscoveryPlugin() : Plugin( tr("Expert Discovery"), tr("Expert Discovery plugin") ),viewCtx(NULL), delay(false) {
    
-	connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_initExpertDiscoveryViewCtx()));
+    connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_initExpertDiscoveryViewCtx()));
 
     windowId = 0;
 
@@ -50,7 +50,7 @@ ExpertDiscoveryPlugin::ExpertDiscoveryPlugin() : Plugin( tr("Expert Discovery"),
 
 void ExpertDiscoveryPlugin::sl_initExpertDiscoveryViewCtx() {
      if (AppContext::getMainWindow()) {
-		  viewCtx = new ExpertDiscoveryViewCtx(this);
+          viewCtx = new ExpertDiscoveryViewCtx(this);
           Q_ASSERT(viewCtx);
           viewCtx->init();
 

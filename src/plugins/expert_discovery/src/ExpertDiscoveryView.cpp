@@ -82,14 +82,14 @@ QWidget* ExpertDiscoveryView::createWidget(){
     layout->setContentsMargins(0, 0, 0, 0);
     //setLayout(layout);
 
-    //connect(signalsWidget, SIGNAL( 	itemClicked ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
-    connect(signalsWidget, SIGNAL( 	itemActivated ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
-    connect(signalsWidget, SIGNAL( 	currentItemChanged ( QTreeWidgetItem * , QTreeWidgetItem * ) ), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
-    connect(signalsWidget, SIGNAL( 	si_loadMarkup(bool ) ), SLOT(sl_treeWidgetMarkup(bool )));
-    connect(signalsWidget, SIGNAL( 	si_showSequence() ), SLOT(sl_showSequence()));
-    connect(signalsWidget, SIGNAL( 	si_addToShown() ), SLOT(sl_addToShown()));
-    connect(signalsWidget, SIGNAL( 	si_clearDisplayed() ), SLOT(sl_clearDisplayed()));
-    connect(signalsWidget, SIGNAL( 	si_showFirstSequences() ), SLOT(sl_showFirstSequences()));
+    //connect(signalsWidget, SIGNAL(itemClicked ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
+    connect(signalsWidget, SIGNAL(itemActivated ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
+    connect(signalsWidget, SIGNAL(currentItemChanged ( QTreeWidgetItem * , QTreeWidgetItem * ) ), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
+    connect(signalsWidget, SIGNAL(si_loadMarkup(bool ) ), SLOT(sl_treeWidgetMarkup(bool )));
+    connect(signalsWidget, SIGNAL(si_showSequence() ), SLOT(sl_showSequence()));
+    connect(signalsWidget, SIGNAL(si_addToShown() ), SLOT(sl_addToShown()));
+    connect(signalsWidget, SIGNAL(si_clearDisplayed() ), SLOT(sl_clearDisplayed()));
+    connect(signalsWidget, SIGNAL(si_showFirstSequences() ), SLOT(sl_showFirstSequences()));
  
     connect(propWidget, SIGNAL(si_propChanged(EDProjectItem*, const EDPIProperty*, QString )), signalsWidget, SLOT(sl_propChanged(EDProjectItem* , const EDPIProperty* , QString )));
 
@@ -237,41 +237,41 @@ bool ExpertDiscoveryView::askForSave(){
 }
 
 void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegDialog(){
-	Task *tasks = new Task("Loading positive and negative sequences", TaskFlag_NoRun);
+    Task *tasks = new Task("Loading positive and negative sequences", TaskFlag_NoRun);
 
     ExpertDiscoveryPosNegDialog d(QApplication::activeWindow());
-	if (d.exec()) {
-	    if (!AppContext::getProject()) {
-			QList<GUrl> emptyList;
-			tasks->addSubTask( AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
-		}
+    if (d.exec()) {
+        if (!AppContext::getProject()) {
+            QList<GUrl> emptyList;
+            tasks->addSubTask( AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+        }
 
-		ExpertDiscoveryLoadPosNegTask *t = new ExpertDiscoveryLoadPosNegTask(d.getFirstFileName(), d.getSecondFileName(), d.isGenerateNegative());
-		connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadPosNegTaskStateChanged() ) );
-		tasks->addSubTask(t);
-	}
-	
-	AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
-	
+        ExpertDiscoveryLoadPosNegTask *t = new ExpertDiscoveryLoadPosNegTask(d.getFirstFileName(), d.getSecondFileName(), d.isGenerateNegative());
+        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadPosNegTaskStateChanged() ) );
+        tasks->addSubTask(t);
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
+
 }
 void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
-	ExpertDiscoveryLoadPosNegTask *loadTask = qobject_cast<ExpertDiscoveryLoadPosNegTask*>(sender());
+    ExpertDiscoveryLoadPosNegTask *loadTask = qobject_cast<ExpertDiscoveryLoadPosNegTask*>(sender());
     if (!loadTask || !loadTask->isFinished()) {
         return;
     }
 
     if (loadTask->getStateInfo().hasError()) {
-		ExpertDiscoveryErrors::fileOpenError();
+        ExpertDiscoveryErrors::fileOpenError();
         return;
     }
 
-	QList <Document *> docs = loadTask->getDocuments();
+    QList <Document *> docs = loadTask->getDocuments();
 
-	Q_ASSERT(!docs.isEmpty());
+    Q_ASSERT(!docs.isEmpty());
     Q_ASSERT(docs.count() > 1);
 
-	posUDoc = docs.first();
-	d.setPosBase(posUDoc->getObjects());
+    posUDoc = docs.first();
+    d.setPosBase(posUDoc->getObjects());
 
     foreach(GObject* gobj, posUDoc->getObjects()){
         //addObject(gobj);
@@ -281,8 +281,8 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
         posUDoc = NULL;
     }
 
-	negUDoc = docs.at(1);
-	d.setNegBase(negUDoc->getObjects());
+    negUDoc = docs.at(1);
+    d.setNegBase(negUDoc->getObjects());
 
     foreach(GObject* gobj, negUDoc->getObjects()){
         //addObject(gobj);
@@ -452,35 +452,35 @@ void ExpertDiscoveryView::sl_updateAll(){
 }
 
 void ExpertDiscoveryView::sl_showExpertDiscoveryControlDialog(){
-	Task *tasks = new Task("Loading control sequences", TaskFlag_NoRun);
+    Task *tasks = new Task("Loading control sequences", TaskFlag_NoRun);
 
     ExpertDiscoveryControlDialog d(QApplication::activeWindow());
-	if (d.exec()) {
-	   Q_ASSERT(AppContext::getProject());
-		ExpertDiscoveryLoadControlTask *t = new ExpertDiscoveryLoadControlTask(d.getFirstFileName());
-		connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlTaskStateChanged() ) );
-		tasks->addSubTask(t);
-	}
-	
-	AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
-	
+    if (d.exec()) {
+       Q_ASSERT(AppContext::getProject());
+        ExpertDiscoveryLoadControlTask *t = new ExpertDiscoveryLoadControlTask(d.getFirstFileName());
+        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlTaskStateChanged() ) );
+        tasks->addSubTask(t);
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
+
 }
 void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
-	ExpertDiscoveryLoadControlTask *loadTask = qobject_cast<ExpertDiscoveryLoadControlTask*>(sender());
+    ExpertDiscoveryLoadControlTask *loadTask = qobject_cast<ExpertDiscoveryLoadControlTask*>(sender());
     if (!loadTask || !loadTask->isFinished()) {
         return;
     }
 
     if (loadTask->getStateInfo().hasError()) {
-		ExpertDiscoveryErrors::fileOpenError();
+        ExpertDiscoveryErrors::fileOpenError();
         return;
     }
 
     QList <Document *> docs = loadTask->getDocuments();
 
-	Q_ASSERT(!docs.isEmpty());
+    Q_ASSERT(!docs.isEmpty());
 
-	conUDoc = docs.first();
+    conUDoc = docs.first();
 
     propWidget->clearAll();
 
@@ -506,7 +506,7 @@ void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
     d.clearContrBase();
     d.clearContrAnnot();
 
-	d.setConBase(conUDoc->getObjects());
+    d.setConBase(conUDoc->getObjects());
 
     foreach(GObject* gobj, conUDoc->getObjects()){
         edObjects.push_back(gobj);
@@ -554,7 +554,7 @@ void ExpertDiscoveryView::sl_setRecBound(){
 }
 
 void ExpertDiscoveryView::sl_extractSignals(){
-	Task *tasks = new Task("Extracting signals", TaskFlag_NoRun);
+    Task *tasks = new Task("Extracting signals", TaskFlag_NoRun);
     ExpertDiscoverySignalExtractorTask *t = new ExpertDiscoverySignalExtractorTask(&d);
     extrTask = t;
     connect(t, SIGNAL(si_newSignalReady(DDisc::Signal* , CSFolder* )), SLOT(sl_newSignalReady(DDisc::Signal* , CSFolder* )));

@@ -160,7 +160,7 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
             if (endLen >= 4){
                 endStr = endStr.left(endLen - 3);
                 roundedEnd = endStr.toInt() * pow((double)10 , (double)(3));
-				//roundedEnd = endStr.toInt() * pow((double)10 , (double)(endLen - 3));
+                //roundedEnd = endStr.toInt() * pow((double)10 , (double)(endLen - 3));
             }
             endStr = FormatUtils::formatNumber(roundedEnd);
             if (c.textPosition == LEFT) {

@@ -18,7 +18,7 @@ class ExpertDiscoverySignalsAutoAnnotationUpdater;
 
 
 class ExpertDiscoveryView : public GObjectView{
-	Q_OBJECT
+    Q_OBJECT
 
 public:
     ExpertDiscoveryView(GObjectViewFactoryId factoryId, const QString& viewName, QObject* p=NULL);
@@ -43,11 +43,11 @@ public:
 
 
 private slots:
-	void sl_showExpertDiscoveryPosNegDialog();
-	void sl_loadPosNegTaskStateChanged();
+    void sl_showExpertDiscoveryPosNegDialog();
+    void sl_loadPosNegTaskStateChanged();
 
-	void sl_showExpertDiscoveryControlDialog();
-	void sl_loadControlTaskStateChanged();
+    void sl_showExpertDiscoveryControlDialog();
+    void sl_loadControlTaskStateChanged();
 
     void sl_showExpertDiscoveryPosNegMrkDialog();
     void sl_loadPosNegMrkTaskStateChanged();
@@ -103,7 +103,7 @@ private:
     EDPropertiesTable*  propWidget;
     AnnotatedDNAView*   currentAdv;
 
-	ExpertDiscoveryData d;
+    ExpertDiscoveryData d;
 
     QAction*            newDoc;
     QAction*            openDoc;
@@ -116,7 +116,7 @@ private:
     QAction*            loadControlMarkupAction;
     QAction*            generateFullReportAction;
     
-    QList<GObject*>		edObjects;
+    QList<GObject*>     edObjects;
     EDPISequence*       curEDsequence;
 
     Document* posUDoc;
@@ -137,7 +137,7 @@ signals:
 };
 
 class ExpertDiscoveryViewWindow : public GObjectViewWindow{
-	Q_OBJECT
+    Q_OBJECT
 public:
     ExpertDiscoveryViewWindow(GObjectView* view, const QString& viewName, bool persistent = false);
     virtual void setupMDIToolbar(QToolBar* tb);

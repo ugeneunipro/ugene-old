@@ -8,7 +8,7 @@
 namespace U2 {
 
 class EDPropertiesTable : public QTableWidget{
-	Q_OBJECT
+    Q_OBJECT
 public:
     EDPropertiesTable(QWidget* parent);
 
@@ -16,7 +16,7 @@ public:
     void updateCurrentProperties();
 
     void clearAll();
-	
+
 private:
     void addNewGroup(const QString& name);
     void addNewField(const QString& name);

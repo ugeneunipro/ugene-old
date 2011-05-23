@@ -11,7 +11,7 @@
 namespace U2{
 
 ExpertDiscoveryViewCtx::ExpertDiscoveryViewCtx(QObject* p):GObjectViewWindowContext(p, AnnotatedDNAViewFactory::ID){
-	
+
 }
 void ExpertDiscoveryViewCtx::initViewContext(GObjectView* view){
 

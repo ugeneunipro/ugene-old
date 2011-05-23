@@ -5,28 +5,28 @@
 namespace U2 {
 
 class ExpertDiscoveryPosNegDialog : public QDialog, public Ui_ExpertDiscoveryPosNegDialog{
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ExpertDiscoveryPosNegDialog(QWidget *parent);
+    ExpertDiscoveryPosNegDialog(QWidget *parent);
 
-	virtual void accept();
+    virtual void accept();
 
-	QString getFirstFileName() const {return firstFileName;}
-	QString getSecondFileName() const {return secondFileName;}
-	bool isGenerateNegative() const {return generateNeg;}
+    QString getFirstFileName() const {return firstFileName;}
+    QString getSecondFileName() const {return secondFileName;}
+    bool isGenerateNegative() const {return generateNeg;}
 protected slots:
-	void sl_openFirstFile();
-	void sl_openSecondFile();
-	void sl_oneSequence();
+    void sl_openFirstFile();
+    void sl_openSecondFile();
+    void sl_oneSequence();
 
 private:
-	QString firstFileName;
-	QString secondFileName;
+    QString firstFileName;
+    QString secondFileName;
 
-	bool generateNeg;
+    bool generateNeg;
 
-	QString filter;
-	
+    QString filter;
+
 };
 
 }//namespace

@@ -39,66 +39,66 @@ namespace U2 {
 
 ExpertDiscoveryLoadPosNegTask::ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg)
 : Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel)){
-	firstFile = firstF;
+    firstFile = firstF;
 
-	secondFile = secondF;
+    secondFile = secondF;
 
-	this->generateNeg = generateNeg;
+    this->generateNeg = generateNeg;
 }
 
 ExpertDiscoveryLoadPosNegTask::~ExpertDiscoveryLoadPosNegTask(){
-	// error while loading documents
+    // error while loading documents
     if (hasError()) {
         Project *project = AppContext::getProject();
 
-		// skip added to the project documents
-		if (project) {
-	        QList<Document*> projectDocs = project->getDocuments();
+        // skip added to the project documents
+        if (project) {
+            QList<Document*> projectDocs = project->getDocuments();
 
-		    foreach (Document *doc, projectDocs) {
-			    docs.removeAll(doc);
-			}
-		}
+            foreach (Document *doc, projectDocs) {
+                docs.removeAll(doc);
+            }
+        }
 
-		// delete loaded but not added to the project documents
-//		qDeleteAll(docs);
-		foreach (Document *doc, docs) {
-//			docs.removeAll(doc);
-			delete doc;
-		}
+        // delete loaded but not added to the project documents
+//        qDeleteAll(docs);
+        foreach (Document *doc, docs) {
+//            docs.removeAll(doc);
+            delete doc;
+        }
    }
 }
 
 void ExpertDiscoveryLoadPosNegTask::prepare(){
-	// load sequences
-	Document *doc = loadFile(firstFile);
-	if (doc) {
-		doc->setName("Positive");
-		docs << doc;
-	}
+    // load sequences
+    Document *doc = loadFile(firstFile);
+    if (doc) {
+        doc->setName("Positive");
+        docs << doc;
+    }
 
-	if (hasError()) {
-		return;
-	}
-	if(!generateNeg){
-		doc = loadFile(secondFile);
-		if (doc) {
-			doc->setName("Negative");
-			docs << doc;
-		}
-	}	
+    if (hasError()) {
+        return;
+    }
+    if(!generateNeg){
+        doc = loadFile(secondFile);
+        if (doc) {
+            doc->setName("Negative");
+            docs << doc;
+        }
+    }
 }
 
 
 Document* ExpertDiscoveryLoadPosNegTask::loadFile(QString inFile){
-	GUrl URL(inFile);
+    GUrl URL(inFile);
 
     //Project *project = AppContext::getProject();
 
-	//Q_ASSERT(project);
+    //Q_ASSERT(project);
     //Document *doc = project->findDocumentByURL(URL);
 
-	// document already present in the project
+    // document already present in the project
 //     if (doc) {
 //         return doc;
 //     }
@@ -113,88 +113,88 @@ Document* ExpertDiscoveryLoadPosNegTask::loadFile(QString inFile){
     Q_ASSERT(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
 
-	Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());
+    Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());
     //addSubTask(new AddDocumentTask(doc)); // add document to the project
 
-	LoadUnloadedDocumentTask* ld = new LoadUnloadedDocumentTask(doc);
-	if(generateNeg){
-		connect(AppContext::getTaskScheduler(),SIGNAL(si_stateChanged(Task*)), SLOT(sl_generateNegativeSample(Task*)));
-	}
-	addSubTask(ld); // load document
+    LoadUnloadedDocumentTask* ld = new LoadUnloadedDocumentTask(doc);
+    if(generateNeg){
+        connect(AppContext::getTaskScheduler(),SIGNAL(si_stateChanged(Task*)), SLOT(sl_generateNegativeSample(Task*)));
+    }
+    addSubTask(ld); // load document
 
     return doc;
 }
 
 void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
-	LoadUnloadedDocumentTask *loadTask = qobject_cast<LoadUnloadedDocumentTask*>(task);
+    LoadUnloadedDocumentTask *loadTask = qobject_cast<LoadUnloadedDocumentTask*>(task);
     if (!loadTask || !loadTask->isFinished()) {
         return;
     }
-	if (loadTask->getStateInfo().hasError()) {
-		ExpertDiscoveryErrors::fileOpenError();
+    if (loadTask->getStateInfo().hasError()) {
+        ExpertDiscoveryErrors::fileOpenError();
         return;
     }
-	if(docs.isEmpty()){
-		return;
-	}
-	Document* positiveDoc = docs.first();
-	Document* negativeDoc;
-	QString baseName = positiveDoc->getURL().baseFileName();
-	baseName = baseName.append("_negative_generated");
-	QString suffix = positiveDoc->getURL().completeFileSuffix();
-	if(suffix!=""){
-		suffix = QString(".").append(suffix);
-	}
-	baseName.append(suffix);
-	QString negFileName = positiveDoc->getURL().dirPath().append("/"+baseName);
-	GUrl URL(negFileName);
+    if(docs.isEmpty()){
+        return;
+    }
+    Document* positiveDoc = docs.first();
+    Document* negativeDoc;
+    QString baseName = positiveDoc->getURL().baseFileName();
+    baseName = baseName.append("_negative_generated");
+    QString suffix = positiveDoc->getURL().completeFileSuffix();
+    if(suffix!=""){
+        suffix = QString(".").append(suffix);
+    }
+    baseName.append(suffix);
+    QString negFileName = positiveDoc->getURL().dirPath().append("/"+baseName);
+    GUrl URL(negFileName);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
-	QList<GObject*> negObjects = sequencesGenerator(positiveDoc->getObjects());
-	negativeDoc = new Document(positiveDoc->getDocumentFormat(),iof,URL,negObjects);
+    QList<GObject*> negObjects = sequencesGenerator(positiveDoc->getObjects());
+    negativeDoc = new Document(positiveDoc->getDocumentFormat(),iof,URL,negObjects);
 
-	negativeDoc->setLoaded(true);
+    negativeDoc->setLoaded(true);
 
-	Project *project = AppContext::getProject();
-	//project->addDocument(negativeDoc);
+    Project *project = AppContext::getProject();
+    //project->addDocument(negativeDoc);
 
-	if (negativeDoc) {
-		negativeDoc->setName("Negative");
-		docs << negativeDoc;
-	}
+    if (negativeDoc) {
+        negativeDoc->setName("Negative");
+        docs << negativeDoc;
+    }
 }
 
 #define NUMBER_OF_NEGATIVE_PER_POSITIVE 10
 QList<GObject*> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GObject*> &objects){
-	QList<GObject*> neg;
-	int acgtContent[4];
+    QList<GObject*> neg;
+    int acgtContent[4];
 
-	foreach(GObject* obj, objects){
-		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-			DNASequenceObject* seq = (DNASequenceObject*)obj;
-			calculateACGTContent(*seq,acgtContent);
-			for (int i = 0; i < NUMBER_OF_NEGATIVE_PER_POSITIVE; i++){
-				QByteArray curArr = generateRandomSequence(acgtContent, seq->getSequenceLen());
-				QString name = seq->getGObjectName();
-				name = name.append(QString("_neg%1").arg(i));
-				DNASequence curSeq = DNASequence(seq->getDNASequence().getName().append(QString("_neg%1").arg(i)), curArr,seq->getAlphabet());
-				DNASequenceObject* curSeqObj = new DNASequenceObject(name, curSeq);
-				neg.append(curSeqObj);
-			}
-		}
-	}
+    foreach(GObject* obj, objects){
+        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+            DNASequenceObject* seq = (DNASequenceObject*)obj;
+            calculateACGTContent(*seq,acgtContent);
+            for (int i = 0; i < NUMBER_OF_NEGATIVE_PER_POSITIVE; i++){
+                QByteArray curArr = generateRandomSequence(acgtContent, seq->getSequenceLen());
+                QString name = seq->getGObjectName();
+                name = name.append(QString("_neg%1").arg(i));
+                DNASequence curSeq = DNASequence(seq->getDNASequence().getName().append(QString("_neg%1").arg(i)), curArr,seq->getAlphabet());
+                DNASequenceObject* curSeqObj = new DNASequenceObject(name, curSeq);
+                neg.append(curSeqObj);
+            }
+        }
+    }
 
-	return neg;
+    return neg;
 }
 
 void ExpertDiscoveryLoadPosNegTask::calculateACGTContent(const DNASequenceObject& seq, int* acgtContent) {
     //assert(seq.getAlphabet()->isNucleic());
     acgtContent[0] = acgtContent[1] = acgtContent[2] = acgtContent[3] = 0;
-	int seqLen = seq.getSequenceLen();
+    int seqLen = seq.getSequenceLen();
     int total = seq.getSequenceLen();
-	for (int i=0; i < seqLen; i++) {
-		char c = seq.getSequence().at(i);
+    for (int i=0; i < seqLen; i++) {
+        char c = seq.getSequence().at(i);
         if (c == 'A') {
-			acgtContent[0]++;
+            acgtContent[0]++;
         } else if (c == 'C') {
             acgtContent[1]++;
         } else if (c == 'G') {
@@ -477,51 +477,51 @@ void ExpertDiscoveryLoadControlMrkTask::prepare(){
 
 ExpertDiscoveryLoadControlTask::ExpertDiscoveryLoadControlTask(QString firstF)
 : Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel)){
-	firstFile = firstF;
+    firstFile = firstF;
 }
 
 ExpertDiscoveryLoadControlTask::~ExpertDiscoveryLoadControlTask(){
-	// error while loading documents
+    // error while loading documents
     if (hasError()) {
         Project *project = AppContext::getProject();
 
-		// skip added to the project documents
-		if (project) {
-	        QList<Document*> projectDocs = project->getDocuments();
+        // skip added to the project documents
+        if (project) {
+            QList<Document*> projectDocs = project->getDocuments();
 
-		    foreach (Document *doc, projectDocs) {
-			    docs.removeAll(doc);
-			}
-		}
+            foreach (Document *doc, projectDocs) {
+                docs.removeAll(doc);
+            }
+        }
 
-		// delete loaded but not added to the project documents
-//		qDeleteAll(docs);
-		foreach (Document *doc, docs) {
-//			docs.removeAll(doc);
-			delete doc;
-		}
+        // delete loaded but not added to the project documents
+//        qDeleteAll(docs);
+        foreach (Document *doc, docs) {
+//            docs.removeAll(doc);
+            delete doc;
+        }
    }
 }
 
 void ExpertDiscoveryLoadControlTask::prepare(){
-	// load sequences
-	Document *doc = loadFile(firstFile);
-	if (doc) {
-		doc->setName("Control");
-		docs << doc;
-	}
+    // load sequences
+    Document *doc = loadFile(firstFile);
+    if (doc) {
+        doc->setName("Control");
+        docs << doc;
+    }
 }
 
 
 Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
-	GUrl URL(inFile);
+    GUrl URL(inFile);
 
 //     Project *project = AppContext::getProject();
 // 
-// 	Q_ASSERT(project);
+//     Q_ASSERT(project);
 //     Document *doc = project->findDocumentByURL(URL);
 // 
-// 	// document already present in the project
+//     // document already present in the project
 //     if (doc) {
 //         return doc;
 //     }
@@ -536,17 +536,17 @@ Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
     Q_ASSERT(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
 
-	Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());
+    Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());
     //addSubTask(new AddDocumentTask(doc)); // add document to the project
-	addSubTask(new LoadUnloadedDocumentTask(doc)); // load document
+    addSubTask(new LoadUnloadedDocumentTask(doc)); // load document
 
     return doc;
 }
 
 void ExpertDiscoveryErrors::fileOpenError(const QString &filename) {
 
-	QMessageBox mb(QMessageBox::Critical, tr("File opening error"), tr("Error opening file %1").arg(filename));
-	mb.exec();
+    QMessageBox mb(QMessageBox::Critical, tr("File opening error"), tr("Error opening file %1").arg(filename));
+    mb.exec();
 }
 
 void ExpertDiscoveryErrors::markupLoadError() {
@@ -558,11 +558,11 @@ void ExpertDiscoveryErrors::markupLoadError() {
 
 ExpertDiscoverySignalExtractorTask::ExpertDiscoverySignalExtractorTask(ExpertDiscoveryData* d)
 : Task(tr("ExpertDiscovery signals extracting"), TaskFlags(TaskFlag_FailOnSubtaskCancel)){
-	data = d;
-	extractor = NULL;
+    data = d;
+    extractor = NULL;
 }
 ExpertDiscoverySignalExtractorTask::~ExpertDiscoverySignalExtractorTask(){
-	delete extractor;
+    delete extractor;
 }
 
 void ExpertDiscoverySignalExtractorTask::run(){
@@ -570,11 +570,11 @@ void ExpertDiscoverySignalExtractorTask::run(){
     //folder = &data->getRootFolder();
         //performNextStep();
     //
-	if(!extractor){
-		return;
-	}
-	
-	stateInfo.progress = 0;
+    if(!extractor){
+        return;
+    }
+
+    stateInfo.progress = 0;
 //test
 //     Signal* ps = NULL;
 //     OpReiteration *op = new OpReiteration();
@@ -590,53 +590,53 @@ void ExpertDiscoverySignalExtractorTask::run(){
 //     ps1 = new Signal(op,"olegSig","descrSig1");
 //     emit si_newSignalReady(ps1->clone(), folder);
 //test
-	while(performNextStep()){
-		if (stateInfo.cancelFlag) break;
-		stateInfo.progress = short(extractor->progress() + 0.5);
-	}
+    while(performNextStep()){
+        if (stateInfo.cancelFlag) break;
+        stateInfo.progress = short(extractor->progress() + 0.5);
+    }
 
-	stateInfo.progress = 100;
+    stateInfo.progress = 100;
 
 }
 void ExpertDiscoverySignalExtractorTask::prepare(){
     //relocate
     //data->markupLetters();
 
-	ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen());
-	if(w.exec()){
-		PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
-		predicatBase->create(w.getPredicates());
+    ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen());
+    if(w.exec()){
+        PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
+        predicatBase->create(w.getPredicates());
 
-		extractor = new Extractor(&data->getPosSeqBase(), &data->getNegSeqBase(), predicatBase);
-		extractor->setFisherBound			   ( w.getFisher());
-		extractor->setProbabilityBound	       ( w.getProbability());
-		extractor->setInterestFisher		   ( w.getIntFisher());
-		extractor->setInterestProbability      ( w.getIntProbability());
-		extractor->setCoverageBound		       ( w.getCoverage()		   );
-		extractor->setMaxComplexity		       ( w.getMaxComplexity()		   );
-		extractor->setMinComplexity		       ( w.getMinComplexity()		   );
-		extractor->setMinCorrelationOnPos      ( w.getMinPosCorrelation()	);
-		extractor->setMaxCorrelationOnPos      ( w.getMaxPosCorrelation()	);
-		extractor->setMinCorrelationOnNeg      ( w.getMinNegCorrelation()	);
-		extractor->setMaxCorrelationOnNeg      ( w.getMaxNegCorrelation()	);
-		extractor->setCorrelationImportant     ( w.getCorrelationImportant()  );
-		extractor->setCheckFisherMinimization  ( w.getCheckFisherMinimization());
-		extractor->setStoreOnlyDifferent       ( w.getStoreOnlyDifferent()    );
-		extractor->setUmEnabled( w.getUmEnabled() );
-		extractor->setUmSamplesBound( w.getUmSamplesBound() );
-		extractor->setUmBound( w.getUmBound() );
-	    folder = w.getFolder();
-	}
+        extractor = new Extractor(&data->getPosSeqBase(), &data->getNegSeqBase(), predicatBase);
+        extractor->setFisherBound ( w.getFisher());
+        extractor->setProbabilityBound ( w.getProbability());
+        extractor->setInterestFisher ( w.getIntFisher());
+        extractor->setInterestProbability ( w.getIntProbability());
+        extractor->setCoverageBound ( w.getCoverage());
+        extractor->setMaxComplexity ( w.getMaxComplexity());
+        extractor->setMinComplexity ( w.getMinComplexity());
+        extractor->setMinCorrelationOnPos ( w.getMinPosCorrelation());
+        extractor->setMaxCorrelationOnPos ( w.getMaxPosCorrelation());
+        extractor->setMinCorrelationOnNeg ( w.getMinNegCorrelation());
+        extractor->setMaxCorrelationOnNeg ( w.getMaxNegCorrelation());
+        extractor->setCorrelationImportant ( w.getCorrelationImportant());
+        extractor->setCheckFisherMinimization ( w.getCheckFisherMinimization());
+        extractor->setStoreOnlyDifferent ( w.getStoreOnlyDifferent());
+        extractor->setUmEnabled( w.getUmEnabled());
+        extractor->setUmSamplesBound( w.getUmSamplesBound());
+        extractor->setUmBound( w.getUmBound());
+        folder = w.getFolder();
+    }
 }
 
 bool ExpertDiscoverySignalExtractorTask::performNextStep(){
-	Signal* pSignal = NULL;
+    Signal* pSignal = NULL;
     bool needOneMore = extractor->step(&pSignal);
-	if (pSignal){
-		//void* pointer = (void*)(pSignal->clone());
-		//QVariant signal = qVariantFromValue<void*>(pointer);
-		emit si_newSignalReady(pSignal->clone(), folder);
-	}
+    if (pSignal){
+        //void* pointer = (void*)(pSignal->clone());
+        //QVariant signal = qVariantFromValue<void*>(pointer);
+        emit si_newSignalReady(pSignal->clone(), folder);
+    }
     return needOneMore;
 
     //test

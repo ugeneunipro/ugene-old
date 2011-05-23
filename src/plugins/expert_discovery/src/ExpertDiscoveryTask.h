@@ -24,9 +24,9 @@ namespace U2 {
 class Document;
 
 class ExpertDiscoveryLoadPosNegTask: public Task{
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg);
+    ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg);
     ~ExpertDiscoveryLoadPosNegTask();
 
     void run(){};
@@ -38,26 +38,26 @@ public:
 
 private:
     QString firstFile, secondFile;
-	bool generateNeg;
+    bool generateNeg;
     QList<Document*> docs;
 
     Document* loadFile(QString inFile);
 
-	QList<GObject*> sequencesGenerator(const QList<GObject*> &);
-	QByteArray generateRandomSequence(const int* acgtContent, int seqLen);
-	void calculateACGTContent(const DNASequenceObject& seq, int* acgtContent);
+    QList<GObject*> sequencesGenerator(const QList<GObject*> &);
+    QByteArray generateRandomSequence(const int* acgtContent, int seqLen);
+    void calculateACGTContent(const DNASequenceObject& seq, int* acgtContent);
 
 protected slots:
-	void sl_generateNegativeSample(Task* task);
+    void sl_generateNegativeSample(Task* task);
 
 signals:
     void si_stateChanged(Task* task);
 };
 
 class ExpertDiscoveryLoadControlTask: public Task{
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ExpertDiscoveryLoadControlTask(QString firstF);
+    ExpertDiscoveryLoadControlTask(QString firstF);
     ~ExpertDiscoveryLoadControlTask();
 
     void run(){};
@@ -67,7 +67,7 @@ public:
 
 private:
     QString firstFile;
-	QList<Document*> docs;
+    QList<Document*> docs;
 
     Document* loadFile(QString inFile);
 
@@ -119,20 +119,20 @@ signals:
 };
 
 class ExpertDiscoverySignalExtractorTask: public Task{
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ExpertDiscoverySignalExtractorTask(ExpertDiscoveryData* d);
+    ExpertDiscoverySignalExtractorTask(ExpertDiscoveryData* d);
     ~ExpertDiscoverySignalExtractorTask();
 
     void run();
     void prepare();
 
 private:
-	DDisc::Extractor *extractor;
+    DDisc::Extractor *extractor;
     CSFolder* folder;
-	ExpertDiscoveryData* data;
+    ExpertDiscoveryData* data;
 
-	bool performNextStep();
+    bool performNextStep();
 
 signals:
     void si_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
@@ -158,11 +158,11 @@ signals:
 
 // error messages and dialogs
 class ExpertDiscoveryErrors: QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	enum Errors {ErrorOpen, NoErrors};
+    enum Errors {ErrorOpen, NoErrors};
 
-	static void fileOpenError(const QString &filename = "");
+    static void fileOpenError(const QString &filename = "");
     static void markupLoadError();
 };
 

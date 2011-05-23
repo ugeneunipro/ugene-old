@@ -25,50 +25,50 @@ ExpertDiscoveryData::ExpertDiscoveryData (){
 }
 
 void ExpertDiscoveryData::setPosBase(const QList<GObject*> & objects){
-	foreach(GObject* obj, objects){
-		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+    foreach(GObject* obj, objects){
+        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
             Sequence seq = prerareSequence(obj);
             seq.setHasScore(false);
             posBase.addSequence(seq);
             QString name=QString::fromStdString(seq.getName());
             recDataStorage.addSequence(name);
-		}
-	}
+        }
+    }
 }
 void ExpertDiscoveryData::setNegBase(const QList<GObject*> & objects){
-	foreach(GObject* obj, objects){
-		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+    foreach(GObject* obj, objects){
+        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
             Sequence seq = prerareSequence(obj);
             seq.setHasScore(false);
             negBase.addSequence(seq);
             QString name=QString::fromStdString(seq.getName());
             recDataStorage.addSequence(name);
-		}
-	}
+        }
+    }
 }
 
 void ExpertDiscoveryData::setConBase(const QList<GObject*> & objects){
-	foreach(GObject* obj, objects){
-		if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+    foreach(GObject* obj, objects){
+        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
             Sequence seq = prerareSequence(obj);
             seq.setHasScore(false);
             conBase.addSequence(seq);
             QString name=QString::fromStdString(seq.getName());
             recDataStorage.addSequence(name);
-		}
-	}
+        }
+    }
 }
 
 Sequence ExpertDiscoveryData::prerareSequence(const GObject* obj) const{
-	const QString& name  = obj->getGObjectName();
-	std::string n = name.toStdString();
+    const QString& name  = obj->getGObjectName();
+    std::string n = name.toStdString();
 
-	DNASequenceObject* seq = (DNASequenceObject*)obj;
-	const QByteArray& seqArr =  seq->getSequence();	
-	std::string seqStr = std::string(seqArr.data(),seqArr.length());
-	Sequence seqReady = Sequence(n, seqStr);
+    DNASequenceObject* seq = (DNASequenceObject*)obj;
+    const QByteArray& seqArr =  seq->getSequence();
+    std::string seqStr = std::string(seqArr.data(),seqArr.length());
+    Sequence seqReady = Sequence(n, seqStr);
 
-	return seqReady;
+    return seqReady;
 }
 
 void ExpertDiscoveryData::clearContrBase(){
@@ -79,66 +79,66 @@ void ExpertDiscoveryData::clearContrAnnot(){
 }
 
 void ExpertDiscoveryData::markupLetters(void){
-	clearScores();
-	// If already exist return
-	if (isLettersMarkedUp())
-		return;
+    clearScores();
+    // If already exist return
+    if (isLettersMarkedUp())
+        return;
 
-	// Adding new signal family for letters
-	std::string strFamilyName = ExpertDiscoveryData::FAMILY_LETTERS;
-	std::string strMethodName = ExpertDiscoveryData::FAMILY_LETTERS_METHOD;
-	
-	const char letter[] = {'A','C','T','G','\0'};
-	Family letters;
-	letters.setName(strFamilyName);	
+    // Adding new signal family for letters
+    std::string strFamilyName = ExpertDiscoveryData::FAMILY_LETTERS;
+    std::string strMethodName = ExpertDiscoveryData::FAMILY_LETTERS_METHOD;
 
-	for (int i=0; letter[i] != 0; i++) {
-		MetaInfo mi;
-		mi.setName(char2string(letter[i]));
-		mi.setNo(i);
-		mi.setMethodName(strMethodName);
-		letters.AddInfo(mi);
-	}
+    const char letter[] = {'A','C','T','G','\0'};
+    Family letters;
+    letters.setName(strFamilyName);
 
-	desc.addFamily(letters);
-	
-	markupLetters(posBase, posAnn);
-	markupLetters(negBase, negAnn);
-	
-	if (conBase.getSize() != 0)
-		markupLetters(conBase, conAnn);
+    for (int i=0; letter[i] != 0; i++) {
+        MetaInfo mi;
+        mi.setName(char2string(letter[i]));
+        mi.setNo(i);
+        mi.setMethodName(strMethodName);
+        letters.AddInfo(mi);
+    }
+
+    desc.addFamily(letters);
+
+    markupLetters(posBase, posAnn);
+    markupLetters(negBase, negAnn);
+
+    if (conBase.getSize() != 0)
+        markupLetters(conBase, conAnn);
 
     setModifed();
 
 }
 void ExpertDiscoveryData::markupLetters(SequenceBase& rBase, MarkingBase& rAnn){
-	std::string strFamilyName = ExpertDiscoveryData::FAMILY_LETTERS;
-	const char letter[] = {'A','C','T','G','\0'};
-	int size = rBase.getSize();
-	std::string seq;
-	for (int i=0; i<size; i++) {
-		seq = rBase.getSequence(i).getSequence();
+    std::string strFamilyName = ExpertDiscoveryData::FAMILY_LETTERS;
+    const char letter[] = {'A','C','T','G','\0'};
+    int size = rBase.getSize();
+    std::string seq;
+    for (int i=0; i<size; i++) {
+        seq = rBase.getSequence(i).getSequence();
 
-		Marking mrk;
-		try {
-			mrk = rAnn.getMarking(i);			
-		} 
-		catch (exception) {
-		}
-		int len = (int)seq.size();
-		for (int j=0; j<len; j++) {
-			if (strchr(letter, seq[j]) != NULL)
-				mrk.set(char2string(seq[j]), strFamilyName, Interval(j,j));
-		}
+        Marking mrk;
+        try {
+            mrk = rAnn.getMarking(i);
+        }
+        catch (exception) {
+        }
+        int len = (int)seq.size();
+        for (int j=0; j<len; j++) {
+            if (strchr(letter, seq[j]) != NULL)
+                mrk.set(char2string(seq[j]), strFamilyName, Interval(j,j));
+        }
 
-		rAnn.setMarking(i, mrk);
-	}
-	rBase.setMarking(rAnn);
+        rAnn.setMarking(i, mrk);
+    }
+    rBase.setMarking(rAnn);
 }
 void ExpertDiscoveryData::clearScores(){
-	posBase.clearScores();
-	negBase.clearScores();
-	conBase.clearScores();
+    posBase.clearScores();
+    negBase.clearScores();
+    conBase.clearScores();
 }
 bool ExpertDiscoveryData::updateScore(Sequence& rSeq){
     if (rSeq.isHasScore())
@@ -254,20 +254,20 @@ bool ExpertDiscoveryData::updateScores(){
 
 bool ExpertDiscoveryData::isLettersMarkedUp(void) const
 {
-	std::string family = ExpertDiscoveryData::FAMILY_LETTERS;
-	try {
-		desc.getSignalFamily(family);
-	}
-	catch (exception&) {
-		return false;
-	}
+    std::string family = ExpertDiscoveryData::FAMILY_LETTERS;
+    try {
+        desc.getSignalFamily(family);
+    }
+    catch (exception&) {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 std::string ExpertDiscoveryData::char2string(char ch) {
-	char ar[] = {ch, 0};
-	return std::string(ar);
+    char ar[] = {ch, 0};
+    return std::string(ar);
 }
 
 void ExpertDiscoveryData::switchSelection(EDProjectItem* pItem, bool upd){
@@ -704,7 +704,7 @@ bool ExpertDiscoveryData::generateRecognizationReport(ostream& out, const Sequen
     if (bSuppressNulls)
         out << "Sequences with zero score: <I>" << nNulls << "</I><BR>";
 
-    out	<< "Details: <BR>"
+    out    << "Details: <BR>"
         << "<TABLE border=1>"
         << "<TR align=center><TD>Sequence No</TD><TD>Sequence Name</TD><TD>Score</TD><TD>Result</TD></TR>" << endl;
 
@@ -743,7 +743,7 @@ bool ExpertDiscoveryData::generateRecognizationReportPositive(ostream& out, QStr
     if (bSuppressNulls)
         out << "Sequences with zero score: <I>" << nNulls << "</I><BR>";
 
-    out	<< "Details: <BR>"
+    out    << "Details: <BR>"
         << "<TABLE border=1>"
         << "<TR align=center><TD>Sequence No</TD><TD>Sequence Name</TD><TD>Score</TD><TD>Result</TD><TD>FP_Learning</TD><TD>FP_Control</TD></TR>" << endl;
 

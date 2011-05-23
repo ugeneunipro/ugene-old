@@ -81,7 +81,7 @@ public:
     QString getBuffer() const {return buffer;}
 
 protected:
-	enum { STACKWALK_MAX_NAMELEN = 1024 }; // max name length for found symbols
+    enum { STACKWALK_MAX_NAMELEN = 1024 }; // max name length for found symbols
 
 protected:
   // Entry for each Callstack-Entry

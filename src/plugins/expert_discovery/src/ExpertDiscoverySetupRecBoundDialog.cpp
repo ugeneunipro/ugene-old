@@ -14,7 +14,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
 , posScore( vPosScore )
 , negScore( vNegScore ){
 
-	setupUi(this);
+    setupUi(this);
     
     recBoundSpinBox->setValue(recognizationBound);
     posRecLineEdit->setText(QString("%1").arg(probPosRej));
@@ -25,14 +25,14 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
 }
 
 void ExpertDiscoverySetupRecBoundDialog::accept(){
-	
-    recognizationBound = recBoundSpinBox->value();
-	QDialog::accept();
 
-	
+    recognizationBound = recBoundSpinBox->value();
+    QDialog::accept();
+
+
 }
 void ExpertDiscoverySetupRecBoundDialog::sl_recBoundChaged(double val){
-	recognizationBound = val;
+    recognizationBound = val;
     updateProbs();
     posRecLineEdit->setText(QString("%1").arg(probPosRej));
     negRecLineEdit->setText(QString("%1").arg(probNegRec));

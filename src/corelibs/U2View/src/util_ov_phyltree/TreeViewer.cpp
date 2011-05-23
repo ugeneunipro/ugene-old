@@ -835,7 +835,7 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
         scene()->addItem(root);
         defaultZoom();
         updateRect();
-		updateTreeSettings();
+        updateTreeSettings();
         fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
     }
 }
@@ -845,7 +845,7 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
         swapAction->setEnabled(false);
 
         layout = TreeLayout_Circular;
-		updateTreeSettings();
+        updateTreeSettings();
         layoutTask = new CreateCircularBranchesTask(rectRoot);
         connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
@@ -858,7 +858,7 @@ void TreeViewerUI::sl_unrootedLayoutTriggered() {
         swapAction->setEnabled(false);
 
         layout = TreeLayout_Unrooted;
-		updateTreeSettings();
+        updateTreeSettings();
         layoutTask = new CreateUnrootedBranchesTask(rectRoot);
         connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
         TaskScheduler* scheduler = AppContext::getTaskScheduler();

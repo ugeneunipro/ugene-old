@@ -5,22 +5,22 @@
 namespace U2 {
 
 class ExpertDiscoveryControlDialog : public QDialog, public Ui_ExpertDiscoveryControlDialog{
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ExpertDiscoveryControlDialog(QWidget *parent);
+    ExpertDiscoveryControlDialog(QWidget *parent);
 
-	virtual void accept();
+    virtual void accept();
 
-	QString getFirstFileName() const {return firstFileName;}
+    QString getFirstFileName() const {return firstFileName;}
 protected slots:
-	void sl_openFirstFile();
+    void sl_openFirstFile();
 
 private:
-	QString firstFileName;
-	
+    QString firstFileName;
 
-	QString filter;
-	
+
+    QString filter;
+
 };
 
 }//namespace

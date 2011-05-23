@@ -21,40 +21,40 @@ class EDProjectItem;
 class EDPICS;
 class EDPISequence;
 
-const int ED_UPDATE_ALL			    = 0;
-const int ED_CURRENT_ITEM_CHANGED	= 1;
-const int ED_ITEM_NAME_CHANGED		= 2;
-const int ED_ITEM_STATE_CHANGED	    = 3;
-const int ED_ITEM_ADDED			    = 4;
-const int ED_ITEM_DELETED			= 5;
-const int ED_UPDATE_CHILDREN		= 6;
-const int ED_PROPERTY_CHANGED		= 7;
-const int ED_MRK_UPDATE		        = 8;
+const int ED_UPDATE_ALL             = 0;
+const int ED_CURRENT_ITEM_CHANGED   = 1;
+const int ED_ITEM_NAME_CHANGED      = 2;
+const int ED_ITEM_STATE_CHANGED     = 3;
+const int ED_ITEM_ADDED             = 4;
+const int ED_ITEM_DELETED           = 5;
+const int ED_UPDATE_CHILDREN        = 6;
+const int ED_PROPERTY_CHANGED       = 7;
+const int ED_MRK_UPDATE             = 8;
 
 enum SequenceType {POSITIVE_SEQUENCE, NEGATIVE_SEQUENCE, CONTROL_SEQUENCE, UNKNOWN_SEQUENCE};
 
 class ExpertDiscoveryData : public QObject{
-	Q_OBJECT
+    Q_OBJECT
 public:
 
     static const std::string FAMILY_LETTERS;
-	static const std::string FAMILY_LETTERS_METHOD;
+    static const std::string FAMILY_LETTERS_METHOD;
 
-	ExpertDiscoveryData ();
+    ExpertDiscoveryData ();
 
-	void setPosBase(const QList<GObject*> &);
-	void setNegBase(const QList<GObject*> &);
-	void setConBase(const QList<GObject*> &);
+    void setPosBase(const QList<GObject*> &);
+    void setNegBase(const QList<GObject*> &);
+    void setConBase(const QList<GObject*> &);
 
-	void markupLetters(void);
-	void markupLetters(SequenceBase& rBase, MarkingBase& rAnn);
-	bool isLettersMarkedUp(void) const;
-	void clearScores();
+    void markupLetters(void);
+    void markupLetters(SequenceBase& rBase, MarkingBase& rAnn);
+    bool isLettersMarkedUp(void) const;
+    void clearScores();
 
-	const MetaInfoBase& getDescriptionBase() const { return desc;}
+    const MetaInfoBase& getDescriptionBase() const { return desc;}
     MetaInfoBase& getDescriptionBaseNoConst() { return desc;}
-	SequenceBase& getPosSeqBase() {return posBase;}
-	SequenceBase& getNegSeqBase() {return negBase;}
+    SequenceBase& getPosSeqBase() {return posBase;}
+    SequenceBase& getNegSeqBase() {return negBase;}
     SequenceBase& getConSeqBase() {return conBase;}
 
     MarkingBase& getPosMarkBase() {return posAnn;}
@@ -115,24 +115,24 @@ public:
 
     
 private:
-	SequenceBase posBase;
-	SequenceBase negBase;
-	SequenceBase conBase;
+    SequenceBase posBase;
+    SequenceBase negBase;
+    SequenceBase conBase;
 
-	MetaInfoBase	desc;
-	MarkingBase		posAnn;
-	MarkingBase		negAnn;
-	MarkingBase		conAnn;
+    MetaInfoBase    desc;
+    MarkingBase     posAnn;
+    MarkingBase     negAnn;
+    MarkingBase     conAnn;
 
     CSFolder        rootFolder;
 
     bool modified;
 
-	inline Sequence prerareSequence(const GObject* obj) const;
+    inline Sequence prerareSequence(const GObject* obj) const;
 
-	static std::string char2string(char ch);
+    static std::string char2string(char ch);
 
-    SelectedSignalsContainer	selectedSignals;
+    SelectedSignalsContainer    selectedSignals;
 
 
 };

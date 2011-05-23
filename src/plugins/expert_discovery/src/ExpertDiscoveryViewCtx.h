@@ -7,7 +7,7 @@
 namespace U2{
 
 class ExpertDiscoveryViewCtx: public GObjectViewWindowContext{
-	Q_OBJECT
+    Q_OBJECT
 
 public:
     ExpertDiscoveryViewCtx(QObject* p);
