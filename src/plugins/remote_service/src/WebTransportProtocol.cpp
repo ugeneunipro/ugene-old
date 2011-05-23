@@ -71,14 +71,6 @@ const QByteArray BaseGlobalProperties::TASKS_LIST_FINISHED("tasks-list-finished"
 
 //////////////////////////////////////////////////////////////////////////
 
-
-static QString getUgeneVersion() {
-    Version v = Version::ugeneVersion();
-    return QString("%1.%2.%3").arg(v.major).arg(v.minor).arg(v.patch);
-}
-
-const QString Uctp::APP_VERSION(getUgeneVersion());
-
 #define ULOG_WEB_TRANSPORT_PROTOCOL "web-transport-protocol"
 static Logger log(ULOG_WEB_TRANSPORT_PROTOCOL);
 
@@ -102,7 +94,7 @@ QIODevice* UctpRequestBuilder::getDataSource()
     stream.writeStartDocument();
     stream.writeStartElement(UctpElements::REQUEST);
     stream.writeAttribute(UctpAttributes::COMMAND_TYPE, getCommand());
-    stream.writeAttribute(UctpElements::APP_VERSION, Uctp::APP_VERSION );
+    stream.writeAttribute(UctpElements::APP_VERSION, Version::ugeneVersion().text );
 
     // Contents section
     formContents(stream);

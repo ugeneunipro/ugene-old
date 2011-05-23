@@ -187,7 +187,6 @@ class Uctp {
     QXmlSimpleReader xmlReader;
     QString errorString;
 public:
-    static const QString APP_VERSION;
     bool parseReply(QIODevice* reply, const UctpCommand& command, QMap<QString,UctpElementData>& replyData);
     const QString& getErrorText() const { return errorString; } 
 };
