@@ -147,7 +147,7 @@ void EditFragmentDialog::updatePreview()
     if (!lBluntButton->isChecked()) {
         uLeftOverhang = lDirectRadioButton->isChecked() ? lCustomOverhangEdit->text().toUpper() : QByteArray();
         if ( lComplRadioButton->isChecked() ) {
-            QByteArray buf = lCustomOverhangEdit->text().toAscii();
+            QByteArray buf = lCustomOverhangEdit->text().toUpper().toAscii();
             transl->translate(buf.data(), buf.size());
             bLeftOverhang = buf;
         }
@@ -155,7 +155,7 @@ void EditFragmentDialog::updatePreview()
     if (!rBluntButton->isChecked()){
         uRightOverhang = rDirectRadioButton->isChecked() ? rCustomOverhangEdit->text().toUpper() : QByteArray();
         if ( rComplRadioButton->isChecked() ) {
-            QByteArray buf = rCustomOverhangEdit->text().toAscii();
+            QByteArray buf = rCustomOverhangEdit->text().toUpper().toAscii();
             transl->translate(buf.data(), buf.size());
             bRightOverhang = buf;
         }
