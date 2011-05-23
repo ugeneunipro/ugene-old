@@ -22,6 +22,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 
+#include <U2Core/Version.h>
 #include <U2Core/GUrl.h>
 
 #include "UctpRequestBuilders.h"
@@ -72,7 +73,7 @@ void RunRemoteTaskRequest::formContents( QXmlStreamWriter& stream )
     stream.writeStartDocument();
     stream.writeStartElement(UctpElements::REQUEST);
     stream.writeAttribute(UctpAttributes::COMMAND_TYPE, UctpCommands::RUN_TASK);
-    stream.writeAttribute(UctpElements::APP_VERSION, Uctp::APP_VERSION );
+    stream.writeAttribute(UctpElements::APP_VERSION, Version::ugeneVersion().text );
     stream.writeAttribute(UctpAttributes::SESSION_ID, session->getUid());
 
     // save schema
