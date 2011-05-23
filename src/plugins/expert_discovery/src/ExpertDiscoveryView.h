@@ -16,16 +16,6 @@
 namespace U2{
 class ExpertDiscoverySignalsAutoAnnotationUpdater;
 
-class ExpertDiscoveryADVSplitWidget : public ADVSplitWidget{
-    Q_OBJECT
-public:
-    ExpertDiscoveryADVSplitWidget(AnnotatedDNAView* view);
-    virtual bool acceptsGObject(GObject* objects){Q_UNUSED(objects); return false;}
-    virtual void updateState(const QVariantMap& m) {}
-    virtual void saveState(QVariantMap& m) {}
-};
-
-
 
 class ExpertDiscoveryView : public GObjectView{
 	Q_OBJECT
@@ -33,7 +23,6 @@ class ExpertDiscoveryView : public GObjectView{
 public:
     ExpertDiscoveryView(GObjectViewFactoryId factoryId, const QString& viewName, QObject* p=NULL);
     virtual ~ExpertDiscoveryView();
-    //virtual void setupMDIToolbar(QToolBar* tb);
     void insertSeqView(QWidget* view);
 
     QAction* getNewDocAction(){return newDoc;}
@@ -66,6 +55,8 @@ private slots:
     void sl_showExpertDiscoveryControlMrkDialog();
     void sl_loadControlMrkTaskStateChanged();
     void sl_newDoc();
+
+    void clearSequencesView();
     void sl_openDoc();
     void sl_saveDoc();
     void sl_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
@@ -79,6 +70,8 @@ private slots:
 
     void sl_showSequence();
     void sl_addToShown();
+    void sl_showFirstSequences();
+    void sl_clearDisplayed();
 
     void sl_testView(); 
 
@@ -110,8 +103,6 @@ private:
     EDPropertiesTable*  propWidget;
     AnnotatedDNAView*   currentAdv;
 
-    ExpertDiscoveryADVSplitWidget*   seqWidget;
-
 	ExpertDiscoveryData d;
 
     QAction*            newDoc;
@@ -125,7 +116,6 @@ private:
     QAction*            loadControlMarkupAction;
     QAction*            generateFullReportAction;
     
-
     QList<GObject*>		edObjects;
     EDPISequence*       curEDsequence;
 
@@ -140,6 +130,8 @@ private:
     const EDProcessedSignal* curPS;
     bool updatePS;
 
+    QMutex mutex;
+
 signals:
     void si_insertSeqGObjects(const QList<GObject*>& objects);
 };
@@ -153,23 +145,4 @@ protected:
     bool onCloseEvent();
 
 };
-
-class ExpertDiscoveryView1 : public GObjectView{
-    Q_OBJECT
-
-public:
-    ExpertDiscoveryView1(GObjectViewFactoryId factoryId, const QString& viewName, QObject* p=NULL);
-
-
-private:
-    virtual QWidget* createWidget();
-};
-
-
-
-
-
-
-
-
 }//namespace

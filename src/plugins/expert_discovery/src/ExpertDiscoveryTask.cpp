@@ -239,7 +239,7 @@ QByteArray ExpertDiscoveryLoadPosNegTask::generateRandomSequence(const int* acgt
     return randomSequence;
 }
 
-ExpertDiscoveryLoadPosNegMrkTask::ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, ExpertDiscoveryData& edD)
+ExpertDiscoveryLoadPosNegMrkTask::ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, bool appendToCurrentMrk, ExpertDiscoveryData& edD)
 : Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel |TaskFlag_FailOnSubtaskError))
 ,edData(edD)
 ,posDoc(NULL)
@@ -252,23 +252,19 @@ ExpertDiscoveryLoadPosNegMrkTask::ExpertDiscoveryLoadPosNegMrkTask(QString first
     thirdFile = thirdF;
 
     this->generateDescr = generateDescr;
+
+    appendToCurrent = appendToCurrentMrk;
 }
 
 void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
-//     QList<DocumentFormat*> curFormats = DocumentUtils::detectFormat(firstFile);
-//     if(!curFormats.isEmpty()){
-//         if(curFormats.first()->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
-//             
-//         }
-//     }
-
-//     if(!edData.loadMarkup(firstFile, secondFile, thirdFile, generateDescr)){
-//         stateInfo.setError(tr("Load markups error"));
-//     }   
 
     edData.clearScores();
-    edData.getPosMarkBase().clear();
-    edData.getNegMarkBase().clear();
+
+    if(!appendToCurrent){
+        edData.getPosMarkBase().clear();
+        edData.getNegMarkBase().clear();
+    }
+
     edData.getDescriptionBaseNoConst().clear();
 
     QString strPosName = firstFile;
@@ -387,7 +383,7 @@ Task::ReportResult ExpertDiscoveryLoadPosNegMrkTask::report(){
 
     try {
         if (generateDescr) {
-            if (!edData.generateDescription())
+            if (!edData.generateDescription(!appendToCurrent))
                 throw std::exception();
         }
         else {
@@ -606,7 +602,7 @@ void ExpertDiscoverySignalExtractorTask::prepare(){
     //relocate
     //data->markupLetters();
 
-	ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getPosSeqBase().getSize());
+	ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen());
 	if(w.exec()){
 		PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
 		predicatBase->create(w.getPredicates());
@@ -812,6 +808,7 @@ ExpertDiscoverySignalsAutoAnnotationUpdater::ExpertDiscoverySignalsAutoAnnotatio
 :AutoAnnotationsUpdater(tr("Signals"), "ExpertDiscover Signals")
 ,curPS(NULL)
 ,edData(NULL)
+,mutex(NULL)
 {
 
 }
@@ -822,7 +819,7 @@ Task* ExpertDiscoverySignalsAutoAnnotationUpdater::createAutoAnnotationsUpdateTa
 
     AnnotationTableObject* aObj = aa->getAnnotationObject();
     const DNASequence& dna = aa->getSeqObject()->getDNASequence();
-    Task* task = new ExpertDiscoveryToAnnotationTask(aObj, dna, edData, curPS);
+    Task* task = new ExpertDiscoveryToAnnotationTask(aObj, dna, edData, curPS, *mutex);
     return task;
 }
 bool ExpertDiscoverySignalsAutoAnnotationUpdater::checkConstraints(const AutoAnnotationConstraints& constraints){
@@ -834,8 +831,8 @@ bool ExpertDiscoverySignalsAutoAnnotationUpdater::checkConstraints(const AutoAnn
     //return false;
 }
 
-ExpertDiscoveryToAnnotationTask::ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps)
-:Task(tr("Find and store expert discovery signals on a sequence"), TaskFlags_FOSCOE), dna(seq), edData(d), aObj(aobj), curPS(ps){
+ExpertDiscoveryToAnnotationTask::ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut)
+:Task(tr("Find and store expert discovery signals on a sequence"), TaskFlags_FOSCOE), dna(seq), edData(d), aObj(aobj), curPS(ps), mutex(mut){
 
     seqRange = U2Region(0, seq.length());
 }
@@ -882,12 +879,16 @@ void ExpertDiscoveryToAnnotationTask::run(){
         isPos = true;
     }
 
+    //cs start
+    mutex.lock();
     csToAnnotation(seqNumber, edSeq.getSize());
     
     hasRecData = edData->recDataStorage.getRecognizationData(recData, &edSeq, edData->getSelectedSignalsContainer());
     if(hasRecData){
         recDataToAnnotation();    
     }
+    mutex.unlock();
+    //cs end
     
 }
 
@@ -918,7 +919,7 @@ void ExpertDiscoveryToAnnotationTask::csToAnnotation(int seqNumber, unsigned int
         return;
     }
 
-    EDProcessedSignal curPsCopy = *curPS;
+    //EDProcessedSignal curPsCopy = *curPS;
 
     const Set& set = isPos? curPS->getYesRealizations(seqNumber) : curPS->getNoRealizations(seqNumber);
 

@@ -186,6 +186,10 @@
         <source>Ok</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Append to Current Markup</source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>SignalsExtrWiz</name>
@@ -278,7 +282,15 @@
         <translation></translation>
     </message>
     <message>
-        <source>Not aligned</source>
+        <source>Minimal Complexity</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Maximal Complexity</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Aligned</source>
         <translation></translation>
     </message>
 </context>
@@ -376,14 +388,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>Show sequence</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Add to shown</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Generate report</source>
         <translation></translation>
     </message>
@@ -428,24 +432,40 @@
         <translation></translation>
     </message>
     <message>
+        <source>Select signal</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Deselect signal</source>
-        <translation>Деселектировать сигнал</translation>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Show one sequence</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Add to displayed</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Clear displayed sequences area</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Show sequences</source>
+        <translation></translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation>Сортировка</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Field</source>
-        <translation>Поле</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Order</source>
-        <translation>Порядок</translation>
-    </message>
-    <message>
-        <source>Select signal</source>
-        <translation>Селектировать сигнал</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -589,6 +609,10 @@
     </message>
     <message>
         <source>Select predicate on the tree above or create a new one using buttons.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Minimal complexity must not be grater then maximal complexity and positive</source>
         <translation></translation>
     </message>
 </context>

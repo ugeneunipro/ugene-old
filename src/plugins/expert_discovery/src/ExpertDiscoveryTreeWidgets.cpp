@@ -461,7 +461,15 @@ bool EDProjectItem::operator<(const QTreeWidgetItem &other) const{
                 return true;
             else 
                 return pItem1->getName() < pItem2->getName();
-    }else return QTreeWidgetItem::operator<(other);;
+    }else{ 
+        const EDProjectItem *pParent = dynamic_cast<const EDProjectItem*>(dynamic_cast<const QTreeWidgetItem*>(pItem1)->parent());
+        if (pParent != NULL && pParent->getType() == PIT_CSN_DISTANCE) {
+            return (pParent->child(0) == pItem1) ? false : true;
+        }
+        else{
+            return QTreeWidgetItem::operator<(other);
+        }
+    }
 }
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -756,8 +764,6 @@ void EDPICSDirectory::update(bool bupdateChildren){
         for (int nSubfolder=0; nSubfolder<nSubfolderNum; nSubfolder++){
             EDPICSFolder* nFol = new EDPICSFolder(pFolder->getSubfolder(nSubfolder));
             addChild(dynamic_cast<EDProjectItem*>(nFol));
-            int a = 1;
-           // nFol->setParent(this);
         }
                         
 
@@ -765,8 +771,6 @@ void EDPICSDirectory::update(bool bupdateChildren){
         for (int nSignal=0; nSignal<nSignalNum; nSignal++){
             EDPICS* nSig = new EDPICS( pFolder->getSignal(nSignal) );
             addChild(dynamic_cast<EDProjectItem*>(nSig));
-            int a = 1;
-           // nSig->setParent(this);
         }
             
     }      
@@ -848,6 +852,10 @@ EDPICSNode::~EDPICSNode(){
 Operation* EDPICSNode::getOperation(){
    return pOp;
 }
+
+void EDPICSNode::setOperation(Operation *pOp){
+    this->pOp = pOp;
+}
 const Operation* EDPICSNode::getOperation() const{
    return pOp;
 }
@@ -863,8 +871,16 @@ void EDPICSNode::update(bool bupdateChildren){
         if (bupdateChildren) {
             takeChildren();
             int nArgNum = pOp->getArgumentNumber();
-            for (int nArg=0; nArg<nArgNum; nArg++)
-                addChild(dynamic_cast<EDProjectItem*>( EDPICSNode::createCSN( pOp->getArgument(nArg) )));
+            for (int nArg=0; nArg<nArgNum; nArg++){
+                EDProjectItem* ch = dynamic_cast<EDProjectItem*>(EDPICSNode::createCSN(pOp->getArgument(nArg)));
+                emit si_getMetaInfoBase();
+                ch->setMetainfoBase(getMinfo());
+                addChild( ch );
+                if(ch->getType() != PIT_CSN_UNDEFINED){
+                    ch->update(true);
+                }
+                //addChild(dynamic_cast<EDProjectItem*>( EDPICSNode::createCSN( pOp->getArgument(nArg) )));
+            }
         }
     }
 }
@@ -903,19 +919,19 @@ const EDProcessedSignal* EDPICSNode::getProcessedSignal(ExpertDiscoveryData& edD
             EDPIProperty posCoverage("Pos. coverage");
             EDPIProperty negCoverage("Neg. coverage");
             EDPIProperty fisher("Fisher");
-            EDPIProperty ul("ul");
+            //EDPIProperty ul("ul");
 
             prob.setCallback(new Callback<EDPICSNode, QString>(this, &EDPICSNode::getProbability));
             posCoverage.setCallback(new Callback<EDPICSNode, QString>(this, &EDPICSNode::getPosCoverage));
             negCoverage.setCallback(new Callback<EDPICSNode, QString>(this, &EDPICSNode::getNegCoverage));
             fisher.setCallback(new Callback<EDPICSNode, QString>(this, &EDPICSNode::getFisher));
-            ul.setCallback(new Callback<EDPICSNode, QString>(this, &EDPICSNode::getUl));
+            //ul.setCallback(new Callback<EDPICSNode, QString>(this, &EDPICSNode::getUl));
 
             GenInfo.addProperty(prob);
             GenInfo.addProperty(posCoverage);
             GenInfo.addProperty(negCoverage);
             GenInfo.addProperty(fisher);
-            GenInfo.addProperty(ul);
+//            GenInfo.addProperty(ul);
             addGroup(GenInfo);
         }
     }
@@ -976,6 +992,7 @@ EItemType EDPICS::getType() const{
 const Signal* EDPICS::getSignal() const{
     return m_pSignal;
 }
+
 void EDPICS::update(bool bupdateChildren){
     clearGroups();
 
@@ -1005,30 +1022,30 @@ void EDPICS::update(bool bupdateChildren){
     EDPICSNode::update(false);
     setName(m_pSignal->getName().c_str());
 
-    if (m_pSignal->isPriorParamsDefined()) {
-        EDPIProperty PropPriorProb(strPriorProb);
-        PropPriorProb.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorProbability));
-        PropPriorProb.setType(EDPIPropertyTypeStaticString::getInstance());
-
-        EDPIProperty PropPriorPosCoverage(strPriorPosCoverage);
-        PropPriorPosCoverage.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorPosCoverage));
-        PropPriorPosCoverage.setType(EDPIPropertyTypeStaticString::getInstance());
-
-        EDPIProperty PropPriorNegCoverage(strPriorNegCoverage);
-        PropPriorNegCoverage.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorNegCoverage));
-        PropPriorNegCoverage.setType(EDPIPropertyTypeStaticString::getInstance());
-
-        EDPIProperty PropPriorFisher(strPriorFisher);
-        PropPriorFisher.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorFisher));
-        PropPriorFisher.setType(EDPIPropertyTypeStaticString::getInstance());
-
-        EDPIPropertyGroup PriorParams(strPriorParams);
-        PriorParams.addProperty(PropPriorProb);
-        PriorParams.addProperty(PropPriorFisher);
-        PriorParams.addProperty(PropPriorPosCoverage);
-        PriorParams.addProperty(PropPriorNegCoverage);
-       addGroup(PriorParams);
-    }
+//     if (m_pSignal->isPriorParamsDefined()) {
+//         EDPIProperty PropPriorProb(strPriorProb);
+//         PropPriorProb.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorProbability));
+//         PropPriorProb.setType(EDPIPropertyTypeStaticString::getInstance());
+// 
+//         EDPIProperty PropPriorPosCoverage(strPriorPosCoverage);
+//         PropPriorPosCoverage.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorPosCoverage));
+//         PropPriorPosCoverage.setType(EDPIPropertyTypeStaticString::getInstance());
+// 
+//         EDPIProperty PropPriorNegCoverage(strPriorNegCoverage);
+//         PropPriorNegCoverage.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorNegCoverage));
+//         PropPriorNegCoverage.setType(EDPIPropertyTypeStaticString::getInstance());
+// 
+//         EDPIProperty PropPriorFisher(strPriorFisher);
+//         PropPriorFisher.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorFisher));
+//         PropPriorFisher.setType(EDPIPropertyTypeStaticString::getInstance());
+// 
+//         EDPIPropertyGroup PriorParams(strPriorParams);
+//         PriorParams.addProperty(PropPriorProb);
+//         PriorParams.addProperty(PropPriorFisher);
+//         PriorParams.addProperty(PropPriorPosCoverage);
+//         PriorParams.addProperty(PropPriorNegCoverage);
+//        addGroup(PriorParams);
+//     }
 
     if (bupdateChildren) {
         takeChildren();
@@ -1167,6 +1184,8 @@ void EDPICSNDistance::update(bool bupdateChildren) {
     Editor.addProperty(PropOrder);
    addGroup(Editor);	
 
+    emit si_getMetaInfoBase();
+
     EDPICSNode::update(bupdateChildren);
 }
 
@@ -1270,6 +1289,8 @@ void EDPICSNRepetition::update(bool bupdateChildren)
     Editor.addProperty(PropTo);
    addGroup(Editor);	
 
+   emit si_getMetaInfoBase();
+
     EDPICSNode::update(bupdateChildren);
 }
 
@@ -1360,6 +1381,8 @@ void EDPICSNInterval::update(bool bupdateChildren)
     Editor.addProperty(PropFrom);
     Editor.addProperty(PropTo);
    addGroup(Editor);	
+
+   emit si_getMetaInfoBase();
 
     EDPICSNode::update(bupdateChildren);
 
@@ -1544,14 +1567,6 @@ EItemType EDPIMrkRoot::getType() const
 void EDPIMrkRoot::update( bool bUpdateChildren)
 {
     setName("Markup");
-
-//     if (bUpdateChildren) {
-//         takeChildren();
-//          const MetaInfoBase& rDesc = d->getDescriptionBase();
-//          int nFamilyNum = rDesc.getFamilyNumber();
-//          for (int i=0; i<nFamilyNum; i++)
-//             addChild( new EDPIMrkFamily(rDesc.getSignalFamily(i)) );
-//     }
 }
 
 void EDPIMrkRoot::updMarkup(const ExpertDiscoveryData& d){

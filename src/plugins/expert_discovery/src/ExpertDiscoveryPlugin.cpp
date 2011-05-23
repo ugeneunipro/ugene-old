@@ -96,7 +96,7 @@ void ExpertDiscoveryPlugin::sl_expertDiscoveryViewDelay(){
 
         ExpertDiscoveryView* v = new ExpertDiscoveryView("ED", "EDView", this);
         v->addObjectHandler(viewCtx);
-        ExpertDiscoveryViewWindow* wind = new ExpertDiscoveryViewWindow(v, "ExpertDiscovery");
+        ExpertDiscoveryViewWindow* wind = new ExpertDiscoveryViewWindow(v, "Expert Discovery");
         windowId = wind->getId();
         AppContext::getMainWindow()->getMDIManager()->addMDIWindow(wind);
         AppContext::getMainWindow()->getMDIManager()->activateWindow(wind);

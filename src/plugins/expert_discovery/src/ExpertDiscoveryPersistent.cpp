@@ -302,6 +302,21 @@ void EDPMOperation::save(QDataStream& ar, Operation*& pOp)
     if (pOp) eType = pOp->getType();
     else eType = OP_UNDEFINED;
     ar << (int)eType;
+
+    switch (eType) {
+        case OP_DISTANCE	:	saveDistance(ar, dynamic_cast<OpDistance*>(pOp)); break;
+        case OP_REITERATION	:	saveReiteration(ar, dynamic_cast<OpReiteration*>(pOp)); break;
+        case OP_INTERVAL	:	saveInterval(ar, dynamic_cast<OpInterval*>(pOp)); break;
+        case OP_TS			:	saveTS(ar, dynamic_cast<TS*>(pOp)); break;
+        case OP_UNDEFINED	:	return;
+        default: assert(0);
+    }
+
+    for (int i=0; i<pOp->getArgumentNumber(); i++) {
+        Operation *pArg = pOp->getArgument(i);
+        EDPMOperation::save(ar,pArg);
+        pOp->setArgument(pArg,i);
+    }
 }
 
 void EDPMOperation::saveDistance(QDataStream& ar, OpDistance* pOp)

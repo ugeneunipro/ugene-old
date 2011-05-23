@@ -186,6 +186,10 @@
         <source>Ok</source>
         <translation>Ок</translation>
     </message>
+    <message>
+        <source>Append to Current Markup</source>
+        <translation>Добавить к текущей разметке</translation>
+    </message>
 </context>
 <context>
     <name>SignalsExtrWiz</name>
@@ -278,8 +282,16 @@
         <translation>Необходимо создать пердикаты, которые будут использоваться при конструировании комплексных сигналов.</translation>
     </message>
     <message>
-        <source>Not aligned</source>
-        <translation type="unfinished"></translation>
+        <source>Minimal Complexity</source>
+        <translation>Минимальная сложность</translation>
+    </message>
+    <message>
+        <source>Maximal Complexity</source>
+        <translation>Максимальная сложность</translation>
+    </message>
+    <message>
+        <source>Aligned</source>
+        <translation>Выровненная выборка</translation>
     </message>
 </context>
 <context>
@@ -287,6 +299,10 @@
     <message>
         <source>NewSignal</source>
         <translation type="obsolete">Новый сигнал</translation>
+    </message>
+    <message>
+        <source>NewFolder</source>
+        <translation type="obsolete">Новая папка</translation>
     </message>
 </context>
 <context>
@@ -384,11 +400,11 @@
     </message>
     <message>
         <source>Show sequence</source>
-        <translation>Показать последовательность</translation>
+        <translation type="obsolete">Показать последовательность</translation>
     </message>
     <message>
         <source>Add to shown</source>
-        <translation>Добавить к отображаемым последовательностям</translation>
+        <translation type="obsolete">Добавить к отображаемым последовательностям</translation>
     </message>
     <message>
         <source>Generate report</source>
@@ -436,23 +452,39 @@
     </message>
     <message>
         <source>Select signal</source>
-        <translation type="unfinished"></translation>
+        <translation>Селектировать сигнал</translation>
     </message>
     <message>
         <source>Deselect signal</source>
-        <translation type="unfinished"></translation>
+        <translation>Деселектировать сигнал</translation>
+    </message>
+    <message>
+        <source>Show one sequence</source>
+        <translation>Показать одну последовательность</translation>
+    </message>
+    <message>
+        <source>Add to displayed</source>
+        <translation>Добавить к отображаемым</translation>
+    </message>
+    <message>
+        <source>Clear displayed sequences area</source>
+        <translation>Очистить область отображения</translation>
+    </message>
+    <message>
+        <source>Show sequences</source>
+        <translation>Отобразить последовательности</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation type="unfinished"></translation>
+        <translation>Сортировка</translation>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле</translation>
     </message>
     <message>
         <source>Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Порядок</translation>
     </message>
 </context>
 <context>
@@ -598,6 +630,10 @@
         <source>Select predicate on the tree above or create a new one using buttons.</source>
         <translation>Создайте предикаты и задайте их параметры.</translation>
     </message>
+    <message>
+        <source>Minimal complexity must not be grater then maximal complexity and positive</source>
+        <translation>Минимальная сложность должна быть меньше, чем максимальная и положительной</translation>
+    </message>
 </context>
 <context>
     <name>U2::ExpertDiscoveryLoadControlMrkTask</name>
@@ -655,7 +691,7 @@
     </message>
     <message>
         <source>Expert Discovery (alpha)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>

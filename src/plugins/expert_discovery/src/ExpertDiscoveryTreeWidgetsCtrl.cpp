@@ -1,21 +1,12 @@
 #include "ExpertDiscoveryTreeWidgetsCtrl.h"
 
-
-
- #include <QStandardItemModel>
+#include <QStandardItemModel>
 #include<QMessageBox>
 #include <QtGui/QMouseEvent>
 
 
-
 namespace U2 {
 
-// MyTreeWidget::MyTreeWidget(QWidget *parent)
-// :QTreeView(parent){
-//     QStandardItemModel* sm = new QStandardItemModel(this);
-//     setModel(sm );
-// }
- 
 EDProjectTree::EDProjectTree(QWidget *parent, ExpertDiscoveryData &d)
 :QTreeWidget(parent)
 ,edData(d)
@@ -54,7 +45,7 @@ void EDProjectTree::updateTree(int flag, EDProjectItem* item){
     case ED_ITEM_NAME_CHANGED		:	updateItem(item);	break;
     case ED_ITEM_STATE_CHANGED		:	updateItemState(item);	break;
     case ED_ITEM_ADDED				:	internalRemake(item, dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(item)->parent()));	break;
-    case ED_ITEM_DELETED			:	/*DeleteItem(pItem);*/  break;
+    case ED_ITEM_DELETED			:	/*deleteItem(pItem);*/  break;
     case ED_CURRENT_ITEM_CHANGED	:	setCurrentItem(item); break;
     case ED_UPDATE_CHILDREN		    :	updateChildren(item); break;
     case ED_MRK_UPDATE              :   updateMarkup(); break; 
@@ -105,18 +96,7 @@ void EDProjectTree::clearTree(){
 }
 
 void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent){
-    /*int nImage = TypeToImage(pItem->GetType());
-    HTREEITEM hItem = InsertItem(pItem->GetName(), nImage, nImage, hParent);
-    SetItemData(hItem, (DWORD_PTR) pItem);
-    pItem->SetTreeItem(hItem);
-    if (pItem->IsSelected())
-        SetItemState(hItem, TVIS_BOLD, TVIS_BOLD);
-    else
-        SetItemState(hItem, 0, TVIS_BOLD);
-    int nSubitemsNumber = pItem->GetSubitemsNumber();
-    for (int i=0; i<nSubitemsNumber; i++)
-        InternalRemake(hItem, pItem->GetSubitem(i));
-    SortChildItems(hItem, m_sortingMode, m_order);   */
+   
     subItem->setText(0, subItem->getName());
     subItem->setIcon(0, getItemIcon(subItem));
     subItem->setSortOrd(sortOrd);
@@ -131,6 +111,8 @@ void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent
         
     }
     subItem->sortChildren(0, Qt::AscendingOrder);
+    updateItemState(subItem);
+
 }
 
 
@@ -138,10 +120,7 @@ void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent
 void EDProjectTree::updateItem(EDProjectItem* pItem){
     pItem->setText(0, pItem->getName());
     pItem->setIcon(0, getItemIcon(pItem));
-    /*SetItemText(hItem, pItem->GetName());
-    SortChildren(GetParentItem(hItem));
-    int nImage = TypeToImage(pItem->GetType());
-    SetItemImage(hItem, nImage, nImage);*/
+ 
     QFont curFont = pItem->font(0);
     if (edData.isSignalSelected(pItem))
         curFont.setBold(true);
@@ -175,17 +154,13 @@ void EDProjectTree::updateItemState(EDProjectItem *pItem)
 
 
 void EDProjectTree::updateChildren(EDProjectItem* pItem){
-    //updateItem(pItem);
    
-    //SelectItem(NULL);
-    //while (hChild = GetChildItem(hParent)) CRGTreeCtrl::DeleteItem(hChild);
     for (int i=0; i<pItem->childCount(); i++){
         EDProjectItem* ch = dynamic_cast<EDProjectItem*>(pItem->child(i));
         internalRemake(ch, pItem);
 
     }
     pItem->sortChildren(0, Qt::AscendingOrder);
-    //SortChildItems(hParent, m_sortingMode, m_order);*/
 }
 
 void EDProjectTree::updateMarkup(){
@@ -193,7 +168,6 @@ void EDProjectTree::updateMarkup(){
     for (int i = 0; i < mrkRoot.childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(mrkRoot.child(i));
         if(item){
-  //          connect(item, SIGNAL(si_getMetaInfoBase()), SLOT(sl_setMetainfoBase()));
             internalRemake(item, &mrkRoot);
         }
     }    
@@ -242,7 +216,6 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
             return;
         case PIT_CS:{
             
-           //EDPICSDirectory *pParent = dynamic_cast<EDPICSDirectory*>(dynamic_cast<EDProjectItem*>(item->parent()));
            EDPICS *pPI = dynamic_cast<EDPICS*>(item);
            EDPICSDirectory *pParent = dynamic_cast<EDPICSDirectory*>(dynamic_cast<QTreeWidgetItem*>(pPI)->parent());
            assert(pPI != NULL);
@@ -310,7 +283,6 @@ void EDProjectTree::mouseDoubleClickEvent(QMouseEvent *e){
     QTreeWidgetItem* curItem = itemAt(e->pos());
     setCurrentItem(curItem, 0);
     
-//    sl_showSequence();
     sl_addToShown();
 
     QTreeWidget::mouseDoubleClickEvent(e);
@@ -355,6 +327,7 @@ QMenu* EDProjectTree::chosePopupMen(EDProjectItem* pItem){
             return NULL;
         } 
         generateReportAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
+        showFirstSequencesAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
         return popupMenuSequenceBase;
     }
     return NULL;
@@ -427,14 +400,20 @@ void EDProjectTree::createPopupsAndActions(){
     loadMarkupAction = new QAction(tr("Load markup"), this);
     connect(loadMarkupAction, SIGNAL(triggered(bool)), SLOT(sl_loadMarkup()));
 
-    showSequenceAction = new QAction(tr("Show sequence"), this);
+    showSequenceAction = new QAction(tr("Show one sequence"), this);
     connect(showSequenceAction, SIGNAL(triggered(bool)), SLOT(sl_showSequence()));
 
-    addToShownAction = new QAction(tr("Add to shown"), this);
+    addToShownAction = new QAction(tr("Add to displayed"), this);
     connect(addToShownAction, SIGNAL(triggered(bool)), SLOT(sl_addToShown()));
 
     generateReportAction = new QAction(tr("Generate report"), this);
     connect(generateReportAction, SIGNAL(triggered(bool)), SLOT(sl_generateReport()));
+
+    clearDisplayedAction = new QAction(tr("Clear displayed sequences area"), this);
+    connect(clearDisplayedAction, SIGNAL(triggered(bool)), SLOT(sl_clearDisplayed()));
+
+    showFirstSequencesAction = new QAction(tr("Show sequences"), this);
+    connect(showFirstSequencesAction, SIGNAL(triggered(bool)), SLOT(sl_showFirstSequences()));
 
     sortGroup = new QActionGroup(this);
     sortOrdGroup = new QActionGroup(this);
@@ -488,8 +467,8 @@ void EDProjectTree::createPopupsAndActions(){
     popupMenuDir->addSeparator();
     popupMenuDir->addAction(selAllSigAction);
     popupMenuDir->addAction(deselAllSigAction);
-    popupMenuDir->addAction(setPriorAllSigAction);
-    popupMenuDir->addAction(clearPriorAllSigAction);
+    //popupMenuDir->addAction(setPriorAllSigAction);
+    //popupMenuDir->addAction(clearPriorAllSigAction);
 
     popupMenuDirRoot = new QMenu(this);
     popupMenuDirRoot->addAction(newFolderAction);
@@ -497,8 +476,8 @@ void EDProjectTree::createPopupsAndActions(){
     popupMenuDirRoot->addSeparator();
     popupMenuDirRoot->addAction(selAllSigAction);
     popupMenuDirRoot->addAction(deselAllSigAction);
-    popupMenuDirRoot->addAction(setPriorAllSigAction);
-    popupMenuDirRoot->addAction(clearPriorAllSigAction);
+    //popupMenuDirRoot->addAction(setPriorAllSigAction);
+    //popupMenuDirRoot->addAction(clearPriorAllSigAction);
 
     QMenu* sortMenu = new QMenu(tr("Sort"), this);
     QMenu* fieldMenu = new QMenu(tr("Field"), this);
@@ -517,13 +496,14 @@ void EDProjectTree::createPopupsAndActions(){
     popupMenuSequence = new QMenu(this);
     popupMenuSequence->addAction(showSequenceAction);
     popupMenuSequence->addAction(addToShownAction);
+    popupMenuSequence->addAction(clearDisplayedAction);
 
     popupMenuSequenceBase = new QMenu(this);
     popupMenuSequenceBase->addAction(generateReportAction);
+    popupMenuSequenceBase->addAction(showFirstSequencesAction);
 }
 
 void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
-    //EDPICSNode* pCSN = dynamic_cast<EDPICSNode*>(findEDItem(pItem));
     EDPICSNode* pCSN = dynamic_cast<EDPICSNode*>(pItem);
     Operation* pOp = pCSN->getOperation();
     
@@ -542,6 +522,10 @@ void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIPropert
             connect(pPICS, SIGNAL(si_getMetaInfoBase()), SLOT(sl_setMetainfoBase()));
             Signal *pSignal = findSignal(pPICS->getSignal());
             pSignal->attach(pNewOp);
+            Operation* op = pPICS->getOperation();
+            //if(op==NULL){
+                pPICS->setOperation(pSignal->getSignal());
+            //}
             pPICS->update(true);
         }
         else {
@@ -830,6 +814,7 @@ void EDProjectTree::onMrkItemPropertyChanged(EDProjectItem* pItem, const EDPIPro
     EDProjectItem* pIt = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pPITS)->parent());
     updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pIt);
     updateTree(ED_CURRENT_ITEM_CHANGED, pPITS);
+    emit currentItemChanged(pPITS,pPITS);
 }
 
 Operation* EDProjectTree::createCSN(int ValueId) const{
@@ -1084,6 +1069,13 @@ void EDProjectTree::sl_showSequence(){
 }
 void EDProjectTree::sl_addToShown(){
     emit si_addToShown();
+}
+
+void EDProjectTree::sl_clearDisplayed(){
+    emit si_clearDisplayed();
+}
+void EDProjectTree::sl_showFirstSequences(){
+    emit si_showFirstSequences();
 }
 
 void EDProjectTree::sl_setMetainfoBase(){

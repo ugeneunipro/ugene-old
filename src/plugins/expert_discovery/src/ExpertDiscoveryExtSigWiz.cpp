@@ -23,6 +23,8 @@ ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f,
 	ulCritCheck->setChecked(state.bUmEnabled);
 	samplesBoundEdit->setText(QString("%1").arg(state.nUmSamplesBound));
     levelBoundEdit->setText(QString("%1").arg(state.dUmBound));
+    minComplexityEdit->setText(QString("%1").arg(state.nMinComplexity));
+    maxComplexityEdit->setText(QString("%1").arg(state.nMaxComplexity));
 
 	QDoubleValidator* d0_100Valid = new QDoubleValidator(0,100,5,this);
 	QDoubleValidator* d0_1Valid = new QDoubleValidator(0,1,5,this);
@@ -144,15 +146,28 @@ void ExpertDiscoveryExtSigWiz::sl_deleteButton(){
 
 void ExpertDiscoveryExtSigWiz::sl_idChanged(int id){
     switch (id){
-        case 2:
-            if(!(checkD(condProbLevEdit) && checkD(coverBoundEdit)
-                && checkD(fishCritEdit) && checkD(levelBoundEdit)
-                && checkD(samplesBoundEdit))){
-                    back();
+        case 2:{
+            int minCom = 0;
+            int maxCom = 0;
+            minCom = minComplexityEdit->text().toInt();
+            maxCom = maxComplexityEdit->text().toInt();
+
+            if(minCom>maxCom || minCom<0){
+                back();
+                QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr("Minimal complexity must not be grater then maximal complexity and positive"));
+                mb.exec();
+                break;
+            }else{
+                if(!(checkD(condProbLevEdit) && checkD(coverBoundEdit)
+                    && checkD(fishCritEdit) && checkD(levelBoundEdit)
+                    && checkD(samplesBoundEdit))){
+                        back();
+                }
             }
             break;
+        }
         case 3:
-            if((intervItem->childCount() == 0 ) && (repetItem->childCount() == 0 ) && (distItem->childCount() == 0 ) && !notAlignedCheck->isChecked()){
+            if((intervItem->childCount() == 0 ) && (repetItem->childCount() == 0 ) && (distItem->childCount() == 0 ) && !alignedCheck->isChecked()){
                 back();
                 QMessageBox mb(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
                 mb.exec();
@@ -195,7 +210,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
 		delete item;
 	}
 
-    if(notAlignedCheck->isChecked()){
+    if(alignedCheck->isChecked()){
         for(int i = 0; i < posSize; i++){
             OpInterval *pOp = new OpInterval;
             pOp->setInt(Interval(i, i));
@@ -216,6 +231,8 @@ void ExpertDiscoveryExtSigWiz::accept(){
         state.bUmEnabled = ulCritCheck->isChecked();
         state.nUmSamplesBound = (int)(samplesBoundEdit->text().toDouble());
         state.dUmBound = levelBoundEdit->text().toDouble();
+        state.nMinComplexity = minComplexityEdit->text().toInt();
+        state.nMaxComplexity = maxComplexityEdit->text().toInt();
 
         //page 3
         if(!treeFoldersWidget->selectedItems().isEmpty()){
@@ -242,6 +259,7 @@ void ExpertDiscoveryExtSigWiz::hideParameters(){
     samplesBoundEdit->hide();
     label_6->hide();
     levelBoundEdit->hide();
+    advancedButton->hide();
    
 }
 

@@ -473,6 +473,7 @@ public:
     EDPICSNode(Operation *pOp);
     virtual ~EDPICSNode();
     Operation* getOperation();
+    void setOperation(Operation *pOp);
     const Operation* getOperation() const;
     virtual	void update(bool bUpdateChildren);
 

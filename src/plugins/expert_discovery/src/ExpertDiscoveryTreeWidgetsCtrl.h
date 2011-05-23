@@ -65,6 +65,8 @@ protected slots:
     void sl_loadMarkup();
     void sl_showSequence();
     void sl_addToShown();
+    void sl_clearDisplayed();
+    void sl_showFirstSequences();
     void sl_setMetainfoBase();
     void sl_generateReport();
     void sl_sortField(QAction* action);
@@ -112,6 +114,8 @@ private:
     QAction*    showSequenceAction;
     QAction*    addToShownAction;
     QAction*    generateReportAction;
+    QAction*    clearDisplayedAction;
+    QAction*    showFirstSequencesAction;
 
     QActionGroup* sortGroup;
     QActionGroup* sortOrdGroup;
@@ -137,6 +141,8 @@ signals:
     void si_loadMarkup(bool isLetters);
     void si_showSequence();
     void si_addToShown();
+    void si_showFirstSequences();
+    void si_clearDisplayed();
 };
     
 } //namespace

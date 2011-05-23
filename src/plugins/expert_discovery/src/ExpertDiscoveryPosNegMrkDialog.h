@@ -15,6 +15,7 @@ public:
 	QString getSecondFileName() const {return secondFileName;}
     QString getThirdFileName() const {return thirdFileName;}
 	bool isGenerateDescr() const {return generateDescr;}
+    bool isAppendToCurrentMarkup() const {return addToCurrentCheck->isChecked();}
 protected slots:
 	void sl_openFirstFile();
 	void sl_openSecondFile();

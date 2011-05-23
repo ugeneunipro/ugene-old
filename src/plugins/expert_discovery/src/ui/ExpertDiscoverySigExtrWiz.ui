@@ -113,6 +113,43 @@
         </widget>
        </item>
        <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="2">
+          <widget class="QLineEdit" name="minComplexityEdit"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Minimal Complexity</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Maximal Complexity</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLineEdit" name="maxComplexityEdit"/>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QCheckBox" name="ulCritCheck">
          <property name="text">
           <string>Check Ul criteria</string>
@@ -218,6 +255,9 @@
          <attribute name="headerVisible">
           <bool>false</bool>
          </attribute>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
          <column>
           <property name="text">
            <string notr="true">1</string>
@@ -276,9 +316,12 @@
       </layout>
      </item>
      <item>
-      <widget class="QCheckBox" name="notAlignedCheck">
+      <widget class="QCheckBox" name="alignedCheck">
        <property name="text">
-        <string>Not aligned</string>
+        <string>Aligned</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -309,6 +352,9 @@
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
      <widget class="QTreeWidget" name="treeFoldersWidget">
+      <attribute name="headerVisible">
+       <bool>false</bool>
+      </attribute>
       <attribute name="headerVisible">
        <bool>false</bool>
       </attribute>

@@ -17,7 +17,7 @@
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/AnnotationData.h>
 
-
+#include <QMutex>
 
 namespace U2 {
 
@@ -78,7 +78,7 @@ signals:
 class ExpertDiscoveryLoadPosNegMrkTask: public Task{
     Q_OBJECT
 public:
-    ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, ExpertDiscoveryData& edData);
+    ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, bool appendToCurrentMrk, ExpertDiscoveryData& edData);
 
     void run(){};
     void prepare();
@@ -87,6 +87,7 @@ public:
 private:
     QString firstFile, secondFile, thirdFile;
     bool generateDescr;
+    bool appendToCurrent;
 
     ExpertDiscoveryData& edData;
     Document* posDoc;
@@ -187,16 +188,18 @@ public:
 
     void setEDData(ExpertDiscoveryData* d){edData = d;}
     void setEDProcSignals(const EDProcessedSignal* ps){curPS = ps;}
+    void setEDMutex(QMutex* mut){mutex = mut;}
 private:
     ExpertDiscoveryData* edData;
     const EDProcessedSignal* curPS;
+    QMutex* mutex;
 
 };
 
 class ExpertDiscoveryToAnnotationTask : public Task{
     Q_OBJECT
 public:
-    ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps);
+    ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut);
     void run();
     ReportResult report();
 private:
@@ -213,6 +216,7 @@ private:
     bool                                hasRecData;
     bool                                isControl;
     bool                                isPos;
+    QMutex&                             mutex;
 };
 
 class ExpertDiscoverySaveDocumentTask : public Task{

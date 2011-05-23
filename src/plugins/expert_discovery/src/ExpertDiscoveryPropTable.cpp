@@ -17,6 +17,7 @@ EDPropertiesTable::EDPropertiesTable(QWidget* parent)
     horizontalHeader()->hide();
     //connect(this, SIGNAL(cellChanged ( int , int  )), SLOT(sl_cellDataChanged(int , int )));
     connect(this, SIGNAL(itemChanged ( QTableWidgetItem*  )), SLOT( sl_cellChanged(QTableWidgetItem*) ));
+    setWordWrap(true);
 }
 
 void EDPropertiesTable::representPIProperties(EDProjectItem* pItem){
@@ -59,6 +60,7 @@ void EDPropertiesTable::representPIProperties(EDProjectItem* pItem){
             }
         }
     }
+    resizeColumnsToContents();
 }
 
 void EDPropertiesTable::updateCurrentProperties(){

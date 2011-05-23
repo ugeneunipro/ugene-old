@@ -86,7 +86,7 @@ public:
     bool loadMarkup(const QString& firstF, const QString& secondF, const QString& thirdF, bool generateDescr);
     bool loadAnnotation(MarkingBase& base, const SequenceBase& seqBase, QString strFileName);
     //bool loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc);
-    bool generateDescription();
+    bool generateDescription(bool clearDescr = true);
     void loadControlSequenceAnnotation(const QString& fileName);
 
     void cleanup();
@@ -106,10 +106,14 @@ public:
 
     bool isModified() {return modified;}
     void setModifed(bool modFlag = true){modified = modFlag;}
+
+    int getMaxPosSequenceLen();
     
     double recognizationBound;
     RecognizationDataStorage recDataStorage;
     QList<EDPISequence*> selSequences;
+
+    
 private:
 	SequenceBase posBase;
 	SequenceBase negBase;

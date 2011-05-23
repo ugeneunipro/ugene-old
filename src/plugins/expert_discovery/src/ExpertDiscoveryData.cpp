@@ -543,8 +543,10 @@ bool ExpertDiscoveryData::loadAnnotation(MarkingBase& base, const SequenceBase& 
 //     return true;
 // }
 
-bool ExpertDiscoveryData::generateDescription(){
-    desc.clear();
+bool ExpertDiscoveryData::generateDescription(bool clearDescr){
+    if(clearDescr){
+        desc.clear();
+    }
     SequenceBase* seqBase = &posBase;
     MarkingBase* base = &posAnn; 
     for (int k=0; k<2; k++) {
@@ -607,8 +609,9 @@ void ExpertDiscoveryData::cleanup(){
     negAnn.clear();
     conAnn.clear();
 
-    clearSelectedSequencesList();
+    rootFolder.clear();
 
+    clearSelectedSequencesList();
 }
 
 void ExpertDiscoveryData::addSequenceToSelected(EDPISequence* seq){
@@ -662,7 +665,7 @@ void ExpertDiscoveryData::generateRecognitionReportFull(){
 }
 bool ExpertDiscoveryData::generateRecognizationReportHeader(ostream& out) const{
     
-    out << "<HTML><HEAD><TITLE>ExpertDiscovery 2.0 and UGENE: Recognization report</TITLE></HEAD><BODY>" << endl
+    out << "<HTML><HEAD><TITLE> UGENE (ExpertDiscovery plugin): Recognition report</TITLE></HEAD><BODY>" << endl
         << "<H1>ExpertDiscovery 2.0 and UGENE: Recognization report</H1><BR>" << endl
         << "<I>Report genrated at " << (QDateTime::currentDateTime().toString("hh:mm on dd/MM/yyyy").toStdString())
         << "<BR>Recognization bound was set to " << recognizationBound
@@ -813,6 +816,20 @@ void ExpertDiscoveryData::generateRecognizationReport(EDProjectItem* pItem){
         }
 
     }
+}
+
+int ExpertDiscoveryData::getMaxPosSequenceLen(){
+    int maxLen = 0;
+    int curLen = 0;
+
+    for (int i = 0; i < posBase.getSize(); i++){
+        curLen = posBase.getSequence(i).getSize();
+        if(curLen > maxLen){
+            maxLen = curLen;
+        }
+    }
+
+    return maxLen;
 }
 
 }//namespace
