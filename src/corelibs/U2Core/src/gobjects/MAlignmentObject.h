@@ -84,8 +84,8 @@ public:
 
     int getLength() const {return msa.getLength();}
 
-    void geleteGapsByAbsoluteVal(int val);
-    void geleteGapsByRelativeVal(int val);
+    void deleteGapsByAbsoluteVal(int val);
+    
     void deleteAllGapColumn();
 
 signals:

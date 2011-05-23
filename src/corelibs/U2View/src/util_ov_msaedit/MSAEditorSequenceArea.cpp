@@ -1041,13 +1041,14 @@ void MSAEditorSequenceArea::sl_delCol() {
     if(dlg.exec() == QDialog::Accepted) {
         DeleteMode deleteMode = dlg.getDeleteMode();
         int value = dlg.getValue();
-
+        MAlignmentObject* msaObj = editor->getMSAObject();
         switch(deleteMode) {
-            case DeleteByAbsoluteVal: editor->getMSAObject()->geleteGapsByAbsoluteVal(value);
+            case DeleteByAbsoluteVal: msaObj->deleteGapsByAbsoluteVal(value);
                 break;
-            case DeleteByRelativeVal: editor->getMSAObject()->geleteGapsByRelativeVal(value);
+            case DeleteByRelativeVal: 
+                msaObj->deleteGapsByAbsoluteVal( ( msaObj->getMAlignment().getNumRows()*value ) / 100 );
                 break;
-            case DeleteAll: editor->getMSAObject()->deleteAllGapColumn();
+            case DeleteAll: msaObj->deleteAllGapColumn();
                 break;
             default:
                 assert(0);

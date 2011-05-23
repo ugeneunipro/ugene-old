@@ -260,7 +260,7 @@ void MAlignmentObject::crop( U2Region window, const QSet<QString>& rowNames ) {
     emit si_alignmentChanged(maBefore, mi);    
 }
 
-void MAlignmentObject::geleteGapsByAbsoluteVal(int val) {
+void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
     int length = msa.getLength();
     MAlignment maBefore = msa;
     for(int i = 0; i < length; i++) { //columns
@@ -277,27 +277,10 @@ void MAlignmentObject::geleteGapsByAbsoluteVal(int val) {
             i--;
         }
     }
-
-    MAlignmentModInfo mi;
-    emit si_alignmentChanged(maBefore, mi);   
-}
-
-void MAlignmentObject::geleteGapsByRelativeVal(int val) {
-    int length = msa.getLength();
-    MAlignment maBefore = msa;
-    for(int i = 0; i < length; i++) { //columns
-        int gapCount = 0;
-        for(int j = 0; j < msa.getNumRows(); j++) { //sequences
-            if(charAt(j,i) == '-') {
-                gapCount++;
-            }
-        }
-
-        if(100*gapCount/msa.getNumRows() >= val) {
-            removeRegion(i, 0, 1, msa.getNumRows(), true, false);
-            length--;
-            i--;
-        }
+    
+    if (msa.isEmpty()) {
+        msa = maBefore;
+        return;
     }
 
     MAlignmentModInfo mi;
