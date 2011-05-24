@@ -39,6 +39,9 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AssemblyUtils.h>
 
+#include <QtGui/QMessageBox>
+#include <QtGui/QApplication>
+
 #include <memory>
 
 namespace U2 {
@@ -219,9 +222,16 @@ void AssemblyModel::sl_referenceLoadingFailed() {
 // when reference doc removed from project
 void AssemblyModel::sl_referenceDocRemoved(Document* d) {
     if(d != NULL && d == refDoc) {
-        refDoc->disconnect(SIGNAL(si_loadedStateChanged()));
-        cleanup();
-        emit si_referenceChanged();
+        QMessageBox::StandardButtons fl = QMessageBox::Yes | QMessageBox::No;
+        QMessageBox::StandardButton btn = QMessageBox::question(QApplication::activeWindow(), tr("Errors"), 
+            tr("Remove association with '%1' assembly").arg(assembly.visualName), fl, QMessageBox::Yes);
+        if(btn == QMessageBox::Yes) {
+            sl_unassociateReference();
+        } else {
+            refDoc->disconnect(SIGNAL(si_loadedStateChanged()));
+            cleanup();
+            emit si_referenceChanged();
+        }
     }
 }
 
