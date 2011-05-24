@@ -726,7 +726,7 @@ void TaskSchedulerImpl::updateTaskProgressAndDesc(TaskInfo* ti) {
                 sum += sub->getProgress() * w;
                 maxSum += w;
             }
-            if (sum > 100.0f) {
+            if (maxSum > 1.0f) {
                 newProgress = qRound(sum / maxSum);
             } else {
                 newProgress = qRound(sum);
