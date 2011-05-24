@@ -177,19 +177,15 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
     }
     if(setRef) {
         model->setReference(seqDbi, u2SeqObj);
-        QMessageBox::StandardButtons fl = QMessageBox::Yes | QMessageBox::No;
-        QMessageBox::StandardButton btn = QMessageBox::question(ui, tr("Question"), tr("Associate assembly with '%1'?").arg(seqObjName), fl, QMessageBox::Yes);
-        if(QMessageBox::Yes == btn) {
-            U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiHandle().dbi->getCrossDatabaseReferenceDbi();
-            U2CrossDatabaseReference crossDbRef;
-            crossDbRef.dataRef.dbiId = u2SeqObj.dbiId;
-            crossDbRef.dataRef.entityId = u2SeqObj.id;
-            crossDbRef.dataRef.version = 1;
-            crossDbRef.dataRef.factoryId = "FileDbi_" + seqDoc->getDocumentFormatId();
-            crossDbi->createCrossReference(crossDbRef, status);
-            LOG_OP(status);
-            model->associateWithReference(crossDbRef);
-        }
+        U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiHandle().dbi->getCrossDatabaseReferenceDbi();
+        U2CrossDatabaseReference crossDbRef;
+        crossDbRef.dataRef.dbiId = u2SeqObj.dbiId;
+        crossDbRef.dataRef.entityId = u2SeqObj.id;
+        crossDbRef.dataRef.version = 1;
+        crossDbRef.dataRef.factoryId = "FileDbi_" + seqDoc->getDocumentFormatId();
+        crossDbi->createCrossReference(crossDbRef, status);
+        LOG_OP(status);
+        model->associateWithReference(crossDbRef);
     }
 
     GCOUNTER( cvar, tvar, "AssemblyBrowser:associate_with_reference" );
