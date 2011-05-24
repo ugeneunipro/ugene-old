@@ -84,8 +84,7 @@ void BlastPlusSupportCommonTask::prepare(){
             return;
         }
     }
-    tmpDir.cd(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath());
-    if(!tmpDir.mkdir(tmpDirName)){
+    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName)){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }

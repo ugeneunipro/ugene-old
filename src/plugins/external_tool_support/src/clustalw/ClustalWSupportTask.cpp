@@ -83,8 +83,7 @@ void ClustalWSupportTask::prepare(){
             emit si_stateChanged();
         }
     }
-    tmpDir.cd(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath());
-    if(!tmpDir.mkdir(tmpDirName)){
+    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName)){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         emit si_stateChanged();
         return;
@@ -182,13 +181,15 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
 }
 Task::ReportResult ClustalWSupportTask::report(){
     //Remove subdir for temporary files, that created in prepare
-    QDir tmpDir(QFileInfo(url).absoluteDir());
-    foreach(QString file, tmpDir.entryList()){
-        tmpDir.remove(file);
-    }
-    if(!tmpDir.rmdir(tmpDir.absolutePath())){
-        stateInfo.setError(tr("Can not remove directory for temporary files."));
-        emit si_stateChanged();
+    if(!url.isEmpty()){
+        QDir tmpDir(QFileInfo(url).absoluteDir());
+        foreach(QString file, tmpDir.entryList()){
+            tmpDir.remove(file);
+        }
+        if(!tmpDir.rmdir(tmpDir.absolutePath())){
+            stateInfo.setError(tr("Can not remove directory for temporary files."));
+            emit si_stateChanged();
+        }
     }
 
     return ReportResult_Finished;
