@@ -44,8 +44,13 @@ class AssemblyReadsArea: public QWidget {
     Q_OBJECT
     
     // (hotkey, description) pairs
-    static const QList<QPair<QString, QString> > HOTKEY_DESCRIPTIONS;
-    static QList<QPair<QString, QString> > initHotkeyDescriptions();
+    struct HotkeyDescription {
+        QString key;
+        QString desc;
+        HotkeyDescription(const QString& k, const QString & d) : key(k), desc(d) {}
+    };
+    static const QList<HotkeyDescription> HOTKEY_DESCRIPTIONS;
+    static QList<HotkeyDescription> initHotkeyDescriptions();
     
 public:
     AssemblyReadsArea(AssemblyBrowserUi * ui, QScrollBar * hBar, QScrollBar * vBar);
@@ -175,6 +180,8 @@ private:
     QMenu * readMenu;
     QAction * copyDataAction;
     QAction * exportReadAction;
+    
+    int currentHotkeyIndex;
 };
 
 } //ns

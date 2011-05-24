@@ -55,7 +55,7 @@ namespace U2 {
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
 QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true),
 coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), readMenu(new QMenu(this)), copyDataAction(NULL), 
-exportReadAction(NULL) {
+exportReadAction(NULL), currentHotkeyIndex(-1) {
     QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
     coveredRegionsLayout->addWidget(&coveredRegionsLabel);
     setLayout(coveredRegionsLayout);
@@ -160,23 +160,23 @@ void AssemblyReadsArea::drawAll() {
 
 const static QString ZOOM_LINK("zoom");
 
-const QList<QPair<QString, QString> > AssemblyReadsArea::HOTKEY_DESCRIPTIONS = AssemblyReadsArea::initHotkeyDescriptions();
+const QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::HOTKEY_DESCRIPTIONS = AssemblyReadsArea::initHotkeyDescriptions();
 
-QList<QPair<QString, QString> > AssemblyReadsArea::initHotkeyDescriptions() {
-    QList<QPair<QString, QString> > res;
-    res << QPair<QString, QString>(tr("Shift+move mouse"), tr("Zoom the Assembly Overview to selection"));
-    res << QPair<QString, QString>(tr("Ctrl+wheel"), tr("Zoom the Assembly Overview"));
-    res << QPair<QString, QString>(tr("Alt+click"), tr("Zoom the Assembly Overview in 100x"));
-    res << QPair<QString, QString>(tr("Wheel+move mouse"), tr("Move the Assembly Overview"));
-    res << QPair<QString, QString>(tr("Wheel"), tr("Zoom the Reads Area"));
-    res << QPair<QString, QString>(tr("Double-click"), tr("Zoom in the Reads Area"));
-    res << QPair<QString, QString>(tr("+/-"), tr("Zoom in/Zoom out the Reads Area"));
-    res << QPair<QString, QString>(tr("Click+move mouse"), tr("Move the Reads Area"));
-    res << QPair<QString, QString>(tr("Arrow"), tr("Move one base in the corresponding direction in the Reads Area"));
-    res << QPair<QString, QString>(tr("Ctrl+arrow"), tr("Move one page in the corresponding direction in the Reads Area"));
-    res << QPair<QString, QString>(tr("Page up/Page down"), tr("Move one page up/down in the Reads Area"));
-    res << QPair<QString, QString>(tr("Home/End"), tr("Move to the beginning/end of the assembly in the Reads Area"));
-    res << QPair<QString, QString>(tr("Ctrl+G"), tr("Focus to the <i>Go to position</i> field on the toolbar"));
+QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::initHotkeyDescriptions() {
+    QList<HotkeyDescription> res;
+    res << HotkeyDescription(tr("Shift+move mouse"), tr("Zoom the Assembly Overview to selection"));
+    res << HotkeyDescription(tr("Ctrl+wheel"), tr("Zoom the Assembly Overview"));
+    res << HotkeyDescription(tr("Alt+click"), tr("Zoom the Assembly Overview in 100x"));
+    res << HotkeyDescription(tr("Wheel+move mouse"), tr("Move the Assembly Overview"));
+    res << HotkeyDescription(tr("Wheel"), tr("Zoom the Reads Area"));
+    res << HotkeyDescription(tr("Double-click"), tr("Zoom in the Reads Area"));
+    res << HotkeyDescription(tr("+/-"), tr("Zoom in/Zoom out the Reads Area"));
+    res << HotkeyDescription(tr("Click+move mouse"), tr("Move the Reads Area"));
+    res << HotkeyDescription(tr("Arrow"), tr("Move one base in the corresponding direction in the Reads Area"));
+    res << HotkeyDescription(tr("Ctrl+arrow"), tr("Move one page in the corresponding direction in the Reads Area"));
+    res << HotkeyDescription(tr("Page up/Page down"), tr("Move one page up/down in the Reads Area"));
+    res << HotkeyDescription(tr("Home/End"), tr("Move to the beginning/end of the assembly in the Reads Area"));
+    res << HotkeyDescription(tr("Ctrl+G"), tr("Focus to the <i>Go to position</i> field on the toolbar"));
     return res;
 }
 
@@ -211,13 +211,15 @@ void AssemblyReadsArea::drawWelcomeScreen(QPainter & p) {
         coveredRegionsText += "</table>";
         text += coveredRegionsText;
     }
-    // commented due to including this in future versions
-    /*if(!HOTKEY_DESCRIPTIONS.isEmpty()) {
-        text += "<br><br><br><u>TIP:</u>&nbsp;&nbsp;&nbsp;";
-        int i = qrand() % HOTKEY_DESCRIPTIONS.size();
-        text += QString("<b>%1</b>&nbsp;&mdash;&nbsp;%2").arg(HOTKEY_DESCRIPTIONS.at(i).first).arg(HOTKEY_DESCRIPTIONS.at(i).second);
-    }*/
-
+    
+    assert(!HOTKEY_DESCRIPTIONS.isEmpty());
+    if(currentHotkeyIndex == -1 || !coveredRegionsLabel.isVisible()) {
+        currentHotkeyIndex = qrand() % HOTKEY_DESCRIPTIONS.size();
+    }
+    text += "<br><br><br><u>TIP:</u>&nbsp;&nbsp;&nbsp;";
+    HotkeyDescription hotkey = HOTKEY_DESCRIPTIONS.at(currentHotkeyIndex);
+    text += QString("<b>%1</b>&nbsp;&mdash;&nbsp;%2").arg(hotkey.key).arg(hotkey.desc);
+    
     coveredRegionsLabel.setText(text);
     coveredRegionsLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     coveredRegionsLabel.show();
