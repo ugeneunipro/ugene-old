@@ -301,17 +301,30 @@ bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAT
     if (qu->contains(fisrtSymbol)) {
         return false;
     }
-    int j = 0;
-    for (j=0; j<objCount; j++) {
-        if (offset < objLens[j]) {
+
+    //binary search in reference objects
+    int low = 0;
+    int high = objCount;
+    int mid = 0;
+    qint64 rc = 0;
+    SAType minBorder = 0;
+    while (low <= high) {
+        mid = (low + high) / 2;
+        rc = objLens[mid] - (qint64)offset;
+        minBorder = mid>0?objLens[mid-1]:0;
+        if (((qint64)offset >= minBorder) && (rc > 0)) {
             break;
+        } else if (rc <= 0) {
+            low = mid;
+        } else {
+            high = mid;
         }
     }
-    SAType minBorder = j>0?objLens[j-1]:0;
+
     if (fisrtSymbol < minBorder) {
         return false;
     }
-    if (offset + (length - startPos - 1) >= objLens[j]) {
+    if (offset + (length - startPos - 1) >= objLens[mid]) {
         return false;
     }
 
