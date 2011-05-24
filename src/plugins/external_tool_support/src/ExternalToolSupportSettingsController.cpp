@@ -328,7 +328,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
 void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
     LastOpenDirHelper lod("toolpack path");
     QString dirPath;
-
+    bool isPathValid=false;
     lod.url = dirPath = QFileDialog::getExistingDirectory(this, tr("Choose Directory With External Tools Pack"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dirPath.isEmpty()) {
         QDir dir=QDir(dirPath);
@@ -342,6 +342,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
 
                     }else{
                         if(dirName.contains(toolKitName,Qt::CaseInsensitive)){
+                            isPathValid=true;
                             QWidget* itemWid=treeWidget->itemWidget(item,1);
                             PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
                             if(lineEdit->text().isEmpty()){
@@ -370,6 +371,11 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
                     }
                 }
             }
+        }
+        if(!isPathValid){
+            QMessageBox::warning(this, tr("Warning"),
+                                            tr("Not a valid external tools directory"),
+                                            QMessageBox::Ok);
         }
     }
 }
