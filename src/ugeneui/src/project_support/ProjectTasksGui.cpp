@@ -193,6 +193,11 @@ void OpenProjectTask::prepare() {
             }
             Document * doc = p->findDocumentByURL(_url);
             if (!doc) {
+                QFileInfo fi(_url.getURLString());
+                if(!fi.exists()){
+                    stateInfo.setError(L10N::errorFileNotFound(_url));
+                    continue;
+                }
                 QList<DocumentFormat*> fs = DocumentUtils::detectFormat(_url);
                 if (fs.isEmpty()) {
                     stateInfo.setError(  tr("unsupported_document%1").arg(_url.fileName()) );

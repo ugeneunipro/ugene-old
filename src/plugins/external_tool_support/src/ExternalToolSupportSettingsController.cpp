@@ -24,6 +24,7 @@
 #include "utils/ExternalToolValidateTask.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/L10n.h>
 #include <U2Misc/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <QtGui>
@@ -373,7 +374,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
             }
         }
         if(!isPathValid){
-            QMessageBox::warning(this, tr("Warning"),
+            QMessageBox::warning(this, L10N::warningTitle(),
                                             tr("Not a valid external tools directory"),
                                             QMessageBox::Ok);
         }
