@@ -79,7 +79,10 @@ void BowtieAdapter::doBowtie(const QString& ebwtFileName, BowtieReadsReader* rea
 			ti.setError(QString("Bowtie exits with error code %1").arg(e));
 			ctx->hasError = true;
 		}
-	}
+    } catch (QString exceptionMessage) {
+        ti.setError(exceptionMessage);
+        ctx->hasError = true;
+    }
 	if(ctx->hasError) {
 		for(int i=0;i<ctx->search.nthreads-1;i++) {
 			ctx->workerList[i]->start.release();

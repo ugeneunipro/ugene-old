@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/Timer.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Formats/DocumentFormatUtils.h>
@@ -195,30 +196,45 @@ int GenomeAlignerDbiReader::getProgress() {
 /************************************************************************/
 /* GenomeAlignerDbiWriter                                               */
 /************************************************************************/
-const qint64 GenomeAlignerDbiWriter::readBunchSize = 1000;
+const qint64 GenomeAlignerDbiWriter::readBunchSize = 10000;
 
-GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(U2AssemblyDbi *_wDbi, U2Assembly _assembly)
-: wDbi(_wDbi), assembly(_assembly)
-{
-    wholeAssembly.startPos = 0;
-    wholeAssembly.length = wDbi->getMaxEndPos(assembly.id, status);
-    maxRow = wDbi->getMaxPackedRow(assembly.id, wholeAssembly, status);
-    readsInAssembly = wDbi->countReads(assembly.id, wholeAssembly, status);
-    currentRow = maxRow;
+inline void checkOperationStatus(const U2OpStatus &status) {
+    if (status.hasError()) {
+        throw status.getError();
+    }
+}
+
+GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refName) {
+    //TODO: support several assemblies.
+    dbiHandle = QSharedPointer<DbiHandle>(new DbiHandle("SQLiteDbi", dbiFilePath, true, status));
+    checkOperationStatus(status);
+    sqliteDbi = dbiHandle->dbi;
+    wDbi = sqliteDbi->getAssemblyDbi();
+
+    sqliteDbi->getObjectDbi()->createFolder("/", status);
+    checkOperationStatus(status);
+    assembly.visualName = refName;
+    U2AssemblyReadsImportInfo importInfo;
+    wDbi->createAssemblyObject(assembly, "/", NULL, importInfo, status);
+    checkOperationStatus(status);
 }
 
 void GenomeAlignerDbiWriter::write(SearchQuery *seq, SAType offset) {
     U2AssemblyRead read(new U2AssemblyReadData());
-    read->readSequence = seq->constSequence();
+
+    read->name = seq->getName().toAscii();
     read->leftmostPos = offset;
+    read->effectiveLen = seq->length();
+    read->readSequence = seq->constSequence();
+    read->quality = seq->hasQuality() ? seq->getQuality().qualCodes : "";
+    read->flags = None;
     read->cigar.append(U2CigarToken(U2CigarOp_M, seq->length()));
-    read->packedViewRow = currentRow;
-    currentRow++;
 
     reads.append(read);
     if (reads.size() >= readBunchSize) {
         BufferedDbiIterator<U2AssemblyRead> readsIterator(reads);
         wDbi->addReads(assembly.id, &readsIterator, status);
+        checkOperationStatus(status);
         reads.clear();
     }
 }
@@ -227,30 +243,13 @@ void GenomeAlignerDbiWriter::close() {
     if (reads.size() > 0) {
         BufferedDbiIterator<U2AssemblyRead> readsIterator(reads);
         wDbi->addReads(assembly.id, &readsIterator, status);
+        checkOperationStatus(status);
         reads.clear();
     }
-    wDbi->updateAssemblyObject(assembly, status);
 
-
-    /* TODO: what this all about?
-    QList<U2DataId> ids;
-    qint64 toRead = 0;
-    for (qint64 count = 0; count < readsInAssembly;) {
-        toRead = qMin((readsInAssembly - count), readBunchSize);
-        ids = wDbi->getReadIds(assembly.id, wholeAssembly, 0, toRead, status);
-        count += toRead;
-        wDbi->removeReads(assembly.id, ids.mid(0, toRead), status);
-        ids.clear();
-    }
-    //wDbi->pack(assembly.id, status);
-    */
-}
-
-bool checkAndLogError(const U2OpStatusImpl & status) {
-    if(status.hasError()) {
-        uiLog.error(QString(QString("Genome Aligner -> Database Error: " + status.getError()).toAscii().data()));
-    }
-    return status.hasError();
+    U2AssemblyPackStat packStatus;
+    wDbi->pack(assembly.id, packStatus, status);
+    checkOperationStatus(status);
 }
 
 } //U2

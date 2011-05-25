@@ -27,10 +27,12 @@
 #include "BowtieReadsIOUtils.h"
 
 #include <U2Core/GUrl.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Formats/StreamSequenceReader.h>
 #include <U2Formats/StreamSequenceWriter.h>
 
 #include <QtCore/QMutex>
+#include <QtCore/QSharedPointer>
 
 namespace U2 {
 	class MAlignment;
@@ -59,6 +61,26 @@ public:
 	void close();
 private:
 	U2::StreamContigWriter seqWriter;
+};
+
+/************************************************************************/
+/* DbiReadsWriter                                                       */
+/************************************************************************/
+
+class BowtieDbiReadsWriter : public U2::BowtieReadsWriter {
+public:
+    BowtieDbiReadsWriter(const U2::GUrl& dbiFilePath, const QString& refName);
+    void write(const U2::DNASequence& seq, int offset);
+    void close();
+private:
+    U2::U2OpStatusImpl status;
+    QSharedPointer<U2::DbiHandle> dbiHandle;
+    U2::U2Dbi* sqliteDbi;
+    U2::U2AssemblyDbi *wDbi;
+    U2::U2Assembly assembly;
+    QList<U2::U2AssemblyRead> reads;
+
+    static const qint64 readBunchSize;
 };
 
 /************************************************************************/

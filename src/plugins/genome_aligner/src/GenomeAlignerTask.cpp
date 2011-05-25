@@ -82,26 +82,6 @@ justBuildIndex(_justBuildIndex), windowSize(0), bunchSize(0), index(NULL), lastQ
     indexLoadTime = 0;
     shortreadIOTime = 0;
     currentProgress = 0.0f;
-    
-    dbiIO = false;//settings.getCustomValue(OPTION_DBI_IO, true).toBool();
-    if (!justBuildIndex && !dbiIO) {
-        seqReader = settings.getCustomValue(OPTION_READS_READER, qVariantFromValue(GenomeAlignerReaderContainer()))
-            .value<GenomeAlignerReaderContainer>().reader;
-        if (NULL == seqReader) {
-            seqReader = new GenomeAlignerUrlReader(settings.shortReadUrls);
-        }
-
-        if (seqReader->isEnd()) {
-            setError(tr("Can not init short reads loader."));
-            return;
-        }
-
-        seqWriter = settings.getCustomValue(OPTION_READS_WRITER, qVariantFromValue(GenomeAlignerWriterContainer()))
-            .value<GenomeAlignerWriterContainer>().writer;
-        if (NULL == seqWriter) {
-            seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, settings.refSeqUrl.baseFileName());
-        }
-    }
 
     alignReversed = settings.getCustomValue(OPTION_ALIGN_REVERSED, true).toBool();
     openCL = settings.getCustomValue(OPTION_OPENCL, false).toBool();
@@ -149,26 +129,13 @@ GenomeAlignerTask::~GenomeAlignerTask() {
 }
 
 void GenomeAlignerTask::prepare() {
-    if (!justBuildIndex && dbiIO) {
-        assert(settings.shortReadUrls.size() > 0);
-        QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(settings.shortReadUrls.first());
-        if (!detectedFormats.isEmpty()) {
-            IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-            loadDbiTask = new LoadDocumentTask(detectedFormats.first()->getFormatId(), settings.shortReadUrls.first(), factory);
-            addSubTask(loadDbiTask);
-        } else {
-            setError("Unsupported dbi file format.");
-            return;
-        }
-    } else {
-        setupCreateIndexTask();
-        addSubTask(createIndexTask);
-        if (!justBuildIndex && !bestMode) {
-            setMaxParallelSubtasks(3);
-            pWriteTask = new GenomeAlignerWriteTask(seqWriter);
-            pWriteTask->setSubtaskProgressWeight(0.0f);
-            addSubTask(pWriteTask);
-        }
+    setupCreateIndexTask();
+    addSubTask(createIndexTask);
+    if (!justBuildIndex && !bestMode) {
+        setMaxParallelSubtasks(3);
+        pWriteTask = new GenomeAlignerWriteTask(seqWriter);
+        pWriteTask->setSubtaskProgressWeight(0.0f);
+        addSubTask(pWriteTask);
     }
 }
 
@@ -181,28 +148,6 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         return subTasks;
     }
 
-    if (dbiIO && subTask == loadDbiTask) {
-        Document *d = loadDbiTask->getDocument();
-        QList<GObject*> objects = d->findGObjectByType(GObjectTypes::ASSEMBLY);
-
-        if (objects.size() < 1) {
-            setError("Can't find assembly objects.");
-            return subTasks;
-        }
-        AssemblyObject *assObj = qobject_cast<AssemblyObject*>(objects.first());
-        U2OpStatusImpl status;
-        handle = QSharedPointer<DbiHandle>(new DbiHandle(assObj->getDbiRef().factoryId, assObj->getDbiRef().dbiId, status));
-        U2Dbi *dbi = handle->dbi;
-        U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(assObj->getDbiRef().entityId, status);
-        seqReader = new GenomeAlignerDbiReader(dbi->getAssemblyDbi(), assm);
-        seqWriter = new GenomeAlignerDbiWriter(dbi->getAssemblyDbi(), assm);
-        //seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, settings.refSeqUrl.baseFileName());
-        
-        setupCreateIndexTask();
-        subTasks.append(createIndexTask);
-        return subTasks;
-    }
-
     assert(createIndexTask != NULL);
     if (justBuildIndex) {
         return subTasks;
@@ -210,7 +155,35 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     qint64 time=(subTask->getTimeInfo().finishTime - subTask->getTimeInfo().startTime);
     if (subTask == createIndexTask) {
         index = createIndexTask->index;
+        seqReader = settings.getCustomValue(OPTION_READS_READER, qVariantFromValue(GenomeAlignerReaderContainer()))
+            .value<GenomeAlignerReaderContainer>().reader;
+        if (NULL == seqReader) {
+            seqReader = new GenomeAlignerUrlReader(settings.shortReadUrls);
+        }
+
+        if (seqReader->isEnd()) {
+            setError(tr("Can not init short reads loader."));
+            return subTasks;
+        }
+
+        seqWriter = settings.getCustomValue(OPTION_READS_WRITER, qVariantFromValue(GenomeAlignerWriterContainer()))
+            .value<GenomeAlignerWriterContainer>().writer;
+        if (NULL == seqWriter) {
+            if (settings.samOutput) {
+                seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, index->getSeqName());
+            } else {
+                try {
+                    seqWriter = new GenomeAlignerDbiWriter(settings.resultFileName.getURLString(), index->getSeqName());
+                } catch (QString exeptionMessage) {
+                    setError(exeptionMessage);
+                    return subTasks;
+                }
+            }
+        }
         seqWriter->setReferenceName(index->getSeqName());
+        if (!bestMode) {
+            pWriteTask->setSeqWriter(seqWriter);
+        }
         taskLog.details(QString("Genome aligner index creation time: %1").arg((double)time/(1000*1000)));
     }
 
@@ -313,7 +286,7 @@ Task::ReportResult GenomeAlignerTask::report() {
         haveResults = false;
         return ReportResult_Finished;
     }
-    seqWriter->close();
+    
     if (readsCount > 0) {
         taskLog.info(tr("The aligning is finished."));
         taskLog.info(tr("Whole working time = %1.").arg((GTimer::currentTimeMicros() - inf.startTime)/(1000*1000)));
@@ -455,6 +428,9 @@ void ReadShortReadsSubTask::run() {
             }
         }
     }
+    if (0 == bunchSize) {
+        parent->seqWriter->close();
+    }
 }
 
 WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries, quint64 &r)
@@ -480,29 +456,34 @@ void WriteAlignedReadsSubTask::run() {
     SearchQuery **q = queries.data();
     int size = queries.size();
 
-    for (int i=0; i<size; i++) {
-        read = q[i];
-        revCompl = read->getRevCompl();
+    try {
+        for (int i=0; i<size; i++) {
+            read = q[i];
+            revCompl = read->getRevCompl();
 
-        if (i<size-1 && revCompl == q[i+1]) {
-            continue;
-        }
+            if (i<size-1 && revCompl == q[i+1]) {
+                continue;
+            }
 
-        if (NULL == revCompl && read->haveResult()) {
-            seqWriter->write(read, read->firstResult());
-            readsAligned++;
-        } else if (NULL != revCompl) {
-            int c = read->firstMCount();
-            int cRev = revCompl->firstMCount();
-
-            if (c <= cRev && c < INT_MAX) {
+            if (NULL == revCompl && read->haveResult()) {
                 seqWriter->write(read, read->firstResult());
                 readsAligned++;
-            } else if (cRev < INT_MAX) {
-                seqWriter->write(revCompl, revCompl->firstResult());
-                readsAligned++;
+            } else if (NULL != revCompl) {
+                int c = read->firstMCount();
+                int cRev = revCompl->firstMCount();
+
+                if (c <= cRev && c < INT_MAX) {
+                    seqWriter->write(read, read->firstResult());
+                    readsAligned++;
+                } else if (cRev < INT_MAX) {
+                    seqWriter->write(revCompl, revCompl->firstResult());
+                    readsAligned++;
+                }
             }
         }
+    } catch (QString exeptionMessage) {
+        setError(exeptionMessage);
+        return;
     }
 }
 

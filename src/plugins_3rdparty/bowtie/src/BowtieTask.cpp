@@ -398,8 +398,18 @@ void BowtieTLSTask::_run()
     }
 
 	BowtieReadsWriter* writer = parent->settings.getCustomValue(BowtieTask::OPTION_READS_WRITER, qVariantFromValue(BowtieReadsReaderContainer())).value<BowtieReadsWriterContainer>().writer;
-	if(writer == NULL) 
-		writer = new BowtieUrlReadsWriter(parent->settings.resultFileName, ctx->search.refName.c_str(), ctx->search.refLength);
+    if(writer == NULL) {
+        if (parent->settings.samOutput) {
+		    writer = new BowtieUrlReadsWriter(parent->settings.resultFileName, ctx->search.refName.c_str(), ctx->search.refLength);
+        } else {
+            try {
+                writer = new BowtieDbiReadsWriter(parent->settings.resultFileName, ctx->search.refName.c_str());
+            } catch (QString exeptionMessage) {
+                setError(exeptionMessage);
+                return;
+            }
+        }
+    }
 
 	BowtieAdapter::doBowtie(parent->indexPath, reader, writer, parent->settings.resultFileName, stateInfo);
 }

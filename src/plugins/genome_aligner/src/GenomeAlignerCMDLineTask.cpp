@@ -43,6 +43,7 @@ namespace U2 {
 #define OPTION_REVERSE      "rev-comp"
 #define OPTION_BEST_MODE    "best"
 #define OPTION_OMIT         "omit-size"
+#define OPTION_SAM          "sam"
 
 
  GenomeAlignerCMDLineTask::GenomeAlignerCMDLineTask()
@@ -58,6 +59,7 @@ namespace U2 {
     alignRevCompl = false;
     bestMode = false;
     onlyBuildIndex = false;
+    samOutput = false;
 
     // parse options
        
@@ -112,6 +114,8 @@ namespace U2 {
             if (qualityThreshold<0) {
                 qualityThreshold = 0;
             }
+        } else if (opt.first == OPTION_SAM) {
+            samOutput = true;
         }
     }
         
@@ -152,6 +156,7 @@ void GenomeAlignerCMDLineTask::prepare()
     settings.refSeqUrl = refPath;
     settings.indexFileName = indexPath;
     settings.loadResultDocument = false;
+    settings.samOutput = samOutput;
     if (onlyBuildIndex) {
         settings.prebuiltIndex = false;
     } else {
@@ -183,7 +188,7 @@ QString GenomeAlignerCMDLineTask::getArgumentsDescritption()
     desc += tr("  --%1    Path to reference genome sequence\n\n").arg(OPTION_REFERENCE, fieldSize);
     desc += tr("  --%1    Path to short-reads data in FASTA or FASTQ format\n\n").arg(OPTION_SHORTREADS, fieldSize);
     desc += tr("  --%1    Path to prebuilt index (base file name or with .idx extension). If not set, index is searched in system temporary directory. If --build-index option is applied, index will be saved to specified path.\n\n").arg(OPTION_INDEX_PATH, fieldSize);
-    desc += tr("  --%1    Path to output alignment in SAM format\n\n").arg(OPTION_RESULT, fieldSize);
+    desc += tr("  --%1    Path to output alignment in UGENEDB or SAM format (see --%2)\n\n").arg(OPTION_RESULT, fieldSize).arg(OPTION_SAM);
     desc += tr("  --%1    Memory size (in Mbs) reserved for short-reads. The bigger value the faster algorithm works. Default value depends on available system memory.\n\n").arg(OPTION_MEMSIZE, fieldSize);
     desc += tr("  --%1    Index fragmentation size (in Mbs). Small fragments better fit into RAM, allowing to load more short reads. Default value is 10.\n\n").arg(OPTION_REF_FRAG, fieldSize);
     desc += tr("  --%1    Absolute amount of allowed mismatches per every short-read (mutually exclusive with --%2). Default value is 0.\n\n").arg(OPTION_N_MISMATHES, fieldSize).arg(OPTION_PT_MISMATHES);
@@ -191,6 +196,7 @@ QString GenomeAlignerCMDLineTask::getArgumentsDescritption()
     desc += tr("  --%1    Use both the read and its reverse complement during the aligning.\n\n").arg(OPTION_REVERSE, fieldSize);
     desc += tr("  --%1    Report only about best alignments (in terms of mismatches).\n\n").arg(OPTION_BEST_MODE, fieldSize);
     desc += tr("  --%1    Omit reads with qualities lower than the specified value. Reads which have no qualities are not omitted. Default value is 0.\n\n").arg(OPTION_OMIT, fieldSize);
+    desc += tr("  --%1    Output aligned reads in SAM format. Default value is false.\n\n").arg(OPTION_SAM, fieldSize);
 
     return desc;
 }

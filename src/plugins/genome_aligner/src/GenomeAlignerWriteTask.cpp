@@ -29,6 +29,10 @@ seqWriter(s), end(false), writing(false), readsWritten(0)
 {
 }
 
+void GenomeAlignerWriteTask::setSeqWriter(GenomeAlignerWriter *seqWriter) {
+    this->seqWriter = seqWriter;
+}
+
 void GenomeAlignerWriteTask::addResult(SearchQuery *qu) {
     listMutex.lock();
     WriteData data;
@@ -52,40 +56,48 @@ void GenomeAlignerWriteTask::setFinished() {
 }
 
 void GenomeAlignerWriteTask::flush() {
-    writeMutex.lock();
-    foreach (WriteData data, results) {
-        seqWriter->write(data.qu, data.offset);
-        setReadWritten(data.qu, data.qu->getRevCompl());
+    try {
+        writeMutex.lock();
+        foreach (WriteData data, results) {
+            seqWriter->write(data.qu, data.offset);
+            setReadWritten(data.qu, data.qu->getRevCompl());
+        }
+        results.clear();
+        writeMutex.unlock();
+    } catch (QString exeptionMessage) {
+        setError(exeptionMessage);
     }
-    results.clear();
-    writeMutex.unlock();
 }
 
 void GenomeAlignerWriteTask::run() {
     stateInfo.setProgress(0);
-    do {
-        waitMutex.lock();
-        writing = false;
-        waiter.wait(&waitMutex);
-        if (end) {
+    try {
+        do {
+            waitMutex.lock();
             writing = false;
-            break;
-        }
+            waiter.wait(&waitMutex);
+            if (end) {
+                writing = false;
+                break;
+            }
 
-        QVector<WriteData> newResults;
-        listMutex.lock();
-        newResults += (results);
-        results.clear();
-        listMutex.unlock();
-        waitMutex.unlock();
+            QVector<WriteData> newResults;
+            listMutex.lock();
+            newResults += (results);
+            results.clear();
+            listMutex.unlock();
+            waitMutex.unlock();
 
-        writeMutex.lock();
-        foreach (WriteData data, newResults) {
-            seqWriter->write(data.qu, data.offset);
-            setReadWritten(data.qu, data.qu->getRevCompl());
-        }
-        writeMutex.unlock();
-    } while (!end);
+            writeMutex.lock();
+            foreach (WriteData data, newResults) {
+                seqWriter->write(data.qu, data.offset);
+                setReadWritten(data.qu, data.qu->getRevCompl());
+            }
+            writeMutex.unlock();
+        } while (!end);
+    } catch (QString exeptionMessage) {
+        setError(exeptionMessage);
+    }
 }
 
 void GenomeAlignerWriteTask::setReadWritten(SearchQuery *read, SearchQuery *revCompl) {

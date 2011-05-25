@@ -48,6 +48,7 @@ public:
     void flush();
     void setFinished();
     quint64 getWrittenReadsCount() const {return readsWritten;}
+    void setSeqWriter(GenomeAlignerWriter *seqWriter);
 private:
     GenomeAlignerWriter *seqWriter;
     QVector<WriteData> results;

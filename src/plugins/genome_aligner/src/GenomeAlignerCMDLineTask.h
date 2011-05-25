@@ -38,7 +38,7 @@ public:
 private:
     int mismatchCount, ptMismatchCount, memSize, refSize, qualityThreshold;
     bool useCuda, useOpenCL;
-    bool alignRevCompl, bestMode;
+    bool alignRevCompl, bestMode, samOutput;
     DnaAssemblyToRefTaskSettings settings;
     QString indexPath, resultPath, refPath;
     bool onlyBuildIndex;

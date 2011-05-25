@@ -36,6 +36,7 @@
 #include <U2Lang/WorkflowUtils.h>
 
 #include <QtCore/QString>
+#include <QtCore/QSharedPointer>
 
 #include <memory>
 
@@ -168,20 +169,17 @@ private:
 
 class GenomeAlignerDbiWriter : public GenomeAlignerWriter {
 public:
-    GenomeAlignerDbiWriter(U2AssemblyDbi *wDbi, U2Assembly assembly);
+    GenomeAlignerDbiWriter(QString dbiFilePath, QString refName);
     inline void write(SearchQuery *seq, SAType offset);
     void close();
-    void setReferenceName(const QString &) {};
+    void setReferenceName(const QString &refName) {};
 private:
+    U2OpStatusImpl status;
+    QSharedPointer<DbiHandle> dbiHandle;
+    U2Dbi* sqliteDbi;
     U2AssemblyDbi *wDbi;
     U2Assembly assembly;
-    U2Assembly newAssembly;
     QList<U2AssemblyRead> reads;
-    U2Region wholeAssembly;
-    U2OpStatusImpl status;
-    qint64 maxRow;
-    qint64 currentRow;
-    qint64 readsInAssembly;
 
     static const qint64 readBunchSize;
 };

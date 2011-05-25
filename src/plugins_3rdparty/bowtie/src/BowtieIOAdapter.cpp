@@ -70,6 +70,65 @@ void BowtieUrlReadsWriter::close() {
 }
 
 /************************************************************************/
+/* BowtieDbiReadsWriter                                                 */
+/************************************************************************/
+const qint64 BowtieDbiReadsWriter::readBunchSize = 10000;
+
+inline void checkOperationStatus(const U2::U2OpStatus &status) {
+    if (status.hasError()) {
+        throw status.getError();
+    }
+}
+
+BowtieDbiReadsWriter::BowtieDbiReadsWriter(const U2::GUrl& dbiFilePath, const QString& refName) {
+    //TODO: support several assemblies.
+    dbiHandle = QSharedPointer<U2::DbiHandle>(new U2::DbiHandle("SQLiteDbi", dbiFilePath.getURLString(), true, status));
+    checkOperationStatus(status);
+    sqliteDbi = dbiHandle->dbi;
+    wDbi = sqliteDbi->getAssemblyDbi();
+
+    sqliteDbi->getObjectDbi()->createFolder("/", status);
+    checkOperationStatus(status);
+    assembly.visualName = refName;
+    U2::U2AssemblyReadsImportInfo importInfo;
+    wDbi->createAssemblyObject(assembly, "/", NULL, importInfo, status);
+    checkOperationStatus(status);
+}
+
+void BowtieDbiReadsWriter::write(const U2::DNASequence& seq, int offset) {
+    U2::U2AssemblyRead read(new U2::U2AssemblyReadData());
+
+    read->name = seq.getName().toAscii();
+    read->leftmostPos = offset;
+    read->effectiveLen = seq.length();
+    read->readSequence = seq.constSequence();
+    read->quality = seq.hasQualityScores() ? seq.quality.qualCodes : "";
+    read->flags = U2::None;
+    read->cigar.append(U2::U2CigarToken(U2::U2CigarOp_M, seq.length()));
+
+    reads.append(read);
+    if (reads.size() >= readBunchSize) {
+        U2::BufferedDbiIterator<U2::U2AssemblyRead> readsIterator(reads);
+        wDbi->addReads(assembly.id, &readsIterator, status);
+        checkOperationStatus(status);
+        reads.clear();
+    }
+}
+
+void BowtieDbiReadsWriter::close() {
+    if (reads.size() > 0) {
+        U2::BufferedDbiIterator<U2::U2AssemblyRead> readsIterator(reads);
+        wDbi->addReads(assembly.id, &readsIterator, status);
+        checkOperationStatus(status);
+        reads.clear();
+    }
+
+    U2::U2AssemblyPackStat packStatus;
+    wDbi->pack(assembly.id, packStatus, status);
+    checkOperationStatus(status);
+}
+
+/************************************************************************/
 /* DNASequencesPatternSource                                            */
 /************************************************************************/
 DNASequencesPatternSource::DNASequencesPatternSource( uint32_t seed, U2::BowtieReadsReader* reader )

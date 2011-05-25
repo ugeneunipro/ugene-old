@@ -70,6 +70,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
     DnaAssemblyDialog dlg(registry, QApplication::activeWindow());
     if (dlg.exec()) {
         DnaAssemblyToRefTaskSettings s;
+        s.samOutput = false;
         s.refSeqUrl = dlg.getRefSeqUrl();
         s.algName = dlg.getAlgorithmName();
         s.resultFileName = dlg.getResultFileName();

@@ -273,7 +273,7 @@ void DnaAssemblyDialog::addGuiExtension() {
 }
 
 void DnaAssemblyDialog::buildResultUrl(const GUrl& refUrl ) {
-    GUrl url = GUrlUtils::rollFileName(refUrl.dirPath() + "/" + refUrl.baseFileName()+ ".sam", DocumentUtils::getNewDocFileNameExcludesHint());
+    GUrl url = GUrlUtils::rollFileName(refUrl.dirPath() + "/" + refUrl.baseFileName()+ ".ugenedb", DocumentUtils::getNewDocFileNameExcludesHint());
     resultFileNameEdit->setText(url.getURLString());
 }
 
