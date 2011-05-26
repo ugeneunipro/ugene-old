@@ -231,7 +231,9 @@ void RestrctionMapWidget::sl_onAnnotationsInGroupRemoved( const QList<Annotation
         if (folderItem) {
             folderItem->removeEnzymeItem(a);
         }        
-    }   
+    }
+
+    group->getGObject()->releaseLocker();
 }
 
 
