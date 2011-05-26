@@ -23,7 +23,9 @@
 #define _U2_ASSEMBLY_H_
 
 #include <U2Core/U2Sequence.h>
+#include <U2Core/U2Range.h>
 #include <QtCore/QSharedData>
+
 
 namespace U2 {
 
@@ -213,7 +215,7 @@ class U2AssemblyCoverageStat {
 public:
     U2AssemblyCoverageStat() {}
     
-    QVector<qint64> coverage;
+    QVector< U2Range<int> > coverage;
 };
 
 } //namespace

@@ -103,7 +103,7 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     
     //3. format the string 
     // pos + 1 because of 1-based coords
-    QString cursorLabel = FormatUtils::formatNumberWithSeparators(posXInAsm + 1) + QString(" C%1").arg(coverageStat.coverage.at(0));
+    QString cursorLabel = FormatUtils::formatNumberWithSeparators(posXInAsm + 1) + QString(" C%1").arg(coverageStat.coverage.at(0).maxValue);
     int textWidth = p.fontMetrics().width(cursorLabel);
     int textHeight = p.fontMetrics().height();
     QRect offsetRect(cursorPos - textWidth/2, LABELS_END, textWidth, textHeight);

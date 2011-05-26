@@ -382,11 +382,18 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& n
     }
 }
 
+static void incCoverage(quint64& c) {
+    //increment both min and max coverage stats
+    c += quint64(1) <<32;
+    c += 1;
+}
+
+
 void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
     int csize = c.coverage.size();
     SAFE_POINT(csize > 0, "illegal coverage vector size!", );
 
-    qint64* cdata = c.coverage.data();
+    U2Range<int>* cdata = c.coverage.data();
     double basesPerRange = double(r.length) / csize;
     while (q.step() && !os.isCoR()) {
         qint64 startPos = q.getInt64(0);
@@ -401,8 +408,68 @@ void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U
         int firstCoverageIdx = (int)((readCroppedRegion.startPos - r.startPos)/ basesPerRange);
         int lastCoverageIdx = (int)((readCroppedRegion.startPos + len - r.startPos ) / basesPerRange);
         for (int i = firstCoverageIdx; i <= lastCoverageIdx && i < csize; i++) {
-            cdata[i]++;
+            cdata[i].minValue++;
+            cdata[i].maxValue++;
         }
+    }
+}
+
+#define MAX_COVERAGE_VECTOR_SIZE (1000*1000)
+
+static void remapCoverage(U2AssemblyReadsImportInfo& ii, int newSize, int newBasesPerPoint) {
+    int oldSize = ii.coverage.coverage.size();
+    SAFE_POINT(oldSize < newSize, "Invalid new coverage vector size!",);
+    SAFE_POINT(ii.coverageBasesPerPoint <= newBasesPerPoint, "Invalid new coverage bases per point value!",);
+    SAFE_POINT(newSize < MAX_COVERAGE_VECTOR_SIZE, "New coverage vector size is too large", );
+
+    ii.coverage.coverage.resize(newSize);
+    if (ii.coverageBasesPerPoint == newBasesPerPoint || oldSize == 0) {
+        return;
+    }
+    //remap
+    int nPointsToMerge = newBasesPerPoint / ii.coverageBasesPerPoint;
+    U2Range<int>* data = ii.coverage.coverage.data();
+    int oldSizeInNewVector = oldSize / nPointsToMerge;
+    int oldI = 0;
+    for (int i = 0; i < oldSizeInNewVector; i++) {
+        U2Range<int> res = data[oldI];
+        for (int oldEnd = oldI + nPointsToMerge; ++oldI < oldEnd;) {
+            U2Range<int> oldVal = data[oldI];
+            res = res + oldVal;
+        }
+        data[i] = res;
+    }
+    qFill(data + oldSizeInNewVector, data + oldSize, U2Range<int>());
+}
+
+
+void SQLiteAssemblyUtils::addToCoverage(U2AssemblyReadsImportInfo& ii, const U2AssemblyRead& read) {
+    if (!ii.computeCoverage) {
+        return;
+    }
+    int csize = ii.coverage.coverage.size();
+    int basesPerPoint = qMax(1, ii.coverageBasesPerPoint);
+    int endPos = (read->leftmostPos + read->effectiveLen) / basesPerPoint;
+    if (endPos >= csize) {
+        // resize and remap coverage info
+        int newCSize = ii.maxEndPosHint > 0 ? ii.maxEndPosHint : endPos * 2;
+        while (newCSize > MAX_COVERAGE_VECTOR_SIZE) {
+            basesPerPoint*=2;
+            if (newCSize/2 == MAX_COVERAGE_VECTOR_SIZE) {
+                newCSize = MAX_COVERAGE_VECTOR_SIZE;
+                break;
+            }
+            newCSize/=2;
+        }
+        remapCoverage(ii, newCSize, basesPerPoint);
+        endPos = (read->leftmostPos + read->effectiveLen) / basesPerPoint;
+        ii.coverageBasesPerPoint = basesPerPoint;
+    }
+    int startPos = read->leftmostPos / basesPerPoint;
+    U2Range<int>* coverageData = ii.coverage.coverage.data();
+    for (int i = startPos; i <= endPos; i++) {
+        coverageData[i].minValue++;
+        coverageData[i].maxValue++;
     }
 }
 

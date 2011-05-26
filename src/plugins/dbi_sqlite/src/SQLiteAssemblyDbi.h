@@ -174,6 +174,8 @@ public:
     static void unpackData(const QByteArray& packed, QByteArray& name, QByteArray& sequence, QByteArray& cigarText, QByteArray& qualityString, U2OpStatus& os);
 
     static void calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os);
+
+    static void addToCoverage(U2AssemblyReadsImportInfo& ii, const U2AssemblyRead& read);
 };
 
 class SQLiteAssemblyNameFilter : public SqlRSFilter<U2AssemblyRead> {

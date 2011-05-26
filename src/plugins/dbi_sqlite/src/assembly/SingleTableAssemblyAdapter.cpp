@@ -203,6 +203,8 @@ void SingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2A
         
         insertQ.insert();
 
+        SQLiteAssemblyUtils::addToCoverage(ii, read);
+
         ii.nReads++;
     }
 }

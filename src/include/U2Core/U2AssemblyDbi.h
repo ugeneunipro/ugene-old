@@ -41,7 +41,7 @@ public:
 /** Additional reads info used during reads import into assembly */
 class U2AssemblyReadsImportInfo {
 public:
-    U2AssemblyReadsImportInfo() : nReads(0), packed(false) {}
+    U2AssemblyReadsImportInfo() : nReads(0), packed(false), computeCoverage(false), maxEndPosHint(0), coverageBasesPerPoint(1) {}
     
     /** Number of reads added during import */
     qint64 nReads;
@@ -51,6 +51,19 @@ public:
 
     /* Place where to save pack statistics */
     U2AssemblyPackStat packStat;
+
+    
+    /** Specifies if assembly coverage is needed to be computed at import time*/
+    bool computeCoverage;
+
+    /** coverage size hint - tells max end pos for reads if not 0*/
+    int  maxEndPosHint;
+    
+    /** Place to save coverage info */
+    U2AssemblyCoverageStat coverage;
+    
+    /** Shows how many real bases are in 1 coverage point */
+    int             coverageBasesPerPoint;
 };
 
 /**
