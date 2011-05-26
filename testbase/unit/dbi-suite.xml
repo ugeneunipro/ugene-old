@@ -1,0 +1,6 @@
+<!DOCTYPE UGENE_TEST_FRAMEWORK_SUITE>
+
+<suite name="Dbi tests">
+    <env-var name ="COMMON_DATA_DIR" />
+    <test-dir path="Dbi" test-format="XML" test-ext="*.xml"/> 
+</suite>

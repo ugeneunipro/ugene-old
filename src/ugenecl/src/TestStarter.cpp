@@ -265,8 +265,4 @@ Task::ReportResult TestStarter::report() {
     return ReportResult_Finished;
 }
 
-void APITestStarter::launchAPITests() {
-    AppContext::getAPITestBase()->getRunner()->launchTests(suites);
-}
-
 }//namespace

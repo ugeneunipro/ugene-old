@@ -76,16 +76,6 @@ private:
     TestRunnerTask*             ttask;
 };
 
-class APITestStarter : public QObject {
-    Q_OBJECT
-public:
-    APITestStarter(const QStringList& urls, QObject* p=NULL) : QObject(p), suites(urls) {}
-public slots:
-    void launchAPITests();
-private:
-    QStringList suites;
-}; 
-
 } //namespace
 
 #endif

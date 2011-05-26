@@ -7,5 +7,4 @@ HEADERS += \
     src/core/dbi/assembly/AssemblyDbiTest.h
 SOURCES += \
     src/ApiTestsPlugin.cpp \
-    src/DbiTest.cpp \
     src/core/dbi/assembly/AssemblyDbiTest.cpp

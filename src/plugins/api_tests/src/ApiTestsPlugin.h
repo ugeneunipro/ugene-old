@@ -3,6 +3,8 @@
 
 #include <U2Core/PluginModel.h>
 #include <U2Test/APITestRunner.h>
+#include <U2Test/XMLTestUtils.h>
+
 
 namespace U2 {
 
@@ -12,11 +14,17 @@ public:
     ApiTestsPlugin();
 };
 
-class APITestRunnerImpl : public APITestRunner {
+class GTest_APITest : public GTest {
+    Q_OBJECT
 public:
-    virtual void launchTests(const QStringList& suiteUrls);
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_APITest, "gtest", TaskFlags_FOSCOE);
+
+    void run();
+    Task::ReportResult report();
+
 private:
-    static void parseTestNames(const QStringList& urls, QStringList& result);
+    QString tcase;
+    QStringList excluded;
 };
 
 } // namespace U2

@@ -237,7 +237,7 @@ public:
 
     void setGUITestBase(GUITestBase *_tb) {assert(tb == NULL || _tb == NULL); tb = _tb;}
 
-    void setAPITestBase(APITestBase* _atb) {assert(atb == NULL || _atb == NULL); atb = _atb;}
+    void setAPITestEnvRegistry(APITestEnvRegistry* _atb) {assert(atb == NULL || _atb == NULL); atb = _atb;}
 
     static AppContextImpl* getApplicationContext();
 
@@ -295,7 +295,7 @@ protected:
     virtual CDSearchFactoryRegistry*        _getCDSFactoryRegistry() const { return cdsfr; }
     virtual U2DbiRegistry *                 _getDbiRegistry() const { return dbiRegistry; }
     virtual GUITestBase*                    _getGUITestBase() const {return tb;}
-    virtual APITestBase*                  _getAPITestBase() const {return atb;}
+    virtual APITestEnvRegistry*                  _getAPITestEnvRegistry() const {return atb;}
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -355,7 +355,7 @@ private:
     AutoAnnotationsSupport* aaSupport;
     U2DbiRegistry *dbiRegistry;
     GUITestBase *tb;
-    APITestBase* atb;
+    APITestEnvRegistry* atb;
     bool guiMode;
     QString activeWindow;
 

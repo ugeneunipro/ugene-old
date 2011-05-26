@@ -123,18 +123,6 @@ static bool openDocs() {
     return ret;
 }
 
-static bool startAPITests() {
-    bool ret = false;
-    QStringList suiteUrls = CMDLineRegistryUtils::getParameterValuesByWords( CMDLineCoreOptions::API_TEST_URLS );
-    if( suiteUrls.size() > 0 ) {
-        APITestStarter* ts = new APITestStarter(suiteUrls);
-        QObject::connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), ts, SLOT(launchAPITests()));
-        ret = true;
-    }
-    return ret;
-}
-
-
 static void updateStaticTranslations() {
     GObjectTypes::initTypeTranslations();
 }
@@ -420,8 +408,8 @@ int main(int argc, char **argv)
     StructuralAlignmentAlgorithmRegistry *saar = new StructuralAlignmentAlgorithmRegistry();
     appContext->setStructuralAlignmentAlgorithmRegistry(saar);
 
-    APITestBase* atb = new APITestBase();
-    appContext->setAPITestBase(atb);
+    APITestEnvRegistry* atb = new APITestEnvRegistry();
+    appContext->setAPITestEnvRegistry(atb);
 
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
@@ -444,7 +432,6 @@ int main(int argc, char **argv)
     }
     
     openDocs();
-    startAPITests();
     registerCoreServices();
     
     //3 run QT 
@@ -559,7 +546,7 @@ int main(int argc, char **argv)
     appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
     delete saar;
 
-    appContext->setAPITestBase(NULL);
+    appContext->setAPITestEnvRegistry(NULL);
     delete atb;
 
     return rc;

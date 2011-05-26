@@ -4,28 +4,15 @@
 
 namespace U2 {
 
-class APITestRunner {
+class GTestEnvironment;
+
+class APITestEnvRegistry {
 public:
-    virtual void launchTests(const QStringList& suiteUrls)=0;
-};
-
-class APITestBase {
-public:
-    APITestBase() : runner(NULL) {}
-    //~APITestBase() { delete runner; }
-
-    void setRunner(APITestRunner* _runner) {
-        assert(runner==NULL || _runner==NULL);
-        runner = _runner;
-    }
-
-    APITestRunner* getRunner() const {
-        assert(runner!=NULL);
-        return runner;
-    }
-
+    const GTestEnvironment* getEnvironment(const QString& name) const { return registry.value(name); }
+    void setEnvironment(const QString& name, const GTestEnvironment* env) { registry[name] = env; }
+    void removeEnvironment(const QString& name) { registry.remove(name); }
 private:
-    APITestRunner* runner;
+    QMap<QString, const GTestEnvironment*> registry;
 };
 
 } //namespace
