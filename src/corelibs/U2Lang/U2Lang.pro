@@ -7,6 +7,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/library/BaseSlots.h \
            src/library/BaseTypes.h \
            src/library/LocalDomain.h \
+           src/library/ScriptLibrary.h \
            src/model/ActorModel.h \
            src/model/ActorPrototypeRegistry.h \
            src/model/Attribute.h \
@@ -44,6 +45,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseSlots.cpp \
            src/library/BaseTypes.cpp \
            src/library/LocalDomain.cpp \
+           src/library/ScriptLibrary.cpp \
            src/model/ActorModel.cpp \
            src/model/ActorPrototypeRegistry.cpp \
            src/model/Attribute.cpp \

@@ -168,7 +168,8 @@ Task* BaseDocWriter::tick() {
         if( formatAttr != NULL ) { // user sets format
             format = AppContext::getDocumentFormatRegistry()->getFormatById( formatAttr->getAttributeValue<QString>() );
         }
-        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>();
+        Attribute * urlAttribute = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
+        url = urlAttribute->getAttributeValue<QString>();
         fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>();
         fileMode |= SaveDoc_DestroyAfter;
         Attribute* a = actor->getParameter(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE().getId());

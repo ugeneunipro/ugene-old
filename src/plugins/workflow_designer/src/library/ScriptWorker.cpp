@@ -30,6 +30,7 @@
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/IntegralBusType.h>
+#include <U2Lang/ScriptLibrary.h>
 
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
@@ -50,23 +51,6 @@ const static QString OUTPUT_PORT_TYPE("output-for-");
 static const QString IN_PORT_ID("in");
 static const QString OUT_PORT_ID("out");
 
-static QScriptValue debugOut(QScriptContext *ctx, QScriptEngine *)  {
-    QString msg = "";
-    if(ctx->argument(0).isNumber()) {
-        msg = QString::number(ctx->argument(0).toInt32());
-    } else if(ctx->argument(0).isString()) {
-        msg = ctx->argument(0).toString();
-    } else if(ctx->argument(0).isBool()) {
-        if(ctx->argument(0).toBool()) {
-            msg = "true";
-        } else {
-            msg = "false";
-        }
-    }
-    scriptLog.details(msg);
-    return 0;
-}
-
 void ScriptWorkerTask::run() {
     //QScriptEngine engine;
     QMap<QString, QScriptValue> scriptVars;
@@ -80,36 +64,7 @@ void ScriptWorkerTask::run() {
         }
     }
 
-    TaskStateInfo tsi;
-    QScriptValue foo = engine->globalObject();
-
-    foo.setProperty("subsequence",engine->newFunction(getSubsequence));
-    foo.setProperty("complement", engine->newFunction(complement));
-    foo.setProperty("size", engine->newFunction(sequenceSize));
-    foo.setProperty("translate", engine->newFunction(translate));
-    foo.setProperty("charAt", engine->newFunction(charAt));
-    foo.setProperty("alphabetType", engine->newFunction(alphabetType));
-    foo.setProperty("getName", engine->newFunction(sequenceName));
-    foo.setProperty("printToLog",engine->newFunction(debugOut));
-    foo.setProperty("isAmino", engine->newFunction(isAmino));
-    foo.setProperty("getMinimumQuality", engine->newFunction(getMinimumQuality));
-    foo.setProperty("hasQuality",engine->newFunction(hasQuality));
-    foo.setProperty("sequenceFromText", engine->newFunction(sequenceFromText));
-
-    foo.setProperty("createAlignment", engine->newFunction(createAlignment));
-    foo.setProperty("sequenceFromAlignment",engine->newFunction(getSequenceFromAlignment));
-    foo.setProperty("addToAlignment",engine->newFunction(addToAlignment));
-    foo.setProperty("findInAlignment",engine->newFunction(findInAlignment));
-    foo.setProperty("removeFromAlignment",engine->newFunction(removeFromAlignment));
-    foo.setProperty("rowNum",engine->newFunction(rowNum));
-    foo.setProperty("columnNum",engine->newFunction(columnNum));
-    foo.setProperty("alignmentAlphabetType",engine->newFunction(alignmentAlphabetType));
-
-    foo.setProperty("annotatedRegions", engine->newFunction(getAnnotationRegion));
-    foo.setProperty("addQualifier", engine->newFunction(addQualifier));
-    foo.setProperty("getLocation", engine->newFunction(getLocation));
-    foo.setProperty("filterByQualifier", engine->newFunction(filterByQualifier));
-
+    WorkflowScriptLibrary::initEngine(engine);
     QScriptValue scriptResultValue = ScriptTask::runScript(engine, scriptVars, script->getScriptText(), stateInfo);
     result = scriptResultValue.toVariant();
     if(engine->hasUncaughtException()) {

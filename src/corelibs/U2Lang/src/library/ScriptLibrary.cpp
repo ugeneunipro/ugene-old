@@ -1,44 +1,62 @@
 /**
- * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
- * http://ugene.unipro.ru
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
+* UGENE - Integrated Bioinformatics Tools.
+* Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+* http://ugene.unipro.ru
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+* MA 02110-1301, USA.
+*/
 
-#ifndef _WORKFLOW_SCRIPT_FUNC_H_
-#define _WORKFLOW_SCRIPT_FUNC_H_
-#include <QtScript>
+#include "ScriptLibrary.h"
 
-#include <U2Core/AppContext.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
-
-#include <U2Core/DNASequence.h>
-#include <U2Core/AnnotationData.h>
-#include <U2Core/MAlignment.h>
-
-#include <U2Core/MSAUtils.h>
-
+#include <U2Core/Log.h>
 
 namespace U2 {
-namespace LocalWorkflow {
 
-// ================== Sequence =======================
-static QScriptValue getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {
+void WorkflowScriptLibrary::initEngine(QScriptEngine * engine) {
+    QScriptValue foo = engine->globalObject();
+    
+    foo.setProperty("subsequence",engine->newFunction(getSubsequence));
+    foo.setProperty("complement", engine->newFunction(complement));
+    foo.setProperty("size", engine->newFunction(sequenceSize));
+    foo.setProperty("translate", engine->newFunction(translate));
+    foo.setProperty("charAt", engine->newFunction(charAt));
+    foo.setProperty("alphabetType", engine->newFunction(alphabetType));
+    foo.setProperty("getName", engine->newFunction(sequenceName));
+    foo.setProperty("printToLog",engine->newFunction(debugOut));
+    foo.setProperty("isAmino", engine->newFunction(isAmino));
+    foo.setProperty("getMinimumQuality", engine->newFunction(getMinimumQuality));
+    foo.setProperty("hasQuality",engine->newFunction(hasQuality));
+    foo.setProperty("sequenceFromText", engine->newFunction(sequenceFromText));
+    
+    foo.setProperty("createAlignment", engine->newFunction(createAlignment));
+    foo.setProperty("sequenceFromAlignment",engine->newFunction(getSequenceFromAlignment));
+    foo.setProperty("addToAlignment",engine->newFunction(addToAlignment));
+    foo.setProperty("findInAlignment",engine->newFunction(findInAlignment));
+    foo.setProperty("removeFromAlignment",engine->newFunction(removeFromAlignment));
+    foo.setProperty("rowNum",engine->newFunction(rowNum));
+    foo.setProperty("columnNum",engine->newFunction(columnNum));
+    foo.setProperty("alignmentAlphabetType",engine->newFunction(alignmentAlphabetType));
+    
+    foo.setProperty("annotatedRegions", engine->newFunction(getAnnotationRegion));
+    foo.setProperty("addQualifier", engine->newFunction(addQualifier));
+    foo.setProperty("getLocation", engine->newFunction(getLocation));
+    foo.setProperty("filterByQualifier", engine->newFunction(filterByQualifier));
+}
+
+QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 3) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -54,7 +72,7 @@ static QScriptValue getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {
         catch(...) {
             return ctx->throwError(QObject::tr("Incorrect arguments"));
         }
-        
+
         if(dna.seq.isEmpty()) {
             return ctx->throwError(QObject::tr("Empty or invalid sequence"));
         }
@@ -64,7 +82,7 @@ static QScriptValue getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {
     }
 }
 
-static QScriptValue concatSequence(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::concatSequence(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() < 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -86,7 +104,7 @@ static QScriptValue concatSequence(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-static QScriptValue complement(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::complement(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -107,7 +125,7 @@ static QScriptValue complement(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-static QScriptValue sequenceSize(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::sequenceSize(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -123,7 +141,7 @@ static QScriptValue sequenceSize(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-static QScriptValue translate(QScriptContext *ctx, QScriptEngine *engine){
+QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() < 1 && ctx->argumentCount() > 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -159,7 +177,7 @@ static QScriptValue translate(QScriptContext *ctx, QScriptEngine *engine){
     return calee.property("res");
 }
 
-static QScriptValue charAt(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::charAt(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount()!= 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -182,7 +200,7 @@ static QScriptValue charAt(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-static QScriptValue sequenceName(QScriptContext *ctx, QScriptEngine *) {
+QScriptValue WorkflowScriptLibrary::sequenceName(QScriptContext *ctx, QScriptEngine *) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -198,7 +216,7 @@ static QScriptValue sequenceName(QScriptContext *ctx, QScriptEngine *) {
     return calee.property("res");
 }
 
-static QScriptValue alphabetType(QScriptContext *ctx, QScriptEngine *engine)  {
+QScriptValue WorkflowScriptLibrary::alphabetType(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -214,7 +232,7 @@ static QScriptValue alphabetType(QScriptContext *ctx, QScriptEngine *engine)  {
     return calee.property("res");
 }
 
-static QScriptValue sequenceFromText(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::sequenceFromText(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -231,10 +249,9 @@ static QScriptValue sequenceFromText(QScriptContext *ctx, QScriptEngine *engine)
     QScriptValue calee = ctx->callee();
     calee.setProperty("res", engine->newVariant(QVariant::fromValue<DNASequence>(seq)));
     return calee.property("res");
-
 }
 
-static QScriptValue isAmino(QScriptContext *ctx, QScriptEngine *) {
+QScriptValue WorkflowScriptLibrary::isAmino(QScriptContext *ctx, QScriptEngine *) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -250,7 +267,7 @@ static QScriptValue isAmino(QScriptContext *ctx, QScriptEngine *) {
     return calee.property("res");
 }
 
-static QScriptValue getMinimumQuality(QScriptContext *ctx, QScriptEngine *) {
+QScriptValue WorkflowScriptLibrary::getMinimumQuality(QScriptContext *ctx, QScriptEngine *) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -274,7 +291,7 @@ static QScriptValue getMinimumQuality(QScriptContext *ctx, QScriptEngine *) {
     return calee.property("res");
 }
 
-static QScriptValue hasQuality(QScriptContext *ctx, QScriptEngine *) {
+QScriptValue WorkflowScriptLibrary::hasQuality(QScriptContext *ctx, QScriptEngine *) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -292,10 +309,7 @@ static QScriptValue hasQuality(QScriptContext *ctx, QScriptEngine *) {
     return calee.property("res");
 }
 
-
-// ================== Alignment =======================
-
-static QScriptValue getSequenceFromAlignment(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::getSequenceFromAlignment(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 2 && ctx->argumentCount() != 4) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -333,7 +347,7 @@ static QScriptValue getSequenceFromAlignment(QScriptContext *ctx, QScriptEngine 
     return calee.property("res");
 }
 
-static QScriptValue findInAlignment(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::findInAlignment(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -370,11 +384,11 @@ static QScriptValue findInAlignment(QScriptContext *ctx, QScriptEngine *engine) 
     return calee.property("res");
 }
 
-static QScriptValue createAlignment(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::createAlignment(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() < 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
-    
+
     MAlignment align;
     DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
     if(seq.seq.isEmpty()) {
@@ -399,13 +413,13 @@ static QScriptValue createAlignment(QScriptContext *ctx, QScriptEngine *engine) 
     return calee.property("res");
 }
 
-static QScriptValue addToAlignment(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::addToAlignment(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() < 2 && ctx->argumentCount() >3) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
     MAlignment align = ctx->argument(0).toVariant().value<MAlignment>();
-    
+
     DNASequence seq = ctx->argument(1).toVariant().value<DNASequence>();
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
@@ -438,7 +452,7 @@ static QScriptValue addToAlignment(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-static QScriptValue removeFromAlignment(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::removeFromAlignment(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -461,7 +475,7 @@ static QScriptValue removeFromAlignment(QScriptContext *ctx, QScriptEngine *engi
     return calee.property("res");
 }
 
-static QScriptValue rowNum(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::rowNum(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount()!= 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -477,7 +491,7 @@ static QScriptValue rowNum(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-static QScriptValue columnNum(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::columnNum(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount()!= 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -493,7 +507,7 @@ static QScriptValue columnNum(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-static QScriptValue alignmentAlphabetType(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::alignmentAlphabetType(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount()!= 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -509,9 +523,7 @@ static QScriptValue alignmentAlphabetType(QScriptContext *ctx, QScriptEngine *en
     return calee.property("res");
 }
 
-// ================== Annotations =======================
-
-static QScriptValue getAnnotationRegion(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 3) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -562,7 +574,7 @@ static QScriptValue getAnnotationRegion(QScriptContext *ctx, QScriptEngine *engi
     return calee.property("res");
 }
 
-static QScriptValue filterByQualifier(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::filterByQualifier(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount()!= 3) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -592,14 +604,14 @@ static QScriptValue filterByQualifier(QScriptContext *ctx, QScriptEngine *engine
     return calee.property("res");
 }
 
-static QScriptValue addQualifier(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::addQualifier(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() < 3 && ctx->argumentCount() > 4) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
     QList<SharedAnnotationData> anns = ctx->argument(0).toVariant().value< QList<SharedAnnotationData> >();
     if(anns.isEmpty()) {
-       return ctx->throwError(QObject::tr("Invalid annotations"));
+        return ctx->throwError(QObject::tr("Invalid annotations"));
     }
     QString qual = ctx->argument(1).toString();
     if(qual.isEmpty()) {
@@ -633,7 +645,7 @@ static QScriptValue addQualifier(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-static QScriptValue getLocation(QScriptContext *ctx, QScriptEngine *engine) {
+QScriptValue WorkflowScriptLibrary::getLocation(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
@@ -656,7 +668,21 @@ static QScriptValue getLocation(QScriptContext *ctx, QScriptEngine *engine) {
     return calee.property("res");
 }
 
-}
+QScriptValue WorkflowScriptLibrary::debugOut(QScriptContext *ctx, QScriptEngine *) {
+    QString msg = "";
+    if(ctx->argument(0).isNumber()) {
+        msg = QString::number(ctx->argument(0).toInt32());
+    } else if(ctx->argument(0).isString()) {
+        msg = ctx->argument(0).toString();
+    } else if(ctx->argument(0).isBool()) {
+        if(ctx->argument(0).toBool()) {
+            msg = "true";
+        } else {
+            msg = "false";
+        }
+    }
+    scriptLog.details(msg);
+    return 0;
 }
 
-#endif
+} // U2

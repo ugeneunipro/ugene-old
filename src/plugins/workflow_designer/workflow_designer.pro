@@ -34,13 +34,12 @@ HEADERS += src/ActorCfgModel.h \
            src/library/ScriptWorker.h \
            src/library/SequenceSplitWorker.h \
            src/library/Text2SequenceWorker.h \
-           src/library/WorkflowScriptFunctions.h \
            src/library/SequencesToMSAWorker.h \
            src/library/FilterAnnotationsWorker.h \
            src/library/CDSearchWorker.h \
-		   src/library/StatisticWorkers.h \
-		   src/library/ReverseComplementWorker.h \
-		   src/library/MSA2SequenceWorker.h \
+	   src/library/StatisticWorkers.h \
+	   src/library/ReverseComplementWorker.h \
+	   src/library/MSA2SequenceWorker.h \
            src/util/SaveSchemaImageUtils.h 
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \

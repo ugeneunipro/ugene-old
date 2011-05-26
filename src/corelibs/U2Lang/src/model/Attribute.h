@@ -33,7 +33,7 @@
 
 #include <U2Lang/Datatype.h>
 #include <U2Lang/Descriptor.h>
-
+#include <U2Lang/ScriptLibrary.h>
 
 namespace U2 {
 
@@ -146,6 +146,7 @@ inline QString Attribute::getAttributeValue() const {
     }
     
     TaskStateInfo tsi;
+    WorkflowScriptLibrary::initEngine(&engine);
     QScriptValue scriptResult = ScriptTask::runScript(&engine, scriptVars, scriptData.getScriptText(), tsi);
     
     // FIXME: report errors!

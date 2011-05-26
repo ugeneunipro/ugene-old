@@ -114,8 +114,9 @@ void BaseWorker::bindScriptValues() {
                 //attrId.replace(".", "_");
                 //attrId.replace("-", "_");
                 AttributeScript & attrScript = attribute->getAttributeScript();
-                if( attrScript.hasVarWithId(attrId) ) {
-                    attrScript.setVarValueWithId(attrId, busData.value(slotDesc));
+                if( !attrScript.getScriptText().isEmpty() ) {
+                    //attrScript.setVarValueWithId(attrId, busData.value(slotDesc));
+                    attrScript.setScriptVar(attrId, busData.value(slotDesc));
                 }
             }
         }
