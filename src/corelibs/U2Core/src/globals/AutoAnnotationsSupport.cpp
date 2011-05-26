@@ -146,6 +146,7 @@ void AutoAnnotationObject::handleUpdate( QList<AutoAnnotationsUpdater*> updaters
         // check constraints
         AutoAnnotationConstraints cns;
         cns.alphabet = dnaObj->getAlphabet();
+        cns.hints = dnaObj->getGHints();
         if (!updater->checkConstraints(cns)) {
             continue;
         }

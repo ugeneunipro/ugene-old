@@ -78,6 +78,9 @@ private slots:
     void sl_newViewTask(Task* t);
     void sl_updateAll();
 
+    void sl_autoAnnotationUpdateStarted();
+    void sl_autoAnnotationUpdateFinished();
+
 protected:
     virtual void onObjectAdded(GObject* o){
         //add implementation
@@ -96,6 +99,7 @@ private:
     Document* createUDocument(SequenceType sType);
 
     bool wizzard;
+    int updatesCount;
 
     QSplitter*          splitter;
 

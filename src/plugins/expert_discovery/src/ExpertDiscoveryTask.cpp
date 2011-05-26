@@ -26,6 +26,8 @@
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/GHints.h>
+
 #include <QtGui/QMessageBox>
 
 #include <QtCore/QSet>
@@ -827,8 +829,16 @@ bool ExpertDiscoverySignalsAutoAnnotationUpdater::checkConstraints(const AutoAnn
         return false;
     }
 
-    return constraints.alphabet->isNucleic();
-    //return false;
+    bool edEnabled = false;
+    if(constraints.hints != NULL){
+        QVariant hint = constraints.hints->get("EDHint");
+        if(hint.isNull()){
+            return false;
+        }
+        edEnabled = hint.toBool();
+    }
+
+    return constraints.alphabet->isNucleic() && edEnabled;
 }
 
 ExpertDiscoveryToAnnotationTask::ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut)

@@ -60,6 +60,9 @@ void AutoAnnotationsADVAction::updateMenu()
     if (seqWidget->getSequenceContexts().count() > 0) {
         constraints.alphabet = seqWidget->getSequenceContexts().first()->getAlphabet();
     }
+    if(seqWidget->getSequenceObjects().count() > 0){
+        constraints.hints = seqWidget->getSequenceObjects().first()->getGHints();
+    }
     
     QList<AutoAnnotationsUpdater*> updaters = AppContext::getAutoAnnotationsSupport()->getAutoAnnotationUpdaters();
     if (updaters.count() == 0 ) {
@@ -124,6 +127,9 @@ void AutoAnnotationsADVAction::addUpdaterToMenu(AutoAnnotationsUpdater* updater)
     AutoAnnotationConstraints constraints;
     if (seqWidget->getSequenceContexts().count() > 0) {
             constraints.alphabet = seqWidget->getSequenceContexts().first()->getAlphabet();
+    }
+    if(seqWidget->getSequenceObjects().count() > 0){
+        constraints.hints = seqWidget->getSequenceObjects().first()->getGHints();
     }
 
     QAction* toggleAction = new QAction(updater->getName(), this);

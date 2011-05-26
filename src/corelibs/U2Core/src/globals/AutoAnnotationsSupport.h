@@ -29,6 +29,7 @@
 namespace U2 {
 
 class GObject;
+class GHints;
 class AnnotationTableObject;
 class DNASequenceObject;
 class DNAAlphabet;
@@ -69,8 +70,9 @@ private:
 #define AUTO_ANNOTATION_SETTINGS "auto-annotations/"
 
 struct AutoAnnotationConstraints {
-    AutoAnnotationConstraints() : alphabet(NULL) {}
+    AutoAnnotationConstraints() : alphabet(NULL), hints(NULL) {}
     DNAAlphabet* alphabet;
+    GHints* hints;
 };
 
 class U2CORE_EXPORT AutoAnnotationsUpdater : public QObject {

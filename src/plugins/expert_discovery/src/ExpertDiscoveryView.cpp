@@ -22,6 +22,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GObjectSelection.h>
+#include <U2Core/GHints.h>
 
 #include <QMessageBox>
 #include <QtGui/QFileDialog>
@@ -41,11 +42,13 @@ ExpertDiscoveryView::ExpertDiscoveryView(GObjectViewFactoryId factoryId, const Q
 ,posUDoc(NULL)
 ,negUDoc(NULL)
 ,conUDoc(NULL)
-,extrTask(NULL){
+,extrTask(NULL)
+,updatesCount(0){
 
     createActions();
 
     edAutoAnnotationsUpdater = new ExpertDiscoverySignalsAutoAnnotationUpdater;
+    AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
     edAutoAnnotationsUpdater->setEDData(&d);
     edAutoAnnotationsUpdater->setEDProcSignals(curPS);
     edAutoAnnotationsUpdater->setEDMutex(&mutex);
@@ -372,15 +375,19 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
     clearSequencesView();
 
     foreach(GObject* gobj, adv->getObjects()){
+        GHints* edHints = new GHintsDefaultImpl();
+        edHints->set("EDHint", QVariant(true));
+        gobj->setGHints(edHints);
         addObject(gobj);
     }
     adv->setClosingInterface(closeInterface);
     currentAdv = adv;
     splitter->addWidget(adv->getWidget());
-    adv->addAutoAnnotationsUpdated(edAutoAnnotationsUpdater);
+//    adv->addAutoAnnotationsUpdated(edAutoAnnotationsUpdater);
 
     QList<ADVSequenceWidget*> curSequenceWidgets = currentAdv->getSequenceWidgets();
     foreach(ADVSequenceWidget* seqWidget, curSequenceWidgets){
+
         ADVSingleSequenceWidget* singleSeqWidget = dynamic_cast<ADVSingleSequenceWidget*>(seqWidget);
         if(singleSeqWidget){
             DetView* dv = singleSeqWidget->getDetView();
@@ -389,6 +396,15 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
                 dv->setShowTranslation(false);
             }
         }
+    }
+
+    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
+        AutoAnnotationsADVAction* aaAction = AutoAnnotationUtils::findAutoAnnotationADVAction( sctx );
+        assert(aaAction);
+        AutoAnnotationObject* aaobj = aaAction->getAAObj();
+        assert(aaobj);
+        connect(aaobj, SIGNAL(si_updateStarted()), SLOT(sl_autoAnnotationUpdateStarted()));
+        connect(aaobj, SIGNAL(si_updateFinshed()), SLOT(sl_autoAnnotationUpdateFinished()));
     }
     
     connect(adv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
@@ -449,6 +465,21 @@ void ExpertDiscoveryView::sl_updateAll(){
     loadControlMarkupAction->setEnabled(d.getConSeqBase().getSize() != 0);
     generateFullReportAction->setEnabled(enableActions);
 
+}
+
+void ExpertDiscoveryView::sl_autoAnnotationUpdateStarted(){
+    updatesCount++;
+    if(updatesCount > 0){
+        signalsWidget->setEnabled(false);
+    }
+}
+void ExpertDiscoveryView::sl_autoAnnotationUpdateFinished(){
+    updatesCount--;
+
+    if(updatesCount <= 0){
+        signalsWidget->setEnabled(true);
+        updatesCount = 0;
+    }
 }
 
 void ExpertDiscoveryView::sl_showExpertDiscoveryControlDialog(){
@@ -627,13 +658,13 @@ void ExpertDiscoveryView::updateAnnotations(){
     }
 
     edAutoAnnotationsUpdater->setEDProcSignals(curPS);
-    AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
+    //AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
 
     foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
         AutoAnnotationUtils::triggerAutoAnnotationsUpdate(sctx, "ExpertDiscover Signals");
     }
 
-    AppContext::getAutoAnnotationsSupport()->unregisterAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
+    //AppContext::getAutoAnnotationsSupport()->unregisterAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
 }
 
 void ExpertDiscoveryView::createEDSequence(){
@@ -877,6 +908,14 @@ void ExpertDiscoveryView::sl_clearDisplayed(){
 void ExpertDiscoveryView::clearSequencesView()
 {
     if(currentAdv){
+        foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
+            AutoAnnotationsADVAction* aaAction = AutoAnnotationUtils::findAutoAnnotationADVAction( sctx );
+            assert(aaAction);
+            AutoAnnotationObject* aaobj = aaAction->getAAObj();
+            assert(aaobj);
+            disconnect(aaobj, SIGNAL(si_updateStarted()),this,  SLOT(sl_autoAnnotationUpdateStarted()));
+            disconnect(aaobj, SIGNAL(si_updateFinshed()), this, SLOT(sl_autoAnnotationUpdateFinished()));
+        }
         disconnect(currentAdv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), this,  SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
         foreach(GObject* obj, objects){
             removeObject(obj);
