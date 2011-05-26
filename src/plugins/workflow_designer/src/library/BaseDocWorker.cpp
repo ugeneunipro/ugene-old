@@ -193,6 +193,9 @@ Task* BaseDocWriter::tick() {
             return new FailTask(err);
         }
         
+        // to avoid "c:/..." and "C:/..." on windows
+        anUrl = QFileInfo(anUrl).absoluteFilePath();
+        
         // set correct file extension
         GUrl path(anUrl);
         QStringList suffixList = format->getSupportedDocumentFileExtensions();
