@@ -737,6 +737,11 @@ bool AnnotationTableObject::checkConstraints(const GObjectConstraints* c) const 
     return true;
 }
 
+void AnnotationTableObject::cleanAnnotations() {
+    assert(!annLocker.isLocked());
+    annLocker.sl_Clean();
+
+}
 AnnotationTableObjectConstraints::AnnotationTableObjectConstraints(const AnnotationTableObjectConstraints& c, QObject* p) 
 : GObjectConstraints(GObjectTypes::ANNOTATION_TABLE, p), sequenceSizeToFit(c.sequenceSizeToFit)
 {
@@ -762,5 +767,30 @@ bool annotationGreaterThanByRegion( const Annotation* a1, const Annotation* a2 )
     return annotationLessThanByRegion(a2, a1);
 }
 
+
+void AnnotationsLocker::setToDelete( const QList<Annotation*>& _anns, AnnotationGroup *_parentGroup, int counter )
+{
+    anns = _anns;
+    parentGroup = _parentGroup;
+    deleteCounter = counter;
+}
+
+void AnnotationsLocker::releaseLocker(){
+    if(deleteCounter) {
+        deleteCounter--;
+    }
+}
+
+bool AnnotationsLocker::isLocked() const{
+    return deleteCounter != 0;
+}
+
+void AnnotationsLocker::sl_Clean(){
+    if(deleteCounter == 0) {
+        qDeleteAll(anns);
+        anns.clear();
+        parentGroup->getParentGroup()->removeSubgroup(parentGroup);
+    }
+}
 }//namespace
 

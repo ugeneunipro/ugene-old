@@ -212,39 +212,15 @@ U2CORE_EXPORT QDataStream& operator<<(QDataStream& dataStream, const AnnotationG
 class AnnotationsLocker: public QObject {
     Q_OBJECT
 public:
-    void setToDelete(const QList<Annotation*>& _anns, AnnotationGroup *_parentGroup, int counter) {
-        anns = _anns;
-        parentGroup = _parentGroup;
-        deleteCounter = counter;
-        connect(&timer, SIGNAL(timeout()), SLOT(sl_timeout()));
-        timer.start(100);
-    }
-    void releaseLocker() {
-        if(deleteCounter) {
-            deleteCounter--;
-        }
-    }
-
-    bool isLocked() const {
-        return deleteCounter != 0;
-    }
-
-    private slots:
-        void sl_timeout() {
-            if(deleteCounter == 0) {
-                qDeleteAll(anns);
-                anns.clear();
-                parentGroup->getParentGroup()->removeSubgroup(parentGroup);
-                timer.stop();
-                timer.disconnect();
-            }
-        }
+    void setToDelete(const QList<Annotation*>& _anns, AnnotationGroup *_parentGroup, int counter);
+    void releaseLocker();
+    bool isLocked() const;
+    void sl_Clean();
     
 private:
     QList<Annotation*> anns;
     AnnotationGroup *parentGroup;
     int deleteCounter;
-    QTimer timer;
 };
 
 class DeleteAnnotationsFromObjectTask: public Task {
@@ -292,6 +268,7 @@ public:
     void removeAnnotationsInGroup(const QList<Annotation*>& _annotations, AnnotationGroup *group);
     void releaseLocker();
     bool isLocked() const;
+    void cleanAnnotations();
 
 protected:
 
