@@ -52,15 +52,12 @@ public:
     QString				getPathToSignal(const Signal* pSignal) const;
     const Signal*		getSignalByPath(QString strPath) const;
 
-    
-
 protected:
     bool				doConstructPath(QString& strPath, const Signal* pSignal) const;
 
 private:
     std::vector<Signal*>	signalsVect;
     QVector<CSFolder*>	    folders;
-
     QString					strName;
 };
 
@@ -72,7 +69,6 @@ protected:
     virtual void process(Operation *pOp, const SequenceBase *pYesBase, const SequenceBase *pNoBase) {}
 
 public:
-    //void Serialize(CArchive& ar);
     virtual ~EDProcessedSignal() {}
     static EDProcessedSignal* processSignal(Operation *pOp, const SequenceBase *pYesBase, const SequenceBase *pNoBase);
     void makeStandardProcessing(Operation *pOp, const SequenceBase *pYesBase, const SequenceBase *pNoBase);
@@ -118,8 +114,8 @@ protected:
     }
     EDProcessedSignal();
 private:
-    //const EDProcessedSignal& operator=(const EDProcessedSignal&);
-    //EDProcessedSignal(const EDProcessedSignal&);
+    const EDProcessedSignal& operator=(const EDProcessedSignal&);
+    EDProcessedSignal(const EDProcessedSignal&);
     void setYesRealizations(int iSequence, const Set& set) { 
         m_arYesRealizations[iSequence] = set;
     }
@@ -204,8 +200,7 @@ private:
     RecognizationData* getRecData(const Sequence* seq);
     QMap<QString, RecognizationData*> recMap;
 };
-
-   
+  
 } //namespace
 
 #endif

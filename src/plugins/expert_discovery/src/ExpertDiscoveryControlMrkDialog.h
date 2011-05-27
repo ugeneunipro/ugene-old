@@ -12,15 +12,13 @@ public:
     virtual void accept();
 
     QString getFirstFileName() const {return firstFileName;}
+
 protected slots:
     void sl_openFirstFile();
 
 private:
     QString firstFileName;
-
-
     QString filter;
-
 };
 
 }//namespace

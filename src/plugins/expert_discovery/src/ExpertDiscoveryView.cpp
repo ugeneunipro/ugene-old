@@ -478,6 +478,7 @@ void ExpertDiscoveryView::sl_autoAnnotationUpdateFinished(){
 
     if(updatesCount <= 0){
         signalsWidget->setEnabled(true);
+        signalsWidget->setFocus();
         updatesCount = 0;
     }
 }
@@ -557,13 +558,6 @@ void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
 }
 
 void ExpertDiscoveryView::sl_newSignalReady(DDisc::Signal* signal, CSFolder* folder){
-    
-    //void* p =  qVariantValue<void*>(signal);
-    //Signal* pSignal = (Signal*) p;
-   // signal->setName(folder->makeUniqueSignalName().toStdString());
-    //folder->addSignal(signal);
-
-    //test 
     Signal* ps = signal;
     CSFolder *pFolder = folder;
     ps->setName(pFolder->makeUniqueSignalName().toStdString());

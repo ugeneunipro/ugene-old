@@ -464,7 +464,7 @@ bool EDProjectItem::operator<(const QTreeWidgetItem &other) const{
     }else{ 
         const EDProjectItem *pParent = dynamic_cast<const EDProjectItem*>(dynamic_cast<const QTreeWidgetItem*>(pItem1)->parent());
         if (pParent != NULL && pParent->getType() == PIT_CSN_DISTANCE) {
-            return (pParent->child(0) == pItem1) ? false : true;
+            return (pParent->child(0) == pItem1) ? true : false;
         }
         else{
             return QTreeWidgetItem::operator<(other);

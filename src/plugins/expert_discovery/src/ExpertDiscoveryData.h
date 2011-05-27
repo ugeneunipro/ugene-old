@@ -1,14 +1,11 @@
 #ifndef _EXPERTDISCOVERIDATAHEADER_
 #define _EXPERTDISCOVERIDATAHEADER_
 
-
 #include "DDisc/Sequence.h"
 #include "DDisc/MetaInfo.h"
 
-
 #include "ExpertDiscoveryCSUtil.h"
 #include "ExpertDiscoveryTreeWidgets.h"
-
 
 #include <U2Core/GObject.h>
 #include <QObject>
@@ -85,7 +82,6 @@ public:
 
     bool loadMarkup(const QString& firstF, const QString& secondF, const QString& thirdF, bool generateDescr);
     bool loadAnnotation(MarkingBase& base, const SequenceBase& seqBase, QString strFileName);
-    //bool loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc);
     bool generateDescription(bool clearDescr = true);
     void loadControlSequenceAnnotation(const QString& fileName);
 
@@ -112,7 +108,6 @@ public:
     double recognizationBound;
     RecognizationDataStorage recDataStorage;
     QList<EDPISequence*> selSequences;
-
     
 private:
     SequenceBase posBase;
@@ -128,12 +123,11 @@ private:
 
     bool modified;
 
+    SelectedSignalsContainer    selectedSignals;
+
     inline Sequence prerareSequence(const GObject* obj) const;
 
     static std::string char2string(char ch);
-
-    SelectedSignalsContainer    selectedSignals;
-
 
 };
 }//namespace
