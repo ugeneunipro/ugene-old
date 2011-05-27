@@ -41,7 +41,7 @@ static QList<QByteArray> splitBuffers(const QByteArray& request, const QByteArra
         QByteArray buf = request.mid(start, pos - start );
         assert(buf.endsWith(">"));
         result.append(buf);
-        start += pos + len;
+        start = pos + len;
     }
     
     return result;

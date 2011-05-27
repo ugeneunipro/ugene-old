@@ -36,6 +36,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/QDScheme.h>
 
@@ -54,7 +55,7 @@ namespace LocalWorkflow {
 * QDWorkerFactory                                                      
 *************************************************************************/
 
-static const QString SCHEMA_ATTR("schema");
+static const QString SCHEMA_ATTR(BaseAttributes::URL_IN_ATTRIBUTE().getId());
 static const QString OUTPUT_ATTR("merge");
 static const QString OFFSET_ATTR("offset");
 
