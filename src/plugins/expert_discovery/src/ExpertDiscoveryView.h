@@ -81,6 +81,8 @@ private slots:
     void sl_autoAnnotationUpdateStarted();
     void sl_autoAnnotationUpdateFinished();
 
+    //void sl_propChanged(QTreeWidgetItem* item);
+
 protected:
     virtual void onObjectAdded(GObject* o){
         //add implementation

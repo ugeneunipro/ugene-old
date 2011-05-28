@@ -14,6 +14,7 @@ EDProjectTree::EDProjectTree(QWidget *parent, ExpertDiscoveryData &d)
 ,seqRoot(d)
 ,sortField(ED_FIELD_PROBABILITY)
 ,sortOrd(ED_ORDER_DECREASING)
+,updatingItem(false)
 {
     createPopupsAndActions();
     updateTree(ED_UPDATE_ALL);
@@ -215,7 +216,7 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
             }
             return;
         case PIT_CS:{
-            
+           //updatingItem = true;
            EDPICS *pPI = dynamic_cast<EDPICS*>(item);
            EDPICSDirectory *pParent = dynamic_cast<EDPICSDirectory*>(dynamic_cast<QTreeWidgetItem*>(pPI)->parent());
            assert(pPI != NULL);
@@ -247,6 +248,7 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
                 }
                 else assert(0);
             pParent->update(true);
+           // updatingItem = false;
             EDProjectItem* pCurItem = const_cast<EDProjectItem*>(pParent->findItemConnectedTo(pSignal));
             updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pParent);
             updateTree(ED_CURRENT_ITEM_CHANGED, pCurItem);
@@ -518,6 +520,7 @@ void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIPropert
         assert(pNewOp != NULL);
 
         if (pParent->getType() == PIT_CS) {
+            updatingItem = true;
             EDPICS *pPICS = dynamic_cast<EDPICS*>(pParent);
             connect(pPICS, SIGNAL(si_getMetaInfoBase()), SLOT(sl_setMetainfoBase()));
             Signal *pSignal = findSignal(pPICS->getSignal());
@@ -527,8 +530,11 @@ void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIPropert
                 pPICS->setOperation(pSignal->getSignal());
             //}
             pPICS->update(true);
+            updatingItem = false;
+
         }
         else {
+            updatingItem = true;
             EDPICSNode *pPICS = dynamic_cast<EDPICSNode*>(pParent);
             Operation* pParentOp = pPICS->getOperation();
             int id;
@@ -540,6 +546,7 @@ void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIPropert
             pParentOp->setArgument(pNewOp, id);
             connect(pParent, SIGNAL(si_getMetaInfoBase()), SLOT(sl_setMetainfoBase()));
             pParent->update(true);
+            updatingItem = false;
         }
         delete pOp;
         const EDProjectItem *pNewItemc = pParent->findItemConnectedTo(pNewOp);
@@ -814,7 +821,7 @@ void EDProjectTree::onMrkItemPropertyChanged(EDProjectItem* pItem, const EDPIPro
     EDProjectItem* pIt = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pPITS)->parent());
     updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pIt);
     updateTree(ED_CURRENT_ITEM_CHANGED, pPITS);
-    emit currentItemChanged(pPITS,pPITS);
+    emit si_changeProp(pPITS);
 }
 
 Operation* EDProjectTree::createCSN(int ValueId) const{

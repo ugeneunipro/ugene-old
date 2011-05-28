@@ -93,6 +93,7 @@ QWidget* ExpertDiscoveryView::createWidget(){
     connect(signalsWidget, SIGNAL(si_addToShown() ), SLOT(sl_addToShown()));
     connect(signalsWidget, SIGNAL(si_clearDisplayed() ), SLOT(sl_clearDisplayed()));
     connect(signalsWidget, SIGNAL(si_showFirstSequences() ), SLOT(sl_showFirstSequences()));
+    connect(signalsWidget, SIGNAL(si_changeProp(QTreeWidgetItem*)), propWidget, SLOT(sl_treeSelChanged(QTreeWidgetItem*)));
  
     connect(propWidget, SIGNAL(si_propChanged(EDProjectItem*, const EDPIProperty*, QString )), signalsWidget, SLOT(sl_propChanged(EDProjectItem* , const EDPIProperty* , QString )));
 
@@ -647,7 +648,7 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
 
 void ExpertDiscoveryView::updateAnnotations(){
     
-    if(!currentAdv){
+    if(!currentAdv || !signalsWidget->isEnabled() || signalsWidget->isUpdatingItem()){
         return;
     }
 

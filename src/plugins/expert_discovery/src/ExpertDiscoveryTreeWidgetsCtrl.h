@@ -50,6 +50,8 @@ public:
     void deleteSignal(EDPICS* signal);
     void updateSorting();
     void updateSortingRecurs(EDProjectItem* pItem);
+
+    bool isUpdatingItem() {return updatingItem;}
 protected slots:
     void sl_newFolder();
     void sl_newSignal();
@@ -130,6 +132,7 @@ private:
     EDSortParameters sortField;
     EDSortParameters sortOrd;
 
+    bool updatingItem;
 protected:
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
@@ -143,6 +146,7 @@ signals:
     void si_addToShown();
     void si_showFirstSequences();
     void si_clearDisplayed();
+    void si_changeProp(QTreeWidgetItem* item);
 };
     
 } //namespace
