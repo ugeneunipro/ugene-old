@@ -29,12 +29,13 @@ namespace U2 {
 class NetworkConfiguration;
 class UserAppsSettings;
 class AppResourcePool;
+class TestRunnerSettings;
 
 /** A collection for all settings used in app that have C++ model description */
 
 class U2CORE_EXPORT AppSettings {
 public:
-    AppSettings() : nc(NULL), userAppsSettings(NULL), ri(NULL){}
+    AppSettings() : nc(NULL), userAppsSettings(NULL), ri(NULL), trs(NULL) {}
 
     virtual ~AppSettings(){}
 
@@ -44,10 +45,13 @@ public:
 
     AppResourcePool* getAppResourcePool() const {return ri;}
 
+    TestRunnerSettings* getTestRunnerSettings() const {return trs;}
+
 protected:
     NetworkConfiguration*   nc;
     UserAppsSettings*       userAppsSettings;
     AppResourcePool*        ri;
+    TestRunnerSettings*     trs;
 };
 
 }//namespace

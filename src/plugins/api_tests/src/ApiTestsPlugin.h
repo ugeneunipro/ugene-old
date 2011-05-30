@@ -2,7 +2,6 @@
 #define APITESTSPLUGIN_H
 
 #include <U2Core/PluginModel.h>
-#include <U2Test/APITestRunner.h>
 #include <U2Test/XMLTestUtils.h>
 
 
@@ -19,12 +18,14 @@ class GTest_APITest : public GTest {
 public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_APITest, "gtest", TaskFlags_FOSCOE);
 
+    void prepare();
     void run();
-    Task::ReportResult report();
+    void cleanup();
 
 private:
     QString tcase;
     QStringList excluded;
+    QStringList included;
 };
 
 } // namespace U2

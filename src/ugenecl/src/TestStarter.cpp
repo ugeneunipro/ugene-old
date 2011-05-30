@@ -26,7 +26,6 @@
 
 #include <U2Test/GTest.h>
 #include <U2Test/TestRunnerTask.h>
-#include <U2Test/APITestRunner.h>
 
 #include <QtXml/QtXml>
 #include <QtCore/QProcess>

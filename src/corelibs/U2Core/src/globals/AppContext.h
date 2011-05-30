@@ -77,7 +77,6 @@ class StructuralAlignmentAlgorithmRegistry;
 class AutoAnnotationsSupport;
 class CDSearchFactoryRegistry;
 class GUITestBase;
-class APITestEnvRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -203,7 +202,6 @@ public:
     static QString getActiveWindowName() {return getInstance()->_getActiveWindowName();}
     static void setActiveWindowName(const QString &name) {getInstance()->_setActiveWindowName(name);}
     static GUITestBase *getGUITestBase() {return getInstance()->_getGUITestBase();}
-    static APITestEnvRegistry *getAPITestEnvRegistry() { return getInstance()->_getAPITestEnvRegistry(); }
     
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
@@ -259,7 +257,6 @@ protected:
     virtual U2DbiRegistry *             _getDbiRegistry() const = 0;
     virtual CDSearchFactoryRegistry* _getCDSFactoryRegistry() const = 0;
     virtual GUITestBase* _getGUITestBase() const = 0;
-    virtual APITestEnvRegistry* _getAPITestEnvRegistry() const =0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

@@ -105,7 +105,6 @@
 #include <project_support/ProjectTasksGui.h>
 #include <U2Test/GUITestService.h>
 #include <U2Test/GUITestBase.h>
-#include <U2Test/APITestRunner.h>
 
 /* TRANSLATOR U2::AppContextImpl */
 
@@ -411,9 +410,6 @@ int main(int argc, char **argv)
     StructuralAlignmentAlgorithmRegistry *saar = new StructuralAlignmentAlgorithmRegistry();
     appContext->setStructuralAlignmentAlgorithmRegistry(saar);
 
-    APITestEnvRegistry* atb = new APITestEnvRegistry();
-    appContext->setAPITestEnvRegistry(atb);
-
     CMDLineUtils::init();
     
     PhyTreeGeneratorRegistry* genRegistry = new PhyTreeGeneratorRegistry();
@@ -641,9 +637,6 @@ int main(int argc, char **argv)
 
     appContext->setGlobalSettings(NULL);
     delete globalSettings;
-
-    appContext->setAPITestEnvRegistry(NULL);
-    delete atb;
 
     return rc;   
 }

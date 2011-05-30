@@ -3,15 +3,16 @@
 
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/AppSettings.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/TestRunnerSettings.h>
 
 
 namespace U2 {
 
-static DbiTestData createTestData() {
-    const GTestEnvironment* env = AppContext::getAPITestEnvRegistry()->getEnvironment("AssemblyDbiTest");
-    QString dataDirPath = env->getVar("COMMON_DATA_DIR");
+DbiTestData createTestData() {
+    QString dataDirPath = AppContext::getAppSettings()->getTestRunnerSettings()->getVar("AssemblyDbiTest");
     QDir dataDir(dataDirPath);
     DbiTestData d;
     d.filePath = dataDir.absoluteFilePath("example-alignment.bam.ugenedb");
@@ -24,9 +25,8 @@ static DbiTestData createTestData() {
     return d;
 }
 
-static DbiTestData createTestData2() {
-    const GTestEnvironment* env = AppContext::getAPITestEnvRegistry()->getEnvironment("AssemblyDbiTest");
-    QString dataDirPath = env->getVar("COMMON_DATA_DIR");
+DbiTestData createTestData2() {
+    QString dataDirPath = AppContext::getAppSettings()->getTestRunnerSettings()->getVar("AssemblyDbiTest");
     QDir dataDir(dataDirPath);
     DbiTestData d;
     d.filePath = dataDir.absoluteFilePath("c_elegans_test.bam.ugenedb");

@@ -6,8 +6,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
 
-#include <U2Test/APITestRunner.h>
-
 #include <gtest/gtest.h>
 
 #include <QtCore/QDir>

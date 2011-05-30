@@ -1,4 +1,10 @@
 <!DOCTYPE UGENE_TEST_FRAMEWORK_TEST>
-<multi-test>
-<gtest case="AssemblyDbiTest" excluded="countReads" />
-</multi-test>
+
+<gtest case="AssemblyDbiTest">
+
++ getAssemblyObject
+- countReads
++ getMaxEndPos
++ getReads
+
+</gtest>

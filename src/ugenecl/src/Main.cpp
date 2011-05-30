@@ -75,7 +75,6 @@
 #include <U2Remote/DistributedComputingUtil.h>
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Test/TestRunnerTask.h>
-#include <U2Test/APITestRunner.h>
 
 #include "ForeverTask.h"
 #include "LogDriver.h"
@@ -408,9 +407,6 @@ int main(int argc, char **argv)
     StructuralAlignmentAlgorithmRegistry *saar = new StructuralAlignmentAlgorithmRegistry();
     appContext->setStructuralAlignmentAlgorithmRegistry(saar);
 
-    APITestEnvRegistry* atb = new APITestEnvRegistry();
-    appContext->setAPITestEnvRegistry(atb);
-
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
     // show help if need
@@ -545,9 +541,6 @@ int main(int argc, char **argv)
 
     appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
     delete saar;
-
-    appContext->setAPITestEnvRegistry(NULL);
-    delete atb;
 
     return rc;
 }

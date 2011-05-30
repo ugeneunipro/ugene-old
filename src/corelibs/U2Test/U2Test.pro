@@ -4,7 +4,7 @@ include (U2Test.pri)
 HEADERS += src/GTest.h \
            src/GTestFrameworkComponents.h \
            src/TestRunnerTask.h \
-           src/APITestRunner.h \
+           src/TestRunnerSettings.h \
            src/xmltest/XMLTestFormat.h \
            src/xmltest/XMLTestUtils.h \
            src/gui_tests/AboutDialogTests.h \

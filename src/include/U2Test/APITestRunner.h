@@ -1,1 +1,0 @@
-#include "../../corelibs/U2Test/src/APITestRunner.h"
