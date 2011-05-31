@@ -9,6 +9,7 @@ HEADERS += src/WebWindow.h \
            src/phyltree/TextSettingsDialog.h \
            src/phyltree/TreeSettingsDialog.h \
            src/util_dna_assembly/BuildIndexDialog.h \
+           src/util_dna_assembly/ConvertAssemblyToSamDialog.h \
            src/util_dna_assembly/DnaAssemblyDialog.h \
            src/util_dna_assembly/DnaAssemblyGUIExtension.h \
            src/util_dna_assembly/DnaAssemblyUtils.h \
@@ -94,6 +95,7 @@ FORMS += src/phyltree/ui/BranchSettingsDialog.ui \
          src/phyltree/ui/TextSettingsDialog.ui \
          src/phyltree/ui/TreeSettingsDialog.ui \
          src/util_dna_assembly/ui/AssemblyToRefDialog.ui \
+         src/util_dna_assembly/ui/AssemblyToSamDialog.ui \
          src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
          src/util_find_dialog/ui/FindDialogUI.ui \
          src/util_msa_align/ui/PerformAlignmentDialog.ui \
@@ -117,6 +119,7 @@ SOURCES += src/WebWindow.cpp \
            src/phyltree/TextSettingsDialog.cpp \
            src/phyltree/TreeSettingsDialog.cpp \
            src/util_dna_assembly/BuildIndexDialog.cpp \
+           src/util_dna_assembly/ConvertAssemblyToSamDialog.cpp \
            src/util_dna_assembly/DnaAssemblyDialog.cpp \
            src/util_dna_assembly/DnaAssemblyUtils.cpp \
            src/util_find_dialog/FindDialog.cpp \

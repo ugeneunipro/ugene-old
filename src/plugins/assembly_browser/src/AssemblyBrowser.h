@@ -115,6 +115,7 @@ private slots:
     void sl_onShowCoordsOnRulerChanged();
     void sl_saveScreenshot();
     void sl_showContigInfo();
+    void sl_exportToSam();
     
 private:
     void initFont();
@@ -156,6 +157,7 @@ private:
     QAction * showCoordsOnRulerAction;
     QAction * saveScreenShotAction;
     QAction * showInfoAction;
+    QAction * exportToSamAction;
     
     const static int MAX_CELL_WIDTH = 300;
     const static double INITIAL_ZOOM_FACTOR;

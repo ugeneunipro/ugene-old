@@ -19,41 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_DNA_ASSEMBLEY_UTILS_H_
-#define _U2_DNA_ASSEMBLEY_UTILS_H_
+#ifndef _U2_CONVERT_ASSEMBLY_TO_SAM_DIALOG_H_
+#define _U2_CONVERT_ASSEMBLY_TO_SAM_DIALOG_H_
 
-#include <U2Core/global.h>
+#include <U2Core/GUrl.h>
+#include <QtGui/QDialog>
+
+class Ui_AssemblyToSamDialog;
 
 namespace U2 {
 
-class DnaAssemblyToRefTaskSettings;
-
-class U2VIEW_EXPORT DnaAssemblySupport : public QObject {
+class U2VIEW_EXPORT ConvertAssemblyToSamDialog : public QDialog {
     Q_OBJECT
+
 public:
-    DnaAssemblySupport();
+    ConvertAssemblyToSamDialog(QWidget* parent = NULL, QString dbName = "");
+
+    const GUrl getDbFileUrl();
+    const GUrl getSamFileUrl();
 
 private slots:
-    void sl_showDnaAssemblyDialog();
-    void sl_showBuildIndexDialog();
-    void sl_showConvertToSamDialog();
+    void sl_onSetDbPathButtonClicked();
+    void sl_onSetSamPathButtonClicked();
+    void accept();
+    void reject();
 
-}; 
+private:
+    Ui_AssemblyToSamDialog *ui;
+    void buildSamUrl(const GUrl &dbUrl);
 
-// class DnaAssemblyLoadShortReadsTask : public Task {
-//     Q_OBJECT
-// public:
-//     DnaAssemblyLoadShortReadsTask(DnaAssemblyToRefTaskSettings& settings, const QList<GUrl>& shortReads);
-//     virtual void prepare();
-//     QList<Task*> onSubTaskFinished(Task* subTask);
-//     QList<DN
-//     virtual ReportResult report();
-// private:
-//     DnaAssemblyToRefTaskSettings& settings;
-//     const QList<GUrl>& shortReads;
-// }; 
+    static GUrl dbFileUrl;
+};
 
 } // U2
 
-
-#endif // _U2_DNA_ASSEMBLEY_TASK_H_
+#endif //  _U2_CONVERT_ASSEMBLY_TO_SAM_DIALOG_H_

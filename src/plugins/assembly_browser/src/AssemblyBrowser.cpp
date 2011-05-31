@@ -59,11 +59,16 @@
 #include <U2Core/Timer.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
+
+#include <U2Formats/ConvertAssemblyToSamTask.h>
+
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 
 #include <U2Misc/DialogUtils.h>
 #include <U2Misc/PositionSelector.h>
+
+#include <U2View/ConvertAssemblyToSamDialog.h>
 
 #include <memory>
 
@@ -79,7 +84,7 @@ AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) :
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
 zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
-showInfoAction(0)
+showInfoAction(0), exportToSamAction(0)
 {
     GCOUNTER( cvar, tvar, "AssemblyBrowser:open" );
     initFont();
@@ -221,6 +226,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addAction(showCoordsOnRulerAction);
         tb->addAction(saveScreenShotAction);
         tb->addAction(showInfoAction);
+        tb->addAction(exportToSamAction);
     }
     GObjectView::buildStaticToolbar(tb);
 }
@@ -237,6 +243,7 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
         m->addAction(zoomOutAction);
         m->addAction(saveScreenShotAction);
         m->addAction(showInfoAction);
+        m->addAction(exportToSamAction);
     }
     GObjectView::buildStaticMenu(m);
     GUIUtils::disableEmptySubmenus(m);
@@ -494,6 +501,9 @@ void AssemblyBrowser::setupActions() {
     
     showInfoAction = new QAction(QIcon(":ugene/images/task_report.png"), tr("Show assembly information"), this);
     connect(showInfoAction, SIGNAL(triggered()), SLOT(sl_showContigInfo()));
+
+    exportToSamAction = new QAction(QIcon(":/core/images/sam.png"), tr("Export assembly to SAM format"), this);
+    connect(exportToSamAction, SIGNAL(triggered()), SLOT(sl_exportToSam()));
 }
 
 void AssemblyBrowser::sl_showContigInfo() {
@@ -533,6 +543,14 @@ void AssemblyBrowser::sl_showContigInfo() {
 void AssemblyBrowser::sl_saveScreenshot() {
     ExportImageDialog dialog(ui);
     dialog.exec();
+}
+
+void AssemblyBrowser::sl_exportToSam() {
+    ConvertAssemblyToSamDialog dialog(ui, gobject->getGObjectName());
+    if (dialog.exec()) {
+        ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(qobject_cast<AssemblyObject*>(gobject), &(model->getDbiHandle()), dialog.getSamFileUrl());
+        AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
+    }
 }
 
 void AssemblyBrowser::sl_onShowCoordsOnRulerChanged() {

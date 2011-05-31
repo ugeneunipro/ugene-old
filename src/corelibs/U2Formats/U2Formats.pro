@@ -32,7 +32,8 @@ HEADERS += src/ABIFormat.h \
            src/StockholmFormat.h \
            src/StreamSequenceReader.h \
            src/StreamSequenceWriter.h \
-           src/SwissProtPlainTextFormat.h
+           src/SwissProtPlainTextFormat.h \
+           src/tasks/ConvertAssemblyToSamTask.h
 SOURCES += src/ABIFormat.cpp \
            src/ACEFormat.cpp \
            src/ASNFormat.cpp \
@@ -62,6 +63,7 @@ SOURCES += src/ABIFormat.cpp \
            src/StockholmFormat.cpp \
            src/StreamSequenceReader.cpp \
            src/StreamSequenceWriter.cpp \
-           src/SwissProtPlainTextFormat.cpp
+           src/SwissProtPlainTextFormat.cpp \
+           src/tasks/ConvertAssemblyToSamTask.cpp
 RESOURCES += U2Formats.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

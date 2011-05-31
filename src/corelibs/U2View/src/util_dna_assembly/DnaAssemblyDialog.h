@@ -42,6 +42,7 @@ public:
     const QString getAlgorithmName();
     const QString getResultFileName();
     const bool isPrebuiltIndex();
+    const bool isSamOutput();
     QMap<QString,QVariant> getCustomSettings();
 
 protected:
@@ -54,6 +55,7 @@ private slots:
     void sl_onSetResultFileNameButtonClicked();
     void sl_onAlgorithmChanged(const QString &text);
     void sl_onPrebuiltIndexBoxClicked();
+    void sl_onSamBoxClicked();
 
 private:
     const DnaAssemblyAlgRegistry* assemblyRegistry;
@@ -62,6 +64,7 @@ private:
     static QList<QString> shortReads;
     static QString methodName;
     static bool prebuiltIndex;
+    static bool samOutput;
     void updateState();
     void addGuiExtension();
     void buildResultUrl(const GUrl& url);

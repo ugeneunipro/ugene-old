@@ -426,7 +426,7 @@ bool SAMFormat::getSectionTags( QByteArray &line, const QByteArray &sectionName,
     return true;
 }
 
-bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter* io, const QByteArray& refName, int refLength, bool first)
+bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter* io, const QByteArray& refName, int refLength, bool first, bool useCigar, const QByteArray &cigar)
 {
     static const QByteArray TAB = "\t";
     static const QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
@@ -434,7 +434,9 @@ bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter*
     static const QByteArray mrnm("*");
     static const QByteArray mpos("0");
     static const QByteArray isize("0");
-    static const QString rowData = "%1" + TAB + flag + TAB + "%2" + TAB + "%3" + TAB + mapq + TAB + "%4M" + TAB + mrnm
+    static const QString rowDataNotCigar = "%1" + TAB + flag + TAB + "%2" + TAB + "%3" + TAB + mapq + TAB + "%4M" + TAB + mrnm
+        + TAB + mpos + TAB + isize + TAB + "%5" + TAB + "%6" + "\n";
+    static const QString rowDataCigar = "%1" + TAB + flag + TAB + "%2" + TAB + "%3" + TAB + mapq + TAB + "%4" + TAB + mrnm
         + TAB + mpos + TAB + isize + TAB + "%5" + TAB + "%6" + "\n";
     
     if( NULL == io || !io->isOpen() ) {
@@ -459,12 +461,22 @@ bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter*
     }
 
     QByteArray qual = read.hasQualityScores() ? read.quality.qualCodes : QByteArray("*");
-    QString row = rowData.arg(qname.constData())
-        .arg(refName.constData())
-        .arg(offset+1)
-        .arg(read.seq.length())
-        .arg(read.seq.constData())
-        .arg(qual.constData());
+    QString row;
+    if (useCigar) {
+        row = rowDataCigar.arg(qname.constData())
+            .arg(refName.constData())
+            .arg(offset+1)
+            .arg(cigar.constData())
+            .arg(read.seq.constData())
+            .arg(qual.constData());
+    } else {
+        row = rowDataNotCigar.arg(qname.constData())
+            .arg(refName.constData())
+            .arg(offset+1)
+            .arg(read.seq.length())
+            .arg(read.seq.constData())
+            .arg(qual.constData());
+    }
 
     if (io->writeBlock(row.toAscii()) != row.length()) {
         return false;

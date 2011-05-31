@@ -39,6 +39,7 @@ QList<QString> DnaAssemblyDialog::shortReads;
 QString DnaAssemblyDialog::genomePath;
 QString DnaAssemblyDialog::methodName;
 bool DnaAssemblyDialog::prebuiltIndex = false;
+bool DnaAssemblyDialog::samOutput = false;
 
 DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWidget* p /* = NULL*/ )
 : QDialog(p), assemblyRegistry(registry), customGUI(NULL)
@@ -68,6 +69,7 @@ DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWi
     connect(addRefButton, SIGNAL(clicked()), SLOT(sl_onAddRefButtonClicked()) );
     connect(methodNamesBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_onAlgorithmChanged(const QString &)));
     connect(prebuiltIndexCheckBox, SIGNAL(clicked()), SLOT(sl_onPrebuiltIndexBoxClicked()));
+    connect(samBox, SIGNAL(clicked()), SLOT(sl_onSamBoxClicked()));
     
     if (!genomePath.isEmpty()) {
         refSeqEdit->setText(genomePath);
@@ -216,12 +218,24 @@ void DnaAssemblyDialog::sl_onPrebuiltIndexBoxClicked() {
     }
 }
 
+void DnaAssemblyDialog::sl_onSamBoxClicked() {
+    samOutput = samBox->isChecked();
+
+    if (!refSeqEdit->text().isEmpty()) {
+        buildResultUrl(refSeqEdit->text());
+    }
+}
+
 const QString DnaAssemblyDialog::getResultFileName() {
     return resultFileNameEdit->text();
 }
 
 const bool DnaAssemblyDialog::isPrebuiltIndex() {
     return prebuiltIndexCheckBox->isChecked();
+}
+
+const bool DnaAssemblyDialog::isSamOutput() {
+    return samBox->isChecked();
 }
 
 QMap<QString, QVariant> DnaAssemblyDialog::getCustomSettings() {
@@ -273,7 +287,14 @@ void DnaAssemblyDialog::addGuiExtension() {
 }
 
 void DnaAssemblyDialog::buildResultUrl(const GUrl& refUrl ) {
-    GUrl url = GUrlUtils::rollFileName(refUrl.dirPath() + "/" + refUrl.baseFileName()+ ".ugenedb", DocumentUtils::getNewDocFileNameExcludesHint());
+    QByteArray extension;
+    if (samOutput) {
+        extension = "sam";
+    } else {
+        extension = "ugenedb";
+    }
+    QString tmpUrl = QString(refUrl.dirPath() + "/" + refUrl.baseFileName()+ ".%1").arg(extension.constData());
+    GUrl url = GUrlUtils::rollFileName(tmpUrl, DocumentUtils::getNewDocFileNameExcludesHint());
     resultFileNameEdit->setText(url.getURLString());
 }
 

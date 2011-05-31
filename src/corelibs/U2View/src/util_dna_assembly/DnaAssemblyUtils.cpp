@@ -25,19 +25,21 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/GObjectSelection.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Algorithm/DnaAssemblyMultiTask.h>
+#include <U2Formats/ConvertAssemblyToSamTask.h>
 #include <U2Gui/DelayedAddDocumentAndOpenViewTask.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectSelection.h>
 
 #include "DnaAssemblyUtils.h"
 #include "DnaAssemblyDialog.h"
 #include "BuildIndexDialog.h"
+#include "ConvertAssemblyToSamDialog.h"
 
 
 namespace U2 {
@@ -56,6 +58,11 @@ DnaAssemblySupport::DnaAssemblySupport()
     buildIndexAction->setIcon(QIcon(":core/images/align.png"));
     connect( buildIndexAction, SIGNAL( triggered() ), SLOT( sl_showBuildIndexDialog() ) );
     dnaAssemblySub->addAction( buildIndexAction );
+
+    QAction* convertAssemblyToSamAction = new QAction( tr("Convert UGENE Assembly data base to SAM format..."), this );
+    convertAssemblyToSamAction->setIcon(QIcon(":core/images/align.png"));
+    connect( convertAssemblyToSamAction, SIGNAL( triggered() ), SLOT( sl_showConvertToSamDialog() ) );
+    dnaAssemblySub->addAction( convertAssemblyToSamAction );
 }
 
 void DnaAssemblySupport::sl_showDnaAssemblyDialog() 
@@ -70,7 +77,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
     DnaAssemblyDialog dlg(registry, QApplication::activeWindow());
     if (dlg.exec()) {
         DnaAssemblyToRefTaskSettings s;
-        s.samOutput = false;
+        s.samOutput = dlg.isSamOutput();
         s.refSeqUrl = dlg.getRefSeqUrl();
         s.algName = dlg.getAlgorithmName();
         s.resultFileName = dlg.getResultFileName();
@@ -110,6 +117,15 @@ void DnaAssemblySupport::sl_showBuildIndexDialog()
         s.prebuiltIndex = false;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, false, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
+    }
+}
+
+void DnaAssemblySupport::sl_showConvertToSamDialog()
+{
+    ConvertAssemblyToSamDialog dlg(QApplication::activeWindow());
+    if (dlg.exec()) {
+        Task *convertTask = new ConvertAssemblyToSamTask(dlg.getDbFileUrl(), dlg.getSamFileUrl());
+        AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
     }
 }
 
