@@ -173,7 +173,7 @@ void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, Tas
    
 }
 
-void GenomeAlignerCUDAHelper::alignReads(IndexPart& indexPart, SearchContext* ctx, TaskStateInfo& stateInfo) {
+void GenomeAlignerCUDAHelper::alignReads(IndexPart& indexPart, AlignContext* ctx, TaskStateInfo& stateInfo) {
  
 #ifdef  GA_BUILD_WITH_CUDA
 

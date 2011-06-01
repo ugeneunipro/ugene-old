@@ -36,7 +36,7 @@
 #include <QSemaphore>
 #include <memory>
 
-#define ResType qint64
+#define BinarySearchResult qint64
 
 namespace U2 {
 
@@ -44,10 +44,10 @@ class GenomeAlignerIndex;
 class FindInPartSubTask;
 class PrepareVectorsSubTask;
 
-class SearchContext {
+class AlignContext {
 public:
-    SearchContext(): w(-1), ptMismatches(0), nMismatches(0), absMismatches(0), bestMode(false),
-        openCL(false), useCUDA(0), minReadLength(-1), maxReadLength(-1) {}
+    AlignContext(): w(-1), ptMismatches(0), nMismatches(0), absMismatches(0), bestMode(false),
+        openCL(false), useCUDA(0), minReadLength(-1), maxReadLength(-1), bitFilter(0), isReadingFinished(false) {}
     int w;
     int ptMismatches;
     int nMismatches;
@@ -59,6 +59,14 @@ public:
     int maxReadLength;
     BMType bitFilter;
     QVector<SearchQuery*> queries;
+    QVector<BMType> bitValuesV;
+    QVector<int> readNumbersV;
+    QVector<int> positionsAtReadV;
+
+    bool isReadingFinished;
+    bool isReadingStarted;
+    QMutex listM;
+    QWaitCondition alignerWait;
 };
 
 #define MAX_PERCENTAGE 100
@@ -66,13 +74,14 @@ class GenomeAlignerFindTask : public Task {
     Q_OBJECT
     friend class ShortReadAligner;
 public:
-    GenomeAlignerFindTask(GenomeAlignerIndex *i, const SearchContext &s, GenomeAlignerWriteTask *writeTask);
+    GenomeAlignerFindTask(GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *writeTask);
     ~GenomeAlignerFindTask();
     virtual void run();
     virtual void prepare();
 
     void loadPartForAligning(int part);
     void getDataForAligning(int &first, int &length);
+    void waitDataForAligning(int &first, int &length);
     bool runOpenCLBinarySearch();
 
     qint64 getIndexLoadTime() const {return indexLoadTime;}
@@ -80,11 +89,8 @@ public:
 private:
     GenomeAlignerIndex *index;
     GenomeAlignerWriteTask *writeTask;
-    SearchContext *settings;
-    QVector<BMType> bitValuesV;
-    QVector<int> readNumbersV;
-    QVector<int> positionsAtReadV;
-    ResType *bitMaskResults;
+    AlignContext *alignContext;
+    BinarySearchResult *bitMaskResults;
 
     int alignerTaskCount;
     int waiterCount;
@@ -99,7 +105,7 @@ private:
     QWaitCondition waiter;
     QMutex openCLMutex;
 
-    void prepareBitValues();
+    void unsafeGetData(int &first, int &length);
 
     static const int ALIGN_DATA_SIZE;
 };
@@ -109,11 +115,11 @@ typedef QVector<SearchQuery*>::iterator QueryIter;
 class ShortReadAligner : public Task {
     Q_OBJECT
 public:
-    ShortReadAligner(GenomeAlignerIndex *index, SearchContext *settings, GenomeAlignerWriteTask *writeTask);
+    ShortReadAligner(GenomeAlignerIndex *index, AlignContext *alignContext, GenomeAlignerWriteTask *writeTask);
     virtual void run();
 private:
     GenomeAlignerIndex *index;
-    SearchContext *settings;
+    AlignContext *alignContext;
     GenomeAlignerWriteTask *writeTask;
 };
 

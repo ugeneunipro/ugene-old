@@ -25,20 +25,21 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/Timer.h>
 
-#include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIndex.h"
 #include "GenomeAlignerTask.h"
 #include "SuffixSearchCUDA.h"
 
 #include <time.h>
 
+#include "GenomeAlignerFindTask.h"
+
 namespace U2 {
 
 const int GenomeAlignerFindTask::ALIGN_DATA_SIZE = 100000;
 
-GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, const SearchContext &s, GenomeAlignerWriteTask *w)
+GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *w)
 : Task("GenomeAlignerFindTask", TaskFlag_None),
-index(i), writeTask(w), settings(new SearchContext(s)), bitMaskResults(NULL)
+index(i), writeTask(w), alignContext(s), bitMaskResults(NULL)
 {
     partLoaded = false;
     openCLFinished = false;
@@ -49,16 +50,11 @@ index(i), writeTask(w), settings(new SearchContext(s)), bitMaskResults(NULL)
 }
 
 void GenomeAlignerFindTask::prepare() {
-    settings->w = GenomeAlignerTask::calculateWindowSize(settings->absMismatches,
-        settings->nMismatches, settings->ptMismatches, settings->minReadLength, settings->maxReadLength);
-    settings->bitFilter = ((quint64)0 - 1)<<(62 - settings->w*2);
+    alignContext->w = GenomeAlignerTask::calculateWindowSize(alignContext->absMismatches,
+        alignContext->nMismatches, alignContext->ptMismatches, alignContext->minReadLength, alignContext->maxReadLength);
+    alignContext->bitFilter = ((quint64)0 - 1)<<(62 - alignContext->w*2);
 
-    prepareBitValues();
-    if (isCanceled() || hasError()) {
-        return;
-    }
-
-    if (settings->useCUDA) {
+    if (alignContext->useCUDA) {
         //proceed to run function
         return;
     }
@@ -68,52 +64,25 @@ void GenomeAlignerFindTask::prepare() {
     for (int i=0; i<alignerTaskCount; i++) {
         waiterCount = 0;
         nextElementToGive = 0;
-        Task *subTask = new ShortReadAligner(index, settings, writeTask);
+        Task *subTask = new ShortReadAligner(index, alignContext, writeTask);
         subTask->setSubtaskProgressWeight(1.0f/alignerTaskCount);
         addSubTask(subTask);
     }
 }
 
-void GenomeAlignerFindTask::prepareBitValues() {
-    taskLog.details("start to calculate bitValues");
-    int CMAX = settings->nMismatches;
-    int W = 0;
-    int q = 0;
-    int readNum = 0;
-    for (QueryIter it=settings->queries.begin(); it!=settings->queries.end(); it++, readNum++) {
-        SearchQuery *qu = *it;
-        W = qu->length();
-        if (!settings->absMismatches) {
-            CMAX = (W * settings->ptMismatches) / MAX_PERCENTAGE;
-        }
-        q = W / (CMAX + 1);
-        assert(q >= settings->w);
-
-        const char* querySeq = qu->constData();
-        for (int i = 0; i < W - settings->w + 1; i+=q) {
-            const char *seq = querySeq + i;
-            BMType bv = index->getBitValue(seq, qMin(GenomeAlignerIndex::charsInMask, W - i));
-            bitValuesV.push_back(bv);
-            readNumbersV.push_back(readNum);
-            positionsAtReadV.push_back(i);
-        }
-    }
-    taskLog.details("finish to calculate bitValues");
-}
-
 void GenomeAlignerFindTask::run() {
-    if (settings->useCUDA) {
+    if (alignContext->useCUDA) {
         
         GenomeAlignerCUDAHelper cudaHelper;
         
-        cudaHelper.loadShortReads(settings->queries, stateInfo);
+        cudaHelper.loadShortReads(alignContext->queries, stateInfo);
         if (hasError()) {
             return;
         }
 
         for (int part = 0; part < index->getPartCount(); ++part) {
             index->loadPart(part);
-            cudaHelper.alignReads(index->getLoadedPart(),settings, stateInfo);
+            cudaHelper.alignReads(index->getLoadedPart(),alignContext, stateInfo);
             if (hasError()) {
                 return;
             }
@@ -140,13 +109,14 @@ void GenomeAlignerFindTask::loadPartForAligning(int part) {
         index->loadPart(part);
         partLoaded = true;
         openCLFinished = false;
+        nextElementToGive = 0;
         taskLog.details(QString("finish to load part %1").arg(part));
     }
 }
 
-void GenomeAlignerFindTask::getDataForAligning(int &first, int &length) {
-    QMutexLocker lock(&shortReadsMutex);
-    int bitValuesCount = bitValuesV.size();
+void GenomeAlignerFindTask::unsafeGetData(int &first, int &length) {
+    int bitValuesCount = alignContext->bitValuesV.size();
+
     first = nextElementToGive;
 
     if (first >= bitValuesCount) {
@@ -157,14 +127,14 @@ void GenomeAlignerFindTask::getDataForAligning(int &first, int &length) {
         length = ALIGN_DATA_SIZE;
     }
 
-    int *rn = readNumbersV.data();
+    QVector<int> &rn = alignContext->readNumbersV;
     int it = first + length;
     for (int last=it-1; it<bitValuesCount; it++) {
         if (rn[last] == rn[it]) {
             length++;
         } else {
-            SearchQuery *lastQu = settings->queries.at(rn[last]);
-            SearchQuery *qu = settings->queries.at(rn[it]);
+            SearchQuery *lastQu = alignContext->queries.at(rn[last]);
+            SearchQuery *qu = alignContext->queries.at(rn[it]);
             if (lastQu->getRevCompl() == qu) {
                 last = it;
                 length++;
@@ -177,12 +147,29 @@ void GenomeAlignerFindTask::getDataForAligning(int &first, int &length) {
     nextElementToGive += length;
 }
 
+void GenomeAlignerFindTask::getDataForAligning(int &first, int &length) {
+    QMutexLocker lock(&shortReadsMutex);
+    unsafeGetData(first, length);
+}
+
+void GenomeAlignerFindTask::waitDataForAligning(int &first, int &length) {
+    QMutexLocker lock(&shortReadsMutex);
+    while ((!alignContext->isReadingFinished && alignContext->bitValuesV.size() - nextElementToGive < ALIGN_DATA_SIZE)
+        || !alignContext->isReadingStarted) { //while (not enough read) wait
+        alignContext->alignerWait.wait(&shortReadsMutex);
+    }
+    unsafeGetData(first, length);
+    if (alignContext->isReadingFinished) {
+        alignContext->alignerWait.wakeAll();
+    }
+}
+
 bool GenomeAlignerFindTask::runOpenCLBinarySearch() {
     QMutexLocker lock(&openCLMutex);
     if (!openCLFinished) {
         openCLFinished = true;
         delete[] bitMaskResults;
-        bitMaskResults = index->bitMaskBinarySearchOpenCL(bitValuesV.data(), bitValuesV.size(), settings->bitFilter);
+        bitMaskResults = index->bitMaskBinarySearchOpenCL(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), alignContext->bitFilter);
         if (NULL == bitMaskResults) {
             setError("OpenCL binary find error");
             return false;
@@ -197,34 +184,44 @@ bool GenomeAlignerFindTask::runOpenCLBinarySearch() {
 }
 
 GenomeAlignerFindTask::~GenomeAlignerFindTask() {
-    delete settings;
     delete[] bitMaskResults;
 }
 
-ShortReadAligner::ShortReadAligner(GenomeAlignerIndex *i, SearchContext *s, GenomeAlignerWriteTask *w)
-: Task("ShortReadAligner", TaskFlag_None), index(i), settings(s), writeTask(w)
+ShortReadAligner::ShortReadAligner(GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *w)
+: Task("ShortReadAligner", TaskFlag_None), index(i), alignContext(s), writeTask(w)
 {
 }
 
 void ShortReadAligner::run() {
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
-    SearchQuery **q = settings->queries.data();
     SearchQuery *shortRead = NULL;
     SearchQuery *revCompl = NULL;
     int first = 0;
     int last = 0;
     int length = 0;
-    ResType bmr = 0;
-    const BMType *bitValues = parent->bitValuesV.constData();
-    const int *readNumbers = parent->readNumbersV.constData();
-    const int *par = parent->positionsAtReadV.constData();
-    ResType *bitMaskResults = NULL;
+    BinarySearchResult bmr = 0;
+    BinarySearchResult *bitMaskResults = NULL;
+
+    //for thread safe:
+    SearchQuery **q = const_cast<SearchQuery**>(alignContext->queries.constData());
+    BMType bv = 0;
+    int rn = 0;
+    int rn1 = 0;
+    int pos = 0;
+    int w = GenomeAlignerTask::calculateWindowSize(alignContext->absMismatches,
+        alignContext->nMismatches, alignContext->ptMismatches, alignContext->minReadLength, alignContext->maxReadLength);
+    BMType bitFilter = ((quint64)0 - 1)<<(62 - w*2);
 
     for (int part=0; part < index->getPartCount(); part++) {
+        q = const_cast<SearchQuery**>(alignContext->queries.constData());
+        const BMType *bitValues = alignContext->bitValuesV.constData();
+        const int *readNumbers = alignContext->readNumbersV.constData();
+        const int *par = alignContext->positionsAtReadV.constData();
+
         stateInfo.setProgress(100*part/index->getPartCount());
         parent->loadPartForAligning(part);
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
-        if (settings->openCL) {
+        if (alignContext->openCL) {
             if (!parent->runOpenCLBinarySearch()) {
                 return;
             }
@@ -232,14 +229,40 @@ void ShortReadAligner::run() {
             stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
         }
 
-        parent->getDataForAligning(first, length);
+        if (part > 0 || alignContext->openCL) {
+            parent->getDataForAligning(first, length);
+        } else { //if (0 == part) then wait for reading shortreads
+            parent->waitDataForAligning(first, length);
+        }
         while (length > 0) {
+            if (!(part > 0 || alignContext->openCL)) {
+                w = GenomeAlignerTask::calculateWindowSize(alignContext->absMismatches,
+                    alignContext->nMismatches, alignContext->ptMismatches, alignContext->minReadLength, alignContext->maxReadLength);
+                bitFilter = ((quint64)0 - 1)<<(62 - w*2);
+            }
+
             last = first + length;
             for (int i=first; i<last; i++) {
-                int readNum = readNumbers[i];
-                shortRead = q[readNum];
+                if (part > 0 || alignContext->openCL) { //for avoiding a QVector deep copy
+                    bv = bitValues[i];
+                    rn = readNumbers[i];
+                    pos = par[i];
+                    if (i < last - 1) {
+                        rn1 = readNumbers[i+1];
+                    }
+                    shortRead = q[rn];
+                } else {
+                    QMutexLocker lock(&alignContext->listM);
+                    bv = alignContext->bitValuesV[i];
+                    rn = alignContext->readNumbersV[i];
+                    pos = alignContext->positionsAtReadV[i];
+                    if (i < last - 1) {
+                        rn1 = alignContext->readNumbersV[i+1];
+                    }
+                    shortRead = alignContext->queries[rn];
+                }
                 revCompl = shortRead->getRevCompl();
-                if (settings->bestMode) {
+                if (alignContext->bestMode) {
                     if (0 == shortRead->firstMCount()) {
                         continue;
                     }
@@ -248,21 +271,30 @@ void ShortReadAligner::run() {
                     }
                 }
 
-                if (settings->openCL) {
+                if (alignContext->openCL) {
                     bmr = bitMaskResults[i];
                 } else {
-                    bmr = index->bitMaskBinarySearch(bitValues[i], settings->bitFilter);
+                    bmr = index->bitMaskBinarySearch(bv, bitFilter);
                 }
-                index->alignShortRead(shortRead, bitValues[i], par[i], bmr, settings);
+                index->alignShortRead(shortRead, bv, pos, bmr, alignContext, bitFilter, w);
 
-                if (!settings->bestMode && shortRead->haveResult()) {
-                    if ((i == last - 1) || (readNumbers[i+1] != readNum)) {
-                        writeTask->addResult(shortRead);
+                if (!alignContext->bestMode) {
+                    if ((i == last - 1) || (rn1 != rn)) {
+                        if (shortRead->haveResult()) {
+                            writeTask->addResult(shortRead);
+                        }
                         shortRead->onPartChanged();
                     }
                 }
             }
-            parent->getDataForAligning(first, length);
+            if (part > 0 || alignContext->openCL) {
+                parent->getDataForAligning(first, length);
+            } else {
+                parent->waitDataForAligning(first, length);
+            }
+            w = GenomeAlignerTask::calculateWindowSize(alignContext->absMismatches,
+                alignContext->nMismatches, alignContext->ptMismatches, alignContext->minReadLength, alignContext->maxReadLength);
+            bitFilter = ((quint64)0 - 1)<<(62 - w*2);
         }
     }
 }

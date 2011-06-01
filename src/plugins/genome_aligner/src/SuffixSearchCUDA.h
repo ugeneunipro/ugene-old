@@ -41,7 +41,7 @@ private:
 
 #endif
 
-class SearchContext;
+class AlignContext;
 class IndexPart;
 class SearchQuery;
 class TaskStateInfo;
@@ -51,7 +51,7 @@ public:
     GenomeAlignerCUDAHelper( );
     ~GenomeAlignerCUDAHelper();
     void loadShortReads(QVector<SearchQuery*>& queries,TaskStateInfo& stateInfo);
-    void alignReads(IndexPart& indexPart, SearchContext* context, TaskStateInfo& stateInfo);
+    void alignReads(IndexPart& indexPart, AlignContext* context, TaskStateInfo& stateInfo);
     qint64 estimateMemoryUsage();
 private:
     int bufSizeMB;

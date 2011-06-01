@@ -80,23 +80,21 @@ private:
     GenomeAlignerWriteTask *pWriteTask;
     GenomeAlignerReader *seqReader;
     GenomeAlignerWriter *seqWriter;
-    QSharedPointer<DbiHandle> handle;
+    AlignContext alignContext;
+
     bool justBuildIndex;
-    uint windowSize, bunchSize, nMismatches, ptMismatches;
-    bool absMismatches;
-    bool bestMode;
-    bool openCL;
-    bool useCUDA;
+    uint bunchSize;
+    
+    bool alignReversed;
     bool dbiIO;
     QString indexFileName;
-    bool alignReversed;
     bool prebuiltIndex;
     GenomeAlignerIndex *index;
     int qualityThreshold;
     int readMemSize;
     int seqPartSize;
-    QVector<SearchQuery*> queries;
     SearchQuery *lastQuery;
+    bool noDataToAlign;
 
     //statistics
     quint64 readsCount;
@@ -116,8 +114,8 @@ class ReadShortReadsSubTask : public Task {
 public:
     ReadShortReadsSubTask(SearchQuery **lastQuery,
                           GenomeAlignerReader *seqReader,
-                          QVector<SearchQuery*> &queries,
                           const DnaAssemblyToRefTaskSettings& settings,
+                          AlignContext &alignContext,
                           quint64 freeMemorySize);
     virtual void run();
 
@@ -128,9 +126,11 @@ public:
 private:
     SearchQuery **lastQuery;
     GenomeAlignerReader *seqReader;
-    QVector<SearchQuery*> &queries;
     const DnaAssemblyToRefTaskSettings &settings;
+    AlignContext &alignContext;
     quint64 freeMemorySize;
+
+    inline void add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent);
 
     static const int ONE_SEARCH_QUERY_SIZE = 38; //~38 bytes for one search query?
 };

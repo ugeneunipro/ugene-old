@@ -239,7 +239,7 @@ void GenomeAlignerIndex::loadPart(int part) {
     }
 }
 
-ResType GenomeAlignerIndex::bitMaskBinarySearch(BMType bitValue, BMType bitFilter) {
+BinarySearchResult GenomeAlignerIndex::bitMaskBinarySearch(BMType bitValue, BMType bitFilter) {
     int low = 0;
     int high = indexPart.getLoadedPartSize() - 1;
     BMType *a = indexPart.bitMask;
@@ -263,19 +263,19 @@ ResType GenomeAlignerIndex::bitMaskBinarySearch(BMType bitValue, BMType bitFilte
     return -1;
 }
 
-ResType *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(BMType *bitValues, int size, BMType bitFilter) {
+BinarySearchResult *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, BMType bitFilter) {
     taskLog.details(QString("Binary search on GPU of %1 Mb search-values in %2 Mb base values")
         .arg((8*size)/(1024*1024)).arg((8*indexPart.getLoadedPartSize())/(1024*1024)));
     BinaryFindOpenCL bf((NumberType*)indexPart.bitMask, indexPart.getLoadedPartSize(), (NumberType*)bitValues, size, bitFilter);
 
     NumberType *ans = bf.launch();
 
-    return (ResType*)ans;
+    return (BinarySearchResult*)ans;
 }
 
-ResType * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValues, int size, BMType bitFilter )
+BinarySearchResult * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValues, int size, BMType bitFilter )
 {
-    ResType* result = NULL;
+    BinarySearchResult* result = NULL;
 #ifdef GA_BUILD_WITH_CUDA 
     taskLog.details(QString("Binary search using CUDA on GPU of %1 Mb search-values in %2 Mb base values")
         .arg((8*size)/(1024*1024)).arg((8*indexPart.getLoadedPartSize())/(1024*1024)));
@@ -283,7 +283,7 @@ ResType * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValues, int siz
     // estimate memory size?
     SuffixSearchCUDA ss;
     
-    result = (ResType*)ss.runSearch( indexPart.bitMask, 
+    result = (BinarySearchResult*)ss.runSearch( indexPart.bitMask, 
         indexPart.getLoadedPartSize(), bitValues, size, bitFilter);
          
 #endif // GA_BUILD_WITH_CUDA
@@ -350,7 +350,7 @@ bool GenomeAlignerIndex::compare(const char *sourceSeq, const char *querySeq, in
 }
 
 //this method contains big copy-paste but it works very fast because of it.
-void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int startPos, ResType firstResult, SearchContext *settings)
+void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int startPos, BinarySearchResult firstResult, AlignContext *settings, BMType bitFilter, int w)
 {
     if (firstResult < 0) {
         return;
@@ -360,8 +360,6 @@ void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int st
     SAType offset = 0;
     const QByteArray &querySeq = qu->constSequence();
     char *refBuff = NULL;
-    int w = settings->w;
-    BMType bitFilter = settings->bitFilter;
 
     int CMAX = settings->nMismatches;
     if (!settings->absMismatches) {

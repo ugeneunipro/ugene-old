@@ -26,7 +26,7 @@
 #include <U2Core/U2AssemblyUtils.h>
 #include "GenomeAlignerIndexPart.h"
 
-#define ResType qint64
+#define BinarySearchResult qint64
 
 namespace U2 {
 
