@@ -31,39 +31,68 @@
 namespace U2 {
 
 
-AddSequencesToAlignmentTask::AddSequencesToAlignmentTask( MAlignmentObject* obj, const QString& fileWithSequencesUrl )
-: Task("Add sequences to alignment task", TaskFlag_NoRun), maObj(obj)
+AddSequencesToAlignmentTask::AddSequencesToAlignmentTask( MAlignmentObject* obj, const QStringList& fileWithSequencesUrls )
+: Task("Add sequences to alignment task", TaskFlag_NoRun), maObj(obj), urls(fileWithSequencesUrls), stateLock(NULL)
 {
-    assert(!fileWithSequencesUrl.isEmpty());
-    QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesUrl);    
-    if (!detectedFormats.isEmpty()) {
-        IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        DocumentFormat* format = detectedFormats.first();
-        loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesUrl, factory);
-        addSubTask(loadTask);
-    } else {
-        setError("Unknown format");
-    }
+    assert(!fileWithSequencesUrls.isEmpty());
+    bufMa = maObj->getMAlignment();
+   
 }
+
+void AddSequencesToAlignmentTask::prepare()
+{
+ 
+    if (maObj.isNull()) {
+        stateInfo.setError(tr("Object is empty."));
+        return;
+    }
+
+    if (maObj->isStateLocked()) {
+        stateInfo.setError(tr("Object is locked for modifications."));
+        return;
+    }
+    
+    stateLock = new StateLock("Adding_files_to_alignment", StateLockFlag_LiveLock);
+    maObj->lockState(stateLock);
+
+    foreach( const QString& fileWithSequencesUrl, urls) {
+        QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesUrl);    
+        if (!detectedFormats.isEmpty()) {
+            IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            DocumentFormat* format = detectedFormats.first();
+            LoadDocumentTask* loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesUrl, factory);
+            addSubTask(loadTask);
+        } else {
+            setError("Unknown format");
+        }
+    }
+
+}
+
+
 
 QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
 {
     QList<Task*> subTasks;
 
     propagateSubtaskError();
-    if ( (subTask != loadTask )|| (isCanceled()) || (hasError()) ) {
+    if ( isCanceled() || hasError() ) {
         return subTasks;
     }
 
+    LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(subTask);
+    assert(loadTask != NULL);
     Document* doc = loadTask->getDocument();
     QList<GObject*> seqObjects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     
     foreach(GObject* obj, seqObjects) {
         DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
         assert(dnaObj != NULL);
-        DNAAlphabet* dnaAl = dnaObj->getAlphabet();
-        if (maObj->getAlphabet()->getType() == dnaAl->getType()) {
-            maObj->addRow(dnaObj->getDNASequence());
+        DNAAlphabet* newAlphabet = DNAAlphabet::deriveCommonAlphabet(dnaObj->getAlphabet(), bufMa.getAlphabet());
+        if (newAlphabet != NULL) {
+            bufMa.setAlphabet(newAlphabet);
+            MAlignmentRow row(dnaObj->getDNASequence().getName(), dnaObj->getSequence(), 0);
+            bufMa.addRow(row);
         } else {
             stateInfo.setError(tr("Sequence %1 from %2 has different alphabet").arg(dnaObj->getGObjectName()).arg(loadTask->getDocument()->getURLString()));
         }
@@ -75,8 +104,16 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
 
 Task::ReportResult AddSequencesToAlignmentTask::report()
 {
+    if (stateLock) {
+        maObj->unlockState(stateLock);
+        delete stateLock;
+    }
+    
+    maObj->setMAlignment(bufMa);
+    
     return ReportResult_Finished;
 }
+
 
 
 }

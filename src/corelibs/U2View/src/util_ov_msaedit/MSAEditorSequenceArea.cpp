@@ -1298,11 +1298,12 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
     QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
     
     LastOpenDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open file with sequences"), lod.dir, filter);
+    QStringList urls = QFileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter);
     
-    if (!lod.url.isEmpty()) {
+    if (!urls.isEmpty()) {
+        lod.url = urls.first();
         cancelSelection();
-        AddSequencesToAlignmentTask * task = new AddSequencesToAlignmentTask(msaObject, lod.url);    
+        AddSequencesToAlignmentTask * task = new AddSequencesToAlignmentTask(msaObject, urls);    
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
     

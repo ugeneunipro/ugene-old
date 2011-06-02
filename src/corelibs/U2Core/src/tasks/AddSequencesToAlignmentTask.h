@@ -31,18 +31,21 @@
 namespace U2 {
 
 class LoadDocumentTask;
+class StateLock;
 
 class U2CORE_EXPORT AddSequencesToAlignmentTask : public Task {
     Q_OBJECT
 public:
-    AddSequencesToAlignmentTask(MAlignmentObject* obj, const QString& fileWithSequences);
-
+    AddSequencesToAlignmentTask(MAlignmentObject* obj, const QStringList& filesWithSequences);
+    void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
 
     ReportResult report();
 
     QPointer<MAlignmentObject>  maObj;
-    LoadDocumentTask*           loadTask;
+    MAlignment                  bufMa;
+    QStringList                 urls;
+    StateLock*                  stateLock;
 };
 
 }// namespace
