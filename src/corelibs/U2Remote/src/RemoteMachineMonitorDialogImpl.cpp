@@ -101,8 +101,8 @@ rmm(monitor), getPublicMachinesTask( NULL ) {
         okPushButton->setText( OK_BUTTON_RUN );
     }
     
-    updateState();
     initMachineActionsMenu();
+    updateState();
 }
 
 void RemoteMachineMonitorDialogImpl::initMachineActionsMenu() {
@@ -443,7 +443,10 @@ void RemoteMachineMonitorDialogImpl::updateState()
     removePushButton->setEnabled(available );
     modifyPushButton->setEnabled(available );
     showTasksButton->setEnabled(available);
-
+    
+    foreach (QAction* action, machineActionsMenu->actions()) {
+        action->setEnabled(available);
+    }
 }
 
 RemoteMachineSettings* RemoteMachineMonitorDialogImpl::getSelectedMachine() const {
