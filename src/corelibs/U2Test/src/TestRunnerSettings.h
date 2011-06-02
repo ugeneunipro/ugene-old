@@ -13,6 +13,27 @@ private:
     QMap<QString, QString> registry;
 };
 
+class APITestData {
+public:
+    template<class T>
+    T getValue(const QString& key) const {
+        const QVariant& val = d.value(key);
+        return qVariantValue<T>(val);
+    }
+
+    template<class T>
+    bool addValue(const QString& key, const T& val) {
+        assert(!key.isEmpty());
+        assert(!d.keys().contains(key));
+        const QVariant& var = qVariantFromValue<T>(val);
+        d[key] = var;
+        return true;
+    }
+
+private:
+    QMap<QString, QVariant> d;
+};
+
 } //namespace
 
 #endif

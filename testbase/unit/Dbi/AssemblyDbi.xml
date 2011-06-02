@@ -3,8 +3,17 @@
 <gtest case="AssemblyDbiTest">
 
 + getAssemblyObject
-- countReads
-+ getMaxEndPos
++ countReads
 + getReads
+- getReadsByRow
++ getReadsByName
+- getMaxPackedRow
++ getMaxEndPos
+- createAssemblyObject
+- updateAssemblyObject
+- removeReads
+- addReads
+- pack
++ calculateCoverage
 
 </gtest>
