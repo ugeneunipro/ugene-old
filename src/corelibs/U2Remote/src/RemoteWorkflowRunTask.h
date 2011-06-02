@@ -47,6 +47,7 @@ public:
 
     virtual void prepare();
     virtual void run();
+    QString generateReport() const;
     virtual ReportResult report();
     qint64 getRemoteTaskId() { return taskId; }
 

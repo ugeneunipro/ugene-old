@@ -49,7 +49,7 @@ namespace U2 {
 ***************************************/
 
 RemoteWorkflowRunTask::RemoteWorkflowRunTask( RemoteMachineSettings * m, const Schema & sc, const QList<Iteration> & its ) 
-    : Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE ), machineSettings( m ), 
+    : Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), machineSettings( m ), 
       machine( NULL ), schema( sc ), iterations( its ), taskId(0), eventLoop(NULL),taskIsActive(false) 
 {
     GCOUNTER(cvar, tvar, "WorkflowOnTheCloud");
@@ -61,7 +61,7 @@ RemoteWorkflowRunTask::RemoteWorkflowRunTask( RemoteMachineSettings * m, const S
 }
 
 RemoteWorkflowRunTask::RemoteWorkflowRunTask( RemoteMachineSettings *m, qint64 remoteTaskId )
-: Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE ), machineSettings( m ), 
+: Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), machineSettings( m ), 
 machine( NULL ), taskId(remoteTaskId), eventLoop(NULL), taskIsActive(true)
 {
     GCOUNTER(cvar, tvar, "WorkflowOnTheCloud");
@@ -242,6 +242,33 @@ void RemoteWorkflowRunTask::sl_remoteTaskTimerUpdate()  {
 
     stateInfo.progress = progress;
     QTimer::singleShot( RemoteWorkflowRunTask::TIMER_UPDATE_TIME, this, SLOT( sl_remoteTaskTimerUpdate() ) );
+}
+
+QString RemoteWorkflowRunTask::generateReport() const {
+    QString res;
+    res+="<table width='75%'>";
+    res+=QString("<tr><th>%1</th><th>%2</th><th>%3</th></tr>").arg(tr("Task")).arg(tr("Status")).arg(tr("Details"));
+    QString name = Qt::escape(getTaskName());
+    QString status = hasError() ? tr("Failed") : isCanceled() ? tr("Canceled") : tr("Finished");
+    QString error = Qt::escape(getError()).replace("\n", "<br>");
+    if (hasError()) {
+        name = "<font color='red'>"+name+"</font>";
+        status = "<font color='red'>"+status+"</font>";
+    } else if (isCanceled()) {
+        status = "<font color='blue'>"+status+"</font>";
+    } else {
+        status = "<font color='green'>"+status+"</font>";
+    }
+    res+=QString("<tr><td>%1</td><td>%2</td><td>%3</td></tr>").arg(name).arg(status).arg(error);
+    res += QString("<tr><td><i>%1</i></td></tr>").arg(tr("Output files:"));
+    foreach(QString url, outputUrls) {
+        if(QFile::exists(url)) {
+            res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(url).arg(url);
+        }
+    }
+    res+="<tr><td></td></tr>";
+    res+="</table>";
+    return res;
 }
 
 
