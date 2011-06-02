@@ -342,9 +342,9 @@ void GTest_AddSequenceToAlignment::prepare(){
         stateInfo.setError(GTest::tr("File with sequences has empty name"));
         return;
     }
-    QString url = env->getVar("COMMON_DATA_DIR") + "/" + seqFileName;
+    QStringList urls(env->getVar("COMMON_DATA_DIR") + "/" + seqFileName);
 
-    addSubTask(new AddSequencesToAlignmentTask(maobj, url) );
+    addSubTask(new AddSequencesToAlignmentTask(maobj, urls) );
 
 }
 
