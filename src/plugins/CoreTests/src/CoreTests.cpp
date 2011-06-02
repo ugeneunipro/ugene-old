@@ -40,6 +40,7 @@
 #include "PWMatrixTests.h"
 #include "SecStructPredictTests.h"
 #include "DnaAssemblyTests.h"
+#include "FindAlgorithmTests.h"
 
 #include "EditAlignmentTests.h"
 #include "SMatrixTests.h"
@@ -241,10 +242,19 @@ void CoreTests::registerFactories() {
         GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
         l->qlist = BinaryFindOpenCLTests::createTestFactories();
         foreach(XMLTestFactory* f, l->qlist) {
-        bool res = xmlTestFormat->registerTestFactory(f);
-        assert(res); Q_UNUSED(res);
+            bool res = xmlTestFormat->registerTestFactory(f);
+            assert(res); Q_UNUSED(res);
+        }
     }
-}
+
+    { // FindAlforithm tests
+        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
+        l->qlist = FindAlgorithmTests::createTestFactories();
+        foreach(XMLTestFactory* f, l->qlist) {
+        bool res = xmlTestFormat->registerTestFactory(f);
+            assert(res); Q_UNUSED(res);
+        }
+    }
 }
 
 }//namespace

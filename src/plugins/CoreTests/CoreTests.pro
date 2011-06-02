@@ -21,7 +21,8 @@ HEADERS += src/AnnotationTableObjectTest.h \
            src/SMatrixTests.h \
            src/TaskTests.h \
            src/BinaryFindOpenCLTests.h \
-           src/GUrlTests.h
+           src/GUrlTests.h \
+           src/FindAlgorithmTests.h
 SOURCES += src/AnnotationTableObjectTest.cpp \
            src/AsnParserTests.cpp \
            src/BioStruct3DObjectTests.cpp \
@@ -42,4 +43,5 @@ SOURCES += src/AnnotationTableObjectTest.cpp \
            src/SMatrixTests.cpp \
            src/TaskTests.cpp \
            src/BinaryFindOpenCLTests.cpp \
-           src/GUrlTests.cpp
+           src/GUrlTests.cpp \
+           src/FindAlgorithmTests.cpp
