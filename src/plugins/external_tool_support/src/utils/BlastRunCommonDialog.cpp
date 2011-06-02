@@ -192,7 +192,7 @@ void BlastRunCommonDialog::sl_onMatrixChanged(int index){
 }
 void BlastRunCommonDialog::sl_restoreDefault(){
     needRestoreDefault=true;
-    sl_onProgNameChange(0);
+//    sl_onProgNameChange(0);
     megablastCheckBox->setChecked(false);
     sl_megablastChecked();
     sl_onMatchScoresChanged(0);
@@ -230,6 +230,19 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
     settings.programName=programName->currentText();
     if(programName->currentText() == "blastn"){//nucl
         programName->setToolTip(tr("Direct nucleotide alignment"));
+    }else if(programName->currentText() == "blastp"){//amino
+        programName->setToolTip(tr("Direct protein alignment"));
+    }else if(programName->currentText() == "blastx"){//nucl
+        programName->setToolTip(tr("Protein alignment, input nucleotide is translated input protein before the search"));
+    }else if(programName->currentText() == "tblastn"){//amino
+        programName->setToolTip(tr("Protein alignment, nucleotide database is translated input protein before the search"));
+    }else if(programName->currentText() == "tblastx"){//nucl
+        programName->setToolTip(tr("Protein alignment, both input query and database are translated before the search"));
+    }else{
+        assert(0);
+    }
+
+    if(programName->currentText() == "blastn"){
         megablastCheckBox->setEnabled(true);
         if(megablastCheckBox->isChecked()){
             wordSizeSpinBox->setValue(28);
@@ -246,60 +259,20 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
         matrixComboBox->hide();
         serviceLabel->hide();
         serviceComboBox->hide();
-    }else if(programName->currentText() == "blastp"){//amino
-        programName->setToolTip(tr("Direct protein alignment"));
-        megablastCheckBox->setEnabled(false);
-        wordSizeSpinBox->setValue(3);
-        wordSizeSpinBox->setMaximum(3);
-        wordSizeSpinBox->setMinimum(2);
-
-        matchScoreLabel->hide();
-        scoresComboBox->hide();
-        matrixLabel->show();
-        matrixComboBox->show();
-        serviceLabel->show();
-        serviceComboBox->show();
-    }else if(programName->currentText() == "blastx"){//nucl
-        programName->setToolTip(tr("Protein alignment, input nucleotide is translated input protein before the search"));
-        megablastCheckBox->setEnabled(false);
-        wordSizeSpinBox->setValue(3);
-        wordSizeSpinBox->setMaximum(3);
-        wordSizeSpinBox->setMinimum(2);
-
-        matchScoreLabel->hide();
-        scoresComboBox->hide();
-        matrixLabel->show();
-        matrixComboBox->show();
-        serviceLabel->show();
-        serviceComboBox->show();
-    }else if(programName->currentText() == "tblastn"){//amino
-        programName->setToolTip(tr("Protein alignment, nucleotide database is translated input protein before the search"));
-        megablastCheckBox->setEnabled(false);
-        wordSizeSpinBox->setValue(3);
-        wordSizeSpinBox->setMaximum(3);
-        wordSizeSpinBox->setMinimum(2);
-
-        matchScoreLabel->hide();
-        scoresComboBox->hide();
-        matrixLabel->show();
-        matrixComboBox->show();
-        serviceLabel->show();
-        serviceComboBox->show();
-    }else if(programName->currentText() == "tblastx"){//nucl
-        programName->setToolTip(tr("Protein alignment, both input query and database are translated before the search"));
-        megablastCheckBox->setEnabled(false);
-        wordSizeSpinBox->setValue(3);
-        wordSizeSpinBox->setMaximum(3);
-        wordSizeSpinBox->setMinimum(2);
-
-        matchScoreLabel->hide();
-        scoresComboBox->hide();
-        matrixLabel->show();
-        matrixComboBox->show();
-        serviceLabel->show();
-        serviceComboBox->show();
+        sl_onMatchScoresChanged(0);
     }else{
-        assert(0);
+        megablastCheckBox->setEnabled(false);
+        wordSizeSpinBox->setValue(3);
+        wordSizeSpinBox->setMaximum(3);
+        wordSizeSpinBox->setMinimum(2);
+
+        matchScoreLabel->hide();
+        scoresComboBox->hide();
+        matrixLabel->show();
+        matrixComboBox->show();
+        serviceLabel->show();
+        serviceComboBox->show();
+        sl_onMatrixChanged(0);
     }
 }
 }//namespace
