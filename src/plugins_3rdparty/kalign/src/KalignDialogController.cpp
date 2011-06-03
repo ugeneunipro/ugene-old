@@ -55,42 +55,23 @@ KalignDialogController::KalignDialogController(QWidget* w, const MAlignment& _ma
     translateCheckBox->setEnabled(ma.getAlphabet()->isNucleic());
 }
 
-void KalignDialogController::setupUiExt() {
-	gridLayout->removeWidget(gapOpenSpinBox);
-	delete gapOpenSpinBox;
-	gapOpenSpinBox = new QClearableDoubleSpinBox();
-	gapOpenSpinBox->setObjectName(QString::fromUtf8("gapOpenSpinBox"));
+void KalignDialogController::setupUiExt() {    
 	gapOpenSpinBox->setEnabled(false);
-	gapOpenSpinBox->setValue(53.9);
-    gapOpenSpinBox->setMinimumSize(80, 0);
-	gridLayout->addWidget(gapOpenSpinBox, 0, 1, 1, 1);
-
-	gridLayout->removeWidget(gapExtensionPenaltySpinBox);
-	delete gapExtensionPenaltySpinBox;
-	gapExtensionPenaltySpinBox = new QClearableDoubleSpinBox();
-	gapExtensionPenaltySpinBox->setObjectName(QString::fromUtf8("gapExtensionPenaltySpinBox"));
 	gapExtensionPenaltySpinBox->setEnabled(false);
-	gapExtensionPenaltySpinBox->setValue(8.52);
-    gapExtensionPenaltySpinBox->setMinimumSize(80, 0);
-	gridLayout->addWidget(gapExtensionPenaltySpinBox, 1, 1, 1, 1);
-
-	gridLayout->removeWidget(terminalGapSpinBox);
-	delete terminalGapSpinBox;
-	terminalGapSpinBox = new QClearableDoubleSpinBox();
-	terminalGapSpinBox->setObjectName(QString::fromUtf8("terminalGapSpinBox"));
 	terminalGapSpinBox->setEnabled(false);
-	terminalGapSpinBox->setValue(4.42);
-    terminalGapSpinBox->setMinimumSize(80, 0);
-	gridLayout->addWidget(terminalGapSpinBox, 2, 1, 1, 1);
-
-	gridLayout->removeWidget(bonusScoreSpinBox);
-	delete bonusScoreSpinBox;
-	bonusScoreSpinBox = new QClearableDoubleSpinBox();
-	bonusScoreSpinBox->setObjectName(QString::fromUtf8("bonusScoreSpinBox"));
 	bonusScoreSpinBox->setEnabled(false);
-	bonusScoreSpinBox->setValue(0.02);
-    bonusScoreSpinBox->setMinimumSize(80, 0);
-	gridLayout->addWidget(bonusScoreSpinBox, 3, 1, 1, 1);
+
+    if(ma.getAlphabet()->isAmino()) {
+        gapOpenSpinBox->setValue(53.9);
+        gapExtensionPenaltySpinBox->setValue(8.52);
+        terminalGapSpinBox->setValue(4.42);
+        bonusScoreSpinBox->setValue(0.02);
+    } else {
+        gapOpenSpinBox->setValue(217);
+        gapExtensionPenaltySpinBox->setValue(39.4);
+        terminalGapSpinBox->setValue(292.6);
+        bonusScoreSpinBox->setValue(28.3);
+    }
 
 	QObject::connect(gapOpenCheckBox, SIGNAL(clicked(bool)), gapOpenSpinBox, SLOT(setEnabled(bool)));
 	QObject::connect(gapExtensionPenaltyCheckBox, SIGNAL(clicked(bool)), gapExtensionPenaltySpinBox, SLOT(setEnabled(bool)));

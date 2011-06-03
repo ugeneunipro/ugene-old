@@ -43,6 +43,7 @@ public:
     ~KalignPlugin();
 public slots:
     void sl_runKalignTask();
+    void sl_documentLoaded(Task* task);
 
 private:
     KalignMSAEditorContext* ctx;
