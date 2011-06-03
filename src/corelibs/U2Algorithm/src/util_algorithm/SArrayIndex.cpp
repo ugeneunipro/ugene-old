@@ -87,18 +87,20 @@ void CreateSArrayIndexTask::cleanup() {
 SArrayIndex::SArrayIndex(const char *_seqStart, const quint32* _bitTable, int _bitCharLen)
 :  w(0), w4(0), wRest(0), skipGap(0), gapOffset(0),
 arrLen(0), sArray(NULL), bitMask(NULL), bitFilter(0),
-wCharsInMask(0), wAfterBits(0), seqStart(_seqStart), seqLen(0),
-l1Step(0), L1_SIZE(0), l1bitMask(NULL),
-bitTable(_bitTable), bitCharLen(_bitCharLen)
+wCharsInMask(0), wAfterBits(0),
+bitTable(_bitTable), bitCharLen(_bitCharLen),
+seqStart(_seqStart), seqLen(0),
+l1Step(0), L1_SIZE(0), l1bitMask(NULL)
 {
 
 }
 
+
 SArrayIndex::SArrayIndex(const char* seq, quint32 seqSize,  quint32 _len, TaskStateInfo& ti, 
                          char unknownChar, const quint32* _bitTable,  int _bitCharLen, int _gap, int _gapOffset)
-                         : w(_len), w4(_len/4), wRest(_len%4), skipGap(_gap),
-                         gapOffset(_gapOffset), l1Step(0), L1_SIZE(0), l1bitMask(NULL),
-                         bitTable(_bitTable), bitCharLen(_bitCharLen)
+                         : w(_len), w4(_len/4), wRest(_len%4), skipGap(_gap), gapOffset(_gapOffset),
+                         bitTable(_bitTable), bitCharLen(_bitCharLen),
+                         l1Step(0), L1_SIZE(0), l1bitMask(NULL)
 {
     quint64 t1 = GTimer::currentTimeMicros();
     seqLen = seqSize;

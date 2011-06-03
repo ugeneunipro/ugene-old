@@ -728,7 +728,7 @@ void WorkflowView::setupContextMenu(QMenu* m) {
     }
     QList<QGraphicsItem*> sel = scene->selectedItems();
     if (!sel.isEmpty()) {
-        if(!(sel.size() == 1 && sel.first()->type() == WorkflowBusItemType || sel.first()->type() == WorkflowPortItemType)) {
+        if(!((sel.size() == 1 && sel.first()->type() == WorkflowBusItemType) || sel.first()->type() == WorkflowPortItemType)) {
             m->addAction(copyAction);
             m->addAction(cutAction);
         }

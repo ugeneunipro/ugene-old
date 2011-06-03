@@ -117,7 +117,6 @@ QBitArray TextUtils::createBitMap(char c1) {
 
 QBitArray TextUtils::createBitMap(const QByteArray& chars, bool val) {
     QBitArray res = getEmptyBitMap();
-    const char* data = chars.constData();
     for (int i = 0, n = chars.size(); i < n ; i++) {
         char c = chars[i];
         res[quint8(c)] = val;

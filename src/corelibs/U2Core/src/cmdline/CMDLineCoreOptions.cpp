@@ -65,6 +65,7 @@ void CMDLineCoreOptions::initHelp() {
         tr( "<language_code>" ));
     
     cmdLineRegistry->registerCMDLineHelpProvider( helpSection );
+    cmdLineRegistry->registerCMDLineHelpProvider( loadSettingsFileSection );
     cmdLineRegistry->registerCMDLineHelpProvider( translSection );
 }
 

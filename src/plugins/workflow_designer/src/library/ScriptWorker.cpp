@@ -185,9 +185,10 @@ void ScriptWorker::bindPortVariables() {
             QString attrId = IntegralBusType::parseAttributeIdFromSlotDesc(slotDesc);
             QString portId = bus->getPortId();
             IntegralBusPort * busPort = qobject_cast<IntegralBusPort*>(actor->getPort(portId));
+            Q_UNUSED(busPort);
             assert(busPort != NULL);
             
-            Actor * bindedAttrOwner = busPort->getLinkedActorById(actorId);
+            //Actor * bindedAttrOwner = busPort->getLinkedActorById(actorId);
             attrId.prepend("in_");
             if( script->hasVarWithId(attrId)) {
                 script->setVarValueWithId(attrId, busData.value(slotDesc));

@@ -102,9 +102,9 @@ static void registerCoreServices() {
 }
 
 // we will run task that don't die
-static void setCongeneStayAlive() {
-    AppContext::getTaskScheduler()->registerTopLevelTask( new ForeverTask() );
-}
+//static void setCongeneStayAlive() {
+//    AppContext::getTaskScheduler()->registerTopLevelTask( new ForeverTask() );
+//}
 
 static bool openDocs() {
     bool ret = false;
@@ -182,7 +182,7 @@ class GApplication: public QCoreApplication { //Move to the core? same code in u
 public:
     GApplication(int & argc, char ** argv): QCoreApplication(argc, argv) {}
     virtual bool notify(QObject * receiver, QEvent * event ) {
-        bool res;
+        bool res = false;
 #if defined(USE_CRASHHANDLER) && defined(NDEBUG)
         try {
             res = QCoreApplication::notify(receiver, event);

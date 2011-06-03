@@ -121,6 +121,7 @@ qint64 U2AssemblyUtils::getCigarExtraLength(const QList<U2CigarToken>& cigar) {
             case U2CigarOp_N: 
                 res+=t.count; 
                 break;
+            default:;
         }
     }
     return res;

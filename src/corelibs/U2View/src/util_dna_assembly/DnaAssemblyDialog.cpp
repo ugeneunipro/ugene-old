@@ -230,11 +230,11 @@ const QString DnaAssemblyDialog::getResultFileName() {
     return resultFileNameEdit->text();
 }
 
-const bool DnaAssemblyDialog::isPrebuiltIndex() {
+bool DnaAssemblyDialog::isPrebuiltIndex() const {
     return prebuiltIndexCheckBox->isChecked();
 }
 
-const bool DnaAssemblyDialog::isSamOutput() {
+bool DnaAssemblyDialog::isSamOutput() const {
     return samBox->isChecked();
 }
 

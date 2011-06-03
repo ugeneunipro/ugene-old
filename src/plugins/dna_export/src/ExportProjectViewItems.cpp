@@ -318,7 +318,6 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
     }    
 
     GObject* obj = set.first();
-    MAlignmentObject* mobj = qobject_cast<MAlignmentObject*>(obj);
     MAlignment ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
 
     GObject* firstObject = set.first();

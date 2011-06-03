@@ -189,13 +189,13 @@ public:
     inline AssemblyReferenceArea * getReferenceArea() const {return referenceArea;}
     
 private:
+    AssemblyBrowser * browser;
     ZoomableAssemblyOverview * zoomableOverview;        
     AssemblyReferenceArea * referenceArea;
     AssemblyDensityGraph * densityGraph;
     AssemblyRuler * ruler;
     AssemblyReadsArea * readsArea;
     
-    AssemblyBrowser * browser;
 };
 
 

@@ -213,11 +213,11 @@ void BioStruct3DGLWidget::resizeGL(int width, int height)
     }
 
     if (anaglyph) {
-        if (anaglyphRenderTextureLeft != NULL)
+        if (anaglyphRenderTextureLeft != 0)
             glDeleteTextures(1, &anaglyphRenderTextureLeft);
-        if (anaglyphRenderTextureRight != NULL)
+        if (anaglyphRenderTextureRight != 0)
             glDeleteTextures(1, &anaglyphRenderTextureRight);
-        if (tempAnaglyphRenderTexture != NULL)
+        if (tempAnaglyphRenderTexture != 0)
             glDeleteTextures(1, &tempAnaglyphRenderTexture);
 
         anaglyphRenderTextureLeft = getEmptyTexture(width, height);
@@ -517,6 +517,7 @@ void BioStruct3DGLWidget::sl_onAnnotationSelectionChanged(AnnotationSelection*, 
     QVector<U2Region> empty;
 
     const BioStruct3D &biostruct = *contexts.first().biostruct;
+    Q_UNUSED(biostruct);
     BioStruct3DColorScheme *scheme = contexts.first().colorScheme.data();
 
     foreach (Annotation* annotation, added) {

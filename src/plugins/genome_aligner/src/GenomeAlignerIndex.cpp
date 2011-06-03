@@ -275,6 +275,7 @@ BinarySearchResult *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(const BMType *
 
 BinarySearchResult * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValues, int size, BMType bitFilter )
 {
+    Q_UNUSED(bitValues);Q_UNUSED(size);Q_UNUSED(bitFilter);
     BinarySearchResult* result = NULL;
 #ifdef GA_BUILD_WITH_CUDA 
     taskLog.details(QString("Binary search using CUDA on GPU of %1 Mb search-values in %2 Mb base values")
@@ -357,7 +358,7 @@ void GenomeAlignerIndex::alignShortRead(SearchQuery *qu, BMType bitValue, int st
     }
 
     SAType fisrtSymbol = 0;
-    SAType offset = 0;
+    //SAType offset = 0;
     const QByteArray &querySeq = qu->constSequence();
     char *refBuff = NULL;
 

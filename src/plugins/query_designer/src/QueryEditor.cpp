@@ -39,7 +39,7 @@ QueryEditor::QueryEditor(QWidget* parent/* =0 */) : QWidget(parent), current(NUL
     setupUi(this);
     caption->setMinimumHeight(nameEdit->sizeHint().height());
 
-    QueryViewController* controller = qobject_cast<QueryViewController*>(parent);
+    //QueryViewController* controller = qobject_cast<QueryViewController*>(parent);
     nameEdit->setValidator(new QRegExpValidator(QRegExp(QDDocument::ID_PATTERN), nameEdit));
     directionCombo->insertItem(0, tr("Forward"));
     directionCombo->insertItem(1, tr("Backward"));

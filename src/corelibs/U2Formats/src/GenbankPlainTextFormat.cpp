@@ -487,9 +487,9 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, TaskStateInfo& 
 
     //write every feature
     const char* spaceLine = TextUtils::SPACE_LINE.data();
-    const QByteArray& aminoQ = GBFeatureUtils::QUALIFIER_AMINO_STRAND;
-    const QByteArray& aminoQYes = GBFeatureUtils::QUALIFIER_AMINO_STRAND_YES;
-    const QByteArray& aminoQNo = GBFeatureUtils::QUALIFIER_AMINO_STRAND_NO;
+//    const QByteArray& aminoQ = GBFeatureUtils::QUALIFIER_AMINO_STRAND;
+//    const QByteArray& aminoQYes = GBFeatureUtils::QUALIFIER_AMINO_STRAND_YES;
+//    const QByteArray& aminoQNo = GBFeatureUtils::QUALIFIER_AMINO_STRAND_NO;
     const QByteArray& nameQ = GBFeatureUtils::QUALIFIER_NAME;
     const QByteArray& groupQ = GBFeatureUtils::QUALIFIER_GROUP;
     const QString& defaultKey = GBFeatureUtils::DEFAULT_KEY;

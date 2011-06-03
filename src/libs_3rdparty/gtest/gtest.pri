@@ -4,7 +4,7 @@ UGENE_RELATIVE_DESTDIR = ''
 
 TARGET = gtest
 TEMPLATE = lib
-CONFIG +=thread debug_and_release
+CONFIG +=thread debug_and_release warn_off
 INCLUDEPATH += src
 LIBS += -L../../_release
 

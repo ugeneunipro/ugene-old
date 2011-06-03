@@ -71,9 +71,9 @@ private:
 
 protected:
     QString id;
-    bool supportsIndexFiles;
     DnaAssemblyToRefTaskFactory* taskFactory;
     DnaAssemblyGUIExtensionsFactory* guiExtFactory;
+    bool supportsIndexFiles;
 };
 
 } // namespace

@@ -426,6 +426,9 @@ void TreeViewerUI::updateSettings(const TreeSettings &settings) {
             case TreeLayout_Unrooted:
                 sl_unrootedLayoutTriggered();
                 break;
+            case TreeLayout_Rectangular:
+                //here to please compiler
+                break;
         }
     }else{
         updateTreeSettings();

@@ -40,7 +40,7 @@ public:
     DnaAssemblyAlgorithmMainWidget(QWidget* parent) : QWidget(parent) {}
     virtual QMap<QString,QVariant> getDnaAssemblyCustomSettings() = 0;
     virtual bool isParametersOk(QString &error) = 0;
-    virtual bool buildIndexUrl(const GUrl& url, bool prebuiltIndex, QString &error) {return true;};
+    virtual bool buildIndexUrl(const GUrl&, bool, QString &) {return true;};
     virtual void prebuiltIndex(bool) {};
     virtual bool isIndexOk(QString &, GUrl) {return true;};
 };

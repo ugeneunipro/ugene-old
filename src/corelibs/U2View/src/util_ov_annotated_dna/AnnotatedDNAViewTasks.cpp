@@ -123,12 +123,12 @@ static QString deriveViewName(const QList<DNASequenceObject*>& seqObjects) {
     return viewName;
 }
 
-static bool objLessThan(const DNASequenceObject* o1 , const DNASequenceObject* o2) {
-    if (o1->getDocument() == o2->getDocument()) {
-        return o1->getGObjectName() < o2->getGObjectName();
-    }
-    return o1->getDocument()->getURLString() < o2->getDocument()->getURLString();
-}
+//static bool objLessThan(const DNASequenceObject* o1 , const DNASequenceObject* o2) {
+//    if (o1->getDocument() == o2->getDocument()) {
+//        return o1->getGObjectName() < o2->getGObjectName();
+//    }
+//    return o1->getDocument()->getURLString() < o2->getDocument()->getURLString();
+//}
 
 
 void OpenAnnotatedDNAViewTask::open() {
@@ -223,7 +223,6 @@ void OpenSavedAnnotatedDNAViewTask::open() {
     QList<DNASequenceObject*> sequenceObjects;
     foreach(const GObjectReference& ref, state.getSequenceObjects()) {
         Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
-        bool l = doc->isLoaded();
         if (doc == NULL) {
             stateIsIllegal = true;
             stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));

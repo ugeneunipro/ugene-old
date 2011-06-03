@@ -18,7 +18,7 @@ void ProjectViewTests::openFile(const QString &path) {
 }
 
 void ProjectViewTests::addObjectToView(const QString &objectName) {
-    QTreeView *projectViewTree = static_cast<QTreeView*>(findWidgetByName(projectViewName));
+    //QTreeView *projectViewTree = static_cast<QTreeView*>(findWidgetByName(projectViewName));
 
     QPoint pos = getItemPosition(objectName, projectViewName);
     moveTo(projectViewName, pos);
@@ -30,7 +30,7 @@ void ProjectViewTests::addObjectToView(const QString &objectName) {
 }
 
 void ProjectViewTests::openDocumentInView(const QString &objectName) {
-    QTreeView *projectViewTree = static_cast<QTreeView*>(findWidgetByName(projectViewName));
+    //QTreeView *projectViewTree = static_cast<QTreeView*>(findWidgetByName(projectViewName));
 
     QPoint pos = getItemPosition(objectName, projectViewName);
     moveTo(projectViewName, pos);

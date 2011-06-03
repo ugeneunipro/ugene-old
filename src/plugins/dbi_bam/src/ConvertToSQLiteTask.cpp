@@ -70,7 +70,8 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
 class BAMDbiIterator : public U2DbiIterator<U2AssemblyRead> {
 public:
     BAMDbiIterator(int referenceId, Reader* _reader, QList<Index::ReferenceIndex::Chunk> _chunks, qint64 _totalChunksLength, qint64& _readLength, TaskStateInfo& _ti)
-        : refId(referenceId), reader(_reader), chunks(_chunks), totalChunksLength(_totalChunksLength), readLength(_readLength), chunksLength(0), ti(_ti), bufferIndex(0), bufferCount(0), chunkIndex(0), offset(0, 0), readsCount(0), readTime(0)
+        : refId(referenceId), reader(_reader), chunks(_chunks), totalChunksLength(_totalChunksLength), readLength(_readLength), chunksLength(0), ti(_ti),
+        bufferCount(0), bufferIndex(0), chunkIndex(0), offset(0, 0), readsCount(0), readTime(0)
     {
         foreach(const Index::ReferenceIndex::Chunk& chunk, chunks) {
             chunksLength += chunk.getEnd().getCoffset() - chunk.getStart().getCoffset();
@@ -357,7 +358,6 @@ void ConvertToSQLiteTask::run() {
                 stateInfo.setDescription(BAMDbiPlugin::tr("Reading"));
                 int readsCount = 0;
                 int progressUpdateCounter = 0;
-                int progressUpdates = 0;
                 while(!reader->isEof() && readsCount < READS_CHUNK_SIZE) {
                     Reader::AlignmentReader aReader = reader->getAlignmentReader();
                     if(bamInfo.isReferenceSelected(aReader.getId())) {

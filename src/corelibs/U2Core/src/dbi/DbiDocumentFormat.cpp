@@ -110,7 +110,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
     return d;
 }
 
-void DbiDocumentFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter* io) {
+void DbiDocumentFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter*) {
     // 1. get db
     // 2. call sync
     QString url = d->getURLString();

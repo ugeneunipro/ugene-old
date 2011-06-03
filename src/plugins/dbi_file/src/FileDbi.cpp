@@ -37,6 +37,7 @@ FileDbi::FileDbi(FileDbiFactory * f) : U2AbstractDbi(f->getId()), fid(f->getDocu
 
 void FileDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U2OpStatus& os) {
     bool create = props.value(U2_DBI_OPTION_CREATE, "0").toInt() > 0;
+    Q_UNUSED(create);
     assert(!create);
     
     QString url = props.value(U2_DBI_OPTION_URL);

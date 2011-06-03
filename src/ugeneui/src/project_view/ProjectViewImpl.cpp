@@ -143,6 +143,7 @@ void DocumentUpdater::sl_update() {
                     doc->setLastUpdateTime();
                 }
                 break;
+                default:;
         }
     }
 

@@ -409,6 +409,7 @@ void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64
     if(!zoomable) return;
     U2OpStatusImpl os;
     qint64 modelLen = model->getModelLength(os);
+    Q_UNUSED(modelLen);
     assert(newLen <= modelLen);
     if(newLen != visibleRange.length || newStartPos != visibleRange.startPos) {
         qint64 minLen = minimalOverviewedLen();

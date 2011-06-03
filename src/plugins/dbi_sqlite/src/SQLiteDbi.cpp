@@ -107,7 +107,7 @@ void SQLiteDbi::setProperty(const QString& name, const QString& value, U2OpStatu
     q2.execute();
 }
 
-static int isEmptyCallback(void *o, int argc, char **argv, char **column) {
+static int isEmptyCallback(void *o, int argc, char **/*argv*/, char **/*column*/) {
     int* res = (int*)o;
     *res = argc;
     return 0;
@@ -304,7 +304,7 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     return QVariantMap();
 }
     
-bool SQLiteDbi::flush(U2OpStatus& os) {
+bool SQLiteDbi::flush(U2OpStatus& ) {
     //todo:
     return true;
 }
@@ -313,7 +313,7 @@ QString SQLiteDbi::getDbiId() const {
     return url;
 }
 
-QHash<QString, QString> SQLiteDbi::getDbiMetaInfo(U2OpStatus& os) {
+QHash<QString, QString> SQLiteDbi::getDbiMetaInfo(U2OpStatus& ) {
     QHash<QString, QString> res;
     res["url"] = url;
     return res;
@@ -342,7 +342,7 @@ U2DbiFactoryId SQLiteDbiFactory::getId()const {
     return ID;
 }
 
-bool SQLiteDbiFactory::isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const {
+bool SQLiteDbiFactory::isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& ) const {
     QString surl  = properties.value(U2_DBI_OPTION_URL);
     GUrl url(surl);
     if (!url.isLocalFile()) {

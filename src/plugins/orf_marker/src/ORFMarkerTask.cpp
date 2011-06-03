@@ -89,7 +89,7 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
     AnnotationTableObject* aObj = aa->getAnnotationObject();
     DNASequenceObject* dnaObj = aa->getSeqObject();
     DNAAlphabet* al = dnaObj->getAlphabet();
-
+    Q_UNUSED(al);
     assert(al != NULL);
 
     ORFAlgorithmSettings cfg;

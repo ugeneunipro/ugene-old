@@ -4,7 +4,7 @@ UGENE_RELATIVE_DESTDIR = ''
 
 TARGET = ugenedb
 TEMPLATE = lib
-CONFIG +=thread debug_and_release
+CONFIG +=thread debug_and_release warn_off
 INCLUDEPATH += src
 DEFINES+=SQLITE_ENABLE_COLUMN_METADATA
 DEFINES+=SQLITE_ENABLE_RTREE

@@ -172,7 +172,7 @@ public:
     GenomeAlignerDbiWriter(QString dbiFilePath, QString refName);
     inline void write(SearchQuery *seq, SAType offset);
     void close();
-    void setReferenceName(const QString &refName) {};
+    void setReferenceName(const QString &) {};
 private:
     U2OpStatusImpl status;
     QSharedPointer<DbiHandle> dbiHandle;

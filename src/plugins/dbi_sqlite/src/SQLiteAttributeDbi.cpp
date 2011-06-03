@@ -165,7 +165,7 @@ void SQLiteAttributeDbi::readAttribute(SQLiteQuery& q, U2Attribute& attr) {
 
 
 /** Sorts all objects in database according to U2DbiSortConfig provided  */
-QList<U2DataId> SQLiteAttributeDbi::sort(const U2DbiSortConfig& sc, qint64 offset, qint64 count, U2OpStatus& os) {
+QList<U2DataId> SQLiteAttributeDbi::sort(const U2DbiSortConfig& , qint64 , qint64 , U2OpStatus& os) {
     QList<U2DataId> res;
     os.setError("not implemented");
     return res;

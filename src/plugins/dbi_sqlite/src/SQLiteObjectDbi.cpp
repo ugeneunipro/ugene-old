@@ -205,7 +205,7 @@ qint64 SQLiteObjectDbi::countObjects(const QString& folder, U2OpStatus& os) {
     return q.selectInt64();
 }
 
-QList<U2DataId> SQLiteObjectDbi::getObjects(const QString& folder, qint64 offset, qint64 count, U2OpStatus& os) {
+QList<U2DataId> SQLiteObjectDbi::getObjects(const QString& folder, qint64 , qint64 , U2OpStatus& os) {
     SQLiteQuery q("SELECT o.id, o.type FROM Object AS o, FolderContent AS fc, Folder AS f WHERE f.path = ?1 AND fc.folder = f.id AND fc.object=o.id", db, os);
     q.bindString(1, folder);
     return q.selectDataIdsExt();
@@ -332,7 +332,7 @@ void SQLiteObjectDbi::removeParent(const U2DataId& parentId, const U2DataId& chi
     SQLiteQuery q("DELETE FROM Parent WHERE parent = ?1 AND child = ?2", db, os);
     q.bindDataId(1, parentId);
     q.bindDataId(2, childId);
-    qint64 res = q.update(1);
+    /*qint64 res = */q.update(1);
     if (os.hasError()) {
         return;
     }

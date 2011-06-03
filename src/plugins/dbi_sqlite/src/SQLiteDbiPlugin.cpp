@@ -41,6 +41,9 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
+//#define TEST_SQLITE_DBI
+
+#ifdef TEST_SQLITE_DBI
 static QList<U2AssemblyRead> generateReads(int nReads, const U2Region& elenRange, int refSeqLen) {
     static const char* acgt = "ACGT";
     QList<U2AssemblyRead> res;
@@ -62,8 +65,7 @@ static QList<U2AssemblyRead> generateReads(int nReads, const U2Region& elenRange
     }
     return res;
 }
-
-//#define TEST_SQLITE_DBI
+#endif
 
 SQLiteDbiPlugin::SQLiteDbiPlugin() : Plugin(tr("SQLite format support"), tr("Adds support for SQLite format to UGENE")) {
     AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());

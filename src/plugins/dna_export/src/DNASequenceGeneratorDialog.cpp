@@ -260,7 +260,7 @@ void BaseContentDialog::sl_save() {
     percentMap['T'] = percentT / 100.0;
 
     Settings *s = AppContext::getSettings();
-    bool gc = s->getValue("dna_export/gc_skew",false).toBool();
+    //bool gc = s->getValue("dna_export/gc_skew",false).toBool();
     s->setValue(ROOT_SETTING + GCSKEW_SETTING, gcSkewRadioButton->isChecked());
 
     accept();

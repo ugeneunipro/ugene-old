@@ -361,7 +361,7 @@ void GSequenceLineView::focusOutEvent(QFocusEvent* fe) {
 bool GSequenceLineView::eventFilter(QObject *object, QEvent *event) {
     if (object == frameView) {
         // show-hide frame on frameView show/hide event
-        if (isVisible() && event->type() == QEvent::Show || event->type() == QEvent::Hide) {
+        if ((isVisible() && event->type() == QEvent::Show) || event->type() == QEvent::Hide) {
             if (visibleRange.contains(frameView->getVisibleRange())) {
                 addUpdateFlags(GSLV_UF_FrameChanged);
                 update();

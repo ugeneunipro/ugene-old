@@ -25,12 +25,12 @@
 
 #include <QtGui/QWidget>
 #include <QtCore/QSharedPointer>
+#include "AssemblyModel.h"
 
 namespace U2 {
 
 class AssemblyBrowserUi;
 class AssemblyBrowser;
-class AssemblyModel;
 
 /**
  * Ruler widget provides auto-adjustable scale, labeled notches and a 

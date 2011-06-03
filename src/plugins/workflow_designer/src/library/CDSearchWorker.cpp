@@ -188,7 +188,7 @@ Task* CDSearchWorker::tick() {
     return t;
 }
 
-void CDSearchWorker::sl_taskFinished(Task* t) {
+void CDSearchWorker::sl_taskFinished(Task*) {
     if(output) {
         QList<SharedAnnotationData> res = cds->getCDSResults();
         QString annName = actor->getParameter(ANNOTATION_ATTR)->getAttributeValue<QString>();

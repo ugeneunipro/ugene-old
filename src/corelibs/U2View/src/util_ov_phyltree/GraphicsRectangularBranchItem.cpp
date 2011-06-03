@@ -88,7 +88,7 @@ void GraphicsRectangularBranchItem::collapse() {
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(const QString& name, GraphicsRectangularBranchItem* pitem)
-: GraphicsBranchItem(name), direction(GraphicsRectangularBranchItem::up), cur_height_coef(1) {
+: GraphicsBranchItem(name), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
     setParentItem(pitem);
     setPos(0, 0);
     height = 0;
@@ -96,24 +96,24 @@ GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(const QString& name
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name)
-: GraphicsBranchItem(false), direction(GraphicsRectangularBranchItem::up), cur_height_coef(1) {
+: GraphicsBranchItem(false), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
     new GraphicsRectangularBranchItem(name, this);
     setPos(x, y);
     phyBranch = NULL;
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name, qreal d)
-: GraphicsBranchItem(d, false), direction(GraphicsRectangularBranchItem::up), cur_height_coef(1) {
+: GraphicsBranchItem(d, false),  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
     new GraphicsRectangularBranchItem(name, this);
     setPos(x, y);
     phyBranch = NULL;
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal d)
-: GraphicsBranchItem(d), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL), cur_height_coef(1) {}
+: GraphicsBranchItem(d), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL) {}
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem()
-: direction(GraphicsRectangularBranchItem::up), phyBranch(NULL), cur_height_coef(1) {}
+:  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL) {}
 
 void GraphicsRectangularBranchItem::setParentItem(QGraphicsItem *item) {
     prepareGeometryChange();

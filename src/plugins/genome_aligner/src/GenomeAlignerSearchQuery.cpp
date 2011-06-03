@@ -43,7 +43,7 @@ SearchQuery::SearchQuery(const DNASequence *shortRead, SearchQuery *revCompl) {
     //assRead = NULL;
 }
 
-SearchQuery::SearchQuery(const U2AssemblyRead &shortRead, SearchQuery *revCompl) {
+SearchQuery::SearchQuery(const U2AssemblyRead &, SearchQuery *revCompl) {
     dna = false;
     wroteResult = false;
     this->revCompl = revCompl;

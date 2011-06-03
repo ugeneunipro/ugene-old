@@ -188,6 +188,6 @@ QString SyncHTTP::syncPost(const QString& path, const QByteArray& data)
 }
 
 
-void SyncHTTP::finished(int idx, bool err) {
+void SyncHTTP::finished(int, bool) {
     loop.exit();
 }

@@ -397,7 +397,6 @@ void WorkflowEditor::editPort(Port* p) {
         BusPortEditor* ed = new BusPortEditor(qobject_cast<IntegralBusPort*>(p));
         ed->setParent(p);
         p->setEditor(ed);
-        QWidget *w = ed->getWidget();
         paramHeight = ed->getOptimalHeight();
 
         edit(p);

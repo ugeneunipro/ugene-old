@@ -3,7 +3,7 @@
 PLUGIN_ID=kalign
 PLUGIN_NAME=KAlign
 PLUGIN_VENDOR=Unipro
-
+CONFIG += warn_off
 
 LIBS += -lqscore
 

@@ -76,7 +76,7 @@ private:
 class EnzymesSelectorDialogHandler : public SelectorDialogHandler {
 public:
     EnzymesSelectorDialogHandler() {}
-    virtual QDialog* createSelectorDialog(const QString& init = QString()) { return new EnzymesSelectorDialog(this); }
+    virtual QDialog* createSelectorDialog(const QString&) { return new EnzymesSelectorDialog(this); }
     virtual QString getSelectedString(QDialog* dlg);
 };
 

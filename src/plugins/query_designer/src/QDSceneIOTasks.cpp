@@ -320,6 +320,7 @@ QDDocument* QDSceneSerializer::scene2doc(QueryScene* scene) {
             QDElementStatement* unitElement = new QDElementStatement(name, Element);
             unit2stmt[su] = unitElement;
             bool res = doc->addElement(unitElement);
+            Q_UNUSED(res);
             assert(res);
             QDElement const* uv = scene->getUnitView(su);
             assert(uv);
@@ -360,6 +361,7 @@ QDElementStatement* QDSchemeSerializer::saveActor( QDActor* actor, QDDocument* d
     QString elementName = actor->getParameters()->getLabel();
     QDElementStatement* actorElement = new QDElementStatement(elementName, Group);
     bool res = doc->addElement(actorElement);
+    Q_UNUSED(res);
     assert(res);
     actorElement->setAttribute(QDElementStatement::ALGO_ATTR_NAME, actor->getActorType());
     QList< QPair<QString,QString> > attrsMap = actor->saveConfiguration();

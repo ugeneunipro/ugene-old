@@ -225,7 +225,7 @@ void QDSWActor::sl_onAlgorithmTaskFinished(Task*) {
         res << iter.value()->getAnotations();
     }
 
-    QDStrandOption schemaStrand = scheme->getStrand();
+    //QDStrandOption schemaStrand = scheme->getStrand();
 
     foreach(const SharedAnnotationData& ad, res) {
         QDResultUnit ru(new QDResultUnitData);

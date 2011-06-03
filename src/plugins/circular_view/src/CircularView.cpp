@@ -408,8 +408,8 @@ CircularViewRenderArea::CircularViewRenderArea(CircularView* d)
 : GSequenceLineViewAnnotatedRenderArea(d, true), outerEllipseSize(OUTER_ELLIPSE_SIZE),
 ellipseDelta(ELLIPSE_DELTA), innerEllipseSize(INNER_ELLIPSE_SIZE), rulerEllipseSize(RULER_ELLIPSE_SIZE),
 middleEllipseSize(MIDDLE_ELLIPSE_SIZE), arrowLength(ARROW_LENGTH),
-arrowHeightDelta(ARROW_HEIGHT_DELTA), maxDisplayingLabels(MAX_DISPLAYING_LABELS),
-circularView(d), rotationDegree(0), mouseAngle(0), fitsInView(true), oldYlevel(0) {
+arrowHeightDelta(ARROW_HEIGHT_DELTA), maxDisplayingLabels(MAX_DISPLAYING_LABELS), fitsInView(true),
+circularView(d), rotationDegree(0), mouseAngle(0), oldYlevel(0) {
     setMouseTracking(true);
 
     ADVSequenceObjectContext* ctx = view->getSequenceContext();

@@ -63,8 +63,8 @@ public:
     RemoteMachineSettings* getSettings() { return settings; }
    
 private:
-    RemoteMachine* machine;
     RemoteMachineSettings* settings;
+    RemoteMachine* machine;
     void addTaskToScheduler(qint64 taskid);
 
 }; // UpdateActiveTasks

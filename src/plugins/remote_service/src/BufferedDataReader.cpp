@@ -160,7 +160,7 @@ qint64 BufferedDataReader::readData( char *data, qint64 maxlen )
     return len;
 }
 
-qint64 BufferedDataReader::writeData( const char* data, qint64 maxlen )
+qint64 BufferedDataReader::writeData( const char* , qint64 )
 {
     assert(0);
     return -1;

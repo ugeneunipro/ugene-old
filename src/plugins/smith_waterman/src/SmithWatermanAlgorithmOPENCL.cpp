@@ -36,14 +36,14 @@
 
 namespace U2 {   
 
-SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  : clEvent(NULL), clKernel(NULL), clProgram(NULL), 
-clCommandQueue(NULL), clContext(NULL), queryProfBuf(NULL),
-seqLibProfBuf(NULL), hDataMaxBuf(NULL), hDataUpBufTmp(NULL), 
-fDataUpBuf(NULL), hDataRecBufTmp(NULL), directionsUpBufTmp(NULL), 
-directionsRecBufTmp(NULL), directionsMaxBuf(NULL),
-
-MAX_SHARED_VECTOR_LENGTH(32),
-MAX_BLOCKS_NUMBER(AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getMaxComputeUnits())
+SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  :
+        MAX_BLOCKS_NUMBER(AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getMaxComputeUnits()),
+        MAX_SHARED_VECTOR_LENGTH(32),
+        clEvent(NULL), clKernel(NULL), clProgram(NULL),
+        clCommandQueue(NULL), clContext(NULL), queryProfBuf(NULL),
+        seqLibProfBuf(NULL), hDataMaxBuf(NULL), hDataUpBufTmp(NULL),
+        hDataRecBufTmp(NULL), fDataUpBuf(NULL), directionsUpBufTmp(NULL),
+        directionsRecBufTmp(NULL), directionsMaxBuf(NULL)
 {}
 
 quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq ) {
@@ -205,8 +205,6 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     directionsMaxBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
     if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
-
-    cl_int status = 0;
 
     algoLog.trace(QString("partsNumber: %1 queryDevider: %2").arg(partsNumber).arg(queryDevider));
     algoLog.trace(QString("seqLen: %1 partSeqSize: %2 overlapSize: %3").arg(seqLibLength).arg(partSeqSize).arg(overlapLength));

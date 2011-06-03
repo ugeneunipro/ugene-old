@@ -146,7 +146,7 @@ void AssemblyRuler::drawRuler(QPainter & p) {
     
     int lettersPerZ = browser->calcAsmCoordX(50);
     int interval = pow((double)10, numOfDigits(lettersPerZ)-1); //interval between notches
-    int pixInterval = browser->calcPixelCoord(interval);
+    //int pixInterval = browser->calcPixelCoord(interval);
     
     int globalOffset = browser->getXOffsetInAssembly();
     qint64 firstLetterWithNotch = globalOffset - 1;

@@ -505,8 +505,8 @@ void GUITest::sendEvent(QObject *obj, QEvent *e) {
     e->setAccepted(true);
         QCoreApplication::postEvent(obj, e);
         QCoreApplication::processEvents();
-        int count = 0;
-        /*while(e->isAccepted() && count < WAIT_TIMEOUT) {
+        /*int count = 0;
+        while(e->isAccepted() && count < WAIT_TIMEOUT) {
             sleep(1);
             count++;
         }

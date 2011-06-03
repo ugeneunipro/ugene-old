@@ -363,7 +363,7 @@ void ReadShortReadsSubTask::run() {
     taskLog.details(QString("Memory size is %1").arg(m));
     bool alignReversed = settings.getCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, true).toBool();
     int qualityThreshold = settings.getCustomValue(GenomeAlignerTask::OPTION_QUAL_THRESHOLD, 0).toInt();
-    int s = sizeof(SearchQuery);
+    //int s = sizeof(SearchQuery);
     int n = 0;
     int CMAX = alignContext.nMismatches;
     int W = 0;

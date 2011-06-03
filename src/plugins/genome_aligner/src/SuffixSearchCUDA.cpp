@@ -82,13 +82,14 @@ quint64* U2::SuffixSearchCUDA::runSearch( const quint64* numbers, const int numb
 
 
 GenomeAlignerCUDAHelper::GenomeAlignerCUDAHelper( )
-: suffixSize(0), readsNumber(0), seqSize(0)
+: readsNumber(0), suffixSize(0), seqSize(0)
 {
     bufSizeMB = 1;
 }
 
 
 void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, TaskStateInfo& stateInfo) {
+    Q_UNUSED(queries);
 
 #ifdef GA_BUILD_WITH_CUDA
 
@@ -103,7 +104,7 @@ void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, Tas
     
     foreach (SearchQuery* q, queries) {
         int len = q->length();
-        sizes.append(len);
+        sizes.append(len);queries
         offsets.append(totalReadsSize);
         totalReadsSize += len;
     }
@@ -115,7 +116,7 @@ void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, Tas
     SAFE_CALL( cudaMalloc((void **)&readsDev, totalReadsSize * sizeof(char)) );
     SAFE_CALL( cudaMalloc((void **)&readSizesDev,  readsNumber * sizeof(quint32)) );
     SAFE_CALL( cudaMalloc((void **)&readOffsetsDev, readsNumber * sizeof(quint32)) );
-    
+    queries
     taskLog.details(QString("Copying %1 bytes of short reads data to device").arg(totalReadsSize*sizeof(char)));
     
     // TODO: change the way reads are loaded into memory: use big data chunks when loading!
@@ -174,7 +175,8 @@ void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, Tas
 }
 
 void GenomeAlignerCUDAHelper::alignReads(IndexPart& indexPart, AlignContext* ctx, TaskStateInfo& stateInfo) {
- 
+    Q_UNUSED(indexPart);Q_UNUSED(ctx);
+
 #ifdef  GA_BUILD_WITH_CUDA
 
     suffixSize = indexPart.getLoadedPartSize();

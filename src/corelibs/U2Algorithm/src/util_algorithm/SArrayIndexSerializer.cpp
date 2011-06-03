@@ -181,10 +181,6 @@ void SArrayIndexSerializer::readArray(QFile &file, char *buff, int *len, int *po
                 ti.setError(QString("Empty array's value at line %1").arg(*lineIdx-1));
                 return;
             }
-            if (number < 0) {
-                ti.setError(QString("Negative array's value at line %1").arg(*lineIdx-1));
-                return;
-            }
             array[i] = number;
         }
 }

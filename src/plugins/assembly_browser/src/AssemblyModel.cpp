@@ -51,7 +51,7 @@ namespace U2 {
 //==============================================================================
 
 AssemblyModel::AssemblyModel(const DbiHandle & dbiHandle_) : 
-cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), dbiHandle(dbiHandle_), assemblyDbi(0), 
+cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), assemblyDbi(0), dbiHandle(dbiHandle_),
 refSeqDbiHandle(0), loadingReference(false), refDoc(0), md5Retrieved(false), cachedReadsNumber(NO_VAL), speciesRetrieved(false),
 uriRetrieved(false){
     Project * prj = AppContext::getProject();
@@ -132,7 +132,7 @@ QByteArray AssemblyModel::getReferenceMd5(U2OpStatus& os) {
 qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
     if(NO_VAL == cachedModelHeight) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        U2OpStatusImpl os;
+        //U2OpStatusImpl os;
         static const QByteArray MAX_PROW_ATTRIBUTE_NAME("max_prow_attribute");
         if(attributeDbi != NULL) {
             cachedModelHeight = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, MAX_PROW_ATTRIBUTE_NAME, NO_VAL, os);
@@ -333,7 +333,7 @@ void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref)
 qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
     if(cachedReadsNumber == NO_VAL) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        U2OpStatusImpl os;
+        //U2OpStatusImpl os;
         static const QByteArray READS_COUNT_ATTRIBUTE_NAME("count_reads_attribute");
         if(attributeDbi != NULL) {
             cachedReadsNumber = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, READS_COUNT_ATTRIBUTE_NAME, NO_VAL, os);

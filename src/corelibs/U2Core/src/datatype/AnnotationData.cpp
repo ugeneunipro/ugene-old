@@ -50,13 +50,13 @@ QDataStream& operator<<(QDataStream& dataStream, const U2Qualifier& q) {
     return dataStream << q.name << q.value;
 }
 
-QDataStream& operator>>(QDataStream& dataStream, AnnotationData& data) {
+QDataStream& operator>>(QDataStream& dataStream, AnnotationData& ) {
     assert(0);
     return dataStream; 
 //    return dataStream >> data.name >> data.location >> data.qualifiers;
 }
 
-QDataStream& operator<<(QDataStream& dataStream, const AnnotationData& data) {
+QDataStream& operator<<(QDataStream& dataStream, const AnnotationData& ) {
     assert(0);
     return dataStream; 
 //    return dataStream << data.name << data.location << data.qualifiers;

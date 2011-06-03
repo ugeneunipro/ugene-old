@@ -178,7 +178,7 @@ void EditFragmentDialog::sl_updatePreview()
     updatePreview();
 }
 
-void EditFragmentDialog::sl_customOverhangSet( const QString& text )
+void EditFragmentDialog::sl_customOverhangSet( const QString& )
 {
     updatePreview();
 }

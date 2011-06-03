@@ -364,8 +364,8 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
 
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
     const QByteArray& aminoQ = GBFeatureUtils::QUALIFIER_AMINO_STRAND;
-    const QByteArray& aminoQYes = GBFeatureUtils::QUALIFIER_AMINO_STRAND_YES;
-    const QByteArray& aminoQNo = GBFeatureUtils::QUALIFIER_AMINO_STRAND_NO;
+    //const QByteArray& aminoQYes = GBFeatureUtils::QUALIFIER_AMINO_STRAND_YES;
+    //const QByteArray& aminoQNo = GBFeatureUtils::QUALIFIER_AMINO_STRAND_NO;
     const QByteArray& nameQ = GBFeatureUtils::QUALIFIER_NAME;
     
     //here we have valid key and location;

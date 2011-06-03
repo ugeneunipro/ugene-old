@@ -44,8 +44,8 @@ namespace U2 {
 
 DigestSequenceTask::DigestSequenceTask(  const DNASequenceObject* so, AnnotationTableObject* source, 
                                        AnnotationTableObject* dest, const QList<SEnzymeData>& cutSites )
-                                       :   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), enzymeData(cutSites),
-                                       searchForRestrictionSites(false), sourceObj(source), destObj(dest), dnaObj(so)
+                                       :   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
+                                       searchForRestrictionSites(false), sourceObj(source), destObj(dest), dnaObj(so), enzymeData(cutSites)
 {
     GCOUNTER(cvar,tvar,"DigestSequenceIntoFragments");
 
@@ -58,8 +58,8 @@ DigestSequenceTask::DigestSequenceTask(  const DNASequenceObject* so, Annotation
 
 DigestSequenceTask::DigestSequenceTask( const DNASequenceObject* so, AnnotationTableObject* aobj, 
                                        const QList<SEnzymeData>& cutSites )
-:   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), enzymeData(cutSites),
-    searchForRestrictionSites(true), sourceObj(aobj), destObj(aobj), dnaObj(so)
+:   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
+    searchForRestrictionSites(true), sourceObj(aobj), destObj(aobj), dnaObj(so), enzymeData(cutSites)
 {
     GCOUNTER(cvar,tvar,"DigestSequenceIntoFragments");
     

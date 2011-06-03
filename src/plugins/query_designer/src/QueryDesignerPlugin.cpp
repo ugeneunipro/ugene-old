@@ -169,7 +169,7 @@ Task* QueryDesignerService::createServiceDisablingTask() {
     return new CloseDesignerTask(this);
 }
 
-void QueryDesignerService::serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged) {
+void QueryDesignerService::serviceStateChangedCallback(ServiceState , bool enabledStateChanged) {
     if (!enabledStateChanged) {
         return;
     }

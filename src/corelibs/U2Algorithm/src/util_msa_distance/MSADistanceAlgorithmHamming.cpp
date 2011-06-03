@@ -41,7 +41,7 @@ QString MSADistanceAlgorithmFactoryHamming::getName() const {
 }
 
 
-MSADistanceAlgorithm* MSADistanceAlgorithmFactoryHamming::createAlgorithm(const MAlignment& ma, QObject* p) {
+MSADistanceAlgorithm* MSADistanceAlgorithmFactoryHamming::createAlgorithm(const MAlignment& ma, QObject* ) {
     return new MSADistanceAlgorithmHamming(this, ma);
 }
 

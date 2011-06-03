@@ -37,7 +37,7 @@ namespace U2 {
 
 static const QString GROUP_NAME = "Query results";
 
-void GTest_QDSchedulerTest::init(XMLTestFormat *tf, const QDomElement& el) {
+void GTest_QDSchedulerTest::init(XMLTestFormat *, const QDomElement& el) {
     sched = NULL;
     expectedResult = NULL;
     seqObj = NULL;

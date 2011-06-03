@@ -46,7 +46,7 @@ private:
     const NumberType* numbers;
     const int numbersSize;
     const NumberType* findNumbers;
-    const int findNumbersSize;
+    const size_t findNumbersSize;
     const NumberType filter;
 
     cl_event clEvent1;

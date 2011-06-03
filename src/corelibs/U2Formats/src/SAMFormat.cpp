@@ -149,6 +149,7 @@ static void prepareRead(const QByteArray& core, const QByteArray& quality, QByte
             switch(token.op) {
                 case U2CigarOp_M: cigar.append("M"); break;
                 case U2CigarOp_N: cigar.append("N"); break;
+                default:;
             }
         }
     }
@@ -395,7 +396,7 @@ void SAMFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io )
         QByteArray rname(ma.getName().replace(QRegExp("\\s|\\t"), "_").toAscii());
         foreach(MAlignmentRow row, ma.getRows()) {
             block.clear();
-            const QByteArray &core = row.getCore();
+            //const QByteArray &core = row.getCore();
             QByteArray qname = QString(row.getName()).replace(QRegExp("\\s|\\t"), "_").toAscii();
             QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
             QByteArray pos = QByteArray::number(row.getCoreStart()+1);

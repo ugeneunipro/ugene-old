@@ -26,7 +26,8 @@ namespace U2 {
 RemoteMachine::~RemoteMachine() {
 }
 
-RemoteMachineSettings::RemoteMachineSettings( ProtocolInfo * proto, RemoteMachineType type ) : machineType(type), credentials(NULL) {
+RemoteMachineSettings::RemoteMachineSettings( ProtocolInfo * proto, RemoteMachineType type ) :
+        credentials(NULL), machineType(type) {
     assert( NULL != proto ); 
     protoId = proto->getId();
 }

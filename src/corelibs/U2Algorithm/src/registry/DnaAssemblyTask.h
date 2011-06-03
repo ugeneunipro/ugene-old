@@ -48,8 +48,8 @@ public:
     GUrl resultFileName;
     QString indexFileName;
     QString algName;
-    bool loadResultDocument;
     bool prebuiltIndex;
+    bool loadResultDocument;
     bool samOutput;
     
 private:

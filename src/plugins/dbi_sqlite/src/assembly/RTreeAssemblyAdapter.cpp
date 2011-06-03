@@ -38,7 +38,7 @@ namespace U2 {
 
 RTreeAssemblyAdapter::RTreeAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
                                             const AssemblyCompressor* compressor,
-                                            DbRef* db, U2OpStatus& os)
+                                            DbRef* db, U2OpStatus& )
 : AssemblyAdapter(assemblyId, compressor, db)
 {
     dbi = _dbi;
@@ -187,7 +187,6 @@ void RTreeAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2Assembl
 }
 
 void RTreeAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2OpStatus& os) {
-    SQLiteObjectDbi* objDbi = dbi->getSQLiteObjectDbi();
     foreach(const U2DataId& readId, readIds) {
         SQLiteUtils::remove(readsTable, "id", readId, 1, db, os);
         SQLiteUtils::remove(indexTable, "id", readId, 1, db, os);

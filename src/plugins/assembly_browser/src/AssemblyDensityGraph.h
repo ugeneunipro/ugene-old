@@ -24,12 +24,12 @@
 
 #include <QtGui/QWidget>
 #include <QtCore/QSharedPointer>
+#include "AssemblyModel.h"
 
 namespace U2 {
 
 class AssemblyBrowserUi;
 class AssemblyBrowser;
-class AssemblyModel;
 
 class AssemblyDensityGraph: public QWidget {
     Q_OBJECT

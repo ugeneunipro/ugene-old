@@ -11,13 +11,13 @@
 
 namespace U2 {
 
-GUITestService::GUITestService(QObject *parent): Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")) {
+GUITestService::GUITestService(QObject *): Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")) {
     testLauncher = NULL;
     connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_registerSevice()));
     GUITestBase *tb = AppContext::getGUITestBase();
-    TestProjectView *test1 = new TestProjectView("E:/Files/_1.003.fa", "E:/Files/_1.002.fa", "3INS chain 3 sequence", "Add object to view test");
-    TestTaskView *test2 = new TestTaskView("E:/Files/ecoli.gbk", "Cancel task test");
-    ComplexTest *test3 = new ComplexTest("E:/Files/_1.002.fa", "Lock-unlock test");
+//    TestProjectView *test1 = new TestProjectView("E:/Files/_1.003.fa", "E:/Files/_1.002.fa", "3INS chain 3 sequence", "Add object to view test");
+//    TestTaskView *test2 = new TestTaskView("E:/Files/ecoli.gbk", "Cancel task test");
+//    ComplexTest *test3 = new ComplexTest("E:/Files/_1.002.fa", "Lock-unlock test");
     Test1AboutDialog* test1AboutDialog=new Test1AboutDialog("AboutDialog_test1");
     Test2AboutDialog* test2AboutDialog=new Test2AboutDialog("AboutDialog_test2");
     Test3AboutDialog* test3AboutDialog=new Test3AboutDialog("AboutDialog_test3");
@@ -50,7 +50,7 @@ void GUITestService::sl_registerSevice() {
 }
 
 
-void GUITestService::serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged) {
+void GUITestService::serviceStateChangedCallback(ServiceState , bool enabledStateChanged) {
     if (!enabledStateChanged) {
         return;
     }
@@ -90,8 +90,8 @@ void TestProjectView::execute() {
 }
 
 void TestProjectView::checkResult() {
-    QWidget *w1 = findWidgetByName("ADV_single_sequence_widget_0", "_1 3INS chain 2 sequence");
-    QWidget *w2 = findWidgetByName("ADV_single_sequence_widget_1", "_1 3INS chain 2 sequence");
+//    QWidget *w1 = findWidgetByName("ADV_single_sequence_widget_0", "_1 3INS chain 2 sequence");
+//    QWidget *w2 = findWidgetByName("ADV_single_sequence_widget_1", "_1 3INS chain 2 sequence");
 
     /*ADVSingleSequenceWidget * sw1 = qobject_cast<ADVSingleSequenceWidget*>(w1);
     ADVSingleSequenceWidget * sw2 = qobject_cast<ADVSingleSequenceWidget*>(w2);

@@ -24,7 +24,8 @@
 
 namespace U2 {
 
-Notification::Notification(const QString &message, NotificationType _type, QAction *_action):QLabel(NULL),text(message), action(_action), type(_type) {
+Notification::Notification(const QString &message, NotificationType _type, QAction *_action):QLabel(NULL),
+    action(_action), text(message), type(_type) {
     setMinimumWidth(TT_WIDTH);
     setMaximumWidth(TT_WIDTH);
     setMaximumHeight(TT_HEIGHT);
@@ -172,7 +173,7 @@ void Notification::mousePressEvent(QMouseEvent *ev) {
 
 
 
-bool Notification::eventFilter(QObject *watched, QEvent *event) {
+bool Notification::eventFilter(QObject *, QEvent *event) {
     if(event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *e= static_cast<QMouseEvent*>(event);
         if(e->button() == Qt::LeftButton) {

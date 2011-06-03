@@ -44,7 +44,7 @@ namespace U2 {
     *******************************************/
 
     RetrieveRemoteMachineInfoTask::RetrieveRemoteMachineInfoTask( RemoteMachineSettings* s ) 
-        : Task( tr( "Retrieve remote machine info task" ), TaskFlags_FOSCOE ), pingOK(false), pingTask(NULL), machine( NULL ), settings(s) 
+        : Task( tr( "Retrieve remote machine info task" ), TaskFlags_FOSCOE ), pingTask(NULL), pingOK(false), machine( NULL ), settings(s)
     {
         setVerboseLogMode(true);
         setErrorNotificationSuppression(true);

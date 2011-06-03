@@ -79,7 +79,7 @@ bool contains(const QDResultUnit& res, const QVector<U2Region>& location) {
     return false;
 }
 
-void QDActor::filterResults(const QVector<U2Region>& location) {
+void QDActor::filterResults(const QVector<U2Region>& ) {
     /*QList<QDResultGroup*> res = results;
     foreach(QDResultGroup* grp, res) {
         foreach(const QDResultUnit& ru, grp->getResultsList()) {
@@ -769,6 +769,7 @@ bool QDScheme::validateGroupName( const QString& name ) const {
 void QDScheme::setRequiredNum(const QString& group, int num) {
     assert(actorGroups.keys().contains(group));
     const QList<QDActor*>& grpMembrs = actorGroups.value(group);
+    Q_UNUSED(grpMembrs);
     assert(num<=grpMembrs.size());
     actorGroupReqNum[group] = num;
     emit si_schemeChanged();

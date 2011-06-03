@@ -56,8 +56,6 @@ namespace U2 {
 const QString SamplesWidget::MIME_TYPE("application/x-ugene-sample-id");
 QList<SampleCategory> SampleRegistry::data;
 
-static QPixmap genSnap(const QDomDocument& xml);
-
 #define DATA_ROLE Qt::UserRole
 #define INFO_ROLE Qt::UserRole + 1
 #define ICON_ROLE Qt::UserRole + 2

@@ -54,8 +54,8 @@ public:
     MSAAlignTask(MAlignmentObject* obj, const MSAAlignTaskSettings& settings, TaskFlags flags = TaskFlags_FOSCOE);
     virtual ~MSAAlignTask() {}
 protected:
-    const MSAAlignTaskSettings& settings;
     MAlignmentObject* obj;
+    const MSAAlignTaskSettings& settings;
 };
 
 

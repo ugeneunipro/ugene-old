@@ -48,8 +48,8 @@ namespace U2 {
 #define MARGIN 4
 #define ARR_W 15
 QDElement::QDElement(QDSchemeUnit* _unit)
-: unit(_unit), font(QFont()), bound(0,0,3*ANNOTATION_MIN_SIZE,ANNOTATION_MIN_SIZE),
-dragging(false), itemResizeFlags(0), highlighted(false), extendedHeight(ANNOTATION_MIN_SIZE) {
+: highlighted(false), unit(_unit), font(QFont()), bound(0,0,3*ANNOTATION_MIN_SIZE,ANNOTATION_MIN_SIZE),
+dragging(false), extendedHeight(ANNOTATION_MIN_SIZE), itemResizeFlags(0) {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
@@ -175,7 +175,6 @@ void QDElement::saveState(QDElementStatement* el) const {
 }
 
 void QDElement::sl_refresh() {
-    QDActor* a = qobject_cast<QDActor*>(sender());
     QString baseHtml = "<center>" + getHeaderString();
     QueryScene* qs = qobject_cast<QueryScene*>(scene());
     if (qs && !qs->showActorDesc()) {
@@ -222,7 +221,7 @@ QString QDElement::getHeaderString() const {
     return res;
 }
 
-bool QDElement::isLinkedWith(QDElement* other, QDDistanceType kind) {
+bool QDElement::isLinkedWith(QDElement* /*other*/, QDDistanceType /*kind*/) {
     /*foreach(Footnote* linkIt, links) {
         if(other->links.contains(linkIt) && linkIt->kind()==kind) {
             return true;
@@ -608,6 +607,7 @@ bool QDElement::sceneEvent(QEvent *event) {
             }
         }
         break;
+        default:;
     }
 
     if(itemResizeFlags) {
@@ -1092,7 +1092,7 @@ bool QDDescriptionItem::sceneEvent(QEvent *event) {
         case QEvent::GraphicsSceneMouseMove:
         {
             if(resize) {
-                QueryScene* qs = qobject_cast<QueryScene*>(scene());
+                //QueryScene* qs = qobject_cast<QueryScene*>(scene());
                 QGraphicsSceneMouseEvent* me = static_cast<QGraphicsSceneMouseEvent *>(event);
                 if(me->buttons()&Qt::LeftButton) {
                     QPointF p = me->pos();
@@ -1110,6 +1110,7 @@ bool QDDescriptionItem::sceneEvent(QEvent *event) {
             }
         }
         break;
+        default:;
     }
     return QGraphicsTextItem::sceneEvent(event);
 }
@@ -1147,7 +1148,7 @@ QRectF QDRulerItem::txtBound() const {
     return txtBound;
 }
 
-void QDRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) {
+void QDRulerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * ) {
     if (rightPos - leftPos < MIN_LEN_TO_DRAW) {
         return;
     }

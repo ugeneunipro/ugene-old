@@ -151,21 +151,21 @@ QDomElement SchemaSerializer::saveActor(const Actor* proc, QDomElement& proj) {
     return docElement;
 }
 
-static Actor* readActor(const QDomElement& procElement) {
-    const QString name = procElement.attribute(TYPE_ATTR);
-    ActorPrototype* proto = WorkflowEnv::getProtoRegistry()->getProto(name);
-    if (!proto) {
-        return NULL;
-    }
+//static Actor* readActor(const QDomElement& procElement) {
+//    const QString name = procElement.attribute(TYPE_ATTR);
+//    ActorPrototype* proto = WorkflowEnv::getProtoRegistry()->getProto(name);
+//    if (!proto) {
+//        return NULL;
+//    }
 
-    Actor* proc = proto->createInstance();
-    if (proc) {
-        SchemaSerializer::readConfiguration(proc, procElement);
-        proc->setLabel(procElement.attribute(NAME_ATTR));
-        SchemaSerializer::readParamAliases( proc->getParamAliases(), procElement );
-    }
-    return proc;
-}
+//    Actor* proc = proto->createInstance();
+//    if (proc) {
+//        SchemaSerializer::readConfiguration(proc, procElement);
+//        proc->setLabel(procElement.attribute(NAME_ATTR));
+//        SchemaSerializer::readParamAliases( proc->getParamAliases(), procElement );
+//    }
+//    return proc;
+//}
 
 QDomElement SchemaSerializer::saveLink(const Link* link, QDomElement& proj) {
     QDomElement docElement = proj.ownerDocument().createElement(DATAFLOW_EL);
@@ -273,12 +273,12 @@ void SchemaSerializer::readParamAliases( QMap<QString, QString> & aliases, const
 
 static const QString META_EL = "info";
 
-static void saveMeta(const Workflow::Metadata* meta, QDomElement& proj){
-    QDomElement el = proj.ownerDocument().createElement(META_EL);
-    proj.appendChild(el);
-    el.setAttribute(NAME_ATTR, meta->name);
-    el.appendChild(proj.ownerDocument().createCDATASection(meta->comment));
-}
+//static void saveMeta(const Workflow::Metadata* meta, QDomElement& proj){
+//    QDomElement el = proj.ownerDocument().createElement(META_EL);
+//    proj.appendChild(el);
+//    el.setAttribute(NAME_ATTR, meta->name);
+//    el.appendChild(proj.ownerDocument().createCDATASection(meta->comment));
+//}
 
 QString SchemaSerializer::readMeta(Workflow::Metadata* meta, const QDomElement& proj) {
     QDomElement el = proj.elementsByTagName(META_EL).item(0).toElement();

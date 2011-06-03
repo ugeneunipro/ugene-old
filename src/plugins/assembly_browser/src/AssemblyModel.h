@@ -97,15 +97,15 @@ private:
 
     U2Sequence reference;
     U2SequenceDbi * referenceDbi;
-    DbiHandle * refSeqDbiHandle;
-    QPointer<Document> refDoc;
     
     U2Assembly assembly;
     U2AssemblyDbi * assemblyDbi;
     
-    DbiHandle dbiHandle; 
+    DbiHandle dbiHandle;
+    DbiHandle * refSeqDbiHandle;
 
     bool loadingReference;
+    QPointer<Document> refDoc;
     
     QByteArray referenceMd5;
     bool md5Retrieved;

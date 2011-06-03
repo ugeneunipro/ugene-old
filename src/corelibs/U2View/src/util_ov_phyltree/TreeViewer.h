@@ -121,8 +121,8 @@ private:
     QAction*            contAction;
 
     QAction*            zoomToSelAction;
-    QAction*            zoomOutAction;
     QAction*            zoomToAllAction;
+    QAction*            zoomOutAction;
 
     QAction*            printAction;
     QAction*            captureTreeAction;

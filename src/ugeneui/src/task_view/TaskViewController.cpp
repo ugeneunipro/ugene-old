@@ -465,7 +465,7 @@ QString TVReportWindow::prepareReportHTML(Task* t) {
     return report;
 }
 
-bool TVReportWindow::eventFilter(QObject *o, QEvent *e) {
+bool TVReportWindow::eventFilter(QObject *, QEvent *e) {
     if(e->type() == QEvent::MouseButtonPress) {
         QMouseEvent *me = static_cast<QMouseEvent*>(e);
         if(me->button() == Qt::LeftButton) {

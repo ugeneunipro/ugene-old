@@ -147,6 +147,7 @@ void check(const QByteArray & expectedSeq, ShortReadIterator & it) {
         assert(i < expectedSeq.size());
         char expected = expectedSeq[i++];
         char actual = it.nextLetter();
+        Q_UNUSED(actual);Q_UNUSED(expected);
         assert(expected == actual);
     }
     assert(i == expectedSeq.size());

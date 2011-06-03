@@ -801,7 +801,6 @@ void WorkflowPortItem::paint(QPainter *painter,
             << QLineF(scRect.topLeft(), scRect.bottomLeft());
         QLineF arr(mapToScene(dragPoint), mapToScene(p1));
         QPointF crossPt;
-        bool crossed = false;
         foreach(QLineF scEdge, sceneEdges) {
             if (scEdge.intersect(arr, &crossPt) == QLineF::BoundedIntersection) {
                 pp = mapFromScene(crossPt);

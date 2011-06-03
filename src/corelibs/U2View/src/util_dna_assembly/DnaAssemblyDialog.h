@@ -41,8 +41,8 @@ public:
     const QList<GUrl> getShortReadUrls();
     const QString getAlgorithmName();
     const QString getResultFileName();
-    const bool isPrebuiltIndex();
-    const bool isSamOutput();
+    bool isPrebuiltIndex() const;
+    bool isSamOutput() const;
     QMap<QString,QVariant> getCustomSettings();
 
 protected:

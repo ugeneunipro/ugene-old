@@ -330,7 +330,7 @@ QMap<QString,UctpElementData> RemoteServiceMachine::sendRequest(TaskStateInfo& s
         return replyData;
     }
     
-    qint64 dataLength = dataSource->size();
+    //qint64 dataLength = dataSource->size();
     QEventLoop eventLoop;
     QNetworkAccessManager networkManager;
 

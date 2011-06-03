@@ -57,7 +57,7 @@ samFileUrl(sam), loadDbiTask(NULL), assObj(o), handle(h)
 {
 }
 
-QList<Task*> ConvertAssemblyToSamTask::onSubTaskFinished(Task* subTask) {
+QList<Task*> ConvertAssemblyToSamTask::onSubTaskFinished(Task* ) {
     QList<Task*> subTasks;
 
     Document *d = loadDbiTask->getDocument();

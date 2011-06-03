@@ -140,7 +140,7 @@ void OpenProjectTask::prepare() {
             msgBox.setText(tr("New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?"));
             QPushButton *newWindow = msgBox.addButton(tr("New Window"), QMessageBox::ActionRole);
             QPushButton *oldWindow = msgBox.addButton(tr("This Window"), QMessageBox::ActionRole);
-            QPushButton *abort = msgBox.addButton(QMessageBox::Abort);
+            /*QPushButton *abort =*/ msgBox.addButton(QMessageBox::Abort);
             msgBox.exec();
 
             if(msgBox.clickedButton() == newWindow) {

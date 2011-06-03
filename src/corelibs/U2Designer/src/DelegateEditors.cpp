@@ -189,7 +189,7 @@ void URLLineEdit::sl_onBrowse() {
     setFocus();
 }
 
-void URLLineEdit::focusOutEvent ( QFocusEvent * event ) {
+void URLLineEdit::focusOutEvent ( QFocusEvent * ) {
     emit si_finished();
 }
 
@@ -438,7 +438,7 @@ void StingListEdit::sl_onExpand()
     }
 }
 
-void StingListEdit::focusOutEvent ( QFocusEvent * event ) {
+void StingListEdit::focusOutEvent ( QFocusEvent * ) {
     emit si_finished();
 }
 
@@ -512,7 +512,7 @@ void StringListDelegate::sl_showEditorButton(bool show) {
  * StringSelectorDelegate
 ********************************/
 
-QWidget *StringSelectorDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const {
+QWidget *StringSelectorDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const {
     QWidget * editor = new QWidget(parent);
     valueEdit = new QLineEdit(editor);
     valueEdit->setObjectName("valueEdit");
@@ -552,12 +552,12 @@ void StringSelectorDelegate::sl_onClick() {
     delete dlg;
 }
 
-void StringSelectorDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
+void StringSelectorDelegate::setEditorData(QWidget *, const QModelIndex &index) const {
     QString val = index.model()->data(index, ConfigurationEditor::ItemValueRole).toString();
     valueEdit->setText(val);
 }
 
-void StringSelectorDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
+void StringSelectorDelegate::setModelData(QWidget *, QAbstractItemModel *model, const QModelIndex &index) const {
     QString val = valueEdit->text().trimmed();
     model->setData(index, val, ConfigurationEditor::ItemValueRole);
     if (multipleSelection) {

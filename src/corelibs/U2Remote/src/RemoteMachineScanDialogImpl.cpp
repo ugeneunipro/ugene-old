@@ -41,6 +41,7 @@ RemoteMachineScanDialogImpl::RemoteMachineScanDialogImpl() {
     
     QList< ProtocolInfo * > protocolInfos = pir->getProtocolInfos();
     foreach( ProtocolInfo * pi, protocolInfos ) {
+        Q_UNUSED(pi);
         assert( NULL != pi );
 //         if( NULL != pi->getRemoteMachineScanner() ) {
 //             protocolComboBox->addItem( pi->getId() );
@@ -106,7 +107,7 @@ void RemoteMachineScanDialogImpl::sl_okPushButtonClicked() {
     accept();
 }
 
-void RemoteMachineScanDialogImpl::sl_startScan(  const QString & protoId ) {
+void RemoteMachineScanDialogImpl::sl_startScan(  const QString & /*protoId*/ ) {
 //     RemoteMachineScanner * scanner = AppContext::getProtocolInfoRegistry()->getProtocolInfo( protoId )->getRemoteMachineScanner();
 //     assert( NULL != scanner );
 //     scanner->startScan();

@@ -147,6 +147,7 @@ void ImportAnnotationsFromCSVDialog::accept() {
             case ColumnRole_Name: names++; break;
             case ColumnRole_Ignore: break;
             case ColumnRole_Qualifier: break;
+            default:;
         }
     }
     if (endPos + startPos + length != 2  || endPos > 1 || startPos > 1 || length > 1) {

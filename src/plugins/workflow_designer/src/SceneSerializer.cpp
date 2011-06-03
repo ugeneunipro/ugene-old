@@ -97,7 +97,8 @@ static void initProcMap(QMap<ActorId, WorkflowProcessItem*> & procMap, WorkflowS
     }
 }
 
-QString SceneSerializer::xml2scene(const QDomElement& projectElement, WorkflowScene* scene, QMap<ActorId, ActorId>& remapping, 
+QString SceneSerializer::xml2scene(const QDomElement& projectElement, WorkflowScene* scene,
+                                   QMap<ActorId, ActorId>& /*remapping*/,
                                                  bool ignoreErrors, bool select) {
     QMap<ActorId, WorkflowProcessItem*> procMap;
     QMap<ActorId, Actor*> actorMap;
@@ -135,12 +136,12 @@ QString SceneSerializer::xml2scene(const QDomElement& projectElement, WorkflowSc
             it->setSelected(true);
         }
         procMap[id] = it;
-        foreach(PortDescriptor * pd, proto->getPortDesciptors()) {
-            if(pd == NULL) {
-                continue;
-            }
-            WorkflowPortItem * p = it->getPort(pd->getId());
-        }
+//        foreach(PortDescriptor * pd, proto->getPortDesciptors()) {
+//            if(pd == NULL) {
+//                continue;
+//            }
+//            WorkflowPortItem * p = it->getPort(pd->getId());
+//        }
     }
     return QString();
 }

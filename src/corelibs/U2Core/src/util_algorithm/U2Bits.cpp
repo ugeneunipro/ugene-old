@@ -24,9 +24,9 @@
 
 namespace U2 {
 
-static int getLenBits(int len) {
-    return len == 0 ? 3 : len < 0XFF ? 0 : len < 0xFFFF ? 1 : 2;
-}
+//static int getLenBits(int len) {
+//    return len == 0 ? 3 : len < 0XFF ? 0 : len < 0xFFFF ? 1 : 2;
+//}
 static int getLenBitsSize(int len) {
     return len == 0 ? 0 : len < 0XFF ? 8 : len < 0xFFFF ? 16 : 32;
 }
@@ -129,7 +129,7 @@ QByteArray U2BitCompression::compress(const char* text, int len, int alphabetSiz
     return bitSet;
 }
 
-QByteArray U2BitCompression::uncompress(const char* data, const QByteArray& alphabetChars, U2OpStatus& os) {
+QByteArray U2BitCompression::uncompress(const char* data, const QByteArray& alphabetChars, U2OpStatus&) {
     // algorithm
     // 1. Derive all chars from header
     // 2. Assign bit masks per chars that have signed bit in header
@@ -190,11 +190,11 @@ QVector<int> U2BitCompression::prepareCharNumsMask(const QByteArray& alphabetCha
 
 #define K_FACTOR 1.5
 /** Compression is eligible if compressed text < original text length with a compression factor of K */ 
-static bool isCompressionNeeded(int textLen, int alphabetSize) {
-    int nBits = alphabetSize + U2Bits::getNumberOfBitsPerChar(alphabetSize) * textLen;
-    int compressedBytes = U2Bits::getNumberOfBytes(nBits);
-    return compressedBytes * K_FACTOR < textLen;
-}
+//static bool isCompressionNeeded(int textLen, int alphabetSize) {
+//    int nBits = alphabetSize + U2Bits::getNumberOfBitsPerChar(alphabetSize) * textLen;
+//    int compressedBytes = U2Bits::getNumberOfBytes(nBits);
+//    return compressedBytes * K_FACTOR < textLen;
+//}
 
 //////////////////////////////////////////////////////////////////////////
 // bits helper

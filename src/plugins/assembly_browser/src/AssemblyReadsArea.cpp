@@ -53,8 +53,9 @@
 namespace U2 {
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
-QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), scribbling(false), redraw(true),
-coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), readMenu(new QMenu(this)), copyDataAction(NULL), 
+QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true),
+coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this),  scribbling(false),
+readMenu(new QMenu(this)), copyDataAction(NULL),
 exportReadAction(NULL), currentHotkeyIndex(-1) {
     QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
     coveredRegionsLayout->addWidget(&coveredRegionsLabel);
@@ -180,7 +181,7 @@ QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::initHotkeyDescrip
     return res;
 }
 
-void AssemblyReadsArea::drawWelcomeScreen(QPainter & p) {
+void AssemblyReadsArea::drawWelcomeScreen(QPainter &) {
     GTIMER(c1, t1, "AssemblyReadsArea::drawDensityGraph");
 
     cachedReads.clear();
@@ -475,14 +476,14 @@ void AssemblyReadsArea::mouseMoveEvent(QMouseEvent * e) {
     update();
 }
 
-void AssemblyReadsArea::leaveEvent(QEvent * e) {
+void AssemblyReadsArea::leaveEvent(QEvent *) {
     QPoint curInHintCoords = hintData.hint.mapFromGlobal(QCursor::pos());
     if(!hintData.hint.rect().contains(curInHintCoords)) {
         sl_hideHint();
     }
 }
 
-void AssemblyReadsArea::hideEvent(QHideEvent * e) {
+void AssemblyReadsArea::hideEvent(QHideEvent *) {
     sl_hideHint();
 }
 

@@ -172,7 +172,7 @@ static void setSearchPaths() {
 }
 
 
-static void initLogsCache(LogCacheExt& logsCache, const QStringList& envList) {
+static void initLogsCache(LogCacheExt& logsCache, const QStringList& ) {
 #ifdef _DEBUG
     logsCache.setConsoleOutputEnabled(true);
 #else
@@ -189,7 +189,7 @@ class GApplication: public QApplication {
 public:
     GApplication(int & argc, char ** argv): QApplication(argc, argv) {}
     virtual bool notify(QObject * receiver, QEvent * event ) {
-        bool res;
+        bool res = false;
 #if defined(USE_CRASHHANDLER)
         try {
             res = QApplication::notify(receiver, event);
@@ -489,6 +489,7 @@ int main(int argc, char **argv)
     registerCoreServices();
 #ifdef _DEBUG 
     GUITestService *guiTestService = new GUITestService();
+    Q_UNUSED(guiTestService);
 #endif
     
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {

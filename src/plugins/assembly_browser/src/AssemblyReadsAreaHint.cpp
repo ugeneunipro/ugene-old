@@ -175,7 +175,7 @@ bool AssemblyReadsAreaHint::eventFilter(QObject *, QEvent * event) {
     }
 }
 
-void AssemblyReadsAreaHint::leaveEvent(QEvent * e) {
+void AssemblyReadsAreaHint::leaveEvent(QEvent *) {
     AssemblyReadsArea * p = qobject_cast<AssemblyReadsArea*>(parent());
     QPoint curInParentCoords = p->mapFromGlobal(QCursor::pos());
     if(!p->rect().contains(curInParentCoords)) {

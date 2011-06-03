@@ -542,7 +542,7 @@ void QueryScene::removeActors(const QList<QDActor*>& actors) {
 
 void QueryScene::removeConstraint(QDConstraint* constraint) {
     QDSchemeUnit* su = constraint->getSchemeUnits().at(0);
-    QDActor* actor = su->getActor();
+    Q_UNUSED(su);
     assert(su->getConstraints().contains(constraint));
     foreach(QGraphicsItem* it, getFootnotes()) {
         Footnote* fn = qgraphicsitem_cast<Footnote*>(it);

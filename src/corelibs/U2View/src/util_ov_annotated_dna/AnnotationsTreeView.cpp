@@ -548,7 +548,7 @@ void RemoveItemsTask::prepare() {
 }
 
 void RemoveItemsTask::run() {
-    AVGroupItem* groupItem = treeView->findGroupItem(aObj->getRootGroup());
+    //AVGroupItem* groupItem = treeView->findGroupItem(aObj->getRootGroup());
     delete parentGroupItem;
     /*foreach(Annotation* a, as) {
         assert(a->getGObject() == NULL);
@@ -1235,7 +1235,7 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
 }
 
 
-bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* me) {
+bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
     uiLog.trace("Starting drag & drop in annotations view");
 
     resetDragAndDropData();

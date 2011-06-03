@@ -77,7 +77,7 @@ void QDGroupsEditor::rebuild() {
         addTopLevelItem(groupItem);
         foreach(QDActor const* actor, scheme->getActors(group)) {
             const QString& actorLabel = actor->getParameters()->getLabel();
-            QTreeWidgetItem* actorItem = new QTreeWidgetItem(groupItem, QStringList(actorLabel));
+            /*QTreeWidgetItem* actorItem = */new QTreeWidgetItem(groupItem, QStringList(actorLabel));
         }
     }
 }

@@ -41,7 +41,7 @@ namespace U2 {
 SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
                                                        char tablePrefix, const QString& tableSuffix, 
                                                        const AssemblyCompressor* compressor, 
-                                                       DbRef* db, U2OpStatus& os)
+                                                       DbRef* db, U2OpStatus& )
                                                        : AssemblyAdapter(assemblyId, compressor, db)
 {
     dbi = _dbi;
@@ -212,7 +212,7 @@ void SingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2A
 void SingleTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2OpStatus& os) {
     //TODO: add transaction per pack or reads
     //TODO: remove multiple reads in 1 SQL at once
-    SQLiteObjectDbi* objDbi = dbi->getSQLiteObjectDbi();
+    //SQLiteObjectDbi* objDbi = dbi->getSQLiteObjectDbi();
     foreach(U2DataId readId, readIds) {
         SQLiteUtils::remove(readsTable, "id", readId, 1, db, os);
         if (os.hasError()) {

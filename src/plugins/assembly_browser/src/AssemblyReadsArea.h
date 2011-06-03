@@ -32,12 +32,12 @@
 #include <U2Core/U2Assembly.h>
 #include "AssemblyCellRenderer.h"
 #include "AssemblyReadsAreaHint.h"
+#include "AssemblyModel.h"
 
 namespace U2 {
 
 class AssemblyBrowser;
 class AssemblyBrowserUi;
-class AssemblyModel;
 class AssemblyReadsArea;
 
 class AssemblyReadsArea: public QWidget {
@@ -175,6 +175,7 @@ private:
         QPoint diff;
         int cellWidth;
     } mover;
+
     bool scribbling;
     
     QMenu * readMenu;

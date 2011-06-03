@@ -427,9 +427,9 @@ void AssemblyBrowser::setOffsetsInAssembly(qint64 x, qint64 y) {
 }
 
 void AssemblyBrowser::adjustOffsets(qint64 dx, qint64 dy) {
-    U2OpStatusImpl status;
-    qint64 modelLen = model->getModelLength(status);
-    qint64 modelHeight = model->getModelHeight(status);
+    //U2OpStatusImpl status;
+    //qint64 modelLen = model->getModelLength(status);
+    //qint64 modelHeight = model->getModelHeight(status);
 
     xOffsetInAssembly = normalizeXoffset(xOffsetInAssembly + dx);
     yOffsetInAssembly = normalizeYoffset(yOffsetInAssembly + dy);
@@ -606,7 +606,7 @@ void AssemblyBrowser::sl_zoomIn(const QPoint & pos) {
     
     qint64 oldWidth = basesCanBeVisible();
     qint64 posXAsmCoord = calcAsmPosX(pos.x());
-    qint64 posYAsmCoord = calcAsmPosY(pos.y());
+    //qint64 posYAsmCoord = calcAsmPosY(pos.y());
     
     // zoom in
     {
@@ -615,6 +615,7 @@ void AssemblyBrowser::sl_zoomIn(const QPoint & pos) {
             zoomFactor /= ZOOM_MULT;
         } else { 
             int cellWidth = zoomInFromSize(oldCellSize);
+            Q_UNUSED(cellWidth);
             assert(cellWidth <= MAX_CELL_WIDTH);
         }
     }
@@ -641,7 +642,7 @@ void AssemblyBrowser::sl_zoomOut(const QPoint & pos) {
 
     qint64 oldWidth = basesVisible();
     qint64 posXAsmCoord = calcAsmPosX(pos.x());
-    qint64 posYAsmCoord = calcAsmPosY(pos.y());
+    //qint64 posYAsmCoord = calcAsmPosY(pos.y());
     
     // zoom out
     {

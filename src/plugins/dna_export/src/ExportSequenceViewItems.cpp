@@ -661,8 +661,8 @@ void ADVExportContext::sl_getSequenceById() {
 }
 
 void ADVExportContext::fetchSequencesFromRemoteDB(const QString & listId) {
-    const QList<AnnotationSelectionData>& selection = view->getAnnotationsSelection()->getSelection();
-    AnnotationTableObject *ao = selection.first().annotation->getGObject();
+//    const QList<AnnotationSelectionData>& selection = view->getAnnotationsSelection()->getSelection();
+//    AnnotationTableObject *ao = selection.first().annotation->getGObject();
     DNAAlphabet* seqAl = view->getSequenceObjectsWithContexts().first()->getAlphabet();
 
     QString db;

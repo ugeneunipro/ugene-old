@@ -3,7 +3,7 @@ include( ../../ugene_globals.pri )
 UGENE_RELATIVE_DESTDIR = ''
 
 TEMPLATE = lib
-CONFIG +=qt thread debug_and_release staticlib
+CONFIG +=qt thread debug_and_release staticlib warn_off
 QT += network xml script
 INCLUDEPATH += src _tmp ../../core/src  ../../include
 

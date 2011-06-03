@@ -169,7 +169,6 @@ void MultiTableAssemblyAdapter::rereadTables(const QByteArray& idata, U2OpStatus
         for (int elenPos = 0; elenPos < nElens; elenPos++) {
             QString suffix = getTableSuffix(rowPos, elenPos);
             QString tableName = SingleTableAssemblyAdapter::getReadsTableName(assemblyId, 'M', suffix);
-            MTASingleTableAdapter* ma = NULL;
             if (SQLiteUtils::isTableExists(tableName, db, os)) {
                 createAdapter(rowPos, elenPos, os);                
             }

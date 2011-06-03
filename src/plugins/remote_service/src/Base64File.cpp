@@ -98,7 +98,7 @@ qint64 Base64File::readData( char *data, qint64 maxlen )
     
 }
 
-qint64 Base64File::writeData( const char* data, qint64 maxlen )
+qint64 Base64File::writeData( const char* , qint64 )
 {
     return -1;
 }

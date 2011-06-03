@@ -75,7 +75,6 @@ Task::ReportResult CheckUpdatesTask::report() {
 
     if(runOnStartup) {
         QString baseVersion = v.text.remove("-dev", Qt::CaseInsensitive);
-        Settings *s = AppContext::getSettings();
         if(siteVersion > thisVersion || (baseVersion == siteVersion && thisVersion.contains("dev"))) {
             QString message = tr("Newer version available. You can download it from our site.");
             QMessageBox box(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, 

@@ -81,7 +81,7 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
     perfLog.trace(QString("Assembly: algorithm pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
-int AssemblyPackAlgorithm::packRead(const U2Region& reg, PackAlgorithmContext& ctx, U2OpStatus& os) {
+int AssemblyPackAlgorithm::packRead(const U2Region& reg, PackAlgorithmContext& ctx, U2OpStatus& ) {
     int prow = selectProw(ctx.tails.data(), reg.startPos, reg.endPos());
     if (prow == -1) {
         if (reg.startPos > ctx.peakEnd) {

@@ -72,15 +72,16 @@ private:
 };
 
 struct LigateFragmentsTaskConfig {
-    LigateFragmentsTaskConfig() : annotateFragments(false), checkOverhangs(true), makeCircular(false), addDocToProject(true), openView(false), saveDoc(false) {}
+    LigateFragmentsTaskConfig() : annotateFragments(false), checkOverhangs(true), makeCircular(false),
+    addDocToProject(true), openView(false), saveDoc(false) {}
     GUrl docUrl;
     QString seqName;
     bool annotateFragments;
     bool checkOverhangs;
     bool makeCircular;
     bool addDocToProject;
-    bool saveDoc;
     bool openView;
+    bool saveDoc;
    
 };
 

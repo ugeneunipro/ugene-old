@@ -139,7 +139,7 @@ void ExportMSA2SequencesTask::run() {
 ExportMSA2MSATask::ExportMSA2MSATask(const MAlignment& _ma, int _offset, int _len, const QString& _url,
     const QList<DNATranslation*>& _aminoTranslations, DocumentFormatId _format) 
 : AbstractExportTask(tr("Export alignment to alignment: %1").arg(_url), TaskFlag_None), 
-ma(_ma), offset(_offset), len(_len), url(_url), aminoTranslations(_aminoTranslations), format(_format)
+ma(_ma), offset(_offset), len(_len), url(_url), format(_format), aminoTranslations(_aminoTranslations)
 {
     GCOUNTER( cvar, tvar, "ExportMSA2MSATask" );
     setVerboseLogMode(true);

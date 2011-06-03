@@ -27,12 +27,12 @@
 #include <QtCore/QSharedPointer>
 
 #include "AssemblyCellRenderer.h"
+#include "AssemblyModel.h"
 
 namespace U2 {
 
 class AssemblyBrowserUi;
 class AssemblyBrowser;
-class AssemblyModel;
 
 class AssemblyReferenceArea: public QWidget {
     Q_OBJECT

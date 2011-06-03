@@ -382,13 +382,6 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& n
     }
 }
 
-static void incCoverage(quint64& c) {
-    //increment both min and max coverage stats
-    c += quint64(1) <<32;
-    c += 1;
-}
-
-
 void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
     int csize = c.coverage.size();
     SAFE_POINT(csize > 0, "illegal coverage vector size!", );

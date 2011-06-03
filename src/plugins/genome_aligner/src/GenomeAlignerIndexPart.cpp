@@ -144,7 +144,7 @@ SAType IndexPart::getLoadedSeqStart() {
     return seqStarts[currentPart];
 }
 
-void IndexPart::build(int part) {
+void IndexPart::build(int) {
 
 }
 

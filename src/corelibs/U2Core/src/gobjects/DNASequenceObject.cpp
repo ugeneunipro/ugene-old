@@ -43,9 +43,10 @@ static DNASequenceObject* findObjById(const U2DataId & seqId, const QList<DNASeq
     return NULL;
 }
 
-U2Sequence DNASequenceObjectSequenceDbiWrapper::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os)  {
+U2Sequence DNASequenceObjectSequenceDbiWrapper::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& )  {
     DNASequenceObject * seqObj = findObjById(sequenceId, seqObjs);
     if(seqObj == NULL) {
+        // FIXME raise error?
         return U2Sequence();
     }
     Document* doc = seqObj->getDocument();
@@ -57,10 +58,11 @@ U2Sequence DNASequenceObjectSequenceDbiWrapper::getSequenceObject(const U2DataId
     return res;
 }
 
-QByteArray DNASequenceObjectSequenceDbiWrapper::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os)  {
+QByteArray DNASequenceObjectSequenceDbiWrapper::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& )  {
     GTIMER(c1, t1, "DNASequenceObjectSequenceDbiWrapper::getSequenceData");
     DNASequenceObject * seqObj = findObjById(sequenceId, seqObjs);
     if(seqObj == NULL) {
+        // FIXME raise error?
         return QByteArray();
     }
     return seqObj->getSequence().mid(region.startPos, region.length);
@@ -112,7 +114,7 @@ bool DNASequenceObject::checkConstraints(const GObjectConstraints* c) const {
 }
 
 void DNASequenceObject::setCircular(bool val) {
-    dnaSeq.circular = true;
+    dnaSeq.circular = val;
 }
 
 void DNASequenceObject::setSequence( DNASequence seq ){

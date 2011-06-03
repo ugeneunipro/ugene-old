@@ -3,7 +3,7 @@
 PLUGIN_ID=hmm3
 PLUGIN_NAME=HMM3
 PLUGIN_VENDOR=Unipro
-
+CONFIG += warn_off
 include( ../../ugene_plugin_common.pri )
 
 win32 {
