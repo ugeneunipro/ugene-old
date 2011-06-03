@@ -132,7 +132,7 @@ class AssemblyAdapter {
 public:
     AssemblyAdapter(const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref);
     
-    virtual void createReadsTables(U2OpStatus& os) {};
+    virtual void createReadsTables(U2OpStatus& ) {};
     virtual void createReadsIndexes(U2OpStatus& ) {};
     virtual void shutdown(U2OpStatus& ) {};
 

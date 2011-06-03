@@ -242,7 +242,7 @@ void SQLiteObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
     subfolders.sort(); //remove innermost folders first
     for (int i = subfolders.length(); --i >= 0 && !os.hasError();) {
         const QString& subfolder = subfolders.at(i);
-        removeFolder(folder, os);
+        removeFolder(subfolder, os);
     }
     if (os.hasError()) {
         return;
@@ -431,7 +431,7 @@ qint64 SQLiteObjectDbi::getFolderGlobalVersion(const QString& folder, U2OpStatus
     return q.selectInt64();
 }
 
-void SQLiteObjectDbi::onFolderUpdated(const QString& folder) {
+void SQLiteObjectDbi::onFolderUpdated(const QString& ) {
     //TODO: update local version of the given folder & global for all parents
 }
 

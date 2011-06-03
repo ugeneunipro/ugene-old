@@ -176,7 +176,6 @@ public:
     SQLiteCrossDatabaseReferenceDbi(SQLiteDbi* dbi);
 
     /**
-        Adds new remote object to database./**
         Adds new remote object to database.
         Sets local object id assigned to the new value
         Requires: U2DbiFeature_WriteCrossDatabaseReferences

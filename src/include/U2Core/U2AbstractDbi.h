@@ -75,7 +75,7 @@ public:
     
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
     
-    virtual U2DataType getEntityTypeById(const U2DataId& id) const {return U2Type::Unknown;}
+    virtual U2DataType getEntityTypeById(const U2DataId&) const {return U2Type::Unknown;}
 
 protected:
     U2DbiState                  state;
@@ -141,7 +141,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteMsa, getRootDbi(), os);
     }
     
-    virtual void removeSequences(U2Msa& msa, const QList<U2DataId> sequenceIds, U2OpStatus &os) {
+    virtual void removeSequences(U2Msa&, const QList<U2DataId> , U2OpStatus &os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteMsa, getRootDbi(), os);
     }
 
@@ -176,7 +176,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_AssemblyReadsPacking, getRootDbi(), os);
     }
 
-    virtual void calculateCoverage(const U2DataId&, const U2Region&, U2AssemblyCoverageStat& c, U2OpStatus& os) {
+    virtual void calculateCoverage(const U2DataId&, const U2Region&, U2AssemblyCoverageStat&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_AssemblyCoverageStat, getRootDbi(), os);
     }
 };
@@ -188,10 +188,12 @@ protected:
 
     virtual U2AnnotationGroup createGroup(const U2DataId&, const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+        return U2AnnotationGroup();
     }
     
     virtual U2AnnotationGroup moveGroup(const U2DataId&, const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+        return U2AnnotationGroup();
     }
 
     virtual void createAnnotation(U2Annotation&, U2OpStatus& os) {
@@ -269,6 +271,7 @@ class U2SimpleCrossDatabaseReferenceDbi: public U2CrossDatabaseReferenceDbi {
 public:
     virtual U2CrossDatabaseReference getCrossReference(const U2DataId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteCrossDatabaseReferences, getRootDbi(), os);
+        return U2CrossDatabaseReference();
     }
 
     virtual void updateCrossReference(const U2CrossDatabaseReference&, U2OpStatus& os) {

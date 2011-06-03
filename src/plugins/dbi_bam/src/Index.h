@@ -48,7 +48,7 @@ public:
         public:
             Bin(unsigned int bin, QList<Chunk> chunks);
             const QList<Chunk> &getChunks() const;
-            const unsigned int getBin() const;
+            unsigned int getBin() const;
         private:
             unsigned int bin;
             QList<Chunk> chunks;

@@ -74,7 +74,7 @@ void FileDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U2O
     state = U2DbiState_Ready;
 }
 
-QVariantMap FileDbi::shutdown(U2OpStatus & op) {
+QVariantMap FileDbi::shutdown(U2OpStatus&) {
     return QVariantMap();
 }
 
@@ -102,7 +102,7 @@ U2DbiFactoryId FileDbiFactory::getId() const {
     return ID_PREFIX + fid;
 }
 
-bool FileDbiFactory::isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const {
+bool FileDbiFactory::isValidDbi(const QHash<QString, QString>&, const QByteArray&, U2OpStatus&) const {
     return false;
 }
 

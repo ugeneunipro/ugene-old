@@ -48,7 +48,7 @@ namespace LocalWorkflow {
 
 /**************************
 * GenerateDNAWorkerFactory 
-/**************************/
+ **************************/
 
 static const QString LENGHT_ATTR("length");
 static const QString SEQ_NUM_ATTR("count");
