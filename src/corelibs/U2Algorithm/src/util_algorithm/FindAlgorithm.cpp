@@ -565,6 +565,7 @@ void FindAlgorithm::find(
                         res.region.length = newLen;
                         res.err = err;
                         res.strand = (ci == 1) ? U2Strand::Complementary : U2Strand::Direct;
+                        res.translation = (aminoTT != NULL) ? true : false; 
                         if( !insDel && singleShot ) {
                             rl->onResult( res );
                             res.clear();
