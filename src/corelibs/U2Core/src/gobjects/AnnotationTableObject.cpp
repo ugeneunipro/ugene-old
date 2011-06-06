@@ -145,9 +145,9 @@ QString Annotation::getQualifiersTip(int maxRows, DNASequenceObject* seq, DNATra
         }
         if(!complete || seqVal.length() > QUALIFIER_VALUE_CUT) {
             seqVal = seqVal.left(QUALIFIER_VALUE_CUT) + " ...";
-            if (aminoVal.length() > QUALIFIER_VALUE_CUT) {
-                aminoVal = aminoVal.left(QUALIFIER_VALUE_CUT) + " ...";
-            }
+        }
+        if(!complete || aminoVal.length() > QUALIFIER_VALUE_CUT) {
+            aminoVal = aminoVal.left(QUALIFIER_VALUE_CUT) + " ...";
         }
         if (!tip.isEmpty()) {
             tip+="<br>";

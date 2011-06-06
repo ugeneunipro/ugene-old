@@ -58,7 +58,7 @@ QString QDPrimerActor::getText() const {
     return "Searches primers";
 }
 
-Task* QDPrimerActor::getAlgorithmTask(const QVector<U2Region>& location ) {
+Task* QDPrimerActor::getAlgorithmTask(const QVector<U2Region>& /*location*/ ) {
     Task* t = NULL;
     DNASequenceObject* seqObj = scheme->getDNA();
     settings.setSequence(seqObj->getSequence());
