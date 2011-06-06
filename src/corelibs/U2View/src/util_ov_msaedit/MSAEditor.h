@@ -114,6 +114,7 @@ protected slots:
 
 protected:
     virtual QWidget* createWidget();
+    bool eventFilter(QObject* o, QEvent* e);
 
 private:
     void addCopyMenu(QMenu* m);
@@ -130,6 +131,7 @@ private:
     void updateActions();
     void setFirstVisibleBase(int firstPos);
     void setZoomFactor(float newZoomFactor) {zoomFactor = newZoomFactor;}
+    void initDragAndDropSupport();
 
     MAlignmentObject* msaObject;
     MSAEditorUI*      ui;
@@ -166,7 +168,6 @@ public:
     QWidget* createLabelWidget(const QString& text = QString(), Qt::Alignment ali = Qt::AlignCenter) const;
 
     MSAEditor* getEditor() const {return editor;}
-
     QAction* getUndoAction() const;
     QAction* getRedoAction() const;
 

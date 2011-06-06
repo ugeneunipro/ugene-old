@@ -33,6 +33,7 @@
 #include <util_ov_phyltree/TreeViewerTasks.h>
 
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Misc/DialogUtils.h>
@@ -419,6 +420,7 @@ QWidget* MSAEditor::createWidget() {
     connect(ui , SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
     saveScreenshotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     connect(saveScreenshotAction, SIGNAL(triggered()), ui, SLOT(sl_saveScreenshot()));
+    initDragAndDropSupport();
     return ui;
 }
 
@@ -468,6 +470,40 @@ void MSAEditor::calcFontPixelToPointSizeCoef() {
     QFontInfo info(font);
     fontPixelToPointSize = (float) info.pixelSize() / (float) info.pointSize();
     
+}
+
+bool MSAEditor::eventFilter( QObject* o, QEvent* e )
+{
+    if (e->type() == QEvent::DragEnter || e->type() == QEvent::Drop) {
+        QDropEvent* de = (QDropEvent*)e;
+        const QMimeData* md = de->mimeData();
+        const GObjectMimeData* gomd = qobject_cast<const GObjectMimeData*>(md);
+        if (gomd != NULL) {
+            if (msaObject->isStateLocked()) {
+                return false;
+            }
+            DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*> (gomd->objPtr.data());
+            if (dnaObj != NULL ) {
+                if (DNAAlphabet::deriveCommonAlphabet(dnaObj->getAlphabet(), msaObject->getAlphabet()) == NULL) {
+                    return false;
+                }
+                if (e->type() == QEvent::DragEnter) {
+                    de->acceptProposedAction();
+                } else {     
+                    msaObject->addRow(dnaObj->getDNASequence());
+                }    
+            }
+        }
+    }
+
+    return false;    
+}
+
+void MSAEditor::initDragAndDropSupport()
+{
+    assert(ui!= NULL);
+    ui->setAcceptDrops(true);
+    ui->installEventFilter(this);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -587,6 +623,7 @@ void MSALabelWidget::sl_fontChanged() {
     update();
     setMinimumHeight(ui->consArea->height());
 }
+
 
 }//namespace
 
