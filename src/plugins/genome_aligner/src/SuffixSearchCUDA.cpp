@@ -89,7 +89,6 @@ GenomeAlignerCUDAHelper::GenomeAlignerCUDAHelper( )
 
 
 void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, TaskStateInfo& stateInfo) {
-    Q_UNUSED(queries);
 
 #ifdef GA_BUILD_WITH_CUDA
 
@@ -104,7 +103,7 @@ void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, Tas
     
     foreach (SearchQuery* q, queries) {
         int len = q->length();
-        sizes.append(len);queries
+        sizes.append(len);
         offsets.append(totalReadsSize);
         totalReadsSize += len;
     }
@@ -116,7 +115,6 @@ void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, Tas
     SAFE_CALL( cudaMalloc((void **)&readsDev, totalReadsSize * sizeof(char)) );
     SAFE_CALL( cudaMalloc((void **)&readSizesDev,  readsNumber * sizeof(quint32)) );
     SAFE_CALL( cudaMalloc((void **)&readOffsetsDev, readsNumber * sizeof(quint32)) );
-    queries
     taskLog.details(QString("Copying %1 bytes of short reads data to device").arg(totalReadsSize*sizeof(char)));
     
     // TODO: change the way reads are loaded into memory: use big data chunks when loading!
@@ -168,6 +166,7 @@ void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, Tas
     SAFE_CALL( cudaMemcpy(readOffsetsDev, offsets.data(), readsNumber*sizeof(quint32), cudaMemcpyHostToDevice  ) );
 
 #else
+    Q_UNUSED(queries);
     stateInfo.setError(GenomeAlignerFindTask::tr("The CUDA optimization is not included into this bundle.\
         Please make sure to set UGENE_CUDA_DECTECTED=1 when building UGENE") );
 #endif
@@ -175,7 +174,6 @@ void GenomeAlignerCUDAHelper::loadShortReads(QVector<SearchQuery*>& queries, Tas
 }
 
 void GenomeAlignerCUDAHelper::alignReads(IndexPart& indexPart, AlignContext* ctx, TaskStateInfo& stateInfo) {
-    Q_UNUSED(indexPart);Q_UNUSED(ctx);
 
 #ifdef  GA_BUILD_WITH_CUDA
 
@@ -218,8 +216,10 @@ void GenomeAlignerCUDAHelper::alignReads(IndexPart& indexPart, AlignContext* ctx
     SAFE_CALL( cudaFree(sArrayDev) );
 
 #else
+    
+    Q_UNUSED(indexPart);Q_UNUSED(ctx);
     stateInfo.setError(GenomeAlignerFindTask::tr("The CUDA optimization is not included into this bundle.\
-                                            Please make sure to set UGENE_CUDA_DECTECT=1 when building UGENE") );
+                                            Please make sure to set UGENE_CUDA_DECTECTED=1 when building UGENE") );
 
 #endif
 
