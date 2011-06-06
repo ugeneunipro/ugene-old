@@ -376,7 +376,7 @@ void ProjectTreeController::sl_onTreeSelectionChanged() {
 bool ProjectTreeController::eventFilter(QObject* o, QEvent* e) {
     if (e->type() == QEvent::KeyPress) {
         QKeyEvent *kEvent = (QKeyEvent*)e;
-        if(kEvent->key() == Qt::Key_F2) {
+        if(kEvent->key() == Qt::Key_F2 && !((QTreeWidget *)o)->selectedItems().isEmpty()) {
             ProjViewItem *item = static_cast<ProjViewItem *>(((QTreeWidget *)o)->selectedItems().last());
             if(item->isObjectItem()) {
                 ProjViewObjectItem *objItem = static_cast<ProjViewObjectItem*>(item);
