@@ -36,7 +36,7 @@ class KalignDialogController : public QDialog, public Ui_KalignDialog {
     Q_OBJECT
 
 public:
-    KalignDialogController(QWidget* w, const MAlignment& ma, KalignTaskSettings& settings);
+    KalignDialogController(QWidget* w, const MAlignment& ma, KalignTaskSettings& settings, bool translateEnabled);
     bool translateToAmino();
 
 public slots:
@@ -47,21 +47,6 @@ private:
     MAlignment                          ma;
     KalignTaskSettings&                 settings;
 };
-
-class KalignWithExtFileSpecifyDialogController : public QDialog, public Ui_KalignDialog {
-        Q_OBJECT
-public:
-        KalignWithExtFileSpecifyDialogController(QWidget* w, KalignTaskSettings& settings);
-public slots:
-    void accept();
-private slots:
-    void sl_inputFileLineEditChanged(const QString& str);
-private:
-    void setupUiExt(); 
-    KalignTaskSettings&     settings;
-    FileLineEdit*           inputFileLineEdit;
-};
-
 
 }//namespace
 #endif

@@ -134,9 +134,9 @@ private:
 #endif // RUN_WORKFLOW_IN_THREADS
 
 
-class KAlignWithExtFileSpecifySupportTask : public Task {
+class KAlignAndSaveTask : public Task {
 public:
-    KAlignWithExtFileSpecifySupportTask(const KalignTaskSettings& config);
+    KAlignAndSaveTask(Document* doc, const KalignTaskSettings& config);
     void prepare();
     Task::ReportResult report();
 
@@ -144,9 +144,7 @@ public:
 private:
     MAlignmentObject*   mAObject;
     Document*           currentDocument;
-
     SaveDocumentTask*   saveDocumentTask;
-    LoadDocumentTask*   loadDocumentTask;
     Task*               kalignGObjectTask;
     KalignTaskSettings  config;
 };

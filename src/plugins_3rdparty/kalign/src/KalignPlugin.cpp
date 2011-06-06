@@ -23,7 +23,6 @@
 #include "KalignTask.h"
 #include "KalignConstants.h"
 #include "KalignDialogController.h"
-#include "KalignSettingsWidget.h"
 #include "KalignWorker.h"
 #include "kalign_tests/KalignTests.h"
 
@@ -58,13 +57,6 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     KalignPlugin * plug = new KalignPlugin();
     return plug;
 }
-
-class KalignGuiExtFactory : public MSAAlignGUIExtensionsFactory {
-public:
-    KalignGuiExtFactory(){};
-    MSAAlignAlgorithmMainWidget* createMainWidget(QWidget* parent) {return new KalignSettingsWidget(parent);}
-    bool hasMainWidget() {return true;}
-};
 
 KalignPlugin::KalignPlugin() 
     : Plugin(tr("Kalign"), 
@@ -136,31 +128,24 @@ void KalignPlugin::sl_runKalignTask() {
 }
 
 void KalignPlugin::sl_documentLoaded(Task* task) {
+    if(task->hasError() || task->isCanceled()) {
+        return;
+    }
     Document* currentDocument = ((LoadDocumentTask*)task)->takeDocument();
     assert(currentDocument!=NULL);
     MAlignmentObject* mAObject = qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
     assert(mAObject!=NULL);
     
     KalignTaskSettings s;
-    KalignDialogController dlg(AppContext::getMainWindow()->getQMainWindow(), mAObject->getMAlignment(), s);
+    s.inputFilePath = currentDocument->getURL().getURLString();
+    KalignDialogController dlg(AppContext::getMainWindow()->getQMainWindow(), mAObject->getMAlignment(), s, false);
 
     int rc = dlg.exec();
     if (rc != QDialog::Accepted) {
         return;
     }
-
-    MAlignmentGObjectTask * kalignTask = NULL;
-#ifndef RUN_WORKFLOW_IN_THREADS
-    if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
-        kalignTask = new KalignGObjectRunFromSchemaTask(mAObject, s);
-    } else {
-        kalignTask = new KalignGObjectTask(mAObject, s);
-    }
-#else
-    kalignTask = new KalignGObjectTask(mAObject, s);
-#endif // RUN_WORKFLOW_IN_THREADS
-    assert(kalignTask != NULL);
-    AppContext::getTaskScheduler()->registerTopLevelTask( new MSAAlignMultiTask(mAObject, kalignTask, dlg.translateToAmino()) );
+    Task * kalignTask = new KAlignAndSaveTask(currentDocument, s);
+    AppContext::getTaskScheduler()->registerTopLevelTask( kalignTask );
 }
 
 KalignPlugin::~KalignPlugin() {
@@ -217,7 +202,7 @@ void KalignMSAEditorContext::sl_align() {
     assert(!obj->isStateLocked());
     
     KalignTaskSettings s;
-    KalignDialogController dlg(ed->getWidget(), obj->getMAlignment(), s);
+    KalignDialogController dlg(ed->getWidget(), obj->getMAlignment(), s, true);
     
     int rc = dlg.exec();
     if (rc != QDialog::Accepted) {

@@ -6,7 +6,6 @@ HEADERS += src/KalignAdapter.h \
            src/KalignPlugin.h \
            src/KalignConstants.h \
            src/KalignException.h \
-           src/KalignSettingsWidget.h \
            src/KalignTask.h \
            src/KalignUtils.h \
            src/KalignWorker.h \
@@ -23,14 +22,12 @@ HEADERS += src/KalignAdapter.h \
            src/kalign2/kalign2_output.h \
            src/kalign2/kalign2_profile_alignment.h 
 
-FORMS += src/ui/KalignDialog.ui \
-         src/ui/KalignSettingsWidget.ui
+FORMS += src/ui/KalignDialog.ui
 
 SOURCES += src/KalignAdapter.cpp \
            src/KalignDialogController.cpp \
            src/KalignException.cpp \
            src/KalignPlugin.cpp \
-           src/KalignSettingsWidget.cpp \
            src/KalignTask.cpp \
            src/KalignUtils.cpp \
            src/KalignWorker.cpp \
