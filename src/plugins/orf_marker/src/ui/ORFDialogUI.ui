@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>545</width>
+    <width>560</width>
     <height>560</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>494</width>
+    <width>560</width>
     <height>560</height>
    </size>
   </property>
@@ -207,9 +207,25 @@
            </widget>
           </item>
           <item>
+           <widget class="QCheckBox" name="ckOverlap">
+            <property name="toolTip">
+             <string>allow_overlap_tip</string>
+            </property>
+            <property name="text">
+             <string>Allow overlap</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="ckAlt">
             <property name="enabled">
              <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
             <property name="toolTip">
              <string>allow_alt_tip</string>
@@ -502,22 +518,6 @@
     <hint type="destinationlabel">
      <x>419</x>
      <y>32</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ckInit</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>ckAlt</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>279</x>
-     <y>95</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>279</x>
-     <y>119</y>
     </hint>
    </hints>
   </connection>

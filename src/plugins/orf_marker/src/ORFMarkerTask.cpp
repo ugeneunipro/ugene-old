@@ -33,6 +33,7 @@ namespace U2 {
 
 const QString ORFSettingsKeys::STRAND("orf_finder/strand");
 const QString ORFSettingsKeys::ALLOW_ALT_START("orf_finder/allow_alt_start");
+const QString ORFSettingsKeys::ALLOW_OVERLAP("orf_finder/allow_overlap");
 const QString ORFSettingsKeys::AMINO_TRANSL("orf_finder/amino_transl");
 const QString ORFSettingsKeys::MIN_LEN("orf_finder/min_length");
 const QString ORFSettingsKeys::MUST_FIT("orf_finder/must_fit");
@@ -44,6 +45,7 @@ void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::MUST_FIT, cfg.mustFit);
     s->setValue(ORFSettingsKeys::MUST_INIT, cfg.mustInit);
     s->setValue(ORFSettingsKeys::ALLOW_ALT_START, cfg.allowAltStart);
+    s->setValue(ORFSettingsKeys::ALLOW_OVERLAP, cfg.allowOverlap);
     s->setValue(ORFSettingsKeys::MIN_LEN, cfg.minLen);
     s->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(cfg.searchRegion));
     s->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(cfg.strand));
@@ -53,6 +55,7 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
     cfg.mustFit = s->getValue(ORFSettingsKeys::MUST_FIT, false).toBool();
     cfg.mustInit = s->getValue(ORFSettingsKeys::MUST_INIT, true).toBool();
     cfg.allowAltStart = s->getValue(ORFSettingsKeys::ALLOW_ALT_START, false).toBool();
+    cfg.allowOverlap = s->getValue(ORFSettingsKeys::ALLOW_OVERLAP, false).toBool();
     cfg.minLen = s->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
 
     QString strandId = s->getValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::STRAND_BOTH).toString();
@@ -85,7 +88,6 @@ void U2::FindORFsToAnnotationsTask::run()
     foreach( const ORFFindResult& res, results) {
         aData.append(res.toAnnotation(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME));
     }
-
 }
 
 Task::ReportResult U2::FindORFsToAnnotationsTask::report()

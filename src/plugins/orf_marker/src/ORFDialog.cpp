@@ -398,6 +398,7 @@ void ORFDialog::initSettings()
     ckFit->setChecked(s.mustFit);
     ckInit->setChecked(s.mustInit);
     ckAlt->setChecked(s.allowAltStart);
+    ckOverlap->setChecked(s.allowOverlap);
     sbMinLen->setValue(s.minLen);
     if (s.strand == ORFAlgorithmStrand_Direct) {
         rbDirect->setChecked(true);
@@ -416,6 +417,7 @@ void ORFDialog::getSettings(ORFAlgorithmSettings& s)
     s.mustFit = ckFit->isChecked();
     s.mustInit = ckInit->isChecked();
     s.allowAltStart = ckAlt->isChecked();
+    s.allowOverlap = ckOverlap->isChecked();
     s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
 
     //setup search region

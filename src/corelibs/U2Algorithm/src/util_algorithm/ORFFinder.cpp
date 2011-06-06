@@ -61,6 +61,7 @@ void ORFFindAlgorithm::find(
     bool mustFit = cfg.mustFit;
     bool mustInit = cfg.mustInit;
     bool allowAltStart = cfg.allowAltStart;
+    bool allowOverlap = cfg.allowOverlap;
     int minLen = qMax(cfg.minLen, 3);
 
     int onePercentLen = cfg.searchRegion.length/100;
@@ -69,28 +70,33 @@ void ORFFindAlgorithm::find(
     percentsCompleted = 0;
 
     if (isDirect(cfg.strand)) {
-        int start[3] = {-1,-1,-1};
+        QList<int> start[3];
         if (!mustInit) {
             for (int i=0; i<3;i++) {
                 int frame = (cfg.searchRegion.startPos + i)%3;
-                start[frame] = cfg.searchRegion.startPos + i;
+                start[frame].append(cfg.searchRegion.startPos + i);
             }
         }
         int end = cfg.searchRegion.endPos();
         for(int i = cfg.searchRegion.startPos; i < end && !stopFlag; i++, leftTillPercent--) {
             int frame = i%3;
-            if (start[frame] >=0) {
-                if (aTT->isStopCodon(sequence + i)) {
-                    int len = i - start[frame];
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(start[frame], len), frame));
-                    start[frame] = mustInit? -1 : i + 3;
+            QList<int>* initiators = start + frame;
+            if (!initiators->isEmpty() && aTT->isStopCodon(sequence + i)) {
+                foreach(int initiator, *initiators) {
+                    int len = i - initiator;
+                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(initiator, len), frame));
                 }
-            } else if (mustInit) { 
-                if (aTT->isStartCodon(sequence + i)) {
-                    start[frame] = i;
-                } else if (allowAltStart 
-                    && aTT->isCodon(DNATranslationRole_Start_Alternative, sequence + i)) {
-                    start[frame] = i;
+                initiators->clear();
+                if (!mustInit) {
+                    initiators->append(i+3);
+                }
+            } else if (initiators->isEmpty() || allowOverlap) {
+                if (aTT->isStartCodon(sequence + i)
+                    || (allowAltStart && aTT->isCodon(DNATranslationRole_Start_Alternative, sequence + i))
+                   ) {
+                    if (initiators->isEmpty() || initiators->last() != i) {
+                        initiators->append(i);
+                    }
                 }
             }
             if (leftTillPercent == 0) {
@@ -101,10 +107,10 @@ void ORFFindAlgorithm::find(
         if (!mustFit && !stopFlag) {
             //check if non-terminated ORFs remained
             for (int i=0; i<3;i++) {
-                if (start[i] >=0) {
-                    int len = end - start[i] - i;
+                foreach(int initiator, start[i]) {
+                    int len = end - initiator - i;
                     len -= len%3;
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(start[i], len), i + 1));
+                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(initiator, len), i + 1));
                 }
             }
         }
@@ -118,28 +124,33 @@ void ORFFindAlgorithm::find(
         TextUtils::reverse(revComplDna.data(), revComplDna.size());
         const char* rcSeq = revComplDna.data();
 
-        int start[3] = {-1,-1,-1};
+        QList<int> start[3];
         if (!mustInit) {
             for (int i=0; i<3;i++) {
                 int frame = (cfg.searchRegion.endPos() - i)%3;
-                start[frame] = cfg.searchRegion.endPos() - i;
+                start[frame].append(cfg.searchRegion.endPos() - i);
             }
         }
         int end = cfg.searchRegion.startPos;
         for(int i = cfg.searchRegion.endPos(); i >= end && !stopFlag; rcSeq++, i--, leftTillPercent--) {
             int frame = i%3;
-            if (start[frame] >=0) {
-                if (aTT->isStopCodon(rcSeq)) {
-                    int len = start[frame] - i;
+            QList<int>* initiators = start + frame;
+            if (!initiators->isEmpty() && aTT->isStopCodon(rcSeq)) {
+                foreach(int initiator, *initiators) {
+                    int len = initiator - i;
                     if (len>=minLen) rl->onResult(ORFFindResult(U2Region(i, len), frame - 3));
-                    start[frame] = mustInit? -1 : i - 3;
                 }
-            } else if (mustInit) {
-                if (aTT->isStartCodon(rcSeq)) {
-                    start[frame] = i;
-                } else if (allowAltStart 
-                    && aTT->isCodon(DNATranslationRole_Start_Alternative, rcSeq)) {
-                    start[frame] = i;
+                initiators->clear();
+                if (!mustInit) {
+                    initiators->append(i-3);
+                }
+            } else if (initiators->isEmpty() || allowOverlap) {
+                if (aTT->isStartCodon(rcSeq)
+                    || (allowAltStart && aTT->isCodon(DNATranslationRole_Start_Alternative, rcSeq))
+                   ) {
+                    if (initiators->isEmpty() || initiators->last() != i) {
+                        initiators->append(i);
+                    }
                 }
             }
             if (leftTillPercent == 0) {
@@ -150,9 +161,9 @@ void ORFFindAlgorithm::find(
         if (!mustFit && !stopFlag) {
             //check if non-terminated ORFs remained
             for (int i=0; i<3;i++) {
-                if (start[i] >=0) {
+                foreach(int initiator, start[i]) {
                     int ind = end + i%3;
-                    int len = start[i] - ind;
+                    int len = initiator - ind;
                     len -= len%3;
                     if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind, len), i - 3));
                 }
