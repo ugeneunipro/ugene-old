@@ -353,6 +353,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     zoomOutAction = treeViewer->getZoomOutAction();
     zoomToAllAction = treeViewer->getZoomToAllAction();
     setColorAction = treeViewer->getBranchesSettingsAction();
+    captureAction = treeViewer->getCaptureTreeAction();
     buttonPopup = new QMenu(this);
 
     //chrootAction->setEnabled(false); //not implemented yet
@@ -366,6 +367,8 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     connect(collapseAction, SIGNAL(triggered(bool)), SLOT(sl_collapseTriggered()));
 
     buttonPopup->addAction(setColorAction);
+
+    buttonPopup->addAction(captureAction);
 
     updateActionsState();
 }
@@ -754,8 +757,14 @@ void TreeViewerUI::sl_collapseTriggered() {
 }
 
 void TreeViewerUI::sl_captureTreeTriggered() {
-    ExportImageDialog dialog(this,this->rect(),false,true,phyObject->getDocument()->getName());
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    ExportImageDialog dialog(this,this->rect(),false,true,phyObject->getDocument()->getURL().baseFileName());
     dialog.exec();
+
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
 void TreeViewerUI::sl_exportTriggered() {
@@ -828,6 +837,7 @@ void TreeViewerUI::sl_contTriggered(bool on) {
 void TreeViewerUI::sl_rectangularLayoutTriggered() {
     if (layout != TreeLayout_Rectangular) {
         swapAction->setEnabled(true);
+        root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Rectangular;
         scene()->removeItem(root);
@@ -846,6 +856,7 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
 void TreeViewerUI::sl_circularLayoutTriggered() {
     if (layout != TreeLayout_Circular) {
         swapAction->setEnabled(false);
+        root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Circular;
         updateTreeSettings();
@@ -859,6 +870,7 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
 void TreeViewerUI::sl_unrootedLayoutTriggered() {
     if (layout != TreeLayout_Unrooted) {
         swapAction->setEnabled(false);
+        root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Unrooted;
         updateTreeSettings();

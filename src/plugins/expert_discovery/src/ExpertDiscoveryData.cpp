@@ -789,6 +789,7 @@ void ExpertDiscoveryData::generateRecognizationReport(EDProjectItem* pItem){
     saveRepDialog.setFileMode(QFileDialog::AnyFile);
     saveRepDialog.setNameFilter(tr("Hypertext files (*.htm *.html)"));
     saveRepDialog.setViewMode(QFileDialog::Detail);
+    saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
 
     if(saveRepDialog.exec()){
         QStringList fileNames = saveRepDialog.selectedFiles();
