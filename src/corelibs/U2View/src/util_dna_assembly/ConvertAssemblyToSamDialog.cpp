@@ -35,7 +35,7 @@ namespace U2 {
 
 GUrl ConvertAssemblyToSamDialog::dbFileUrl;
 
-ConvertAssemblyToSamDialog::ConvertAssemblyToSamDialog(QWidget* parent, QString dbName)
+ConvertAssemblyToSamDialog::ConvertAssemblyToSamDialog(QWidget* parent, QString dbPath)
 : QDialog(parent)
 {
     ui = new Ui_AssemblyToSamDialog;
@@ -46,10 +46,11 @@ ConvertAssemblyToSamDialog::ConvertAssemblyToSamDialog(QWidget* parent, QString 
     connect(ui->convertButton, SIGNAL(clicked()), SLOT(accept()));
     connect(ui->cancelButton, SIGNAL(clicked()), SLOT(reject()));
 
-    if ("" != dbName) {
-        ui->dbPathEdit->setText(dbName);
+    if ("" != dbPath) {
+        ui->dbPathEdit->setText(dbPath);
         ui->dbPathEdit->setReadOnly(true);
         ui->setDbPathButton->setEnabled(false);
+        buildSamUrl(dbPath);
         return;
     }
 

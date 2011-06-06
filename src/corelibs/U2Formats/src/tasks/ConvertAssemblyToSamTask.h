@@ -36,17 +36,14 @@ class U2FORMATS_EXPORT ConvertAssemblyToSamTask : public Task {
     Q_OBJECT
 public:
     ConvertAssemblyToSamTask(GUrl dbFileUrl, GUrl samFileUrl);
-    ConvertAssemblyToSamTask(AssemblyObject *assObj, const DbiHandle *handle, GUrl samFileUrl);
+    ConvertAssemblyToSamTask(const DbiHandle *handle, GUrl samFileUrl);
     void run();
-    QList<Task*> onSubTaskFinished(Task* subTask);
     QString generateReport() const;
 
 private:
     GUrl dbFileUrl;
     GUrl samFileUrl;
-    LoadDocumentTask *loadDbiTask;
 
-    AssemblyObject *assObj;
     const DbiHandle *handle;
 };
 

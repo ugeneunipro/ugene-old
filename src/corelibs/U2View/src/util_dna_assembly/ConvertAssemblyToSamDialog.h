@@ -33,7 +33,7 @@ class U2VIEW_EXPORT ConvertAssemblyToSamDialog : public QDialog {
     Q_OBJECT
 
 public:
-    ConvertAssemblyToSamDialog(QWidget* parent = NULL, QString dbName = "");
+    ConvertAssemblyToSamDialog(QWidget* parent = NULL, QString dbPath = "");
 
     const GUrl getDbFileUrl();
     const GUrl getSamFileUrl();

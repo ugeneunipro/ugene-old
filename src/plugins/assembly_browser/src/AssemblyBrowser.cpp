@@ -546,9 +546,13 @@ void AssemblyBrowser::sl_saveScreenshot() {
 }
 
 void AssemblyBrowser::sl_exportToSam() {
-    ConvertAssemblyToSamDialog dialog(ui, gobject->getGObjectName());
+    U2OpStatusImpl os;
+    QHash<QString, QString> metaInfo = model->getDbiHandle().dbi->getDbiMetaInfo(os);
+
+    ConvertAssemblyToSamDialog dialog(ui, metaInfo["url"]);
+
     if (dialog.exec()) {
-        ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(qobject_cast<AssemblyObject*>(gobject), &(model->getDbiHandle()), dialog.getSamFileUrl());
+        ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(&(model->getDbiHandle()), dialog.getSamFileUrl());
         AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
     }
 }

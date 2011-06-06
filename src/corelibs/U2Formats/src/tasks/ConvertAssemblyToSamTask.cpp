@@ -26,6 +26,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/SAMFormat.h>
@@ -38,56 +39,18 @@ namespace U2 {
 
 ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(GUrl db, GUrl sam)
 : Task("ConvertAssemblyToSamTask", (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
-dbFileUrl(db), samFileUrl(sam), loadDbiTask(NULL), assObj(NULL), handle(NULL)
+dbFileUrl(db), samFileUrl(sam), handle(NULL)
 {
-    QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(dbFileUrl);
-    if (!detectedFormats.isEmpty()) {
-        IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        loadDbiTask = new LoadDocumentTask(detectedFormats.first()->getFormatId(), dbFileUrl, factory);
-        addSubTask(loadDbiTask);
-    } else {
-        setError("Unsupported file format.");
-        return;
-    }
 }
 
-ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(AssemblyObject *o, const DbiHandle *h, GUrl sam)
+ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(const DbiHandle *h, GUrl sam)
 : Task("ConvertAssemblyToSamTask", (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
-samFileUrl(sam), loadDbiTask(NULL), assObj(o), handle(h)
+samFileUrl(sam), handle(h)
 {
-}
-
-QList<Task*> ConvertAssemblyToSamTask::onSubTaskFinished(Task* ) {
-    QList<Task*> subTasks;
-
-    Document *d = loadDbiTask->getDocument();
-    QList<GObject*> objects = d->findGObjectByType(GObjectTypes::ASSEMBLY);
-
-    if (objects.size() < 1) {
-        setError("Can't find assembly objects.");
-        return subTasks;
-    }
-    assObj = qobject_cast<AssemblyObject*>(objects.first());
-
-    return subTasks;
 }
 
 void ConvertAssemblyToSamTask::run() {
-    U2OpStatusImpl status;
-    QSharedPointer<DbiHandle> dbiHandle;
-    if (NULL == handle) {
-        dbiHandle = QSharedPointer<DbiHandle>(new DbiHandle("SQLiteDbi", dbFileUrl.getURLString(), false, status));
-        handle = dbiHandle.data();
-    }
-    U2Dbi *dbi = handle->dbi;
-    U2Assembly assembly = dbi->getAssemblyDbi()->getAssemblyObject(assObj->getDbiRef().entityId, status);
-
-    U2AssemblyDbi *assDbi = dbi->getAssemblyDbi();
-    U2Region wholeAssembly;
-    wholeAssembly.startPos = 0;
-    wholeAssembly.length = assDbi->getMaxEndPos(assembly.id, status);
-
-    QByteArray refSeqName = QString(assObj->getGObjectName()).replace(QRegExp("\\s|\\t"), "_").toAscii();
+    //init sam file
     DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
     SAMFormat *format = qobject_cast<SAMFormat*> (f);
     assert(format != NULL);
@@ -98,21 +61,43 @@ void ConvertAssemblyToSamTask::run() {
     assert(res == true);
     Q_UNUSED(res);
 
-    U2DbiIterator<U2AssemblyRead> *dbiIterator = assDbi->getReads(assembly.id, wholeAssembly, status);
+    //init assembly objects
+    U2OpStatusImpl status;
+    QSharedPointer<DbiHandle> dbiHandle;
+    if (NULL == handle) {
+        dbiHandle = QSharedPointer<DbiHandle>(new DbiHandle("SQLiteDbi", dbFileUrl.getURLString(), false, status));
+        handle = dbiHandle.data();
+    }
+    U2ObjectDbi *odbi = handle->dbi->getObjectDbi();
+    U2AssemblyDbi *assDbi = handle->dbi->getAssemblyDbi();
+    QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, status);
+    U2Region wholeAssembly;
+    wholeAssembly.startPos = 0;
 
-    bool first = true;
-    DNASequence seq;
-    while (dbiIterator->hasNext()) {
-        U2AssemblyRead read = dbiIterator->next();
-        read->cigar;
+    //writing to a sam file for an every object
+    foreach(U2DataId id, objectIds) {
+        U2DataType objectType = handle->dbi->getEntityTypeById(id);
+        if (U2Type::Assembly == objectType) {
+            U2Assembly assembly = handle->dbi->getAssemblyDbi()->getAssemblyObject(id, status);
+            wholeAssembly.length = assDbi->getMaxEndPos(assembly.id, status);
 
-        
-        seq.seq = read->readSequence;
-        seq.quality = read->quality;
-        seq.setName(read->name);
+            QByteArray refSeqName = assembly.visualName.replace(QRegExp("\\s|\\t"), "_").toAscii();
+            U2DbiIterator<U2AssemblyRead> *dbiIterator = assDbi->getReads(assembly.id, wholeAssembly, status);
 
-        format->storeAlignedRead(read->leftmostPos, seq, io, refSeqName, wholeAssembly.length, first, true, U2AssemblyUtils::cigar2String(read->cigar));
-        first = false;
+            bool first = true;
+            DNASequence seq;
+            while (dbiIterator->hasNext()) {
+                U2AssemblyRead read = dbiIterator->next();
+                read->cigar;
+
+                seq.seq = read->readSequence;
+                seq.quality = read->quality;
+                seq.setName(read->name);
+
+                format->storeAlignedRead(read->leftmostPos, seq, io, refSeqName, wholeAssembly.length, first, true, U2AssemblyUtils::cigar2String(read->cigar));
+                first = false;
+            }
+        }
     }
 
     io->close();
