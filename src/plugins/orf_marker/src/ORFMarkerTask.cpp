@@ -31,6 +31,42 @@
 
 namespace U2 {
 
+const QString ORFSettingsKeys::STRAND("orf_finder/strand");
+const QString ORFSettingsKeys::ALLOW_ALT_START("orf_finder/allow_alt_start");
+const QString ORFSettingsKeys::AMINO_TRANSL("orf_finder/amino_transl");
+const QString ORFSettingsKeys::MIN_LEN("orf_finder/min_length");
+const QString ORFSettingsKeys::MUST_FIT("orf_finder/must_fit");
+const QString ORFSettingsKeys::MUST_INIT("orf_finder/must_init");
+const QString ORFSettingsKeys::SEARCH_REGION("orf_finder/region");
+
+void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
+    s->setValue(ORFSettingsKeys::AMINO_TRANSL, cfg.proteinTT->getTranslationId());
+    s->setValue(ORFSettingsKeys::MUST_FIT, cfg.mustFit);
+    s->setValue(ORFSettingsKeys::MUST_INIT, cfg.mustInit);
+    s->setValue(ORFSettingsKeys::ALLOW_ALT_START, cfg.allowAltStart);
+    s->setValue(ORFSettingsKeys::MIN_LEN, cfg.minLen);
+    s->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(cfg.searchRegion));
+    s->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(cfg.strand));
+}
+
+void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
+    cfg.mustFit = s->getValue(ORFSettingsKeys::MUST_FIT, false).toBool();
+    cfg.mustInit = s->getValue(ORFSettingsKeys::MUST_INIT, true).toBool();
+    cfg.allowAltStart = s->getValue(ORFSettingsKeys::ALLOW_ALT_START, false).toBool();
+    cfg.minLen = s->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
+
+    QString strandId = s->getValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::STRAND_BOTH).toString();
+    cfg.strand = ORFAlgorithmSettings::getStrandByStringId(strandId);
+
+    QString translId = s->getValue(ORFSettingsKeys::AMINO_TRANSL, "").toString();
+    if (!translId.isEmpty()) {
+        cfg.proteinTT = AppContext::getDNATranslationRegistry()->lookupTranslation(translId);
+    }
+
+    cfg.searchRegion = s->getValue(ORFSettingsKeys::SEARCH_REGION).value<U2Region>();
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 // find ORFS and save 2 annotations task
 
@@ -93,20 +129,15 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
     assert(al != NULL);
 
     ORFAlgorithmSettings cfg;
+    ORFSettingsKeys::read(cfg, AppContext::getSettings());
     
     cfg.complementTT = GObjectUtils::findComplementTT(dnaObj);
-    QString translId = AppContext::getSettings()->getValue(ORFSettingsKeys::AMINO_TRANSL, "").toString();
-    if (translId.isEmpty()) {
+    if (cfg.proteinTT == NULL) {
         cfg.proteinTT = GObjectUtils::findAminoTT(dnaObj,false);
-    } else {
-        cfg.proteinTT = AppContext::getDNATranslationRegistry()->lookupTranslation(translId);
     }
-    QString strandId = AppContext::getSettings()->getValue(ORFSettingsKeys::STRAND,
-        ORFAlgorithmSettings::STRAND_BOTH).toString();
-    cfg.strand = ORFAlgorithmSettings::getStrandByStringId(strandId);
-    cfg.minLen = AppContext::getSettings()->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
-    cfg.searchRegion = AppContext::getSettings()->getValue(ORFSettingsKeys::SEARCH_REGION, 
-        QVariant::fromValue(U2Region(0, dnaObj->getSequenceLen()))).value<U2Region>();
+    if (cfg.searchRegion.isEmpty()) {
+        cfg.searchRegion = U2Region(0, dnaObj->getSequenceLen());
+    }
     
     Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getDNASequence(), cfg );
 

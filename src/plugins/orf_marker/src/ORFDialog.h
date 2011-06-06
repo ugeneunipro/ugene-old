@@ -78,7 +78,7 @@ private:
     void updateStatus();
     void tunePercentBox();
     void initSettings();
-    void saveSettings();
+    void getSettings(ORFAlgorithmSettings& s);
     
     void runTask();
 

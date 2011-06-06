@@ -84,17 +84,6 @@ enum ORFAlgorithmStrand {
     ORFAlgorithmStrand_Complement
 };
 
-struct U2ALGORITHM_EXPORT ORFSettingsKeys {
-public:
-    static const QString STRAND;
-    static const QString AMINO_TRANSL;
-    static const QString SEARCH_REGION;
-    static const QString MIN_LEN;
-    static const QString MUST_FIT;
-    static const QString MUST_INIT;
-    static const QString ALLOW_ALT_START;
-};
-
 class U2ALGORITHM_EXPORT ORFAlgorithmSettings {
 public:
     ORFAlgorithmSettings(ORFAlgorithmStrand strand = ORFAlgorithmStrand_Both,

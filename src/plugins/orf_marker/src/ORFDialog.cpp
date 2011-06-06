@@ -49,6 +49,8 @@
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QTreeView>
 
+#include "ORFMarkerTask.h"
+
 Q_DECLARE_METATYPE(QAction *)
 
 namespace U2 {
@@ -298,16 +300,7 @@ void ORFDialog::runTask() {
     assert(task == NULL);
     
     ORFAlgorithmSettings s;
-    s.strand = getAlgStrand();
-    s.complementTT = ctx->getComplementTT();
-    s.proteinTT = ctx->getAminoTT();
-    s.mustFit = ckFit->isChecked();
-    s.mustInit = ckInit->isChecked();
-    s.allowAltStart = ckAlt->isChecked();
-    s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
-    
-    //setup search region
-    s.searchRegion = getCompleteSearchRegion();
+    getSettings(s);
 
     task = new ORFFindTask(s, ctx->getSequenceData());
     
@@ -388,47 +381,45 @@ void ORFDialog::accept()
         task->cancel();
     }
     
-    saveSettings();
+    ORFAlgorithmSettings s;
+    getSettings(s);
+    ORFSettingsKeys::save(s, AppContext::getSettings());
     AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
 
-
     QDialog::accept();
-
 }
 
 
 void ORFDialog::initSettings()
 {
-    ckFit->setChecked(AppContext::getSettings()->getValue(ORFSettingsKeys::MUST_FIT, false).toBool());
-    ckInit->setChecked(AppContext::getSettings()->getValue(ORFSettingsKeys::MUST_INIT, true).toBool());
-    ckAlt->setChecked(AppContext::getSettings()->getValue(ORFSettingsKeys::ALLOW_ALT_START, false).toBool());
-    sbMinLen->setValue(AppContext::getSettings()->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt());
-    QString strandId = AppContext::getSettings()->getValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::STRAND_BOTH).toString();
-    ORFAlgorithmStrand strand = ORFAlgorithmSettings::getStrandByStringId(strandId);
-    if (strand == ORFAlgorithmStrand_Direct) {
+    ORFAlgorithmSettings s;
+    ORFSettingsKeys::read(s, AppContext::getSettings());
+
+    ckFit->setChecked(s.mustFit);
+    ckInit->setChecked(s.mustInit);
+    ckAlt->setChecked(s.allowAltStart);
+    sbMinLen->setValue(s.minLen);
+    if (s.strand == ORFAlgorithmStrand_Direct) {
         rbDirect->setChecked(true);
-    } else if (strand == ORFAlgorithmStrand_Complement) {
+    } else if (s.strand == ORFAlgorithmStrand_Complement) {
         rbComplement->setChecked(true);
     } else {
         rbBoth->setChecked(true);
     }
-
 }
 
-
-void ORFDialog::saveSettings()
+void ORFDialog::getSettings(ORFAlgorithmSettings& s)
 {
-    ORFAlgorithmStrand strand = getAlgStrand();
-    U2Region searchRegion = getCompleteSearchRegion();
-    AppContext::getSettings()->setValue(ORFSettingsKeys::STRAND, strand);
-    AppContext::getSettings()->setValue(ORFSettingsKeys::AMINO_TRANSL, ctx->getAminoTT()->getTranslationId());
-    AppContext::getSettings()->setValue(ORFSettingsKeys::MUST_FIT, ckFit->isChecked());
-    AppContext::getSettings()->setValue(ORFSettingsKeys::MUST_INIT, ckInit->isChecked());
-    AppContext::getSettings()->setValue(ORFSettingsKeys::ALLOW_ALT_START, ckAlt->isChecked());
-    AppContext::getSettings()->setValue(ORFSettingsKeys::MIN_LEN, sbMinLen->value());
-    AppContext::getSettings()->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(searchRegion));
-    AppContext::getSettings()->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(strand));
+    s.strand = getAlgStrand();
+    s.complementTT = ctx->getComplementTT();
+    s.proteinTT = ctx->getAminoTT();
+    s.mustFit = ckFit->isChecked();
+    s.mustInit = ckInit->isChecked();
+    s.allowAltStart = ckAlt->isChecked();
+    s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
 
+    //setup search region
+    s.searchRegion = getCompleteSearchRegion();
 }
 
 U2::ORFAlgorithmStrand ORFDialog::getAlgStrand() const

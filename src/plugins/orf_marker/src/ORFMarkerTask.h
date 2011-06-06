@@ -31,7 +31,22 @@
 namespace U2 {
 
 class AnnotationTableObject;
+class Settings;
 class DNASequence;
+
+struct ORFSettingsKeys {
+public:
+    static const QString STRAND;
+    static const QString AMINO_TRANSL;
+    static const QString SEARCH_REGION;
+    static const QString MIN_LEN;
+    static const QString MUST_FIT;
+    static const QString MUST_INIT;
+    static const QString ALLOW_ALT_START;
+
+    static void save(const ORFAlgorithmSettings& cfg, Settings* st);
+    static void read(ORFAlgorithmSettings& cfg, const Settings* st);
+};
 
  class FindORFsToAnnotationsTask: public Task {
      Q_OBJECT
