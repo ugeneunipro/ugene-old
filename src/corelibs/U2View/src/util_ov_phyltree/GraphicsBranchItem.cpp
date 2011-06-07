@@ -156,7 +156,7 @@ void GraphicsBranchItem::initText(qreal d) {
 }
 
 GraphicsBranchItem::GraphicsBranchItem(bool withButton)
-: buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false) {
+: buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false), correspondingItem(NULL) {
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
@@ -173,7 +173,7 @@ GraphicsBranchItem::GraphicsBranchItem(bool withButton)
     setPen(pen1);
 }
 
-GraphicsBranchItem::GraphicsBranchItem(const QString& name): buttonItem(NULL), distanceText(NULL), collapsed(false) {
+GraphicsBranchItem::GraphicsBranchItem(const QString& name): buttonItem(NULL), distanceText(NULL), collapsed(false), correspondingItem(NULL) {
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
@@ -197,7 +197,7 @@ GraphicsBranchItem::GraphicsBranchItem(const QString& name): buttonItem(NULL), d
 }
 
 GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
-: buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false) {
+: buttonItem(NULL), distanceText(NULL), nameText(NULL), collapsed(false), correspondingItem(NULL) {
 
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);

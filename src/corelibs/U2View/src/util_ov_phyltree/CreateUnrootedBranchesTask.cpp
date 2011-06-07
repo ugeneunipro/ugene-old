@@ -39,6 +39,7 @@ GraphicsUnrootedBranchItem* CreateUnrootedBranchesTask::getBranch(GraphicsRectan
             getBranch(ri, res);
         }
     }
+    res->setCorrespondingItem(from);
     return res;
 }
 

@@ -50,6 +50,7 @@ public:
     BranchSettings settings;
 
 private:
+    GraphicsBranchItem* correspondingItem;
     GraphicsButtonItem* buttonItem;
     void initText(qreal d);
 
@@ -63,7 +64,6 @@ protected:
 
     GraphicsBranchItem(const QString& name);
     GraphicsBranchItem(qreal d, bool withButton = true);
-
 
 public:
     GraphicsBranchItem(bool withButton = true);
@@ -83,6 +83,9 @@ public:
 
     void updateSettings(const BranchSettings& branchSettings);
     void updateTextSettings(const QFont& font, const QColor& color);
+
+    GraphicsBranchItem* getCorrespondingItem() {return correspondingItem;}
+    void setCorrespondingItem(GraphicsBranchItem* cItem) {correspondingItem = cItem;}
 };
 
 }//namespace;

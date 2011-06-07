@@ -42,6 +42,7 @@ namespace U2 {
 GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qreal h, GraphicsRectangularBranchItem* from)
 : GraphicsBranchItem(true), height(h), direction(from->getDirection()), visible(true) {
     setParentItem(parent);
+    settings = from->settings;
     qreal w = from->getWidth();
     setWidthW(w);
     setDist(from->getDist());
@@ -49,10 +50,11 @@ GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qr
     QPointF p = mapFromScene(0, 0);
     setTransform(QTransform().translate(p.x(), p.y()).rotate((direction == GraphicsBranchItem::up ? -1 : 1) * h / M_PI * 180).translate(-p.x(), -p.y()));
 
-    QPen pen1;
-    pen1.setCosmetic(true);
+    //QPen pen1;
+    //pen1.setCosmetic(true);
     if (from->getNameText() != NULL) {
         nameText = new QGraphicsSimpleTextItem(from->getNameText()->text(), this);
+        nameText->setFont(from->getNameText()->font());
         QRectF rect = nameText->boundingRect();
         qreal h = rect.height();
         nameText->setPos(GraphicsBranchItem::TextSpace, -h * 0.5);
@@ -61,14 +63,13 @@ GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qr
             nameText->setTransform(QTransform().translate(p.x(), p.y()).rotate(180).translate(-p.x(), -p.y()));
         }
 
-        pen1.setStyle(Qt::DotLine);
-        pen1.setColor(Qt::darkGray);
-        QBrush brush1 = nameText->brush();
-        brush1.setColor(Qt::darkGray);
-        nameText->setBrush(brush1);
+//         pen1.setStyle(Qt::DotLine);
+//         pen1.setColor(Qt::darkGray);
+        nameText->setBrush(from->getNameText()->brush());
     }
     if (from->getDistanceText() != NULL) {
         distanceText = new QGraphicsSimpleTextItem(from->getDistanceText()->text(), this);
+        distanceText->setFont(from->getDistanceText()->font());
         QRectF rect = distanceText->boundingRect();
         if (distanceText->scenePos().x() < 0) {
             QPointF p(rect.center().x(), rect.height());
@@ -76,11 +77,10 @@ GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qr
         }
         distanceText->setPos(-0.5 * (w + rect.width()), -rect.height());
 
-        QBrush brush1 = distanceText->brush();
-        brush1.setColor(Qt::darkGray);
-        distanceText->setBrush(brush1);
+        distanceText->setBrush(from->getDistanceText()->brush());
     }
-    setPen(pen1);
+    setPen(from->pen());
+    
 }
 
 QRectF GraphicsCircularBranchItem::boundingRect() const {

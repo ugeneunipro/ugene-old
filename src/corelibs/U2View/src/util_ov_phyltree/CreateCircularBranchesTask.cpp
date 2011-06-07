@@ -39,6 +39,7 @@ GraphicsCircularBranchItem* CreateCircularBranchesTask::getBranch(GraphicsRectan
             getBranch(ri, res);
         }
     }
+    res->setCorrespondingItem(from);
     return res;
 }
 

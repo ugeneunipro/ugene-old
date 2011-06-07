@@ -38,6 +38,7 @@ namespace U2 {
 GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qreal angle, GraphicsRectangularBranchItem* from): GraphicsBranchItem(true) {
     setParentItem(parent);
     qreal w = from->getWidth();
+    settings = from->settings;
     setWidthW(w);
     setDist(from->getDist());
     setPos(w, 0);
@@ -46,10 +47,11 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
 //    setTransformOriginPoint(-w, 0);
 //    setRotation(angle);
 
-    QPen pen1;
-    pen1.setCosmetic(true);
+//     QPen pen1;
+//     pen1.setCosmetic(true);
     if (from->getNameText() != NULL) {
         nameText = new QGraphicsSimpleTextItem(from->getNameText()->text(), this);
+        nameText->setFont(from->getNameText()->font());
         QRectF rect = nameText->boundingRect();
         qreal h = rect.height();
         nameText->setPos(GraphicsBranchItem::TextSpace, -h * 0.5);
@@ -60,14 +62,13 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
 //            nameText->setRotation(180);
         }
 
-        pen1.setStyle(Qt::DotLine);
-        pen1.setColor(Qt::darkGray);
-        QBrush brush1 = nameText->brush();
-        brush1.setColor(Qt::darkGray);
-        nameText->setBrush(brush1);
+//         pen1.setStyle(Qt::DotLine);
+//         pen1.setColor(Qt::darkGray);
+        nameText->setBrush(from->getNameText()->brush());
     }
     if (from->getDistanceText() != NULL) {
         distanceText = new QGraphicsSimpleTextItem(from->getDistanceText()->text(), this);
+        distanceText->setFont(from->getDistanceText()->font());
         QRectF rect = distanceText->boundingRect();
         if (distanceText->scenePos().x() < 0) {
             QPointF p(rect.center().x(), rect.height());
@@ -77,11 +78,9 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
         }
         distanceText->setPos(-0.5 * (w + rect.width()), -rect.height());
 
-        QBrush brush1 = distanceText->brush();
-        brush1.setColor(Qt::darkGray);
-        distanceText->setBrush(brush1);
+        distanceText->setBrush(from->getDistanceText()->brush());
     }
-    setPen(pen1);
+    setPen(from->pen());
 }
 
 QRectF GraphicsUnrootedBranchItem::boundingRect() const {

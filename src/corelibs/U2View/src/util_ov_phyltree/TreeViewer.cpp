@@ -463,6 +463,9 @@ void TreeViewerUI::updateSettings() {
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
         if (branchItem) {
             branchItem->updateSettings(branchSettings);
+            if(branchItem->getCorrespondingItem()){
+                branchItem->getCorrespondingItem()->updateSettings(branchSettings);
+            }
         }
 
         scene()->update();
@@ -479,7 +482,10 @@ void TreeViewerUI::updateTextSettings(){
 
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
         if (branchItem) {
-          branchItem->updateTextSettings(textSettings.textFont, textSettings.textColor);
+            branchItem->updateTextSettings(textSettings.textFont, textSettings.textColor);
+            if(branchItem->getCorrespondingItem()){
+                branchItem->getCorrespondingItem()->updateTextSettings(textSettings.textFont, textSettings.textColor);
+            }
         }
 
         scene()->update();
