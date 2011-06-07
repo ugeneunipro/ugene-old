@@ -74,12 +74,11 @@ void MAFFTSupportTask::prepare(){
         }
         if(!tmpDir.rmdir(tmpDir.absolutePath())){
             stateInfo.setError(tr("Subdir for temporary files exists. Can not remove this directory."));
-            emit si_stateChanged();
+            return;
         }
     }
     if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName)){
         stateInfo.setError(tr("Can not create directory for temporary files."));
-        emit si_stateChanged();
         return;
     }
     url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
