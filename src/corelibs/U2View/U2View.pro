@@ -31,6 +31,8 @@ HEADERS += src/WebWindow.h \
            src/util_ov_annotated_dna/AnnotatedDNAViewState.h \
            src/util_ov_annotated_dna/AnnotatedDNAViewTasks.h \
            src/util_ov_annotated_dna/AnnotationsTreeView.h \
+		   src/util_ov_annotated_dna/AnnotationsTreeViewL.h \
+		   src/util_ov_annotated_dna/AnnotationsTreeModel.h \
            src/util_ov_annotated_dna/AutoAnnotationUtils.h \
            src/util_ov_annotated_dna/CreateRulerDialogController.h \
            src/util_ov_annotated_dna/DetView.h \
@@ -138,6 +140,8 @@ SOURCES += src/WebWindow.cpp \
            src/util_ov_annotated_dna/AnnotatedDNAViewState.cpp \
            src/util_ov_annotated_dna/AnnotatedDNAViewTasks.cpp \
            src/util_ov_annotated_dna/AnnotationsTreeView.cpp \
+		   src/util_ov_annotated_dna/AnnotationsTreeViewL.cpp \
+		   src/util_ov_annotated_dna/AnnotationsTreeModel.cpp \
            src/util_ov_annotated_dna/AutoAnnotationUtils.cpp \
            src/util_ov_annotated_dna/CreateRulerDialogController.cpp \
            src/util_ov_annotated_dna/DetView.cpp \

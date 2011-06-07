@@ -38,7 +38,7 @@ class AnnotatedDNAViewState;
 class DNASequenceObject;
 class AnnotationTableObject;
 class GSequenceLineView;
-class AnnotationsTreeView;
+class AnnotationsTreeViewL;
 class AnnotationSelection;
 class AnnotationGroupSelection;
 class DNASequenceSelection;
@@ -126,7 +126,7 @@ public:
     
     void removeADVAction(ADVGlobalAction* a) {advActions.removeAll(a);} 
 
-    AnnotationsTreeView* getAnnotationsView() {return annotationsView;}
+    AnnotationsTreeViewL* getAnnotationsView() {return annotationsView;}
 
     void updateAutoAnnotations();
 
@@ -216,7 +216,7 @@ private:
     
     QMap<ADVSequenceObjectContext*, AutoAnnotationObject*>   autoAnnotationsMap;
 
-    AnnotationsTreeView*        annotationsView;
+    AnnotationsTreeViewL*        annotationsView;
     QList<ADVSequenceWidget*>   seqViews;
     QList<ADVSplitWidget*>      splitWidgets;
 
