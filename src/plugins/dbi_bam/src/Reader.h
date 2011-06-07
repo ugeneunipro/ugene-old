@@ -29,23 +29,37 @@
 namespace U2 {
 namespace BAM {
 
-class Reader
-{
+class Reader {
+public:
+    Reader(IOAdapter &_ioAdapter) : ioAdapter(_ioAdapter) {}
+    virtual const Header &getHeader() const = 0;
+    virtual bool isEof() const = 0;
+    virtual ~Reader() {}
+protected:
+    Header header;
+    IOAdapter &ioAdapter;
+
+    QHash<QByteArray, int> referencesMap;
+    QHash<QByteArray, int> readGroupsMap;
+    QHash<QByteArray, int> programsMap;
+};
+
+class BamReader : public Reader {
 public:
 
     class AlignmentReader {
     public:
-        AlignmentReader(Reader* reader, int id, int blockSize);
+        AlignmentReader(BamReader* reader, int id, int blockSize);
         int getId();
         Alignment read();
         void skip();
     private:
         int id;
         int blockSize;
-        Reader* r;
+        BamReader* r;
     };
 
-    Reader(IOAdapter &ioAdapter);
+    BamReader(IOAdapter &ioAdapter);
     const Header &getHeader()const;
     Alignment readAlignment();
     AlignmentReader getAlignmentReader();
@@ -66,11 +80,6 @@ private:
     QByteArray readString();
     void readHeader();
 
-    Header header;
-    QHash<QByteArray, int> referencesMap;
-    QHash<QByteArray, int> readGroupsMap;
-    QHash<QByteArray, int> programsMap;
-    IOAdapter &ioAdapter;
     BgzfReader reader;
 friend class AlignmentReader;
 };

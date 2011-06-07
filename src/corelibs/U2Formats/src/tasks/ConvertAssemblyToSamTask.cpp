@@ -25,6 +25,7 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -74,7 +75,20 @@ void ConvertAssemblyToSamTask::run() {
     U2Region wholeAssembly;
     wholeAssembly.startPos = 0;
 
+    QVector<QByteArray> names;
+    QVector<int> lengths;
+    foreach(U2DataId id, objectIds) {
+        U2DataType objectType = handle->dbi->getEntityTypeById(id);
+        if (U2Type::Assembly == objectType) {
+            U2Assembly assembly = handle->dbi->getAssemblyDbi()->getAssemblyObject(id, status);
+            int length = handle->dbi->getAttributeDbi()->getIntegerAttribute(id, status).value;
+            names.append(assembly.visualName.replace(QRegExp("\\s|\\t"), "_").toAscii());
+            lengths.append(length);
+        }
+    }
+
     //writing to a sam file for an every object
+    format->storeHeader(io, names, lengths);
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle->dbi->getEntityTypeById(id);
         if (U2Type::Assembly == objectType) {
@@ -84,7 +98,6 @@ void ConvertAssemblyToSamTask::run() {
             QByteArray refSeqName = assembly.visualName.replace(QRegExp("\\s|\\t"), "_").toAscii();
             U2DbiIterator<U2AssemblyRead> *dbiIterator = assDbi->getReads(assembly.id, wholeAssembly, status);
 
-            bool first = true;
             DNASequence seq;
             while (dbiIterator->hasNext()) {
                 U2AssemblyRead read = dbiIterator->next();
@@ -94,8 +107,7 @@ void ConvertAssemblyToSamTask::run() {
                 seq.quality = read->quality;
                 seq.setName(read->name);
 
-                format->storeAlignedRead(read->leftmostPos, seq, io, refSeqName, wholeAssembly.length, first, true, U2AssemblyUtils::cigar2String(read->cigar));
-                first = false;
+                format->storeAlignedRead(read->leftmostPos, seq, io, refSeqName, wholeAssembly.length, false, true, U2AssemblyUtils::cigar2String(read->cigar));
             }
         }
     }

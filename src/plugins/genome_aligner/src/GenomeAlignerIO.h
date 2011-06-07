@@ -103,7 +103,7 @@ private:
 
 class GenomeAlignerUrlWriter : public GenomeAlignerWriter {
 public:
-    GenomeAlignerUrlWriter(const GUrl &resultFile, const QString &refName);
+    GenomeAlignerUrlWriter(const GUrl &resultFile, const QString &refName, int refLength);
     inline void write(SearchQuery *seq, SAType offset);
     void close();
     void setReferenceName(const QString &refName);
@@ -169,7 +169,7 @@ private:
 
 class GenomeAlignerDbiWriter : public GenomeAlignerWriter {
 public:
-    GenomeAlignerDbiWriter(QString dbiFilePath, QString refName);
+    GenomeAlignerDbiWriter(QString dbiFilePath, QString refName, int refLength);
     inline void write(SearchQuery *seq, SAType offset);
     void close();
     void setReferenceName(const QString &) {};

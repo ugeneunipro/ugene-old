@@ -55,18 +55,19 @@ private:
     bool unmappedSelected;
 };
 
-class LoadBamInfoTask : public Task {
+class LoadInfoTask : public Task {
     Q_OBJECT
 public:
-    LoadBamInfoTask(const GUrl& sourceUrl);
+    LoadInfoTask(const GUrl& sourceUrl, bool sam);
     void run();
     inline BAMInfo& getInfo() { return bamInfo; }
     const GUrl& getSourceUrl() const;
+    bool isSam() const { return sam; }
 private:    
     const GUrl sourceUrl;
     BAMInfo bamInfo;
+    bool sam;
 };
-
 
 } // namespace BAM
 } // namespace U2

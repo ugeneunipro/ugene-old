@@ -21,6 +21,7 @@
 
 #include "IOException.h"
 #include "Reader.h"
+#include "SamReader.h"
 #include "Index.h"
 #include "Dbi.h"
 #include "BAMDbiPlugin.h"
@@ -43,11 +44,12 @@ namespace BAM {
 static const int FIRST_STAGE_PERCENT = 60;
 static const int SECOND_STAGE_PERCENT = 40;
 
-ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl, BAMInfo& _bamInfo):
+ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl, BAMInfo& _bamInfo, bool _sam):
     Task(tr("Convert BAM to UGENE database (%1)").arg(_destinationUrl.fileName()), TaskFlag_None),
     sourceUrl(_sourceUrl),
     destinationUrl(_destinationUrl),
-    bamInfo(_bamInfo)
+    bamInfo(_bamInfo),
+    sam(_sam)
 {
     GCOUNTER( cvar, tvar, "ConvertBamToUgenedb" );
     tpm = Progress_Manual;
@@ -69,7 +71,7 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
 
 class BAMDbiIterator : public U2DbiIterator<U2AssemblyRead> {
 public:
-    BAMDbiIterator(int referenceId, Reader* _reader, QList<Index::ReferenceIndex::Chunk> _chunks, qint64 _totalChunksLength, qint64& _readLength, TaskStateInfo& _ti)
+    BAMDbiIterator(int referenceId, BamReader* _reader, QList<Index::ReferenceIndex::Chunk> _chunks, qint64 _totalChunksLength, qint64& _readLength, TaskStateInfo& _ti)
         : refId(referenceId), reader(_reader), chunks(_chunks), totalChunksLength(_totalChunksLength), readLength(_readLength), chunksLength(0), ti(_ti),
         bufferCount(0), bufferIndex(0), chunkIndex(0), offset(0, 0), readsCount(0), readTime(0)
     {
@@ -120,7 +122,7 @@ private:
                     throw IOException(BAMDbiPlugin::tr("Unexpected end of file"));
                 }
                 
-                Reader::AlignmentReader aReader = reader->getAlignmentReader();
+                BamReader::AlignmentReader aReader = reader->getAlignmentReader();
                 if(aReader.getId() == refId) {
                     buffer[bufferCount++] = AssemblyDbi::alignmentToRead(aReader.read());
                 } else {
@@ -149,7 +151,7 @@ private:
 
     static const int BUFFER_SIZE = 100 * 1000;
     int refId;
-    Reader* reader;
+    BamReader* reader;
     QList<Index::ReferenceIndex::Chunk> chunks;
     qint64 totalChunksLength;
     qint64& readLength;
@@ -184,7 +186,17 @@ void ConvertToSQLiteTask::run() {
         if(!ioAdapter->open(sourceUrl, IOAdapterMode_Read)) {
             throw IOException(BAMDbiPlugin::tr("Can't open file '%1'").arg(sourceUrl.getURLString()));
         }
-        std::auto_ptr<Reader> reader(new Reader(*ioAdapter));
+
+        BamReader *bamReader = NULL;
+        SamReader *samReader = NULL;
+        std::auto_ptr<Reader> reader(NULL);
+        if (sam) {
+            samReader = new SamReader(*ioAdapter);
+            reader.reset(samReader);
+        } else {
+            bamReader = new BamReader(*ioAdapter);
+            reader.reset(bamReader);
+        }
 
         assert(destinationUrl.isLocalFile());
         bool append = QFile::exists(destinationUrl.getURLString());
@@ -212,7 +224,7 @@ void ConvertToSQLiteTask::run() {
         qint64 totalChunksLength = 0;
         qint64 readLength = 0;
         if(bamInfo.hasIndex() && !bamInfo.isUnmappedSelected()) {
-            for(int i=0; i < reader->getHeader().getReferences().count(); i++) {
+            for(int i=0; i < bamReader->getHeader().getReferences().count(); i++) {
                 if(bamInfo.isReferenceSelected(i)) {
                     const QList<Index::ReferenceIndex::Bin>& bins = bamInfo.getIndex().getReferenceIndices().at(i).getBins();
                     if(bins.isEmpty()) {
@@ -270,7 +282,7 @@ void ConvertToSQLiteTask::run() {
                 if(chunks.isEmpty()) {
                     sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
                 } else {                    
-                    BAMDbiIterator iter(i, reader.get(), chunks[i], totalChunksLength, readLength, stateInfo);
+                    BAMDbiIterator iter(i, bamReader, chunks[i], totalChunksLength, readLength, stateInfo);
                     sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &iter, importInfo, opStatus);
                     totalReadsImported += iter.getImportedCount();
                     totalReadTime += iter.getReadTime();
@@ -359,12 +371,23 @@ void ConvertToSQLiteTask::run() {
                 int readsCount = 0;
                 int progressUpdateCounter = 0;
                 while(!reader->isEof() && readsCount < READS_CHUNK_SIZE) {
-                    Reader::AlignmentReader aReader = reader->getAlignmentReader();
-                    if(bamInfo.isReferenceSelected(aReader.getId())) {
-                        reads[aReader.getId()].append(AssemblyDbi::alignmentToRead(aReader.read()));
-                        readsCount++;
+                    if (sam) {
+                        bool eof = false;
+                        Alignment al = samReader->readAlignment(eof);
+                        if (!eof) {
+                            if(bamInfo.isReferenceSelected(al.getReferenceId())) {
+                                reads[al.getReferenceId()].append(AssemblyDbi::alignmentToRead(al));
+                                readsCount++;
+                            }
+                        }
                     } else {
-                        aReader.skip();
+                        BamReader::AlignmentReader aReader = bamReader->getAlignmentReader();
+                        if(bamInfo.isReferenceSelected(aReader.getId())) {
+                            reads[aReader.getId()].append(AssemblyDbi::alignmentToRead(aReader.read()));
+                            readsCount++;
+                        } else {
+                            aReader.skip();
+                        }
                     }
                     if (++progressUpdateCounter > 1000) {
                         if (isCanceled()) {

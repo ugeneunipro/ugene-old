@@ -65,7 +65,7 @@ private:
     DbRef dbRef;
     int assembliesCount;
     std::auto_ptr<IOAdapter> ioAdapter;
-    std::auto_ptr<Reader> reader;
+    std::auto_ptr<BamReader> reader;
     std::auto_ptr<ObjectDbi> objectDbi;
     std::auto_ptr<AssemblyDbi> assemblyDbi;
 };
@@ -120,7 +120,7 @@ private:
 
 class AssemblyDbi : public U2SimpleAssemblyDbi {
 public:
-    AssemblyDbi(Dbi &dbi, Reader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths);
+    AssemblyDbi(Dbi &dbi, BamReader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths);
 
     virtual U2Assembly getAssemblyObject(const U2DataId& id, U2OpStatus &os);
 
@@ -146,7 +146,7 @@ private:
     QList<U2AssemblyRead> getReadsByIds(QList<U2DataId> rowIds, QList<qint64> packedRows, U2OpStatus &os);
 
     Dbi &dbi;
-    Reader &reader;
+    BamReader &reader;
     DbRef &dbRef;
     int assembliesCount;
     QList<qint64> maxReadLengths;

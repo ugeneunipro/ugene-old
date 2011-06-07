@@ -66,7 +66,7 @@ Document *BAMFormat::loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVaria
         QString lockReason;
         QList<MAlignment> alignments;
         {
-            Reader reader(*io);
+            BamReader reader(*io);
             foreach(const Header::Reference &reference, reader.getHeader().getReferences()) {
                 MAlignment alignment(reference.getName());
                 alignment.setLength(reference.getLength());

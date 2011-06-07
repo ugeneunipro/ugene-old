@@ -36,7 +36,7 @@ class ConvertToSQLiteDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ConvertToSQLiteDialog(const GUrl& sourceUrl, BAMInfo& bamInfo);
+    ConvertToSQLiteDialog(const GUrl& sourceUrl, BAMInfo& bamInfo, bool sam);
 
     const GUrl &getDestinationUrl()const;
     bool        addToProject() const;

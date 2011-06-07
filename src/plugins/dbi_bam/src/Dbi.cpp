@@ -58,7 +58,7 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
         if(!ioAdapter->open(url, IOAdapterMode_Read)) {
             throw IOException(BAMDbiPlugin::tr("Can't open file '%1'").arg(url.getURLString()));
         }
-        reader.reset(new Reader(*ioAdapter));
+        reader.reset(new BamReader(*ioAdapter));
         QFileInfo fileInfo(url.getURLString());
         sqliteUrl = GUrl(QDir::temp().absoluteFilePath(url.fileName() + "." + QString::number(fileInfo.lastModified().toTime_t()) + "." + QString::number(fileInfo.size()) + ".sqlite"));
         bool exists = false;
@@ -503,7 +503,7 @@ qint64 ObjectDbi::getFolderGlobalVersion(const QString &folder, U2OpStatus &os) 
 
 // AssemblyDbi
 
-AssemblyDbi::AssemblyDbi(Dbi &dbi, Reader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths):
+AssemblyDbi::AssemblyDbi(Dbi &dbi, BamReader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths):
     U2SimpleAssemblyDbi(&dbi),
     dbi(dbi),
     reader(reader),

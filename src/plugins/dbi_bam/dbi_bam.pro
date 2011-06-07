@@ -21,7 +21,8 @@ HEADERS += \
     src/Dbi.h \
     src/ConvertToSQLiteTask.h \
     src/ConvertToSQLiteDialog.h \
-    src/LoadBamInfoTask.h
+    src/LoadBamInfoTask.h \
+    src/SamReader.h
 SOURCES += \
     src/BAMDbiPlugin.cpp \
     src/BAMFormat.cpp \
@@ -42,7 +43,8 @@ SOURCES += \
     src/Dbi.cpp \
     src/ConvertToSQLiteTask.cpp \
     src/ConvertToSQLiteDialog.cpp \
-    src/LoadBamInfoTask.cpp
+    src/LoadBamInfoTask.cpp \
+    src/SamReader.cpp
 FORMS += \
     src/ConvertToSQLiteDialog.ui
 

@@ -405,10 +405,16 @@ void SAMFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io )
             QByteArray mpos("0");
             QByteArray isize("0");
             QByteArray seq;
-            QByteArray qual = row.hasQuality() ? QByteArray() : QByteArray("*");
+            QByteArray qual;
             QByteArray cigar;
 
             prepareRead(row.getCore(), row.getCoreQuality().qualCodes, seq, qual, cigar);
+            if (row.hasQuality()) {
+                row.getCoreQuality().qualCodes;
+            } else {
+                qual.reserve(seq.length());
+                qual.fill('I', seq.length());
+            }
             
             block = qname + tab + flag + tab+ rname + tab + pos + tab + mapq + tab + cigar + tab + mrnm
                 + tab + mpos + tab + isize + tab + seq + tab + qual + "\n";
@@ -424,6 +430,25 @@ bool SAMFormat::getSectionTags( QByteArray &line, const QByteArray &sectionName,
     if(!line.startsWith(sectionName)) return false;
     QByteArray tagsLine = QByteArray::fromRawData(line.constData() + 3, line.length() - 3);
     tags = tagsLine.split(SPACE);
+    return true;
+}
+
+bool SAMFormat::storeHeader(IOAdapter* io, const QVector<QByteArray> &names, const QVector<int> &lengths) {
+    assert(names.size() > 0);
+    assert(names.size() == lengths.size());
+    static const QByteArray TAB = "\t";
+    QByteArray block;
+    block.append(SECTION_HEADER).append(TAB).append("VN:").append(VERSION).append("\n");   
+    for (int i=0; i<names.size(); i++) {
+        block.append(SECTION_SEQUENCE).append(TAB).append(TAG_SEQUENCE_NAME).append(":");
+        block.append(names[i]).append(TAB);
+        block.append(TAG_SEQUENCE_LENGTH).append(":").append(QByteArray::number(lengths[i])).append("\n");
+    }
+    if (io->writeBlock( block ) != block.length()) {
+        return false;
+    }
+    block.clear();
+
     return true;
 }
 
@@ -461,7 +486,12 @@ bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter*
         qname = "contig";
     }
 
-    QByteArray qual = read.hasQualityScores() ? read.quality.qualCodes : QByteArray("*");
+    QByteArray qual;
+    if (read.hasQualityScores()) {
+        qual = read.quality.qualCodes;
+    } else {
+        qual.fill('I', read.seq.length());
+    }
     QString row;
     if (useCigar) {
         row = rowDataCigar.arg(qname.constData())

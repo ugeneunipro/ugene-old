@@ -39,14 +39,19 @@
 namespace U2 {
 namespace BAM {
 
-ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
+ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo, bool sam) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
     ui.setupUi(this);
+    if (sam) {
+        setWindowTitle("Import SAM file");
+    } else {
+        setWindowTitle("Import BAM file");
+    }
     
     connect(ui.bamInfoButton, SIGNAL(clicked()), SLOT(sl_bamInfoButtonClicked()));
     connect(ui.selectAllToolButton, SIGNAL(clicked()), SLOT(sl_selectAll()));
     connect(ui.selectNoneToolButton, SIGNAL(clicked()), SLOT(sl_unselectAll()));
     connect(ui.inverseSelectionToolButton, SIGNAL(clicked()), SLOT(sl_inverseSelection()));
-    ui.indexNotAvailableLabel->setVisible(!bamInfo.hasIndex());
+    ui.indexNotAvailableLabel->setVisible(sam ? false : !bamInfo.hasIndex());
     
     ui.tableWidget->setColumnCount(3);
     ui.tableWidget->setRowCount(bamInfo.getHeader().getReferences().count());

@@ -35,7 +35,7 @@ namespace BAM {
 class ConvertToSQLiteTask : public Task {
     Q_OBJECT
 public:
-    ConvertToSQLiteTask(const GUrl &sourceUrl, const GUrl &destinationUrl, BAMInfo& bamInfo);
+    ConvertToSQLiteTask(const GUrl &sourceUrl, const GUrl &destinationUrl, BAMInfo& bamInfo, bool sam);
     virtual void run();
     
     const GUrl &getDestinationUrl() const;
@@ -44,6 +44,8 @@ private:
     const GUrl sourceUrl;
     const GUrl destinationUrl;
     BAMInfo bamInfo;
+
+    bool sam;
 };
 
 } // namespace BAM

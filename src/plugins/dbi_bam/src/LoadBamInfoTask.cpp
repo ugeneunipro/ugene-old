@@ -28,21 +28,22 @@
 #include "BaiReader.h"
 #include "LoadBamInfoTask.h"
 #include "Exception.h"
+#include "SamReader.h"
 
 namespace U2 {
 namespace BAM {
 
-LoadBamInfoTask::LoadBamInfoTask(const GUrl& _sourceUrl)
-    : Task(tr("Load BAM info"), TaskFlag_None), sourceUrl(_sourceUrl)
+LoadInfoTask::LoadInfoTask(const GUrl& _sourceUrl, bool _sam)
+    : Task(tr("Load BAM info"), TaskFlag_None), sourceUrl(_sourceUrl), sam(_sam)
 {
 
 }
 
-const GUrl& LoadBamInfoTask::getSourceUrl() const {
+const GUrl& LoadInfoTask::getSourceUrl() const {
     return sourceUrl;
 }
 
-void LoadBamInfoTask::run() {        
+void LoadInfoTask::run() {        
     try {
         std::auto_ptr<IOAdapter> ioAdapter;
         {
@@ -53,35 +54,41 @@ void LoadBamInfoTask::run() {
         GUrl baiUrl(sourceUrl.getURLString() + ".bai");
         bool hasIndex = true;
         std::auto_ptr<IOAdapter> ioIndexAdapter;
-        {
-            IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(baiUrl));
-            ioIndexAdapter.reset(factory->createIOAdapter());
-        }
+        IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(baiUrl));
+        ioIndexAdapter.reset(factory->createIOAdapter());
 
         if(!ioAdapter->open(sourceUrl, IOAdapterMode_Read)) {
-            stateInfo.setError(LoadBamInfoTask::tr("Can't open file '%1'").arg(sourceUrl.getURLString()));
+            stateInfo.setError(LoadInfoTask::tr("Can't open file '%1'").arg(sourceUrl.getURLString()));
             return;
         }
 
-        if(!ioIndexAdapter->open(baiUrl, IOAdapterMode_Read)) {
+        if (sam) {
             hasIndex = false;
+        } else {
+            if(!ioIndexAdapter->open(baiUrl, IOAdapterMode_Read)) {
+                hasIndex = false;
+            }
         }
 
-        std::auto_ptr<Reader> reader(new Reader(*ioAdapter));
-        std::auto_ptr<BaiReader> baiReader(new BaiReader(*ioIndexAdapter));
-        
+        std::auto_ptr<Reader> reader(NULL);
+        if (sam) {
+            reader.reset(new SamReader(*ioAdapter));
+        } else {
+            reader.reset(new BamReader(*ioAdapter));
+        }
         bamInfo.setHeader(reader->getHeader());
 
-        Index index;
-        if(hasIndex) {
-            index = baiReader->readIndex();
-            if(index.getReferenceIndices().count() != reader->getHeader().getReferences().size()) {
-                throw Exception("Invalid index");
+        if (!sam) {
+            std::auto_ptr<BaiReader> baiReader(new BaiReader(*ioIndexAdapter));
+            Index index;
+            if(hasIndex) {
+                index = baiReader->readIndex();
+                if(index.getReferenceIndices().count() != reader->getHeader().getReferences().size()) {
+                    throw Exception("Invalid index");
+                }
+                bamInfo.setIndex(index);
             }
-            bamInfo.setIndex(index);
         }
-
-        
     } catch(const Exception &ex) {
         stateInfo.setError(ex.getMessage());
     }

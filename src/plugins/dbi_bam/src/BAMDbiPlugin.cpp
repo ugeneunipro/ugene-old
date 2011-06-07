@@ -26,6 +26,7 @@
 #include <QtGui/QMainWindow>
 #include <U2Core/AppContext.h>
 #include <U2Core/DbiDocumentFormat.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/ProjectModel.h>
@@ -56,7 +57,7 @@ BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface fo
     {
         MainWindow *mainWindow = AppContext::getMainWindow();
         if(NULL != mainWindow) {
-            QAction *converterAction = new QAction(tr("Import BAM File..."), this);
+            QAction *converterAction = new QAction(tr("Import BAM/SAM File..."), this);
             connect(converterAction, SIGNAL(triggered()), SLOT(sl_converter()));
             mainWindow->getTopLevelMenu(MWMENU_TOOLS)->addAction(converterAction);
         }
@@ -69,11 +70,18 @@ void BAMDbiPlugin::sl_converter() {
             throw Exception(tr("SQLite DBI plugin is not loaded"));
         }
         LastOpenDirHelper lod;
-        QString fileName = QFileDialog::getOpenFileName(AppContext::getMainWindow()->getQMainWindow(), tr("Open BAM file"), lod.dir, tr("BAM Files (*.bam)"));
+        QString fileName = QFileDialog::getOpenFileName(AppContext::getMainWindow()->getQMainWindow(), tr("Open BAM/SAM file"), lod.dir, tr("Assembly Files (*.bam *.sam)"));
         if(fileName != NULL) {
             lod.url = fileName;
             GUrl sourceUrl(fileName);
-            LoadBamInfoTask* task = new LoadBamInfoTask(sourceUrl);
+            QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(sourceUrl);
+            bool sam = false;
+            if (!detectedFormats.isEmpty()) {
+                if (detectedFormats.first()->getFormatId() == BaseDocumentFormats::SAM) {
+                    sam = true;
+                }
+            }
+            LoadInfoTask* task = new LoadInfoTask(sourceUrl, sam);
             connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_infoLoaded(Task*)));
             AppContext::getTaskScheduler()->registerTopLevelTask(task);
         }
@@ -83,14 +91,15 @@ void BAMDbiPlugin::sl_converter() {
 }
 
 void BAMDbiPlugin::sl_infoLoaded(Task* task) {
-    LoadBamInfoTask* loadBamInfoTask = qobject_cast<LoadBamInfoTask*>(task);
-    if(!loadBamInfoTask->hasError()) {
-        const GUrl& sourceUrl = loadBamInfoTask->getSourceUrl();
-        BAMInfo& bamInfo = loadBamInfoTask->getInfo();
-        ConvertToSQLiteDialog convertDialog(sourceUrl, bamInfo);
+    LoadInfoTask* loadInfoTask = qobject_cast<LoadInfoTask*>(task);
+    bool sam = loadInfoTask->isSam();
+    if(!loadInfoTask->hasError()) {
+        const GUrl& sourceUrl = loadInfoTask->getSourceUrl();
+        BAMInfo& bamInfo = loadInfoTask->getInfo();
+        ConvertToSQLiteDialog convertDialog(sourceUrl, bamInfo, sam);
         if(QDialog::Accepted == convertDialog.exec()) {
             GUrl destUrl = convertDialog.getDestinationUrl();
-            ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, destUrl, loadBamInfoTask->getInfo());
+            ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, destUrl, loadInfoTask->getInfo(), sam);
             if(convertDialog.addToProject()) {
                 connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_addDbFileToProject(Task*)));
             }

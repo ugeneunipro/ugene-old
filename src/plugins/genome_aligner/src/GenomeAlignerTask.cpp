@@ -171,10 +171,10 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
             .value<GenomeAlignerWriterContainer>().writer;
         if (NULL == seqWriter) {
             if (settings.samOutput) {
-                seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, index->getSeqName());
+                seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, index->getSeqName(), index->getSeqLength());
             } else {
                 try {
-                    seqWriter = new GenomeAlignerDbiWriter(settings.resultFileName.getURLString(), index->getSeqName());
+                    seqWriter = new GenomeAlignerDbiWriter(settings.resultFileName.getURLString(), index->getSeqName(), index->getSeqLength());
                 } catch (QString exeptionMessage) {
                     setError(exeptionMessage);
                     return subTasks;

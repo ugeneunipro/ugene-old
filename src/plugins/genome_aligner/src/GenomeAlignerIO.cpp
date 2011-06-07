@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2AttributeDbi.h>
 #include <U2Core/Timer.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
@@ -58,8 +59,8 @@ SearchQuery *GenomeAlignerUrlReader::read() {
 /* GenomeAlignerUrlWriter                                               */
 /************************************************************************/
 
-GenomeAlignerUrlWriter::GenomeAlignerUrlWriter(const GUrl &resultFile, const QString &refName)
-    :seqWriter(resultFile, refName)
+GenomeAlignerUrlWriter::GenomeAlignerUrlWriter(const GUrl &resultFile, const QString &refName, int refLength)
+    :seqWriter(resultFile, refName, refLength)
 {
     writtenReadsCount = 0;
 }
@@ -204,7 +205,7 @@ inline void checkOperationStatus(const U2OpStatus &status) {
     }
 }
 
-GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refName) {
+GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refName, int refLength) {
     //TODO: support several assemblies.
     dbiHandle = QSharedPointer<DbiHandle>(new DbiHandle("SQLiteDbi", dbiFilePath, true, status));
     checkOperationStatus(status);
@@ -217,6 +218,13 @@ GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refN
     U2AssemblyReadsImportInfo importInfo;
     wDbi->createAssemblyObject(assembly, "/", NULL, importInfo, status);
     checkOperationStatus(status);
+
+    U2IntegerAttribute lenAttr;
+    lenAttr.objectId = assembly.id;
+    lenAttr.name = "reference_length_attribute";
+    lenAttr.version = 1;
+    lenAttr.value = refLength;
+    dbiHandle->dbi->getAttributeDbi()->createIntegerAttribute(lenAttr, status);
 }
 
 void GenomeAlignerDbiWriter::write(SearchQuery *seq, SAType offset) {

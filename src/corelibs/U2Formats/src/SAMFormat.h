@@ -45,6 +45,7 @@ public:
 
     virtual FormatDetectionResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
+    bool storeHeader(IOAdapter* io, const QVector<QByteArray> &names, const QVector<int> &lengths);
     bool storeAlignedRead(int offset, const DNASequence& read, IOAdapter* io, const QByteArray& refName, int refLength, bool first, bool useCigar = false, const QByteArray &cigar = "");
 
     class Field {

@@ -29,15 +29,15 @@
 namespace U2 {
 namespace BAM {
 
-Reader::AlignmentReader::AlignmentReader(Reader* _reader, int _id, int _blockSize) : id(_id), blockSize(_blockSize), r(_reader) {
+BamReader::AlignmentReader::AlignmentReader(BamReader* _reader, int _id, int _blockSize) : id(_id), blockSize(_blockSize), r(_reader) {
     
 }
 
-int Reader::AlignmentReader::getId() {
+int BamReader::AlignmentReader::getId() {
     return id;
 }
 
-Alignment Reader::AlignmentReader::read() {
+Alignment BamReader::AlignmentReader::read() {
     Alignment alignment;
     alignment.setReferenceId(id);
     {
@@ -342,22 +342,22 @@ Alignment Reader::AlignmentReader::read() {
     return alignment;
 }
 
-void Reader::AlignmentReader::skip() {
+void BamReader::AlignmentReader::skip() {
     r->reader.skip(blockSize - 4);
 }
 
-Reader::Reader(IOAdapter &ioAdapter):
-        ioAdapter(ioAdapter),
+BamReader::BamReader(IOAdapter &ioAdapter):
+        Reader(ioAdapter),
         reader(ioAdapter)
 {
     readHeader();
 }
 
-const Header &Reader::getHeader()const {
+const Header &BamReader::getHeader()const {
     return header;
 }
 
-Reader::AlignmentReader Reader::getAlignmentReader() {
+BamReader::AlignmentReader BamReader::getAlignmentReader() {
     int blockSize = readInt32();
     if(blockSize < 0) {
         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid block size: %1").arg(blockSize));
@@ -369,35 +369,35 @@ Reader::AlignmentReader Reader::getAlignmentReader() {
     return AlignmentReader(this, referenceId, blockSize);
 }
 
-Alignment Reader::readAlignment() {
+Alignment BamReader::readAlignment() {
     return getAlignmentReader().read();
 }
 
-bool Reader::isEof()const {
+bool BamReader::isEof()const {
     return reader.isEof();
 }
 
-VirtualOffset Reader::getOffset()const {
+VirtualOffset BamReader::getOffset()const {
     return reader.getOffset();
 }
 
-void Reader::seek(VirtualOffset offset) {
+void BamReader::seek(VirtualOffset offset) {
     reader.seek(offset);
 }
 
-void Reader::readBytes(char *buffer, qint64 size) {
+void BamReader::readBytes(char *buffer, qint64 size) {
     if(reader.read(buffer, size) < size) {
         throw InvalidFormatException(BAMDbiPlugin::tr("Unexpected end of file"));
     }
 }
 
-QByteArray Reader::readBytes(qint64 size) {
+QByteArray BamReader::readBytes(qint64 size) {
     QByteArray result(size, 0);
     readBytes(result.data(), result.size());
     return result;
 }
 
-qint32 Reader::readInt32() {
+qint32 BamReader::readInt32() {
     char buffer[4];
     readBytes(buffer, sizeof(buffer));
     return (buffer[0] & 0xff) |
@@ -406,7 +406,7 @@ qint32 Reader::readInt32() {
             (buffer[3] << 24);
 }
 
-quint32 Reader::readUint32() {
+quint32 BamReader::readUint32() {
     char buffer[4];
     readBytes(buffer, sizeof(buffer));
     return (buffer[0] & 0xff) |
@@ -415,45 +415,45 @@ quint32 Reader::readUint32() {
             ((buffer[3] & 0xff) << 24);
 }
 
-qint16 Reader::readInt16() {
+qint16 BamReader::readInt16() {
     char buffer[2];
     readBytes(buffer, sizeof(buffer));
     return (buffer[0] & 0xff) |
             (buffer[1] << 8);
 }
 
-quint16 Reader::readUint16() {
+quint16 BamReader::readUint16() {
     char buffer[2];
     readBytes(buffer, sizeof(buffer));
     return (buffer[0] & 0xff) |
             ((buffer[1] & 0xff) << 8);
 }
 
-qint8 Reader::readInt8() {
+qint8 BamReader::readInt8() {
     char buffer[1];
     readBytes(buffer, sizeof(buffer));
     return buffer[0];
 }
 
-quint8 Reader::readUint8() {
+quint8 BamReader::readUint8() {
     char buffer[1];
     readBytes(buffer, sizeof(buffer));
     return (buffer[0] & 0xff);
 }
 
-float Reader::readFloat32() {
+float BamReader::readFloat32() {
     quint32 bits = readUint32();
     float *pointer = (float *)&bits;
     return *pointer;
 }
 
-char Reader::readChar() {
+char BamReader::readChar() {
     char character = '\0';
     readBytes(&character, 1);
     return character;
 }
 
-QByteArray Reader::readString() {
+QByteArray BamReader::readString() {
     QByteArray result;
     while(true) {
         char character = readChar();
@@ -466,7 +466,7 @@ QByteArray Reader::readString() {
     return result;
 }
 
-void Reader::readHeader() {
+void BamReader::readHeader() {
     {
         QByteArray magic = readBytes(4);
         if("BAM\001" != magic) {
