@@ -33,7 +33,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     QString request = host;
     request.append(params);
     addParametr(request,ReqParams::sequence,query);
-
+//    algoLog.trace("Request 1:"+request);
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::HTTP_FILE );
     IOAdapter * io = iof->createIOAdapter();
     if(!io->open( request, IOAdapterMode_Read )) {
@@ -100,6 +100,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     }
     request = host + "CMD=Get&FORMAT_TYPE=XML&RID=";
     request.append(requestID);
+//    algoLog.trace("Request 2:"+request);
     buf.close();
     RemoteBLASTTask *rTask = qobject_cast<RemoteBLASTTask*>(task);
     int progr,timeout;
