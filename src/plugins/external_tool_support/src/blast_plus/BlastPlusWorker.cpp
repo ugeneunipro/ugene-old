@@ -65,10 +65,11 @@ const QString DATABASE_PATH("db-path");
 const QString DATABASE_NAME("db-name");
 const QString EXPECT_VALUE("e-val");
 const QString GROUP_NAME("result-name");
-//const QString ORIGINAL_OUT("Blast_output");
 const QString EXT_TOOL_PATH("tool-path");
 const QString TMP_DIR_PATH("temp-dir");
-
+//Additional options
+const QString ORIGINAL_OUT("blast-output");//path for output file
+const QString OUT_TYPE("type-output");//original option -m 0-11
 
 void BlastPlusWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
@@ -93,21 +94,25 @@ void BlastPlusWorkerFactory::init() {
                    BlastPlusWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
     Descriptor gn(GROUP_NAME, BlastPlusWorker::tr("Annotate as"),
                    BlastPlusWorker::tr("Name for annotations"));
-//    Descriptor output(ORIGINAL_OUT, BlastAllWorker::tr("BLAST output"),
-//                   BlastAllWorker::tr("Location of BLAST output file."));
     Descriptor etp(EXT_TOOL_PATH, BlastPlusWorker::tr("Tool Path"),
                    BlastPlusWorker::tr("External tool path"));
     Descriptor tdp(TMP_DIR_PATH, BlastPlusWorker::tr("Temporary directory"),
                    BlastPlusWorker::tr("Directory for temporary files"));
+    Descriptor output(ORIGINAL_OUT, BlastPlusWorker::tr("BLAST output"),
+                   BlastPlusWorker::tr("Location of BLAST output file."));
+    Descriptor outtype(OUT_TYPE, BlastPlusWorker::tr("BLAST output type"),
+                   BlastPlusWorker::tr("Type of BLAST output file."));
 
     a << new Attribute(pn, BaseTypes::STRING_TYPE(), true, QVariant("blastn"));
     a << new Attribute(dp, BaseTypes::STRING_TYPE(), true, QVariant(""));
     a << new Attribute(dn, BaseTypes::STRING_TYPE(), true, QVariant(""));
     a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
     a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant(""));
-//    a << new Attribute(output, BaseTypes::STRING_TYPE(), false, QVariant(""));
     a << new Attribute(etp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(tdp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
+
+    a << new Attribute(output, BaseTypes::STRING_TYPE(), false, QVariant(""));
+    a << new Attribute(outtype, BaseTypes::STRING_TYPE(), false, QVariant("5"));
 
     Descriptor desc(ACTOR_ID, BlastPlusWorker::tr("Local BLAST+ search"),
         BlastPlusWorker::tr("Finds annotations for DNA sequence in local database"));
@@ -124,18 +129,33 @@ void BlastPlusWorkerFactory::init() {
         m["tblastx"] = "tblastx";
         delegates[PROGRAM_NAME] = new ComboBoxDelegate(m);
     }
+
     {
         QVariantMap m;
-        m["1e-100"] = 1e-100;
-        m["1e-10"] = 1e-10;
-        m["1"] = 1;
-        m["10"] = 10;
-        m["100"] = 100;
-        m["1000"] = 1000;
-        delegates[EXPECT_VALUE] = new ComboBoxDelegate(m);
+        m["minimum"] = 0.000001;
+        m["maximum"] = 100000;
+        m["singleStep"] = 1.0;
+        m["decimals"] = 6;
+        delegates[EXPECT_VALUE] = new DoubleSpinBoxDelegate(m);
     }
+    {
+        QVariantMap m;
+        m["traditional pairwise (-outfmt 0)"] = 0;
+//        m["query-anchored showing identities"] = 1;
+//        m["query-anchored no identities"] = 2;
+//        m["flat query-anchored, show identities"] = 3;
+//        m["flat query-anchored, no identities"] = 4;
+        m["XML (-outfmt 5)"] = 5;
+        m["tabular (-outfmt 6)"] = 6;
+//        m["tabular with comment lines"] = 7;
+//        m["Text ASN.1"] = 8;
+//        m["Binary ASN.1"] = 9;
+//        m["Comma-separated values"] = 10;
+//        m["BLAST archive format (ASN.1)"] = 11;
+        delegates[OUT_TYPE] = new ComboBoxDelegate(m);
+    }
+    delegates[ORIGINAL_OUT] = new URLDelegate("", "out file", false);
     delegates[DATABASE_PATH] = new URLDelegate("", "Database Directory", false, true);
-//    delegates[ORIGINAL_OUT] = new URLDelegate("(*.xml)", "xml file", false);
     delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
     delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
 
@@ -233,6 +253,11 @@ Task* BlastPlusWorker::tick() {
         }
     }
     cfg.needCreateAnnotations=false;
+    cfg.outputType=actor->getParameter(OUT_TYPE)->getAttributeValue<int>();
+    cfg.outputOriginalFile=actor->getParameter(ORIGINAL_OUT)->getAttributeValue<QString>();
+    if(cfg.outputType != 5 && cfg.outputOriginalFile.isEmpty()){
+        return new FailTask(tr("Not selected BLAST output file"));
+    }
     Task * t=NULL;
     if(cfg.programName == "blastn"){
         t = new BlastNPlusSupportTask(cfg);

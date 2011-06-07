@@ -122,50 +122,51 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
     else if(subTask==blastPlusTask){
         assert(logParser);
         delete logParser;
-        if(!QFileInfo(url+".xml").exists()){
-            QString curToolName;
-            if(settings.programName == "blastn"){
-                curToolName=BLASTN_TOOL_NAME;
-            }else if(settings.programName == "blastp"){
-                curToolName=BLASTP_TOOL_NAME;
-            }else if(settings.programName == "blastx"){
-                curToolName=BLASTX_TOOL_NAME;
-            }else if(settings.programName == "tblastn"){
-                curToolName=TBLASTN_TOOL_NAME;
-            }else if(settings.programName == "tblastx"){
-                curToolName=TBLASTX_TOOL_NAME;
-            } else if(settings.programName == "rpsblast") {
-                curToolName = RPSBLAST_TOOL_NAME;
-            }
-            if(AppContext::getExternalToolRegistry()->getByName(curToolName)->isValid()){
-                stateInfo.setError(tr("Output file not found"));
-            }else{
-                stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(curToolName)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(curToolName)->getPath()));
-            }
-            emit si_stateChanged();
-            return res;
-        }
-
-        parseResult();
-        if((!result.isEmpty())&&(settings.needCreateAnnotations)) {
-           // Document* d = AppContext::getProject()->findDocumentByURL(url);
-            //assert(d==NULL);
-            if(!settings.outputResFile.isEmpty()) {
-                IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-                DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
-                Document *d = df->createNewDocument(iof, settings.outputResFile);
-                d->addObject(settings.aobj);
-                AppContext::getProject()->addDocument(d);
+        if(settings.outputType == 5){
+            if(!QFileInfo(settings.outputOriginalFile).exists()){
+                QString curToolName;
+                if(settings.programName == "blastn"){
+                    curToolName=BLASTN_TOOL_NAME;
+                }else if(settings.programName == "blastp"){
+                    curToolName=BLASTP_TOOL_NAME;
+                }else if(settings.programName == "blastx"){
+                    curToolName=BLASTX_TOOL_NAME;
+                }else if(settings.programName == "tblastn"){
+                    curToolName=TBLASTN_TOOL_NAME;
+                }else if(settings.programName == "tblastx"){
+                    curToolName=TBLASTX_TOOL_NAME;
+                } else if(settings.programName == "rpsblast") {
+                    curToolName = RPSBLAST_TOOL_NAME;
+                }
+                if(AppContext::getExternalToolRegistry()->getByName(curToolName)->isValid()){
+                    stateInfo.setError(tr("Output file not found"));
+                }else{
+                    stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
+                                       .arg(AppContext::getExternalToolRegistry()->getByName(curToolName)->getName())
+                                       .arg(AppContext::getExternalToolRegistry()->getByName(curToolName)->getPath()));
+                }
+                return res;
             }
 
-            for(QMutableListIterator<SharedAnnotationData> it_ad(result); it_ad.hasNext(); ) {
-                AnnotationData * ad = it_ad.next().data();
-                U2Region::shift(settings.offsInGlobalSeq, ad->location->regions);
-            }
+            parseResult();
+            if((!result.isEmpty())&&(settings.needCreateAnnotations)) {
+               // Document* d = AppContext::getProject()->findDocumentByURL(url);
+                //assert(d==NULL);
+                if(!settings.outputResFile.isEmpty()) {
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+                    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+                    Document *d = df->createNewDocument(iof, settings.outputResFile);
+                    d->addObject(settings.aobj);
+                    AppContext::getProject()->addDocument(d);
+                }
 
-            res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
+                for(QMutableListIterator<SharedAnnotationData> it_ad(result); it_ad.hasNext(); ) {
+                    AnnotationData * ad = it_ad.next().data();
+                    U2Region::shift(settings.offsInGlobalSeq, ad->location->regions);
+                }
+
+                res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
+            }
         }
     }
     return res;
@@ -196,7 +197,7 @@ BlastTaskSettings BlastPlusSupportCommonTask::getSettings() const {
 void BlastPlusSupportCommonTask::parseResult() {
 
     QDomDocument xmlDoc;
-    QFile file(url+".xml");
+    QFile file(settings.outputOriginalFile);
     if (!file.open(QIODevice::ReadOnly)){
         stateInfo.setError("Can't open output file");
         return;

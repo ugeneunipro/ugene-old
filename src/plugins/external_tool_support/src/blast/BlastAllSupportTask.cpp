@@ -125,8 +125,13 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
         }
         arguments <<"-i"<< url;
         arguments <<"-a"<< QString::number(settings.numberOfProcessors);
-        arguments <<"-m"<< "7";//Set output file format to xml
-        arguments <<"-o"<< url+".xml";//settings.outputRepFile;
+        arguments <<"-m"<< QString::number(settings.outputType);//"7";//By default set output file format to xml
+        if(settings.outputOriginalFile.isEmpty()){
+            arguments <<"-o"<< url+".xml";//settings.outputRepFile;
+            settings.outputOriginalFile = url+".xml";
+        }else{
+            arguments <<"-o"<< settings.outputOriginalFile;
+        }
 
         logParser=new ExternalToolLogParser();
         blastAllTask=new ExternalToolRunTask(BLASTALL_TOOL_NAME,arguments, logParser);
@@ -136,35 +141,37 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
     else if(subTask==blastAllTask){
         assert(logParser);
         delete logParser;
-        if(!QFileInfo(url+".xml").exists()){
-            if(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->isValid()){
-                stateInfo.setError(tr("Output file not found"));
-            }else{
-                stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->getPath()));
+        if(settings.outputType == 7){
+            if(!QFileInfo(settings.outputOriginalFile).exists()){
+                if(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->isValid()){
+                    stateInfo.setError(tr("Output file not found"));
+                }else{
+                    stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
+                                       .arg(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->getName())
+                                       .arg(AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->getPath()));
+                }
+                emit si_stateChanged();
+                return res;
             }
-            emit si_stateChanged();
-            return res;
-        }
-        parseResult();
-        if((!result.isEmpty())&&(settings.needCreateAnnotations)) {
-           // Document* d = AppContext::getProject()->findDocumentByURL(url);
-            //assert(d==NULL);
-            if(!settings.outputResFile.isEmpty()) {
-                IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-                DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
-                Document *d = df->createNewDocument(iof, settings.outputResFile);
-                d->addObject(settings.aobj);
-                AppContext::getProject()->addDocument(d);
-            }
+            parseResult();
+            if((!result.isEmpty())&&(settings.needCreateAnnotations)) {
+               // Document* d = AppContext::getProject()->findDocumentByURL(url);
+                //assert(d==NULL);
+                if(!settings.outputResFile.isEmpty()) {
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+                    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+                    Document *d = df->createNewDocument(iof, settings.outputResFile);
+                    d->addObject(settings.aobj);
+                    AppContext::getProject()->addDocument(d);
+                }
 
-            for(QMutableListIterator<SharedAnnotationData> it_ad(result); it_ad.hasNext(); ) {
-                AnnotationData * ad = it_ad.next().data();
-                U2Region::shift(settings.offsInGlobalSeq, ad->location->regions);
-            }
+                for(QMutableListIterator<SharedAnnotationData> it_ad(result); it_ad.hasNext(); ) {
+                    AnnotationData * ad = it_ad.next().data();
+                    U2Region::shift(settings.offsInGlobalSeq, ad->location->regions);
+                }
 
-            res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
+                res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
+            }
         }
     }
     return res;
@@ -196,7 +203,7 @@ QList<SharedAnnotationData> BlastAllSupportTask::getResultedAnnotations() const 
 void BlastAllSupportTask::parseResult() {
 
     QDomDocument xmlDoc;
-    QFile file(url+".xml");
+    QFile file(settings.outputOriginalFile);
     if (!file.open(QIODevice::ReadOnly)){
         stateInfo.setError("Can't open output file");
         return;

@@ -112,17 +112,17 @@ void GenerateDNAWorkerFactory::init() {
         Attribute *cAttr = new Attribute(cpd, BaseTypes::NUM_TYPE(), false, 25);
         Attribute *gAttr = new Attribute(gpd, BaseTypes::NUM_TYPE(), false, 25);
         Attribute *tAttr = new Attribute(tpd, BaseTypes::NUM_TYPE(), false, 25);
-        aAttr->setRelation(ALGORITHM, "GC Content");
-        cAttr->setRelation(ALGORITHM, "GC Content");
-        gAttr->setRelation(ALGORITHM, "GC Content");
-        tAttr->setRelation(ALGORITHM, "GC Content");
+        aAttr->addRelation(ALGORITHM, "GC Content");
+        cAttr->addRelation(ALGORITHM, "GC Content");
+        gAttr->addRelation(ALGORITHM, "GC Content");
+        tAttr->addRelation(ALGORITHM, "GC Content");
         a << aAttr;
         a << cAttr;
         a << gAttr;
         a << tAttr;
 
         Attribute *attr = new Attribute(gcSkew, BaseTypes::NUM_TYPE(), false, 0.25);
-        attr->setRelation(ALGORITHM, "GC Skew");
+        attr->addRelation(ALGORITHM, "GC Skew");
         a << attr;
     }
 

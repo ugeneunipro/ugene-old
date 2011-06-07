@@ -116,16 +116,22 @@ bool Attribute::isEmptyString() const {
 
 bool Attribute::isVisible(const QVariantMap &values) const {
     if(hasRelation) {
-        return (values.value(relatedAttribute) == relatedAttributeValue);
+        QMapIterator<QString, QVariant> i(relation);
+         while (i.hasNext()) {
+             i.next();
+             if(values.value(i.key()) == i.value()){
+                 return true;
+             }
+         }
+        return false;//(values.value(relatedAttribute) == relatedAttributeValue);
     } else {
         return true;
     }
 }
 
-void Attribute::setRelation(const QString& attrName, const QVariant &attrValue) {
+void Attribute::addRelation(const QString& attrName, const QVariant &attrValue) {
     hasRelation = true;
-    relatedAttribute = attrName;
-    relatedAttributeValue = attrValue;
+    relation.insertMulti(attrName, attrValue);
 }
 
 /*************************************

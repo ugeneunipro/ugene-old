@@ -102,7 +102,7 @@ public:
     bool isEmpty() const;
     bool isEmptyString() const;
     bool isVisible(const QVariantMap &values) const;
-    void setRelation(const QString& attrName, const QVariant &attrValue);
+    void addRelation(const QString& attrName, const QVariant &attrValue);
     
 private:
     template<typename T> T getAttributeValueWithoutScript() const {
@@ -125,8 +125,7 @@ private:
     AttributeScript     scriptData;
 
     bool hasRelation;
-    QString relatedAttribute;
-    QVariant relatedAttributeValue;
+    QMap <QString,QVariant> relation;
     
 }; // Attribute
 

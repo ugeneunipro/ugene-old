@@ -106,13 +106,11 @@ void RemoteBLASTWorkerFactory::init() {
 
     {
         QVariantMap m;
-        m["1e-100"] = 1e-100;
-        m["1e-10"] = 1e-10;
-        m["1"] = 1;
-        m["10"] = 10;
-        m["100"] = 100;
-        m["1000"] = 1000;
-        delegates[EXPECT] = new ComboBoxDelegate(m);
+        m["minimum"] = 0.000001;
+        m["maximum"] = 100000;
+        m["singleStep"] = 1.0;
+        m["decimals"] = 6;
+        delegates[EXPECT] = new DoubleSpinBoxDelegate(m);
     }
 
     delegates[ORIGINAL_OUT] = new URLDelegate("(*.xml)","xml file");

@@ -218,6 +218,7 @@ void BlastPlusSupportRunDialog::sl_runQuery(){
     }
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();
+    settings.outputType=5;//By default set output file format to xml
     accept();
 }
 ////////////////////////////////////////
@@ -497,6 +498,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_runQuery(){
     }
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();
+    settings.outputType=5;//By default set output file format to xml
     accept();
 }
 void BlastPlusWithExtFileSpecifySupportRunDialog::sl_cancel(){

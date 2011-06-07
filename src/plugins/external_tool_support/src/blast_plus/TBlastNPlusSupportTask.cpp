@@ -76,8 +76,14 @@ ExternalToolRunTask* TBlastNPlusSupportTask::createBlastPlusTask(){
     //ncbi-blast-2.2.24+-src/c++/src/corelib/ncbithr.cpp", line 649: Fatal: ncbi::CThread::Run()
     //- Assertion failed: (0) CThread::Run() -- system does not support threads
     //arguments <<"-num_threads"<< QString::number(settings.numberOfProcessors);
-    arguments <<"-outfmt"<< "5";//Set output file format to xml
-    arguments <<"-out"<< url+".xml";//settings.outputRepFile;
+    arguments <<"-outfmt"<< QString::number(settings.outputType);//"5";//Set output file format to xml
+    if(settings.outputOriginalFile.isEmpty()){
+        arguments <<"-out"<< url+".xml";
+        settings.outputOriginalFile = url+".xml";
+    }else{
+        arguments <<"-out"<< settings.outputOriginalFile;
+    }
+
 
     log.trace("Blastall arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser();

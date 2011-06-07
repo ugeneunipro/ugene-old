@@ -135,7 +135,9 @@ public:
 
     QString         queryFile;              //-i  Query File [File In]
     QByteArray      querySequence;
-    QString         outputResFile;          //-o  BLAST report Output File [File Out]  Optional
+    QString         outputResFile;          //Output file with annotations
+    QString         outputOriginalFile;     //-o  BLAST report Output File [File Out]  Optional
+    int             outputType;             //-m  Type of BLAST report Output File [File Out]  Optional
 
     int             numberOfProcessors;     //-a  Number of processors to use [Integer]
     int             numberOfHits;           //-K  Number of best hits from a region to keep. Off by default.  If used a value of 100 is recommended.
