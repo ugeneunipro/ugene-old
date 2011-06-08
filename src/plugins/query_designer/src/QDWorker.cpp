@@ -28,6 +28,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FailTask.h>
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -172,8 +173,7 @@ Task* QDWorker::tick() {
     
     QFile f(schemaUri);
     if (!f.open(QIODevice::ReadOnly)) {
-        coreLog.error(L10N::errorOpeningFileRead(schemaUri));
-        return NULL;
+        return new FailTask(L10N::errorOpeningFileRead(schemaUri));
     }
     QByteArray data = f.readAll();
     QString content = QString::fromUtf8(data);
