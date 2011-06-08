@@ -146,41 +146,42 @@ void MuscleTask::doAlign(bool refine) {
     assert(!hasError());
     if(!isCanceled()) {
         assert(!resultSubMA.isEmpty());
-        if (config.alignRegion && config.regionToAlign.length != inputMA.getLength()) {
-            resultMA.setAlphabet(inputMA.getAlphabet());
-            QByteArray emptySeq;
-            const int nSeq = inputMA.getNumRows();
-            int *ids = new int[nSeq];
+        resultMA.setAlphabet(inputMA.getAlphabet());
+        QByteArray emptySeq;
+        const int nSeq = inputMA.getNumRows();
+        int *ids = new int[nSeq];
 
-            const int resNSeq = resultSubMA.getNumRows();
-            bool *existID = new bool[nSeq];
-            memset(existID,0,sizeof(bool)*nSeq);
-            for(int i=0, n = resNSeq; i < n; i++) {
-                ids[i] = ctx->output_uIds[i];
-                existID[ids[i]] = true;
+        const int resNSeq = resultSubMA.getNumRows();
+        bool *existID = new bool[nSeq];
+        memset(existID,0,sizeof(bool)*nSeq);
+        for(int i=0, n = resNSeq; i < n; i++) {
+            ids[i] = ctx->output_uIds[i];
+            existID[ids[i]] = true;
+        }
+        if(config.stableMode) {
+            for(int i = 0; i<nSeq;i++) {
+                ids[i] = i;
             }
-            if(config.stableMode) {
-                for(int i = 0; i<nSeq;i++) {
-                    ids[i] = i;
+        }
+        int j = resNSeq;
+        QByteArray gapSeq(resultSubMA.getLength(),MAlignment_GapChar);
+        for(int i=0, n = nSeq; i < n; i++) {
+            if(!existID[i]) {
+                MAlignmentRow row(inputMA.getRow(i).getName(), gapSeq);
+                if(config.stableMode) {
+                    resultSubMA.addRow(row,i);
+                } else {
+                    ids[j] = i;
+                    resultSubMA.addRow(row);
                 }
+                j++;
             }
-            int j = resNSeq;
-            QByteArray gapSeq(resultSubMA.getLength(),MAlignment_GapChar);
-            for(int i=0, n = nSeq; i < n; i++) {
-                if(!existID[i]) {
-					MAlignmentRow row(inputMA.getRow(i).getName(), gapSeq);
-                    if(config.stableMode) {
-                        resultSubMA.addRow(row,i);
-                    } else {
-                        ids[j] = i;
-                        resultSubMA.addRow(row);
-                    }
-                    j++;
-                }
-            }
-            delete[] existID;
-            assert(resultSubMA.getNumRows() == inputMA.getNumRows());
+        }
+        delete[] existID;
 
+        assert(resultSubMA.getNumRows() == inputMA.getNumRows());
+
+        if (config.alignRegion && config.regionToAlign.length != inputMA.getLength()) {                        
 
             for(int i=0, n = inputMA.getNumRows(); i < n; i++) {
                 const MAlignmentRow& row= inputMA.getRow(ids[i]);

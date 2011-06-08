@@ -97,7 +97,8 @@ void setupAlphaAndScore(DNAAlphabet* al, TaskStateInfo& ti) {
     }
 }
 
-void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) {
+void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) {    
+    MuscleContext *ctx = getMuscleContext();
     for (int i=0, n = ma.getNumRows(); i<n; i++) {
         const MAlignmentRow& row = ma.getRow(i);
         
@@ -111,6 +112,7 @@ void convertMAlignment2MSA(MSA& muscleMSA, const MAlignment& ma, bool fixAlpha) 
         name[row.getName().length()] = '\0';
         
         muscleMSA.AppendSeq(seq, coreLen, name);
+        ctx->tmp_uIds[i] = ctx->input_uIds[i];
     }
     if (fixAlpha) {
         muscleMSA.FixAlpha();
