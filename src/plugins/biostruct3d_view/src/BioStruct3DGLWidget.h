@@ -198,12 +198,6 @@ private:
     //! Creates actions for existing ColorSchemes, loads default color scheme.
     void loadColorSchemes();
 
-    //! Creates actions for select/deselect shown models.
-    void createSelectModelsActions();
-
-    //! Creates menu for select/deselect shown models.
-    void createSelectModelsMenu();
-
     //! Creates actions for structural alignment
     void createStrucluralAlignmentActions();
 
@@ -315,23 +309,21 @@ private:
     QAction *closeAction;
     QAction *exportImageAction;
 
+    // actions for selecting/deselecting shown models
+    QAction *selectModelsAction;
+
     // structural alignment related actions
     QAction *alignWithAction;
     QAction *resetAlignmentAction;
-
-    // actions for select/deselect shown models
-    QActionGroup *selectModelActions;
-    QAction *selectModelsExclusiveAction;
-    QAction *selectAllModelsAction;
 
     QActionGroup *colorSchemeActions;
     QActionGroup *rendererActions;
     QActionGroup *molSurfaceRenderActions;
     QActionGroup *molSurfaceTypeActions;
+
     QMenu *selectColorSchemeMenu;
     QMenu *selectRendererMenu;
     QMenu *displayMenu;
-    QMenu *modelsMenu;
 
 private slots:
      void sl_selectColorScheme(QAction* action);
@@ -355,9 +347,7 @@ private slots:
 
      // slots for select/deselect shown models actions
      // they affects only first biostruct
-     void sl_selectModel(QAction *action);
-     void sl_selectAllModels();
-     void sl_selectModelsExclusive();
+     void sl_selectModels();
 
      void sl_showSurface();
      void sl_hideSurface();

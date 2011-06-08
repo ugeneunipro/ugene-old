@@ -26,6 +26,7 @@
 #include "ExportImage3DGLDialog.h"
 #include "SettingsDialog.h"
 #include "MolecularSurfaceRenderer.h"
+#include "SelectModelsDialog.h"
 
 #include <U2Core/BioStruct3D.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -145,9 +146,6 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
 
     createActions();
     createMenus();
-
-    createSelectModelsActions();
-    createSelectModelsMenu();
 
     loadColorSchemes();
     loadGLRenderers();
@@ -784,63 +782,17 @@ void BioStruct3DGLWidget::showAllModels(bool show) {
     ctx.renderer->setShownModelsIndexes(ctx.shownModelsIndexes);
 }
 
-void BioStruct3DGLWidget::sl_selectModel(QAction *action) {
-    int modelId = action->text().toInt();
-    bool show = action->isChecked();
+void BioStruct3DGLWidget::sl_selectModels() {
+    BioStruct3DRendererContext &ctx = contexts.first();
+    SelectModelsDialog dlg(ctx.biostruct->getModelsNames(), ctx.shownModelsIndexes, this);
 
-    // in exclusive mode exact one model shown at the same time
-    if (selectModelActions->isExclusive()) {
-        showAllModels(false);
-        showModel(modelId, true);
+    if (dlg.exec() == QDialog::Accepted) {
+        ctx.shownModelsIndexes = dlg.getSelectedModelsIndexes();
+        ctx.renderer->setShownModelsIndexes(ctx.shownModelsIndexes);
+
+        contexts.first().renderer->updateShownModels();
+        updateGL();
     }
-    else {
-        showModel(modelId, show);
-    }
-
-    contexts.first().renderer->updateShownModels();
-    updateGL();
-}
-
-void BioStruct3DGLWidget::sl_selectAllModels() {
-    selectModelsExclusiveAction->setChecked(false);
-    selectModelActions->setExclusive(false);
-
-    foreach (QAction *action, selectModelActions->actions()) {
-        action->setChecked(true);
-    }
-
-    showAllModels(true);
-    contexts.first().renderer->updateShownModels();
-    updateGL();
-}
-
-void BioStruct3DGLWidget::sl_selectModelsExclusive() {
-    if (selectModelsExclusiveAction->isChecked()) {
-        QAction *first = 0;
-        foreach (QAction *action, selectModelActions->actions()) {
-            if (!first && action->isChecked()) {
-                first = action;
-            }
-            action->setChecked(false);
-        }
-
-        if (!first) {
-            first = selectModelActions->actions().first();
-        }
-
-        int firstId = first->text().toInt();
-        showAllModels(false);
-        showModel(firstId, true);
-
-        selectModelActions->setExclusive(true);
-        first->setChecked(true);
-    }
-    else {
-        selectModelActions->setExclusive(false);
-    }
-
-    contexts.first().renderer->updateShownModels();
-    updateGL();
 }
 
 void BioStruct3DGLWidget::writeImage2DToFile( int format, int options, int nbcol, const char *fileName )
@@ -991,34 +943,6 @@ void BioStruct3DGLWidget::wheelEvent ( QWheelEvent * event )
     zoom(numDegrees / 10);
 }
 
-void BioStruct3DGLWidget::createSelectModelsActions() {
-    selectModelActions = 0;
-    const BioStruct3DRendererContext &ctx = contexts.first();
-    const BioStruct3D &biostruct = *ctx.biostruct;
-
-    if (biostruct.modelMap.size() > 1) {
-        selectModelActions = new QActionGroup(this);
-        connect(selectModelActions, SIGNAL(triggered(QAction *)), this, SLOT(sl_selectModel(QAction *)));
-
-        foreach (int modelId, biostruct.modelMap.keys()) {
-            QAction *action = new QAction(QString::number(modelId), selectModelActions);
-            action->setCheckable(true);
-
-            if (ctx.shownModelsIndexes.contains(biostruct.modelMap.keys().indexOf(modelId))) {
-                action->setChecked(true);
-            }
-        }        
-        selectModelsExclusiveAction = new QAction(tr("Exclusive"), this);
-        selectModelsExclusiveAction->setCheckable(true);
-        selectModelsExclusiveAction->setChecked(true);
-        selectModelActions->setExclusive(true);
-        connect(selectModelsExclusiveAction, SIGNAL(triggered()), this, SLOT(sl_selectModelsExclusive()));
-
-        selectAllModelsAction = new QAction(tr("Select All"), this);
-        connect(selectAllModelsAction, SIGNAL(triggered()), this, SLOT(sl_selectAllModels()));
-    }
-}
-
 void BioStruct3DGLWidget::createActions()
 {
     QAction* action = NULL;
@@ -1067,6 +991,12 @@ void BioStruct3DGLWidget::createActions()
     action->setCheckable(true);
     action->setChecked(true);
 
+    selectModelsAction = 0;
+    if (!contexts.isEmpty() && contexts.first().biostruct->getModelsNames().size() > 1) {
+        selectModelsAction = new QAction(tr("Models.."), this);
+        connect(selectModelsAction, SIGNAL(triggered()), this, SLOT(sl_selectModels()));
+    }
+
     spinAction = new QAction(tr("Spin"), this);
     spinAction->setCheckable(true);
     connect(spinAction, SIGNAL(triggered()), this, SLOT(sl_acitvateSpin()));
@@ -1093,17 +1023,6 @@ void BioStruct3DGLWidget::createStrucluralAlignmentActions() {
     connect(resetAlignmentAction, SIGNAL(triggered()), this, SLOT(sl_resetAlignment()));
 }
 
-void BioStruct3DGLWidget::createSelectModelsMenu() {
-    if (selectModelActions) {
-        modelsMenu = new QMenu(tr("Models"));
-        modelsMenu->addAction(selectModelsExclusiveAction);
-        modelsMenu->addAction(selectAllModelsAction);
-        modelsMenu->addActions(selectModelActions->actions());
-
-        displayMenu->addMenu(modelsMenu);
-    }
-}
-
 void BioStruct3DGLWidget::createMenus()
 {
     // Renderer selection
@@ -1128,6 +1047,10 @@ void BioStruct3DGLWidget::createMenus()
 
     displayMenu->addMenu(surfaceMenu);
     displayMenu->addMenu(surfaceTypeMenu);
+
+    if (selectModelsAction) {
+        displayMenu->addAction(selectModelsAction);
+    }
 
     displayMenu->addAction(spinAction);
     displayMenu->addAction(settingsAction);

@@ -17,11 +17,13 @@ HEADERS += src/BallAndStickGLRenderer.h \
            src/SettingsDialog.h \
            src/StructuralAlignmentDialog.h \
            src/gl2ps/gl2ps.h \
-           src/BioStruct3DSubsetEditor.h
+           src/BioStruct3DSubsetEditor.h \
+	   src/SelectModelsDialog.h
 
 FORMS +=   src/ui/SettingsDialog.ui \
            src/ui/StructuralAlignmentDialog.ui \
-           src/ui/BioStruct3DSubsetEditor.ui
+           src/ui/BioStruct3DSubsetEditor.ui \
+	   src/ui/SelectModelsDialog.ui
 
 SOURCES += src/BallAndStickGLRenderer.cpp \
            src/BioStruct3DColorScheme.cpp \
@@ -39,7 +41,8 @@ SOURCES += src/BallAndStickGLRenderer.cpp \
            src/SettingsDialog.cpp \
            src/StructuralAlignmentDialog.cpp \
            src/gl2ps/gl2ps.cpp \
-           src/BioStruct3DSubsetEditor.cpp
+           src/BioStruct3DSubsetEditor.cpp \
+	   src/SelectModelsDialog.cpp
 
 RESOURCES += biostruct3d_view.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
