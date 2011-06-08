@@ -76,7 +76,7 @@ private:
 };
 
 class Footnote;
-class QDElement : public QObject, public QGraphicsItem {
+class QDElement : public QGraphicsObject {
     friend class QDElementDescription;
     friend class Footnote;
     friend class QueryViewController;
@@ -145,7 +145,7 @@ private:
     QDElementDescription* itemDescription;
 };
 
-class Footnote : public QObject, public QGraphicsItem {
+class Footnote : public QGraphicsObject {
     friend class QDElement;
     Q_OBJECT
 public:
@@ -209,7 +209,7 @@ private:
     int resize;
 };
 
-class QDRulerItem : public QObject, public QGraphicsItem {
+class QDRulerItem : public QGraphicsObject {
     Q_OBJECT
 public:
     QDRulerItem() : leftPos(0), rightPos(0) {}

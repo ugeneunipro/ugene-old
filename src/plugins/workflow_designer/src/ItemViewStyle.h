@@ -38,7 +38,7 @@ const qreal R = 30;
 const qreal A = 8;
 
 
-class ItemViewStyle : public QObject, public QGraphicsItem {
+class ItemViewStyle : public QGraphicsObject {
     Q_OBJECT
 public:
     ItemViewStyle(const QString& id);
