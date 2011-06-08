@@ -181,7 +181,7 @@ QList<Annotation*> ADVSequenceObjectContext::selectRelatedAnnotations(const QLis
     QList<Annotation*> res;
     foreach(Annotation* a, alist) {
         AnnotationTableObject* o = a->getGObject();
-        if (annotations.contains(o)) {
+        if (annotations.contains(o) || autoAnnotations.contains(o)) {
             res.append(a);
         }
     }
