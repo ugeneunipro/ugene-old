@@ -67,6 +67,7 @@
 #include "blast/BlastAllWorker.h"
 #include "blast_plus/BlastPlusSupport.h"
 #include "blast_plus/BlastPlusWorker.h"
+#include "cap3/CAP3Support.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <blast_plus/RPSBlastSupportTask.h>
@@ -153,6 +154,9 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     AppContext::getExternalToolRegistry()->registerEntry(tBlastXPlusTool);
     BlastPlusSupport* rpsblastTool = new BlastPlusSupport(RPSBLAST_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(rpsblastTool);
+    CAP3Support* cap3Tool = new CAP3Support(CAP3_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(cap3Tool);
+
 
     if (AppContext::getMainWindow()) {
         ExternalToolSupprotAction* formatDBAction= new ExternalToolSupprotAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
@@ -174,15 +178,21 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         toolList << BLASTN_TOOL_NAME << BLASTP_TOOL_NAME << BLASTX_TOOL_NAME << TBLASTN_TOOL_NAME << TBLASTX_TOOL_NAME << RPSBLAST_TOOL_NAME;
         ExternalToolSupprotAction* blastPlusAction= new ExternalToolSupprotAction(tr("BLAST+ Search..."), this, toolList);
         connect(blastPlusAction, SIGNAL(triggered()), blastNPlusTool, SLOT(sl_runWithExtFileSpecify()));
+        
+        ExternalToolSupprotAction* cap3Action = new ExternalToolSupprotAction(cap3Tool->getName(), this, QStringList(cap3Tool->getName()));
+        connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
+
 
         //Add to menu NCBI Toolkit
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu* toolsSubmenu = tools->addMenu(tr("BLAST"));
-        toolsSubmenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
-        toolsSubmenu->addAction(formatDBAction);
-        toolsSubmenu->addAction(blastallAction);
-        toolsSubmenu->addAction(makeBLASTDBAction);
-        toolsSubmenu->addAction(blastPlusAction);
+        QMenu* assemblySumbenu = tools->addMenu(tr("Contig Assembly"));
+        assemblySumbenu->addAction(cap3Action);
+        QMenu* blastSubmenu = tools->addMenu(tr("BLAST"));
+        blastSubmenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
+        blastSubmenu->addAction(formatDBAction);
+        blastSubmenu->addAction(blastallAction);
+        blastSubmenu->addAction(makeBLASTDBAction);
+        blastSubmenu->addAction(blastPlusAction);
     }
 
     AppContext::getCDSFactoryRegistry()->registerFactory(new CDSearchLocalTaskFactory(), CDSearchFactoryRegistry::LocalSearch);
