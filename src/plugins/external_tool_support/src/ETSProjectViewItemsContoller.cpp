@@ -60,9 +60,17 @@ void ETSProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
 
-    MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
-    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
-    if (!set.isEmpty()) {
+    MultiGSelection ms; //ms.addSelection(pv->getGObjectSelection());
+    ms.addSelection(pv->getDocumentSelection());
+    QList<Document*> set = SelectionUtils::getSelectedDocs(ms);
+    bool hasFastaDocs=false;
+    foreach(Document* doc,set){
+        if(doc->getDocumentFormatId() == BaseDocumentFormats::PLAIN_FASTA){
+            hasFastaDocs=true;
+            break;
+        }
+    }
+    if (hasFastaDocs) {
         QMenu* subMenu = m.addMenu(tr("BLAST"));
         subMenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
         subMenu->addAction(formatDBOnSelectionAction);
@@ -113,7 +121,9 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());//???
     FormatDBSupportTaskSettings settings;
     foreach(Document* doc,pv->getDocumentSelection()->getSelectedDocuments()){
-        settings.inputFilesPath.append(doc->getURLString());
+        if(doc->getDocumentFormatId() == BaseDocumentFormats::PLAIN_FASTA){
+            settings.inputFilesPath.append(doc->getURLString());
+        }
     }
     FormatDBSupportRunDialog formatDBRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
     if(formatDBRunDialog.exec() != QDialog::Accepted){
