@@ -429,7 +429,7 @@ void AnnotationsTreeViewL::sl_onAnnotationObjectAdded(AnnotationTableObject* obj
         SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
 
     connect(obj, SIGNAL(si_onGroupCreated(AnnotationGroup*)), SLOT(sl_onGroupCreated(AnnotationGroup*)));
-    //connect(obj, SIGNAL(si_onGroupRemoved(AnnotationGroup*, AnnotationGroup*)), SLOT(sl_onGroupRemoved(AnnotationGroup*, AnnotationGroup*)));
+    connect(obj, SIGNAL(si_onGroupRemoved(AnnotationGroup*, AnnotationGroup*)), SLOT(sl_onGroupRemoved(AnnotationGroup*, AnnotationGroup*)));
     connect(obj, SIGNAL(si_onGroupRenamed(AnnotationGroup*, const QString& )), SLOT(sl_onGroupRenamed(AnnotationGroup*, const QString& )));
 
     connect(obj, SIGNAL(si_modifiedStateChanged()), SLOT(sl_annotationObjectModifiedStateChanged()));
@@ -618,18 +618,13 @@ void AnnotationsTreeViewL::sl_onGroupCreated(AnnotationGroup* g) {
 }
 
 void AnnotationsTreeViewL::sl_onGroupRemoved(AnnotationGroup* parent, AnnotationGroup* g) {
-    AVGroupItemL* pg  = findGroupItem(parent);
-    tree->treeWalker->deleteItem(g);
-    assert(parent!=NULL && pg!=NULL);
-    
-    for(int i = 0, n = pg->childCount(); i < n; i++) {
-        AVItemL* item = static_cast<AVItemL*>(pg->child(i));
-        if (item->type == AVItemType_Group && (static_cast<AVGroupItemL*>(item))->group == g) {
-            tree->removeItem(item);
-            break;
-        }
+    AVGroupItemL *gr = findGroupItem(g);
+    if(gr) {
+        destroyTree(gr);
+        tree->treeWalker->deleteItem(g);
+        tree->realNumberOfItems -= tree->getExpandedNumber(gr) + 1;
+        tree->removeItem(gr);
     }
-    pg->updateVisual();
 }
 
 void AnnotationsTreeViewL::sl_onGroupRenamed(AnnotationGroup* g, const QString& oldName) {
@@ -1892,7 +1887,7 @@ int LazyTreeView::scrollOneItemUp() {
     assert(item != NULL);
     QTreeWidgetItem *last = onScreen.first();
     QTreeWidgetItem *toDelete = onScreen.last();
-    if(item == last->parent()) {
+    if(item == last->parent() || item->parent()->parent() == NULL) {
         onScreen.insert(0, item);
     } else {
         insertItem(0,  item);
@@ -1906,12 +1901,15 @@ int LazyTreeView::scrollOneItemDown() {
     LazyAnnotationTreeViewModel* lm = static_cast<LazyAnnotationTreeViewModel*>(model());
     AVItemL *item = getNextItemDown(static_cast<AVItemL*>(onScreen.last()));
     if(item) {
+        QTreeWidgetItem *toDelete = onScreen.first();
         insertItem(item->parent()->childCount() - 1, item, false);
         if(treeWalker->isExpanded(item)) {
             emptyExpand = true;
             expand(lm->guessIndex(item));
         }
-        deleteTop();
+        if(toDelete->childCount() == 0) {
+            removeItem(toDelete);
+        }
         return 1;
     } else {
         return 0;
@@ -1987,26 +1985,6 @@ void LazyTreeView::sl_collapsed(const QModelIndex &index) {
 
     updateSlider();
     emit itemCollapsed(item);
-}
-
-void LazyTreeView::deleteTop() {
-    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(model());
-    QTreeWidgetItem * root = (QTreeWidgetItem*)(lm->getItem(QModelIndex()));
-    QTreeWidgetItem *item = root;
-    while(item) {
-        if(item->childCount() == 0 && item->parent()->parent()) {//don't delete top level items
-            QModelIndex index = lm->guessIndex(item);
-            if(!onScreen.contains(item)) {
-                if(currentItem() == item) {
-                    setCurrentIndex(QModelIndex());
-                }
-                removeItem(item);
-            }
-            return;
-        }
-        root = item;
-        item = item->child(0);
-    }
 }
 
 void LazyTreeView::insertItemBehindView(int row, QTreeWidgetItem *item) {
@@ -2142,6 +2120,9 @@ AVItemL * LazyTreeView::getNextItemDown(AVItemL *bottom){ //Get item next down f
 AVItemL * LazyTreeView::getLastItemInSubtree(AnnotationGroup *gr, AnnotationsTreeViewL *view) {
     LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel *>(model());
     if(gr->getSubgroups().isEmpty()) {
+        if(gr->getAnnotations().isEmpty()) {
+
+        }
         Annotation *a = gr->getAnnotations().last();
         if(treeWalker->isExpanded(a, gr)) {
             AVAnnotationItemL *annItem = view->findAnnotationItem(gr, a);

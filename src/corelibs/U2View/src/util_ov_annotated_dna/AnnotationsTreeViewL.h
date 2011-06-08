@@ -35,13 +35,6 @@ class LazyTreeView;
 class AnnotationsTreeViewL;
 
 
-
-
-
-
-
-
-
 class CustomSlider: public QScrollBar {
 public:
     CustomSlider(QWidget *parent = NULL);
@@ -101,7 +94,6 @@ protected:
 
 private:
     void resizeModel();
-    void deleteTop();
     void insertItem(int row, QTreeWidgetItem *item, bool removeLast = true);
     void insertItemBehindView(int row, QTreeWidgetItem *item);
     void removeItem(QTreeWidgetItem *item, bool removeAll = false);

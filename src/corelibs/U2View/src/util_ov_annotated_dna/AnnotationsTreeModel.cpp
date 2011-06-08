@@ -288,11 +288,20 @@ void TreeIndex::deleteItem(Annotation *a, AnnotationGroup *gr) {
     int offset = gr->getAnnotations().indexOf(a);
     int ind = findPosition(gr) + offset + 1;
     itemMap[getRootGroupName(gr->getGObject())].erase(itemMap[getRootGroupName(gr->getGObject())].begin() + ind);
+    if(gr->getAnnotations().isEmpty()) {
+        ind = findPosition(gr);
+        itemMap[getRootGroupName(gr->getGObject())][ind] = 0;  
+    }
 }
 
 void TreeIndex::deleteItem(AnnotationGroup *gr) {
     int ind = findPosition(gr);
-    itemMap[getRootGroupName(gr->getGObject())].erase(itemMap[getRootGroupName(gr->getGObject())].begin() + ind);
+    QString name = gr->getGObject() ? getRootGroupName(gr->getGObject()) : getRootGroupName(gr->getParentGroup()->getGObject());
+    itemMap[name].erase(itemMap[name].begin() + ind);
+    if(gr->getParentGroup()->getSubgroups().isEmpty()) {
+        ind = findPosition(gr->getParentGroup());
+        itemMap[name][ind] = 0;
+    }
 }
 
 void TreeIndex::addItem(Annotation *a, AnnotationGroup *gr) {
