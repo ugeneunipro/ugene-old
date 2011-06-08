@@ -99,6 +99,7 @@ loadDocumentTask(NULL), doc(NULL), accNumber(accId), dbName(dbNm) {
         fileName = sourceUrl.fileName();
     } else {
         format = getFileFormat(dbName);
+        accNumber.replace(";",",");
         QStringList accIds = accNumber.split(",");
         if (accIds.size() == 1 ) {
             fileName = accNumber + "." + format;
