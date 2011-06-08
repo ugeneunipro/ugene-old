@@ -144,7 +144,7 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     assert(orfTasks.isEmpty());
     foreach(const U2Region& r, searchLocation) {
         ORFAlgorithmSettings stngs(settings);
-        settings.searchRegion = r;
+        stngs.searchRegion = r;
         ORFFindTask* sub = new ORFFindTask(stngs, dna->getSequence());
         orfTasks.append(sub);
         t->addSubTask(sub);
