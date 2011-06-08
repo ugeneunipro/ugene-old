@@ -71,6 +71,9 @@ ExternalToolRunTask* BlastNPlusSupportTask::createBlastPlusTask(){
     if(settings.numberOfHits != 0){
         arguments <<"-culling_limit" << QString::number(settings.numberOfHits); //???
     }
+    if(!settings.isGappedAlignment){
+        arguments << "-ungapped";
+    }
 
     arguments <<"-query"<< url;
     //I always get error from BLAST+:

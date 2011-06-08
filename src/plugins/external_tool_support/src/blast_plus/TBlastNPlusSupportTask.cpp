@@ -71,6 +71,10 @@ ExternalToolRunTask* TBlastNPlusSupportTask::createBlastPlusTask(){
     if(settings.numberOfHits != 0){
         arguments <<"-culling_limit" << QString::number(settings.numberOfHits); //???
     }
+    if(!settings.isGappedAlignment){
+        arguments << "-ungapped";
+    }
+
     arguments <<"-query"<< url;
     //I always get error from BLAST+:
     //ncbi-blast-2.2.24+-src/c++/src/corelib/ncbithr.cpp", line 649: Fatal: ncbi::CThread::Run()

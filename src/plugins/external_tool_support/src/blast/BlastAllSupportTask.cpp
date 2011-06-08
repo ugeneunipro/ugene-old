@@ -126,6 +126,11 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
         arguments <<"-i"<< url;
         arguments <<"-a"<< QString::number(settings.numberOfProcessors);
         arguments <<"-m"<< QString::number(settings.outputType);//"7";//By default set output file format to xml
+        if(settings.programName != "tblastx"){
+            if(!settings.isGappedAlignment){
+                arguments << "-g" << "F";
+            }
+        }
         if(settings.outputOriginalFile.isEmpty()){
             arguments <<"-o"<< url+".xml";//settings.outputRepFile;
             settings.outputOriginalFile = url+".xml";

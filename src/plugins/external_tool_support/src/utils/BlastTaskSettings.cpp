@@ -32,6 +32,7 @@ BlastTaskSettings::BlastTaskSettings() {
     isDefaultMatrix=true;
     isDefautScores=true;
     isDefaultCosts=true;
+    isGappedAlignment=true;
     reset();
 }
 
@@ -51,6 +52,7 @@ void BlastTaskSettings::reset() {
     numberOfProcessors=1;
     needCreateAnnotations=true;
     filter="";
+    isGappedAlignment=true;
 }
 
 }//namespace

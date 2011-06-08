@@ -499,6 +499,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_runQuery(){
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();
     settings.outputType=5;//By default set output file format to xml
+    settings.isGappedAlignment=gappedAlignmentCheckBox->isChecked();
     accept();
 }
 void BlastPlusWithExtFileSpecifySupportRunDialog::sl_cancel(){

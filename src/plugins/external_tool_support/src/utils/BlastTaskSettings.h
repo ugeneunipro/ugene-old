@@ -117,30 +117,32 @@ public:
 
     QString         programName;            //-p Program Name [String]
     QString         databaseNameAndPath;    //-d database [String]
-    QString         filter;                 //-F  Filter query sequence (DUST with blastn, SEG with others) [String] : default = T
+    QString         filter;                 //-F Filter query sequence (DUST with blastn, SEG with others) [String] : default = T
     float           expectValue;            //-e Expectation value [Real] : default = 10.0
-    bool            megablast;              //-n  MegaBlast search [T/F]
+    bool            megablast;              //-n MegaBlast search [T/F]
 
-    int             wordSize;               //-W  Word size, default if zero (blastn 11, megablast 28, all others 3) [Integer] up to 99
-    int             gapOpenCost;            //-G  Cost to open a gap (-1 invokes default behavior) [Integer]
-    int             gapExtendCost;          //-E  Cost to extend a gap (-1 invokes default behavior) [Integer]
+    int             wordSize;               //-W Word size, default if zero (blastn 11, megablast 28, all others 3) [Integer] up to 99
+    int             gapOpenCost;            //-G Cost to open a gap (-1 invokes default behavior) [Integer]
+    int             gapExtendCost;          //-E Cost to extend a gap (-1 invokes default behavior) [Integer]
     bool            isDefaultCosts;
+
+    bool            isGappedAlignment;      //-g Perform gapped alignment (not available with tblastx)
     //only for nucleotide sequence
-    int             mismatchPenalty;        //-q  Penalty for a nucleotide mismatch (blastn only) [Integer]
-    int             matchReward;            //-r  Reward for a nucleotide match (blastn only) [Integer]
+    int             mismatchPenalty;        //-q Penalty for a nucleotide mismatch (blastn only) [Integer]
+    int             matchReward;            //-r Reward for a nucleotide match (blastn only) [Integer]
     bool            isDefautScores;
     //only for protein sequence
-    QString         matrix;                 //-M  Matrix [String] : default = BLOSUM62
+    QString         matrix;                 //-M Matrix [String] : default = BLOSUM62
     bool            isDefaultMatrix;
 
-    QString         queryFile;              //-i  Query File [File In]
+    QString         queryFile;              //-i Query File [File In]
     QByteArray      querySequence;
     QString         outputResFile;          //Output file with annotations
-    QString         outputOriginalFile;     //-o  BLAST report Output File [File Out]  Optional
-    int             outputType;             //-m  Type of BLAST report Output File [File Out]  Optional
+    QString         outputOriginalFile;     //-o BLAST report Output File [File Out]  Optional
+    int             outputType;             //-m Type of BLAST report Output File [File Out]  Optional
 
-    int             numberOfProcessors;     //-a  Number of processors to use [Integer]
-    int             numberOfHits;           //-K  Number of best hits from a region to keep. Off by default.  If used a value of 100 is recommended.
+    int             numberOfProcessors;     //-a Number of processors to use [Integer]
+    int             numberOfHits;           //-K Number of best hits from a region to keep. Off by default.  If used a value of 100 is recommended.
 
     bool            isNucleotideSeq;
     DNAAlphabet*    alphabet;

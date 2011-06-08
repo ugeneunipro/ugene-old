@@ -230,14 +230,19 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
     settings.programName=programName->currentText();
     if(programName->currentText() == "blastn"){//nucl
         programName->setToolTip(tr("Direct nucleotide alignment"));
+        gappedAlignmentCheckBox->setEnabled(true);
     }else if(programName->currentText() == "blastp"){//amino
         programName->setToolTip(tr("Direct protein alignment"));
+        gappedAlignmentCheckBox->setEnabled(true);
     }else if(programName->currentText() == "blastx"){//nucl
         programName->setToolTip(tr("Protein alignment, input nucleotide is translated input protein before the search"));
+        gappedAlignmentCheckBox->setEnabled(true);
     }else if(programName->currentText() == "tblastn"){//amino
         programName->setToolTip(tr("Protein alignment, nucleotide database is translated input protein before the search"));
+        gappedAlignmentCheckBox->setEnabled(true);
     }else if(programName->currentText() == "tblastx"){//nucl
         programName->setToolTip(tr("Protein alignment, both input query and database are translated before the search"));
+        gappedAlignmentCheckBox->setEnabled(false);
     }else{
         assert(0);
     }

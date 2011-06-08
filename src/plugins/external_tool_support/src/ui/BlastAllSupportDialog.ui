@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
+    <width>564</width>
     <height>322</height>
    </rect>
   </property>
@@ -137,6 +137,16 @@
            </property>
            <property name="value">
             <double>10.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QCheckBox" name="gappedAlignmentCheckBox">
+           <property name="text">
+            <string>Perform gapped alignment</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

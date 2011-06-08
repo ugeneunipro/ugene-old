@@ -150,6 +150,7 @@ void BlastAllSupportRunDialog::sl_runQuery(){
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();
     settings.outputType=7;//By default set output file format to xml
+    settings.isGappedAlignment=gappedAlignmentCheckBox->isChecked();
     accept();
 }
 ////////////////////////////////////////

@@ -57,6 +57,7 @@ const QString TMP_DIR_PATH("temp-dir");
 //Additional options
 const QString ORIGINAL_OUT("blast-output");//path for output file
 const QString OUT_TYPE("type-output");//original option -m 0-11
+const QString GAPPED_ALN("gapped-aln");//Perform gapped alignment (not available with tblastx)
 //const QString USE_MEGABLAST("mega-blast");//
 //const QString WORD_SIZE("word-size");//
 //const QString GAP_COSTS("gap-cost");//gap-open and gap-ext costs
@@ -95,6 +96,8 @@ void BlastAllWorkerFactory::init() {
                    BlastAllWorker::tr("Location of BLAST output file."));
     Descriptor outtype(OUT_TYPE, BlastAllWorker::tr("BLAST output type"),
                    BlastAllWorker::tr("Type of BLAST output file."));
+    Descriptor ga(GAPPED_ALN, BlastAllWorker::tr("Gapped alignment"),
+                   BlastAllWorker::tr("Perform gapped alignment"));
 //    Descriptor umb(USE_MEGABLAST, BlastAllWorker::tr("Use MEGABLAST"),
 //                   BlastAllWorker::tr("Activates MEGABLAST algorithm for blastn search"));
 //    Descriptor ws(WORD_SIZE, BlastAllWorker::tr("Word size"),
@@ -116,6 +119,12 @@ void BlastAllWorkerFactory::init() {
     a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
     a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant(""));
 
+    Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
+    gaAttr->addRelation(PROGRAM_NAME,"blastn");
+    gaAttr->addRelation(PROGRAM_NAME,"blastp");
+    gaAttr->addRelation(PROGRAM_NAME,"blastx");
+    gaAttr->addRelation(PROGRAM_NAME,"tblastn");
+    a << gaAttr;
 //    Attribute* umbAttr= new Attribute(umb, BaseTypes::BOOL_TYPE(), false, QVariant(false));
 //    umbAttr->addRelation(PROGRAM_NAME,"blastn");
 //    a << umbAttr;
@@ -157,6 +166,12 @@ void BlastAllWorkerFactory::init() {
         m["singleStep"] = 1.0;
         m["decimals"] = 6;
         delegates[EXPECT_VALUE] = new DoubleSpinBoxDelegate(m);
+    }
+    {
+        QVariantMap m;
+        m["use"] = true;
+        m["not use"] = false;
+        delegates[GAPPED_ALN] = new ComboBoxDelegate(m);
     }
     delegates[DATABASE_PATH] = new URLDelegate("", "Database Directory", false, true);
     delegates[ORIGINAL_OUT] = new URLDelegate("", "out file", false);
@@ -319,7 +334,7 @@ Task* BlastAllWorker::tick() {
     cfg.wordSize=0;//actor->getParameter(WORD_SIZE)->getAttributeValue<int>();
 
 //    cfg.megablast=actor->getParameter(USE_MEGABLAST)->getAttributeValue<bool>();
-
+    cfg.isGappedAlignment=actor->getParameter(GAPPED_ALN)->getAttributeValue<bool>();
     cfg.expectValue=actor->getParameter(EXPECT_VALUE)->getAttributeValue<double>();
     cfg.groupName=actor->getParameter(GROUP_NAME)->getAttributeValue<QString>();
     if(cfg.groupName.isEmpty()){

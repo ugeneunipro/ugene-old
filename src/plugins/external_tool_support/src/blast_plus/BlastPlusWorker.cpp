@@ -70,6 +70,7 @@ const QString TMP_DIR_PATH("temp-dir");
 //Additional options
 const QString ORIGINAL_OUT("blast-output");//path for output file
 const QString OUT_TYPE("type-output");//original option -m 0-11
+const QString GAPPED_ALN("gapped-aln");//Perform gapped alignment (not available with tblastx)
 
 void BlastPlusWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
@@ -102,14 +103,23 @@ void BlastPlusWorkerFactory::init() {
                    BlastPlusWorker::tr("Location of BLAST output file."));
     Descriptor outtype(OUT_TYPE, BlastPlusWorker::tr("BLAST output type"),
                    BlastPlusWorker::tr("Type of BLAST output file."));
+    Descriptor ga(GAPPED_ALN, BlastPlusWorker::tr("Gapped alignment"),
+                   BlastPlusWorker::tr("Perform gapped alignment"));
 
     a << new Attribute(pn, BaseTypes::STRING_TYPE(), true, QVariant("blastn"));
     a << new Attribute(dp, BaseTypes::STRING_TYPE(), true, QVariant(""));
     a << new Attribute(dn, BaseTypes::STRING_TYPE(), true, QVariant(""));
-    a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
-    a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant(""));
     a << new Attribute(etp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(tdp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
+    a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
+    a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant(""));
+
+    Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
+    gaAttr->addRelation(PROGRAM_NAME,"blastn");
+    gaAttr->addRelation(PROGRAM_NAME,"blastp");
+    gaAttr->addRelation(PROGRAM_NAME,"blastx");
+    gaAttr->addRelation(PROGRAM_NAME,"tblastn");
+    a << gaAttr;
 
     a << new Attribute(output, BaseTypes::STRING_TYPE(), false, QVariant(""));
     a << new Attribute(outtype, BaseTypes::STRING_TYPE(), false, QVariant("5"));
@@ -137,6 +147,12 @@ void BlastPlusWorkerFactory::init() {
         m["singleStep"] = 1.0;
         m["decimals"] = 6;
         delegates[EXPECT_VALUE] = new DoubleSpinBoxDelegate(m);
+    }
+    {
+        QVariantMap m;
+        m["use"] = true;
+        m["not use"] = false;
+        delegates[GAPPED_ALN] = new ComboBoxDelegate(m);
     }
     {
         QVariantMap m;
@@ -212,6 +228,7 @@ Task* BlastPlusWorker::tick() {
         cfg.groupName="blast result";
     }
     cfg.wordSize=0;
+    cfg.isGappedAlignment=actor->getParameter(GAPPED_ALN)->getAttributeValue<bool>();
 
     QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>();
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
