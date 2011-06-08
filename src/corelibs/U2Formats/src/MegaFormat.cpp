@@ -364,6 +364,7 @@ void MegaFormat::save(U2::IOAdapter *io, U2::Document *d, U2::TaskStateInfo &ti)
         foreach (const MAlignmentRow & item, ma.getRows()) {
             QByteArray line;
             line.append(MEGA_SEPARATOR).append(item.getName());
+            TextUtils::replace(line.data(), line.length(), TextUtils::WHITES, '_');
             
             for (int i=0; i<maxNameLength-item.getName().length()+1; i++) {
                 line.append(' ');
