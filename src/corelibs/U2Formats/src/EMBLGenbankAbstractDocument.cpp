@@ -278,6 +278,7 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
     return len;
 }
 
+
 QString EMBLGenbankAbstractDocument::genObjectName(QSet<QString>& usedNames, const QString& seqName, const QVariantMap& tags, int n, const GObjectType& t) {
     //try to check UGENE_MARK first
     QString name;
@@ -300,22 +301,17 @@ QString EMBLGenbankAbstractDocument::genObjectName(QSet<QString>& usedNames, con
                 name = EMBLGenbankAbstractDocument::DEFAULT_OBJ_NAME;
             }
         }
+        if(t == GObjectTypes::ANNOTATION_TABLE) {
+            name+=" features";
+        } else if (t == GObjectTypes::SEQUENCE) {
+            name+=" sequence";
+        }
     }
-    QString baseName = name;
-    if(t == GObjectTypes::ANNOTATION_TABLE) {
-        name+=" features";
-    }else if (t == GObjectTypes::SEQUENCE) {
-        name+=" sequence";
-    }else{
-        assert(false);
-    }
-
     //now variate name if there are duplicates
     int n2 = 1;
     QString res = name;
     while (usedNames.contains(res)) {
-        QString extensionNumber = " " + QString::number(n) + (n2 == 1 ? QString("") : ("."+QString::number(n2)));
-        res = name.insert(baseName.length(), extensionNumber);
+        res =  name + " " + QString::number(n) + (n2 == 1 ? QString("") : ("."+QString::number(n2)));
     }
     usedNames.insert(res);
     return res;
