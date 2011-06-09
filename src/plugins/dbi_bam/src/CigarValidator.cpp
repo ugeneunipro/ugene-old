@@ -99,7 +99,7 @@ void CigarValidator::validate(int * totalLength) {
 
 bool CigarValidator::isClippingOperation(Alignment::CigarOperation::Operation op) {
     return Alignment::CigarOperation::HardClip == op ||
-        Alignment::CigarOperation::HardClip == op;
+        Alignment::CigarOperation::SoftClip == op;
 }
 
 bool CigarValidator::isRealOperation(Alignment::CigarOperation::Operation op) {
