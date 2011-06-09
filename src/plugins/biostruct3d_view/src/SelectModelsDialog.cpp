@@ -25,10 +25,13 @@
 
 namespace U2 {
 
-SelectModelsDialog::SelectModelsDialog(const QList<int> &modelIds, const QList<int> &selectedItems, QWidget *parent /*= 0*/)
+SelectModelsDialog::SelectModelsDialog(const QList<int> &_modelIds, const QList<int> &_selectedItems, QWidget *parent /*= 0*/)
         : QDialog(parent), Ui::SelectModelsDialog()
 {
     setupUi(this);
+
+    QVector<int> modelIds = _modelIds.toVector();
+    QSet<int> selectedItems = _selectedItems.toSet();
 
     for (int i = 0; i < modelIds.size(); ++i) {
         int modelId = modelIds[i];
