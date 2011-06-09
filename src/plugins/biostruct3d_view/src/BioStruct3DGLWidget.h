@@ -71,9 +71,6 @@ public:
 
     QSharedPointer<BioStruct3DGLRenderer> renderer;
     QSharedPointer<BioStruct3DColorScheme> colorScheme;
-
-    // this is just index numbers of models, NOT modelIds
-    QList<int> shownModelsIndexes;
 };
 
 /*!

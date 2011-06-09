@@ -685,7 +685,8 @@ void BioStruct3DGLWidget::setupRenderer(const QString &name) {
 
         // TODO: this situation may be potentialy dangerous
         // if renderer starts draw right now, maybe SharedPointer will be good solution
-        BioStruct3DGLRenderer *rend = BioStruct3DGLRendererRegistry::createRenderer(name, *ctx.biostruct, ctx.colorScheme.data(), ctx.shownModelsIndexes, this);
+        const QList<int> &shownModelsIndexes = ctx.renderer->getShownModelsIndexes();
+        BioStruct3DGLRenderer *rend = BioStruct3DGLRendererRegistry::createRenderer(name, *ctx.biostruct, ctx.colorScheme.data(), shownModelsIndexes, this);
         assert(rend);
         ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(rend);
     }
@@ -760,35 +761,36 @@ void BioStruct3DGLWidget::showModel(int modelId, bool show) {
     int idx = ctx.biostruct->modelMap.keys().indexOf(modelId);
     assert(idx != -1);
 
-    if (show && !ctx.shownModelsIndexes.contains(idx)) {
-        ctx.shownModelsIndexes.append(idx);
+    QList<int> shownModelsIndexes = ctx.renderer->getShownModelsIndexes();
+
+    if (show && !shownModelsIndexes.contains(idx)) {
+        shownModelsIndexes.append(idx);
     }
     else if (!show) {
-        ctx.shownModelsIndexes.removeAll(idx);
+        shownModelsIndexes.removeAll(idx);
     }
-    ctx.renderer->setShownModelsIndexes(ctx.shownModelsIndexes);
+    ctx.renderer->setShownModelsIndexes(shownModelsIndexes);
 }
 
 void BioStruct3DGLWidget::showAllModels(bool show) {
     BioStruct3DRendererContext &ctx = contexts.first();
 
-    ctx.shownModelsIndexes.clear();
+    QList<int> shownModelsIndexes;
     if (show) {
         int numModels = ctx.biostruct->modelMap.size();
         for (int i = 0; i < numModels; ++i) {
-            ctx.shownModelsIndexes.append(i);            
+            shownModelsIndexes.append(i);
         }
     }
-    ctx.renderer->setShownModelsIndexes(ctx.shownModelsIndexes);
+    ctx.renderer->setShownModelsIndexes(shownModelsIndexes);
 }
 
 void BioStruct3DGLWidget::sl_selectModels() {
     BioStruct3DRendererContext &ctx = contexts.first();
-    SelectModelsDialog dlg(ctx.biostruct->getModelsNames(), ctx.shownModelsIndexes, this);
+    SelectModelsDialog dlg(ctx.biostruct->getModelsNames(), ctx.renderer->getShownModelsIndexes(), this);
 
     if (dlg.exec() == QDialog::Accepted) {
-        ctx.shownModelsIndexes = dlg.getSelectedModelsIndexes();
-        ctx.renderer->setShownModelsIndexes(ctx.shownModelsIndexes);
+        ctx.renderer->setShownModelsIndexes(dlg.getSelectedModelsIndexes());
 
         contexts.first().renderer->updateShownModels();
         updateGL();
@@ -1232,7 +1234,7 @@ void BioStruct3DGLWidget::sl_exportImage()
 void BioStruct3DGLWidget::sl_showSurface()
 {
     QList<SharedAtom> atoms;
-    int index = contexts.first().shownModelsIndexes.first();
+    int index = contexts.first().renderer->getShownModelsIndexes().first();
     foreach (const SharedMolecule &mol, contexts.first().biostruct->moleculeMap) {
         const Molecule3DModel& model = mol->models.at(index);
         atoms += model.atoms;
@@ -1299,8 +1301,7 @@ void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList
     ctx.colorScheme->setSelectionColor(selectionColor);
     ctx.colorScheme->setUnselectedShadingLevel((double)unselectedShadingLevel/100.0);
 
-    ctx.shownModelsIndexes = shownModelsIdx;
-    BioStruct3DGLRenderer *renderer = BioStruct3DGLRendererRegistry::createRenderer(currentGLRendererName, *ctx.biostruct, ctx.colorScheme.data(), ctx.shownModelsIndexes, this);
+    BioStruct3DGLRenderer *renderer = BioStruct3DGLRendererRegistry::createRenderer(currentGLRendererName, *ctx.biostruct, ctx.colorScheme.data(), shownModelsIdx, this);
     assert(renderer);
     ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(renderer);
 
