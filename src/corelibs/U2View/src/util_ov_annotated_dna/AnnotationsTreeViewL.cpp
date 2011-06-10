@@ -1739,8 +1739,9 @@ void AnnotationsTreeViewL::sl_addQualifier() {
         Annotation* a = ai->annotation;
         a->addQualifier(q);
         //ai->setExpanded(true);
+        AVQualifierItemL* qi = new AVQualifierItemL(ai, q);
         sl_itemExpanded(ai);
-        AVQualifierItemL* qi = ai->findQualifierItem(q.name, q.value);
+        //AVQualifierItemL* qi = ai->findQualifierItem(q.name, q.value);
         tree->setCurrentItem(qi);
         tree->scrollToItem(qi);
     }
