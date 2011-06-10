@@ -35,13 +35,14 @@ protected:
             QString originalFile = testData.getValue<QString>(DATA_PATH);
             ASSERT_TRUE(QFileInfo(originalFile).exists());
 
-            /*QFileInfo fi(originalFile);
+            QFileInfo fi(originalFile);
             QString tmpFile = QDir::temp().absoluteFilePath(fi.fileName());
             if(QFile::exists(tmpFile)) {
                 QFile::remove(tmpFile);
             }
-            ASSERT_TRUE(QFile::copy(originalFile, tmpFile));*/
-            properties["url"] = originalFile;
+            ASSERT_FALSE(QFile::exists(tmpFile));
+            ASSERT_TRUE(QFile::copy(originalFile, tmpFile));
+            properties["url"] = tmpFile;
         }
 
         QVariantMap persistentData;

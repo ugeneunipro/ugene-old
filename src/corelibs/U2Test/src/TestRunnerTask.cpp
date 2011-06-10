@@ -119,6 +119,14 @@ QList<Task*> TestRunnerTask::onSubTaskFinished(Task* subTask) {
                     newEnv->setVar( var, globalEnvVars[var] );
                 }
 
+                const QString& suiteDir = QFileInfo(testState->getTestRef()->getSuite()->getURL()).absoluteDir().absolutePath();
+                if (newEnv->getVars().contains("COMMON_DATA_DIR")) {
+                    newEnv->setVar("COMMON_DATA_DIR", suiteDir + newEnv->getVar("COMMON_DATA_DIR"));
+                }
+                if (newEnv->getVars().contains("TEMP_DATA_DIR")) {
+                    newEnv->setVar("TEMP_DATA_DIR", suiteDir + newEnv->getVar("TEMP_DATA_DIR"));
+                }
+
                 GTest* test = tf->createTest(testState->getTestRef()->getShortName(), NULL, newEnv, loader->testData, err);
                 if (test == NULL) {
                     testState->setFailed(err);

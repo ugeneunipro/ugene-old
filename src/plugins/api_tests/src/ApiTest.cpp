@@ -5,7 +5,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 
-#include <U2Test/TestRunnerTask.h>
 #include <U2Test/TestRunnerSettings.h>
 
 
@@ -37,12 +36,7 @@ void GTest_APITest::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_APITest::prepare() {
-    TestRunnerTask* trTask = qobject_cast<TestRunnerTask*>(getParentTask());
-    assert(trTask);
-    GTestState* ts = trTask->getStateByTestMap().value(this);
-    assert(ts);
-    GTestSuite* suite = ts->getTestRef()->getSuite();
-    QString dataDir = QFileInfo(suite->getURL()).absoluteDir().absolutePath() + "/_common_data";
+    QString dataDir = env->getVar("COMMON_DATA_DIR");
     AppContext::getAppSettings()->getTestRunnerSettings()->setVar(tcase, dataDir);
 }
 

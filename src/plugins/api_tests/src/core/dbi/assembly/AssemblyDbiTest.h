@@ -29,53 +29,8 @@ protected:
     U2AssemblyDbi *assemblyDbi;
 };
 
-// copy of U2AssemblyReadData that can be used with QVariant
-
-class ReadData {
-public:
-    ReadData() : leftmostPos(0), effectiveLen(0), 
-        packedViewRow(0), mappingQuality(255) {}
-
-    bool operator ==(const U2AssemblyRead& read) const {
-        if (name != read->name) {
-            return false;
-        }
-        if (leftmostPos != read->leftmostPos) {
-            return false;
-        }
-        if (effectiveLen != read->effectiveLen) {
-            return false;
-        }
-        if (packedViewRow != read->packedViewRow) {
-            return false;
-        }
-        if (readSequence != read->readSequence) {
-            return false;
-        }
-        if (quality != read->quality) {
-            return false;
-        }
-        if (mappingQuality != read->mappingQuality) {
-            return false;
-        }
-        if (flags != read->flags) {
-            return false;
-        }
-        return true;
-    }
-
-    QByteArray          name;
-    qint64              leftmostPos;
-    qint64              effectiveLen;
-    qint64              packedViewRow;
-    QByteArray          readSequence;
-    QByteArray          quality;
-    quint8              mappingQuality;
-    qint64              flags;
-};
-
 } // namespace U2
 
-Q_DECLARE_METATYPE(U2::ReadData);
+Q_DECLARE_METATYPE(U2::U2AssemblyRead);
 
 #endif // ASSEMBLYDBITEST_H

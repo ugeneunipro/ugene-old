@@ -5,15 +5,15 @@
 + getAssemblyObject
 + countReads
 + getReads
-- getReadsByRow
-+ getReadsByName
-- getMaxPackedRow
++ getReadsByRow
+- getReadsByName
++ getMaxPackedRow
 + getMaxEndPos
-- createAssemblyObject
++ createAssemblyObject
 - updateAssemblyObject
-- removeReads
-- addReads
-- pack
++ removeReads
++ addReads
++ pack
 + calculateCoverage
 
 </gtest>

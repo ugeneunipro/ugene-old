@@ -236,20 +236,8 @@ void TestRunnerService::addTestSuite(GTestSuite *ts) {
         }
     }
     readEnvForKeys(tsEnvResultedKeys);
-    updateDefaultEnvValues(ts);
     
     emit si_testSuiteAdded(ts);
-}
-
-void TestRunnerService::updateDefaultEnvValues(GTestSuite* ts) {
-    QMap<QString, QString> vars = env->getVars();
-    //if (vars.contains("COMMON_DATA_DIR") && vars.value("COMMON_DATA_DIR").isEmpty()) {
-        env->setVar("COMMON_DATA_DIR", QFileInfo(ts->getURL()).absoluteDir().absolutePath() + "/_common_data");
-  //  }
-
-    if (vars.contains("TEMP_DATA_DIR") && vars.value("TEMP_DATA_DIR").isEmpty()) {
-        env->setVar("TEMP_DATA_DIR", QFileInfo(ts->getURL()).absoluteDir().absolutePath()+"/_tmp");
-    }
 }
 
 void TestRunnerService::removeTestSuite(GTestSuite* ts) {
@@ -283,6 +271,12 @@ void TestRunnerService::readBuiltInVars() {
     }
     if (!vars.contains(TIME_OUT_VAR) || vars.value(TIME_OUT_VAR).isEmpty()) {
         env->setVar(TIME_OUT_VAR, TIME_OUT_VAR_VALUE);
+    }
+    if (!vars.contains("COMMON_DATA_DIR") || vars.value("COMMON_DATA_DIR").isEmpty()) {
+        env->setVar("COMMON_DATA_DIR", "/_common_data");
+    }
+    if (!vars.contains("TEMP_DATA_DIR") || vars.value("TEMP_DATA_DIR").isEmpty()) {
+        env->setVar("TEMP_DATA_DIR", "/_tmp");
     }
 }
 
