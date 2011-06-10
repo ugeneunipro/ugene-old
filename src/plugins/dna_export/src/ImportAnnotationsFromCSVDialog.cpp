@@ -60,7 +60,7 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
 {
     setupUi(this);
     connect(readFileButton, SIGNAL(clicked()), SLOT(sl_readFileClicked()));
-    //connect(previewButton, SIGNAL(clicked()), SLOT(sl_previewClicked()));
+    connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(sl_previewClicked()));
     connect(guessButton, SIGNAL(clicked()), SLOT(sl_guessSeparatorClicked()));
     connect(scriptButton, SIGNAL(clicked()), SLOT(sl_scriptSeparatorClicked()));
     connect(separatorEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_separatorChanged(const QString&)));
