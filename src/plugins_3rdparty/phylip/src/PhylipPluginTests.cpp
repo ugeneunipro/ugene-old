@@ -61,6 +61,13 @@ void GTest_NeighborJoin::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
     resultCtxName = el.attribute("sample");
+    QString bootstrSeed;
+    bootstrSeed = el.attribute("bootstrapSeed");
+    if(bootstrSeed == NULL){
+        bootStrapSeed = -1;
+    }else{
+        bootStrapSeed = bootstrSeed.toInt();
+    }
 }
 
 void GTest_NeighborJoin::prepare() {
@@ -112,13 +119,20 @@ void GTest_NeighborJoin::prepare() {
 	treeObjFromDoc = qobject_cast<PhyTreeObject*>(obj2);
 	
 	if(treeObjFromDoc == NULL){
-		stateInfo.setError(  QString("error can't cast to philogenetic tree from GObject") );
+		stateInfo.setError(  QString("error can't cast to phylogenetic tree from GObject") );
 		return;
 	}
 	assert( obj != NULL);
 
     CreatePhyTreeSettings settings;
     settings.algorithmId = PhylipPlugin::PHYLIP_NEIGHBOUR_JOIN;
+
+    if(bootStrapSeed != -1){
+        settings.bootstrap = true;
+        settings.seed = bootStrapSeed;
+        settings.consensusID =  "Majority Rule (extended)";
+        settings.replicates = 100;
+    }
 
     task = new PhyTreeGeneratorTask(input->getMAlignment(), settings);
     addSubTask(task);

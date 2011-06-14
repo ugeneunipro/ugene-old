@@ -78,9 +78,9 @@ void createPhyTreeFromPhylipTree(const MAlignment &ma, node *p, double m, boolea
         } else {
             if(bootstrap_repl != 0){
                 if(p->deltav == 0){
-                    PhyNode::addBranch(root, current, 1);
+                    PhyNode::addBranch(root, current, bootstrap_repl);
                 }else{
-                    PhyNode::addBranch(root, current, p->deltav / (float)bootstrap_repl);
+                    PhyNode::addBranch(root, current, p->deltav );
                 }
             }else{
                 PhyNode::addBranch(root, current, p->v);

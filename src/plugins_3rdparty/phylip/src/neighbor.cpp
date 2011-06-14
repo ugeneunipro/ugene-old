@@ -49,7 +49,7 @@ vector* getMtx()
 void neighbor_getoptions()
 {
   /* interactively set options */
-  long inseed0 = 0, loopcount;
+  long inseed0 = 1, loopcount;
   //Char ch;
 
   //fprintf(outfile, "\nNeighbor-Joining/UPGMA method version %s\n\n",VERSION);

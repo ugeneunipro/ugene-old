@@ -46,6 +46,7 @@ public:
 private:    
     QString inputDocCtxName;
     QString resultCtxName;
+    int bootStrapSeed;
     Document* maDoc;
     Document* treeDoc;
     PhyTreeGeneratorTask* task;
