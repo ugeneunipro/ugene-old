@@ -306,6 +306,9 @@ QList<AVAnnotationItemL*> AnnotationsTreeViewL::findAnnotationItems(const Annota
     QList<AVAnnotationItemL*> res;
     foreach(AnnotationGroup* g, a->getGroups()) {
         AVGroupItemL* gItem = findGroupItem(g);
+        if(gItem == NULL) {
+            return QList<AVAnnotationItemL*>();
+        }
         AVAnnotationItemL* aItem = findAnnotationItem(gItem, a);
         res.append(aItem);
     }
@@ -460,9 +463,6 @@ void AnnotationsTreeViewL::sl_onAnnotationObjectRemoved(AnnotationTableObject* o
     TreeSorter ts(this);
 
     AVGroupItemL* groupItem = findGroupItem(obj->getRootGroup());
-    //assert(groupItem!=NULL);
-    LazyAnnotationTreeViewModel * lm = static_cast<LazyAnnotationTreeViewModel *>(tree->model());
-    //AVItemL * root = lm->getItem(QModelIndex());
     if(groupItem) {
         destroyTree(groupItem);
         tree->removeItem(groupItem, true);
@@ -560,7 +560,7 @@ void AnnotationsTreeViewL::sl_onAnnotationModified(const AnnotationModification&
         case AnnotationModification_LocationChanged:
             {
                 QList<AVAnnotationItemL*> aItems = findAnnotationItems(md.annotation);
-                assert(!aItems.isEmpty());
+                //assert(!aItems.isEmpty());
                 foreach(AVAnnotationItemL* ai, aItems) {
                     ai->updateVisual(ATVAnnUpdateFlag_BaseColumns);
                 }
@@ -639,6 +639,7 @@ void AnnotationsTreeViewL::sl_onGroupCreated(AnnotationGroup* g) {
 }
 
 void AnnotationsTreeViewL::sl_onGroupRemoved(AnnotationGroup* parent, AnnotationGroup* g) {
+    Q_UNUSED(parent);
     AVGroupItemL *gr = findGroupItem(g);
     if(gr) {
         destroyTree(gr);
