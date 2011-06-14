@@ -44,6 +44,8 @@ unix {
     INSTALLS += target
 }
 
+unix_not_mac() : LIBS += -lX11
+
 HEADERS += src/SendReportDialog.h
 
 FORMS += src/ui/SendReportDialog.ui
