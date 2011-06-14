@@ -109,9 +109,10 @@ static int clearRange(const QString& cur_line){
     QString line = cur_line;
     modifyLine(line, LAST_QA_POS);
 
-    int result = line.toInt();
-    if(0 == result){
-        return 0;
+    bool ok = true;
+    int result = line.toInt(&ok);
+    if(!ok){
+        return INT_MAX;
     }else{
         return result;
     }
@@ -121,9 +122,10 @@ static int paddedStartCons(const QString& cur_line){
     QString line = cur_line;
     modifyLine(line, PADDED_START_POS);
 
-    int result = line.toInt();
-    if(0 == result){
-        return 0;
+    bool ok = true;
+    int result = line.toInt(&ok);
+    if(!ok){
+        return INT_MAX;
     }else{
         return result;
     }
@@ -135,14 +137,15 @@ static int readsPos(const QString& cur_line){
     prepareLine(line, READS_POS);
 
     if(-1 != line.indexOf(' ')){
-        return -1;
+        return INT_MAX;
     }
 
     line = line.mid(0, line.length());
 
-    int result = line.toInt();
-    if(0 == result){
-        return 0;
+    bool ok = true;
+    int result = line.toInt(&ok);
+    if(!ok){
+        return INT_MAX;
     }else{
         return result;
     }
@@ -338,13 +341,13 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
 
             readPos = readsPos(readLine);
             complStrand = readsComplement(readLine);
-            if((-1 == readPos) ||  (-1 == complStrand) ){
+            if((INT_MAX == readPos) ||  (-1 == complStrand) ){
                 ti.setError(ACEFormat::tr("Bad AF note"));
                 return ;
             }
 
             paddedStart = paddedStartCons(readLine);
-            if(-1 == paddedStart){
+            if(INT_MAX == paddedStart){
                 ti.setError(ACEFormat::tr("Bad AF note"));
                 return ;
             }
@@ -432,7 +435,7 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
             }
 
             if (!names.contains(name)) {
-                ti.setError(ACEFormat::tr("A name is not mutch with AF names"));
+                ti.setError(ACEFormat::tr("A name is not match with AF names"));
                 return ;
             }else{
                 names.remove(name);
