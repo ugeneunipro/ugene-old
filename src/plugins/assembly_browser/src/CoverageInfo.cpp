@@ -25,6 +25,7 @@
 #include "AssemblyModel.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace U2 {
 
@@ -51,6 +52,27 @@ void CalcCoverageInfoTask::run() {
     qint64 minReadsPerRegion = qint64(1) << 62;
     qint64 sum = 0;
     qint64 start = settings.visibleRange.startPos;
+
+    U2AssemblyCoverageStat coverageStat;
+    {
+        U2OpStatusImpl status;
+        coverageStat = settings.model->getCoverageStat(status);
+        if(status.hasError()) {
+            stateInfo.setError(status.getError());
+            return;
+        }
+    }
+
+    qint64 modelLength = 0;
+    {
+        U2OpStatusImpl status;
+        modelLength = settings.model->getModelLength(status);
+        if(status.hasError()) {
+            stateInfo.setError(status.getError());
+            return;
+        }
+    }
+    double coverageStatBasesPerRegion = (double)modelLength/coverageStat.coverage.size();
     
     for(int i = 0 ; i < numOfRegions; ++i) {
         //jump to next region
@@ -62,15 +84,32 @@ void CalcCoverageInfoTask::run() {
         }
         stateInfo.progress = double(i) / numOfRegions * 100.;
         
-        //get region coverage info from DB
-        U2OpStatusImpl status;
-        qint64 readsPerRegion = settings.model->countReadsInAssembly(U2Region(start, qRound64(basesPerRegion)), status);
-        if(status.hasError()) {
-            stateInfo.setError(status.getError());
-            return;
+        qint64 readsPerRegion = 0;
+        if(!coverageStat.coverage.isEmpty() && (coverageStatBasesPerRegion <= basesPerRegion)) {
+            // downsample the precalculated coverage info to the specified number of regions
+            double startPosition = start/coverageStatBasesPerRegion;
+            double endPosition = (start + basesPerRegion)/coverageStatBasesPerRegion;
+            if(endPosition >= coverageStat.coverage.size()) {
+                endPosition = coverageStat.coverage.size() - 1;
+            }
+            double value = 0;
+            value += coverageStat.coverage[(int)startPosition].maxValue*(1 - std::fmod(startPosition, 1.0));
+            value += coverageStat.coverage[(int)endPosition].maxValue*std::fmod(endPosition, 1.0);
+            for(int j = (int)startPosition + 1;j < (int)endPosition;j++) {
+                value += coverageStat.coverage[j].maxValue;
+            }
+            readsPerRegion = qRound64(value);
+        } else {
+            //get region coverage info from DB
+            U2OpStatusImpl status;
+            readsPerRegion = settings.model->countReadsInAssembly(U2Region(start, qRound64(basesPerRegion)), status);
+            if(status.hasError()) {
+                stateInfo.setError(status.getError());
+                return;
+            }
         }
         result.coverageInfo[i] = readsPerRegion;
-        
+
         //update min and max
         if(maxReadsPerRegion < readsPerRegion) {
             maxReadsPerRegion = readsPerRegion;

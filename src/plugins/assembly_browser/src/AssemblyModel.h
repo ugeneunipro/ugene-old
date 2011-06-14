@@ -42,6 +42,8 @@ public:
 
     qint64 countReadsInAssembly(const U2Region & r, U2OpStatus & os);
     void calculateCoverageStat(const U2Region & r, U2AssemblyCoverageStat & stat, U2OpStatus & os);
+
+    U2AssemblyCoverageStat &getCoverageStat(U2OpStatus & os);
     
     U2Region getGlobalRegion();
 
@@ -100,7 +102,7 @@ private:
     
     U2Assembly assembly;
     U2AssemblyDbi * assemblyDbi;
-    
+
     DbiHandle dbiHandle;
     DbiHandle * refSeqDbiHandle;
 
@@ -117,6 +119,8 @@ private:
 
     QString referenceUri;
     bool uriRetrieved;
+
+    U2AssemblyCoverageStat cachedCoverageStat;
 }; // AssemblyModel
 
 } // U2
