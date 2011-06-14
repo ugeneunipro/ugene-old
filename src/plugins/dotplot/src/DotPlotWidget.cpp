@@ -427,8 +427,12 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
 
 // save dotplot as image
 void DotPlotWidget::sl_showSaveImageDialog() {
+    exitButton->hide();
+
     ExportImageDialog dialog(this, this->rect());
     dialog.exec();
+
+    exitButton->show();
 }
 
 // save dotplot into a dotplot file, return true if successful

@@ -27,6 +27,8 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
+
+
 namespace U2 {
 
 DotPlotFilesDialog::DotPlotFilesDialog(QWidget *parent)
