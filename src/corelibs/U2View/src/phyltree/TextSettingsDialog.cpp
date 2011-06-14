@@ -48,6 +48,8 @@ TextSettingsDialog::TextSettingsDialog(QWidget *parent, const TextSettings &text
     underlineToolButton->setChecked(settings.textFont.underline());
     overlineToolButton->setChecked(settings.textFont.overline());
 
+    overlineToolButton->setVisible(false);
+
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButton()));
 }
 

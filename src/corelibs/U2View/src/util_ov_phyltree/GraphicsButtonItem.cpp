@@ -107,12 +107,24 @@ void GraphicsButtonItem::collapse() {
 void GraphicsButtonItem::swapSiblings() {
     uiLog.trace("Swapping siblings");
 
-    GraphicsRectangularBranchItem *branchItem = dynamic_cast<GraphicsRectangularBranchItem*>(parentItem());
+    GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(parentItem());
     if (!branchItem) {
         return;
     }
 
-    branchItem->swapSiblings();
+    GraphicsRectangularBranchItem *rectBranchItem = dynamic_cast<GraphicsRectangularBranchItem*>(branchItem);
+    if(!rectBranchItem){
+        if(!branchItem->getCorrespondingItem()){
+            return;
+        }
+        
+        rectBranchItem = dynamic_cast<GraphicsRectangularBranchItem*>(branchItem->getCorrespondingItem());
+        if(!rectBranchItem){
+            return;
+        }
+    }
+
+    rectBranchItem->swapSiblings();
 }
 
 bool GraphicsButtonItem::isSelectedTop() {

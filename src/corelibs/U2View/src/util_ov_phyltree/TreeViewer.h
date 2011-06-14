@@ -216,6 +216,9 @@ private:
     void collapseSelected();
 
     void updateSettings();
+
+    void updateLayout();
+
     void updateTextSettings();
     void updateTreeSettings();
 

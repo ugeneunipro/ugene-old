@@ -420,19 +420,7 @@ void TreeViewerUI::updateSettings(const TreeSettings &settings) {
 
     treeSettings = settings;
     if(layout!=TreeLayout_Rectangular){
-        TreeLayout tmpL = layout;
-        layout = TreeLayout_Rectangular;
-        switch(tmpL){
-            case TreeLayout_Circular:
-                sl_circularLayoutTriggered();
-                break;
-            case TreeLayout_Unrooted:
-                sl_unrootedLayoutTriggered();
-                break;
-            case TreeLayout_Rectangular:
-                //here to please compiler
-                break;
-        }
+        updateLayout();
     }else{
         updateTreeSettings();
     }
@@ -732,6 +720,7 @@ void TreeViewerUI::sl_swapTriggered() {
         }
     }
     redrawRectangularLayout(); 
+    updateLayout();
     updateTreeSettings();
 }
 
@@ -861,7 +850,7 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
 
 void TreeViewerUI::sl_circularLayoutTriggered() {
     if (layout != TreeLayout_Circular) {
-        swapAction->setEnabled(false);
+        //swapAction->setEnabled(false);
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Circular;
@@ -875,7 +864,7 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
 
 void TreeViewerUI::sl_unrootedLayoutTriggered() {
     if (layout != TreeLayout_Unrooted) {
-        swapAction->setEnabled(false);
+       // swapAction->setEnabled(false);
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Unrooted;
@@ -1076,7 +1065,7 @@ void TreeViewerUI::defaultZoom(){
 
 void TreeViewerUI::redrawRectangularLayout(){
  
-    if(layout == TreeLayout_Rectangular){
+    //if(layout == TreeLayout_Rectangular){
         int current = 0;
         qreal minDistance = -2, maxDistance = 0;
         GraphicsRectangularBranchItem* item = rectRoot;
@@ -1092,7 +1081,7 @@ void TreeViewerUI::redrawRectangularLayout(){
 
         qreal scale = qMin(minDistScale, maxDistScale);
         setScale(scale);
-    }
+    //}
     
 }
 
@@ -1127,6 +1116,24 @@ void TreeViewerUI::updateActionsState(){
 
     QList<QGraphicsItem*> updatingItems = this->scene()->selectedItems();
     collapseAction->setEnabled(!updatingItems.isEmpty());
-    if(layout == TreeLayout_Rectangular) swapAction->setEnabled(!updatingItems.isEmpty());
+    swapAction->setEnabled(!updatingItems.isEmpty());
 }
+
+void TreeViewerUI::updateLayout()
+{
+    TreeLayout tmpL = layout;
+    layout = TreeLayout_Rectangular;
+    switch(tmpL){
+        case TreeLayout_Circular:
+            sl_circularLayoutTriggered();
+            break;
+        case TreeLayout_Unrooted:
+            sl_unrootedLayoutTriggered();
+            break;
+        case TreeLayout_Rectangular:
+            //here to please compiler
+            break;
+    }
+}
+
 }//namespace

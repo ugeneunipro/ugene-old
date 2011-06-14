@@ -47,8 +47,6 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
 //    setTransformOriginPoint(-w, 0);
 //    setRotation(angle);
 
-//     QPen pen1;
-//     pen1.setCosmetic(true);
     if (from->getNameText() != NULL) {
         nameText = new QGraphicsSimpleTextItem(from->getNameText()->text(), this);
         nameText->setFont(from->getNameText()->font());
@@ -62,8 +60,6 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
 //            nameText->setRotation(180);
         }
 
-//         pen1.setStyle(Qt::DotLine);
-//         pen1.setColor(Qt::darkGray);
         nameText->setBrush(from->getNameText()->brush());
     }
     if (from->getDistanceText() != NULL) {
