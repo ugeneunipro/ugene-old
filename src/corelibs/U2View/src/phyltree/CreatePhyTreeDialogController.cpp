@@ -75,10 +75,13 @@ void CreatePhyTreeDialogController::sl_okClicked(){
         }
     }
 
-    if(estimateResources()){
+    qint64 memRequiredMB = 0;
+
+    if(estimateResources(&memRequiredMB)){
         QMessageBox mb(QMessageBox::Warning, tr("Warning"), 
-            tr("There is insufficient memory to run PHYLIP dnadist for the alignment."
-            " It may cause an error. Do you want to continue?"), QMessageBox::Ok|QMessageBox::Cancel);
+            tr("Probably, for that alignment there is no enough memory to run PHYLIP dnadist module. \
+            The module will require more than %1 MB in the estimation. \
+            \nIt could cause an error. Do you want to continue?").arg(memRequiredMB), QMessageBox::Ok|QMessageBox::Cancel);
         if(mb.exec() == QMessageBox::Ok){
             QDialog::accept();
         }
@@ -124,9 +127,9 @@ CreatePhyTreeDialogController::~CreatePhyTreeDialogController()
     delete ui;
 }
 
-bool CreatePhyTreeDialogController::estimateResources(){
-    int appMemMb = 0;
-    int minMemoryForDistanceMatrixMb = 0;
+bool CreatePhyTreeDialogController::estimateResources(qint64* memoryRequiredMB){
+    qint64 appMemMb = 0;
+    qint64 minMemoryForDistanceMatrixMb = 0;
     AppResourcePool* s = AppContext::getAppSettings()->getAppResourcePool();
     //AppResourcePool::getCurrentAppMemory(appMemMb);
 
@@ -144,19 +147,20 @@ bool CreatePhyTreeDialogController::estimateResources(){
     //sizeof(sitelike) = 32
     //sizeof(ratelike) = 4
     
-    int spp = msa.getNumRows();
-    int endsite = msa.getLength();
+    qint64 spp = msa.getNumRows();
+    qint64 endsite = msa.getLength();
 
-    int ugeneLowestMemoryUsedMb = 50; 
+    qint64 ugeneLowestMemoryUsageMb = 50; 
 
-    minMemoryForDistanceMatrixMb = (int)(spp*endsite*32 + endsite*4)/(1024*1024);
+    minMemoryForDistanceMatrixMb = (qint64)(spp*endsite*32 + endsite*4)/(1024*1024);
 
-    if(minMemoryForDistanceMatrixMb>appMemMb - ugeneLowestMemoryUsedMb){
+    *memoryRequiredMB = minMemoryForDistanceMatrixMb;
+
+    if(minMemoryForDistanceMatrixMb>appMemMb - ugeneLowestMemoryUsageMb){
         return true;
     }else{
         return false;
     }
-
 }
 
 #define SEED_MIN 0

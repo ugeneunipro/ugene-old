@@ -1904,28 +1904,37 @@ void writename(long start, long n, long *enterorder)
 
 void memerror()
 {
-  printf("Error allocating memory\n");
-  exxit(-1);
+
+    const char message[] = "Error allocating memory";
+    ugene_exit(message);
+
+  //printf("Error allocating memory\n");
+  //exxit(-1);
 }  /* memerror */
 
 
 void odd_malloc(long x)
 { /* error message if attempt to malloc too little or too much memory */
-  printf ("ERROR: a function asked for an inappropriate amount of memory:");
-  printf ("  %ld bytes\n", x);
-  printf ("       This can mean one of two things:\n");
-  printf ("       1.  The input file is incorrect");
-  printf (" (perhaps it was not saved as Text Only),\n");
-  printf ("       2.  There is a bug in the program.\n");
-  printf ("       Please check your input file carefully.\n");
-  printf ("       If it seems to be a bug, please mail joe (at) gs.washington.edu\n");
-  printf ("       with the name of the program, your computer system type,\n");
-  printf ("       a full description of the problem, and with the input data file.\n");
-  printf ("       (which should be in the body of the message, not as an Attachment).\n");
 
-  /* abort() can be used to crash */
-  
-  exxit(-1);
+  const char message[] = "ERROR: a function asked for an inappropriate amount of memory";
+  ugene_exit(message);
+
+//   printf ("ERROR: a function asked for an inappropriate amount of memory:");
+//   printf ("  %ld bytes\n", x);
+//   printf ("       This can mean one of two things:\n");
+//   printf ("       1.  The input file is incorrect");
+//   printf (" (perhaps it was not saved as Text Only),\n");
+//   printf ("       2.  There is a bug in the program.\n");
+//   printf ("       Please check your input file carefully.\n");
+//   printf ("       If it seems to be a bug, please mail joe (at) gs.washington.edu\n");
+//   printf ("       with the name of the program, your computer system type,\n");
+//   printf ("       a full description of the problem, and with the input data file.\n");
+//   printf ("       (which should be in the body of the message, not as an Attachment).\n");
+// 
+//   /* abort() can be used to crash */
+//   
+//   exxit(-1);
+
 }
 
 

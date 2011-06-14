@@ -36,7 +36,7 @@ private:
     QList<CreatePhyTreeWidget*> childWidgets;
     Ui_CreatePhyTree* ui;
 
-    bool estimateResources(); 
+    bool estimateResources(qint64* memoryRequiredMB); 
     bool checkSeed(int seed);
 };
 
