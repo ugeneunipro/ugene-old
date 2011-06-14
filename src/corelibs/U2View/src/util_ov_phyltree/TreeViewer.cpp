@@ -476,8 +476,11 @@ void TreeViewerUI::updateTextSettings(){
             }
         }
 
-        scene()->update();
+        //scene()->update();
     }    
+
+    updateLayout();
+    updateTreeSettings();
 }
 void TreeViewerUI::updateTreeSettings(){
 
