@@ -19,43 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_DNA_ASSEMBLY_MULTI_TASK_
-#define _U2_DNA_ASSEMBLY_MULTI_TASK_
+#ifndef _U2_DELAYED_ADD_AND_OPEN_VIEW_TASK_H_
+#define _U2_DELAYED_ADD_AND_OPEN_VIEW_TASK_H_
 
-#include <U2Algorithm/DnaAssemblyTask.h>
 #include <U2Core/Task.h>
-#include <U2Core/GUrl.h>
 
 namespace U2 {
 
 class Document;
-class LoadDocumentTask;
-class AddDocumentTask;
-class MAlignmentObject;
 
-class U2ALGORITHM_EXPORT DnaAssemblyMultiTask : public Task {
+/**
+    This task is a simple wrapper for an AddDocumentTask and a LoadUnloadedDocumentAndOpenViewTask
+    which waits for a signal providing a document and then proceeds to create the two tasks as its
+    subtasks and register itself with the task scheduler.
+    It can only be deleted by the task scheduler so it's imperative that the correct signal is received
+    at some point by an instance of this class and it's allowed to do its work and no memory leak occurs.
+*/
+class U2GUI_EXPORT DelayedAddDocumentAndOpenViewTask: public Task {
     Q_OBJECT
 public:
-    DnaAssemblyMultiTask(const DnaAssemblyToRefTaskSettings& settings, bool viewResult = false, bool justBuildIndex = false);
-    virtual void prepare();
-    virtual ReportResult report();
-    virtual QString generateReport() const;
-    QList<Task*> onSubTaskFinished(Task* subTask);
-    const MAlignmentObject* getAssemblyResult();
+    DelayedAddDocumentAndOpenViewTask() : Task(tr("Delayed load and open document task"), TaskFlags_NR_FOSCOE) {}
+    ~DelayedAddDocumentAndOpenViewTask() {};
 
-signals:
-    void documentAvailable(Document*);
+public slots:
+    void sl_onDocumentAvailable(Document *d);
+};
 
-private:
-    DnaAssemblyToRefTaskSettings settings;
-    DnaAssemblyToReferenceTask* assemblyToRefTask;
-    AddDocumentTask* addDocumentTask;
-    LoadDocumentTask* loadDocumentTask;
-    Document* doc;
-    QList<GUrl> shortReadUrls;
-    bool openView;
-    bool justBuildIndex;
-}; 
 
 } // namespace
+
+
 #endif

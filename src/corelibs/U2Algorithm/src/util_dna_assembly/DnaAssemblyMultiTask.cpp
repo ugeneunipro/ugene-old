@@ -87,7 +87,9 @@ QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
             clonedDoc->loadFrom(doc); // doc was loaded in a separate thread -> clone all GObjects
             assert(!clonedDoc->isTreeItemModified());
             assert(clonedDoc->isLoaded());
-            doc = clonedDoc;
+
+            // Leak alert: if this signal isn't handled somewhere, memory allocated for this document will be lost.
+            emit documentAvailable(clonedDoc);
         }
     }
 
@@ -124,26 +126,6 @@ QString DnaAssemblyMultiTask::generateReport() const {
         .arg(settings.refSeqUrl.fileName());
     }
     return res;
-}
-
-Document* DnaAssemblyMultiTask::takeDocument()
-{
-    Document* d = doc;
-    doc = NULL;
-    return d;
-}
-
-void DnaAssemblyMultiTask::cleanup()
-{
-    if (doc != NULL) {
-        delete doc;
-        doc = NULL;
-    }
-}
-
-DnaAssemblyMultiTask::~DnaAssemblyMultiTask()
-{
-   cleanup();
 }
 
 } // namespace

@@ -12,6 +12,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/ProjectParsing.h \
            src/ProjectView.h \
            src/UnloadDocumentTask.h \
+           src/DelayedAddDocumentAndOpenViewTask.h \
            src/util_gui/AddExistingDocumentDialogController.h \
            src/util_gui/AddExistingDocumentDialogImpl.h \
            src/util_gui/AddNewDocumentDialogController.h \
@@ -64,6 +65,7 @@ SOURCES += src/MainWindow.cpp \
            src/OpenViewTask.cpp \
            src/ProjectParsing.cpp \
            src/UnloadDocumentTask.cpp \
+           src/DelayedAddDocumentAndOpenViewTask.cpp \
            src/util_gui/AddExistingDocumentDialogImpl.cpp \
            src/util_gui/AddNewDocumentDialogImpl.cpp \
            src/util_gui/AnnotationSettingsDialogImpl.cpp \
@@ -90,3 +92,4 @@ SOURCES += src/MainWindow.cpp \
            src/util_gui/logview/LogView.cpp
 RESOURCES += U2Gui.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+

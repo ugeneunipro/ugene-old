@@ -46,7 +46,7 @@ Task* ExportUtils::wrapExportTask(AbstractExportTask* t, bool addToProject) {
     if (!addToProject) {
         return t;
     }
-    return new AddExportedDocumentAndOpenViewTask(t);
+    return new AddDocumentAndOpenViewTask(t);
 }
 
 

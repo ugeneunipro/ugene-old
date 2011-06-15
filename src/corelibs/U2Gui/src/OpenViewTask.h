@@ -73,18 +73,6 @@ private:
 
 };
 
-class U2GUI_EXPORT AddDocumentAndOpenViewTask : public Task {
-    Q_OBJECT
-public:
-    AddDocumentAndOpenViewTask(Document* d);
-protected:
-    void prepare();
-private:
-    Document* doc;
-
-};
-
-
 
 }//namespace
 
