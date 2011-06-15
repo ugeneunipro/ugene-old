@@ -31,30 +31,37 @@
 
 namespace U2{
 
+
+class U2ALGORITHM_EXPORT CreateSubalignmentSettings {
+public:
+    CreateSubalignmentSettings(const U2Region& w, const QStringList& sNames,
+        const GUrl& path, bool save, bool add) :
+    window(w), seqNames(sNames), url(path), saveImmediately(save), addToProject(add) {}
+    U2Region window;
+    QStringList seqNames;
+    GUrl url;
+    bool saveImmediately;
+    bool addToProject;
+};
+   
+    
 class U2ALGORITHM_EXPORT CreateSubalignmentTask : public Task {
     Q_OBJECT
 public:    
-    CreateSubalignmentTask(MAlignmentObject* _maObj, U2Region _window, 
-                            const QStringList& _seqNames, const GUrl& _url, 
-                            bool saveImmediately = false );
+    CreateSubalignmentTask(MAlignmentObject* _maObj, const CreateSubalignmentSettings& settings );
+    ~CreateSubalignmentTask();
 
-    ~CreateSubalignmentTask(){};
-
-    void prepare();
-    Task::ReportResult report();
-
-signals:
-    void documentCreated(Document *);
+    virtual void prepare();
+    virtual void cleanup();
+    Document* takeDocument();
+    const CreateSubalignmentSettings& getSettings() { return cfg; }
 
 private:
-    bool                saveToAnother;
-    Document *          curDoc;
-    MAlignmentObject*   maObj;
-    U2Region             window;
-    QStringList         seqNames;
-    GUrl                url;
-    Document*           newDoc;
-    bool                saveImmediately;
+    Document*                   curDoc;
+    MAlignmentObject*           maObj;
+    CreateSubalignmentSettings  cfg;
+    Document*                   newDoc;
+    bool                        saveToAnother;
 };
 
 }

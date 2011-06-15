@@ -25,7 +25,7 @@
 #include "ui/ui_CreateSubalignimentDialog.h"
 
 #include <U2Core/global.h>
-
+#include <U2Core/Task.h>
 #include <U2Core/MAlignmentObject.h>
 
 namespace U2{
@@ -56,6 +56,23 @@ private:
     U2Region window;
     QStringList selectedNames;
 };
+
+
+class CreateSubalignmentTask;
+class CreateSubalignmentSettings;
+
+class U2VIEW_EXPORT CreateSubalignmentAndOpenViewTask : public Task {
+    Q_OBJECT
+public:
+    CreateSubalignmentAndOpenViewTask(MAlignmentObject* mobj, const CreateSubalignmentSettings& settings);
+    QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    CreateSubalignmentTask* csTask;
+
+};
+
+
+
 
 }
 

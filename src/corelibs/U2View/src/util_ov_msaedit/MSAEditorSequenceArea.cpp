@@ -1158,16 +1158,12 @@ void MSAEditorSequenceArea::sl_createSubaligniment(){
     dialog.exec();
     if(dialog.result() == QDialog::Accepted){
         U2Region window = dialog.getRegion();
-        bool isAdd = dialog.getAddToProjFlag();
+        bool addToProject = dialog.getAddToProjFlag();
         QString path = dialog.getSavePath();
         QStringList seqNames = dialog.getSelectedSeqNames();
-
-        CreateSubalignmentTask *csatask = new CreateSubalignmentTask(editor->getMSAObject(), window, seqNames, path, true);
-        if(isAdd) {
-            DelayedAddDocumentAndOpenViewTask *delayedTask = new DelayedAddDocumentAndOpenViewTask();
-            connect(csatask, SIGNAL(documentCreated(Document*)), delayedTask, SLOT(sl_onDocumentAvailable(Document*)));
-        }
-        AppContext::getTaskScheduler()->registerTopLevelTask(csatask);
+        Task* csTask = new CreateSubalignmentAndOpenViewTask(editor->getMSAObject(), 
+            CreateSubalignmentSettings(window, seqNames, path, true, addToProject) );
+        AppContext::getTaskScheduler()->registerTopLevelTask(csTask);
     }
 }
 

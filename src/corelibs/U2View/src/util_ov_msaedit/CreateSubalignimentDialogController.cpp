@@ -26,6 +26,10 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/AddDocumentTask.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Algorithm/CreateSubalignmentTask.h>
 
 #include <QtGui/qfiledialog.h>
 #include <QtGui/qmessagebox.h>
@@ -183,5 +187,40 @@ void CreateSubalignimentDialogController::selectSeqNames(){
     }
     selectedNames = names;
 }
+
+
+CreateSubalignmentAndOpenViewTask::CreateSubalignmentAndOpenViewTask( MAlignmentObject* maObj, const CreateSubalignmentSettings& settings )
+:Task("CreateSubalignmentAndOpenViewTask", TaskFlags_NR_FOSCOE)
+{
+    csTask = new CreateSubalignmentTask(maObj, settings);
+    addSubTask(csTask);
+    setMaxParallelSubtasks(1);
+}
+
+QList<Task*> CreateSubalignmentAndOpenViewTask::onSubTaskFinished( Task* subTask )
+{
+    QList<Task*> res;
+
+    propagateSubtaskError();
+    if (hasError() || isCanceled()) {
+        return res;
+    }
+
+    if ( (subTask == csTask) && csTask->getSettings().addToProject ) {
+        Document* doc = csTask->takeDocument();
+        assert(doc != NULL);
+        Project* proj = AppContext::getProject();
+        if (proj == NULL) {
+            QList<GUrl> emptyList;
+            res.append(  AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+        }
+        res.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
+        res.append(new AddDocumentTask(doc));
+    }
+
+    return res;
+
+}
+
 
 };

@@ -121,7 +121,7 @@ void GTest_CreateSubalignimentTask::prepare(){
     expectedMaobj = (MAlignmentObject*)expList.first();
 
     maobj = (MAlignmentObject*)list.first();
-    t = new CreateSubalignmentTask(maobj, window, seqNames, doc->getURL(), false);
+    t = new CreateSubalignmentTask(maobj, CreateSubalignmentSettings(window, seqNames, doc->getURL(), false,false));
     addSubTask(t);
 }
 

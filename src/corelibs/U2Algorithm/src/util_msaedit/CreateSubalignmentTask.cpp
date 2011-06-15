@@ -25,30 +25,26 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/Log.h>
-#include <U2Core/ProjectModel.h>
 #include <U2Core/SaveDocumentTask.h>
-
 #include <U2Core/GObjectUtils.h>
+
+
 
 
 namespace U2{
 
-CreateSubalignmentTask::CreateSubalignmentTask(MAlignmentObject* _maObj, U2Region _window, 
-                                              const QStringList& _seqNames, const GUrl& _url, 
-                                                bool _saveImmediately )
+CreateSubalignmentTask::CreateSubalignmentTask(MAlignmentObject* _maObj, const CreateSubalignmentSettings& settings )
 : Task(tr("Extract selected as MSA task"), TaskFlags_NR_FOSCOE),
-saveToAnother(true),
-maObj(_maObj), window(_window), seqNames(_seqNames), url(_url), 
-saveImmediately(_saveImmediately)
+maObj(_maObj), cfg(settings)
 {
     curDoc = maObj->getDocument();
-    if(url == curDoc->getURL() || url.isEmpty()) {
+    if(cfg.url == curDoc->getURL() || cfg.url.isEmpty()) {
         saveToAnother = false;
     }
 }
 
 void CreateSubalignmentTask::prepare() {
-    QString ext = url.completeFileSuffix();
+    QString ext = cfg.url.completeFileSuffix();
 
     DocumentFormat *dfd = 0;
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
@@ -70,10 +66,10 @@ void CreateSubalignmentTask::prepare() {
 
     newDoc = curDoc;
 
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(cfg.url));
     if(saveToAnother) {
         QList<GObject*> GObjList = curDoc->getObjects();
-        newDoc = dfd->createNewDocument(iof, url, curDoc->getGHintsMap());
+        newDoc = dfd->createNewDocument(iof, cfg.url, curDoc->getGHintsMap());
         foreach(GObject* go, GObjList){
             GObject *cl = go->clone();
             newDoc->addObject(cl);
@@ -82,7 +78,7 @@ void CreateSubalignmentTask::prepare() {
             }
         }
         foreach(GObject* o, newDoc->getObjects()) {
-            GObjectUtils::updateRelationsURL(o, curDoc->getURL(), url);
+            GObjectUtils::updateRelationsURL(o, curDoc->getURL(), cfg.url);
         }
     }
     else {
@@ -94,21 +90,38 @@ void CreateSubalignmentTask::prepare() {
 
     //TODO: add "remove empty rows and columns" flag to crop function
     QSet<QString> rowNames;
-    foreach (const QString& name, seqNames) {
+    foreach (const QString& name, cfg.seqNames) {
         rowNames.insert(name);
     }
-    maObj->crop(window, rowNames);
-
-    if(saveImmediately) {
-        addSubTask(new SaveDocumentTask(newDoc, iof, url));
+    maObj->crop(cfg.window, rowNames);
+    
+    if(cfg.saveImmediately) {
+        addSubTask(new SaveDocumentTask(newDoc, iof, cfg.url));
     }
+    
 
-    // Leak alert: if this signal isn't handled somewhere, memory allocated for this document will be lost
-    emit documentCreated(newDoc);
+ }
+
+void CreateSubalignmentTask::cleanup()
+{
+    if (newDoc != NULL) {
+        delete newDoc;
+        newDoc = NULL;
+    }
 }
 
-Task::ReportResult CreateSubalignmentTask::report(){
-    return ReportResult_Finished;
+Document* CreateSubalignmentTask::takeDocument()
+{
+    Document* doc = newDoc;
+    newDoc = NULL;
+    return doc;
 }
+
+CreateSubalignmentTask::~CreateSubalignmentTask()
+{
+    cleanup();
+}
+
+
 
 }
