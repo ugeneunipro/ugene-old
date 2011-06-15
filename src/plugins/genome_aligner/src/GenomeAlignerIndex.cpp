@@ -210,7 +210,7 @@ BMType GenomeAlignerIndex::getBitValue(const char *seq, int length) const {
     return bitValue;
 }
 
-void GenomeAlignerIndex::loadPart(int part) {
+bool GenomeAlignerIndex::loadPart(int part) {
     currentPart = part;
     if (build) {
         GTIMER(c, v, "GenomeAlignerIndex::build");
@@ -232,10 +232,11 @@ void GenomeAlignerIndex::loadPart(int part) {
             build = false;
             serialize(baseFileName + "." + REF_INDEX_EXTENSION);
         }
+        return true;
     } else {
         GTIMER(c, v, "GenomeAlignerIndex::load");
         GCOUNTER(c1, v1, "GenomeAlignerIndex::load");
-        indexPart.load(part);
+        return indexPart.load(part);
     }
 }
 

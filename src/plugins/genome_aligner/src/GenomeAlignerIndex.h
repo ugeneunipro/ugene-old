@@ -44,7 +44,7 @@ public:
     ~GenomeAlignerIndex();
 
     BMType getBitValue(const char *seq, int length) const;
-    void loadPart(int part);
+    bool loadPart(int part);
     void alignShortRead(SearchQuery *qu, BMType bitValue, int startPos, BinarySearchResult firstResult, AlignContext *settings, BMType bitFilter, int w);
     BinarySearchResult bitMaskBinarySearch(BMType bitValue, BMType bitFilter);
     BinarySearchResult *bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, quint64 BMType);

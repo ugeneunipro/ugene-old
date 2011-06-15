@@ -46,10 +46,9 @@ public:
     SAType getMaxLength();
     SAType getLoadedSeqStart();
     int getCurrentPart() {return currentPart;}
-    void load(int part);
+    bool load(int part);
     void build(int part);
     void writePart(int part, quint32 arrLen);
-    void createBitmask(int start, int last);
 private:
     int             partCount;
     int             currentPart;
@@ -59,6 +58,8 @@ private:
 
     QFile           *refFile;
     QFile           **partFiles;
+
+    BMType getBitValue(uchar *seq, SAType idx);
 };
 
 bool isLittleEndian();

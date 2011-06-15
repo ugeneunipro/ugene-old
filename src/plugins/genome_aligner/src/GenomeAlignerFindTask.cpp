@@ -81,7 +81,9 @@ void GenomeAlignerFindTask::run() {
         }
 
         for (int part = 0; part < index->getPartCount(); ++part) {
-            index->loadPart(part);
+            if (!index->loadPart(part)) {
+                setError("Incorrect index file. Please, try to create a new index file.");
+            }
             cudaHelper.alignReads(index->getLoadedPart(),alignContext, stateInfo);
             if (hasError()) {
                 return;
@@ -106,7 +108,9 @@ void GenomeAlignerFindTask::loadPartForAligning(int part) {
     QMutexLocker lock(&loadPartMutex);
     if (!partLoaded) {
         taskLog.details(QString("loading part %1").arg(part));
-        index->loadPart(part);
+        if (!index->loadPart(part)) {
+            setError("Incorrect index file. Please, try to create a new index file.");
+        }
         partLoaded = true;
         openCLFinished = false;
         nextElementToGive = 0;
@@ -220,6 +224,9 @@ void ShortReadAligner::run() {
 
         stateInfo.setProgress(100*part/index->getPartCount());
         parent->loadPartForAligning(part);
+        if (parent->hasError()) {
+            return;
+        }
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
         if (alignContext->openCL) {
             if (!parent->runOpenCLBinarySearch()) {
