@@ -274,4 +274,26 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
     return subTasks;
 }
 
+
+AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( Document* d )
+:Task("AddDocumentAndOpenViewTask", TaskFlags_NR_FOSCOE), doc(d)
+{
+    assert(doc != NULL);
+    setMaxParallelSubtasks(1);
+}
+
+void AddDocumentAndOpenViewTask::prepare()
+{
+    Project* proj = AppContext::getProject();
+    if (proj == NULL) {
+        QList<GUrl> emptyList;
+        addSubTask(  AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+    }
+    addSubTask(new AddDocumentTask(doc));
+    addSubTask(new LoadUnloadedDocumentAndOpenViewTask(doc));
+}
+
+
+
+
 }//namespace

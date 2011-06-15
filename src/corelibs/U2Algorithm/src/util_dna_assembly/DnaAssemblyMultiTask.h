@@ -37,14 +37,15 @@ class U2ALGORITHM_EXPORT DnaAssemblyMultiTask : public Task {
     Q_OBJECT
 public:
     DnaAssemblyMultiTask(const DnaAssemblyToRefTaskSettings& settings, bool viewResult = false, bool justBuildIndex = false);
+    ~DnaAssemblyMultiTask();
     virtual void prepare();
+    virtual void cleanup();
     virtual ReportResult report();
     virtual QString generateReport() const;
     QList<Task*> onSubTaskFinished(Task* subTask);
     const MAlignmentObject* getAssemblyResult();
-
-signals:
-    void documentAvailable(Document*);
+    bool getOpenViewFlag() { return openView; }
+    Document* takeDocument();
 
 private:
     DnaAssemblyToRefTaskSettings settings;
