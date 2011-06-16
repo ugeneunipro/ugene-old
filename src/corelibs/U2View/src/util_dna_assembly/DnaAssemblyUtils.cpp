@@ -34,7 +34,9 @@
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Algorithm/DnaAssemblyMultiTask.h>
 #include <U2Formats/ConvertAssemblyToSamTask.h>
-#include <U2Gui/DelayedAddDocumentAndOpenViewTask.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/MultiTask.h>
 
 #include "DnaAssemblyUtils.h"
 #include "DnaAssemblyDialog.h"
@@ -86,10 +88,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         s.prebuiltIndex = dlg.isPrebuiltIndex();
         s.loadResultDocument = true;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, true);
-
-        // create a delayed open & view document task and instruct it to open a project if required as well
-        DelayedAddDocumentAndOpenViewTask *delayedTask = new DelayedAddDocumentAndOpenViewTask();
-        connect(assemblyTask, SIGNAL(documentAvailable(Document*)), delayedTask, SLOT(sl_onDocumentAvailable(Document*)));
+        connect(assemblyTask, SIGNAL(si_stateChanged()), SLOT(sl_dnaAssemblyTaskStateChanged()));
 
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
@@ -127,6 +126,22 @@ void DnaAssemblySupport::sl_showConvertToSamDialog()
         Task *convertTask = new ConvertAssemblyToSamTask(dlg.getDbFileUrl(), dlg.getSamFileUrl());
         AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
     }
+}
+
+void DnaAssemblySupport::sl_dnaAssemblyTaskStateChanged()
+{
+    DnaAssemblyMultiTask* t = qobject_cast<DnaAssemblyMultiTask*> (QObject::sender());
+    if (t == NULL) {
+        return;
+    }
+
+    if (t->getState() == Task::State_Finished && t->getOpenViewFlag() == true) {
+        Document* d = t->takeDocument();
+        Task* mTask = new AddDocumentAndOpenViewTask(d);
+        AppContext::getTaskScheduler()->registerTopLevelTask(mTask);
+    }
+
+    
 }
 
 } // U2

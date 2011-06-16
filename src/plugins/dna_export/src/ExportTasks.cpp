@@ -44,7 +44,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // AddDocumentAndOpenViewTask
 
-AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask(AbstractExportTask* t) 
+AddExportedDocumentAndOpenViewTask::AddExportedDocumentAndOpenViewTask(AbstractExportTask* t) 
 : Task("Export sequence to document", TaskFlags_NR_FOSCOE)
 {
     exportTask = t;
@@ -52,7 +52,7 @@ AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask(AbstractExportTask* t)
 }
 
 
-QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask ) {
+QList<Task*> AddExportedDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
     if (subTask == exportTask && !subTask->hasError()) {
         Document* doc = exportTask->getDocument();

@@ -42,10 +42,10 @@ public:
 
 /** A task to adds exported document to project and open view*/
 //TODO: make this task a general purpose routine
-class AddDocumentAndOpenViewTask: public Task {
+class AddExportedDocumentAndOpenViewTask: public Task {
     Q_OBJECT
 public:
-    AddDocumentAndOpenViewTask(AbstractExportTask* t);
+    AddExportedDocumentAndOpenViewTask(AbstractExportTask* t);
     QList<Task*> onSubTaskFinished( Task* subTask );
 private:
     AbstractExportTask* exportTask;

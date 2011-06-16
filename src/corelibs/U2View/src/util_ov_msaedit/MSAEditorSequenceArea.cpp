@@ -25,7 +25,6 @@
 #include "CreateSubalignimentDialogController.h"
 
 #include <U2Algorithm/CreateSubalignmentTask.h>
-#include <U2Gui/DelayedAddDocumentAndOpenViewTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/AddSequencesToAlignmentTask.h>
 #include <U2Core/DNAAlphabet.h>
