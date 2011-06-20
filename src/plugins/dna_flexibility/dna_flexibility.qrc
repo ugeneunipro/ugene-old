@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="dna_flexibility/" >
+        <file>images/flexibility.png</file>
+    </qresource>
+</RCC>

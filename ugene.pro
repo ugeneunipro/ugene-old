@@ -44,6 +44,7 @@ SUBDIRS += \
           src/plugins/dbi_bam \
           src/plugins/dna_export \
           src/plugins/dna_stat \
+          src/plugins/dna_flexibility \
           src/plugins/dna_graphpack \
           src/plugins/orf_marker \
           src/plugins/workflow_designer \
