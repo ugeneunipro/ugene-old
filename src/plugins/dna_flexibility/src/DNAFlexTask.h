@@ -55,7 +55,7 @@ public:
         const DNASequence& sequence);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
-    QList<SharedAnnotationData> DNAFlexTask::getAnnotationsFromResults(const QList<HighFlexResult>& results);
+    QList<SharedAnnotationData> getAnnotationsFromResults(const QList<HighFlexResult>& results);
 
 private:
     HighFlexSettings                    settings;
