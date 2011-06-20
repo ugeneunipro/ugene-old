@@ -158,6 +158,7 @@ Section "Build"
     !insertmacro AddPlugin dbi_file
     !insertmacro AddPlugin expert_discovery
     !insertmacro AddPlugin ptools
+    !insertmacro AddPlugin dna_flexibility
     
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"
