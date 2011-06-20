@@ -77,6 +77,9 @@ public:
     
     static void setCmdlineUgenePath(const QString & path);
     static QString getCmdlineUgenePath();
+
+    static void setExternalToolDirectory(const QString &newDir);
+    static const QString getExternalToolDirectory();
     
     static Watcher * const watcher;
 };

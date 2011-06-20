@@ -29,6 +29,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/WorkflowEnv.h \
            src/model/WorkflowManager.h \
            src/model/WorkflowTransport.h \
+		   src/model/ExternalToolCfg.h \
            src/support/CoreLibConstants.h \
            src/support/HRSchemaSerializer.h \
            src/support/MapDatatypeEditor.h \

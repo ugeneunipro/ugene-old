@@ -26,6 +26,8 @@
 #include <U2Lang/IntegralBusType.h>
 #include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowIOTasks.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/BaseSlots.h>
 #include <U2Core/GObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Settings.h>
@@ -385,6 +387,24 @@ void WorkflowUtils::getLinkedActorsId(Actor *a, QList<QString> &linkedActors) {
     } else {
         return;
     }
+}
+
+Descriptor WorkflowUtils::getSlotDescOfDatatype(const DataTypePtr & dt) {
+    QString dtId = dt->getId();
+    if(dtId == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
+        return BaseSlots::DNA_SEQUENCE_SLOT();
+    }
+    if(dtId == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
+        return BaseSlots::ANNOTATION_TABLE_SLOT();
+    }
+    if(dtId == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
+        return BaseSlots::MULTIPLE_ALIGNMENT_SLOT();
+    }
+    if(dtId == BaseTypes::STRING_TYPE()->getId()) {
+        return BaseSlots::TEXT_SLOT();
+    }
+    assert(false);
+    return *dt;
 }
 
 static QStringList initLowerToUpperList() {

@@ -58,6 +58,7 @@
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/WorkflowRunTask.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/ExternalToolCfg.h>
 #include <U2Remote/RemoteWorkflowRunTask.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Designer/DelegateEditors.h>
@@ -87,6 +88,8 @@
 #include "SceneSerializer.h"
 #include "WorkflowViewItems.h"
 #include "WorkflowViewController.h"
+#include "library/CreateExternalProcessDialog.h"
+#include "library/ExternalProcessWorker.h"
 
 /* TRANSLATOR U2::LocalWorkflow::WorkflowView*/
 
@@ -408,6 +411,9 @@ void WorkflowView::createActions() {
     editScriptAction->setIcon(QIcon(":workflow_designer/images/edit_script.png"));
     editScriptAction->setEnabled(false); // because user need to select actor with script to enable it
     connect(editScriptAction, SIGNAL(triggered()), SLOT(sl_editScript()));
+
+    externalToolAction = new QAction(tr("Create wrapper for external tool"), this);
+    connect(externalToolAction, SIGNAL(triggered()), SLOT(sl_externalAction()));
 }
 
 void WorkflowView::sl_createScript() {
@@ -423,7 +429,18 @@ void WorkflowView::sl_createScript() {
             QRectF rect = scene->sceneRect();
             scene->addProcess( scene->createActor( proto, QVariantMap()), rect.center());
         }
-        
+    }
+}
+
+void WorkflowView::sl_externalAction() {
+    CreateExternalProcessDialog dlg(this);
+    if(dlg.exec() == QDialog::Accepted) {
+        ExternalProcessConfig *cfg = dlg.config();
+        if(LocalWorkflow::ExternalProcessWorkerFactory::init(cfg)) {
+            ActorPrototype *proto = WorkflowEnv::getProtoRegistry()->getProto(cfg->name);
+            QRectF rect = scene->sceneRect();
+            scene->addProcess( scene->createActor( proto, QVariantMap()), rect.center());
+        }
     }
 }
 
@@ -625,6 +642,7 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addSeparator();
     tb->addAction(createScriptAcction);
     tb->addAction(editScriptAction);
+    tb->addAction(externalToolAction);
     tb->addSeparator();
     tb->addAction(copyAction);
     tb->addAction(pasteAction);
@@ -690,6 +708,7 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addSeparator();
     m->addAction(createScriptAcction);
     m->addAction(editScriptAction);
+    m->addAction(externalToolAction);
     m->addSeparator();
 
     QMenu* ttMenu = new QMenu(tr("Item style"));

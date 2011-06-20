@@ -63,5 +63,9 @@ const Descriptor BaseActorCategories::CATEGORY_SCRIPT() {
     return Descriptor("sa", tr("Custom elements"), "");
 }
 
+const Descriptor BaseActorCategories::CATEGORY_EXTERNAL() {
+    return Descriptor("ex", tr("External tools"),"");
+}
+
 }//Workflow namespace
 }//GB2 namespace

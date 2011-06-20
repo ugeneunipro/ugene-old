@@ -31,6 +31,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Lang/ExternalToolCfg.h>
 
 #include "HRSchemaSerializer.h"
 
@@ -66,6 +67,14 @@ const QString HRSchemaSerializer::TAB                   = "    ";
 const QString HRSchemaSerializer::NO_NAME               = "";
 const QString HRSchemaSerializer::COLON                 = ":";
 const QString HRSchemaSerializer::SEMICOLON             = ";";
+const QString HRSchemaSerializer::INPUT_START           = ".inputs";
+const QString HRSchemaSerializer::OUTPUT_START          = ".outputs";
+const QString HRSchemaSerializer::ATTRIBUTES_START      = ".attributes";
+const QString HRSchemaSerializer::TYPE_PORT             = "type";
+const QString HRSchemaSerializer::FORMAT_PORT           = "format";
+const QString HRSchemaSerializer::CMDLINE               = "cmdline";
+const QString HRSchemaSerializer::DESCRIPTION           = "description";
+const QString HRSchemaSerializer::PROMPTER              = "templatedescription";
 
 template <class T>
 static void setIfNotNull(const T & what, T * to) {
@@ -248,7 +257,8 @@ void HRSchemaSerializer::Tokenizer::tokenize(const QString & d) {
             continue;
         }
         if(depth == 1) {
-            isElemDef = !line.startsWith(META_START) && !line.startsWith(ITERATION_START) && !line.contains(DATAFLOW_SIGN);
+            isElemDef = !line.startsWith(META_START) && !line.startsWith(ITERATION_START) && !line.contains(DATAFLOW_SIGN) 
+                && !line.startsWith(INPUT_START) && !line.startsWith(OUTPUT_START) && !line.startsWith(ATTRIBUTES_START);
             elemDefHeader = true;
         } else {
             elemDefHeader = false;
@@ -836,6 +846,85 @@ QString HRSchemaSerializer::string2Schema(const QString & bytes, Schema * schema
     return NO_ERROR;
 }
 
+void HRSchemaSerializer::parsePorts(Tokenizer & tokenizer, QList<DataConfig>& ports) {
+    while(tokenizer.look() != BLOCK_END) {
+        DataConfig cfg;
+        cfg.attrName = tokenizer.take();
+        tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+        ParsedPairs pairs(tokenizer);
+        cfg.type = pairs.equalPairs.take(TYPE_PORT);
+        cfg.format = pairs.equalPairs.take(FORMAT_PORT);
+        cfg.description = pairs.equalPairs.take(DESCRIPTION);
+        tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        ports << cfg;
+    }
+}
+
+void HRSchemaSerializer::parseAttributes(Tokenizer & tokenizer, QList<AttributeConfig>& attrs) {
+    while(tokenizer.look() != BLOCK_END) {
+        AttributeConfig cfg;
+        cfg.attrName = tokenizer.take();
+        tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+        ParsedPairs pairs(tokenizer);
+        cfg.type = pairs.equalPairs.take(TYPE_PORT);
+        cfg.description = pairs.equalPairs.take(DESCRIPTION);
+        tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        attrs << cfg;
+    }
+}
+
+ExternalProcessConfig*  HRSchemaSerializer::parseActorBody(Tokenizer & tokenizer) {
+    ExternalProcessConfig *cfg = new ExternalProcessConfig();
+    cfg->name = tokenizer.take();
+    while(tokenizer.notEmpty() && tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
+        QString tok = tokenizer.take();
+        QString next = tokenizer.look();
+        if(tok == HRSchemaSerializer::INPUT_START) {
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            HRSchemaSerializer::parsePorts(tokenizer, cfg->inputs);
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if(tok == HRSchemaSerializer::OUTPUT_START) {
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            HRSchemaSerializer::parsePorts(tokenizer, cfg->outputs);
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if(tok == HRSchemaSerializer::ATTRIBUTES_START) {
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            HRSchemaSerializer::parseAttributes(tokenizer, cfg->attrs);
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if(tok == HRSchemaSerializer::BLOCK_START) {
+            //tokenizer.take();
+            /*Actor * proc = HRSchemaSerializer::parseElementsDefinition(tokenizer, tok, data.actorMap, data.idMap);
+            data.schema->addProcess(proc);
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);*/
+        } else if(tok == HRSchemaSerializer::CMDLINE) {
+            tokenizer.assertToken(COLON);
+            cfg->cmdLine = tokenizer.take();
+        } else if(tok == HRSchemaSerializer::DESCRIPTION)  {
+            tokenizer.assertToken(COLON);
+            cfg->description = tokenizer.take();
+        }else if(tok == HRSchemaSerializer::PROMPTER) {
+            tokenizer.assertToken(COLON);
+            cfg->templateDescription = tokenizer.take();
+        } else {
+            throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::UNDEFINED_CONSTRUCT.arg(tok).arg(next));
+        }
+    }
+    return cfg;
+}
+
+ExternalProcessConfig* HRSchemaSerializer::string2Actor(const QString & bytes) {
+    ExternalProcessConfig *cfg = NULL;
+    try {
+        WorkflowSchemaReaderData data(bytes, NULL, NULL, NULL);
+        parseHeader(data.tokenizer, data.meta);
+        cfg = parseActorBody(data.tokenizer);
+    } catch (...) {
+        return NULL;
+    }
+    return cfg;
+}
+
+
 void HRSchemaSerializer::addPart( QString & to, const QString & w) {
     QString what = w;
     if( !what.endsWith(NEW_LINE) ) {
@@ -1108,5 +1197,67 @@ QMap<ActorId, ActorId> HRSchemaSerializer::deepCopy(const Schema& from, Schema* 
     to->setDeepCopyFlag(true);
     return idMap;
 }
+
+static QString inputsDefenition(const QList<DataConfig> &inputs) {
+    QString res = HRSchemaSerializer::TAB + HRSchemaSerializer::INPUT_START + " {\n";
+    foreach(const DataConfig cfg, inputs) {
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + cfg.attrName + " {\n";
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "type:" + cfg.type + ";\n";
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "format:" + cfg.format + ";\n";
+        if(!cfg.description.isEmpty()) {
+            res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "description:\"" + cfg.description + "\";\n";
+        }
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "}\n";
+    }
+    res += HRSchemaSerializer::TAB + "}\n";
+    return res;
+}
+
+static QString outputsDefenition(const QList<DataConfig> &inputs) {
+    QString res = HRSchemaSerializer::TAB + HRSchemaSerializer::OUTPUT_START + " {\n";
+    foreach(const DataConfig cfg, inputs) {
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + cfg.attrName + " {\n";
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "type:" + cfg.type + ";\n";
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "format:" + cfg.format + ";\n";
+        if(!cfg.description.isEmpty()) {
+            res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "description:\"" + cfg.description + "\";\n";
+        }
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "}\n";
+    }
+    res += HRSchemaSerializer::TAB + "}\n";
+    return res;
+}
+
+static QString attributesDefinition(const QList<AttributeConfig> &attrs) {
+    QString res = HRSchemaSerializer::TAB + HRSchemaSerializer::ATTRIBUTES_START + " {\n";
+    foreach(const AttributeConfig &cfg, attrs) {
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + cfg.attrName + " {\n";
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "type:" + cfg.type + ";\n";
+        if(!cfg.description.isEmpty()) {
+            res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "description:\"" + cfg.description + "\";\n";
+        }
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "}\n";
+    }
+    res += HRSchemaSerializer::TAB + "}\n";
+    return res;
+}
+
+QString HRSchemaSerializer::actor2String(ExternalProcessConfig *cfg ) {
+    QString res = HRSchemaSerializer::HEADER_LINE + "\n";
+    res += "\"" + cfg->name + "\" {\n";
+    res += inputsDefenition(cfg->inputs);
+    res += outputsDefenition(cfg->outputs);
+    res += attributesDefinition(cfg->attrs);
+    res += HRSchemaSerializer::TAB + HRSchemaSerializer::CMDLINE + ":\"" + cfg->cmdLine + "\";\n";
+    if(!cfg->description.isEmpty()) {
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::DESCRIPTION + ":\"" + cfg->description + "\";\n";
+    }
+    if(!cfg->templateDescription.isEmpty()) {
+        res += HRSchemaSerializer::TAB + HRSchemaSerializer::PROMPTER + ":\"" + cfg->templateDescription + "\";\n";
+    }
+    res += "}";
+    return res;
+}
+
 
 } // U2

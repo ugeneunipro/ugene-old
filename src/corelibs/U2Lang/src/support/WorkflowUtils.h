@@ -76,6 +76,8 @@ public:
     static QString getStringForParameterDisplayRole(const QVariant & value);
     
     static Actor * findActorByParamAlias(const QList<Actor*> & procs, const QString & alias, QString & attrName, bool writeLog = true);
+
+    static Descriptor getSlotDescOfDatatype(const DataTypePtr & dt);
     
 private:
     static QStringList initExtensions();

@@ -48,6 +48,7 @@ AppSettingsGUIPageState* WorkflowSettingsPageController::getSavedState() {
     state->path = WorkflowSettings::getUserDirectory();
     state->color = WorkflowSettings::getBGColor();
     state->runSchemaInSeparateProcess = WorkflowSettings::runInSeparateProcess();
+    state->externalToolCfgDir = WorkflowSettings::getExternalToolDirectory();
     return state;
 }
 
@@ -62,6 +63,7 @@ void WorkflowSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     WorkflowSettings::setUserDirectory(state->path);
     WorkflowSettings::setBGColor(state->color);
     WorkflowSettings::setRunInSeparateProcess(state->runSchemaInSeparateProcess);
+    WorkflowSettings::setExternalToolDirectory(state->externalToolCfgDir);
 }
 
 AppSettingsGUIPageWidget* WorkflowSettingsPageController::createWidget(AppSettingsGUIPageState* state) {
@@ -76,6 +78,7 @@ WorkflowSettingsPageWidget::WorkflowSettingsPageWidget(WorkflowSettingsPageContr
     styleCombo->addItem(U2::WorkflowView::tr("Extended"), ItemStyles::EXTENDED);
     connect(dirButton, SIGNAL(clicked()), SLOT(sl_getDirectory()));
     connect(colorWidget, SIGNAL(clicked()), SLOT(sl_getColor()));
+    connect(extToolDirButton, SIGNAL(clicked()), SLOT(sl_getExternalToolCfgDir()));
     colorWidget->installEventFilter(this);
 #ifdef RUN_WORKFLOW_IN_THREADS
     runInSeparateProcessBox->setVisible(false);
@@ -131,6 +134,7 @@ void WorkflowSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     pal.setColor(colorWidget->backgroundRole(), state->color);
     colorWidget->setPalette(pal);
     runInSeparateProcessBox->setChecked(state->runSchemaInSeparateProcess);
+    extToolDirEdit->setText(state->externalToolCfgDir);
 }
 
 AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
@@ -144,7 +148,21 @@ AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
     state->path = dirEdit->text();
     state->color = colorWidget->palette().color(colorWidget->backgroundRole());
     state->runSchemaInSeparateProcess = runInSeparateProcessBox->isChecked();
+    state->externalToolCfgDir = extToolDirEdit->text();
     return state;
+}
+
+void WorkflowSettingsPageWidget::sl_getExternalToolCfgDir() {
+    QString url = WorkflowSettings::getExternalToolDirectory();
+
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setViewMode(QFileDialog::List);
+    dialog.setDirectory(url);
+    if(dialog.exec() == QDialog::Accepted) {
+        QString dir = dialog.selectedFiles().first();
+        extToolDirEdit->setText(dir + "/");
+    }
 }
 
 } //namespace

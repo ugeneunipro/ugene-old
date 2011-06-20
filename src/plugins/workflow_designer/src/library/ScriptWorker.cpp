@@ -88,23 +88,6 @@ QString ScriptPromter::composeRichDoc() {
     return target->getProto()->getDocumentation();
 }
 
-static Descriptor getSlotDescOfDatatype(const DataTypePtr & dt) {
-    QString dtId = dt->getId();
-    if(dtId == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
-        return BaseSlots::DNA_SEQUENCE_SLOT();
-    }
-    if(dtId == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
-        return BaseSlots::ANNOTATION_TABLE_SLOT();
-    }
-    if(dtId == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
-        return BaseSlots::MULTIPLE_ALIGNMENT_SLOT();
-    }
-    if(dtId == BaseTypes::STRING_TYPE()->getId()) {
-        return BaseSlots::TEXT_SLOT();
-    }
-    assert(false);
-    return *dt;
-}
 
 bool ScriptWorkerFactory::init(QList<DataTypePtr > input, QList<DataTypePtr > output, QList<Attribute *> attrs, const QString& name, const QString &description) {
     QList<PortDescriptor*> portDescs; 
@@ -116,7 +99,7 @@ bool ScriptWorkerFactory::init(QList<DataTypePtr > input, QList<DataTypePtr > ou
             coreLog.error(ScriptWorker::tr("For input port was set empty data type"));
             return false;
         }
-        map[getSlotDescOfDatatype(tptr)] = tptr;
+        map[WorkflowUtils::getSlotDescOfDatatype(tptr)] = tptr;
     }
 
     DataTypePtr inSet( new MapDataType(Descriptor(INPUT_PORT_TYPE + name), map) );
@@ -130,7 +113,7 @@ bool ScriptWorkerFactory::init(QList<DataTypePtr > input, QList<DataTypePtr > ou
             coreLog.error(ScriptWorker::tr("For output port was set empty data type"));
             return false;
         }
-        map[getSlotDescOfDatatype(tptr)] = tptr;
+        map[WorkflowUtils::getSlotDescOfDatatype(tptr)] = tptr;
     }
     
     DataTypePtr outSet( new MapDataType(Descriptor(OUTPUT_PORT_TYPE + name), map) );

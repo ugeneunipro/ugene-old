@@ -39,6 +39,7 @@ protected:
     virtual ActorPrototypeRegistry* initProtoRegistry();
     virtual DomainFactoryRegistry* initDomainRegistry();
     virtual DataTypeValueFactoryRegistry* initDataTypeValueFactoryRegistry();
+    virtual ExternalToolCfgRegistry* initExternalToolCfgRegistry();
     
 }; // WorkflowEnvImpl
 

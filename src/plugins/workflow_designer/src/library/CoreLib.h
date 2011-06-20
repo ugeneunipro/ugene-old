@@ -33,6 +33,7 @@ class CoreLib : public QObject {
 public:
     static void init();
     static void initUsersWorkers();
+    static void initExternalToolsWorkers();
 };
 
 } // Workflow namespace

@@ -23,6 +23,8 @@
 
 #include "CreateScriptWorker.h"
 #include "library/ScriptWorker.h"
+#include "library/ExternalProcessWorker.h"
+#include "library/CreateExternalProcessDialog.h"
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -51,7 +53,6 @@
 #include <QtGui/QContextMenuEvent>
 
 #include <QtCore/QDir>
-
 
 namespace U2 {
 
@@ -323,7 +324,8 @@ void WorkflowPalette::contextMenuEvent(QContextMenuEvent *e)
     QMenu menu;
     menu.addAction(tr("Expand all"), this, SLOT(expandAll()));
     menu.addAction(tr("Collapse all"), this, SLOT(collapseAll()));
-    if(itemAt(e->pos()) && itemAt(e->pos())->parent() && itemAt(e->pos())->parent()->text(0) == BaseActorCategories::CATEGORY_SCRIPT().getDisplayName()) {
+    if(itemAt(e->pos()) && itemAt(e->pos())->parent() && (itemAt(e->pos())->parent()->text(0) == BaseActorCategories::CATEGORY_SCRIPT().getDisplayName() 
+        || itemAt(e->pos())->parent()->text(0) == BaseActorCategories::CATEGORY_EXTERNAL().getDisplayName())) {
         menu.addAction(tr("Edit"), this, SLOT(editElement()));
         menu.addAction(tr("Remove"), this, SLOT(removeElement()));
         currentAction = actionMap.key(itemAt(e->pos()));
@@ -338,6 +340,9 @@ void WorkflowPalette::removeElement() {
     QString path = WorkflowSettings::getUserDirectory();
 
     QString fileName = path + proto->getDisplayName() + ".usa"; //use constant
+    if(!QFile::exists(fileName)) {
+        fileName = WorkflowSettings::getExternalToolDirectory() + proto->getDisplayName() + ".etc";
+    }
     QFile::setPermissions(fileName, QFile::ReadOwner | QFile::WriteOwner);
     if(!QFile::remove(fileName)) {
         uiLog.error(tr("Can't remove element %1").arg(proto->getDisplayName()));
@@ -354,24 +359,43 @@ void WorkflowPalette::removeElement() {
 void WorkflowPalette::editElement() {
     ActorPrototype *proto = currentAction->data().value<ActorPrototype *>();
     QString oldName = proto->getDisplayName();
+    ActorPrototypeRegistry *reg = WorkflowEnv::getProtoRegistry();
+    QMap<Descriptor, QList<ActorPrototype*> > categories = reg->getProtos();
 
-    CreateScriptElementDialog dlg(this, proto);
-    if(dlg.exec() == QDialog::Accepted) {
-        ActorPrototypeRegistry *reg = WorkflowEnv::getProtoRegistry();
-        assert(reg);
+    if(categories.value(BaseActorCategories::CATEGORY_SCRIPT()).contains(proto)) {
+        CreateScriptElementDialog dlg(this, proto);
+        if(dlg.exec() == QDialog::Accepted) {
+            ActorPrototypeRegistry *reg = WorkflowEnv::getProtoRegistry();
+            assert(reg);
 
-        QList<DataTypePtr > input = dlg.getInput();
-        QList<DataTypePtr > output = dlg.getOutput();
-        QList<Attribute*> attrs = dlg.getAttributes();
-        QString name = dlg.getName();
-        QString desc = dlg.getDescription();
+            QList<DataTypePtr > input = dlg.getInput();
+            QList<DataTypePtr > output = dlg.getOutput();
+            QList<Attribute*> attrs = dlg.getAttributes();
+            QString name = dlg.getName();
+            QString desc = dlg.getDescription();
 
-        if(oldName != name) {
-            removeElement();
-        } else {
-            reg->unregisterProto(proto->getId());
+            if(oldName != name) {
+                removeElement();
+            } else {
+                reg->unregisterProto(proto->getId());
+            }
+            LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name,desc);
         }
-        LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name,desc);
+    } else { //External process category
+        ExternalProcessConfig *cfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());
+        CreateExternalProcessDialog dlg(this, cfg);
+        if(dlg.exec() == QDialog::Accepted) {
+            cfg = dlg.config();
+
+            WorkflowEnv::getExternalCfgRegistry()->unregisterConfig(oldName);
+            WorkflowEnv::getExternalCfgRegistry()->registerExternalTool(cfg);
+            if(oldName != cfg->name) {
+                removeElement();
+            } else {
+                reg->unregisterProto(proto->getId());
+            }
+            LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
+        }
     }
 }
 

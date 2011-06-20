@@ -39,6 +39,7 @@ public:
     static const Descriptor CATEGORY_TRANSCRIPTION();
     static const Descriptor CATEGORY_SCRIPT();
     static const Descriptor CATEGORY_STATISTIC();
+    static const Descriptor CATEGORY_EXTERNAL();
     
 }; // BaseActorCategories
 

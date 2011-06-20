@@ -37,9 +37,11 @@ HEADERS += src/ActorCfgModel.h \
            src/library/SequencesToMSAWorker.h \
            src/library/FilterAnnotationsWorker.h \
            src/library/CDSearchWorker.h \
+		   src/library/ExternalProcessWorker.h \
 	   src/library/StatisticWorkers.h \
 	   src/library/ReverseComplementWorker.h \
 	   src/library/MSA2SequenceWorker.h \
+	   src/library/CreateExternalProcessDialog.h \
            src/util/SaveSchemaImageUtils.h 
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
@@ -47,7 +49,8 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/SchemaConfigurationDialog.ui \
          src/ui/WorkflowEditorWidget.ui \
          src/ui/WorkflowMetaDialog.ui \
-         src/ui/WorkflowSettingsWidget.ui
+         src/ui/WorkflowSettingsWidget.ui \
+		 src/ui/ExternalProcessWorkerDialog.ui
 SOURCES += src/ActorCfgModel.cpp \
            src/ChooseItemDialog.cpp \
            src/CreateScriptWorker.cpp \
@@ -84,9 +87,11 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/FilterAnnotationsWorker.cpp \
            src/library/SequencesToMSAWorker.cpp \
            src/library/CDSearchWorker.cpp \
+		   src/library/ExternalProcessWorker.cpp \
 		   src/library/StatisticWorkers.cpp \
 		   src/library/ReverseComplementWorker.cpp \
 		   src/library/MSA2SequenceWorker.cpp \
+		   src/library/CreateExternalProcessDialog.cpp \
            src/util/SaveSchemaImageUtils.cpp 
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

@@ -30,9 +30,14 @@
 #include <U2Lang/Schema.h>
 #include <U2Lang/Port.h>
 
+
 namespace U2 {
 
 using namespace Workflow;
+
+class ExternalProcessConfig;
+class DataConfig;
+class AttributeConfig;
 
 class U2LANG_EXPORT HRSchemaSerializer : public QObject {
     Q_OBJECT
@@ -67,6 +72,14 @@ public:
     static const QString NO_NAME;
     static const QString COLON;
     static const QString SEMICOLON;
+    static const QString INPUT_START;
+    static const QString OUTPUT_START;
+    static const QString ATTRIBUTES_START;
+    static const QString TYPE_PORT;
+    static const QString FORMAT_PORT;
+    static const QString CMDLINE;
+    static const QString DESCRIPTION;
+    static const QString PROMPTER;
     
 public:
     struct U2LANG_EXPORT ReadFailed {
@@ -145,6 +158,12 @@ public:
     static QString aliasesHelp(const QList<Actor*> & procs);
     static NamesMap generateElementNames(const QList<Actor*>& procs);
     static QString schema2String(const Schema & schema, const Metadata * meta, bool copyMode = false);
+
+    static ExternalProcessConfig* string2Actor(const QString & bytes);
+    static QString actor2String(ExternalProcessConfig *cfg);
+    static ExternalProcessConfig *parseActorBody(Tokenizer & tokenizer);
+    static void parsePorts(Tokenizer & tokenizer, QList<DataConfig>& ports);
+    static void parseAttributes(Tokenizer & tokenizer, QList<AttributeConfig>& attrs);
     
     static QMap<ActorId, ActorId> deepCopy(const Schema& from, Schema* to);
 };

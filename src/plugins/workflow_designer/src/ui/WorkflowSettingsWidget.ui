@@ -6,64 +6,61 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>412</width>
-    <height>400</height>
+    <width>487</width>
+    <height>465</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Resource settings</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Scene appearance</string>
      </property>
-     <layout class="QFormLayout" name="formLayout">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_2">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="gridBox">
         <property name="text">
-         <string>Element style</string>
+         <string>Show grid</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="styleCombo"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Element font</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QFontComboBox" name="fontCombo"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Element background color</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QWidget" name="colorWidget" native="true"/>
-      </item>
-      <item row="1" column="0">
+      <item>
        <widget class="QCheckBox" name="snapBox">
         <property name="text">
          <string>Snap to grid</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="gridBox">
+      <item>
+       <widget class="QComboBox" name="styleCombo"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Show grid</string>
+         <string>Element style</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFontComboBox" name="fontCombo"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Element font</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="colorWidget" native="true"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Element background color</string>
         </property>
        </widget>
       </item>
@@ -89,18 +86,50 @@
    <item>
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
-      <string>Custom elements directory</string>
+      <string>Directories</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLineEdit" name="dirEdit"/>
-      </item>
-      <item>
-       <widget class="QToolButton" name="dirButton">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>...</string>
+         <string>Custom elements directory</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="dirEdit"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="dirButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>External tools config directory</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="extToolDirEdit"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="extToolDirButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

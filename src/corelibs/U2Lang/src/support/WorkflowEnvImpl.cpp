@@ -68,5 +68,10 @@ WorkflowEnvImpl::~WorkflowEnvImpl()
     delete dvfReg;
 }
 
+ExternalToolCfgRegistry* WorkflowEnvImpl::initExternalToolCfgRegistry() {
+    ExternalToolCfgRegistry *ecfgReg = new ExternalToolCfgRegistry();
+    return ecfgReg;
+}
+
 }//namespace Workflow
 }//namespace U2

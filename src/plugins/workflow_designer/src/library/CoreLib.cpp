@@ -38,6 +38,7 @@
 #include "StatisticWorkers.h"
 #include "ReverseComplementWorker.h"
 #include "MSA2SequenceWorker.h"
+#include "ExternalProcessWorker.h"
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -66,6 +67,7 @@
 #include <U2Core/global.h>
 #include <U2Misc/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Lang/HRSchemaSerializer.h>
 
 
 /* TRANSLATOR U2::Workflow::CoreLib */
@@ -296,6 +298,7 @@ void CoreLib::init() {
     DNAStatWorkerFactory::init();
     RCWorkerFactory::init();
     initUsersWorkers();
+    initExternalToolsWorkers();
 }
 
 void CoreLib::initUsersWorkers() {
@@ -374,6 +377,32 @@ void CoreLib::initUsersWorkers() {
         ScriptWorkerFactory::init(inputTypes, outputTypes, attrs, actorName, actorDesc);
     }
 }
+
+void CoreLib::initExternalToolsWorkers() {
+    QString path = WorkflowSettings::getExternalToolDirectory();
+    QDir dir(path);
+    if(!dir.exists()) {
+        return;
+    }
+    dir.setNameFilters(QStringList() << "*.etc");
+    QFileInfoList fileList = dir.entryInfoList();
+
+    foreach(const QFileInfo& fileInfo, fileList) {
+        QString url = fileInfo.filePath();
+        QFile file(url);
+        file.open(QIODevice::ReadOnly);
+        QString data = file.readAll().data();
+
+        ExternalProcessConfig *cfg = NULL;
+        cfg = HRSchemaSerializer::string2Actor(data);
+
+        if(cfg) {
+            ExternalProcessWorkerFactory::init(cfg);
+        }
+        file.close();
+    }
+} 
+
 
 } // Workflow namespace
 } // U2 namespace

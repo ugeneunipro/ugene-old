@@ -30,6 +30,7 @@
 #include <QtGui/QStyle>
 #include <QtGui/QColor>
 #include <QtGui/QStyleFactory>
+#include <U2Core/GUrl.h>
 
 namespace U2 {
 
@@ -45,6 +46,7 @@ namespace U2 {
 #define SCRIPT_MODE SETTINGS + "scriptMode"
 #define RUN_IN_SEPARATE_PROC SETTINGS + "runInSeparateProcess"
 #define CMDLINE_UGENE_PATH SETTINGS + "cmdlineUgenePath"
+#define EXTERNAL_TOOL_WORKER_PATH SETTINGS + "externalToolWorkerPath"
 
 Watcher* const WorkflowSettings::watcher = new Watcher;
 
@@ -126,6 +128,38 @@ void WorkflowSettings::setUserDirectory(const QString &newDir) {
             return;
         }
         dir.setNameFilters(QStringList() << "*.usa");
+        QFileInfoList fileList = dir.entryInfoList();
+        foreach(const QFileInfo &fileInfo, fileList) {
+            QString newFileUrl = newDir + fileInfo.fileName();
+            QFile::copy(fileInfo.filePath(), newFileUrl);
+        }
+    }
+}
+
+const QString WorkflowSettings::getExternalToolDirectory() {
+    Settings *s = AppContext::getSettings();
+    GUrl url(s->fileName());
+    QString defaultPath = url.dirPath();
+    defaultPath += "/ExternalToolConfig/";
+    QString path = s->getValue(EXTERNAL_TOOL_WORKER_PATH, defaultPath).toString();
+    return path;
+}
+
+void WorkflowSettings::setExternalToolDirectory(const QString &newDir) {
+    Settings *s = AppContext::getSettings();
+    GUrl url(s->fileName());
+    QString defaultPath = url.dirPath();
+    defaultPath += "/ExternalToolConfig/";
+    QString path = s->getValue(EXTERNAL_TOOL_WORKER_PATH, defaultPath).toString();
+
+    s->setValue(EXTERNAL_TOOL_WORKER_PATH, newDir);
+
+    if(path != newDir) {
+        QDir dir(path);
+        if(!dir.exists()) {
+            return;
+        }
+        dir.setNameFilters(QStringList() << "*.etc");
         QFileInfoList fileList = dir.entryInfoList();
         foreach(const QFileInfo &fileInfo, fileList) {
             QString newFileUrl = newDir + fileInfo.fileName();

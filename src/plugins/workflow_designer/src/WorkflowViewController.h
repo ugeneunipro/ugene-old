@@ -183,6 +183,7 @@ private slots:
     void sl_toggleLock(bool = true);
     void sl_createScript();
     void sl_editScript();
+    void sl_externalAction();
     void sl_protoDeleted(const QString& id);
     void sl_xmlSchemaLoaded(Task*);
     
@@ -223,6 +224,7 @@ private:
 
     QAction* createScriptAcction;
     QAction* editScriptAction;
+    QAction* externalToolAction;
     
     QAction* configureIterationsAction;
     QAction* configureAliasesAction;
