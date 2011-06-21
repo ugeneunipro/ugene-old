@@ -10,7 +10,7 @@ CigarValidator::CigarValidator(QList<Alignment::CigarOperation> cigar_) : cigar(
 
 void CigarValidator::validate(int * totalLength) {
     const static Alignment::CigarOperation::Operation CIGAR_H = Alignment::CigarOperation::HardClip;
-    //const static Alignment::CigarOperation::Operation CIGAR_S = Alignment::CigarOperation::SoftClip;
+    const static Alignment::CigarOperation::Operation CIGAR_S = Alignment::CigarOperation::SoftClip;
 
     //bool hasRealOperation = false;
     int myTotalLength = 0;
@@ -28,7 +28,7 @@ void CigarValidator::validate(int * totalLength) {
                 
             } 
             //2. Check sentence "S may only have H operations between them and the ends of the CIGAR string"
-            else {
+            else if(CIGAR_S == op && (0 != i && cigar.size()-1 != i)) {
                 if (1 == i) {
                     if (3 == cigar.size() && CIGAR_H == cigar.at(2).getOperation()) {
                         // ok
