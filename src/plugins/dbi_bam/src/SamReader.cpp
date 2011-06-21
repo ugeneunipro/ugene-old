@@ -232,10 +232,9 @@ Alignment SamReader::parseAlignmentString(QByteArray line) {
     {
         QByteArray quality = tokens[10];
         if ("*" != quality) {
-            if(!QRegExp("[!-~]+").exactMatch(quality)) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid quality value: %1").arg(QString(quality)));
+            if(QRegExp("[!-~]+").exactMatch(quality)) {
+                alignment.setQuality(quality);
             }
-            alignment.setQuality(quality);
         }
     }
     {

@@ -106,8 +106,15 @@ void ConvertAssemblyToSamTask::run() {
                 seq.seq = read->readSequence;
                 seq.quality = read->quality;
                 seq.setName(read->name);
+                QByteArray cigar = U2AssemblyUtils::cigar2String(read->cigar);
+                if(!QRegExp("[!-~]+").exactMatch(seq.quality.qualCodes)) {
+                    seq.quality.qualCodes = "*";
+                }
+                if (cigar.isEmpty()) {
+                    cigar = "*";
+                }
 
-                format->storeAlignedRead(read->leftmostPos, seq, io, refSeqName, wholeAssembly.length, false, true, U2AssemblyUtils::cigar2String(read->cigar));
+                format->storeAlignedRead(read->leftmostPos, seq, io, refSeqName, wholeAssembly.length, false, true, cigar);
             }
         }
     }
