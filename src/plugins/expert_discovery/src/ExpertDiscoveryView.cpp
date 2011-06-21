@@ -618,10 +618,10 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
                updatePS = false;
            }
            else {
-               mutex.lock();
+               //mutex.lock();
                curPS = pPICSN->getProcessedSignal(d);
                updatePS = true;
-               mutex.unlock();
+               //mutex.unlock();
            }
 
            if (curPS == NULL) {
@@ -638,9 +638,9 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
            break;
        }
        default:
-           mutex.lock();
+           //mutex.lock();
            curPS = NULL;
-           mutex.unlock();
+           //mutex.unlock();
     }
 
     propWidget->sl_treeSelChanged(tItem);

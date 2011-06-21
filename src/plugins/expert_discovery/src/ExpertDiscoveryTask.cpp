@@ -890,14 +890,14 @@ void ExpertDiscoveryToAnnotationTask::run(){
     }
 
     //cs start
-    mutex.lock();
+   // mutex.lock();
     csToAnnotation(seqNumber, edSeq.getSize());
     
     hasRecData = edData->recDataStorage.getRecognizationData(recData, &edSeq, edData->getSelectedSignalsContainer());
     if(hasRecData){
         recDataToAnnotation();    
     }
-    mutex.unlock();
+   // mutex.unlock();
     //cs end
     
 }
