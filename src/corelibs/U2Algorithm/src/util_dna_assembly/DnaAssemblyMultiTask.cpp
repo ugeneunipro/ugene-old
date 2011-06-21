@@ -95,11 +95,13 @@ QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
 }
 
 const MAlignmentObject* DnaAssemblyMultiTask::getAssemblyResult() {
+    assert(!openView);
     if ( doc == NULL ) {
         return NULL;
     }
 
     QList<GObject*> objs = doc->getObjects();
+    doc = NULL;
     if ( objs.size() == 0 ) {
         return NULL;
     }
