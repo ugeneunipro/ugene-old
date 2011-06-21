@@ -20,18 +20,32 @@
  */
 
 #include "DotPlotDialog.h"
+#include "DotPlotTasks.h"
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2Core/global.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+#include <U2Misc/DialogUtils.h>
+#include <QtGui/QFileDialog>
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
 
 #include <QtGui/QColorDialog>
 
 namespace U2 {
 
-DotPlotDialog::DotPlotDialog(QWidget *parent, const QList<ADVSequenceObjectContext *> &seq, int minLen, int identity, ADVSequenceObjectContext *sequenceX, ADVSequenceObjectContext *sequenceY, bool dir, bool inv, const QColor &dColor, const QColor &iColor)
-: QDialog(parent), sequences(seq), directColor(dColor), invertedColor(iColor)
+DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, ADVSequenceObjectContext *sequenceX, ADVSequenceObjectContext *sequenceY, bool dir, bool inv, const QColor &dColor, const QColor &iColor)
+: QDialog(parent), directColor(dColor), invertedColor(iColor), xSeq(sequenceX), ySeq(sequenceY), adv(currentADV)
 {
     setupUi(this);
+
+    if(!adv){
+        return;
+    }
+
+    sequences = adv->getSequenceContexts();
 
     if (sequences.size() <= 0) {
         return;
@@ -53,21 +67,42 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, const QList<ADVSequenceObjectConte
 
     int xSeqIndex=-1, ySeqIndex=-1;
     int curIndex = 0;
-    foreach (ADVSequenceObjectContext *s, sequences) {
+
+//     sequences in the current view
+//         foreach (ADVSequenceObjectContext *s, sequences) {
+//             Q_ASSERT(s);
+//     
+//             xAxisCombo->addItem(s->getSequenceGObject()->getGObjectName());
+//             yAxisCombo->addItem(s->getSequenceGObject()->getGObjectName());
+//     
+//             if (sequenceX == s) {
+//                 xSeqIndex = curIndex;
+//             }
+//             if (sequenceY == s) {
+//                 ySeqIndex = curIndex;
+//             }
+//     
+//             curIndex++;
+//         }
+
+    //sequences in the project
+    QList<GObject*> allSequences  = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE);
+    foreach (GObject* s, allSequences) {
         Q_ASSERT(s);
 
-        xAxisCombo->addItem(s->getSequenceGObject()->getGObjectName());
-        yAxisCombo->addItem(s->getSequenceGObject()->getGObjectName());
+        xAxisCombo->addItem(s->getGObjectName());
+        yAxisCombo->addItem(s->getGObjectName());
 
-        if (sequenceX == s) {
+        if (sequenceX && (sequenceX->getSequenceGObject() == s)) {
             xSeqIndex = curIndex;
         }
-        if (sequenceY == s) {
+        if (sequenceY && (sequenceY->getSequenceGObject() == s)) {
             ySeqIndex = curIndex;
         }
 
         curIndex++;
     }
+
 
     // choose the second sequence for Y axis
     if (sequences.size() > 1) {
@@ -97,10 +132,12 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, const QList<ADVSequenceObjectConte
 
     connect(directDefaultColorButton, SIGNAL(clicked()), SLOT(sl_directDefaultColorButton()));
     connect(invertedDefaultColorButton, SIGNAL(clicked()), SLOT(sl_invertedDefaultColorButton()));
+
+    connect(loadSequenceButton, SIGNAL(clicked()), SLOT(sl_loadSequenceButton()));
 }
 
 void DotPlotDialog::accept() {
-
+    updateSequencesOnADV();
     xSeq = sequences.at(xAxisCombo->currentIndex());
     ySeq = sequences.at(yAxisCombo->currentIndex());
 
@@ -121,6 +158,9 @@ void DotPlotDialog::sl_minLenHeuristics() {
 
     Q_ASSERT(xAxisCombo);
     Q_ASSERT(yAxisCombo);
+
+    updateSequencesOnADV(false);
+
     ADVSequenceObjectContext *xSequence = sequences.at(xAxisCombo->currentIndex());
     ADVSequenceObjectContext *ySequence = sequences.at(yAxisCombo->currentIndex());
 
@@ -226,10 +266,104 @@ void DotPlotDialog::sl_invertedDefaultColorButton() {
     updateColors();
 }
 
+void DotPlotDialog::sl_loadSequenceButton(){
+    QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
+    LastOpenDirHelper lod("DotPlot file");
+    lod.url = QFileDialog::getOpenFileName(NULL, tr("Open file"), lod.dir, filter);
+    if(!lod.url.isEmpty()){
+        Task *tasks = new Task("Adding document to the project", TaskFlag_NoRun);
+
+        if (!AppContext::getProject()) {
+            QList<GUrl> emptyList;
+            tasks->addSubTask( AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+        }
+
+        DotPlotLoadDocumentsTask *t = new DotPlotLoadDocumentsTask(lod.url, false, NULL, false, false);
+        tasks->addSubTask(t);
+
+        connect( AppContext::getTaskScheduler(), SIGNAL( si_stateChanged(Task*) ), SLOT( sl_loadTaskStateChanged(Task*) ) );
+
+        AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
+    }
+
+}
+
+void DotPlotDialog::sl_loadTaskStateChanged(Task* t){
+    DotPlotLoadDocumentsTask *loadTask = qobject_cast<DotPlotLoadDocumentsTask*>(t);
+    if (!loadTask || !loadTask->isFinished()) {
+        return;
+    }
+
+    if (loadTask->getStateInfo().hasError()) {
+        DotPlotDialogs::filesOpenError();
+        return;
+    }
+
+    QList <Document *> docs = loadTask->getDocuments();
+    foreach (Document* doc, docs) {
+        QList<GObject*> docSequences  = doc->getObjects();
+        foreach (GObject* s, docSequences) {
+            Q_ASSERT(s);
+
+            if(s->getGObjectType() == GObjectTypes::SEQUENCE){
+                xAxisCombo->addItem(s->getGObjectName());
+                yAxisCombo->addItem(s->getGObjectName());
+            }
+        }
+    }
+}
+
 void DotPlotDialog::updateColors() {
 
     directColorButton->setStyleSheet(COLOR_STYLE.arg(directColor.name()));
     invertedColorButton->setStyleSheet(COLOR_STYLE.arg(invertedColor.name()));
+}
+
+bool DotPlotDialog::isOnCurrentADV(GObject* obj){
+    Q_ASSERT(obj);
+
+    QList<ADVSequenceObjectContext*> currentContexts = adv->getSequenceContexts();
+
+    bool result = false;
+    foreach(ADVSequenceObjectContext* objContext, currentContexts){
+        if (objContext->getSequenceGObject()->getGObjectName() == obj->getGObjectName()){
+            result = true;
+        }
+    }
+
+    return result;
+}
+
+GObject* DotPlotDialog::getGObjectByName(const QString& gObjectName){
+    QList<GObject*> allSequences  = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE);  
+    GObject* obj = NULL;
+    foreach (GObject* s, allSequences) {
+
+        if (gObjectName == s->getGObjectName()) {
+            obj = s; 
+        }
+    }
+    return obj;
+}
+
+void DotPlotDialog::updateSequencesOnADV(bool addToAdv)
+{
+    GObject* curGObject = getGObjectByName(xAxisCombo->currentText());
+    Q_ASSERT(curGObject);
+    if(!isOnCurrentADV(curGObject)){
+        if(addToAdv){
+            adv->addObject(curGObject);
+        }
+        sequences = adv->getSequenceContexts();
+    }
+    curGObject = getGObjectByName(yAxisCombo->currentText());
+    Q_ASSERT(curGObject);
+    if(!isOnCurrentADV(curGObject)){
+        if(addToAdv){
+            adv->addObject(curGObject);
+        }
+        sequences = adv->getSequenceContexts();
+    }
 }
 
 }//namespace

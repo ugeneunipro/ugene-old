@@ -97,6 +97,10 @@ void DotPlotViewContext::sl_loadTaskStateChanged(Task* task) {
         return;
     }
 
+    if(loadTask->isNoView()){
+        return;
+    }
+
     // prepare document objects to open view with
     GObjectSelection os;
 

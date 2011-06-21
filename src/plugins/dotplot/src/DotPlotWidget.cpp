@@ -564,13 +564,8 @@ bool DotPlotWidget::sl_showSettingsDialog() {
     }
 
     Q_ASSERT(dnaView);
-    QList<ADVSequenceObjectContext *> sequences = dnaView->getSequenceContexts();
 
-    if (sequences.size() <= 0) {
-        return false;
-    }
-
-    DotPlotDialog d(this, sequences, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor);
+    DotPlotDialog d(this, dnaView, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor);
     if (d.exec()) {
         setMinimumHeight(200);
 
@@ -923,7 +918,7 @@ void DotPlotWidget::drawNames(QPainter &p) const {
     p.save();
 
     p.rotate(90);
-    p.translate(0, -(w + textSpace*2));
+    p.translate(DP_MARGIN + DP_EXIT_BUTTON_SIZE, -(w +textSpace*2));
     p.drawText(0, 0, h+textSpace, textSpace, Qt::AlignCenter, nameY);
 
     p.restore();

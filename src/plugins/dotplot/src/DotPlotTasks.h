@@ -85,18 +85,20 @@ class DotPlotLoadDocumentsTask : public Task {
     Q_OBJECT
 public:
 
-    DotPlotLoadDocumentsTask(QString firstF, int firstG, QString secondF, int secondG);
+    DotPlotLoadDocumentsTask(QString firstF, int firstG, QString secondF, int secondG, bool view = true);
     ~DotPlotLoadDocumentsTask();
 
     void run(){};
     void prepare();
 
     QList<Document*> getDocuments() const {return docs;}
+    bool isNoView(){return noView;}
 
 private:
     QString firstFile, secondFile;
     int firstGap, secondGap;
     QList<Document*> docs;
+    bool noView;
 
     Document* loadFile(QString inFile, int gapSize);
 

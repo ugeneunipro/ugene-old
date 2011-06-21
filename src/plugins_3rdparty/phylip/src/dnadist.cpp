@@ -93,7 +93,7 @@ void getoptions()
   progress = true;
   interleaved = true;
   loopcount = 0;
-  
+
   QString matrixModel = getDNADistSettings().matrixId;
   if (matrixModel == DNADistModelTypes::F84) {
       f84 = true;
@@ -101,12 +101,16 @@ void getoptions()
       jukes = false;
       freqsfrom = true;
       logdet = false;
+      ttratio = getDNADistSettings().ttRatio;
+      ttr = true;
   } else if (matrixModel == DNADistModelTypes::Kimura) {
       f84 = false;
       kimura = true;
       jukes = false;
       freqsfrom = false;
       logdet = false;
+      ttratio = getDNADistSettings().ttRatio;
+      ttr = true;
   } else if (matrixModel == DNADistModelTypes::JukesCantor) {
       f84 = false;
       kimura = false;

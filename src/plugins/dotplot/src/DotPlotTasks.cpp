@@ -225,8 +225,8 @@ bool LoadDotPlotTask::loadDotPlot(QTextStream &stream, int fileSize) {
 }
 
 
-DotPlotLoadDocumentsTask::DotPlotLoadDocumentsTask(QString firstF, int firstG, QString secondF, int secondG)
-: Task(tr("DotPlot loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel))
+DotPlotLoadDocumentsTask::DotPlotLoadDocumentsTask(QString firstF, int firstG, QString secondF, int secondG, bool view)
+: Task(tr("DotPlot loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel)), noView(!view)
 {
     firstFile = firstF;
     firstGap = firstG;
@@ -254,6 +254,9 @@ void DotPlotLoadDocumentsTask::prepare() {
 
 Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
 
+    if(inFile == ""){
+        return NULL;
+    }
     GUrl URL(inFile);
 
     Project *project = AppContext::getProject();

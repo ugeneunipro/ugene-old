@@ -61,6 +61,7 @@ void DistMatrixModelWidget::fillSettings( CreatePhyTreeSettings& settings )
     settings.matrixId = modelBox->currentText();
     settings.useGammaDistributionRates = gammaCheckBox->isChecked();
     settings.alphaFactor = alphaSpinBox->value();
+    settings.ttRatio = transitionRatioSpinBox->value();
 }
 void DistMatrixModelWidget::storeSettings(){
      AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + DIST_MATRIX_MODEL_PATH, modelBox->currentText());

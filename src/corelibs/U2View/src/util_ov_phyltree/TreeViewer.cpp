@@ -444,6 +444,13 @@ void TreeViewerUI::updateSettings() {
     QList<QGraphicsItem*> updatingItems = this->scene()->selectedItems();
     if(updatingItems.isEmpty()){
         updatingItems = this->items();
+
+        QGraphicsLineItem* legendLine = dynamic_cast<QGraphicsLineItem*>(legend);
+        if(legendLine){
+            QPen legendPen;
+            legendPen.setColor(branchSettings.branchColor);
+            legendLine->setPen(legendPen);
+        }
     }
 
     foreach (QGraphicsItem *graphItem, updatingItems) {
@@ -464,6 +471,14 @@ void TreeViewerUI::updateTextSettings(){
     QList<QGraphicsItem*> updatingItems = this->scene()->selectedItems();
     if(updatingItems.isEmpty()){
         updatingItems = this->items();
+
+        QList<QGraphicsItem*> legendChildItems = legend->children();
+        if(!legendChildItems.isEmpty()){
+            QGraphicsSimpleTextItem* legendText = dynamic_cast<QGraphicsSimpleTextItem*>(legendChildItems.first());
+            if(legendText){
+                legendText->setBrush(textSettings.textColor);
+            }
+        }
     }
 
     foreach (QGraphicsItem *graphItem, updatingItems) {
@@ -625,7 +640,8 @@ void TreeViewerUI::addLegend(qreal scale) {
     str.truncate(i + 1);
 
     legend = new QGraphicsLineItem(0, 0, WIDTH, 0);
-    QGraphicsItem* text = new QGraphicsSimpleTextItem(str, legend);
+    QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(str, legend);
+    text->setFont(TreeViewerUtils::getFont());
     QRectF rect = text->boundingRect();
     text->setPos(0.5 * (WIDTH - rect.width()), -rect.height());
     scene()->addItem(legend);
@@ -692,7 +708,7 @@ void TreeViewerUI::resizeEvent(QResizeEvent *e) {
 
 // needed to export tree
 void TreeViewerUI::paint(QPainter &painter) {
-    painter.setBrush(QColor(0, 0, 0));
+    painter.setBrush(Qt::darkGray);
     painter.setFont(TreeViewerUtils::getFont());
     scene()->render(&painter);
 }

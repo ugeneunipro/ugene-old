@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>547</width>
-    <height>297</height>
+    <height>328</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -359,6 +359,16 @@
         </item>
        </layout>
       </item>
+      <item row="5" column="2">
+       <widget class="QPushButton" name="loadSequenceButton">
+        <property name="toolTip">
+         <string>Click to load a sequence from the file system. The sequence will be added to the combo boxes when it is loaded to the project</string>
+        </property>
+        <property name="text">
+         <string>Load Sequence</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -401,6 +411,7 @@
  <tabstops>
   <tabstop>xAxisCombo</tabstop>
   <tabstop>yAxisCombo</tabstop>
+  <tabstop>loadSequenceButton</tabstop>
   <tabstop>directCheckBox</tabstop>
   <tabstop>invertedCheckBox</tabstop>
   <tabstop>directColorButton</tabstop>
@@ -426,7 +437,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>453</x>
-     <y>286</y>
+     <y>317</y>
     </hint>
     <hint type="destinationlabel">
      <x>273</x>
@@ -442,7 +453,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>536</x>
-     <y>286</y>
+     <y>317</y>
     </hint>
     <hint type="destinationlabel">
      <x>273</x>
@@ -458,11 +469,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>127</x>
-     <y>181</y>
+     <y>212</y>
     </hint>
     <hint type="destinationlabel">
      <x>526</x>
-     <y>182</y>
+     <y>213</y>
     </hint>
    </hints>
   </connection>

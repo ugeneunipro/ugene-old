@@ -29,11 +29,13 @@
 
 namespace U2 {
 class ADVSequenceObjectContext;
+class GObject;
+class AnnotatedDNAView;
 
 class DotPlotDialog : public QDialog, public Ui_DotPlotDialog{
     Q_OBJECT
 public:
-    DotPlotDialog(QWidget *parent, const QList<ADVSequenceObjectContext *>& sequences, int minLen, int identity, ADVSequenceObjectContext *seqX, ADVSequenceObjectContext *seqY, bool dir, bool inv, const QColor &dColor = QColor(), const QColor &iColor = QColor());
+    DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, ADVSequenceObjectContext *seqX, ADVSequenceObjectContext *seqY, bool dir, bool inv, const QColor &dColor = QColor(), const QColor &iColor = QColor());
 
     virtual void accept();
 
@@ -52,6 +54,9 @@ public:
 
 protected slots:
     void sl_minLenHeuristics();
+
+    void updateSequencesOnADV(bool addToADV = true);
+
     void sl_hundredPercent();
 
     void sl_directInvertedCheckBox();
@@ -62,13 +67,21 @@ protected slots:
     void sl_directDefaultColorButton();
     void sl_invertedDefaultColorButton();
 
+    void sl_loadSequenceButton();
+
+    void sl_loadTaskStateChanged(Task* t);
+
 private:
     QList<ADVSequenceObjectContext *> sequences;
     ADVSequenceObjectContext *xSeq, *ySeq;
+    AnnotatedDNAView* adv;
 
     QColor directColor, invertedColor;
 
     void updateColors();
+
+    bool isOnCurrentADV(GObject* obj);
+    GObject* getGObjectByName(const QString& gObjectName);
 };
 
 } //namespace
