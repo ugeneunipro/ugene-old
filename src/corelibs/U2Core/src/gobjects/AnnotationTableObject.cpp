@@ -36,6 +36,17 @@
 
 namespace U2 {
 
+bool isValidSymbols(const QString &str){
+    QRegExp rx("([\\w_-\\d'\\*]+)");
+    assert(rx.isValid());
+    rx.indexIn(str);
+    QString cap = rx.cap(1);
+    if(rx.cap(1) != str){
+        return false;
+    }
+    return true;
+}
+
 Annotation::Annotation(SharedAnnotationData _d): obj(NULL), d(_d)
 {
 }
@@ -45,12 +56,12 @@ Annotation::~Annotation() {
 }
 
 bool Annotation::isValidQualifierName(const QString& s) {
-    return !s.isEmpty() && s.length() < 20;
+    return !s.isEmpty() && s.length() < 20 && isValidSymbols(s);
 }
 
 bool Annotation::isValidQualifierValue(const QString& s) {
     Q_UNUSED(s); //todo: check whitespaces!
-    return true;
+    return isValidSymbols(s);
 }
 
 bool Annotation::isValidAnnotationName(const QString& n) {
@@ -71,7 +82,7 @@ bool Annotation::isValidAnnotationName(const QString& n) {
     if (name[0] == ' ' || name[name.size() - 1] == ' ') {
         return false;
     }
-    return true;
+    return isValidSymbols(n);
 }
 
 QString Annotation::getQualifiersTip(int maxRows, DNASequenceObject* seq, DNATranslation* comlTT, DNATranslation* aminoTT) const {
