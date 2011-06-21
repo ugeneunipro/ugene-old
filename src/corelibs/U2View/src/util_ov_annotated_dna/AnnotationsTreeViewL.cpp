@@ -1435,7 +1435,10 @@ void AnnotationsTreeViewL::sl_itemCollapsed(QTreeWidgetItem* qi) {
     int lim = tree->getMaxItem();
     int acceptable = lim - current;
 
-    AVItemL *item = tree->getNextItemDown(static_cast<AVItemL*>(tree->onScreen.last()));
+    AVItemL *item =  NULL;
+    if(acceptable > 0) {
+        item = tree->getNextItemDown(static_cast<AVItemL*>(tree->onScreen.last()));
+    }
     while(item && acceptable > 0) {
         tree->insertItem(item->parent()->childCount() - 1, item, false);
         if(tree->treeWalker->isExpanded(item)) {
