@@ -95,62 +95,11 @@ void BlastAllSupportRunDialog::sl_runQuery(){
         settings.aobj = ca_c->getModel().getAnnotationObject();
     }
     settings.groupName=ca_c->getModel().groupName;
-
-    settings.databaseNameAndPath=databasePathLineEdit->text()+"/"+baseNameLineEdit->text();
-    settings.expectValue=evalueSpinBox->value();
-    settings.wordSize=wordSizeSpinBox->value();
-    settings.megablast=megablastCheckBox->isChecked();
     settings.alphabet=dnaso->getAlphabet();
-    settings.numberOfHits=numberOfHitsSpinBox->value();
-    settings.numberOfProcessors=numberOfCPUSpinBox->value();
-
-    settings.gapOpenCost=costsComboBox->currentText().split(" ").at(0).toInt();
-    settings.gapExtendCost=costsComboBox->currentText().split(" ").at(1).toInt();
-    //setup filters
-    if(lowComplexityFilterCheckBox->isChecked()){
-        settings.filter="L";
-    }
-    if(repeatsCheckBox->isChecked()){
-        settings.filter=settings.filter.isEmpty() ? "R" : settings.filter+"; R";
-    }
-//    if(lowerCaseCheckBox->isChecked()){
-//        settings.filter=settings.filter.isEmpty() ? "???" : settings.filter+"; ???";
-//    }
-    if(lookupMaskCheckBox->isChecked()){
-        settings.filter=settings.filter.isEmpty() ? "m" : "m "+settings.filter;
-    }
-
-    if(settings.isNucleotideSeq){
-        if((((scoresComboBox->currentText() == "1 -4") || (scoresComboBox->currentText() == "1 -3")) && costsComboBox->currentText()=="2 2") || //-G 2 -E 2
-            ((scoresComboBox->currentText() == "1 -2") && costsComboBox->currentText()=="2 2") || //-G 2 -E 2
-            ((scoresComboBox->currentText() == "1 -1") && costsComboBox->currentText()=="4 2") || //-G 4 -E 2
-            (((scoresComboBox->currentText() == "2 -7") || (scoresComboBox->currentText() == "2 -5"))&& costsComboBox->currentText()=="4 4") || //-G 4 -E 4
-            ((scoresComboBox->currentText() == "2 -3") && costsComboBox->currentText()=="6 4") || //-G 6 -E 4
-            (((scoresComboBox->currentText() == "4 -5") || (scoresComboBox->currentText() == "5 -4")) && costsComboBox->currentText()=="12 8"))//-G 12 -E 8
-        {
-            settings.isDefaultCosts=true;
-        }else{
-            settings.isDefaultCosts=false;
-        }
-        settings.isDefautScores=(scoresComboBox->currentText() == "1 -3");
-    }else{
-        if(((matrixComboBox->currentText() == "PAM30") && costsComboBox->currentText()=="9 1") || //-G 9 -E 1
-                ((matrixComboBox->currentText() == "PAM70") && costsComboBox->currentText()=="10 1") || //-G 10 -E 1
-                ((matrixComboBox->currentText() == "BLOSUM45") && costsComboBox->currentText()=="15 2") ||
-                ((matrixComboBox->currentText() == "BLOSUM62") && costsComboBox->currentText()=="11 1") ||
-                ((matrixComboBox->currentText() == "BLOSUM80") && costsComboBox->currentText()=="10 1"))
-        {
-            settings.isDefaultCosts=true;
-        }else{
-            settings.isDefaultCosts=false;
-        }
-        settings.isDefaultMatrix=(matrixComboBox->currentText() == "BLOSUM62");
-
-    }
+    getSettings(settings);
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();
     settings.outputType=7;//By default set output file format to xml
-    settings.isGappedAlignment=gappedAlignmentCheckBox->isChecked();
     accept();
 }
 ////////////////////////////////////////
@@ -299,61 +248,10 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
         }
         settingsList[i].groupName=ca_c->getModel().groupName;
 
-        settingsList[i].databaseNameAndPath=databasePathLineEdit->text()+"/"+baseNameLineEdit->text();
-        settingsList[i].expectValue=evalueSpinBox->value();
-        settingsList[i].wordSize=wordSizeSpinBox->value();
-        settingsList[i].megablast=megablastCheckBox->isChecked();
-    //    settings.alphabet=dnaso->getAlphabet();
-        settingsList[i].numberOfHits=numberOfHitsSpinBox->value();
-        settingsList[i].numberOfProcessors=numberOfCPUSpinBox->value();
+        getSettings(settingsList[i]);
 
-        settingsList[i].gapOpenCost=costsComboBox->currentText().split(" ").at(0).toInt();
-        settingsList[i].gapExtendCost=costsComboBox->currentText().split(" ").at(1).toInt();
         //setup filters
-        if(lowComplexityFilterCheckBox->isChecked()){
-            settingsList[i].filter="L";
-        }
-        if(repeatsCheckBox->isChecked()){
-            settingsList[i].filter=settingsList[i].filter.isEmpty() ? "R" : settingsList[i].filter+"; R";
-        }
-    //    if(lowerCaseCheckBox->isChecked()){
-    //        settings.filter=settings.filter.isEmpty() ? "???" : settings.filter+"; ???";
-    //    }
-        if(lookupMaskCheckBox->isChecked()){
-            settingsList[i].filter=settingsList[i].filter.isEmpty() ? "m" : "m "+settingsList[i].filter;
-        }
-
-        if(settingsList[i].isNucleotideSeq){
-            if((((scoresComboBox->currentText() == "1 -4") || (scoresComboBox->currentText() == "1 -3")) && costsComboBox->currentText()=="2 2") || //-G 2 -E 2
-                ((scoresComboBox->currentText() == "1 -2") && costsComboBox->currentText()=="2 2") || //-G 2 -E 2
-                ((scoresComboBox->currentText() == "1 -1") && costsComboBox->currentText()=="4 2") || //-G 4 -E 2
-                (((scoresComboBox->currentText() == "2 -7") || (scoresComboBox->currentText() == "2 -5"))&& costsComboBox->currentText()=="4 4") || //-G 4 -E 4
-                ((scoresComboBox->currentText() == "2 -3") && costsComboBox->currentText()=="6 4") || //-G 6 -E 4
-                (((scoresComboBox->currentText() == "4 -5") || (scoresComboBox->currentText() == "5 -4")) && costsComboBox->currentText()=="12 8"))//-G 12 -E 8
-            {
-                settingsList[i].isDefaultCosts=true;
-            }else{
-                settingsList[i].isDefaultCosts=false;
-                settingsList[i].matchReward=scoresComboBox->currentText().split(" ").at(0).toInt();
-                settingsList[i].mismatchPenalty=scoresComboBox->currentText().split(" ").at(1).toInt();
-            }
-            settingsList[i].isDefautScores=(scoresComboBox->currentText() == "1 -3");
-        }else{
-            if(((matrixComboBox->currentText() == "PAM30") && costsComboBox->currentText()=="9 1") || //-G 9 -E 1
-                    ((matrixComboBox->currentText() == "PAM70") && costsComboBox->currentText()=="10 1") || //-G 10 -E 1
-                    ((matrixComboBox->currentText() == "BLOSUM45") && costsComboBox->currentText()=="15 2") ||
-                    ((matrixComboBox->currentText() == "BLOSUM62") && costsComboBox->currentText()=="11 1") ||
-                    ((matrixComboBox->currentText() == "BLOSUM80") && costsComboBox->currentText()=="10 1"))
-            {
-                settingsList[i].isDefaultCosts=true;
-            }else{
-                settingsList[i].isDefaultCosts=false;
-                settingsList[i].matrix=matrixComboBox->currentText();
-            }
-            settingsList[i].isDefaultMatrix=(matrixComboBox->currentText() == "BLOSUM62");
-        }
-        settingsList[i].programName=programName->currentText();
-
+        settingsList[i].outputType=7;//By default set output file format to xml
     }
     bool docAlreadyInProject=false;
     Project* proj=AppContext::getProject();
@@ -367,7 +265,6 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
     }
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();
-    settings.outputType=7;//By default set output file format to xml
     accept();
 }
 void BlastAllWithExtFileSpecifySupportRunDialog::sl_cancel(){

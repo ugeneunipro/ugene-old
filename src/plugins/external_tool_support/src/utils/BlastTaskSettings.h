@@ -30,34 +30,19 @@ namespace U2 {
 /*Options for BlastAll
 blastall 2.2.21 not included arguments:
 
-  -F  Filter query sequence (DUST with blastn, SEG with others) [String]
-    default = T
-  -X  X dropoff value for gapped alignment (in bits) (zero invokes default behavior)
-      blastn 30, megablast 20, tblastx 0, all others 15 [Integer]
-    default = 0
   -I  Show GI's in deflines [T/F]
     default = F
   -v  Number of database sequences to show one-line descriptions for (V) [Integer]
     default = 500
   -b  Number of database sequence to show alignments for (B) [Integer]
     default = 250
-  -f  Threshold for extending hits, default if zero
-      blastp 11, blastn 0, blastx 12, tblastn 13
-      tblastx 13, megablast 0 [Real]
-    default = 0
-  -g  Perform gapped alignment (not available with tblastx) [T/F]
-    default = T
   -Q  Query Genetic code to use [Integer]
     default = 1
   -D  DB Genetic code (for tblast[nx] only) [Integer]
     default = 1
-!!!  -a  Number of processors to use [Integer]
-    default = 1
   -O  SeqAlign file [File Out]  Optional
   -J  Believe the query defline [T/F]
     default = F
-  -W  Word size, default if zero (blastn 11, megablast 28, all others 3) [Integer]
-    default = 0
   -z  Effective length of the database (use zero for the real size) [Real]
     default = 0
   -P  0 for multiple hit, 1 for single hit (does not apply to blastn) [Integer]
@@ -71,18 +56,8 @@ blastall 2.2.21 not included arguments:
     default = F
   -l  Restrict search of database to list of GI's [String]  Optional
   -U  Use lower case filtering of FASTA sequence [T/F]  Optional
-  -y  X dropoff value for ungapped extensions in bits (0.0 invokes default behavior)
-      blastn 20, megablast 10, all others 7 [Real]
-    default = 0.0
-  -Z  X dropoff value for final gapped alignment in bits (0.0 invokes default behavior)
-      blastn/megablast 100, tblastx 0, all others 25 [Integer]
-    default = 0
   -R  PSI-TBLASTN checkpoint file [File In]  Optional
-  -n  MegaBlast search [T/F]
-    default = F
   -L  Location on query sequence [String]  Optional
-  -A  Multiple Hits window size, default if zero (blastn/megablast 0, all others 40 [Integer]
-    default = 0
   -w  Frame shift penalty (OOF algorithm for blastx) [Integer]
     default = 0
   -t  Length of the largest intron allowed in a translated nucleotide sequence when linking multiple distinct alignments. (0 invokes default behavior; a negative value disables linking.) [Integer]
@@ -134,6 +109,15 @@ public:
     //only for protein sequence
     QString         matrix;                 //-M Matrix [String] : default = BLOSUM62
     bool            isDefaultMatrix;
+
+    //X dropoff
+    int             xDropoffGA;             //-X  X dropoff value for gapped alignment (in bits) blastn 30, megablast 20, tblastx 0, all others 15 [Integer]
+    float           xDropoffUnGA;           //-y  X dropoff value for ungapped extensions in bits blastn 20, megablast 10, all others 7 [Real]
+    int             xDropoffFGA;            //-Z  X dropoff value for final gapped alignment in bits blastn/megablast 100, tblastx 0, all others 25 [Integer]
+
+    int             windowSize;             //-A  Multiple Hits window size, default if zero (blastn/megablast 0, all others 40 [Integer]
+    bool            isDefaultThreshold;
+    float           threshold;              //-f  Threshold for extending hits, default if zero blastp 11, blastn 0, blastx 12, tblastn 13 tblastx 13, megablast 0 [Real]
 
     QString         queryFile;              //-i Query File [File In]
     QByteArray      querySequence;

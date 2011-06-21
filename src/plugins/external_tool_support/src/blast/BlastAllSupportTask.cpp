@@ -124,6 +124,35 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
             arguments <<"-K" << QString::number(settings.numberOfHits);
         }
         arguments <<"-i"<< url;
+        if (settings.programName != "tblastx"){
+            if((settings.programName == "blastn" && settings.xDropoffGA != 30) ||
+                    (settings.programName == "blastn" && settings.megablast && settings.xDropoffGA != 20) ||
+                    (settings.programName != "blastn" && settings.xDropoffGA != 15))
+            {
+                arguments << "-X" << QString::number(settings.xDropoffGA);
+            }
+            if((settings.programName == "blastn" && settings.xDropoffFGA != 100) ||
+                    (settings.programName != "blastn" && settings.xDropoffFGA != 25))
+            {
+                arguments << "-Z" << QString::number(settings.xDropoffFGA);
+            }
+        }
+        if((settings.programName == "blastn" && settings.xDropoffUnGA != 20) ||
+                (settings.programName == "blastn" && settings.megablast && settings.xDropoffUnGA != 10) ||
+                (settings.programName != "blastn" && settings.xDropoffUnGA != 7))
+        {
+            arguments << "-y" << QString::number(settings.xDropoffUnGA);
+        }
+        if((settings.programName=="blastn" && settings.windowSize != 0)||
+                (settings.programName != "blastn" && settings.windowSize !=40))
+        {
+            arguments << "-A" << QString::number(settings.windowSize);
+        }
+        if(!settings.isDefaultThreshold){
+            arguments << "-f" << QString::number(settings.threshold);
+        }
+
+//        arguments <<"-I" << "T";
         arguments <<"-a"<< QString::number(settings.numberOfProcessors);
         arguments <<"-m"<< QString::number(settings.outputType);//"7";//By default set output file format to xml
         if(settings.programName != "tblastx"){

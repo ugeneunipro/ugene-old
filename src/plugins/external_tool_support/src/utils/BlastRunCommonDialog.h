@@ -47,6 +47,8 @@ protected slots:
     void sl_megablastChecked();//=
     void sl_restoreDefault();//=
 protected:
+    void getSettings(BlastTaskSettings& settings);
+
     BlastTaskSettings&                  settings;
     bool                                needRestoreDefault;
     CreateAnnotationWidgetController*   ca_c;

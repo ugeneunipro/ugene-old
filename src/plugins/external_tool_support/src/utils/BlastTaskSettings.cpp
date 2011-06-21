@@ -33,6 +33,7 @@ BlastTaskSettings::BlastTaskSettings() {
     isDefautScores=true;
     isDefaultCosts=true;
     isGappedAlignment=true;
+    isDefaultThreshold=true;
     reset();
 }
 
@@ -53,6 +54,12 @@ void BlastTaskSettings::reset() {
     needCreateAnnotations=true;
     filter="";
     isGappedAlignment=true;
+    xDropoffGA=0;
+    xDropoffUnGA=0;
+    xDropoffFGA=0;
+    windowSize=0;
+    threshold=0;
+    isDefaultThreshold=true;
 }
 
 }//namespace

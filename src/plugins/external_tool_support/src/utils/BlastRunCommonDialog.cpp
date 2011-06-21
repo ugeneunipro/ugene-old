@@ -207,12 +207,16 @@ void BlastRunCommonDialog::sl_megablastChecked(){
         }
         wordSizeSpinBox->setMaximum(100);
         wordSizeSpinBox->setMinimum(12);
+        xDropoffGASpinBox->setValue(20);
+        xDropoffUnGASpinBox->setValue(20);
     }else{
         if(wordSizeSpinBox->value()<7 || needRestoreDefault){
             wordSizeSpinBox->setValue(11);
         }
         wordSizeSpinBox->setMaximum(100);
         wordSizeSpinBox->setMinimum(7);
+        xDropoffGASpinBox->setValue(30);
+        xDropoffUnGASpinBox->setValue(10);
     }
 }
 void BlastRunCommonDialog::sl_onBrowseDatabasePath(){
@@ -231,18 +235,23 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
     if(programName->currentText() == "blastn"){//nucl
         programName->setToolTip(tr("Direct nucleotide alignment"));
         gappedAlignmentCheckBox->setEnabled(true);
+        thresholdSpinBox->setValue(0);
     }else if(programName->currentText() == "blastp"){//amino
         programName->setToolTip(tr("Direct protein alignment"));
         gappedAlignmentCheckBox->setEnabled(true);
+        thresholdSpinBox->setValue(11);
     }else if(programName->currentText() == "blastx"){//nucl
         programName->setToolTip(tr("Protein alignment, input nucleotide is translated input protein before the search"));
         gappedAlignmentCheckBox->setEnabled(true);
+        thresholdSpinBox->setValue(12);
     }else if(programName->currentText() == "tblastn"){//amino
         programName->setToolTip(tr("Protein alignment, nucleotide database is translated input protein before the search"));
         gappedAlignmentCheckBox->setEnabled(true);
+        thresholdSpinBox->setValue(13);
     }else if(programName->currentText() == "tblastx"){//nucl
         programName->setToolTip(tr("Protein alignment, both input query and database are translated before the search"));
         gappedAlignmentCheckBox->setEnabled(false);
+        thresholdSpinBox->setValue(13);
     }else{
         assert(0);
     }
@@ -258,18 +267,23 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
             wordSizeSpinBox->setMaximum(100);
             wordSizeSpinBox->setMinimum(7);
         }
+        windowSizeSpinBox->setValue(0);
+
         matchScoreLabel->show();
         scoresComboBox->show();
         matrixLabel->hide();
         matrixComboBox->hide();
         serviceLabel->hide();
         serviceComboBox->hide();
+        thresholdSpinBox->hide();
+        thresholdLabel->hide();
         sl_onMatchScoresChanged(0);
     }else{
         megablastCheckBox->setEnabled(false);
         wordSizeSpinBox->setValue(3);
         wordSizeSpinBox->setMaximum(3);
         wordSizeSpinBox->setMinimum(2);
+        windowSizeSpinBox->setValue(40);
 
         matchScoreLabel->hide();
         scoresComboBox->hide();
@@ -277,7 +291,99 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
         matrixComboBox->show();
         serviceLabel->show();
         serviceComboBox->show();
+        thresholdSpinBox->show();
+        thresholdLabel->show();
         sl_onMatrixChanged(0);
+    }
+    //set X dropoff values
+    if(programName->currentText() == "blastn"){
+        megablastCheckBox->setEnabled(true);
+        if(megablastCheckBox->isChecked()){
+            xDropoffGASpinBox->setValue(20);
+            xDropoffUnGASpinBox->setValue(10);
+        }else{
+            xDropoffGASpinBox->setValue(30);
+            xDropoffUnGASpinBox->setValue(20);
+        }
+        xDropoffFGASpinBox->setValue(100);
+        xDropoffGASpinBox->setEnabled(true);
+        xDropoffFGASpinBox->setEnabled(true);
+    }else if (programName->currentText() == "tblastx"){
+        xDropoffGASpinBox->setValue(0);
+        xDropoffGASpinBox->setEnabled(false);
+        xDropoffUnGASpinBox->setValue(7);
+        xDropoffFGASpinBox->setValue(0);
+        xDropoffFGASpinBox->setEnabled(false);
+    }else{
+        xDropoffGASpinBox->setValue(15);
+        xDropoffUnGASpinBox->setValue(7);
+        xDropoffFGASpinBox->setValue(25);
+        xDropoffGASpinBox->setEnabled(true);
+        xDropoffFGASpinBox->setEnabled(true);
+    }
+}
+void BlastRunCommonDialog::getSettings(BlastTaskSettings &localSettings){
+    localSettings.databaseNameAndPath=databasePathLineEdit->text()+"/"+baseNameLineEdit->text();
+    localSettings.expectValue=evalueSpinBox->value();
+    localSettings.wordSize=wordSizeSpinBox->value();
+    localSettings.megablast=megablastCheckBox->isChecked();
+    localSettings.numberOfHits=numberOfHitsSpinBox->value();
+    localSettings.numberOfProcessors=numberOfCPUSpinBox->value();
+
+    localSettings.gapOpenCost=costsComboBox->currentText().split(" ").at(0).toInt();
+    localSettings.gapExtendCost=costsComboBox->currentText().split(" ").at(1).toInt();
+    //setup filters
+    if(lowComplexityFilterCheckBox->isChecked()){
+        localSettings.filter="L";
+    }
+    if(repeatsCheckBox->isChecked()){
+        localSettings.filter=localSettings.filter.isEmpty() ? "R" : localSettings.filter+"; R";
+    }
+//    if(lowerCaseCheckBox->isChecked()){
+//        settings.filter=settings.filter.isEmpty() ? "???" : settings.filter+"; ???";
+//    }
+    if(lookupMaskCheckBox->isChecked()){
+        localSettings.filter=localSettings.filter.isEmpty() ? "m" : "m "+localSettings.filter;
+    }
+
+    if(localSettings.isNucleotideSeq){
+        if((((scoresComboBox->currentText() == "1 -4") || (scoresComboBox->currentText() == "1 -3")) && costsComboBox->currentText()=="2 2") || //-G 2 -E 2
+            ((scoresComboBox->currentText() == "1 -2") && costsComboBox->currentText()=="2 2") || //-G 2 -E 2
+            ((scoresComboBox->currentText() == "1 -1") && costsComboBox->currentText()=="4 2") || //-G 4 -E 2
+            (((scoresComboBox->currentText() == "2 -7") || (scoresComboBox->currentText() == "2 -5"))&& costsComboBox->currentText()=="4 4") || //-G 4 -E 4
+            ((scoresComboBox->currentText() == "2 -3") && costsComboBox->currentText()=="6 4") || //-G 6 -E 4
+            (((scoresComboBox->currentText() == "4 -5") || (scoresComboBox->currentText() == "5 -4")) && costsComboBox->currentText()=="12 8"))//-G 12 -E 8
+        {
+            localSettings.isDefaultCosts=true;
+        }else{
+            localSettings.isDefaultCosts=false;
+        }
+        localSettings.isDefautScores=(scoresComboBox->currentText() == "1 -3");
+    }else{
+        if(((matrixComboBox->currentText() == "PAM30") && costsComboBox->currentText()=="9 1") || //-G 9 -E 1
+                ((matrixComboBox->currentText() == "PAM70") && costsComboBox->currentText()=="10 1") || //-G 10 -E 1
+                ((matrixComboBox->currentText() == "BLOSUM45") && costsComboBox->currentText()=="15 2") ||
+                ((matrixComboBox->currentText() == "BLOSUM62") && costsComboBox->currentText()=="11 1") ||
+                ((matrixComboBox->currentText() == "BLOSUM80") && costsComboBox->currentText()=="10 1"))
+        {
+            localSettings.isDefaultCosts=true;
+        }else{
+            localSettings.isDefaultCosts=false;
+        }
+        localSettings.isDefaultMatrix=(matrixComboBox->currentText() == "BLOSUM62");
+    }
+    localSettings.isGappedAlignment=gappedAlignmentCheckBox->isChecked();
+    localSettings.windowSize=windowSizeSpinBox->value();
+    localSettings.threshold=thresholdSpinBox->value();
+    localSettings.xDropoffGA=xDropoffGASpinBox->value();
+    localSettings.xDropoffUnGA=xDropoffUnGASpinBox->value();
+    localSettings.xDropoffFGA=xDropoffFGASpinBox->value();
+    if((localSettings.programName == "blastn" && localSettings.threshold != 0) ||
+            (localSettings.programName == "blastp" && localSettings.threshold != 11) ||
+            (localSettings.programName == "blastx" && localSettings.threshold != 12) ||
+            (localSettings.programName == "tblastn" && localSettings.threshold != 13) ||
+            (localSettings.programName == "tblastx" && localSettings.threshold != 13)){
+        localSettings.isDefaultThreshold=false;
     }
 }
 }//namespace

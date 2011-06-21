@@ -76,6 +76,24 @@ ExternalToolRunTask* BlastNPlusSupportTask::createBlastPlusTask(){
     }
 
     arguments <<"-query"<< url;
+    if((settings.xDropoffGA != 30) ||
+            (settings.megablast && settings.xDropoffGA != 20))
+    {
+        arguments << "-xdrop_gap" << QString::number(settings.xDropoffGA);
+    }
+    if(settings.xDropoffFGA != 100){
+        arguments << "-xdrop_gap_final" << QString::number(settings.xDropoffFGA);
+    }
+
+    if((settings.xDropoffUnGA != 20) ||
+            (settings.megablast && settings.xDropoffUnGA != 10))
+    {
+        arguments << "-xdrop_ungap" << QString::number(settings.xDropoffUnGA);
+    }
+    if(settings.windowSize != 0)
+    {
+        arguments << "-window_size" << QString::number(settings.windowSize);
+    }
     //I always get error from BLAST+:
     //ncbi-blast-2.2.24+-src/c++/src/corelib/ncbithr.cpp", line 649: Fatal: ncbi::CThread::Run()
     //- Assertion failed: (0) CThread::Run() -- system does not support threads
