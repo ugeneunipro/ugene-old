@@ -1,8 +1,10 @@
 #include "ProjectViewTests.h"
 
-#include <QtGui>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2OpStatusUtils.h>
+
+#include <QtGui>
 
 namespace U2 {
 
@@ -11,7 +13,7 @@ const QString ProjectViewTests::projectViewName = "documentTreeWidget";
 
 
 void ProjectViewTests::openFile(const QString &path) {
-    Task *t = AppContext::getProjectLoader()->openProjectTask(path, false);
+    Task *t = AppContext::getProjectLoader()->openWithProjectTask(path);
     t->moveToThread(QApplication::instance()->thread());
     emit runTask(t);
     //waitForTask(t);

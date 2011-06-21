@@ -24,27 +24,28 @@
 
 #include <U2Core/IOAdapter.h>
 #include <U2Core/AppContext.h>
-#include <U2Gui/MainWindow.h>
 #include <U2Core/Task.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/SelectionModel.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/ProjectService.h>
-#include <U2Formats/FastaFormat.h>
-#include <U2Formats/GenbankPlainTextFormat.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GUrlUtils.h>
-
-#include <U2Formats/DocumentFormatUtils.h>
 #include <U2Core/GObjectUtils.h>
 
-#include <qfiledialog.h>
-#include <QtGui/QMessageBox>
-#include <qmessagebox.h>
+#include <U2Formats/DocumentFormatUtils.h>
+#include <U2Formats/FastaFormat.h>
+#include <U2Formats/GenbankPlainTextFormat.h>
+
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/MainWindow.h>
+
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#include <QtGui/QMessageBox>
 
 namespace U2{
 
@@ -104,7 +105,7 @@ void CreateDocumentFromTextDialogController::accept(){
     }    
     
     if(AppContext::getProject() == NULL) {
-        Task * openProj = AppContext::getProjectLoader()->openProjectTask("", true);
+        Task * openProj = AppContext::getProjectLoader()->createNewProjectTask();
         connect(openProj, SIGNAL(si_stateChanged()), this, SLOT(sl_projectLoaded()));
         AppContext::getTaskScheduler()->registerTopLevelTask(openProj);
         return;

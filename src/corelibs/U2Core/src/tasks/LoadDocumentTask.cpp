@@ -46,7 +46,15 @@
 namespace U2 {
 
 /* TRANSLATOR U2::LoadUnloadedDocumentTask */    
+//////////////////////////////////////////////////////////////////////////
+// DocumentProviderTask
+DocumentProviderTask::DocumentProviderTask(const QString& name, TaskFlags flags) : Task(name, flags), resultDocument(NULL) {
+}
 
+void DocumentProviderTask::cleanup(){
+    delete resultDocument;
+    resultDocument = NULL;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // LoadUnloadedDocumentTask
@@ -187,7 +195,7 @@ bool LoadUnloadedDocumentTask::addLoadingSubtask(Task* t, const LoadDocumentTask
 
 LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u, 
                                    IOAdapterFactory* i, const QVariantMap& map, const LoadDocumentTaskConfig& _config)
-: Task("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), result(NULL), config(_config)
+: DocumentProviderTask("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), config(_config)
 {
     setTaskName(tr("Read document: '%1'").arg(u.fileName()));
  
@@ -217,14 +225,6 @@ LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
     return new LoadDocumentTask( df->getFormatId(), url, iof );
 }
 
-LoadDocumentTask::~LoadDocumentTask() {
-    cleanup();
-}
-
-void LoadDocumentTask::cleanup() {
-    delete result;
-    result = NULL;
-}
 
 void LoadDocumentTask::prepare() {
     if(hasError() || isCanceled()) {
@@ -260,48 +260,48 @@ void LoadDocumentTask::run() {
     }
     if (config.createDoc && iof->isResourceAvailable(url) == TriState_No) {
         if (iof->isIOModeSupported(IOAdapterMode_Write)) {
-            result = format->createNewDocument(iof, url, hints);
+            resultDocument = format->createNewDocument(iof, url, hints);
         } else {
             setError(tr("Document not found %1").arg(url.getURLString()));
         }
     } else {
-        result = format->loadDocument(iof, url, stateInfo, hints);
+        resultDocument = format->loadDocument(iof, url, stateInfo, hints);
     }
     if (config.checkObjRef.isValid() && !hasError()) {
         processObjRef();
     }
-    assert(isCanceled() || result!=NULL || hasError());
-    assert(result == NULL || result->isLoaded());
+    assert(isCanceled() || resultDocument != NULL || hasError());
+    assert(resultDocument == NULL || resultDocument->isLoaded());
 }
 
 Task::ReportResult LoadDocumentTask::report() {
     if (stateInfo.hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
-    assert(result!=NULL);
-    result->setLastUpdateTime();
+    assert(resultDocument != NULL);
+    resultDocument->setLastUpdateTime();
     return ReportResult_Finished;
 }
 
 
 void LoadDocumentTask::processObjRef() {
     assert(config.checkObjRef.isValid());
-    assert(result!=NULL);
+    assert(resultDocument!=NULL);
 
-    if (GObjectUtils::selectObjectByReference(config.checkObjRef, result->getObjects(), UOF_LoadedOnly) == NULL) {
+    if (GObjectUtils::selectObjectByReference(config.checkObjRef, resultDocument->getObjects(), UOF_LoadedOnly) == NULL) {
         if (config.objFactory == NULL) {
             stateInfo.setError(tr("Object not found: %1").arg(config.checkObjRef.objName));
         } else {
-            assert(!result->isStateLocked());
+            assert(!resultDocument->isStateLocked());
             Document::Constraints c;
             c.objectTypeToAdd.append(config.checkObjRef.objType);
-            bool ok = result->checkConstraints(c);
+            bool ok = resultDocument->checkConstraints(c);
             if (!ok) {
-                stateInfo.setError(tr("Can't add object. Document format constraints check failed: %1").arg(result->getName()));
+                stateInfo.setError(tr("Can't add object. Document format constraints check failed: %1").arg(resultDocument->getName()));
             } else {
                 GObject* obj = config.objFactory->create(config.checkObjRef);
                 assert(obj!=NULL);
-                result->addObject(obj);
+                resultDocument->addObject(obj);
             }
         }
     }

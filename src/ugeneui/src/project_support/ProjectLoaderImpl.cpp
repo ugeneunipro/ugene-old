@@ -21,16 +21,23 @@
 
 #include "ProjectLoaderImpl.h"
 
-#include <U2Gui/MainWindow.h>
+#include <U2Core/AddDocumentTask.h>
 #include <U2Core/Settings.h>
 #include <U2Core/ServiceTypes.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/CMDLineUtils.h>
 
 #include <U2Misc/DialogUtils.h>
 
 #include <U2Gui/CreateDocumentFromTextDialogController.h>
 #include <U2Gui/DownloadRemoteFileDialog.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/ProjectView.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/OpenViewTask.h>
 
 #include "ProjectTasksGui.h"
 #include "ProjectImpl.h"
@@ -108,19 +115,6 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
 	updateState();
 }
 
-ProjectLoaderImpl::~ProjectLoaderImpl() {
-    assert(AppContext::getProject() == NULL);
-
-	delete separatorAction1;
-	delete separatorAction2;
-    delete openProjectAction;
-    delete newProjectAction;
-	delete recentProjectsMenu;
-	delete recentItemsMenu;
-
-    openProjectAction = newProjectAction = separatorAction1 = separatorAction2 = NULL;
-}
-
 
 void ProjectLoaderImpl::updateState() {
 	recentProjectsMenu->setDisabled(recentProjectsMenu->isEmpty());
@@ -150,7 +144,7 @@ void ProjectLoaderImpl::sl_newProject() {
 	}
 
 	QString projectName = d.projectNameEdit->text();
-	AppContext::getTaskScheduler()->registerTopLevelTask(new OpenProjectTask(fileName, true, projectName));
+	AppContext::getTaskScheduler()->registerTopLevelTask(new OpenProjectTask(fileName, projectName));
 }
 
 void ProjectLoaderImpl::sl_openProject() {
@@ -173,36 +167,29 @@ void ProjectLoaderImpl::sl_openProject() {
         urls << GUrl(file, GUrl_File);
     }
     //updateRecentItemsMenu();
-    Task* openTask = new OpenProjectTask(urls, true);
-    connect(openTask, SIGNAL(si_stateChanged()), SLOT(sl_projectOpened()));
-	AppContext::getTaskScheduler()->registerTopLevelTask(openTask);	
-}
-
-void ProjectLoaderImpl::sl_projectOpened() {
-    Task *t = static_cast<Task*>(sender());
-    if(t->isFinished()) {
-        Project *p = AppContext::getProject();
-        if(p && p->getDocuments().isEmpty()) {
-            Task * cls = new CloseProjectTask();
-            AppContext::getTaskScheduler()->registerTopLevelTask(cls);
-        }
+    Task* openTask = openWithProjectTask(urls);
+    if (openTask != NULL) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(openTask);	
     }
 }
 
-void ProjectLoaderImpl::sl_openRecentProject()
-{
+void ProjectLoaderImpl::sl_openRecentProject() {
     QAction *action = qobject_cast<QAction *>(sender());
     assert(action);
     QString url = action->data().toString();
-    AppContext::getTaskScheduler()->registerTopLevelTask(new OpenProjectTask(url, true));	
+    AppContext::getTaskScheduler()->registerTopLevelTask(new OpenProjectTask(url));	
 }
 
 void ProjectLoaderImpl::sl_openRecentFile() {
 	QAction *action = qobject_cast<QAction *>(sender());
 	assert(action);
-	QString url = action->data().toString();
-    AppContext::getTaskScheduler()->registerTopLevelTask(new OpenProjectTask(url, false));	
-    prependToRecentItems(url);
+	GUrl url = action->data().toString();
+    Task* task = ProjectLoader::openWithProjectTask(url);
+    if (task == NULL) {
+        return;
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);	
+    prependToRecentItems(url.getURLString());
 #ifdef Q_OS_LINUX
     if(QString("4.5.0") == qVersion())
     {
@@ -243,14 +230,112 @@ void ProjectLoaderImpl::updateRecentProjectsMenu() {
     }
 }
 
+#define MAX_DOCS_TO_OPEN_VIEWS 5
 
-Task* ProjectLoaderImpl::openProjectTask(const QString& file, bool closeActiveProject) {
-	return new OpenProjectTask(file, closeActiveProject);
+Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVariantMap& hints) {
+    // detect if we open real UGENE project file
+    bool projectsOnly = true;
+    foreach(const GUrl & url, urls) {
+        projectsOnly = projectsOnly && url.lastFileSuffix() == PROJECT_FILE_PURE_EXT;
+        if (!projectsOnly) {
+            break;
+        }
+    }
+    if (projectsOnly) {
+        GUrl projectUrl = urls.isEmpty() ? QString() : urls.last();
+        QVariantMap h2 = hints;
+        h2[DLH_CLOSE_PROJECT] = true;
+        return createProjectLoadingTask(projectUrl, h2);
+    }
+    
+    // detect all formats from urls list and add files to project
+    QList<LoadDocumentInfo> docsInfo;
+    foreach(const GUrl& url, urls) {
+        if (url.lastFileSuffix() == PROJECT_FILE_PURE_EXT) {
+            // skip extra project files
+            coreLog.info(tr("Project file '%1' ignored").arg(url.getURLString()));
+            continue;
+        }
+        Project* project = AppContext::getProject();
+        Document * doc = project == NULL ? NULL : project->findDocumentByURL(url);
+        if (doc != NULL) {
+            QWidget *p = AppContext::getMainWindow()->getQMainWindow();
+            coreLog.details("The document already in the project");
+            QMessageBox::warning(p, tr("warning"), tr("The document already in the project"));
+            if (doc->isLoaded()) {
+                const QList<GObject*>& docObjects = doc->getObjects();
+                QList<GObjectViewWindow*> viewsList = GObjectViewUtils::findViewsWithAnyOfObjects(docObjects);
+                if (!viewsList.isEmpty()) {
+                    AppContext::getMainWindow()->getMDIManager()->activateWindow(viewsList.first());
+                } else {
+                    AppContext::getProjectView()->highlightItem(doc);
+                }
+                coreLog.info(tr("The document is already loaded and added to project: %1").arg(url.fileName()));
+            } else if(!doc->isLoaded() && AppContext::getProjectView()) {
+                AppContext::getProjectView()->highlightItem(doc);
+            }
+        } else {
+            QList<DocumentFormat*> formats = DocumentUtils::detectFormat(url);
+            if (!formats.isEmpty()) {
+                LoadDocumentInfo info;
+                info.openView = docsInfo.size() < MAX_DOCS_TO_OPEN_VIEWS;
+                info.url = url;
+                info.hints = hints;
+                info.formatId = formats.first()->getFormatId(); 
+                info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+                docsInfo.append(info);
+            } else {
+                coreLog.error(tr("Failed to detect file format: %1").arg(url.getURLString()));
+            }
+        }
+    }
+    if (docsInfo.isEmpty()) {
+        return NULL;
+    }
+    return new AddDocumentsToProjectTask(docsInfo);
 }
 
-Task* ProjectLoaderImpl::openProjectTask(const QList<GUrl>& urls, bool closeActiveProject) {
-    return new OpenProjectTask(urls, closeActiveProject);
+Task* ProjectLoaderImpl::createNewProjectTask(const GUrl& url) {
+    return createProjectLoadingTask(url);
 }
+
+Task* ProjectLoaderImpl::createProjectLoadingTask(const GUrl& url, const QVariantMap& hints) {
+    Project* p = AppContext::getProject();
+    if (p == NULL) {
+        return new OpenProjectTask(url.getURLString());
+    }
+    if (url == p->getProjectURL()) {
+        QString message = tr("Project is already opened");
+        QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(),"UGENE", message);
+        return NULL;
+    }
+    QMessageBox msgBox(AppContext::getMainWindow()->getQMainWindow());
+    msgBox.setWindowTitle(tr("UGENE"));
+    msgBox.setText(tr("New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?"));
+    QPushButton *newWindow = msgBox.addButton(tr("New Window"), QMessageBox::ActionRole);
+    QPushButton *oldWindow = msgBox.addButton(tr("This Window"), QMessageBox::ActionRole);
+    msgBox.addButton(QMessageBox::Abort);
+    msgBox.exec();
+
+    if (msgBox.clickedButton() == newWindow) {
+        QStringList params =  CMDLineRegistryUtils::getPureValues(0);
+        bool b = QProcess::startDetached(params.first(), QStringList() << url.getURLString());
+        if (!b) {
+            coreLog.error(tr("Failed to open new instance of UGENE"));
+        }
+        return NULL;
+    } else if (msgBox.clickedButton() == oldWindow) {
+        bool closeActiveProject = hints.value(DLH_CLOSE_PROJECT, QVariant::fromValue(false)).toBool();
+        if (!closeActiveProject) {
+            coreLog.error(tr("Stopped loading project: %1. Reason: active project found").arg(url.getURLString()));
+            return NULL;
+        }
+    } else {
+        return NULL;
+    }   
+    return new OpenProjectTask(url.getURLString());
+}
+
 
 void ProjectLoaderImpl::sl_projectURLChanged(const QString& oldURL) {
     if (!oldURL.isEmpty()) {
@@ -338,8 +423,7 @@ void ProjectLoaderImpl::sl_documentAdded( Document* doc )
     }
 }
 
-void ProjectLoaderImpl::sl_documentStateChanged()
-{
+void ProjectLoaderImpl::sl_documentStateChanged() {
     Document* doc = qobject_cast<Document*>( QObject::sender() );
     if (doc != NULL) {
         if (!doc->isModified()) {
@@ -472,6 +556,81 @@ void ProjectDialogController::accept()
 Project* ProjectLoaderImpl::createProject(const QString& name, const QString& url, QList<Document*>& documents, QList<GObjectViewState*>& states) {
     ProjectImpl* pi = new ProjectImpl(name, url, documents, states);
     return pi;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Add documents to project task
+
+AddDocumentsToProjectTask::AddDocumentsToProjectTask(const QList<LoadDocumentInfo> _docsInfo) 
+: Task(tr("Loading documents"), TaskFlag_NoRun), docsInfo(_docsInfo), loadTasksAdded(false)
+{    
+    setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
+
+    Project* p = AppContext::getProject();
+    if (!p) {
+        // create anonymous project
+        coreLog.info(tr("Creating new project"));
+        p = new ProjectImpl("", "");
+        Task* rpt = new RegisterProjectServiceTask(p);
+        rpt->setSubtaskProgressWeight(0);
+        addSubTask(rpt);
+    } else {
+        QList<Task*> tasks = prepareLoadTasks();
+        foreach(Task* t, tasks) {
+            addSubTask(t);
+        }
+        loadTasksAdded = true;
+    }
+}
+
+QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> res;
+    if (!loadTasksAdded) {
+        loadTasksAdded = true;
+        res = prepareLoadTasks();
+    }
+    return res;   
+};
+
+QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
+    QList<Task*> res;
+    Project* p = AppContext::getProject();
+    if (p == NULL) {
+        coreLog.error(tr("No active project found!"));
+        return res;
+    }
+    foreach(const LoadDocumentInfo& info, docsInfo) {
+        //1. add all documents to project as unloaded documents
+        Document* doc = p->findDocumentByURL(info.url);
+        Task* addDocumentTask = NULL;
+        Task* openViewTask = NULL;
+        if (doc == NULL) {
+            DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(info.formatId);
+            GObjectType t = df->getSupportedObjectTypes().toList().first();
+            if (GObjectTypes::getTypeInfo(t).type == GObjectTypes::UNKNOWN) {
+                continue;
+            }
+            doc = new Document(df, info.iof, info.url);;
+            addDocumentTask = new AddDocumentTask(doc);
+            addDocumentTask->setSubtaskProgressWeight(0);
+        }
+        if (info.openView) {
+            openViewTask = new LoadUnloadedDocumentAndOpenViewTask(doc);
+        }
+        if (addDocumentTask == NULL || openViewTask == NULL) {
+            if (addDocumentTask!=NULL) {
+                res << addDocumentTask;
+            } else {
+                res << openViewTask;
+            }
+        } else {
+            QList<Task*> tasks;
+            tasks << addDocumentTask << openViewTask;
+            res << new MultiTask(tr("Load and open view for: %1").arg(info.url.fileName()), tasks);
+        }
+    }
+    return res;
 }
 
 

@@ -471,7 +471,7 @@ bool TVReportWindow::eventFilter(QObject *, QEvent *e) {
         if(me->button() == Qt::LeftButton) {
             QString url = textEdit->anchorAt(me->pos());
             if(!url.isEmpty()) {
-                Task *t = AppContext::getProjectLoader()->openProjectTask(url, false);
+                Task *t = AppContext::getProjectLoader()->openWithProjectTask(url);
                 AppContext::getTaskScheduler()->registerTopLevelTask(t);
             }
         }

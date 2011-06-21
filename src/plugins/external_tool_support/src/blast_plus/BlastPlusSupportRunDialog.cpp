@@ -221,8 +221,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(co
             Project* proj = AppContext::getProject();
             if (proj == NULL) {
                 wasNoOpenProject=true;
-                QList<GUrl> emptyList;
-                tasks.append( AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+                tasks.append( AppContext::getProjectLoader()->createNewProjectTask());
             }
 
             DocumentFormatConstraints c;
@@ -376,14 +375,14 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_runQuery(){
             settingsList[i].aobj = new AnnotationTableObject(sequencesRefList[i].objName+" annotations");
             settingsList[i].aobj->addObjectRelation(GObjectRelation(sequencesRefList[i], GObjectRelationRole::SEQUENCE));
         } else {
-            assert(NULL);//allways created new document for annotations
+            assert(NULL);//always created new document for annotations
 //            ca_c->prepareAnnotationObject();
 //            settings.aobj = caControllers.at(i)->getModel().getAnnotationObject();
         }
         settingsList[i].groupName=ca_c->getModel().groupName;
 
         getSettings(settingsList[i]);
-        settingsList[i].outputType=5;//By default set output file format to xml
+        settingsList[i].outputType = 5;//By default set output file format to xml
     }
     bool docAlreadyInProject=false;
     Project* proj=AppContext::getProject();
@@ -393,7 +392,8 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_runQuery(){
         }
     }
     if(!docAlreadyInProject){
-        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openProjectTask(inputFileLineEdit->text(),false));
+        QString url = inputFileLineEdit->text();
+        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openWithProjectTask(url));
     }
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();

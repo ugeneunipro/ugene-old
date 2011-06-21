@@ -245,7 +245,7 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
         QString fullPath = loadRemoteDocTask->getLocalUrl();
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            subTasks.append(  AppContext::getProjectLoader()->openProjectTask(fullPath, false));
+            subTasks.append(AppContext::getProjectLoader()->openWithProjectTask(fullPath));
         } else {
             Document* doc = loadRemoteDocTask->getDocument();
             assert(doc != NULL);
@@ -280,20 +280,15 @@ AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( Document* d )
 {
     assert(doc != NULL);
     setMaxParallelSubtasks(1);
-}
+} 
 
-void AddDocumentAndOpenViewTask::prepare()
-{
+void AddDocumentAndOpenViewTask::prepare() {
     Project* proj = AppContext::getProject();
     if (proj == NULL) {
-        QList<GUrl> emptyList;
-        addSubTask(  AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+        addSubTask(  AppContext::getProjectLoader()->createNewProjectTask() );
     }
     addSubTask(new AddDocumentTask(doc));
     addSubTask(new LoadUnloadedDocumentAndOpenViewTask(doc));
 }
-
-
-
 
 }//namespace

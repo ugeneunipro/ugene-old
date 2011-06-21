@@ -28,31 +28,25 @@
 #include <AppContextImpl.h>
 
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Core/AddDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/RemoveDocumentTask.h>
-#include <U2Gui/OpenViewTask.h>
-#include <U2Gui/UnloadDocumentTask.h>
-
 #include <U2Core/DocumentUtils.h>
-
-#include <U2Core/IOAdapter.h>
-#include <U2Core/Log.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Gui/ObjectViewModel.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GHints.h>
-#include <U2Gui/ProjectView.h>
 #include <U2Core/GObject.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/L10n.h>
-
+#include <U2Core/IOAdapter.h>
+#include <U2Core/Log.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/CMDLineUtils.h>
-
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectUtils.h>
 
+
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/UnloadDocumentTask.h>
 #include <U2Gui/ProjectParsing.h>
 
 #include <QtXml/QDomDocument>
@@ -94,170 +88,33 @@ void CloseProjectTask::prepare() {
 
 //////////////////////////////////////////////////////////////////////////
 /// OpenProjectTask
-OpenProjectTask::OpenProjectTask(const QString& _url, bool _closeActiveProject, const QString& _name) 
-    : Task(tr("open_project_task_name"), TaskFlags_NR_FOSCOE), url(_url), name(_name), loadProjectTask(NULL), closeActiveProject(_closeActiveProject)
+OpenProjectTask::OpenProjectTask(const QString& _url, const QString& _name) 
+    : Task(tr("open_project_task_name"), TaskFlags_NR_FOSCOE), url(_url), name(_name), loadProjectTask(NULL)
 {
-}
-
-OpenProjectTask::OpenProjectTask(const QList<GUrl>& list, bool _closeActiveProject) 
-    : Task(tr("open_project_task_name"), TaskFlags_NR_FOSCOE), urlList(list), loadProjectTask(NULL), closeActiveProject(_closeActiveProject) 
-{
-    if (urlList.isEmpty()) {
-        return;
-    }
-    int howManyProjFiles = 0;
-    foreach(const GUrl & url, urlList) {
-        if(url.lastFileSuffix() == PROJECT_FILE_PURE_EXT) {
-            howManyProjFiles++;
-        }
-    }
-    if(howManyProjFiles == urlList.size()) { // only project files are given -> open first project, ignore other
-        url = urlList.takeFirst().getURLString();
-        foreach( const GUrl & url, urlList ) {
-            coreLog.info(tr("Project file '%1' ignored").arg(url.getURLString()));
-        }
-    }
 }
 
 void OpenProjectTask::prepare() {
-    if (url.endsWith(PROJECTFILE_EXT)) { // open a project
-        QFileInfo f(url);
-        if (f.exists() && !(f.isFile() && f.isReadable())) {
-            stateInfo.setError(  tr("invalid_url%1").arg(url) );
-            return;
-        }
-        
-        // close current
-        if (AppContext::getProject()!=NULL) {
-            if(url == AppContext::getProject()->getProjectURL()) {
-                coreLog.info(tr("Project already opened"));
-                QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(),"UGENE", tr("Project already opened"));
-                return ;
-            }
+    QFileInfo f(url);
+    if (f.exists() && !(f.isFile() && f.isReadable())) {
+        stateInfo.setError(  tr("invalid_url%1").arg(url) );
+        return;
+    }
+    if (AppContext::getProject() != NULL) {
+        addSubTask(new CloseProjectTask());
+    }        
 
-            QMessageBox msgBox(AppContext::getMainWindow()->getQMainWindow());
-            msgBox.setWindowTitle(tr("UGENE"));
-            msgBox.setText(tr("New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?"));
-            QPushButton *newWindow = msgBox.addButton(tr("New Window"), QMessageBox::ActionRole);
-            QPushButton *oldWindow = msgBox.addButton(tr("This Window"), QMessageBox::ActionRole);
-            /*QPushButton *abort =*/ msgBox.addButton(QMessageBox::Abort);
-            msgBox.exec();
-
-            if(msgBox.clickedButton() == newWindow) {
-                QStringList params =  CMDLineRegistryUtils::getPureValues(0);
-                bool b = QProcess::startDetached(params.first(), QStringList() << url);
-                if(!b) {
-                    coreLog.error(tr("Failed to open new instance of UGENE"));
-                }
-                return;
-            } else if(msgBox.clickedButton() == oldWindow) {
-                if (!closeActiveProject) {
-                    stateInfo.cancelFlag = true;
-                    coreLog.info(tr("Stopped loading project: %1. Reason: active project found").arg(url));
-                    return;
-                }
-                addSubTask(new CloseProjectTask());
-            } else {
-                return;
-            }        
-        }
-
-        if (f.exists()) {
-            loadProjectTask = new LoadProjectTask(url);
-            addSubTask(loadProjectTask);
-        } else {
-            ProjectImpl* p =  new ProjectImpl(name, url);
-            //addSubTask(new SaveProjectTask(SaveProjectTaskKind_SaveProjectOnly, p));
-            addSubTask(new RegisterProjectServiceTask(p));
-        }
-    } else { // load a (bunch of) documents
-        if (!url.isEmpty()) {
-            urlList << GUrl(url);
-        }
-        Project* p = AppContext::getProject();
-        if (!p) {
-            // create anonymous project
-            coreLog.info(tr("Creating new project"));
-            p = new ProjectImpl("", "");
-            Task* rpt = new RegisterProjectServiceTask(p);
-            rpt->setSubtaskProgressWeight(0);
-            addSubTask(rpt);
-        }
-#define MAX_DOCS_TO_OPEN_VIEWS 5
-        bool openView = urlList.size() < MAX_DOCS_TO_OPEN_VIEWS;
-        foreach(const GUrl& _url, urlList) {
-            if (_url.lastFileSuffix() == PROJECT_FILE_PURE_EXT) {
-                // skip extra project files
-                coreLog.info(tr("Project file '%1' ignored").arg(_url.getURLString()));
-                continue;
-            }
-            Document * doc = p->findDocumentByURL(_url);
-            if (!doc) {
-                QFileInfo fi(_url.getURLString());
-                if(!fi.exists()){
-                    stateInfo.setError(L10N::errorFileNotFound(_url));
-                    continue;
-                }
-                QList<DocumentFormat*> fs = DocumentUtils::detectFormat(_url);
-                if (fs.isEmpty()) {
-                    stateInfo.setError(  tr("unsupported_document%1").arg(_url.fileName()) );
-                    continue;
-                }
-
-                DocumentFormat* format = fs.first();
-                assert(format);
-                IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(_url));
-                doc = new Document(format, iof, _url);
-                GObjectType t = format->getSupportedObjectTypes().toList().first();
-                if(GObjectTypes::getTypeInfo(t).type != GObjectTypes::UNKNOWN) {
-                    Task * adt = new AddDocumentTask(doc);
-                    adt->setSubtaskProgressWeight(0);
-                    addSubTask(adt);
-                }
-                else {
-                    coreLog.info(tr("Document wasn't added to project: unsupported format"));
-                }
-            } else{
-                QWidget *p = AppContextImpl::getMainWindow()->getQMainWindow();
-                coreLog.details("The document already in the project");
-                QMessageBox::warning(p, tr("warning"), tr("The document already in the project"));
-                if (doc->isLoaded()) {
-                    const QList<GObject*>& docObjects = doc->getObjects();
-                    QList<GObjectViewWindow*> viewsList = GObjectViewUtils::findViewsWithAnyOfObjects(docObjects);
-                    if (!viewsList.isEmpty()) {
-                        AppContext::getMainWindow()->getMDIManager()->activateWindow(viewsList.first());
-                    }else{
-                        AppContext::getProjectView()->highlightItem(doc);
-                    }
-                    coreLog.info(tr("The document is already opened: %1").arg(_url.fileName()));
-                    continue;
-                }else if(!doc->isLoaded() && AppContext::getProjectView()){
-                    AppContext::getProjectView()->highlightItem(doc);
-                    continue;
-                }
-            }
-            if (openView) { // view is opened for first document only
-                addSubTask(new LoadUnloadedDocumentAndOpenViewTask(doc));
-            }
-        }
+    if (f.exists()) {
+        loadProjectTask = new LoadProjectTask(url);
+        addSubTask(loadProjectTask);
+    } else {
+        ProjectImpl* p =  new ProjectImpl(name, url);
+        addSubTask(new RegisterProjectServiceTask(p));
+        //     addSubTask(new SaveProjectTask(SaveProjectTaskKind_SaveProjectOnly, p));
     }
 }
 
 QList<Task*> OpenProjectTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasError()) {
-        if (subTask == loadProjectTask) {
-            return res;
-        }
-        Project *p = AppContext::getProject();
-        if(p == NULL) {
-            return res;
-        }
-        Document * doc = p->findDocumentByURL(url);
-        if(doc) {
-            p->removeDocument(doc);
-        }
-    } 
     if (!isCanceled() && subTask == loadProjectTask && !loadProjectTask->hasError()) {
         Project* p =  loadProjectTask->detachProject();
         res.append(new RegisterProjectServiceTask(p));
@@ -492,6 +349,10 @@ void ExportProjectTask::prepare(){
  
     ProjectFileUtils::saveProjectFile(stateInfo, pr, destinationDir + "/" + projectFile, urlRemap);
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+// tests
 
 void GTest_LoadProject::init(XMLTestFormat*, const QDomElement& el) {
     addTaskResource(TaskResourceUsage( RESOURCE_PROJECT, 1, true));

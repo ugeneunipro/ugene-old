@@ -248,8 +248,7 @@ void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegDialog(){
     ExpertDiscoveryPosNegDialog d(QApplication::activeWindow());
     if (d.exec()) {
         if (!AppContext::getProject()) {
-            QList<GUrl> emptyList;
-            tasks->addSubTask( AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+            tasks->addSubTask( AppContext::getProjectLoader()->createNewProjectTask() );
         }
 
         ExpertDiscoveryLoadPosNegTask *t = new ExpertDiscoveryLoadPosNegTask(d.getFirstFileName(), d.getSecondFileName(), d.isGenerateNegative());

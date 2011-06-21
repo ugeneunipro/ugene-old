@@ -37,6 +37,23 @@ class IOAdapterFactory;
 class StateLock;
 class LoadDocumentTask;
 
+/** Base interface for different document loading tasks */
+class U2CORE_EXPORT DocumentProviderTask : public Task {
+    Q_OBJECT
+public:
+    DocumentProviderTask(const QString& name, TaskFlags flags);
+    virtual ~DocumentProviderTask() {cleanup();}
+
+    virtual Document* getDocument()  {return resultDocument;}
+    virtual Document* takeDocument() {Document* d = resultDocument; resultDocument = NULL; return d;}
+
+    virtual void cleanup();
+
+protected:
+    Document* resultDocument;
+};
+
+
 // creates object using name and type info from ref
 //NOTE: the default impl can create only limited set of objects
 class U2CORE_EXPORT LDTObjectFactory : public QObject {
@@ -81,7 +98,7 @@ private:
     LoadDocumentTaskConfig  config;
 };
 
-class U2CORE_EXPORT LoadDocumentTask : public Task {
+class U2CORE_EXPORT LoadDocumentTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     static LoadDocumentTask * getDefaultLoadDocTask( const GUrl & url );
@@ -91,20 +108,10 @@ public:
                 IOAdapterFactory* iof, const QVariantMap& hints = QVariantMap(), 
                 const LoadDocumentTaskConfig& config = LoadDocumentTaskConfig());
 
-    ~LoadDocumentTask();
-
     virtual void run();
     virtual void prepare();
     virtual ReportResult report();
-    virtual void cleanup();
-
-    /** 
-        WARNING: these methods returns document created in worker thread !! 
-        This document must be cloned in main thread before adding to project
-    */
-    Document* getDocument() const {return result;}
-    Document* takeDocument() {Document* d = result; result = NULL; return d;}
-
+    
     const GUrl& getURL() const {return url;}
 
 private:
@@ -114,7 +121,6 @@ private:
     const GUrl              url;
     IOAdapterFactory*       iof;
     QVariantMap             hints;
-    Document*               result;
     LoadDocumentTaskConfig  config;
 };
 

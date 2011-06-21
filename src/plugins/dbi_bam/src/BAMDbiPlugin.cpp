@@ -123,7 +123,7 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
     if(prj == NULL) {
         QList<GUrl> list;
         list.append(url);
-        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openProjectTask(list, false));
+        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openWithProjectTask(list));
         return;
     }
     Document * doc = prj->findDocumentByURL(url);

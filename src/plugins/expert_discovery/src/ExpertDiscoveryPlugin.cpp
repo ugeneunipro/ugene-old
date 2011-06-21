@@ -69,8 +69,7 @@ void ExpertDiscoveryPlugin::sl_expertDiscoveryView(){
     //create project here
     if (!AppContext::getProject()) {
         Task *tasks = new Task("Creating empty project", TaskFlag_NoRun);
-        QList<GUrl> emptyList;
-        Task* t = AppContext::getProjectLoader()->openProjectTask(emptyList, false);
+        Task* t = AppContext::getProjectLoader()->createNewProjectTask();
         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_expertDiscoveryViewDelay() ) );
         tasks->addSubTask(t);        
         AppContext::getTaskScheduler()->registerTopLevelTask(tasks);

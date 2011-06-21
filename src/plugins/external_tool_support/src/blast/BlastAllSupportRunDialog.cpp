@@ -151,8 +151,7 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(con
             Project* proj = AppContext::getProject();
             if (proj == NULL) {
                 wasNoOpenProject=true;
-                QList<GUrl> emptyList;
-                tasks.append( AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+                tasks.append( AppContext::getProjectLoader()->createNewProjectTask() );
             }
 
             DocumentFormatConstraints c;
@@ -261,7 +260,8 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
         }
     }
     if(!docAlreadyInProject){
-        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openProjectTask(inputFileLineEdit->text(),false));
+        QString url = inputFileLineEdit->text();
+        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openWithProjectTask(url));
     }
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();

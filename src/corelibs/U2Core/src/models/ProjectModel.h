@@ -33,16 +33,37 @@ class GObjectViewState;
 class Document;
 class Project;
 class Task;
+class U2OpStatus;
 
 #define PROJECT_FILE_PURE_EXT QString("uprj")
 #define PROJECTFILE_EXT QString("." + PROJECT_FILE_PURE_EXT)
 
+//data loader hints
+#define DLH_CLOSE_PROJECT "close-active-project"
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {
 public:
-    virtual Task* openProjectTask(const QString& file, bool closeActiveProject) = 0;
-    virtual Task* openProjectTask(const QList<GUrl>& urls, bool closeActiveProject) = 0;
+    /** 
+        Opens files and adds them to the current project. If project does not exists - creates anonymous one 
+        If the file is project file - loads it. 
+    */
+    virtual Task* openWithProjectTask(const QList<GUrl>& urls, const QVariantMap& hints = QVariantMap()) = 0;
+    
+    /** Creates new project. If URL is empty the project created is anonymous */
+    virtual Task* createNewProjectTask(const GUrl& url = GUrl()) = 0;
+    
+    /** Loads project from the specified location */
+    virtual Task* createProjectLoadingTask(const GUrl& url, const QVariantMap& hints = QVariantMap()) = 0;
+
+    /** Creates new project instance */
     virtual Project* createProject(const QString& name, const QString& url, QList<Document*>& documents, QList<GObjectViewState*>& states) = 0;
+
+    Task* openWithProjectTask(const GUrl& url, const QVariantMap& hints = QVariantMap()) {
+        QList<GUrl> urls; urls << url;
+        return openWithProjectTask(urls, hints);
+    };
+
+
 };
 
 /// Project model

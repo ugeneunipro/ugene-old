@@ -470,7 +470,7 @@ int main(int argc, char **argv)
         foreach( const QString & url, urls ) {
             gurls << GUrl(url);
         }
-        Task * t = AppContext::getProjectLoader()->openProjectTask( gurls, false );
+        Task * t = AppContext::getProjectLoader()->openWithProjectTask(gurls);
         // defer loading until all plugins/services loaded
         QObject::connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), 
             new TaskStarter( t ), SLOT( registerTask() ) );
@@ -478,7 +478,7 @@ int main(int argc, char **argv)
     } else if (AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {
         QString lastProject = ProjectLoaderImpl::getLastProjectURL();
         if (!lastProject.isEmpty()) {
-            Task* t = AppContext::getProjectLoader()->openProjectTask(lastProject, false);
+            Task* t = AppContext::getProjectLoader()->openWithProjectTask(lastProject);
             // defer project start until all plugins/services loaded
             QObject::connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), 
                 new TaskStarter(t), SLOT(registerTask()));

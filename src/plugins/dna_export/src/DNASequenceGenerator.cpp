@@ -258,7 +258,7 @@ QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
                     delete doc;
                 }
             } else {
-                tasks << AppContext::getProjectLoader()->openProjectTask(doc->getURLString(), false);
+                tasks << AppContext::getProjectLoader()->openWithProjectTask(QList<GUrl>() << doc->getURL());
                 // open project task will load supplied url
                 doc->unload();
                 delete doc;

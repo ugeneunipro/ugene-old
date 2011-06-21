@@ -225,7 +225,7 @@ QList<Task*> TCoffeeWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTa
     }else if(subTask==saveDocumentTask){
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openProjectTask(currentDocument->getURLString(), false));
+            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString()));
         } else {
             bool docAlreadyInProject=false;
             foreach(Document* doc, proj->getDocuments()){

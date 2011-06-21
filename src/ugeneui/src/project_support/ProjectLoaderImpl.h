@@ -40,15 +40,19 @@ class ProjectLoaderImpl : public ProjectLoader {
     Q_OBJECT
 public:
     ProjectLoaderImpl();
-	~ProjectLoaderImpl();
+	
+    virtual Task* openWithProjectTask(const QList<GUrl>& urls, const QVariantMap& hints = QVariantMap());
 
-    virtual Task* openProjectTask(const QString& file, bool closeActiveProject);
-    virtual Task* openProjectTask(const QList<GUrl>& urls, bool closeActiveProject);
+    virtual Task* createNewProjectTask(const GUrl& url = GUrl());
+
+    virtual Task* createProjectLoadingTask(const GUrl& url, const QVariantMap& hints = QVariantMap());
+    
     virtual Project* createProject(const QString& name, const QString& url, QList<Document*>& documents, QList<GObjectViewState*>& states);
-
+    
     static QString getLastProjectURL();
 
 private:
+
     void updateState();
 	void updateRecentProjectsMenu();
     void prependToRecentProjects(const QString& pFile);
@@ -66,8 +70,7 @@ private slots:
     void sl_documentAdded(Document* doc);
     void sl_documentStateChanged();
     void sl_projectURLChanged(const QString& oldURL);
-    void sl_projectOpened();
-
+    
 	void sl_downloadRemoteFile();
 
 
@@ -113,6 +116,31 @@ private:
     void setupDefaults();
     bool fileEditIsEmpty;
 };
+
+
+class LoadDocumentInfo {
+public:
+    LoadDocumentInfo() : iof (NULL), openView(false) {}
+    GUrl                    url;
+    DocumentFormatId        formatId;
+    IOAdapterFactory*       iof;
+    QVariantMap             hints;
+    bool                    openView;
+};
+
+class AddDocumentsToProjectTask: public Task {
+    Q_OBJECT
+public:
+    AddDocumentsToProjectTask(const QList<LoadDocumentInfo> docsInfo);
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    QList<Task*> prepareLoadTasks();
+
+    QList<LoadDocumentInfo> docsInfo;
+    bool loadTasksAdded;
+};
+
+
 
 
 }//namespace

@@ -147,8 +147,7 @@ inDoc(NULL), ato(NULL) {
     tpm = Progress_Manual;
     stateInfo.progress = 0;
     if (addToProject && !AppContext::getProject()) {
-        QList<GUrl> emptyList;
-        openProjTask = AppContext::getProjectLoader()->openProjectTask(emptyList, false);
+        openProjTask = AppContext::getProjectLoader()->createNewProjectTask();
         addSubTask(openProjTask);
     } else {
         const QList<Task*>& tasks = init();

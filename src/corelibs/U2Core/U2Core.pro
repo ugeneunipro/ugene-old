@@ -81,6 +81,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/io/VFSAdapter.h \
            src/io/VirtualFileSystem.h \
            src/io/ZlibAdapter.h \
+           src/models/DocumentImport.h \
            src/models/DocumentModel.h \
            src/models/DocumentUtils.h \
            src/models/GHints.h \
@@ -199,6 +200,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/io/VFSAdapter.cpp \
            src/io/VirtualFileSystem.cpp \
            src/io/ZlibAdapter.cpp \
+           src/models/DocumentImport.cpp \
            src/models/DocumentModel.cpp \
            src/models/DocumentUtils.cpp \
            src/models/GHints.cpp \

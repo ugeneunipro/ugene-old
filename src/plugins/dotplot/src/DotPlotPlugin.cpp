@@ -129,8 +129,7 @@ void DotPlotViewContext::sl_showDotPlotDialog() {
     DotPlotFilesDialog d(QApplication::activeWindow());
     if (d.exec()) {
         if (!AppContext::getProject()) {
-            QList<GUrl> emptyList;
-            tasks->addSubTask( AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+            tasks->addSubTask( AppContext::getProjectLoader()->createNewProjectTask() );
         }
 
         DotPlotLoadDocumentsTask *t = new DotPlotLoadDocumentsTask(d.getFirstFileName(), d.getFirstGap(), d.getSecondFileName(), d.getSecondGap());

@@ -65,9 +65,8 @@ class OpenProjectTask : public Task {
     Q_OBJECT
 
 public:
-	OpenProjectTask(const QString& url, bool closeActiveProject, const QString& name = QString::null);
-    OpenProjectTask(const QList<GUrl>& list, bool closeActiveProject);
-	
+	OpenProjectTask(const QString& url, const QString& name = QString::null);
+    
 	virtual void prepare();
 	
 protected:
@@ -76,9 +75,7 @@ protected:
 private:
 	QString url;
 	QString name;
-    QList<GUrl> urlList;
 	LoadProjectTask* loadProjectTask;
-    bool closeActiveProject;
 };
 
 /// SaveProjectTask schema:
@@ -171,7 +168,6 @@ private:
 	QString     destinationDir;
     QString     projectFile;
 };
-
 
 //cppcheck-suppress noConstructor
 class GTest_LoadProject : public GTest {

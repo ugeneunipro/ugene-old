@@ -274,8 +274,7 @@ void DotPlotDialog::sl_loadSequenceButton(){
         Task *tasks = new Task("Adding document to the project", TaskFlag_NoRun);
 
         if (!AppContext::getProject()) {
-            QList<GUrl> emptyList;
-            tasks->addSubTask( AppContext::getProjectLoader()->openProjectTask(emptyList, false) );
+            tasks->addSubTask( AppContext::getProjectLoader()->createNewProjectTask() );
         }
 
         DotPlotLoadDocumentsTask *t = new DotPlotLoadDocumentsTask(lod.url, false, NULL, false, false);
