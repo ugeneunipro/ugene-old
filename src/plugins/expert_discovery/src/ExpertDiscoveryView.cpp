@@ -59,6 +59,8 @@ ExpertDiscoveryView::~ExpertDiscoveryView(){
     delete negUDoc;
     delete conUDoc;
     delete curEDsequence;
+
+    AppContext::getAutoAnnotationsSupport()->unregisterAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
     //delete splitter;
 }
 

@@ -930,6 +930,15 @@ void ExpertDiscoveryToAnnotationTask::csToAnnotation(int seqNumber, unsigned int
     }
 
     //EDProcessedSignal curPsCopy = *curPS;
+    if(isPos){
+        if(curPS->getYesSequenceNumber() <= seqNumber){
+            return;
+        }
+    }else{
+        if(curPS->getNoSequenceNumber() <= seqNumber){
+            return;
+        }
+    }
 
     const Set& set = isPos? curPS->getYesRealizations(seqNumber) : curPS->getNoRealizations(seqNumber);
 
