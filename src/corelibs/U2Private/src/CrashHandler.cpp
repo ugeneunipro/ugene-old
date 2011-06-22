@@ -248,6 +248,8 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
     } else {
         waitpid(child_pid,NULL,0);
     }
+    fclose(fp);
+    fclose(err);
 #endif
 
     QString message = exceptionType + "|";

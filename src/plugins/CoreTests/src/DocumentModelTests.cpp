@@ -29,6 +29,7 @@
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Core/DocumentUtils.h>
 
 namespace U2 {
 
@@ -164,6 +165,43 @@ Task::ReportResult GTest_LoadBrokenDocument::report() {
         return ReportResult_Finished;
     }
     stateInfo.setError(QString("file read without errors"));
+    return ReportResult_Finished;
+}
+
+
+/*******************************
+*GTest_DocumentFormat
+*******************************/
+
+void GTest_DocumentFormat::init(XMLTestFormat *tf, const QDomElement& el) {
+    Q_UNUSED(tf);
+
+    docUrl = el.attribute("url");
+    if (docUrl.isEmpty()) {
+        failMissingValue("url");
+        return;
+    }
+    docUrl = env->getVar("COMMON_DATA_DIR") + "/" + docUrl;
+
+    docFormat = el.attribute(VALUE_ATTR);
+    if (docFormat.isEmpty()) {
+        failMissingValue(VALUE_ATTR);
+        return;
+    } 
+} 
+
+Task::ReportResult GTest_DocumentFormat::report() {
+    
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(docUrl));
+    if(formats.isEmpty()) {
+        stateInfo.setError(QString("Can't detect format for file %1").arg(docUrl));
+        return ReportResult_Finished;
+    } 
+
+    QString format = formats.first().format->getFormatId();
+    if (format != docFormat) {
+        stateInfo.setError(QString("Format not matched: %1, expected %2").arg(format).arg(docFormat));
+    }
     return ReportResult_Finished;
 }
 
@@ -438,6 +476,7 @@ QList<XMLTestFactory*> DocumentModelTests::createTestFactories() {
     QList<XMLTestFactory*> res;
     res.append(GTest_LoadDocument::createFactory());
     res.append(GTest_LoadBrokenDocument::createFactory());
+    res.append(GTest_DocumentFormat::createFactory());
     res.append(GTest_DocumentNumObjects::createFactory());
     res.append(GTest_DocumentObjectNames::createFactory());
     res.append(GTest_DocumentObjectTypes::createFactory());

@@ -141,6 +141,9 @@ FormatDetectionScore NewickFormat::checkRawData(const QByteArray& rawData, const
         }
         last = any;
     }
+    if(QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {
+        return FormatDetection_LowSimilarity;
+    }
     return FormatDetection_VeryHighSimilarity;
 }
 

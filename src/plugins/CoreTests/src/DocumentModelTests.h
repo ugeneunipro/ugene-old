@@ -88,6 +88,16 @@ class GTest_DocumentNumObjects : public GTest {
     int numObjs;
 };
 
+class GTest_DocumentFormat : public GTest {
+    Q_OBJECT
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DocumentFormat, "check-document-format");
+
+    ReportResult report();
+
+    QString docUrl;
+    QString docFormat;
+};
+
 class GTest_DocumentObjectNames : public GTest {
     Q_OBJECT
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DocumentObjectNames, "check-document-object-names");

@@ -103,8 +103,8 @@ Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, c
 FormatDetectionScore RawDNASequenceFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
-    if(QRegExp("[a-zA-Z]*").exactMatch(rawData)) {
-        return FormatDetection_HighSimilarity;
+    if(QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {
+        return FormatDetection_VeryHighSimilarity;
     }
     bool hasBinaryData = TextUtils::contains(TextUtils::BINARY, data, size);
     //returning 'very low chance' here just because it's impossible to have 100% detection for this format
