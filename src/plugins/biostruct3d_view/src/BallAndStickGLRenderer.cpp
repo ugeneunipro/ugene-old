@@ -36,15 +36,20 @@ namespace U2 {
 
 const QString BallAndStickGLRenderer::ID(QObject::tr("Ball-and-Stick"));
 
-BallAndStickGLRenderer::BallAndStickGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
-    : BioStruct3DGLRenderer(struc,s,shownModels,widget), dl(0)
+BallAndStickGLRenderer::BallAndStickGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings)
+    : BioStruct3DGLRenderer(struc,s,shownModels,settings), dl(0)
 {
-    dl = glGenLists(1);
-    createDisplayList();
+    create();
 }
 
 BallAndStickGLRenderer::~BallAndStickGLRenderer() {
-    glDeleteLists(dl, 1);
+    if (glIsList(dl)) {
+        glDeleteLists(dl, 1);
+    }
+}
+
+void BallAndStickGLRenderer::create() {
+    createDisplayList();
 }
 
 void BallAndStickGLRenderer::drawBioStruct3D() {
@@ -61,6 +66,10 @@ void BallAndStickGLRenderer::updateColorScheme() {
 }
 
 void BallAndStickGLRenderer::updateShownModels() {
+    createDisplayList();
+}
+
+void BallAndStickGLRenderer::updateSettings() {
     createDisplayList();
 }
 
@@ -122,7 +131,8 @@ static void drawAtomsBonds(const Color4f &viewAtomColor, float renderDetailLevel
 
 void BallAndStickGLRenderer::createDisplayList()
 {
-    float renderDetailLevel = glWidget->getRenderDetailLevel();
+    dl = glGenLists(1);
+    float renderDetailLevel = settings->detailLevel;
 
     QList<Color4f> colors;
 

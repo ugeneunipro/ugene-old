@@ -46,13 +46,18 @@ class TubeGLRenderer : public BioStruct3DGLRenderer {
     void drawTubes(const BioStruct3DColorScheme* colorScheme); 
 
 protected:
-    TubeGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget);
+    TubeGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
 
 public:
     void drawBioStruct3D();
 
+    virtual void create();
     virtual void updateColorScheme() {};
     virtual void updateShownModels() {};
+    virtual void updateSettings() {};
+
+public:
+    static bool isAvailableFor(const BioStruct3D &);
 
     RENDERER_FACTORY(TubeGLRenderer)
 };

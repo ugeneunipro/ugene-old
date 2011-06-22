@@ -41,11 +41,11 @@ const BioStruct3DGLRendererFactory* BioStruct3DGLRendererRegistry::getFactory(co
     return getInstance()->factories.value(name, 0);
 }
 
-BioStruct3DGLRenderer* BioStruct3DGLRendererRegistry::createRenderer(const QString &name, const BioStruct3D &bs, const BioStruct3DColorScheme* s, const QList<int> &sm, const BioStruct3DGLWidget *w) {
+BioStruct3DGLRenderer* BioStruct3DGLRendererRegistry::createRenderer(const QString &name, const BioStruct3D &bs, const BioStruct3DColorScheme* s, const QList<int> &sm, const BioStruct3DRendererSettings *settings) {
     const BioStruct3DGLRendererFactory *fact = getFactory(name);
 
     if (fact) {
-        return fact->createInstance(bs,s,sm,w);
+        return fact->createInstance(bs,s,sm,settings);
     }
 
     return 0;
@@ -60,18 +60,37 @@ BioStruct3DGLRendererRegistry* BioStruct3DGLRendererRegistry::getInstance() {
     return reg;
 }
 
-#define REGISTER_FACTORY(c) factories.insert(c::ID, new c::Factory)
+bool BioStruct3DGLRendererRegistry::isAvailableFor(const QString &name, const BioStruct3D &biostruct) {
+    const BioStruct3DGLRendererFactory *fact = getFactory(name);
+    return fact->isAvailableFor(biostruct);
+}
+
+QList<QString> BioStruct3DGLRendererRegistry::getRenderersAvailableFor(const BioStruct3D &biostruct) {
+    BioStruct3DGLRendererRegistry *reg = getInstance();
+
+    QList<QString> ret;
+    foreach (const BioStruct3DGLRendererFactory *fact, reg->factories) {
+        if (fact->isAvailableFor(biostruct)) {
+            ret.append(fact->getName());
+        }
+    }
+
+    return ret;
+}
+
+
+#define REGISTER_FACTORY(c) factories.insert(c::ID, new c::Factory(c::ID))
 void BioStruct3DGLRendererRegistry::registerFactories() {
     REGISTER_FACTORY(BallAndStickGLRenderer);
-    REGISTER_FACTORY(TubeGLRenderer);
     REGISTER_FACTORY(VanDerWaalsGLRenderer);
+    REGISTER_FACTORY(TubeGLRenderer);
     REGISTER_FACTORY(WormsGLRenderer);
 }
 
 
 /* class BioStruct3DGLRenderer */
-BioStruct3DGLRenderer::BioStruct3DGLRenderer( const BioStruct3D& _bioStruct, const BioStruct3DColorScheme* _s, const QList<int> &_shownModels, const BioStruct3DGLWidget *widget)
-        : bioStruct(_bioStruct), colorScheme(_s), shownModels(_shownModels), glWidget(widget)
+BioStruct3DGLRenderer::BioStruct3DGLRenderer( const BioStruct3D& _bioStruct, const BioStruct3DColorScheme* _s, const QList<int> &_shownModels, const BioStruct3DRendererSettings *_settings)
+        : bioStruct(_bioStruct), colorScheme(_s), shownModels(_shownModels), settings(_settings)
 {}
 
 void BioStruct3DGLRenderer::setColorScheme( const BioStruct3DColorScheme* s )

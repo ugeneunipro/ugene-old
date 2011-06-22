@@ -82,7 +82,7 @@ public:
     QColor getLeftEyeColor()const;
     QColor getRightEyeColor()const;
 
-    int getRenderDetailLevel()const;
+    float getRenderDetailLevel()const;
     int getShadingLevel()const;
     bool getAnaglyph()const;
     int getEyesShift()const;
@@ -96,7 +96,7 @@ public:
     void setGlassesColorScheme(QColor &leftEyeColor, QColor &rightEyeColor);
     void setGlassesColorScheme(int num);
 
-    void setRenderDetailLevel(int renderDetailLevel);
+    void setRenderDetailLevel(float renderDetailLevel);
     void setShadingLevel(int shading);
 
     void setAnaglyph(bool anaglyph);

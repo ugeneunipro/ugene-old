@@ -77,7 +77,7 @@ void BioStruct3DSettingsDialog::sl_setRenderDetailLevel()
 {
     renderDetailLevel=renderDetailLevelSlider->sliderPosition();
 
-    state[glWidget->RENDER_DETAIL_LEVEL_NAME] = QVariant::fromValue(renderDetailLevel);
+    state[glWidget->RENDER_DETAIL_LEVEL_NAME] = QVariant::fromValue((float) renderDetailLevel/100.0);
     glWidget->setState(state);
 }
 
@@ -148,9 +148,9 @@ QColor BioStruct3DSettingsDialog::getSelectionColor()const
     return selectionColor;
 }
 
-int BioStruct3DSettingsDialog::getRenderDetailLevel()const
+float BioStruct3DSettingsDialog::getRenderDetailLevel()const
 {
-    return renderDetailLevel;
+    return renderDetailLevel/100.0;
 }
 
 bool BioStruct3DSettingsDialog::getAnaglyph()const
@@ -219,10 +219,9 @@ void BioStruct3DSettingsDialog::setSelectionColor(QColor color)
     this->selectionColor=color;
 }
 
-void BioStruct3DSettingsDialog::setRenderDetailLevel(int renderDetailLevel)
+void BioStruct3DSettingsDialog::setRenderDetailLevel(float renderDetailLevel_)
 {
-    this->renderDetailLevel = renderDetailLevel;
-
+    renderDetailLevel = renderDetailLevel_ * 100;
     renderDetailLevelSlider->setSliderPosition(renderDetailLevel);
 }
 

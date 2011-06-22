@@ -33,17 +33,47 @@ namespace U2 {
 const QString WormsGLRenderer::ID(QObject::tr("Worms"));
 
 
-WormsGLRenderer::WormsGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
-        : BioStruct3DGLRenderer(struc,s,shownModels,widget)
+WormsGLRenderer::WormsGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings)
+        : BioStruct3DGLRenderer(struc,s,shownModels,settings)
 {
+    create();
+}
+
+bool WormsGLRenderer::isAvailableFor(const BioStruct3D &bioStruct) {
+    bool available = false;
+
     const char* alphaCarbonTag = "CA";
     const char* phosophorTag = "P";
     const char* carbonylOxygenTag = "O";
-    
-    int numModels = struc.modelMap.count();
 
+    foreach (const SharedMolecule &mol, bioStruct.moleculeMap) {
+        int modelId = 0;
+        foreach (const Molecule3DModel& model, mol->models) {
+            foreach (const SharedAtom atom, model.atoms) {
+                if (    (atom->name.trimmed() == alphaCarbonTag)
+                        || (atom->name.trimmed() == phosophorTag)
+                        || (atom->name.trimmed() == carbonylOxygenTag) ) {
+                    available = true;
+                }
+            }
+            ++modelId;
+        }
+    }
 
-    QMapIterator<int, SharedMolecule> i(struc.moleculeMap);
+    return available;
+
+}
+
+void WormsGLRenderer::create() {
+    assert(isAvailableFor(bioStruct) && "Availability must be checked first!");
+
+    const char* alphaCarbonTag = "CA";
+    const char* phosophorTag = "P";
+    const char* carbonylOxygenTag = "O";
+
+    int numModels = bioStruct.modelMap.count();
+
+    QMapIterator<int, SharedMolecule> i(bioStruct.moleculeMap);
     while (i.hasNext()) {
         i.next();
         const SharedMolecule mol = i.value();
@@ -61,13 +91,12 @@ WormsGLRenderer::WormsGLRenderer( const BioStruct3D& struc, const BioStruct3DCol
                 }
             }
             ++modelId;
-            
+
         }
         bioPolymerMap.insert(i.key(), bioPolymer);
     }
 
-    createWorms();    
-
+    createWorms();
 }
 
 
@@ -100,9 +129,9 @@ void WormsGLRenderer::drawWorms(  )
                 }
 
                 glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a1));
-                glDrawHalfWorm(a0->coord3d, a1->coord3d, a2->coord3d, a3->coord3d, ribbonThickness, false, false, tension, glWidget->getRenderDetailLevel());
+                glDrawHalfWorm(a0->coord3d, a1->coord3d, a2->coord3d, a3->coord3d, ribbonThickness, false, false, tension, settings->detailLevel);
                 glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a2));
-                glDrawHalfWorm(a3->coord3d, a2->coord3d, a1->coord3d, a0->coord3d, ribbonThickness, false, false, tension, glWidget->getRenderDetailLevel());
+                glDrawHalfWorm(a3->coord3d, a2->coord3d, a1->coord3d, a0->coord3d, ribbonThickness, false, false, tension, settings->detailLevel);
             }
 
             if (wormCoords.size() >= 3) {
@@ -112,22 +141,22 @@ void WormsGLRenderer::drawWorms(  )
                 const SharedAtom a2 = wormCoords.at(2);
                 Vector3D atomCoordFirst = model.openingAtom;
                 glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(a0));
-                glDrawHalfWorm(atomCoordFirst, a0->coord3d, a1->coord3d, a2->coord3d, ribbonThickness, true, false, tension, glWidget->getRenderDetailLevel());
-                glDrawHalfWorm(a2->coord3d, a1->coord3d, a0->coord3d, atomCoordFirst, ribbonThickness, false, false, tension, glWidget->getRenderDetailLevel());
+                glDrawHalfWorm(atomCoordFirst, a0->coord3d, a1->coord3d, a2->coord3d, ribbonThickness, true, false, tension, settings->detailLevel);
+                glDrawHalfWorm(a2->coord3d, a1->coord3d, a0->coord3d, atomCoordFirst, ribbonThickness, false, false, tension, settings->detailLevel);
                 // Draw worm ending
                 const SharedAtom aN1 = wormCoords.at(size - 1);
                 const SharedAtom aN2 = wormCoords.at(size - 2);
                 const SharedAtom aN3 = wormCoords.at(size - 3);
                 Vector3D atomCoordLast = model.closingAtom;
                 glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, getAtomColor(aN1));
-                glDrawHalfWorm(atomCoordLast, aN1->coord3d, aN2->coord3d, aN3->coord3d, ribbonThickness, true, false, tension, glWidget->getRenderDetailLevel());
-                glDrawHalfWorm(aN3->coord3d, aN2->coord3d, aN1->coord3d, atomCoordLast, ribbonThickness, false, false, tension, glWidget->getRenderDetailLevel());
+                glDrawHalfWorm(atomCoordLast, aN1->coord3d, aN2->coord3d, aN3->coord3d, ribbonThickness, true, false, tension, settings->detailLevel);
+                glDrawHalfWorm(aN3->coord3d, aN2->coord3d, aN1->coord3d, atomCoordLast, ribbonThickness, false, false, tension, settings->detailLevel);
             }
             
             //Draw 3d objects
             if (shownModels.count() == 1) {
                 foreach( Object3D* obj, model.objects) {
-                    obj->draw(glWidget->getRenderDetailLevel());
+                    obj->draw(settings->detailLevel);
                 }
             }
 
@@ -141,7 +170,6 @@ void WormsGLRenderer::drawWorms(  )
 void WormsGLRenderer::drawBioStruct3D()
 {
     drawWorms();
-
 }
 
 void WormsGLRenderer::updateColorScheme()
@@ -161,6 +189,10 @@ void WormsGLRenderer::updateColorScheme()
 }
 
 void WormsGLRenderer::updateShownModels() {
+    updateColorScheme();
+}
+
+void  WormsGLRenderer::updateSettings() {
     updateColorScheme();
 }
 

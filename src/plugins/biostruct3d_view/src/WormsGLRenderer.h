@@ -91,20 +91,23 @@ class WormsGLRenderer : public BioStruct3DGLRenderer {
     void drawSecondaryStructure();
     const float* getAtomColor(const SharedAtom& atom);
 
-
 protected:
-    WormsGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget);
+    WormsGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
 
 public:
     virtual ~WormsGLRenderer();
 
+    virtual void create();
     virtual void drawBioStruct3D();
 
     virtual void updateColorScheme();
     virtual void updateShownModels();
+    virtual void updateSettings();
+
+public:
+    static bool isAvailableFor(const BioStruct3D &);
 
     RENDERER_FACTORY(WormsGLRenderer)
-
 };
 
 } //namespace

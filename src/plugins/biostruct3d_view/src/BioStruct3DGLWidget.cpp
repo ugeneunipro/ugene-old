@@ -83,7 +83,7 @@ static QColor DEFAULT_RIGHT_EYE_COLOR = QColor(255, 0, 0);
 
 static bool DEFAULT_ANAGLYPH = false;
 
-static int DEFAULT_RENDER_DETAIL_LEVEL = 100;
+static float DEFAULT_RENDER_DETAIL_LEVEL = 100/100.0;
 static int DEFAULT_EYES_SHIFT = 160;
 static int DEFAULT_SHADING_LEVEL = 50;
 
@@ -108,6 +108,7 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
     : QGLWidget(parent),
     dnaView(view),
     contexts(),
+    rendererSettings(DEFAULT_RENDER_DETAIL_LEVEL),
     frameManager(manager), molSurface(NULL),
     spinAngle(0), displayMenu(NULL)
 {
@@ -134,7 +135,6 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
     leftEyeColor = DEFAULT_LEFT_EYE_COLOR;
     rightEyeColor = DEFAULT_RIGHT_EYE_COLOR;
 
-    renderDetailLevel = DEFAULT_RENDER_DETAIL_LEVEL;
     unselectedShadingLevel = DEFAULT_SHADING_LEVEL;
 
     emptyTextureData = NULL;
@@ -142,13 +142,18 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
     currentColorSchemeName = BioStruct3DColorSchemeRegistry::defaultFactoryName();
     currentGLRendererName = BioStruct3DGLRendererRegistry::defaultFactoryName();
 
+    QList<QString> availableRenders = BioStruct3DGLRendererRegistry::getRenderersAvailableFor(obj->getBioStruct3D());
+    if (!availableRenders.contains(currentGLRendererName)) {
+        currentGLRendererName = availableRenders.first();
+    }
+
     addBiostruct(obj);
 
     createActions();
     createMenus();
 
     loadColorSchemes();
-    loadGLRenderers();
+    loadGLRenderers(availableRenders);
 
     // Set view settings
     // shoud be separate function
@@ -239,11 +244,6 @@ void BioStruct3DGLWidget::paintGL()
 float BioStruct3DGLWidget::getEyesShiftMult() const
 {
     return eyesShift/100.0f;
-}
-
-float BioStruct3DGLWidget::getRenderDetailLevel() const
-{
-    return renderDetailLevel/100.0f;
 }
 
 void BioStruct3DGLWidget::ViewOrtho()                                               // Set Up An Ortho View
@@ -610,7 +610,7 @@ QVariantMap BioStruct3DGLWidget::getState()
     state[LEFT_EYE_COLOR_NAME] = QVariant::fromValue(leftEyeColor);
     state[RIGHT_EYE_COLOR_NAME] = QVariant::fromValue(rightEyeColor);
 
-    state[RENDER_DETAIL_LEVEL_NAME] = QVariant::fromValue(renderDetailLevel);
+    state[RENDER_DETAIL_LEVEL_NAME] = QVariant::fromValue(rendererSettings.detailLevel);
     state[SHADING_LEVEL_NAME] = QVariant::fromValue(unselectedShadingLevel);
     state[ANAGLYPH_NAME] = QVariant::fromValue(anaglyph);
     state[EYES_SHIFT_NAME] = QVariant::fromValue(eyesShift);
@@ -635,7 +635,7 @@ void BioStruct3DGLWidget::setState( const QVariantMap& state )
     leftEyeColor = state.value(LEFT_EYE_COLOR_NAME, DEFAULT_LEFT_EYE_COLOR).value<QColor>();
     rightEyeColor = state.value(RIGHT_EYE_COLOR_NAME, DEFAULT_RIGHT_EYE_COLOR).value<QColor>();
 
-    renderDetailLevel = state.value(RENDER_DETAIL_LEVEL_NAME, DEFAULT_RENDER_DETAIL_LEVEL).value<int>();
+    rendererSettings.detailLevel = state.value(RENDER_DETAIL_LEVEL_NAME, DEFAULT_RENDER_DETAIL_LEVEL).value<float>();
     anaglyph = state.value(ANAGLYPH_NAME, DEFAULT_ANAGLYPH).value<bool>();
     eyesShift = state.value(EYES_SHIFT_NAME, DEFAULT_EYES_SHIFT).value<int>();
 
@@ -686,7 +686,7 @@ void BioStruct3DGLWidget::setupRenderer(const QString &name) {
         // TODO: this situation may be potentialy dangerous
         // if renderer starts draw right now, maybe SharedPointer will be good solution
         const QList<int> &shownModelsIndexes = ctx.renderer->getShownModelsIndexes();
-        BioStruct3DGLRenderer *rend = BioStruct3DGLRendererRegistry::createRenderer(name, *ctx.biostruct, ctx.colorScheme.data(), shownModelsIndexes, this);
+        BioStruct3DGLRenderer *rend = BioStruct3DGLRendererRegistry::createRenderer(name, *ctx.biostruct, ctx.colorScheme.data(), shownModelsIndexes, &rendererSettings);
         assert(rend);
         ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(rend);
     }
@@ -864,20 +864,20 @@ void BioStruct3DGLWidget::loadColorSchemes()
     assert(iter != schemeActions.end());    
 }
 
-void BioStruct3DGLWidget::loadGLRenderers()
+void BioStruct3DGLWidget::loadGLRenderers(const QList<QString> &availableRenderers)
 {
-    currentGLRendererName =  BioStruct3DGLRendererRegistry::defaultFactoryName();
+    // highlight current renderer in menu
 
-    // highlight default renderer in menu
-    QList<QAction*>::iterator iter;
-    QList<QAction*> renderActions = rendererActions->actions();
-    for (iter = renderActions.begin(); iter != renderActions.end(); ++iter) {
-        if ((*iter)->text() == currentGLRendererName) {
-            (*iter)->setChecked(true);
-            break;
+    foreach (QAction *ac, rendererActions->actions()) {
+        // disable all unavailable renderers in menu
+        if (!availableRenderers.contains(ac->text())) {
+            ac->setDisabled(true);
+        }
+
+        if (ac->text() == currentGLRendererName) {
+            ac->setChecked(true);
         }
     }
-    assert(iter != renderActions.end());
 
     QString surfaceRendererName = ConvexMapRenderer::ID;
     surfaceRenderer.reset(MolecularSurfaceRendererRegistry::createMSRenderer(surfaceRendererName));
@@ -1184,7 +1184,7 @@ void BioStruct3DGLWidget::sl_settings()
 
     dialog.setBackgroundColor(backgroundColor);
     dialog.setSelectionColor(selectionColor);
-    dialog.setRenderDetailLevel(renderDetailLevel);
+    dialog.setRenderDetailLevel(rendererSettings.detailLevel);
     dialog.setShadingLevel(unselectedShadingLevel);
 
     dialog.setAnaglyphAvailability(anaglyphAvailable);
@@ -1205,7 +1205,7 @@ void BioStruct3DGLWidget::sl_settings()
         }
         setUnselectedShadingLevel(unselectedShadingLevel);
 
-        renderDetailLevel=dialog.getRenderDetailLevel();
+        rendererSettings.detailLevel = dialog.getRenderDetailLevel();
         anaglyph = dialog.getAnaglyph();
 
         eyesShift = dialog.getEyesShift();
@@ -1301,7 +1301,7 @@ void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList
     ctx.colorScheme->setSelectionColor(selectionColor);
     ctx.colorScheme->setUnselectedShadingLevel((double)unselectedShadingLevel/100.0);
 
-    BioStruct3DGLRenderer *renderer = BioStruct3DGLRendererRegistry::createRenderer(currentGLRendererName, *ctx.biostruct, ctx.colorScheme.data(), shownModelsIdx, this);
+    BioStruct3DGLRenderer *renderer = BioStruct3DGLRendererRegistry::createRenderer(currentGLRendererName, *ctx.biostruct, ctx.colorScheme.data(), shownModelsIdx, &rendererSettings);
     assert(renderer);
     ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(renderer);
 

@@ -48,7 +48,7 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
                 Color4f atomColor = colorScheme->getAtomColor(atom);
                 Vector3D pos = atom.constData()->coord3d;
                 glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, atomColor.getConstData());
-                glDrawAtom(pObj, pos, ribbonThickness, glWidget->getRenderDetailLevel());
+                glDrawAtom(pObj, pos, ribbonThickness, settings->detailLevel);
 
                 if (!firstPass) {
                     // Draw bonds only between atoms of the same molecular chain
@@ -57,9 +57,9 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
                         if (atom.constData()->residueIndex - bufAtom.constData()->residueIndex == 1) { 
                             Vector3D bufPos = bufAtom.constData()->coord3d;
                             Color4f bufAtomColor = colorScheme->getAtomColor(bufAtom);
-                            glDrawHalfBond(pObj, bufPos, pos, ribbonThickness, glWidget->getRenderDetailLevel());
+                            glDrawHalfBond(pObj, bufPos, pos, ribbonThickness, settings->detailLevel);
                             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, bufAtomColor.getConstData());
-                            glDrawHalfBond(pObj, pos, bufPos, ribbonThickness, glWidget->getRenderDetailLevel());
+                            glDrawHalfBond(pObj, pos, bufPos, ribbonThickness, settings->detailLevel);
                         }
                     }
                 } else {
@@ -82,13 +82,42 @@ void TubeGLRenderer::drawBioStruct3D()
 }
 
 
-TubeGLRenderer::TubeGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DGLWidget *widget )
-        : BioStruct3DGLRenderer(struc,s,shownModels,widget)
+TubeGLRenderer::TubeGLRenderer( const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings )
+        : BioStruct3DGLRenderer(struc,s,shownModels,settings)
 {
+    create();
+}
+
+bool TubeGLRenderer::isAvailableFor(const BioStruct3D &bioStruct) {
+    bool available = false;
+
     const char* alphaCarbonTag = "CA";
     const char* phosporTag = "P";
-    
-    foreach (const SharedMolecule mol, struc.moleculeMap) {
+
+    foreach (const SharedMolecule mol, bioStruct.moleculeMap) {
+        int modelId = 0;
+        foreach (const Molecule3DModel& model, mol->models) {
+            foreach (const SharedAtom atom, model.atoms) {
+                if ( (atom->name.trimmed() == alphaCarbonTag) || (atom->name.trimmed() == phosporTag)) {
+                    available = true;
+                }
+            }
+            ++modelId;
+        }
+    }
+
+    return available;
+}
+
+void TubeGLRenderer::create() {
+    assert(isAvailableFor(bioStruct) && "Availability must be checked first!");
+
+    tubeMap.clear();
+
+    const char* alphaCarbonTag = "CA";
+    const char* phosporTag = "P";
+
+    foreach (const SharedMolecule mol, bioStruct.moleculeMap) {
         int modelId = 0;
         foreach (const Molecule3DModel& model, mol->models) {
             foreach (const SharedAtom atom, model.atoms) {
@@ -96,10 +125,9 @@ TubeGLRenderer::TubeGLRenderer( const BioStruct3D& struc, const BioStruct3DColor
                     tubeMap[atom->chainIndex].modelsMap[modelId].append(atom);
                 }
             }
-            ++modelId;    
+            ++modelId;
         }
     }
-    
 }
 
 

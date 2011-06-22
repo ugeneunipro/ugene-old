@@ -142,7 +142,7 @@ public:
     void writeImage2DToFile(int format, int options, int nbcol, const char *fileName);
 
     float getEyesShiftMult() const;
-    float getRenderDetailLevel() const;
+
     void setBackgroundColor(QColor backgroundColor);
     float sumCorrectColors(float a, float b);
 
@@ -191,7 +191,7 @@ private:
 
     // controller logic
     //! Creates actions for existing GLRenderers, loads default renderer.
-    void loadGLRenderers();
+    void loadGLRenderers(const QList<QString> &availableRenderers);
     //! Creates actions for existing ColorSchemes, loads default color scheme.
     void loadColorSchemes();
 
@@ -263,6 +263,9 @@ private:
 
     QList<BioStruct3DRendererContext> contexts;
 
+    // Settings common for all renderers, such as detail level
+    BioStruct3DRendererSettings rendererSettings;
+
     GLFrameManager* frameManager;
     std::auto_ptr<GLFrame> glFrame;
 
@@ -291,7 +294,6 @@ private:
     QColor selectionColor;
     QTimer* animationTimer;
 
-    int renderDetailLevel;
     int unselectedShadingLevel;
 
     // anaglyph related
