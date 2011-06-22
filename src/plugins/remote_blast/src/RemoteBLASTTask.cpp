@@ -72,11 +72,17 @@ QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
            // Document* d = AppContext::getProject()->findDocumentByURL(url);
             //assert(d==NULL);
             if(!url.isEmpty()) {
-                IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-                DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
-                Document *d = df->createNewDocument(iof, url);
-                d->addObject(aobj);
-                AppContext::getProject()->addDocument(d);
+                Document *d = AppContext::getProject()->findDocumentByURL(url);
+                if(d==NULL) {
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+                    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+                    d = df->createNewDocument(iof, url);
+                    d->addObject(aobj);
+                    AppContext::getProject()->addDocument(d);
+                } else {
+                    setError(tr("File %1 already exists").arg(url));
+                    return res;
+                }
             }
             
             for(QMutableListIterator<SharedAnnotationData> it_ad(anns); it_ad.hasNext(); ) {
