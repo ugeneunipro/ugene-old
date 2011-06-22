@@ -984,11 +984,9 @@ void AnnotationsTreeViewL::updateState() {
 
     QList<AVGroupItemL*> topLevelGroups = selectGroupItems(items, TriState_Unknown, TriState_Yes);
 
-    bool hasAutoAnnotationObjects = false;
     foreach (AVGroupItemL* item, topLevelGroups) {
         AnnotationTableObject* aObj = item->getAnnotationTableObject();
         if (AutoAnnotationsSupport::isAutoAnnotation(aObj)) {
-            hasAutoAnnotationObjects = true;
             break;
         }
     }
@@ -2423,7 +2421,6 @@ void LazyTreeView::sl_entered( const QModelIndex &index )
 void AnnotationsTreeViewL::focusOnItem(Annotation *a) {
     QList<int> indexes;
     AnnotationGroup *topGroup = a->getGroups().first();
-    AVGroupItemL *bottomGroup;
     indexes << topGroup->getAnnotations().indexOf(a);
 
     /************************************************************************/
@@ -2458,7 +2455,6 @@ void AnnotationsTreeViewL::focusOnItem(Annotation *a) {
             tree->onScreen.insert(0, topGroupItem);
         }
     }
-    bottomGroup = topGroupItem;
     
     int num = tree->numOnScreen;
     QList<QTreeWidgetItem*> oldList = tree->onScreen;

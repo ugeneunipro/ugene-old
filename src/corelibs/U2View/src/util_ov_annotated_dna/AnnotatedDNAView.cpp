@@ -582,9 +582,9 @@ void AnnotatedDNAView::updateMultiViewActions() {
 }
 
 void AnnotatedDNAView::sl_onContextMenuRequested(const QPoint & scrollAreaPos) {
+    Q_UNUSED(scrollAreaPos);
     QMenu m;
 
-    QPoint globalPos = scrollArea->mapToGlobal(scrollAreaPos);
     m.addAction(posSelectorAction); 
     m.addSeparator()->setObjectName("FIRST_SEP");
     clipb->addCopyMenu(&m);

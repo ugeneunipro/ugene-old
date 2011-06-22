@@ -201,7 +201,6 @@ QPointF DotPlotWidget::zoomTo(Qt::Axis axis, const U2Region &lr, bool emitSignal
     if(lr.length == 0){
         return zoom;
     }
-    QPointF oldZoom = zoom;
 
     int seqLen = 0;
     switch (axis) {
@@ -1541,8 +1540,6 @@ void DotPlotWidget::wheelEvent(QWheelEvent *e) {
     if (dotPlotTask) {
         return;
     }
-
-    QPointF oldCoords = toInnerCoords(e->pos().x(), e->pos().y());
 
     QPointF oldzoom = zoom;
     QPointF newzoom = zoom*(1 + e->delta()/(float)1000);

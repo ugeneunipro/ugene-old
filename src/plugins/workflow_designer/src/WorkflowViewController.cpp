@@ -1644,7 +1644,7 @@ void WorkflowScene::centerView() {
         QTransform matrix = child->transform() * QTransform().translate(childPos.x(), childPos.y());
         childRect |= matrix.mapRect(child->boundingRect() | child->childrenBoundingRect());
     }
-    QPointF zero = childRect.center();
+//    QPointF zero = childRect.center();
     //log.info(QString("center [%1 %2]").arg(zero.x()).arg(zero.y()));
     //FIXME does not work
     //views().first()->centerOn(zero);

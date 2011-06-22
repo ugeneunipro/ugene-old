@@ -585,6 +585,7 @@ AddDocumentsToProjectTask::AddDocumentsToProjectTask(const QList<LoadDocumentInf
 }
 
 QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task* subTask) {
+    Q_UNUSED(subTask);
     QList<Task*> res;
     if (!loadTasksAdded) {
         loadTasksAdded = true;
