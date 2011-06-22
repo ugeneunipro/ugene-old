@@ -284,6 +284,7 @@ private:
     // drag&drop related data
     bool                    isDragging;
     bool                    dndCopyOnly;
+    bool                    renameFlag;
     QList<AVItemL*>          dndSelItems;
     AVGroupItemL*            dropDestination;
 

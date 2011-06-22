@@ -216,6 +216,7 @@ AnnotationsTreeViewL::AnnotationsTreeViewL(AnnotatedDNAView* _ctx) : ctx(_ctx){
     isDragging = false;
     resetDragAndDropData();
     tree->setAcceptDrops(true);
+    renameFlag = false;
 }
 
 void AnnotationsTreeViewL::restoreWidgetState() { 
@@ -592,12 +593,16 @@ void AnnotationsTreeViewL::sl_onAnnotationModified(const AnnotationModification&
                 const QualifierModification& qm = (const QualifierModification&)md;
                 QList<AVAnnotationItemL*> aItems  = findAnnotationItems(qm.annotation);
                 foreach(AVAnnotationItemL* ai, aItems) {
-                    if (ai->isExpanded() || ai->childCount() > 0) { //if item was expanded - add real qualifier items
+                    if (ai->isExpanded() || ai->childCount() > 0 || renameFlag) { //if item was expanded - add real qualifier items
 
                         AVQualifierItemL* qi = new AVQualifierItemL(ai, qm.qualifier);
                         tree->insertItem(ai->childCount() - 1, qi, false);
                         tree->realNumberOfItems++;
                         tree->updateSlider();
+                        LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel *>(tree->model());
+                        tree->emptyExpand = true;
+                        renameFlag = false;
+                        tree->expand(lm->guessIndex(qi->parent()));
 
                     } else {
                         ai->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator); //otherwise process indicator only
@@ -633,6 +638,9 @@ void AnnotationsTreeViewL::sl_onGroupCreated(AnnotationGroup* g) {
     LazyAnnotationTreeViewModel *model = static_cast<LazyAnnotationTreeViewModel *>(tree->model());
     AVGroupItemL* pg = g->getParentGroup()== NULL ? static_cast<AVGroupItemL*>(model->getItem(QModelIndex())) : findGroupItem(g->getParentGroup());
     tree->treeWalker->addItem(g);
+    if(pg->childCount() == 0) {
+        tree->insertItem(pg->parent()->indexOfChild(pg), pg);
+    }
     if(pg != NULL) {
         pg->updateVisual();
     }
@@ -1611,6 +1619,7 @@ void AnnotationsTreeViewL::editItem(AVItemL* item) {
         bool ok = editQualifierDialogHelper(qi, ro, q);
         if (!ro && ok && (q.name!=qi->qName || q.value!=qi->qValue)) {
             Annotation* a = (static_cast<AVAnnotationItemL*>(qi->parent()))->annotation;
+            renameFlag = true;
             a->removeQualifier(qi->qName, qi->qValue);
             a->addQualifier(q);
             AVQualifierItemL* qi = ai->findQualifierItem(q.name, q.value);
@@ -1744,7 +1753,9 @@ void AnnotationsTreeViewL::sl_addQualifier() {
         a->addQualifier(q);
         //ai->setExpanded(true);
         AVQualifierItemL* qi = new AVQualifierItemL(ai, q);
-        sl_itemExpanded(ai);
+        //sl_itemExpanded(ai);
+        LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(tree->model());
+        tree->expand(lm->guessIndex(qi->parent()));
         //AVQualifierItemL* qi = ai->findQualifierItem(q.name, q.value);
         tree->setCurrentItem(qi);
         tree->scrollToItem(qi);
