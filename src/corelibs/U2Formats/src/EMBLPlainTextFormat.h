@@ -31,7 +31,7 @@ class U2FORMATS_EXPORT EMBLPlainTextFormat : public EMBLGenbankAbstractDocument 
 public:
     EMBLPlainTextFormat(QObject* p);
 
-    virtual FormatDetectionResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual FormatDetectionScore checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
 protected:
 

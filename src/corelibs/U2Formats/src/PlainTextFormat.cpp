@@ -106,7 +106,7 @@ void PlainTextFormat::storeRawData(const QByteArray& rawData, TaskStateInfo& ts,
 }
 
 
-FormatDetectionResult PlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatDetectionScore PlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     bool hasBinaryData = TextUtils::contains(TextUtils::BINARY, data, size);

@@ -53,7 +53,7 @@ SwissProtPlainTextFormat::SwissProtPlainTextFormat(QObject* p)
     tagMap["CC"] = DNAInfo::COMMENT; //The CC lines are free text comments on the entry, and are used to convey any useful information.
 }
 
-FormatDetectionResult SwissProtPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatDetectionScore SwissProtPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     //TODO: improve format checking
 
     const char* data = rawData.constData();

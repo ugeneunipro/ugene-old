@@ -213,15 +213,14 @@ LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
         return NULL;
     }
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( url ) );
-    if( NULL == iof ) {
+    if ( iof == NULL ) {
         return NULL;
     }
-    QList< DocumentFormat* > dfs = DocumentUtils::detectFormat(url);
+    QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(url);
     if( dfs.isEmpty() ) {
         return NULL;
     }
-    DocumentFormat * df = dfs.first();
-    
+    DocumentFormat * df = dfs.first().format;
     return new LoadDocumentTask( df->getFormatId(), url, iof );
 }
 

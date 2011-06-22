@@ -29,6 +29,34 @@
 
 namespace U2 {
 
+class DocumentImportHandler;
+
+/** 
+    Result of the format detection.
+    contains score and ( format or importer ) instance pointer
+*/
+class U2CORE_EXPORT FormatDetectionResult {
+public:
+    FormatDetectionResult() : format(NULL), importer(NULL), score(FormatDetection_NotMatched){}
+    DocumentFormat*         format;
+    DocumentImportHandler*  importer;
+    int                     score;
+};
+
+class U2CORE_EXPORT FormatDetectionConfig {
+public:
+    FormatDetectionConfig() : bestMatchesOnly(true), documentFormatsOnly(true), useExtensionBonus(true){}
+    
+    /** if true format detection algorithm returns list of best matches only */
+    bool bestMatchesOnly;
+    
+    /** if true format detection algorithm do not test format converters and returns only real formats */
+    bool documentFormatsOnly;
+
+    /** if true file extension is checked and bonus is added if extension is matched for a format*/
+    bool useExtensionBonus;
+};
+
 class U2CORE_EXPORT DocumentUtils: public QObject    {
 public:
     /* returns set with document urls */
@@ -39,13 +67,23 @@ public:
     */
     static QSet<QString> getNewDocFileNameExcludesHint();
 
-    // the best match goes first in the returned list
-    static QList<DocumentFormat*> detectFormat(const GUrl& url);
+    /* Detects document format. The best match goes first in the returned list */
+    static QList<FormatDetectionResult> detectFormat(const GUrl& url, const FormatDetectionConfig& conf = FormatDetectionConfig());
 
-    // io - opened io adapter
-    static QList<DocumentFormat*> detectFormat( IOAdapter* io );
+    /* 
+        Detects document format. The best match goes first in the returned list 
+        IOAdapter must be opened
+    */
+    static QList<FormatDetectionResult> detectFormat(IOAdapter* io, const FormatDetectionConfig& conf = FormatDetectionConfig());
 
-    static QList<DocumentFormat*> detectFormat(const QByteArray& rawData, const QString& ext = QString(), const GUrl& url = GUrl());
+    /* 
+        Detects document format. The best match goes first in the returned list 
+        ext & url can be used here to add extension bonus to the final score
+    */
+    static QList<FormatDetectionResult> detectFormat(const QByteArray& rawData, const QString& ext = QString(), 
+                                            const GUrl& url = GUrl(), const FormatDetectionConfig& conf = FormatDetectionConfig());
+
+    static QList<DocumentFormat*> toFormats(const QList<FormatDetectionResult>& infos);
 };
 
 }//namespace

@@ -54,7 +54,7 @@ EMBLPlainTextFormat::EMBLPlainTextFormat(QObject* p)
     tagMap["CO"] = DNAInfo::CONTIG;
 }
 
-FormatDetectionResult EMBLPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatDetectionScore EMBLPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     //TODO: improve format checking
 
     const char* data = rawData.constData();

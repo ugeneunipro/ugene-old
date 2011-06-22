@@ -82,23 +82,23 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
     QString inFile = QFileInfo(lod.url).absoluteFilePath();
     inputEdit->setText(inFile);
     
-    QList<DocumentFormat*> formats = DocumentUtils::detectFormat(inFile);
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         return;
     }
 
     DocumentFormat* format = NULL;
-    foreach(DocumentFormat* f, formats) {
-        if(f->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-            format = f;
+    foreach(const FormatDetectionResult& i, formats) {
+        if (i.format->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+            format = i.format;
             break;
         } 
     }
 
-    if(format == NULL) {
-        foreach(DocumentFormat* f, formats){
-            if(f->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE)) {
-                format = f;
+    if (format == NULL) {
+        foreach(const FormatDetectionResult& i, formats) {
+            if (i.format->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE)) {
+                format = i.format;
                 break;
             }
         }
@@ -382,23 +382,23 @@ PFMatrixBuildToFileTask::PFMatrixBuildToFileTask(const QString& inFile, const QS
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     c.supportedObjectTypes += GObjectTypes::SEQUENCE;
     c.rawData = BaseIOAdapters::readFileHeader(inFile);
-    QList<DocumentFormat*> formats = DocumentUtils::detectFormat(inFile);
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("Input format error") );
         return;
     }
 
     DocumentFormatId format = "";
-    foreach(const DocumentFormat* f, formats) {
-        if(f->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-            format = f->getFormatId();
+    foreach(const FormatDetectionResult& i, formats) {
+        if (i.format->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+            format = i.format->getFormatId();
             break;
         } 
     }
     if(format.isEmpty()) {
-        foreach(const DocumentFormat* f, formats) {
-            if(f->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE)) {
-                format = f->getFormatId();
+        foreach(const FormatDetectionResult& i, formats) {
+            if (i.format->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE)) {
+                format = i.format->getFormatId();
                 break;
             }
         }
@@ -529,12 +529,12 @@ PWMatrixBuildToFileTask::PWMatrixBuildToFileTask(const QString& inFile, const QS
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     c.supportedObjectTypes += GObjectTypes::SEQUENCE;
     c.rawData = BaseIOAdapters::readFileHeader(inFile);
-    QList<DocumentFormat*> formats = DocumentUtils::detectFormat(inFile);
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("Input format error") );
         return;
     }
-    DocumentFormatId format = formats.first()->getFormatId();
+    DocumentFormatId format = formats.first().format->getFormatId();
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(inFile));
     loadTask = new LoadDocumentTask(format, inFile, iof);
     loadTask->setSubtaskProgressWeight(0.03F);

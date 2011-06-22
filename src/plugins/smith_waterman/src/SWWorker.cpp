@@ -306,16 +306,16 @@ bool SWWorker::isReady() {
 QString SWWorker::readPatternsFromFile(const QString url) {
     QFileInfo fi(url);
     QString pattern;
-    if(!fi.exists()){
+    if (!fi.exists()) {
         return "";
     }
-    QList<DocumentFormat*> fs = DocumentUtils::detectFormat(url);
+    QList<FormatDetectionResult> fs = DocumentUtils::detectFormat(url);
     DocumentFormat* format = NULL;
 
-    foreach( DocumentFormat * f, fs ) {
-        const QSet<GObjectType>& types = f->getSupportedObjectTypes();
+    foreach( const FormatDetectionResult& i, fs ) {
+        const QSet<GObjectType>& types = i.format->getSupportedObjectTypes();
         if (types.contains(GObjectTypes::SEQUENCE) || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-            format = f;
+            format = i.format;
             break;
         }
     }

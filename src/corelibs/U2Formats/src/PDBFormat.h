@@ -45,7 +45,7 @@ public:
 
     virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
 
-    virtual FormatDetectionResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual FormatDetectionScore checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
     static int getElementNumberByName(const QByteArray& elementName);
     static char getAcronymByName(const QByteArray& name);
     static QHash<QByteArray, int> createAtomNumMap();

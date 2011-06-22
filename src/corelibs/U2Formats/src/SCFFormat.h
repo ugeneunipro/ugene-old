@@ -43,7 +43,7 @@ public:
 
     virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
 
-    virtual FormatDetectionResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual FormatDetectionScore checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
     static void exportDocumentToSCF(const QString& fileName, const DNAChromatogram& cd, const DNASequence& dna, TaskStateInfo& ts);
 

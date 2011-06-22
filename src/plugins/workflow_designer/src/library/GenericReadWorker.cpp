@@ -119,7 +119,7 @@ void LoadMSATask::run() {
         return;
     }
     DocumentFormat* format = NULL;
-    QList<DocumentFormat*> fs = DocumentUtils::detectFormat(url);
+    QList<DocumentFormat*> fs = DocumentUtils::toFormats(DocumentUtils::detectFormat(url));
     foreach(DocumentFormat* f, fs) {
         if (f->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
             format = f;
@@ -212,7 +212,7 @@ void LoadSeqTask::run() {
         stateInfo.setError(  tr("File '%1' not exists").arg(url) );
         return;
     }
-    QList<DocumentFormat*> fs = DocumentUtils::detectFormat(url);
+    QList<DocumentFormat*> fs = DocumentUtils::toFormats(DocumentUtils::detectFormat(url));
     DocumentFormat* format = NULL;
 
     foreach( DocumentFormat * f, fs ) {

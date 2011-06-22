@@ -29,6 +29,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -94,14 +95,18 @@ Task::ReportResult ObjectViewTask::report() {
 }
 
 Document* ObjectViewTask::createDocumentAndAddToProject( const QString& docUrl, Project* p ) {
-    assert(p);
+    SAFE_POINT(p!=NULL, "Project is NULL!", NULL);
+
     QFileInfo fi(docUrl);
     if (!fi.exists()) {
         return NULL;
     }
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(docUrl));
-    QList<DocumentFormat*> dfs = DocumentUtils::detectFormat(docUrl);
-    Document* doc = new Document( dfs.first(), iof, GUrl(docUrl) );
+    QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(docUrl);
+    if (dfs.isEmpty()) {
+        return NULL;
+    }
+    Document* doc = new Document( dfs.first().format, iof, GUrl(docUrl) );
     p->addDocument(doc);
     return doc;
 }

@@ -523,7 +523,7 @@ void IndexFormat::storeDocument( Document* doc, TaskStateInfo& ts, IOAdapter* io
     }
 }
 
-FormatDetectionResult IndexFormat::checkRawData(const QByteArray& data, const GUrl&) const {
+FormatDetectionScore IndexFormat::checkRawData(const QByteArray& data, const GUrl&) const {
     bool headerIsOk = checkHeader( data.constData(), data.size());
     return headerIsOk ? FormatDetection_Matched: FormatDetection_NotMatched;
 }

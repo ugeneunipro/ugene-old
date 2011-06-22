@@ -71,13 +71,13 @@ void BAMDbiPlugin::sl_converter() {
         }
         LastOpenDirHelper lod;
         QString fileName = QFileDialog::getOpenFileName(AppContext::getMainWindow()->getQMainWindow(), tr("Open BAM/SAM file"), lod.dir, tr("Assembly Files (*.bam *.sam)"));
-        if(fileName != NULL) {
+        if (!fileName.isEmpty()) {
             lod.url = fileName;
             GUrl sourceUrl(fileName);
-            QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(sourceUrl);
+            QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(sourceUrl);
             bool sam = false;
             if (!detectedFormats.isEmpty()) {
-                if (detectedFormats.first()->getFormatId() == BaseDocumentFormats::SAM) {
+                if (detectedFormats.first().format->getFormatId() == BaseDocumentFormats::SAM) {
                     sam = true;
                 }
             }

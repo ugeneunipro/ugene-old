@@ -47,7 +47,7 @@ FastaFormat::FastaFormat(QObject* p)
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
 }
 
-FormatDetectionResult FastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatDetectionScore FastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 

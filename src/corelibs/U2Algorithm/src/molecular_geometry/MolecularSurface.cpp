@@ -98,7 +98,7 @@ U2::GeodesicSphere MolecularSurface::getAtomSurfaceDots( const SharedAtom& a, in
 bool MolecularSurface::vertexNeighboursOneOf( const Vector3D& v, const QList<SharedAtom>& atoms ) {
     foreach (const SharedAtom& a, atoms) {
         float r = AtomConstants::getAtomCovalentRadius(a->atomicNumber) + TOLERANCE;
-        Vector3D v2 = a->coord3d;
+        //Vector3D v2 = a->coord3d;
         //qDebug("testing if vertex (%f,%f,%f) neighbors atom (%f,%f,%f) of radius %f", v.x, v.y, v.z, v2.x, v2.y, v2.z, radius);
         if ( sqr(v.x - a->coord3d.x) + sqr(v.y - a->coord3d.y) + sqr(v.z - a->coord3d.z ) <= r*r ) {
                 return true;

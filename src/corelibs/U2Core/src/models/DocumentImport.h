@@ -38,7 +38,7 @@ public:
     /** name of the source file format */
     QString                 sourceFormat;
     /** detection score */
-    FormatDetectionResult   sourceFormatDetectionResult;
+    FormatDetectionScore   sourceFormatDetectionResult;
 };
 
 /** Registry for all DocumentImportHandlers */

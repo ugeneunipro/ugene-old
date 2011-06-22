@@ -147,7 +147,7 @@ namespace U2 {
             return;
         }
 
-        QList<DocumentFormatId> detectedFormats = DocumentFormatUtils::toIds(DocumentUtils::detectFormat(url));
+        QList<DocumentFormatId> detectedFormats = DocumentFormatUtils::toIds(DocumentUtils::toFormats(DocumentUtils::detectFormat(url)));
         DocumentFormatId activeFormat = detectedFormats.isEmpty() ? DocumentFormatId() : detectedFormats.first();
         DocumentFormatComboboxController::fill(forceFormatCombo, detectedFormats, activeFormat);
     }

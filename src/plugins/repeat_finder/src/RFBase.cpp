@@ -166,9 +166,9 @@ bool RFAlgorithmBase::checkResult(const RFResult& r) {
 
     //check that result starts and ends with match if len > W
     if (r.l > int(WINDOW_SIZE)) {
-        char cx = seqX[r.x];
+        char cx = seqX[r.x]; 
         char cy = seqY[r.y];
-        assert(CHAR_MATCHES(cx, cy));
+        assert(CHAR_MATCHES(cx, cy));Q_UNUSED(cx);Q_UNUSED(cy);
 
         cx = seqX[r.x + r.l - 1];
         cy = seqY[r.y + r.l - 1];

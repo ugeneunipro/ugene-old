@@ -260,11 +260,11 @@ MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObjec
 //             return;
 //         }
 //     }
-    QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesOrProfile);    
+    QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesOrProfile);    
     if (detectedFormats.isEmpty()) {
         setError("Unknown format");
     }
-    DocumentFormat* format = detectedFormats.first();
+    DocumentFormat* format = detectedFormats.first().format;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(fileWithSequencesOrProfile));
     loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesOrProfile, iof);
     loadTask->setSubtaskProgressWeight(0.01f);

@@ -128,7 +128,6 @@ QVector<U2Region> U2AnnotationUtils::fixLocationsForReplacedRegion( const U2Regi
 
         QVector<U2Region> toReplace, toDelete;
         foreach(U2Region reg, loc){
-            U2Region copy = reg;
             if(reg.endPos() <= regionToReplace.startPos){
                 toReplace.append(reg);
             } else {

@@ -165,7 +165,7 @@ case Z_STREAM_END:
 
 qint64 GzipUtil::compress(const char* inBuff, qint64 inSize, bool finish) 
 {
-    int ret;
+    int ret; Q_UNUSED(ret);
     /* Based on gun.c (example from zlib, copyrighted (C) 2003, 2005 Mark Adler) */
     strm.avail_in = inSize;
     strm.next_in = (Bytef*)inBuff;

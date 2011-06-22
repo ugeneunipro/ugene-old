@@ -241,12 +241,12 @@ bool LoadRemoteDocumentTask::initLoadDocumentTask(  )
 
     // Detect format
     if (formatId.isEmpty()) {
-        QList<DocumentFormat*> formats = DocumentUtils::detectFormat(fullPath);
+        QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(fullPath);
         if (formats.isEmpty()) {
             stateInfo.setError("Unknown file format!");
             return false;
         } else {
-            formatId = formats.first()->getFormatId();
+            formatId = formats.first().format->getFormatId();
         }
     }
     IOAdapterFactory * iow = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);

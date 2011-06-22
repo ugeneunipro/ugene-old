@@ -36,8 +36,10 @@
 
 namespace U2 {
 
-DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, ADVSequenceObjectContext *sequenceX, ADVSequenceObjectContext *sequenceY, bool dir, bool inv, const QColor &dColor, const QColor &iColor)
-: QDialog(parent), directColor(dColor), invertedColor(iColor), xSeq(sequenceX), ySeq(sequenceY), adv(currentADV)
+DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, 
+                             ADVSequenceObjectContext *sequenceX, ADVSequenceObjectContext *sequenceY, 
+                             bool dir, bool inv, const QColor &dColor, const QColor &iColor)
+: QDialog(parent), xSeq(sequenceX), ySeq(sequenceY), adv(currentADV), directColor(dColor), invertedColor(iColor)
 {
     setupUi(this);
 

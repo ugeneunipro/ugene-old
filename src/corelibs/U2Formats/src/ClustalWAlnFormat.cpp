@@ -295,7 +295,7 @@ void ClustalWAlnFormat::storeDocument( Document* d, TaskStateInfo& ti, IOAdapter
     save(io, d, ti);
 }
 
-FormatDetectionResult  ClustalWAlnFormat::checkRawData(const QByteArray& data, const GUrl&) const {
+FormatDetectionScore  ClustalWAlnFormat::checkRawData(const QByteArray& data, const GUrl&) const {
     if (TextUtils::contains(TextUtils::BINARY, data.constData(), data.size())) {
         return FormatDetection_NotMatched;
     }

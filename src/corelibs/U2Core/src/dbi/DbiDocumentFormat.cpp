@@ -120,7 +120,7 @@ void DbiDocumentFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter*
     }
 }
 
-FormatDetectionResult DbiDocumentFormat::checkRawData(const QByteArray& rawData, const GUrl& url) const {
+FormatDetectionScore DbiDocumentFormat::checkRawData(const QByteArray& rawData, const GUrl& url) const {
     U2DbiFactory* f = AppContext::getDbiRegistry()->getDbiFactoryById(id);
     if (f != NULL) {
         QHash<QString, QString> props;

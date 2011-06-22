@@ -515,7 +515,6 @@ bool DetViewRenderArea::deriveTranslationCharColor(int pos, U2Strand strand, QLi
     // 2+ annotations found on nucleic -> black
 
     int nAnnotations = 0;
-    Annotation* annotation;
     U2Region tripletRange = strand == U2Strand::Complementary ? U2Region(pos - 2, 2) : U2Region(pos, 2);
     AnnotationSettings* as = NULL;
     int sequenceLen = view->getSequenceLen();
@@ -544,7 +543,6 @@ bool DetViewRenderArea::deriveTranslationCharColor(int pos, U2Strand strand, QLi
         }
         if (annotationOk) {
             nAnnotations++;
-            annotation = a;
             as = tas;
             if (nAnnotations > 1) {
                 break;

@@ -594,7 +594,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter& p
     QVector<U2Region> location = a->getRegions();
     for (int ri = 0, ln = location.size(); ri < ln; ri++) {
         const U2Region& r = location.at(ri);
-        U2Region y = getAnnotationYRange(a, ri, as);
+        //U2Region y = getAnnotationYRange(a, ri, as);
         if (ri > 0) {
             U2Region prev = location.at(ri - 1);
             int prevPos = prev.endPos();

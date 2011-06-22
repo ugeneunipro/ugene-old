@@ -269,13 +269,13 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
         return doc;
     }
 
-    QList<DocumentFormat*> formats = DocumentUtils::detectFormat(inFile);
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         stateInfo.setError(tr("Detecting format error for file %1").arg(inFile));
         return NULL;
     }
 
-    DocumentFormat* format = formats.first();
+    DocumentFormat* format = formats.first().format;
     Q_ASSERT(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
 

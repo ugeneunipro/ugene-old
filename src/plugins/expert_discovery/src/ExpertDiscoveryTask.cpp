@@ -105,13 +105,13 @@ Document* ExpertDiscoveryLoadPosNegTask::loadFile(QString inFile){
 //         return doc;
 //     }
 
-    QList<DocumentFormat*> formats = DocumentUtils::detectFormat(inFile);
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         stateInfo.setError(tr("Detecting format error for file %1").arg(inFile));
         return NULL;
     }
 
-    DocumentFormat* format = formats.first();
+    DocumentFormat* format = formats.first().format;
     Q_ASSERT(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
 
@@ -272,13 +272,13 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
     QString strPosName = firstFile;
     try {
         if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
-            if (!edData.loadAnnotation(edData.getPosMarkBase(), edData.getPosSeqBase(), strPosName))
+            if (!edData.loadAnnotation(edData.getPosMarkBase(), edData.getPosSeqBase(), strPosName)) {
                 throw std::exception();
-        }
-        else {
-            QList<DocumentFormat*> curFormats = DocumentUtils::detectFormat(firstFile);
-            if(!curFormats.isEmpty()){
-                if(curFormats.first()->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
+            }
+        } else  {
+            QList<FormatDetectionResult> curFormats = DocumentUtils::detectFormat(firstFile);
+            if (!curFormats.isEmpty()){
+                if(curFormats.first().format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
                     GUrl URL(strPosName);
                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
                     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
@@ -286,7 +286,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
                     posDoc = new Document(f , iof, URL, QList<UnloadedObjectInfo>());
                     addSubTask(new LoadUnloadedDocumentTask(posDoc));
 
-                }else{
+                } else {
                     ifstream fPosAnn(strPosName.toStdString().c_str());  
                     edData.getPosMarkBase().load(fPosAnn);
                 }
@@ -309,18 +309,17 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
         if (strNegName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
             if (!edData.loadAnnotation(edData.getNegMarkBase(), edData.getNegSeqBase(), strNegName))
                 throw std::exception();
-        }
-        else {
-            QList<DocumentFormat*> curFormats = DocumentUtils::detectFormat(strNegName);
-            if(!curFormats.isEmpty()){
-                if(curFormats.first()->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
+        } else {
+            QList<FormatDetectionResult> curFormats = DocumentUtils::detectFormat(strNegName);
+            if (!curFormats.isEmpty()) {
+                if(curFormats.first().format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
                     GUrl URL(strNegName);
                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
                     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
                     negDoc = new Document(f, iof, URL, QList<UnloadedObjectInfo>());
                     addSubTask(new LoadUnloadedDocumentTask(negDoc));
-                }else{
+                } else {
                     ifstream fNegAnn(strNegName.toStdString().c_str());
                     edData.getNegMarkBase().load(fNegAnn);
                 }
@@ -528,14 +527,13 @@ Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
 //         return doc;
 //     }
 
-    QList<DocumentFormat*> formats = DocumentUtils::detectFormat(inFile);
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         stateInfo.setError(tr("Detecting format error for file %1").arg(inFile));
         return NULL;
     }
 
-    DocumentFormat* format = formats.first();
-    Q_ASSERT(format);
+    DocumentFormat* format = formats.first().format;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
 
     Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());

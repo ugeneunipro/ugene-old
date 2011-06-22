@@ -55,7 +55,7 @@ GenbankPlainTextFormat::GenbankPlainTextFormat(QObject* p)
     fPrefix = "  ";
 }
 
-FormatDetectionResult GenbankPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatDetectionScore GenbankPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     //TODO: improve handling
     const char* data = rawData.constData();
     int size = rawData.size();

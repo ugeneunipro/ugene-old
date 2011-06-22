@@ -145,12 +145,12 @@ void CreateFileIndexTask::readOneUrl( const QString& url, IOAdapterFactory* inpu
     }
     
     while( !io->isEof() ) {
-        QList< DocumentFormat* > dfList = DocumentUtils::detectFormat( io.get() );
+        QList<FormatDetectionResult> dfList = DocumentUtils::detectFormat( io.get() );
         if( dfList.isEmpty() ) {
             stateInfo.setError(tr( "Can't detect file format: %1").arg(url));
             return;
         }
-        DocumentFormat* df = dfList.first();
+        DocumentFormat* df = dfList.first().format;
         if( !df->checkFlags(DocumentFormatFlag_SupportStreaming) ) {
             stateInfo.setError(tr( "UGENE can't index files of a specified format: %1" ).arg(df->getFormatName()));
             return;

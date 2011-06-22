@@ -70,10 +70,10 @@ QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
     if ( subTask == assemblyToRefTask && settings.loadResultDocument ) {
         assert(!settings.resultFileName.isEmpty());
         GUrl resultUrl(settings.resultFileName); 
-        QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(resultUrl);    
+        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(resultUrl);    
         if (!detectedFormats.isEmpty()) {
             IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-            DocumentFormat* format = detectedFormats.first();
+            DocumentFormat* format = detectedFormats.first().format;
             loadDocumentTask = new LoadDocumentTask(format->getFormatId(), resultUrl, factory);
             subTasks.append(loadDocumentTask);
         }  

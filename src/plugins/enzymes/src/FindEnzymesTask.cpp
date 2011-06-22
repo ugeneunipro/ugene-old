@@ -350,7 +350,6 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
     }
 
     FindEnzymesTaskConfig cfg;
-    U2Region range = aa->getSeqObject()->getSequenceRange();
     cfg.circular = aa->getSeqObject()->isCircular();
     cfg.groupName = getGroupName();
     cfg.isAutoAnnotationUpdateTask = true;

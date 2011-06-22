@@ -51,7 +51,7 @@ public:
     
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
     
-    virtual FormatDetectionResult checkRawData( const QByteArray& data, const GUrl& = GUrl()) const;
+    virtual FormatDetectionScore checkRawData( const QByteArray& data, const GUrl& = GUrl()) const;
     
     struct UHMMWriteException {
         QString what;

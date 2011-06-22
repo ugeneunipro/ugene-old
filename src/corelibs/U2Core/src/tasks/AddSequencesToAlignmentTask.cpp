@@ -56,10 +56,10 @@ void AddSequencesToAlignmentTask::prepare()
     maObj->lockState(stateLock);
 
     foreach( const QString& fileWithSequencesUrl, urls) {
-        QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesUrl);    
+        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesUrl);    
         if (!detectedFormats.isEmpty()) {
             IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-            DocumentFormat* format = detectedFormats.first();
+            DocumentFormat* format = detectedFormats.first().format;
             LoadDocumentTask* loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesUrl, factory);
             addSubTask(loadTask);
         } else {

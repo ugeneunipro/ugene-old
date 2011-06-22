@@ -79,13 +79,13 @@ bool StreamSequenceReader::hasNext()
 bool StreamSequenceReader::init( const QList<GUrl>& urls )
 {
     foreach (const GUrl& url, urls) {
-        QList<DocumentFormat*> detectedFormats = DocumentUtils::detectFormat(url);    
+        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(url);    
         if (detectedFormats.isEmpty()) {
             taskInfo.setError(QString("File %1 unsupported format.").arg(url.getURLString()));
             break;
         }
         ReaderContext ctx;
-        ctx.format = detectedFormats.first();
+        ctx.format = detectedFormats.first().format;
         if ( ctx.format->getFlags().testFlag(DocumentFormatFlag_SupportStreaming) == false  ) {
             break;
         }

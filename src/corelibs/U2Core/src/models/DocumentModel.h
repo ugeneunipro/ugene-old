@@ -77,7 +77,7 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 // Result of the format detection algorithm
 // Note: High/Very High, Low/Very low selection is the result of the quality of detection algorithm
 // For example if detection algorithm is not advanced enough it must not use VeryHigh rating
-enum FormatDetectionResult {
+enum FormatDetectionScore {
     FormatDetection_NotMatched = -10, // format is not matched and can't be parsed at all
     FormatDetection_VeryLowSimilarity = 1, // very low similarity found. Parsing is allowed
     FormatDetection_LowSimilarity = 2, // save as very low, but slightly better, used as extra step in cross-formats differentiation
@@ -150,7 +150,7 @@ public:
         Note: Data can contain only first N (~1024) bytes of the file
         The URL value is optional and provided as supplementary option. URL value here can be empty in some special cases.
     */
-    virtual FormatDetectionResult checkRawData(const QByteArray& dataPrefix, const GUrl& url = GUrl()) const = 0;
+    virtual FormatDetectionScore checkRawData(const QByteArray& dataPrefix, const GUrl& url = GUrl()) const = 0;
     
     /* Checks that document format satisfies given constraints */ 
     virtual bool checkConstraints(const DocumentFormatConstraints& c) const;
@@ -196,7 +196,7 @@ public:
 
     bool                    checkRawData;
     QByteArray              rawData;
-    FormatDetectionResult   minDataCheckResult;
+    FormatDetectionScore   minDataCheckResult;
 
 };
 

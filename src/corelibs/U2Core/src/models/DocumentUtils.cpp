@@ -46,18 +46,29 @@ QSet<QString> DocumentUtils::getNewDocFileNameExcludesHint() {
 }
 
 
-static void placeOrderedByScore(QList<DocumentFormat*>& formats, QList<int>& scores, DocumentFormat* df, int score) {
-    assert(formats.size() == scores.size());
-    for (int i = 0; i < formats.length(); i++) {
-        int scoreI = scores.at(i);
-        if (scoreI < score) {
-            scores.insert(i, score);
-            formats.insert(i, df);
+static void placeOrderedByScore(const FormatDetectionResult& info, QList<FormatDetectionResult>& result, const FormatDetectionConfig& conf) {
+    if (result.isEmpty()) {
+        result.append(info);
+        return;
+    }
+    if (conf.bestMatchesOnly) {
+        int bestScore = result.first().score;
+        if (bestScore > info.score) {
+            return;
+        } else if (bestScore < info.score) {
+            result.clear();
+        } 
+        result.append(info);
+        return;
+    }
+    for (int i = 0; i < result.length(); i++) {
+        int scoreI = result.at(i).score;
+        if (scoreI < info.score) {
+            result.insert(i, info);
             return;
         }
     }
-    formats.append(df);
-    scores.append(score);
+    result.append(info);
 }
 
 #define FORMAT_DETECTION_EXT_BONUS 3
@@ -65,50 +76,64 @@ static void placeOrderedByScore(QList<DocumentFormat*>& formats, QList<int>& sco
 // returns formats with FormatDetectionResult != Not matched sorted by FormatDetectionResult
 // FormatDetectionResult is adjusted by +FORMAT_DETECTION_EXT_BONUS if extension is matched
 
-QList< DocumentFormat* > DocumentUtils::detectFormat( const QByteArray& rawData, const QString& ext, const GUrl& url) {
+QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawData, const QString& ext, 
+                                                     const GUrl& url, const FormatDetectionConfig& conf) 
+{
     DocumentFormatRegistry* fr = AppContext::getDocumentFormatRegistry();
     QList< DocumentFormatId > allFormats = fr->getRegisteredFormats();
 
-    QList<DocumentFormat*> formats;
-    QList<int> scores;
-    foreach( DocumentFormatId id, allFormats) {
-        DocumentFormat* f = fr->getFormatById( id );
+    QList<FormatDetectionResult> result;
+    foreach(const DocumentFormatId& id, allFormats) {
+        DocumentFormat* f = fr->getFormatById(id);
         int score = f->checkRawData(rawData, url);
         if (score ==  FormatDetection_NotMatched) {
             continue;
         }
-        if (f->getSupportedDocumentFileExtensions().contains(ext)) {
+        if (conf.useExtensionBonus && f->getSupportedDocumentFileExtensions().contains(ext)) {
             score+=FORMAT_DETECTION_EXT_BONUS;
         }
-        placeOrderedByScore(formats, scores, f, score);
+        FormatDetectionResult res;
+        res.format = f;
+        res.score = score;
+        placeOrderedByScore(res, result, conf);
     }
-    return formats;
+    return result;
 }
 
-QList<DocumentFormat*> DocumentUtils::detectFormat(const GUrl& url) {
-    QList< DocumentFormat* > res;
+QList<FormatDetectionResult> DocumentUtils::detectFormat(const GUrl& url, const FormatDetectionConfig& conf) {
+    QList<FormatDetectionResult> result;
     if( url.isEmpty() ) {
-        return res;
+        return result;
     }
     QByteArray rawData = BaseIOAdapters::readFileHeader(url);
     if (rawData.isEmpty()) {
-        return res;
+        return result;
     }
     QString ext = GUrlUtils::getUncompressedExtension(url);
-    res = detectFormat(rawData, ext, url);
-    return res;
+    result = detectFormat(rawData, ext, url, conf);
+    return result;
 }
 
 
-QList< DocumentFormat* > DocumentUtils::detectFormat( IOAdapter *io ) {
-    QList< DocumentFormat* > res;
-    if( NULL == io || !io->isOpen() ) {
-        return res;
+QList<FormatDetectionResult> DocumentUtils::detectFormat(IOAdapter *io, const FormatDetectionConfig& conf) {
+    QList<FormatDetectionResult> result;
+    if( io == NULL || !io->isOpen() ) {
+        return result;
     }
     QByteArray rawData = BaseIOAdapters::readFileHeader( io );
     QString ext = GUrlUtils::getUncompressedExtension(io->getURL());
-    res = detectFormat( rawData, ext , io->getURL());
-    return res;
+    result = detectFormat( rawData, ext , io->getURL(), conf);
+    return result;
+}
+
+QList<DocumentFormat*> DocumentUtils::toFormats(const QList<FormatDetectionResult>& infos) {
+    QList<DocumentFormat*> result;
+    foreach(const FormatDetectionResult& info, infos) {
+        if (info.format != NULL) {
+            result << info.format;
+        }
+    }
+    return result;
 }
 
 } //namespace

@@ -216,7 +216,7 @@ void BAMFormat::storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io) {
     }
 }
 
-FormatDetectionResult BAMFormat::checkRawData(const QByteArray &rawData, const GUrl & /*url*/) const {
+FormatDetectionScore BAMFormat::checkRawData(const QByteArray &rawData, const GUrl & /*url*/) const {
     z_stream_s stream;
     stream.zalloc = Z_NULL;
     stream.zfree = Z_NULL;
@@ -226,7 +226,7 @@ FormatDetectionResult BAMFormat::checkRawData(const QByteArray &rawData, const G
     QByteArray magic(4, '\0');
     stream.next_out = (Bytef *)magic.data();
     stream.avail_out = magic.size();
-    FormatDetectionResult result = FormatDetection_NotMatched;
+    FormatDetectionScore result = FormatDetection_NotMatched;
     if(Z_OK == inflateInit2(&stream, 16 + 15)) {
         if(Z_OK == inflate(&stream, Z_SYNC_FLUSH)) {
             if(0 == stream.avail_out) {

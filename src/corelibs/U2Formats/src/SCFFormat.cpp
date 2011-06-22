@@ -46,7 +46,7 @@ SCFFormat::SCFFormat(QObject* p) : DocumentFormat(p,DocumentFormatFlags(0), QStr
     supportedObjectTypes+=GObjectTypes::CHROMATOGRAM;
 }
 
-FormatDetectionResult SCFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatDetectionScore SCFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     if (size <= 4 || data[0]!='.' || data[1]!='s' || data[2]!='c' || data[3]!='f') {

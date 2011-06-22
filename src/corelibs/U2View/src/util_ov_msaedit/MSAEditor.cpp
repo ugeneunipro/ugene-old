@@ -472,8 +472,7 @@ void MSAEditor::calcFontPixelToPointSizeCoef() {
     
 }
 
-bool MSAEditor::eventFilter( QObject* o, QEvent* e )
-{
+bool MSAEditor::eventFilter(QObject*, QEvent* e) {
     if (e->type() == QEvent::DragEnter || e->type() == QEvent::Drop) {
         QDropEvent* de = (QDropEvent*)e;
         const QMimeData* md = de->mimeData();

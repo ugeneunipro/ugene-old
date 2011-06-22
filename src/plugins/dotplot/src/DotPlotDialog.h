@@ -35,7 +35,9 @@ class AnnotatedDNAView;
 class DotPlotDialog : public QDialog, public Ui_DotPlotDialog{
     Q_OBJECT
 public:
-    DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, ADVSequenceObjectContext *seqX, ADVSequenceObjectContext *seqY, bool dir, bool inv, const QColor &dColor = QColor(), const QColor &iColor = QColor());
+    DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, 
+        ADVSequenceObjectContext *seqX, ADVSequenceObjectContext *seqY, bool dir, bool inv, 
+        const QColor &dColor = QColor(), const QColor &iColor = QColor());
 
     virtual void accept();
 

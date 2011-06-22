@@ -296,7 +296,7 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& si)
     }
 }
 
-FormatDetectionResult GFFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatDetectionScore GFFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     int n = TextUtils::skip(TextUtils::WHITES, data, size);
@@ -312,7 +312,7 @@ FormatDetectionResult GFFFormat::checkRawData(const QByteArray& rawData, const G
     }
     QString header(rawData);
     header = header.remove("#");
-    FormatDetectionResult res = FormatDetection_NotMatched;
+    FormatDetectionScore res = FormatDetection_NotMatched;
     if(header.startsWith("gff-version")){
         res = FormatDetection_Matched;
     }

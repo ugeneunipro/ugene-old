@@ -343,8 +343,8 @@ inline bool cmpAmbiguous( char a, char b){
     assert( a >= 0 && a < 128);
     assert( b >= 0 && b < 128);
 
-    char c1 = charMap[a];
-    char c2 = charMap[b];
+    char c1 = charMap[uchar(a)];
+    char c2 = charMap[uchar(b)];
 
     return c1 & c2;
 }

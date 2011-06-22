@@ -128,7 +128,7 @@ void WorkflowDocFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter
     wo->setSceneRawData(rawData);
 }
 
-FormatDetectionResult WorkflowDocFormat::checkRawData(const QByteArray& data, const GUrl&) const {
+FormatDetectionScore WorkflowDocFormat::checkRawData(const QByteArray& data, const GUrl&) const {
     LoadWorkflowTask::FileFormat format = LoadWorkflowTask::detectFormat(data);
     bool ok  = format == LoadWorkflowTask::HR || format == LoadWorkflowTask::XML;
     return ok ? FormatDetection_Matched  : FormatDetection_NotMatched;

@@ -275,13 +275,13 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                 AppContext::getProjectView()->highlightItem(doc);
             }
         } else {
-            QList<DocumentFormat*> formats = DocumentUtils::detectFormat(url);
+            QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url);
             if (!formats.isEmpty()) {
                 LoadDocumentInfo info;
                 info.openView = docsInfo.size() < MAX_DOCS_TO_OPEN_VIEWS;
                 info.url = url;
                 info.hints = hints;
-                info.formatId = formats.first()->getFormatId(); 
+                info.formatId = formats.first().format->getFormatId(); 
                 info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
                 docsInfo.append(info);
             } else {

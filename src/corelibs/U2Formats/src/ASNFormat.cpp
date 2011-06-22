@@ -54,7 +54,7 @@ ASNFormat::ASNFormat( QObject* p ) : DocumentFormat(p, DocumentFormatFlag(0), QS
 }
 
 
-FormatDetectionResult ASNFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatDetectionScore ASNFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     static const char* formatTag = "Ncbi-mime-asn1 ::= strucseq";
     
     if (!rawData.startsWith(formatTag)) {

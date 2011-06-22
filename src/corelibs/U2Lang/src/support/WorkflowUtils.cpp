@@ -87,10 +87,12 @@ QString WorkflowUtils::getDropUrl(QList<DocumentFormat*>& fs, const QMimeData* m
         }
     } else if (md->hasUrls()) {
         QList<QUrl> urls = md->urls();
-        if (urls.size() == 1)
-        {
-            url = urls.at(0).toLocalFile();
-            fs += DocumentUtils::detectFormat(url);
+        if (urls.size() == 1) {
+            url = urls.first().toLocalFile();
+            QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url);
+            foreach(const FormatDetectionResult& di, formats) {
+                fs << di.format;
+            }
         }
     }
     return url;

@@ -184,13 +184,13 @@ QList<Task*> QDRunDialogTask::init() {
     } else {
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(inUri));
         assert(iof);
-        QList<DocumentFormat*> dfs = DocumentUtils::detectFormat(inUri);
-        if(dfs.isEmpty()) {
+        QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(inUri);
+        if (dfs.isEmpty()) {
             setError(tr(""));
         } else {
-            foreach(DocumentFormat* f, dfs){
-                if(f->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE)) {
-                    loadTask = new LoadDocumentTask(f->getFormatId(), inUri, iof);
+            foreach(const FormatDetectionResult& i, dfs){
+                if (i.format->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE)) {
+                    loadTask = new LoadDocumentTask(i.format->getFormatId(), inUri, iof);
                     res.append(loadTask);
                     break;
                 }
