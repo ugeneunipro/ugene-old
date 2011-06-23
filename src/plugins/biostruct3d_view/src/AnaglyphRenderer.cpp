@@ -48,6 +48,7 @@ AnaglyphSettings AnaglyphSettings::fromMap(const QVariantMap &map) {
 }
 
 void AnaglyphRenderer::init() {
+    createEmptyTextures();
 }
 
 void AnaglyphRenderer::resize(int _width, int _height) {
