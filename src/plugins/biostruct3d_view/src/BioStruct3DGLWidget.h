@@ -24,6 +24,7 @@
 
 #include "BioStruct3DGLRender.h"
 #include "BioStruct3DColorScheme.h"
+#include "AnaglyphRenderer.h"
 
 #include <U2Core/Vector3D.h>
 #include <U2Core/BioStruct3DObject.h>
@@ -141,13 +142,15 @@ public:
     */
     void writeImage2DToFile(int format, int options, int nbcol, const char *fileName);
 
-    float getEyesShiftMult() const;
-
     void setBackgroundColor(QColor backgroundColor);
-    float sumCorrectColors(float a, float b);
+
+    /** @returns This widget GLFrame */
+    GLFrame *getGLFrame() { return glFrame.get(); }
+
+    /** Draws scene without setting camera */
+    void draw();
 
 protected:
-
     /*!
     * QGlWidget virtual function, initializes OpenGL params. See, Qt docs "QGLWidget" for details. 
     */
@@ -236,22 +239,6 @@ private:
     int getChainIdForAnnotationObject(AnnotationTableObject* ao); 
     void connectExternalSignals();
 
-    // anaglyph related
-    unsigned int* emptyTextureData;
-    GLuint anaglyphRenderTextureLeft, anaglyphRenderTextureRight, tempAnaglyphRenderTexture;
-
-    void ViewOrtho();                                               // Set Up An Ortho View
-    void ViewPerspective();                                         // Set Up A Perspective View
-    GLuint getEmptyTexture(int textureWidth, int textureHeight);    // Create An Empty Texture
-
-    void draw();
-    void drawTexturesAnaglyph(GLuint anaglyphRenderTextureLeft, GLuint anaglyphRenderTextureRight);                                // Draw The Image
-    void drawTexture(GLuint anaglyphRenderTexture, int red, int green, int blue, float alpha, bool alphaOnly);                     // Draw The Blurred Image
-    void drawAll();
-    void drawColoredPlane(int red, int green, int blue, float alpha);
-
-    bool hasGlErrors();
-
     Vector3D getTrackballMapping(int x, int y);
     static int getSequenceChainId(const DNASequenceObject* seqObj);
     static int getWidgetCount(QString objectName);
@@ -274,6 +261,9 @@ private:
 
     MolecularSurfaceCalcTask* surfaceCalcTask;
 
+    AnaglyphStatus anaglyphStatus;
+    std::auto_ptr<AnaglyphRenderer> anaglyph;
+
     QVariantMap defaultsSettings;
 
     // controller logic
@@ -295,12 +285,6 @@ private:
     QTimer* animationTimer;
 
     int unselectedShadingLevel;
-
-    // anaglyph related
-    bool anaglyph, anaglyphAvailable, firstResize;
-    int eyesShift;
-    QColor leftEyeColor;
-    QColor rightEyeColor;
 
     // controller logic
     QAction *spinAction;
@@ -348,6 +332,7 @@ private slots:
      // they affects only first biostruct
      void sl_selectModels();
 
+     // slots for surface renderers
      void sl_showSurface();
      void sl_hideSurface();
      void sl_selectSurfaceRenderer(QAction* surfaceRenderer);
@@ -366,14 +351,9 @@ public:
     static const QString OBJECT_ID_NAME;
 
     static const QString SELECTION_COLOR_NAME;
-
-    static const QString LEFT_EYE_COLOR_NAME;
-    static const QString RIGHT_EYE_COLOR_NAME;
-
     static const QString RENDER_DETAIL_LEVEL_NAME;
     static const QString SHADING_LEVEL_NAME;
-    static const QString ANAGLYPH_NAME;
-    static const QString EYES_SHIFT_NAME;
+    static const QString ANAGLYPH_STATUS_NAME;
 };
 
 }   // namespace U2

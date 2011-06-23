@@ -28,6 +28,7 @@ namespace U2 {
 static Logger log("test");
 
 BioStruct3DSettingsDialog::BioStruct3DSettingsDialog()
+        : anaglyphStatus(NOT_AVAILABLE), anaglyphSettings(AnaglyphSettings::defaultSettings())
 {
     setupUi(this);
 
@@ -88,52 +89,44 @@ void BioStruct3DSettingsDialog::sl_setShadingLevel()
     glWidget->setState(state);
 }
 
-void BioStruct3DSettingsDialog::sl_setAnaglyph()
-{
-    anaglyph = anaglyphViewGroupBox->isChecked();
+void BioStruct3DSettingsDialog::sl_setAnaglyph() {
+    anaglyphStatus = (anaglyphViewGroupBox->isChecked()) ? ENABLED : DISABLED;
 
-    state[glWidget->ANAGLYPH_NAME] = QVariant::fromValue(anaglyph);
+    state[glWidget->ANAGLYPH_STATUS_NAME] = qVariantFromValue((int)anaglyphStatus);
     glWidget->setState(state);
 }
 
-void BioStruct3DSettingsDialog::sl_setEyesShift()
-{
-    eyesShift = eyesShiftSlider->sliderPosition();
+void BioStruct3DSettingsDialog::sl_setEyesShift() {
+    anaglyphSettings.eyesShift = (float) eyesShiftSlider->sliderPosition() / 100.0;
 
-    state[glWidget->EYES_SHIFT_NAME] = QVariant::fromValue(eyesShift);
+    anaglyphSettings.toMap(state);
     glWidget->setState(state);
 }
 
-void BioStruct3DSettingsDialog::sl_setGlassesColorScheme()
-{
+void BioStruct3DSettingsDialog::sl_setGlassesColorScheme() {
     int itemNum = glassesColorSchemeComboBox->currentIndex();
-
     setGlassesColorScheme(itemNum);
 }
 
-void BioStruct3DSettingsDialog::sl_setLeftEyeColor()
-{
-    QColor changed(QColorDialog::getColor(leftEyeColor,this));
+void BioStruct3DSettingsDialog::sl_setLeftEyeColor() {
+    QColor changed(QColorDialog::getColor(anaglyphSettings.leftEyeColor, this));
 
-    if (changed.red()!=0 || changed.green()!=0 || changed.blue()!=0)
-        setGlassesColorScheme(changed, rightEyeColor);
-
-    state[glWidget->LEFT_EYE_COLOR_NAME] = QVariant::fromValue(changed);
-    glWidget->setState(state);
+    if (changed.red()!=0 || changed.green()!=0 || changed.blue()!=0) {
+        setGlassesColorScheme(changed, anaglyphSettings.rightEyeColor);
+    }
 }
 
-void BioStruct3DSettingsDialog::sl_setRightEyeColor()
-{
-    QColor changed(QColorDialog::getColor(rightEyeColor,this));
+void BioStruct3DSettingsDialog::sl_setRightEyeColor() {
+    QColor changed(QColorDialog::getColor(anaglyphSettings.rightEyeColor, this));
 
-    if (changed.red()!=0 || changed.green()!=0 || changed.blue()!=0)
-        setGlassesColorScheme(leftEyeColor, changed);
+    if (changed.red()!=0 || changed.green()!=0 || changed.blue()!=0) {
+        setGlassesColorScheme(anaglyphSettings.leftEyeColor, changed);
+    }
 }
 
-void BioStruct3DSettingsDialog::sl_swapColors()
-{
-    QColor right(rightEyeColor);
-    QColor left(leftEyeColor);
+void BioStruct3DSettingsDialog::sl_swapColors() {
+    QColor right(anaglyphSettings.rightEyeColor);
+    QColor left(anaglyphSettings.leftEyeColor);
 
     setGlassesColorScheme(right, left);
 }
@@ -150,27 +143,7 @@ QColor BioStruct3DSettingsDialog::getSelectionColor()const
 
 float BioStruct3DSettingsDialog::getRenderDetailLevel()const
 {
-    return renderDetailLevel/100.0;
-}
-
-bool BioStruct3DSettingsDialog::getAnaglyph()const
-{
-    return anaglyph;
-}
-
-int BioStruct3DSettingsDialog::getEyesShift()const
-{
-    return eyesShift;
-}
-
-QColor BioStruct3DSettingsDialog::getLeftEyeColor()const
-{
-    return leftEyeColor;
-}
-
-QColor BioStruct3DSettingsDialog::getRightEyeColor()const
-{
-    return rightEyeColor;
+    return renderDetailLevel / 100.0;
 }
 
 void BioStruct3DSettingsDialog::setGlassesColorScheme(QColor &leftEyeColor, QColor &rightEyeColor)
@@ -203,12 +176,6 @@ void BioStruct3DSettingsDialog::setGlassesColorScheme(int num)
     setRightEyeColor(need.rightEyeColor);
 }
 
-void BioStruct3DSettingsDialog::setEyesShift(int eyesShift)
-{
-    this->eyesShift=eyesShift;
-    this->eyesShiftSlider->setSliderPosition(eyesShift);
-}
-
 void BioStruct3DSettingsDialog::setBackgroundColor(QColor color)
 {
     this->backgroundColor=color;
@@ -225,40 +192,23 @@ void BioStruct3DSettingsDialog::setRenderDetailLevel(float renderDetailLevel_)
     renderDetailLevelSlider->setSliderPosition(renderDetailLevel);
 }
 
-void BioStruct3DSettingsDialog::setAnaglyph(bool anaglyph)
-{
-    this->anaglyph = anaglyph;
-
-    anaglyphViewGroupBox->setChecked(anaglyph);
-}
-
-void BioStruct3DSettingsDialog::setAnaglyphAvailability(bool anaglyphAvailability) {
-
-    anaglyphViewGroupBox->setEnabled(anaglyphAvailability);
-
-    if (!anaglyphAvailability) {    
-        QString anaglyphTitile = anaglyphViewGroupBox->title();
-        anaglyphViewGroupBox->setTitle(anaglyphTitile + QString(" ") + QString(tr("(not supported by your videocard)")));
-    }
-}
-
 static const QString COLOR_STYLE("QPushButton { background-color : %1;}");// color : %2;
 
 void BioStruct3DSettingsDialog::setLeftEyeColor(QColor leftEyecolor)
 {
-    leftEyeColor = leftEyecolor;
-    leftEyeColorChangeButton->setStyleSheet(COLOR_STYLE.arg(leftEyeColor.name()));
+    anaglyphSettings.leftEyeColor = leftEyecolor;
+    leftEyeColorChangeButton->setStyleSheet(COLOR_STYLE.arg(anaglyphSettings.leftEyeColor.name()));
 
-    state[glWidget->LEFT_EYE_COLOR_NAME] = QVariant::fromValue(leftEyeColor);
+    anaglyphSettings.toMap(state);
     glWidget->setState(state);
 }
 
 void BioStruct3DSettingsDialog::setRightEyeColor(QColor rightEyecolor)
 {
-    rightEyeColor = rightEyecolor;
-    rightEyeColorChangeButton->setStyleSheet(COLOR_STYLE.arg(rightEyeColor.name()));
+    anaglyphSettings.rightEyeColor = rightEyecolor;
+    rightEyeColorChangeButton->setStyleSheet(COLOR_STYLE.arg(anaglyphSettings.rightEyeColor.name()));
 
-    state[glWidget->RIGHT_EYE_COLOR_NAME] = QVariant::fromValue(rightEyeColor);
+    anaglyphSettings.toMap(state);
     glWidget->setState(state);
 }
 
@@ -269,6 +219,46 @@ int BioStruct3DSettingsDialog::getShadingLevel() const {
 void BioStruct3DSettingsDialog::setShadingLevel(int shading) {
     shadingLevel = shading;
     shadingSlider->setSliderPosition(shading);
+}
+
+// anaglyph related settings
+AnaglyphStatus BioStruct3DSettingsDialog::getAnaglyphStatus() const {
+    return anaglyphStatus;
+}
+
+const AnaglyphSettings& BioStruct3DSettingsDialog::getAnaglyphSettings() const {
+    return anaglyphSettings;
+}
+
+void BioStruct3DSettingsDialog::setAnaglyphStatus(AnaglyphStatus status) {
+    anaglyphStatus = status;
+
+    if (anaglyphStatus == NOT_AVAILABLE) {
+        anaglyphViewGroupBox->setDisabled(true);
+
+        QString anaglyphTitile = anaglyphViewGroupBox->title();
+        anaglyphViewGroupBox->setTitle(anaglyphTitile + QString(" ") + QString(tr("(not supported by your videocard)")));
+    }
+    else if (anaglyphStatus == DISABLED) {
+        anaglyphViewGroupBox->setEnabled(true);
+        anaglyphViewGroupBox->setChecked(false);
+    }
+    else if (anaglyphStatus == ENABLED) {
+        anaglyphViewGroupBox->setEnabled(true);
+        anaglyphViewGroupBox->setChecked(true);
+    }
+    else {
+        assert(!"Invalid AnaglyphStatus value");
+    }
+}
+
+void BioStruct3DSettingsDialog::setAnaglyphSettings(const AnaglyphSettings &settings) {
+    anaglyphSettings = settings;
+
+    setLeftEyeColor(anaglyphSettings.leftEyeColor);
+    setRightEyeColor(anaglyphSettings.rightEyeColor);
+
+    eyesShiftSlider->setSliderPosition(anaglyphSettings.eyesShift * 100.0);
 }
 
 } // namespace

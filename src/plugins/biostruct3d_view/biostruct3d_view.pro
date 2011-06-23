@@ -18,7 +18,9 @@ HEADERS += src/BallAndStickGLRenderer.h \
            src/StructuralAlignmentDialog.h \
            src/gl2ps/gl2ps.h \
            src/BioStruct3DSubsetEditor.h \
-	   src/SelectModelsDialog.h
+	   src/SelectModelsDialog.h \
+	   src/AnaglyphRenderer.h
+
 
 FORMS +=   src/ui/SettingsDialog.ui \
            src/ui/StructuralAlignmentDialog.ui \
@@ -42,7 +44,8 @@ SOURCES += src/BallAndStickGLRenderer.cpp \
            src/StructuralAlignmentDialog.cpp \
            src/gl2ps/gl2ps.cpp \
            src/BioStruct3DSubsetEditor.cpp \
-	   src/SelectModelsDialog.cpp
+	   src/SelectModelsDialog.cpp \
+	   src/AnaglyphRenderer.cpp
 
 RESOURCES += biostruct3d_view.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

@@ -23,8 +23,10 @@
 #define _U2_SETTINGSDIALOG_H_
 
 #include "BioStruct3DGLWidget.h"
-#include <QtGui/QColorDialog>
 #include "ui_SettingsDialog.h"
+#include "AnaglyphRenderer.h"
+
+#include <QtGui/QColorDialog>
 
 namespace U2 {
 
@@ -76,32 +78,30 @@ private slots:
 
 
 public:
+    // anaglyph related settings
+    AnaglyphStatus getAnaglyphStatus() const;
+    const AnaglyphSettings& getAnaglyphSettings() const;
+
+    void setAnaglyphStatus(AnaglyphStatus status);
+    void setAnaglyphSettings(const AnaglyphSettings &settings);
+
+    void setRightEyeColor(QColor rightEyecolor);
+    void setLeftEyeColor(QColor leftEyecolor);
+
     QColor getBackgroundColor()const;
     QColor getSelectionColor()const;
 
-    QColor getLeftEyeColor()const;
-    QColor getRightEyeColor()const;
-
     float getRenderDetailLevel()const;
     int getShadingLevel()const;
-    bool getAnaglyph()const;
-    int getEyesShift()const;
 
     void setBackgroundColor(QColor color);
     void setSelectionColor(QColor color);
-
-    void setLeftEyeColor(QColor leftEyecolor);
-    void setRightEyeColor(QColor rightEyecolor);
 
     void setGlassesColorScheme(QColor &leftEyeColor, QColor &rightEyeColor);
     void setGlassesColorScheme(int num);
 
     void setRenderDetailLevel(float renderDetailLevel);
     void setShadingLevel(int shading);
-
-    void setAnaglyph(bool anaglyph);
-    void setAnaglyphAvailability(bool anaglyph);
-    void setEyesShift(int eyesShift);
 
     void setWidget(BioStruct3DGLWidget *glWidget);
 
@@ -116,13 +116,12 @@ private:
     QColor backgroundColor;
     QColor selectionColor;
 
-    QColor leftEyeColor;
-    QColor rightEyeColor;
 
     int renderDetailLevel;
     int shadingLevel;
-    bool anaglyph;
-    int eyesShift;
+
+    AnaglyphStatus anaglyphStatus;
+    AnaglyphSettings anaglyphSettings;
 };
 
 } // namespace

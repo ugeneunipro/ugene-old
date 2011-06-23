@@ -78,13 +78,7 @@ int BioStruct3DGLWidget::widgetCount = 0;
 static QColor DEFAULT_BACKGROUND_COLOR = Qt::black;
 static QColor DEFAULT_SELECTION_COLOR = Qt::yellow;
 
-static QColor DEFAULT_LEFT_EYE_COLOR = QColor(0, 255, 255);
-static QColor DEFAULT_RIGHT_EYE_COLOR = QColor(255, 0, 0);
-
-static bool DEFAULT_ANAGLYPH = false;
-
-static float DEFAULT_RENDER_DETAIL_LEVEL = 100/100.0;
-static int DEFAULT_EYES_SHIFT = 160;
+static float DEFAULT_RENDER_DETAIL_LEVEL = 1.0;
 static int DEFAULT_SHADING_LEVEL = 50;
 
 const QString BioStruct3DGLWidget::BACKGROUND_COLOR_NAME("BackgroundColor");
@@ -95,49 +89,36 @@ const QString BioStruct3DGLWidget::RENDERER_NAME("GLRenderer");
 const QString BioStruct3DGLWidget::OBJECT_ID_NAME("OBJECT_ID");
 
 const QString BioStruct3DGLWidget::SELECTION_COLOR_NAME("SelectionColor");
-
-const QString BioStruct3DGLWidget::LEFT_EYE_COLOR_NAME("LeftEyeColor");
-const QString BioStruct3DGLWidget::RIGHT_EYE_COLOR_NAME("RightEyeColor");
-
-const QString BioStruct3DGLWidget::RENDER_DETAIL_LEVEL_NAME("RenderDetailLevel");
 const QString BioStruct3DGLWidget::SHADING_LEVEL_NAME("Shading Unselected Regions Level");
-const QString BioStruct3DGLWidget::ANAGLYPH_NAME("Anaglyph");
-const QString BioStruct3DGLWidget::EYES_SHIFT_NAME("EyesShift");
+const QString BioStruct3DGLWidget::RENDER_DETAIL_LEVEL_NAME("RenderDetailLevel");
+const QString BioStruct3DGLWidget::ANAGLYPH_STATUS_NAME("AnaglyphStatus");
 
-BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const AnnotatedDNAView* view, GLFrameManager* manager, QWidget *parent /* = 0*/)
-    : QGLWidget(parent),
-    dnaView(view),
-    contexts(),
-    rendererSettings(DEFAULT_RENDER_DETAIL_LEVEL),
-    frameManager(manager), molSurface(NULL),
-    spinAngle(0), displayMenu(NULL)
+BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const AnnotatedDNAView *_dnaView, GLFrameManager* manager, QWidget *parent /* = 0*/)
+        : QGLWidget(parent),
+        dnaView(_dnaView), contexts(),
+        rendererSettings(DEFAULT_RENDER_DETAIL_LEVEL),
+        frameManager(manager), glFrame(),
+        molSurface(0), surfaceRenderer(), surfaceCalcTask(0),
+        anaglyphStatus(DISABLED),
+        anaglyph(new AnaglyphRenderer(this, AnaglyphSettings::defaultSettings())),
+
+        defaultsSettings(), currentColorSchemeName(), currentGLRendererName(),
+        chainIdCache(), cameraClipNear(0), cameraClipFar(0),
+        rotAngle(0), spinAngle(0), rotAxis(), lastPos(),
+        lightPostion(), backgroundColor(),
+        selectionColor(), animationTimer(0),
+        unselectedShadingLevel(DEFAULT_SHADING_LEVEL),
+
+        spinAction(0), settingsAction(0), closeAction(0), exportImageAction(0), selectModelsAction(0), alignWithAction(0),
+        resetAlignmentAction(0), colorSchemeActions(0), rendererActions(0), molSurfaceRenderActions(0),
+        molSurfaceTypeActions(0), selectColorSchemeMenu(0), selectRendererMenu(0), displayMenu(0)
 {
     GCOUNTER( cvar, tvar, "BioStruct3DGLWidget" );
 
     QString currentModelID = obj->getBioStruct3D().pdbId;
-    setObjectName(currentModelID + "-" + QString("%1").arg(++widgetCount));
-    //TODO: ? setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
+    setObjectName(QString("%1-%2").arg(++widgetCount).arg(currentModelID));
 
     connectExternalSignals();
-
-    backgroundColor = DEFAULT_BACKGROUND_COLOR;
-    selectionColor = DEFAULT_SELECTION_COLOR;
-    eyesShift = DEFAULT_EYES_SHIFT;
-
-    anaglyphRenderTextureLeft = 0;
-    anaglyphRenderTextureRight = 0;
-    tempAnaglyphRenderTexture = 0;
-
-    anaglyph = DEFAULT_ANAGLYPH;
-    anaglyphAvailable = true;
-    firstResize = true;
-
-    leftEyeColor = DEFAULT_LEFT_EYE_COLOR;
-    rightEyeColor = DEFAULT_RIGHT_EYE_COLOR;
-
-    unselectedShadingLevel = DEFAULT_SHADING_LEVEL;
-
-    emptyTextureData = NULL;
 
     currentColorSchemeName = BioStruct3DColorSchemeRegistry::defaultFactoryName();
     currentGLRendererName = BioStruct3DGLRendererRegistry::defaultFactoryName();
@@ -175,8 +156,7 @@ BioStruct3DGLWidget::~BioStruct3DGLWidget() {
     uiLog.trace("Biostruct3DGLWdiget "+objectName()+" deleted");
 }
 
-void BioStruct3DGLWidget::initializeGL()
-{
+void BioStruct3DGLWidget::initializeGL() {
     setLightPosition(Vector3D(0, 0.0, 1.0));
     GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0 };
     GLfloat light_specular[] = { 0.6f, 0.6f, 0.6f, 1.0 };
@@ -194,147 +174,48 @@ void BioStruct3DGLWidget::initializeGL()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     updateAllRenderers();
+
+    anaglyph->init();
+    if (!anaglyph->isAvailable()) {
+        anaglyphStatus = NOT_AVAILABLE;
+    }
 }
 
-void BioStruct3DGLWidget::resizeGL(int width, int height)
-{
-
-    if (firstResize && (width>0) && (height>0)) {
-
-        anaglyphRenderTextureLeft = getEmptyTexture(width, height);
-        anaglyphRenderTextureRight = getEmptyTexture(width, height);
-        tempAnaglyphRenderTexture =  getEmptyTexture(width, height);
-
-        // test anaglyph mode
-        anaglyph = true;
-        draw(); // draw() checks for openGL errors and sets 'anaglyphAvailable' flag
-
-        // return anaglyph mode to the default value
-        anaglyph = DEFAULT_ANAGLYPH;
-
-        firstResize = false;
-    }
-
-    if (anaglyph) {
-        if (anaglyphRenderTextureLeft != 0)
-            glDeleteTextures(1, &anaglyphRenderTextureLeft);
-        if (anaglyphRenderTextureRight != 0)
-            glDeleteTextures(1, &anaglyphRenderTextureRight);
-        if (tempAnaglyphRenderTexture != 0)
-            glDeleteTextures(1, &tempAnaglyphRenderTexture);
-
-        anaglyphRenderTextureLeft = getEmptyTexture(width, height);
-        anaglyphRenderTextureRight = getEmptyTexture(width, height);
-        tempAnaglyphRenderTexture =  getEmptyTexture(width, height);
-    }
-
-    hasGlErrors();
-
+void BioStruct3DGLWidget::resizeGL(int width, int height) {
     glFrame->updateViewPort(width, height);
+    if (anaglyphStatus == ENABLED) {
+        anaglyph->resize(width, height);
+    }
 }
 
-void BioStruct3DGLWidget::paintGL()
-{
-    if (!isVisible())
+void BioStruct3DGLWidget::paintGL() {
+    if (!isVisible()) {
         return;
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    draw();
-}
+    }
 
-float BioStruct3DGLWidget::getEyesShiftMult() const
-{
-    return eyesShift/100.0f;
-}
+    clock_t frameStart =  clock();
 
-void BioStruct3DGLWidget::ViewOrtho()                                               // Set Up An Ortho View
-{
-    glMatrixMode(GL_PROJECTION);                                // Select Projection
-    glPushMatrix();                                             // Push The Matrix
-    glLoadIdentity();                                           // Reset The Matrix
-    glOrtho( 0, width() , height(), 0, -1, 1 );                         // Select Ortho Mode (640x480)
-    glMatrixMode(GL_MODELVIEW);                                 // Select Modelview Matrix
-    glPushMatrix();                                             // Push The Matrix
-    glLoadIdentity();                                           // Reset The Matrix
-}
+        // Clear buffers, setup modelview matrix
+        // Scene render unable to do this since it used by anaglyph renderer
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-void BioStruct3DGLWidget::ViewPerspective()                                         // Set Up A Perspective View
-{
-    glMatrixMode( GL_PROJECTION );                              // Select Projection
-    glPopMatrix();                                              // Pop The Matrix
-    glMatrixMode( GL_MODELVIEW );                               // Select Modelview
-    glPopMatrix();                                              // Pop The Matrix
-}
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
-GLuint BioStruct3DGLWidget::getEmptyTexture(int textureWidth, int textureHeight)    // Create An Empty Texture
-{
-    GLuint txtnumber;                                                    // Texture ID
+        gluLookAt(0.0, 0.0, glFrame->getCameraPosition().z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-    glGenTextures(1, &txtnumber);                                        // Create 1 Texture
-    glBindTexture(GL_TEXTURE_2D, txtnumber);                            // Bind The Texture
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
-    GL_RGBA, GL_UNSIGNED_BYTE, emptyTextureData);                       // Build Texture Using Information In data
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-    return txtnumber;                                                    // Return The Texture ID
-}
-
-void BioStruct3DGLWidget::drawTexturesAnaglyph(GLuint anaglyphRenderTextureLeft, GLuint anaglyphRenderTextureRight)                                // Draw The Image
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);      //clear color and depth buffers
-    drawTexture(anaglyphRenderTextureLeft, rightEyeColor.red(), rightEyeColor.green(), rightEyeColor.blue(), 0.5f, false); // colored left image
-    if (hasGlErrors()) { return; }
-
-    glBindTexture(GL_TEXTURE_2D, tempAnaglyphRenderTexture);                    // Bind To The Blur Texture
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width(), height(), 0);// Copy Our ViewPort To The Blur Texture (From 0,0 To 128,128... No Border)
-    if (hasGlErrors()) { return; }
-
-    drawTexture(anaglyphRenderTextureRight, leftEyeColor.red(), leftEyeColor.green(), leftEyeColor.blue(), 0.5f, false); // colored right image
-    drawTexture(tempAnaglyphRenderTexture, 255, 255, 255, 1.0f, true);
-}
-
-void BioStruct3DGLWidget::drawTexture(GLuint anaglyphRenderTexture, int red, int green, int blue, float alpha, bool alphaOnly)                              // Draw The Blurred Image
-{
-    glEnable(GL_TEXTURE_2D);                                    // Enable 2D Texture Mapping
-
-    GLboolean blendEnabled = glIsEnabled(GL_BLEND);
-    if (blendEnabled) {
-        if (alphaOnly){
-            glBlendFunc(GL_DST_ALPHA, GL_DST_ALPHA); // the second image is this, it has needed alpha color
+        if (anaglyphStatus == ENABLED) {
+            // draw using anaglyph renderer
+            anaglyph->draw();
         }
         else {
-            glBlendFunc(GL_ONE, GL_ONE);
+            // draw using default scene renderer (this)
+            draw();
         }
-    }
-    if (hasGlErrors()) { return; }
 
-    glBindTexture(GL_TEXTURE_2D, anaglyphRenderTexture);                    // Bind To The Blur Texture
-    if (hasGlErrors()) { return; }
-    ViewOrtho();                                                // Switch To An Ortho View
-    if (hasGlErrors()) { return; }
-
-    glColor4f((float)red/255, (float)green/255, (float)blue/255, alpha);                    // Set The Alpha Value (Starts At 0.2)
-    glBegin(GL_QUADS);                                          // Begin Drawing Quads
-        glTexCoord2f(0, 1);                     // Texture Coordinate   ( 0, 1 )
-        glVertex2f(0,0);                                    // First Vertex     (   0,   0 )
-
-        glTexCoord2f(0, 0);                     // Texture Coordinate   ( 0, 0 )
-        glVertex2f(0, (float)height());                                 // Second Vertex    (   0, 480 )
-
-        glTexCoord2f(1, 0);                     // Texture Coordinate   ( 1, 0 )
-        glVertex2f((float)width(), (float)height());                                // Third Vertex     ( 640, 480 )
-
-        glTexCoord2f(1, 1);                     // Texture Coordinate   ( 1, 1 )
-        glVertex2f((float)width(), 0);                                  // Fourth Vertex    ( 640,   0 )
-    glEnd();                                                    // Done Drawing Quads
-    if (hasGlErrors()) { return; }
-
-    ViewPerspective();                                          // Switch To A Perspective View
-    if (hasGlErrors()) { return; }
-
-    glDisable(GL_TEXTURE_2D);                                   // Disable 2D Texture Mapping
-    glBindTexture(GL_TEXTURE_2D,0);                             // Unbind The Blur Texture
-    if (hasGlErrors()) { return; }
+    clock_t frameEnd = clock();
+    double frameTime = (frameEnd - frameStart) / (double)CLOCKS_PER_SEC;
+    perfLog.trace( QString("BioStruct3DView frame rendering time %1 s").arg(frameTime) );
 }
 
 static Vector3D calcRotationCenter(const QList<BioStruct3DRendererContext> &contexts) {
@@ -345,10 +226,8 @@ static Vector3D calcRotationCenter(const QList<BioStruct3DRendererContext> &cont
     return c/contexts.length();
 }
 
-void BioStruct3DGLWidget::drawAll()
-{
-    glEnable(GL_DEPTH_TEST);                                    // Enable Depth Testing
-
+void BioStruct3DGLWidget::draw() {
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
@@ -360,7 +239,6 @@ void BioStruct3DGLWidget::drawAll()
 
     glMultMatrixf(glFrame->getRotationMatrix() );
     glTranslatef(-rotCenter.x ,-rotCenter.y, -rotCenter.z);
-    clock_t t1 =  clock();
 
     foreach (const BioStruct3DRendererContext &ctx, contexts) {
         glPushMatrix();
@@ -395,80 +273,7 @@ void BioStruct3DGLWidget::drawAll()
 
     glDisable(GL_LIGHTING);
     glDisable(GL_LIGHT0);
-    glDisable(GL_DEPTH_TEST);                                   // Disable Depth Testing
-
-    // bug-2858: This profiling wrong when anaglyph enabled
-    // This profiling doesn't consider creation time of
-    // BioStruct3DGLRenderer and BioStruct3DColorScheme which may be crucial
-    clock_t t2 = clock();
-    perfLog.trace("BioStruct3D structure rendering time " + QString::number((float)( t2 - t1)/ CLOCKS_PER_SEC)+ " s");
-}
-
-bool BioStruct3DGLWidget::hasGlErrors() {
-
-    GLenum lastGlError = glGetError();
-
-    bool hasAnyGlError = (lastGlError != GL_NO_ERROR);
-    if (anaglyphAvailable) {
-        anaglyphAvailable = !hasAnyGlError; // don't change anaglyph mode availability if some error happened at least once
-    }
-
-    if (hasAnyGlError) {
-        uiLog.trace(
-            QString("OpenGL error: ") + QString((char*)gluErrorString(lastGlError)) +
-            QString(", returned error code ") + QString::number(lastGlError) +
-            QString(", GL_NO_ERROR = ") + QString::number(GL_NO_ERROR)
-        );
-
-        anaglyph = false;
-    }
-
-    return hasAnyGlError;
-}
-
-void BioStruct3DGLWidget::draw() {
-
-    float eyesShift = 5*getEyesShiftMult()*glFrame->getCameraPosition().z/200;
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);      //clear color and depth buffers
-
-    if (!anaglyph) {
-        gluLookAt(0.0, 0.0, glFrame->getCameraPosition().z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-        drawAll();
-        hasGlErrors();
-    }
-    else {
-
-        gluLookAt(eyesShift, 0.0, glFrame->getCameraPosition().z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-        drawAll();
-        if (hasGlErrors()) { return; }
-
-        glBindTexture(GL_TEXTURE_2D, anaglyphRenderTextureRight);                   // Bind To The Anaglyph Texture
-        if (hasGlErrors()) { return; }
-        glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width(), height(), 0);// Copy Our ViewPort To The Blur Texture (From 0,0 To 128,128... No Border)
-        if (hasGlErrors()) { return; }
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        if (hasGlErrors()) { return; }
-        glLoadIdentity();
-        if (hasGlErrors()) { return; }
-
-        gluLookAt(-eyesShift, 0.0, glFrame->getCameraPosition().z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-        if (hasGlErrors()) { return; }
-        drawAll();
-
-        if (hasGlErrors()) { return; }
-
-        glBindTexture(GL_TEXTURE_2D, anaglyphRenderTextureLeft);                    // Bind To The Anaglyph Texture
-        if (hasGlErrors()) { return; }
-        glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width(), height(), 0);// Copy Our ViewPort To The Blur Texture (From 0,0 To 128,128... No Border)
-        if (hasGlErrors()) { return; }
-
-        drawTexturesAnaglyph(anaglyphRenderTextureLeft, anaglyphRenderTextureRight);
-    }
+    glDisable(GL_DEPTH_TEST);
 }
 
 Vector3D BioStruct3DGLWidget::getTrackballMapping(int x, int y)
@@ -599,6 +404,9 @@ QVariantMap BioStruct3DGLWidget::getState()
 {
     QVariantMap state;
     glFrame->writeStateToMap(state);
+    anaglyph->getSettings().toMap(state);
+
+    state[ANAGLYPH_STATUS_NAME] = qVariantFromValue((int)anaglyphStatus);
 
     state[COLOR_SCHEME_NAME] = QVariant::fromValue(currentColorSchemeName);
     state[RENDERER_NAME] = QVariant::fromValue(currentGLRendererName);
@@ -607,13 +415,8 @@ QVariantMap BioStruct3DGLWidget::getState()
     state[BACKGROUND_COLOR_NAME] = QVariant::fromValue(backgroundColor);
     state[SELECTION_COLOR_NAME] = QVariant::fromValue(selectionColor);
 
-    state[LEFT_EYE_COLOR_NAME] = QVariant::fromValue(leftEyeColor);
-    state[RIGHT_EYE_COLOR_NAME] = QVariant::fromValue(rightEyeColor);
-
     state[RENDER_DETAIL_LEVEL_NAME] = QVariant::fromValue(rendererSettings.detailLevel);
     state[SHADING_LEVEL_NAME] = QVariant::fromValue(unselectedShadingLevel);
-    state[ANAGLYPH_NAME] = QVariant::fromValue(anaglyph);
-    state[EYES_SHIFT_NAME] = QVariant::fromValue(eyesShift);
 
     return state;
 }
@@ -627,17 +430,15 @@ void BioStruct3DGLWidget::setState( const QVariantMap& state )
     glFrame->makeCurrent();
     glFrame->setState(state);
 
+    anaglyphStatus = (AnaglyphStatus) state.value(ANAGLYPH_STATUS_NAME).value<int>();
+    anaglyph->setSettings(AnaglyphSettings::fromMap(state));
+
     backgroundColor = state.value(BACKGROUND_COLOR_NAME, DEFAULT_BACKGROUND_COLOR).value<QColor>();
     setBackgroundColor(backgroundColor);
 
     selectionColor = state.value(SELECTION_COLOR_NAME, DEFAULT_SELECTION_COLOR).value<QColor>();
 
-    leftEyeColor = state.value(LEFT_EYE_COLOR_NAME, DEFAULT_LEFT_EYE_COLOR).value<QColor>();
-    rightEyeColor = state.value(RIGHT_EYE_COLOR_NAME, DEFAULT_RIGHT_EYE_COLOR).value<QColor>();
-
     rendererSettings.detailLevel = state.value(RENDER_DETAIL_LEVEL_NAME, DEFAULT_RENDER_DETAIL_LEVEL).value<float>();
-    anaglyph = state.value(ANAGLYPH_NAME, DEFAULT_ANAGLYPH).value<bool>();
-    eyesShift = state.value(EYES_SHIFT_NAME, DEFAULT_EYES_SHIFT).value<int>();
 
     QString previousColorSchemeName = currentColorSchemeName;
     QString previousGLRendererName = currentGLRendererName;
@@ -1187,16 +988,14 @@ void BioStruct3DGLWidget::sl_settings()
     dialog.setRenderDetailLevel(rendererSettings.detailLevel);
     dialog.setShadingLevel(unselectedShadingLevel);
 
-    dialog.setAnaglyphAvailability(anaglyphAvailable);
-    dialog.setAnaglyph(anaglyph);
-    dialog.setEyesShift(eyesShift);
-    dialog.setGlassesColorScheme(leftEyeColor, rightEyeColor);
+    dialog.setAnaglyphStatus(anaglyphStatus);
+    dialog.setAnaglyphSettings(anaglyph->getSettings());
 
     QVariantMap previousState = getState();
 
     if (QDialog::Accepted == dialog.exec())
     {
-        backgroundColor=dialog.getBackgroundColor();
+        backgroundColor = dialog.getBackgroundColor();
         selectionColor = dialog.getSelectionColor();
         unselectedShadingLevel = dialog.getShadingLevel();
 
@@ -1206,12 +1005,9 @@ void BioStruct3DGLWidget::sl_settings()
         setUnselectedShadingLevel(unselectedShadingLevel);
 
         rendererSettings.detailLevel = dialog.getRenderDetailLevel();
-        anaglyph = dialog.getAnaglyph();
 
-        eyesShift = dialog.getEyesShift();
-
-        leftEyeColor = dialog.getLeftEyeColor();
-        rightEyeColor = dialog.getRightEyeColor();
+        anaglyphStatus = dialog.getAnaglyphStatus();
+        anaglyph->setSettings(dialog.getAnaglyphSettings());
 
         this->makeCurrent();
         setBackgroundColor(backgroundColor);
