@@ -26,57 +26,50 @@
 
 namespace U2 {
 
-class DocumentImportHandler;
+class DocumentImporter;
 class DocumentProviderTask;
+class FormatDetectionResult;
 
-
-/** Result of document format detection for import */
-class U2CORE_EXPORT DocumentImportHandle {
-public:
-    /** id of the import handler */
-    QString                 handlerId;
-    /** name of the source file format */
-    QString                 sourceFormat;
-    /** detection score */
-    FormatDetectionScore   sourceFormatDetectionResult;
-};
 
 /** Registry for all DocumentImportHandlers */
-class U2CORE_EXPORT DocumentImportSupport : public QObject {
+class U2CORE_EXPORT DocumentImportersRegistry: public QObject {
     Q_OBJECT
 public:
-    DocumentImportSupport(QObject* p = NULL) : QObject(p) {}
-    ~DocumentImportSupport();
+    DocumentImportersRegistry(QObject* p = NULL) : QObject(p) {}
+    ~DocumentImportersRegistry();
 
-    /** Finds importers valid for the data provided */
-    QList<DocumentImportHandle> findImportHandlers(const QByteArray& rawData, const GUrl& url) const;
-    
     /** returns handler by its id */
-    DocumentImportHandler* getDocumentImportHandler(const QString& handlerId) const;
+    DocumentImporter* getDocumentImporter(const QString& importerId) const;
  
     /** registers new document import handler */
-    void addDocumentImportHandler(DocumentImportHandler* h);
+    void addDocumentImporter(DocumentImporter* i);
+    
+    const QList<DocumentImporter*>& getImporters() const {return importers;}
+
 private:
-    QList<DocumentImportHandler*> importHandlers;
+    QList<DocumentImporter*> importers;
 };
 
 
-class U2CORE_EXPORT DocumentImportHandler : public QObject {
+class U2CORE_EXPORT DocumentImporter : public QObject {
     Q_OBJECT
 public:
-    DocumentImportHandler(const QString& _id, const QString& _name, QObject* o = NULL) : QObject(o), id(_id), name(_name){}
+    DocumentImporter(const QString& _id, const QString& _name, QObject* o = NULL) : QObject(o), id(_id), name(_name){}
 
-    virtual DocumentImportHandle checkData(const QByteArray& rawData, const GUrl& url) = 0;
+    virtual FormatDetectionScore checkData(const QByteArray& rawData, const GUrl& url) = 0;
     
-    virtual DocumentProviderTask* createImportTask(const DocumentImportHandle& handle, bool showWizard) = 0;
+    virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard) = 0;
     
     const QString& getName() const {return name;}
 
     const QString& getId() const {return id;}
 
+    const QList<QString>& getSupportedFileExtensions() const {return extensions;}
+
 protected:
-    QString id;
-    QString name;
+    QString         id;
+    QString         name;
+    QList<QString>  extensions;
 };
 
 } //namespace

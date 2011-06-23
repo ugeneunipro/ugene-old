@@ -712,8 +712,6 @@ void BioStruct3DGLWidget::mousePressEvent(QMouseEvent *event)
 
 void BioStruct3DGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    Vector3D rotCenter = contexts.first().biostruct->getCenter();
-
     if (event->buttons() & Qt::LeftButton) {
         Vector3D curPos = getTrackballMapping(event->x(), event->y());
         Vector3D delta = curPos - lastPos;

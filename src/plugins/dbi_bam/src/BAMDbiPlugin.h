@@ -25,12 +25,11 @@
 #include <U2Core/PluginModel.h>
 #include <U2Core/U2Dbi.h>
 #include <U2Core/Log.h>
+#include <U2Core/DocumentImport.h>
+#include <U2Core/LoadDocumentTask.h>
 
 namespace U2 {
 namespace BAM {
-
-#define ULOG_BAM_DBI_PLUGIN "bam-dbi"
-static Logger bamLog(ULOG_BAM_DBI_PLUGIN);
 
 class BAMDbiPlugin : public Plugin {
     Q_OBJECT
@@ -41,6 +40,31 @@ private slots:
     void sl_infoLoaded(Task*);
     void sl_addDbFileToProject(Task*);
     
+};
+
+class BAMImporter : public DocumentImporter {
+    Q_OBJECT
+public:
+    BAMImporter();
+
+    virtual FormatDetectionScore checkData(const QByteArray& rawData, const GUrl& url);
+
+    virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard);
+
+};
+
+class LoadInfoTask;
+class ConvertToSQLiteTask;
+
+class BAMImporterTask : public DocumentProviderTask {
+public:
+    BAMImporterTask(const GUrl& url, bool useGui);
+    QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    LoadInfoTask*           loadInfoTask;
+    ConvertToSQLiteTask*    convertTask;
+    LoadDocumentTask*       loadDocTask;
+    bool                    useGui;
 };
 
 } // namespace BAM

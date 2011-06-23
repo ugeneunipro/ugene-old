@@ -200,7 +200,7 @@ public:
 
 };
 
-
+class DocumentImportersRegistry;
 class U2CORE_EXPORT DocumentFormatRegistry  : public QObject {
     Q_OBJECT
 public:
@@ -217,6 +217,8 @@ public:
     virtual DocumentFormat* selectFormatByFileExtension(const QString& fileExt) const = 0;
 
     virtual QList<DocumentFormatId> selectFormats(const DocumentFormatConstraints& c) const = 0;
+
+    virtual DocumentImportersRegistry* getImportSupport() = 0;
 
 signals:
     void si_documentFormatRegistered(DocumentFormat*);

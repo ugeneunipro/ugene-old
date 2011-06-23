@@ -456,7 +456,7 @@ void ConvertToSQLiteTask::run() {
         time_t packTime = time(0) - packStart;
         time_t totalTime = time(0) - startTime;
         
-        bamLog.trace(QString("BAM %1: imported %2 reads, total time %3 s, read time %4 s, pack time %5").arg(sourceUrl.fileName()).arg(QString::number(totalReadsImported)).arg(QString::number(totalTime)).arg(QString::number(totalReadTime)).arg(QString::number(packTime)));
+        ioLog.trace(QString("BAM %1: imported %2 reads, total time %3 s, read time %4 s, pack time %5").arg(sourceUrl.fileName()).arg(QString::number(totalReadsImported)).arg(QString::number(totalTime)).arg(QString::number(totalReadTime)).arg(QString::number(packTime)));
 
     } catch(const Exception &e) {
         setError(e.getMessage());

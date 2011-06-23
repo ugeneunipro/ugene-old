@@ -19,18 +19,51 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/DocumentModel.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/AppContext.h>
 #include "AddDocumentTask.h"
 
-namespace U2
-{
+#include <U2Core/ProjectModel.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/RemoveDocumentTask.h>
 
-AddDocumentTask::AddDocumentTask( Document * _d ) :
-Task( tr("Add document to the project: %1").arg(_d->getURLString()), TaskFlag_NoRun), d(_d)
+namespace U2 {
+
+
+AddDocumentTask::AddDocumentTask(Document * _d, const AddDocumentTaskConfig& _conf) :
+Task( tr("Add document to the project: %1").arg(_d->getURLString()), TaskFlags_NR_FOSCOE), d(_d), dpt(NULL), conf(_conf)
 {
     d->checkMainThreadModel();
+}
+
+AddDocumentTask::AddDocumentTask(DocumentProviderTask * _dpt, const AddDocumentTaskConfig& c) :
+Task( tr("Add document to the project: %1").arg(_dpt->getDocumentDescription()), TaskFlags_NR_FOSCOE), d(NULL), dpt(_dpt), conf(c)
+{
+    addSubTask(dpt);
+}
+
+QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> res;
+    if (dpt->isCanceled()) {
+        return res;
+    }
+    if (subTask == dpt) {
+        Document* doc = dpt->takeDocument();
+        if (!doc->isMainThreadModel()) {
+            d = doc->clone();
+            delete doc;
+        } else {
+            d = doc;
+        }
+        if (AppContext::getProject() == NULL) {
+            res << AppContext::getProjectLoader()->createNewProjectTask();
+        } else if (conf.unloadExistingDocument) {
+            Document* oldDoc = AppContext::getProject()->findDocumentByURL(d->getURL());
+            if (oldDoc != NULL && oldDoc != d) {
+                res << new RemoveMultipleDocumentsTask(AppContext::getProject(), QList<Document*>() << oldDoc, false, false);
+            }
+        }
+    }
+    return res;
 }
 
 Task::ReportResult AddDocumentTask::report() {
@@ -47,7 +80,7 @@ Task::ReportResult AddDocumentTask::report() {
         if (sameURLDoc!=NULL) {
             stateInfo.setError(tr("Document is already added to the project %1").arg(d->getURL().getURLString()));
         } else {
-            p->addDocument( d );
+            p->addDocument(d);
         }
     } else {
         stateInfo.setError(stateInfo.getError() + tr("Document was removed"));

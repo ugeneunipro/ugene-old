@@ -182,7 +182,6 @@ void TaskSchedulerImpl::unregisterFinishedTopLevelTasks() {
 void TaskSchedulerImpl::processNewSubtasks() {
     for (int i=0, n = tasksWithNewSubtasks.size();i<n; i++) {
         TaskInfo* ti = tasksWithNewSubtasks[i];
-        TaskFlags flags =  ti->task->getFlags();
         assert(ti->newSubtasks.size() > 0);
 
         int nParallel = ti->task->getNumParallelSubtasks();

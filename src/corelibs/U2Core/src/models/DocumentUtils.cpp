@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/DocumentImport.h>
 
 namespace U2 {
 
@@ -47,6 +48,9 @@ QSet<QString> DocumentUtils::getNewDocFileNameExcludesHint() {
 
 
 static void placeOrderedByScore(const FormatDetectionResult& info, QList<FormatDetectionResult>& result, const FormatDetectionConfig& conf) {
+    if (info.score == FormatDetection_NotMatched) {
+        return;
+    }
     if (result.isEmpty()) {
         result.append(info);
         return;
@@ -95,7 +99,26 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawD
         FormatDetectionResult res;
         res.format = f;
         res.score = score;
+        res.rawData = rawData;
+        res.url = url;
+        res.extension = ext;
         placeOrderedByScore(res, result, conf);
+    }
+    if (conf.useImporters) {
+        DocumentImportersRegistry* importReg = AppContext::getDocumentFormatRegistry()->getImportSupport();
+        foreach(DocumentImporter* i, importReg->getImporters()) {
+            int score = i->checkData(rawData, url);
+            if (conf.useExtensionBonus && i->getSupportedFileExtensions().contains(ext)) {
+                score+=FORMAT_DETECTION_EXT_BONUS;
+            }
+            FormatDetectionResult res;
+            res.importer = i;
+            res.score = score;
+            res.rawData = rawData;
+            res.url = url;
+            res.extension = ext;
+            placeOrderedByScore(res, result, conf);
+        }
     }
     return result;
 }

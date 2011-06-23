@@ -48,9 +48,12 @@ public:
     virtual Document* takeDocument() {Document* d = resultDocument; resultDocument = NULL; return d;}
 
     virtual void cleanup();
+    virtual QString getDocumentDescription() const {return documentDescription;}
 
 protected:
     Document* resultDocument;
+    /** provider's document description */
+    QString   documentDescription;
 };
 
 

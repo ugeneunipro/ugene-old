@@ -22,20 +22,38 @@
 #ifndef _U2_ADD_DOCUMENT_TASK_H_
 #define _U2_ADD_DOCUMENT_TASK_H_
 
-#include <qpointer.h>
 #include <U2Core/Task.h>
+#include <U2Core/DocumentModel.h>
+
+#include <QtCore/QPointer>
 
 namespace U2 {
-class Document;
 
+class Document;
+class DocumentProviderTask;
+
+class AddDocumentTaskConfig {
+public:
+    AddDocumentTaskConfig() : createProjectIfNeeded(true), unloadExistingDocument(false) {}
+    
+    bool createProjectIfNeeded;
+    bool unloadExistingDocument;
+};
 // Adds document to the project. Waits for locks if any
 class U2CORE_EXPORT AddDocumentTask : public Task {
     Q_OBJECT
 public:
-    AddDocumentTask( Document * d );
-    virtual ReportResult report();
+    AddDocumentTask(Document * d, const AddDocumentTaskConfig& c = AddDocumentTaskConfig());
+    AddDocumentTask(DocumentProviderTask* dp, const AddDocumentTaskConfig& c = AddDocumentTaskConfig());
+
+    ReportResult report();
+
+    QList<Task*> onSubTaskFinished(Task* subTask);
+    Document* getDocument() {return d.data();}
 private:
-    QPointer<Document> d;
+    QPointer<Document>      d;
+    DocumentProviderTask*   dpt;
+    AddDocumentTaskConfig   conf;
 };
 
 

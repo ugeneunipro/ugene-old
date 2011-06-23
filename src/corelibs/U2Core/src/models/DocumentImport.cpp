@@ -23,33 +23,22 @@
 
 namespace U2 {
 
-DocumentImportSupport::~DocumentImportSupport() {
-    qDeleteAll(importHandlers);
-    importHandlers.clear();
+DocumentImportersRegistry::~DocumentImportersRegistry() {
+    qDeleteAll(importers);
+    importers.clear();
 }
 
-QList<DocumentImportHandle> DocumentImportSupport::findImportHandlers(const QByteArray& rawData, const GUrl& url) const {
-    QList<DocumentImportHandle> res;
-    foreach(DocumentImportHandler* h, importHandlers) {
-        DocumentImportHandle handle = h->checkData(rawData, url);
-        if (handle.sourceFormatDetectionResult > FormatDetection_NotMatched) {
-            res.append(handle);
-        }
-    }
-    return res;
-}
-
-DocumentImportHandler* DocumentImportSupport::getDocumentImportHandler(const QString& handlerId) const {
-    foreach(DocumentImportHandler* h, importHandlers) {
-        if (h->getId() == handlerId) {
-            return h;
+DocumentImporter* DocumentImportersRegistry::getDocumentImporter(const QString& importerId) const {
+    foreach(DocumentImporter* i, importers) {
+        if (i->getId() == importerId) {
+            return i;
         }
     }
     return NULL;
 }
 
-void DocumentImportSupport::addDocumentImportHandler(DocumentImportHandler* h) {
-    importHandlers << h;
+void DocumentImportersRegistry::addDocumentImporter(DocumentImporter* i) {
+    importers << i;
 }
 
 

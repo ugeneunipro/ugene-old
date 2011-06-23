@@ -36,6 +36,7 @@ namespace U2 {
 #define RECENT_ITEMS_SETTINGS_NAME "recentItems"
 #define RECENT_PROJECTS_SETTINGS_NAME "recentProjects"
 
+class DocumentProviderTask;
 class ProjectLoaderImpl : public ProjectLoader {
     Q_OBJECT
 public:
@@ -118,9 +119,9 @@ private:
 };
 
 
-class LoadDocumentInfo {
+class AD2P_DocumentInfo {
 public:
-    LoadDocumentInfo() : iof (NULL), openView(false) {}
+    AD2P_DocumentInfo() : iof (NULL), openView(false) {}
     GUrl                    url;
     DocumentFormatId        formatId;
     IOAdapterFactory*       iof;
@@ -128,15 +129,25 @@ public:
     bool                    openView;
 };
 
+class AD2P_ProviderInfo {
+public:
+    AD2P_ProviderInfo() : dp (NULL), openView(false){}
+    DocumentProviderTask*   dp;
+    bool                    openView;
+};
+
 class AddDocumentsToProjectTask: public Task {
     Q_OBJECT
 public:
-    AddDocumentsToProjectTask(const QList<LoadDocumentInfo> docsInfo);
+    AddDocumentsToProjectTask(const QList<AD2P_DocumentInfo>& docsInfo, const QList<AD2P_ProviderInfo>& providersInfo);
+    ~AddDocumentsToProjectTask();
+
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 private:
     QList<Task*> prepareLoadTasks();
 
-    QList<LoadDocumentInfo> docsInfo;
+    QList<AD2P_DocumentInfo> docsInfo;
+    QList<AD2P_ProviderInfo> providersInfo;
     bool loadTasksAdded;
 };
 

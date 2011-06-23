@@ -214,6 +214,10 @@ bool ConvertToSQLiteDialog::addToProject() const {
     return ui.addToProjectBox->isChecked();
 }
 
+void ConvertToSQLiteDialog::hideAddToProjectOption() {
+    ui.addToProjectBox->hide();
+}
+
 void ConvertToSQLiteDialog::accept() {
     destinationUrl = GUrl(ui.destinationUrlEdit->text());
     // TODO: deal with unmapped reads

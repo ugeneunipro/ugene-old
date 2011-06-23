@@ -20,7 +20,6 @@
  */
 
 #include "OpenViewTask.h"
-#include <U2Core/AddDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/AppContext.h>
@@ -266,7 +265,6 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
                 assert(clonedDoc->isLoaded());
                 subTasks.append(new AddDocumentTask(clonedDoc));
                 subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(clonedDoc));
-
             }    
         }
     }
@@ -275,20 +273,31 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
 }
 
 
-AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( Document* d )
-:Task("AddDocumentAndOpenViewTask", TaskFlags_NR_FOSCOE), doc(d)
+AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( Document* doc, const AddDocumentTaskConfig& conf)
+:Task(tr("Opening view for document: %1").arg(doc->getURL().fileName()), TaskFlags_NR_FOSCOE)
 {
-    assert(doc != NULL);
     setMaxParallelSubtasks(1);
+    addSubTask(new AddDocumentTask(doc, conf));
 } 
 
-void AddDocumentAndOpenViewTask::prepare() {
-    Project* proj = AppContext::getProject();
-    if (proj == NULL) {
-        addSubTask(  AppContext::getProjectLoader()->createNewProjectTask() );
+AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( DocumentProviderTask* dp, const AddDocumentTaskConfig& conf )
+:Task(tr("Opening view for document: %1").arg(dp->getDocumentDescription()), TaskFlags_NR_FOSCOE)
+{
+    setMaxParallelSubtasks(1);
+    addSubTask(new AddDocumentTask(dp, conf));
+} 
+
+
+QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished(Task* t) {
+    QList<Task*> res;
+    AddDocumentTask* addTask = qobject_cast<AddDocumentTask*>(t);
+    if (addTask != NULL && !addTask->getStateInfo().isCoR()) {
+        Document* doc = addTask->getDocument();
+        assert(doc != NULL);
+        res << new LoadUnloadedDocumentAndOpenViewTask(doc);
     }
-    addSubTask(new AddDocumentTask(doc));
-    addSubTask(new LoadUnloadedDocumentAndOpenViewTask(doc));
+    return res;
 }
+
 
 }//namespace

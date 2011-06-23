@@ -19,26 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMainWindow>
 #include <U2Core/AppContext.h>
 #include <U2Core/DbiDocumentFormat.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/ProjectModel.h>
+
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
+
 #include <U2Misc/DialogUtils.h>
+
 #include "Dbi.h"
 #include "Exception.h"
 #include "ConvertToSQLiteDialog.h"
 #include "ConvertToSQLiteTask.h"
 #include "BAMDbiPlugin.h"
 #include "LoadBamInfoTask.h"
+
+
+#include <QtGui/QAction>
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMainWindow>
 
 namespace U2 {
 namespace BAM {
@@ -56,10 +62,12 @@ BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface fo
 
     {
         MainWindow *mainWindow = AppContext::getMainWindow();
-        if(NULL != mainWindow) {
+        if (NULL != mainWindow) {
             QAction *converterAction = new QAction(tr("Import BAM/SAM File..."), this);
             connect(converterAction, SIGNAL(triggered()), SLOT(sl_converter()));
             mainWindow->getTopLevelMenu(MWMENU_TOOLS)->addAction(converterAction);
+
+            AppContext::getDocumentFormatRegistry()->getImportSupport()->addDocumentImporter(new BAMImporter());
         }
     }
 }
@@ -148,6 +156,62 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
         openViewTask->setMaxParallelSubtasks(1);    
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(openViewTask);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// BAM importer
+BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM file import")){
+    extensions << "bam";
+}
+
+FormatDetectionScore BAMImporter::checkData(const QByteArray& rawData, const GUrl& url) {
+    QString s;
+    bool ok = url.lastFileSuffix().toLower() == "bam" 
+                && TextUtils::contains(TextUtils::BINARY, rawData.constData(), rawData.length());
+    if (ok) {
+        return FormatDetection_VeryHighSimilarity;
+    }
+    return FormatDetection_NotMatched;
+}
+
+DocumentProviderTask* BAMImporter::createImportTask(const FormatDetectionResult& res, bool showWizard) {
+    return new BAMImporterTask(res.url, showWizard);
+}
+
+
+BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui) 
+: DocumentProviderTask(tr("BAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE)
+{
+    useGui = _useGui;
+    convertTask = NULL;
+    loadDocTask = NULL;
+    loadInfoTask = new LoadInfoTask(url, false);
+    addSubTask(loadInfoTask);
+
+    documentDescription = url.fileName();
+}
+
+QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> res;
+    if (loadInfoTask == subTask) {
+        ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), false);
+        convertDialog.hideAddToProjectOption();
+        int rc = convertDialog.exec();
+        if (rc == QDialog::Accepted) {
+            GUrl destUrl = convertDialog.getDestinationUrl();
+            convertTask = new ConvertToSQLiteTask(loadInfoTask->getSourceUrl(), destUrl, loadInfoTask->getInfo(), false);
+            res << convertTask;
+        } else {
+            stateInfo.setCanceled(true);
+        }
+    } else if (convertTask == subTask) {
+        loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
+        res << loadDocTask;
+    } else {
+        assert(subTask == loadDocTask);
+        resultDocument = loadDocTask->takeDocument();
+    }
+    return res;
 }
 
 } // namespace BAM

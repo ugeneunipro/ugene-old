@@ -24,12 +24,15 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/GUrl.h>
+#include <U2Core/AddDocumentTask.h>
 
 namespace U2 {
 
 class Document;
 class LoadDocumentTask;
 class LoadRemoteDocumentTask;
+class DocumentProviderTask;
+
 
 class U2GUI_EXPORT LoadUnloadedDocumentAndOpenViewTask : public Task {
     Q_OBJECT
@@ -76,14 +79,11 @@ private:
 class U2GUI_EXPORT AddDocumentAndOpenViewTask : public Task {
     Q_OBJECT
 public:
-    AddDocumentAndOpenViewTask(Document* d);
+    AddDocumentAndOpenViewTask(Document* d, const AddDocumentTaskConfig& conf = AddDocumentTaskConfig());
+    AddDocumentAndOpenViewTask(DocumentProviderTask* d, const AddDocumentTaskConfig& conf = AddDocumentTaskConfig());
 protected:
-    void prepare();
-private:
-    Document* doc;
-
+    QList<Task*> onSubTaskFinished(Task* t);
 };
-
 
 
 }//namespace

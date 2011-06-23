@@ -40,7 +40,7 @@ public:
 
     const GUrl &getDestinationUrl()const;
     bool        addToProject() const;
-    
+    void        hideAddToProjectOption();
 public slots:
     virtual void accept();
 

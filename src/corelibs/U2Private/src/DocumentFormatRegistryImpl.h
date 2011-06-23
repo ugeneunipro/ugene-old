@@ -23,7 +23,9 @@
 #define _DOCUMENT_FORMAT_REGISTRY_IMPL_H_
 
 #include "private.h"
+
 #include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentImport.h>
 
 namespace U2 {
 
@@ -43,9 +45,13 @@ public:
 
     virtual QList<DocumentFormatId> selectFormats(const DocumentFormatConstraints& c) const;
 
+    virtual DocumentImportersRegistry* getImportSupport() {return &importSupport;}
+
 private:
     void init();
+
     QList<DocumentFormat*>      formats;
+    DocumentImportersRegistry   importSupport;
 };
 
 }//namespace

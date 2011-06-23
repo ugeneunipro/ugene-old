@@ -44,7 +44,7 @@ namespace LocalWorkflow {
 
 
 /*
-/****************************
+ ****************************
  * ClustalWWorkerFactory
  ****************************/
 //const QString ClustalWWorkerFactory::ACTOR_ID("clustalw");

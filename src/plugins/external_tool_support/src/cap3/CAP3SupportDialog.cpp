@@ -29,8 +29,8 @@ namespace U2 {
 ////////////////////////////////////////
 //CAP3SupportDialog
 
-CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent) :
-    settings(s), QDialog(parent)
+CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent) 
+: QDialog(parent), settings(s)
 {
     setupUi(this);
     

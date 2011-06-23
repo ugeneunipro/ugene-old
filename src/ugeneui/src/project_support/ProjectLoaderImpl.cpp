@@ -29,6 +29,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/CMDLineUtils.h>
+#include <U2Core/DocumentImport.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Misc/DialogUtils.h>
 
@@ -249,7 +251,9 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
     }
     
     // detect all formats from urls list and add files to project
-    QList<LoadDocumentInfo> docsInfo;
+    QList<AD2P_DocumentInfo> docsInfo;
+    QList<AD2P_ProviderInfo> docProviders;
+    int nViews = 0;
     foreach(const GUrl& url, urls) {
         if (url.lastFileSuffix() == PROJECT_FILE_PURE_EXT) {
             // skip extra project files
@@ -275,24 +279,35 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                 AppContext::getProjectView()->highlightItem(doc);
             }
         } else {
-            QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url);
+            FormatDetectionConfig conf;
+            conf.useImporters = true;
+            QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, conf);
             if (!formats.isEmpty()) {
-                LoadDocumentInfo info;
-                info.openView = docsInfo.size() < MAX_DOCS_TO_OPEN_VIEWS;
-                info.url = url;
-                info.hints = hints;
-                info.formatId = formats.first().format->getFormatId(); 
-                info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
-                docsInfo.append(info);
+                const FormatDetectionResult& dr = formats.first();
+                if (dr.format != NULL ) {
+                    AD2P_DocumentInfo info;
+                    info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
+                    info.url = url;
+                    info.hints = hints;
+                    info.formatId = formats.first().format->getFormatId(); 
+                    info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+                    docsInfo << info;
+                } else {
+                    assert(dr.importer != NULL);
+                    AD2P_ProviderInfo info;
+                    info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
+                    info.dp = formats.first().importer->createImportTask(dr, true);
+                    docProviders << info;
+                }
             } else {
                 coreLog.error(tr("Failed to detect file format: %1").arg(url.getURLString()));
             }
         }
     }
-    if (docsInfo.isEmpty()) {
+    if (docsInfo.isEmpty() && docProviders.isEmpty()) {
         return NULL;
     }
-    return new AddDocumentsToProjectTask(docsInfo);
+    return new AddDocumentsToProjectTask(docsInfo, docProviders);
 }
 
 Task* ProjectLoaderImpl::createNewProjectTask(const GUrl& url) {
@@ -562,17 +577,15 @@ Project* ProjectLoaderImpl::createProject(const QString& name, const QString& ur
 //////////////////////////////////////////////////////////////////////////
 // Add documents to project task
 
-AddDocumentsToProjectTask::AddDocumentsToProjectTask(const QList<LoadDocumentInfo> _docsInfo) 
-: Task(tr("Loading documents"), TaskFlag_NoRun), docsInfo(_docsInfo), loadTasksAdded(false)
+AddDocumentsToProjectTask::AddDocumentsToProjectTask(const QList<AD2P_DocumentInfo>& _docsInfo, const QList<AD2P_ProviderInfo>& _provInfo) 
+: Task(tr("Loading documents"), TaskFlag_NoRun), docsInfo(_docsInfo), providersInfo(_provInfo), loadTasksAdded(false)
 {    
     setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
 
     Project* p = AppContext::getProject();
     if (!p) {
         // create anonymous project
-        coreLog.info(tr("Creating new project"));
-        p = new ProjectImpl("", "");
-        Task* rpt = new RegisterProjectServiceTask(p);
+        Task* rpt = AppContext::getProjectLoader()->createNewProjectTask();
         rpt->setSubtaskProgressWeight(0);
         addSubTask(rpt);
     } else {
@@ -584,28 +597,31 @@ AddDocumentsToProjectTask::AddDocumentsToProjectTask(const QList<LoadDocumentInf
     }
 }
 
-QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task* subTask) {
-    Q_UNUSED(subTask);
+AddDocumentsToProjectTask::~AddDocumentsToProjectTask() {
+    if (!loadTasksAdded) {
+        foreach(const AD2P_ProviderInfo& info, providersInfo) {
+            delete info.dp;
+        }
+    }
+}
+
+QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task*) {
     QList<Task*> res;
     if (!loadTasksAdded) {
-        loadTasksAdded = true;
         res = prepareLoadTasks();
+        loadTasksAdded = true;
     }
     return res;   
 };
 
 QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
     QList<Task*> res;
+
     Project* p = AppContext::getProject();
-    if (p == NULL) {
-        coreLog.error(tr("No active project found!"));
-        return res;
-    }
-    foreach(const LoadDocumentInfo& info, docsInfo) {
-        //1. add all documents to project as unloaded documents
+    SAFE_POINT(p != NULL, tr("No active project found!"), res);
+
+    foreach(const AD2P_DocumentInfo& info, docsInfo) {
         Document* doc = p->findDocumentByURL(info.url);
-        Task* addDocumentTask = NULL;
-        Task* openViewTask = NULL;
         if (doc == NULL) {
             DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(info.formatId);
             GObjectType t = df->getSupportedObjectTypes().toList().first();
@@ -613,24 +629,24 @@ QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
                 continue;
             }
             doc = new Document(df, info.iof, info.url);;
-            addDocumentTask = new AddDocumentTask(doc);
-            addDocumentTask->setSubtaskProgressWeight(0);
         }
         if (info.openView) {
-            openViewTask = new LoadUnloadedDocumentAndOpenViewTask(doc);
-        }
-        if (addDocumentTask == NULL || openViewTask == NULL) {
-            if (addDocumentTask!=NULL) {
-                res << addDocumentTask;
-            } else {
-                res << openViewTask;
-            }
+            res << new AddDocumentAndOpenViewTask(doc);
         } else {
-            QList<Task*> tasks;
-            tasks << addDocumentTask << openViewTask;
-            res << new MultiTask(tr("Load and open view for: %1").arg(info.url.fileName()), tasks);
+            res << new AddDocumentTask(doc);
         }
     }
+
+    AddDocumentTaskConfig conf;
+    conf.unloadExistingDocument = true;// -> re-import kills old version
+    foreach(const AD2P_ProviderInfo& info, providersInfo) {
+        if (info.openView) {
+            res << new AddDocumentAndOpenViewTask(info.dp, conf);
+        } else {
+            res << new AddDocumentTask(info.dp, conf);
+        }
+    }
+
     return res;
 }
 

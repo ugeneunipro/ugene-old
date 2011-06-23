@@ -163,33 +163,13 @@ void GraphicsRectangularBranchItem::setHeightCoef(int coef){
 }
 
 void GraphicsRectangularBranchItem::swapSiblings() {
-
-    if(!phyBranch){
+    if (!phyBranch) {
         return ;
     }
-
-    QList<QGraphicsItem*> items = this->childItems();
-
-    GraphicsRectangularBranchItem *firstBranch = NULL, *secondBranch = NULL;
-
-    for (int i=0; i<items.size(); i++) {
-        QGraphicsItem *childItem = items[i];
-        GraphicsRectangularBranchItem *branchItem = dynamic_cast<GraphicsRectangularBranchItem*>(childItem);
-
-        if (branchItem) {
-            if (!firstBranch) {
-                firstBranch = branchItem;
-            }
-            else {
-                secondBranch = branchItem;
-            }
-        }
-    }
-
+    
     PhyNode* nodeTo = phyBranch->node2;
-
     int branchCount = nodeTo->branches.count();
-    if (branchCount>2) {
+    if (branchCount > 2) {
         nodeTo->branches.swap(0, 2);
     }
 }

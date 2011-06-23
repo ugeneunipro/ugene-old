@@ -29,7 +29,7 @@
 
 namespace U2 {
 
-class DocumentImportHandler;
+class DocumentImporter;
 
 /** 
     Result of the format detection.
@@ -39,19 +39,22 @@ class U2CORE_EXPORT FormatDetectionResult {
 public:
     FormatDetectionResult() : format(NULL), importer(NULL), score(FormatDetection_NotMatched){}
     DocumentFormat*         format;
-    DocumentImportHandler*  importer;
+    DocumentImporter*       importer;
     int                     score;
+    QByteArray              rawData;
+    GUrl                    url;
+    QString                 extension;
 };
 
 class U2CORE_EXPORT FormatDetectionConfig {
 public:
-    FormatDetectionConfig() : bestMatchesOnly(true), documentFormatsOnly(true), useExtensionBonus(true){}
+    FormatDetectionConfig() : bestMatchesOnly(true), useImporters(false), useExtensionBonus(true){}
     
     /** if true format detection algorithm returns list of best matches only */
     bool bestMatchesOnly;
     
-    /** if true format detection algorithm do not test format converters and returns only real formats */
-    bool documentFormatsOnly;
+    /** if false format detection algorithm do not test format importers and returns only real formats */
+    bool useImporters;
 
     /** if true file extension is checked and bonus is added if extension is matched for a format*/
     bool useExtensionBonus;

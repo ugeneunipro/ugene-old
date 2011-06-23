@@ -49,6 +49,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // DocumentProviderTask
 DocumentProviderTask::DocumentProviderTask(const QString& name, TaskFlags flags) : Task(name, flags), resultDocument(NULL) {
+    documentDescription = tr("[unknown]");
 }
 
 void DocumentProviderTask::cleanup(){
@@ -198,6 +199,7 @@ LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u,
 : DocumentProviderTask("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), config(_config)
 {
     setTaskName(tr("Read document: '%1'").arg(u.fileName()));
+    documentDescription = u.getURLString();
  
     tpm = Progress_Manual;
     assert(iof!=NULL);

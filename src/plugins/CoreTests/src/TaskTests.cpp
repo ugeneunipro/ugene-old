@@ -267,7 +267,7 @@ void GTest_TaskCheckFlag::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
     bool ok = false;
-    TaskFlags taskFlags = flagsFromString(taskFlags_str,&ok);
+    /*TaskFlags taskFlags = */flagsFromString(taskFlags_str,&ok);
     if(!ok) {
         failMissingValue(FLAGS_ATTR);
         return;
