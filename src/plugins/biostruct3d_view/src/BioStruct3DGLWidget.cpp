@@ -105,8 +105,8 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
         defaultsSettings(), currentColorSchemeName(), currentGLRendererName(),
         chainIdCache(), cameraClipNear(0), cameraClipFar(0),
         rotAngle(0), spinAngle(0), rotAxis(), lastPos(),
-        lightPostion(), backgroundColor(),
-        selectionColor(), animationTimer(0),
+        lightPostion(), backgroundColor(DEFAULT_BACKGROUND_COLOR),
+        selectionColor(DEFAULT_SELECTION_COLOR), animationTimer(0),
         unselectedShadingLevel(DEFAULT_SHADING_LEVEL),
 
         spinAction(0), settingsAction(0), closeAction(0), exportImageAction(0), selectModelsAction(0), alignWithAction(0),
