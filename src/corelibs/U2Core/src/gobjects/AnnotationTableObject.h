@@ -212,6 +212,7 @@ U2CORE_EXPORT QDataStream& operator<<(QDataStream& dataStream, const AnnotationG
 class AnnotationsLocker: public QObject {
     Q_OBJECT
 public:
+    AnnotationsLocker();
     void setToDelete(const QList<Annotation*>& _anns, AnnotationGroup *_parentGroup, int counter);
     void releaseLocker();
     bool isLocked() const;

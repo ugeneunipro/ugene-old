@@ -43,6 +43,7 @@ private:
     QString                         groupName;
     QList<Annotation*>              toDelete;
     int                             pos;
+    bool                            annsSet;
 };
 
 }//namespace

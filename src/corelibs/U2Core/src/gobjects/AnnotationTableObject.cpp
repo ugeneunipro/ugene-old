@@ -779,8 +779,7 @@ bool annotationGreaterThanByRegion( const Annotation* a1, const Annotation* a2 )
 }
 
 
-void AnnotationsLocker::setToDelete( const QList<Annotation*>& _anns, AnnotationGroup *_parentGroup, int counter )
-{
+void AnnotationsLocker::setToDelete( const QList<Annotation*>& _anns, AnnotationGroup *_parentGroup, int counter ) {
     anns = _anns;
     parentGroup = _parentGroup;
     deleteCounter = counter;
@@ -802,6 +801,9 @@ void AnnotationsLocker::sl_Clean(){
         anns.clear();
         parentGroup->getParentGroup()->removeSubgroup(parentGroup);
     }
+}
+
+AnnotationsLocker::AnnotationsLocker(): parentGroup(NULL), deleteCounter(0) {
 }
 }//namespace
 

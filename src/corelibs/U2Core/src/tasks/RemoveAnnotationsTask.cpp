@@ -32,7 +32,7 @@ namespace U2 {
 RemoveAnnotationsTask::RemoveAnnotationsTask( AnnotationTableObject* ao, const QString& gName )
 :Task("RemoveAnnotationsTask",TaskFlag_NoRun), aobj(ao), groupName(gName), pos(0)
 {
-
+    annsSet = false;
     assert(ao != NULL);
 }
 
@@ -43,7 +43,7 @@ void RemoveAnnotationsTask::prepare()
         return;
     }
 
-    subGroup = aobj->getRootGroup()->getSubgroup(groupName, false);
+    /*subGroup = aobj->getRootGroup()->getSubgroup(groupName, false);
     if (subGroup == NULL) {
         stateInfo.setError(tr("Subgroup %1 is not found").arg(groupName));
         return;
@@ -69,9 +69,9 @@ void RemoveAnnotationsTask::prepare()
     int size = toDelete.size();
     if (size == 0) {
         return ;
-    }
+    }*/
 
-    aobj->removeAnnotationsInGroup(toDelete, subGroup);
+ //   aobj->removeAnnotationsInGroup(toDelete, subGroup);
 }
 
 
@@ -79,10 +79,45 @@ void RemoveAnnotationsTask::prepare()
 
 Task::ReportResult RemoveAnnotationsTask::report() {
     //aobj->releaseLocker();
-    if(aobj->isLocked()) {
-        return ReportResult_CallMeAgain;
+    if(!annsSet) {
+        if(aobj->isLocked()) {
+            return ReportResult_CallMeAgain;
+        } else {
+            
+            subGroup = aobj->getRootGroup()->getSubgroup(groupName, false);
+            if (subGroup == NULL) {
+                return ReportResult_Finished;
+            }
+            QSet<Annotation*> annotations;
+            subGroup->findAllAnnotationsInGroupSubTree(annotations);
+            toDelete = annotations.toList();
+
+            if (hasError() || isCanceled() )  {
+                return ReportResult_Finished;
+            }
+
+
+            if (aobj->isStateLocked()) {
+                stateInfo.setDescription(tr("Waiting for object lock released"));
+                return ReportResult_Finished;
+            }
+
+            int size = toDelete.size();
+            if (size == 0) {
+                return ReportResult_Finished;
+            }
+
+            annsSet = true;
+            aobj->removeAnnotationsInGroup(toDelete, subGroup);
+            return ReportResult_CallMeAgain;
+        }
     } else {
-        aobj->cleanAnnotations();
+        if(aobj->isLocked()) {
+            return ReportResult_CallMeAgain;
+        } else {
+            aobj->cleanAnnotations();
+            annsSet = false;
+        }
     }
     return ReportResult_Finished;
 }
