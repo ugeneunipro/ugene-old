@@ -288,13 +288,13 @@ void BioStruct3DChainSelection::remove(int chain, const QVector<U2Region> &regio
 }
 
 void BioStruct3DChainSelection::update(int chain, const U2Region &add, const U2Region &remove) {
-    this->add(chain, add);
     this->remove(chain, remove);
+    this->add(chain, add);
 }
 
 void BioStruct3DChainSelection::update(int chain, const QVector<U2Region> &adds, const QVector<U2Region> &removes) {
-    add(chain, adds);
     remove(chain, removes);
+    add(chain, adds);
 }
 
 } // namespace U2

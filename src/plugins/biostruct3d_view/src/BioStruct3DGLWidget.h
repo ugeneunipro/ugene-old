@@ -236,11 +236,9 @@ private:
 
     void saveDefaultSettings();
 
-    int getChainIdForAnnotationObject(AnnotationTableObject* ao); 
     void connectExternalSignals();
 
     Vector3D getTrackballMapping(int x, int y);
-    static int getSequenceChainId(const DNASequenceObject* seqObj);
     static int getWidgetCount(QString objectName);
     bool isSyncModeOn();
 
@@ -326,7 +324,6 @@ private slots:
      void sl_onSequenceAddedToADV(ADVSequenceObjectContext *ctx);
      void sl_onSequenceRemovedFromADV(ADVSequenceObjectContext *ctx);
      void sl_onSequenceSelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed);
-     void sl_onAnnotationSelectionChanged(AnnotationSelection* thiz, const QList<Annotation*>& added, const QList<Annotation*>& removed);
 
      // slots for select/deselect shown models actions
      // they affects only first biostruct
