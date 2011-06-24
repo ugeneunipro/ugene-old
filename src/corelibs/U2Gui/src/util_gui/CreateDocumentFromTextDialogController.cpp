@@ -59,6 +59,7 @@ CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(Q
 
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
+    connect(ui->filepathEdit, SIGNAL(textChanged ( const QString &)), this, SLOT(sl_filepathTextChanged(const QString &)));
     ui->nameEdit->setText("Sequence");
 
     sl_indexChanged(0);
@@ -70,7 +71,7 @@ void CreateDocumentFromTextDialogController::sl_browseButtonClicked(){
     LastOpenDirHelper h;
     h.url = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
     ui->filepathEdit->setText(QDir::toNativeSeparators(h.url));
-    sl_indexChanged(ui->formatBox->currentIndex());
+    sl_indexChanged(ui->formatBox->currentIndex());   
 }
 
 void CreateDocumentFromTextDialogController::accept(){
@@ -199,4 +200,12 @@ CreateDocumentFromTextDialogController::~CreateDocumentFromTextDialogController(
 {
     delete ui;
 }
+
+void CreateDocumentFromTextDialogController::sl_filepathTextChanged( const QString &text ){
+    QFileInfo newFile(text);
+    if(ui->nameEdit->text() != newFile.baseName()){
+        newFile.baseName().isEmpty() ? ui->nameEdit->setText("Sequence") : ui->nameEdit->setText(newFile.baseName());
+    }
+}
+
 }//ns

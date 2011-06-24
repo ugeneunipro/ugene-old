@@ -48,6 +48,7 @@ private slots:
     void sl_browseButtonClicked();
     void sl_indexChanged(int index);
     void sl_projectLoaded();
+    void sl_filepathTextChanged(const QString &text);
     
 private:
     void addSeqPasterWidget();
