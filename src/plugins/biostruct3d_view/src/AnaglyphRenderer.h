@@ -44,7 +44,7 @@ public:
 
 public:
     static AnaglyphSettings defaultSettings() {
-        return AnaglyphSettings(1.6, QColor(0, 255, 255), QColor(255, 0, 0));
+        return AnaglyphSettings(1.6f, QColor(0, 255, 255), QColor(255, 0, 0));
     }
 
 public:
