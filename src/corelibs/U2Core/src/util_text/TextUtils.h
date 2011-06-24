@@ -48,6 +48,9 @@ public:
 
     static const QByteArray SPACE_LINE;
 
+    static const QBitArray QUALIFIER_NAME_CHARS;
+    static const QBitArray ANNOTATIONS_NAME_CHARS;
+
     inline static const char* getLineOfSpaces(int nspaces);
 
     inline static bool fits(const QBitArray& map, const char* str, int len);

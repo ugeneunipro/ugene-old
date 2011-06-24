@@ -36,6 +36,7 @@ static QByteArray getLowerCaseMap();
 static QByteArray getSpaceLine();
 static QBitArray getLessThan();
 static QBitArray getGrearThan();
+static QBitArray getQualNameAllowedSymbols();
 
 const QBitArray TextUtils::ALPHAS = getAlphas();
 const QBitArray TextUtils::ALPHA_NUMS = getAlphaNums();
@@ -48,12 +49,20 @@ const QByteArray TextUtils::LOWER_CASE_MAP = getLowerCaseMap();
 const QByteArray TextUtils::SPACE_LINE = getSpaceLine();
 const QBitArray TextUtils::LESS_THAN = getLessThan();
 const QBitArray TextUtils::GREATER_THAN = getGrearThan();
+const QBitArray TextUtils::QUALIFIER_NAME_CHARS = getAlphas() | getNums() | getQualNameAllowedSymbols();
+const QBitArray TextUtils::ANNOTATIONS_NAME_CHARS = TextUtils::QUALIFIER_NAME_CHARS;
 
 
 //TODO: optimize shared data structs access! -> replace it with arrays with bounds checking in debug
 
 static QBitArray getEmptyBitMap() {
     return QBitArray(256);
+}
+
+static QBitArray getQualNameAllowedSymbols(){
+    QBitArray res = getEmptyBitMap();
+    res['-']=res['\'']=res['_']=res['*']=true;
+    return res;
 }
 
 static QBitArray getBinary() {
