@@ -25,7 +25,7 @@
 #include "AssemblyModel.h"
 
 #include <algorithm>
-#include <cmath>
+#include <limits>
 
 namespace U2 {
 
@@ -35,28 +35,12 @@ BackgroundTask<CoverageInfo>("Calculate assembly coverage", TaskFlag_None), sett
     tpm = Progress_Manual;
 };
 
-// see commented code below
-// to calc sum in QVector
-//struct SumCounter {
-//    qint64 sum;
-//    SumCounter() : sum(0) {}
-//    void operator()(qint64 x) {sum += x;}
-//};
-
 void CalcCoverageInfoTask::run() {
-    const int numOfRegions = settings.regions;
-    result.coverageInfo.resize(settings.regions);
-    
-    double basesPerRegion = double(settings.visibleRange.length) / numOfRegions;
-    qint64 maxReadsPerRegion = 0;
-    qint64 minReadsPerRegion = qint64(1) << 62;
-    qint64 sum = 0;
-    qint64 start = settings.visibleRange.startPos;
 
-    U2AssemblyCoverageStat coverageStat;
+    U2AssemblyCoverageStat cachedCoverageStat;
     {
         U2OpStatusImpl status;
-        coverageStat = settings.model->getCoverageStat(status);
+        cachedCoverageStat = settings.model->getCoverageStat(status);
         if(status.hasError()) {
             stateInfo.setError(status.getError());
             return;
@@ -72,76 +56,50 @@ void CalcCoverageInfoTask::run() {
             return;
         }
     }
-    double coverageStatBasesPerRegion = (double)modelLength/coverageStat.coverage.size();
-    
-    for(int i = 0 ; i < numOfRegions; ++i) {
-        //jump to next region
-        start = settings.visibleRange.startPos + basesPerRegion * i;
-        
-        //check cancel and update progress
-        if(stateInfo.cancelFlag) {
-            return;
-        }
-        stateInfo.progress = double(i) / numOfRegions * 100.;
-        
-        qint64 readsPerRegion = 0;
-        if(!coverageStat.coverage.isEmpty() && (coverageStatBasesPerRegion <= basesPerRegion)) {
-            // downsample the precalculated coverage info to the specified number of regions
-            double startPosition = start/coverageStatBasesPerRegion;
-            double endPosition = (start + basesPerRegion)/coverageStatBasesPerRegion;
-            if(endPosition >= coverageStat.coverage.size()) {
-                endPosition = coverageStat.coverage.size() - 1;
-            }
-            double value = 0;
-            value += coverageStat.coverage[(int)startPosition].maxValue*(1 - std::fmod(startPosition, 1.0));
-            value += coverageStat.coverage[(int)endPosition].maxValue*std::fmod(endPosition, 1.0);
-            for(int j = (int)startPosition + 1;j < (int)endPosition;j++) {
-                value += coverageStat.coverage[j].maxValue;
-            }
-            readsPerRegion = qRound64(value);
-        } else {
-            //get region coverage info from DB
+    double basesPerRegion = (double)settings.visibleRange.length/settings.regions;
+    double coverageStatBasesPerRegion = (double)modelLength/cachedCoverageStat.coverage.size();
+
+    result.coverageInfo.resize(settings.regions);
+
+    if(cachedCoverageStat.coverage.isEmpty() || (coverageStatBasesPerRegion > basesPerRegion)) {
+        U2AssemblyCoverageStat coverageStat;
+        coverageStat.coverage.resize(settings.regions);
+        {
             U2OpStatusImpl status;
-            readsPerRegion = settings.model->countReadsInAssembly(U2Region(start, qRound64(basesPerRegion)), status);
+            settings.model->calculateCoverageStat(settings.visibleRange, coverageStat, status);
             if(status.hasError()) {
                 stateInfo.setError(status.getError());
                 return;
             }
         }
-        result.coverageInfo[i] = readsPerRegion;
-
-        //update min and max
-        if(maxReadsPerRegion < readsPerRegion) {
-            maxReadsPerRegion = readsPerRegion;
+        assert(coverageStat.coverage.size() == settings.regions);
+        for(int regionIndex = 0;regionIndex < settings.regions;regionIndex++) {
+            result.coverageInfo[regionIndex] = coverageStat.coverage[regionIndex].maxValue;
         }
-        if(minReadsPerRegion > readsPerRegion) {
-            minReadsPerRegion = readsPerRegion;
+    } else {
+        for(int regionIndex = 0;regionIndex < settings.regions;regionIndex++) {
+            int startPosition = qRound((settings.visibleRange.startPos + basesPerRegion*regionIndex)/coverageStatBasesPerRegion);
+            int endPosition = qRound((settings.visibleRange.startPos + basesPerRegion*(regionIndex + 1))/coverageStatBasesPerRegion);
+            result.coverageInfo[regionIndex] = 0;
+            for(int i = startPosition;i < endPosition;i++) {
+                result.coverageInfo[regionIndex] = std::max(result.coverageInfo[regionIndex], (qint64)cachedCoverageStat.coverage[i].maxValue);
+            }
         }
-        sum += readsPerRegion;
     }
-    
-    result.maxCoverage = maxReadsPerRegion;
-    result.minCoverage = minReadsPerRegion;
-    
-    U2OpStatusImpl status;
-    result.averageCoverage = double(sum) / numOfRegions;
-    
-    // Code with accurate coverage counting, commented due to performance issues
-    // calculate coverage
-    //U2AssemblyCoverageStat stat;
-    //stat.coverage.resize(settings.regions);
-    //settings.model->calculateCoverageStat(settings.visibleRange, stat, stateInfo);
-    //if(hasError()) {
-    //    return;
-    //}
-    //
-    //// fill the result
-    //result.coverageInfo = stat.coverage;
-    //result.maxCoverage = *std::max_element(result.coverageInfo.constBegin(), result.coverageInfo.constEnd());
-    //result.minCoverage = *std::min_element(result.coverageInfo.constBegin(), result.coverageInfo.constEnd());
-    
-    //SumCounter counter = std::for_each(result.coverageInfo.constBegin(), result.coverageInfo.constEnd(), SumCounter());
-    //result.averageCoverage = double(counter.sum) / settings.regions;
+
+    {
+        result.maxCoverage = 0;
+        result.minCoverage = std::numeric_limits<qint64>::max();
+
+        qint64 sum = 0;
+
+        for(int regionIndex = 0;regionIndex < settings.regions;regionIndex++) {
+            result.maxCoverage = std::max(result.maxCoverage, result.coverageInfo[regionIndex]);
+            result.minCoverage = std::min(result.maxCoverage, result.coverageInfo[regionIndex]);
+            sum += result.coverageInfo[regionIndex];
+        }
+        result.averageCoverage = (double)sum/settings.regions;
+    }
 }
 
 }

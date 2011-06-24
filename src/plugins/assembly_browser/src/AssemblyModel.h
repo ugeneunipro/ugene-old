@@ -43,7 +43,7 @@ public:
     qint64 countReadsInAssembly(const U2Region & r, U2OpStatus & os);
     void calculateCoverageStat(const U2Region & r, U2AssemblyCoverageStat & stat, U2OpStatus & os);
 
-    U2AssemblyCoverageStat &getCoverageStat(U2OpStatus & os);
+    const U2AssemblyCoverageStat &getCoverageStat(U2OpStatus & os);
     
     U2Region getGlobalRegion();
 

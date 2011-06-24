@@ -92,7 +92,7 @@ void AssemblyModel::calculateCoverageStat(const U2Region & r, U2AssemblyCoverage
     return assemblyDbi->calculateCoverage(assembly.id, r, stat, os);
 }
 
-U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
+const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
     if(cachedCoverageStat.coverage.isEmpty()) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         if(NULL != attributeDbi) {
