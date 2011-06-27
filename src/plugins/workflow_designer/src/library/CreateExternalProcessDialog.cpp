@@ -723,7 +723,7 @@ bool CreateExternalProcessDialog::validate() {
             QMessageBox msgBox(this);
             msgBox.setWindowTitle(title);
             msgBox.setText(tr("You don't use parameter %1 in template string. Continue?").arg(str));
-            QPushButton *ignore = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
+            msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
             QPushButton *cancel = msgBox.addButton(tr("Abort"), QMessageBox::ActionRole);
             msgBox.exec();
             if(msgBox.clickedButton() == cancel) {

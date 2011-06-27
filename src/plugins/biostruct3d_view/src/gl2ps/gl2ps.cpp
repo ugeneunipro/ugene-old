@@ -1784,7 +1784,7 @@ static void gl2psAddPlanesInBspTreeImage(GL2PSprimitive *prim,
     }
     head->back = NULL;
     head->front = NULL;
-    GLint ret;
+    GLint ret = 0;
     for(i = 2+offset; i < prim->numverts; i++){
       ret = gl2psCheckPoint(prim->verts[i].xyz, head->plane);
       if(ret != GL2PS_POINT_COINCIDENT) break;

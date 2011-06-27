@@ -121,13 +121,6 @@ void GenomeAlignerIndexTask::run() {
     index->indexPart.saLengths = new SAType[parts];
     index->indexPart.partFiles = new QFile*[parts];
 
-    int partLen = 0;
-    if (1 == parts) {
-        partLen = seqLength;
-    } else {
-        partLen = MAX_ELEM_COUNT_IN_MEMORY;
-    }
-
     SAType start = 0;
     SAType length = 0;
     for (int i=0; i<parts; i++) {

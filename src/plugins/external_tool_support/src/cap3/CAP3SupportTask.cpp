@@ -176,22 +176,19 @@ int CAP3LogParser::getProgress()
 //////////////////////////////////////////
 ////PrepareInput
 
-PrepareInputForCAP3Task::PrepareInputForCAP3Task( const QStringList& inputUrls, const QString& output )
+PrepareInputForCAP3Task::PrepareInputForCAP3Task( const QStringList&, const QString&)
 :Task("PrepareInputForCAP3Task", TaskFlags_NR_FOSCOE)
 {
 
 }
 
-void PrepareInputForCAP3Task::prepare()
-{
-    
+void PrepareInputForCAP3Task::prepare() {
+    //TODO:
 }
 
-QList<Task*> PrepareInputForCAP3Task::onSubTaskFinished( Task* subTask )
-{
+QList<Task*> PrepareInputForCAP3Task::onSubTaskFinished(Task* ) {
     QList<Task*> res;
-
-
+    //TODO:
     return res;
 
 }

@@ -59,7 +59,8 @@ void GTest_APITest::run() {
     }
 
     QByteArray ba = filter.toLocal8Bit();
-    char *argv[] = { "", ba.data() };
+    QByteArray empty;
+    char *argv[] = { empty.data(), ba.data() };
     int argc = 2;
     ::testing::InitGoogleTest(&argc, argv);
     int res = RUN_ALL_TESTS();

@@ -63,7 +63,7 @@ cl_program OpenCLUtils::createProgramByResource(
 
     if (err != CL_SUCCESS) {
         size_t logSize = 1;
-        openCLHelper.clGetProgramBuildInfo_p(clProgram, deviceId, CL_PROGRAM_BUILD_LOG, NULL, NULL, &logSize);
+        openCLHelper.clGetProgramBuildInfo_p(clProgram, deviceId, CL_PROGRAM_BUILD_LOG, 0, NULL, &logSize);
         gauto_array<char> logStr(new char[logSize]);
         openCLHelper.clGetProgramBuildInfo_p(clProgram, deviceId, CL_PROGRAM_BUILD_LOG, logSize, logStr.get(), &logSize);
 
