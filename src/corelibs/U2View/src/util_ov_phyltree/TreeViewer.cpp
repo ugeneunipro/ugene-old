@@ -354,6 +354,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     zoomToAllAction = treeViewer->getZoomToAllAction();
     setColorAction = treeViewer->getBranchesSettingsAction();
     captureAction = treeViewer->getCaptureTreeAction();
+    exportAction = treeViewer->getExportAction();
     buttonPopup = new QMenu(this);
 
     //chrootAction->setEnabled(false); //not implemented yet
@@ -368,7 +369,11 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
 
     buttonPopup->addAction(setColorAction);
 
-    buttonPopup->addAction(captureAction);
+    QMenu* cameraMenu = new QMenu(tr("Export Tree Image"), this);
+    cameraMenu->addAction(captureAction);
+    cameraMenu->addAction(exportAction);
+    cameraMenu->setIcon(QIcon(":/core/images/cam2.png"));
+    buttonPopup->addMenu(cameraMenu);
 
     updateActionsState();
 }

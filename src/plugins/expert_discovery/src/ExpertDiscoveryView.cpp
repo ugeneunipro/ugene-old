@@ -55,6 +55,8 @@ ExpertDiscoveryView::ExpertDiscoveryView(GObjectViewFactoryId factoryId, const Q
 }
 
 ExpertDiscoveryView::~ExpertDiscoveryView(){
+
+    clearSequencesView();
     delete posUDoc;
     delete negUDoc;
     delete conUDoc;
@@ -196,7 +198,7 @@ void ExpertDiscoveryView::sl_newDoc(){
 
 void ExpertDiscoveryView::sl_openDoc(){
 
-    LastOpenDirHelper lod("ExpertDiscovery");
+    LastOpenDirHelper lod("ExpertDiscovery");           
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Load ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
 
     if (lod.url.length() <= 0) {

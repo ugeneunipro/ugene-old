@@ -258,6 +258,7 @@ private:
     QAction*            collapseAction;
     QAction*            setColorAction;
     QAction*            captureAction;
+    QAction*            exportAction;
 
     BranchSettings      branchSettings;
     ButtonSettings      buttonSettings;
