@@ -101,6 +101,7 @@ public:
     AVItemL *getLastItemInSubtree(AnnotationGroup *gr, AnnotationsTreeViewL *view);
     int getExpandedNumber(AVItemL *item);
     int getExpandedNumber(AnnotationGroup *gr);
+    void updateItem(QTreeWidgetItem *item);
 
     
 

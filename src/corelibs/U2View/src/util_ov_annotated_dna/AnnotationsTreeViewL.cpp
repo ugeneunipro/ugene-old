@@ -638,10 +638,14 @@ void AnnotationsTreeViewL::sl_onGroupCreated(AnnotationGroup* g) {
     LazyAnnotationTreeViewModel *model = static_cast<LazyAnnotationTreeViewModel *>(tree->model());
     AVGroupItemL* pg = g->getParentGroup()== NULL ? static_cast<AVGroupItemL*>(model->getItem(QModelIndex())) : findGroupItem(g->getParentGroup());
     tree->treeWalker->addItem(g);
-    if(pg->childCount() == 0) {
+    if(pg && pg->childCount() == 0) {
         tree->insertItem(pg->parent()->indexOfChild(pg), pg);
     }
+    /*if(pg) {
+        tree->updateItem(pg);
+    }*/
     if(pg != NULL) {
+        tree->updateItem(pg);
         pg->updateVisual();
     }
 }
@@ -2291,7 +2295,11 @@ void LazyTreeView::resizeModel(){
     if(dif < 0) { //Expand view
         AVItemL *item = getNextItemDown(static_cast<AVItemL*>(onScreen.last()));
         while(item && dif < 0) { //Add items to bottom
-            insertItem(item->parent()->childCount() - 1, item, false);
+            if(item->parent()->parent() == NULL) {
+                insertItem(item->parent()->indexOfChild(item), item, false);
+            } else {
+                insertItem(item->parent()->childCount() - 1, item, false);
+            }
             if(++dif < 0) {
                 item = getNextItemDown(static_cast<AVItemL*>(onScreen.last()));
             }
@@ -2412,12 +2420,21 @@ void LazyTreeView::resizeEvent( QResizeEvent *event )
     resizeModel();
 }
 
-void LazyTreeView::sl_entered( const QModelIndex &index )
-{
+void LazyTreeView::sl_entered( const QModelIndex &index ) {
     LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
     QTreeWidgetItem *item = (QTreeWidgetItem *)modell->getItem(index);
     emit itemEntered(item, index.column());
 }
+
+void LazyTreeView::updateItem( QTreeWidgetItem *item ) {
+    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel *>(model());
+    update(lm->guessIndex(item));
+    setDirtyRegion(QRegion(visualRect(lm->guessIndex(item))));
+    repaint();
+}
+
+
+
 void AnnotationsTreeViewL::focusOnItem(Annotation *a) {
     QList<int> indexes;
     AnnotationGroup *topGroup = a->getGroups().first();
