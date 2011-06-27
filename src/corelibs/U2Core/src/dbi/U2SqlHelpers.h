@@ -308,7 +308,7 @@ private:
                 return;
             }
             nextResult = loader->load(query);
-        } while (filter != NULL && filter->filter(nextResult));
+        } while (filter != NULL && !filter->filter(nextResult));
     }
 
     SQLiteQuery*    query;

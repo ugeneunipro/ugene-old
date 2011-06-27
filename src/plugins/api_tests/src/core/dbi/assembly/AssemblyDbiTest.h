@@ -4,6 +4,7 @@
 #include <core/dbi/DbiTest.h>
 
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 
 namespace U2 {
@@ -30,7 +31,5 @@ protected:
 };
 
 } // namespace U2
-
-Q_DECLARE_METATYPE(U2::U2AssemblyRead);
 
 #endif // ASSEMBLYDBITEST_H

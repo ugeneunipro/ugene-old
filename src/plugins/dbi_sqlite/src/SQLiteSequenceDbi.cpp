@@ -46,16 +46,21 @@ void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
 }
 
 U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) {
-    U2Sequence res(sequenceId, dbi->getDbiId(), 0);
+    U2Sequence res;
     SQLiteQuery q("SELECT Sequence.length, Sequence.alphabet, Sequence.circular, Object.version FROM Sequence, Object "
         " WHERE Object.id = ?1 AND Sequence.object = Object.id", db, os);
     q.bindDataId(1, sequenceId);
     if (q.step()) {
+        res.id = sequenceId;
+        res.dbiId = dbi->getDbiId();
+        res.version = 0;
         res.length = q.getInt64(0);
         res.alphabet = q.getString(1);
         res.circular = q.getBool(2);
         res.version = q.getInt64(3);
         q.ensureDone();
+    } else if (!os.hasError()) {
+        os.setError(SQLiteL10N::tr("Sequence object not found."));
     }
     return res;
 }
@@ -92,9 +97,10 @@ void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString
     if (os.hasError()) {
         return;
     }
-    SQLiteQuery q("INSERT INTO Sequence(object, alphabet) VALUES(?1, ?2)", db, os);
+    SQLiteQuery q("INSERT INTO Sequence(object, alphabet, circular) VALUES(?1, ?2, ?3)", db, os);
     q.bindDataId(1, sequence.id);
     q.bindString(2, sequence.alphabet.id);
+    q.bindBool(3, sequence.circular);
     q.execute();
 }
 
@@ -147,6 +153,8 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     }
     if (cropLeftPos >= 0) {
         leftCrop = getSequenceData(sequenceId, U2Region(cropLeftPos, regionToReplace.startPos - cropLeftPos), os);
+    } else {
+        cropLeftPos = 0;
     }
 
     QByteArray rightCrop;
@@ -163,7 +171,7 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     
     // remove all affected regions
     SQLiteQuery removeQ("DELETE FROM SequenceData WHERE sequence = ?1 "
-        " AND ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart  AND send > ?2))", db, os);
+        " AND ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart  AND send >= ?2))", db, os);
     removeQ.bindDataId(1, sequenceId);
     removeQ.bindInt64(2, regionToReplace.startPos);
     removeQ.bindInt64(3, regionToReplace.endPos());
@@ -183,13 +191,12 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
         if (os.hasError()) {
             return;
         }
-
     }
 
     // insert new regions
     QList<QByteArray> newDataToInsert = quantify(QList<QByteArray>() << leftCrop << dataToInsert << rightCrop);
     SQLiteQuery insertQ("INSERT INTO SequenceData(sequence, sstart, send, data) VALUES(?1, ?2, ?3, ?4)", db, os);
-    qint64 startPos = regionToReplace.startPos;
+    qint64 startPos = cropLeftPos;
     foreach(const QByteArray& d, newDataToInsert) {
         insertQ.reset();
         insertQ.bindDataId(1, sequenceId);
@@ -218,6 +225,6 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     }
 
     SQLiteObjectDbi::incrementVersion(sequenceId, db, os);
-                      }
+}
 
 } //namespace

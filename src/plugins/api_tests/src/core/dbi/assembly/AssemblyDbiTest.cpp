@@ -1,14 +1,20 @@
 #include "AssemblyDbiTest.h"
+#include "AssemblyDbiTestUtil.h"
 
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/AppContext.h>
 
 #include <U2Test/TestRunnerSettings.h>
 
+#include <QtCore/QDir>
+
 
 namespace U2 {
+
+static const QString& INVALID_ASSEMBLY_ID = "invalid_assembly_id";
 
 static const QString& TOTAL_NUM_READS = "total_num_reads";
 static const QString& NUM_READS_IN = "num_reads_in";
@@ -23,16 +29,18 @@ static const QString& GET_READS_BY_ROW_END = "get_reads_by_row_end";
 static const QString& GET_READS_BY_ROW_OUT = "get_reads_by_row_out";
 
 static const QString& READS_BY_NAME_IN = "reads_by_name_in";
-static const QString& READS_BY_NAME_OUT = "reads_by_name_out";
 
 static const QString& MAX_END_POS = "max_end_pos";
 
-static const QString& ADD_READ = "add_read";
+static const QString& MAX_PACKED_ROW_IN = "max_packed_row_in";
+static const QString& MAX_PACKED_ROW_OUT = "max_packed_row_out";
 
 static const QString& REMOVE_READS_IN = "remove_reads_in";
 
-static const QString& MAX_PACKED_ROW_IN = "max_packed_row_in";
-static const QString& MAX_PACKED_ROW_OUT = "max_packed_row_out";
+static const QString& ADD_READ = "add_read";
+
+static const QString& PACK_COUNT = "pack_count";
+static const QString& PACK_MAX = "pack_max";
 
 static const QString& COVERAGE_REGION_IN = "calc_coverage_region_in";
 static const QString& COVERAGE_REGION_OUT = "calc_coverage_region_out";
@@ -40,17 +48,21 @@ static const QString& COVERAGE_REGION_OUT = "calc_coverage_region_out";
 APITestData createTestData() {
     APITestData d;
 
-    QString dataDirPath = AppContext::getAppSettings()->getTestRunnerSettings()->getVar("AssemblyDbiTest");
-    QDir dataDir(dataDirPath);
-    QString dataPath = dataDir.absoluteFilePath("test-alignment1.ugenedb");
-    d.addValue(BaseDbiTest::DATA_PATH, dataPath);
+    // COMMON_DATA_DIR
+    {
+        QString dataDirPath = AppContext::getAppSettings()->getTestRunnerSettings()->getVar("AssemblyDbiTest");
+        QDir dataDir(dataDirPath);
+        QString dataPath = dataDir.absoluteFilePath("test-alignment1.ugenedb");
+        d.addValue(BaseDbiTest::DB_URL, dataPath);
+    }
+
+    // invalid assembly id
+    d.addValue(INVALID_ASSEMBLY_ID, QByteArray("zZÿÿ"));
 
     // countReads
-    {
-        d.addValue(TOTAL_NUM_READS, 48);
-        d.addValue(NUM_READS_IN, U2Region(10,10));
-        d.addValue(NUM_READS_OUT, 6);
-    }
+    d.addValue(TOTAL_NUM_READS, 48);
+    d.addValue(NUM_READS_IN, U2Region(10,10));
+    d.addValue(NUM_READS_OUT, 6);
 
     //getReads
     {
@@ -120,29 +132,27 @@ APITestData createTestData() {
     // getReadsByName
     {
         U2AssemblyRead read(new U2AssemblyReadData());
-        read->name = "2797 Example sequence FW - secondary sequence 5464";
+        read->name = "Test read";
         read->leftmostPos = 93;
         read->effectiveLen = 49;
-        read->packedViewRow = 15;
+        read->packedViewRow = 0;
         read->readSequence = "AAGATCCTCATGTTATATCGGCAGTGGGTTGATCAATCCACGTGGATAG";
-        read->cigar.append(U2CigarToken(U2CigarOp_M, 49));
         read->flags = None;
-
+        
         QVariantList readsByName;
         readsByName.append(qVariantFromValue(read));
-        d.addValue(READS_BY_NAME_OUT, read->name);
+        d.addValue(READS_BY_NAME_IN, readsByName);
     }
 
     // getMaxPackedRow
-    {
-        d.addValue(MAX_PACKED_ROW_IN, U2Region(10,6));
-        d.addValue(MAX_PACKED_ROW_OUT, 3);
-    }
+    d.addValue(MAX_PACKED_ROW_IN, U2Region(10,6));
+    d.addValue(MAX_PACKED_ROW_OUT, 3);
 
     // getMaxEndPos
-    {
-        d.addValue(MAX_END_POS, qint64(146));
-    }
+    d.addValue(MAX_END_POS, qint64(146));
+
+    // removeReads
+    d.addValue(REMOVE_READS_IN, U2Region(10, 10));    
 
     // addReads
     {
@@ -157,105 +167,57 @@ APITestData createTestData() {
         d.addValue(ADD_READ, reads2add);
     }
 
-    // removeReads
-    {
-        d.addValue(REMOVE_READS_IN, U2Region(10, 10));
-    }
+    // pack
+    d.addValue(PACK_MAX, 28);
+    d.addValue(PACK_COUNT, 48);
     
     // calculateCoverage
-    {
-        d.addValue(COVERAGE_REGION_IN, U2Region(20, 1));
-        d.addValue(COVERAGE_REGION_OUT, 7);
-    }
+
+    d.addValue(COVERAGE_REGION_IN, U2Region(20, 1));
+    d.addValue(COVERAGE_REGION_OUT, 7);
 
     return d;
 }
 
-bool compareCigar(const QList<U2CigarToken>& c1, const QList<U2CigarToken>& c2) {
-    if (c1.size() != c2.size()) {
-        return false;
-    }
-    for (int i=0; i<c1.size(); i++) {
-        U2CigarToken tok1 = c1.at(i);
-        U2CigarToken tok2 = c2.at(i);
-        if (tok1.count != tok2.count || tok1.op != tok2.op) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool compareReads(const U2AssemblyRead& r1, const U2AssemblyRead& r2) {
-    if (r1->name != r2->name) {
-        return false;
-    }
-    if (r1->leftmostPos != r2->leftmostPos) {
-        return false;
-    }
-    if (r1->effectiveLen != r2->effectiveLen) {
-        return false;
-    }
-    if (r1->packedViewRow != r2->packedViewRow) {
-        return false;
-    }
-    if (r1->readSequence != r2->readSequence) {
-        return false;
-    }
-    if (r1->quality != r2->quality) {
-        return false;
-    }
-    if (r1->mappingQuality != r2->mappingQuality) {
-        return false;
-    }
-    if (r1->flags != r2->flags) {
-        return false;
-    }
-    if (!compareCigar(r1->cigar, r2->cigar)) {
-        return false;
-    }
-    return true;
-}
-
-bool findRead(const U2AssemblyRead& subj, QVariantList& reads) {
-    for (qint64 i=0, n = reads.size(); i<n; i++) {
-        const U2AssemblyRead& curRead = qVariantValue<U2AssemblyRead>(reads.at(i));
-        if (compareReads(subj, curRead)) {
-            reads.removeAt(i);
-            return true;
-        }
-    }
-    return false;
-}
-
-bool containsRead(const U2AssemblyRead& subj, U2DbiIterator<U2AssemblyRead>* iter) {
-    while (iter->hasNext()) {
-        const U2AssemblyRead& r = iter->next();
-        if (compareReads(r, subj)) {
-            return true;
-        }
-    }
-    return false;
-}
-
 TEST_P(AssemblyDbiTest, getAssemblyObject) {
-    U2OpStatusImpl opStatus;
-    U2DataId id = this->assemblyIds.first();
-    U2Assembly assembly = this->assemblyDbi->getAssemblyObject(id, opStatus);
-    ASSERT_FALSE(opStatus.hasError()) << opStatus.getError().toStdString();
+    const U2DataId& id = this->assemblyIds.first();
+    U2OpStatusImpl os;
+    U2Assembly assembly = this->assemblyDbi->getAssemblyObject(id, os);
+    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+    ASSERT_EQ(assembly.id, id);
+}
+
+TEST_P(AssemblyDbiTest, getAssemblyObjectInvalid) {
+    const U2DataId& invalidId = testData.getValue<QByteArray>(INVALID_ASSEMBLY_ID);
+    U2OpStatusImpl os;
+    const U2Assembly& assembly = this->assemblyDbi->getAssemblyObject(invalidId, os);
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+    ASSERT_TRUE(assembly.id.isEmpty());
 }
 
 TEST_P(AssemblyDbiTest, countReads) {
+    const U2DataId& id = this->assemblyIds.first();
+
+    {
+        U2OpStatusImpl os;
+        qint64 numReads = this->assemblyDbi->countReads(id, U2_ASSEMBLY_REGION_MAX, os);
+        ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+        ASSERT_EQ(testData.getValue<qint64>(TOTAL_NUM_READS), numReads);
+    }
+
     U2OpStatusImpl os;
-    U2DataId id = this->assemblyIds.first();
-
-    qint64 numReads = this->assemblyDbi->countReads(id, U2_ASSEMBLY_REGION_MAX, os);
-    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
-    ASSERT_EQ(testData.getValue<qint64>(TOTAL_NUM_READS), numReads);
-
     const U2Region& testRegion = testData.getValue<U2Region>(NUM_READS_IN);
-    numReads = this->assemblyDbi->countReads(id, testRegion, os);
+    qint64 numReads = this->assemblyDbi->countReads(id, testRegion, os);
     ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
     ASSERT_EQ(testData.getValue<qint64>(NUM_READS_OUT), numReads);
+}
+
+TEST_P(AssemblyDbiTest, countReadsInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    U2OpStatusImpl os;
+    qint64 res = this->assemblyDbi->countReads(id, U2_ASSEMBLY_REGION_MAX, os);
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+    ASSERT_EQ(res, -1);
 }
 
 TEST_P(AssemblyDbiTest, getReads) {
@@ -263,16 +225,23 @@ TEST_P(AssemblyDbiTest, getReads) {
     const U2Region& region = testData.getValue<U2Region>(GET_READS_IN);
     U2OpStatusImpl os;
 
-    U2DbiIterator<U2AssemblyRead>* iter = this->assemblyDbi->getReads(id, region, os);
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    iter.reset(this->assemblyDbi->getReads(id, region, os));
     ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
 
-    QVariantList expectedReads = testData.getValue<QVariantList>(GET_READS_OUT);
-    while (iter->hasNext()) {
-        const U2AssemblyRead& read = iter->next();
-        ASSERT_TRUE(findRead(read, expectedReads));
-    }
-    delete iter;
-    ASSERT_TRUE(expectedReads.isEmpty());
+    QVariantList expectedVar = testData.getValue<QVariantList>(GET_READS_OUT);
+    QList<U2AssemblyRead> expectedReads;
+    AssemblyDbiTestUtil::var2readList(expectedVar, expectedReads);
+    ASSERT_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), expectedReads));
+}
+
+TEST_P(AssemblyDbiTest, getReadsInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    U2OpStatusImpl os;
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    iter.reset(this->assemblyDbi->getReads(id, U2_ASSEMBLY_REGION_MAX, os));
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+    ASSERT_TRUE(iter.get() == NULL);
 }
 
 TEST_P(AssemblyDbiTest, getReadsByRow) {
@@ -283,34 +252,59 @@ TEST_P(AssemblyDbiTest, getReadsByRow) {
     qint64 begin = testData.getValue<qint64>(GET_READS_BY_ROW_BEGIN);
     qint64 end = testData.getValue<qint64>(GET_READS_BY_ROW_END);
 
-    U2DbiIterator<U2AssemblyRead>* iter = this->assemblyDbi->getReadsByRow(id, region, begin, end, os);
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    iter.reset(this->assemblyDbi->getReadsByRow(id, region, begin, end, os));
     ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
 
-    QVariantList expectedReads = testData.getValue<QVariantList>(GET_READS_BY_ROW_OUT);
-    while (iter->hasNext()) {
-        U2AssemblyRead actualRead = iter->next();
-        ASSERT_TRUE(findRead(actualRead, expectedReads));
-    }
-    delete iter;
-    ASSERT_TRUE(expectedReads.isEmpty());
+    QVariantList expectedVar = testData.getValue<QVariantList>(GET_READS_BY_ROW_OUT);
+    QList<U2AssemblyRead> expectedReads;
+    AssemblyDbiTestUtil::var2readList(expectedVar, expectedReads);
+    ASSERT_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), expectedReads));
+}
+
+TEST_P(AssemblyDbiTest, getReadsByRowInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    qint64 begin = testData.getValue<qint64>(GET_READS_BY_ROW_BEGIN);
+    qint64 end = testData.getValue<qint64>(GET_READS_BY_ROW_END);
+    const U2Region& region = testData.getValue<U2Region>(GET_READS_BY_ROW_REGION);    
+    U2OpStatusImpl os;
+
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    iter.reset(this->assemblyDbi->getReadsByRow(id, region, begin, end, os));
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+    ASSERT_TRUE(iter.get() == NULL);
 }
 
 TEST_P(AssemblyDbiTest, getReadsByName) {
-    U2OpStatusImpl os;
-    const QByteArray& name = testData.getValue<QByteArray>(READS_BY_NAME_IN);
+    QVariantList readsVar = testData.getValue<QVariantList>(READS_BY_NAME_IN);
+    ASSERT_FALSE(readsVar.isEmpty()) << "Incorrect test data for 'getReadsByName'. Reads list is empty.";
+
+    QList<U2AssemblyRead> reads;
+    AssemblyDbiTestUtil::var2readList(readsVar, reads);
+    const QByteArray& name = reads.first()->name;
     const U2DataId& id = this->assemblyIds.first();
 
-    U2DbiIterator<U2AssemblyRead>* iter = this->assemblyDbi->getReadsByName(id, name, os);
-    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
-
-    QVariantList expectedReads = testData.getValue<QVariantList>(READS_BY_NAME_OUT);
-    while (iter->hasNext()) {
-        const U2AssemblyRead& read = iter->next();
-        ASSERT_TRUE(findRead(read, expectedReads));
+    {
+        U2OpStatusImpl os;
+        BufferedDbiIterator<U2AssemblyRead> it(reads);
+        this->assemblyDbi->addReads(id, &it, os);
+        ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
     }
-    ASSERT_TRUE(expectedReads.isEmpty());
 
-    delete iter;
+    U2OpStatusImpl os;
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    iter.reset(this->assemblyDbi->getReadsByName(id, name, os));
+    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+    ASSERT_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), reads)) << "Reads not found";
+}
+
+TEST_P(AssemblyDbiTest, getReadsByNameInvalid) {    
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    U2OpStatusImpl os;
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    iter.reset(this->assemblyDbi->getReadsByName(id, "", os));
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+    ASSERT_TRUE(iter.get() == NULL);
 }
 
 TEST_P(AssemblyDbiTest, getMaxPackedRow) {
@@ -322,12 +316,28 @@ TEST_P(AssemblyDbiTest, getMaxPackedRow) {
     ASSERT_EQ(actual, testData.getValue<qint64>(MAX_PACKED_ROW_OUT));
 }
 
+TEST_P(AssemblyDbiTest, getMaxPackedRowInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    U2OpStatusImpl os;
+    qint64 res = this->assemblyDbi->getMaxPackedRow(id, U2_ASSEMBLY_REGION_MAX, os);
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+    ASSERT_EQ(res, -1);
+}
+
 TEST_P(AssemblyDbiTest, getMaxEndPos) {
     U2DataId id = this->assemblyIds.first();
     U2OpStatusImpl os;
     qint64 res = this->assemblyDbi->getMaxEndPos(id, os);
     ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
     ASSERT_EQ(testData.getValue<qint64>(MAX_END_POS), res);
+}
+
+TEST_P(AssemblyDbiTest, getMaxEndPosInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    U2OpStatusImpl os;
+    qint64 res = this->assemblyDbi->getMaxEndPos(id, os);
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+    ASSERT_EQ(res, -1);
 }
 
 TEST_P(AssemblyDbiTest, createAssemblyObject) {
@@ -338,8 +348,103 @@ TEST_P(AssemblyDbiTest, createAssemblyObject) {
     this->assemblyDbi->createAssemblyObject(assembly, "/", NULL, importInfo, os);
     ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
 
-    U2Assembly actual = this->assemblyDbi->getAssemblyObject(assembly.id, os);
+    U2Assembly res = this->assemblyDbi->getAssemblyObject(assembly.id, os);
     ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+}
+
+TEST_P(AssemblyDbiTest, removeReads) {
+    const U2DataId& id = this->assemblyIds.first();
+    const U2Region& region = testData.getValue<U2Region>(REMOVE_READS_IN);
+    U2OpStatusImpl os;
+
+    QList<U2DataId> readIds;
+    {
+        std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+        iter.reset(this->assemblyDbi->getReads(id, region, os));
+        ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+
+        while (iter->hasNext()) {
+            const U2AssemblyRead& read = iter->next();
+            readIds.append(read->id);
+        }
+    }
+
+    this->assemblyDbi->removeReads(id, readIds, os);
+    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    iter.reset(this->assemblyDbi->getReads(id, region, os));
+    ASSERT_FALSE(iter->hasNext()) << "Reads were not deleted";
+}
+
+TEST_P(AssemblyDbiTest, removeReadsInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    U2OpStatusImpl os;
+    this->assemblyDbi->removeReads(id, QList<U2DataId>(), os);
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+}
+
+TEST_P(AssemblyDbiTest, addReads) {
+    QVariantList reads2add = testData.getValue<QVariantList>(ADD_READ);
+    QList<U2AssemblyRead> reads;
+    foreach(QVariant var, reads2add) {
+        const U2AssemblyRead& read = qVariantValue<U2AssemblyRead>(var);
+        reads.append(read);
+    }
+
+    const U2DataId& id = this->assemblyIds.first();
+    BufferedDbiIterator<U2AssemblyRead> it(reads);
+    U2OpStatusImpl os;
+
+    this->assemblyDbi->addReads(id, &it, os);
+    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+
+    foreach(U2AssemblyRead read, reads) {
+        std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+        iter.reset(this->assemblyDbi->getReads(id, U2_ASSEMBLY_REGION_MAX, os));
+        ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+
+        bool added = false;
+        while (iter->hasNext()) {
+            if (AssemblyDbiTestUtil::compareReads(read, iter->next())) {
+                added = true;
+                break;
+            }
+        }
+        ASSERT_TRUE(added);
+    }
+}
+
+TEST_P(AssemblyDbiTest, addReadsInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    QList<U2AssemblyRead> reads;
+    BufferedDbiIterator<U2AssemblyRead> it(reads);
+    U2OpStatusImpl os;
+    this->assemblyDbi->addReads(id, &it, os);
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
+}
+
+TEST_P(AssemblyDbiTest, pack) {
+    const U2DataId& id = assemblyIds.first();
+    U2AssemblyPackStat stats;
+    U2OpStatusImpl os;
+
+    this->assemblyDbi->pack(id, stats, os);
+    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
+    
+    int maxProw = testData.getValue<int>(PACK_MAX);
+    qint64 readsCount = testData.getValue<int>(PACK_COUNT);
+    
+    ASSERT_EQ(stats.maxProw, maxProw);
+    ASSERT_EQ(stats.readsCount, readsCount);
+}
+
+TEST_P(AssemblyDbiTest, packInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    U2AssemblyPackStat stat;
+    U2OpStatusImpl os;
+    this->assemblyDbi->pack(id, stat, os);
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
 }
 
 TEST_P(AssemblyDbiTest, calculateCoverage) {
@@ -354,52 +459,13 @@ TEST_P(AssemblyDbiTest, calculateCoverage) {
     ASSERT_EQ(testData.getValue<int>(COVERAGE_REGION_OUT), res);
 }
 
-TEST_P(AssemblyDbiTest, addReads) {
-    QVariantList reads2add = testData.getValue<QVariantList>(ADD_READ);
-    QList<U2AssemblyRead> reads;
-    foreach(QVariant var, reads2add) {
-        const U2AssemblyRead& read = qVariantValue<U2AssemblyRead>(var);
-        reads.append(read);
-    }
-
-    BufferedDbiIterator<U2AssemblyRead> it(reads);
-
+TEST_P(AssemblyDbiTest, calculateCoverageInvalid) {
+    const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
+    const U2Region& region = testData.getValue<U2Region>(COVERAGE_REGION_IN);
+    U2AssemblyCoverageStat c;
     U2OpStatusImpl os;
-    const U2DataId& id = this->assemblyIds.first();
-
-    this->assemblyDbi->addReads(id, &it, os);
-    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
-
-    U2DbiIterator<U2AssemblyRead>* iter = this->assemblyDbi->getReads(id, U2_ASSEMBLY_REGION_MAX, os);
-    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
-
-    foreach(QVariant var, reads2add) {
-        const U2AssemblyRead& addedRead = qVariantValue<U2AssemblyRead>(var);
-        ASSERT_TRUE(containsRead(addedRead, iter)) << "Read was not added";
-    }
-    delete iter;
-}
-
-TEST_P(AssemblyDbiTest, removeReads) {
-    U2OpStatusImpl os;
-    const U2DataId& id = this->assemblyIds.first();
-    const U2Region& region = testData.getValue<U2Region>(REMOVE_READS_IN);
-
-    U2DbiIterator<U2AssemblyRead>* iter = this->assemblyDbi->getReads(id, region, os);
-    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
-
-    QList<U2DataId> readIds;
-    while (iter->hasNext()) {
-        const U2AssemblyRead& read = iter->next();
-        readIds.append(read->id);
-    }
-    delete iter;
-
-    this->assemblyDbi->removeReads(id, readIds, os);
-    ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
-
-    iter = this->assemblyDbi->getReads(id, region, os);
-    ASSERT_FALSE(iter->hasNext()) << "Reads were not deleted";
+    this->assemblyDbi->calculateCoverage(id, region, c, os);
+    ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
 }
 
 INSTANTIATE_TEST_CASE_P(

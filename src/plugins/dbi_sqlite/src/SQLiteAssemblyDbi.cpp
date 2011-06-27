@@ -80,6 +80,7 @@ AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpS
     SQLiteQuery q("SELECT imethod, cmethod FROM Assembly WHERE object = ?1", db, os);
     q.bindDataId(1, assemblyId);
     if (!q.step()) {
+        os.setError(SQLiteL10N::tr("There is no assembly object with the specified id."));
         return NULL;
     }
     QString indexMethod = q.getString(0);
@@ -104,16 +105,21 @@ AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpS
 
 
 U2Assembly SQLiteAssemblyDbi::getAssemblyObject(const U2DataId& assemblyId, U2OpStatus& os) {
-    U2Assembly res(assemblyId, dbi->getDbiId(), 0);
+    U2Assembly res;
     SQLiteQuery q("SELECT Assembly.reference, Object.name, Object.version FROM Assembly, Object "
                 " WHERE Object.id = ?1 AND Assembly.object = Object.id", db, os);
     q.bindDataId(1, assemblyId);
     if (q.step())  {
+        res.id = assemblyId;
+        res.dbiId = dbi->getDbiId();
+        res.version = 0;
         res.referenceId = q.getDataId(0, U2Type::Assembly);
         res.visualName = q.getString(1);
         res.version = q.getInt64(2);
         q.ensureDone();
-    } 
+    } else if (!os.hasError()) {
+        os.setError(SQLiteL10N::tr("Assembly object not found."));
+    }
     return res;
 }
 
@@ -121,6 +127,9 @@ qint64 SQLiteAssemblyDbi::countReads(const U2DataId& assemblyId, const U2Region&
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::countReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::countReadsAt");
     AssemblyAdapter* a = getAdapter(assemblyId, os);
+    if ( a == NULL ) {
+        return -1;
+    }
     return a->countReads(r, os);
 }
 
@@ -129,7 +138,10 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assem
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    return a->getReads(r, os);
+    if ( a != NULL ) {
+        return a->getReads(r, os);
+    }
+    return NULL;
 }
 
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
@@ -138,6 +150,10 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& 
     
     quint64 t0 = GTimer::currentTimeMicros();
     AssemblyAdapter* a = getAdapter(assemblyId, os);
+
+    if ( a == NULL ) {
+        return NULL;
+    }
 
     U2DbiIterator<U2AssemblyRead>* res = a->getReadsByRow(r, minRow, maxRow, os);
 
@@ -151,7 +167,10 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByName(const U2DataId&
     GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsByName -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsByName");
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    return a->getReadsByName(name, os);
+    if ( a != NULL ) {
+        return a->getReadsByName(name, os);
+    }
+    return NULL;
 }
 
 
@@ -159,6 +178,10 @@ qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Re
     quint64 t0 = GTimer::currentTimeMicros();
     
     AssemblyAdapter* a = getAdapter(assemblyId, os);
+
+    if ( a == NULL ) {
+        return -1;
+    }
     qint64 res = a->getMaxPackedRow(r, os);
     
     perfLog.trace(QString("Assembly: get max packed row: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
@@ -171,6 +194,9 @@ qint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& o
     quint64 t0 = GTimer::currentTimeMicros();
 
     AssemblyAdapter* a = getAdapter(assemblyId, os);
+    if ( a == NULL ) {
+        return -1;
+    }
     quint64 res = a->getMaxEndPos(os);
     
     perfLog.trace(QString("Assembly: get max end pos: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
@@ -215,7 +241,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
 }
 
  
-void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
+void SQLiteAssemblyDbi::updateAssemblyObject(const U2Assembly& assembly, U2OpStatus& os) {
     SQLiteTransaction(db, os);
     
     SQLiteQuery q1("UPDATE Assembly SET reference = ?1 WHERE object = ?2", db, os);
@@ -230,7 +256,9 @@ void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& o
 
 void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    a->removeReads(rowIds, os);
+    if ( a != NULL ) {
+        a->removeReads(rowIds, os);
+    }
 }
 
 void SQLiteAssemblyDbi::addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) {
@@ -248,8 +276,10 @@ void SQLiteAssemblyDbi::addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRea
 
 void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {
     AssemblyAdapter* a = getAdapter(assemblyId, os);
-    U2AssemblyReadsImportInfo ii;
-    addReads(a, it, ii, os);
+    if ( a != NULL ) {
+        U2AssemblyReadsImportInfo ii;
+        addReads(a, it, ii, os);
+    }
 }
 
 
@@ -261,6 +291,9 @@ void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2AssemblyPackStat& sta
     quint64 t0 = GTimer::currentTimeMicros();
 
     AssemblyAdapter* a = getAdapter(assemblyId, os);
+    if ( a == NULL ) {
+        return;
+    }
     stat.readsCount = a->countReads(U2_ASSEMBLY_REGION_MAX, os);
     a->pack(stat, os);
     perfLog.trace(QString("Assembly: full pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
@@ -273,6 +306,9 @@ void SQLiteAssemblyDbi::calculateCoverage(const U2DataId& assemblyId, const U2Re
     quint64 t0 = GTimer::currentTimeMicros();
 
     AssemblyAdapter* a = getAdapter(assemblyId, os);
+    if ( a == NULL ) {
+        return;
+    }
     a->calculateCoverage(region, c, os);
     perfLog.trace(QString("Assembly: full coverage calculation time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }

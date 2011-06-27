@@ -3,17 +3,27 @@
 <gtest case="AssemblyDbiTest">
 
 + getAssemblyObject
++ getAssemblyObjectInvalid
 + countReads
++ countReadsInvalid
 + getReads
++ getReadsInvalid
 + getReadsByRow
-- getReadsByName
++ getReadsByRowInvalid
++ getReadsByName
++ getReadsByNameInvalid
 + getMaxPackedRow
++ getMaxPackedRowInvalid
 + getMaxEndPos
++ getMaxEndPosInvalid
 + createAssemblyObject
-- updateAssemblyObject
 + removeReads
++ removeReadsInvalid
 + addReads
++ addReadsInvalid
 + pack
++ packInvalid
 + calculateCoverage
++ calculateCoverageInvalid
 
 </gtest>

@@ -1,0 +1,11 @@
+<!DOCTYPE UGENE_TEST_FRAMEWORK_TEST>
+
+<gtest case="SequenceDbiTest">
++ getSequenceObject
++ getSequenceObjectInvalid
++ getAllSequenceObjects
++ getSequenceData
++ getSequenceDataInvalid
++ createSequenceObject
++ updateSequenceData
+</gtest>

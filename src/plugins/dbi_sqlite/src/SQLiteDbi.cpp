@@ -107,7 +107,7 @@ void SQLiteDbi::setProperty(const QString& name, const QString& value, U2OpStatu
     q2.execute();
 }
 
-static int isEmptyCallback(void *o, int argc, char **/*argv*/, char **/*column*/) {
+static int isEmptyCallback(void *o, int argc, char ** /*argv*/, char ** /*column*/) {
     int* res = (int*)o;
     *res = argc;
     return 0;

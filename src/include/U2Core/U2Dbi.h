@@ -188,7 +188,7 @@ public:
     /** Returns all features supported by this DBI instance */
     virtual const QSet<U2DbiFeature>& getFeatures() const = 0;
 
-    /** Returns properties used to initialized the database */
+    /** Returns properties used to initialize the database */
     virtual QHash<QString, QString> getInitProperties() const = 0;
 
     /** Returns database meta-info. Any set of properties to be shown to user */
@@ -202,7 +202,7 @@ public:
 
     /** 
         Database interface to access objects
-        All dbi implementation must support a subset of this interface
+        All dbi implementations must support a subset of this interface
     */
     virtual U2ObjectDbi* getObjectDbi() = 0;
 

@@ -160,7 +160,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 
-    virtual void updateAssemblyObject(U2Assembly&, U2OpStatus& os) {
+    virtual void updateAssemblyObject(const U2Assembly&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 

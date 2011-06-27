@@ -86,7 +86,7 @@ public:
         Updates assembly object fields 
         Requires: U2DbiFeature_WriteAssembly feature support
     */
-    virtual void updateAssemblyObject(U2Assembly&, U2OpStatus& os);
+    virtual void updateAssemblyObject(const U2Assembly&, U2OpStatus& os);
 
 
     /** 

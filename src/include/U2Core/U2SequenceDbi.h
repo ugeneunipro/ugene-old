@@ -36,27 +36,39 @@ protected:
     U2SequenceDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
 public:
-    /** Reads sequence object from database */
+    /** 
+        Reads sequence object from database by its id.
+        If there is no sequence object with the specified id returns a default constructed value.
+    */
     virtual U2Sequence getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) = 0;
     
     /**  
-    Reads specified sequence data region from database.
-    The region must be valid region within sequence bounds.
+        Reads specified sequence data region from database.
+        The region must be valid region within sequence bounds.
+        If there is no sequence with the specified id returns an empty QByteArray.
     */
     virtual QByteArray getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) = 0;
 
-    /**  Adds new (empty) sequence instance into database, sets the assigned id on the passed U2Sequence instance. 
+    /**
+        Adds a new (empty) sequence instance into database.
+        Sets the assigned id to the passed U2Sequence instance.
         The folder must exist in the database.
-        Use 'updateSequenceData' method to supply data to the created sequence.
+
+        Note: Use 'updateSequenceData' method to supply data to the created sequence.
 
         Requires: U2DbiFeature_WriteSequence feature support
     */
     virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) = 0;
 
     /** 
-        Updates sequence region. 
-        The region must be valid region within sequence bounds.
-        Note: regionToReplace length can differ from dataToInsert length, so the method can be used to add/remove sequence regions.
+        Updates sequence region:
+        replaces 'regionToReplace' sequence region with 'dataToInsert'.
+
+        Note: 'regionToReplace' length can differ from dataToInsert length, so the method
+        can be used to insert/remove sequence regions.
+
+        WARNING: The passed region 'startPos' has to be between 0 and sequence length inclusive.
+        If the sequence is empty 'regionToReplace.startPos' has to be 0.
 
         //TODO think about annotations: should we fix locations automatically?? If yes, emit notifications??
         // varlax: I think this should be left to user, no automatic fixes.
