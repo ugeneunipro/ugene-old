@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void ugene_exit(const char* message) throw();
+void ugene_exit(const char* message);
 
 
 namespace U2 {

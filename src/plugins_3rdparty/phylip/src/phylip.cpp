@@ -2780,7 +2780,7 @@ void exxit(int exitcode)
 } /* exxit */
 
 
-void ugene_exit( const char* message ) throw()
+void ugene_exit( const char* message )
 {
     throw message;
 }
