@@ -45,6 +45,7 @@ FastaFormat::FastaFormat(QObject* p)
 {
     formatName = tr("FASTA");
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
+    formatDescription = tr("FASTA format is a text-based format for representing either nucleotide sequences or peptide sequences, in which base pairs or amino acids are represented using single-letter codes. The format also allows for sequence names and comments to precede the sequences.");
 }
 
 FormatDetectionScore FastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {

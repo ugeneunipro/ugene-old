@@ -35,6 +35,7 @@ NewickFormat::NewickFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_W
 {
     fileExtensions << "nwk" << "newick";
     formatName = tr("Newick Standard");
+    formatDescription = tr("Newick is a simple format used to write out trees in a text file");
     supportedObjectTypes += GObjectTypes::PHYLOGENETIC_TREE;
 }
 
@@ -56,7 +57,7 @@ Document* NewickFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVa
 
 static void writeNode(IOAdapter* io, PhyNode* node) {
     int branches = node->branches.size();
-    if (branches == 1 && (node->name=="" || node->name=="ROOT")) {
+    if (branches == 1 && (node->name == "" || node->name == "ROOT")) {
         assert(node != node->branches[0]->node2);
         writeNode(io, node->branches[0]->node2);
         return;
@@ -141,10 +142,17 @@ FormatDetectionScore NewickFormat::checkRawData(const QByteArray& rawData, const
         }
         last = any;
     }
-    if(QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {
+    if (QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {
         return FormatDetection_LowSimilarity;
     }
-    return FormatDetection_VeryHighSimilarity;
+    int braces = (rawData.contains('(') ? 1 : 0) + (rawData.contains(')') ? 1 : 0) ;
+    if (braces == 0 && rawData.length() > 50)  {
+        return FormatDetection_LowSimilarity;
+    }
+    if (braces == 1) {
+        return FormatDetection_NotMatched;
+    }
+    return FormatDetection_HighSimilarity;
 }
 
 

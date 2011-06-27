@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/DocumentImport.h>
+#include <U2Core/Log.h>
 
 namespace U2 {
 
@@ -39,6 +40,9 @@ DocumentImporter* DocumentImportersRegistry::getDocumentImporter(const QString& 
 
 void DocumentImportersRegistry::addDocumentImporter(DocumentImporter* i) {
     importers << i;
+    if (i->getImporterDescription().isEmpty()) {
+        coreLog.trace("Warn! Importer has no description: " + i->getImporterName());
+    }
 }
 
 

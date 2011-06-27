@@ -43,6 +43,7 @@ EMBLPlainTextFormat::EMBLPlainTextFormat(QObject* p)
 : EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_EMBL, tr("EMBL"), 80, DocumentFormatFlag_SupportStreaming, p) 
 {
     fileExtensions << "em" << "emb" << "embl";
+    formatDescription = tr("EMBL Flat File Format is a rich format for storing sequences and associated annotations");
     sequenceStartPrefix = "SQ";
     fPrefix = "FT";
 

@@ -162,6 +162,7 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
 // BAM importer
 BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM file import")){
     extensions << "bam";
+    importerDescription = tr("BAM files importer is used to convert conventional BAM and SAM files into UGENE database format. Having BAM or SAM file converted into UGENE DB format you get an fast and efficient interface to your data with an option to change the content");
 }
 
 FormatDetectionScore BAMImporter::checkData(const QByteArray& rawData, const GUrl& url) {

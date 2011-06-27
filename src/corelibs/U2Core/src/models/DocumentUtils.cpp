@@ -140,7 +140,7 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat(const GUrl& url, const 
 
 QList<FormatDetectionResult> DocumentUtils::detectFormat(IOAdapter *io, const FormatDetectionConfig& conf) {
     QList<FormatDetectionResult> result;
-    if( io == NULL || !io->isOpen() ) {
+    if (io == NULL || !io->isOpen()) {
         return result;
     }
     QByteArray rawData = BaseIOAdapters::readFileHeader( io );
@@ -157,6 +157,16 @@ QList<DocumentFormat*> DocumentUtils::toFormats(const QList<FormatDetectionResul
         }
     }
     return result;
+}
+
+QString FormatDetectionResult::getFormatDescriptionText() const {
+    QString text = format == NULL ? importer->getImporterDescription() : format->getFormatDescription();
+    return text;
+}
+
+QString FormatDetectionResult::getFormatOrImporterName() const {
+    QString name = format == NULL ? importer->getImporterName() : format->getFormatName();
+    return name;
 }
 
 } //namespace

@@ -51,6 +51,8 @@ QHash<QByteArray, char> PDBFormat::acronymNameMap;
 PDBFormat::PDBFormat( QObject* p ) : DocumentFormat(p, DocumentFormatFlag(0), QStringList("pdb"))
 {
     formatName = tr("PDB");
+    formatDescription = tr("The Protein Data Bank (PDB) format provides a standard representation for macromolecular structure data derived from X-ray diffraction and NMR studies.");
+
     initUtilityMaps();
     AtomConstants::init();
     supportedObjectTypes+=GObjectTypes::BIOSTRUCTURE_3D;

@@ -20,6 +20,9 @@
  */
 
 #include "ProjectLoaderImpl.h"
+#include "DocumentFormatSelectorController.h"
+#include "ProjectTasksGui.h"
+#include "ProjectImpl.h"
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/Settings.h>
@@ -40,9 +43,6 @@
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/OpenViewTask.h>
-
-#include "ProjectTasksGui.h"
-#include "ProjectImpl.h"
 
 #include <QtGui/QAction>
 
@@ -281,23 +281,34 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
         } else {
             FormatDetectionConfig conf;
             conf.useImporters = true;
+            conf.bestMatchesOnly = false;
             QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, conf);
             if (!formats.isEmpty()) {
-                const FormatDetectionResult& dr = formats.first();
-                if (dr.format != NULL ) {
-                    AD2P_DocumentInfo info;
-                    info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
-                    info.url = url;
-                    info.hints = hints;
-                    info.formatId = formats.first().format->getFormatId(); 
-                    info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
-                    docsInfo << info;
-                } else {
-                    assert(dr.importer != NULL);
-                    AD2P_ProviderInfo info;
-                    info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
-                    info.dp = formats.first().importer->createImportTask(dr, true);
-                    docProviders << info;
+                int idx = 0;
+                if (formats.size() > 1 && 
+                    (formats[0].score == formats[1].score 
+                    || (formats[1].score > FormatDetection_AverageSimilarity && formats[0].score < FormatDetection_Matched) 
+                    || formats[0].score <= FormatDetection_AverageSimilarity)) 
+                {
+                    idx = DocumentFormatSelectorController::selectResult(url, formats.first().rawData, formats);
+                }
+                if (idx >= 0) {
+                    const FormatDetectionResult& dr =  formats[idx];
+                    if (dr.format != NULL ) {
+                        AD2P_DocumentInfo info;
+                        info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
+                        info.url = url;
+                        info.hints = hints;
+                        info.formatId = dr.format->getFormatId(); 
+                        info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+                        docsInfo << info;
+                    } else {
+                        assert(dr.importer != NULL);
+                        AD2P_ProviderInfo info;
+                        info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
+                        info.dp = dr.importer->createImportTask(dr, true);
+                        docProviders << info;
+                    }
                 }
             } else {
                 coreLog.error(tr("Failed to detect file format: %1").arg(url.getURLString()));

@@ -25,8 +25,8 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
 
-#include <QtGui/qfiledialog.h>
-#include <QtGui/qmessagebox.h>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 
 namespace U2{
 

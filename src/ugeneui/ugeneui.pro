@@ -14,6 +14,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/main_window/ToolBarManager.h \
            src/plugin_viewer/PluginViewerController.h \
            src/plugin_viewer/PluginViewerImpl.h \
+           src/project_support/DocumentFormatSelectorController.h \
            src/project_support/ExportProjectDialogController.h \
            src/project_support/ProjectImpl.h \
            src/project_support/ProjectLoaderImpl.h \
@@ -32,6 +33,7 @@ FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/main_window/ui/AboutDialog.ui \
          src/plugin_viewer/ui/PluginViewerWidget.ui \
          src/project_support/ui/CreateNewProjectWidget.ui \
+         src/project_support/ui/DocumentFormatSelectorDialog.ui \
          src/project_support/ui/ExportProjectDialog.ui \
          src/project_view/ui/ProjectViewWidget.ui \
          src/script/ui/ScriptLibraryEditor.ui \
@@ -52,6 +54,7 @@ SOURCES += src/Main.cpp \
            src/main_window/ToolBarManager.cpp \
            src/plugin_viewer/PluginViewerController.cpp \
            src/plugin_viewer/PluginViewerImpl.cpp \
+           src/project_support/DocumentFormatSelectorController.cpp \
            src/project_support/ExportProjectDialogController.cpp \
            src/project_support/ProjectImpl.cpp \
            src/project_support/ProjectLoaderImpl.cpp \

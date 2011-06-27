@@ -50,6 +50,9 @@ bool DocumentFormatRegistryImpl::registerFormat(DocumentFormat* f) {
     assert(getFormatById(f->getFormatId())==NULL);
     formats.push_back(f);
     emit si_documentFormatRegistered(f);
+    if (f->getFormatDescription().isEmpty()) {
+        coreLog.trace("Warn! Format has no description: " + f->getFormatName());
+    }
     return true;
 }
 

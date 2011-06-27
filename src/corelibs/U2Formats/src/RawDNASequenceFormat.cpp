@@ -42,6 +42,7 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
     formatName = tr("Raw sequence");
     fileExtensions << "seq" << "txt";
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
+    formatDescription = tr("Raw sequence file - a whole content of the file is treated either as a single nucleotide or peptide sequence UGENE will remove all non-alphabetic chars from the result sequence");
 }
 
 

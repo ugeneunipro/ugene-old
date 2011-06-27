@@ -59,17 +59,20 @@ public:
     virtual FormatDetectionScore checkData(const QByteArray& rawData, const GUrl& url) = 0;
     
     virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard) = 0;
+
+    virtual QString getImporterDescription() const {return importerDescription;}
     
-    const QString& getName() const {return name;}
+    const QString& getImporterName() const {return name;}
 
     const QString& getId() const {return id;}
 
     const QList<QString>& getSupportedFileExtensions() const {return extensions;}
-
+    
 protected:
     QString         id;
     QString         name;
     QList<QString>  extensions;
+    QString         importerDescription;
 };
 
 } //namespace

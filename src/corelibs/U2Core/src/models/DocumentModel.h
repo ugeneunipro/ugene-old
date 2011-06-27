@@ -151,6 +151,9 @@ public:
         The URL value is optional and provided as supplementary option. URL value here can be empty in some special cases.
     */
     virtual FormatDetectionScore checkRawData(const QByteArray& dataPrefix, const GUrl& url = GUrl()) const = 0;
+
+    /** Returns generic format description */
+    virtual QString getFormatDescription() const {return formatDescription;}
     
     /* Checks that document format satisfies given constraints */ 
     virtual bool checkConstraints(const DocumentFormatConstraints& c) const;
@@ -172,6 +175,7 @@ protected:
     DocumentFormatFlags formatFlags;
     QStringList         fileExtensions;
     QSet<GObjectType>   supportedObjectTypes;
+    QString             formatDescription;
 };
 
 class DocumentFormatConstraints {

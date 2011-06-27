@@ -37,6 +37,7 @@ PlainTextFormat::PlainTextFormat(QObject* p) : DocumentFormat(p, DocumentFormatF
 {
     formatName = tr("Plain text");
     supportedObjectTypes+=GObjectTypes::TEXT;
+    formatDescription = tr("A simple plain text file.");
 }
 
 

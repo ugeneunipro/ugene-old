@@ -44,6 +44,10 @@ public:
     QByteArray              rawData;
     GUrl                    url;
     QString                 extension;
+
+    QString getFormatDescriptionText() const;
+    QString getFormatOrImporterName() const;
+
 };
 
 class U2CORE_EXPORT FormatDetectionConfig {
