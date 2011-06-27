@@ -56,8 +56,6 @@
 namespace U2 {
 
 
-static Logger log(ULOG_ENZYMES);
-
 QList<SEnzymeData>   EnzymesSelectorWidget::loadedEnzymes;
 QSet<QString>        EnzymesSelectorWidget::lastSelection;
 
@@ -151,7 +149,7 @@ void EnzymesSelectorWidget::loadFile(const QString& url) {
         if (isVisible()) {
             QMessageBox::critical(NULL, tr("Error"), ti.getError());
         } else  {
-            log.error(ti.getError());
+            ioLog.error(ti.getError());
         }
         return;
     }
@@ -189,7 +187,7 @@ void EnzymesSelectorWidget::saveFile(const QString& url) {
         if (isVisible()) {
             QMessageBox::critical(NULL, tr("Error"), ti.getError());
         } else  {
-            log.error(ti.getError());
+            uiLog.error(ti.getError());
         }
         return;
     }

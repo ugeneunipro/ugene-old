@@ -103,7 +103,7 @@ bool TaskSchedulerImpl::processFinishedTasks() {
         Task::State state = ti->task->getState();
         assert(state != Task::State_Finished);
 
-        if (ti->task->getTimeOut()!=0){
+        if (ti->task->getTimeOut() > 0){
             int secsPassed = GTimer::secsBetween(ti->task->getTimeInfo().startTime, GTimer::currentTimeMicros());
             if(ti->task->getTimeOut()<=secsPassed){
                 ti->task->setError( tr("TimeOut Error. TimeOut = %1 sec.").arg(ti->task->getTimeOut()));

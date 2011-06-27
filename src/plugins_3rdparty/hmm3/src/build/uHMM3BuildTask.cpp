@@ -61,8 +61,6 @@ static Document * getSavingDocument( const QList< P7_HMM* >& hmms, const QString
 
 namespace U2 {
 
-static Logger log( UHMM3_BUILD_LOG_CAT );
-
 /**********************************
  * UHMM3BuildTask
  ***********************************/
@@ -79,7 +77,7 @@ UHMM3BuildTask::UHMM3BuildTask( const UHMM3BuildSettings& aset, const MAlignment
         ( 1 < msaSzInMB && msaSzInMB <= 10 ) ? 7 : ( 10 < msaSzInMB && msaSzInMB <= 30 ) ? 5 : 4;
     int howManyMem = qMax( 1, (int)( power * msaSzInMB ) );
     addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
-    log.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
+    algoLog.trace( QString( "%1 requires %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
 }
 
 bool UHMM3BuildTask::checkMsa() {

@@ -36,8 +36,6 @@ namespace U2 {
 
 /* TRANSLATOR U2::FindEnzymesTask */
 
-static Logger log(ULOG_ENZYMES);
-
 //////////////////////////////////////////////////////////////////////////
 // enzymes -> annotations
 
@@ -243,7 +241,7 @@ QList<SharedAnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QStri
 
 Task::ReportResult FindEnzymesTask::report() {
     if (!hasError() && !isCanceled()) {
-        log.info(tr("Found %1 restriction sites").arg(results.count()));
+        algoLog.info(tr("Found %1 restriction sites").arg(results.count()));
     }
     return ReportResult_Finished;
 }
@@ -300,7 +298,7 @@ void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti)
         return;
     }
     if (!enzyme->alphabet->isNucleic()) {
-        log.info(tr("Non-nucleic enzyme alphabet: %1, enzyme: %2, skipping..").arg(enzyme->alphabet->getId()).arg(enzyme->id));
+        algoLog.info(tr("Non-nucleic enzyme alphabet: %1, enzyme: %2, skipping..").arg(enzyme->alphabet->getId()).arg(enzyme->id));
         return;
     }
     bool useExtendedComparator = enzyme->alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 

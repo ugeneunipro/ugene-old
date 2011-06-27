@@ -42,7 +42,6 @@ Task::Task(const QString& _name, TaskFlags f) {
     parentTask  = NULL;
     progressWeightAsSubtask = 1;
     maxParallelSubtasks = MAX_PARALLEL_SUBTASKS_SERIAL;
-    timeOut = 0;
     insidePrepare = false;
 }
 

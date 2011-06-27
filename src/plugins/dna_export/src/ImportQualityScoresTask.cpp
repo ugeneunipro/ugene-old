@@ -36,7 +36,6 @@
 
 namespace U2 {
 
-static Logger log(ULOG_IMPORT_QUALITY_SCORES);
 
 ReadQualityScoresTask::ReadQualityScoresTask( const QString& file, DNAQualityType t)
 : Task("ReadPhredQuality", TaskFlag_None), fileName(file), type(t)

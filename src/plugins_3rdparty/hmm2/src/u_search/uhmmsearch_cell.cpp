@@ -28,7 +28,6 @@
 
 extern spe_program_handle_t hmmercell_spu;
 namespace U2 {
-static Logger log(UHMMSearch::tr("UHMMSearch"));
 
 
 	

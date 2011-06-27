@@ -33,8 +33,6 @@
 
 namespace U2 {
 
-static Logger log(ULOG_ENZYMES);
-
 QString EnzymesIO::getFileDialogFilter() {
     return DialogUtils::prepareFileFilter(tr("Bairoch format"), QStringList("bairoch"));
 }
@@ -68,7 +66,7 @@ QList<SEnzymeData> EnzymesIO::readEnzymes(const QString& url, TaskStateInfo& ti)
         if (d->alphabet == NULL) {
             d->alphabet = AppContext::getDNAAlphabetRegistry()->findAlphabet(d->seq);
             if (!d->alphabet->isNucleic()) {
-                log.error(tr("Non-nucleic enzyme alphabet: '%1', alphabet: %2, sequence '%3'")
+                algoLog.error(tr("Non-nucleic enzyme alphabet: '%1', alphabet: %2, sequence '%3'")
                     .arg(d->id).arg(d->alphabet->getId()).arg(QString(d->seq)));
             }
         }
@@ -77,11 +75,6 @@ QList<SEnzymeData> EnzymesIO::readEnzymes(const QString& url, TaskStateInfo& ti)
 }
 
 void EnzymesIO::writeEnzymes(const QString& url, const QString& source, const QSet<QString>& enzymes, TaskStateInfo& ti) {
-    QString tmp;
-    foreach(tmp, enzymes){
-        log.trace(tmp);
-    }
-
     IOAdapterId ioId = BaseIOAdapters::url2io(url);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     if (iof == NULL) {
@@ -149,7 +142,7 @@ QList<SEnzymeData> EnzymesIO::readBairochFile(const QString& url, IOAdapterFacto
                 res.append(currentData);
                 currentData = new EnzymeData();
             } else {
-                log.trace(QString("Enzyme without ID, line %1, skipping").arg(line));
+                ioLog.trace(QString("Enzyme without ID, line %1, skipping").arg(line));
             }
             continue;
         }
@@ -190,7 +183,7 @@ QList<SEnzymeData> EnzymesIO::readBairochFile(const QString& url, IOAdapterFacto
                     bool ok = true;
                     cutPos = cutStr.length() == 1 && cutStr[0] == '?' ? ENZYME_CUT_UNKNOWN : cutStr.toInt(&ok);
                     if (!ok) {
-                        log.error(tr("Illegal cut pos: %1, line %2").arg(QString(cutStr)).arg(line));
+                        ioLog.error(tr("Restriction enzymes: Illegal cut pos: %1, line %2").arg(QString(cutStr)).arg(line));
                         break;
                     }
                 } else {

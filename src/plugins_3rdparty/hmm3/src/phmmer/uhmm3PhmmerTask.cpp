@@ -42,7 +42,6 @@ using namespace U2;
 
 namespace U2 {
 
-static Logger log( UHMM3_PHMMER_LOG_CAT );
 
 static int countPhmmerMemInMB( qint64 dbLen, int queryLen ) {
     assert( 0 < dbLen && 0 < queryLen );
@@ -120,7 +119,7 @@ void UHMM3PhmmerTask::addMemResource() {
     
     int howManyMem = countPhmmerMemInMB( db.length(), query.length() );
     addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
-    log.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
+    algoLog.trace( QString( "%1 requires %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
 }
 
 DNASequence UHMM3PhmmerTask::getSequenceFromDocument( Document * doc, TaskStateInfo & ti ) {
@@ -367,7 +366,7 @@ QList<TaskResourceUsage> UHMM3SWPhmmerTask::getResources(SequenceWalkerSubtask *
     QList<TaskResourceUsage> res;
     int howManyMem = countPhmmerMemInMB( dbSeq.length(), querySeq.length() );
     res << TaskResourceUsage( RESOURCE_MEMORY, howManyMem );
-    log.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
+    algoLog.trace( QString( "%1 requires %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
     return res;
 }
 

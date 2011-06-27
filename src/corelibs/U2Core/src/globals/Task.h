@@ -84,9 +84,14 @@ private:
 
 class U2CORE_EXPORT TaskTimeInfo {
 public:
+    TaskTimeInfo() : startTime(0), finishTime(0), timeOut(-1) {}
+
     //time in microseconds from Unix Epoch (UTC). See Timer.h
-    qint64 startTime;  //the time task is promoted to 'running' state
-    qint64 finishTime; //the time task is promoted to 'finished' state
+    qint64  startTime;  //the time task is promoted to 'running' state
+    qint64  finishTime; //the time task is promoted to 'finished' state
+
+    int     timeOut;  //number of seconds to be passed before tasks is timed out, -1 -> timeout function is disabled
+
 };
 
 #define MAX_PARALLEL_SUBTASKS_AUTO   0
@@ -279,10 +284,10 @@ public:
     void setMinimizeSubtaskErrorText(bool v);
     
     /** Number of seconds to be passed to mark task as failed by timeout */
-    void setTimeOut(int sec) {timeOut = sec;}
+    void setTimeOut(int sec) {timeInfo.timeOut = sec;}
 
     /** Number of seconds to be passed to mark task as failed by timeout */
-    int getTimeOut() const { return timeOut;}
+    int getTimeOut() const { return timeInfo.timeOut;}
 
     void addTaskResource(const TaskResourceUsage& r);
 
@@ -319,7 +324,6 @@ private:
     Task*               parentTask;
     QList<Task*>        subtasks;
     qint64              taskId;
-    int                 timeOut; //number of seconds to be passed before tasks is timed out
     TaskResources       taskResources;
     bool                insidePrepare;
 };

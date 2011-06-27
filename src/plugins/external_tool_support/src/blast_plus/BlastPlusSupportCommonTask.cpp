@@ -46,8 +46,6 @@
 
 namespace U2 {
 
-static Logger log(ULOG_CAT_BLASTPLUS_RUN_TASK);
-
 BlastPlusSupportCommonTask::BlastPlusSupportCommonTask(const BlastTaskSettings& _settings) :
         Task("Run NCBI Blast+ task", TaskFlags_NR_FOSCOE),
         settings(_settings)

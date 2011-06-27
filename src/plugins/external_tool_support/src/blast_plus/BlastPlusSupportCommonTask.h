@@ -41,8 +41,6 @@
 #include <QtXml/QDomNode>
 #include <QtXml/QDomDocument>
 
-#define ULOG_CAT_BLASTPLUS_RUN_TASK "Plugin: External Tool Support: blast+"
-
 namespace U2 {
 
 class BlastPlusSupportCommonTask : public Task {

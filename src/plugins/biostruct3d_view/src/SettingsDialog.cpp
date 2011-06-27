@@ -25,7 +25,6 @@
 
 namespace U2 {
 
-static Logger log("test");
 
 BioStruct3DSettingsDialog::BioStruct3DSettingsDialog()
         : anaglyphStatus(NOT_AVAILABLE), anaglyphSettings(AnaglyphSettings::defaultSettings())

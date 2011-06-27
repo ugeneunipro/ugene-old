@@ -29,9 +29,6 @@ namespace U2 {
 
 #define PING_REMOTE_SERVICE_LOG "ping-remote-server"
 
-static Logger log(PING_REMOTE_SERVICE_LOG);
-
-
 RemoteServicePingTask::RemoteServicePingTask( const QString& url )
 :Task( tr( "RemoteServicePingTask" ), TaskFlags( TaskFlags_FOSCOE ) ), 
 machinePath(url), machine(NULL),  machineFactory(new RemoteServiceMachineFactory()) 

@@ -31,8 +31,6 @@
 
 namespace U2 {
 
-#define ULOG_ENZYMES QString("Restriction Enzymes")
-
 class DNAAlphabet;
 
 #define QUALIFIER_LEFT_TERM             "5'term"

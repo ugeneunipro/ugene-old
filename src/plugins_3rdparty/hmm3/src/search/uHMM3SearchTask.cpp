@@ -44,8 +44,6 @@ using namespace U2;
 
 namespace U2 {
 
-static Logger log( UHMM3_SEARCH_LOG_CAT );
-
 static int countSearchMemInMB( qint64 seqLen, int hmmLen ) {
     return ( ( 77 * seqLen + 10500 * hmmLen ) / ( 1024 * 1024 ) ) + 2;
 }
@@ -245,7 +243,7 @@ QList< TaskResourceUsage > UHMM3SWSearchTask::getResources( SequenceWalkerSubtas
     QList< TaskResourceUsage > res;
     int howManyMem = countSearchMemInMB( t->getRegionSequenceLen(), hmm->M );
     res << TaskResourceUsage( RESOURCE_MEMORY, howManyMem );
-    log.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
+    algoLog.trace( QString( "%1 requires %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
     return res;
 }
 
@@ -471,7 +469,7 @@ void UHMM3SearchTask::addMemResource() {
     
     int howManyMem = countSearchMemInMB( seqLen, hmm->M );
     addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
-    log.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
+    algoLog.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
 }
 
 QList< Task* > UHMM3SearchTask::onSubTaskFinished( Task* subTask ) {

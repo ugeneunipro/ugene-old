@@ -38,8 +38,6 @@
 
 namespace U2 {
 
-static Logger log(ULOG_CAT_BLASTPLUS_RUN_TASK);
-
 ExternalToolRunTask* BlastNPlusSupportTask::createBlastPlusTask(){
 
     QStringList arguments;
@@ -106,7 +104,7 @@ ExternalToolRunTask* BlastNPlusSupportTask::createBlastPlusTask(){
         arguments <<"-out"<< settings.outputOriginalFile;
     }
 
-    log.trace("Blastall arguments: "+arguments.join(" "));
+    algoLog.trace("Blastall arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser();
     return new ExternalToolRunTask(BLASTN_TOOL_NAME, arguments, logParser);
 }

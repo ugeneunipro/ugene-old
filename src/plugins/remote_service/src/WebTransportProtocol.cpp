@@ -71,11 +71,7 @@ const QByteArray BaseGlobalProperties::TASKS_LIST_FINISHED("tasks-list-finished"
 
 //////////////////////////////////////////////////////////////////////////
 
-#define ULOG_WEB_TRANSPORT_PROTOCOL "web-transport-protocol"
-static Logger log(ULOG_WEB_TRANSPORT_PROTOCOL);
-
-void UctpSession::buildQUuid( QUuid* uuid ) const
-{
+void UctpSession::buildQUuid( QUuid* uuid ) const {
     assert(uuid != NULL);
     
     // construct uuid from MD5 representation of session-id
@@ -140,7 +136,7 @@ bool UctpReplyHandler::startElement( const QString &namespaceURI, const QString 
         envelope = true;
     } 
     xmlAttrMap.insert(qName, attributes);
-    log.trace(QString("Parsing element %1").arg(qName));
+    ioLog.trace(QString("Parsing element %1").arg(qName));
     curText.clear();
     return true;
     
@@ -156,7 +152,7 @@ bool UctpReplyHandler::endElement(const QString &namespaceURI, const QString &lo
         QString status = currentAttributes.value(QString(UctpElements::STATUS));
         if (status == UctpValues::STATUS_OK) {
             replyResultOk = true;
-            log.trace("Uctp request succeed");
+            coreLog.trace("Uctp request succeed");
         } 
     } 
     

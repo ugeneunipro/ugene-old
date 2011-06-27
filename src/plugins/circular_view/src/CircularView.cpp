@@ -55,7 +55,6 @@ const int CircularView::MIN_OUTER_SIZE = 100;
 const int CircularView::graduation = 16;
 
 
-static Logger log("Circular view plugin");
 
 CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx)
 : GSequenceLineViewAnnotated(p, ctx), clockwise(true), holdSelection(false)
