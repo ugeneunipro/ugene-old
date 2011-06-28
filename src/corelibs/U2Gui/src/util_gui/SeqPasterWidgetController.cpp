@@ -67,6 +67,9 @@ QByteArray SeqPasterWidgetController::getNormSequence(DNAAlphabet * alph, const 
             }
         }
     }
+    if(!alph->isCaseSensitive()){
+        ret = ret.toUpper();
+    }
     return ret;
 }
 
