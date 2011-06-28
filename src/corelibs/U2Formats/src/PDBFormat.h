@@ -71,13 +71,12 @@ private:
         QString currentPDBLine;
         int currentChainIndex;
         int currentModelIndex;
+        char currentChainIndentifier;
         bool flagMultipleModels, flagAtomRecordPresent;
         QHash<char, int> chainIndexMap;
         QHash<char, QByteArray> seqResMap;
-        //QMap<int, int> residueStartIndexMap;
-        //QMap<int, int> unreferencedResidueStartIndexMap;
-        //QVariantMap currentMoleculeDescr;
-
+        QSet<QByteArray> resIndSet;
+        
         // Methods
         QByteArray getSpecValue(const QByteArray& specLine, const QByteArray& valueName);
         void parseHeader(BioStruct3D& biostruct, TaskStateInfo& ti);

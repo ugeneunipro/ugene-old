@@ -165,6 +165,7 @@ PDBFormat::PDBParser::PDBParser(IOAdapter* _io) : io(_io), currentPDBLine(""), c
 
     currentChainIndex = 1;
     currentModelIndex = 0;
+    currentChainIndentifier = ' '; 
     flagMultipleModels = false;
     flagAtomRecordPresent = false;
 }
@@ -323,11 +324,20 @@ void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, TaskStateInfo&)
     int id = currentPDBLine.mid(6,5).toInt();
     QByteArray atomName = currentPDBLine.mid(12,4).toAscii().trimmed();
     QByteArray residueName = currentPDBLine.mid(17,3).toAscii().trimmed();
-    int residueIndex = currentPDBLine.mid(22,4).toInt();
+    QByteArray residueIndexStr = currentPDBLine.mid(22,5).toAscii();
     char residueAcronym = PDBFormat::getAcronymByName(residueName);
     char chainIdentifier = currentPDBLine.at(21).toAscii();
     
+    if (currentChainIndentifier != chainIdentifier) {
+        resIndSet.clear();
+        currentChainIndentifier = chainIdentifier;
+    }
+    
+    resIndSet.insert(residueIndexStr);
+    int residueIndex = resIndSet.size();
+
     bool atomIsInChain = !isHetero || seqResContains(chainIdentifier, residueIndex, residueAcronym );
+
 
     QByteArray elementName = currentPDBLine.mid(76,2).toAscii().trimmed();
     
@@ -335,6 +345,7 @@ void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, TaskStateInfo&)
     int atomicNumber = PDBFormat::getElementNumberByName(element);
 
     int chainIndex = chainIndexMap.contains(chainIdentifier) ? chainIndexMap.value(chainIdentifier) : currentChainIndex;
+
 
     if ( currentModelIndex == 0 && atomIsInChain ) {
     
