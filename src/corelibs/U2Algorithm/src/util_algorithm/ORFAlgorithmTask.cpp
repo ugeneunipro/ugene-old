@@ -27,6 +27,8 @@
 
 namespace U2 {
 
+#define MAX_RESULTS 100000
+
 ORFFindTask::ORFFindTask(const ORFAlgorithmSettings& s, const QByteArray& seq) 
 : Task (tr("ORF find"), TaskFlag_None), config(s), sequence(seq)
 {
@@ -45,10 +47,16 @@ void ORFFindTask::run() {
 }
 
 void ORFFindTask::onResult(const ORFFindResult& r) {
-    lock.lock();
+    QMutexLocker locker(&lock);
+    if (newResults.size() > MAX_RESULTS) {
+        if (!isCanceled()) {
+            stateInfo.setError(  tr("Number of results exceeds %1").arg(MAX_RESULTS) );
+            cancel();
+        }
+        return;
+    }
     assert(r.region.length % 3 == 0);
     newResults.append(r);
-    lock.unlock();
 }
 
 QList<ORFFindResult> ORFFindTask::popResults() {
