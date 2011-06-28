@@ -57,6 +57,7 @@ void ORFFindAlgorithm::find(
 {
     Q_UNUSED(seqLen);
     assert(cfg.proteinTT && cfg.proteinTT->isThree2One());
+    assert(seqLen >= cfg.searchRegion.endPos() - 1);
     DNATranslation3to1Impl* aTT = (DNATranslation3to1Impl*)cfg.proteinTT;
     bool mustFit = cfg.mustFit;
     bool mustInit = cfg.mustInit;

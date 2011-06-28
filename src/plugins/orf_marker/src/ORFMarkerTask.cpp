@@ -137,7 +137,7 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
     if (cfg.proteinTT == NULL) {
         cfg.proteinTT = GObjectUtils::findAminoTT(dnaObj,false);
     }
-    if (cfg.searchRegion.isEmpty()) {
+    if (cfg.searchRegion.isEmpty() || cfg.searchRegion.endPos() >= dnaObj->getSequenceLen() + 1 ) {
         cfg.searchRegion = U2Region(0, dnaObj->getSequenceLen());
     }
     
