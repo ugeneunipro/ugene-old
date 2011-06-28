@@ -368,8 +368,11 @@ QStringList ReadCSVAsAnnotationsTask::parseLineIntoTokens(const QString& line, c
         QScriptValueIterator it(scriptResult);
         while (it.hasNext()) {
             it.next();
+            if (it.flags() & QScriptValue::SkipInEnumeration)
+                continue;
             QScriptValue val = it.value();
-            result.append(val.toString());
+            QString strVal = val.toString();
+            result.append(strVal);
         }
     } else {
         ti.setError(tr("Script result is not an array of strings!"));

@@ -412,7 +412,7 @@ void ImportAnnotationsFromCSVDialog::preview(bool silent) {
     }
     CSVParsingConfig parseOptions;
     toParsingConfig(parseOptions);
-    if (parseOptions.splitToken.isEmpty() || !parseOptions.parsingScript.isEmpty()) {
+    if (parseOptions.splitToken.isEmpty() && parseOptions.parsingScript.isEmpty()) {
         return;
     }
     
