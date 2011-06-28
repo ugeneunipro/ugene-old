@@ -31,6 +31,7 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Formats/GenbankFeatures.h>
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <QtGui/QMenu>
 #include <QtGui/QToolTip>
@@ -676,6 +677,7 @@ QString GSequenceLineViewAnnotated::createToolTip(QHelpEvent* e) {
                 tip += "<tr><td/><td>...</td>";
                 rows++;
             } else {
+                tip += "<tr><td></td><td><b>Location</b> = " + Genbank::LocationParser::buildLocationString(ad.annotation->data()) + "</td></tr>";
                 tip += "<tr><td/><td>";
                 tip += ad.annotation->getQualifiersTip(ROWS_LIMIT - rows, getSequenceObject(), ctx->getComplementTT(), ctx->getAminoTT());
                 tip += "</td></tr>";
