@@ -94,7 +94,12 @@ QList<SharedAnnotationData> DNAFlexTask::getAnnotationsFromResults(const QList<H
         annotData->location->regions << result.region;
 
         annotData->qualifiers.append(
-            U2Qualifier("area_average_threshold", QString::number(result.area, 'f', 3)));
+            U2Qualifier("area_average_threshold", QString::number(result.averageThreshold, 'f', 3)));
+        annotData->qualifiers.append(
+            U2Qualifier("windows_number", QString::number(result.windowsNumber)));
+        annotData->qualifiers.append(
+            U2Qualifier("total_threshold", QString::number(result.totalThreshold, 'f', 3)));
+
 
         annotResults.append(annotData);
     }

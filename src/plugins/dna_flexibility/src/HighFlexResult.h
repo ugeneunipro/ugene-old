@@ -32,11 +32,17 @@ namespace U2 {
 class HighFlexResult
 {
 public:
-    HighFlexResult() : region(0, 0), area(0.0) {}
-    HighFlexResult(const U2Region& _region, double _area) : region(_region), area(_area) {}
+    HighFlexResult() : averageThreshold(0.0), windowsNumber(0), totalThreshold(0) {}
+    HighFlexResult(const U2Region& _region, double _averageThreshold, int _windowsNumber, double _totalThreshold)
+        : region(_region),
+          averageThreshold(_averageThreshold),
+          windowsNumber(_windowsNumber),
+          totalThreshold(_totalThreshold) {}
 
     U2Region region;
-    double area;
+    double averageThreshold;
+    int windowsNumber;
+    double totalThreshold;
 };
 
 

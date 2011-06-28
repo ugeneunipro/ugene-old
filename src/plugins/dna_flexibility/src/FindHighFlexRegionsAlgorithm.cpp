@@ -120,7 +120,10 @@ void FindHighFlexRegionsAlgorithm::find(
                         = areaTotalThreshold / (areaHighFlexWindowsNumber + 1); // "+1" as it starts from 0
 
                     // Adding the result found to the results
-                    HighFlexResult result(resultRegion, areaAverageThreshold);
+                    HighFlexResult result(resultRegion,
+                        areaAverageThreshold,
+                        areaHighFlexWindowsNumber + 1,
+                        areaTotalThreshold);
                     addToResults(resultsListener, result);
                 }
 
