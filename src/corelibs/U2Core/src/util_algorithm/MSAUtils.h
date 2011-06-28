@@ -31,6 +31,7 @@ class GObject;
 class MAlignment;
 class MAlignmentRow;
 class TaskStateInfo;
+class U2OpStatus;
 
 class U2CORE_EXPORT MSAUtils : public QObject {
     Q_OBJECT
@@ -38,7 +39,7 @@ public:
 
     static bool equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QByteArray& pattern);
     
-    static MAlignment seq2ma(const QList<GObject*>& dnas, QString& err);
+    static MAlignment seq2ma(const QList<GObject*>& dnas, U2OpStatus& os);
 
     static QList<DNASequence> ma2seq(const MAlignment& ma, bool trimGaps);
 

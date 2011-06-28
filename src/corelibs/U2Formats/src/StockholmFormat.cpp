@@ -719,7 +719,7 @@ void StockholmFormat::storeDocument( Document* doc, TaskStateInfo& ti, IOAdapter
     }
 }
 
-FormatDetectionScore  StockholmFormat::checkRawData(const QByteArray& data, const GUrl&) const {
+RawDataCheckResult StockholmFormat::checkRawData(const QByteArray& data, const GUrl&) const {
     bool headerIsOK = checkHeader( data.constData(), data.size());
     return headerIsOK ? FormatDetection_VeryHighSimilarity : FormatDetection_NotMatched;
 }

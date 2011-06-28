@@ -25,18 +25,19 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/RemoveDocumentTask.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
 
 AddDocumentTask::AddDocumentTask(Document * _d, const AddDocumentTaskConfig& _conf) :
-Task( tr("Add document to the project: %1").arg(_d->getURLString()), TaskFlags_NR_FOSCOE), d(_d), dpt(NULL), conf(_conf)
+Task( tr("Add document to the project: %1").arg(_d->getURLString()), TaskFlags_NR_FOSCOE), document(_d), dpt(NULL), conf(_conf)
 {
-    d->checkMainThreadModel();
+    document->checkMainThreadModel();
 }
 
 AddDocumentTask::AddDocumentTask(DocumentProviderTask * _dpt, const AddDocumentTaskConfig& c) :
-Task( tr("Add document to the project: %1").arg(_dpt->getDocumentDescription()), TaskFlags_NR_FOSCOE), d(NULL), dpt(_dpt), conf(c)
+Task( tr("Add document to the project: %1").arg(_dpt->getDocumentDescription()), TaskFlags_NR_FOSCOE), document(NULL), dpt(_dpt), conf(c)
 {
     addSubTask(dpt);
 }
@@ -49,16 +50,16 @@ QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
     if (subTask == dpt) {
         Document* doc = dpt->takeDocument();
         if (!doc->isMainThreadModel()) {
-            d = doc->clone();
+            document = doc->clone();
             delete doc;
         } else {
-            d = doc;
+            document = doc;
         }
         if (AppContext::getProject() == NULL) {
             res << AppContext::getProjectLoader()->createNewProjectTask();
         } else if (conf.unloadExistingDocument) {
-            Document* oldDoc = AppContext::getProject()->findDocumentByURL(d->getURL());
-            if (oldDoc != NULL && oldDoc != d) {
+            Document* oldDoc = AppContext::getProject()->findDocumentByURL(document->getURL());
+            if (oldDoc != NULL && oldDoc != document) {
                 res << new RemoveMultipleDocumentsTask(AppContext::getProject(), QList<Document*>() << oldDoc, false, false);
             }
         }
@@ -75,12 +76,12 @@ Task::ReportResult AddDocumentTask::report() {
     
     if( p->isStateLocked() ) {
         return ReportResult_CallMeAgain;
-    } else if (d!= NULL) {
-        Document* sameURLDoc = p->findDocumentByURL(d->getURL());
+    } else if (document != NULL) {
+        Document* sameURLDoc = p->findDocumentByURL(document->getURL());
         if (sameURLDoc!=NULL) {
-            stateInfo.setError(tr("Document is already added to the project %1").arg(d->getURL().getURLString()));
+            stateInfo.setError(tr("Document is already added to the project %1").arg(document->getURL().getURLString()));
         } else {
-            p->addDocument(d);
+            p->addDocument(document);
         }
     } else {
         stateInfo.setError(stateInfo.getError() + tr("Document was removed"));

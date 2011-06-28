@@ -23,6 +23,10 @@
 
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/GObjectRelationRoles.h>
 
 namespace U2 {
 
@@ -108,6 +112,89 @@ QVector<U2Region> SequenceUtils::toJoinedRegions(const QList<QByteArray>& seqPar
         prevEnd += seq.size();
     }
     return res;
+}
+
+
+Document* SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2OpStatus& os) {
+    // prepare  annotation object -> sequence object mapping first
+    // and precompute resulted sequence size and alphabet
+    int mergedSize = 0;
+    QHash< QString, QList<AnnotationTableObject*> > annotationsBySequenceObjectName;
+    QList<DNASequenceObject*> seqObjects;
+    QString docUrl = doc->getURLString();
+    DNAAlphabet* al = NULL;
+    foreach(GObject* obj, doc->getObjects()) {
+        AnnotationTableObject* annObj = qobject_cast<AnnotationTableObject*>(obj);
+        if (annObj == NULL) {
+            DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+            if (seqObj != NULL) {
+                seqObjects << seqObj;
+                mergedSize += mergedSize == 0 ? 0 : mergeGap;
+                mergedSize += seqObj->getSequenceLen();
+                DNAAlphabet* seqAl = seqObj->getAlphabet(); 
+                al = (al == NULL) ?  seqAl : DNAAlphabet::deriveCommonAlphabet(al, seqAl);
+                if (al == NULL) {
+                    os.setError(tr("Failed to derive common alphabet!"));
+                    break;
+                }
+            }
+            continue;
+        }
+        QList<GObjectRelation> seqRelations = annObj->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);
+        foreach(const GObjectRelation& rel, seqRelations) {
+            const QString& relDocUrl = rel.getDocURL();
+            if (relDocUrl == docUrl) {
+                QList<AnnotationTableObject*>& annObjs = annotationsBySequenceObjectName[rel.ref.objName];
+                if (!annObjs.contains(annObj)) {
+                    annObjs << annObj;
+                }
+            }
+        }
+    }
+    if (os.hasError()) {
+        return NULL;
+    }
+    if (seqObjects.isEmpty()) {
+        return NULL;
+    }
+    DNASequence seq(doc->getURL().fileName(), QByteArray(), al);
+    seq.seq.reserve(mergedSize); //TODO: check if memory op succeed!!!
+    AnnotationTableObject* annObj = new AnnotationTableObject(seq.getName() + " annotations");
+    QByteArray delim(mergeGap, al->getDefaultSymbol());
+    foreach(DNASequenceObject* seqObj, seqObjects) {
+        if (!seq.seq.isEmpty()) {
+            seq.seq.append(delim);
+        }
+        U2Region contigReg(seq.seq.length(), seqObj->getSequenceLen());
+        seq.seq.append(seqObj->getSequence());
+
+        SharedAnnotationData ad(new AnnotationData());
+        ad->name = "contig";
+        ad->location->regions << contigReg;
+        annObj->addAnnotation(new Annotation(ad));
+
+        // now convert all annotations;
+        QList<AnnotationTableObject*> annObjects = annotationsBySequenceObjectName.value(seqObj->getGObjectName());
+        foreach(AnnotationTableObject* annObj, annObjects) {
+            foreach(Annotation* a, annObj->getAnnotations()) {
+                Annotation* newAnnotation = new Annotation(a->data());
+                U2Location newLocation = newAnnotation->getLocation();
+                U2Region::shift(contigReg.startPos, newLocation->regions);
+                newAnnotation->setLocation(newLocation);
+                QStringList groupNames;
+                foreach(AnnotationGroup* g, a->getGroups()) {
+                    groupNames << g->getGroupName();
+                }
+                annObj->addAnnotation(newAnnotation, groupNames);
+            }
+        }
+    }
+    DNASequenceObject* seqObj = new DNASequenceObject(seq.getName(), seq);
+    QList<GObject*> objects; objects << seqObj << annObj;
+    QVariantMap hints;
+    Document* resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), objects, hints, tr("File content was merged"));
+    doc->propagateModLocks(resultDoc);
+    return resultDoc;
 }
 
 }//namespace

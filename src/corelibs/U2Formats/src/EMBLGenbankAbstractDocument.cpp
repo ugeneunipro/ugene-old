@@ -81,7 +81,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
     writeLockReason.clear();
 
     //get settings
-    int gapSize = qBound(-1, DocumentFormatUtils::getIntSettings(fs, MERGE_MULTI_DOC_GAP_SIZE_SETTINGS, -1), 1000*1000);
+    int gapSize = qBound(-1, DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergeGapSize, -1), 1000*1000);
     bool merge = gapSize!=-1;
 
     QByteArray sequence;
@@ -91,7 +91,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
     QVector<U2Region> mergedMapping;
 
     int predictedSize = qMax(100*1000, 
-        DocumentFormatUtils::getIntSettings(fs, MERGE_MULTI_DOC_SEQUENCE_SIZE_SETTINGS, merge ? 0 : io->left()));
+        DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergingFinalSizeHint, merge ? 0 : io->left()));
 
     sequence.reserve(predictedSize + (merge ? gapSize : 0));
     

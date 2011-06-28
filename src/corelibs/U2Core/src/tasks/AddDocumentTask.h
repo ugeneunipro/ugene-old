@@ -39,7 +39,7 @@ public:
     bool createProjectIfNeeded;
     bool unloadExistingDocument;
 };
-// Adds document to the project. Waits for locks if any
+/**  Adds document to active project. Waits for locks if any */
 class U2CORE_EXPORT AddDocumentTask : public Task {
     Q_OBJECT
 public:
@@ -49,9 +49,10 @@ public:
     ReportResult report();
 
     QList<Task*> onSubTaskFinished(Task* subTask);
-    Document* getDocument() {return d.data();}
+    Document* getDocument() {return document;}
 private:
-    QPointer<Document>      d;
+
+    Document*               document;
     DocumentProviderTask*   dpt;
     AddDocumentTaskConfig   conf;
 };

@@ -1055,7 +1055,9 @@ void WorkflowView::sl_pasteItems(const QString& s) {
         pasteCount = 0;
         lastPaste = tmp;
     }
-    if( !AppContext::getDocumentFormatRegistry()->getFormatById(WorkflowDocFormat::FORMAT_ID)->checkRawData(lastPaste.toAscii()) ) {
+    QByteArray lpt = lastPaste.toAscii();
+    DocumentFormat* wf = AppContext::getDocumentFormatRegistry()->getFormatById(WorkflowDocFormat::FORMAT_ID);
+    if (wf->checkRawData(lpt).score != FormatDetection_Matched) {
         return;
     }
     scene->clearSelection();

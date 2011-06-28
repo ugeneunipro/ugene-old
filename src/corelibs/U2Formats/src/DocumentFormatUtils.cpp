@@ -31,6 +31,7 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Formats/GenbankFeatures.h>
@@ -74,16 +75,16 @@ DNASequenceObject* DocumentFormatUtils::addSequenceObject(QList<GObject*>& objec
 }
 
 
-DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigs, QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping) {
-    if (contigs.size() == 1) {
+DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigNames, QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping) {
+    if (contigNames.size() == 1) {
         DNAAlphabet* al = findAlphabet(mergedSequence);
-        const QString& name = contigs.first();
+        const QString& name = contigNames.first();
         DNASequence seq( mergedSequence, al );
         return DocumentFormatUtils::addSequenceObject(objects, name, seq);
     }
 
-    assert(contigs.size() >=2);
-    assert(contigs.size() == mergedMapping.size());
+    assert(contigNames.size() >=2);
+    assert(contigNames.size() == mergedMapping.size());
 
     DNAAlphabet* al = findAlphabet(mergedSequence, mergedMapping);
     char defSym = al->getDefaultSymbol();
@@ -108,7 +109,7 @@ DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>&
     }
 
     //save mapping info as annotations
-    for (int i=0; i<contigs.size(); i++) {
+    for (int i=0; i<contigNames.size(); i++) {
         SharedAnnotationData d(new AnnotationData());
         d->name = "contig";
         d->location->regions << mergedMapping[i];
@@ -150,7 +151,7 @@ void DocumentFormatUtils::updateFormatSettings(QList<GObject*>& objects, QVarian
     if (sequences.size() == 1) {
         DNASequenceObject* so = qobject_cast<DNASequenceObject*>(sequences.first());
         int len = so->getSequence().length();
-        fs[MERGE_MULTI_DOC_SEQUENCE_SIZE_SETTINGS] = len;
+        fs[DocumentReadingMode_SequenceMergingFinalSizeHint] = len;
     }
 }
 
@@ -258,6 +259,25 @@ QList<AnnotationSettings*> DocumentFormatUtils::predefinedSettings() {
     predefined.append(new AnnotationSettings(BioStruct3D::TurnAnnotationTag, true, QColor(255,85,127), true));
     predefined.append(new AnnotationSettings(BioStruct3D::MoleculeAnnotationTag, false, QColor(0,255,0), false));
     return predefined;
+}
+
+QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
+    QList<DNASequence> res;
+    const DNASequenceObject* seqObj = qobject_cast<const DNASequenceObject*>(obj);
+    if (seqObj != NULL) {
+        res << seqObj->getDNASequence();
+        return res;
+    }
+    const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
+    DNAAlphabet* al = maObj->getMAlignment().getAlphabet();
+    foreach(const MAlignmentRow& row, maObj->getMAlignment().getRows()) {
+        DNASequence seq;
+        seq.seq = row.toByteArray(row.getCoreEnd());
+        seq.setName(row.getName());
+        seq.alphabet = al;
+        res << seq;
+    }
+    return res;
 }
 
 } //namespace

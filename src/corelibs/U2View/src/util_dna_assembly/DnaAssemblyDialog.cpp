@@ -23,29 +23,32 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QKeyEvent>
 
-#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+
+#include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Misc/DialogUtils.h>
 
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+
 #include "DnaAssemblyDialog.h"
 #include "DnaAssemblyGUIExtension.h"
 
 namespace U2 {
 
-QList<QString> DnaAssemblyDialog::shortReads;
-QString DnaAssemblyDialog::genomePath;
+QStringList DnaAssemblyDialog::lastShortReadsUrls;
+QString DnaAssemblyDialog::lastRefSeqUrl;
 QString DnaAssemblyDialog::methodName;
 bool DnaAssemblyDialog::prebuiltIndex = false;
 bool DnaAssemblyDialog::samOutput = false;
 
-DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWidget* p /* = NULL*/ )
-: QDialog(p), assemblyRegistry(registry), customGUI(NULL)
+DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUrls, const QString& refSeqUrl)
+: QDialog(p), assemblyRegistry(AppContext::getDnaAssemblyAlgRegistry()), customGUI(NULL)
 {
     setupUi(this);
-    QStringList names = registry->getRegisteredAlgorithmIds();
+    QStringList names = assemblyRegistry->getRegisteredAlgorithmIds();
     methodNamesBox->addItems(names);
     // TODO: change the way default method is set
     if (names.size() > 0) {
@@ -71,18 +74,20 @@ DnaAssemblyDialog::DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWi
     connect(prebuiltIndexCheckBox, SIGNAL(clicked()), SLOT(sl_onPrebuiltIndexBoxClicked()));
     connect(samBox, SIGNAL(clicked()), SLOT(sl_onSamBoxClicked()));
     
-    if (!genomePath.isEmpty()) {
-        refSeqEdit->setText(genomePath);
-        buildResultUrl(genomePath);
+    QString activeRefSeqUrl = refSeqUrl.isEmpty() ? lastRefSeqUrl : refSeqUrl;
+    if (!activeRefSeqUrl.isEmpty()) {
+        refSeqEdit->setText(activeRefSeqUrl);
+        buildResultUrl(activeRefSeqUrl);
         if (NULL != customGUI) {
             QString error;
-            customGUI->buildIndexUrl(genomePath, prebuiltIndex, error);
+            customGUI->buildIndexUrl(lastRefSeqUrl, prebuiltIndex, error);
+            //todo: process error!
         }
     }
-    foreach(const QString& read, shortReads) {
+    QStringList activeShortReadsUrl = shortReadsUrls.isEmpty() ? lastShortReadsUrls : shortReadsUrls;
+    foreach(const QString& read, activeShortReadsUrl) {
         shortReadsList->addItem(read);
     }
-
 }
 
 void DnaAssemblyDialog::updateState() {
@@ -150,13 +155,13 @@ void DnaAssemblyDialog::accept() {
             tr("Short reads list is empty!") );
     } else {
         
-        genomePath.clear();
-        shortReads.clear();
+        lastRefSeqUrl.clear();
+        lastShortReadsUrls.clear();
 
-        genomePath = refSeqEdit->text();
+        lastRefSeqUrl = refSeqEdit->text();
         int numItems = shortReadsList->count();
         for( int i =0; i < numItems; ++i) {
-            shortReads.append(shortReadsList->item(i)->text());
+            lastShortReadsUrls.append(shortReadsList->item(i)->text());
         }
         
         QDialog::accept();
@@ -313,6 +318,11 @@ bool DnaAssemblyDialog::eventFilter( QObject * obj, QEvent * event ) {
         // pass the event on to the parent class
         return QDialog::eventFilter(obj, event);
     }
+}
+
+void DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(const QStringList& shortReadUrls, const QString& refSeqUrl) {
+    DnaAssemblyDialog d(QApplication::activeWindow(), shortReadUrls, refSeqUrl);
+    d.exec();
 }
 
 } // U2

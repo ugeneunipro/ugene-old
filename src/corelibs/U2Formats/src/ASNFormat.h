@@ -76,7 +76,7 @@ public:
     virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::PLAIN_ASN;}
     virtual const QString& getFormatName() const {return formatName;}
     virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-    virtual FormatDetectionScore checkRawData(const QByteArray& data, const GUrl& = GUrl()) const;
+    virtual RawDataCheckResult checkRawData(const QByteArray& data, const GUrl& = GUrl()) const;
 
     class U2FORMATS_EXPORT AsnParser 
     {

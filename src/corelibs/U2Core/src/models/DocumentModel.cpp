@@ -119,7 +119,7 @@ bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const 
         return false; // filtered by exclude flags
     }
 
-    if (c.checkRawData && checkRawData(c.rawData) < c.minDataCheckResult) {
+    if (c.checkRawData && checkRawData(c.rawData).score < c.minDataCheckResult) {
         return false; //raw data is not matched
     }
 
@@ -576,6 +576,17 @@ void Document::setLastUpdateTime() {
         lastUpdateTime = fi.lastModified();
     }
 }
+void Document::propagateModLocks(Document* doc)  const {
+    for (int i = 0; i < DocumentModLock_NUM_LOCKS; i++) {
+        StateLock* lock = modLocks[i];
+        if (lock != NULL && doc->modLocks[i] != NULL) {
+            StateLock* newLock = new StateLock(lock->getUserDesc(), lock->getFlags());
+            doc->modLocks[i] = newLock;
+            doc->lockState(newLock);
+        }
+    }
+}
+
 
 }//namespace
 

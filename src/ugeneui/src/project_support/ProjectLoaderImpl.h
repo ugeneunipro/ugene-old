@@ -37,6 +37,8 @@ namespace U2 {
 #define RECENT_PROJECTS_SETTINGS_NAME "recentProjects"
 
 class DocumentProviderTask;
+class FormatDetectionResult;
+
 class ProjectLoaderImpl : public ProjectLoader {
     Q_OBJECT
 public:
@@ -60,6 +62,7 @@ private:
     void updateRecentItemsMenu();
     void prependToRecentItems(const QString& url);
     void rememberProjectURL();
+    bool processHints(FormatDetectionResult& dr);
 
 private slots:
     void sl_newProject();

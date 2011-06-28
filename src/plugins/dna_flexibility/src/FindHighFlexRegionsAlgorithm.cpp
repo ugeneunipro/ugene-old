@@ -36,6 +36,8 @@ void FindHighFlexRegionsAlgorithm::find(
         int& stopFlag,
         int& percentsCompleted)
 {
+    Q_UNUSED(stopFlag); Q_UNUSED(percentsCompleted); //TODO: fix it
+
     SAFE_POINT(settings.windowSize <= seqLength, 
         "Internal error: a user is not allowed to input such window size",);
     SAFE_POINT(settings.windowStep <= seqLength-2,

@@ -25,7 +25,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TextUtils.h>
-
+#include <U2Core/U2OpStatus.h>
 
 #include <U2Core/MAlignment.h>
 
@@ -48,10 +48,13 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
 }
 
 
-MAlignment MSAUtils::seq2ma( const QList<GObject*>& list, QString& err ) {
+MAlignment MSAUtils::seq2ma( const QList<GObject*>& list, U2OpStatus& os) {
     MAlignment ma(MA_OBJECT_NAME);
     foreach(GObject* obj, list) {
         DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
+        if (dnaObj == NULL) {
+            continue;
+        }
         const DNASequence& seq = dnaObj->getDNASequence();
         DNAAlphabet* al = ma.getAlphabet();
         if (al == NULL) {
@@ -64,7 +67,7 @@ MAlignment MSAUtils::seq2ma( const QList<GObject*>& list, QString& err ) {
                 } else if(ma.getAlphabet()->getId() == "NUCL_DNA_EXTENDED_ALPHABET") {
                     al = dnaObj->getAlphabet();
                 } else {
-                    err = tr("Sequences have different alphabets.");
+                    os.setError(tr("Sequences have different alphabets."));
                     break;
                 }                
             }
@@ -74,7 +77,7 @@ MAlignment MSAUtils::seq2ma( const QList<GObject*>& list, QString& err ) {
         MAlignmentRow row(dnaObj->getGObjectName(), seq.seq, 0);
         ma.addRow(row);
     }
-    if (!err.isEmpty()) {
+    if (os.hasError()) {
         ma.clear();
     }
     return ma;

@@ -44,7 +44,7 @@ public:
 
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
 
-    virtual FormatDetectionScore checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
 private:
     QStringList parseLine(QString line) const;

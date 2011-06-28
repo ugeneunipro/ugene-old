@@ -61,6 +61,11 @@ public:
     virtual bool hasBuildIndexWidget() = 0;
 };
 
+class U2VIEW_EXPORT DnaAssemblyGUIUtils : public QObject {
+public:
+    static void runAssembly2ReferenceDialog(const QStringList& shortReadUrls = QStringList(), const QString& refSeqUrl = QString());
+};
+
 } // U2
 
 

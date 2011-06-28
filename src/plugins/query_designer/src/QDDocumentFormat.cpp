@@ -68,9 +68,10 @@ Document* QDDocFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
         ti.progress = io->getProgress();
     }
 
-    if(!checkRawData(rawData)) {
+    if (checkRawData(rawData).score != FormatDetection_Matched) {
         ti.setError(tr("Invalid header. %1 expected").arg(QDDocument::HEADER_LINE));
         rawData.clear();
+        return NULL;
     }
 
     QList<GObject*> objects;
@@ -98,7 +99,7 @@ void QDDocFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter* io) {
     wo->setSceneRawData(rawData);
 }
 
-FormatDetectionScore QDDocFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {
+RawDataCheckResult QDDocFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {
     const QString& data = rawData;
     if(data.trimmed().startsWith(QDDocument::HEADER_LINE)) {
         return FormatDetection_Matched;

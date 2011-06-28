@@ -19,29 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EMBL_PLAIN_TEXT_FORMAT_H_
-#define _U2_EMBL_PLAIN_TEXT_FORMAT_H_
+#ifndef _U2_DOCUMENT_READING_MODE_SELECTOR_CONTROLLER_
+#define _U2_DOCUMENT_READING_MODE_SELECTOR_CONTROLLER_
 
-#include "EMBLGenbankAbstractDocument.h"
+#include <U2Core/AppContext.h>
 
 namespace U2 {
 
-class U2FORMATS_EXPORT EMBLPlainTextFormat : public EMBLGenbankAbstractDocument {
-    Q_OBJECT
+class FormatDetectionResult;
+
+class DocumentReadingModeSelectorController : public QObject {
+	Q_OBJECT
+    
+    DocumentReadingModeSelectorController(){}
+
 public:
-    EMBLPlainTextFormat(QObject* p);
-
-    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
-
-protected:
-
-    bool readIdLine(ParserState*);
-    bool readEntry(QByteArray&, ParserState*);
-    //void readAnnotations(ParserState*, int offset);
-    QMap<QString, QString> tagMap;
+    /** 
+        Adds additional hints to dr.rawCheckResult.properties on format reading mode  
+        If 'false' is returned -> user pressed cancel
+    */
+    static bool adjustReadingMode(FormatDetectionResult& dr);
 };
 
-
-}//namespace
+} //namespace
 
 #endif

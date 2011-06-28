@@ -177,10 +177,8 @@ void ExportMSA2MSATask::run() {
             res << new DNASequenceObject(name, s);
         }                
     }
-    QString err;
-    MAlignment ma = MSAUtils::seq2ma(res, err);
-    if (!err.isEmpty()) {
-        stateInfo.setError(err);
+    MAlignment ma = MSAUtils::seq2ma(res, stateInfo);
+    if (hasError()) {
         return;
     }
     doc->addObject(new MAlignmentObject(ma));

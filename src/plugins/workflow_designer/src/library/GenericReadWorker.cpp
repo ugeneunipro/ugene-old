@@ -149,13 +149,10 @@ void LoadMSATask::run() {
                 results.append(((MAlignmentObject*)go)->getMAlignment());
             }
         } else {
-            QString err;
-            MAlignment ma = MSAUtils::seq2ma(doc->findGObjectByType(GObjectTypes::SEQUENCE), err);
-            if (err.isEmpty()) {
+            MAlignment ma = MSAUtils::seq2ma(doc->findGObjectByType(GObjectTypes::SEQUENCE), stateInfo);
+            if (!hasError()) {
                 results.append(ma);
-            } else {
-                setError(err);
-            }
+            } 
         }
     }
     if (doc != NULL && doc->isLoaded()) {
@@ -172,7 +169,7 @@ void GenericSeqReader::init() {
     GenericSeqActorProto::Mode mode = GenericSeqActorProto::Mode(actor->getParameter(
                                                                     GenericSeqActorProto::MODE_ATTR)->getAttributeValue<int>());
     if (GenericSeqActorProto::MERGE == mode) {
-        QString mergeToken = MERGE_MULTI_DOC_GAP_SIZE_SETTINGS;
+        QString mergeToken = DocumentReadingMode_SequenceMergeGapSize;
         cfg[mergeToken] = actor->getParameter(GenericSeqActorProto::GAP_ATTR)->getAttributeValue<int>();
     }
     selector.acc = actor->getParameter(GenericSeqActorProto::ACC_ATTR)->getAttributeValue<QString>();

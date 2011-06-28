@@ -37,16 +37,18 @@ class DocumentImporter;
 */
 class U2CORE_EXPORT FormatDetectionResult {
 public:
-    FormatDetectionResult() : format(NULL), importer(NULL), score(FormatDetection_NotMatched){}
+    FormatDetectionResult() : format(NULL), importer(NULL){}
     DocumentFormat*         format;
     DocumentImporter*       importer;
-    int                     score;
     QByteArray              rawData;
     GUrl                    url;
     QString                 extension;
 
+    RawDataCheckResult      rawDataCheckResult;
+
     QString getFormatDescriptionText() const;
     QString getFormatOrImporterName() const;
+    int score() const {return rawDataCheckResult.score;}
 
 };
 

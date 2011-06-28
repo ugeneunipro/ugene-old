@@ -42,7 +42,7 @@ SRFastaFormat::SRFastaFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 
-FormatDetectionScore SRFastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+RawDataCheckResult SRFastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     

@@ -57,7 +57,7 @@ PDWFormat::PDWFormat(QObject* p)
     supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;
 }
 
-FormatDetectionScore PDWFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+RawDataCheckResult PDWFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     if (!rawData.startsWith(PDW_FORMAT_TAG)) {

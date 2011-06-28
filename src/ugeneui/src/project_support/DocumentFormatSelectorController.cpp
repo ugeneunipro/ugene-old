@@ -57,9 +57,9 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, const QByteA
         const FormatDetectionResult& r = results[i];
         QString text;
         if (r.format != NULL) {
-            text = tr("<b>%1</b> format. Score: %2 <i>(%3)</i>").arg(r.format->getFormatName()).arg(r.score).arg(score2Text(r.score));
+            text = tr("<b>%1</b> format. Score: %2 <i>(%3)</i>").arg(r.format->getFormatName()).arg(r.score()).arg(score2Text(r.score()));
         } else if (r.importer != NULL) {
-            text = tr("<b><font color=red>Import: </font>%1</b>. Score: %2 (<i>%3</i>)").arg(r.importer->getImporterName()).arg(r.score).arg(score2Text(r.score));
+            text = tr("<b><font color=red>Import: </font>%1</b>. Score: %2 (<i>%3</i>)").arg(r.importer->getImporterName()).arg(r.score()).arg(score2Text(r.score()));
         } else {
             assert(0);
             continue;

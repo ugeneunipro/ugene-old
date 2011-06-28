@@ -76,7 +76,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         return;
     }
         
-    DnaAssemblyDialog dlg(registry, QApplication::activeWindow());
+    DnaAssemblyDialog dlg(QApplication::activeWindow());
     if (dlg.exec()) {
         DnaAssemblyToRefTaskSettings s;
         s.samOutput = dlg.isSamOutput();

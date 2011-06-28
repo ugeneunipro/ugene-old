@@ -22,21 +22,24 @@
 #ifndef _U2_DNA_ASSEMBLEY_DIALOG_H_
 #define _U2_DNA_ASSEMBLEY_DIALOG_H_
 
-#include <QtCore/QVariant>
-
 #include <U2Core/GUrl.h>
+
 #include <ui/ui_AssemblyToRefDialog.h>
+
+#include <QtCore/QVariant>
+#include <QtCore/QStringList>
+
 
 namespace U2 {
 
 class DnaAssemblyAlgRegistry;
 class DnaAssemblyAlgorithmMainWidget;
 
-class DnaAssemblyDialog : public QDialog, private Ui::AssemblyToRefDialog    {
+class DnaAssemblyDialog : public QDialog, private Ui::AssemblyToRefDialog {
     Q_OBJECT
 
 public:
-    DnaAssemblyDialog(const DnaAssemblyAlgRegistry* registry, QWidget* p = NULL);
+    DnaAssemblyDialog(QWidget* p = NULL, const QStringList& shortReadsUrls = QStringList(), const QString& refSeqUrl = QString());
     const GUrl getRefSeqUrl();
     const QList<GUrl> getShortReadUrls();
     const QString getAlgorithmName();
@@ -58,17 +61,19 @@ private slots:
     void sl_onSamBoxClicked();
 
 private:
-    const DnaAssemblyAlgRegistry* assemblyRegistry;
-    DnaAssemblyAlgorithmMainWidget* customGUI;
-    static QString genomePath;
-    static QList<QString> shortReads;
-    static QString methodName;
-    static bool prebuiltIndex;
-    static bool samOutput;
     void updateState();
     void addGuiExtension();
     void buildResultUrl(const GUrl& url);
     void accept();
+
+
+    const DnaAssemblyAlgRegistry*   assemblyRegistry;
+    DnaAssemblyAlgorithmMainWidget* customGUI;
+    static QString                  lastRefSeqUrl;
+    static QStringList              lastShortReadsUrls;
+    static QString                  methodName;
+    static bool                     prebuiltIndex;
+    static bool                     samOutput;
 };
 
 } // namespace

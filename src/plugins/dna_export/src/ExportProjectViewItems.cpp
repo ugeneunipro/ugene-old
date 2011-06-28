@@ -35,8 +35,6 @@
 #include "ImportAnnotationsFromCSVTask.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/ProjectView.h>
 #include <U2Core/SelectionModel.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GUrlUtils.h>
@@ -53,10 +51,14 @@
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/SelectionUtils.h>
-
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/MSAUtils.h>
-#include <U2Gui/GUIUtils.h>
+
 #include <U2Misc/DialogUtils.h>
+
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/ProjectView.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -260,10 +262,10 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
         return;
     }
 
-    QString err;
-    MAlignment ma = MSAUtils::seq2ma(sequenceObjects, err);
-    if (!err.isEmpty()) {
-        QMessageBox::critical(NULL, L10N::errorTitle(), err);
+    U2OpStatusImpl os;
+    MAlignment ma = MSAUtils::seq2ma(sequenceObjects, os);
+    if (os.hasError()) {
+        QMessageBox::critical(NULL, L10N::errorTitle(), os.getError());
         return;
     }
     

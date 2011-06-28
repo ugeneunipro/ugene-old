@@ -144,10 +144,10 @@ public:
 
     static IOAdapterId url2io(const GUrl& url);
 
-    static QByteArray readFileHeader(const GUrl& url, int size = 1024);
+    static QByteArray readFileHeader(const GUrl& url, int size = 65536);
     
     // io - opened ioadapter. before and after the call pos in file the same
-    static QByteArray readFileHeader( IOAdapter* io, int size = 1024 );
+    static QByteArray readFileHeader( IOAdapter* io, int size = 65536 );
 };
 
 

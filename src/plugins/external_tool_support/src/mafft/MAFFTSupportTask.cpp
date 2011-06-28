@@ -144,17 +144,15 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
                                      AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
         loadTemporyDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTemporyDocumentTask);
-    }else if(subTask==loadTemporyDocumentTask){
+    } else if (subTask==loadTemporyDocumentTask) {
         newDocument=loadTemporyDocumentTask->takeDocument();
         assert(newDocument!=NULL);
 
         //move MAlignment from new alignment to old document
         assert(newDocument->getObjects().length()!=0);
-        QString err;
-        resultMA = MSAUtils::seq2ma(newDocument->getObjects(), err);
-        if (!err.isEmpty()) {
-            stateInfo.setError(tr("Can not get multiple alignment from temporary file.")+err);
-            emit si_stateChanged();
+        resultMA = MSAUtils::seq2ma(newDocument->getObjects(), stateInfo);
+        if (hasError()) {
+            emit si_stateChanged(); //TODO: task can't emit this signal!
             return res;
         }
         mAObject->setMAlignment(resultMA);

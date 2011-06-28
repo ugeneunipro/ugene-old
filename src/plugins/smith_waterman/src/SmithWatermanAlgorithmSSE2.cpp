@@ -357,6 +357,7 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
     vMaxScore = _mm_slli_epi16 (vMaxScore, 15);    
 
     vMinimums = _mm_shuffle_epi32 (vMaxScore, 0);
+    Q_UNUSED(vMinimums);
 
     vMin = _mm_shuffle_epi32 (vMaxScore, 0);
     vMin = _mm_srli_si128 (vMin, 14);

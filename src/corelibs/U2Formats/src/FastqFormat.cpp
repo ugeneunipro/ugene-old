@@ -47,7 +47,7 @@ It was originally developed at the Wellcome Trust Sanger Institute to bundle a F
 but has recently become the de facto standard for storing the output of high throughput sequencing instruments.");
 }
 
-FormatDetectionScore FastqFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+RawDataCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 
@@ -55,7 +55,18 @@ FormatDetectionScore FastqFormat::checkRawData(const QByteArray& rawData, const 
         return FormatDetection_NotMatched;
     }
     bool hasBinaryBlocks = TextUtils::contains(TextUtils::BINARY, data, size);
-    return hasBinaryBlocks ? FormatDetection_NotMatched: FormatDetection_AverageSimilarity;
+    if (hasBinaryBlocks){
+        return FormatDetection_NotMatched;
+    }
+    RawDataCheckResult res(FormatDetection_AverageSimilarity);
+    // here we propagate some property values without actual parsing
+    // this must be fixed some day
+    res.properties[RawDataCheckResult_Sequence] = true;
+    res.properties[RawDataCheckResult_SequenceWithGaps] = false;
+    res.properties[RawDataCheckResult_MultipleSequences] = true;
+    res.properties[RawDataCheckResult_MinSequenceSize] = 10;
+    res.properties[RawDataCheckResult_MaxSequenceSize] = 1000;
+    return res;
 }
 
 
@@ -195,7 +206,7 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
             break;
          }
          
-         if ( qualityScores.length() != sequence.length() ) {
+         if ( qualityScores.length() != sequence.length() - sequenceStart) {
              ti.setError(U2::FastqFormat::tr("Not a valid FASTQ file: %1. Bad quality scores: inconsistent size.").arg(docUrl.getURLString()));   
          }
          
@@ -236,9 +247,9 @@ Document* FastqFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
     QVariantMap fs = _fs;
     QList<GObject*> objects;
 
-    int gapSize = qBound(-1, DocumentFormatUtils::getIntSettings(fs, MERGE_MULTI_DOC_GAP_SIZE_SETTINGS, -1), 1000*1000);
+    int gapSize = qBound(-1, DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergeGapSize, -1), 1000*1000);
     int predictedSize = qMax(100*1000,
-        DocumentFormatUtils::getIntSettings(fs, MERGE_MULTI_DOC_SEQUENCE_SIZE_SETTINGS, gapSize==-1 ? 0 : io->left()));
+        DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergingFinalSizeHint, gapSize==-1 ? 0 : io->left()));
 
     QString lockReason;
     load( io, io->getURL(), objects, ti, gapSize, predictedSize, lockReason, mode);

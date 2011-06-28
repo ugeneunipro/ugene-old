@@ -37,7 +37,7 @@ public:
     virtual const QString &getFormatName()const;
     virtual Document *loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVariantMap &fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
     virtual void storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io);
-    virtual FormatDetectionScore checkRawData(const QByteArray &rawData, const GUrl& url = GUrl())const;
+    virtual RawDataCheckResult checkRawData(const QByteArray &rawData, const GUrl& url = GUrl())const;
 private:
     static const QString FORMAT_ID;
     const QString formatName;

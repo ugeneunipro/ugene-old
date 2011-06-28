@@ -29,6 +29,8 @@
 namespace U2 {
 
 class DNATranslation;
+class U2OpStatus;
+class Document;
 
 class U2CORE_EXPORT SequenceUtils : public QObject {
     Q_OBJECT
@@ -57,6 +59,8 @@ public:
 
     /** Returns regions locations as if they were joined */
     static QVector<U2Region> toJoinedRegions(const QList<QByteArray>& seqParts);
+
+    static Document* mergeSequences(const Document* doc, int mergeGap, U2OpStatus& os);
 };
 
 

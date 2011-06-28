@@ -29,6 +29,7 @@
 #include <U2Core/L10n.h>
 
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/TextUtils.h>
@@ -45,10 +46,46 @@ FastaFormat::FastaFormat(QObject* p)
 {
     formatName = tr("FASTA");
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
+    supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
     formatDescription = tr("FASTA format is a text-based format for representing either nucleotide sequences or peptide sequences, in which base pairs or amino acids are represented using single-letter codes. The format also allows for sequence names and comments to precede the sequences.");
 }
 
-FormatDetectionScore FastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+static QVariantMap analyzeRawData(const QByteArray& data) {
+    QVariantMap res;
+    res[RawDataCheckResult_Sequence] = true;
+    QList<QByteArray> sequences = data.split('>');
+    if (sequences.size() > 1) {
+        res[RawDataCheckResult_MultipleSequences] = true;
+        int hasGaps = false;
+        int minLen = -1;
+        int maxLen = -1;
+        foreach (const QByteArray& sequence, sequences) {
+            QList<QByteArray> lines = sequence.split('\n');
+            int len = 0;
+            for (int i = 1; i < lines.size(); i++) {
+                const QByteArray& line = lines[i];
+                if (!hasGaps && line.contains(MAlignment_GapChar)) {
+                    hasGaps = true;
+                }
+                len += line.length();
+            }
+            if (len > 0) {
+                minLen = minLen == -1 ? len : qMin(minLen, len);
+                maxLen = maxLen == -1 ? len : qMax(maxLen, len);
+            }
+        }
+        if (hasGaps) {
+            res[RawDataCheckResult_SequenceWithGaps] = true;
+        }
+        if (minLen > 0) {
+            res[RawDataCheckResult_MaxSequenceSize] = maxLen;
+            res[RawDataCheckResult_MinSequenceSize] = minLen;
+        }
+    }
+    return res;
+}
+
+RawDataCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 
@@ -59,7 +96,14 @@ FormatDetectionScore FastaFormat::checkRawData(const QByteArray& rawData, const 
         return FormatDetection_NotMatched;
     }
     bool hasBinaryBlocks = TextUtils::contains(TextUtils::BINARY, data, size);
-    return hasBinaryBlocks ? FormatDetection_NotMatched : FormatDetection_HighSimilarity;
+    if (hasBinaryBlocks) {
+        return FormatDetection_NotMatched;
+    }
+    
+    //ok, format is matched -> add hints on sequence sizes
+    RawDataCheckResult res(FormatDetection_Matched);
+    res.properties = analyzeRawData(data);
+    return res;
 }
 
 #define READ_BUFF_SIZE  4096
@@ -125,7 +169,7 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
         } else {
             DNASequence seq(headerLine, sequence);
             QString objName;
-            if (!(mode == DocumentLoadMode_SingleObject)) {
+            if (mode != DocumentLoadMode_SingleObject) {
                 objName = TextUtils::variate(headerLine, "_", names);
                 names.insert(objName);
                 //TODO parse header
@@ -165,9 +209,9 @@ Document* FastaFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
     QVariantMap fs = _fs;
     QList<GObject*> objects;
 
-    int gapSize = qBound(-1, DocumentFormatUtils::getIntSettings(fs, MERGE_MULTI_DOC_GAP_SIZE_SETTINGS, -1), 1000*1000);
+    int gapSize = qBound(-1, DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergeGapSize, -1), 1000*1000);
     int predictedSize = qMax(1000,
-        DocumentFormatUtils::getIntSettings(fs, MERGE_MULTI_DOC_SEQUENCE_SIZE_SETTINGS, gapSize==-1 ? 0 : io->left()));
+        DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergingFinalSizeHint, gapSize==-1 ? 0 : io->left()));
 
     QString lockReason;
     load(io, io->getURL(), objects, ti, gapSize, predictedSize, lockReason, mode);
@@ -182,46 +226,44 @@ Document* FastaFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
 }
 
 #define LINE_LEN 70
-static void saveOneFasta( IOAdapter* io, GObject* fastaObj, TaskStateInfo& tsi ) {
-    DNASequenceObject* seqObj = qobject_cast< DNASequenceObject* >( fastaObj );
-
-    if ( NULL == seqObj ) {
-        tsi.setError(L10N::badArgument("NULL sequence" ));
-        return;
-    }
-
+static void saveOneFasta( IOAdapter* io, const DNASequence& sequence, GObject*,  TaskStateInfo& tsi ) {
     //writing header;
-    QByteArray block;
+
     // TODO better header out of info tags
     /*QString hdr = seqObj->getDNASequence().info.value(DNAInfo::FASTA_HDR).toString();
     if (hdr.isEmpty()) {
         hdr = seqObj->getGObjectName();
     }*/
-    QString hdr = seqObj->getGObjectName();
+
+    QByteArray block;
+    QString hdr = sequence.getName();
     block.append('>').append(hdr).append( '\n' );
-    try {
-        if (io->writeBlock( block ) != block.length()) {
-            throw 0;
+    if (io->writeBlock( block ) != block.length()) {
+        tsi.setError(L10N::errorWritingFile(io->getURL()));
+        return;
+    }
+    const char* seq = sequence.seq.constData();
+    int len = sequence.seq.length();
+    for (int i = 0; i < len; i += LINE_LEN ) {
+        int chunkSize = qMin( LINE_LEN, len - i );
+        if (io->writeBlock( seq + i, chunkSize ) != chunkSize || !io->writeBlock( "\n", 1 )) {
+            tsi.setError(L10N::errorWritingFile(io->getURL()));
+            return;
         }
-        const char* seq = seqObj->getSequence().constData();
-        int len = seqObj->getSequence().length();
-        for (int i = 0; i < len; i += LINE_LEN ) {
-            int chunkSize = qMin( LINE_LEN, len - i );
-            if (io->writeBlock( seq + i, chunkSize ) != chunkSize
-                || !io->writeBlock( "\n", 1 )) {
-                    throw 0;
-            }
-        }
-    } catch (int) {
-        GUrl url = seqObj->getDocument() ? seqObj->getDocument()->getURL() : GUrl();
-        tsi.setError(L10N::errorWritingFile(url));
     }
 }
+
 
 void FastaFormat::storeDocument( Document* doc, TaskStateInfo& ts, IOAdapter* io ) {
     //TODO: check saved op states!!!
     foreach( GObject* o, doc->getObjects() ) {
-        saveOneFasta( io, o, ts );
+        QList<DNASequence> sequences = DocumentFormatUtils::toSequences(o);
+        foreach(const DNASequence& s, sequences) {
+            saveOneFasta( io, s, o, ts );
+            if (ts.isCoR()) {
+                break;
+            }
+        }
     }
 }
 

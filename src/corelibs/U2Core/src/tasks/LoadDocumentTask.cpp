@@ -34,13 +34,18 @@
 #include <U2Core/DocumentUtils.h>
 
 #include <U2Core/GObjectSelection.h>
-
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/SequenceUtils.h>
+
 #include <QtCore/QFileInfo>
+
 #include <QtGui/QApplication>
 
 namespace U2 {
@@ -267,6 +272,13 @@ void LoadDocumentTask::run() {
         }
     } else {
         resultDocument = format->loadDocument(iof, url, stateInfo, hints);
+        if (resultDocument != NULL) {
+            Document* convertedDoc = createCopyRestructuresWithHints(resultDocument, stateInfo);
+            if (convertedDoc != NULL) {
+                delete resultDocument;
+                resultDocument = convertedDoc;
+            }
+        }
     }
     if (config.checkObjRef.isValid() && !hasError()) {
         processObjRef();
@@ -307,6 +319,49 @@ void LoadDocumentTask::processObjRef() {
         }
     }
 }
+
+
+Document* LoadDocumentTask::createCopyRestructuresWithHints(const Document* doc, U2OpStatus& os) {
+    Document *resultDoc = NULL;
+    const QVariantMap& hints = doc->getGHintsMap();
+    if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
+        QList<DNASequenceObject*> seqObjects;
+        MAlignment ma = MSAUtils::seq2ma(doc->getObjects(), os);
+        if (ma.isEmpty()) {
+            return NULL;
+        }
+        ma.trim();
+
+        MAlignmentObject* maObj = new MAlignmentObject(ma);
+        QList<GObject*> objects;
+        objects << maObj;
+
+        DocumentFormatConstraints objTypeConstraints;
+        objTypeConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
+        bool makeReadOnly = !doc->getDocumentFormat()->checkConstraints(objTypeConstraints);
+
+        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), objects, hints, 
+            makeReadOnly ? tr("Format does not support writing of alignments") : QString());
+
+        doc->propagateModLocks(resultDoc);
+        return resultDoc;
+    } 
+    if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
+        int mergeGap = hints.value(DocumentReadingMode_SequenceMergeGapSize).toInt();
+        if (mergeGap < 0 || GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE).count() <= 1) {
+            return NULL;
+        }
+        resultDoc = SequenceUtils::mergeSequences(doc, mergeGap, os);
+        if (os.hasError()) {
+            delete resultDoc;
+            return NULL;
+        }
+        return resultDoc;
+
+    }
+    return NULL;
+}
+
 
 GObject* LDTObjectFactory::create(const GObjectReference& ref) {
     assert(ref.objType == GObjectTypes::ANNOTATION_TABLE); //TODO: handle other core types

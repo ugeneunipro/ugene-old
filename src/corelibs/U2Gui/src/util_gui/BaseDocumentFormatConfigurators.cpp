@@ -79,7 +79,7 @@ void MultiPartDocFormatConfigurator::configure(QVariantMap& info) {
     // fill GUI with default settings
     BaseDocumentFormatConfigurators::loadDefaultFormatSettings(formatId, info);
     int mergeGap = -1;
-    QString mergeToken = MERGE_MULTI_DOC_GAP_SIZE_SETTINGS;
+    QString mergeToken = DocumentReadingMode_SequenceMergeGapSize;
     QVariant v  = info.value(mergeToken);    
     if (v.isValid()) {
         mergeGap = v.toInt();

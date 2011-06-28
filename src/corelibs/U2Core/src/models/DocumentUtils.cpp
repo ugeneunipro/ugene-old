@@ -48,7 +48,7 @@ QSet<QString> DocumentUtils::getNewDocFileNameExcludesHint() {
 
 
 static void placeOrderedByScore(const FormatDetectionResult& info, QList<FormatDetectionResult>& result, const FormatDetectionConfig& conf) {
-    if (info.score == FormatDetection_NotMatched) {
+    if (info.score() == FormatDetection_NotMatched) {
         return;
     }
     if (result.isEmpty()) {
@@ -56,18 +56,18 @@ static void placeOrderedByScore(const FormatDetectionResult& info, QList<FormatD
         return;
     }
     if (conf.bestMatchesOnly) {
-        int bestScore = result.first().score;
-        if (bestScore > info.score) {
+        int bestScore = result.first().score();
+        if (bestScore > info.score()) {
             return;
-        } else if (bestScore < info.score) {
+        } else if (bestScore < info.score()) {
             result.clear();
         } 
         result.append(info);
         return;
     }
     for (int i = 0; i < result.length(); i++) {
-        int scoreI = result.at(i).score;
-        if (scoreI < info.score) {
+        int scoreI = result.at(i).score();
+        if (scoreI < info.score()) {
             result.insert(i, info);
             return;
         }
@@ -89,16 +89,16 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawD
     QList<FormatDetectionResult> result;
     foreach(const DocumentFormatId& id, allFormats) {
         DocumentFormat* f = fr->getFormatById(id);
-        int score = f->checkRawData(rawData, url);
-        if (score ==  FormatDetection_NotMatched) {
+        RawDataCheckResult cr = f->checkRawData(rawData, url);
+        if (cr.score ==  FormatDetection_NotMatched) {
             continue;
         }
-        if (conf.useExtensionBonus && f->getSupportedDocumentFileExtensions().contains(ext)) {
-            score+=FORMAT_DETECTION_EXT_BONUS;
+        if (conf.useExtensionBonus && f->getSupportedDocumentFileExtensions().contains(ext) && cr.score >= FormatDetection_VeryLowSimilarity) {
+            cr.score += FORMAT_DETECTION_EXT_BONUS;
         }
         FormatDetectionResult res;
         res.format = f;
-        res.score = score;
+        res.rawDataCheckResult = cr;
         res.rawData = rawData;
         res.url = url;
         res.extension = ext;
@@ -107,13 +107,13 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawD
     if (conf.useImporters) {
         DocumentImportersRegistry* importReg = AppContext::getDocumentFormatRegistry()->getImportSupport();
         foreach(DocumentImporter* i, importReg->getImporters()) {
-            int score = i->checkData(rawData, url);
-            if (conf.useExtensionBonus && i->getSupportedFileExtensions().contains(ext)) {
-                score+=FORMAT_DETECTION_EXT_BONUS;
+            RawDataCheckResult cr = i->checkData(rawData, url);
+            if (conf.useExtensionBonus && i->getSupportedFileExtensions().contains(ext) && cr.score >= FormatDetection_VeryLowSimilarity) {
+                cr.score += FORMAT_DETECTION_EXT_BONUS;
             }
             FormatDetectionResult res;
             res.importer = i;
-            res.score = score;
+            res.rawDataCheckResult = cr;
             res.rawData = rawData;
             res.url = url;
             res.extension = ext;

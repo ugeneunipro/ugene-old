@@ -26,10 +26,6 @@
 
 #include <QtCore/QStringList>
 
-//todo: move to separate header
-#define MERGE_MULTI_DOC_GAP_SIZE_SETTINGS           "merge_gap"
-#define MERGE_MULTI_DOC_SEQUENCE_SIZE_SETTINGS      "merge_size"
-
 namespace U2  {
 
 class Document;
@@ -69,6 +65,9 @@ public:
     static void assignAlphabet(MAlignment& ma, char ignore);
 
     static QList<AnnotationSettings*> predefinedSettings();
+
+    /** Extracts sequences either from Sequence or MAlignment object */
+    static QList<DNASequence> toSequences(const GObject* obj);
 };
 
 }//namespace

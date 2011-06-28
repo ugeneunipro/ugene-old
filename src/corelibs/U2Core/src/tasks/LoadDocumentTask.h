@@ -120,6 +120,13 @@ public:
 private:
     void processObjRef();
 
+    /** Creates new document that contains data from original one restructured to new form according to document hints
+        For example: combines all sequences to alignment, merge sequences, etc
+        Return NULL if no restructuring was made
+        */
+    static Document* createCopyRestructuresWithHints(const Document* doc, U2OpStatus& os);
+    
+
     DocumentFormat*         format;
     const GUrl              url;
     IOAdapterFactory*       iof;

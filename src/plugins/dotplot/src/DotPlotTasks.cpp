@@ -281,7 +281,7 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
 
     QVariantMap formatSettings;
     if (gapSize >= 0) {
-        QString mergeToken = MERGE_MULTI_DOC_GAP_SIZE_SETTINGS;
+        QString mergeToken = DocumentReadingMode_SequenceMergeGapSize;
         formatSettings[mergeToken] = gapSize;
     }
 

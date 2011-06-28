@@ -87,6 +87,43 @@ enum FormatDetectionScore {
     FormatDetection_Matched = 10 // here we 100% sure that we deal with a known and supported format.
 };
 
+/** Set of hints provided by raw data check routines */
+
+/** 'true' if file contain at least one sequence */
+#define RawDataCheckResult_Sequence "sequence"
+
+/** 'true' if at least one sequence in file has gaps */
+#define RawDataCheckResult_SequenceWithGaps "sequence-with-gaps"
+
+/** 'true' if multiple sequences were found */
+#define RawDataCheckResult_MultipleSequences "multiple-sequences"
+
+/** contains estimation of minimal size of a sequence from document*/
+#define RawDataCheckResult_MinSequenceSize "sequence-min-size"
+
+/** contains estimation of maximum size of a sequence from document */
+#define RawDataCheckResult_MaxSequenceSize "sequence-max-size"
+
+/** The result of the document format detection: score and additional info that was parsed during raw data check */
+class RawDataCheckResult {
+public:
+    RawDataCheckResult() : score(FormatDetection_NotMatched){};
+    RawDataCheckResult(FormatDetectionScore _score) : score(_score){}
+
+    /** Score of the detection */
+    int score;
+
+    QVariantMap properties;
+    
+};
+
+/** Set of hints that can be processed during document loading */
+#define DocumentReadingMode_SequenceMergeGapSize            "merge-gap"
+#define DocumentReadingMode_SequenceMergingFinalSizeHint    "merge-size"
+#define DocumentReadingMode_SequenceAsAlignmentHint         "sequences-are-msa"
+#define DocumentReadingMode_SequenceAsShortReadsHint        "sequences-are-short-reads"
+
+
 class U2CORE_EXPORT DocumentFormat: public QObject {
     Q_OBJECT
 public:
@@ -150,7 +187,7 @@ public:
         Note: Data can contain only first N (~1024) bytes of the file
         The URL value is optional and provided as supplementary option. URL value here can be empty in some special cases.
     */
-    virtual FormatDetectionScore checkRawData(const QByteArray& dataPrefix, const GUrl& url = GUrl()) const = 0;
+    virtual RawDataCheckResult checkRawData(const QByteArray& dataPrefix, const GUrl& url = GUrl()) const = 0;
 
     /** Returns generic format description */
     virtual QString getFormatDescription() const {return formatDescription;}
@@ -200,7 +237,7 @@ public:
 
     bool                    checkRawData;
     QByteArray              rawData;
-    FormatDetectionScore   minDataCheckResult;
+    FormatDetectionScore    minDataCheckResult;
 
 };
 
@@ -313,6 +350,8 @@ public:
     QVariantMap getGHintsMap() const;
 
     StateLock* getDocumentModLock(DocumentModLock type) const {return modLocks[type];}
+    
+    void propagateModLocks(Document* doc) const;
 
     bool hasUserModLock() const {return modLocks[DocumentModLock_USER]!=NULL;}
 

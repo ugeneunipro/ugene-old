@@ -56,7 +56,7 @@ GenbankPlainTextFormat::GenbankPlainTextFormat(QObject* p)
     fPrefix = "  ";
 }
 
-FormatDetectionScore GenbankPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+RawDataCheckResult GenbankPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     //TODO: improve handling
     const char* data = rawData.constData();
     int size = rawData.size();
@@ -65,7 +65,19 @@ FormatDetectionScore GenbankPlainTextFormat::checkRawData(const QByteArray& rawD
         return FormatDetection_NotMatched;
     }
     bool startsWithLocus = TextUtils::equals("LOCUS ", data, 6);
-    return startsWithLocus ? FormatDetection_VeryHighSimilarity : FormatDetection_NotMatched;
+    if (!startsWithLocus) {
+        return FormatDetection_NotMatched;
+    }
+    RawDataCheckResult res(FormatDetection_VeryHighSimilarity);
+    
+    QByteArray seqStartPattern1 = "\n        1";
+    QByteArray seqStartPattern2 = "\nORIGIN";
+
+    res.properties[RawDataCheckResult_Sequence] = rawData.contains(seqStartPattern1) || rawData.contains(seqStartPattern2);
+
+    bool multi = (rawData.indexOf(seqStartPattern1) != rawData.lastIndexOf(seqStartPattern1)) || (rawData.indexOf(seqStartPattern2) != rawData.lastIndexOf(seqStartPattern2));
+    res.properties[RawDataCheckResult_MultipleSequences] = multi;
+    return res;
 }
 
 

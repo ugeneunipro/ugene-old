@@ -96,9 +96,10 @@ Document* WorkflowDocFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, cons
         ti.progress = io->getProgress();
     }
     
-    if(!checkRawData(rawData)) {
+    if (checkRawData(rawData).score != FormatDetection_Matched) {
         ti.setError(tr("Invalid header. %1 expected").arg(HRSchemaSerializer::HEADER_LINE));
         rawData.clear();
+        return NULL;
     }
     //todo: check file-readonly status?
     
@@ -128,7 +129,7 @@ void WorkflowDocFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter
     wo->setSceneRawData(rawData);
 }
 
-FormatDetectionScore WorkflowDocFormat::checkRawData(const QByteArray& data, const GUrl&) const {
+RawDataCheckResult WorkflowDocFormat::checkRawData(const QByteArray& data, const GUrl&) const {
     LoadWorkflowTask::FileFormat format = LoadWorkflowTask::detectFormat(data);
     bool ok  = format == LoadWorkflowTask::HR || format == LoadWorkflowTask::XML;
     return ok ? FormatDetection_Matched  : FormatDetection_NotMatched;

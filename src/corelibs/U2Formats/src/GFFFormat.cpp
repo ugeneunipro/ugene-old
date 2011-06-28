@@ -296,7 +296,7 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& si)
     }
 }
 
-FormatDetectionScore GFFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+RawDataCheckResult GFFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     int n = TextUtils::skip(TextUtils::WHITES, data, size);

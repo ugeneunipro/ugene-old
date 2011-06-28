@@ -21,6 +21,7 @@
 
 #include "ProjectLoaderImpl.h"
 #include "DocumentFormatSelectorController.h"
+#include "DocumentReadingModeSelectorController.h"
 #include "ProjectTasksGui.h"
 #include "ProjectImpl.h"
 
@@ -43,6 +44,8 @@
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/OpenViewTask.h>
+
+#include <U2View/DnaAssemblyGUIExtension.h>
 
 #include <QtGui/QAction>
 
@@ -286,19 +289,28 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
             if (!formats.isEmpty()) {
                 int idx = 0;
                 if (formats.size() > 1 && 
-                    (formats[0].score == formats[1].score 
-                    || (formats[1].score > FormatDetection_AverageSimilarity && formats[0].score < FormatDetection_Matched) 
-                    || formats[0].score <= FormatDetection_AverageSimilarity)) 
+                    (formats[0].score() == formats[1].score() 
+                    || (formats[1].score() > FormatDetection_AverageSimilarity && formats[0].score() < FormatDetection_Matched) 
+                    || formats[0].score() <= FormatDetection_AverageSimilarity)) 
                 {
                     idx = DocumentFormatSelectorController::selectResult(url, formats.first().rawData, formats);
                 }
                 if (idx >= 0) {
-                    const FormatDetectionResult& dr =  formats[idx];
+                    FormatDetectionResult& dr =  formats[idx];
+                    dr.rawDataCheckResult.properties.unite(hints);
                     if (dr.format != NULL ) {
+                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr);
+                        if (!ok) {
+                            continue;
+                        }
+                        bool documentProcessingFinished = processHints(dr);
+                        if (documentProcessingFinished) {
+                            continue;
+                        }
                         AD2P_DocumentInfo info;
                         info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
                         info.url = url;
-                        info.hints = hints;
+                        info.hints = dr.rawDataCheckResult.properties;
                         info.formatId = dr.format->getFormatId(); 
                         info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
                         docsInfo << info;
@@ -319,6 +331,16 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
         return NULL;
     }
     return new AddDocumentsToProjectTask(docsInfo, docProviders);
+}
+
+
+bool ProjectLoaderImpl::processHints(FormatDetectionResult& dr) {
+    bool alignAsShortReads = dr.rawDataCheckResult.properties.value(DocumentReadingMode_SequenceAsShortReadsHint).toBool();
+    if (alignAsShortReads) {
+        DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(QStringList() << dr.url.getURLString());
+        return true;
+    }
+    return false;
 }
 
 Task* ProjectLoaderImpl::createNewProjectTask(const GUrl& url) {
@@ -639,7 +661,7 @@ QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
             if (GObjectTypes::getTypeInfo(t).type == GObjectTypes::UNKNOWN) {
                 continue;
             }
-            doc = new Document(df, info.iof, info.url);;
+            doc = new Document(df, info.iof, info.url, QList<UnloadedObjectInfo>(), info.hints);
         }
         if (info.openView) {
             res << new AddDocumentAndOpenViewTask(doc);
