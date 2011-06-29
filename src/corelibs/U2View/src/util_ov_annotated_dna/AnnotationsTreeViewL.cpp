@@ -441,7 +441,8 @@ void AnnotationsTreeViewL::sl_onAnnotationObjectAdded(AnnotationTableObject* obj
     AVGroupItemL *root = (AVGroupItemL*)model->getItem(QModelIndex());
     AVGroupItemL* groupItem = createGroupItem(root, obj->getRootGroup());
     if(tree->lineHeight == 1) {
-        tree->lineHeight = tree->rowHeight(model->guessIndex(groupItem));
+        //tree->lineHeight = tree->rowHeight(model->guessIndex(groupItem));
+        tree->setLineHeight(tree->rowHeight(model->guessIndex(groupItem)));
     }
     tree->calculateIndex(obj);
     tree->realNumberOfItems++;
@@ -1459,6 +1460,22 @@ void AnnotationsTreeViewL::sl_itemCollapsed(QTreeWidgetItem* qi) {
             item = tree->getNextItemDown(static_cast<AVItemL*>(tree->onScreen.last()));
         }
     }
+
+    if(acceptable > 0) {
+        item = tree->getNextItemUp();
+    }
+    while(item && acceptable > 0) {
+        QTreeWidgetItem *last = tree->onScreen.first();
+        if(item == last->parent() || item->parent()->parent() == NULL) {
+            tree->onScreen.insert(0, item);
+        } else {
+            tree->insertItem(0,  item);
+        }
+        acceptable--;
+        if(acceptable > 0) {
+            item = tree->getNextItemUp();
+        }
+    }
 }
 
 void AnnotationsTreeViewL::destroyTree(QTreeWidgetItem* qi) {
@@ -1894,7 +1911,14 @@ void LazyTreeView::scrollContentsBy ( int, int dy ) {
     CustomSlider *slider = static_cast<CustomSlider*>(verticalScrollBar());
     LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(model());
 
+    if(slider->numToScroll() != 0) {
+        numToScroll = slider->numToScroll();
+        slider->resetNumToScroll();
+    }
+
     int pos = slider->sliderCustomPosition();
+    coreLog.trace("old position was: " + QString::number(pos));
+    coreLog.trace("numToScroll was: " + QString::number(numToScroll));
     if(dy < 0) {
         int res = 1;
         while(numToScroll > 0 && res) {
@@ -1918,7 +1942,9 @@ void LazyTreeView::scrollContentsBy ( int, int dy ) {
         
     }
     slider->setPosition(pos);
+    coreLog.trace("new position was set to: " + QString::number(pos));
     slider->update();
+    viewport()->update();
 }
 
 int LazyTreeView::scrollOneItemUp() {
@@ -2371,6 +2397,7 @@ LazyTreeView::LazyTreeView( QWidget * parent /*= 0 */ ) : QTreeView(parent) {
     connect(verticalScrollBar(), SIGNAL(rangeChanged ( int, int)), SLOT(sl_rangeChanged(int, int)));
     numOnScreen = 14;
     setVerticalScrollBar(new CustomSlider(this));
+    verticalScrollBar()->setMouseTracking(true);
     flag = false;
     treeWalker = new TreeIndex();
     realNumberOfItems = 0;
@@ -2433,6 +2460,11 @@ void LazyTreeView::updateItem( QTreeWidgetItem *item ) {
     repaint();
 }
 
+void LazyTreeView::setLineHeight( int height ) {
+    lineHeight = height;
+    CustomSlider * slider = static_cast<CustomSlider*>(verticalScrollBar());
+    slider->setRowHeight(height);
+}
 
 
 void AnnotationsTreeViewL::focusOnItem(Annotation *a) {
@@ -2520,8 +2552,10 @@ void AnnotationsTreeViewL::focusOnItem(Annotation *a) {
 }
 
 
-CustomSlider::CustomSlider( QWidget *parent /*= NULL*/ ) : QScrollBar(parent), minVal(0), maxVal(0), sliderPos(0){
+CustomSlider::CustomSlider( QWidget *parent /*= NULL*/ ) : QScrollBar(parent), minVal(0), maxVal(0), sliderPos(0), rowHeight(1), dif(0){
     setPageStep(14);
+    setMouseTracking(true);
+    oldPos = QPoint(0,0);
 }
 
 void CustomSlider::setMaxVal( int _maxVal ){
@@ -2557,7 +2591,7 @@ void CustomSlider::sliderChange( SliderChange sc ) {
 }
 
 void CustomSlider::paintEvent( QPaintEvent * ) {
-    QStyleOptionSlider options;
+    //QStyleOptionSlider options;
     options.initFrom(this);
     options.sliderPosition = sliderPos;
     options.maximum = maxVal;
@@ -2567,6 +2601,7 @@ void CustomSlider::paintEvent( QPaintEvent * ) {
     options.orientation = Qt::Vertical;
     options.sliderValue = sliderPos;
     options.upsideDown = false;
+    options.state = QStyle::State_Sunken | QStyle::State_Enabled;
 
     QPainter painter(this);
     style()->drawComplexControl(QStyle::CC_ScrollBar, &options, &painter);
@@ -2577,11 +2612,46 @@ int CustomSlider::sliderCustomPosition() const {
 }
 
 void CustomSlider::mouseMoveEvent( QMouseEvent *me ) {
-    if(me->button() == Qt::LeftButton) {
-        int newPos = me->pos().y();
-        int dif = newPos - sliderPos;
-        emit sliderMoved(value() + dif);
+    if(me->buttons() & Qt::LeftButton) {
+        int newPos = QStyle::sliderValueFromPosition(minVal, maxVal, me->pos().y(), height());
+        coreLog.trace("new position: " + QString::number(newPos) + ", old position: " + QString::number(oldPos.y()) + ", new position: " + QString::number(me->pos().y()));
+        int sDif = newPos - sliderPos;
+        coreLog.trace("dif: " + QString::number(sDif));
+        dif = qAbs(sDif);
+        setSliderPosition(sliderPosition() + sDif);
     }
 }
 
+void CustomSlider::mousePressEvent(QMouseEvent *me) {
+    if(me->button() == Qt::LeftButton) {
+        oldPos = me->pos();
+        QRect sr = style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarSlider, this);
+        QRect gr = style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove, this);
+        if(sr.contains(me->pos())) {
+            return;
+        } else if(gr.contains(me->pos())) {
+            if(me->pos().y() < sr.topLeft().y()) {
+                dif = pageStep;
+                setSliderPosition(sliderPosition() - pageStep);
+            } else if(me->pos().y() > sr.bottomLeft().y()) {
+                dif = pageStep;
+                setSliderPosition(sliderPosition() + pageStep);
+            }
+            return;
+        }
+    }
+    QScrollBar::mousePressEvent(me);
+}
+
+void CustomSlider::setRowHeight( int height ) {
+    rowHeight = height;
+}
+
+int CustomSlider::numToScroll() const {
+    return dif;
+}
+
+void CustomSlider::resetNumToScroll() {
+    dif = 0;
+}
 }//namespace

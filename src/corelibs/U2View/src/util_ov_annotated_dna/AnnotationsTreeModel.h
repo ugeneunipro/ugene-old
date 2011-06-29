@@ -131,16 +131,6 @@ public:
     const QString qValue;
 };
 
-class Tracer {
-public:
-    static void trace(const QString& msg) {
-        QFile file("E:\\trace_log.txt");
-        file.open(QIODevice::Append);
-        file.write(msg.toUtf8());
-        file.close();
-    }
-};
-
 class TreeIndex {
 public:
     TreeIndex();

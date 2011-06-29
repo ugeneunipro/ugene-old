@@ -64,17 +64,25 @@ public:
     void setPosition(int pos);
     void setCustomPageStep(int ps);
     int sliderCustomPosition() const;
+    void setRowHeight(int height);
+    int numToScroll() const;
+    void resetNumToScroll();
 
 protected:
     virtual void sliderChange(SliderChange sc);
     void paintEvent(QPaintEvent *);
     void mouseMoveEvent(QMouseEvent *me);
+    void mousePressEvent(QMouseEvent *me);
 
 private:
     int minVal;
     int maxVal;
     int sliderPos;
     int pageStep;
+    int rowHeight;
+    QPoint oldPos;
+    QStyleOptionSlider options;
+    int dif;
 };
 
 
@@ -102,6 +110,7 @@ public:
     int getExpandedNumber(AVItemL *item);
     int getExpandedNumber(AnnotationGroup *gr);
     void updateItem(QTreeWidgetItem *item);
+    void setLineHeight(int height);
 
     
 
