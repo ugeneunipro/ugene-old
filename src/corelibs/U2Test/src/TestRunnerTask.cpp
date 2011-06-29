@@ -128,6 +128,9 @@ QList<Task*> TestRunnerTask::onSubTaskFinished(Task* subTask) {
                 }
 
                 GTest* test = tf->createTest(testState->getTestRef()->getShortName(), NULL, newEnv, loader->testData, err);
+                int testTimeout = testState->getTestRef()->getSuite()->getTestTimeout();
+                test->setTimeOut(testTimeout);
+
                 if (test == NULL) {
                     testState->setFailed(err);
                     teamcityLog.info(QString("##teamcity[testStarted name='%1 : %2']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName()));

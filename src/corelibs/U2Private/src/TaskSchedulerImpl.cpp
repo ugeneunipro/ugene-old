@@ -105,8 +105,11 @@ bool TaskSchedulerImpl::processFinishedTasks() {
 
         if (ti->task->getTimeOut() > 0){
             int secsPassed = GTimer::secsBetween(ti->task->getTimeInfo().startTime, GTimer::currentTimeMicros());
-            if(ti->task->getTimeOut()<=secsPassed){
-                ti->task->setError( tr("TimeOut Error. TimeOut = %1 sec.").arg(ti->task->getTimeOut()));
+            if(ti->task->getTimeOut() < secsPassed){
+                QString msg = QString("Timeout error, running %1 sec expected %2 sec.").arg(secsPassed).arg(ti->task->getTimeOut());
+                taskLog.error(QString("Task {%1} %2 Cancelling task...").arg(ti->task->getTaskName()).arg(msg));
+
+                ti->task->setError(msg);
                 ti->task->cancel();
             }
 

@@ -160,18 +160,25 @@ public:
 
     const QString& getName() const {return name;}
 
+    int getTestTimeout() const { return testTimeout; }
+
     static GTestSuite* readTestSuite(const QString& url, QString& err);
     static QList<GTestSuite*> readTestSuiteList(const QString& url, QStringList& err);
 
 protected:
-    GTestSuite() {}
+    GTestSuite()
+        : url(), name(), tests(), excluded(), testTimeout(0), env()
+    {}
     
     QString url;
-
     QString name;
     
     QList<GTestRef*> tests;
     QList<GTestRef*> excluded;
+
+    /** Maximum run time for single test in sutie.
+        timeout = 0 means this parameter unused */
+    int testTimeout;
 
     GTestEnvironment env;
 };

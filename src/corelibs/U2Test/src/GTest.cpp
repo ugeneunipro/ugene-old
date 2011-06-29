@@ -162,6 +162,9 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
         return NULL;
     }
 
+    //Test timeout
+    QString testTimeout = suiteEl.attribute("test-timeout", "0");
+
     //Env
     GTestEnvironment suiteEnv;
     QDomNodeList envNodes = suiteEl.elementsByTagName("env-var");
@@ -249,6 +252,9 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
     suite->env  = suiteEnv;
     suite->tests = suiteTests;
     suite->excluded = excluded;
+    // testTimeout format is unchecked, but it will fail to 0 it's ok
+    suite->testTimeout = testTimeout.toInt();
+    suite->testTimeout = (suite->testTimeout == 0) ? -1 : suite->testTimeout;   // -1 means timeout check disabled
 
     foreach( GTestRef * r, suiteTests ) {
         r->setSuite( suite );
