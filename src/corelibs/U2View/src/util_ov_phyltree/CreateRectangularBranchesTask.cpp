@@ -127,6 +127,12 @@ void CreateRectangularBranchesTask::run() {
     item->setHeightW(0);
     root = item;
 
+    if(minDistance == 0){
+        minDistance = 1;
+    }
+    if(maxDistance == 0){
+        maxDistance = 1;
+    }
     qreal minDistScale = GraphicsRectangularBranchItem::DEFAULT_WIDTH / (qreal)minDistance;
     qreal maxDistScale = GraphicsRectangularBranchItem::MAXIMUM_WIDTH / (qreal)maxDistance;
 
