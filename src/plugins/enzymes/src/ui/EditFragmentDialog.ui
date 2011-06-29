@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>488</width>
-    <height>483</height>
+    <height>567</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -21,13 +21,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
-        <string>Left Overhang</string>
+        <string>Left End</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QGroupBox" name="groupBox_2">
           <property name="title">
@@ -70,39 +70,46 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
               <widget class="QRadioButton" name="lDirectRadioButton">
                <property name="text">
-                <string>Direct</string>
+                <string>5'-3'</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="lDirectOverhangEdit">
+               <property name="maxLength">
+                <number>15</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
               <widget class="QRadioButton" name="lComplRadioButton">
                <property name="text">
-                <string>Reverse-complement</string>
+                <string>3'-5'</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="lComplOverhangEdit">
+               <property name="maxLength">
+                <number>15</number>
                </property>
               </widget>
              </item>
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <widget class="QLineEdit" name="lCustomOverhangEdit"/>
-             </item>
-             <item>
-              <widget class="QPushButton" name="lResetButton">
-               <property name="text">
-                <string>Reset</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QPushButton" name="lResetButton">
+             <property name="text">
+              <string>Reset</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -113,7 +120,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_3">
        <property name="title">
-        <string>Right Overhang</string>
+        <string>Right End</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
@@ -153,44 +160,51 @@
           <property name="checked">
            <bool>false</bool>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
               <widget class="QRadioButton" name="rDirectRadioButton">
                <property name="text">
-                <string>Direct</string>
+                <string>5'-3'</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="rDirectOverhangEdit">
+               <property name="maxLength">
+                <number>15</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
               <widget class="QRadioButton" name="rComplRadioButton">
                <property name="text">
-                <string>Reverse-complement</string>
+                <string>3'-5'</string>
                </property>
                <property name="checked">
                 <bool>false</bool>
                </property>
               </widget>
              </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QLineEdit" name="rCustomOverhangEdit"/>
-             </item>
-             <item>
-              <widget class="QPushButton" name="rResetButton">
-               <property name="text">
-                <string>Reset</string>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="rComplOverhangEdit">
+               <property name="maxLength">
+                <number>15</number>
                </property>
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QPushButton" name="rResetButton">
+             <property name="text">
+              <string>Reset</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -317,7 +331,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>362</x>
-     <y>160</y>
+     <y>173</y>
     </hint>
    </hints>
   </connection>

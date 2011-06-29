@@ -66,16 +66,24 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
     const DNAFragmentTerm& leftTerm = dnaFragment.getLeftTerminus();
     const DNAFragmentTerm& rightTerm = dnaFragment.getRightTerminus();
 
-    lCustomOverhangEdit->setText(leftTerm.overhang);
-    lCustomOverhangEdit->setMaxLength(8);
-    if (!leftTerm.isDirect) {
+    if (leftTerm.isDirect) {
+        lDirectRadioButton->setChecked(true);
+        lDirectOverhangEdit->setText(leftTerm.overhang);
+    } else {
         lComplRadioButton->setChecked(true);
+        QByteArray buf = leftTerm.overhang;
+        transl->translate(buf.data(), buf.length());
+        lComplOverhangEdit->setText(buf);
     }
-
-    rCustomOverhangEdit->setText(rightTerm.overhang);
-    rCustomOverhangEdit->setMaxLength(8);
-    if (!rightTerm.isDirect) {
+    
+    if (rightTerm.isDirect) {
+        rDirectRadioButton->setChecked(true);
+        rDirectOverhangEdit->setText(rightTerm.overhang);
+    } else {
         rComplRadioButton->setChecked(true);
+        QByteArray buf = rightTerm.overhang;
+        transl->translate(buf.data(), buf.size());
+        rComplOverhangEdit->setText(buf);
     }
 
     leftTerm.type == OVERHANG_TYPE_BLUNT ? lBluntButton->toggle() : lStickyButton->toggle();
@@ -94,9 +102,13 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
     connect(lResetButton, SIGNAL(clicked()), SLOT(sl_onLeftResetClicked()));
     connect(rResetButton, SIGNAL(clicked()), SLOT(sl_onRightResetClicked()));
 
-
+    connect(lDirectOverhangEdit, SIGNAL(textChanged ( const QString& )), SLOT(sl_updatePreview()));
+    connect(lComplOverhangEdit, SIGNAL(textChanged ( const QString& )), SLOT(sl_updatePreview()));
+    connect(rDirectOverhangEdit, SIGNAL(textChanged ( const QString& )), SLOT(sl_updatePreview()));
+    connect(rComplOverhangEdit, SIGNAL(textChanged ( const QString& )), SLOT(sl_updatePreview()));
 
 }
+
 
 void EditFragmentDialog::accept()
 {
@@ -107,28 +119,49 @@ void EditFragmentDialog::accept()
     dnaFragment.setRightTermType(rTermType);
     
     if (lCustomOverhangBox->isChecked()) {
-        if (lCustomOverhangEdit->text().isEmpty()) {
-            QMessageBox::warning(this, windowTitle(), tr("Left overhang is empty. Please enter the overhang or set blunt 5'Terminus."));
+        QLineEdit* lCustomOverhangEdit = lDirectRadioButton->isChecked() ? lDirectOverhangEdit : lComplOverhangEdit;
+        QString leftOverhang = lCustomOverhangEdit->text();
+
+        if (leftOverhang.isEmpty()) {
+            QMessageBox::warning(this, windowTitle(), tr("Left overhang is empty. Please enter the overhang or set blunt left end."));
             return;
         }
-        if (!isValidOverhang(lCustomOverhangEdit->text())) {
+        if (!isValidOverhang(leftOverhang)) {
             QMessageBox::warning(this, windowTitle(), tr("Invalid left overhang: unsupported alphabet!"));
             lCustomOverhangEdit->setFocus();
-            lCustomOverhangEdit->setSelection(0, lCustomOverhangEdit->text().length());
+            lCustomOverhangEdit->setSelection(0, leftOverhang.length());
+            return;
+        }
+
+        QByteArray bLeftOverhang = leftOverhang.toUpper().toAscii();
+        if ( lComplRadioButton->isChecked() ) {
+            transl->translate(bLeftOverhang.data(), bLeftOverhang.size());
+        }
+        dnaFragment.setLeftOverhang(bLeftOverhang);
+        dnaFragment.setLeftOverhangStrand(lDirectRadioButton->isChecked());
+    
+    }
+    
+    if (rCustomOverhangBox->isChecked()) {
+        QLineEdit* rCustomOverhangEdit = rDirectRadioButton->isChecked() ? rDirectOverhangEdit : rComplOverhangEdit;
+        QString rightOverhang = rCustomOverhangEdit->text();
+
+        if (rightOverhang.isEmpty()) {
+            QMessageBox::warning(this, windowTitle(), tr("Right overhang is empty. Please enter the overhang or set blunt right end."));
+            return;
+        }
+        if (!isValidOverhang(rightOverhang)) {
+            QMessageBox::warning(this, windowTitle(), tr("Invalid right overhang: unsupported alphabet!"));
+            rCustomOverhangEdit->setFocus();
+            rCustomOverhangEdit->setSelection(0, rightOverhang.length());
             return;
         }
         
-        dnaFragment.setLeftOverhang(lCustomOverhangEdit->text().toUpper().toAscii());
-        dnaFragment.setLeftOverhangStrand(lDirectRadioButton->isChecked());
-    }
-    if (rCustomOverhangBox->isChecked()) {
-        if (!isValidOverhang(rCustomOverhangEdit->text())) {
-            QMessageBox::warning(this, windowTitle(), tr("Invalid right overhang: unsupported alphabet!"));
-            rCustomOverhangEdit->setFocus();
-            rCustomOverhangEdit->setSelection(0, rCustomOverhangEdit->text().length());
-            return;
+        QByteArray bRightOverhang = rightOverhang.toUpper().toAscii();
+        if ( lComplRadioButton->isChecked() ) {
+            transl->translate(bRightOverhang.data(), bRightOverhang.size());
         }
-        dnaFragment.setRightOverhang(rCustomOverhangEdit->text().toUpper().toAscii());
+        dnaFragment.setRightOverhang(bRightOverhang);
         dnaFragment.setRightOverhangStrand(rDirectRadioButton->isChecked());
     }
     
@@ -144,31 +177,25 @@ void EditFragmentDialog::updatePreview()
     preview += tr("Fragment of %1%2<br>").arg(dnaFragment.getSequenceDocName()).arg(invertedStr);
 
     QString uLeftOverhang, bLeftOverhang, uRightOverhang, bRightOverhang;
+    
     if (!lBluntButton->isChecked()) {
-        uLeftOverhang = lDirectRadioButton->isChecked() ? lCustomOverhangEdit->text().toUpper() : QByteArray();
-        if ( lComplRadioButton->isChecked() ) {
-            QByteArray buf = lCustomOverhangEdit->text().toUpper().toAscii();
-            transl->translate(buf.data(), buf.size());
-            bLeftOverhang = buf;
-        }
+        uLeftOverhang = lDirectRadioButton->isChecked() ? lDirectOverhangEdit->text().toUpper() : QByteArray();
+        bLeftOverhang = lComplRadioButton->isChecked() ? lComplOverhangEdit->text().toUpper() : QByteArray();
     }
+    
     if (!rBluntButton->isChecked()){
-        uRightOverhang = rDirectRadioButton->isChecked() ? rCustomOverhangEdit->text().toUpper() : QByteArray();
-        if ( rComplRadioButton->isChecked() ) {
-            QByteArray buf = rCustomOverhangEdit->text().toUpper().toAscii();
-            transl->translate(buf.data(), buf.size());
-            bRightOverhang = buf;
-        }
+        uRightOverhang = rDirectRadioButton->isChecked() ? rDirectOverhangEdit->text().toUpper() : QByteArray();
+        bRightOverhang = rComplRadioButton->isChecked() ? rComplOverhangEdit->text().toUpper() : QByteArray();
+        
     }
     preview+=("<table cellspacing=\"10\" >");
-    preview += tr("<tr> <td align=\"center\"> 5'End </td><td></td> <td align=\"center\"> 3'End </td> </tr>");
+    preview += tr("<tr> <td align=\"center\"> 5' </td><td></td> <td align=\"center\"> 3' </td> </tr>");
 
     preview += QString("<tr> <td align=\"center\" >%1</td><td align=\"center\" >%2</td><td align=\"center\" >%3</td> </tr>").
         arg(uLeftOverhang).arg(seq).arg(uRightOverhang);
     preview += QString("<tr> <td align=\"center\" >%1</td><td align=\"center\" >%2</td><td align=\"center\" >%3</td> </tr>").
         arg(bLeftOverhang).arg(trseq).arg(bRightOverhang);
-
-
+    preview += tr("<tr> <td align=\"center\"> 3' </td><td></td> <td align=\"center\"> 5' </td> </tr>");
     preview+=("</table>");
     previewEdit->setText(preview);
 }
@@ -218,16 +245,21 @@ void EditFragmentDialog::resetLeftOverhang()
     const QList<SEnzymeData>& enzymes = EnzymesIO::getDefaultEnzymesList();
     SEnzymeData enz = EnzymesIO::findEnzymeById(enzymeId, enzymes);
     
-    int startPos = dnaFragment.getFragmentRegions().first().startPos - enz->cutDirect;
-    int fragLen = enz->seq.length() - enz->cutDirect - enz->cutComplement;
-
-    QByteArray overhang = dnaFragment.getSourceSequence().mid(startPos - fragLen + 1, fragLen);
-
-    lCustomOverhangEdit->setText(overhang);
-    if (dnaFragment.getLeftTerminus().isDirect) {
+    int leftCutCompl = enz->seq.length() - enz->cutComplement;
+    int cutPos = dnaFragment.getFragmentRegions().first().startPos - qMax(enz->cutDirect, leftCutCompl);
+    int leftOverhangStart = cutPos + qMin(enz->cutDirect, leftCutCompl);
+    QByteArray overhang = dnaFragment.getSourceSequence().mid(leftOverhangStart, dnaFragment.getFragmentRegions().first().startPos - leftOverhangStart);
+    bool isDirect = enz->cutDirect < leftCutCompl;
+    
+    if (isDirect) {
         lDirectRadioButton->setChecked(true);
+        lDirectOverhangEdit->setText(overhang);
+        lComplOverhangEdit->clear();
     } else {
         lComplRadioButton->setChecked(true);
+        transl->translate(overhang.data(), overhang.length());
+        lDirectOverhangEdit->clear();
+        lComplOverhangEdit->setText(overhang);
     }
 }
 
@@ -240,17 +272,23 @@ void EditFragmentDialog::resetRightOverhang()
     
     const QList<SEnzymeData>& enzymes = EnzymesIO::getDefaultEnzymesList();
     SEnzymeData enz = EnzymesIO::findEnzymeById(enzymeId, enzymes);
-
-    int startPos = dnaFragment.getFragmentRegions().last().endPos();
-    int fragLen = enz->seq.length() - enz->cutComplement - enz->cutDirect;
-
-    QByteArray overhang = dnaFragment.getSourceSequence().mid(startPos, fragLen);
-
-    rCustomOverhangEdit->setText(overhang);
-    if (dnaFragment.getRightTerminus().isDirect) {
+    
+    int rightCutCompl = enz->seq.length() - enz->cutComplement;
+    int rightCutPos = dnaFragment.getFragmentRegions().last().endPos();
+    int enzStart = rightCutPos - qMin(enz->cutDirect, rightCutCompl );
+    int rightOverhangStart = enzStart + qMax(enz->cutDirect, rightCutCompl );
+    QByteArray overhang = dnaFragment.getSourceSequence().mid(rightCutPos, rightOverhangStart - rightCutPos);
+    bool isDirect = enz->cutDirect > rightCutCompl;
+   
+    if (isDirect) {
         rDirectRadioButton->setChecked(true);
+        rDirectOverhangEdit->setText(overhang);
+        rComplOverhangEdit->clear();
     } else {
         rComplRadioButton->setChecked(true);
+        transl->translate(overhang.data(), overhang.length());
+        rDirectOverhangEdit->clear();
+        rComplOverhangEdit->setText(overhang);
     }
 }
 
