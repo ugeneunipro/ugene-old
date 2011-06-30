@@ -117,9 +117,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     gotoAction->setToolTip(QString("%1 (%2)").arg(gotoAction->text()).arg(gotoAction->shortcut().toString()));
     connect(gotoAction, SIGNAL(triggered()), SLOT(sl_goto()));
 
-    //removeGapColumnsAction = new QAction(QIcon(":core/images/msaed_remove_columns_with_gaps.png"), tr("Remove columns with gaps"), this);
-    //connect(removeGapColumnsAction, SIGNAL(triggered()), SLOT(sl_removeColumnsWithGaps()));
-    
     removeAllGapsAction = new QAction(QIcon(":core/images/msaed_remove_all_gaps.png"), tr("Remove all gaps"), this);
     connect(removeAllGapsAction, SIGNAL(triggered()), SLOT(sl_removeAllGaps()));
 

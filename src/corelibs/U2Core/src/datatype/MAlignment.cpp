@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QStack>
+
 #include "MAlignment.h"
 
 #include <U2Core/DNAAlphabet.h>
@@ -697,6 +699,38 @@ void MAlignment::sortRowsByName(bool asc) {
     MAStateCheck check(this);
 
     qStableSort(rows.begin(), rows.end(), CompareMARowsByName(asc));
+}
+
+
+void MAlignment::moveRowsBlock( int startRow, int numRows, int delta )
+{
+    MAStateCheck check(this);
+
+    // Assumption: numRows is rather big, delta is small (1~2) 
+    // It's more optimal to move abs(delta) of rows then the block itself
+    
+    int i = 0;
+    int k = qAbs(delta);
+
+    assert ( ( delta > 0 && startRow + numRows + delta - 1 < rows.length() )
+        || (delta < 0 && startRow + delta >= 0 && startRow + qAbs(delta) <= rows.length() )  );
+
+    QStack<MAlignmentRow> toMove;
+    int fromRow = delta > 0 ? startRow + numRows  : startRow + delta; 
+
+    while (i <  k ) {
+        MAlignmentRow row = rows.takeAt(fromRow);
+        toMove.push(row);
+        i++;
+    }
+    
+    int toRow = delta > 0 ? startRow : startRow + numRows - k;
+
+    while ( toMove.count() > 0 ) {
+        MAlignmentRow row = toMove.pop();
+        rows.insert(toRow, row);
+    }
+    
 }
 
 

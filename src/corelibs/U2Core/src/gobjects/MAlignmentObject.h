@@ -82,6 +82,8 @@ public:
 
     virtual void setGObjectName(const QString& newName);
 
+    void moveRowsBlock( int firstRow, int numRows, int delta);
+
     int getLength() const {return msa.getLength();}
 
     void deleteGapsByAbsoluteVal(int val);

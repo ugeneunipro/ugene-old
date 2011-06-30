@@ -41,6 +41,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) : edi
     completeRedraw = true;
     scribbling = false;
     curSeq = -1;
+    shiftPos = -1;
     
     connect(editor, SIGNAL(si_buildStaticMenu(GObjectView*, QMenu*)), SLOT(sl_buildStaticMenu(GObjectView*, QMenu*)));
     
@@ -268,6 +269,7 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
         MSAEditorSelection selection(0, curSeq, width, 1);
         ui->seqArea->setSelection(selection);
         scribbling = true;
+        shiftPos = curSeq;
     }
     QWidget::mousePressEvent(e);
 }
@@ -279,7 +281,11 @@ void MSAEditorNameList::mouseMoveEvent( QMouseEvent* e )
         if (ui->seqArea->isSeqInRange(newSeqNum)) {
             ui->seqArea->updateVBarPosition(newSeqNum);
         }
-        updateSelection(newSeqNum);
+        if (QApplication::keyboardModifiers().testFlag(Qt::AltModifier) ) {
+            moveSelectedRegion(newSeqNum);
+        } else {
+            updateSelection(newSeqNum);
+        }
     }
     QWidget::mouseMoveEvent(e);
 
@@ -291,6 +297,7 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
         curSeq = ui->seqArea->getSequenceNumByY(e->y());
         updateSelection(curSeq);
         scribbling = false;
+        shiftPos = -1;
     }
     ui->seqArea->getVBar()->setupRepeatAction(QAbstractSlider::SliderNoAction);
     QWidget::mouseReleaseEvent(e);
@@ -308,6 +315,7 @@ void MSAEditorNameList::updateSelection( int newSeq )
         int height = qAbs(newSeq - curSeq) + 1;
         MSAEditorSelection selection(0, startSeq, width, height );
         ui->seqArea->setSelection(selection);
+        shiftPos = newSeq;
     }
 
 }
@@ -452,6 +460,9 @@ void MSAEditorNameList::sl_onScrollBarActionTriggered( int scrollAction )
 {
     if (scrollAction ==  QAbstractSlider::SliderSingleStepAdd || scrollAction == QAbstractSlider::SliderSingleStepSub) {
         if (scribbling) {
+            if (QApplication::keyboardModifiers().testFlag(Qt::AltModifier)) {
+                return;
+            }
             QPoint coord = mapFromGlobal(QCursor::pos());
             int seqNum = ui->seqArea->getSequenceNumByY(coord.y());
             updateSelection(seqNum);
@@ -486,4 +497,42 @@ void MSAEditorNameList::mouseDoubleClickEvent( QMouseEvent *e )
     Q_UNUSED(e);
     sl_editSequenceName();
 }
+
+void MSAEditorNameList::moveSelectedRegion( int newSeqNum )
+{
+    int numRowsInSelection = ui->seqArea->getSelection().height();
+    int firstRowInSelection = ui->seqArea->getSelection().y();
+    int lastRowInSelection = firstRowInSelection + numRowsInSelection - 1;
+    
+    if (newSeqNum >= firstRowInSelection && newSeqNum <= lastRowInSelection ) {
+        return;
+    }
+
+    int shift = newSeqNum - shiftPos; // > 0 ? newSeqNum - lastRowInSelection : newSeqNum - firstRowInSelection;
+    // "out-of-range" checks
+    if ( (shift > 0 && lastRowInSelection + shift >= editor->getNumSequences() )  || 
+        (shift < 0 && firstRowInSelection + shift < 0 ) ||
+        (shift < 0 && firstRowInSelection + qAbs(shift) > editor->getNumSequences()) ) {
+            return;
+    }
+
+    if (!ui->seqArea->isSeqInRange(firstRowInSelection) || 
+        !ui->seqArea->isSeqInRange(lastRowInSelection)) {
+            // can happen when mouse is "chaotic" 
+            ui->seqArea->cancelSelection();
+            return;
+    }
+
+    //printf("newseqnum=%d, curseq=%d, shift=%d\n",newSeqNum, curSeq, shift);
+    MAlignmentObject* maObj = editor->getMSAObject();
+    if ( !maObj->isStateLocked() ) {
+        maObj->moveRowsBlock(firstRowInSelection, numRowsInSelection, shift);
+        curSeq += shift;
+        shiftPos = newSeqNum;
+        int selectionStart = qMin(curSeq, newSeqNum);
+        MSAEditorSelection selection(0, selectionStart, editor->getAlignmentLen(), numRowsInSelection );
+        ui->seqArea->setSelection(selection);
+    }
+}
+
 }//namespace

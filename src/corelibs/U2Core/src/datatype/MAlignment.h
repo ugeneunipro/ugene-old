@@ -278,6 +278,9 @@ public:
     // Sorts rows by name
     void sortRowsByName(bool asc = true);
 
+    // Shifts a selection of consequent rows
+    void moveRowsBlock( int startRow, int numRows, int delta );
+
     // Checks model consistency
     void check() const;
 

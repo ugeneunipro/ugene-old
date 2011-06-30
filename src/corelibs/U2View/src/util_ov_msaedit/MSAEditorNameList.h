@@ -77,7 +77,7 @@ private:
     void buildMenu(QMenu* m);
     void updateScrollBar();
     void updateSelection(int newSeqNum);
-    
+    void moveSelectedRegion( int newSeqNum );
     void drawAll();
     void drawContent(QPainter& p);
     void drawSelection(QPainter& p);
@@ -87,7 +87,7 @@ private:
     MSAEditor*          editor;
     MSAEditorUI*        ui;
     QScrollBar*         nhBar;
-    int                 curSeq;
+    int                 curSeq, shiftPos;
     bool                scribbling;
 
     QAction*            editSequenceNameAction;

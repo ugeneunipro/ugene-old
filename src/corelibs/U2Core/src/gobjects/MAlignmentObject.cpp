@@ -309,6 +309,20 @@ void MAlignmentObject::deleteAllGapColumn() {
     emit si_alignmentChanged(maBefore, mi);   
 }
 
+void MAlignmentObject::moveRowsBlock( int firstRow, int numRows, int shift )
+{
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+
+    MAlignment maBefore = msa;
+
+    msa.moveRowsBlock(firstRow, numRows, shift);
+
+    setModified(true);
+    MAlignmentModInfo mi;
+    emit si_alignmentChanged(maBefore, mi);
+
+}
+
 static bool _registerMeta() {
     qRegisterMetaType<MAlignmentModInfo>("MAlignmentModInfo");
     return true;
