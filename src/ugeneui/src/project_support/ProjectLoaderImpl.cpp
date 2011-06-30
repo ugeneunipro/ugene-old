@@ -249,7 +249,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
     if (projectsOnly) {
         GUrl projectUrl = urls.isEmpty() ? QString() : urls.last();
         QVariantMap h2 = hints;
-        h2[DLH_CLOSE_PROJECT] = true;
+        h2[ProjectLoaderHint_CloseActiveProject] = true;
         return createProjectLoadingTask(projectUrl, h2);
     }
     
@@ -291,7 +291,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                 if (formats.size() > 1 && 
                     (formats[0].score() == formats[1].score() 
                     || (formats[1].score() > FormatDetection_AverageSimilarity && formats[0].score() < FormatDetection_Matched) 
-                    || formats[0].score() <= FormatDetection_AverageSimilarity)) 
+                    || (formats[0].score() <= FormatDetection_AverageSimilarity)
+                    || (hints.value(ProjectLoaderHint_ForceFormatOptions).toBool() == true))) 
                 {
                     idx = DocumentFormatSelectorController::selectResult(url, formats.first().rawData, formats);
                 }
@@ -373,7 +374,7 @@ Task* ProjectLoaderImpl::createProjectLoadingTask(const GUrl& url, const QVarian
         }
         return NULL;
     } else if (msgBox.clickedButton() == oldWindow) {
-        bool closeActiveProject = hints.value(DLH_CLOSE_PROJECT, QVariant::fromValue(false)).toBool();
+        bool closeActiveProject = hints.value(ProjectLoaderHint_CloseActiveProject, QVariant::fromValue(false)).toBool();
         if (!closeActiveProject) {
             coreLog.error(tr("Stopped loading project: %1. Reason: active project found").arg(url.getURLString()));
             return NULL;

@@ -76,8 +76,6 @@ public:
 	
 	void initView();
 
-	//QAction* getAddNewDocumentAction() const {return addNewDocumentAction;}
-
 	QAction* getAddExistingDocumentAction() const {return addExistingDocumentAction;}
 
     virtual QList<Task*> createLoadDocumentTasks(const QList<Document*>& docs) const;
@@ -107,7 +105,6 @@ private slots:
 	void sl_onProjectModifiedStateChanged();
 	void sl_onDocumentRemoved(Document* d);
 	void sl_onAddExistingDocument();
-	void sl_onAddNewDocument();
 	void sl_onSaveSelectedDocs();
 	void sl_onDocTreePopupMenuRequested(QMenu& popup);
 	void sl_openNewView();
@@ -140,7 +137,6 @@ private:
 
 
     QAction*    addExistingDocumentAction;
-    //QAction*  addNewDocumentAction;
     QAction*    saveSelectedDocsAction;
     QAction*    relocateDocumentAction;
     QAction*    saveCopyAction;

@@ -96,7 +96,7 @@ void MWStub::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasUrls()) {
         QList<GUrl> urls = GUrlUtils::qUrls2gUrls(event->mimeData()->urls());
         QVariantMap hints;
-        hints[DLH_CLOSE_PROJECT] = true;
+        hints[ProjectLoaderHint_CloseActiveProject] = true;
         Task* t = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
         event->acceptProposedAction();

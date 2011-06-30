@@ -157,6 +157,10 @@ Document* SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2OpS
     if (seqObjects.isEmpty()) {
         return NULL;
     }
+    if (mergedSize > 1000*1000*1000) { //2Gb (max qbytearray size) / 2
+        os.setError(tr("Not enough memory to complete operation!"));
+        return NULL;
+    }
     DNASequence seq(doc->getURL().fileName(), QByteArray(), al);
     seq.seq.reserve(mergedSize); //TODO: check if memory op succeed!!!
     AnnotationTableObject* annObj = new AnnotationTableObject(seq.getName() + " annotations");

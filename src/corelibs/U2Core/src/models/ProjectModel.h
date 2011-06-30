@@ -39,7 +39,9 @@ class U2OpStatus;
 #define PROJECTFILE_EXT QString("." + PROJECT_FILE_PURE_EXT)
 
 //data loader hints
-#define DLH_CLOSE_PROJECT "close-active-project"
+#define ProjectLoaderHint_CloseActiveProject "close-active-project"
+#define ProjectLoaderHint_ForceFormatOptions "force-format-options"
+
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {
 public:

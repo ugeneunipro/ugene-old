@@ -12,8 +12,9 @@ HEADERS += src/AppSettingsGUI.h \
            src/ProjectParsing.h \
            src/ProjectView.h \
            src/UnloadDocumentTask.h \
-           src/util_gui/AddExistingDocumentDialogController.h \
-           src/util_gui/AddExistingDocumentDialogImpl.h \
+           _tmp/ui/ui_AddExistingDocumentDialog.h \
+           _tmp/ui/ui_CreateNewObjectDialog.h \
+           _tmp/ui/ui_SelectFormatToSaveDialog.h \
            src/util_gui/AddNewDocumentDialogController.h \
            src/util_gui/AddNewDocumentDialogImpl.h \
            src/util_gui/AnnotationSettingsDialogController.h \
@@ -40,8 +41,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util_gui/SaveDocumentGroupController.h \
            src/util_gui/SeqPasterWidgetController.h \
            src/util_gui/logview/LogView.h
-FORMS += src/util_gui/ui/AddExistingDocumentDialog.ui \
-         src/util_gui/ui/AddNewDocumentDialog.ui \
+FORMS += src/util_gui/ui/AddNewDocumentDialog.ui \
          src/util_gui/ui/AnnotationSettingsDialog.ui \
          src/util_gui/ui/CopyDocumentDialog.ui \
          src/util_gui/ui/CreateAnnotationWidget.ui \
@@ -64,7 +64,6 @@ SOURCES += src/MainWindow.cpp \
            src/OpenViewTask.cpp \
            src/ProjectParsing.cpp \
            src/UnloadDocumentTask.cpp \
-           src/util_gui/AddExistingDocumentDialogImpl.cpp \
            src/util_gui/AddNewDocumentDialogImpl.cpp \
            src/util_gui/AnnotationSettingsDialogImpl.cpp \
            src/util_gui/BaseDocumentFormatConfigurators.cpp \

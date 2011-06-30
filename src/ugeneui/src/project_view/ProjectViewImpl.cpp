@@ -46,8 +46,6 @@
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/UnloadDocumentTask.h>
 
-#include <U2Gui/AddNewDocumentDialogController.h>
-#include <U2Gui/AddExistingDocumentDialogController.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Misc/DialogUtils.h>
 #include <U2Gui/CopyDocumentDialogController.h>
@@ -309,9 +307,6 @@ void ProjectViewImpl::enable() {
     addExistingDocumentAction->setShortcutContext(Qt::ApplicationShortcut);
     connect(addExistingDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddExistingDocument()));
 
-    //addNewDocumentAction = new QAction(QIcon(":ugene/images/add_new_document.png"), tr("add_new_document_action"), w);
-    //connect(addNewDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddNewDocument()));
-
     saveSelectedDocsAction = new QAction(QIcon(":ugene/images/save_selected_documents.png"), tr("save_selected_modified_docs_action"), w);
     connect(saveSelectedDocsAction, SIGNAL(triggered()), SLOT(sl_onSaveSelectedDocs()));
 
@@ -469,23 +464,6 @@ void ProjectViewImpl::sl_onDocumentRemoved(Document* doc) {
     doc->disconnect(this);
 }
 
-void ProjectViewImpl::sl_onAddNewDocument() {
-    AddNewDocumentDialogModel m;
-    DocumentFormatConstraints c;
-    c.supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE; //TODO: we can't create other data types on the fly..
-    c.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    AddNewDocumentDialogController::run(NULL, m, c);
-    if (m.successful) {
-        DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(m.format);
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(m.io);
-        coreLog.info(tr("Creating new document %1").arg(m.url));
-        Document* doc = format->createNewDocument(iof, m.url);
-        doc->setModified(true);
-        AppContext::getProject()->addDocument(doc);
-    }
-}
-
-
 void ProjectViewImpl::sl_onSaveSelectedDocs() {
     const DocumentSelection* docSelection = getDocumentSelection();
     QList<Document*> modifiedDocs;
@@ -531,38 +509,22 @@ void ProjectViewImpl::sl_onViewPersistentStateChanged(GObjectViewWindow* v) {
 }
 
 void ProjectViewImpl::sl_onAddExistingDocument() {
-    AddExistingDocumentDialogModel m;
-	AddExistingDocumentDialogController::run(NULL, m, false);
-	if (!m.successful) {
+    LastOpenDirHelper h;
+    QString filter = DialogUtils::prepareDocumentsFileFilter(true);
+    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
+    if (file.isEmpty()) {
         return;
     }
-
-    DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(m.format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(m.io);
-
-    coreLog.info(tr("Adding existing document %1").arg(m.url));
-
-    QList<Task *> tasks;
-    Document * newdoc = 0;
-    QString multiTaskName;
-    if( !m.dwnldPath.isEmpty() ) {
-        IOAdapterFactory * iow = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        QString url_w = m.dwnldPath;
-        tasks.push_back( new CopyDataTask(iof, m.url, iow, url_w) );
-        multiTaskName += "download_";
-        newdoc = new Document(format, iow, url_w, QList<UnloadedObjectInfo>(), m.formatSettings);
-    } else {
-        newdoc = new Document(format, iof, m.url, QList<UnloadedObjectInfo>(), m.formatSettings);
+    if (QFileInfo(file).exists()) {
+        h.url = file;
     }
-    if (m.readOnly) {
-        newdoc->setUserModLock(true);
+    QList<GUrl> urls; urls << GUrl(file, GUrl_File);
+    QVariantMap hints;
+    hints[ProjectLoaderHint_ForceFormatOptions] = true;
+    Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
+    if (openTask != NULL) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(openTask);	
     }
-    Task * adt = new AddDocumentTask(newdoc);
-    adt->setSubtaskProgressWeight(0);
-    tasks.append(adt);
-    tasks.append(new LoadUnloadedDocumentAndOpenViewTask(newdoc));
-    multiTaskName += tr("Add and load document");
-    AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask(multiTaskName, tasks) );
 
 }
 
