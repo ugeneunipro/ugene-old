@@ -72,7 +72,7 @@ int SearchQuery::length() const {
     if (dna) {
         return seqLength;
     } else {
-        return NULL;//assRead->readSequence.length();
+        return 0;//assRead->readSequence.length();
     }
 }
 

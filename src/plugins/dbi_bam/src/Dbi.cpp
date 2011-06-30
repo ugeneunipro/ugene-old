@@ -332,7 +332,7 @@ U2DbiFactoryId DbiFactory::getId()const {
 bool DbiFactory::isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus & /*os*/) const {
     BAMFormat f;
     int score = f.checkRawData(rawData, properties.value(U2_DBI_OPTION_URL)).score;
-    return score = FormatDetection_Matched;
+    return score == FormatDetection_Matched;
 }
 
 const QString DbiFactory::ID = "BAMDbi";
