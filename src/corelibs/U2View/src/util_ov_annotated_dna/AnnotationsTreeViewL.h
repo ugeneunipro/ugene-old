@@ -73,6 +73,7 @@ protected:
     void paintEvent(QPaintEvent *);
     void mouseMoveEvent(QMouseEvent *me);
     void mousePressEvent(QMouseEvent *me);
+    void mouseReleaseEvent(QMouseEvent *me);
 
 private:
     int minVal;
@@ -80,9 +81,9 @@ private:
     int sliderPos;
     int pageStep;
     int rowHeight;
-    QPoint oldPos;
     QStyleOptionSlider options;
     int dif;
+    bool sliderPressed;
 };
 
 
