@@ -223,6 +223,7 @@ Task* BaseDocWriter::tick() {
                 assert(count == 1);
                 anUrl = GUrlUtils::ensureFileExt(anUrl, format->getSupportedDocumentFileExtensions()).getURLString();
             }
+            urlAttribute->setAttributeValue(anUrl);
             doc = new Document(format, iof, anUrl);
             doc->setLoaded(true);
             docs.insert(anUrl, doc);
@@ -243,8 +244,8 @@ Task* BaseDocWriter::tick() {
 Task* BaseDocWriter::processDocs()
 {
     if(docs.isEmpty()) {
-        coreLog.error( "nothing to write: no documents" );
-        return NULL;
+        //coreLog.error( "nothing to write: no documents" );
+        return new FailTask("nothing to write: no documents");
     }
     QList<Task*> tlist;
     QMapIterator<QString, Document*> it(docs);
