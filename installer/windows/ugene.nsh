@@ -19,6 +19,8 @@
 
 # Pages
     !insertmacro MUI_PAGE_WELCOME
+    !insertmacro MUI_PAGE_LICENSE ../source/LICENSE
+    !define MUI_PAGE_CUSTOMFUNCTION_LEAVE checkInstDir
     !insertmacro MUI_PAGE_DIRECTORY
     !insertmacro MUI_PAGE_INSTFILES
     !insertmacro MUI_PAGE_FINISH
@@ -28,6 +30,13 @@
 
 # Languages
     !insertmacro MUI_LANGUAGE "English"
+
+Function "checkInstDir"
+   CreateDirectory $INSTDIR
+   Iferrors 0 +3
+   MessageBox MB_ICONEXCLAMATION 'The directory "$INSTDIR" is not available for writing. Please choose another directory.'
+   abort
+FunctionEnd
 
 !include ugene_extensions.nsh
 
@@ -41,7 +50,7 @@
     !define ReleaseBuildDir "..\..\src\_release"
     !include ${ReleaseBuildDir}\version.nsis
     !ifndef ProductVersion
-        !define ProductVersion "unknown"
+    !define ProductVersion "unknown"
     !endif
 
 
@@ -78,7 +87,7 @@ Section "Build"
     SetOverwrite IfNewer
     File "${ReleaseBuildDir}\ugeneui.exe"
     File "${ReleaseBuildDir}\ugenecl.exe"
-	File "${ReleaseBuildDir}\ugeneui.map"
+    File "${ReleaseBuildDir}\ugeneui.map"
     File "${ReleaseBuildDir}\ugenecl.map"
     File "${ReleaseBuildDir}\ugenem.exe"
     Rename ugenecl.exe ugene.exe
@@ -94,7 +103,7 @@ Section "Build"
     File "${ReleaseBuildDir}\U2Test.dll"
     File "${ReleaseBuildDir}\U2View.dll"
     File "${ReleaseBuildDir}\ugenedb.dll"
-	File "${ReleaseBuildDir}\U2Algorithm.map"
+    File "${ReleaseBuildDir}\U2Algorithm.map"
     File "${ReleaseBuildDir}\U2Core.map"
     File "${ReleaseBuildDir}\U2Designer.map"
     File "${ReleaseBuildDir}\U2Formats.map"
@@ -127,7 +136,7 @@ Section "Build"
     !insertmacro AddPlugin chroma_view
     !insertmacro AddPlugin circular_view
     !insertmacro AddPlugin remote_service
-    !insertmacro AddPlugin cuda_support
+#    !insertmacro AddPlugin cuda_support
     !insertmacro AddPlugin opencl_support
     !insertmacro AddPlugin dna_export
     !insertmacro AddPlugin dna_graphpack
@@ -170,6 +179,10 @@ Section "Build"
     
     ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
     IntFmt $0 "0x%08X" $0
+
+    var /GLOBAL warnText #collects warnings during the installation
+    Iferrors 0 +2
+    StrCpy $warnText "Warning: not all files were copied successfully!"
     
     # Write the uninstall keys for Windows
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "DisplayName" "${FullProductName} ${PrintableVersion}"
@@ -177,8 +190,15 @@ Section "Build"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "Publisher" "Unipro"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "DisplayVersion" "${PrintableVersion}"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${FullProductName}" "EstimatedSize" "$0"
+
+    Iferrors 0 +2
+    StrCpy $warnText "$warnText$\r$\nWarning: cannot create registry entries!"
+
     WriteUninstaller "$INSTDIR\Uninst.exe"
 
+
+    Iferrors 0 +2
+    StrCpy $warnText "$warnText$\r$\nWarning: cannot create uninstaller!"
 
     # Remove old config
     # Delete $APPDATA\${CompanyName}\${ProductName}.ini
@@ -195,6 +215,7 @@ Section "Add Shortcuts"
     SectionIn 1
     SetShellVarContext all
     RMDir /r "$SMPROGRAMS\${FullProductName}"
+    ClearErrors
     CreateDirectory "$SMPROGRAMS\${FullProductName}"
     CreateShortCut "$SMPROGRAMS\${FullProductName}\Launch UGENE.lnk" "$INSTDIR\ugeneui.exe" "" "$INSTDIR\ugeneui.exe" 0
     CreateShortCut "$SMPROGRAMS\${FullProductName}\Download User Manual.lnk" "$INSTDIR\download_manual.url" "" "$INSTDIR\download_manual.url" 0
@@ -203,7 +224,14 @@ Section "Add Shortcuts"
     CreateShortCut "$SMPROGRAMS\${FullProductName}\Uninstall.lnk" "$INSTDIR\Uninst.exe" "" "$INSTDIR\Uninst.exe" 0
     CreateShortCut "$DESKTOP\${FullProductName}.lnk" "$INSTDIR\ugeneui.exe" "" "$INSTDIR\ugeneui.exe" 0
 
- SectionEnd
+    Iferrors 0 +2
+    StrCpy $warnText "$warnText$\r$\nWarning: cannot create program shortcuts!"
+#Display all of collected warnings  
+    var /GLOBAL warnTextLen
+    StrLen $warnTextLen "$warnText"
+    IntCmp $warnTextLen 0 +2
+    MessageBox MB_ICONEXCLAMATION "$warnText"
+SectionEnd
 
 ################################################################
 Section Uninstall

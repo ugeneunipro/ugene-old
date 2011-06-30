@@ -133,5 +133,5 @@ FunctionEnd
 !macro AddPlugin plugin
     File "${ReleaseBuildDir}\plugins\${plugin}.dll"
     File "${ReleaseBuildDir}\plugins\${plugin}.plugin"
-	File "${ReleaseBuildDir}\plugins\${plugin}.map"
+    File "${ReleaseBuildDir}\plugins\${plugin}.map"
 !macroend
