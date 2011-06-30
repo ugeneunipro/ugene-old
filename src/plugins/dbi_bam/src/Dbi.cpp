@@ -20,6 +20,7 @@
  */
 
 #include "IOException.h"
+#include "CancelledException.h"
 #include "BAMDbiPlugin.h"
 #include "Dbi.h"
 #include "BAMFormat.h"
@@ -283,7 +284,7 @@ void Dbi::buildIndex(U2OpStatus &os) {
                         maxReadLengths[alignment.getReferenceId()] = qMax(maxReadLengths[alignment.getReferenceId()], readLength);
                     }
                     if(os.isCanceled()) {
-                        throw Exception(BAMDbiPlugin::tr("Operation was cancelled"));
+                        throw CancelledException(BAMDbiPlugin::tr("Operation was cancelled"));
                     }
                     os.setProgress(ioAdapter->getProgress());
                 }

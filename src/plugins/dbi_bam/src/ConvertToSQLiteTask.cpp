@@ -20,6 +20,7 @@
  */
 
 #include "IOException.h"
+#include "CancelledException.h"
 #include "Reader.h"
 #include "SamReader.h"
 #include "Index.h"
@@ -34,15 +35,12 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 
+#include <limits>
 #include <memory>
 #include <time.h>
 
 namespace U2 {
 namespace BAM {
-
-#define READS_CHUNK_SIZE (250*1000)
-static const int FIRST_STAGE_PERCENT = 60;
-static const int SECOND_STAGE_PERCENT = 40;
 
 ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl, BAMInfo& _bamInfo, bool _sam):
     Task(tr("Convert BAM to UGENE database (%1)").arg(_destinationUrl.fileName()), TaskFlag_None),
@@ -69,106 +67,296 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
     reads.clear();
 }
 
-class BAMDbiIterator : public U2DbiIterator<U2AssemblyRead> {
+namespace {
+
+class Iterator {
 public:
-    BAMDbiIterator(int referenceId, BamReader* _reader, QList<Index::ReferenceIndex::Chunk> _chunks, qint64 _totalChunksLength, qint64& _readLength, TaskStateInfo& _ti)
-        : refId(referenceId), reader(_reader), chunks(_chunks), totalChunksLength(_totalChunksLength), readLength(_readLength), chunksLength(0), ti(_ti),
-        bufferCount(0), bufferIndex(0), chunkIndex(0), offset(0, 0), readsCount(0), readTime(0)
+    virtual ~Iterator() {}
+
+    virtual bool hasNext() = 0;
+
+    virtual U2AssemblyRead next() = 0;
+
+    virtual void skip() = 0;
+
+    virtual const U2AssemblyRead &peek() = 0;
+
+    virtual int peekReferenceId() = 0;
+};
+
+class BamIterator : public Iterator {
+public:
+    BamIterator(BamReader &reader):
+        reader(reader),
+        alignmentReader(NULL, 0, 0),
+        alignmentReaderValid(false),
+        readValid(false)
     {
-        foreach(const Index::ReferenceIndex::Chunk& chunk, chunks) {
-            chunksLength += chunk.getEnd().getCoffset() - chunk.getStart().getCoffset();
+    }
+
+    virtual bool hasNext() {
+        return readValid || alignmentReaderValid || !reader.isEof();
+    }
+
+    virtual U2AssemblyRead next() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
         }
-    }
-
-    bool hasNext() {
-        if(bufferIndex >= bufferCount) {
-            fill();
+        if(!readValid) {
+            if(!alignmentReaderValid) {
+                alignmentReader = reader.getAlignmentReader();
+            }
+            alignmentReaderValid = false;
+            read = AssemblyDbi::alignmentToRead(alignmentReader.read());
         }
-        return bufferIndex < bufferCount;                   
+        readValid = false;
+        return read;
     }
 
-    U2AssemblyRead next() {
-        assert(hasNext());
-        return buffer[bufferIndex++];
+    virtual void skip() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        if(!readValid) {
+            if(!alignmentReaderValid) {
+                alignmentReader = reader.getAlignmentReader();
+            }
+            alignmentReaderValid = false;
+            alignmentReader.skip();
+        }
+        readValid = false;
     }
 
-    U2AssemblyRead peek() {
-        assert(bufferIndex < bufferCount);
-        return buffer[bufferIndex];
+    virtual const U2AssemblyRead &peek() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        if(!readValid) {
+            if(!alignmentReaderValid) {
+                alignmentReader = reader.getAlignmentReader();
+            }
+            alignmentReaderValid = false;
+            read = AssemblyDbi::alignmentToRead(alignmentReader.read());
+            readValid = true;
+        }
+        return read;
     }
 
-    qint64 getImportedCount() {
-        return readsCount;
-    }
-
-    time_t getReadTime() {
-        return readTime;
+    virtual int peekReferenceId() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        if(!readValid) {
+            if(!alignmentReaderValid) {
+                alignmentReader = reader.getAlignmentReader();
+                alignmentReaderValid = true;
+            }
+        }
+        return alignmentReader.getId();
     }
 
 private:
-
-    void fill() {
-        bufferCount = 0;
-        bufferIndex = 0;
-        int statusUpdateCount = 0;
-        ti.setDescription(BAMDbiPlugin::tr("Reading"));
-        time_t startTime = time(0);
-        while(chunkIndex < chunks.count() && bufferCount < BUFFER_SIZE) {
-            const Index::ReferenceIndex::Chunk& chunk = chunks.at(chunkIndex);
-            VirtualOffset start = offset <= chunk.getStart() ? chunk.getStart() : offset;
-            reader->seek(start);
-            while(reader->getOffset() < chunk.getEnd() && bufferCount < BUFFER_SIZE) {
-                if(reader->isEof()) {
-                    throw IOException(BAMDbiPlugin::tr("Unexpected end of file"));
-                }
-                
-                BamReader::AlignmentReader aReader = reader->getAlignmentReader();
-                if(aReader.getId() == refId) {
-                    buffer[bufferCount++] = AssemblyDbi::alignmentToRead(aReader.read());
-                } else {
-                    aReader.skip();
-                }
-
-                if(++statusUpdateCount > 1000) {
-                    if(ti.cancelFlag) {
-                        throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
-                    }
-                    ti.progress = FIRST_STAGE_PERCENT * (readLength + reader->getOffset().getCoffset() - start.getCoffset()) / totalChunksLength;
-                    ti.setDescription(BAMDbiPlugin::tr("Reading (%1 reads)").arg(QString::number(bufferCount)));
-                }
-            }
-            offset = reader->getOffset();
-            if(offset == chunk.getEnd()) {
-                chunkIndex++;
-                offset = VirtualOffset(0);
-            }
-            readLength += reader->getOffset().getCoffset() - start.getCoffset();        
-        }
-        readTime += time(0) - startTime;
-        readsCount += bufferCount;
-        ti.setDescription(BAMDbiPlugin::tr("Saving reads"));
-    }
-
-    static const int BUFFER_SIZE = 100 * 1000;
-    int refId;
-    BamReader* reader;
-    QList<Index::ReferenceIndex::Chunk> chunks;
-    qint64 totalChunksLength;
-    qint64& readLength;
-    qint64 chunksLength;
-    TaskStateInfo& ti;
-    U2AssemblyRead buffer[BUFFER_SIZE];
-    int bufferCount;
-    int bufferIndex;
-    int chunkIndex;
-    VirtualOffset offset;
-    qint64 readsCount;
-    time_t readTime;
+    BamReader &reader;
+    BamReader::AlignmentReader alignmentReader;
+    bool alignmentReaderValid;
+    U2AssemblyRead read;
+    bool readValid;
 };
 
-static bool chunkLessThan(const Index::ReferenceIndex::Chunk &c1, const Index::ReferenceIndex::Chunk &c2) {
-    return c1.getStart() < c2.getStart();
-}
+class SamIterator : public Iterator {
+public:
+    SamIterator(SamReader &reader):
+        reader(reader),
+        readValid(false)
+    {
+    }
+
+    virtual bool hasNext() {
+        return readValid || !reader.isEof();
+    }
+
+    virtual U2AssemblyRead next() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        if(!readValid) {
+            bool eof = false;
+            read = AssemblyDbi::alignmentToRead(reader.readAlignment(eof));
+        }
+        readValid = false;
+        return read;
+    }
+
+    virtual void skip() {
+        next();
+    }
+
+    virtual const U2AssemblyRead &peek() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        if(!readValid) {
+            bool eof = false;
+            Alignment alignemnt = reader.readAlignment(eof);
+            readReferenceId = alignemnt.getReferenceId();
+            read = AssemblyDbi::alignmentToRead(alignemnt);
+            readValid = true;
+        }
+        return read;
+    }
+
+    virtual int peekReferenceId() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        if(!readValid) {
+            bool eof = false;
+            Alignment alignemnt = reader.readAlignment(eof);
+            readReferenceId = alignemnt.getReferenceId();
+            read = AssemblyDbi::alignmentToRead(alignemnt);
+            readValid = true;
+        }
+        return readReferenceId;
+    }
+
+private:
+    SamReader &reader;
+    U2AssemblyRead read;
+    int readReferenceId;
+    bool readValid;
+};
+
+class ReferenceIterator {
+public:
+    ReferenceIterator(int referenceId, Iterator &iterator):
+        referenceId(referenceId),
+        iterator(iterator)
+    {
+    }
+
+    U2AssemblyRead next() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        return iterator.next();
+    }
+
+    U2AssemblyRead peek() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        return iterator.peek();
+    }
+
+    bool hasNext() {
+        return iterator.hasNext() && (iterator.peekReferenceId() == referenceId);
+    }
+
+private:
+    int referenceId;
+    Iterator &iterator;
+};
+
+class DbiIterator : public U2DbiIterator<U2AssemblyRead> {
+public:
+    virtual ~DbiIterator() {}
+
+    virtual bool hasNext() = 0;
+
+    virtual U2AssemblyRead next() = 0;
+
+    virtual U2AssemblyRead peek() = 0;
+
+    virtual qint64 getReadsImported() = 0;
+};
+
+class SequentialDbiIterator : public DbiIterator {
+public:
+    SequentialDbiIterator(int referenceId, Iterator &iterator, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
+        referenceIterator(referenceId, iterator),
+        readsImported(0),
+        stateInfo(stateInfo),
+        ioAdapter(ioAdapter)
+    {
+    }
+
+    virtual bool hasNext() {
+        if(stateInfo.isCanceled()) {
+            return false;
+        }
+        return referenceIterator.hasNext();
+    }
+
+    virtual U2AssemblyRead next() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        stateInfo.progress = ioAdapter.getProgress();
+        readsImported++;
+        return referenceIterator.next();
+    }
+
+    virtual U2AssemblyRead peek() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        return referenceIterator.peek();
+    }
+
+    virtual qint64 getReadsImported() {
+        return readsImported;
+    }
+
+private:
+    ReferenceIterator referenceIterator;
+    qint64 readsImported;
+    TaskStateInfo &stateInfo;
+    const IOAdapter &ioAdapter;
+};
+
+class IndexedBamDbiIterator : public DbiIterator {
+public:
+    IndexedBamDbiIterator(int referenceId, BamReader &reader, const Index &index, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
+        iterator(reader),
+        dbiIterator(referenceId, iterator, stateInfo, ioAdapter)
+    {
+        {
+            VirtualOffset minOffset = VirtualOffset(0xffffffffffffLL, 0xffff);
+            foreach(const Index::ReferenceIndex::Bin &bin, index.getReferenceIndices()[referenceId].getBins()) {
+                foreach(const Index::ReferenceIndex::Chunk &chunk, bin.getChunks()) {
+                    if(minOffset > chunk.getStart()) {
+                        minOffset = chunk.getStart();
+                    }
+                }
+            }
+            reader.seek(minOffset);
+        }
+    }
+
+    virtual bool hasNext() {
+        return dbiIterator.hasNext();
+    }
+
+    virtual U2AssemblyRead next() {
+        return dbiIterator.next();
+    }
+
+    virtual U2AssemblyRead peek() {
+        return dbiIterator.peek();
+    }
+
+    virtual qint64 getReadsImported() {
+        return dbiIterator.getReadsImported();
+    }
+
+private:
+    BamIterator iterator;
+    SequentialDbiIterator dbiIterator;
+};
+
+static const int READS_CHUNK_SIZE = 250*1000;
+
+} // namespace
 
 void ConvertToSQLiteTask::run() {
     try {
@@ -200,7 +388,7 @@ void ConvertToSQLiteTask::run() {
 
         assert(destinationUrl.isLocalFile());
         bool append = QFile::exists(destinationUrl.getURLString());
-        
+
         U2OpStatusImpl opStatus;
 
         DbiHandle dbiHandle("SQLiteDbi", destinationUrl.getURLString(), true, opStatus);
@@ -215,92 +403,156 @@ void ConvertToSQLiteTask::run() {
                 throw Exception(opStatus.getError());
             }
         }
-        
-        QMap<int, U2Assembly> assemblies;        
-        QMap<int, QList<Index::ReferenceIndex::Chunk> > chunks;
 
-        //Prepare index chunks
+        QMap<int, U2Assembly> assemblies;
 
-        qint64 totalChunksLength = 0;
-        qint64 readLength = 0;
-        if(bamInfo.hasIndex() && !bamInfo.isUnmappedSelected()) {
-            for(int i=0; i < bamReader->getHeader().getReferences().count(); i++) {
-                if(bamInfo.isReferenceSelected(i)) {
-                    const QList<Index::ReferenceIndex::Bin>& bins = bamInfo.getIndex().getReferenceIndices().at(i).getBins();
-                    if(bins.isEmpty()) {
-                        continue;
-                    }
-                    //unsigned int lastBin = bins.last().getBin();
-                    //unsigned int minBin = lastBin > 0 ? (lastBin > 8 ? (lastBin > 72 ? (lastBin > 584 ? (lastBin > 4680 ? 4681 : 585) : 73) : 9) : 1) : 0;
-                    QList<Index::ReferenceIndex::Chunk> refChunks;
-                    foreach(const Index::ReferenceIndex::Bin bin, bins) {
-                        //if(bin.getBin() >= minBin) {
-                            foreach(const Index::ReferenceIndex::Chunk& chunk, bin.getChunks()) {
-                                if(chunk.getStart() < chunk.getEnd()) {
-                                    refChunks.append(chunk);
-                                    totalChunksLength += chunk.getEnd().getCoffset() - chunk.getStart().getCoffset();
-                                } else {
-                                    coreLog.error(BAMDbiPlugin::tr("Skip invalid chunk: bin %1, chunk begin %2, chunk end %3").arg(bin.getBin())
-                                        .arg(chunk.getStart().getPackedOffset())
-                                        .arg(chunk.getEnd().getPackedOffset()));
-                                }
-                            }
-                        //}
-                    }
+        bool needPacking = false;
 
-                    qSort(refChunks.begin(), refChunks.end(), chunkLessThan);
+        qint64 totalReadsImported = 0;
 
-                    for(int j = 0; j < refChunks.count() - 1; ) {
-                        const Index::ReferenceIndex::Chunk& left = refChunks.at(j);
-                        const Index::ReferenceIndex::Chunk& right = refChunks.at(j + 1);
-                        if(left.getEnd() >= right.getStart()) {
-                            // merge
-                            Index::ReferenceIndex::Chunk chunk(left.getStart(), right.getEnd());
-                            refChunks.replace(j, chunk);
-                            refChunks.removeAt(j + 1);
-                        } else {
-                            j++;
-                        }
-                    }
-                    chunks.insert(i, refChunks);
+        stateInfo.setDescription("Importing reads");
+
+        if(bamInfo.hasIndex() ||
+           (Header::Coordinate == reader->getHeader().getSortingOrder()) ||
+           (Header::QueryName == reader->getHeader().getSortingOrder())) {
+
+            std::auto_ptr<Iterator> iterator;
+            if(!bamInfo.hasIndex()) {
+                if(sam) {
+                    iterator.reset(new SamIterator(*samReader));
+                } else {
+                    iterator.reset(new BamIterator(*bamReader));
                 }
             }
-        }
 
-        U2AttributeDbi * attributeDbi = sqliteDbi->getAttributeDbi();
-        qint64 totalReadsImported = 0;
-        time_t totalReadTime = 0;
-        bool pack = true;
-        for(int i=0; i < reader->getHeader().getReferences().count(); i++) {
-            if(bamInfo.isReferenceSelected(i)) {
-                
-                const Header::Reference &reference = reader->getHeader().getReferences().at(i);
-                U2Assembly assembly;
-                assembly.visualName = reference.getName();
-                U2OpStatusImpl opStatus;
-                U2AssemblyReadsImportInfo importInfo;
-                if(chunks.isEmpty()) {
-                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
-                } else {                    
-                    BAMDbiIterator iter(i, bamReader, chunks[i], totalChunksLength, readLength, stateInfo);
-                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &iter, importInfo, opStatus);
-                    totalReadsImported += iter.getImportedCount();
-                    totalReadTime += iter.getReadTime();
-                    pack = !importInfo.packed;
-                    assert(bamInfo.hasIndex());
+            for(int referenceId = 0;referenceId < reader->getHeader().getReferences().size(); referenceId++) {
+                if(bamInfo.isReferenceSelected(referenceId)) {
+                    U2Assembly assembly;
+                    assembly.visualName = reader->getHeader().getReferences()[referenceId].getName();
+                    U2AssemblyReadsImportInfo importInfo;
+                    U2OpStatusImpl opStatus;
+                    std::auto_ptr<DbiIterator> dbiIterator;
+                    if(bamInfo.hasIndex()) {
+                        dbiIterator.reset(new IndexedBamDbiIterator(referenceId, *bamReader, bamInfo.getIndex(), stateInfo, *ioAdapter));
+                    } else {
+                        dbiIterator.reset(new SequentialDbiIterator(referenceId, *iterator, stateInfo, *ioAdapter));
+                    }
+                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", dbiIterator.get(), importInfo, opStatus);
+                    if(opStatus.hasError()) {
+                        throw Exception(opStatus.getError());
+                    }
+                    if(isCanceled()) {
+                        throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
+                    }
+                    if(!importInfo.packed) {
+                        needPacking = true;
+                    }
+                    totalReadsImported += dbiIterator->getReadsImported();
+                    assemblies.insert(referenceId, assembly);
+                } else {
+                    if(!bamInfo.hasIndex()) {
+                        while(iterator->hasNext() && iterator->peekReferenceId() == referenceId) {
+                            iterator->skip();
+                        }
+                        if(isCanceled()) {
+                            throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
+                        }
+                    }
                 }
+            }
+
+            if(bamInfo.isUnmappedSelected()) {
+                SequentialDbiIterator dbiIterator(-1, *iterator, stateInfo, *ioAdapter);
+                U2Assembly assembly;
+                assembly.visualName = "Unmapped";
+                U2AssemblyReadsImportInfo importInfo;
+                U2OpStatusImpl opStatus;
+                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &dbiIterator, importInfo, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }
-                // set contig's properties to attributes
-                if(attributeDbi != NULL) {
-                    U2OpStatusImpl status;
+                if(isCanceled()) {
+                    throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
+                }
+                totalReadsImported += dbiIterator.getReadsImported();
+                assemblies.insert(-1, assembly);
+            }
+        } else {
+            needPacking = true;
+
+            std::auto_ptr<Iterator> iterator;
+            if(sam) {
+                iterator.reset(new SamIterator(*samReader));
+            } else {
+                iterator.reset(new BamIterator(*bamReader));
+            }
+
+            for(int referenceId = 0;referenceId < reader->getHeader().getReferences().size(); referenceId++) {
+                if(bamInfo.isReferenceSelected(referenceId)) {
+                    U2Assembly assembly;
+                    assembly.visualName = reader->getHeader().getReferences()[referenceId].getName();
+                    U2AssemblyReadsImportInfo importInfo;
+                    U2OpStatusImpl opStatus;
+                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
+                    if(opStatus.hasError()) {
+                        throw Exception(opStatus.getError());
+                    }
+                    if(isCanceled()) {
+                        throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
+                    }
+                    assemblies.insert(referenceId, assembly);
+                }
+            }
+
+            if(bamInfo.isUnmappedSelected()) {
+                U2Assembly assembly;
+                assembly.visualName = "Unmapped";
+                U2AssemblyReadsImportInfo importInfo;
+                U2OpStatusImpl opStatus;
+                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
+                if(opStatus.hasError()) {
+                    throw Exception(opStatus.getError());
+                }
+                assemblies.insert(-1, assembly);
+            }
+
+            while(iterator->hasNext()) {
+                QMap<int, QList<U2AssemblyRead> > reads;
+                foreach(int index, assemblies.keys()) {
+                    reads.insert(index, QList<U2AssemblyRead>());
+                }
+                int readCount = 0;
+                while(iterator->hasNext() && (readCount < READS_CHUNK_SIZE)) {
+                    if(((-1 == iterator->peekReferenceId()) && bamInfo.isUnmappedSelected()) ||
+                        bamInfo.isReferenceSelected(iterator->peekReferenceId())) {
+                        reads[iterator->peekReferenceId()].append(iterator->next());
+                        readCount++;
+                    } else {
+                        iterator->skip();
+                    }
+                }
+                if(isCanceled()) {
+                    throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
+                }
+                flushReads(sqliteDbi, assemblies, reads);
+                totalReadsImported += readCount;
+            }
+        }
+
+        U2AttributeDbi *attributeDbi = sqliteDbi->getAttributeDbi();
+
+        if(NULL != attributeDbi) {
+            foreach(int referenceId, assemblies.keys()) {
+                if(-1 != referenceId) {
+                    const Header::Reference &reference = reader->getHeader().getReferences()[referenceId];
+                    const U2Assembly &assembly = assemblies[referenceId];
                     {
                         U2IntegerAttribute lenAttr;
                         lenAttr.objectId = assembly.id;
                         lenAttr.name = "reference_length_attribute";
                         lenAttr.version = 1;
                         lenAttr.value = reference.getLength();
+                        U2OpStatusImpl status;
                         attributeDbi->createIntegerAttribute(lenAttr, status);
                         if(status.hasError()) {
                             throw Exception(status.getError());
@@ -312,6 +564,7 @@ void ConvertToSQLiteTask::run() {
                         md5Attr.name = "reference_md5_attribute";
                         md5Attr.version = 1;
                         md5Attr.value = reference.getMd5();
+                        U2OpStatusImpl status;
                         attributeDbi->createByteArrayAttribute(md5Attr, status);
                         if(status.hasError()) {
                             throw Exception(status.getError());
@@ -323,6 +576,7 @@ void ConvertToSQLiteTask::run() {
                         speciesAttr.name = "reference_species_attribute";
                         speciesAttr.version = 1;
                         speciesAttr.value = reference.getSpecies();
+                        U2OpStatusImpl status;
                         attributeDbi->createByteArrayAttribute(speciesAttr, status);
                         if(status.hasError()) {
                             throw Exception(status.getError());
@@ -334,130 +588,62 @@ void ConvertToSQLiteTask::run() {
                         uriAttr.name = "reference_uri_attribute";
                         uriAttr.version = 1;
                         uriAttr.value = reference.getUri();
+                        U2OpStatusImpl status;
                         attributeDbi->createStringAttribute(uriAttr, status);
                         if(status.hasError()) {
                             throw Exception(status.getError());
                         }
                     }
                 }
-                assemblies.insert(i, assembly);
             }
         }
 
-        // Import without index
-        
-        if(bamInfo.isUnmappedSelected()) {
-            U2Assembly assembly;
-            assembly.visualName = QString("Unmapped");
-            {
+        stateInfo.setDescription("Packing reads");
+
+        time_t packStart = time(0);
+        if(needPacking) {
+            foreach(int referenceId, assemblies.keys()) {
                 U2OpStatusImpl opStatus;
-                U2AssemblyReadsImportInfo importInfo;
-                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
+                U2AssemblyPackStat stat;
+                sqliteDbi->getAssemblyDbi()->pack(assemblies[referenceId].id, stat, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }
-            }
-            assemblies.insert(-1, assembly);
-        }
-        
-        if(!bamInfo.hasIndex() || bamInfo.isUnmappedSelected()) {
-            QMap<int, QList<U2AssemblyRead> > reads;        
-            foreach(int index, assemblies.keys()) {
-                reads.insert(index, QList<U2AssemblyRead>());            
-            }
-
-            while(!reader->isEof()) {
-                stateInfo.setDescription(BAMDbiPlugin::tr("Reading"));
-                int readsCount = 0;
-                int progressUpdateCounter = 0;
-                while(!reader->isEof() && readsCount < READS_CHUNK_SIZE) {
-                    if (sam) {
-                        bool eof = false;
-                        Alignment al = samReader->readAlignment(eof);
-                        if (!eof) {
-                            if(bamInfo.isReferenceSelected(al.getReferenceId())) {
-                                reads[al.getReferenceId()].append(AssemblyDbi::alignmentToRead(al));
-                                readsCount++;
-                            }
-                        }
-                    } else {
-                        BamReader::AlignmentReader aReader = bamReader->getAlignmentReader();
-                        if(bamInfo.isReferenceSelected(aReader.getId())) {
-                            reads[aReader.getId()].append(AssemblyDbi::alignmentToRead(aReader.read()));
-                            readsCount++;
-                        } else {
-                            aReader.skip();
+                if(NULL != attributeDbi) {
+                    {
+                        U2IntegerAttribute maxProwAttr;
+                        maxProwAttr.objectId = assemblies[referenceId].id;
+                        maxProwAttr.name = "max_prow_attribute";
+                        maxProwAttr.version = 1;
+                        maxProwAttr.value = stat.maxProw;
+                        attributeDbi->createIntegerAttribute(maxProwAttr, opStatus);
+                        if(opStatus.hasError()) {
+                            throw Exception(opStatus.getError());
                         }
                     }
-                    if (++progressUpdateCounter > 1000) {
-                        if (isCanceled()) {
-                            throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
-                        }
-                        stateInfo.progress = ioAdapter->getProgress() * FIRST_STAGE_PERCENT / 100;
-                        stateInfo.setDescription(readsCount == 0 ? BAMDbiPlugin::tr("Positioning...")  : BAMDbiPlugin::tr("Reading (%1 reads)").arg(QString::number(readsCount)));
-                        progressUpdateCounter = 0;
-                    }
-                }
-                totalReadsImported += readsCount;
-                stateInfo.setDescription(BAMDbiPlugin::tr("Saving reads"));
-                flushReads(sqliteDbi, assemblies, reads);
-                if (isCanceled()) {
-                    throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
-                }
-                stateInfo.progress = ioAdapter->getProgress()*FIRST_STAGE_PERCENT/100;
-            }
-        }        
-
-        //Packing
-        time_t packStart = time(0);
-        if (pack) {
-            stateInfo.setDescription(BAMDbiPlugin::tr("Packing reads"));
-            int i = 0;
-            foreach(int index, assemblies.keys()) {
-                {
-                    U2OpStatusImpl opStatus;
-                    U2AssemblyPackStat stat;
-                    sqliteDbi->getAssemblyDbi()->pack(assemblies[index].id, stat, opStatus);
-                    if(opStatus.hasError()) {
-                        throw Exception(opStatus.getError());
-                    }
-                    if(attributeDbi != NULL) {
-                        {
-                            U2IntegerAttribute maxProwAttr;
-                            maxProwAttr.objectId = assemblies[index].id;
-                            maxProwAttr.name = "max_prow_attribute";
-                            maxProwAttr.version = 1;
-                            maxProwAttr.value = stat.maxProw;
-                            attributeDbi->createIntegerAttribute(maxProwAttr, opStatus);
-                            if(opStatus.hasError()) {
-                                throw Exception(opStatus.getError());
-                            }
-                        }
-                        {
-                            U2IntegerAttribute countReadsAttr;
-                            countReadsAttr.objectId = assemblies[index].id;
-                            countReadsAttr.name = "count_reads_attribute";
-                            countReadsAttr.version = 1;
-                            countReadsAttr.value = stat.readsCount;
-                            attributeDbi->createIntegerAttribute(countReadsAttr, opStatus);
-                            if(opStatus.hasError()) {
-                                throw Exception(opStatus.getError());
-                            }
+                    {
+                        U2IntegerAttribute countReadsAttr;
+                        countReadsAttr.objectId = assemblies[referenceId].id;
+                        countReadsAttr.name = "count_reads_attribute";
+                        countReadsAttr.version = 1;
+                        countReadsAttr.value = stat.readsCount;
+                        attributeDbi->createIntegerAttribute(countReadsAttr, opStatus);
+                        if(opStatus.hasError()) {
+                            throw Exception(opStatus.getError());
                         }
                     }
-                    
                 }
-                if(isCanceled()) {
-                    throw Exception(BAMDbiPlugin::tr("Task was cancelled"));
-                }
-                stateInfo.progress = FIRST_STAGE_PERCENT + (++i)*SECOND_STAGE_PERCENT/assemblies.size();
             }
         }
         time_t packTime = time(0) - packStart;
+
         time_t totalTime = time(0) - startTime;
         
-        ioLog.trace(QString("BAM %1: imported %2 reads, total time %3 s, read time %4 s, pack time %5").arg(sourceUrl.fileName()).arg(QString::number(totalReadsImported)).arg(QString::number(totalTime)).arg(QString::number(totalReadTime)).arg(QString::number(packTime)));
+        ioLog.trace(QString("BAM %1: imported %2 reads, total time %3 s, pack time %4").arg(sourceUrl.fileName()).arg(QString::number(totalReadsImported)).arg(QString::number(totalTime)).arg(QString::number(packTime)));
 
+    } catch(const CancelledException & /*e*/) {
+        assert(destinationUrl.isLocalFile());
+        QFile::remove(destinationUrl.getURLString());
     } catch(const Exception &e) {
         setError(e.getMessage());
         assert(destinationUrl.isLocalFile());
