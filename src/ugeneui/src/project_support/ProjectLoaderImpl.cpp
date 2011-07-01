@@ -643,11 +643,13 @@ AddDocumentsToProjectTask::~AddDocumentsToProjectTask() {
     }
 }
 
-QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task*) {
+QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task* t) {
     QList<Task*> res;
     if (!loadTasksAdded) {
         res = prepareLoadTasks();
         loadTasksAdded = true;
+    } else if (t->hasError()) {
+        coreLog.error(t->getError());
     }
     return res;   
 };

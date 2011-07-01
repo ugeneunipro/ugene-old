@@ -123,7 +123,7 @@ enum TaskFlag {
 
     TaskFlag_ReportingIsEnabled = 1 << 21, // task is asked to generate report
 
-    TaskFlag_VerboseStateLog = 1 << 22, //tasks prepared/finished state is dumped to the 'info' log category
+    TaskFlag_VerboseStateLog = 1 << 22, //tasks prepared/finished state is dumped to the 'info' log category. Effective for top-level tasks only
 
     TaskFlag_MinimizeSubtaskErrorText = 1 << 23, //for TaskFlag_FailOnSubtaskError task minimizes the error text
                                                 // excluding task-names info from the text
