@@ -27,10 +27,13 @@
 
 namespace U2 {
 
-#define MAIN_THREAD_THREAD_MODEL
-
-StateLockableItem::StateLockableItem(QObject* p)  : QObject(p), itemIsModified(false), mainThreadModel(false), modificationVersion(0)
+StateLockableItem::StateLockableItem(QObject* p)  : QObject(p), itemIsModified(false), mainThreadModificationOnly(false),  modificationVersion(0)
 {
+    QThread* appThread = QApplication::instance()->thread();
+    QThread* objectThread = thread();
+    bool mainThread = appThread == objectThread;
+    setMainThreadModificationOnly(mainThread);
+
 }
 
 StateLockableItem::~StateLockableItem(){
@@ -42,7 +45,7 @@ StateLockableItem::~StateLockableItem(){
 
 static void checkThread(const StateLockableItem* i) {
 #ifdef _DEBUG
-    if (i->isMainThreadModel()) {
+    if (i->isMainThreadModificationOnly()) {
         QThread* appThread = QApplication::instance()->thread();
         QThread* thisThread = QThread::currentThread();
         QThread* itemThread = i->thread();
@@ -54,9 +57,6 @@ static void checkThread(const StateLockableItem* i) {
 #endif    
 }
 
-void StateLockableItem::checkMainThreadModel() const {
-    checkThread(this);
-}
 
 void StateLockableItem::lockState(StateLock* lock) {
     assert(!locks.contains(lock));
@@ -94,6 +94,12 @@ void StateLockableItem::setModified(bool d) {
     emit si_modifiedStateChanged();
 }
 
+bool StateLockableItem::isMainThreadObject() const {
+    QThread* at = QApplication::instance()->thread();
+    QThread* ot = thread();
+    return at == ot;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Tree
 
@@ -106,8 +112,8 @@ bool StateLockableTreeItem::isStateLocked() const {
     return StateLockableItem::isStateLocked() || (parentStateLockItem!=NULL ? parentStateLockItem->isStateLocked() : false);
 }
 
-bool StateLockableTreeItem::isMainThreadModel() const {
-    return StateLockableItem::isMainThreadModel() || (parentStateLockItem != NULL && parentStateLockItem->isMainThreadModel()); 
+bool StateLockableTreeItem::isMainThreadModificationOnly() const {
+    return StateLockableItem::isMainThreadModificationOnly() || (parentStateLockItem != NULL && parentStateLockItem->isMainThreadModificationOnly()); 
 }
 
 void StateLockableTreeItem::lockState(StateLock* lock) {
@@ -163,10 +169,10 @@ void StateLockableTreeItem::onParentStateLocked() {
 void StateLockableTreeItem::onParentStateUnlocked() {
     //parent has become unlocked -> check if my state is changed
     if (!locks.isEmpty()) {
-        return; //nothing chaged - was still locked 
+        return; //nothing changed - was still locked 
     }
 
-    //notify childred
+    //notify children
     assert(!isStateLocked());
     
     emit si_lockedStateChanged();
@@ -188,7 +194,7 @@ void StateLockableTreeItem::setParentStateLockItem(StateLockableTreeItem* newPar
     bool treeMod = isTreeItemModified();
     assert(modify || !treeMod);
     if (newParent!=NULL) {
-        setMainThreadModel(newParent->isMainThreadModel());
+        setMainThreadModificationOnly(newParent->isMainThreadModificationOnly());
         checkThread(this);
         newParent->childItems.insert(this);
         if (modify) {

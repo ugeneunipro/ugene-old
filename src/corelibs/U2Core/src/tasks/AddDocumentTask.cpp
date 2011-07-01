@@ -31,15 +31,17 @@ namespace U2 {
 
 
 AddDocumentTask::AddDocumentTask(Document * _d, const AddDocumentTaskConfig& _conf) :
-Task( tr("Add document to the project: %1").arg(_d->getURLString()), TaskFlags_NR_FOSCOE), document(_d), dpt(NULL), conf(_conf)
+Task( tr("Adding document to project: %1").arg(_d->getURLString()), TaskFlags_NR_FOSCOE), document(_d), dpt(NULL), conf(_conf)
 {
-    document->checkMainThreadModel();
+    setSubtaskProgressWeight(0);
+    SAFE_POINT(document->isMainThreadObject(), QString("Document added to the project does not belong to the main application thread: %1 !").arg(document->getURLString()),);
 }
 
 AddDocumentTask::AddDocumentTask(DocumentProviderTask * _dpt, const AddDocumentTaskConfig& c) :
-Task( tr("Add document to the project: %1").arg(_dpt->getDocumentDescription()), TaskFlags_NR_FOSCOE), document(NULL), dpt(_dpt), conf(c)
+Task( tr("Adding document to project: %1").arg(_dpt->getDocumentDescription()), TaskFlags_NR_FOSCOE), document(NULL), dpt(_dpt), conf(c)
 {
     addSubTask(dpt);
+    setSubtaskProgressWeight(0);
 }
 
 QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
@@ -49,7 +51,7 @@ QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
     }
     if (subTask == dpt) {
         Document* doc = dpt->takeDocument();
-        if (!doc->isMainThreadModel()) {
+        if (!doc->isMainThreadModificationOnly()) {
             document = doc->clone();
             delete doc;
         } else {

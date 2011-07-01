@@ -39,7 +39,7 @@ namespace U2 {
 ProjectImpl::ProjectImpl(const QString& _name, const QString& _url, const QList<Document*>& _docs, const QList<GObjectViewState*>& _states)
 : name(_name), url(_url) 
 {
-    mainThreadModel = true;
+    mainThreadModificationOnly = true;
     foreach(Document* doc, _docs) {
         addDocument(doc);
     }

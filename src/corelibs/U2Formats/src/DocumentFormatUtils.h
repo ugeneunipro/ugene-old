@@ -37,14 +37,17 @@ class MAlignment;
 class DNASequence;
 class GUrl;
 class AnnotationSettings;
+class U2OpStatus;
 
-class U2FORMATS_EXPORT DocumentFormatUtils {
+class U2FORMATS_EXPORT DocumentFormatUtils : public QObject {
+    Q_OBJECT
 public:
-    static DNASequenceObject* addSequenceObject(QList<GObject*>& objects, const QString& name, DNASequence& seq);
+    static DNASequenceObject* addSequenceObject(QList<GObject*>& objects, const QString& name, DNASequence& seq, 
+        const QVariantMap& hints, U2OpStatus& os);
 
     /** if no docURL provided -> relations are not set*/
     static DNASequenceObject* addMergedSequenceObject(QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigs, 
-                            QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping);
+                            QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping, const QVariantMap& hints, U2OpStatus& os);
 
     static DNAAlphabet* findAlphabet(const QByteArray& arr);
     

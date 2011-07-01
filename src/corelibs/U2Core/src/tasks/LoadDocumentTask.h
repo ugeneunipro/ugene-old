@@ -124,7 +124,7 @@ private:
         For example: combines all sequences to alignment, merge sequences, etc
         Return NULL if no restructuring was made
         */
-    static Document* createCopyRestructuresWithHints(const Document* doc, U2OpStatus& os);
+    static Document* createCopyRestructuredWithHints(const Document* doc, U2OpStatus& os);
     
 
     DocumentFormat*         format;

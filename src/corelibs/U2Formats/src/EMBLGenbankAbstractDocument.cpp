@@ -170,7 +170,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
                 DNASequence seq(sequence);
                 seq.info = data.tags;
                 seq.circular = data.circular;
-                DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sequenceName, seq);
+                DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sequenceName, seq, fs, si);
                 if (annotationsObject!=NULL) {
                     sequenceRef.objName = seqObj->getGObjectName();
                     annotationsObject->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
@@ -186,7 +186,12 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
         assert(sequence.size() > gapSize);
         assert(qEqual(sequence.constEnd() - gapSize, sequence.constEnd(), gapSequence.constBegin()));
         sequence.resize(sequence.size() - gapSize);//remove last gap
-        DNASequenceObject* so = DocumentFormatUtils::addMergedSequenceObject(objects, io->getURL(), contigs, sequence, mergedMapping);
+        DNASequenceObject* so = DocumentFormatUtils::addMergedSequenceObject(objects, io->getURL(), contigs, sequence, mergedMapping, fs, si);
+        if (si.hasError()) {
+            qDeleteAll(objects);
+            delete mergedAnnotations;
+            return;
+        }
         if (mergedAnnotations!=NULL) {
             sequenceRef.objName = so->getGObjectName();
             mergedAnnotations->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));

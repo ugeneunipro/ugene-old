@@ -34,7 +34,7 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/TextObject.h>
-
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/TextUtils.h>
 
 #include <time.h>
@@ -88,7 +88,7 @@ Document* ABIFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
     sf.head = readBuff.constData();
     sf.pos = 0;
     sf.size = readBuff.size();
-    Document* doc = parseABI(&sf, io, fs);
+    Document* doc = parseABI(&sf, io, fs, ti);
     if (doc == NULL && !ti.hasError()) {
         ti.setError(tr("Not a valid ABIF file: %1").arg(io->toString()));
     }
@@ -399,7 +399,7 @@ static void replace_nl(char *string) {
     }
 }
 
-Document* ABIFormat::parseABI(SeekableBuf* fp, IOAdapter* io, const QVariantMap& fs) {
+Document* ABIFormat::parseABI(SeekableBuf* fp, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {
 
     float fspacing; /* average base spacing */
     uint numPoints, numBases;
@@ -822,7 +822,10 @@ skip_bases:
     dna.info.insert(DNAInfo::ID, sequenceName);
 
     QList<GObject*> objects;
-    DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sequenceName, dna);
+    DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sequenceName, dna, fs, os);
+    if (os.hasError()) {
+        return NULL;
+    }
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");
     objects.append(chromObj);
     objects.append(new TextObject(sequenceComment, "Info"));

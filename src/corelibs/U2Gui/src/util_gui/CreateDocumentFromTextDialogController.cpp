@@ -35,6 +35,8 @@
 #include <U2Core/L10n.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 #include <U2Formats/FastaFormat.h>
@@ -145,7 +147,9 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
     QList<GObject*> objects;
     const QString seqName(ui->nameEdit->text());
     DNASequence seq = w->getSequence();
-    DocumentFormatUtils::addSequenceObject(objects, seqName, seq);
+    QVariantMap hints; U2OpStatusImpl os;
+    DocumentFormatUtils::addSequenceObject(objects, seqName, seq, hints, os);
+    SAFE_POINT_OP(os,);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(ui->filepathEdit->text()));
     QVariant currentId = ui->formatBox->itemData(ui->formatBox->currentIndex());
     DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(currentId.toString());

@@ -31,6 +31,7 @@ class IOAdapter;
 class SeekableBuf;
 class DNAChromatogram;
 class DNASequence;
+class U2OpStatus;
 
 class U2FORMATS_EXPORT  SCFFormat : public DocumentFormat {
     Q_OBJECT
@@ -48,7 +49,7 @@ public:
     static void exportDocumentToSCF(const QString& fileName, const DNAChromatogram& cd, const DNASequence& dna, TaskStateInfo& ts);
 
 private:
-    Document* parseSCF(SeekableBuf*, IOAdapterFactory* io, const GUrl& url, const QVariantMap& fs);
+    Document* parseSCF(SeekableBuf*, IOAdapterFactory* io, const GUrl& url, const QVariantMap& fs, U2OpStatus& os);
 
     QString formatName;
 };

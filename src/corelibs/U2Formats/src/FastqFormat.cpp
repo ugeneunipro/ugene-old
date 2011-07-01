@@ -148,7 +148,7 @@ static bool readBlock( QByteArray & block, IOAdapter * io, TaskStateInfo & ti, q
 /**
  * FASTQ format specification: http://maq.sourceforge.net/fastq.shtml
  */
-static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, TaskStateInfo& ti,
+static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, const QVariantMap& hints, TaskStateInfo& ti,
                  int gapSize, int predictedSize, QString& writeLockReason, DocumentLoadMode mode) {
      writeLockReason.clear();
      QByteArray readBuff, secondBuff;
@@ -220,7 +220,10 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
              DNASequence seq( headerLine, sequence );
              seq.quality = DNAQuality(qualityScores);
              seq.info.insert(DNAInfo::ID, headerLine);
-             DocumentFormatUtils::addSequenceObject(objects, objName, seq);
+             DocumentFormatUtils::addSequenceObject(objects, objName, seq, hints, ti);
+             if (ti.hasError()) {
+                 break;
+             }
          }
 
          if (mode == DocumentLoadMode_SingleObject) {
@@ -231,7 +234,7 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
      assert(headers.size() == mergedMapping.size());
 
      if (!ti.hasError() && !ti.cancelFlag && merge && !headers.isEmpty()) {
-         DocumentFormatUtils::addMergedSequenceObject(objects, docUrl, headers, sequence, mergedMapping);
+         DocumentFormatUtils::addMergedSequenceObject(objects, docUrl, headers, sequence, mergedMapping, hints, ti);
      }
 
      if (merge && headers.size() > 1) {
@@ -252,7 +255,7 @@ Document* FastqFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
         DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergingFinalSizeHint, gapSize==-1 ? 0 : io->left()));
 
     QString lockReason;
-    load( io, io->getURL(), objects, ti, gapSize, predictedSize, lockReason, mode);
+    load( io, io->getURL(), objects, fs, ti, gapSize, predictedSize, lockReason, mode);
 
     if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);

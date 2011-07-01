@@ -40,13 +40,13 @@ public:
 
     virtual Document* loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
 
-    void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& si);
-
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
 
     virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
 private:
+    void load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& hints, TaskStateInfo& si);
+
     QStringList parseLine(QString line) const;
 
     QString formatName;

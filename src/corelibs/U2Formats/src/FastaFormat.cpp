@@ -107,7 +107,7 @@ RawDataCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GU
 }
 
 #define READ_BUFF_SIZE  4096
-static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, TaskStateInfo& ti,
+static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, const QVariantMap& hints, TaskStateInfo& ti,
                  int gapSize, int predictedSize, QString& writeLockReason, DocumentLoadMode mode) {
     writeLockReason.clear();
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
@@ -178,7 +178,11 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
             } else {
                 objName = headerLine;
             }
-            DocumentFormatUtils::addSequenceObject(objects, objName, seq);
+            DocumentFormatUtils::addSequenceObject(objects, objName, seq, hints, ti);
+            if (ti.hasError()) {
+                qDeleteAll(objects);
+                return;
+            }
         }
 
         if( mode == DocumentLoadMode_SingleObject ) {
@@ -189,7 +193,7 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, Ta
     assert(headers.size() == mergedMapping.size());
 
     if (!ti.hasError() && !ti.cancelFlag && merge && !headers.isEmpty()) {
-        DocumentFormatUtils::addMergedSequenceObject(objects, docUrl, headers, sequence, mergedMapping);
+        DocumentFormatUtils::addMergedSequenceObject(objects, docUrl, headers, sequence, mergedMapping, hints, ti);
     }
     if (!ti.hasError() && !ti.cancelFlag && objects.isEmpty()) {
         ti.setError(Document::tr("Document is empty."));
@@ -214,7 +218,7 @@ Document* FastaFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
         DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergingFinalSizeHint, gapSize==-1 ? 0 : io->left()));
 
     QString lockReason;
-    load(io, io->getURL(), objects, ti, gapSize, predictedSize, lockReason, mode);
+    load(io, io->getURL(), objects, fs, ti, gapSize, predictedSize, lockReason, mode);
     if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);
         return NULL;

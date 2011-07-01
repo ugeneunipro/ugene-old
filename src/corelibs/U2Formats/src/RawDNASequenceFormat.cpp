@@ -46,7 +46,7 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
 }
 
 
-static void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti) {
+static void load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& hints, TaskStateInfo& ti) {
     static int READ_BUFF_SIZE = 4096;
 
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
@@ -82,16 +82,16 @@ static void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti) {
         return;
     }
     if (seq.size() == 0) {
-        ti.setError(RawDNASequenceFormat::tr("Seqeunce is empty"));
+        ti.setError(RawDNASequenceFormat::tr("Sequence is empty"));
         return;
     }
     DNASequence dnaseq(seq);
-    DocumentFormatUtils::addSequenceObject(objects, "Sequence", dnaseq);
+    DocumentFormatUtils::addSequenceObject(objects, "Sequence", dnaseq, hints, ti);
 }
 
 Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
     QList<GObject*> objects;
-    load(io, objects, ti);
+    load(io, objects, fs, ti);
     
     if (ti.hasError()) {
         return NULL;

@@ -236,6 +236,7 @@ void ProjectLoaderImpl::updateRecentProjectsMenu() {
 }
 
 #define MAX_DOCS_TO_OPEN_VIEWS 5
+#define MAX_OBJECT_PER_DOC 500
 
 Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVariantMap& hints) {
     // detect if we open real UGENE project file
@@ -312,6 +313,9 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                         info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
                         info.url = url;
                         info.hints = dr.rawDataCheckResult.properties;
+                        if (!info.hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
+                            info.hints[DocumentReadingMode_MaxObjectsInDoc] = MAX_OBJECT_PER_DOC;
+                        }
                         info.formatId = dr.format->getFormatId(); 
                         info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
                         docsInfo << info;

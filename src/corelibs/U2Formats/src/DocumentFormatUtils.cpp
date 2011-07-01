@@ -57,10 +57,22 @@ QList<DNAAlphabet*> DocumentFormatUtils::findAlphabets(const QByteArray& arr) {
     return als;
 }
 
-DNASequenceObject* DocumentFormatUtils::addSequenceObject(QList<GObject*>& objects, const QString& name, DNASequence& seq) {
+DNASequenceObject* DocumentFormatUtils::addSequenceObject(QList<GObject*>& objects, const QString& name, DNASequence& seq, 
+                                                          const QVariantMap& hints, U2OpStatus& os) 
+{
+    if (hints.contains(DocumentReadingMode_MaxObjectsInDoc) && !hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
+        int n = hints.value(DocumentReadingMode_MaxObjectsInDoc).toInt();
+        if (n >= objects.size()) {
+            os.setError(tr("Maximum number of objects per document limit reached. Try different options for opening the document!"));
+            return NULL;
+        }
+    }
     if (seq.alphabet== NULL) {
         seq.alphabet = findAlphabet(seq.seq);
-        assert(seq.alphabet!=NULL);
+        if (seq.alphabet == NULL) {
+            os.setError(tr("Undefined sequence alphabet"));
+            return NULL;
+        }
     }
 
     if (!seq.alphabet->isCaseSensitive()) {
@@ -75,12 +87,16 @@ DNASequenceObject* DocumentFormatUtils::addSequenceObject(QList<GObject*>& objec
 }
 
 
-DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigNames, QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping) {
+DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>& objects, const GUrl& docUrl, 
+                                                                const QStringList& contigNames, QByteArray& mergedSequence, 
+                                                                const QVector<U2Region>& mergedMapping,
+                                                                const QVariantMap& hints, U2OpStatus& os) 
+{
     if (contigNames.size() == 1) {
         DNAAlphabet* al = findAlphabet(mergedSequence);
         const QString& name = contigNames.first();
         DNASequence seq( mergedSequence, al );
-        return DocumentFormatUtils::addSequenceObject(objects, name, seq);
+        return DocumentFormatUtils::addSequenceObject(objects, name, seq, hints, os);
     }
 
     assert(contigNames.size() >=2);
@@ -89,7 +105,7 @@ DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>&
     DNAAlphabet* al = findAlphabet(mergedSequence, mergedMapping);
     char defSym = al->getDefaultSymbol();
     //fill gaps with defSym
-    for (int i=1; i<mergedMapping.size(); i++) {
+    for (int i = 1; i < mergedMapping.size(); i++) {
         const U2Region& prev = mergedMapping[i-1];
         const U2Region& next = mergedMapping[i];
         int gapSize = next.startPos - prev.endPos();
@@ -99,7 +115,7 @@ DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>&
         }
     }
     DNASequence seq( mergedSequence, al );
-    DNASequenceObject* so = addSequenceObject(objects, "Sequence", seq);
+    DNASequenceObject* so = addSequenceObject(objects, "Sequence", seq, hints, os);
     AnnotationTableObject* ao = new AnnotationTableObject("Contigs");
 
     //save relation if docUrl is not empty
@@ -109,7 +125,7 @@ DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>&
     }
 
     //save mapping info as annotations
-    for (int i=0; i<contigNames.size(); i++) {
+    for (int i = 0; i < contigNames.size(); i++) {
         SharedAnnotationData d(new AnnotationData());
         d->name = "contig";
         d->location->regions << mergedMapping[i];
@@ -123,7 +139,7 @@ DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>&
 #define MAX_REALLOC_SIZE (300*1000*1000)
 #define MIN_K_TO_REALLOC 1.07
 void DocumentFormatUtils::trySqueeze(QByteArray& a) {
-    //squeeze can cause 2x memusage -> avoid squeezing of large arrays
+    //squeeze can cause 2x memory usage -> avoid squeezing of large arrays
     float k =  float(a.capacity()) / a.size();
     if (a.size() <= MAX_REALLOC_SIZE && k > MIN_K_TO_REALLOC) {
         a.squeeze();

@@ -163,7 +163,7 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
 
     name = url.fileName();
     qFill(modLocks, modLocks + DocumentModLock_NUM_LOCKS, (StateLock*)NULL);    
-    
+
     addUnloadedObjects(unloadedObjects);
     initModLocks(instanceModLockDesc, false);
     checkUnloadedState();
@@ -177,7 +177,6 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
     name = url.fileName();
     
     qFill(modLocks, modLocks + DocumentModLock_NUM_LOCKS, (StateLock*)NULL);
-
     foreach(GObject* o, _objects) {
         _addObject(o);
     }
@@ -196,7 +195,7 @@ Document::~Document() {
         }
     }
     foreach(GObject* obj, objects) {
-        obj->setGHints(new GHintsDefaultImpl());
+        obj->setGHints(NULL);
     }
     delete ctxState;
 }

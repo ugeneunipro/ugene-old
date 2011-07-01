@@ -29,6 +29,7 @@ namespace U2 {
 
 class IOAdapter;
 class SeekableBuf;
+class U2OpStatus;
 
 class U2FORMATS_EXPORT  ABIFormat : public DocumentFormat {
     Q_OBJECT
@@ -44,7 +45,7 @@ public:
     virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
     
 private:
-    Document* parseABI(SeekableBuf*, IOAdapter* io, const QVariantMap& fs);
+    Document* parseABI(SeekableBuf*, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os);
     QString formatName;
 };
 

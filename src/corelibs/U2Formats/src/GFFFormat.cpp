@@ -47,14 +47,14 @@ GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlags_SW, QStri
 }
 
 
-Document* GFFFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap&, DocumentLoadMode){
+Document* GFFFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode){
     if( NULL == io || !io->isOpen() ) {
         ti.setError(L10N::badArgument("IO adapter"));
         return NULL;
     }
     QList<GObject*> objects;
 
-    load(io, objects, ti);
+    load(io, objects, fs, ti);
 
     if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);
@@ -112,7 +112,7 @@ static QString fromEscapedString( const QString & val ) {
     return ret;
 }
 
-void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& si){
+void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& hints, TaskStateInfo& si){
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
     int len = io->readLine(buff.data, READ_BUFF_SIZE);
     buff.data[len] = '\0';
@@ -146,18 +146,22 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& si)
                 DNASequence sequence(objName, seq);
                 sequence.info.insert(DNAInfo::FASTA_HDR, objName);
                 sequence.info.insert(DNAInfo::ID, objName);
-                DNASequenceObject *dnaso = DocumentFormatUtils::addSequenceObject(objects, objName, sequence);
+                DNASequenceObject *dnaso = DocumentFormatUtils::addSequenceObject(objects, objName, sequence, hints, si);
+                if (si.hasError()) {
+                    assert(dnaso = NULL);
+                    return;
+                }
                 seqMap.insert(objName, dnaso);
                 headerName = words.join(" ").remove(">");
                 seq = "";
-            }else{
+            } else {
                 if(words.size() > 1){
                     si.setError(tr("Parsing error: sequence in FASTA sequence has whitespaces at line %1").arg(lineNumber));
                     return;
                 }
                 seq.append(words[0]);
             }
-        }else if(!words[0].startsWith("#")){
+        } else if (!words[0].startsWith("#")){
             if(words.size() != 9){
                 si.setError(tr("Parsing error: too few fields at line %1").arg(lineNumber));
                 return;
@@ -280,10 +284,16 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& si)
         DNASequence sequence(objName, seq);
         sequence.info.insert(DNAInfo::FASTA_HDR, objName);
         sequence.info.insert(DNAInfo::ID, objName);
-        DNASequenceObject *dnaso = DocumentFormatUtils::addSequenceObject(objects, objName, sequence);
+        DNASequenceObject *dnaso = DocumentFormatUtils::addSequenceObject(objects, objName, sequence, hints, si);
+        if (si.hasError()) {
+            assert(dnaso == NULL);
+            qDeleteAll(seqMap.values());
+            seqMap.clear();
+            return;
+        }
         seqMap.insert(objName, dnaso);
     }
-
+    
     //linking annotation tables with corresponding sequences
     foreach(AnnotationTableObject *ob, atoSet){
         QString objName = ob->getGObjectName();

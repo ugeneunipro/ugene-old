@@ -33,7 +33,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNAChromatogramObject.h>
-
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/TextUtils.h>
 
 /* TRANSLATOR U2::SCFFormat */    
@@ -78,9 +78,11 @@ Document* SCFFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
     sf.head = readBuff.constData();
     sf.pos = 0;
     sf.size = readBuff.size();
-    Document* doc = parseSCF(&sf, io->getFactory(), url, fs);
+    Document* doc = parseSCF(&sf, io->getFactory(), url, fs, ti);
     if (doc == NULL && !ti.hasError()) {
-        ti.setError(tr("Not a valid SCF file: %1").arg(url.getURLString()));
+        if (!ti.hasError()) {
+            ti.setError(tr("Failed to parse SCF file: %1").arg(url.getURLString()));
+        }
     }
     return doc;
 }
@@ -516,7 +518,7 @@ int read_scf_bases3(SeekableBuf *fp, Bases *b, size_t num_bases)
     return 0;
 }
 
-Document* SCFFormat::parseSCF(SeekableBuf* fp, IOAdapterFactory* iof, const GUrl& url, const QVariantMap& fs) {    
+Document* SCFFormat::parseSCF(SeekableBuf* fp, IOAdapterFactory* iof, const GUrl& url, const QVariantMap& fs, U2OpStatus& os) {    
     Header h;
     float scf_version;
     int sections = READ_ALL;
@@ -655,7 +657,11 @@ Document* SCFFormat::parseSCF(SeekableBuf* fp, IOAdapterFactory* iof, const GUrl
     dna.info.insert(DNAInfo::COMMENT, vals);
 
     QList<GObject*> objects;
-    DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sampleName + " sequence", dna);
+    DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sampleName + " sequence", dna, fs, os);
+    if (os.hasError()) {
+        assert(seqObj == NULL);
+        return NULL;
+    }
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, sampleName + " chromatogram");
     objects.append(chromObj);
     Document* doc = new Document(this, iof, url, objects, fs);

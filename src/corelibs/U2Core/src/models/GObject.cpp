@@ -52,7 +52,6 @@ Document*  GObject::getDocument() const {
 }
 
 void GObject::setGHints(GHints* s) {
-    assert(s!=NULL);
     delete hints;
     hints = s;
 }

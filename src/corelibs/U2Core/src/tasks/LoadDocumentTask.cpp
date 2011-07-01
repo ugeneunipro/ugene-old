@@ -119,7 +119,6 @@ Task::ReportResult LoadUnloadedDocumentTask::report() {
     }
 
     if (hasError()) {
-        coreLog.error(tr("Error: %1").arg(stateInfo.getError()));
         if (!resName.isEmpty()) {
             clearResourceUse();
             resName.clear();
@@ -273,10 +272,19 @@ void LoadDocumentTask::run() {
     } else {
         resultDocument = format->loadDocument(iof, url, stateInfo, hints);
         if (resultDocument != NULL) {
-            Document* convertedDoc = createCopyRestructuresWithHints(resultDocument, stateInfo);
+            Document* convertedDoc = createCopyRestructuredWithHints(resultDocument, stateInfo);
             if (convertedDoc != NULL) {
                 delete resultDocument;
                 resultDocument = convertedDoc;
+            }
+            if (hints.contains(DocumentReadingMode_MaxObjectsInDoc) ) {
+                int maxObjects = hints.value(DocumentReadingMode_MaxObjectsInDoc).toInt();
+                int docObjects = resultDocument->getObjects().size();
+                if (docObjects > maxObjects) {
+                    setError(tr("Maximum number of objects per document limit reached for %1. Try different options for opening the document!").arg(resultDocument->getURLString()));
+                    delete resultDocument;
+                    resultDocument = NULL;
+                }
             }
         }
     }
@@ -321,7 +329,7 @@ void LoadDocumentTask::processObjRef() {
 }
 
 
-Document* LoadDocumentTask::createCopyRestructuresWithHints(const Document* doc, U2OpStatus& os) {
+Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc, U2OpStatus& os) {
     Document *resultDoc = NULL;
     const QVariantMap& hints = doc->getGHintsMap();
     if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
@@ -344,9 +352,7 @@ Document* LoadDocumentTask::createCopyRestructuresWithHints(const Document* doc,
             makeReadOnly ? tr("Format does not support writing of alignments") : QString());
 
         doc->propagateModLocks(resultDoc);
-        return resultDoc;
-    } 
-    if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
+    } else if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
         int mergeGap = hints.value(DocumentReadingMode_SequenceMergeGapSize).toInt();
         if (mergeGap < 0 || GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE).count() <= 1) {
             return NULL;
@@ -354,12 +360,10 @@ Document* LoadDocumentTask::createCopyRestructuresWithHints(const Document* doc,
         resultDoc = SequenceUtils::mergeSequences(doc, mergeGap, os);
         if (os.hasError()) {
             delete resultDoc;
-            return NULL;
+            resultDoc = NULL;
         }
-        return resultDoc;
-
     }
-    return NULL;
+    return resultDoc;
 }
 
 

@@ -28,6 +28,7 @@
 
 namespace U2 {
 
+
 enum StateLockFlag {
     StateLockFlag_NoFlags  = 0x00,
     StateLockFlag_LiveLock = 0x01,
@@ -71,14 +72,15 @@ public:
 
     virtual bool isItemModified() const {return itemIsModified;}
 
-    virtual bool isMainThreadModel() const {return mainThreadModel;}
+    /** Main thread model object can only be modified in main thread */
+    virtual bool isMainThreadModificationOnly() const {return mainThreadModificationOnly;}
 
-    virtual void setMainThreadModel(bool v) { mainThreadModel = v; }
+    virtual void setMainThreadModificationOnly(bool v) { mainThreadModificationOnly = v;}
+
+    virtual bool isMainThreadObject() const;
 
     //returns number of modifications done to this item
     virtual int getModificationVersion() const {return modificationVersion;}
-
-    virtual void checkMainThreadModel() const;
 
 signals:
     void si_lockedStateChanged();
@@ -87,7 +89,7 @@ signals:
 protected:
     QList<StateLock*> locks;
     bool itemIsModified;
-    bool mainThreadModel;
+    bool mainThreadModificationOnly;
     int  modificationVersion;
 };
 
@@ -137,7 +139,7 @@ public:
 
     QList<StateLock*> findLocks(StateLockableTreeItemBranchFlags treeFlags, StateLockFlag lockFlag = StateLockFlag_AnyFlags) const;
 
-    virtual bool isMainThreadModel() const;
+    virtual bool isMainThreadModificationOnly() const;
 
 protected:
     

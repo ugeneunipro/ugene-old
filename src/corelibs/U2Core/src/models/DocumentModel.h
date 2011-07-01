@@ -122,6 +122,7 @@ public:
 #define DocumentReadingMode_SequenceMergingFinalSizeHint    "merge-size"
 #define DocumentReadingMode_SequenceAsAlignmentHint         "sequences-are-msa"
 #define DocumentReadingMode_SequenceAsShortReadsHint        "sequences-are-short-reads"
+#define DocumentReadingMode_MaxObjectsInDoc                 "max-objects-in-doc"
 
 
 class U2CORE_EXPORT DocumentFormat: public QObject {
