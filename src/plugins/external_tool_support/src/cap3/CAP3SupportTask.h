@@ -37,11 +37,15 @@
 namespace U2 {
 
 class CAP3LogParser;
+class CopyDataTask;
 
 class CAP3SupportTaskSettings {
 public:
-    CAP3SupportTaskSettings() {}
-    QString inputFilePath, outputFilePath;
+    CAP3SupportTaskSettings() 
+        : openView(true) {}
+    QStringList inputFiles;
+    QString outputFilePath;
+    bool openView;
 };
 
 class PrepareInputForCAP3Task : public Task {
@@ -49,12 +53,15 @@ class PrepareInputForCAP3Task : public Task {
 public:
     PrepareInputForCAP3Task(const QStringList& inputFiles, const QString& outputDirPath);
     void prepare();
+    QString getPreparedPath() { return preparedPath; }
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
     QList<LoadDocumentTask*> loadTasks;
+    QList<CopyDataTask*> copyTasks;
     QStringList inputUrls;
-    QString ouputUrl;
-    int numSequences;
+    QStringList filesToCopy;
+    QString outputDir, preparedPath;
+    bool onlyCopyFiles;
 };
 
 
@@ -66,11 +73,13 @@ public:
     Task::ReportResult report();
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
-    MAlignmentObject*           mAObject;
-    QString                     outputUrl;
+    MAlignmentObject*           maObject;
+    QString                     tmpDirUrl, tmpOutputUrl;
     Document*                   newDoc;
     LoadDocumentTask*           loadTmpDocumentTask;
+    PrepareInputForCAP3Task*    prepareDataForCAP3Task;
     ExternalToolRunTask*        cap3Task;
+    CopyDataTask*               copyResultTask;
     CAP3LogParser*              logParser;
     CAP3SupportTaskSettings     settings;
 };

@@ -23,14 +23,13 @@
 #include "CAP3Support.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
 #include <U2Core/Counter.h>
-#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/MAlignmentObject.h>
-
+#include <U2Core/CopyDataTask.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Gui/OpenViewTask.h>
 
@@ -44,52 +43,32 @@ CAP3SupportTask::CAP3SupportTask(const CAP3SupportTaskSettings& _settings) :
         Task("CAP3SupportTask", TaskFlags_NR_FOSCOE),
         settings(_settings)
 {
-   GCOUNTER( cvar, tvar, "CAP3SupportTask" );
-   setMaxParallelSubtasks(1);
-   newDoc = NULL;
-   logParser = NULL;
-   loadTmpDocumentTask = NULL;
+    GCOUNTER( cvar, tvar, "CAP3SupportTask" );
+    setMaxParallelSubtasks(1);
+    newDoc = NULL;
+    logParser = NULL;
+    loadTmpDocumentTask = NULL;
+    copyResultTask = NULL;
+    cap3Task = NULL;
+    prepareDataForCAP3Task = NULL;
+    maObject = NULL;
 }
 
 
 void CAP3SupportTask::prepare(){
-    //Add new subdir for temporary files
-    //Directory name is ExternalToolName + CurrentDate + CurrentTime
-    /*
-    QString tmpDirName = "CAP3_"+QString::number(this->getTaskId())+"_"+
-                         QDate::currentDate().toString("dd.MM.yyyy")+"_"+
-                         QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
-                         QString::number(QCoreApplication::applicationPid())+"/";
-    //Check and remove subdir for temporary files
     
-    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName);
-    if(tmpDir.exists()){
-        foreach(const QString& file, tmpDir.entryList()){
-            tmpDir.remove(file);
-        }
-        if(!tmpDir.rmdir(tmpDir.absolutePath())){
-            stateInfo.setError(tr("Subdirectory for temporary files exists. Can not remove this directory."));
-            return;
-        }
-    }
-
-    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName)){
-        stateInfo.setError(tr("Can not create directory for temporary files."));
+    
+    //Add new subdir for temporary files
+    
+    QString errMsg;
+    tmpDirUrl = ExternalToolSupportUtils::createTmpDir("CAP3", getTaskId(), errMsg);
+    if (tmpDirUrl.isEmpty()) {
+        setError(errMsg);
         return;
     }
-    */
-    //url = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.out";
-    //saveTemporaryDocumentTask = new SaveAlignmentTask(mAObject->getMAlignment(), url, BaseDocumentFormats::CLUSTAL_ALN);
-    //saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
-    //addSubTask(saveTemporaryDocumentTask);
-    
-    QStringList arguments;
-    arguments << settings.inputFilePath;
-    outputUrl = settings.outputFilePath;
-    logParser = new CAP3LogParser();
-    cap3Task = new ExternalToolRunTask(CAP3_TOOL_NAME, arguments, logParser);
-    cap3Task->setSubtaskProgressWeight(95);
-    addSubTask(cap3Task);
+
+    prepareDataForCAP3Task = new PrepareInputForCAP3Task(settings.inputFiles, tmpDirUrl);
+    addSubTask(prepareDataForCAP3Task);
 
 }
 
@@ -104,8 +83,18 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
         return res;
     }
     
-    if (subTask == cap3Task){
-        if(!QFileInfo(outputUrl).exists()){
+    if (subTask == prepareDataForCAP3Task) {
+        GUrl inputUrl = prepareDataForCAP3Task->getPreparedPath();
+        tmpOutputUrl = inputUrl.dirPath() + "/" + inputUrl.baseFileName() + ".cap.ace"; 
+        
+        QStringList arguments;
+        arguments << inputUrl.getURLString();
+        logParser = new CAP3LogParser();
+        cap3Task = new ExternalToolRunTask(CAP3_TOOL_NAME, arguments, logParser);
+        cap3Task->setSubtaskProgressWeight(95);
+        res.append(cap3Task);   
+    } else if (subTask == cap3Task){
+        if(!QFile::exists(tmpOutputUrl)){
             if(AppContext::getExternalToolRegistry()->getByName(CAP3_TOOL_NAME)->isValid()){
                 stateInfo.setError(tr("Output file not found"));
             }else{
@@ -115,14 +104,26 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
             }
             return res;
         }
+        
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+        copyResultTask = new CopyDataTask(iof, tmpOutputUrl, iof, settings.outputFilePath );
+        res.append(copyResultTask);
+        
+    } else if (subTask == copyResultTask) {
+        
+        if( !QFile::exists(settings.outputFilePath)) {
+            stateInfo.setError(tr("Output file not found: copy from tmp dir failed."));
+            return res;
+        }
+
         loadTmpDocumentTask=
                 new LoadDocumentTask(BaseDocumentFormats::ACE,
-                                     outputUrl,
+                                     settings.outputFilePath,
                                      AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTmpDocumentTask);
 
-    }else  if( subTask == loadTmpDocumentTask ) {
+    } else  if( subTask == loadTmpDocumentTask  ) {
         Document* doc = loadTmpDocumentTask->takeDocument();
         assert(doc != NULL);
         // clone doc because it was created in another thread
@@ -144,17 +145,11 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
 
 
 Task::ReportResult CAP3SupportTask::report(){
-    //Remove subdir for temporary files, that created in prepare
-//     if(!url.isEmpty()){
-//         QDir tmpDir(QFileInfo(url).absoluteDir());
-//         foreach(QString file, tmpDir.entryList()){
-//             tmpDir.remove(file);
-//         }
-//         if(!tmpDir.rmdir(tmpDir.absolutePath())){
-//             stateInfo.setError(tr("Can not remove directory for temporary files."));
-//             emit si_stateChanged();
-//         }
-//     }
+
+    QString errMsg;
+    if (!ExternalToolSupportUtils::removeTmpDir(tmpDirUrl,errMsg)) {
+        stateInfo.setError(errMsg);
+    }
 
     return ReportResult_Finished;
 }
@@ -176,19 +171,61 @@ int CAP3LogParser::getProgress()
 //////////////////////////////////////////
 ////PrepareInput
 
-PrepareInputForCAP3Task::PrepareInputForCAP3Task( const QStringList&, const QString&)
-:Task("PrepareInputForCAP3Task", TaskFlags_NR_FOSCOE)
+PrepareInputForCAP3Task::PrepareInputForCAP3Task( const QStringList& inputFiles, const QString& outputDirPath)
+:Task("PrepareInputForCAP3Task", TaskFlags_NR_FOSCOE), inputUrls(inputFiles), outputDir(outputDirPath), onlyCopyFiles(false)
 {
+
 
 }
 
 void PrepareInputForCAP3Task::prepare() {
-    //TODO:
+    
+    if (inputUrls.size() == 1) {
+        const QString& inputFileUrl = inputUrls.first();
+        
+        QList<FormatDetectionResult> results = DocumentUtils::detectFormat(inputFileUrl);
+        
+        if (!results.isEmpty()) {
+            DocumentFormat* format = results.first().format;
+            if (format->getFormatId() == BaseDocumentFormats::PLAIN_FASTA) {
+                onlyCopyFiles = true;
+            }
+        }
+    } 
+    
+    
+    if (onlyCopyFiles) {    
+        // short path: copy single FASTA file along with quality and constraints to target dir
+        QString inputFileUrl = inputUrls.first();
+        filesToCopy.append(inputFileUrl);
+        QString inputFileUrlBase = GUrl(inputFileUrl).baseFileName();
+        QString inputFileDir = GUrl(inputFileUrl).dirPath();
+        QString qualFileUrl = inputFileDir + "/" + inputFileUrlBase + ".qual";
+        if (QFile::exists(qualFileUrl)) {
+            filesToCopy.append(qualFileUrl);        
+        }
+        QString constraintsFileUrl = inputFileDir+ "/" + inputFileUrlBase + ".con";
+        if (QFile::exists(constraintsFileUrl)) {
+            filesToCopy.append(qualFileUrl);
+        }
+        foreach (const QString& fileName, filesToCopy) {
+            IOAdapterFactory* iof = 
+                AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            CopyDataTask* copyTask = new CopyDataTask(iof, fileName, iof, outputDir + "/" + GUrl(fileName).fileName());
+            addSubTask(copyTask);
+        }
+        preparedPath = outputDir + "/" + GUrl(inputFileUrl).fileName();
+
+    } else {
+        // long path: load each file, save sequences and qualities to output dir
+        assert(0);
+    } 
+
 }
 
 QList<Task*> PrepareInputForCAP3Task::onSubTaskFinished(Task* ) {
     QList<Task*> res;
-    //TODO:
+    
     return res;
 
 }

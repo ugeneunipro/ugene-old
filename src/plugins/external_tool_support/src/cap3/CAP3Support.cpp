@@ -106,7 +106,7 @@ void CAP3Support::sl_runWithExtFileSpecify(){
         return;
     }
     
-    assert(!settings.inputFilePath.isEmpty());
+    assert(!settings.inputFiles.isEmpty());
 
     CAP3SupportTask* task = new CAP3SupportTask(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);

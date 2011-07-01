@@ -27,6 +27,7 @@
 
 namespace U2 {
 
+
 class ExternalToolLogParser;
 class ExternalToolRunTask: public Task {
     Q_OBJECT
@@ -37,7 +38,8 @@ public:
     void prepare();
     void run();
     Task::ReportResult report();
-
+    
+    
     void cancelProcess();
 public slots:
     void sl_onReadyToReadLog();
@@ -50,6 +52,13 @@ private:
     char*                   logData;
     QProcess*               externalToolProcess;
 };
+
+class ExternalToolSupportUtils : public QObject {
+public:
+    static bool removeTmpDir(const QString& absoulutePath, QString& errMsg);
+    static QString createTmpDir(const QString& dirName, int uniqueId,  QString& errMsg);
+};
+
 
 class ExternalToolLogParser {
 public:

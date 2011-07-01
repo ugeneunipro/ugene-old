@@ -22,9 +22,14 @@
 #include "ExternalToolRunTask.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
 #include <QtCore/QString>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
+#include <QtCore/QCoreApplication>
 
 namespace U2 {
 
@@ -154,4 +159,54 @@ void ExternalToolLogParser::parseErrOutput(const QString& partOfLog){
         }
     }
 }
+
+bool ExternalToolSupportUtils::removeTmpDir( const QString& tmpDirUrl, QString& errMsg )
+{
+    if(!tmpDirUrl.isEmpty()){
+        QDir tmpDir(tmpDirUrl);
+        foreach(const QString& file, tmpDir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries)){
+            if (!tmpDir.remove(file)) {
+                errMsg = tr("Can not remove files from temporary directory.");
+                return false;
+            }
+        }
+        if(!tmpDir.rmdir(tmpDir.absolutePath())){
+            errMsg = tr("Can not remove directory for temporary files.");
+            return false;
+        }
+    } else {
+        errMsg = tr("Can not remove temporary directory: path is empty.");
+        return false;
+    }
+
+    return true;
+}
+
+QString ExternalToolSupportUtils::createTmpDir( const QString& dirName, int id,  QString& errMsg )
+{
+    //Directory name is ExternalToolName + unique ID + CurrentDate + CurrentTime
+    
+    QString tmpDirName = dirName+"_"+QString::number(id)+ "_" +
+        QDate::currentDate().toString("dd.MM.yyyy")+"_"+
+        QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
+        QString::number(QCoreApplication::applicationPid())+"/";
+    
+    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName);
+    
+    //Remove dir for temporary files if it exists already
+    
+    if(tmpDir.exists()){
+        if (!removeTmpDir(tmpDir.absolutePath(), errMsg)) {
+            return QString();
+        }
+    }
+
+    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName)){
+        errMsg = tr("Can not create directory for temporary files.");
+        return QString();
+    }
+
+    return tmpDir.absolutePath();
+}
+
 }//namespace

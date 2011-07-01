@@ -52,13 +52,17 @@ void CAP3SupportDialog::accept()
         return;
     }
     
+    int itemCount = seqList->count();
+    for (int i = 0; i < itemCount; ++i) {
+        settings.inputFiles.append( seqList->item(i)->text() );
+    }
+
     if (outputPathLineEdit->text().isEmpty() ) {
         QMessageBox::information(this, windowTitle(),
             tr("Result contig file name is not set!") );
         return;
     } 
     
-    settings.inputFilePath = seqList->item(0)->text();
     settings.outputFilePath = outputPathLineEdit->text();
 
     QDialog::accept();
@@ -96,7 +100,7 @@ void CAP3SupportDialog::sl_onRemoveAllButtonClicked()
 
 void CAP3SupportDialog::sl_onSpecifyOutputPathButtonClicked()
 {
-    /*
+    
     LastOpenDirHelper lod;
     lod.url = QFileDialog::getSaveFileName(this, tr("Set result contig file name"), lod.dir, tr("ACE format (*.ace)"));
     if (!lod.url.isEmpty()) {
@@ -106,7 +110,7 @@ void CAP3SupportDialog::sl_onSpecifyOutputPathButtonClicked()
         }
         outputPathLineEdit->setText(result.getURLString());
     }
-    */
+    
 }
 
 
