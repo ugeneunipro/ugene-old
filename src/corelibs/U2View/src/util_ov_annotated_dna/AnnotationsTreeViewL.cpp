@@ -100,6 +100,7 @@ AnnotationsTreeViewL::AnnotationsTreeViewL(AnnotatedDNAView* _ctx) : ctx(_ctx){
     tree->setSelectionMode(QAbstractItemView::ExtendedSelection);
     tree->viewport()->installEventFilter(this);
     tree->setMouseTracking(true);
+    tree->setAutoScroll(false);
     //tree->setNumberOfItems();
 
     connect(tree, SIGNAL(itemEntered(QTreeWidgetItem*, int)), SLOT(sl_itemEntered(QTreeWidgetItem*, int)));
@@ -2404,14 +2405,12 @@ LazyTreeView::LazyTreeView( QWidget * parent /*= 0 */ ) : QTreeView(parent) {
     lineHeight = 1;
 }
 
-void LazyTreeView::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
-{
+void LazyTreeView::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected ) {
     QTreeView::selectionChanged(selected, deselected);
     emit itemSelectionChanged();
 }
 
-void LazyTreeView::mouseDoubleClickEvent( QMouseEvent * event )
-{
+void LazyTreeView::mouseDoubleClickEvent( QMouseEvent * event ) {
     LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
     QPoint pos = event->pos();
     QModelIndex index = indexAt(pos);
@@ -2422,19 +2421,17 @@ void LazyTreeView::mouseDoubleClickEvent( QMouseEvent * event )
     emit itemDoubleClicked(item, index.column());
 }
 
-void LazyTreeView::mousePressEvent( QMouseEvent *event )
-{
+void LazyTreeView::mousePressEvent( QMouseEvent *event ) {
     LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
     QPoint pos = event->pos();
     QModelIndex index = indexAt(pos);
     QTreeWidgetItem *item = (QTreeWidgetItem *)modell->getItem(index);
-    //selectionModel()->select(index, QItemSelectionModel::Select);
+
     QTreeView::mousePressEvent(event);
     emit itemClicked(item, index.column());
 }
 
-void LazyTreeView::resizeEvent( QResizeEvent *event )
-{
+void LazyTreeView::resizeEvent( QResizeEvent *event ) {
     QTreeView::resizeEvent(event);
     numOnScreen = viewport()->height() / lineHeight;
     if(numOnScreen == 0) {
