@@ -71,4 +71,4 @@ public:
 } // Workflow namespace
 } // U2 namespace
 
-#endif
+#endif // _U2_CAP3_WORKER_H_

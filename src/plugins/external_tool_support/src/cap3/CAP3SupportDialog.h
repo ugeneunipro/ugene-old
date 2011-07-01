@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CAP3_SUPPORT_DIALOG_H
-#define _U2_CAP3_SUPPORT_DIALOG_H
+#ifndef _U2_CAP3_SUPPORT_DIALOG_H_
+#define _U2_CAP3_SUPPORT_DIALOG_H_
 
 #include <QDialog>
 #include <U2Misc/DialogUtils.h>
@@ -46,4 +46,4 @@ private:
 
 
 }//namespace
-#endif // _U2_CAP3_SUPPORT_DIALOG_H
+#endif // _U2_CAP3_SUPPORT_DIALOG_H_

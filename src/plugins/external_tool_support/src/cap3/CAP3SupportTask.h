@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CLUSTALW_SUPPORT_TASK_H
-#define _U2_CLUSTALW_SUPPORT_TASK_H
+#ifndef _U2_CAP3_SUPPORT_TASK_H_
+#define _U2_CAP3_SUPPORT_TASK_H_
 
 #include <QtCore/QFile>
 
@@ -84,4 +84,4 @@ private:
 };
 
 }//namespace
-#endif // _U2_CLUSTALW_SUPPORT_TASK_H
+#endif // _U2_CAP3_SUPPORT_TASK_H_

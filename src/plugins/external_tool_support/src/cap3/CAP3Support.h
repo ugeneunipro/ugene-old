@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CAP3_SUPPORT_H
-#define _U2_CAP3_SUPPORT_H
+#ifndef _U2_CAP3_SUPPORT_H_
+#define _U2_CAP3_SUPPORT_H_
 
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2View/MSAEditor.h>
@@ -41,33 +41,6 @@ private:
     GObjectViewWindowContext* viewCtx;
 };
 
-/*
-class CAP3SupportContext: public GObjectViewWindowContext {
-    Q_OBJECT
-public:
-    CAP3SupportContext(QObject* p);
-
-protected slots:
-    void sl_align_with_ClustalW ();
-
-protected:
-    virtual void initViewContext(GObjectView* view);
-    virtual void buildMenu(GObjectView* view, QMenu* m);
-};
-
-
-class CAP3SupportAction : public ExternalToolSupprotAction {
-        Q_OBJECT
-public:
-    CAP3SupportAction(QObject* p, GObjectView* v, const QString& text, int order)
-        : ExternalToolSupprotAction(p,v,text,order, QStringList(CAP3_TOOL_NAME)) {}
-    MSAEditor*  getMSAEditor() const;
-
-private slots:
-    void sl_lockedStateChanged();
-};
-*/
-
 
 }//namespace
-#endif // _U2_CLUSTALW_SUPPORT_H
+#endif // _U2_CAP3_SUPPORT_H_
