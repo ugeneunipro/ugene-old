@@ -30,6 +30,7 @@
 
 #include "DelegateEditors.h"
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Core/GUrlUtils.h>
 
 namespace U2 {
 
@@ -165,21 +166,27 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
 ********************************/
 void URLLineEdit::sl_onBrowse() {
     LastOpenDirHelper lod(type);
+    QString lastDir = lod.dir;
+    GUrl currentUrl(text());
+    QDir dir(currentUrl.dirPath());
+    if(dir.exists()) {
+        lastDir = currentUrl.dirPath();
+    }
 
     QString name;
     if(isPath){
-        lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lod.dir);
+        lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
     }else if (multi) {
-        QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lod.dir, FileFilter);
+        QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lastDir, FileFilter);
         name = lst.join(";");
         if (!lst.isEmpty()) {
             lod.url = lst.first();
         }
     } else {
         if(saveFile) {
-            lod.url = name = QFileDialog::getSaveFileName(NULL, tr("Select a file"), lod.dir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
+            lod.url = name = QFileDialog::getSaveFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
         } else {
-            lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lod.dir, FileFilter );
+            lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter );
         }
     }
     if (!name.isEmpty()) {

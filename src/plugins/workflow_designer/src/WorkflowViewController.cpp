@@ -59,6 +59,7 @@
 #include <U2Lang/WorkflowRunTask.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/ExternalToolCfg.h>
+#include <U2Lang/HRSchemaSerializer.h>
 #include <U2Remote/RemoteWorkflowRunTask.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Designer/DelegateEditors.h>
@@ -70,6 +71,7 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Designer/DesignerUtils.h>
 #include <U2Core/ProjectService.h>
+#include <U2Core/IOAdapter.h>
 
 #include "WorkflowDesignerPlugin.h"
 #include "WorkflowViewItems.h"
@@ -91,6 +93,7 @@
 #include "library/CreateExternalProcessDialog.h"
 #include "library/ExternalProcessWorker.h"
 
+
 /* TRANSLATOR U2::LocalWorkflow::WorkflowView*/
 
 namespace U2 {
@@ -104,6 +107,7 @@ namespace U2 {
 enum {ElementsTab,SamplesTab};
 
 #define WS 1000
+#define MAX_FILE_SIZE 1000000
 
 static QString percentStr = WorkflowView::tr("%");
 
@@ -414,6 +418,8 @@ void WorkflowView::createActions() {
 
     externalToolAction = new QAction(tr("Create wrapper for external tool"), this);
     connect(externalToolAction, SIGNAL(triggered()), SLOT(sl_externalAction()));
+    appendExternalTool = new QAction(tr("Add element from file"), this);
+    connect(appendExternalTool, SIGNAL(triggered()), SLOT(sl_appendExternalToolWorker()));
 }
 
 void WorkflowView::sl_createScript() {
@@ -441,6 +447,42 @@ void WorkflowView::sl_externalAction() {
             QRectF rect = scene->sceneRect();
             scene->addProcess( scene->createActor( proto, QVariantMap()), rect.center());
         }
+    }
+}
+
+void WorkflowView::sl_appendExternalToolWorker() {
+    QString filter = DialogUtils::prepareFileFilter(WorkflowUtils::tr("UGENE workflow element"), QStringList() << "etc", true);
+    QString url = QFileDialog::getOpenFileName(this, tr("Open worker file"), QString(), filter);
+    if (!url.isEmpty()) {
+        IOAdapter *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(GUrl(url)))->createIOAdapter();
+        if(!io->open(url, IOAdapterMode_Read)) {
+            coreLog.error(tr("Can't load element."));
+            return;
+        }
+        QByteArray data;
+        data.resize(MAX_FILE_SIZE);
+        data.fill(0);
+        io->readBlock(data.data(), MAX_FILE_SIZE);
+        //file.open(QIODevice::ReadOnly);
+        //QString data = file.readAll().data();
+
+        ExternalProcessConfig *cfg = NULL;
+        cfg = HRSchemaSerializer::string2Actor(data.data());
+
+        if(cfg) {
+            if(WorkflowEnv::getProtoRegistry()->getProto(cfg->name)) {
+                coreLog.error("Element with this name already exists");
+            } else {
+                LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
+                ActorPrototype *proto = WorkflowEnv::getProtoRegistry()->getProto(cfg->name);
+                QRectF rect = scene->sceneRect();
+                scene->addProcess( scene->createActor( proto, QVariantMap()), rect.center());
+            }
+            
+        } else {
+            coreLog.error(tr("Can't load element."));
+        }
+        io->close();
     }
 }
 
@@ -643,6 +685,7 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(createScriptAcction);
     tb->addAction(editScriptAction);
     tb->addAction(externalToolAction);
+    tb->addAction(appendExternalTool);
     tb->addSeparator();
     tb->addAction(copyAction);
     tb->addAction(pasteAction);

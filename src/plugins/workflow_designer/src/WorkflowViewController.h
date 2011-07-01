@@ -184,6 +184,7 @@ private slots:
     void sl_createScript();
     void sl_editScript();
     void sl_externalAction();
+    void sl_appendExternalToolWorker();
     void sl_protoDeleted(const QString& id);
     void sl_xmlSchemaLoaded(Task*);
     
@@ -225,6 +226,7 @@ private:
     QAction* createScriptAcction;
     QAction* editScriptAction;
     QAction* externalToolAction;
+    QAction* appendExternalTool;
     
     QAction* configureIterationsAction;
     QAction* configureAliasesAction;
