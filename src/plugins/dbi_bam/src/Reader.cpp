@@ -544,7 +544,7 @@ void BamReader::readHeader() {
                             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header field: %1").arg(QString(tokens[index])));
                         }
                     }
-                    if(!QRegExp("[A-Za-z][A-Za-z]").exactMatch(fieldTag) && "M5" != fieldTag) { //workaround for bug in the spec
+                    if(!QRegExp("[A-Za-z][A-Za-z0-9]").exactMatch(fieldTag)) {
                         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header field tag: %1").arg(QString(fieldTag)));
                     }
                     if(!QRegExp("[ -~]+").exactMatch(fieldValue)) {
