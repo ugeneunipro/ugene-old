@@ -62,7 +62,7 @@ DNASequenceObject* DocumentFormatUtils::addSequenceObject(QList<GObject*>& objec
 {
     if (hints.contains(DocumentReadingMode_MaxObjectsInDoc) && !hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
         int n = hints.value(DocumentReadingMode_MaxObjectsInDoc).toInt();
-        if (n >= objects.size()) {
+        if (n > 0 && n <= objects.size()) {
             os.setError(tr("Maximum number of objects per document limit reached. Try different options for opening the document!"));
             return NULL;
         }
