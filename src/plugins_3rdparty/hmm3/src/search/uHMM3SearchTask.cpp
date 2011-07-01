@@ -468,8 +468,8 @@ void UHMM3SearchTask::addMemResource() {
     assert( 0 < seqLen && NULL != hmm && 0 < hmm->M );
     
     int howManyMem = countSearchMemInMB( seqLen, hmm->M );
-    addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
-    algoLog.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
+    //TODO: addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
+    //algoLog.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
 }
 
 QList< Task* > UHMM3SearchTask::onSubTaskFinished( Task* subTask ) {
