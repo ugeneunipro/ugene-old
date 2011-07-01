@@ -85,7 +85,7 @@ bool IndexPart::load(int part) {
         return true;
     }
     currentPart = part;
-    int elemSize = sizeof(SAType) + sizeof(BMType);
+    //int elemSize = sizeof(SAType) + sizeof(BMType);
     qint64 size = 0;
     saLengths[part] = (partFiles[part]->size() - 1 - seqLengths[currentPart]/4)/sizeof(SAType);
     if (!partFiles[part]->isOpen()) {

@@ -181,6 +181,7 @@ static void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, co
             DocumentFormatUtils::addSequenceObject(objects, objName, seq, hints, ti);
             if (ti.hasError()) {
                 qDeleteAll(objects);
+                objects.clear();
                 return;
             }
         }
@@ -221,6 +222,7 @@ Document* FastaFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
     load(io, io->getURL(), objects, fs, ti, gapSize, predictedSize, lockReason, mode);
     if (ti.hasError() || ti.cancelFlag) {
         qDeleteAll(objects);
+        objects.clear();
         return NULL;
     }
 

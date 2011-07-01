@@ -62,7 +62,8 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
         url = getTempDir(env) + "/" + el.attribute("url");   
     } else{
         tempFile = false;
-        url = env->getVar("COMMON_DATA_DIR") + "/" + el.attribute("url");
+        QString commonDataDir = env->getVar("COMMON_DATA_DIR");
+        url =  commonDataDir + "/" + el.attribute("url");
     }
     IOAdapterId         io = el.attribute("io");
     IOAdapterFactory*   iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(io);
