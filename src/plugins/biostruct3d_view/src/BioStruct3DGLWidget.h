@@ -150,6 +150,12 @@ public:
     /** Draws scene without setting camera */
     void draw();
 
+    /** @returns scene rotation center */
+    Vector3D getSceneCenter() const;
+
+    /** @returns scene bounding sphere radius */
+    float getSceneRadius() const;
+
 protected:
     /*!
     * QGlWidget virtual function, initializes OpenGL params. See, Qt docs "QGLWidget" for details. 
@@ -234,6 +240,9 @@ private:
     //! Show/hide all models for first biostruct
     void showAllModels(bool show);
 
+    /** Setup frame settings: camera clip, camera position */
+    void setupFrame();
+
     void saveDefaultSettings();
 
     void connectExternalSignals();
@@ -268,10 +277,7 @@ private:
     QString currentColorSchemeName;
     QString currentGLRendererName;
 
-    QMap<const AnnotationTableObject*, int> chainIdCache;
-
     // camera
-    GLfloat cameraClipNear, cameraClipFar; //cameraDistance, 
     GLfloat rotAngle, spinAngle;
     Vector3D rotAxis, lastPos;
 

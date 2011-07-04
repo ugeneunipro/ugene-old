@@ -97,13 +97,12 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
         : QGLWidget(parent),
         dnaView(_dnaView), contexts(),
         rendererSettings(DEFAULT_RENDER_DETAIL_LEVEL),
-        frameManager(manager), glFrame(),
+        frameManager(manager), glFrame(new GLFrame(this)),
         molSurface(0), surfaceRenderer(), surfaceCalcTask(0),
         anaglyphStatus(DISABLED),
         anaglyph(new AnaglyphRenderer(this, AnaglyphSettings::defaultSettings())),
 
         defaultsSettings(), currentColorSchemeName(), currentGLRendererName(),
-        chainIdCache(), cameraClipNear(0), cameraClipFar(0),
         rotAngle(0), spinAngle(0), rotAxis(), lastPos(),
         lightPostion(), backgroundColor(DEFAULT_BACKGROUND_COLOR),
         selectionColor(DEFAULT_SELECTION_COLOR), animationTimer(0),
@@ -117,6 +116,8 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
 
     QString currentModelID = obj->getBioStruct3D().pdbId;
     setObjectName(QString("%1-%2").arg(++widgetCount).arg(currentModelID));
+
+    setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::BIOSTRUCTURE_3D).icon);
 
     connectExternalSignals();
 
@@ -136,24 +137,59 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
     loadColorSchemes();
     loadGLRenderers(availableRenders);
 
-    // Set view settings
-    // shoud be separate function
-    float scaleFactor = 2.5;
-    float maxDistFromCenter = contexts.first().biostruct->getRadius();
-    float camZ = scaleFactor * maxDistFromCenter;
-
-    cameraClipNear = (camZ - maxDistFromCenter) * 0.66f;
-    cameraClipFar = (camZ + maxDistFromCenter) * 1.2f;
-
-    glFrame.reset( new GLFrame(this, cameraClipNear, cameraClipFar, camZ) );
     frameManager->addGLFrame(glFrame.get());
     saveDefaultSettings();
-
-    setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::BIOSTRUCTURE_3D).icon);
 }
 
 BioStruct3DGLWidget::~BioStruct3DGLWidget() {
     uiLog.trace("Biostruct3DGLWdiget "+objectName()+" deleted");
+}
+
+void BioStruct3DGLWidget::setupFrame() {
+    const float scaleFactor = 2.5;
+    float radius = getSceneRadius();
+    float camZ = scaleFactor * radius;
+
+    float cameraClipNear = (camZ - radius) * 0.66f;
+    float cameraClipFar = (camZ + radius) * 1.2f;
+
+    glFrame->setCameraClip(cameraClipNear, cameraClipFar);
+
+    Vector3D pos = glFrame->getCameraPosition();
+    pos.z = camZ;
+    glFrame->setCameraPosition(pos);
+
+    glFrame->makeCurrent();
+    glFrame->updateViewPort();
+    glFrame->updateGL();
+}
+
+float BioStruct3DGLWidget::getSceneRadius() const {
+    // good idea: ask renderer for radius instead of asking biostruct
+    float maxRadius = 0;
+    const Vector3D sceneCenter = getSceneCenter();
+
+    foreach (const BioStruct3DRendererContext &ctx, contexts) {
+        Vector3D center = ctx.biostruct->getCenter();
+        float radius = (center - sceneCenter).length() + ctx.biostruct->getRadius();
+        if (maxRadius < radius) {
+            maxRadius = radius;
+        }
+    }
+
+    return maxRadius;
+}
+
+Vector3D BioStruct3DGLWidget::getSceneCenter() const {
+    // good idea: ask renderer for center instead of asking biostruct
+    Vector3D c;
+    foreach (const BioStruct3DRendererContext &ctx, contexts) {
+        // TODO: transform should be applied in BioStruct
+        Vector3D tmp = ctx.biostruct->getCenter();
+        c += tmp.dot(ctx.biostruct->getTransform());
+    }
+
+    return c / float(contexts.length());
 }
 
 void BioStruct3DGLWidget::initializeGL() {
@@ -218,14 +254,6 @@ void BioStruct3DGLWidget::paintGL() {
     perfLog.trace( QString("BioStruct3DView frame rendering time %1 s").arg(frameTime) );
 }
 
-static Vector3D calcRotationCenter(const QList<BioStruct3DRendererContext> &contexts) {
-    Vector3D c;
-    foreach (const BioStruct3DRendererContext &ctx, contexts) {
-        c += ctx.biostruct->getCenter();
-    }
-    return c/contexts.length();
-}
-
 void BioStruct3DGLWidget::draw() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
@@ -233,11 +261,11 @@ void BioStruct3DGLWidget::draw() {
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Vector3D rotCenter = calcRotationCenter(contexts);
+    Vector3D rotCenter = getSceneCenter();
 
     glTranslatef(glFrame->getCameraPosition().x, glFrame->getCameraPosition().y, 0);
 
-    glMultMatrixf(glFrame->getRotationMatrix() );
+    glMultMatrixf(glFrame->getRotationMatrix());
     glTranslatef(-rotCenter.x ,-rotCenter.y, -rotCenter.z);
 
     foreach (const BioStruct3DRendererContext &ctx, contexts) {
@@ -984,24 +1012,27 @@ void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
     updateGL();
 }
 
+/** Convert modelId's list to modelIndexes list */
+static QList<int> modelIdsToModelIdx(const BioStruct3D &bs, const QList<int> &modelsIds) {
+    QList<int> modelsIdx;
+    foreach (int modelId, modelsIds) {
+        int idx = bs.getModelsNames().indexOf(modelId);
+        assert(idx != -1 && "No such modelId in biostruct");
+        modelsIdx << idx;
+    }
+
+    return modelsIdx;
+}
+
 void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList<int> &shownModels /*= QList<int>()*/) {
     assert(contexts.size() < 2 && "Multiple models in one view is unsupported now");
     BioStruct3DRendererContext ctx(obj);
 
-    // show only first model if model list is empty
-    QList<int> shownModelsIdx;
+    QList<int> shownModelsIdx = modelIdsToModelIdx(*ctx.biostruct, shownModels);
 
-    if (shownModels.isEmpty()) {
+    // show only first model if model list is empty
+    if (shownModelsIdx.isEmpty()) {
         shownModelsIdx << 0;
-    }
-    else {
-        // convert modelIds to model index numbers
-        const BioStruct3D &bs = obj->getBioStruct3D();
-        foreach (int modelId, shownModels) {
-            int idx = bs.getModelsNames().indexOf(modelId);
-            assert(idx != -1 && "No such modelId in biostruct");
-            shownModelsIdx << idx;
-        }
     }
 
     BioStruct3DColorScheme *colorScheme = BioStruct3DColorSchemeRegistry::createColorScheme(currentColorSchemeName, ctx.obj);
@@ -1015,6 +1046,8 @@ void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList
     ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(renderer);
 
     contexts.append(ctx);
+
+    setupFrame();
 }
 
 void BioStruct3DGLWidget::sl_alignWith() {
@@ -1039,6 +1072,7 @@ void BioStruct3DGLWidget::sl_resetAlignment() {
     assert(contexts.size() < 3 && "Multiple models in one view is unsupported now");
     if (contexts.size() == 2) {
         contexts.removeLast();
+        setupFrame();
 
         glFrame->makeCurrent();
         update();

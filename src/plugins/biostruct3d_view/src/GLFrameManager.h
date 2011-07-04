@@ -36,18 +36,10 @@ class Vector3D;
 */
 class GLFrame {
     static const GLfloat DEFAULT_ZOOM;
-//    static const Vector3D DEFAULT_CAMERA;
-    QGLWidget* glWidget;
-//    GLfloat zoomFactor;
-    Matrix44 rotMatrix;
-    bool synchLock;
-    float cameraClipNear, cameraClipFar;
-//    Vector3D cameraPosition;
-
+    //static const Vector3D DEFAULT_CAMERA;
 public:
-    GLfloat zoomFactor;
-    Vector3D cameraPosition;
-    GLFrame(QGLWidget* widget, float cameraNear, float cameraFar, float cameraZ);
+    GLFrame(QGLWidget* widget);
+
     void setState(const QVariantMap& state);
     void writeStateToMap(QVariantMap& states);
     QGLWidget* getGLWidget() { return glWidget; }
@@ -59,11 +51,23 @@ public:
     float* getRotationMatrix() { return rotMatrix.data(); }
     void rotateCamera(const Vector3D& rotAxis, float rotAngle);
 
-    const Vector3D getCameraPosition()const;
+    void setCameraClip(float near, float far);
+
+    const Vector3D getCameraPosition() const;
+    void setCameraPosition(const Vector3D &v);
     void setCameraPosition(float x, float y, float z);
 
     void performZoom(float delta);
     void performShift(float deltaX, float deltaY);
+
+private:
+    QGLWidget* glWidget;
+    Matrix44 rotMatrix;
+    bool synchLock;
+    float cameraClipNear, cameraClipFar;
+
+    GLfloat zoomFactor;
+    Vector3D cameraPosition;
 };
 
 class GLFrameManager {

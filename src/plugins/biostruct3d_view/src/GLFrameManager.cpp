@@ -32,17 +32,12 @@ const GLfloat GLFrame::DEFAULT_ZOOM = 45.0f;
 ///////////////////////////////////////////////////////////////////////////////////////////
 /// GLFrame
 
-GLFrame::GLFrame(QGLWidget* widget, float cameraNear, float cameraFar, float cameraZ) : glWidget(widget), synchLock(false)
+GLFrame::GLFrame(QGLWidget* widget)
+        : glWidget(widget), rotMatrix(), synchLock(false),
+          cameraClipNear(0), cameraClipFar(0),
+          zoomFactor(DEFAULT_ZOOM), cameraPosition(0,0,0)
 {
-    zoomFactor = DEFAULT_ZOOM;
     rotMatrix.loadIdentity();
-    cameraClipNear = cameraNear;
-    cameraClipFar = cameraFar;
-
-    cameraPosition.set(0.0f, 0.0f, cameraZ);
-
-    // Set view settings
-    //float scaleFactor = 2.5;
 }
 
 void GLFrame::performZoom( float delta )
@@ -79,6 +74,15 @@ const Vector3D GLFrame::getCameraPosition()const
 void GLFrame::setCameraPosition(float x, float y, float z)
 {
     cameraPosition.set(x, y, z);
+}
+
+void GLFrame::setCameraPosition(const Vector3D &v) {
+    cameraPosition = v;
+}
+
+void GLFrame::setCameraClip(float near, float far) {
+    cameraClipNear = near;
+    cameraClipFar = far;
 }
 
 void GLFrame::rotateCamera(const Vector3D& rotAxis, float rotAngle )
