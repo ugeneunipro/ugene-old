@@ -43,6 +43,8 @@ public:
     virtual GObject *loadObject( IOAdapter* io, TaskStateInfo& ti);
 
     virtual DNASequence *loadSequence( IOAdapter* io, TaskStateInfo& ti);
+
+    void storeSequence(const DNASequence& sequence, IOAdapter* io, TaskStateInfo& ti);
     
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
 

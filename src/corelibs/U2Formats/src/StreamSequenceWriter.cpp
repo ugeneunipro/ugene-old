@@ -25,6 +25,7 @@
 #include <U2Core/IOAdapter.h>
 
 #include <U2Formats/SAMFormat.h>
+#include <U2Formats/FastaFormat.h>
 
 #include "StreamSequenceWriter.h"
 
@@ -69,7 +70,37 @@ StreamContigWriter::~StreamContigWriter()
 }
 
 
+StreamShortReadWriter::StreamShortReadWriter( bool writeQualityExplicitly) : writeQuality(writeQualityExplicitly)
+{
+    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA);
+    fastaFormat = qobject_cast<FastaFormat*> (df);
+    assert(fastaFormat != NULL);
 
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    io = iof->createIOAdapter();
+
+}
+
+
+bool StreamShortReadWriter::init( const GUrl& url )
+{
+    ouputPath = url;
+    bool res = io->open(url, IOAdapterMode_Write);
+    return res;   
+}
+
+bool StreamShortReadWriter::writeNextSequence( const DNASequence& seq )
+{   
+    TaskStateInfo info;
+    fastaFormat->storeSequence(seq,io,info);
+    
+    return !info.hasError();
+}
+
+void StreamShortReadWriter::close()
+{
+    io->close();
+}
 
 } //namespace 
 

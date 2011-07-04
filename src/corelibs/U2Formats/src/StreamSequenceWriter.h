@@ -30,7 +30,6 @@
 
 namespace U2 {
 
-class Document;
 class IOAdapter;
 class SAMFormat;
 
@@ -57,6 +56,29 @@ public:
     int getNumSeqWritten() { return numSeqWritten; }
     void close();
 };
+
+/** 
+*
+* Class provides stream writing for DNA short reads.
+* It currently supports FASTA formats and allows to write quality in separate file.
+* 
+*/ 
+
+class FastaFormat;
+
+class U2FORMATS_EXPORT StreamShortReadWriter 
+{
+    FastaFormat* fastaFormat;
+    IOAdapter* io;
+    GUrl ouputPath;
+    bool writeQuality;
+public:
+    StreamShortReadWriter( bool writeQualityExplicitly = false);
+    bool init(const GUrl& url);
+    bool writeNextSequence(const DNASequence& seq);
+    const GUrl& getOutputPath() { return ouputPath; }
+    void close();
+}; 
 
 
 } //namespace

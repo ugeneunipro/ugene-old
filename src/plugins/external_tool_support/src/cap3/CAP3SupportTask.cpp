@@ -84,6 +84,7 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
     }
     
     if (subTask == prepareDataForCAP3Task) {
+        assert(!prepareDataForCAP3Task->getPreparedPath().isEmpty());
         GUrl inputUrl = prepareDataForCAP3Task->getPreparedPath();
         tmpOutputUrl = inputUrl.dirPath() + "/" + inputUrl.baseFileName() + ".cap.ace"; 
         
@@ -178,7 +179,7 @@ int CAP3LogParser::getProgress()
 ////PrepareInput
 
 PrepareInputForCAP3Task::PrepareInputForCAP3Task( const QStringList& inputFiles, const QString& outputDirPath)
-:Task("PrepareInputForCAP3Task", TaskFlags_NR_FOSCOE), inputUrls(inputFiles), outputDir(outputDirPath), onlyCopyFiles(false)
+:Task("PrepareInputForCAP3Task", TaskFlags_FOSCOE), inputUrls(inputFiles), outputDir(outputDirPath), onlyCopyFiles(false)
 {
 
 
@@ -224,16 +225,59 @@ void PrepareInputForCAP3Task::prepare() {
 
     } else {
         // long path: load each file, save sequences and qualities to output dir
-        assert(0);
+        
+        QList<GUrl> inputGUrls;
+        foreach( const QString& url, inputUrls) {
+            inputGUrls.append(url);
+        }
+        
+        if (!seqReader.init(inputGUrls)) {
+            setError(seqReader.getErrorMessage());
+            return;
+        }
+
+        QString outPath = outputDir + "/" + QString("%1_misc").arg(inputGUrls.first().baseFileName());
+
+        if (!seqWriter.init(outPath)) {
+            setError(tr("Failed to initialize sequence writer."));
+            return;
+        }
+        
     } 
 
 }
 
-QList<Task*> PrepareInputForCAP3Task::onSubTaskFinished(Task* ) {
-    QList<Task*> res;
+void PrepareInputForCAP3Task::run()
+{
+    if (hasError() || onlyCopyFiles) {
+        return;
+    }
     
-    return res;
+    while (seqReader.hasNext()) {
+        if (isCanceled()) {
+            return;
+        }
+        DNASequence* seq = seqReader.getNextSequenceObject();
+        if (seq == NULL) {
+            setError(seqReader.getErrorMessage());
+            return;
+        }
+        bool ok = seqWriter.writeNextSequence(*seq);
+        if (!ok) {
+            setError(tr("Failed to write sequence %1").arg(seq->getName()));
+            return;
+        }
+    }
+    
+    preparedPath = seqWriter.getOutputPath().getURLString();
+    seqWriter.close();
 
+
+}
+
+Task::ReportResult PrepareInputForCAP3Task::report()
+{
+    return ReportResult_Finished;
 }
 
 

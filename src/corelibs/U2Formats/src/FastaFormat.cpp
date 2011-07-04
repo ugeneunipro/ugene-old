@@ -337,4 +337,9 @@ DNASequence *FastaFormat::loadSequence(IOAdapter* io, TaskStateInfo& ti) {
     return seq;
 }
 
+void FastaFormat::storeSequence( const DNASequence& sequence, IOAdapter* io, TaskStateInfo& ti )
+{
+    saveOneFasta(io, sequence, NULL, ti);
+}
+
 }//namespace

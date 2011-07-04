@@ -57,21 +57,25 @@ bool StreamSequenceReader::hasNext()
         if (currentReaderIndex < 0 || currentReaderIndex >= readers.count()) {
             return false;
         }
-        
-        ReaderContext ctx = readers.at(currentReaderIndex);
 
-        DNASequence *newSeq = ctx.format->loadSequence(ctx.io, taskInfo);
-        currentSeq.reset(newSeq);
-        if (NULL == newSeq) {
-            ++currentReaderIndex;
-        } else {
-            lookupPerformed = true;
+        while (currentReaderIndex < readers.count()) {
+            ReaderContext ctx = readers.at(currentReaderIndex);
+            DNASequence *newSeq = ctx.format->loadSequence(ctx.io, taskInfo);
+            currentSeq.reset(newSeq);
+            if (NULL == newSeq) {
+                ++currentReaderIndex;
+            } else {
+                lookupPerformed = true;
+                break;
+            }
         }
+    
     }
-
+    
     if (currentSeq.get() == NULL) {
         return false;
     }
+
 
     return true;
 }

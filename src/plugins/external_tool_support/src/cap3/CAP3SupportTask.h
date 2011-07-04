@@ -28,6 +28,8 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Formats/StreamSequenceReader.h>
+#include <U2Formats/StreamSequenceWriter.h>
 #include "utils/ExportTasks.h"
 
 #include <U2Core/MAlignmentObject.h>
@@ -53,13 +55,15 @@ class PrepareInputForCAP3Task : public Task {
 public:
     PrepareInputForCAP3Task(const QStringList& inputFiles, const QString& outputDirPath);
     void prepare();
+    void run();
+    ReportResult report();
     QString getPreparedPath() { return preparedPath; }
-    QList<Task*> onSubTaskFinished(Task* subTask);
 private:
-    QList<LoadDocumentTask*> loadTasks;
     QList<CopyDataTask*> copyTasks;
     QStringList inputUrls;
     QStringList filesToCopy;
+    StreamSequenceReader seqReader;
+    StreamShortReadWriter seqWriter;
     QString outputDir, preparedPath;
     bool onlyCopyFiles;
 };
