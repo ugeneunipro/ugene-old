@@ -275,15 +275,15 @@ QString SWPrompter::composeRichDoc() {
     QString resultName = getRequiredParam(NAME_ATTR);
 
     QString doc = tr("Searches regions in each sequence from <u>%1</u>"
-        " similar to <u>%2</u> pattern(s). <br/>Percent similarity between"
-        " a sequence and a pattern is <u>%3%</u>. <br/>Seaches in <u>%4</u>"
-        " of a %5sequence. <br/>Outputs the regions found annotated as <u>%6</u>.")
+        " similar to %2 pattern(s). <br/>Percent similarity between"
+        " a sequence and a pattern is %3. <br/>Seaches in %4"
+        " of a %5 sequence. <br/>Outputs the regions found annotated as %6.")
         .arg(seqName)
-        .arg(pattern)
-        .arg(cfg.percentOfScore)
-        .arg(strandName)
-        .arg(searchInTranslationSelected)
-        .arg(resultName);
+        .arg(getHyperlink(PATTERN_ATTR, pattern))
+        .arg(getHyperlink(SCORE_ATTR, QString::number(cfg.percentOfScore) + "%"))
+        .arg(getHyperlink(BaseAttributes::STRAND_ATTRIBUTE().getId(), strandName))
+        .arg(getHyperlink(AMINO_ATTR, searchInTranslationSelected))
+        .arg(getHyperlink(NAME_ATTR, resultName));
 
     return doc;
 }

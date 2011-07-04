@@ -103,6 +103,7 @@ QString ImportPhredQualityPrompter::composeRichDoc() {
     QString producerName = producer ? tr(" from <u>%1</u>").arg(producer->getLabel()) : "";
     QString qualUrl = getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId()).toString();
     QString qualSeq = (qualUrl.isEmpty() ? "<font color='red'>"+tr("unset")+"</font>" : QString("<u>%1</u>").arg(GUrl(qualUrl).fileName()) );
+    qualSeq = getHyperlink(BaseAttributes::URL_IN_ATTRIBUTE().getId(), qualSeq);
 
     QString doc = tr("Import PHRED quality scores in file %1  to the sequences %2 and send the sequences to the output.")
         .arg(qualSeq).arg(producerName);

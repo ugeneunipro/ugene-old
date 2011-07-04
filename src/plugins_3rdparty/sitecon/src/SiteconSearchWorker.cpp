@@ -140,13 +140,15 @@ static int getStrand(const QString & s) {
 }
 
 QString SiteconSearchPrompter::composeRichDoc() {
-    Actor* modelProducer = qobject_cast<IntegralBusPort*>(target->getPort(MODEL_PORT))->getProducer(MODEL_PORT);
-    Actor* seqProducer = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()))->getProducer(BasePorts::IN_SEQ_PORT_ID());
+    Actor* modelProducer = qobject_cast<IntegralBusPort*>(target->getPort(MODEL_PORT))->getProducer(SiteconWorkerFactory::SITECON_SLOT.getId());
+    Actor* seqProducer = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()))->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
 
-    QString seqName = seqProducer ? tr("For each sequence from <u>%1</u>,").arg(seqProducer->getLabel()) : "";
-    QString modelName = modelProducer ? tr("with all profiles provided by <u>%1</u>,").arg(modelProducer->getLabel()) : "";
+    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    QString seqName = tr("For each sequence from <u>%1</u>,").arg(seqProducer ? seqProducer->getLabel() : unsetStr);
+    QString modelName = tr("with all profiles provided by <u>%1</u>,").arg(modelProducer ? modelProducer->getLabel() : unsetStr);
 
     QString resultName = getRequiredParam(NAME_ATTR);
+    resultName = getHyperlink(NAME_ATTR, resultName);
 
     QString strandName;
     switch (getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>())) {
@@ -154,13 +156,14 @@ QString SiteconSearchPrompter::composeRichDoc() {
     case 1: strandName = SiteconSearchWorker::tr("direct strand"); break;
     case -1: strandName = SiteconSearchWorker::tr("complement strand"); break;
     }
+    strandName = getHyperlink(BaseAttributes::STRAND_ATTRIBUTE().getId(), strandName);
 
     QString doc = tr("%1 search transcription factor binding sites (TFBS) %2."
         "<br>Recognize sites with <u>similarity %3%</u>, process <u>%4</u>."
         "<br>Output the list of found regions annotated as <u>%5</u>.")
         .arg(seqName)
         .arg(modelName)
-        .arg(getParameter(SCORE_ATTR).toInt())
+        .arg(getHyperlink(SCORE_ATTR, getParameter(SCORE_ATTR).toInt()))
         .arg(strandName)
         .arg(resultName);
 

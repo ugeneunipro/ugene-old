@@ -23,6 +23,7 @@
 #include "ItemViewStyle.h"
 #include "WorkflowViewController.h"
 #include "HRSceneSerializer.h"
+#include "WorkflowEditor.h"
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/ActorModel.h>
@@ -62,7 +63,7 @@ WorkflowProcessItem::WorkflowProcessItem(Actor* prc) : process(prc) {
     styles[ItemStyles::SIMPLE] = new SimpleProcStyle(this);
     styles[ItemStyles::EXTENDED] = new ExtendedProcStyle(this);
     currentStyle = getStyleByIdSafe(WorkflowSettings::defaultStyle());
-    currentStyle->setActive(true);
+    currentStyle->setVisible(true);
     createPorts();
 }
 
@@ -139,9 +140,9 @@ void WorkflowProcessItem::sl_update() {
 
 void WorkflowProcessItem::setStyle(StyleId s) {
     prepareGeometryChange();
-    currentStyle->setActive(false);
+    currentStyle->setVisible(false);
     currentStyle = getStyleByIdSafe(s);
-    currentStyle->setActive(true);
+    currentStyle->setVisible(true);
     currentStyle->refresh();
     foreach(WorkflowPortItem* pit, ports) {
         pit->setStyle(s);
@@ -178,7 +179,6 @@ void WorkflowProcessItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
                           QWidget *widget)
 {
-    currentStyle->paint(painter,option,widget);
     WorkflowAbstractRunner* rt = getWorkflowScene()->getRunner();
     if (rt) {
         //{WorkerWaiting, WorkerReady, WorkerRunning, WorkerDone};
@@ -352,10 +352,22 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
         }
         break;
     case ItemSceneHasChanged:
-        if (scene()) {
-            foreach(WorkflowPortItem* pit, ports) {
-                scene()->addItem(pit);
-            }
+        {
+	        WorkflowScene* ws = getWorkflowScene();
+	        if (ws) {
+	            ItemViewStyle* viewStyle = styles.value(ItemStyles::EXTENDED);
+	            ExtendedProcStyle* extStyle = qgraphicsitem_cast<ExtendedProcStyle*>(viewStyle);
+	            assert(extStyle);
+	            WorkflowView* view = ws->getController();
+	            if (view) {
+	                connect(extStyle, SIGNAL(linkActivated(const QString&)),
+                        view->getPropertyEditor(), SLOT(sl_linkActivated(const QString&)));
+	            }
+	
+	            foreach(WorkflowPortItem* pit, ports) {
+	                ws->addItem(pit);
+	            }
+	        }
         }
         break;
     case ItemSceneChange:

@@ -134,7 +134,7 @@ QString QDPrompter::composeRichDoc() {
 
     QString doc = tr("Analyze each nucleotide sequence <u>%1</u> with <u>%2</u>.")
         .arg(producerName)
-        .arg(schemaFile);
+        .arg(getHyperlink(SCHEMA_ATTR, schemaFile));
 
     return doc;
 }

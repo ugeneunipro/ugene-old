@@ -56,6 +56,8 @@ public:
     bool isModified() const {return modified;} //FIXME draft support
     bool isLocked() const {return locked;}
 
+    WorkflowView* getController() const { return controller; }
+
     WorkflowAbstractRunner* getRunner() const {return runner;}
     void setRunner(WorkflowAbstractRunner* r) {runner = r;}
 
@@ -118,6 +120,8 @@ public:
     ~WorkflowView();
 
     //WorkflowDesignerService* getService() const {return service;}
+
+    WorkflowEditor* getPropertyEditor() const { return propertyEditor; }
 
     virtual void setupMDIToolbar(QToolBar* tb);
     virtual void setupViewMenu(QMenu* n);

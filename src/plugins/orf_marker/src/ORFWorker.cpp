@@ -162,12 +162,15 @@ QString ORFPrompter::composeRichDoc() {
 
     QString extra;
     if (!cfg.mustInit) {
-        extra += tr(", allow ORFs <u>starting with any codon</u> other than terminator");
+        QString anyLink = getHyperlink(INIT_ATTR, tr("starting with any codon"));
+        extra += tr(", allow ORFs %1 other than terminator").arg(anyLink);
     } else if (cfg.allowAltStart) {
-        extra += tr(", take into account <u>alternative start codons</u>");
+        QString altLink = getHyperlink(ALT_ATTR, tr("alternative start codons"));
+        extra += tr(", take into account %1").arg(altLink);
     }
     if (cfg.mustFit) {
-        extra += tr(", <u>ignore non-terminated</u> ORFs");
+        QString mustFitLink = getHyperlink(FIT_ATTR, tr("ignore non-terminated"));
+        extra += tr(", %1 ORFs").arg(mustFitLink);
     }
 
     QString strandName;
@@ -176,12 +179,14 @@ QString ORFPrompter::composeRichDoc() {
     case ORFAlgorithmStrand_Direct: strandName = ORFWorker::tr("direct strand"); break;
     case ORFAlgorithmStrand_Complement: strandName = ORFWorker::tr("complement strand"); break;
     }
+    strandName = getHyperlink(BaseAttributes::STRAND_ATTRIBUTE().getId(), strandName);
 
-    QString resultName = getRequiredParam(NAME_ATTR);
+    QString resultName = getHyperlink(NAME_ATTR, getRequiredParam(NAME_ATTR));
 
     QString transId = getParameter(ID_ATTR).toString();
     QString ttName = AppContext::getDNATranslationRegistry()->
         lookupTranslation(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()), DNATranslationType_NUCL_2_AMINO, transId)->getTranslationName();
+    ttName = getHyperlink(ID_ATTR, ttName);
 
 
     QString doc = tr("For each nucleotide sequence%1, find ORFs in <u>%2</u> using the <u>%3</u>."
@@ -190,7 +195,7 @@ QString ORFPrompter::composeRichDoc() {
         .arg(producerName) //sequence from Read Fasta 1
         .arg(strandName) //both strands
         .arg(ttName) //Standard Genetic Code
-        .arg(cfg.minLen) //100
+        .arg(getHyperlink(LEN_ATTR, cfg.minLen)) //100
         .arg(extra) //  take into account alternative start codons.
         .arg(resultName);
     

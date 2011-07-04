@@ -79,6 +79,7 @@ private slots:
     void sl_changeVisibleInput(bool);
     void sl_changeVisibleOutput(bool);
     void sl_showDoc(const QString&);
+    void sl_linkActivated(const QString&);
 
 private:
     void changeSizes(QWidget *w, int h);

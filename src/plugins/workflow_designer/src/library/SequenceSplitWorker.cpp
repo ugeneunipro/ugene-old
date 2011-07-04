@@ -68,21 +68,29 @@ QString SequenceSplitPromter::composeRichDoc() {
 
     //translate or not?
     bool translate = getParameter( TRANSLATE_ATTR ).toBool();
-    QString translateText = translate ? tr( "<u>translate</u> it if annotation marks translated subsequence, " ) : "";
+    QString translateText;
+    if (translate) {
+        translateText = tr("%1 it if annotation marks translated subsequence, ")
+            .arg(getHyperlink(TRANSLATE_ATTR, tr("translate")));
+    }
 
     //complement or not?
     bool complement = getParameter( COMPLEMENT_ATTR ).toBool();
-    QString complementText = complement ? tr( "make it <u>reverse-complement</u> if annotation is located on complement strand, " ) : "";
+    QString complementText;
+    if (complement) {
+        complementText = tr("make it %1 if annotation is located on complement strand, ")
+            .arg(getHyperlink(COMPLEMENT_ATTR, "reverse-complement"));
+    }
 
     //expand
     QString expandText;
     int expandLeft = getParameter( EXTEND_LEFT_ATTR ).toInt();
     int expandRight = getParameter( EXTEND_RIGHT_ATTR ).toInt();
     if( expandLeft ) {
-        expandText += tr("expand it to left with <u>%1</u>, ").arg(expandLeft);
+        expandText += tr("expand it to left with <u>%1</u>, ").arg(getHyperlink(EXTEND_LEFT_ATTR, expandLeft));
     }
     if( expandRight ) {
-        expandText += tr("expand it to right with <u>%1</u>").arg(expandRight);
+        expandText += tr("expand it to right with <u>%1</u>").arg(getHyperlink(EXTEND_RIGHT_ATTR, expandRight));
     }
     if( !expandRight && expandLeft ){
         expandText.remove( expandText.size()-1, 2);

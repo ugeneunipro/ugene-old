@@ -73,12 +73,13 @@ QString RemoteDBFetcherPrompter::composeRichDoc()
     dbid = RemoteDBFetcherFactory::cuteDbNames.key(dbid, dbid);
     
     QString saveDir = getParameter(PATH_ID).value<QString>();
+    saveDir = getHyperlink(PATH_ID, saveDir);
     QString saveDirStr = RemoteDBFetcherWorker::tr("Save result to <u>%1</u> directory").arg(saveDir);
     
     return RemoteDBFetcherWorker::tr("Reads %1 identified with %2 from <u>%3</u> remote database. %4").
         arg(seq).
-        arg(seqidsStr).
-        arg(dbid).
+        arg(getHyperlink(SEQID_ID, seqidsStr)).
+        arg(getHyperlink(DBID_ID, dbid)).
         arg(saveDirStr);
 }
 

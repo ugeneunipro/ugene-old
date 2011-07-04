@@ -75,6 +75,7 @@ QString RCWorkerPrompter::composeRichDoc() {
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
     QString type = getRequiredParam(OP_TYPE);
     QString op = type == "norev" ? "complement" : type == "nocompl" ? "reverse" : "reverse-complement";
+    op = getHyperlink(OP_TYPE, op);
 
     QString res = tr("Converts each input sequence from %1 into its %2 counterpart").arg(producerName).arg(op);
     return res;

@@ -121,7 +121,7 @@ QString HMMSearchPrompter::composeRichDoc() {
     QString seqName = seqProducer ? tr("For each sequence from <u>%1</u>,").arg(seqProducer->getLabel()) : "";
     QString hmmName = hmmProducer ? tr("using all profiles provided by <u>%1</u>,").arg(hmmProducer->getLabel()) : "";
 
-    QString resultName = getRequiredParam(NAME_ATTR);
+    QString resultName = getHyperlink(NAME_ATTR, getRequiredParam(NAME_ATTR));
     QString cfg = isDefaultCfg(this) ? tr("Use <u>default</u> settings.") : tr("Use <u>custom</u> settings.");
 
     QString doc = tr("%1 search HMM signals %2. %3"

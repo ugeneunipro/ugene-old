@@ -131,7 +131,7 @@ QString RemoteBLASTPrompter::composeRichDoc() {
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
     QString doc = tr("For sequence %1 find annotations in database <u>%2</u>")
-        .arg(producerName).arg(getParameter(DATABASE).toString());
+        .arg(producerName).arg(getHyperlink(DATABASE, getRequiredParam(DATABASE)));
     return doc;
 }
 

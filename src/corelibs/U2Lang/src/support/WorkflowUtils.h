@@ -101,6 +101,9 @@ public:
     QString getRequiredParam(const QString& id);
     QVariant getParameter(const QString& id);
     QString getProducers(const QString& port, const QString& slot);
+    static QString getHyperlink(const QString& id, const QString& val);
+    static QString getHyperlink(const QString& id, int val);
+    static QString getHyperlink(const QString& id, qreal val);
 
     virtual QString composeRichDoc() = 0;
     virtual void update(const QVariantMap& cfg) {map = cfg; sl_actorModified();}

@@ -186,7 +186,7 @@ QString FindPrompter::composeRichDoc() {
     cfg.strand = getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>());
     cfg.maxErr = getParameter(ERR_ATTR).toInt();
     cfg.insDelAlg = getParameter(ALGO_ATTR).toBool();
-    QString pattern = getRequiredParam(PATTERN_ATTR);
+    QString pattern = getHyperlink(PATTERN_ATTR, getRequiredParam(PATTERN_ATTR));
 
     QString strandName;
     switch (cfg.strand) {
@@ -202,22 +202,23 @@ QString FindPrompter::composeRichDoc() {
         default:
             assert(false);
     }
+    strandName = getHyperlink(BaseAttributes::STRAND_ATTRIBUTE().getId(), strandName);
 
     QString searchInTranslationSelected = "";
     if (getParameter(AMINO_ATTR).toBool()) {
         searchInTranslationSelected = "<u>" + tr("translated") + "</u>" + " ";
     }
+    searchInTranslationSelected = getHyperlink(AMINO_ATTR, searchInTranslationSelected);
 
-    QString resultName = getRequiredParam(NAME_ATTR);
+    QString resultName = getHyperlink(NAME_ATTR, getRequiredParam(NAME_ATTR));
 
     QString matches;
-    if (0 == cfg.maxErr)
-    {
-        matches = tr("A substring must <u>match a pattern exactly</u>.");
-    }
-    else
-    {
-        matches = tr("Maximum <u>number of mismatches is %1</u>.").arg(cfg.maxErr);
+    if (0 == cfg.maxErr) {
+        matches = tr("A substring must %1.")
+            .arg(getHyperlink(ERR_ATTR, tr("match a pattern exactly")));
+    } else {
+        matches = tr("Maximum number of mismatches is %1.")
+            .arg(getHyperlink(ERR_ATTR, cfg.maxErr));
     }
 
     QString doc = tr("Searches regions in each sequence from <u>%1</u>"

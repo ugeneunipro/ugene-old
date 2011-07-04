@@ -70,6 +70,17 @@ public:
 
     void changeScriptMode(bool _mode);
 
+    QModelIndex modelIndexById(const QString& id) {
+        for (int i=0; i<attrs.size(); i++) {
+            Attribute* a = attrs.at(i);
+            if (a->getId()==id) {
+                QModelIndex modelIndex = index(i, 1);
+                return modelIndex;
+            }
+        }
+        return QModelIndex();
+    }
+
 private:
     bool setAttributeValue( const Attribute * attr, QVariant & attrValue ) const;
     void setupAttributesScripts();

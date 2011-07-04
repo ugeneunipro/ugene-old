@@ -511,4 +511,17 @@ QString PrompterBaseImpl::getProducers( const QString& port, const QString& slot
     }
     return labels.join(", ");
 }
+
+QString PrompterBaseImpl::getHyperlink(const QString& id, const QString& val) {
+    return QString("<a href=param:%1>%2</a>").arg(id).arg(val);
+}
+
+QString PrompterBaseImpl::getHyperlink(const QString& id, int val) {
+    return getHyperlink(id, QString::number(val));
+}
+
+QString PrompterBaseImpl::getHyperlink(const QString& id, qreal val) {
+    return getHyperlink(id, QString::number(val));
+}
+
 }//namespace

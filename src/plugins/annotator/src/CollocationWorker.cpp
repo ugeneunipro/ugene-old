@@ -141,12 +141,13 @@ QString CollocationPrompter::composeRichDoc() {
         data = tr("For each %1%2,").arg(seqName).arg(annName);
     }
 
-    QString annotations = getParameter(ANN_ATTR).toString();
+    QString annotations;
     QStringList names = annotations.split(QRegExp("\\W+"), QString::SkipEmptyParts).toSet().toList();
     annotations = names.join(", ");
     if (annotations.isEmpty()) {
         annotations = getRequiredParam(ANN_ATTR);
     }
+    annotations = getHyperlink(ANN_ATTR, annotations);
 
     int distance = getParameter(LEN_ATTR).toInt();
     bool mode = getParameter(FIT_ATTR).toBool();
@@ -156,12 +157,12 @@ QString CollocationPrompter::composeRichDoc() {
         extra = tr(" Annotations themselves may not span beyond the region.");
     }
 
-    QString resultName = getRequiredParam(NAME_ATTR);
+    QString resultName = getHyperlink(NAME_ATTR, getRequiredParam(NAME_ATTR));
     QString doc = tr("%1 look if <u>%2</u> annotations appear collocated within same region of length <u>%3</u>.%4"
         "<br>Output the list of found regions annotated as <u>%5</u>.")
         .arg(data) //sequence from Read Fasta 1
         .arg(annotations)
-        .arg(distance)
+        .arg(getHyperlink(LEN_ATTR, distance))
         .arg(extra)
         .arg(resultName);
 

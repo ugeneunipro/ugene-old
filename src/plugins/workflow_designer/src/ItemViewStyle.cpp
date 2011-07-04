@@ -51,7 +51,8 @@ const StyleId ItemStyles::EXTENDED = "ext";
 #define BGC QString("-bgc")
 #define FONT QString("-font")
 
-ItemViewStyle::ItemViewStyle(const QString& id) : active(false), defFont(WorkflowSettings::defaultFont()), id(id) {
+ItemViewStyle::ItemViewStyle(WorkflowProcessItem* p, const QString& id) : QGraphicsObject(p), defFont(WorkflowSettings::defaultFont()), id(id) {
+    setVisible(false);
     bgColorAction = new QAction(tr("Background color"), this);
     connect(bgColorAction, SIGNAL(triggered()), SLOT(selectBGColor()));
 
@@ -101,7 +102,7 @@ void ItemViewStyle::loadState(QDomElement& el) {
     }
 }
 
-SimpleProcStyle::SimpleProcStyle(WorkflowProcessItem* pit) : ItemViewStyle(ItemStyles::SIMPLE) {
+SimpleProcStyle::SimpleProcStyle(WorkflowProcessItem* pit) : ItemViewStyle(pit, ItemStyles::SIMPLE) {
     owner = (pit);
     owner->connect(owner->getProcess(), SIGNAL(si_labelChanged()), SLOT(sl_update()));
     bgColor = defaultColor();
@@ -165,7 +166,7 @@ void SimpleProcStyle::paint(QPainter *painter,
 
 #define MARGIN 5
 
-ExtendedProcStyle::ExtendedProcStyle(WorkflowProcessItem* pit) : ItemViewStyle(ItemStyles::EXTENDED),
+ExtendedProcStyle::ExtendedProcStyle(WorkflowProcessItem* pit) : ItemViewStyle(pit, ItemStyles::EXTENDED),
 autoResize(true), resizing(NoResize) {
     owner = (pit);
     Actor* process = pit->getProcess();
@@ -179,6 +180,7 @@ autoResize(true), resizing(NoResize) {
             .arg(process->getLabel()).arg(process->getProto()->getDocumentation()));
     }
     owner->connect(fontAction, SIGNAL(triggered()), SLOT(sl_update()));
+    desc = new DescriptionItem(this);
     refresh();
 
     resizeModeAction = new QAction(tr("Auto-resize to text"), this);
@@ -187,7 +189,6 @@ autoResize(true), resizing(NoResize) {
     connect(resizeModeAction, SIGNAL(toggled(bool)), SLOT(setAutoResizeEnabled(bool)));
 
     bgColor = defaultColor();
-    snap2GridFlag = WorkflowSettings::snap2Grid();
 }
 
 QColor ExtendedProcStyle::defaultColor() const {
@@ -232,6 +233,7 @@ void ExtendedProcStyle::refresh() {
     } else {
         //bounds.setSize(bounds.size().expandedTo(doc->size() + QSizeF(MARGIN*2,MARGIN*2)));
     }
+    desc->setDocument(doc);
 }
 
 QPainterPath ExtendedProcStyle::shape () const {
@@ -251,12 +253,6 @@ void ExtendedProcStyle::paint(QPainter *painter,
     bgColor.setAlpha(64);
     QRectF tb = boundingRect();
     painter->fillRect(tb, QBrush(bgColor));
-
-    painter->save();
-    painter->translate(-R + MARGIN, -R + MARGIN);
-    doc->drawContents(painter, QRectF(QPointF(),bounds.size() - QSizeF(MARGIN*2,MARGIN*2)));
-    painter->restore();
-
     
     painter->setRenderHint(QPainter::Antialiasing);
 
@@ -300,61 +296,19 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
     case QEvent::GraphicsSceneHoverEnter:
     case QEvent::GraphicsSceneHoverMove:
         {
-            snap2GridFlag = WorkflowSettings::snap2Grid();
-            resizing = NoResize;
-            QGraphicsSceneHoverEvent* he = (static_cast<QGraphicsSceneHoverEvent *>(event));
-            QPointF p = he->pos();
-            qreal dx = qAbs(bounds.right() - p.x());
-            qreal dy = qAbs(bounds.bottom() - p.y());
-            if (dx < RESIZE_AREA) {
-                resizing |= RightResize;
-            }
-            if(dx > (bounds.width() - RESIZE_AREA)) {
-                resizing |= LeftResize;
-            }
-            if (dy < RESIZE_AREA) {
-                resizing |= BottomResize;
-            }
-            if(dy > (bounds.height() - RESIZE_AREA)) {
-                resizing |= TopResize;
-            }
-
-            switch (resizing)
-            {
-            case NoResize:
-                owner->unsetCursor();
-                break;
-            case RightResize:
-            case LeftResize:
-                owner->setCursor(Qt::SizeHorCursor);
-                break;
-            case BottomResize:
-            case TopResize:
-                owner->setCursor(Qt::SizeVerCursor);
-                break;
-            case RBResize:
-            case LTResize:
-                owner->setCursor(Qt::SizeFDiagCursor);
-                break;
-            case LBResize:
-            case RTResize:
-                owner->setCursor(Qt::SizeBDiagCursor);
-                break;
-            }
-            ret = (resizing != NoResize);
+            QGraphicsSceneHoverEvent* he = static_cast<QGraphicsSceneHoverEvent*>(event);
+            ret = updateCursor(he->pos());
         }
         break;
-    case QEvent::GraphicsSceneHoverLeave:
     case QEvent::GraphicsSceneMouseRelease:
-        if (resizing) 
-        {
+        desc->mouseReleaseEvent(event);
+    case QEvent::GraphicsSceneHoverLeave:
+        if (resizing) {
             owner->unsetCursor();
-            WorkflowSettings::setSnap2Grid(snap2GridFlag);
         }
         resizing = NoResize;
         break;
     case QEvent::GraphicsSceneMouseMove:
-        
         if (resizing && event->spontaneous()) {
             QGraphicsSceneMouseEvent* me = (static_cast<QGraphicsSceneMouseEvent *>(event));
             WorkflowSettings::setSnap2Grid(false);
@@ -466,6 +420,50 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
     return ret;
 }
 
+bool ExtendedProcStyle::updateCursor(const QPointF& p) {
+    bool ret = false;
+    resizing = NoResize;
+    qreal dx = qAbs(bounds.right() - p.x());
+    qreal dy = qAbs(bounds.bottom() - p.y());
+    if (dx < RESIZE_AREA) {
+        resizing |= RightResize;
+    }
+    if(dx > (bounds.width() - RESIZE_AREA)) {
+        resizing |= LeftResize;
+    }
+    if (dy < RESIZE_AREA) {
+        resizing |= BottomResize;
+    }
+    if(dy > (bounds.height() - RESIZE_AREA)) {
+        resizing |= TopResize;
+    }
+
+    switch (resizing)
+    {
+    case NoResize:
+        owner->unsetCursor();
+        break;
+    case RightResize:
+    case LeftResize:
+        owner->setCursor(Qt::SizeHorCursor);
+        break;
+    case BottomResize:
+    case TopResize:
+        owner->setCursor(Qt::SizeVerCursor);
+        break;
+    case RBResize:
+    case LTResize:
+        owner->setCursor(Qt::SizeFDiagCursor);
+        break;
+    case LBResize:
+    case RTResize:
+        owner->setCursor(Qt::SizeBDiagCursor);
+        break;
+    }
+    ret = (resizing != NoResize);
+    return ret;
+}
+
 void ExtendedProcStyle::setFixedBounds( const QRectF& b)
 {
     doc->setPageSize(b.size() - QSizeF(MARGIN*2,MARGIN*2));
@@ -479,11 +477,6 @@ void ExtendedProcStyle::setFixedBounds( const QRectF& b)
     }
     owner->update();
     resizeModeAction->setChecked(false);
-}
-
-void ExtendedProcStyle::setActive( bool v )
-{
-    /*autoResize =*/ active = v;
 }
 
 void ExtendedProcStyle::setAutoResizeEnabled(bool b) {
@@ -522,6 +515,13 @@ void ExtendedProcStyle::loadState(QDomElement& el) {
     ItemViewStyle::loadState(el);
 }
 
+void ExtendedProcStyle::linkHovered(const QString& url) {
+    if (url.isEmpty()) {
+        owner->unsetCursor();
+    } else {
+        owner->setCursor(Qt::PointingHandCursor);
+    }
+}
 
 HintItem::HintItem( const QString & text, QGraphicsItem * parent)
 : QGraphicsTextItem(text, parent), dragging(false) {
@@ -592,6 +592,48 @@ void HintItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 void HintItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
     dragging = false;
     QGraphicsTextItem::mouseReleaseEvent(event);
+}
+
+DescriptionItem::DescriptionItem(ExtendedProcStyle* p) : QGraphicsTextItem(p) {
+    setPos(-R + MARGIN, -R + MARGIN);
+    setAcceptHoverEvents(true);
+    setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::LinksAccessibleByKeyboard);
+    p->connect(this, SIGNAL(linkActivated(const QString&)), SIGNAL(linkActivated(const QString&)));
+    p->connect(this, SIGNAL(linkHovered(const QString&)), SLOT(linkHovered(const QString&)));
+    //setZValue(-1000);
+}
+
+QRectF DescriptionItem::boundingRect() const {
+    QRectF bounds = parentItem()->boundingRect();
+    bounds.translate(R - MARGIN, R - MARGIN);
+    return bounds;
+}
+
+void DescriptionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    QStyleOptionGraphicsItem deselectedOption = *option;
+    deselectedOption.state &= ~(QStyle::State_Selected | QStyle::State_HasFocus);
+    QGraphicsTextItem::paint(painter, &deselectedOption, widget);
+}
+
+void DescriptionItem::mouseReleaseEvent(QEvent *event) {
+    QGraphicsSceneMouseEvent* e = static_cast<QGraphicsSceneMouseEvent*>(event);
+    e->setPos(mapFromParent(e->pos()));
+    QGraphicsTextItem::mouseReleaseEvent(e);
+}
+
+bool DescriptionItem::sceneEvent(QEvent *event) {
+    switch (event->type()) {
+        case QEvent::GraphicsSceneHoverMove:
+        case QEvent::GraphicsSceneHoverEnter:
+            ExtendedProcStyle* owner = qgraphicsitem_cast<ExtendedProcStyle*>(parentItem());
+            if (owner->resizing) {
+                QGraphicsSceneHoverEvent* he = static_cast<QGraphicsSceneHoverEvent*>(event);
+                const QPointF& p = mapToParent(he->pos());
+                owner->updateCursor(p);
+            }
+            break;
+    }
+    return QGraphicsTextItem::sceneEvent(event);
 }
 
 }//namespace

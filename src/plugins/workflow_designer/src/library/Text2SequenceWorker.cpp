@@ -217,23 +217,30 @@ QString Text2SequencePrompter::composeRichDoc() {
     Actor * txtProducer = input->getProducer(BaseSlots::TEXT_SLOT().getId());
     QString txtProducetStr = tr(" from <u>%1</u>").arg(txtProducer ? txtProducer->getLabel() : unsetStr);
     
-    QString seqName = getParameter(SEQ_NAME_ATTR_ID).value<QString>();
-    QString seqNameStr = tr("sequence with name <u>%1</u>").arg(!seqName.isEmpty() ? seqName : unsetStr);
+    QString seqName = getRequiredParam(SEQ_NAME_ATTR_ID);
+    QString seqNameStr = tr("sequence with name <u>%1</u>").arg(getHyperlink(SEQ_NAME_ATTR_ID, seqName));
     
     QString alId = getParameter(ALPHABET_ATTR_ID).value<QString>();
     QString seqAlStr;
     if(alId == ALPHABET_ATTR_ID_DEF_VAL) {
-        seqAlStr = tr("Automatically detect sequence alphabet");
+        seqAlStr = getHyperlink(ALPHABET_ATTR_ID, tr("Automatically detect sequence alphabet"));
     } else {
         alId = Text2SequenceWorker::cuteAlIdNames.key(alId, "");
         DNAAlphabet * alphabet = AppContext::getDNAAlphabetRegistry()->findById(alId);
-        seqAlStr = tr("Set sequence alphabet to <u>%1</u>").arg(alphabet ? alphabet->getName() : unsetStr);
+        QString alphStr = getHyperlink(ALPHABET_ATTR_ID, alphabet ? alphabet->getName() : unsetStr);
+        seqAlStr = tr("Set sequence alphabet to %1").arg(alphStr);
     }
     
     bool skipUnknown = getParameter(SKIP_SYM_ATTR_ID).value<bool>();
-    QString replaceStr = getParameter(REPLACE_SYM_ATTR_ID).value<QString>();
-    QString unknownSymbolsStr = skipUnknown ? tr("<u>skipped</u>") : 
-                                              tr("<u>replaced with symbol %1</u>").arg(!replaceStr.isEmpty() ? replaceStr : unsetStr );
+    QString replaceStr = getRequiredParam(REPLACE_SYM_ATTR_ID);
+    QString unknownSymbolsStr;
+    if (skipUnknown) {
+        unknownSymbolsStr = getHyperlink(SKIP_SYM_ATTR_ID, tr("skipped"));
+    } else {
+        unknownSymbolsStr = QString("%1 %2")
+            .arg(getHyperlink(SKIP_SYM_ATTR_ID, tr("replaced with symbol")))
+            .arg(getHyperlink(REPLACE_SYM_ATTR_ID, replaceStr));
+    }
     
     QString doc = tr("Convert input text%1 to %2. %3. Unknown symbols are %4.")
         .arg(txtProducetStr)

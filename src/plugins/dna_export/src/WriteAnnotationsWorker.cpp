@@ -199,7 +199,10 @@ QString WriteAnnotationsPrompter::composeRichDoc() {
     QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId());
     QString format = getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId()).value<QString>();
     
-    return tr("Save all annotations from <u>%1</u> to %2 in <u>%3</u> format").arg(annName).arg(url).arg(format);
+    return tr("Save all annotations from <u>%1</u> to %2 in %3 format")
+        .arg(annName)
+        .arg(getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url))
+        .arg(getHyperlink(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), format));
 }
 
 } // LocalWorkflow

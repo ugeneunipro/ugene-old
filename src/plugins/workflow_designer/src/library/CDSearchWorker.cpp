@@ -133,9 +133,11 @@ QString CDSearchPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
+    QString dbStr = target->getParameter(DATABASE_ATTR)->getAttributeValue<QString>();
+
     QString doc = tr("For sequence %1 find conserved domains in database <u>%2</u>")
         .arg(producerName)
-        .arg(target->getParameter(DATABASE_ATTR)->getAttributeValue<QString>());
+        .arg(getHyperlink(DATABASE_ATTR, dbStr));
     return doc;
 }
 

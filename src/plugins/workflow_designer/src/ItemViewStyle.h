@@ -41,12 +41,10 @@ const qreal A = 8;
 class ItemViewStyle : public QGraphicsObject {
     Q_OBJECT
 public:
-    ItemViewStyle(const QString& id);
+    ItemViewStyle(WorkflowProcessItem* p, const QString& id);
     QString getId() const {return id;}
 
     virtual void refresh() {}
-    virtual void setActive(bool v) {active = v;}
-    bool isActive() const {return active;}
     virtual bool sceneEventFilter(QGraphicsItem *, QEvent *) {return false;}
     virtual QList<QAction*> getContextMenuActions() const {return (QList<QAction*>() << bgColorAction << fontAction);}
     virtual void saveState(QDomElement& ) const;
@@ -59,7 +57,6 @@ public:
     
 protected:
     WorkflowProcessItem* owner;
-    bool active;
     QColor bgColor;
     QFont defFont;
 
@@ -81,6 +78,8 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
 };
 
+class DescriptionItem;
+
 class ExtendedProcStyle : public ItemViewStyle {
     Q_OBJECT
 public:
@@ -90,7 +89,6 @@ public:
     QColor defaultColor() const;
     void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
     virtual void refresh();
-    virtual void setActive(bool v);
     virtual bool sceneEventFilter(QGraphicsItem * watched, QEvent * event);
     virtual QList<QAction*> getContextMenuActions() const;
     virtual void saveState(QDomElement& ) const;
@@ -99,14 +97,19 @@ public:
     bool isAutoResized() const {return autoResize;}
     void setFixedBounds(const QRectF& b);
 
+    bool updateCursor(const QPointF& pos);
+
+signals:
+    void linkActivated(const QString&);
+
 private slots:
     void setAutoResizeEnabled(bool b);
+    void linkHovered(const QString&);
     
 private:
     QTextDocument* doc;
     QRectF bounds;
     bool autoResize;
-    bool snap2GridFlag;
 
     enum ResizeMode {NoResize = 0, RightResize = 1, LeftResize = 2, BottomResize = 4, TopResize = 8, 
         RBResize = RightResize + BottomResize, RTResize = RightResize + TopResize, 
@@ -114,6 +117,8 @@ private:
     int resizing;
 
     QAction* resizeModeAction;
+    DescriptionItem* desc;
+    friend class DescriptionItem;
 };
 
 class HintItem : public QGraphicsTextItem {
@@ -126,6 +131,17 @@ protected:
 private:
     QPointF initPos;
     bool dragging;
+};
+
+class DescriptionItem : public QGraphicsTextItem {
+    Q_OBJECT
+public:
+    DescriptionItem(ExtendedProcStyle* p);
+    void mouseReleaseEvent(QEvent *event);
+protected:
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    bool sceneEvent(QEvent *event);
 };
 
 }//namespace

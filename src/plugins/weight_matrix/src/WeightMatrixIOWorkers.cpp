@@ -192,18 +192,17 @@ Worker* PWMatrixWorkerFactory::createWorker(Actor* a) {
 }
 
 QString PWMatrixReadPrompter::composeRichDoc() {
-    return tr("Read model(s) from <u>%1</u>").arg(getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId()));
+    return tr("Read model(s) from <u>%1</u>").arg(getHyperlink(BaseAttributes::URL_IN_ATTRIBUTE().getId(), getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId())));
 }
 
 QString PWMatrixWritePrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(WMATRIX_IN_PORT_ID));
     Actor* producer = input->getProducer(PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE_ID);
-    if (!producer) {
-        return getURL(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
-    }
+    QString from = producer ? producer->getLabel() : "<font color='red'>"+tr("unset")+"</font>";
     QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId()); 
+    url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
     QString doc = tr("Save the profile(s) from <u>%1</u> to %2.")
-        .arg(producer->getLabel())
+        .arg(from)
         .arg(url);
     return doc;
 }
@@ -408,18 +407,17 @@ Worker* PFMatrixWorkerFactory::createWorker(Actor* a) {
 }
 
 QString PFMatrixReadPrompter::composeRichDoc() {
-    return tr("Read model(s) from <u>%1</u>").arg(getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId()));
+    return tr("Read model(s) from <u>%1</u>").arg(getHyperlink(BaseAttributes::URL_IN_ATTRIBUTE().getId(), getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId())));
 }
 
 QString PFMatrixWritePrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(FMATRIX_IN_PORT_ID));
     Actor* producer = input->getProducer(PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE_ID);
-    if (!producer) {
-        return getURL(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
-    }
+    QString from = producer ? producer->getLabel() : "<font color='red'>"+tr("unset")+"</font>";
     QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId()); 
+    url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
     QString doc = tr("Save the profile(s) from <u>%1</u> to %2.")
-        .arg(producer->getLabel())
+        .arg(from)
         .arg(url);
     return doc;
 }

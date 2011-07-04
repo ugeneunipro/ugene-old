@@ -166,7 +166,7 @@ void HMMIOWorkerFactory::init() {
 }
 
 QString HMMReadPrompter::composeRichDoc() {
-    return tr("Read HMM profile(s) from %1").arg(getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId()));
+    return tr("Read HMM profile(s) from %1").arg(getHyperlink(BaseAttributes::URL_IN_ATTRIBUTE().getId(), getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId())));
 }
 
 QString HMMWritePrompter::composeRichDoc() {
@@ -175,6 +175,7 @@ QString HMMWritePrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerStr = producer ? producer->getLabel() : unsetStr;
     QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId()); 
+    url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
     QString doc = tr("Save HMM profile(s) from <u>%1</u> to <u>%2</u>.")
         .arg(producerStr)
         .arg(url);

@@ -130,6 +130,7 @@ QString WriteGenbankPrompter::composeRichDoc() {
     
     QString url = getScreenedURL( qobject_cast<IntegralBusPort*>(target->getPort(outPortId)), 
         BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId() );
+    url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
     
     QString data;
     if (seqName.isEmpty() && annName.isEmpty()) {
@@ -154,6 +155,7 @@ QString WriteFastaPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(outPortId));
     QString url = getScreenedURL( qobject_cast<IntegralBusPort*>(target->getPort(outPortId)),
         BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId() );
+    url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
 
     Actor* seqProducer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
     if (!seqProducer) {
@@ -186,6 +188,7 @@ QString WriteDocPrompter::composeRichDoc() {
     QString outPortId = target->getInputPorts().first()->getId();
     QString url = getScreenedURL( qobject_cast<IntegralBusPort*>(target->getPort(outPortId)), 
         BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId() );
+    url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
     
     QString producers = getProducers(outPortId, slot);
     if (producers.isEmpty()) {
@@ -199,7 +202,8 @@ QString WriteDocPrompter::composeRichDoc() {
  * ReadDocPrompter
  *****************************/
 QString ReadDocPrompter::composeRichDoc() {
-    return spec.arg(getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId()));
+    const QString& id = BaseAttributes::URL_IN_ATTRIBUTE().getId();
+    return spec.arg(getHyperlink(id, getURL(id)));
 }
 
 }//namespace Workflow

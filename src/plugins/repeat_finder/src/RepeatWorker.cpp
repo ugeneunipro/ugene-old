@@ -156,10 +156,10 @@ QString RepeatPrompter::composeRichDoc() {
         "<br>Detect <u>%3% identical</u> repeats <u>not shorter than %4 bps</u>."
         "<br>Output the list of found regions annotated as <u>%5</u>.")
         .arg(producerName) //sequence from Read Fasta 1
-        .arg(inverted) 
-        .arg(getParameter(IDENTITY_ATTR).toInt())
-        .arg(getParameter(LEN_ATTR).toInt())
-        .arg(resultName);
+        .arg(getHyperlink(INVERT_ATTR, inverted))
+        .arg(getHyperlink(IDENTITY_ATTR, getParameter(IDENTITY_ATTR).toInt()))
+        .arg(getHyperlink(LEN_ATTR, getParameter(LEN_ATTR).toInt()))
+        .arg(getHyperlink(NAME_ATTR, resultName));
     
     return doc;
 }

@@ -288,7 +288,7 @@ QString BlastAllPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
     QString doc = tr("For sequence %1 find annotations in database <u>%2</u>")
-        .arg(producerName).arg(getParameter(DATABASE_NAME).toString());
+        .arg(producerName).arg(getHyperlink(DATABASE_NAME, getRequiredParam(DATABASE_NAME)));
 
     return doc;
 }
