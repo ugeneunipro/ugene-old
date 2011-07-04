@@ -64,6 +64,18 @@ void CAP3SupportDialog::accept()
     } 
     
     settings.outputFilePath = outputPathLineEdit->text();
+    settings.bandExpansionSize = bandExpansionBox->value();
+    settings.baseQualityClipCutoff = baseQualityClipCutoffBox->value();
+    settings.baseQualityDiffCutoff = baseQualityDiffCutoffBox->value();
+    settings.maxQScoreSum = maxQScoreDiffBox->value();
+    settings.gapPenaltyFactor = gapPenaltyFactorBox->value();
+    settings.maxGapLength = maxGapLengthBox->value();
+    settings.matchScoreFactor = matchScoreFactorBox->value();
+    settings.mismatchScoreFactor = mismatchScoreFactorBox->value();
+    settings.overlapPercentIdentetyCutoff = overlapPercentIdentityBox->value();
+    settings.overlapLengthCutoff = overlapLengthCutoffBox->value();
+    settings.overlapSimilarityScoreCutoff = overlapSimilarityScoreCutoffBox->value();
+    settings.reverseReads = reverseReadsBox->isChecked();
 
     QDialog::accept();
 }

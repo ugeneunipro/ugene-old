@@ -44,10 +44,44 @@ class CopyDataTask;
 class CAP3SupportTaskSettings {
 public:
     CAP3SupportTaskSettings() 
-        : openView(true) {}
+    {
+        openView = true;
+        bandExpansionSize = 20;
+        baseQualityDiffCutoff = 20;
+        baseQualityClipCutoff = 12;
+        maxQScoreSum = 200;
+        maxGapLength = 20;
+        gapPenaltyFactor = 6;
+        maxOverhangPercent = 20;
+        matchScoreFactor = 2;
+        mismatchScoreFactor = -5;
+        overlapSimilarityScoreCutoff = 900;
+        overlapLengthCutoff = 40;
+        overlapPercentIdentetyCutoff = 80;
+        reverseReads = 1;
+    }
+    
+    QStringList getArgumentsList();
+
     QStringList inputFiles;
     QString outputFilePath;
     bool openView;
+    int bandExpansionSize;
+    int baseQualityDiffCutoff;
+    int baseQualityClipCutoff;
+    int maxQScoreSum;
+    int maxGapLength;
+    int gapPenaltyFactor;
+    int maxOverhangPercent;
+    int matchScoreFactor;
+    int mismatchScoreFactor;
+    int overlapLengthCutoff;
+    int overlapPercentIdentetyCutoff;
+    int overlapSimilarityScoreCutoff;
+    int maxNumberOfWordMatches;
+    int clippingRange;
+    int reverseReads;
+
 };
 
 class PrepareInputForCAP3Task : public Task {
@@ -56,8 +90,7 @@ public:
     PrepareInputForCAP3Task(const QStringList& inputFiles, const QString& outputDirPath);
     void prepare();
     void run();
-    ReportResult report();
-    QString getPreparedPath() { return preparedPath; }
+    const QString& getPreparedPath() { return preparedPath; }
 private:
     QList<CopyDataTask*> copyTasks;
     QStringList inputUrls;

@@ -275,15 +275,17 @@ void PrepareInputForCAP3Task::run()
 
 }
 
-Task::ReportResult PrepareInputForCAP3Task::report()
+
+QStringList CAP3SupportTaskSettings::getArgumentsList()
 {
-    return ReportResult_Finished;
+    QStringList res;
+    res += QString("-a %1").arg(bandExpansionSize);
+    res += QString("-b %1").arg(baseQualityDiffCutoff);
+    res += QString("-c %1").arg(baseQualityClipCutoff);
+    res += QString("-d %1").arg(maxQScoreSum);
+    res += QString("-r %1").arg(reverseReads);
+
+    return res;
 }
-
-
-
-
-
-
 
 }//namespace

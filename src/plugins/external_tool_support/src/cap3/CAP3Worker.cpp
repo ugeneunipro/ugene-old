@@ -44,23 +44,12 @@ namespace LocalWorkflow {
 
 
 
- /****************************
- /*CAP3WorkerFactory
- /****************************/
+ //////////////////////////////////////////////////////////////////////////
+ //CAP3WorkerFactory
+ //////////////////////////////////////////////////////////////////////////
 
 const QString CAP3WorkerFactory::ACTOR_ID("CAP3");
 const QString INPUT_FILE_PATH("input-path");
-/*const QString GAP_OPEN_PENALTY("gap-open-penalty");
-const QString GAP_EXT_PENALTY("gap-ext-penalty");
-const QString GAP_DIST("gap-distance");
-const QString END_GAPS("close-gap-penalty");
-const QString NO_PGAPS("no-residue-specific-gaps");
-const QString NO_HGAPS("no-hydrophilic-gaps");
-const QString ITERATION("iteration-type");
-const QString NUM_ITERATIONS("iterations-max-num");
-const QString MATRIX("matrix");
-const QString EXT_TOOL_PATH("path");
-const QString TMP_DIR_PATH("temp-dir");*/
 
 void CAP3WorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
@@ -93,9 +82,10 @@ void CAP3WorkerFactory::init() {
     localDomain->registerEntry(new CAP3WorkerFactory());
 }
 
-/****************************
-/* CAP3Prompter
-/****************************/
+//////////////////////////////////////////////////////////////////////////
+// CAP3Prompter
+//////////////////////////////////////////////////////////////////////////
+
 CAP3Prompter::CAP3Prompter(Actor* p) : PrompterBase<CAP3Prompter>(p) {
 }
 
@@ -106,9 +96,10 @@ QString CAP3Prompter::composeRichDoc() {
 
     return doc;
 }
-/****************************
-/* CAP3Worker
-/****************************/
+//////////////////////////////////////////////////////////////////////////
+// CAP3Worker
+//////////////////////////////////////////////////////////////////////////
+
 CAP3Worker::CAP3Worker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {
 }
 
