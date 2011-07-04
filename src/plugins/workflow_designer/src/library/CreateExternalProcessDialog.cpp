@@ -685,7 +685,7 @@ bool CreateExternalProcessDialog::validate() {
             return false;
         } 
         if(dc.attrName.contains(invalidSymbols)) {
-            QMessageBox::critical(this, title, tr("Invalid symbols in name").arg(dc.attrName));
+            QMessageBox::critical(this, title, tr("Invalid symbols in name %1").arg(dc.attrName));
             return false;
         }
         nameList << dc.attrName;
@@ -696,7 +696,7 @@ bool CreateExternalProcessDialog::validate() {
             return false;
         } 
         if(dc.attrName.contains(invalidSymbols)) {
-            QMessageBox::critical(this, title, tr("Invalid symbols in name").arg(dc.attrName));
+            QMessageBox::critical(this, title, tr("Invalid symbols in name %1").arg(dc.attrName));
             return false;
         }
         nameList << dc.attrName;
@@ -707,7 +707,7 @@ bool CreateExternalProcessDialog::validate() {
             return false;
         } 
         if(ac.attrName.contains(invalidSymbols)) {
-            QMessageBox::critical(this, title, tr("Invalid symbols in name").arg(ac.attrName));
+            QMessageBox::critical(this, title, tr("Invalid symbols in name %1").arg(ac.attrName));
             return false;
         }
         nameList << ac.attrName;

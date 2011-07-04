@@ -752,6 +752,7 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addAction(createScriptAcction);
     m->addAction(editScriptAction);
     m->addAction(externalToolAction);
+    m->addAction(appendExternalTool);
     m->addSeparator();
 
     QMenu* ttMenu = new QMenu(tr("Item style"));

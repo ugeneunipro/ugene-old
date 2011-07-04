@@ -169,7 +169,7 @@ void URLLineEdit::sl_onBrowse() {
     QString lastDir = lod.dir;
     GUrl currentUrl(text());
     QDir dir(currentUrl.dirPath());
-    if(dir.exists()) {
+    if(!text().isEmpty() && dir.exists()) {
         lastDir = currentUrl.dirPath();
     }
 

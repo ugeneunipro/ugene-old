@@ -40,6 +40,7 @@ public:
         ExternalToolCfgRegistry * reg = WorkflowEnv::getExternalCfgRegistry();
         cfg = reg->getConfigByName(actor->getProto()->getId());
         commandLine = cfg->cmdLine;
+        done = false;
     }
     bool isReady();
     bool isDone();
@@ -60,6 +61,7 @@ private:
 
     QStringList inputUrls;
     QMap<QString, DataConfig> outputUrls;
+    bool done;
 };
 
 class ExternalProcessWorkerFactory: public DomainFactory {

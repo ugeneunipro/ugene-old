@@ -126,7 +126,7 @@ bool ExternalProcessWorkerFactory::init(ExternalProcessConfig *cfg) {
 const QString ExternalProcessWorker::generateURL(const QString &extention, const QString &name) {
     QString url;
     QString path = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath();
-    url = path + "/tmp" + name + QString::number(QDateTime::currentDateTime().toTime_t()) + QDateTime::currentDateTime().toString() + "." + extention;
+    url = path + "/tmp" + name + QString::number(QDateTime::currentDateTime().toTime_t()) +  "." + extention;
     return url;
 }
 
@@ -270,6 +270,7 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
         }
         if(isEnded) {
             output->setEnded();
+            done = true;
         }
     }
 }
@@ -284,7 +285,7 @@ void ExternalProcessWorker::init() {
 
 bool ExternalProcessWorker::isReady() {
     if(inputs.isEmpty()) {
-        return true;
+        return !done;
     } else {
         bool res = true;
         foreach(const CommunicationChannel *ch, inputs) {
@@ -297,11 +298,12 @@ bool ExternalProcessWorker::isReady() {
 }
 
 bool ExternalProcessWorker::isDone() {
-    bool res = true;
+    /*bool res = true;
     foreach(CommunicationChannel *ch, inputs) {
         res = res && ch->isEnded();
-    }
-    return res;
+    }*/
+
+    return done;
 }
 
 void ExternalProcessWorker::cleanup() {
