@@ -169,6 +169,8 @@ public:
     virtual QModelIndex	parent ( const QModelIndex & index ) const;
     virtual bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
     virtual bool insertRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
+    virtual bool insertColumns(int position, int columns, const QModelIndex &parent = QModelIndex());
+    virtual bool removeColumns(int position, int columns, const QModelIndex &parent = QModelIndex());
     virtual Qt::ItemFlags flags ( const QModelIndex & index ) const;
     virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
     QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;

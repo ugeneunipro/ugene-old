@@ -95,7 +95,7 @@ AnnotationsTreeViewL::AnnotationsTreeViewL(AnnotatedDNAView* _ctx) : ctx(_ctx){
 
     tree->setHeaderLabels(headerLabels);
     tree->setHeaderHidden(false);
-    tree->header()->setStretchLastSection(true);
+    //tree->header()->setStretchLastSection(true);
     tree->setUniformRowHeights(true);
     tree->setSelectionMode(QAbstractItemView::ExtendedSelection);
     tree->viewport()->installEventFilter(this);
@@ -443,7 +443,7 @@ void AnnotationsTreeViewL::sl_onAnnotationObjectAdded(AnnotationTableObject* obj
     AVGroupItemL* groupItem = createGroupItem(root, obj->getRootGroup());
     if(tree->lineHeight == 1) {
         //tree->lineHeight = tree->rowHeight(model->guessIndex(groupItem));
-        tree->setLineHeight(tree->rowHeight(model->guessIndex(groupItem)));
+        tree->setLineHeight(tree->rowHeight(tree->guessIndex(groupItem)));
     }
     tree->calculateIndex(obj);
     tree->realNumberOfItems++;
@@ -601,10 +601,9 @@ void AnnotationsTreeViewL::sl_onAnnotationModified(const AnnotationModification&
                         tree->insertItem(ai->childCount() - 1, qi, false);
                         tree->realNumberOfItems++;
                         tree->updateSlider();
-                        LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel *>(tree->model());
                         tree->emptyExpand = true;
                         renameFlag = false;
-                        tree->expand(lm->guessIndex(qi->parent()));
+                        tree->expand(tree->guessIndex(qi->parent()));
                         tree->emptyExpand = false;
 
                     } else {
@@ -1395,7 +1394,6 @@ void AnnotationsTreeViewL::sl_itemClicked(QTreeWidgetItem * i, int column) {
 }
 
 void AnnotationsTreeViewL::sl_itemExpanded(QTreeWidgetItem* qi) {
-    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(tree->model());
     int current = tree->onScreen.size();
     int lim = tree->getMaxItem();
     int itemsToAdd;
@@ -1412,7 +1410,8 @@ void AnnotationsTreeViewL::sl_itemExpanded(QTreeWidgetItem* qi) {
         tree->insertItem(i->parent()->childCount() - 1, i, false);
         if(tree->treeWalker->isExpanded(i)) {
             tree->emptyExpand = true;
-            tree->expand(lm->guessIndex(i));
+            tree->expand(tree->guessIndex(i));
+            tree->emptyExpand = false;
         }
     }
 
@@ -1427,7 +1426,8 @@ void AnnotationsTreeViewL::sl_itemExpanded(QTreeWidgetItem* qi) {
         tree->insertItem(i->parent()->childCount() - 1, i);
         if(tree->treeWalker->isExpanded(i)) {
             tree->emptyExpand = true;
-            tree->expand(lm->guessIndex(i));
+            tree->expand(tree->guessIndex(i));
+            tree->emptyExpand = false;
         }
 
         tree->removeItem(bottomItem);
@@ -1439,7 +1439,6 @@ void AnnotationsTreeViewL::sl_itemExpanded(QTreeWidgetItem* qi) {
 void AnnotationsTreeViewL::sl_itemCollapsed(QTreeWidgetItem* qi) {
     destroyTree(qi);
     qi->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(tree->model());
     
     int current = tree->onScreen.size();
     int lim = tree->getMaxItem();
@@ -1452,7 +1451,7 @@ void AnnotationsTreeViewL::sl_itemCollapsed(QTreeWidgetItem* qi) {
     while(item && acceptable > 0) {
         tree->insertItem(item->parent()->childCount() - 1, item, false);
         if(tree->treeWalker->isExpanded(item)) {
-            tree->expand(lm->guessIndex(item));
+            tree->expand(tree->guessIndex(item));
         }
         acceptable--;
         if(acceptable > 0) {
@@ -1549,16 +1548,20 @@ void AnnotationsTreeViewL::addQualifierColumn(const QString& q) {
 
     qColumns.append(q);
     int nColumns = headerLabels.size() + qColumns.size();
-    tree->setColumnCount(nColumns);
+    //tree->setColumnCount(nColumns);
+    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(tree->model());
     tree->setHeaderLabels(headerLabels + qColumns);
-    tree->setColumnWidth(nColumns-2, nColumns - 2 == 1 ? 200 : 100);
-    updateAllAnnotations(ATVAnnUpdateFlag_QualColumns);
+    lm->insertColumn(nColumns);
     
+    tree->setColumnWidth(nColumns-2, nColumns - 2 == 1 ? 200 : 100);
+    
+    updateAllAnnotations(ATVAnnUpdateFlag_QualColumns);
     updateState();
 }
 
 
 void AnnotationsTreeViewL::removeQualifierColumn(const QString& q) {
+    int ind = qColumns.indexOf(q);
     bool ok = qColumns.removeOne(q);
     if (!ok) {
         return;
@@ -1566,10 +1569,13 @@ void AnnotationsTreeViewL::removeQualifierColumn(const QString& q) {
 
     TreeSorter ts(this);
 
-    tree->setColumnCount(headerLabels.size() + qColumns.size());
+    //tree->setColumnCount(headerLabels.size() + qColumns.size());
+    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(tree->model());
     tree->setHeaderLabels(headerLabels + qColumns);
-    updateAllAnnotations(ATVAnnUpdateFlag_QualColumns);
+    lm->removeColumn(ind);
     
+    updateAllAnnotations(ATVAnnUpdateFlag_QualColumns);
+
     updateState();
 }
 
@@ -1773,8 +1779,7 @@ void AnnotationsTreeViewL::sl_addQualifier() {
         //ai->setExpanded(true);
         AVQualifierItemL* qi = new AVQualifierItemL(ai, q);
         //sl_itemExpanded(ai);
-        LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(tree->model());
-        tree->expand(lm->guessIndex(qi->parent()));
+        tree->expand(tree->guessIndex(qi->parent()));
         //AVQualifierItemL* qi = ai->findQualifierItem(q.name, q.value);
         tree->setCurrentItem(qi);
         tree->scrollToItem(qi);
@@ -1863,14 +1868,12 @@ QTreeWidgetItem* LazyTreeView::currentItem() {
 }
 
 void LazyTreeView::scrollToItem(QTreeWidgetItem *item, ScrollHint hint) {
-    LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
-    QModelIndex index = modell->guessIndex(item);
+    QModelIndex index = guessIndex(item);
     scrollTo(index, hint);
 }
 
 void LazyTreeView::setCurrentItem(QTreeWidgetItem *item) {
-    LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
-    QModelIndex index = modell->guessIndex(item);
+    QModelIndex index = guessIndex(item);
     setCurrentIndex (index);
 }
 
@@ -1909,7 +1912,6 @@ void LazyTreeView::scrollContentsBy ( int, int dy ) {
     }
 
     CustomSlider *slider = static_cast<CustomSlider*>(verticalScrollBar());
-    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(model());
 
     if(slider->numToScroll() != 0) {
         numToScroll = qBound(0, slider->numToScroll(), slider->getMaxVal());
@@ -1935,10 +1937,13 @@ void LazyTreeView::scrollContentsBy ( int, int dy ) {
         }
     }
 
-    if(indexAt(QPoint(0,0)) != lm->guessIndex(onScreen.first())) {
+    if(indexAt(QPoint(0,0)) != guessIndex(onScreen.first())) {
         flag = true;
-        
-        scrollTo(lm->guessIndex(onScreen.first()), QAbstractItemView::PositionAtTop);
+        emptyExpand = true;
+        //expand(guessIndex(onScreen.first()->parent())); //if don't expand parent, qtreeview itself will expand it and resize scroll bar
+        //emptyExpand = false;
+        scrollTo(guessIndex(onScreen.first()), QAbstractItemView::PositionAtTop);
+        emptyExpand = false;
         
     }
     slider->setPosition(pos);
@@ -1963,16 +1968,23 @@ int LazyTreeView::scrollOneItemUp() {
 }
 
 int LazyTreeView::scrollOneItemDown() {
-    LazyAnnotationTreeViewModel* lm = static_cast<LazyAnnotationTreeViewModel*>(model());
     AVItemL *item = getNextItemDown(static_cast<AVItemL*>(onScreen.last()));
     if(item) {
         QTreeWidgetItem *toDelete = onScreen.first();
         insertItem(item->parent()->childCount() - 1, item, false);
         if(treeWalker->isExpanded(item)) {
             emptyExpand = true;
-            expand(lm->guessIndex(item));
+            expand(guessIndex(item));
+            emptyExpand = false;
         }
+
+        QTreeWidgetItem *parentToDelete = toDelete->parent();
         if(toDelete->childCount() == 0) {
+            removeItem(toDelete);
+        }
+        while(parentToDelete->childCount() == 0) {
+            toDelete = parentToDelete;
+            parentToDelete = parentToDelete->parent();
             removeItem(toDelete);
         }
         return 1;
@@ -2058,7 +2070,7 @@ void LazyTreeView::insertItemBehindView(int row, QTreeWidgetItem *item) {
     lm->nextToAdd = (AVItemL*)item;
 
     lm->debugFlag = true;
-    lm->insertRow(row, lm->guessIndex(parent));
+    lm->insertRow(row, guessIndex(parent));
 }
 
 void LazyTreeView::insertItem(int row, QTreeWidgetItem *item, bool removeLast) {
@@ -2068,7 +2080,7 @@ void LazyTreeView::insertItem(int row, QTreeWidgetItem *item, bool removeLast) {
     lm->nextToAdd = (AVItemL*)item;
 
     lm->debugFlag = true;
-    lm->insertRow(row, lm->guessIndex(parent));
+    lm->insertRow(row, guessIndex(parent));
 
     int ind;
     if(onScreen.indexOf(parent) != -1) {
@@ -2106,7 +2118,7 @@ void LazyTreeView::removeItem(QTreeWidgetItem *item, bool removeAll) {
         if(currentItem() == item) {
             setCurrentIndex(QModelIndex());
         }
-        lm->removeRow(parent->indexOfChild(item), lm->guessIndex(parent));
+        lm->removeRow(parent->indexOfChild(item), guessIndex(parent));
     }
 }
 
@@ -2183,21 +2195,26 @@ AVItemL * LazyTreeView::getNextItemDown(AVItemL *bottom){ //Get item next down f
 }
 
 AVItemL * LazyTreeView::getLastItemInSubtree(AnnotationGroup *gr, AnnotationsTreeViewL *view) {
-    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel *>(model());
     if(gr->getSubgroups().isEmpty()) {
-        if(gr->getAnnotations().isEmpty()) {
-
-        }
         Annotation *a = gr->getAnnotations().last();
         if(treeWalker->isExpanded(a, gr)) {
             AVAnnotationItemL *annItem = view->findAnnotationItem(gr, a);
             AVGroupItemL *upperGroup = view->findGroupItem(gr);
+            if(upperGroup == NULL) {
+                AVGroupItemL *pGroup = view->findGroupItem(gr->getParentGroup());
+                assert(pGroup);
+                upperGroup = new AVGroupItemL(view, pGroup, gr);
+                insertItemBehindView(0, upperGroup);
+            }
             if(annItem == NULL) {
                 annItem = new AVAnnotationItemL(upperGroup, a);
                 insertItemBehindView(upperGroup->childCount() - 1, annItem);
                 if(treeWalker->isExpanded(a, gr)) {
                     emptyExpand = true;
-                    expand(lm->guessIndex(annItem));
+                    expand(guessIndex(annItem));
+                    emptyExpand = true;
+                    expand(guessIndex(upperGroup));
+                    emptyExpand = false;
                 }
             }
             return new AVQualifierItemL(annItem, a->getQualifiers().last());
@@ -2209,7 +2226,8 @@ AVItemL * LazyTreeView::getLastItemInSubtree(AnnotationGroup *gr, AnnotationsTre
                 insertItemBehindView(/*upperGroup->childCount() - 1*/0, parentGroup);
                 if(treeWalker->isExpanded(gr)) {
                     emptyExpand = true;
-                    expand(lm->guessIndex(parentGroup));
+                    expand(guessIndex(parentGroup));
+                    emptyExpand = false;
                 }
             }
             return new AVAnnotationItemL(parentGroup, a);
@@ -2219,14 +2237,15 @@ AVItemL * LazyTreeView::getLastItemInSubtree(AnnotationGroup *gr, AnnotationsTre
         if(treeWalker->isExpanded(childGroup)) {
             return getLastItemInSubtree(childGroup, view);
         } else {
-            AVGroupItemL *parentGroup = view->findGroupItem(gr);
+            AVGroupItemL *parentGroup = view->findGroupItem(gr); //FIXME: what if group don't exist
             AVGroupItemL *upperGroup = view->findGroupItem(gr->getParentGroup());
             if(parentGroup == NULL) {
                 parentGroup = new AVGroupItemL(view, upperGroup, gr);
                 insertItemBehindView(/*upperGroup->childCount() - 1 */0, parentGroup);
                 if(treeWalker->isExpanded(gr)) {
                     emptyExpand = true;
-                    expand(lm->guessIndex(parentGroup));
+                    expand(guessIndex(parentGroup));
+                    emptyExpand = false;
                 }
             }
             return new AVGroupItemL(view, parentGroup, childGroup);
@@ -2270,6 +2289,11 @@ AVItemL * LazyTreeView::getNextItemUp(){ //Get item upper than first on screen
                      if(!annItem) { //If annotation not in tree, insert it in tree
                         annItem = new AVAnnotationItemL(currentGroup, currentGroup->getAnnotationGroup()->getAnnotations()[index - 1]);
                         insertItemBehindView(0, annItem);
+                        if(treeWalker->isExpanded(currentGroup->getAnnotationGroup()->getAnnotations()[index - 1], currentGroup->getAnnotationGroup())) {
+                            emptyExpand = true;
+                            expand(guessIndex(annItem));
+                            emptyExpand = false;
+                        }
                      }
                      //Last qualifier of previous annotation
                      nextItem = new AVQualifierItemL(annItem, annItem->annotation->getQualifiers().last());
@@ -2289,7 +2313,7 @@ AVItemL * LazyTreeView::getNextItemUp(){ //Get item upper than first on screen
                     return NULL; //reached top of tree
                 } else {
                     AVGroupItemL *rootGroup = static_cast<AVGroupItemL*>(parentGroup->child(index - 1)); //Another top group
-                    if(treeWalker->isExpanded(rootGroup->getAnnotationGroup())) {//If top group is expanded, get lat item in it
+                    if(treeWalker->isExpanded(rootGroup->getAnnotationGroup())) {//If top group is expanded, get last item in it
                         return getLastItemInSubtree(rootGroup->getAnnotationGroup(), rootGroup->getAnnotationTreeView());
                     } else { //or return top group
                         return rootGroup;
@@ -2334,7 +2358,7 @@ void LazyTreeView::resizeModel(){
         if(dif < 0) {
             item = getNextItemUp();
         }
-        while(item && dif < 0) { //Add item to top
+        while(item && dif < 0) { //Add items to top
             flag = true;
             QTreeWidgetItem *last = onScreen.first();
             if(item == last->parent()) {
@@ -2353,6 +2377,13 @@ void LazyTreeView::resizeModel(){
             dif--;
         }
     }
+    if(indexAt(QPoint(0,0)) != guessIndex(onScreen.first())) {
+        flag = true;
+        emptyExpand = true;
+        scrollTo(guessIndex(onScreen.first()), QAbstractItemView::PositionAtTop);
+        emptyExpand = false;
+
+    }
     updateSlider();
 }
 
@@ -2368,6 +2399,7 @@ void LazyTreeView::updateSlider() {
         maxVal = realNumberOfItems - numOnScreen;
     }
     CustomSlider *slider = static_cast<CustomSlider*>(verticalScrollBar());
+    slider->setCustomPageStep(numOnScreen);
     slider->setPageStep(numOnScreen);
     slider->setMaxVal(maxVal);
     slider->setMaximum(slider->getMaxVal());
@@ -2437,8 +2469,6 @@ void LazyTreeView::resizeEvent( QResizeEvent *event ) {
     if(numOnScreen == 0) {
         numOnScreen = 1;
     }
-    CustomSlider *slider = static_cast<CustomSlider*>(verticalScrollBar());
-    slider->setCustomPageStep(numOnScreen);
     resizeModel();
 }
 
@@ -2449,9 +2479,8 @@ void LazyTreeView::sl_entered( const QModelIndex &index ) {
 }
 
 void LazyTreeView::updateItem( QTreeWidgetItem *item ) {
-    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel *>(model());
-    update(lm->guessIndex(item));
-    setDirtyRegion(QRegion(visualRect(lm->guessIndex(item))));
+    update(guessIndex(item));
+    setDirtyRegion(QRegion(visualRect(guessIndex(item))));
     viewport()->repaint();
 }
 
@@ -2461,6 +2490,10 @@ void LazyTreeView::setLineHeight( int height ) {
     slider->setRowHeight(height);
 }
 
+QModelIndex LazyTreeView::guessIndex( QTreeWidgetItem *item ) {
+    LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(model());
+    return lm->guessIndex(item);
+}
 
 void AnnotationsTreeViewL::focusOnItem(Annotation *a) {
     QList<int> indexes;
@@ -2524,7 +2557,7 @@ void AnnotationsTreeViewL::focusOnItem(Annotation *a) {
         if(!oldList.contains(item)) {
             tree->insertItem(0, item, false);
             if(tree->treeWalker->isExpanded(item)) {
-                tree->expand(lm->guessIndex(item));
+                tree->expand(tree->guessIndex(item));
             }
         } else {
             tree->onScreen.insert(0, item);
@@ -2538,11 +2571,11 @@ void AnnotationsTreeViewL::focusOnItem(Annotation *a) {
     /************************************************************************
     Scroll to upper item on screen
     ************************************************************************/
-    if(tree->indexAt(QPoint(0,0)) != lm->guessIndex(tree->onScreen.first())) {
+    if(tree->indexAt(QPoint(0,0)) != tree->guessIndex(tree->onScreen.first())) {
         tree->flag = true;
         CustomSlider *slider = static_cast<CustomSlider *>(tree->verticalScrollBar());
         slider->setPosition(tree->getPositionInTree(tree->onScreen.first()));
-        tree->scrollTo(lm->guessIndex(tree->onScreen.first()), QAbstractItemView::PositionAtTop);
+        tree->scrollTo(tree->guessIndex(tree->onScreen.first()), QAbstractItemView::PositionAtTop);
     }
 }
 
@@ -2566,7 +2599,7 @@ void CustomSlider::setPosition( int pos ) {
 }
 
 void CustomSlider::setCustomPageStep( int ps ) {
-    pageStep = ps;
+    //pageStep = ps;
 }
 
 void CustomSlider::sliderChange( SliderChange sc ) {
@@ -2587,7 +2620,7 @@ void CustomSlider::paintEvent( QPaintEvent * ) {
     options.maximum = maxVal;
     options.minimum = minVal;
     options.singleStep = 1;
-    options.pageStep = pageStep;
+    options.pageStep = pageStep();
     options.orientation = Qt::Vertical;
     options.sliderValue = sliderPos;
     options.upsideDown = false;
@@ -2618,11 +2651,11 @@ void CustomSlider::mousePressEvent(QMouseEvent *me) {
             sliderPressed = true;
         } else if(grooveRect.contains(me->pos())) { //mouse was pressed on free space of scroll bar -> scroll on page step
             if(me->pos().y() < sliderRect.topLeft().y()) {
-                dif = pageStep;
-                setSliderPosition(sliderPosition() - pageStep);
+                dif = pageStep();
+                setSliderPosition(sliderPosition() - pageStep());
             } else if(me->pos().y() > sliderRect.bottomLeft().y()) {
-                dif = pageStep;
-                setSliderPosition(sliderPosition() + pageStep);
+                dif = pageStep();
+                setSliderPosition(sliderPosition() + pageStep());
             }
         } else{ //mouse was pressed on arrows
             if(me->pos().y() < sliderRect.topLeft().y()) {

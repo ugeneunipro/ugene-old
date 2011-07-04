@@ -164,6 +164,27 @@ bool LazyAnnotationTreeViewModel::hasChildren ( const QModelIndex & parent) cons
     }
 }
 
+bool LazyAnnotationTreeViewModel::insertColumns( int position, int columns, const QModelIndex &parent /*= QModelIndex()*/ ) {
+    beginInsertColumns(parent, position, position + columns - 1);
+    //success = rootItem->insertColumns(position, columns);
+    nCol += columns;
+    endInsertColumns();
+
+    return true;
+}
+
+bool LazyAnnotationTreeViewModel::removeColumns( int position, int columns, const QModelIndex &parent /*= QModelIndex()*/ ) {
+    beginRemoveColumns(parent, position, position + columns - 1);
+    //success = rootItem->removeColumns(position, columns);
+    nCol -= columns;
+    endRemoveColumns();
+    
+    if(nCol >= 2) {
+        return true;
+    } else {
+        return false;
+    }
+}
 //Tree Index
 
 TreeIndex::TreeIndex() {
@@ -559,13 +580,6 @@ int AVGroupItemL::childNumber() const{
         return 0;
     }
 }
-/*
-void AVGroupItemL::changeIndexes(int i) {
-    for(int j = i; j < childCount(); j++) {
-        AVItemL *childItem = static_cast<AVItemL*>(child(j));
-        //childItem->setRow(j);
-    }
-}*/
 
 AVAnnotationItemL::AVAnnotationItemL(AVGroupItemL* parent, Annotation* a) : AVItemL(parent, AVItemType_Annotation), annotation(a) {
     updateVisual(ATVAnnUpdateFlags(ATVAnnUpdateFlag_BaseColumns) | ATVAnnUpdateFlag_QualColumns);    

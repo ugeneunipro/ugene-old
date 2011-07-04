@@ -79,7 +79,7 @@ private:
     int minVal;
     int maxVal;
     int sliderPos;
-    int pageStep;
+    //int pageStep;
     int rowHeight;
     QStyleOptionSlider options;
     int dif;
@@ -112,6 +112,8 @@ public:
     int getExpandedNumber(AnnotationGroup *gr);
     void updateItem(QTreeWidgetItem *item);
     void setLineHeight(int height);
+
+    QModelIndex guessIndex(QTreeWidgetItem *item);
 
     
 
