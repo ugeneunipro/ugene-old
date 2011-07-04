@@ -51,7 +51,7 @@ public:
     float* getRotationMatrix() { return rotMatrix.data(); }
     void rotateCamera(const Vector3D& rotAxis, float rotAngle);
 
-    void setCameraClip(float near, float far);
+    void setCameraClip(float clipNear, float clipFar);
 
     const Vector3D getCameraPosition() const;
     void setCameraPosition(const Vector3D &v);

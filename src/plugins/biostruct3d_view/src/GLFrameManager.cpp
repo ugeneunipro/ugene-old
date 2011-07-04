@@ -80,9 +80,9 @@ void GLFrame::setCameraPosition(const Vector3D &v) {
     cameraPosition = v;
 }
 
-void GLFrame::setCameraClip(float near, float far) {
-    cameraClipNear = near;
-    cameraClipFar = far;
+void GLFrame::setCameraClip(float clipNear, float clipFar) {
+    cameraClipNear = clipNear;
+    cameraClipFar = clipFar;
 }
 
 void GLFrame::rotateCamera(const Vector3D& rotAxis, float rotAngle )
