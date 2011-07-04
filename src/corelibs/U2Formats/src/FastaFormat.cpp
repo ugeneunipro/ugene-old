@@ -51,36 +51,41 @@ FastaFormat::FastaFormat(QObject* p)
 }
 
 static QVariantMap analyzeRawData(const QByteArray& data) {
-    QVariantMap res;
-    res[RawDataCheckResult_Sequence] = true;
-    QList<QByteArray> sequences = data.split('>');
-    if (sequences.size() > 1) {
-        res[RawDataCheckResult_MultipleSequences] = true;
-        int hasGaps = false;
-        int minLen = -1;
-        int maxLen = -1;
-        foreach (const QByteArray& sequence, sequences) {
-            QList<QByteArray> lines = sequence.split('\n');
-            int len = 0;
-            for (int i = 1; i < lines.size(); i++) {
-                const QByteArray& line = lines[i];
-                if (!hasGaps && line.contains(MAlignment_GapChar)) {
-                    hasGaps = true;
-                }
-                len += line.length();
-            }
+    int hasGaps = false;
+    int minLen = -1;
+    int maxLen = -1;
+    int len = 0;
+    int nSequences = 0;
+    QTextStream input(data, QIODevice::ReadOnly);
+    QString line;
+    do {
+        line = input.readLine();
+        if (line[0] == '>') {
+            nSequences++;
             if (len > 0) {
                 minLen = minLen == -1 ? len : qMin(minLen, len);
                 maxLen = maxLen == -1 ? len : qMax(maxLen, len);
             }
+            len = 0;
+        } else {
+            len += line.length();
+            if (!hasGaps && line.contains(MAlignment_GapChar)) {
+                hasGaps = true;
+            }
         }
-        if (hasGaps) {
-            res[RawDataCheckResult_SequenceWithGaps] = true;
-        }
-        if (minLen > 0) {
-            res[RawDataCheckResult_MaxSequenceSize] = maxLen;
-            res[RawDataCheckResult_MinSequenceSize] = minLen;
-        }
+    } while (!line.isEmpty());
+
+    QVariantMap res;
+    res[RawDataCheckResult_Sequence] = true;
+    if (hasGaps) {
+        res[RawDataCheckResult_SequenceWithGaps] = true;
+    }
+    if (nSequences > 1) {
+        res[RawDataCheckResult_MultipleSequences] = true;
+    }
+    if (minLen > 0) {
+        res[RawDataCheckResult_MaxSequenceSize] = maxLen;
+        res[RawDataCheckResult_MinSequenceSize] = minLen;
     }
     return res;
 }

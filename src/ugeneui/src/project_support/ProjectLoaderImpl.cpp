@@ -662,23 +662,34 @@ QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
 
     foreach(const AD2P_DocumentInfo& info, docsInfo) {
         Document* doc = p->findDocumentByURL(info.url);
+        bool unsupportedObjectType = false;
         if (doc == NULL) {
             DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(info.formatId);
             GObjectType t = df->getSupportedObjectTypes().toList().first();
             if (GObjectTypes::getTypeInfo(t).type == GObjectTypes::UNKNOWN) {
-                continue;
+                unsupportedObjectType = true;
             }
             doc = new Document(df, info.iof, info.url, QList<UnloadedObjectInfo>(), info.hints);
         }
-        if (info.openView) {
-            res << new AddDocumentAndOpenViewTask(doc);
+        if (unsupportedObjectType) {
+            if (info.openView) {
+                res << new LoadUnloadedDocumentAndOpenViewTask(doc);
+            } else {
+                coreLog.trace(QString("View limit exceed for the document: %1").arg(info.url.getURLString()));
+                delete doc;
+            }
         } else {
-            res << new AddDocumentTask(doc);
+            if (info.openView) {
+                res << new AddDocumentAndOpenViewTask(doc);
+            } else {
+                res << new AddDocumentTask(doc);
+            }
         }
+        
     }
 
     AddDocumentTaskConfig conf;
-    conf.unloadExistingDocument = true;// -> re-import kills old version
+    conf.unloadExistingDocument = true;// -> re-import kills old document version
     foreach(const AD2P_ProviderInfo& info, providersInfo) {
         if (info.openView) {
             res << new AddDocumentAndOpenViewTask(info.dp, conf);
