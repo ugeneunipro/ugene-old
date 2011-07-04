@@ -70,6 +70,7 @@ class CAP3SupportTask : public Task {
 public:
     CAP3SupportTask(const CAP3SupportTaskSettings& settings);
     void prepare();
+    MAlignmentObject* getResultAlignment() { return maObject; }
     Task::ReportResult report();
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:

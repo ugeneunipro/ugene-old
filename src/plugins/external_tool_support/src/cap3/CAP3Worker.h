@@ -30,19 +30,19 @@ namespace U2 {
 
 namespace LocalWorkflow {
 
-/*
-class ClustalWPrompter : public PrompterBase<ClustalWPrompter> {
+
+class CAP3Prompter : public PrompterBase<CAP3Prompter> {
     Q_OBJECT
 public:
-    ClustalWPrompter(Actor* p = 0);
+    CAP3Prompter(Actor* p = 0);
 protected:
     QString composeRichDoc();
 };
 
-class ClustalWWorker : public BaseWorker {
+class CAP3Worker : public BaseWorker {
     Q_OBJECT
 public:
-    ClustalWWorker(Actor* a);
+    CAP3Worker(Actor* a);
     
     virtual void init();
     virtual bool isReady();
@@ -56,18 +56,18 @@ private slots:
 protected:
     CommunicationChannel *input, *output;
     QString resultName,transId;
-    ClustalWSupportTaskSettings cfg;
+    CAP3SupportTaskSettings cfg;
     
 }; 
 
-class ClustalWWorkerFactory : public DomainFactory {
+class CAP3WorkerFactory : public DomainFactory {
 public:
     static const QString ACTOR_ID;
     static void init();
-    ClustalWWorkerFactory() : DomainFactory(ACTOR_ID) {}
-    virtual Worker* createWorker(Actor* a) {return new ClustalWWorker(a);}
+    CAP3WorkerFactory() : DomainFactory(ACTOR_ID) {}
+    virtual Worker* createWorker(Actor* a) {return new CAP3Worker(a);}
 };
-*/
+
 } // Workflow namespace
 } // U2 namespace
 
