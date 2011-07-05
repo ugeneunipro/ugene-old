@@ -51,7 +51,7 @@ StructuralAlignmentTask::StructuralAlignmentTask(StructuralAlignmentAlgorithm *_
 {}
 
 void StructuralAlignmentTask::run() {
-    result = algorithm->align(settings);
+    result = algorithm->align(settings, stateInfo);
 }
 
 Task::ReportResult StructuralAlignmentTask::report() {
@@ -60,23 +60,29 @@ Task::ReportResult StructuralAlignmentTask::report() {
 
 QString StructuralAlignmentTask::generateReport() const {
     QString res;
-    res += QString("Structural alignment finished on <b>%1</b> (reference) vs <b>%2</b>").arg(settings.ref.print(), settings.alt.print()) + "<br><br>";
-    res += QString("<b>RMSD</b> = %1").arg(result.rmsd);
 
-    res += "<table><tr><td>";
-        res += "<b>Transform</b> = ";
-    res += "</td><td>";
-        res += "<table>";
-            res += "<tr>";
-            for (int i = 0; i < 16; ++i) {
-                res += "<td>" + QString::number(result.transform[i]) + "</td>";
-                if ((i+1) % 4 == 0 && i < 15) {
-                    res += "<\tr><tr>";
+    if (!hasError()) {
+        res += QString("Structural alignment finished on <b>%1</b> (reference) vs <b>%2</b>").arg(settings.ref.print(), settings.alt.print()) + "<br><br>";
+        res += QString("<b>RMSD</b> = %1").arg(result.rmsd);
+
+        res += "<table><tr><td>";
+            res += "<b>Transform</b> = ";
+        res += "</td><td>";
+            res += "<table>";
+                res += "<tr>";
+                for (int i = 0; i < 16; ++i) {
+                    res += "<td>" + QString::number(result.transform[i]) + "</td>";
+                    if ((i+1) % 4 == 0 && i < 15) {
+                        res += "<\tr><tr>";
+                    }
                 }
-            }
-            res += "</tr>";
-        res += "</table>";
-    res += "</td></tr></table>";
+                res += "</tr>";
+            res += "</table>";
+        res += "</td></tr></table>";
+    }
+    else {
+        res += QString("Structural alignment on <b>%1</b> (reference) vs <b>%2</b> failed").arg(settings.ref.print(), settings.alt.print());
+    }
 
     return res;
 }

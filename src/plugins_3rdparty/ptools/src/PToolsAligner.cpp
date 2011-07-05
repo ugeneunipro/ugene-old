@@ -107,8 +107,10 @@ QString PToolsAligner::validate(const StructuralAlignmentTaskSettings &settings)
     return QString();
 }
 
-StructuralAlignment PToolsAligner::align(const StructuralAlignmentTaskSettings &settings) {
+StructuralAlignment PToolsAligner::align(const StructuralAlignmentTaskSettings &settings, TaskStateInfo &state) {
     algoLog.trace(QString("PToolsAligner started on %1 (reference) vs %2").arg(settings.ref.print(), settings.alt.print()));
+
+    QString error;
 
     StructuralAlignment result;
     try {
@@ -128,10 +130,15 @@ StructuralAlignment PToolsAligner::align(const StructuralAlignmentTaskSettings &
         }
     }
     catch (std::exception e) {
-        algoLog.error(QString("Internal ptools error: %1").arg(e.what()));
+        error = QString("Internal ptools error: %1").arg(e.what());
     }
     catch (...) {
-        algoLog.error(QString("Internal ptools error"));
+        error = QString("Internal ptools error");
+    }
+
+    if (!error.isEmpty()) {
+        algoLog.error(error);
+        state.setError(error);
     }
 
     return result;

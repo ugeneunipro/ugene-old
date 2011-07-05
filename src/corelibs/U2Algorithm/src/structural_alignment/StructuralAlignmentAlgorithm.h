@@ -87,7 +87,7 @@ public:
       * @returns "" on ok and error descripton on fail
       */
     virtual QString validate(const StructuralAlignmentTaskSettings &settings) = 0;
-    virtual StructuralAlignment align(const StructuralAlignmentTaskSettings &settings) = 0;
+    virtual StructuralAlignment align(const StructuralAlignmentTaskSettings &settings, TaskStateInfo &state) = 0;
 };  // class StructuralAlignmentAlgorithm
 
 /** Task wrapper for structural alignment algorithm */
