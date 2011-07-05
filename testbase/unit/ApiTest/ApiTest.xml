@@ -49,4 +49,7 @@ AttributeDbiTest
 + StringAttribute
 + ByteArrayAttribute
 
+RepeatTest
++ t01
+
 </gtest>
