@@ -3,10 +3,6 @@
 
 #include <core/dbi/DbiTest.h>
 
-#include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2Sequence.h>
-
 
 namespace U2 {
 

@@ -22,12 +22,36 @@ public:
     }
 
     template<class T>
-    bool addValue(const QString& key, const T& val) {
+    void addValue(const QString& key, const T& val) {
         assert(!key.isEmpty());
         assert(!d.keys().contains(key));
         const QVariant& var = qVariantFromValue<T>(val);
         d[key] = var;
-        return true;
+    }
+
+    template<class T>
+    QList<T> getList(const QString& key) const {
+        const QVariant& val = d.value(key);
+        if (val.type() != QVariant::List) {
+            return QList<T>();
+        }
+        const QVariantList& varList = val.toList();
+        QList<T> list;
+        foreach(const QVariant& var, varList) {
+            list << qVariantValue<T>(var);
+        }
+        return list;
+    }
+
+    template<class T>
+    void addList(const QString& key, const QList<T>& list) {
+        assert(!key.isEmpty());
+        assert(!d.keys().contains(key));
+        QVariantList varList;
+        foreach(const T& val, list) {
+            varList << qVariantFromValue<T>(val);
+        }
+        d[key] = varList;
     }
 
 private:

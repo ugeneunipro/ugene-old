@@ -4,6 +4,9 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2Sequence.h>
 
 #include <QtCore/QDir>
 
@@ -25,13 +28,8 @@ const QString& UPDATE_SEQ = "update_seq";
 
 APITestData SequenceDbiTest::initTestData() {
     APITestData d;
-    // COMMON_DATA_DIR
-    {
-        QString dataDirPath = AppContext::getAppSettings()->getTestRunnerSettings()->getVar("SequenceDbiTest");
-        QDir dataDir(dataDirPath);
-        QString dbUrl = dataDir.absoluteFilePath("test-sequenceDbi1.ugenedb");
-        d.addValue(BaseDbiTest::DB_URL, dbUrl);
-    }
+
+    d.addValue<QString>(BaseDbiTest::DB_URL, "sequence-dbi.ugenedb");
 
     d.addValue<QByteArray>(INVALID_SEQ_ID, "anmr%");
 

@@ -596,11 +596,9 @@ void HintItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
 
 DescriptionItem::DescriptionItem(ExtendedProcStyle* p) : QGraphicsTextItem(p) {
     setPos(-R + MARGIN, -R + MARGIN);
-    setAcceptHoverEvents(true);
     setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::LinksAccessibleByKeyboard);
     p->connect(this, SIGNAL(linkActivated(const QString&)), SIGNAL(linkActivated(const QString&)));
     p->connect(this, SIGNAL(linkHovered(const QString&)), SLOT(linkHovered(const QString&)));
-    //setZValue(-1000);
 }
 
 QRectF DescriptionItem::boundingRect() const {

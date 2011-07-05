@@ -10,52 +10,86 @@
 
 namespace U2 {
 
+class GTestFilterBuilder {
+public:
+    bool addTestCase(const QString& testCase) {
+        if (testCase.isEmpty() || filter.keys().contains(testCase)) {
+            return false;
+        }
+        filter[testCase] = QStringList();
+        return true;
+    }
+
+    bool addTest(const QString& testCase, const QString& test) {
+        if (!filter.keys().contains(testCase)) {
+            return false;
+        }
+        filter[testCase].append(test); 
+        return true;
+    }
+
+    QString buildFilterString() const {
+        QString filterString;
+        QMapIterator<QString, QStringList> iter(filter);
+
+        while(iter.hasNext()) {
+            iter.next();
+            const QStringList& tests = iter.value();
+            if (tests.isEmpty()) {
+                continue;
+            }
+            
+            int i = 0;
+            if (filterString.isEmpty()) {
+                filterString = QString("--gtest_filter=*/%1.%2/*").arg(iter.key()).arg(tests.first());
+                i = 1;
+            }
+
+            for (; i<tests.size(); i++) {
+                const QString& test = tests.at(i);
+                filterString += QString(":*/%1.%2/*").arg(iter.key()).arg(test);
+            }
+        }
+        return filterString;
+    }
+
+private:
+    QMap<QString, QStringList> filter;
+};
+
 void GTest_APITest::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
-    tcase = el.attribute("case");
-    if (tcase.isEmpty()) {
-        failMissingValue(tr("Test case is not set"));
-    }
+
+    GTestFilterBuilder builder;
 
     QString testList = el.text();
     QTextStream stream(&testList);
     QString line = stream.readLine();
+    QString testCase;
     while (!line.isNull()) {
         line = line.trimmed();
         if (line.startsWith('+')) {
             line.remove(0,1);
             line = line.trimmed();
-            included.append(line);
-        } else if (line.startsWith('-')) {
-            line.remove(0,1);
-            line = line.trimmed();
-            excluded.append(line);
+            builder.addTest(testCase, line);
+        } else if (!line.startsWith('-') && !line.startsWith('#')) {
+            testCase = line;
+            builder.addTestCase(line);
         }
         line = stream.readLine();
     }
+
+    filter = builder.buildFilterString();
 }
 
 void GTest_APITest::prepare() {
     QString dataDir = env->getVar("COMMON_DATA_DIR");
-    AppContext::getAppSettings()->getTestRunnerSettings()->setVar(tcase, dataDir);
+    AppContext::getAppSettings()->getTestRunnerSettings()->setVar("COMMON_DATA_DIR", dataDir);
 }
 
 void GTest_APITest::run() {
-    if (included.isEmpty()) {
+    if (filter.isEmpty()) {
         return;
-    }
-    QString filter = QString("--gtest_filter=*/%1.%2/*").arg(tcase).arg(included.first());
-    for (int i=1; i<included.size(); i++) {
-        const QString& testName = included.at(i);
-        filter += QString(":*/%1.%2/*").arg(tcase).arg(testName);
-    }
-
-    if (!excluded.isEmpty()) {
-        filter += QString("-*/%1.%2/*").arg(tcase).arg(excluded.first());
-        for(int i=1; i<excluded.size(); i++) {
-            const QString& ex = excluded.at(i);
-            filter += QString(":*/%1.%2/*").arg(tcase).arg(ex);
-        }
     }
 
     QByteArray ba = filter.toLocal8Bit();
@@ -70,7 +104,7 @@ void GTest_APITest::run() {
 }
 
 void GTest_APITest::cleanup() {
-    AppContext::getAppSettings()->getTestRunnerSettings()->removeVar(tcase);
+    AppContext::getAppSettings()->getTestRunnerSettings()->removeVar("COMMON_DATA_DIR");
 }
 
 } //namespace

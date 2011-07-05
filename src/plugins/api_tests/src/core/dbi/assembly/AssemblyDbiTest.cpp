@@ -47,14 +47,8 @@ static const QString& COVERAGE_REGION_OUT = "calc_coverage_region_out";
 
 APITestData createTestData() {
     APITestData d;
-
-    // COMMON_DATA_DIR
-    {
-        QString dataDirPath = AppContext::getAppSettings()->getTestRunnerSettings()->getVar("AssemblyDbiTest");
-        QDir dataDir(dataDirPath);
-        QString dataPath = dataDir.absoluteFilePath("test-alignment1.ugenedb");
-        d.addValue(BaseDbiTest::DB_URL, dataPath);
-    }
+    
+    d.addValue<QString>(BaseDbiTest::DB_URL, "assembly-dbi.ugenedb");
 
     // invalid assembly id
     d.addValue(INVALID_ASSEMBLY_ID, QByteArray("zZÿÿ"));

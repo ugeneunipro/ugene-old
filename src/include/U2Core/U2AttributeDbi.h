@@ -60,18 +60,22 @@ public:
     virtual QStringList getAvailableAttributeNames(U2OpStatus& os) = 0;
     
     /** 
-        Returns all attribute ids for the given object with a given name
-        If name is empty -> returns all object attributes
+        Returns ids of all attributes with a name 'attributeName' for the object referenced by 'objectId'.
+        If 'attributeName' is empty returns all object attributes.
     */
     virtual QList<U2DataId> getObjectAttributes(const U2DataId& objectId, const QString& attributeName, U2OpStatus& os) = 0;
 
     /** 
-        Returns all attribute ids for the given object 
-        If name is empty -> returns all object attributes
+        Returns ids of all attributes with a childId 'childId' and a name 'attributeName'
+        for the object referenced by 'objectId'.
+        If 'attributeName' is empty returns ids of all object attributes with a specified childId.
     */
     virtual QList<U2DataId> getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, const QString& attributeName, U2OpStatus& os) = 0;
 
-    /** Loads integer attribute by id */
+    /**
+        Loads integer attribute by id.
+        If there is no integer attribute with the specified id returns 
+    */
     virtual U2IntegerAttribute getIntegerAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
     /** Loads real attribute by id */

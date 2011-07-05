@@ -3,6 +3,7 @@
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
 
 #include <QtCore/QDir>
 
@@ -13,14 +14,16 @@ const QString BaseDbiTest::DB_URL("db_url");
 
 void BaseDbiTest::SetUp() {
     testData = GetParam();
-
+    
     U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById("SQLiteDbi");
     ASSERT_NE((U2DbiFactory *)NULL, factory);
 
     dbi.reset(factory->createDbi());
     ASSERT_NE((U2Dbi *)NULL, dbi.get());
 
-    QString originalFile = testData.getValue<QString>(DB_URL);
+    TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
+    QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + testData.getValue<QString>(DB_URL);
+
     QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
 
     if(QFile::exists(tmpFile)) {

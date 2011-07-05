@@ -5,7 +5,7 @@
 
 
 namespace U2 {
-
+    
 class GTest_APITest : public GTest {
     Q_OBJECT
 public:
@@ -16,9 +16,7 @@ public:
     void cleanup();
 
 private:
-    QString tcase;
-    QStringList excluded;
-    QStringList included;
+    QString filter;
 };
 
 } //namespace
