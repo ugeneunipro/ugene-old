@@ -160,18 +160,18 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
         AppContext::getTaskScheduler()->registerTopLevelTask(new SaveDocumentTask(doc, doc->getIOAdapterFactory(), doc->getURL()));
     }
     
-    if(AppContext::getMainWindow()->getMDIManager()->getWindows().isEmpty()) {
-        DocumentSelection ds; 
-        ds.setSelection(QList<Document*>() <<doc);
-        MultiGSelection ms; 
-        ms.addSelection(&ds);
-        foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
-            if(f->canCreateView(ms)) {
-                AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(ms));
-                break;
-            }
+    // Open view for created document
+    DocumentSelection ds;
+    ds.setSelection(QList<Document*>() <<doc);
+    MultiGSelection ms;
+    ms.addSelection(&ds);
+    foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
+        if(f->canCreateView(ms)) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(ms));
+            break;
         }
     }
+
     
     this->close();
     QDialog::accept();
