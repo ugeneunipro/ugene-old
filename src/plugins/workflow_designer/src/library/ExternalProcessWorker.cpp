@@ -220,7 +220,7 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             Document * d = f->loadDocument(io, url,ts, QVariantMap());
 
             if(d == NULL) {
-                coreLog.error(tr("Can't open document"));
+                //coreLog.error(tr("Can't open document"));
                 bool isEnded = true;
                 foreach(CommunicationChannel *ch, inputs) {
                     isEnded = isEnded && ch->isEnded();
@@ -328,6 +328,12 @@ Task("Launch external process task", TaskFlag_None), execString(_execString)  {
 
 void LaunchExternalToolTask::run() {
     QProcess *externalProcess = new QProcess();
+    if(execString.contains(">")) {
+        QString output = execString.split(">").last();
+        output = output.trimmed();
+        execString = execString.split(">").first();
+        externalProcess->setStandardOutputFile(output);
+    }
     externalProcess->start(execString);
 
     if(!externalProcess->waitForStarted(3000)) {
