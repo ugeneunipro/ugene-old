@@ -212,11 +212,22 @@ void WorkflowPalette::sortTree() {
             addTopLevelItem(item);
         }
     }
-} 
+
+    text = BaseActorCategories::CATEGORY_EXTERNAL().getDisplayName();
+    if (!findItems(text, Qt::MatchExactly).isEmpty())
+    {
+        item = findItems(text, Qt::MatchExactly).first();
+        if (item)
+        {
+            takeTopLevelItem(indexFromItem(item).row());
+            addTopLevelItem(item);
+        }
+    }
+}
 
 QMenu* WorkflowPalette::createMenu(const QString& name) {
     QMenu* itemsMenu = new QMenu(name, this);
-    QMenu *dataSink = NULL, *dataSource = NULL, *userScript = NULL;
+    QMenu *dataSink = NULL, *dataSource = NULL, *userScript = NULL, *externalTools = NULL;
     QAction *firstAction = NULL;
     QMapIterator<QString, QList<QAction*> > it(categoryMap);
     while (it.hasNext()) {
@@ -233,10 +244,12 @@ QMenu* WorkflowPalette::createMenu(const QString& name) {
         }
         if(it.key() == BaseActorCategories::CATEGORY_DATASRC().getDisplayName()) {
             dataSource = grpMenu;
-        }else if(it.key() == BaseActorCategories::CATEGORY_DATASINK().getDisplayName()) {
+        }else if (it.key() == BaseActorCategories::CATEGORY_DATASINK().getDisplayName()) {
             dataSink = grpMenu;
-        } else if(it.key() == BaseActorCategories::CATEGORY_SCRIPT().getDisplayName()) {
+        } else if (it.key() == BaseActorCategories::CATEGORY_SCRIPT().getDisplayName()) {
             userScript = grpMenu;
+        } else if (it.key() == BaseActorCategories::CATEGORY_EXTERNAL().getDisplayName()) {
+            externalTools = grpMenu;
         } else {
             QAction * a = itemsMenu->addMenu(grpMenu);
             firstAction = firstAction ? firstAction : a;
@@ -245,8 +258,11 @@ QMenu* WorkflowPalette::createMenu(const QString& name) {
 
     itemsMenu->insertMenu(firstAction, dataSource);
     itemsMenu->insertMenu(firstAction, dataSink);
-    if(userScript) {
+    if (userScript) {
         itemsMenu->addMenu(userScript);
+    }
+    if (externalTools) {
+        itemsMenu->addMenu(externalTools);
     }
 
     return itemsMenu;

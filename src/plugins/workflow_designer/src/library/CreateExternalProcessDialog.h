@@ -58,6 +58,7 @@ private:
     Ui::CreateExternalProcessWorkerDialog ui;
     ExternalProcessConfig *cfg;
     bool editing;
+    static const int INFO_STRINGS_NUM = 5;
 };
 
 }

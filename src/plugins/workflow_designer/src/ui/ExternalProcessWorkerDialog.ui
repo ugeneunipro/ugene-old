@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create wrapper for external tool</string>
+   <string>Create Element with Command Line Tool</string>
   </property>
   <property name="wizardStyle">
    <enum>QWizard::ClassicStyle</enum>

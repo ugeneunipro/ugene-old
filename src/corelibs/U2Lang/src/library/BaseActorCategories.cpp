@@ -28,19 +28,19 @@ namespace U2 {
 namespace Workflow {
 
 const Descriptor BaseActorCategories::CATEGORY_DATASRC() {
-    return Descriptor("a", tr("Data sources"), "");
+    return Descriptor("a", tr("Data Readers"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_DATASINK() {
-    return Descriptor("b", tr("Data sinks"), "");
+    return Descriptor("b", tr("Data Writers"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_CONVERTERS() {
-    return Descriptor("bc", tr("Data converters"), "");
+    return Descriptor("bc", tr("Data Converters"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_BASIC() { 
-    return Descriptor("c", tr("Basic analysis"), "");
+    return Descriptor("c", tr("Basic Analysis"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_STATISTIC() {
@@ -48,23 +48,23 @@ const Descriptor BaseActorCategories::CATEGORY_STATISTIC() {
 }
 
 const Descriptor BaseActorCategories::CATEGORY_ALIGNMENT() { 
-    return Descriptor("d", tr("Multiple sequence alignment"), "");
+    return Descriptor("d", tr("Multiple Sequence Alignment"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_ASSEMBLY() {
-    return Descriptor("asm", tr("DNA assembly"), ""); 
+    return Descriptor("asm", tr("DNA Assembly"), ""); 
 }
 
 const Descriptor BaseActorCategories::CATEGORY_TRANSCRIPTION() {
-    return Descriptor("tr", tr("Transcription factor"), ""); 
+    return Descriptor("tr", tr("Transcription Factor"), ""); 
 }
 
 const Descriptor BaseActorCategories::CATEGORY_SCRIPT() {
-    return Descriptor("sa", tr("Custom elements"), "");
+    return Descriptor("sa", tr("Custom Elements with Script"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_EXTERNAL() {
-    return Descriptor("ex", tr("External tools"),"");
+    return Descriptor("ex", tr("Custom Elements with CMD Tools"),"");
 }
 
 }//Workflow namespace

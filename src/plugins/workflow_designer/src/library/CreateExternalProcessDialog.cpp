@@ -473,10 +473,10 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     //connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(sl_generateTemplateString()));
 
     QFontMetrics info(ui.descr1TextEdit->font());
-    ui.descr1TextEdit->setFixedHeight(info.height() * 4);
-    ui.descr2TextEdit->setFixedHeight(info.height() * 4);
-    ui.descr3TextEdit->setFixedHeight(info.height() * 4);
-    ui.descr4TextEdit->setFixedHeight(info.height() * 4);
+    ui.descr1TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    ui.descr2TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    ui.descr3TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    ui.descr4TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
 
     ui.inputTableView->setModel(new CfgExternalToolModel());
     ui.outputTableView->setModel(new CfgExternalToolModel());
@@ -568,7 +568,7 @@ void CreateExternalProcessDialog::sl_deleteAttribute() {
     ui.attributesTableView->model()->removeRow(index.row());
 }
 
-CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /*= NULL*/ ): QWizard(p) {
+CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/ ): QWizard(p) {
     ui.setupUi(this);
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
     connect(ui.addOutputButton, SIGNAL(clicked()), SLOT(sl_addOutput()));
@@ -596,10 +596,10 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /*= NULL*/ 
     ui.attributesTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
     QFontMetrics info(ui.descr1TextEdit->font());
-    ui.descr1TextEdit->setFixedHeight(info.height() * 4);
-    ui.descr2TextEdit->setFixedHeight(info.height() * 4);
-    ui.descr3TextEdit->setFixedHeight(info.height() * 4);
-    ui.descr4TextEdit->setFixedHeight(info.height() * 4);
+    ui.descr1TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    ui.descr2TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    ui.descr3TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    ui.descr4TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
     editing = false;
 }
 
@@ -650,30 +650,30 @@ void CreateExternalProcessDialog::accept() {
 }
 
 bool CreateExternalProcessDialog::validate() {
-    QString title = tr("Create wrapper for external tool");
+    QString title = tr("Create Element");
     if(cfg->inputs.isEmpty() && cfg->outputs.isEmpty())  {
-        QMessageBox::critical(this, title, tr("Nor input data nor output data was set"));
+        QMessageBox::critical(this, title, tr("Please set the input/output data."));
         return false;
     }
 
     if(cfg->cmdLine.isEmpty()) {
-        QMessageBox::critical(this, title, tr("Set command line to run external tool"));
+        QMessageBox::critical(this, title, tr("Please set the command line to run external tool."));
         return false;
     }
 
     if(cfg->name.isEmpty()) {
-        QMessageBox::critical(this, title, tr("Set name for new element"));
+        QMessageBox::critical(this, title, tr("Please set the name for the new element."));
         return false;
     }
 
     QRegExp invalidSymbols("[\\.,:;\\?]");
     if(cfg->name.contains(invalidSymbols)) {
-        QMessageBox::critical(this, title, tr("Invalid symbols in element name"));
+        QMessageBox::critical(this, title, tr("Invalid symbols in the element name."));
         return false;
     }
 
     if(WorkflowEnv::getProtoRegistry()->getProto(cfg->name) && !editing) {
-        QMessageBox::critical(this, title, tr("Element with this name already exists"));
+        QMessageBox::critical(this, title, tr("Element with this name already exists."));
         return false;
     }
 
@@ -681,40 +681,40 @@ bool CreateExternalProcessDialog::validate() {
     QStringList nameList;
     foreach(const DataConfig & dc, cfg->inputs) {
         if(dc.attrName.isEmpty()) {
-            QMessageBox::critical(this, title, tr("For one or more parameters name was not set"));
+            QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
             return false;
         } 
         if(dc.attrName.contains(invalidSymbols)) {
-            QMessageBox::critical(this, title, tr("Invalid symbols in name %1").arg(dc.attrName));
+            QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(dc.attrName));
             return false;
         }
         nameList << dc.attrName;
     }
     foreach(const DataConfig & dc, cfg->outputs) {
         if(dc.attrName.isEmpty()) {
-            QMessageBox::critical(this, title, tr("For one or more parameters name was not set"));
+            QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
             return false;
         } 
         if(dc.attrName.contains(invalidSymbols)) {
-            QMessageBox::critical(this, title, tr("Invalid symbols in name %1").arg(dc.attrName));
+            QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(dc.attrName));
             return false;
         }
         nameList << dc.attrName;
     }
     foreach(const AttributeConfig & ac, cfg->attrs) {
         if(ac.attrName.isEmpty()) {
-            QMessageBox::critical(this, title, tr("For one or more parameters name was not set"));
+            QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
             return false;
         } 
         if(ac.attrName.contains(invalidSymbols)) {
-            QMessageBox::critical(this, title, tr("Invalid symbols in name %1").arg(ac.attrName));
+            QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(ac.attrName));
             return false;
         }
         nameList << ac.attrName;
     }
 
     if(nameList.removeDuplicates() > 0) {
-        QMessageBox::critical(this, title, tr("The same name of element pentameters was found"));
+        QMessageBox::critical(this, title, tr("The same name of element parameters was found"));
         return false;
     }
 

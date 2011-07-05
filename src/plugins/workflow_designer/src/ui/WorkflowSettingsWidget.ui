@@ -92,7 +92,7 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Custom elements directory</string>
+         <string>Directory for custom elements with scripts</string>
         </property>
        </widget>
       </item>
@@ -104,7 +104,7 @@
         <item>
          <widget class="QToolButton" name="dirButton">
           <property name="text">
-           <string>...</string>
+           <string notr="true">...</string>
           </property>
          </widget>
         </item>
@@ -113,7 +113,7 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>External tools config directory</string>
+         <string>Directory for custom elements with command line tools</string>
         </property>
        </widget>
       </item>
@@ -125,7 +125,7 @@
         <item>
          <widget class="QToolButton" name="extToolDirButton">
           <property name="text">
-           <string>...</string>
+           <string notr="true">...</string>
           </property>
          </widget>
         </item>

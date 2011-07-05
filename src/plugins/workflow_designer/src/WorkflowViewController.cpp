@@ -337,14 +337,14 @@ void WorkflowView::createActions() {
     deleteAction->setShortcuts(QKeySequence::Delete);
     connect(deleteAction, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
 
-    configureIterationsAction = new QAction(tr("Configure iterations"), this);
+    configureAliasesAction = new QAction(tr("Configure command line aliases..."), this);
+    configureAliasesAction->setIcon(QIcon(":workflow_designer/images/table_relationship.png"));
+    connect(configureAliasesAction, SIGNAL(triggered()), SLOT(sl_configureAliases()));
+
+    configureIterationsAction = new QAction(tr("Configure iterations..."), this);
     configureIterationsAction->setIcon(QIcon(":workflow_designer/images/tag.png"));
     //configureIterationsAction ->setShortcut(QKeySequence::Delete);
     connect(configureIterationsAction , SIGNAL(triggered()), SLOT(sl_configureIterations()));
-    
-    configureAliasesAction = new QAction(tr("Configure command line aliases"), this);
-    configureAliasesAction->setIcon(QIcon(":workflow_designer/images/cmdline.png"));
-    connect(configureAliasesAction, SIGNAL(triggered()), SLOT(sl_configureAliases()));
     
     selectAction = new QAction(tr("Select all elements"), this);
     selectAction->setShortcuts(QKeySequence::SelectAll);
@@ -369,7 +369,7 @@ void WorkflowView::createActions() {
     sceneScaleCombo->setEditable(true);
     sceneScaleCombo->setValidator(new PercentValidator(this));
     QStringList scales;
-    scales << tr("25%") << tr("50%") << tr("75%") << tr("100%") << tr("125%") << tr("150%") << tr("200%");
+    scales << "25%" << "50%" << "75%" << "100%" << "125%" << "150%" << "200%";
     sceneScaleCombo->addItems(scales);
     sceneScaleCombo->setCurrentIndex(3);
     connect(sceneScaleCombo, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_rescaleScene(const QString &)));
@@ -407,18 +407,21 @@ void WorkflowView::createActions() {
     unlockAction->setChecked(true);
     connect(unlockAction, SIGNAL(toggled(bool)), SLOT(sl_toggleLock(bool)));
 
-    createScriptAcction = new QAction(tr("Create Script Object"), this);
+    createScriptAcction = new QAction(tr("Create element with script..."), this);
     createScriptAcction->setIcon(QIcon(":workflow_designer/images/script.png"));
     connect(createScriptAcction, SIGNAL(triggered()), SLOT(sl_createScript()));
 
-    editScriptAction = new QAction(tr("Edit script text"),this);
-    editScriptAction->setIcon(QIcon(":workflow_designer/images/edit_script.png"));
+    editScriptAction = new QAction(tr("Edit script of the element..."),this);
+    editScriptAction->setIcon(QIcon(":workflow_designer/images/script_edit.png"));
     editScriptAction->setEnabled(false); // because user need to select actor with script to enable it
     connect(editScriptAction, SIGNAL(triggered()), SLOT(sl_editScript()));
 
-    externalToolAction = new QAction(tr("Create wrapper for external tool"), this);
+    externalToolAction = new QAction(tr("Create element with command line tool..."), this);
+    externalToolAction->setIcon(QIcon(":workflow_designer/images/external_cmd_tool.png"));
     connect(externalToolAction, SIGNAL(triggered()), SLOT(sl_externalAction()));
-    appendExternalTool = new QAction(tr("Add element from file"), this);
+
+    appendExternalTool = new QAction(tr("Add element with command line tool..."), this);
+    appendExternalTool->setIcon(QIcon(":workflow_designer/images/external_cmd_tool_add.png"));
     connect(appendExternalTool, SIGNAL(triggered()), SLOT(sl_appendExternalToolWorker()));
 }
 
@@ -679,11 +682,12 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(validateAction);
     tb->addAction(runAction);
     tb->addAction(stopAction);
-    tb->addAction(configureIterationsAction);
     tb->addAction(configureAliasesAction);
+    tb->addAction(configureIterationsAction);
     tb->addSeparator();
     tb->addAction(createScriptAcction);
     tb->addAction(editScriptAction);
+    tb->addSeparator();
     tb->addAction(externalToolAction);
     tb->addAction(appendExternalTool);
     tb->addSeparator();
@@ -693,14 +697,11 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(cutAction);
     tb->addAction(deleteAction);
     tb->addSeparator();
-    //tb->addAction(bringToFrontAction);
-    //tb->addAction(sendToBackAction);
-    //tb->addSeparator();
     tb->addWidget(sceneScaleCombo);
     tb->addSeparator();
 
     QToolButton* tt = new QToolButton(tb);
-    QMenu* ttMenu = new QMenu(tr("Item style"), this);
+    QMenu* ttMenu = new QMenu(tr("Element style"), this);
     foreach(QAction* a, styleActions) {
         ttMenu->addAction(a);
     }
@@ -744,18 +745,19 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addAction(exportAction);
     m->addSeparator();
     m->addAction(validateAction);
-    m->addAction(configureIterationsAction);
-    m->addAction(configureAliasesAction);
     m->addAction(runAction);
     m->addAction(stopAction);
+    m->addAction(configureAliasesAction);
+    m->addAction(configureIterationsAction);
     m->addSeparator();
     m->addAction(createScriptAcction);
     m->addAction(editScriptAction);
+    m->addSeparator();
     m->addAction(externalToolAction);
     m->addAction(appendExternalTool);
     m->addSeparator();
 
-    QMenu* ttMenu = new QMenu(tr("Item style"));
+    QMenu* ttMenu = new QMenu(tr("Element style"));
     foreach(QAction* a, styleActions) {
         ttMenu->addAction(a);
     }
@@ -777,6 +779,7 @@ void WorkflowView::setupViewMenu(QMenu* m) {
         m->addSeparator();
         m->addAction(unlockAction);
     }
+    m->addSeparator();
 }
 
 void WorkflowView::setupContextMenu(QMenu* m) {
@@ -809,14 +812,14 @@ void WorkflowView::setupContextMenu(QMenu* m) {
 
             m->addSeparator();
 
-            QMenu* itMenu = new QMenu(tr("Item properties"));
+            QMenu* itMenu = new QMenu(tr("Element properties"));
             foreach(QAction* a, wit->getContextMenuActions()) {
                 itMenu->addAction(a);
             }
             m->addMenu(itMenu);
         }
         if(!(sel.size() == 1 && (sel.first()->type() == WorkflowBusItemType || sel.first()->type() == WorkflowPortItemType))) {
-            QMenu* ttMenu = new QMenu(tr("Item style"));
+            QMenu* ttMenu = new QMenu(tr("Element style"));
             foreach(QAction* a, styleActions) {
                 ttMenu->addAction(a);
             }

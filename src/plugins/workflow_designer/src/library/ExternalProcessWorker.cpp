@@ -113,6 +113,7 @@ bool ExternalProcessWorkerFactory::init(ExternalProcessConfig *cfg) {
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 
     proto->setEditor(new DelegateEditor(delegates));
+    proto->setIconPath(":workflow_designer/images/external_cmd_tool.png");
 
     proto->setPrompter( new ExternalProcessWorkerPrompter() );
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_EXTERNAL(), proto);
