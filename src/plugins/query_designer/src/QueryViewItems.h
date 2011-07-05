@@ -64,14 +64,11 @@ public:
     void setHeight(qreal h) { height=h; }
 signals:
     void linkClicked(const QString& link);
-private slots:
-    void sl_setCurrentLink(const QString& lnk) { curLnk = lnk; }
 protected:
     bool sceneEvent(QEvent *event);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) { event->ignore(); }
 private:
-    QString curLnk;
     qreal height;
 };
 
@@ -120,7 +117,6 @@ private slots:
     void sl_onHoverLink(const QString& link);
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     QVariant itemChange( GraphicsItemChange change, const QVariant & value );
     bool sceneEvent(QEvent *event);

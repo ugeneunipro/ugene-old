@@ -307,11 +307,6 @@ QPointF QDElement::getLeftConnector() {
     return mapToScene(QPointF(boundingRect().left(), (boundingRect().top() + boundingRect().bottom())/2));
 }
 
-void QDElement::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    //dragPoint = event->pos();
-    QGraphicsItem::mousePressEvent(event);
-}
-
 void QDElement::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton) {
         foreach(Footnote* link, links) {
@@ -486,7 +481,6 @@ bool QDElement::sceneEvent(QEvent *event) {
         }
         case QEvent::GraphicsSceneHoverLeave:
         case QEvent::GraphicsSceneMouseRelease:
-            unsetCursor();
             itemResizeFlags = 0;
             break;
         case QEvent::GraphicsSceneMouseMove:
@@ -612,8 +606,7 @@ bool QDElement::sceneEvent(QEvent *event) {
 
     if(itemResizeFlags) {
         return true;
-    }
-    else {
+    } else {
         return QGraphicsItem::sceneEvent(event);
     }
 }
@@ -628,6 +621,25 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
                 if (qs==NULL) {
                     return newPos;
                 }
+                // Adjust position for item to fit in row
+                qreal start = qs->annotationsArea().top();
+                newPos.setY(round(newPos.y() - start, GRID_STEP) + start);
+                QRectF rect = qs->annotationsArea();
+                rect.setHeight(rect.height()-boundingRect().height());
+                rect.setWidth(rect.width()-boundingRect().width());
+                if (!rect.contains(newPos)) {
+                    if (newPos.y()>rect.bottom()) {
+                        int prevRowsNum = qs->getRowsNumber();
+                        qreal bottomEdge = newPos.y() + boundingRect().height();
+                        int reqRowNum = (bottomEdge - qs->annotationsArea().top())/GRID_STEP;
+                        int rowNum = qMax(prevRowsNum, reqRowNum);
+                        qs->setRowsNumber(rowNum);
+                    }
+                    // Keep the item inside the annotation area
+                    newPos.setX(qMin(rect.right(), qMax(newPos.x(), rect.left())));
+                    newPos.setY(qMax(newPos.y(), rect.top()));
+                }
+                
                 //prevent collision
                 QRectF itemRect = boundingRect();
                 const QPointF& topLeft = mapToScene(itemRect.topLeft());
@@ -656,8 +668,7 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
                         if(right.x()-left.x()<=0) {
                             return oldPos;
                         }
-                    }
-                    else {
+                    } else {
                         QPointF right = fn->getDstPoint();
                         right+=newPos-scenePos();
                         QPointF left = fn->getSrcPoint();
@@ -666,25 +677,6 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
                         }
                     }
                 }
-                //////////////////////////////////////////////////////////////////////////
-                qreal start = qs->annotationsArea().top();
-                newPos.setY(round(newPos.y() - start, GRID_STEP) + start);
-                QRectF rect = qs->annotationsArea();
-                rect.setHeight(rect.height()-boundingRect().height());
-                rect.setWidth(rect.width()-boundingRect().width());
-                if (!rect.contains(newPos)) {
-                    if (newPos.y()>rect.bottom()) {
-                        int prevRowsNum = qs->getRowsNumber();
-                        qreal bottomEdge = newPos.y() + boundingRect().height();
-                        int reqRowNum = (bottomEdge - qs->annotationsArea().top())/GRID_STEP;
-                        int rowNum = qMax(prevRowsNum, reqRowNum);
-                        qs->setRowsNumber(rowNum);
-                    }
-                    // Keep the item inside the annotation area
-                    newPos.setX(qMin(rect.right(), qMax(newPos.x(), rect.left())));
-                    newPos.setY(qMax(newPos.y(), rect.top()));
-                }
-                //////////////////////////////////////////////////////////////////////////
                 return newPos;
             }
             break;
@@ -711,18 +703,11 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
             if(qVariantValue<QGraphicsScene*>(value)!=NULL) {
                 sl_refresh();
                 adaptSize();
-                {
-                    QueryScene* qs = qobject_cast<QueryScene*>(scene());
-                    assert(qs);
-                    QueryViewController* view = qs->getViewController();
-                    /*connect(itemDescription, SIGNAL(linkActivated(const QString&)),
-                        view, SLOT(sl_selectEditorCell(const QString&)));*/
-                    if (view) {
-                        connect(itemDescription, SIGNAL(linkClicked(const QString&)),
-                            view, SLOT(sl_selectEditorCell(const QString&)));
-                    }
-                    connect(itemDescription, SIGNAL(linkHovered(const QString&)),
-                        SLOT(sl_onHoverLink(const QString&)));
+                QueryScene* qs = qobject_cast<QueryScene*>(scene());
+                QueryViewController* view = qs->getViewController();
+                if (view) {
+                    connect(itemDescription, SIGNAL(linkActivated(const QString&)), view, SLOT(sl_selectEditorCell(const QString&)));
+                    connect(itemDescription, SIGNAL(linkHovered(const QString&)), SLOT(sl_onHoverLink(const QString&)));
                 }
             }
             break;
@@ -747,8 +732,7 @@ void QDElement::updateFootnotes() {
 void QDElement::sl_onHoverLink(const QString &link) {
     if (link.isEmpty()) {
         unsetCursor();
-    }
-    else {
+    } else {
         setCursor(Qt::PointingHandCursor);
     }
 }
@@ -757,11 +741,9 @@ void QDElement::sl_onHoverLink(const QString &link) {
 /* QDElementDescription                                                 */
 /************************************************************************/
 
-QDElementDescription::QDElementDescription(QGraphicsItem* parent/* =NULL */)
-: QGraphicsTextItem(parent), curLnk("") {
+QDElementDescription::QDElementDescription(QGraphicsItem* parent/* =NULL */) : QGraphicsTextItem(parent) {
     setAcceptHoverEvents(true);
     setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::LinksAccessibleByKeyboard);
-    connect(this, SIGNAL(linkHovered(const QString&)), SLOT(sl_setCurrentLink(const QString&)));
 }
 
 QRectF QDElementDescription::boundingRect() const {
@@ -776,11 +758,10 @@ void QDElementDescription::paint(QPainter *painter, const QStyleOptionGraphicsIt
     QGraphicsTextItem::paint(painter, &deselectedOption, widget);
 }
 
+// subscribe to mouse release event (link activation in QGraphicsTextItem) by accepting mouse press
 void QDElementDescription::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    if (event->buttons()&Qt::LeftButton) {
-        emit linkClicked(curLnk);
-    }
     QGraphicsTextItem::mousePressEvent(event);
+    event->accept();
 }
 
 bool QDElementDescription::sceneEvent(QEvent *event) {
@@ -788,19 +769,17 @@ bool QDElementDescription::sceneEvent(QEvent *event) {
     switch (event->type())
     {
     case QEvent::GraphicsSceneHoverEnter:
-    //case QEvent::GraphicsSceneHoverLeave:
     case QEvent::GraphicsSceneHoverMove:
     case QEvent::GraphicsSceneMouseRelease:
     case QEvent::GraphicsSceneMouseMove:
+    case QEvent::GraphicsSceneMousePress:
         {
             QGraphicsSceneMouseEvent* me = static_cast<QGraphicsSceneMouseEvent*>(event);
-            assert(me);
             QDElement* parent = qgraphicsitem_cast<QDElement*>(parentItem());
             assert(parent);
             me->setPos(mapToParent(me->pos()));
             res = parent->sceneEvent(me);
         }
-    default:
         break;
     }
     return res;
