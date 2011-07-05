@@ -910,15 +910,25 @@ void DotPlotWidget::drawNames(QPainter &p) const {
     QString nameX = sequenceX->getSequenceObject()->getGObjectName();
     QString nameY = sequenceY->getSequenceObject()->getGObjectName();
 
-    nameX += " (" + tr("min length")+" "+QString::number(minLen)+", "+tr("identity")+" "+QString::number(identity)+"%)";
+    const QFontMetrics &fm = this->fontMetrics();
 
-    p.drawText(0, h + textSpace, w+2*textSpace, textSpace, Qt::AlignCenter, nameX);
+    nameX += tr(" (min length %1, identity %2%)").arg(minLen).arg(identity);
+    int nameXWidth = fm.width(nameX);
+
+    // If nameX doesn't fit, it should be aligned left instead of center
+    int flags = (nameXWidth < w) ? Qt::AlignCenter : Qt::AlignVCenter | Qt::AlignLeft;
+    p.drawText(textSpace, h + textSpace, w, textSpace, Qt::AlignCenter, nameX);
 
     p.save();
 
-    p.rotate(90);
-    p.translate(DP_MARGIN + DP_EXIT_BUTTON_SIZE, -(w +textSpace*2));
-    p.drawText(0, 0, h+textSpace, textSpace, Qt::AlignCenter, nameY);
+        p.rotate(90);
+        p.translate(DP_MARGIN + textSpace, -(w +textSpace*2));
+
+        int nameYWidth = fm.width(nameY);
+
+        // If nameY doesn't fit, it should be aligned left instead of center
+        flags = (nameYWidth < h) ? Qt::AlignCenter : Qt::AlignVCenter | Qt::AlignLeft;
+        p.drawText(0, 0, h, textSpace, flags, nameY);
 
     p.restore();
 }
