@@ -12,9 +12,6 @@ HEADERS += src/AppSettingsGUI.h \
            src/ProjectParsing.h \
            src/ProjectView.h \
            src/UnloadDocumentTask.h \
-           _tmp/ui/ui_AddExistingDocumentDialog.h \
-           _tmp/ui/ui_CreateNewObjectDialog.h \
-           _tmp/ui/ui_SelectFormatToSaveDialog.h \
            src/util_gui/AddNewDocumentDialogController.h \
            src/util_gui/AddNewDocumentDialogImpl.h \
            src/util_gui/AnnotationSettingsDialogController.h \
