@@ -28,6 +28,7 @@
 
 namespace U2 {
 
+#define StateLockModType_AddChild "state-lock-mod-add-child"
 
 enum StateLockFlag {
     StateLockFlag_NoFlags  = 0x00,
@@ -68,7 +69,9 @@ public:
 
     virtual void unlockState(StateLock* lock);
 
-    virtual void setModified(bool modified);
+    virtual void setModified(bool modified, const QString& modType = QString());
+    
+    virtual bool isModificationAllowed(const QString& modType) {return !isStateLocked();}
 
     virtual bool isItemModified() const {return itemIsModified;}
 
@@ -121,7 +124,7 @@ public:
 
     virtual void unlockState(StateLock* lock);
 
-    virtual void setModified(bool modified);
+    virtual void setModified(bool modified, const QString& modType = QString());
 
     virtual bool isTreeItemModified () const {return numModifiedChildren > 0 || itemIsModified;}
 
@@ -143,12 +146,12 @@ public:
 
 protected:
     
-    static void setParentStateLockItem_static(StateLockableTreeItem* child, StateLockableTreeItem* newParent, bool ignoreLocks = false) {
-        child->setParentStateLockItem(newParent, ignoreLocks);
+    static void setParentStateLockItem_static(StateLockableTreeItem* child, StateLockableTreeItem* newParent) {
+        child->setParentStateLockItem(newParent);
     }
 
-    void setParentStateLockItem(StateLockableTreeItem* p, bool ignoreLocks = false, bool modify = true);
-    void setModified(bool modified, bool ignoreLocks);
+    void setParentStateLockItem(StateLockableTreeItem* p);
+    
 
     void increaseNumModifiedChilds(int n);
     void decreaseNumModifiedChilds(int n);

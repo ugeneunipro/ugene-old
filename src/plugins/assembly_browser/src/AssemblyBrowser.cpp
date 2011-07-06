@@ -97,6 +97,7 @@ showInfoAction(0), exportToSamAction(0)
         model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus)));
         sl_assemblyLoaded();
     }   
+    onObjectAdded(gobject);
 }
 
 QWidget * AssemblyBrowser::createWidget() {
@@ -705,6 +706,11 @@ int AssemblyBrowser::zoomOutFromSize(int oldCellSize) {
     } while(cellWidth == oldCellSize);
     return cellWidth;
 }
+
+void AssemblyBrowser::onObjectRenamed(GObject*, const QString&) {
+    OpenAssemblyBrowserTask::updateTitle(this);
+}
+
 
 //==============================================================================
 // AssemblyBrowserUi

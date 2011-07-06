@@ -20,13 +20,14 @@
  */
 
 #include "ObjectViewModel.h"
+
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
-
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QFileInfo>
 #include <QtGui/QVBoxLayout>
@@ -123,6 +124,7 @@ QString GObjectView::addObject(GObject* o) {
 }
 
 void GObjectView::_removeObject(GObject* o) {
+    o->disconnect(this);
     int i = objects.removeAll(o);
     assert(i==1); Q_UNUSED(i);
     closing = onObjectRemoved(o) || closing;
@@ -141,7 +143,7 @@ void GObjectView::removeObject(GObject* o) {
     }
 }
 
-void GObjectView::sl_onObjectRemoved(GObject* o) {
+void GObjectView::sl_onObjectRemovedFromDocument(GObject* o) {
     if (objects.contains(o)) {
         _removeObject(o);
         if (closing) {
@@ -158,14 +160,16 @@ bool GObjectView::onObjectRemoved(GObject* obj) {
 }
 
 void GObjectView::onObjectAdded(GObject* obj) {
+    connect(obj, SIGNAL(si_nameChanged(const QString&)), SLOT(sl_onObjectNameChanged(const QString&)));
     foreach(GObjectViewObjectHandler* oh, objectHandlers) {
         oh->onObjectAdded(this, obj);
     }
 }
 
 
+
 void GObjectView::sl_onDocumentAdded(Document* d) {
-    connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemoved(GObject*)));
+    connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemovedFromDocument(GObject*)));
     connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
 }
 
@@ -183,6 +187,16 @@ void GObjectView::sl_onDocumentRemoved(Document* d) {
             break;
         }
     }
+}
+
+void GObjectView::sl_onObjectNameChanged(const QString& oldName) {
+    Project* p = AppContext::getProject();
+    if (p == NULL) {
+        return;
+    }
+    GObject* obj = qobject_cast<GObject*>(sender());
+    SAFE_POINT(obj != NULL, "Can't locate renamed object!",);
+    onObjectRenamed(obj, oldName);
 }
 
 QWidget* GObjectView::getWidget()  {
@@ -221,6 +235,15 @@ bool GObjectView::containsDocumentObjects(Document* doc) const {
         }
     }
     return result;
+}
+
+void GObjectView::setName(const QString& newName) {
+    QString oldName = viewName;
+    if (oldName == newName) {
+        return;
+    }
+    viewName = newName;
+    emit si_nameChanged(oldName);
 }
 
 //////////////////////////////////////////////////////////////////////////

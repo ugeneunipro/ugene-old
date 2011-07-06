@@ -21,9 +21,27 @@
 
 #include "GHints.h"
 
-#include "StateLockableDataModel.h"
+#include <U2Core/Log.h>
+#include <U2Core/StateLockableDataModel.h>
+
 
 namespace U2 {
+
+void GHints::setAll(const QVariantMap& newMap) {
+    foreach(const QString& key, newMap.keys()) {
+        QVariant val = newMap.value(key);
+        set(key, val);
+    }
+}
+
+void GHints::dump(const QVariantMap& map) {
+    foreach(QString k, map.keys()) {
+        QList<QVariant> l = map.values(k);
+        foreach(QVariant v, l) {
+            coreLog.trace(QString("Hint: %1=%2").arg(k).arg(v.toString()));
+        }
+    }
+}
 
 void ModTrackHints::setMap(const QVariantMap& _map) {
     if (map == _map) {
@@ -34,16 +52,22 @@ void ModTrackHints::setMap(const QVariantMap& _map) {
 }
 
 void ModTrackHints::set(const QString& key, const QVariant& val) {
-    if (get(key) == val) {
+    QVariant oldVal = get(key);
+    if (oldVal == val) {
         return;
     }
+    
+//     QString newV = val.toString();
+//     QString oldV = oldVal.toString();
+ 
     map[key] = val;
     setModified();
 }
 
+
 int ModTrackHints::remove(const QString& key) {
     int r = map.remove(key);
-    if (r!=0) {
+    if (r != 0) {
         setModified();
     }
     return r;
@@ -54,7 +78,7 @@ void ModTrackHints::setModified() {
     while (modItem->getParentStateLockItem()!=NULL && topParentMode) {
         modItem = modItem->getParentStateLockItem();
     }
-    if (!modItem->isStateLocked()) { //TODO:
+    if (!modItem->isStateLocked()) { //TODO: use isModificationAllowed here!
         modItem->setModified(true);
     }
 }

@@ -125,6 +125,7 @@ private:
         Return NULL if no restructuring was made
         */
     static Document* createCopyRestructuredWithHints(const Document* doc, U2OpStatus& os);
+    static void renameObjects(Document* doc, const QStringList& names);
     
 
     DocumentFormat*         format;

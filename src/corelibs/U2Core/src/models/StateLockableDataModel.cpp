@@ -21,15 +21,16 @@
 
 #include "StateLockableDataModel.h"
 
+#include <U2Core/U2SafePoints.h>
 
-#include <QtGui/QApplication>
 #include <QtCore/QThread>
+#include <QtCore/QCoreApplication>
 
 namespace U2 {
 
 StateLockableItem::StateLockableItem(QObject* p)  : QObject(p), itemIsModified(false), mainThreadModificationOnly(false),  modificationVersion(0)
 {
-    QThread* appThread = QApplication::instance()->thread();
+    QThread* appThread = QCoreApplication::instance()->thread();
     QThread* objectThread = thread();
     bool mainThread = appThread == objectThread;
     setMainThreadModificationOnly(mainThread);
@@ -46,7 +47,7 @@ StateLockableItem::~StateLockableItem(){
 static void checkThread(const StateLockableItem* i) {
 #ifdef _DEBUG
     if (i->isMainThreadModificationOnly()) {
-        QThread* appThread = QApplication::instance()->thread();
+        QThread* appThread = QCoreApplication::instance()->thread();
         QThread* thisThread = QThread::currentThread();
         QThread* itemThread = i->thread();
         assert(appThread == thisThread);
@@ -81,21 +82,21 @@ void StateLockableItem::unlockState(StateLock* lock) {
 }
 
 
-void StateLockableItem::setModified(bool d) {
-    assert(!d || !isStateLocked());
+void StateLockableItem::setModified(bool newModifiedState, const QString& modType) {
+    SAFE_POINT(newModifiedState == false || isModificationAllowed(modType), "Item modification not allowed", );
     checkThread(this);
-    if (d) {
+    if (newModifiedState) {
         modificationVersion++;
     }
-    if (itemIsModified == d) {
+    if (itemIsModified == newModifiedState) {
         return;
     }
-    itemIsModified = d;
+    itemIsModified = newModifiedState;
     emit si_modifiedStateChanged();
 }
 
 bool StateLockableItem::isMainThreadObject() const {
-    QThread* at = QApplication::instance()->thread();
+    QThread* at = QCoreApplication::instance()->thread();
     QThread* ot = thread();
     return at == ot;
 }
@@ -109,7 +110,7 @@ StateLockableTreeItem::~StateLockableTreeItem() {
 }
 
 bool StateLockableTreeItem::isStateLocked() const {
-    return StateLockableItem::isStateLocked() || (parentStateLockItem!=NULL ? parentStateLockItem->isStateLocked() : false);
+    return StateLockableItem::isStateLocked() || (parentStateLockItem != NULL ? parentStateLockItem->isStateLocked() : false);
 }
 
 bool StateLockableTreeItem::isMainThreadModificationOnly() const {
@@ -182,59 +183,60 @@ void StateLockableTreeItem::onParentStateUnlocked() {
     }
 }
 
-void StateLockableTreeItem::setParentStateLockItem(StateLockableTreeItem* newParent, bool ignoreLocks, bool modify) { 
-    assert(parentStateLockItem == NULL || newParent == NULL);
-    assert(newParent == NULL || !newParent->isStateLocked() || ignoreLocks);
-    assert(parentStateLockItem == NULL || !parentStateLockItem->isStateLocked() || ignoreLocks);
+void StateLockableTreeItem::setParentStateLockItem(StateLockableTreeItem* newParent) { 
+    SAFE_POINT(parentStateLockItem == NULL || newParent == NULL, "Parent item is already assigned", );
+    SAFE_POINT(newParent == NULL || newParent->isModificationAllowed(StateLockModType_AddChild), 
+        "Add-child modification is not allowed for new parent item!",);
+    SAFE_POINT(parentStateLockItem == NULL || parentStateLockItem->isModificationAllowed(StateLockModType_AddChild), 
+        "Add-child modification is not allowed for old parent item!",);
 
     StateLockableTreeItem* oldParent = parentStateLockItem; 
     parentStateLockItem = newParent;
     setParent(newParent);
     
     bool treeMod = isTreeItemModified();
-    assert(modify || !treeMod);
     if (newParent!=NULL) {
         setMainThreadModificationOnly(newParent->isMainThreadModificationOnly());
         checkThread(this);
         newParent->childItems.insert(this);
-        if (modify) {
-            newParent->setModified(true, ignoreLocks);
-            if (treeMod) {
-                newParent->increaseNumModifiedChilds(numModifiedChildren + 1);
-            }
-        } 
+        newParent->setModified(true, StateLockModType_AddChild);
+        if (treeMod) {
+            newParent->increaseNumModifiedChilds(numModifiedChildren + 1);
+        }
+
     } else if (oldParent!=NULL) {
         oldParent->childItems.remove(this);
-        if (modify) {
-            oldParent->setModified(true, ignoreLocks);
-            if (treeMod) {
-                oldParent->decreaseNumModifiedChilds(numModifiedChildren + 1);
-            }
-        } 
-    }
-}
-
-
-void StateLockableTreeItem::setModified(bool d) {
-    setModified(d, false);
-}
-
-void StateLockableTreeItem::setModified(bool d, bool ignoreLocks) {
-    assert(!d|| !isStateLocked() || ignoreLocks); Q_UNUSED(ignoreLocks);
-    if (d) {
-        modificationVersion++;
-    }
-    if (itemIsModified == d) {
-        return;
-    }
-    itemIsModified = d;
-    if (parentStateLockItem && numModifiedChildren == 0) {
-        if (itemIsModified) {
-            parentStateLockItem->increaseNumModifiedChilds(1);
-        } else {
-            parentStateLockItem->decreaseNumModifiedChilds(1);
+        oldParent->setModified(true, StateLockModType_AddChild);
+        if (treeMod) {
+            oldParent->decreaseNumModifiedChilds(numModifiedChildren + 1);
         }
     }
+}
+
+
+void StateLockableTreeItem::setModified(bool newModifiedState, const QString& modType) {
+    SAFE_POINT(newModifiedState == false || isModificationAllowed(modType), "Item modification not allowed", );
+    checkThread(this);
+    if (newModifiedState) {
+        modificationVersion++;
+    }
+    if (itemIsModified == newModifiedState) {
+        return;
+    }
+    itemIsModified = newModifiedState;
+
+    bool parentUpdate = parentStateLockItem && numModifiedChildren == 0;
+    
+    if (itemIsModified && parentUpdate) { // let parent become modified first
+        parentStateLockItem->increaseNumModifiedChilds(1);
+    }
+
+    emit si_modifiedStateChanged();
+
+    if (!itemIsModified && parentUpdate) { // let parent become clean last
+        parentStateLockItem->decreaseNumModifiedChilds(1);
+    }
+
     if (!hasModifiedChildren()) {
         checkThread(this);
         emit si_modifiedStateChanged();

@@ -60,6 +60,7 @@ private slots:
 	void sl_onTreeCurrentChanged(QTreeWidgetItem * current, QTreeWidgetItem * previous);
 	void sl_onItemActivated(QTreeWidgetItem*, int);
 	void sl_onItemChanged(QTreeWidgetItem*, int);
+    void sl_onViewNameChanged(const QString&);
 	
 	void sl_activateView();
 	void sl_addState();
@@ -83,7 +84,7 @@ private:
 
 	GObjectViewState* findStateToOpen() const;
 	
-	void addView(GObjectViewWindow*);
+	void addViewWindow(GObjectViewWindow*);
 	void addState(GObjectViewState*);
 	void removeState(GObjectViewState* s);
 	
@@ -120,7 +121,7 @@ public:
 	virtual void updateVisual();
 	
 	QString viewName;//BUG:416: remove this field?
-	GObjectViewWindow* view;
+	GObjectViewWindow* viewWindow;
 };
 
 class OVTStateItem : public OVTItem {

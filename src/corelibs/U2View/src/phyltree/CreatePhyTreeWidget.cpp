@@ -21,8 +21,8 @@
 
 #include "CreatePhyTreeWidget.h"
 
-namespace U2{
+namespace U2 {
 
- const QString CreatePhyTreeWidget::settingsPath = "phytree_dialog_settings";
+const QString CreatePhyTreeWidget::settingsPath = "phytree_dialog_settings";
 
 }

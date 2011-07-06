@@ -96,6 +96,21 @@ void OpenMSAEditorTask::open() {
 
 }
 
+void OpenMSAEditorTask::updateTitle(MSAEditor* msaEd) {
+    const QString& oldViewName = msaEd->getName();
+    GObjectViewWindow* w = GObjectViewUtils::findViewByName(oldViewName);
+    if (w != NULL) {
+        MAlignmentObject* msaObject = msaEd->getMSAObject();
+        QString newViewName = GObjectViewUtils::genUniqueViewName(msaObject->getDocument(), msaObject);
+        msaEd->setName(newViewName);
+        w->setWindowTitle(newViewName);
+    }
+}
+
+void OpenMSAEditorTask::updateStates(GObject* o, const QString& newName) {
+
+}
+
 //////////////////////////////////////////////////////////////////////////
 // open view from state
 

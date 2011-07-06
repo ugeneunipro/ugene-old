@@ -59,13 +59,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
     const QBitArray& WHITES = TextUtils::WHITES;
     
-    QStringList objectNames = fs.value(GOBJECT_NAMES_HINT).toStringList();
-    QString objName;
-    if (objectNames.size() == 1) {
-        objName = objectNames.first();
-    } else {
-        objName = io->getURL().baseFileName();
-    }
+    QString objName = io->getURL().baseFileName();
     MAlignment al(objName);
     bool lineOk = false;
     bool firstBlock = true;

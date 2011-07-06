@@ -35,6 +35,7 @@ GObject::GObject(QString _type, const QString& _name, const QVariantMap& hintsMa
 {
     assert(name.length() > 0);
     hints = new GHintsDefaultImpl(hintsMap);
+    hints->set(GObjectHint_LastUsedObjectName, name);
 }
 
 GObject::~GObject() {
@@ -60,24 +61,23 @@ void GObject::setGObjectName(const QString& newName) {
     if (name == newName) {
         return;
     }
-
-    SAFE_POINT(getDocument()==NULL || getDocument()->findGObjectByName(newName)==NULL, "Duplicate object name!",);
+    SAFE_POINT(getDocument() == NULL || getDocument()->findGObjectByName(newName) == NULL, "Duplicate object name!",);
 
     QString oldName = name;
     name = newName; 
-    setModified(true);
+    hints->set(GObjectHint_LastUsedObjectName, name);
+    
     emit si_nameChanged(oldName);
 }
 
-
 QList<GObjectRelation> GObject::getObjectRelations() const {
-    QList<GObjectRelation> res = hints->get(RELATED_OBJECTS_KEY).value<QList<GObjectRelation> >();
+    QList<GObjectRelation> res = hints->get(GObjectHint_RelatedObjects).value<QList<GObjectRelation> >();
     return res;
     
 }
 
 void GObject::setObjectRelations(const QList<GObjectRelation>& list) {
-    hints->set(RELATED_OBJECTS_KEY, QVariant::fromValue<QList<GObjectRelation> >(list));
+    hints->set(GObjectHint_RelatedObjects, QVariant::fromValue<QList<GObjectRelation> >(list));
 }
 
 QList<GObjectRelation> GObject::findRelatedObjectsByRole(const QString& role) const {

@@ -42,6 +42,7 @@ public:
 class AssemblyObject;
 class UnloadedObject;
 class Document;
+class AssemblyBrowser;
 
 class OpenAssemblyBrowserTask : public ObjectViewTask {
     Q_OBJECT
@@ -50,6 +51,7 @@ public:
     OpenAssemblyBrowserTask(UnloadedObject * obj);
     OpenAssemblyBrowserTask(Document * doc);
     virtual void open();
+    static void updateTitle(AssemblyBrowser* ab);
 private:
     GObjectReference unloadedObjRef;
 };

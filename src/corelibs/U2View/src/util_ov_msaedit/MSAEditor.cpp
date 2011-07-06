@@ -92,6 +92,8 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
 : GObjectView(MSAEditorFactory::ID, viewName), ui(NULL) {
     msaObject = qobject_cast<MAlignmentObject*>(obj);
     objects.append(msaObject);
+    onObjectAdded(msaObject);
+
     requiredObjects.append(msaObject);
     GCOUNTER(cvar,tvar,"MSAEditor");
 
@@ -271,6 +273,14 @@ void MSAEditor::sl_openTree() {
     Task* task = new OpenTreeViewerTask(newObj);
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     scheduler->registerTopLevelTask(task);
+}
+
+void MSAEditor::onObjectRenamed(GObject* obj, const QString& oldName) {
+    // 1. update title
+    OpenMSAEditorTask::updateTitle(this);
+
+    // 2. update states
+    OpenMSAEditorTask::updateStates(obj, oldName);
 }
 
 static void saveFont(const QFont& f) {
@@ -454,8 +464,7 @@ void MSAEditor::sl_onContextMenuRequested(const QPoint & pos) {
     m.exec(QCursor::pos());
 }
 
-const QRect MSAEditor::getCurrentSelection() const
-{
+const QRect& MSAEditor::getCurrentSelection() const {
     return ui->seqArea->getSelection().getRect();
 }
 

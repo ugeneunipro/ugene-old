@@ -31,6 +31,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GUrl.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
@@ -401,8 +402,7 @@ void ProjectViewImpl::initView() {
     projectTreeController->setObjectName("document_Filter_Tree_Controller");
     connect(projectTreeController, SIGNAL(si_onPopupMenuRequested(QMenu&)), SLOT(sl_onDocTreePopupMenuRequested(QMenu&)));
     connect(projectTreeController, SIGNAL(si_doubleClicked(GObject*)), SLOT(sl_onDoubleClicked(GObject*)));
-    connect(projectTreeController, SIGNAL(si_nameChanged(GObject *)), SLOT(sl_onNameChanged(GObject *)));
-
+    
     w->groupModeMenu->addAction(projectTreeController->getGroupByDocumentAction());
     w->groupModeMenu->addAction(projectTreeController->getGroupByTypeAction());
     w->groupModeMenu->addAction(projectTreeController->getGroupFlatAction());
@@ -575,7 +575,8 @@ public:
 };
 
 void ProjectViewImpl::sl_onDoubleClicked(GObject* o) {
-    assert(o!=NULL);
+    SAFE_POINT(o != NULL, "No double-clicked object found", );
+
     GObjectSelection os; os.addToSelection(o);
     MultiGSelection ms; ms.addSelection(&os);
 
@@ -831,35 +832,9 @@ void ProjectViewImpl::sl_openStateView() {
     }
 }
 
-void ProjectViewImpl::sl_onNameChanged(GObject *obj) {
-    QList<GObjectViewWindow*> wList = GObjectViewUtils::findViewsWithObject(obj);
-    //GObjectViewFactory* f = wList.first()->getViewFactory();
-    foreach(GObjectViewWindow* w, wList) {
-        OVTViewItem* bookmark = objectViewController->findViewItem(w->windowTitle());
-        QString newName = GObjectViewUtils::genUniqueViewName(obj->getDocument(),obj);
-        w->setWindowTitle(newName);
-        bookmark->viewName = newName;
-        bookmark->setText(0,newName);
-
-        if(obj->getGObjectType() == GObjectTypes::SEQUENCE) {
-            AnnotatedDNAView* objView = qobject_cast<AnnotatedDNAView*>(w->getObjectView());
-            foreach(ADVSequenceWidget * seqWidget, objView->getSequenceWidgets()) {
-                if(seqWidget->isWidgetOnlyObject(obj)) {
-                    ADVSingleSequenceWidget *sSeqWidget = qobject_cast<ADVSingleSequenceWidget*>(seqWidget);
-                    sSeqWidget->setTitle(obj->getGObjectName());
-                    break;
-                }
-            }
-        }
-    }
-}
 
 void ProjectViewImpl::sl_onDocumentAdded(Document* d) {
-    connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
-}
-
-void ProjectViewImpl::sl_onDocumentLoadedStateChanged() {
-    //do nothing..
+//    connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
 }
 
 void ProjectViewImpl::sl_filterTextChanged(const QString& t) {

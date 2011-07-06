@@ -79,7 +79,7 @@ public:
     
     int getNumSequences() const;
 
-    const QRect getCurrentSelection() const;
+    const QRect& getCurrentSelection() const;
     
     const QFont& getFont() const {return font;}
     int getFirstVisibleBase() const;
@@ -111,11 +111,11 @@ protected slots:
     void sl_resetZoom(); 
     void sl_buildTree();
     void sl_openTree();
-
+    
 protected:
     virtual QWidget* createWidget();
     bool eventFilter(QObject* o, QEvent* e);
-
+    virtual void onObjectRenamed(GObject* obj, const QString& oldName);
 private:
     void addCopyMenu(QMenu* m);
     void addEditMenu(QMenu* m);

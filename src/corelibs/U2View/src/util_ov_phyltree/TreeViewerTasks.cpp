@@ -93,9 +93,24 @@ void OpenTreeViewerTask::open() {
     scheduler->registerTopLevelTask(createTask);
 }
 
+void OpenTreeViewerTask::updateTitle(TreeViewer* tv) {
+    const QString& oldViewName = tv->getName();
+    GObjectViewWindow* w = GObjectViewUtils::findViewByName(oldViewName);
+    if (w != NULL) {
+        PhyTreeObject* phyObj = tv->getPhyObject();
+        QString newViewName = GObjectViewUtils::genUniqueViewName(phyObj->getDocument(), phyObj);
+        tv->setName(newViewName);
+        w->setWindowTitle(newViewName);
+    }
+}
+
+void OpenTreeViewerTask::updateStates(GObject* o, const QString& newName) {
+
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 // open view from state
-
 
 OpenSavedTreeViewerTask::OpenSavedTreeViewerTask(const QString& viewName, const QVariantMap& stateData) 
 : ObjectViewTask(TreeViewerFactory::ID, viewName, stateData)

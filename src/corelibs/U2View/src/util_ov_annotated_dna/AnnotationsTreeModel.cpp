@@ -462,7 +462,8 @@ QString AVItemL::getFileUrl(int col) const {
 
 }
 
-AVGroupItemL::AVGroupItemL(AnnotationsTreeViewL* _atv, AVGroupItemL* parent, AnnotationGroup* g) : AVItemL(parent, AVItemType_Group), group(g), atv(_atv) 
+AVGroupItemL::AVGroupItemL(AnnotationsTreeViewL* _atv, AVGroupItemL* parent, AnnotationGroup* g) 
+: AVItemL(parent, AVItemType_Group), group(g), atv(_atv) 
 {
     updateVisual();
 }

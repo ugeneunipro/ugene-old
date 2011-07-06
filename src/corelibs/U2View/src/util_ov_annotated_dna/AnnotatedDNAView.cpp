@@ -1014,8 +1014,7 @@ void AnnotatedDNAView::addAutoAnnotationsUpdated(AutoAnnotationsUpdater* updater
      }
 }
 
-void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged()
-{
+void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged() {
     Task* t = qobject_cast<Task*> (sender());
     if (t == NULL) {
         return;
@@ -1024,6 +1023,23 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged()
     if (t->getState() == Task::State_Finished && !(t->hasError() || t->isCanceled()) ) {
         updateAutoAnnotations();
     }
+}
+
+void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
+    // 1. update title
+    OpenAnnotatedDNAViewTask::updateTitle(this);
+    
+    // 2. update components
+    if (obj->getGObjectType() == GObjectTypes::SEQUENCE) {
+        DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+        ADVSequenceObjectContext* ctx = getSequenceContext(seqObj);
+        foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
+            w->onSequenceObjectRenamed(oldName);
+        }
+    }
+
+    // 3. update states
+    OpenAnnotatedDNAViewTask::updateStates(obj, oldName);
 
 }
 

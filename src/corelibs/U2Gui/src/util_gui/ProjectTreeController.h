@@ -34,7 +34,6 @@
 #include <QtGui/QTreeWidget>
 #include <QtGui/QIcon>
 
-
 namespace U2 {
 
 class Task;
@@ -137,7 +136,6 @@ protected:
 signals:
 	void si_onPopupMenuRequested(QMenu& popup);
 	void si_doubleClicked(GObject*);
-    void si_nameChanged(GObject *);
 
 private slots:
 	void sl_onTreeSelectionChanged();
@@ -155,9 +153,9 @@ private slots:
 	void sl_onObjectAdded(GObject* o);
 	void sl_onObjectRemoved(GObject* o);
 	void sl_onObjectModifiedStateChanged();
+    void sl_onObjectNameChanged(const QString&);
 
 	void sl_onItemDoubleClicked(QTreeWidgetItem * item, int column);
-    void sl_onItemChanged(QTreeWidgetItem *, int );
 
     void sl_onResourceUserRegistered(const QString& res, Task* t);
     void sl_onResourceUserUnregistered(const QString& res, Task* t);
@@ -172,6 +170,7 @@ private slots:
     void sl_windowActivated(MWMDIWindow*);
     void sl_objectAddedToActiveView(GObjectView*, GObject*);
     void sl_objectRemovedFromActiveView(GObjectView*, GObject*);
+    void sl_onCloseEditor(QWidget*,QAbstractItemDelegate::EndEditHint);
 
 private:
 	void updateActions();
@@ -191,6 +190,7 @@ private:
     void insertTreeItemSorted(ProjViewItem* p, ProjViewItem* item);
     void updateLoadingState(Document* d);
     void updateObjectActiveStateVisual(GObject* o);
+    void updateObjectVisual(GObject* obj);
     
 
     ProjViewDocumentItem* findDocumentItem(Document* d) const;
@@ -218,9 +218,7 @@ private:
 	DocumentSelection                   documentSelection;
     ProjectTreeControllerModeSettings   mode;
     QSet<ProjViewItem*>                 itemsToUpdate;
-    bool                                editing;
     GObjectView*                        markActiveView;
-
 
 public: 
 	QIcon documentIcon;
@@ -278,11 +276,9 @@ public:
 	virtual void updateVisual(bool recursive = false);
     bool isActive() const;
     virtual bool operator< ( const QTreeWidgetItem & other ) const;
-    virtual void setData(int column, int role, const QVariant& value);
     GObject* obj;
 	
 };
-
 
 }//namespace
 #endif

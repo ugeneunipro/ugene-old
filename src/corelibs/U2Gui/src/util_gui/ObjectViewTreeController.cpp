@@ -24,6 +24,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2SafePoints.h>
 
 
 #include <QtCore/QEvent>
@@ -103,20 +104,21 @@ void ObjectViewTreeController::buildTree() {
 
 	QList<GObjectViewWindow*> views = GObjectViewUtils::getAllActiveViews();
 	foreach(GObjectViewWindow* v, views) {
-		addView(v);
+		addViewWindow(v);
 	}
 }
 
-void ObjectViewTreeController::addView(GObjectViewWindow* v) {
-	v->installEventFilter(this);
-	connect(v, SIGNAL(si_persistentStateChanged(GObjectViewWindow*)), SLOT(sl_onViewPersistentStateChanged(GObjectViewWindow*)));
-	OVTViewItem* vi = findViewItem(v->getViewName());
+void ObjectViewTreeController::addViewWindow(GObjectViewWindow* viewWindow) {
+	viewWindow->installEventFilter(this);
+    connect(viewWindow, SIGNAL(si_persistentStateChanged(GObjectViewWindow*)), SLOT(sl_onViewPersistentStateChanged(GObjectViewWindow*)));
+    connect(viewWindow->getObjectView(), SIGNAL(si_nameChanged(const QString&)), SLOT(sl_onViewNameChanged(const QString&)));
+	OVTViewItem* vi = findViewItem(viewWindow->getViewName());
 	if (vi == NULL) {
-		vi = new OVTViewItem(v, this);
+		vi = new OVTViewItem(viewWindow, this);
 		tree->addTopLevelItem(vi);
 	} else {
-		assert(vi->view == NULL);
-		vi->view = v;
+		assert(vi->viewWindow == NULL);
+		vi->viewWindow = viewWindow;
 		vi->updateVisual();
 	}
 }
@@ -128,7 +130,7 @@ void ObjectViewTreeController::addState(GObjectViewState* s) {
 		tree->addTopLevelItem(vi);
 	}
 	OVTStateItem* si = findStateItem(s);
-	assert(si == NULL);
+    SAFE_POINT(si == NULL, QString("State item is already exists: %1 -> %2").arg(s->getViewName()).arg(s->getStateName()),);
 	si = new OVTStateItem(s, vi, this);
     si->setIcon(0, bookmarkStateIcon);
 	vi->addChild(si);
@@ -136,14 +138,14 @@ void ObjectViewTreeController::addState(GObjectViewState* s) {
 
 void ObjectViewTreeController::removeState(GObjectViewState* s) {
 	OVTStateItem* si = findStateItem(s);
-	assert(si != NULL);
+    SAFE_POINT(si != NULL, QString("Failed to find state item to remove: %1 -> %2").arg(s->getViewName()).arg(s->getStateName()),);
 	OVTViewItem* vi = static_cast<OVTViewItem*>(si->parent());
 	delete si;
     if (vi->childCount() == 0) {
-        if (vi->view==NULL) {
+        if (vi->viewWindow==NULL) {
 		    delete vi;
         } else {
-            makeViewTransient(vi->view);
+            makeViewTransient(vi->viewWindow);
         }
     }
 }
@@ -179,7 +181,7 @@ GObjectViewState* ObjectViewTreeController::findStateToOpen() const {
 		state = si->state;
 	} else {
 		OVTViewItem* vi = currentViewItem();
-		if (vi!=NULL && vi->view == NULL) {
+		if (vi!=NULL && vi->viewWindow == NULL) {
 			const QList<GObjectViewState*>& allStates = AppContext::getProject()->getGObjectViewStates();
 			state = GObjectViewUtils::findStateInList(vi->viewName, GObjectViewState::APP_CLOSING_STATE_NAME, allStates);
 		}
@@ -191,11 +193,11 @@ void ObjectViewTreeController::updateActions() {
 	OVTStateItem* si = currentStateItem();
 	OVTViewItem* vi = currentViewItem(true);
 	
-	bool hasActiveView = vi!=NULL && vi->view!=NULL;
+	bool hasActiveView = vi!=NULL && vi->viewWindow!=NULL;
 
 	GObjectViewState* stateToOpen = findStateToOpen();
 
-	bool canAddStates = hasActiveView && vi->view->getViewFactory()->supportsSavedStates();
+	bool canAddStates = hasActiveView && vi->viewWindow->getViewFactory()->supportsSavedStates();
 	
 	activateViewAction->setEnabled(hasActiveView || stateToOpen!=NULL);
 	addStateAction->setEnabled(canAddStates);
@@ -208,9 +210,9 @@ bool ObjectViewTreeController::eventFilter(QObject *obj, QEvent *event) {
 		GObjectViewWindow* v = qobject_cast<GObjectViewWindow*>(obj);
 		assert(v);
 		OVTViewItem* vi = findViewItem(v->getViewName());
-		assert(vi);
+		SAFE_POINT(vi != NULL, QString("Can't find view item to filter close event!: %1").arg(v->getViewName()), false);
 		if (v->isPersistent()) {
-			vi->view  = NULL;	
+			vi->viewWindow = NULL;	
 			vi->updateVisual();
 		} else {
 			assert(vi->childCount() == 0);
@@ -223,8 +225,8 @@ bool ObjectViewTreeController::eventFilter(QObject *obj, QEvent *event) {
 
 void ObjectViewTreeController::sl_onMdiWindowAdded(MWMDIWindow* w) {
 	GObjectViewWindow* v = qobject_cast<GObjectViewWindow*>(w);
-	if (v!=NULL) {
-		addView(v);
+	if (v != NULL) {
+		addViewWindow(v);
 		updateActions();
 	} 
 }
@@ -300,8 +302,8 @@ void ObjectViewTreeController::sl_onTreeCurrentChanged(QTreeWidgetItem * current
 
 void ObjectViewTreeController::sl_activateView() {
 	OVTViewItem* vi = currentViewItem();
-	if (vi!=NULL && vi->view!=NULL) { //raise existing view, no state change
-		AppContext::getMainWindow()->getMDIManager()->activateWindow(vi->view);
+	if (vi!=NULL && vi->viewWindow!=NULL) { //raise existing view, no state change
+		AppContext::getMainWindow()->getMDIManager()->activateWindow(vi->viewWindow);
 		return;
 	}
 	//open closed view by state or update state of the active view
@@ -318,7 +320,6 @@ void ObjectViewTreeController::sl_activateView() {
 		} 
 	} else {
 		GObjectViewFactory* f = AppContext::getObjectViewFactoryRegistry()->getFactoryById(state->getViewFactoryId());
-		assert(f!=NULL);
 		AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(state->getViewName(), state->getStateData()));
 	}
 }
@@ -337,15 +338,16 @@ void ObjectViewTreeController::makeViewPersistent(GObjectViewWindow* w) {
 
 void ObjectViewTreeController::sl_addState() {
 	OVTViewItem* vi = currentViewItem(true);
-    assert(vi!=NULL && vi->view!=NULL);
-    if (!vi->view->isPersistent()) {
-        makeViewPersistent(vi->view);
+    SAFE_POINT(vi != NULL, QString("Can't find view item to add state!"),);
+    SAFE_POINT(vi->viewWindow != NULL, QString("View window is NULL: %1").arg(vi->viewName),);    
+    if (!vi->viewWindow->isPersistent()) {
+        makeViewPersistent(vi->viewWindow);
     }
-    assert(vi->view->isPersistent());
+    assert(vi->viewWindow->isPersistent());
 
-        QString stateName = GObjectViewUtils::genUniqueStateName(tr("New bookmark")); //todo: avoid localization here?
-	QVariantMap state = vi->view->getObjectView()->saveState();
-	GObjectViewState* s = new GObjectViewState(vi->view->getViewFactoryId(), vi->view->getViewName(), stateName, state);
+    QString stateName = GObjectViewUtils::genUniqueStateName(tr("New bookmark")); //todo: avoid localization here?
+	QVariantMap state = vi->viewWindow->getObjectView()->saveState();
+	GObjectViewState* s = new GObjectViewState(vi->viewWindow->getViewFactoryId(), vi->viewWindow->getViewName(), stateName, state);
 	AppContext::getProject()->addGObjectViewState(s);
 
     vi->setExpanded(true);
@@ -364,7 +366,7 @@ void ObjectViewTreeController::sl_removeState() {
         p->removeGObjectViewState(si->state);
     } else {
         OVTViewItem* vi = currentViewItem();
-        assert(vi!=NULL);
+        SAFE_POINT(vi != NULL, QString("Can't find view item to remove its state!"),);
         int childs = vi->childCount();
         assert(childs > 0);
         for (int i=0; i< childs; i++) {
@@ -376,7 +378,7 @@ void ObjectViewTreeController::sl_removeState() {
 
 void ObjectViewTreeController::sl_renameState() {
 	OVTStateItem* si = currentStateItem();
-	assert(si);
+	SAFE_POINT(si != NULL, QString("Can't find state item to rename!"),);
 
 	si->setFlags(si->flags() | Qt::ItemIsEditable);
 	tree->editItem(si);
@@ -385,13 +387,11 @@ void ObjectViewTreeController::sl_renameState() {
 }
 
 void ObjectViewTreeController::sl_onItemChanged(QTreeWidgetItem* i, int c) {
-	assert(c == 0);
-	Q_UNUSED(c);
+	assert(c == 0); Q_UNUSED(c);
 	OVTItem* oi = static_cast<OVTItem*>(i);
 	if (oi->isViewItem()) {
 		OVTViewItem* vi = static_cast<OVTViewItem*>(oi);
-		assert(vi->text(0).endsWith(vi->viewName));
-		Q_UNUSED(vi);
+		assert(vi->text(0).endsWith(vi->viewName)); Q_UNUSED(vi);
 		return;
 	}
 	assert(oi->isStateItem());
@@ -414,30 +414,36 @@ void ObjectViewTreeController::sl_onItemChanged(QTreeWidgetItem* i, int c) {
 
 void ObjectViewTreeController::sl_onStateModified(GObjectViewState* s) {
 	OVTStateItem* si = findStateItem(s);
-	assert(si);
+    SAFE_POINT(si != NULL, QString("Can't find state item to update: %1 -> %2").arg(s->getViewName()).arg(s->getStateName()),);
 	si->updateVisual();
+}
+
+void ObjectViewTreeController::sl_onViewNameChanged(const QString& oldName) {
+    OVTViewItem* vi = findViewItem(oldName);
+    SAFE_POINT(vi, QString("Can't find view item to rename: %1").arg(oldName),);
+    vi->updateVisual();
 }
 
 //////////////////////////////////////////////////////////////////////////
 /// tree items
 
 OVTViewItem::OVTViewItem(GObjectViewWindow* v, ObjectViewTreeController* c) 
-: OVTItem (c), viewName(v->getViewName()), view(v)
+: OVTItem (c), viewName(v->getViewName()), viewWindow(v)
 {
 	updateVisual();
 }
 
 OVTViewItem::OVTViewItem(const QString& _viewName, ObjectViewTreeController* c) 
-: OVTItem (c), viewName(_viewName), view(NULL)
+: OVTItem (c), viewName(_viewName), viewWindow(NULL)
 {
 	updateVisual();
 }
 
 void OVTViewItem::updateVisual() {
-    setIcon(0, view == NULL ? controller->getInactiveBookmarkIcon() : controller->getActiveBookmarkIcon());
+    setIcon(0, viewWindow == NULL ? controller->getInactiveBookmarkIcon() : controller->getActiveBookmarkIcon());
+    viewName = viewWindow->getViewName();
 
-    QString text;
-	text+=viewName;
+    QString text = viewName;
 	setText(0, text);
 }
 

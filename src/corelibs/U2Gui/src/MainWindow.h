@@ -25,6 +25,8 @@
 #include <U2Core/global.h>
 #include <U2Core/PluginModel.h>
 #include <U2Core/ServiceTypes.h>
+
+#include <QtCore/QEvent>
 #include <QtGui/QWidget>
 
 class QAction;
@@ -106,8 +108,8 @@ public:
 
     MWMDIWindow(const QString& _windowName);
 
-    virtual void setupMDIToolbar(QToolBar* tb) {Q_UNUSED(tb);}
-    virtual void setupViewMenu(QMenu* m) {Q_UNUSED(m);}
+    virtual void setupMDIToolbar(QToolBar*) {}
+    virtual void setupViewMenu(QMenu*) {}
 
     int getId() const {return windowId;}
 

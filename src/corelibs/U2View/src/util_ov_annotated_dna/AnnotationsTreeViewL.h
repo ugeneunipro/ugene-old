@@ -115,8 +115,6 @@ public:
 
     QModelIndex guessIndex(QTreeWidgetItem *item);
 
-    
-
 protected:
     virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
     virtual void mouseDoubleClickEvent ( QMouseEvent * event );
@@ -191,7 +189,9 @@ private slots:
     void sl_onAnnotationsRemoved(const QList<Annotation*>&);
     void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>& as, AnnotationGroup* group);
     void sl_onAnnotationModified(const AnnotationModification& md);
-    void sl_annotationObjectModifiedStateChanged();
+    void sl_onAnnotationObjectModifiedStateChanged();
+    void sl_onAnnotationObjectRenamed(const QString& oldName);
+
 
     void sl_onGroupCreated(AnnotationGroup*);
     void sl_onGroupRemoved(AnnotationGroup* parent, AnnotationGroup* removed);

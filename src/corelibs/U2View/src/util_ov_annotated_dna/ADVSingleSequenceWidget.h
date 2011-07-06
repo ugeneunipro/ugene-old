@@ -124,9 +124,10 @@ public:
 
     virtual void setNumBasesVisible(int n);
     
-    void setTitle(const QString& title);
-
     QAction* getSelectRangeAction() const {return selectRangeAction1;}
+
+    virtual void onSequenceObjectRenamed(const QString& oldName);
+
 protected slots:
     void sl_onViewDestroyed(QObject*);
 
@@ -203,6 +204,7 @@ public:
     
     QToolBar* getToolBar() const { return toolBar;}
     void setTitle(const QString & title) {nameLabel->setText(title);}
+    void updateTitle();
 
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *e);

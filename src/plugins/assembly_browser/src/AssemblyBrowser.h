@@ -94,6 +94,8 @@ public:
     inline QSharedPointer<AssemblyModel> getModel() const {return model;}
     inline QFont getFont() const {return font;}
     void setFocusToPosSelector();
+    
+    AssemblyObject* getAssemblyObject() const {return gobject;}
 
 public slots:
     void sl_zoomIn(const QPoint & pos = QPoint());
@@ -107,6 +109,7 @@ signals:
 protected:
     virtual QWidget * createWidget();
     virtual bool eventFilter(QObject*, QEvent*);
+    virtual void onObjectRenamed(GObject* obj, const QString& oldName);
     
 private slots:
     void sl_assemblyLoaded();

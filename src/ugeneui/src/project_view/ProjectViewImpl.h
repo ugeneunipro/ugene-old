@@ -100,8 +100,7 @@ protected:
 
 private slots: 
     void sl_onDocumentAdded(Document* d);
-    void sl_onDocumentLoadedStateChanged();
-
+    
 	void sl_onProjectModifiedStateChanged();
 	void sl_onDocumentRemoved(Document* d);
 	void sl_onAddExistingDocument();
@@ -117,10 +116,8 @@ private slots:
     void sl_filterTextChanged(const QString& t);
     void sl_relocate();
     void sl_saveCopy();
-    void sl_onNameChanged(GObject *);
 
 private:
-
     void saveWidgetState(ProjectViewWidget* w);
     void restoreWidgetState(ProjectViewWidget* w);
     void buildViewMenu(QMenu& m);

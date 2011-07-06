@@ -123,13 +123,6 @@ static QString deriveViewName(const QList<DNASequenceObject*>& seqObjects) {
     return viewName;
 }
 
-//static bool objLessThan(const DNASequenceObject* o1 , const DNASequenceObject* o2) {
-//    if (o1->getDocument() == o2->getDocument()) {
-//        return o1->getGObjectName() < o2->getGObjectName();
-//    }
-//    return o1->getDocument()->getURLString() < o2->getDocument()->getURLString();
-//}
-
 
 void OpenAnnotatedDNAViewTask::open() {
     if (stateInfo.hasError() || sequenceObjectRefs.isEmpty()) {
@@ -154,12 +147,25 @@ void OpenAnnotatedDNAViewTask::open() {
         stateInfo.setError(tr("No sequence objects found"));
         return;
     }
-    //qSort(seqObjects.begin(), seqObjects.end(), objLessThan);
     QString viewName = deriveViewName(seqObjects);
     AnnotatedDNAView* v = new AnnotatedDNAView(viewName, seqObjects);
     GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);
     MWMDIManager* mdiManager =  AppContext::getMainWindow()->getMDIManager();
     mdiManager->addMDIWindow(w);
+
+}
+
+void OpenAnnotatedDNAViewTask::updateTitle(AnnotatedDNAView* v) {
+    const QString& oldViewName = v->getName();
+    GObjectViewWindow* w = GObjectViewUtils::findViewByName(oldViewName);
+    if (w != NULL) {
+        QString newViewName = deriveViewName(v->getSequenceObjectsWithContexts());
+        v->setName(newViewName);
+        w->setWindowTitle(newViewName);
+    }
+}
+
+void OpenAnnotatedDNAViewTask::updateStates(GObject* o, const QString& newName) {
 
 }
 

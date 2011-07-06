@@ -769,8 +769,8 @@ void ADVSingleSequenceWidget::sl_togglePanView(){
     setPanViewCollapsed(!isPanViewCollapsed());
 }
 
-void ADVSingleSequenceWidget::setTitle(const QString& title) {
-    headerWidget->setTitle(title);
+void ADVSingleSequenceWidget::onSequenceObjectRenamed(const QString&) {
+    headerWidget->updateTitle();
 }
 
 
@@ -811,15 +811,15 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     
     int labelWidth = 50;
     QFontMetrics fm(f);
-    QString nameText = objName + " [" + getShortAlphabetName(seqObj->getAlphabet()) +"]";
-    nameLabel = new QLabel(nameText, this);
+    nameLabel = new QLabel("", this);
+    updateTitle();
     nameLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     nameLabel->setMinimumWidth(labelWidth);
-    nameLabel->setMaximumWidth(fm.width(nameText));
+    nameLabel->setMaximumWidth(fm.width(nameLabel->text()));
     nameLabel->setFont(f);
     nameLabel->setToolTip(objInfoTip);
     nameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-
+    
     toolBar = new HBar(this);
     toolBar->layout()->setSpacing(0);
     toolBar->layout()->setMargin(0);
@@ -845,6 +845,12 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     populateToolBars();
     updateActiveState();
 
+}
+
+void ADVSingleSequenceHeaderWidget::updateTitle() {
+    DNASequenceObject* seqObj = ctx->getSequenceObject();
+    QString newTitle = seqObj->getGObjectName() + " [" + getShortAlphabetName(seqObj->getAlphabet()) +"]";
+    setTitle(newTitle);
 }
 
 void ADVSingleSequenceHeaderWidget::populateToolBars() {
@@ -952,8 +958,6 @@ QString ADVSingleSequenceHeaderWidget::getShortAlphabetName(DNAAlphabet* al) {
     }
     return "?";
 }
-
-
 
 }//namespace
 

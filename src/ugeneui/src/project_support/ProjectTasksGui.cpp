@@ -189,9 +189,9 @@ Task::ReportResult SaveProjectTask::report() {
 /// SaveOnlyProjectTask
 
 SaveOnlyProjectTask::SaveOnlyProjectTask(Project* p, const QString& _url)
-    :Task(tr("Save project"), TaskFlag_NoRun), sub(NULL), proj(p), url(_url){
+: Task(tr("Save project"), TaskFlag_NoRun), sub(NULL), proj(p), url(_url)
+{
         lock = NULL;
-        //assert(!url.isEmpty());
 }
 
 SaveOnlyProjectTask::~SaveOnlyProjectTask(){
@@ -210,7 +210,7 @@ void SaveOnlyProjectTask::prepare(){
     foreach(Document *d, proj->getDocuments()){
         if (d->getURL().isLocalFile()) {
             QFile pathToDoc(d->getURLString());
-            if(!pathToDoc.exists()){
+            if (!pathToDoc.exists()){
                 phantomDocs.append(d);
             }
         }
@@ -218,7 +218,7 @@ void SaveOnlyProjectTask::prepare(){
     if (!phantomDocs.isEmpty()){   
         sub = new RemoveMultipleDocumentsTask(proj, phantomDocs, false, false);
         addSubTask(sub);
-    }else{
+    } else {
         _run();
     }
 }

@@ -27,9 +27,6 @@
 
 namespace U2 {
 
-#define GOBJECT_NAMES_HINT "gobject-names"
-
-
 class U2CORE_EXPORT UnloadedObjectInfo {
 public:
     UnloadedObjectInfo(GObject* obj = NULL);

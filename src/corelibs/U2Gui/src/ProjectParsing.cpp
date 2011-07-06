@@ -150,9 +150,10 @@ void ProjectFileUtils::saveProjectFile(TaskStateInfo& ts, Project* project,
             UnloadedObjectInfo info(obj);
             objElement.setAttribute("name", info.name);
             objElement.setAttribute("type", info.type);
+
             if (!info.hints.isEmpty()) {
                 //for all object relations make path relative
-                info.hints[RELATED_OBJECTS_KEY] = toRelativeRelations(obj->getObjectRelations(), projectDir, docUrlRemap);
+                info.hints[GObjectHint_RelatedObjects] = toRelativeRelations(obj->getObjectRelations(), projectDir, docUrlRemap);
                 QString hintsStr = map2String(info.hints);
                 QDomText hintsNode = xmlDoc.createCDATASection(hintsStr);
                 objElement.appendChild(hintsNode);
@@ -325,7 +326,7 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
         bool instanceLock = docElement.attribute("format-lock").toInt() != 0;
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioAdapterId);
         DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(format);
-        if(df == NULL) { // this can happen when close ugene on startup
+        if (df == NULL) { // this can happen when close ugene on startup
             continue;
         }
         QVariantMap fs = string2Map(docElement.text(), true);
@@ -345,10 +346,10 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
             info.hints = string2Map(objElement.text(), true);
 
             if (!info.hints.isEmpty()) {
-                QVariant qv = info.hints[RELATED_OBJECTS_KEY];
+                QVariant qv = info.hints[GObjectHint_RelatedObjects];
                 if (!qv.isNull()){
                     QList<GObjectRelation> relList = qv.value<QList<GObjectRelation> >();
-                    info.hints[RELATED_OBJECTS_KEY] = toAbsoluteRelations(relList, proj.absoluteDir());
+                    info.hints[GObjectHint_RelatedObjects] = toAbsoluteRelations(relList, proj.absoluteDir());
                 }
             }
 

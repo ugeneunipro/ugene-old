@@ -39,8 +39,12 @@ public:
     virtual QVariant get(const QString& key) const = 0;
 
     virtual void set(const QString& key, const QVariant& val) = 0;
+    
+    virtual void setAll(const QVariantMap& map);
 
     virtual int remove(const QString& key) = 0;
+    
+    static void dump(const QVariantMap& map);
 };
 
 class U2CORE_EXPORT GHintsDefaultImpl : public GHints {
@@ -53,7 +57,7 @@ public:
     virtual QVariant get(const QString& key) const  {return map.value(key);}
 
     virtual void set(const QString& key, const QVariant& val) {map[key] = val;}
-
+    
     virtual int remove(const QString& key) {return map.remove(key);}
 
 protected:
@@ -71,7 +75,7 @@ public:
     virtual void setMap(const QVariantMap& _map);
 
     virtual void set(const QString& key, const QVariant& val);
-
+    
     virtual int remove(const QString& key);
 
 private:

@@ -358,6 +358,10 @@ public:
 
     void setUserModLock(bool v);
 
+    virtual void setModified(bool modified, const QString& modType = QString());
+
+    virtual bool isModificationAllowed(const QString& modType);
+
     bool isModified() const { return isTreeItemModified(); }
 
     void setLastUpdateTime();
@@ -369,9 +373,9 @@ private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Document* const &in);
     static void fromScriptValue(const QScriptValue &object, Document* &out);
 protected:
-    void _removeObject(GObject* o, bool ignoreLocks = false);
-    void _addObject(GObject* obj, bool ignoreLocks = false);
-    void _addObjectToHierarchy(GObject* obj, bool ignoreLocks = false);
+    void _removeObject(GObject* o);
+    void _addObject(GObject* obj);
+    void _addObjectToHierarchy(GObject* obj);
 
     void initModLocks(const QString& instanceModLockDesc, bool loaded);
     
@@ -390,6 +394,7 @@ protected:
     QDateTime           lastUpdateTime;
     
     StateLock*          modLocks[DocumentModLock_NUM_LOCKS];
+    bool                loadStateChangeMode;
 
 signals:
     void si_urlChanged();

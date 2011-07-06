@@ -48,6 +48,8 @@
 
 #include <QtGui/QApplication>
 
+#define GObjectHint_NamesList  "gobject-hint-names-list"
+
 namespace U2 {
 
 /* TRANSLATOR U2::LoadUnloadedDocumentTask */    
@@ -89,11 +91,11 @@ void LoadUnloadedDocumentTask::prepare() {
     const GUrl& url = unloadedDoc->getURL();
     coreLog.details(tr("Starting load document from %1, document format %2").arg(url.getURLString()).arg(formatName));
     QVariantMap hints = unloadedDoc->getGHintsMap();
-    QStringList nameHints;
+    QStringList namesList;
     foreach(GObject* obj, unloadedDoc->getObjects()) {
-        nameHints << obj->getGObjectName();
+        namesList << obj->getGObjectName();
     }
-    hints[GOBJECT_NAMES_HINT] = nameHints;
+    hints[GObjectHint_NamesList] = namesList;
     subtask = new LoadDocumentTask(format, url, iof, hints, config);
     addSubTask(subtask);
 
@@ -270,8 +272,17 @@ void LoadDocumentTask::run() {
             setError(tr("Document not found %1").arg(url.getURLString()));
         }
     } else {
+        QStringList renameList = hints.value(GObjectHint_NamesList).toStringList();
+        // removing this value from hints -> name list changes are not tracked in runtime
+        // and used for LoadUnloadedDocument & LoadDocument privately
+        hints.remove(GObjectHint_NamesList);
+
         resultDocument = format->loadDocument(iof, url, stateInfo, hints);
+
         if (resultDocument != NULL) {
+            if (!renameList.isEmpty()) {
+                renameObjects(resultDocument, renameList);
+            }
             Document* convertedDoc = createCopyRestructuredWithHints(resultDocument, stateInfo);
             if (convertedDoc != NULL) {
                 delete resultDocument;
@@ -366,6 +377,42 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc,
     return resultDoc;
 }
 
+void LoadDocumentTask::renameObjects(Document* doc, const QStringList& names) {
+    if (doc->getObjects().size() != names.size()) {
+        coreLog.trace(QString("Objects renaming failed! Objects in doc: %1, names: %2").arg(doc->getObjects().size()).arg(names.size()));
+        return;
+    }
+    
+    //drop names first
+    QSet<QString> usedNames;
+    QSet<GObject*> notRenamedObjects;
+    foreach(GObject* obj, doc->getObjects()) {
+        notRenamedObjects.insert(obj);
+        usedNames.insert(obj->getGObjectName());
+    }
+    const QList<GObject*>& objects = doc->getObjects();
+    int nObjects = objects.size();
+    int maxIters = nObjects;
+    int currentIter = 0; //to avoid endless loop in case of duplicate names
+    while (!notRenamedObjects.isEmpty() && currentIter < maxIters) {
+        for (int i = 0; i < nObjects;  i++) {
+            GObject* obj = objects[i];
+            if (!notRenamedObjects.contains(obj)) {
+                continue;
+            }
+            QString newName = names[i];
+            if (usedNames.contains(newName)) {
+                continue;
+            }
+            QString oldName = obj->getGObjectName();
+            obj->setGObjectName(newName);
+            usedNames.remove(oldName);
+            usedNames.insert(newName);
+            notRenamedObjects.remove(obj);
+        }
+        currentIter++;
+    }
+}
 
 GObject* LDTObjectFactory::create(const GObjectReference& ref) {
     assert(ref.objType == GObjectTypes::ANNOTATION_TABLE); //TODO: handle other core types

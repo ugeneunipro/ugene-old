@@ -70,6 +70,7 @@ CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx)
     setMouseTracking(true);
 
     connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), this, SLOT(sl_sequenceChanged()));
+    connect(ctx->getSequenceGObject(), SIGNAL(si_nameChanged(const QString&)), this, SLOT(sl_onSequenceObjectRenamed(const QString&)));
     pack();
     
     //mark sequence as circular
@@ -333,6 +334,10 @@ void CircularView::sl_zoomOut() {
     ra->outerEllipseSize/=ZOOM_SCALE;
     adaptSizes();
     updateZoomActions();
+}
+
+void CircularView::sl_onSequenceObjectRenamed(const QString&) {
+    update();
 }
 
 void CircularView::updateZoomActions() {

@@ -459,14 +459,15 @@ void AnnotationsTreeViewL::sl_onAnnotationObjectAdded(AnnotationTableObject* obj
     connect(obj, SIGNAL(si_onGroupRemoved(AnnotationGroup*, AnnotationGroup*)), SLOT(sl_onGroupRemoved(AnnotationGroup*, AnnotationGroup*)));
     connect(obj, SIGNAL(si_onGroupRenamed(AnnotationGroup*, const QString& )), SLOT(sl_onGroupRenamed(AnnotationGroup*, const QString& )));
 
-    connect(obj, SIGNAL(si_modifiedStateChanged()), SLOT(sl_annotationObjectModifiedStateChanged()));
+    connect(obj, SIGNAL(si_modifiedStateChanged()), SLOT(sl_onAnnotationObjectModifiedStateChanged()));
+    connect(obj, SIGNAL(si_nameChanged(const QString&)), SLOT(sl_onAnnotationObjectRenamed(const QString& )));
 }
 
 void AnnotationsTreeViewL::sl_onAnnotationObjectRemoved(AnnotationTableObject* obj) {
     TreeSorter ts(this);
 
     AVGroupItemL* groupItem = findGroupItem(obj->getRootGroup());
-    if(groupItem) {
+    if (groupItem) {
         destroyTree(groupItem);
         tree->removeItem(groupItem, true);
     }
@@ -649,10 +650,9 @@ void AnnotationsTreeViewL::sl_onGroupCreated(AnnotationGroup* g) {
     }
 }
 
-void AnnotationsTreeViewL::sl_onGroupRemoved(AnnotationGroup* parent, AnnotationGroup* g) {
-    Q_UNUSED(parent);
+void AnnotationsTreeViewL::sl_onGroupRemoved(AnnotationGroup*, AnnotationGroup* g) {
     AVGroupItemL *gr = findGroupItem(g);
-    if(gr) {
+    if (gr != NULL) {
         destroyTree(gr);
         tree->treeWalker->deleteItem(g);
         tree->realNumberOfItems -= tree->getExpandedNumber(gr) + 1;
@@ -660,11 +660,11 @@ void AnnotationsTreeViewL::sl_onGroupRemoved(AnnotationGroup* parent, Annotation
     }
 }
 
-void AnnotationsTreeViewL::sl_onGroupRenamed(AnnotationGroup* g, const QString& oldName) {
-    Q_UNUSED(oldName);
+void AnnotationsTreeViewL::sl_onGroupRenamed(AnnotationGroup* g, const QString&) {
     AVGroupItemL* gi = findGroupItem(g);
-    assert(gi!=NULL);
-    gi->updateVisual();
+    if (gi != NULL) {
+        gi->updateVisual();
+    }
 }
 
 AVGroupItemL* AnnotationsTreeViewL::createGroupItem(AVGroupItemL* parentGroupItem, AnnotationGroup* g) {
@@ -1831,12 +1831,21 @@ void AnnotationsTreeView::sl_copyAnnotations() {
 void AnnotationsTreeView::sl_pasteAnnotations() {
 }*/
 
-void AnnotationsTreeViewL::sl_annotationObjectModifiedStateChanged() {
+void AnnotationsTreeViewL::sl_onAnnotationObjectModifiedStateChanged() {
     AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(sender());
     assert(ao!=NULL);
     AVGroupItemL* gi = findGroupItem(ao->getRootGroup());
     assert(gi!=NULL);
     gi->updateVisual();
+}
+
+void AnnotationsTreeViewL::sl_onAnnotationObjectRenamed(const QString& oldName) {
+    AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(sender());
+    AVGroupItemL* gi = findGroupItem(ao->getRootGroup());
+    if (gi != NULL) {
+        gi->updateVisual();
+        tree->updateItem(gi); //TODO: why manual update is required?
+    }
 }
 
 AVItemL* AnnotationsTreeViewL::currentItem(){

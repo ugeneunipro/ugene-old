@@ -29,7 +29,8 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QPointer>
 
-#define RELATED_OBJECTS_KEY "related_objs"
+#define GObjectHint_RelatedObjects          "gobject-hint-related-objects"
+#define GObjectHint_LastUsedObjectName      "gobject-hint-last-used-object-name"
 
 namespace U2 {
 
@@ -87,7 +88,7 @@ public:
     void setIndexInfo( const QHash<QString, QString>& ii) {indexInfo = ii;}
 
     bool isUnloaded() const;
-    
+
 signals:
     void si_nameChanged(const QString& oldName);
 

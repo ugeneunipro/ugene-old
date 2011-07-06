@@ -56,7 +56,7 @@ private:
     QMap<GObjectViewFactoryId, GObjectViewFactory*> mapping;
 };
 
-
+class GObjectReference;
 class U2GUI_EXPORT GObjectViewState : public QObject {
     Q_OBJECT
 public:
@@ -130,6 +130,8 @@ public:
     GObjectViewFactoryId getFactoryId() const {return factoryId;}
 
     const QString& getName() const {return viewName;}
+    
+    void setName(const QString& name);
 
     QWidget* getWidget();
 
@@ -171,6 +173,7 @@ protected:
     /** if 'true' is returned -> view will be closed */
     virtual bool onObjectRemoved(GObject* o);
     virtual void onObjectAdded(GObject* o);
+    virtual void onObjectRenamed(GObject* obj, const QString& oldName) {};
 
 protected:
     virtual void _removeObject(GObject* o);
@@ -182,9 +185,12 @@ signals:
     void si_buildStaticToolbar(GObjectView* v, QToolBar* tb);
     void si_objectAdded(GObjectView* v, GObject* obj);
     void si_objectRemoved(GObjectView* v, GObject* obj);
+    void si_nameChanged(const QString& oldName);
 
 protected slots:
-    void sl_onObjectRemoved(GObject* o);
+    void sl_onObjectRemovedFromDocument(GObject* o);
+    void sl_onObjectNameChanged(const QString&);
+
     virtual void sl_onDocumentAdded(Document*);
     virtual void sl_onDocumentRemoved(Document*);
     virtual void sl_onDocumentLoadedStateChanged() {}
@@ -224,7 +230,7 @@ public:
 
     void setPersistent(bool v);
 
-    QString getViewName() const {return windowTitle();}
+    QString getViewName() const {return view->getName();}
 
     GObjectView* getObjectView() const {return view;}
 

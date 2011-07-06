@@ -92,10 +92,10 @@ TreeViewer::TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangula
     phyObject = qobject_cast<PhyTreeObject*>(obj);
     objects.append(phyObject);
     requiredObjects.append(phyObject);
+    onObjectAdded(phyObject);
 }
 
 QTransform TreeViewer::getTransform() const {
-
     return ui->transform();
 }
 
@@ -300,6 +300,14 @@ QWidget* TreeViewer::createWidget() {
     ui = new TreeViewerUI(this);
 
     return ui;
+}
+
+void TreeViewer::onObjectRenamed(GObject* obj, const QString& oldName) {
+    // 1. update title
+    OpenTreeViewerTask::updateTitle(this);
+
+    // 2. update states
+    OpenTreeViewerTask::updateStates(obj, oldName);
 }
 
 ////////////////////////////

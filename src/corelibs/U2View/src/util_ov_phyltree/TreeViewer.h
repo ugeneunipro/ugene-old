@@ -42,8 +42,7 @@
 #include <U2View/TreeSettingsDialog.h>
 
 
-
-#include <QTransform>
+#include <QtGui/QTransform>
 
 namespace U2 {
 
@@ -103,7 +102,7 @@ public:
 
 protected:
     virtual QWidget* createWidget();
-
+    virtual void onObjectRenamed(GObject* obj, const QString& oldName);
 
 private:
     QAction*            treeSettingsAction;

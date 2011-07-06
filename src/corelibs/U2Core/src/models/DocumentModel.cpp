@@ -160,13 +160,17 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
                    : StateLockableTreeItem(), df(_df), io(_io), url(_url)
 {
     ctxState = new GHintsDefaultImpl(hints);
-
     name = url.fileName();
+    
     qFill(modLocks, modLocks + DocumentModLock_NUM_LOCKS, (StateLock*)NULL);    
 
+    loadStateChangeMode = true;
     addUnloadedObjects(unloadedObjects);
+    loadStateChangeMode = false;
+    
     initModLocks(instanceModLockDesc, false);
     checkUnloadedState();
+    assert(!isModified());
 }
 
 Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
@@ -175,15 +179,18 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
 {
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
-    
+
+    loadStateChangeMode = true;
     qFill(modLocks, modLocks + DocumentModLock_NUM_LOCKS, (StateLock*)NULL);
     foreach(GObject* o, _objects) {
         _addObject(o);
     }
+    loadStateChangeMode = false;
 
     initModLocks(instanceModLockDesc, true);
     
     checkLoadedState();
+    assert(!isModified());
 }
 
 Document::~Document() {
@@ -211,19 +218,15 @@ void Document::addObject(GObject* obj){
     _addObject(obj);
 }
 
-void Document::_addObjectToHierarchy(GObject* obj, bool ignoreLocks) {
-    assert(!isStateLocked() || ignoreLocks);
-    
-    bool modify = !ignoreLocks;
-    obj->setParentStateLockItem(this, ignoreLocks, modify);
+void Document::_addObjectToHierarchy(GObject* obj) {
+    obj->setParentStateLockItem(this);
     obj->setGHints(new ModTrackHints(this, obj->getGHintsMap(), true));
+    obj->setModified(false);
     objects.append(obj);
 }
 
-void Document::_addObject(GObject* obj, bool ignoreLocks) {
-    obj->setModified(false);
-    _addObjectToHierarchy(obj, ignoreLocks);
-
+void Document::_addObject(GObject* obj) {
+    _addObjectToHierarchy(obj);
     assert(objects.size() == getChildItems().size());
     emit si_objectAdded(obj);
 }
@@ -233,12 +236,11 @@ void Document::removeObject(GObject* obj) {
     _removeObject(obj);
 }
 
-void Document::_removeObject(GObject* obj, bool ignoreLocks) {
+void Document::_removeObject(GObject* obj) {
     assert(obj->getParentStateLockItem() == this);
     obj->setModified(false);
 
-    bool modify = !ignoreLocks;
-    obj->setParentStateLockItem(NULL, ignoreLocks, modify);
+    obj->setParentStateLockItem(NULL);
     objects.removeOne(obj);
     obj->setGHints(new GHintsDefaultImpl());
 
@@ -308,6 +310,7 @@ void Document::checkLoadedState() const {
 #endif
 }
 
+
 static StateLock* NULL_LOCK = NULL;
 
 void Document::loadFrom(const Document* d) {
@@ -325,14 +328,16 @@ void Document::loadFrom(const Document* d) {
     int totalLocks = locks.count();    
     assert(totalLocks == nDocLocks);
 #endif
+    
+    loadStateChangeMode = true;
 
     QMap<QString, UnloadedObjectInfo> unloadedInfo;
     foreach(GObject* obj, objects) { //remove all unloaded objects
         unloadedInfo.insert(obj->getGObjectName(), UnloadedObjectInfo(obj));
-        _removeObject(obj, true);
+        _removeObject(obj);
     }
-
-    ctxState->setMap(d->getGHints()->getMap());
+    ctxState->setAll(d->getGHints()->getMap());
+    
     lastUpdateTime = d->getLastUpdateTime();
 
     //copy instance modlocks if any
@@ -362,13 +367,14 @@ void Document::loadFrom(const Document* d) {
             }
             clonedObj->getGHints()->setMap(mergedHints);
         }
-        _addObject(clonedObj, true);
+        _addObject(clonedObj);
     }
     
     setLoaded(true); 
     
     //TODO: rebind local objects relations if url!=d.url
-    setModified(false);
+    
+    loadStateChangeMode = false;
     
     checkLoadedState();
 }
@@ -499,6 +505,8 @@ bool Document::unload() {
         return false;
     }
 
+    loadStateChangeMode = true;
+
     int nDocLocks = 0; 
     qCount(modLocks, modLocks + DocumentModLock_NUM_LOCKS, NULL_LOCK, nDocLocks);
     nDocLocks = DocumentModLock_NUM_LOCKS - nDocLocks;
@@ -510,44 +518,60 @@ bool Document::unload() {
     QList<UnloadedObjectInfo> unloadedInfo;
     foreach(GObject* obj, objects) { //Note: foreach copies object list
         unloadedInfo.append(UnloadedObjectInfo(obj));
-        _removeObject(obj, true);
+        _removeObject(obj);
     }
     addUnloadedObjects(unloadedInfo);
     
-    StateLock* fl =modLocks[DocumentModLock_FORMAT_AS_INSTANCE];
-    if (fl!=NULL) {
+    StateLock* fl = modLocks[DocumentModLock_FORMAT_AS_INSTANCE];
+    if (fl != NULL) {
         unlockState(fl);
         modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = NULL;
     }
     
     setLoaded(false);
-    setModified(false);
+    
+    loadStateChangeMode = false;
 
     return true;
 }
 
+void Document::setModified(bool modified, const QString& modType) {
+    if (loadStateChangeMode && modified && modType == StateLockModType_AddChild) { //ignore modification events during loading/unloading
+        return;    
+    }
+    StateLockableTreeItem::setModified(modified, modType);
+}
+
+bool Document::isModificationAllowed(const QString& modType) {
+    bool ok = loadStateChangeMode && modType == StateLockModType_AddChild;
+    ok = ok || StateLockableTreeItem::isModificationAllowed(modType);
+    return ok;
+}
+
+
 void Document::setGHints(GHints* newHints) {
     assert(newHints!=NULL);
-
     //gobjects in document keep states in parent document map -> preserve gobject hints
-    QList<QVariantMap> objStates;
-    for (int i=0;i<objects.size();i++) {
-        objStates.append(objects[i]->getGHintsMap());
+    QList<QVariantMap> objectHints;
+    for (int i = 0; i < objects.size(); i++) {
+        GObject* obj = objects[i];
+        objectHints.append(obj->getGHintsMap());
     }
     
     delete ctxState;
     ctxState = newHints;
 
-    for (int i=0;i<objects.size();i++) {
-        objects[i]->getGHints()->setMap(objStates[i]);
+    for (int i = 0;i < objects.size(); i++) {
+        const QVariantMap& hints = objectHints[i];
+        GObject* obj = objects[i];
+        obj->getGHints()->setMap(hints);
     }
-
 }
 
 void Document::addUnloadedObjects(const QList<UnloadedObjectInfo>& info) {
     foreach(const UnloadedObjectInfo& oi, info) {
         UnloadedObject* obj = new UnloadedObject(oi);
-        _addObjectToHierarchy(obj, true);
+        _addObjectToHierarchy(obj);
         assert(obj->getDocument() == this);
         emit si_objectAdded(obj);    
     }

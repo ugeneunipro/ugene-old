@@ -74,6 +74,8 @@ public:
     virtual int getNumBasesVisible() const = 0;
 
     virtual void setNumBasesVisible(int n) = 0;
+
+    virtual void onSequenceObjectRenamed(const QString& oldName) = 0;
     
 signals:
     void si_sequenceObjectAdded(DNASequenceObject*);

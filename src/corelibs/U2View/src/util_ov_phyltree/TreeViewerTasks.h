@@ -41,6 +41,9 @@ public:
 
     virtual void open();
 
+    static void updateTitle(TreeViewer* tv);
+    static void updateStates(GObject* o, const QString& newName);
+
 private:
     QPointer<PhyTreeObject>     phyObject;
     GObjectReference            unloadedReference;

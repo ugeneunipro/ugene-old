@@ -140,6 +140,7 @@ public:
 protected:
     virtual QWidget* createWidget();
     virtual bool onObjectRemoved(GObject* o);
+    virtual void onObjectRenamed(GObject* obj, const QString& oldName);
     virtual bool eventFilter(QObject*, QEvent*);
     virtual void timerEvent(QTimerEvent *e);
     

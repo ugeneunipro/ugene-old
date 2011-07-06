@@ -139,4 +139,15 @@ void OpenAssemblyBrowserTask::open() {
     }
 }
 
+void OpenAssemblyBrowserTask::updateTitle(AssemblyBrowser* ab) {
+    const QString& oldViewName = ab->getName();
+    GObjectViewWindow* w = GObjectViewUtils::findViewByName(oldViewName);
+    if (w != NULL) {
+        AssemblyObject* aObj = ab->getAssemblyObject();
+        QString newViewName = GObjectViewUtils::genUniqueViewName(aObj->getDocument(), aObj);
+        ab->setName(newViewName);
+        w->setWindowTitle(newViewName);
+    }
+}
+
 } //ns
