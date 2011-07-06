@@ -166,6 +166,7 @@ PDBFormat::PDBParser::PDBParser(IOAdapter* _io) : io(_io), currentPDBLine(""), c
     currentChainIndex = 1;
     currentModelIndex = 0;
     currentChainIndentifier = ' '; 
+    int residueOrder = 0;
     flagMultipleModels = false;
     flagAtomRecordPresent = false;
 }
@@ -324,20 +325,13 @@ void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, TaskStateInfo&)
     int id = currentPDBLine.mid(6,5).toInt();
     QByteArray atomName = currentPDBLine.mid(12,4).toAscii().trimmed();
     QByteArray residueName = currentPDBLine.mid(17,3).toAscii().trimmed();
-    QByteArray residueIndexStr = currentPDBLine.mid(22,5).toAscii();
+    int resId = currentPDBLine.mid(22,4).toAscii().toInt();
+    char insCode = currentPDBLine.at(26).toAscii();
     char residueAcronym = PDBFormat::getAcronymByName(residueName);
     char chainIdentifier = currentPDBLine.at(21).toAscii();
-    
-    if (currentChainIndentifier != chainIdentifier) {
-        resIndSet.clear();
-        currentChainIndentifier = chainIdentifier;
-    }
-    
-    resIndSet.insert(residueIndexStr);
-    int residueIndex = resIndSet.size();
-
-    bool atomIsInChain = !isHetero || seqResContains(chainIdentifier, residueIndex, residueAcronym );
-
+        
+    ResidueIndex residueIndex(resId,insCode);
+    bool atomIsInChain = !isHetero || seqResContains(chainIdentifier, residueIndex.toInt(), residueAcronym );
 
     QByteArray elementName = currentPDBLine.mid(76,2).toAscii().trimmed();
     
@@ -357,7 +351,7 @@ void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, TaskStateInfo&)
 
         SharedMolecule& mol = biostruct.moleculeMap[chainIndex];
         
-        if (!mol->residueMap.contains(residueIndex))  {
+        if (currentResidueIndex != residueIndex)  {
             SharedResidue residue( new ResidueData );
             residue->name = residueName;
             residue->acronym = residueAcronym;
@@ -365,6 +359,9 @@ void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, TaskStateInfo&)
                 ioLog.details(tr("PDB warning: unknown residue name: %1").arg(residue->name.constData()));
             }
             residue->chainIndex = chainIndex;
+            currentResidueIndex = residueIndex;
+            residueOrder++;
+            residueIndex.setOrder(residueOrder);
             mol->residueMap.insert(residueIndex, residue);
         }
 
@@ -718,6 +715,10 @@ void PDBFormat::PDBParser::createMolecule( char chainIdentifier, BioStruct3D &bi
     newMol->name = QString("chain %1").arg(chainIdentifier);
     biostruct.moleculeMap.insert(chainIndex,newMol);
     chainIndexMap.insert(chainIdentifier, chainIndex);
+}
+
+void PDBFormat::PDBParser::updateResidueIndexes( BioStruct3D& biostruc )
+{
 }
 
 char PDBFormat::getAcronymByName( const QByteArray& name )

@@ -54,7 +54,7 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
                     // Draw bonds only between atoms of the same molecular chain
                     if (atom.constData()->chainIndex == bufAtom.constData()->chainIndex) {
                         // ... and when they are sequential
-                        if (atom.constData()->residueIndex - bufAtom.constData()->residueIndex == 1) { 
+                        if (atom.constData()->residueIndex.toInt() - bufAtom.constData()->residueIndex.toInt() == 1) { 
                             Vector3D bufPos = bufAtom.constData()->coord3d;
                             Color4f bufAtomColor = colorScheme->getAtomColor(bufAtom);
                             glDrawHalfBond(pObj, bufPos, pos, ribbonThickness, settings->detailLevel);

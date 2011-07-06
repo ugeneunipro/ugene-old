@@ -122,7 +122,7 @@ void BioStruct3DColorScheme::updateSelectionRegion(int chainId, const QVector<U2
 }
 
 bool BioStruct3DColorScheme::isInSelection(const SharedAtom &atom) const {
-   return selection.inSelection(atom->chainIndex, atom->residueIndex);
+   return selection.inSelection(atom->chainIndex, atom->residueIndex.toInt());
 }
 
 Color4f BioStruct3DColorScheme::getSchemeAtomColor(const SharedAtom&) const {
@@ -288,7 +288,7 @@ SecStructColorScheme::SecStructColorScheme(const BioStruct3DObject *biostruct)
 Color4f SecStructColorScheme::getSchemeAtomColor( const SharedAtom& atom ) const
 {
     Color4f c = defaultAtomColor;
-    int residueIndex = atom->residueIndex;
+    int residueIndex = atom->residueIndex.toInt();
 
     if (molMap.contains(atom->chainIndex)) {
         const QHash<int, QByteArray>& residueTable = molMap.value(atom->chainIndex).strucResidueTable;

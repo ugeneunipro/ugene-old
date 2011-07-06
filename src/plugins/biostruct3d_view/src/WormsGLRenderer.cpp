@@ -84,10 +84,10 @@ void WormsGLRenderer::create() {
             BioPolymerModel& bpModel = bioPolymer.bpModels[modelId];
             foreach (const SharedAtom atom, model.atoms) {
                 if ((atom->name.trimmed() == alphaCarbonTag) || (atom->name.trimmed() == phosophorTag)) {
-                    bpModel.monomerMap[atom->residueIndex].alphaCarbon = atom;
+                    bpModel.monomerMap[atom->residueIndex.toInt()].alphaCarbon = atom;
                 }
-                if ( (atom->name.trimmed() == carbonylOxygenTag) && (bpModel.monomerMap.contains(atom->residueIndex))) {
-                    bpModel.monomerMap[atom->residueIndex].carbonylOxygen = atom;
+                if ( (atom->name.trimmed() == carbonylOxygenTag) && (bpModel.monomerMap.contains(atom->residueIndex.toInt()))) {
+                    bpModel.monomerMap[atom->residueIndex.toInt()].carbonylOxygen = atom;
                 }
             }
             ++modelId;
@@ -124,7 +124,7 @@ void WormsGLRenderer::drawWorms(  )
                 const SharedAtom a2 = wormCoords.at(i+2);
                 const SharedAtom a3 = wormCoords.at(i+3);
                 // draw worms only between sequential residues
-                if (a2->residueIndex - a1->residueIndex != 1) {
+                if (a2->residueIndex.toInt() - a1->residueIndex.toInt() != 1) {
                     continue;
                 }
 

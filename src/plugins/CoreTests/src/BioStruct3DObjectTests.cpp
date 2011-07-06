@@ -408,8 +408,8 @@ Task::ReportResult GTest_BioStruct3DAtomResidueName::report()
     }
 
     int chainId = atom->chainIndex;
-    int residueId = atom->residueIndex;
-    QString tmpName =  bioStruct.getResidueById(chainId, residueId)->name;
+    int residueId = atom->residueIndex.toInt();
+    QString tmpName =  bioStruct.getResidueById(chainId, ResidueIndex(residueId,' '))->name;
 
     if (residueName != tmpName) {
         stateInfo.setError(QString("atom with id=%1 sequenceId does not match: %2, expected %3").arg(atomId).arg(tmpName).arg(residueName));

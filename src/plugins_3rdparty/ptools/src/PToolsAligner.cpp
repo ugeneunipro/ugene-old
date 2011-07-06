@@ -63,7 +63,7 @@ static PTools::Rigidbody* createRigidBody(const BioStruct3DReference &subset) {
                 if (i >= region.startPos && i < region.endPos()) {
                     PTools::Atomproperty pproperty;
                     pproperty.SetType(atom->name.data());
-                    pproperty.SetResidId(atom->residueIndex);
+                    pproperty.SetResidId(atom->residueIndex.toInt());
                     //pproperty.SetAtomId();
 
                     const Vector3D &coord = atom->coord3d;

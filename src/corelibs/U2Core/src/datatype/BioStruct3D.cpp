@@ -156,11 +156,13 @@ const SharedAtom BioStruct3D::getAtomById( int atomIndex, int modelIndex ) const
     return SharedAtom(NULL);
 }
 
-const SharedResidue BioStruct3D::getResidueById( int chainIndex, int residueIndex ) const
+const SharedResidue BioStruct3D::getResidueById( int chainIndex, ResidueIndex residueIndex ) const
 {
     const SharedMolecule mol =  moleculeMap.value(chainIndex);
-    if (mol->residueMap.contains(residueIndex)) {
-        return mol->residueMap.value(residueIndex);
+    foreach (const ResidueIndex& id, mol->residueMap.keys() ){
+        if ( id.toInt() == residueIndex.toInt() ) {
+            return mol->residueMap.value(id);
+        }
     }
 
     return SharedResidue(NULL);   
@@ -201,7 +203,7 @@ void BioStruct3D::generateSecStructureAnnotations()
         SharedAnnotationData sd(NULL);
         int chainId = struc->chainIndex;
         assert(chainId != 0);
-        int initResidueId = moleculeMap.value(chainId)->residueMap.constBegin().key();    
+        int initResidueId = moleculeMap.value(chainId)->residueMap.constBegin().key().toInt();    
         sd = new AnnotationData;
         sd->name = BioStruct3D::SecStructAnnotationTag;
         U2Qualifier qual(SecStructTypeQualifierName, getSecStructTypeName(struc->type));
@@ -259,7 +261,7 @@ bool BioStruct3DChainSelection::inSelection(int chainId, int residueId) const {
 }
 
 void BioStruct3DChainSelection::add(int chain, const U2Region &region) {
-    int start = biostruct.moleculeMap[chain]->residueMap.begin().key();
+    int start = biostruct.moleculeMap[chain]->residueMap.begin().key().toInt();
     for (int i = region.startPos; i < region.endPos(); ++i) {
         if (!data->selection.contains(chain, start + i)) {
             data->selection.insert(chain, start + i);
@@ -275,7 +277,7 @@ void BioStruct3DChainSelection::add(int chain, const QVector<U2Region> &regions)
 }
 
 void BioStruct3DChainSelection::remove(int chain, const U2Region &region) {
-    int start = biostruct.moleculeMap[chain]->residueMap.begin().key();
+    int start = biostruct.moleculeMap[chain]->residueMap.begin().key().toInt();
     for (int i = region.startPos; i < region.endPos(); ++i) {
         data->selection.remove(chain, start + i);
     }
@@ -295,6 +297,29 @@ void BioStruct3DChainSelection::update(int chain, const U2Region &add, const U2R
 void BioStruct3DChainSelection::update(int chain, const QVector<U2Region> &adds, const QVector<U2Region> &removes) {
     remove(chain, removes);
     add(chain, adds);
+}
+
+bool ResidueIndex::operator< ( const ResidueIndex& other ) const
+{
+    if (order == other.order) {
+        if (resId == other.resId) {
+            return insCode < other.insCode;
+        } else {
+            return resId < other.resId;
+        }
+    } else {
+        return order < other.order;
+    }
+}
+
+bool ResidueIndex::operator==( const ResidueIndex& other ) const
+{
+    return (other.insCode == insCode) && (other.resId == resId); 
+}
+
+bool ResidueIndex::operator!=( const ResidueIndex& other ) const
+{
+    return !(*this == other);
 }
 
 } // namespace U2

@@ -24,12 +24,12 @@
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/BioStruct3D.h>
 #include <QtCore/QSharedDataPointer>
 
 namespace U2 {
 
 class IOAdapter;
-class BioStruct3D;
 class AnnotationTableObject;
 class DNASequenceObject;
 class AtomData;
@@ -69,8 +69,10 @@ private:
         // Data
         IOAdapter *io;
         QString currentPDBLine;
+        ResidueIndex currentResidueIndex;
         int currentChainIndex;
         int currentModelIndex;
+        int residueOrder;
         char currentChainIndentifier;
         bool flagMultipleModels, flagAtomRecordPresent;
         QHash<char, int> chainIndexMap;
@@ -92,6 +94,7 @@ private:
 
         void parseModel(BioStruct3D& biostruct, TaskStateInfo& ti);
         void updateSecStructChainIndexes( BioStruct3D& biostruc );
+        void updateResidueIndexes( BioStruct3D& biostruc );
         bool seqResContains(char chainIdentier, int residueIndex, char acronym);
         QByteArray getNextSpecLine();
     public:

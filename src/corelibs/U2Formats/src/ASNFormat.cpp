@@ -279,7 +279,7 @@ void ASNFormat::BioStructLoader::loadModelCoordsFromNode( AsnNode* modelNode, At
         float z = (float) zCoords->children.at(i)->value.toInt() / scaleFactor;
         AtomData* a = new AtomData();
         a->chainIndex = chainId;
-        a->residueIndex = resId;
+        a->residueIndex = ResidueIndex(resId, ' ');
         a->coord3d = Vector3D(x,y,z);
         
         quint64 index = calcStdResidueIndex(chainId, resId);
@@ -371,7 +371,7 @@ void ASNFormat::BioStructLoader::loadMoleculeFromNode(AsnNode* moleculeNode, Mol
         ResidueData* resData = new ResidueData();
         resData->chainIndex = chainId;
         StdResidue stdResidue = loadResidueFromNode(resNode, resData);
-        molecule->residueMap.insert(resId, SharedResidue(resData));
+        molecule->residueMap.insert( ResidueIndex(resId, ' '), SharedResidue(resData));
         stdResidueCache.insert(calcStdResidueIndex(chainId, resId), stdResidue);
         
     }
@@ -564,8 +564,8 @@ void ASNFormat::BioStructLoader::loadIntraResidueBonds( BioStruct3D& struc )
         SharedMolecule& mol = struc.moleculeMap[chainId];
         int numModels = mol->models.count();
         for( int modelId = 0; modelId < numModels; ++modelId) {
-            foreach( int resId, mol->residueMap.keys()) {
-                quint64 index = calcStdResidueIndex(chainId, resId);
+            foreach( ResidueIndex resId, mol->residueMap.keys()) {
+                quint64 index = calcStdResidueIndex(chainId, resId.toInt());
                 if (!stdResidueCache.contains(index)) {
                     continue;
                 }

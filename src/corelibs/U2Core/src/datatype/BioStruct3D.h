@@ -37,6 +37,22 @@ namespace U2 {
 
 class U2Region;
 
+class U2CORE_EXPORT ResidueIndex
+{
+    int resId;
+    int order; // to keep order of residues in the chain
+    char insCode;
+public:
+    ResidueIndex() : resId(0), insCode(' '), order(0) {}
+    ResidueIndex(int residueIdx, char insertionCode) : resId(residueIdx), insCode(insertionCode), order(0) {}
+    bool operator<(const ResidueIndex& other) const;
+    bool operator==(const ResidueIndex& other) const;
+    bool operator!=(const ResidueIndex& other) const;
+    int toInt() const { return resId; }
+    void setOrder(int ord) { order = ord; }
+};
+
+
 //! Represents biopolimer residue
 class ResidueData : public QSharedData    
 { 
@@ -59,7 +75,7 @@ class AtomData : public QSharedData
 public:
     int atomicNumber;
     int chainIndex;
-    int residueIndex;
+    ResidueIndex residueIndex;
     QByteArray name;
     Vector3D coord3d;
     float occupancy, temperature;
@@ -67,7 +83,6 @@ public:
 public:
     AtomData() {
         chainIndex = 0;
-        residueIndex = 0;
         atomicNumber = 0;
         temperature = -1.0;
         occupancy = 0;
@@ -129,11 +144,12 @@ public:
 /*!
     Represents molecule chain (biopolymer or any other)
 */
+
 class MoleculeData : public QSharedData {
 public:
     MoleculeData(): engineered(false)  {}
     MoleculeData(const QString& molName) : name(molName), engineered(false) {}
-    QMap<int, SharedResidue> residueMap;
+    QMap<ResidueIndex, SharedResidue> residueMap;
 
     // this list used by biostrct renderers
     // its indexes are NOT model ids taken from PDB
@@ -178,8 +194,9 @@ public:
     QByteArray getRawSequenceByChainId(int id) const;
     int getNumberOfAtoms() const;
     int getNumberOfResidues() const;
+    static int residueIndexToInt(const ResidueIndex& idx);
     const SharedAtom getAtomById(int index, int modelIndex) const;
-    const SharedResidue getResidueById(int chainIndex, int residueIndex) const;
+    const SharedResidue getResidueById(int chainIndex, ResidueIndex residueIndex) const;
 
     // Theese three methods need to solve confusion between model ids (same as in PDB)
     // and internal model indexes, both  are used in UGENE
