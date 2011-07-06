@@ -623,12 +623,16 @@ bool DescriptionItem::sceneEvent(QEvent *event) {
     switch (event->type()) {
         case QEvent::GraphicsSceneHoverMove:
         case QEvent::GraphicsSceneHoverEnter:
-            ExtendedProcStyle* owner = qgraphicsitem_cast<ExtendedProcStyle*>(parentItem());
-            if (owner->resizing) {
-                QGraphicsSceneHoverEvent* he = static_cast<QGraphicsSceneHoverEvent*>(event);
-                const QPointF& p = mapToParent(he->pos());
-                owner->updateCursor(p);
+            {
+                ExtendedProcStyle* owner = qgraphicsitem_cast<ExtendedProcStyle*>(parentItem());
+                if (owner->resizing) {
+                    QGraphicsSceneHoverEvent* he = static_cast<QGraphicsSceneHoverEvent*>(event);
+                    const QPointF& p = mapToParent(he->pos());
+                    owner->updateCursor(p);
+                }
             }
+            break;
+        default:
             break;
     }
     return QGraphicsTextItem::sceneEvent(event);

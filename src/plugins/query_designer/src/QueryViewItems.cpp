@@ -766,21 +766,22 @@ void QDElementDescription::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
 bool QDElementDescription::sceneEvent(QEvent *event) {
     bool res = QGraphicsTextItem::sceneEvent(event);
-    switch (event->type())
-    {
-    case QEvent::GraphicsSceneHoverEnter:
-    case QEvent::GraphicsSceneHoverMove:
-    case QEvent::GraphicsSceneMouseRelease:
-    case QEvent::GraphicsSceneMouseMove:
-    case QEvent::GraphicsSceneMousePress:
-        {
-            QGraphicsSceneMouseEvent* me = static_cast<QGraphicsSceneMouseEvent*>(event);
-            QDElement* parent = qgraphicsitem_cast<QDElement*>(parentItem());
-            assert(parent);
-            me->setPos(mapToParent(me->pos()));
-            res = parent->sceneEvent(me);
-        }
-        break;
+    switch (event->type()) {
+        case QEvent::GraphicsSceneHoverEnter:
+        case QEvent::GraphicsSceneHoverMove:
+        case QEvent::GraphicsSceneMouseRelease:
+        case QEvent::GraphicsSceneMouseMove:
+        case QEvent::GraphicsSceneMousePress:
+            {
+                QGraphicsSceneMouseEvent* me = static_cast<QGraphicsSceneMouseEvent*>(event);
+                QDElement* parent = qgraphicsitem_cast<QDElement*>(parentItem());
+                assert(parent);
+                me->setPos(mapToParent(me->pos()));
+                res = parent->sceneEvent(me);
+            }
+            break;
+        default:
+            break;
     }
     return res;
 }
