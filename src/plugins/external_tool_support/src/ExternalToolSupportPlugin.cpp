@@ -27,6 +27,7 @@
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
+#include <U2View/DnaAssemblyUtils.h>
 #include <U2Core/MAlignmentObject.h>
 
 #include <U2Core/GAutoDeleteList.h>
@@ -179,20 +180,19 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         ExternalToolSupprotAction* blastPlusAction= new ExternalToolSupprotAction(tr("BLAST+ Search..."), this, toolList);
         connect(blastPlusAction, SIGNAL(triggered()), blastNPlusTool, SLOT(sl_runWithExtFileSpecify()));
         
-        ExternalToolSupprotAction* cap3Action = new ExternalToolSupprotAction(cap3Tool->getName(), this, QStringList(cap3Tool->getName()));
-        connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
-
-
         //Add to menu NCBI Toolkit
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu* assemblySumbenu = tools->addMenu(tr("Contig Assembly"));
-        assemblySumbenu->addAction(cap3Action);
         QMenu* blastSubmenu = tools->addMenu(tr("BLAST"));
         blastSubmenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
         blastSubmenu->addAction(formatDBAction);
         blastSubmenu->addAction(blastallAction);
         blastSubmenu->addAction(makeBLASTDBAction);
         blastSubmenu->addAction(blastPlusAction);
+        
+        ExternalToolSupprotAction* cap3Action = new ExternalToolSupprotAction(QString("Contig assembly with %1").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
+        connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
+        QMenu* assemblySumbenu = tools->findChild<QMenu*>(MWMENU_TOOLS_ASSEMBLY);
+        assemblySumbenu->addAction(cap3Action);
     }
 
     AppContext::getCDSFactoryRegistry()->registerFactory(new CDSearchLocalTaskFactory(), CDSearchFactoryRegistry::LocalSearch);

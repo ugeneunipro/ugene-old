@@ -50,6 +50,7 @@ DnaAssemblySupport::DnaAssemblySupport()
 {
     QMenu *toolsMenu = AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS );
     QMenu *dnaAssemblySub = toolsMenu->addMenu(QIcon( ":core/images/align.png" ), tr("DNA assembly"));
+    dnaAssemblySub->setObjectName(MWMENU_TOOLS_ASSEMBLY);
 
     QAction* dnaAssemblyAction = new QAction( tr("Align short reads..."), this );
     dnaAssemblyAction->setIcon(QIcon(":core/images/align.png"));

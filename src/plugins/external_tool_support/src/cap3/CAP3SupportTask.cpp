@@ -88,8 +88,8 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
         GUrl inputUrl = prepareDataForCAP3Task->getPreparedPath();
         tmpOutputUrl = inputUrl.dirPath() + "/" + inputUrl.baseFileName() + ".cap.ace"; 
         
-        QStringList arguments;
-        arguments << inputUrl.getURLString();
+        QStringList arguments = settings.getArgumentsList();
+        arguments.prepend( inputUrl.getURLString() );
         logParser = new CAP3LogParser();
         cap3Task = new ExternalToolRunTask(CAP3_TOOL_NAME, arguments, logParser);
         cap3Task->setSubtaskProgressWeight(95);
@@ -279,12 +279,19 @@ void PrepareInputForCAP3Task::run()
 QStringList CAP3SupportTaskSettings::getArgumentsList()
 {
     QStringList res;
-    res += QString("-a %1").arg(bandExpansionSize);
-    res += QString("-b %1").arg(baseQualityDiffCutoff);
-    res += QString("-c %1").arg(baseQualityClipCutoff);
-    res += QString("-d %1").arg(maxQScoreSum);
-    res += QString("-r %1").arg(reverseReads);
-
+    res += "-a"; res += QString("%1").arg(bandExpansionSize);
+    res += "-b"; res += QString("%1").arg(baseQualityDiffCutoff);
+    res += "-c"; res += QString("%1").arg(baseQualityClipCutoff);
+    res += "-d"; res += QString("%1").arg(maxQScoreSum);
+    res += "-f"; res += QString("%1").arg(maxGapLength);
+    res += "-g"; res += QString("%1").arg(gapPenaltyFactor);
+    res += "-m"; res += QString("%1").arg(matchScoreFactor);
+    res += "-n"; res += QString("%1").arg(mismatchScoreFactor);
+    res += "-o"; res += QString("%1").arg(overlapLengthCutoff);
+    res += "-p"; res += QString("%1").arg(overlapPercentIdentetyCutoff);
+    res += "-s"; res += QString("%1").arg(overlapSimilarityScoreCutoff);
+    res += "-t"; res += QString("%1").arg(maxNumberOfWordMatches);
+    
     return res;
 }
 

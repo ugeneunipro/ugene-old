@@ -61,6 +61,7 @@ CAP3Support::CAP3Support(const QString& name, const QString& path) : ExternalToo
 #endif
     validMessage="cap3 File_of_reads [options]";
     description=tr("<i>CAP3</i> is a contig assembly program. \
+                   <br>It allows to assembly long DNA reads (up to 1000 bp). \
                    <br>Binaries can be downloaded from http://seq.cs.iastate.edu/cap3.html");
     description+=tr("<br><br> Huang, X. and Madan, A.  (1999)");
     description+=tr("<br>CAP3: A DNA Sequence Assembly Program,");
