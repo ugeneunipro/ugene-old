@@ -142,6 +142,11 @@ public:
                 doc->connect(input, SIGNAL(bindingChanged()), SLOT(sl_actorModified()));
             }
         }
+
+        foreach(Workflow::Port* input, a->getOutputPorts()) {
+            doc->connect(input, SIGNAL(bindingChanged()), SLOT(sl_actorModified()));
+        }
+        //}
         return doc;
     }
 protected:

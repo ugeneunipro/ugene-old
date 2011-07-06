@@ -472,7 +472,9 @@ bool TVReportWindow::eventFilter(QObject *, QEvent *e) {
             QString url = textEdit->anchorAt(me->pos());
             if(!url.isEmpty()) {
                 Task *t = AppContext::getProjectLoader()->openWithProjectTask(url);
-                AppContext::getTaskScheduler()->registerTopLevelTask(t);
+                if(t) {
+                    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+                }
             }
         }
     } else if(e->type() == QEvent::MouseMove) {

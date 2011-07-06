@@ -41,6 +41,7 @@ public:
         cfg = reg->getConfigByName(actor->getProto()->getId());
         commandLine = cfg->cmdLine;
         done = false;
+        busy = false;
     }
     bool isReady();
     bool isDone();
@@ -62,6 +63,7 @@ private:
     QStringList inputUrls;
     QMap<QString, DataConfig> outputUrls;
     bool done;
+    bool busy;
 };
 
 class ExternalProcessWorkerFactory: public DomainFactory {

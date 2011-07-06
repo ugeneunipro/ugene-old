@@ -35,9 +35,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="styleCombo"/>
-      </item>
-      <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Element style</string>
@@ -45,7 +42,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QFontComboBox" name="fontCombo"/>
+       <widget class="QComboBox" name="styleCombo"/>
       </item>
       <item>
        <widget class="QLabel" name="label">
@@ -55,7 +52,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="colorWidget" native="true"/>
+       <widget class="QFontComboBox" name="fontCombo"/>
       </item>
       <item>
        <widget class="QLabel" name="label_3">
@@ -63,6 +60,9 @@
          <string>Element background color</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="colorWidget" native="true"/>
       </item>
      </layout>
     </widget>

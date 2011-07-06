@@ -35,6 +35,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/GObjectRelationRoles.h>
 
 
 namespace U2 {
@@ -132,24 +133,40 @@ const QString ExternalProcessWorker::generateURL(const QString &extention, const
 }
 
 Task* ExternalProcessWorker::tick() {
+    if(busy) {
+        return NULL;
+    }
+    busy = true;
+    QString execString = commandLine;
     foreach(Attribute *a, actor->getAttributes()) {
-        int i = commandLine.indexOf(QRegExp("\\$" + a->getDisplayName() + "(\\W|$)"));
+        int i = execString.indexOf(QRegExp("\\$" + a->getDisplayName() + "(\\W|$)"));
         if(i != -1) {
             //commandLine.replace("$" + a->getDisplayName(), a->getAttributeValue<QString>()); //set parameters in command line with attributes values
-            commandLine.replace(i, a->getDisplayName().size() + 1 , a->getAttributeValue<QString>()); //set parameters in command line with attributes values
+            execString.replace(i, a->getDisplayName().size() + 1 , a->getAttributeValue<QString>()); //set parameters in command line with attributes values
         }
     }
 
     int i = 0;
+    
     foreach(const DataConfig& dataCfg, cfg->inputs) { //write all input data to files
         DocumentFormat *f;
         f = AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format);
+        IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+        QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
+        inputUrls << url;
+        /*Document *d = new Document(f, io, url);
+        d->setLoaded(true);*/
+        Document *d;
+
+
         Message inputMessage = getMessageAndSetupScriptValues(inputs[i]);
         QList<GObject*> l;
         QVariantMap qm = inputMessage.getData().toMap();
         if(dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
             DNASequence seq = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+            //d->addObject(new DNASequenceObject(seq.getName(), seq));
             l << new DNASequenceObject(seq.getName(), seq);
+            d = new Document(f, io, url, l);
         } else if(dataCfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
             QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
             AnnotationTableObject * aobj = new AnnotationTableObject("anns");
@@ -158,12 +175,18 @@ Task* ExternalProcessWorker::tick() {
                 aobj->addAnnotation(new Annotation(ann));
             }
             l << aobj;
+            //d->addObject(aobj);
+            d = new Document(f, io, url, l);
         } else if(dataCfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
             MAlignment ma = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
             l << new MAlignmentObject(ma);
+            //d->addObject(new MAlignmentObject(ma));
+            d = new Document(f, io, url, l);
         } else if(dataCfg.type == SEQ_WITH_ANNS) {
             DNASequence seq = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-            l << new DNASequenceObject(seq.getName(), seq);
+            DNASequenceObject*dnaObj =  new DNASequenceObject(seq.getName(), seq);
+            //d->addObject(dnaObj);
+            l << dnaObj;
 
             QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
             AnnotationTableObject * aobj = new AnnotationTableObject("anns");
@@ -171,18 +194,24 @@ Task* ExternalProcessWorker::tick() {
                 QStringList list;
                 aobj->addAnnotation(new Annotation(ann));
             }
+            
             l << aobj;
+            d = new Document(f, io, url, l);
+
+            QList<GObjectRelation> rel;
+            rel << GObjectRelation(GObjectReference(dnaObj), GObjectRelationRole::SEQUENCE);
+            aobj->setObjectRelations(rel);
         }
-        IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
-        inputUrls << url;
-        Document *d = new Document(f, io, url, l);
+        //IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+        //QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
+        //inputUrls << url;
+        //Document *d = new Document(f, io, url, l);
         TaskStateInfo ts;
         f->storeDocument(d, ts, io);
 
-        int ind = commandLine.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
+        int ind = execString.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
         if(ind != -1) {
-            commandLine.replace(ind, dataCfg.attrName.size() + 1 , url); 
+            execString.replace(ind, dataCfg.attrName.size() + 1 , "\"" + url + "\""); 
         }
         //commandLine.replace("$" + dataCfg.attrName, url);
         
@@ -194,14 +223,14 @@ Task* ExternalProcessWorker::tick() {
         QString url1 = generateURL(AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format)->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
         outputUrls.insert(url1, dataCfg);
 
-        int ind = commandLine.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
+        int ind = execString.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
         if(ind != -1) {
-            commandLine.replace(ind, dataCfg.attrName.size() + 1 , url1); 
+            execString.replace(ind, dataCfg.attrName.size() + 1 , "\"" + url1 + "\""); 
         }
         //commandLine.replace("$" + dataCfg.attrName, url1);
     }
     
-    LaunchExternalToolTask *task = new LaunchExternalToolTask(commandLine);
+    LaunchExternalToolTask *task = new LaunchExternalToolTask(execString);
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onTaskFinishied()));
     return task;
 }
@@ -228,7 +257,11 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 }
                 if(isEnded) {
                     output->setEnded();
+                    done  = true;
                 }
+                busy = false;
+                QFile::remove(url);
+                outputUrls.clear();
                 return;
             }
 
@@ -249,19 +282,26 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
                 v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue(list);
             } else if(cfg.type == SEQ_WITH_ANNS) {
-                DNASequenceObject *seqObj = static_cast<DNASequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
-                AnnotationTableObject *obj = static_cast<AnnotationTableObject *>(d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).first());
-                QList<SharedAnnotationData> list;
-                foreach(Annotation* a, obj->getAnnotations()) {
-                    list << a->data();
+                if(!d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
+                    DNASequenceObject *seqObj = static_cast<DNASequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
+                    DNASequence seq = seqObj->getSequence();
+                    seq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::RAW());
+                    v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<DNASequence>(seq);
                 }
-                v[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue(list);
-                DNASequence seq = seqObj->getSequence();
-                seq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::RAW());
-                v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<DNASequence>(seq);
+                if(!d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).isEmpty()) {
+                    AnnotationTableObject *obj = static_cast<AnnotationTableObject *>(d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).first());
+                    QList<SharedAnnotationData> list;
+                    foreach(Annotation* a, obj->getAnnotations()) {
+                        list << a->data();
+                    }
+                    v[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue(list);
+                }
+                
             }
+            QFile::remove(url);
         }
 
+        outputUrls.clear();
         DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(OUTPUT_PORT_TYPE + cfg->name);
         
         output->put(Message(dataType, v));
@@ -274,6 +314,7 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             done = true;
         }
     }
+    busy = false;
 }
 
 void ExternalProcessWorker::init() {
@@ -368,6 +409,30 @@ QString ExternalProcessWorkerPrompter::composeRichDoc() {
             QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
             QString producerName = tr("<u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
             doc.replace("$" + dataCfg.attrName, producerName);
+        }
+    }
+
+    foreach(const DataConfig& dataCfg, cfg->outputs) {
+        QRegExp param("\\$" + dataCfg.attrName + /*"[,:;\s\.\-]"*/"\\W|$");
+        if(doc.contains(param)) {
+            IntegralBusPort* output = qobject_cast<IntegralBusPort*>(target->getPort(OUT_PORT_ID));
+            DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(dataCfg.type);
+            if(dataCfg.type == SEQ_WITH_ANNS) {
+                dataType = BaseTypes::DNA_SEQUENCE_TYPE();
+            }
+            QString destinations;
+            QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+            foreach(Port *p, output->getLinks().keys()) {
+                IntegralBusPort* ibp = qobject_cast<IntegralBusPort*>(p);
+                Actor *dest = ibp->owner();
+                destinations += tr("<u>%1</u>").arg(dest ? dest->getLabel() : unsetStr) + ",";
+            }
+            if(destinations.isEmpty()) {
+                destinations = tr("<u>%1</u>").arg(unsetStr);
+            } else {
+                destinations.resize(destinations.size() - 1); //remove last semicolon
+            }
+            doc.replace("$" + dataCfg.attrName, destinations);
         }
     }
 

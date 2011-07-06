@@ -77,8 +77,8 @@ WorkflowSettingsPageWidget::WorkflowSettingsPageWidget(WorkflowSettingsPageContr
     styleCombo->addItem(U2::WorkflowView::tr("Minimal"), ItemStyles::SIMPLE);
     styleCombo->addItem(U2::WorkflowView::tr("Extended"), ItemStyles::EXTENDED);
     connect(dirButton, SIGNAL(clicked()), SLOT(sl_getDirectory()));
-    connect(colorWidget, SIGNAL(clicked()), SLOT(sl_getColor()));
     connect(extToolDirButton, SIGNAL(clicked()), SLOT(sl_getExternalToolCfgDir()));
+    colorWidget->setMinimumHeight(label->height());
     colorWidget->installEventFilter(this);
 #ifdef RUN_WORKFLOW_IN_THREADS
     runInSeparateProcessBox->setVisible(false);
@@ -102,9 +102,11 @@ void WorkflowSettingsPageWidget::sl_getDirectory() {
 
 void WorkflowSettingsPageWidget::sl_getColor() {
     QColor newColor = QColorDialog::getColor(colorWidget->palette().color(colorWidget->backgroundRole()), this);
-    QPalette pal = colorWidget->palette();
-    pal.setColor(colorWidget->backgroundRole() , newColor);
-    colorWidget->setPalette(pal);
+    if(newColor.isValid()) {
+        QPalette pal = colorWidget->palette();
+        pal.setColor(colorWidget->backgroundRole() , newColor);
+        colorWidget->setPalette(pal);
+    }
 }
 
 bool WorkflowSettingsPageWidget::eventFilter(QObject *, QEvent * event)
