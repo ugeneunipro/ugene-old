@@ -326,8 +326,9 @@ void QDElement::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
             newPos.ry()+=p.y();
         }
         setPos(newPos);
+    } else {
+        QGraphicsItem::mouseMoveEvent(event);
     }
-    QGraphicsItem::mouseMoveEvent(event);
 }
 
 void QDElement::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
@@ -636,7 +637,7 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
                         qs->setRowsNumber(rowNum);
                     }
                     // Keep the item inside the annotation area
-                    newPos.setX(qMin(rect.right(), qMax(newPos.x(), rect.left())));
+                    newPos.setX(qBound(rect.left(), newPos.x(), rect.left() + QueryScene::MAX_SCENE_SIZE.width()));
                     newPos.setY(qMax(newPos.y(), rect.top()));
                 }
                 
@@ -687,6 +688,17 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
                     return QGraphicsItem::itemChange(change, value);
                 }
                 qs->sl_adaptRowsNumber();
+                
+                QRectF rect = qs->sceneRect();
+                qreal rightEdge = mapRectToScene(boundingRect()).right();
+                qreal min = rect.left() + QueryScene::DEFAULT_SCENE_SIZE.width();
+                qreal max = rect.left() + QueryScene::MAX_SCENE_SIZE.width();
+                rightEdge = qBound(min, rightEdge, max);
+                if (rightEdge > rect.right()) {
+                    rect.setRight(rightEdge);
+                    qs->setSceneRect(rect);
+                }
+                
                 updateFootnotes();
                 qs->setModified(true);
             }
@@ -792,6 +804,9 @@ bool QDElementDescription::sceneEvent(QEvent *event) {
 
 Footnote::Footnote(QDElement* _from, QDElement* _to, QDDistanceType _distType, QDConstraint* parent, const QFont& _font)
 : from(_from), to(_to), distType(_distType), constraint(parent), font(_font), draging(false) {
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+#endif
     connect(constraint->getParameters(), SIGNAL(si_modified()), SLOT(sl_update()));
     init();
 }
@@ -850,7 +865,6 @@ void Footnote::updatePos() {
     //assert(qs->footnotesArea().contains(QPointF(xPos,y)));
     setPos(xPos, y);
     updateLines(QPointF(xPos, y));
-    qs->updateDescriptionPos();
 }
 
 void Footnote::updateLines(const QPointF& p) {
@@ -875,8 +889,7 @@ QVariant Footnote::itemChange(GraphicsItemChange change, const QVariant &value) 
             scene()->addItem(leftRef);
             scene()->addItem(rightRef);
         }
-    }
-    else if(change==ItemSceneChange){
+    } else if(change==ItemSceneChange) {
         if(qVariantValue<QGraphicsScene*>(value)==NULL) {
             scene()->removeItem(leftRef);
             scene()->removeItem(rightRef);
@@ -885,6 +898,10 @@ QVariant Footnote::itemChange(GraphicsItemChange change, const QVariant &value) 
             from->links.removeAll(this);
             to->links.removeAll(this);
         }
+    } else if (change==ItemPositionHasChanged) {
+        updateLines(scenePos());
+        leftRef->update();
+        rightRef->update();
     }
     return QGraphicsItem::itemChange(change, value);
 }

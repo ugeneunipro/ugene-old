@@ -48,6 +48,11 @@ class QueryScene : public QGraphicsScene {
 public:
     QueryScene(QueryViewController* parent=0);
     ~QueryScene();
+
+    void initTitle();
+    void initRuler();
+    void initDescription();
+
     QDScheme* getScheme() const { return scheme; }
     QRectF rulerArea() const;
     QRectF annotationsArea() const;
@@ -55,6 +60,7 @@ public:
     QList<QDElement*> getElements() const;
     QList<QGraphicsItem*> getFootnotes() const;
     QDElement* getUnitView(QDSchemeUnit* su) const;
+    void updateSceneRect();
     void setRowsNumber(int count);
     int getRowsNumber() { return rowsNum; }
     void insertRow(int idx);
@@ -64,11 +70,11 @@ public:
     void setLabel(const QString& lbl);
     QString getDescription() const;
     void setDescription(const QString& dsc);
-    void updateDescriptionPos();
     QueryViewController* getViewController() const { return view; }
     bool showActorDesc() const { return showDesc; }
     bool showActorOrder() const { return showOrder; }
 
+    void updateDescription();
     void addActor(QDActor* actor, const QPointF& pos);
     void addDistanceConstraint(QDElement* src, QDElement* dst, QDDistanceType distType, int min, int max);
     void removeActor(QDActor* actor);
@@ -88,6 +94,9 @@ public slots:
     void sl_adaptRowsNumber();
     void sl_updateRulerText();
     void sl_setModified() { setModified(true); }
+public:
+    static const QSizeF MAX_SCENE_SIZE;
+    static const QSizeF DEFAULT_SCENE_SIZE;
 protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
@@ -110,7 +119,6 @@ private:
     QDRulerItem*            ruler;
 
     bool                    showSchemeLbl;
-    bool                    showSchemeDesc;
     bool                    showDesc;
     bool                    showOrder;
 

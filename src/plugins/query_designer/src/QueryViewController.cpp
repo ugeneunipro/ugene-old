@@ -56,37 +56,26 @@ namespace U2 {
 /* Scene                                                                */
 /************************************************************************/
 
-#define QS 1000
+const QSizeF QueryScene::MAX_SCENE_SIZE(10*1000, 10*1000);
+const QSizeF QueryScene::DEFAULT_SCENE_SIZE(1000, 1000);
+
 #define MAX_ITEM_SIZE 10000 // max point size for any visual item and whole scene
 #define MIN_ROWS_NUMBER 3
-#define LABEL_HEIGHT 40
-#define LABEL_PIXEL_SIZE 15
-#define LABEL_LEFT_PAD 200
-QueryScene::QueryScene(QueryViewController* parent/* =0 */)
-: QGraphicsScene(parent), dropCandidateLeft(NULL), dropCandidateRight(NULL),
-view(parent), rowsNum(MIN_ROWS_NUMBER), showSchemeLbl(false), showSchemeDesc(false),
-showDesc(true), showOrder(true), modified(false) {
-    setSceneRect(0, 0, QS, QS);
+#define DESCRIPTION_TOP_PAD 40
+#define DESCRIPTION_BOTTOM_PAD 20
+#define FOOTNOTES_AREA_TOP_MARGIN 20
+#define FOOTNOTE_BOTTOM_MARGIN 20
+
+QueryScene::QueryScene(QueryViewController* parent/* =0 */) : QGraphicsScene(parent),
+dropCandidateLeft(NULL), dropCandidateRight(NULL), view(parent), rowsNum(3),
+showSchemeLbl(false), showDesc(true), showOrder(true), modified(false) {
+    setSceneRect(0, 0, DEFAULT_SCENE_SIZE.width(), DEFAULT_SCENE_SIZE.height());
     setItemIndexMethod(NoIndex);
     scheme = new QDScheme;
 
-    labelTxtItem = new QDLabelItem("NewSchema");
-    if (parent) {
-        connect(labelTxtItem, SIGNAL(si_editingFinished()), parent, SLOT(sl_updateTitle()));
-    }
-    labelTxtItem->setPos(LABEL_LEFT_PAD,0);
-    QFont lblFont;
-    lblFont.setItalic(true);
-    lblFont.setPixelSize(LABEL_PIXEL_SIZE);
-    labelTxtItem->setFont(lblFont);
-
-    descTxtItem = new QDDescriptionItem("<Write description here>");
-    descTxtItem->setTextWidth(200);
-
-    ruler = new QDRulerItem;
-    connect(this, SIGNAL(si_schemeChanged()), ruler, SLOT(sl_updateText()));
-    addItem(ruler);
-    ruler->setPos(0,0);
+    initTitle();
+    initRuler();
+    initDescription();
 }
 
 QueryScene::~QueryScene() {
@@ -95,6 +84,47 @@ QueryScene::~QueryScene() {
     delete labelTxtItem;
     delete descTxtItem;
     delete ruler;
+}
+
+#define LABEL_HEIGHT 40
+#define LABEL_PIXEL_SIZE 15
+#define LABEL_LEFT_PAD 200
+
+void QueryScene::initTitle() {
+    labelTxtItem = new QDLabelItem("NewSchema");
+    QFont lblFont;
+    lblFont.setItalic(true);
+    lblFont.setPixelSize(LABEL_PIXEL_SIZE);
+    labelTxtItem->setFont(lblFont);
+    labelTxtItem->setPos(LABEL_LEFT_PAD,0);
+    if (view) {
+        connect(labelTxtItem, SIGNAL(si_editingFinished()), view, SLOT(sl_updateTitle()));
+    }
+}
+
+void QueryScene::initRuler() {
+    ruler = new QDRulerItem;
+    connect(this, SIGNAL(si_schemeChanged()), ruler, SLOT(sl_updateText()));
+    ruler->setPos(0,0);
+    addItem(ruler);
+}
+
+void QueryScene::initDescription() {
+    descTxtItem = new QDDescriptionItem("<Write description here>");
+    descTxtItem->setTextWidth(200);
+    qreal viewWidth(0);
+    if (views().isEmpty()) {
+        viewWidth = sceneRect().width();
+    } else {
+        assert(views().size() == 1);
+        QGraphicsView* v = views().first();
+        viewWidth = v->viewport()->width();
+    }
+    qreal xPos = (viewWidth - descTxtItem->boundingRect().width()) / 2.0;
+    qreal yPos = footnotesArea().bottom() + DESCRIPTION_TOP_PAD;
+    descTxtItem->setPos(xPos, yPos);
+    addItem(descTxtItem);
+    descTxtItem->setVisible(false);
 }
 
 int QueryScene::getRow(QDElement* const uv) const {
@@ -142,8 +172,7 @@ void QueryScene::sl_adaptRowsNumber() {
     for (int i=rowsNum-1;i>=MIN_ROWS_NUMBER; i--) {
         if (unitsIntersectedByRow(i).isEmpty()) {
             --adaptedNum;
-        }
-        else {
+        } else {
             break;
         }
     }
@@ -175,14 +204,14 @@ void QueryScene::sl_showLabel(bool show) {
         return;
     }
     showSchemeLbl = show;
-    int dy;
+    int dy(0);
     if (showSchemeLbl) {
-        dy=LABEL_HEIGHT;
+        addItem(labelTxtItem);
+        dy = LABEL_HEIGHT;
         ruler->setPos(0, LABEL_HEIGHT);
-    }
-    else {
-        dy = -LABEL_HEIGHT;
+    } else {
         removeItem(labelTxtItem);
+        dy = -LABEL_HEIGHT;
         ruler->setPos(0,0);
     }
     foreach(QGraphicsItem* it, items()) {
@@ -190,25 +219,12 @@ void QueryScene::sl_showLabel(bool show) {
             it->moveBy(0.0, dy);
         }
     }
+    descTxtItem->moveBy(0.0, dy);
     update();
-    if (showSchemeLbl) {
-        addItem(labelTxtItem);
-    }
-    updateDescriptionPos();
 }
 
 void QueryScene::sl_showSchemeDesc(bool show) {
-    if (showSchemeDesc==show) {
-        return;
-    }
-    showSchemeDesc = show;
-    if (!showSchemeDesc) {
-        removeItem(descTxtItem);
-    }
-    else {
-        addItem(descTxtItem);
-        updateDescriptionPos();
-    }
+    descTxtItem->setVisible(show);
 }
 
 void QueryScene::sl_showItemDesc(bool show) {
@@ -234,12 +250,6 @@ void QueryScene::sl_showOrder(bool show) {
     }
 }
 
-#define DESCRIPTION_TOP_PAD 40
-void QueryScene::updateDescriptionPos() {
-    qreal y = footnotesArea().bottom() + DESCRIPTION_TOP_PAD;
-    descTxtItem->setPos(descTxtItem->x(),y);
-}
-
 QRectF QueryScene::rulerArea() const {
     QRectF area = ruler->boundingRect();
     area.moveTopLeft(ruler->scenePos());
@@ -259,7 +269,6 @@ QRectF QueryScene::annotationsArea() const {
     return QRectF(rect.left(), top, rect.width(), areaHeight);
 }
 
-#define FOOTNOTES_AREA_TOP_MARGIN 20
 QRectF QueryScene::footnotesArea() const {
     qreal tlX = sceneRect().left();
     qreal tlY = annotationsArea().bottom() + FOOTNOTES_AREA_TOP_MARGIN;
@@ -273,6 +282,7 @@ QRectF QueryScene::footnotesArea() const {
             }
         }
     }
+    brY += FOOTNOTE_BOTTOM_MARGIN;
     QRectF rect(QPointF(tlX,tlY), QPointF(brX,brY));
     assert(rect.width() < MAX_ITEM_SIZE && rect.height() < MAX_ITEM_SIZE);
     return rect;
@@ -308,20 +318,32 @@ QDElement* QueryScene::getUnitView(QDSchemeUnit* su) const {
     return NULL;
 }
 
+#define MAX_ROWS_NUMBER 200
 void QueryScene::setRowsNumber(int count) {
-    rowsNum = count;
-    QList<Footnote*> footnotes;
-    foreach(QGraphicsItem* item, items()) {
-        if(item->type()==FootnoteItemType) {
-            footnotes << qgraphicsitem_cast<Footnote*>(item);
+    if (count <= MAX_ROWS_NUMBER) {
+        qreal dY = (count - rowsNum)*GRID_STEP;
+        rowsNum = count;
+        foreach(QGraphicsItem* item, items()) {
+            if(item->type()==FootnoteItemType) {
+                Footnote* fn = qgraphicsitem_cast<Footnote*>(item);
+                fn->moveBy(0.0, dY);
+            }
         }
+
+        descTxtItem->moveBy(0.0, dY);        
+        qreal bottom = descTxtItem->mapRectToScene(descTxtItem->boundingRect()).bottom();
+        bottom = footnotesArea().bottom() + DESCRIPTION_TOP_PAD;
+        descTxtItem->setY(bottom);
+        qreal newH = qMax(QueryScene::DEFAULT_SCENE_SIZE.height(),
+            descTxtItem->mapRectToScene(descTxtItem->boundingRect()).bottom() + DESCRIPTION_BOTTOM_PAD);
+
+        QRectF r = sceneRect();
+        if (newH > r.height()) {
+            r.setHeight(newH);
+            setSceneRect(r);
+        }
+        update();
     }
-    foreach(Footnote* footnote, footnotes) {
-        footnote->updatePos();
-    }
-    //to do: evaluate row area and update it instead of whole scene
-    updateDescriptionPos();
-    update();
 }
 
 void QueryScene::drawBackground(QPainter *painter, const QRectF &rect) {
@@ -485,7 +507,7 @@ void QueryScene::addActor(QDActor* actor, const QPointF& pos) {
             addItem(fn);
             fn->updatePos();
         }
-    }
+    }    
     connect(actor->getParameters(), SIGNAL(si_modified()), ruler, SLOT(sl_updateText()));
     emit_schemeChanged();
     setModified(true);
@@ -502,6 +524,7 @@ void QueryScene::addDistanceConstraint(QDElement* src, QDElement* dst, QDDistanc
         Footnote* fn = new Footnote(src, dst, distType, c);
         addItem(fn);
         fn->updatePos();
+        updateDescription();
         emit_schemeChanged();
     }
     setModified(true);
@@ -553,6 +576,7 @@ void QueryScene::removeConstraint(QDConstraint* constraint) {
         }
     }
     scheme->removeConstraint(constraint);
+    updateDescription();
     emit_schemeChanged();
     setModified(true);
 }
@@ -582,6 +606,16 @@ void QueryScene::setModified( bool b ) {
     }
 }
 
+void QueryScene::updateDescription() {
+    qreal y = footnotesArea().bottom() + DESCRIPTION_TOP_PAD;
+    descTxtItem->setY(y);
+    QRectF rect = sceneRect();
+    y = descTxtItem->mapRectToScene(descTxtItem->boundingRect()).bottom();
+    qreal newH = qMax(y + DESCRIPTION_BOTTOM_PAD, QueryScene::DEFAULT_SCENE_SIZE.height());
+    rect.setHeight(newH);
+    setSceneRect(rect);
+}
+
 /************************************************************************/
 /* View Controller                                                      */
 /************************************************************************/
@@ -589,7 +623,6 @@ enum {ElementsTab,GroupsTab,SamplesTab};
 
 #define PALETTE_STATE "query_palette_settings"
 
-#define DESCRIPTION_HEIGHT 200
 QueryViewController::QueryViewController() : MWMDIWindow(tr("Query Designer")) {
     GCOUNTER(cvar, tvar, "OpenQDWindow");
     scene = new QueryScene(this);
@@ -636,9 +669,6 @@ QueryViewController::QueryViewController() : MWMDIWindow(tr("Query Designer")) {
     sl_updateTitle();
     
     sl_scrollUp();
-    qreal viewportW = sceneView->viewport()->width();
-    qreal xp = (viewportW - scene->descTxtItem->boundingRect().width())/2.0;
-    scene->descTxtItem->setPos(xp, 0);
 }
 
 void QueryViewController::loadScene(const QString& content) {
