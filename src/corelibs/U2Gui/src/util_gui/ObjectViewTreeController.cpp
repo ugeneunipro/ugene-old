@@ -441,7 +441,7 @@ OVTViewItem::OVTViewItem(const QString& _viewName, ObjectViewTreeController* c)
 
 void OVTViewItem::updateVisual() {
     setIcon(0, viewWindow == NULL ? controller->getInactiveBookmarkIcon() : controller->getActiveBookmarkIcon());
-    viewName = viewWindow->getViewName();
+    viewName = viewWindow == NULL ? viewName : viewWindow->getViewName();
 
     QString text = viewName;
 	setText(0, text);
