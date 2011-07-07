@@ -104,11 +104,6 @@ void OpenTreeViewerTask::updateTitle(TreeViewer* tv) {
     }
 }
 
-void OpenTreeViewerTask::updateStates(GObject* o, const QString& newName) {
-
-}
-
-
 //////////////////////////////////////////////////////////////////////////
 // open view from state
 

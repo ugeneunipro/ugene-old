@@ -32,20 +32,24 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Timer.h>
 #include <U2Core/DBXRefRegistry.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/GenbankLocationParser.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/AutoAnnotationsSupport.h>
+
+#include <U2Formats/GenbankLocationParser.h>
+
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/EditQualifierDialog.h>
-#include <U2Misc/TreeWidgetUtils.h>
 #include <U2Gui/OpenViewTask.h>
+
+#include <U2Misc/TreeWidgetUtils.h>
 
 #include <QtCore/QFileInfo>
 #include <QtGui/QVBoxLayout>
@@ -434,7 +438,7 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded(AnnotationTableObject* obj)
     connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation*>&)), SLOT(sl_onAnnotationsAdded(const QList<Annotation*>&)));
     connect(obj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation*>&)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation*>&)));
     connect(obj, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)), 
-        SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
+                        SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*)));
     connect(obj, SIGNAL(si_onAnnotationModified(const AnnotationModification&)), SLOT(sl_onAnnotationModified(const AnnotationModification&)));
 
     connect(obj, SIGNAL(si_onGroupCreated(AnnotationGroup*)), SLOT(sl_onGroupCreated(AnnotationGroup*)));
@@ -442,6 +446,7 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded(AnnotationTableObject* obj)
     connect(obj, SIGNAL(si_onGroupRenamed(AnnotationGroup*, const QString& )), SLOT(sl_onGroupRenamed(AnnotationGroup*, const QString& )));
 
     connect(obj, SIGNAL(si_modifiedStateChanged()), SLOT(sl_annotationObjectModifiedStateChanged()));
+    connect(obj, SIGNAL(si_nameChanged(const QString&)), SLOT(sl_onAnnotationObjectRenamed(const QString&)));
 }
 
 void AnnotationsTreeView::sl_onAnnotationObjectRemoved(AnnotationTableObject* obj) {
@@ -455,6 +460,12 @@ void AnnotationsTreeView::sl_onAnnotationObjectRemoved(AnnotationTableObject* ob
     obj->disconnect(this);
 }
 
+void AnnotationsTreeView::sl_onAnnotationObjectRenamed(const QString& oldName) {
+    AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(sender());
+    AVGroupItem* gi = findGroupItem(ao->getRootGroup());
+    SAFE_POINT(gi!=NULL, "Failed to find annotations object on rename!",);
+    gi->updateVisual();
+}
 
 void AnnotationsTreeView::sl_onAnnotationsAdded(const QList<Annotation*>& as) {
     GTIMER(c1,t1,"AnnotationsTreeView::sl_onAnnotationsAdded");

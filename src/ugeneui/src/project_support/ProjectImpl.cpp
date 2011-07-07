@@ -123,6 +123,12 @@ void ProjectImpl::addDocument(Document* d) {
     resourceTracker->acquire(memUseMB);*/
 	emit si_documentAdded(d);
 	setModified(true);
+    
+    connect(d, SIGNAL(si_objectAdded(GObject*)), SLOT(sl_onObjectAdded(GObject*)));
+    connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemoved(GObject*)));
+    foreach(GObject* obj, d->getObjects()) {
+        sl_onObjectAdded(obj);
+    }
 }
 
 bool ProjectImpl::lockResources(int sizeMB, const QString & url, QString& error) {
@@ -146,6 +152,8 @@ void ProjectImpl::removeDocument(Document* d, bool autodelete) {
 
 	setParentStateLockItem_static(d, NULL);
 	docs.removeOne(d);
+    
+    d->disconnect(this);
 
     d->setGHints(new GHintsDefaultImpl(d->getGHints()->getMap()));
 
@@ -184,6 +192,28 @@ void ProjectImpl::removeGObjectViewState(GObjectViewState* s) {
     assert(i == 1);
 	emit si_objectViewStateRemoved(s);
 	setModified(true);
+}
+
+void ProjectImpl::sl_onObjectAdded(GObject* obj) {
+    connect(obj, SIGNAL(si_nameChanged(const QString&)), SLOT(sl_onObjectRenamed(const QString&)));
+}
+
+void ProjectImpl::sl_onObjectRemoved(GObject* obj) {
+    obj->disconnect(this);
+}
+
+void ProjectImpl::sl_onObjectRenamed(const QString& oldName) {
+    GObject* obj = qobject_cast<GObject*>(sender());
+    updateObjectRelations(GObjectReference(obj->getDocument()->getURLString(), oldName, obj->getGObjectType()), GObjectReference(obj));
+}
+
+
+void ProjectImpl::updateObjectRelations(const GObjectReference& oldRef, const GObjectReference& newRef) {
+    foreach(Document* d, getDocuments()) {
+        foreach(GObject* obj, d->getObjects()) {
+            obj->updateRefInRelations(oldRef, newRef);
+        }
+    }
 }
 
 }

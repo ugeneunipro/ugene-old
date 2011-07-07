@@ -1038,9 +1038,6 @@ void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
         }
     }
 
-    // 3. update states
-    OpenAnnotatedDNAViewTask::updateStates(obj, oldName);
-
 }
 
 

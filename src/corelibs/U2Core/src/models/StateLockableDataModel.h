@@ -71,7 +71,7 @@ public:
 
     virtual void setModified(bool modified, const QString& modType = QString());
     
-    virtual bool isModificationAllowed(const QString& modType) {return !isStateLocked();}
+    virtual bool isModificationAllowed(const QString& modType) {Q_UNUSED(modType); return !isStateLocked();}
 
     virtual bool isItemModified() const {return itemIsModified;}
 

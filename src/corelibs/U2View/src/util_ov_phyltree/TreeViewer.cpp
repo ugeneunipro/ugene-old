@@ -303,11 +303,8 @@ QWidget* TreeViewer::createWidget() {
 }
 
 void TreeViewer::onObjectRenamed(GObject* obj, const QString& oldName) {
-    // 1. update title
+    // update title
     OpenTreeViewerTask::updateTitle(this);
-
-    // 2. update states
-    OpenTreeViewerTask::updateStates(obj, oldName);
 }
 
 ////////////////////////////

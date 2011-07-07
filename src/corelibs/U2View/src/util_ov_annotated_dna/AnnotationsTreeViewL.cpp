@@ -1839,7 +1839,7 @@ void AnnotationsTreeViewL::sl_onAnnotationObjectModifiedStateChanged() {
     gi->updateVisual();
 }
 
-void AnnotationsTreeViewL::sl_onAnnotationObjectRenamed(const QString& oldName) {
+void AnnotationsTreeViewL::sl_onAnnotationObjectRenamed(const QString&) {
     AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(sender());
     AVGroupItemL* gi = findGroupItem(ao->getRootGroup());
     if (gi != NULL) {

@@ -51,7 +51,7 @@ ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFor
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 
-void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& fs, TaskStateInfo& ti) {
+void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&, TaskStateInfo& ti) {
     static int READ_BUFF_SIZE = 1024;
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();

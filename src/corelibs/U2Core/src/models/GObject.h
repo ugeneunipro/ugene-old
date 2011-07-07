@@ -78,6 +78,8 @@ public:
     void addObjectRelation(const GObject* obj, const QString& role);
     
     void removeObjectRelation(const GObjectRelation& ref);
+    
+    void updateRefInRelations(const GObjectReference& oldRef, const GObjectReference& newRef);
 
     bool hasObjectRelation(const GObject* obj, const QString& role) const;
     

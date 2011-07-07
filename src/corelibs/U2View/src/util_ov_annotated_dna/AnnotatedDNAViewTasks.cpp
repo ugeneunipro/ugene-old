@@ -165,10 +165,6 @@ void OpenAnnotatedDNAViewTask::updateTitle(AnnotatedDNAView* v) {
     }
 }
 
-void OpenAnnotatedDNAViewTask::updateStates(GObject* o, const QString& newName) {
-
-}
-
 //////////////////////////////////////////////////////////////////////////
 // open view from state
 static QSet<Document*> selectDocuments(Project* p, const QList<GObjectReference>& refs) {

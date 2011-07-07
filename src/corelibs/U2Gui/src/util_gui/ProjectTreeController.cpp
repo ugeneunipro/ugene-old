@@ -105,6 +105,9 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     unloadSelectedDocumentsAction = new QAction(QIcon(":core/images/unload_document.png"), tr("Unload selected document"), this);
     connect(unloadSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onUnloadSelectedDocuments()));
 
+    renameAction = new QAction(tr("Rename..."), this);
+    connect(renameAction, SIGNAL(triggered()), SLOT(sl_onRename()));
+
     groupByDocumentAction = new QAction(tr("Group by document"), this);
     groupByDocumentAction->setObjectName("Group_by_document_action");
     groupByDocumentAction->setCheckable(true);
@@ -182,7 +185,7 @@ void ProjectTreeController::connectDocument(Document* d) {
 	connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
 	connect(d, SIGNAL(si_objectAdded(GObject*)), SLOT(sl_onObjectAdded(GObject*)));
 	connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemoved(GObject*)));
-    connect(d, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
+    connect(d, SIGNAL(si_lockedStateChanged()), SLOT(sl_onLockedStateChanged()));
     connect(d, SIGNAL(si_urlChanged()), SLOT(sl_onDocumentURLorNameChanged()));
     connect(d, SIGNAL(si_nameChanged()), SLOT(sl_onDocumentURLorNameChanged()));
 	
@@ -374,16 +377,18 @@ void ProjectTreeController::sl_onTreeSelectionChanged() {
 bool ProjectTreeController::eventFilter(QObject* o, QEvent* e) {
     if (e->type() == QEvent::KeyPress) {
         QKeyEvent *kEvent = (QKeyEvent*)e;
-        if (kEvent->key() == Qt::Key_F2 && !((QTreeWidget *)o)->selectedItems().isEmpty()) {
-            ProjViewItem *item = static_cast<ProjViewItem *>(((QTreeWidget *)o)->selectedItems().last());
-            if (item->isObjectItem() && !AppContext::getProject()->isStateLocked()) {
-                ProjViewObjectItem *objItem = static_cast<ProjViewObjectItem*>(item);
-                QString oldName = objItem->obj->getGObjectName();
-                objItem->setFlags(objItem->flags() | Qt::ItemIsEditable);
-                objItem->setText(0, objItem->obj->getGObjectName());
-                tree->editItem(objItem);
-            }
+        int key = kEvent->key();
+        bool hasSelection = !((QTreeWidget *)o)->selectedItems().isEmpty();
+        if (key == Qt::Key_F2 && hasSelection) {
+            sl_onRename();
             return true;
+        } else if ( (key == Qt::Key_Return || key == Qt::Key_Enter) && hasSelection) {
+            ProjViewItem *item = static_cast<ProjViewItem *>(((QTreeWidget *)o)->selectedItems().last());
+            if (item->isObjectItem()) {
+                ProjViewObjectItem *objItem = static_cast<ProjViewObjectItem*>(item);
+                emit si_returnPressed(objItem->obj);
+            }
+
         }
     }
     return false;
@@ -460,18 +465,17 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
     }
 
     ProjectView* pv = AppContext::getProjectView();
-	if (pv!=NULL) {
-        //change original text, these actions removed when menu deleted
-        //QAction* addNewDocumentAction = new QAction(pv->getAddNewDocumentAction()->icon(), tr("new_document"), &m);
-        //connect(addNewDocumentAction, SIGNAL(triggered()), pv->getAddNewDocumentAction(), SLOT(trigger()));
-
+	if (pv != NULL) {
         QAction* addExistingDocumentAction = new QAction(pv->getAddExistingDocumentAction()->icon(), tr("Existing document"), &m);
         connect(addExistingDocumentAction, SIGNAL(triggered()), pv->getAddExistingDocumentAction(), SLOT(trigger()));
 
         QMenu* addMenu = m.addMenu(tr("Add"));
         addMenu->menuAction()->setObjectName( ACTION_PROJECT__ADD_MENU);
         addMenu->addAction(addExistingDocumentAction);
-        //addMenu->addAction(addNewDocumentAction);
+
+        QMenu* editMenu = m.addMenu(tr("Edit"));
+        editMenu->menuAction()->setObjectName( ACTION_PROJECT__EDIT_MENU);
+        editMenu->addAction(renameAction);
 	}
 
     QMenu* removeMenu = m.addMenu(tr("Remove"));
@@ -524,6 +528,15 @@ void ProjectTreeController::updateActions() {
         unloadSelectedDocumentsAction->setText(tr("Unload selected objects"));
     }
 
+    QList<QTreeWidgetItem*> selItems = tree->selectedItems();
+    bool renameIsOk = false;
+    if (selItems.size() == 1) {
+        ProjViewItem *item = static_cast<ProjViewItem *>(selItems.last());
+        if (item != NULL && item->isObjectItem() && !AppContext::getProject()->isStateLocked()) {
+            renameIsOk = true;
+        }
+    } 
+    renameAction->setEnabled(renameIsOk);
 }
 
 void ProjectTreeController::sl_onRemoveSelectedDocuments() {
@@ -621,7 +634,7 @@ void ProjectTreeController::sl_onToggleReadonly() {
     }
 }
 
-void ProjectTreeController::sl_lockedStateChanged() {
+void ProjectTreeController::sl_onLockedStateChanged() {
     QObject * who = sender();
     Document* doc = qobject_cast<Document*>(who);
     assert(doc!=NULL);
@@ -659,6 +672,20 @@ void ProjectTreeController::sl_lockedStateChanged() {
     updateActions();
 }
 
+void ProjectTreeController::sl_onRename() {
+    QList<QTreeWidgetItem*> selItems = tree->selectedItems();
+    if (selItems.size() != 1) {
+        return;
+    }
+    ProjViewItem *item = static_cast<ProjViewItem *>(selItems.last());
+    if (item != NULL && item->isObjectItem() && !AppContext::getProject()->isStateLocked()) {
+        ProjViewObjectItem *objItem = static_cast<ProjViewObjectItem*>(item);
+        QString oldName = objItem->obj->getGObjectName();
+        objItem->setFlags(objItem->flags() | Qt::ItemIsEditable);
+        objItem->setText(0, objItem->obj->getGObjectName());
+        tree->editItem(objItem);
+    }
+}
 
 void ProjectTreeController::flattenDocumentItem(ProjViewDocumentItem* docItem) {
     assert(mode.groupMode == ProjectTreeGroupMode_Flat);

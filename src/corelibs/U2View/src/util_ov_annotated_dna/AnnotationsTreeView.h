@@ -84,6 +84,7 @@ private slots:
 
     void sl_onAnnotationObjectAdded(AnnotationTableObject* obj);
     void sl_onAnnotationObjectRemoved(AnnotationTableObject* obj);
+    void sl_onAnnotationObjectRenamed(const QString &oldName);
 
     void sl_onAnnotationsAdded(const QList<Annotation*>&);
     void sl_onAnnotationsRemoved(const QList<Annotation*>&);

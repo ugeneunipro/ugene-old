@@ -41,7 +41,6 @@ public:
     virtual void open();
 
     static void updateTitle(MSAEditor* msaEd);
-    static void updateStates(GObject* o, const QString& newName);
 
 private:
     QPointer<MAlignmentObject>  msaObject;

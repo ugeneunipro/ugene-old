@@ -107,9 +107,6 @@ void OpenMSAEditorTask::updateTitle(MSAEditor* msaEd) {
     }
 }
 
-void OpenMSAEditorTask::updateStates(GObject* o, const QString& newName) {
-
-}
 
 //////////////////////////////////////////////////////////////////////////
 // open view from state

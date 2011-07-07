@@ -71,6 +71,8 @@ class QMainWindow;
 #define ACTION_PROJECT__ADD_NEW_DOCUMENT            "action_project__add_new_document"
 #define ACTION_PROJECT__ADD_EXISTING_DOCUMENT       "action_project__add_existing_document"
 
+#define ACTION_PROJECT__EDIT_MENU                    "action_project__edit_menu"
+
 #define DOCK_PROJECT_VIEW    "dock_project_view"
 #define DOCK_TASK_VIEW       "dock_task_view"
 #define DOCK_LOG_VIEW        "dock_log_view"

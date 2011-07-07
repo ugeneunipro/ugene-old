@@ -173,7 +173,7 @@ protected:
     /** if 'true' is returned -> view will be closed */
     virtual bool onObjectRemoved(GObject* o);
     virtual void onObjectAdded(GObject* o);
-    virtual void onObjectRenamed(GObject* obj, const QString& oldName) {};
+    virtual void onObjectRenamed(GObject* obj, const QString& oldName) {Q_UNUSED(obj); Q_UNUSED(oldName);}
 
 protected:
     virtual void _removeObject(GObject* o);

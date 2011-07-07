@@ -401,7 +401,8 @@ void ProjectViewImpl::initView() {
     projectTreeController = new ProjectTreeController(w, w->documentTreeWidget, s);
     projectTreeController->setObjectName("document_Filter_Tree_Controller");
     connect(projectTreeController, SIGNAL(si_onPopupMenuRequested(QMenu&)), SLOT(sl_onDocTreePopupMenuRequested(QMenu&)));
-    connect(projectTreeController, SIGNAL(si_doubleClicked(GObject*)), SLOT(sl_onDoubleClicked(GObject*)));
+    connect(projectTreeController, SIGNAL(si_doubleClicked(GObject*)), SLOT(sl_onActivated(GObject*)));
+    connect(projectTreeController, SIGNAL(si_returnPressed(GObject*)), SLOT(sl_onActivated(GObject*)));
     
     w->groupModeMenu->addAction(projectTreeController->getGroupByDocumentAction());
     w->groupModeMenu->addAction(projectTreeController->getGroupByTypeAction());
@@ -574,7 +575,7 @@ public:
     QList<QPointer<GObject> >	objects;
 };
 
-void ProjectViewImpl::sl_onDoubleClicked(GObject* o) {
+void ProjectViewImpl::sl_onActivated(GObject* o) {
     SAFE_POINT(o != NULL, "No double-clicked object found", );
 
     GObjectSelection os; os.addToSelection(o);

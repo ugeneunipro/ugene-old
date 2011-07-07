@@ -276,11 +276,8 @@ void MSAEditor::sl_openTree() {
 }
 
 void MSAEditor::onObjectRenamed(GObject* obj, const QString& oldName) {
-    // 1. update title
+    // update title
     OpenMSAEditorTask::updateTitle(this);
-
-    // 2. update states
-    OpenMSAEditorTask::updateStates(obj, oldName);
 }
 
 static void saveFont(const QFont& f) {

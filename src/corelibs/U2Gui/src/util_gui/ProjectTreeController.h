@@ -136,6 +136,7 @@ protected:
 signals:
 	void si_onPopupMenuRequested(QMenu& popup);
 	void si_doubleClicked(GObject*);
+    void si_returnPressed(GObject*);
 
 private slots:
 	void sl_onTreeSelectionChanged();
@@ -161,7 +162,8 @@ private slots:
     void sl_onResourceUserUnregistered(const QString& res, Task* t);
     void sl_onLoadingDocumentProgressChanged();
     void sl_onToggleReadonly();
-    void sl_lockedStateChanged();
+    void sl_onLockedStateChanged();
+    void sl_onRename();
     
     void sl_onGroupByDocument();
     void sl_onGroupByType();
@@ -209,6 +211,7 @@ private:
     QAction* unloadSelectedDocumentsAction;
     QAction* addReadonlyFlagAction;
     QAction* removeReadonlyFlagAction;
+    QAction* renameAction;
     
     QAction* groupByDocumentAction;
     QAction* groupByTypeAction;

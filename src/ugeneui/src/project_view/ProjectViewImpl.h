@@ -112,7 +112,7 @@ private slots:
 	void sl_addToView();
 	void sl_onMDIWindowAdded(MWMDIWindow*);
 	void sl_onViewPersistentStateChanged(GObjectViewWindow* thiz);
-	void sl_onDoubleClicked(GObject*);
+	void sl_onActivated(GObject*);
     void sl_filterTextChanged(const QString& t);
     void sl_relocate();
     void sl_saveCopy();

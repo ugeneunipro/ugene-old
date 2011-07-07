@@ -77,9 +77,13 @@ public:
 
 private slots:
 	void sl_onStateModified(GObjectViewState*);
+    void sl_onObjectAdded(GObject*);
+    void sl_onObjectRemoved(GObject* o);
+    void sl_onObjectRenamed(const QString& oldName);
 
 private:
 	void addState(GObjectViewState* s);
+    void updateObjectRelations(const GObjectReference& oldRef, const GObjectReference& newRef);
     
     QString name;
     QString url;

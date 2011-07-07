@@ -39,7 +39,6 @@ public:
     virtual void open();
 
     static void updateTitle(AnnotatedDNAView* v);
-    static void updateStates(GObject* o, const QString& newName);
 
 private:
     QList<GObjectReference> sequenceObjectRefs;

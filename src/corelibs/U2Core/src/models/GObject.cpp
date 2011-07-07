@@ -136,6 +136,24 @@ bool GObject::isUnloaded() const {
     return type == GObjectTypes::UNLOADED;
 }
 
+void GObject::updateRefInRelations(const GObjectReference& oldRef, const GObjectReference& newRef) {
+    QList<GObjectRelation> rels = getObjectRelations();
+    bool changed = false;
+    for (int i = 0; i < rels.size(); i++) {
+        GObjectRelation& rel = rels[i];
+        if (rel.ref == oldRef) {
+            rel.ref = newRef;
+            changed = true;
+        }
+    }
+    if (changed) {
+        setObjectRelations(rels);
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// GObjectReference
 
 GObjectReference::GObjectReference(const GObject* obj, bool deriveLoadedType) {
     assert(obj!=NULL && obj->getDocument()!=NULL);
