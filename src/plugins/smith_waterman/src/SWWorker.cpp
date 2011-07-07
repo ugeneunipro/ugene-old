@@ -368,12 +368,42 @@ QString SWWorker::readPatternsFromFile(const QString url) {
 Task* SWWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
     SmithWatermanSettings cfg;
-
+    
     // sequence
     DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
     if(seq.isNull()) {
         return new FailTask(tr("Null sequence supplied to Smith-Waterman: %1").arg(seq.getName()));
     }
+    // scoring matrix
+    QString mtrx = actor->getParameter(MATRIX_ATTR)->getAttributeValue<QString>();
+    if(mtrx.isEmpty()){
+        mtrx = "Auto";
+    }
+    cfg.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(mtrx);
+    if(cfg.pSm.getName().isEmpty() && mtrx.toLower() != "auto") {
+        algoLog.details(tr("Invalid value: weight matrix with given name not exists"));
+        return new FailTask(tr("Invalid value: weight matrix with given name not exists"));
+    }
+    if (cfg.pSm.isEmpty()) {
+        QString matrixName;
+        QStringList lst = AppContext::getSubstMatrixRegistry()->selectMatrixNamesByAlphabet(seq.alphabet);
+        if (!lst.isEmpty()) {
+            matrixName = lst.first();
+            cfg.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(matrixName);
+        }
+        if(cfg.pSm.isEmpty()) {
+            return new FailTask(tr("Can't find weight matrix name: '%1'!").arg(matrixName.isEmpty() ? tr("<empty>") : matrixName));
+        }
+    }
+    
+    if(mtrx.toLower() != "auto") {
+        QByteArray alphChars = seq.alphabet->getAlphabetChars();
+        if(cfg.pSm.getAlphabet()->containsAll(alphChars.constData(), alphChars.length()) ) {
+            return new FailTask(tr("Wrong matrix selected. Alphabets do not match"));
+        }
+    }
+
+    // pattern
     QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>();
     if(QFile::exists(ptrnStr)) {
         ptrnStr = readPatternsFromFile(ptrnStr);
@@ -381,7 +411,8 @@ Task* SWWorker::tick() {
     ptrnStr.remove(" ");
     ptrnStr = ptrnStr.toUpper();
     QByteArray ptrnBytes = QString(ptrnStr).remove(PATTERN_DELIMITER).toAscii();
-    if(!seq.alphabet->containsAll(ptrnBytes.constData(), ptrnBytes.length())) {
+    
+    if(!cfg.pSm.getAlphabet()->containsAll(ptrnBytes.constData(), ptrnBytes.length())) {
         algoLog.error(tr("Incorrect value: pattern alphabet doesn't match sequence alphabet "));
         return new FailTask(tr("Pattern symbols not matching to alphabet"));
     }
@@ -430,33 +461,6 @@ Task* SWWorker::tick() {
         QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
         if (!TTs.isEmpty()) {
             cfg.aminoTT = TTs.first(); //FIXME let user choose or use hints ?
-        }
-    }
-
-    // scoring matrix
-    QString mtrx = actor->getParameter(MATRIX_ATTR)->getAttributeValue<QString>();
-    if(mtrx.isEmpty()){
-        mtrx = "Auto";
-    }
-    cfg.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(mtrx);
-    if(cfg.pSm.getName().isEmpty() && mtrx.toLower() != "auto") {
-        algoLog.details(tr("Invalid value: weight matrix with given name not exists"));
-        return new FailTask(tr("Invalid value: weight matrix with given name not exists"));
-    }
-    if (cfg.pSm.isEmpty()) {
-        QString matrixName;
-        QStringList lst = AppContext::getSubstMatrixRegistry()->selectMatrixNamesByAlphabet(seq.alphabet);
-        if (!lst.isEmpty()) {
-            matrixName = lst.first();
-            cfg.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(matrixName);
-        }
-        if(cfg.pSm.isEmpty()) {
-            return new FailTask(tr("Can't find weight matrix name: '%1'!").arg(matrixName.isEmpty() ? tr("<empty>") : matrixName));
-        }
-    }
-    if(mtrx.toLower() != "auto") {
-        if(seq.alphabet->getType() != cfg.pSm.getAlphabet()->getType()) {
-            return new FailTask(tr("Wrong matrix selected. Alphabets do not match"));
         }
     }
 

@@ -277,13 +277,18 @@ bool SmithWatermanDialog::readParameters() {
     } else {
         aminoTT = 0;
     }
+    
+    if (!readSubstMatrix()) {
+        return false;
+    }
+    
     if (!readPattern(aminoTT)) {
         return false;
     }
     config.aminoTT = aminoTT;
 
     if (!readRegion()      || !readGapModel()     || 
-        !readSubstMatrix() || !readResultFilter() || !readRealization() ) {
+        !readResultFilter() || !readRealization() ) {
         return false;
     }
 
@@ -374,7 +379,8 @@ bool SmithWatermanDialog::readResultFilter() {
 bool SmithWatermanDialog::readPattern(DNATranslation* aminoTT) {
     DNAAlphabet* al = 0;
     if (0 == aminoTT) {
-        al = ctxSeq->getAlphabet(); 
+        assert(config.pSm.getAlphabet() != NULL);
+        al = config.pSm.getAlphabet(); 
     } else {
         al = aminoTT->getDstAlphabet();
     }
