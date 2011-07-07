@@ -267,7 +267,7 @@ void GTest_UHMM3Search::prepare() {
 
     switch( algo ) {
     case GENERAL_SEARCH:
-        searchTaskToCtx = new UHMM3SearchTask( settings, hmmFilename, sequence.seq.data(), sequence.seq.size() );
+        searchTaskToCtx = new UHMM3LoadProfileAndSearchTask(settings, hmmFilename, sequence.seq);
         addSubTask( searchTaskToCtx );
         break;
     case SEQUENCE_WALKER_SEARCH:
@@ -610,7 +610,7 @@ void GTest_UHMM3SearchCompare::setAndCheckArgs() {
         return;
     }
     
-    generalTask = qobject_cast< UHMM3SearchTask*    >( searchTask );
+    generalTask = qobject_cast< UHMM3LoadProfileAndSearchTask* >( searchTask );
     swTask      = qobject_cast< UHMM3SWSearchTask*  >( searchTask );
     
     if( NULL != generalTask ) {

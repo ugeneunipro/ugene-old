@@ -424,87 +424,72 @@ UHMM3SearchTaskSettings::UHMM3SearchTaskSettings() {
 * UHMM3SearchTask
 *****************************************************/
 
-UHMM3SearchTask::UHMM3SearchTask( const UHMM3SearchTaskSettings& s, P7_HMM* h, const char* se, int l )
-: Task( "", TaskFlag_None ), settings( s ), hmm( h ), seq( se ), seqLen( l ) {
-    if( NULL == hmm ) {
-        setTaskName( tr( "HMM search task" ) );
-        stateInfo.setError( tr( "no_hmm_given" ) );
-        return;
-    }
-    assert( NULL != hmm->name );
-    setTaskName( tr( "HMM search with '%1'" ).arg( hmm->name ) );
-    
-    if( NULL == seq || ( 0 >= seqLen ) ) {
-        stateInfo.setError( tr( "empty_sequence_given" ) );
-        return;
-    }
-    
-    addMemResource();
+UHMM3SearchTask::UHMM3SearchTask(const UHMM3SearchTaskSettings &_settings, P7_HMM *_hmmProfile, const QByteArray &_sequence)
+        : Task(tr("HMM search task"), TaskFlag_None),
+          settings(_settings), hmmProfile(_hmmProfile), sequence(_sequence)
+{
+    assert(hmmProfile && "Bad HMM profile given");
+    assert(hmmProfile->name);
+
+    setTaskName(tr("HMM search with '%1'").arg(hmmProfile->name));
 }
 
-UHMM3SearchTask::UHMM3SearchTask( const UHMM3SearchTaskSettings& s, const QString& hf, const char* se, int l )
-: Task( "", TaskFlag_None ), settings( s ), hmm( NULL ), seq( se ), seqLen( l ) {
-    const QString& hmmFilename = hf;
-    if( hmmFilename.isEmpty() ) {
-        setTaskName( tr( "HMM search task" ) );
-        stateInfo.setError( tr( "no_hmm_file_given" ) );
-        return;
-    }
-    setTaskName( tr( "HMM search with '%1' file" ).arg( hmmFilename ) );
-    
-    if( NULL == seq || ( 0 >= seqLen ) ) {
-        stateInfo.setError( tr( "empty_sequence_given" ) );
-        return;
-    }
-    
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( hmmFilename ) );
-    assert( NULL != iof );
-    
-    loadHmmTask = new LoadDocumentTask( UHMMFormat::UHHMER_FORMAT_ID, hmmFilename, iof, QVariantMap() );
-    addSubTask( loadHmmTask );
+void UHMM3SearchTask::prepare() {
+    assert(hmmProfile->M > 0);
+
+    int howManyMem = countSearchMemInMB(sequence.length(), hmmProfile->M);
+    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, howManyMem));
+
+    algoLog.trace(QString("%1 needs %2 of memory").arg(getTaskName()).arg(howManyMem));
 }
 
-void UHMM3SearchTask::addMemResource() {
-    assert( 0 < seqLen && NULL != hmm && 0 < hmm->M );
-    
-    int howManyMem = countSearchMemInMB( seqLen, hmm->M );
-    //TODO: addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, howManyMem ));
-    //algoLog.trace( QString( "%1 needs %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
-}
-
-QList< Task* > UHMM3SearchTask::onSubTaskFinished( Task* subTask ) {
-    assert( NULL != subTask );
-    QList< Task* > res;
-    if( subTask->hasError() || subTask->isCanceled() ) {
-        stateInfo.setError( subTask->getError() );
-        return res;
-    }
-    
-    if( loadHmmTask == subTask ) {
-        hmm = UHMM3Utilities::getHmmFromDocument( loadHmmTask->getDocument(), stateInfo );
-        if( NULL != hmm ) {
-            addMemResource();
-        }
-    } else {
-        assert( 0 && "undefined_subtask_finished" );
-    }
-    return res;
-}
-
-UHMM3SearchResult UHMM3SearchTask::getResult() const {
-    return result;
-}
-
-void UHMM3SearchTask::run() {
-    if( stateInfo.hasError() ) {
-        return;
-    }
-    assert( NULL != hmm );
-    
+void UHMM3SearchTask::run() {   
     UHMM3SearchTaskLocalStorage::createTaskContext( getTaskId() );
-    result = UHMM3Search::search( hmm, seq, seqLen, settings.inner, stateInfo, seqLen );
+    result = UHMM3Search::search(hmmProfile, sequence.data(), sequence.length(), settings.inner, stateInfo, sequence.length());
     UHMM3SearchTaskLocalStorage::freeTaskContext( getTaskId() );
 }
+
+/*****************************************************
+* UHMM3LoadProfileAndSearchTask
+*****************************************************/
+
+UHMM3LoadProfileAndSearchTask::UHMM3LoadProfileAndSearchTask(const UHMM3SearchTaskSettings &_settings, const QString &_hmmProfileFile, const QByteArray &_sequence)
+        : Task(tr("HMM search with '%1' HMM profile file").arg(_hmmProfileFile), TaskFlags_NR_FOSCOE),
+          loadHmmProfileTask(0), hmmSearchTask(0),
+          hmmProfile(0), settings(_settings), sequence(_sequence)
+{
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(_hmmProfileFile));
+    assert(iof);
+
+    loadHmmProfileTask = new LoadDocumentTask(UHMMFormat::UHHMER_FORMAT_ID, _hmmProfileFile, iof);
+    addSubTask(loadHmmProfileTask);
+}
+
+QList<Task*> UHMM3LoadProfileAndSearchTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> subTasks;
+
+    propagateSubtaskError();
+    if(subTask->hasError() || subTask->isCanceled()) {
+        return subTasks;
+    }
+
+    if (loadHmmProfileTask == subTask) {
+        hmmProfile = UHMM3Utilities::getHmmFromDocument(loadHmmProfileTask->getDocument(), stateInfo);
+        assert(hmmProfile && "Bad HMM profile");
+
+        hmmSearchTask = new UHMM3SearchTask(settings, hmmProfile, sequence);
+        subTasks << hmmSearchTask;
+    }
+    else if (hmmSearchTask == subTask) {
+        // pass
+    }
+    else {
+        assert(!"Undefined task");
+    }
+
+    return subTasks;
+}
+
 
 /*****************************************************
 * UHMM3SWSearchToAnnotationsTask

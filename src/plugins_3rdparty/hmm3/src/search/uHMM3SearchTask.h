@@ -49,28 +49,50 @@ public:
 
 class UHMM3SearchTask : public Task {
     Q_OBJECT
+
 public:
-    UHMM3SearchTask( const UHMM3SearchTaskSettings& settings, P7_HMM* hmm, const char* seq, int seqLen );
-    UHMM3SearchTask( const UHMM3SearchTaskSettings& settings, const QString& hmmFilename, const char* seq, int sqLen );
+    UHMM3SearchTask(const UHMM3SearchTaskSettings &settings, P7_HMM *hmmProfile, const QByteArray &sequence);
     
-    void run();
-    
-    QList< Task* > onSubTaskFinished( Task* subTask );
-    
-    UHMM3SearchResult getResult() const;
+    virtual void prepare();
+    virtual void run();
+
+    UHMM3SearchResult getResult() const {
+        assert(isFinished());
+        return result;
+    }
 
 private:
-    void addMemResource();
-    
-private:
     UHMM3SearchTaskSettings settings;
-    P7_HMM*                 hmm;
-    const char*             seq;
-    int                     seqLen;
+    P7_HMM                  *hmmProfile;
+    QByteArray              sequence;
     UHMM3SearchResult       result;
-    LoadDocumentTask*       loadHmmTask;
-    
+
 }; // UHMM3SearchTask
+
+class UHMM3LoadProfileAndSearchTask : public Task {
+    Q_OBJECT
+
+public:
+    UHMM3LoadProfileAndSearchTask(const UHMM3SearchTaskSettings &settings, const QString &hmmProfileFile, const QByteArray &sequence);
+
+    UHMM3SearchResult getResult() const {
+        assert(isFinished());
+        return hmmSearchTask->getResult();
+    }
+
+protected:
+    virtual QList<Task*> onSubTaskFinished(Task *subTask);
+
+private:
+    LoadDocumentTask        *loadHmmProfileTask;
+    UHMM3SearchTask         *hmmSearchTask;
+
+    P7_HMM                  *hmmProfile;
+    UHMM3SearchTaskSettings settings;
+    QByteArray              sequence;
+
+}; // UHMM3LoadProfileAndSearchTask
+
 
 /**************************************
 * Sequence walker version of hmmer3 search task.

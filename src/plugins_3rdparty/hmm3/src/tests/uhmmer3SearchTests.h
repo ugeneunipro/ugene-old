@@ -135,7 +135,7 @@ private:
 private:
     QString                     searchTaskCtxName;
     QString                     trueOutFilename;
-    UHMM3SearchTask*            generalTask;
+    UHMM3LoadProfileAndSearchTask *generalTask;
     UHMM3SWSearchTask*          swTask;
     GTest_UHMM3SearchAlgoType   algo;
 
