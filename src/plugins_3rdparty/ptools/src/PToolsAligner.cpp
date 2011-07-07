@@ -118,8 +118,7 @@ StructuralAlignment PToolsAligner::align(const StructuralAlignmentTaskSettings &
         auto_ptr<PTools::Rigidbody> paltBody(createRigidBody(settings.alt));
 
         if (prefBody->Size() != paltBody->Size()) {
-            algoLog.error(QString("Failed to align, subsets turn to RigidBodies of a different size"));
-            return result;
+            error = QString("Failed to align, subsets turn to RigidBodies of a different size");
         }
 
         Superpose_t presult = PTools::superpose(*prefBody, *paltBody);
