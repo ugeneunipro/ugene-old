@@ -25,7 +25,7 @@
 #include "AnnotatedDNAViewTasks.h"
 #include "ADVUtils.h"
 
-#include "AnnotationsTreeViewL.h"
+#include "AnnotationsTreeView.h"
 #include "ADVAnnotationCreation.h"
 #include "ADVClipboard.h"
 #include "ADVConstants.h"
@@ -167,7 +167,7 @@ QWidget* AnnotatedDNAView::createWidget() {
     scrolledWidgetLayout->setSpacing(0);
     scrolledWidget->setBackgroundRole(QPalette::Light);
 
-    annotationsView = new AnnotationsTreeViewL(this);
+    annotationsView = new AnnotationsTreeView(this);
     annotationsView->setObjectName("annotations_tree_view");
     for (int i = seqContexts.size(); --i>=0;) { //use reverse mode -> so sequence widget for a lower index will be on top
         ADVSequenceObjectContext* seqCtx = seqContexts[i];

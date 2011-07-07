@@ -23,7 +23,7 @@
 
 #include "AnnotatedDNAView.h"
 #include "ADVSequenceObjectContext.h"
-#include "AnnotationsTreeViewL.h"
+#include "AnnotationsTreeView.h"
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>//for CreateAnnotationModel
@@ -97,8 +97,8 @@ void ADVAnnotationCreation::sl_createAnnotation() {
     }
     
     //setup default object and group if possible from AnnotationsTreeView
-    AnnotationsTreeViewL* tv = ctx->getAnnotationsView();
-    AVItemL* ai = tv->currentItem();
+    AnnotationsTreeView* tv = ctx->getAnnotationsView();
+    AVItem* ai = tv->currentItem();
     if (ai!=NULL && !ai->isReadonly()) {
         AnnotationTableObject* aobj = ai->getAnnotationTableObject();
         if (seqCtx->getAnnotationGObjects().contains(aobj)) {
