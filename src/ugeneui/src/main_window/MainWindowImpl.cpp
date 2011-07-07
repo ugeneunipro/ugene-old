@@ -98,8 +98,10 @@ void MWStub::dropEvent(QDropEvent *event)
         QVariantMap hints;
         hints[ProjectLoaderHint_CloseActiveProject] = true;
         Task* t = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
-        AppContext::getTaskScheduler()->registerTopLevelTask(t);
-        event->acceptProposedAction();
+        if (t) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(t);
+            event->acceptProposedAction();
+        }
     } else {
         if(event->mimeData()->hasFormat(DocumentMimeData::MIME_TYPE)) {
             const DocumentMimeData *docData = static_cast<const DocumentMimeData *>(event->mimeData());

@@ -394,6 +394,7 @@ void TaskSchedulerImpl::prepareNewTasks() {
 }
 
 void TaskSchedulerImpl::registerTopLevelTask(Task* task) {
+    SAFE_POINT(task, QString("Trying to register NULL task"),);
 
 #ifdef _DEBUG
     QThread* appThread = QCoreApplication::instance()->thread();
