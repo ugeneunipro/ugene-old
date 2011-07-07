@@ -123,6 +123,11 @@ void DumpHelpTask::dumpHelp() {
 void DumpHelpTask::prepare() {
     CMDLineRegistry * cmdlineRegistry = AppContext::getCMDLineRegistry();
     assert(cmdlineRegistry != NULL);
+    if (cmdlineRegistry->hasParameter(CMDLineCoreOptions::USAGE)) {
+        dumpProgramNameAndUsage();
+        return;
+    }
+
     QString paramName = cmdlineRegistry->getParameterValue( CMDLineCoreOptions::HELP );
     paramName = paramName.isEmpty() ? cmdlineRegistry->getParameterValue(CMDLineCoreOptions::HELP_SHORT) : paramName;
     if( paramName.isEmpty() ) {

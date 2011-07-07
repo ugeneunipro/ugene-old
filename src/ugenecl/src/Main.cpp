@@ -410,8 +410,10 @@ int main(int argc, char **argv)
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
     // show help if need
-    bool showHelp = cmdLineRegistry->hasParameter(CMDLineCoreOptions::HELP);
-    showHelp = showHelp || cmdLineRegistry->hasParameter(CMDLineCoreOptions::HELP_SHORT);
+    bool showHelp = cmdLineRegistry->hasParameter(CMDLineCoreOptions::HELP) || 
+        cmdLineRegistry->hasParameter(CMDLineCoreOptions::USAGE) ||
+        cmdLineRegistry->hasParameter(CMDLineCoreOptions::HELP_SHORT);
+    
     if( showHelp ) {
         QObject::connect( psp, SIGNAL( si_allStartUpPluginsLoaded()), new TaskStarter(new DumpHelpTask()), SLOT(registerTask()));
     }

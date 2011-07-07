@@ -44,6 +44,7 @@ public:
     static const QString LOG_FORMAT;
     static const QString LOG_LEVEL;
     static const QString LAUNCH_TEST;
+    static const QString USAGE;
         
 public:
     // initialize help for core cmdline options
