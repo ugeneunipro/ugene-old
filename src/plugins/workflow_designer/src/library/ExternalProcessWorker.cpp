@@ -82,7 +82,7 @@ bool ExternalProcessWorkerFactory::init(ExternalProcessConfig *cfg) {
         portDescs << new PortDescriptor( outDesc, outSet, false, true );
     }
 
-    Descriptor desc( cfg->name, cfg->name, cfg->description );
+    Descriptor desc( cfg->name, cfg->name, cfg->description.isEmpty() ? cfg->name : cfg->description );
 
     QList<Attribute*> attribs;
     QMap<QString, PropertyDelegate*> delegates;
