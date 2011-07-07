@@ -120,12 +120,13 @@ StructuralAlignment PToolsAligner::align(const StructuralAlignmentTaskSettings &
         if (prefBody->Size() != paltBody->Size()) {
             error = QString("Failed to align, subsets turn to RigidBodies of a different size");
         }
+        else {
+            Superpose_t presult = PTools::superpose(*prefBody, *paltBody);
 
-        Superpose_t presult = PTools::superpose(*prefBody, *paltBody);
-
-        result.rmsd = presult.rmsd;
-        for (int i = 0; i < 16; ++i) {
-            result.transform[i] = presult.matrix(i/4, i%4);
+            result.rmsd = presult.rmsd;
+            for (int i = 0; i < 16; ++i) {
+                result.transform[i] = presult.matrix(i/4, i%4);
+            }
         }
     }
     catch (std::exception e) {
