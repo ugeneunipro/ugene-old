@@ -295,7 +295,7 @@ BinarySearchResult * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValu
 }
 
 bool GenomeAlignerIndex::isValidPos(SAType offset, int startPos, int length, SAType &fisrtSymbol, SearchQuery *qu, SAType &loadedSeqStart) {
-    assert(offset>=0 && offset<objLens[objCount-1]);
+    assert(offset<objLens[objCount-1]);
     if ((qint64)offset - loadedSeqStart < startPos) {
         return false;
     }

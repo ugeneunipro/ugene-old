@@ -176,8 +176,8 @@ QPainterPath WorkflowProcessItem::shape () const {
 }
 
 void WorkflowProcessItem::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem *option,
-                          QWidget *widget)
+                          const QStyleOptionGraphicsItem */*option*/,
+                          QWidget */*widget*/)
 {
     WorkflowAbstractRunner* rt = getWorkflowScene()->getRunner();
     if (rt) {

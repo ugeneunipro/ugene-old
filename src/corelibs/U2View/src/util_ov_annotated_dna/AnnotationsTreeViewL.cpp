@@ -2607,7 +2607,7 @@ void CustomSlider::setPosition( int pos ) {
     sliderPos = qBound(minVal,pos, maxVal);
 }
 
-void CustomSlider::setCustomPageStep( int ps ) {
+void CustomSlider::setCustomPageStep( int /*ps*/ ) {
     //pageStep = ps;
 }
 

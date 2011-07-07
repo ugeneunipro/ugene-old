@@ -21,7 +21,7 @@ void LaunchTestTask::run() {
 
 void LaunchTestTask::prepare() {
     if(!t) {
-        printf(tr("GUITesting:Empty test").toUtf8().data());
+        printf("%s\n", tr("GUITesting:Empty test").toUtf8().data());
         //coreLog.info(tr("GUITesting:Empty test"));
         exit(0);
     }
@@ -29,10 +29,10 @@ void LaunchTestTask::prepare() {
 
 Task::ReportResult LaunchTestTask::report() {
     if(t->isSuccessful()) {
-        printf(tr("GUITesting:Success").toUtf8().data());
+        printf("%s\n", tr("GUITesting:Success").toUtf8().data());
         //coreLog.info(tr("GUITesting:Success"));
     } else {
-        printf(QString(tr("GUITesting:") + t->getError()).toUtf8().data());
+        printf("%s\n", QString(tr("GUITesting:") + t->getError()).toUtf8().data());
         //coreLog.info(QString(tr("GUITesting:") + t->getError()).toUtf8().data());
     }
     exit(0);

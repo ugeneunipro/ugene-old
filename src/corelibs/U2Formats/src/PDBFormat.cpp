@@ -166,7 +166,6 @@ PDBFormat::PDBParser::PDBParser(IOAdapter* _io) : io(_io), currentPDBLine(""), c
     currentChainIndex = 1;
     currentModelIndex = 0;
     currentChainIndentifier = ' '; 
-    int residueOrder = 0;
     flagMultipleModels = false;
     flagAtomRecordPresent = false;
 }
@@ -717,7 +716,7 @@ void PDBFormat::PDBParser::createMolecule( char chainIdentifier, BioStruct3D &bi
     chainIndexMap.insert(chainIdentifier, chainIndex);
 }
 
-void PDBFormat::PDBParser::updateResidueIndexes( BioStruct3D& biostruc )
+void PDBFormat::PDBParser::updateResidueIndexes( BioStruct3D& /*biostruc*/)
 {
 }
 

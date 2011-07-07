@@ -43,8 +43,8 @@ class U2CORE_EXPORT ResidueIndex
     int order; // to keep order of residues in the chain
     char insCode;
 public:
-    ResidueIndex() : resId(0), insCode(' '), order(0) {}
-    ResidueIndex(int residueIdx, char insertionCode) : resId(residueIdx), insCode(insertionCode), order(0) {}
+    ResidueIndex() : resId(0), order(0), insCode(' ') {}
+    ResidueIndex(int residueIdx, char insertionCode) : resId(residueIdx), order(0), insCode(insertionCode) {}
     bool operator<(const ResidueIndex& other) const;
     bool operator==(const ResidueIndex& other) const;
     bool operator!=(const ResidueIndex& other) const;

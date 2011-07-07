@@ -834,7 +834,7 @@ void ProjectViewImpl::sl_openStateView() {
 }
 
 
-void ProjectViewImpl::sl_onDocumentAdded(Document* d) {
+void ProjectViewImpl::sl_onDocumentAdded(Document* /*d*/) {
 //    connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
 }
 

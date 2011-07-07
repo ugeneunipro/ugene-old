@@ -80,7 +80,7 @@ int SearchQuery::getNameLength() const {
     if (dna) {
         return nameLength;
     } else {
-        return NULL;//assRead->readSequence.length();
+        return 0;//assRead->readSequence.length();
     }
 }
 
