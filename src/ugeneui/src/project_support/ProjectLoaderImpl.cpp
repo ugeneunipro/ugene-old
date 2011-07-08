@@ -701,6 +701,24 @@ QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
     return res;
 }
 
+OpenWithProjectTask::OpenWithProjectTask(const QStringList& _urls) 
+: Task(tr(""), TaskFlags_NR_FOSCOE)
+{
+    foreach(const QString& u, _urls) {
+        urls << GUrl(u);
+    }
+
+    if (urls.size() == 1) {
+        setTaskName(tr("Opening document: %1").arg(urls.first().getURLString()));
+    } else {
+        setTaskName(tr("Opening %1 documents").arg(urls.size()));
+    }
+}
+
+void OpenWithProjectTask::prepare() {
+    addSubTask(AppContext::getProjectLoader()->openWithProjectTask(urls));
+}
+
 
 }//namespace
 

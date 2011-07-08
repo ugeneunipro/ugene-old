@@ -154,7 +154,14 @@ private:
     bool loadTasksAdded;
 };
 
-
+class OpenWithProjectTask : public Task {
+    Q_OBJECT
+public:
+    OpenWithProjectTask(const QStringList& urls);
+    void prepare();
+private:
+    QList<GUrl> urls;
+};
 
 
 }//namespace

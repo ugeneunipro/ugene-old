@@ -466,14 +466,9 @@ int main(int argc, char **argv)
     if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_TEST)) {
     QStringList urls = CMDLineRegistryUtils::getPureValues();
     if( !urls.isEmpty() ) {
-        QList<GUrl> gurls;
-        foreach( const QString & url, urls ) {
-            gurls << GUrl(url);
-        }
-        Task * t = AppContext::getProjectLoader()->openWithProjectTask(gurls);
         // defer loading until all plugins/services loaded
         QObject::connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), 
-            new TaskStarter( t ), SLOT( registerTask() ) );
+            new TaskStarter( new OpenWithProjectTask(urls) ), SLOT( registerTask() ) );
         
     } else if (AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {
         QString lastProject = ProjectLoaderImpl::getLastProjectURL();
