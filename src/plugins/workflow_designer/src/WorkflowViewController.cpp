@@ -455,7 +455,7 @@ void WorkflowView::sl_externalAction() {
 
 void WorkflowView::sl_appendExternalToolWorker() {
     QString filter = DialogUtils::prepareFileFilter(WorkflowUtils::tr("UGENE workflow element"), QStringList() << "etc", true);
-    QString url = QFileDialog::getOpenFileName(this, tr("Open worker file"), QString(), filter);
+    QString url = QFileDialog::getOpenFileName(this, tr("Add element"), QString(), filter);
     if (!url.isEmpty()) {
         IOAdapter *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(GUrl(url)))->createIOAdapter();
         if(!io->open(url, IOAdapterMode_Read)) {
@@ -521,6 +521,7 @@ void WorkflowView::sl_protoDeleted(const QString &id) {
         scene->update();
     }
 }
+
 
 void WorkflowView::sl_toggleLock(bool b) {
     if (sender() != unlockAction) {

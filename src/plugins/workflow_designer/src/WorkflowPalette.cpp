@@ -51,8 +51,10 @@
 #include <QtGui/QItemDelegate>
 #include <QtGui/QTreeView>
 #include <QtGui/QContextMenuEvent>
+#include <QtGui/QMessageBox>
 
 #include <QtCore/QDir>
+
 
 namespace U2 {
 
@@ -351,6 +353,15 @@ void WorkflowPalette::contextMenuEvent(QContextMenuEvent *e)
 }
 
 void WorkflowPalette::removeElement() {
+    QMessageBox msg(this);
+    msg.setWindowTitle("Remove element");
+    msg.setText("Remove this element?");
+    msg.addButton(QMessageBox::Ok);
+    msg.addButton(QMessageBox::Cancel);
+    if(msg.exec() == QMessageBox::Cancel) {
+        return;
+    }
+
     ActorPrototype *proto = currentAction->data().value<ActorPrototype *>();
 
     QString path = WorkflowSettings::getUserDirectory();
@@ -393,6 +404,8 @@ void WorkflowPalette::editElement() {
             if(oldName != name) {
                 removeElement();
             } else {
+                QString id = proto->getId();
+                emit si_protoDeleted(id);
                 reg->unregisterProto(proto->getId());
             }
             LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name,desc);
@@ -408,6 +421,8 @@ void WorkflowPalette::editElement() {
             if(oldName != cfg->name) {
                 removeElement();
             } else {
+                QString id = proto->getId();
+                emit si_protoDeleted(id);
                 reg->unregisterProto(proto->getId());
             }
             LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);

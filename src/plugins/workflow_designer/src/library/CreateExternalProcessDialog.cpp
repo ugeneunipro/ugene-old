@@ -469,6 +469,8 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     connect(ui.deleteOutputButton, SIGNAL(clicked()), SLOT(sl_deleteOutput()));
     connect(ui.addAttributeButton, SIGNAL(clicked()), SLOT(sl_addAttribute()));
     connect(ui.deleteAttributeButton, SIGNAL(clicked()), SLOT(sl_deleteAttribute()));
+    //connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(validateNextPage()));
+    connect(this, SIGNAL(currentIdChanged(int)), SLOT(sl_validatePage(int)));
     //connect(button(QWizard::FinishButton), SIGNAL(clicked()), SLOT(sl_OK()));
     //connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(sl_generateTemplateString()));
 
@@ -492,6 +494,9 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     ui.inputTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     ui.outputTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     ui.attributesTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    QFontMetrics fm(ui.inputTableView->font());
+    ui.inputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
+    ui.outputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
 
     int ind = 0;
     foreach(const DataConfig &dataCfg, cfg->inputs) {
@@ -539,33 +544,45 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     ui.prompterTextEdit->setText(cfg->templateDescription);
 
     editing = true;
+    connect(ui.nameLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateName(const QString &)));
+    connect(ui.templateLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateCmdLine(const QString &)));
+    connect(ui.inputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
+    connect(ui.outputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
+    connect(ui.attributesTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateAttributeModel(const QModelIndex &, const QModelIndex &)));
+    //validateNextPage();
 }
 
 void CreateExternalProcessDialog::sl_addInput() {
     ui.inputTableView->model()->insertRow(0, QModelIndex());
+    validateDataModel();
 }
 
 void CreateExternalProcessDialog::sl_addOutput() {
     ui.outputTableView->model()->insertRow(0, QModelIndex());
+    validateDataModel();
 }
 
 void CreateExternalProcessDialog::sl_deleteInput() {
     QModelIndex index = ui.inputTableView->currentIndex();
     ui.inputTableView->model()->removeRow(index.row());
+    validateDataModel();
 }
 
 void CreateExternalProcessDialog::sl_deleteOutput() {
     QModelIndex index = ui.outputTableView->currentIndex();
     ui.outputTableView->model()->removeRow(index.row());
+    validateDataModel();
 }
 
 void CreateExternalProcessDialog::sl_addAttribute() {
     ui.attributesTableView->model()->insertRow(0, QModelIndex());
+    validateAttributeModel();
 }
 
 void CreateExternalProcessDialog::sl_deleteAttribute() {
     QModelIndex index = ui.attributesTableView->currentIndex();
     ui.attributesTableView->model()->removeRow(index.row());
+    validateAttributeModel();
 }
 
 CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/ ): QWizard(p) {
@@ -578,10 +595,19 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
     connect(ui.deleteAttributeButton, SIGNAL(clicked()), SLOT(sl_deleteAttribute()));
     //connect(button(QWizard::FinishButton), SIGNAL(clicked()), SLOT(sl_OK()));
     connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(sl_generateTemplateString()));
+    //connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(validateNextPage()));
+    connect(this, SIGNAL(currentIdChanged(int)), SLOT(sl_validatePage(int)));
+
+    connect(ui.nameLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateName(const QString &)));
+    connect(ui.templateLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateCmdLine(const QString &)));
 
     ui.inputTableView->setModel(new CfgExternalToolModel());
     ui.outputTableView->setModel(new CfgExternalToolModel());
     ui.attributesTableView->setModel(new CfgExternalToolModelAttributes());
+
+    connect(ui.inputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
+    connect(ui.outputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
+    connect(ui.attributesTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateAttributeModel(const QModelIndex &, const QModelIndex &)));
 
     ui.inputTableView->setItemDelegate(new ProxyDelegate());
     ui.outputTableView->setItemDelegate(new ProxyDelegate());
@@ -594,6 +620,10 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
     ui.inputTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     ui.outputTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     ui.attributesTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+
+    QFontMetrics fm(ui.inputTableView->font());
+    ui.inputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
+    ui.outputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
 
     QFontMetrics info(ui.descr1TextEdit->font());
     ui.descr1TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
@@ -757,5 +787,164 @@ void CreateExternalProcessDialog::sl_generateTemplateString() {
 
     ui.templateLineEdit->setText(cmd);
 }
+
+void CreateExternalProcessDialog::sl_validateName( const QString &text) {
+    bool res = true;
+    if(text.isEmpty()) {
+        //QMessageBox::critical(this, title, tr("Please set the name for the new element."));
+        res =  false;
+    }
+
+    QRegExp invalidSymbols("\\W");
+    if(text.contains(invalidSymbols)) {
+        //QMessageBox::critical(this, title, tr("Invalid symbols in the element name."));
+        res =  false;
+    }
+
+    if(WorkflowEnv::getProtoRegistry()->getProto(text) && !editing) {
+        //QMessageBox::critical(this, title, tr("Element with this name already exists."));
+        res =  false;
+    }
+
+    button(QWizard::NextButton)->setEnabled(res);
+}
+
+void CreateExternalProcessDialog::sl_validateCmdLine( const QString & text) {
+    if(text.isEmpty()) {
+        button(QWizard::FinishButton)->setEnabled(false);
+    } else {
+        button(QWizard::FinishButton)->setEnabled(true);
+    }
+}
+
+void CreateExternalProcessDialog::validateDataModel(const QModelIndex &, const QModelIndex & ) {
+    bool res = true;
+    CfgExternalToolModel *model;
+
+    QRegExp invalidSymbols("\\W");
+    QStringList nameList;
+    model = static_cast<CfgExternalToolModel*>(ui.inputTableView->model());
+    foreach(CfgExternalToolItem *item, model->getItems()) {
+        if(item->itemData.attrName.isEmpty()) {
+            //QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
+            res = false;
+        }
+        if(item->itemData.attrName.contains(invalidSymbols)) {
+            //QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(dc.attrName));
+            res = false;
+        }
+        nameList << item->itemData.attrName;
+    }
+
+    model = static_cast<CfgExternalToolModel*>(ui.outputTableView->model());
+    foreach(CfgExternalToolItem *item, model->getItems()) {
+        if(item->itemData.attrName.isEmpty()) {
+            //QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
+            res = false;
+        }
+        if(item->itemData.attrName.contains(invalidSymbols)) {
+            //QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(dc.attrName));
+            res = false;
+        }
+        nameList << item->itemData.attrName;
+    }
+    
+
+
+    if(nameList.removeDuplicates() > 0) {
+        //QMessageBox::critical(this, title, tr("The same name of element parameters was found"));
+        res = false;
+    }
+
+    if(nameList.isEmpty()) {
+        res = false;
+    }
+    button(QWizard::NextButton)->setEnabled(res);
+}
+
+void CreateExternalProcessDialog::validateAttributeModel(const QModelIndex &, const QModelIndex & ) {
+    bool res = true;
+    CfgExternalToolModel *model;
+
+    QRegExp invalidSymbols("\\W");
+    QStringList nameList;
+    model = static_cast<CfgExternalToolModel*>(ui.inputTableView->model());
+    foreach(CfgExternalToolItem *item, model->getItems()) {
+        if(item->itemData.attrName.isEmpty()) {
+            //QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
+            res = false;
+        }
+        if(item->itemData.attrName.contains(invalidSymbols)) {
+            //QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(dc.attrName));
+            res = false;
+        }
+        nameList << item->itemData.attrName;
+    }
+
+    model = static_cast<CfgExternalToolModel*>(ui.outputTableView->model());
+    foreach(CfgExternalToolItem *item, model->getItems()) {
+        if(item->itemData.attrName.isEmpty()) {
+            //QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
+            res = false;
+        }
+        if(item->itemData.attrName.contains(invalidSymbols)) {
+            //QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(dc.attrName));
+            res = false;
+        }
+        nameList << item->itemData.attrName;
+    }
+    
+    CfgExternalToolModelAttributes *aModel = static_cast<CfgExternalToolModelAttributes*>(ui.attributesTableView->model());
+    foreach(AttributeItem *item, aModel->getItems()) {
+        if(item->getName().isEmpty()) {
+            //QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
+            res = false;
+        } 
+        if(item->getName().contains(invalidSymbols)) {
+            //QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(ac.attrName));
+            res = false;
+        }
+        nameList << item->getName();
+    }
+
+
+    if(nameList.removeDuplicates() > 0) {
+        //QMessageBox::critical(this, title, tr("The same name of element parameters was found"));
+        res = false;
+    }
+    button(QWizard::NextButton)->setEnabled(res);
+}
+
+void CreateExternalProcessDialog::validateNextPage() {
+    int id = currentId();
+    switch(id) {
+        case 0:
+            sl_validateName(ui.nameLineEdit->text());
+            break;
+        case 1:
+            validateDataModel();
+            break;
+        case 2:
+            validateAttributeModel();
+        case 3:
+            sl_validateCmdLine(ui.templateLineEdit->text());
+    }
+}
+
+void CreateExternalProcessDialog::sl_validatePage(int id) {
+    switch(id) {
+        case 0:
+            sl_validateName(ui.nameLineEdit->text());
+            break;
+        case 1:
+            validateDataModel();
+            break;
+        case 2:
+            validateAttributeModel();
+        case 3:
+            sl_validateCmdLine(ui.templateLineEdit->text());
+    }
+}
+
 
 }

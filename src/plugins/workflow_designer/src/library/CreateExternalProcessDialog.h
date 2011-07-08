@@ -40,6 +40,7 @@ public:
     CreateExternalProcessDialog(QWidget *p, ExternalProcessConfig *cfg);
     ExternalProcessConfig* config() const {return cfg;}
     bool validate();
+    //bool isComplete() const;
 
 public slots:
     void accept();
@@ -52,6 +53,13 @@ private slots:
     void sl_addAttribute();
     void sl_deleteAttribute();
     void sl_generateTemplateString();
+   // void sl_updateButtons();
+    void sl_validateName(const QString &);
+    void sl_validateCmdLine(const QString &);
+    void validateDataModel(const QModelIndex & i1 = QModelIndex(), const QModelIndex & i2 = QModelIndex());
+    void validateAttributeModel(const QModelIndex & i1 = QModelIndex(), const QModelIndex & i2 = QModelIndex());
+    void validateNextPage();
+    void sl_validatePage(int);
     //void sl_OK();
 
 private:

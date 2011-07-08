@@ -52,7 +52,7 @@ DataTypePtr BaseTypes::ANNOTATION_TABLE_TYPE() {
     assert(dtr);
     static bool startup = true;
     if (startup) {
-        dtr->registerEntry(DataTypePtr(new DataType(ANNOTATION_TABLE_TYPE_ID, tr("Set of DNA annotations"), tr("A set of annotated features in a DNA sequence"))));
+        dtr->registerEntry(DataTypePtr(new DataType(ANNOTATION_TABLE_TYPE_ID, tr("Set of annotations"), tr("A set of annotated features in a sequence"))));
         startup = false;
     }
     return dtr->getById(ANNOTATION_TABLE_TYPE_ID);
@@ -64,7 +64,7 @@ DataTypePtr BaseTypes::ANNOTATION_TABLE_LIST_TYPE() {
     static bool startup = true;
     if (startup) {
         dtr->registerEntry(DataTypePtr(new ListDataType(
-            Descriptor(ANNOTATION_TABLE_LIST_TYPE_ID, tr("List of Annotations"), tr("A list of DNA sequence annotations")),
+            Descriptor(ANNOTATION_TABLE_LIST_TYPE_ID, tr("List of annotations"), tr("A list of sequence annotations")),
             BaseTypes::ANNOTATION_TABLE_TYPE())));
         startup = false;
     }
@@ -76,7 +76,7 @@ DataTypePtr BaseTypes::MULTIPLE_ALIGNMENT_TYPE() {
     assert(dtr);
     static bool startup = true;
     if (startup) {
-        dtr->registerEntry(DataTypePtr(new DataType(MULTIPLE_ALIGNMENT_TYPE_ID, tr("Multiple Aligment"), tr("Set of aligned sequences"))));
+        dtr->registerEntry(DataTypePtr(new DataType(MULTIPLE_ALIGNMENT_TYPE_ID, tr("Multiple alignment"), tr("Set of aligned sequences"))));
         startup = false;
     }
     return dtr->getById(MULTIPLE_ALIGNMENT_TYPE_ID);

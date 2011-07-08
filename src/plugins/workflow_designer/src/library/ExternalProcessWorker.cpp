@@ -313,6 +313,14 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             output->setEnded();
             done = true;
         }
+    } else {
+        bool res = true;
+        foreach(const CommunicationChannel *ch, inputs) {
+            if(ch) {
+                res = res && ch->hasMessage();
+            }
+        }
+        done = !res;
     }
     busy = false;
 }
