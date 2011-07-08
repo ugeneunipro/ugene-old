@@ -33,26 +33,6 @@ flag=0
                 CUR_FILENAME_FORMATED="${CUR_FILENAME##*../}"
 				CUR_FILEPATH="${CUR_FILENAME_FORMATED%/*}"
 				mkdir -p "$DST_DIR$CUR_FILEPATH"
-				if [[ $CUR_FILENAME == ${FILE_TYPE[$i]} ]]
-                then
-                	
-                    #copy and add header
-                    #echo "header: $CUR_FILENAME --> $DST_DIR$CUR_FILENAME"
-                    if [[ -s "${HEADER_FILE_NAME[$i]}" ]] # if header file is found...
-                    then
-					
-                        cat "${HEADER_FILE_NAME[$i]}" "$CUR_FILENAME" > "$DST_DIR$CUR_FILENAME_FORMATED" 
-                    else
-                        echo "HEADER FILE for ${FILE_TYPE[$i]}  not found"
-                            if [[ $REMOVE_FLAG == 1 ]]
-                            then
-                                rm -irf "$DST_DIR"
-                            fi
-                        exit 1
-                        #cp "$CUR_FILENAME" "$DST_DIR$CUR_FILENAME" 
-                    fi
-                    flag_to_copy=0
-                fi
             done
                     if [[ $flag_to_copy == 1 ]]
                     then
@@ -91,20 +71,8 @@ do
                 if [[ $CUR_FILENAME == ${FILE_TYPE[$i]} ]]
                 then
                     #echo "head: $CUR_FILENAME --> $DST_DIR$CUR_FILENAME"
-                    if [[ -s "${HEADER_FILE_NAME[$i]}" ]] # if header file is found..
-                    then
-						CUR_FILENAME_FORMATED="${CUR_FILENAME##*../}"
-                        cat "${HEADER_FILE_NAME[$i]}" "$CUR_FILENAME" > "$DST_DIR$CUR_FILENAME_FORMATED" 
-                    else
-                        echo "HEADER FILE for ${FILE_TYPE[$i]}  not found"
-                            if [[ $REMOVE_FLAG == 1 ]]
-                            then
-                                rm -irf "$DST_DIR"
-                            fi
-                        exit 1
-                        #cp "$CUR_FILENAME" "$DST_DIR$CUR_FILENAME" 
-                    fi
-                    flag_to_copy=0
+					CUR_FILENAME_FORMATED="${CUR_FILENAME##*../}"
+                    cat "$CUR_FILENAME" > "$DST_DIR$CUR_FILENAME_FORMATED" 
                 fi
             done
                     if [[ $flag_to_copy == 1 ]]
