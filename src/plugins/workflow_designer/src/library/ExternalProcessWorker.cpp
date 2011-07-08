@@ -211,7 +211,7 @@ Task* ExternalProcessWorker::tick() {
 
         int ind = execString.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
         if(ind != -1) {
-            execString.replace(ind, dataCfg.attrName.size() + 1 , "\"" + url + "\""); 
+            execString.replace(ind, dataCfg.attrName.size() + 1 , url); 
         }
         //commandLine.replace("$" + dataCfg.attrName, url);
         
