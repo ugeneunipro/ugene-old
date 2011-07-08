@@ -100,7 +100,7 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
     exitButton->setIcon(exitIcon);
 
     exitButton->setAutoFillBackground(true);
-
+    exitButton->setAutoRaise(true);
 }
 
 // init menu items, actions and connect signals
