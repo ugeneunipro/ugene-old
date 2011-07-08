@@ -523,9 +523,10 @@ void ConvertToSQLiteTask::run() {
                 }
                 int readCount = 0;
                 while(iterator->hasNext() && (readCount < READS_CHUNK_SIZE)) {
-                    if(((-1 == iterator->peekReferenceId()) && bamInfo.isUnmappedSelected()) ||
-                        bamInfo.isReferenceSelected(iterator->peekReferenceId())) {
-                        reads[iterator->peekReferenceId()].append(iterator->next());
+                    int referenceId = iterator->peekReferenceId();
+                    if(((-1 == referenceId) && bamInfo.isUnmappedSelected()) ||
+                        bamInfo.isReferenceSelected(referenceId)) {
+                        reads[referenceId].append(iterator->next());
                         readCount++;
                     } else {
                         iterator->skip();
