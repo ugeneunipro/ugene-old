@@ -1,5 +1,4 @@
-#ifndef _U2_REPTEST_H_
-#define _U2_REPTEST_H_
+#ifdef _U2_REPTEST_H_
 
 #include <gtest/gtest.h>
 

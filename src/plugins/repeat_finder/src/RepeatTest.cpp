@@ -1,3 +1,4 @@
+#ifdef _U2_REPTEST_H_
 #include "RepeatTest.h"
 
 #include <U2Core/AppContext.h>
@@ -25,3 +26,4 @@ INSTANTIATE_TEST_CASE_P(
                         ::testing::Values(createData()));
 
 } //namespace
+#endif
