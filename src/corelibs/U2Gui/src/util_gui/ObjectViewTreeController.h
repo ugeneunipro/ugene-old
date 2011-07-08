@@ -47,11 +47,9 @@ public:
     const QIcon& getInactiveBookmarkIcon() const {return bookmarkInactiveIcon;}
     OVTViewItem* findViewItem(const QString& name);
 
-protected:
-	bool eventFilter(QObject *obj, QEvent *event);
-
 private slots:
 	void sl_onMdiWindowAdded(MWMDIWindow*);
+    void sl_onMdiWindowClosing(MWMDIWindow*);
 	void sl_onViewStateAdded(GObjectViewState*);
 	void sl_onStateModified(GObjectViewState*);
 	void sl_onViewStateRemoved(GObjectViewState*);

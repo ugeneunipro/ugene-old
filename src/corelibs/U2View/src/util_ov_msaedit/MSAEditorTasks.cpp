@@ -107,16 +107,14 @@ void OpenMSAEditorTask::updateTitle(MSAEditor* msaEd) {
     }
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 // open view from state
-
 
 OpenSavedMSAEditorTask::OpenSavedMSAEditorTask(const QString& viewName, const QVariantMap& stateData) 
 : ObjectViewTask(MSAEditorFactory::ID, viewName, stateData)
 {
     MSAEditorState state(stateData);
-    GObjectReference ref = state.getMSAObject();
+    GObjectReference ref = state.getMSAObjectRef();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
     if (doc == NULL) {
         doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject());
@@ -137,7 +135,7 @@ void OpenSavedMSAEditorTask::open() {
         return;
     }
     MSAEditorState state(stateData);
-    GObjectReference ref = state.getMSAObject();
+    GObjectReference ref = state.getMSAObjectRef();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
     if (doc == NULL) {
         stateIsIllegal = true;
@@ -147,7 +145,7 @@ void OpenSavedMSAEditorTask::open() {
     GObject* obj = doc->findGObjectByName(ref.objName);
     if (obj == NULL || obj->getGObjectType() != GObjectTypes::MULTIPLE_ALIGNMENT) {
         stateIsIllegal = true;
-        stateInfo.setError(tr("DNA sequence object not found: %1").arg(ref.objName));
+        stateInfo.setError(tr("Alignment object not found: %1").arg(ref.objName));
         return;
     }
     MAlignmentObject* msaObject = qobject_cast<MAlignmentObject*>(obj);

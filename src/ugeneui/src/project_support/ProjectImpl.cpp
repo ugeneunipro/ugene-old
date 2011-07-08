@@ -26,10 +26,10 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-
 #include <U2Core/GHints.h>
-
 #include <U2Core/Log.h>
+
+#include <U2Gui/MainWindow.h>
 
 namespace U2 {
 
@@ -39,6 +39,7 @@ namespace U2 {
 ProjectImpl::ProjectImpl(const QString& _name, const QString& _url, const QList<Document*>& _docs, const QList<GObjectViewState*>& _states)
 : name(_name), url(_url) 
 {
+    idGen = 0;
     mainThreadModificationOnly = true;
     foreach(Document* doc, _docs) {
         addDocument(doc);
@@ -49,6 +50,13 @@ ProjectImpl::ProjectImpl(const QString& _name, const QString& _url, const QList<
     setModified(false);
 
     resourceTracker = AppContext::getAppSettings()->getAppResourcePool()->getResource(RESOURCE_MEMORY);
+
+    MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
+    if (mdi != NULL) {
+        connect(mdi, SIGNAL(si_windowAdded(MWMDIWindow*)), SLOT(sl_onMdiWindowAdded(MWMDIWindow*)));
+        connect(mdi, SIGNAL(si_windowClosing(MWMDIWindow*)), SLOT(sl_onMdiWindowClosing(MWMDIWindow*)));
+    }
+    	
 }
 
 ProjectImpl::~ProjectImpl() {
@@ -59,8 +67,8 @@ ProjectImpl::~ProjectImpl() {
 	}
 
 	//delete all views
-	while (!objectViews.isEmpty()) {
-		GObjectViewState* s = objectViews.takeLast();
+	while (!objectViewStates.isEmpty()) {
+		GObjectViewState* s = objectViewStates.takeLast();
 		delete s;
 	}
 }
@@ -173,21 +181,35 @@ void ProjectImpl::sl_onStateModified(GObjectViewState*) {
 	setModified(true);
 }
 
+void ProjectImpl::sl_onMdiWindowAdded(MWMDIWindow* w) {
+    GObjectViewWindow* vw = qobject_cast<GObjectViewWindow*>(w);
+    if (vw != NULL) {
+        connect(vw->getObjectView(), SIGNAL(si_nameChanged(const QString&)), SLOT(sl_onViewRenamed(const QString&)) );
+    }
+}
+
+void ProjectImpl::sl_onMdiWindowClosing(MWMDIWindow* w) {
+    GObjectViewWindow* vw = qobject_cast<GObjectViewWindow*>(w);
+    if (vw != NULL) {
+        vw->getObjectView()->disconnect(this);
+    }
+}
+
 void ProjectImpl::addState(GObjectViewState* s) {
-	assert(!objectViews.contains(s));
+	assert(!objectViewStates.contains(s));
 	connect(s, SIGNAL(si_stateModified(GObjectViewState*)), SLOT(sl_onStateModified(GObjectViewState*)));
-	objectViews.append(s);
+	objectViewStates.append(s);
 	setModified(true);
 }
 
 void ProjectImpl::addGObjectViewState(GObjectViewState* s) {
-	assert(GObjectViewUtils::findStateInList(s->getViewName(), s->getStateName(), objectViews) == NULL);
+	assert(GObjectViewUtils::findStateInList(s->getViewName(), s->getStateName(), objectViewStates) == NULL);
 	addState(s);
 	emit si_objectViewStateAdded(s);
 }
 
 void ProjectImpl::removeGObjectViewState(GObjectViewState* s) {
-	int i = objectViews.removeAll(s);
+	int i = objectViewStates.removeAll(s);
     Q_UNUSED(i);
     assert(i == 1);
 	emit si_objectViewStateRemoved(s);
@@ -196,17 +218,83 @@ void ProjectImpl::removeGObjectViewState(GObjectViewState* s) {
 
 void ProjectImpl::sl_onObjectAdded(GObject* obj) {
     connect(obj, SIGNAL(si_nameChanged(const QString&)), SLOT(sl_onObjectRenamed(const QString&)));
+    if (!obj->getGHints()->get(GObjectHint_InProjectId).isValid()) {
+        obj->getGHints()->set(GObjectHint_InProjectId, genNextObjectId());
+    }
 }
 
 void ProjectImpl::sl_onObjectRemoved(GObject* obj) {
     obj->disconnect(this);
+    obj->getGHints()->remove(GObjectHint_InProjectId);
+}
+
+QString ProjectImpl::genNextObjectId() {
+    idGen++;
+    return "Object:" + QString::number(idGen);
+}
+
+
+void ProjectImpl::sl_onViewRenamed(const QString& oldName) {
+    GObjectView* view = qobject_cast<GObjectView*>(sender());
+    updateGObjectViewStates(oldName, view->getName());
+}
+
+void ProjectImpl::updateGObjectViewStates(const QString& oldViewName, const QString& newViewName) {
+    foreach(GObjectViewState* state, objectViewStates) {
+        if (state->getViewName() == oldViewName) {
+            state->setViewName(newViewName);
+            setModified(true);
+        }
+    }
 }
 
 void ProjectImpl::sl_onObjectRenamed(const QString& oldName) {
     GObject* obj = qobject_cast<GObject*>(sender());
-    updateObjectRelations(GObjectReference(obj->getDocument()->getURLString(), oldName, obj->getGObjectType()), GObjectReference(obj));
+    GObjectReference from(obj->getDocument()->getURLString(), oldName, obj->getGObjectType());
+    GObjectReference to(obj);
+    updateObjectRelations(from, to);
+    foreach(GObjectViewState* state, objectViewStates) {
+        QVariantMap data = state->getStateData(); 
+        if (updateReferenceFields(state->getStateName(), data, from , to) > 0) {
+            state->setStateData(data);
+        }
+    }
 }
 
+int ProjectImpl::updateReferenceFields(const QString& stateName, QVariantMap& map, const GObjectReference& from, const GObjectReference& to) {
+    static QString refType = "U2::GObjectReference";
+    static QString refListType = "QList<U2::GObjectReference>";
+    int n = 0;
+    foreach(const QString& key, map.keys()) {
+        const QVariant& v = map[key];
+        QString typeName = v.typeName();
+        if (typeName == refType) {
+            GObjectReference ref = v.value<GObjectReference>();
+            if (ref == from) {
+                map[key] = QVariant::fromValue<GObjectReference>(to);
+                coreLog.trace(QString("Renaming reference in state '%1': %2 -> %3").arg(stateName).arg(from.objName).arg(to.objName));
+                n++;
+            }
+        } else if (typeName == refListType) {
+            int nBefore = n;
+            QList<GObjectReference> refList = v.value<QList<GObjectReference> >();
+            QList<GObjectReference> newRefList;
+            foreach(const GObjectReference& ref, refList) {
+                if (ref == from) {
+                    coreLog.trace(QString("Renaming reference in [] state '%1': %2 -> %3").arg(stateName).arg(from.objName).arg(to.objName));
+                    newRefList << to;
+                    n++;
+                } else {
+                    newRefList << ref;
+                }
+            }
+            if (nBefore < n) {
+                map[key] = QVariant::fromValue<QList<GObjectReference> >(newRefList);
+            }
+        }
+    }
+    return n;
+}
 
 void ProjectImpl::updateObjectRelations(const GObjectReference& oldRef, const GObjectReference& newRef) {
     foreach(Document* d, getDocuments()) {
@@ -216,4 +304,5 @@ void ProjectImpl::updateObjectRelations(const GObjectReference& oldRef, const GO
     }
 }
 
-}
+} //namespace
+

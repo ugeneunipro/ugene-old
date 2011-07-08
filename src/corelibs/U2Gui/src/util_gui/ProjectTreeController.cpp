@@ -384,7 +384,7 @@ bool ProjectTreeController::eventFilter(QObject* o, QEvent* e) {
             return true;
         } else if ( (key == Qt::Key_Return || key == Qt::Key_Enter) && hasSelection) {
             ProjViewItem *item = static_cast<ProjViewItem *>(((QTreeWidget *)o)->selectedItems().last());
-            if (item->isObjectItem()) {
+            if (item->isObjectItem() && !item->flags().testFlag(Qt::ItemIsEditable)) {
                 ProjViewObjectItem *objItem = static_cast<ProjViewObjectItem*>(item);
                 emit si_returnPressed(objItem->obj);
             }

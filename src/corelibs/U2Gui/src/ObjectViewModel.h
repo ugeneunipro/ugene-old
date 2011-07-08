@@ -68,6 +68,8 @@ public:
 
     const QString& getViewName() const {return viewName;}
 
+    void setViewName(const QString& newName);
+
     const QString& getStateName() const {return stateName;}
 
     void setStateName(const QString& newName);
@@ -110,9 +112,7 @@ public:
     virtual Task* createViewTask(const MultiGSelection& multiSelection, bool single = false) = 0;
 
     virtual Task* createViewTask(const QString& viewName, const QVariantMap& stateData) {
-        Q_UNUSED(viewName); Q_UNUSED(stateData);
-        assert(0); 
-        return NULL;
+        Q_UNUSED(viewName); Q_UNUSED(stateData); assert(0); return NULL;
     }
 
 protected:

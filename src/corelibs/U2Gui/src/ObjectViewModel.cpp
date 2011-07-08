@@ -40,6 +40,12 @@ namespace U2 {
 const QString GObjectViewState::APP_CLOSING_STATE_NAME("Auto saved");
 const GObjectViewFactoryId GObjectViewFactory::SIMPLE_TEXT_FACTORY("SimpleTextView");
 
+void GObjectViewState::setViewName(const QString& newName) {
+    // this method is not a real state modification: state caches view name as a reference, but not its internal data
+    // it is used only on view renaming 
+     viewName = newName; 
+}
+
 void GObjectViewState::setStateName(const QString& newName) {
     if (newName == stateName) {
         return;

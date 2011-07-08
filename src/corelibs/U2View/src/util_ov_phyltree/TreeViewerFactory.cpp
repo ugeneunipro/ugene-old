@@ -130,8 +130,5 @@ Task* TreeViewerFactory::createViewTask(const QString& viewName, const QVariantM
     return new OpenSavedTreeViewerTask(viewName, stateData);
 }
 
-bool TreeViewerFactory::supportsSavedStates() const {
-    return true;
-}
 
 }//namespace

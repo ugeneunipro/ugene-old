@@ -29,8 +29,12 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QPointer>
 
+/** List of object relations */
 #define GObjectHint_RelatedObjects          "gobject-hint-related-objects"
+/** Last used object name. Used in case if object is renamed but name is not saved to file */
 #define GObjectHint_LastUsedObjectName      "gobject-hint-last-used-object-name"
+/** When object is added to project, in-project-id is assigned that is unique per project */
+#define GObjectHint_InProjectId             "gobject-hint-in-project-id"
 
 namespace U2 {
 

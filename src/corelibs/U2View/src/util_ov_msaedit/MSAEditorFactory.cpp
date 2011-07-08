@@ -113,7 +113,7 @@ bool MSAEditorFactory::isStateInSelection(const MultiGSelection& multiSelection,
     if (!state.isValid()) {
         return false;
     }
-    GObjectReference ref = state.getMSAObject();
+    GObjectReference ref = state.getMSAObjectRef();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
     if (doc == NULL) { //todo: accept to use invalid state removal routines of ObjectViewTask ???
         return false;

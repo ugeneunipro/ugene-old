@@ -104,6 +104,10 @@ public:
 
     virtual void makeClean() = 0;
 
+    virtual quint64 getObjectIdCounter() const = 0;
+    
+    virtual void setObjectIdCounter(quint64 c) = 0;
+
     static void setupToEngine(QScriptEngine *engine);
 private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Project* const &in);

@@ -42,9 +42,9 @@ public:
 
     bool isValid() const;
 
-    GObjectReference getMSAObject() const;
+    GObjectReference getMSAObjectRef() const;
 
-    void setMSAObject(const GObjectReference& ref);
+    void setMSAObjectRef(const GObjectReference& ref);
 
     QFont getFont() const;
     void setFont(const QFont &f);

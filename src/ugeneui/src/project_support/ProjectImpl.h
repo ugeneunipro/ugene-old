@@ -34,6 +34,7 @@ class FailedToLoadFormat;
 class ServiceLock;
 class SaveProjectTask;
 class LoadProjectTask;
+class MWMDIWindow;
 
 class ProjectImpl : public Project {
     Q_OBJECT
@@ -67,7 +68,7 @@ public:
 		return findDocumentByURL(url.getURLString()); 
 	}
 	
-	virtual const QList<GObjectViewState*>& getGObjectViewStates() const {return objectViews;}
+	virtual const QList<GObjectViewState*>& getGObjectViewStates() const {return objectViewStates;}
 
 	virtual void addGObjectViewState(GObjectViewState* s);
 
@@ -75,21 +76,35 @@ public:
 
 	virtual void makeClean();
 
+    quint64 getObjectIdCounter() const {return idGen;}
+
+    void setObjectIdCounter(quint64 c)  {idGen = c;}
+
 private slots:
 	void sl_onStateModified(GObjectViewState*);
     void sl_onObjectAdded(GObject*);
     void sl_onObjectRemoved(GObject* o);
     void sl_onObjectRenamed(const QString& oldName);
 
+    void sl_onMdiWindowAdded(MWMDIWindow* w);
+    void sl_onMdiWindowClosing(MWMDIWindow* w);
+    void sl_onViewRenamed(const QString& oldName);
+
 private:
 	void addState(GObjectViewState* s);
     void updateObjectRelations(const GObjectReference& oldRef, const GObjectReference& newRef);
-    
+    // returns number of reference fields updated
+    int updateReferenceFields(const QString& stateName, QVariantMap& map, const GObjectReference& from, const GObjectReference& to);
+    void updateGObjectViewStates(const QString& oldViewName, const QString& newViewName);
+    QString genNextObjectId();
+
+    int idGen;
+
     QString name;
     QString url;
 	QList<Document*> docs;
 
-	QList<GObjectViewState*> objectViews;
+	QList<GObjectViewState*> objectViewStates;
     AppResource *resourceTracker;
     QMap<QString, qint64> resourceUsage;
 

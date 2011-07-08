@@ -107,12 +107,17 @@ bool MWMDIManagerImpl::eventFilter(QObject *obj, QEvent *event) {
 		QMdiSubWindow* qw = qobject_cast<QMdiSubWindow*>(obj);
 		MDIItem* item = getMDIItem(qw);
         uiLog.trace(QString("Processing close window request for '%1'").arg(getWindowName(item)));
-        emit si_windowClosing(item->w);
+        
+        //check if user realy wants to close the window, ignore event if not
         if (!onCloseEvent(item->w)) {
             uiLog.trace(QString("Ignoring close window request for '%1'").arg(getWindowName(item)));
             event->ignore();
             return true;
         }
+        
+        // here we sure that window will be closed
+        emit si_windowClosing(item->w);
+
         if (item == mdiContentOwner) { // if 'current' window is closed -> clear MDI
             clearMDIContent(true);
         }

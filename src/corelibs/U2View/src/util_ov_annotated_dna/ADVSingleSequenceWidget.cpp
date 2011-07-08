@@ -34,9 +34,9 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
-
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/AnnotationSelection.h>
+#include <U2Core/GHints.h>
 
 #include <U2Misc/RangeSelector.h>
 #include <U2Misc/PositionSelector.h>
@@ -595,7 +595,8 @@ void ADVSingleSequenceWidget::sl_zoomToRange() {
 
 void ADVSingleSequenceWidget::updateState(const QVariantMap& m) {
     QVariantMap map = m.value(SPLITTER_STATE_MAP_NAME).toMap();
-    QVariantMap myData = map.value(getActiveSequenceContext()->getSequenceObject()->getGObjectName()).toMap();
+    QString sequenceInProjectId = getActiveSequenceContext()->getSequenceObject()->getGHints()->get(GObjectHint_InProjectId).toString();
+    QVariantMap myData = map.value(sequenceInProjectId).toMap();
     U2Region panReg = myData.value(PAN_REG_NAME).value<U2Region>();
     int detPos = myData.value(DET_POS_NAME).toInt();
     
@@ -660,7 +661,8 @@ void ADVSingleSequenceWidget::saveState(QVariantMap& m) {
     myData[CUSTOM_R_OFFSETS] = roffsets;
     myData[CUSTOM_R_COLORS] = rcolors;
     
-    map[getActiveSequenceContext()->getSequenceObject()->getGObjectName()] = myData;
+    QString sequenceInProjectId = getActiveSequenceContext()->getSequenceObject()->getGHints()->get(GObjectHint_InProjectId).toString();
+    map[sequenceInProjectId] = myData;
     m[SPLITTER_STATE_MAP_NAME] = map;
 }
 

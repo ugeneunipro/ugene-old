@@ -90,7 +90,7 @@ void ObjectViewTreeController::connectModel() {
 	
 	MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
 	connect(mdi, SIGNAL(si_windowAdded(MWMDIWindow*)), SLOT(sl_onMdiWindowAdded(MWMDIWindow*)));
-	//todo: window/view name changed!
+    connect(mdi, SIGNAL(si_windowClosing(MWMDIWindow*)), SLOT(sl_onMdiWindowClosing(MWMDIWindow*)));
 }
 	
 
@@ -205,31 +205,33 @@ void ObjectViewTreeController::updateActions() {
 	renameStateAction->setEnabled(si!=NULL);
 }
 
-bool ObjectViewTreeController::eventFilter(QObject *obj, QEvent *event) {
-	if (event->type() == QEvent::Close) {
-		GObjectViewWindow* v = qobject_cast<GObjectViewWindow*>(obj);
-		assert(v);
-		OVTViewItem* vi = findViewItem(v->getViewName());
-		SAFE_POINT(vi != NULL, QString("Can't find view item to filter close event!: %1").arg(v->getViewName()), false);
-		if (v->isPersistent()) {
-			vi->viewWindow = NULL;	
-			vi->updateVisual();
-		} else {
-			assert(vi->childCount() == 0);
-			delete vi;
-		}
-		updateActions();
-	}
-	return QObject::eventFilter(obj, event);
+void ObjectViewTreeController::sl_onMdiWindowAdded(MWMDIWindow* w) {
+	GObjectViewWindow* vw = qobject_cast<GObjectViewWindow*>(w);
+	if (vw == NULL) {
+        return;
+    }
+    addViewWindow(vw);
+	updateActions();
 }
 
-void ObjectViewTreeController::sl_onMdiWindowAdded(MWMDIWindow* w) {
-	GObjectViewWindow* v = qobject_cast<GObjectViewWindow*>(w);
-	if (v != NULL) {
-		addViewWindow(v);
-		updateActions();
-	} 
+void ObjectViewTreeController::sl_onMdiWindowClosing(MWMDIWindow* w) {
+    GObjectViewWindow* wv = qobject_cast<GObjectViewWindow*>(w);
+    if (wv == NULL) {
+        return;
+    }
+    OVTViewItem* vi = findViewItem(wv->getViewName());
+    SAFE_POINT(vi != NULL, QString("Can't find view item on window closing! View name: %1").arg(wv->getViewName()),);
+    if (wv->isPersistent()) {
+        vi->viewWindow = NULL;	
+        vi->updateVisual();
+    } else {
+        assert(vi->childCount() == 0);
+        delete vi;
+    }
+    updateActions();
 }
+
+
 
 void ObjectViewTreeController::sl_onViewStateAdded(GObjectViewState* s) {
 	addState(s);
@@ -261,10 +263,10 @@ OVTViewItem* ObjectViewTreeController::findViewItem(const QString& name) {
 
 OVTStateItem* ObjectViewTreeController::findStateItem(GObjectViewState* s) {
 	OVTViewItem* vi = findViewItem(s->getViewName());
-	if (vi==NULL) {
+	if (vi == NULL) {
 		return NULL;
 	}
-	for(int i =0; i< vi->childCount(); i++) {
+	for(int i = 0; i< vi->childCount(); i++) {
 		OVTStateItem* si = static_cast<OVTStateItem*>(vi->child(i));
 		if (si->state == s) {
 			return si;

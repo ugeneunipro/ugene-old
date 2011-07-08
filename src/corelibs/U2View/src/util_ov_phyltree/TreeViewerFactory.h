@@ -41,9 +41,10 @@ public:
 
     virtual Task* createViewTask(const QString& viewName, const QVariantMap& stateData);
 
-    virtual bool supportsSavedStates() const;
+    virtual bool supportsSavedStates() const {return true;}
 
     static const GObjectViewFactoryId ID;
+
 };
 
 } // namespace

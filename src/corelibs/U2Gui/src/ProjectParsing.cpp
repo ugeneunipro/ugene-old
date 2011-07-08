@@ -102,6 +102,7 @@ void ProjectFileUtils::saveProjectFile(TaskStateInfo& ts, Project* project,
     projectElement.setAttribute("name", project->getProjectName());
     const QString ver(CURRENT_PROJECT_VERSION);
     projectElement.setAttribute("version", ver);
+    projectElement.setAttribute("oid", project->getObjectIdCounter());
 
     QFileInfo projectFile(projectUrl);
     QDir projectDir = projectFile.absoluteDir();
@@ -276,6 +277,7 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
 
     QDomElement projectElement = xmlDoc.documentElement();
     QString name = projectElement.attribute("name");
+    quint64 oid = qMax(quint64(0), projectElement.attribute("oid").toULongLong());
 
     QList<Document*> documents;
     QList<GObjectViewState*> states;
@@ -380,6 +382,7 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
         states.append(state);
     }
     Project* project = AppContext::getProjectLoader()->createProject(name, pURL, documents, states);
+    project->setObjectIdCounter(oid);
     return project;
 }
 

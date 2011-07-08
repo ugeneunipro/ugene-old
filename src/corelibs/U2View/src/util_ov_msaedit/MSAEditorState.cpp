@@ -40,11 +40,11 @@ bool MSAEditorState::isValid() const {
     return stateData.value(VIEW_ID) == MSAEditorFactory::ID;
 }
 
-GObjectReference MSAEditorState::getMSAObject() const {
+GObjectReference MSAEditorState::getMSAObjectRef() const {
     return stateData.contains(MSA_OBJ) ? stateData[MSA_OBJ].value<GObjectReference>() : GObjectReference();
 }
 
-void MSAEditorState::setMSAObject(const GObjectReference& ref) {
+void MSAEditorState::setMSAObjectRef(const GObjectReference& ref) {
     stateData[MSA_OBJ] = QVariant::fromValue<GObjectReference>(ref);
 }
 
@@ -93,7 +93,7 @@ QVariantMap MSAEditorState::saveState(MSAEditor* v) {
 
     MAlignmentObject* msaObj = v->getMSAObject();
     if (msaObj) {
-        ss.setMSAObject(GObjectReference(msaObj));
+        ss.setMSAObjectRef(GObjectReference(msaObj));
     }
 
     ss.setFont(v->getFont());
