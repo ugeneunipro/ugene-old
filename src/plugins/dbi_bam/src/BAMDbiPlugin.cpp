@@ -207,6 +207,10 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
         }
     } else if (convertTask == subTask) {
         loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
+        if (loadDocTask == NULL) {
+            setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
+            return res;
+        }
         res << loadDocTask;
     } else {
         assert(subTask == loadDocTask);
