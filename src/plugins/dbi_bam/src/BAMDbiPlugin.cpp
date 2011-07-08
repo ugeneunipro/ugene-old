@@ -194,6 +194,10 @@ BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui)
 
 QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
+    if (subTask->hasError()) {
+        propagateSubtaskError();
+        return res;
+    }
     if (loadInfoTask == subTask) {
         ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), false);
         convertDialog.hideAddToProjectOption();
