@@ -51,13 +51,14 @@
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/DNASequenceSelection.h>
 
 #include <U2Core/AddPartToSequenceTask.h>
 #include <U2Core/ReplacePartOfSequenceTask.h>
+#include <U2Core/ReverseSequenceTask.h>
 
 #include <U2View/FindDialog.h>//BUG:423: move to plugins!?
 #include <U2View/SecStructPredictUtils.h>
@@ -137,6 +138,10 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<DNASeque
     removeSequenceObjectAction = new QAction(tr("Selected sequence from view"), this);
     connect(removeSequenceObjectAction, SIGNAL(triggered()), SLOT(sl_removeSelectedSequenceObject()));
     
+    reverseSequenceAction = new QAction(tr("Reverse complement sequence"), this);
+    connect(reverseSequenceAction, SIGNAL(triggered()), SLOT(sl_reverseSequence()));
+
+
     SecStructPredictViewAction::createAction(this);
 
 }
@@ -460,6 +465,12 @@ void AnnotatedDNAView::addEditMenu(QMenu* m) {
         rm->addAction(replaceSequencePart);
     }
     rm->addAction(removeSequencePart);
+    if (seqCtx->getComplementTT() != NULL) {
+        reverseSequenceAction->setText(tr("Reverse complement sequence"));
+    } else {
+        reverseSequenceAction->setText(tr("Reverse sequence"));
+    }
+    rm->addAction(reverseSequenceAction);
 }
 
 Task* AnnotatedDNAView::updateViewTask(const QString& stateName, const QVariantMap& stateData) {
@@ -1039,6 +1050,23 @@ void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
     }
 
 }
+
+void AnnotatedDNAView::sl_reverseSequence()
+{
+    ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
+    DNASequenceObject *seqObj = seqCtx->getSequenceObject();
+    QList<AnnotationTableObject*> annotations = seqCtx->getAnnotationObjects(false).toList();
+    
+    DNATranslation* complTr = NULL;
+    if (seqObj->getAlphabet()->isNucleic()) {
+        complTr = seqCtx->getComplementTT();
+    }
+
+    Task* t = new ReverseSequenceTask(seqObj,annotations,complTr);
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
+    seqCtx->getSequenceSelection()->clear();    
+}   
 
 
 

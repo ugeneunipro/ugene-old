@@ -178,6 +178,7 @@ private slots:
     void sl_removeSequencePart();
     void sl_replaceSequencePart();
     void sl_sequenceModifyTaskStateChanged();
+    void sl_reverseSequence();
     
     virtual void sl_onDocumentAdded(Document*);
     virtual void sl_onDocumentLoadedStateChanged();
@@ -207,7 +208,8 @@ private:
     QAction*            removeSequencePart;
     QAction*            replaceSequencePart;
     QAction*            removeSequenceObjectAction;         
-    
+    QAction*            reverseSequenceAction;
+
     PositionSelector*   posSelector;
     
     QList<ADVSequenceObjectContext*>    seqContexts;

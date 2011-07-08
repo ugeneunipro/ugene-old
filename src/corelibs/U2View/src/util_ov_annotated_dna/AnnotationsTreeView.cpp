@@ -86,7 +86,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
     lastClickedColumn = 0;
 
     tree = new QTreeWidget(this);
-    tree->setObjectName("tree_widget");
+    tree->setObjectName("annotations_tree_widget");
 
     tree->setSortingEnabled(true);
     tree->sortItems(0, Qt::AscendingOrder);

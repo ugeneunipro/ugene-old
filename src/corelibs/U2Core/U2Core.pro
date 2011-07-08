@@ -115,6 +115,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/RemoveDocumentTask.h \
            src/tasks/RemovePartFromSequenceTask.h \
            src/tasks/ReplacePartOfSequenceTask.h \
+           src/tasks/ReverseSequenceTask.h \
            src/tasks/SaveDocumentStreamingTask.h \
            src/tasks/SaveDocumentTask.h \
            src/tasks/ScriptTask.h \
@@ -230,6 +231,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/RemoveDocumentTask.cpp \
            src/tasks/RemovePartFromSequenceTask.cpp \
            src/tasks/ReplacePartOfSequenceTask.cpp \
+           src/tasks/ReverseSequenceTask.cpp \
            src/tasks/SaveDocumentStreamingTask.cpp \
            src/tasks/SaveDocumentTask.cpp \
            src/tasks/ScriptTask.cpp \
