@@ -28,8 +28,6 @@
 
 //#include <U2Core/Timer.h>
 
-#include <execinfo.h>
-
 namespace U2 {
 
 
