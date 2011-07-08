@@ -205,9 +205,11 @@ public:
 
 protected slots:
     void sl_fontChanged();
+    
 
 protected:
     void paintEvent(QPaintEvent *e);
+    void mousePressEvent(QMouseEvent *e);
 };
 
 

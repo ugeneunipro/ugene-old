@@ -27,6 +27,7 @@
 
 #include <QtGui/QMenu>
 #include <QtGui/QScrollBar>
+#include <QtGui/QRubberBand>
 
 namespace U2 {
 
@@ -73,11 +74,12 @@ protected:
     //todo context menu?
 
 private:
+    bool isRowInSelection(int row);
     void updateActions();
     void buildMenu(QMenu* m);
     void updateScrollBar();
     void updateSelection(int newSeqNum);
-    void moveSelectedRegion( int newSeqNum );
+    void moveSelectedRegion( int shift );
     void drawAll();
     void drawContent(QPainter& p);
     void drawSelection(QPainter& p);
@@ -87,9 +89,11 @@ private:
     MSAEditor*          editor;
     MSAEditorUI*        ui;
     QScrollBar*         nhBar;
-    int                 curSeq, shiftPos;
-    bool                scribbling;
+    int                 curSeq;
+    QPoint              origin;
+    bool                scribbling,shifting;
 
+    QRubberBand*        rubberBand;
     QAction*            editSequenceNameAction;
     QAction*            copyCurrentSequenceAction;
     QAction*            removeCurrentSequenceAction;

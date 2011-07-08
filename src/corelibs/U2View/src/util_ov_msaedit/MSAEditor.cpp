@@ -629,6 +629,11 @@ void MSALabelWidget::sl_fontChanged() {
     setMinimumHeight(ui->consArea->height());
 }
 
+void MSALabelWidget::mousePressEvent( QMouseEvent *e )
+{
+    ui->seqArea->cancelSelection();
+}
+
 
 }//namespace
 
