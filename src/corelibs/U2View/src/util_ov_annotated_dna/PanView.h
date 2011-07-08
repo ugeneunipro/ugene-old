@@ -23,6 +23,7 @@
 #define _U2_PAN_VIEW_H_
 
 #include "GSequenceLineViewAnnotated.h"
+#include "U2Misc/GraphUtils.h"
 
 #include <QtGui/QFont>
 #include <QtGui/QAction>
@@ -241,8 +242,8 @@ private:
         return cachedView->height() - ((numLines - line) * lineHeight);
     }
 
-    void drawRuler(QPainter& p);
-    void drawCustomRulers(QPainter& p);
+    void drawRuler(GraphUtils::RulerConfig c,  QPainter& p, const U2Region &visibleRange, int firstCharCenter, int firstLastWidth);
+    void drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p, const U2Region &visibleRange, int firstCharCenter);
     void drawSequenceSelection(QPainter& p);
     
     PanView*            panView;

@@ -45,8 +45,8 @@ CreateRulerDialogController::CreateRulerDialogController(const QSet<QString>& na
    
     nameEdit->setText(TextUtils::variate(tr("New ruler"), "_", filter));
 
-    spinBox->setMinimum(seqRange.startPos + 1);
-    spinBox->setMaximum(seqRange.endPos());
+    spinBox->setMinimum(INT_MIN);
+    spinBox->setMaximum(INT_MAX);
     spinBox->setValue(seqRange.contains(defaultOffset+1) ? defaultOffset + 1 : spinBox->minimum());
 
     color = Qt::darkBlue;

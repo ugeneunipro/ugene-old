@@ -45,7 +45,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Ruler offset</string>
+        <string>Ruler start</string>
        </property>
       </widget>
      </item>

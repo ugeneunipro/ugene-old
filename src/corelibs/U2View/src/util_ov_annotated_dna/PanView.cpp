@@ -49,6 +49,8 @@
 
 namespace U2 {
 
+#define RULER_NOTCH_SIZE 2
+
 PanView::ZoomUseObject::ZoomUseObject()
 : usingZoom(false), panView(NULL) {}
 
@@ -608,19 +610,38 @@ void PanViewRenderArea::drawAll(QPaintDevice* pd) {
     bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) || 
                           uf.testFlag(GSLV_UF_VisibleRangeChanged) || uf.testFlag(GSLV_UF_AnnotationsChanged);
 
+    QPainter p(pd);
     if (completeRedraw) {
         QPainter pCached(cachedView);
         pCached.fillRect(0, 0, pd->width(), pd->height(), Qt::white);
         pCached.setPen(Qt::black);
 
-        drawRuler(pCached);
-        drawCustomRulers(pCached);
+        GraphUtils::RulerConfig c;
+        PanView* panview = qobject_cast<PanView*>(view);
+
+        const U2Region& visibleRange = view->getVisibleRange();
+        float halfChar = getCurrentScale() / 2;
+        int firstCharCenter = qRound(posToCoordF(visibleRange.startPos) + halfChar);
+        int lastCharCenter = qRound(posToCoordF(visibleRange.endPos()-1) + halfChar);
+        int firstLastWidth = lastCharCenter - firstCharCenter;
+        if (qRound(halfChar) == 0) {
+            int w = width();
+            assert(firstLastWidth == w); Q_UNUSED(w);
+            firstLastWidth--; // make the end of the ruler visible
+        }
+        c.notchSize = RULER_NOTCH_SIZE;
+        int chunk = GraphUtils::calculateChunk(visibleRange.startPos+1, visibleRange.endPos(), panView->width(), p);
+        foreach(const RulerInfo& ri, customRulers) {
+            chunk = qMax(chunk, GraphUtils::calculateChunk(visibleRange.startPos+1-ri.offset, visibleRange.endPos()-ri.offset, panView->width(), p));
+        }
+        c.predefinedChunk = chunk;
+        drawRuler(c, pCached, visibleRange, firstCharCenter, firstLastWidth);
+        drawCustomRulers(c, pCached, visibleRange, firstCharCenter);
 
         drawAnnotations(pCached);
 
         pCached.end();
     }
-    QPainter p(pd);
     p.drawPixmap(0, 0, *cachedView);
 
 
@@ -639,48 +660,28 @@ void PanViewRenderArea::drawAll(QPaintDevice* pd) {
         drawFocus(p);
     }
 }
-#define RULER_NOTCH_SIZE 2
-void PanViewRenderArea::drawRuler(QPainter& p) {
+void PanViewRenderArea::drawRuler(GraphUtils::RulerConfig c,  QPainter& p, const U2Region &visibleRange, int firstCharCenter, int firstLastWidth){
     if (!showMainRuler) {
         return;
     }
-    const U2Region& visibleRange = view->getVisibleRange();
-    float halfChar = getCurrentScale() / 2;
-    int firstCharCenter = qRound(posToCoordF(visibleRange.startPos) + halfChar);
-    int lastCharCenter = qRound(posToCoordF(visibleRange.endPos()-1) + halfChar);
-    int firstLastWidth = lastCharCenter - firstCharCenter;
-    if (qRound(halfChar) == 0) {
-        int w = width();
-        assert(firstLastWidth == w); Q_UNUSED(w);
-        firstLastWidth--; // make the end of the ruler visible
-    }
-    GraphUtils::RulerConfig c;
-    c.notchSize = RULER_NOTCH_SIZE;
     int y = getLineY(getRulerLine()) + c.notchSize;
     GraphUtils::drawRuler(p, QPoint(firstCharCenter, y), firstLastWidth, visibleRange.startPos+1, visibleRange.endPos(), rulerFont, c);
 }
 
 
 #define LINE_TEXT_OFFSET 10
-
-void PanViewRenderArea::drawCustomRulers(QPainter& p) {
+void PanViewRenderArea::drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p, const U2Region &visibleRange, int firstCharCenter) {
     if (!showCustomRulers || customRulers.isEmpty()) {
         return;
     }
-    const U2Region& visibleRange = view->getVisibleRange();
     float pixelsPerChar = getCurrentScale();
     float halfChar =  pixelsPerChar / 2;
-    int firstCharCenter = qRound(posToCoordF(visibleRange.startPos) + halfChar);
     int lastCharCenter = qRound(posToCoordF(visibleRange.endPos()-1) + halfChar);
-    
     QFont crf = rulerFont;
     crf.setBold(true);
-    
     QFontMetrics fm(crf);
     int w = width();
 
-    GraphUtils::RulerConfig c;
-    c.notchSize = RULER_NOTCH_SIZE;
     int maxRulerTextWidth = 0;
     foreach(const RulerInfo& ri, customRulers) {
         int w = fm.width(ri.name);
@@ -690,10 +691,8 @@ void PanViewRenderArea::drawCustomRulers(QPainter& p) {
         const RulerInfo& ri = customRulers[i];
         p.setPen(ri.color);
         p.setFont(crf);
-        
         int y = getLineY(getCustomRulerLine(i)) + c.notchSize;
         p.drawText(QRect(LINE_TEXT_OFFSET, y, maxRulerTextWidth, lineHeight), ri.name);
-    
         int rulerStartOffset = maxRulerTextWidth + LINE_TEXT_OFFSET;
         if (rulerStartOffset >= w)  {
             continue;
@@ -709,12 +708,17 @@ void PanViewRenderArea::drawCustomRulers(QPainter& p) {
             startPos+=nChars;
             x+=deltaPixels2;
         }
-        
         int rulerWidth = lastCharCenter - x;
         if (qRound(halfChar) == 0) {
             assert(firstCharCenter == 0 && lastCharCenter == w);
             rulerWidth--; // make the end of the ruler visible
         }
+        int offsetToFirstNotch = c.predefinedChunk - visibleRange.startPos%c.predefinedChunk;
+        int mainRuler = visibleRange.startPos + offsetToFirstNotch; 
+        int newStartPos = visibleRange.startPos - ri.offset + offsetToFirstNotch;
+        int lim = startPos + ri.offset;
+        for(; mainRuler < lim; mainRuler += c.predefinedChunk, newStartPos += c.predefinedChunk);
+        c.correction = newStartPos;
         GraphUtils::drawRuler(p, QPoint(x, y), rulerWidth, startPos, endPos, rulerFont, c);
     }
 }

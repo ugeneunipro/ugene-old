@@ -43,7 +43,6 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
     if (start == end || len < MIN_RULER_LEN) {
         return;
     }
-    
     p.save();
     
     assert(c.drawArrow != c.drawBorderNotches);
@@ -59,39 +58,9 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
     int stW = fm.width(st);
     int enW = fm.width(en);
 
-    //the width of the bigger number
-    int N = cw * qMax(QString::number(start).length(), QString::number(end).length()) * 4 / 3;
     qint64 span = qMax(start, end) - qMin(start, end);
-    int dN = 0;
-    int chunk = 1;
-    while (span > 2 * chunk) {
-        dN = chunk > (1000 * 1000)? cw * 2 : (chunk > 1000 ?  cw * 2 : 0);
-        qint64 reqLen = qint64((double(span) / chunk) * (N - dN));
-        assert(reqLen > 0);
-        if (reqLen < len) {
-            break;
-        } 
-        if (reqLen / 2 < len) {
-            int cchunk = chunk*2;
-            dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
-            qint64 reqLen2 = qint64((double(span) / cchunk) * (N - dN));
-            if (reqLen2 < len) {
-                chunk = cchunk;
-                break;
-            }
-        }
+    int chunk = c.predefinedChunk == 0 ? calculateChunk(start, end, len, p) : c.predefinedChunk;
 
-        if (reqLen / 5 < len) {
-            int cchunk = chunk*5;
-            dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
-            qint64 reqLen5 = qint64((double(span) / cchunk) * (N - dN));
-            if (reqLen5 < len) {
-                chunk = cchunk;
-                break;
-            }
-        }
-        chunk *= 10;
-    }
     assert(span / chunk < 1000);
     while (chunk > span) {
         chunk /= 2;
@@ -136,7 +105,13 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
             p.drawLine(pos.x(), pos.y() + len, pos.x() + c.arrowWidth, pos.y() + len - c.arrowLen);
         }
         if (start / chunk != end / chunk) {
-            for (int currnotch = chunk * (start / chunk + 1); currnotch < end; currnotch += chunk) {
+            int currnotch;
+            if(c.correction != NULL){
+                currnotch = c.correction;
+            }else{
+                currnotch = chunk * (start / chunk + 1);
+            }
+            for (; currnotch < end; currnotch += chunk) {
                 int y = qRound((end - currnotch) * scale);
                 if (c.drawNotches) {
                     p.drawLine(pos.x() - notchDX1, pos.y() + len - y, pos.x() + notchDX2, pos.y() + len - y);
@@ -208,7 +183,13 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
                 p.drawLine(pos.x() + len, pos.y(), pos.x() + len - c.arrowLen, pos.y() + c.arrowWidth);
             }
             if (start / chunk != end / chunk) {
-                for (int currnotch = chunk * (start / chunk + 1); currnotch < end; currnotch += chunk) {
+                int currnotch; 
+                if(c.correction != NULL){
+                    currnotch = c.correction;
+                }else{
+                    currnotch = chunk * (start / chunk + 1);
+                }
+                for (; currnotch < end; currnotch += chunk) {
                     int x = qRound(scale * (currnotch - start));
                     if (c.drawNotches) {
                         p.drawLine(pos.x() + x, pos.y() - notchDY1, pos.x() + x, pos.y() + notchDY2);
@@ -229,7 +210,13 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
                 p.drawLine(pos.x(), pos.y(), pos.x() + c.arrowLen, pos.y() + c.arrowWidth);
             }
             if (start / chunk != end / chunk) {
-                for (int currnotch = chunk * (start / chunk + 1); currnotch < end; currnotch += chunk) {
+                int currnotch;
+                if(c.correction != NULL){
+                    currnotch = c.correction;
+                }else{
+                    currnotch = chunk * (start / chunk + 1);
+                }
+                for (; currnotch < end; currnotch += chunk) {
                     int x = qRound((currnotch - start) * scale);
                     if (c.drawNotches) {
                         p.drawLine(pos.x() + len - x, pos.y() - notchDY1, pos.x() + len - x, pos.y() + notchDY2);
@@ -420,5 +407,43 @@ QColor GraphUtils::proposeLightColorByKey(const QString& key) {
     return colors.at((hash*hash)%colors.size());
 }
 
+int GraphUtils::calculateChunk( qint64 start, qint64 end, qint64 len, const QPainter &p ){
+    QFontMetrics fm = p.fontMetrics();
+    int cw = fm.width('0');
+    //the width of the bigger number
+    int N = cw * qMax(QString::number(start).length(), QString::number(end).length()) * 4 / 3;
+    qint64 span = qMax(start, end) - qMin(start, end);
+    int dN = 0;
+    int chunk = 1;
+    while (span > 2 * chunk) {
+        dN = chunk > (1000 * 1000)? cw * 2 : (chunk > 1000 ?  cw * 2 : 0);
+        qint64 reqLen = qint64((double(span) / chunk) * (N - dN));
+        assert(reqLen > 0);
+        if (reqLen < len) {
+            break;
+        } 
+        if (reqLen / 2 < len) {
+            int cchunk = chunk*2;
+            dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
+            qint64 reqLen2 = qint64((double(span) / cchunk) * (N - dN));
+            if (reqLen2 < len) {
+                chunk = cchunk;
+                break;
+            }
+        }
+
+        if (reqLen / 5 < len) {
+            int cchunk = chunk*5;
+            dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
+            qint64 reqLen5 = qint64((double(span) / cchunk) * (N - dN));
+            if (reqLen5 < len) {
+                chunk = cchunk;
+                break;
+            }
+        }
+        chunk *= 10;
+    }
+    return chunk;
+}
 }//namespace
 

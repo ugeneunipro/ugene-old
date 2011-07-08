@@ -56,6 +56,8 @@ public:
             extraAxisLenAfter =0;
             textBorderStart = 2;
             textBorderEnd = 2;
+            predefinedChunk = 0;
+            correction = 0;
         }
         bool    drawArrow;
         int     arrowLen;
@@ -66,6 +68,8 @@ public:
         int     extraAxisLenAfter;
         int     textBorderStart; //offset in pixels for the first text label at the start pos
         int     textBorderEnd;   //offset in pixels for the last text label at the end pos
+        int     predefinedChunk;
+        int     correction;
         bool    drawNumbers;
         bool    drawNotches;
         bool    drawBorderNotches;
@@ -76,6 +80,7 @@ public:
     };
 
     static void drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 start, qint64 end, const QFont& f, const RulerConfig& config);
+    static int calculateChunk(qint64 start, qint64 end, qint64 len, const QPainter &p);
     static int findChunk(qint64 len, qint64 span, int N);
 
     //static void drawDensityPlot(QPainter& p, QRect& drawRect, QRect& calcRect, quint32 n, quint32* x, quint32 *y, quint32* len);
