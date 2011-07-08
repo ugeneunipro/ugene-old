@@ -237,19 +237,11 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
     char name_buf[512];
     name_buf[readlink(path.toAscii().data(), name_buf, 511)]=0;
     FILE *fp;
-    FILE *err;
     fp = freopen ("/tmp/UGENEstacktrace.txt","w+",stdout);
-    err = freopen("/tmp/UGENEerror", "w+", stderr);
-    int child_pid = fork();
-    if (!child_pid) {
-        fprintf(stdout,"stack trace for %s pid=%s\n",name_buf,pid_buf);
-        execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "bt", name_buf, pid_buf, NULL);
-        abort(); /* If gdb failed to start */
-    } else {
-        waitpid(child_pid,NULL,0);
-    }
+    void * stackTrace[1024];
+    int frames = backtrace(stackTrace, 1024);
+    backtrace_symbols_fd(stackTrace, frames, STDOUT_FILENO);
     fclose(fp);
-    fclose(err);
 #endif
 
     QString message = exceptionType + "|";
