@@ -440,9 +440,10 @@ QString ExternalProcessWorkerPrompter::composeRichDoc() {
     }
 
     foreach(const AttributeConfig &attrCfg, cfg->attrs) {
-        QRegExp param("\\$" + attrCfg.attrName + /*"[,:;\s\.\-]"*/"\\W");
+        QRegExp param("\\$" + attrCfg.attrName + /*"[,:;\s\.\-]"*/"\\W|$");
         if(doc.contains(param)) {
-            doc.replace("$" + attrCfg.attrName, getRequiredParam(attrCfg.attrName));
+            QString prm = getRequiredParam(attrCfg.attrName);
+            doc.replace("$" + attrCfg.attrName, getHyperlink(attrCfg.attrName, prm));
         }
     }
 
