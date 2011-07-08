@@ -227,7 +227,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addAction(showCoordsOnRulerAction);
         tb->addAction(saveScreenShotAction);
         tb->addAction(showInfoAction);
-        tb->addAction(exportToSamAction);
+//        tb->addAction(exportToSamAction);
     }
     GObjectView::buildStaticToolbar(tb);
 }
