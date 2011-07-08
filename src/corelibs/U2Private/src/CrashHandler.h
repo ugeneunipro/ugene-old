@@ -48,11 +48,13 @@ namespace U2 {
     //LONG NTAPI CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo );
 #else 
 #include <stdlib.h>
-#include <signal.h>
+
 #include <stdio.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <signal.h>
+#include <execinfo.h>
 #endif
 
 
