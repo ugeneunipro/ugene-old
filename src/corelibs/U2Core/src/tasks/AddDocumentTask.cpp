@@ -46,9 +46,10 @@ Task( tr("Adding document to project: %1").arg(_dpt->getDocumentDescription()), 
 
 QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (dpt->isCanceled()) {
+    if (propagateSubtaskError() || dpt->isCanceled()) {
         return res;
     }
+
     if (subTask == dpt) {
         Document* doc = dpt->takeDocument();
         if (!doc->isMainThreadModificationOnly()) {
