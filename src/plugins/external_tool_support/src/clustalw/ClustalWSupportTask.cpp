@@ -207,7 +207,11 @@ ClustalWWithExtFileSpecifySupportTask::ClustalWWithExtFileSpecifySupportTask(con
     loadDocumentTask = NULL;
     clustalWSupportTask = NULL;
 }
-
+ClustalWWithExtFileSpecifySupportTask::~ClustalWWithExtFileSpecifySupportTask(){
+    if(currentDocument!=NULL){
+        delete currentDocument;
+    }
+}
 void ClustalWWithExtFileSpecifySupportTask::prepare(){
     DocumentFormatConstraints c;
     c.checkRawData = true;
@@ -236,7 +240,8 @@ QList<Task*> ClustalWWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subT
         return res;
     }
     if(subTask==loadDocumentTask){
-        currentDocument=loadDocumentTask->takeDocument();
+        // clone doc because it was created in another thread
+        currentDocument=loadDocumentTask->getDocument()->clone();
         assert(currentDocument!=NULL);
         assert(currentDocument->getObjects().length()==1);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
@@ -257,12 +262,9 @@ QList<Task*> ClustalWWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subT
                     docAlreadyInProject=true;
                 }
             }
-            if (docAlreadyInProject) {
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
-            } else {
-                // Add document to project
-                res.append(new AddDocumentTask(currentDocument));
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
+            if (!docAlreadyInProject) {
+                res.append(new AddDocumentAndOpenViewTask(currentDocument));
+                currentDocument=NULL;
             }
         }
     }

@@ -133,15 +133,8 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
 
         if (settings.openView) {
             // clone doc because it was created in another thread
-            const GUrl& fullPath = doc->getURL();
-            DocumentFormat* format = doc->getDocumentFormat();
-            IOAdapterFactory * iof = doc->getIOAdapterFactory();
-            Document* clonedDoc = new Document(format, iof, fullPath);
-            clonedDoc->loadFrom(doc);
-            assert(!clonedDoc->isTreeItemModified());
-            assert(clonedDoc->isLoaded());
-            res.append(new AddDocumentTask(clonedDoc));
-            res.append(new OpenViewTask(clonedDoc));     
+            Document* clonedDoc = doc->clone();
+            res.append(new AddDocumentAndOpenViewTask(clonedDoc));
         }
         
     }

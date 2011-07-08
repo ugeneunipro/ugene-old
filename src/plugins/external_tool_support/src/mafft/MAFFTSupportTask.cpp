@@ -191,7 +191,11 @@ MAFFTWithExtFileSpecifySupportTask::MAFFTWithExtFileSpecifySupportTask(const MAF
     loadDocumentTask = NULL;
     mAFFTSupportTask = NULL;
 }
-
+MAFFTWithExtFileSpecifySupportTask::~MAFFTWithExtFileSpecifySupportTask(){
+    if(currentDocument!=NULL){
+        delete currentDocument;
+    }
+}
 void MAFFTWithExtFileSpecifySupportTask::prepare(){
     DocumentFormatConstraints c;
     c.checkRawData = true;
@@ -220,7 +224,7 @@ QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask
         return res;
     }
     if(subTask==loadDocumentTask){
-        currentDocument=loadDocumentTask->takeDocument();
+        currentDocument=loadDocumentTask->getDocument()->clone();
         assert(currentDocument!=NULL);
         assert(currentDocument->getObjects().length()==1);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
@@ -241,12 +245,10 @@ QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask
                     docAlreadyInProject=true;
                 }
             }
-            if (docAlreadyInProject) {
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
-            } else {
+            if (!docAlreadyInProject) {
                 // Add document to project
-                res.append(new AddDocumentTask(currentDocument));
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
+                res.append(new AddDocumentAndOpenViewTask(currentDocument));
+                currentDocument=NULL;
             }
         }
     }

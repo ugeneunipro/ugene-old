@@ -104,6 +104,7 @@ class ClustalWWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT
 public:
     ClustalWWithExtFileSpecifySupportTask(const ClustalWSupportTaskSettings& settings);
+    ~ClustalWWithExtFileSpecifySupportTask();
     void prepare();
     Task::ReportResult report();
 

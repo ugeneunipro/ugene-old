@@ -85,6 +85,7 @@ class TCoffeeWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT
 public:
     TCoffeeWithExtFileSpecifySupportTask(const TCoffeeSupportTaskSettings& settings);
+    ~TCoffeeWithExtFileSpecifySupportTask();
     void prepare();
     Task::ReportResult report();
 

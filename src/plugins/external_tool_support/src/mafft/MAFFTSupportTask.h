@@ -85,6 +85,7 @@ class MAFFTWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT
 public:
     MAFFTWithExtFileSpecifySupportTask(const MAFFTSupportTaskSettings& settings);
+    ~MAFFTWithExtFileSpecifySupportTask();
     void prepare();
     Task::ReportResult report();
 
