@@ -561,7 +561,8 @@ void RemoveItemsTask::prepare() {
 
 void RemoveItemsTask::run() {
     //AVGroupItem* groupItem = treeView->findGroupItem(aObj->getRootGroup());
-    delete parentGroupItem;
+    qDeleteAll(parentGroupItem->takeChildren());
+    //delete parentGroupItem;
     /*foreach(Annotation* a, as) {
         assert(a->getGObject() == NULL);
         QList<AVAnnotationItem*> aItems;
