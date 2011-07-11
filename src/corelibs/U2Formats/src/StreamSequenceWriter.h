@@ -27,11 +27,10 @@
 
 #include <U2Core/GUrl.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Formats/SAMFormat.h>
 
 namespace U2 {
 
-class IOAdapter;
-class SAMFormat;
 
 /** 
 *
@@ -40,16 +39,16 @@ class SAMFormat;
 * 
 */ 
 
-class U2FORMATS_EXPORT StreamContigWriter {
-    IOAdapter* io;
-    SAMFormat* format;
-    int numSeqWritten;
-    int refSeqLength;
-    QByteArray refSeqName;
+class U2FORMATS_EXPORT StreamShortReadsWriter {
+    IOAdapter*  io;
+    SAMFormat   format;
+    int         numSeqWritten;
+    int         refSeqLength;
+    QByteArray  refSeqName;
 
 public:
-    StreamContigWriter(const GUrl& url, const QString& refName = QString(), int refLength = 0);
-    ~StreamContigWriter();
+    StreamShortReadsWriter(const GUrl& url, const QString& refName = QString(), int refLength = 0);
+    ~StreamShortReadsWriter();
     bool writeNextAlignedRead(int offset, const DNASequence& seq);
     void setRefSeqLength(int l) { refSeqLength = l;}
     void setRefSeqName(const QString& name ) { refSeqName = QString(name).replace(QRegExp("\\s|\\t"), "_").toAscii(); }

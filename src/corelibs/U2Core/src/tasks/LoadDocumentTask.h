@@ -111,6 +111,11 @@ public:
                 IOAdapterFactory* iof, const QVariantMap& hints = QVariantMap(), 
                 const LoadDocumentTaskConfig& config = LoadDocumentTaskConfig());
 
+    LoadDocumentTask(DocumentFormat* format, const GUrl& url,
+        IOAdapterFactory* iof, const QVariantMap& hints = QVariantMap(), 
+        const LoadDocumentTaskConfig& config = LoadDocumentTaskConfig());
+
+
     virtual void run();
     virtual void prepare();
     virtual ReportResult report();
@@ -118,6 +123,7 @@ public:
     const GUrl& getURL() const {return url;}
 
 private:
+    void init();
     void processObjRef();
 
     /** Creates new document that contains data from original one restructured to new form according to document hints

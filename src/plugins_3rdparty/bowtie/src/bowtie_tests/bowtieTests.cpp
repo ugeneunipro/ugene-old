@@ -24,13 +24,11 @@
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
-
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/Log.h>
-
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
@@ -39,11 +37,13 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AppContext.h>
 
+#include <U2Formats/SAMFormat.h>
+
+#include <U2View/DnaAssemblyUtils.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QRegExp>
 
-#include <U2View/DnaAssemblyUtils.h>
 
 
 /* TRANSLATOR U2::GTest*/
@@ -241,7 +241,11 @@ QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
             return res;
         }
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.resultFileName));
-        resultLoadTask = new LoadDocumentTask(BaseDocumentFormats::SAM, config.resultFileName,iof);
+        // SAM format is removed from supported formats list and supported only by BAM plugin
+        // Create it manually and provide to LoadDocumentTask
+        SAMFormat* samFormat = new SAMFormat();
+        resultLoadTask = new LoadDocumentTask(samFormat, config.resultFileName,iof);
+        samFormat->setParent(resultLoadTask);
         res << resultLoadTask;
 		
     }else if (subTask == resultLoadTask) {
@@ -256,7 +260,15 @@ QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
 		
 		QFileInfo patternFile(env->getVar("COMMON_DATA_DIR")+"/"+patternFileName);
 		IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(patternFile.absoluteFilePath()));
-		patternLoadTask = new LoadDocumentTask(patternFormat, patternFile.absoluteFilePath(), iof);
+        if (patternFormat == BaseDocumentFormats::SAM) {
+            // SAM format is removed from supported formats list and supported only by BAM plugin
+            // Create it manually and provide to LoadDocumentTask
+            SAMFormat* samFormat = new SAMFormat();
+            patternLoadTask = new LoadDocumentTask(samFormat, patternFile.absoluteFilePath(), iof);
+            samFormat->setParent(patternLoadTask);
+        } else {
+		    patternLoadTask = new LoadDocumentTask(patternFormat, patternFile.absoluteFilePath(), iof);
+        }
 		patternLoadTask->setSubtaskProgressWeight(0);
 		res << patternLoadTask;
 

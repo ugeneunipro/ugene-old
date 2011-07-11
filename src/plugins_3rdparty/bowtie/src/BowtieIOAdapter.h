@@ -60,7 +60,7 @@ public:
 	void write(const U2::DNASequence& seq, int offset);
 	void close();
 private:
-	U2::StreamContigWriter seqWriter;
+	U2::StreamShortReadsWriter seqWriter;
 };
 
 /************************************************************************/

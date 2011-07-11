@@ -206,12 +206,28 @@ LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u,
 {
     setTaskName(tr("Read document: '%1'").arg(u.fileName()));
     documentDescription = u.getURLString();
- 
-    tpm = Progress_Manual;
-    assert(iof!=NULL);
     format = AppContext::getDocumentFormatRegistry()->getFormatById(f);
-    if(format == NULL) {
-        setError(tr("Invalid document format %1").arg(f));
+    init();
+}
+
+LoadDocumentTask::LoadDocumentTask(DocumentFormat* f, const GUrl& u, 
+                                   IOAdapterFactory* i, const QVariantMap& map, const LoadDocumentTaskConfig& _config)
+                                   : DocumentProviderTask("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), config(_config)
+{
+    setTaskName(tr("Read document: '%1'").arg(u.fileName()));
+    documentDescription = u.getURLString();
+    format = f;
+    init();
+}
+
+void LoadDocumentTask::init() {
+    tpm = Progress_Manual;
+    if (format == NULL) {
+        setError(tr("Document format is NULL!"));
+        return;
+    }
+    if (iof == NULL) {
+        setError(tr("IO adapter factory is NULL!"));
         return;
     }
 }

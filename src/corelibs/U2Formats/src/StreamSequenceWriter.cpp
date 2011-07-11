@@ -31,25 +31,11 @@
 
 namespace U2 {
 
-bool StreamContigWriter::writeNextAlignedRead( int offset, const DNASequence& seq )
-{
-    bool writeOk = format->storeAlignedRead(offset, seq, io, refSeqName, refSeqLength, numSeqWritten == 0);
-    if (writeOk) {
-        ++numSeqWritten;
-        return true;
-    }
 
-    return false;
-
-}
-
-StreamContigWriter::StreamContigWriter(const GUrl& url, const QString& refName , int refLength ) 
+StreamShortReadsWriter::StreamShortReadsWriter(const GUrl& url, const QString& refName , int refLength ) 
 : numSeqWritten(0), refSeqLength(refLength)
 {
     refSeqName = QString(refName).replace(QRegExp("\\s|\\t"), "_").toAscii();
-    DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
-    format = qobject_cast<SAMFormat*> (f);
-    assert(format != NULL);
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     io = iof->createIOAdapter();
@@ -59,46 +45,50 @@ StreamContigWriter::StreamContigWriter(const GUrl& url, const QString& refName ,
 
 }
 
-void StreamContigWriter::close()
-{
+bool StreamShortReadsWriter::writeNextAlignedRead( int offset, const DNASequence& seq ) {
+    bool writeOk = format.storeAlignedRead(offset, seq, io, refSeqName, refSeqLength, numSeqWritten == 0);
+    if (writeOk) {
+        ++numSeqWritten;
+        return true;
+    }
+
+    return false;
+
+}
+
+void StreamShortReadsWriter::close() {
     io->close();
 }
 
-StreamContigWriter::~StreamContigWriter()
-{
+StreamShortReadsWriter::~StreamShortReadsWriter() {
     delete io;
 }
 
 
-StreamShortReadWriter::StreamShortReadWriter( bool writeQualityExplicitly) : writeQuality(writeQualityExplicitly)
-{
+StreamShortReadWriter::StreamShortReadWriter( bool writeQualityExplicitly) : writeQuality(writeQualityExplicitly) {
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA);
     fastaFormat = qobject_cast<FastaFormat*> (df);
     assert(fastaFormat != NULL);
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     io = iof->createIOAdapter();
-
 }
 
 
-bool StreamShortReadWriter::init( const GUrl& url )
-{
+bool StreamShortReadWriter::init( const GUrl& url ) {
     ouputPath = url;
     bool res = io->open(url, IOAdapterMode_Write);
     return res;   
 }
 
-bool StreamShortReadWriter::writeNextSequence( const DNASequence& seq )
-{   
+bool StreamShortReadWriter::writeNextSequence( const DNASequence& seq ) {   
     TaskStateInfo info;
     fastaFormat->storeSequence(seq,io,info);
     
     return !info.hasError();
 }
 
-void StreamShortReadWriter::close()
-{
+void StreamShortReadWriter::close() {
     io->close();
 }
 

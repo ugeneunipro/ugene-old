@@ -29,12 +29,15 @@
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/SAMFormat.h>
 
 #include <QSharedPointer>
 
 #include "ConvertAssemblyToSamTask.h"
+
+#include <memory>
 
 namespace U2 {
 
@@ -52,16 +55,13 @@ samFileUrl(sam), handle(h)
 
 void ConvertAssemblyToSamTask::run() {
     //init sam file
-    DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
-    SAMFormat *format = qobject_cast<SAMFormat*> (f);
-    assert(format != NULL);
-
+    SAMFormat samFormat;
+    
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    IOAdapter *io = iof->createIOAdapter();
+    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
     bool res = io->open(samFileUrl, IOAdapterMode_Write);
-    assert(res == true);
-    Q_UNUSED(res);
-
+    SAFE_POINT(res == true, QString("Failed to open SAM file for write: %1").arg(samFileUrl.getURLString()),);
+    
     //init assembly objects
     U2OpStatusImpl status;
     QSharedPointer<DbiHandle> dbiHandle;
@@ -88,7 +88,7 @@ void ConvertAssemblyToSamTask::run() {
     }
 
     //writing to a sam file for an every object
-    format->storeHeader(io, names, lengths);
+    samFormat.storeHeader(io.get(), names, lengths);
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle->dbi->getEntityTypeById(id);
         if (U2Type::Assembly == objectType) {
@@ -114,12 +114,10 @@ void ConvertAssemblyToSamTask::run() {
                     cigar = "*";
                 }
 
-                format->storeAlignedRead(read->leftmostPos, seq, io, refSeqName, wholeAssembly.length, false, true, cigar);
+                samFormat.storeAlignedRead(read->leftmostPos, seq, io.get(), refSeqName, wholeAssembly.length, false, true, cigar);
             }
         }
     }
-
-    io->close();
 }
 
 QString ConvertAssemblyToSamTask::generateReport() const {

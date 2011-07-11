@@ -108,7 +108,7 @@ public:
     void close();
     void setReferenceName(const QString &refName);
 private:
-    StreamContigWriter seqWriter;
+    StreamShortReadsWriter seqWriter;
 };
 
 /************************************************************************/
