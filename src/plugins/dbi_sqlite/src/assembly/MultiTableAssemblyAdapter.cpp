@@ -470,6 +470,7 @@ void MultiTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2As
         ii.packStat.readsCount = ii.nReads;
         ii.packStat.maxProw = packContext.maxProw;
         ii.packed = true;
+        flushTables(os);
     }
 }
 
