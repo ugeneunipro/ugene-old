@@ -95,12 +95,12 @@ void AssemblyModel::calculateCoverageStat(const U2Region & r, U2AssemblyCoverage
 const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
     QMutexLocker mutexLocker(&mutex);
     Q_UNUSED(mutexLocker);
-    if(!cachedCoverageStatValid) {
+    if(cachedCoverageStat.coverage.isEmpty()) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         if(NULL != attributeDbi) {
             static const QByteArray COVERAGE_STAT_ATTRIBUTE_NAME("coverageStat");
             QByteArray data = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, COVERAGE_STAT_ATTRIBUTE_NAME, QByteArray(), os);
-            if(!os.hasError()) {
+            if(!os.isCoR()) {
                 if(!data.isEmpty()) {
                     if(0 == (data.size() % 4)) {
                         for(int index = 0;index < data.size()/4;index++) {
@@ -110,18 +110,16 @@ const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
                             }
                             cachedCoverageStat.coverage.append(U2Range<int>(value, value));
                         }
-                        cachedCoverageStatValid = true;
                     } else {
                         os.setError("Invalid attribute size");
                     }
                 } else {
                     qint64 length = getModelLength(os);
-                    if(!os.hasError()) {
+                    if(!os.isCoR()) {
                         static const int COVERAGE_STAT_SIZE = 1000*1000;
                         cachedCoverageStat.coverage.resize(COVERAGE_STAT_SIZE);
                         calculateCoverageStat(U2Region(0, length), cachedCoverageStat, os);
-                        if(!os.hasError()) {
-                            cachedCoverageStatValid = true;
+                        if(!os.isCoR()) {
                             QByteArray data;
                             for(int index = 0;index < cachedCoverageStat.coverage.size();index++) {
                                 for(int i = 0;i < 4;i++) {

@@ -39,10 +39,8 @@ void CalcCoverageInfoTask::run() {
 
     U2AssemblyCoverageStat cachedCoverageStat;
     {
-        U2OpStatusImpl status;
-        cachedCoverageStat = settings.model->getCoverageStat(status);
-        if(status.hasError()) {
-            stateInfo.setError(status.getError());
+        cachedCoverageStat = settings.model->getCoverageStat(stateInfo);
+        if(stateInfo.isCoR()) {
             return;
         }
     }
@@ -65,10 +63,8 @@ void CalcCoverageInfoTask::run() {
         U2AssemblyCoverageStat coverageStat;
         coverageStat.coverage.resize(settings.regions);
         {
-            U2OpStatusImpl status;
-            settings.model->calculateCoverageStat(settings.visibleRange, coverageStat, status);
-            if(status.hasError()) {
-                stateInfo.setError(status.getError());
+            settings.model->calculateCoverageStat(settings.visibleRange, coverageStat, stateInfo);
+            if(stateInfo.isCoR()) {
                 return;
             }
         }

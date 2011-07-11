@@ -123,7 +123,6 @@ private:
     bool uriRetrieved;
 
     U2AssemblyCoverageStat cachedCoverageStat;
-    bool cachedCoverageStatValid;
 
     QMutex mutex;
 }; // AssemblyModel
