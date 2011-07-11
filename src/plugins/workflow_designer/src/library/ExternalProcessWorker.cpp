@@ -445,10 +445,12 @@ QString ExternalProcessWorkerPrompter::composeRichDoc() {
             }
             QString destinations;
             QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
-            foreach(Port *p, output->getLinks().keys()) {
-                IntegralBusPort* ibp = qobject_cast<IntegralBusPort*>(p);
-                Actor *dest = ibp->owner();
-                destinations += tr("<u>%1</u>").arg(dest ? dest->getLabel() : unsetStr) + ",";
+            if(!output->getLinks().isEmpty()) {
+                foreach(Port *p, output->getLinks().keys()) {
+                    IntegralBusPort* ibp = qobject_cast<IntegralBusPort*>(p);
+                    Actor *dest = ibp->owner();
+                    destinations += tr("<u>%1</u>").arg(dest ? dest->getLabel() : unsetStr) + ",";
+                }
             }
             if(destinations.isEmpty()) {
                 destinations = tr("<u>%1</u>").arg(unsetStr);
