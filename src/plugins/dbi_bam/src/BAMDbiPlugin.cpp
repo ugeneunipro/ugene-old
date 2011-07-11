@@ -163,8 +163,14 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
 
 //////////////////////////////////////////////////////////////////////////
 // BAM importer
-BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM file import")){
-    extensions << "bam";
+BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM/SAM file import")){
+    //prepare sorted extensions list
+    QSet<QString> extsSet; BAMFormat bam; SAMFormat sam;
+    extsSet.unite(bam.getSupportedDocumentFileExtensions().toSet()).unite(sam.getSupportedDocumentFileExtensions().toSet());
+    QStringList exts = extsSet.toList();
+    qSort(exts);
+    
+    extensions << exts;
     importerDescription = tr("BAM files importer is used to convert conventional BAM and SAM files into UGENE database format. Having BAM or SAM file converted into UGENE DB format you get an fast and efficient interface to your data with an option to change the content");
 }
 

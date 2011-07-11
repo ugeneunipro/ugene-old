@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentImport.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
 
@@ -106,8 +107,13 @@ QString DialogUtils::prepareDocumentsFileFilter(bool any, const QStringList& ext
     foreach(DocumentFormatId id , ids) {
         DocumentFormat* df = fr->getFormatById(id);
         QStringList effectiveExtra = getExtra(df, extra);
-        result.append(prepareFileFilter(df->getFormatName(), df->getSupportedDocumentFileExtensions(), false, effectiveExtra));
+        result << prepareFileFilter(df->getFormatName(), df->getSupportedDocumentFileExtensions(), false, effectiveExtra);
     }
+    foreach(DocumentImporter* importer, fr->getImportSupport()->getImporters()) {
+        QStringList importerExts = importer->getSupportedFileExtensions();
+        result << prepareFileFilter(importer->getImporterName(), importerExts, false, QStringList());
+    }
+
     result.sort();
     if (any) {
         result.prepend(tr("All files") + " ( " + getAllFilesFilter() + " )");
