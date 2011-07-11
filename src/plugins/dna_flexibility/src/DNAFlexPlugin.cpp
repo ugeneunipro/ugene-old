@@ -104,10 +104,13 @@ bool DNAFlexViewContext::inputSequenceIsValid(const QByteArray& sequence)
 void DNAFlexViewContext::initViewContext(GObjectView* view)
 {
     AnnotatedDNAView* annotView = qobject_cast<AnnotatedDNAView*>(view);
+
+    // Adding the action to the Analyze menu, but not to the toolbar
     ADVGlobalAction* action = new ADVGlobalAction(annotView,
         QIcon(":dna_flexibility/images/flexibility.png"),
         tr("Find high DNA flexibility regions..."),
-        20);
+        2000,
+        ADVGlobalActionFlags(ADVGlobalActionFlag_AddToAnalyseMenu));
     action->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(action, SIGNAL(triggered()), SLOT(sl_showDNAFlexDialog()));
 }
