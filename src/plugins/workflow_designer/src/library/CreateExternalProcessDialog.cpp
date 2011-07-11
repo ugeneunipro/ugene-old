@@ -152,7 +152,10 @@ public:
         } else if(newType == SEQ_WITH_ANNS){
             delegate =  new ComboBoxDelegate(annFormatsW);
             format = annFormatsW.values().first().toString();
-        } else {
+        } else if(newType == BaseTypes::STRING_TYPE()->getId()) {
+            delegate = new ComboBoxDelegate(textFormat);
+            format = textFormat.values().first().toString();
+        } else{
             return;
         }
         item->setFormat(format);
@@ -292,6 +295,9 @@ public:
                 annFormatsR[df->getFormatName()] = df->getFormatId();
             }
         }
+
+        DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_TEXT);
+        textFormat[df->getFormatName()] = df->getFormatId();
     }
 
     void initTypes() {
@@ -302,6 +308,9 @@ public:
         types[ptr->getDisplayName()] = ptr->getId();
 
         ptr = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
+        types[ptr->getDisplayName()] = ptr->getId();
+
+        ptr = BaseTypes::STRING_TYPE();
         types[ptr->getDisplayName()] = ptr->getId();
 
         types["Sequence with annotations"] = SEQ_WITH_ANNS;
@@ -316,6 +325,7 @@ private:
     QVariantMap seqFormatsR;
     QVariantMap msaFormatsR;
     QVariantMap annFormatsR;
+    QVariantMap textFormat;
 };
 
 

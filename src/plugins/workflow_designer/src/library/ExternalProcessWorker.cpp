@@ -36,6 +36,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/TextObject.h>
 
 
 namespace U2 {
@@ -201,6 +202,11 @@ Task* ExternalProcessWorker::tick() {
             QList<GObjectRelation> rel;
             rel << GObjectRelation(GObjectReference(dnaObj), GObjectRelationRole::SEQUENCE);
             aobj->setObjectRelations(rel);
+        } else if(dataCfg.type == BaseTypes::STRING_TYPE()->getId()) {
+            QString str = qm.value(BaseSlots::TEXT_SLOT().getId()).value<QString>();
+            TextObject *obj = new TextObject(str, "tmp_text_object");
+            l << obj;
+            d = new Document(f, io, url, l);
         }
         //IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         //QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
@@ -297,6 +303,12 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                     v[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue(list);
                 }
                 
+            } else if(cfg.type == BaseTypes::STRING_TYPE()->getId()) {
+                if(!d->findGObjectByType(GObjectTypes::TEXT, UOF_LoadedAndUnloaded).isEmpty()) {
+                    TextObject *obj = static_cast<TextObject*>(d->findGObjectByType(GObjectTypes::TEXT, UOF_LoadedAndUnloaded).first());
+                    DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
+                    v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<QString>(obj->getText());
+                }
             }
             QFile::remove(url);
         }
