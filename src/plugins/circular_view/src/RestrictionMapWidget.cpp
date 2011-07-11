@@ -223,16 +223,14 @@ void RestrctionMapWidget::initTreeWidget()
 
 void RestrctionMapWidget::sl_onAnnotationsInGroupRemoved( const QList<Annotation*>& anns, AnnotationGroup* group )
 {
-    if (group->getGroupName() != ANNOTATION_GROUP_ENZYME) {
-        return;
+    if (group->getGroupName() == ANNOTATION_GROUP_ENZYME) {
+        foreach (Annotation* a, anns) {
+            EnzymeFolderItem* folderItem = findEnzymeFolderByName(a->getAnnotationName());
+            if (folderItem) {
+                folderItem->removeEnzymeItem(a);
+            }        
+        }
     }
-    foreach (Annotation* a, anns) {
-        EnzymeFolderItem* folderItem = findEnzymeFolderByName(a->getAnnotationName());
-        if (folderItem) {
-            folderItem->removeEnzymeItem(a);
-        }        
-    }
-
     group->getGObject()->releaseLocker();
 }
 
