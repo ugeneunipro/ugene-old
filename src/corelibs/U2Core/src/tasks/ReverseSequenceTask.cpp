@@ -23,13 +23,14 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/DNASequenceSelection.h>
 
 #include "ReverseSequenceTask.h"
 
 namespace U2 {
 
-ReverseSequenceTask::ReverseSequenceTask( DNASequenceObject* dObj, QList<AnnotationTableObject*> annotations, DNATranslation* transl )
-:Task("ReverseSequenceTask", TaskFlags_NR_FOSCOE), seqObj(dObj), aObjs(annotations), complTr(transl)
+ReverseSequenceTask::ReverseSequenceTask( DNASequenceObject* dObj, QList<AnnotationTableObject*> annotations, DNASequenceSelection* s, DNATranslation* transl )
+:Task("ReverseSequenceTask", TaskFlags_NR_FOSCOE), seqObj(dObj), aObjs(annotations), selection(s), complTr(transl)
 {
 
 }
@@ -49,6 +50,14 @@ Task::ReportResult ReverseSequenceTask::report()
     TextUtils::reverse(data, len);
     seqObj->setSequence(sequence);
 
+    // mirror selection
+    if (selection != NULL) {
+        QVector<U2Region> regions = selection->getSelectedRegions();
+        U2Region::mirror(len, regions);
+        U2Region::reverse(regions);
+        selection->setSelectedRegions(regions);
+    }
+    
     // fix annotation locations
     foreach (AnnotationTableObject* aObj, aObjs) {
         QList<Annotation*> annotations = aObj->getAnnotations();
@@ -67,5 +76,6 @@ Task::ReportResult ReverseSequenceTask::report()
 
     return ReportResult_Finished;
 }
+
 
 }//namespace

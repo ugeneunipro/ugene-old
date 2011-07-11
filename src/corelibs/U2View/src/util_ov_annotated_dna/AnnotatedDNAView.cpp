@@ -1033,7 +1033,23 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged() {
 
     if (t->getState() == Task::State_Finished && !(t->hasError() || t->isCanceled()) ) {
         updateAutoAnnotations();
+        // TODO: there must be better way to do this
+        ReverseSequenceTask* reverseTask = qobject_cast<ReverseSequenceTask*>(t);
+        ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
+        if (reverseTask != NULL && seqCtx != NULL) {
+            QVector<U2Region> regions = seqCtx->getSequenceSelection()->getSelectedRegions();
+            if (regions.count() == 1) {
+                U2Region r = regions.first();
+                foreach (ADVSequenceWidget* w, seqCtx->getSequenceWidgets()) {
+                    w->centerPosition(r.startPos);
+                }
+            }
+        }
     }
+    
+    
+    
+
 }
 
 void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
@@ -1062,10 +1078,9 @@ void AnnotatedDNAView::sl_reverseSequence()
         complTr = seqCtx->getComplementTT();
     }
 
-    Task* t = new ReverseSequenceTask(seqObj,annotations,complTr);
+    Task* t = new ReverseSequenceTask(seqObj,annotations, seqCtx->getSequenceSelection(), complTr);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
-    seqCtx->getSequenceSelection()->clear();    
 }   
 
 
