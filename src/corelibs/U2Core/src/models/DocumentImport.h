@@ -56,7 +56,7 @@ class U2CORE_EXPORT DocumentImporter : public QObject {
 public:
     DocumentImporter(const QString& _id, const QString& _name, QObject* o = NULL) : QObject(o), id(_id), name(_name){}
 
-    virtual FormatDetectionScore checkData(const QByteArray& rawData, const GUrl& url) = 0;
+    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& url) = 0;
     
     virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard) = 0;
 

@@ -33,7 +33,7 @@ class DNASequence;
 class U2FORMATS_EXPORT  SAMFormat : public DocumentFormat {
     Q_OBJECT
 public:
-    SAMFormat(QObject* p);
+    SAMFormat(QObject* p = NULL);
 
     virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::SAM;}
 

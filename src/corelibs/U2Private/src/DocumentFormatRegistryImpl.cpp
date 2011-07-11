@@ -37,7 +37,7 @@
 #include <U2Formats/MSFFormat.h>
 #include <U2Formats/SRFastaFormat.h>
 #include <U2Formats/GFFFormat.h>
-#include <U2Formats/SAMFormat.h>
+//#include <U2Formats/SAMFormat.h> -> SAM format works only via importer 
 #include <U2Formats/NEXUSFormat.h>
 #include <U2Formats/MegaFormat.h>
 #include <U2Formats/ACEFormat.h>
@@ -160,8 +160,8 @@ void DocumentFormatRegistryImpl::init() {
     NEXUSFormat* nexus = new NEXUSFormat(this);
     registerFormat(nexus);
 
-    SAMFormat *sam = new SAMFormat(this);
-    registerFormat(sam);
+//    SAMFormat *sam = new SAMFormat(this);
+//    registerFormat(sam);
 
     MegaFormat *meg = new MegaFormat(this);
     registerFormat(meg);

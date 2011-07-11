@@ -27,6 +27,8 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/ProjectModel.h>
 
+#include <U2Formats/SAMFormat.h>
+
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
 
@@ -38,6 +40,7 @@
 #include "ConvertToSQLiteTask.h"
 #include "BAMDbiPlugin.h"
 #include "LoadBamInfoTask.h"
+#include "BAMFormat.h"
 
 
 #include <QtGui/QAction>
@@ -165,28 +168,36 @@ BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM file impor
     importerDescription = tr("BAM files importer is used to convert conventional BAM and SAM files into UGENE database format. Having BAM or SAM file converted into UGENE DB format you get an fast and efficient interface to your data with an option to change the content");
 }
 
-FormatDetectionScore BAMImporter::checkData(const QByteArray& rawData, const GUrl& url) {
-    QString s;
-    bool ok = url.lastFileSuffix().toLower() == "bam" 
-                && TextUtils::contains(TextUtils::BINARY, rawData.constData(), rawData.length());
-    if (ok) {
-        return FormatDetection_VeryHighSimilarity;
+#define SAM_HINT "bam-importer-sam-hint"
+
+RawDataCheckResult BAMImporter::checkRawData(const QByteArray& rawData, const GUrl& url) {
+    BAMFormat bamFormat;
+    RawDataCheckResult bamScore = bamFormat.checkRawData(rawData, url);
+
+    SAMFormat samFormat;
+    RawDataCheckResult samScore = samFormat.checkRawData(rawData, url);
+
+    if (bamScore.score > samScore.score ) {
+        return bamScore;
     }
-    return FormatDetection_NotMatched;
+    samScore.properties[SAM_HINT] = true;
+    return samScore;
 }
 
 DocumentProviderTask* BAMImporter::createImportTask(const FormatDetectionResult& res, bool showWizard) {
-    return new BAMImporterTask(res.url, showWizard);
+    bool sam = res.rawDataCheckResult.properties[SAM_HINT].toBool();
+    return new BAMImporterTask(res.url, showWizard, sam);
 }
 
 
-BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui) 
-: DocumentProviderTask(tr("BAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE)
+BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, bool _sam) 
+: DocumentProviderTask(tr("BAM/SAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE)
 {
     useGui = _useGui;
+    sam = _sam;
     convertTask = NULL;
     loadDocTask = NULL;
-    loadInfoTask = new LoadInfoTask(url, false);
+    loadInfoTask = new LoadInfoTask(url, sam);
     addSubTask(loadInfoTask);
 
     documentDescription = url.fileName();
@@ -204,7 +215,7 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
         int rc = convertDialog.exec();
         if (rc == QDialog::Accepted) {
             GUrl destUrl = convertDialog.getDestinationUrl();
-            convertTask = new ConvertToSQLiteTask(loadInfoTask->getSourceUrl(), destUrl, loadInfoTask->getInfo(), false);
+            convertTask = new ConvertToSQLiteTask(loadInfoTask->getSourceUrl(), destUrl, loadInfoTask->getInfo(), sam);
             res << convertTask;
         } else {
             stateInfo.setCanceled(true);
