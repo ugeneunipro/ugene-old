@@ -93,7 +93,9 @@ void AssemblyModel::calculateCoverageStat(const U2Region & r, U2AssemblyCoverage
 }
 
 const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
-    if(cachedCoverageStat.coverage.isEmpty()) {
+    QMutexLocker mutexLocker(&mutex);
+    Q_UNUSED(mutexLocker);
+    if(!cachedCoverageStatValid) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         if(NULL != attributeDbi) {
             static const QByteArray COVERAGE_STAT_ATTRIBUTE_NAME("coverageStat");
@@ -108,6 +110,7 @@ const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
                             }
                             cachedCoverageStat.coverage.append(U2Range<int>(value, value));
                         }
+                        cachedCoverageStatValid = true;
                     } else {
                         os.setError("Invalid attribute size");
                     }
@@ -118,6 +121,7 @@ const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
                         cachedCoverageStat.coverage.resize(COVERAGE_STAT_SIZE);
                         calculateCoverageStat(U2Region(0, length), cachedCoverageStat, os);
                         if(!os.hasError()) {
+                            cachedCoverageStatValid = true;
                             QByteArray data;
                             for(int index = 0;index < cachedCoverageStat.coverage.size();index++) {
                                 for(int i = 0;i < 4;i++) {

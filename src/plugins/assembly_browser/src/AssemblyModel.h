@@ -23,6 +23,8 @@
 #define __U2_ASSEMBLY_BROWSER_MODEL_H__
 
 #include <QtCore/QPointer>
+#include <QtCore/QMutex>
+#include <QtCore/QMutexLocker>
 #include <U2Core/U2DbiUtils.h>
 
 namespace U2 {
@@ -121,6 +123,9 @@ private:
     bool uriRetrieved;
 
     U2AssemblyCoverageStat cachedCoverageStat;
+    bool cachedCoverageStatValid;
+
+    QMutex mutex;
 }; // AssemblyModel
 
 } // U2
