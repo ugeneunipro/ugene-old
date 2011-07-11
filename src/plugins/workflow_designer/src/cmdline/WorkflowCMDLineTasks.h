@@ -61,6 +61,7 @@ class WorkflowRemoteRunFromCMDLineTask : public WorkflowRunFromCMDLineBase {
     Q_OBJECT
 public:
     WorkflowRemoteRunFromCMDLineTask();
+    virtual void prepare();
     virtual Task * getWorkflowRunTask() const;
     
 private:

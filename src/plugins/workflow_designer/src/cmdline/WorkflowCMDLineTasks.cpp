@@ -194,6 +194,15 @@ Task * WorkflowRunFromCMDLineTask::getWorkflowRunTask() const {
 * WorkflowRemoteRunFromCMDLineTask
 *******************************************/
 WorkflowRemoteRunFromCMDLineTask::WorkflowRemoteRunFromCMDLineTask() {
+}
+
+Task * WorkflowRemoteRunFromCMDLineTask::getWorkflowRunTask() const {
+    assert(settings != NULL);
+    return new RemoteWorkflowRunTask( settings, *schema, schema->getIterations());
+}
+
+void WorkflowRemoteRunFromCMDLineTask::prepare()
+{
     CMDLineRegistry * cmdlineReg = AppContext::getCMDLineRegistry();
     assert(cmdlineReg != NULL);
     QString filePath = cmdlineReg->getParameterValue(WorkflowDesignerPlugin::REMOTE_MACHINE);
@@ -201,18 +210,14 @@ WorkflowRemoteRunFromCMDLineTask::WorkflowRemoteRunFromCMDLineTask() {
         stateInfo.setError(tr("%1 parameter expected, but not set").arg(WorkflowDesignerPlugin::REMOTE_MACHINE));
         return;
     }
-    
+
     if( !SerializeUtils::deserializeRemoteMachineSettingsFromFile(filePath, &settings) ) {
-        assert(settings == NULL);
+        //assert(settings == NULL);
         stateInfo.setError(tr("Cannot read remote machine settings from %2").arg(filePath));
         return;
     }
     assert(settings != NULL);
-}
 
-Task * WorkflowRemoteRunFromCMDLineTask::getWorkflowRunTask() const {
-    assert(settings != NULL);
-    return new RemoteWorkflowRunTask( settings, *schema, schema->getIterations());
 }
 
 } // U2
