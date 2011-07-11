@@ -31,6 +31,8 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/DocumentUtils.h>
 
+#include <U2Formats/SAMFormat.h>
+
 namespace U2 {
 
 /* TRANSLATOR U2::GTest */
@@ -74,7 +76,14 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
     } else if (format.isEmpty()) {
         stateInfo.setError( QString("doc_format_is_not_specified"));
     } else {
-        loadTask = new LoadDocumentTask(format, url, iof);
+        if (format == BaseDocumentFormats::SAM) {
+            //SAM format is temporarily removed from base formats list -> create it manually
+            SAMFormat* samFormat = new SAMFormat();
+            loadTask = new LoadDocumentTask(samFormat, url, iof);
+            samFormat->setParent(loadTask);
+        } else {
+            loadTask = new LoadDocumentTask(format, url, iof);
+        }
         addSubTask(loadTask);
     }
 }

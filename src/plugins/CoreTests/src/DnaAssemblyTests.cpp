@@ -21,14 +21,20 @@
 
 #include <U2Core/MAlignmentObject.h>
 
+#include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+
+#include <U2Formats/SAMFormat.h>
 
 #include <U2Algorithm/DnaAssemblyTask.h>
 #include <U2Algorithm/DnaAssemblyMultiTask.h>
-#include "DnaAssemblyTests.h"
+
 #include <U2View/DnaAssemblyUtils.h>
 
+
+#include "DnaAssemblyTests.h"
 
 namespace U2 {
 
@@ -39,10 +45,8 @@ namespace U2 {
 #define RES_OBJ_NAME "res-index"
 #define CUSTOM_ATTR "custom-options"
 
-void GTest_DnaAssemblyToReferenceTask::init(XMLTestFormat *tf, const QDomElement& el) 
-{
-    Q_UNUSED(tf);
-
+void GTest_DnaAssemblyToReferenceTask::init(XMLTestFormat*, const QDomElement& el)  {
+    
     refSeqUrl = el.attribute(REF_SEQ_ATTR);
     if (refSeqUrl.isEmpty()) {
         failMissingValue(REF_SEQ_ATTR);
@@ -94,7 +98,8 @@ void GTest_DnaAssemblyToReferenceTask::init(XMLTestFormat *tf, const QDomElement
     foreach (const QString& url, shortReadList) {
         shortReadUrls.append(GUrl(env->getVar("COMMON_DATA_DIR") + "/" + url));
     }
-
+    loadResultTask = NULL;
+    assemblyMultiTask = NULL;
 }
 
 void GTest_DnaAssemblyToReferenceTask::prepare()
@@ -122,7 +127,7 @@ void GTest_DnaAssemblyToReferenceTask::prepare()
         settings.prebuiltIndex = true;
     }
 
-    settings.loadResultDocument = true;
+    settings.openView = false;
     settings.algName = algName;
     settings.refSeqUrl = refSeqUrl;
     settings.indexFileName = indexFileName;
@@ -133,17 +138,26 @@ void GTest_DnaAssemblyToReferenceTask::prepare()
     }
 
     assemblyMultiTask = new DnaAssemblyMultiTask( settings,  false);
-
     addSubTask(assemblyMultiTask);
+    
+    SAMFormat* samFormat = new SAMFormat();
+    loadResultTask = new LoadDocumentTask(samFormat, settings.resultFileName, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
+    samFormat->setParent(loadResultTask);
+    addSubTask(loadResultTask);
 }
 
-Task::ReportResult GTest_DnaAssemblyToReferenceTask::report()
-{
+Task::ReportResult GTest_DnaAssemblyToReferenceTask::report() {
     if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
     
-    const MAlignmentObject* obj = assemblyMultiTask->getAssemblyResult();
+    Document* resultDoc = loadResultTask->getDocument();
+    QList<GObject*> resObjects = resultDoc->getObjects();
+    if (resObjects.size() != 1) {
+        setError("Invalid number of objects in result!");
+        return ReportResult_Finished;
+    }
+    MAlignmentObject* obj = qobject_cast<MAlignmentObject*>(resObjects.first());
     if (obj == NULL) {
         setError("Failed to load result alignment");
         return ReportResult_Finished;

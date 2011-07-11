@@ -21,20 +21,19 @@
 
 #include "DnaAssemblyMultiTask.h"
 
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/AddDocumentTask.h>
-#include <U2Gui/OpenViewTask.h>
-#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
-#include <U2Core/MAlignmentObject.h>
+#include <U2Core/ProjectModel.h>
+
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+
+#include <U2Gui/OpenViewTask.h>
 
 namespace U2 {
 
 DnaAssemblyMultiTask::DnaAssemblyMultiTask( const DnaAssemblyToRefTaskSettings& s, bool view, bool _justBuildIndex )
 : Task("DnaAssemblyMultiTask", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), settings(s),
-assemblyToRefTask(NULL), addDocumentTask(NULL), loadDocumentTask(NULL),
-doc(NULL), shortReadUrls(s.shortReadUrls), openView(view), justBuildIndex(_justBuildIndex)
+assemblyToRefTask(NULL), shortReadUrls(s.shortReadUrls), openView(view), justBuildIndex(_justBuildIndex)
 {
 
 }
@@ -67,47 +66,16 @@ QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
         taskLog.details(QString("Assembly to reference task time: %1").arg((double)time/(1000*1000)));
     }
 
-    if ( subTask == assemblyToRefTask && settings.loadResultDocument ) {
-        assert(!settings.resultFileName.isEmpty());
-        GUrl resultUrl(settings.resultFileName); 
-        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(resultUrl);    
-        if (!detectedFormats.isEmpty()) {
-            IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-            DocumentFormat* format = detectedFormats.first().format;
-            loadDocumentTask = new LoadDocumentTask(format->getFormatId(), resultUrl, factory);
-            subTasks.append(loadDocumentTask);
-        }  
-
-    } else if (subTask == loadDocumentTask ) {
-        doc = loadDocumentTask->getDocument();
-        if (openView) {
-            DocumentFormat* format = doc->getDocumentFormat(); 
-            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-            Document* clonedDoc = new Document(format, iof, doc->getURLString());
-            clonedDoc->loadFrom(doc); // doc was loaded in a separate thread -> clone all GObjects
-            assert(!clonedDoc->isTreeItemModified());
-            assert(clonedDoc->isLoaded());
-            doc = clonedDoc;
+    if ( subTask == assemblyToRefTask && settings.openView ) {
+        Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(settings.resultFileName);
+        if (openTask != NULL) {
+            subTasks << openTask;
         }
     }
 
     return subTasks;
 }
 
-const MAlignmentObject* DnaAssemblyMultiTask::getAssemblyResult() {
-    assert(!openView);
-    if ( doc == NULL ) {
-        return NULL;
-    }
-
-    QList<GObject*> objs = doc->getObjects();
-    doc = NULL;
-    if ( objs.size() == 0 ) {
-        return NULL;
-    }
-
-    return qobject_cast<MAlignmentObject*> (objs.first());
-}
 
 QString DnaAssemblyMultiTask::generateReport() const {
     QString res;
@@ -128,24 +96,6 @@ QString DnaAssemblyMultiTask::generateReport() const {
     return res;
 }
 
-Document* DnaAssemblyMultiTask::takeDocument()
-{
-    Document* d = doc;
-    doc = NULL;
-    return d;
-}
 
-void DnaAssemblyMultiTask::cleanup()
-{
-    if (doc != NULL) {
-        delete doc;
-        doc = NULL;
-    }
-}
-
-DnaAssemblyMultiTask::~DnaAssemblyMultiTask()
-{
-   cleanup();
-}
 
 } // namespace

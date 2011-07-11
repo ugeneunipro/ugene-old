@@ -196,10 +196,7 @@ void DnaAssemblyDialog::sl_onSetResultFileNameButtonClicked() {
     lod.url = QFileDialog::getSaveFileName(this, tr("Set result alignment file name"), lod.dir);
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
-        if (result.lastFileSuffix().isEmpty()) {
-            result = QString( "%1.srfa" ).arg( result.getURLString() );
-        }
-        resultFileNameEdit->setText(result.getURLString());
+        buildResultUrl(result);
     }
 }
 
@@ -267,6 +264,16 @@ void DnaAssemblyDialog::addGuiExtension() {
     if (NULL == env) {
         adjustSize();
         return;
+    }
+    if (!env->isDbiSupported()) {
+        samBox->setChecked(true);
+        samBox->setEnabled(false);
+        if (!samOutput) {
+            samOutput = true;
+            sl_onSamBoxClicked();
+        }
+    } else {
+        samBox->setEnabled(true);
     }
     DnaAssemblyGUIExtensionsFactory* gui = env->getGUIExtFactory();
     if (gui!=NULL && gui->hasMainWidget()) {

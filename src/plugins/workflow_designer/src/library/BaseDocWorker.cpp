@@ -166,7 +166,8 @@ Task* BaseDocWriter::tick() {
         
         Attribute * formatAttr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
         if( formatAttr != NULL ) { // user sets format
-            format = AppContext::getDocumentFormatRegistry()->getFormatById( formatAttr->getAttributeValue<QString>() );
+            QString formatId = formatAttr->getAttributeValue<QString>();
+            format = AppContext::getDocumentFormatRegistry()->getFormatById( formatId );
         }
         Attribute * urlAttribute = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
         url = urlAttribute->getAttributeValue<QString>();

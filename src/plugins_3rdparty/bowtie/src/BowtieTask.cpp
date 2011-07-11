@@ -307,7 +307,7 @@ QVariantMap BowtieRunFromSchemaTask::getSchemaData() const {
         res["seed-length"] = settings.getCustomValue(BowtieTask::OPTION_SEED_LEN, 28);
     }
     res["try-hard"] = settings.getCustomValue(BowtieTask::OPTION_TRYHARD, false);
-    res["format"] = qVariantFromValue(BaseDocumentFormats::CLUSTAL_ALN);
+    res["format"] = qVariantFromValue(BaseDocumentFormats::SAM);
     res["out"] = settings.resultFileName.getURLString();
     return res;
 }

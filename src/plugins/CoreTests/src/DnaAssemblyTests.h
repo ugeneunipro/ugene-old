@@ -32,6 +32,7 @@ namespace U2 {
 class DnaAssemblyMultiTask;
 class MAlignmentObject;
 class DNASequenceObject;
+class LoadDocumentTask;
 
 class GTest_DnaAssemblyToReferenceTask : public GTest {
     Q_OBJECT
@@ -42,6 +43,7 @@ public:
     void cleanup();
 private:
     DnaAssemblyMultiTask* assemblyMultiTask;
+    LoadDocumentTask* loadResultTask;
     QList<GUrl> shortReadUrls;
     QMap<QString,QString> customOptions;
     QString objName;

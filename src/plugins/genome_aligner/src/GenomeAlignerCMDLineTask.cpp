@@ -155,7 +155,7 @@ void GenomeAlignerCMDLineTask::prepare()
     settings.shortReadUrls = shortReadUrls;
     settings.refSeqUrl = refPath;
     settings.indexFileName = indexPath;
-    settings.loadResultDocument = false;
+    settings.openView = false;
     settings.samOutput = samOutput;
     if (onlyBuildIndex) {
         settings.prebuiltIndex = false;

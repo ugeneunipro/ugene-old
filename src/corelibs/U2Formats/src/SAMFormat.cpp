@@ -88,9 +88,13 @@ SAMFormat::SAMFormat( QObject* p ): DocumentFormat(p, DocumentFormatFlags_SW, QS
 {
     formatName = tr("SAM");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
+    skipDetection = false;
 }
 
 RawDataCheckResult SAMFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {
+    if (skipDetection) {
+        return FormatDetection_NotMatched;
+    }
     QRegExp rx("^@[A-Za-z][A-Za-z](\\t[A-Za-z][A-Za-z]:[ -~]+)");
     //try to find SAM header
     if(rx.indexIn(rawData) != 0) {

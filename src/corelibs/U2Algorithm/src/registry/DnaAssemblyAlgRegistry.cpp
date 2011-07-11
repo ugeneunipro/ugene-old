@@ -27,8 +27,8 @@
 namespace U2 {
 
 DnaAssemblyAlgorithmEnv::DnaAssemblyAlgorithmEnv(const QString& _id, DnaAssemblyToRefTaskFactory* _tf, 
-                                                 DnaAssemblyGUIExtensionsFactory* _g, bool indexSupported)
-: id(_id), taskFactory(_tf), guiExtFactory(_g), supportsIndexFiles(indexSupported)
+                                                 DnaAssemblyGUIExtensionsFactory* _g, bool indexSupported, bool _sd)
+: id(_id), taskFactory(_tf), guiExtFactory(_g), supportsIndexFiles(indexSupported), supportsDbi(_sd)
 {
 }
 

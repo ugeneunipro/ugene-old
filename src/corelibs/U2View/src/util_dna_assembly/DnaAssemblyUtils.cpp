@@ -87,10 +87,8 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         s.setCustomSettings( dlg.getCustomSettings() );
         s.shortReadUrls = dlg.getShortReadUrls();
         s.prebuiltIndex = dlg.isPrebuiltIndex();
-        s.loadResultDocument = true;
+        s.openView = true;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, true);
-        connect(assemblyTask, SIGNAL(si_stateChanged()), SLOT(sl_dnaAssemblyTaskStateChanged()));
-
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
  
@@ -113,15 +111,14 @@ void DnaAssemblySupport::sl_showBuildIndexDialog()
         s.resultFileName = dlg.getIndexFileName();
         s.indexFileName = dlg.getIndexFileName();
         s.setCustomSettings( dlg.getCustomSettings() );
-        s.loadResultDocument = false;
+        s.openView = false;
         s.prebuiltIndex = false;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, false, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
 }
 
-void DnaAssemblySupport::sl_showConvertToSamDialog()
-{
+void DnaAssemblySupport::sl_showConvertToSamDialog() {
     ConvertAssemblyToSamDialog dlg(QApplication::activeWindow());
     if (dlg.exec()) {
         Task *convertTask = new ConvertAssemblyToSamTask(dlg.getDbFileUrl(), dlg.getSamFileUrl());
@@ -129,21 +126,6 @@ void DnaAssemblySupport::sl_showConvertToSamDialog()
     }
 }
 
-void DnaAssemblySupport::sl_dnaAssemblyTaskStateChanged()
-{
-    DnaAssemblyMultiTask* t = qobject_cast<DnaAssemblyMultiTask*> (QObject::sender());
-    if (t == NULL) {
-        return;
-    }
-
-    if (t->getState() == Task::State_Finished && t->getOpenViewFlag() == true) {
-        Document* d = t->takeDocument();
-        Task* mTask = new AddDocumentAndOpenViewTask(d);
-        AppContext::getTaskScheduler()->registerTopLevelTask(mTask);
-    }
-
-    
-}
 
 } // U2
 

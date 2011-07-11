@@ -29,30 +29,21 @@
 namespace U2 {
 
 class Document;
-class LoadDocumentTask;
-class AddDocumentTask;
-class MAlignmentObject;
 
 class U2ALGORITHM_EXPORT DnaAssemblyMultiTask : public Task {
     Q_OBJECT
 public:
     DnaAssemblyMultiTask(const DnaAssemblyToRefTaskSettings& settings, bool viewResult = false, bool justBuildIndex = false);
-    ~DnaAssemblyMultiTask();
     virtual void prepare();
-    virtual void cleanup();
     virtual ReportResult report();
     virtual QString generateReport() const;
     QList<Task*> onSubTaskFinished(Task* subTask);
-    const MAlignmentObject* getAssemblyResult();
     bool getOpenViewFlag() { return openView; }
-    Document* takeDocument();
-
+    const DnaAssemblyToRefTaskSettings& getSettings() const {return settings;}
 private:
     DnaAssemblyToRefTaskSettings settings;
     DnaAssemblyToReferenceTask* assemblyToRefTask;
-    AddDocumentTask* addDocumentTask;
-    LoadDocumentTask* loadDocumentTask;
-    Document* doc;
+    //Document* doc;
     QList<GUrl> shortReadUrls;
     bool openView;
     bool justBuildIndex;

@@ -27,7 +27,6 @@ HEADERS += src/ABIFormat.h \
            src/RawDNASequenceFormat.h \
            src/SAMFormat.h \
            src/SCFFormat.h \
-           src/SRFastaFormat.h \
            src/StdResidueDictionary.h \
            src/StockholmFormat.h \
            src/StreamSequenceReader.h \
@@ -58,7 +57,6 @@ SOURCES += src/ABIFormat.cpp \
            src/RawDNASequenceFormat.cpp \
            src/SAMFormat.cpp \
            src/SCFFormat.cpp \
-           src/SRFastaFormat.cpp \
            src/StdResidueDictionary.cpp \
            src/StockholmFormat.cpp \
            src/StreamSequenceReader.cpp \

@@ -268,8 +268,9 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
         Document * doc = project == NULL ? NULL : project->findDocumentByURL(url);
         if (doc != NULL) {
             QWidget *p = AppContext::getMainWindow()->getQMainWindow();
-            coreLog.details("The document already in the project");
-            QMessageBox::warning(p, tr("warning"), tr("The document already in the project"));
+            QString message = tr("The document with the same URL is already added to the project");
+            coreLog.details(message);
+            QMessageBox::warning(p, tr("warning"), message);
             if (doc->isLoaded()) {
                 const QList<GObject*>& docObjects = doc->getObjects();
                 QList<GObjectViewWindow*> viewsList = GObjectViewUtils::findViewsWithAnyOfObjects(docObjects);

@@ -216,7 +216,7 @@ void GTest_Bowtie::prepare() {
     config.prebuiltIndex = usePrebuildIndex;
     config.resultFileName = GUrl(tmpDataDir+"/"+QString::number(getTaskId()));
     config.algName = BOWTIE_ALG_NAME;
-    config.loadResultDocument = true;
+    config.openView = false;
     bowtieTask = new BowtieTask(config);
 
 	addSubTask(bowtieTask);

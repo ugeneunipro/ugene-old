@@ -522,11 +522,11 @@ void GTest_LoadDocumentFromProject::init(XMLTestFormat* tf, const QDomElement& e
 
 void GTest_LoadDocumentFromProject::prepare(){
     Project *pr = AppContext::getProject();
-    if(pr == NULL){
+    if (pr == NULL){
         stateInfo.setError(tr("No project loaded"));
         return;
     }
-    if(documentFileName.isEmpty()){
+    if (documentFileName.isEmpty()){
         stateInfo.setError(tr("Document name to load is empty"));
         return;
     }

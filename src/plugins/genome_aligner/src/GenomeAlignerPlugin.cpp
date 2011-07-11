@@ -74,7 +74,7 @@ GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE genome aligner"),
     
     bool guiMode = AppContext::getMainWindow();
     DnaAssemblyGUIExtensionsFactory* guiFactory = guiMode ? new GenomeAlignerGuiExtFactory(): NULL;
-    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv("UGENE genome aligner", new GenomeAlignerTask::Factory, guiFactory, true);
+    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv("UGENE genome aligner", new GenomeAlignerTask::Factory, guiFactory, true, true);
     bool res = registry->registerAlgorithm(algo);
     Q_UNUSED(res);
     assert(res);
