@@ -994,8 +994,9 @@ void ProjectTreeController::sl_onDocumentURLorNameChanged() {
 void ProjectTreeController::highlightItem(Document *doc){
     assert(doc);
     ProjViewDocumentItem *item = findDocumentItem(doc);
-    assert( item );
-    item->setSelected(true);
+    if (item) { //item can be NULL here if custom filter is used
+        item->setSelected(true);
+    }
 }
 
 void ProjectTreeController::sl_windowActivated(MWMDIWindow* w) {
