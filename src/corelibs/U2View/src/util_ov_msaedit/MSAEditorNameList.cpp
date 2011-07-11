@@ -311,6 +311,10 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
             }
             
         }
+        if (e->pos() == origin) {
+            // special case: click but don't drag
+            shifting = false;
+        }
         if (shifting) {
             int shift = 0;
             int numSeq = ui->editor->getNumSequences();
@@ -324,10 +328,10 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
                 shift = newSeq - curSeq;  
             }
             moveSelectedRegion(shift);
+            shifting = false;
         } else {
             updateSelection(newSeq);
         }
-        shifting = false;
         scribbling = false;
     }
     ui->seqArea->getVBar()->setupRepeatAction(QAbstractSlider::SliderNoAction);
