@@ -195,7 +195,11 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QPlainTextEdit" name="previewEdit"/>
+    <widget class="QPlainTextEdit" name="previewEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
