@@ -460,7 +460,7 @@ void AnnotationsTreeView::sl_onAnnotationObjectRemoved(AnnotationTableObject* ob
     obj->disconnect(this);
 }
 
-void AnnotationsTreeView::sl_onAnnotationObjectRenamed(const QString& oldName) {
+void AnnotationsTreeView::sl_onAnnotationObjectRenamed(const QString&) {
     AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(sender());
     AVGroupItem* gi = findGroupItem(ao->getRootGroup());
     SAFE_POINT(gi!=NULL, "Failed to find annotations object on rename!",);

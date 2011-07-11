@@ -302,7 +302,7 @@ QWidget* TreeViewer::createWidget() {
     return ui;
 }
 
-void TreeViewer::onObjectRenamed(GObject* obj, const QString& oldName) {
+void TreeViewer::onObjectRenamed(GObject*, const QString&) {
     // update title
     OpenTreeViewerTask::updateTitle(this);
 }

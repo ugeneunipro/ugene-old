@@ -275,7 +275,7 @@ void MSAEditor::sl_openTree() {
     scheduler->registerTopLevelTask(task);
 }
 
-void MSAEditor::onObjectRenamed(GObject* obj, const QString& oldName) {
+void MSAEditor::onObjectRenamed(GObject*, const QString&) {
     // update title
     OpenMSAEditorTask::updateTitle(this);
 }

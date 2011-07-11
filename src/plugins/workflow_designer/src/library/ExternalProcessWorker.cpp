@@ -150,14 +150,13 @@ Task* ExternalProcessWorker::tick() {
     int i = 0;
     
     foreach(const DataConfig& dataCfg, cfg->inputs) { //write all input data to files
-        DocumentFormat *f;
-        f = AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format);
+        DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format);
         IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
         inputUrls << url;
         /*Document *d = new Document(f, io, url);
         d->setLoaded(true);*/
-        Document *d;
+        Document *d = NULL;
 
 
         Message inputMessage = getMessageAndSetupScriptValues(inputs[i]);
@@ -208,6 +207,9 @@ Task* ExternalProcessWorker::tick() {
             l << obj;
             d = new Document(f, io, url, l);
         }
+        
+        //TODO: document can be NULL here!!!
+
         //IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         //QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
         //inputUrls << url;
