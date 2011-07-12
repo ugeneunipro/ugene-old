@@ -208,7 +208,17 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         if(clustalExe.exists()){
             AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->setPath(clustalWPath);
         }
+    }
+
+    QString cap3Path = QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+"\\tools\\cap3.exe");
+    if(AppContext::getExternalToolRegistry()->getByName(CAP3_TOOL_NAME)->getPath().isEmpty()){
+        QFileInfo cap3Exe(cap3Path);
+        if(cap3Exe.exists()){
+            AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->setPath(cap3Path);
         }
+    }
+
+
 
 #endif
 
