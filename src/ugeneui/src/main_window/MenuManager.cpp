@@ -20,6 +20,7 @@
  */
 
 #include "MenuManager.h"
+#include <U2Core/Log.h>
 
 namespace U2 {
 #define STATIC_MENU_MODEL 1
@@ -69,19 +70,36 @@ QMenu* MWMenuManagerImpl::createTopLevelMenu(const QString& sysName, const QStri
     menuBar->addMenu(qmenu);
 //#else
     if (MWMENU_WINDOW != sysName) {
-	    qmenu->installEventFilter(this);
+        qmenu->installEventFilter(this);
         qmenu->setEnabled(false);
     }
 #endif
     return qmenu;
 }
 
+
+static void touchMenu(QMenu* menu ) {
+    QList<QMenu*> menus = menu->findChildren<QMenu*>();
+    foreach(QMenu* menu, menus) {
+        if (!menu->isEnabled() ) {
+            continue;
+        }
+        menu->setEnabled(false);
+        //coreLog.trace("Touched menu" + menu->menuAction()->text());
+        touchMenu(menu);
+        menu->setEnabled(true);
+    }
+}
+
 bool MWMenuManagerImpl::eventFilter(QObject *obj, QEvent *event) {
 	if (event->type() == QEvent::ActionAdded || event->type() == QEvent::ActionRemoved)  {
             QMenu* menu = qobject_cast<QMenu*>(obj);
             assert(menu!=NULL);
+            //coreLog.trace("aaa:EventFilter (Menu Manager)");
 #ifndef Q_OS_MAC
             menu->setEnabled(!menu->isEmpty());
+#else
+            touchMenu(menu);
 #endif
             //updateTopLevelMenuVisibility(menu);
 	}
