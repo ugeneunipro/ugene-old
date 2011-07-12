@@ -82,7 +82,7 @@ add-plugin external_tool_support
 add-plugin genome_aligner
 add-plugin gor4
 add-plugin hmm2
-#add-plugin hmm3
+add-plugin hmm3
 add-plugin kalign
 add-plugin orf_marker
 add-plugin phylip
