@@ -214,7 +214,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     if(AppContext::getExternalToolRegistry()->getByName(CAP3_TOOL_NAME)->getPath().isEmpty()){
         QFileInfo cap3Exe(cap3Path);
         if(cap3Exe.exists()){
-            AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->setPath(cap3Path);
+            AppContext::getExternalToolRegistry()->getByName(CAP3_TOOL_NAME)->setPath(cap3Path);
         }
     }
 
