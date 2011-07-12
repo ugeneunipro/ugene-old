@@ -144,7 +144,7 @@ void LoadMSATask::run() {
     assert(isCanceled() || doc!=NULL || hasError());
     assert(doc == NULL || doc->isLoaded());
     if (!isCanceled() && doc!=NULL && doc->isLoaded()) {
-        if (format->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+        if (!doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT).isEmpty()) {
             foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
                 results.append(((MAlignmentObject*)go)->getMAlignment());
             }
