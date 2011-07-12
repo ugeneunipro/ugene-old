@@ -90,6 +90,7 @@ public:
     PrepareInputForCAP3Task(const QStringList& inputFiles, const QString& outputDirPath);
     void prepare();
     void run();
+    bool onlyCopyInputFiles() { return onlyCopyFiles; }
     const QString& getPreparedPath() { return preparedPath; }
 private:
     QList<CopyDataTask*> copyTasks;

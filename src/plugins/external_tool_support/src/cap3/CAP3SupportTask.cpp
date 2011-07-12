@@ -73,6 +73,7 @@ void CAP3SupportTask::prepare(){
 }
 
 
+#define CAP3_EXT ".cap.ace"
 
 QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
@@ -86,8 +87,12 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
     if (subTask == prepareDataForCAP3Task) {
         assert(!prepareDataForCAP3Task->getPreparedPath().isEmpty());
         GUrl inputUrl = prepareDataForCAP3Task->getPreparedPath();
-        tmpOutputUrl = inputUrl.dirPath() + "/" + inputUrl.baseFileName() + ".cap.ace"; 
-        
+        if (prepareDataForCAP3Task->onlyCopyInputFiles()) {
+            tmpOutputUrl = inputUrl.getURLString()+ CAP3_EXT;     
+        } else {
+            tmpOutputUrl = inputUrl.dirPath() + "/" + inputUrl.baseFileName() + CAP3_EXT; 
+        }
+
         QStringList arguments = settings.getArgumentsList();
         arguments.prepend( inputUrl.getURLString() );
         logParser = new CAP3LogParser();
