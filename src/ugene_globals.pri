@@ -65,7 +65,7 @@ isEmpty( UGENE_SSE2_DETECTED ) {
     }
     macx {
         !ppc{
-            system(system_profiler SPHardwareDataType | grep Processor | grep Intel > /dev/null) {
+            system(/usr/sbin/system_profiler SPHardwareDataType | grep Processor | grep Intel > /dev/null) {
                UGENE_SSE2_DETECTED = 1
             } 
         }
