@@ -41,6 +41,7 @@
 #include "SecStructPredictTests.h"
 #include "DnaAssemblyTests.h"
 #include "FindAlgorithmTests.h"
+#include "FormatDetectionTests.h"
 
 #include "EditAlignmentTests.h"
 #include "SMatrixTests.h"
@@ -144,6 +145,9 @@ void CoreTests::registerFactories() {
 
     // FindAlforithm tests
     registerFactory<FindAlgorithmTests>(xmlTestFormat);
+
+    // Automatic format detection tests
+    registerFactory<FormatDetectionTests>(xmlTestFormat);
 }
 
 }//namespace
