@@ -149,7 +149,7 @@ void GTest_PerfectMatch::init(XMLTestFormat*, const QDomElement& el) {
 
 void GTest_PerfectMatch::run() {
     FormatDetectionConfig conf;
-    conf.useImporters = true;
+    conf.useImporters = false;
     conf.bestMatchesOnly = false;
 
     matchedFormats = DocumentUtils::detectFormat(fileURL, conf);
@@ -166,18 +166,21 @@ Task::ReportResult GTest_PerfectMatch::report() {
             || (matchedFormats[1].score() > FormatDetection_AverageSimilarity && matchedFormats[0].score() < FormatDetection_Matched)
             || (matchedFormats[0].score() <= FormatDetection_AverageSimilarity)))
         {
-            // matched to multipe matchedFormats
+            // matched to multipe formats
             QString matchedFormatsStr;
             foreach (const FormatDetectionResult &dr, matchedFormats) {
+                assert(dr.format && "Importers should be disabled");
                 matchedFormatsStr += QString("%1 (score: %2), ").arg(dr.format->getFormatId()).arg(dr.score());
             }
             matchedFormatsStr.chop(2);
 
-            stateInfo.setError(QString("Matched to multiple matchedFormats: %1; expected %2").arg(matchedFormatsStr).arg(expectedFormat));
+            stateInfo.setError(QString("Matched to multiple formats: %1; expected %2").arg(matchedFormatsStr).arg(expectedFormat));
         }
         else {
             // matched exactly
             FormatDetectionResult &dr =  matchedFormats.first();
+            assert(dr.format && "Importers should be disabled");
+
             if (dr.format->getFormatId() != expectedFormat) {
                 stateInfo.setError(QString("Matched to %1 (score: %2) format, expected %3").arg(dr.format->getFormatId()).arg(dr.score()).arg(expectedFormat));
             }
