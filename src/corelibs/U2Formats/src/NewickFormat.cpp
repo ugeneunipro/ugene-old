@@ -33,7 +33,7 @@ namespace U2 {
 
 NewickFormat::NewickFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_W1) 
 {
-    fileExtensions << "nwk" << "newick";
+    fileExtensions << "nwk" << "newick" << "nh" << "ph";
     formatName = tr("Newick Standard");
     formatDescription = tr("Newick is a simple format used to write out trees in a text file");
     supportedObjectTypes += GObjectTypes::PHYLOGENETIC_TREE;
