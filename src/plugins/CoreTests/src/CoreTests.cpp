@@ -64,197 +64,86 @@ CoreTests::CoreTests() : Plugin("Core tests", "Core lib tests") {
 CoreTests::~CoreTests() {
 }
 
+template <class Factory>
+bool CoreTests::registerFactory(XMLTestFormat *xmlTestFormat) {
+    GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
+    l->qlist = Factory::createTestFactories();
+
+    bool res = true;
+    foreach(XMLTestFactory* f, l->qlist) {
+        bool ok = xmlTestFormat->registerTestFactory(f);
+        res = res && ok;
+    }
+
+    assert(res);
+    return res;
+}
+
 void CoreTests::registerFactories() {
 
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
     XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
     assert(xmlTestFormat!=NULL);
 
-    {
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = SMatrixTests::createTestFactories();
+    registerFactory<SMatrixTests>(xmlTestFormat);
 
-        foreach(XMLTestFactory* f, l->qlist) {
-            bool res = xmlTestFormat->registerTestFactory(f);
-            Q_UNUSED(res);
-            assert(res);
-        }
-    }
+    //Document model tests
+    registerFactory<DocumentModelTests>(xmlTestFormat);
 
-    { //Document model tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = DocumentModelTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
-   { //DNASequenceObject Tests
-       GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-       l->qlist = DNASequenceObjectTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
-    { //DNATranslationImplTests Tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = DNATranslationImplTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
-    { //Annotation Table Object Test
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = AnnotationTableObjectTest::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
-    { //Sequence Walker Test
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = SequenceWalkerTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    //DNASequenceObject Tests
+    registerFactory<DNASequenceObjectTests>(xmlTestFormat);
 
-    { //BioStruct3D Object Tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = BioStruct3DObjectTests::createTestFactories();
-            foreach(XMLTestFactory* f, l->qlist) {
-                bool res = xmlTestFormat->registerTestFactory(f);
-                assert(res); Q_UNUSED(res);
-            }
-    }
+    //DNATranslationImplTests Tests
+    registerFactory<DNATranslationImplTests>(xmlTestFormat);
 
-    { //PhyTree Object Tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = PhyTreeObjectTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) {
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    //Annotation Table Object Test
+    registerFactory<AnnotationTableObjectTest>(xmlTestFormat);
 
-    { //Task Tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = TaskTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
-    { // Indexing files tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = FilesIndexingTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
-    
-    { // Edit sequence tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = EditSequenceTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    //Sequence Walker Test
+    registerFactory<SequenceWalkerTests>(xmlTestFormat);
+
+    //BioStruct3D Object Tests
+    registerFactory<BioStruct3DObjectTests>(xmlTestFormat);
+
+    //PhyTree Object Tests
+    registerFactory<PhyTreeObjectTests>(xmlTestFormat);
+
+    //Task Tests
+    registerFactory<TaskTests>(xmlTestFormat);
+
+    // Indexing files tests
+    registerFactory<FilesIndexingTests>(xmlTestFormat);
+
+    // Edit sequence tests
+    registerFactory<EditSequenceTests>(xmlTestFormat);
         
-    { // AsnParser tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = AsnParserTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    // AsnParser tests
+    registerFactory<AsnParserTests>(xmlTestFormat);
 
-    { // SecStructPredict tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = SecStructPredictTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    // SecStructPredict tests
+    registerFactory<SecStructPredictTests>(xmlTestFormat);
 
-    { // DnaAssembly tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = DnaAssemblyTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    // DnaAssembly tests
+    registerFactory<DnaAssemblyTests>(xmlTestFormat);
 
-    {
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = CreateSubalignimentTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    registerFactory<CreateSubalignimentTests>(xmlTestFormat);
 
-    {
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = LoadRemoteDocumentTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    registerFactory<LoadRemoteDocumentTests>(xmlTestFormat);
 
-     { // PWMatrix tests
-         GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-         l->qlist = PWMatrixTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) { 
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    // PWMatrix tests
+    registerFactory<PWMatrixTests>(xmlTestFormat);
 
-     { // CMDLine tests
-         GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-         l->qlist = CMDLineTests::createTestFactories();
-         foreach(XMLTestFactory* f, l->qlist) { 
-             bool res = xmlTestFormat->registerTestFactory(f);
-             assert(res); Q_UNUSED(res);
-         }
-     }
+    // CMDLine tests
+    registerFactory<CMDLineTests>(xmlTestFormat);
 
-     { // GUrl tests
-         GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-         l->qlist = GUrlTests::createTestFactories();
-         foreach(XMLTestFactory* f, l->qlist) { 
-             bool res = xmlTestFormat->registerTestFactory(f);
-             assert(res); Q_UNUSED(res);
-         }
-     }
+    // GUrl tests
+    registerFactory<GUrlTests>(xmlTestFormat);
 
-    { // BinaryFindOpencl tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = BinaryFindOpenCLTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) {
-            bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    // BinaryFindOpencl tests
+    registerFactory<BinaryFindOpenCLTests>(xmlTestFormat);
 
-    { // FindAlforithm tests
-        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-        l->qlist = FindAlgorithmTests::createTestFactories();
-        foreach(XMLTestFactory* f, l->qlist) {
-        bool res = xmlTestFormat->registerTestFactory(f);
-            assert(res); Q_UNUSED(res);
-        }
-    }
+    // FindAlforithm tests
+    registerFactory<FindAlgorithmTests>(xmlTestFormat);
 }
 
 }//namespace

@@ -26,12 +26,16 @@
 
 namespace U2 {
 
+class XMLTestFormat;
+
 class CoreTests : public Plugin {
     Q_OBJECT
 public:
     CoreTests();
     virtual ~CoreTests();
 private:
+    template <class Factory>
+    bool registerFactory(XMLTestFormat *xmlTestFormat);
     void registerFactories();
 };
 
