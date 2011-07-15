@@ -28,9 +28,11 @@
 #include <QtGui/QDialog>
 
 namespace U2 {
+
 class ADVSequenceObjectContext;
 class GObject;
 class AnnotatedDNAView;
+class DNASequenceObject;
 
 class DotPlotDialog : public QDialog, public Ui_DotPlotDialog{
     Q_OBJECT
@@ -57,8 +59,6 @@ public:
 protected slots:
     void sl_minLenHeuristics();
 
-    void updateSequencesOnADV(bool addToADV = true);
-
     void sl_hundredPercent();
 
     void sl_directInvertedCheckBox();
@@ -74,15 +74,15 @@ protected slots:
     void sl_loadTaskStateChanged(Task* t);
 
 private:
-    QList<ADVSequenceObjectContext *> sequences;
-    ADVSequenceObjectContext *xSeq, *ySeq;
-    AnnotatedDNAView* adv;
+    QList<DNASequenceObject*>   sequences;
+    ADVSequenceObjectContext    *xSeq, *ySeq;
+    AnnotatedDNAView*           adv;
 
     QColor directColor, invertedColor;
 
     void updateColors();
 
-    bool isOnCurrentADV(GObject* obj);
+    bool isObjectInADV(GObject* obj);
     GObject* getGObjectByName(const QString& gObjectName);
 };
 
