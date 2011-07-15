@@ -47,7 +47,8 @@ Alignment SamReader::parseAlignmentString(QByteArray line) {
 
     {
         QByteArray &qname = tokens[0];
-        if(!QRegExp("[!-?A-~]{1,255}").exactMatch(qname)) {
+        // workaround for malformed SAMs
+        if(!QRegExp("[ -~]{1,255}").exactMatch(qname)) {
             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid query template name: %1").arg(QString(qname)));
         }
         alignment.setName(qname);
@@ -96,7 +97,8 @@ Alignment SamReader::parseAlignmentString(QByteArray line) {
     }
     {
         QByteArray &rname = tokens[2];
-        if(!QRegExp("[*]|[!-()+-<>-~][!-~]*").exactMatch(rname)) {
+        // workaround for malformed SAMs
+        if(!QRegExp("[*]|[!-()+-<>-~][ -~]*").exactMatch(rname)) {
             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid reference name: %1").arg(QString(rname)));
         }
         if ("*" == rname) {
@@ -184,7 +186,8 @@ Alignment SamReader::parseAlignmentString(QByteArray line) {
     }
     {
         QByteArray nextReference = tokens[6];
-        if(!QRegExp("[*]|[=]|[!-()+-<>-~][!-~]*").exactMatch(nextReference)) {
+        // workaround for malformed SAMs
+        if(!QRegExp("[*]|[=]|[!-()+-<>-~][ -~]*").exactMatch(nextReference)) {
             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid mate reference name: %1").arg(QString(nextReference)));
         }
         if ("*" == nextReference) {
