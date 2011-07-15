@@ -26,6 +26,7 @@
 
 #include <QtCore/QMultiMap>
 #include <QtCore/QVector>
+#include <QtCore/QMutex>
 #include <QtGui/QColor>
 
 namespace U2 {
@@ -117,10 +118,13 @@ public:
 class U2FORMATS_EXPORT GBFeatureUtils : public QObject {
     Q_OBJECT
 public:
+	static QMutex allKeys_mutex;
     static const QVector<GBFeatureKeyInfo>& allKeys();
 
+	static QMutex getKeyGroups_mutex;
     static const GBFeatureKeyInfo& getKeyInfo(GBFeatureKey key) {return allKeys().at(key);}
 
+	static QMutex getKey_mutex;
     static const QMultiMap<QString, GBFeatureKey>& getKeyGroups();
     
     static GBFeatureKey getKey(const QString& text);
@@ -138,6 +142,8 @@ public:
     
     //max annotation key len in Genbank or EMBL formats
     static const int    MAX_KEY_LEN;
+
+	
 };
 
 }//namespace

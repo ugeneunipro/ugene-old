@@ -22,10 +22,16 @@
 #include "GenbankFeatures.h"
 
 #include <QtCore/QHash>
+#include <QtCore/QMutex>
+#include <QtCore/QMutexLocker>
 
 #include <U2Core/FeatureColors.h>
 
 namespace U2 {
+
+QMutex GBFeatureUtils::allKeys_mutex;
+QMutex GBFeatureUtils::getKeyGroups_mutex;
+QMutex GBFeatureUtils::getKey_mutex;
 
 const QByteArray GBFeatureUtils::QUALIFIER_AMINO_STRAND("ugene_amino_strand");
 const QByteArray GBFeatureUtils::QUALIFIER_AMINO_STRAND_YES("yes");
@@ -57,7 +63,9 @@ static QColor cl(const QString& txt) {
 #define FK(key, text, color, amino, desc) \
     FKE(key, text, color, amino, desc, "")
 
+
 const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
+	QMutexLocker locker(&allKeys_mutex);
     static QVector<GBFeatureKeyInfo> features(GBFeatureKey_NUM_KEYS);
     static bool inited = false;
     if (inited) {
@@ -144,7 +152,9 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     return features;
 }
 
+
 const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
+	QMutexLocker locker(&getKeyGroups_mutex);
     static QMultiMap<QString, GBFeatureKey> groups;
     
     if (groups.isEmpty()) {
@@ -252,6 +262,7 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
 }
 
 GBFeatureKey GBFeatureUtils::getKey(const QString& text) {
+	QMutexLocker locker(&getKey_mutex);
     static QHash<QString, GBFeatureKey> keysByText;
     if (keysByText.isEmpty()) {
         foreach(const GBFeatureKeyInfo& ki, allKeys()) {
