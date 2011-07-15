@@ -26,7 +26,7 @@
 #include "TaskSchedulerImpl.h"
 #include <U2Core/Version.h>
 
-//#include <U2Core/Timer.h>
+#include <U2Core/Timer.h>
 
 namespace U2 {
 
@@ -262,10 +262,9 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
         QString taskLog;
         QList<LogMessage*>::iterator it;
         int i;
-        for(i = 0, it = --ms.end(); i <= 50 && it!= ms.begin(); i++, it--) {
+        for(i = 0, it = --ms.end(); i <= 70 && it!= ms.begin(); i++, it--) {
             LogMessage* msg = *it;
-            QDateTime data = QDateTime::currentDateTime();
-            taskLog += "[" + data.toString("hh:mm::ss.zzz") + "] " + msg->text + "\n";
+            taskLog.prepend("[" + GTimer::createDateTime(msg->time).toString("hh:mm:ss.zzz") + "] " + "[" + msg->categories.first() + "] " + msg->text + "\n");
         }
         taskLog += "|";
         message += taskLog;

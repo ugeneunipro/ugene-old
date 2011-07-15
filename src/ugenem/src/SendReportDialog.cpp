@@ -44,7 +44,7 @@ void ReportSender::parse(const QString &htmlReport) {
         report += "ActiveWindow: ";
         report += list.takeFirst() + "\n\n";
 
-        report += "TaskLog:\n";
+        report += "Log:\n";
         report += list.takeFirst() + "\n";
 
         report += "Task tree:\n";

@@ -48,6 +48,11 @@ TaskSchedulerImpl::TaskSchedulerImpl(AppResourcePool* rp) {
 
     schedulerLog = new LogCache();
     schedulerLog->filter.filters.append(LogFilterItem(ULOG_CAT_TASKS, LogLevel_TRACE));
+    schedulerLog->filter.filters.append(LogFilterItem(ULOG_CAT_CORE_SERVICES, LogLevel_TRACE));
+    schedulerLog->filter.filters.append(LogFilterItem(ULOG_CAT_IO, LogLevel_TRACE));
+    schedulerLog->filter.filters.append(LogFilterItem(ULOG_CAT_USER_INTERFACE, LogLevel_ERROR));
+    schedulerLog->filter.filters.append(LogFilterItem(ULOG_CAT_ALGORITHM, LogLevel_TRACE));
+    schedulerLog->filter.filters.append(LogFilterItem(ULOG_CAT_CONSOLE, LogLevel_ERROR));
 }
 
 TaskSchedulerImpl::~TaskSchedulerImpl() {
