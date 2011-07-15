@@ -1666,6 +1666,7 @@ void AnnotationsTreeView::renameItem(AVItem* item) {
             && gi->group->getParentGroup()->getSubgroup(newName, false) == NULL) 
         {
             gi->group->setGroupName(newName);
+            gi->group->getGObject()->setModified(true);
             gi->updateVisual();
         }
     } else if (item->type == AVItemType_Annotation) {
@@ -1694,6 +1695,7 @@ void AnnotationsTreeView::renameItem(AVItem* item) {
             }
             ai->annotation->setLocationOperator(location->op);
             ai->annotation->setStrand(location->strand);
+            ai->annotation->getGObject()->setModified(true);
         }
     } else {
         assert(item->type == AVItemType_Qualifier);
@@ -1705,6 +1707,7 @@ void AnnotationsTreeView::renameItem(AVItem* item) {
             QString val = qi->qValue;
             a->removeQualifier(qi->qName, val);
             a->addQualifier(newName, val);
+            a->getGObject()->setModified(true);
             AVQualifierItem* qi = ai->findQualifierItem(newName, val);
             tree->setCurrentItem(qi);
             tree->scrollToItem(qi);
