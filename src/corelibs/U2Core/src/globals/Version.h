@@ -44,6 +44,7 @@ public:
     bool operator  <  (const Version& v) const;
     bool operator  <= (const Version& v) const;
     bool operator  == (const Version& v) const;
+    bool operator  != (const Version& v) const {return !(v == *this);}
 
     int major;
     int minor;

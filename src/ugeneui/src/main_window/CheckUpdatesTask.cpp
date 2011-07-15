@@ -22,7 +22,6 @@
 #include "CheckUpdatesTask.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Version.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Settings.h>
 #include <U2Core/NetworkConfiguration.h>
@@ -56,7 +55,8 @@ void CheckUpdatesTask::run() {
     if (isProxy && !isException) {
         http.setProxy(nc->getProxy(QNetworkProxy::HttpProxy));
     }
-    siteVersion = http.syncGet(PAGE_NAME);
+    QString siteVersionText = http.syncGet(PAGE_NAME);
+    siteVersion = Version::parseVersion(siteVersionText);
     stateInfo.setDescription(QString());
 
     if (http.error() != QHttp::NoError) {
@@ -70,12 +70,10 @@ Task::ReportResult CheckUpdatesTask::report() {
         return ReportResult_Finished;
     }
 
-    Version v = Version::ugeneVersion();
-    QString thisVersion = v.text;
+    Version thisVersion = Version::ugeneVersion();
 
     if(runOnStartup) {
-        QString baseVersion = v.text.remove("-dev", Qt::CaseInsensitive);
-        if(siteVersion > thisVersion || (baseVersion == siteVersion && thisVersion.contains("dev"))) {
+        if (siteVersion > thisVersion) {
             QString message = tr("Newer version available. You can download it from our site.");
             QMessageBox box(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, 
                 AppContext::getMainWindow()->getQMainWindow());
@@ -85,15 +83,15 @@ Task::ReportResult CheckUpdatesTask::report() {
 
             box.exec();
 
-            if(box.clickedButton() == siteButton) {
+            if (box.clickedButton() == siteButton) {
                 GUIUtils::runWebBrowser("http://ugene.unipro.ru/download.html");
             } else if(box.clickedButton() == dontAsk) {
                 AppContext::getSettings()->setValue(ASK_VESRION_SETTING, false);
             }
         }
     } else {    
-        QString message = "<table><tr><td>"+tr("Your version:") + "</td><td><b>"+thisVersion+"</b></td></tr>";
-        message+="<tr><td>" + tr("Latest version:") + "</td><td><b>"+siteVersion+"</b></td></tr></table>";
+        QString message = "<table><tr><td>"+tr("Your version:") + "</td><td><b>" + thisVersion.text + "</b></td></tr>";
+        message += "<tr><td>" + tr("Latest version:") + "</td><td><b>" + siteVersion.text + "</b></td></tr></table>";
         bool needUpdate = thisVersion != siteVersion;
         if (!needUpdate) {
             message += "<p>" + tr("You have the latest version");

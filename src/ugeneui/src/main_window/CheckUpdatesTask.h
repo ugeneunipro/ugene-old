@@ -23,6 +23,7 @@
 #define _U2_CHECK_UPDATES_TASKS_H_
 
 #include <U2Core/Task.h>
+#include <U2Core/Version.h>
 
 namespace U2 {
 
@@ -36,8 +37,8 @@ public:
     void run();
     ReportResult report();
 
-    QString siteVersion;
-    bool runOnStartup;
+    Version siteVersion;
+    bool    runOnStartup;
 };
 
 
