@@ -180,3 +180,4 @@ unix {
 
     INSTALLS += binscript ugene_starter transl plugins scripts data desktop icons manual
 }
+ 
