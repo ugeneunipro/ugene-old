@@ -160,6 +160,7 @@ public:
 	ExportProjectTask(const QString& _destinationDir, const QString& projectFile, bool _compress = false);
 
 	void prepare();
+    ReportResult report();
 
 private:
 	void _run(TaskStateInfo& ts, Project* p, QString url, QStringList paths);

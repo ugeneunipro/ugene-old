@@ -306,12 +306,19 @@ Task(tr("Export project task"), TaskFlags_NR_FOSCOE), compress(_compress), desti
 
 void ExportProjectTask::prepare(){
     Project *pr = AppContext::getProject();
+    if (pr->isItemModified()) {
+        addSubTask(new SaveProjectTask(SaveProjectTaskKind_SaveProjectAndDocuments, pr));
+    }
+}
+
+Task::ReportResult ExportProjectTask::report() {
+    Project *pr = AppContext::getProject();
 
     QList<Document*> docList = pr->getDocuments();
     foreach(Document* doc, docList){
         if(doc->getURL().isEmpty()){
             coreLog.error(tr("One of the documents has empty URL"));
-            return;
+            return ReportResult_Finished;
         }
     }
 
@@ -320,7 +327,7 @@ void ExportProjectTask::prepare(){
     if (!error.isEmpty()){
         coreLog.error(error);
         setError(error);
-        return;
+        return ReportResult_Finished;
     }
 
     QMap<QString, QString> urlRemap;
@@ -337,7 +344,7 @@ void ExportProjectTask::prepare(){
                 } else {
                     coreLog.error(tr("Error during coping documents"));
                 }
-                return;
+                return ReportResult_Finished;
             }
             urlRemap[origPath] = resultPath;
         }
@@ -348,6 +355,7 @@ void ExportProjectTask::prepare(){
     }
  
     ProjectFileUtils::saveProjectFile(stateInfo, pr, destinationDir + "/" + projectFile, urlRemap);
+    return ReportResult_Finished;
 }
 
 
