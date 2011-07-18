@@ -55,34 +55,34 @@ public:
     
 }; // WorkflowRunSchemaForTaskCallback
 
-class U2LANG_EXPORT WorkflowRunSchemaForTask : public Task {
+class U2LANG_EXPORT WorkflowRunSchemaForTask : public DocumentProviderTask {
     Q_OBJECT
 public:
-    WorkflowRunSchemaForTask(const QString & schemaName, WorkflowRunSchemaForTaskCallback * callback);
+    WorkflowRunSchemaForTask(const QString& schemaName, WorkflowRunSchemaForTaskCallback* callback, 
+                            const QVariantMap& resultDocHints = QVariantMap());
     ~WorkflowRunSchemaForTask();
     
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     virtual ReportResult report();
-    //returns new created document. caller should delete
-    Document * getResult();
     
 private:
     void setSchemaSettings();
     void setSchemaSettings(const QVariantMap & data);
     
 private:
-    WorkflowRunSchemaForTaskCallback * callback;
-    LoadWorkflowTask * loadSchemaTask;
-    Schema schema;
-    Document * inputDocument;
-    SaveDocumentTask * saveInputTask;
-    QTemporaryFile saveInputTmpFile;
-    QString saveInputTmpFilename;
-    WorkflowRunInProcessTask * runSchemaTask;
-    QTemporaryFile resultTmpFile;
-    QString resultTmpFilename;
-    LoadDocumentTask * loadResultTask;
-    QString schemaName;
+    WorkflowRunSchemaForTaskCallback*   callback;
+    LoadWorkflowTask*                   loadSchemaTask;
+    Schema                              schema;
+    Document*                           inputDocument;
+    SaveDocumentTask*                   saveInputTask;
+    QTemporaryFile                      saveInputTmpFile;
+    QString                             saveInputTmpFilename;
+    WorkflowRunInProcessTask*           runSchemaTask;
+    QTemporaryFile                      resultTmpFile;
+    QString                             resultTmpFilename;
+    LoadDocumentTask*                   loadResultTask;
+    QString                             schemaName;
+    QVariantMap                         resultDocHints;
     
 }; // WorkflowRunSchemaForTask
 

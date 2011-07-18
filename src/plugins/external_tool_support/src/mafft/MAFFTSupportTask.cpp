@@ -52,7 +52,7 @@ MAFFTSupportTask::MAFFTSupportTask(MAlignmentObject* _mAObject, const MAFFTSuppo
     GCOUNTER( cvar, tvar, "MAFFTSupportTask" );
     currentDocument = mAObject->getDocument();
     saveTemporaryDocumentTask=NULL;
-    loadTemporyDocumentTask=NULL;
+    loadTmpDocumentTask=NULL;
     mAFFTTask=NULL;
     newDocument=NULL;
     logParser=NULL;
@@ -90,7 +90,7 @@ void MAFFTSupportTask::prepare(){
 QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     if(subTask->hasError()) {
-        if(subTask==loadTemporyDocumentTask){
+        if(subTask==loadTmpDocumentTask){
             if(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->isValid()){
                 stateInfo.setError(tr("Can not open output file: ")+subTask->getError());
             }else{
@@ -108,7 +108,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
     if(hasError() || isCanceled()) {
         return res;
     }
-    if(subTask==saveTemporaryDocumentTask){
+    if (subTask == saveTemporaryDocumentTask){
         QStringList arguments;
         if(settings.gapOpenPenalty != -1) {
             arguments <<"--op" << QString::number(settings.gapOpenPenalty);
@@ -120,17 +120,17 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
             arguments <<"--maxiterate"<<QString::number(settings.maxNumberIterRefinement);
         }
         arguments <<url;
-        logParser=new MAFFTLogParser(mAObject->getMAlignment().getNumRows(), settings.maxNumberIterRefinement, url+".out.fa");
-        mAFFTTask=new ExternalToolRunTask(MAFFT_TOOL_NAME, arguments, logParser);
+        logParser = new MAFFTLogParser(mAObject->getMAlignment().getNumRows(), settings.maxNumberIterRefinement, url+".out.fa");
+        mAFFTTask = new ExternalToolRunTask(MAFFT_TOOL_NAME, arguments, logParser);
         mAFFTTask->setSubtaskProgressWeight(95);
         res.append(mAFFTTask);
-    }else if(subTask==mAFFTTask){
+    } else if (subTask == mAFFTTask) {
         assert(logParser);
         delete logParser;
-        if(!QFileInfo(url+".out.fa").exists()){
-            if(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->isValid()){
+        if (!QFileInfo(url+".out.fa").exists()) {
+            if (AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->isValid()){
                 stateInfo.setError(tr("Output file not found"));
-            }else{
+            } else {
                 stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
                                    .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getName())
                                    .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getPath()));
@@ -138,14 +138,12 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
             emit si_stateChanged();
             return res;
         }
-        loadTemporyDocumentTask=
-                new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,
-                                     url+".out.fa",
-                                     AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
-        loadTemporyDocumentTask->setSubtaskProgressWeight(5);
-        res.append(loadTemporyDocumentTask);
-    } else if (subTask==loadTemporyDocumentTask) {
-        newDocument=loadTemporyDocumentTask->takeDocument();
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+        loadTmpDocumentTask= new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA, url+".out.fa", iof);
+        loadTmpDocumentTask->setSubtaskProgressWeight(5);
+        res.append(loadTmpDocumentTask);
+    } else if (subTask == loadTmpDocumentTask) {
+        newDocument=loadTmpDocumentTask->takeDocument();
         assert(newDocument!=NULL);
 
         //move MAlignment from new alignment to old document
@@ -190,9 +188,10 @@ MAFFTWithExtFileSpecifySupportTask::MAFFTWithExtFileSpecifySupportTask(const MAF
     saveDocumentTask = NULL;
     loadDocumentTask = NULL;
     mAFFTSupportTask = NULL;
+    cleanDoc = true;
 }
 MAFFTWithExtFileSpecifySupportTask::~MAFFTWithExtFileSpecifySupportTask(){
-    if(currentDocument!=NULL){
+    if (cleanDoc){
         delete currentDocument;
     }
 }
@@ -208,10 +207,10 @@ void MAFFTWithExtFileSpecifySupportTask::prepare(){
     }
 
     DocumentFormatId alnFormat = formats.first();
-    loadDocumentTask=
-            new LoadDocumentTask(alnFormat,
-                                 settings.inputFilePath,
-                                 AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath)));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath));
+    QVariantMap hints;
+    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    loadDocumentTask = new LoadDocumentTask(alnFormat, settings.inputFilePath, iof, hints);
     addSubTask(loadDocumentTask);
 }
 QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask) {
@@ -223,7 +222,7 @@ QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask
     if(hasError() || isCanceled()) {
         return res;
     }
-    if(subTask==loadDocumentTask){
+    if (subTask==loadDocumentTask){
         currentDocument=loadDocumentTask->getDocument()->clone();
         assert(currentDocument!=NULL);
         assert(currentDocument->getObjects().length()==1);
@@ -231,24 +230,22 @@ QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask
         assert(mAObject!=NULL);
         mAFFTSupportTask=new MAFFTSupportTask(mAObject,settings);
         res.append(mAFFTSupportTask);
-    }else if(subTask == mAFFTSupportTask){
+    } else if (subTask == mAFFTSupportTask){
         saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath)),settings.inputFilePath);
         res.append(saveDocumentTask);
-    }else if(subTask==saveDocumentTask){
+    } else if (subTask==saveDocumentTask){
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString()));
+            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
         } else {
-            bool docAlreadyInProject=false;
-            foreach(Document* doc, proj->getDocuments()){
-                if(doc->getURL() == currentDocument->getURL()){
-                    docAlreadyInProject=true;
-                }
-            }
-            if (!docAlreadyInProject) {
+            Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
+            if (projDoc != NULL) {
+                projDoc->setLastUpdateTime();
+                res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
+            } else {
                 // Add document to project
                 res.append(new AddDocumentAndOpenViewTask(currentDocument));
-                currentDocument=NULL;
+                cleanDoc = false;
             }
         }
     }

@@ -44,12 +44,13 @@ static QString findSchemaPath(const QString & schemaName) {
     return QString();
 }
 
-WorkflowRunSchemaForTask::WorkflowRunSchemaForTask(const QString & scName, WorkflowRunSchemaForTaskCallback * c)
-: Task(tr("Run workflow schema for task %1").arg(scName), TaskFlag_NoRun), callback(c), 
-  loadSchemaTask(NULL), inputDocument(NULL), saveInputTask(NULL), runSchemaTask(NULL), loadResultTask(NULL), schemaName(scName) {
+WorkflowRunSchemaForTask::WorkflowRunSchemaForTask(const QString & scName, WorkflowRunSchemaForTaskCallback * c, const QVariantMap& _resultDocHints)
+: DocumentProviderTask(tr("Run workflow schema for task %1").arg(scName), TaskFlag_NoRun), callback(c), 
+  loadSchemaTask(NULL), inputDocument(NULL), saveInputTask(NULL), runSchemaTask(NULL), loadResultTask(NULL), schemaName(scName) 
+{
     assert(callback != NULL);
-    
-    if(callback->saveInput()) {
+    resultDocHints = _resultDocHints;
+    if (callback->saveInput()) {
         DocumentFormat * inputDf = AppContext::getDocumentFormatRegistry()->getFormatById(callback->inputFileFormat());
         assert(inputDf != NULL);
         saveInputTmpFile.setFileTemplate(QString("%1/XXXXXX.%2").arg(QDir::tempPath()).arg(inputDf->getSupportedDocumentFileExtensions().first()));
@@ -61,7 +62,7 @@ WorkflowRunSchemaForTask::WorkflowRunSchemaForTask(const QString & scName, Workf
         saveInputTmpFile.close();
     }
     
-    if(callback->saveOutput()) {
+    if (callback->saveOutput()) {
         DocumentFormat * outputDf = AppContext::getDocumentFormatRegistry()->getFormatById(callback->outputFileFormat());
         assert(outputDf != NULL);
         resultTmpFile.setFileTemplate(QString("%1/XXXXXX.%2").arg(QDir::tempPath()).arg(outputDf->getSupportedDocumentFileExtensions().first()));
@@ -74,7 +75,7 @@ WorkflowRunSchemaForTask::WorkflowRunSchemaForTask(const QString & scName, Workf
     }
     
     QString schemaPath = findSchemaPath(schemaName);
-    if(schemaPath.isEmpty()) {
+    if (schemaPath.isEmpty()) {
         assert(false);
         setError(tr("Internal error: cannot find schema %1").arg(schemaName));
         return;
@@ -179,11 +180,15 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
         {
             IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(resultTmpFilename));
             assert(iof != NULL);
-            loadResultTask = new LoadDocumentTask(callback->outputFileFormat(), resultTmpFilename, iof);
+            loadResultTask = new LoadDocumentTask(callback->outputFileFormat(), resultTmpFilename, iof, resultDocHints);
             res << loadResultTask;
         }
         break;
     case NOTHING:
+        if (loadResultTask != NULL && loadResultTask->getDocument() != NULL) {
+            Document* doc = loadResultTask->getDocument();
+            resultDocument = doc->clone();
+        }
         break;
     default:
         assert(false);
@@ -194,15 +199,6 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
 Task::ReportResult WorkflowRunSchemaForTask::report() {
     propagateSubtaskError();
     return ReportResult_Finished;
-}
-
-Document * WorkflowRunSchemaForTask::getResult() {
-    if(loadResultTask != NULL) {
-        return loadResultTask->getDocument()->clone();
-    } else {
-        assert(false);
-        return NULL;
-    }
 }
 
 }    // namespace U2

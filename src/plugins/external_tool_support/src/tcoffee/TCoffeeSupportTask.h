@@ -77,7 +77,7 @@ private:
 
     SaveMSA2SequencesTask*      saveTemporaryDocumentTask;
     ExternalToolRunTask*        tCoffeeTask;
-    LoadDocumentTask*           loadTemporyDocumentTask;
+    LoadDocumentTask*           loadTmpDocumentTask;
     TCoffeeSupportTaskSettings  settings;
 };
 
@@ -93,11 +93,12 @@ public:
 private:
     MAlignmentObject*           mAObject;
     Document*                   currentDocument;
+    bool                        cleanDoc;
 
-    SaveDocumentTask*           saveDocumentTask;
-    LoadDocumentTask*           loadDocumentTask;
-    TCoffeeSupportTask*           tCoffeeSupportTask;
-    TCoffeeSupportTaskSettings    settings;
+    SaveDocumentTask*               saveDocumentTask;
+    LoadDocumentTask*               loadDocumentTask;
+    TCoffeeSupportTask*             tCoffeeSupportTask;
+    TCoffeeSupportTaskSettings      settings;
 };
 
 class TCoffeeLogParser : public ExternalToolLogParser {

@@ -29,8 +29,11 @@ namespace U2 {
 
 
 class ExternalToolLogParser;
+class ExternalToolRunTaskHelper;
+
 class ExternalToolRunTask: public Task {
     Q_OBJECT
+    friend class ExternalToolRunTaskHelper;
 public:
     ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser*  logParser);
     ~ExternalToolRunTask();
@@ -41,16 +44,28 @@ public:
     
     
     void cancelProcess();
-public slots:
-    void sl_onReadyToReadLog();
-    void sl_onReadyToReadErrLog();
 private:
     QStringList             arguments;
     QString                 program;
     ExternalToolLogParser*  logParser;
     QString                 toolName;
-    char*                   logData;
     QProcess*               externalToolProcess;
+};
+
+/** Part of ExternalToolRunTask that belongs to task run  thread -> get signals from that thread directly */
+class ExternalToolRunTaskHelper : public QObject {
+    Q_OBJECT
+
+public:
+    ExternalToolRunTaskHelper(ExternalToolRunTask* t);
+
+public slots:
+    void sl_onReadyToReadLog();
+    void sl_onReadyToReadErrLog();
+
+private:
+    ExternalToolRunTask*    p;
+    QByteArray              logData;
 };
 
 class ExternalToolSupportUtils : public QObject {

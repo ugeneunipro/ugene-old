@@ -121,31 +121,35 @@ void KalignPlugin::sl_runKalignTask() {
             return;
         }
         DocumentFormatId alnFormat = formats.first();
-        LoadDocumentTask* task = new LoadDocumentTask(alnFormat, sourceUrl, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(sourceUrl)));
+        QVariantMap hints;
+        hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(sourceUrl));
+        LoadDocumentTask* task = new LoadDocumentTask(alnFormat, sourceUrl, iof, hints);
         connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_documentLoaded(Task*)));
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }        
 }
 
 void KalignPlugin::sl_documentLoaded(Task* task) {
-    if(task->hasError() || task->isCanceled()) {
+    if (task->hasError() || task->isCanceled()) {
         return;
     }
-    Document* currentDocument = ((LoadDocumentTask*)task)->takeDocument();
-    assert(currentDocument!=NULL);
-    MAlignmentObject* mAObject = qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
+    LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(task);
+    Document* doc = loadTask->getDocument();
+    assert(doc != NULL);
+    MAlignmentObject* mAObject = qobject_cast<MAlignmentObject*>(doc->getObjects().first());
     assert(mAObject!=NULL);
     
     KalignTaskSettings s;
-    s.inputFilePath = currentDocument->getURL().getURLString();
+    s.inputFilePath = doc->getURLString();
     KalignDialogController dlg(AppContext::getMainWindow()->getQMainWindow(), mAObject->getMAlignment(), s, false);
 
     int rc = dlg.exec();
     if (rc != QDialog::Accepted) {
         return;
     }
-    Task * kalignTask = new KAlignAndSaveTask(currentDocument, s);
-    AppContext::getTaskScheduler()->registerTopLevelTask( kalignTask );
+    Task * kalignTask = new KAlignAndSaveTask(loadTask->takeDocument()->clone(), s); //clone -> move to main thread
+    AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);
 }
 
 KalignPlugin::~KalignPlugin() {

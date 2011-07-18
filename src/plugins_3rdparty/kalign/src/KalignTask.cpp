@@ -178,7 +178,8 @@ Task::ReportResult KalignGObjectTask::report() {
 #ifndef RUN_WORKFLOW_IN_THREADS
 
 KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * o, const KalignTaskSettings & c) :
-MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE,o), config(c), lock(NULL), runSchemaTask(NULL), objName(o->getDocument()->getName()) {
+MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE,o), config(c), lock(NULL), runSchemaTask(NULL), objName(o->getDocument()->getName()) 
+{
     setTaskName(tr("KALIGN align '%1' in separate process").arg(objName));
     setUseDescriptionFromSubtask(true);
     setVerboseLogMode(true);
@@ -202,7 +203,9 @@ void KalignGObjectRunFromSchemaTask::prepare() {
     
     lock = new StateLock(KALIGN_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
-    runSchemaTask = new WorkflowRunSchemaForTask(KALIGN_SCHEMA_NAME, this);
+    QVariantMap hints;
+    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    runSchemaTask = new WorkflowRunSchemaForTask(KALIGN_SCHEMA_NAME, this, hints);
     addSubTask(runSchemaTask);
 }
 
@@ -223,7 +226,7 @@ Task::ReportResult KalignGObjectRunFromSchemaTask::report() {
         return ReportResult_Finished;
     }
     
-    std::auto_ptr<Document> result(runSchemaTask->getResult());
+    std::auto_ptr<Document> result(runSchemaTask->takeDocument());
     QList<GObject*> objs = result->getObjects();
     assert(objs.size() == 1);
     const QString KALIGN_TASK_NO_RESULT_ERROR(tr("Undefined error: Kalign task did not produced result"));
@@ -286,12 +289,18 @@ KAlignAndSaveTask::KAlignAndSaveTask(Document* doc, const KalignTaskSettings& _c
 {
     mAObject = NULL;
     currentDocument = doc;
+    cleanDoc = true;
     saveDocumentTask = NULL;
     kalignGObjectTask = NULL;
 }
 
-void KAlignAndSaveTask::prepare()
-{
+KAlignAndSaveTask::~KAlignAndSaveTask() {
+    if (cleanDoc) {
+        delete currentDocument;
+    }
+}
+
+void KAlignAndSaveTask::prepare() {
     assert(currentDocument!=NULL);
     MAlignmentObject* mAObject = qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
     assert(mAObject!=NULL);
@@ -309,41 +318,32 @@ void KAlignAndSaveTask::prepare()
     addSubTask(kalignGObjectTask);
 }
 
-Task::ReportResult KAlignAndSaveTask::report()
-{
-    return ReportResult_Finished;
-}
-
-QList<Task*> KAlignAndSaveTask::onSubTaskFinished( Task* subTask )
-{
+QList<Task*> KAlignAndSaveTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> res;
-    if(subTask->hasError()) {
+    if (subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasError() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
-    if(subTask == kalignGObjectTask){
-        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath)),config.inputFilePath);
+    if (subTask == kalignGObjectTask){
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath));
+        saveDocumentTask = new SaveDocumentTask(currentDocument,iof,config.inputFilePath);
         res.append(saveDocumentTask);
-    }else if(subTask==saveDocumentTask){
+    } else if (subTask == saveDocumentTask){
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString()));
+            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
         } else {
-            bool docAlreadyInProject=false;
-            foreach(Document* doc, proj->getDocuments()){
-                if(doc->getURL() == currentDocument->getURL()){
-                    docAlreadyInProject=true;
-                }
-            }
-            if (docAlreadyInProject) {
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
+            Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
+            if (projDoc != NULL) {
+                projDoc->setLastUpdateTime();
+                res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
             } else {
                 // Add document to project
-                res.append(new AddDocumentTask(currentDocument));
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
+                res.append(new AddDocumentAndOpenViewTask(currentDocument));
+                cleanDoc = false;
             }
         }
     }

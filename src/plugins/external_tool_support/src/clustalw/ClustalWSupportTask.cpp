@@ -206,12 +206,15 @@ ClustalWWithExtFileSpecifySupportTask::ClustalWWithExtFileSpecifySupportTask(con
     saveDocumentTask = NULL;
     loadDocumentTask = NULL;
     clustalWSupportTask = NULL;
+    cleanDoc = true;
 }
+
 ClustalWWithExtFileSpecifySupportTask::~ClustalWWithExtFileSpecifySupportTask(){
-    if(currentDocument!=NULL){
+    if (cleanDoc) {
         delete currentDocument;
     }
 }
+
 void ClustalWWithExtFileSpecifySupportTask::prepare(){
     DocumentFormatConstraints c;
     c.checkRawData = true;
@@ -224,10 +227,11 @@ void ClustalWWithExtFileSpecifySupportTask::prepare(){
     }
 
     DocumentFormatId alnFormat = formats.first();
-    loadDocumentTask=
-            new LoadDocumentTask(alnFormat,
-                                 settings.inputFilePath,
-                                 AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath)));
+    QVariantMap hints;
+    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath));
+    loadDocumentTask = new LoadDocumentTask(alnFormat, settings.inputFilePath,iof, hints);
+
     addSubTask(loadDocumentTask);
 }
 QList<Task*> ClustalWWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask) {
@@ -236,35 +240,33 @@ QList<Task*> ClustalWWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subT
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasError() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
-    if(subTask==loadDocumentTask){
-        // clone doc because it was created in another thread
-        currentDocument=loadDocumentTask->getDocument()->clone();
+    if (subTask == loadDocumentTask){
+        currentDocument=loadDocumentTask->getDocument()->clone();  // clone doc because it was created in another thread
         assert(currentDocument!=NULL);
         assert(currentDocument->getObjects().length()==1);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
         assert(mAObject!=NULL);
         clustalWSupportTask=new ClustalWSupportTask(mAObject,settings);
         res.append(clustalWSupportTask);
-    }else if(subTask == clustalWSupportTask){
-        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath)),settings.inputFilePath);
+    } else if (subTask == clustalWSupportTask) {
+        saveDocumentTask = new SaveDocumentTask(currentDocument, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath)),settings.inputFilePath);
         res.append(saveDocumentTask);
-    }else if(subTask==saveDocumentTask){
+    } else if (subTask == saveDocumentTask) {
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString()));
+            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString(), currentDocument->getGHintsMap()));
         } else {
-            bool docAlreadyInProject=false;
-            foreach(Document* doc, proj->getDocuments()){
-                if(doc->getURL() == currentDocument->getURL()){
-                    docAlreadyInProject=true;
-                }
-            }
-            if (!docAlreadyInProject) {
+            Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
+            if (projDoc != NULL) {
+                projDoc->setLastUpdateTime();
+                res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
+            } else {
+                // Add document to project
                 res.append(new AddDocumentAndOpenViewTask(currentDocument));
-                currentDocument=NULL;
+                cleanDoc = false;
             }
         }
     }

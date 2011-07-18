@@ -423,6 +423,13 @@ MuscleWithExtFileSpecifySupportTask::MuscleWithExtFileSpecifySupportTask(const M
     saveDocumentTask = NULL;
     loadDocumentTask = NULL;
     muscleGObjectTask = NULL;
+    cleanDoc = true;
+}
+
+MuscleWithExtFileSpecifySupportTask::~MuscleWithExtFileSpecifySupportTask() {
+    if (cleanDoc) {
+        delete currentDocument;
+    }
 }
 
 void MuscleWithExtFileSpecifySupportTask::prepare(){
@@ -437,24 +444,24 @@ void MuscleWithExtFileSpecifySupportTask::prepare(){
     }
 
     DocumentFormatId alnFormat = formats.first();
-    loadDocumentTask=
-            new LoadDocumentTask(alnFormat,
-                                 config.inputFilePath,
-                                 AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath)));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath));
+    QVariantMap hints;
+    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    loadDocumentTask = new LoadDocumentTask(alnFormat, config.inputFilePath, iof, hints);
     addSubTask(loadDocumentTask);
 }
 
 QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasError()) {
+    if (subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasError() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
-    if(subTask==loadDocumentTask){
-        currentDocument=loadDocumentTask->takeDocument();
+    if (subTask == loadDocumentTask){
+        currentDocument = loadDocumentTask->getDocument()->clone(); //clone -> to move to main thread here
         assert(currentDocument!=NULL);
         assert(currentDocument->getObjects().length()==1);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
@@ -471,7 +478,7 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
         }
 
 #ifndef RUN_WORKFLOW_IN_THREADS
-        if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+        if (WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
             muscleGObjectTask = new MuscleGObjectRunFromSchemaTask(mAObject, config);
         } else {
             muscleGObjectTask = new MuscleGObjectTask(mAObject, config);
@@ -481,26 +488,22 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
 #endif // RUN_WORKFLOW_IN_THREADS
         assert(muscleGObjectTask != NULL);
         res.append(muscleGObjectTask);
-    }else if(subTask == muscleGObjectTask){
+    } else if (subTask == muscleGObjectTask){
         saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath)),config.inputFilePath);
         res.append(saveDocumentTask);
-    }else if(subTask==saveDocumentTask){
+    } else if (subTask == saveDocumentTask){
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString()));
+            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
         } else {
-            bool docAlreadyInProject=false;
-            foreach(Document* doc, proj->getDocuments()){
-                if(doc->getURL() == currentDocument->getURL()){
-                    docAlreadyInProject=true;
-                }
-            }
-            if (docAlreadyInProject) {
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
+            Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
+            if (projDoc) {
+                projDoc->setLastUpdateTime();
+                res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
             } else {
                 // Add document to project
-                res.append(new AddDocumentTask(currentDocument));
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(currentDocument));
+                res.append(new AddDocumentAndOpenViewTask(currentDocument));
+                cleanDoc = false;
             }
         }
     }
@@ -560,7 +563,9 @@ void MuscleGObjectRunFromSchemaTask::prepare() {
     
     lock = new StateLock(MUSCLE_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
-    runSchemaTask = new WorkflowRunSchemaForTask(MUSCLE_SCHEMA_NAME, this);
+    QVariantMap hints;
+    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    runSchemaTask = new WorkflowRunSchemaForTask(MUSCLE_SCHEMA_NAME, this, hints);
     addSubTask(runSchemaTask);
 }
 
@@ -581,18 +586,18 @@ Task::ReportResult MuscleGObjectRunFromSchemaTask::report() {
         return ReportResult_Finished;
     }
     
-    std::auto_ptr<Document> result(runSchemaTask->getResult());
+    std::auto_ptr<Document> result(runSchemaTask->takeDocument());
     QList<GObject*> objs = result->getObjects();
     assert(objs.size() == 1);
     const QString MUSCLE_TASK_NO_RESULT_ERROR(tr("Undefined error: muscle task did not produced result"));
     if( objs.isEmpty() ) {
         setError(MUSCLE_TASK_NO_RESULT_ERROR);
-            return ReportResult_Finished;
+        return ReportResult_Finished;
     }
     MAlignmentObject * maObj = qobject_cast<MAlignmentObject*>(objs.first());
     if(maObj == NULL) {
         setError(MUSCLE_TASK_NO_RESULT_ERROR);
-            return ReportResult_Finished;
+        return ReportResult_Finished;
     }
     obj->setMAlignment(maObj->getMAlignment());
     return ReportResult_Finished;

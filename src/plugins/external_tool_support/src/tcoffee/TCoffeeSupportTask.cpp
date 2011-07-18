@@ -32,8 +32,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
-
 #include <U2Core/AddDocumentTask.h>
+
 #include <U2Gui/OpenViewTask.h>
 
 namespace U2 {
@@ -52,7 +52,7 @@ TCoffeeSupportTask::TCoffeeSupportTask(MAlignmentObject* _mAObject, const TCoffe
     GCOUNTER( cvar, tvar, "TCoffeeSupportTask" );
     currentDocument = mAObject->getDocument();
     saveTemporaryDocumentTask=NULL;
-    loadTemporyDocumentTask=NULL;
+    loadTmpDocumentTask=NULL;
     tCoffeeTask=NULL;
     newDocument=NULL;
     logParser=NULL;
@@ -132,14 +132,16 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
             emit si_stateChanged();
             return res;
         }
-        loadTemporyDocumentTask=
-                new LoadDocumentTask(BaseDocumentFormats::MSF,
-                                     url+".msf",
-                                     AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
-        loadTemporyDocumentTask->setSubtaskProgressWeight(5);
-        res.append(loadTemporyDocumentTask);
-    }else if(subTask==loadTemporyDocumentTask){
-        newDocument=loadTemporyDocumentTask->takeDocument();
+        
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+        QVariantMap hints;
+        hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+        loadTmpDocumentTask = new LoadDocumentTask(BaseDocumentFormats::MSF, url+".msf", iof, hints);
+                        
+        loadTmpDocumentTask->setSubtaskProgressWeight(5);
+        res.append(loadTmpDocumentTask);
+    } else if (subTask==loadTmpDocumentTask) {
+        newDocument=loadTmpDocumentTask->takeDocument();
         assert(newDocument!=NULL);
 
         //move MAlignment from new alignment to old document
@@ -148,7 +150,7 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         assert(newMAligmentObject!=NULL);
         resultMA=newMAligmentObject->getMAlignment();
         mAObject->setMAlignment(resultMA);
-        if(currentDocument != NULL){
+        if (currentDocument != NULL){
             currentDocument->setModified(true);
         }
         //new document deleted in destructor of LoadDocumentTask
@@ -182,9 +184,10 @@ TCoffeeWithExtFileSpecifySupportTask::TCoffeeWithExtFileSpecifySupportTask(const
     saveDocumentTask = NULL;
     loadDocumentTask = NULL;
     tCoffeeSupportTask = NULL;
+    cleanDoc = true;
 }
 TCoffeeWithExtFileSpecifySupportTask::~TCoffeeWithExtFileSpecifySupportTask(){
-    if(currentDocument!=NULL){
+    if (cleanDoc){
         delete currentDocument;
     }
 }
@@ -200,22 +203,22 @@ void TCoffeeWithExtFileSpecifySupportTask::prepare(){
     }
 
     DocumentFormatId alnFormat = formats.first();
-    loadDocumentTask=
-            new LoadDocumentTask(alnFormat,
-                                 settings.inputFilePath,
-                                 AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath)));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath));
+    QVariantMap hints;
+    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    loadDocumentTask = new LoadDocumentTask(alnFormat, settings.inputFilePath, iof, hints);
     addSubTask(loadDocumentTask);
 }
 QList<Task*> TCoffeeWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if(subTask->hasError()) {
+    if (subTask->hasError()) {
         stateInfo.setError(subTask->getError());
         return res;
     }
-    if(hasError() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return res;
     }
-    if(subTask==loadDocumentTask){
+    if (subTask==loadDocumentTask){
         currentDocument=loadDocumentTask->getDocument()->clone();
         assert(currentDocument!=NULL);
         assert(currentDocument->getObjects().length()==1);
@@ -223,24 +226,22 @@ QList<Task*> TCoffeeWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTa
         assert(mAObject!=NULL);
         tCoffeeSupportTask=new TCoffeeSupportTask(mAObject,settings);
         res.append(tCoffeeSupportTask);
-    }else if(subTask == tCoffeeSupportTask){
+    } else if (subTask == tCoffeeSupportTask){
         saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath)),settings.inputFilePath);
         res.append(saveDocumentTask);
-    }else if(subTask==saveDocumentTask){
+    } else if (subTask==saveDocumentTask){
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString()));
+            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
         } else {
-            bool docAlreadyInProject=false;
-            foreach(Document* doc, proj->getDocuments()){
-                if(doc->getURL() == currentDocument->getURL()){
-                    docAlreadyInProject=true;
-                }
-            }
-            if (!docAlreadyInProject) {
+            Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
+            if (projDoc != NULL) {
+                projDoc->setLastUpdateTime();
+                res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
+            } else {
                 // Add document to project
                 res.append(new AddDocumentAndOpenViewTask(currentDocument));
-                currentDocument=NULL;
+                cleanDoc = false;
             }
         }
     }

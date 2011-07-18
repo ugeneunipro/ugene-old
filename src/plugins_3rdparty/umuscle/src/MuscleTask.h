@@ -133,6 +133,8 @@ public:
 class MuscleWithExtFileSpecifySupportTask : public Task {
 public:
     MuscleWithExtFileSpecifySupportTask(const MuscleTaskSettings& config);
+    ~MuscleWithExtFileSpecifySupportTask();
+
     void prepare();
     Task::ReportResult report();
 
@@ -140,6 +142,7 @@ public:
 private:
     MAlignmentObject*   mAObject;
     Document*           currentDocument;
+    bool                cleanDoc;
 
     SaveDocumentTask*   saveDocumentTask;
     LoadDocumentTask*   loadDocumentTask;
@@ -182,10 +185,10 @@ private:
     void assertConfig();
     
 private:
-    QString objName;
-    MuscleTaskSettings config;
-    WorkflowRunSchemaForTask * runSchemaTask;
-    StateLock* lock;
+    QString                     objName;
+    MuscleTaskSettings          config;
+    WorkflowRunSchemaForTask *  runSchemaTask;
+    StateLock*                  lock;
 };
 
 #endif // RUN_WORKFLOW_IN_THREADS

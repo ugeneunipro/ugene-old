@@ -35,51 +35,51 @@ namespace U2 {
 
 ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QStringList& _arguments, ExternalToolLogParser*  _logParser)
 : Task(_toolName + " run task", TaskFlag_None), arguments(_arguments), 
-  logParser(_logParser), toolName(_toolName), logData(NULL), externalToolProcess(NULL)
+  logParser(_logParser), toolName(_toolName), externalToolProcess(NULL)
 {
     ExternalTool * tool = AppContext::getExternalToolRegistry()->getByName(toolName);
-    if(tool == NULL) {
+    if (tool == NULL) {
         setError(tr("Undefined tool: '%1'").arg(toolName));
         return;
     }
-    if(tool->getPath().isEmpty()) {
+    if (tool->getPath().isEmpty()) {
         setError(tr("Path for '%1' tool not set").arg(toolName));
         return;
     }
-    if(!tool->isValid()) {
+    if (!tool->isValid()) {
 //        setError(tr("'%1' tool located in '%2' not exists or not valid").arg(toolName).arg(tool->getPath()));
 //        return;
     }
     program=tool->getPath();
     coreLog.trace("Creating run task for: " + toolName);
-    logData=(char*)malloc(1000*sizeof(char));
 }
 
 ExternalToolRunTask::~ExternalToolRunTask(){
-    free(logData);
     delete externalToolProcess;
 }
 
 void ExternalToolRunTask::prepare(){
-    if(hasError() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
     algoLog.trace("Program executable: "+program);
     algoLog.trace("Program arguments: "+arguments.join(" "));
 }
 void ExternalToolRunTask::run(){
-    if(hasError() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return;
     }
-    externalToolProcess=new QProcess();//???
-    connect(externalToolProcess,SIGNAL(readyReadStandardOutput()),SLOT(sl_onReadyToReadLog()));
-    connect(externalToolProcess,SIGNAL(readyReadStandardError()),SLOT(sl_onReadyToReadErrLog()));
+    externalToolProcess = new QProcess();//???
+    ExternalToolRunTaskHelper* h = new ExternalToolRunTaskHelper(this);
+    connect(externalToolProcess,SIGNAL(readyReadStandardOutput()), h, SLOT(sl_onReadyToReadLog()));
+    connect(externalToolProcess,SIGNAL(readyReadStandardError()), h, SLOT(sl_onReadyToReadErrLog()));
     externalToolProcess->start(program, arguments);
     //externalToolProcess->state()
-    if(!externalToolProcess->waitForStarted(3000)){
-        if(AppContext::getExternalToolRegistry()->getByName(toolName)->isValid()){
+    if (!externalToolProcess->waitForStarted(3000)){
+        ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
+        if (tool->isValid()){
             stateInfo.setError(tr("Can not run %1 tool.").arg(toolName));
-        }else{
+        } else {
             stateInfo.setError(tr("Can not run %1 tool. May be tool path '%2' not valid?")
                                .arg(toolName)
                                .arg(AppContext::getExternalToolRegistry()->getByName(toolName)->getPath()));
@@ -99,32 +99,46 @@ void ExternalToolRunTask::cancelProcess(){
     externalToolProcess->kill();
 }
 
-void ExternalToolRunTask::sl_onReadyToReadLog(){
-    if(externalToolProcess->readChannel() == QProcess::StandardError)
-        externalToolProcess->setReadChannel(QProcess::StandardOutput);
-    int numberReadChars=externalToolProcess->read(logData,1000);
-    while(numberReadChars > 0){
-        //call log parser
-        logParser->parseOutput(QString(logData).left(numberReadChars));
-        numberReadChars=externalToolProcess->read(logData,1000);
-    }
-    stateInfo.progress=logParser->getProgress();
-    emit si_progressChanged();
+ExternalToolRunTaskHelper::ExternalToolRunTaskHelper(ExternalToolRunTask* t) 
+: QObject(t), p(t)
+{ 
+    logData.resize(1000); 
 }
 
-void ExternalToolRunTask::sl_onReadyToReadErrLog(){
-    if(externalToolProcess->readChannel() == QProcess::StandardOutput)
-        externalToolProcess->setReadChannel(QProcess::StandardError);
-    int numberReadChars=externalToolProcess->read(logData,1000);
+void ExternalToolRunTaskHelper::sl_onReadyToReadLog(){
+    assert(p->isRunning());
+    if (p->externalToolProcess->readChannel() == QProcess::StandardError) {
+        p->externalToolProcess->setReadChannel(QProcess::StandardOutput);
+    }
+    int numberReadChars = p->externalToolProcess->read(logData.data(), logData.size());
     while(numberReadChars > 0){
         //call log parser
-        logParser->parseErrOutput(QString(logData).left(numberReadChars));
-        numberReadChars=externalToolProcess->read(logData,1000);
+        QString line = QString::fromLocal8Bit(logData.constData(), numberReadChars);
+        p->logParser->parseOutput(line);
+        numberReadChars = p->externalToolProcess->read(logData.data(), logData.size());
     }
-    stateInfo.setError(logParser->getLastError());
-    stateInfo.progress=logParser->getProgress();
-    emit si_progressChanged();
+    p->stateInfo.progress = p->logParser->getProgress();
 }
+
+void ExternalToolRunTaskHelper::sl_onReadyToReadErrLog(){
+    assert(p->isRunning());
+    if (p->externalToolProcess->readChannel() == QProcess::StandardOutput) {
+        p->externalToolProcess->setReadChannel(QProcess::StandardError);
+    }
+    int numberReadChars = p->externalToolProcess->read(logData.data(), logData.size());
+    while(numberReadChars > 0){
+        //call log parser
+        QString line = QString::fromLocal8Bit(logData.constData(), numberReadChars);
+        p->logParser->parseErrOutput(line);
+        numberReadChars = p->externalToolProcess->read(logData.data(), logData.size());
+    }
+    QString lastErr = p->logParser->getLastError();
+    if (!lastErr.isEmpty()) {
+        p->stateInfo.setError(lastErr);
+    }
+    p->stateInfo.progress = p->logParser->getProgress();
+}
+
 ////////////////////////////////////////
 //ExternalToolLogParser
 ExternalToolLogParser::ExternalToolLogParser() {

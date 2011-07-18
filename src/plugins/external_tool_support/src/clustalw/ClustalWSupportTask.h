@@ -112,6 +112,7 @@ public:
 private:
     MAlignmentObject*           mAObject;
     Document*                   currentDocument;
+    bool                        cleanDoc;
 
     SaveDocumentTask*           saveDocumentTask;
     LoadDocumentTask*           loadDocumentTask;

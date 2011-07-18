@@ -137,13 +137,14 @@ private:
 class KAlignAndSaveTask : public Task {
 public:
     KAlignAndSaveTask(Document* doc, const KalignTaskSettings& config);
-    void prepare();
-    Task::ReportResult report();
+    ~KAlignAndSaveTask();
 
+    void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
     MAlignmentObject*   mAObject;
     Document*           currentDocument;
+    bool                cleanDoc;
     SaveDocumentTask*   saveDocumentTask;
     Task*               kalignGObjectTask;
     KalignTaskSettings  config;

@@ -77,7 +77,7 @@ private:
 
     SaveMSA2SequencesTask*      saveTemporaryDocumentTask;
     ExternalToolRunTask*        mAFFTTask;
-    LoadDocumentTask*           loadTemporyDocumentTask;
+    LoadDocumentTask*           loadTmpDocumentTask;
     MAFFTSupportTaskSettings    settings;
 };
 
@@ -93,6 +93,7 @@ public:
 private:
     MAlignmentObject*           mAObject;
     Document*                   currentDocument;
+    bool                        cleanDoc;
 
     SaveDocumentTask*           saveDocumentTask;
     LoadDocumentTask*           loadDocumentTask;
