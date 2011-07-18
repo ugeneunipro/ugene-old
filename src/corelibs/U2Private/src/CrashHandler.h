@@ -40,7 +40,7 @@
 #include "private.h"
 #include "StackWalker.h"
 
-namespace U2 {
+
 
 #if defined( Q_OS_WIN )
 
@@ -57,7 +57,7 @@ namespace U2 {
 #include <execinfo.h>
 #endif
 
-
+namespace U2 {
 
 struct ExceptionInfo {
     QString errorType;
