@@ -27,9 +27,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/GObjectUtils.h>
-
-
-
+#include <U2Core/BaseDocumentFormats.h>
 
 namespace U2{
 
@@ -38,7 +36,8 @@ CreateSubalignmentTask::CreateSubalignmentTask(MAlignmentObject* _maObj, const C
 maObj(_maObj), cfg(settings)
 {
     curDoc = maObj->getDocument();
-    if(cfg.url == curDoc->getURL() || cfg.url.isEmpty()) {
+    newDoc = NULL;
+    if (cfg.url == curDoc->getURL() || cfg.url.isEmpty()) {
         saveToAnother = false;
     }
 }
@@ -46,43 +45,37 @@ maObj(_maObj), cfg(settings)
 void CreateSubalignmentTask::prepare() {
     QString ext = cfg.url.completeFileSuffix();
 
-    DocumentFormat *dfd = 0;
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+    DocumentFormat *dfd = dfr->getFormatById(BaseDocumentFormats::CLUSTAL_ALN);
 
     foreach(const DocumentFormatId &dfId, dfr->getRegisteredFormats()) {
         DocumentFormat *df = dfr->getFormatById(dfId);
-
         foreach(const QString &dfExt, df->getSupportedDocumentFileExtensions()) {
-            if(ext.endsWith(dfExt)) {
+            if (ext.endsWith(dfExt)) {
                 dfd = df;
+                break;
             }
         }
-    }
-
-    if(!dfd) {
-        coreLog.error(tr("Unable to detect format by file extension"));
-        return;
     }
 
     newDoc = curDoc;
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(cfg.url));
-    if(saveToAnother) {
+    if (saveToAnother) {
         QList<GObject*> GObjList = curDoc->getObjects();
         newDoc = dfd->createNewDocument(iof, cfg.url, curDoc->getGHintsMap());
         foreach(GObject* go, GObjList){
             GObject *cl = go->clone();
             newDoc->addObject(cl);
-            if(go == maObj){
+            if (go == maObj){
                 maObj = static_cast<MAlignmentObject*> (cl);
             }
         }
         foreach(GObject* o, newDoc->getObjects()) {
             GObjectUtils::updateRelationsURL(o, curDoc->getURL(), cfg.url);
         }
-    }
-    else {
-        if(newDoc->isStateLocked()){
+    } else {
+        if(newDoc->isStateLocked()) {
             coreLog.error(tr("Document is locked"));
             return;
         }
@@ -95,30 +88,27 @@ void CreateSubalignmentTask::prepare() {
     }
     maObj->crop(cfg.window, rowNames);
     
-    if(cfg.saveImmediately) {
+    if (cfg.saveImmediately) {
         addSubTask(new SaveDocumentTask(newDoc, iof, cfg.url));
     }
     
 
  }
 
-void CreateSubalignmentTask::cleanup()
-{
+void CreateSubalignmentTask::cleanup() {
     if (newDoc != NULL) {
         delete newDoc;
         newDoc = NULL;
     }
 }
 
-Document* CreateSubalignmentTask::takeDocument()
-{
+Document* CreateSubalignmentTask::takeDocument() {
     Document* doc = newDoc;
     newDoc = NULL;
     return doc;
 }
 
-CreateSubalignmentTask::~CreateSubalignmentTask()
-{
+CreateSubalignmentTask::~CreateSubalignmentTask() {
     cleanup();
 }
 

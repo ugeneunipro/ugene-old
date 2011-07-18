@@ -79,9 +79,6 @@
      <attribute name="horizontalHeaderDefaultSectionSize">
       <number>100</number>
      </attribute>
-     <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>100</number>
-     </attribute>
     </widget>
    </item>
    <item>
@@ -202,6 +199,9 @@
       <widget class="QPushButton" name="okButton">
        <property name="text">
         <string>Extract</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
