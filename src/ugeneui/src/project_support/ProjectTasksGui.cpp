@@ -375,14 +375,13 @@ void GTest_LoadProject::init(XMLTestFormat*, const QDomElement& el) {
 void GTest_LoadProject::prepare(){
     QList<Task*> tasks;
     Project *previousProject = AppContext::getProject();
-    Task *tt;
     ServiceRegistry* sr = AppContext::getServiceRegistry();
     QList<Service*> services = sr->findServices(Service_Project);
     int servSize = services.size();
     assert(servSize <= 1);
     if(servSize == 1){
-        if(previousProject->metaObject() != NULL){
-            tt  = new CloseProjectTask();
+        if (previousProject->metaObject() != NULL){
+            Task *tt  = new CloseProjectTask();
             tasks.append(tt);
         }
     } else if(previousProject != NULL) {
