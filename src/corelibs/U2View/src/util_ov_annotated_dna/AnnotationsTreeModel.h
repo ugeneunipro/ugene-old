@@ -152,8 +152,8 @@ public:
     QString getRootGroupName(AnnotationTableObject *aobj) const;
     //bool *items;
     //std::vector<char> items;
-    short *indexes;
-    int num;
+    //short *indexes;
+    //int num;
     QMap<QString, std::vector<char> > itemMap;
 };
 

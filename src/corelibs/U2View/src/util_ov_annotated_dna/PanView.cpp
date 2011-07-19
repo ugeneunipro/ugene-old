@@ -617,7 +617,6 @@ void PanViewRenderArea::drawAll(QPaintDevice* pd) {
         pCached.setPen(Qt::black);
 
         GraphUtils::RulerConfig c;
-        PanView* panview = qobject_cast<PanView*>(view);
 
         const U2Region& visibleRange = view->getVisibleRange();
         float halfChar = getCurrentScale() / 2;

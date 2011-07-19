@@ -58,6 +58,8 @@ public:
         overlapSimilarityScoreCutoff = 900;
         overlapLengthCutoff = 40;
         overlapPercentIdentetyCutoff = 80;
+        maxNumberOfWordMatches = 300;
+        clippingRange = 100;
         reverseReads = 1;
     }
     
@@ -127,8 +129,8 @@ class CAP3LogParser : public ExternalToolLogParser {
 public:
     CAP3LogParser();
     int getProgress();
-private:
-    int countSequencesInMSA;
+//private:
+//    int countSequencesInMSA;
 };
 
 }//namespace

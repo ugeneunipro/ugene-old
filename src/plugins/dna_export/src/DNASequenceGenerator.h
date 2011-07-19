@@ -39,7 +39,7 @@ class SaveDocumentTask;
 class DNASequenceGeneratorConfig {
 public:
     DNASequenceGeneratorConfig()
-        : addToProj(false), saveDoc(true), format(NULL), alphabet(NULL), length(0), numSeqs(1), useRef(true) {}
+        : addToProj(false), saveDoc(true), format(NULL), alphabet(NULL), length(0), numSeqs(1), useRef(true), window() {}
 
     DNAAlphabet* getAlphabet() const { assert(alphabet); return alphabet; }
 

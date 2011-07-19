@@ -283,7 +283,7 @@ public:
 class RemoveItemsTask: public Task  {
 public:
     RemoveItemsTask(AnnotationsTreeView *_treeView, AnnotationTableObject *_aObj, const QList<Annotation *>& list, AnnotationGroup *gr):
-    Task("Remove items", TaskFlag_None), treeView(_treeView), aObj(_aObj), as(list), parentGroup(gr) {}
+    Task("Remove items", TaskFlag_None), treeView(_treeView), aObj(_aObj), as(list), parentGroup(gr), parentGroupItem(NULL) {}
     void prepare();
     void run();
     Task::ReportResult report();

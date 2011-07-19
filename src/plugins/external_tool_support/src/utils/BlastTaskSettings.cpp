@@ -49,6 +49,7 @@ void BlastTaskSettings::reset() {
     matchReward=0;
     matrix="";
     queryFile="";
+    outputType=0;
     outputResFile="";
     numberOfProcessors=1;
     needCreateAnnotations=true;

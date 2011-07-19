@@ -197,7 +197,7 @@ void CircularViewContext::sl_showCircular() {
     }
 }
 
-CircularViewAction::CircularViewAction() : ADVSequenceWidgetAction(CIRCULAR_ACTION_NAME, tr("Show circular view")), view(NULL) 
+CircularViewAction::CircularViewAction() : ADVSequenceWidgetAction(CIRCULAR_ACTION_NAME, tr("Show circular view")), view(NULL), rmapWidget(NULL)
 {
 }
 
