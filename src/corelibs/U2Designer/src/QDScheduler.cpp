@@ -41,10 +41,10 @@ namespace U2 {
 static int PROCESSING_PROGRESS_WEIGHT(80);
 
 QDScheduler::QDScheduler(const QDRunSettings& _settings)
-: Task(tr("QDScheduler"), TaskFlags_NR_FOSCOE), settings(_settings), importTask(NULL) 
-{
+: Task(tr("QDScheduler"), TaskFlags_NR_FOSCOE), settings(_settings) {
     GCOUNTER( cvar, tvar, "QueryDesignerScheduler" );
     loadTask = NULL;
+    createAnnsTask = NULL;
     linker = new QDResultLinker(this);
     settings.scheme->adaptActorsOrder();
     currentStep = new QDStep(settings.scheme);
@@ -86,10 +86,7 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
         propagateSubtaskError();
         return subs;
     }
-    if (isCanceled()) {
-        return subs;
-    }
-    if (linker->isCancelled()) {
+    if (isCanceled() || linker->isCancelled() || subTask == createAnnsTask) {
         return subs;
     }
     
@@ -102,28 +99,14 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
         return subs;
     }
 
-    if (subTask == importTask) {
-        return subs;
-    }
-
     if (currentStep->hasNext()) {
         currentStep->next();
         QDTask* t = new QDTask(currentStep, linker);
         connect(t, SIGNAL(si_progressChanged()), SLOT(sl_updateProgress()));
         subs.append(t);
     } else {
-        //if annotation table document is added to the proj
-        //have to modify it in the main thread
-        Document* annObjDoc = settings.annotationsObj->getDocument();
-        if (annObjDoc) {
-            Project* prj = AppContext::getProject();
-            if ( prj && prj->getDocuments().contains(annObjDoc) ) {
-                linker->pushToTable("QD Results", "Result ");
-                return subs;
-            }
-        }
-        importTask = new QDImportToTableTask(linker, "QD Results", "Result ");
-        subs.append(importTask);
+        createAnnsTask = new QDCreateAnnotationsTask(linker);
+        subs.append(createAnnsTask);
     }
     return subs;
 }
@@ -140,6 +123,10 @@ void QDScheduler::sl_updateProgress() {
 }
 
 Task::ReportResult QDScheduler::report() {
+    if (stateInfo.isCanceled() || stateInfo.hasError()) {
+        return ReportResult_Finished;
+    }
+    linker->pushToTable();
     // last task is finished, add annotation table object to view if needed
     if (!settings.viewName.isEmpty()) {
         GObjectViewWindow* viewWindow = GObjectViewUtils::findViewByName(settings.viewName);
@@ -157,80 +144,16 @@ QDResultLinker::QDResultLinker(QDScheduler* _sched)
 : scheme(_sched->getSettings().scheme), sched(_sched), cancelled(false), currentStep(NULL),
 needInit(true) {}
 
-AnnotationTableObject* QDResultLinker::pushToTable(const QString& tableName, const QString& groupPrefix) {
-    Q_UNUSED(tableName);
-    const QDRunSettings& settings = sched->getSettings();
-    AnnotationTableObject* ato = settings.annotationsObj;
-    AnnotationGroup* root = ato->getRootGroup();
-    if (!settings.groupName.isEmpty()) {
-        root = root->getSubgroup(settings.groupName, true);
-    }
-
-    if (settings.outputType==QDRunSettings::Single) {
-        int offset = sched->getSettings().offset;
-        U2Region seqRange = scheme->getDNA()->getSequenceRange();
-        foreach(QDResultGroup* candidate, candidates) {
-            if (sched->isCanceled()) {
-                return NULL;
+QString QDResultLinker::prepareAnnotationName(const QDResultUnit& res) {
+    QString aname = res->owner->getActor()->annotateAs();
+    if (aname=="<rsite>") {
+        foreach(const U2Qualifier& qual, res->quals) {
+            if (qual.name == "id") {
+                return qual.value;
             }
-
-            qint64 startPos = candidate->getResultsList().first()->region.startPos;
-            qint64 endPos = candidate->getResultsList().first()->region.endPos();
-            foreach(QDResultUnit ru, candidate->getResultsList()) {
-                startPos = qMin(startPos, ru->region.startPos);
-                endPos = qMax(endPos, ru->region.endPos());
-            }
-            startPos = qMax(seqRange.startPos, startPos - offset);
-            endPos = qMin(seqRange.endPos(), endPos + offset);
-            U2Region r(startPos, endPos-startPos);
-
-            SharedAnnotationData ad(new AnnotationData());
-            ad->name = groupPrefix;
-            ad->location->regions.append(r);
-            root->addAnnotation(new Annotation(ad));
         }
-        return ato;
     }
-
-    int counter = root->getSubgroups().count();
-    qint64 start, end;
-    int sss = candidates.size();
-    perfLog.details(QString("%1 groups").arg(sss));
-    start = GTimer::currentTimeMicros();
-    foreach(QDResultGroup* candidate, candidates) {
-        if (sched->isCanceled()) {
-            return NULL;
-        }
-        const QString& grpName = QString("%1 %2").arg(groupPrefix).arg(QString::number(++counter));
-        AnnotationGroup* newGroup = root->getSubgroup(grpName, true);
-        foreach(const QDResultUnit& res, candidate->getResultsList()) {
-            Annotation* a = result2annotation.value(res, NULL);
-            if (a == NULL) {
-                SharedAnnotationData ad(new AnnotationData());
-                QString aname = res->owner->getActor()->annotateAs();
-                if (aname=="<rsite>") {
-                    foreach(const U2Qualifier& qual, res->quals) {
-                        if (qual.name == "id") {
-                            aname = qual.value;
-                            break;
-                        }
-                    }
-                }
-                ad->name = aname;
-                ad->setStrand(res->strand);
-                ad->location->regions.append(res->region);
-                ad->qualifiers = res->quals;
-                a = new Annotation(ad);
-                result2annotation[res] = a;
-            }
-            newGroup->addAnnotation(a);
-        }
-        candidates.removeOne(candidate);
-        delete candidate;
-    }
-    end = GTimer::currentTimeMicros();
-    perfLog.details(QString("push to table in %1 ms").arg(GTimer::millisBetween(start, end)));
-    return ato;
+    return aname;
 }
 
 // for 1..3, 5..7 returns 1..7
@@ -585,6 +508,108 @@ QList<QDResultUnit> QDResultLinker::prepareComplResults( QDResultGroup* src ) co
     return res;
 }
 
+#define RESULT_PREFIX "Result"
+void QDResultLinker::prepareAnnotations() {
+    qint64 start(0), end(0);
+    perfLog.details(QString("%1 groups").arg(candidates.size()));
+    start = GTimer::currentTimeMicros();
+
+    if (sched->getSettings().outputType == QDRunSettings::Single ) {
+        createMergedAnnotations(RESULT_PREFIX);
+    } else {
+        createAnnotations(RESULT_PREFIX);
+    }
+
+    end = GTimer::currentTimeMicros();
+    perfLog.details(QString("push to table in %1 ms").arg(GTimer::millisBetween(start, end)));
+}
+
+void QDResultLinker::createAnnotations(const QString& groupPrefix) {
+    int counter = 0;
+    foreach(QDResultGroup* candidate, candidates) {
+        if (sched->isCanceled()) {
+            return;
+        }
+        const QString& grpName = QString("%1 %2")
+            .arg(groupPrefix)
+            .arg(QString::number(++counter));
+
+        QList<Annotation*> groupAnns;
+        
+        foreach(const QDResultUnit& res, candidate->getResultsList()) {
+            Annotation* a = result2annotation.value(res, NULL);
+            if (a == NULL) {
+                SharedAnnotationData ad(new AnnotationData());
+                ad->name = prepareAnnotationName(res);
+                ad->setStrand(res->strand);
+                ad->location->regions.append(res->region);
+                ad->qualifiers = res->quals;
+                a = new Annotation(ad);
+                result2annotation[res] = a;
+            }
+            groupAnns.append(a);
+        }
+        annotations[grpName] = groupAnns;
+        delete candidate;
+    }
+    candidates.clear();
+}
+
+void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
+    const QDRunSettings& settings = sched->getSettings();
+    int offset = settings.offset;
+    const U2Region& seqRange = scheme->getDNA()->getSequenceRange();
+    QList<Annotation*> anns;
+    foreach(QDResultGroup* candidate, candidates) {
+        if (sched->isCanceled()) {
+            return;
+        }
+
+        qint64 startPos = candidate->getResultsList().first()->region.startPos;
+        qint64 endPos = candidate->getResultsList().first()->region.endPos();
+        foreach(QDResultUnit ru, candidate->getResultsList()) {
+            startPos = qMin(startPos, ru->region.startPos);
+            endPos = qMax(endPos, ru->region.endPos());
+        }
+        startPos = qMax(seqRange.startPos, startPos - offset);
+        endPos = qMin(seqRange.endPos(), endPos + offset);
+        U2Region r(startPos, endPos-startPos);
+
+        SharedAnnotationData ad(new AnnotationData());
+        ad->name = groupPrefix;
+        ad->location->regions.append(r);
+        anns.append(new Annotation(ad));
+        delete candidate;
+    }
+    candidates.clear();
+    annotations[""] = anns;
+}
+
+void QDResultLinker::pushToTable() {
+    const QDRunSettings& settings = sched->getSettings();
+    AnnotationTableObject* ao = settings.annotationsObj;
+    assert(ao != NULL);
+
+    AnnotationGroup* root = ao->getRootGroup();
+    if (!settings.groupName.isEmpty()) {
+        root = root->getSubgroup(settings.groupName, true);
+    }
+
+    QMapIterator< QString, QList<Annotation*> > iter(annotations);
+    while (iter.hasNext()) {
+        iter.next();
+        AnnotationGroup* ag = NULL;
+        if (iter.key().isEmpty()) {
+            ag = root;
+        } else {
+            ag = root->getSubgroup(iter.key(), true);
+        }
+        foreach(Annotation* a, iter.value()) {
+            ag->addAnnotation(a);
+        }
+    }
+}
+
 //QDStep
 //////////////////////////////////////////////////////////////////////////
 QDStep::QDStep(QDScheme* _scheme) : scheme(_scheme) {
@@ -751,7 +776,6 @@ static const int LINK_START = (FIND_LOC_PROGRESS_WEIGHT + RUN_TASK_PROGRESS_WEIG
 void QDTask::sl_updateProgress() {
     Task* sub = qobject_cast<Task*>(sender());
     if (sub==findLocationTask) {
-        //
     } else if (sub==runTask) {
         stateInfo.progress = RUN_START + sub->getProgress() * RUN_TASK_PROGRESS_WEIGHT;
     } else { //linkTask

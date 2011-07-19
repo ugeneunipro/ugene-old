@@ -306,7 +306,7 @@ void QDDialog::addAnnotationsWidget() {
     acm.sequenceObjectRef = GObjectReference(dnaso);
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
-    acm.data->name = "Query results";
+    acm.data->name = "Query_results";
     acm.useUnloadedObjects = true;
     acm.sequenceLen = dnaso->getSequenceLen();
     cawc = new CreateAnnotationWidgetController(acm, this);

@@ -77,10 +77,13 @@ public:
     QDResultLinker(QDScheduler* _sched);
     QVector<U2Region> findLocation(QDStep* step);
     void updateCandidates(QDStep* step, int& progress);
-    AnnotationTableObject* pushToTable(const QString& tableName, const QString& groupPrefix);
     QDScheduler* getScheduler() const { return sched; }
     int getCandidatesNumber() const { return candidates.size(); }
     bool isCancelled() const { return cancelled; }
+    void prepareAnnotations();
+    void createAnnotations(const QString& groupPrefix);
+    void createMergedAnnotations(const QString& groupPrefix);
+    void pushToTable();
 private:
     void formGroupResults();
     void processNewResults(int& progress);
@@ -90,6 +93,7 @@ private:
     QDStrandOption findResultStrand(QDResultGroup* actorRes);
     //inverts repeat pair if any for complement search
     QList<QDResultUnit> prepareComplResults(QDResultGroup* src) const;
+    static QString prepareAnnotationName(const QDResultUnit& res);
 private:
     QDScheme* scheme;
     QDScheduler* sched;
@@ -101,6 +105,9 @@ private:
 
     QList<QDResultGroup*> currentResults;
     QMap< QDActor*, QList<QDResultGroup*> > currentGroupResults;
+
+
+    QMap< QString, QList<Annotation*> > annotations;
 };
 
 class QDFindLocationTask : public Task {
@@ -134,21 +141,6 @@ private:
     QDResultLinker* linker;
 };
 
-class U2DESIGNER_EXPORT QDImportToTableTask : public Task {
-    Q_OBJECT
-public:
-    QDImportToTableTask(QDResultLinker* _linker, const QString& _tableName, const QString& _groupPrefix)
-        : Task(tr("Results to annotation table"), TaskFlag_None), linker(_linker), ato(NULL),
-        tableName(_tableName), groupPrefix(_groupPrefix) {}
-
-    void run() { ato = linker->pushToTable(tableName, groupPrefix); }
-    AnnotationTableObject* getTable() const { return ato; }
-private:
-    QDResultLinker* linker;
-    AnnotationTableObject* ato;
-    QString tableName, groupPrefix;
-};
-
 class QDTask : public Task {
     Q_OBJECT
 public:
@@ -164,6 +156,18 @@ private:
     QVector<U2Region> curActorLocation;
 };
 
+class U2DESIGNER_EXPORT QDCreateAnnotationsTask : public Task {
+    Q_OBJECT
+public:
+    QDCreateAnnotationsTask(QDResultLinker* linker)
+        : Task(tr("Prepare annotations task"), TaskFlag_None), linker(linker) {}
+
+    void run() { linker->prepareAnnotations(); }
+
+private:
+    QDResultLinker* linker;
+};
+
 class U2DESIGNER_EXPORT QDScheduler : public Task {
     Q_OBJECT
 public:
@@ -177,9 +181,9 @@ private slots:
     void sl_updateProgress();
 private:
     QDRunSettings settings;
-    QDImportToTableTask* importTask;
     QDResultLinker* linker;
     LoadUnloadedDocumentTask* loadTask;
+    QDCreateAnnotationsTask* createAnnsTask;
     QDStep* currentStep;
     int progressDelta;
 };
