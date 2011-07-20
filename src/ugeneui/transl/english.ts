@@ -911,7 +911,7 @@
     <message>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="214"/>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="216"/>
-        <source>main_window_title</source>
+        <source>UGENE</source>
         <translation>UGENE</translation>
     </message>
     <message>

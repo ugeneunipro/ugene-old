@@ -177,11 +177,11 @@ void MainWindowImpl::close() {
 
 
 void MainWindowImpl::createActions() {
-    exitAction = new QAction(tr("mw_menu_file_exit"), this);
+    exitAction = new QAction(tr("Exit"), this);
     exitAction->setShortcutContext(Qt::WindowShortcut);
     connect(exitAction, SIGNAL(triggered()), SLOT(sl_exitAction()));
 
-    aboutAction = new QAction(tr("mw_menu_help_about"), this);
+    aboutAction = new QAction(tr("About"), this);
     aboutAction->setShortcut(QKeySequence(Qt::Key_F1));
     aboutAction->setShortcutContext(Qt::ApplicationShortcut);
     connect(aboutAction, SIGNAL(triggered()), SLOT(sl_aboutAction()));
@@ -215,9 +215,9 @@ void MainWindowImpl::sl_checkUpdatesAction() {
 
 void MainWindowImpl::setWindowTitle(const QString& title) {
     if (title.isEmpty()) {
-        mw->setWindowTitle(tr("main_window_title"));
+        mw->setWindowTitle(tr("UGENE"));
     } else {
-	    mw->setWindowTitle(title + " " + tr("main_window_title") );
+	    mw->setWindowTitle(title + " " + tr("UGENE") );
     }
 }
 

@@ -854,32 +854,32 @@
     <name>U2::MWMenuManagerImpl</name>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="10"/>
-        <source>mw_menu_file</source>
+        <source>File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="11"/>
-        <source>mw_menu_actions</source>
+        <source>Actions</source>
         <translation>Операции</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="12"/>
-        <source>mw_menu_settings</source>
+        <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="13"/>
-        <source>mw_menu_tools</source>
+        <source>Tools</source>
         <translation>Инструменты</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="14"/>
-        <source>mw_menu_window</source>
+        <source>Window</source>
         <translation>Окна</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="15"/>
-        <source>mw_menu_help</source>
+        <source>Help</source>
         <translation>Помощь</translation>
     </message>
 </context>
@@ -887,7 +887,7 @@
     <name>U2::MainWindowImpl</name>
     <message>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="155"/>
-        <source>mw_menu_file_exit</source>
+        <source>Exit</source>
         <translation>Вы&amp;ход</translation>
     </message>
     <message>
@@ -898,7 +898,7 @@
     <message>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="193"/>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="195"/>
-        <source>main_window_title</source>
+        <source>UGENE</source>
         <translation>UGENE</translation>
     </message>
     <message>
@@ -923,7 +923,7 @@
     </message>
     <message>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="159"/>
-        <source>mw_menu_help_about</source>
+        <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>

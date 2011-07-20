@@ -85,4 +85,4 @@ SOURCES += src/MainWindow.cpp \
            src/util_gui/SeqPasterWidgetController.cpp \
            src/util_gui/logview/LogView.cpp
 RESOURCES += U2Gui.qrc
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts transl/chinese.ts

@@ -29,12 +29,12 @@ MWMenuManagerImpl::MWMenuManagerImpl(QObject* p, QMenuBar* mb) : QObject(p)
 {
 	menuBar = mb;
     menuBar->setObjectName("mw_menu_bar");
-	createTopLevelMenu(MWMENU_FILE, tr("mw_menu_file"));
-	createTopLevelMenu(MWMENU_ACTIONS, tr("mw_menu_actions"), MWMENU_FILE);
-	createTopLevelMenu(MWMENU_SETTINGS, tr("mw_menu_settings"), MWMENU_ACTIONS);
-	createTopLevelMenu(MWMENU_TOOLS, tr("mw_menu_tools"), MWMENU_SETTINGS);
-	createTopLevelMenu(MWMENU_WINDOW, tr("mw_menu_window"), MWMENU_TOOLS);
-	createTopLevelMenu(MWMENU_HELP, tr("mw_menu_help"), MWMENU_WINDOW);
+	createTopLevelMenu(MWMENU_FILE, tr("File"));
+	createTopLevelMenu(MWMENU_ACTIONS, tr("Actions"), MWMENU_FILE);
+	createTopLevelMenu(MWMENU_SETTINGS, tr("Settings"), MWMENU_ACTIONS);
+	createTopLevelMenu(MWMENU_TOOLS, tr("Tools"), MWMENU_SETTINGS);
+	createTopLevelMenu(MWMENU_WINDOW, tr("Window"), MWMENU_TOOLS);
+	createTopLevelMenu(MWMENU_HELP, tr("Help"), MWMENU_WINDOW);
 }
 
 QMenu* MWMenuManagerImpl::getTopLevelMenu(const QString& sysName) const {

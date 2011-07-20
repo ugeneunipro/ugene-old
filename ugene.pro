@@ -97,9 +97,9 @@ win32 {
 
 
 #prepare translations
-UGENE_TRANSL_IDX   = 0          1          2
-UGENE_TRANSL_FILES = russian.ts english.ts czech.ts
-UGENE_TRANSL_TAG   = ru         en         cs
+UGENE_TRANSL_IDX   = 0          1          2        3
+UGENE_TRANSL_FILES = russian.ts english.ts czech.ts chinese.ts
+UGENE_TRANSL_TAG   = ru         en         cs       cn       
 
 UGENE_TRANSL_DIR   = transl
 UGENE_TRANSL_QM_TARGET_DIR = src/_debug src/_release

@@ -858,32 +858,32 @@
     <name>U2::MWMenuManagerImpl</name>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="10"/>
-        <source>mw_menu_file</source>
+        <source>File</source>
         <translation>&amp;Soubor</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="11"/>
-        <source>mw_menu_actions</source>
+        <source>Actions</source>
         <translation>&amp;Činnosti</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="12"/>
-        <source>mw_menu_settings</source>
+        <source>Settings</source>
         <translation>&amp;Nastavení</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="13"/>
-        <source>mw_menu_tools</source>
+        <source>Tools</source>
         <translation>&amp;Nástroje</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="14"/>
-        <source>mw_menu_window</source>
+        <source>Window</source>
         <translation>&amp;Okno</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="15"/>
-        <source>mw_menu_help</source>
+        <source>Help</source>
         <translation>&amp;Nápověda</translation>
     </message>
 </context>
@@ -891,7 +891,7 @@
     <name>U2::MainWindowImpl</name>
     <message>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="155"/>
-        <source>mw_menu_file_exit</source>
+        <source>Exit</source>
         <translation>U&amp;končit</translation>
     </message>
     <message>
@@ -902,7 +902,7 @@
     <message>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="193"/>
         <location filename="../src/main_window/MainWindowImpl.cpp" line="195"/>
-        <source>main_window_title</source>
+        <source>UGENE</source>
         <translation>UGENE</translation>
     </message>
     <message>
