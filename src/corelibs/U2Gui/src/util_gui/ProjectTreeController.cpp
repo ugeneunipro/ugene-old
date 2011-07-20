@@ -1092,9 +1092,9 @@ void ProjectTreeController::sl_objectRemovedFromActiveView(GObjectView*, GObject
 
 void ProjectTreeController::sl_onAddObjectToSelectedDocument()
 {
-    QList<Document*> selectedDocuments = getDocumentSelection()->getSelectedDocuments();
+    QSet<Document*> selectedDocuments = getDocsInSelection(true);
     assert(selectedDocuments.size() == 1);
-    Document* doc = selectedDocuments.first();
+    Document* doc = selectedDocuments.values().first();
     
     ProjectTreeControllerModeSettings settings;
     
