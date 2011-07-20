@@ -116,8 +116,9 @@ const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
                 } else {
                     qint64 length = getModelLength(os);
                     if(!os.isCoR()) {
-                        static const int COVERAGE_STAT_SIZE = 1000*1000;
-                        cachedCoverageStat.coverage.resize(COVERAGE_STAT_SIZE);
+                        static const qint64 MAX_COVERAGE_CACHE_SIZE = 1000*1000;
+                        int coverageCacheSize = (int)qMin(MAX_COVERAGE_CACHE_SIZE, length);
+                        cachedCoverageStat.coverage.resize(coverageCacheSize);
                         calculateCoverageStat(U2Region(0, length), cachedCoverageStat, os);
                         if(!os.isCoR()) {
                             QByteArray data;
