@@ -38,9 +38,8 @@ ProjectTreeItemSelectorDialogImpl::ProjectTreeItemSelectorDialogImpl(QWidget* p,
 {
     setupUi(this);
     controller = new ProjectTreeController(this, treeWidget, s);
-    //TODO: fix bug with double clicking on gobject
-    //connect(controller, SIGNAL(si_doubleClicked(GObject*)), SLOT(sl_objectClicked(GObject*)));
-    acceptByDoubleClick = true;
+    connect(controller, SIGNAL(si_doubleClicked(GObject*)), this, SLOT(sl_objectClicked(GObject*)));
+    acceptByDoubleClick = false;
 }
 
 void ProjectTreeItemSelectorDialogImpl::sl_objectClicked(GObject* obj) {
@@ -49,7 +48,6 @@ void ProjectTreeItemSelectorDialogImpl::sl_objectClicked(GObject* obj) {
     assert(d != NULL);
     if (!d->isLoaded()) { 
         QAction* loadSelectedDocumentsAction = controller->getLoadSeletectedDocumentsAction();
-        assert(loadSelectedDocumentsAction->isEnabled());
         loadSelectedDocumentsAction->trigger();
         return;
     }

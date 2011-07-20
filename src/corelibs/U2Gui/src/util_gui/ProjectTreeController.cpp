@@ -26,6 +26,7 @@
 #include <U2Core/GObject.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ResourceTracker.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/RemoveDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
@@ -36,6 +37,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/ProjectTreeItemSelectorDialog.h>
 
 #include <QtCore/QMimeData>
 #include <QtCore/QMap>
@@ -84,11 +86,18 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     documentIcon.addFile(":/core/images/document.png");
     roDocumentIcon.addFile(":/core/images/ro_document.png");
     
+    addObjectToDocumentAction = new QAction(QIcon(":core/images/add_gobject.png"), tr("Add object to document"), this);
+    tree->addAction(addObjectToDocumentAction);
+    connect(addObjectToDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddObjectToSelectedDocument()));
+    
     removeSelectedDocumentsAction = new QAction(QIcon(":core/images/remove_selected_documents.png"), tr("Remove selected documents"), this);
 	removeSelectedDocumentsAction->setShortcut(QKeySequence::Delete);
     removeSelectedDocumentsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     tree->addAction(removeSelectedDocumentsAction);
     connect(removeSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onRemoveSelectedDocuments()));
+    
+    removeSelectedObjectsAction = new QAction(QIcon(":core/images/remove_gobject.png"), tr("Remove object from document"), this);
+    connect(removeSelectedObjectsAction, SIGNAL(triggered()), SLOT(sl_onRemoveSelectedObjects()));
 
 	loadSelectedDocumentsAction = new QAction(QIcon(":core/images/load_selected_documents.png"), tr("Load selected documents"), this);
     loadSelectedDocumentsAction->setShortcuts(QList<QKeySequence>() << Qt::Key_Enter << Qt::Key_Return);
@@ -102,7 +111,7 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     removeReadonlyFlagAction = new QAction(tr("Unlock document for editing"), this);
     connect(removeReadonlyFlagAction, SIGNAL(triggered()), SLOT(sl_onToggleReadonly()));
 
-    unloadSelectedDocumentsAction = new QAction(QIcon(":core/images/unload_document.png"), tr("Unload selected document"), this);
+    unloadSelectedDocumentsAction = new QAction( QIcon(":core/images/unload_document.png"), tr("Unload selected document"), this);
     connect(unloadSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onUnloadSelectedDocuments()));
 
     renameAction = new QAction(tr("Rename..."), this);
@@ -472,6 +481,7 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
         QMenu* addMenu = m.addMenu(tr("Add"));
         addMenu->menuAction()->setObjectName( ACTION_PROJECT__ADD_MENU);
         addMenu->addAction(addExistingDocumentAction);
+        addMenu->addAction(addObjectToDocumentAction);
 
         QMenu* editMenu = m.addMenu(tr("Edit"));
         editMenu->menuAction()->setObjectName( ACTION_PROJECT__EDIT_MENU);
@@ -479,8 +489,13 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
 	}
 
     QMenu* removeMenu = m.addMenu(tr("Remove"));
-	removeMenu->addAction(removeSelectedDocumentsAction);
-	removeMenu->setEnabled(removeSelectedDocumentsAction->isEnabled());
+    if (removeSelectedDocumentsAction->isEnabled()) {
+        removeMenu->addAction(removeSelectedDocumentsAction);
+    }
+    if (removeSelectedObjectsAction->isEnabled()) {
+        removeMenu->addAction(removeSelectedObjectsAction);
+    }
+    removeMenu->setEnabled(!removeMenu->actions().isEmpty());
 
 	emit si_onPopupMenuRequested(m);
     m.setObjectName("popMenu");
@@ -511,7 +526,26 @@ void ProjectTreeController::updateActions() {
         } else {
             hasLoadedDocumentInSelection = true;
         }
-	}
+    }
+    
+    bool canAddObjectToDocument = true;
+    foreach(Document* d, docsInSelection) {
+        if (!DocumentUtils::canAddGObjectsToDocument(d,GObjectTypes::SEQUENCE)) {
+            canAddObjectToDocument = false;
+            break;
+        }
+    }
+    addObjectToDocumentAction->setEnabled(canAddObjectToDocument && docsInSelection.size() == 1);
+    
+    bool canRemoveObjectFromDocument = true;
+    QList<GObject*> selectedObjects = objectSelection.getSelectedObjects();
+    foreach(GObject* obj, selectedObjects ) {
+        if (!DocumentUtils::canRemoveGObjectFromDocument(obj)) {
+            canRemoveObjectFromDocument = false;
+            break;
+        }
+    }
+    removeSelectedObjectsAction->setEnabled(canRemoveObjectFromDocument && !objectSelection.isEmpty());
     removeSelectedDocumentsAction->setEnabled(!docsItemsInSelection.isEmpty());
 
     loadSelectedDocumentsAction->setEnabled(hasUnloadedDocumentInSelection);
@@ -1056,6 +1090,54 @@ void ProjectTreeController::sl_objectRemovedFromActiveView(GObjectView*, GObject
     updateObjectActiveStateVisual(o);
 }
 
+void ProjectTreeController::sl_onAddObjectToSelectedDocument()
+{
+    QList<Document*> selectedDocuments = getDocumentSelection()->getSelectedDocuments();
+    assert(selectedDocuments.size() == 1);
+    Document* doc = selectedDocuments.first();
+    
+    ProjectTreeControllerModeSettings settings;
+    
+    // do not show objects from the selected document
+    QList<GObject*> docObjects = doc->getObjects();
+    foreach (GObject* obj, docObjects) {
+        settings.excludeObjectList.append(obj);
+    }
+    
+    QSet<GObjectType> types = doc->getDocumentFormat()->getSupportedObjectTypes();
+    foreach( const GObjectType& type, types) {
+        settings.objectTypesToShow.append(type);
+    }
+    
+    QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,tree);
+
+    if (!objects.isEmpty()) {
+        foreach(GObject* obj, objects) {
+            if (obj->isUnloaded()) {
+                continue;
+            }
+            doc->addObject(obj->clone());
+
+        }
+    }
+}
+
+void ProjectTreeController::sl_onRemoveSelectedObjects()
+{
+    QList<GObject*> objs = getGObjectSelection()->getSelectedObjects();
+
+    if (objs.isEmpty()) {
+        return;
+    }
+    objectSelection.clear();
+
+    foreach (GObject* obj, objs) {
+        Document* doc = obj->getDocument();
+        assert(doc != NULL);
+        doc->removeObject(obj);
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 /// Tree Items
@@ -1390,5 +1472,7 @@ bool ProjectTreeControllerModeSettings::isTypeShown(GObjectType t) const {
     }
     return objectTypesToShow.contains(t);
 }
+
+
 
 }//namespace

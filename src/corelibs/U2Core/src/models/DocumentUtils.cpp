@@ -159,6 +159,37 @@ QList<DocumentFormat*> DocumentUtils::toFormats(const QList<FormatDetectionResul
     return result;
 }
 
+bool DocumentUtils::canAddGObjectsToDocument( Document* doc, const GObjectType& type )
+{
+    if (!doc->isLoaded() || doc->isStateLocked()) {
+        return false;
+    }
+
+    DocumentFormat* df = doc->getDocumentFormat();
+    return df->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Add, type);
+}
+
+bool DocumentUtils::canRemoveGObjectFromDocument( GObject* obj )
+{
+    Document* doc = obj->getDocument();
+
+    if (!doc->isLoaded() || doc->isStateLocked()) {
+        return false;
+    }
+
+    if (doc->getObjects().size() < 2) {
+        // cannot remove the only object in the document
+        return false;
+    }
+
+    DocumentFormat* df = doc->getDocumentFormat();
+    if (!df->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Remove, obj->getGObjectType() )) {
+        return false;
+    }
+    
+    return true;   
+}
+
 QString FormatDetectionResult::getFormatDescriptionText() const {
     QString text = format == NULL ? importer->getImporterDescription() : format->getFormatDescription();
     return text;

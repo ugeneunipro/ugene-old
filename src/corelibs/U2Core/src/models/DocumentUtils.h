@@ -93,6 +93,10 @@ public:
                                             const GUrl& url = GUrl(), const FormatDetectionConfig& conf = FormatDetectionConfig());
 
     static QList<DocumentFormat*> toFormats(const QList<FormatDetectionResult>& infos);
+
+    static bool canAddGObjectsToDocument(Document* doc, const GObjectType& type);
+
+    static bool canRemoveGObjectFromDocument(GObject* obj);
 };
 
 }//namespace

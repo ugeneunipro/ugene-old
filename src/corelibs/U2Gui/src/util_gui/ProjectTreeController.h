@@ -142,6 +142,8 @@ private slots:
 	void sl_onTreeSelectionChanged();
 	void sl_onContextMenuRequested(const QPoint & pos);
 	void sl_onRemoveSelectedDocuments();
+    void sl_onRemoveSelectedObjects();
+    void sl_onAddObjectToSelectedDocument();
 	void sl_onLoadSelectedDocuments();
     void sl_onUnloadSelectedDocuments();
 
@@ -207,7 +209,10 @@ private:
 	QTreeWidget* tree;
 
 	QAction* removeSelectedDocumentsAction;
+    QAction* removeSelectedObjectsAction;
 	QAction* loadSelectedDocumentsAction;
+    QAction* addObjectToDocumentAction;
+    QAction* removeObjectFromDocument;
     QAction* unloadSelectedDocumentsAction;
     QAction* addReadonlyFlagAction;
     QAction* removeReadonlyFlagAction;

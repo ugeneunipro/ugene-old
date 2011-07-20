@@ -3,6 +3,7 @@
         <file>images/add_existing_document.png</file>
         <file>images/arrow_rotate_clockwise.png</file>
         <file>images/add_new_document.png</file>
+        <file>images/add_gobject.png</file>
         <file>images/adv_widget_menu.png</file>
         <file>images/create_annotation.png</file>
         <file>images/create_annotation_icon.png</file>
@@ -24,6 +25,7 @@
         <file>images/copy_annotation_translation.png</file>
         <file>images/find_dialog.png</file>
         <file>images/remove_selected_documents.png</file>
+        <file>images/remove_gobject.png</file>
         <file>images/load_selected_documents.png</file>
         <file>images/annotation_settings.png</file>
         <file>images/lock.png</file>
