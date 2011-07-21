@@ -270,6 +270,10 @@ void PrepareInputForCAP3Task::run()
             setError(seqReader.getErrorMessage());
             return;
         }
+        // avoid names dublicating
+        QByteArray seqName = seq->getName().toAscii();
+        seqName.replace(' ','_');
+        seq->setName(seqName);
         bool ok = seqWriter.writeNextSequence(*seq);
         if (!ok) {
             setError(tr("Failed to write sequence %1").arg(seq->getName()));
