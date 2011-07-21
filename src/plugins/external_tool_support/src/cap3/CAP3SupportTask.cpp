@@ -23,6 +23,7 @@
 #include "CAP3Support.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -132,11 +133,20 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
     } else  if( subTask == loadTmpDocumentTask  ) {
         
         Document* doc = loadTmpDocumentTask->getDocument();
-        assert(doc != NULL);
-        assert(doc->getObjects().size() > 0);
+        SAFE_POINT(doc != NULL, "Failed loading result document", res);
+        
+        if (doc->getObjects().size() == 0) {
+            // TODO: delete new file?
+            setError(tr("No assembly is found for provided reads"));
+            return res;
+        }
+        
         maObject = qobject_cast<MAlignmentObject*>( doc->getObjects().first() );
-
         if (settings.openView) {
+            if (AppContext::getProject() == NULL) {
+                res.append( AppContext::getProjectLoader()->createNewProjectTask() );
+            }
+            
             // clone doc because it was created in another thread
             Document* clonedDoc = doc->clone();
             res.append(new AddDocumentAndOpenViewTask(clonedDoc));
