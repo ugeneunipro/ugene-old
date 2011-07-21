@@ -299,6 +299,7 @@ QStringList CAP3SupportTaskSettings::getArgumentsList()
     res += "-p"; res += QString("%1").arg(overlapPercentIdentetyCutoff);
     res += "-s"; res += QString("%1").arg(overlapSimilarityScoreCutoff);
     res += "-t"; res += QString("%1").arg(maxNumberOfWordMatches);
+    res += "-y"; res += QString("%1").arg(clippingRange);
     
     return res;
 }

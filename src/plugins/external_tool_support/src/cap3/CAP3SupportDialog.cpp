@@ -77,6 +77,7 @@ void CAP3SupportDialog::accept()
     settings.overlapSimilarityScoreCutoff = overlapSimilarityScoreCutoffBox->value();
     settings.maxNumberOfWordMatches = maxNumWordMatchesBox->value();
     settings.reverseReads = reverseReadsBox->isChecked();
+    settings.clippingRange = clippingRangeBox->value();
 
     QDialog::accept();
 }

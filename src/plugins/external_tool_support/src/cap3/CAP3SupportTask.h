@@ -59,7 +59,7 @@ public:
         overlapLengthCutoff = 40;
         overlapPercentIdentetyCutoff = 80;
         maxNumberOfWordMatches = 300;
-        clippingRange = 100;
+        clippingRange = 250;
         reverseReads = 1;
     }
     
