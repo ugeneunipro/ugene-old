@@ -12,8 +12,6 @@ class BowtieSupport : public ExternalTool {
     Q_OBJECT
 public:
     BowtieSupport(const QString &name, const QString &path = "");
-private slots:
-    void sl_pathChanged();
 };
 
 } // namespace U2
