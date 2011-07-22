@@ -28,6 +28,8 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/TextUtils.h>
 
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/RepeatFinderSettings.h>
@@ -62,16 +64,15 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
     sharedSeqX(NULL), sharedSeqY(NULL),
     clearedByRepitSel(false)
 {
-    dotPlotDirectResultsListener = new DotPlotResultsListener();
-    dotPlotInverseResultsListener = new DotPlotResultsListener();
+    dpDirectResultListener = new DotPlotResultsListener();
+    dpRevComplResultsListener = new DotPlotRevComplResultsListener();
 
     QFontMetrics fm = QPainter(this).fontMetrics();
     int minTextSpace = fm.width(" 00000 ");
 
     if (defaultTextSpace < minTextSpace) {
         textSpace = minTextSpace;
-    }
-    else {
+    } else {
         textSpace = defaultTextSpace;
     }
 
@@ -166,8 +167,8 @@ DotPlotWidget::~DotPlotWidget() {
     if (dotPlotTask) {
         cancelRepeatFinderTask();
     }
-    delete dotPlotDirectResultsListener;
-    delete dotPlotInverseResultsListener;
+    delete dpDirectResultListener;
+    delete dpRevComplResultsListener;
 }
 
 
@@ -318,12 +319,12 @@ void DotPlotWidget::sl_taskFinished(Task *task) {
         return;
     }
 
-    if (!dotPlotDirectResultsListener->stateOk || !dotPlotInverseResultsListener->stateOk) {
+    if (!dpDirectResultListener->stateOk || !dpRevComplResultsListener->stateOk) {
         DotPlotDialogs::tooManyResults();
     }
     dotPlotTask = NULL;
-    dotPlotDirectResultsListener->setTask(NULL);
-    dotPlotInverseResultsListener->setTask(NULL);
+    dpDirectResultListener->setTask(NULL);
+    dpRevComplResultsListener->setTask(NULL);
 
     if (deleteDotPlotFlag) {
         deleteDotPlotFlag = false;
@@ -460,14 +461,14 @@ bool DotPlotWidget::sl_showSaveFileDialog() {
 
         return false;
     }
-    Q_ASSERT(dotPlotDirectResultsListener);
+    Q_ASSERT(dpDirectResultListener);
     Q_ASSERT(sequenceX);
     Q_ASSERT(sequenceY);
 
     dotPlotTask = new SaveDotPlotTask(
             lod.url,
-            dotPlotDirectResultsListener->dotPlotList,
-            dotPlotInverseResultsListener->dotPlotList,
+            dpDirectResultListener->dotPlotList,
+            dpRevComplResultsListener->dotPlotList,
             sequenceX->getSequenceObject(),
             sequenceY->getSequenceObject(),
             minLen,
@@ -524,16 +525,16 @@ bool DotPlotWidget::sl_showLoadFileDialog() {
             break;
     }
 
-    Q_ASSERT(dotPlotDirectResultsListener);
-    Q_ASSERT(dotPlotDirectResultsListener->dotPlotList);
+    Q_ASSERT(dpDirectResultListener);
+    Q_ASSERT(dpDirectResultListener->dotPlotList);
 
-    Q_ASSERT(dotPlotInverseResultsListener);
-    Q_ASSERT(dotPlotInverseResultsListener->dotPlotList);
+    Q_ASSERT(dpRevComplResultsListener);
+    Q_ASSERT(dpRevComplResultsListener->dotPlotList);
 
     dotPlotTask = new LoadDotPlotTask(
             lod.url,
-            dotPlotDirectResultsListener->dotPlotList,
-            dotPlotInverseResultsListener->dotPlotList,
+            dpDirectResultListener->dotPlotList,
+            dpRevComplResultsListener->dotPlotList,
             sequenceX->getSequenceObject(),
             sequenceY->getSequenceObject(),
             &minLen,
@@ -597,13 +598,13 @@ bool DotPlotWidget::sl_showSettingsDialog() {
 
         connectSequenceSelectionSignals();
 
-        Q_ASSERT(dotPlotDirectResultsListener);
-        Q_ASSERT(dotPlotDirectResultsListener->dotPlotList);
-        dotPlotDirectResultsListener->dotPlotList->clear();
+        Q_ASSERT(dpDirectResultListener);
+        Q_ASSERT(dpDirectResultListener->dotPlotList);
+        dpDirectResultListener->dotPlotList->clear();
 
-        Q_ASSERT(dotPlotInverseResultsListener);
-        Q_ASSERT(dotPlotInverseResultsListener->dotPlotList);
-        dotPlotInverseResultsListener->dotPlotList->clear();
+        Q_ASSERT(dpRevComplResultsListener);
+        Q_ASSERT(dpRevComplResultsListener->dotPlotList);
+        dpRevComplResultsListener->dotPlotList->clear();
 
         Q_ASSERT(sequenceX);
         Q_ASSERT(sequenceY);
@@ -653,7 +654,7 @@ bool DotPlotWidget::sl_showSettingsDialog() {
 
         if (d.isDirect()) {
             RepeatFinderSettings cDirect(
-                dotPlotDirectResultsListener,
+                dpDirectResultListener,
                 sequenceX->getSequenceObject()->getSequence().data(),
                 sequenceX->getSequenceLen(),
                 false,                        // direct
@@ -665,18 +666,18 @@ bool DotPlotWidget::sl_showSettingsDialog() {
             );
 
             Task *dotPlotDirectTask = factory->getTaskInstance(cDirect);
-            dotPlotDirectResultsListener->setTask(dotPlotDirectTask);
+            dpDirectResultListener->setTask(dotPlotDirectTask);
 
             tasks << dotPlotDirectTask;
         }
 
         if (d.isInverted()) {
             RepeatFinderSettings cInverse(
-                dotPlotInverseResultsListener,
-                sequenceX->getSequenceObject()->getSequence().data(),
+                dpRevComplResultsListener,
+                sequenceX->getSequenceObject()->getSequence().constData(),
                 sequenceX->getSequenceLen(),
-                true,                        // inversed
-                sequenceY->getSequenceObject()->getSequence().data(),
+                true,                        // inverted
+                sequenceY->getSequenceObject()->getSequence().constData(),
                 sequenceY->getSequenceLen(),
                 al,
                 d.getMinLen(), d.getMismatches(),
@@ -684,7 +685,8 @@ bool DotPlotWidget::sl_showSettingsDialog() {
             );
 
             Task *dotPlotInversedTask = factory->getTaskInstance(cInverse);
-            dotPlotInverseResultsListener->setTask(dotPlotInversedTask);
+            dpRevComplResultsListener->setTask(dotPlotInversedTask);
+            dpRevComplResultsListener->xLen = sequenceX->getSequenceLen();
 
             tasks << dotPlotInversedTask;
         }
@@ -764,13 +766,13 @@ void DotPlotWidget::pixMapUpdate() {
 
     QLine line;
 
-    Q_ASSERT(dotPlotDirectResultsListener);
-    Q_ASSERT(dotPlotDirectResultsListener->dotPlotList);
+    Q_ASSERT(dpDirectResultListener);
+    Q_ASSERT(dpDirectResultListener->dotPlotList);
 
     // draw to the dotplot direct results
     if (direct) {
         pixp.setPen(dotPlotDirectColor);
-        foreach(const DotPlotResults &r, *dotPlotDirectResultsListener->dotPlotList) {
+        foreach(const DotPlotResults &r, *dpDirectResultListener->dotPlotList) {
 
             if (!getLineToDraw(r, &line, ratioX, ratioY)) {
                 continue;
@@ -783,7 +785,7 @@ void DotPlotWidget::pixMapUpdate() {
     // draw to the dotplot inverted results
     if (inverted) {
         pixp.setPen(dotPlotInvertedColor);
-        foreach(const DotPlotResults &r, *dotPlotInverseResultsListener->dotPlotList) {
+        foreach(const DotPlotResults &r, *dpRevComplResultsListener->dotPlotList) {
 
             if (!getLineToDraw(r, &line, ratioX, ratioY, true)) {
                 continue;
@@ -943,7 +945,6 @@ void DotPlotWidget::drawNearestRepeat(QPainter& p) const {
 
     QLine line;
     if (getLineToDraw(*nearestRepeat, &line, ratioX, ratioY, nearestInverted)) {
-
         p.drawLine(line);
     }
 
@@ -1435,8 +1436,8 @@ const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
 
     bool first = true;
 
-    Q_ASSERT (dotPlotDirectResultsListener);
-    foreach (const DotPlotResults &r, *dotPlotDirectResultsListener->dotPlotList) {
+    Q_ASSERT (dpDirectResultListener);
+    foreach (const DotPlotResults &r, *dpDirectResultListener->dotPlotList) {
 
         float halfLen = r.len/(float)2;
         float midX = r.x + halfLen;
@@ -1455,8 +1456,8 @@ const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
         first = false;
     }
 
-    Q_ASSERT (dotPlotInverseResultsListener);
-    foreach (const DotPlotResults &r, *dotPlotInverseResultsListener->dotPlotList) {
+    Q_ASSERT (dpRevComplResultsListener);
+    foreach (const DotPlotResults &r, *dpRevComplResultsListener->dotPlotList) {
 
         float halfLen = r.len/(float)2;
         float midX = r.x + halfLen;
@@ -1557,26 +1558,32 @@ void DotPlotWidget::wheelEvent(QWheelEvent *e) {
 }
 
 QString DotPlotWidget::makeToolTipText() const{
-    if(!nearestRepeat){
+    if (!nearestRepeat){
         return "";
     }
 
-    if(!sequenceX || !sequenceY){
+    if (!sequenceX || !sequenceY){
         return "";
     }
 
-    int shownLen = 20;
+    int maxRepeatSequenceShowLen = 20;
     QString text ="HIT:  len: %1, match: %2, %: %3\n";
     QString coord = "Coordinates(beg.): x: %1 y: %2\n";
     QString upLineSeq ="";
     QString middleLineSeq = "";
     QString downLineSeq = "";
-    const QByteArray &seqX = sequenceX->getSequenceData();
-    const QByteArray &seqY = sequenceY->getSequenceData();
+    QByteArray repX = sequenceX->getSequenceObject()->getSequence().mid(nearestRepeat->x, nearestRepeat->len);
+    QByteArray repY = sequenceY->getSequenceObject()->getSequence().mid(nearestRepeat->y, nearestRepeat->len);
+    if (nearestInverted) {
+        DNATranslation* complT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(sequenceX->getAlphabet());
+        assert(complT != NULL);
+        TextUtils::reverse(repX.data(), repX.length());
+        complT->translate(repX.data(), repX.length());
+    }
     int match = 0;
 
-    for(int i = 0; i < nearestRepeat->len; i++){
-        if(seqX.at(nearestRepeat->x +i) == seqY.at(nearestRepeat->y +i)){
+    for (int i = 0; i < nearestRepeat->len; i++){
+        if (repX[i] == repY[i]) {
             match++;
         }
     }
@@ -1587,27 +1594,29 @@ QString DotPlotWidget::makeToolTipText() const{
     coord = coord.arg(nearestRepeat->x).arg(nearestRepeat->y);
     text.append(coord);
 
-    text.append("S1:     ");
-
-    for(int i = 0; i < nearestRepeat->len && i<shownLen; i++){
-        if(seqX.at(nearestRepeat->x +i) == seqY.at(nearestRepeat->y +i)){
-            middleLineSeq.append(seqX.at(nearestRepeat->x +i));
-        }else{
+    for(int i = 0; i < nearestRepeat->len && i < maxRepeatSequenceShowLen; i++) {
+        char rx = repX[i];
+        char ry = repY[i];
+        if (rx == ry) {
+            middleLineSeq.append(rx);
+        } else {
             middleLineSeq.append("*");
         }
-        upLineSeq.append(seqX.at(nearestRepeat->x +i));
-        downLineSeq.append(seqY.at(nearestRepeat->y +i));
+        upLineSeq.append(rx);
+        downLineSeq.append(ry);
     }
 
+    QString ttt = nearestRepeat->len <= maxRepeatSequenceShowLen ? "\n" : "...\n";
+    text.append("X:     ");
     text.append(upLineSeq);
-    text.append("...\n");
-    text.append("Cons: ");
+    text.append(ttt);
+    text.append(">:     ");
 
     text.append(middleLineSeq);
-    text.append("...\n");
-    text.append("S2:     ");
+    text.append(ttt);
+    text.append("Y:     ");
     text.append(downLineSeq);
-    text.append("...");
+    text.append(ttt);
 
     return text;
 }

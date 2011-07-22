@@ -29,28 +29,7 @@ Task* RFTaskFactory::getTaskInstance( const RepeatFinderSettings& c) const {
 
     if (c.inverted) {
         return new ReverseAndCreateTask(c);
-/*
-        result = new Task("Make reverse sequence and find repeats", TaskFlag_NoRun);
-
-        RevComplSequenceTask *revTask = new RevComplSequenceTask(DNASequence(QByteArray(c.seqX), c.al), U2Region(0, c.sizeX));
-        result->addSubTask(revTask);
-
-        Task *rfBase = RFAlgorithmBase::createTask(
-            c.l,
-            revTask->complementSequence.constData(),
-            c.sizeX,
-            c.seqY,
-            c.sizeY,
-            c.al,
-            c.w,
-            c.mismatches,
-            c.alg,
-            c.nThreads
-        );
-        result->addSubTask(rfBase);
-        */
-    }
-    else {
+    } else {
         return RFAlgorithmBase::createTask(
             c.l,
             c.seqX,

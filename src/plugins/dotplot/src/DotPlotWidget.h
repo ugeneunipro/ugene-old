@@ -40,6 +40,7 @@ class GObjectView;
 class LRegionsSelection;
 
 class DotPlotResultsListener;
+class DotPlotRevComplResultsListener;
 class DotPlotMiniMap;
 struct DotPlotResults;
 class GSequenceLineView;
@@ -137,7 +138,8 @@ private:
 
     QPointF clickedFirst, clickedSecond;
 
-    DotPlotResultsListener *dotPlotDirectResultsListener, *dotPlotInverseResultsListener;
+    DotPlotResultsListener*         dpDirectResultListener;
+    DotPlotRevComplResultsListener* dpRevComplResultsListener;
 
     QAction *showSettingsDialogAction;
     QAction *saveImageAction;

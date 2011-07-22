@@ -90,6 +90,17 @@ private:
     Task *rfTask;
 };
 
+// apply rev-compl transformation for X sequence results
+class DotPlotRevComplResultsListener : public DotPlotResultsListener {
+public:
+    DotPlotRevComplResultsListener() : xLen(0) {}
+    virtual void onResult(const RFResult& r);
+    virtual void onResults(const QVector<RFResult>& v);
+   
+    int xLen;
+};
+
+
 } // namespace
 
 #endif // _U2_DOT_PLOT_CLASSES_H_

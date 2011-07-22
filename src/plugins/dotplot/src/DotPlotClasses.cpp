@@ -133,8 +133,27 @@ void DotPlotResultsListener::onResults(const QVector<RFResult>& v) {
         DotPlotResults vec(r.x, r.y, r.l);
         dotPlotList->push_back(vec);
     }
+}
+
+// add new found results to the list
+void DotPlotRevComplResultsListener::onResult(const RFResult& r) {
+    RFResult res(xLen - r.x - r.l, r.y , r.l);
+    assert(res.x >= 0 && res.x < xLen);
+    DotPlotResultsListener::onResult(res);
 
 }
+
+void DotPlotRevComplResultsListener::onResults(const QVector<RFResult>& v) {
+    QVector<RFResult> results;
+    results.reserve(v.size());
+    foreach(const RFResult& r, v) {
+        RFResult res(xLen - r.x - r.l, r.y, r.l);
+        assert(res.x >= 0 && res.x < xLen);
+        results << res;
+    }
+    DotPlotResultsListener::onResults(results);
+}
+
 
 // dialogs and error messages
 void DotPlotDialogs::taskRunning() {

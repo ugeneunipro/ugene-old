@@ -40,6 +40,7 @@ public:
     virtual void setRFResultsListener(Task*, RFResultsListener*);
 };
 
+/** Reverses X sequence and runs repeat finder task */
 class ReverseAndCreateTask : public Task {
     Q_OBJECT
 public:
