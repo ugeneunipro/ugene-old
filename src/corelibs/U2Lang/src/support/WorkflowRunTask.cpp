@@ -492,6 +492,11 @@ Task(tr("Monitoring execution of workflow schema"), TaskFlag_NoRun), schemaPath(
     connect(proc, SIGNAL(readyReadStandardOutput()), SLOT(sl_onReadStandardOutput()));
     QString cmdlineUgenePath(WorkflowSettings::getCmdlineUgenePath());
     assert(!cmdlineUgenePath.isEmpty());
+    QString line = cmdlineUgenePath;
+    foreach(const QString& arg, args ) {
+        line+=" " + arg;
+    }
+    coreLog.trace("Starting process: " + line);
     proc->start(cmdlineUgenePath, args);
     bool startedSuccessfully = proc->waitForStarted();
     if(!startedSuccessfully) {
@@ -630,15 +635,14 @@ static QStringList generateCandidates(const QString & prefix) {
 }
 
 static QString getCmdlineUgenePath() {
-    QStringList candidates(generateCandidates(QFileInfo(".").absoluteFilePath()));
-    candidates << generateCandidates(QFileInfo("./../_debug").absoluteFilePath());
-    candidates << generateCandidates(QFileInfo("./../_release").absoluteFilePath());
+    QString executableDir = QCoreApplication::applicationDirPath();
+    QStringList candidates(generateCandidates(executableDir));
     foreach(const QString & candidate, candidates) {
         if(QFile::exists(candidate)) {
             return candidate;
         }
     }
-    assert(false);
+    coreLog.info(WorkflowRunTask::tr("Command line UGENE path not found, a possibility to run in separate process will be disabled"));
     return QString();
 }
 
