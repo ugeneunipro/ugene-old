@@ -22,7 +22,6 @@
 #ifndef _IOADAPTER_REGISTRY_IMPL_H_
 #define _IOADAPTER_REGISTRY_IMPL_H_
 
-#include "private.h"
 #include <U2Core/IOAdapter.h>
 
 namespace U2 {

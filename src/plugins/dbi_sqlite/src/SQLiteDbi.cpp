@@ -149,7 +149,7 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     crossDbi->initSqlSchema(os);
     attributeDbi->initSqlSchema(os);
 
-    setProperty(SQLITE_DBI_OPTION_UGENE_VERSION, Version::ugeneVersion().text, os);
+    setProperty(SQLITE_DBI_OPTION_UGENE_VERSION, Version::appVersion().text, os);
 }
 
 void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& os){
@@ -162,7 +162,7 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
         return;
     }
     Version dbUgeneVersion = Version::parseVersion(dbUgeneVersionText);
-    Version currentVersion = Version::ugeneVersion();
+    Version currentVersion = Version::appVersion();
     if (dbUgeneVersion > currentVersion) {
         coreLog.info(SQLiteL10n::tr("Warning! Database of version %1 was created with a newer UGENE version: %2. Not all database features are supported!").arg(currentVersion.text).arg(dbUgeneVersion.text));
     }

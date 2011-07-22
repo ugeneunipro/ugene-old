@@ -70,7 +70,7 @@ Task::ReportResult CheckUpdatesTask::report() {
         return ReportResult_Finished;
     }
 
-    Version thisVersion = Version::ugeneVersion();
+    Version thisVersion = Version::appVersion();
 
     if(runOnStartup) {
         if (siteVersion > thisVersion) {

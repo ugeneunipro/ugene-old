@@ -22,8 +22,6 @@
 #ifndef _DOCUMENT_FORMAT_REGISTRY_IMPL_H_
 #define _DOCUMENT_FORMAT_REGISTRY_IMPL_H_
 
-#include "private.h"
-
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentImport.h>
 

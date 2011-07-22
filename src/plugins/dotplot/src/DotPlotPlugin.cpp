@@ -61,12 +61,9 @@ DotPlotPlugin::DotPlotPlugin() : Plugin(tr("Dotplot"), tr("Build dotplot for seq
 void DotPlotPlugin::sl_initDotPlotView() {
     if (AppContext::getMainWindow()) {
         RepeatFinderTaskFactoryRegistry *fr = AppContext::getRepeatFinderTaskFactoryRegistry();
-        Q_ASSERT(fr);
-
         RepeatFinderTaskFactory *factory = fr->getFactory("");
         if (factory) {
             viewCtx = new DotPlotViewContext(this);
-            Q_ASSERT(viewCtx);
             viewCtx->init();
         }
     }

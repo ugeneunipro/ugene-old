@@ -22,7 +22,7 @@
 #ifndef _U2_APPCONTEXT_IMPL_
 #define _U2_APPCONTEXT_IMPL_
 
-#include "private.h"
+#include <U2Core/global.h>
 #include <U2Core/AppContext.h>
 
 namespace U2 {

@@ -23,6 +23,7 @@
 #define _U2_GOBJECT_TYPES_H_
 
 #include <U2Core/global.h>
+
 #include <QtGui/QIcon>
 
 namespace U2 {

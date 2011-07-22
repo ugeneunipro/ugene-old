@@ -74,7 +74,7 @@ const QString TestFramework::TEST_TIMEOUT_CMD_OPTION = "test-timeout";
 bool TestFramework::helpRegistered = false;
 
 TestFramework::TestFramework() {
-    if( !helpRegistered && Version::ugeneVersion().isDevVersion) {
+    if( !helpRegistered && Version::appVersion().isDevVersion) {
         setTRHelpSections();
     }
     setTestRunnerSettings();

@@ -20,7 +20,7 @@
  */
 
 #include "Log.h"
-#include "Timer.h"
+#include <U2Core/Timer.h>
 
 #include <QtCore/QSet>
 

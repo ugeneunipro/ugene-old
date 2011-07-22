@@ -203,7 +203,7 @@ QString Shtirlitz::formCountersReport() {
 
 QString Shtirlitz::formSystemReport() {
     QString dateAndTime = QDateTime::currentDateTime().toString(Qt::ISODate);
-    QString ugeneVer = Version::ugeneVersion().text;
+    QString ugeneVer = Version::appVersion().text;
     QString qtVersion = qVersion();
     QString osName;
     QString osVersion;

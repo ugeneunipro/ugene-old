@@ -444,7 +444,7 @@ void LigateFragmentsTask::prepare()
 
 Annotation* LigateFragmentsTask::createSourceAnnotation( int regLen )
 {
-    Version v = Version::ugeneVersion();
+    Version v = Version::appVersion();
     SharedAnnotationData sd( new AnnotationData);
     sd->name = "source";
     sd->location->regions << U2Region(0, regLen);

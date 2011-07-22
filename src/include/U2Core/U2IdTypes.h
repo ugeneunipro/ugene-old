@@ -19,19 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_APPSETTINGS_IMPL_H_
-#define _U2_APPSETTINGS_IMPL_H_
+#ifndef _U2_BASE_IDENTITIES_
+#define _U2_BASE_IDENTITIES_
 
-#include <U2Core/AppSettings.h>
+/** Application global IDs types */
+
+#include <U2Core/U2Identity.h>
 
 namespace U2 {
 
-class U2PRIVATE_EXPORT AppSettingsImpl : public AppSettings {
-public:
-    AppSettingsImpl();
-    ~AppSettingsImpl();
-};
 
-}//namespace
+//internal types:
+INT32_ID(ServiceType);
+STRING_ID(GObjectViewFactoryId);
+
+//TODO:
+typedef QString DocumentFormatId;
+typedef QString GObjectType;
+typedef QString IOAdapterId;
+typedef QString GTestFormatId;
+
+} //namespace
 
 #endif

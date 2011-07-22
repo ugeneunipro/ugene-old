@@ -152,7 +152,7 @@ void RegisterServiceTask::prepare() {
 
     foreach(Service* rs, sr->services) {
         if (rs->getType() == s->getType() && (s->getFlags().testFlag(ServiceFlag_Singleton) || s->getFlags().testFlag(ServiceFlag_Singleton))) {
-            stateInfo.setError(tr("Only one service of specified type is allowed: %1").arg(s->getType()));
+            stateInfo.setError(tr("Only one service of specified type is allowed: %1").arg(s->getType().id));
             return;
         }
     }

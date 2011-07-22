@@ -22,7 +22,7 @@
 #ifndef _U2_SETTINGS_IMPL
 #define _U2_SETTINGS_IMPL
 
-#include "private.h"
+#include "U2Core/global.h"
 #include <U2Core/Settings.h>
 
 #include <QtCore/QSettings>

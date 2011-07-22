@@ -21,9 +21,8 @@
 
 #include "Version.h"
 
-// UGENE_VERSION must be supplied as a preprocessor directive
-#ifndef UGENE_VERSION
-#error UGENE_VERSION is not set!
+#ifndef U2_APP_VERSION
+#error U2_APP_VERSION is not set!
 #endif
 
 namespace U2 {
@@ -31,7 +30,7 @@ namespace U2 {
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-#define UGENE_VERSION_STRING TOSTRING(UGENE_VERSION)
+#define U2_APP_VERSION_STRING TOSTRING(U2_APP_VERSION)
 #define VERSION_DEV_SUFFIX "dev"
 
 Version::Version() {
@@ -82,8 +81,8 @@ Version Version::parseVersion(const QString& text) {
     return v;
 }
 
-Version Version::ugeneVersion() {
-    return parseVersion(UGENE_VERSION_STRING);
+Version Version::appVersion() {
+    return parseVersion(U2_APP_VERSION_STRING);
 }
 
 Version Version::qtVersion() {

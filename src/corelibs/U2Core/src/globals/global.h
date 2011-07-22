@@ -22,10 +22,20 @@
 #ifndef _U2_COREAPI_H_
 #define _U2_COREAPI_H_
 
-#include <assert.h>
+#include <U2Core/U2IdTypes.h>
+
 #include <QtCore/qglobal.h>
 #include <QtCore/QVariantMap>
 #include <QtCore/QObject>
+
+#include <assert.h>
+
+#ifdef _DEBUG
+#   define U2_PRODUCT_NAME "UGENED"
+#else
+#   define U2_PRODUCT_NAME "UGENE"
+#endif
+
 
 #ifdef BUILDING_U2CORE_DLL
 #   define U2CORE_EXPORT Q_DECL_EXPORT
@@ -77,6 +87,19 @@
 #else
 #   define U2DESIGNER_EXPORT Q_DECL_IMPORT
 #endif
+#ifdef BUILDING_U2PRIVATE_DLL
+#   define U2PRIVATE_EXPORT Q_DECL_EXPORT
+#else
+#   define U2PRIVATE_EXPORT Q_DECL_IMPORT
+#endif
+
+
+// UGENE_VERSION must be supplied as a preprocessor directive
+#ifndef UGENE_VERSION
+#error UGENE_VERSION is not set!
+#else
+#define U2_APP_VERSION UGENE_VERSION
+#endif
 
 //global
 #define GLOBAL_SETTINGS QString("global/")
@@ -90,13 +113,6 @@ typedef QMap<QString, QString> QStrStrMap;
 
 namespace U2 {
 
-//internal types:
-typedef QString                 DocumentFormatId;
-typedef QString                 GObjectType;
-typedef QString                 IOAdapterId;
-typedef QString                 GObjectViewFactoryId;
-typedef QString                 GTestFormatId;
-typedef int                     ServiceType;
 
 enum TriState {
     TriState_Unknown,

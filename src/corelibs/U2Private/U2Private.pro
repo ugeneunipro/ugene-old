@@ -9,7 +9,6 @@ HEADERS += src/AppContextImpl.h \
            src/LogSettings.h \
            src/PluginDescriptor.h \
            src/PluginSupportImpl.h \
-           src/private.h \
            src/ServiceRegistryImpl.h \
            src/SettingsImpl.h \
            src/TaskSchedulerImpl.h \

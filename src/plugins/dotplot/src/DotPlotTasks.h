@@ -36,8 +36,10 @@ class DNASequenceObject;
 class SaveDotPlotTask : public Task {
     Q_OBJECT
 public:
-    SaveDotPlotTask(const QString &file, QList<DotPlotResults> *dotPlotDirectList, QList<DotPlotResults> *dotPlotInverseList, DNASequenceObject *seqX, DNASequenceObject *seqY, int mLen, int ident)
-        : Task(tr("DotPlot saving"), TaskFlags_FOSCOE), filename(file), directList(dotPlotDirectList), inverseList(dotPlotInverseList), sequenceX(seqX), sequenceY(seqY), minLen(mLen), identity(ident)
+    SaveDotPlotTask(const QString &file, QList<DotPlotResults> *dotPlotDirectList, QList<DotPlotResults> *dotPlotInverseList, 
+        DNASequenceObject *seqX, DNASequenceObject *seqY, int mLen, int ident)
+        : Task(tr("DotPlot saving"), TaskFlags_FOSCOE), filename(file), directList(dotPlotDirectList), inverseList(dotPlotInverseList), 
+        sequenceX(seqX), sequenceY(seqY), minLen(mLen), identity(ident)
     {
         tpm = Task::Progress_Manual;
     };
@@ -60,8 +62,12 @@ class LoadDotPlotTask : public Task {
     Q_OBJECT
 public:
 
-    LoadDotPlotTask(const QString &file, QList<DotPlotResults> *dotPlotDirectList, QList<DotPlotResults> *dotPlotInverseList, DNASequenceObject *seqX, DNASequenceObject *seqY, int *mLen, int *ident, bool *dir, bool *inv)
-        : Task(tr("DotPlot loading"), TaskFlags_FOSCOE), filename(file), directList(dotPlotDirectList), inverseList(dotPlotInverseList), sequenceX(seqX), sequenceY(seqY), minLen(mLen), identity(ident), direct(dir), inverted(inv)
+    LoadDotPlotTask(const QString &file, QList<DotPlotResults> *dotPlotDirectList, 
+        QList<DotPlotResults> *dotPlotInverseList, DNASequenceObject *seqX, 
+        DNASequenceObject *seqY, int *mLen, int *ident, bool *dir, bool *inv)
+        : Task(tr("DotPlot loading"), TaskFlags_FOSCOE), filename(file), 
+        directList(dotPlotDirectList), inverseList(dotPlotInverseList), 
+        sequenceX(seqX), sequenceY(seqY), minLen(mLen), identity(ident), direct(dir), inverted(inv)
     {
         tpm = Task::Progress_Manual;
     };

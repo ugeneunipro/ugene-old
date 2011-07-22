@@ -19,9 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/global.h>
 #include <U2Core/Version.h>
 #include <U2Core/GUrl.h>
-#include "private.h"
 
 namespace U2 {
 

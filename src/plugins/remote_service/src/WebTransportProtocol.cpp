@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include "WebTransportProtocol.h"
+
 #include <U2Core/Log.h>
 #include <U2Core/Version.h>
-#include "WebTransportProtocol.h"
 
 namespace U2 {
 
@@ -90,7 +91,7 @@ QIODevice* UctpRequestBuilder::getDataSource()
     stream.writeStartDocument();
     stream.writeStartElement(UctpElements::REQUEST);
     stream.writeAttribute(UctpAttributes::COMMAND_TYPE, getCommand());
-    stream.writeAttribute(UctpElements::APP_VERSION, Version::ugeneVersion().text );
+    stream.writeAttribute(UctpElements::APP_VERSION, Version::appVersion().text );
 
     // Contents section
     formContents(stream);

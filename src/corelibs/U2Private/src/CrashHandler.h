@@ -26,20 +26,20 @@
 
 
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QProcess>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QMutex>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
 #include <U2Core/Log.h>
 #include <U2Core/LogCache.h>
 
-#include "private.h"
 #include "StackWalker.h"
 
+
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QProcess>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QMutex>
 
 
 #if defined( Q_OS_WIN )

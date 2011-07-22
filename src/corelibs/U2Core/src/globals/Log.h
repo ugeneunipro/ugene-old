@@ -22,7 +22,7 @@
 #ifndef _U2_LOG_H_
 #define _U2_LOG_H_
 
-#include "global.h"
+#include <U2Core/global.h>
 
 #include <QtCore/QMetaType>
 #include <QtCore/QTime>

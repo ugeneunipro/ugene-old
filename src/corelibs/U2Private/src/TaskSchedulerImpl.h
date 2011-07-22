@@ -22,7 +22,7 @@
 #ifndef _U2_TASK_SCHEDULER_IMPL_H_
 #define _U2_TASK_SCHEDULER_IMPL_H_
 
-#include "private.h"
+#include <U2Core/global.h>
 #include <U2Core/Task.h>
 #include <U2Core/LogCache.h>
 

@@ -22,13 +22,14 @@
 #ifndef _U2_UGENE_TEST_FRAMEWORK_H_
 #define _U2_UGENE_TEST_FRAMEWORK_H_
 
+
+#include <U2Core/Task.h>
+
 #include <QtCore/QString>
 #include <QtCore/QList>
 #include <QtCore/QObject>
 #include <QtCore/QMap>
 #include <QtXml/QtXml>
-
-#include <U2Core/Task.h>
 
 namespace U2 {
 

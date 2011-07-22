@@ -27,10 +27,9 @@
 #include "SettingsDialog.h"
 #include "MolecularSurfaceRenderer.h"
 #include "SelectModelsDialog.h"
+#include "StructuralAlignmentDialog.h"
 
 #include <U2Core/BioStruct3D.h>
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
@@ -41,15 +40,20 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Counter.h>
 #include <U2Core/TaskSignalMapper.h>
-#include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
-#include <U2Algorithm/MolecularSurface.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/AnnotationSelection.h>
-#include <time.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
+
+#include <U2Algorithm/StructuralAlignmentAlgorithm.h>
+#include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
+#include <U2Algorithm/MolecularSurface.h>
+
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/ADVSequenceObjectContext.h>
+
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QMessageBox>
@@ -60,10 +64,7 @@
 #include <QtOpenGL>
 
 #include "gl2ps/gl2ps.h"
-
-#include "StructuralAlignmentDialog.h"
-#include <U2Algorithm/StructuralAlignmentAlgorithm.h>
-
+#include <time.h>
 #include <memory>
 
 // disable "unsafe functions" deprecation warnings on MS VS

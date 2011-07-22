@@ -143,7 +143,7 @@ void LoadAllPluginsTask::addToOrderingQueue(const QString& url) {
     }
 
     // check version
-    Version ugeneVersion = Version::ugeneVersion();
+    Version ugeneVersion = Version::appVersion();
     Version qtVersion = Version::qtVersion();
     if (ugeneVersion.debug != desc.pluginVersion.debug) {
         coreLog.trace(QString("Plugin debug/release mode is not matched with UGENE binaries: %1").arg(desc.id));

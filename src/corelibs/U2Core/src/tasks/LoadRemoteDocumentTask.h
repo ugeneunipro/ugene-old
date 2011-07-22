@@ -22,8 +22,9 @@
 #ifndef _U2_LOAD_REMOTE_DOCUMENT_TASK_H_
 #define _U2_LOAD_REMOTE_DOCUMENT_TASK_H_
 
-#include <U2Core/Task.h>
+
 #include <U2Core/GUrl.h>
+#include <U2Core/Task.h>
 
 #include <QtCore/QEventLoop>
 #include <QtCore/QUrl>

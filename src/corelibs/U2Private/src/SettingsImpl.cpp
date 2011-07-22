@@ -33,12 +33,6 @@
 
 namespace U2 {
 
-#ifdef _DEBUG
-#define PRODUCT_NAME "UGENED"
-#else
-#define PRODUCT_NAME "UGENE"
-#endif
-
 static QString findKey(const QStringList& envList, const QString& key) {
     QString prefix = key + "=";
     QString result;
@@ -64,7 +58,7 @@ static QString preparePath(const QString& pathName) {
 SettingsImpl::SettingsImpl(QSettings::Scope scope) {
     QString fileName;
     QStringList envList = QProcess::systemEnvironment();
-    static const QString configFileName = QString("%1.ini").arg(PRODUCT_NAME);
+    static const QString configFileName = QString("%1.ini").arg(U2_PRODUCT_NAME);
 
     if (scope == QSettings::UserScope) {
         // check for local cfg file -> portable UGENE
@@ -94,7 +88,7 @@ SettingsImpl::SettingsImpl(QSettings::Scope scope) {
 #else
         QSettings::Format format = QSettings::IniFormat;
 #endif
-        settings = new QSettings(format, scope, "Unipro", PRODUCT_NAME, this);
+        settings = new QSettings(format, scope, "Unipro", U2_PRODUCT_NAME, this);
     }  else {
         settings = new QSettings(fileName, QSettings::IniFormat, this);
     }
@@ -136,7 +130,7 @@ void SettingsImpl::setValue(const QString& pathName, const QVariant& value) {
 }
 
 QString SettingsImpl::toVersionKey(const QString& key) const {
-    static QString VERSION_KEY_SUFFIX = "/" + Version::ugeneVersion().text;
+    static QString VERSION_KEY_SUFFIX = "/" + Version::appVersion().text;
     
     if (key.endsWith("/")) {
         return key + VERSION_KEY_SUFFIX + "/";

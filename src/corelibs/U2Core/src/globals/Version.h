@@ -32,7 +32,7 @@ public:
     Version();
 
     // Current UGENE instance version
-    static Version ugeneVersion();
+    static Version appVersion();
 
     // Current QT version
     static Version qtVersion();
@@ -46,13 +46,13 @@ public:
     bool operator  == (const Version& v) const;
     bool operator  != (const Version& v) const {return !(v == *this);}
 
-    int major;
-    int minor;
-    int patch;
-    bool debug;
-    QString text;
-    QString suffix;
-    bool isDevVersion;
+    int         major;
+    int         minor;
+    int         patch;
+    bool        debug;
+    QString     text;
+    QString     suffix;
+    bool        isDevVersion;
 };
 
 } //namespace

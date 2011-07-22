@@ -29,13 +29,17 @@
 #include <U2Core/Vector3D.h>
 #include <U2Core/BioStruct3DObject.h>
 
-#include <QSharedPointer>
-#include <QtOpenGL/QGLWidget>
+
+#include <QtCore/QTimer>
+#include <QtCore/QSharedPointer>
+
 #include <QtGui/QMenu>
 #include <QtGui/QActionGroup>
 #include <QtGui/QAction>
 #include <QtGui/QColor>
-#include <QtCore/QTimer>
+
+#include <QtOpenGL/QGLWidget>
+
 #include <memory>
 
 namespace U2 { 

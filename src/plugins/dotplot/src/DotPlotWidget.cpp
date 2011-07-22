@@ -23,25 +23,25 @@
 #include "DotPlotDialog.h"
 #include "DotPlotTasks.h"
 
-#include <U2Algorithm/RepeatFinderTaskFactory.h>
+#include <U2Core/MultiTask.h>
 #include <U2Core/AppContext.h>
-#include <U2Misc/GraphUtils.h>
-#include <U2Misc/DialogUtils.h>
-
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceSelection.h>
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVSingleSequenceWidget.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/RepeatFinderSettings.h>
 #include <U2Algorithm/RepeatFinderTaskFactory.h>
 
-#include <U2Core/MultiTask.h>
-#include <U2View/PanView.h>
 #include <U2Gui/ExportImageDialog.h>
 
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/PanView.h>
+
+#include <U2Misc/GraphUtils.h>
+#include <U2Misc/DialogUtils.h>
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QFileDialog>
@@ -341,15 +341,13 @@ void DotPlotWidget::sl_taskFinished(Task *task) {
 void DotPlotWidget::cancelRepeatFinderTask() {
 
     RepeatFinderTaskFactoryRegistry *tfr = AppContext::getRepeatFinderTaskFactoryRegistry();
-    Q_ASSERT(tfr);
     RepeatFinderTaskFactory *factory = tfr->getFactory("");
-    Q_ASSERT(factory);
+    SAFE_POINT(factory != NULL, "Repeats factory is NULL!", );
     factory->setRFResultsListener(dotPlotTask, NULL);
 
     MultiTask *mTask = qobject_cast<MultiTask*>(dotPlotTask);
     if (mTask) {
         foreach(Task *t, mTask->getSubtasks()) {
-
             if (!t->isFinished()) {
                 t->cancel();
             }
@@ -648,9 +646,8 @@ bool DotPlotWidget::sl_showSettingsDialog() {
         sharedSeqY = sequenceY->getSequenceObject()->getSequence();
 
         RepeatFinderTaskFactoryRegistry *tfr = AppContext::getRepeatFinderTaskFactoryRegistry();
-        Q_ASSERT(tfr);
         RepeatFinderTaskFactory *factory = tfr->getFactory("");
-        Q_ASSERT(factory);
+        SAFE_POINT(factory != NULL, "Repeats factory is NULL!", false);
 
         QList<Task*> tasks;
 

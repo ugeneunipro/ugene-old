@@ -39,10 +39,10 @@ public:
     virtual void accept();
 
 public:
-    QString url;
-    DocumentFormatId format;
-    bool    trimGapsFlag;
-    bool    addToProjectFlag;
+    QString             url;
+    DocumentFormatId    format;
+    bool                trimGapsFlag;
+    bool                addToProjectFlag;
 
 private:    
     SaveDocumentGroupController* saveContoller;

@@ -38,7 +38,7 @@
 
 namespace U2 {
 
-// UGene Common Transport Protocol (UCTP) definitions
+// UGENE Common Transport Protocol (UCTP) definitions
 
 typedef QByteArray UctpCommand;
 

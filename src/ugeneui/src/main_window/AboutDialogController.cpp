@@ -155,7 +155,7 @@ AWidget::AWidget() {
     QImage image(":ugene/images/about.png");
     QPainter p(&image);
     p.setPen(Qt::lightGray);
-    Version v = Version::ugeneVersion();
+    Version v = Version::appVersion();
     QString version = v.text;
     QString text = "Unipro UGENE v" + version + "\n" + __DATE__;
     p.drawText(QRect(10, 20, width()-10, 60), text);

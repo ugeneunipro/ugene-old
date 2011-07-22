@@ -73,7 +73,7 @@ void RunRemoteTaskRequest::formContents( QXmlStreamWriter& stream )
     stream.writeStartDocument();
     stream.writeStartElement(UctpElements::REQUEST);
     stream.writeAttribute(UctpAttributes::COMMAND_TYPE, UctpCommands::RUN_TASK);
-    stream.writeAttribute(UctpElements::APP_VERSION, Version::ugeneVersion().text );
+    stream.writeAttribute(UctpElements::APP_VERSION, Version::appVersion().text );
     stream.writeAttribute(UctpAttributes::SESSION_ID, session->getUid());
 
     // save schema

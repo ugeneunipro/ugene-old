@@ -83,7 +83,7 @@ WorkflowSettingsPageWidget::WorkflowSettingsPageWidget(WorkflowSettingsPageContr
 #ifdef RUN_WORKFLOW_IN_THREADS
     runInSeparateProcessBox->setVisible(false);
 #else
-    runInSeparateProcessBox->setVisible(Version::ugeneVersion().isDevVersion);
+    runInSeparateProcessBox->setVisible(Version::appVersion().isDevVersion);
 #endif // RUN_WORKFLOW_IN_THREADS
 }
 

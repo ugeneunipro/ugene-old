@@ -42,7 +42,7 @@ namespace U2 {
 // TODO i18n help messages ?
 // FIXME windows console encoding issue (see LogDriver.cpp)
 
-const QString DumpHelpTask::VERSION_INFO = QString("\nConsole version of UGENE %1\n").arg(Version::ugeneVersion().text);
+const QString DumpHelpTask::VERSION_INFO = QString("\nConsole version of UGENE %1\n").arg(Version::appVersion().text);
 
 static void dumpProgramNameAndUsage() {
     fprintf( stdout, "%s" , DumpHelpTask::VERSION_INFO.toAscii().constData());

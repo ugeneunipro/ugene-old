@@ -22,7 +22,7 @@
 #ifndef _U2_PLUGINSUPPORT_IMPL_
 #define _U2_PLUGINSUPPORT_IMPL_
 
-#include "private.h"
+#include <U2Core/global.h>
 #include <U2Core/PluginModel.h>
 #include <U2Core/Task.h>
 

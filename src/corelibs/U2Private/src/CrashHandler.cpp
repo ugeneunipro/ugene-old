@@ -246,7 +246,7 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
 
     QString message = exceptionType + "|";
 
-    message += Version::ugeneVersion().text;
+    message += Version::appVersion().text;
     message += "|";
 
     QString activeWindow = AppContext::getActiveWindowName();

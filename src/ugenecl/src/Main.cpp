@@ -215,7 +215,7 @@ int main(int argc, char **argv)
     }
 
     if (argc == 1) {
-        Version version = Version::ugeneVersion();
+        Version version = Version::appVersion();
         fprintf(stderr, "Console interface for Unipro UGENE v%s\n"
 #ifdef Q_OS_WIN
             "Hint: Use 'ugeneui.exe' command to run GUI version of UGENE\n"
