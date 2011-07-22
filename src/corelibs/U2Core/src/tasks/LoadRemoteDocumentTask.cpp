@@ -72,23 +72,6 @@ loadDocumentTask(NULL), doc(NULL) {
     GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
 }
 
-LoadRemoteDocumentTask::LoadRemoteDocumentTask( const QString& accId, const QString& dbNm) :
-Task("LoadRemoteDocument", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL),
-loadDocumentTask(NULL), doc(NULL), accNumber(accId), dbName(dbNm) {
-    
-    RemoteDBRegistry::getRemoteDBRegistry().convertAlias(dbName);
-    sourceUrl = GUrl(RemoteDBRegistry::getRemoteDBRegistry().getURL(accId, dbName));
-    
-    if (sourceUrl.isHyperLink()) {
-        fileName = sourceUrl.fileName();
-    } else {
-        format = getFileFormat(dbName);
-        fileName = accNumber + "." + format;
-    }
-    
-    GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
-}
-
 LoadRemoteDocumentTask::LoadRemoteDocumentTask(const QString & accId, const QString & dbNm, const QString & fullPathDir) :
 Task("LoadRemoteDocument", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL), 
 loadDocumentTask(NULL), doc(NULL), accNumber(accId), dbName(dbNm) {
@@ -108,9 +91,11 @@ loadDocumentTask(NULL), doc(NULL), accNumber(accId), dbName(dbNm) {
         }
     }
     
-    fullPath = QDir::cleanPath(fullPathDir);
-    fullPath = !fullPath.endsWith("/") ? fullPath + "/" : fullPath;
-    
+    if (!fullPathDir.isEmpty()) {
+        fullPath = QDir::cleanPath(fullPathDir);
+        fullPath = !fullPath.endsWith("/") ? fullPath + "/" : fullPath;
+    }
+
     GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
 }
 
@@ -318,6 +303,7 @@ RecentlyDownloadedCache::~RecentlyDownloadedCache()
 LoadDataFromEntrezTask::LoadDataFromEntrezTask( const QString& dbId, const QString& accNum, const QString& retType, const QString& path )
 : Task("LoadDataFromEntrez", TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), db(dbId), 
 accNumber(accNum), fullPath(path), format(retType) {
+
 }
 
 LoadDataFromEntrezTask::~LoadDataFromEntrezTask() {

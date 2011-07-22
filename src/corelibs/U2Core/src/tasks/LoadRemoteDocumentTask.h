@@ -86,8 +86,7 @@ public:
     
 public:
     LoadRemoteDocumentTask(const GUrl& url);
-    LoadRemoteDocumentTask(const QString& accId, const QString& dbName);
-    LoadRemoteDocumentTask(const QString & accId, const QString & dbName, const QString & fullPathDir);
+    LoadRemoteDocumentTask(const QString & accId, const QString & dbName, const QString & fullPathDir = QString());
     virtual void prepare();
     virtual ReportResult report();
     QString getLocalUrl(){ return fullPath; }
@@ -135,6 +134,7 @@ private:
     QNetworkAccessManager* networkManager;
     QXmlSimpleReader xmlReader;
     QString db, accNumber;
+    bool copyDataMode;
     QString resultIndex;
     QString fullPath, format;
 };

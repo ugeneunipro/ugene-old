@@ -31,6 +31,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/MultiTask.h>
 #include <U2Core/Settings.h>
 #include <U2Misc/DialogUtils.h>
 
@@ -127,9 +128,18 @@ void DownloadRemoteFileDialog::accept()
         return;
     }        
     
-    Task* task = new LoadRemoteDocumentAndOpenViewTask(resourceId, getDBName(), fullPath);
-    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    QString dbName = getDBName();
+    QStringList resIds = resourceId.split(QRegExp("[\\s,;]+"));
+
+    QList<Task*> tasks;
+    foreach (const QString& resId, resIds) {
+        tasks.append( new LoadRemoteDocumentAndOpenViewTask(resId, dbName, fullPath) );
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("DownloadRemoteDocuments", tasks) );
+
     QDialog::accept();
+
 }
 
 void DownloadRemoteFileDialog::sl_updateHint(const QString& dbName) {
