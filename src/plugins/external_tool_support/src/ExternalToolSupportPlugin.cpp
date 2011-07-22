@@ -69,8 +69,12 @@
 #include "blast_plus/BlastPlusSupport.h"
 #include "blast_plus/BlastPlusWorker.h"
 #include "cap3/CAP3Support.h"
+#include "bowtie/BowtieSupport.h"
+#include "bowtie/BowtieTask.h"
+#include "bowtie/BowtieSettingsWidget.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <blast_plus/RPSBlastSupportTask.h>
 
 
@@ -157,6 +161,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     AppContext::getExternalToolRegistry()->registerEntry(rpsblastTool);
     CAP3Support* cap3Tool = new CAP3Support(CAP3_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(cap3Tool);
+    BowtieSupport* bowtieSupport = new BowtieSupport(BOWTIE_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(bowtieSupport);
+    BowtieSupport* bowtieBuildSupport = new BowtieSupport(BOWTIE_BUILD_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(bowtieBuildSupport);
 
 
     if (AppContext::getMainWindow()) {
@@ -197,6 +205,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
     AppContext::getCDSFactoryRegistry()->registerFactory(new CDSearchLocalTaskFactory(), CDSearchFactoryRegistry::LocalSearch);
 
+    AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BowtieTask::taskName, new BowtieTaskFactory(), new BowtieGUIExtensionsFactory(), true, false));
+
     //Read settings
     ExternalToolSupportSettings::getExternalTools();
 
@@ -215,6 +225,22 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         QFileInfo cap3Exe(cap3Path);
         if(cap3Exe.exists()){
             AppContext::getExternalToolRegistry()->getByName(CAP3_TOOL_NAME)->setPath(cap3Path);
+        }
+    }
+
+    QString bowtiePath = QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+"\\tools\\bowtie.exe");
+    if(AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME)->getPath().isEmpty()){
+        QFileInfo bowtieExe(bowtiePath);
+        if(bowtieExe.exists()){
+            AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME)->setPath(bowtiePath);
+        }
+    }
+
+    QString bowtieBuildPath = QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+"\\tools\\bowtie-build.exe");
+    if(AppContext::getExternalToolRegistry()->getByName(BOWTIE_BUILD_TOOL_NAME)->getPath().isEmpty()){
+        QFileInfo bowtieBuildExe(bowtieBuildPath);
+        if(bowtieBuildExe.exists()){
+            AppContext::getExternalToolRegistry()->getByName(BOWTIE_BUILD_TOOL_NAME)->setPath(bowtieBuildPath);
         }
     }
 

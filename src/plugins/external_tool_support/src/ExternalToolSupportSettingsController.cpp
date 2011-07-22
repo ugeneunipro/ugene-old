@@ -252,7 +252,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
     }
     assert(selectedItems.length()==1);
     QString name=selectedItems.at(0)->text(0);
-    if((selectedItems.at(0)->text(0) != "BLAST") && (selectedItems.at(0)->text(0) != "BLAST+")){
+    if((selectedItems.at(0)->text(0) != "BLAST") && (selectedItems.at(0)->text(0) != "BLAST+") && (selectedItems.at(0)->text(0) != "BowtieToolkit")){
         descriptionTextEdit->setText(AppContext::getExternalToolRegistry()->getByName(selectedItems.at(0)->text(0))->getDescription());
         if(!externalToolsInfo[selectedItems.at(0)->text(0)].version.isEmpty()){
             descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Version: ")+externalToolsInfo[selectedItems.at(0)->text(0)].version);
@@ -267,6 +267,14 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
     }
     if(selectedItems.at(0)->text(0) == "BLAST+"){
         descriptionTextEdit->setText(tr("<i>BLAST+</i> is a new version of the BLAST package from the NCBI."));
+    }
+    if(selectedItems.at(0)->text(0) == "BowtieToolkit"){
+        descriptionTextEdit->setText(tr("<i>Bowtie<i> is an ultrafast, memory-efficient short read aligner. "
+                       "It aligns short DNA sequences (reads) to the human genome at "
+                       "a rate of over 25 million 35-bp reads per hour. "
+                       "Bowtie indexes the genome with a Burrows-Wheeler index to keep "
+                       "its memory footprint small: typically about 2.2 GB for the human "
+                       "genome (2.9 GB for paired-end)."));
     }
 }
 void ExternalToolSupportSettingsPageWidget::sl_onPathEditWidgetClick(){
