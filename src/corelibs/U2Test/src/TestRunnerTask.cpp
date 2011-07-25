@@ -127,16 +127,15 @@ QList<Task*> TestRunnerTask::onSubTaskFinished(Task* subTask) {
                     newEnv->setVar("TEMP_DATA_DIR", suiteDir + newEnv->getVar("TEMP_DATA_DIR"));
                 }
 
-                GTest* test = tf->createTest(testState->getTestRef()->getShortName(), NULL, newEnv, loader->testData, err);
-                int testTimeout = testState->getTestRef()->getSuite()->getTestTimeout();
-                test->setTimeOut(testTimeout);
-
+                GTest* test = tf->createTest(testState->getTestRef()->getShortName(), NULL, newEnv, loader->testData, err);               
                 if (test == NULL) {
                     testState->setFailed(err);
                     teamcityLog.info(QString("##teamcity[testStarted name='%1 : %2']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName()));
                     teamcityLog.info(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName(),QString(testState->getErrorMessage()).replace("'","|'").replace('\n',' ')));
                     teamcityLog.info(QString("##teamcity[testFinished name='%1 : %2']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName()));
                 } else {
+                    int testTimeout = testState->getTestRef()->getSuite()->getTestTimeout();
+                    test->setTimeOut(testTimeout);
                     stateByTest[test] = testState;
                     QString var = env->getVar(TIME_OUT_VAR);
                     int timeout = var.toInt();
