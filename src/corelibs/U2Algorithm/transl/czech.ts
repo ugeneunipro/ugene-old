@@ -75,7 +75,7 @@
         <translation type="obsolete">Find in sequence task</translation>
     </message>
     <message>
-        <location filename="../src/util_algorithm/FindAlgorithmTask.cpp" line="10"/>
+        <location filename="../src/misc/FindAlgorithmTask.cpp" line="10"/>
         <source>Find in sequence task</source>
         <translation>Najít v úkolu sekvence</translation>
     </message>
@@ -181,7 +181,7 @@ Pro každý sloupec vybere nejvzácnější symbol v celém zarovnání s procen
 <context>
     <name>U2::ORFFindTask</name>
     <message>
-        <location filename="../src/util_algorithm/ORFAlgorithmTask.cpp" line="10"/>
+        <location filename="../src/util_orf/ORFAlgorithmTask.cpp" line="10"/>
         <source>ORF find</source>
         <translation>Hledání ORF</translation>
     </message>

@@ -9,15 +9,10 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/misc/EnzymeModel.h \
            src/misc/FindAlgorithm.h \
            src/misc/FindAlgorithmTask.h \
-           src/misc/ORFAlgorithmTask.h \
-           src/misc/ORFFinder.h \
            src/misc/RepeatFinderSettings.h \
            src/misc/RepeatFinderTaskFactory.h \
            src/misc/RollingArray.h \
            src/misc/RollingMatrix.h \
-           src/misc/SArrayBasedFindTask.h \
-           src/misc/SArrayIndex.h \
-           src/misc/SArrayIndexSerializer.h \
            src/molecular_geometry/GeomUtils.h \
            src/molecular_geometry/MolecularSurface.h \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.h \
@@ -63,6 +58,11 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.h \
            src/util_msaedit/CreateSubalignmentTask.h \
            src/util_msaedit/MAlignmentUtilTasks.h \
+           src/util_orf/ORFAlgorithmTask.h \
+           src/util_orf/ORFFinder.h \
+           src/util_sarray/SArrayBasedFindTask.h \
+           src/util_sarray/SArrayIndex.h \
+           src/util_sarray/SArrayIndexSerializer.h \
            src/util_weight_matrix/BuiltInPWMConversionAlgorithms.h \
            src/util_weight_matrix/PWMConversionAlgorithm.h \
            src/util_weight_matrix/PWMConversionAlgorithmBVH.h \
@@ -78,11 +78,6 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/misc/EnzymeModel.cpp \
            src/misc/FindAlgorithm.cpp \
            src/misc/FindAlgorithmTask.cpp \
-           src/misc/ORFAlgorithmTask.cpp \
-           src/misc/ORFFinder.cpp \
-           src/misc/SArrayBasedFindTask.cpp \
-           src/misc/SArrayIndex.cpp \
-           src/misc/SArrayIndexSerializer.cpp \
            src/molecular_geometry/GeomUtils.cpp \
            src/molecular_geometry/MolecularSurface.cpp \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.cpp \
@@ -124,6 +119,11 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.cpp \
            src/util_msaedit/CreateSubalignmentTask.cpp \
            src/util_msaedit/MAlignmentUtilTasks.cpp \
+           src/util_orf/ORFAlgorithmTask.cpp \
+           src/util_orf/ORFFinder.cpp \
+           src/util_sarray/SArrayBasedFindTask.cpp \
+           src/util_sarray/SArrayIndex.cpp \
+           src/util_sarray/SArrayIndexSerializer.cpp \
            src/util_weight_matrix/BuiltInPWMConversionAlgorithms.cpp \
            src/util_weight_matrix/PWMConversionAlgorithm.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmBVH.cpp \

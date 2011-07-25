@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Algorithm/src/misc/ORFAlgorithmTask.h"
+#include "../../corelibs/U2Algorithm/src/util_orf/ORFAlgorithmTask.h"

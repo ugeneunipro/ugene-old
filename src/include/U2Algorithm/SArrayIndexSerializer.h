@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Algorithm/src/misc/SArrayIndexSerializer.h"
+#include "../../corelibs/U2Algorithm/src/util_sarray/SArrayIndexSerializer.h"

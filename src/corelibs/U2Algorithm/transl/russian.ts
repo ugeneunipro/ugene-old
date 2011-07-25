@@ -71,7 +71,7 @@
 <context>
     <name>U2::FindAlgorithmTask</name>
     <message>
-        <location filename="../src/util_algorithm/FindAlgorithmTask.cpp" line="10"/>
+        <location filename="../src/misc/FindAlgorithmTask.cpp" line="10"/>
         <source>Find in sequence task</source>
         <translation>Поиск Смита-Ватермана</translation>
     </message>
@@ -177,7 +177,7 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::ORFFindTask</name>
     <message>
-        <location filename="../src/util_algorithm/ORFAlgorithmTask.cpp" line="10"/>
+        <location filename="../src/util_orf/ORFAlgorithmTask.cpp" line="10"/>
         <source>ORF find</source>
         <translation>Поиск ORF (рамок считывания)</translation>
     </message>
