@@ -149,16 +149,16 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/TaskSignalMapper.h \
            src/tasks/TaskStarter.h \
            src/tasks/TLSTask.h \
-           src/util_algorithm/MSAUtils.h \
-           src/util_algorithm/QVariantUtils.h \
-           src/util_algorithm/SequenceUtils.h \
-           src/util_algorithm/U2AnnotationUtils.h \
-           src/util_algorithm/U2AssemblyUtils.h \
-           src/util_algorithm/U2AttributeUtils.h \
-           src/util_algorithm/U2Bits.h \
-           src/util_algorithm/U2OpStatusUtils.h \
-           src/util_text/FormatUtils.h \
-           src/util_text/TextUtils.h
+           src/util/FormatUtils.h \
+           src/util/MSAUtils.h \
+           src/util/QVariantUtils.h \
+           src/util/SequenceUtils.h \
+           src/util/TextUtils.h \
+           src/util/U2AnnotationUtils.h \
+           src/util/U2AssemblyUtils.h \
+           src/util/U2AttributeUtils.h \
+           src/util/U2Bits.h \
+           src/util/U2OpStatusUtils.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineRegistry.cpp \
            src/cmdline/CMDLineUtils.cpp \
@@ -270,13 +270,13 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/TaskSignalMapper.cpp \
            src/tasks/TaskStarter.cpp \
            src/tasks/TLSTask.cpp \
-           src/util_algorithm/MSAUtils.cpp \
-           src/util_algorithm/QVariantUtils.cpp \
-           src/util_algorithm/SequenceUtils.cpp \
-           src/util_algorithm/U2AnnotationUtils.cpp \
-           src/util_algorithm/U2AssemblyUtils.cpp \
-           src/util_algorithm/U2AttributeUtils.cpp \
-           src/util_algorithm/U2Bits.cpp \
-           src/util_text/FormatUtils.cpp \
-           src/util_text/TextUtils.cpp
+           src/util/FormatUtils.cpp \
+           src/util/MSAUtils.cpp \
+           src/util/QVariantUtils.cpp \
+           src/util/SequenceUtils.cpp \
+           src/util/TextUtils.cpp \
+           src/util/U2AnnotationUtils.cpp \
+           src/util/U2AssemblyUtils.cpp \
+           src/util/U2AttributeUtils.cpp \
+           src/util/U2Bits.cpp
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

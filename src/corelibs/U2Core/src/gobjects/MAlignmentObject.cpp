@@ -24,7 +24,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/U2SafePoints.h>
-#include <util_algorithm/MSAUtils.h>
+#include <U2Core/MSAUtils.h>
 
 namespace U2 {
 

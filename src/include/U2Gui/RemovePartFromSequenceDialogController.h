@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/RemovePartFromSequenceDialogController.h"
+#include "../../corelibs/U2Gui/src/util/RemovePartFromSequenceDialogController.h"

@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/logview/LogView.h"
+#include "../../corelibs/U2Gui/src/util/logview/LogView.h"

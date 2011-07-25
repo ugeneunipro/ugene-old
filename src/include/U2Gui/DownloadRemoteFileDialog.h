@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/DownloadRemoteFileDialog.h"
+#include "../../corelibs/U2Gui/src/util/DownloadRemoteFileDialog.h"

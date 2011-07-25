@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/CreateAnnotationWidgetController.h"
+#include "../../corelibs/U2Gui/src/util/CreateAnnotationWidgetController.h"

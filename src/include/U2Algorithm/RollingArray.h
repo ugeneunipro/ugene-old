@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Algorithm/src/util_algorithm/RollingArray.h"
+#include "../../corelibs/U2Algorithm/src/misc/RollingArray.h"

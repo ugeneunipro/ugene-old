@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/SeqPasterWidgetController.h"
+#include "../../corelibs/U2Gui/src/util/SeqPasterWidgetController.h"

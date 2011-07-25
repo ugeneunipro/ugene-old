@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/ExportImageDialog.h"
+#include "../../corelibs/U2Gui/src/util/ExportImageDialog.h"

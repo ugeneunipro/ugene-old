@@ -1,2 +1,2 @@
-#include "../../corelibs/U2Core/src/util_algorithm/U2OpStatusUtils.h"
+#include "../../corelibs/U2Core/src/util/U2OpStatusUtils.h"
 

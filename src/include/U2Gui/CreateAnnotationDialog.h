@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/CreateAnnotationDialog.h"
+#include "../../corelibs/U2Gui/src/util/CreateAnnotationDialog.h"

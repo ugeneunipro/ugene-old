@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/ObjectViewTreeController.h"
+#include "../../corelibs/U2Gui/src/util/ObjectViewTreeController.h"

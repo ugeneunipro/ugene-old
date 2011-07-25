@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/AddNewDocumentDialogController.h"
+#include "../../corelibs/U2Gui/src/util/AddNewDocumentDialogController.h"

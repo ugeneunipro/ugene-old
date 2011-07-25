@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/EditQualifierDialog.h"
+#include "../../corelibs/U2Gui/src/util/EditQualifierDialog.h"

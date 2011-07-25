@@ -1059,18 +1059,18 @@
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util_algorithm/MSAUtils.cpp" line="40"/>
+        <location filename="../src/util/MSAUtils.cpp" line="40"/>
         <source>Sequences have different alphabets.</source>
         <translation>Sekvence mají rozdílné abecedy.</translation>
     </message>
     <message>
-        <location filename="../src/util_algorithm/MSAUtils.cpp" line="74"/>
-        <location filename="../src/util_algorithm/MSAUtils.cpp" line="79"/>
+        <location filename="../src/util/MSAUtils.cpp" line="74"/>
+        <location filename="../src/util/MSAUtils.cpp" line="79"/>
         <source>Alignment is empty!</source>
         <translation>Zarovnání je prázdné!</translation>
     </message>
     <message>
-        <location filename="../src/util_algorithm/MSAUtils.cpp" line="85"/>
+        <location filename="../src/util/MSAUtils.cpp" line="85"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation>Sekvence v zarovnání mají rozdílné velikosti!</translation>
     </message>

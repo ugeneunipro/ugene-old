@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Algorithm/src/util_algorithm/DynTable.h"
+#include "../../corelibs/U2Algorithm/src/misc/DynTable.h"

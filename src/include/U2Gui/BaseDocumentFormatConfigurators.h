@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/BaseDocumentFormatConfigurators.h"
+#include "../../corelibs/U2Gui/src/util/BaseDocumentFormatConfigurators.h"

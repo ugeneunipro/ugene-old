@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/CreateObjectRelationDialogController.h"
+#include "../../corelibs/U2Gui/src/util/CreateObjectRelationDialogController.h"

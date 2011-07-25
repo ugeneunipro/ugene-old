@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Algorithm/src/util_algorithm/BitsTable.h"
+#include "../../corelibs/U2Algorithm/src/misc/BitsTable.h"

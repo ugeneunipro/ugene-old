@@ -4,47 +4,47 @@
 <context>
     <name>AddExistingDocumentDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="14"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="14"/>
         <source>Add existing document</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="51"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="51"/>
         <source>Document location:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="61"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="61"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="68"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="68"/>
         <source>Document format:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="78"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="78"/>
         <source>Force read-only mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="98"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="98"/>
         <source>Custom settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="105"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="105"/>
         <source>Save file to disk before opening</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="143"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="143"/>
         <source>Add</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddExistingDocumentDialog.ui" line="153"/>
+        <location filename="../src/util/ui/AddExistingDocumentDialog.ui" line="153"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -52,37 +52,37 @@
 <context>
     <name>AddNewDocumentDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/AddNewDocumentDialog.ui" line="14"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="14"/>
         <source>Add new document</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddNewDocumentDialog.ui" line="50"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="50"/>
         <source>Document format</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddNewDocumentDialog.ui" line="60"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="60"/>
         <source>Document location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddNewDocumentDialog.ui" line="70"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="70"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddNewDocumentDialog.ui" line="97"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="97"/>
         <source>Compress file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddNewDocumentDialog.ui" line="137"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="137"/>
         <source>Create</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AddNewDocumentDialog.ui" line="144"/>
+        <location filename="../src/util/ui/AddNewDocumentDialog.ui" line="144"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -90,42 +90,42 @@
 <context>
     <name>AnnotationSettingsDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="13"/>
+        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="13"/>
         <source>Visualization settings for annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="26"/>
+        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="26"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="31"/>
+        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="31"/>
         <source>Color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="36"/>
+        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="36"/>
         <source>Amino</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="41"/>
+        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="41"/>
         <source>Highlight</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="46"/>
+        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="46"/>
         <source>Visual Qualifier</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="69"/>
+        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="69"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/AnnotationSettingsDialog.ui" line="82"/>
+        <location filename="../src/util/ui/AnnotationSettingsDialog.ui" line="82"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -133,42 +133,42 @@
 <context>
     <name>CopyDocumentDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/CopyDocumentDialog.ui" line="14"/>
+        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="14"/>
         <source>Save a copy</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CopyDocumentDialog.ui" line="25"/>
+        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="25"/>
         <source>Save to file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CopyDocumentDialog.ui" line="32"/>
+        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="32"/>
         <source>File format</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CopyDocumentDialog.ui" line="45"/>
+        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="45"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CopyDocumentDialog.ui" line="52"/>
+        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="52"/>
         <source>Add to project</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CopyDocumentDialog.ui" line="62"/>
+        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="62"/>
         <source>Compress file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CopyDocumentDialog.ui" line="89"/>
+        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="89"/>
         <source>Save</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CopyDocumentDialog.ui" line="96"/>
+        <location filename="../src/util/ui/CopyDocumentDialog.ui" line="96"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -176,70 +176,70 @@
 <context>
     <name>CreateAnnotationWidget</name>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="26"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="26"/>
         <source>Create annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="35"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="35"/>
         <source>Save annotation(s) to</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="41"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="41"/>
         <source>Existing annotation table</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="54"/>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="82"/>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="117"/>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="185"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="54"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="82"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="117"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="185"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="65"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="65"/>
         <source>Create new table</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="92"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="92"/>
         <source>Annotation parameters</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="104"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="104"/>
         <source>Group name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="114"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="114"/>
         <source>Predefined group names</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="134"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="134"/>
         <source>Annotation name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="148"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="148"/>
         <source>Predefined annotation names</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="168"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="168"/>
         <source>Location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="175"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="175"/>
         <source>Annotation location in GenBank format</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateAnnotationWidget.ui" line="182"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="182"/>
         <source>Add/remove complement flag</source>
         <translation></translation>
     </message>
@@ -247,47 +247,47 @@
 <context>
     <name>CreateDocumentFromTextDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="14"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="14"/>
         <source>Create document</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="22"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="22"/>
         <source>Document location:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="32"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="32"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="39"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="39"/>
         <source>Document format:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="49"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="49"/>
         <source>Sequence name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="56"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="56"/>
         <source>Sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="65"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="65"/>
         <source>Save file immediately</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="87"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="87"/>
         <source>Create</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateDocumentFromTextDialog.ui" line="94"/>
+        <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="94"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -295,37 +295,37 @@
 <context>
     <name>CreateNewObjectDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/CreateNewObjectDialog.ui" line="14"/>
+        <location filename="../src/util/ui/CreateNewObjectDialog.ui" line="14"/>
         <source>Create new object</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateNewObjectDialog.ui" line="39"/>
+        <location filename="../src/util/ui/CreateNewObjectDialog.ui" line="39"/>
         <source>Object name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateNewObjectDialog.ui" line="49"/>
+        <location filename="../src/util/ui/CreateNewObjectDialog.ui" line="49"/>
         <source>Object type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateNewObjectDialog.ui" line="59"/>
+        <location filename="../src/util/ui/CreateNewObjectDialog.ui" line="59"/>
         <source>Document</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateNewObjectDialog.ui" line="69"/>
+        <location filename="../src/util/ui/CreateNewObjectDialog.ui" line="69"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateNewObjectDialog.ui" line="113"/>
+        <location filename="../src/util/ui/CreateNewObjectDialog.ui" line="113"/>
         <source>Create</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateNewObjectDialog.ui" line="120"/>
+        <location filename="../src/util/ui/CreateNewObjectDialog.ui" line="120"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -333,22 +333,22 @@
 <context>
     <name>CreateObjectRelationDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/CreateObjectRelationDialog.ui" line="13"/>
+        <location filename="../src/util/ui/CreateObjectRelationDialog.ui" line="13"/>
         <source>Edit object relations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateObjectRelationDialog.ui" line="19"/>
+        <location filename="../src/util/ui/CreateObjectRelationDialog.ui" line="19"/>
         <source>Associate object with:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateObjectRelationDialog.ui" line="44"/>
+        <location filename="../src/util/ui/CreateObjectRelationDialog.ui" line="44"/>
         <source>Ok</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/CreateObjectRelationDialog.ui" line="51"/>
+        <location filename="../src/util/ui/CreateObjectRelationDialog.ui" line="51"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -356,47 +356,47 @@
 <context>
     <name>DownloadRemoteFileDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="14"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="14"/>
         <source>Fetch data from remote database</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="22"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="22"/>
         <source>Resource ID:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="32"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="32"/>
         <source>Database:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="49"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="49"/>
         <source>Save to directory:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="61"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="61"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="90"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="90"/>
         <source>Hint</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="97"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="97"/>
         <source>Use database unique identifier.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="135"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="135"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/DownloadRemoteFileDialog.ui" line="142"/>
+        <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="142"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -404,27 +404,27 @@
 <context>
     <name>EditQualifierDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/EditQualifierDialog.ui" line="14"/>
+        <location filename="../src/util/ui/EditQualifierDialog.ui" line="14"/>
         <source>Edit qualifier</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditQualifierDialog.ui" line="22"/>
+        <location filename="../src/util/ui/EditQualifierDialog.ui" line="22"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditQualifierDialog.ui" line="38"/>
+        <location filename="../src/util/ui/EditQualifierDialog.ui" line="38"/>
         <source>Value</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditQualifierDialog.ui" line="77"/>
+        <location filename="../src/util/ui/EditQualifierDialog.ui" line="77"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditQualifierDialog.ui" line="67"/>
+        <location filename="../src/util/ui/EditQualifierDialog.ui" line="67"/>
         <source>OK</source>
         <translation></translation>
     </message>
@@ -432,62 +432,62 @@
 <context>
     <name>EditSequenceDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="20"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="20"/>
         <source>Annotations region resolving mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="28"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="28"/>
         <source>Resize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="38"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="38"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="45"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="45"/>
         <source>Split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="59"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="59"/>
         <source>Position to insert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="91"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="91"/>
         <source>Save to new file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="105"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="105"/>
         <source>Document location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="115"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="115"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="122"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="122"/>
         <source>Document format:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="134"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="134"/>
         <source>Merge annotations to this file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="159"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="159"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/EditSequenceDialog.ui" line="166"/>
+        <location filename="../src/util/ui/EditSequenceDialog.ui" line="166"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -495,22 +495,22 @@
 <context>
     <name>FormatSettingsDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/FormatSettingsDialog.ui" line="13"/>
+        <location filename="../src/util/ui/FormatSettingsDialog.ui" line="13"/>
         <source>Custom settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/FormatSettingsDialog.ui" line="34"/>
+        <location filename="../src/util/ui/FormatSettingsDialog.ui" line="34"/>
         <source>Save as default settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/FormatSettingsDialog.ui" line="54"/>
+        <location filename="../src/util/ui/FormatSettingsDialog.ui" line="54"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/FormatSettingsDialog.ui" line="61"/>
+        <location filename="../src/util/ui/FormatSettingsDialog.ui" line="61"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -518,22 +518,22 @@
 <context>
     <name>MultipartDocFormatConfiguratorWidget</name>
     <message>
-        <location filename="../src/util_gui/ui/MultipartDocFormatConfiguratorWidget.ui" line="19"/>
+        <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="19"/>
         <source>Create annotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/MultipartDocFormatConfiguratorWidget.ui" line="25"/>
+        <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="25"/>
         <source>Separate sequences</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/MultipartDocFormatConfiguratorWidget.ui" line="32"/>
+        <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="32"/>
         <source>Merge sequences</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/MultipartDocFormatConfiguratorWidget.ui" line="41"/>
+        <location filename="../src/util/ui/MultipartDocFormatConfiguratorWidget.ui" line="41"/>
         <source>Gap length:</source>
         <translation></translation>
     </message>
@@ -541,22 +541,22 @@
 <context>
     <name>ProjectTreeItemSelectorDialogBase</name>
     <message>
-        <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="13"/>
+        <location filename="../src/util/ui/ProjectTreeItemSelectorDialogBase.ui" line="13"/>
         <source>Select Item</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="20"/>
+        <location filename="../src/util/ui/ProjectTreeItemSelectorDialogBase.ui" line="20"/>
         <source>1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="43"/>
+        <location filename="../src/util/ui/ProjectTreeItemSelectorDialogBase.ui" line="43"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/ProjectTreeItemSelectorDialogBase.ui" line="53"/>
+        <location filename="../src/util/ui/ProjectTreeItemSelectorDialogBase.ui" line="53"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -564,58 +564,58 @@
 <context>
     <name>RemovePartFromSequenceDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="14"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="14"/>
         <source>Remove subsequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="22"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="22"/>
         <source>Region to remove</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="62"/>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="96"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="62"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="96"/>
         <source>Remove</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="69"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="69"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="78"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="78"/>
         <source>Annotations region resolving mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="86"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="86"/>
         <source>Resize</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="111"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="111"/>
         <source>Save to new file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="123"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="123"/>
         <source>Merge annotations to this file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="132"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="132"/>
         <source>Document location:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="142"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="142"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/RemovePartFromSequenceDialog.ui" line="149"/>
+        <location filename="../src/util/ui/RemovePartFromSequenceDialog.ui" line="149"/>
         <source>Document format:</source>
         <translation></translation>
     </message>
@@ -623,17 +623,17 @@
 <context>
     <name>SelectFormatToSaveDialog</name>
     <message>
-        <location filename="../src/util_gui/ui/SelectFormatToSaveDialog.ui" line="13"/>
+        <location filename="../src/util/ui/SelectFormatToSaveDialog.ui" line="13"/>
         <source>Select format to save sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/SelectFormatToSaveDialog.ui" line="37"/>
+        <location filename="../src/util/ui/SelectFormatToSaveDialog.ui" line="37"/>
         <source>Create</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/SelectFormatToSaveDialog.ui" line="44"/>
+        <location filename="../src/util/ui/SelectFormatToSaveDialog.ui" line="44"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -641,33 +641,33 @@
 <context>
     <name>SeqPasterWidget</name>
     <message>
-        <location filename="../src/util_gui/ui/SeqPasterWidget.ui" line="14"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="14"/>
         <source>Create annotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/SeqPasterWidget.ui" line="26"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="26"/>
         <source>Paste data here</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/SeqPasterWidget.ui" line="43"/>
-        <location filename="../src/util_gui/ui/SeqPasterWidget.ui" line="53"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="43"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="53"/>
         <source>Custom settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/SeqPasterWidget.ui" line="59"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="59"/>
         <source>Alphabet:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/SeqPasterWidget.ui" line="69"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="69"/>
         <source>Skip unknown symbols</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ui/SeqPasterWidget.ui" line="79"/>
+        <location filename="../src/util/ui/SeqPasterWidget.ui" line="79"/>
         <source>Replace unknown symbols with</source>
         <translation></translation>
     </message>
@@ -675,17 +675,17 @@
 <context>
     <name>SeqPasterWidgetController</name>
     <message>
-        <location filename="../src/util_gui/SeqPasterWidgetController.cpp" line="55"/>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="55"/>
         <source>Input sequence is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/SeqPasterWidgetController.cpp" line="59"/>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="59"/>
         <source>Replace symbol is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/SeqPasterWidgetController.cpp" line="75"/>
+        <location filename="../src/util/SeqPasterWidgetController.cpp" line="75"/>
         <source>Alphabet not detected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -693,51 +693,51 @@
 <context>
     <name>U2::AddExistingDocumentDialogImpl</name>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="149"/>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="155"/>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="161"/>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="167"/>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="173"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="149"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="155"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="161"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="167"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="173"/>
         <source>Error!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="65"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="65"/>
         <source>Project is locked</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="86"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="86"/>
         <source>Open file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="149"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="149"/>
         <source>File %1 does not exist!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="155"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="155"/>
         <source>Document URL is empty!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="161"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="161"/>
         <source>Document is already added!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="167"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="167"/>
         <source>Document format is not selected!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="173"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="173"/>
         <source>IO adapter not found!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddExistingDocumentDialogImpl.cpp" line="184"/>
+        <location filename="../src/util/AddExistingDocumentDialogImpl.cpp" line="184"/>
         <source>Save as</source>
         <translation></translation>
     </message>
@@ -745,12 +745,12 @@
 <context>
     <name>U2::AddNewDocumentDialogImpl</name>
     <message>
-        <location filename="../src/util_gui/AddNewDocumentDialogImpl.cpp" line="48"/>
+        <location filename="../src/util/AddNewDocumentDialogImpl.cpp" line="48"/>
         <source>Project is locked</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AddNewDocumentDialogImpl.cpp" line="114"/>
+        <location filename="../src/util/AddNewDocumentDialogImpl.cpp" line="114"/>
         <source>Save file</source>
         <translation></translation>
     </message>
@@ -781,37 +781,37 @@
 <context>
     <name>U2::AnnotationSettingsDialogImpl</name>
     <message>
-        <location filename="../src/util_gui/AnnotationSettingsDialogImpl.cpp" line="38"/>
+        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="38"/>
         <source>Annotation name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AnnotationSettingsDialogImpl.cpp" line="39"/>
+        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="39"/>
         <source>A color used to highlight annotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AnnotationSettingsDialogImpl.cpp" line="40"/>
+        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="40"/>
         <source>If checked the annotation will be shown on amino strand</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AnnotationSettingsDialogImpl.cpp" line="41"/>
+        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="41"/>
         <source>If unchecked the annotation will not be highlighted with color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AnnotationSettingsDialogImpl.cpp" line="42"/>
+        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="42"/>
         <source>A comma-separated list of qualifier names.&lt;br&gt; The value of qualifiers will be shown instead of the annotation names in PanView</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AnnotationSettingsDialogImpl.cpp" line="138"/>
+        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="138"/>
         <source>Visual qualifiers for %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/AnnotationSettingsDialogImpl.cpp" line="139"/>
+        <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="139"/>
         <source>Please enter a comma-separated list of qualifier names.&lt;br&gt; &lt;i&gt;The value of qualifiers (with list priority) will be shown instead of the annotation names in PanView&lt;/i&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -819,22 +819,22 @@
 <context>
     <name>U2::CreateAnnotationDialog</name>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationDialog.cpp" line="25"/>
+        <location filename="../src/util/CreateAnnotationDialog.cpp" line="25"/>
         <source>Create</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationDialog.cpp" line="28"/>
+        <location filename="../src/util/CreateAnnotationDialog.cpp" line="28"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationDialog.cpp" line="48"/>
+        <location filename="../src/util/CreateAnnotationDialog.cpp" line="48"/>
         <source>Create annotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationDialog.cpp" line="54"/>
+        <location filename="../src/util/CreateAnnotationDialog.cpp" line="54"/>
         <source>Error</source>
         <translation></translation>
     </message>
@@ -842,58 +842,58 @@
 <context>
     <name>U2::CreateAnnotationWidgetController</name>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="136"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="136"/>
         <source>Save file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="183"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="183"/>
         <source>Select annotation saving parameters</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="90"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="90"/>
         <source>&lt;auto&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="186"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="186"/>
         <source>Document is already added to the project: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="192"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="192"/>
         <source>Illegal folder: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="198"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="198"/>
         <source>Annotation name is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="203"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="203"/>
         <source>Annotation name is too long!
 Maximum allowed size: %1 (Genbank format compatibility issue)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="208"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="208"/>
         <source>Illegal annotation name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="213"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="213"/>
         <source>Group name is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="218"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="218"/>
         <source>Illegal group name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateAnnotationWidgetController.cpp" line="222"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="222"/>
         <source>Invalid location! Location must be in GenBank format.
 Simple examples:
 1..10
@@ -905,32 +905,32 @@ complement(5..15)</source>
 <context>
     <name>U2::CreateDocumentFromTextDialogController</name>
     <message>
-        <location filename="../src/util_gui/CreateDocumentFromTextDialogController.cpp" line="45"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="45"/>
         <source>Select file to save...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateDocumentFromTextDialogController.cpp" line="64"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="64"/>
         <source>No path specified</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateDocumentFromTextDialogController.cpp" line="77"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="77"/>
         <source>Sequence name is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateDocumentFromTextDialogController.cpp" line="59"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="59"/>
         <source>Filename is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateDocumentFromTextDialogController.cpp" line="86"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="86"/>
         <source>warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateDocumentFromTextDialogController.cpp" line="86"/>
+        <location filename="../src/util/CreateDocumentFromTextDialogController.cpp" line="86"/>
         <source>The document already in the project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -938,12 +938,12 @@ complement(5..15)</source>
 <context>
     <name>U2::CreateObjectRelationDialogController</name>
     <message>
-        <location filename="../src/util_gui/CreateObjectRelationDialogController.cpp" line="45"/>
+        <location filename="../src/util/CreateObjectRelationDialogController.cpp" line="45"/>
         <source>Warning</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/CreateObjectRelationDialogController.cpp" line="46"/>
+        <location filename="../src/util/CreateObjectRelationDialogController.cpp" line="46"/>
         <source>Found annotations that are out of the sequence range, continue?</source>
         <translation></translation>
     </message>
@@ -951,17 +951,17 @@ complement(5..15)</source>
 <context>
     <name>U2::DownloadRemoteFileDialog</name>
     <message>
-        <location filename="../src/util_gui/DownloadRemoteFileDialog.cpp" line="58"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="58"/>
         <source>Select directory to save</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/DownloadRemoteFileDialog.cpp" line="91"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="91"/>
         <source>Resource id is empty!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/DownloadRemoteFileDialog.cpp" line="97"/>
+        <location filename="../src/util/DownloadRemoteFileDialog.cpp" line="97"/>
         <source>No directory selected for saving file!</source>
         <translation></translation>
     </message>
@@ -969,18 +969,18 @@ complement(5..15)</source>
 <context>
     <name>U2::EditQualifierDialog</name>
     <message>
-        <location filename="../src/util_gui/EditQualifierDialog.cpp" line="63"/>
-        <location filename="../src/util_gui/EditQualifierDialog.cpp" line="67"/>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="63"/>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="67"/>
         <source>Error!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/EditQualifierDialog.cpp" line="63"/>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="63"/>
         <source>Illegal qualifier name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/EditQualifierDialog.cpp" line="67"/>
+        <location filename="../src/util/EditQualifierDialog.cpp" line="67"/>
         <source>Illegal qualifier value</source>
         <translation></translation>
     </message>
@@ -988,32 +988,32 @@ complement(5..15)</source>
 <context>
     <name>U2::EditSequenceDialogController</name>
     <message>
-        <location filename="../src/util_gui/EditSequenceDialogController.cpp" line="26"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="26"/>
         <source>Insert sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/EditSequenceDialogController.cpp" line="28"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="28"/>
         <source>Replace sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/EditSequenceDialogController.cpp" line="60"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="60"/>
         <source>Directory to save is not exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/EditSequenceDialogController.cpp" line="64"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="64"/>
         <source>Entered path is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/EditSequenceDialogController.cpp" line="68"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="68"/>
         <source>Filename is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/EditSequenceDialogController.cpp" line="86"/>
+        <location filename="../src/util/EditSequenceDialogController.cpp" line="86"/>
         <source>Select file to save...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1034,24 +1034,24 @@ complement(5..15)</source>
 <context>
     <name>U2::GUIUtils</name>
     <message>
-        <location filename="../src/util_gui/GUIUtils.cpp" line="99"/>
-        <location filename="../src/util_gui/GUIUtils.cpp" line="109"/>
-        <location filename="../src/util_gui/GUIUtils.cpp" line="127"/>
+        <location filename="../src/util/GUIUtils.cpp" line="99"/>
+        <location filename="../src/util/GUIUtils.cpp" line="109"/>
+        <location filename="../src/util/GUIUtils.cpp" line="127"/>
         <source>Error!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/GUIUtils.cpp" line="99"/>
+        <location filename="../src/util/GUIUtils.cpp" line="99"/>
         <source>Document URL is empty!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/GUIUtils.cpp" line="109"/>
+        <location filename="../src/util/GUIUtils.cpp" line="109"/>
         <source>Unable to launch default web browser.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/GUIUtils.cpp" line="127"/>
+        <location filename="../src/util/GUIUtils.cpp" line="127"/>
         <source>Please specify the browser executable</source>
         <translation></translation>
     </message>
@@ -1094,42 +1094,42 @@ complement(5..15)</source>
 <context>
     <name>U2::LogViewWidget</name>
     <message>
-        <location filename="../src/util_gui/logview/LogView.cpp" line="47"/>
+        <location filename="../src/util/logview/LogView.cpp" line="47"/>
         <source>Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/logview/LogView.cpp" line="52"/>
+        <location filename="../src/util/logview/LogView.cpp" line="52"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/logview/LogView.cpp" line="56"/>
+        <location filename="../src/util/logview/LogView.cpp" line="56"/>
         <source>Dump performance counters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/logview/LogView.cpp" line="59"/>
+        <location filename="../src/util/logview/LogView.cpp" line="59"/>
         <source>Append separator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/logview/LogView.cpp" line="61"/>
+        <location filename="../src/util/logview/LogView.cpp" line="61"/>
         <source>Clear log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/logview/LogView.cpp" line="97"/>
+        <location filename="../src/util/logview/LogView.cpp" line="97"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/logview/LogView.cpp" line="175"/>
+        <location filename="../src/util/logview/LogView.cpp" line="175"/>
         <source>logview_set_case</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/logview/LogView.cpp" line="178"/>
+        <location filename="../src/util/logview/LogView.cpp" line="178"/>
         <source>logview_use_regexp</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1137,7 +1137,7 @@ complement(5..15)</source>
 <context>
     <name>U2::MultiPartDocFormatConfigurator</name>
     <message>
-        <location filename="../src/util_gui/BaseDocumentFormatConfigurators.cpp" line="53"/>
+        <location filename="../src/util/BaseDocumentFormatConfigurators.cpp" line="53"/>
         <source>%1 format settings</source>
         <translation></translation>
     </message>
@@ -1176,27 +1176,27 @@ complement(5..15)</source>
 <context>
     <name>U2::ObjectViewTreeController</name>
     <message>
-        <location filename="../src/util_gui/ObjectViewTreeController.cpp" line="33"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="33"/>
         <source>Activate view</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ObjectViewTreeController.cpp" line="38"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="38"/>
         <source>Add bookmark</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ObjectViewTreeController.cpp" line="42"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="42"/>
         <source>Remove bookmark</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ObjectViewTreeController.cpp" line="48"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="48"/>
         <source>Rename bookmark</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ObjectViewTreeController.cpp" line="325"/>
+        <location filename="../src/util/ObjectViewTreeController.cpp" line="325"/>
         <source>New bookmark</source>
         <translation></translation>
     </message>
@@ -1240,94 +1240,94 @@ complement(5..15)</source>
 <context>
     <name>U2::ProjectTreeController</name>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="64"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="64"/>
         <source>Remove selected documents</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="70"/>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="510"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="70"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="510"/>
         <source>Load selected documents</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="76"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="76"/>
         <source>Lock document for editing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="79"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="79"/>
         <source>Unlock document for editing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="82"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="82"/>
         <source>Unload selected document</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="85"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="85"/>
         <source>Group by document</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="91"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="91"/>
         <source>Group by type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="97"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="97"/>
         <source>No groups</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="203"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="203"/>
         <source>Unloaded object refers to unloaded type: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="458"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="458"/>
         <source>Existing document</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="461"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="461"/>
         <source>Add</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="467"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="467"/>
         <source>Remove</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="511"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="511"/>
         <source>Unload selected documents</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="513"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="513"/>
         <source>Load selected objects</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="514"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="514"/>
         <source>Unload selected objects</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="1080"/>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="1153"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1080"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1153"/>
         <source>[loading %1%]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="1096"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1096"/>
         <source>Locks:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/ProjectTreeController.cpp" line="1099"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1099"/>
         <source>Project is locked</source>
         <translation></translation>
     </message>
@@ -1335,27 +1335,27 @@ complement(5..15)</source>
 <context>
     <name>U2::RemovePartFromSequenceDialogController</name>
     <message>
-        <location filename="../src/util_gui/RemovePartFromSequenceDialogController.cpp" line="49"/>
+        <location filename="../src/util/RemovePartFromSequenceDialogController.cpp" line="49"/>
         <source>There must be only one region to delete</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/RemovePartFromSequenceDialogController.cpp" line="53"/>
+        <location filename="../src/util/RemovePartFromSequenceDialogController.cpp" line="53"/>
         <source>Unable to parse region to delete</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/RemovePartFromSequenceDialogController.cpp" line="59"/>
+        <location filename="../src/util/RemovePartFromSequenceDialogController.cpp" line="59"/>
         <source>Cannot remove the whole sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/RemovePartFromSequenceDialogController.cpp" line="64"/>
+        <location filename="../src/util/RemovePartFromSequenceDialogController.cpp" line="64"/>
         <source>Region to delete is out of sequence bounds</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_gui/RemovePartFromSequenceDialogController.cpp" line="75"/>
+        <location filename="../src/util/RemovePartFromSequenceDialogController.cpp" line="75"/>
         <source>Select file to save...</source>
         <translation></translation>
     </message>
@@ -1363,7 +1363,7 @@ complement(5..15)</source>
 <context>
     <name>U2::SaveDocumentGroupController</name>
     <message>
-        <location filename="../src/util_gui/SaveDocumentGroupController.cpp" line="18"/>
+        <location filename="../src/util/SaveDocumentGroupController.cpp" line="18"/>
         <source>Select file location</source>
         <translation></translation>
     </message>

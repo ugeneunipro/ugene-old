@@ -1067,18 +1067,18 @@
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util_algorithm/MSAUtils.cpp" line="67"/>
+        <location filename="../src/util/MSAUtils.cpp" line="67"/>
         <source>Sequences have different alphabets.</source>
         <translation>Алфавиты не совпадают</translation>
     </message>
     <message>
-        <location filename="../src/util_algorithm/MSAUtils.cpp" line="102"/>
-        <location filename="../src/util_algorithm/MSAUtils.cpp" line="107"/>
+        <location filename="../src/util/MSAUtils.cpp" line="102"/>
+        <location filename="../src/util/MSAUtils.cpp" line="107"/>
         <source>Alignment is empty!</source>
         <translation>Выравнивание пусто!</translation>
     </message>
     <message>
-        <location filename="../src/util_algorithm/MSAUtils.cpp" line="113"/>
+        <location filename="../src/util/MSAUtils.cpp" line="113"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation>Последовательности в выравнивании имеют разный размер!</translation>
     </message>
@@ -1339,7 +1339,7 @@
 <context>
     <name>U2AssemblyUtils</name>
     <message>
-        <location filename="../src/util_algorithm/U2AssemblyUtils.cpp" line="53"/>
+        <location filename="../src/util/U2AssemblyUtils.cpp" line="53"/>
         <source>Invalid CIGAR op: &apos;%1&apos;!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1347,7 +1347,7 @@
 <context>
     <name>U2BitCompression</name>
     <message>
-        <location filename="../src/util_algorithm/U2Bits.cpp" line="89"/>
+        <location filename="../src/util/U2Bits.cpp" line="89"/>
         <source>Bit compression: illegal character in text &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>

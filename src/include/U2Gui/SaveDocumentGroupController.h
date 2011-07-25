@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/SaveDocumentGroupController.h"
+#include "../../corelibs/U2Gui/src/util/SaveDocumentGroupController.h"

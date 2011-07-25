@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/CopyDocumentDialogController.h"
+#include "../../corelibs/U2Gui/src/util/CopyDocumentDialogController.h"

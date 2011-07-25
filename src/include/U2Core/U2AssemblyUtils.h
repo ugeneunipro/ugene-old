@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Core/src/util_algorithm/U2AssemblyUtils.h"
+#include "../../corelibs/U2Core/src/util/U2AssemblyUtils.h"

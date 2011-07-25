@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Algorithm/src/util_algorithm/EnzymeModel.h"
+#include "../../corelibs/U2Algorithm/src/misc/EnzymeModel.h"

@@ -1,7 +1,24 @@
 include (U2Algorithm.pri)
 
 # Input
-HEADERS += src/molecular_geometry/GeomUtils.h \
+HEADERS += src/misc/BinaryFindOpenCL.h \
+           src/misc/BitsTable.h \
+           src/misc/CDSearchTaskFactory.h \
+           src/misc/DnaAssemblyMultiTask.h \
+           src/misc/DynTable.h \
+           src/misc/EnzymeModel.h \
+           src/misc/FindAlgorithm.h \
+           src/misc/FindAlgorithmTask.h \
+           src/misc/ORFAlgorithmTask.h \
+           src/misc/ORFFinder.h \
+           src/misc/RepeatFinderSettings.h \
+           src/misc/RepeatFinderTaskFactory.h \
+           src/misc/RollingArray.h \
+           src/misc/RollingMatrix.h \
+           src/misc/SArrayBasedFindTask.h \
+           src/misc/SArrayIndex.h \
+           src/misc/SArrayIndexSerializer.h \
+           src/molecular_geometry/GeomUtils.h \
            src/molecular_geometry/MolecularSurface.h \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.h \
            src/molecular_geometry/VanDerWaalsSurface.h \
@@ -31,21 +48,6 @@ HEADERS += src/molecular_geometry/GeomUtils.h \
            src/structural_alignment/StructuralAlignmentAlgorithm.h \
            src/structural_alignment/StructuralAlignmentAlgorithmFactory.h \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.h \
-           src/util_algorithm/BinaryFindOpenCL.h \
-           src/util_algorithm/BitsTable.h \
-           src/util_algorithm/DynTable.h \
-           src/util_algorithm/EnzymeModel.h \
-           src/util_algorithm/FindAlgorithm.h \
-           src/util_algorithm/FindAlgorithmTask.h \
-           src/util_algorithm/ORFAlgorithmTask.h \
-           src/util_algorithm/ORFFinder.h \
-           src/util_algorithm/RollingArray.h \
-           src/util_algorithm/RollingMatrix.h \
-           src/util_algorithm/SArrayBasedFindTask.h \
-           src/util_algorithm/SArrayIndex.h \
-           src/util_algorithm/SArrayIndexSerializer.h \
-           src/util_cds/CDSearchTaskFactory.h \
-           src/util_dna_assembly/DnaAssemblyMultiTask.h \
            src/util_msa_consensus/BuiltInConsensusAlgorithms.h \
            src/util_msa_consensus/MSAConsensusAlgorithm.h \
            src/util_msa_consensus/MSAConsensusAlgorithmClustal.h \
@@ -61,8 +63,6 @@ HEADERS += src/molecular_geometry/GeomUtils.h \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.h \
            src/util_msaedit/CreateSubalignmentTask.h \
            src/util_msaedit/MAlignmentUtilTasks.h \
-           src/util_repeat_finder/RepeatFinderSettings.h \
-           src/util_repeat_finder/RepeatFinderTaskFactory.h \
            src/util_weight_matrix/BuiltInPWMConversionAlgorithms.h \
            src/util_weight_matrix/PWMConversionAlgorithm.h \
            src/util_weight_matrix/PWMConversionAlgorithmBVH.h \
@@ -72,7 +72,18 @@ HEADERS += src/molecular_geometry/GeomUtils.h \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.h \
            src/util_gpu/opencl/OpenCLHelper.h \
            src/util_gpu/opencl/OpenCLUtils.h
-SOURCES += src/molecular_geometry/GeomUtils.cpp \
+SOURCES += src/misc/BinaryFindOpenCL.cpp \
+           src/misc/BitsTable.cpp \
+           src/misc/DnaAssemblyMultiTask.cpp \
+           src/misc/EnzymeModel.cpp \
+           src/misc/FindAlgorithm.cpp \
+           src/misc/FindAlgorithmTask.cpp \
+           src/misc/ORFAlgorithmTask.cpp \
+           src/misc/ORFFinder.cpp \
+           src/misc/SArrayBasedFindTask.cpp \
+           src/misc/SArrayIndex.cpp \
+           src/misc/SArrayIndexSerializer.cpp \
+           src/molecular_geometry/GeomUtils.cpp \
            src/molecular_geometry/MolecularSurface.cpp \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.cpp \
            src/molecular_geometry/VanDerWaalsSurface.cpp \
@@ -98,17 +109,6 @@ SOURCES += src/molecular_geometry/GeomUtils.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithm.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmFactory.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.cpp \
-           src/util_algorithm/BinaryFindOpenCL.cpp \
-           src/util_algorithm/BitsTable.cpp \
-           src/util_algorithm/EnzymeModel.cpp \
-           src/util_algorithm/FindAlgorithm.cpp \
-           src/util_algorithm/FindAlgorithmTask.cpp \
-           src/util_algorithm/ORFAlgorithmTask.cpp \
-           src/util_algorithm/ORFFinder.cpp \
-           src/util_algorithm/SArrayBasedFindTask.cpp \
-           src/util_algorithm/SArrayIndex.cpp \
-           src/util_algorithm/SArrayIndexSerializer.cpp \
-           src/util_dna_assembly/DnaAssemblyMultiTask.cpp \
            src/util_msa_consensus/BuiltInConsensusAlgorithms.cpp \
            src/util_msa_consensus/MSAConsensusAlgorithm.cpp \
            src/util_msa_consensus/MSAConsensusAlgorithmClustal.cpp \

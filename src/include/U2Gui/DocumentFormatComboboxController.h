@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util_gui/DocumentFormatComboboxController.h"
+#include "../../corelibs/U2Gui/src/util/DocumentFormatComboboxController.h"

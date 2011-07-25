@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Core/src/util_text/FormatUtils.h"
+#include "../../corelibs/U2Core/src/util/FormatUtils.h"

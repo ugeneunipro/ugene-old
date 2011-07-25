@@ -22,8 +22,7 @@
 #ifndef _U2_DBI_H_
 #define _U2_DBI_H_
 
-#include "U2Type.h"
-
+#include <U2Core/U2Type.h>
 #include <U2Core/U2Annotation.h>
 #include <U2Core/U2Assembly.h>
 #include <U2Core/U2Attribute.h>
