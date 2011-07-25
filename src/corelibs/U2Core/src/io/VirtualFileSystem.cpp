@@ -36,9 +36,6 @@ namespace U2 {
  * VirtualFileSystem
  *******************************************/
 
-const QString VirtualFileSystem::URL_PREFIX = "VFS";
-const QString VirtualFileSystem::URL_NAME_SEPARATOR = "!@#$";
-
 VirtualFileSystem::VirtualFileSystem() {
 }
 

@@ -66,6 +66,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/ExternalToolRegistry.h \
            src/globals/GAutoDeleteList.h \
            src/globals/global.h \
+           src/globals/GUrl.h \
            src/globals/Identifiable.h \
            src/globals/IdRegistry.h \
            src/globals/L10n.h \
@@ -98,8 +99,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/gobjects/TextObject.h \
            src/gobjects/UIndexObject.h \
            src/gobjects/UnloadedObject.h \
-           src/io/GUrl.h \
-           src/io/GUrlUtils.h \
            src/io/HttpFileAdapter.h \
            src/io/IOAdapter.h \
            src/io/LocalFileAdapter.h \
@@ -150,6 +149,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/TaskStarter.h \
            src/tasks/TLSTask.h \
            src/util/FormatUtils.h \
+           src/util/GUrlUtils.h \
            src/util/MSAUtils.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
@@ -200,6 +200,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/DocumentFormatConfigurators.cpp \
            src/globals/ExternalToolRegistry.cpp \
            src/globals/GAutoDeleteList.cpp \
+           src/globals/GUrl.cpp \
            src/globals/Log.cpp \
            src/globals/LogCache.cpp \
            src/globals/NetworkConfiguration.cpp \
@@ -224,8 +225,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/gobjects/TextObject.cpp \
            src/gobjects/UIndexObject.cpp \
            src/gobjects/UnloadedObject.cpp \
-           src/io/GUrl.cpp \
-           src/io/GUrlUtils.cpp \
            src/io/HttpFileAdapter.cpp \
            src/io/IOAdapter.cpp \
            src/io/LocalFileAdapter.cpp \
@@ -271,6 +270,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/TaskStarter.cpp \
            src/tasks/TLSTask.cpp \
            src/util/FormatUtils.cpp \
+           src/util/GUrlUtils.cpp \
            src/util/MSAUtils.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \

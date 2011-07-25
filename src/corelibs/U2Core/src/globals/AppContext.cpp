@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "AppContext.h"
+#include <U2Core/AppContext.h>
 
 namespace U2 {
 

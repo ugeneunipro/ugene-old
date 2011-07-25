@@ -25,9 +25,9 @@
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 
-#include <QtCore/QMutex>
+#include <U2Algorithm/BitsTable.h>
 
-#include "BitsTable.h"
+#include <QtCore/QMutex>
 
 namespace U2 {
 

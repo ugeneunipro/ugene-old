@@ -39,9 +39,7 @@ namespace U2 {
  */
 class U2CORE_EXPORT VirtualFileSystem {
 public:
-    // if you want MemBufAdapter reading-writing to your vfs: make url of your file as URL_PREFIX+vfsname+URL_NAME_SEPARATOR+filename
-    static const QString    URL_PREFIX;
-    static const QString    URL_NAME_SEPARATOR; // NOTE: vfs name should not contain this separator
+    // if you want MemBufAdapter reading-writing to your vfs: make url of your file as U2_VFS_URL_PREFIX+vfsname+U2_VFS_FILE_SEPARATOR+filename
     static const int        READ_BLOCK_SZ = 4096;
     
 public:

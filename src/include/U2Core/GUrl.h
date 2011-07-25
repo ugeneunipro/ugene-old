@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Core/src/io/GUrl.h"
+#include "../../corelibs/U2Core/src/globals/GUrl.h"

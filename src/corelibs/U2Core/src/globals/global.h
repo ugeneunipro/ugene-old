@@ -39,6 +39,8 @@
 #define U2_USER_INI             "UGENE_USER_INI"
 #define U2_SYSTEM_INI           "UGENE_SYSTEM_INI"
 
+#define U2_VFS_URL_PREFIX       "VFS"
+#define U2_VFS_FILE_SEPARATOR   "!@#$"
 
 
 #ifdef BUILDING_U2CORE_DLL

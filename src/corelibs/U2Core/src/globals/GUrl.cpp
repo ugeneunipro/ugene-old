@@ -23,7 +23,6 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
-#include <U2Core/VirtualFileSystem.h>
 
 namespace U2 {
 
@@ -99,7 +98,7 @@ GUrlType GUrl::getURLType(const QString& rawUrl) {
         result = GUrl_Http;
     } else if (rawUrl.startsWith("ftp://")) {
         result = GUrl_Ftp;
-    } else if( rawUrl.startsWith( VirtualFileSystem::URL_PREFIX ) ) {
+    } else if( rawUrl.startsWith( U2_VFS_URL_PREFIX ) ) {
         result = GUrl_VFSFile;
     }
     return result;
@@ -168,7 +167,7 @@ QString GUrl::fileName() const {
 QString GUrl::baseFileName() const {
     QString result;
     if( isVFSFile() ) {
-        QStringList args = urlString.split( VirtualFileSystem::URL_NAME_SEPARATOR, QString::SkipEmptyParts, Qt::CaseSensitive );
+        QStringList args = urlString.split(U2_VFS_FILE_SEPARATOR, QString::SkipEmptyParts, Qt::CaseSensitive );
         if( 2 == args.size() ) {
             result = QFileInfo( args.at( 1 ) ).baseName();
         }
