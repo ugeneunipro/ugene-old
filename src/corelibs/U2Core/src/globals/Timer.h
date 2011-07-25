@@ -22,8 +22,8 @@
 #ifndef _U2_TIMER_H_
 #define _U2_TIMER_H_
 
-#include "global.h"
-#include "Counter.h"
+#include <U2Core/global.h>
+#include <U2Core/Counter.h>
 
 #include <QtCore/QDateTime>
 

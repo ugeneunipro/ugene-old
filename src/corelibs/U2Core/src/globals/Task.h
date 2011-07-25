@@ -348,9 +348,10 @@ public:
     virtual QString getStateName(Task* t) const = 0;
 
     virtual void addThreadId(qint64 taskId, Qt::HANDLE id)  = 0;
+
     virtual void removeThreadId(qint64 taskId) = 0;
+
     virtual qint64 getNameByThreadId(Qt::HANDLE id) const = 0;
-    virtual QList<LogMessage*> getMessages() = 0;
 
 protected:
 

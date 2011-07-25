@@ -23,12 +23,13 @@
 #ifndef _U2_VIRTUAL_FILE_SYSTEM_H_
 #define _U2_VIRTUAL_FILE_SYSTEM_H_
 
+#include <U2Core/global.h>
+
+
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QByteArray>
 #include <QtCore/QMap>
-
-#include <U2Core/global.h>
 
 namespace U2 {
 

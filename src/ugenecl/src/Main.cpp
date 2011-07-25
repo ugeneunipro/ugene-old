@@ -19,33 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <AppContextImpl.h>
-#include <SettingsImpl.h>
-#include <DocumentFormatRegistryImpl.h>
-#include <IOAdapterRegistryImpl.h>
-#include <PluginSupportImpl.h>
-#include <ServiceRegistryImpl.h>
-#include <TaskSchedulerImpl.h>
-#include <AppSettingsImpl.h>
-#include <CrashHandler.h>
-
-#include <U2Algorithm/CudaGpuRegistry.h>
-#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
-#include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
-#include <U2Algorithm/MSAAlignAlgRegistry.h>
-#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
-#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
-#include <U2Algorithm/OpenCLGpuRegistry.h>
-#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
-#include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
-#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
-#include <U2Algorithm/SecStructPredictAlgRegistry.h>
-#include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
-#include <U2Algorithm/SubstMatrixRegistry.h>
-#include <U2Algorithm/SWResultFilterRegistry.h>
-#include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
-#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
-
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/CMDLineCoreOptions.h>
 #include <U2Core/CMDLineRegistry.h>
@@ -65,17 +38,51 @@
 #include <U2Core/Timer.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/Version.h>
+#include <U2Core/VirtualFileSystem.h>
+
+#include <U2Algorithm/CudaGpuRegistry.h>
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
+#include <U2Algorithm/MSAAlignAlgRegistry.h>
+#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
+#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
+#include <U2Algorithm/OpenCLGpuRegistry.h>
+#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
+#include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
+#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
+#include <U2Algorithm/SecStructPredictAlgRegistry.h>
+#include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
+#include <U2Algorithm/SubstMatrixRegistry.h>
+#include <U2Algorithm/SWResultFilterRegistry.h>
+#include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
+
+#include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/TestRunnerTask.h>
+
 #include <U2Gui/BaseDocumentFormatConfigurators.h>
+
+#include <U2Remote/DistributedComputingUtil.h>
+
 #include <U2Lang/QueryDesignerRegistry.h>
 #include <U2Lang/WorkflowEnvImpl.h>
 #include <U2Lang/WorkflowRunTask.h>
 #include <U2Lang/LocalDomain.h>
-#include <U2Remote/DistributedComputingUtil.h>
-#include <U2Test/GTestFrameworkComponents.h>
-#include <U2Test/TestRunnerTask.h>
 
+//U2Private
+#include <AppContextImpl.h>
+#include <SettingsImpl.h>
+#include <DocumentFormatRegistryImpl.h>
+#include <IOAdapterRegistryImpl.h>
+#include <PluginSupportImpl.h>
+#include <ServiceRegistryImpl.h>
+#include <TaskSchedulerImpl.h>
+#include <AppSettingsImpl.h>
+#include <CrashHandler.h>
+
+// local project imports
 #include "ForeverTask.h"
 #include "LogDriver.h"
 #include "ShutdownTask.h"
@@ -205,7 +212,7 @@ int main(int argc, char **argv)
 {
 #if defined(USE_CRASHHANDLER) && defined(NDEBUG)
     CrashHandler::setupHandler();
-    CrashHandler::allocateReserve();
+    CrashHandler::preallocateReservedSpace();
 #endif
 
     const char* build = QT_VERSION_STR, *runtime = qVersion();

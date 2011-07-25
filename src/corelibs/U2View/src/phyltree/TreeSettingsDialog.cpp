@@ -20,8 +20,7 @@
  */
 
 #include "TreeSettingsDialog.h"
-
-#include <U2Core/L10n.h>
+#include <U2Core/global.h>
 
 namespace U2 {
 
@@ -44,16 +43,16 @@ TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &tree
 
     heightSlider->setEnabled(isRectLayout);
 
-    treeViewCombo->addItem(L10N::treePhylogram());
-    treeViewCombo->addItem(L10N::treeCladogram());
+    treeViewCombo->addItem(treePhylogramText());
+    treeViewCombo->addItem(treeCladogramText());
 
     switch ( settings.type )
     {
     case TreeSettings::PHYLOGRAM:
-        treeViewCombo->setCurrentIndex(treeViewCombo->findText(L10N::treePhylogram()));
+        treeViewCombo->setCurrentIndex(treeViewCombo->findText(treePhylogramText()));
         break;
     case TreeSettings::CLADOGRAM:
-        treeViewCombo->setCurrentIndex(treeViewCombo->findText(L10N::treeCladogram()));
+        treeViewCombo->setCurrentIndex(treeViewCombo->findText(treeCladogramText()));
         break;
     default:
         assert(false && "Unexpected tree type value.");
@@ -66,10 +65,10 @@ void TreeSettingsDialog::accept() {
     changedSettings.height_coef = heightSlider->value();
     changedSettings.width_coef = widthlSlider->value();
 
-    if (treeViewCombo->currentText() == L10N::treePhylogram())
+    if (treeViewCombo->currentText() == treePhylogramText())
     {
         changedSettings.type = TreeSettings::PHYLOGRAM;
-    } else if (treeViewCombo->currentText() == L10N::treeCladogram()) {
+    } else if (treeViewCombo->currentText() == treeCladogramText()) {
         changedSettings.type = TreeSettings::CLADOGRAM;
     } else {
         assert(false && "Unexpected tree type value");

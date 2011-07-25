@@ -61,7 +61,7 @@ SettingsImpl::SettingsImpl(QSettings::Scope scope) {
     static const QString configFileName = QString("%1.ini").arg(U2_PRODUCT_NAME);
 
     if (scope == QSettings::UserScope) {
-        // check for local cfg file -> portable UGENE
+        // check for local cfg file -> portable APP
         bool localCfg = false;
         QDir dir(QDir::current());
         QFileInfoList dirEntries = dir.entryInfoList();
@@ -76,11 +76,11 @@ SettingsImpl::SettingsImpl(QSettings::Scope scope) {
         if (!localCfg) {
             fileName = AppContext::getCMDLineRegistry()->getParameterValue( CMDLineCoreOptions::INI_FILE );
             if (fileName.isEmpty()) {
-                fileName = findKey(envList, "UGENE_USER_INI");
+                fileName = findKey(envList, U2_USER_INI);
             }
         }
     } else {
-        fileName = findKey(envList, "UGENE_SYSTEM_INI");
+        fileName = findKey(envList, U2_SYSTEM_INI);
     }
     if (fileName.isEmpty()) {
 #ifdef Q_WS_MAC
@@ -88,7 +88,8 @@ SettingsImpl::SettingsImpl(QSettings::Scope scope) {
 #else
         QSettings::Format format = QSettings::IniFormat;
 #endif
-        settings = new QSettings(format, scope, "Unipro", U2_PRODUCT_NAME, this);
+        settings = new QSettings(format, scope, U2_ORGANIZATION_NAME, U2_PRODUCT_NAME
+            , this);
     }  else {
         settings = new QSettings(fileName, QSettings::IniFormat, this);
     }

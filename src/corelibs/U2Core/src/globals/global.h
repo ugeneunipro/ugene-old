@@ -31,10 +31,14 @@
 #include <assert.h>
 
 #ifdef _DEBUG
-#   define U2_PRODUCT_NAME "UGENED"
+#   define U2_PRODUCT_NAME      "UGENED"
 #else
-#   define U2_PRODUCT_NAME "UGENE"
+#   define U2_PRODUCT_NAME      "UGENE"
 #endif
+#define U2_ORGANIZATION_NAME    "Unipro"
+#define U2_USER_INI             "UGENE_USER_INI"
+#define U2_SYSTEM_INI           "UGENE_SYSTEM_INI"
+
 
 
 #ifdef BUILDING_U2CORE_DLL

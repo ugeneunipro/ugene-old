@@ -22,11 +22,16 @@
 #if defined(USE_CRASHHANDLER)
 
 #include "CrashHandler.h"
-
 #include "TaskSchedulerImpl.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/Task.h>
+#include <U2Core/Log.h>
+#include <U2Core/LogCache.h>
+#include <U2Core/Timer.h>
 #include <U2Core/Version.h>
 
-#include <U2Core/Timer.h>
+#define MAX_CRASH_MESSAGES_TO_SEND 70
 
 namespace U2 {
 
@@ -168,22 +173,37 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
     }
 #endif
 
-char  *CrashHandler::buffer = NULL;
+char* CrashHandler::buffer = NULL;
+LogCache* CrashHandler::crashLogCache = NULL;
 
-void CrashHandler::allocateReserve() {
+void CrashHandler::preallocateReservedSpace() {
+    assert(buffer == NULL);
     buffer = new char[1024*1024];
 }
 
 void CrashHandler::releaseReserve() {
-    delete []buffer;
+    delete[] buffer;
+    buffer = NULL;
+    delete crashLogCache;
+    crashLogCache = NULL;
 }
 
 void CrashHandler::setupHandler() {
+    // setup cached messages first
+    assert(crashLogCache = NULL);
+    crashLogCache = new LogCache();
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_TASKS, LogLevel_TRACE));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CORE_SERVICES, LogLevel_TRACE));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_IO, LogLevel_TRACE));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_USER_INTERFACE, LogLevel_ERROR));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_ALGORITHM, LogLevel_TRACE));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CONSOLE, LogLevel_ERROR));
+
 #if defined( Q_OS_WIN )
     addHandlerFunc = NULL;
     removeHandlerFunc = NULL;
     HMODULE h = LoadLibrary(TEXT("kernel32.dll"));
-    if(h != NULL) {
+    if (h != NULL) {
         FARPROC func = GetProcAddress(h, "AddVectoredExceptionHandler");
         if(func != NULL) {
             addHandlerFunc = (addExceptionHandler)func;
@@ -194,7 +214,7 @@ void CrashHandler::setupHandler() {
             removeHandlerFunc = (removeExceptionHandler)func;
         }
     }
-    if(addHandlerFunc != NULL) {
+    if (addHandlerFunc != NULL) {
         addHandlerFunc(1, CrashHandlerFunc);
     }
     //handler = AddVectoredExceptionHandler(1, CrashHandlerFunc);
@@ -227,7 +247,6 @@ void CrashHandler::setupHandler() {
 #endif
 }
 
-
 void CrashHandler::runMonitorProcess(const QString &exceptionType) {
     QString path = QCoreApplication::applicationDirPath() + "/ugenem";
 
@@ -244,67 +263,68 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
     fclose(fp);
 #endif
 
-    QString message = exceptionType + "|";
+    QString reportText = exceptionType + "|";
 
-    message += Version::appVersion().text;
-    message += "|";
+    reportText += Version::appVersion().text;
+    reportText += "|";
 
     QString activeWindow = AppContext::getActiveWindowName();
     if(activeWindow.isEmpty()) {
-        message += "None|";
+        reportText += "None|";
     } else {
-        message += activeWindow + "|";
+        reportText += activeWindow + "|";
     }
 
-    TaskScheduler *ts = AppContext::getTaskScheduler();
-    if (ts) {
-        QList<LogMessage*> ms = ts->getMessages();
-        QString taskLog;
+    QList<LogMessage*> logMessages = crashLogCache == NULL ? QList<LogMessage*>() : crashLogCache->messages;
+    QString messageLog;
+    if (!logMessages.isEmpty()) {
         QList<LogMessage*>::iterator it;
         int i;
-        for(i = 0, it = --ms.end(); i <= 70 && it!= ms.begin(); i++, it--) {
+        for(i = 0, it = --logMessages.end(); i <= MAX_CRASH_MESSAGES_TO_SEND && it!= logMessages.begin(); i++, it--) {
             LogMessage* msg = *it;
-            taskLog.prepend("[" + GTimer::createDateTime(msg->time).toString("hh:mm:ss.zzz") + "] " + "[" + msg->categories.first() + "] " + msg->text + "\n");
-        }
-        taskLog += "|";
-        message += taskLog;
-        QString taskList;
-        QList<Task* > topTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
-        foreach(Task *t, topTasks) {
-            if(t->getState() != Task::State_Finished) {
-                QString state;
-                if(t->getState() == Task::State_Running) {
-                    state = "(Running)";
-                } else if(t->getState() == Task::State_New) {
-                    state = "(New)";
-                } else if(t->getState() == Task::State_Prepared) {
-                    state = "(Preparing)";
-                }
-                QString progress = QString::number(t->getStateInfo().progress);
-                taskList.append(t->getTaskName() + "\t" + state + "\t" + progress  + "\n");
-                foreach(Task *tt, t->getSubtasks()) {
-                    getSubTasks(tt, taskList, 1);
-                }
-            }
-        }
-        message += taskList;
-        if(taskList.isEmpty()) {
-            message += "None";
+            messageLog.prepend("[" + GTimer::createDateTime(msg->time).toString("hh:mm:ss.zzz") + "] " + "[" + msg->categories.first() + "] " + msg->text + "\n");
         }
     } else {
-        message += "None|None";
+        messageLog += "None";
+    }
+    reportText += messageLog + " | ";
+        
+    QString taskList;
+    TaskScheduler *ts = AppContext::getTaskScheduler();
+    QList<Task* > topTasks = ts != NULL ? ts->getTopLevelTasks() : QList<Task*>();
+    foreach(Task *t, topTasks) {
+        if(t->getState() != Task::State_Finished) {
+            QString state;
+            if (t->getState() == Task::State_Running) {
+                state = "(Running)";
+            } else if(t->getState() == Task::State_New) {
+                state = "(New)";
+            } else if(t->getState() == Task::State_Prepared) {
+                state = "(Preparing)";
+            }
+            QString progress = QString::number(t->getStateInfo().progress);
+            taskList.append(t->getTaskName() + "\t" + state + "\t" + progress  + "\n");
+            foreach(Task *tt, t->getSubtasks()) {
+                getSubTasks(tt, taskList, 1);
+            }
+        }
+    }
+    reportText += taskList;
+    if (taskList.isEmpty()) {
+        reportText += "None";
     }
 
+    
 #if defined (Q_OS_WIN)
-    message += "|" + st.getBuffer();
+    reportText += "|" + st.getBuffer();
 #else
-    message += "|None";
+    reportText += "|None";
 #endif
 
     static QMutex mutex;
     QMutexLocker lock(&mutex);
 
-    QProcess::startDetached(path, QStringList() << message.toUtf8().toBase64());
+    QProcess::startDetached(path, QStringList() << reportText.toUtf8().toBase64());
     exit(1);
 }
 

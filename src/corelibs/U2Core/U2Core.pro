@@ -26,9 +26,32 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/PhyTree.h \
            src/datatype/PWMatrix.h \
            src/datatype/SMatrix.h \
+           src/datatype/U2Annotation.h \
+           src/datatype/U2Assembly.h \
+           src/datatype/U2Attribute.h \
+           src/datatype/U2CoreAttributes.h \
+           src/datatype/U2Identity.h \
+           src/datatype/U2IdTypes.h \
+           src/datatype/U2Msa.h \
+           src/datatype/U2Range.h \
+           src/datatype/U2Region.h \
+           src/datatype/U2Sequence.h \
+           src/datatype/U2Type.h \
+           src/datatype/U2TypeIds.h \
            src/datatype/UIndex.h \
            src/datatype/Vector3D.h \
            src/dbi/DbiDocumentFormat.h \
+           src/dbi/U2AbstractDbi.h \
+           src/dbi/U2AnnotationsDbi.h \
+           src/dbi/U2AssemblyDbi.h \
+           src/dbi/U2AttributeDbi.h \
+           src/dbi/U2CrossDatabaseReferenceDbi.h \
+           src/dbi/U2Dbi.h \
+           src/dbi/U2DbiRegistry.h \
+           src/dbi/U2DbiUtils.h \
+           src/dbi/U2MsaDbi.h \
+           src/dbi/U2ObjectDbi.h \
+           src/dbi/U2SequenceDbi.h \
            src/dbi/U2SqlHelpers.h \
            src/globals/AppContext.h \
            src/globals/AppGlobalObject.h \
@@ -57,6 +80,9 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/Settings.h \
            src/globals/Task.h \
            src/globals/Timer.h \
+           src/globals/U2Alphabet.h \
+           src/globals/U2OpStatus.h \
+           src/globals/U2SafePoints.h \
            src/globals/UserApplicationsSettings.h \
            src/globals/Version.h \
            src/gobjects/AnnotationTableObject.h \
@@ -126,6 +152,11 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util_algorithm/MSAUtils.h \
            src/util_algorithm/QVariantUtils.h \
            src/util_algorithm/SequenceUtils.h \
+           src/util_algorithm/U2AnnotationUtils.h \
+           src/util_algorithm/U2AssemblyUtils.h \
+           src/util_algorithm/U2AttributeUtils.h \
+           src/util_algorithm/U2Bits.h \
+           src/util_algorithm/U2OpStatusUtils.h \
            src/util_text/FormatUtils.h \
            src/util_text/TextUtils.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \

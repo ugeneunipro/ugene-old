@@ -261,7 +261,7 @@ void MainWindowImpl::runClosingTask() {
     } else {
         QMessageBox *msgBox = new QMessageBox(getQMainWindow());
         msgBox->setWindowTitle(tr("UGENE"));
-        msgBox->setText(tr("Shutdown already in process. Close UGENE immediately"));
+        msgBox->setText(tr("Shutdown already in process. Close UGENE immediately?"));
         QPushButton *closeButton = msgBox->addButton(tr("Close"), QMessageBox::ActionRole);
         /*QPushButton *waitButton =*/ msgBox->addButton(tr("Wait"), QMessageBox::ActionRole);
         msgBox->exec();

@@ -23,6 +23,7 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
+#include <U2Core/VirtualFileSystem.h>
 
 namespace U2 {
 

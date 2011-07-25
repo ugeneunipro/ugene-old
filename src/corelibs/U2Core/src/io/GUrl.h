@@ -23,7 +23,6 @@
 #define _U2_GURL_H_
 
 #include <U2Core/global.h>
-#include <U2Core/VirtualFileSystem.h>
 
 namespace U2 {
 

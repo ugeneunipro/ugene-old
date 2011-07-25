@@ -81,7 +81,6 @@ public:
     bool setFileOutputEnabled(const QString& file);
     bool isFileOutputEnabled() const {return fileEnabled;}
     QString getFileOutputPath() const {return QFileInfo(file).canonicalFilePath();}
-
 protected slots:
     virtual void sl_onMessage(const LogMessage& msg);
 

@@ -26,14 +26,9 @@
 
 
 
-
-#include <U2Core/AppContext.h>
-#include <U2Core/Task.h>
-#include <U2Core/Log.h>
-#include <U2Core/LogCache.h>
-
 #include "StackWalker.h"
 
+#include <U2Core/global.h>
 
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -68,9 +63,12 @@ typedef PVOID (__stdcall* addExceptionHandler)( __in ULONG, __in PVECTORED_EXCEP
 typedef PVOID (__stdcall* removeExceptionHandler)(__in PVOID);
 #endif
 
+class LogCache;
+class Task;
+class LogMessage;
+
 class U2PRIVATE_EXPORT CrashHandler {
 public:
-    CrashHandler() {}
     static void setupHandler();
 #if defined( Q_OS_WIN )
     static LONG NTAPI CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo );
@@ -89,13 +87,14 @@ public:
 #endif
     static void runMonitorProcess(const QString &exceptionType);
     static void getSubTasks(Task *t, QString& list, int lvl);
-    static void allocateReserve();
+    static void preallocateReservedSpace();
     static void releaseReserve();
 
-    static char *buffer;
+    static char*            buffer;
+    static LogCache*        crashLogCache;
 };
 
-}
+} //namespace
 
 #endif //crash handler flag
 

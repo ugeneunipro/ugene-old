@@ -24,7 +24,6 @@
 
 #include <U2Core/global.h>
 #include <U2Core/Task.h>
-#include <U2Core/LogCache.h>
 
 #include <QtCore/QThread>
 #include <QtCore/QTimer>
@@ -109,7 +108,6 @@ public:
     void addThreadId(qint64 taskId, Qt::HANDLE id) {/*threadIds.insert(taskId, id);*/threadIds[taskId] = id;}
     void removeThreadId(qint64 taskId) {threadIds.remove(taskId);}
     qint64 getNameByThreadId(Qt::HANDLE id) const{return threadIds.key(id);}
-    QList<LogMessage*> getMessages() {return schedulerLog->messages;}
 
 private slots:
     void update();
@@ -149,8 +147,6 @@ private:
     AppResourcePool*        resourcePool;
     AppResource*            threadsResource;
     bool                    stateChangesObserved;
-    LogCache*               schedulerLog;      
-
 };
 
 } //namespace
