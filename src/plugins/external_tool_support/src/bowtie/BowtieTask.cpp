@@ -172,7 +172,7 @@ void BowtieAssembleTask::prepare() {
 
 // BowtieTask
 
-const QString BowtieTask::taskName = "Bowtie";
+const QString BowtieTask::taskName = "BowtieTODO";
 
 const QString BowtieTask::OPTION_N_MISMATCHES = "n-mismatches";
 const QString BowtieTask::OPTION_V_MISMATCHES = "v-mismatches";

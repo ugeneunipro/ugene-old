@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Core/src/globals/U2Alphabet.h"
+#include "../../corelibs/U2Core/src/datatype/U2Alphabet.h"

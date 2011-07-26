@@ -23,7 +23,6 @@
 #define _U2_SEQUENCE_UTILS_H_
 
 #include <U2Core/global.h>
-#include <U2Core/DNASequence.h>
 #include <U2Core/U2Region.h>
 
 namespace U2 {
