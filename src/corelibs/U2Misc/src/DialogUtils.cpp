@@ -205,7 +205,7 @@ void FileLineEdit::sl_onBrowse() {
             lod.url = lst.first();
         }
     } else {
-        lod.url = name = QFileDialog::getSaveFileName(NULL, tr("Select a file"), lod.dir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
+        lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select file(s)"), lod.dir, FileFilter);
     }
     if (!name.isEmpty()) {
         setText(name);
