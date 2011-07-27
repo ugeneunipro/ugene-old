@@ -67,9 +67,10 @@ QVector<U2Region> U2AnnotationUtils::fixLocationsForRemovedRegion( const U2Regio
 
 QVector<U2Region> U2AnnotationUtils::fixLocationsForInsertedRegion( qint64 insertPos, qint64 len, 
                                                                  QVector<U2Region>& regionList, 
-                                                                 AnnotationStrategyForResize s )
+                                                                 AnnotationStrategyForResize s,
+                                                                 Annotation *an, AnnotationTableObject *ato)
 {
-    QVector<U2Region> toReplace, toDelete;
+    QVector<U2Region> toReplace, toDelete, toSplit;
     foreach(U2Region reg, regionList){
         if(reg.endPos() <= insertPos){
             toReplace.append(reg);
@@ -82,7 +83,7 @@ QVector<U2Region> U2AnnotationUtils::fixLocationsForInsertedRegion( qint64 inser
                     reg.startPos += len;
                     toReplace.append(reg);
                 }                                
-            }else if(s == AnnotationStrategyForResize_Split){
+            }else if(s == AnnotationStrategyForResize_Split_To_Joined){
                 if(reg.startPos < insertPos && reg.endPos() > insertPos){
                     U2Region firstPart, secondPart;
                     firstPart.startPos = reg.startPos;
@@ -95,6 +96,19 @@ QVector<U2Region> U2AnnotationUtils::fixLocationsForInsertedRegion( qint64 inser
                     reg.startPos += len;
                     toReplace.append(reg);
                 }                                
+            }else if(s == AnnotationStrategyForResize_Split_To_Separate){
+                if(reg.startPos < insertPos && reg.endPos() > insertPos){
+                    U2Region firstPart, secondPart;
+                    firstPart.startPos = reg.startPos;
+                    firstPart.length = insertPos - reg.startPos;
+                    secondPart.startPos = firstPart.endPos() + len;
+                    secondPart.length = reg.length - firstPart.length;
+                    toReplace.append(firstPart);
+                    toSplit.append(secondPart);
+                }else if(reg.startPos >= insertPos){
+                    reg.startPos += len;
+                    toSplit.append(reg);
+                }                      
             }else if(s == AnnotationStrategyForResize_Remove){
                 if(reg.startPos < insertPos && reg.endPos() > insertPos){
                     toDelete.append(reg);
@@ -104,6 +118,18 @@ QVector<U2Region> U2AnnotationUtils::fixLocationsForInsertedRegion( qint64 inser
                 }                                
             }
         }
+    }
+
+    if(s == AnnotationStrategyForResize_Split_To_Separate && toSplit.size() > 0){
+        assert(an != NULL && ato != NULL);
+        Annotation *splitted = new Annotation(an->data());
+        splitted->setAnnotationName(an->getAnnotationName());
+        QStringList groupsList;
+        foreach(AnnotationGroup *group, an->getGroups()){
+            groupsList.append(group->getGroupName());
+        }
+        splitted->replaceRegions(toSplit);
+        ato->addAnnotation(splitted, groupsList);
     }
     regionList.clear();
     regionList << toReplace;

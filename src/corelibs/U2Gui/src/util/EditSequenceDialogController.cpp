@@ -49,6 +49,7 @@ namespace U2{
     } else {
         setWindowTitle(tr("Replace sequence")); 
         ui->splitRB->setEnabled(false);
+        ui->split_separateRB->setEnabled(false);
         //ui->insertPositionSpin->setEnabled(false);
         ui->insertPositionBox->setEnabled(false);
     }
@@ -115,7 +116,9 @@ U2AnnotationUtils::AnnotationStrategyForResize EditSequenceDialogController::get
     if(ui->resizeRB->isChecked()){
         return U2AnnotationUtils::AnnotationStrategyForResize_Resize;
     }else if(ui->splitRB->isChecked()){
-        return U2AnnotationUtils::AnnotationStrategyForResize_Split;
+        return U2AnnotationUtils::AnnotationStrategyForResize_Split_To_Joined;
+    }else if(ui->split_separateRB->isChecked()){
+        return U2AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate;
     }else{
         assert(ui->removeRB->isChecked());
         return U2AnnotationUtils::AnnotationStrategyForResize_Remove;

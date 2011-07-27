@@ -109,7 +109,7 @@ void AddPartToSequenceTask::fixAnnotations(){
                 QList<Annotation*> annList = ato->getAnnotations();
                 foreach(Annotation *an, annList){
                     QVector<U2Region> locs = an->getRegions();
-                    U2AnnotationUtils::fixLocationsForInsertedRegion(insertPos, len, locs, strat);
+                    U2AnnotationUtils::fixLocationsForInsertedRegion(insertPos, len, locs, strat, an, ato);
                     if (!locs.isEmpty()) {
                         an->replaceRegions(locs);
                     } else {

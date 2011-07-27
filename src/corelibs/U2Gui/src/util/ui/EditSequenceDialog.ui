@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>457</width>
-    <height>295</height>
+    <height>293</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,14 @@
           <item>
            <widget class="QRadioButton" name="splitRB">
             <property name="text">
-             <string>Split</string>
+             <string>Split (join annotation parts)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="split_separateRB">
+            <property name="text">
+             <string>Split (separate annotations parts)</string>
             </property>
            </widget>
           </item>

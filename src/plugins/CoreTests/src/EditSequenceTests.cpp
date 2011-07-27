@@ -75,11 +75,14 @@ void GTest_AddPartToSequenceTask::init(XMLTestFormat *tf, const QDomElement& el)
     }else{
         expectedRegions.clear();
     }
+    
     buf = el.attribute(EXPECTED_ANNOTATION_STRATEGY_ATTR);
     if(buf.toLower() == "remove"){
         strat = U2AnnotationUtils::AnnotationStrategyForResize_Remove;
-    }else if(buf.toLower() == "split"){
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Split;
+    }else if(buf.toLower() == "split_joined"){
+        strat = U2AnnotationUtils::AnnotationStrategyForResize_Split_To_Joined;
+    }else if(buf.toLower() == "split_separate"){
+        strat = U2AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate;
     }else{
         strat = U2AnnotationUtils::AnnotationStrategyForResize_Resize;
     }
