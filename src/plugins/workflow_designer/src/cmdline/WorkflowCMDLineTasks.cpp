@@ -210,9 +210,9 @@ void WorkflowRemoteRunFromCMDLineTask::prepare()
         stateInfo.setError(tr("%1 parameter expected, but not set").arg(WorkflowDesignerPlugin::REMOTE_MACHINE));
         return;
     }
-
-    if( !SerializeUtils::deserializeRemoteMachineSettingsFromFile(filePath, &settings) ) {
-        //assert(settings == NULL);
+    
+    settings = SerializeUtils::deserializeRemoteMachineSettings(filePath);
+    if( settings == NULL ) {
         stateInfo.setError(tr("Cannot read remote machine settings from %2").arg(filePath));
         return;
     }

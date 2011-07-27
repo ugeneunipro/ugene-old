@@ -28,10 +28,12 @@
 #include "Serializable.h"
 
 #include <U2Core/Task.h>
+#include <QtCore/QSharedPointer>
 
 namespace U2 {
 
 class RemoteMachineSettings;
+typedef QSharedPointer<RemoteMachineSettings> RemoteMachineSettingsPtr;
 
 /* 
  * Base class for RemoteMachines. Should be implemented for each transport protocol.
@@ -39,6 +41,7 @@ class RemoteMachineSettings;
  */
 class U2REMOTE_EXPORT RemoteMachine {
 public:
+    
     virtual ~RemoteMachine();
 
     // Runs task on remote machine. Returns remote taskId
@@ -68,7 +71,7 @@ public:
     // Pings remote machine
     virtual void ping(TaskStateInfo& si) = 0;
 
-    virtual const RemoteMachineSettings* getSettings() const = 0;
+    virtual RemoteMachineSettingsPtr getSettings() = 0;
 
 }; // RemoteMachine
 
@@ -87,9 +90,11 @@ enum RemoteMachineType {
 * Authentication information
 */
 struct U2REMOTE_EXPORT UserCredentials {
+    UserCredentials() : permanent(false), valid(false) {}
     QString name;
     QString passwd;
     bool permanent;
+    bool valid;
 };
 
 /*
@@ -102,9 +107,9 @@ public:
 
     RemoteMachineType getMachineType() const { return machineType; }
     const QString& getProtocolId() const {return protoId;}
+    const UserCredentials& getUserCredentials() const { return credentials; }
     void flushCredentials();
     void setupCredentials(const QString& userName, const QString& passwd, bool permanent );
-    UserCredentials* getUserCredentials() const { return credentials; }
     
     virtual QString serialize() const = 0;
     virtual QString getName() const = 0;
@@ -114,11 +119,12 @@ public:
     virtual bool operator==( const RemoteMachineSettings& ) const = 0;
     
 protected:
-    UserCredentials* credentials;
+    UserCredentials credentials;
     QString protoId;
     RemoteMachineType machineType;
     
 }; // RemoteMachineSettings
+
 
 /*
  * Base class for RemoteMachinesFactories
@@ -127,9 +133,9 @@ class U2REMOTE_EXPORT RemoteMachineFactory {
 public:
     virtual ~RemoteMachineFactory();
     
-    virtual RemoteMachine * createInstance( const QString & serializedSettings ) const = 0;
-    virtual RemoteMachine * createInstance( RemoteMachineSettings * settings ) const = 0;
-    virtual RemoteMachineSettings * createSettings( const QString & serializedSettings ) const = 0;
+    virtual RemoteMachine * createInstance( const QString& serializedSettings ) const = 0;
+    virtual RemoteMachine * createInstance( const RemoteMachineSettingsPtr& settings ) const = 0;
+    virtual RemoteMachineSettingsPtr createSettings( const QString & serializedSettings ) const = 0;
     
 }; // RemoteMachineFactory
 

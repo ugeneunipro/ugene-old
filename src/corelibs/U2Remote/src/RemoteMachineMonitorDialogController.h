@@ -30,7 +30,7 @@ namespace U2 {
     class U2REMOTE_EXPORT RemoteMachineMonitorDialogController {
 
     public:
-        static RemoteMachineSettings* selectRemoteMachine(RemoteMachineMonitor* monitor, bool runTaskMode = false );
+        static RemoteMachineSettingsPtr selectRemoteMachine(RemoteMachineMonitor* monitor, bool runTaskMode = false );
     };
 
 } // U2

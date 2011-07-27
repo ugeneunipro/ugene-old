@@ -34,10 +34,10 @@ namespace U2 {
 class RemoteMachineSettingsDialog : public QDialog, public Ui::RemoteMachineSettingsDialog {
     Q_OBJECT
 public:
-    RemoteMachineSettingsDialog(QWidget* parent, RemoteMachineSettings* settings = NULL);
+    RemoteMachineSettingsDialog(QWidget* parent, const RemoteMachineSettingsPtr& settings = RemoteMachineSettingsPtr());
     ~RemoteMachineSettingsDialog();
     
-    RemoteMachineSettings * getMachineSettings() const;
+    RemoteMachineSettingsPtr getMachineSettings() const;
 
 private slots:
     void sl_okPushButtonClicked();
@@ -45,9 +45,9 @@ private slots:
 private:
     void showErrorLabel(const QString& error);
     void createMachineSettings();
-    RemoteMachineSettings *         machineSettings;
+    RemoteMachineSettingsPtr        machineSettings;
     QString                         protoId;
-    ProtocolUI *                    currentUi;
+    ProtocolUI*                     currentUi;
     
 }; // RemoteMachineSettingsDialog
 

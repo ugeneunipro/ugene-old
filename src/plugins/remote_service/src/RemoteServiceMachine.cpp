@@ -61,11 +61,11 @@ static bool regMetaType = registerMeta();
 
 // RemoteServiceMachine
 
-RemoteServiceMachine::RemoteServiceMachine(RemoteServiceMachineSettings* s)
+RemoteServiceMachine::RemoteServiceMachine(const RemoteServiceSettingsPtr& s)
 : settings(s), protocolHandler(new Uctp()), session(NULL) 
 {
 
-    remoteServiceUrl = settings->getUrl();
+    remoteServiceUrl = s->getUrl();
    
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
     proxy = nc->getProxyByUrl(remoteServiceUrl);
@@ -74,7 +74,7 @@ RemoteServiceMachine::RemoteServiceMachine(RemoteServiceMachineSettings* s)
     sslProtocol = nc->getSslProtocol();
 #endif //QT_NO_OPENSSL
 
-    QByteArray sid = settings->getSessionId().toAscii();
+    QByteArray sid = s->getSessionId().toAscii();
     if (!sid.isEmpty() ) {
         session.reset(new UctpSession(sid));    
     }
@@ -85,11 +85,9 @@ RemoteServiceMachine::RemoteServiceMachine(RemoteServiceMachineSettings* s)
 }
 
 RemoteServiceMachine::~RemoteServiceMachine() {
-    UserCredentials* credentials = settings->getUserCredentials();
-    if (credentials != NULL) {
-        if (!credentials->permanent) {
-            settings->flushCredentials();
-        }
+    const UserCredentials& credentials = settings->getUserCredentials();
+    if (credentials.valid && !credentials.permanent) {
+        settings->flushCredentials();
     }
 }
 
@@ -372,8 +370,8 @@ QMap<QString,UctpElementData> RemoteServiceMachine::sendRequest(TaskStateInfo& s
 }
 
 void RemoteServiceMachine::initSession(TaskStateInfo& si) {
-    if (settings->getUserCredentials() == NULL) {
-        si.setError(tr("User auth info is not available"));
+    if (!settings->getUserCredentials().valid) {
+        si.setError(tr("User authentication info is not available"));
         return;
     }
     
@@ -483,19 +481,19 @@ void RemoteServiceMachine::deleteRemoteTask(TaskStateInfo& si,  qint64 taskId) {
     sendRequest( si, request );
 }
 
+RemoteMachineSettingsPtr RemoteServiceMachine::getSettings()
+{
+    return qSharedPointerCast<RemoteMachineSettings>(settings);
+}
+
 
 // RemoteServiceMachineSettings
-
-RemoteServiceMachineSettings::RemoteServiceMachineSettings():
-RemoteMachineSettings( AppContext::getProtocolInfoRegistry()->getProtocolInfo( RemoteServiceCommon::WEB_TRANSPORT_PROTOCOL_ID), RemoteMachineType_RemoteService)
-
-{
-}
 
 RemoteServiceMachineSettings::RemoteServiceMachineSettings(const QString &host):
 RemoteMachineSettings(AppContext::getProtocolInfoRegistry()->getProtocolInfo( RemoteServiceCommon::WEB_TRANSPORT_PROTOCOL_ID ), RemoteMachineType_RemoteService ),
 url(host)
 {
+    rsLog.trace(QString("Created remote service configuration %1").arg(host));
 }
 
 #define URL_ATTR "url"
@@ -506,6 +504,7 @@ url(host)
 
 bool RemoteServiceMachineSettings::operator ==( const RemoteMachineSettings & m ) const {
     const RemoteMachineSettings * machine = &m;
+    // TODO: this crap to be removed
     const RemoteServiceMachineSettings* cfg = dynamic_cast< const RemoteServiceMachineSettings* >( machine );
     if( NULL == cfg ) {
         return false;
@@ -517,9 +516,9 @@ bool RemoteServiceMachineSettings::operator ==( const RemoteMachineSettings & m 
 QString RemoteServiceMachineSettings::serialize() const {
     QStringList cfg;
     cfg.append(QString("%1=%2").arg(URL_ATTR).arg(url));
-    if (credentials != NULL) {
-        cfg.append(QString("%1=%2").arg(NAME_ATTR).arg(credentials->name));
-        cfg.append(QString("%1=%2").arg(PASSWD_ATTR).arg(credentials->passwd));
+    if (credentials.valid) {
+        cfg.append(QString("%1=%2").arg(NAME_ATTR).arg(credentials.name));
+        cfg.append(QString("%1=%2").arg(PASSWD_ATTR).arg(credentials.passwd));
     }
 
     return cfg.join("\n");
@@ -556,25 +555,30 @@ bool RemoteServiceMachineSettings::deserialize( const QString & data ) {
 
 
 QString RemoteServiceMachineSettings::getUserName() const {
-    assert(credentials != NULL);
-    return credentials->name;
+    assert(credentials.valid);
+    return credentials.name;
 }
 
 QString RemoteServiceMachineSettings::getPasswd() const {
-    assert(credentials != NULL);
-    return credentials->passwd;
+    assert(credentials.valid);
+    return credentials.passwd;
 }
 
 bool RemoteServiceMachineSettings::usesGuestAccount() const {
-    if (credentials == NULL) {
+    if (!credentials.valid) {
         return false;
     }
 
-    if (credentials->name == GUEST_ACCOUNT) {
+    if (credentials.name == GUEST_ACCOUNT) {
         return true;
     } else {
         return false;
     }
+}
+
+RemoteServiceMachineSettings::~RemoteServiceMachineSettings()
+{
+    rsLog.trace(QString("Deleting configuration for %1").arg(url));
 }
 
 // RemoteServiceMachineFactory
@@ -586,29 +590,29 @@ RemoteServiceMachineFactory::~RemoteServiceMachineFactory() {
 }
 
 RemoteMachine * RemoteServiceMachineFactory::createInstance( const QString & serializedSettings ) const {
-    RemoteServiceMachineSettings settings;
-    if(settings.deserialize(serializedSettings))
+    RemoteServiceSettingsPtr settings(new RemoteServiceMachineSettings);
+    if(settings->deserialize(serializedSettings))
     {
-        return createInstance(&settings);
+        return createInstance(settings);
     }
     return NULL;
 }
 
-RemoteMachine * RemoteServiceMachineFactory::createInstance( RemoteMachineSettings * settings ) const {
-    RemoteServiceMachineSettings *castedSettings = dynamic_cast<RemoteServiceMachineSettings *>(settings);
+RemoteMachine * RemoteServiceMachineFactory::createInstance( const RemoteMachineSettingsPtr& settings ) const {
+    RemoteServiceSettingsPtr castedSettings = qSharedPointerDynamicCast<RemoteServiceMachineSettings>(settings);
+    // TODO: this crap to be removed
     if(NULL != castedSettings) {
         return new RemoteServiceMachine(castedSettings);
     }
     return NULL;
 }
 
-RemoteMachineSettings * RemoteServiceMachineFactory::createSettings( const QString & serializedSettings ) const {
-    RemoteServiceMachineSettings * ret = new RemoteServiceMachineSettings();
+RemoteMachineSettingsPtr RemoteServiceMachineFactory::createSettings( const QString & serializedSettings ) const {
+    RemoteMachineSettingsPtr ret( new RemoteServiceMachineSettings );
     if( ret->deserialize( serializedSettings ) ) {
         return ret;
     }
-    delete ret;
-    return NULL;
+    return RemoteMachineSettingsPtr();
 }
 
 } // namespace U2

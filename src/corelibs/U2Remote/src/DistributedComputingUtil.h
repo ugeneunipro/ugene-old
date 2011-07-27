@@ -57,13 +57,13 @@ class UpdateActiveTasks : public Task {
     Q_OBJECT
 
 public:
-    UpdateActiveTasks( RemoteMachineSettings* s);
+    UpdateActiveTasks( const RemoteMachineSettingsPtr& s);
     ~UpdateActiveTasks();
     virtual void run();
-    RemoteMachineSettings* getSettings() { return settings; }
+    const RemoteMachineSettingsPtr& getSettings() { return settings; }
    
 private:
-    RemoteMachineSettings* settings;
+    RemoteMachineSettingsPtr settings;
     RemoteMachine* machine;
     void addTaskToScheduler(qint64 taskid);
 

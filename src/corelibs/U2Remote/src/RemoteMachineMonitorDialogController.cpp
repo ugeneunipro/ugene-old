@@ -28,18 +28,18 @@
 
 namespace U2 {
 
-RemoteMachineSettings* RemoteMachineMonitorDialogController::selectRemoteMachine(
+RemoteMachineSettingsPtr RemoteMachineMonitorDialogController::selectRemoteMachine(
     RemoteMachineMonitor* monitor, bool runTaskMode /*= false */ )
 {
     RemoteMachineMonitorDialogImpl dlg( QApplication::activeWindow(), monitor, runTaskMode);
 
     int ret = dlg.exec();
     if(ret == QDialog::Rejected) {
-        return NULL;
+        return RemoteMachineSettingsPtr();
     }
     assert(ret == QDialog::Accepted);
 
-    RemoteMachineSettings *rms = dlg.getSelectedMachine();
+    RemoteMachineSettingsPtr rms = dlg.getSelectedMachine();
     if (runTaskMode && !rms) {
         QMessageBox::critical(QApplication::activeWindow(), 
             RemoteMachineMonitorDialogImpl::tr("Selecting machines error!"), 

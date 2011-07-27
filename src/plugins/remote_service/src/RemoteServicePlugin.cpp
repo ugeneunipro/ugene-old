@@ -47,10 +47,10 @@ const QString RemoteServiceCommon::WEB_TRANSPORT_PROTOCOL_ID = "Web transport pr
 
 static void cleanupRemoteMachineMonitor() {
     RemoteMachineMonitor* rmm = AppContext::getRemoteMachineMonitor();
-    QList<RemoteMachineMonitorItem> items = rmm->getRemoteMachineMonitorItems();
+    QList<RemoteMachineSettingsPtr> items = rmm->getRemoteMachineMonitorItems();
     
-    foreach (const RemoteMachineMonitorItem& item, items) {
-        rmm->removeMachine(item.machine);
+    foreach (const RemoteMachineSettingsPtr& item, items) {
+        rmm->removeMachineConfiguration(item);
     }
 }
 
@@ -66,9 +66,9 @@ RemoteServicePlugin::RemoteServicePlugin():
 
     if (thisIsFirstLaunch()) {
         cleanupRemoteMachineMonitor();
-        RemoteServiceMachineSettings* settings = new RemoteServiceMachineSettings(EC2_URL);
+        RemoteServiceSettingsPtr settings( new RemoteServiceMachineSettings(EC2_URL) );
         settings->setupCredentials(RemoteServiceMachineSettings::GUEST_ACCOUNT, EC2_PASS, true);
-        AppContext::getRemoteMachineMonitor()->addMachine(settings, false);
+        AppContext::getRemoteMachineMonitor()->addMachineConfiguration(settings);
     }
     registerCMDLineHelp();
     processCMDLineOptions();

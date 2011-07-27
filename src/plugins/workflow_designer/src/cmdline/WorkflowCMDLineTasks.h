@@ -65,7 +65,7 @@ public:
     virtual Task * getWorkflowRunTask() const;
     
 private:
-    RemoteMachineSettings * settings;
+    RemoteMachineSettingsPtr settings;
     
 }; // WorkflowRemoteRunFromCMDLineTask
 

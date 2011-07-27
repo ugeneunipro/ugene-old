@@ -943,8 +943,8 @@ void WorkflowView::remoteLaunch() {
     
     RemoteMachineMonitor * rmm = AppContext::getRemoteMachineMonitor();
     assert( NULL != rmm );
-    RemoteMachineSettings *settings = RemoteMachineMonitorDialogController::selectRemoteMachine(rmm, true);
-    if (!settings) {
+    RemoteMachineSettingsPtr settings = RemoteMachineMonitorDialogController::selectRemoteMachine(rmm, true);
+    if (settings == NULL) {
         return;
     }
     assert(settings->getMachineType() == RemoteMachineType_RemoteService);

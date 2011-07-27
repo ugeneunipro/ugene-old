@@ -31,25 +31,11 @@
 
 namespace U2 {
 
-struct RemoteMachineMonitorItem {
-    RemoteMachineSettings * machine;
-    bool selected;
-    
-    RemoteMachineMonitorItem( RemoteMachineSettings * s, bool se ) 
-        : machine( s ), selected( se ) {
-        assert( NULL != machine );
-    }
-    
-    RemoteMachineMonitorItem() 
-        : machine( NULL ), selected( false ) {
-    }
-    
-}; // RemoteMachineMonitorItem
-
 /*
  * Stores info about all remote machines registered in system
  * Can be accessed by AppContext::getRemoteMachineMonitor()
  */
+
 class U2REMOTE_EXPORT RemoteMachineMonitor {
 public:
     static const QString REMOTE_MACHINE_MONITOR_SETTINGS_TAG;
@@ -57,16 +43,12 @@ public:
 public:
     RemoteMachineMonitor();
     ~RemoteMachineMonitor();
-    /* RemoteMachineMonitor takes ownership of this machine */
-    bool addMachine( RemoteMachineSettings * machine, bool selected );
-    void removeMachine( RemoteMachineSettings * machine );
-    void setSelected( RemoteMachineSettings * machine, bool selected );
-    RemoteMachineSettings* findMachine(const QString& serializedSettings) const;
-
-    QList< RemoteMachineSettings * > getMachinesList(); /* function not const because we can call initialize() here */
-    QList< RemoteMachineMonitorItem > getRemoteMachineMonitorItems();
-    QList< RemoteMachineSettings* > getSelectedMachines();
-
+    /* RemoteMachineMonitor shares ownership of the machine settings with machine instances */
+    bool addMachineConfiguration( const RemoteMachineSettingsPtr& machineSettings);
+    void removeMachineConfiguration( const RemoteMachineSettingsPtr& machineSettings);
+    RemoteMachineSettingsPtr findMachineSettings(const QString& serializedSettings) const;
+    /* Function not const because we can call initialize() here */
+    QList<RemoteMachineSettingsPtr> getRemoteMachineMonitorItems(); 
     void saveSettings();
     
 private:
@@ -78,11 +60,10 @@ private:
     
     void ensureInitialized();
     void initialize();
-    bool hasMachineInMonitor( RemoteMachineSettings * machine ) const;
     
 private:
-    QList< RemoteMachineMonitorItem >   items;
-    bool                                initialized;
+    QList<RemoteMachineSettingsPtr> items;
+    bool initialized;
     
 }; // RemoteMachineMonitor
 

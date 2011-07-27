@@ -29,7 +29,7 @@
 
 namespace U2 {
 
-RemoteMachineSettingsDialog::RemoteMachineSettingsDialog(QWidget* parent, RemoteMachineSettings* settings) : QDialog(parent), machineSettings( settings ), currentUi( NULL ) {
+RemoteMachineSettingsDialog::RemoteMachineSettingsDialog(QWidget* parent, const RemoteMachineSettingsPtr& settings ) : QDialog(parent), machineSettings( settings ), currentUi( NULL ) {
     setupUi( this );
     
     ProtocolInfoRegistry * pir = AppContext::getProtocolInfoRegistry();
@@ -63,12 +63,9 @@ RemoteMachineSettingsDialog::~RemoteMachineSettingsDialog() {
     }
 }
 
-RemoteMachineSettings * RemoteMachineSettingsDialog::getMachineSettings() const {
+RemoteMachineSettingsPtr  RemoteMachineSettingsDialog::getMachineSettings() const {
     return machineSettings;
 }
-
-
-
 
 void RemoteMachineSettingsDialog::sl_okPushButtonClicked() {
     

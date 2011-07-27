@@ -38,14 +38,14 @@ RemoteServiceSettingsUI::RemoteServiceSettingsUI()
 RemoteServiceSettingsUI::~RemoteServiceSettingsUI() {
 }
 
-RemoteMachineSettings * RemoteServiceSettingsUI::createMachine() const {
+RemoteMachineSettingsPtr RemoteServiceSettingsUI::createMachine() const {
     if( !validate().isEmpty()) {
-        return NULL;
+        return RemoteMachineSettingsPtr();
     }
     
     QString url = urlLineEdit->text().trimmed();
 
-    RemoteServiceMachineSettings* s = new RemoteServiceMachineSettings(url);
+    RemoteServiceSettingsPtr s( new RemoteServiceMachineSettings(url) );
 
     if (guestRB->isChecked()) {
         s->setupCredentials(RemoteServiceMachineSettings::GUEST_ACCOUNT, QString(), true);
@@ -58,8 +58,9 @@ RemoteMachineSettings * RemoteServiceSettingsUI::createMachine() const {
 
 }
 
-void RemoteServiceSettingsUI::initializeWidget(const RemoteMachineSettings *settings) {
-    const RemoteServiceMachineSettings *castedSettings = dynamic_cast<const RemoteServiceMachineSettings *>(settings);
+void RemoteServiceSettingsUI::initializeWidget(const RemoteMachineSettingsPtr& settings) {
+    //TODO: remove this crap
+    const RemoteServiceSettingsPtr castedSettings = qSharedPointerDynamicCast<RemoteServiceMachineSettings>(settings);
     if (NULL != castedSettings) {
         urlLineEdit->setText(castedSettings->getUrl());
 
@@ -67,11 +68,11 @@ void RemoteServiceSettingsUI::initializeWidget(const RemoteMachineSettings *sett
             guestRB->setChecked(true);
         } else {
             existingRB->setChecked(true);
-            UserCredentials* credentials = settings->getUserCredentials();
-            if (credentials != NULL) {
-                userNameEdit->setText(castedSettings->getUserName());
-                passwdEdit->setText(castedSettings->getPasswd());
-                rememberEdit->setChecked(credentials->permanent);
+            const UserCredentials& credentials = settings->getUserCredentials();
+            if (credentials.valid) {
+                userNameEdit->setText(credentials.name);
+                passwdEdit->setText(credentials.passwd);
+                rememberEdit->setChecked(credentials.permanent);
             }
         }        
     }
@@ -103,8 +104,9 @@ void RemoteServiceSettingsUI::clearWidget() {
 
 }
 
-QDialog* RemoteServiceSettingsUI::createUserTasksDialog( const RemoteMachineSettings* s, QWidget* parent ) {
-    const RemoteServiceMachineSettings* settings = dynamic_cast< const RemoteServiceMachineSettings* >(s);
+QDialog* RemoteServiceSettingsUI::createUserTasksDialog( const RemoteMachineSettingsPtr& s, QWidget* parent ) {
+    //TODO: remove this crap
+    const RemoteServiceSettingsPtr settings = qSharedPointerDynamicCast< RemoteServiceMachineSettings >(s);
     
     if (settings == NULL) {
         return NULL;

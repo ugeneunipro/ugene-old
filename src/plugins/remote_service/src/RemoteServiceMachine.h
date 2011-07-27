@@ -41,8 +41,8 @@ namespace U2 {
 
 class RemoteServiceMachineSettings : public RemoteMachineSettings {
 public:
-    RemoteServiceMachineSettings();
-    RemoteServiceMachineSettings(const QString &url);
+    RemoteServiceMachineSettings(const QString &url = QString());
+    ~RemoteServiceMachineSettings();
 
     virtual bool operator==( const RemoteMachineSettings& machine ) const;
 
@@ -65,10 +65,12 @@ private:
 
 class UctpSession;
 
+typedef QSharedPointer<RemoteServiceMachineSettings> RemoteServiceSettingsPtr;
+
 class RemoteServiceMachine : public QObject, public RemoteMachine {
     Q_OBJECT
 public:
-    RemoteServiceMachine(RemoteServiceMachineSettings* s);
+    RemoteServiceMachine(const RemoteServiceSettingsPtr& s);
     virtual ~RemoteServiceMachine();
     
     // Runs task on remote machine. Returns remote taskId
@@ -98,7 +100,7 @@ public:
     // Pings remote machine
     virtual void ping(TaskStateInfo& si);
 
-    virtual const RemoteMachineSettings* getSettings() const {return settings;}
+    virtual RemoteMachineSettingsPtr getSettings(); 
 
     //non-virtual methods -> TODO: refactor or add to the base interface
     void initSession(TaskStateInfo& si);
@@ -125,14 +127,12 @@ private:
 
     QList<qint64> getTasksList(TaskStateInfo& si, const QByteArray& taskState);
 
-
-    RemoteServiceMachineSettings*       settings;
-    QNetworkProxy                       proxy;
+    RemoteServiceSettingsPtr settings;
 
 #ifndef QT_NO_OPENSSL
     QSsl::SslProtocol                   sslProtocol;
 #endif    
-
+    QNetworkProxy                       proxy;
     std::auto_ptr<Uctp>                 protocolHandler;
     std::auto_ptr<UctpSession>          session;
     QString                             remoteServiceUrl;
@@ -168,10 +168,9 @@ public:
     RemoteServiceMachineFactory();
     virtual ~RemoteServiceMachineFactory();
 
-    virtual RemoteMachine * createInstance( const QString & serializedSettings ) const;
-    virtual RemoteMachine * createInstance( RemoteMachineSettings * settings ) const;
-    virtual RemoteMachineSettings * createSettings( const QString & serializedSettings ) const;
-    
+    virtual RemoteMachine * createInstance( const QString& serializedSettings ) const;
+    virtual RemoteMachine * createInstance( const RemoteMachineSettingsPtr& settings ) const;
+    virtual RemoteMachineSettingsPtr createSettings( const QString & serializedSettings ) const;
 };
 
 

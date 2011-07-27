@@ -39,172 +39,171 @@
 
 namespace U2 {
 
-    /*******************************************
-    * RetrieveRemoteMachineInfoTask
-    *******************************************/
+/*******************************************
+* RetrieveRemoteMachineInfoTask
+*******************************************/
 
-    RetrieveRemoteMachineInfoTask::RetrieveRemoteMachineInfoTask( RemoteMachineSettings* s ) 
-        : Task( tr( "Retrieve remote machine info task" ), TaskFlags_FOSCOE ), pingTask(NULL), pingOK(false), machine( NULL ), settings(s)
-    {
-        setVerboseLogMode(true);
-        setErrorNotificationSuppression(true);
+RetrieveRemoteMachineInfoTask::RetrieveRemoteMachineInfoTask( RemoteMachineSettingsPtr s ) 
+: Task( tr( "Retrieve remote machine info task" ), TaskFlags_FOSCOE ), pingTask(NULL), pingOK(false), machine( NULL ), settings(s)
+{
+    setVerboseLogMode(true);
+    setErrorNotificationSuppression(true);
 
+}
+
+RetrieveRemoteMachineInfoTask::~RetrieveRemoteMachineInfoTask() {
+    delete machine;
+    machine = NULL;
+}
+
+void RetrieveRemoteMachineInfoTask::prepare() {
+    rsLog.details(tr("Retrieving remomote machine info..." ));
+
+    ProtocolInfo* pi = AppContext::getProtocolInfoRegistry()->getProtocolInfo( settings->getProtocolId() );
+    machine = pi->getRemoteMachineFactory()->createInstance(settings);
+    if( NULL == machine ) {
+        setError( tr( "Cannot create remote machine from remote machine settings: %1" ).arg( settings->getName() ) );
+        return;
     }
 
-    RetrieveRemoteMachineInfoTask::~RetrieveRemoteMachineInfoTask() {
-        delete machine;
-        machine = NULL;
+    pingTask = new PingTask(machine);
+    addSubTask( pingTask );
+}
+
+
+void RetrieveRemoteMachineInfoTask::run() {
+    if( hasError() || isCanceled() ) {
+        return;
     }
-
-    void RetrieveRemoteMachineInfoTask::prepare() {
-        rsLog.details(tr("Retrieving remomote machine info..." ));
-
-        ProtocolInfo* pi = AppContext::getProtocolInfoRegistry()->getProtocolInfo( settings->getProtocolId() );
-        machine = pi->getRemoteMachineFactory()->createInstance(settings);
-        if( NULL == machine ) {
-            setError( tr( "Cannot create remote machine from remote machine settings: %1" ).arg( settings->getName() ) );
-            return;
-        }
-
-        pingTask = new PingTask(machine);
-        addSubTask( pingTask );
+    assert( NULL != machine );
+    if( isCanceled() ) { 
+        return; 
     }
+    hostname = machine->getServerName(stateInfo);
+}
 
+Task::ReportResult RetrieveRemoteMachineInfoTask::report() {
 
-    void RetrieveRemoteMachineInfoTask::run() {
-        if( hasError() || isCanceled() ) {
-            return;
-        }
-        assert( NULL != machine );
-        if( isCanceled() ) { 
-            return; 
-        }
-        hostname = machine->getServerName(stateInfo);
+    if( pingTask->isCanceled() ) {
+        pingTask->setError( tr( "Ping task is canceled by user" ) );
     }
-
-    Task::ReportResult RetrieveRemoteMachineInfoTask::report() {
-
-        if( pingTask->isCanceled() ) {
-            pingTask->setError( tr( "Ping task is canceled by user" ) );
-        }
-        if( pingTask->hasError() ) {
-            setError( tr( "Ping task finished with error: " ) + pingTask->getError() );
-            pingOK = false;
-            return ReportResult_Finished;
-        }
-
-        pingOK = true;
-        if( isCanceled() ) {
-            setError( tr( "Task is canceled by user" ) );
-            return ReportResult_Finished;
-        }
-
+    if( pingTask->hasError() ) {
+        setError( tr( "Ping task finished with error: " ) + pingTask->getError() );
+        pingOK = false;
         return ReportResult_Finished;
     }
 
-    QStringList RetrieveRemoteMachineInfoTask::getServicesList() const {
-        return services;
+    pingOK = true;
+    if( isCanceled() ) {
+        setError( tr( "Task is canceled by user" ) );
+        return ReportResult_Finished;
     }
 
-    QString RetrieveRemoteMachineInfoTask::getHostName() const {
-        return hostname;
+    return ReportResult_Finished;
+}
+
+QStringList RetrieveRemoteMachineInfoTask::getServicesList() const {
+    return services;
+}
+
+QString RetrieveRemoteMachineInfoTask::getHostName() const {
+    return hostname;
+}
+
+bool RetrieveRemoteMachineInfoTask::isPingOk() const {
+    return pingOK;
+}
+
+
+
+/*******************************************
+* RetrievePublicMachinesTask
+*******************************************/
+
+const QString RetrievePublicMachinesTask::PUBLIC_MACHINES_KEEPER_SERVER = "http://ugene.unipro.ru";
+const QString RetrievePublicMachinesTask::PUBLIC_MACHINES_KEEPER_PAGE   = "/public_machines.html";
+const QString RetrievePublicMachinesTask::PUBLIC_MACHINES_STR_SEPARATOR = "<br>";
+
+RetrievePublicMachinesTask::RetrievePublicMachinesTask() : Task( "Retrieve public remote machines", TaskFlag_None ) {
+    setVerboseLogMode(true);
+    setErrorNotificationSuppression(true);
+}
+
+
+RetrievePublicMachinesTask::~RetrievePublicMachinesTask() {
+
+}
+
+void RetrievePublicMachinesTask::run() {
+    rsLog.details(tr("Retrieving public machines..."));
+
+    SyncHTTP http( QUrl( PUBLIC_MACHINES_KEEPER_SERVER ).host() );
+    NetworkConfiguration * nc = AppContext::getAppSettings()->getNetworkConfiguration();
+    assert( NULL != nc );
+    bool proxyUsed = nc->isProxyUsed( QNetworkProxy::HttpProxy );
+    bool srvIsException = nc->getExceptionsList().contains( QUrl( PUBLIC_MACHINES_KEEPER_SERVER ).host() );
+
+    if( proxyUsed && !srvIsException ) {
+        http.setProxy( nc->getProxy( QNetworkProxy::HttpProxy ) );
     }
+    processEncodedMachines( http.syncGet( PUBLIC_MACHINES_KEEPER_PAGE ) );
 
-    bool RetrieveRemoteMachineInfoTask::isPingOk() const {
-        return pingOK;
+    if (hasError()) {
+        rsLog.error(tr("Failed to retrieve public machines, error: %1").arg(getError()));
+    } else {
+        rsLog.info(tr("Found %1 public machines").arg(publicMachines.size()));
     }
+}
 
-
-
-    /*******************************************
-    * RetrievePublicMachinesTask
-    *******************************************/
-
-    const QString RetrievePublicMachinesTask::PUBLIC_MACHINES_KEEPER_SERVER = "http://ugene.unipro.ru";
-    const QString RetrievePublicMachinesTask::PUBLIC_MACHINES_KEEPER_PAGE   = "/public_machines.html";
-    const QString RetrievePublicMachinesTask::PUBLIC_MACHINES_STR_SEPARATOR = "<br>";
-
-    RetrievePublicMachinesTask::RetrievePublicMachinesTask() : Task( "Retrieve public remote machines", TaskFlag_None ) {
-        setVerboseLogMode(true);
-        setErrorNotificationSuppression(true);
-    }
-
-
-    RetrievePublicMachinesTask::~RetrievePublicMachinesTask() {
-        qDeleteAll( publicMachines );
-    }
-
-    void RetrievePublicMachinesTask::run() {
-        rsLog.details(tr("Retrieving public machines..."));
-
-        SyncHTTP http( QUrl( PUBLIC_MACHINES_KEEPER_SERVER ).host() );
-        NetworkConfiguration * nc = AppContext::getAppSettings()->getNetworkConfiguration();
-        assert( NULL != nc );
-        bool proxyUsed = nc->isProxyUsed( QNetworkProxy::HttpProxy );
-        bool srvIsException = nc->getExceptionsList().contains( QUrl( PUBLIC_MACHINES_KEEPER_SERVER ).host() );
-
-        if( proxyUsed && !srvIsException ) {
-            http.setProxy( nc->getProxy( QNetworkProxy::HttpProxy ) );
+void RetrievePublicMachinesTask::processEncodedMachines( const QString & encodedMachinesStr ) {
+    QStringList encodedMachines = encodedMachinesStr.split( PUBLIC_MACHINES_STR_SEPARATOR, QString::SkipEmptyParts  );
+    foreach( const QString & encodedMachine, encodedMachines ) {
+        RemoteMachineSettingsPtr settings = SerializeUtils::deserializeRemoteMachineSettings( encodedMachine.trimmed() );
+        if (settings == NULL) {
+            setError( tr( "Illegal server response" ) );
+            break;
         }
-        processEncodedMachines( http.syncGet( PUBLIC_MACHINES_KEEPER_PAGE ) );
-
-        if (hasError()) {
-            rsLog.error(tr("Failed to retrieve public machines, error: %1").arg(getError()));
-        } else {
-            rsLog.info(tr("Found %1 public machines").arg(publicMachines.size()));
-        }
+        publicMachines << settings;
     }
+}
 
-    void RetrievePublicMachinesTask::processEncodedMachines( const QString & encodedMachinesStr ) {
-        QStringList encodedMachines = encodedMachinesStr.split( PUBLIC_MACHINES_STR_SEPARATOR, QString::SkipEmptyParts  );
-        foreach( const QString & encodedMachine, encodedMachines ) {
-            RemoteMachineSettings * settings = NULL;
-            if (!SerializeUtils::deserializeRemoteMachineSettings( encodedMachine.trimmed(), &settings )) {
-                assert( NULL == settings );
-                setError( tr( "Illegal server response" ) );
-                break;
-            }
-            publicMachines << settings;
-        }
-    }
+QList< RemoteMachineSettingsPtr > RetrievePublicMachinesTask::getPublicMachines() const {
+    return publicMachines;
+}
 
-    QList< RemoteMachineSettings* > RetrievePublicMachinesTask::getPublicMachines() const {
-        return publicMachines;
-    }
+QList< RemoteMachineSettingsPtr > RetrievePublicMachinesTask::takePublicMachines() {
+    QList< RemoteMachineSettingsPtr > res = publicMachines;
+    publicMachines.clear();
+    return res;
+}
 
-    QList< RemoteMachineSettings* > RetrievePublicMachinesTask::takePublicMachines() {
-        QList< RemoteMachineSettings* > res = publicMachines;
-        publicMachines.clear();
-        return res;
+/*******************************************
+* SaveRemoteMachineSettings
+*******************************************/
+SaveRemoteMachineSettings::SaveRemoteMachineSettings(const RemoteMachineSettingsPtr& machineSettings, const QString& file)
+: Task(tr("Save remote machine settings task"), TaskFlag_None), filename(file) {
+    if(filename.isEmpty()) {
+        setError(tr("Output file not set"));
+        return;
     }
+    if( machineSettings == NULL ) {
+        setError(tr("Nothing to write: empty remote machine settings"));
+        return;
+    }
+    data = SerializeUtils::serializeRemoteMachineSettings(machineSettings).toAscii();
+}
 
-    /*******************************************
-    * SaveRemoteMachineSettings
-    *******************************************/
-    SaveRemoteMachineSettings::SaveRemoteMachineSettings(RemoteMachineSettings * machineSettings, const QString& file)
-        : Task(tr("Save remote machine settings task"), TaskFlag_None), filename(file) {
-            if(filename.isEmpty()) {
-                setError(tr("Output file not set"));
-                return;
-            }
-            if( machineSettings == NULL ) {
-                setError(tr("Nothing to write: empty remote machine settings"));
-                return;
-            }
-            data = SerializeUtils::serializeRemoteMachineSettings(machineSettings).toAscii();
+void SaveRemoteMachineSettings::run() {
+    if(hasError() || isCanceled()) {
+        return;
     }
-
-    void SaveRemoteMachineSettings::run() {
-        if(hasError() || isCanceled()) {
-            return;
-        }
-        QFile out(filename);
-        if( !out.open(QIODevice::WriteOnly) ) {
-            setError(tr("Cannot open %1 file").arg(filename));
-            return;
-        }
-        out.write(data);
-        out.close();
+    QFile out(filename);
+    if( !out.open(QIODevice::WriteOnly) ) {
+        setError(tr("Cannot open %1 file").arg(filename));
+        return;
     }
+    out.write(data);
+    out.close();
+}
 
 } // U2

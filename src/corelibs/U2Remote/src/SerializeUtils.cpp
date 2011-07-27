@@ -35,12 +35,12 @@ namespace U2 {
 
 #define HEADER_COMMENT "# UGENE remote machine settings"
 
-QString SerializeUtils::serializeRemoteMachineSettings( RemoteMachineSettings * machine ) {
-    assert( NULL != machine );
-    return HEADER_COMMENT "\n" + machine->serialize();
+QString SerializeUtils::serializeRemoteMachineSettings( const RemoteMachineSettingsPtr& machineSettings ) {
+    assert( NULL != machineSettings );
+    return HEADER_COMMENT "\n" + machineSettings->serialize();
 }
 
-bool SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachine ** machine ) {
+/*bool SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachine ** machine ) {
     QFile file( machinePath );
     if( !file.open( QIODevice::ReadOnly ) ) {
         return NULL;
@@ -77,6 +77,7 @@ bool SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & m
     if( !deserializeRemoteMachineSettings( data, settings ) || NULL == settings ) { return false; }
     return true;
 }
+*/
 
 static QString getDefaultProtocolId( ) {
     QString res;
@@ -89,27 +90,24 @@ static QString getDefaultProtocolId( ) {
     return res;
 }
 
-bool SerializeUtils::deserializeRemoteMachineSettings( const QString & data, RemoteMachineSettings ** ret, QString * retProtoId ) {
-    if( NULL == ret ) {
-        return false;
-    }
-    *ret = NULL;
-    
+RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettings( const QString & data, QString * retProtoId ) {
     
     QString protoId = getDefaultProtocolId();
     ProtocolInfo * protoInfo = AppContext::getProtocolInfoRegistry()->getProtocolInfo( protoId );
     if( NULL == protoInfo ) {
-        return false;
+        assert(false);
+        return RemoteMachineSettingsPtr();
     }
         
-    *ret = protoInfo->getRemoteMachineFactory()->createSettings( data );
+    RemoteMachineSettingsPtr machineSettings = protoInfo->getRemoteMachineFactory()->createSettings( data );
     if( NULL != retProtoId ) {
         *retProtoId = protoId;
     }
 
-    return NULL == *ret ? false : true;
+    return machineSettings;
 }
 
+/*
 bool SerializeUtils::deserializeRemoteMachineSettings( const QString & data, RemoteMachine ** machine ) {
     if( NULL == machine ) {
         return false;
@@ -128,5 +126,6 @@ bool SerializeUtils::deserializeRemoteMachineSettings( const QString & data, Rem
     
     return NULL == *machine ? false : true;
 }
+*/
 
 } // U2

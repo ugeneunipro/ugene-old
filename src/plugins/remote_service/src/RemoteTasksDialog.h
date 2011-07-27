@@ -26,11 +26,10 @@
 
 #include <QtGui/QDialog>
 #include "ui/ui_TaskStatisticsDialog.h"
+#include "RemoteServiceMachine.h"
 
 namespace U2 {
 
-class RemoteServiceMachineSettings;
-class RemoteServiceMachine;
 class GetUserTasksInfoTask;
 class FetchRemoteTaskResultTask;
 class DeleteRemoteDataTask;
@@ -40,7 +39,7 @@ class RemoteTasksDialog : public QDialog, public Ui::RemoteTasksDialog
 {
     Q_OBJECT
 public:
-    RemoteTasksDialog(const RemoteServiceMachineSettings* s,QWidget* parent = NULL);
+    RemoteTasksDialog(const RemoteServiceSettingsPtr& s,QWidget* parent = NULL);
 
 private slots:
     void sl_onRefreshFinished();

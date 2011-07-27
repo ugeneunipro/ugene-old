@@ -36,7 +36,7 @@ namespace U2 {
     class RetrieveRemoteMachineInfoTask : public Task {
         Q_OBJECT
     public:
-        RetrieveRemoteMachineInfoTask( RemoteMachineSettings* s);
+        RetrieveRemoteMachineInfoTask( RemoteMachineSettingsPtr s);
         ~RetrieveRemoteMachineInfoTask();
 
         virtual void prepare();
@@ -47,15 +47,15 @@ namespace U2 {
         //QUuid getUuid() const;
         QString getHostName() const;
         bool isPingOk() const;
-        RemoteMachineSettings* getMachineSettings() const {return settings;}
+        RemoteMachineSettingsPtr getMachineSettings() const {return settings;}
 
     private:
-        QStringList             services;
-        QString                 hostname;
-        PingTask*               pingTask;
-        bool                    pingOK;
-        RemoteMachine *         machine;
-        RemoteMachineSettings*  settings;
+        QStringList                 services;
+        QString                     hostname;
+        PingTask*                   pingTask;
+        bool                        pingOK;
+        RemoteMachine *             machine;
+        RemoteMachineSettingsPtr    settings;
     }; // RetrieveRemoteMachineInfoTask
 
 
@@ -74,14 +74,14 @@ namespace U2 {
 
         virtual void run();
 
-        QList< RemoteMachineSettings* > getPublicMachines() const;
-        QList< RemoteMachineSettings* > takePublicMachines();
+        QList< RemoteMachineSettingsPtr > getPublicMachines() const;
+        QList< RemoteMachineSettingsPtr > takePublicMachines();
 
     private:
         void processEncodedMachines( const QString & encodedMachines );
 
     private:
-        QList< RemoteMachineSettings* > publicMachines;
+        QList< RemoteMachineSettingsPtr > publicMachines;
 
     }; // RetrievePublicMachinesTask
 
@@ -90,7 +90,7 @@ namespace U2 {
     class SaveRemoteMachineSettings : public Task {
         Q_OBJECT
     public:
-        SaveRemoteMachineSettings(RemoteMachineSettings * machineSettings, const QString& filename);
+        SaveRemoteMachineSettings(const RemoteMachineSettingsPtr& machineSettings, const QString& filename);
         virtual void run();
 
     private:

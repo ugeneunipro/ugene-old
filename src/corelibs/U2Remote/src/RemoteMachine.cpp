@@ -27,7 +27,7 @@ RemoteMachine::~RemoteMachine() {
 }
 
 RemoteMachineSettings::RemoteMachineSettings( ProtocolInfo * proto, RemoteMachineType type ) :
-        credentials(NULL), machineType(type) {
+        machineType(type) {
     assert( NULL != proto ); 
     protoId = proto->getId();
 }
@@ -37,16 +37,16 @@ RemoteMachineSettings::~RemoteMachineSettings() {
 }
 
 void RemoteMachineSettings::flushCredentials() {
-    delete credentials;
-    credentials = NULL;
+    credentials = UserCredentials();
+
 }
 
 void RemoteMachineSettings::setupCredentials( const QString& userName, const QString& passwd, bool permanent ) {
     flushCredentials();
-    credentials = new UserCredentials;
-    credentials->name = userName;
-    credentials->passwd = passwd;
-    credentials->permanent = permanent;
+    credentials.name = userName;
+    credentials.passwd = passwd;
+    credentials.permanent = permanent;
+    credentials.valid = true;
 }
 
 RemoteMachineFactory::~RemoteMachineFactory() {

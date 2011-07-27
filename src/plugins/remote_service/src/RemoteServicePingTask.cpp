@@ -22,8 +22,8 @@
 #include <U2Remote/SerializeUtils.h>
 #include <U2Core/Log.h>
 
-#include "RemoteServicePingTask.h"
 #include "RemoteServiceMachine.h"
+#include "RemoteServicePingTask.h"
 
 namespace U2 {
 
@@ -37,15 +37,14 @@ machinePath(url), machine(NULL),  machineFactory(new RemoteServiceMachineFactory
 }
 
 void RemoteServicePingTask::prepare() {
- 
-    RemoteMachineSettings* machineSettings;
-    
+
     if( machinePath.isEmpty() ) { 
         setError("Path to remote server settings file is not set");
         return;
     }
-
-    if( !SerializeUtils::deserializeRemoteMachineSettingsFromFile( machinePath, &machineSettings ) ) {
+    
+    RemoteMachineSettingsPtr machineSettings = SerializeUtils::deserializeRemoteMachineSettings(machinePath);
+    if( machineSettings == NULL ) {
         setError( tr("Can not parse remote server settings file %1").arg(machinePath) );
         return;
     }

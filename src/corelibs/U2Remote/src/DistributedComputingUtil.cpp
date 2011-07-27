@@ -90,7 +90,7 @@ QStringList DistributedComputingUtil::filterRemoteMachineServices( const QString
 * UpdateActiveTasks
 *******************************************/
 
-UpdateActiveTasks::UpdateActiveTasks(RemoteMachineSettings* s) :
+UpdateActiveTasks::UpdateActiveTasks(const RemoteMachineSettingsPtr& s) :
  Task("UpdateActiveTasks", TaskFlags_FOSCOE), settings(s), machine(NULL) 
  {
      rsLog.details(tr("Updating active tasks..."));

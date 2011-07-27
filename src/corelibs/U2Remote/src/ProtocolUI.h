@@ -40,11 +40,11 @@ public:
     virtual ~ProtocolUI();
     
     // after user clicks 'ok', creates remote machine settings based on the info in the form. Caller should delete it
-    virtual RemoteMachineSettings * createMachine() const = 0;
-    virtual void initializeWidget( const RemoteMachineSettings *settings ) = 0;
+    virtual RemoteMachineSettingsPtr createMachine() const = 0;
+    virtual void initializeWidget( const RemoteMachineSettingsPtr& settings ) = 0;
     virtual void clearWidget() = 0;
     virtual QString validate() const = 0;
-    virtual QDialog* createUserTasksDialog(const RemoteMachineSettings* settings, QWidget* parent) = 0;
+    virtual QDialog* createUserTasksDialog(const RemoteMachineSettingsPtr& settings, QWidget* parent) = 0;
     
 private:
     ProtocolUI( const ProtocolUI & );

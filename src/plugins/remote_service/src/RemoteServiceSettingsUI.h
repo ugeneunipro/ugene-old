@@ -36,10 +36,10 @@ public:
     RemoteServiceSettingsUI();
     virtual ~RemoteServiceSettingsUI();
 
-    virtual RemoteMachineSettings * createMachine() const;
-    virtual void initializeWidget(const RemoteMachineSettings *settings);
+    virtual RemoteMachineSettingsPtr createMachine() const;
+    virtual void initializeWidget(const RemoteMachineSettingsPtr& settings);
     virtual void clearWidget();
-    virtual QDialog* createUserTasksDialog(const RemoteMachineSettings* settings, QWidget* parent);
+    virtual QDialog* createUserTasksDialog(const RemoteMachineSettingsPtr& settings, QWidget* parent);
     virtual QString validate() const;
 
 };

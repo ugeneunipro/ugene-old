@@ -38,11 +38,11 @@ class UpdateActiveTasks;
 class RemoteMachinesMonitor;
 
 struct RemoteMachineItemInfo {
-    RemoteMachineSettings * settings;
-    QString                 hostname;
-    bool                    isSelected;
+    RemoteMachineSettingsPtr    settings;
+    QString                     hostname;
+    bool                        isSelected;
     
-    RemoteMachineItemInfo( RemoteMachineSettings * s) 
+    RemoteMachineItemInfo(const RemoteMachineSettingsPtr& s) 
         : settings( s ) {
         assert( NULL != settings );
     }
@@ -64,20 +64,20 @@ public:
                                     bool runTaskMode = false );
     
     QList< RemoteMachineItemInfo > getModel() const;
-    RemoteMachineSettings* getSelectedMachine() const;
+    RemoteMachineSettingsPtr getSelectedMachine() const;
     
 private:
-    bool addMachine( RemoteMachineSettings * machine, bool ping );
+    bool addMachineSettings( const RemoteMachineSettingsPtr& machine, bool ping );
     QTreeWidgetItem * addItemToTheView( RemoteMachineItemInfo & item );
     int topLevelItemsSelectedNum() const;
     int getSelectedTopLevelRow() const;
-    bool hasSameMachineInTheView( RemoteMachineSettings * machine ) const;
+    bool hasSameMachineInTheView( const RemoteMachineSettingsPtr& machine ) const;
     void enableItem( QTreeWidgetItem * item, bool enable );
     bool removeDialogItemAt( int row ); /* returns if item was successfully removed */
-    bool checkCredentials(RemoteMachineSettings* settings);
+    bool checkCredentials(const RemoteMachineSettingsPtr& settings);
     void checkBoxStateChanged( QCheckBox * cb, bool enable );
     RemoteMachineItemInfo& getItemInfo(QTreeWidgetItem* item);
-    void pingMachine( RemoteMachineSettings * settings, QTreeWidgetItem * item );
+    void pingMachine( const RemoteMachineSettingsPtr& settings, QTreeWidgetItem * item );
     void resizeTreeWidget();
     void initMachineActionsMenu();
     void updateState();
@@ -101,7 +101,7 @@ private:
     QMenu* machineActionsMenu;
     int currentlySelectedItemIndex;
     QList< RemoteMachineItemInfo > machinesItemsByOrder;
-    QMap< RemoteMachineSettings *, QTreeWidgetItem * > pingingItems; /* ping sent to machines with this items */
+    QMap< RemoteMachineSettingsPtr, QTreeWidgetItem * > pingingItems; /* ping sent to machines with this items */
     
     /* not static because QApplication must be constructed before any graphical object */
     const QPixmap PING_YES;

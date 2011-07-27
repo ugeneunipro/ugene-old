@@ -96,11 +96,10 @@ public:
     
     /* serialization of RemoteMachineSettings: human-readable QString instead of binary QVariant 
        4 deserialization functions need for tests */
-    static QString serializeRemoteMachineSettings( RemoteMachineSettings * machine );
-    static bool deserializeRemoteMachineSettings( const QString & data, RemoteMachineSettings ** settings, QString * protoId = NULL );
-    static bool deserializeRemoteMachineSettings( const QString & data, RemoteMachine ** machine );
-    static bool deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachine ** machine );
-    static bool deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachineSettings ** machine );
+    static QString serializeRemoteMachineSettings( const RemoteMachineSettingsPtr& machine );
+    static RemoteMachineSettingsPtr deserializeRemoteMachineSettings( const QString & data, QString * protoId = NULL );
+    //static bool deserializeRemoteMachineSettings( const QString & data, RemoteMachine ** machine );
+    //static bool deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachine ** machine );
     
 }; // SerializeUtils
 

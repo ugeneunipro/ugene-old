@@ -46,7 +46,6 @@ void RemoteMachineMonitor::initialize() {
     Settings * settings = AppContext::getSettings();
     assert( NULL != settings );
     if( !deserializeMachines( settings->getValue( REMOTE_MACHINE_MONITOR_SETTINGS_TAG ) ) ) {
-        qDeleteAll( getMachinesList() );
         items.clear();
         return;
     }
@@ -57,7 +56,6 @@ RemoteMachineMonitor::~RemoteMachineMonitor() {
         return;
     }
     saveSettings();
-    qDeleteAll( getMachinesList() );
 }
 
 void RemoteMachineMonitor::saveSettings() {
@@ -73,10 +71,10 @@ void RemoteMachineMonitor::saveSettings() {
 
 QVariant RemoteMachineMonitor::serializeMachines() const {
     QVariantList res;
-    foreach( const RemoteMachineMonitorItem & item, items ) {
+    foreach( const RemoteMachineSettingsPtr& item, items ) {
         QVariantList itemRes;
-        itemRes << QVariant( SerializeUtils::serializeRemoteMachineSettings( item.machine ) );
-        itemRes << QVariant( item.selected );
+        QString data = SerializeUtils::serializeRemoteMachineSettings(item);
+        itemRes << data;
         res << QVariant( itemRes );
     }
     return res;
@@ -93,110 +91,53 @@ bool RemoteMachineMonitor::deserializeMachines( const QVariant & data ) {
             return false;
         }
         QVariantList itemArgs = arg.toList();
-        if( 2 != itemArgs.size() ) {
+        if( itemArgs.size() == 0 ) {
             return false;
         }
-        RemoteMachineMonitorItem item;
-        if( !SerializeUtils::deserializeRemoteMachineSettings( itemArgs[0].toString(), &item.machine ) ) {
-            assert( NULL == item.machine );
+        RemoteMachineSettingsPtr machineSettings = SerializeUtils::deserializeRemoteMachineSettings(itemArgs[0].toString());
+        if( machineSettings == NULL ) {
             return false;
         }
-        if( !SerializeUtils::deserializeValue<bool>( itemArgs[1], &item.selected ) ) {
-            return false;
-        }
-        items << item;
+        
+        items << machineSettings;
     }
     return true;
 }
 
-bool RemoteMachineMonitor::addMachine( RemoteMachineSettings * machine, bool selected ) {
+bool RemoteMachineMonitor::addMachineConfiguration( const RemoteMachineSettingsPtr& machineSettings ) {
     ensureInitialized();
 
-    if( NULL == machine || hasMachineInMonitor( machine ) ) {
+    if( NULL == machineSettings || items.contains(machineSettings) ) {
         return false;
     }
-    items.append( RemoteMachineMonitorItem( machine, selected ) );
+    items.append( machineSettings );
     return true;
 }
 
-void RemoteMachineMonitor::setSelected( RemoteMachineSettings * machine, bool selected ) {
-    if( NULL == machine ) {
-        return;
-    }
-    int sz = items.size();
-    for( int i = 0; i < sz; ++i ) {
-        RemoteMachineMonitorItem & item = items[i];
-        if( item.machine == machine ) {
-            item.selected = selected;
-            break;
-        }
-    }
-}
-
-bool RemoteMachineMonitor::hasMachineInMonitor( RemoteMachineSettings * machine ) const {
-    assert( NULL != machine );
-    foreach( const RemoteMachineMonitorItem & item, items ) {
-        if( item.machine == machine ) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void RemoteMachineMonitor::removeMachine( RemoteMachineSettings * machine ) {
+void RemoteMachineMonitor::removeMachineConfiguration( const RemoteMachineSettingsPtr& machineSettings ) {
     ensureInitialized();
 
-    if( NULL == machine || !hasMachineInMonitor( machine ) ) {
+    if( NULL == machineSettings ) {
         return;
     }
     
-    int at = -1;
-    int sz = items.size();
-    for( int i = 0; i < sz; ++i ) {
-        if( items.at( i ).machine == machine ) {
-            at = i;
-            break;
-        }
-    }
-    assert( -1 != at );
-    delete items.at( at ).machine;
-    items.removeAt( at );
+    items.removeOne(machineSettings);
 }
 
-QList< RemoteMachineSettings * > RemoteMachineMonitor::getMachinesList() {
-    ensureInitialized();
-    QList< RemoteMachineSettings* > ret;
-    foreach( const RemoteMachineMonitorItem & item, items ) {
-        ret << item.machine;
-    }
-    return ret;
-}
-
-QList< RemoteMachineMonitorItem > RemoteMachineMonitor::getRemoteMachineMonitorItems() {
+QList<RemoteMachineSettingsPtr> RemoteMachineMonitor::getRemoteMachineMonitorItems() {
     ensureInitialized();
     return items;
 }
 
-QList< RemoteMachineSettings* > RemoteMachineMonitor::getSelectedMachines() {
-    ensureInitialized();
 
-    QList< RemoteMachineSettings* > res;
-    foreach( const RemoteMachineMonitorItem & item, items ) {
-        if( item.selected ) {
-            res << item.machine;
-        }
-    }
-    return res;
-}
-
-RemoteMachineSettings* RemoteMachineMonitor::findMachine( const QString& id ) const
+RemoteMachineSettingsPtr RemoteMachineMonitor::findMachineSettings( const QString& id ) const
 {
-    foreach ( const RemoteMachineMonitorItem& item, items) {
-        if (item.machine->serialize() == id ) {
-            return item.machine;
+    foreach ( const RemoteMachineSettingsPtr& item, items) {
+        if (item->serialize() == id ) {
+            return item;
         }
     }
-    return NULL;
+    return RemoteMachineSettingsPtr();
 }
 
 

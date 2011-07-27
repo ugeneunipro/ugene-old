@@ -71,12 +71,11 @@ rmm(monitor), getPublicMachinesTask( NULL ) {
     
     assert(rmm != NULL);
 
-    QList< RemoteMachineMonitorItem > monitorItems = rmm->getRemoteMachineMonitorItems();
-
+    QList< RemoteMachineSettingsPtr > monitorItems = rmm->getRemoteMachineMonitorItems();
     int sz = monitorItems.size();
     for( int i = 0; i < sz; ++i ) {
-        RemoteMachineMonitorItem item = monitorItems.at( i );
-        addMachine( item.machine, false );
+        const RemoteMachineSettingsPtr& item = monitorItems.at( i );
+        addMachineSettings( item, false );
     }
     rsLog.details(tr("Found %1 remote machine records").arg(sz));
     
@@ -124,7 +123,7 @@ void RemoteMachineMonitorDialogImpl::initMachineActionsMenu() {
     connect(saveMachineAction, SIGNAL(triggered()), SLOT(sl_saveMachine()));
 }
 
-bool RemoteMachineMonitorDialogImpl::addMachine( RemoteMachineSettings * settings, bool ping ) {
+bool RemoteMachineMonitorDialogImpl::addMachineSettings( const RemoteMachineSettingsPtr& settings, bool ping ) {
     assert( NULL != settings );
     if( hasSameMachineInTheView( settings ) ) {
         rsLog.error(tr( "Can't add %1 machine. The machine is already registered" ).arg( settings->getName() ) );
@@ -135,9 +134,9 @@ bool RemoteMachineMonitorDialogImpl::addMachine( RemoteMachineSettings * setting
     
     machinesItemsByOrder << item;
     QTreeWidgetItem * widgetItem = addItemToTheView( item );
-    
-
     assert( NULL != widgetItem );
+    rmm->addMachineConfiguration(settings);
+
     if (ping) {
         pingMachine( settings, widgetItem );
     } else {
@@ -146,8 +145,6 @@ bool RemoteMachineMonitorDialogImpl::addMachine( RemoteMachineSettings * setting
 
     }
     
-    rmm->addMachine(settings, false);
-
     return true;
 }
 
@@ -166,12 +163,11 @@ QTreeWidgetItem * RemoteMachineMonitorDialogImpl::addItemToTheView( RemoteMachin
     return widgetItem;
 }
 
-bool RemoteMachineMonitorDialogImpl::hasSameMachineInTheView( RemoteMachineSettings * suspect ) const {
+bool RemoteMachineMonitorDialogImpl::hasSameMachineInTheView( const RemoteMachineSettingsPtr& suspect ) const {
     int sz = machinesItemsByOrder.size();
-    int i = 0;
-    for( ; i < sz; ++i ) {
-        RemoteMachineItemInfo item = machinesItemsByOrder.at( i );
-        if( *item.settings == *suspect ) {
+    for( int i = 0; i < sz; ++i ) {
+        const RemoteMachineItemInfo& item = machinesItemsByOrder.at( i );
+        if( item.settings == suspect ) {
             return true;
         }
     }
@@ -185,7 +181,7 @@ QList< RemoteMachineItemInfo > RemoteMachineMonitorDialogImpl::getModel() const 
 
 void RemoteMachineMonitorDialogImpl::sl_okPushButtonClicked() {
     if (okPushButton->text() == OK_BUTTON_RUN) {
-        RemoteMachineSettings* s = getSelectedMachine(); 
+        RemoteMachineSettingsPtr s = getSelectedMachine(); 
         checkCredentials(s);
     }
 
@@ -211,13 +207,12 @@ void RemoteMachineMonitorDialogImpl::sl_addPushButtonClicked() {
     }
     assert( QDialog::Accepted == rc );
     
-    RemoteMachineSettings * newMachine = settingsDlg.getMachineSettings();
+    RemoteMachineSettingsPtr newMachine = settingsDlg.getMachineSettings();
     if( NULL == newMachine ) {
         return;
     }
-    if( !addMachine( newMachine, true ) ) {
-        delete newMachine;
-    }
+    addMachineSettings( newMachine, true );
+    
 }
 
 void RemoteMachineMonitorDialogImpl::sl_modifyPushButtonClicked() {
@@ -231,13 +226,13 @@ void RemoteMachineMonitorDialogImpl::sl_modifyPushButtonClicked() {
         return;
     }
     
-    RemoteMachineSettings * newMachine = settingsDlg.getMachineSettings();
+    RemoteMachineSettingsPtr newMachine = settingsDlg.getMachineSettings();
     if( NULL == newMachine ) {
         return;
     }
     
     removeDialogItemAt( row );
-    addMachine( newMachine, true );
+    addMachineSettings( newMachine, true );
 }
 
 void RemoteMachineMonitorDialogImpl::sl_removePushButtonClicked() {
@@ -256,7 +251,7 @@ bool RemoteMachineMonitorDialogImpl::removeDialogItemAt( int row ) {
     assert( 0 <= row && row < machinesItemsByOrder.size() );
     RemoteMachineItemInfo & itemToRemove = machinesItemsByOrder[row];
     std::auto_ptr<QTreeWidgetItem> treeItemToRemove ( machinesTreeWidget->takeTopLevelItem( row ) );
-    rmm->removeMachine(itemToRemove.settings);
+    rmm->removeMachineConfiguration(itemToRemove.settings);
     machinesItemsByOrder.removeAt( row );
     
     return true;
@@ -296,7 +291,7 @@ void RemoteMachineMonitorDialogImpl::sl_retrieveInfoTaskStateChanged() {
         return;
     }
     
-    RemoteMachineSettings* machineSettings = retrieveInfoTask->getMachineSettings();
+    RemoteMachineSettingsPtr machineSettings = retrieveInfoTask->getMachineSettings();
     assert( NULL != machineSettings );
     QTreeWidgetItem * treeItem = pingingItems.value( machineSettings );
     
@@ -339,7 +334,7 @@ void RemoteMachineMonitorDialogImpl::sl_pingPushButtonClicked() {
     updateState();
 }
 
-void RemoteMachineMonitorDialogImpl::pingMachine( RemoteMachineSettings * settings, QTreeWidgetItem * item ) {
+void RemoteMachineMonitorDialogImpl::pingMachine( const RemoteMachineSettingsPtr& settings, QTreeWidgetItem * item ) {
     assert( NULL != settings && NULL != item );
     
     if (!checkCredentials(settings)) {
@@ -384,17 +379,15 @@ void RemoteMachineMonitorDialogImpl::sl_getPublicMachinesTaskStateChanged() {
         return;
     }
         
-    QList< RemoteMachineSettings* > newMachines = getPublicMachinesTask->takePublicMachines();
+    QList< RemoteMachineSettingsPtr > newMachines = getPublicMachinesTask->takePublicMachines();
 
     if( getPublicMachinesTask->hasError()) {
         QMessageBox::critical(this, tr("Info"), tr("Error during remote machines request: %1").arg(getPublicMachinesTask->getError()));
     } else if ( newMachines.isEmpty() ) {
         QMessageBox::information(this, tr("Info"), tr("No public machines found"));
     } else {
-        foreach( RemoteMachineSettings * machine, newMachines ) {
-            if( !addMachine( machine, false ) ) {
-                delete machine; /* it already exists in the monitor list */
-            }
+        foreach( const RemoteMachineSettingsPtr&  machine, newMachines ) {
+            addMachineSettings( machine, false );
         }
     }
     getPublicMachinesTask = NULL;
@@ -449,9 +442,9 @@ void RemoteMachineMonitorDialogImpl::updateState()
     }
 }
 
-RemoteMachineSettings* RemoteMachineMonitorDialogImpl::getSelectedMachine() const {
+RemoteMachineSettingsPtr RemoteMachineMonitorDialogImpl::getSelectedMachine() const {
     if ( currentlySelectedItemIndex < 0 || currentlySelectedItemIndex >= machinesItemsByOrder.size() ) {
-        return NULL;
+        return RemoteMachineSettingsPtr();
     }
 
     const RemoteMachineItemInfo& info = machinesItemsByOrder.at(currentlySelectedItemIndex);
@@ -466,7 +459,7 @@ void RemoteMachineMonitorDialogImpl::sl_showUserTasksButtonClicked() {
     ProtocolInfo* pi = protoInfos.first();
 
     int row = getSelectedTopLevelRow();
-    RemoteMachineSettings* settings = machinesItemsByOrder.at(row).settings;
+    RemoteMachineSettingsPtr settings = machinesItemsByOrder.at(row).settings;
     if (!checkCredentials(settings)) {
         return;
     }
@@ -481,9 +474,9 @@ void RemoteMachineMonitorDialogImpl::sl_showUserTasksButtonClicked() {
     dlg->exec();
 }
 
-bool RemoteMachineMonitorDialogImpl::checkCredentials( RemoteMachineSettings* settings ) {
-    UserCredentials* credentials = settings->getUserCredentials();
-    if (credentials == NULL) {
+bool RemoteMachineMonitorDialogImpl::checkCredentials( const RemoteMachineSettingsPtr& settings ) {
+    const UserCredentials& credentials = settings->getUserCredentials();
+    if (!credentials.valid) {
         AuthDialog dlg(this);
         int rc = dlg.exec();
         if ( QDialog::Rejected == rc ) {

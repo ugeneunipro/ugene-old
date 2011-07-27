@@ -48,7 +48,7 @@ namespace U2 {
 * RemoteWorkflowRunTask
 ***************************************/
 
-RemoteWorkflowRunTask::RemoteWorkflowRunTask( RemoteMachineSettings * m, const Schema & sc, const QList<Iteration> & its ) 
+RemoteWorkflowRunTask::RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, const Schema & sc, const QList<Iteration> & its ) 
     : Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), machineSettings( m ), 
       machine( NULL ), schema( sc ), iterations( its ), taskId(0), eventLoop(NULL),taskIsActive(false) 
 {
@@ -60,7 +60,7 @@ RemoteWorkflowRunTask::RemoteWorkflowRunTask( RemoteMachineSettings * m, const S
     tpm = Progress_Manual;
 }
 
-RemoteWorkflowRunTask::RemoteWorkflowRunTask( RemoteMachineSettings *m, qint64 remoteTaskId )
+RemoteWorkflowRunTask::RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, qint64 remoteTaskId )
 : Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), machineSettings( m ), 
 machine( NULL ), taskId(remoteTaskId), eventLoop(NULL), taskIsActive(true)
 {

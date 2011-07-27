@@ -38,8 +38,8 @@ using namespace Workflow;
 class U2REMOTE_EXPORT RemoteWorkflowRunTask : public Task {
     Q_OBJECT
 public:
-    RemoteWorkflowRunTask( RemoteMachineSettings *m, const Schema & sc, const QList<Iteration> & its );
-    RemoteWorkflowRunTask( RemoteMachineSettings *m, qint64 remoteTaskId);
+    RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, const Schema & sc, const QList<Iteration> & its );
+    RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, qint64 remoteTaskId);
     ~RemoteWorkflowRunTask();
 
     static const int TIMER_UPDATE_TIME = 2000; /* 2 seconds */
@@ -59,7 +59,7 @@ private slots:
     void sl_remoteTaskTimerUpdate();
 
 private:
-    RemoteMachineSettings*  machineSettings;
+    RemoteMachineSettingsPtr  machineSettings;
     RemoteMachine *         machine;
     Schema                  schema;
     QList<Iteration>        iterations;

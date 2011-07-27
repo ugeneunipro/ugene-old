@@ -32,13 +32,13 @@
 
 namespace U2 {
 
-RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceMachineSettings* settings,QWidget* parent ) 
+RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceSettingsPtr& settings,QWidget* parent ) 
 : QDialog(parent), getInfoTask(NULL), fetchResultTask(NULL), deleteRemoteDataTask(NULL), machine(NULL) 
 {
     setupUi(this);
     
     
-    machine.reset(new RemoteServiceMachine(const_cast<RemoteServiceMachineSettings*>(settings)));
+    machine.reset(new RemoteServiceMachine(settings));
     urlLabel->setText(settings->getName());
     
     connect(this, SIGNAL(finished(int)), SLOT(sl_onDialogClosed()));
