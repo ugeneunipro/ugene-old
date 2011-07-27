@@ -72,6 +72,8 @@ public:
     virtual U2AttributeDbi* getAttributeDbi()  {return NULL;}
     
     virtual U2ObjectDbi* getObjectDbi()  {return NULL;}
+
+    virtual U2SnpDbi* getSnpDbi()  {return NULL;}
     
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
     
