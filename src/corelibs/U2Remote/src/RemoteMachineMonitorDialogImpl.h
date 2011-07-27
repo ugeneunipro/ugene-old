@@ -30,12 +30,19 @@
 #include <QtGui/QMenu>
 #include <QtGui/QCheckBox>
 
+
+
 namespace U2 {
 
 class RemoteTask;
 class RetrievePublicMachinesTask;
 class UpdateActiveTasks;
 class RemoteMachinesMonitor;
+
+#if QT_VERSION < 0x040700
+template <class T> bool operator<(const QSharedPointer<T>& a, const QSharedPointer<T>& b){ return a.data() < b.data(); }
+#endif
+
 
 struct RemoteMachineItemInfo {
     RemoteMachineSettingsPtr    settings;
