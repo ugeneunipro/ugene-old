@@ -26,6 +26,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/PhyTree.h \
            src/datatype/PWMatrix.h \
            src/datatype/SMatrix.h \
+           src/datatype/U2Alphabet.h \
            src/datatype/U2Annotation.h \
            src/datatype/U2Assembly.h \
            src/datatype/U2Attribute.h \
@@ -36,6 +37,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Range.h \
            src/datatype/U2Region.h \
            src/datatype/U2Sequence.h \
+           src/datatype/U2Snp.h \
            src/datatype/U2Type.h \
            src/datatype/U2TypeIds.h \
            src/datatype/UIndex.h \
@@ -52,6 +54,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2MsaDbi.h \
            src/dbi/U2ObjectDbi.h \
            src/dbi/U2SequenceDbi.h \
+           src/dbi/U2SnpDbi.h \
            src/dbi/U2SqlHelpers.h \
            src/globals/AppContext.h \
            src/globals/AppGlobalObject.h \
@@ -81,7 +84,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/Settings.h \
            src/globals/Task.h \
            src/globals/Timer.h \
-           src/globals/U2Alphabet.h \
            src/globals/U2OpStatus.h \
            src/globals/U2SafePoints.h \
            src/globals/UserApplicationsSettings.h \

@@ -42,6 +42,7 @@ class U2CrossDatabaseReferenceDbi;
 class U2MsaDbi;
 class U2AssemblyDbi;
 class U2AttributeDbi;
+class U2SnpDbi;
 class U2OpStatus;
 class U2Dbi;
 
@@ -85,6 +86,8 @@ enum U2CORE_EXPORT U2DbiFeature {
     U2DbiFeature_ReadAttributes               = 5,
     /** DBI supports read methods for remote objects  */
     U2DbiFeature_ReadCrossDatabaseReferences  = 6,
+    /** DBI supports readings Snps and SnpTracks */
+    U2DbiFeature_ReadSnps                     = 7,
 
     /** DBI supports changing/storing sequences */
     U2DbiFeature_WriteSequence                = 101,
@@ -92,12 +95,15 @@ enum U2CORE_EXPORT U2DbiFeature {
     U2DbiFeature_WriteMsa                     = 102,
     /** DBI supports changing/storing assemblies */
     U2DbiFeature_WriteAssembly                = 103
-    /** DBI supports changing/storing sequence annotations*/,
+    /** DBI supports changing/storing sequence annotations */,
     U2DbiFeature_WriteSequenceAnnotations     = 104,
     /** DBI supports changing/storing attributes */
     U2DbiFeature_WriteAttributes              = 105,
     /** DBI supports cross database references */
     U2DbiFeature_WriteCrossDatabaseReferences = 106,
+    /** DBI supports changing/storing Snps and SnpTracks */
+    U2DbiFeature_WriteSnps                    = 107,
+
 
     /** DBI supports removal of objects */
     U2DbiFeature_RemoveObjects                = 200,
@@ -234,6 +240,12 @@ public:
         Not NULL only if U2DbiFeature_ReadAttributes supported
     */
     virtual U2AttributeDbi* getAttributeDbi()  = 0;
+
+    /**  
+        U2Snp related DBI routines 
+        Not NULL only if U2DbiFeature_ReadSnps supported
+    */
+    virtual U2SnpDbi* getSnpDbi()  = 0;
 
     /** 
         Cross database references handling routines 

@@ -184,7 +184,7 @@ public:
     quint8              mappingQuality;
     
     /** Read flags */
-    qint64 flags;
+    qint64              flags;
 };
 
 typedef QSharedDataPointer<U2AssemblyReadData> U2AssemblyRead;
