@@ -36,6 +36,7 @@
 namespace U2 {
 
 static const int CROSS_SIZE = 9;
+#define CHILDREN_OFFSET 8
 
 MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) : editor(_ui->editor), ui(_ui), nhBar(_nhBar) {
     setFocusPolicy(Qt::WheelFocus);
@@ -108,7 +109,7 @@ void MSAEditorNameList::updateScrollBar() {
     }
     // adjustment for branch primitive in collapsing mode
     if (ui->isCollapsibleMode()) {
-        maxNameWidth += 2*CROSS_SIZE;
+        maxNameWidth += 2*CROSS_SIZE + CHILDREN_OFFSET;
     }
 
     int availableWidth = width() - MARGIN_TEXT_LEFT;
@@ -540,6 +541,8 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, bool selected, cons
 
     QStyleOption branchOption;
 
+    int delta = 0;
+
     if (index >= 0) {
         branchOption.rect = calculateButtonRect(textRect);
 
@@ -557,12 +560,13 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, bool selected, cons
                 if (itemLastPos != pos) {
                     branchOption.state |= QStyle::State_Sibling;
                 }
+                delta = CHILDREN_OFFSET;
             }
         }
         style()->drawPrimitive(QStyle::PE_IndicatorBranch, &branchOption, &p, this);
     }
 
-    textRect = QRect(textRect.left() + CROSS_SIZE*2, textRect.top(), textRect.width() - ((5*CROSS_SIZE)/2), textRect.height());
+    textRect = QRect(textRect.left() + CROSS_SIZE*2 + delta, textRect.top(), textRect.width() - ((5*CROSS_SIZE)/2), textRect.height());
     style()->drawItemText(&p, textRect, Qt::AlignVCenter | Qt::AlignLeft, branchOption.palette, true, row.getName());
 }
 
