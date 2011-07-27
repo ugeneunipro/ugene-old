@@ -32,7 +32,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include "GenomeAlignerPlugin.h"
 

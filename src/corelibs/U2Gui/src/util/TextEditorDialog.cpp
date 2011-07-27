@@ -20,7 +20,7 @@
  */
 
 #include "TextEditorDialog.h"
-#include <ui/ui_TextEditorDialog.h>
+#include "ui/ui_TextEditorDialog.h"
 
 #include <QtGui/QKeyEvent>
 

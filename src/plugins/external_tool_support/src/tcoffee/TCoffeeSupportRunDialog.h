@@ -23,7 +23,7 @@
 #define _U2_TCOFFEE_SUPPORT_RUN_DIALOG_H
 
 #include <QtGui/QDialog>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <ui/ui_TCoffeeSupportRunDialog.h>
 #include "TCoffeeSupportTask.h"
 

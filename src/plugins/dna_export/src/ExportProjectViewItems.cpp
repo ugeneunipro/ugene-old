@@ -54,7 +54,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/MSAUtils.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>

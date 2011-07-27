@@ -25,7 +25,7 @@
 #include "MuscleTask.h"
 
 #include <U2Core/GAutoDeleteList.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <ui/ui_MuscleAlignDialog.h>
 

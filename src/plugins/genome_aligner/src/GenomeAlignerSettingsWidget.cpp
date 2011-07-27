@@ -29,7 +29,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Algorithm/OpenCLGpuRegistry.h>
 #include <QtGui/QFileDialog>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include "GenomeAlignerSettingsWidget.h"
 

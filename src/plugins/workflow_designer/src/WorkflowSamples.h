@@ -23,7 +23,7 @@
 #define _U2_WORKFLOW_SAMPLES_H_
 
 #include <U2Lang/Descriptor.h>
-#include <U2Misc/GlassView.h>
+#include <U2Gui/GlassView.h>
 #include <U2Core/Task.h>
 
 #include <QtGui/QAction>

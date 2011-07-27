@@ -38,7 +38,7 @@
 #include <U2View/MSAEditorFactory.h>
 #include <U2View/MSAEditor.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <QtGui/QMainWindow>

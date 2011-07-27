@@ -44,7 +44,7 @@
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/QDScheduler.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Formats/GenbankFeatures.h>
 

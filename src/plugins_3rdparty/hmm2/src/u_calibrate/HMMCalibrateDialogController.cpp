@@ -7,7 +7,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/AppResources.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>

@@ -38,7 +38,7 @@
 #include <U2Formats/DocumentFormatUtils.h>
 #include <U2Core/DocumentUtils.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 
 #include <U2Core/DIProperties.h>

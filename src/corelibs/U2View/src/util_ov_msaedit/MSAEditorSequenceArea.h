@@ -26,7 +26,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
-#include <U2Misc/GScrollBar.h>
+#include <U2Gui/GScrollBar.h>
 
 #include <QtGui/QWidget>
 #include <QtGui/QMenu>

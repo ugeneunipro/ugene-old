@@ -35,8 +35,8 @@
 #include <U2Core/Settings.h>
 #include <U2Core/TaskSignalMapper.h>
 
-#include <U2Misc/GlassView.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/GlassView.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Lang/QueryDesignerRegistry.h>
 

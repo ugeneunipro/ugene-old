@@ -30,7 +30,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Formats/IndexFormat.h>
 
 #include <U2Core/CreateFileIndexTask.h>

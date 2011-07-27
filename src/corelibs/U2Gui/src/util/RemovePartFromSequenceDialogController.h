@@ -22,7 +22,7 @@
 #ifndef _U2_REMOVE_PART_FROM_SEQUENCE_CONTROLLER_H_
 #define _U2_REMOVE_PART_FROM_SEQUENCE_CONTROLLER_H_
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/RemovePartFromSequenceTask.h>
 

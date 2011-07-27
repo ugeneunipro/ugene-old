@@ -35,7 +35,7 @@ class Logger;
 class TaskStateInfo;
 
 
-class U2MISC_EXPORT DialogUtils : public QObject {
+class U2GUI_EXPORT DialogUtils : public QObject {
     Q_OBJECT
 public:
     static void showProjectIsLockedWarning(QWidget* p = NULL);
@@ -59,7 +59,7 @@ public:
     static QPair<QString, QString> selectFileForScreenShot(QWidget * parent);
 };
 
-class U2MISC_EXPORT LastOpenDirHelper {
+class U2GUI_EXPORT LastOpenDirHelper {
 public:
     LastOpenDirHelper(const QString& domain = QString(), const QString& defaultVal = QString()); //reads dir
     virtual ~LastOpenDirHelper(); //if url is not empty -> derives dir from url and stores it
@@ -76,7 +76,7 @@ public:
     QString url;
 };
 
-class U2MISC_EXPORT FileLineEdit : public QLineEdit {
+class U2GUI_EXPORT FileLineEdit : public QLineEdit {
     Q_OBJECT
 public:
     FileLineEdit(const QString& filter, const QString& type, bool multi, QWidget *parent)

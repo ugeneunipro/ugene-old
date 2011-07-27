@@ -25,7 +25,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/AnnotationTableObject.h>
 
-#include <U2Misc/TextEditorDialog.h>
+#include <U2Gui/TextEditorDialog.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>

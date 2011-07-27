@@ -33,7 +33,7 @@
 
 #include <U2Gui/OpenViewTask.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 
 namespace U2 {

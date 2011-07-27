@@ -37,11 +37,11 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Misc/PositionSelector.h>
+#include <U2Gui/PositionSelector.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Core/TextUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/IOAdapter.h>
 
 #include <QtGui/QPainter>

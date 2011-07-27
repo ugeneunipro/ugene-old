@@ -13,7 +13,7 @@
 #include <U2Core/GObjectUtils.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/CreateAnnotationTask.h>
 

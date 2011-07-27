@@ -31,7 +31,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <memory>
 #include <QtCore/QtAlgorithms>

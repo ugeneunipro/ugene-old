@@ -29,7 +29,7 @@
 
 namespace U2 {
 
-class U2MISC_EXPORT ScaleBar : public QWidget {
+class U2GUI_EXPORT ScaleBar : public QWidget {
     Q_OBJECT
 public:
     ScaleBar(QWidget* parent = 0);

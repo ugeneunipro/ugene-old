@@ -44,8 +44,8 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 
-#include <U2Misc/HBar.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/HBar.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2View/CreatePhyTreeDialogController.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 

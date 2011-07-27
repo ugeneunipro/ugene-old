@@ -28,7 +28,7 @@
 
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>

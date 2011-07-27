@@ -22,7 +22,7 @@
 #include "DotPlotFilesDialog.h"
 
 #include <U2Core/GObjectTypes.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>

@@ -37,7 +37,7 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Designer/DelegateEditors.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include "ExportAnnotations2CSVTask.h"
 #include "WriteAnnotationsWorker.h"

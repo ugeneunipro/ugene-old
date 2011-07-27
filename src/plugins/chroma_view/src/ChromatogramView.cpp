@@ -46,7 +46,7 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#include <U2Misc/GScrollBar.h>
+#include <U2Gui/GScrollBar.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/AddNewDocumentDialogController.h>
 #include <U2Gui/ProjectTreeController.h>

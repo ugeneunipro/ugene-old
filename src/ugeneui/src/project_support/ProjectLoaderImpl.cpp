@@ -36,7 +36,7 @@
 #include <U2Core/DocumentImport.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Gui/CreateDocumentFromTextDialogController.h>
 #include <U2Gui/DownloadRemoteFileDialog.h>

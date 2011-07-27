@@ -23,7 +23,7 @@
 #define _U2_CAP3_SUPPORT_DIALOG_H_
 
 #include <QDialog>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <ui/ui_CAP3SupportDialog.h>
 
 namespace U2 {

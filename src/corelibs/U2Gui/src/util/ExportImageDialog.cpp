@@ -26,7 +26,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QImageWriter>
 #include <QtGui/QFileDialog>

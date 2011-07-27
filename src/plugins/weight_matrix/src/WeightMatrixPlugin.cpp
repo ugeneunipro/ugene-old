@@ -31,7 +31,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVUtils.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <U2Algorithm/PWMConversionAlgorithm.h>

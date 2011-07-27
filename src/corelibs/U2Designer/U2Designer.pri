@@ -8,7 +8,7 @@ UGENE_RELATIVE_DESTDIR = ''
 QT += svg
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2DESIGNER_DLL
 
-LIBS += -L../../_release -lU2Core -lU2Misc -lU2Lang -lU2Gui
+LIBS += -L../../_release -lU2Core -lU2Lang -lU2Gui
 
 !debug_and_release|build_pass {
 

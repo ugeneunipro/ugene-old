@@ -23,7 +23,7 @@
 #include "SaveDocumentGroupController.h"
 #include "ui/ui_CopyDocumentDialog.h"
 
-#include "U2Misc/DialogUtils.h"
+#include "U2Gui/DialogUtils.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GObject.h>

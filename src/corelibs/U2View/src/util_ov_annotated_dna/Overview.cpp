@@ -32,8 +32,8 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
 
-#include <U2Misc/GScrollBar.h>
-#include <U2Misc/GraphUtils.h>
+#include <U2Gui/GScrollBar.h>
+#include <U2Gui/GraphUtils.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolTip>

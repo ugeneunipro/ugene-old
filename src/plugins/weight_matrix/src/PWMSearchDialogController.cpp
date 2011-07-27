@@ -35,7 +35,7 @@
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>

@@ -53,7 +53,6 @@ add-library U2Designer
 add-library U2Formats
 add-library U2Gui
 add-library U2Lang
-add-library U2Misc
 add-library U2Private
 add-library U2Remote
 add-library U2Test

@@ -27,7 +27,7 @@
 #include <U2Lang/WorkflowRunTask.h>
 
 #include <U2Gui/MainWindow.h>
-#include <U2Misc/ScriptEditorDialog.h>
+#include <U2Gui/ScriptEditorDialog.h>
 
 #include <QtGui/QAction>
 #include <QtGui/QGraphicsScene>

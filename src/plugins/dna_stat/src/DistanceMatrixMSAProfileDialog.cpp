@@ -26,7 +26,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/WebWindow.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>

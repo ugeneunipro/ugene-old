@@ -34,7 +34,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Core/Settings.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>

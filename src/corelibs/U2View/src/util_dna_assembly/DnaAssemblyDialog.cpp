@@ -29,7 +29,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 

@@ -19,42 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GLASS_VIEW_H_
-#define _U2_GLASS_VIEW_H_
+#ifndef _U2_TEXT_EDITOR_DIALOG_H_
+#define _U2_TEXT_EDITOR_DIALOG_H_
 
 #include <U2Core/global.h>
-#include <QtGui/QGraphicsView>
+#include <QtGui/QDialog>
 
-class QTextDocument;
+class Ui_TextEditorDialog;
 
 namespace U2 {
 
-class U2MISC_EXPORT GlassPane : public QWidget {
+class U2GUI_EXPORT TextEditorDialog : public QDialog {
     Q_OBJECT
 public:
-    GlassPane(QWidget* parent = 0) : QWidget(parent) {}
-    virtual void paint(QPainter*) = 0;
-    virtual bool eventFilter(QObject*, QEvent* e) {
-        return this->event(e);
-    }
-};
-
-
-class U2MISC_EXPORT GlassView : public QGraphicsView {
-    Q_OBJECT
-public:
-    GlassView(QGraphicsScene * scene) : QGraphicsView(scene), glass(NULL) {}
-
-public slots:
-    void setGlass(GlassPane*);
+    TextEditorDialog(QWidget* parent, const QString& title, const QString& label, const QString& text, bool acceptOnEnter);
+    ~TextEditorDialog();
+    QString getText();
 
 protected:
-    bool viewportEvent(QEvent * event);
-    void paintEvent(QPaintEvent *);
-    void scrollContentsBy(int dx, int dy);
-    
-    GlassPane* glass;
+    bool eventFilter(QObject *, QEvent *);
+
+private:
+    Ui_TextEditorDialog* ui;
 };
 
-}//namespace
+} // namespace
+
 #endif

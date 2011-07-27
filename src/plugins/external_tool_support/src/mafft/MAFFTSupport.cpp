@@ -38,7 +38,7 @@
 #include <U2Core/MAlignmentObject.h>
 
 #include <U2Gui/GUIUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 namespace U2 {
 

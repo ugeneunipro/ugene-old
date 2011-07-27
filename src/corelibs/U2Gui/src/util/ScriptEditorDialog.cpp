@@ -20,10 +20,10 @@
  */
 
 #include "ScriptEditorDialog.h"
-#include <ui/ui_ScriptEditorDialog.h>
+#include "ui/ui_ScriptEditorDialog.h"
 
 #include <U2Core/L10n.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtCore/QFile>
 #include <QtGui/QMessageBox>

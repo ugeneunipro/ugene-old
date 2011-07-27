@@ -11,7 +11,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Counter.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 
 #include <QtGui/QMessageBox>

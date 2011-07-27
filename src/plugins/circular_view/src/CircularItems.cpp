@@ -24,7 +24,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
-#include <U2Misc/GraphUtils.h>
+#include <U2Gui/GraphUtils.h>
 #include <U2Core/AppContext.h>
 #include <QtGui/QGraphicsLineItem>
 

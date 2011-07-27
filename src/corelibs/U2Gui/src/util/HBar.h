@@ -19,30 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_TEXT_EDITOR_DIALOG_H_
-#define _U2_TEXT_EDITOR_DIALOG_H_
+#ifndef _U2_HBAR_H_
+#define _U2_HBAR_H_
 
 #include <U2Core/global.h>
-#include <QtGui/QDialog>
-
-class Ui_TextEditorDialog;
+#include <QtGui/QToolBar>
 
 namespace U2 {
 
-class U2MISC_EXPORT TextEditorDialog : public QDialog {
-    Q_OBJECT
+///////////////////////////////////////////////////////////////////////////////////////////
+// Header widget toolbar
+
+class U2GUI_EXPORT HBar : public QToolBar {
 public:
-    TextEditorDialog(QWidget* parent, const QString& title, const QString& label, const QString& text, bool acceptOnEnter);
-    ~TextEditorDialog();
-    QString getText();
-
+    HBar(QWidget* w) : QToolBar(w){}
 protected:
-    bool eventFilter(QObject *, QEvent *);
-
-private:
-    Ui_TextEditorDialog* ui;
+    void paintEvent(QPaintEvent* ) {
+        //do not draw any special toolbar control -> make is merged with parent widget
+    }
 };
 
-} // namespace
+} //namespace
 
 #endif

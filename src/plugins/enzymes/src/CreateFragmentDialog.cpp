@@ -30,7 +30,7 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2View/ADVSequenceObjectContext.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Algorithm/EnzymeModel.h>
 #include "CreateFragmentDialog.h"

@@ -22,7 +22,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>

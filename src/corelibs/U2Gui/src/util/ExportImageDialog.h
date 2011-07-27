@@ -22,7 +22,7 @@
 #ifndef _U2_EXPORT_IMAGE_DIALOG_H_
 #define _U2_EXPORT_IMAGE_DIALOG_H_
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtCore/QList>
 #include <QtCore/QString>

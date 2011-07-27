@@ -41,7 +41,6 @@ copy %RELEASE_DIR%\U2Designer.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Formats.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Gui.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Lang.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Misc.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Private.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Remote.dll  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Test.dll  %OUTPUT_DIR%
@@ -53,7 +52,6 @@ copy %RELEASE_DIR%\U2Designer.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Formats.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Gui.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Lang.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Misc.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Private.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Remote.map  %OUTPUT_DIR%
 copy %RELEASE_DIR%\U2Test.map  %OUTPUT_DIR%

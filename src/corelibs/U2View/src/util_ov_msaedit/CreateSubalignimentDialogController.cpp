@@ -21,7 +21,7 @@
 
 #include "CreateSubalignimentDialogController.h"
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Formats/GenbankLocationParser.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>

@@ -25,7 +25,7 @@
 #include <QtGui/QDialog>
 
 #include <U2Core/GAutoDeleteList.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <ui/ui_KalignDialog.h>
 #include "KalignTask.h"

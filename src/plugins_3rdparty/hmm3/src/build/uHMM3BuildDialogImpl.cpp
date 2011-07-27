@@ -23,7 +23,7 @@
 #include <QtGui/QMessageBox>
 
 #include <U2Core/AppContext.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <gobject/uHMMObject.h>
 #include "uHMM3BuildDialogImpl.h"

@@ -23,7 +23,7 @@
 #include "EnzymesIO.h"
 #include "FindEnzymesTask.h"
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>

@@ -29,7 +29,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Misc/GraphUtils.h>
+#include <U2Gui/GraphUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/BuiltInConsensusAlgorithms.h>

@@ -31,7 +31,7 @@
 #include <U2Core/Timer.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>

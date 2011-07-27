@@ -36,7 +36,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/AppContext.h>
 
 #include <QtCore/QEvent>
@@ -58,7 +58,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
-#include <U2Misc/GScrollBar.h>
+#include <U2Gui/GScrollBar.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
 

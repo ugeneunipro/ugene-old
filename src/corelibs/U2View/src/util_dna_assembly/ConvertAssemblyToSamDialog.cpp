@@ -23,7 +23,7 @@
 
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QFileDialog>
 #include <QMessageBox>

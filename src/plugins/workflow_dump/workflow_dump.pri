@@ -9,4 +9,4 @@ PLUGIN_VENDOR=Unipro
 
 include( ../../ugene_plugin_common.pri )
 
-INCLUDEPATH += ../../corelibs/U2Misc/_tmp
+INCLUDEPATH += ../../corelibs/U2Gui/_tmp

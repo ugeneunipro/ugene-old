@@ -19,26 +19,42 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GSCROLL_BAR_H_
-#define _U2_GSCROLL_BAR_H_
+#ifndef _U2_GLASS_VIEW_H_
+#define _U2_GLASS_VIEW_H_
 
 #include <U2Core/global.h>
-#include <QtGui/QScrollBar>
+#include <QtGui/QGraphicsView>
+
+class QTextDocument;
 
 namespace U2 {
 
-class U2MISC_EXPORT GScrollBar : public QScrollBar {
+class U2GUI_EXPORT GlassPane : public QWidget {
+    Q_OBJECT
 public:
-    GScrollBar(Qt::Orientation o, QWidget *p=0) : QScrollBar(o, p){}
-
-    void setupRepeatAction(SliderAction action, int thresholdTime=100, int repeatTime=50) {
-        QScrollBar::setRepeatAction(action, thresholdTime, repeatTime);
+    GlassPane(QWidget* parent = 0) : QWidget(parent) {}
+    virtual void paint(QPainter*) = 0;
+    virtual bool eventFilter(QObject*, QEvent* e) {
+        return this->event(e);
     }
-
-    SliderAction getRepeatAction() const {return repeatAction();}
 };
 
 
-} //namespace
+class U2GUI_EXPORT GlassView : public QGraphicsView {
+    Q_OBJECT
+public:
+    GlassView(QGraphicsScene * scene) : QGraphicsView(scene), glass(NULL) {}
 
+public slots:
+    void setGlass(GlassPane*);
+
+protected:
+    bool viewportEvent(QEvent * event);
+    void paintEvent(QPaintEvent *);
+    void scrollContentsBy(int dx, int dy);
+    
+    GlassPane* glass;
+};
+
+}//namespace
 #endif

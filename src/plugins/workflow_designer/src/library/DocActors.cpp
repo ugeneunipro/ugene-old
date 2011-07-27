@@ -29,7 +29,7 @@
 #include <U2Lang/BaseAttributes.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 namespace U2 {
 namespace Workflow {

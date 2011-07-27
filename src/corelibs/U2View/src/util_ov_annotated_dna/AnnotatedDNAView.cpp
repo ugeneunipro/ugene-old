@@ -66,8 +66,8 @@
 #include <U2Gui/AnnotationSettingsDialogController.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/CreateObjectRelationDialogController.h>
-#include <U2Misc/PositionSelector.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/PositionSelector.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/EditSequenceDialogController.h>
 #include <U2Gui/RemovePartFromSequenceDialogController.h>
 

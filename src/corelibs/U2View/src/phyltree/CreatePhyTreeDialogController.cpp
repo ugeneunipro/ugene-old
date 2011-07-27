@@ -10,7 +10,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Settings.h>

@@ -23,7 +23,7 @@
 #define _U2_PAN_VIEW_H_
 
 #include "GSequenceLineViewAnnotated.h"
-#include "U2Misc/GraphUtils.h"
+#include "U2Gui/GraphUtils.h"
 
 #include <QtGui/QFont>
 #include <QtGui/QAction>

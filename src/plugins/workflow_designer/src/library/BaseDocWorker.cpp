@@ -39,7 +39,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DocumentUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 namespace U2 {
 namespace LocalWorkflow {

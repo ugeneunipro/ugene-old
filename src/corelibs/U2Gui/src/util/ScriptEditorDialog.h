@@ -30,7 +30,7 @@
 class Ui_ScriptEditorDialog;
 
 namespace U2 {
-class U2MISC_EXPORT ScriptEditorDialog : public QDialog {
+class U2GUI_EXPORT ScriptEditorDialog : public QDialog {
     Q_OBJECT
 public:
     ScriptEditorDialog(QWidget* p, const QString& roHeaderText, const QString & text = QString());

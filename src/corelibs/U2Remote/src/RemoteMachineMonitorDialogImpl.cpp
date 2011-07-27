@@ -25,9 +25,9 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Misc/AuthenticationDialog.h>
+#include <U2Gui/AuthenticationDialog.h>
 #include <U2Remote/RemoteMachineTasks.h>
 #include <U2Remote/RemoteMachineMonitor.h>
 #include <U2Gui/LogView.h>

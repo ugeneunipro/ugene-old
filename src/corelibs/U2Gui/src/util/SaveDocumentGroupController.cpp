@@ -24,7 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/DocumentFormatComboboxController.h>
 
 #include <QtGui/QFileDialog>

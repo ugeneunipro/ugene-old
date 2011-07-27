@@ -31,7 +31,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
 

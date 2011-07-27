@@ -65,8 +65,8 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 
-#include <U2Misc/DialogUtils.h>
-#include <U2Misc/PositionSelector.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/PositionSelector.h>
 
 #include <U2View/ConvertAssemblyToSamDialog.h>
 

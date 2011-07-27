@@ -5,14 +5,14 @@ include (ugene_lib_common.pri)
 
 UGENE_RELATIVE_DESTDIR = 'plugins'
 QT += network xml webkit svg
-LIBS += -L../../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Misc -lU2Lang -lU2Designer
+LIBS += -L../../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Designer
 
 !debug_and_release|build_pass {
     CONFIG(debug, debug|release) {
         PLUGIN_ID=$$join(PLUGIN_ID, "", "", "d")
         DESTDIR=../../_debug/plugins
-        LIBS -= -L../../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Misc -lU2Lang -lU2Designer
-        LIBS += -L../../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Guid -lU2Viewd -lU2Testd -lU2Remoted -lU2Miscd -lU2Langd -lU2Designerd
+        LIBS -= -L../../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Designer
+        LIBS += -L../../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Guid -lU2Viewd -lU2Testd -lU2Remoted -lU2Langd -lU2Designerd
     }
     CONFIG(release, debug|release) {
         DESTDIR=../../_release/plugins

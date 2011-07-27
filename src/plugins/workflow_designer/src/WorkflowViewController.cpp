@@ -64,7 +64,7 @@
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
-#include <U2Misc/GlassView.h>
+#include <U2Gui/GlassView.h>
 #include <U2Remote/RemoteMachine.h>
 #include <U2Remote/RemoteMachineMonitorDialogController.h>
 #include <U2Remote/DistributedComputingUtil.h>

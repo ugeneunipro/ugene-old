@@ -24,9 +24,9 @@
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
 #include <U2Lang/IntegralBusModel.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Misc/ScriptEditorDialog.h>
+#include <U2Gui/ScriptEditorDialog.h>
 
 #include "DelegateEditors.h"
 #include <U2Lang/WorkflowUtils.h>

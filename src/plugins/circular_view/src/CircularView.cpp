@@ -33,9 +33,9 @@
 #include <U2View/ADVSequenceWidget.h>
 
 #include <U2Core/DNASequenceSelection.h>
-#include <U2Misc/GScrollBar.h>
+#include <U2Gui/GScrollBar.h>
 #include <U2Core/FormatUtils.h>
-#include <U2Misc/GraphUtils.h>
+#include <U2Gui/GraphUtils.h>
 
 #include <QtGui/QTextEdit>
 #include <QtGui/QGridLayout>

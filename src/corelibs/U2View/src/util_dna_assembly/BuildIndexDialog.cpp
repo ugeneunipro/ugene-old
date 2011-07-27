@@ -24,7 +24,7 @@
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Core/GUrlUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/DocumentUtils.h>
 
 #include <QtGui/QFileDialog>

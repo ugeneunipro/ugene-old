@@ -32,7 +32,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include "ImportQualityScoresWorker.h"
 

@@ -41,7 +41,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/Notification.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 

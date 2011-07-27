@@ -29,11 +29,11 @@
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
 
-#include <U2Misc/ScriptEditorDialog.h>
+#include <U2Gui/ScriptEditorDialog.h>
 
 #include <U2Core/AnnotationTableObject.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/SaveDocumentGroupController.h>
 
 #include <QtCore/QFileInfo>

@@ -33,7 +33,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/Settings.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include "DownloadRemoteFileDialog.h"
 #include "ui/ui_DownloadRemoteFileDialog.h"

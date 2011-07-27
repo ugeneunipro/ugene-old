@@ -27,9 +27,9 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Misc/GScrollBar.h>
-
+#include <U2Gui/GScrollBar.h>
 #include <U2Gui/ObjectViewModel.h>
+
 #include <QtGui/QTextEdit>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QApplication>

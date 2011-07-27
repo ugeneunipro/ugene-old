@@ -26,7 +26,7 @@
 
 #include <U2Lang/Descriptor.h>
 
-#include <U2Misc/GlassView.h>
+#include <U2Gui/GlassView.h>
 
 #include <QtGui/QListWidget>
 

@@ -31,7 +31,7 @@ namespace U2 {
 
 #define PI 3.1415926535897932384626433832795
 
-class U2MISC_EXPORT GraphUtils {
+class U2GUI_EXPORT GraphUtils {
 public:
 
     enum Direction { LTR, RTL, BTT, TTB };

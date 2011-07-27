@@ -25,7 +25,7 @@
 #include <U2Core/global.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include "ExportAnnotationsDialog.h"
 
 namespace U2 {

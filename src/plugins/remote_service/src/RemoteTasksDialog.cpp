@@ -23,7 +23,7 @@
 #include <QtGui/QFileDialog>
 
 #include <U2Core/AppContext.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include "RemoteServiceMachine.h"
 #include "RemoteServiceUtilTasks.h"

@@ -38,12 +38,12 @@
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/GHints.h>
 
-#include <U2Misc/RangeSelector.h>
-#include <U2Misc/PositionSelector.h>
+#include <U2Gui/RangeSelector.h>
+#include <U2Gui/PositionSelector.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
-#include <U2Misc/DialogUtils.h>
-#include <U2Misc/HBar.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HBar.h>
 
 #include <QtGui/QApplication>
 #include <QtGui/QToolButton>

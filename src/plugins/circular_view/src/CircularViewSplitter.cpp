@@ -30,8 +30,8 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/AnnotationTableObject.h>
 
-#include <U2Misc/HBar.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/HBar.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QVBoxLayout>

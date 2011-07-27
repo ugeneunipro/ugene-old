@@ -53,7 +53,7 @@
 #include <U2View/ADVConstants.h>
 
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/LoadRemoteDocumentTask.h>

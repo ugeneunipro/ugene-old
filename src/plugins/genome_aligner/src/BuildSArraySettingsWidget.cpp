@@ -24,7 +24,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/UserApplicationsSettings.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <QtGui/QFileDialog>
 
 #include "BuildSArraySettingsWidget.h"

@@ -34,7 +34,7 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Gui/AppSettingsGUI.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>

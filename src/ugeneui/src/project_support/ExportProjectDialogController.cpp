@@ -21,7 +21,7 @@
 
 #include "ExportProjectDialogController.h"
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
 

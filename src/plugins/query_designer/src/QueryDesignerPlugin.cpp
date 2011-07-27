@@ -38,7 +38,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 

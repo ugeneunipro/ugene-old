@@ -42,8 +42,8 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/PanView.h>
 
-#include <U2Misc/GraphUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/GraphUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QFileDialog>

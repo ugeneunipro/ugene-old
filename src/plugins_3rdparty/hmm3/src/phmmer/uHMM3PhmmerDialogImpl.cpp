@@ -26,7 +26,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectTypes.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <phmmer/uhmm3PhmmerTask.h>
 #include "uHMM3PhmmerDialogImpl.h"

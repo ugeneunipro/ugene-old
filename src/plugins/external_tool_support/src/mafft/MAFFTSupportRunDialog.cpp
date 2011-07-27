@@ -21,7 +21,7 @@
 
 #include "MAFFTSupportRunDialog.h"
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
 

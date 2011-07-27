@@ -26,7 +26,7 @@
 #include <U2Core/U2AnnotationUtils.h>
 #include <U2Core/GUrl.h>
 #include <U2Gui/SeqPasterWidgetController.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QDialog>
 

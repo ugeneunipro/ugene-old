@@ -65,7 +65,7 @@
 #include <U2Lang/CoreLibConstants.h>
 
 #include <U2Core/global.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Lang/HRSchemaSerializer.h>
 

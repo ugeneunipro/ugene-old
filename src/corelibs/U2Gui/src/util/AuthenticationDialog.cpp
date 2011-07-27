@@ -21,7 +21,7 @@
 
 #include <QtGui/QMessageBox>
 
-#include <ui/ui_AuthentificationDialog.h>
+#include "ui/ui_AuthentificationDialog.h"
 #include "AuthenticationDialog.h"
 
 namespace U2 {

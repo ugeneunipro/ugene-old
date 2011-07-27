@@ -49,7 +49,7 @@
 #include <U2Gui/EditQualifierDialog.h>
 #include <U2Gui/OpenViewTask.h>
 
-#include <U2Misc/TreeWidgetUtils.h>
+#include <U2Gui/TreeWidgetUtils.h>
 
 #include <QtCore/QFileInfo>
 #include <QtGui/QVBoxLayout>

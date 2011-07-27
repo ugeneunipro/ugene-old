@@ -50,7 +50,7 @@
 
 #include <U2Designer/QDScheduler.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>

@@ -46,7 +46,7 @@
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/SWResultFilterRegistry.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MSAUtils.h>

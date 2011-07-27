@@ -19,26 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_HBAR_H_
-#define _U2_HBAR_H_
+#ifndef _U2_GSCROLL_BAR_H_
+#define _U2_GSCROLL_BAR_H_
 
 #include <U2Core/global.h>
-#include <QtGui/QToolBar>
+#include <QtGui/QScrollBar>
 
 namespace U2 {
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    // Header widget toolbar
+class U2GUI_EXPORT GScrollBar : public QScrollBar {
+public:
+    GScrollBar(Qt::Orientation o, QWidget *p=0) : QScrollBar(o, p){}
 
-    class U2MISC_EXPORT HBar : public QToolBar {
-    public:
-        HBar(QWidget* w) : QToolBar(w){}
-    protected:
-        void paintEvent(QPaintEvent* pe) {
-            Q_UNUSED(pe);
-            //do not draw any special toolbar control -> make is merged with parent widget
-        }
-    };
+    void setupRepeatAction(SliderAction action, int thresholdTime=100, int repeatTime=50) {
+        QScrollBar::setRepeatAction(action, thresholdTime, repeatTime);
+    }
+
+    SliderAction getRepeatAction() const {return repeatAction();}
+};
+
 
 } //namespace
 

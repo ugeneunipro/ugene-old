@@ -32,7 +32,7 @@
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include "Dbi.h"
 #include "Exception.h"

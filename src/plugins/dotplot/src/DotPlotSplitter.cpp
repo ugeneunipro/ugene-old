@@ -33,7 +33,7 @@
 #include <QtGui/QToolButton>
 //#include <QtGui/QToolBar>
 //#include <U2View/ADVSingleSequenceWidget.h>
-#include <U2Misc/HBar.h>
+#include <U2Gui/HBar.h>
 #include <U2View/AnnotatedDNAView.h>
 
 namespace U2 {

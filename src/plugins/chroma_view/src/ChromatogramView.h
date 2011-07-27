@@ -25,7 +25,7 @@
 #include <U2Core/GObject.h>
 #include <U2Core/DNAChromatogram.h>
 #include <U2View/GSequenceLineView.h>
-#include <U2Misc/ScaleBar.h>
+#include <U2Gui/ScaleBar.h>
 
 #include <QtGui>
 

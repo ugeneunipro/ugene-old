@@ -7,7 +7,7 @@
 #include "ExpertDiscoveryExtSigWiz.h"
 #include "ExpertDiscoveryPlugin.h"
 
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2View/ADVUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>

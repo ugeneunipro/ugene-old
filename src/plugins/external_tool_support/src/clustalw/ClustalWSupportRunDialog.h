@@ -23,7 +23,7 @@
 #define _U2_CLUSTALW_SUPPORT_RUN_DIALOG_H
 
 #include <QDialog>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 #include <ui/ui_ClustalWSupportRunDialog.h>
 #include "ClustalWSupportTask.h"
 

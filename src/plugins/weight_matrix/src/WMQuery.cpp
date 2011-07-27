@@ -31,7 +31,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/FailTask.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QApplication>
 

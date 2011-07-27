@@ -35,8 +35,8 @@
 #include <U2Core/U2AnnotationUtils.h>
 
 #include <U2Core/DNASequenceSelection.h>
-#include <U2Misc/GraphUtils.h>
-#include <U2Misc/GScrollBar.h>
+#include <U2Gui/GraphUtils.h>
+#include <U2Gui/GScrollBar.h>
 #include <U2Core/TextUtils.h>
 
 #include <QtGui/QTextEdit>

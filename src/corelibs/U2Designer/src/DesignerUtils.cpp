@@ -22,7 +22,7 @@
 #include "DesignerUtils.h"
 
 #include <U2Lang/WorkflowUtils.h>
-#include <U2Misc/DialogUtils.h>
+#include <U2Gui/DialogUtils.h>
 
 //TODO FIX translator
 namespace U2 {

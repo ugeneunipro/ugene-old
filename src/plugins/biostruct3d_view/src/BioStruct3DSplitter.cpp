@@ -44,7 +44,7 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectTreeController.h>
-#include <U2Misc/HBar.h>
+#include <U2Gui/HBar.h>
 #include <U2View/AnnotatedDNAView.h>
 
 #include "BioStruct3DSplitter.h"
