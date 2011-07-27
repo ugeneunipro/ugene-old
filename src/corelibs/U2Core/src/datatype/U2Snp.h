@@ -38,12 +38,14 @@ public:
     U2DataId      sequence;
 };
 
-
+/** Single nucleotide polymorphisms database representation */
 class U2CORE_EXPORT U2Snp : public U2Entity {
 public:
-    U2Snp() : pos (0) {}
+    U2Snp() : pos (0), oldBase(0), newBase(0) {}
 
-    qint64 pos;
+    qint64  pos;
+    char    oldBase;
+    char    newBase;
 
 };
 

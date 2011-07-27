@@ -98,5 +98,6 @@
         <file>images/dna_helix.png</file>
         <file>images/tree_layout.png</file>
         <file>images/notch.png</file>
+        <file>images/layers.png</file>
     </qresource>
 </RCC>
