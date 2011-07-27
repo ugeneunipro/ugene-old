@@ -405,13 +405,13 @@ bool ZoomableAssemblyOverview::canZoomToRange(const U2Region & range)const {
     return minimalOverviewedLen() != range.length;
 }
 
-void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64 newLen) {
+void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64 newLen, bool force) {
     if(!zoomable) return;
     U2OpStatusImpl os;
     qint64 modelLen = model->getModelLength(os);
     Q_UNUSED(modelLen);
     assert(newLen <= modelLen);
-    if(newLen != visibleRange.length || newStartPos != visibleRange.startPos) {
+    if(newLen != visibleRange.length || newStartPos != visibleRange.startPos || force) {
         qint64 minLen = minimalOverviewedLen();
         qint64 minLenDiff = 0;
         if(newLen < minLen) {
@@ -429,8 +429,8 @@ void ZoomableAssemblyOverview::checkedSetVisibleRange(qint64 newStartPos, qint64
     }
 }
 
-void ZoomableAssemblyOverview::checkedSetVisibleRange(const U2Region & newRegion) {
-    checkedSetVisibleRange(newRegion.startPos, newRegion.length);
+void ZoomableAssemblyOverview::checkedSetVisibleRange(const U2Region & newRegion, bool force) {
+    checkedSetVisibleRange(newRegion.startPos, newRegion.length, force);
 }
 
 void ZoomableAssemblyOverview::paintEvent(QPaintEvent * e) {
@@ -441,6 +441,8 @@ void ZoomableAssemblyOverview::paintEvent(QPaintEvent * e) {
 void ZoomableAssemblyOverview::resizeEvent(QResizeEvent * e) {
     cachedSelection = calcCurrentSelection();
     moveSelectionToPos(cachedSelection.center(), false);
+    // force re-check visible range to avoid violating 1-pixel limit
+    checkedSetVisibleRange(visibleRange, true);
     launchCoverageCalculation();
     sl_redraw();
     QWidget::resizeEvent(e);
