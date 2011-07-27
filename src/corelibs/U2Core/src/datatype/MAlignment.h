@@ -87,6 +87,7 @@ public:
     // Compares 2 rows. Rows are equal if their offsets, packed and names are equal
     inline bool operator!=(const MAlignmentRow& r) const;
     bool operator==(const MAlignmentRow& r) const;
+    bool isRowContentEqual(const MAlignmentRow& r) const;
 
     // The first non-gap character position in the row
     // - 1 if not found
@@ -277,6 +278,9 @@ public:
 
     // Sorts rows by name
     void sortRowsByName(bool asc = true);
+
+    // Sorts rows by similarity making identical rows sequential
+    void sortRowsBySimilarity(QVector<U2Region>& united);
 
     // Shifts a selection of consequent rows
     void moveRowsBlock( int startRow, int numRows, int delta );

@@ -22,6 +22,8 @@
 #ifndef _U2_MSA_EDITOR_NAME_LIST_H_
 #define _U2_MSA_EDITOR_NAME_LIST_H_
 
+#include "MSACollapsibleModel.h"
+
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 
@@ -59,6 +61,7 @@ private slots:
 
     void sl_nameBarMoved(int n);
     void sl_fontChanged();
+    void sl_modelChanged();
 
 protected:
     void resizeEvent(QResizeEvent* e);
@@ -84,7 +87,12 @@ private:
     void drawContent(QPainter& p);
     void drawSelection(QPainter& p);
     void drawSequenceItem(QPainter& p, int n, bool selected);
+    void drawSequenceItem(QPainter& p, int s, bool selected, const U2Region& yRange, int pos);
     void drawFocus(QPainter& p);
+    QFont getFont(bool selected) const;
+    QRect calculateTextRect(const U2Region& yRange, bool selected) const;
+    QRect calculateButtonRect(const QRect& itemRect) const;
+    int getSelectedRow() const;
     
     MSAEditor*          editor;
     MSAEditorUI*        ui;
@@ -99,7 +107,6 @@ private:
     QAction*            removeCurrentSequenceAction;
     QPixmap*            cachedView;
     bool                completeRedraw;
-
 };
 
 }//namespace

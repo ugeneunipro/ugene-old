@@ -22,6 +22,7 @@
 #ifndef _U2_MSA_EDITOR_H_
 #define _U2_MSA_EDITOR_H_
 
+
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/U2Region.h>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
@@ -43,6 +44,7 @@ class MSAEditorStatusWidget;
 class MSAEditorUndoFramework;
 class PhyTreeGeneratorTask;
 class MSAEditorTreeViewer;
+class MSACollapsibleItemModel;
 
 #define MSAE_MENU_COPY          "MSAE_MENU_COPY"
 #define MSAE_MENU_EDIT          "MSAE_MENU_EDIT"
@@ -171,6 +173,10 @@ public:
     QAction* getUndoAction() const;
     QAction* getRedoAction() const;
 
+    bool isCollapsibleMode() const { return collapsibleMode; }
+    void setCollapsibleMode(bool collapse) { collapsibleMode = collapse; }
+    MSACollapsibleItemModel* getCollapseModel() const { return collapseModel; }
+
 public slots:
     void sl_saveScreenshot();
 
@@ -190,6 +196,8 @@ private:
     QList<QWidget*>                 lw2Widgets;
     QList<QWidget*>                 treeAreaWidgets;
     MSAEditorUndoFramework*         undoFWK;
+    MSACollapsibleItemModel*        collapseModel;
+    bool                            collapsibleMode;
 };
 
 

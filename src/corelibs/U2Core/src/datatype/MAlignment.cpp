@@ -322,6 +322,10 @@ bool MAlignmentRow::operator==(const MAlignmentRow& row) const {
     if (row.name != this->name) {
         return false;
     }
+    return isRowContentEqual(row);
+}
+
+bool MAlignmentRow::isRowContentEqual(const MAlignmentRow& row) const {
     if (offset == row.offset && sequence == row.sequence) {
         return true;
     }
@@ -701,6 +705,28 @@ void MAlignment::sortRowsByName(bool asc) {
     qStableSort(rows.begin(), rows.end(), CompareMARowsByName(asc));
 }
 
+void MAlignment::sortRowsBySimilarity(QVector<U2Region>& united) {
+    QList<MAlignmentRow> sortedRows;
+    while (!rows.isEmpty()) {
+        const MAlignmentRow& r = rows.takeFirst();
+        sortedRows.append(r);
+        int start = sortedRows.size() - 1;
+        int len = 1;
+        QMutableListIterator<MAlignmentRow> iter(rows);
+        while (iter.hasNext()) {
+            const MAlignmentRow& next = iter.next();
+            if(next.isRowContentEqual(r)) {
+                sortedRows.append(next);
+                iter.remove();
+                ++len;
+            }
+        }
+        if (len > 1) {
+            united.append(U2Region(start, len));
+        }
+    }
+    rows = sortedRows;
+}
 
 void MAlignment::moveRowsBlock( int startRow, int numRows, int delta )
 {

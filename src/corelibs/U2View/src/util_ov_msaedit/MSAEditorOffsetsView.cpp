@@ -165,25 +165,42 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
     int lbw = fm.width('[');
     int rbw = fm.width(']');
     int pos = showStartPos ? seqArea->getFirstVisibleBase() : seqArea->getLastVisibleBase(true, true);
-    for(int i=0; i< nSeqVisible; i++) {
-        U2Region yRange = seqArea->getSequenceYRange(startSeq + i, true);
-        int offs = cache->getBaseCounts(startSeq + i, pos, !showStartPos);
-        int seqSize = cache->getBaseCounts(startSeq + i, aliLen - 1, true);
-        QString  offset = QString::number(offs+1);
-        if (showStartPos && offs == 0) {
-            p.setPen(Qt::black);
-            QRect lbr(OFFS_WIDGET_BORDER, yRange.startPos, lbw, yRange.length);
-            p.drawText(lbr, Qt::AlignCenter, "[");
-        } else if (!showStartPos && offs == seqSize) {
-            p.setPen(Qt::black);
-            QRect rbr(w - OFFS_WIDGET_BORDER - rbw, yRange.startPos, rbw, yRange.length);
-            p.drawText(rbr, Qt::AlignCenter, "]");
-            offset = QString::number(offs);
-        } else {
-            p.setPen(dg);
+
+    QVector<U2Region> visibleRows;
+    const MSAEditorUI* ui = editor->getUI();
+    if (ui->isCollapsibleMode()) {
+        MSACollapsibleItemModel* m = ui->getCollapseModel();
+        int lastSeq = seqArea->getLastVisibleSequence(true);
+        m->getVisibleRows(startSeq, lastSeq, visibleRows);
+    } else {
+        visibleRows.append(U2Region(startSeq, nSeqVisible));
+    }
+
+    int i=0;
+    qint64 numRows = (qint64)cache->getMSAObject()->getMAlignment().getNumRows();
+    foreach(const U2Region& r, visibleRows) {
+        int end = qMin(r.endPos(), numRows);;
+        for (int row=r.startPos; row < end; row++) {
+            U2Region yRange = seqArea->getSequenceYRange(startSeq + i, true);
+            int offs = cache->getBaseCounts(row, pos, !showStartPos);
+            int seqSize = cache->getBaseCounts(row, aliLen - 1, true);
+            QString  offset = QString::number(offs+1);
+            if (showStartPos && offs == 0) {
+                p.setPen(Qt::black);
+                QRect lbr(OFFS_WIDGET_BORDER, yRange.startPos, lbw, yRange.length);
+                p.drawText(lbr, Qt::AlignCenter, "[");
+            } else if (!showStartPos && offs == seqSize) {
+                p.setPen(Qt::black);
+                QRect rbr(w - OFFS_WIDGET_BORDER - rbw, yRange.startPos, rbw, yRange.length);
+                p.drawText(rbr, Qt::AlignCenter, "]");
+                offset = QString::number(offs);
+            } else {
+                p.setPen(dg);
+            }
+            QRect tr(OFFS_WIDGET_BORDER + (showStartPos ? lbw : 0), yRange.startPos, w - 2 * OFFS_WIDGET_BORDER - (showStartPos ? lbw : rbw), yRange.length);
+            p.drawText(tr, Qt::AlignRight | Qt::AlignVCenter, offset);
+            i++;
         }
-        QRect tr(OFFS_WIDGET_BORDER + (showStartPos ? lbw : 0), yRange.startPos, w - 2 * OFFS_WIDGET_BORDER - (showStartPos ? lbw : rbw), yRange.length);
-        p.drawText(tr, Qt::AlignRight | Qt::AlignVCenter, offset);
     }
 }
 

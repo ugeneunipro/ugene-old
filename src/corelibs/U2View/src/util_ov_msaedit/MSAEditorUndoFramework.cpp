@@ -20,6 +20,7 @@
  */
 
 #include "MSAEditorUndoFramework.h"
+#include "MSACollapsibleModel.h"
 
 #include <U2Core/MAlignmentObject.h>
 
@@ -70,10 +71,15 @@ void MSAEditorUndoFramework::applyUndoRedoAction(const MAlignment& ma) {
     }
 }
 
-void MSAEditorUndoFramework::sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& ) {
+void MSAEditorUndoFramework::sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& mi) {
     if (maObj == NULL || lastSavedObjectVersion == maObj->getModificationVersion() || maBefore.getRows() == maObj->getMAlignment().getRows()) {
         return;
     }
+
+    if (mi.hints.value(MODIFIER) == MAROW_SIMILARITY_SORT) {
+        return;
+    }
+
     lastSavedObjectVersion = maObj->getModificationVersion();
     const MAlignment& maAfter = maObj->getMAlignment();
     int memUseBefore = 0;

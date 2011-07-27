@@ -512,8 +512,9 @@ void MSAEditor::initDragAndDropSupport()
 }
 
 //////////////////////////////////////////////////////////////////////////
-MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), offsetsView(NULL), statusWidget(NULL) {
+MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), offsetsView(NULL), statusWidget(NULL), collapsibleMode(false) {
     undoFWK = new MSAEditorUndoFramework(this, editor->getMSAObject());
+    collapseModel = new MSACollapsibleItemModel(this);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     setMinimumSize(300, 200);
@@ -590,6 +591,8 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
     QWidget *mainWidget = new QWidget();
     mainWidget->setLayout(mainLayout);
     setLayout(mainLayout);
+
+    connect(collapseModel, SIGNAL(toggled()), offsetsView, SLOT(sl_modelChanged()));
 }
 
 QWidget* MSAEditorUI::createLabelWidget(const QString& text, Qt::Alignment ali) const {

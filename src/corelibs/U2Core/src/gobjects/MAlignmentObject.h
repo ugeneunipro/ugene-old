@@ -38,6 +38,7 @@ public:
     MAlignmentModInfo() : sequenceContentChanged(true), sequenceListChanged(true) {}
     bool sequenceContentChanged;
     bool sequenceListChanged;
+    QVariantMap hints;
 
 private:
     static bool registerMeta;
@@ -76,7 +77,7 @@ public:
 
     void crop(U2Region window, const QSet<QString>& rowNames);
 
-    void setMAlignment(const MAlignment& ma);
+    void setMAlignment(const MAlignment& ma, const QVariantMap& hints = QVariantMap());
 
     DNAAlphabet* getAlphabet() const { return msa.getAlphabet(); }
 

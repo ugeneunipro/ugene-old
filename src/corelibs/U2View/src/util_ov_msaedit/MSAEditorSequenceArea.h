@@ -23,6 +23,7 @@
 #define _U2_MSA_EDITOR_SEQUENCE_AREA_H_
 
 #include "DeleteGapsDialog.h"
+#include "MSACollapsibleModel.h"
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
@@ -81,7 +82,6 @@ private:
     explicit MSAEditorSelection(QRect& rect) : selArea(rect) { } 
     QRect selArea;
 };
-
 
 class U2VIEW_EXPORT MSAEditorSequenceArea : public QWidget {
     Q_OBJECT
@@ -154,6 +154,10 @@ public:
 
     void deleteCurrentSelection();
 
+    U2Region getSelectedRows() const;
+
+    U2Region getRowsAt(int seq) const;
+
 private:
     const QPoint& getCursorPos() const {assert(checkState()); return cursorPos;}
 
@@ -220,6 +224,7 @@ private slots:
     void sl_goto();
     void sl_removeAllGaps();
     void sl_sortByName();
+    void sl_setCollapsingMode(bool enabled);
     void sl_reverseComplementCurrentSelection();
 
     void sl_onPosChangeRequest(int pos);
@@ -229,6 +234,8 @@ private slots:
     void sl_changeColorScheme();
 
     void sl_zoomOperationPerformed(bool resizeModeChanged);
+
+    void sl_modelChanged();
 
 protected:
     virtual void wheelEvent (QWheelEvent * event);
@@ -279,6 +286,7 @@ private:
     QAction*        addSeqFromFileAction;
     QAction*        addSeqFromProjectAction;
     QAction*        sortByNameAction;
+    QAction*        viewModeAction;
     QAction*        reverseComplementAction;
 
     

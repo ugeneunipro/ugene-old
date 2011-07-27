@@ -53,6 +53,7 @@ private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&){updateOffsets();}
     void sl_startChanged(const QPoint& , const QPoint& ) {updateOffsets();}
     void sl_fontChanged() {updateOffsets();}
+    void sl_modelChanged() {updateOffsets();}
     void sl_showOffsets(bool);
 private:
     void updateOffsets();

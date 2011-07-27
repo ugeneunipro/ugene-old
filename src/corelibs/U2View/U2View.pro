@@ -70,6 +70,7 @@ HEADERS += src/WebWindow.h \
            src/util_ov_msaedit/MSAEditorStatusBar.h \
            src/util_ov_msaedit/MSAEditorTasks.h \
            src/util_ov_msaedit/MSAEditorUndoFramework.h \
+           src/util_ov_msaedit/MSACollapsibleModel.h \
            src/util_ov_phyltree/CreateBranchesTask.h \
            src/util_ov_phyltree/CreateCircularBranchesTask.h \
            src/util_ov_phyltree/CreateRectangularBranchesTask.h \
@@ -178,6 +179,7 @@ SOURCES += src/WebWindow.cpp \
            src/util_ov_msaedit/MSAEditorStatusBar.cpp \
            src/util_ov_msaedit/MSAEditorTasks.cpp \
            src/util_ov_msaedit/MSAEditorUndoFramework.cpp \
+           src/util_ov_msaedit/MSACollapsibleModel.cpp \
            src/util_ov_phyltree/CreateCircularBranchesTask.cpp \
            src/util_ov_phyltree/CreateRectangularBranchesTask.cpp \
            src/util_ov_phyltree/CreateUnrootedBranchesTask.cpp \

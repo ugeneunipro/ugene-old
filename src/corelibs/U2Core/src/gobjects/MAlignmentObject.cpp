@@ -195,7 +195,7 @@ void MAlignmentObject::removeRow(int seqNum) {
 }
 
 
-void MAlignmentObject::setMAlignment(const MAlignment& newMa) {
+void MAlignmentObject::setMAlignment(const MAlignment& newMa, const QVariantMap& hints) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
     MAlignment maBefore = msa;
@@ -206,6 +206,7 @@ void MAlignmentObject::setMAlignment(const MAlignment& newMa) {
     setModified(true);
 
     MAlignmentModInfo mi;
+    mi.hints = hints;
     emit si_alignmentChanged(maBefore, mi);
 }
 
