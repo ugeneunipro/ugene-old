@@ -51,6 +51,8 @@ static const QString WRITE_ANNOTATIONS_IN_TYPE_ID("write-annotations-in-type");
 static const QString CSV_FORMAT_ID("csv");
 static const QString ANNOTATIONS_NAME("annotations-name");
 static const QString ANNOTATIONS_NAME_DEF_VAL("unknown features");
+static const QString SEPARATOR("separator");
+static const QString SEPARATOR_DEFAULT_VALUE (",");
 
 /*******************************
  * WriteAnnotationsWorker
@@ -104,7 +106,8 @@ Task * WriteAnnotationsWorker::tick() {
         if(fl.testFlag(SaveDoc_Roll) && !GUrlUtils::renameFileWithNameRoll(filepath, ti, excludeFileNames, &coreLog)) {
             return new FailTask(ti.getError());
         }
-        return new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), NULL, false, filepath, fl.testFlag(SaveDoc_Append));
+        return new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), NULL, false, filepath, fl.testFlag(SaveDoc_Append)
+                                                , actor->getParameter(SEPARATOR)->getAttributeValue<QString>());
     } else {
         fl |= SaveDoc_DestroyAfter;
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(filepath));
@@ -155,6 +158,9 @@ void WriteAnnotationsWorkerFactory::init() {
         Descriptor annotationsNameDesc(ANNOTATIONS_NAME, WriteAnnotationsWorker::tr("Annotations name"), 
             WriteAnnotationsWorker::tr("Object name of saving annotations"));
         attrs << new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, QVariant(ANNOTATIONS_NAME_DEF_VAL));
+        Descriptor separatorDesc(SEPARATOR, WriteAnnotationsWorker::tr("CSV separator"), 
+            WriteAnnotationsWorker::tr("String which separates values in CSV files"));
+        attrs << new Attribute(separatorDesc, BaseTypes::STRING_TYPE(), false, QVariant(SEPARATOR_DEFAULT_VALUE));
     }
     
     Descriptor protoDesc(WriteAnnotationsWorkerFactory::ACTOR_ID, 

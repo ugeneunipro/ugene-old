@@ -36,7 +36,7 @@ public:
         const QList<Annotation*>& annotations,
         const QByteArray& sequence,
         DNATranslation *complementTranslation,
-        bool exportSequence, const QString& url, bool append = false);
+        bool exportSequence, const QString& url, bool append = false, QString sep = ",");
 
     void run();
 private:
@@ -46,6 +46,7 @@ private:
     bool exportSequence;
     QString url;
     bool append;
+    QString separator;
 };
 
 } // namespace U2

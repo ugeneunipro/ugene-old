@@ -37,23 +37,25 @@ ExportAnnotations2CSVTask::ExportAnnotations2CSVTask(const QList<Annotation*>& a
                                                      DNATranslation *complementTranslation,
                                                      bool exportSequence,
                                                      const QString& url, 
-                                                     bool apnd)
+                                                     bool apnd,
+                                                     QString sep)
 : Task(tr("Export2CSV"), TaskFlag_None),
     annotations(annotations),
     sequence(sequence),
     complementTranslation(complementTranslation),
     exportSequence(exportSequence),
     url(url),
+    separator(sep),
     append(apnd)
 {
     GCOUNTER( cvar, tvar, "ExportAnnotattions2CSVTask" );
 }
 
-static void writeCSVLine(const QStringList& container, IOAdapter *ioAdapter) {
+static void writeCSVLine(const QStringList& container, IOAdapter *ioAdapter, QString separator) {
     bool first = true;
     foreach(QString value, container) {
         if (!first) {
-            if (0 == ioAdapter->writeBlock(",")) {
+            if (0 == ioAdapter->writeBlock(separator.toAscii())) {
                 throw 0;
             }
         }
@@ -104,7 +106,7 @@ void ExportAnnotations2CSVTask::run() {
                     }
                 }
             }
-            writeCSVLine(columnNames, ioAdapter.get());
+            writeCSVLine(columnNames, ioAdapter.get(), separator);
         }
         foreach(const Annotation* annotation, annotations) {
             foreach(const U2Region& region, annotation->getRegions()) {
@@ -141,7 +143,7 @@ void ExportAnnotations2CSVTask::run() {
                     int qualifiedIndex = columnIndices[qualifier.name];
                     values[qualifiedIndex] = qualifier.value;
                 }
-                writeCSVLine(values, ioAdapter.get());
+                writeCSVLine(values, ioAdapter.get(), separator);
             }
         }
     } catch(int) {
