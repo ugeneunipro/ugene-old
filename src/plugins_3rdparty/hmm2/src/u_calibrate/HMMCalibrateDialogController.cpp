@@ -7,7 +7,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/AppResources.h>
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -27,7 +27,7 @@ HMMCalibrateDialogController::HMMCalibrateDialogController(QWidget* w)
 
 
 void HMMCalibrateDialogController::sl_hmmFileButtonClicked() {
-    LastOpenDirHelper lod(HMMIO::HMM_ID);
+    LastUsedDirHelper lod(HMMIO::HMM_ID);
     lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;
@@ -36,7 +36,7 @@ void HMMCalibrateDialogController::sl_hmmFileButtonClicked() {
 }
 
 void HMMCalibrateDialogController::sl_outFileButtonClicked() {
-    LastOpenDirHelper lod(HMMIO::HMM_ID);
+    LastUsedDirHelper lod(HMMIO::HMM_ID);
     lod.url= QFileDialog::getSaveFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;

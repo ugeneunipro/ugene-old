@@ -21,7 +21,7 @@
 
 
 #include <U2Core/AppContext.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -42,7 +42,7 @@ UIndexExportToNewFileDialogModel UIndexExportToNewFileDialogImpl::getModel() con
 }
 
 void UIndexExportToNewFileDialogImpl::sl_openExportFile() {
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     h.url = QFileDialog::getSaveFileName( this, tr( "Select file to export" ), h.dir );
     if (!h.url.isEmpty()) {
         exportFileEdit->setText(h.url);

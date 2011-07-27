@@ -19,26 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QKeyEvent>
+#include "MSAAlignDialog.h"
+#include "MSAAlignGUIExtension.h"
+#include <ui/ui_PerformAlignmentDialog.h>
 
-#include <U2Algorithm/MSAAlignAlgRegistry.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
+
+#include <U2Algorithm/MSAAlignAlgRegistry.h>
+
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
-
-#include "MSAAlignDialog.h"
-#include <ui/ui_PerformAlignmentDialog.h>
-
-#include "MSAAlignGUIExtension.h"
-
-
-
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#include <QtGui/QKeyEvent>
 
 namespace U2 {
 
@@ -59,7 +57,7 @@ MSAAlignDialog::MSAAlignDialog(const QString& _algorithmName, bool useFileMenu ,
 
 
 void MSAAlignDialog::sl_onFileNameButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getOpenFileName(this, tr("Set result alignment file name"), lod.dir, 
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if (!lod.url.isEmpty()) {

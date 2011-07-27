@@ -36,7 +36,7 @@
 #include <U2Core/DocumentImport.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Gui/CreateDocumentFromTextDialogController.h>
 #include <U2Gui/DownloadRemoteFileDialog.h>
@@ -153,7 +153,7 @@ void ProjectLoaderImpl::sl_newProject() {
 }
 
 void ProjectLoaderImpl::sl_openProject() {
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     QString filter = DialogUtils::prepareDocumentsFileFilter(true);
 
     filter.append("\n"+tr("UGENE project file") + " (*" + PROJECTFILE_EXT + ")");

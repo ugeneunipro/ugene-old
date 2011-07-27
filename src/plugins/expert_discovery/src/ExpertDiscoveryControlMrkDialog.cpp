@@ -1,6 +1,7 @@
 #include "ExpertDiscoveryControlMrkDialog.h"
 
 #include <U2Core/GObjectTypes.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QFileDialog>
@@ -33,7 +34,7 @@ void ExpertDiscoveryControlMrkDialog::accept(){
 }
 
 void ExpertDiscoveryControlMrkDialog::sl_openFirstFile(){
-    LastOpenDirHelper lod("ExpertDiscovery control sequences markup file");
+    LastUsedDirHelper lod("ExpertDiscovery control sequences markup file");
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Open control sequences markup file"), lod.dir, filter);
 
     Q_ASSERT(firstFileEdit);

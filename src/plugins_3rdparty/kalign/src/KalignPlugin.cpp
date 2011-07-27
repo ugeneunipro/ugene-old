@@ -29,19 +29,22 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
 #include <U2Core/TaskSignalMapper.h>
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorFactory.h>
-#include <U2View/MSAAlignDialog.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Algorithm/MSAAlignAlgRegistry.h>
-#include <U2Lang/WorkflowSettings.h>
-
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/GObjectTypes.h>
+
+#include <U2Algorithm/MSAAlignAlgRegistry.h>
+
+#include <U2Lang/WorkflowSettings.h>
+
+#include <U2View/MSAEditorFactory.h>
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAAlignDialog.h>
+
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/Notification.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
@@ -103,7 +106,7 @@ KalignPlugin::KalignPlugin()
 void KalignPlugin::sl_runKalignTask() {
     
     //Call select input file and setup settings dialog
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     QString fileName = QFileDialog::getOpenFileName(AppContext::getMainWindow()->getQMainWindow(), tr("Open multiple alignment"), lod.dir);
     if(fileName != NULL) {
         lod.url = fileName;

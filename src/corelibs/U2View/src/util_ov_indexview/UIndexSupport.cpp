@@ -22,19 +22,21 @@
 #include "UIndexSupport.h"
 #include "CreateFileIndexDialog.h"
 
+#include <U2Core/CreateFileIndexTask.h>
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/DocumentModel.h>
+
+#include <U2Formats/IndexFormat.h>
+
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/LastUsedDirHelper.h>
+
 #include <QtGui/QMenu>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
-#include <U2Gui/MainWindow.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Formats/IndexFormat.h>
-
-#include <U2Core/CreateFileIndexTask.h>
-#include <U2Core/AddDocumentTask.h>
 
 namespace U2 {
 
@@ -134,7 +136,7 @@ CreateFileIndexDialog::CreateFileIndexDialog(QWidget* p, bool enableAddToProjBut
 
 static const QString SEMICOLON = ";";
 void CreateFileIndexDialog::sl_openInputFile() {
-    LastOpenDirHelper helper;
+    LastUsedDirHelper helper;
     QStringList files = QFileDialog::getOpenFileNames(this, tr("Select files"), helper.dir);
     model.inputUrls = files;
     if( !files.isEmpty() ) {
@@ -149,7 +151,7 @@ void CreateFileIndexDialog::sl_openInputFile() {
 }
 
 void CreateFileIndexDialog::sl_openOutputFile() {
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     h.url = QFileDialog::getSaveFileName( this, tr( "Select index file to create" ), h.dir );
     if (!h.url.isEmpty()) {
         outputFileEdit->setText(h.url);

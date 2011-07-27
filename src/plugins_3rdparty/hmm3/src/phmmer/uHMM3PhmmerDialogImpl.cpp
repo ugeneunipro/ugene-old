@@ -26,6 +26,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <phmmer/uhmm3PhmmerTask.h>
@@ -89,7 +90,7 @@ void UHMM3PhmmerDialogImpl::setModelValues() {
 }
 
 void UHMM3PhmmerDialogImpl::sl_queryToolButtonClicked() {
-    LastOpenDirHelper helper( QUERY_FILES_DIR );
+    LastUsedDirHelper helper( QUERY_FILES_DIR );
     helper.url = QFileDialog::getOpenFileName( this, tr( "Select query sequence file" ),
         helper, DialogUtils::prepareDocumentsFileFilterByObjType( GObjectTypes::SEQUENCE, true ) );
     if( !helper.url.isEmpty() ) {

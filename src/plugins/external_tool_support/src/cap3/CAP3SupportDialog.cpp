@@ -25,6 +25,9 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 
+#include <U2Gui/LastUsedDirHelper.h>
+
+
 namespace U2 {
 ////////////////////////////////////////
 //CAP3SupportDialog
@@ -84,7 +87,7 @@ void CAP3SupportDialog::accept()
 
 void CAP3SupportDialog::sl_onAddButtonClicked()
 {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Add sequences to assembly"), lod.dir);
     if (fileNames.isEmpty()) {
         return;
@@ -115,7 +118,7 @@ void CAP3SupportDialog::sl_onRemoveAllButtonClicked()
 void CAP3SupportDialog::sl_onSpecifyOutputPathButtonClicked()
 {
     
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getSaveFileName(this, tr("Set result contig file name"), lod.dir, tr("ACE format (*.ace)"));
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;

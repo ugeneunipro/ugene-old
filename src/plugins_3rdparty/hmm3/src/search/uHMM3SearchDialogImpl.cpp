@@ -22,6 +22,7 @@
 #include "uHMM3SearchDialogImpl.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Remote/DistributedComputingUtil.h>
@@ -211,7 +212,7 @@ void UHMM3SearchDialogImpl::sl_domESpinBoxChanged( int newVal ) {
 }
 
 void UHMM3SearchDialogImpl::sl_queryHmmFileToolButtonClicked() {
-    LastOpenDirHelper helper( HMM_FILES_DIR_ID );
+    LastUsedDirHelper helper( HMM_FILES_DIR_ID );
     helper.url = QFileDialog::getOpenFileName( this, tr( "Select query HMM profile" ), 
         helper, DialogUtils::prepareDocumentsFileFilterByObjType( UHMMObject::UHMM_OT, true ) );
     if( !helper.url.isEmpty() ) {

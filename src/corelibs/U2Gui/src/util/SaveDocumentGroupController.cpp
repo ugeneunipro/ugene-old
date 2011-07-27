@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
 
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/DocumentFormatComboboxController.h>
 
@@ -86,7 +87,7 @@ void SaveDocumentGroupController::sl_saveButtonClicked() {
     }
 
     // show the dialog
-	LastOpenDirHelper lod;
+	LastUsedDirHelper lod;
 	lod.url = QFileDialog::getSaveFileName(conf.parentWidget, conf.saveTitle, lod, filter, &selectedFilter);
 	if (lod.url.isEmpty()) {
 		return;

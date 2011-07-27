@@ -23,6 +23,7 @@
 #include <QtGui/QMessageBox>
 
 #include <U2Core/AppContext.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <gobject/uHMMObject.h>
@@ -86,7 +87,7 @@ void UHMM3BuildDialogImpl::setModelValues() {
 }
 
 void UHMM3BuildDialogImpl::sl_maOpenFileButtonClicked() {
-    LastOpenDirHelper helper( MA_FILES_DIR_ID );
+    LastUsedDirHelper helper( MA_FILES_DIR_ID );
     helper.url = QFileDialog::getOpenFileName( this, tr( "Select multiple alignment file" ),
         helper, DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if( !helper.url.isEmpty() ) {
@@ -95,7 +96,7 @@ void UHMM3BuildDialogImpl::sl_maOpenFileButtonClicked() {
 }
 
 void UHMM3BuildDialogImpl::sl_outHmmFileButtonClicked() {
-    LastOpenDirHelper helper( HMM_FILES_DIR_ID );
+    LastUsedDirHelper helper( HMM_FILES_DIR_ID );
     helper.url = QFileDialog::getSaveFileName( this, tr( "Select hmm file to create" ), 
         helper, DialogUtils::prepareDocumentsFileFilterByObjType( UHMMObject::UHMM_OT, true) );
     if( !helper.url.isEmpty() ) {

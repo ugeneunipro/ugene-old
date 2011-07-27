@@ -38,7 +38,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
@@ -69,8 +69,8 @@ QueryDesignerPlugin::QueryDesignerPlugin()
 
     QString defaultDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/query_samples";
 
-    if (DialogUtils::getLastOpenFileDir(QUERY_DESIGNER_ID).isEmpty()) {
-        DialogUtils::setLastOpenFileDir(defaultDir, QUERY_DESIGNER_ID);
+    if (LastUsedDirHelper::getLastUsedDir(QUERY_DESIGNER_ID).isEmpty()) {
+        LastUsedDirHelper::setLastUsedDir(defaultDir, QUERY_DESIGNER_ID);
     }
 
     //tests

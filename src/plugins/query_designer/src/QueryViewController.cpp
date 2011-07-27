@@ -36,7 +36,7 @@
 #include <U2Core/TaskSignalMapper.h>
 
 #include <U2Gui/GlassView.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Lang/QueryDesignerRegistry.h>
 
@@ -880,7 +880,7 @@ void QueryViewController::sl_loadScene() {
             return;
         }
     }
-    LastOpenDirHelper dir(QUERY_DESIGNER_ID);
+    LastUsedDirHelper dir(QUERY_DESIGNER_ID);
     dir.url = QFileDialog::getOpenFileName(this, tr("Load Schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
     if (!dir.url.isEmpty()) {
         QDLoadSceneTask* t = new QDLoadSceneTask(scene, dir.url);
@@ -906,7 +906,7 @@ void QueryViewController::sl_saveScene() {
 }
 
 void QueryViewController::sl_saveSceneAs() {
-    LastOpenDirHelper dir(QUERY_DESIGNER_ID);
+    LastUsedDirHelper dir(QUERY_DESIGNER_ID);
     dir.url = QFileDialog::getSaveFileName(this, tr("Save Schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
     if (!dir.url.isEmpty()) {
         schemeUri = dir.url;

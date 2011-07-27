@@ -51,30 +51,9 @@ public:
 
     static QString prepareDocumentsFileFilterByObjType(const GObjectType& t, bool any);
 
-
-    static QString getLastOpenFileDir(const QString& toolType = QString(), const QString& defaultVal = QString());
-
-    static void setLastOpenFileDir(const QString& ld, const QString& toolType = QString());
-    
     static QPair<QString, QString> selectFileForScreenShot(QWidget * parent);
 };
 
-class U2GUI_EXPORT LastOpenDirHelper {
-public:
-    LastOpenDirHelper(const QString& domain = QString(), const QString& defaultVal = QString()); //reads dir
-    virtual ~LastOpenDirHelper(); //if url is not empty -> derives dir from url and stores it
-    
-    operator const QString&() const {return dir;} 
-    void saveURLDir2LastOpenDir();
-
-    QString domain;
-
-    //last used dir
-    QString dir;
-
-    // value returned by file dialog
-    QString url;
-};
 
 class U2GUI_EXPORT FileLineEdit : public QLineEdit {
     Q_OBJECT

@@ -22,6 +22,8 @@
 #include "DotPlotFilesDialog.h"
 
 #include <U2Core/GObjectTypes.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QFileDialog>
@@ -67,7 +69,7 @@ void DotPlotFilesDialog::sl_mergeSecond() {
 // open first file button clicked
 void DotPlotFilesDialog::sl_openFirstFile() {
 
-    LastOpenDirHelper lod("DotPlot first file");
+    LastUsedDirHelper lod("DotPlot first file");
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Open first file"), lod.dir, filter);
 
     Q_ASSERT(firstFileEdit);
@@ -79,9 +81,9 @@ void DotPlotFilesDialog::sl_openFirstFile() {
 // open second file button clicked
 void DotPlotFilesDialog::sl_openSecondFile() {
 
-    LastOpenDirHelper lod("DotPlot second file");
+    LastUsedDirHelper lod("DotPlot second file");
     if (lod.dir.isEmpty()) {
-        LastOpenDirHelper lodFirst("DotPlot first file");
+        LastUsedDirHelper lodFirst("DotPlot first file");
 
         lod.dir = lodFirst.dir;
     }

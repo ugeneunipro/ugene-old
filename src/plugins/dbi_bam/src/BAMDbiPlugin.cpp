@@ -32,7 +32,7 @@
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include "Dbi.h"
 #include "Exception.h"
@@ -80,7 +80,7 @@ void BAMDbiPlugin::sl_converter() {
         if(!AppContext::getDbiRegistry()->getRegisteredDbiFactories().contains("SQLiteDbi")) {
             throw Exception(tr("SQLite DBI plugin is not loaded"));
         }
-        LastOpenDirHelper lod;
+        LastUsedDirHelper lod;
         QString fileName = QFileDialog::getOpenFileName(AppContext::getMainWindow()->getQMainWindow(), tr("Open BAM/SAM file"), lod.dir, tr("Assembly Files (*.bam *.sam)"));
         if (!fileName.isEmpty()) {
             lod.url = fileName;

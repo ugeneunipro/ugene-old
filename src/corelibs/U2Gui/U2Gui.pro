@@ -35,6 +35,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/GScrollBar.h \
            src/util/GUIUtils.h \
            src/util/HBar.h \
+           src/util/LastUsedDirHelper.h \
            src/util/ObjectViewTreeController.h \
            src/util/PositionSelector.h \
            src/util/ProjectDocumentComboBoxController.h \
@@ -97,6 +98,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/GScrollBar.cpp \
            src/util/GUIUtils.cpp \
            src/util/HBar.cpp \
+           src/util/LastUsedDirHelper.cpp \
            src/util/ObjectViewTreeController.cpp \
            src/util/PositionSelector.cpp \
            src/util/ProjectDocumentComboBoxController.cpp \

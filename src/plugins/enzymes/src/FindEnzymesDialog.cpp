@@ -31,6 +31,7 @@
 #include <U2Core/Timer.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -97,10 +98,10 @@ EnzymesSelectorWidget::~EnzymesSelectorWidget() {
 }
 
 void EnzymesSelectorWidget::setupSettings() {
-    QString dir = DialogUtils::getLastOpenFileDir(EnzymeSettings::DATA_DIR_KEY);
+    QString dir = LastUsedDirHelper::getLastUsedDir(EnzymeSettings::DATA_DIR_KEY);
     if (dir.isEmpty() || !QDir(dir).exists()) {
         dir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/enzymes/";
-        DialogUtils::setLastOpenFileDir(dir, EnzymeSettings::DATA_DIR_KEY);
+        LastUsedDirHelper::setLastUsedDir(dir, EnzymeSettings::DATA_DIR_KEY);
     }
     QString lastEnzFile = AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString();
     if (lastEnzFile.isEmpty() || !QFile::exists(lastEnzFile)) {
@@ -270,7 +271,7 @@ void EnzymesSelectorWidget::updateStatus() {
 }
 
 void EnzymesSelectorWidget::sl_selectFile() {
-    LastOpenDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
+    LastUsedDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
     dir.url = QFileDialog::getOpenFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
     if (!dir.url.isEmpty()) {
         loadFile(dir.url);
@@ -344,7 +345,7 @@ void EnzymesSelectorWidget::sl_inverseSelection() {
 }
 
 void EnzymesSelectorWidget::sl_saveSelectionToFile() {
-    LastOpenDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
+    LastUsedDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
     dir.url = QFileDialog::getSaveFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
     if (!dir.url.isEmpty()) {
         saveFile(dir.url);

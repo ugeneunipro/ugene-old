@@ -33,7 +33,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/Settings.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include "DownloadRemoteFileDialog.h"
 #include "ui/ui_DownloadRemoteFileDialog.h"
@@ -70,7 +70,7 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
 const QString DOWNLOAD_REMOTE_FILE_DOMAIN = "DownloadRemoteFileDialog";
 
 void DownloadRemoteFileDialog::sl_saveFilenameButtonClicked() {
-    LastOpenDirHelper lod(DOWNLOAD_REMOTE_FILE_DOMAIN);
+    LastUsedDirHelper lod(DOWNLOAD_REMOTE_FILE_DOMAIN);
     QString filename = QFileDialog::getExistingDirectory(this, tr("Select directory to save"), lod.dir);
     if(!filename.isEmpty()) {
         ui->saveFilenameLineEdit->setText(filename);

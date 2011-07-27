@@ -22,10 +22,12 @@
 #include "BuildIndexDialog.h"
 #include "DnaAssemblyGUIExtension.h"
 
-#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Core/GUrlUtils.h>
-#include <U2Gui/DialogUtils.h>
 #include <U2Core/DocumentUtils.h>
+
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -57,7 +59,7 @@ BuildIndexDialog::BuildIndexDialog(const DnaAssemblyAlgRegistry* registry, QWidg
 }
 
 void BuildIndexDialog::sl_onAddRefButtonClicked() {
-	LastOpenDirHelper lod;
+	LastUsedDirHelper lod;
 	QString filter;
 
 	lod.url = QFileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
@@ -70,7 +72,7 @@ void BuildIndexDialog::sl_onAddRefButtonClicked() {
 }
 
 void BuildIndexDialog::sl_onSetIndexFileNameButtonClicked() {
-	LastOpenDirHelper lod;
+	LastUsedDirHelper lod;
 	lod.url = QFileDialog::getSaveFileName(this, tr("Set index file name"), lod.dir);
 	if (!lod.url.isEmpty()) {
 		GUrl index = lod.url;

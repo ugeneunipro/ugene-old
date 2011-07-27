@@ -26,10 +26,13 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 
-#include <QtGui/QMessageBox>
+#include <U2Gui/LastUsedDirHelper.h>
+
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+
 #include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 
 
 namespace U2{
@@ -105,7 +108,7 @@ void EditSequenceDialogController::addSeqpasterWidget(){
 }
 
 void EditSequenceDialogController::sl_browseButtonClicked(){
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     
     h.url = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
     ui->filepathEdit->setText(h.url);

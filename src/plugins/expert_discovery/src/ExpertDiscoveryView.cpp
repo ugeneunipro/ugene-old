@@ -7,7 +7,7 @@
 #include "ExpertDiscoveryExtSigWiz.h"
 #include "ExpertDiscoveryPlugin.h"
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2View/ADVUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -24,7 +24,7 @@
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GHints.h>
 
-#include <QMessageBox>
+#include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 
 
@@ -198,7 +198,7 @@ void ExpertDiscoveryView::sl_newDoc(){
 
 void ExpertDiscoveryView::sl_openDoc(){
 
-    LastOpenDirHelper lod("ExpertDiscovery");           
+    LastUsedDirHelper lod("ExpertDiscovery");           
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Load ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
 
     if (lod.url.length() <= 0) {
@@ -219,7 +219,7 @@ void ExpertDiscoveryView::sl_openDoc(){
 }
 void ExpertDiscoveryView::sl_saveDoc(){
 
-    LastOpenDirHelper lod("ExpertDiscovery");
+    LastUsedDirHelper lod("ExpertDiscovery");
     lod.url = QFileDialog::getSaveFileName(NULL, tr("Save ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
 
     if (lod.url.length() <= 0) {

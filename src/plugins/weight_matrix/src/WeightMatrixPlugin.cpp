@@ -31,7 +31,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVUtils.h>
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <U2Algorithm/PWMConversionAlgorithm.h>
@@ -70,12 +70,12 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
 
     QString defaultDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/position_weight_matrix";
 
-    if (DialogUtils::getLastOpenFileDir(WeightMatrixIO::WEIGHT_MATRIX_ID).isEmpty()) {
-        DialogUtils::setLastOpenFileDir(defaultDir, WeightMatrixIO::WEIGHT_MATRIX_ID);
+    if (LastUsedDirHelper::getLastUsedDir(WeightMatrixIO::WEIGHT_MATRIX_ID).isEmpty()) {
+        LastUsedDirHelper::setLastUsedDir(defaultDir, WeightMatrixIO::WEIGHT_MATRIX_ID);
     }
 
-    if (DialogUtils::getLastOpenFileDir(WeightMatrixIO::FREQUENCY_MATRIX_ID).isEmpty()) {
-        DialogUtils::setLastOpenFileDir(defaultDir, WeightMatrixIO::FREQUENCY_MATRIX_ID);
+    if (LastUsedDirHelper::getLastUsedDir(WeightMatrixIO::FREQUENCY_MATRIX_ID).isEmpty()) {
+        LastUsedDirHelper::setLastUsedDir(defaultDir, WeightMatrixIO::FREQUENCY_MATRIX_ID);
     }
 
     QDActorPrototypeRegistry* qdpr = AppContext::getQDActorProtoRegistry();

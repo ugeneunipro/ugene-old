@@ -21,18 +21,22 @@
 
 #include "CreateSubalignimentDialogController.h"
 
-#include <U2Gui/DialogUtils.h>
-#include <U2Formats/GenbankLocationParser.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AddDocumentTask.h>
-#include <U2Gui/OpenViewTask.h>
+
+#include <U2Formats/GenbankLocationParser.h>
+
 #include <U2Algorithm/CreateSubalignmentTask.h>
 
-#include <QtGui/qfiledialog.h>
-#include <QtGui/qmessagebox.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Gui/LastUsedDirHelper.h>
+
+
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 
 namespace U2{
 
@@ -105,7 +109,7 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
 }
 
 void CreateSubalignimentDialogController::sl_browseButtonClicked(){
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
 
     QString newPath = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter );
     filepathEdit->setText(newPath);

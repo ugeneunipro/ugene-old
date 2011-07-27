@@ -32,6 +32,8 @@
 #include <U2Core/CopyDataTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/LoadDocumentTask.h>
+
 #include <U2Gui/OpenViewTask.h>
 
 namespace U2 {

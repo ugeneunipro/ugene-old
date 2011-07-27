@@ -21,16 +21,18 @@
 
 
 
+#include "DelegateEditors.h"
+
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
-#include <U2Lang/IntegralBusModel.h>
-#include <U2Gui/DialogUtils.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Gui/ScriptEditorDialog.h>
-
-#include "DelegateEditors.h"
-#include <U2Lang/WorkflowUtils.h>
 #include <U2Core/GUrlUtils.h>
+
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/WorkflowUtils.h>
+
+#include <U2Gui/ScriptEditorDialog.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 namespace U2 {
 
@@ -165,7 +167,7 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
 * URLLineEdit
 ********************************/
 void URLLineEdit::sl_onBrowse() {
-    LastOpenDirHelper lod(type);
+    LastUsedDirHelper lod(type);
     QString lastDir = lod.dir;
     GUrl currentUrl(text());
     QDir dir(currentUrl.dirPath());

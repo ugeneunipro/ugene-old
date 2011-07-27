@@ -30,18 +30,18 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Counter.h>
-
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/DIProperties.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
-#include <U2Core/DocumentUtils.h>
 
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
-#include <U2Core/LoadDocumentTask.h>
 
-#include <U2Core/DIProperties.h>
 #include <U2Algorithm/PWMConversionAlgorithm.h>
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
 
@@ -71,7 +71,7 @@ PWMBuildDialogController::PWMBuildDialogController(QWidget* w)
 
 
 void PWMBuildDialogController::sl_inFileButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getOpenFileName(this, tr("Select file with alignment"), lod, 
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true).append("\n").append(
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, false)));
@@ -197,7 +197,7 @@ void PWMBuildDialogController::replaceLogo(const MAlignment& ma) {
 }
 
 void PWMBuildDialogController::sl_outFileButtonClicked() {
-    LastOpenDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
+    LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
     if (frequencyButton->isChecked()) {
         lod.url = QFileDialog::getSaveFileName(this, tr("Select file to save frequency matrix to..."), lod, WeightMatrixIO::getPFMFileFilter(false));
     } else {

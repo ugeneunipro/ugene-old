@@ -25,6 +25,7 @@
 #include "CreateSubalignimentDialogController.h"
 
 #include <U2Algorithm/CreateSubalignmentTask.h>
+
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/AddSequencesToAlignmentTask.h>
 #include <U2Core/DNAAlphabet.h>
@@ -36,13 +37,15 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/IOAdapter.h>
+
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
-#include <U2Core/TextUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
-#include <U2Core/IOAdapter.h>
 
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
@@ -1394,7 +1397,7 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
     
     QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
     
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     QStringList urls = QFileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter);
     
     if (!urls.isEmpty()) {

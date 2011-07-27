@@ -20,8 +20,9 @@
  */
 
 #include "FormatDBSupportRunDialog.h"
+
 #include <U2Core/DNAAlphabet.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
@@ -59,7 +60,7 @@ FormatDBSupportRunDialog::FormatDBSupportRunDialog(FormatDBSupportTaskSettings& 
 }
 
 void FormatDBSupportRunDialog::sl_onBrowseInputFiles(){
-    LastOpenDirHelper lod("");
+    LastUsedDirHelper lod("");
     QString name;
     QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lod.dir, "");
     name = lst.join(";");
@@ -81,7 +82,7 @@ void FormatDBSupportRunDialog::sl_onBrowseInputFiles(){
     }
 }
 void FormatDBSupportRunDialog::sl_onBrowseInputDir(){
-    LastOpenDirHelper lod("");
+    LastUsedDirHelper lod("");
 
     QString name;
     lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory with input files"), lod.dir);
@@ -92,7 +93,7 @@ void FormatDBSupportRunDialog::sl_onBrowseInputDir(){
 }
 
 void FormatDBSupportRunDialog::sl_onBrowseDatabasePath(){
-    LastOpenDirHelper lod("Database Directory");
+    LastUsedDirHelper lod("Database Directory");
 
     QString name;
     lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory to save database files"), lod.dir);

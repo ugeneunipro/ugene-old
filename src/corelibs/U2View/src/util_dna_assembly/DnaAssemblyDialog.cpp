@@ -29,7 +29,8 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
-#include <U2Gui/DialogUtils.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 
@@ -95,7 +96,7 @@ void DnaAssemblyDialog::updateState() {
 }
 
 void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir);
     if (fileNames.isEmpty()) {
         return;
@@ -107,7 +108,7 @@ void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
 }
 
 void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     QString filter;
 
     lod.url = QFileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
@@ -192,7 +193,7 @@ void DnaAssemblyDialog::sl_onRemoveShortReadsButtonClicked() {
 }
 
 void DnaAssemblyDialog::sl_onSetResultFileNameButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getSaveFileName(this, tr("Set result alignment file name"), lod.dir);
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;

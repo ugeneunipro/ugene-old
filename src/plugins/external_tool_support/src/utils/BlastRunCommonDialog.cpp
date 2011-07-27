@@ -20,6 +20,7 @@
  */
 
 #include "BlastRunCommonDialog.h"
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
@@ -29,10 +30,11 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
@@ -220,7 +222,7 @@ void BlastRunCommonDialog::sl_megablastChecked(){
     }
 }
 void BlastRunCommonDialog::sl_onBrowseDatabasePath(){
-    LastOpenDirHelper lod("Database Directory");
+    LastUsedDirHelper lod("Database Directory");
 
     QString name;
     lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory with database files"), lod.dir);

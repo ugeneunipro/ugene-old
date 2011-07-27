@@ -51,6 +51,7 @@
 #include <U2Designer/QDScheduler.h>
 
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -93,7 +94,7 @@ void QDRunDialog::sl_selectFile() {
         fileFilter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::PLAIN_GENBANK, true, QStringList());
     }
     
-    LastOpenDirHelper dir;
+    LastUsedDirHelper dir;
     if (!edit->text().isEmpty()) {
         QFileInfo fi(edit->text());
         dir.url = fi.absoluteFilePath();
@@ -361,7 +362,7 @@ QVector<U2Region> QDDialog::getLocation() const {
 void QDDialog::sl_selectScheme() {
     delete scheme;
     scheme = NULL;
-    LastOpenDirHelper dir(QUERY_DESIGNER_ID);
+    LastUsedDirHelper dir(QUERY_DESIGNER_ID);
     dir.url = QFileDialog::getOpenFileName(this, tr("Select query"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
     if (dir.url.isEmpty()) {
         return;

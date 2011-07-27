@@ -44,6 +44,7 @@
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -70,7 +71,7 @@ CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(Q
 }
 
 void CreateDocumentFromTextDialogController::sl_browseButtonClicked(){
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     h.url = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
     ui->filepathEdit->setText(QDir::toNativeSeparators(h.url));
     sl_indexChanged(ui->formatBox->currentIndex());   

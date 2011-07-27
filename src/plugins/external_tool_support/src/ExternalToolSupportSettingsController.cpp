@@ -25,9 +25,12 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
-#include <U2Gui/DialogUtils.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
+
 #include <QtGui>
+
 #include <blast/BlastAllSupport.h>
 #include <blast/FormatDBSupport.h>
 #include <blast_plus/BlastPlusSupport.h>
@@ -293,7 +296,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onPathEditWidgetClick(){
     }
 }
 void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
-    LastOpenDirHelper lod("toolkit path");
+    LastUsedDirHelper lod("toolkit path");
     QString dir;
 
     lod.url = dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory With Executables"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
@@ -335,7 +338,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
     }
 }
 void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
-    LastOpenDirHelper lod("toolpack path");
+    LastUsedDirHelper lod("toolpack path");
     QString dirPath;
     bool isPathValid=false;
     lod.url = dirPath = QFileDialog::getExistingDirectory(this, tr("Choose Directory With External Tools Pack"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
@@ -391,7 +394,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
 ////////////////////////////////////////
 //PathLineEdit
 void PathLineEdit::sl_onBrowse() {
-    LastOpenDirHelper lod(type);
+    LastUsedDirHelper lod(type);
 
     QString name;
     if(text().isEmpty()){

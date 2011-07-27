@@ -23,7 +23,7 @@
 #include <QtGui/QFileDialog>
 
 #include <U2Core/AppContext.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include "RemoteServiceMachine.h"
 #include "RemoteServiceUtilTasks.h"
@@ -132,7 +132,7 @@ void RemoteTasksDialog::sl_onFetchButtonClicked() {
         return;
     }
 
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     QString folder = QFileDialog::getExistingDirectory(this, tr("Select directory to save results: "), h.dir);
     
     if (folder.isEmpty()) {

@@ -1,6 +1,7 @@
 #include "ExpertDiscoveryPosNegMrkDialog.h"
 
 #include <U2Core/GObjectTypes.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QFileDialog>
@@ -58,7 +59,7 @@ void ExpertDiscoveryPosNegMrkDialog::sl_oneSequence() {
 }
 
 void ExpertDiscoveryPosNegMrkDialog::sl_openFirstFile(){
-    LastOpenDirHelper lod("ExpertDiscovery positive sequences markup file");
+    LastUsedDirHelper lod("ExpertDiscovery positive sequences markup file");
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Open positive sequences markup file"), lod.dir, filter);
 
     Q_ASSERT(firstFileEdit);
@@ -68,9 +69,9 @@ void ExpertDiscoveryPosNegMrkDialog::sl_openFirstFile(){
 }
 void ExpertDiscoveryPosNegMrkDialog::sl_openSecondFile() {
 
-    LastOpenDirHelper lod("ExpertDiscovery negative sequences markup file");
+    LastUsedDirHelper lod("ExpertDiscovery negative sequences markup file");
     if (lod.dir.isEmpty()) {
-        LastOpenDirHelper lodFirst("Open negative sequences file");
+        LastUsedDirHelper lodFirst("Open negative sequences file");
 
         lod.dir = lodFirst.dir;
     }
@@ -84,9 +85,9 @@ void ExpertDiscoveryPosNegMrkDialog::sl_openSecondFile() {
 
 void ExpertDiscoveryPosNegMrkDialog::sl_openThirdFile() {
 
-    LastOpenDirHelper lod("ExpertDiscovery description file");
+    LastUsedDirHelper lod("ExpertDiscovery description file");
     if (lod.dir.isEmpty()) {
-        LastOpenDirHelper lodFirst("ExpertDiscovery description file");
+        LastUsedDirHelper lodFirst("ExpertDiscovery description file");
 
         lod.dir = lodFirst.dir;
     }

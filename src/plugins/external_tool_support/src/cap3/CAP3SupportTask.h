@@ -24,12 +24,9 @@
 
 #include <QtCore/QFile>
 
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
 #include <U2Formats/StreamSequenceReader.h>
 #include <U2Formats/StreamSequenceWriter.h>
+
 #include "utils/ExportTasks.h"
 
 #include <U2Core/MAlignmentObject.h>
@@ -40,6 +37,7 @@ namespace U2 {
 
 class CAP3LogParser;
 class CopyDataTask;
+class LoadDocumentTask;
 
 class CAP3SupportTaskSettings {
 public:

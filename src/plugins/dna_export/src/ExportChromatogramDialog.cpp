@@ -26,9 +26,10 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Core/L10n.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SaveDocumentGroupController.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -51,7 +52,7 @@ ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileU
 }
 
 void ExportChromatogramDialog::sl_onBrowseClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     QString filter;
 
     lod.url = QFileDialog::getSaveFileName(this, tr("Select a file"), lod.dir, "*.scf");

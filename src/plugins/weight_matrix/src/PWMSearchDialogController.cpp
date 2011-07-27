@@ -35,7 +35,7 @@
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -204,7 +204,7 @@ bool PWMSearchDialogController::eventFilter(QObject *obj, QEvent *ev) {
 }
 
 void PWMSearchDialogController::sl_selectModelFile() {
-    LastOpenDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
+    LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
     lod.url = QFileDialog::getOpenFileName(this, tr("Select file with frequency or weight matrix"), lod, 
          WeightMatrixIO::getAllMatrixFileFilter(false) + ";;" +
          WeightMatrixIO::getPFMFileFilter(false) + ";;" +
@@ -341,7 +341,7 @@ void PWMSearchDialogController::sl_onViewMatrix() {
 }
 
 void PWMSearchDialogController::sl_onLoadList() {
-    LastOpenDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
+    LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
     lod.url = QFileDialog::getOpenFileName(this, tr("Load file with list of matrices"), lod, tr("CSV files (*.csv)"));
     if (lod.url.isEmpty()) {
         return;
@@ -381,7 +381,7 @@ void PWMSearchDialogController::sl_onSaveList() {
     if (queue.isEmpty()) {
         return;
     }
-    LastOpenDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
+    LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
     lod.url = QFileDialog::getSaveFileName(this, tr("Save file with list of matrices"), lod, tr("CSV files (*.csv)"));
     if (lod.url.isEmpty()) {
         return;
@@ -408,7 +408,7 @@ void PWMSearchDialogController::sl_onClearQueue() {
 }
 
 void PWMSearchDialogController::sl_onLoadFolder() {
-    LastOpenDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
+    LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
     lod.dir = QFileDialog::getExistingDirectory(this, tr("Select directory with frequency or weight matrices"), lod);
     if (lod.dir.isEmpty()) {
         return;

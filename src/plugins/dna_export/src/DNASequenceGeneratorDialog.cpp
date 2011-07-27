@@ -29,8 +29,7 @@
 #include <U2Core/Settings.h>
 
 #include <U2Gui/SaveDocumentGroupController.h>
-
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -89,7 +88,7 @@ void DNASequenceGeneratorDialog::sl_stateChanged(int state) {
 }
 
 void DNASequenceGeneratorDialog::sl_browseReference() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     QString filter = DNASequenceGenerator::prepareReferenceFileFilter();
     lod.url = QFileDialog::getOpenFileName(this, tr("Open file"), lod.dir, filter);
     inputEdit->setText(lod.url);

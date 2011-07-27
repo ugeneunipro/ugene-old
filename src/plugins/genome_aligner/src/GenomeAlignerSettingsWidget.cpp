@@ -28,11 +28,11 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Algorithm/OpenCLGpuRegistry.h>
-#include <QtGui/QFileDialog>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include "GenomeAlignerSettingsWidget.h"
 
+#include <QtGui/QFileDialog>
 
 namespace U2 {
 
@@ -168,7 +168,7 @@ or the index directory.").arg(index.seqPartSize).arg(partSlider->value());
 }
 
 void GenomeAlignerSettingsWidget::sl_onSetIndexDirButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
 
     lod.url = QFileDialog::getExistingDirectory(this, tr("Set index files directory"), indexDirEdit->text());
     if (!lod.url.isEmpty()) {

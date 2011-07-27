@@ -27,9 +27,13 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
 
+#include <U2Gui/LastUsedDirHelper.h>
+
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QCoreApplication>
+
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 
@@ -150,52 +154,18 @@ QPair<QString, QString> DialogUtils::selectFileForScreenShot(QWidget * parent) {
     filters[ "JPG/JPEG format (*.jpg)" ] = "jpg";
     filters[ "TIF - Tagged Image File format (*.tiff)" ] = "tiff";
 
-    LastOpenDirHelper lod("image");
+    LastUsedDirHelper lod("image");
     QString selectedFilter;
     lod.url = QFileDialog::getSaveFileName(parent, tr("Export alignment image"), lod.dir, QStringList(filters.keys()).join(";;"), &selectedFilter);
     return QPair<QString, QString>(lod.url, filters.value(selectedFilter));
 }
 
-#define SETTINGS_ROOT QString("gui/")
-
-QString DialogUtils::getLastOpenFileDir(const QString& toolType, const QString& defaultVal) {
-    QString key = SETTINGS_ROOT + (toolType.isEmpty() ? "" : toolType + "/") + "lastDir";
-    QString defDir = defaultVal;
-    if (defDir.isEmpty() && toolType.isEmpty()) {
-        defDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/samples";
-    }
-    QString res = AppContext::getSettings()->getValue(key, defDir).toString();
-    return res;
-}
-
-void DialogUtils::setLastOpenFileDir(const QString& ld, const QString& toolType) {
-    QString key = SETTINGS_ROOT + (toolType.isEmpty() ? "" : toolType + "/") + "lastDir";
-    AppContext::getSettings()->setValue(key, ld);
-}
-
-LastOpenDirHelper::LastOpenDirHelper(const QString& d, const QString& defaultVal) {
-    domain = d;
-    dir = DialogUtils::getLastOpenFileDir(domain, defaultVal);
-}
-
-LastOpenDirHelper::~LastOpenDirHelper() {
-    saveURLDir2LastOpenDir();
-}
-
-void LastOpenDirHelper::saveURLDir2LastOpenDir() {
-    if (!url.isEmpty()) {
-        QString newDir = QFileInfo(url).absoluteDir().absolutePath();
-        if (dir != newDir) {
-            DialogUtils::setLastOpenFileDir(newDir, domain);
-        }
-    }
-}
 
 /********************************
 * FileLineEdit
 ********************************/
 void FileLineEdit::sl_onBrowse() {
-    LastOpenDirHelper lod(type);
+    LastUsedDirHelper lod(type);
 
     QString name;
     if (multi) {

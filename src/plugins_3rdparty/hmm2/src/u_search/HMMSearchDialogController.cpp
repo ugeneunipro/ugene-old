@@ -8,14 +8,13 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/IOAdapter.h>
-
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/CreateAnnotationTask.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QFileDialog>
@@ -70,7 +69,7 @@ void HMMSearchDialogController::reject() {
 }
 
 void HMMSearchDialogController::sl_hmmFileClicked() {
-    LastOpenDirHelper lod(HMMIO::HMM_ID);
+    LastUsedDirHelper lod(HMMIO::HMM_ID);
     lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;

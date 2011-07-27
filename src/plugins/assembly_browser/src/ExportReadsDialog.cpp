@@ -23,7 +23,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Gui/DialogUtils.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -56,7 +57,7 @@ void ExportReadsDialog::accept() {
 }
 
 void ExportReadsDialog::sl_selectFile() {
-    LastOpenDirHelper lod("ExportReadsDialog");
+    LastUsedDirHelper lod("ExportReadsDialog");
     lod.url = QFileDialog::getSaveFileName(this, tr("Select file to save"), lod, filter);
     if (lod.url.isEmpty()) {
         return;

@@ -29,12 +29,11 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
-
-#include <U2Gui/DialogUtils.h>
-
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QColorDialog>
@@ -232,7 +231,7 @@ void DotPlotDialog::sl_invertedDefaultColorButton() {
 
 void DotPlotDialog::sl_loadSequenceButton(){
     QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
-    LastOpenDirHelper lod("DotPlot file");
+    LastUsedDirHelper lod("DotPlot file");
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Open file"), lod.dir, filter);
     if(!lod.url.isEmpty()){
         Task *tasks = new Task("Adding document to the project", TaskFlag_NoRun);

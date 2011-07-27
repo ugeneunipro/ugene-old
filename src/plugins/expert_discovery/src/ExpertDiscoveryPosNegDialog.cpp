@@ -1,6 +1,7 @@
 #include "ExpertDiscoveryPosNegDialog.h"
 
 #include <U2Core/GObjectTypes.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QFileDialog>
@@ -53,7 +54,7 @@ void ExpertDiscoveryPosNegDialog::sl_oneSequence() {
 }
 
 void ExpertDiscoveryPosNegDialog::sl_openFirstFile(){
-    LastOpenDirHelper lod("ExpertDiscovery positive sequences file");
+    LastUsedDirHelper lod("ExpertDiscovery positive sequences file");
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Open positive sequences file"), lod.dir, filter);
 
     Q_ASSERT(firstFileEdit);
@@ -63,9 +64,9 @@ void ExpertDiscoveryPosNegDialog::sl_openFirstFile(){
 }
 void ExpertDiscoveryPosNegDialog::sl_openSecondFile() {
 
-    LastOpenDirHelper lod("ExpertDiscovery negative sequences file");
+    LastUsedDirHelper lod("ExpertDiscovery negative sequences file");
     if (lod.dir.isEmpty()) {
-        LastOpenDirHelper lodFirst("Open negative sequences file");
+        LastUsedDirHelper lodFirst("Open negative sequences file");
 
         lod.dir = lodFirst.dir;
     }

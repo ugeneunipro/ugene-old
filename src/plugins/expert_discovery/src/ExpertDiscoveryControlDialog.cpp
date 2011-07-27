@@ -2,6 +2,7 @@
 
 #include <U2Core/GObjectTypes.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -33,7 +34,7 @@ void ExpertDiscoveryControlDialog::accept(){
 }
 
 void ExpertDiscoveryControlDialog::sl_openFirstFile(){
-    LastOpenDirHelper lod("ExpertDiscovery control sequences file");
+    LastUsedDirHelper lod("ExpertDiscovery control sequences file");
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Open control sequences file"), lod.dir, filter);
 
     Q_ASSERT(firstFileEdit);

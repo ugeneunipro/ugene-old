@@ -25,13 +25,15 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Core/LogCache.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/AuthenticationDialog.h>
+#include <U2Gui/LogView.h>
+
 #include <U2Remote/RemoteMachineTasks.h>
 #include <U2Remote/RemoteMachineMonitor.h>
-#include <U2Gui/LogView.h>
-#include <U2Core/LogCache.h>
 
 #include <QtGui/QLabel>
 #include <QtGui/QMessageBox>
@@ -408,7 +410,7 @@ void RemoteMachineMonitorDialogImpl::sl_saveMachine() {
     assert(topLevelItemsSelectedNum() == 1);
     RemoteMachineItemInfo & item = machinesItemsByOrder[getSelectedTopLevelRow()];
     QString filename;
-    LastOpenDirHelper dirHelper(SAVE_SETTINGS_FILE_DOMAIN);
+    LastUsedDirHelper dirHelper(SAVE_SETTINGS_FILE_DOMAIN);
     dirHelper.url = filename = QFileDialog::getSaveFileName( this, tr("Select a file to save"), dirHelper.dir);
     AppContext::getTaskScheduler()->registerTopLevelTask(new SaveRemoteMachineSettings(item.settings, filename));
 }

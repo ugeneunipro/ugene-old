@@ -21,9 +21,10 @@
 
 #include "ExportProjectDialogController.h"
 
-#include <U2Gui/DialogUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -69,7 +70,7 @@ void ExportProjectDialogController::accept(){
 }
 
 void ExportProjectDialogController::sl_onBrowseButton(){
-	LastOpenDirHelper h;
+	LastUsedDirHelper h;
 	QString folder = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), h.dir);
     if (folder.isEmpty()) {
         return;

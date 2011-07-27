@@ -11,8 +11,10 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Counter.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Gui/DialogUtils.h>
 #include <U2Core/LoadDocumentTask.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -36,7 +38,7 @@ HMMBuildDialogController::HMMBuildDialogController(const QString& _pn, const MAl
 }
 
 void HMMBuildDialogController::sl_msaFileClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_alignment"), 
         lod, DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     
@@ -48,7 +50,7 @@ void HMMBuildDialogController::sl_msaFileClicked() {
 }
 
 void HMMBuildDialogController::sl_resultFileClicked() {
-    LastOpenDirHelper lod(HMMIO::HMM_ID);
+    LastUsedDirHelper lod(HMMIO::HMM_ID);
     lod.url = QFileDialog::getSaveFileName(this, tr("Select file with HMM profile"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;

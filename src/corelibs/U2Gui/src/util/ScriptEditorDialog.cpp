@@ -23,6 +23,7 @@
 #include "ui/ui_ScriptEditorDialog.h"
 
 #include <U2Core/L10n.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <QtCore/QFile>
@@ -100,7 +101,7 @@ void ScriptEditorDialog::setScriptPath(const QString& path) {
 #define SCRIPTS_DOMAIN QString("scripts")
 
 void ScriptEditorDialog::sl_openScript() {
-    LastOpenDirHelper ld(SCRIPTS_DOMAIN);
+    LastUsedDirHelper ld(SCRIPTS_DOMAIN);
     ld.url = QFileDialog::getOpenFileName(this, tr("Select script to open"), ld.dir, getScriptsFileFilter());
     if (ld.url.isEmpty()) {
         return;
@@ -123,7 +124,7 @@ void ScriptEditorDialog::sl_saveAsScript() {
         QMessageBox::critical(this, L10N::errorTitle(), tr("Script is empty!"));
         return;
     }
-    LastOpenDirHelper ld(SCRIPTS_DOMAIN);
+    LastUsedDirHelper ld(SCRIPTS_DOMAIN);
     ld.url = QFileDialog::getSaveFileName(this, tr("Save script to file"), ld.dir, getScriptsFileFilter());
     if (ld.url.isEmpty()) {
         return;

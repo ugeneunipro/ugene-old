@@ -22,17 +22,21 @@
 #include "RemovePartFromSequenceDialogController.h"
 #include "ui/ui_RemovePartFromSequenceDialog.h"
 
-#include <QtGui/QMessageBox>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
-#include <QtGui/QFileDialog>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AnnotationData.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/AppContext.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/DialogUtils.h>
 
-#include <U2Core/AnnotationData.h>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
+
+#include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
+
 
 
 namespace U2{
@@ -90,7 +94,7 @@ void RemovePartFromSequenceDialogController::accept(){
 }
 
 void RemovePartFromSequenceDialogController::sl_browseButtonClicked(){
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     
     h.url = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
     ui->filepathEdit->setText(h.url);

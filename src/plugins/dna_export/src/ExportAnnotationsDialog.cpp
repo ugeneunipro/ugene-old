@@ -19,14 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QFileDialog>
-#include <QtCore/QList>
+#include "ExportAnnotationsDialog.h"
+
 
 #include <U2Core/global.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
-#include <U2Gui/DialogUtils.h>
-#include "ExportAnnotationsDialog.h"
+
+#include <U2Gui/LastUsedDirHelper.h>
+
+#include <QtCore/QList>
+#include <QtGui/QFileDialog>
 
 namespace U2 {
 
@@ -117,7 +120,7 @@ void ExportAnnotationsDialog::sl_onChooseFileButtonClicked() {
     }
     fileFormats.append("All files (*)");
     
-    LastOpenDirHelper helper("ExportAnnotationsDialogHelperDomain");
+    LastUsedDirHelper helper("ExportAnnotationsDialogHelperDomain");
     helper.url = QFileDialog::getSaveFileName(this, tr("Select file to save annotations"), helper.dir, fileFormats, 
         NULL, QFileDialog::DontConfirmOverwrite);
     if(!helper.url.isEmpty()) {

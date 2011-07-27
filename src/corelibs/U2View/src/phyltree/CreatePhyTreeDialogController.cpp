@@ -2,19 +2,21 @@
 #include "ui/ui_CreatePhyTreeDialog.h"
 
 #include "CreatePhyTreeWidget.h"
-#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Gui/DialogUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Settings.h>
 #include <U2Core/AppResources.h>
+
+#include <U2Algorithm/SubstMatrixRegistry.h>
+#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/qfiledialog.h>
 #include <QtGui/qmessagebox.h>
@@ -107,7 +109,7 @@ void CreatePhyTreeDialogController::sl_browseClicked()
 {
     GUrl oldUrl = ui->fileNameEdit->text(); 
     QString path;
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     if (oldUrl.isEmpty()) {
         path = lod.dir;
     } else {

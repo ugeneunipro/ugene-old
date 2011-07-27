@@ -26,31 +26,30 @@
 #include <U2Core/ProjectService.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
-#include <U2Gui/ObjectViewModel.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/Log.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/U2SafePoints.h>
-
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DbiDocumentFormat.h>
-
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/CopyDataTask.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Core/SelectionUtils.h>
+
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/UnloadDocumentTask.h>
-
+#include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/CopyDocumentDialogController.h>
-#include <U2Core/SelectionUtils.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -510,7 +509,7 @@ void ProjectViewImpl::sl_onViewPersistentStateChanged(GObjectViewWindow* v) {
 }
 
 void ProjectViewImpl::sl_onAddExistingDocument() {
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     QString filter = DialogUtils::prepareDocumentsFileFilter(true);
     QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
     if (file.isEmpty()) {
@@ -854,7 +853,7 @@ void ProjectViewImpl::sl_relocate() {
     if (d->isLoaded()) { //TODO: support loaded docs relocation?
         return;
     }
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     h.url = QFileDialog::getOpenFileName(w, tr("Select new file location"), h.dir);
     if (h.url.isEmpty()) {
         return;
@@ -871,7 +870,7 @@ void ProjectViewImpl::sl_saveCopy() {
     if (!d->isLoaded()) {
         return;
     }
-    LastOpenDirHelper h;
+    LastUsedDirHelper h;
     CopyDocumentDialogController dialog(d, w);
     int result = dialog.exec();
     if (result == QDialog::Accepted){

@@ -33,7 +33,7 @@
 
 #include <U2Core/AnnotationTableObject.h>
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/SaveDocumentGroupController.h>
 
 #include <QtCore/QFileInfo>
@@ -320,7 +320,7 @@ void ImportAnnotationsFromCSVDialog::sl_prefixToSkipChanged(const QString& v) {
 
 void ImportAnnotationsFromCSVDialog::sl_readFileClicked() {
     // show the dialog
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     
     lod.url = QFileDialog::getOpenFileName(this, tr("Select CSV file to read"), lod);
     if (lod.url.isEmpty()) {

@@ -38,7 +38,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVUtils.h>
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <U2Test/XMLTestFormat.h>
@@ -79,8 +79,8 @@ SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin
 
     QString defaultDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/sitecon_models";
 
-    if (DialogUtils::getLastOpenFileDir(SiteconIO::SITECON_ID).isEmpty()) {
-        DialogUtils::setLastOpenFileDir(defaultDir, SiteconIO::SITECON_ID);
+    if (LastUsedDirHelper::getLastUsedDir(SiteconIO::SITECON_ID).isEmpty()) {
+        LastUsedDirHelper::setLastUsedDir(defaultDir, SiteconIO::SITECON_ID);
     }
 
     QDActorPrototypeRegistry* qpfr = AppContext::getQDActorProtoRegistry();

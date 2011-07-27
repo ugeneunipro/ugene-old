@@ -22,7 +22,7 @@
 #ifndef _U2_EXPORT_IMAGE_DIALOG_H_
 #define _U2_EXPORT_IMAGE_DIALOG_H_
 
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtCore/QList>
 #include <QtCore/QString>
@@ -72,7 +72,7 @@ private:
     QString origFilename;
     QString format;
 
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     Ui_ImageExportForm* ui;
     QRect rect;
     bool showSizeRuler;

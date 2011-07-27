@@ -19,30 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CAP3_SUPPORT_DIALOG_H_
-#define _U2_CAP3_SUPPORT_DIALOG_H_
+#ifndef _U2_LAST_USED_DIR_HELPER_H_
+#define _U2_LAST_USED_DIR_HELPER_H_
 
-#include <QtGui/QDialog>
-#include <ui/ui_CAP3SupportDialog.h>
+#include <U2Core/global.h>
 
 namespace U2 {
 
-class CAP3SupportTaskSettings;
-
-class CAP3SupportDialog : public QDialog, public Ui_CAP3SupportDialog {
-    Q_OBJECT
+class U2GUI_EXPORT LastUsedDirHelper {
 public:
-    CAP3SupportDialog(CAP3SupportTaskSettings& settings, QWidget* parent);
-    void accept();
-private slots:
-    void sl_onAddButtonClicked();
-    void sl_onRemoveButtonClicked();
-    void sl_onRemoveAllButtonClicked();
-    void sl_onSpecifyOutputPathButtonClicked();
-private:
-    CAP3SupportTaskSettings& settings;
+    LastUsedDirHelper(const QString& domain = QString(), const QString& defaultVal = QString()); //reads dir
+
+    virtual ~LastUsedDirHelper(); //if url is not empty -> derives dir from url and stores it
+    
+
+    static QString getLastUsedDir(const QString& toolType = QString(), const QString& defaultVal = QString());
+
+    static void setLastUsedDir(const QString& ld, const QString& toolType = QString());
+
+    operator const QString&() const {return dir;} 
+
+    void saveLastUsedDir();
+
+    QString domain;
+
+    //last used dir
+    QString dir;
+
+    // value returned by file dialog
+    QString url;
 };
 
+} //namespace
 
-}//namespace
-#endif // _U2_CAP3_SUPPORT_DIALOG_H_
+#endif

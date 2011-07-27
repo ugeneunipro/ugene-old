@@ -436,7 +436,7 @@ void DotPlotWidget::sl_showSaveImageDialog() {
 // save dotplot into a dotplot file, return true if successful
 bool DotPlotWidget::sl_showSaveFileDialog() {
 
-    LastOpenDirHelper lod("Dotplot");
+    LastUsedDirHelper lod("Dotplot");
     lod.url = QFileDialog::getSaveFileName(NULL, tr("Save Dotplot"), lod.dir, tr("Dotplot files (*.dpt)"));
 
     if (lod.url.length() <= 0) {
@@ -482,7 +482,7 @@ bool DotPlotWidget::sl_showSaveFileDialog() {
 // load dotplot from the dotplot file, return true if successful
 bool DotPlotWidget::sl_showLoadFileDialog() {
 
-    LastOpenDirHelper lod("Dotplot");
+    LastUsedDirHelper lod("Dotplot");
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Load Dotplot"), lod.dir, tr("Dotplot files (*.dpt)"));
 
     if (lod.url.length() <= 0) {

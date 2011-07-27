@@ -29,7 +29,7 @@
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -173,7 +173,7 @@ bool SiteconSearchDialogController::eventFilter(QObject *obj, QEvent *ev) {
 }
 
 void SiteconSearchDialogController::sl_selectModelFile() {
-    LastOpenDirHelper lod(SiteconIO::SITECON_ID);
+    LastUsedDirHelper lod(SiteconIO::SITECON_ID);
     lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_model"), lod, SiteconIO::getFileFilter());
     if (lod.url.isEmpty()) {
         return;

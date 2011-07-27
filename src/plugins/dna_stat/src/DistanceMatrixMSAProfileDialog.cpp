@@ -26,9 +26,12 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Gui/DialogUtils.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
+
 #include <U2View/MSAEditor.h>
 #include <U2View/WebWindow.h>
+
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 
@@ -49,7 +52,7 @@ DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEd
 }
 
 void DistanceMatrixMSAProfileDialog::sl_selectFile() {
-    LastOpenDirHelper h("plugin_dna_stat");
+    LastUsedDirHelper h("plugin_dna_stat");
     QString filter;
     if (csvRB->isChecked()) {
         filter = tr("CSV files") + " (*.csv)";

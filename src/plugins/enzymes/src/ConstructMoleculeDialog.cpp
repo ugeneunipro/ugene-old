@@ -19,19 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-
-#include <U2Gui/DialogUtils.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Gui/ProjectTreeController.h>
-#include <U2Gui/ProjectTreeItemSelectorDialog.h>
-
 #include "ConstructMoleculeDialog.h"
 #include "EditFragmentDialog.h"
 #include "CreateFragmentDialog.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/DocumentUtils.h>
+
+#include <U2Gui/ProjectTreeController.h>
+#include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/LastUsedDirHelper.h>
+
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 
 #include <memory>
 
@@ -51,7 +52,7 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
     }
 
     
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     GUrl url = GUrlUtils::rollFileName(lod.dir + "/new_mol.gb", DocumentUtils::getNewDocFileNameExcludesHint());
     filePathEdit->setText(url.getURLString());
     fragmentListWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -104,7 +105,7 @@ void ConstructMoleculeDialog::accept()
 
 void ConstructMoleculeDialog::sl_onBrowseButtonClicked()
 {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getSaveFileName(this, tr("Set new molecule file name"), lod.dir, tr("Genbank (*.gb )"));
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;

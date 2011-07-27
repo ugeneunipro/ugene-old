@@ -35,7 +35,7 @@
 
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
@@ -222,7 +222,7 @@ void MuscleMSAEditorContext::sl_alignSequencesToProfile() {
     QString f2 = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, false);
     QString filter = f2 + "\n" + f1;
 
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with sequences"), lod, filter);
     if (lod.url.isEmpty()) {
         return;
@@ -239,7 +239,7 @@ void MuscleMSAEditorContext::sl_alignProfileToProfile() {
         return;
     assert(!obj->isStateLocked());
 
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with alignment"), lod,
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
 

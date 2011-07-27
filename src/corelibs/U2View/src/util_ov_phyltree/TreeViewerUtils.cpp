@@ -20,7 +20,8 @@
  */
 
 #include "TreeViewerUtils.h"
-#include <U2Gui/DialogUtils.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -42,7 +43,7 @@ const char* TreeViewerUtils::IMAGE_FILTERS =
     "XPM - X11 Pixmap (*.xpm)";
 
 void TreeViewerUtils::saveImageDialog(const QString& filters, QString &fileName, QString &format) {
-    LastOpenDirHelper lod(IMAGE_DIR);
+    LastUsedDirHelper lod(IMAGE_DIR);
     int i = fileName.lastIndexOf('.');
     if (i != -1) {
         fileName = fileName.left(i);

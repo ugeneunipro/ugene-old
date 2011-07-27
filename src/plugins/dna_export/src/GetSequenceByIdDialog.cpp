@@ -19,13 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include "GetSequenceByIdDialog.h"
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include <U2Gui/LastUsedDirHelper.h>
 
-#include "GetSequenceByIdDialog.h"
-#include <U2Gui/DialogUtils.h>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
@@ -42,7 +43,7 @@ GetSequenceByIdDialog::GetSequenceByIdDialog(QWidget *w): QDialog(w) {
 const QString DOWNLOAD_REMOTE_FILE_DOMAIN = "DownloadRemoteFileDialog";
 
 void GetSequenceByIdDialog::sl_saveFilenameButtonClicked() {
-    LastOpenDirHelper lod(DOWNLOAD_REMOTE_FILE_DOMAIN);
+    LastUsedDirHelper lod(DOWNLOAD_REMOTE_FILE_DOMAIN);
     QString dirName = QFileDialog::getExistingDirectory(this, tr("Select directory to save"), lod.dir);
     if(!dirName.isEmpty()) {
         directoryEdit->setText(dirName);

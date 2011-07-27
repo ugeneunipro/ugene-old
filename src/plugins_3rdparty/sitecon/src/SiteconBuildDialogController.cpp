@@ -31,12 +31,12 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Counter.h>
-
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
 
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
-#include <U2Core/LoadDocumentTask.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -63,7 +63,7 @@ SiteconBuildDialogController::SiteconBuildDialogController(SiteconPlugin* pl, QW
 
 
 void SiteconBuildDialogController::sl_inFileButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_alignment"), lod, 
                                                 DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if (lod.url.isEmpty()) {
@@ -73,7 +73,7 @@ void SiteconBuildDialogController::sl_inFileButtonClicked() {
 }
 
 void SiteconBuildDialogController::sl_outFileButtonClicked() {
-    LastOpenDirHelper lod(SiteconIO::SITECON_ID);
+    LastUsedDirHelper lod(SiteconIO::SITECON_ID);
     lod.url = QFileDialog::getSaveFileName(this, tr("Select file to save model to..."), lod, SiteconIO::getFileFilter(false));
     if (lod.url.isEmpty()) {
         return;

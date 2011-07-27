@@ -19,16 +19,17 @@
  * MA 02110-1301, USA.
  */
 
+#include "ConvertAssemblyToSamDialog.h"
 #include <ui/ui_AssemblyToSamDialog.h>
 
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
-#include <U2Gui/DialogUtils.h>
 
-#include <QFileDialog>
-#include <QMessageBox>
+#include <U2Gui/LastUsedDirHelper.h>
 
-#include "ConvertAssemblyToSamDialog.h"
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+
 
 
 namespace U2 {
@@ -88,7 +89,7 @@ void ConvertAssemblyToSamDialog::buildSamUrl(const GUrl &dbUrl) {
 }
 
 void ConvertAssemblyToSamDialog::sl_onSetDbPathButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     QString filter;
 
     lod.url = QFileDialog::getOpenFileName(this, tr("Open an assembly data base file"), lod.dir, filter);
@@ -101,7 +102,7 @@ void ConvertAssemblyToSamDialog::sl_onSetDbPathButtonClicked() {
 }
 
 void ConvertAssemblyToSamDialog::sl_onSetSamPathButtonClicked() {
-    LastOpenDirHelper lod;
+    LastUsedDirHelper lod;
     lod.url = QFileDialog::getSaveFileName(this, tr("Set a result SAM file name"), lod.dir);
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
