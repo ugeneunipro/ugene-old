@@ -99,5 +99,6 @@
         <file>images/tree_layout.png</file>
         <file>images/notch.png</file>
         <file>images/layers.png</file>
+        <file>images/collapse.png</file>
     </qresource>
 </RCC>

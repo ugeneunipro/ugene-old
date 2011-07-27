@@ -132,7 +132,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     sortByNameAction = new QAction(tr("Sort sequences by name"), this);
     connect(sortByNameAction, SIGNAL(triggered()), SLOT(sl_sortByName()));
 
-    viewModeAction = new QAction(QIcon(":core/images/layers.png"), tr("Enable collapsing"), this);
+    viewModeAction = new QAction(QIcon(":core/images/collapse.png"), tr("Enable collapsing"), this);
     viewModeAction->setCheckable(true);
     connect(viewModeAction, SIGNAL(toggled(bool)), SLOT(sl_setCollapsingMode(bool)));
 
