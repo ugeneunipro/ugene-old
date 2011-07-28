@@ -744,9 +744,19 @@ void TreeViewerUI::sl_swapTriggered() {
             break;
         }
     }
+    qreal curZoom = zoom;
+
+    QTransform curTransform = viewportTransform();
+    setTransformationAnchor(NoAnchor);
+
     redrawRectangularLayout(); 
     updateLayout();
     updateTreeSettings();
+
+    setTransform(curTransform);
+    zoom = curZoom;
+    updateActionsState();
+    setTransformationAnchor(AnchorUnderMouse);
 }
 
 void TreeViewerUI::collapseSelected() {
