@@ -343,6 +343,7 @@ static QList<StrPair> formatKeywords(DNASequenceObject* so) {
 void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IOAdapter* io ) {
     QList<GObject*> seqs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     QList<GObject*> anns = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+    int seqCounter = seqs.size();
 
     while (!seqs.isEmpty() || !anns.isEmpty()) {
 
@@ -378,8 +379,11 @@ void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IO
         //write tool mark
         QList<GObject*> annsAndSeqObjs; annsAndSeqObjs<<aos; if (so!=NULL) {annsAndSeqObjs<<so;}
         if (!annsAndSeqObjs.isEmpty()) {
-            //write object names, TODO: avoid writing if names are default?
-            if (!writeKeyword(io, si, UGENE_MARK, annsAndSeqObjs[0]->getGObjectName(), false)) {
+            QString unimark = annsAndSeqObjs[0]->getGObjectName();
+            if(annsAndSeqObjs[0]->getGObjectType() == GObjectTypes::SEQUENCE && seqCounter > 1){
+                unimark += " sequence";
+            }
+            if (!writeKeyword(io, si, UGENE_MARK, unimark, false)) {
                 return;
             }
             for (int x=1; x < annsAndSeqObjs.size(); x++) {
