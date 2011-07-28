@@ -233,6 +233,8 @@ private:
     void updateActionsState();
 
     qreal avgWidth();
+
+    void updateLabelsAlignment(bool on);
     
     PhyTreeObject*      phyObject;
     GraphicsBranchItem* root;

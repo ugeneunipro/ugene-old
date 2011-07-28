@@ -566,27 +566,26 @@ void TreeViewerUI::updateTreeSettings(){
     scene()->update();
 
     if(contEnabled){
-        QStack<GraphicsBranchItem*> stack;
-        stack.push(root);
-        if (root != rectRoot) {
-            stack.push(rectRoot);
-        }
-        while (!stack.empty()) {
-            GraphicsBranchItem* item = stack.pop();
-            if (item->getNameText() == NULL) {
-                foreach (QGraphicsItem* citem, item->childItems()) {
-                    GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
-                    if (gbi != NULL) {
-                        stack.push(gbi);
-                    }
-                }
-            } else {
-                item->setWidth(0);
-            }
-        }
-        updateRect();
-        contEnabled = false;
-        sl_contTriggered(true);
+//         QStack<GraphicsBranchItem*> stack;
+//         stack.push(root);
+//         if (root != rectRoot) {
+//             stack.push(rectRoot);
+//         }
+//         while (!stack.empty()) {
+//             GraphicsBranchItem* item = stack.pop();
+//             if (item->getNameText() == NULL) {
+//                 foreach (QGraphicsItem* citem, item->childItems()) {
+//                     GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
+//                     if (gbi != NULL) {
+//                         stack.push(gbi);
+//                     }
+//                 }
+//             } else {
+//                 item->setWidth(0);
+//             }
+//         }
+//         updateRect();
+        updateLabelsAlignment(contEnabled);
     }
 
     defaultZoom();
@@ -813,48 +812,39 @@ void TreeViewerUI::sl_exportTriggered() {
 void TreeViewerUI::sl_contTriggered(bool on) {
     if (on != contEnabled) {
         contEnabled = on;
+        TreeLayout curLayout = layout;
         QStack<GraphicsBranchItem*> stack;
-        stack.push(root);
-        if (root != rectRoot) {
+       
+        if (on){
+            contEnabled = false;
+            hide();                             //to remove blinking
+            sl_rectangularLayoutTriggered();
+            contEnabled = true;
             stack.push(rectRoot);
-        }
-        while (!stack.empty()) {
-            GraphicsBranchItem* item = stack.pop();
-            if (item->getNameText() == NULL) {
-                foreach (QGraphicsItem* citem, item->childItems()) {
-                    GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
-                    if (gbi != NULL) {
-                        stack.push(gbi);
-                    }
-                }
-            } else {
-                
-                qreal nWidth = 0;
-                if(on){
-                    qreal scW = scene()->sceneRect().width();
-                    qreal scL = scene()->sceneRect().left();
-                    qreal textScPosX = item->getNameText()->scenePos().x();
-                    nWidth = scW + scL - textScPosX;
-                    if (showNameLabels){
-                        qreal textBRW = item->getNameText()->boundingRect().width();
-                        nWidth -= textBRW + GraphicsBranchItem::TextSpace;
-                    }
-                }
-// 
-//                 //test
-//                 QGraphicsItem* pitem =  item->parentItem();
-//                 GraphicsBranchItem* grPItem = dynamic_cast<GraphicsBranchItem*>(pitem);
-//                 if(grPItem){
-//                     if(grPItem->getDistanceText()!= NULL && grPItem->getDistanceText()->text() == ""){
-//                         nWidth+=8;
-//                     }
-//                 }
-//                 //test
-
-                item->setWidth(nWidth);
+        }else{
+            stack.push(root);
+            if (root != rectRoot) {
+                stack.push(rectRoot);
             }
         }
-        updateRect();
+        updateLabelsAlignment(on);
+
+        switch (curLayout)
+        {
+        case TreeLayout_Circular:
+            sl_circularLayoutTriggered();
+            fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+            break;
+
+        case TreeLayout_Unrooted:
+            sl_unrootedLayoutTriggered();
+            fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+            break;
+        case TreeLayout_Rectangular:
+            show();
+            break;
+        }
+        
     }
 }
 
@@ -879,7 +869,6 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
 
 void TreeViewerUI::sl_circularLayoutTriggered() {
     if (layout != TreeLayout_Circular) {
-        //swapAction->setEnabled(false);
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Circular;
@@ -893,7 +882,6 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
 
 void TreeViewerUI::sl_unrootedLayoutTriggered() {
     if (layout != TreeLayout_Unrooted) {
-       // swapAction->setEnabled(false);
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Unrooted;
@@ -926,6 +914,7 @@ void TreeViewerUI::sl_layoutRecomputed() {
         }
         showLabels(lt);
     }
+    show();
     
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
@@ -971,27 +960,6 @@ void TreeViewerUI::sl_showNameLabelsTriggered(bool on) {
             }else{
                 if(curTreeViewer->getContAction()->isChecked()){
                     sl_contTriggered(true);
-                }
-            }
-        }else{
-            if (contEnabled) {
-                QStack<GraphicsBranchItem*> stack;
-                stack.push(root);
-                if (root != rectRoot) {
-                    stack.push(rectRoot);
-                }
-                while (!stack.empty()) {
-                    GraphicsBranchItem* item = stack.pop();
-                    if (item->getNameText() == NULL) {
-                        foreach (QGraphicsItem* citem, item->childItems()) {
-                            GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
-                            if (gbi != NULL) {
-                                stack.push(gbi);
-                            }
-                        }
-                    } else {
-                        item->setWidth(item->getWidth() + (on ? 1 : -1) * (maxNameWidth - item->getNameText()->boundingRect().width() - 2 * GraphicsBranchItem::TextSpace));
-                    }
                 }
             }
         }
@@ -1170,6 +1138,52 @@ void TreeViewerUI::updateLayout()
             //here to please compiler
             break;
     }
+}
+
+void TreeViewerUI::updateLabelsAlignment(bool on)
+{
+    QStack<GraphicsBranchItem*> stack;
+    //         if (on){
+    //             contEnabled = false;
+    //             sl_rectangularLayoutTriggered();
+    //             contEnabled = true;
+    //             stack.push(rectRoot);
+    //         }else{
+    stack.push(root);
+    if (root != rectRoot) {
+        stack.push(rectRoot);
+    }
+    // }
+
+    while (!stack.empty()) {
+        GraphicsBranchItem* item = stack.pop();
+        if (item->getNameText() == NULL) {
+            foreach (QGraphicsItem* citem, item->childItems()) {
+                GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
+                if (gbi != NULL) {
+                    stack.push(gbi);
+                }
+            }
+        } else {
+
+            qreal nWidth = 0;
+            if(on){
+                qreal scW = scene()->sceneRect().width();
+                qreal scL = scene()->sceneRect().left();
+                qreal textScPosX = item->getNameText()->scenePos().x();
+                nWidth = scW + scL - textScPosX;
+                if (showNameLabels){
+                    qreal textBRW = item->getNameText()->boundingRect().width();
+                    nWidth -= textBRW + GraphicsBranchItem::TextSpace;
+                }
+            }
+            item->setWidth(nWidth);
+
+        }
+    }
+
+    updateRect();
+    //fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
 }//namespace
