@@ -434,7 +434,6 @@ void TreeViewerUI::updateSettings(const TreeSettings &settings) {
     }else{
         updateTreeSettings();
     }
-
 }
 
 void TreeViewerUI::sl_setSettingsTriggered() {
@@ -637,7 +636,6 @@ void TreeViewerUI::setSettingsState(const QVariantMap& m) {
     }
 }
 
-
 void TreeViewerUI::addLegend(qreal scale) {
     static const qreal WIDTH = 30.0;
     qreal d = WIDTH / scale;
@@ -715,7 +713,6 @@ void TreeViewerUI::resizeEvent(QResizeEvent *e) {
     QGraphicsView::resizeEvent(e);
 }
 
-// needed to export tree
 void TreeViewerUI::paint(QPainter &painter) {
     painter.setBrush(Qt::darkGray);
     painter.setFont(TreeViewerUtils::getFont());
@@ -844,7 +841,6 @@ void TreeViewerUI::sl_contTriggered(bool on) {
             show();
             break;
         }
-        
     }
 }
 
@@ -873,7 +869,11 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
 
         layout = TreeLayout_Circular;
         updateTreeSettings();
-        layoutTask = new CreateCircularBranchesTask(rectRoot);
+        if(getScale() <= GraphicsRectangularBranchItem::DEFAULT_WIDTH){
+            layoutTask = new CreateCircularBranchesTask(rectRoot, true);
+        }else{
+            layoutTask = new CreateCircularBranchesTask(rectRoot);
+        }
         connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_layoutRecomputed()));
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
         scheduler->registerTopLevelTask(layoutTask);
@@ -1045,9 +1045,7 @@ void TreeViewerUI::sl_zoomToSel(){
             zooming(zoom1);
             centerOn(rect.center());
         }
-
     }
-     
 }
 void TreeViewerUI::sl_zoomOut(){
     zooming(1.0/(float)ZOOM_COEF);
@@ -1061,32 +1059,28 @@ void TreeViewerUI::defaultZoom(){
 }
 
 void TreeViewerUI::redrawRectangularLayout(){
- 
-    //if(layout == TreeLayout_Rectangular){
-        int current = 0;
-        qreal minDistance = -2, maxDistance = 0;
-        GraphicsRectangularBranchItem* item = rectRoot;
+    int current = 0;
+    qreal minDistance = -2, maxDistance = 0;
+    GraphicsRectangularBranchItem* item = rectRoot;
 
-        item->redrawBranches(current, minDistance, maxDistance, phyObject->getTree()->rootNode);
+    item->redrawBranches(current, minDistance, maxDistance, phyObject->getTree()->rootNode);
 
-        item->setWidthW(0);
-        item->setDist(0);
-        item->setHeightW(0);
+    item->setWidthW(0);
+    item->setDist(0);
+    item->setHeightW(0);
 
-        if(minDistance == 0){
-            minDistance = 1;
-        }
-        if(maxDistance == 0){
-            maxDistance = 1;
-        }
+    if(minDistance == 0){
+        minDistance = 1;
+    }
+    if(maxDistance == 0){
+        maxDistance = 1;
+    }
 
-        qreal minDistScale = GraphicsRectangularBranchItem::DEFAULT_WIDTH / (qreal)minDistance;
-        qreal maxDistScale = GraphicsRectangularBranchItem::MAXIMUM_WIDTH / (qreal)maxDistance;
+    qreal minDistScale = GraphicsRectangularBranchItem::DEFAULT_WIDTH / (qreal)minDistance;
+    qreal maxDistScale = GraphicsRectangularBranchItem::MAXIMUM_WIDTH / (qreal)maxDistance;
 
-        qreal scale = qMin(minDistScale, maxDistScale);
-        setScale(scale);
-    //}
-    
+    qreal scale = qMin(minDistScale, maxDistScale);
+    setScale(scale);
 }
 
 qreal TreeViewerUI::avgWidth(){
@@ -1143,17 +1137,10 @@ void TreeViewerUI::updateLayout()
 void TreeViewerUI::updateLabelsAlignment(bool on)
 {
     QStack<GraphicsBranchItem*> stack;
-    //         if (on){
-    //             contEnabled = false;
-    //             sl_rectangularLayoutTriggered();
-    //             contEnabled = true;
-    //             stack.push(rectRoot);
-    //         }else{
     stack.push(root);
     if (root != rectRoot) {
         stack.push(rectRoot);
     }
-    // }
 
     while (!stack.empty()) {
         GraphicsBranchItem* item = stack.pop();
@@ -1165,7 +1152,6 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
                 }
             }
         } else {
-
             qreal nWidth = 0;
             if(on){
                 qreal scW = scene()->sceneRect().width();
@@ -1178,12 +1164,9 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
                 }
             }
             item->setWidth(nWidth);
-
         }
     }
-
     updateRect();
-    //fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
 }//namespace

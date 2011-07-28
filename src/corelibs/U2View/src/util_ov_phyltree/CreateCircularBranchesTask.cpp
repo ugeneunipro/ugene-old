@@ -29,7 +29,11 @@
 
 namespace U2 {
 
-CreateCircularBranchesTask::CreateCircularBranchesTask(GraphicsRectangularBranchItem *r): root1(r) {}
+const qreal CreateCircularBranchesTask::DEGENERATED_WIDTH = 300;
+const qreal CreateCircularBranchesTask::WIDTH_RADIUS = 30;
+const qreal CreateCircularBranchesTask::SCALE = 6.0;
+
+CreateCircularBranchesTask::CreateCircularBranchesTask(GraphicsRectangularBranchItem *r, bool _degeneratedCase): root1(r), degeneratedCase(_degeneratedCase) {}
 
 GraphicsCircularBranchItem* CreateCircularBranchesTask::getBranch(GraphicsRectangularBranchItem *from, GraphicsCircularBranchItem* parent) {
     GraphicsCircularBranchItem* res = new GraphicsCircularBranchItem(parent, coef * from->getHeight(), from);
@@ -44,8 +48,13 @@ GraphicsCircularBranchItem* CreateCircularBranchesTask::getBranch(GraphicsRectan
 }
 
 void CreateCircularBranchesTask::run() {
-    coef = 6.0 / root1->childrenBoundingRect().height();
-    root1->setWidthW(30);
+    coef = SCALE / root1->childrenBoundingRect().height();
+    if (degeneratedCase){
+        root1->setWidthW(DEGENERATED_WIDTH);
+    }else{
+        root1->setWidthW(WIDTH_RADIUS);
+    }
+    
     GraphicsCircularBranchItem* r = getBranch(root1, NULL);
     r->setVisibleW(false);
     root = r;
