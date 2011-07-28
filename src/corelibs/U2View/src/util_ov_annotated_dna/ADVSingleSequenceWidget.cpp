@@ -671,12 +671,13 @@ void ADVSingleSequenceWidget::sl_closeView()
 {
     closeView();
 }
-void ADVSingleSequenceWidget::sl_saveScreenshot()
-{
-    QRect screenRect = QRect(linesLayout->itemAt(1)->geometry().topLeft().x(),
-                                  linesLayout->itemAt(1)->geometry().topLeft().y(),
-                                  this->geometry().bottomRight().x(),
-                                  this->geometry().bottomRight().y());
+
+void ADVSingleSequenceWidget::sl_saveScreenshot() {
+    if (linesLayout->count() < 2) {
+        return;
+    }
+    QRect screenRect = rect();
+    screenRect.setTopLeft(linesLayout->itemAt(1)->geometry().topLeft());
     ExportImageDialog dialog(this, screenRect);
     dialog.exec();
 

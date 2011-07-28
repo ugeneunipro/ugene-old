@@ -48,53 +48,39 @@ static const QString PS_FORMAT = "ps";
 static const int PS_FORMAT_ID = 2;
 static const QString PDF_FORMAT = "pdf";
 
-ExportImageDialog::ExportImageDialog( QWidget* widget, bool _showSizeRuler, bool _useVectorFormats, const QString& _filename ) :
-        QDialog(widget), widget(widget), filename(_filename), origFilename(_filename), lod(IMAGE_DIR, QDir::homePath()), showSizeRuler(_showSizeRuler), useVectorFormats(_useVectorFormats)
-{
-    ui = new Ui_ImageExportForm;
-    ui->setupUi(this);
-
-    if(useVectorFormats){
-        supportedFormats.append("svg");
-        supportedFormats.append("ps");
-        supportedFormats.append("pdf");
-    }
-    QList<QByteArray> list=QImageWriter::supportedImageFormats();
-    foreach(QByteArray format,list){
-        if(format != "ico"){
-            supportedFormats.append(QString(format));
-        }
-    }
+ExportImageDialog::ExportImageDialog( QWidget* widget, bool _showSizeRuler, bool _useVectorFormats, const QString& _filename )
+: QDialog(widget), widget(widget), filename(_filename), origFilename(_filename), lod(IMAGE_DIR, QDir::homePath()), showSizeRuler(_showSizeRuler), useVectorFormats(_useVectorFormats) {
     setupComponents();
 }
 
-ExportImageDialog::ExportImageDialog( QWidget* widget, QRect _rect, bool _showSizeRuler, bool _useVectorFormats, const QString& _filename ) :
-        QDialog(widget), widget(widget), filename(_filename), origFilename(_filename), lod(IMAGE_DIR, QDir::homePath()), rect(_rect), showSizeRuler(_showSizeRuler), useVectorFormats(_useVectorFormats)
-{
-    ui = new Ui_ImageExportForm;
-    ui->setupUi(this);
-    if(useVectorFormats){
-        supportedFormats.append("svg");
-        supportedFormats.append("ps");
-        supportedFormats.append("pdf");
-    }
-    QList<QByteArray> list=QImageWriter::supportedImageFormats();
-    foreach(QByteArray format,list){
-        if(format != "ico"){
-            supportedFormats.append(QString(format));
-        }
-    }
-
+ExportImageDialog::ExportImageDialog( QWidget* widget, QRect _rect, bool _showSizeRuler, bool _useVectorFormats, const QString& _filename )
+: QDialog(widget), widget(widget), filename(_filename), origFilename(_filename), lod(IMAGE_DIR, QDir::homePath()), rect(_rect), showSizeRuler(_showSizeRuler), useVectorFormats(_useVectorFormats) {
     setupComponents();
 }
-int ExportImageDialog::getWidth(){
+
+int ExportImageDialog::getWidth() {
     return ui->widthSpinBox->value();
 }
-int ExportImageDialog::getHeight(){
+
+int ExportImageDialog::getHeight() {
     return ui->heightSpinBox->value();
 }
-void ExportImageDialog::setupComponents()
-{
+
+void ExportImageDialog::setupComponents() {
+    ui = new Ui_ImageExportForm;
+    ui->setupUi(this);
+    if(useVectorFormats){
+        supportedFormats.append("svg");
+        supportedFormats.append("ps");
+        supportedFormats.append("pdf");
+    }
+    QList<QByteArray> list=QImageWriter::supportedImageFormats();
+    foreach(QByteArray format,list){
+        if(format != "ico"){
+            supportedFormats.append(QString(format));
+        }
+    }
+
     if(!showSizeRuler){
         ui->widthLabel->hide();
         ui->widthSpinBox->hide();

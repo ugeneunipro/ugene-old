@@ -787,14 +787,11 @@ void TreeViewerUI::sl_collapseTriggered() {
 }
 
 void TreeViewerUI::sl_captureTreeTriggered() {
-    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    ExportImageDialog dialog(this,this->rect(),false,true,phyObject->getDocument()->getURL().baseFileName());
+    Document* doc = phyObject->getDocument();
+    const GUrl& url = doc->getURL();
+    const QString& fileName = url.baseFileName();
+    ExportImageDialog dialog(viewport(), viewport()->rect(), false, true, fileName);
     dialog.exec();
-
-    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
 void TreeViewerUI::sl_exportTriggered() {

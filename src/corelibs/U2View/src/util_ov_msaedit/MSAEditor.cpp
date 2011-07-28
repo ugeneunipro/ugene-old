@@ -608,7 +608,9 @@ QAction* MSAEditorUI::getRedoAction() const {
 }
 
 void MSAEditorUI::sl_saveScreenshot(){
-    ExportImageDialog dialog(this);
+    QRect screenRect = splitter->geometry();
+    screenRect.setBottom(seqArea->geometry().bottom());
+    ExportImageDialog dialog(this, screenRect);
     dialog.exec();
 }
 
