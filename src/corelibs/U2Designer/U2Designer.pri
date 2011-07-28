@@ -14,8 +14,8 @@ LIBS += -L../../_release -lU2Core -lU2Lang -lU2Gui
 
     CONFIG(debug, debug|release) {
         DESTDIR=../../_debug
-        LIBS -= -L../../_release -lU2Core -lU2Misc -lU2Lang -lU2Gui
-        LIBS += -L../../_debug -lU2Cored -lU2Miscd -lU2Langd -lU2Guid
+        LIBS -= -L../../_release -lU2Core -lU2Lang -lU2Gui
+        LIBS += -L../../_debug -lU2Cored -lU2Langd -lU2Guid
     }
 
     CONFIG(release, debug|release) {
