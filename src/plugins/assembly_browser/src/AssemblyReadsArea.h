@@ -76,15 +76,36 @@ private:
     void setupVScrollBar();
 
     void drawAll();
-    void drawWelcomeScreen(QPainter & p);
     void drawReads(QPainter & p);
-    void drawHint(QPainter & p);
+
+    void drawCurrentReadHighlight(QPainter &p);
+    void drawReadsShadowing(QPainter &p);
+
+    /** Find reads crossing vertical line in assembly.
+        @param asmX position in assembly */
+    QList<U2AssemblyRead> findReadsCrossingX(quint64 asmX);
+
+    /** Find read laying under screen position.
+        @param pos screen position */
+    bool findReadOnPos(const QPoint &pos, U2AssemblyRead &read);
+
+    /** Calculate rectangle corresponding to the read on screen */
+    QRect calcReadRect(const U2AssemblyRead &read);
+
+    /** Update hint data and position */
+    void updateHint();
+
+    /** Put welcome screen info on coveredRegionsLabel */
+    void showWelcomeScreen();
     
     int calcFontPointSize() const;
     
-    bool findReadUnderMouse(U2AssemblyRead & read);
     void updateMenuActions();
     void exportReads(const QList<U2AssemblyRead> & reads);
+
+    void createMenu();
+    QMenu* createShadowingMenu();
+    void shadowingMenuSetBind(bool enabled);
         
 signals:
     void si_heightChanged();
@@ -102,6 +123,9 @@ private slots:
     void sl_onCopyReadData();
     void sl_onExportRead();
     void sl_onExportReadsOnScreen();
+    void sl_onShadowingModeChanged(QAction *a);
+    void sl_onBindShadowing();
+    void sl_onShadowingJump();
     
 private:
     AssemblyBrowserUi * ui;
@@ -141,8 +165,8 @@ private:
     QPoint curPos;
     
     struct HintData {
-        HintData(QWidget * p) : redrawHint(false), hint(p) {}
-        bool redrawHint;
+        HintData(QWidget * p) : updateHint(false), hint(p) {}
+        bool updateHint;
         AssemblyReadsAreaHint hint;
         U2DataId curReadId;
     } hintData;
@@ -176,13 +200,28 @@ private:
         int cellWidth;
     } mover;
 
+    bool shadowingEnabled;
+    struct ShadowingData {
+        ShadowingData()
+            : mode(FREE), boundPos(0) {}
+
+        enum ShadowingMode {FREE, CENTERED, BIND} mode;
+        quint64 boundPos;
+    } shadowingData;
+
     bool scribbling;
+    int currentHotkeyIndex;
     
     QMenu * readMenu;
     QAction * copyDataAction;
     QAction * exportReadAction;
-    
-    int currentHotkeyIndex;
+
+    // shadowing actions
+    QAction *disableShadowing;
+    QAction *shadowingModeFree;
+    QAction *shadowingModeCentered;
+    QAction *shadowingBindHere;
+    QAction *shadowingJump;
 };
 
 } //ns

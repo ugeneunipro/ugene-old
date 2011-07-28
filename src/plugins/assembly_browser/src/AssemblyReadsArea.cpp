@@ -52,11 +52,16 @@
 
 namespace U2 {
 
-AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) : 
-QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true),
-coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this),  scribbling(false),
-readMenu(new QMenu(this)), copyDataAction(NULL),
-exportReadAction(NULL), currentHotkeyIndex(-1) {
+static const QColor backgroundColor(Qt::white);
+static const QColor shadowingColor(255,255,255,200);
+
+AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_)
+    :  QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true),
+        coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), mover(),
+        shadowingEnabled(false), shadowingData(),
+        scribbling(false), currentHotkeyIndex(-1),
+        readMenu(new QMenu(this))
+{
     QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
     coveredRegionsLayout->addWidget(&coveredRegionsLabel);
     setLayout(coveredRegionsLayout);
@@ -67,14 +72,57 @@ exportReadAction(NULL), currentHotkeyIndex(-1) {
     
     coveredRegionsLabel.installEventFilter(this);
     
-    //setup menu
+    createMenu();
+}
+
+void AssemblyReadsArea::createMenu() {
     copyDataAction = readMenu->addAction(tr("Copy read information to clipboard"));
     connect(copyDataAction, SIGNAL(triggered()), SLOT(sl_onCopyReadData()));
+
     QMenu * exportMenu = readMenu->addMenu(tr("Export"));
-    exportReadAction = exportMenu->addAction("Current read");
-    connect(exportReadAction, SIGNAL(triggered()), SLOT(sl_onExportRead()));
-    QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
-    connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
+        exportReadAction = exportMenu->addAction("Current read");
+        connect(exportReadAction, SIGNAL(triggered()), SLOT(sl_onExportRead()));
+
+        QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
+        connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
+
+    QMenu *shadowingMenu = createShadowingMenu();
+    readMenu->addMenu(shadowingMenu);
+}
+
+static const QString BIND_HERE(AssemblyReadsArea::tr("Lock here"));
+
+QMenu* AssemblyReadsArea::createShadowingMenu() {
+    QMenu *shadowingMenu = new QMenu(tr("Read shadowing"));
+
+    disableShadowing = shadowingMenu->addAction(tr("Disabled"));
+    disableShadowing->setCheckable(true);
+    shadowingModeFree = shadowingMenu->addAction(tr("Free"));
+    shadowingModeFree ->setCheckable(true);
+    shadowingModeCentered = shadowingMenu->addAction(tr("Centered"));
+    shadowingModeCentered->setCheckable(true);
+
+    shadowingMenu->addSeparator();
+    shadowingBindHere = shadowingMenu->addAction(BIND_HERE);
+    shadowingBindHere->setDisabled(true);
+    connect(shadowingBindHere, SIGNAL(triggered()), this, SLOT(sl_onBindShadowing()));
+
+    shadowingJump = shadowingMenu->addAction(tr("Jump to locked base"));
+    shadowingJump->setEnabled(false);
+    connect(shadowingJump, SIGNAL(triggered()), this, SLOT(sl_onShadowingJump()));
+
+
+    QActionGroup *modeGroup = new QActionGroup(this);
+    modeGroup->addAction(disableShadowing);
+    modeGroup->addAction(shadowingModeFree);
+    modeGroup->addAction(shadowingModeCentered);
+
+    modeGroup->setExclusive(true);
+    disableShadowing->setChecked(true);
+
+    connect(modeGroup, SIGNAL(triggered(QAction*)), this, SLOT(sl_onShadowingModeChanged(QAction*)));
+
+    return shadowingMenu;
 }
 
 void AssemblyReadsArea::initRedraw() {
@@ -136,26 +184,39 @@ void AssemblyReadsArea::drawAll() {
     GTIMER(c1, t1, "AssemblyReadsArea::drawAll");
     if(!model->isEmpty()) {
         if (redraw) {
-            cachedView.fill(Qt::transparent);
-            QPainter p(&cachedView);
+            // update cached pixmap
             redraw = false;
 
-            if(!browser->areReadsVisible()) {
-                drawWelcomeScreen(p);
-            } else {
+            if(browser->areReadsVisible()) {
+                cachedView.fill(Qt::transparent);
+                QPainter p(&cachedView);
                 drawReads(p);
             }
+            else {
+                QPainter p(this);
+                p.fillRect(0, 0, width(), height(), Qt::transparent);
+                showWelcomeScreen();
+            }
+
             setupHScrollBar(); 
             setupVScrollBar();
         }
-        QPixmap cachedViewCopy(cachedView);
-        if(hintData.redrawHint) {
-            QPainter p(&cachedViewCopy);
-            hintData.redrawHint = false;
-            drawHint(p);
+
+        if(browser->areReadsVisible()) {
+            QPainter p(this);
+            p.drawPixmap(0, 0, cachedView);
+
+            // draw all light stuff which is faster
+            // to redraw than cache into pixmap
+
+            if(hintData.updateHint) {
+                hintData.updateHint = false;
+                updateHint();
+            }
+
+            drawReadsShadowing(p);
+            drawCurrentReadHighlight(p);
         }
-        QPainter p(this);
-        p.drawPixmap(0, 0, cachedViewCopy);
     }
 }
 
@@ -181,7 +242,7 @@ QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::initHotkeyDescrip
     return res;
 }
 
-void AssemblyReadsArea::drawWelcomeScreen(QPainter &) {
+void AssemblyReadsArea::showWelcomeScreen() {
     GTIMER(c1, t1, "AssemblyReadsArea::drawDensityGraph");
 
     cachedReads.clear();
@@ -233,7 +294,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     coveredRegionsLabel.hide();
 
     p.setFont(browser->getFont());
-    p.fillRect(rect(), Qt::white);
+    p.fillRect(rect(), backgroundColor);
 
     cachedReads.xOffsetInAssembly = browser->getXOffsetInAssembly();
     cachedReads.yOffsetInAssembly = browser->getYOffsetInAssembly();
@@ -321,9 +382,9 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     }    
 }
 
-bool AssemblyReadsArea::findReadUnderMouse(U2AssemblyRead & read) {
-    qint64 asmX = cachedReads.xOffsetInAssembly + (double)curPos.x() / cachedReads.letterWidth;
-    qint64 asmY = cachedReads.yOffsetInAssembly + (double)curPos.y() / cachedReads.letterWidth;
+bool AssemblyReadsArea::findReadOnPos(const QPoint &pos, U2AssemblyRead &read) {
+    qint64 asmX = cachedReads.xOffsetInAssembly + (double)pos.x() / cachedReads.letterWidth;
+    qint64 asmY = cachedReads.yOffsetInAssembly + (double)pos.y() / cachedReads.letterWidth;
     bool found = false;
     QListIterator<U2AssemblyRead> it(cachedReads.data);
     while(it.hasNext()) {
@@ -337,7 +398,18 @@ bool AssemblyReadsArea::findReadUnderMouse(U2AssemblyRead & read) {
     return found;
 }
 
-void AssemblyReadsArea::drawHint(QPainter & p) {
+QList<U2AssemblyRead> AssemblyReadsArea::findReadsCrossingX(quint64 asmX) {
+    QList<U2AssemblyRead> found;
+    foreach (const U2AssemblyRead &r, cachedReads.data) {
+        if(asmX >= r->leftmostPos && asmX < r->leftmostPos + U2AssemblyUtils::getEffectiveReadLength(r)) {
+            found << r;
+        }
+    }
+
+    return found;
+}
+
+void AssemblyReadsArea::updateHint() {
     if(cachedReads.isEmpty() || cachedReads.letterWidth == 0 || scribbling) {
         sl_hideHint();
         return;
@@ -345,7 +417,7 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
 
     // 1. find assembly read we stay on
     U2AssemblyRead read;
-    bool found = findReadUnderMouse(read);
+    bool found = findReadOnPos(curPos, read);
     if(!found) {
         sl_hideHint();
         return;
@@ -376,8 +448,9 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
     if(!hintData.hint.isVisible()) {
         hintData.hint.show();
     }
+}
 
-    // 4. paint frame around read
+QRect AssemblyReadsArea::calcReadRect(const U2AssemblyRead &read) {
     U2Region readBases(read->leftmostPos, U2AssemblyUtils::getEffectiveReadLength(read));
     U2Region readVisibleBases = readBases.intersect(cachedReads.visibleBases);
     assert(!readVisibleBases.isEmpty());
@@ -391,17 +464,80 @@ void AssemblyReadsArea::drawHint(QPainter & p) {
     int x_pix_start = browser->calcPainterOffset(xToDrawRegion.startPos);
     int y_pix_start = browser->calcPainterOffset(yToDrawRegion.startPos);
 
-    p.setPen(Qt::darkRed);
-    QPoint l(x_pix_start, y_pix_start);
-    QPoint r(x_pix_start + readVisibleBases.length * cachedReads.letterWidth, y_pix_start);
-    const QPoint off(0, cachedReads.letterWidth);
-    p.drawLine(l, r);
-    p.drawLine(l + off, r + off);
-    if(readBases.startPos == readVisibleBases.startPos) { // draw left border
-        p.drawLine(l, l + off);
+    int width = readVisibleBases.length * cachedReads.letterWidth;
+    int height = cachedReads.letterWidth;
+
+    return QRect(x_pix_start, y_pix_start, width, height);
+}
+
+void AssemblyReadsArea::drawCurrentReadHighlight(QPainter &p) {
+    U2AssemblyRead read;
+    bool found = findReadOnPos(curPos, read);
+    if (found) {
+        p.setBrush(Qt::NoBrush);
+        p.setPen(Qt::darkRed);
+        QRect rect = calcReadRect(read);
+        rect.setBottomRight(rect.bottomRight() - QPoint(1,1));
+
+        p.drawRect(rect);
     }
-    if(readBases.endPos() == readVisibleBases.endPos()) { // draw right border
-        p.drawLine(r, r + off);
+}
+
+void AssemblyReadsArea::drawReadsShadowing(QPainter &p) {
+     if (shadowingEnabled) {
+        int screenLinePos;
+        quint64 asmLinePos;
+
+        if (shadowingData.mode == ShadowingData::FREE) {
+            screenLinePos = curPos.x();
+            asmLinePos = cachedReads.xOffsetInAssembly + (double)screenLinePos / cachedReads.letterWidth;
+        }
+        else if (shadowingData.mode == ShadowingData::CENTERED) {
+            screenLinePos = width() / 2.0;
+            asmLinePos = cachedReads.xOffsetInAssembly + (double)screenLinePos / cachedReads.letterWidth;
+        }
+        else if (shadowingData.mode == ShadowingData::BIND) {
+            asmLinePos = shadowingData.boundPos;
+            screenLinePos = (asmLinePos - cachedReads.xOffsetInAssembly) * cachedReads.letterWidth;
+        }
+        else {
+            assert(!"Unknown ShadowingMode");
+        }
+
+        QList<U2AssemblyRead> crossedReads = findReadsCrossingX(asmLinePos);
+
+        QVector<QRect> rects;
+        if (!crossedReads.isEmpty()) {
+            rects.reserve(cachedReads.data.size() - crossedReads.size());
+
+            foreach (const U2AssemblyRead &read, cachedReads.data) {
+                if (crossedReads.contains(read)) {
+                    continue;
+                }
+
+                const QRect &rect = calcReadRect(read);
+                rects << rect;
+            }
+        }
+        else {
+            // crossed reads are out of the screen, shadow all visible reads
+            rects << QRect(this->rect());
+        }
+
+        p.setBrush(QBrush(shadowingColor));
+        p.setPen(Qt::NoPen);
+
+        p.drawRects(rects);
+
+        if (screenLinePos >= 0 && screenLinePos < width()) {
+            static const QPen cursorPen(Qt::darkRed);
+
+            // snap cursor to letter center
+            int x = (screenLinePos / cachedReads.letterWidth) * cachedReads.letterWidth + (double)cachedReads.letterWidth/2;
+
+            p.setPen(cursorPen);
+            p.drawLine(x, 0, x, height());
+        }
     }
 }
 
@@ -472,8 +608,9 @@ void AssemblyReadsArea::mouseMoveEvent(QMouseEvent * e) {
         browser->adjustOffsets(-x_units, -y_units);
     }
     curPos = e->pos();
-    hintData.redrawHint = true;
+    hintData.updateHint = true;
     update();
+    QWidget::mouseMoveEvent(e);
 }
 
 void AssemblyReadsArea::leaveEvent(QEvent *) {
@@ -491,7 +628,7 @@ bool AssemblyReadsArea::event(QEvent * e) {
     QEvent::Type t = e->type();
     if(t == QEvent::WindowDeactivate) {
         sl_hideHint();
-        hintData.redrawHint = false;
+        hintData.updateHint = false;
     }
     return QWidget::event(e);
 }
@@ -619,7 +756,7 @@ void AssemblyReadsArea::sl_hideHint() {
 
 void AssemblyReadsArea::sl_onCopyReadData() {
     U2AssemblyRead read;
-    bool found = findReadUnderMouse(read);
+    bool found = findReadOnPos(curPos, read);
     if(!found) {
         return;
     }
@@ -628,7 +765,7 @@ void AssemblyReadsArea::sl_onCopyReadData() {
 
 void AssemblyReadsArea::updateMenuActions() {
     U2AssemblyRead read;
-    bool found = findReadUnderMouse(read);
+    bool found = findReadOnPos(curPos, read);
     copyDataAction->setEnabled(found);
     exportReadAction->setEnabled(found);
 }
@@ -674,7 +811,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
 
 void AssemblyReadsArea::sl_onExportRead() {
     U2AssemblyRead read;
-    bool found = findReadUnderMouse(read);
+    bool found = findReadOnPos(curPos, read);
     if(!found) {
         return;
     }
@@ -685,6 +822,74 @@ void AssemblyReadsArea::sl_onExportReadsOnScreen() {
     if(!cachedReads.data.isEmpty()) {
         exportReads(cachedReads.data);
     }
+}
+
+void AssemblyReadsArea::shadowingMenuSetBind(bool enable) {
+    if (enable) {
+        shadowingBindHere->setText(tr("Locked to base"));
+        shadowingBindHere->setCheckable(true);
+        shadowingBindHere->setChecked(true);
+        shadowingJump->setEnabled(true);
+    }
+    else {
+        shadowingBindHere->setText(BIND_HERE);
+        shadowingBindHere->setCheckable(false);
+        shadowingBindHere->setChecked(false);
+        shadowingJump->setEnabled(false);
+    }
+}
+
+void AssemblyReadsArea::sl_onShadowingModeChanged(QAction *a) {
+    if (a == disableShadowing) {
+        shadowingEnabled = false;
+        shadowingData.mode = ShadowingData::FREE;
+    }
+    else {
+        shadowingEnabled = true;
+    }
+
+    if (a == shadowingModeFree) {
+        if (shadowingData.mode != ShadowingData::BIND) {
+            shadowingData.mode = AssemblyReadsArea::ShadowingData::FREE;
+
+            shadowingBindHere->setEnabled(true);
+        }
+    }
+    else  {
+        shadowingMenuSetBind(false);
+        shadowingBindHere->setEnabled(false);
+    }
+
+    if (a == shadowingModeCentered) {
+        shadowingData.mode = AssemblyReadsArea::ShadowingData::CENTERED;
+    }
+}
+
+void AssemblyReadsArea::sl_onBindShadowing() {
+    if (shadowingData.mode != ShadowingData::BIND) {
+        shadowingData.mode = ShadowingData::BIND;
+        qint64 asmX = cachedReads.xOffsetInAssembly + (double)curPos.x() / cachedReads.letterWidth;
+        shadowingData.boundPos = asmX;
+
+        shadowingMenuSetBind(true);
+    }
+    else {
+        shadowingData.mode = ShadowingData::FREE;
+        shadowingMenuSetBind(false);
+    }
+}
+
+void AssemblyReadsArea::sl_onShadowingJump() {
+    int onScreen = cachedReads.visibleBases.length;
+    int center = onScreen / 2;
+    quint64 pos = shadowingData.boundPos;
+    pos = (pos < center) ? 0 : shadowingData.boundPos - center;
+
+    U2OpStatusImpl os;
+    quint64 len = model->getModelLength(os);
+    pos = (pos > len - onScreen +1) ? len - onScreen +1 : pos;
+
+    browser->setXOffsetInAssembly(pos);
 }
 
 } //ns
