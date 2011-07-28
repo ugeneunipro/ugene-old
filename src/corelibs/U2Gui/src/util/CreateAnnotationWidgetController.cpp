@@ -98,6 +98,15 @@ CreateAnnotationWidgetController::CreateAnnotationWidgetController(const CreateA
     QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR).toString();
     if (dir.isEmpty() || !QDir(dir).exists()) {
         dir = QDir::homePath();
+        Project* prj = AppContext::getProject();
+        if (prj != NULL) {
+            const QString& prjUrl = prj->getProjectURL();
+            if (!prjUrl.isEmpty()) {
+                QFileInfo fi(prjUrl);
+                const QDir& prjDir = fi.absoluteDir();
+                dir = prjDir.absolutePath();
+            }
+        }
     }
     dir+="/";
     QString baseName = "MyDocument";
