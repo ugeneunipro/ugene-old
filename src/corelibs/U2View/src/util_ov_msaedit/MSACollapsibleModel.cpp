@@ -130,7 +130,13 @@ void MSACollapsibleItemModel::getVisibleRows(int startPos, int endPos, QVector<U
             start = item.row + item.numRows;
         }
     }
-    int lastRow = mapToRow(j - 1, endPos);
+
+    int lastRow = 0;
+    if (j - 1 < 0) {
+        lastRow = endPos;
+    } else {
+        lastRow = mapToRow(j - 1, endPos);
+    }
 
     MSAEditor* ed = ui->getEditor();
     MAlignmentObject* obj = ed->getMSAObject();
