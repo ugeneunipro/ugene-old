@@ -40,7 +40,7 @@ public:
     const CreateAnnotationModel &getCreateAnnotationModel()const;
     int getRangeStart()const;
     int getRangeEnd()const;
-
+    QString checkModel();
     void prepareAnnotationObject();
 public:
     static bool parseIntervalList(QString inputString, QString delimiter, QList<QPair<int, int> > *outputList);

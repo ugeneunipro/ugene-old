@@ -102,7 +102,7 @@ int Primer3Dialog::getRangeEnd()const
 
 void Primer3Dialog::prepareAnnotationObject()
 {
-    createAnnotationWidgetController->prepareAnnotationObject();
+   createAnnotationWidgetController->prepareAnnotationObject();
 }
 
 QString Primer3Dialog::intervalListToString(QList<QPair<int, int> > intervalList, QString delimiter) {
@@ -627,6 +627,11 @@ void Primer3Dialog::on_sbRangeEnd_editingFinished()
     {
         ui.sbRangeStart->setValue(ui.sbRangeEnd->value());
     }
+}
+
+QString Primer3Dialog::checkModel()
+{
+    return createAnnotationWidgetController->validate();
 }
 
 } // namespace U2

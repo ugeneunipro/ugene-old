@@ -64,6 +64,8 @@ bool Annotation::isValidAnnotationName(const QString& n) {
     validChars['-'] = true;
     validChars[' '] = true;
     validChars['\''] = true;
+    validChars['*']  = true;
+    
     QByteArray name = n.toLocal8Bit();
     if (!TextUtils::fits(validChars, name.constData(), name.size())) {
         return false;
@@ -71,7 +73,7 @@ bool Annotation::isValidAnnotationName(const QString& n) {
     if (name[0] == ' ' || name[name.size() - 1] == ' ') {
         return false;
     }
-    return TextUtils::fits(TextUtils::ANNOTATIONS_NAME_CHARS, n.toAscii().data(), n.length());
+    return true;
 }
 
 QString Annotation::getQualifiersTip(int maxRows, DNASequenceObject* seq, DNATranslation* comlTT, DNATranslation* aminoTT) const {

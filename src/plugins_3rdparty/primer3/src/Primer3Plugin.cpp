@@ -168,10 +168,17 @@ void Primer3ADVContext::sl_showDialog() {
             settings.setIncludedRegion(qMakePair(
                     dialog.getRangeStart() + settings.getFirstBaseIndex(),
                     dialog.getRangeEnd() - dialog.getRangeStart()));
+            QString err = dialog.checkModel();
+            if (!err.isEmpty()) {
+                QMessageBox::warning(QApplication::activeWindow(), dialog.windowTitle(), err);
+                return;
+            }
+            
             dialog.prepareAnnotationObject();
             const CreateAnnotationModel &model = dialog.getCreateAnnotationModel();
             AppContext::getTaskScheduler()->registerTopLevelTask(
-                    new Primer3ToAnnotationsTask(settings, model.getAnnotationObject(), model.groupName, ""));
+                new Primer3ToAnnotationsTask(settings, model.getAnnotationObject(), model.groupName, ""));
+
         }
     }
 }
