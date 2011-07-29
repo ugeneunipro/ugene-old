@@ -177,7 +177,6 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
             settings.aminoTT = TTs.first(); //FIXME let user choose or use hints ?
         }
     }
-    assert(dna->getAlphabet()->containsAll(settings.ptrn.constData(),settings.ptrn.length()));
     assert(settings.pSm.getName().isEmpty() && mtrx.toLower() != "auto");
 
     if (settings.pSm.isEmpty()) {

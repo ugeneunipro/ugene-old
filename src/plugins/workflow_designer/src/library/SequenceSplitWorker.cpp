@@ -135,21 +135,16 @@ Task * SequenceSplitWorker::tick() {
     bool noSeq = inputSeq.isNull();
     bool noAnns = inputAnns.isEmpty();
     if( noSeq || noAnns ) {
-        //if( failFast ) {
-            if( noSeq ) {
-                return new FailTask( tr("No sequence provided to split worker") );
-            } else if( noAnns ) {
-                return new FailTask( tr("Nothing to extract. No annotations provided to split worker") );
-            } else {
-                assert(false);
-            }
-       // } 
+        if( noSeq ) {
+            coreLog.info(tr("No sequence provided to split worker"));
+        } else {
+            coreLog.info(tr("Nothing to extract. Sequence '%1' has no annotations.").arg(inputSeq.getName()));
+        }
         
-        outPort->put( Message(BaseTypes::ANNOTATION_TABLE_TYPE(), QVariant()) );
         if( seqPort->isEnded() ) {
             outPort->setEnded();
         }
-        return 0;
+        return NULL;
     } 
 
     ssTasks.clear();
