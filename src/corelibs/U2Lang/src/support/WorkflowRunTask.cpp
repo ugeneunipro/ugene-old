@@ -32,6 +32,7 @@
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Version.h>
+#include <U2Core/Settings.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
@@ -488,6 +489,7 @@ Task(tr("Monitoring execution of workflow schema"), TaskFlag_NoRun), schemaPath(
     args << QString("--%1").arg(OUTPUT_PROGRESS_OPTION);
     args << "--lang=en";
     args << QString("--%1").arg(OUTPUT_ERROR_OPTION);
+    args << QString("--ini-file='%1'").arg(AppContext::getSettings()->fileName());
     connect(proc, SIGNAL(error(QProcess::ProcessError)), SLOT(sl_onError(QProcess::ProcessError)));
     connect(proc, SIGNAL(readyReadStandardOutput()), SLOT(sl_onReadStandardOutput()));
     QString cmdlineUgenePath(WorkflowSettings::getCmdlineUgenePath());
