@@ -299,7 +299,7 @@ void MSAEditorConsensusArea::setupFontAndHeight() {
 
 void MSAEditorConsensusArea::sl_zoomOperationPerformed( bool resizeModeChanged )
 {
-    if (editor->getResizeMode() == MSAEditor::ResizeMode_OnlyContent || resizeModeChanged) {
+    if (editor->getResizeMode() == MSAEditor::ResizeMode_OnlyContent && !resizeModeChanged) {
         completeRedraw = true;
         update();
     } else {

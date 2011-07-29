@@ -162,9 +162,10 @@ void MSAEditor::sl_zoomIn() {
     bool resizeModeChanged = false;
 
     if (zoomFactor >= 1) {
+        ResizeMode oldMode = resizeMode;
         resizeMode = ResizeMode_FontAndContent;
+        resizeModeChanged = resizeMode != oldMode;
         zoomFactor = 1;
-        resizeModeChanged = true;
     }
     updateActions();
     
@@ -182,8 +183,9 @@ void MSAEditor::sl_zoomOut() {
     } else {
         Q_ASSERT(zoomMult > 0);
         zoomFactor /= zoomMult;
+        ResizeMode oldMode = resizeMode;
         resizeMode = ResizeMode_OnlyContent;
-        resizeModeChanged = true;
+        resizeModeChanged = resizeMode != oldMode;
     }
     updateActions();
 
@@ -222,7 +224,7 @@ void MSAEditor::sl_zoomToSelection()
 
     updateActions();
 
-    emit si_zoomOperationPerformed(oldMode == resizeMode);
+    emit si_zoomOperationPerformed(resizeMode != oldMode);
 }
 
 void MSAEditor::sl_buildTree() {
@@ -325,7 +327,7 @@ void MSAEditor::sl_resetZoom() {
     zoomFactor = DEFAULT_ZOOM_FACTOR;
     ResizeMode oldMode = resizeMode;
     resizeMode = ResizeMode_FontAndContent;
-    emit si_zoomOperationPerformed(resizeMode == oldMode);
+    emit si_zoomOperationPerformed(resizeMode != oldMode);
     
     updateActions();
 }
@@ -617,7 +619,7 @@ void MSAEditorUI::sl_saveScreenshot(){
 MSALabelWidget::MSALabelWidget(const MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a) 
 : ui(_ui), text(_t), ali(_a)
 {
-    connect(ui->getEditor(), SIGNAL(si_fontChanged(const QFont&)), SLOT(sl_fontChanged()));
+    connect(ui->getEditor(), SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_fontChanged()));
 }
 
 void MSALabelWidget::paintEvent(QPaintEvent *) {
