@@ -35,6 +35,7 @@
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2SnpDbi.h>
 
 
 namespace U2 {
@@ -280,6 +281,22 @@ public:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteCrossDatabaseReferences, getRootDbi(), os);
     }
 };
+
+
+/** Default no-op implementation for write  methods of U2SnpDbi */
+class U2SimpleSnpDbi: public U2SnpDbi {
+protected:
+    U2SimpleSnpDbi(U2Dbi* rootDbi) : U2SnpDbi(rootDbi) {}
+
+    virtual void createSnpTrack(U2SnpTrack& , U2DbiIterator<U2Snp>* , const QString&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSnp, getRootDbi(), os); 
+    }
+ 
+    virtual void updateSnpTrack(const U2SnpTrack& track, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSnp, getRootDbi(), os); 
+    }
+};
+
 
 
 }//namespace

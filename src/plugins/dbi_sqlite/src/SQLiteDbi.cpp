@@ -149,22 +149,22 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     crossDbi->initSqlSchema(os);
     attributeDbi->initSqlSchema(os);
 
-    setProperty(SQLITE_DBI_OPTION_UGENE_VERSION, Version::appVersion().text, os);
+    setProperty(SQLITE_DBI_OPTION_APP_VERSION, Version::appVersion().text, os);
 }
 
 void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& os){
-    QString dbUgeneVersionText = getProperty(SQLITE_DBI_OPTION_UGENE_VERSION, "", os);
+    QString appVersionText = getProperty(SQLITE_DBI_OPTION_APP_VERSION, "", os);
     if (os.hasError()) {
         return;
     }
-    if (dbUgeneVersionText.isEmpty()) {
-        os.setError(SQLiteL10n::tr("Not a UGENE SQLite database: %1").arg(url));
+    if (appVersionText.isEmpty()) {
+        os.setError(SQLiteL10n::tr("Not a %1 SQLite database: %2").arg(U2_PRODUCT_NAME).arg(url));
         return;
     }
-    Version dbUgeneVersion = Version::parseVersion(dbUgeneVersionText);
+    Version dbAppVersion = Version::parseVersion(appVersionText);
     Version currentVersion = Version::appVersion();
-    if (dbUgeneVersion > currentVersion) {
-        coreLog.info(SQLiteL10n::tr("Warning! Database of version %1 was created with a newer UGENE version: %2. Not all database features are supported!").arg(currentVersion.text).arg(dbUgeneVersion.text));
+    if (dbAppVersion > currentVersion) {
+        coreLog.info(SQLiteL10n::tr("Warning! Database of version %1 was created with a newer %2 version: %3. Not all database features are supported!").arg(currentVersion.text).arg(U2_PRODUCT_NAME).arg(dbAppVersion.text));
     }
 
     foreach(const QString& key, props.keys()) {
@@ -242,7 +242,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         //TODO: incremental_vacuum
         //TODO: temp_store_directory
 
-        // check if the opened database is valid UGENE sqlite dbi
+        // check if the opened database is valid sqlite dbi
         initProperties = props;
         if (isEmpty(db, os)) {
             if (create) {

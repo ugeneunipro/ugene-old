@@ -8,6 +8,7 @@ HEADERS += src/SQLiteAssemblyDbi.h \
            src/SQLiteMsaDbi.h \
            src/SQLiteObjectDbi.h \
            src/SQLiteSequenceDbi.h \
+           src/SQLiteSnpDbi.h \
            src/assembly/AssemblyPackAlgorithm.h \
            src/assembly/MultiTableAssemblyAdapter.h \
            src/assembly/RTreeAssemblyAdapter.h \
@@ -19,6 +20,7 @@ SOURCES += src/SQLiteAssemblyDbi.cpp \
            src/SQLiteMsaDbi.cpp \
            src/SQLiteObjectDbi.cpp \
            src/SQLiteSequenceDbi.cpp \
+           src/SQLiteSnpDbi.cpp \
            src/assembly/AssemblyPackAlgorithm.cpp \
            src/assembly/MultiTableAssemblyAdapter.cpp \
            src/assembly/RTreeAssemblyAdapter.cpp \

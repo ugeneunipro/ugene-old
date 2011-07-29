@@ -21,7 +21,6 @@
 
 #include "RTreeAssemblyAdapter.h"
 #include "../SQLiteDbi.h"
-#include "../SQLiteAssemblyDbi.h"
 #include "../SQLiteObjectDbi.h"
 
 

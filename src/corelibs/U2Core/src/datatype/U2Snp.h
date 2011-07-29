@@ -31,8 +31,8 @@ namespace U2 {
 */
 class U2CORE_EXPORT U2SnpTrack : public U2Object {
 public:
-    U2SnpTrack() : pos(0) {}
-    U2SnpTrack(const U2DataId& id, const QString& dbId, qint64 version) : U2Object(id, dbId, version), length(0){}
+    U2SnpTrack() {}
+    U2SnpTrack(const U2DataId& id, const QString& dbId, qint64 version) : U2Object(id, dbId, version){}
     
     /** Sequence id */
     U2DataId      sequence;

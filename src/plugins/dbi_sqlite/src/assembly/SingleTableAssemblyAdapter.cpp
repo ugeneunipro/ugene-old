@@ -21,7 +21,6 @@
 
 #include "SingleTableAssemblyAdapter.h"
 #include "../SQLiteDbi.h"
-#include "../SQLiteAssemblyDbi.h"
 #include "../SQLiteObjectDbi.h"
 
 #include <U2Core/U2AssemblyUtils.h>

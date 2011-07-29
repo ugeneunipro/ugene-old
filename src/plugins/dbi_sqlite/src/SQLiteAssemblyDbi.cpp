@@ -33,7 +33,6 @@
 
 #include <U2Core/Timer.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/DNAAlphabet.h>
 
 #include <memory>
 

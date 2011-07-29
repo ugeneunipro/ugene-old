@@ -35,6 +35,11 @@
 #else
 #   define U2_PRODUCT_NAME      "UGENE"
 #endif
+
+/** used to store settings with a project name in a key, etc. Same in debug and release */
+#define U2_PRODUCT_KEY          "ugene"
+
+
 #define U2_ORGANIZATION_NAME    "Unipro"
 #define U2_USER_INI             "UGENE_USER_INI"
 #define U2_SYSTEM_INI           "UGENE_SYSTEM_INI"

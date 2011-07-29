@@ -87,7 +87,7 @@ enum U2CORE_EXPORT U2DbiFeature {
     /** DBI supports read methods for remote objects  */
     U2DbiFeature_ReadCrossDatabaseReferences  = 6,
     /** DBI supports readings Snps and SnpTracks */
-    U2DbiFeature_ReadSnps                     = 7,
+    U2DbiFeature_ReadSnp                     = 7,
 
     /** DBI supports changing/storing sequences */
     U2DbiFeature_WriteSequence                = 101,
@@ -102,7 +102,7 @@ enum U2CORE_EXPORT U2DbiFeature {
     /** DBI supports cross database references */
     U2DbiFeature_WriteCrossDatabaseReferences = 106,
     /** DBI supports changing/storing Snps and SnpTracks */
-    U2DbiFeature_WriteSnps                    = 107,
+    U2DbiFeature_WriteSnp                    = 107,
 
 
     /** DBI supports removal of objects */

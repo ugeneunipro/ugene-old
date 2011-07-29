@@ -67,7 +67,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/DBXRefRegistry.h \
            src/globals/DocumentFormatConfigurators.h \
            src/globals/ExternalToolRegistry.h \
-           src/globals/GAutoDeleteList.h \
            src/globals/global.h \
            src/globals/GUrl.h \
            src/globals/Identifiable.h \
@@ -151,6 +150,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/TaskStarter.h \
            src/tasks/TLSTask.h \
            src/util/FormatUtils.h \
+           src/util/GAutoDeleteList.h \
            src/util/GUrlUtils.h \
            src/util/MSAUtils.h \
            src/util/QVariantUtils.h \
@@ -201,7 +201,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/DBXRefRegistry.cpp \
            src/globals/DocumentFormatConfigurators.cpp \
            src/globals/ExternalToolRegistry.cpp \
-           src/globals/GAutoDeleteList.cpp \
            src/globals/GUrl.cpp \
            src/globals/Log.cpp \
            src/globals/LogCache.cpp \
@@ -272,6 +271,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/TaskStarter.cpp \
            src/tasks/TLSTask.cpp \
            src/util/FormatUtils.cpp \
+           src/util/GAutoDeleteList.cpp \
            src/util/GUrlUtils.cpp \
            src/util/MSAUtils.cpp \
            src/util/QVariantUtils.cpp \

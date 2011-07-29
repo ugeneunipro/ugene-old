@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Core/src/globals/GAutoDeleteList.h"
+#include "../../corelibs/U2Core/src/util/GAutoDeleteList.h"

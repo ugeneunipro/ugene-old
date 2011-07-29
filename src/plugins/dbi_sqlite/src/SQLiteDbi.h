@@ -39,7 +39,7 @@ class DbRef;
 
 
 // Names of SQLiteDbi flags
-#define SQLITE_DBI_OPTION_UGENE_VERSION    "ugene-version"
+#define SQLITE_DBI_OPTION_APP_VERSION    (U2_PRODUCT_KEY + QString("-version"))
 
 
 /** Name of the init property used to indicate assembly reads storage method for all new assemblies */

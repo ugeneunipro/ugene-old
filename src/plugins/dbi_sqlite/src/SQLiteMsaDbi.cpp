@@ -22,6 +22,7 @@
 #include "SQLiteMsaDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -100,9 +101,7 @@ QList<U2MsaRow> SQLiteMsaRDbi::getRows(const U2DataId& msaId, qint32 firstRow, q
             assert(prev.offset + prev.gap < gap.offset); //gaps are ordered correctly and do not overlap
             prev = gap;
         }
-        if (os.hasError()) {
-            break;
-        }
+        SAFE_POINT_OP(os, res);
         res.append(row);
     }
     return res;

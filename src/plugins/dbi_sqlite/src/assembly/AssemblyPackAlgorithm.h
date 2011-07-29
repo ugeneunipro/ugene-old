@@ -22,7 +22,7 @@
 #ifndef _U2_SQLITE_ASSEMBLY_PACK_ALGORITHM_DBI_H_
 #define _U2_SQLITE_ASSEMBLY_PACK_ALGORITHM_DBI_H_
 
-#include "SQLiteDbi.h"
+#include "../SQLiteDbi.h"
 #include <U2Core/U2SqlHelpers.h>
 
 namespace U2 {

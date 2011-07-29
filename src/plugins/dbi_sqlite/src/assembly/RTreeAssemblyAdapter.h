@@ -22,7 +22,7 @@
 #ifndef _U2_SQLITE_ASSEMBLY_RTREE_DBI_H_
 #define _U2_SQLITE_ASSEMBLY_RTREE_DBI_H_
 
-#include "SQLiteAssemblyDbi.h"
+#include "../SQLiteAssemblyDbi.h"
 #include "AssemblyPackAlgorithm.h"
 
 #include <U2Core/U2SqlHelpers.h>

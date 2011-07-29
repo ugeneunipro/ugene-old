@@ -53,7 +53,10 @@ QString LastUsedDirHelper::getLastUsedDir(const QString& toolType, const QString
     QString key = SETTINGS_ROOT + (toolType.isEmpty() ? "" : toolType + "/") + "lastDir";
     QString defDir = defaultVal;
     if (defDir.isEmpty() && toolType.isEmpty()) {
-        defDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/samples";
+        QStringList dataDirs = QDir::searchPaths( PATH_PREFIX_DATA );
+        if (!dataDirs.isEmpty()) {
+            defDir = dataDirs.first() + "/samples";
+        }
     }
     QString res = AppContext::getSettings()->getValue(key, defDir).toString();
     return res;
