@@ -31,7 +31,8 @@
 namespace U2 {
 
 AssemblyReferenceArea::AssemblyReferenceArea(AssemblyBrowserUi * ui_) : 
-QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), referenceAreaMenu(new QMenu(this)) {
+    QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), referenceAreaMenu(new QMenu(this)), cellRenderer(createAssemblyCellRenderer())
+{
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
@@ -94,12 +95,12 @@ void AssemblyReferenceArea::drawReference(QPainter & p) {
                 text = false;
             }
         }
-        cellRenderer.render(QSize(letterWidth, letterHeight), text, f);
+        cellRenderer->render(QSize(letterWidth, letterHeight), text, f);
 
         for(int i = 0; i < visibleSequence.length(); ++i, x_pix_start+=letterWidth) {
             QRect r(x_pix_start, y_pix_start, letterWidth, letterHeight);
             char c = visibleSequence.at(i);
-            QPixmap cellImage = cellRenderer.cellImage(c);
+            QPixmap cellImage = cellRenderer->cellImage(c);
             p.drawPixmap(r, cellImage);
         }
     }

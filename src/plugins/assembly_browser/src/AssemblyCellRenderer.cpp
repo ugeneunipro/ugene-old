@@ -29,77 +29,60 @@
 namespace U2 {
 
 namespace {
-    QMap<char, QColor> initDefaultColorSheme() {
-        QMap<char, QColor> colors;
 
-        //TODO other chars ??
-        //TODO = symbol 
-        colors['a'] = QColor("#FCFF92");
-        colors['c'] = QColor("#70F970");
-        colors['g'] = QColor("#4EADE1");
-        colors['t'] = QColor("#FF99B1");
-        colors['A'] = QColor("#FCFF92");
-        colors['C'] = QColor("#70F970");
-        colors['G'] = QColor("#4EADE1");
-        colors['T'] = QColor("#FF99B1");
+}
+static QMap<char, QColor> initDefaultColorSheme() {
+    QMap<char, QColor> colors;
 
-        colors['-'] = QColor("#FBFBFB");
-        colors['N'] = QColor("#FBFBFB");
+    //TODO other chars ??
+    //TODO = symbol
+    colors['a'] = QColor("#FCFF92");
+    colors['c'] = QColor("#70F970");
+    colors['g'] = QColor("#4EADE1");
+    colors['t'] = QColor("#FF99B1");
+    colors['A'] = QColor("#FCFF92");
+    colors['C'] = QColor("#70F970");
+    colors['G'] = QColor("#4EADE1");
+    colors['T'] = QColor("#FF99B1");
 
-        return colors;
-    }
+    colors['-'] = QColor("#FBFBFB");
+    colors['N'] = QColor("#FBFBFB");
+
+    return colors;
 }
 
-static const QMap<char, QColor> defaultColorScheme = initDefaultColorSheme();
-
-
-AssemblyCellRenderer::AssemblyCellRenderer() :
-colorScheme(defaultColorScheme), cachedTextFlag(false) {
+static QList<char> initAssemblyAlphabet() {
+    QList<char> alphabet;
+    alphabet << 'a' << 'c' << 'g' << 't'
+             << 'A' << 'C' << 'G' << 'T'
+             << '-' << 'N';
+    return alphabet;
 }
 
-void AssemblyCellRenderer::render(const QSize & size, bool text /*= false*/, const QFont & font /*= QFont()*/) {
-    GTIMER(c1, t1, "AssemblyCellRenderer::render");
-    GCOUNTER(c2, t2, "AssemblyCellRenderer::render -> calls");
-
-    if(images.empty() || (cachedSize != size || cachedTextFlag != text)) {
-        drawCells(size, font, text);
-    }
+inline static bool isGap(char c) {
+    //TODO : get rid of hardcoded values!
+    //TODO: smarter analysis. Don't forget about '=' symbol and IUPAC codes
+    return (c == '-' || c == 'N');
 }
 
-void AssemblyCellRenderer::drawCells(const QSize & size, const QFont & font, bool text) {
-    images.clear();
+}
 
-    foreach(char c, colorScheme.keys()) {
-        QPixmap img(size);
-        drawCell(img, colorScheme.value(c));
-        if(text) {
-            drawText(img, c, font);
-        }
-        images.insert(c, img);
-    }
+static const QMap<char, QColor> nucleotideColorScheme = initDefaultColorSheme();
+static const QList<char> assemblyAlphabet = initAssemblyAlphabet();
 
-    unknownChar = QPixmap(size);
-    drawCell(unknownChar, Qt::white);
+void AssemblyCellRenderer::drawCell(QPixmap &img, const QColor &color, bool text, char c, const QFont &font, const QColor &textColor) {
+    drawBackground(img, color);
+
     if(text) {
-        drawText(unknownChar, '?', font);
+        drawText(img, c, font, textColor);
     }
 }
 
-void AssemblyCellRenderer::drawText(QPixmap &img, char c, const QFont & f) {
-    QPainter p(&img);
-    p.setFont(f);
-    if('-' == c || 'N' == c) { //TODO : get rid of hardcoded values!
-        p.setPen(Qt::red);
-    } 
-    p.drawText(img.rect(), Qt::AlignCenter, QString(c));
-
-}
-
-void AssemblyCellRenderer::drawCell(QPixmap &img, const QColor & color) {
+void AssemblyCellRenderer::drawBackground(QPixmap &img, const QColor & color) {
     QPainter p(&img);
 
     //TODO invent something greater
-    QLinearGradient linearGrad(QPointF(0, 0), QPointF(img.width(), img.height()));
+    QLinearGradient linearGrad( QPointF(0, 0), QPointF(img.width(), img.height()));
     linearGrad.setColorAt(0, QColor::fromRgb(color.red()-70,color.green()-70,color.blue()-70));
     linearGrad.setColorAt(1, color);
     QBrush br(linearGrad);
@@ -107,13 +90,164 @@ void AssemblyCellRenderer::drawCell(QPixmap &img, const QColor & color) {
     p.fillRect(img.rect(), br);
 }
 
-QPixmap AssemblyCellRenderer::cellImage(char c) {
-    if(!defaultColorScheme.contains(c)) {
-        //TODO: smarter analysis. Don't forget about '=' symbol and IUPAC codes
-        c = 'N';
+void AssemblyCellRenderer::drawText(QPixmap &img, char c, const QFont &font, const QColor &color) {
+    QPainter p(&img);
+    p.setFont(font);
+    p.setPen(color);
+    p.drawText(img.rect(), Qt::AlignCenter, QString(c));
+}
+
+class NucleotideColorsRenderer : public AssemblyCellRenderer {
+public:
+    NucleotideColorsRenderer()
+        : AssemblyCellRenderer(), colorScheme(nucleotideColorScheme),
+          images(), unknownChar(), size(), text(false), font() {}
+    virtual ~NucleotideColorsRenderer() {}
+
+    virtual void render(const QSize &size, bool text, const QFont &font);
+
+    virtual QPixmap cellImage(char c);
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c);
+
+private:
+    void update();
+
+private:
+    QMap<char, QColor> colorScheme;
+
+    // images cache
+    QHash<char, QPixmap> images;
+    QPixmap unknownChar;
+
+    // cached cells parameters
+    QSize size;
+    bool text;
+    QFont font;
+};
+
+void NucleotideColorsRenderer::render(const QSize &_size, bool _text, const QFont &_font) {
+    GTIMER(c1, t1, "NucleotideColorsRenderer::render");
+    GCOUNTER(c2, t2, "NucleotideColorsRenderer::render -> calls");
+
+    if (_size != size || _text != text || (text && _font != font)) {
+        // update cache
+        size = _size, text = _text, font = _font;
+        update();
+    }
+}
+
+void NucleotideColorsRenderer::update() {
+    images.clear();
+
+    foreach(char c, colorScheme.keys()) {
+        QPixmap img(size);
+        QColor textColor = isGap(c) ? Qt::red : Qt::black;
+        drawCell(img, colorScheme.value(c), text, c, font, textColor);
+        images.insert(c, img);
     }
 
+    unknownChar = QPixmap(size);
+    drawCell(unknownChar, QColor("#FBFBFB"), text, '?', font, Qt::red);
+}
+
+QPixmap NucleotideColorsRenderer::cellImage(char c) {
+    c = (!nucleotideColorScheme.contains(c)) ? 'N' : c;
     return images.value(c, unknownChar);
 }
 
-} //ns
+QPixmap NucleotideColorsRenderer::cellImage(const U2AssemblyRead&, char c) {
+    return cellImage(c);
+}
+
+class ComplementColorsRenderer : public AssemblyCellRenderer {
+public:
+    ComplementColorsRenderer()
+        : AssemblyCellRenderer(),
+          directImages(), complementImages(), unknownChar(),
+          size(), text(false), font() {}
+
+    virtual ~ComplementColorsRenderer() {}
+
+    virtual void render(const QSize &size, bool text, const QFont &font);
+
+    virtual QPixmap cellImage(char c);
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c);
+
+private:
+    void update();
+
+private:    
+    // images cache
+    QHash<char, QPixmap> directImages, complementImages;
+    QPixmap unknownChar;
+
+    // cached cells parameters
+    QSize size;
+    bool text;
+    QFont font;
+
+private:
+    static const QColor directColor, complementColor;
+};
+
+const QColor ComplementColorsRenderer::directColor("#4EADE1");
+const QColor ComplementColorsRenderer::complementColor("#70F970");
+
+void ComplementColorsRenderer::render(const QSize &_size, bool _text, const QFont &_font) {
+    GTIMER(c1, t1, "NucleotideColorsRenderer::render");
+    GCOUNTER(c2, t2, "NucleotideColorsRenderer::render -> calls");
+
+    if (_size != size || _text != text || (text && _font != font)) {
+        // update cache
+        size = _size, text = _text, font = _font;
+        update();
+    }
+}
+
+void ComplementColorsRenderer::update() {
+    directImages.clear();
+    complementImages.clear();
+
+    foreach(char c, assemblyAlphabet) {
+        QPixmap dimg(size), cimg(size);
+        QColor dcolor = directColor, ccolor = complementColor, textColor = Qt::black;
+
+        if (isGap(c)) {
+            dcolor = ccolor =  QColor("#FBFBFB");
+            textColor = Qt::red;
+        }
+
+        drawCell(dimg, dcolor, text, c, font, textColor);
+        drawCell(cimg, ccolor, text, c, font, textColor);
+
+        directImages.insert(c, dimg);
+        complementImages.insert(c, cimg);
+    }
+
+    unknownChar = QPixmap(size);
+    drawCell(unknownChar, QColor("#FBFBFB"), text, '?', font, Qt::red);
+}
+
+QPixmap ComplementColorsRenderer::cellImage(char c) {
+    c = (!nucleotideColorScheme.contains(c)) ? 'N' : c;
+    return directImages.value(c, unknownChar);
+}
+
+QPixmap ComplementColorsRenderer::cellImage(const U2AssemblyRead &read, char c) {
+    c = (!nucleotideColorScheme.contains(c)) ? 'N' : c;
+
+    if (ReadFlagsUtils::isComplementaryRead(read->flags)) {
+        return complementImages.value(c, unknownChar);
+    }
+    else {
+        return directImages.value(c, unknownChar);
+    }
+}
+
+
+extern AssemblyCellRenderer* createAssemblyCellRenderer() {
+    return new NucleotideColorsRenderer();
+    //return new ComplementColorsRenderer();
+}
+
+}   // namespace U2

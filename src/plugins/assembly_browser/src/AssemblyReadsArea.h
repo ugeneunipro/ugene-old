@@ -34,6 +34,9 @@
 #include "AssemblyReadsAreaHint.h"
 #include "AssemblyModel.h"
 
+#include <memory>
+using std::auto_ptr;
+
 namespace U2 {
 
 class AssemblyBrowser;
@@ -134,7 +137,7 @@ private:
 
     bool redraw;
     QPixmap cachedView;
-    AssemblyCellRenderer cellRenderer;
+    auto_ptr<AssemblyCellRenderer> cellRenderer;
     
     QLabel coveredRegionsLabel;
     QScrollBar * hBar;

@@ -22,6 +22,8 @@
 #ifndef __ASSEMBLY_CELL_RENDERER__
 #define __ASSEMBLY_CELL_RENDERER__
 
+#include <U2Core/U2Assembly.h>
+
 #include <QtCore/QMap>
 #include <QtCore/QHash>
 
@@ -31,28 +33,27 @@
 
 namespace U2 {
 
+/** Abstract cell renderer interface */
 class AssemblyCellRenderer {
 public:
-    AssemblyCellRenderer();
+    AssemblyCellRenderer() {}
+    virtual ~AssemblyCellRenderer() {}
 
-    void render(const QSize & size, bool text = false, const QFont & font = QFont());
+    /** Render pixmaps into cache */
+    virtual void render(const QSize &size, bool text, const QFont &font) = 0;
 
-    QPixmap cellImage(char c);
+    /** @returns cached cell pixmap */
+    virtual QPixmap cellImage(char c) = 0;
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c) = 0;
 
-private:
-    void drawCells(const QSize & size, const QFont & font, bool text);
-
-    void drawCell(QPixmap &img, const QColor & color);
-    void drawText(QPixmap &img, char c, const QFont & f);
-
-private:
-    QMap<char, QColor> colorScheme;
-
-    QHash<char, QPixmap> images;
-    QSize cachedSize;
-    bool cachedTextFlag;
-    QPixmap unknownChar;
+protected:
+    static void drawCell(QPixmap &img, const QColor &color, bool text, char c, const QFont &font, const QColor &textColor);
+    static void drawBackground(QPixmap &img, const QColor & color);
+    static void drawText(QPixmap &img, char c, const QFont &font, const QColor & color);
 };
+
+/** Factory: create default cell renderer */
+extern AssemblyCellRenderer* createAssemblyCellRenderer();
 
 } //ns
 

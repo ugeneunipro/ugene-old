@@ -29,6 +29,9 @@
 #include "AssemblyCellRenderer.h"
 #include "AssemblyModel.h"
 
+#include <memory>
+using std::auto_ptr;
+
 namespace U2 {
 
 class AssemblyBrowserUi;
@@ -64,7 +67,7 @@ private:
 
     QPixmap cachedView;
     bool redraw;
-    AssemblyCellRenderer cellRenderer;
+    auto_ptr<AssemblyCellRenderer> cellRenderer;
 
     const static int FIXED_HEIGHT = 25;
 

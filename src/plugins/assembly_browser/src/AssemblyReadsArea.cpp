@@ -56,7 +56,7 @@ static const QColor backgroundColor(Qt::white);
 static const QColor shadowingColor(255,255,255,200);
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_)
-    :  QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true),
+    :  QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true), cellRenderer(createAssemblyCellRenderer()),
         coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), mover(),
         shadowingEnabled(false), shadowingData(),
         scribbling(false), currentHotkeyIndex(-1),
@@ -324,7 +324,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
         if(text) {
             f.setPointSize(calcFontPointSize());
         }
-        cellRenderer.render(QSize(cachedReads.letterWidth, cachedReads.letterWidth), text, f);
+        cellRenderer->render(QSize(cachedReads.letterWidth, cachedReads.letterWidth), text, f);
     }
 
     // 2. Iterate over all visible reads and draw them
@@ -365,7 +365,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
                 char c = cigarIt.nextLetter();
 
                 QPoint cellStart(x_pix_start + x_pix_offset, y_pix_start);
-                QPixmap cellImage = cellRenderer.cellImage(c);
+                QPixmap cellImage = cellRenderer->cellImage(read, c);
 
                 p.drawPixmap(cellStart, cellImage);
             }
