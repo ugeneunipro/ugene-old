@@ -39,6 +39,9 @@
 
 namespace U2 {
 
+static const QColor labelForegroundColor = Qt::darkRed;
+static const QColor labelBackgroundColor(255, 255, 255, 180);
+
 //==============================================================================
 // ZoomableAssemblyOverview
 //==============================================================================
@@ -269,18 +272,20 @@ void ZoomableAssemblyOverview::drawCoordLabels(QPainter & p) {
     insertSpaceSeparators(visibleDiffText);
 
     //Prepare font
-    QFont font;
+    QFont font = p.font();
     font.setStyleHint(QFont::SansSerif, QFont::PreferAntialias);
+    p.setFont(font);
     QFontMetrics fontMetrics(font);
+
+    p.setPen(labelForegroundColor);
 
     //draw Visible Region
     QString visibleRegionText = tr("%1 to %2 (%3 bp)").arg(visibleStartText).arg(visibleEndText).arg(visibleDiffText); 
     QRect grtRect = QRect(0, 0, fontMetrics.width(visibleRegionText), fontMetrics.height());
     grtRect.translate(xoffset, rect().height() - yoffset - grtRect.height());
     if(rect().contains(grtRect)) {
-        p.fillRect(grtRect, QColor(255, 255, 255, 180));
-        p.setPen(Qt::darkRed);    
-        p.drawText(grtRect, Qt::AlignCenter, visibleRegionText);
+        p.fillRect(grtRect, labelBackgroundColor);
+        p.drawText(grtRect, visibleRegionText);
     }
 
     //draw Selected Region
@@ -301,9 +306,8 @@ void ZoomableAssemblyOverview::drawCoordLabels(QPainter & p) {
     QRect srtRect = QRect(0, 0, fontMetrics.width(selectedRegionText), fontMetrics.height());
     srtRect.translate(rect().width() - srtRect.width() - xoffset, rect().height() - yoffset - grtRect.height());
     if(rect().contains(srtRect) && !srtRect.intersects(grtRect)) {
-        p.fillRect(srtRect, QColor(255, 255, 255, 180));
-        p.setPen(Qt::darkRed);    
-        p.drawText(srtRect, /*Qt::AlignCenter, */selectedRegionText);
+        p.fillRect(srtRect, labelBackgroundColor);
+        p.drawText(srtRect, selectedRegionText);
     }
 }
 
