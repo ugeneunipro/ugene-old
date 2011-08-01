@@ -210,7 +210,7 @@ int MSACollapsibleItemModel::getLastPos() const {
         MSAEditor* ed = ui->getEditor();
         MAlignmentObject* o = ed->getMSAObject();
         const MAlignment& ma = o->getMAlignment();
-        return ma.getNumRows();
+        return ma.getNumRows() - 1;
     }
 
     int lastIdx = items.size() - 1;
