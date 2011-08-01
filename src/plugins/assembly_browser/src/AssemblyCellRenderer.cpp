@@ -30,7 +30,6 @@ namespace U2 {
 
 namespace {
 
-}
 static QMap<char, QColor> initDefaultColorSheme() {
     QMap<char, QColor> colors;
 
@@ -65,7 +64,7 @@ inline static bool isGap(char c) {
     return (c == '-' || c == 'N');
 }
 
-}
+}   // namespace {
 
 static const QMap<char, QColor> nucleotideColorScheme = initDefaultColorSheme();
 static const QList<char> assemblyAlphabet = initAssemblyAlphabet();
