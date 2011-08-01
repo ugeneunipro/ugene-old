@@ -507,16 +507,8 @@ bool WorkflowEditor::eventFilter(QObject* object, QEvent* event) {
     return false;
 }
 
-static const QString& PARAM_ARG("param:");
-
 void WorkflowEditor::sl_linkActivated(const QString& url) {
-    QStringList args = url.split('&');
-    QString id;
-    foreach(QString arg, args) {
-        if (arg.startsWith(PARAM_ARG)) {
-            id = arg.mid(PARAM_ARG.length());
-        }
-    }
+    const QString& id = WorkflowUtils::getParamIdFromHref(url);
     
     QModelIndex modelIndex = actorModel->modelIndexById(id);
     QModelIndex prev = table->selectionModel()->currentIndex();

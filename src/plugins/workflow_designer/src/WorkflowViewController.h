@@ -73,6 +73,8 @@ public:
     void addProcess(Actor*, const QPointF&);
     Actor * createActor( ActorPrototype * proto, const QVariantMap & params = QVariantMap() );
     void clearScene();
+
+    void setupLinkCtxMenu(const QString& href, Actor* actor, const QPoint& pos);
     
 public slots:
     void sl_deleteItem();
@@ -83,13 +85,14 @@ public slots:
     void setModified(bool b);
     void centerView();
     void setHint(int i) {hint=i; update();}
+    void sl_openDocuments();
 
 signals:
     void processItemAdded();
     void processDblClicked();
     void configurationChanged();
 
-protected:
+protected:    
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -109,6 +112,7 @@ private:
 
     WorkflowAbstractRunner* runner;
     int hint;
+    QAction* openDocumentsAction;
     
 }; // WorkflowScene
 

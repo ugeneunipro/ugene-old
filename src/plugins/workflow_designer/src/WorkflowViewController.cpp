@@ -1368,6 +1368,8 @@ static bool canDrop(const QMimeData* m, QList<ActorPrototype*>& lst) {
 
 WorkflowScene::WorkflowScene(WorkflowView *parent) 
 : QGraphicsScene(parent), controller(parent), modified(false), locked(false), runner(NULL), hint(0){
+    openDocumentsAction = new QAction(tr("Open document(s)"), this);
+    connect(openDocumentsAction, SIGNAL(triggered()), SLOT(sl_openDocuments()));
 }
 
 WorkflowScene::~WorkflowScene() {
@@ -1455,10 +1457,13 @@ QList<Actor*> WorkflowScene::getAllProcs() const {
 }
 
 void WorkflowScene::contextMenuEvent(QGraphicsSceneContextMenuEvent * e) {
-    QMenu menu;
-    controller->setupContextMenu(&menu);
-    e->accept();
-    menu.exec(e->screenPos());
+    QGraphicsScene::contextMenuEvent(e);
+    if (!e->isAccepted()) {
+        QMenu menu;
+        controller->setupContextMenu(&menu);
+        e->accept();
+        menu.exec(e->screenPos());
+    }    
 }
 
 void WorkflowScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent) {
@@ -1548,6 +1553,46 @@ void WorkflowScene::clearScene() {
 
     foreach(WorkflowProcessItem *item, deleteList) {
         removeItem(item);
+    }
+}
+
+void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QPoint& pos) {
+    const QString& attributeId = WorkflowUtils::getParamIdFromHref(href);
+    bool isInput = attributeId == BaseAttributes::URL_IN_ATTRIBUTE().getId();
+    bool isOutput = attributeId == BaseAttributes::URL_OUT_ATTRIBUTE().getId();
+    if (isInput || isOutput) {
+        const ActorId& actorId = actor->getId();
+        const Iteration& iteration = controller->propertyEditor->getCurrentIteration();
+        const QVariantMap& cfg = iteration.getParameters(actorId);
+        QString urlStr;
+        if (cfg.keys().contains(attributeId)) {
+            urlStr = cfg.value(attributeId).toString();
+        } else {
+            Attribute* attribute = actor->getParameter(attributeId);
+            urlStr = attribute->getAttributePureValue().toString();
+        }
+
+        if (!urlStr.isEmpty()) {
+            QMenu menu;
+            openDocumentsAction->setData(urlStr);
+            menu.addAction(openDocumentsAction);
+            menu.exec(pos);
+        }
+    }
+}
+
+void WorkflowScene::sl_openDocuments() {
+    const QString& urlStr = qVariantValue<QString>(openDocumentsAction->data());
+    const QStringList& _urls = WorkflowUtils::expandToUrls(urlStr);
+    QList<GUrl> urls;
+    foreach(const QString& url, _urls) {
+        urls.append(url);
+    }
+    Task* t = AppContext::getProjectLoader()->openWithProjectTask(urls);
+    if (t) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    } else {
+        QMessageBox::critical(controller, tr("Workflow Designer"), tr("Unable to open specified documents. Watch log for details."));
     }
 }
 

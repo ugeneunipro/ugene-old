@@ -46,6 +46,7 @@ namespace U2 {
  *****************************/
 const QStringList WorkflowUtils::WD_FILE_EXTENSIONS = initExtensions();
 const QString WorkflowUtils::WD_XML_FORMAT_EXTENSION("uws");
+const QString WorkflowUtils::HREF_PARAM_ID("param");
 
 QStringList WorkflowUtils::initExtensions() {
     QStringList exts;
@@ -447,6 +448,19 @@ Actor * WorkflowUtils::findActorByParamAlias(const QList<Actor*> & procs, const 
     return ret;
 }
 
+QString WorkflowUtils::getParamIdFromHref( const QString& href ) {
+    QStringList args = href.split('&');
+    const QString& prefix = QString("%1:").arg(HREF_PARAM_ID);
+    QString id;
+    foreach(QString arg, args) {
+        if (arg.startsWith(prefix)) {
+            id = arg.mid(prefix.length());
+            break;
+        }
+    }
+    return id;
+}
+
 /*****************************
  * PrompterBaseImpl
  *****************************/
@@ -513,7 +527,7 @@ QString PrompterBaseImpl::getProducers( const QString& port, const QString& slot
 }
 
 QString PrompterBaseImpl::getHyperlink(const QString& id, const QString& val) {
-    return QString("<a href=param:%1>%2</a>").arg(id).arg(val);
+    return QString("<a href=%1:%2>%3</a>").arg(WorkflowUtils::HREF_PARAM_ID).arg(id).arg(val);
 }
 
 QString PrompterBaseImpl::getHyperlink(const QString& id, int val) {

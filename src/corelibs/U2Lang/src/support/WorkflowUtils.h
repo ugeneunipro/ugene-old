@@ -47,6 +47,7 @@ public:
 
     static const QStringList WD_FILE_EXTENSIONS;
     static const QString WD_XML_FORMAT_EXTENSION;
+    static const QString HREF_PARAM_ID;
 
     #define ACTOR_REF (Qt::UserRole)
     #define PORT_REF (Qt::UserRole + 1)
@@ -78,6 +79,8 @@ public:
     static Actor * findActorByParamAlias(const QList<Actor*> & procs, const QString & alias, QString & attrName, bool writeLog = true);
 
     static Descriptor getSlotDescOfDatatype(const DataTypePtr & dt);
+    
+    static QString getParamIdFromHref(const QString& href);
     
 private:
     static QStringList initExtensions();

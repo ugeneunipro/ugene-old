@@ -175,10 +175,7 @@ QPainterPath WorkflowProcessItem::shape () const {
     return currentStyle->shape();
 }
 
-void WorkflowProcessItem::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem */*option*/,
-                          QWidget */*widget*/)
-{
+void WorkflowProcessItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
     WorkflowAbstractRunner* rt = getWorkflowScene()->getRunner();
     if (rt) {
         //{WorkerWaiting, WorkerReady, WorkerRunning, WorkerDone};
@@ -462,6 +459,7 @@ void WorkflowProcessItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
     initialPositions.clear();
     QGraphicsItem::mouseReleaseEvent(event);
 }
+
 ///////////// PIO /////////////
 
 WorkflowPortItem* WorkflowPortItem::findNearbyBindingCandidate(const QPointF& pos) const {

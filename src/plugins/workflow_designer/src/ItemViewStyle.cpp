@@ -32,6 +32,7 @@
 #include <QtGui/QColorDialog>
 #include <QtGui/QFontDialog>
 #include <QtGui/QFontDialog>
+#include <QtGui/QAbstractTextDocumentLayout>
 #include <QtXml/QDomDocument>
 
 #include <U2Core/Log.h>
@@ -396,23 +397,23 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
         }
         break;
     /*case QEvent::GraphicsSceneMousePress:
-        mousePressEvent(static_cast<QGraphicsSceneMouseEvent *>(event));
-        break;
+    mousePressEvent(static_cast<QGraphicsSceneMouseEvent *>(event));
+    break;
     case QEvent::GraphicsSceneMouseDoubleClick:
-        mouseDoubleClickEvent(static_cast<QGraphicsSceneMouseEvent *>(event));
-        break;
+    mouseDoubleClickEvent(static_cast<QGraphicsSceneMouseEvent *>(event));
+    break;
     case QEvent::GraphicsSceneWheel:
-        wheelEvent(static_cast<QGraphicsSceneWheelEvent *>(event));
-        break;
+    wheelEvent(static_cast<QGraphicsSceneWheelEvent *>(event));
+    break;
     case QEvent::KeyPress:
-        keyPressEvent(static_cast<QKeyEvent *>(event));
-        break;
+    keyPressEvent(static_cast<QKeyEvent *>(event));
+    break;
     case QEvent::KeyRelease:
-        keyReleaseEvent(static_cast<QKeyEvent *>(event));
-        break;
+    keyReleaseEvent(static_cast<QKeyEvent *>(event));
+    break;
     case QEvent::InputMethod:
-        inputMethodEvent(static_cast<QInputMethodEvent *>(event));
-        break;*/
+    inputMethodEvent(static_cast<QInputMethodEvent *>(event));
+    break;*/
     default:
         return false;
     }
@@ -636,6 +637,22 @@ bool DescriptionItem::sceneEvent(QEvent *event) {
             break;
     }
     return QGraphicsTextItem::sceneEvent(event);
+}
+
+void DescriptionItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) {
+    QAbstractTextDocumentLayout* layout = document()->documentLayout();
+    const QString& href = layout->anchorAt(event->pos());
+
+    if (href.isEmpty()) {
+        event->ignore();
+        return;
+    }
+    
+    ItemViewStyle* style = qgraphicsitem_cast<ItemViewStyle*>(parentItem());
+    WorkflowProcessItem const* procItem = style->getOwner();
+    Actor* actor = procItem->getProcess();
+    WorkflowScene* ws = procItem->getWorkflowScene();
+    ws->setupLinkCtxMenu(href, actor, event->screenPos());
 }
 
 }//namespace

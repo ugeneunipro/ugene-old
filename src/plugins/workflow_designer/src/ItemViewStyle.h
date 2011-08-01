@@ -54,6 +54,7 @@ public:
     void setBgColor(const QColor & color) {bgColor = color;}
     QFont defaultFont() const {return defFont;}
     void setDefaultFont(const QFont & font) { defFont = font; }
+    WorkflowProcessItem const* getOwner() const { return owner; }
     
 protected:
     WorkflowProcessItem* owner;
@@ -142,6 +143,7 @@ protected:
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     bool sceneEvent(QEvent *event);
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 };
 
 }//namespace
