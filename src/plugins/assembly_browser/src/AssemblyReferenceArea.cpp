@@ -99,8 +99,8 @@ void AssemblyReferenceArea::drawReference(QPainter & p) {
         for(int i = 0; i < visibleSequence.length(); ++i, x_pix_start+=letterWidth) {
             QRect r(x_pix_start, y_pix_start, letterWidth, letterHeight);
             char c = visibleSequence.at(i);
-            QImage cellImage = cellRenderer.cellImage(c);
-            p.drawImage(r, cellImage);
+            QPixmap cellImage = cellRenderer.cellImage(c);
+            p.drawPixmap(r, cellImage);
         }
     }
 }

@@ -70,7 +70,7 @@ void AssemblyCellRenderer::drawCells(const QSize & size, const QFont & font, boo
     images.clear();
 
     foreach(char c, colorScheme.keys()) {
-        QImage img(size, QImage::Format_RGB32);
+        QPixmap img(size);
         drawCell(img, colorScheme.value(c));
         if(text) {
             drawText(img, c, font);
@@ -78,14 +78,14 @@ void AssemblyCellRenderer::drawCells(const QSize & size, const QFont & font, boo
         images.insert(c, img);
     }
 
-    unknownChar = QImage(size, QImage::Format_RGB32);
+    unknownChar = QPixmap(size);
     drawCell(unknownChar, Qt::white);
     if(text) {
         drawText(unknownChar, '?', font);
     }
 }
 
-void AssemblyCellRenderer::drawText(QImage &img, char c, const QFont & f) {
+void AssemblyCellRenderer::drawText(QPixmap &img, char c, const QFont & f) {
     QPainter p(&img);
     p.setFont(f);
     if('-' == c || 'N' == c) { //TODO : get rid of hardcoded values!
@@ -95,7 +95,7 @@ void AssemblyCellRenderer::drawText(QImage &img, char c, const QFont & f) {
 
 }
 
-void AssemblyCellRenderer::drawCell(QImage &img, const QColor & color) {
+void AssemblyCellRenderer::drawCell(QPixmap &img, const QColor & color) {
     QPainter p(&img);
 
     //TODO invent something greater
@@ -107,7 +107,7 @@ void AssemblyCellRenderer::drawCell(QImage &img, const QColor & color) {
     p.fillRect(img.rect(), br);
 }
 
-QImage AssemblyCellRenderer::cellImage(char c) {
+QPixmap AssemblyCellRenderer::cellImage(char c) {
     if(!defaultColorScheme.contains(c)) {
         //TODO: smarter analysis. Don't forget about '=' symbol and IUPAC codes
         c = 'N';

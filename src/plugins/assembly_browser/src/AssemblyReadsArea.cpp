@@ -365,9 +365,9 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
                 char c = cigarIt.nextLetter();
 
                 QPoint cellStart(x_pix_start + x_pix_offset, y_pix_start);
-                QImage cellImage = cellRenderer.cellImage(c);
+                QPixmap cellImage = cellRenderer.cellImage(c);
 
-                p.drawImage(cellStart, cellImage);
+                p.drawPixmap(cellStart, cellImage);
             }
         } else { 
             int xstart = browser->calcPixelCoord(xToDrawRegion.startPos);

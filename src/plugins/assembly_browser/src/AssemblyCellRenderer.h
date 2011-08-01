@@ -26,7 +26,7 @@
 #include <QtCore/QHash>
 
 #include <QtGui/QColor>
-#include <QtGui/QImage>
+#include <QtGui/QPixmap>
 #include <QtGui/QFont>
 
 namespace U2 {
@@ -37,21 +37,21 @@ public:
 
     void render(const QSize & size, bool text = false, const QFont & font = QFont());
 
-    QImage cellImage(char c);
+    QPixmap cellImage(char c);
 
 private:
     void drawCells(const QSize & size, const QFont & font, bool text);
 
-    void drawCell(QImage &img, const QColor & color);
-    void drawText(QImage &img, char c, const QFont & f);
+    void drawCell(QPixmap &img, const QColor & color);
+    void drawText(QPixmap &img, char c, const QFont & f);
 
 private:
     QMap<char, QColor> colorScheme;
 
-    QHash<char, QImage> images;
+    QHash<char, QPixmap> images;
     QSize cachedSize;
     bool cachedTextFlag;
-    QImage unknownChar;
+    QPixmap unknownChar;
 };
 
 } //ns
