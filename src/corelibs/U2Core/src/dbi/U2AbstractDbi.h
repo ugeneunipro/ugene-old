@@ -292,7 +292,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSnp, getRootDbi(), os); 
     }
  
-    virtual void updateSnpTrack(const U2SnpTrack& track, U2OpStatus& os) {
+    virtual void updateSnpTrack(const U2SnpTrack&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSnp, getRootDbi(), os); 
     }
 };
