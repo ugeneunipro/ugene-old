@@ -94,12 +94,13 @@ void AssemblyReferenceArea::drawReference(QPainter & p) {
                 text = false;
             }
         }
-        QVector<QImage> cells = cellRenderer.render(QSize(letterWidth, letterHeight), text, f);
+        cellRenderer.render(QSize(letterWidth, letterHeight), text, f);
 
         for(int i = 0; i < visibleSequence.length(); ++i, x_pix_start+=letterWidth) {
             QRect r(x_pix_start, y_pix_start, letterWidth, letterHeight);
             char c = visibleSequence.at(i);
-            p.drawImage(r, cells[c]);
+            QImage cellImage = cellRenderer.cellImage(c);
+            p.drawImage(r, cellImage);
         }
     }
 }

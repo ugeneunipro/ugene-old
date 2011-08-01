@@ -31,14 +31,13 @@
 
 namespace U2 {
 
-//TODO: implement real color schemes as for MSA 
-extern const QMap<char, QColor> defaultColorScheme;
-
 class AssemblyCellRenderer {
 public:
-    AssemblyCellRenderer(const QMap<char, QColor> & colorScheme_ = defaultColorScheme);
+    AssemblyCellRenderer();
 
-    QVector<QImage> render(const QSize & size, bool text = false, const QFont & font = QFont());
+    void render(const QSize & size, bool text = false, const QFont & font = QFont());
+
+    QImage cellImage(char c);
 
 private:
     void drawCells(const QSize & size, const QFont & font, bool text);

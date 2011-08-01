@@ -50,20 +50,19 @@ namespace {
     }
 }
 
-const QMap<char, QColor> defaultColorScheme = initDefaultColorSheme();
+static const QMap<char, QColor> defaultColorScheme = initDefaultColorSheme();
 
 
-AssemblyCellRenderer::AssemblyCellRenderer(const QMap<char, QColor> & colorScheme_) :
-colorScheme(colorScheme_), cachedTextFlag(false) {
+AssemblyCellRenderer::AssemblyCellRenderer() :
+colorScheme(defaultColorScheme), cachedTextFlag(false) {
 }
 
-QVector<QImage> AssemblyCellRenderer::render(const QSize & size, bool text /*= false*/, const QFont & font /*= QFont()*/) {
+void AssemblyCellRenderer::render(const QSize & size, bool text /*= false*/, const QFont & font /*= QFont()*/) {
     GTIMER(c1, t1, "AssemblyCellRenderer::render");
     GCOUNTER(c2, t2, "AssemblyCellRenderer::render -> calls");
     if(images.empty() || (cachedSize != size || cachedTextFlag != text)) {
         drawCells(size, font, text);
     }
-    return images;
 }
 
 void AssemblyCellRenderer::drawCells(const QSize & size, const QFont & font, bool text) {
@@ -101,5 +100,13 @@ void AssemblyCellRenderer::drawCell(char c, const QColor & color) {
     p.fillRect(imgRect, br);
 }
 
+QImage AssemblyCellRenderer::cellImage(char c) {
+    if(!defaultColorScheme.contains(c)) {
+        //TODO: smarter analysis. Don't forget about '=' symbol and IUPAC codes
+        c = 'N';
+    }
+
+    return images[c];
+}
 
 } //ns
