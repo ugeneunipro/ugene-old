@@ -60,44 +60,51 @@ colorScheme(defaultColorScheme), cachedTextFlag(false) {
 void AssemblyCellRenderer::render(const QSize & size, bool text /*= false*/, const QFont & font /*= QFont()*/) {
     GTIMER(c1, t1, "AssemblyCellRenderer::render");
     GCOUNTER(c2, t2, "AssemblyCellRenderer::render -> calls");
+
     if(images.empty() || (cachedSize != size || cachedTextFlag != text)) {
         drawCells(size, font, text);
     }
 }
 
 void AssemblyCellRenderer::drawCells(const QSize & size, const QFont & font, bool text) {
-    images = QVector<QImage>(256, QImage(size, QImage::Format_RGB32));
+    images.clear();
+
     foreach(char c, colorScheme.keys()) {
-        drawCell(c, colorScheme.value(c));
+        QImage img(size, QImage::Format_RGB32);
+        drawCell(img, colorScheme.value(c));
         if(text) {
-            drawText(c, font);
+            drawText(img, c, font);
         }
+        images.insert(c, img);
+    }
+
+    unknownChar = QImage(size, QImage::Format_RGB32);
+    drawCell(unknownChar, Qt::white);
+    if(text) {
+        drawText(unknownChar, '?', font);
     }
 }
 
-void AssemblyCellRenderer::drawText(char c, const QFont & f) {
-    QImage & result = images[c];
-    QPainter p(&result);
+void AssemblyCellRenderer::drawText(QImage &img, char c, const QFont & f) {
+    QPainter p(&img);
     p.setFont(f);
     if('-' == c || 'N' == c) { //TODO : get rid of hardcoded values!
         p.setPen(Qt::red);
     } 
-    p.drawText(result.rect(), Qt::AlignCenter, QString(c));
+    p.drawText(img.rect(), Qt::AlignCenter, QString(c));
 
 }
 
-void AssemblyCellRenderer::drawCell(char c, const QColor & color) {
-    QImage & result = images[c];
-    QPainter p(&result);
+void AssemblyCellRenderer::drawCell(QImage &img, const QColor & color) {
+    QPainter p(&img);
 
     //TODO invent something greater
-    QLinearGradient linearGrad(QPointF(0, 0), QPointF(result.width(), result.height()));
+    QLinearGradient linearGrad(QPointF(0, 0), QPointF(img.width(), img.height()));
     linearGrad.setColorAt(0, QColor::fromRgb(color.red()-70,color.green()-70,color.blue()-70));
     linearGrad.setColorAt(1, color);
     QBrush br(linearGrad);
 
-    QRect imgRect(0, 0, result.width(), result.height());
-    p.fillRect(imgRect, br);
+    p.fillRect(img.rect(), br);
 }
 
 QImage AssemblyCellRenderer::cellImage(char c) {
@@ -106,7 +113,7 @@ QImage AssemblyCellRenderer::cellImage(char c) {
         c = 'N';
     }
 
-    return images[c];
+    return images.value(c, unknownChar);
 }
 
 } //ns

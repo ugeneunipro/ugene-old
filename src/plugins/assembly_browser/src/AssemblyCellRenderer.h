@@ -23,7 +23,7 @@
 #define __ASSEMBLY_CELL_RENDERER__
 
 #include <QtCore/QMap>
-#include <QtCore/QVector>
+#include <QtCore/QHash>
 
 #include <QtGui/QColor>
 #include <QtGui/QImage>
@@ -42,15 +42,16 @@ public:
 private:
     void drawCells(const QSize & size, const QFont & font, bool text);
 
-    void drawText(char c, const QFont & f);
-
-    void drawCell(char c, const QColor & color);
+    void drawCell(QImage &img, const QColor & color);
+    void drawText(QImage &img, char c, const QFont & f);
 
 private:
     QMap<char, QColor> colorScheme;
-    QVector<QImage> images;
+
+    QHash<char, QImage> images;
     QSize cachedSize;
     bool cachedTextFlag;
+    QImage unknownChar;
 };
 
 } //ns
