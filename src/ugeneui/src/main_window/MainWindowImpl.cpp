@@ -215,9 +215,9 @@ void MainWindowImpl::sl_checkUpdatesAction() {
 
 void MainWindowImpl::setWindowTitle(const QString& title) {
     if (title.isEmpty()) {
-        mw->setWindowTitle(tr("UGENE"));
+        mw->setWindowTitle(U2_APP_TITLE);
     } else {
-	    mw->setWindowTitle(title + " " + tr("UGENE") );
+	    mw->setWindowTitle(title + " " + U2_APP_TITLE);
     }
 }
 
@@ -260,7 +260,7 @@ void MainWindowImpl::runClosingTask() {
         shutDownInProcess = true;
     } else {
         QMessageBox *msgBox = new QMessageBox(getQMainWindow());
-        msgBox->setWindowTitle(tr("UGENE"));
+        msgBox->setWindowTitle(U2_APP_TITLE);
         msgBox->setText(tr("Shutdown already in process. Close UGENE immediately?"));
         QPushButton *closeButton = msgBox->addButton(tr("Close"), QMessageBox::ActionRole);
         /*QPushButton *waitButton =*/ msgBox->addButton(tr("Wait"), QMessageBox::ActionRole);

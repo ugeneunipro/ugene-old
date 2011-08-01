@@ -83,7 +83,7 @@ UGENE_CUDA_LIB_DIR = $$(CUDA_LIB_PATH)
 UGENE_CUDA_INC_DIR = $$(CUDA_INC_PATH)
 
 # CUDA detection tools
-isEmpty(UGENE_CUDA_DETECTED) : UGENE_CUDA_DETECTED = 0
+isEmpty(UGENE_CUDA_DETECTED) : UGENE_CUDA_DETECTED = 1
 defineTest( use_cuda ) {
     contains( UGENE_CUDA_DETECTED, 1) : return (true)
     return (false)

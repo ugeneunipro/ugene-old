@@ -2262,12 +2262,6 @@ Please select file to align.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="677"/>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="691"/>
-        <source>UGENE</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="681"/>
         <source>Jalview</source>
         <translation></translation>

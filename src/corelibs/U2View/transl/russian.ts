@@ -2433,12 +2433,6 @@ Please select file to align.</source>
         <translation>Без цвета</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="677"/>
-        <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="691"/>
-        <source>UGENE</source>
-        <translation>Раскраска UGENE</translation>
-    </message>
-    <message>
         <location filename="../src/util_ov_msaedit/MSAColorScheme.cpp" line="681"/>
         <source>Jalview</source>
         <translation>Раскраска Jalview</translation>

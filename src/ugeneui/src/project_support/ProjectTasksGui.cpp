@@ -144,7 +144,7 @@ void SaveProjectTask::prepare() {
     if (url.isEmpty() && (!proj->getGObjectViewStates().isEmpty() || proj->getDocuments().size() > 0)) {
         //ask if to save project
         QWidget* w  = AppContext::getMainWindow()->getQMainWindow();
-        int code = QMessageBox::question(w, tr("UGENE"), tr("Save current project?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+        int code = QMessageBox::question(w, U2_APP_TITLE, tr("Save current project?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
         if (code == QMessageBox::Yes) {
             ProjectDialogController d(ProjectDialogController::Save_Project, w);
             int rc = d.exec();

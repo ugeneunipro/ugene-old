@@ -116,7 +116,7 @@ void DocumentUpdater::sl_update() {
         Document* doc = iter.next();
         QMessageBox::StandardButton btn = QMessageBox::question(
             QApplication::activeWindow(),
-            tr("UGENE"),
+            U2_APP_TITLE,
             tr("Document '%1' was modified. Do you wish to reload it?").arg(doc->getName()),
             QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
 
@@ -177,7 +177,7 @@ void DocumentUpdater::sl_update() {
         QString unloadErr = UnloadDocumentTask::checkSafeUnload(doc);
         if (!unloadErr.isEmpty()) {
             QMessageBox::warning(QApplication::activeWindow(),
-                tr("UGENE"),
+                U2_APP_TITLE,
                 tr("Unable to unload '%1'").arg(doc->getName())
                 );
             doc->setLastUpdateTime();

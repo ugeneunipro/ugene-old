@@ -674,7 +674,7 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
 
     fillLightColorsCS(colorsPerChar);
     addUGENENucl(colorsPerChar);
-    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::UGENE_NUCL, tr("UGENE"), DNAAlphabet_NUCL, colorsPerChar));
+    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::UGENE_NUCL, U2_APP_TITLE, DNAAlphabet_NUCL, colorsPerChar));
 
     fillEmptyCS(colorsPerChar);
     addJalviewNucl(colorsPerChar);
@@ -688,7 +688,7 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
 
     fillLightColorsCS(colorsPerChar);
     addUGENEAmino(colorsPerChar);
-    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::UGENE_AMINO, tr("UGENE"), DNAAlphabet_AMINO, colorsPerChar));
+    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::UGENE_AMINO, U2_APP_TITLE, DNAAlphabet_AMINO, colorsPerChar));
     
     fillEmptyCS(colorsPerChar);
     addZappoAmino(colorsPerChar);
