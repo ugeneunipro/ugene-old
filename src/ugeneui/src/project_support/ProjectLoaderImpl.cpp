@@ -302,7 +302,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                     FormatDetectionResult& dr =  formats[idx];
                     dr.rawDataCheckResult.properties.unite(hints);
                     if (dr.format != NULL ) {
-                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr);
+                        bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
+                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions);
                         if (!ok) {
                             continue;
                         }

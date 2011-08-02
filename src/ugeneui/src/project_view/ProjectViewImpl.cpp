@@ -265,7 +265,6 @@ ProjectViewImpl::ProjectViewImpl()
 //    addNewDocumentAction = NULL;
     saveSelectedDocsAction = NULL;
     relocateDocumentAction = NULL;
-    addExistingDocumentAction = NULL;
     saveProjectOnClose = false;
 
     //todo: move it somewhere else -> object views could be openend without project view service active

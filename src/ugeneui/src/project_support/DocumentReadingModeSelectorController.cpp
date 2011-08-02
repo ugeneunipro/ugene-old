@@ -30,7 +30,7 @@
 namespace U2{
 
 
-bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionResult& dr) {
+bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionResult& dr, bool forceOptions) {
     // only sequence reading mode options are supported today
 
     // sequence reading: 
@@ -39,10 +39,13 @@ bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionRes
         // 3. as a multiple sequence alignment
         // 4. as reads to be aligned to reference
 
-    bool forceOptions = false; //reserved for future use
-
     QVariantMap& props = dr.rawDataCheckResult.properties;
     bool sequenceFound = props.value(RawDataCheckResult_Sequence).toBool();
+    if (!sequenceFound && forceOptions) {
+        DocumentFormatConstraints dfc;
+        dfc.supportedObjectTypes << GObjectTypes::SEQUENCE;
+        sequenceFound = dr.format->checkConstraints(dfc);
+    }
     bool multipleSequences = props.value(RawDataCheckResult_MultipleSequences).toBool();
     bool sequenceWithGaps = props.value(RawDataCheckResult_SequenceWithGaps).toBool();
     int minSequenceSize = props.value(RawDataCheckResult_MinSequenceSize).toInt();

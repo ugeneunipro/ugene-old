@@ -38,7 +38,7 @@ public:
         Adds additional hints to dr.rawCheckResult.properties on format reading mode  
         If 'false' is returned -> user pressed cancel
     */
-    static bool adjustReadingMode(FormatDetectionResult& dr);
+    static bool adjustReadingMode(FormatDetectionResult& dr, bool forceReadingOptions);
 };
 
 } //namespace
