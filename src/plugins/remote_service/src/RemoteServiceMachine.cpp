@@ -85,10 +85,7 @@ RemoteServiceMachine::RemoteServiceMachine(const RemoteServiceSettingsPtr& s)
 }
 
 RemoteServiceMachine::~RemoteServiceMachine() {
-    const UserCredentials& credentials = settings->getUserCredentials();
-    if (credentials.valid && !credentials.permanent) {
-        settings->flushCredentials();
-    }
+    
 }
 
 
@@ -396,6 +393,11 @@ void RemoteServiceMachine::initSession(TaskStateInfo& si) {
     QByteArray id = elData.attributesMap.value(UctpAttributes::SESSION_ID);
     session.reset(new UctpSession(id));
     updateGlobalSettings();
+
+    const UserCredentials& credentials = settings->getUserCredentials();
+    if (credentials.valid && !credentials.permanent) {
+        settings->flushCredentials();
+    }
 }
 
 
