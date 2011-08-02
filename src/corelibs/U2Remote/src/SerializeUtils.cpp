@@ -95,7 +95,6 @@ RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettings( const
     QString protoId = getDefaultProtocolId();
     ProtocolInfo * protoInfo = AppContext::getProtocolInfoRegistry()->getProtocolInfo( protoId );
     if( NULL == protoInfo ) {
-        assert(false);
         return RemoteMachineSettingsPtr();
     }
         

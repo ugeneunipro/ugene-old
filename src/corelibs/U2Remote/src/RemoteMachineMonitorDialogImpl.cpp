@@ -196,13 +196,15 @@ void RemoteMachineMonitorDialogImpl::sl_cancelPushButtonClicked() {
 
 
 void RemoteMachineMonitorDialogImpl::sl_addPushButtonClicked() {
-    RemoteMachineSettingsDialog settingsDlg(this);
     
     QList< ProtocolInfo* > protoInfos = AppContext::getProtocolInfoRegistry()->getProtocolInfos();
     if (protoInfos.size() < 1) {
         QMessageBox::information(this, tr("Add remote macnine"), tr("No protocols for distributed computing are found.\nPlease check your plugin list."));
         return;
     }
+    
+    RemoteMachineSettingsDialog settingsDlg(this);
+    
     int rc = settingsDlg.exec();
     if( QDialog::Rejected == rc ) {
         return;
