@@ -303,7 +303,7 @@ QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
 int DocumentFormatUtils::getMergeGap(const QVariantMap& hints) {
     int res = getIntSettings(hints, DocumentReadingMode_SequenceMergeGapSize, -1);
     if (res == -1)  {
-        res = getIntSettings(hints, MERGE_MULTI_DOC_GAP_SIZE_SETTINGS_DEPRECATED, 1);
+        res = getIntSettings(hints, MERGE_MULTI_DOC_GAP_SIZE_SETTINGS_DEPRECATED, -1);
     }
     return res;
 }
