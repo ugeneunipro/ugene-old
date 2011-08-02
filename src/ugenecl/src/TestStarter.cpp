@@ -112,11 +112,11 @@ void TestStarter::addTestSuite(GTestSuite *ts) {
 void TestStarter::updateDefaultEnvValues(GTestSuite* ts) {
     QMap<QString, QString> vars = env->getVars();
     if (vars.contains("COMMON_DATA_DIR") && vars.value("COMMON_DATA_DIR").isEmpty()) {
-        env->setVar("COMMON_DATA_DIR", QFileInfo(ts->getURL()).absoluteDir().absolutePath() + "/_common_data");
+        env->setVar("COMMON_DATA_DIR", "/_common_data");
     }
 
     if (vars.contains("TEMP_DATA_DIR") && vars.value("TEMP_DATA_DIR").isEmpty()) {
-        env->setVar("TEMP_DATA_DIR", QFileInfo(ts->getURL()).absoluteDir().absolutePath()+"/_tmp");
+        env->setVar("TEMP_DATA_DIR", "/_tmp");
     }
 }
 
