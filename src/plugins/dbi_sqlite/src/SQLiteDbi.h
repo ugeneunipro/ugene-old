@@ -122,13 +122,14 @@ public:
     /** Returns properties used to initialized the database */
     virtual QHash<QString, QString> getInitProperties() const {return initProperties;}
 
+    QString getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const;
+
+    void setProperty(const QString& name, const QString& value, U2OpStatus& os);
+
 private:
     QString getLastErrorMessage(int rc);
 
     void setState(U2DbiState state);
-
-    QString getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const;
-    void setProperty(const QString& name, const QString& value, U2OpStatus& os);
 
     void populateDefaultSchema(U2OpStatus& os);
     void internalInit(const QHash<QString, QString>& props, U2OpStatus& os);

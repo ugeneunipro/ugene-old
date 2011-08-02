@@ -250,7 +250,7 @@ Document* FastqFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
     QVariantMap fs = _fs;
     QList<GObject*> objects;
 
-    int gapSize = qBound(-1, DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergeGapSize, -1), 1000*1000);
+    int gapSize = qBound(-1, DocumentFormatUtils::getMergeGap(_fs), 1000*1000);
     int predictedSize = qMax(100*1000,
         DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergingFinalSizeHint, gapSize==-1 ? 0 : io->left()));
 

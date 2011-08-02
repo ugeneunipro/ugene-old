@@ -71,6 +71,8 @@ public:
 
     /** Extracts sequences either from Sequence or MAlignment object */
     static QList<DNASequence> toSequences(const GObject* obj);
+
+    static int getMergeGap(const QVariantMap& hints);
 };
 
 }//namespace

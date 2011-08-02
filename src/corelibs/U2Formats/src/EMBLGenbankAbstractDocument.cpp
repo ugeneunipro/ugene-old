@@ -81,7 +81,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
     writeLockReason.clear();
 
     //get settings
-    int gapSize = qBound(-1, DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergeGapSize, -1), 1000*1000);
+    int gapSize = qBound(-1, DocumentFormatUtils::getMergeGap(fs), 1000*1000);
     bool merge = gapSize!=-1;
 
     QByteArray sequence;
