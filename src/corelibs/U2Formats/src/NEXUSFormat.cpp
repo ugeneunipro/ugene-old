@@ -819,7 +819,7 @@ void NEXUSFormat::storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io) {
     storeObjects(objects, io, ts);
 }
 
-RawDataCheckResult NEXUSFormat::checkRawData(const QByteArray &rawData, const GUrl&) const {
+FormatCheckResult NEXUSFormat::checkRawData(const QByteArray &rawData, const GUrl&) const {
     if (rawData.startsWith("#NEXUS")) {
         return FormatDetection_VeryHighSimilarity;
     }

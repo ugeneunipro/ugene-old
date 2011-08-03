@@ -25,6 +25,8 @@
 #include <U2Core/global.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/U2FormatCheckResult.h>
+
 #include "StateLockableDataModel.h"
 
 #include <U2Core/UnloadedObject.h>
@@ -73,20 +75,6 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 #define DocumentFormatFlags_W1 (DocumentFormatFlags(DocumentFormatFlag_SupportWriting) | DocumentFormatFlag_SingleObjectFormat)
 
 
-
-// Result of the format detection algorithm
-// Note: High/Very High, Low/Very low selection is the result of the quality of detection algorithm
-// For example if detection algorithm is not advanced enough it must not use VeryHigh rating
-enum FormatDetectionScore {
-    FormatDetection_NotMatched = -10, // format is not matched and can't be parsed at all
-    FormatDetection_VeryLowSimilarity = 1, // very low similarity found. Parsing is allowed
-    FormatDetection_LowSimilarity = 2, // save as very low, but slightly better, used as extra step in cross-formats differentiation
-    FormatDetection_AverageSimilarity = 3, //see above
-    FormatDetection_HighSimilarity = 4,//see above
-    FormatDetection_VeryHighSimilarity = 5,//see above
-    FormatDetection_Matched = 10 // here we 100% sure that we deal with a known and supported format.
-};
-
 /** Set of hints provided by raw data check routines */
 
 /** 'true' if file contain at least one sequence */
@@ -104,18 +92,6 @@ enum FormatDetectionScore {
 /** contains estimation of maximum size of a sequence from document */
 #define RawDataCheckResult_MaxSequenceSize "sequence-max-size"
 
-/** The result of the document format detection: score and additional info that was parsed during raw data check */
-class RawDataCheckResult {
-public:
-    RawDataCheckResult() : score(FormatDetection_NotMatched){};
-    RawDataCheckResult(FormatDetectionScore _score) : score(_score){}
-
-    /** Score of the detection */
-    int score;
-
-    QVariantMap properties;
-    
-};
 
 /** Set of hints that can be processed during document loading */
 #define DocumentReadingMode_SequenceMergeGapSize            "merge-gap"
@@ -188,7 +164,7 @@ public:
         Note: Data can contain only first N (~1024) bytes of the file
         The URL value is optional and provided as supplementary option. URL value here can be empty in some special cases.
     */
-    virtual RawDataCheckResult checkRawData(const QByteArray& dataPrefix, const GUrl& url = GUrl()) const = 0;
+    virtual FormatCheckResult checkRawData(const QByteArray& dataPrefix, const GUrl& url = GUrl()) const = 0;
 
     /** Returns generic format description */
     virtual QString getFormatDescription() const {return formatDescription;}
@@ -437,5 +413,3 @@ public:
 } //namespace
 Q_DECLARE_METATYPE(U2::Document*)
 #endif
-
-

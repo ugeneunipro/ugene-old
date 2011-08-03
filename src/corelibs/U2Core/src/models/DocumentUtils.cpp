@@ -89,7 +89,7 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawD
     QList<FormatDetectionResult> result;
     foreach(const DocumentFormatId& id, allFormats) {
         DocumentFormat* f = fr->getFormatById(id);
-        RawDataCheckResult cr = f->checkRawData(rawData, url);
+        FormatCheckResult cr = f->checkRawData(rawData, url);
         if (cr.score ==  FormatDetection_NotMatched) {
             continue;
         }
@@ -107,7 +107,7 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawD
     if (conf.useImporters) {
         DocumentImportersRegistry* importReg = AppContext::getDocumentFormatRegistry()->getImportSupport();
         foreach(DocumentImporter* i, importReg->getImporters()) {
-            RawDataCheckResult cr = i->checkRawData(rawData, url);
+            FormatCheckResult cr = i->checkRawData(rawData, url);
             if (conf.useExtensionBonus && i->getSupportedFileExtensions().contains(ext) && cr.score >= FormatDetection_VeryLowSimilarity) {
                 cr.score += FORMAT_DETECTION_EXT_BONUS;
             }

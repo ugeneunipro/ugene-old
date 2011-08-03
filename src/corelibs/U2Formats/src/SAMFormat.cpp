@@ -91,7 +91,7 @@ SAMFormat::SAMFormat( QObject* p ): DocumentFormat(p, DocumentFormatFlags_SW, QS
     skipDetection = false;
 }
 
-RawDataCheckResult SAMFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult SAMFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {
     if (skipDetection) {
         return FormatDetection_NotMatched;
     }

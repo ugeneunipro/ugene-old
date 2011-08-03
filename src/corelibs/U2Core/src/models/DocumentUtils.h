@@ -44,7 +44,7 @@ public:
     GUrl                    url;
     QString                 extension;
 
-    RawDataCheckResult      rawDataCheckResult;
+    FormatCheckResult      rawDataCheckResult;
 
     QString getFormatDescriptionText() const;
     QString getFormatOrImporterName() const;

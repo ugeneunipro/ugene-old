@@ -42,7 +42,7 @@ public:
 
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
 
-    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
 private:
     void load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& hints, TaskStateInfo& si);

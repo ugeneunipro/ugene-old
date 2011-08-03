@@ -326,7 +326,7 @@ void MSFFormat::storeDocument( Document* d, TaskStateInfo& ti, IOAdapter* io ) {
 }
 
 
-RawDataCheckResult MSFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult MSFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 

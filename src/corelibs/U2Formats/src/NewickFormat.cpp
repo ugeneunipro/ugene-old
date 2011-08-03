@@ -96,7 +96,7 @@ void NewickFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io)
     }
 }
 
-RawDataCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     bool containsBinary = TextUtils::contains(TextUtils::BINARY, data, size);

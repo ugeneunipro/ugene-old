@@ -43,7 +43,7 @@ public:
 
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
 
-    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
     bool storeHeader(IOAdapter* io, const QVector<QByteArray> &names, const QVector<int> &lengths);
     

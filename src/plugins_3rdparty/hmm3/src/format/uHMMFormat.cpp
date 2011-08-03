@@ -338,7 +338,7 @@ void UHMMFormat::storeDocument( Document* doc, TaskStateInfo& ti, IOAdapter* io 
     saveAll( io, doc->getObjects(), ti );
 }
 
-RawDataCheckResult UHMMFormat::checkRawData( const QByteArray& data, const GUrl&) const {
+FormatCheckResult UHMMFormat::checkRawData( const QByteArray& data, const GUrl&) const {
     bool result =  data.startsWith( UHMMFormatReader::HMMER2_VERSION_HEADER.toAscii() ) 
                 || data.startsWith( UHMMFormatReader::HMMER3_VERSION_HEADER.toAscii() );
     

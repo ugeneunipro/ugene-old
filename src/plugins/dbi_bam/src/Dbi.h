@@ -78,7 +78,7 @@ public:
 
     virtual U2DbiFactoryId getId()const;
 
-    virtual bool isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus &os) const;
+    virtual FormatCheckResult isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus &os) const;
 
 public:
     static const QString ID;

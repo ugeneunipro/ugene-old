@@ -23,6 +23,7 @@
 #define _U2_DBI_H_
 
 #include <U2Core/U2Type.h>
+#include <U2Core/U2FormatCheckResult.h>
 #include <U2Core/U2Annotation.h>
 #include <U2Core/U2Assembly.h>
 #include <U2Core/U2Attribute.h>
@@ -141,7 +142,7 @@ public:
         rawData param is used for compatibility with UGENE 1.x format detection 
         and can be used by factory directly to check database header
     */
-    virtual bool isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const = 0;
+    virtual FormatCheckResult isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const = 0;
 };
 
 

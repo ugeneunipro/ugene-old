@@ -51,6 +51,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2Dbi.h \
            src/dbi/U2DbiRegistry.h \
            src/dbi/U2DbiUtils.h \
+           src/dbi/U2FormatCheckResult.h \
            src/dbi/U2MsaDbi.h \
            src/dbi/U2ObjectDbi.h \
            src/dbi/U2SequenceDbi.h \

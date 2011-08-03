@@ -99,7 +99,7 @@ void QDDocFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter* io) {
     wo->setSceneRawData(rawData);
 }
 
-RawDataCheckResult QDDocFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult QDDocFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {
     const QString& data = rawData;
     if(data.trimmed().startsWith(QDDocument::HEADER_LINE)) {
         return FormatDetection_Matched;

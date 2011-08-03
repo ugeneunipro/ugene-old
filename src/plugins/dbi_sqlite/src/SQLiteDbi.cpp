@@ -342,13 +342,16 @@ U2DbiFactoryId SQLiteDbiFactory::getId()const {
     return ID;
 }
 
-bool SQLiteDbiFactory::isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& ) const {
+FormatCheckResult SQLiteDbiFactory::isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& ) const {
     QString surl  = properties.value(U2_DBI_OPTION_URL);
     GUrl url(surl);
     if (!url.isLocalFile()) {
-        return false;
+        return FormatDetection_NotMatched;
     }
-    return rawData.startsWith("SQLite format 3");
+    if (rawData.startsWith("SQLite format 3")) {
+        return FormatDetection_Matched;
+    }
+    return FormatDetection_NotMatched;
 }
 
 const U2DbiFactoryId SQLiteDbiFactory::ID = "SQLiteDbi";

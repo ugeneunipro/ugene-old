@@ -101,7 +101,7 @@ Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, c
     return doc;
 }
 
-RawDataCheckResult RawDNASequenceFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult RawDNASequenceFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     if(QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {

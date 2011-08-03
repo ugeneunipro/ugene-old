@@ -53,7 +53,7 @@ public:
 
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io);
 
-    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& url = GUrl()) const;
+    virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url = GUrl()) const;
 
 private:
     QString formatName;

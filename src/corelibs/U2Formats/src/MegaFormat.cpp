@@ -68,7 +68,7 @@ void MegaFormat::storeDocument( Document* d, TaskStateInfo& ti, IOAdapter* io ) 
     save(io, d, ti);
 }
 
-RawDataCheckResult MegaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult MegaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     QByteArray line=rawData.trimmed();
 
     if (!line.startsWith(MEGA_SEPARATOR)) {

@@ -60,7 +60,7 @@ PDBFormat::PDBFormat( QObject* p ) : DocumentFormat(p, DocumentFormatFlag(0), QS
     supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;
 }
 
-RawDataCheckResult PDBFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult PDBFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     static const char* headerTag = "HEADER";
     static const char* atomTag = "ATOM";
     static const char* modelTag = "MODEL";

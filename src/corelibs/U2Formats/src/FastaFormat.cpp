@@ -90,7 +90,7 @@ static QVariantMap analyzeRawData(const QByteArray& data) {
     return res;
 }
 
-RawDataCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 
@@ -106,7 +106,7 @@ RawDataCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GU
     }
     
     //ok, format is matched -> add hints on sequence sizes
-    RawDataCheckResult res(FormatDetection_Matched);
+    FormatCheckResult res(FormatDetection_Matched);
     res.properties = analyzeRawData(data);
     return res;
 }

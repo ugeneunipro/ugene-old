@@ -163,7 +163,7 @@ public:
     virtual U2DbiFactoryId getId() const;
 
     /** Checks that data pointed by properties is a valid DBI resource */
-    virtual bool isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const;
+    virtual FormatCheckResult isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const;
 
 public:
     static const U2DbiFactoryId ID;

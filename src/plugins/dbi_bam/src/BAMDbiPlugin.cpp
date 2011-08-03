@@ -176,12 +176,12 @@ BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM/SAM file i
 
 #define SAM_HINT "bam-importer-sam-hint"
 
-RawDataCheckResult BAMImporter::checkRawData(const QByteArray& rawData, const GUrl& url) {
+FormatCheckResult BAMImporter::checkRawData(const QByteArray& rawData, const GUrl& url) {
     BAMFormat bamFormat;
-    RawDataCheckResult bamScore = bamFormat.checkRawData(rawData, url);
+    FormatCheckResult bamScore = bamFormat.checkRawData(rawData, url);
 
     SAMFormat samFormat;
-    RawDataCheckResult samScore = samFormat.checkRawData(rawData, url);
+    FormatCheckResult samScore = samFormat.checkRawData(rawData, url);
 
     if (bamScore.score > samScore.score ) {
         return bamScore;

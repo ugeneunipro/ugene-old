@@ -37,7 +37,7 @@ public:
     virtual const QString& getFormatName() const { return formatName; }
     virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
     virtual void storeDocument(Document* d, TaskStateInfo& ts, IOAdapter* io );
-    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
     
 private:
     QString formatName;

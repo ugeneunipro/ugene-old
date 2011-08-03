@@ -62,7 +62,7 @@ public:
 
     virtual void storeDocument( Document* doc, TaskStateInfo& ti, IOAdapter* io );
 
-    virtual RawDataCheckResult checkRawData(const QByteArray& data, const GUrl& = GUrl()) const;
+    virtual FormatCheckResult checkRawData(const QByteArray& data, const GUrl& = GUrl()) const;
 
     virtual bool isObjectOpSupported( const Document* d , DocumentFormat::DocObjectOp op, GObjectType t ) const;
 

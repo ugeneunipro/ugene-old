@@ -120,15 +120,15 @@ void DbiDocumentFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter*
     }
 }
 
-RawDataCheckResult DbiDocumentFormat::checkRawData(const QByteArray& rawData, const GUrl& url) const {
+FormatCheckResult DbiDocumentFormat::checkRawData(const QByteArray& rawData, const GUrl& url) const {
     U2DbiFactory* f = AppContext::getDbiRegistry()->getDbiFactoryById(id);
     if (f != NULL) {
         QHash<QString, QString> props;
         props[U2_DBI_OPTION_URL] = url.getURLString();
         U2OpStatusImpl os;
-        bool ok = f->isValidDbi(props, rawData, os) && !os.hasError();
-        if (ok) {
-            return FormatDetection_Matched;
+        FormatCheckResult r = f->isValidDbi(props, rawData, os);
+        if (!os.hasError()) {
+            return r;
         }
     }
     return FormatDetection_NotMatched;

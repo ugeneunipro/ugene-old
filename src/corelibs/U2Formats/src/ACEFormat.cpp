@@ -470,7 +470,7 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
     }
 }
 
-RawDataCheckResult ACEFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult ACEFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     static const char* formatTag = "AS";
 
     if (!rawData.startsWith(formatTag)) {

@@ -306,7 +306,7 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&
     }
 }
 
-RawDataCheckResult GFFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult GFFFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     int n = TextUtils::skip(TextUtils::WHITES, data, size);

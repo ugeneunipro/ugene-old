@@ -31,7 +31,7 @@ class U2FORMATS_EXPORT SwissProtPlainTextFormat : public EMBLGenbankAbstractDocu
 public:
     SwissProtPlainTextFormat(QObject* p);
 
-    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+    virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
 protected:
 

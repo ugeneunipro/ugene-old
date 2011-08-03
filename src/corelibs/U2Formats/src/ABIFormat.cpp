@@ -50,7 +50,7 @@ ABIFormat::ABIFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(0), QSt
     supportedObjectTypes+=GObjectTypes::CHROMATOGRAM;
 }
 
-RawDataCheckResult ABIFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult ABIFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 

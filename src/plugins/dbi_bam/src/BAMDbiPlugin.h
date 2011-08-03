@@ -47,7 +47,7 @@ class BAMImporter : public DocumentImporter {
 public:
     BAMImporter();
 
-    virtual RawDataCheckResult checkRawData(const QByteArray& rawData, const GUrl& url);
+    virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url);
 
     virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard);
 

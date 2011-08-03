@@ -56,7 +56,7 @@ GenbankPlainTextFormat::GenbankPlainTextFormat(QObject* p)
     fPrefix = "  ";
 }
 
-RawDataCheckResult GenbankPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult GenbankPlainTextFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     //TODO: improve handling
     const char* data = rawData.constData();
     int size = rawData.size();
@@ -68,7 +68,7 @@ RawDataCheckResult GenbankPlainTextFormat::checkRawData(const QByteArray& rawDat
     if (!startsWithLocus) {
         return FormatDetection_NotMatched;
     }
-    RawDataCheckResult res(FormatDetection_VeryHighSimilarity);
+    FormatCheckResult res(FormatDetection_VeryHighSimilarity);
     
     QByteArray seqStartPattern1 = "\n        1";
     QByteArray seqStartPattern2 = "\nORIGIN";

@@ -47,7 +47,7 @@ It was originally developed at the Wellcome Trust Sanger Institute to bundle a F
 but has recently become the de facto standard for storing the output of high throughput sequencing instruments.");
 }
 
-RawDataCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
+FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 
@@ -58,7 +58,7 @@ RawDataCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GU
     if (hasBinaryBlocks){
         return FormatDetection_NotMatched;
     }
-    RawDataCheckResult res(FormatDetection_AverageSimilarity);
+    FormatCheckResult res(FormatDetection_AverageSimilarity);
     // here we propagate some property values without actual parsing
     // this must be fixed some day
     res.properties[RawDataCheckResult_Sequence] = true;

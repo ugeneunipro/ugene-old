@@ -51,7 +51,7 @@ public:
     
     virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
     
-    virtual RawDataCheckResult checkRawData( const QByteArray& data, const GUrl& = GUrl()) const;
+    virtual FormatCheckResult checkRawData( const QByteArray& data, const GUrl& = GUrl()) const;
     
     struct UHMMWriteException {
         QString what;
