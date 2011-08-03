@@ -434,7 +434,7 @@ void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U
         }
         
         int firstCoverageIdx = (int)((readCroppedRegion.startPos - r.startPos)/ basesPerRange);
-        int lastCoverageIdx = (int)((readCroppedRegion.startPos + len - 1 - r.startPos ) / basesPerRange);
+        int lastCoverageIdx = (int)((readCroppedRegion.startPos + readCroppedRegion.length - 1 - r.startPos ) / basesPerRange);
         for (int i = firstCoverageIdx; i <= lastCoverageIdx && i < csize; i++) {
             cdata[i].minValue++;
             cdata[i].maxValue++;
