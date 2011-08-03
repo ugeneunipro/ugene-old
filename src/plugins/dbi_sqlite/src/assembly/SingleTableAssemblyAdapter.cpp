@@ -229,7 +229,7 @@ void SingleTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) 
 
 void SingleTableAssemblyAdapter::calculateCoverage(const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
     QString queryString = "SELECT gstart, elen FROM " + readsTable;
-    bool rangeArgs = !rangeMode || (r== U2_ASSEMBLY_REGION_MAX) || r.length < 50;
+    bool rangeArgs = r != U2_ASSEMBLY_REGION_MAX;
 
     if (rangeArgs) {
         queryString+=" WHERE " + rangeConditionCheck;
