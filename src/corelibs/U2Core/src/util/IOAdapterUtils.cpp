@@ -25,6 +25,8 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/IOAdapter.h>
 
+#include <memory>
+
 namespace U2 {
 
 IOAdapterId IOAdapterUtils::url2io(const GUrl& url) {
@@ -45,7 +47,7 @@ IOAdapterId IOAdapterUtils::url2io(const GUrl& url) {
 
 QByteArray IOAdapterUtils::readFileHeader(const GUrl& url, int size) {
     QByteArray data;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     std::auto_ptr<IOAdapter> adapter(iof->createIOAdapter());
     bool res = adapter->open(url, IOAdapterMode_Read);
     if (!res) {
