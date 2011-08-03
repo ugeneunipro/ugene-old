@@ -28,6 +28,8 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/Settings.h>
 #include <U2Core/ServiceTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -319,7 +321,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                             info.hints[DocumentReadingMode_MaxObjectsInDoc] = MAX_OBJECT_PER_DOC;
                         }
                         info.formatId = dr.format->getFormatId(); 
-                        info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+                        info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
                         docsInfo << info;
                     } else {
                         assert(dr.importer != NULL);

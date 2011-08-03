@@ -13,6 +13,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GObject.h>
@@ -230,7 +231,7 @@ void GTest_uHMMERSearch::prepare() {
     }
     QString annotationName = "hmm_signal";
     QString url = env->getVar("TEMP_DATA_DIR")+"/uhmmsearch/"+resultDocName;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
     assert(aDoc == NULL);
     aDoc = df->createNewDocument(iof, url);
@@ -389,12 +390,12 @@ Task::ReportResult GTest_hmmCompare::report() {
     
     QFileInfo fi1(env->getVar("COMMON_DATA_DIR")+"/"+file1Name);
     QString url1 = fi1.absoluteFilePath();
-    IOAdapterFactory* iof1 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url1));
+    IOAdapterFactory* iof1 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url1));
     std::auto_ptr<IOAdapter> io1(iof1->createIOAdapter());
     //QFile file1(fi1.absoluteFilePath());
     QFileInfo fi2(env->getVar("TEMP_DATA_DIR")+"/"+file2Name);
     QString url2 = fi2.absoluteFilePath();
-    IOAdapterFactory* iof2 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url2));
+    IOAdapterFactory* iof2 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url2));
     std::auto_ptr<IOAdapter> io2(iof2->createIOAdapter());
     fi2.absoluteDir().mkdir(fi2.absoluteDir().absolutePath()); // ???
     //QFile file2(fi2.absoluteFilePath());

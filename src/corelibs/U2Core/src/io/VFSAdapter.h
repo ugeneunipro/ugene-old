@@ -24,6 +24,8 @@
 
 #include <U2Core/IOAdapter.h>
 
+#include <QtCore/QBuffer>
+
 namespace U2 {
 
 class U2CORE_EXPORT VFSAdapterFactory: public IOAdapterFactory {

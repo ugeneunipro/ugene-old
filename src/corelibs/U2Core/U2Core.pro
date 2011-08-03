@@ -153,6 +153,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/FormatUtils.h \
            src/util/GAutoDeleteList.h \
            src/util/GUrlUtils.h \
+           src/util/IOAdapterUtils.h \
            src/util/MSAUtils.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
@@ -274,6 +275,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/FormatUtils.cpp \
            src/util/GAutoDeleteList.cpp \
            src/util/GUrlUtils.cpp \
+           src/util/IOAdapterUtils.cpp \
            src/util/MSAUtils.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \

@@ -22,11 +22,8 @@
 #ifndef _U2_BAM_DBI_H_
 #define _U2_BAM_DBI_H_
 
-#include <U2Core/U2Dbi.h>
 #include <U2Core/U2AbstractDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SqlHelpers.h>
-#include <U2Core/U2DbiRegistry.h>
 
 #include "Reader.h"
 

@@ -33,6 +33,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/IOAdapter.h>
 
 #include <U2Gui/OpenViewTask.h>
 

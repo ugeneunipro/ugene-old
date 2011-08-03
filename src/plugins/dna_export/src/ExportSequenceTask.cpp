@@ -25,6 +25,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNATranslationImpl.h>
@@ -151,7 +152,7 @@ static ExportSequenceItem backToNucleic(const ExportSequenceItem& ei, bool mostP
 void ExportSequenceTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(config.formatId);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.fileName));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.fileName));
     doc.reset(f->createNewDocument(iof, config.fileName)); 
     QList<ExportSequenceItem> notMergedItems;
     foreach(const ExportSequenceItem& ei0, config.items) {

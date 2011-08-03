@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/TextUtils.h>
 
 #include "uhmmer3BuildTests.h"
@@ -365,7 +366,7 @@ Task::ReportResult GTest_CompareHmmFiles::report() {
         return ReportResult_Finished;
     }
 
-    IOAdapterFactory* iof1 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(filename1));
+    IOAdapterFactory* iof1 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filename1));
     std::auto_ptr<IOAdapter> io1(iof1->createIOAdapter());
     if( io1.get() == NULL ) {
         stateInfo.setError( tr( "cannot_create_io_adapter_for_1_file" ) );
@@ -376,7 +377,7 @@ Task::ReportResult GTest_CompareHmmFiles::report() {
         return ReportResult_Finished;
     }
 
-    IOAdapterFactory* iof2 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(filename2));
+    IOAdapterFactory* iof2 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filename2));
     std::auto_ptr<IOAdapter> io2(iof2->createIOAdapter());
     if( io2.get() == NULL ) {
         stateInfo.setError( tr( "cannot_create_io_adapter_for_2_file" ) );

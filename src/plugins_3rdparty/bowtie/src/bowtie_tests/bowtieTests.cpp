@@ -28,6 +28,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
@@ -240,7 +241,7 @@ QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
             bowtieTask->setError("Reference assembly failed - no possible alignment found");
             return res;
         }
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.resultFileName));
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.resultFileName));
         // SAM format is removed from supported formats list and supported only by BAM plugin
         // Create it manually and provide to LoadDocumentTask
         SAMFormat* samFormat = new SAMFormat();
@@ -259,7 +260,7 @@ QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
         ma1 =  qobject_cast<MAlignmentObject*> (doc->getObjects().first()->clone());
 		
 		QFileInfo patternFile(env->getVar("COMMON_DATA_DIR")+"/"+patternFileName);
-		IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(patternFile.absoluteFilePath()));
+		IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(patternFile.absoluteFilePath()));
         if (patternFormat == BaseDocumentFormats::SAM) {
             // SAM format is removed from supported formats list and supported only by BAM plugin
             // Create it manually and provide to LoadDocumentTask

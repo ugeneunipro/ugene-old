@@ -24,6 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
 
@@ -35,7 +36,11 @@
 #include <U2Core/DIProperties.h>
 
 #include <QtCore/QVector>
+#include <QtCore/QTextStream>
+#include <QtCore/QFile>
+
 #include <QtGui/QMessageBox>
+
 #include <memory>
 
 /* TRANSLATOR U2::IOAdapter */
@@ -305,12 +310,12 @@ void WeightMatrixIO::writePWMatrix(IOAdapterFactory* iof, const QString& url, Ta
 
 
 void PFMatrixReadTask::run() {
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     model = WeightMatrixIO::readPFMatrix(iof, url, stateInfo);
 }
 
 void PFMatrixWriteTask::run() {
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     if (fileMode & SaveDoc_Roll && !GUrlUtils::renameFileWithNameRoll(url, stateInfo)) {
         return;
     }
@@ -318,12 +323,12 @@ void PFMatrixWriteTask::run() {
 }
 
 void PWMatrixReadTask::run() {
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     model = WeightMatrixIO::readPWMatrix(iof, url, stateInfo);
 }
 
 void PWMatrixWriteTask::run() {
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     if (fileMode & SaveDoc_Roll && !GUrlUtils::renameFileWithNameRoll(url, stateInfo)) {
         return;
     }

@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QFile>
@@ -54,7 +55,7 @@ bool VirtualFileSystem::createFile( const QString & filename, const QByteArray &
 }
 
 bool VirtualFileSystem::mapFile( const QString & filename, const QString & filePath ) {
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( filePath ) );
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( filePath ) );
     SAFE_POINT(iof != NULL, QString("Failed to find IO adapter factory: %1").arg(filePath), false);
     
     std::auto_ptr<IOAdapter> io( iof->createIOAdapter() );
@@ -84,7 +85,7 @@ bool VirtualFileSystem::mapBack( const QString & filename, const QString & fileP
         return false;
     }
     
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( filePath ) );
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( filePath ) );
     SAFE_POINT(iof != NULL, QString("Failed to find IO adapter factory: %1").arg(filePath), false);
 
     std::auto_ptr<IOAdapter> io( iof->createIOAdapter() );

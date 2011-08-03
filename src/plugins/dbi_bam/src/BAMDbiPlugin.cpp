@@ -26,6 +26,9 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2DbiRegistry.h>
 
 #include <U2Formats/SAMFormat.h>
 
@@ -143,7 +146,7 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
     }
     AddDocumentTask * addTask = NULL;
     if(doc == NULL) {
-        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url.getURLString()));
+        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url.getURLString()));
         assert(iof != NULL);
         DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById("usqlite");
         if(df == NULL) {

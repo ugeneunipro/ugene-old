@@ -24,6 +24,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/GObjectUtils.h>
@@ -60,7 +61,7 @@ void CreateSubalignmentTask::prepare() {
 
     newDoc = curDoc;
 
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(cfg.url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.url));
     if (saveToAnother) {
         QList<GObject*> GObjList = curDoc->getObjects();
         newDoc = dfd->createNewDocument(iof, cfg.url, curDoc->getGHintsMap());

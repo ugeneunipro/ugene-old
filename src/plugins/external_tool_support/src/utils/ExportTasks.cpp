@@ -24,6 +24,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNATranslationImpl.h>
@@ -56,7 +57,7 @@ SaveAlignmentTask::SaveAlignmentTask(const MAlignment& _ma, const QString& _file
 void SaveAlignmentTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(fileName));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileName));
     doc.reset(f->createNewDocument(iof, fileName));
     doc->addObject(new MAlignmentObject(ma));
     f->storeDocument(doc.get(), stateInfo);
@@ -77,7 +78,7 @@ ma(_ma), url(_url), trimAli(_trimAli), format(_format)
 void SaveMSA2SequencesTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     doc.reset(f->createNewDocument(iof, url));
 
     QList<DNASequence> lst = MSAUtils::ma2seq(ma, trimAli);

@@ -34,6 +34,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
+#include <U2Core/IOAdapterUtils.h>
 
 #include <limits>
 #include <memory>
@@ -368,7 +369,7 @@ void ConvertToSQLiteTask::run() {
         }
         std::auto_ptr<IOAdapter> ioAdapter;
         {
-            IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(sourceUrl));
+            IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(sourceUrl));
             ioAdapter.reset(factory->createIOAdapter());
         }
         if(!ioAdapter->open(sourceUrl, IOAdapterMode_Read)) {

@@ -27,6 +27,7 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentUtils.h>
@@ -101,7 +102,7 @@ void LoadMSATask::prepare() {
     int memUseMB = 0;
     QFileInfo file(url);
     memUseMB = file.size() / (1024*1024);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
         memUseMB *= 2.5; //Need to calculate compress level
     }
@@ -139,7 +140,7 @@ void LoadMSATask::run() {
         return;
     }
     ioLog.info(tr("Reading MSA from %1 [%2]").arg(url).arg(format->getFormatName()));
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     Document *doc = format->loadDocument(iof, url, stateInfo, QVariantMap());
     assert(isCanceled() || doc!=NULL || hasError());
     assert(doc == NULL || doc->isLoaded());
@@ -192,7 +193,7 @@ void LoadSeqTask::prepare() {
     int memUseMB = 0;
     QFileInfo file(url);
     memUseMB = file.size() / (1024*1024);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
         memUseMB *= 2.5; //Need to calculate compress level
     }
@@ -225,7 +226,7 @@ void LoadSeqTask::run() {
         return;
     }
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     Document *doc = format->loadDocument(iof, url, stateInfo, cfg);
     assert(isCanceled() || doc!=NULL || hasError());
     assert(doc == NULL || doc->isLoaded());

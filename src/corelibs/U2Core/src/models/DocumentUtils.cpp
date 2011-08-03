@@ -25,6 +25,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentImport.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 
 namespace U2 {
 
@@ -128,7 +130,7 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat(const GUrl& url, const 
     if( url.isEmpty() ) {
         return result;
     }
-    QByteArray rawData = BaseIOAdapters::readFileHeader(url);
+    QByteArray rawData = IOAdapterUtils::readFileHeader(url);
     if (rawData.isEmpty()) {
         return result;
     }
@@ -143,7 +145,7 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat(IOAdapter *io, const Fo
     if (io == NULL || !io->isOpen()) {
         return result;
     }
-    QByteArray rawData = BaseIOAdapters::readFileHeader( io );
+    QByteArray rawData = IOAdapterUtils::readFileHeader( io );
     QString ext = GUrlUtils::getUncompressedExtension(io->getURL());
     result = detectFormat( rawData, ext , io->getURL(), conf);
     return result;

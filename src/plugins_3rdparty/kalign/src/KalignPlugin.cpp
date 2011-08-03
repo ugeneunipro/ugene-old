@@ -31,6 +31,7 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/GObjectTypes.h>
 
@@ -115,7 +116,7 @@ void KalignPlugin::sl_runKalignTask() {
         DocumentFormatConstraints c;
         c.checkRawData = true;
         c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
-        c.rawData = BaseIOAdapters::readFileHeader(sourceUrl);
+        c.rawData = IOAdapterUtils::readFileHeader(sourceUrl);
         QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
         if (formats.isEmpty()) {
             NotificationStack* nStack = AppContext::getMainWindow()->getNotificationStack();
@@ -126,7 +127,7 @@ void KalignPlugin::sl_runKalignTask() {
         DocumentFormatId alnFormat = formats.first();
         QVariantMap hints;
         hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(sourceUrl));
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(sourceUrl));
         LoadDocumentTask* task = new LoadDocumentTask(alnFormat, sourceUrl, iof, hints);
         connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_documentLoaded(Task*)));
         AppContext::getTaskScheduler()->registerTopLevelTask(task);

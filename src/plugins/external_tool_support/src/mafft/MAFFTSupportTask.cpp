@@ -32,6 +32,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/IOAdapterUtils.h>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Gui/OpenViewTask.h>
@@ -199,7 +200,7 @@ void MAFFTWithExtFileSpecifySupportTask::prepare(){
     DocumentFormatConstraints c;
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
-    c.rawData = BaseIOAdapters::readFileHeader(settings.inputFilePath);
+    c.rawData = IOAdapterUtils::readFileHeader(settings.inputFilePath);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("input_format_error") );
@@ -207,7 +208,7 @@ void MAFFTWithExtFileSpecifySupportTask::prepare(){
     }
 
     DocumentFormatId alnFormat = formats.first();
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.inputFilePath));
     QVariantMap hints;
     hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
     loadDocumentTask = new LoadDocumentTask(alnFormat, settings.inputFilePath, iof, hints);
@@ -231,7 +232,7 @@ QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask
         mAFFTSupportTask=new MAFFTSupportTask(mAObject,settings);
         res.append(mAFFTSupportTask);
     } else if (subTask == mAFFTSupportTask){
-        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(settings.inputFilePath)),settings.inputFilePath);
+        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.inputFilePath)),settings.inputFilePath);
         res.append(saveDocumentTask);
     } else if (subTask==saveDocumentTask){
         Project* proj = AppContext::getProject();

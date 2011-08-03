@@ -21,6 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/WorkflowRunTask.h>
 #include "RunSchemaForTask.h"
@@ -157,7 +158,7 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
         {
             assert(inputDocument == NULL);
             assert(!saveInputTmpFilename.isEmpty());
-            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(saveInputTmpFilename));
+            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(saveInputTmpFilename));
             assert(iof != NULL);
             DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(callback->inputFileFormat());
             assert(df != NULL);
@@ -178,7 +179,7 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
         break;
     case LOAD_RESULT:
         {
-            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(resultTmpFilename));
+            IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(resultTmpFilename));
             assert(iof != NULL);
             loadResultTask = new LoadDocumentTask(callback->outputFileFormat(), resultTmpFilename, iof, resultDocHints);
             res << loadResultTask;

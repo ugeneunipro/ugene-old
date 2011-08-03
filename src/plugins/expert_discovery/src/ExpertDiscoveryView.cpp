@@ -18,6 +18,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/ProjectModel.h>
@@ -777,7 +778,7 @@ Document* ExpertDiscoveryView::createUDocument(SequenceType sType){
     QString suffix = QString(".fa");
     baseName.append(suffix);
     GUrl URL(baseName);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
     DocumentFormat* dformat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA);
     Document* doc = new Document(dformat,iof,URL);
     doc->setLoaded(true);

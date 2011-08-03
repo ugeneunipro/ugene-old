@@ -27,6 +27,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Settings.h>
@@ -240,14 +241,14 @@ SiteconBuildToFileTask::SiteconBuildToFileTask(const QString& inFile, const QStr
     DocumentFormatConstraints c;
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
-    c.rawData = BaseIOAdapters::readFileHeader(inFile);
+    c.rawData = IOAdapterUtils::readFileHeader(inFile);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("input_format_error") );
         return;
     }
     DocumentFormatId format = formats.first();
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(inFile));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(inFile));
     loadTask = new LoadDocumentTask(format, inFile, iof);
     loadTask->setSubtaskProgressWeight(0.03F);
     stateInfo.progress = 0;

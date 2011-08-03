@@ -22,6 +22,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 
 #include <U2Core/GetDocumentFromIndexTask.h>
 #include <U2Core/SaveDocumentStreamingTask.h>
@@ -91,7 +92,7 @@ Task::ReportResult ExportToNewFileFromIndexTask::report() {
 }
 
 IOAdapter* ExportToNewFileFromIndexTask::getOpenedIOAdapter(const QString& url) {
-    IOAdapterId ioId = BaseIOAdapters::url2io( url );
+    IOAdapterId ioId = IOAdapterUtils::url2io( url );
     IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( ioId );
     if( NULL == factory ) {
         setError(tr( "No IO adapter found for URL: %1").arg(url));

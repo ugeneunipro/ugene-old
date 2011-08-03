@@ -39,6 +39,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DNASequenceSelection.h>
 
 #include <U2View/AnnotatedDNAView.h>
@@ -183,7 +184,7 @@ QList<Task*> QDRunDialogTask::init() {
             res.append(scheduler);
         }
     } else {
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(inUri));
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(inUri));
         assert(iof);
         QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(inUri);
         if (dfs.isEmpty()) {

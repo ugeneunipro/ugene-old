@@ -26,6 +26,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
 
@@ -35,6 +36,11 @@
 #include <U2Gui/DialogUtils.h>
 
 #include <QtCore/QVector>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QTextIStream>
+#include <QtCore/qmath.h>
+
 #include <memory>
 
 /* TRANSLATOR U2::IOAdapter */
@@ -463,12 +469,12 @@ void SiteconIO::writeModel(IOAdapterFactory* iof, const QString& url, TaskStateI
 }
 
 void SiteconReadTask::run() {
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     model = SiteconIO::readModel(iof, url, stateInfo);
 }
 
 void SiteconWriteTask::run() {
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     if (fileMode & SaveDoc_Roll && !GUrlUtils::renameFileWithNameRoll(url, stateInfo)) {
         return;
     }

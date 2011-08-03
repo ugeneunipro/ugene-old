@@ -24,6 +24,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Core/AppContext.h>
@@ -277,7 +278,7 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
 
     DocumentFormat* format = formats.first().format;
     Q_ASSERT(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
 
     QVariantMap formatSettings;
     if (gapSize >= 0) {

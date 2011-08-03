@@ -25,6 +25,7 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/Log.h>
 #include <U2Core/GObjectTypes.h>
@@ -53,7 +54,7 @@ static Document * getSavingDocument( const QList< P7_HMM* >& hmms, const QString
         ( AppContext::getDocumentFormatRegistry()->getFormatById( UHMMFormat::UHHMER_FORMAT_ID ) );
     assert( NULL != hmmFrmt );
     
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( outfile ) );
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( outfile ) );
     assert( NULL != iof );
     
     return new Document( hmmFrmt, iof, outfile, docObjects, QVariantMap() );
@@ -188,14 +189,14 @@ settings( set ), inFile( _inFile ), loadTask( NULL ), saveHmmFileTask( NULL ), s
     DocumentFormatConstraints constr;
 	constr.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 	constr.checkRawData = true;
-    constr.rawData = BaseIOAdapters::readFileHeader( inFile );
+    constr.rawData = IOAdapterUtils::readFileHeader( inFile );
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
     if( formats.isEmpty() ) {
         stateInfo.setError( tr( "input_format_error" ) );
         return;
     }
     DocumentFormatId alnFormat = formats.first();
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( inFile ) );
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( inFile ) );
 
     if( NULL == iof ) {
         stateInfo.setError( tr( "cannot_create_io_adapter_for_%1_file" ).arg( inFile ) );

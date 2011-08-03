@@ -26,6 +26,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
@@ -150,7 +151,7 @@ void UHMM3SWSearchTask::prepare() {
         }
         addSubTask( swTask );
     } else {
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( hmmFilename ) );
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( hmmFilename ) );
         assert( NULL != iof );
         loadHmmTask = new LoadDocumentTask( UHMMFormat::UHHMER_FORMAT_ID, hmmFilename, iof, QVariantMap() );
         addSubTask( loadHmmTask );
@@ -458,7 +459,7 @@ UHMM3LoadProfileAndSearchTask::UHMM3LoadProfileAndSearchTask(const UHMM3SearchTa
           loadHmmProfileTask(0), hmmSearchTask(0),
           hmmProfile(0), settings(_settings), sequence(_sequence)
 {
-    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(_hmmProfileFile));
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(_hmmProfileFile));
     assert(iof);
 
     loadHmmProfileTask = new LoadDocumentTask(UHMMFormat::UHHMER_FORMAT_ID, _hmmProfileFile, iof);

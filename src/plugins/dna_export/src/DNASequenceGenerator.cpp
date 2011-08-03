@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
@@ -214,7 +215,7 @@ QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
         const QString& name = cfg.getSequenceName();
         DNAAlphabet* alp = cfg.getAlphabet();
         assert(alp);
-        IOAdapterFactory * io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(cfg.getOutUrlString()));
+        IOAdapterFactory * io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.getOutUrlString()));
 
         if (seqs.size() == 1) {
             const QByteArray& seq = seqs.first();

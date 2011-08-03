@@ -22,6 +22,7 @@
 #include "ExportAnnotations2CSVTask.h"
 
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
@@ -73,7 +74,7 @@ void ExportAnnotations2CSVTask::run() {
     try  {
         std::auto_ptr<IOAdapter> ioAdapter;
         {
-            IOAdapterId ioAdapterId = BaseIOAdapters::url2io(url);
+            IOAdapterId ioAdapterId = IOAdapterUtils::url2io(url);
             IOAdapterFactory *ioAdapterFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioAdapterId);
             if(NULL == ioAdapterFactory) {
                 stateInfo.setError(tr("No IO adapter found for URL: %1").arg(url));

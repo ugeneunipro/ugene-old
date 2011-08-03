@@ -25,8 +25,11 @@
 #include "Dbi.h"
 #include "BAMFormat.h"
 
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/IOAdapterUtils.h>
 
 #include <sqlite3.h>
 
@@ -53,7 +56,7 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
             throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
         {
-            IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+            IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
             ioAdapter.reset(factory->createIOAdapter());
         }
         if(!ioAdapter->open(url, IOAdapterMode_Read)) {

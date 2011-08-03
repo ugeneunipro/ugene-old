@@ -27,6 +27,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GUrl.h>
@@ -882,7 +883,7 @@ void ProjectViewImpl::sl_saveCopy() {
             return;
         }
         bool addToProject = dialog.getAddToProjectFlag();
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(h.url));
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(h.url));
         DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
         DocumentFormat *df = dfr->getFormatById(dialog.getDocumentFormatId());
         if (iof == NULL) {

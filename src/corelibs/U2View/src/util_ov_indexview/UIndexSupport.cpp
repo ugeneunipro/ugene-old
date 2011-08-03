@@ -26,6 +26,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentModel.h>
 
 #include <U2Formats/IndexFormat.h>
@@ -78,7 +79,7 @@ void UIndexSupport::sl_showCreateFileIndexDialog() {
     updateModel( model );
     
     IOAdapterFactory * outFactory = AppContext::getIOAdapterRegistry()->
-        getIOAdapterFactoryById(BaseIOAdapters::url2io( model.outputUrl ));
+        getIOAdapterFactoryById(IOAdapterUtils::url2io( model.outputUrl ));
     if( outFactory == NULL ) {
         QMessageBox::critical(NULL, tr("Error!"), tr("Cannot write output file: unknown io adapter for %1").arg(model.outputUrl));
         return;
@@ -88,7 +89,7 @@ void UIndexSupport::sl_showCreateFileIndexDialog() {
     QList< IOAdapterFactory* > inFactories;
     for(int i = 0; i < inUrls.size(); ++i) {
         QString url = inUrls.at(i);
-        IOAdapterFactory * factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io(url));
+        IOAdapterFactory * factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io(url));
         if(factory == NULL) {
             QMessageBox::critical(NULL, tr("Error!"), tr("Cannot read input file: unknown io adapter for %1").arg(url));
             return;
@@ -116,7 +117,7 @@ void UIndexSupport::sl_creatingIndexTaskStateChanged() {
     assert(!url.isEmpty());
     DocumentFormat * format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::INDEX);
     assert(format != NULL);
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     assert(iof != NULL);
     Document * doc = new Document( format, iof, url, QList<UnloadedObjectInfo>(), QVariantMap() );
     AppContext::getTaskScheduler()->registerTopLevelTask(new AddDocumentTask(doc));

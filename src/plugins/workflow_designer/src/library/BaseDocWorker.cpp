@@ -38,6 +38,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Gui/DialogUtils.h>
 
@@ -69,7 +70,7 @@ void BaseDocReader::init() {
         if (!doc) {
             DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
             assert(format);
-            IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+            IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
             doc = new Document(format, iof, url);
         }
         //TODO lock document???
@@ -216,7 +217,7 @@ Task* BaseDocWriter::tick() {
 
         doc = docs.value(anUrl);
         if (!doc) {
-            IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+            IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
             int count = ++counter[anUrl];
             if(!append && count > 1) {
                 anUrl = GUrlUtils::prepareFileName(anUrl, count, format->getSupportedDocumentFileExtensions());

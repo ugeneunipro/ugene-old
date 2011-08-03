@@ -23,6 +23,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
 
 #include "ExportSequencesDialog.h"
@@ -69,7 +70,7 @@ QString ExportUtils::genUniqueName(const QSet<QString>& names, QString prefix) {
 Task * ExportUtils::saveAnnotationsTask(const QString & filepath, const DocumentFormatId & format, const QList<Annotation*> & annList) {
     SaveDocFlags fl(SaveDoc_Roll);
     fl |= SaveDoc_DestroyAfter;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(filepath));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
     assert(iof != NULL);
     DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(format);
     assert(df != NULL);

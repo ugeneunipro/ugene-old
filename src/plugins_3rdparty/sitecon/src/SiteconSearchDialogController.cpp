@@ -24,24 +24,24 @@
 #include "SiteconAlgorithm.h"
 #include "SiteconIO.h"
 
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
-
-#include <U2Gui/CreateAnnotationDialog.h>
-#include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Gui/LastUsedDirHelper.h>
-
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
-
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Gui/GUIUtils.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceSelection.h>
+
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/CreateAnnotationDialog.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/LastUsedDirHelper.h>
+
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/ADVSequenceObjectContext.h>
 
 #include <assert.h>
 
@@ -180,7 +180,7 @@ void SiteconSearchDialogController::sl_selectModelFile() {
     }
     
     TaskStateInfo si;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(lod.url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(lod.url));
     SiteconModel m = SiteconIO::readModel(iof, lod.url, si);
     if (si.hasError()) {
         QMessageBox::critical(this, tr("error"), si.getError());

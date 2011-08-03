@@ -42,6 +42,7 @@
 
 #include <U2Formats/EMBLGenbankAbstractDocument.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AppContext.h>
@@ -86,7 +87,7 @@ Task *TextReader::tick() {
         }
     } else {
         url = urls.takeFirst();
-        IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+        IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
         io = iof->createIOAdapter();
         if(!io->open(url,IOAdapterMode_Read)) {
             return new FailTask(tr("Can't load file %1").arg(url));

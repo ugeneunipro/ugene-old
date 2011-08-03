@@ -21,6 +21,7 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/IOAdapterUtils.h>
 
 #include <memory>
 #include "Reader.h"
@@ -47,14 +48,14 @@ void LoadInfoTask::run() {
     try {
         std::auto_ptr<IOAdapter> ioAdapter;
         {
-            IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(sourceUrl));
+            IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(sourceUrl));
             ioAdapter.reset(factory->createIOAdapter());
         }
 
         GUrl baiUrl(sourceUrl.getURLString() + ".bai");
         bool hasIndex = true;
         std::auto_ptr<IOAdapter> ioIndexAdapter;
-        IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(baiUrl));
+        IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(baiUrl));
         ioIndexAdapter.reset(factory->createIOAdapter());
 
         if(!ioAdapter->open(sourceUrl, IOAdapterMode_Read)) {

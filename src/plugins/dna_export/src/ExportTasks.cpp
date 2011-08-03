@@ -23,6 +23,7 @@
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNATranslationImpl.h>
@@ -96,7 +97,7 @@ ExportAlignmentTask::ExportAlignmentTask(const MAlignment& _ma, const QString& _
 void ExportAlignmentTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(fileName));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileName));
     doc.reset(f->createNewDocument(iof, fileName));
     doc->addObject(new MAlignmentObject(ma));
     f->storeDocument(doc.get(), stateInfo);
@@ -117,7 +118,7 @@ ma(_ma), url(_url), trimAli(_trimAli), format(_format)
 void ExportMSA2SequencesTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     doc.reset(f->createNewDocument(iof, url));
 
     QList<DNASequence> lst = MSAUtils::ma2seq(ma, trimAli);
@@ -148,7 +149,7 @@ ma(_ma), offset(_offset), len(_len), url(_url), format(_format), aminoTranslatio
 void ExportMSA2MSATask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     doc.reset(f->createNewDocument(iof, url));
 
     QList<DNASequence> lst = MSAUtils::ma2seq(ma, true);

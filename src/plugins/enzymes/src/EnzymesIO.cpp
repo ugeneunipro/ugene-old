@@ -23,12 +23,18 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
+
 #include <U2Gui/DialogUtils.h>
 #include <U2Core/Settings.h>
+
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+
 #include <memory>
 
 namespace U2 {
@@ -40,7 +46,7 @@ QString EnzymesIO::getFileDialogFilter() {
 QList<SEnzymeData> EnzymesIO::readEnzymes(const QString& url, TaskStateInfo& ti) {
     QList<SEnzymeData> res;
 
-    IOAdapterId ioId = BaseIOAdapters::url2io(url);
+    IOAdapterId ioId = IOAdapterUtils::url2io(url);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     if (iof == NULL) {
         ti.setError(  tr("Unsupported URI type") );
@@ -75,14 +81,14 @@ QList<SEnzymeData> EnzymesIO::readEnzymes(const QString& url, TaskStateInfo& ti)
 }
 
 void EnzymesIO::writeEnzymes(const QString& url, const QString& source, const QSet<QString>& enzymes, TaskStateInfo& ti) {
-    IOAdapterId ioId = BaseIOAdapters::url2io(url);
+    IOAdapterId ioId = IOAdapterUtils::url2io(url);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     if (iof == NULL) {
         ti.setError(  tr("Unsupported URI type") );
         return;
     }
 
-    IOAdapterId srcioId = BaseIOAdapters::url2io(source);
+    IOAdapterId srcioId = IOAdapterUtils::url2io(source);
     IOAdapterFactory* srciof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(srcioId);
     if (srciof == NULL) {
         ti.setError(  tr("Unsupported URI type") );
@@ -104,7 +110,7 @@ void EnzymesIO::writeEnzymes(const QString& url, const QString& source, const QS
 }
 
 EnzymeFileFormat EnzymesIO::detectFileFormat(const QString& url) {
-    QByteArray data= BaseIOAdapters::readFileHeader(url, 256);
+    QByteArray data= IOAdapterUtils::readFileHeader(url, 256);
     if (data.startsWith("CC ") || data.startsWith("ID ")) {
         return EnzymeFileFormat_Bairoch;
     }

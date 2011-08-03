@@ -24,6 +24,7 @@
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TextUtils.h>
@@ -635,7 +636,7 @@ bool GTest_UHMM3SearchCompare::searchResultLessThan(const UHMM3SearchSeqDomainRe
 UHMM3SearchResult GTest_UHMM3SearchCompare::getOriginalSearchResult( const QString & filename ) {
     assert( !filename.isEmpty() );
     
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( filename ) );
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( filename ) );
     std::auto_ptr< IOAdapter > io( iof->createIOAdapter() );
     if( NULL == io.get() ) {
         throw QString( "cannot_create_io_adapter_for_'%1'_file" ).arg( filename );

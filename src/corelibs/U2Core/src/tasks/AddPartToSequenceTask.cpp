@@ -25,6 +25,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Log.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/Counter.h>
@@ -88,7 +89,7 @@ Task::ReportResult AddPartToSequenceTask::report(){
         
     if(save){
         QList<Task*> tasks;
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
         tasks.append(new SaveDocumentTask(seqObj->getDocument(), iof, url));              
         Project *p = AppContext::getProject();
         if(p != NULL){
@@ -122,7 +123,7 @@ void AddPartToSequenceTask::fixAnnotations(){
 }
 
 void AddPartToSequenceTask::preparationForSave(){
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(dfId);;
     if (iof == NULL) {
         return;

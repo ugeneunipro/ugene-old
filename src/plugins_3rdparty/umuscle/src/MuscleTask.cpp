@@ -33,6 +33,7 @@
 #include <U2Core/StateLockableDataModel.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/ProjectModel.h>
@@ -249,7 +250,7 @@ MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObjec
 //     DocumentFormatConstraints c;
 //     c.checkRawData = true;
 //     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT; //MA here comes first because for a sequence format raw sequence can be used by default
-//     c.rawData = BaseIOAdapters::readFileHeader(fileWithSequencesOrProfile);
+//     c.rawData = IOAdapterUtils::readFileHeader(fileWithSequencesOrProfile);
 //     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
 //     if (formats.isEmpty()) {
 //         c.supportedObjectTypes.clear();
@@ -265,7 +266,7 @@ MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObjec
         setError("Unknown format");
     }
     DocumentFormat* format = detectedFormats.first().format;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(fileWithSequencesOrProfile));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileWithSequencesOrProfile));
     loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesOrProfile, iof);
     loadTask->setSubtaskProgressWeight(0.01f);
     addSubTask(loadTask);
@@ -436,7 +437,7 @@ void MuscleWithExtFileSpecifySupportTask::prepare(){
     DocumentFormatConstraints c;
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
-    c.rawData = BaseIOAdapters::readFileHeader(config.inputFilePath);
+    c.rawData = IOAdapterUtils::readFileHeader(config.inputFilePath);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("input_format_error") );
@@ -444,7 +445,7 @@ void MuscleWithExtFileSpecifySupportTask::prepare(){
     }
 
     DocumentFormatId alnFormat = formats.first();
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.inputFilePath));
     QVariantMap hints;
     hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
     loadDocumentTask = new LoadDocumentTask(alnFormat, config.inputFilePath, iof, hints);
@@ -489,7 +490,7 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
         assert(muscleGObjectTask != NULL);
         res.append(muscleGObjectTask);
     } else if (subTask == muscleGObjectTask){
-        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath)),config.inputFilePath);
+        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.inputFilePath)),config.inputFilePath);
         res.append(saveDocumentTask);
     } else if (subTask == saveDocumentTask){
         Project* proj = AppContext::getProject();

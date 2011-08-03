@@ -44,6 +44,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Core/TextUtils.h>
@@ -521,7 +522,7 @@ void PWMSearchDialogController::sl_onResultActivated(QTreeWidgetItem* i, int col
 }
 
 void PWMSearchDialogController::loadFile(QString filename) {
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(filename));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filename));
     TaskStateInfo siPFM;
     PWMatrix m;
     intermediate = WeightMatrixIO::readPFMatrix(iof, filename, siPFM);

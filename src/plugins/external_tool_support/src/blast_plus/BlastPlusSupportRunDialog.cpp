@@ -30,6 +30,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceObject.h>
@@ -227,7 +228,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(co
             DocumentFormatConstraints c;
             c.checkRawData = true;
             c.supportedObjectTypes += GObjectTypes::SEQUENCE;
-            c.rawData = BaseIOAdapters::readFileHeader(str);
+            c.rawData = IOAdapterUtils::readFileHeader(str);
             QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
             if (formats.isEmpty()) {
                 //stateInfo.setError(tr("input_format_error"));
@@ -238,7 +239,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(co
             LoadDocumentTask* loadDocumentTask=
                     new LoadDocumentTask(df,
                                  str,
-                                 AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(str)));
+                                 AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(str)));
             connect(loadDocumentTask,SIGNAL(si_stateChanged()),SLOT(sl_inputFileLoadTaskStateChanged()));
             tasks.append(loadDocumentTask);
             AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Load documents and open project",tasks));

@@ -46,6 +46,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectService.h>
 #include <U2Core/Settings.h>
@@ -459,7 +460,7 @@ void WorkflowView::sl_appendExternalToolWorker() {
     QString filter = DialogUtils::prepareFileFilter(WorkflowUtils::tr("UGENE workflow element"), QStringList() << "etc", true);
     QString url = QFileDialog::getOpenFileName(this, tr("Add element"), QString(), filter);
     if (!url.isEmpty()) {
-        IOAdapter *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(GUrl(url)))->createIOAdapter();
+        IOAdapter *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(GUrl(url)))->createIOAdapter();
         if(!io->open(url, IOAdapterMode_Read)) {
             coreLog.error(tr("Can't load element."));
             return;
@@ -1270,7 +1271,7 @@ void WorkflowView::sl_loadScene() {
         connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_updateTitle()));
         connect(m, SIGNAL(si_taskFinished(Task*)), scene, SLOT(centerView()));
         connect(m, SIGNAL(si_taskFinished(Task*)), propertyEditor, SLOT(resetIterations()));
-        if(LoadWorkflowTask::detectFormat(BaseIOAdapters::readFileHeader(url)) == LoadWorkflowTask::XML) {
+        if(LoadWorkflowTask::detectFormat(IOAdapterUtils::readFileHeader(url)) == LoadWorkflowTask::XML) {
             connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_xmlSchemaLoaded(Task*)));
         }
         AppContext::getTaskScheduler()->registerTopLevelTask(t);

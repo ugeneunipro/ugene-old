@@ -27,6 +27,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/GObject.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
@@ -101,7 +102,7 @@ Document* ObjectViewTask::createDocumentAndAddToProject( const QString& docUrl, 
     if (!fi.exists()) {
         return NULL;
     }
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(docUrl));
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(docUrl));
     QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(docUrl);
     if (dfs.isEmpty()) {
         return NULL;

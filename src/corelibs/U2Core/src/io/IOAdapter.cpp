@@ -21,7 +21,6 @@
 
 #include "IOAdapter.h"
 
-#include <U2Core/AppContext.h>
 #include <U2Core/TextUtils.h>
 #include <memory>
 
@@ -33,63 +32,6 @@ const IOAdapterId BaseIOAdapters::HTTP_FILE( "http_file" );
 const IOAdapterId BaseIOAdapters::GZIPPED_HTTP_FILE( "http_file_gzip" );
 const IOAdapterId BaseIOAdapters::VFS_FILE( "memory_buffer" );
 
-
-IOAdapterId BaseIOAdapters::url2io(const GUrl& url) {
-    if( url.isVFSFile() ) {
-        return BaseIOAdapters::VFS_FILE;
-    }
-    if( url.isHyperLink() ) {
-        if( url.lastFileSuffix() == "gz") {
-            return BaseIOAdapters::GZIPPED_HTTP_FILE;
-        }
-        return BaseIOAdapters::HTTP_FILE;
-    }
-    if( url.lastFileSuffix() == "gz") {
-        return BaseIOAdapters::GZIPPED_LOCAL_FILE;
-    }
-    return BaseIOAdapters::LOCAL_FILE;
-}
-
-QByteArray BaseIOAdapters::readFileHeader(const GUrl& url, int size) {
-    QByteArray data;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
-    std::auto_ptr<IOAdapter> adapter(iof->createIOAdapter());
-    bool res = adapter->open(url, IOAdapterMode_Read);
-    if (!res) {
-        return data;//BUG:420: report error
-    }
-
-    data.resize(size);
-
-    int s = adapter->readBlock(data.data(), data.size());
-    if (s == -1) {
-        data.resize(0);
-        return data;//BUG:420: report error
-    }
-
-    if (s != data.size()) {
-        data.resize(s);
-    }
-    return data;
-}
-
-QByteArray BaseIOAdapters::readFileHeader( IOAdapter* io, int sz ) {
-    QByteArray data;
-    if( NULL == io || !io->isOpen() ) {
-        return data;
-    }
-    data.resize( sz );
-    int ret = io->readBlock( data.data(), sz );
-    if( -1 == ret ) {
-        data.resize( 0 );
-        return data;
-    }
-    if( ret != sz ) {
-        data.resize( ret );
-    }
-    io->skip( -ret );
-    return data;
-}
 
 qint64 IOAdapter::readUntil(char* buf, qint64 maxSize, 
                             const QBitArray& readTerminators,

@@ -23,6 +23,7 @@
 #include <U2Core/AppContext.h>
 
 #include <U2Core/UIndexObject.h>
+#include <U2Core/IOAdapterUtils.h>
 
 #include "FilesIndexingTests.h"
 
@@ -53,7 +54,7 @@ void addStr( QStringList& l, const QString& add ) {
 QList< IOAdapterFactory* > getIOAdapterFactories( const QStringList& urls ) {
     QList< IOAdapterFactory* > ret;
     foreach( QString url, urls ) {
-        ret << AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( url ) );
+        ret << AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( url ) );
     }
     return ret;
 }
@@ -75,7 +76,7 @@ QList< int > getNumbers( const QStringList& numList, bool& ok ) {
 }
 
 IOAdapter* getOpenedIOAdapter( const QString& filename, IOAdapterMode mode, TaskStateInfo& tsi ) {
-    IOAdapterId adId = BaseIOAdapters::url2io( filename );
+    IOAdapterId adId = IOAdapterUtils::url2io( filename );
     IOAdapterFactory* ioFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( adId );
     if( NULL == ioFactory ) {
         tsi.setError(( "cannot_create_io_factory_for_tmp_file" ));
@@ -158,7 +159,7 @@ void GTest_CreateFileIndex::init( XMLTestFormat* tf, const QDomElement& el ) {
     //tmpInput = !el.attribute( TMP_INPUT_TAG ).isEmpty();
     tmpInput = yesNoTag( el, TMP_INPUT_TAG );
     outputUrl = env->getVar( ENV_TMP_DATA_DIR ) + "/" + el.attribute( OUTPUT_URL_TAG );
-    outFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( outputUrl ) );
+    outFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( outputUrl ) );
     inputUrls = el.attribute( INPUT_URLS_TAG ).split( INPUT_URLS_SEPARATOR, QString::SkipEmptyParts );
 }
 

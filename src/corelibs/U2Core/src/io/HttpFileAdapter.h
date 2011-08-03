@@ -27,6 +27,7 @@
 
 #include <QtCore/QEventLoop>
 #include <QtCore/QLinkedList>
+#include <QtCore/QMutex>
 
 
 class QHttp;

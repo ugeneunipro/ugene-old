@@ -28,6 +28,8 @@
 
 #include "uHMMFormatReader.h"
 
+#include <math.h>
+
 using namespace U2;
 
 const int BUF_SZ        = 1024;

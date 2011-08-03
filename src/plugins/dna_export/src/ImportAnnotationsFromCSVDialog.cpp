@@ -25,6 +25,7 @@
 
 #include <U2Core/L10n.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
@@ -203,7 +204,7 @@ void ImportAnnotationsFromCSVDialog::toTaskConfig(ImportAnnotationsFromCSVTaskCo
 
 #define PREVIEW_BUFF_SIZE 8196
 QString ImportAnnotationsFromCSVDialog::readFileHeader(const QString& fileName, bool silentFail) {
-    IOAdapterId ioId = BaseIOAdapters::url2io(fileName);
+    IOAdapterId ioId = IOAdapterUtils::url2io(fileName);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
     bool ok = io->open(fileName, IOAdapterMode_Read);

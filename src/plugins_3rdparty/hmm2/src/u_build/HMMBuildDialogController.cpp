@@ -7,6 +7,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/Counter.h>
@@ -164,7 +165,7 @@ HMMBuildToFileTask::HMMBuildToFileTask(const QString& inFile, const QString& _ou
     DocumentFormatConstraints c;
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
-    c.rawData = BaseIOAdapters::readFileHeader(inFile);
+    c.rawData = IOAdapterUtils::readFileHeader(inFile);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("input_format_error") );
@@ -175,7 +176,7 @@ HMMBuildToFileTask::HMMBuildToFileTask(const QString& inFile, const QString& _ou
 
     
     loadTask = new LoadDocumentTask(alnFormat, inFile, 
-                                    AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(inFile)),
+                                    AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(inFile)),
                                     QVariantMap());
     addSubTask(loadTask);
 }
@@ -247,7 +248,7 @@ void HMMBuildToFileTask::_run() {
     plan7_s* hmm = buildTask->getHMM();
     assert(hmm!=NULL);
 	IOAdapterFactory* iof;
-	iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(outFile));
+	iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(outFile));
 	
     //todo: write command line too!
     HMMIO::writeHMM2(iof, outFile, stateInfo, hmm);

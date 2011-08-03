@@ -35,6 +35,7 @@ extern "C" {
 #include <U2Core/StateLockableDataModel.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/ProjectModel.h>
@@ -328,7 +329,7 @@ QList<Task*> KAlignAndSaveTask::onSubTaskFinished( Task* subTask ) {
         return res;
     }
     if (subTask == kalignGObjectTask){
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(config.inputFilePath));
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.inputFilePath));
         saveDocumentTask = new SaveDocumentTask(currentDocument,iof,config.inputFilePath);
         res.append(saveDocumentTask);
     } else if (subTask == saveDocumentTask){

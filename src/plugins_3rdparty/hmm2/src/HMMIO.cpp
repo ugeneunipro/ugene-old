@@ -24,6 +24,7 @@
 #include "TaskLocalStorage.h"
 
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Task.h>
 #include <U2Core/GUrlUtils.h>
@@ -35,6 +36,8 @@
 
 #include <memory>
 #include <QtCore/QtAlgorithms>
+#include <QtCore/QFileInfo>
+
 namespace U2 {
 
 /* TRANSLATOR U2::IOAdapter */    
@@ -658,7 +661,7 @@ HMMReadTask::~HMMReadTask() {
 
 void HMMReadTask::run() {
     TaskLocalData::createHMMContext(getTaskId(), true);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     HMMIO::readHMM2(iof, url, stateInfo, &hmm);
     TaskLocalData::freeHMMContext(getTaskId());
 }
@@ -672,7 +675,7 @@ HMMWriteTask::HMMWriteTask(const QString& url, plan7_s* s, uint f)
 
 void HMMWriteTask::run() {
     TaskLocalData::createHMMContext(getTaskId(), true);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     if (fileMode & SaveDoc_Roll && !GUrlUtils::renameFileWithNameRoll(url, stateInfo)) {
         return;
     }

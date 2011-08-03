@@ -31,6 +31,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 
 #include <U2Core/GObjectTypes.h>
@@ -483,11 +484,11 @@ void GTest_Muscle_Load_Align_QScore::prepare() {
         return;
     }
 
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(env->getVar("COMMON_DATA_DIR")+"/"+inFileURL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(env->getVar("COMMON_DATA_DIR")+"/"+inFileURL));
     loadTask1 = new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,env->getVar("COMMON_DATA_DIR")+"/"+inFileURL,iof);
     loadTask1->setSubtaskProgressWeight(0);
     addSubTask(loadTask1);
-    iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(env->getVar("COMMON_DATA_DIR")+"/"+patFileURL));
+    iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(env->getVar("COMMON_DATA_DIR")+"/"+patFileURL));
     
     loadTask2 = new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,env->getVar("COMMON_DATA_DIR")+"/"+patFileURL,iof);
 
@@ -630,11 +631,11 @@ Muscle_Load_Align_Compare_Task::Muscle_Load_Align_Compare_Task( QString inFileUR
 }
 
 void Muscle_Load_Align_Compare_Task::prepare() {
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(str_inFileURL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(str_inFileURL));
     loadTask1 = new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,str_inFileURL,iof);
     loadTask1->setSubtaskProgressWeight(0);
     addSubTask(loadTask1);
-    iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(str_patFileURL));
+    iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(str_patFileURL));
     loadTask2 = new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,str_patFileURL,iof);
     addSubTask(loadTask2);
     loadTask1->setSubtaskProgressWeight(0);

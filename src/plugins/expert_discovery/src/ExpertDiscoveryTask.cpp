@@ -13,6 +13,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
@@ -113,7 +114,7 @@ Document* ExpertDiscoveryLoadPosNegTask::loadFile(QString inFile){
 
     DocumentFormat* format = formats.first().format;
     Q_ASSERT(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
 
     Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());
     //addSubTask(new AddDocumentTask(doc)); // add document to the project
@@ -150,7 +151,7 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
     baseName.append(suffix);
     QString negFileName = positiveDoc->getURL().dirPath().append("/"+baseName);
     GUrl URL(negFileName);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
     QList<GObject*> negObjects = sequencesGenerator(positiveDoc->getObjects());
     negativeDoc = new Document(positiveDoc->getDocumentFormat(),iof,URL,negObjects);
 
@@ -280,7 +281,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
             if (!curFormats.isEmpty()){
                 if(curFormats.first().format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
                     GUrl URL(strPosName);
-                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
                     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
                     posDoc = new Document(f , iof, URL, QList<UnloadedObjectInfo>());
@@ -314,7 +315,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
             if (!curFormats.isEmpty()) {
                 if(curFormats.first().format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
                     GUrl URL(strNegName);
-                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
                     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
                     negDoc = new Document(f, iof, URL, QList<UnloadedObjectInfo>());
@@ -534,7 +535,7 @@ Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
     }
 
     DocumentFormat* format = formats.first().format;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(URL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
 
     Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());
     //addSubTask(new AddDocumentTask(doc)); // add document to the project

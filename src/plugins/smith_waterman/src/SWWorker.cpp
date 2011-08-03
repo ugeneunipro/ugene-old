@@ -21,6 +21,25 @@
 
 #include "SWWorker.h"
 
+#include <U2Core/DNASequence.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Log.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/PluginModel.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/DNAInfo.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/MAlignmentObject.h>
+
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -28,29 +47,15 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
-#include <U2Designer/DelegateEditors.h>
 #include <U2Lang/BaseAttributes.h>
 
-#include <U2Core/DNASequence.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/L10n.h>
-#include <U2Core/Log.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/PluginModel.h>
-#include <U2Core/FailTask.h>
-#include <U2Core/TaskSignalMapper.h>
-#include <U2Core/SequenceWalkerTask.h>
-#include <U2Core/DNAInfo.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/SWResultFilterRegistry.h>
+
+#include <U2Designer/DelegateEditors.h>
+
 #include <U2Gui/DialogUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/MSAUtils.h>
-#include <U2Core/MAlignmentObject.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -324,7 +329,7 @@ QString SWWorker::readPatternsFromFile(const QString url) {
         return "";
     }
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(url));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
 
     IOAdapter *io = iof->createIOAdapter();
     if (!io->open(url, IOAdapterMode_Read)) {

@@ -23,6 +23,7 @@
 #include "ui/ui_CreateDocumentFromTextDialog.h"
 
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
 #include <U2Core/ProjectModel.h>
@@ -151,7 +152,7 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
     QVariantMap hints; U2OpStatusImpl os;
     DocumentFormatUtils::addSequenceObject(objects, seqName, seq, hints, os);
     SAFE_POINT_OP(os,);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(ui->filepathEdit->text()));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(ui->filepathEdit->text()));
     QVariant currentId = ui->formatBox->itemData(ui->formatBox->currentIndex());
     DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(currentId.toString());
     doc = new Document(df, iof, fullPath, objects);

@@ -41,6 +41,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AddDocumentTask.h>
@@ -789,7 +790,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
             seq.quality = DNAQuality(r->quality, DNAQualityType_Sanger);
             objs << new DNASequenceObject(r->name, seq);
         }
-        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(model.filepath));
+        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(model.filepath));
         Document * doc = new Document(df, iof, model.filepath, objs);
         SaveDocFlags fl;
         fl |= SaveDoc_Overwrite;

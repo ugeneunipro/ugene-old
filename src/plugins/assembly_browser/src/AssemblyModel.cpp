@@ -34,6 +34,7 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -247,7 +248,7 @@ Task * AssemblyModel::createLoadReferenceAndAddtoProjectTask(const U2CrossDataba
     SAFE_POINT(df, QString("Document format is not supported? %1").arg(fid), NULL);
     
     QString url = ref.dataRef.dbiId;
-    IOAdapterId iofId = BaseIOAdapters::url2io(url);
+    IOAdapterId iofId = IOAdapterUtils::url2io(url);
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(iofId);
     SAFE_POINT(iof, QString("IO-factory is unknown? %1, url: %2").arg(iofId).arg(url), NULL);
 

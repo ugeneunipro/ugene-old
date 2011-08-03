@@ -26,6 +26,7 @@
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Lang/BaseTypes.h>
@@ -110,7 +111,7 @@ Task * WriteAnnotationsWorker::tick() {
                                                 , actor->getParameter(SEPARATOR)->getAttributeValue<QString>());
     } else {
         fl |= SaveDoc_DestroyAfter;
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(filepath));
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
         Document * doc = new Document(AppContext::getDocumentFormatRegistry()->getFormatById(formatId), iof, filepath);
         doc->setLoaded(true);
         att->setModified(false);

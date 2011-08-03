@@ -25,6 +25,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/IOAdapter.h>
 
 #include <U2Formats/SAMFormat.h>
 

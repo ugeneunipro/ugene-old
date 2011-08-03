@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
@@ -156,7 +157,7 @@ QList<Annotation*> ImportAnnotationsFromCSVTask::prepareAnnotations() const {
 }
 
 Document* ImportAnnotationsFromCSVTask::prepareNewDocument(const QList<Annotation*>& annotations) const {
-    IOAdapterId ioId = BaseIOAdapters::url2io(config.dstFile);
+    IOAdapterId ioId = IOAdapterUtils::url2io(config.dstFile);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     Document* result = config.df->createNewDocument(iof, config.dstFile);
     AnnotationTableObject* ao = new AnnotationTableObject("Annotations");
@@ -180,7 +181,7 @@ ReadCSVAsAnnotationsTask::ReadCSVAsAnnotationsTask(const QString& _file, const C
 #define BUFF_SIZE 8192
 void ReadCSVAsAnnotationsTask::run() {
     GUrl url(file);
-    IOAdapterId ioId = BaseIOAdapters::url2io(url);
+    IOAdapterId ioId = IOAdapterUtils::url2io(url);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
     

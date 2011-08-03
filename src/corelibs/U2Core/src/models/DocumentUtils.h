@@ -23,7 +23,6 @@
 #define _U2_DOCUMENT_UTILS_H_
 
 #include <U2Core/global.h>
-#include <U2Core/IOAdapter.h>
 
 #include "DocumentModel.h"
 

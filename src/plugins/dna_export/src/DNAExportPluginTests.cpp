@@ -22,6 +22,7 @@
 #include <U2Core/GObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
@@ -195,7 +196,7 @@ QList<Task*> GTest_ExportNucleicToAminoAlignmentTask::onSubTaskFinished(Task* su
     }
 
     if (subTask == exportTask) {       
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::url2io(outputFileName));
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(outputFileName));
         resultLoadTask = new LoadDocumentTask(BaseDocumentFormats::CLUSTAL_ALN, outputFileName, iof);
         res << resultLoadTask;
     } else if (subTask == resultLoadTask) {

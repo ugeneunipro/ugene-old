@@ -29,6 +29,7 @@
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObject.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GHints.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/DocumentUtils.h>
@@ -236,7 +237,7 @@ LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
     if( url.isEmpty() ) {
         return NULL;
     }
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::url2io( url ) );
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( url ) );
     if ( iof == NULL ) {
         return NULL;
     }
