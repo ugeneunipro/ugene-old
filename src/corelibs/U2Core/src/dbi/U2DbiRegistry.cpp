@@ -57,7 +57,7 @@ U2DbiFactory *U2DbiRegistry::getDbiFactoryById(U2DbiFactoryId id) const {
 U2DbiPool::U2DbiPool(QObject* p) : QObject(p) {
 }
 
-U2Dbi* U2DbiPool::openDbi(U2DbiFactoryId id, const QString& url, bool create, U2OpStatus& os) {
+U2Dbi* U2DbiPool::openDbi(const U2DbiFactoryId& id, const QString& url, bool create, U2OpStatus& os) {
     QMutexLocker m(&lock);
 
     ioLog.trace(QString("DbiPool: Opening DBI. Url: %1, factory: %2").arg(url).arg(id));

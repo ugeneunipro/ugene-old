@@ -23,11 +23,11 @@
 #define _U2_IOADAPTER_UTILS_H_
 
 #include <U2Core/global.h>
+#include <U2Core/IOAdapter.h>
 
 namespace U2 {
 
-class GUrl;
-class IOAdapter;
+class U2OpStatus;
 
 class U2CORE_EXPORT IOAdapterUtils {
 public:
@@ -36,8 +36,10 @@ public:
 
     static QByteArray readFileHeader(const GUrl& url, int size = 65536);
     
-    // io - opened ioadapter. before and after the call pos in file the same
+    // io - opened IO adapter. before and after the call pos in file the same
     static QByteArray readFileHeader( IOAdapter* io, int size = 65536 );
+
+    static IOAdapter* open(const GUrl& url, U2OpStatus& os, IOAdapterMode mode = IOAdapterMode_Read);
 };
 
 }//namespace

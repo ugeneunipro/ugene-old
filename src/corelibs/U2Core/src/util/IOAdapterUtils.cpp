@@ -24,6 +24,9 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/L10n.h>
 
 #include <memory>
 
@@ -84,6 +87,25 @@ QByteArray IOAdapterUtils::readFileHeader( IOAdapter* io, int sz ) {
     }
     io->skip( -ret );
     return data;
+}
+
+IOAdapter* IOAdapterUtils::open(const GUrl& url, U2OpStatus& os, IOAdapterMode mode) {
+    IOAdapterId  ioId = IOAdapterUtils::url2io(url);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
+    if (iof == NULL) {
+        os.setError(L10N::tr("Failed to detect IO adapter for %1").arg(url.getURLString()));
+        return NULL;
+    }
+    IOAdapter* io = iof->createIOAdapter();
+    SAFE_POINT(io != NULL, "IO adapter is NULL!", NULL);
+    
+    bool ok = io->open(url, mode);
+    if (!ok) {
+        os.setError(L10N::tr("Failed to detect IO adapter for %1").arg(url.getURLString()));
+        delete io;
+        return NULL;
+    }
+    return io;
 }
 
 } //namespace

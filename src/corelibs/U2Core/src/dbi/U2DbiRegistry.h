@@ -64,7 +64,7 @@ class U2CORE_EXPORT U2DbiPool : public QObject {
 public:
     U2DbiPool(QObject* p = NULL);
     
-    U2Dbi* openDbi(U2DbiFactoryId id, const QString& url, bool create, U2OpStatus& os);
+    U2Dbi* openDbi(const U2DbiFactoryId& id, const QString& url, bool create, U2OpStatus& os);
     void addRef(U2Dbi * dbi, U2OpStatus & os);
     void releaseDbi(U2Dbi* dbi, U2OpStatus& os);
 
