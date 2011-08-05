@@ -525,7 +525,6 @@ void WorkflowView::sl_protoDeleted(const QString &id) {
     }
 }
 
-
 void WorkflowView::sl_toggleLock(bool b) {
     if (sender() != unlockAction) {
         unlockAction->setChecked(b);
@@ -1094,6 +1093,7 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         sl_updateTitle();
     } else {
         scene->clearScene();
+        propertyEditor->resetIterations();
         sl_pasteSample(s);
     }
 }
@@ -1555,6 +1555,7 @@ void WorkflowScene::clearScene() {
     foreach(WorkflowProcessItem *item, deleteList) {
         removeItem(item);
     }
+    iterations.clear();
 }
 
 void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QPoint& pos) {

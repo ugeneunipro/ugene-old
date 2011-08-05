@@ -193,7 +193,6 @@ void URLLineEdit::sl_onBrowse() {
     }
     if (!name.isEmpty()) {
         setText(name);
-        QKeyEvent accept(QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
     }
     setFocus();
 }
