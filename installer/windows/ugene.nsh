@@ -163,7 +163,6 @@ Section "Build"
     !insertmacro AddPlugin dbi_bam
     !insertmacro AddPlugin dbi_sqlite
     !insertmacro AddPlugin assembly_browser
-    !insertmacro AddPlugin dbi_file
     !insertmacro AddPlugin expert_discovery
     !insertmacro AddPlugin ptools
     !insertmacro AddPlugin dna_flexibility
