@@ -26,6 +26,8 @@
 
 #include "AssemblyBrowser.h"
 
+#include <U2Core/U2SafePoints.h>
+
 namespace U2 {
 
 AssemblyDensityGraph::AssemblyDensityGraph(AssemblyBrowserUi * ui_) : 
@@ -37,8 +39,9 @@ QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()) {
 }
 
 void AssemblyDensityGraph::connectSlots() {
-    connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_redraw()));
-    connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
+    connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_launchCoverageCalculation()));
+    connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_launchCoverageCalculation()));
+    connect(&coverageTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
 }
 
 void AssemblyDensityGraph::drawAll() {
@@ -46,8 +49,13 @@ void AssemblyDensityGraph::drawAll() {
         if (redraw) {
             cachedView.fill(Qt::transparent);
             QPainter p(&cachedView);
-            redraw = false;
-            drawGraph(p);
+
+            if(coverageTaskRunner.isFinished()) {
+                drawGraph(p);
+                redraw = false;
+            } else {
+                p.drawText(cachedView.rect(), Qt::AlignCenter, tr("Background is rendering..."));
+            }
         }
         QPainter p(this);
         p.drawPixmap(0, 0, cachedView);
@@ -58,24 +66,10 @@ void AssemblyDensityGraph::drawGraph(QPainter & p) {
     if(browser->areCellsVisible()) {
         int cellWidth = browser->getCellWidth();
         int visibleBases = browser->basesVisible();
-        qint64 xStart = browser->getXOffsetInAssembly();
-
-        QVector<qint64> densities(visibleBases);
-        qint64 maxDensity = -1;
-        //calculate density for each visible column
-        for(int ibase = 0; ibase < visibleBases; ++ibase) {
-            U2OpStatusImpl os;
-            qint64 base = xStart + ibase;
-            qint64 density = model->countReadsInAssembly(U2Region(base, 1), os);
-            if (os.hasError()) {
-                LOG_OP(os);
-                break;
-            }
-            if(maxDensity < density) {
-                maxDensity = density;
-            }
-            densities[ibase] = density;
-        }
+        CoverageInfo ci = coverageTaskRunner.getResult();
+        QVector<qint64> & densities = ci.coverageInfo;
+        SAFE_POINT(visibleBases == densities.size(), "Invalid CoverageInfo size when drawing density graph",);
+        qint64 maxDensity = ci.maxCoverage;
 
         if(0 == maxDensity) {
             return;
@@ -85,8 +79,9 @@ void AssemblyDensityGraph::drawGraph(QPainter & p) {
         double readsPerYPixel = double(maxDensity)/height();
         for(int ibase = 0; ibase < visibleBases; ++ibase) {
             int columnPixels = qint64(double(densities[ibase]) / readsPerYPixel + 0.5);
-            int grayCoeff = 255 - int(double(255) / maxDensity * densities[ibase] + 0.5);
-            p.fillRect(ibase*cellWidth, 0, cellWidth, columnPixels, QColor(grayCoeff, grayCoeff, grayCoeff));
+            //int grayCoeff = 255 - int(double(255) / maxDensity * densities[ibase] + 0.5);
+            double grayCoeffD = double(densities[ibase]) / maxDensity;
+            p.fillRect(ibase*cellWidth, height()-columnPixels, cellWidth, height(), ui->getCoverageColor(grayCoeffD));
         }
     } 
 }
@@ -111,6 +106,23 @@ void AssemblyDensityGraph::sl_redraw() {
     cachedView = QPixmap(size());
     redraw = true;
     update();
+}
+
+void AssemblyDensityGraph::sl_launchCoverageCalculation()
+{
+    if(browser->areCellsVisible()) {
+        qint64 start = browser->getXOffsetInAssembly();
+        int length= browser->basesVisible();
+
+        CalcCoverageInfoTaskSettings settings;
+        settings.model = model;
+        settings.visibleRange = U2Region(start, length);
+        settings.regions = length;
+
+        //coverageTaskRunner.run(new CountReadsTask(settings));
+        coverageTaskRunner.run(new CalcCoverageInfoTask(settings));
+    }
+    sl_redraw();
 }
 
 } //ns

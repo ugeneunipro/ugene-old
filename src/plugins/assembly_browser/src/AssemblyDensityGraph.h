@@ -24,7 +24,10 @@
 
 #include <QtGui/QWidget>
 #include <QtCore/QSharedPointer>
+
 #include "AssemblyModel.h"
+#include "CoverageInfo.h"
+#include "BackgroundTaskRunner.h"
 
 namespace U2 {
 
@@ -45,6 +48,7 @@ signals:
 
 private slots:
     void sl_redraw();
+    void sl_launchCoverageCalculation();
 
 private:
     void connectSlots();
@@ -59,6 +63,8 @@ private:
     QPixmap cachedView;
     bool redraw;
     const static int FIXED_HEIGHT = 25;
+
+    BackgroundTaskRunner<CoverageInfo> coverageTaskRunner;
 };
 
 } //ns

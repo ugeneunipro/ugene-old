@@ -118,6 +118,7 @@ void ZoomableAssemblyOverview::drawAll() {
             cachedBackground = QPixmap(size());
             QPainter p(&cachedBackground);
             drawBackground(p);
+            redrawBackground = false;
         }
         //draw selection and labels
         if (redrawSelection) {
@@ -199,7 +200,7 @@ void ZoomableAssemblyOverview::drawBackground(QPainter & p) {
         }
 
         //UGENE-style colors
-        p.setPen(QColor(80-60*grayCoeffD, 160-100*grayCoeffD, 200-130*grayCoeffD));
+        p.setPen(ui->getCoverageColor(grayCoeffD));
         p.drawLine(i, 0, i, columnPixels);
     }
 

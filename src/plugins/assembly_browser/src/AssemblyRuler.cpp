@@ -95,7 +95,6 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     //2. extract coverage info on current position
     qint64 posXInAsm = browser->calcAsmPosX(cursorPos);
     U2OpStatusImpl status;
-    //quint64 readsPerXPixel = model->countReadsInAssembly(U2Region(posXInAsm, 1), status);
     U2AssemblyCoverageStat coverageStat;
     coverageStat.coverage.resize(1);
     model->calculateCoverageStat(U2Region(posXInAsm, 1), coverageStat, status);

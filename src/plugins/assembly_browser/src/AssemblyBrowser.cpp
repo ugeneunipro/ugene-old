@@ -727,8 +727,7 @@ referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
 
         zoomableOverview = new ZoomableAssemblyOverview(this, true); //zooming temporarily disabled -iefremov
         referenceArea = new AssemblyReferenceArea(this);
-        //densityGraph = new AssemblyDensityGraph(this);
-        densityGraph = NULL;
+        densityGraph = new AssemblyDensityGraph(this);
         ruler = new AssemblyRuler(this);
         readsArea  = new AssemblyReadsArea(this, readsHBar, readsVBar);
 
@@ -741,14 +740,13 @@ referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
         readsLayout->setMargin(0);
         readsLayout->setSpacing(0);
 
-        //readsLayout->addWidget(densityGraph);
         readsLayout->addWidget(referenceArea, 0, 0);
-
         readsLayout->addWidget(ruler, 1, 0);
+        readsLayout->addWidget(densityGraph, 2, 0);
 
-        readsLayout->addWidget(readsArea, 2, 0);
-        readsLayout->addWidget(readsVBar, 2, 1, 1, 1);
-        //readsLayout->addWidget(readsHBar, 3, 0);
+        readsLayout->addWidget(readsArea, 3, 0);
+        readsLayout->addWidget(readsVBar, 3, 1, 1, 1);
+        readsLayout->addWidget(readsHBar, 3, 0);
 
         QWidget * readsLayoutWidget = new QWidget;
         readsLayoutWidget->setLayout(readsLayout);
@@ -774,6 +772,11 @@ referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
         mainLayout->addWidget(infoLabel);
         setLayout(mainLayout);
     }
+}
+
+QColor AssemblyBrowserUi::getCoverageColor(double grayCoeff)
+{
+    return QColor(80-60*grayCoeff, 160-100*grayCoeff, 200-130*grayCoeff);
 }
 
 } //ns

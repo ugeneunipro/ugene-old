@@ -190,6 +190,8 @@ public:
     inline ZoomableAssemblyOverview * getOverview() const {return zoomableOverview;}
     inline AssemblyRuler * getRuler() const {return ruler;}
     inline AssemblyReferenceArea * getReferenceArea() const {return referenceArea;}
+
+    QColor getCoverageColor(double grayCoeff);
     
 private:
     AssemblyBrowser * browser;
