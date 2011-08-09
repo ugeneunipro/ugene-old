@@ -24,6 +24,7 @@
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -103,6 +104,22 @@ void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString
     q.bindBool(3, sequence.circular);
     q.execute();
 }
+
+
+void SQLiteSequenceDbi::updateSequenceObject(U2Sequence& sequence, U2OpStatus& os) {
+    SQLiteTransaction(db, os);
+
+    SQLiteQuery q("UPDATE Sequence SET alphabet = ?1, circular = ?2 WHERE object = ?3", db, os);
+    q.bindString(1, sequence.alphabet.id);
+    q.bindBool(2, sequence.circular);
+    q.bindDataId(3, sequence.id);
+    q.execute();
+
+    SAFE_POINT_OP(os, );
+
+    dbi->getSQLiteObjectDbi()->updateObject(sequence, os);
+}
+
 
 #define SEQUENCE_CHUNK_SIZE (1024*1024)
 

@@ -60,6 +60,14 @@ public:
     */
     virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) = 0;
 
+
+    /** 
+        Updates sequence object fields.
+
+        Requires: U2DbiFeature_WriteSequence feature support.
+    */
+    virtual void updateSequenceObject(U2Sequence& sequence, U2OpStatus& os) = 0;
+
     /** 
         Updates sequence region:
         replaces 'regionToReplace' sequence region with 'dataToInsert'.

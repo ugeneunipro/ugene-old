@@ -194,7 +194,7 @@ TEST_P(AssemblyDbiTest, countReads) {
 
     {
         U2OpStatusImpl os;
-        qint64 numReads = this->assemblyDbi->countReads(id, U2_ASSEMBLY_REGION_MAX, os);
+        qint64 numReads = this->assemblyDbi->countReads(id, U2_REGION_MAX, os);
         ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
         ASSERT_EQ(testData.getValue<qint64>(TOTAL_NUM_READS), numReads);
     }
@@ -209,7 +209,7 @@ TEST_P(AssemblyDbiTest, countReads) {
 TEST_P(AssemblyDbiTest, countReadsInvalid) {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
-    qint64 res = this->assemblyDbi->countReads(id, U2_ASSEMBLY_REGION_MAX, os);
+    qint64 res = this->assemblyDbi->countReads(id, U2_REGION_MAX, os);
     ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
     ASSERT_EQ(res, -1);
 }
@@ -233,7 +233,7 @@ TEST_P(AssemblyDbiTest, getReadsInvalid) {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
-    iter.reset(this->assemblyDbi->getReads(id, U2_ASSEMBLY_REGION_MAX, os));
+    iter.reset(this->assemblyDbi->getReads(id, U2_REGION_MAX, os));
     ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
     ASSERT_TRUE(iter.get() == NULL);
 }
@@ -313,7 +313,7 @@ TEST_P(AssemblyDbiTest, getMaxPackedRow) {
 TEST_P(AssemblyDbiTest, getMaxPackedRowInvalid) {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
-    qint64 res = this->assemblyDbi->getMaxPackedRow(id, U2_ASSEMBLY_REGION_MAX, os);
+    qint64 res = this->assemblyDbi->getMaxPackedRow(id, U2_REGION_MAX, os);
     ASSERT_TRUE(os.hasError()) << AssemblyDbiTestUtil::ERR_INVALID_ASSEMBLY_ID;
     ASSERT_EQ(res, -1);
 }
@@ -395,7 +395,7 @@ TEST_P(AssemblyDbiTest, addReads) {
 
     foreach(U2AssemblyRead read, reads) {
         std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
-        iter.reset(this->assemblyDbi->getReads(id, U2_ASSEMBLY_REGION_MAX, os));
+        iter.reset(this->assemblyDbi->getReads(id, U2_REGION_MAX, os));
         ASSERT_FALSE(os.hasError()) << os.getError().toStdString();
 
         bool added = false;

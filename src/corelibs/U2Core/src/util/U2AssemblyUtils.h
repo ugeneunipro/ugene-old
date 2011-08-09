@@ -26,9 +26,6 @@
 
 namespace U2 {
 
-/** Predefined region - acts as hint for a function that whole assembly must be processed */
-#define U2_ASSEMBLY_REGION_MAX U2Region(0, LLONG_MAX)
-
 /** 
     Predefined integer attribute for coverage
     First 4 bytes - lower coverage bound 

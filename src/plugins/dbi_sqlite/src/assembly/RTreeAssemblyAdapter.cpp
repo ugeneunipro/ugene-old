@@ -72,7 +72,7 @@ void RTreeAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
 }
 
 qint64 RTreeAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
-    if (r == U2_ASSEMBLY_REGION_MAX) {
+    if (r == U2_REGION_MAX) {
         return SQLiteQuery(QString("SELECT COUNT(*) FROM %1").arg(readsTable), db, os).selectInt64();
     }
     QString qStr = QString("SELECT COUNT(*) FROM %1 AS i WHERE " + RANGE_CONDITION_CHECK).arg(indexTable);
@@ -201,7 +201,7 @@ void RTreeAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
 void RTreeAssemblyAdapter::calculateCoverage(const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
     QString queryString = "SELECT gstart, gend - gstart FROM " + indexTable;
     bool rangeArgs = false;
-    if (r != U2_ASSEMBLY_REGION_MAX) {
+    if (r != U2_REGION_MAX) {
         queryString+="AS i WHERE " + RANGE_CONDITION_CHECK;
         rangeArgs = true;
     }

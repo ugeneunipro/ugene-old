@@ -149,7 +149,7 @@ public:
 
         Requires: U2DbiFeature_WriteAssembly feature support.
     */
-    virtual void updateAssemblyObject(const U2Assembly& assembly, U2OpStatus& os) = 0;
+    virtual void updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) = 0;
 
     /** 
         Removes reads from assembly.

@@ -23,6 +23,7 @@
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -408,6 +409,17 @@ U2DataId SQLiteObjectDbi::createObject(U2DataType type, const QString& folder, c
     i2.execute();
 
     return res;
+}
+
+void SQLiteObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
+    SQLiteQuery q("UPDATE Object SET name = ?1, version = version + 1 WHERE id = ?2", db, os);
+    q.bindString(1, obj.visualName);
+    q.bindDataId(2, obj.id);
+    q.execute();
+
+    SAFE_POINT_OP(os, );
+
+    obj.version = getObjectVersion(obj.id, os);
 }
 
 qint64 SQLiteObjectDbi::getFolderId(const QString& path, bool mustExist, DbRef* db, U2OpStatus& os) {

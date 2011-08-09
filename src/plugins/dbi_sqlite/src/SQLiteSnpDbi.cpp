@@ -108,8 +108,15 @@ public:
 };
 
 U2DbiIterator<U2Snp>* SQLiteSnpDbi::getSnps(const U2DataId& trackId, const U2Region& region, U2OpStatus& os) {
-    SQLiteQuery* q = new SQLiteQuery("SELECT pos, oldBase, newBase FROM Snp WHERE track = ?1", db, os);
+    if (region == U2_REGION_MAX) {
+        SQLiteQuery* q = new SQLiteQuery("SELECT pos, oldBase, newBase FROM Snp WHERE track = ?1", db, os);
+        q->bindDataId(1, trackId);
+        return new SqlRSIterator<U2Snp>(q, new SimpleSnpLoader(), NULL, U2Snp(), os);
+    } 
+    SQLiteQuery* q = new SQLiteQuery("SELECT pos, oldBase, newBase FROM Snp WHERE track = ?1 AND pos >= ?2 AND pos <?3", db, os);
     q->bindDataId(1, trackId);
+    q->bindInt64(2, region.startPos);
+    q->bindInt64(3, region.endPos());
     return new SqlRSIterator<U2Snp>(q, new SimpleSnpLoader(), NULL, U2Snp(), os);
 }
 

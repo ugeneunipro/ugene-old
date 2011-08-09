@@ -240,17 +240,17 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
 }
 
  
-void SQLiteAssemblyDbi::updateAssemblyObject(const U2Assembly& assembly, U2OpStatus& os) {
+void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
     SQLiteTransaction(db, os);
     
-    SQLiteQuery q1("UPDATE Assembly SET reference = ?1 WHERE object = ?2", db, os);
-    q1.bindDataId(1, assembly.referenceId);
-    q1.bindDataId(2, assembly.id);
-    q1.execute();
+    SQLiteQuery q("UPDATE Assembly SET reference = ?1 WHERE object = ?2", db, os);
+    q.bindDataId(1, assembly.referenceId);
+    q.bindDataId(2, assembly.id);
+    q.execute();
 
-    SQLiteQuery q2("UPDATE Object SET version = version + 1 WHERE id = ?2", db, os);
-    q2.bindDataId(1, assembly.id);
-    q2.execute();
+    SAFE_POINT_OP(os, );
+
+    dbi->getSQLiteObjectDbi()->updateObject(assembly, os);
 }
 
 void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
@@ -293,7 +293,7 @@ void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2AssemblyPackStat& sta
     if ( a == NULL ) {
         return;
     }
-    stat.readsCount = a->countReads(U2_ASSEMBLY_REGION_MAX, os);
+    stat.readsCount = a->countReads(U2_REGION_MAX, os);
     a->pack(stat, os);
     perfLog.trace(QString("Assembly: full pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }

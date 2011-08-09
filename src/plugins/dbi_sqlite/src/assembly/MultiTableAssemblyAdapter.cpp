@@ -244,7 +244,7 @@ QByteArray MultiTableAssemblyAdapter::getIdExtra(int rowPos, int elenPos) {
 
 
 qint64 MultiTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
-    bool all = r == U2_ASSEMBLY_REGION_MAX;
+    bool all = r == U2_REGION_MAX;
     qint64 sum = 0;
     // use more sensitive algorithm for smaller regions with low amount of reads
     // and not-very sensitive for huge regions with a lot of reads
@@ -704,7 +704,7 @@ void MultiTablePackAlgorithmAdapter::migrateAll(U2OpStatus& os) {
     if (nReadsToMigrate == 0) {
         return;
     }
-    qint64 nReadsTotal = multiTableAdapter->countReads(U2_ASSEMBLY_REGION_MAX, os);
+    qint64 nReadsTotal = multiTableAdapter->countReads(U2_REGION_MAX, os);
     qint64 migrationPercent = nReadsToMigrate * 100 / nReadsTotal;
 
     perfLog.trace(QString("Assembly: starting reads migration process. Reads to migrate: %1, total: %2 (%3%)").arg(nReadsToMigrate).arg(nReadsTotal).arg(migrationPercent));

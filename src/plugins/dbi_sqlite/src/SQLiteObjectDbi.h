@@ -135,6 +135,8 @@ public:
     */
     static U2DataId createObject(U2DataType type, const QString& folder, const QString& objectName, SQLiteDbiObjectRank rank, DbRef* db, U2OpStatus& os);
 
+    void updateObject(U2Object& obj, U2OpStatus& os);
+
     /** 
         Returns internal database folder id 
         Fails if folder not found and 'mustExist' == true

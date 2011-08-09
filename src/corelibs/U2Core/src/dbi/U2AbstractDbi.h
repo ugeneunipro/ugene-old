@@ -129,6 +129,10 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi(), os);
     }
 
+    virtual void updateSequenceObject(U2Sequence& , U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi(), os);
+    }
+
     virtual void updateSequenceData(const U2DataId&, const U2Region&, const QByteArray&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi(), os);
     }
@@ -163,7 +167,7 @@ protected:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 
-    virtual void updateAssemblyObject(const U2Assembly&, U2OpStatus& os) {
+    virtual void updateAssemblyObject(U2Assembly&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 

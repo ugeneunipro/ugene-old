@@ -111,7 +111,7 @@ void SingleTableAssemblyAdapter::bindRegion(SQLiteQuery& q, const U2Region& r, b
 }
 
 qint64 SingleTableAssemblyAdapter::countReads(const U2Region& r, U2OpStatus& os) {
-    if (r == U2_ASSEMBLY_REGION_MAX) {
+    if (r == U2_REGION_MAX) {
         return SQLiteQuery(QString("SELECT COUNT(*) FROM %1").arg(readsTable), db, os).selectInt64();
     }
     QString qStr = QString("SELECT COUNT(*) FROM %1 WHERE " + rangeConditionCheckForCount).arg(readsTable);
@@ -229,7 +229,7 @@ void SingleTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) 
 
 void SingleTableAssemblyAdapter::calculateCoverage(const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {
     QString queryString = "SELECT gstart, elen FROM " + readsTable;
-    bool rangeArgs = r != U2_ASSEMBLY_REGION_MAX;
+    bool rangeArgs = r != U2_REGION_MAX;
 
     if (rangeArgs) {
         queryString+=" WHERE " + rangeConditionCheck;

@@ -391,7 +391,7 @@ qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
         }
         if(cachedReadsNumber == NO_VAL) {
             LOG_OP(os);
-            cachedReadsNumber = assemblyDbi->countReads(assembly.id, U2_ASSEMBLY_REGION_MAX, os);
+            cachedReadsNumber = assemblyDbi->countReads(assembly.id, U2_REGION_MAX, os);
         }
     }
     return cachedReadsNumber;

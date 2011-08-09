@@ -28,6 +28,9 @@
 
 namespace U2 {
 
+/** Predefined region - acts as hint for a function that all possible range must be processed */
+#define U2_REGION_MAX U2Region(0, LLONG_MAX)
+
 /** 
     Linear 64bit region 
 */
