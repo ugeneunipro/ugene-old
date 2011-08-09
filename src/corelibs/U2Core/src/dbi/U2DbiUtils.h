@@ -46,10 +46,17 @@ public:
 
     DbiHandle(const DbiHandle & dbiHandle_);
 
+    /** Constructs empty invalid dbi handle */
+    DbiHandle();
+
     ~DbiHandle();
 
-    U2Dbi* dbi;
-    U2OpStatus& os;
+    bool isValid() const {return dbi != NULL;}
+    
+    U2Dbi*          dbi;
+
+    U2OpStatus&     os;
+
 private: //TODO
     DbiHandle & operator=(const DbiHandle & DbiHandle_);
 };

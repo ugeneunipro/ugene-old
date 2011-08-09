@@ -21,7 +21,7 @@
 
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2DbiRegistry.h>
-#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
 
 namespace U2 {
@@ -51,10 +51,18 @@ DbiHandle::DbiHandle(U2DbiFactoryId id, const QString& url,  bool create, U2OpSt
     dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(id, url, create, os);
 }
 
-DbiHandle::DbiHandle(const DbiHandle & dbiHandle_) : dbi(dbiHandle_.dbi), os(dbiHandle_.os) {
-    if (dbi != NULL) {
+DbiHandle::DbiHandle(const DbiHandle& dbiHandle) : dbi(dbiHandle.dbi), os(dbiHandle.os) {
+    if (dbiHandle.dbi != NULL) {
         AppContext::getDbiRegistry()->getGlobalDbiPool()->addRef(dbi, os);
     }
+}
+
+static U2OpStatus& getStubOpStatus() {
+    static U2OpStatusImpl stubOs;
+    return stubOs;
+}
+
+DbiHandle::DbiHandle() : dbi(NULL), os(getStubOpStatus()) {
 }
 
 DbiHandle::~DbiHandle() {
