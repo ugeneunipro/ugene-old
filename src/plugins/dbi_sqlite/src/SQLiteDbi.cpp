@@ -80,7 +80,7 @@ U2AttributeDbi* SQLiteDbi::getAttributeDbi() {
     return attributeDbi;
 }
 
-QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const {
+QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) {
     SQLiteQuery q("SELECT value FROM Meta WHERE name = ?1", db, os);
     q.bindString(1, name);
     bool found = q.step();
@@ -189,7 +189,8 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_WriteCrossDatabaseReferences);
     features.insert(U2DbiFeature_ReadAttributes);
     features.insert(U2DbiFeature_WriteAttributes);
-
+    features.insert(U2DbiFeature_ReadProperties);
+    features.insert(U2DbiFeature_WriteProperties);
 }
 
 void SQLiteDbi::setState(U2DbiState s) {

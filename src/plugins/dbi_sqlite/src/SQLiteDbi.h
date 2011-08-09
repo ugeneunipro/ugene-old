@@ -122,9 +122,9 @@ public:
     /** Returns properties used to initialized the database */
     virtual QHash<QString, QString> getInitProperties() const {return initProperties;}
 
-    QString getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) const;
+    virtual QString getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os);
 
-    void setProperty(const QString& name, const QString& value, U2OpStatus& os);
+    virtual void setProperty(const QString& name, const QString& value, U2OpStatus& os);
 
 private:
     QString getLastErrorMessage(int rc);

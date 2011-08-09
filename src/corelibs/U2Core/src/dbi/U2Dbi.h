@@ -76,48 +76,52 @@ enum U2CORE_EXPORT U2DbiState {
 enum U2CORE_EXPORT U2DbiFeature {
     
     /** DBI supports sequence reading methods */
-    U2DbiFeature_ReadSequence                 = 1,
+    U2DbiFeature_ReadSequence                   = 1,
     /** DBI supports MSA reading methods */
-    U2DbiFeature_ReadMsa                      = 2,
+    U2DbiFeature_ReadMsa                        = 2,
     /** DBI supports Assembly reading methods */
-    U2DbiFeature_ReadAssembly                 = 3,
+    U2DbiFeature_ReadAssembly                   = 3,
     /** DBI supports sequence annotations reading methods */
-    U2DbiFeature_ReadSequenceAnnotations      = 4,
+    U2DbiFeature_ReadSequenceAnnotations        = 4,
     /** DBI supports read methods for attributes */
-    U2DbiFeature_ReadAttributes               = 5,
+    U2DbiFeature_ReadAttributes                 = 5,
     /** DBI supports read methods for remote objects  */
-    U2DbiFeature_ReadCrossDatabaseReferences  = 6,
+    U2DbiFeature_ReadCrossDatabaseReferences    = 6,
     /** DBI supports readings Snps and SnpTracks */
-    U2DbiFeature_ReadSnp                     = 7,
+    U2DbiFeature_ReadSnp                        = 7,
+    /** DBI supports readings of custom properties */
+    U2DbiFeature_ReadProperties                 = 8,
 
     /** DBI supports changing/storing sequences */
-    U2DbiFeature_WriteSequence                = 101,
+    U2DbiFeature_WriteSequence                  = 101,
     /** DBI supports changing/storing multiple sequence alignments */
-    U2DbiFeature_WriteMsa                     = 102,
+    U2DbiFeature_WriteMsa                       = 102,
     /** DBI supports changing/storing assemblies */
-    U2DbiFeature_WriteAssembly                = 103
+    U2DbiFeature_WriteAssembly                  = 103
     /** DBI supports changing/storing sequence annotations */,
-    U2DbiFeature_WriteSequenceAnnotations     = 104,
+    U2DbiFeature_WriteSequenceAnnotations       = 104,
     /** DBI supports changing/storing attributes */
-    U2DbiFeature_WriteAttributes              = 105,
+    U2DbiFeature_WriteAttributes                = 105,
     /** DBI supports cross database references */
-    U2DbiFeature_WriteCrossDatabaseReferences = 106,
+    U2DbiFeature_WriteCrossDatabaseReferences   = 106,
     /** DBI supports changing/storing Snps and SnpTracks */
-    U2DbiFeature_WriteSnp                    = 107,
+    U2DbiFeature_WriteSnp                       = 107,
+    /** DBI supports changing/storing custom properties */
+    U2DbiFeature_WriteProperties                = 108,
 
 
     /** DBI supports removal of objects */
-    U2DbiFeature_RemoveObjects                = 200,
+    U2DbiFeature_RemoveObjects                  = 200,
     /** DBI supports set folder modification operations */
-    U2DbiFeature_ChangeFolders                = 201,
+    U2DbiFeature_ChangeFolders                  = 201,
     
     /** DBI provides optimized algorithm for assembly reads packing */
-    U2DbiFeature_AssemblyReadsPacking         = 300,
+    U2DbiFeature_AssemblyReadsPacking           = 300,
     /** DBI provides optimized algorithm for coverage calculation */
-    U2DbiFeature_AssemblyCoverageStat         = 301,
+    U2DbiFeature_AssemblyCoverageStat           = 301,
 
     /** DBI provides optimized algorithm for sorting attributes */
-    U2DbiFeature_AttributeSorting             = 400,
+    U2DbiFeature_AttributeSorting               = 400,
 
 };
 
@@ -253,6 +257,19 @@ public:
         Not NULL only if U2DbiFeature_ReadCrossDatabaseReferences supported
     */
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi() = 0;
+
+    /** 
+        Reads database global properties.
+        Requires U2DbiFeature_ReadProperties support
+    */
+    virtual QString getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) = 0;
+
+    /** 
+        Sets database global properties.
+        Requires U2DbiFeature_WriteProperties support
+    */
+    virtual void setProperty(const QString& name, const QString& value, U2OpStatus& os) = 0;
+
 };
 
 /** 

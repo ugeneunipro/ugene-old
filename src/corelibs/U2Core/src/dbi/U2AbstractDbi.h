@@ -80,6 +80,15 @@ public:
     
     virtual U2DataType getEntityTypeById(const U2DataId&) const {return U2Type::Unknown;}
 
+    virtual QString getProperty(const QString&, const QString& defaultValue, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_ReadProperties, this, os);
+        return defaultValue;
+    }
+
+    virtual void setProperty(const QString&, const QString&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteProperties, this, os);
+    }
+
 protected:
     U2DbiState                  state;
     U2DbiId                     dbiId;
