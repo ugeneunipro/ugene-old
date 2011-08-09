@@ -324,6 +324,53 @@ void MAlignmentObject::moveRowsBlock( int firstRow, int numRows, int shift )
 
 }
 
+
+bool MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int nRows, int shift )
+{
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", false );
+    SAFE_POINT(!isRegionEmpty(startPos, startRow, nBases, nRows), "Region is empty!", false );
+
+    MAlignment maBefore = msa;
+
+    int n = 0;
+    if (shift > 0) {
+        insertGap(U2Region(startRow,nRows), startPos, shift);
+        n = shift;
+    } else {
+        if (startPos + shift < 0) {
+            return false;
+        }
+        int endRow = startRow + nRows;
+        for (int row = startRow; row < endRow; ++row) {
+            n += deleteGap(row, startPos + shift, qAbs(shift));
+        }
+    }
+
+    setModified(true);
+    MAlignmentModInfo mi;
+    emit si_alignmentChanged(maBefore, mi);
+    
+    return n > 0;
+
+}
+
+
+bool MAlignmentObject::isRegionEmpty(int startPos, int startRow, int numChars, int numRows) const
+{
+    bool emptyBlock = true;
+    for (int row = startRow; row < startRow + numRows; ++row ) {
+        for( int pos = startPos; pos < startPos + numChars; ++pos ) {
+            const MAlignmentRow& r = msa.getRows().at(row);
+            if (r.chatAt(pos) != MAlignment_GapChar) {
+                emptyBlock = false;
+                break;
+            }
+        }
+    }
+
+    return emptyBlock;
+}
+
 static bool _registerMeta() {
     qRegisterMetaType<MAlignmentModInfo>("MAlignmentModInfo");
     return true;

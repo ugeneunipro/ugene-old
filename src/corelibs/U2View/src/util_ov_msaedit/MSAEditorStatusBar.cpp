@@ -75,7 +75,8 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     l->addWidget(lockLabel);
     setLayout(l);
 
-    connect(seqArea, SIGNAL(si_cursorMoved(const QPoint&,const QPoint&)), SLOT(sl_cursorMoved(const QPoint&,const QPoint&)));
+    connect(seqArea, SIGNAL(si_selectionChanged(const MSAEditorSelection& , const MSAEditorSelection& )), 
+        SLOT(sl_selectionChanged(const MSAEditorSelection& , const MSAEditorSelection&)));
     connect(mobj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
     connect(mobj, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockStateChanged()));

@@ -79,6 +79,9 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     startSeq = 0;
     highlightSelection = false;
     scribbling = false;
+    shifting = false;
+
+    rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
    
     delSelectionAction = new QAction(tr("Remove selection"), this);
     delSelectionAction->setShortcut(QKeySequence(Qt::Key_Delete));
@@ -615,15 +618,20 @@ void MSAEditorSequenceArea::updateSelection( const QPoint& newPos)
 
 void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 {
-    if ((e->buttons() & Qt::LeftButton) && scribbling) {
-        QPoint absPos = coordToAbsolutePos(e->pos());
-        if ( isInRange(absPos) ) {
-            updateHBarPosition(absPos.x());
-            updateVBarPosition(absPos.y());
+    if ( (e->buttons() & Qt::LeftButton) && scribbling ) {
+        QPoint newCurPos = coordToAbsolutePos(e->pos());
+        if (isInRange(newCurPos)) {
+            updateHBarPosition(newCurPos.x());
+            updateVBarPosition(newCurPos.y());
+        } 
+
+        if (shifting) {
+            shiftSelectedRegion( newCurPos.x() - cursorPos.x() );
+        } else {
+            rubberBand->setGeometry(QRect(origin, e->pos()).normalized());
         }
-        updateSelection(absPos);
     }
-    
+
     QWidget::mouseMoveEvent(e);
 
 }
@@ -632,10 +640,22 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 
 void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 {
-    
-    if (e->button() == Qt::LeftButton) {
-        QPoint pos = coordToAbsolutePos(e->pos());
-        updateSelection(pos);
+    rubberBand->hide();
+    if (scribbling) {
+        QPoint newCurPos = coordToAbsolutePos(e->pos());
+        if (isInRange(newCurPos) ) {
+            if (e->pos() == origin) {
+                // special case: click but don't drag
+                shifting = false;
+            }
+            if (shifting) {
+                int shift = newCurPos.x() - cursorPos.x();
+                shiftSelectedRegion(shift);
+            } else {
+                updateSelection(newCurPos);
+            }
+        }
+        shifting = false;
         scribbling = false;
     }
     shBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
@@ -646,19 +666,26 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 
 
 void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
+
     if (!hasFocus()) {
         setFocus();
     }
 
-    if (e->button() == Qt::LeftButton) {
-        QPoint p = coordToPos(e->pos());
-        if (p.x()!=-1 && p.y()!=-1) {
-            setCursorPos(p);
-            setSelection(MSAEditorSelection(p,1,1));
+    if ((e->button() == Qt::LeftButton)){
+        origin = e->pos();
+        cursorPos = coordToPos(e->pos());
+        MSAEditorSelection s = ui->seqArea->getSelection();
+        if ( s.getRect().contains(cursorPos) ){ 
+            shifting = true;
+        } else {
+            rubberBand->setGeometry(QRect(origin, QSize()));
+            rubberBand->show();
+            ui->seqArea->cancelSelection();
         }
-        scribbling = true;
+        if ( isInRange(cursorPos) ) {
+            scribbling = true;
+        }
     }
-    mousePos = e->pos();
 
     QWidget::mousePressEvent(e);
 }
@@ -681,19 +708,15 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
              cancelSelection();
              break;
         case Qt::Key_Left:
-            //moveCursor(-1, 0);    
             moveSelection(-1,0);
             break;
         case Qt::Key_Right:
-            //moveCursor(1, 0);    
             moveSelection(1,0);
             break;
         case Qt::Key_Up:
-            //moveCursor(0, -1);    
             moveSelection(0,-1);
             break;
         case Qt::Key_Down:
-            //moveCursor(0, 1);    
             moveSelection(0,1);
             break;
         case Qt::Key_Home:
@@ -919,7 +942,6 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s) {
 
     emit si_selectionChanged(selection, prevSelection);
     QPoint current = prevSelection.topLeft(), prev = prevSelection.topLeft();
-    emit si_cursorMoved(current, prev);
     update();
 
 }
@@ -933,11 +955,6 @@ void MSAEditorSequenceArea::setCursorPos(const QPoint& p) {
     QPoint prev = cursorPos;
     cursorPos = p;
     
-    emit si_cursorMoved(cursorPos, prev);
-    
-    //if (up) {
-    //    update();
-    //}
     highlightSelection = false;
     updateActions();
 }
@@ -1173,10 +1190,11 @@ bool MSAEditorSequenceArea::checkState() const {
     int lastSeq = getLastVisibleSequence(true);
     assert(lastPos < aliLen && lastSeq < nSeqs);
     
-    int cx = cursorPos.x();
-    int cy = cursorPos.y();
-    assert(cx >= 0 && cy >= 0);
-    assert(cx < aliLen && cy < nSeqs);
+    // TODO: check selection is valid
+    //int cx = cursorPos.x();
+    //int cy = cursorPos.y();
+    //assert(cx >= 0 && cy >= 0);
+    //assert(cx < aliLen && cy < nSeqs);
 #endif
     return true;
 }
@@ -1235,14 +1253,14 @@ void MSAEditorSequenceArea::sl_onScrollBarActionTriggered( int scrollAction )
 
     if (scrollAction ==  QAbstractSlider::SliderSingleStepAdd || scrollAction == QAbstractSlider::SliderSingleStepSub) {
         if (scribbling) {
-            QPoint coord = mapFromGlobal(QCursor::pos());
+            /*QPoint coord = mapFromGlobal(QCursor::pos());
             QPoint pos = coordToAbsolutePos(coord);
             if ( (scrollAction == QAbstractSlider::SliderSingleStepSub) && (sbar == shBar) ) {
                 pos.setX(pos.x() - 1);
             } else if ( (scrollAction == QAbstractSlider::SliderSingleStepSub) && (sbar == svBar) )  {
                 pos.setY(pos.y() - 1);
             }
-            updateSelection(pos);
+            updateSelection(pos);*/
         }
     }
 }
@@ -1357,6 +1375,31 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
         
     
 }
+
+
+void MSAEditorSequenceArea::shiftSelectedRegion( int shift )
+{
+    if (shift == 0) {
+        return;
+    }
+  
+    MAlignmentObject* maObj = editor->getMSAObject();
+    if ( !maObj->isStateLocked() ) {
+        int x = selection.x(); 
+        int y = selection.y();
+        int width = selection.width();
+        int height = selection.height();
+        if (maObj->isRegionEmpty(x,y,width,height)) {
+            return;
+        }
+        bool shiftOk = maObj->shiftRegion(x,y,width,height,shift);
+        if (shiftOk) {
+            cursorPos.setX(cursorPos.x() + shift);
+            moveSelection(shift,0);
+        }
+    }
+}
+
 
 void MSAEditorSequenceArea::deleteCurrentSelection()
 {

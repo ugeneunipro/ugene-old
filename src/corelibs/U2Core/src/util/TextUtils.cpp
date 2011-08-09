@@ -37,7 +37,6 @@ static QByteArray getSpaceLine();
 static QBitArray getLessThan();
 static QBitArray getGrearThan();
 static QBitArray getQualNameAllowedSymbols();
-static QBitArray getAnnotationAllowedSymbols();
 
 const QBitArray TextUtils::ALPHAS = getAlphas();
 const QBitArray TextUtils::ALPHA_NUMS = getAlphaNums();

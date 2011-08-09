@@ -55,6 +55,8 @@ public:
 
     char charAt(int seqNum, int pos) const {return msa.charAt(seqNum, pos);}
 
+    bool isRegionEmpty(int x, int y, int width, int height) const;
+
     virtual GObject* clone() const;
 
     void insertGap(int seqNum, int pos, int nGaps);
@@ -84,6 +86,8 @@ public:
     virtual void setGObjectName(const QString& newName);
 
     void moveRowsBlock( int firstRow, int numRows, int delta);
+
+    bool shiftRegion( int startPos, int startRow, int nBases, int nRows, int shift);
 
     int getLength() const {return msa.getLength();}
 

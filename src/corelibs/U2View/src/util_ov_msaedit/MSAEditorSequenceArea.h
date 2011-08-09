@@ -32,6 +32,7 @@
 #include <QtGui/QWidget>
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
+#include <QtGui/QRubberBand>
 
 namespace U2 {
 
@@ -148,6 +149,8 @@ public:
 
     void moveSelection(int dx, int dy);
 
+    void shiftSelectedRegion(int shift);
+
     void cancelSelection();
 
     void highlightCurrentSelection() { highlightSelection = true; update(); }
@@ -159,7 +162,7 @@ public:
     U2Region getRowsAt(int seq) const;
 
 private:
-    const QPoint& getCursorPos() const {assert(checkState()); return cursorPos;}
+    // emulating cursor mode with
 
     void setCursorPos(const QPoint& p);
 
@@ -189,7 +192,6 @@ public:
     
 signals:
     void si_startChanged(const QPoint& p, const QPoint& prev);
-    void si_cursorMoved(const QPoint& p, const QPoint& prev);
     void si_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
 
 protected:
@@ -266,13 +268,14 @@ private:
     MSAEditorUI*    ui;
     GScrollBar*     shBar;
     GScrollBar*     svBar;
+    QRubberBand*    rubberBand;
 
     int             startPos; //first visible x pos 
     int             startSeq; //first visible y pos
 
-    bool scribbling;
-    QPoint              cursorPos;
-    QPoint              mousePos;
+    bool                scribbling, shifting;
+    QPoint              origin; // global window coordinates
+    QPoint              cursorPos; // mouse cursor position in alignment coordinates
     MSAEditorSelection  selection;
 
     QAction*        copySelectionAction;
