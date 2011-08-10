@@ -37,7 +37,7 @@
 namespace U2 {
 
 ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, DNASequenceObject* obj) 
-: QObject(v), view(v), seqObj(obj), aminoTT(NULL), complTT(NULL), selection(NULL), translations(NULL)
+: QObject(v), view(v), seqObj(obj), aminoTT(NULL), complTT(NULL), selection(NULL), translations(NULL), visibleFrames(NULL)
 {
     selection = new DNASequenceSelection(seqObj, this);
     clarifyAminoTT = false;
@@ -58,6 +58,21 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, DNASeque
                 a->setChecked(aminoTT == t);
                 a->setData(QVariant(t->getTranslationId()));
                 connect(a, SIGNAL(triggered()), SLOT(sl_setAminoTranslation()));
+            }
+            visibleFrames = new QActionGroup(this);
+            visibleFrames->setExclusive(false);
+            for(int i = 0; i < 6; i++){
+                QAction* a;
+                if(i < 3){
+                    a = visibleFrames->addAction(QString("%1 direct translation frame").arg(i+1));
+                }else{
+                    a = visibleFrames->addAction(QString("%1 complement translation frame").arg(i+1-3));
+                }
+                a->setCheckable(true);
+                a->setChecked(true);
+                //set row id
+                a->setData(i);
+                connect(a, SIGNAL(triggered()), SLOT(sl_toggleTransltions()));
             }
         }
     }
@@ -111,9 +126,16 @@ QList<GObject*> ADVSequenceObjectContext::getAnnotationGObjects() const {
 
 
 QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
-    QMenu* m = NULL;
+    QMenu* m = NULL, *frames = NULL;
     if (translations) {
         m = new QMenu(tr("Amino translation"));
+        frames = new QMenu(tr("Translation frames"));
+        foreach(QAction* a, visibleFrames->actions()) {
+            frames->addAction(a);
+        }
+        m->addMenu(frames);
+        m->addSeparator();
+
         m->setIcon(QIcon(":core/images/tt_switch.png"));
         foreach(QAction* a, translations->actions()) {
             m->addAction(a);
@@ -210,4 +232,15 @@ QSet<AnnotationTableObject*> ADVSequenceObjectContext::getAnnotationObjects(bool
 
 }
 
+void ADVSequenceObjectContext::sl_toggleTransltions(){
+    emit si_translationRowsChanged();
+}
+
+QVector<bool> ADVSequenceObjectContext::getTranslationRowsVisibleStatus(){
+    QVector<bool> result;
+     foreach(QAction* a, visibleFrames->actions()) {
+         result.append(a->isChecked());
+     }
+     return result;
+}
 }//namespace

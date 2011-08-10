@@ -76,13 +76,16 @@ public:
     void removeSequenceWidget(ADVSequenceWidget* w);
 
     QList<Annotation*> selectRelatedAnnotations(const QList<Annotation*>& alist) const;
+    QVector<bool> getTranslationRowsVisibleStatus();
 
 private slots:
     void sl_setAminoTranslation();
+    void sl_toggleTransltions();
 signals:
     void si_aminoTranslationChanged();
     void si_annotationObjectAdded(AnnotationTableObject* obj);
     void si_annotationObjectRemoved(AnnotationTableObject* obj);
+    void si_translationRowsChanged();
 
 private:
     void guessAminoTT(AnnotationTableObject* ao);
@@ -94,6 +97,7 @@ private:
     DNATranslation*                 complTT;
     DNASequenceSelection*           selection;
     QActionGroup*                   translations;
+    QActionGroup*                   visibleFrames;
     QList<ADVSequenceWidget*>       seqWidgets;
     QSet<AnnotationTableObject*>    annotations;
     QSet<AnnotationTableObject*>    autoAnnotations;

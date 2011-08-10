@@ -45,6 +45,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
 #include <QtGui/QLayout>
+#include <QtGui/QMessageBox>
 
 
 namespace U2 {
@@ -76,6 +77,7 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     renderArea->setObjectName("render_area");
 
     connect(ctx, SIGNAL(si_aminoTranslationChanged()), SLOT(sl_onAminoTTChanged()));
+    connect(ctx, SIGNAL(si_translationRowsChanged()), SLOT(sl_translationRowsChanged()));
 
     connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), this, SLOT(sl_sequenceChanged()));
 
@@ -203,7 +205,35 @@ void DetView::sl_sequenceChanged(){
     GSequenceLineView::sl_sequenceChanged();
 }
 
+void DetView::sl_translationRowsChanged(){
+    QVector<bool> visibleRows = getSequenceContext()->getTranslationRowsVisibleStatus();
+    bool anyFrame = false;
+    foreach(bool b, visibleRows){
+        anyFrame = anyFrame || b;
+    }
+    if(!anyFrame){
+        sl_showTranslationToggle(false);
+        return;
+    }
 
+    updateScrollBar();
+    updateSize();
+    completeUpdate();
+}
+
+void DetView::sl_showTranslationToggle( bool v ){
+    QVector<bool> visibleRows = getSequenceContext()->getTranslationRowsVisibleStatus();
+    bool anyFrame = false;
+    foreach(bool b, visibleRows){
+        anyFrame = anyFrame || b;
+    }
+    if(!anyFrame && v){
+        QMessageBox::warning(this, tr("warning"), DetView::tr("Select at least one visible row for translations"));
+        showTranslationAction->setChecked(false);
+        return;
+    }
+    setShowTranslation(v);
+}
 //////////////////////////////////////////////////////////////////////////
 /// render
 DetViewRenderArea::DetViewRenderArea(DetView* v) : GSequenceLineViewAnnotatedRenderArea(v, true) {
@@ -224,12 +254,26 @@ void DetViewRenderArea::updateLines() {
         rulerLine = 1;
         numLines = 2;
     } else if (detView->hasComplementaryStrand() && detView->hasTranslations()) {
+        //change
         firstDirectTransLine = 0;
         baseLine = 3;
         rulerLine = 4;
         complementLine = 5;
         firstComplTransLine = 6;
-        numLines = 9;
+        numLines = 9; 
+        QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
+            
+        for(int i = 0; i<6; i++ ){
+            if(!v[i]){
+                if(i<3){
+                    baseLine--;
+                    rulerLine--;
+                    complementLine--;
+                    firstComplTransLine--;
+                }
+                numLines--;
+            }
+        }
     } else if (detView->hasComplementaryStrand()) {
         assert(!detView->hasTranslations());
         baseLine = 0;
@@ -242,6 +286,19 @@ void DetViewRenderArea::updateLines() {
         baseLine = 3;
         rulerLine = 4;
         numLines = 5;
+        QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
+
+        for(int i = 0; i<6; i++ ){
+            if(!v[i]){
+                if(i<3){
+                    baseLine--;
+                    rulerLine--;
+                    complementLine--;
+                    firstComplTransLine--;
+                }
+                numLines--;
+            }
+        }
     }
     assert(numLines > 0);
 }
@@ -377,14 +434,25 @@ static QByteArray translate(DNATranslation* t, const char* seq, int seqLen) {
     return res;
 }
 
+int correctLine( QVector<bool> visibleRows, int line){
+    int retLine = line;
+    assert(visibleRows.size() == 6);
+    for(int i = 0; i < line; i++){
+        if(!visibleRows[i+3]){
+            retLine--;
+        }
+    }
+    return retLine;
+}
+
 void DetViewRenderArea::drawTranslations(QPainter& p) {
     p.setFont(sequenceFont);
+    DetView* detView = getDetView();
+    QVector<bool> visibleRows = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
 
     if (firstDirectTransLine < 0 && firstComplTransLine < 0) {
         return;
     }
-    DetView* detView = getDetView();
-
     DNATranslation3to1Impl* aminoTable = (DNATranslation3to1Impl*)detView->getAminoTT();
     assert(aminoTable!=NULL && aminoTable->isThree2One());
 
@@ -408,48 +476,51 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     fontBS.setBold(true);
     QFont fontIS = sequenceFontSmall;
     fontIS.setItalic(true);
+    int directLine = 0;
 
     QList<Annotation*> annotationsInRange = detView->findAnnotationsInRange(visibleRange);
 
 
     {//direct translations
         for(int i = 0; i < 3; i++) {
-            int indent = (visibleRange.startPos + i) % 3;
-            int dnaStartPos = visibleRange.startPos + indent - 3;
-            if (dnaStartPos < minUsablePos) {
-                dnaStartPos+=3;
-            }
-            int dnaLen = maxUsablePos - dnaStartPos;
-            const char* seqStart = sequence.data();
-            const char* dnaSeq = sequence.data() + dnaStartPos;
-            QByteArray amino = translate(aminoTable, dnaSeq, dnaLen);
-
-            int line = dnaStartPos % 3;
-            int y = getTextY(firstDirectTransLine + line);
-            int dx = dnaStartPos - visibleRange.startPos;
-            for(int j = 0, n = amino.length(); j < n ; j++, dnaSeq += 3) {
-                char amin = amino[j];
-                int xpos = 3 * j + 1 + dx;
-                assert(xpos >= 0 && xpos < visibleRange.length);
-                int x =  xpos * charWidth + xCharOffset;
-
-                QColor charColor;
-                bool inAnnotation = deriveTranslationCharColor(dnaSeq - seqStart, U2Strand::Direct, annotationsInRange, charColor);
-
-                if (aminoTable->isStartCodon(dnaSeq)) {
-                    p.setPen(inAnnotation ? charColor : startC);
-                    p.setFont(inAnnotation ? fontB : fontBS);
-                } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, dnaSeq)) {
-                    p.setPen(inAnnotation ? charColor : startC);
-                    p.setFont(inAnnotation ? fontI: fontIS);
-                } else if (aminoTable->isStopCodon(dnaSeq)) {
-                    p.setPen(inAnnotation ? charColor : stopC);
-                    p.setFont(inAnnotation ? fontB : fontBS);
-                } else {
-                    p.setPen(charColor);
-                    p.setFont(inAnnotation ? sequenceFont : sequenceFontSmall);
+            if(visibleRows[i] == true){
+                int indent = (visibleRange.startPos + i) % 3;
+                int dnaStartPos = visibleRange.startPos + indent - 3;
+                if (dnaStartPos < minUsablePos) {
+                    dnaStartPos+=3;
                 }
-                p.drawText(x, y, QString(amin));
+                int dnaLen = maxUsablePos - dnaStartPos;
+                const char* seqStart = sequence.data();
+                const char* dnaSeq = sequence.data() + dnaStartPos;
+                QByteArray amino = translate(aminoTable, dnaSeq, dnaLen);
+
+                
+                int y = getTextY(firstDirectTransLine + directLine++);
+                int dx = dnaStartPos - visibleRange.startPos;
+                for(int j = 0, n = amino.length(); j < n ; j++, dnaSeq += 3) {
+                    char amin = amino[j];
+                    int xpos = 3 * j + 1 + dx;
+                    assert(xpos >= 0 && xpos < visibleRange.length);
+                    int x =  xpos * charWidth + xCharOffset;
+
+                    QColor charColor;
+                    bool inAnnotation = deriveTranslationCharColor(dnaSeq - seqStart, U2Strand::Direct, annotationsInRange, charColor);
+
+                    if (aminoTable->isStartCodon(dnaSeq)) {
+                        p.setPen(inAnnotation ? charColor : startC);
+                        p.setFont(inAnnotation ? fontB : fontBS);
+                    } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, dnaSeq)) {
+                        p.setPen(inAnnotation ? charColor : startC);
+                        p.setFont(inAnnotation ? fontI: fontIS);
+                    } else if (aminoTable->isStopCodon(dnaSeq)) {
+                        p.setPen(inAnnotation ? charColor : stopC);
+                        p.setFont(inAnnotation ? fontB : fontBS);
+                    } else {
+                        p.setPen(charColor);
+                        p.setFont(inAnnotation ? sequenceFont : sequenceFontSmall);
+                    }
+                    p.drawText(x, y, QString(amin));
+                }
             }
         }
     }
@@ -461,6 +532,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
         QByteArray revComplDna(usableSize, 0);
         complTable->translate(sequence.data() + minUsablePos, usableSize, revComplDna.data(), usableSize);
         TextUtils::reverse(revComplDna.data(), revComplDna.size());
+        int complLine = 0;
         for(int i = 0; i < 3; i++) {
             int indent = (seqLen - visibleRange.endPos() + i) % 3;
             int revComplStartPos = visibleRange.endPos() - indent + 3; //start of the reverse complement sequence in direct coords
@@ -473,33 +545,37 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
             const char* dnaSeq = revComplData + revComplDnaOffset;
             int dnaLen = revComplStartPos - minUsablePos;
             QByteArray amino = translate(aminoTable, dnaSeq, dnaLen);
-            int line = (seqLen - revComplStartPos) % 3;
-            int y = getTextY(firstComplTransLine + line);
-            int dx = visibleRange.endPos() - revComplStartPos;
-            for(int j = 0, n = amino.length(); j < n ; j++, dnaSeq +=3) {
-                char amin = amino[j];
-                int xpos = visibleRange.length - (3 * j + 2 + dx);
-                assert(xpos >= 0 && xpos < visibleRange.length);
-                int x =  xpos * charWidth + xCharOffset;
+            complLine = (seqLen - revComplStartPos) % 3;
+            if(visibleRows[complLine+3] == true){
+                complLine = correctLine(visibleRows, complLine);
+                //int line = (seqLen - revComplStartPos) % 3;
+                int y = getTextY(firstComplTransLine + complLine);
+                int dx = visibleRange.endPos() - revComplStartPos;
+                for(int j = 0, n = amino.length(); j < n ; j++, dnaSeq +=3) {
+                    char amin = amino[j];
+                    int xpos = visibleRange.length - (3 * j + 2 + dx);
+                    assert(xpos >= 0 && xpos < visibleRange.length);
+                    int x =  xpos * charWidth + xCharOffset;
 
-                QColor charColor;
-                bool inAnnotation = deriveTranslationCharColor(maxUsablePos - (dnaSeq - revComplDna.constData()), 
-                    U2Strand::Complementary, annotationsInRange, charColor);
+                    QColor charColor;
+                    bool inAnnotation = deriveTranslationCharColor(maxUsablePos - (dnaSeq - revComplDna.constData()), 
+                        U2Strand::Complementary, annotationsInRange, charColor);
 
-                if (aminoTable->isStartCodon(dnaSeq)) {
-                    p.setPen(inAnnotation ? charColor : startC);
-                    p.setFont(inAnnotation ? fontB : fontBS);
-                } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, dnaSeq)) {
-                    p.setPen(inAnnotation ? charColor : startC);
-                    p.setFont(inAnnotation ? fontI : fontIS);
-                } else if (aminoTable->isStopCodon(dnaSeq)) {
-                    p.setPen(inAnnotation ? charColor : stopC);
-                    p.setFont(inAnnotation ? fontB : fontBS);
-                } else {
-                    p.setPen(charColor);
-                    p.setFont(inAnnotation ? sequenceFont : sequenceFontSmall);
+                    if (aminoTable->isStartCodon(dnaSeq)) {
+                        p.setPen(inAnnotation ? charColor : startC);
+                        p.setFont(inAnnotation ? fontB : fontBS);
+                    } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, dnaSeq)) {
+                        p.setPen(inAnnotation ? charColor : startC);
+                        p.setFont(inAnnotation ? fontI : fontIS);
+                    } else if (aminoTable->isStopCodon(dnaSeq)) {
+                        p.setPen(inAnnotation ? charColor : stopC);
+                        p.setFont(inAnnotation ? fontB : fontBS);
+                    } else {
+                        p.setPen(charColor);
+                        p.setFont(inAnnotation ? sequenceFont : sequenceFontSmall);
+                    }
+                    p.drawText(x, y, QString(amin));
                 }
-                p.drawText(x, y, QString(amin));
             }
         }
     }

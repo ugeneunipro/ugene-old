@@ -58,7 +58,8 @@ protected slots:
     virtual void sl_sequenceChanged();
     void sl_onAminoTTChanged();
     void sl_showComplementToggle(bool v) {setShowComplement(v);}
-    void sl_showTranslationToggle(bool v) {setShowTranslation(v);}
+    void sl_showTranslationToggle(bool v);
+    void sl_translationRowsChanged();
 
 protected:
     void showEvent(QShowEvent * e);
