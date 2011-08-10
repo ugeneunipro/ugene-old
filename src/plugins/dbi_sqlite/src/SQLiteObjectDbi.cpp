@@ -396,19 +396,18 @@ U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder,
     if (os.hasError()) {
         return res;
     }
-    if (folder.isEmpty()) {
-        return res;
-    }
-    assert(rank == SQLiteDbiObjectRank_TopLevel);
-    qint64 folderId = getFolderId(folder, true, db, os);
-    if (os.hasError()) {
-        return res;
-    }
+    if (!folder.isEmpty()) {
+        assert(rank == SQLiteDbiObjectRank_TopLevel);
+        qint64 folderId = getFolderId(folder, true, db, os);
+        if (os.hasError()) {
+            return res;
+        }
 
-    SQLiteQuery i2("INSERT INTO FolderContent(folder, object) VALUES(?1, ?2)", db, os);
-    i2.bindInt64(1, folderId);
-    i2.bindDataId(2, res);    
-    i2.execute();
+        SQLiteQuery i2("INSERT INTO FolderContent(folder, object) VALUES(?1, ?2)", db, os);
+        i2.bindInt64(1, folderId);
+        i2.bindDataId(2, res);    
+        i2.execute();
+    }
 
     object.id = res;
     object.dbiId = dbi->getDbiId();
