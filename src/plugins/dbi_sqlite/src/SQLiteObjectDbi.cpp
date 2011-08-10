@@ -385,7 +385,9 @@ qint64 SQLiteObjectDbi::getObjectVersion(const U2DataId& objectId, U2OpStatus& o
     return q.selectInt64();
 }
 
-U2DataId SQLiteObjectDbi::createObject(U2DataType type, const QString& folder, const QString& vname, SQLiteDbiObjectRank rank, DbRef* db, U2OpStatus& os) {
+U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder, SQLiteDbiObjectRank rank, U2OpStatus& os) {
+    U2DataType type = object.getType();
+    const QString &vname = object.visualName;
     SQLiteQuery i1("INSERT INTO Object(type, rank, name) VALUES(?1, ?2, ?3)", db, os);
     i1.bindType(1, type);
     i1.bindInt32(2, rank);
@@ -408,7 +410,24 @@ U2DataId SQLiteObjectDbi::createObject(U2DataType type, const QString& folder, c
     i2.bindDataId(2, res);    
     i2.execute();
 
+    object.id = res;
+    object.dbiId = dbi->getDbiId();
+    object.version = getObjectVersion(object.id, os);
     return res;
+}
+
+void SQLiteObjectDbi::getObject(U2Object& object, const U2DataId& id, U2OpStatus& os) {
+    SQLiteQuery q("SELECT Object.name, Object.version FROM Object WHERE Object.id = ?1", db, os);
+    q.bindDataId(1, id);
+    if (q.step()) {
+        object.id = id;
+        object.dbiId = dbi->getDbiId();
+        object.visualName = q.getString(0);
+        object.version = q.getInt64(1);
+        q.ensureDone();
+    } else if (!os.hasError()) {
+        os.setError(SQLiteL10N::tr("Object not found."));
+    }
 }
 
 void SQLiteObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
@@ -476,7 +495,7 @@ void SQLiteCrossDatabaseReferenceDbi::initSqlSchema(U2OpStatus& os) {
 
 
 void SQLiteCrossDatabaseReferenceDbi::createCrossReference(U2CrossDatabaseReference& reference, U2OpStatus& os) {
-    reference.id = SQLiteObjectDbi::createObject(U2Type::Assembly, QString(), reference.visualName,  SQLiteDbiObjectRank_TopLevel, db, os);
+    dbi->getSQLiteObjectDbi()->createObject(reference, QString(), SQLiteDbiObjectRank_TopLevel, os);
     if (os.hasError()) {
         return;
     }

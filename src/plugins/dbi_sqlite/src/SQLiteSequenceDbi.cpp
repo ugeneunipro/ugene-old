@@ -48,17 +48,17 @@ void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
 
 U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) {
     U2Sequence res;
-    SQLiteQuery q("SELECT Sequence.length, Sequence.alphabet, Sequence.circular, Object.version FROM Sequence, Object "
-        " WHERE Object.id = ?1 AND Sequence.object = Object.id", db, os);
+    dbi->getSQLiteObjectDbi()->getObject(res, sequenceId, os);
+
+    SAFE_POINT_OP(os, res)
+
+    SQLiteQuery q("SELECT Sequence.length, Sequence.alphabet, Sequence.circular FROM Sequence "
+        " WHERE Sequence.object = ?1", db, os);
     q.bindDataId(1, sequenceId);
     if (q.step()) {
-        res.id = sequenceId;
-        res.dbiId = dbi->getDbiId();
-        res.version = 0;
         res.length = q.getInt64(0);
         res.alphabet = q.getString(1);
         res.circular = q.getBool(2);
-        res.version = q.getInt64(3);
         q.ensureDone();
     } else if (!os.hasError()) {
         os.setError(SQLiteL10N::tr("Sequence object not found."));
@@ -94,7 +94,7 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
 
 
 void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) {
-    sequence.id = SQLiteObjectDbi::createObject(U2Type::Sequence, folder, sequence.visualName, SQLiteDbiObjectRank_TopLevel, db, os);
+    dbi->getSQLiteObjectDbi()->createObject(sequence, folder, SQLiteDbiObjectRank_TopLevel, os);
     if (os.hasError()) {
         return;
     }

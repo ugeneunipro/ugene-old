@@ -130,11 +130,22 @@ public:
     // Helper methods
 
     /**
-        Creates new object of the specified type. Puts it into the 'folder'
+        Creates database entry for 'object'. Puts object into the 'folder'.
+        Retrieves type and name from 'object', sets its id and version.
+
         Returns result object data id
     */
-    static U2DataId createObject(U2DataType type, const QString& folder, const QString& objectName, SQLiteDbiObjectRank rank, DbRef* db, U2OpStatus& os);
+    U2DataId createObject(U2Object & object, const QString& folder, SQLiteDbiObjectRank rank, U2OpStatus& os);
 
+    /**
+        Retrieves U2Object fields from database entry with 'id'
+        and sets these fields for 'object'
+    */
+    void getObject(U2Object& object, const U2DataId& id, U2OpStatus& os);
+
+    /**
+        Updates database entry for 'obj'. Increments its version.
+    */
     void updateObject(U2Object& obj, U2OpStatus& os);
 
     /** 

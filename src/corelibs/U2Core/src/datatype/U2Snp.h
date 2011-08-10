@@ -36,6 +36,9 @@ public:
     
     /** Sequence id */
     U2DataId      sequence;
+
+    // implement U2Object
+    virtual U2DataType getType() { return U2Type::SnpTrack; }
 };
 
 /** Single nucleotide polymorphisms database representation */

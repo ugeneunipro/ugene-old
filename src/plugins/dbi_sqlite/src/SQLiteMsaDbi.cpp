@@ -20,6 +20,7 @@
  */
 
 #include "SQLiteMsaDbi.h"
+#include "SQLiteObjectDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
@@ -60,12 +61,15 @@ void SQLiteMsaRDbi::initSqlSchema(U2OpStatus& os) {
 }
 
 U2Msa SQLiteMsaRDbi::getMsaObject(const U2DataId& msaId, U2OpStatus& os) {
-    U2Msa res(msaId, dbi->getDbiId(), 0);
-    SQLiteQuery q("SELECT Msa.alphabet, Object.version FROM Msa, Object WHERE Object.id = ?1 AND Msa.object = Object.id", db, os);
+    U2Msa res;
+    dbi->getSQLiteObjectDbi()->getObject(res, msaId, os);
+
+    SAFE_POINT_OP(os, res);
+
+    SQLiteQuery q("SELECT Msa.alphabet FROM Msa WHERE Msa.object = ?1", db, os);
     q.bindDataId(1, msaId);
     if (q.step())  {
-        res.alphabet = q.getString(1);
-        res.version = q.getInt64(2);
+        res.alphabet = q.getString(0);
         q.ensureDone();
     } 
     return res;

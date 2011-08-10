@@ -105,16 +105,15 @@ AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpS
 
 U2Assembly SQLiteAssemblyDbi::getAssemblyObject(const U2DataId& assemblyId, U2OpStatus& os) {
     U2Assembly res;
-    SQLiteQuery q("SELECT Assembly.reference, Object.name, Object.version FROM Assembly, Object "
-                " WHERE Object.id = ?1 AND Assembly.object = Object.id", db, os);
+    dbi->getSQLiteObjectDbi()->getObject(res, assemblyId, os);
+
+    SAFE_POINT_OP(os, res);
+
+    SQLiteQuery q("SELECT Assembly.reference FROM Assembly "
+                " WHERE Assembly.object = ?1", db, os);
     q.bindDataId(1, assemblyId);
     if (q.step())  {
-        res.id = assemblyId;
-        res.dbiId = dbi->getDbiId();
-        res.version = 0;
         res.referenceId = q.getDataId(0, U2Type::Assembly);
-        res.visualName = q.getString(1);
-        res.version = q.getInt64(2);
         q.ensureDone();
     } else if (!os.hasError()) {
         os.setError(SQLiteL10N::tr("Assembly object not found."));
@@ -209,7 +208,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
                                              U2AssemblyReadsImportInfo& importInfo, 
                                              U2OpStatus& os) 
 {
-    assembly.id = SQLiteObjectDbi::createObject(U2Type::Assembly, folder, assembly.visualName,  SQLiteDbiObjectRank_TopLevel, db, os);
+    dbi->getSQLiteObjectDbi()->createObject(assembly, folder, SQLiteDbiObjectRank_TopLevel, os);
     SAFE_POINT_OP(os,);
     
     //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE, os);

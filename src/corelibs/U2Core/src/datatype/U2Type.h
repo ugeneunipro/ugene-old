@@ -144,6 +144,9 @@ public:
 
     /** The name of the object shown to user. Any reasonably short text */
     QString     visualName;
+
+    /** The type of the object. Should be overriden in subclasses */
+    virtual U2DataType getType() { return U2Type::Unknown; }
 };
 
 
@@ -158,8 +161,10 @@ public:
 
 
     // remote data element id;
-    U2DataRef   dataRef; 
+    U2DataRef   dataRef;
 
+    // implement U2Object
+    virtual U2DataType getType() { return U2Type::CrossDatabaseReference; }
 };
 
 

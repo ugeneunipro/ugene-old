@@ -198,6 +198,9 @@ public:
     U2Assembly(U2DataId id, QString dbId, qint64 version) : U2Object(id, dbId, version) {}
 
     U2DataId        referenceId;
+
+    // implement U2Object
+    virtual U2DataType getType() { return U2Type::Assembly; }
 };
 
 /** Statistics information collected during the reads packing algorithm */

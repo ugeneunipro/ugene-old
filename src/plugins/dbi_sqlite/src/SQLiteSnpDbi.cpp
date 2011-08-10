@@ -49,12 +49,15 @@ void SQLiteSnpDbi::initSqlSchema(U2OpStatus& os) {
 }
 
 U2SnpTrack SQLiteSnpDbi::getSnpTrack(const U2DataId& snpId, U2OpStatus& os) {
-    U2SnpTrack res(snpId, dbi->getDbiId(), 0);
-    SQLiteQuery q("SELECT SnpTrack.sequence, Object.version FROM SnpTrack, Object WHERE Object.id = ?1 AND SnpTrack.object = Object.id", db, os);
+    U2SnpTrack res;
+    dbi->getSQLiteObjectDbi()->getObject(res, snpId, os);
+
+    SAFE_POINT_OP(os, res);
+
+    SQLiteQuery q("SELECT SnpTrack.sequence FROM SnpTrack WHERE SnpTrack.object = ?1", db, os);
     q.bindDataId(1, snpId);
     if (q.step())  {
-        res.sequence = q.getDataId(1, U2Type::Sequence);
-        res.version = q.getInt64(2);
+        res.sequence = q.getDataId(0, U2Type::Sequence);
         q.ensureDone();
     } 
     return res;
@@ -68,7 +71,7 @@ void SQLiteSnpDbi::createSnpTrack(U2SnpTrack& track, U2DbiIterator<U2Snp>* it, c
     
     SQLiteTransaction t(db, os);
 
-    track.id = SQLiteObjectDbi::createObject(U2Type::SnpTrack, folder, track.visualName, SQLiteDbiObjectRank_TopLevel, db, os);
+    dbi->getSQLiteObjectDbi()->createObject(track, folder, SQLiteDbiObjectRank_TopLevel, os);
     SAFE_POINT_OP(os,);
 
     SQLiteQuery q1("INSERT INTO SnpTrack(object, sequence) VALUES(?1, ?2)", db, os);

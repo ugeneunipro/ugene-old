@@ -60,7 +60,9 @@ public:
     
     /** Alignment alphabet. All sequence in alignment must have alphabet that fits into alignment alphabet */
     U2AlphabetId    alphabet;
-   
+
+    // implement U2Object
+    virtual U2DataType getType() { return U2Type::Msa; }
 };
 
 
