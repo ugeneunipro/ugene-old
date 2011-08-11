@@ -25,6 +25,7 @@
 #include "SQLiteMsaDbi.h"
 #include "SQLiteAssemblyDbi.h"
 #include "SQLiteAttributeDbi.h"
+#include "SQLiteSnpDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/Log.h>
@@ -44,6 +45,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     assemblyDbi = new SQLiteAssemblyDbi(this);
     crossDbi = new SQLiteCrossDatabaseReferenceDbi(this);
     attributeDbi = new SQLiteAttributeDbi(this);
+    snpDbi = new SQLiteSnpDbi(this);
 }
 
 SQLiteDbi::~SQLiteDbi() {
@@ -52,6 +54,7 @@ SQLiteDbi::~SQLiteDbi() {
     delete objectDbi;
     delete sequenceDbi;
     delete msaDbi;
+    delete snpDbi;
     delete assemblyDbi;
     delete crossDbi;
     delete attributeDbi;
@@ -148,6 +151,7 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     assemblyDbi->initSqlSchema(os);
     crossDbi->initSqlSchema(os);
     attributeDbi->initSqlSchema(os);
+    snpDbi->initSqlSchema(os);
 
     setProperty(SQLITE_DBI_OPTION_APP_VERSION, Version::appVersion().text, os);
 }
@@ -287,6 +291,7 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     assemblyDbi->shutdown(os);
     crossDbi->shutdown(os);
     attributeDbi->shutdown(os);
+    snpDbi->shutdown(os);
     
     setState(U2DbiState_Stopping);
     int rc = sqlite3_close(db->handle);
@@ -327,6 +332,11 @@ U2DataType SQLiteDbi::getEntityTypeById(const U2DataId& id) const {
 
 SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
     return static_cast<SQLiteObjectDbi*>(objectDbi);
+}
+
+U2SnpDbi* SQLiteDbi::getSnpDbi()
+{
+    return snpDbi;
 }
 
 // SQLiteDbiFactory

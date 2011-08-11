@@ -43,8 +43,8 @@ void SQLiteSnpDbi::initSqlSchema(U2OpStatus& os) {
     // pos   - mutation position
     // oldBase - original base
     // newBase - resulted base
-    SQLiteQuery("CREATE TABLE Snp(track INTEGER, pos INTEGER, oldBase INTEGER NOT NULL, newBase INTEGER NOT NULL, gend INTEGER NOT NULL, "
-        " FOREIGN KEY(track) REFERENCES SnpTrack(object)", db, os).execute();
+    SQLiteQuery("CREATE TABLE Snp(track INTEGER, pos INTEGER, oldBase INTEGER NOT NULL, newBase INTEGER NOT NULL, "
+        " FOREIGN KEY(track) REFERENCES SnpTrack(object) )", db, os).execute();
     
 }
 
@@ -87,8 +87,9 @@ void SQLiteSnpDbi::createSnpTrack(U2SnpTrack& track, U2DbiIterator<U2Snp>* it, c
         q2.bindDataId(1, track.id);
         q2.bindInt64(2, snp.pos);
         q2.bindInt32(3, snp.oldBase);
-        q2.bindInt32(3, snp.newBase);
+        q2.bindInt32(4, snp.newBase);
         q2.execute();
+        SAFE_POINT_OP(os,);
     }
 }
 

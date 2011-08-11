@@ -35,6 +35,7 @@ class SQLiteMsaRDbi;
 class SQLiteAssemblyDbi;
 class SQLiteCrossDatabaseReferenceDbi;
 class SQLiteAttributeDbi;
+class SQLiteSnpDbi;
 class DbRef;
 
 
@@ -115,6 +116,8 @@ public:
 
     virtual U2AttributeDbi* getAttributeDbi();
 
+    virtual U2SnpDbi*   getSnpDbi();
+
     DbRef*    getDbRef() const {return db;}
 
     SQLiteObjectDbi* getSQLiteObjectDbi() const;
@@ -143,6 +146,7 @@ private:
     SQLiteAssemblyDbi*                  assemblyDbi;
     SQLiteCrossDatabaseReferenceDbi*    crossDbi;
     SQLiteAttributeDbi*                 attributeDbi;
+    SQLiteSnpDbi*                       snpDbi;
     
     friend class SQLiteObjectDbi;
     friend class SQLiteCrossDatabaseReferenceDbi;
