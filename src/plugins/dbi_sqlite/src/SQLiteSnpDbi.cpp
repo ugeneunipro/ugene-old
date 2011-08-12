@@ -111,6 +111,7 @@ public:
     }
 };
 
+
 U2DbiIterator<U2Snp>* SQLiteSnpDbi::getSnps(const U2DataId& trackId, const U2Region& region, U2OpStatus& os) {
     if (region == U2_REGION_MAX) {
         SQLiteQuery* q = new SQLiteQuery("SELECT pos, oldBase, newBase FROM Snp WHERE track = ?1", db, os);
@@ -122,6 +123,21 @@ U2DbiIterator<U2Snp>* SQLiteSnpDbi::getSnps(const U2DataId& trackId, const U2Reg
     q->bindInt64(2, region.startPos);
     q->bindInt64(3, region.endPos());
     return new SqlRSIterator<U2Snp>(q, new SimpleSnpLoader(), NULL, U2Snp(), os);
+}
+
+class SimpleSnpTrackLoader : public SqlRSLoader<U2SnpTrack> {
+    U2SnpTrack load(SQLiteQuery* q) {
+        U2SnpTrack track;
+        track.id = q->getDataId(0, U2Type::SnpTrack);
+        track.sequence = q->getDataId(1,U2Type::Sequence);
+        return track;
+    }
+};
+
+U2DbiIterator<U2SnpTrack>* SQLiteSnpDbi::getSnpTracks( U2OpStatus& os )
+{
+    SQLiteQuery* q = new SQLiteQuery("SELECT object,sequence FROM SnpTrack", db, os);
+    return new SqlRSIterator<U2SnpTrack>(q, new SimpleSnpTrackLoader(), NULL, U2SnpTrack(), os);    
 }
 
 } //namespace

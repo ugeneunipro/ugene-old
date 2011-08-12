@@ -36,6 +36,10 @@ protected:
     U2SnpDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
 public:
+    
+    /** Returns available SnpTracks */
+    virtual U2DbiIterator<U2SnpTrack>* getSnpTracks(U2OpStatus& os) = 0;
+
 
     /** Returns SnpTrack instance by the given id */
     virtual U2SnpTrack getSnpTrack(const U2DataId& id, U2OpStatus& os) = 0;

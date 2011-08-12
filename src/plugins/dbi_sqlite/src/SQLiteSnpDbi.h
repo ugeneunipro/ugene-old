@@ -33,6 +33,8 @@ public:
 
     SQLiteSnpDbi(SQLiteDbi* dbi);
 
+    virtual U2DbiIterator<U2SnpTrack>* getSnpTracks(U2OpStatus& os);
+    
     /** Returns SnpTrack instance by the given id */
     virtual U2SnpTrack getSnpTrack(const U2DataId& id, U2OpStatus& os);
 
