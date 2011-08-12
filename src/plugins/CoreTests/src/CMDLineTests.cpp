@@ -148,6 +148,10 @@ Task::ReportResult GTest_RunCMDLine::report() {
     
     QString err = getErrorMsg(output);
     if( !err.isEmpty() ) {
+        int eofIdx = err.indexOf("\n");
+        if (eofIdx>0) {
+            err = err.left(eofIdx-1);
+        }
         setError( "Process finished with error" + err);
     }
     
