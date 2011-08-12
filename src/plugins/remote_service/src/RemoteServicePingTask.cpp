@@ -43,7 +43,12 @@ void RemoteServicePingTask::prepare() {
         return;
     }
     
-    RemoteMachineSettingsPtr machineSettings = SerializeUtils::deserializeRemoteMachineSettings(machinePath);
+    RemoteMachineSettingsPtr machineSettings = RemoteMachineSettingsPtr();
+    if (QFile::exists(machinePath)) {
+        machineSettings = SerializeUtils::deserializeRemoteMachineSettingsFromFile(machinePath);
+    } else {
+        machineSettings = SerializeUtils::deserializeRemoteMachineSettings(machinePath);
+    }
     if( machineSettings == NULL ) {
         setError( tr("Can not parse remote server settings file %1").arg(machinePath) );
         return;

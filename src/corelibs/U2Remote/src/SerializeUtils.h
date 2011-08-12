@@ -99,7 +99,7 @@ public:
     static QString serializeRemoteMachineSettings( const RemoteMachineSettingsPtr& machine );
     static RemoteMachineSettingsPtr deserializeRemoteMachineSettings( const QString & data, QString * protoId = NULL );
     //static bool deserializeRemoteMachineSettings( const QString & data, RemoteMachine ** machine );
-    //static bool deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachine ** machine );
+    static RemoteMachineSettingsPtr deserializeRemoteMachineSettingsFromFile( const QString & machinePath);
     
 }; // SerializeUtils
 

@@ -40,10 +40,10 @@ QString SerializeUtils::serializeRemoteMachineSettings( const RemoteMachineSetti
     return HEADER_COMMENT "\n" + machineSettings->serialize();
 }
 
-/*bool SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachine ** machine ) {
+RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath) {
     QFile file( machinePath );
     if( !file.open( QIODevice::ReadOnly ) ) {
-        return NULL;
+        return RemoteMachineSettingsPtr();
     }
     
     QString data;
@@ -54,13 +54,10 @@ QString SerializeUtils::serializeRemoteMachineSettings( const RemoteMachineSetti
         }
     }
     
-    if( !deserializeRemoteMachineSettings( data, machine ) || NULL == machine ) {
-        return false;
-    }
-    return true;
+    return deserializeRemoteMachineSettings( data );
 }
 
-bool SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachineSettings ** settings ) {
+/*bool SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachineSettings ** settings ) {
     QFile file( machinePath );
     if( !file.open( QIODevice::ReadOnly ) ) {
         return NULL;
