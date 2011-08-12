@@ -46,9 +46,10 @@ class U2CORE_EXPORT U2Snp : public U2Entity {
 public:
     U2Snp() : pos (0), oldBase(0), newBase(0) {}
 
-    qint64  pos;
-    char    oldBase;
-    char    newBase;
+    qint64      pos;
+    char        oldBase;
+    char        newBase;
+    QString     publicId; // could be id from external db, visible for user
 
 };
 

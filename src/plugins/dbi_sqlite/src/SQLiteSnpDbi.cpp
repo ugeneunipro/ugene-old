@@ -43,7 +43,8 @@ void SQLiteSnpDbi::initSqlSchema(U2OpStatus& os) {
     // pos   - mutation position
     // oldBase - original base
     // newBase - resulted base
-    SQLiteQuery("CREATE TABLE Snp(track INTEGER, pos INTEGER, oldBase INTEGER NOT NULL, newBase INTEGER NOT NULL, "
+    // publicId - identifier visible for user
+    SQLiteQuery("CREATE TABLE Snp(track INTEGER, pos INTEGER, oldBase INTEGER NOT NULL, newBase INTEGER NOT NULL, publicId TEXT NOT NULL, "
         " FOREIGN KEY(track) REFERENCES SnpTrack(object) )", db, os).execute();
     
 }
@@ -80,7 +81,7 @@ void SQLiteSnpDbi::createSnpTrack(U2SnpTrack& track, U2DbiIterator<U2Snp>* it, c
     q1.execute();
     SAFE_POINT_OP(os,);
 
-    SQLiteQuery q2("INSERT INTO Snp(track, pos, oldBase, newBase) VALUES(?1, ?2, ?3, ?4)", db, os);
+    SQLiteQuery q2("INSERT INTO Snp(track, pos, oldBase, newBase, publicId) VALUES(?1, ?2, ?3, ?4, ?5)", db, os);
     while (it->hasNext() && !os.isCoR()) {
         U2Snp snp = it->next();
         q2.reset();
@@ -88,6 +89,7 @@ void SQLiteSnpDbi::createSnpTrack(U2SnpTrack& track, U2DbiIterator<U2Snp>* it, c
         q2.bindInt64(2, snp.pos);
         q2.bindInt32(3, snp.oldBase);
         q2.bindInt32(4, snp.newBase);
+        q2.bindString(5,snp.publicId);
         q2.execute();
         SAFE_POINT_OP(os,);
     }
@@ -107,18 +109,18 @@ public:
         res.pos = q->getInt64(0);
         res.oldBase = (char)q->getInt32(1);
         res.newBase = (char)q->getInt32(2);
+        res.publicId = q->getString(3);
         return res;
     }
 };
 
-
 U2DbiIterator<U2Snp>* SQLiteSnpDbi::getSnps(const U2DataId& trackId, const U2Region& region, U2OpStatus& os) {
     if (region == U2_REGION_MAX) {
-        SQLiteQuery* q = new SQLiteQuery("SELECT pos, oldBase, newBase FROM Snp WHERE track = ?1", db, os);
+        SQLiteQuery* q = new SQLiteQuery("SELECT pos, oldBase, newBase, publicId FROM Snp WHERE track = ?1", db, os);
         q->bindDataId(1, trackId);
         return new SqlRSIterator<U2Snp>(q, new SimpleSnpLoader(), NULL, U2Snp(), os);
     } 
-    SQLiteQuery* q = new SQLiteQuery("SELECT pos, oldBase, newBase FROM Snp WHERE track = ?1 AND pos >= ?2 AND pos <?3", db, os);
+    SQLiteQuery* q = new SQLiteQuery("SELECT pos, oldBase, newBase, publicId FROM Snp WHERE track = ?1 AND pos >= ?2 AND pos <?3", db, os);
     q->bindDataId(1, trackId);
     q->bindInt64(2, region.startPos);
     q->bindInt64(3, region.endPos());
