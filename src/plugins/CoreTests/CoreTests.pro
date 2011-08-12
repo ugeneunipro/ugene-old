@@ -23,6 +23,7 @@ HEADERS += src/AnnotationTableObjectTest.h \
            src/BinaryFindOpenCLTests.h \
            src/GUrlTests.h \
            src/FindAlgorithmTests.h \
+           src/PingRemoteServiceTests.h \
            src/FormatDetectionTests.h
 SOURCES += src/AnnotationTableObjectTest.cpp \
            src/AsnParserTests.cpp \
@@ -46,4 +47,5 @@ SOURCES += src/AnnotationTableObjectTest.cpp \
            src/BinaryFindOpenCLTests.cpp \
            src/GUrlTests.cpp \
            src/FindAlgorithmTests.cpp \
+           src/PingRemoteServiceTests.cpp \
            src/FormatDetectionTests.cpp
