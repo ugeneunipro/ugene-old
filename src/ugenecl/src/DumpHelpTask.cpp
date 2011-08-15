@@ -22,6 +22,9 @@
 #include "DumpHelpTask.h"
 
 #include <cstdio>
+#ifdef Q_OS_WIN32
+#include "windows.h"
+#endif
 
 #include <QtCore/QDir>
 
@@ -37,33 +40,40 @@
 #include <U2Core/CMDLineHelpProvider.h>
 #include <U2Core/CMDLineCoreOptions.h>
 
-namespace U2 {
+void printStringToConsole(const char* format, const QString& str){
+    QByteArray ba = str.toLocal8Bit();
+    char* buf = ba.data();
+#ifdef Q_OS_WIN32
+    // a bit of magic to workaround Windows console encoding issues
+    CharToOemA(buf,buf);
+#endif
+    printf(format, buf);
+}
 
-// TODO i18n help messages ?
-// FIXME windows console encoding issue (see LogDriver.cpp)
+namespace U2 {
 
 const QString DumpHelpTask::VERSION_INFO = QString("\nConsole version of UGENE %1\n").arg(Version::appVersion().text);
 
 static void dumpProgramNameAndUsage() {
-    fprintf( stdout, "%s" , DumpHelpTask::VERSION_INFO.toAscii().constData());
-    fprintf( stdout, "Usage: ugene [[--task=]task_name] [--task_parameter=value] [-task_parameter value] "
+    printStringToConsole( "%s" , DumpHelpTask::VERSION_INFO);
+    printStringToConsole("%s", "Usage: ugene [[--task=]task_name] [--task_parameter=value] [-task_parameter value] "
         "[--option[=value]] [-option [value]]\n\n");
 }
 
 static void dumpSectionName( const QString & name ) {
-    fprintf(stdout, "   --%-20s", name.toLocal8Bit().constData() );
+    printStringToConsole( "   --%-20s", name);
 }
 
 static void dumpSectionContent( const QString & content ) {
-    fprintf(stdout, "\t%s", content.toLocal8Bit().constData());
+    printStringToConsole( "\t%s", content);
 }
 
 static void dumpSectionIndent() {
-    fprintf(stdout, "%28s", " " );
+    printStringToConsole( "%28s", " " );
 }
 
 static void dumpTaskName(const QString & taskName) {
-    fprintf(stdout, "     %-20s\n", taskName.toLocal8Bit().constData());
+    printStringToConsole( "     %-20s\n", taskName);
 }
 
 static void dumpOptionHelpSyntax(const QString & option, const QString & argsDescription) {
@@ -73,17 +83,17 @@ static void dumpOptionHelpSyntax(const QString & option, const QString & argsDes
     } else {
         optionHelp = "ugene --" + option + "=" + argsDescription;
     }
-    fprintf(stdout, "%s\n", optionHelp.toLocal8Bit().constData());
+    printStringToConsole( "%s\n", optionHelp);
 }
 
 static void dumpOptionHelpDescription(const QString & description) {
-    fprintf(stdout, "%s\n", description.toLocal8Bit().constData());
+    printStringToConsole( "%s\n", description);
 }
 
 void DumpHelpTask::dumpHelp() {
     dumpProgramNameAndUsage();
 
-    fprintf( stdout, "\nOptions: \n" );
+    printStringToConsole("%s", "\nOptions: \n" );
     QString prevSectionName;
     QList<CMDLineHelpProvider* > helpProviders = AppContext::getCMDLineRegistry()->listCMDLineHelpProviders();
     foreach (CMDLineHelpProvider* hProvider, helpProviders) {
@@ -96,11 +106,11 @@ void DumpHelpTask::dumpHelp() {
             dumpSectionIndent();
         }
         dumpSectionContent( hProvider->getHelpSectionShortDescription() );
-        fprintf(stdout, "\n");
+        printStringToConsole("%s", "\n");
     }
-    fprintf( stdout, "\n" );
+    printStringToConsole("%s", "\n" );
 
-    fprintf(stdout, "\nAvailable tasks:\n");
+    printStringToConsole("%s", "\nAvailable tasks:\n");
     QStringList dataDirs = QDir::searchPaths(PATH_PREFIX_DATA);
     foreach(const QString & url, dataDirs ) {
         QString dirUrl = url + "/cmdline/";
@@ -117,7 +127,7 @@ void DumpHelpTask::dumpHelp() {
             }
         }
     }
-    fprintf(stdout, "Use ugene --help=<task-name> to get full help\n");
+    printStringToConsole("%s", "Use ugene --help=<task-name> to get full help\n");
 }
 
 void DumpHelpTask::prepare() {
@@ -162,13 +172,13 @@ void DumpHelpTask::prepare() {
     
     // Dumping help of the selected section in the registered help pages
     //
-    fprintf( stdout, "\n" );
+    printStringToConsole("%s", "\n" );
 
     assert(0 != helpProviders.at(ind)->getHelpSectionFullName());
     dumpOptionHelpSyntax(helpProviders.at(ind)->getHelpSectionFullName(),
         helpProviders.at(ind)->getHelpSectionArgsDescription());
 
-    fprintf( stdout, "\n" );
+    printStringToConsole("%s", "\n" );
 
     QString description;
     if (!helpProviders.at(ind)->getHelpSectionFullDescription().isEmpty())
@@ -195,12 +205,12 @@ void DumpHelpTask::prepare() {
 
 static void dumpSchemaMetadata(Metadata * meta) {
     assert(meta != NULL);
-    fprintf(stdout, "\n%s\n", meta->comment.toLocal8Bit().constData());
+    printStringToConsole( "\n%s\n", meta->comment);
 }
 
 static void dumpSchemaCmdlineParameters( Schema * schema ) {
     assert(schema != NULL);
-    fprintf(stdout, "Parameters:\n");
+    printStringToConsole("%s", "Parameters:\n");
     foreach( Actor * actor, schema->getProcesses() ) {
         assert(actor != NULL);
         QMap<QString, QString>::const_iterator it = actor->getParamAliases().constBegin();
@@ -214,11 +224,11 @@ static void dumpSchemaCmdlineParameters( Schema * schema ) {
             } else {
                 dumpSectionContent(DumpHelpTask::tr("No help available for this parameter"));
             }
-            fprintf(stdout, "\n" );
+            printStringToConsole("%s", "\n" );
             ++it;
         }
     }
-    fprintf(stdout, "\n" );
+    printStringToConsole("%s", "\n" );
 }
 
 QList<Task*> DumpHelpTask::onSubTaskFinished(Task* subTask) {
@@ -241,7 +251,8 @@ void DumpHelpTask::dumpParameters() {
     QList<StringPair> params = AppContext::getCMDLineRegistry()->getParameters();
     QList<StringPair>::const_iterator it = params.constBegin();
     while( it != params.constEnd() ) {
-        fprintf( stdout, "key: \"%s\" and value: \"%s\"\n", it->first.toLocal8Bit().constData(), it->second.toLocal8Bit().constData() );
+        printStringToConsole( "key: \"%s\"", it->first);
+        printStringToConsole( " and value: \"%s\"\n", it->second);
         ++it;
     }
 }
