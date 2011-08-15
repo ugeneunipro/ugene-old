@@ -212,6 +212,7 @@ Task* BaseDocWriter::tick() {
         if (!suffixList.contains(suffix)) {
             path = path.dirPath() + "/" + path.baseFileName() + "." + newSuffix; 
             anUrl = path.getURLString();
+            urlAttribute->setAttributeValue(anUrl);
         } 
         
 

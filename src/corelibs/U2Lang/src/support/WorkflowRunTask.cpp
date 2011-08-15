@@ -33,6 +33,9 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Version.h>
 #include <U2Core/Settings.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/BaseDocumentFormats.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
@@ -251,12 +254,49 @@ QList<Task*> WorkflowIterationRunTask::onSubTaskFinished(Task* subTask) {
     return tasks;
 }
 
+DocumentFormat *getDocumentFormatByProtoId(QString protoId) {
+    DocumentFormatId formatId;
+    if (CoreLibConstants::WRITE_TEXT_PROTO_ID == protoId) {
+        formatId = BaseDocumentFormats::PLAIN_TEXT;
+    } 
+    else if (CoreLibConstants::WRITE_FASTA_PROTO_ID == protoId) {
+        formatId = BaseDocumentFormats::PLAIN_FASTA;
+    }
+    else if (CoreLibConstants::WRITE_GENBANK_PROTO_ID == protoId) {
+        formatId = BaseDocumentFormats::PLAIN_GENBANK;
+    }
+    else if (CoreLibConstants::WRITE_CLUSTAL_PROTO_ID == protoId) {
+        formatId = BaseDocumentFormats::CLUSTAL_ALN;
+    }
+    else if (CoreLibConstants::WRITE_STOCKHOLM_PROTO_ID == protoId) {
+        formatId = BaseDocumentFormats::STOCKHOLM;
+    }
+    else if (CoreLibConstants::WRITE_FASTQ_PROTO_ID == protoId ) {
+        formatId = BaseDocumentFormats::FASTQ;
+    } else {
+        return NULL;
+    }
+
+    return AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+}
+
 static QStringList getOutputFiles(const QList<Actor*> & procs) {
     QStringList res;
     foreach(Actor *a, procs) {
+        Attribute * formatAttr = a->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
         foreach(Attribute *attr, a->getProto()->getAttributes()) {
             if(attr->getId() == BaseAttributes::URL_OUT_ATTRIBUTE().getId()) {
                 QString str = a->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>();
+                DocumentFormat *format = NULL;
+                if (NULL != formatAttr) {
+                    QString formatId = formatAttr->getAttributeValue<QString>();
+                    format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+                } else {
+                    format = getDocumentFormatByProtoId(a->getProto()->getId());
+                }
+                if (NULL != format) {
+                    str = GUrlUtils::ensureFileExt(GUrl(str), format->getSupportedDocumentFileExtensions()).getURLString();
+                }
                 QUrl url(str);
                 if(url.isValid()) {
                     res << url.toString();
