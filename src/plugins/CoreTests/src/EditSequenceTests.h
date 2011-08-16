@@ -48,7 +48,7 @@ public:
     void prepare();
     Task::ReportResult report();
 private:
-    U2AnnotationUtils::AnnotationStrategyForResize strat;
+    U1AnnotationUtils::AnnotationStrategyForResize strat;
     QString             docName;
     QString             seqName;
     int                 startPos;
@@ -68,7 +68,7 @@ public:
     void prepare();
     Task::ReportResult report();
 private:
-    U2AnnotationUtils::AnnotationStrategyForResize strat;
+    U1AnnotationUtils::AnnotationStrategyForResize strat;
     QString             docName;
     QString             seqName;
     int                 startPos;
@@ -88,7 +88,7 @@ public:
     void prepare();
     Task::ReportResult report();
 private:
-    U2AnnotationUtils::AnnotationStrategyForResize strat;
+    U1AnnotationUtils::AnnotationStrategyForResize strat;
     QString             docName;
     QString             seqName;
     int                 startPos;

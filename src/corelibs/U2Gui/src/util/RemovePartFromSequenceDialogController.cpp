@@ -101,12 +101,12 @@ void RemovePartFromSequenceDialogController::sl_browseButtonClicked(){
     sl_indexChanged(ui->formatBox->currentIndex());
 }
 
-U2AnnotationUtils::AnnotationStrategyForResize RemovePartFromSequenceDialogController::getStrategy(){
+U1AnnotationUtils::AnnotationStrategyForResize RemovePartFromSequenceDialogController::getStrategy(){
     if(ui->removeRB->isChecked()){
-        return U2AnnotationUtils::AnnotationStrategyForResize_Remove;
+        return U1AnnotationUtils::AnnotationStrategyForResize_Remove;
     }else{
         assert(ui->resizeRB->isChecked());
-        return U2AnnotationUtils::AnnotationStrategyForResize_Resize;
+        return U1AnnotationUtils::AnnotationStrategyForResize_Resize;
     }
 }
 

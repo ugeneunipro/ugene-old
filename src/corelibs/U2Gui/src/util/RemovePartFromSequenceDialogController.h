@@ -40,7 +40,7 @@ public:
 
     bool modifyCurrentDocument() const;;
     QString getNewDocumentPath() const;;
-    U2AnnotationUtils::AnnotationStrategyForResize getStrategy();
+    U1AnnotationUtils::AnnotationStrategyForResize getStrategy();
     U2Region getRegionToDelete() const {return toDelete;};
     bool mergeAnnotations() const;;
     DocumentFormatId getDocumentFormatId() const;;

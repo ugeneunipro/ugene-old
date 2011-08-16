@@ -28,7 +28,7 @@
 
 #include <U2Core/U2DbiUtils.h>
 
-#include <U2Core/U2AnnotationsDbi.h>
+#include <U2Core/U2AnnotationDbi.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2SequenceDbi.h>
@@ -64,7 +64,7 @@ public:
 
     virtual U2SequenceDbi* getSequenceDbi() {return NULL;}
 
-    virtual U2AnnotationDbi* getAnnotationRDbi() {return NULL;}
+    virtual U2AnnotationDbi* getAnnotationDbi() {return NULL;}
 
     virtual U2MsaDbi* getMsaDbi() {return NULL;}
 
@@ -207,9 +207,8 @@ protected:
         return U2AnnotationGroup();
     }
     
-    virtual U2AnnotationGroup moveGroup(const U2DataId&, const QString&, U2OpStatus& os) {
+    virtual void removeGroup(const U2DataId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
-        return U2AnnotationGroup();
     }
 
     virtual void createAnnotation(U2Annotation&, U2OpStatus& os) {

@@ -19,139 +19,141 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ANNOTATION_DBI_H_
-#define _U2_ANNOTATION_DBI_H_
+#ifndef _U2_SQLITE_ANNOTATION_DBI_H_
+#define _U2_SQLITE_ANNOTATION_DBI_H_
 
-#include <U2Core/U2Type.h>
-#include <U2Core/U2Dbi.h>
-#include <U2Core/U2Annotation.h>
+#include "SQLiteDbi.h"
+
+#include <U2Core/U2AnnotationDbi.h>
 
 namespace U2 {
 
-/**
-    An interface to obtain 'read' access to sequence annotations
-*/
-class U2CORE_EXPORT U2AnnotationDbi : public U2ChildDbi {
-protected:
-    U2AnnotationDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
-
+class SQLiteAnnotationDbi : public U2AnnotationDbi, public SQLiteChildDBICommon {
 public:
+
+    SQLiteAnnotationDbi(SQLiteDbi* dbi);
+
+    virtual void initSqlSchema(U2OpStatus& os);
 
     /** 
         Returns group by path. Path construction algorithm: parent-name2 + "/" + parent-name1 +  "/" + ... + "/" + groupName 
     */
-    virtual U2AnnotationGroup getGroupByPath(const U2DataId& sequenceId, const QString& path, U2OpStatus& os) =0;
+    virtual U2AnnotationGroup getGroupByPath(const U2DataId& sequenceId, const QString& path, U2OpStatus& os);
     
     /** Returns all subgroups of the given group */
-    virtual QList<U2AnnotationGroup> getSubgroups(const U2DataId& groupId, U2OpStatus& os) = 0;
+    virtual QList<U2AnnotationGroup> getSubgroups(const U2DataId& groupId, U2OpStatus& os);
 
-    /** Reads annotation group by id */
-    virtual U2AnnotationGroup getGroup(const U2DataId& groupId, U2OpStatus& os) = 0;
+        /** Reads annotation group by id */
+    virtual U2AnnotationGroup getGroup(const U2DataId& groupId, U2OpStatus& os);
     
     /**
         Creates new group. If group already exists - returns existing instance
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual U2AnnotationGroup createGroup(const U2DataId& sequenceId, const QString& path, U2OpStatus& os) = 0;    
+    virtual U2AnnotationGroup createGroup(const U2DataId& sequenceId, const QString& path, U2OpStatus& os);
 
     /**
-        Changes group path.
-        If destination group is already exists operation fails.
+        Removes group and all child data
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual U2AnnotationGroup moveGroup(const U2DataId& groupId, const QString& newPath, U2OpStatus& os) = 0;    
+    virtual void removeGroup(const U2DataId& groupId, U2OpStatus& os);
 
     /** 
         Returns number of annotations for the given sequence object in the given region.
         Counts all annotations whose location intersects the region.
         If region is [0, U2_DBI_NO_LIMIT] - returns all annotation for the given sequence
     */
-    virtual qint64 countSequenceAnnotations(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) = 0;
+    virtual qint64 countSequenceAnnotations(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os);
 
     /** 
         Returns number of annotations in the given sequence group object in the given region.
         Counts all annotations whose location intersects the region.
         If region is [0, U2_DBI_NO_LIMIT] - returns all annotation for the given sequence
     */
-    virtual qint64 countGroupAnnotations(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) = 0;
-
+    virtual qint64 countGroupAnnotations(const U2DataId& groupId, const U2Region& region, U2OpStatus& os);
 
     /** 
         Returns annotations for the given sequence object
-        Orders result by qualifier if not empty
+        'Offset' and 'count' can be used to change the default position and number of results produced by iterator
+        Note: 'count' is a hint here while 'offset' is obligatory to support
     */
-    virtual U2DbiIterator<U2DataId>* getAnnotationsBySequence(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2DataId>* getAnnotationsBySequence(const U2DataId& sequenceId, const U2Region& region, 
+        qint64 offset, qint64 count, U2OpStatus& os);
     
 
     /** 
         Returns annotations for the given group
-        Orders result by qualifier if not empty
+        'Offset' and 'count' can be used to change the default position and number of results produced by iterator
+        Note: 'count' is a hint here while 'offset' is obligatory to support
     */
-    virtual U2DbiIterator<U2DataId>* getAnnotationsByGroup(const U2DataId& sequenceId, const U2Region& region, const QString& orderByQualifier, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2DataId>* getAnnotationsByGroup(const U2DataId& groupId, const U2Region& region, 
+        qint64 offset, qint64 count, U2OpStatus& os);
+
 
     /** Reads annotation entity by id */
-    virtual U2Annotation getAnnotation(const U2DataId& annotationId, U2OpStatus& os) = 0;
+    virtual U2Annotation getAnnotation(const U2DataId& annotationId, U2OpStatus& os);
 
     /** Returns groups this annotation belongs to */
-    virtual QList<U2DataId> getAnnotationGroups(const U2DataId& annotationId, U2OpStatus& os) = 0;
-
+    virtual QList<U2DataId> getAnnotationGroups(const U2DataId& annotationId, U2OpStatus& os) ;
 
     /** 
         Adds list of new annotations. Assigns Ids to annotations added 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void createAnnotations(QList<U2Annotation>& annotations, const U2DataId& group, U2OpStatus& os) = 0;
+    virtual void createAnnotations(QList<U2Annotation>& annotations, const U2DataId& group, U2OpStatus& os);
 
     
     /** 
         Removes annotation from database 
         Requires: U2DbiFeature_WriteAnnotation feature support
      */
-    virtual void removeAnnotation(const U2DataId& annotationId, U2OpStatus& os) = 0;
+    virtual void removeAnnotation(const U2DataId& annotationId, U2OpStatus& os);
 
     /**  
         Removes annotations from database  
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void removeAnnotations(const QList<U2DataId>& annotationIds, U2OpStatus& os) = 0;
+    virtual void removeAnnotations(const QList<U2DataId>& annotationIds, U2OpStatus& os);
     
     /** 
         Changes annotations location 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void updateLocation(const U2DataId& annotationId, const U2Location& location, U2OpStatus& os) = 0;  
+    virtual void updateLocation(const U2DataId& annotationId, const U2Location& location, U2OpStatus& os);
     
     /** 
         Changes annotations name 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void updateName(const U2DataId& annotationId, const QString& newName, U2OpStatus& os) = 0;  
+    virtual void updateName(const U2DataId& annotationId, const QString& newName, U2OpStatus& os);  
     
     /** 
         Adds new qualifier to annotation  
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void createQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os) = 0;
+    virtual void createQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os);
     
     /** 
         Removes existing qualifier from annotation  
         Requires: U2DbiFeature_WriteAnnotation feature support
      */    
-    virtual void removeQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os) = 0; 
+    virtual void removeQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os);
 
     /** 
         Adds annotation to the specified group 
         Requires: U2DbiFeature_WriteAnnotation feature support
     */    
-    virtual void addToGroup(const U2DataId& groupId, const U2DataId& annotationId, U2OpStatus& os) = 0; 
+    virtual void addToGroup(const U2DataId& groupId, const U2DataId& annotationId, U2OpStatus& os);
     
     /** 
         Removes annotation from the specified group 
-        If annotation belongs to no group, it is removed
+        Note: If annotation belongs to no group, it is automatically removed from database
         Requires: U2DbiFeature_WriteAnnotation feature support
     */
-    virtual void removeFromGroup(const U2DataId& groupId, const U2DataId& annotationId, U2OpStatus& os) = 0; 
-    
+    virtual void removeFromGroup(const U2DataId& groupId, const U2DataId& annotationId, U2OpStatus& os); 
+
+
+    bool isInGroup(const U2DataId& groupId, const U2DataId& annotationId, U2OpStatus& os);
 };
 
 } //namespace

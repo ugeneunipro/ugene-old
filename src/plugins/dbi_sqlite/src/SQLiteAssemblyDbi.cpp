@@ -240,7 +240,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
 
  
 void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
     
     SQLiteQuery q("UPDATE Assembly SET reference = ?1 WHERE object = ?2", db, os);
     q.bindDataId(1, assembly.referenceId);

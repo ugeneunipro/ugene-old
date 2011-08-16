@@ -44,7 +44,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/Vector3D.h \
            src/dbi/DbiDocumentFormat.h \
            src/dbi/U2AbstractDbi.h \
-           src/dbi/U2AnnotationsDbi.h \
+           src/dbi/U2AnnotationDbi.h \
            src/dbi/U2AssemblyDbi.h \
            src/dbi/U2AttributeDbi.h \
            src/dbi/U2CrossDatabaseReferenceDbi.h \
@@ -158,6 +158,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
            src/util/TextUtils.h \
+           src/util/U1AnnotationUtils.h \
            src/util/U2AnnotationUtils.h \
            src/util/U2AssemblyUtils.h \
            src/util/U2AttributeUtils.h \
@@ -280,6 +281,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \
            src/util/TextUtils.cpp \
+           src/util/U1AnnotationUtils.cpp \
            src/util/U2AnnotationUtils.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \

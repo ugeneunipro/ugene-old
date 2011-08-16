@@ -115,16 +115,16 @@ void EditSequenceDialogController::sl_browseButtonClicked(){
     sl_indexChanged(ui->formatBox->currentIndex());
 }
 
-U2AnnotationUtils::AnnotationStrategyForResize EditSequenceDialogController::getAnnotationStrategy() {
+U1AnnotationUtils::AnnotationStrategyForResize EditSequenceDialogController::getAnnotationStrategy() {
     if(ui->resizeRB->isChecked()){
-        return U2AnnotationUtils::AnnotationStrategyForResize_Resize;
+        return U1AnnotationUtils::AnnotationStrategyForResize_Resize;
     }else if(ui->splitRB->isChecked()){
-        return U2AnnotationUtils::AnnotationStrategyForResize_Split_To_Joined;
+        return U1AnnotationUtils::AnnotationStrategyForResize_Split_To_Joined;
     }else if(ui->split_separateRB->isChecked()){
-        return U2AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate;
+        return U1AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate;
     }else{
         assert(ui->removeRB->isChecked());
-        return U2AnnotationUtils::AnnotationStrategyForResize_Remove;
+        return U1AnnotationUtils::AnnotationStrategyForResize_Remove;
     }
 }
 

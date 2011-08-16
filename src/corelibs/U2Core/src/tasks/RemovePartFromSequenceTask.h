@@ -25,7 +25,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/U2AnnotationUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 namespace U2 {
 
@@ -33,7 +33,7 @@ class U2CORE_EXPORT RemovePartFromSequenceTask : public Task {
     Q_OBJECT
 public:
     RemovePartFromSequenceTask(DocumentFormatId _dfId, DNASequenceObject *_seqObj, U2Region _regionToDelete, 
-        U2AnnotationUtils::AnnotationStrategyForResize _str = U2AnnotationUtils::AnnotationStrategyForResize_Resize, 
+        U1AnnotationUtils::AnnotationStrategyForResize _str = U1AnnotationUtils::AnnotationStrategyForResize_Resize, 
         const GUrl& _url = GUrl(), bool _mergeAnnotations = false);
     virtual Task::ReportResult report();
 
@@ -47,7 +47,7 @@ private:
     Document *newDoc;
     bool save;
     GUrl url;
-    U2AnnotationUtils::AnnotationStrategyForResize strat;
+    U1AnnotationUtils::AnnotationStrategyForResize strat;
     QList<Document*> docs;
     DNASequenceObject *seqObj;
     U2Region regionToDelete;

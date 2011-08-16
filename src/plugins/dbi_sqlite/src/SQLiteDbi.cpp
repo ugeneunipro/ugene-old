@@ -26,6 +26,7 @@
 #include "SQLiteAssemblyDbi.h"
 #include "SQLiteAttributeDbi.h"
 #include "SQLiteSnpDbi.h"
+#include "SQLiteAnnotationDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/Log.h>
@@ -46,6 +47,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     crossDbi = new SQLiteCrossDatabaseReferenceDbi(this);
     attributeDbi = new SQLiteAttributeDbi(this);
     snpDbi = new SQLiteSnpDbi(this);
+    annotationDbi = new SQLiteAnnotationDbi(this);
 }
 
 SQLiteDbi::~SQLiteDbi() {
@@ -58,6 +60,7 @@ SQLiteDbi::~SQLiteDbi() {
     delete assemblyDbi;
     delete crossDbi;
     delete attributeDbi;
+    delete annotationDbi;
     delete db;
 }
 
@@ -195,6 +198,10 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_WriteAttributes);
     features.insert(U2DbiFeature_ReadProperties);
     features.insert(U2DbiFeature_WriteProperties);
+    features.insert(U2DbiFeature_ReadSnp);
+    features.insert(U2DbiFeature_WriteSnp);
+    features.insert(U2DbiFeature_ReadSequenceAnnotations);
+    features.insert(U2DbiFeature_WriteSequence);
 }
 
 void SQLiteDbi::setState(U2DbiState s) {
@@ -334,9 +341,12 @@ SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
     return static_cast<SQLiteObjectDbi*>(objectDbi);
 }
 
-U2SnpDbi* SQLiteDbi::getSnpDbi()
-{
+U2SnpDbi* SQLiteDbi::getSnpDbi() {
     return snpDbi;
+}
+
+U2AnnotationDbi* SQLiteDbi::getAnnotationDbi() {
+    return annotationDbi;
 }
 
 // SQLiteDbiFactory

@@ -226,7 +226,7 @@ public:
         U2Annotation related DBI routines 
         Not NULL only if U2DbiFeature_ReadAnnotations supported
     */
-    virtual U2AnnotationDbi* getAnnotationRDbi() = 0;
+    virtual U2AnnotationDbi* getAnnotationDbi() = 0;
 
     /**  
         U2Annotation related DBI routines 

@@ -120,9 +120,10 @@ public:
 */
 class U2CORE_EXPORT U2Entity {
 public:
-    U2Entity(){}
-    U2Entity(U2DataId _id) : id(_id){}
+    U2Entity(U2DataId _id = U2DataId()) : id(_id){}
     virtual ~U2Entity(){}
+
+    bool hasValidId() const {return id.isEmpty();}
 
     U2DataId id;
 };

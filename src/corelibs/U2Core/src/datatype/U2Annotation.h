@@ -208,6 +208,8 @@ inline bool	operator== ( const U2LocationData * ptr1, const U2Location & ptr2 ) 
 */
 class U2CORE_EXPORT U2Annotation : public U2Entity {
 public:
+    U2Annotation() : location(new U2LocationData()), version(0){}
+
     /** Sequence this annotation is related to */
     U2DataId                sequenceId;
     
@@ -256,6 +258,9 @@ public:
     /** Modification counter updated any (any depth) child group is modified */
     qint64              globalVersion;
 };
+
+#define GROUP_PATH_SEPARATOR "/"
+#define GROUP_PATH_SEPARATOR_CHAR '/'
 
 //////////////////////////////////////////////////////////////////////////
 // functions impl

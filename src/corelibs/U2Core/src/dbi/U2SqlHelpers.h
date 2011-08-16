@@ -331,6 +331,16 @@ protected:
     QByteArray dbExtra;
 };
 
+#define DBI_TYPE_CHECK(dataId,  expectedType, os, res)\
+    if (!dataId.isEmpty()) {\
+        U2DataType realType = SQLiteUtils::toType(dataId);\
+        if (realType != expectedType) {\
+            os.setError(QString("Illegal data type: %1, expected %2").arg(realType).arg(expectedType));\
+            return res;\
+        }\
+    }\
+    
+
 } //namespace
 
 #endif

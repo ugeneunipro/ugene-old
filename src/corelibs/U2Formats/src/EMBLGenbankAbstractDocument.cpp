@@ -37,7 +37,7 @@
 
 #include <U2Core/DNAInfo.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/U2AnnotationUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 namespace U2 {
 

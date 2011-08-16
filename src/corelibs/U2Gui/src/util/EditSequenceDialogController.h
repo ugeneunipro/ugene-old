@@ -23,7 +23,7 @@
 #define _U2_EDIT_SEQUENCE_CONTROLLER_H_
 
 #include <U2Core/U2Region.h>
-#include <U2Core/U2AnnotationUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/GUrl.h>
 #include <U2Gui/SeqPasterWidgetController.h>
 #include <U2Gui/DialogUtils.h>
@@ -57,7 +57,7 @@ public:
     DNASequence getNewSequence(){return w->getSequence();};
     GUrl getDocumentPath(); 
     int getPosToInsert(){return pos;};
-    U2AnnotationUtils::AnnotationStrategyForResize getAnnotationStrategy();
+    U1AnnotationUtils::AnnotationStrategyForResize getAnnotationStrategy();
     bool mergeAnnotations();
     DocumentFormatId getDocumentFormatId();
 private slots:

@@ -208,12 +208,10 @@ void Dbi::buildIndex(U2OpStatus &os) {
     }
     {
         U2OpStatusImpl transactionOpStatus;
-        SQLiteTransaction transaction(&dbRef, transactionOpStatus);
+        SQLiteTransaction t(&dbRef, transactionOpStatus);
         if (transactionOpStatus.hasError()) {
             throw Exception(transactionOpStatus.getError());
         }
-        Q_UNUSED(transaction);
-
         try {
             {
                 U2OpStatusImpl opStatus;

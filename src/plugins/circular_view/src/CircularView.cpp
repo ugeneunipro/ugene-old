@@ -29,7 +29,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/U2AnnotationUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2View/ADVSequenceWidget.h>
 
 #include <U2Core/DNASequenceSelection.h>
@@ -234,7 +234,7 @@ void CircularView::setAngle(int angle) {
 void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection* selection, const QList<Annotation*>& added, const QList<Annotation*>& removed) {
     
     foreach (Annotation* a, added) {
-        bool splitted =  U2AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange()); 
+        bool splitted =  U1AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange()); 
         int locationIdx = selection->getAnnotationData(a)->locationIdx;
         if (splitted && locationIdx != -1) {
             // set locationIdx = -1 to make sure whole annotation region is selected
@@ -820,7 +820,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
 
     QList<CircurlarAnnotationRegionItem*> regions;
 
-    bool splitted = U2AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange());
+    bool splitted = U1AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange());
     bool splittedItemIsReady = false;
 
     foreach(const U2Region& r, location) {
@@ -909,7 +909,7 @@ void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, Annotation*
     }
 
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    bool splitted = U2AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange());
+    bool splitted = U1AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange());
 
     int seqLen = ctx->getSequenceLen();
     const QVector<U2Region>& location = a->getRegions();

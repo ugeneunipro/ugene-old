@@ -107,7 +107,7 @@ void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString
 
 
 void SQLiteSequenceDbi::updateSequenceObject(U2Sequence& sequence, U2OpStatus& os) {
-    SQLiteTransaction(db, os);
+    SQLiteTransaction t(db, os);
 
     SQLiteQuery q("UPDATE Sequence SET alphabet = ?1, circular = ?2 WHERE object = ?3", db, os);
     q.bindString(1, sequence.alphabet.id);

@@ -78,13 +78,13 @@ void GTest_AddPartToSequenceTask::init(XMLTestFormat *tf, const QDomElement& el)
     
     buf = el.attribute(EXPECTED_ANNOTATION_STRATEGY_ATTR);
     if(buf.toLower() == "remove"){
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Remove;
+        strat = U1AnnotationUtils::AnnotationStrategyForResize_Remove;
     }else if(buf.toLower() == "split_joined"){
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Split_To_Joined;
+        strat = U1AnnotationUtils::AnnotationStrategyForResize_Split_To_Joined;
     }else if(buf.toLower() == "split_separate"){
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate;
+        strat = U1AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate;
     }else{
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Resize;
+        strat = U1AnnotationUtils::AnnotationStrategyForResize_Resize;
     }
 }
 
@@ -202,9 +202,9 @@ void GTest_RemovePartFromSequenceTask::init(XMLTestFormat *tf, const QDomElement
 
     buf = el.attribute(EXPECTED_ANNOTATION_STRATEGY_ATTR);
     if (buf.toLower() == "remove"){
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Remove;
+        strat = U1AnnotationUtils::AnnotationStrategyForResize_Remove;
     } else {
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Resize;
+        strat = U1AnnotationUtils::AnnotationStrategyForResize_Resize;
     }
 }
 
@@ -326,9 +326,9 @@ void GTest_ReplacePartOfSequenceTask::init(XMLTestFormat *tf, const QDomElement&
 
     buf = el.attribute(EXPECTED_ANNOTATION_STRATEGY_ATTR);
     if(buf.toLower() == "remove"){
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Remove;
+        strat = U1AnnotationUtils::AnnotationStrategyForResize_Remove;
     }else{
-        strat = U2AnnotationUtils::AnnotationStrategyForResize_Resize;
+        strat = U1AnnotationUtils::AnnotationStrategyForResize_Resize;
     }
 }
 

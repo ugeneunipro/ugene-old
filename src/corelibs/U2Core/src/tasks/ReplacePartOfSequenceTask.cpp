@@ -42,7 +42,7 @@ namespace U2 {
 
 ReplacePartOfSequenceTask::ReplacePartOfSequenceTask(DocumentFormatId _dfId, DNASequenceObject *_seqObj, 
                                                      U2Region _regionToReplace, const DNASequence& _newSeq, 
-                                                     U2AnnotationUtils::AnnotationStrategyForResize _str,
+                                                     U1AnnotationUtils::AnnotationStrategyForResize _str,
                                                      const GUrl& _url, bool _mergeAnnotations )
     : Task(tr("Replace subsequence"), TaskFlag_NoRun), dfId(_dfId), mergeAnnotations(_mergeAnnotations), 
     save(true), url(_url), strat(_str), seqObj(_seqObj), newSeq(_newSeq.seq), regionToReplace(_regionToReplace) 
@@ -108,7 +108,7 @@ Task::ReportResult ReplacePartOfSequenceTask::report(){
 void ReplacePartOfSequenceTask::fixAnnotations()
 {
     int newLen = newSeq.size();
-    if (strat == U2AnnotationUtils::AnnotationStrategyForResize_Resize && regionToReplace.length == newLen) {
+    if (strat == U1AnnotationUtils::AnnotationStrategyForResize_Resize && regionToReplace.length == newLen) {
         return;
     }
 
@@ -120,7 +120,7 @@ void ReplacePartOfSequenceTask::fixAnnotations()
                 QList<Annotation*> annList = ato->getAnnotations();
                 foreach(Annotation *an, annList){
                     QVector<U2Region> locs = an->getRegions();
-                    U2AnnotationUtils::fixLocationsForReplacedRegion(regionToReplace, newLen, locs, strat);
+                    U1AnnotationUtils::fixLocationsForReplacedRegion(regionToReplace, newLen, locs, strat);
                     if(!locs.isEmpty()){
                         an->replaceRegions(locs);
                     }else{

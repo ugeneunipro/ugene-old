@@ -38,6 +38,9 @@
     Recover utility. Must be used when code tries to recover from invalid internal state
     by returning from the method some default value.
     Traces the message to log. Asserts in debug mode.
+
+    Warning: never use this function as a simple check since it stops application execution in debug mode
+            use CHECK_OP instead
 */
 #define SAFE_POINT(condition, message, result)  \
     if (!(condition)) { \
@@ -51,6 +54,10 @@
     Recover utility. Must be used when code tries to recover from invalid internal state
     by returning from the method some default value.
     Dumps the message to the error-level log. Asserts in debug mode.
+
+    Warning: never use this function as a simple check since it stops application execution in debug mode
+    use CHECK_OP instead
+
 */
 #define SAFE_POINT_OP(os, result)  \
     if (os.hasError()) { \
@@ -68,5 +75,39 @@
     coreLog.error(QString("Trying to recover from error: %1 at %2:%3").arg(message).arg(__FILE__).arg(__LINE__)); \
     assert(0); \
     return result; \
+
+/** 
+    Checks condition is false and returns the result if it is
+
+    Code style hint: use CHECK macro only to make error processing more compact but not all if {return;} patterns !
+*/
+#define CHECK(condition, result) \
+    if (!condition) { \
+        return result; \
+    } 
+
+/** 
+    Checks condition is false and returns the result if it is. 
+    Before the result is returned the 'extraOp' operation is performed (for example logging)
+
+    Code style hint: use CHECK macro only to make error processing more compact but not all if {return;} patterns !
+*/
+#define CHECK_EXT(condition, extraOp, result) \
+    if (!condition) { \
+        extraOp; \
+        return result; \
+    } 
+
+
+/** 
+    Checks that operation is neither not failed nor canceled and returns the result if it does
+*/
+#define CHECK_OP(os, result)  CHECK(!os.isCoR(), result)
+
+/** 
+    Checks that operation is neither failed nor canceled and returns the result if it does. 
+    Before the result is returned the 'extraOp' operation is performed (for example logging)
+*/
+#define CHECK_OP_EXT(os, extraOp, result)  CHECK_EXT(!(os.isCoR()), extraOp, result)
 
 #endif

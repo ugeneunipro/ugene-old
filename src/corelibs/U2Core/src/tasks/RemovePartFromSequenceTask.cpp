@@ -37,12 +37,12 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
-#include <U2Core/U2AnnotationUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 namespace U2 {
 
 RemovePartFromSequenceTask::RemovePartFromSequenceTask(DocumentFormatId _dfId, DNASequenceObject *_seqObj, 
-                                                       U2Region _regionTodelete, U2AnnotationUtils::AnnotationStrategyForResize _str, 
+                                                       U2Region _regionTodelete, U1AnnotationUtils::AnnotationStrategyForResize _str, 
                                                        const GUrl& _url, bool _mergeAnnotations )
 :Task(tr("Remove subsequence"), TaskFlag_NoRun), dfId(_dfId), mergeAnnotations(_mergeAnnotations), save(true),
 url(_url), strat(_str), seqObj(_seqObj), regionToDelete(_regionTodelete) {
@@ -113,7 +113,7 @@ void RemovePartFromSequenceTask::fixAnnotations(){
                 QList<Annotation*> annList = ato->getAnnotations();
                 foreach(Annotation *an, annList){
                     QVector<U2Region> locs = an->getRegions();
-                    U2AnnotationUtils::fixLocationsForRemovedRegion(regionToDelete, locs, strat);
+                    U1AnnotationUtils::fixLocationsForRemovedRegion(regionToDelete, locs, strat);
                     if(!locs.isEmpty()){
                         an->replaceRegions(locs);
                     }else{

@@ -111,7 +111,7 @@ void SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, const QStrin
 }
 
 bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& folder, U2OpStatus& os) {
-    SQLiteTransaction trans(db, os);
+    SQLiteTransaction t(db, os);
 
     U2DataType type = getRootDbi()->getEntityTypeById(objectId);
     if (!U2Type::isObjectType(type)) {

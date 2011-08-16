@@ -32,7 +32,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/U2AnnotationUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Gui/GraphUtils.h>
@@ -310,7 +310,7 @@ U2Region DetViewRenderArea::getAnnotationYRange(Annotation* a, int region, const
         aminoState = as->amino ? TriState_Yes : TriState_No;
     }
     bool transl = getDetView()->hasTranslations() && aminoState == TriState_Yes;
-    int frame = U2AnnotationUtils::getRegionFrame(view->getSequenceLen(), a->getStrand(), a->isOrder(), region, a->getRegions());
+    int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLen(), a->getStrand(), a->isOrder(), region, a->getRegions());
     int line = -1;
     if (complement) {
         if (transl) {
@@ -607,7 +607,7 @@ bool DetViewRenderArea::deriveTranslationCharColor(int pos, U2Strand strand, QLi
             if (!r.contains(tripletRange)) {
                 continue;
             }
-            int regionFrame = U2AnnotationUtils::getRegionFrame(sequenceLen, strand, order, i, location);
+            int regionFrame = U1AnnotationUtils::getRegionFrame(sequenceLen, strand, order, i, location);
             int posFrame = strand == U2Strand::Complementary ? (sequenceLen - pos) % 3 : (pos % 3);
             if (regionFrame ==  posFrame) {
                 tas = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(a);

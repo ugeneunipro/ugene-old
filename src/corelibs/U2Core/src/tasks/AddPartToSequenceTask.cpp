@@ -42,7 +42,7 @@
 namespace U2{
 
 AddPartToSequenceTask::AddPartToSequenceTask(DocumentFormatId _dfId, DNASequenceObject *_seqObj, int _insertPos, 
-                                             DNASequence  _seqPart, U2AnnotationUtils::AnnotationStrategyForResize _strat, 
+                                             DNASequence  _seqPart, U1AnnotationUtils::AnnotationStrategyForResize _strat, 
                                              const GUrl& _url, bool _mergeAnnotations)
 :Task(tr("Insert subsequence"), TaskFlag_NoRun), dfId(_dfId), 
 mergeAnnotations(_mergeAnnotations), save(true), url(_url), strat(_strat),
@@ -110,7 +110,7 @@ void AddPartToSequenceTask::fixAnnotations(){
                 QList<Annotation*> annList = ato->getAnnotations();
                 foreach(Annotation *an, annList){
                     QVector<U2Region> locs = an->getRegions();
-                    U2AnnotationUtils::fixLocationsForInsertedRegion(insertPos, len, locs, strat, an, ato);
+                    U1AnnotationUtils::fixLocationsForInsertedRegion(insertPos, len, locs, strat, an, ato);
                     if (!locs.isEmpty()) {
                         an->replaceRegions(locs);
                     } else {
