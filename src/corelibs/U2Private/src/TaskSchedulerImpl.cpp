@@ -151,6 +151,8 @@ bool TaskSchedulerImpl::processFinishedTasks() {
         // notify parent that subtask finished, check if there are new subtasks from parent
         if (pti != NULL) {
             Task* parentTask = pti->task;
+            SAFE_POINT(parentTask != NULL, "When notifying parentTask about finished task: parentTask is NULL", hasFinished);
+            SAFE_POINT(task != NULL, "When notifying parentTask about finished task: task is NULL", hasFinished);
             propagateStateToParent(task);
             QList<Task*> newSubTasks = onSubTaskFinished(parentTask, task);
             if (!newSubTasks.isEmpty() || !pti->newSubtasks.isEmpty()) {
@@ -159,8 +161,12 @@ bool TaskSchedulerImpl::processFinishedTasks() {
                 }
             }
             foreach(Task* newSub, newSubTasks) {
-                pti->newSubtasks.append(newSub);
-                addSubTask(parentTask, newSub);
+                if(newSub != NULL) {
+                    pti->newSubtasks.append(newSub);
+                    addSubTask(parentTask, newSub);
+                } else {
+                    taskLog.error(QString("Calling onSubTaskFinished from task {%1} with subtask {%2} returned list containing NULL, skipping").arg(parentTask->getTaskName()).arg(task->getTaskName()));
+                }
             }
         }
     }
@@ -457,7 +463,9 @@ bool TaskSchedulerImpl::addToPriorityQueue(Task* task, TaskInfo* pti) {
 }
 
 void TaskSchedulerImpl::unregisterTopLevelTask(Task* task) {
-    assert(topLevelTasks.contains(task));
+    SAFE_POINT(task != NULL, "Trying to unregister NULL task",);
+    SAFE_POINT(topLevelTasks.contains(task), QString("Trying to unregister task that is not top-level"),);
+
     taskLog.trace(tr("Unregistering task: %1").arg(task->getTaskName()));
     stopTask(task);
     topLevelTasks.removeOne(task);
@@ -742,6 +750,7 @@ void TaskSchedulerImpl::updateTaskProgressAndDesc(TaskInfo* ti) {
 }
 
 void TaskSchedulerImpl::deleteTask(Task* task) {
+    SAFE_POINT(task != NULL, "Trying to delete NULL task",);
     foreach(Task* sub, task->getSubtasks()) {
         //todo: check subtask autodelete ??
         deleteTask(sub);

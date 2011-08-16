@@ -66,6 +66,7 @@ void Task::cancel() {
 
 
 void Task::addSubTask(Task* sub) {
+    SAFE_POINT(sub != NULL, "Trying to add NULL subtask",);
     SAFE_POINT(sub->parentTask==NULL, "Task already has a parent!",);
     SAFE_POINT(state == State_New, "Parents can be assigned to tasks in NEW state only!",);
     
@@ -134,7 +135,9 @@ void Task::addTaskResource(const TaskResourceUsage& r) {
 // task scheduler
 
 void TaskScheduler::addSubTask(Task* t, Task* sub) {
+    SAFE_POINT(t != NULL, "When adding subtask to TaskScheduler, the parent task is NULL",);
     SAFE_POINT(sub->getParentTask() == NULL, "Task already has a parent!",);
+    SAFE_POINT(sub != NULL, "When adding subtask to TaskScheduler, the subtask is NULL",);
 
     sub->parentTask = t;
     t->subtasks.append(sub);

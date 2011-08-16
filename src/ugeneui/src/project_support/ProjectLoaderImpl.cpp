@@ -37,6 +37,7 @@
 #include <U2Core/CMDLineUtils.h>
 #include <U2Core/DocumentImport.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/L10n.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 
@@ -332,7 +333,9 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                     }
                 }
             } else {
-                coreLog.error(tr("Failed to detect file format: %1").arg(url.getURLString()));
+                QString message = tr("Failed to detect file format: %1").arg(url.getURLString());
+                coreLog.error(message);
+                QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(), L10N::errorTitle(), message);
             }
         }
     }
