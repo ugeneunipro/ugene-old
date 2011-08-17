@@ -31,6 +31,8 @@
 
 /** List of object relations */
 #define GObjectHint_RelatedObjects          "gobject-hint-related-objects"
+/** The same, but used in previous versions */
+#define GObjectHint_RelatedObjectsLegacy    "related_objs"
 /** Last used object name. Used in case if object is renamed but name is not saved to file */
 #define GObjectHint_LastUsedObjectName      "gobject-hint-last-used-object-name"
 /** When object is added to project, in-project-id is assigned that is unique per project */

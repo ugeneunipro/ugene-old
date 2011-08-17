@@ -59,6 +59,10 @@ private:
     static bool registerMeta;
 };
 
+inline uint qHash(const GObjectReference& key) {
+    return ::qHash(key.docUrl) + ::qHash(key.objName) + ::qHash(key.objType);
+}
+
 //TODO: add constraints on relation roles
 
 class U2CORE_EXPORT GObjectRelation {
@@ -81,6 +85,9 @@ private:
     static bool registerMeta;
 };
 
+inline uint qHash(const GObjectRelation& key) {
+    return qHash(key.ref) + ::qHash(key.role) + ::qHash(key.data);
+}
 
 
 QDataStream &operator<<(QDataStream &out, const GObjectReference &myObj);

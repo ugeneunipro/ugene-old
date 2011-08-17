@@ -54,7 +54,7 @@ static QVariantMap string2Map(const QString& string, bool emptyMapIfError) {
     return QVariantMap();
 }
 
-static QVariant toAbsoluteRelations(const QList<GObjectRelation>& relList, const QDir& projDir)  {
+static QList<GObjectRelation> toAbsoluteRelations(const QList<GObjectRelation>& relList, const QDir& projDir)  {
     QList<GObjectRelation> absoluteRelations;
     foreach(GObjectRelation rel, relList){
         if (GUrl::getURLType(rel.ref.docUrl) == GUrl_File) { //make URL absolute
@@ -66,7 +66,23 @@ static QVariant toAbsoluteRelations(const QList<GObjectRelation>& relList, const
         }
         absoluteRelations.append(rel);
     }
-    return QVariant::fromValue<QList<GObjectRelation> >(absoluteRelations);
+    return absoluteRelations;
+}
+
+static QList<GObjectRelation> hintToRelations(QVariant qv, const QDir& projDir) {
+    if(!qv.isNull()) {
+        return toAbsoluteRelations(qv.value<QList<GObjectRelation> >(), projDir);
+    } else {
+        return QList<GObjectRelation>();
+    }
+}
+
+static QVariant relationsToHint(const QList<GObjectRelation> &relList) {
+    return QVariant::fromValue<QList<GObjectRelation> >(relList);
+}
+
+static QList<GObjectRelation> removeDuplicates(const QList<GObjectRelation> &relList) {
+    return relList.toSet().toList();
 }
 
 static QVariant toRelativeRelations(const QList<GObjectRelation>& absRelations, const QDir& projDir, 
@@ -348,10 +364,14 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
             info.hints = string2Map(objElement.text(), true);
 
             if (!info.hints.isEmpty()) {
-                QVariant qv = info.hints[GObjectHint_RelatedObjects];
-                if (!qv.isNull()){
-                    QList<GObjectRelation> relList = qv.value<QList<GObjectRelation> >();
-                    info.hints[GObjectHint_RelatedObjects] = toAbsoluteRelations(relList, proj.absoluteDir());
+                // For backward compatibility: join relations from old and new hint key, avoid duplication
+                QList<GObjectRelation> relations;
+                relations << hintToRelations(info.hints[GObjectHint_RelatedObjects], proj.absoluteDir());
+                relations << hintToRelations(info.hints[GObjectHint_RelatedObjectsLegacy], proj.absoluteDir());
+                relations = removeDuplicates(relations);
+
+                if(! relations.empty()) {
+                    info.hints[GObjectHint_RelatedObjects] = relationsToHint(relations);
                 }
             }
 
