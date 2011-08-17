@@ -29,6 +29,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/DNASequenceSelection.h>
 
@@ -72,7 +73,7 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, DNASeque
                 a->setChecked(true);
                 //set row id
                 a->setData(i);
-                connect(a, SIGNAL(triggered()), SLOT(sl_toggleTransltions()));
+                connect(a, SIGNAL(triggered()), SLOT(sl_toggleTranslations()));
             }
         }
     }
@@ -130,6 +131,8 @@ QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
     if (translations) {
         m = new QMenu(tr("Amino translation"));
         frames = new QMenu(tr("Translation frames"));
+
+        SAFE_POINT(visibleFrames != NULL, "ADVSequenceObjectContext: visibleFrames is NULL ?!", m);
         foreach(QAction* a, visibleFrames->actions()) {
             frames->addAction(a);
         }
@@ -232,15 +235,18 @@ QSet<AnnotationTableObject*> ADVSequenceObjectContext::getAnnotationObjects(bool
 
 }
 
-void ADVSequenceObjectContext::sl_toggleTransltions(){
+void ADVSequenceObjectContext::sl_toggleTranslations(){
     emit si_translationRowsChanged();
 }
 
 QVector<bool> ADVSequenceObjectContext::getTranslationRowsVisibleStatus(){
     QVector<bool> result;
-     foreach(QAction* a, visibleFrames->actions()) {
-         result.append(a->isChecked());
-     }
-     return result;
+    if (visibleFrames != NULL) {
+        foreach(QAction* a, visibleFrames->actions()) {
+            result.append(a->isChecked());
+        }
+    }
+    return result;
 }
+
 }//namespace

@@ -80,7 +80,7 @@ public:
 
 private slots:
     void sl_setAminoTranslation();
-    void sl_toggleTransltions();
+    void sl_toggleTranslations();
 signals:
     void si_aminoTranslationChanged();
     void si_annotationObjectAdded(AnnotationTableObject* obj);
