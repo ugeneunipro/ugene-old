@@ -82,7 +82,7 @@
     Code style hint: use CHECK macro only to make error processing more compact but not all if {return;} patterns !
 */
 #define CHECK(condition, result) \
-    if (!condition) { \
+    if (!(condition)) { \
         return result; \
     } 
 
@@ -93,7 +93,7 @@
     Code style hint: use CHECK macro only to make error processing more compact but not all if {return;} patterns !
 */
 #define CHECK_EXT(condition, extraOp, result) \
-    if (!condition) { \
+    if (!(condition)) { \
         extraOp; \
         return result; \
     } 
