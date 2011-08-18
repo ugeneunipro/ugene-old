@@ -54,15 +54,7 @@ const QString BowtieBaseTask::taskName("Bowtie");
 BowtieBaseTask::BowtieBaseTask(const DnaAssemblyToRefTaskSettings & c, bool jbi) 
 : DnaAssemblyToReferenceTask(c, TaskFlags_NR_FOSCOE, jbi), sub(NULL) {
     haveResults = true;
-#ifndef RUN_WORKFLOW_IN_THREADS
-    if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
-        sub = new BowtieRunFromSchemaTask(settings, justBuildIndex);
-    } else {
-        sub = new BowtieTask(settings, justBuildIndex);
-    }
-#else
     sub = new BowtieTask(settings, justBuildIndex);
-#endif // RUN_WORKFLOW_IN_THREADS
     addSubTask(sub);
 }
 
