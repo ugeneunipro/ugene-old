@@ -325,7 +325,7 @@ void BowtieBuildWorkerFactory::init() {
 	
     Descriptor refseq(REFSEQ_URL_ATTR, BowtieBuildWorker::tr("Reference"), 
 		BowtieBuildWorker::tr("Reference sequence url. The short reads will be aligned to this reference genome."));
-	Descriptor desc(ACTOR_ID, BowtieBuildWorker::tr("Bowtie build indexer"), 
+    Descriptor desc(ACTOR_ID, BowtieBuildWorker::tr("Bowtie index builder"),
 		BowtieWorker::tr("Bowtie-build builds a Bowtie index from a set of DNA sequences. bowtie-build outputs a set of 6 files with suffixes .1.ebwt, .2.ebwt, .3.ebwt, .4.ebwt, .rev.1.ebwt, and .rev.2.ebwt. These files together constitute the index: they are all that is needed to align reads to that reference. The original sequence files are no longer used by Bowtie once the index is built."));
 	Descriptor ebwt(EBWT_URL_ATTR, BowtieBuildWorker::tr("EBWT"), 
 		BowtieBuildWorker::tr("Output index url."));
