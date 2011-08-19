@@ -37,9 +37,9 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Range.h \
            src/datatype/U2Region.h \
            src/datatype/U2Sequence.h \
-           src/datatype/U2Snp.h \
            src/datatype/U2Type.h \
            src/datatype/U2TypeIds.h \
+           src/datatype/U2Variant.h \
            src/datatype/UIndex.h \
            src/datatype/Vector3D.h \
            src/dbi/DbiDocumentFormat.h \
@@ -55,8 +55,8 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2MsaDbi.h \
            src/dbi/U2ObjectDbi.h \
            src/dbi/U2SequenceDbi.h \
-           src/dbi/U2SnpDbi.h \
            src/dbi/U2SqlHelpers.h \
+           src/dbi/U2VariantDbi.h \
            src/globals/AppContext.h \
            src/globals/AppGlobalObject.h \
            src/globals/AppResources.h \

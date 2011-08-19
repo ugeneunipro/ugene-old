@@ -166,9 +166,9 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
             SQLiteUtils::remove("Sequence", "object", objectId, 1, db, os);
             SQLiteUtils::remove("SequenceData", "sequence", objectId, -1, db, os);
             break;
-        case U2Type::SnpTrack:
-            SQLiteUtils::remove("SnpTrack", "object", objectId, 1, db, os);
-            SQLiteUtils::remove("Snp", "track", objectId, -1, db, os);
+        case U2Type::VariantTrack:
+            SQLiteUtils::remove("VariantTrack", "object", objectId, 1, db, os);
+            SQLiteUtils::remove("Variant", "track", objectId, -1, db, os);
             break;
         case U2Type::Msa:
             //TODO: removeMsaObject(objectId);

@@ -19,37 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SNP_H_
-#define _U2_SNP_H_
+#ifndef _U2_VARIANT_H_
+#define _U2_VARIANT_H_
 
 #include <U2Core/U2Type.h>
 
 namespace U2 {
 
 /** 
-    Representation for set of SNPs. 
+    Representation for set of genomic variations. 
 */
-class U2CORE_EXPORT U2SnpTrack : public U2Object {
+class U2CORE_EXPORT U2VariantTrack : public U2Object {
 public:
-    U2SnpTrack() {}
-    U2SnpTrack(const U2DataId& id, const QString& dbId, qint64 version) : U2Object(id, dbId, version){}
+    U2VariantTrack() {}
+    U2VariantTrack(const U2DataId& id, const QString& dbId, qint64 version) : U2Object(id, dbId, version){}
     
     /** Sequence id */
     U2DataId      sequence;
 
     // implement U2Object
-    virtual U2DataType getType() { return U2Type::SnpTrack; }
+    virtual U2DataType getType() { return U2Type::VariantTrack; }
 };
 
-/** Single nucleotide polymorphisms database representation */
-class U2CORE_EXPORT U2Snp : public U2Entity {
+/** Database representation of genomic variations such as snps, indels, etc.  */
+class U2CORE_EXPORT U2Variant : public U2Entity {
 public:
-    U2Snp() : pos (0), oldBase(0), newBase(0) {}
+    U2Variant() : startPos(0), endPos(0) {}
 
-    qint64      pos;
-    char        oldBase;
-    char        newBase;
-    QString     publicId; // could be id from external db, visible for user
+    qint64      startPos;
+    qint64      endPos;
+    QByteArray  refData;
+    QByteArray  obsData;
+    QString     publicId; 
 
 };
 

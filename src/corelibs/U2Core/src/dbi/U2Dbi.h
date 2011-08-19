@@ -43,7 +43,7 @@ class U2CrossDatabaseReferenceDbi;
 class U2MsaDbi;
 class U2AssemblyDbi;
 class U2AttributeDbi;
-class U2SnpDbi;
+class U2VariantDbi;
 class U2OpStatus;
 class U2Dbi;
 
@@ -87,8 +87,8 @@ enum U2CORE_EXPORT U2DbiFeature {
     U2DbiFeature_ReadAttributes                 = 5,
     /** DBI supports read methods for remote objects  */
     U2DbiFeature_ReadCrossDatabaseReferences    = 6,
-    /** DBI supports readings Snps and SnpTracks */
-    U2DbiFeature_ReadSnp                        = 7,
+    /** DBI supports readings Variants and VariantTracks */
+    U2DbiFeature_ReadVariant                        = 7,
     /** DBI supports readings of custom properties */
     U2DbiFeature_ReadProperties                 = 8,
 
@@ -104,8 +104,8 @@ enum U2CORE_EXPORT U2DbiFeature {
     U2DbiFeature_WriteAttributes                = 105,
     /** DBI supports cross database references */
     U2DbiFeature_WriteCrossDatabaseReferences   = 106,
-    /** DBI supports changing/storing Snps and SnpTracks */
-    U2DbiFeature_WriteSnp                       = 107,
+    /** DBI supports changing/storing Variants and VariantTracks */
+    U2DbiFeature_WriteVariant                       = 107,
     /** DBI supports changing/storing custom properties */
     U2DbiFeature_WriteProperties                = 108,
 
@@ -247,10 +247,10 @@ public:
     virtual U2AttributeDbi* getAttributeDbi()  = 0;
 
     /**  
-        U2Snp related DBI routines 
-        Not NULL only if U2DbiFeature_ReadSnps supported
+        U2Variant related DBI routines 
+        Not NULL only if U2DbiFeature_ReadVariants supported
     */
-    virtual U2SnpDbi* getSnpDbi()  = 0;
+    virtual U2VariantDbi* getVariantDbi()  = 0;
 
     /** 
         Cross database references handling routines 

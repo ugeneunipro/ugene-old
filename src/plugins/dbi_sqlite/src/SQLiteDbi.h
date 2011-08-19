@@ -35,7 +35,7 @@ class SQLiteMsaRDbi;
 class SQLiteAssemblyDbi;
 class SQLiteCrossDatabaseReferenceDbi;
 class SQLiteAttributeDbi;
-class SQLiteSnpDbi;
+class SQLiteVariantDbi;
 class SQLiteAnnotationDbi;
 class DbRef;
 
@@ -117,7 +117,7 @@ public:
 
     virtual U2AttributeDbi* getAttributeDbi();
 
-    virtual U2SnpDbi*   getSnpDbi();
+    virtual U2VariantDbi*   getVariantDbi();
 
     virtual U2AnnotationDbi*   getAnnotationDbi();
 
@@ -149,7 +149,7 @@ private:
     SQLiteAssemblyDbi*                  assemblyDbi;
     SQLiteCrossDatabaseReferenceDbi*    crossDbi;
     SQLiteAttributeDbi*                 attributeDbi;
-    SQLiteSnpDbi*                       snpDbi;
+    SQLiteVariantDbi*                   variantDbi;
     SQLiteAnnotationDbi*                annotationDbi;
     
     friend class SQLiteObjectDbi;

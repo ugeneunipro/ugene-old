@@ -25,7 +25,7 @@
 #include "SQLiteMsaDbi.h"
 #include "SQLiteAssemblyDbi.h"
 #include "SQLiteAttributeDbi.h"
-#include "SQLiteSnpDbi.h"
+#include "SQLiteVariantDbi.h"
 #include "SQLiteAnnotationDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
@@ -46,7 +46,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     assemblyDbi = new SQLiteAssemblyDbi(this);
     crossDbi = new SQLiteCrossDatabaseReferenceDbi(this);
     attributeDbi = new SQLiteAttributeDbi(this);
-    snpDbi = new SQLiteSnpDbi(this);
+    variantDbi = new SQLiteVariantDbi(this);
     annotationDbi = new SQLiteAnnotationDbi(this);
 }
 
@@ -56,7 +56,7 @@ SQLiteDbi::~SQLiteDbi() {
     delete objectDbi;
     delete sequenceDbi;
     delete msaDbi;
-    delete snpDbi;
+    delete variantDbi;
     delete assemblyDbi;
     delete crossDbi;
     delete attributeDbi;
@@ -154,7 +154,7 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     assemblyDbi->initSqlSchema(os);
     crossDbi->initSqlSchema(os);
     attributeDbi->initSqlSchema(os);
-    snpDbi->initSqlSchema(os);
+    variantDbi->initSqlSchema(os);
 
     setProperty(SQLITE_DBI_OPTION_APP_VERSION, Version::appVersion().text, os);
 }
@@ -198,8 +198,8 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_WriteAttributes);
     features.insert(U2DbiFeature_ReadProperties);
     features.insert(U2DbiFeature_WriteProperties);
-    features.insert(U2DbiFeature_ReadSnp);
-    features.insert(U2DbiFeature_WriteSnp);
+    features.insert(U2DbiFeature_ReadVariant);
+    features.insert(U2DbiFeature_WriteVariant);
     features.insert(U2DbiFeature_ReadSequenceAnnotations);
     features.insert(U2DbiFeature_WriteSequence);
 }
@@ -298,7 +298,7 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     assemblyDbi->shutdown(os);
     crossDbi->shutdown(os);
     attributeDbi->shutdown(os);
-    snpDbi->shutdown(os);
+    variantDbi->shutdown(os);
     
     setState(U2DbiState_Stopping);
     int rc = sqlite3_close(db->handle);
@@ -341,8 +341,8 @@ SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
     return static_cast<SQLiteObjectDbi*>(objectDbi);
 }
 
-U2SnpDbi* SQLiteDbi::getSnpDbi() {
-    return snpDbi;
+U2VariantDbi* SQLiteDbi::getVariantDbi() {
+    return variantDbi;
 }
 
 U2AnnotationDbi* SQLiteDbi::getAnnotationDbi() {

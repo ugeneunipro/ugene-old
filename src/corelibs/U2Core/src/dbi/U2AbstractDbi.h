@@ -35,7 +35,7 @@
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
 #include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2SnpDbi.h>
+#include <U2Core/U2VariantDbi.h>
 
 
 namespace U2 {
@@ -74,7 +74,7 @@ public:
     
     virtual U2ObjectDbi* getObjectDbi()  {return NULL;}
 
-    virtual U2SnpDbi* getSnpDbi()  {return NULL;}
+    virtual U2VariantDbi* getVariantDbi()  {return NULL;}
     
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
     
@@ -295,17 +295,17 @@ public:
 };
 
 
-/** Default no-op implementation for write  methods of U2SnpDbi */
-class U2SimpleSnpDbi: public U2SnpDbi {
+/** Default no-op implementation for write  methods of U2VariantDbi */
+class U2SimpleVariantDbi: public U2VariantDbi {
 protected:
-    U2SimpleSnpDbi(U2Dbi* rootDbi) : U2SnpDbi(rootDbi) {}
+    U2SimpleVariantDbi(U2Dbi* rootDbi) : U2VariantDbi(rootDbi) {}
 
-    virtual void createSnpTrack(U2SnpTrack& , U2DbiIterator<U2Snp>* , const QString&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSnp, getRootDbi(), os); 
+    virtual void createVariantTrack(U2VariantTrack& , U2DbiIterator<U2Variant>* , const QString&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteVariant, getRootDbi(), os); 
     }
  
-    virtual void updateSnpTrack(const U2SnpTrack&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSnp, getRootDbi(), os); 
+    virtual void updateVariantTrack(const U2VariantTrack&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteVariant, getRootDbi(), os); 
     }
 };
 
