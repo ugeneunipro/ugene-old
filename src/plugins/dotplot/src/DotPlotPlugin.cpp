@@ -31,6 +31,9 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include <U2Core/GObjectSelection.h>
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
@@ -115,6 +118,8 @@ void DotPlotViewContext::sl_loadTaskStateChanged(Task* task) {
     if (canCreate) {
         AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(ms, false));
         createdByWizard = true; // set flag that we need to show a dotplot settings dialog
+        firstFile = loadTask->getFirstFile();
+        secondFile = loadTask->getSecondFile();
     }
 }
 
@@ -136,6 +141,20 @@ void DotPlotViewContext::sl_showDotPlotDialog() {
     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
 }
 
+static DNASequenceObject * getSequenceByFile(QString file) {
+    Project *project = AppContext::getProject();
+    SAFE_POINT(project != NULL, "No project loaded", NULL);
+
+    Document *doc = project->findDocumentByURL(GUrl(file));
+    CHECK(doc != NULL, NULL);
+
+    QList<GObject*> sequences = GObjectUtils::select(doc->getObjects(), GObjectTypes::SEQUENCE, UOF_LoadedOnly);
+    if(! sequences.isEmpty()) {
+        return qobject_cast<DNASequenceObject*>(sequences.first());
+    }
+    return NULL;
+}
+
 // called from the context menu
 void DotPlotViewContext::sl_buildDotPlot() {
 
@@ -151,6 +170,7 @@ void DotPlotViewContext::sl_buildDotPlot() {
     }
 
     DotPlotWidget *dotPlot = new DotPlotWidget(dnaView);
+    dotPlot->setSequences(getSequenceByFile(firstFile), getSequenceByFile(secondFile));
 
     // show settings dialog
     if (dotPlot && (dotPlot->sl_showSettingsDialog())) {

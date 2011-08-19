@@ -78,6 +78,8 @@ public:
     QString getXSequenceName();
     QString getYSequenceName();
 
+    void setSequences(DNASequenceObject* seqX, DNASequenceObject* seqY);
+
 signals:
     void si_removeDotPlot();
     void si_dotPlotChanged(ADVSequenceObjectContext*, ADVSequenceObjectContext*, float, float, QPointF);

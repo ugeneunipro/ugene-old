@@ -68,6 +68,8 @@ private:
     GObjectViewAction* removeDotPlotAction, *addDotPlotAction;
 
     bool createdByWizard;
+    QString firstFile;
+    QString secondFile;
 };
 
 #define DOTPLOT_ACTION_NAME   "DOTPLOT_ACTION"

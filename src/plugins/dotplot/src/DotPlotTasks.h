@@ -100,6 +100,9 @@ public:
     QList<Document*> getDocuments() const {return docs;}
     bool isNoView(){return noView;}
 
+    QString getFirstFile() { return firstFile; }
+    QString getSecondFile() { return secondFile; }
+
 private:
     QString firstFile, secondFile;
     int firstGap, secondGap;

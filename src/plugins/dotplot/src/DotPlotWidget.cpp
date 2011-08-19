@@ -1763,6 +1763,16 @@ QString DotPlotWidget::getYSequenceName() {
     return sequenceY->getSequenceObject()->getGObjectName();
 }
 
+void DotPlotWidget::setSequences(DNASequenceObject* seqX, DNASequenceObject* seqY)
+{
+    CHECK(dnaView != NULL,);
+    if(seqX != NULL) {
+        sequenceX = dnaView->getSequenceContext(seqX);
+    }
+    if(seqY != NULL) {
+        sequenceY = dnaView->getSequenceContext(seqY);
+    }
+}
 
 void DotPlotWidget::mouseReleaseEvent(QMouseEvent *e) {
     setFocus();
