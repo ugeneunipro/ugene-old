@@ -99,7 +99,7 @@ add-plugin opencl_support
 add-plugin dbi_sqlite
 add-plugin dbi_bam
 add-plugin assembly_browser
-add-plugin dbi_file
+#add-plugin dbi_file
 add-plugin ptools
 add-plugin dna_flexibility
 
