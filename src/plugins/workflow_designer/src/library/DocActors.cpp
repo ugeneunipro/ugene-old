@@ -87,14 +87,14 @@ bool ReadDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * par
  * WriteDocActorProto
  *****************************/
 WriteDocActorProto::WriteDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
-                                       const QString & portId, const QList<Attribute*>& _attrs )
-: DocActorProto( _fid, _desc, _ports, _attrs ), outPortId(portId) {
+                                       const QString & portId, const QList<Attribute*>& _attrs)
+: DocActorProto( _fid, _desc, _ports, _attrs ), outPortId(portId), urlDelegate(NULL) {
     construct();
 }
 
 WriteDocActorProto::WriteDocActorProto(const Descriptor& _desc, const GObjectType & t, const QList<PortDescriptor*>& _ports, 
-                                       const QString & portId, const QList<Attribute*>& _attrs )
-: DocActorProto(_desc, t, _ports, _attrs), outPortId(portId) {
+                                       const QString & portId, const QList<Attribute*>& _attrs)
+: DocActorProto(_desc, t, _ports, _attrs), outPortId(portId), urlDelegate(NULL) {
     construct();
 }
 
@@ -107,12 +107,17 @@ void WriteDocActorProto::construct() {
     attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
 
     QMap< QString, PropertyDelegate* > delegateMap;
-    delegateMap[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(prepareDocumentFilter(), QString(), false );
+    urlDelegate = new URLDelegate(prepareDocumentFilter(), QString(), false );
+    delegateMap[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = urlDelegate;
     delegateMap[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
 
     setEditor(new DelegateEditor(delegateMap));
     setValidator(new ScreenedParamValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), ports.first()->getId(), BaseSlots::URL_SLOT().getId()));
     setPortValidator(outPortId, new ScreenedSlotValidator(BaseSlots::URL_SLOT().getId()));
+}
+
+URLDelegate *WriteDocActorProto::getUrlDelegate() {
+    return urlDelegate;
 }
 
 /****************************

@@ -200,33 +200,35 @@ Task* BaseDocWriter::tick() {
         anUrl = QFileInfo(anUrl).absoluteFilePath();
         
         // set correct file extension
-        GUrl path(anUrl);
-        QStringList suffixList = format->getSupportedDocumentFileExtensions();
-        QString suffix = /*path.completeFileSuffix();*/ path.lastFileSuffix();
-        QString newSuffix = suffixList.first();
-        if (suffix.contains("gz")) {
-            newSuffix.append(GZIP_SUFFIX);
-            suffix = path.completeFileSuffix();
-            suffix.remove(GZIP_SUFFIX);
-        }
-        if (!suffixList.contains(suffix)) {
-            path = path.dirPath() + "/" + path.baseFileName() + "." + newSuffix; 
-            anUrl = path.getURLString();
-            urlAttribute->setAttributeValue(anUrl);
-        } 
+        // commented because of UGENE-537
+        //GUrl path(anUrl);
+        //QStringList suffixList = format->getSupportedDocumentFileExtensions();
+        //QString suffix = /*path.completeFileSuffix();*/ path.lastFileSuffix();
+        //QString newSuffix = suffixList.first();
+        //if (suffix.contains("gz")) {
+        //    newSuffix.append(GZIP_SUFFIX);
+        //    suffix = path.completeFileSuffix();
+        //    suffix.remove(GZIP_SUFFIX);
+        //}
+        //if (!suffixList.contains(suffix)) {
+        //    path = path.dirPath() + "/" + path.baseFileName() + "." + newSuffix; 
+        //    anUrl = path.getURLString();
+        //    urlAttribute->setAttributeValue(anUrl);
+        //} 
         
 
         doc = docs.value(anUrl);
         if (!doc) {
             IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-            int count = ++counter[anUrl];
+            // commented because of UGENE-537
+            /*int count = ++counter[anUrl];
             if(!append && count > 1) {
                 anUrl = GUrlUtils::prepareFileName(anUrl, count, format->getSupportedDocumentFileExtensions());
             } else {
                 assert(count == 1);
                 anUrl = GUrlUtils::ensureFileExt(anUrl, format->getSupportedDocumentFileExtensions()).getURLString();
             }
-            urlAttribute->setAttributeValue(anUrl);
+            urlAttribute->setAttributeValue(anUrl);*/
             doc = new Document(format, iof, anUrl);
             doc->setLoaded(true);
             docs.insert(anUrl, doc);

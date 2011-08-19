@@ -241,13 +241,16 @@ void CoreLib::init() {
             p << new PortDescriptor(pd, writeMAType, true);
             a << new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
                 supportedFormats.contains( BaseDocumentFormats::CLUSTAL_ALN ) ? BaseDocumentFormats::CLUSTAL_ALN : supportedFormats.first() );
-            IntegralBusActorPrototype * proto = new WriteDocActorProto( acd, GObjectTypes::MULTIPLE_ALIGNMENT, p, pd.getId(), a );
+            WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::MULTIPLE_ALIGNMENT, p, pd.getId(), a );
+            IntegralBusActorPrototype * proto = childProto;
             
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {
                 m[fid] = fid;
             }
-            proto->getEditor()->addDelegate(new ComboBoxDelegate(m), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+            ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
+            connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_extensionChanged(const QString &)));
+            proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all MSAs from <u>%1</u> to <u>%2</u>."), BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
         }
@@ -274,13 +277,16 @@ void CoreLib::init() {
             a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
             a << new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
                 supportedFormats.contains( BaseDocumentFormats::PLAIN_FASTA ) ? BaseDocumentFormats::PLAIN_FASTA : supportedFormats.first() );
-            IntegralBusActorPrototype * proto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a );
+            WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a );
+            IntegralBusActorPrototype * proto = childProto;
             
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {
                 m[fid] = fid;
             }
-            proto->getEditor()->addDelegate(new ComboBoxDelegate(m), BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+            ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
+            connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_extensionChanged(const QString &)));
+            proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all sequences from <u>%1</u> to <u>%2</u>."), BaseSlots::DNA_SEQUENCE_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
         }

@@ -25,6 +25,7 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/GUrlUtils.h>
 
@@ -274,6 +275,19 @@ void URLDelegate::sl_showEditorButton( bool show ) {
     showButton = show;
 }
 
+void URLDelegate::sl_extensionChanged(const QString &newExtension) {
+    if (newExtension.isEmpty()) {
+        return;
+    }
+
+    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(newExtension);
+    QString fileFilter;
+    if (NULL != format) {
+        FileFilter = newExtension + " files (*." + format->getSupportedDocumentFileExtensions().first() + ")";
+    } else {
+        FileFilter = newExtension + " files (*." + newExtension + ")";
+    }
+}
 
 /********************************
 * FileModeDelegate

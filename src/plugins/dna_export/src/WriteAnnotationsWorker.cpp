@@ -176,9 +176,12 @@ void WriteAnnotationsWorkerFactory::init() {
         foreach( const DocumentFormatId & fid, supportedFormats ) {
             m[fid] = fid;
         }
-        delegates[BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId()] = new ComboBoxDelegate(m);
-        delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(
+        ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
+        URLDelegate *urlDelegate = new URLDelegate(
             DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::ANNOTATION_TABLE, true), QString(), false );
+        QObject::connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), urlDelegate, SLOT(sl_extensionChanged(const QString &)));
+        delegates[BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId()] = comboDelegate;
+        delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = urlDelegate;
         delegates[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
     }
     proto->setEditor(new DelegateEditor(delegates));

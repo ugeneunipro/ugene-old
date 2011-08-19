@@ -29,6 +29,8 @@
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 
+#include <U2Designer/DelegateEditors.h>
+
 namespace U2 {
 namespace Workflow {
 
@@ -63,12 +65,15 @@ public:
     WriteDocActorProto(const Descriptor& desc, const GObjectType & t, const QList<PortDescriptor*>& ports, 
         const QString & portId, const QList<Attribute*>& attrs = QList<Attribute*>() );
 
+    URLDelegate *getUrlDelegate();
+
 private:
     void construct();
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
 
 private:
     QString outPortId;
+    URLDelegate *urlDelegate;
 };
 
 class ReadDocPrompter;

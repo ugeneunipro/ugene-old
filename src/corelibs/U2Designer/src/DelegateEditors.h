@@ -102,6 +102,7 @@ public:
 public slots:
     void sl_showEditorButton( bool show );
     void sl_commit();
+    void sl_extensionChanged(const QString &newExtension);
     
 protected:
     QString FileFilter;
