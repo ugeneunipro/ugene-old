@@ -58,6 +58,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Gui/GScrollBar.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
@@ -272,8 +273,10 @@ void MSAEditor::sl_openTree() {
     Document *d = new Document(df, iof, treeFileName, QList<GObject*>()<<newObj);
     p->addDocument(d);
 
+    Task* saveTask = new SaveDocumentTask(d);
     Task* task = new OpenTreeViewerTask(newObj);
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
+    scheduler->registerTopLevelTask(saveTask);
     scheduler->registerTopLevelTask(task);
 }
 
