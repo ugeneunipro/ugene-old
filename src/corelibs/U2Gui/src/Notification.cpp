@@ -289,6 +289,12 @@ void NotificationStack::addNotification(Notification *t) {
     connect(t, SIGNAL(si_dissapear()), SLOT(sl_notificationDissapear()));
 }
 
+void NotificationStack::addError(const QString& errorMessage)
+{
+    Notification *t = new Notification(errorMessage, Error_Not);
+    addNotification(t);
+}
+
 void NotificationStack::sl_notificationDissapear() {
     notificationNumber--;
     if(notificationNumber == 0) {

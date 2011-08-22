@@ -157,11 +157,16 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
         if(attributeDbi != NULL) {
             cachedModelLength = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, REFERENCE_ATTRIBUTE_NAME, NO_VAL, os);
         }
+        // ignore incorrect attribute value
+        if(cachedModelLength <= 0) {
+            cachedModelLength = NO_VAL;
+            coreLog.details(QString("ignored incorrect value of attribute %1: should be > 0, got %2").arg(QString(REFERENCE_ATTRIBUTE_NAME)).arg(cachedModelLength));
+        }
         // if cannot from attributes -> set from reference or max end pos
         if(cachedModelLength == NO_VAL) {
-            LOG_OP(status);
             qint64 refLen = hasReference() ? reference.length : 0;
             qint64 assLen = assemblyDbi->getMaxEndPos(assembly.id, status);
+            LOG_OP(status);
             cachedModelLength = qMax(refLen, assLen);
         }
     }

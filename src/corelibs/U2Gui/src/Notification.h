@@ -105,6 +105,8 @@ public:
     ~NotificationStack();
 
     void addNotification(Notification *t);
+    // a shortcut to addNotification for quick reporting errors
+    void addError(const QString& errorMessage);
     int count() const;
     Notification *getNotification(int row) const;
     QList<Notification *>  getItems() const;

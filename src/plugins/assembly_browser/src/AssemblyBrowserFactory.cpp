@@ -5,6 +5,9 @@
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
+
+#include <U2Gui/Notification.h>
 
 #include "AssemblyBrowser.h"
 
@@ -134,6 +137,22 @@ void OpenAssemblyBrowserTask::open() {
 
         viewName = GObjectViewUtils::genUniqueViewName(o->getDocument(), o);
         AssemblyBrowser * v = new AssemblyBrowser(o);
+
+        // before opening view, check for incorrect reference length attribute
+        U2OpStatusImpl status;
+        qint64 modelLen = v->getModel()->getModelLength(status);
+        if(status.hasError()) {
+            LOG_OP(status);
+            AppContext::getMainWindow()->getNotificationStack()->addError(status.getError());
+            continue;
+        }
+        if(modelLen <= 0) {
+            QString message = tr("Cannot open assembly browser for %1: model length should be > 0").arg(o->getDocument()->getURLString());
+            coreLog.error(message);
+            AppContext::getMainWindow()->getNotificationStack()->addError(message);
+            continue;
+        }
+
         GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);
         AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
     }

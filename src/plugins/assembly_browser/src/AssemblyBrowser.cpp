@@ -34,6 +34,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/FormatUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
@@ -308,6 +309,8 @@ qint64 AssemblyBrowser::calcPixelCoord(qint64 xAsmCoord) const {
     U2OpStatusImpl status;
     qint64 modelLen = model->getModelLength(status);
     qint64 width = ui->getReadsArea()->width();
+
+    SAFE_POINT(modelLen != 0, "modelLen == 0, cannot divide to find pixel coordinate", 0);
     qint64 xPixelCoord = (double(width) / modelLen * double(xAsmCoord)) / zoomFactor + 0.5;
     return xPixelCoord;
 }
@@ -684,7 +687,8 @@ void AssemblyBrowser::sl_zoomToReads() {
 }
 
 int AssemblyBrowser::zoomInFromSize(int oldCellSize) {
-    assert(oldCellSize >= 0);
+    SAFE_POINT(oldCellSize >= 0, "oldCellSize < 0, zooming will not work correctly!", oldCellSize);
+
     //single decreasing of the zoomFactor not always changes the cell size
     //so we have to do it in the cycle, until cells grow
     int cellWidth = 0;
@@ -696,7 +700,8 @@ int AssemblyBrowser::zoomInFromSize(int oldCellSize) {
 }
 
 int AssemblyBrowser::zoomOutFromSize(int oldCellSize) {
-    assert(oldCellSize);
+    SAFE_POINT(oldCellSize >= 0, "oldCellSize < 0, zooming will not work correctly!", oldCellSize);
+
     //single increasing of the zoomFactor not always changes the cell size
     //so we have to do it in the cycle
     int cellWidth = 0;
