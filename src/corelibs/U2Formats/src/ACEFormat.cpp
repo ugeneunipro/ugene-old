@@ -446,14 +446,14 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
             sequence.replace('X',MAlignment_GapChar);
 
             bool isComplement = complMap.take(name);
+            int pos = posMap.value(name) - 1;
+            QString rowName(name);
             if(true == isComplement){
-                char *s = sequence.data();
-                TextUtils::reverse(s, sequence.length());
+                rowName.append("(rev-compl)");
             }
             MAlignmentRow row;
-
-            row.setName(name);
-            row.setSequence(sequence, posMap.take(name)-1);
+            row.setName(rowName);
+            row.setSequence(sequence, pos);
 
             al.addRow(row);
 
