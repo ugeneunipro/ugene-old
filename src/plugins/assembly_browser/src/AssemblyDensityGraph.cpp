@@ -46,6 +46,10 @@ void AssemblyDensityGraph::connectSlots() {
 
 void AssemblyDensityGraph::drawAll() {
     if(!model->isEmpty()) {
+        if(cachedView.size() != size()) {
+            cachedView = QPixmap(size());
+            redraw = true;
+        }
         if (redraw) {
             cachedView.fill(Qt::transparent);
             QPainter p(&cachedView);
@@ -68,10 +72,11 @@ void AssemblyDensityGraph::drawGraph(QPainter & p) {
         int visibleBases = browser->basesVisible();
         CoverageInfo ci = coverageTaskRunner.getResult();
         QVector<qint64> & densities = ci.coverageInfo;
-        SAFE_POINT(visibleBases == densities.size(), "Invalid CoverageInfo size when drawing density graph",);
         qint64 maxDensity = ci.maxCoverage;
+        CHECK(maxDensity > 0,);
 
-        if(0 == maxDensity) {
+        if(visibleBases != densities.size()) {
+            sl_launchCoverageCalculation();
             return;
         }
 
@@ -91,19 +96,12 @@ void AssemblyDensityGraph::paintEvent(QPaintEvent * e) {
     QWidget::paintEvent(e);
 }
 
-
-void AssemblyDensityGraph::resizeEvent(QResizeEvent * e) {
-    sl_redraw();
-    QWidget::resizeEvent(e);
-}
-
 void AssemblyDensityGraph::mouseMoveEvent(QMouseEvent * e) {
     emit si_mouseMovedToPos(e->pos());
     QWidget::mouseMoveEvent(e);
 }
 
 void AssemblyDensityGraph::sl_redraw() {
-    cachedView = QPixmap(size());
     redraw = true;
     update();
 }
