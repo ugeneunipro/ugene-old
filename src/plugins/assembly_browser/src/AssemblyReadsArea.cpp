@@ -145,7 +145,7 @@ void AssemblyReadsArea::setupHScrollBar() {
     qint64 numVisibleBases = browser->basesVisible();
 
     hBar->setMinimum(0);
-    hBar->setMaximum(assemblyLen - numVisibleBases + 1); //TODO: remove +1
+    hBar->setMaximum(assemblyLen - numVisibleBases);
     hBar->setSliderPosition(browser->getXOffsetInAssembly());
 
     hBar->setSingleStep(1);

@@ -337,7 +337,9 @@ qint64 AssemblyBrowser::basesCanBeVisible() const {
 qint64 AssemblyBrowser::basesVisible() const {
     U2OpStatusImpl status;
     qint64 modelLength = model->getModelLength(status);
-    return qMin(modelLength, basesCanBeVisible());
+    LOG_OP(status);
+    qint64 maxLength = modelLength - getXOffsetInAssembly();
+    return qMin(maxLength, basesCanBeVisible());
 }
 
 qint64 AssemblyBrowser::rowsCanBeVisible() const {

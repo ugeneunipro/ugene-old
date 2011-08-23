@@ -110,7 +110,7 @@ void AssemblyDensityGraph::sl_launchCoverageCalculation()
 {
     if(browser->areCellsVisible()) {
         qint64 start = browser->getXOffsetInAssembly();
-        int length= browser->basesVisible();
+        qint64 length = browser->basesVisible();
 
         CalcCoverageInfoTaskSettings settings;
         settings.model = model;
