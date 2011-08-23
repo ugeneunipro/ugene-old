@@ -77,10 +77,14 @@ public:
 
     QList<Annotation*> selectRelatedAnnotations(const QList<Annotation*>& alist) const;
     QVector<bool> getTranslationRowsVisibleStatus();
+    void hideTranslationRows();
 
 private slots:
     void sl_setAminoTranslation();
     void sl_toggleTranslations();
+    void sl_showDirectOnly();
+    void sl_showComplOnly();
+    void sl_showShowAll();
 signals:
     void si_aminoTranslationChanged();
     void si_annotationObjectAdded(AnnotationTableObject* obj);

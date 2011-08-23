@@ -67,7 +67,7 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, DNASeque
                 if(i < 3){
                     a = visibleFrames->addAction(QString("%1 direct translation frame").arg(i+1));
                 }else{
-                    a = visibleFrames->addAction(QString("%1 complement translation frame").arg(i+1-3));
+                    a = visibleFrames->addAction(QString("%1 complementary translation frame").arg(i+1-3));
                 }
                 a->setCheckable(true);
                 a->setChecked(true);
@@ -125,6 +125,64 @@ QList<GObject*> ADVSequenceObjectContext::getAnnotationGObjects() const {
     return res;
 }
 
+void ADVSequenceObjectContext::sl_showDirectOnly(){
+    bool needUpdate = false;
+    QList<QAction*> actionList = visibleFrames->actions();
+    int i = 0;
+    for(; i < 3; i++){
+        QAction *a = actionList[i];
+        if(!a->isChecked()){
+            needUpdate = true;
+            a->setChecked(true);
+        }
+    }
+    for(; i < 6; i++){
+        QAction *a = actionList[i];
+        if(a->isChecked()){
+            needUpdate = true;
+            a->setChecked(false);
+        }
+    }
+    if(needUpdate){
+        emit si_translationRowsChanged();
+    }
+}
+
+void ADVSequenceObjectContext::sl_showComplOnly(){
+    bool needUpdate = false;
+    QList<QAction*> actionList = visibleFrames->actions();
+    int i = 0;
+    for(; i < 3; i++){
+        QAction *a = actionList[i];
+        if(a->isChecked()){
+            needUpdate = true;
+            a->setChecked(false);
+        }
+    }
+    for(; i < 6; i++){
+        QAction *a = actionList[i];
+        if(!a->isChecked()){
+            needUpdate = true;
+            a->setChecked(true);
+        }
+    }
+    if(needUpdate){
+        emit si_translationRowsChanged();
+    }
+}
+
+void ADVSequenceObjectContext::sl_showShowAll(){
+    bool needUpdate = false;
+    foreach(QAction* a, visibleFrames->actions()){
+        if(!a->isChecked()) {
+            needUpdate = true;
+            a->setChecked(true);
+        }
+    }
+    if(needUpdate){
+        emit si_translationRowsChanged();
+    }
+}
 
 QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
     QMenu* m = NULL, *frames = NULL;
@@ -136,6 +194,13 @@ QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
         foreach(QAction* a, visibleFrames->actions()) {
             frames->addAction(a);
         }
+        frames->addSeparator();
+
+        connect(frames->addAction(QString("Show direct only")), SIGNAL(triggered()), SLOT(sl_showDirectOnly()));
+        connect(frames->addAction(QString("Show complementary only")), SIGNAL(triggered()), SLOT(sl_showComplOnly()));
+        connect(frames->addAction(QString("Show all")), SIGNAL(triggered()), SLOT(sl_showShowAll()));
+
+
         m->addMenu(frames);
         m->addSeparator();
 
@@ -249,4 +314,16 @@ QVector<bool> ADVSequenceObjectContext::getTranslationRowsVisibleStatus(){
     return result;
 }
 
+void ADVSequenceObjectContext::hideTranslationRows(){
+    bool needUpdate = false;
+    foreach(QAction* a, visibleFrames->actions()){
+        if(a->isChecked()) {
+            needUpdate = true;
+            a->setChecked(false);
+        }
+    }
+    if(needUpdate){
+        emit si_translationRowsChanged();
+    }
+}
 }//namespace

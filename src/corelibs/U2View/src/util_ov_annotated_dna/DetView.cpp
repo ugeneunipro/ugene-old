@@ -159,6 +159,9 @@ void DetView::setShowComplement(bool t) {
 void DetView::setShowTranslation(bool t) {
     showTranslationAction->disconnect(this);
     showTranslationAction->setChecked(t);
+    if(!t){
+        getSequenceContext()->hideTranslationRows();
+    }
     connect(showTranslationAction, SIGNAL(triggered(bool)), SLOT(sl_showTranslationToggle(bool)));
 
     updateSize();
@@ -214,6 +217,9 @@ void DetView::sl_translationRowsChanged(){
     if(!anyFrame){
         sl_showTranslationToggle(false);
         return;
+    }
+    if(!showTranslationAction->isChecked()){
+        sl_showTranslationToggle(true);
     }
 
     updateScrollBar();
