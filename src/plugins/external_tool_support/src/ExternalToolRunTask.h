@@ -81,13 +81,17 @@ public:
     virtual int getProgress(){ return progress; }
     virtual void parseOutput(const QString& partOfLog);
     virtual void parseErrOutput(const QString& partOfLog);
-    QString getLastError() const {return lastErrLine;}
+    QString getLastError() const {return lastError;}
     
 private:
+    /* If any error occured, this variable will be non-empty */
+    QString     lastError;
     /* Percent values in range 0..100, negative if unknown. */
-    QString     lastErrLine;
     int         progress;
+    /* Last line printed to stdout */
     QString     lastLine;
+    /* Last line printed to stderr */
+    QString     lastErrLine;
     
 protected:
     QStringList lastPartOfLog;

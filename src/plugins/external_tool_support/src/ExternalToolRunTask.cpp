@@ -145,6 +145,7 @@ ExternalToolLogParser::ExternalToolLogParser() {
     progress=-1;
     lastLine="";
     lastErrLine="";
+    lastError="";
 }
 void ExternalToolLogParser::parseOutput(const QString& partOfLog){
     lastPartOfLog=partOfLog.split(QChar('\n'));
@@ -153,7 +154,7 @@ void ExternalToolLogParser::parseOutput(const QString& partOfLog){
     foreach(QString buf, lastPartOfLog){
         if(buf.contains("error",Qt::CaseInsensitive)){
             ioLog.error(buf);
-            lastErrLine = buf;
+            lastError = buf;
         }else{
             ioLog.trace(buf);
         }
@@ -167,7 +168,7 @@ void ExternalToolLogParser::parseErrOutput(const QString& partOfLog){
     foreach(const QString& buf, lastPartOfLog){
         if(buf.contains("error",Qt::CaseInsensitive)){
             ioLog.error(buf);
-            lastErrLine = buf;
+            lastError = buf;
         }else{
             ioLog.trace(buf);
         }
