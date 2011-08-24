@@ -23,6 +23,7 @@
 #define _U2_ATTRIBUTE_UTILS_H_
 
 #include <U2Core/U2Type.h>
+#include <U2Core/U2Attribute.h>
 
 namespace U2 {
 
@@ -31,6 +32,9 @@ class U2OpStatus;
 
 /**                                           
     U2Attribute utility functions
+
+    All functions return empty attribute if it is not found or error occured.
+    Use U2Entity::hasValidId() to check for valid value.
 */
 class U2CORE_EXPORT U2AttributeUtils : public QObject {
     Q_OBJECT
@@ -38,13 +42,13 @@ private:
     U2AttributeUtils(){}
 public:
 
-    static qint64 findIntegerAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& name, qint64 defaultVal, U2OpStatus& os);
+    static U2IntegerAttribute findIntegerAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, U2OpStatus& os);
 
-    static double findRealAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& name, double defaultVal, U2OpStatus& os);
+    static U2RealAttribute findRealAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, U2OpStatus& os);
 
-    static QByteArray findByteArrayAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& name, const QByteArray& defaultVal, U2OpStatus& os);
+    static U2ByteArrayAttribute findByteArrayAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, U2OpStatus& os);
 
-    static QString findStringAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& name, const QString& defaultVal, U2OpStatus& os);
+    static U2StringAttribute findStringAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, U2OpStatus& os);
 
 };
 

@@ -123,7 +123,7 @@ public:
     U2Entity(U2DataId _id = U2DataId()) : id(_id){}
     virtual ~U2Entity(){}
 
-    bool hasValidId() const {return id.isEmpty();}
+    bool hasValidId() const {return ! id.isEmpty();}
 
     U2DataId id;
 };
