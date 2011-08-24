@@ -27,7 +27,7 @@
 #include <QtXml/QDomElement>
 #include <QFileInfo>
 
-#include "BowtieTask.h"
+#include "bowtie/BowtieTask.h"
 
 namespace U2 {
 

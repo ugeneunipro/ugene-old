@@ -72,6 +72,7 @@
 #include "bowtie/BowtieSupport.h"
 #include "bowtie/BowtieTask.h"
 #include "bowtie/BowtieSettingsWidget.h"
+#include "bowtie/bowtie_tests/bowtieTests.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -206,6 +207,21 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     AppContext::getCDSFactoryRegistry()->registerFactory(new CDSearchLocalTaskFactory(), CDSearchFactoryRegistry::LocalSearch);
 
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BowtieTask::taskName, new BowtieTaskFactory(), new BowtieGUIExtensionsFactory(), true, false));
+
+    {
+        GTestFormatRegistry *tfr = AppContext::getTestFramework()->getTestFormatRegistry();
+        XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat *>(tfr->findFormat("XML"));
+        assert(NULL != xmlTestFormat);
+
+        GAutoDeleteList<XMLTestFactory> *l = new GAutoDeleteList<XMLTestFactory>(this);
+        l->qlist = BowtieTests::createTestFactories();
+
+        foreach(XMLTestFactory *f, l->qlist) {
+            bool res = xmlTestFormat->registerTestFactory(f);
+            Q_UNUSED(res);
+            assert(res);
+        }
+    }
 
     //Read settings
     ExternalToolSupportSettings::getExternalTools();

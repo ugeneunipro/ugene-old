@@ -1,5 +1,6 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/AppResources.h>
 
 #include "BowtieSupport.h"
 #include "BowtieTask.h"
@@ -8,17 +9,32 @@ namespace U2 {
 
 // BowtieBuildIndexTask
 
-BowtieBuildIndexTask::BowtieBuildIndexTask(const QString &referencePath, const QString &indexPath):
+BowtieBuildIndexTask::BowtieBuildIndexTask(const QString &referencePath, const QString &indexPath, bool colorspace):
     Task("Build Bowtie index", TaskFlags_NR_FOSCOE),
     referencePath(referencePath),
-    indexPath(indexPath)
+    indexPath(indexPath),
+    colorspace(colorspace)
 {
 }
 
 void BowtieBuildIndexTask::prepare() {
+    {
+        QFileInfo file(referencePath);
+        if(!file.exists()) {
+            stateInfo.setError(tr("Reference file \"%1\" does not exist").arg(referencePath));
+            return;
+        }
+        qint64 memUseMB = file.size() * 3 / 1024 / 1024 + 100;
+        coreLog.trace(QString("bowtie-build:Memory resourse %1").arg(memUseMB));
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB));
+    }
+
     QStringList arguments;
     arguments.append(referencePath);
     arguments.append(indexPath);
+    if(colorspace) {
+        arguments.append("--color");
+    }
     ExternalToolRunTask *task = new ExternalToolRunTask(BOWTIE_BUILD_TOOL_NAME, arguments, &logParser);
     addSubTask(task);
 }
@@ -93,7 +109,34 @@ BowtieAssembleTask::BowtieAssembleTask(const DnaAssemblyToRefTaskSettings &setti
 {
 }
 
+bool BowtieAssembleTask::isHaveResults()const {
+    return logParser.isHaveResults();
+}
+
 void BowtieAssembleTask::prepare() {
+    if(settings.indexFileName.isEmpty()) {
+        if(settings.prebuiltIndex) {
+            settings.indexFileName = settings.refSeqUrl.dirPath() + "/" + settings.refSeqUrl.baseFileName();
+        } else {
+            settings.indexFileName = settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName();
+        }
+    }
+    {
+        QString indexSuffixes[] = {".1.ebwt", ".2.ebwt", ".3.ebwt", ".4.ebwt", ".rev.1.ebwt", ".rev.2.ebwt" };
+        for(int i=0; i < 6; i++) {
+            QFileInfo file(settings.indexFileName + indexSuffixes[i]);
+            if(!file.exists()) {
+                stateInfo.setError(tr("Reference index file \"%1\" does not exist").arg(settings.indexFileName + indexSuffixes[i]));
+                return;
+            }
+        }
+
+        static const int SHORT_READ_AVG_LENGTH = 1000;
+        QFileInfo file(settings.indexFileName + indexSuffixes[0]);
+        qint64 memUseMB = (file.size() *  4 + SHORT_READ_AVG_LENGTH*10 ) / 1024 / 1024 + 100;
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
+    }
+
     QStringList arguments;
     arguments.append(QString("-n"));
     arguments.append(settings.getCustomValue(BowtieTask::OPTION_N_MISMATCHES, 2).toString());
@@ -142,6 +185,14 @@ void BowtieAssembleTask::prepare() {
     if(settings.getCustomValue(BowtieTask::OPTION_ALL, false).toBool()) {
         arguments.append("--all");
     }
+    if(settings.getCustomValue(BowtieTask::OPTION_COLORSPACE, false).toBool()) {
+        arguments.append("-C");
+    }
+    {
+        int threads = settings.getCustomValue(BowtieTask::OPTION_THREADS, 1).toInt();
+        arguments.append(QString("--threads"));
+        arguments.append(QString::number(threads));
+    }
     if(!settings.shortReadUrls.isEmpty())
     {
         QList<FormatDetectionResult> detectionResults = DocumentUtils::detectFormat(settings.shortReadUrls.first());
@@ -170,9 +221,36 @@ void BowtieAssembleTask::prepare() {
     addSubTask(task);
 }
 
+// BowtieAssembleTask::LogParser
+
+BowtieAssembleTask::LogParser::LogParser():
+    haveResults(false)
+{
+}
+
+void BowtieAssembleTask::LogParser::parseOutput(const QString &partOfLog) {
+    ExternalToolLogParser::parseErrOutput(partOfLog);
+}
+
+void BowtieAssembleTask::LogParser::parseErrOutput(const QString &partOfLog) {
+    ExternalToolLogParser::parseErrOutput(partOfLog);
+    QRegExp blockRegExp("# reads with at least one reported alignment: (\\d+) \\(\\d+\\.\\d+%\\)");
+    foreach(const QString &buf, lastPartOfLog) {
+        if(buf.contains(blockRegExp)) {
+            if(blockRegExp.cap(1).toInt() > 0) {
+                haveResults = true;
+            }
+        }
+    }
+}
+
+bool BowtieAssembleTask::LogParser::isHaveResults()const {
+    return haveResults;
+}
+
 // BowtieTask
 
-const QString BowtieTask::taskName = "BowtieTODO";
+const QString BowtieTask::taskName = "Bowtie";
 
 const QString BowtieTask::OPTION_N_MISMATCHES = "n-mismatches";
 const QString BowtieTask::OPTION_V_MISMATCHES = "v-mismatches";
@@ -187,6 +265,8 @@ const QString BowtieTask::OPTION_NOMAQROUND = "nomaqround";
 const QString BowtieTask::OPTION_SEED = "seed";
 const QString BowtieTask::OPTION_BEST = "best";
 const QString BowtieTask::OPTION_ALL = "all";
+const QString BowtieTask::OPTION_COLORSPACE = "colorspace";
+const QString BowtieTask::OPTION_THREADS = "threads";
 
 BowtieTask::BowtieTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
     DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex)
@@ -195,7 +275,16 @@ BowtieTask::BowtieTask(const DnaAssemblyToRefTaskSettings &settings, bool justBu
 
 void BowtieTask::prepare() {
     if(!settings.prebuiltIndex) {
-        buildIndexTask = new BowtieBuildIndexTask(settings.refSeqUrl.getURLString(), settings.indexFileName);
+        QString indexFileName = settings.indexFileName;
+        if(indexFileName.isEmpty()) {
+            if(justBuildIndex) {
+                indexFileName = settings.refSeqUrl.dirPath() + "/" + settings.refSeqUrl.baseFileName();
+            } else {
+                indexFileName = settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName();
+            }
+        }
+        buildIndexTask = new BowtieBuildIndexTask(settings.refSeqUrl.getURLString(), indexFileName,
+                                                  settings.getCustomValue(BowtieTask::OPTION_COLORSPACE, false).toBool());
     }
     if(!justBuildIndex) {
         assembleTask = new BowtieAssembleTask(settings);
@@ -208,6 +297,13 @@ void BowtieTask::prepare() {
     } else {
         assert(false);
     }
+}
+
+Task::ReportResult BowtieTask::report() {
+    if(!justBuildIndex) {
+        haveResults = assembleTask->isHaveResults();
+    }
+    return ReportResult_Finished;
 }
 
 QList<Task *> BowtieTask::onSubTaskFinished(Task *subTask) {

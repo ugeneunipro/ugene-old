@@ -341,6 +341,36 @@ p, li { white-space: pre-wrap; }
           </item>
          </layout>
         </item>
+        <item row="7" column="4">
+         <widget class="QSpinBox" name="threadsSpinBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="3">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="7" column="2">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Threads:</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
@@ -360,6 +390,13 @@ p, li { white-space: pre-wrap; }
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QCheckBox" name="colorspaceCheckBox">
+          <property name="text">
+           <string>Colorspace</string>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QCheckBox" name="nomaqroundCheckBox">
           <property name="toolTip">

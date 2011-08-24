@@ -24,10 +24,13 @@
 
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/ExternalToolRegistry.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/AppSettingsGUI.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -153,7 +156,32 @@ void BuildIndexDialog::buildIndexUrl(const GUrl& refUrl ) {
 
 void BuildIndexDialog::accept()
 {
-	if (refSeqEdit->text().isEmpty()) {
+    if (getAlgorithmName() == "Bowtie") {
+        if(AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(tr("DNA Assembly"));
+            msgBox.setInformativeText(tr("Do you want to select it now?"));
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            msgBox.setText(tr("Path for <i>Bowtie-build</i> tool is not selected."));
+            int ret = msgBox.exec();
+            switch (ret) {
+            case QMessageBox::Yes:
+                AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
+                break;
+            case QMessageBox::No:
+                return;
+                break;
+            default:
+                assert(NULL);
+                break;
+            }
+            if(AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
+                return;
+            }
+        }
+    }
+        if (refSeqEdit->text().isEmpty()) {
 		QMessageBox::information(this, tr("Build index"), tr("Reference sequence url is not set!") );
 	} else if (indexFileNameEdit->text().isEmpty() ) {
 		QMessageBox::information(this, tr("Build index"), tr("Index file name is not set!") );

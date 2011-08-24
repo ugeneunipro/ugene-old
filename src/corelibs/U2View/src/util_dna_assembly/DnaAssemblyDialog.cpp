@@ -29,8 +29,10 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/ExternalToolRegistry.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/AppSettingsGUI.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 
@@ -141,6 +143,33 @@ void DnaAssemblyDialog::accept() {
                 }
             } else {
                 QMessageBox::information(this, tr("DNA Assembly"), error);
+                return;
+            }
+        }
+    }
+    if (getAlgorithmName() == "Bowtie") {
+        if(AppContext::getExternalToolRegistry()->getByName("Bowtie")->getPath().isEmpty() ||
+           AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(tr("DNA Assembly"));
+            msgBox.setInformativeText(tr("Do you want to select it now?"));
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            msgBox.setText(tr("Path for <i>Bowtie</i> tools is not selected."));
+            int ret = msgBox.exec();
+            switch (ret) {
+            case QMessageBox::Yes:
+                AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
+                break;
+            case QMessageBox::No:
+                return;
+                break;
+            default:
+                assert(NULL);
+                break;
+            }
+            if(AppContext::getExternalToolRegistry()->getByName("Bowtie")->getPath().isEmpty() ||
+               AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
                 return;
             }
         }

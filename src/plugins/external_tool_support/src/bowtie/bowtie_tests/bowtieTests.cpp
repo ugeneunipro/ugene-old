@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "BowtieConstants.h"
 #include "bowtieTests.h"
 
 #include <U2Core/LoadDocumentTask.h>
@@ -216,7 +215,7 @@ void GTest_Bowtie::prepare() {
     config.refSeqUrl = GUrl(env->getVar("COMMON_DATA_DIR")+"/"+indexName);
     config.prebuiltIndex = usePrebuildIndex;
     config.resultFileName = GUrl(tmpDataDir+"/"+QString::number(getTaskId()));
-    config.algName = BOWTIE_ALG_NAME;
+    config.algName = BowtieTask::taskName;
     config.openView = false;
     bowtieTask = new BowtieTask(config);
 

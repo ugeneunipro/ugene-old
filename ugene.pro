@@ -24,7 +24,6 @@ SUBDIRS += \
           src/ugenecl \
           src/ugenem \
           src/plugins_3rdparty/ball \
-          src/plugins_3rdparty/bowtie \
           src/plugins_3rdparty/sitecon \
           src/plugins_3rdparty/umuscle \
           src/plugins_3rdparty/hmm2 \

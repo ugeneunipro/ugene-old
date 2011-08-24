@@ -47,7 +47,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/utils/ExternalToolValidateTask.h \
            src/bowtie/BowtieTask.h \
            src/bowtie/BowtieSupport.h \
-           src/bowtie/BowtieSettingsWidget.h
+           src/bowtie/BowtieSettingsWidget.h \
+    src/bowtie/bowtie_tests/bowtieTests.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/CAP3SupportDialog.ui \
          src/ui/ClustalWSupportRunDialog.ui \
@@ -56,7 +57,8 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/MAFFTSupportRunDialog.ui \
          src/ui/SelectPathDialog.ui \
          src/ui/TCoffeeSupportRunDialog.ui \
-         src/ui/BowtieSettings.ui
+         src/ui/BowtieSettings.ui \
+    src/ui/BowtieBuildSettings.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolRunTask.cpp \
            src/ExternalToolSupportPlugin.cpp \
@@ -103,6 +105,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/utils/ExternalToolValidateTask.cpp \
            src/bowtie/BowtieTask.cpp \
            src/bowtie/BowtieSupport.cpp \
-           src/bowtie/BowtieSettingsWidget.cpp
+           src/bowtie/BowtieSettingsWidget.cpp \
+    src/bowtie/bowtie_tests/bowtieTests.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

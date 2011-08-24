@@ -23,6 +23,7 @@
 #define _U2_BOWTIE_SETTINGS_WIDGET_H_
 
 #include "ui/ui_BowtieSettings.h"
+#include "ui/ui_BowtieBuildSettings.h"
 #include "U2View/DnaAssemblyGUIExtension.h"
 
 namespace U2 {
@@ -34,6 +35,15 @@ public:
     QMap<QString, QVariant> getDnaAssemblyCustomSettings();
     void buildIndexUrl(const GUrl &url);
     bool isParametersOk(QString &);
+};
+
+class BowtieBuildSettingsWidget : public DnaAssemblyAlgorithmBuildIndexWidget, Ui_BowtieBuildSettings {
+    Q_OBJECT
+public:
+    BowtieBuildSettingsWidget(QWidget *parent);
+    virtual QMap<QString,QVariant> getBuildIndexCustomSettings();
+    virtual QString getIndexFileExtension();
+    virtual void buildIndexUrl(const GUrl& url);
 };
 
 class BowtieGUIExtensionsFactory : public DnaAssemblyGUIExtensionsFactory {

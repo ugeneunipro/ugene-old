@@ -10,7 +10,7 @@ namespace U2 {
 class BowtieBuildIndexTask : public Task {
     Q_OBJECT
 public:
-    BowtieBuildIndexTask(const QString &referencePath, const QString &indexPath);
+    BowtieBuildIndexTask(const QString &referencePath, const QString &indexPath, bool colorspace);
 
     void prepare();
 private:
@@ -44,6 +44,7 @@ private:
     LogParser logParser;
     QString referencePath;
     QString indexPath;
+    bool colorspace;
 };
 
 class BowtieAssembleTask : public Task {
@@ -51,9 +52,23 @@ class BowtieAssembleTask : public Task {
 public:
     BowtieAssembleTask(const DnaAssemblyToRefTaskSettings &settings);
 
+    bool isHaveResults()const;
+
     void prepare();
 private:
-    ExternalToolLogParser logParser;
+    class LogParser : public ExternalToolLogParser {
+    public:
+        LogParser();
+
+        void parseOutput(const QString &partOfLog);
+        void parseErrOutput(const QString &partOfLog);
+
+        bool isHaveResults()const;
+    private:
+        bool haveResults;
+    };
+
+    LogParser logParser;
     DnaAssemblyToRefTaskSettings settings;
 };
 
@@ -64,6 +79,7 @@ public:
     BowtieTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex = false);
 
     void prepare();
+    ReportResult report();
 protected slots:
     QList<Task *> onSubTaskFinished(Task *subTask);
 public:
@@ -80,6 +96,8 @@ public:
     static const QString OPTION_SEED;
     static const QString OPTION_BEST;
     static const QString OPTION_ALL;
+    static const QString OPTION_COLORSPACE;
+    static const QString OPTION_THREADS;
 private:
     BowtieBuildIndexTask *buildIndexTask;
     BowtieAssembleTask *assembleTask;

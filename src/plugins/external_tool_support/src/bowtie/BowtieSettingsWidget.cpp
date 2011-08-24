@@ -19,6 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/AppResources.h>
+
 #include "BowtieSettingsWidget.h"
 #include "BowtieTask.h"
 
@@ -31,6 +35,9 @@ BowtieSettingsWidget::BowtieSettingsWidget(QWidget *parent):
 {
     setupUi(this);
     layout()->setContentsMargins(0,0,0,0);
+
+    threadsSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+    threadsSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
 }
 
 QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() {
@@ -61,12 +68,15 @@ QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() {
         settings.insert(BowtieTask::OPTION_SEED, seedlenSpinBox->value());
     }
 
+    settings.insert(BowtieTask::OPTION_THREADS, threadsSpinBox->value());
+
     settings.insert(BowtieTask::OPTION_NOFW, nofwCheckBox->isChecked());
     settings.insert(BowtieTask::OPTION_NORC, norcCheckBox->isChecked());
     settings.insert(BowtieTask::OPTION_TRYHARD, tryhardCheckBox->isChecked());
     settings.insert(BowtieTask::OPTION_BEST, bestCheckBox->isChecked());
     settings.insert(BowtieTask::OPTION_ALL, allCheckBox->isChecked());
     settings.insert(BowtieTask::OPTION_NOMAQROUND, nomaqroundCheckBox->isChecked());
+    settings.insert(BowtieTask::OPTION_COLORSPACE, colorspaceCheckBox->isChecked());
 
     return settings;
 }
@@ -79,6 +89,30 @@ bool BowtieSettingsWidget::isParametersOk(QString &) {
     return true;
 }
 
+
+// BowtieBuildSettingsWidget
+
+BowtieBuildSettingsWidget::BowtieBuildSettingsWidget(QWidget *parent):
+    DnaAssemblyAlgorithmBuildIndexWidget(parent)
+{
+    setupUi(this);
+    layout()->setContentsMargins(0,0,0,0);
+}
+
+QMap<QString,QVariant> BowtieBuildSettingsWidget::getBuildIndexCustomSettings() {
+    QMap<QString, QVariant> settings;
+    settings.insert(BowtieTask::OPTION_COLORSPACE, colorspaceCheckBox->isChecked());
+    return settings;
+}
+
+QString BowtieBuildSettingsWidget::getIndexFileExtension() {
+    return QString();
+}
+
+void BowtieBuildSettingsWidget::buildIndexUrl(const GUrl& url) {
+    // do nothing
+}
+
 // BowtieGUIExtensionsFactory
 
 DnaAssemblyAlgorithmMainWidget *BowtieGUIExtensionsFactory::createMainWidget(QWidget *parent) {
@@ -86,8 +120,7 @@ DnaAssemblyAlgorithmMainWidget *BowtieGUIExtensionsFactory::createMainWidget(QWi
 }
 
 DnaAssemblyAlgorithmBuildIndexWidget *BowtieGUIExtensionsFactory::createBuildIndexWidget(QWidget *parent) {
-    assert(false);
-    return NULL;
+    return new BowtieBuildSettingsWidget(parent);
 }
 
 bool BowtieGUIExtensionsFactory::hasMainWidget() {
@@ -95,7 +128,7 @@ bool BowtieGUIExtensionsFactory::hasMainWidget() {
 }
 
 bool BowtieGUIExtensionsFactory::hasBuildIndexWidget() {
-    return false;
+    return true;
 }
 
 } //namespace
