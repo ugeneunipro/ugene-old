@@ -38,13 +38,13 @@ private:
     U2AttributeUtils(){}
 public:
 
-    static qint64 findIntegerAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, qint64 defaultVal, U2OpStatus& os);
+    static qint64 findIntegerAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& name, qint64 defaultVal, U2OpStatus& os);
 
-    static double findRealAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, double defaultVal, U2OpStatus& os);
+    static double findRealAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& name, double defaultVal, U2OpStatus& os);
 
-    static QByteArray findByteArrayAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, const QByteArray& defaultVal, U2OpStatus& os);
+    static QByteArray findByteArrayAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& name, const QByteArray& defaultVal, U2OpStatus& os);
 
-    static QString findStringAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, const QString& defaultVal, U2OpStatus& os);
+    static QString findStringAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& name, const QString& defaultVal, U2OpStatus& os);
 
 };
 

@@ -96,7 +96,7 @@ const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         if(NULL != attributeDbi) {
             static const QByteArray COVERAGE_STAT_ATTRIBUTE_NAME("coverageStat");
-            QByteArray data = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, COVERAGE_STAT_ATTRIBUTE_NAME, QByteArray(), os);
+            QByteArray data = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly, COVERAGE_STAT_ATTRIBUTE_NAME, QByteArray(), os);
             if(!os.isCoR()) {
                 if(!data.isEmpty()) {
                     if(0 == (data.size() % 4)) {
@@ -155,7 +155,7 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
         U2OpStatusImpl status;
         static const QByteArray REFERENCE_ATTRIBUTE_NAME("reference_length_attribute");
         if(attributeDbi != NULL) {
-            cachedModelLength = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, REFERENCE_ATTRIBUTE_NAME, NO_VAL, os);
+            cachedModelLength = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly, REFERENCE_ATTRIBUTE_NAME, NO_VAL, os);
         }
         // ignore incorrect attribute value
         if(cachedModelLength <= 0) {
@@ -179,7 +179,7 @@ QByteArray AssemblyModel::getReferenceMd5(U2OpStatus& os) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         static const QByteArray MD5_ATTRIBUTE_NAME("reference_md5_attribute");
         if (attributeDbi != NULL) {
-            referenceMd5 = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, MD5_ATTRIBUTE_NAME, QByteArray(), os);
+            referenceMd5 = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly, MD5_ATTRIBUTE_NAME, QByteArray(), os);
         }
     }
     return referenceMd5;
@@ -191,7 +191,7 @@ qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
         //U2OpStatusImpl os;
         static const QByteArray MAX_PROW_ATTRIBUTE_NAME("max_prow_attribute");
         if(attributeDbi != NULL) {
-            cachedModelHeight = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, MAX_PROW_ATTRIBUTE_NAME, NO_VAL, os);
+            cachedModelHeight = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly, MAX_PROW_ATTRIBUTE_NAME, NO_VAL, os);
         }
         if(cachedModelHeight == NO_VAL) {
             LOG_OP(os);
@@ -392,7 +392,7 @@ qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
         //U2OpStatusImpl os;
         static const QByteArray READS_COUNT_ATTRIBUTE_NAME("count_reads_attribute");
         if(attributeDbi != NULL) {
-            cachedReadsNumber = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, READS_COUNT_ATTRIBUTE_NAME, NO_VAL, os);
+            cachedReadsNumber = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly, READS_COUNT_ATTRIBUTE_NAME, NO_VAL, os);
         }
         if(cachedReadsNumber == NO_VAL) {
             LOG_OP(os);
@@ -412,7 +412,7 @@ QByteArray AssemblyModel::getReferenceSpecies(U2OpStatus & os) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         static const QByteArray SPECIES_ATTRIBUTE_NAME("reference_species_attribute");
         if (attributeDbi != NULL) {
-            referenceSpecies = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, SPECIES_ATTRIBUTE_NAME, QByteArray(), os);
+            referenceSpecies = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly, SPECIES_ATTRIBUTE_NAME, QByteArray(), os);
         }
     }
     return referenceSpecies;
@@ -424,7 +424,7 @@ QString AssemblyModel::getReferenceUri(U2OpStatus & os) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         static const QByteArray URI_ATTRIBUTE_NAME("reference_uri_attribute");
         if(attributeDbi != NULL) {
-            referenceUri = U2AttributeUtils::findStringAttribute(attributeDbi, assembly.id, URI_ATTRIBUTE_NAME, QString(), os);
+            referenceUri = U2AttributeUtils::findStringAttribute(attributeDbi, assembly, URI_ATTRIBUTE_NAME, QString(), os);
         }
     }
     return referenceUri;

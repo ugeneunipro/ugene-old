@@ -22,71 +22,79 @@
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 namespace U2 {
 
-    
-qint64 U2AttributeUtils::findIntegerAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, qint64 defaultVal, U2OpStatus& os) {
-    QList<U2DataId> attributeIds = adbi->getObjectAttributes(objectId, name, os);
+// Generic functionality
+
+template <class AttrType>
+static AttrType getAttribute(U2AttributeDbi* adbi, const U2DataId& attrId, U2OpStatus& os);
+
+template <class AttrType, class ValueType>
+static ValueType findGenericAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& attrName, U2DataType type, const ValueType& defaultValue, U2OpStatus& os) {
+    QList<U2DataId> attributeIds = adbi->getObjectAttributes(obj.id, attrName, os);
     if (attributeIds.isEmpty() || os.hasError()) {
-        return defaultVal;
+        return defaultValue;
     }
     U2Dbi* dbi = adbi->getRootDbi();
     foreach(const U2DataId& id, attributeIds) {
-        if (dbi->getEntityTypeById(id) == U2Type::AttributeInteger) {
-            U2IntegerAttribute ia = adbi->getIntegerAttribute(id, os);
-            return ia.value;
+        if (dbi->getEntityTypeById(id) == type) {
+            AttrType attr = getAttribute<AttrType>(adbi, id, os);
+            if(os.hasError()) {
+                LOG_OP(os);
+                continue;
+            }
+            if(attr.version == obj.version) {
+                return attr.value;
+            }
         }
     }
-    return defaultVal;
+    return defaultValue;
+}
+
+// Implementations
+
+qint64 U2AttributeUtils::findIntegerAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& attrName, qint64 defaultVal, U2OpStatus& os) {
+    return findGenericAttribute<U2IntegerAttribute, qint64>(adbi, obj, attrName, U2Type::AttributeInteger, defaultVal, os);
 }
 
 
-double U2AttributeUtils::findRealAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, double defaultVal, U2OpStatus& os) {
-    QList<U2DataId> attributeIds = adbi->getObjectAttributes(objectId, name, os);
-    if (attributeIds.isEmpty() || os.hasError()) {
-        return defaultVal;
-    }
-    U2Dbi* dbi = adbi->getRootDbi();
-    foreach(const U2DataId& id, attributeIds) {
-        if (dbi->getEntityTypeById(id) == U2Type::AttributeReal) {
-            U2RealAttribute ra = adbi->getRealAttribute(id, os);
-            return ra.value;
-        }
-    }
-    return defaultVal;
+double U2AttributeUtils::findRealAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& attrName, double defaultVal, U2OpStatus& os) {
+    return findGenericAttribute<U2RealAttribute, double>(adbi, obj, attrName, U2Type::AttributeReal, defaultVal, os);
 }
 
 
-QByteArray U2AttributeUtils::findByteArrayAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, const QByteArray& defaultVal, U2OpStatus& os) {
-    QList<U2DataId> attributeIds = adbi->getObjectAttributes(objectId, name, os);
-    if (attributeIds.isEmpty() || os.hasError()) {
-        return defaultVal;
-    }
-    U2Dbi* dbi = adbi->getRootDbi();
-    foreach(const U2DataId& id, attributeIds) {
-        if (dbi->getEntityTypeById(id) == U2Type::AttributeByteArray) {
-            U2ByteArrayAttribute aa = adbi->getByteArrayAttribute(id, os);
-            return aa.value;
-        }
-    }
-    return defaultVal;
+QByteArray U2AttributeUtils::findByteArrayAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& attrName, const QByteArray& defaultVal, U2OpStatus& os) {
+    return findGenericAttribute<U2ByteArrayAttribute, QByteArray>(adbi, obj, attrName, U2Type::AttributeByteArray, defaultVal, os);
 }
 
 
-QString U2AttributeUtils::findStringAttribute(U2AttributeDbi* adbi, const U2DataId& objectId, const QString& name, const QString& defaultVal, U2OpStatus& os) {
-    QList<U2DataId> attributeIds = adbi->getObjectAttributes(objectId, name, os);
-    if (attributeIds.isEmpty() || os.hasError()) {
-        return defaultVal;
-    }
-    U2Dbi* dbi = adbi->getRootDbi();
-    foreach(const U2DataId& id, attributeIds) {
-        if (dbi->getEntityTypeById(id) == U2Type::AttributeInteger) {
-            U2StringAttribute sa = adbi->getStringAttribute(id, os);
-            return sa.value;
-        }
-    }
-    return defaultVal;
+QString U2AttributeUtils::findStringAttribute(U2AttributeDbi* adbi, const U2Object& obj, const QString& attrName, const QString& defaultVal, U2OpStatus& os) {
+    return findGenericAttribute<U2StringAttribute, QString>(adbi, obj, attrName, U2Type::AttributeString, defaultVal, os);
 }
+
+// Getting attribute template specializations
+
+template <>
+U2IntegerAttribute getAttribute<U2IntegerAttribute>(U2AttributeDbi* adbi, const U2DataId& attrId, U2OpStatus &os) {
+    return adbi->getIntegerAttribute(attrId, os);
+}
+
+template <>
+U2RealAttribute getAttribute<U2RealAttribute>(U2AttributeDbi* adbi, const U2DataId& attrId, U2OpStatus &os) {
+    return adbi->getRealAttribute(attrId, os);
+}
+
+template <>
+U2ByteArrayAttribute getAttribute<U2ByteArrayAttribute>(U2AttributeDbi* adbi, const U2DataId& attrId, U2OpStatus &os) {
+    return adbi->getByteArrayAttribute(attrId, os);
+}
+
+template <>
+U2StringAttribute getAttribute<U2StringAttribute>(U2AttributeDbi* adbi, const U2DataId& attrId, U2OpStatus &os) {
+    return adbi->getStringAttribute(attrId, os);
+}
+
 
 } //namespace
