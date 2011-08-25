@@ -266,7 +266,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
 
     QStringList envList = QProcess::systemEnvironment();
-    if(envList.indexOf(QRegExp("PATH=.*"))>=0){
+    if(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive))>=0){
         QString pathEnv = envList.at(envList.indexOf(QRegExp("PATH=.*")));
 #ifdef Q_OS_LINUX
         QStringList paths = pathEnv.split("=").at(1).split(":");
