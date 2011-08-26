@@ -22,6 +22,7 @@
 #include "DotPlotFilesDialog.h"
 
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/DocumentUtils.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
@@ -75,6 +76,15 @@ void DotPlotFilesDialog::sl_openFirstFile() {
     Q_ASSERT(firstFileEdit);
     if (!lod.url.isEmpty()) {
         firstFileEdit->setText(lod.url);
+        FormatDetectionConfig conf;
+        conf.useImporters = true;
+        conf.bestMatchesOnly = true;
+        FormatDetectionResult format = DocumentUtils::detectFormat(lod.url, conf).at(0); //get moslty matched format
+        bool multySeq = format.rawDataCheckResult.properties.value(RawDataCheckResult_MultipleSequences).toBool();
+        if(multySeq){
+            mergeFirstCheckBox->setChecked(true);
+            sl_mergeFirst();            
+        }
     }
 }
 
@@ -92,6 +102,15 @@ void DotPlotFilesDialog::sl_openSecondFile() {
     Q_ASSERT(secondFileEdit);
     if (!lod.url.isEmpty()) {
         secondFileEdit->setText(lod.url);
+        FormatDetectionConfig conf;
+        conf.useImporters = true;
+        conf.bestMatchesOnly = true;
+        FormatDetectionResult format = DocumentUtils::detectFormat(lod.url, conf).at(0);//get moslty matched format
+        bool multySeq = format.rawDataCheckResult.properties.value(RawDataCheckResult_MultipleSequences).toBool();
+        if(multySeq){
+            mergeSecondCheckBox->setChecked(true);
+            sl_mergeSecond();            
+        }
     }
 }
 
