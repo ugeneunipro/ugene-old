@@ -154,25 +154,32 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
     if(NO_VAL == cachedModelLength) {
         // try to set length from attributes
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        U2OpStatusImpl status;
         static const QByteArray REFERENCE_ATTRIBUTE_NAME("reference_length_attribute");
         if(attributeDbi != NULL) {
             U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, REFERENCE_ATTRIBUTE_NAME, os);
+            LOG_OP(os);
             if(attr.hasValidId()) {
                 cachedModelLength = attr.value;
             }
-        }
-        // ignore incorrect attribute value
-        if(cachedModelLength <= 0) {
-            cachedModelLength = NO_VAL;
-            coreLog.details(QString("ignored incorrect value of attribute %1: should be > 0, got %2").arg(QString(REFERENCE_ATTRIBUTE_NAME)).arg(cachedModelLength));
+            // ignore incorrect attribute value and remove corrupted attribute (auto-fix incorrectly converted ugenedb)
+            if(cachedModelLength == 0) {
+                cachedModelLength = NO_VAL;
+                coreLog.details(QString("ignored incorrect value of attribute %1: should be > 0, got %2. Bad attribute removed!").arg(QString(REFERENCE_ATTRIBUTE_NAME)).arg(cachedModelLength));
+                U2AttributeUtils::removeAttribute(attributeDbi, attr.id, os);
+            }
         }
         // if cannot from attributes -> set from reference or max end pos
         if(cachedModelLength == NO_VAL) {
             qint64 refLen = hasReference() ? reference.length : 0;
-            qint64 assLen = assemblyDbi->getMaxEndPos(assembly.id, status);
-            LOG_OP(status);
+            qint64 assLen = assemblyDbi->getMaxEndPos(assembly.id, os);
+            LOG_OP(os);
             cachedModelLength = qMax(refLen, assLen);
+
+            // and save in attribute
+            U2IntegerAttribute attr;
+            U2AttributeUtils::init(attr, assembly, REFERENCE_ATTRIBUTE_NAME);
+            attr.value = cachedModelLength;
+            attributeDbi->createIntegerAttribute(attr, os);
         }
     }
     return cachedModelLength;
@@ -196,18 +203,30 @@ QByteArray AssemblyModel::getReferenceMd5(U2OpStatus& os) {
 qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
     if(NO_VAL == cachedModelHeight) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        //U2OpStatusImpl os;
         static const QByteArray MAX_PROW_ATTRIBUTE_NAME("max_prow_attribute");
         if(attributeDbi != NULL) {
             U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, MAX_PROW_ATTRIBUTE_NAME, os);
+            LOG_OP(os);
             if(attr.hasValidId()) {
-                // TODO: check version
-                cachedModelHeight = attr.value;
+                if(attr.version == assembly.version) {
+                    cachedModelHeight = attr.value;
+                } else {
+                    U2AttributeUtils::removeAttribute(attributeDbi, attr.id, os);
+                    LOG_OP(os);
+                }
             }
         }
         if(cachedModelHeight == NO_VAL) {
-            LOG_OP(os);
+            // if could not get value from attribute, recompute the value...
             cachedModelHeight = assemblyDbi->getMaxPackedRow(assembly.id, U2Region(0, getModelLength(os)), os);
+            LOG_OP(os);
+            if(! os.isCoR()) {
+                // ...and store it in a new attribure
+                U2IntegerAttribute attr;
+                U2AttributeUtils::init(attr, assembly, MAX_PROW_ATTRIBUTE_NAME);
+                attr.value = cachedModelHeight;
+                attributeDbi->createIntegerAttribute(attr, os);
+            }
         }
     }
     return cachedModelHeight;
@@ -405,14 +424,30 @@ qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
         static const QByteArray READS_COUNT_ATTRIBUTE_NAME("count_reads_attribute");
         if(attributeDbi != NULL) {
             U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, READS_COUNT_ATTRIBUTE_NAME, os);
+            LOG_OP(os);
+            // If attribute found...
             if(attr.hasValidId()) {
-                // TODO: check version
-                cachedReadsNumber = attr.value;
+                // ...check its version...
+                if(attr.version == assembly.version) {
+                    cachedReadsNumber = attr.value;
+                } else {
+                    // ...and remove if it's obsolete
+                    U2AttributeUtils::removeAttribute(attributeDbi, attr.id, os);
+                    LOG_OP(os);
+                }
             }
         }
         if(cachedReadsNumber == NO_VAL) {
-            LOG_OP(os);
+            // if could not get value from attribute, recompute the value...
             cachedReadsNumber = assemblyDbi->countReads(assembly.id, U2_REGION_MAX, os);
+            LOG_OP(os);
+            if(! os.isCoR()) {
+                // ...and store it in a new attribure
+                U2IntegerAttribute attr;
+                U2AttributeUtils::init(attr, assembly, READS_COUNT_ATTRIBUTE_NAME);
+                attr.value = cachedReadsNumber;
+                attributeDbi->createIntegerAttribute(attr, os);
+            }
         }
     }
     return cachedReadsNumber;

@@ -26,7 +26,21 @@
 
 namespace U2 {
 
-// Generic functionality
+
+void U2AttributeUtils::init(U2Attribute &attr, U2Object & obj, const QString& name)
+{
+    attr.objectId = obj.id;
+    attr.version = obj.version;
+    attr.name = name;
+}
+
+void U2AttributeUtils::removeAttribute(U2AttributeDbi* adbi, const U2DataId& attrId, U2OpStatus& os) {
+    QList<U2DataId> ids;
+    ids << attrId;
+    adbi->removeAttributes(ids, os);
+}
+
+// Finders: generic functionality
 
 template <class AttrType>
 static AttrType getAttribute(U2AttributeDbi* adbi, const U2DataId& attrId, U2OpStatus& os);

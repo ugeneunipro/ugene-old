@@ -406,8 +406,7 @@ void ConvertToSQLiteTask::run() {
         }
 
         QMap<int, U2Assembly> assemblies;
-
-        bool needPacking = false;
+        QMap<int, U2AssemblyReadsImportInfo> importInfos;
 
         qint64 totalReadsImported = 0;
 
@@ -430,7 +429,7 @@ void ConvertToSQLiteTask::run() {
                 if(bamInfo.isReferenceSelected(referenceId)) {
                     U2Assembly assembly;
                     assembly.visualName = reader->getHeader().getReferences()[referenceId].getName();
-                    U2AssemblyReadsImportInfo importInfo;
+                    U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                     U2OpStatusImpl opStatus;
                     std::auto_ptr<DbiIterator> dbiIterator;
                     if(bamInfo.hasIndex()) {
@@ -444,9 +443,6 @@ void ConvertToSQLiteTask::run() {
                     }
                     if(isCanceled()) {
                         throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
-                    }
-                    if(!importInfo.packed) {
-                        needPacking = true;
                     }
                     totalReadsImported += dbiIterator->getReadsImported();
                     assemblies.insert(referenceId, assembly);
@@ -466,7 +462,7 @@ void ConvertToSQLiteTask::run() {
                 SequentialDbiIterator dbiIterator(-1, *iterator, stateInfo, *ioAdapter);
                 U2Assembly assembly;
                 assembly.visualName = "Unmapped";
-                U2AssemblyReadsImportInfo importInfo;
+                U2AssemblyReadsImportInfo & importInfo = importInfos[-1];
                 U2OpStatusImpl opStatus;
                 sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &dbiIterator, importInfo, opStatus);
                 if(opStatus.hasError()) {
@@ -479,8 +475,6 @@ void ConvertToSQLiteTask::run() {
                 assemblies.insert(-1, assembly);
             }
         } else {
-            needPacking = true;
-
             std::auto_ptr<Iterator> iterator;
             if(sam) {
                 iterator.reset(new SamIterator(*samReader));
@@ -492,7 +486,7 @@ void ConvertToSQLiteTask::run() {
                 if(bamInfo.isReferenceSelected(referenceId)) {
                     U2Assembly assembly;
                     assembly.visualName = reader->getHeader().getReferences()[referenceId].getName();
-                    U2AssemblyReadsImportInfo importInfo;
+                    U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                     U2OpStatusImpl opStatus;
                     sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
                     if(opStatus.hasError()) {
@@ -501,6 +495,7 @@ void ConvertToSQLiteTask::run() {
                     if(isCanceled()) {
                         throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
                     }
+                    importInfo.packed = false;
                     assemblies.insert(referenceId, assembly);
                 }
             }
@@ -508,13 +503,14 @@ void ConvertToSQLiteTask::run() {
             if(bamInfo.isUnmappedSelected()) {
                 U2Assembly assembly;
                 assembly.visualName = "Unmapped";
-                U2AssemblyReadsImportInfo importInfo;
+                U2AssemblyReadsImportInfo & importInfo = importInfos[-1];
                 U2OpStatusImpl opStatus;
                 sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }
                 assemblies.insert(-1, assembly);
+                importInfo.packed = false;
             }
 
             while(iterator->hasNext()) {
@@ -527,8 +523,10 @@ void ConvertToSQLiteTask::run() {
                     int referenceId = iterator->peekReferenceId();
                     if(((-1 == referenceId) && bamInfo.isUnmappedSelected()) ||
                         bamInfo.isReferenceSelected(referenceId)) {
+                        U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                         reads[referenceId].append(iterator->next());
                         readCount++;
+                        importInfo.nReads++;
                     } else {
                         iterator->skip();
                     }
@@ -541,18 +539,36 @@ void ConvertToSQLiteTask::run() {
             }
         }
 
+        stateInfo.setDescription("Packing reads");
+
+        time_t packStart = time(0);
+        foreach(int referenceId, assemblies.keys()) {
+            U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
+            // Pack reads only if t were not packed on import
+            if(!importInfo.packed) {
+                U2OpStatusImpl opStatus;
+                U2AssemblyPackStat stat;
+                sqliteDbi->getAssemblyDbi()->pack(assemblies[referenceId].id, stat, opStatus);
+                if(opStatus.hasError()) {
+                    throw Exception(opStatus.getError());
+                }
+                importInfo.packStat = stat;
+            }
+        }
+        time_t packTime = time(0) - packStart;
+
         U2AttributeDbi *attributeDbi = sqliteDbi->getAttributeDbi();
 
         if(NULL != attributeDbi) {
             foreach(int referenceId, assemblies.keys()) {
+                const U2Assembly &assembly = assemblies[referenceId];
                 if(-1 != referenceId) {
                     const Header::Reference &reference = reader->getHeader().getReferences()[referenceId];
-                    const U2Assembly &assembly = assemblies[referenceId];
                     {
                         U2IntegerAttribute lenAttr;
                         lenAttr.objectId = assembly.id;
                         lenAttr.name = "reference_length_attribute";
-                        lenAttr.version = 1;
+                        lenAttr.version = assembly.version;
                         lenAttr.value = reference.getLength();
                         U2OpStatusImpl status;
                         attributeDbi->createIntegerAttribute(lenAttr, status);
@@ -564,7 +580,7 @@ void ConvertToSQLiteTask::run() {
                         U2ByteArrayAttribute md5Attr;
                         md5Attr.objectId = assembly.id;
                         md5Attr.name = "reference_md5_attribute";
-                        md5Attr.version = 1;
+                        md5Attr.version = assembly.version;
                         md5Attr.value = reference.getMd5();
                         U2OpStatusImpl status;
                         attributeDbi->createByteArrayAttribute(md5Attr, status);
@@ -576,7 +592,7 @@ void ConvertToSQLiteTask::run() {
                         U2ByteArrayAttribute speciesAttr;
                         speciesAttr.objectId = assembly.id;
                         speciesAttr.name = "reference_species_attribute";
-                        speciesAttr.version = 1;
+                        speciesAttr.version = assembly.version;
                         speciesAttr.value = reference.getSpecies();
                         U2OpStatusImpl status;
                         attributeDbi->createByteArrayAttribute(speciesAttr, status);
@@ -588,7 +604,7 @@ void ConvertToSQLiteTask::run() {
                         U2StringAttribute uriAttr;
                         uriAttr.objectId = assembly.id;
                         uriAttr.name = "reference_uri_attribute";
-                        uriAttr.version = 1;
+                        uriAttr.version = assembly.version;
                         uriAttr.value = reference.getUri();
                         U2OpStatusImpl status;
                         attributeDbi->createStringAttribute(uriAttr, status);
@@ -597,47 +613,40 @@ void ConvertToSQLiteTask::run() {
                         }
                     }
                 }
-            }
-        }
 
-        stateInfo.setDescription("Packing reads");
-
-        time_t packStart = time(0);
-        if(needPacking) {
-            foreach(int referenceId, assemblies.keys()) {
-                U2OpStatusImpl opStatus;
-                U2AssemblyPackStat stat;
-                sqliteDbi->getAssemblyDbi()->pack(assemblies[referenceId].id, stat, opStatus);
-                if(opStatus.hasError()) {
-                    throw Exception(opStatus.getError());
+                U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
+                qint64 maxProw = importInfo.packStat.maxProw;
+                if(maxProw > 0)
+                {
+                    U2IntegerAttribute maxProwAttr;
+                    maxProwAttr.objectId = assembly.id;
+                    maxProwAttr.name = "max_prow_attribute";
+                    maxProwAttr.version = assembly.version;
+                    maxProwAttr.value = maxProw;
+                    attributeDbi->createIntegerAttribute(maxProwAttr, opStatus);
+                    if(opStatus.hasError()) {
+                        throw Exception(opStatus.getError());
+                    }
+                } else {
+                    taskLog.details("Warning: incorrect maxProw <= 0, probably packing was not done! Attribute was not set");
                 }
-                if(NULL != attributeDbi) {
-                    {
-                        U2IntegerAttribute maxProwAttr;
-                        maxProwAttr.objectId = assemblies[referenceId].id;
-                        maxProwAttr.name = "max_prow_attribute";
-                        maxProwAttr.version = 1;
-                        maxProwAttr.value = stat.maxProw;
-                        attributeDbi->createIntegerAttribute(maxProwAttr, opStatus);
-                        if(opStatus.hasError()) {
-                            throw Exception(opStatus.getError());
-                        }
+                qint64 readsCount = importInfo.packStat.readsCount;
+                if(readsCount > 0)
+                {
+                    U2IntegerAttribute countReadsAttr;
+                    countReadsAttr.objectId = assembly.id;
+                    countReadsAttr.name = "count_reads_attribute";
+                    countReadsAttr.version = assembly.version;
+                    countReadsAttr.value = readsCount;
+                    attributeDbi->createIntegerAttribute(countReadsAttr, opStatus);
+                    if(opStatus.hasError()) {
+                        throw Exception(opStatus.getError());
                     }
-                    {
-                        U2IntegerAttribute countReadsAttr;
-                        countReadsAttr.objectId = assemblies[referenceId].id;
-                        countReadsAttr.name = "count_reads_attribute";
-                        countReadsAttr.version = 1;
-                        countReadsAttr.value = stat.readsCount;
-                        attributeDbi->createIntegerAttribute(countReadsAttr, opStatus);
-                        if(opStatus.hasError()) {
-                            throw Exception(opStatus.getError());
-                        }
-                    }
+                } else {
+                    taskLog.details("Warning: incorrect readsCount <= 0, probably packing was not done! Attribute was not set");
                 }
             }
         }
-        time_t packTime = time(0) - packStart;
 
         time_t totalTime = time(0) - startTime;
         
