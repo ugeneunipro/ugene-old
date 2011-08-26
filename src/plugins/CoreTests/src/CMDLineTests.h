@@ -39,6 +39,7 @@ public:
     static const QString UGENECL_PATH;
     static const QString TMP_DATA_DIR_PREFIX;
     static const QString COMMON_DATA_DIR_PREFIX;
+    static const QString CONFIG_FILE_PATH;
     
 public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY( GTest_RunCMDLine, "run-cmdline" );

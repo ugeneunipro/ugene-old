@@ -211,7 +211,7 @@ void WorkflowRemoteRunFromCMDLineTask::prepare()
         return;
     }
     
-    settings = SerializeUtils::deserializeRemoteMachineSettings(filePath);
+    settings = SerializeUtils::deserializeRemoteMachineSettingsFromFile(filePath);
     if( settings == NULL ) {
         stateInfo.setError(tr("Cannot read remote machine settings from %2").arg(filePath));
         return;

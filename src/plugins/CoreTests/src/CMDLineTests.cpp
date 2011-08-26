@@ -32,6 +32,7 @@ namespace U2 {
 
 #define COMMON_DATA_DIR_ENV_ID "COMMON_DATA_DIR" 
 #define TEMP_DATA_DIR_ENV_ID   "TEMP_DATA_DIR" 
+#define CONFIG_FILE_ENV_ID "CONFIG_FILE"
 
 /************************
  * GTest_RunCMDLine
@@ -44,6 +45,7 @@ const QString GTest_RunCMDLine::UGENECL_PATH    = "/ugenecld";
 
 const QString GTest_RunCMDLine::TMP_DATA_DIR_PREFIX  = "!tmp_data_dir!";
 const QString GTest_RunCMDLine::COMMON_DATA_DIR_PREFIX = "!common_data_dir!";
+const QString GTest_RunCMDLine::CONFIG_FILE_PATH = "!config_file_path!";
 
 void GTest_RunCMDLine::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
@@ -100,6 +102,9 @@ QString GTest_RunCMDLine::getVal( const QString & val ) {
     }
     if( val.startsWith( TMP_DATA_DIR_PREFIX ) ) {
         return splitVal(val, TMP_DATA_DIR_PREFIX.size(), env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/", true);
+    }
+    if( val == CONFIG_FILE_PATH ) {
+        return env->getVar(COMMON_DATA_DIR_ENV_ID) + "/" + env->getVar(CONFIG_FILE_ENV_ID);
     }
     return val;
 }
