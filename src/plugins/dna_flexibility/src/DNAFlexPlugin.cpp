@@ -24,6 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
@@ -70,9 +71,12 @@ void DNAFlexViewContext::sl_showDNAFlexDialog()
     assert(annotView);
 
     ADVSequenceObjectContext* seqCtx = annotView->getSequenceInFocus();
-    assert(seqCtx != 0 && seqCtx->getAlphabet()->isNucleic());
+    SAFE_POINT(seqCtx != NULL, "no sequence to perform flex search",);
 
-    if (inputSequenceIsValid(seqCtx->getSequenceData()))
+    DNAAlphabet *alphabet = seqCtx->getAlphabet();
+    SAFE_POINT(alphabet->isNucleic(), "alphabet is not nucleic, dialog should not have been invoked",);
+
+    if (alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT())
     {
         DNAFlexDialog dialog(seqCtx);
         dialog.exec();
@@ -80,26 +84,10 @@ void DNAFlexViewContext::sl_showDNAFlexDialog()
     else
     {
         QMessageBox::critical(0, L10N::errorTitle(),
-            tr("The input sequence must contain only A, C, G and T characters!"));
+            tr("Unsupported sequence alphabet, only standard DNA alphabet is supported"));
         return;
     }
 }
-
-
-bool DNAFlexViewContext::inputSequenceIsValid(const QByteArray& sequence)
-{
-    for (int i = 0; i < sequence.size(); ++i)
-    {
-
-        if (!((sequence.at(i) == 'A') || (sequence.at(i) == 'C')
-            || (sequence.at(i) == 'G') || (sequence.at(i) == 'T')))
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 
 void DNAFlexViewContext::initViewContext(GObjectView* view)
 {

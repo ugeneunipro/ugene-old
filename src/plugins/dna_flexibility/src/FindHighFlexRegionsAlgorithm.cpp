@@ -150,6 +150,7 @@ double FindHighFlexRegionsAlgorithm::flexibilityAngle(char firstNucleotide, char
         if (secondNucleotide == 'C') {return 14.6; }
         if (secondNucleotide == 'G') {return 8.2; }
         if (secondNucleotide == 'T') {return 25; }
+        return 7.6; // if second is N or -, choose minimum
     }
 
     if (firstNucleotide == 'C')
@@ -158,6 +159,7 @@ double FindHighFlexRegionsAlgorithm::flexibilityAngle(char firstNucleotide, char
         if (secondNucleotide == 'C') {return 7.2; }
         if (secondNucleotide == 'G') {return 8.9; }
         if (secondNucleotide == 'T') {return 8.2; }
+        return 7.2; // if second is N or -, choose minimum
     }
 
     if (firstNucleotide == 'G')
@@ -166,6 +168,7 @@ double FindHighFlexRegionsAlgorithm::flexibilityAngle(char firstNucleotide, char
         if (secondNucleotide == 'C') {return 11.1; }
         if (secondNucleotide == 'G') {return 7.2; }
         if (secondNucleotide == 'T') {return 14.6; }
+        return 7.2; // if second is N or -, choose minimum
     }
 
     if (firstNucleotide == 'T')
@@ -174,10 +177,19 @@ double FindHighFlexRegionsAlgorithm::flexibilityAngle(char firstNucleotide, char
         if (secondNucleotide == 'C') {return 8.8; }
         if (secondNucleotide == 'G') {return 10.9; }
         if (secondNucleotide == 'T') {return 7.6; }
+        return 7.6; // if second is N or -, choose minimum
     }
 
-    assert(false && "Illegal combination of nucleotides. The standard DNA alphabet is only supported.");
-    return 0;
+    if (firstNucleotide == 'N' || firstNucleotide == '-')
+    {
+        if (secondNucleotide == 'A') {return 7.6; } // minimum of AA, CA, GA, TA
+        if (secondNucleotide == 'C') {return 7.2; } // minimum of AC, CC, GC, TC
+        if (secondNucleotide == 'G') {return 7.2; } // minimum of AG, CG, GG, TG
+        if (secondNucleotide == 'T') {return 7.6; } // minimum of AT, CT, GT, TT
+        return 7.2; // if second is N or -, choose minimum
+    }
+
+    FAIL("Illegal combination of nucleotides. The standard DNA alphabet is only supported.", 0);
 }
 
 

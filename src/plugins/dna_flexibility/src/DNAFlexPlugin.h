@@ -53,7 +53,6 @@ private slots:
 
 private:
     virtual void initViewContext(GObjectView* view);
-    bool inputSequenceIsValid(const QByteArray& sequence);
 };
 
 
