@@ -389,10 +389,6 @@ void ReadShortReadsSubTask::run() {
             break;
         }
 
-        if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH > query->length()) {
-            delete query;
-            continue;
-        }
         if ( qualityThreshold > 0 && query->hasQuality() ) {
             // simple quality filtering
             bool ok = isDnaQualityAboveThreshold(query->getQuality(), qualityThreshold);
@@ -400,11 +396,14 @@ void ReadShortReadsSubTask::run() {
                 continue;
             }
         }
-        if (alignContext.minReadLength > query->length()) {
-            alignContext.minReadLength = query->length();
-        }
-        if (alignContext.maxReadLength < query->length()) {
-            alignContext.maxReadLength = query->length();
+
+        if (GenomeAlignerTask::MIN_SHORT_READ_LENGTH <= query->length()) {
+            if (alignContext.minReadLength > query->length()) {
+                alignContext.minReadLength = query->length();
+            }
+            if (alignContext.maxReadLength < query->length()) {
+                alignContext.maxReadLength = query->length();
+            }
         }
 
         n = alignContext.absMismatches ? alignContext.nMismatches+1 : (query->length()*alignContext.ptMismatches/100)+1;
@@ -421,7 +420,10 @@ void ReadShortReadsSubTask::run() {
             break;
         }
 
-        add(CMAX, W, q, readNum, query, parent);
+        if (!add(CMAX, W, q, readNum, query, parent)) {
+            delete query;
+            continue;
+        }
         ++bunchSize;
         *lastQuery = NULL;
 
@@ -447,14 +449,17 @@ void ReadShortReadsSubTask::run() {
     alignContext.alignerWait.wakeAll();
 }
 
-inline void ReadShortReadsSubTask::add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent) {
+inline bool ReadShortReadsSubTask::add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent) {
     QMutexLocker lock(&alignContext.listM);
-    alignContext.queries.append(query);
     W = query->length();
     if (!alignContext.absMismatches) {
         CMAX = (W * alignContext.ptMismatches) / MAX_PERCENTAGE;
     }
     q = W / (CMAX + 1);
+
+    if (0 == q) {
+        return false;
+    }
 
     const char* querySeq = query->constData();
     for (int i = 0; i < W - q + 1; i+=q) {
@@ -465,6 +470,8 @@ inline void ReadShortReadsSubTask::add(int &CMAX, int &W, int &q, int &readNum, 
         alignContext.positionsAtReadV.push_back(i);
     }
     readNum++;
+    alignContext.queries.append(query);
+    return true;
 }
 
 WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries, quint64 &r)

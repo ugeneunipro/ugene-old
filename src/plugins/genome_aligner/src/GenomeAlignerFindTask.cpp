@@ -214,7 +214,9 @@ void ShortReadAligner::run() {
     int pos = 0;
     int w = GenomeAlignerTask::calculateWindowSize(alignContext->absMismatches,
         alignContext->nMismatches, alignContext->ptMismatches, alignContext->minReadLength, alignContext->maxReadLength);
+    int currentW = w;
     BMType bitFilter = ((quint64)0 - 1)<<(62 - w*2);
+    BMType currentBitFilter = bitFilter;
 
     for (int part=0; part < index->getPartCount(); part++) {
         q = const_cast<SearchQuery**>(alignContext->queries.constData());
@@ -278,12 +280,23 @@ void ShortReadAligner::run() {
                     }
                 }
 
+
+                currentBitFilter = bitFilter;
+                currentW = w;
                 if (alignContext->openCL) {
                     bmr = bitMaskResults[i];
                 } else {
-                    bmr = index->bitMaskBinarySearch(bv, bitFilter);
+                    if (shortRead->length() < GenomeAlignerTask::MIN_SHORT_READ_LENGTH) {
+                        currentW = GenomeAlignerTask::calculateWindowSize(alignContext->absMismatches,
+                            alignContext->nMismatches, alignContext->ptMismatches, shortRead->length(), shortRead->length());
+                        currentBitFilter = ((quint64)0 - 1)<<(62 - currentW*2);
+                        if (0 == currentW) {
+                            continue;
+                        }
+                    }
+                    bmr = index->bitMaskBinarySearch(bv, currentBitFilter);
                 }
-                index->alignShortRead(shortRead, bv, pos, bmr, alignContext, bitFilter, w);
+                index->alignShortRead(shortRead, bv, pos, bmr, alignContext, currentBitFilter, currentW);
 
                 if (!alignContext->bestMode) {
                     if ((i == last - 1) || (rn1 != rn)) {

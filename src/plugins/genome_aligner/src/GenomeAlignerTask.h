@@ -130,7 +130,7 @@ private:
     AlignContext &alignContext;
     quint64 freeMemorySize;
 
-    inline void add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent);
+    inline bool add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent);
 
     static const int ONE_SEARCH_QUERY_SIZE = 38; //~38 bytes for one search query?
 };
