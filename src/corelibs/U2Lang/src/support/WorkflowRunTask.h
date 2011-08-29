@@ -152,6 +152,7 @@ public:
     WorkerState getState(const ActorId & id);
     int getMsgNum(const QString & ids);
     int getMsgPassed(const QString & ids);
+    void writeLog(QString message);
     
 private slots:
     void sl_onError(QProcess::ProcessError);

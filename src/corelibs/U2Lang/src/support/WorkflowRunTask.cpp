@@ -52,6 +52,7 @@ static const QString ERROR_KEYWORD("#%*ugene-finished-with-error#%*");
 static const QString STATE_KEYWORD("#%&state#%&");
 static const QString MSG_NUM_KEYWORD("#%$msgnum#%$");
 static const QString MSG_PASSED_KEYWORD("#%$msgpassed#%$");
+static const QString SEP_PROCESS_PREFIX("Workflow separate process: ");
 
 /*******************************************
  * WorkflowRunTask
@@ -572,8 +573,34 @@ void WorkflowRunInProcessMonitorTask::sl_onError(QProcess::ProcessError err) {
     setError(msg);
 }
 
+void WorkflowRunInProcessMonitorTask::writeLog(QString message) {
+    QStringList lines = message.split(QChar('\n'));
+
+    foreach(QString line, lines) {
+        line = line.simplified();
+        if ("" == line) {
+            continue;
+        }
+        QRegExp rx("\\[.+\\]\\[INFO\\]");
+        if (0 == rx.indexIn(line)) {
+            QString logLine = line.right(line.length() - rx.matchedLength());
+            logLine = logLine.simplified();
+            if (!logLine.startsWith(OUTPUT_PROGRESS_TAG)
+             && !logLine.startsWith(ERROR_KEYWORD)
+             && !logLine.startsWith(STATE_KEYWORD)
+             && !logLine.startsWith(MSG_NUM_KEYWORD)
+             && !logLine.startsWith(MSG_PASSED_KEYWORD)) {
+                logLine.prepend(SEP_PROCESS_PREFIX);
+                taskLog.info(logLine);
+            }
+        }
+    }
+}
+
 void WorkflowRunInProcessMonitorTask::sl_onReadStandardOutput() {
     QString data(proc->readAllStandardOutput());
+    writeLog(data);
+
     int errInd = data.indexOf(ERROR_KEYWORD);
     if(errInd >= 0) {
         int errIndEnd = data.indexOf(ERROR_KEYWORD, errInd + 1);
