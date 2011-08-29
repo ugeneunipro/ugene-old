@@ -107,7 +107,7 @@ void WriteDocActorProto::construct() {
     attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
 
     QMap< QString, PropertyDelegate* > delegateMap;
-    urlDelegate = new URLDelegate(prepareDocumentFilter(), QString(), false );
+    urlDelegate = new URLDelegate(prepareDocumentFilter(), QString(), false, false, true, 0, fid);
     delegateMap[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = urlDelegate;
     delegateMap[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
 

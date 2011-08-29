@@ -65,8 +65,9 @@ protected:
 class U2DESIGNER_EXPORT URLLineEdit : public QLineEdit {
     Q_OBJECT
 public:
-    URLLineEdit(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QWidget *parent)
-        : QLineEdit(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), saveFile(saveFile) {}
+    URLLineEdit(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QWidget *parent, const QString &format = "")
+        : QLineEdit(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), saveFile(saveFile), fileFormat(format) {}
+
 protected:
     void focusOutEvent ( QFocusEvent * event );
 private slots:
@@ -81,14 +82,15 @@ private:
     bool    multi;
     bool    isPath;
     bool    saveFile;
+    QString fileFormat;
 };
 
 class U2DESIGNER_EXPORT URLDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
-    URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0)
+    URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, const QString &format = "")
         : PropertyDelegate(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), showButton( true ), saveFile(saveFile),
-        currentEditor(NULL){
+        currentEditor(NULL), fileFormat(format) {
     }
     virtual ~URLDelegate() {}
 
@@ -102,7 +104,7 @@ public:
 public slots:
     void sl_showEditorButton( bool show );
     void sl_commit();
-    void sl_extensionChanged(const QString &newExtension);
+    void sl_formatChanged(const QString &newFormat);
     
 protected:
     QString FileFilter;
@@ -113,6 +115,7 @@ protected:
     bool    saveFile; // sets when you need only 1 file for reading (is set with multi=false)
     mutable QWidget* currentEditor;
     QString text;
+    QString fileFormat;
 };
 
 class U2DESIGNER_EXPORT SpinBoxDelegate : public PropertyDelegate {

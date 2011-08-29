@@ -249,7 +249,7 @@ void CoreLib::init() {
                 m[fid] = fid;
             }
             ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
-            connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_extensionChanged(const QString &)));
+            connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
             proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all MSAs from <u>%1</u> to <u>%2</u>."), BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
@@ -285,7 +285,7 @@ void CoreLib::init() {
                 m[fid] = fid;
             }
             ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
-            connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_extensionChanged(const QString &)));
+            connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
             proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all sequences from <u>%1</u> to <u>%2</u>."), BaseSlots::DNA_SEQUENCE_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);

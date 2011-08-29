@@ -34,6 +34,7 @@
 
 #include <U2Gui/ScriptEditorDialog.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/DialogUtils.h>
 
 namespace U2 {
 
@@ -188,6 +189,35 @@ void URLLineEdit::sl_onBrowse() {
     } else {
         if(saveFile) {
             lod.url = name = QFileDialog::getSaveFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
+            DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
+            if (NULL != format && !name.isEmpty()) {
+                QString newName(name);
+                GUrl url(newName);
+                QString lastSuffix = url.lastFileSuffix();
+                if ("gz" == lastSuffix) {
+                    int dotPos = newName.length() - lastSuffix.length() - 1;
+                    if ((dotPos >= 0) && (QChar('.') == newName[dotPos])) {
+                        newName = url.getURLString().left(dotPos);
+                        GUrl tmp(newName);
+                        lastSuffix = tmp.lastFileSuffix(); 
+                    }
+                }
+                bool foundExt = false;
+                foreach (QString supExt, format->getSupportedDocumentFileExtensions()) {
+                    if (lastSuffix == supExt) {
+                        foundExt = true;
+                        break;
+                    }
+                }
+                if (!foundExt) {
+                    name = name + "." + format->getSupportedDocumentFileExtensions().first();
+                } else {
+                    int dotPos = newName.length() - lastSuffix.length() - 1;
+                    if ((dotPos < 0) || (QChar('.') != newName[dotPos])) {
+                        name = name + "." + format->getSupportedDocumentFileExtensions().first();
+                    }
+                }
+            }
         } else {
             lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter );
         }
@@ -211,7 +241,7 @@ QWidget *URLDelegate::createEditor(QWidget *parent,
                                        const QModelIndex &/* index */) const
 {
     QWidget * widget = new QWidget(parent);
-    URLLineEdit* documentURLEdit = new URLLineEdit(FileFilter, type, multi, isPath, saveFile, widget);
+    URLLineEdit* documentURLEdit = new URLLineEdit(FileFilter, type, multi, isPath, saveFile, widget, fileFormat);
     documentURLEdit->setObjectName("URLLineEdit");
     documentURLEdit->setFrame(false);
     documentURLEdit->setSizePolicy(QSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred));
@@ -275,18 +305,19 @@ void URLDelegate::sl_showEditorButton( bool show ) {
     showButton = show;
 }
 
-void URLDelegate::sl_extensionChanged(const QString &newExtension) {
-    if (newExtension.isEmpty()) {
+void URLDelegate::sl_formatChanged(const QString &newFormat) {
+    if (newFormat.isEmpty()) {
         return;
     }
 
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(newExtension);
+    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(newFormat);
     QString fileFilter;
     if (NULL != format) {
-        FileFilter = newExtension + " files (*." + format->getSupportedDocumentFileExtensions().first() + ")";
+        FileFilter = DialogUtils::prepareDocumentsFileFilter(newFormat, true);
     } else {
-        FileFilter = newExtension + " files (*." + newExtension + ")";
+        FileFilter = newFormat + " files (*." + newFormat + ")";
     }
+    fileFormat = newFormat;
 }
 
 /********************************

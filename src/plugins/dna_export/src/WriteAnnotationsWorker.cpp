@@ -179,7 +179,7 @@ void WriteAnnotationsWorkerFactory::init() {
         ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
         URLDelegate *urlDelegate = new URLDelegate(
             DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::ANNOTATION_TABLE, true), QString(), false );
-        QObject::connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), urlDelegate, SLOT(sl_extensionChanged(const QString &)));
+        QObject::connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), urlDelegate, SLOT(sl_formatChanged(const QString &)));
         delegates[BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId()] = comboDelegate;
         delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = urlDelegate;
         delegates[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
