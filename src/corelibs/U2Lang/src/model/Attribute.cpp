@@ -32,7 +32,7 @@ namespace U2 {
  *  Attribute
  *************************************/
 Attribute::Attribute(const Descriptor& d, const DataTypePtr t, bool req, const QVariant & defaultValue )
-: Descriptor(d), type(t), required(req), value(defaultValue), hasRelation(false) {
+: Descriptor(d), type(t), required(req), value(defaultValue) {
     debugCheckAttributeId();
 }
 
@@ -115,23 +115,21 @@ bool Attribute::isEmptyString() const {
 }
 
 bool Attribute::isVisible(const QVariantMap &values) const {
-    if(hasRelation) {
-        QMapIterator<QString, QVariant> i(relation);
-         while (i.hasNext()) {
-             i.next();
-             if(values.value(i.key()) == i.value()){
-                 return true;
-             }
-         }
-        return false;//(values.value(relatedAttribute) == relatedAttributeValue);
-    } else {
-        return true;
+    bool hasVisibilityRelations = false;
+    foreach(const AttributeRelation *relation, relations) {
+        if (VISIBILITY == relation->getType()) {
+            hasVisibilityRelations = true;
+            if (relation->getAffectResult(values).toBool()) {
+                return true;
+            }
+        }
     }
+    
+    return !hasVisibilityRelations;
 }
 
-void Attribute::addRelation(const QString& attrName, const QVariant &attrValue) {
-    hasRelation = true;
-    relation.insertMulti(attrName, attrValue);
+void Attribute::addRelation(const AttributeRelation *relation) {
+    relations.append(relation);
 }
 
 /*************************************

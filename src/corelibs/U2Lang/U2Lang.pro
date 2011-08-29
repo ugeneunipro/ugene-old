@@ -11,6 +11,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/ActorModel.h \
            src/model/ActorPrototypeRegistry.h \
            src/model/Attribute.h \
+           src/model/AttributeRelation.h \
            src/model/Configuration.h \
            src/model/ConfigurationEditor.h \
            src/model/ConfigurationValidator.h \
@@ -50,6 +51,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/ActorModel.cpp \
            src/model/ActorPrototypeRegistry.cpp \
            src/model/Attribute.cpp \
+           src/model/AttributeRelation.cpp \
            src/model/Configuration.cpp \
            src/model/Datatype.cpp \
            src/model/Descriptor.cpp \

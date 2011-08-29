@@ -31,6 +31,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/ScriptTask.h>
 
+#include <U2Lang/AttributeRelation.h>
 #include <U2Lang/Datatype.h>
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/ScriptLibrary.h>
@@ -102,7 +103,7 @@ public:
     bool isEmpty() const;
     bool isEmptyString() const;
     bool isVisible(const QVariantMap &values) const;
-    void addRelation(const QString& attrName, const QVariant &attrValue);
+    void addRelation(const AttributeRelation *relation);
     
 private:
     template<typename T> T getAttributeValueWithoutScript() const {
@@ -124,8 +125,7 @@ private:
     // script variables get values only in runtime
     AttributeScript     scriptData;
 
-    bool hasRelation;
-    QMap <QString,QVariant> relation;
+    QVector<const AttributeRelation*> relations;
     
 }; // Attribute
 
