@@ -239,10 +239,12 @@ void CoreLib::init() {
             Descriptor acd(CoreLibConstants::WRITE_MSA_PROTO_ID, tr("Write alignment"), tr("Writes all supplied alignments to file(s) in selected format"));
             Descriptor pd(BasePorts::IN_MSA_PORT_ID(), tr("Multiple sequence alignment"), tr("Multiple sequence alignment"));
             p << new PortDescriptor(pd, writeMAType, true);
-            a << new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
+            Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
                 supportedFormats.contains( BaseDocumentFormats::CLUSTAL_ALN ) ? BaseDocumentFormats::CLUSTAL_ALN : supportedFormats.first() );
+            a << docFormatAttr;
             WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::MULTIPLE_ALIGNMENT, p, pd.getId(), a );
             IntegralBusActorPrototype * proto = childProto;
+            docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId(), docFormatAttr->getAttributePureValue().toString()));
             
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {
@@ -275,10 +277,12 @@ void CoreLib::init() {
             Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("Sequence"));
             p << new PortDescriptor(pd, typeSet, true);
             a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-            a << new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
+            Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
                 supportedFormats.contains( BaseDocumentFormats::PLAIN_FASTA ) ? BaseDocumentFormats::PLAIN_FASTA : supportedFormats.first() );
+            a << docFormatAttr;
             WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a );
             IntegralBusActorPrototype * proto = childProto;
+            docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId(), docFormatAttr->getAttributePureValue().toString()));
             
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {

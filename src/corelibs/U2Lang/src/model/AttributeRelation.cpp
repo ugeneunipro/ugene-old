@@ -20,15 +20,68 @@
  */
 
 #include "AttributeRelation.h"
+#include <U2Core/GUrl.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/AppContext.h>
 
 namespace U2 {
 
-QVariant VisibilityRelation::getAffectResult(const QVariantMap &values) const {
-    if(values.value(influencingAttrName) == attrValue){
-        return true;
+QVariant VisibilityRelation::getAffectResult(const QVariant &influencingValue, const QVariant &) const {
+    return influencingValue == visibilityValue;
+}
+
+QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const {
+    QString newFormatId = influencingValue.toString();
+    GUrl url(dependentValue.toString());
+
+    DocumentFormat *currentFormat = AppContext::getDocumentFormatRegistry()->getFormatById(currentFormatId);
+    DocumentFormat *newFormat = AppContext::getDocumentFormatRegistry()->getFormatById(newFormatId);
+    QString extension;
+    if (NULL == newFormat) {
+        extension = newFormatId;
+    } else {
+        extension = newFormat->getSupportedDocumentFileExtensions().first();
+    }
+    QString urlString = url.getURLString();
+    QString lastSuffix = url.lastFileSuffix();
+    bool withGz = false;
+
+    if ("gz" == lastSuffix) {
+        int dotPos = urlString.length() - lastSuffix.length() - 1;
+        if ((dotPos >= 0) && (QChar('.') == urlString[dotPos])) {
+            withGz = true;
+            urlString = url.getURLString().left(dotPos);
+            GUrl tmp(urlString);
+            lastSuffix = tmp.lastFileSuffix(); 
+        }
     }
 
-    return false;
+    bool foundExt = false;
+    if (NULL == currentFormat) {
+        foundExt = (lastSuffix == currentFormatId);
+    } else {
+        foreach (QString supExt, currentFormat->getSupportedDocumentFileExtensions()) {
+            if (lastSuffix == supExt) {
+                foundExt = true;
+                break;
+            }
+        }
+    }
+    
+    if (foundExt) {
+        int dotPos = urlString.length() - lastSuffix.length() - 1;
+        if ((dotPos >= 0) && (QChar('.') == urlString[dotPos])) { //yes, lastSuffix is a correct extension with .
+            urlString = url.getURLString().left(dotPos);
+        }
+    }
+
+    const_cast<QString&>(currentFormatId).clear();
+    const_cast<QString&>(currentFormatId).append(newFormatId);
+    urlString += "." + extension;
+    if (withGz) {
+        urlString += ".gz";
+    }
+    return urlString;
 }
 
 } // U2

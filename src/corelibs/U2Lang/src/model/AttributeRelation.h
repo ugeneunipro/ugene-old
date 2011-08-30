@@ -27,38 +27,56 @@
 namespace U2 {
 
 enum RelationType {
-    VISIBILITY
+    VISIBILITY,
+    FILE_EXTENSION
 };
 
 /**
  * An abstract class describing any relations between influencing and dependent attributes
- * It should be contained by the dependent attribute
  */
 class U2LANG_EXPORT AttributeRelation {
 public:
-    AttributeRelation(const QString &influencingAttrName, const QVariant &attrValue)
-        : influencingAttrName(influencingAttrName), attrValue(attrValue) {}
+    AttributeRelation(const QString &relatedAttrId)
+        : relatedAttrId(relatedAttrId) {}
 
-    virtual QVariant getAffectResult(const QVariantMap &values) const = 0;
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const = 0;
     virtual RelationType getType() const = 0;
+    QString getRelatedAttrId() const {return relatedAttrId;}
 
     virtual ~AttributeRelation() {}
 
 protected:
-    QString influencingAttrName;
-    QVariant attrValue;
+    QString relatedAttrId;
 };
 
 /**
- * It describes any attribute's visibility depends on a value of another attribute
+ * It describes how visibility of some attribute depends on a value of the related attribute
  */
 class U2LANG_EXPORT VisibilityRelation : public AttributeRelation {
 public:
-    VisibilityRelation(const QString &influencingAttrName, const QVariant &attrValue)
-        : AttributeRelation(influencingAttrName, attrValue) {}
+    VisibilityRelation(const QString &relatedAttrId, const QVariant &visibilityValue)
+        : AttributeRelation(relatedAttrId), visibilityValue(visibilityValue) {}
 
-    virtual QVariant getAffectResult(const QVariantMap &values) const;
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const;
     virtual RelationType getType() const {return VISIBILITY;}
+
+private:
+    QVariant visibilityValue;
+};
+
+/**
+ * A value of URL_OUT_ATTRIBUTE depends on a value of DOCUMENT_FORMAT_ATTRIBUTE
+ */
+class U2LANG_EXPORT FileExtensionRelation : public AttributeRelation {
+public:
+    FileExtensionRelation(const QString &relatedAttrId, const QString &currentFormatId)
+        : AttributeRelation(relatedAttrId), currentFormatId(currentFormatId) {}
+
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const;
+    virtual RelationType getType() const {return FILE_EXTENSION;}
+
+private:
+    QString currentFormatId;
 };
 
 } // U2 namespace

@@ -102,8 +102,9 @@ public:
     
     bool isEmpty() const;
     bool isEmptyString() const;
-    bool isVisible(const QVariantMap &values) const;
     void addRelation(const AttributeRelation *relation);
+    QVector<const AttributeRelation*> &getRelations();
+
     
 private:
     template<typename T> T getAttributeValueWithoutScript() const {

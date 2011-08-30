@@ -176,6 +176,21 @@ int ActorCfgModel::rowCount( const QModelIndex & parent ) const {
     return attrs.isEmpty() || parent.isValid() ? 0 : attrs.size()/*rows*/;
 }
 
+bool ActorCfgModel::isVisible(const QVector<const AttributeRelation*> &relations) const {
+    bool hasVisibilityRelations = false;
+    foreach(const AttributeRelation *relation, relations) {
+        if (VISIBILITY == relation->getType()) {
+            hasVisibilityRelations = true;
+            QVariant visibilityValue = data(modelIndexById(relation->getRelatedAttrId()));
+            if (relation->getAffectResult(visibilityValue, QVariant()).toBool()) {
+                return true;
+            }
+        }
+    }
+
+    return !hasVisibilityRelations;
+}
+
 Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
     int x = iterationIdx;
     if (x >= iterations.size()) {
@@ -189,7 +204,7 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
             def[a->getId()] = a->getAttributePureValue();
         }
         Attribute *currentAttribute = attrs.at(index.row());
-        if(! currentAttribute->isVisible(def)) {
+        if (!isVisible(currentAttribute->getRelations())) {
             return 0;
         }
     } else {
@@ -202,7 +217,7 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
             }
         }
         Attribute *currentAttribute = attrs.at(index.row());
-        if(! currentAttribute->isVisible(map)) {
+        if (!isVisible(currentAttribute->getRelations())) {
             return 0;
         }
     }
@@ -294,7 +309,7 @@ Attribute* ActorCfgModel::getAttributeByRow(int row) const{
 
     QList<Attribute*>visibleAttrs;
     foreach(Attribute* a, attrs) {
-        if(a->isVisible(cfg)) {
+        if (isVisible(a->getRelations())) {
             visibleAttrs << a;
         }
     }
@@ -444,6 +459,13 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
                             subject->setParameter(key, value);
                             emit dataChanged(index, index);
                             uiLog.trace("committed property change");
+                        }
+                    }
+                    foreach (const AttributeRelation *relation, editingAttribute->getRelations()) {
+                        if (FILE_EXTENSION == relation->getType()) {
+                            QModelIndex idx = modelIndexById(relation->getRelatedAttrId());
+                            QVariant newValue = relation->getAffectResult(value, data(idx));
+                            setData(idx, newValue);
                         }
                     }
                     return true;

@@ -114,22 +114,12 @@ bool Attribute::isEmptyString() const {
     return value.type() == QVariant::String && getAttributeValue<QString>().isEmpty();
 }
 
-bool Attribute::isVisible(const QVariantMap &values) const {
-    bool hasVisibilityRelations = false;
-    foreach(const AttributeRelation *relation, relations) {
-        if (VISIBILITY == relation->getType()) {
-            hasVisibilityRelations = true;
-            if (relation->getAffectResult(values).toBool()) {
-                return true;
-            }
-        }
-    }
-    
-    return !hasVisibilityRelations;
-}
-
 void Attribute::addRelation(const AttributeRelation *relation) {
     relations.append(relation);
+}
+
+QVector<const AttributeRelation*> &Attribute::getRelations() {
+    return relations;
 }
 
 /*************************************

@@ -66,10 +66,12 @@ public:
         const QString & portId, const QList<Attribute*>& attrs = QList<Attribute*>() );
 
     URLDelegate *getUrlDelegate();
+    Attribute *getUrlAttr() {return urlAttr;}
 
 private:
     void construct();
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
+    Attribute *urlAttr;
 
 private:
     QString outPortId;

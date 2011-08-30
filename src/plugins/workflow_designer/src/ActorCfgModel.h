@@ -70,7 +70,7 @@ public:
 
     void changeScriptMode(bool _mode);
 
-    QModelIndex modelIndexById(const QString& id) {
+    QModelIndex modelIndexById(const QString& id) const {
         for (int i=0; i<attrs.size(); i++) {
             Attribute* a = attrs.at(i);
             if (a->getId()==id) {
@@ -85,6 +85,7 @@ private:
     bool setAttributeValue( const Attribute * attr, QVariant & attrValue ) const;
     void setupAttributesScripts();
     Attribute *getAttributeByRow(int row) const;
+    bool isVisible(const QVector<const AttributeRelation*> &relations) const;
     
 private:
     Actor*              subject;

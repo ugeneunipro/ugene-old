@@ -151,10 +151,11 @@ void WriteAnnotationsWorkerFactory::init() {
         constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
         supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
         supportedFormats.append(CSV_FORMAT_ID);
-        
-        attrs << new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false,
+        Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false,
             supportedFormats.contains(BaseDocumentFormats::PLAIN_GENBANK) ? BaseDocumentFormats::PLAIN_GENBANK : supportedFormats.first());
-        attrs << new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
+        Attribute *urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
+        attrs << docFormatAttr;
+        attrs << urlAttr;
         attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
         Descriptor annotationsNameDesc(ANNOTATIONS_NAME, WriteAnnotationsWorker::tr("Annotations name"), 
             WriteAnnotationsWorker::tr("Object name of saving annotations"));
@@ -162,6 +163,8 @@ void WriteAnnotationsWorkerFactory::init() {
         Descriptor separatorDesc(SEPARATOR, WriteAnnotationsWorker::tr("CSV separator"), 
             WriteAnnotationsWorker::tr("String which separates values in CSV files"));
         attrs << new Attribute(separatorDesc, BaseTypes::STRING_TYPE(), false, QVariant(SEPARATOR_DEFAULT_VALUE));
+
+        docFormatAttr->addRelation(new FileExtensionRelation(urlAttr->getId(), docFormatAttr->getAttributePureValue().toString()));
     }
     
     Descriptor protoDesc(WriteAnnotationsWorkerFactory::ACTOR_ID, 

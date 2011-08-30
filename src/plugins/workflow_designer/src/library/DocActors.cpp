@@ -103,7 +103,8 @@ bool WriteDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * pa
 }
 
 void WriteDocActorProto::construct() {
-    attrs << new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
+    urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
+    attrs << urlAttr;
     attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
 
     QMap< QString, PropertyDelegate* > delegateMap;
