@@ -286,4 +286,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \
            src/util/U2Bits.cpp
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/chinese.ts \
+                transl/czech.ts \
+                transl/english.ts \
+                transl/russian.ts
