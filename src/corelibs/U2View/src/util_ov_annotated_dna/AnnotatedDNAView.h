@@ -24,6 +24,8 @@
 
 #include <U2Gui/ObjectViewModel.h>
 
+#include <U2Core/Task.h>
+
 #include <QtCore/QPointer>
 #include <QtGui/QTextEdit>
 #include <QtGui/QSplitter>
@@ -179,6 +181,7 @@ private slots:
     void sl_replaceSequencePart();
     void sl_sequenceModifyTaskStateChanged();
     void sl_reverseSequence();
+    void sl_showStatistics();
     
     virtual void sl_onDocumentAdded(Document*);
     virtual void sl_onDocumentLoadedStateChanged();
@@ -209,6 +212,7 @@ private:
     QAction*            replaceSequencePart;
     QAction*            removeSequenceObjectAction;         
     QAction*            reverseSequenceAction;
+    QAction*            statistics;
 
     PositionSelector*   posSelector;
     
@@ -232,6 +236,24 @@ private:
     ADVSequenceWidget*          focusedWidget;
     
     int                         timerId;
+};
+
+class DNAStatProfileTask : public Task {
+    Q_OBJECT
+public:
+    DNAStatProfileTask(AnnotatedDNAView *v);
+    void run();
+    ReportResult report();
+
+private:
+    void computeStats();
+
+    ADVSequenceObjectContext* ctx;
+    int seqLen;
+    QMap<QChar, int> counter;
+    QMap<QByteArray, int> diNuclCounter;
+
+    QString resultText;
 };
 
 }//namespace;
