@@ -80,6 +80,7 @@
 
 
 #define EXTERNAL_TOOL_SUPPORT_FACTORY_ID "ExternalToolSupport"
+#define TOOLS "tools"
 
 namespace U2 {
 
@@ -225,45 +226,43 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
     //Read settings
     ExternalToolSupportSettings::getExternalTools();
+    
+    //Search for tools in application dir
+    
+    QDir appDir(QCoreApplication::applicationDirPath());
+    QStringList entryList = appDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    QString toolsDir;
+    foreach(const QString& dirName, entryList) {
+        if (dirName.contains(TOOLS)) {
+            toolsDir = appDir.absolutePath()+ "/" + dirName;
+            break;
+        }
+    }    
 
-    //Search in tools path
-#ifdef Q_OS_WIN
-    QString clustalWPath = QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+"\\tools\\clustalw2.exe");
-    if(AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->getPath().isEmpty()){
-        QFileInfo clustalExe(clustalWPath);
-        if(clustalExe.exists()){
-            AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->setPath(clustalWPath);
+    if (!toolsDir.isEmpty()) {
+        foreach(ExternalTool* curTool, AppContext::getExternalToolRegistry()->getAllEntries()){
+             if(!curTool->getPath().isEmpty()){ 
+                 continue;
+             }
+             QString exeName = curTool->getExecutableFileName();
+             QDirIterator it(toolsDir, QDirIterator::Subdirectories);
+             bool fileNotFound = true;
+             while (it.hasNext()&& fileNotFound) {
+                 it.next();
+                 QString toolPath(it.filePath() + "/" + exeName);
+                 QFileInfo info(toolPath);
+                 if(info.exists() && info.isFile() && info.isExecutable()){
+                     QString path = QDir::toNativeSeparators(toolPath);
+                     ExternalToolValidateTask* validateTask=new ExternalToolValidateTask(curTool->getName(), path);
+                     connect(validateTask,SIGNAL(si_stateChanged()),SLOT(sl_validateTaskStateChanged()));
+                     AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
+                     fileNotFound=false;
+                 }
+             }
         }
     }
 
-    QString cap3Path = QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+"\\tools\\cap3.exe");
-    if(AppContext::getExternalToolRegistry()->getByName(CAP3_TOOL_NAME)->getPath().isEmpty()){
-        QFileInfo cap3Exe(cap3Path);
-        if(cap3Exe.exists()){
-            AppContext::getExternalToolRegistry()->getByName(CAP3_TOOL_NAME)->setPath(cap3Path);
-        }
-    }
-
-    QString bowtiePath = QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+"\\tools\\bowtie.exe");
-    if(AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME)->getPath().isEmpty()){
-        QFileInfo bowtieExe(bowtiePath);
-        if(bowtieExe.exists()){
-            AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME)->setPath(bowtiePath);
-        }
-    }
-
-    QString bowtieBuildPath = QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+"\\tools\\bowtie-build.exe");
-    if(AppContext::getExternalToolRegistry()->getByName(BOWTIE_BUILD_TOOL_NAME)->getPath().isEmpty()){
-        QFileInfo bowtieBuildExe(bowtieBuildPath);
-        if(bowtieBuildExe.exists()){
-            AppContext::getExternalToolRegistry()->getByName(BOWTIE_BUILD_TOOL_NAME)->setPath(bowtieBuildPath);
-        }
-    }
-
-
-
-#endif
-
+    //Search for tools in path
 
     QStringList envList = QProcess::systemEnvironment();
     if(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive))>=0){
@@ -278,7 +277,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     #endif
 #endif
         foreach(ExternalTool* curTool, AppContext::getExternalToolRegistry()->getAllEntries()){
-            foreach(QString curPath, paths){
+            foreach(const QString& curPath, paths){
                 if(curTool->getPath().isEmpty()){
                     QString exePath = curPath+"/"+curTool->getExecutableFileName();
                     QFileInfo fileExe(exePath);

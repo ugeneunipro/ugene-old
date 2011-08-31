@@ -29,6 +29,7 @@
 #include <U2Core/ExternalToolRegistry.h>
 
 #include <QtCore/QSettings>
+#include <QtCore/QFile>
 #include <QtGui/QApplication>
 #include <QtGui/QStyle>
 #include <QtGui/QStyleFactory>
@@ -65,6 +66,10 @@ bool ExternalToolSupportSettings::getExternalTools() {
     for(int i=0; i<numberExternalTools;i++){
         name=AppContext::getSettings()->getValue(PREFIX_EXTERNAL_TOOL_NAME + QString::number(i), QVariant("")).toString();
         path=AppContext::getSettings()->getValue(PREFIX_EXTERNAL_TOOL_PATH + QString::number(i), QVariant("")).toString();
+        if (!QFile::exists(path)) {
+            // executable is not found -> leave this tool alone
+            continue;
+        }
         isValid=AppContext::getSettings()->getValue(PREFIX_EXTERNAL_TOOL_IS_VALID + QString::number(i), QVariant(false)).toBool();
         version=AppContext::getSettings()->getValue(PREFIX_EXTERNAL_TOOL_VERSION + QString::number(i), QVariant("unknown")).toString();
         if(AppContext::getExternalToolRegistry()->getByName(name) != NULL){
