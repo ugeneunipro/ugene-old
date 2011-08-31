@@ -359,12 +359,13 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
                         QWidget* itemWid=treeWidget->itemWidget(item,1);
                         PathLineEdit* lineEdit=itemWid->findChild<PathLineEdit*>("PathLineEdit");
                         if(lineEdit->text().isEmpty()){
-                            QDirIterator it(dirPath+"/"+dirName,QDirIterator::Subdirectories);
+                            QString toolPath = dirPath + "/" + dirName;
+                            QDirIterator it(toolPath,QDirIterator::Subdirectories);
                             bool fileNotFound=true;
                             QString executableFileName = AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                             while (it.hasNext()&&fileNotFound) {
+                                it.next();
                                 QFileInfo info(it.filePath()+"/"+executableFileName);
-                                QString fname = info.absoluteFilePath();
                                 if(info.exists() && info.isFile() && info.isExecutable()){
                                     QString path=QDir::toNativeSeparators(it.filePath()+"/"+executableFileName);
                                     lineEdit->setText(path);
@@ -378,7 +379,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath(){
                                     AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
                                     fileNotFound=false;
                                 }
-                                it.next();
+
                             }
                         }
                     }
