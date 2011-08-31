@@ -42,6 +42,7 @@ namespace U2 {
 
 class AssemblyBrowserUi;
 class PositionSelector;
+class AssemblyCellRendererFactoryRegistry;
 
 class AssemblyBrowser : public GObjectView {
     Q_OBJECT
@@ -97,6 +98,8 @@ public:
     
     AssemblyObject* getAssemblyObject() const {return gobject;}
 
+    AssemblyCellRendererFactoryRegistry * getCellRendererRegistry() { return cellRendererRegistry; }
+
 public slots:
     void sl_zoomIn(const QPoint & pos = QPoint());
     void sl_zoomOut(const QPoint & pos = QPoint());
@@ -151,6 +154,8 @@ private:
     CoverageInfo coverageInfo;
     CoveredRegionsManager coveredRegionsManager;
     bool coverageReady;
+
+    AssemblyCellRendererFactoryRegistry * cellRendererRegistry;
     
     QAction * zoomInAction;
     QAction * zoomOutAction;

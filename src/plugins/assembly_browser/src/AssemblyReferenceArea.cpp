@@ -31,12 +31,18 @@
 namespace U2 {
 
 AssemblyReferenceArea::AssemblyReferenceArea(AssemblyBrowserUi * ui_) : 
-    QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), referenceAreaMenu(new QMenu(this)), cellRenderer(createAssemblyCellRenderer())
+    QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), cellRenderer(NULL), referenceAreaMenu(new QMenu(this))
 {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
     setMouseTracking(true);
+
+    // init cell renderer
+    AssemblyCellRendererFactoryRegistry *factories = browser->getCellRendererRegistry();
+    AssemblyCellRendererFactory *f = factories->getFactoryById(AssemblyCellRendererFactory::ALL_NUCLEOTIDES);
+    SAFE_POINT(f != NULL, "AssemblyCellRendererFactory::ALL_NUCLEOTIDES not found!",);
+    cellRenderer.reset(f->create());
     
     // setup menu
     QAction * unassociateReferenceAction = referenceAreaMenu->addAction(tr("Unassociate"));

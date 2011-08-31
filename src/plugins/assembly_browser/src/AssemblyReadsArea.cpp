@@ -57,7 +57,7 @@ static const QColor backgroundColor(Qt::white);
 static const QColor shadowingColor(255,255,255,200);
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_)
-    :  QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true), cellRenderer(createAssemblyCellRenderer()),
+    :  QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true), cellRenderer(NULL),
         coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), mover(),
         shadowingEnabled(false), shadowingData(),
         scribbling(false), currentHotkeyIndex(-1),
@@ -86,6 +86,23 @@ void AssemblyReadsArea::createMenu() {
 
         QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
         connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
+
+    QMenu * cellRendererMenu = readMenu->addMenu(tr("Coloring parameter"));
+    {
+        QList<AssemblyCellRendererFactory*> factories = browser->getCellRendererRegistry()->getFactories();
+
+        AssemblyCellRendererFactory * selectedFactory = factories.first();
+        cellRenderer.reset(selectedFactory->create());
+
+        foreach(AssemblyCellRendererFactory *f, factories) {
+            QAction * action = cellRendererMenu->addAction(f->getName());
+            action->setCheckable(true);
+            action->setChecked(f == selectedFactory);
+            action->setData(f->getId());
+            connect(action, SIGNAL(triggered()), SLOT(sl_changeCellRenderer()));
+            cellRendererActions << action;
+        }
+    }
 
     QMenu *shadowingMenu = createShadowingMenu();
     readMenu->addMenu(shadowingMenu);
@@ -354,6 +371,16 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             int x_pix_start = browser->calcPainterOffset(xToDrawRegion.startPos);
             int y_pix_start = browser->calcPainterOffset(yToDrawRegion.startPos);
 
+            QByteArray referenceRegion;
+            if(model->hasReference()) {
+                U2OpStatusImpl status;
+                referenceRegion = model->getReferenceRegion(readVisibleBases, status);
+                if(status.hasError()) {
+                    LOG_OP(status);
+                    referenceRegion = QByteArray();
+                }
+            }
+
             //iterate over letters of the read
             QList<U2CigarToken> cigar(read->cigar); // hack: to show reads without cigar but with mapped position
             if(cigar.isEmpty()) {
@@ -366,7 +393,12 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
                 char c = cigarIt.nextLetter();
 
                 QPoint cellStart(x_pix_start + x_pix_offset, y_pix_start);
-                QPixmap cellImage = cellRenderer->cellImage(read, c);
+                QPixmap cellImage;
+                if(! referenceRegion.isEmpty()) {
+                    cellImage = cellRenderer->cellImage(read, c, referenceRegion[basesPainted-1]);
+                } else {
+                    cellImage = cellRenderer->cellImage(read, c);
+                }
 
                 p.drawPixmap(cellStart, cellImage);
             }
@@ -889,6 +921,23 @@ void AssemblyReadsArea::sl_onShadowingJump() {
     pos = (pos > len - onScreen +1) ? len - onScreen +1 : pos;
 
     browser->setXOffsetInAssembly(pos);
+}
+
+void AssemblyReadsArea::sl_changeCellRenderer() {
+    QAction * action = qobject_cast<QAction*>(sender());
+    SAFE_POINT(action != NULL, "changing cell renderer invoked not by action, ignoring request",);
+
+    QString id = action->data().toString();
+    AssemblyCellRendererFactory* f = browser->getCellRendererRegistry()->getFactoryById(id);
+    SAFE_POINT(f != NULL, "cannot change cell renderer, bad id",);
+
+    cellRenderer.reset(f->create());
+
+    foreach(QAction* a, cellRendererActions) {
+        a->setChecked(a == action);
+    }
+
+    sl_redraw();
 }
 
 } //ns

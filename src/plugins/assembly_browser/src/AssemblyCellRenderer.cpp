@@ -25,6 +25,7 @@
 #include <QtGui/QFont>
 
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -107,6 +108,7 @@ public:
 
     virtual QPixmap cellImage(char c);
     virtual QPixmap cellImage(const U2AssemblyRead &read, char c);
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c, char ref);
 
 private:
     void update();
@@ -158,6 +160,10 @@ QPixmap NucleotideColorsRenderer::cellImage(const U2AssemblyRead&, char c) {
     return cellImage(c);
 }
 
+QPixmap NucleotideColorsRenderer::cellImage(const U2AssemblyRead&, char c, char) {
+    return cellImage(c);
+}
+
 class ComplementColorsRenderer : public AssemblyCellRenderer {
 public:
     ComplementColorsRenderer()
@@ -171,6 +177,7 @@ public:
 
     virtual QPixmap cellImage(char c);
     virtual QPixmap cellImage(const U2AssemblyRead &read, char c);
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c, char ref);
 
 private:
     void update();
@@ -193,8 +200,8 @@ const QColor ComplementColorsRenderer::directColor("#4EADE1");
 const QColor ComplementColorsRenderer::complementColor("#70F970");
 
 void ComplementColorsRenderer::render(const QSize &_size, bool _text, const QFont &_font) {
-    GTIMER(c1, t1, "NucleotideColorsRenderer::render");
-    GCOUNTER(c2, t2, "NucleotideColorsRenderer::render -> calls");
+    GTIMER(c1, t1, "ComplementColorsRenderer::render");
+    GCOUNTER(c2, t2, "ComplementColorsRenderer::render -> calls");
 
     if (_size != size || _text != text || (text && _font != font)) {
         // update cache
@@ -243,10 +250,173 @@ QPixmap ComplementColorsRenderer::cellImage(const U2AssemblyRead &read, char c) 
     }
 }
 
+QPixmap ComplementColorsRenderer::cellImage(const U2AssemblyRead &read, char c, char) {
+    return cellImage(read, c);
+}
 
-extern AssemblyCellRenderer* createAssemblyCellRenderer() {
-    return new NucleotideColorsRenderer();
-    //return new ComplementColorsRenderer();
+class DiffNucleotideColorsRenderer : public AssemblyCellRenderer {
+public:
+    DiffNucleotideColorsRenderer();
+    virtual ~DiffNucleotideColorsRenderer() {}
+
+    virtual void render(const QSize &size, bool text, const QFont &font);
+
+    virtual QPixmap cellImage(char c);
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c);
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c, char ref);
+
+private:
+    void update();
+
+private:
+    QMap<char, QColor> colorScheme;
+
+    // images cache
+    QHash<char, QPixmap> highlightedImages;
+    QHash<char, QPixmap> normalImages;
+    QPixmap unknownChar;
+
+    // cached cells parameters
+    QSize size;
+    bool text;
+    QFont font;
+};
+
+DiffNucleotideColorsRenderer::DiffNucleotideColorsRenderer()
+    : AssemblyCellRenderer(), colorScheme(nucleotideColorScheme),
+  highlightedImages(), normalImages(), unknownChar(), size(), text(false), font() {}
+
+void DiffNucleotideColorsRenderer::render(const QSize &_size, bool _text, const QFont &_font) {
+    GTIMER(c1, t1, "DiffNucleotideColorsRenderer::render");
+    GCOUNTER(c2, t2, "DiffNucleotideColorsRenderer::render -> calls");
+
+    if (_size != size || _text != text || (text && _font != font)) {
+        // update cache
+        size = _size, text = _text, font = _font;
+        update();
+    }
+}
+
+void DiffNucleotideColorsRenderer::update() {
+    highlightedImages.clear();
+    normalImages.clear();
+
+    QColor normalColor("#BBBBBB");
+
+    foreach(char c, colorScheme.keys()) {
+        QPixmap himg(size), nimg(size);
+        // make gaps more noticeable
+        QColor textColor = isGap(c) ? Qt::white : Qt::black;
+        QColor highlightColor = isGap(c) ? Qt::red : colorScheme.value(c);
+
+        drawCell(himg, highlightColor, text, c, font, textColor);
+        drawCell(nimg, normalColor, text, c, font, textColor);
+
+        highlightedImages.insert(c, himg);
+        normalImages.insert(c, nimg);
+    }
+
+    unknownChar = QPixmap(size);
+    drawCell(unknownChar, QColor("#FBFBFB"), text, '?', font, Qt::red);
+}
+
+QPixmap DiffNucleotideColorsRenderer::cellImage(char c) {
+    c = (!nucleotideColorScheme.contains(c)) ? 'N' : c;
+    return highlightedImages.value(c, unknownChar);
+}
+
+QPixmap DiffNucleotideColorsRenderer::cellImage(const U2AssemblyRead&, char c) {
+    return cellImage(c);
+}
+
+QPixmap DiffNucleotideColorsRenderer::cellImage(const U2AssemblyRead&, char c, char ref) {
+    c = (!nucleotideColorScheme.contains(c)) ? 'N' : c;
+
+    if(c == ref) {
+        return normalImages.value(c, unknownChar);
+    } else {
+        return highlightedImages.value(c, unknownChar);
+    }
+    return cellImage(c);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// factories
+
+AssemblyCellRendererFactory::AssemblyCellRendererFactory(const QString &_id, const QString &_name)
+    : id(_id), name(_name)
+{}
+
+QString AssemblyCellRendererFactory::ALL_NUCLEOTIDES = "ASSEMBLY_RENDERER_ALL_NUCLEOTIDES";
+QString AssemblyCellRendererFactory::DIFF_NUCLEOTIDES = "ASSEMBLY_RENDERER_DIFF_NUCLEOTIDES";
+QString AssemblyCellRendererFactory::STRAND_DIRECTION = "ASSEMBLY_RENDERER_STRAND_DIRECTION";
+
+class NucleotideColorsRendererFactory : public AssemblyCellRendererFactory {
+public:
+    NucleotideColorsRendererFactory(const QString &_id, const QString &_name)
+        : AssemblyCellRendererFactory(_id, _name) {}
+
+    virtual AssemblyCellRenderer* create() {
+        return new NucleotideColorsRenderer();
+    }
+};
+
+class DiffNucleotideColorsRendererFactory : public AssemblyCellRendererFactory {
+public:
+    DiffNucleotideColorsRendererFactory(const QString &_id, const QString &_name)
+        : AssemblyCellRendererFactory(_id, _name) {}
+
+    virtual AssemblyCellRenderer* create() {
+        return new DiffNucleotideColorsRenderer();
+    }
+};
+
+class ComplementColorsRendererFactory : public AssemblyCellRendererFactory {
+public:
+    ComplementColorsRendererFactory(const QString &_id, const QString &_name)
+        : AssemblyCellRendererFactory(_id, _name) {}
+
+    virtual AssemblyCellRenderer* create() {
+        return new ComplementColorsRenderer();
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////
+// registry
+
+AssemblyCellRendererFactoryRegistry::AssemblyCellRendererFactoryRegistry(QObject * parent)
+    : QObject(parent)
+{
+    initBuiltInRenderers();
+}
+
+AssemblyCellRendererFactory* AssemblyCellRendererFactoryRegistry::getFactoryById(const QString &id) const {
+    foreach(AssemblyCellRendererFactory *f, factories) {
+        if(f->getId() == id) {
+            return f;
+        }
+    }
+    return NULL;
+}
+
+void AssemblyCellRendererFactoryRegistry::addFactory(AssemblyCellRendererFactory *f) {
+    assert(getFactoryById(f->getId()) == NULL);
+    factories << f;
+}
+
+void AssemblyCellRendererFactoryRegistry::initBuiltInRenderers() {
+    addFactory(new NucleotideColorsRendererFactory(AssemblyCellRendererFactory::ALL_NUCLEOTIDES,
+                                                   tr("Nucleotide")));
+    addFactory(new DiffNucleotideColorsRendererFactory(AssemblyCellRendererFactory::DIFF_NUCLEOTIDES,
+                                                   tr("Difference")));
+    addFactory(new ComplementColorsRendererFactory(AssemblyCellRendererFactory::STRAND_DIRECTION,
+                                                   tr("Strand direction")));
+}
+
+AssemblyCellRendererFactoryRegistry::~AssemblyCellRendererFactoryRegistry() {
+    foreach(AssemblyCellRendererFactory *f, factories) {
+        delete f;
+    }
 }
 
 }   // namespace U2

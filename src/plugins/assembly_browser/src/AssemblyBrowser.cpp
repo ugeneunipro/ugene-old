@@ -28,6 +28,7 @@
 #include "AssemblyRuler.h"
 #include "AssemblyReadsArea.h"
 #include "AssemblyBrowserSettings.h"
+#include "AssemblyCellRenderer.h"
 
 #include <U2Core/U2Type.h>
 #include <U2Core/U2DbiUtils.h>
@@ -84,6 +85,7 @@ const double AssemblyBrowser::INITIAL_ZOOM_FACTOR= 1.;
 AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
 GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
+cellRendererRegistry(new AssemblyCellRendererFactoryRegistry(this)),
 zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
 showInfoAction(0), exportToSamAction(0)
 {
@@ -767,6 +769,7 @@ referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
         connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
         connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
+        connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), readsArea, SLOT(sl_redraw()));
         connect(zoomableOverview, SIGNAL(si_coverageReady()), readsArea, SLOT(sl_redraw()));
         connect(referenceArea, SIGNAL(si_unassociateReference()), browser->getModel().data(), SLOT(sl_unassociateReference()));
     } 

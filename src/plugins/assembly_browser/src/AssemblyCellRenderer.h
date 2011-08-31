@@ -45,6 +45,7 @@ public:
     /** @returns cached cell pixmap */
     virtual QPixmap cellImage(char c) = 0;
     virtual QPixmap cellImage(const U2AssemblyRead &read, char c) = 0;
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c, char ref) = 0;
 
 protected:
     static void drawCell(QPixmap &img, const QColor &color, bool text, char c, const QFont &font, const QColor &textColor);
@@ -52,8 +53,38 @@ protected:
     static void drawText(QPixmap &img, char c, const QFont &font, const QColor & color);
 };
 
-/** Factory: create default cell renderer */
-extern AssemblyCellRenderer* createAssemblyCellRenderer();
+class AssemblyCellRendererFactory {
+public:
+    AssemblyCellRendererFactory(const QString& _id, const QString& _name);
+    virtual AssemblyCellRenderer* create() = 0;
+
+    const QString& getId() const {return id;}
+    const QString& getName() const {return name;}
+
+    static QString ALL_NUCLEOTIDES;
+    static QString DIFF_NUCLEOTIDES;
+    static QString STRAND_DIRECTION;
+
+private:
+    QString id;
+    QString name;
+};
+
+class AssemblyCellRendererFactoryRegistry : public QObject {
+    Q_OBJECT
+public:
+    AssemblyCellRendererFactoryRegistry(QObject * parent = 0);
+    const QList<AssemblyCellRendererFactory*>& getFactories() const { return factories; }
+    AssemblyCellRendererFactory* getFactoryById(const QString& id) const;
+    void addFactory(AssemblyCellRendererFactory* f);
+
+    virtual ~AssemblyCellRendererFactoryRegistry();
+
+private:
+    void initBuiltInRenderers();
+
+    QList<AssemblyCellRendererFactory*> factories;
+};
 
 } //ns
 

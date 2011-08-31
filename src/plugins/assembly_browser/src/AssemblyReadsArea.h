@@ -129,6 +129,7 @@ private slots:
     void sl_onShadowingModeChanged(QAction *a);
     void sl_onBindShadowing();
     void sl_onShadowingJump();
+    void sl_changeCellRenderer();
     
 private:
     AssemblyBrowserUi * ui;
@@ -137,6 +138,7 @@ private:
 
     bool redraw;
     QPixmap cachedView;
+
     auto_ptr<AssemblyCellRenderer> cellRenderer;
     
     QLabel coveredRegionsLabel;
@@ -225,6 +227,8 @@ private:
     QAction *shadowingModeCentered;
     QAction *shadowingBindHere;
     QAction *shadowingJump;
+
+    QList<QAction*> cellRendererActions;
 };
 
 } //ns
