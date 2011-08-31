@@ -126,7 +126,6 @@ echo copying plugins
 add-plugin annotator
 add-plugin ball
 add-plugin biostruct3d_view
-add-plugin bowtie
 add-plugin chroma_view
 add-plugin circular_view
 add-plugin dna_export
@@ -157,7 +156,6 @@ add-plugin external_tool_support
 add-plugin dbi_sqlite
 add-plugin dbi_bam
 add-plugin assembly_browser
-#add-plugin dbi_file
 add-plugin ptools
 add-plugin dna_flexibility
 
@@ -167,6 +165,21 @@ fi
 
 # remove svn dirs
 find $TARGET_APP_DIR -name ".svn" | xargs rm -rf 
+
+#download and include external tools package if applicable
+if [ -z "$EXT_TOOLS_URL" ]; then 
+   echo
+   echo EXT_TOOLS_URL environment variable is not set: skipping this step
+   echo
+else
+   pushd $TARGET_APP_DIR 
+   wget $EXT_TOOLS_URL
+   EXT_TOOLS_PACKAGE=`basename $EXT_TOOLS_URL` 
+   tar -xf $EXT_TOOLS_PACKAGE
+   rm $EXT_TOOLS_PACKAGE
+   popd
+fi
+
 
 REVISION=$BUILD_VCS_NUMBER_new_trunk
 #`svn status -u | sed -n -e '/revision/p' | awk '{print $4}'`
