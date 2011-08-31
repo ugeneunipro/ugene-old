@@ -24,6 +24,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
@@ -567,6 +568,8 @@ ExpertDiscoverySignalExtractorTask::~ExpertDiscoverySignalExtractorTask(){
 }
 
 void ExpertDiscoverySignalExtractorTask::run(){
+
+    GCOUNTER(cvar,tvar, "ExpertDiscoverySignalExtractor" );
     //test
     //folder = &data->getRootFolder();
         //performNextStep();

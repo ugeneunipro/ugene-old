@@ -24,6 +24,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GHints.h>
+#include <U2Core/Counter.h>
+
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -68,6 +70,9 @@ ExpertDiscoveryView::~ExpertDiscoveryView(){
 }
 
 QWidget* ExpertDiscoveryView::createWidget(){
+
+    GCOUNTER(cvar,tvar, "ExpertDiscoveryWindowOpened" );
+
     splitter = new QSplitter(Qt::Horizontal);
 
     signalsWidget = new EDProjectTree(splitter, d);
