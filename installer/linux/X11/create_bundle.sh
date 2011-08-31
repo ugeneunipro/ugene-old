@@ -166,12 +166,16 @@ fi
 # remove svn dirs
 find $TARGET_APP_DIR -name ".svn" | xargs rm -rf 
 
+
+PACKAGE_TYPE="linux"
+
 #download and include external tools package if applicable
 if [ -z "$EXT_TOOLS_URL" ]; then 
    echo
    echo EXT_TOOLS_URL environment variable is not set: skipping this step
    echo
 else
+   PACKAGE_TYPE="linux-full-package" 
    pushd $TARGET_APP_DIR 
    wget $EXT_TOOLS_URL
    EXT_TOOLS_PACKAGE=`basename $EXT_TOOLS_URL` 
@@ -182,14 +186,17 @@ fi
 
 
 REVISION=$BUILD_VCS_NUMBER_new_trunk
-#`svn status -u | sed -n -e '/revision/p' | awk '{print $4}'`
+if [ -z "$REVISION" ]; then
+    REVISION=`svn status -u | sed -n -e '/revision/p' | awk '{print $4}'`
+fi
+
 DATE=`date '+%d_%m_%H-%M'`
 ARCH=`uname -m`
 if [ "$1" == "-test" ]; then
    TEST="-test"
 fi
 
-PACKAGE_NAME=$PRODUCT_NAME"-"$VERSION"-linux-"$ARCH"-r"$REVISION$TEST
+PACKAGE_NAME=$PRODUCT_NAME"-"$VERSION"-$PACKAGE_TYPE-"$ARCH"-r"$REVISION$TEST
 
 tar -cf $PACKAGE_NAME.tar $TARGET_APP_DIR/
 gzip -v $PACKAGE_NAME.tar
