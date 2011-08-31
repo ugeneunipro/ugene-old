@@ -61,7 +61,6 @@ REM copy plugins
 call %INSTALL_DIR%/copy_plugin.cmd annotator
 call %INSTALL_DIR%/copy_plugin.cmd ball
 call %INSTALL_DIR%/copy_plugin.cmd biostruct3d_view
-call %INSTALL_DIR%/copy_plugin.cmd bowtie
 call %INSTALL_DIR%/copy_plugin.cmd chroma_view
 call %INSTALL_DIR%/copy_plugin.cmd circular_view
 call %INSTALL_DIR%/copy_plugin.cmd cuda_support

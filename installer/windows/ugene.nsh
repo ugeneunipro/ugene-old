@@ -131,11 +131,10 @@ Section "Build"
     !insertmacro AddPlugin annotator
     !insertmacro AddPlugin ball
     !insertmacro AddPlugin biostruct3d_view
-    !insertmacro AddPlugin bowtie
     !insertmacro AddPlugin chroma_view
     !insertmacro AddPlugin circular_view
     !insertmacro AddPlugin remote_service
-#    !insertmacro AddPlugin cuda_support
+    !insertmacro AddPlugin cuda_support
     !insertmacro AddPlugin opencl_support
     !insertmacro AddPlugin dna_export
     !insertmacro AddPlugin dna_graphpack
