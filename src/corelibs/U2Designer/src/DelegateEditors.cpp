@@ -217,7 +217,17 @@ void URLLineEdit::browse(bool addFiles) {
     setFocus();
 }
 
-void URLLineEdit::focusOutEvent ( QFocusEvent * ) {
+void URLLineEdit::focusOutEvent ( QFocusEvent * event) {
+    // TODO: fix this low level code. It is made for fixing UGENE-577
+    if (Qt::MouseFocusReason == event->reason()) {
+        QLayout *layout = this->parentWidget()->layout();
+        for (int i=1; i<layout->count(); i++) { //for each QToolButton in the layout
+            QWidget *w = layout->itemAt(i)->widget();
+            if (w->underMouse()) {
+                return;
+            }
+        }
+    }
     emit si_finished();
 }
 
@@ -279,7 +289,7 @@ QWidget *URLDelegate::createEditor(QWidget *parent,
     layout->addWidget(toolButton);
 
     if (multi) {
-        QToolButton * toolButton = new QToolButton(widget);
+        QToolButton *toolButton = new QToolButton(widget);
         toolButton->setVisible( showButton && !text.isEmpty() );
         toolButton->setText(tr("add"));
         toolButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred));
@@ -295,15 +305,13 @@ QWidget *URLDelegate::createEditor(QWidget *parent,
 
 void URLDelegate::sl_commit() {
     URLLineEdit *edit = static_cast<URLLineEdit*>(sender());
-    //sender()->disconnect(this);
+
     if(edit->text() != text) {
         text = edit->text();
         if (currentEditor) {
             emit commitData(currentEditor);
         }
-        //currentEditor->setFocusPolicy(Qt::NoFocus);
     }
-    //connect(sender(), SIGNAL(editingFinished()), SLOT(sl_commit()));
 }
 
 void URLDelegate::setEditorData(QWidget *editor,
