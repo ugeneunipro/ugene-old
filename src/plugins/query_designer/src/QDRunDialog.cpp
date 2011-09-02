@@ -297,8 +297,10 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
 QDDialog::QDDialog(ADVSequenceObjectContext* _ctx)
 : QDialog(_ctx->getAnnotatedDNAView()->getWidget()), ctx(_ctx), scheme(NULL), txtDoc(NULL) {
     setupUi(this);
+    rs=new RegionSelector(this, ctx->getSequenceLen(), false, ctx->getSequenceSelection());
+    rangeSelectorLayout->addWidget(rs);
+
     addAnnotationsWidget();
-    setParameters();
     connectGUI();
 }
 
@@ -322,42 +324,7 @@ void QDDialog::addAnnotationsWidget() {
 
 void QDDialog::connectGUI() {
     connect(tbSelectQuery, SIGNAL(clicked()), SLOT(sl_selectScheme()));
-    connect(spinRangeStart, SIGNAL(valueChanged(int)), SLOT(sl_rangeStartChanged(int)));
-    connect(spinRangeEnd, SIGNAL(valueChanged(int)), SLOT(sl_rangeEndChanged(int)));
-    connect(radioCustomRange, SIGNAL(toggled(bool)), SLOT(sl_radioCustomRangeToggled(bool)));
     connect(okBtn, SIGNAL(clicked()), SLOT(sl_okBtnClicked()));
-}
-
-void QDDialog::setParameters() {
-    const U2Region& range = ctx->getSequenceObject()->getSequenceRange();
-    spinRangeStart->setMinimum(range.startPos);
-    spinRangeStart->setMaximum(range.endPos());
-    spinRangeStart->setValue(range.startPos);
-    spinRangeEnd->setMinimum(range.startPos);
-    spinRangeEnd->setMaximum(range.endPos());
-    spinRangeEnd->setValue(range.endPos());
-
-    const QVector<U2Region>& selectedRegions = ctx->getSequenceSelection()->getSelectedRegions();
-    if (!selectedRegions.isEmpty()) {
-        radioSelectedRange->setChecked(true);
-    }
-    else {
-        radioSelectedRange->setDisabled(true);
-    }
-}
-
-QVector<U2Region> QDDialog::getLocation() const {
-    QVector<U2Region> res;
-    if (radioWholeSequence->isChecked()) {
-        res << ctx->getSequenceObject()->getSequenceRange();
-    }
-    else if (radioSelectedRange->isChecked()) {
-        res << ctx->getSequenceSelection()->getSelectedRegions();
-    }
-    else if (radioCustomRange->isChecked()) {
-        res << U2Region(spinRangeStart->value(), spinRangeEnd->value()-spinRangeStart->value());
-    }
-    return res;
 }
 
 void QDDialog::sl_selectScheme() {
@@ -415,23 +382,6 @@ void QDDialog::sl_selectScheme() {
     hintEdit->setDocument(txtDoc);
 }
 
-void QDDialog::sl_radioCustomRangeToggled(bool checked) {
-    spinRangeStart->setEnabled(checked);
-    spinRangeEnd->setEnabled(checked);
-}
-
-void QDDialog::sl_rangeStartChanged(int i) {
-    if (i > spinRangeEnd->value()) {
-        spinRangeEnd->setValue(i);
-    }
-}
-
-void QDDialog::sl_rangeEndChanged(int i) {
-    if (i < spinRangeStart->value()) {
-        spinRangeStart->setValue(i);
-    }
-}
-
 void QDDialog::sl_okBtnClicked() {
     if (!scheme) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("File with query is not selected!"));
@@ -449,6 +399,13 @@ void QDDialog::sl_okBtnClicked() {
         return;
     }
 
+    bool isRegionOk=false;
+    rs->getRegion(&isRegionOk);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return;
+    }
+
     cawc->prepareAnnotationObject();
     const CreateAnnotationModel& m = cawc->getModel();
     
@@ -462,10 +419,8 @@ void QDDialog::sl_okBtnClicked() {
     settings.scheme = scheme;
     settings.sequenceObj = ctx->getSequenceObject();
     settings.viewName = ctx->getAnnotatedDNAView()->getName();
+    settings.region = rs->getRegion();
 
-    const QVector<U2Region>& location = getLocation();
-
-    settings.region = location.first();
     QDScheduler* t = new QDScheduler(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 

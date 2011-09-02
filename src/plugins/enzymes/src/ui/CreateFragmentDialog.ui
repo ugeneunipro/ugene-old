@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>475</width>
-    <height>261</height>
+    <width>547</width>
+    <height>204</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,71 +25,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QGroupBox" name="groupBox">
-         <property name="title">
-          <string>Region</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QRadioButton" name="wholeSeqButton">
-            <property name="text">
-             <string>Whole Sequence</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="seqSelectionButton">
-            <property name="text">
-             <string>Selected</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="customSelectionButton">
-            <property name="text">
-             <string>Custom</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Start:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="startBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>End:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="endBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        <layout class="QHBoxLayout" name="rangeSelectorLayout"/>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -278,38 +214,6 @@
     <hint type="destinationlabel">
      <x>446</x>
      <y>142</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>customSelectionButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>startBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>267</x>
-     <y>80</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>357</x>
-     <y>82</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>customSelectionButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>endBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>267</x>
-     <y>80</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>447</x>
-     <y>82</y>
     </hint>
    </hints>
   </connection>

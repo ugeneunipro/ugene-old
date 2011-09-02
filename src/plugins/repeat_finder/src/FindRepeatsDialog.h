@@ -27,6 +27,7 @@
 
 #include <U2Core/PluginModel.h>
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/RegionSelector.h>
 #include <U2Core/U2Region.h>
 
 #include <QtGui/QDialog>
@@ -48,15 +49,14 @@ protected slots:
     void sl_setPredefinedAnnotationName();
     void sl_minDistChanged(int i);
     void sl_maxDistChanged(int i);
-    void sl_startRangeChanged(int i);
-    void sl_endRangeChanged(int i);
+    void sl_rangeChanged(int start, int end);
     void sl_minLenHeuristics();
     void sl_hundredPercent();
     void sl_repeatParamsChanged(int);
     void sl_minMaxToggle(bool);
 
 private:
-    U2Region getActiveRange() const;
+    U2Region getActiveRange(bool *ok = NULL) const;
     void saveState();
     QStringList getAvailableAnnotationNames() const;
     bool getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Region>& res);
@@ -69,6 +69,7 @@ private:
 
     ADVSequenceObjectContext*           sc;
     CreateAnnotationWidgetController*   ac;
+    RegionSelector* rs;
 };
 
 class SetAnnotationNameAction : public QAction {

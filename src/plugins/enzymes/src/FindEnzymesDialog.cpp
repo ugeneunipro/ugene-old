@@ -419,8 +419,10 @@ FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
     maxHitSB->setMinimum(ANY_VALUE);
     minHitSB->setMinimum(ANY_VALUE);
 
-    sbRangeStart->setMaximum( seqCtx->getSequenceLen() );
-    sbRangeEnd->setMaximum( seqCtx->getSequenceLen() );
+    rs=new RegionSelector(this, sctx->getSequenceLen(), false, sctx->getSequenceSelection());
+    rs->setEnabled(false);
+    rangeSelectorLayout->addWidget(rs);
+    connect(excludeRegionBox,SIGNAL(toggled(bool)),rs,SLOT(setEnabled(bool)));
 
     initSettings();
 
@@ -432,7 +434,6 @@ FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
     enzymesSelectorWidget->setMinimumSize(enzSel->size());
 
     connect(enzSel, SIGNAL(si_selectionModified(int,int)), SLOT(sl_onSelectionModified(int,int)));
-    connect(fillRangeButton, SIGNAL(clicked()), SLOT(sl_onFillRangeButtonClicked()));
     sl_onSelectionModified( enzSel->getTotalNumber(),enzSel->getNumSelected());
     
 }
@@ -446,6 +447,14 @@ void FindEnzymesDialog::sl_onSelectionModified(int total, int nChecked) {
 void FindEnzymesDialog::accept() {
     QList<SEnzymeData> selectedEnzymes = enzSel->getSelectedEnzymes();
     
+    if (excludeRegionBox->isChecked()){
+        bool isRegionOk=false;
+        rs->getRegion(&isRegionOk);
+        if(!isRegionOk){
+            rs->showErrorMessage();
+            return;
+        }
+    }
     if (selectedEnzymes.isEmpty()) {
         int ret = QMessageBox::question(this, windowTitle(), 
             tr("<html><body align=\"center\">No enzymes are selected!\
@@ -497,8 +506,7 @@ void FindEnzymesDialog::initSettings()
         if (!location->isEmpty()) {
             excludeRegionOn = true;
             const U2Region& range = location->regions.first();
-            sbRangeStart->setValue(range.startPos + 1);
-            sbRangeEnd->setValue(range.endPos());
+            rs->setRegion(range);
         }
     }
     
@@ -527,9 +535,7 @@ void FindEnzymesDialog::saveSettings()
 
     QVector<U2Region> range;
     if (excludeRegionBox->isChecked()) {
-        U2Region r;
-        r.startPos = qMin(sbRangeStart->value(), sbRangeEnd->value()) - 1;
-        r.length = qMax(sbRangeStart->value(), sbRangeEnd->value()) - r.startPos;
+        U2Region r=rs->getRegion();//todo add check on wrong region
         if (r.length != 0) {
             range.append(r);
         }
@@ -544,17 +550,6 @@ void FindEnzymesDialog::initDefaultSettings()
 {
     AppContext::getSettings()->setValue(EnzymeSettings::NON_CUT_REGION, "" );
 }
-
-void FindEnzymesDialog::sl_onFillRangeButtonClicked()
-{
-    DNASequenceSelection* selection = seqCtx->getSequenceSelection();
-    if (!selection->isEmpty()) {
-        const U2Region& range = selection->getSelectedRegions().first();
-        sbRangeStart->setValue(range.startPos + 1);
-        sbRangeEnd->setValue(range.endPos());
-    }
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // Tree item

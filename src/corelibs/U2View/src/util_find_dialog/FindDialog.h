@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
+#include <U2Gui/RegionSelector.h>
 
 #include <ui/ui_FindDialogUI.h>
 
@@ -81,15 +82,11 @@ private slots:
     void sl_onTimer();
 
     //range
-    void sl_onRangeStartChanged(int);
+    void sl_onRangeChanged(int,int);
     void sl_onCurrentPosChanged(int);
-    void sl_onRangeEndChanged(int);
 
     void sl_onResultActivated(QListWidgetItem* i, bool setPos = true);
     void sl_currentResultChanged(QListWidgetItem*, QListWidgetItem*);
-
-    void sl_onRangeToSelection();
-    void sl_onRangeToSequence();
 
     void sl_onRemoveOverlaps();
 
@@ -120,6 +117,8 @@ private:
     FindAlgorithmTask* task;
     QTimer* timer;
     U2Region initialSelection;
+
+    RegionSelector* rs;
 };
 
 }//namespace

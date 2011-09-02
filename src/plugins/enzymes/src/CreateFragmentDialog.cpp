@@ -44,14 +44,11 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
     setupUi(this);
         
     seqObj = ctx->getSequenceObject();
-    seqSelection = ctx->getSequenceSelection();
-    if (!seqSelection->isEmpty()) {
-        seqSelectionButton->setChecked(true);
-    }
+
+    rs=new RegionSelector(this, ctx->getSequenceLen(), false, ctx->getSequenceSelection());
+    rangeSelectorLayout->addWidget(rs);
+
     relatedAnnotations = ctx->getAnnotationObjects(true).toList();
-    
-    startBox->setMaximum(seqObj->getSequenceLen());
-    endBox->setMaximum(seqObj->getSequenceLen());
     
     setupAnnotationsWidget();
 
@@ -62,7 +59,6 @@ CreateFragmentDialog::CreateFragmentDialog( DNASequenceObject* obj, QWidget* p )
 {
     setupUi(this);
     seqObj = obj;
-    seqSelection = NULL;
 
     QList<GObject*> aObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly,GObjectTypes::ANNOTATION_TABLE);
     QList<GObject*> related = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE, 
@@ -74,9 +70,8 @@ CreateFragmentDialog::CreateFragmentDialog( DNASequenceObject* obj, QWidget* p )
         relatedAnnotations.append(aObj);
     }
 
-    startBox->setMaximum(seqObj->getSequenceLen());
-    endBox->setMaximum(seqObj->getSequenceLen());
-    seqSelectionButton->setEnabled(false);
+    rs=new RegionSelector(this, seqObj->getSequenceLen(), false);
+    rangeSelectorLayout->addWidget(rs);
 
     setupAnnotationsWidget();
 
@@ -105,30 +100,16 @@ void CreateFragmentDialog::accept()
             return;
         }
     }    
-    
-    U2Region reg;
-    
-    if (wholeSeqButton->isChecked()) {
-        reg = seqObj->getSequenceRange();
-    } else if (seqSelectionButton->isChecked()) {
-        assert(seqSelection != NULL);
-        QVector<U2Region> selection = seqSelection->getSelectedRegions();
-        if (selection.isEmpty()) {
-            QMessageBox::warning(this, windowTitle(),tr("Sequence selection is empty!\nChoose another region."));
-            return;
-        }
-        
-        reg = selection.first();
-    } else {
-        reg.startPos = startBox->value() - 1;
-        reg.length = endBox->value() - reg.startPos;
-
-        if (reg.length <= 0) {
-            QMessageBox::warning(this, windowTitle(),tr("Invalid fragment region!\nChoose another region."));
-            return;
-        }
+    bool isRegionOk=false;
+    U2Region reg=rs->getRegion(&isRegionOk);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return;
     }
-
+    if (reg.length <= 0) {
+        QMessageBox::warning(this, windowTitle(),tr("Invalid fragment region!\nChoose another region."));
+        return;
+    }
     ac->prepareAnnotationObject();
     const CreateAnnotationModel& m = ac->getModel();
     AnnotationTableObject* obj = m.getAnnotationObject();

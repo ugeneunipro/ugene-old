@@ -47,6 +47,8 @@ SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
     ctxSeq = ctx;
     dialogConfig = _dialogConfig;
     setupUi(this);
+    rs=new RegionSelector(this, ctx->getSequenceLen(), true, ctx->getSequenceSelection());
+    rangeSelectorLayout->addWidget(rs);
 
     substMatrixRegistry = AppContext::getSubstMatrixRegistry();
     if (0 == substMatrixRegistry) {
@@ -85,14 +87,7 @@ SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
 void SmithWatermanDialog::connectGUI() {
     connect(bttnViewMatrix, SIGNAL(clicked()), SLOT(sl_bttnViewMatrix()));
     connect(bttnRun, SIGNAL(clicked()), SLOT(sl_bttnRun()));
-    connect(spinRangeStart, SIGNAL(valueChanged(int)), SLOT(sl_spinRangeStartChanged(int)));
-    connect(spinRangeEnd, SIGNAL(valueChanged(int)), SLOT(sl_spinRangeEndChanged(int)));
     connect(radioTranslation, SIGNAL(toggled(bool)), SLOT(sl_translationToggled(bool)));
-
-    connect(radioWholeSequence, SIGNAL(toggled(bool)), SLOT(sl_wholeSequenceToggled(bool)));
-    connect(radioSelectedRange, SIGNAL(toggled(bool)), SLOT(sl_selectedRangeToggled(bool)));
-    connect(radioCustomRange, SIGNAL(toggled(bool)), SLOT(sl_customRangeToggled(bool)));    
-    
     //connect( remoteRunPushButton, SIGNAL( clicked() ), SLOT( sl_remoteRunButtonClicked() ) );
 
     connect(teditPattern, SIGNAL(textChanged()), SLOT(sl_patternChanged()));
@@ -163,20 +158,6 @@ void SmithWatermanDialog::setParameters() {
     spinScorePercent->setValue(DEF_PERCENT_OF_SCORE);
     dblSpinGapOpen->setValue(DEF_GAP_OPEN_SCORE);
     dblSpinGapExtd->setValue(DEF_GAP_EXTD_SCORE);
-
-    bool hasSelection = !ctxSeq->getSequenceSelection()->isEmpty();
-    radioSelectedRange->setEnabled(hasSelection);
-    radioSelectedRange->setChecked(hasSelection);
-
-    int seqLen = ctxSeq->getSequenceLen();
-
-    spinRangeStart->setMinimum(1);
-    spinRangeStart->setMaximum(seqLen);
-    spinRangeStart->setValue(1);
-    
-    spinRangeEnd->setMinimum(1);
-    spinRangeEnd->setMaximum(seqLen);
-    spinRangeEnd->setValue(seqLen);
 }
 
 void SmithWatermanDialog::sl_bttnViewMatrix() {
@@ -188,18 +169,6 @@ void SmithWatermanDialog::sl_bttnViewMatrix() {
     }
     SubstMatrixDialog smDialog(mtx, this);
     smDialog.exec();
-}
-
-void SmithWatermanDialog::sl_spinRangeStartChanged(int curr_val) {    
-    if (curr_val > spinRangeEnd->value()) {
-        spinRangeEnd->setValue(curr_val);
-    }
-}
-
-void SmithWatermanDialog::sl_spinRangeEndChanged(int curr_val) {
-    if (curr_val < spinRangeStart->value()) {
-        spinRangeStart->setValue(curr_val);
-    }
 }
 
 void SmithWatermanDialog::sl_translationToggled(bool checked) {
@@ -219,21 +188,6 @@ void SmithWatermanDialog::sl_translationToggled(bool checked) {
     }
     comboMatrix->clear();
     comboMatrix->addItems(matrixList);
-}
-
-void SmithWatermanDialog::sl_wholeSequenceToggled(bool) {
-    spinRangeEnd->setEnabled(false);
-    spinRangeStart->setEnabled(false);
-}
-
-void SmithWatermanDialog::sl_selectedRangeToggled(bool) {
-    spinRangeEnd->setEnabled(false);
-    spinRangeStart->setEnabled(false);
-}
-
-void SmithWatermanDialog::sl_customRangeToggled(bool) {
-    spinRangeEnd->setEnabled(true);
-    spinRangeStart->setEnabled(true);
 }
 
 void SmithWatermanDialog::sl_bttnRun() {
@@ -334,22 +288,9 @@ bool SmithWatermanDialog::readSubstMatrix() {
 }
 
 bool SmithWatermanDialog::readRegion() {
-    U2Region range;
-    int sqncLen = ctxSeq->getSequenceLen();
-    if (radioWholeSequence->isChecked()) {
-        range = U2Region(0, sqncLen);
-    } else if ( radioSelectedRange->isChecked() &&
-                !ctxSeq->getSequenceSelection()->getSelectedRegions().isEmpty()) {
-        range = ctxSeq->getSequenceSelection()->getSelectedRegions().first();
-    } else {
-        int startPos = spinRangeStart->value() - 1; // start with 0 
-        int endPos = spinRangeEnd->value();         // 
-        int regionLen = endPos - startPos;
-        range = U2Region(startPos, regionLen);
-    }
-    
-    config.globalRegion = range;
-    return true;
+    bool isRegionOk=false;
+    config.globalRegion = rs->getRegion(&isRegionOk);
+    return isRegionOk;
 }
 
 bool SmithWatermanDialog::readGapModel() {
@@ -458,20 +399,20 @@ void SmithWatermanDialog::loadDialogConfig() {
         break;
     }
 
-    const SmithWatermanRangeType rangeType = dialogConfig->rangeType;
-    switch (rangeType) {
-    case (SmithWatermanRangeType_wholeSequence):
-        radioWholeSequence->setChecked(true);
-        break;
-    case (SmithWatermanRangeType_selectedRange):
-        radioSelectedRange->setChecked(true);
-        break;
-    case (SmithWatermanRangeType_customRange):
-        radioCustomRange->setChecked(true);
-        break;
-    default:
-        break;
-    }
+//    const SmithWatermanRangeType rangeType = dialogConfig->rangeType;
+//    switch (rangeType) {
+//    case (SmithWatermanRangeType_wholeSequence):
+//        radioWholeSequence->setChecked(true);
+//        break;
+//    case (SmithWatermanRangeType_selectedRange):
+//        radioSelectedRange->setChecked(true);
+//        break;
+//    case (SmithWatermanRangeType_customRange):
+//        radioCustomRange->setChecked(true);
+//        break;
+//    default:
+//        break;
+//    }
 
     const QByteArray& prevPattern = dialogConfig->ptrn;
     if (!prevPattern.isEmpty()) {
@@ -538,15 +479,15 @@ void SmithWatermanDialog::saveDialogConfig() {
                             (StrandOption_Both):
                             (dialogConfig->strand);
     
-    dialogConfig->rangeType =   (radioWholeSequence->isChecked()) ?
-                                (SmithWatermanRangeType_wholeSequence):
-                                (dialogConfig->rangeType);
-    dialogConfig->rangeType =   (radioSelectedRange->isChecked()) ?
-                                (SmithWatermanRangeType_selectedRange):
-                                (dialogConfig->rangeType);
-    dialogConfig->rangeType =   (radioCustomRange->isChecked()) ?
-                                (SmithWatermanRangeType_customRange):
-                                (dialogConfig->rangeType);
+//    dialogConfig->rangeType =   (radioWholeSequence->isChecked()) ?
+//                                (SmithWatermanRangeType_wholeSequence):
+//                                (dialogConfig->rangeType);
+//    dialogConfig->rangeType =   (radioSelectedRange->isChecked()) ?
+//                                (SmithWatermanRangeType_selectedRange):
+//                                (dialogConfig->rangeType);
+//    dialogConfig->rangeType =   (radioCustomRange->isChecked()) ?
+//                                (SmithWatermanRangeType_customRange):
+//                                (dialogConfig->rangeType);
     return;
 }
 

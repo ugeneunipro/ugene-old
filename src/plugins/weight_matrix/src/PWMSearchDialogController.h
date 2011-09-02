@@ -34,6 +34,7 @@
 
 #include <U2Core/PFMatrix.h>
 #include <U2Core/PWMatrix.h>
+#include <U2Gui/RegionSelector.h>
 
 #include "WeightMatrixSearchTask.h"
 
@@ -108,6 +109,7 @@ private:
 
     WeightMatrixSearchTask*                             task;
     QTimer*                                             timer;
+    RegionSelector*                                      rs;
 };
 
 }//namespace

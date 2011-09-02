@@ -23,6 +23,7 @@
 #include <QtGui/QMessageBox>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/L10n.h>
 #include "Primer3Dialog.h"
 
 namespace U2 {
@@ -48,14 +49,8 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
         selection = context->getSequenceSelection()->getSelectedRegions().first();
     }
     sequenceLength = context->getSequenceLen();
-
-    if(selection.isEmpty())
-    {
-        ui.pbSelectionRange->setEnabled(false);
-    }
-
-    ui.sbRangeStart->setRange(1, sequenceLength);
-    ui.sbRangeEnd->setRange(1, sequenceLength);
+    rs=new RegionSelector(this, sequenceLength, false, context->getSequenceSelection());
+    ui.rangeSelectorLayout->addWidget(rs);
 
     repeatLibraries.append(QPair<QString, QByteArray>(tr("NONE"), ""));
     repeatLibraries.append(QPair<QString, QByteArray>(tr("HUMAN"), "primer3/humrep_and_simple.txt"));
@@ -90,14 +85,9 @@ const CreateAnnotationModel &Primer3Dialog::getCreateAnnotationModel()const
     return createAnnotationWidgetController->getModel();
 }
 
-int Primer3Dialog::getRangeStart()const
+U2Region Primer3Dialog::getRegion(bool *ok) const
 {
-    return ui.sbRangeStart->value() - 1;
-}
-
-int Primer3Dialog::getRangeEnd()const
-{
-    return ui.sbRangeEnd->value() - 1;
+    return rs->getRegion(ok);
 }
 
 void Primer3Dialog::prepareAnnotationObject()
@@ -283,16 +273,6 @@ void Primer3Dialog::reset()
     ui.edit_PRIMER_RIGHT_INPUT->setEnabled(ui.checkbox_PICK_RIGHT->isChecked());
     ui.edit_PRIMER_INTERNAL_OLIGO_INPUT->setEnabled(ui.checkbox_PICK_HYBRO->isChecked());
 
-    if(!selection.isEmpty())
-    {
-        ui.sbRangeStart->setValue(selection.startPos + 1);
-        ui.sbRangeEnd->setValue(selection.endPos() + 1);
-    }
-    else
-    {
-        ui.sbRangeStart->setValue(1);
-        ui.sbRangeEnd->setValue(sequenceLength);
-    }
 
     ui.combobox_PRIMER_MISPRIMING_LIBRARY->setCurrentIndex(0);
     ui.combobox_PRIMER_INTERNAL_OLIGO_MISHYB_LIBRARY->setCurrentIndex(0);
@@ -522,7 +502,7 @@ bool Primer3Dialog::doDataExchange()
             }
             qualityList.append(value);
         }
-        if(!qualityList.isEmpty() && (qualityList.size() != (ui.sbRangeEnd->value() - ui.sbRangeStart->value())))
+        if(!qualityList.isEmpty() && (qualityList.size() != (rs->getRegion().length)))//todo add check on wrong region
         {
             QMessageBox::critical(this, windowTitle(), tr("Sequence quality list length must be equal to the sequence length"));
             return false;
@@ -590,6 +570,12 @@ void Primer3Dialog::showInvalidInputMessage(QWidget *field, QString fieldLabel)
 
 void Primer3Dialog::on_pbPick_clicked()
 {
+    bool isRegionOk=false;
+    rs->getRegion(&isRegionOk);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return;
+    }
     if(doDataExchange())
     {
         accept();
@@ -599,34 +585,7 @@ void Primer3Dialog::on_pbPick_clicked()
 void Primer3Dialog::on_pbReset_clicked()
 {
     reset();
-}
-
-void Primer3Dialog::on_pbSelectionRange_clicked()
-{
-    ui.sbRangeStart->setValue(selection.startPos + 1);
-    ui.sbRangeEnd->setValue(selection.endPos() + 1);
-}
-
-void Primer3Dialog::on_pbSequenceRange_clicked()
-{
-    ui.sbRangeStart->setValue(1);
-    ui.sbRangeEnd->setValue(sequenceLength);
-}
-
-void Primer3Dialog::on_sbRangeStart_editingFinished()
-{
-    if(ui.sbRangeEnd->value() < ui.sbRangeStart->value())
-    {
-        ui.sbRangeEnd->setValue(ui.sbRangeStart->value());
-    }
-}
-
-void Primer3Dialog::on_sbRangeEnd_editingFinished()
-{
-    if(ui.sbRangeEnd->value() < ui.sbRangeStart->value())
-    {
-        ui.sbRangeStart->setValue(ui.sbRangeEnd->value());
-    }
+    rs->reset();
 }
 
 QString Primer3Dialog::checkModel()

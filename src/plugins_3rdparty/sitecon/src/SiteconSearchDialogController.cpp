@@ -89,13 +89,8 @@ SiteconSearchDialogController::SiteconSearchDialogController(ADVSequenceObjectCo
     
     initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
     int seqLen = ctx->getSequenceLen();
-    sbRangeStart->setMinimum(1);
-    sbRangeStart->setMaximum(seqLen);
-    sbRangeEnd->setMinimum(1);
-    sbRangeEnd->setMaximum(seqLen);
-    
-    sbRangeStart->setValue(1);
-    sbRangeEnd->setValue(seqLen);
+    rs=new RegionSelector(this, seqLen, true, ctx->getSequenceSelection());
+    rangeSelectorLayout->addWidget(rs);
 
     connectGUI();
     updateState();
@@ -128,8 +123,6 @@ void SiteconSearchDialogController::connectGUI() {
 
 
 void SiteconSearchDialogController::updateState() {
-    bool hasInitialSelection = initialSelection.length > 0;
-    rbSelectionRange->setEnabled(hasInitialSelection);
 
     bool hasActiveTask = task!=NULL;
     bool hasCompl = ctx->getComplementTT()!=NULL;
@@ -284,19 +277,15 @@ void SiteconSearchDialogController::runTask() {
     if (model == NULL) {
         QMessageBox::critical(this, tr("error"), tr("model not selected"));
     }
-    U2Region reg;
-    if (rbSequenceRange->isChecked()) {
-        reg = ctx->getSequenceObject()->getSequenceRange();
-    } else if (rbSelectionRange->isChecked()) {
-        reg = initialSelection;
-    } else {
-        reg.startPos = sbRangeStart->value();
-        reg.length = sbRangeEnd->value() - sbRangeStart->value() + 1;
-        if (reg.length <= model->settings.windowSize) {
-            QMessageBox::critical(this, tr("error"), tr("range_is_too_small"));
-            sbRangeEnd->setFocus();
-            return;
-        }
+    bool isRegionOk=false;
+    U2Region reg=rs->getRegion(&isRegionOk);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return;
+    }
+    if (reg.length <= model->settings.windowSize) {
+        QMessageBox::critical(this, tr("error"), tr("range_is_too_small"));
+        return;
     }
     const char* seq = ctx->getSequenceData().constData() + reg.startPos;
     int len = reg.length;

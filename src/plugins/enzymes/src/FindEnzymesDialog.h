@@ -23,6 +23,7 @@
 #define _U2_ENZYMES_DIALOG_H_
 
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/RegionSelector.h>
 
 #include <ui/ui_EnzymesSelectorWidget.h>
 #include <ui/ui_FindEnzymesDialog.h>
@@ -90,13 +91,12 @@ public:
     virtual void accept();
 private slots:
     void sl_onSelectionModified(int total, int nChecked);
-    void sl_onFillRangeButtonClicked();
 private:
     void initSettings();
     void saveSettings();
     ADVSequenceObjectContext*           seqCtx;
     EnzymesSelectorWidget*              enzSel;
-    
+    RegionSelector*                      rs;
 };
 
 class EnzymeTreeItem;

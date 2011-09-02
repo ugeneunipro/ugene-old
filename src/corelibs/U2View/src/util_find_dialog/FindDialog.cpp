@@ -90,7 +90,15 @@ FindDialog::FindDialog(ADVSequenceObjectContext* context): QDialog(context->getA
     if(!selection.isEmpty()) {
         initialSelection = selection.first();
     }
-    
+    rs=new RegionSelector(this, ctx->getSequenceLen(), false, ctx->getSequenceSelection());
+    horizontalLayout->addWidget(rs);
+
+    int seqLen = context->getSequenceLen();
+
+    sbCurrentPos->setMinimum(1);
+    sbCurrentPos->setMaximum(seqLen);
+    sbCurrentPos->setValue(rs->getRegion().startPos+1);
+
     connectGUI();
     updateState();
     if (context->getComplementTT() == NULL) {
@@ -99,18 +107,6 @@ FindDialog::FindDialog(ADVSequenceObjectContext* context): QDialog(context->getA
     
     sbMatch->setMinimum(30);
 
-    int seqLen = context->getSequenceLen();
-    sbRangeStart->setMinimum(1);
-    sbRangeStart->setMaximum(seqLen);
-    
-    sbCurrentPos->setMinimum(1);
-    sbCurrentPos->setMaximum(seqLen);
-    
-    sbRangeEnd->setMinimum(1);
-    sbRangeEnd->setMaximum(seqLen);
-    
-    sbRangeStart->setValue(initialSelection.isEmpty() ? 1 : initialSelection.startPos + 1);
-    sbRangeEnd->setValue(initialSelection.isEmpty() ? seqLen : initialSelection.endPos());
     
     leFind->setFocus();
     lbResult->setSortingEnabled(true);
@@ -149,24 +145,18 @@ void FindDialog::connectGUI() {
     connect(sbMatch, SIGNAL(valueChanged(int)), SLOT(sl_onMatchPercentChanged(int)));
 
     //connect position selectors
-    connect(sbRangeStart, SIGNAL(valueChanged(int)), SLOT(sl_onRangeStartChanged(int)));
+    connect(rs, SIGNAL(si_rangeChanged(int,int)), SLOT(sl_onRangeChanged(int,int)));
     connect(sbCurrentPos, SIGNAL(valueChanged(int)), SLOT(sl_onCurrentPosChanged(int)));
-    connect(sbRangeEnd, SIGNAL(valueChanged(int)), SLOT(sl_onRangeEndChanged(int)));
 
     //results list
     connect(lbResult, SIGNAL(itemActivated(QListWidgetItem*)), SLOT(sl_onResultActivated(QListWidgetItem*)));
     connect(lbResult, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(sl_currentResultChanged(QListWidgetItem*, QListWidgetItem*)));
-
-    //range buttons
-    connect(pbRangeToSelection, SIGNAL(clicked()), SLOT(sl_onRangeToSelection()));
-    connect(pbRangeToSeq, SIGNAL(clicked()), SLOT(sl_onRangeToSequence()));
 
     lbResult->installEventFilter(this);
 }
 
 
 void FindDialog::updateState() {
-    bool hasInitialSelection = initialSelection.length > 0;
     bool hasActiveTask = task!=NULL;
     bool hasAmino = ctx->getAminoTT()!=NULL;
     bool hasCompl = ctx->getComplementTT()!=NULL;
@@ -194,11 +184,8 @@ void FindDialog::updateState() {
     rbMismatchAlg->setEnabled(!hasActiveTask);
     rbInsDelAlg->setEnabled(!hasActiveTask);
 
-    sbRangeStart->setEnabled(!hasActiveTask);
+    rs->setEnabled(!hasActiveTask);
     sbCurrentPos->setEnabled(!hasActiveTask);
-    sbRangeEnd->setEnabled(!hasActiveTask);
-    pbRangeToSelection->setEnabled(!hasActiveTask && hasInitialSelection);
-    pbRangeToSeq->setEnabled(!hasActiveTask);
 
     updateStatus();
 }
@@ -262,13 +249,12 @@ void FindDialog::sl_onFindNext() {
     if (!ok) {
         return;
     }
-    
-    if (sbCurrentPos->value() >= sbRangeEnd->value()) {
+    if (sbCurrentPos->value() >= rs->getRegion().endPos()) {
         int res = QMessageBox::question(this, tr("Question?"), tr("The end of the search region is reached. Restart?"), QMessageBox::Yes, QMessageBox::No);
         if (res != QMessageBox::Yes) {
             return;
         }
-        sbCurrentPos->setValue(sbRangeStart->value());
+        sbCurrentPos->setValue(rs->getRegion().startPos);
     }
 
     savePrevSettings();
@@ -281,8 +267,8 @@ void FindDialog::sl_onFindAll() {
     if (!ok) {
         return;
     }
-    
-    sbCurrentPos->setValue(sbRangeStart->value());
+
+    sbCurrentPos->setValue(rs->getRegion().startPos);
 
     savePrevSettings();
     runTask(false);
@@ -296,27 +282,24 @@ void FindDialog::reject() {
     QDialog::reject();
 }
 
-void FindDialog::sl_onRangeStartChanged(int v) {
-    if (v > sbCurrentPos->value()) {
-        sbCurrentPos->setValue(v);
+void FindDialog::sl_onRangeChanged(int start, int end) {
+    if (start > sbCurrentPos->value()) {
+        sbCurrentPos->setValue(start);
+    }
+    if (end < sbCurrentPos->value()) {
+        sbCurrentPos->setValue(end);
     }
 }
 
 void FindDialog::sl_onCurrentPosChanged(int v) {
-    if (v > sbRangeEnd->value()) {
-        sbRangeEnd->setValue(v);
+    U2Region tmp=rs->getRegion();
+    if (v > tmp.endPos()) {
+        rs->setRegion(U2Region(tmp.startPos,v-tmp.startPos));
     }
-    if (v < sbRangeStart->value()) {
-        sbRangeStart->setValue(v);
-    }
-}
-
-void FindDialog::sl_onRangeEndChanged(int v) {
-    if (v < sbCurrentPos->value()) {
-        sbCurrentPos->setValue(v);
+    if (v-1 < tmp.startPos) {
+        rs->setRegion(U2Region(v-1,tmp.endPos() - v+1));
     }
 }
-
 
 void FindDialog::sl_onClose() {
     reject();
@@ -347,8 +330,8 @@ void FindDialog::tunePercentBox() {
 
 //line ed
 void FindDialog::sl_onSearchPatternChanged(const QString&) {
-    if (leFind->text().length() > getCompleteSearchRegion().length) {
-        sl_onRangeToSequence();
+    if (leFind->text().length() > getCompleteSearchRegion().length) {//if pattern greater then search region
+        rs->setRegion(U2Region(0,sequence->getSequenceLen()));
     }
     tunePercentBox();
     updateState();
@@ -377,7 +360,12 @@ bool FindDialog::checkState(bool forSingleShot) {
         QMessageBox::critical(this, tr("Error!"), tr("Search pattern is empty"));
         return false;
     }
-
+    bool isRegionOk=false;
+    rs->getRegion(&isRegionOk);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return false;
+    }
     int maxErr = getMaxErr();
     int minMatch = pattern.length() - maxErr;
     assert(minMatch > 0);
@@ -420,7 +408,7 @@ bool FindDialog::checkState(bool forSingleShot) {
                 }
                 if (res == QMessageBox::Yes) {
                     lbResult->clear();
-                    sbCurrentPos->setValue(sbRangeStart->value());
+                    sbCurrentPos->setValue(rs->getRegion().startPos);
                 }
             }
         } else {
@@ -464,7 +452,7 @@ int FindDialog::getMaxErr() const {
 }
 
 U2Region FindDialog::getCompleteSearchRegion() const {
-    return U2Region(sbRangeStart->value()-1, sbRangeEnd->value() - sbRangeStart->value() + 1);
+    return rs->getRegion();
 }
 
 void FindDialog::runTask(bool singleShot) {
@@ -574,20 +562,6 @@ void FindDialog::sl_currentResultChanged(QListWidgetItem* current, QListWidgetIt
     FRListItem* item = static_cast<FRListItem*>(current);
     sbCurrentPos->setValue(item->res.region.startPos + 1);
 
-}
-
-void FindDialog::sl_onRangeToSelection() {
-    assert(initialSelection.length!=0);
-    sbRangeStart->setValue(initialSelection.startPos + 1);
-    sbCurrentPos->setValue(sbRangeStart->value());
-    sbRangeEnd->setValue(initialSelection.endPos());
-}
-
-
-void FindDialog::sl_onRangeToSequence() {
-    sbRangeStart->setValue(1);
-    sbCurrentPos->setValue(sbRangeStart->value());
-    sbRangeEnd->setValue(ctx->getSequenceLen());
 }
 
 #define MAX_OVERLAP_K 0.5F

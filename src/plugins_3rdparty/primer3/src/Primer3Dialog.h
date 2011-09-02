@@ -25,6 +25,8 @@
 #include <QtGui/QDialog>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/RegionSelector.h>
+
 #include "ui_Primer3Dialog.h"
 #include "Primer3Task.h"
 
@@ -38,8 +40,7 @@ public:
 
     Primer3TaskSettings getSettings()const;
     const CreateAnnotationModel &getCreateAnnotationModel()const;
-    int getRangeStart()const;
-    int getRangeEnd()const;
+    U2Region getRegion(bool *ok = NULL)const;
     QString checkModel();
     void prepareAnnotationObject();
 public:
@@ -61,11 +62,8 @@ private:
 
     Primer3TaskSettings defaultSettings;
     Primer3TaskSettings settings;
+    RegionSelector* rs;
 private slots:
-    void on_sbRangeEnd_editingFinished();
-    void on_sbRangeStart_editingFinished();
-    void on_pbSequenceRange_clicked();
-    void on_pbSelectionRange_clicked();
     void on_pbReset_clicked();
     void on_pbPick_clicked();
 };

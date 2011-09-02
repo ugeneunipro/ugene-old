@@ -43,6 +43,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/ProjectTreeItemSelectorDialog.h \
            src/util/ProjectTreeItemSelectorDialogImpl.h \
            src/util/RangeSelector.h \
+           src/util/RegionSelector.h \
            src/util/RemovePartFromSequenceDialogController.h \
            src/util/SaveDocumentGroupController.h \
            src/util/ScaleBar.h \
@@ -105,6 +106,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/ProjectTreeController.cpp \
            src/util/ProjectTreeItemSelectorDialog.cpp \
            src/util/RangeSelector.cpp \
+           src/util/RegionSelector.cpp \
            src/util/RemovePartFromSequenceDialogController.cpp \
            src/util/SaveDocumentGroupController.cpp \
            src/util/ScaleBar.cpp \

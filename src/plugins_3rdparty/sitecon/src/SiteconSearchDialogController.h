@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
+#include <U2Gui/RegionSelector.h>
 
 #include <ui/ui_SiteconSearchDialog.h>
 
@@ -90,6 +91,7 @@ private:
 
     SiteconSearchTask* task;
     QTimer* timer;
+    RegionSelector* rs;
 };
 
 }//namespace

@@ -26,6 +26,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
+#include <U2Gui/RegionSelector.h>
 
 #include <QtCore/QList>
 #include <QtGui/QTreeWidget>
@@ -61,9 +62,6 @@ private slots:
     void sl_onSaveAnnotations();
     void sl_onClearList();
     void sl_onFindAll();
-    void sl_onRangeToSelection();
-    void sl_onRangeToPanView();
-    void sl_onRangeToSequence();
 
     void sl_onTaskFinished(Task*);
     void sl_onTimer();
@@ -84,7 +82,7 @@ private:
 
     void importResults();
 
-    U2Region getCompleteSearchRegion() const;
+    U2Region getCompleteSearchRegion(bool *ok = NULL) const;
     ORFAlgorithmStrand getAlgStrand() const;
 
 private:
@@ -95,6 +93,8 @@ private:
     ORFFindTask* task;
     QTimer* timer;
     U2Region initialSelection;
+    RegionSelector* rs;
+    bool isRegionOk;
 };
 
 }//namespace

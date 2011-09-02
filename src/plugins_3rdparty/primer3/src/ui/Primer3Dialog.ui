@@ -2887,52 +2887,7 @@ p, li { white-space: pre-wrap; }
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label_10">
-       <property name="text">
-        <string>Range Start:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="sbRangeStart">
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="accelerated">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>Range End:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="sbRangeEnd">
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="accelerated">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbSelectionRange">
-       <property name="text">
-        <string>Selection range</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbSequenceRange">
-       <property name="text">
-        <string>Sequence range</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="rangeSelectorLayout"/>
      </item>
      <item>
       <spacer name="horizontalSpacer">
@@ -3086,10 +3041,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>edit_PRIMER_MIN_END_QUALITY</tabstop>
   <tabstop>edit_PRIMER_QUALITY_RANGE_MIN</tabstop>
   <tabstop>edit_PRIMER_QUALITY_RANGE_MAX</tabstop>
-  <tabstop>sbRangeStart</tabstop>
-  <tabstop>sbRangeEnd</tabstop>
-  <tabstop>pbSelectionRange</tabstop>
-  <tabstop>pbSequenceRange</tabstop>
   <tabstop>pbReset</tabstop>
   <tabstop>pbPick</tabstop>
  </tabstops>

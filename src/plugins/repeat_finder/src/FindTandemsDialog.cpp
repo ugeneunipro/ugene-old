@@ -88,23 +88,16 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
     repeatLenComboBox->addItem(tr("Custom"), TSConstants::PresetCustom);
     repeatLenComboBox->setCurrentIndex(TSConstants::PresetAll);
 
-    bool hasSelection = !sc->getSequenceSelection()->isEmpty();
-    selectionRangeButton->setEnabled(hasSelection);
-    selectionRangeButton->setChecked(hasSelection);
-
     int seqLen = sc->getSequenceLen();
 
 //    Settings* s = AppContext::getSettings();
 
 //    connect(minLenBox, SIGNAL(valueChanged(int)), SLOT(sl_repeatParamsChanged(int)));
 //    connect(identityBox, SIGNAL(valueChanged(int)), SLOT(sl_repeatParamsChanged(int)));
+    rs=new RegionSelector(this, seqLen, false, sc->getSequenceSelection());
+    rangeSelectorLayout->addWidget(rs);
+    connect(rs,SIGNAL(si_rangeChanged(int,int)),SLOT(sl_rangeChanged(int,int)));
 
-    customRangeStartBox->setMaximum(seqLen);
-    customRangeEndBox->setMaximum(seqLen);
-    customRangeEndBox->setValue(seqLen);
-
-    connect(customRangeStartBox, SIGNAL(valueChanged(int)), SLOT(sl_startRangeChanged(int)));
-    connect(customRangeEndBox, SIGNAL(valueChanged(int)), SLOT(sl_endRangeChanged(int)));
     //connect(minDistBox, SIGNAL(valueChanged(int)), SLOT(sl_minDistChanged(int)));
     //connect(maxDistBox, SIGNAL(valueChanged(int)), SLOT(sl_maxDistChanged(int)));
     
@@ -171,20 +164,11 @@ void FindTandemsDialog::presetSelected(int preset){
     maxPeriodBox->setValue(maxPeriod);
 }
 
-void FindTandemsDialog::sl_startRangeChanged(int i) {
-    if (i > customRangeEndBox->value()) {
-        customRangeEndBox->setValue(i);
-    }
+void FindTandemsDialog::sl_rangeChanged(int start, int end) {
+    Q_UNUSED(start);
+    Q_UNUSED(end);
     updateStatus();
 }
-
-void FindTandemsDialog::sl_endRangeChanged(int i) {
-    if (i < customRangeStartBox->value()) {
-        customRangeStartBox->setValue(i);
-    }
-    updateStatus();
-}
-
 
 bool FindTandemsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Region>& res) {
     bool enabled = cb->isChecked();
@@ -209,22 +193,21 @@ bool FindTandemsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
     return true;
 }
 
-U2Region FindTandemsDialog::getActiveRange() const {
-    U2Region range(0, sc->getSequenceLen());
-    if (selectionRangeButton->isChecked() && !sc->getSequenceSelection()->isEmpty()) {
-        range = sc->getSequenceSelection()->getSelectedRegions().at(0);
-    } else if (customRangeButton->isChecked()) {
-        range.startPos = customRangeStartBox->value();
-        range.length = customRangeEndBox->value() - range.startPos;
-    }
-    return range;
+U2Region FindTandemsDialog::getActiveRange(bool *ok) const {
+    U2Region region=rs->getRegion(ok);//todo add check on wrong region
+    return region;
 }
 
 void FindTandemsDialog::accept() {
     int minPeriod = minPeriodBox->value();
     int maxPeriod = maxPeriodBox->value();
 //    int identPerc = identityBox->value();
-    U2Region range = getActiveRange();
+    bool isRegionOk=false;
+    U2Region range = getActiveRange(&isRegionOk);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return;
+    }
     assert(range.length > 0);
     QString err = ac->validate();
     if (!err.isEmpty()) {

@@ -24,6 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
+#include <U2Core/L10n.h>
 
 #include <U2Formats/GenbankFeatures.h>
 
@@ -86,10 +87,6 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     algoCombo->addItem(tr("Suffix index"), RFAlgorithm_Suffix);
     algoCombo->addItem(tr("Diagonals"), RFAlgorithm_Diagonal);
 
-    bool hasSelection = !sc->getSequenceSelection()->isEmpty();
-    selectionRangeButton->setEnabled(hasSelection);
-    selectionRangeButton->setChecked(hasSelection);
-
     int seqLen = sc->getSequenceLen();
 
     Settings* s = AppContext::getSettings();
@@ -109,10 +106,10 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     connect(minLenBox, SIGNAL(valueChanged(int)), SLOT(sl_repeatParamsChanged(int)));
     connect(identityBox, SIGNAL(valueChanged(int)), SLOT(sl_repeatParamsChanged(int)));
 
-    customRangeStartBox->setMaximum(seqLen);
-    customRangeEndBox->setMaximum(seqLen);
-    customRangeEndBox->setValue(seqLen);
-    
+    rs=new RegionSelector(this, seqLen, false, sc->getSequenceSelection());
+    rangeSelectorLayout->addWidget(rs);
+    connect(rs,SIGNAL(si_rangeChanged(int,int)),SLOT(sl_rangeChanged(int,int)));
+
     QStringList annotationNames = getAvailableAnnotationNames();
     bool haveAnnotations = !annotationNames.isEmpty();
     annotationFitCheck->setEnabled(haveAnnotations);
@@ -124,8 +121,8 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
         prepareAMenu(annotationAroundFilterButton, annotationAroundFilterEdit, annotationNames);
     }
     
-    connect(customRangeStartBox, SIGNAL(valueChanged(int)), SLOT(sl_startRangeChanged(int)));
-    connect(customRangeEndBox, SIGNAL(valueChanged(int)), SLOT(sl_endRangeChanged(int)));
+//    connect(customRangeStartBox, SIGNAL(valueChanged(int)), SLOT(sl_startRangeChanged(int)));
+//    connect(customRangeEndBox, SIGNAL(valueChanged(int)), SLOT(sl_endRangeChanged(int)));
     connect(minDistBox, SIGNAL(valueChanged(int)), SLOT(sl_minDistChanged(int)));
     connect(maxDistBox, SIGNAL(valueChanged(int)), SLOT(sl_maxDistChanged(int)));
     connect(minDistCheck, SIGNAL(toggled(bool)), SLOT(sl_minMaxToggle(bool)));
@@ -183,20 +180,11 @@ void FindRepeatsDialog::sl_maxDistChanged(int i) {
     updateStatus();
 }
 
-void FindRepeatsDialog::sl_startRangeChanged(int i) {
-    if (i > customRangeEndBox->value()) {
-        customRangeEndBox->setValue(i);
-    }
+void FindRepeatsDialog::sl_rangeChanged(int start, int end) {
+    Q_UNUSED(start);
+    Q_UNUSED(end);
     updateStatus();
 }
-
-void FindRepeatsDialog::sl_endRangeChanged(int i) {
-    if (i < customRangeStartBox->value()) {
-        customRangeStartBox->setValue(i);
-    }
-    updateStatus();
-}
-
 
 bool FindRepeatsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Region>& res) {
     bool enabled = cb->isChecked();
@@ -221,15 +209,9 @@ bool FindRepeatsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
     return true;
 }
 
-U2Region FindRepeatsDialog::getActiveRange() const {
-    U2Region range(0, sc->getSequenceLen());
-    if (selectionRangeButton->isChecked() && !sc->getSequenceSelection()->isEmpty()) {
-        range = sc->getSequenceSelection()->getSelectedRegions().at(0);
-    } else if (customRangeButton->isChecked()) {
-        range.startPos = customRangeStartBox->value();
-        range.length = customRangeEndBox->value() - range.startPos;
-    }
-    return range;
+U2Region FindRepeatsDialog::getActiveRange(bool *ok) const {
+    U2Region region=rs->getRegion(ok);
+    return region;
 }
 
 void FindRepeatsDialog::accept() {
@@ -238,7 +220,12 @@ void FindRepeatsDialog::accept() {
     int minDist = minDistCheck->isChecked() ? minDistBox->value() : 0;
     int maxDist = maxDistCheck->isChecked() ? maxDistBox->value(): sc->getSequenceLen();
     bool inverted = invertCheck->isChecked();
-    U2Region range = getActiveRange();
+    bool isRegionOk=false;
+    U2Region range = getActiveRange(&isRegionOk);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return;
+    }
     assert(range.length > 0);
     assert(minDist <= maxDist);
     QString err = ac->validate();

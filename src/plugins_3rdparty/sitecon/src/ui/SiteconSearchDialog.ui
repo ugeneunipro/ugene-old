@@ -1,60 +1,61 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>SiteconSearchDialog</class>
- <widget class="QDialog" name="SiteconSearchDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="SiteconSearchDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
+    <width>264</width>
     <height>414</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>sitecon_search_title</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3" >
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <layout class="QGridLayout" name="gridLayout" >
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>sitecon_model_file</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" >
-      <widget class="QLineEdit" name="modelFileEdit" >
-       <property name="readOnly" >
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="modelFileEdit">
+       <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="0" column="2" >
-      <widget class="QToolButton" name="pbSelectModelFile" >
-       <property name="text" >
+     <item row="0" column="2">
+      <widget class="QToolButton" name="pbSelectModelFile">
+       <property name="text">
         <string>...</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_2" >
-       <property name="toolTip" >
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="toolTip">
         <string>min_err_tip</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>error_level</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="2" >
-      <widget class="QComboBox" name="errLevelBox" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+     <item row="1" column="1" colspan="2">
+      <widget class="QComboBox" name="errLevelBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>min_err_tip</string>
        </property>
       </widget>
@@ -62,60 +63,60 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_8" >
+    <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="1,1">
      <item>
-      <widget class="QGroupBox" name="bgStrand" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+      <widget class="QGroupBox" name="bgStrand">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="title" >
+       <property name="title">
         <string>strand_group</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2" >
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QRadioButton" name="rbBoth" >
-          <property name="text" >
+         <widget class="QRadioButton" name="rbBoth">
+          <property name="text">
            <string>strand_both</string>
           </property>
-          <property name="checked" >
+          <property name="checked">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="rbDirect" >
-          <property name="toolTip" >
+         <widget class="QRadioButton" name="rbDirect">
+          <property name="toolTip">
            <string/>
           </property>
-          <property name="whatsThis" >
+          <property name="whatsThis">
            <string>strand_direct_wit</string>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>strand_direct_label</string>
           </property>
-          <property name="shortcut" >
+          <property name="shortcut">
            <string/>
           </property>
-          <property name="checked" >
+          <property name="checked">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="rbComplement" >
-          <property name="toolTip" >
+         <widget class="QRadioButton" name="rbComplement">
+          <property name="toolTip">
            <string/>
           </property>
-          <property name="whatsThis" >
+          <property name="whatsThis">
            <string>strand_complement_wit</string>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>strand_complement_label</string>
           </property>
-          <property name="shortcut" >
+          <property name="shortcut">
            <string/>
           </property>
          </widget>
@@ -124,190 +125,67 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox" >
-       <property name="title" >
-        <string>range</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout" >
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6" >
-          <item>
-           <widget class="QRadioButton" name="rbSequenceRange" >
-            <property name="text" >
-             <string>sequence_range</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5" >
-          <item>
-           <widget class="QRadioButton" name="rbSelectionRange" >
-            <property name="text" >
-             <string>selection_range</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_3" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout" >
-          <item>
-           <widget class="QRadioButton" name="rbCustomRange" >
-            <property name="text" >
-             <string>custom_range</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="lRangeStart_2" >
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="sbRangeStart" >
-            <property name="enabled" >
-             <bool>false</bool>
-            </property>
-            <property name="minimumSize" >
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="accelerated" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="lRangeStart" >
-            <property name="text" >
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="sbRangeEnd" >
-            <property name="enabled" >
-             <bool>false</bool>
-            </property>
-            <property name="minimumSize" >
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="accelerated" >
-             <bool>true</bool>
-            </property>
-            <property name="maximum" >
-             <number>99</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
+      <layout class="QHBoxLayout" name="rangeSelectorLayout"/>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QTreeWidget" name="resultsTree" >
-     <property name="rootIsDecorated" >
+    <widget class="QTreeWidget" name="resultsTree">
+     <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
-     <property name="sortingEnabled" >
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>range</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>strand</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>psum</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>err1</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>err2</string>
       </property>
      </column>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3" >
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QPushButton" name="pbClear" >
-       <property name="text" >
+      <widget class="QPushButton" name="pbClear">
+       <property name="text">
         <string>clear_results</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pbSaveAnnotations" >
-       <property name="text" >
+      <widget class="QPushButton" name="pbSaveAnnotations">
+       <property name="text">
         <string>save_as_annotations</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -318,20 +196,20 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_7" >
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
-      <widget class="QLabel" name="statusLabel" >
-       <property name="text" >
+      <widget class="QLabel" name="statusLabel">
+       <property name="text">
         <string>status</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_4" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -340,15 +218,15 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pbSearch" >
-       <property name="text" >
+      <widget class="QPushButton" name="pbSearch">
+       <property name="text">
         <string>search</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pbClose" >
-       <property name="text" >
+      <widget class="QPushButton" name="pbClose">
+       <property name="text">
         <string>cancel</string>
        </property>
       </widget>
@@ -358,38 +236,5 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>rbCustomRange</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>sbRangeStart</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>240</x>
-     <y>156</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>348</x>
-     <y>156</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rbCustomRange</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>sbRangeEnd</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>240</x>
-     <y>156</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>464</x>
-     <y>156</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

@@ -23,7 +23,7 @@
 #define _U2_CREATE_FRAGMENT_DIALOG_H_
 
 #include "DNAFragment.h"
-
+#include <U2Gui/RegionSelector.h>
 #include <ui/ui_CreateFragmentDialog.h>
 
 namespace U2 {
@@ -42,11 +42,11 @@ public:
 private:
     CreateAnnotationWidgetController* ac;
     DNASequenceObject*  seqObj;
-    DNASequenceSelection* seqSelection;
     QList<AnnotationTableObject*> relatedAnnotations;
     QSet<QString>  enzymesSelection;
     void setupAnnotationsWidget();
     DNAFragment dnaFragment;
+    RegionSelector* rs;
 };
 
 

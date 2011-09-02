@@ -165,9 +165,10 @@ void Primer3ADVContext::sl_showDialog() {
         {
             Primer3TaskSettings settings = dialog.getSettings();
             settings.setSequence(seqCtx->getSequenceData());
+            U2Region region=dialog.getRegion();
             settings.setIncludedRegion(qMakePair(
-                    dialog.getRangeStart() + settings.getFirstBaseIndex(),
-                    dialog.getRangeEnd() - dialog.getRangeStart()));
+                    (int)region.startPos + settings.getFirstBaseIndex(),
+                    (int)region.length));//need refactor primer3 move to U2Region
             QString err = dialog.checkModel();
             if (!err.isEmpty()) {
                 QMessageBox::warning(QApplication::activeWindow(), dialog.windowTitle(), err);

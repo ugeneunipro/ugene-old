@@ -27,6 +27,7 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
+#include <U2Gui/RegionSelector.h>
 
 
 namespace U2 {
@@ -83,19 +84,15 @@ public:
 private:
     void addAnnotationsWidget();
     void connectGUI();
-    void setParameters();
-    QVector<U2Region> getLocation() const;
 private slots:
     void sl_selectScheme();
-    void sl_radioCustomRangeToggled(bool checked);
-    void sl_rangeStartChanged(int i);
-    void sl_rangeEndChanged(int i);
     void sl_okBtnClicked();
 private:
     ADVSequenceObjectContext* ctx;
     CreateAnnotationWidgetController* cawc;
     QDScheme* scheme;
     QTextDocument* txtDoc;
+    RegionSelector* rs;
 };
 
 }//namespace

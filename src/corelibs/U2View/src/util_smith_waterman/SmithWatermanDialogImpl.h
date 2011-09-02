@@ -35,6 +35,8 @@
 #include <U2Algorithm/SWResultFilterRegistry.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 
+#include <U2Gui/RegionSelector.h>
+
 namespace U2 {
 
 class SmithWatermanDialog: public QDialog, public Ui::SmithWatermanDialogBase {
@@ -48,14 +50,8 @@ private slots:
     void sl_bttnViewMatrix();
 
     void sl_bttnRun();
-    void sl_spinRangeStartChanged(int val);
-    void sl_spinRangeEndChanged(int val);
     void sl_translationToggled(bool toggled);
 
-    void sl_wholeSequenceToggled(bool toggled);
-    void sl_selectedRangeToggled(bool toggled);
-    void sl_customRangeToggled(bool toggled);
-    
     //void sl_remoteRunButtonClicked();
     void sl_patternChanged();
     
@@ -87,6 +83,8 @@ private:
 
     ADVSequenceObjectContext* ctxSeq;
     CreateAnnotationWidgetController* ac;
+
+    RegionSelector* rs;
 };
 
 } // namespace

@@ -33,6 +33,7 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/L10n.h>
 
 #include <U2View/AutoAnnotationUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -80,13 +81,10 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     initSettings();
 
     int seqLen = ctx->getSequenceLen();
-    sbRangeStart->setMinimum(1);
-    sbRangeStart->setMaximum(seqLen);
-    sbRangeEnd->setMinimum(1);
-    sbRangeEnd->setMaximum(seqLen);
-    sbRangeStart->setValue(1);
-    sbRangeEnd->setValue(seqLen);
-    
+
+    rs=new RegionSelector(this, seqLen, false, ctx->getSequenceSelection());
+    rangeSelectorLayout->addWidget(rs);
+
     resultsTree->setSortingEnabled(true);
     resultsTree->sortByColumn(0);
 
@@ -106,16 +104,6 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     connect(transCombo, SIGNAL(currentIndexChanged ( int )), SLOT(sl_translationChanged()));    
     sl_translationChanged();
 
-    foreach(ADVSequenceWidget *w, ctx->getSequenceWidgets()){
-        ADVSingleSequenceWidget* a = qobject_cast<ADVSingleSequenceWidget*>(w);
-        if(a){
-            panViewSelection = a->getPanView()->getVisibleRange();
-            if(a->isPanViewCollapsed()){
-                pbRangeToPan->setDisabled(true);
-            }
-            break;
-        }
-    }
 }
 
 static QString triplet2str(const Triplet& t) {
@@ -182,17 +170,11 @@ void ORFDialog::connectGUI() {
     //results list
     connect(resultsTree, SIGNAL(itemActivated(QTreeWidgetItem*, int)), SLOT(sl_onResultActivated(QTreeWidgetItem*, int)));
 
-    //range buttons
-    connect(pbRangeToSelection, SIGNAL(clicked()), SLOT(sl_onRangeToSelection()));
-    connect(pbRangeToPan, SIGNAL(clicked()), SLOT(sl_onRangeToPanView()));
-    connect(pbRangeToSeq, SIGNAL(clicked()), SLOT(sl_onRangeToSequence()));
-
     resultsTree->installEventFilter(this);
 }
 
 
 void ORFDialog::updateState() {
-    bool hasInitialSelection = initialSelection.length > 0;
     bool hasActiveTask = task!=NULL;
     bool hasCompl = ctx->getComplementTT()!=NULL;
 
@@ -207,11 +189,7 @@ void ORFDialog::updateState() {
     rbDirect->setEnabled(!hasActiveTask);
     rbComplement->setEnabled(!hasActiveTask && hasCompl);
 
-    sbRangeStart->setEnabled(!hasActiveTask);
-    sbRangeEnd->setEnabled(!hasActiveTask);
-    pbRangeToSelection->setEnabled(!hasActiveTask && hasInitialSelection);
-    pbRangeToPan->setEnabled(!hasActiveTask);
-    pbRangeToSeq->setEnabled(!hasActiveTask);
+    rs->setEnabled(!hasActiveTask);
 
     updateStatus();
 }
@@ -292,8 +270,9 @@ void ORFDialog::reject() {
 }
 
 
-U2Region ORFDialog::getCompleteSearchRegion() const {
-    return U2Region(sbRangeStart->value()-1, sbRangeEnd->value() - sbRangeStart->value() + 1);
+U2Region ORFDialog::getCompleteSearchRegion(bool *ok) const{
+    U2Region region=rs->getRegion(ok);//todo add check on wrong region
+    return region;
 }
 
 void ORFDialog::runTask() {
@@ -301,6 +280,10 @@ void ORFDialog::runTask() {
     
     ORFAlgorithmSettings s;
     getSettings(s);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return;
+    }
 
     task = new ORFFindTask(s, ctx->getSequenceData());
     
@@ -359,22 +342,6 @@ void ORFDialog::sl_onResultActivated(QTreeWidgetItem* i, int col) {
     }*/
 }
 
-void ORFDialog::sl_onRangeToSelection() {
-    assert(!initialSelection.isEmpty());
-    sbRangeStart->setValue(initialSelection.startPos + 1);
-    sbRangeEnd->setValue(initialSelection.endPos());
-}
-
-void ORFDialog::sl_onRangeToPanView() {
-    sbRangeStart->setValue(panViewSelection.startPos + 1);
-    sbRangeEnd->setValue(panViewSelection.endPos());
-}
-
-void ORFDialog::sl_onRangeToSequence() {
-    sbRangeStart->setValue(1);
-    sbRangeEnd->setValue(ctx->getSequenceLen());
-}
-
 void ORFDialog::accept()
 {
     if (task!=NULL) {
@@ -383,6 +350,10 @@ void ORFDialog::accept()
     
     ORFAlgorithmSettings s;
     getSettings(s);
+    if(!isRegionOk){
+        rs->showErrorMessage();
+        return;
+    }
     ORFSettingsKeys::save(s, AppContext::getSettings());
     AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
 
@@ -411,6 +382,7 @@ void ORFDialog::initSettings()
 
 void ORFDialog::getSettings(ORFAlgorithmSettings& s)
 {
+    isRegionOk=true;
     s.strand = getAlgStrand();
     s.complementTT = ctx->getComplementTT();
     s.proteinTT = ctx->getAminoTT();
@@ -421,7 +393,7 @@ void ORFDialog::getSettings(ORFAlgorithmSettings& s)
     s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
 
     //setup search region
-    s.searchRegion = getCompleteSearchRegion();
+    s.searchRegion = getCompleteSearchRegion(&isRegionOk);
 }
 
 U2::ORFAlgorithmStrand ORFDialog::getAlgStrand() const
