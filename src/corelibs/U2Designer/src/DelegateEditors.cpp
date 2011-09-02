@@ -223,6 +223,9 @@ void URLLineEdit::sl_onBrowse() {
         }
     }
     if (!name.isEmpty()) {
+        if (name.length() > this->maxLength()) {
+            this->setMaxLength(name.length() + this->maxLength());
+        }
         setText(name);
     }
     setFocus();
