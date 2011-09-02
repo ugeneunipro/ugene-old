@@ -35,6 +35,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Formats/GenbankFeatures.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -116,6 +117,11 @@ DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>&
     }
     DNASequence seq( mergedSequence, al );
     DNASequenceObject* so = addSequenceObject(objects, "Sequence", seq, hints, os);
+    if(os.hasError()) {
+        return NULL;
+    }
+    SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
+
     AnnotationTableObject* ao = new AnnotationTableObject("Contigs");
 
     //save relation if docUrl is not empty

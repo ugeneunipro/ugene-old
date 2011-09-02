@@ -38,6 +38,7 @@
 #include <U2Core/DNAInfo.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -171,6 +172,10 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
                 seq.info = data.tags;
                 seq.circular = data.circular;
                 DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sequenceName, seq, fs, si);
+                if (si.hasError()) {
+                    break;
+                }
+                SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
                 if (annotationsObject!=NULL) {
                     sequenceRef.objName = seqObj->getGObjectName();
                     annotationsObject->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
@@ -192,6 +197,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
             delete mergedAnnotations;
             return;
         }
+        SAFE_POINT(so != NULL, "DocumentFormatUtils::addMergedSequenceObject returned NULL but didn't set error",);
         if (mergedAnnotations!=NULL) {
             sequenceRef.objName = so->getGObjectName();
             mergedAnnotations->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));

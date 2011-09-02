@@ -36,6 +36,7 @@
 #include <U2Core/TextObject.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <time.h>
 
@@ -826,6 +827,7 @@ skip_bases:
     if (os.hasError()) {
         return NULL;
     }
+    SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");
     objects.append(chromObj);
     objects.append(new TextObject(sequenceComment, "Info"));

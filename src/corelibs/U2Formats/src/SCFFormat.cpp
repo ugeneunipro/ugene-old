@@ -35,6 +35,7 @@
 #include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 /* TRANSLATOR U2::SCFFormat */    
 
@@ -659,9 +660,9 @@ Document* SCFFormat::parseSCF(SeekableBuf* fp, IOAdapterFactory* iof, const GUrl
     QList<GObject*> objects;
     DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sampleName + " sequence", dna, fs, os);
     if (os.hasError()) {
-        assert(seqObj == NULL);
         return NULL;
     }
+    SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, sampleName + " chromatogram");
     objects.append(chromObj);
     Document* doc = new Document(this, iof, url, objects, fs);

@@ -31,6 +31,7 @@
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectReference.h>
+#include <U2Core/U2SafePoints.h>
 
 
 namespace U2{
@@ -148,9 +149,9 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&
                 sequence.info.insert(DNAInfo::ID, objName);
                 DNASequenceObject *dnaso = DocumentFormatUtils::addSequenceObject(objects, objName, sequence, hints, si);
                 if (si.hasError()) {
-                    assert(dnaso = NULL);
                     return;
                 }
+                SAFE_POINT(dnaso != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
                 seqMap.insert(objName, dnaso);
                 headerName = words.join(" ").remove(">");
                 seq = "";
@@ -286,11 +287,11 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&
         sequence.info.insert(DNAInfo::ID, objName);
         DNASequenceObject *dnaso = DocumentFormatUtils::addSequenceObject(objects, objName, sequence, hints, si);
         if (si.hasError()) {
-            assert(dnaso == NULL);
             qDeleteAll(seqMap.values());
             seqMap.clear();
             return;
         }
+        SAFE_POINT(dnaso != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
         seqMap.insert(objName, dnaso);
     }
     
