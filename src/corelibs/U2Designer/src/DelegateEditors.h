@@ -72,6 +72,7 @@ protected:
     void focusOutEvent ( QFocusEvent * event );
 private slots:
     void sl_onBrowse();
+    void sl_onBrowseWithAdding();
 
 signals:
     void si_finished();
@@ -83,6 +84,9 @@ private:
     bool    isPath;
     bool    saveFile;
     QString fileFormat;
+
+    void browse(bool addFiles = false);
+    void checkExtension(QString &name);
 };
 
 class U2DESIGNER_EXPORT URLDelegate : public PropertyDelegate {
@@ -116,6 +120,9 @@ protected:
     mutable QWidget* currentEditor;
     QString text;
     QString fileFormat;
+
+private slots:
+    void sl_textChanged(const QString &text);
 };
 
 class U2DESIGNER_EXPORT SpinBoxDelegate : public PropertyDelegate {

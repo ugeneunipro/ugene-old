@@ -169,6 +169,14 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
 * URLLineEdit
 ********************************/
 void URLLineEdit::sl_onBrowse() {
+    this->browse(false);
+}
+
+void URLLineEdit::sl_onBrowseWithAdding() {
+    this->browse(true);
+}
+
+void URLLineEdit::browse(bool addFiles) {
     LastUsedDirHelper lod(type);
     QString lastDir = lod.dir;
     GUrl currentUrl(text());
@@ -182,42 +190,20 @@ void URLLineEdit::sl_onBrowse() {
         lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
     }else if (multi) {
         QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lastDir, FileFilter);
-        name = lst.join(";");
+        if (addFiles) {
+            name = this->text();
+            if (!lst.isEmpty()) {
+                name += ";";
+            }
+        }
+        name += lst.join(";");
         if (!lst.isEmpty()) {
             lod.url = lst.first();
         }
     } else {
         if(saveFile) {
             lod.url = name = QFileDialog::getSaveFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
-            DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
-            if (NULL != format && !name.isEmpty()) {
-                QString newName(name);
-                GUrl url(newName);
-                QString lastSuffix = url.lastFileSuffix();
-                if ("gz" == lastSuffix) {
-                    int dotPos = newName.length() - lastSuffix.length() - 1;
-                    if ((dotPos >= 0) && (QChar('.') == newName[dotPos])) {
-                        newName = url.getURLString().left(dotPos);
-                        GUrl tmp(newName);
-                        lastSuffix = tmp.lastFileSuffix(); 
-                    }
-                }
-                bool foundExt = false;
-                foreach (QString supExt, format->getSupportedDocumentFileExtensions()) {
-                    if (lastSuffix == supExt) {
-                        foundExt = true;
-                        break;
-                    }
-                }
-                if (!foundExt) {
-                    name = name + "." + format->getSupportedDocumentFileExtensions().first();
-                } else {
-                    int dotPos = newName.length() - lastSuffix.length() - 1;
-                    if ((dotPos < 0) || (QChar('.') != newName[dotPos])) {
-                        name = name + "." + format->getSupportedDocumentFileExtensions().first();
-                    }
-                }
-            }
+            this->checkExtension(name);
         } else {
             lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter );
         }
@@ -235,6 +221,37 @@ void URLLineEdit::focusOutEvent ( QFocusEvent * ) {
     emit si_finished();
 }
 
+void URLLineEdit::checkExtension(QString &name) {
+    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
+    if (NULL != format && !name.isEmpty()) {
+        QString newName(name);
+        GUrl url(newName);
+        QString lastSuffix = url.lastFileSuffix();
+        if ("gz" == lastSuffix) {
+            int dotPos = newName.length() - lastSuffix.length() - 1;
+            if ((dotPos >= 0) && (QChar('.') == newName[dotPos])) {
+                newName = url.getURLString().left(dotPos);
+                GUrl tmp(newName);
+                lastSuffix = tmp.lastFileSuffix(); 
+            }
+        }
+        bool foundExt = false;
+        foreach (QString supExt, format->getSupportedDocumentFileExtensions()) {
+            if (lastSuffix == supExt) {
+                foundExt = true;
+                break;
+            }
+        }
+        if (!foundExt) {
+            name = name + "." + format->getSupportedDocumentFileExtensions().first();
+        } else {
+            int dotPos = newName.length() - lastSuffix.length() - 1;
+            if ((dotPos < 0) || (QChar('.') != newName[dotPos])) {
+                name = name + "." + format->getSupportedDocumentFileExtensions().first();
+            }
+        }
+    }
+}
 
 /********************************
 * URLDelegate
@@ -255,11 +272,21 @@ QWidget *URLDelegate::createEditor(QWidget *parent,
     toolButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred));
     connect(toolButton, SIGNAL(clicked()), documentURLEdit, SLOT(sl_onBrowse()));
     
-    QHBoxLayout* layout = new QHBoxLayout(widget);
+    QHBoxLayout *layout = new QHBoxLayout(widget);
     layout->setSpacing(0);
     layout->setMargin(0);
     layout->addWidget(documentURLEdit);
     layout->addWidget(toolButton);
+
+    if (multi) {
+        QToolButton * toolButton = new QToolButton(widget);
+        toolButton->setVisible( showButton && !text.isEmpty() );
+        toolButton->setText(tr("add"));
+        toolButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred));
+        connect(toolButton, SIGNAL(clicked()), documentURLEdit, SLOT(sl_onBrowseWithAdding()));
+        layout->addWidget(toolButton);
+        connect(documentURLEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_textChanged(const QString &)));
+    }
 
     currentEditor = widget;
     connect(documentURLEdit, SIGNAL(si_finished()), SLOT(sl_commit()));
@@ -321,6 +348,18 @@ void URLDelegate::sl_formatChanged(const QString &newFormat) {
         FileFilter = newFormat + " files (*." + newFormat + ")";
     }
     fileFormat = newFormat;
+}
+
+void URLDelegate::sl_textChanged(const QString &text) {
+    if (!multi) {
+        return;
+    }
+    URLLineEdit *documentURLEdit = static_cast<URLLineEdit*>(sender());
+    QLayout *layout = documentURLEdit->parentWidget()->layout();
+
+    if (3 == layout->count()) { // QLineEdit and 2xQToolButton
+        layout->itemAt(2)->widget()->setVisible(showButton && !text.isEmpty());
+    }
 }
 
 /********************************
