@@ -63,6 +63,9 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
     spinBoxWindowSize->setMaximum(sequenceLength);
     spinBoxWindowStep->setMaximum(sequenceLength - 2); // Approximate value. In real life the step should be 1 or small enough.
                                                        // "-2" is added as the first window should be at least 2 nucleotides.
+    if(settings.windowSize >  sequenceLength){
+        settings.windowSize = sequenceLength;
+    }
 
     // Setting the values
     updateHighFlexValues();
