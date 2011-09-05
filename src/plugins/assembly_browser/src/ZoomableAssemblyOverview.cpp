@@ -403,7 +403,12 @@ void ZoomableAssemblyOverview::checkedMoveVisibleRange(qint64 newStartPos) {
 }
 
 qint64 ZoomableAssemblyOverview::minimalOverviewedLen() const {
-    return width(); //1 letter == 1 pixel. We are not going to draw more than one pixel per letter
+    U2OpStatusImpl os;
+    qint64 modelLen = model->getModelLength(os);
+    LOG_OP(os);
+    // 1 letter == 1 pixel. We are not going to draw more than one pixel per letter
+    // Allow more pixels per letter only if model is shorter than screen
+    return qMin(modelLen, (qint64)width());
 }
 
 bool ZoomableAssemblyOverview::canZoomToRange(const U2Region & range)const {
