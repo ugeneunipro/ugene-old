@@ -31,7 +31,7 @@
 namespace U2 {
 
 AssemblyDensityGraph::AssemblyDensityGraph(AssemblyBrowserUi * ui_) : 
-QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()) {
+QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), previousXOffset(-1) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
@@ -40,7 +40,7 @@ QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()) {
 
 void AssemblyDensityGraph::connectSlots() {
     connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_launchCoverageCalculation()));
-    connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_launchCoverageCalculation()));
+    connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_onOffsetsChanged()));
     connect(&coverageTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
 }
 
@@ -73,12 +73,13 @@ void AssemblyDensityGraph::drawGraph(QPainter & p) {
         CoverageInfo ci = coverageTaskRunner.getResult();
         QVector<qint64> & densities = ci.coverageInfo;
         qint64 maxDensity = ci.maxCoverage;
-        CHECK(maxDensity > 0,);
 
         if(visibleBases != densities.size()) {
             sl_launchCoverageCalculation();
             return;
         }
+
+        CHECK(maxDensity > 0,);
 
         //draw density for each visible column
         double readsPerYPixel = double(maxDensity)/height();
@@ -112,6 +113,8 @@ void AssemblyDensityGraph::sl_launchCoverageCalculation()
         qint64 start = browser->getXOffsetInAssembly();
         qint64 length = browser->basesVisible();
 
+        previousXOffset = start;
+
         CalcCoverageInfoTaskSettings settings;
         settings.model = model;
         settings.visibleRange = U2Region(start, length);
@@ -121,6 +124,15 @@ void AssemblyDensityGraph::sl_launchCoverageCalculation()
         coverageTaskRunner.run(new CalcCoverageInfoTask(settings));
     }
     sl_redraw();
+}
+
+void AssemblyDensityGraph::sl_onOffsetsChanged() {
+    if(browser->areCellsVisible()) {
+        qint64 currentXOffset = browser->getXOffsetInAssembly();
+        if(currentXOffset != previousXOffset) {
+            sl_launchCoverageCalculation();
+        }
+    }
 }
 
 } //ns

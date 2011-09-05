@@ -48,6 +48,7 @@ signals:
 private slots:
     void sl_redraw();
     void sl_launchCoverageCalculation();
+    void sl_onOffsetsChanged();
 
 private:
     void connectSlots();
@@ -62,6 +63,8 @@ private:
     QPixmap cachedView;
     bool redraw;
     const static int FIXED_HEIGHT = 25;
+
+    qint64 previousXOffset;
 
     BackgroundTaskRunner<CoverageInfo> coverageTaskRunner;
 };
