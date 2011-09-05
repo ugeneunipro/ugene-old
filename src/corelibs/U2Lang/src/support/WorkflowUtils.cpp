@@ -311,7 +311,17 @@ Descriptor WorkflowUtils::getCurrentMatchingDescriptor(const QList<Descriptor> &
         if (!currentVal.isEmpty()) {
             return Descriptor(currentVal, tr("<List of values>"), tr("List of values"));
         } else {
-            return EMPTY_VALUES_DESC;
+            QString id;
+            bool first = true;
+            for (int i=0; i<candidates.size(); i++) {
+                if (!first) {
+                    id += ";";
+                }
+                id += candidates[i].getId();
+                first = false;
+            }
+            return Descriptor(id, tr("<List of values>"), tr("List of values"));
+            //return EMPTY_VALUES_DESC;
         }
     } else {
         int idx = bindings.contains(key.getId()) ? candidates.indexOf(bindings.value(key.getId())) : 0;
