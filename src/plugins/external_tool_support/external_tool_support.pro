@@ -48,7 +48,10 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/BowtieTask.h \
            src/bowtie/BowtieSupport.h \
            src/bowtie/BowtieSettingsWidget.h \
-    src/bowtie/bowtie_tests/bowtieTests.h
+    	   src/bowtie/bowtie_tests/bowtieTests.h \
+	   src/mrbayes/MrBayesSupport.h \
+	   src/mrbayes/MrBayesDialogWidget.h \
+	   src/mrbayes/MrBayesTask.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/CAP3SupportDialog.ui \
          src/ui/ClustalWSupportRunDialog.ui \
@@ -58,7 +61,8 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/SelectPathDialog.ui \
          src/ui/TCoffeeSupportRunDialog.ui \
          src/ui/BowtieSettings.ui \
-    src/ui/BowtieBuildSettings.ui
+    	 src/ui/BowtieBuildSettings.ui \
+	 src/ui/MrBayesDialog.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolRunTask.cpp \
            src/ExternalToolSupportPlugin.cpp \
@@ -106,6 +110,9 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bowtie/BowtieTask.cpp \
            src/bowtie/BowtieSupport.cpp \
            src/bowtie/BowtieSettingsWidget.cpp \
-    src/bowtie/bowtie_tests/bowtieTests.cpp
+	   src/bowtie/bowtie_tests/bowtieTests.cpp \
+	   src/mrbayes/MrBayesSupport.cpp \
+	   src/mrbayes/MrBayesDialogWidget.cpp \
+	   src/mrbayes/MrBayesTask.cpp 
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

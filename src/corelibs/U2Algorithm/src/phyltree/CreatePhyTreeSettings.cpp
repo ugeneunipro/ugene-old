@@ -24,7 +24,8 @@
 namespace U2{
 
 CreatePhyTreeSettings::CreatePhyTreeSettings() : algorithmId(""), matrixId(""),
-useGammaDistributionRates(false), bootstrap(false), consensusID("")
+useGammaDistributionRates(false), bootstrap(false), consensusID(""), mrBayesSettingsScript(""),
+mb_ngen(1)
 {
 
 }

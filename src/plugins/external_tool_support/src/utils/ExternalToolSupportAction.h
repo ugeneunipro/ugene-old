@@ -27,12 +27,12 @@
 
 namespace U2 {
 
-class ExternalToolSupprotAction : public GObjectViewAction {
+class ExternalToolSupportAction : public GObjectViewAction {
     Q_OBJECT
 public:
-    ExternalToolSupprotAction(QObject* p, GObjectView* v, const QString& _text, int order, const QStringList& _toolNames);
+    ExternalToolSupportAction(QObject* p, GObjectView* v, const QString& _text, int order, const QStringList& _toolNames);
 
-    ExternalToolSupprotAction(const QString& text, QObject* p, const QStringList& _toolNames);
+    ExternalToolSupportAction(const QString& text, QObject* p, const QStringList& _toolNames);
 
     const QStringList getToolNames(){return toolNames;}
 private slots:

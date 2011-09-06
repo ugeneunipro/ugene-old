@@ -63,7 +63,7 @@ void neighbor_getoptions()
   trout = true;
   upper = false;
   printdata = false;
-  progress = true;
+  progress = false;
   treeprint = false; // true;
   njoin = true;
   loopcount = 0;

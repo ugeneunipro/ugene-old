@@ -51,7 +51,7 @@ QList<QString> ConsensusModelTypes::getConsensusModelTypes()
 
 #define SEQ_BOOT_BOTTSTR_PATH "/bootstr"
 #define SEQ_BOOT_REPL_PATH "/replicates"
-#define SEQ_BOOT_SEED_PATH "/seed"
+#define SEQ_BOOT_SEED_PATH "/seq_boot_seed"
 #define SEQ_BOOT_FRACTION_PATH "/fraction"
 #define SEQ_BOOT_CONSENSUSID_PATH "/consensusID"
 
@@ -114,6 +114,14 @@ void SeqBootModelWidget::restoreDefault(){
 
 #define SEED_MIN 5
 #define SEED_MAX 32765
+bool SeqBootModelWidget::checkSettings(QString& msg, const CreatePhyTreeSettings& settings){
+    if(!((settings.seed > SEED_MIN) && (settings.seed <SEED_MAX) && (settings.seed%2 == 1))){
+        msg = tr("Seed must be odd");
+        return false;
+    }
+
+    return true;
+}
 int SeqBootModelWidget::getRandomSeed(){
     int seed = 0;
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -151,8 +159,4 @@ void SeqBootModelWidget::sl_onModelChanged(const QString& modelName) {
         FractionSpinBox->setValue(0.5);
     }
 }
-
-
-
-
 } //namespace

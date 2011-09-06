@@ -90,7 +90,7 @@ void getoptions()
   weights = false;
   printdata = false;
   dotdiff = true;
-  progress = true;
+  progress = false;
   interleaved = true;
   loopcount = 0;
 

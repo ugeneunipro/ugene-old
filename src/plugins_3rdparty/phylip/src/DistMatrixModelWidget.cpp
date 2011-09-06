@@ -24,6 +24,11 @@
 #include "protdist.h"
 
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/Settings.h>
+#include <U2Core/AppResources.h>
+
 
 namespace U2 {
 
@@ -79,6 +84,43 @@ void DistMatrixModelWidget::restoreDefault(){
     gammaCheckBox->setChecked(false);
     alphaSpinBox->setValue(0.5);
     transitionRatioSpinBox->setValue(2.0);
+}
+
+bool DistMatrixModelWidget::checkMemoryEstimation(QString& msg, const MAlignment& msa, const CreatePhyTreeSettings& settings){
+    qint64 appMemMb = 0;
+    qint64 minMemoryForDistanceMatrixMb = 0;
+    AppResourcePool* s = AppContext::getAppSettings()->getAppResourcePool();
+    //AppResourcePool::getCurrentAppMemory(appMemMb);
+
+    appMemMb = s->getMaxMemorySizeInMB();
+
+    //****description******
+    //dnadist_makevalues()
+//     for (i = 0; i < spp; i++) {
+//         nodep[i]->x = (phenotype)Malloc(endsite*sizeof(ratelike));
+//         for (j = 0; j < endsite; j++)
+//             nodep[i]->x[j]  = (ratelike)Malloc(rcategs*sizeof(sitelike));
+//     }
+
+    //rcategs = 1
+    //sizeof(sitelike) = 32
+    //sizeof(ratelike) = 4
+    
+    qint64 spp = msa.getNumRows();
+    qint64 endsite = msa.getLength();
+
+    qint64 ugeneLowestMemoryUsageMb = 50; 
+
+    minMemoryForDistanceMatrixMb = (qint64)(spp*endsite*32 + endsite*4)/(1024*1024);
+
+    if(minMemoryForDistanceMatrixMb>appMemMb - ugeneLowestMemoryUsageMb){
+        msg = tr("Probably, for that alignment there is no enough memory to run PHYLIP dnadist module."
+            "The module will require more than %1 MB in the estimation."
+            "\nIt could cause an error. Do you want to continue?").arg(minMemoryForDistanceMatrixMb);
+        return false;
+    }else{
+        return true;
+    }
 }
 
 void DistMatrixModelWidget::sl_onModelChanged(const QString& modelName) {

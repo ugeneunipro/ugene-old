@@ -134,7 +134,7 @@ void GTest_NeighborJoin::prepare() {
         settings.replicates = 100;
     }
 
-    task = new PhyTreeGeneratorTask(input->getMAlignment(), settings);
+    task = new PhyTreeGeneratorLauncherTask(input->getMAlignment(), settings);
     addSubTask(task);
 }
 
@@ -154,9 +154,5 @@ Task::ReportResult GTest_NeighborJoin::report() {
 void GTest_NeighborJoin::cleanup() {
 	
 }
-
-
-
-	
 
 }

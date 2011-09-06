@@ -38,8 +38,8 @@ class CreatePhyTreeDialogController;
 
 class U2ALGORITHM_EXPORT PhyTreeGenerator{
 public:
-    virtual PhyTree calculatePhyTree(const MAlignment& ma, const CreatePhyTreeSettings& s, TaskStateInfo& ti) = 0;
-    // TODO create separate class&registry
+    //virtual PhyTree calculatePhyTree(const MAlignment& ma, const CreatePhyTreeSettings& s, TaskStateInfo& ti) = 0;
+    virtual Task* createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s) = 0;
     virtual void setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma) = 0;
 };
 

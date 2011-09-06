@@ -28,16 +28,24 @@
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2View/CreatePhyTreeDialogController.h>
 #include <U2Algorithm/PhyTreeGenerator.h>
+#include <U2Algorithm/PhyTreeGeneratorTask.h>
 
 namespace U2 { 
 
 class MAlignment;
 class TaskStateInfo;
+class PhyTreeGeneratorTask;
 
 class NeighborJoinAdapter : public PhyTreeGenerator {
 public:
-    PhyTree calculatePhyTree(const MAlignment& ma, const CreatePhyTreeSettings& s, TaskStateInfo& ti);
+    Task* createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s);
     virtual void setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma);
+};
+
+class NeighborJoinCalculateTreeTask: public PhyTreeGeneratorTask{
+public:
+    NeighborJoinCalculateTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s);
+    void run();
 private:
     static QMutex runLock;
 };

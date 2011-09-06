@@ -13,5 +13,8 @@
         <file>images/cancel.png</file>
         <file>images/ncbi_gray.png</file>
         <file>images/ncbi_warn.png</file>
+	<file>images/mrbayes.png</file>
+	<file>images/mrbayes_gray.png</file>
+	<file>images/mrbayes_warn.png</file>
     </qresource>
 </RCC>

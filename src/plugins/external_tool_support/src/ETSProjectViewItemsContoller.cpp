@@ -45,8 +45,8 @@
 
 namespace U2 {
 ETSProjectViewItemsContoller::ETSProjectViewItemsContoller(QObject* p) : QObject(p) {
-    formatDBOnSelectionAction=new ExternalToolSupprotAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
-    makeBLASTDBOnSelectionAction=new ExternalToolSupprotAction(tr("BLAST+ make DB..."), this, QStringList(MAKEBLASTDB_TOOL_NAME));
+    formatDBOnSelectionAction=new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
+    makeBLASTDBOnSelectionAction=new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(MAKEBLASTDB_TOOL_NAME));
     connect(formatDBOnSelectionAction,SIGNAL(triggered()), SLOT(sl_runFormatDBOnSelection()));
     connect(makeBLASTDBOnSelectionAction,SIGNAL(triggered()), SLOT(sl_runFormatDBOnSelection()));
 
@@ -78,7 +78,7 @@ void ETSProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
     }
 }
 void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
-    ExternalToolSupprotAction* s = qobject_cast<ExternalToolSupprotAction*>(sender());
+    ExternalToolSupportAction* s = qobject_cast<ExternalToolSupportAction*>(sender());
     assert(s != NULL);
     assert((s->getToolNames().contains(FORMATDB_TOOL_NAME))||(s->getToolNames().contains(MAKEBLASTDB_TOOL_NAME)));
     //Check that formatDB and tempory directory path defined

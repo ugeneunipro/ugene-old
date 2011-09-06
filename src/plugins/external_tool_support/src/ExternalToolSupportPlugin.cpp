@@ -63,6 +63,7 @@
 #include "mafft/MAFFTWorker.h"
 #include "tcoffee/TCoffeeSupport.h"
 #include "tcoffee/TCoffeeWorker.h"
+#include "mrbayes/MrBayesSupport.h"
 #include "blast/FormatDBSupport.h"
 #include "blast/BlastAllSupport.h"
 #include "blast/BlastAllWorker.h"
@@ -105,23 +106,27 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     TCoffeeSupport* tCoffeeTool=new TCoffeeSupport(TCOFFEE_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(tCoffeeTool);
 
+    //MrBayes
+    MrBayesSupport* mrBayesTool = new MrBayesSupport(MRBAYES_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(mrBayesTool);
+
     if (AppContext::getMainWindow()) {
         clustalWTool->getViewContext()->setParent(this);
         clustalWTool->getViewContext()->init();
 
-        ExternalToolSupprotAction* clustalWAction = new ExternalToolSupprotAction(tr("ClustalW..."), this, QStringList(CLUSTAL_TOOL_NAME));
+        ExternalToolSupportAction* clustalWAction = new ExternalToolSupportAction(tr("ClustalW..."), this, QStringList(CLUSTAL_TOOL_NAME));
         connect(clustalWAction, SIGNAL(triggered()), clustalWTool, SLOT(sl_runWithExtFileSpecify()));
 
         mAFFTTool->getViewContext()->setParent(this);
         mAFFTTool->getViewContext()->init();
 
-        ExternalToolSupprotAction* mAFFTAction= new ExternalToolSupprotAction(tr("MAFFT..."), this, QStringList(MAFFT_TOOL_NAME));
+        ExternalToolSupportAction* mAFFTAction= new ExternalToolSupportAction(tr("MAFFT..."), this, QStringList(MAFFT_TOOL_NAME));
         connect(mAFFTAction, SIGNAL(triggered()), mAFFTTool, SLOT(sl_runWithExtFileSpecify()));
 
         tCoffeeTool->getViewContext()->setParent(this);
         tCoffeeTool->getViewContext()->init();
 
-        ExternalToolSupprotAction* tCoffeeAction= new ExternalToolSupprotAction(tr("T-Coffee..."), this, QStringList(TCOFFEE_TOOL_NAME));
+        ExternalToolSupportAction* tCoffeeAction= new ExternalToolSupportAction(tr("T-Coffee..."), this, QStringList(TCOFFEE_TOOL_NAME));
         connect(tCoffeeAction, SIGNAL(triggered()), tCoffeeTool, SLOT(sl_runWithExtFileSpecify()));
 
         //Add to menu MA
@@ -170,16 +175,16 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
 
     if (AppContext::getMainWindow()) {
-        ExternalToolSupprotAction* formatDBAction= new ExternalToolSupprotAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
+        ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
         connect(formatDBAction, SIGNAL(triggered()), formatDBTool, SLOT(sl_runWithExtFileSpecify()));
 
-        ExternalToolSupprotAction* makeBLASTDBAction= new ExternalToolSupprotAction(tr("BLAST+ make DB..."), this, QStringList(MAKEBLASTDB_TOOL_NAME));
+        ExternalToolSupportAction* makeBLASTDBAction= new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(MAKEBLASTDB_TOOL_NAME));
         connect(makeBLASTDBAction, SIGNAL(triggered()), makeBLASTDBTool, SLOT(sl_runWithExtFileSpecify()));
 
         blastallTool->getViewContext()->setParent(this);
         blastallTool->getViewContext()->init();
 
-        ExternalToolSupprotAction* blastallAction= new ExternalToolSupprotAction(tr("BLAST Search..."), this, QStringList(BLASTALL_TOOL_NAME));
+        ExternalToolSupportAction* blastallAction= new ExternalToolSupportAction(tr("BLAST Search..."), this, QStringList(BLASTALL_TOOL_NAME));
         connect(blastallAction, SIGNAL(triggered()), blastallTool, SLOT(sl_runWithExtFileSpecify()));
 
         BlastPlusSupportContext* blastPlusViewCtx = new BlastPlusSupportContext(this);
@@ -187,7 +192,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         blastPlusViewCtx->init();
         QStringList toolList;
         toolList << BLASTN_TOOL_NAME << BLASTP_TOOL_NAME << BLASTX_TOOL_NAME << TBLASTN_TOOL_NAME << TBLASTX_TOOL_NAME << RPSBLAST_TOOL_NAME;
-        ExternalToolSupprotAction* blastPlusAction= new ExternalToolSupprotAction(tr("BLAST+ Search..."), this, toolList);
+        ExternalToolSupportAction* blastPlusAction= new ExternalToolSupportAction(tr("BLAST+ Search..."), this, toolList);
         connect(blastPlusAction, SIGNAL(triggered()), blastNPlusTool, SLOT(sl_runWithExtFileSpecify()));
         
         //Add to menu NCBI Toolkit
@@ -199,7 +204,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         blastSubmenu->addAction(makeBLASTDBAction);
         blastSubmenu->addAction(blastPlusAction);
         
-        ExternalToolSupprotAction* cap3Action = new ExternalToolSupprotAction(QString("Contig assembly with %1").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
+        ExternalToolSupportAction* cap3Action = new ExternalToolSupportAction(QString("Contig assembly with %1").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
         connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
         QMenu* assemblySumbenu = tools->findChild<QMenu*>(MWMENU_TOOLS_ASSEMBLY);
         assemblySumbenu->addAction(cap3Action);

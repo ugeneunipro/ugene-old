@@ -42,7 +42,7 @@ class MSAEditorNameList;
 class MSAEditorOffsetsViewController;
 class MSAEditorStatusWidget;
 class MSAEditorUndoFramework;
-class PhyTreeGeneratorTask;
+class PhyTreeGeneratorLauncherTask;
 class MSAEditorTreeViewer;
 class MSACollapsibleItemModel;
 
@@ -151,7 +151,7 @@ private:
     QAction*          saveScreenshotAction;
 
     CreatePhyTreeSettings settings;
-    PhyTreeGeneratorTask* treeGeneratorTask;
+    PhyTreeGeneratorLauncherTask* treeGeneratorTask;
 };
 
 class MSAEditorUI : public QWidget {

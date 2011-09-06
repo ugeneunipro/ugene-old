@@ -40,6 +40,7 @@ public:
     virtual void fillSettings(CreatePhyTreeSettings& settings);
     virtual void storeSettings();
     virtual void restoreDefault();
+    virtual bool checkMemoryEstimation(QString& msg, const MAlignment& msa, const CreatePhyTreeSettings& settings);
 private slots:
     void sl_onModelChanged(const QString& modelName);
 

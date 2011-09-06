@@ -54,11 +54,11 @@ protected:
     virtual void buildMenu(GObjectView* view, QMenu* m);
 };
 
-class MAFFTSupportAction : public ExternalToolSupprotAction {
+class MAFFTSupportAction : public ExternalToolSupportAction {
         Q_OBJECT
 public:
     MAFFTSupportAction(QObject* p, GObjectView* v, const QString& text, int order)
-        : ExternalToolSupprotAction(p,v,text,order, QStringList(MAFFT_TOOL_NAME)) {}
+        : ExternalToolSupportAction(p,v,text,order, QStringList(MAFFT_TOOL_NAME)) {}
     MSAEditor*  getMSAEditor() const;
 
 private slots:

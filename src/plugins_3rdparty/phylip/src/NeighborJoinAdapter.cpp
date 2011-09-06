@@ -40,7 +40,7 @@
 
 namespace U2 {
 
-QMutex NeighborJoinAdapter::runLock;
+QMutex NeighborJoinCalculateTreeTask::runLock;
 
 void createPhyTreeFromPhylipTree(const MAlignment &ma, node *p, double m, boolean njoin, node *start, PhyNode* root, int bootstrap_repl)
 {
@@ -98,9 +98,26 @@ void replacePhylipRestrictedSymbols(QByteArray& name) {
     }
 }
 
+Task* NeighborJoinAdapter::createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s){
+    return new NeighborJoinCalculateTreeTask(ma, s);
+}
 
-PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const CreatePhyTreeSettings& s, TaskStateInfo& ti)
+void NeighborJoinAdapter::setupCreatePhyTreeUI( CreatePhyTreeDialogController* c, const MAlignment& ma )
 {
+     CreatePhyTreeWidget* w = new DistMatrixModelWidget(c, ma);
+     c->insertContrWidget(1,w);
+
+      CreatePhyTreeWidget* b = new SeqBootModelWidget(c, ma);
+      c->insertContrWidget(2, b);
+     c->adjustSize();
+}
+
+NeighborJoinCalculateTreeTask::NeighborJoinCalculateTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s)
+:PhyTreeGeneratorTask(ma, s){
+    setTaskName("NeighborJoin algorithm");
+}
+
+void NeighborJoinCalculateTreeTask::run(){
     QMutexLocker runLocker( &runLock );
 
     GCOUNTER(cvar,tvar, "PhylipNeigborJoin" );
@@ -108,17 +125,18 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
 
     PhyTree phyTree(NULL);
 
-    if (ma.getNumRows() < 3) {
-        ti.setError("Neighbor-Joining runs must have at least 3 species");
-        return phyTree;
+    if (inputMA.getNumRows() < 3) {
+        setError("Neighbor-Joining runs must have at least 3 species");
+        result = phyTree;
+        return;
     }
-    
 
-    if(s.bootstrap){ //bootstrapping and creating a consensus tree
+
+    if(settings.bootstrap){ //bootstrapping and creating a consensus tree
         try {
-            setTaskInfo(&ti);
+            setTaskInfo(&stateInfo);
             setBootstr(true);
-            ti.setDescription("Generating sequences");
+            stateInfo.setDescription("Generating sequences");
 
             std::auto_ptr<SeqBoot> seqBoot(new SeqBoot);
 
@@ -128,25 +146,27 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
                 tmpFile.setFileTemplate(path);
             }
             if(!tmpFile.open()){
-                ti.setError("Can't create temporary file");
-                return phyTree;
+                setError("Can't create temporary file");
+                result = phyTree;
+                return;
             }
 
-            seqBoot->generateSequencesFromAlignment(ma,s);
+            seqBoot->generateSequencesFromAlignment(inputMA,settings);
 
-            ti.setDescription("Calculating trees");
+            stateInfo.setDescription("Calculating trees");
 
             bool initial = true;
-            for (int i = 0; i < s.replicates; i++){
-                ti.progress = (int)(i/(float)s.replicates * 100);
+            for (int i = 0; i < settings.replicates; i++){
+                stateInfo.progress = (int)(i/(float)settings.replicates * 100);
 
                 const MAlignment& curMSA = seqBoot->getMSA(i);
                 std::auto_ptr<DistanceMatrix> distanceMatrix(new DistanceMatrix);
-                distanceMatrix->calculateOutOfAlignment(curMSA,s);
+                distanceMatrix->calculateOutOfAlignment(curMSA,settings);
 
                 if (!distanceMatrix->isValid()) {
-                    ti.setError("Calculated distance matrix is invalid");
-                    return phyTree;
+                    setError("Calculated distance matrix is invalid");
+                    result = phyTree;
+                    return;
                 }
 
                 int sz = distanceMatrix->rawMatrix.count();
@@ -164,7 +184,7 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
 
                 naym* nayme = getNayme();
                 for (int i = 0; i < sz; ++i) {
-                    const MAlignmentRow& row = ma.getRow(i);
+                    const MAlignmentRow& row = inputMA.getRow(i);
                     QByteArray name = row.getName().toAscii();
                     replacePhylipRestrictedSymbols(name);
                     qstrncpy(nayme[i], name.constData(), sizeof(naym));
@@ -179,17 +199,17 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
 
                 neighbour_free_resources();
             }
-            ti.progress = 99;
-            ti.setDescription("Calculating consensus tree");
+            progress = 99;
+            stateInfo.setDescription("Calculating consensus tree");
 
-            if(s.consensusID == ConsensusModelTypes::Strict){
-                consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, true, false, false, false);
-            }else if(s.consensusID == ConsensusModelTypes::MajorityRuleExt){
-                consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, false, true, false, false);
-            }else if(s.consensusID == ConsensusModelTypes::MajorityRule){
-                consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, false, false, true, false);
-            }else if(s.consensusID == ConsensusModelTypes::M1){
-                consens_starter(tmpFile.fileName().toStdString().c_str(), s.fraction, false, false, false, true);
+            if(settings.consensusID == ConsensusModelTypes::Strict){
+                consens_starter(tmpFile.fileName().toStdString().c_str(), settings.fraction, true, false, false, false);
+            }else if(settings.consensusID == ConsensusModelTypes::MajorityRuleExt){
+                consens_starter(tmpFile.fileName().toStdString().c_str(), settings.fraction, false, true, false, false);
+            }else if(settings.consensusID == ConsensusModelTypes::MajorityRule){
+                consens_starter(tmpFile.fileName().toStdString().c_str(), settings.fraction, false, false, true, false);
+            }else if(settings.consensusID == ConsensusModelTypes::M1){
+                consens_starter(tmpFile.fileName().toStdString().c_str(), settings.fraction, false, false, false, true);
             }else{
                 assert(0);
             }
@@ -197,7 +217,7 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
             PhyNode* rootPhy = new PhyNode();
             bool njoin = true;
 
-            createPhyTreeFromPhylipTree(ma, root, 0.43429448222, njoin, root, rootPhy, s.replicates);
+            createPhyTreeFromPhylipTree(inputMA, root, 0.43429448222, njoin, root, rootPhy, settings.replicates);
 
             consens_free_res();
 
@@ -206,23 +226,23 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
 
             phyTree = data;
 
-         } catch (const char* message) {
-            ti.setError(QString("Phylip error %1").arg(message));
+        } catch (const char* message) {
+            stateInfo.setError(QString("Phylip error %1").arg(message));
         }
     }else{
-    
+
         // Exceptions are used to avoid phylip exit(-1) error handling and canceling task 
         try {   
-                    
-            setTaskInfo(&ti);
+            setTaskInfo(&stateInfo);
             setBootstr(false);
-            
+
             std::auto_ptr<DistanceMatrix> distanceMatrix(new DistanceMatrix);
-            distanceMatrix->calculateOutOfAlignment(ma,s);
+            distanceMatrix->calculateOutOfAlignment(inputMA,settings);
 
             if (!distanceMatrix->isValid()) {
-                ti.setError("Calculated distance matrix is invalid");
-                return phyTree;
+                stateInfo.setError("Calculated distance matrix is invalid");
+                result = phyTree;
+                return;
             }
 
             int sz = distanceMatrix->rawMatrix.count();
@@ -240,7 +260,7 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
 
             naym* nayme = getNayme();
             for (int i = 0; i < sz; ++i) {
-                const MAlignmentRow& row = ma.getRow(i);
+                const MAlignmentRow& row = inputMA.getRow(i);
                 QByteArray name = row.getName().toAscii();
                 replacePhylipRestrictedSymbols(name);
                 qstrncpy(nayme[i], name.constData(), sizeof(naym));
@@ -253,8 +273,8 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
             PhyNode* root = new PhyNode();
             bool njoin = true;
 
-            ti.progress = 99;
-            createPhyTreeFromPhylipTree(ma, curTree->start, 0.43429448222, njoin, curTree->start, root, 0);
+            stateInfo.progress = 99;
+            createPhyTreeFromPhylipTree(inputMA, curTree->start, 0.43429448222, njoin, curTree->start, root, 0);
 
             neighbour_free_resources();
 
@@ -263,23 +283,12 @@ PhyTree NeighborJoinAdapter::calculatePhyTree( const MAlignment& ma, const Creat
 
             phyTree = data;
         } catch (const char* message) {
-            ti.setError(QString("Phylip error %1").arg(message));
+            stateInfo.setError(QString("Phylip error %1").arg(message));
         }
-    
+
     }
 
-    return phyTree;
-
-}
-
-void NeighborJoinAdapter::setupCreatePhyTreeUI( CreatePhyTreeDialogController* c, const MAlignment& ma )
-{
-     CreatePhyTreeWidget* w = new DistMatrixModelWidget(c, ma);
-     c->insertContrWidget(1,w);
-
-      CreatePhyTreeWidget* b = new SeqBootModelWidget(c, ma);
-      c->insertContrWidget(2, b);
-     c->adjustSize();
+    result = phyTree;
 }
 
 } 

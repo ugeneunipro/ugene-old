@@ -22,10 +22,12 @@ public:
     ~CreatePhyTreeDialogController();
 
     void insertContrWidget(int pos, CreatePhyTreeWidget* widget);
+    void clearContrWidgets();
 
 private slots:
     void sl_okClicked();
     void sl_browseClicked();
+    void sl_comboIndexChaged(int index);
     void sl_onStoreSettings();
     void sl_onRestoreDefault();
     
@@ -35,9 +37,6 @@ private:
     CreatePhyTreeSettings& settings;
     QList<CreatePhyTreeWidget*> childWidgets;
     Ui_CreatePhyTree* ui;
-
-    bool estimateResources(qint64* memoryRequiredMB); 
-    bool checkSeed(int seed);
 };
 
 }

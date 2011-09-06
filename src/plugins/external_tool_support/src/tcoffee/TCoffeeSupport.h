@@ -54,11 +54,11 @@ protected:
     virtual void buildMenu(GObjectView* view, QMenu* m);
 };
 
-class TCoffeeSupportAction : public ExternalToolSupprotAction {
+class TCoffeeSupportAction : public ExternalToolSupportAction {
         Q_OBJECT
 public:
     TCoffeeSupportAction(QObject* p, GObjectView* v, const QString& text, int order)
-        : ExternalToolSupprotAction(p,v,text,order, QStringList(TCOFFEE_TOOL_NAME)) {}
+        : ExternalToolSupportAction(p,v,text,order, QStringList(TCOFFEE_TOOL_NAME)) {}
     MSAEditor*  getMSAEditor() const;
 
 private slots:

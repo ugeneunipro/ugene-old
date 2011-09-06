@@ -29,7 +29,7 @@
 namespace U2 {
 
 class Document;
-class PhyTreeGeneratorTask;
+class PhyTreeGeneratorLauncherTask;
 
 class GTest_CalculateTreeFromAligment : public GTest {
     Q_OBJECT
@@ -38,7 +38,7 @@ class GTest_CalculateTreeFromAligment : public GTest {
     ReportResult report();
     void prepare();
 
-    PhyTreeGeneratorTask* task;
+    PhyTreeGeneratorLauncherTask* task;
     QString objContextName;
     QString treeObjContextName;
     QString algName;

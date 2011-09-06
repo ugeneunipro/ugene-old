@@ -96,7 +96,7 @@ void prot_getoptions(const QString& matrixModel)
   putchar('\n');
   weights = false;
   printdata = false;
-  progress = true;
+  progress = false;
   interleaved = true;
   similarity = false;
   ttratio = 2.0;
@@ -583,10 +583,10 @@ void prot_inputoptions()
     if (printdata)
       printcategs(outfile, chars, category, "Position categories");
   } else if (printdata && (categs > 1)) {
-    fprintf(outfile, "\nPosition category   Rate of change\n\n");
-    for (i = 1; i <= categs; i++)
-      fprintf(outfile, "%15ld%13.3f\n", i, rate[i - 1]);
-    putc('\n', outfile);
+ //   fprintf(outfile, "\nPosition category   Rate of change\n\n");
+//     for (i = 1; i <= categs; i++)
+//       fprintf(outfile, "%15ld%13.3f\n", i, rate[i - 1]);
+//    putc('\n', outfile);
     prot_printcategories();
   }
   if (weights && printdata)

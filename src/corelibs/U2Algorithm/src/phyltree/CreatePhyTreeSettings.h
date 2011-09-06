@@ -43,7 +43,9 @@ public:
     int seed;
     double fraction;
     QString consensusID;
+    int mb_ngen;
 
+    QString mrBayesSettingsScript;
 };
 
 }

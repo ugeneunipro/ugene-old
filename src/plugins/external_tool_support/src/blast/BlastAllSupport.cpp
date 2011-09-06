@@ -127,7 +127,7 @@ void BlastAllSupportContext::initViewContext(GObjectView* view) {
     assert(av!=NULL);
     Q_UNUSED(av);
 
-    ExternalToolSupprotAction* queryAction = new ExternalToolSupprotAction(this, view, tr("Query with BLAST..."), 2000, QStringList(BLASTALL_TOOL_NAME));
+    ExternalToolSupportAction* queryAction = new ExternalToolSupportAction(this, view, tr("Query with BLAST..."), 2000, QStringList(BLASTALL_TOOL_NAME));
 
     addViewAction(queryAction);
     connect(queryAction, SIGNAL(triggered()), SLOT(sl_showDialog()));

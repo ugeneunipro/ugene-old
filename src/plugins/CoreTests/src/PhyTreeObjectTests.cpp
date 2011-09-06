@@ -87,7 +87,7 @@ void GTest_CalculateTreeFromAligment::prepare() {
     CreatePhyTreeSettings settings;
     settings.algorithmId = algName;
 
-    task = new PhyTreeGeneratorTask(maObj->getMAlignment(), settings);
+    task = new PhyTreeGeneratorLauncherTask(maObj->getMAlignment(), settings);
 
     if (task == NULL) {
         stateInfo.setError(QString("Algorithm %1 not found").arg(algName));

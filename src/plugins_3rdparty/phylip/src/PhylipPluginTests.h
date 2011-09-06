@@ -49,7 +49,7 @@ private:
     int bootStrapSeed;
     Document* maDoc;
     Document* treeDoc;
-    PhyTreeGeneratorTask* task;
+    PhyTreeGeneratorLauncherTask* task;
     MAlignmentObject* input;
     PhyTreeObject* treeObjFromDoc;
 };

@@ -37,13 +37,26 @@ public:
     PhyTree getResult() { return result; }
     const CreatePhyTreeSettings& getSettings() { return settings; } 
     ReportResult report();
-private:
-    void calculateTree();
-    PhyTreeGenerator*           generator;
+protected:
     const MAlignment&           inputMA;
     PhyTree                     result;
     CreatePhyTreeSettings       settings;
+};
 
+class U2ALGORITHM_EXPORT PhyTreeGeneratorLauncherTask: public Task{
+    Q_OBJECT
+public:
+    PhyTreeGeneratorLauncherTask(const MAlignment& ma, const CreatePhyTreeSettings& _settings);
+    ~PhyTreeGeneratorLauncherTask(){};
+    PhyTree getResult() { return result; }
+    void prepare();
+    void run(){};
+    ReportResult report();
+private:
+    const MAlignment&           inputMA;
+    PhyTree                     result;
+    CreatePhyTreeSettings       settings;
+    PhyTreeGeneratorTask*       task;
 };
 
 } //namespace

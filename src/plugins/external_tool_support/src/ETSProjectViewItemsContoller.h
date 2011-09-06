@@ -40,8 +40,8 @@ private slots:
 
     void sl_runFormatDBOnSelection();
 private:
-    ExternalToolSupprotAction* formatDBOnSelectionAction;
-    ExternalToolSupprotAction* makeBLASTDBOnSelectionAction;
+    ExternalToolSupportAction* formatDBOnSelectionAction;
+    ExternalToolSupportAction* makeBLASTDBOnSelectionAction;
 };
 }//namespace
 #endif // _U2_ETS_PROJECT_VIEW_ITEMS_CONTOLLER_H

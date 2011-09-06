@@ -38,7 +38,7 @@ namespace U2
 {
 
 NEXUSFormat::NEXUSFormat(QObject *p) :
-        DocumentFormat(p, DocumentFormatFlags(0), QStringList()<<"nex"<<"nxs")      // disable writing and streaming for now
+        DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList()<<"nex"<<"nxs")      // disable streaming for now
 {
     formatName = tr("NEXUS");
     supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
@@ -678,7 +678,20 @@ void writeMAligment(const MAlignment &ma, IOAdapter *io, TaskStateInfo&) {
     io->writeBlock(line);
     line.clear();
 
-    QTextStream(&line) << tabs << "format gap=" << MAlignment_GapChar << ";\n";
+    //datatype for MrBayes files
+    QString dataType;
+    const QString& alphabetId = ma.getAlphabet()->getId();
+    if(alphabetId == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT() || alphabetId == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()){
+        dataType = "dna";
+    }else if(alphabetId == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT() || alphabetId == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED()){
+       dataType = "rna"; 
+    }else if (alphabetId == BaseDNAAlphabetIds::AMINO_DEFAULT()){
+        dataType = "protein";
+    }else {
+        dataType = "standard";
+    }
+
+    QTextStream(&line) << tabs << "format datatype="<<dataType<<" gap=" << MAlignment_GapChar << ";\n";
     io->writeBlock(line);
     line.clear();
 
@@ -701,9 +714,11 @@ void writeMAligment(const MAlignment &ma, IOAdapter *io, TaskStateInfo&) {
     foreach (const MAlignmentRow& row, rows)
     {
         QString name = row.getName();
+        
         if (name.contains(QRegExp("\\s")))
         {
-            name = "'" + name + "'";
+            //name = "'" + name + "'";
+            name.replace(' ','_');
         }
 
         name = name.leftJustified(nameMaxLen);

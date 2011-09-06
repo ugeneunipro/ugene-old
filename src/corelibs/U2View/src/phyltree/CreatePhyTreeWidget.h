@@ -28,6 +28,9 @@
 
 namespace U2 {
 
+class MAlignment;
+class CreatePhyTreeSettings;
+
 class U2VIEW_EXPORT CreatePhyTreeWidget : public QWidget {
 public:
     static const QString settingsPath;
@@ -35,6 +38,8 @@ public:
     virtual void fillSettings(CreatePhyTreeSettings& settings) {Q_UNUSED(settings); } 
     virtual void storeSettings() {;}
     virtual void restoreDefault() {;}
+    virtual bool checkSettings(QString& msg, const CreatePhyTreeSettings& settings) {return true;}
+    virtual bool checkMemoryEstimation(QString& msg, const MAlignment& msa, const CreatePhyTreeSettings& settings) {return true;}
 };
  
 } //namespace

@@ -29,33 +29,40 @@
 namespace U2 {
 
 PhyTreeGeneratorTask::PhyTreeGeneratorTask(const MAlignment& ma, const CreatePhyTreeSettings& _settings) 
-   : Task(tr("Calculating Phylogenetic Tree"), TaskFlags_FOSCOE), inputMA(ma), settings(_settings)
+   : Task(tr("Calculating Phylogenetic Tree"), TaskFlag_FailOnSubtaskError), inputMA(ma), settings(_settings)
 {
     tpm = Task::Progress_Manual;
-    QString algId = settings.algorithmId;
-    PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
-    generator = registry->getGenerator(algId);
-    assert(generator!=NULL);
-    if (generator == NULL) {
-        stateInfo.setError(tr("Tree construction algorithm %1 not found").arg(algId));
-    }
 }
 
 void PhyTreeGeneratorTask::run() {
-    if (!hasError()) {
-        calculateTree();
-    }
-}
-
-void PhyTreeGeneratorTask::calculateTree() {
-    stateInfo.progress = 0;
-    stateInfo.setDescription(tr("Calculating phylogenetic tree"));
-    result = generator->calculatePhyTree(inputMA, settings, stateInfo);
-    stateInfo.progress = 100;
 }
 
 Task::ReportResult PhyTreeGeneratorTask::report() {
     return ReportResult_Finished; 
+}
+
+PhyTreeGeneratorLauncherTask::PhyTreeGeneratorLauncherTask(const MAlignment& ma, const CreatePhyTreeSettings& _settings)
+:Task(tr("Calculating Phylogenetic Tree"), TaskFlag_FailOnSubtaskError), inputMA(ma), settings(_settings), task(NULL){
+    tpm = Task::Progress_SubTasksBased;
+}
+void PhyTreeGeneratorLauncherTask::prepare(){
+    QString algId = settings.algorithmId;
+    PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
+    PhyTreeGenerator* generator = registry->getGenerator(algId);
+    assert(generator!=NULL);
+    if (generator == NULL) {
+        stateInfo.setError(tr("Tree construction algorithm %1 not found").arg(algId));
+    }else{
+        task = dynamic_cast<PhyTreeGeneratorTask*>(generator->createCalculatePhyTreeTask(inputMA,settings));
+        addSubTask(task);
+    }
+    
+}
+Task::ReportResult PhyTreeGeneratorLauncherTask::report(){
+    if(task){
+        result = task->getResult();
+    }
+    return ReportResult_Finished;
 }
 
 } //namespace

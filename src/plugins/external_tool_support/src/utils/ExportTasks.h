@@ -32,7 +32,7 @@
 
 namespace U2 {
 
-/** A task to save alignment to CLUSTAL */
+/** Save Alignment Task (to CLUSTAL, NEXUS, ...) */
 class SaveAlignmentTask : public Task {
     Q_OBJECT
 public:
@@ -50,7 +50,7 @@ private:
 };
 
 
-/** A task to export alignment to FASTA */
+/**Export Alignment to Sequence Format (FASTA, ...) */
 class SaveMSA2SequencesTask : public Task {
     Q_OBJECT
 public:

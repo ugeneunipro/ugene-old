@@ -244,14 +244,14 @@ void MSAEditor::sl_buildTree() {
         return;
     }
 
-    treeGeneratorTask = new PhyTreeGeneratorTask(msaObject->getMAlignment(), settings);
+    treeGeneratorTask = new PhyTreeGeneratorLauncherTask(msaObject->getMAlignment(), settings);
     connect(treeGeneratorTask, SIGNAL(si_stateChanged()), SLOT(sl_openTree()));
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     scheduler->registerTopLevelTask(treeGeneratorTask);
 }
 
 void MSAEditor::sl_openTree() {
-    if (treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError()) {
+    if (treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError() || treeGeneratorTask->isCanceled()) {
         return;
     }
 

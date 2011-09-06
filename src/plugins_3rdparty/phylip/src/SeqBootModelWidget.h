@@ -46,6 +46,7 @@ public:
     virtual void fillSettings(CreatePhyTreeSettings& settings);
     virtual void storeSettings();
     virtual void restoreDefault();
+    virtual bool checkSettings(QString& msg, const CreatePhyTreeSettings& settings);
 
     int getCurSeed() {return seedSpinBox->value();}
     int getRandomSeed();
@@ -53,9 +54,6 @@ public:
 
 private slots:
     void sl_onModelChanged(const QString& modelName);
-
-
-
 };
 
 }

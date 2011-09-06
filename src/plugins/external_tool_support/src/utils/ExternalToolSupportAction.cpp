@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-ExternalToolSupprotAction::ExternalToolSupprotAction(QObject* p, GObjectView* v, const QString& _text, int order, const QStringList& _toolNames)
+ExternalToolSupportAction::ExternalToolSupportAction(QObject* p, GObjectView* v, const QString& _text, int order, const QStringList& _toolNames)
     : GObjectViewAction(p,v,_text,order), toolNames(_toolNames)
 {
     QFont isConfiguredToolFont;
@@ -63,7 +63,7 @@ ExternalToolSupprotAction::ExternalToolSupprotAction(QObject* p, GObjectView* v,
     }
 }
 
-ExternalToolSupprotAction::ExternalToolSupprotAction(const QString& _text, QObject* p, const QStringList& _toolNames)
+ExternalToolSupportAction::ExternalToolSupportAction(const QString& _text, QObject* p, const QStringList& _toolNames)
     : GObjectViewAction(p, NULL, _text), toolNames(_toolNames)
 {
     QFont isConfiguredToolFont;
@@ -98,7 +98,7 @@ ExternalToolSupprotAction::ExternalToolSupprotAction(const QString& _text, QObje
     }
 }
 
-void ExternalToolSupprotAction::sl_pathChanged() {
+void ExternalToolSupportAction::sl_pathChanged() {
     QFont isConfiguredToolFont;
     bool isOneOfToolConfigured=false;
     foreach(QString toolName, toolNames){
