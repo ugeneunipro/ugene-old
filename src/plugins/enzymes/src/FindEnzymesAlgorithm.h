@@ -28,6 +28,8 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/U2Type.h>
+#include <U2Core/DNATranslation.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QList>
@@ -37,7 +39,7 @@ namespace U2 {
 class FindEnzymesAlgListener {
 public:
     ~FindEnzymesAlgListener(){}
-    virtual void onResult(int pos, const SEnzymeData& enzyme) = 0;
+    virtual void onResult(int pos, const SEnzymeData& enzyme, const U2Strand& strand) = 0;
 };
 
 
@@ -45,20 +47,36 @@ template <typename CompareFN>
 class FindEnzymesAlgorithm {
 public:
     void run(const DNASequence& sequence, const U2Region& range, const SEnzymeData& enzyme, FindEnzymesAlgListener* l, TaskStateInfo& ti) {
+    
+        // look for results in direct strand
+        run(sequence, range, enzyme, enzyme->seq.constData(), U2Strand::Direct, l, ti);
+        
+        // if enzyme is not symmetric - look in complementary strand too
+        DNATranslation* tt = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(enzyme->alphabet);
+        if (tt == NULL) {
+            return;
+        }
+        QByteArray revCompl = enzyme->seq;
+        tt->translate(revCompl.data(), revCompl.size());
+        TextUtils::reverse(revCompl.data(), revCompl.size());
+        if (revCompl == enzyme->seq) {
+            return;
+        }
+        run(sequence, range, enzyme, revCompl.constData(), U2Strand::Complementary, l, ti);
+    }
+
+
+    void run(const DNASequence& sequence, const U2Region& range, const SEnzymeData& enzyme, 
+        const char* pattern, U2Strand stand, FindEnzymesAlgListener* l, TaskStateInfo& ti) 
+    {
         CompareFN fn(sequence.alphabet, enzyme->alphabet);
         const char* seq = sequence.constData();
-        const char* pattern = enzyme->seq.constData();
         char unknownChar = sequence.alphabet->getDefaultSymbol();
         int plen = enzyme->seq.length();
-        for (int s=range.startPos, n = range.endPos() - plen + 1; s < n && !ti.cancelFlag; s++) {
-            bool match = true;
-            for (int p=0; p < plen && match; p++) {
-                char c1 = seq[s + p];
-                char c2 = pattern[p];
-                match = c1!=unknownChar && fn.equals(c1, c2);
-            }
+        for (int s = range.startPos, n = range.endPos() - plen + 1; s < n && !ti.cancelFlag; s++) {
+            bool match = matchSite(seq + s, pattern, plen, unknownChar, fn);
             if (match) {
-                l->onResult(s, enzyme);
+                l->onResult(s, enzyme, stand);
             }
         }
         if (sequence.circular) {
@@ -70,20 +88,26 @@ public:
                 buf.append(dnaseq.mid(startPos));
                 buf.append(dnaseq.mid(0, size));
                 for (int s = 0; s < size; s++) {
-                    bool match = true;
-                    for (int p = 0; p < plen && match; p++) {
-                        char c1 = buf[s + p];
-                        char c2 = pattern[p];
-                        match = c1!=unknownChar && fn.equals(c1,c2);
-                    }
+                    bool match = matchSite(buf.constData() + s, pattern, plen, unknownChar, fn);
                     if (match) {
-                        l->onResult(s + startPos, enzyme);
+                        l->onResult(s + startPos, enzyme, stand);
                     }
                 }
                 
             } 
         }
     }
+
+    bool matchSite(const char* seq, const char* pattern, int plen, char unknownChar, const CompareFN& fn) {
+        bool match = true;
+        for (int p=0; p < plen && match; p++) {
+            char c1 = seq[p];
+            char c2 = pattern[p];
+            match = (c1 != unknownChar && fn.equals(c2, c1));
+        }
+        return match;
+    }
+
 };
 
 } //namespace

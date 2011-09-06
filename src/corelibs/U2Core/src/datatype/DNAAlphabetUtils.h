@@ -51,18 +51,26 @@ public:
     virtual bool equals(char c1, char c2) const {return c1 == c2 && c1!='N' && c2!='N';}
 };
 
-// compares symbols exactly, 'N' does not match any symbol except 'N'
-class ExactDNAAlphabetComparatorN1 : public DNAAlphabetComparator {
+// compares symbols, 'N' does not match any symbol except 'N'
+class ExactDNAAlphabetComparatorStrict : public DNAAlphabetComparator {
 public:
-    ExactDNAAlphabetComparatorN1(DNAAlphabet* _al1, DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2){assert(al1==al2);}
+    ExactDNAAlphabetComparatorStrict(DNAAlphabet* _al1, DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2){assert(al1==al2);}
     
     virtual bool equals(char c1, char c2) const {return c1 == c2;}
 };
 
-// compares symbols exactly, 'N' matches any symbol
-class ExactDNAAlphabetComparatorNX : public DNAAlphabetComparator {
+// compares symbols, 'N' matches any symbol if found in first sequence. N in  the second sequence matches 'N' only
+class ExactDNAAlphabetComparatorN1M: public DNAAlphabetComparator {
 public:
-    ExactDNAAlphabetComparatorNX(DNAAlphabet* _al1, DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2){assert(al1==al2);}
+    ExactDNAAlphabetComparatorN1M(DNAAlphabet* _al1, DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2){assert(al1==al2);}
+
+    virtual bool equals(char c1, char c2) const {return c1 == c2 || c1 == 'N';}
+};
+
+// compares symbols, 'N' matches any symbol
+class ExactDNAAlphabetComparatorN1M_N2M : public DNAAlphabetComparator {
+public:
+    ExactDNAAlphabetComparatorN1M_N2M(DNAAlphabet* _al1, DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2){assert(al1==al2);}
 
     virtual bool equals(char c1, char c2) const {return c1 == c2 || c1 == 'N' || c2 == 'N';}
 };
@@ -71,6 +79,7 @@ public:
 
 #define DNA_AL_EX_INDEX_SIZE ('Z'- ' ' + 1)
 
+// compares extended alphabet symbols, 'N' matches any symbol
 class ExtendedDNAlphabetComparator : public DNAAlphabetComparator {
 public:
     ExtendedDNAlphabetComparator(DNAAlphabet* _al1, DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2) {

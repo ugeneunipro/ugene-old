@@ -31,28 +31,6 @@
 
 namespace U2 {
 
-class U2Strand {
-public:
-    enum Direction {
-        Direct = 1,
-        Complementary = -1
-    };
-
-    U2Strand() : value(Direct)  {}
-    U2Strand(Direction val) {value = val == Complementary ? Complementary : Direct;}
-    
-    bool isDirect() const { return value == Direct;}
-    
-    bool isCompementary() const { return value == Complementary;}
-    
-    bool operator==(const U2Strand& s) const {return value == s.value;}
-        
-    bool operator!=(const U2Strand& s) const {return value != s.value;}
-
- private:
-    int value;
-};
-
 
 /**
     Annotation qualifier - a textual property/remark for annotation

@@ -429,7 +429,7 @@ bool AssemblyReadsArea::findReadOnPos(const QPoint &pos, U2AssemblyRead &read) {
     return found;
 }
 
-QList<U2AssemblyRead> AssemblyReadsArea::findReadsCrossingX(quint64 asmX) {
+QList<U2AssemblyRead> AssemblyReadsArea::findReadsCrossingX(qint64 asmX) {
     QList<U2AssemblyRead> found;
     foreach (const U2AssemblyRead &r, cachedReads.data) {
         if(asmX >= r->leftmostPos && asmX < r->leftmostPos + U2AssemblyUtils::getEffectiveReadLength(r)) {
@@ -517,7 +517,7 @@ void AssemblyReadsArea::drawCurrentReadHighlight(QPainter &p) {
 void AssemblyReadsArea::drawReadsShadowing(QPainter &p) {
      if (shadowingEnabled) {
         int screenLinePos;
-        quint64 asmLinePos;
+        qint64 asmLinePos;
 
         if (shadowingData.mode == ShadowingData::FREE) {
             screenLinePos = curPos.x();

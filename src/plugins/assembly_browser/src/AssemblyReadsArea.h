@@ -86,7 +86,7 @@ private:
 
     /** Find reads crossing vertical line in assembly.
         @param asmX position in assembly */
-    QList<U2AssemblyRead> findReadsCrossingX(quint64 asmX);
+    QList<U2AssemblyRead> findReadsCrossingX(qint64 asmX);
 
     /** Find read laying under screen position.
         @param pos screen position */

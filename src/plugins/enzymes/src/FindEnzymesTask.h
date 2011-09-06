@@ -44,9 +44,10 @@ namespace U2 {
 class FindEnzymesAlgResult {
 public:
     FindEnzymesAlgResult() {pos = -1;}
-    FindEnzymesAlgResult(const SEnzymeData& _enzyme, int _pos) : enzyme(_enzyme), pos(_pos){}
-    SEnzymeData enzyme;
-    int         pos;
+    FindEnzymesAlgResult(const SEnzymeData& _enzyme, int _pos, const U2Strand& _strand) : enzyme(_enzyme), pos(_pos), strand(_strand){}
+    SEnzymeData     enzyme;
+    int             pos;
+    U2Strand        strand;
 };
 
 class FindEnzymesTask;
@@ -90,7 +91,7 @@ public:
 
     QList<FindEnzymesAlgResult>  getResults() const {return results;}
 
-    virtual void onResult(int pos, const SEnzymeData& enzyme);
+    virtual void onResult(int pos, const SEnzymeData& enzyme, const U2Strand& stand);
 
     ReportResult report();
     
@@ -119,7 +120,7 @@ public:
                         FindEnzymesAlgListener* l = NULL, bool circular = false, int maxResults = 0x7FFFFFFF);
     
     QList<FindEnzymesAlgResult>  getResults() const {return results;}
-    virtual void onResult(int pos, const SEnzymeData& enzyme);
+    virtual void onResult(int pos, const SEnzymeData& enzyme, const U2Strand& strand);
     virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti);
     void cleanup();
 private:
