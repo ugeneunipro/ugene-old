@@ -30,6 +30,8 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/U2Type.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/AppContext.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QList>
