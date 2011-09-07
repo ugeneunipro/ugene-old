@@ -53,9 +53,12 @@ class MrBayesLogParser : public ExternalToolLogParser {
 public:
     MrBayesLogParser(int _nchains);
     int getProgress();
+    void parseErrOutput(const QString& partOfLog);
 private:
+    QString lastErrLine;
     bool isMCMCRunning;
     int nchains;
+    int curProgress;
 
 };
 

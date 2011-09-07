@@ -145,12 +145,28 @@ QList<Task*> MrBayesSupportTask::onSubTaskFinished(Task* subTask){
 }
 
 MrBayesLogParser::MrBayesLogParser(int _nchains)
-:nchains(_nchains), isMCMCRunning(false){
+:nchains(_nchains), isMCMCRunning(false), curProgress(0){
     
+}
+void MrBayesLogParser::parseErrOutput(const QString& partOfLog){
+    lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
+    lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
+    lastErrLine=lastPartOfLog.takeLast();
+    foreach(QString buf, lastPartOfLog){
+        if(buf.contains(QRegExp("^\\d+"))
+            ||buf.contains("WARNING")
+            ||buf.contains(QRegExp("^-\\w"))
+            ||buf.contains("No trees are sampled")
+            ||buf.contains("[Relax")
+            ||buf.contains("[Update]")){
+                algoLog.trace(buf);
+        }else{
+            algoLog.info(buf);
+        }
+    }
 }
 int MrBayesLogParser::getProgress(){
     if(!lastPartOfLog.isEmpty()){
-        int curProgress = 0;
         foreach(QString currentMsg, lastPartOfLog){
             if(currentMsg.contains("Chain results:")){
                 isMCMCRunning = true;
@@ -169,7 +185,7 @@ int MrBayesLogParser::getProgress(){
         }
         return curProgress;
     }
-    return 0;
+    return curProgress;
 }
 
 MrBayesGetCalculatedTreeTask::MrBayesGetCalculatedTreeTask(const QString& url)
