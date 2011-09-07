@@ -306,6 +306,10 @@ void DotPlotWidget::sl_timer(){
         const DotPlotResults *res = findNearestRepeat(pos);
         if(res == nearestRepeat){
             QString text = makeToolTipText();
+            QFont dFont, f("Monospace");
+            f.setPointSize(dFont.pointSize());
+            f.setStyleHint(QFont::Courier);
+            QToolTip::setFont(f);
             QToolTip::showText(QCursor::pos(), text);
         }
     }
@@ -364,6 +368,10 @@ bool DotPlotWidget::event(QEvent *event){
         const DotPlotResults *res = findNearestRepeat(pos);
         if(res == nearestRepeat){
             QString text = makeToolTipText();
+            QFont dFont, f("Monospace");
+            f.setPointSize(dFont.pointSize());
+            f.setStyleHint(QFont::Courier);
+            QToolTip::setFont(f);
             QToolTip::showText(helpEvent->globalPos(), text);
         }
     }
@@ -1566,7 +1574,7 @@ QString DotPlotWidget::makeToolTipText() const{
         return "";
     }
 
-    int maxRepeatSequenceShowLen = 20;
+    int maxRepeatSequenceShowLen = 32;
     QString text ="HIT:  len: %1, match: %2, %: %3\n";
     QString coord = "Coordinates(beg.): x: %1 y: %2\n";
     QString upLineSeq ="";
@@ -1591,7 +1599,7 @@ QString DotPlotWidget::makeToolTipText() const{
     text = text.arg(nearestRepeat->len).arg(match).arg((float)(match/(float)nearestRepeat->len)*100);
 
 
-    coord = coord.arg(nearestRepeat->x).arg(nearestRepeat->y);
+    coord = coord.arg(nearestRepeat->x + 1).arg(nearestRepeat->y + 1);
     text.append(coord);
 
     for(int i = 0; i < nearestRepeat->len && i < maxRepeatSequenceShowLen; i++) {
@@ -1607,15 +1615,16 @@ QString DotPlotWidget::makeToolTipText() const{
     }
 
     QString ttt = nearestRepeat->len <= maxRepeatSequenceShowLen ? "\n" : "...\n";
-    text.append("X:     ");
+    text.append("X: ");
     text.append(upLineSeq);
     text.append(ttt);
-    text.append(">:     ");
+    text.append(">: ");
 
     text.append(middleLineSeq);
     text.append(ttt);
-    text.append("Y:     ");
+    text.append("Y: ");
     text.append(downLineSeq);
+    ttt.chop(1);
     text.append(ttt);
 
     return text;
