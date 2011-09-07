@@ -149,21 +149,26 @@ MrBayesLogParser::MrBayesLogParser(int _nchains)
     
 }
 int MrBayesLogParser::getProgress(){
-//     if(lastLine.contains("Chain results:")){
-//         isMCMCRunning = true;
-//         return 0;
-//     }else if (lastLine.contains("Analysis complited in")){
-//         isMCMCRunning = false;
-//         return 100;
-//     }else if(isMCMCRunning){
-//         QString lastMessage = lastLine;
-//         if(lastMessage.contains(QRegExp("\\d+ -- "))){
-//             QRegExp rx("(\\d+) -- ");
-//             assert(rx.indexIn(lastMessage)>-1);
-//             rx.indexIn(lastMessage);
-//             return rx.cap(1).toInt()*/nchains;
-//         }
-//     }
+    if(!lastPartOfLog.isEmpty()){
+        int curProgress = 0;
+        foreach(QString currentMsg, lastPartOfLog){
+            if(currentMsg.contains("Chain results:")){
+                isMCMCRunning = true;
+                curProgress = 0;
+            }else if (currentMsg.contains("Analysis completed in")){
+                isMCMCRunning = false;
+                curProgress = 100;
+            }else if(isMCMCRunning){
+                if(currentMsg.contains(QRegExp("\\d+ -- "))){
+                    QRegExp rx("(\\d+) -- ");
+                    assert(rx.indexIn(currentMsg)>-1);
+                    rx.indexIn(currentMsg);
+                    curProgress = rx.cap(1).toInt()*100/(float)nchains;
+                }
+            }
+        }
+        return curProgress;
+    }
     return 0;
 }
 
@@ -175,7 +180,7 @@ MrBayesGetCalculatedTreeTask::MrBayesGetCalculatedTreeTask(const QString& url)
 void MrBayesGetCalculatedTreeTask::prepare(){
     QString treeFile = baseFileName+TREEFILEEXT;
     if( !QFile::exists(treeFile)) {
-        stateInfo.setError(tr("Output file not found"));
+        stateInfo.setError(tr("Output file is not found"));
         return;
     }
 

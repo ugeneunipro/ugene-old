@@ -20,11 +20,20 @@
  */
 
 #include "MrBayesTask.h"
+#include "MrBayesTests.h"
 #include "MrBayesSupport.h"
 #include "MrBayesDialogWidget.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
+
+#include <U2Core/GAutoDeleteList.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/DialogUtils.h>
+
+#include <U2Test/XMLTestFormat.h>
+#include <U2Test/GTest.h>
+#include <U2Test/GTestFrameworkComponents.h>
 
 namespace U2 {
 
@@ -57,6 +66,19 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
     //register the method  
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     registry->registerPhyTreeGenerator(new MrBayesAdapter(), MRBAYES_TOOL_NAME);
+
+    GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
+    XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
+    assert(xmlTestFormat!=NULL);
+
+    GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
+    l->qlist = MrBayesToolTests::createTestFactories();
+
+    foreach(XMLTestFactory* f, l->qlist) { 
+        bool res = xmlTestFormat->registerTestFactory(f);
+        Q_UNUSED(res);
+        assert(res);
+    }
 }
 
 ////////////////////////////////////////

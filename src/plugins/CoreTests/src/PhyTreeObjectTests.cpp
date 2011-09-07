@@ -86,6 +86,13 @@ void GTest_CalculateTreeFromAligment::prepare() {
 
     CreatePhyTreeSettings settings;
     settings.algorithmId = algName;
+    settings.mb_ngen = 1000;
+    settings.mrBayesSettingsScript = QString("Begin MrBayes;\n"
+        "lset Nst=2 rates=gamma ngammacat=4;\n"
+        "mcmc ngen=1000 samplefreq=100 printfreq=1000 nchains=4 temp=0.4 savebrlens=yes "
+        "startingtree=random seed=10;\n"
+        "sumt burnin=10;\n"
+        "End;\n");
 
     task = new PhyTreeGeneratorLauncherTask(maObj->getMAlignment(), settings);
 

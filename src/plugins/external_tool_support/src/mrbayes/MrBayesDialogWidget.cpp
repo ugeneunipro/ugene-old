@@ -97,6 +97,7 @@ void MrBayesWidget::sl_onRateChanged(const QString& modelName){
 void MrBayesWidget::fillSettings(CreatePhyTreeSettings& settings){
     settings.mb_ngen = ngenSpin->value();
     settings.mrBayesSettingsScript = generateMrBayesSettingsScript();
+    coreLog.trace(settings.mrBayesSettingsScript);
 } 
 void MrBayesWidget::storeSettings(){
     AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + MR_BAYES_MODEL_TYPE, modelTypeCombo->currentText());

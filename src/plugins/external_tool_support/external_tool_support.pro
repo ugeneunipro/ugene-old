@@ -51,7 +51,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
     	   src/bowtie/bowtie_tests/bowtieTests.h \
 	   src/mrbayes/MrBayesSupport.h \
 	   src/mrbayes/MrBayesDialogWidget.h \
-	   src/mrbayes/MrBayesTask.h
+	   src/mrbayes/MrBayesTask.h \
+	   src/mrbayes/MrBayesTests.h 
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/CAP3SupportDialog.ui \
          src/ui/ClustalWSupportRunDialog.ui \
@@ -113,6 +114,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
 	   src/bowtie/bowtie_tests/bowtieTests.cpp \
 	   src/mrbayes/MrBayesSupport.cpp \
 	   src/mrbayes/MrBayesDialogWidget.cpp \
-	   src/mrbayes/MrBayesTask.cpp 
+	   src/mrbayes/MrBayesTask.cpp \
+	   src/mrbayes/MrBayesTests.cpp 
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
