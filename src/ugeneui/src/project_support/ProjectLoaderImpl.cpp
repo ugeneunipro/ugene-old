@@ -38,6 +38,7 @@
 #include <U2Core/DocumentImport.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/L10n.h>
+#include <U2Core/CMDLineCoreOptions.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 
@@ -379,7 +380,8 @@ Task* ProjectLoaderImpl::createProjectLoadingTask(const GUrl& url, const QVarian
 
     if (msgBox.clickedButton() == newWindow) {
         QStringList params =  CMDLineRegistryUtils::getPureValues(0);
-        bool b = QProcess::startDetached(params.first(), QStringList() << url.getURLString());
+        params.append("--" + CMDLineCoreOptions::INI_FILE + "=" + AppContext::getSettings()->fileName());        
+        bool b = QProcess::startDetached(params.first(), QStringList() << url.getURLString() << params[1]);
         if (!b) {
             coreLog.error(tr("Failed to open new instance of UGENE"));
         }
