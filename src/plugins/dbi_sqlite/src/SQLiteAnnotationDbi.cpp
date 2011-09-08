@@ -20,7 +20,6 @@
  */
 
 #include "SQLiteAnnotationDbi.h"
-#include "SQLiteObjectDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>

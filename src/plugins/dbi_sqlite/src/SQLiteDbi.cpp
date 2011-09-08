@@ -26,7 +26,7 @@
 #include "SQLiteAssemblyDbi.h"
 #include "SQLiteAttributeDbi.h"
 #include "SQLiteVariantDbi.h"
-#include "SQLiteAnnotationDbi.h"
+#include "SQLiteFeatureDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/Log.h>
@@ -47,7 +47,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     crossDbi = new SQLiteCrossDatabaseReferenceDbi(this);
     attributeDbi = new SQLiteAttributeDbi(this);
     variantDbi = new SQLiteVariantDbi(this);
-    annotationDbi = new SQLiteAnnotationDbi(this);
+    featureDbi = new SQLiteFeatureDbi(this);
 }
 
 SQLiteDbi::~SQLiteDbi() {
@@ -60,7 +60,7 @@ SQLiteDbi::~SQLiteDbi() {
     delete assemblyDbi;
     delete crossDbi;
     delete attributeDbi;
-    delete annotationDbi;
+    delete featureDbi;
     delete db;
 }
 
@@ -85,6 +85,20 @@ U2CrossDatabaseReferenceDbi* SQLiteDbi::getCrossDatabaseReferenceDbi()  {
 U2AttributeDbi* SQLiteDbi::getAttributeDbi() {
     return attributeDbi;
 }
+
+
+U2VariantDbi* SQLiteDbi::getVariantDbi() {
+    return variantDbi;
+}
+
+U2FeatureDbi* SQLiteDbi::getFeatureDbi() {
+    return featureDbi;
+}
+
+SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
+    return static_cast<SQLiteObjectDbi*>(objectDbi);
+}
+
 
 QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) {
     SQLiteQuery q("SELECT value FROM Meta WHERE name = ?1", db, os);
@@ -155,6 +169,7 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     crossDbi->initSqlSchema(os);
     attributeDbi->initSqlSchema(os);
     variantDbi->initSqlSchema(os);
+    featureDbi->initSqlSchema(os);
 
     setProperty(SQLITE_DBI_OPTION_APP_VERSION, Version::appVersion().text, os);
 }
@@ -200,8 +215,8 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_WriteProperties);
     features.insert(U2DbiFeature_ReadVariant);
     features.insert(U2DbiFeature_WriteVariant);
-    features.insert(U2DbiFeature_ReadSequenceAnnotations);
-    features.insert(U2DbiFeature_WriteSequence);
+    features.insert(U2DbiFeature_ReadFeatures);
+    features.insert(U2DbiFeature_WriteFeatures);
 }
 
 void SQLiteDbi::setState(U2DbiState s) {
@@ -299,6 +314,7 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     crossDbi->shutdown(os);
     attributeDbi->shutdown(os);
     variantDbi->shutdown(os);
+    featureDbi->shutdown(os);
     
     setState(U2DbiState_Stopping);
     int rc = sqlite3_close(db->handle);
@@ -335,18 +351,6 @@ QHash<QString, QString> SQLiteDbi::getDbiMetaInfo(U2OpStatus& ) {
 
 U2DataType SQLiteDbi::getEntityTypeById(const U2DataId& id) const {
     return SQLiteUtils::toType(id);
-}
-
-SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
-    return static_cast<SQLiteObjectDbi*>(objectDbi);
-}
-
-U2VariantDbi* SQLiteDbi::getVariantDbi() {
-    return variantDbi;
-}
-
-U2AnnotationDbi* SQLiteDbi::getAnnotationDbi() {
-    return annotationDbi;
 }
 
 // SQLiteDbiFactory

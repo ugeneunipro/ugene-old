@@ -52,14 +52,16 @@ void SQLiteVariantDbi::initSqlSchema(U2OpStatus& os) {
     
 }
 
-U2VariantTrack SQLiteVariantDbi::getVariantTrack(const U2DataId& VariantId, U2OpStatus& os) {
+U2VariantTrack SQLiteVariantDbi::getVariantTrack(const U2DataId& variantId, U2OpStatus& os) {
     U2VariantTrack res;
-    dbi->getSQLiteObjectDbi()->getObject(res, VariantId, os);
 
-    SAFE_POINT_OP(os, res);
+    DBI_TYPE_CHECK(variantId, U2Type::VariantTrack, os, res);
+
+    dbi->getSQLiteObjectDbi()->getObject(res, variantId, os);
+    CHECK_OP(os, res);
 
     SQLiteQuery q("SELECT VariantTrack.sequence FROM VariantTrack WHERE VariantTrack.object = ?1", db, os);
-    q.bindDataId(1, VariantId);
+    q.bindDataId(1, variantId);
     if (q.step())  {
         res.sequence = q.getDataId(0, U2Type::Sequence);
         q.ensureDone();

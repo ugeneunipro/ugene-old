@@ -28,7 +28,7 @@
 
 #include <U2Core/U2DbiUtils.h>
 
-#include <U2Core/U2AnnotationDbi.h>
+#include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2SequenceDbi.h>
@@ -64,7 +64,7 @@ public:
 
     virtual U2SequenceDbi* getSequenceDbi() {return NULL;}
 
-    virtual U2AnnotationDbi* getAnnotationDbi() {return NULL;}
+    virtual U2FeatureDbi* getFeatureDbi() {return NULL;}
 
     virtual U2MsaDbi* getMsaDbi() {return NULL;}
 
@@ -197,59 +197,37 @@ protected:
     }
 };
 
-/** Default no-op implementation for write  methods of U2AnnotationDbi */
-class U2SimpleAnnotationDbi: public U2AnnotationDbi {
+/** Default no-op implementation for write  methods of U2FeatureDbi */
+class U2SimpleFeatureDbi: public U2FeatureDbi {
 protected:
-    U2SimpleAnnotationDbi(U2Dbi* rootDbi) : U2AnnotationDbi(rootDbi) {}
+    U2SimpleFeatureDbi(U2Dbi* rootDbi) : U2FeatureDbi(rootDbi) {}
 
-    virtual U2AnnotationGroup createGroup(const U2DataId&, const QString&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
-        return U2AnnotationGroup();
-    }
-    
-    virtual void removeGroup(const U2DataId&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+    virtual void createFeature(U2Feature&, QList<U2FeatureKey>&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
     }
 
-    virtual void createAnnotation(U2Annotation&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+
+
+    virtual void addKey(const U2DataId&, const U2FeatureKey&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
     }
 
-    virtual void createAnnotations(QList<U2Annotation>&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
-    }
-    
-    virtual void removeAnnotation(const U2DataId&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+    virtual void removeAllKeys(const U2DataId&, const QString&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
     }
 
-    virtual void removeAnnotations(const QList<U2DataId>&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
-    }
-    
-    virtual void updateLocation(const U2DataId&, const U2Location&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os); 
-    }
-    
-    virtual void updateName(const U2DataId&, const QString&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os); 
-    }
-    
-    virtual void createQualifier(const U2DataId&, const U2Qualifier&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os); 
-    }
-    
-    virtual void removeQualifier(const U2DataId&, const U2Qualifier&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+    virtual void removeAllKeys(const U2DataId&, const U2FeatureKey&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
     }
 
-    virtual void addToGroup(const U2DataId&, const U2DataId&, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+    virtual void updateLocation(const U2DataId&, const U2FeatureLocation&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
     }
-    
-    virtual void removeFromGroup(const U2DataId&, const U2DataId, U2OpStatus& os) {
-        U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequenceAnnotations, getRootDbi(), os);
+
+    virtual void removeFeature(const U2DataId&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
     }
+
 };
 
 /** Default no-op implementation for write  methods of U2AttributeDbi */

@@ -82,6 +82,10 @@ public:
     /**  MSA */
     static const U2DataType MsaRow                  = 1200;
 
+    /** Sequence feature */
+    static const U2DataType Feature                 = 1300;
+
+
     /**  Attribute types */
     static const U2DataType AttributeInteger          = 2001;
     static const U2DataType AttributeReal             = 2002;
@@ -201,6 +205,10 @@ public:
     bool operator==(const U2Strand& s) const {return value == s.value;}
 
     bool operator!=(const U2Strand& s) const {return value != s.value;}
+
+    Direction getDirection() const {return (U2Strand::Direction)value;}
+    
+    int getDirectionValue() const {return value;}
 
 private:
     int value;

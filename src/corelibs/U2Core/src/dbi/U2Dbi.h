@@ -24,7 +24,7 @@
 
 #include <U2Core/U2Type.h>
 #include <U2Core/U2FormatCheckResult.h>
-#include <U2Core/U2Annotation.h>
+#include <U2Core/U2Feature.h>
 #include <U2Core/U2Assembly.h>
 #include <U2Core/U2Attribute.h>
 #include <U2Core/U2Msa.h>
@@ -38,7 +38,7 @@ namespace U2 {
 // For the classes below, see description in class definition
 class U2ObjectDbi;
 class U2SequenceDbi;
-class U2AnnotationDbi;
+class U2FeatureDbi;
 class U2CrossDatabaseReferenceDbi;
 class U2MsaDbi;
 class U2AssemblyDbi;
@@ -82,7 +82,7 @@ enum U2CORE_EXPORT U2DbiFeature {
     /** DBI supports Assembly reading methods */
     U2DbiFeature_ReadAssembly                   = 3,
     /** DBI supports sequence annotations reading methods */
-    U2DbiFeature_ReadSequenceAnnotations        = 4,
+    U2DbiFeature_ReadFeatures                   = 4,
     /** DBI supports read methods for attributes */
     U2DbiFeature_ReadAttributes                 = 5,
     /** DBI supports read methods for remote objects  */
@@ -99,7 +99,7 @@ enum U2CORE_EXPORT U2DbiFeature {
     /** DBI supports changing/storing assemblies */
     U2DbiFeature_WriteAssembly                  = 103
     /** DBI supports changing/storing sequence annotations */,
-    U2DbiFeature_WriteSequenceAnnotations       = 104,
+    U2DbiFeature_WriteFeatures                  = 104,
     /** DBI supports changing/storing attributes */
     U2DbiFeature_WriteAttributes                = 105,
     /** DBI supports cross database references */
@@ -223,10 +223,10 @@ public:
     virtual U2SequenceDbi* getSequenceDbi() = 0;
 
     /**  
-        U2Annotation related DBI routines 
-        Not NULL only if U2DbiFeature_ReadAnnotations supported
+        U2Feature related DBI routines 
+        Not NULL only if U2DbiFeature_ReadFeatures supported
     */
-    virtual U2AnnotationDbi* getAnnotationDbi() = 0;
+    virtual U2FeatureDbi* getFeatureDbi() = 0;
 
     /**  
         U2Annotation related DBI routines 

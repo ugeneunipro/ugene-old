@@ -6,6 +6,7 @@ HEADERS += src/SQLiteAnnotationDbi.h \
            src/SQLiteAttributeDbi.h \
            src/SQLiteDbi.h \
            src/SQLiteDbiPlugin.h \
+           src/SQLiteFeatureDbi.h \
            src/SQLiteMsaDbi.h \
            src/SQLiteObjectDbi.h \
            src/SQLiteSequenceDbi.h \
@@ -19,6 +20,7 @@ SOURCES += src/SQLiteAnnotationDbi.cpp \
            src/SQLiteAttributeDbi.cpp \
            src/SQLiteDbi.cpp \
            src/SQLiteDbiPlugin.cpp \
+           src/SQLiteFeatureDbi.cpp \
            src/SQLiteMsaDbi.cpp \
            src/SQLiteObjectDbi.cpp \
            src/SQLiteSequenceDbi.cpp \

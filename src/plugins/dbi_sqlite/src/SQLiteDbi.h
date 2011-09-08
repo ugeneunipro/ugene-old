@@ -36,7 +36,7 @@ class SQLiteAssemblyDbi;
 class SQLiteCrossDatabaseReferenceDbi;
 class SQLiteAttributeDbi;
 class SQLiteVariantDbi;
-class SQLiteAnnotationDbi;
+class SQLiteFeatureDbi;
 class DbRef;
 
 
@@ -119,7 +119,7 @@ public:
 
     virtual U2VariantDbi*   getVariantDbi();
 
-    virtual U2AnnotationDbi*   getAnnotationDbi();
+    virtual U2FeatureDbi*   getFeatureDbi();
 
     DbRef*    getDbRef() const {return db;}
 
@@ -150,7 +150,7 @@ private:
     SQLiteCrossDatabaseReferenceDbi*    crossDbi;
     SQLiteAttributeDbi*                 attributeDbi;
     SQLiteVariantDbi*                   variantDbi;
-    SQLiteAnnotationDbi*                annotationDbi;
+    SQLiteFeatureDbi*                   featureDbi;
     
     friend class SQLiteObjectDbi;
     friend class SQLiteCrossDatabaseReferenceDbi;

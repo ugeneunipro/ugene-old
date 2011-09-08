@@ -31,7 +31,7 @@ namespace U2 {
 /**
     An interface to obtain 'read' access to sequence annotations
 */
-class U2CORE_EXPORT U2AnnotationDbi : public U2ChildDbi {
+class U2AnnotationDbi : public U2ChildDbi {
 protected:
     U2AnnotationDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
