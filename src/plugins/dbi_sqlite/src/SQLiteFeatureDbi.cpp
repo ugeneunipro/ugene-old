@@ -24,6 +24,8 @@
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <memory>
+
 namespace U2 {
 
 SQLiteFeatureDbi::SQLiteFeatureDbi(SQLiteDbi* dbi) : U2FeatureDbi(dbi), SQLiteChildDBICommon(dbi) {
@@ -112,6 +114,7 @@ static QString toSqlOrderOp(OrderOp op) {
     switch(op) {
         case OrderOp_Asc: res = "ASC";  break;
         case OrderOp_Desc : res = "DESC"; break;
+        default: break;
     }
     return res;
 }
