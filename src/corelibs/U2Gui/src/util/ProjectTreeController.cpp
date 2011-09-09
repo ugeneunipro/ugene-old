@@ -552,7 +552,7 @@ void ProjectTreeController::updateActions() {
     unloadSelectedDocumentsAction->setEnabled(hasLoadedDocumentInSelection);
 
     addReadonlyFlagAction->setEnabled(docsInSelection.size() == 1 && !docsInSelection.toList().first()->hasUserModLock() && !docsInSelection.toList().first()->isStateLocked());
-    removeReadonlyFlagAction->setEnabled(docsInSelection.size() == 1 && docsInSelection.toList().first()->hasUserModLock());
+    removeReadonlyFlagAction->setEnabled(docsInSelection.size() == 1 && docsInSelection.toList().first()->isLoaded() && docsInSelection.toList().first()->hasUserModLock());
 
     if (!docsItemsInSelection.isEmpty()) {
         loadSelectedDocumentsAction->setText(tr("Load selected documents"));

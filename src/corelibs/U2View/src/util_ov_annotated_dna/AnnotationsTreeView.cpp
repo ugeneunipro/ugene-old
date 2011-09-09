@@ -434,6 +434,7 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded(AnnotationTableObject* obj)
     assert(findGroupItem(obj->getRootGroup()) == NULL);
     
     AVGroupItem* groupItem = buildGroupTree(NULL, obj->getRootGroup());
+    SAFE_POINT(groupItem != NULL, "creating AVGroupItem failed",);
     tree->addTopLevelItem(groupItem);
     connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation*>&)), SLOT(sl_onAnnotationsAdded(const QList<Annotation*>&)));
     connect(obj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation*>&)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation*>&)));
@@ -489,7 +490,7 @@ void AnnotationsTreeView::sl_onAnnotationsAdded(const QList<Annotation*>& as) {
                     }
                     childGroup = childGroup->getParentGroup();
                 }
-                assert(gi!=NULL && childGroup!=NULL);
+                SAFE_POINT(gi!=NULL && childGroup!=NULL, "AnnotationsTreeView::sl_onAnnotationsAdded: childGroup not found",);
                 buildGroupTree(gi, childGroup);
             }
             assert(gi!=NULL);
@@ -681,6 +682,7 @@ void AnnotationsTreeView::sl_onGroupRenamed(AnnotationGroup* g, const QString& o
 }
 
 AVGroupItem* AnnotationsTreeView::buildGroupTree(AVGroupItem* parentGroupItem, AnnotationGroup* g) {
+    SAFE_POINT(g != NULL, "in AnnotationsTreeView::buildGroupTree: AnnotationGroup argument is NULL", NULL);
     AVGroupItem* groupItem = new AVGroupItem(this, parentGroupItem, g);
     const QList<AnnotationGroup*>& subgroups = g->getSubgroups();
     foreach(AnnotationGroup* subgroup, subgroups) {
@@ -1862,6 +1864,7 @@ const QIcon& AVGroupItem::getDocumentIcon() {
 }
 
 void AVGroupItem::updateVisual() {
+    SAFE_POINT(group != NULL, "AVGroupItem created with NULL AnnotationGroup argument",);
     if (parent() == NULL) { // document item
         AnnotationTableObject* aobj  = group->getGObject();
         Document* doc = aobj->getDocument();

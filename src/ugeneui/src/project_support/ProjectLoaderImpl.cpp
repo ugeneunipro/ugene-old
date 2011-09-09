@@ -240,7 +240,7 @@ void ProjectLoaderImpl::updateRecentProjectsMenu() {
 }
 
 #define MAX_DOCS_TO_OPEN_VIEWS 5
-#define MAX_OBJECT_PER_DOC 500
+#define MAX_OBJECT_PER_DOC 50000
 
 Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVariantMap& hints) {
     // detect if we open real UGENE project file
