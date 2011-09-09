@@ -193,6 +193,7 @@ private:
     
     void addRelatedAnnotations(ADVSequenceObjectContext* seqCtx);
     void addAutoAnnotations(ADVSequenceObjectContext* seqCtx);
+    void addGraphs(ADVSequenceObjectContext* seqCtx);
     void importDocAnnotations(Document* doc);
 
     QSplitter*          mainSplitter;

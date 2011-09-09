@@ -34,6 +34,7 @@
 #include "ADVSplitWidget.h"
 #include "ADVSyncViewManager.h"
 #include "AutoAnnotationUtils.h"
+#include "GraphMenu.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
@@ -550,6 +551,7 @@ void AnnotatedDNAView::addSequenceWidget(ADVSequenceWidget* v) {
     foreach(ADVSequenceObjectContext* c, contexts) {
         c->addSequenceWidget(v);
         addAutoAnnotations(c);
+        addGraphs(c);
     }
     scrolledWidgetLayout->insertWidget(0, v);
     v->setVisible(true);
@@ -839,6 +841,19 @@ void AnnotatedDNAView::addAutoAnnotations( ADVSequenceObjectContext* seqCtx )
         w->addADVSequenceWidgetAction( aaAction );
     }
 
+}
+
+
+/**
+ * Adds common graphs menu to the current for each sequence
+ */
+void AnnotatedDNAView::addGraphs(ADVSequenceObjectContext* seqCtx)
+{
+    foreach (ADVSequenceWidget* seqWidget, seqCtx->getSequenceWidgets())
+    {
+        GraphMenuAction* graphMenuAction = new GraphMenuAction();
+        seqWidget->addADVSequenceWidgetAction(graphMenuAction);
+    }
 }
 
 

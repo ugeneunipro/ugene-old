@@ -20,6 +20,7 @@
  */
 
 #include "DNAFlexDialog.h"
+#include "DNAFlexGraph.h"
 #include "DNAFlexPlugin.h"
 
 #include <U2Core/AppContext.h>
@@ -60,6 +61,7 @@ DNAFlexPlugin::DNAFlexPlugin()
 DNAFlexViewContext::DNAFlexViewContext(QObject* parent)
     : GObjectViewWindowContext(parent, ANNOTATED_DNA_VIEW_FACTORY_ID)
 {
+    graphFactory = new DNAFlexGraphFactory(this);
 }
 
 
@@ -89,9 +91,20 @@ void DNAFlexViewContext::sl_showDNAFlexDialog()
     }
 }
 
+
 void DNAFlexViewContext::initViewContext(GObjectView* view)
 {
     AnnotatedDNAView* annotView = qobject_cast<AnnotatedDNAView*>(view);
+
+    // Adding the graphs item
+    connect(annotView,
+        SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)),
+        SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
+
+    foreach (ADVSequenceWidget* sequenceWidget, annotView->getSequenceWidgets())
+    {
+        sl_sequenceWidgetAdded(sequenceWidget);
+    }
 
     // Adding the action to the Analyze menu, but not to the toolbar
     ADVGlobalAction* action = new ADVGlobalAction(annotView,
@@ -101,6 +114,26 @@ void DNAFlexViewContext::initViewContext(GObjectView* view)
         ADVGlobalActionFlags(ADVGlobalActionFlag_AddToAnalyseMenu));
     action->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(action, SIGNAL(triggered()), SLOT(sl_showDNAFlexDialog()));
+}
+
+
+void DNAFlexViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* _sequenceWidget)
+{
+    ADVSingleSequenceWidget* sequenceWidget = qobject_cast<ADVSingleSequenceWidget*>(_sequenceWidget);
+    if (sequenceWidget == NULL || sequenceWidget->getSequenceObject() == NULL)
+    {
+        return;
+    }
+
+    // If the alphabet is not the  standard DNA alphabet
+    if (sequenceWidget->getSequenceContext()->getAlphabet()->getId() != BaseDNAAlphabetIds::NUCL_DNA_DEFAULT())
+    {
+        return;
+    }
+
+    // Otherwise add the "DNA Flexibility" action to the graphs menu
+    GraphAction* graphAction = new GraphAction(graphFactory);
+    GraphMenuAction::addGraphAction(sequenceWidget->getActiveSequenceContext(), graphAction);
 }
 
 

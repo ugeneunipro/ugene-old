@@ -19,58 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_DNA_GRAPHPACK_PLUGIN_H_
-#define _U2_DNA_GRAPHPACK_PLUGIN_H_
+#ifndef _U2_DNA_FLEX_GRAPH_H_
+#define _U2_DNA_FLEX_GRAPH_H_
 
-#include <U2Core/PluginModel.h>
-#include <U2Gui/ObjectViewModel.h>
 
 #include <U2View/GraphMenu.h>
 #include <U2View/GSequenceGraphView.h>
-#include <U2View/ADVSequenceWidget.h>
 
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#include <QtCore/QPointer>
 
 namespace U2 {
 
-class MWMDIWindow;
-class GObjectView;
-class GSequenceGraphFactory;
-class GSequenceGraphData;
-class GraphAction;
-class DNAGraphPackViewContext;
-class ADVSingleSequenceWidget;
 
-
-class DNAGraphPackPlugin : public Plugin {
-    Q_OBJECT
-public:
-    DNAGraphPackPlugin();
-
-private:
-    DNAGraphPackViewContext* ctx;
-};
-
-
-class DNAGraphPackViewContext : public GObjectViewWindowContext
+/**
+ * Factory used to draw a DNA Flexibility graph
+ */
+class DNAFlexGraphFactory : public GSequenceGraphFactory
 {
     Q_OBJECT
 public:
-    DNAGraphPackViewContext(QObject* parent);
+    DNAFlexGraphFactory(QObject*);
+    virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView*);
+    virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView*);
+    virtual bool isEnabled(DNASequenceObject*) const;
 
 private:
-    QList<GSequenceGraphFactory*>   graphFactories;
+    /** Default size of "window" on a graph */
+    static const int DEFAULT_WINDOW_SIZE = 100;
 
-    virtual void initViewContext(GObjectView* view);
-
-private slots:
-    void sl_sequenceWidgetAdded(ADVSequenceWidget*);
+    /** Default size of "step" on a graph */
+    static const int DEFAULT_WINDOW_STEP = 1;
 };
 
 
-
-} //namespace
-
+} // namespace
 #endif

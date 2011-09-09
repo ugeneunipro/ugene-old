@@ -19,47 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_DNA_FLEX_PLUGIN_H_
-#define _U2_DNA_FLEX_PLUGIN_H_
+#ifndef _U2_DNA_FLEX_GRAPH_ALGORITHM_H_
+#define _U2_DNA_FLEX_GRAPH_ALGORITHM_H_
 
-#include <U2Core/PluginModel.h>
-#include <U2Gui/ObjectViewModel.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2View/GraphMenu.h>
 
 
 namespace U2 {
 
 
-class DNAFlexPlugin : public Plugin
+/**
+ * Algorithm used to calculate data of a DNA Flexibility graph
+ */
+class DNAFlexGraphAlgorithm : public GSequenceGraphAlgorithm
 {
-    Q_OBJECT
-
 public:
-    DNAFlexPlugin();
+    DNAFlexGraphAlgorithm();
+    virtual ~DNAFlexGraphAlgorithm();
 
-private:
-    GObjectViewWindowContext* viewCtx;
-};
-
-
-class DNAFlexViewContext : public GObjectViewWindowContext
-{
-    Q_OBJECT
-
-public:
-    DNAFlexViewContext(QObject* p);
-
-private slots:
-    void sl_showDNAFlexDialog();
-    void sl_sequenceWidgetAdded(ADVSequenceWidget*);
-
-private:
-    GSequenceGraphFactory* graphFactory;
-
-    virtual void initViewContext(GObjectView* view);
+    virtual void calculate(
+       QVector<float>&,
+       DNASequenceObject*,
+       const U2Region&,
+       const GSequenceGraphWindowData*);
 };
 
 
 } // namespace
+
 
 #endif

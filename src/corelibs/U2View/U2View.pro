@@ -37,7 +37,9 @@ HEADERS += src/WebWindow.h \
            src/util_ov_annotated_dna/CreateRulerDialogController.h \
            src/util_ov_annotated_dna/DetView.h \
            src/util_ov_annotated_dna/EditAnnotationDialogController.h \
+           src/util_ov_annotated_dna/GraphMenu.h \
            src/util_ov_annotated_dna/GSequenceGraphView.h \
+           src/util_ov_annotated_dna/GSequenceGraphViewWithFactory.cpp \
            src/util_ov_annotated_dna/GSequenceLineView.h \
            src/util_ov_annotated_dna/GSequenceLineViewAnnotated.h \
            src/util_ov_annotated_dna/Overview.h \
@@ -147,7 +149,9 @@ SOURCES += src/WebWindow.cpp \
            src/util_ov_annotated_dna/CreateRulerDialogController.cpp \
            src/util_ov_annotated_dna/DetView.cpp \
            src/util_ov_annotated_dna/EditAnnotationDialogController.cpp \
+           src/util_ov_annotated_dna/GraphMenu.cpp \
            src/util_ov_annotated_dna/GSequenceGraphView.cpp \
+           src/util_ov_annotated_dna/GSequenceGraphViewWithFactory.cpp \
            src/util_ov_annotated_dna/GSequenceLineView.cpp \
            src/util_ov_annotated_dna/GSequenceLineViewAnnotated.cpp \
            src/util_ov_annotated_dna/Overview.cpp \

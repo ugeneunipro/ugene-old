@@ -19,58 +19,56 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_DNA_GRAPHPACK_PLUGIN_H_
-#define _U2_DNA_GRAPHPACK_PLUGIN_H_
+#ifndef _U2_GRAPH_MENU_H_
+#define _U2_GRAPH_MENU_H_
 
-#include <U2Core/PluginModel.h>
 #include <U2Gui/ObjectViewModel.h>
 
-#include <U2View/GraphMenu.h>
-#include <U2View/GSequenceGraphView.h>
-#include <U2View/ADVSequenceWidget.h>
+#include <U2View/ADVGraphModel.h>
+#include <U2View/GSequenceGraphViewWithFactory.h>
+#include <U2View/ADVSingleSequenceWidget.h>
 
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#include <QtCore/QPointer>
 
 namespace U2 {
 
-class MWMDIWindow;
-class GObjectView;
-class GSequenceGraphFactory;
-class GSequenceGraphData;
-class GraphAction;
-class DNAGraphPackViewContext;
-class ADVSingleSequenceWidget;
 
-
-class DNAGraphPackPlugin : public Plugin {
-    Q_OBJECT
-public:
-    DNAGraphPackPlugin();
-
-private:
-    DNAGraphPackViewContext* ctx;
-};
-
-
-class DNAGraphPackViewContext : public GObjectViewWindowContext
+/**
+ * Action for drawing a graph
+ */
+class U2VIEW_EXPORT GraphAction : public QAction
 {
     Q_OBJECT
 public:
-    DNAGraphPackViewContext(QObject* parent);
+    GraphAction(GSequenceGraphFactory*);
 
 private:
-    QList<GSequenceGraphFactory*>   graphFactories;
-
-    virtual void initViewContext(GObjectView* view);
+    GSequenceGraphFactory*  factory;
+    GSequenceGraphView*     view;
 
 private slots:
-    void sl_sequenceWidgetAdded(ADVSequenceWidget*);
+    void sl_handleGraphAction();
 };
 
 
+/**
+ * Menu of actions for drawing graphs
+ */
+class U2VIEW_EXPORT GraphMenuAction : public ADVSequenceWidgetAction
+{
+    Q_OBJECT
+public:
+    GraphMenuAction();
+    static void addGraphAction(ADVSequenceObjectContext*, GraphAction*);
 
-} //namespace
+private:
+    static const QString ACTION_NAME;
+    QMenu* menu;
+
+    static GraphMenuAction* findGraphMenuAction(ADVSequenceObjectContext*);
+};
+
+
+}//namespace
+
 
 #endif

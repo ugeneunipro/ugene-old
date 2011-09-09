@@ -25,6 +25,7 @@
 #include "ADVSingleSequenceWidget.h"
 
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GScrollBar.h>
 
@@ -100,12 +101,44 @@ void GSequenceGraphView::addGraphData(GSequenceGraphData* g) {
     graphs.append(g);
 }
 
-void GSequenceGraphView::buildPopupMenu(QMenu& m) {
-    QPoint cpos = renderArea->mapFromGlobal(QCursor::pos());
-    if (!renderArea->rect().contains(cpos)) {
+
+/**
+ * Inserts the "Graphs" popup menu into the common popup menu.
+ *
+ * @param menu Common Sequence View popup menu.
+ */
+void GSequenceGraphView::buildPopupMenu(QMenu& menu)
+{
+    // Verify the cursor position
+    QPoint cursorPosition = renderArea->mapFromGlobal(QCursor::pos());
+    if (!renderArea->rect().contains(cursorPosition))
+    {
         return;
     }
-    m.addAction(visualPropertiesAction);
+
+    // Verify that the menu is not empty (to get the top element - see below)
+    SAFE_POINT(!menu.actions().isEmpty(), 
+        "Internal error: menu is not empty during insertion of the Graph menu!",);
+
+    // Creating the Graphs menu
+    QMenu* graphMenu = new QMenu(tr("Graph"));
+    graphMenu->setIcon(QIcon(":core/images/graphs.png"));
+
+    addActionsToGraphMenu(graphMenu);
+
+    // Inserting the Graphs menu at the top
+    QAction *menuBeginning = *(menu.actions().begin());
+    menu.insertMenu(menuBeginning, graphMenu);
+    menu.insertSeparator(menuBeginning);
+}
+
+/**
+ * Adds actions to the graphs menu
+ */
+void GSequenceGraphView::addActionsToGraphMenu(QMenu* graphMenu)
+{
+    // Add "Graph Settings" action
+    graphMenu->addAction(visualPropertiesAction);
 }
 
 

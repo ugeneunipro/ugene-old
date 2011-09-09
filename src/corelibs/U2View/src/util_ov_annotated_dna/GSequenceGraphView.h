@@ -27,6 +27,7 @@
 
 #include <QtGui/QMenu>
 
+
 namespace U2 {
 
 class GSequenceGraphWindowData;
@@ -55,6 +56,7 @@ public:
 
 protected:
     virtual void pack();
+    virtual void addActionsToGraphMenu(QMenu* graphMenu);
 
 private slots:
     void sl_onShowVisualProperties(bool);
