@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BwaBuildSettings</class>
+ <widget class="QWidget" name="BwaBuildSettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>167</width>
+    <height>59</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Algorithm (-a)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="indexAlgorithmComboBox">
+       <property name="currentIndex">
+        <number>2</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>bwtsw</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>div</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>is</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="colorspaceCheckBox">
+     <property name="text">
+      <string>Colorspace (-c)</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>indexAlgorithmComboBox</tabstop>
+  <tabstop>colorspaceCheckBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

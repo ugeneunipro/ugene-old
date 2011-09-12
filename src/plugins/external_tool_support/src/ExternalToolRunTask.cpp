@@ -91,6 +91,12 @@ void ExternalToolRunTask::run(){
             cancelProcess();
         }
     }
+    {
+        int exitCode = externalToolProcess->exitCode();
+        if(exitCode != EXIT_SUCCESS && !hasError()) {
+            setError(tr("%1 tool exited with code %2").arg(toolName).arg(exitCode));
+        }
+    }
 }
 Task::ReportResult ExternalToolRunTask::report(){
     return ReportResult_Finished;

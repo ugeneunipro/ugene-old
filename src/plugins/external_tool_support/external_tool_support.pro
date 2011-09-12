@@ -48,7 +48,11 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/BowtieTask.h \
            src/bowtie/BowtieSupport.h \
            src/bowtie/BowtieSettingsWidget.h \
-    	   src/bowtie/bowtie_tests/bowtieTests.h \
+           src/bowtie/bowtie_tests/bowtieTests.h \
+           src/bwa/BwaSupport.h \
+           src/bwa/BwaTask.h \
+           src/bwa/BwaSettingsWidget.h \
+           src/bwa/bwa_tests/bwaTests.h \
 	   src/mrbayes/MrBayesSupport.h \
 	   src/mrbayes/MrBayesDialogWidget.h \
 	   src/mrbayes/MrBayesTask.h \
@@ -62,6 +66,9 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/SelectPathDialog.ui \
          src/ui/TCoffeeSupportRunDialog.ui \
          src/ui/BowtieSettings.ui \
+         src/ui/BowtieBuildSettings.ui \
+         src/ui/BwaBuildSettings.ui \
+         src/ui/BwaSettings.ui \
     	 src/ui/BowtieBuildSettings.ui \
 	 src/ui/MrBayesDialog.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
@@ -111,7 +118,11 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bowtie/BowtieTask.cpp \
            src/bowtie/BowtieSupport.cpp \
            src/bowtie/BowtieSettingsWidget.cpp \
-	   src/bowtie/bowtie_tests/bowtieTests.cpp \
+           src/bowtie/bowtie_tests/bowtieTests.cpp \
+           src/bwa/BwaSupport.cpp \
+           src/bwa/BwaTask.cpp \
+           src/bwa/BwaSettingsWidget.cpp \
+           src/bwa/bwa_tests/bwaTests.cpp \
 	   src/mrbayes/MrBayesSupport.cpp \
 	   src/mrbayes/MrBayesDialogWidget.cpp \
 	   src/mrbayes/MrBayesTask.cpp \

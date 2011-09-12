@@ -74,6 +74,10 @@
 #include "bowtie/BowtieTask.h"
 #include "bowtie/BowtieSettingsWidget.h"
 #include "bowtie/bowtie_tests/bowtieTests.h"
+#include "bwa/BwaSupport.h"
+#include "bwa/BwaTask.h"
+#include "bwa/BwaSettingsWidget.h"
+#include "bwa/bwa_tests/bwaTests.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -172,6 +176,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     AppContext::getExternalToolRegistry()->registerEntry(bowtieSupport);
     BowtieSupport* bowtieBuildSupport = new BowtieSupport(BOWTIE_BUILD_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(bowtieBuildSupport);
+    BwaSupport* bwaSupport = new BwaSupport(BWA_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(bwaSupport);
 
 
     if (AppContext::getMainWindow()) {
@@ -213,6 +219,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     AppContext::getCDSFactoryRegistry()->registerFactory(new CDSearchLocalTaskFactory(), CDSearchFactoryRegistry::LocalSearch);
 
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BowtieTask::taskName, new BowtieTaskFactory(), new BowtieGUIExtensionsFactory(), true, false));
+    AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BwaTask::taskName, new BwaTaskFactory(), new BwaGUIExtensionsFactory(), true, false));
 
     {
         GTestFormatRegistry *tfr = AppContext::getTestFramework()->getTestFormatRegistry();
@@ -221,6 +228,20 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
         GAutoDeleteList<XMLTestFactory> *l = new GAutoDeleteList<XMLTestFactory>(this);
         l->qlist = BowtieTests::createTestFactories();
+
+        foreach(XMLTestFactory *f, l->qlist) {
+            bool res = xmlTestFormat->registerTestFactory(f);
+            Q_UNUSED(res);
+            assert(res);
+        }
+    }
+    {
+        GTestFormatRegistry *tfr = AppContext::getTestFramework()->getTestFormatRegistry();
+        XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat *>(tfr->findFormat("XML"));
+        assert(NULL != xmlTestFormat);
+
+        GAutoDeleteList<XMLTestFactory> *l = new GAutoDeleteList<XMLTestFactory>(this);
+        l->qlist = BwaTests::createTestFactories();
 
         foreach(XMLTestFactory *f, l->qlist) {
             bool res = xmlTestFormat->registerTestFactory(f);
