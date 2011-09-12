@@ -53,6 +53,10 @@ public:
     /** Returns all Variants from the given region */
     virtual U2DbiIterator<U2Variant>* getVariants(const U2DataId& track, const U2Region& region, U2OpStatus& os);
 
+    virtual U2DbiIterator<U2Variant>* getVariantsRange(int offset, int limit, U2OpStatus& os);
+
+    virtual int getVariantCount(const U2DataId& track, U2OpStatus& os);
+
     virtual void initSqlSchema(U2OpStatus& os);
 
 };

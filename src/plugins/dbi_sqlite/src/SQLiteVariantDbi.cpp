@@ -150,4 +150,24 @@ U2DbiIterator<U2VariantTrack>* SQLiteVariantDbi::getVariantTracks( U2OpStatus& o
     return new SqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), NULL, U2VariantTrack(), os);    
 }
 
+U2DbiIterator<U2Variant>* SQLiteVariantDbi::getVariantsRange( int offset, int limit, U2OpStatus& os )
+{
+    SQLiteQuery* q = new SQLiteQuery("SELECT startPos, endPos, refData, obsData, publicId FROM Variant \
+                                     LIMIT ?1 OFFSET ?2" , db, os);
+    q->bindInt64(1, limit);
+    q->bindInt64(2, offset);
+    return new SqlRSIterator<U2Variant>(q, new SimpleVariantLoader(), NULL, U2Variant(), os);
+}
+
+int SQLiteVariantDbi::getVariantCount( const U2DataId& trackId, U2OpStatus& os )
+{
+    SQLiteQuery q("SELECT COUNT(*) FROM Variant WHERE track = ?1 " , db, os);
+    q.bindDataId(1, trackId);
+    if (!q.step()) {
+        return -1;
+    }
+
+    return q.getInt32(0); 
+}
+
 } //namespace
