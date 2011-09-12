@@ -367,7 +367,7 @@ p, li { white-space: pre-wrap; }
         <item row="7" column="2">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Threads:</string>
+           <string>Threads</string>
           </property>
          </widget>
         </item>
@@ -485,6 +485,28 @@ bowtie is somewhat slower when --best is specified.
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mismatchesComboBox</tabstop>
+  <tabstop>mismatchesSpinBox</tabstop>
+  <tabstop>maqerrCheckBox</tabstop>
+  <tabstop>maqerrSpinBox</tabstop>
+  <tabstop>seedlenCheckBox</tabstop>
+  <tabstop>seedlenSpinBox</tabstop>
+  <tabstop>maxbtsCheckBox</tabstop>
+  <tabstop>maxbtsSpinBox</tabstop>
+  <tabstop>chunckmbsCheckBox</tabstop>
+  <tabstop>chunkmbsSpinBox</tabstop>
+  <tabstop>seedCheckBox</tabstop>
+  <tabstop>spinBox</tabstop>
+  <tabstop>threadsSpinBox</tabstop>
+  <tabstop>colorspaceCheckBox</tabstop>
+  <tabstop>nomaqroundCheckBox</tabstop>
+  <tabstop>nofwCheckBox</tabstop>
+  <tabstop>norcCheckBox</tabstop>
+  <tabstop>tryhardCheckBox</tabstop>
+  <tabstop>bestCheckBox</tabstop>
+  <tabstop>allCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
