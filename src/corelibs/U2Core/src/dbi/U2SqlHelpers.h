@@ -331,6 +331,17 @@ protected:
     QByteArray dbExtra;
 };
 
+class SqlDataIdRSLoaderEx : public SqlRSLoader<U2DataId> {
+public:
+    SqlDataIdRSLoaderEx(const QByteArray& _dbExra = QByteArray()) : dbExtra(_dbExra){}
+    U2DataId load(SQLiteQuery* q) { return q->getDataId(0, q->getDataType(1), dbExtra);}
+
+protected:    
+    U2DataType type;
+    QByteArray dbExtra;
+};
+
+
 #define DBI_TYPE_CHECK(dataId,  expectedType, os, res)\
     if (!dataId.isEmpty()) {\
         U2DataType realType = SQLiteUtils::toType(dataId);\

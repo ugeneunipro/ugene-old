@@ -109,6 +109,9 @@ public:
 
     virtual qint64 getFolderGlobalVersion(const QString &folder, U2OpStatus &os);
 
+    virtual U2DbiIterator<U2DataId>* getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os);
+
+
 private:
     Dbi &dbi;
     DbRef &dbRef;

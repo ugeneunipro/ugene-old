@@ -504,8 +504,12 @@ qint64 ObjectDbi::getFolderGlobalVersion(const QString &folder, U2OpStatus &os) 
     }
 }
 
-// AssemblyDbi
+U2DbiIterator<U2DataId>* ObjectDbi::getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os) {
+    //todo:
+    return NULL;
+}
 
+// AssemblyDbi
 AssemblyDbi::AssemblyDbi(Dbi &dbi, BamReader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths):
     U2SimpleAssemblyDbi(&dbi),
     dbi(dbi),

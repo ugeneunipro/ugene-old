@@ -202,7 +202,7 @@ class U2SimpleFeatureDbi: public U2FeatureDbi {
 protected:
     U2SimpleFeatureDbi(U2Dbi* rootDbi) : U2FeatureDbi(rootDbi) {}
 
-    virtual void createFeature(U2Feature&, QList<U2FeatureKey>&, U2OpStatus& os) {
+    virtual void createFeature(U2Feature&, const QList<U2FeatureKey>&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
     }
 

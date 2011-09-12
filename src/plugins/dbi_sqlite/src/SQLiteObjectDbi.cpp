@@ -88,6 +88,17 @@ QList<U2DataId> SQLiteObjectDbi::getParents(const U2DataId& entityId, U2OpStatus
     return q.selectDataIdsExt();
 }
 
+U2DbiIterator<U2DataId>* SQLiteObjectDbi::getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os) {
+    bool checkType = type != U2Type::Unknown;
+    QString query = "SELECT o.id AS id, o.type AS type FROM Object WHERE " + TOP_LEVEL_FILTER 
+            + " AND visualName = ?1 " + (checkType ? "AND type = ?2" : "");
+    SQLiteQuery* q = new SQLiteQuery(query, db, os);
+    q->bindString(1, visualName);
+    if (checkType) {
+        q->bindType(2, type);
+    }
+    return new SqlRSIterator<U2DataId>(q, new SqlDataIdRSLoaderEx(), NULL, U2DataId(), os);
+}
 
 //////////////////////////////////////////////////////////////////////////
 // Write methods for objects

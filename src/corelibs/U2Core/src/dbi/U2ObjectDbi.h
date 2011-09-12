@@ -59,6 +59,10 @@ public:
     virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus& os) = 0;
 
 
+    /** Returns objects iterator with a given name and type. If type is Unknown -> checks objects of all types */
+    virtual U2DbiIterator<U2DataId>* getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os) = 0;
+
+
     /**  Returns list of folders stored in database. 
         Folders are represented as paths, separated by '/' character.
         At least one root folder is required. 

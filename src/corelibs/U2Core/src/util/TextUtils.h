@@ -23,7 +23,6 @@
 #define _U2_TEXT_UTILS_H_
 
 #include <U2Core/global.h>
-#include <U2Core/U2Region.h>
 
 #include <QtCore/QBitArray>
 #include <QtCore/QSet>

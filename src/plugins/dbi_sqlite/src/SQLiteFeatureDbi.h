@@ -58,7 +58,7 @@ public:
         Creates new feature in database. Uses all fields in 'feature' param and assign database id to it as the result
         Requires: U2DbiFeature_WriteFeature feature support
     */
-    virtual void createFeature(U2Feature& feature, QList<U2FeatureKey>& keys, U2OpStatus& os);
+    virtual void createFeature(U2Feature& feature, const QList<U2FeatureKey>& keys, U2OpStatus& os);
 
 
 

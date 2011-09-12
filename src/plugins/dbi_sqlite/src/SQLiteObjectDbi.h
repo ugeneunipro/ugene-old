@@ -50,6 +50,8 @@ public:
      */
     virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus& os);
 
+    virtual U2DbiIterator<U2DataId>* getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os);
+
 
     // Read methods for folders
 

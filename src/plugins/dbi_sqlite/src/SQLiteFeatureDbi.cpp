@@ -218,7 +218,7 @@ static void addKeyCommon(SQLiteQuery& qk, const U2DataId& featureId, const U2Fea
     qk.insert();
 }
 
-void SQLiteFeatureDbi::createFeature(U2Feature& feature, QList<U2FeatureKey>& keys, U2OpStatus& os) {
+void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKey>& keys, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
 
     SQLiteQuery qf("INSERT INTO Feature(parent, sequence, strand, start, len) VALUES(?1, ?2, ?3, ?4, ?5)" , db, os);

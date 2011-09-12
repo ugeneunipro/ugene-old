@@ -48,7 +48,7 @@ class FeatureQuery {
 public:
     FeatureQuery() : topLevelOnly(false),  keyNameOrderOp(OrderOp_None),
         keyValueCompareOp(ComparisonOp_Invalid), keyValueOrderOp(OrderOp_None), 
-        intersectRegion(0, -1), startPosOrderOp(OrderOp_None) {}
+        intersectRegion(-1, 0), startPosOrderOp(OrderOp_None) {}
     
     U2DataId        sequenceId;
 
@@ -64,7 +64,7 @@ public:
     
     /** Indicates the region to intersect
         Special values: 
-            len = -1 :   filter is disabled
+            startPos = -1 and len = 0 :   filter is disabled
     */
     U2Region        intersectRegion;
     OrderOp         startPosOrderOp;
@@ -99,7 +99,7 @@ public:
         Creates new feature in database. Uses all fields in 'feature' param and assign database id to it as the result
         Requires: U2DbiFeature_WriteFeature feature support
     */
-    virtual void createFeature(U2Feature& feature, QList<U2FeatureKey>& keys, U2OpStatus& os) = 0;
+    virtual void createFeature(U2Feature& feature, const QList<U2FeatureKey>& keys, U2OpStatus& os) = 0;
 
 
 
