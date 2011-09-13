@@ -38,6 +38,7 @@ namespace U2 {
 const qreal GraphicsRectangularBranchItem::DEFAULT_WIDTH = 25.0;
 const qreal GraphicsRectangularBranchItem::MAXIMUM_WIDTH = 500.0;
 const int GraphicsRectangularBranchItem::DEFAULT_HEIGHT = 25;
+const qreal GraphicsRectangularBranchItem::EPSILON = 0.0000000001;
 
 void GraphicsRectangularBranchItem::collapse() {
     collapsed = !collapsed;

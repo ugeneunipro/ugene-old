@@ -35,6 +35,7 @@ class GraphicsRectangularBranchItem: public GraphicsBranchItem {
 public:
     static const qreal DEFAULT_WIDTH;
     static const qreal MAXIMUM_WIDTH;
+    static const qreal EPSILON;
     static const int DEFAULT_HEIGHT;
     
     GraphicsRectangularBranchItem();

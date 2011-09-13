@@ -156,9 +156,7 @@ void MrBayesLogParser::parseErrOutput(const QString& partOfLog){
         if(buf.contains(QRegExp("^\\d+"))
             ||buf.contains("WARNING")
             ||buf.contains(QRegExp("^-\\w"))
-            ||buf.contains("No trees are sampled")
-            ||buf.contains("[Relax")
-            ||buf.contains("[Update]")){
+            ||buf.contains("No trees are sampled")){
                 algoLog.trace(buf);
         }else{
             algoLog.info(buf);
