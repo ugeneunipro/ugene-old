@@ -145,7 +145,7 @@ void FindDialog::connectGUI() {
     connect(sbMatch, SIGNAL(valueChanged(int)), SLOT(sl_onMatchPercentChanged(int)));
 
     //connect position selectors
-    connect(rs, SIGNAL(si_rangeChanged(int,int)), SLOT(sl_onRangeChanged(int,int)));
+    connect(rs, SIGNAL(si_regionChanged(const U2Region&)), SLOT(sl_onRegionChanged(const U2Region&)));
     connect(sbCurrentPos, SIGNAL(valueChanged(int)), SLOT(sl_onCurrentPosChanged(int)));
 
     //results list
@@ -282,12 +282,13 @@ void FindDialog::reject() {
     QDialog::reject();
 }
 
-void FindDialog::sl_onRangeChanged(int start, int end) {
-    if (start > sbCurrentPos->value()) {
-        sbCurrentPos->setValue(start);
+void FindDialog::sl_onRegionChanged(const U2Region& region) {
+    int newVisualStart = region.startPos + 1;
+    if (newVisualStart > sbCurrentPos->value()) {
+        sbCurrentPos->setValue(newVisualStart);
     }
-    if (end < sbCurrentPos->value()) {
-        sbCurrentPos->setValue(end);
+    if (region.endPos() < sbCurrentPos->value()) {
+        sbCurrentPos->setValue(region.endPos());
     }
 }
 
@@ -296,7 +297,7 @@ void FindDialog::sl_onCurrentPosChanged(int v) {
     if (v > tmp.endPos()) {
         rs->setRegion(U2Region(tmp.startPos,v-tmp.startPos));
     }
-    if (v-1 < tmp.startPos) {
+    if ( v - 1 < tmp.startPos) {
         rs->setRegion(U2Region(v-1,tmp.endPos() - v+1));
     }
 }

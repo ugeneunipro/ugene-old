@@ -49,14 +49,13 @@ protected slots:
     void sl_setPredefinedAnnotationName();
     void sl_minDistChanged(int i);
     void sl_maxDistChanged(int i);
-    void sl_rangeChanged(int start, int end);
+    void sl_onRegionChanged(const U2Region&);
     void sl_minLenHeuristics();
     void sl_hundredPercent();
     void sl_repeatParamsChanged(int);
     void sl_minMaxToggle(bool);
 
 private:
-    U2Region getActiveRange(bool *ok = NULL) const;
     void saveState();
     QStringList getAvailableAnnotationNames() const;
     bool getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Region>& res);

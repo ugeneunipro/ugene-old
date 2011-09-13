@@ -41,23 +41,23 @@ public:
     ~RegionSelector();
     U2Region getRegion(bool *ok = NULL) const;
 
-    void setRegion(U2Region value);
+    void setRegion(const U2Region& value);
     void reset();
 
     void showErrorMessage();
 
 signals:
-    void si_rangeChanged(int startPos, int endPos);
+    void si_regionChanged(const U2Region& newRegion);
 
 private slots:
     void sl_onComboBoxIndexChanged(int);
-    void sl_onRangeChanged();
+    void sl_onRegionChanged();
     void sl_onValueEdited();
 
 private:
     void init();
 
-    qint64          len;
+    qint64          maxLen;
     RegionLineEdit* startEdit;
     RegionLineEdit* endEdit;
     QComboBox*      comboBox;

@@ -49,7 +49,7 @@ public:
     bool                reportReflected;
     bool                filterNested;
     int                 maxResults;
-    U2Region             seqRegion, seq2Region;
+    U2Region            seqRegion, seq2Region;
     
     //all these regions are in global sequence coordinates
     QVector<U2Region>    midRegionsToInclude;  //reported repeat must contain one of these regions
@@ -86,6 +86,7 @@ public:
 
 protected:
     void addResult(const RFResult& r);
+    void _addResult(int x, int y, int l);
     bool isFilteredByRegions(const RFResult& r);
     RFAlgorithmBase* createRFTask();
     void filterNestedRepeats();

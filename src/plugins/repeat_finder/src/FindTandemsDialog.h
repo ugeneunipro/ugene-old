@@ -49,7 +49,7 @@ public:
 
 protected slots:
     //void sl_setPredefinedAnnotationName();
-    void sl_rangeChanged(int start, int end);
+    void sl_onRegionChanged(const U2Region&);
     void minPeriodChanged(int min);
     void maxPeriodChanged(int max);
     void presetSelected(int preset);

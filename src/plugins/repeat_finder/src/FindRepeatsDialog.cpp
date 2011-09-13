@@ -108,7 +108,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
 
     rs=new RegionSelector(this, seqLen, false, sc->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
-    connect(rs,SIGNAL(si_rangeChanged(int,int)),SLOT(sl_rangeChanged(int,int)));
+    connect(rs,SIGNAL(si_regionChanged(const U2Region&)),SLOT(sl_onRegionChanged(const U2Region& )));
 
     QStringList annotationNames = getAvailableAnnotationNames();
     bool haveAnnotations = !annotationNames.isEmpty();
@@ -180,9 +180,7 @@ void FindRepeatsDialog::sl_maxDistChanged(int i) {
     updateStatus();
 }
 
-void FindRepeatsDialog::sl_rangeChanged(int start, int end) {
-    Q_UNUSED(start);
-    Q_UNUSED(end);
+void FindRepeatsDialog::sl_onRegionChanged(const U2Region&) {
     updateStatus();
 }
 
@@ -209,20 +207,15 @@ bool FindRepeatsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
     return true;
 }
 
-U2Region FindRepeatsDialog::getActiveRange(bool *ok) const {
-    U2Region region=rs->getRegion(ok);
-    return region;
-}
-
 void FindRepeatsDialog::accept() {
     int minLen = minLenBox->value();
     int identPerc = identityBox->value();
     int minDist = minDistCheck->isChecked() ? minDistBox->value() : 0;
     int maxDist = maxDistCheck->isChecked() ? maxDistBox->value(): sc->getSequenceLen();
     bool inverted = invertCheck->isChecked();
-    bool isRegionOk=false;
-    U2Region range = getActiveRange(&isRegionOk);
-    if(!isRegionOk){
+    bool isRegionOk = false;
+    U2Region range = rs->getRegion(&isRegionOk);
+    if (!isRegionOk){
         rs->showErrorMessage();
         return;
     }
@@ -289,8 +282,8 @@ void FindRepeatsDialog::saveState() {
 }
 
 quint64 FindRepeatsDialog::areaSize() const {
-    quint64 range = getActiveRange().length;
-    if (range <=0) {
+    quint64 range = rs->getRegion().length;
+    if (range <= 0) {
         return 0;
     }
     int minDist = minDistCheck->isChecked() ? minDistBox->value() : 0;
@@ -329,15 +322,13 @@ void FindRepeatsDialog::sl_minLenHeuristics() {
     minLenBox->setValue((int)len);
 }
 
-void FindRepeatsDialog::sl_repeatParamsChanged(int v) {
-    Q_UNUSED(v);
+void FindRepeatsDialog::sl_repeatParamsChanged(int) {
     updateStatus();
 
     minLenBox->setSingleStep(minLenBox->value() >= 20 ? 10 : 1);
 }
 
-void FindRepeatsDialog::sl_minMaxToggle(bool v) {
-    Q_UNUSED(v);
+void FindRepeatsDialog::sl_minMaxToggle(bool) {
     updateStatus();
 }
 

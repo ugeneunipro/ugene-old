@@ -78,9 +78,6 @@ FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequ
         settings.seq2Region = U2Region(0, directSequence2.length());
     }
 
-    if (settings.maxDist == 0) {
-        settings.maxDist = seq.length();
-    }
     revComplTask = NULL;
     rfTask = NULL;
     startTime = GTimer::currentTimeMicros();
@@ -213,18 +210,35 @@ void FindRepeatsTask::cleanup() {
 void FindRepeatsTask::addResult(const RFResult& r) {
     int x = r.x + settings.seqRegion.startPos;
     int y = settings.inverted ? settings.seqRegion.endPos() - r.y - r.l : r.y + settings.seq2Region.startPos;
+    int l = r.l;
     assert(x >= settings.seqRegion.startPos && x + r.l <= settings.seqRegion.endPos());
     assert(y >= settings.seq2Region.startPos && y + r.l <= settings.seq2Region.endPos());
 
-    int dist = qAbs(x - y) - r.l;
+    int dist = qAbs(x - y) - l;
     if (dist < settings.minDist || dist > settings.maxDist) {
+        // dist < 0 -> overlapping repeat. Try to reduce its length to fit min/max constraints if possible
+        if (dist < 0) { 
+            // match if prefixes fits dist
+            int plen = qAbs(x - y) - settings.minDist;
+            if (plen  >= settings.minLen) {
+                _addResult(x, y, plen);
+            }
+            // match if suffixes fits dist
+            int dlen = settings.minDist - dist;
+            if (l - dlen >= settings.minLen) {
+                _addResult(x + dlen, y + dlen, l - dlen);
+            }
+        }
         return;
     }
+    _addResult(x, y, l);
+}
 
+void FindRepeatsTask::_addResult(int x, int y, int l) {
     if (settings.reportReflected || x <= y) {
-        results.append(RFResult(x, y, r.l));
+        results.append(RFResult(x, y, l));
     } else {
-        results.append(RFResult(y, x, r.l));
+        results.append(RFResult(y, x, l));
     }
 }
 

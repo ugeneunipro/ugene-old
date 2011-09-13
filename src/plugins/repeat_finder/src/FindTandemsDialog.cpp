@@ -96,7 +96,7 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
 //    connect(identityBox, SIGNAL(valueChanged(int)), SLOT(sl_repeatParamsChanged(int)));
     rs=new RegionSelector(this, seqLen, false, sc->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
-    connect(rs,SIGNAL(si_rangeChanged(int,int)),SLOT(sl_rangeChanged(int,int)));
+    connect(rs,SIGNAL(si_regionChanged(const U2Region&)),SLOT(sl_onRegionChanged(const U2Region&)));
 
     //connect(minDistBox, SIGNAL(valueChanged(int)), SLOT(sl_minDistChanged(int)));
     //connect(maxDistBox, SIGNAL(valueChanged(int)), SLOT(sl_maxDistChanged(int)));
@@ -164,9 +164,7 @@ void FindTandemsDialog::presetSelected(int preset){
     maxPeriodBox->setValue(maxPeriod);
 }
 
-void FindTandemsDialog::sl_rangeChanged(int start, int end) {
-    Q_UNUSED(start);
-    Q_UNUSED(end);
+void FindTandemsDialog::sl_onRegionChanged(const U2Region&) {
     updateStatus();
 }
 

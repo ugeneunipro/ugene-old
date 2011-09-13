@@ -82,7 +82,7 @@ private slots:
     void sl_onTimer();
 
     //range
-    void sl_onRangeChanged(int,int);
+    void sl_onRegionChanged(const U2Region& r);
     void sl_onCurrentPosChanged(int);
 
     void sl_onResultActivated(QListWidgetItem* i, bool setPos = true);
