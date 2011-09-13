@@ -195,21 +195,200 @@ static bool checkSeq(const QByteArray &seq){
     return true;
 }
 
+
 #define READ_BUFF_SIZE  4096
+
+static inline void skipBreaks(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, qint64* len){
+    bool lineOk = true;
+    *len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+    if (*len == 0) { //end if stream
+        ti.setError(ACEFormat::tr("Unexpected end of file"));
+        return;
+    }
+    if (!lineOk) {
+        ti.setError(ACEFormat::tr("Line is too long"));
+        return;
+    }
+}
+static inline void parseConsensus(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, QString& consName, QSet<QString> &names, QString& headerLine, QByteArray& consensus){
+    char aceBStartChar = 'B';
+    QBitArray aceBStart = TextUtils::createBitMap(aceBStartChar);
+    qint64 len = 0;
+    bool ok = true;
+    QString line;
+    consName = getName(headerLine);
+    if("" == consName){
+        ti.setError(ACEFormat::tr("There is no AF note"));
+        return ;
+    }
+    if (names.contains(consName)) {
+        ti.setError(ACEFormat::tr("A name is duplicated"));
+        return ;
+    }
+    names.insert(consName);
+    consensus.clear();
+    do {
+        len = io->readUntil(buff, READ_BUFF_SIZE, aceBStart, IOAdapter::Term_Exclude, &ok);
+        if (len <= 0) {
+            ti.setError(ACEFormat::tr("No consensus"));
+            return ;
+        }
+        len = TextUtils::remove(buff, len, TextUtils::WHITES);
+        buff[len] = 0;
+        consensus.append(buff);
+        ti.progress = io->getProgress();
+    } while (!ti.cancelFlag && !ok);
+    len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
+    line = QString(QByteArray::fromRawData(buff, len)).trimmed();
+    if(!line.startsWith("BQ")){
+        ti.setError(ACEFormat::tr("BQ keyword hasn't been found"));
+        return ;
+    }
+    consensus=consensus.toUpper();
+    if(!checkSeq(consensus)){
+        ti.setError(ACEFormat::tr("Bad consensus data"));
+        return ;
+    }
+    consensus.replace('*',MAlignment_GapChar);
+}
+
+static inline void parseAFTag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, int count, QMap< QString, int> &posMap, QMap< QString, bool> &complMap, QSet<QString> &names){
+    int count1 = count;
+    QString readLine;
+    QString name;
+    qint64 len = 0;
+    int readPos = 0;
+    int complStrand = 0;
+    int paddedStart = 0;
+    while (!ti.cancelFlag && count1>0) {
+        do{
+            skipBreaks(io, ti, buff, &len);
+            if(ti.hasError()){
+                return;
+            }
+            readLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
+        }while (!readLine.startsWith("AF"));
+
+        name = getName(readLine);
+        if(!readLine.startsWith("AF") || "" == name){
+            ti.setError(ACEFormat::tr("There is no AF note"));
+            return ;
+        }
+
+        readPos = readsPos(readLine);
+        complStrand = readsComplement(readLine);
+        if((INT_MAX == readPos) ||  (-1 == complStrand) ){
+            ti.setError(ACEFormat::tr("Bad AF note"));
+            return ;
+        }
+
+        paddedStart = paddedStartCons(readLine);
+        if(INT_MAX == paddedStart){
+            ti.setError(ACEFormat::tr("Bad AF note"));
+            return ;
+        }
+
+        posMap.insert(name,paddedStart);
+
+        if (names.contains(name)) {
+            ti.setError(ACEFormat::tr("A name is duplicated"));
+            return ;
+        }
+
+        bool cur_compl = (complStrand == 1);
+        complMap.insert(name,cur_compl);
+
+        names.insert(name);
+
+        count1--;
+        ti.progress = io->getProgress();
+    } 
+}
+
+static inline void parseRDandQATag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, QMap< QString, int> &posMap, QMap< QString, bool> &complMap, QSet<QString> &names, QString& name, QByteArray& sequence){
+    QString line;
+    qint64 len = 0;
+    bool ok = true;
+    char aceQStartChar = 'Q';
+    QBitArray aceQStart = TextUtils::createBitMap(aceQStartChar);
+    do{
+        skipBreaks(io, ti, buff, &len);
+        if(ti.hasError()){
+            return;
+        }
+        line = QString(QByteArray::fromRawData(buff, len)).trimmed();
+    }while (!line.startsWith("RD"));
+
+    name = getName(line);
+    if(!line.startsWith("RD") || "" == name){
+        ti.setError(ACEFormat::tr("There is no read note"));
+        return ;
+    }
+
+    sequence.clear();
+    do {
+        len = io->readUntil(buff, READ_BUFF_SIZE, aceQStart, IOAdapter::Term_Exclude, &ok);
+        if (len <= 0) {
+            ti.setError(ACEFormat::tr("No sequence"));
+            return ;
+        }
+        len = TextUtils::remove(buff, len, TextUtils::WHITES);
+        buff[len] = 0;
+        sequence.append(buff);
+        ti.progress = io->getProgress();
+    } while (!ti.cancelFlag && !ok);
+    len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
+    line = QString(QByteArray::fromRawData(buff, len)).trimmed();
+    if(!line.startsWith("QA")){
+        ti.setError(ACEFormat::tr("QA keyword hasn't been found"));
+        return ;
+    }
+    int clearRangeStart = 0;
+    int clearRangeEnd = 0;
+
+    clearRangeStart = readsCount(line);
+    if(-1==clearRangeStart){
+        ti.setError(ACEFormat::tr("QA error no clear range"));
+        return ;
+    }
+
+    clearRangeEnd = clearRange(line);
+    if(0==clearRangeEnd){
+        ti.setError(ACEFormat::tr("QA error no clear range"));
+        return ;
+    }
+
+    len = sequence.length();
+    if(clearRangeStart > clearRangeEnd || clearRangeEnd > len){
+        ti.setError(ACEFormat::tr("QA error bad range"));
+        return ;
+    }
+
+    sequence=sequence.toUpper();
+    if(!checkSeq(sequence)){
+        ti.setError(ACEFormat::tr("Bad sequence data"));
+        return ;
+    }
+
+    if (!names.contains(name)) {
+        ti.setError(ACEFormat::tr("A name is not match with AF names"));
+        return ;
+    }else{
+        names.remove(name);
+    }
+
+    sequence.replace('*',MAlignment_GapChar);
+    sequence.replace('N',MAlignment_GapChar);
+    sequence.replace('X',MAlignment_GapChar);
+
+    
+}
+
 void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateInfo &ti) {
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
     int count = 0;
-
-    char aceHeaderStartChar = 'C';
-    QBitArray aceHeaderStart = TextUtils::createBitMap(aceHeaderStartChar);
-    char aceReadStartChar = 'R';
-    QBitArray aceReadStart = TextUtils::createBitMap(aceReadStartChar);
-    char aceBStartChar = 'B';
-    QBitArray aceBStart = TextUtils::createBitMap(aceBStartChar);
-    char aceQStartChar = 'Q';
-    QBitArray aceQStart = TextUtils::createBitMap(aceQStartChar);
 
     QByteArray sequence;
     QSet<QString> names;
@@ -218,15 +397,12 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
 
      //skip leading whites if present
     bool lineOk = true;
-    len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-    if (len == 0) { //end if stream
-        return ;
-    }
-    if (!lineOk) {
-        ti.setError(ACEFormat::tr("Line is too long"));
-        return ;
+    skipBreaks(io, ti, buff, &len);
+    if(ti.hasError()){
+        return;
     }
     QString headerLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
+
     if (!headerLine.startsWith(AS)) {
         ti.setError(ACEFormat::tr("First line is not an ace header"));
         return ;
@@ -241,13 +417,9 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
             QBitArray nonWhites = ~TextUtils::WHITES;
             io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
             //read header
-            len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-            if (len == 0) { //end if stream
-                return ;
-            }
-            if (!lineOk) {
-                ti.setError(ACEFormat::tr("Line is too long"));
-                return ;
+            skipBreaks(io, ti, buff, &len);
+            if(ti.hasError()){
+                return;
             }
             headerLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
             if (!headerLine.startsWith(CO)) {
@@ -256,14 +428,9 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
             }
         }else{
             do{
-                len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-                if (len == 0) { //end if stream
-                    ti.setError(ACEFormat::tr("Unexpected end of file"));
-                    return ;
-                }
-                if (!lineOk) {
-                    ti.setError(ACEFormat::tr("Line is too long"));
-                    return ;
+                skipBreaks(io, ti, buff, &len);
+                if(ti.hasError()){
+                    return;
                 }
                 headerLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
             }while (!headerLine.startsWith(CO));
@@ -273,177 +440,30 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
             ti.setError(ACEFormat::tr("There is no note about reads count"));
             return ;
         }
-        QString readLine;
+        //consensus
         QString name;
         QByteArray consensus;
-        //consensus
-        QString consName = getName(headerLine);
-        if("" == consName){
-                ti.setError(ACEFormat::tr("There is no AF note"));
-                return ;
+        QString consName;
+
+        parseConsensus(io, ti, buff, consName, names, headerLine, consensus);
+        if (ti.hasError()){
+            return;
         }
-        if (names.contains(consName)) {
-                ti.setError(ACEFormat::tr("A name is duplicated"));
-                return ;
-        }
-        names.insert(consName);
-        consensus.clear();
-            do {
-                len = io->readUntil(buff, READ_BUFF_SIZE, aceBStart, IOAdapter::Term_Exclude, &lineOk);
-                if (len <= 0) {
-                    ti.setError(ACEFormat::tr("No consensus"));
-                    return ;
-                }
-                len = TextUtils::remove(buff, len, TextUtils::WHITES);
-                buff[len] = 0;
-                consensus.append(buff);
-                ti.progress = io->getProgress();
-            } while (!ti.cancelFlag && !lineOk);
-            len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-            readLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
-            if(!readLine.startsWith(BQ)){
-                ti.setError(ACEFormat::tr("BQ keyword hasn't been found"));
-                return ;
-            }
-            consensus=consensus.toUpper();
-            if(!checkSeq(consensus)){
-                ti.setError(ACEFormat::tr("Bad consensus data"));
-                return ;
-            }
-            consensus.replace('*',MAlignment_GapChar);
-            MAlignment al(consName);
-            al.addRow(MAlignmentRow(consName, consensus));
+
+        MAlignment al(consName);
+        al.addRow(MAlignmentRow(consName, consensus));
 
         //AF
-        int count1 = count;
-        int readPos = 0;
-        int complStrand = 0;
-        int paddedStart = 0;
-        while (!ti.cancelFlag && count1>0) {
-            do{
-                len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-                if (len == 0) { //end if stream
-                    ti.setError(ACEFormat::tr("Unexpected end of file"));
-                    return ;
-                }
-                if (!lineOk) {
-                    ti.setError(ACEFormat::tr("Line is too long"));
-                    return ;
-                }
-                readLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
-            }while (!readLine.startsWith(AF));
-
-            name = getName(readLine);
-            if(!readLine.startsWith(AF) || "" == name){
-                ti.setError(ACEFormat::tr("There is no AF note"));
-                return ;
-            }
-
-            readPos = readsPos(readLine);
-            complStrand = readsComplement(readLine);
-            if((INT_MAX == readPos) ||  (-1 == complStrand) ){
-                ti.setError(ACEFormat::tr("Bad AF note"));
-                return ;
-            }
-
-            paddedStart = paddedStartCons(readLine);
-            if(INT_MAX == paddedStart){
-                ti.setError(ACEFormat::tr("Bad AF note"));
-                return ;
-            }
-
-            posMap.insert(name,paddedStart);
-
-            if (names.contains(name)) {
-                ti.setError(ACEFormat::tr("A name is duplicated"));
-                return ;
-            }
-
-            bool cur_compl = (complStrand == 1);
-            complMap.insert(name,cur_compl);
-
-            names.insert(name);
-
-            count1--;
-            ti.progress = io->getProgress();
+        parseAFTag(io, ti, buff, count, posMap, complMap, names);
+        if (ti.hasError()){
+            return;
         }
-        //RD
-
+        //RD and QA
         while (!ti.cancelFlag && count>0) {
-            do{
-                len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-                if (len == 0) { //end if stream
-                    ti.setError(ACEFormat::tr("Unexpected end of file"));
-                    return ;
-                }
-                if (!lineOk) {
-                    ti.setError(ACEFormat::tr("Line is too long"));
-                    return ;
-                }
-                readLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
-            }while (!readLine.startsWith(RD));
-
-            name = getName(readLine);
-            if(!readLine.startsWith(RD) || "" == name){
-                ti.setError(ACEFormat::tr("There is no read note"));
-                return ;
+            parseRDandQATag(io, ti, buff, posMap, complMap, names, name, sequence);
+            if (ti.hasError()){
+                return;
             }
-
-            sequence.clear();
-            do {
-                len = io->readUntil(buff, READ_BUFF_SIZE, aceQStart, IOAdapter::Term_Exclude, &lineOk);
-                if (len <= 0) {
-                    ti.setError(ACEFormat::tr("No sequence"));
-                    return ;
-                }
-                len = TextUtils::remove(buff, len, TextUtils::WHITES);
-                buff[len] = 0;
-                sequence.append(buff);
-                ti.progress = io->getProgress();
-            } while (!ti.cancelFlag && !lineOk);
-            len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-            readLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
-            if(!readLine.startsWith(QA)){
-                ti.setError(ACEFormat::tr("QA keyword hasn't been found"));
-                return ;
-            }
-            int clearRangeStart = 0;
-            int clearRangeEnd = 0;
-
-            clearRangeStart = readsCount(readLine);
-            if(-1==clearRangeStart){
-                ti.setError(ACEFormat::tr("QA error no clear range"));
-                return ;
-            }
-
-            clearRangeEnd = clearRange(readLine);
-            if(0==clearRangeEnd){
-                ti.setError(ACEFormat::tr("QA error no clear range"));
-                return ;
-            }
-
-            len = sequence.length();
-            if(clearRangeStart > clearRangeEnd || clearRangeEnd > len){
-                ti.setError(ACEFormat::tr("QA error bad range"));
-                return ;
-            }
-
-            sequence=sequence.toUpper();
-            if(!checkSeq(sequence)){
-                ti.setError(ACEFormat::tr("Bad sequence data"));
-                return ;
-            }
-
-            if (!names.contains(name)) {
-                ti.setError(ACEFormat::tr("A name is not match with AF names"));
-                return ;
-            }else{
-                names.remove(name);
-            }
-
-            sequence.replace('*',MAlignment_GapChar);
-            sequence.replace('N',MAlignment_GapChar);
-            sequence.replace('X',MAlignment_GapChar);
 
             bool isComplement = complMap.take(name);
             int pos = posMap.value(name) - 1;
