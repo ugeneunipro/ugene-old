@@ -57,30 +57,36 @@ enum HMMERHeaderTags {
     TC,
     NC,
     NULE, // in HMMER2 only
-    HMM
+    HMM,
+    BM,
+    SM
 }; // HMMERHeaderTags
 
 static QMap< QByteArray, HMMERHeaderTags > getHeaderTagsMap() {
-    QMap< QByteArray, HMMERHeaderTags > ret;
-    ret["NAME"]     = NAME;
-    ret["ACC"]      = ACC;
-    ret["DESC"]     = DESC;
-    ret["LENG"]     = LENG;
-    ret["ALPH"]     = ALPH;
-    ret["RF"]       = RF;
-    ret["CS"]       = CS;
-    ret["MAP"]      = MAP;
-    ret["DATE"]     = DATE;
-    ret["COM"]      = COM;
-    ret["NSEQ"]     = NSEQ;
-    ret["EFFN"]     = EFFN;
-    ret["CKSUM"]    = CKSUM;
-    ret["STATS"]    = STATS;
-    ret["GA"]       = GA;
-    ret["TC"]       = TC;
-    ret["NC"]       = NC;
-    ret["NULE"]     = NULE;
-    ret["HMM"]      = HMM;
+    static QMap< QByteArray, HMMERHeaderTags > ret;
+    if (ret.isEmpty()) {
+        ret["NAME"]     = NAME;
+        ret["ACC"]      = ACC;
+        ret["DESC"]     = DESC;
+        ret["LENG"]     = LENG;
+        ret["ALPH"]     = ALPH;
+        ret["RF"]       = RF;
+        ret["CS"]       = CS;
+        ret["MAP"]      = MAP;
+        ret["DATE"]     = DATE;
+        ret["COM"]      = COM;
+        ret["NSEQ"]     = NSEQ;
+        ret["EFFN"]     = EFFN;
+        ret["CKSUM"]    = CKSUM;
+        ret["STATS"]    = STATS;
+        ret["GA"]       = GA;
+        ret["TC"]       = TC;
+        ret["NC"]       = NC;
+        ret["NULE"]     = NULE;
+        ret["HMM"]      = HMM;
+        ret["BM"]       = BM;
+        ret["SM"]       = SM;
+    }
     return ret;
 }
 
@@ -151,7 +157,11 @@ static void setFloat( float& num, const QByteArray& numStr ) {
 }
 
 static void set2Floats( float& f1, float& f2, const QByteArray& str ) {
-    QString line( str );
+    QString line(str.trimmed());
+    if (line.endsWith(";"))  { //PFAM compatibilty fix
+        line = line.mid(0, line.length()-1);
+    }
+
     QStringList words = line.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
 
     if( 2 != words.size() ) {
@@ -482,6 +492,10 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
             case HMM:
                 isHeaderSection = false;
                 continue;
+            case BM:
+            case SM:
+                //TODO: update HMMER and start use these fields too
+                break;
             case BAD_TAG:
                 throw UHMMFormatReader::UHMMFormatReaderException(
                     UHMMFormatReader::tr( "unrecognized_tag_in_header_section:%1" ).arg( QString(tagStr) ) );
