@@ -85,6 +85,9 @@ void ORFFindAlgorithm::find(
             if (!initiators->isEmpty() && aTT->isStopCodon(sequence + i)) {
                 foreach(int initiator, *initiators) {
                     int len = i - initiator;
+					if (cfg.includeStopCodon) {
+						len+=3;
+					}
                     if (len>=minLen) rl->onResult(ORFFindResult(U2Region(initiator, len), frame));
                 }
                 initiators->clear();
@@ -139,7 +142,11 @@ void ORFFindAlgorithm::find(
             if (!initiators->isEmpty() && aTT->isStopCodon(rcSeq)) {
                 foreach(int initiator, *initiators) {
                     int len = initiator - i;
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(i, len), frame - 3));
+					int ind = i;
+					if (cfg.includeStopCodon) {
+						ind -= 3;
+					}
+                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind, len), frame - 3));
                 }
                 initiators->clear();
                 if (!mustInit) {

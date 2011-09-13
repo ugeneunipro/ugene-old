@@ -55,6 +55,7 @@ static const QString LEN_ATTR("min-length");
 static const QString FIT_ATTR("require-stop-codon");
 static const QString INIT_ATTR("require-init-codon");
 static const QString ALT_ATTR("allow-alternative-codons");
+static const QString ISC_ATTR("include-stop-codon");
 
 const QString ORFWorkerFactory::ACTOR_ID("orf-search");
 
@@ -81,7 +82,8 @@ void ORFWorkerFactory::init() {
         Descriptor fd(FIT_ATTR, ORFWorker::tr("Require stop codon"), QApplication::translate("ORFDialogBase", "must_fit_tip", 0, QApplication::UnicodeUTF8));
         Descriptor ind(INIT_ATTR, ORFWorker::tr("Require init codon"), QApplication::translate("ORFDialogBase", "must_init_tip", 0, QApplication::UnicodeUTF8));
         Descriptor ad(ALT_ATTR, ORFWorker::tr("Allow alternative codons"), QApplication::translate("ORFDialogBase", "allow_alt_tip", 0, QApplication::UnicodeUTF8));
-
+		Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set"));
+		
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("ORF"));
         a << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, QVariant(100));
@@ -89,6 +91,9 @@ void ORFWorkerFactory::init() {
         a << new Attribute(fd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         a << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, QVariant(true));
         a << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+		a << new Attribute(isc, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+
+
     }
 
     Descriptor desc(ACTOR_ID, ORFWorker::tr("ORF marker"), 
@@ -159,6 +164,7 @@ QString ORFPrompter::composeRichDoc() {
     cfg.mustFit = getParameter(FIT_ATTR).toBool();
     cfg.mustInit = getParameter(INIT_ATTR).toBool();
     cfg.allowAltStart = getParameter(ALT_ATTR).toBool();
+	cfg.includeStopCodon = getParameter(ISC_ATTR).toBool();
 
     QString extra;
     if (!cfg.mustInit) {
@@ -224,6 +230,7 @@ Task* ORFWorker::tick() {
     cfg.mustFit = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>();
     cfg.mustInit = actor->getParameter(INIT_ATTR)->getAttributeValue<bool>();
     cfg.allowAltStart = actor->getParameter(ALT_ATTR)->getAttributeValue<bool>();
+	cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>();
     resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
     if(resultName.isEmpty()){
         algoLog.error(tr("ORF: result name is empty, default name used"));

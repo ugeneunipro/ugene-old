@@ -37,6 +37,7 @@ namespace U2 {
 #define SEQ_ATTR "seq"
 #define STRAND_ATTR "strand"
 #define MIN_LENGTH_ATTR "min_length"
+#define INCLUDE_STOP_CODON_ATTR "include_stop_codon"
 #define TERMINATES_ATTR "terminates_with_region"
 #define START_WITH_INIT_ATTR "starts_with_init_codon"
 #define ALT_INIT_ATTR "allow_alt_init_codons"
@@ -136,6 +137,13 @@ void GTest_ORFMarkerTask::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
 
+	QString strIncStopCodon = el.attribute(INCLUDE_STOP_CODON_ATTR);
+	if (strIncStopCodon == "true") {
+		settings.includeStopCodon = true;
+	} else {
+		settings.includeStopCodon = false;
+	}
+
     QString strAltStart = el.attribute(ALT_INIT_ATTR);
     if (strAltStart.isEmpty()) {
         failMissingValue(ALT_INIT_ATTR);
@@ -173,7 +181,7 @@ void GTest_ORFMarkerTask::prepare() {
     settings.complementTT = tr.getComplTranslation();
     settings.proteinTT = tr.getAminoTranslation();
     settings.searchRegion = mySequence->getSequenceRange();
-    task = new ORFFindTask(settings, mySequence->getSequence());
+	task = new ORFFindTask(settings, mySequence->getSequence());
     addSubTask(task);
 }
 
