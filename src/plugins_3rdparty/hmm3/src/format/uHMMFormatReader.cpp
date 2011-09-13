@@ -158,7 +158,7 @@ static void setFloat( float& num, const QByteArray& numStr ) {
 
 static void set2Floats( float& f1, float& f2, const QByteArray& str ) {
     QString line(str.trimmed());
-    if (line.endsWith(";"))  { //PFAM compatibilty fix
+    if (line.endsWith(";"))  { //PFAM compatibility fix
         line = line.mid(0, line.length()-1);
     }
 
