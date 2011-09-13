@@ -1077,10 +1077,10 @@ void TreeViewerUI::redrawRectangularLayout(){
     item->setHeightW(0);
 
     if(minDistance == 0){
-        minDistance = 1;
+        minDistance = GraphicsRectangularBranchItem::EPSILON;
     }
     if(maxDistance == 0){
-        maxDistance = 1;
+        maxDistance = GraphicsRectangularBranchItem::EPSILON;
     }
 
     qreal minDistScale = GraphicsRectangularBranchItem::DEFAULT_WIDTH / (qreal)minDistance;
