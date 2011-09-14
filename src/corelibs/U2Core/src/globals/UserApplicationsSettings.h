@@ -57,7 +57,7 @@ public:
     QString getTemporaryDirPath() const;
     void setTemporaryDirPath(const QString& newPath);
 
-    bool enableCollectingStatistics() const;
+    bool isStatisticsCollectionEnabled() const;
     void setEnableCollectingStatistics(bool b);
 
     bool tabbedWindowLayout() const;

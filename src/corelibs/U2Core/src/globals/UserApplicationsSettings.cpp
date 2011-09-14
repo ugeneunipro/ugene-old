@@ -127,7 +127,7 @@ void UserAppsSettings::setTemporaryDirPath(const QString& newPath)
     emit si_temporaryPathChanged();
 }
 
-bool UserAppsSettings::enableCollectingStatistics() const {
+bool UserAppsSettings::isStatisticsCollectionEnabled() const {
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + COLLECTING_STATISTICS).toBool();
 }
 

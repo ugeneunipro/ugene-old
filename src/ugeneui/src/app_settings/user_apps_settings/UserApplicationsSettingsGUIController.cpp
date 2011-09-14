@@ -74,7 +74,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageController::getSavedState()
     state->style = s->getVisualStyle();
     state->downloadsDirPath = s->getDownloadDirPath();
     state->temporaryDirPath = s->getTemporaryDirPath();
-    state->enableStatistics = s->enableCollectingStatistics();
+    state->enableStatistics = s->isStatisticsCollectionEnabled();
     state->tabbedWindowLayout = s->tabbedWindowLayout();
     return state;
 }

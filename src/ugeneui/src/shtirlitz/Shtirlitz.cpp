@@ -101,9 +101,18 @@ void Shtirlitz::wakeup() {
     if (thisVersionFirstLaunch) {
         s->setValue(thisVersionsKey, QVariant(true));
     }
+    
+    // Do nothing if Shtirlitz was disabled
+    if (QProcess::systemEnvironment().contains(ENV_UGENE_DEV)) {
+        return;
+    }
 
-    //1. Check if UGENE is launched for the first time
-    if( thisVersionFirstLaunch ) {
+    bool enabledByUser = AppContext::getAppSettings()->getUserAppsSettings()->isStatisticsCollectionEnabled();
+    
+    // Check if this version of UGENE is launched for the first time 
+    // and user did not enabled stats before -> ask to enable
+    // Do not ask to enable it twice for different versions!
+    if( thisVersionFirstLaunch && !enabledByUser) {
         QMessageBox::StandardButton answ = QMessageBox::question(QApplication::activeWindow(), tr("Statistical reports"), tr(firstTimeNotice), QMessageBox::Yes | QMessageBox::No );
         if( QMessageBox::Yes != answ ) {
             AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( false );
@@ -115,12 +124,7 @@ void Shtirlitz::wakeup() {
         //Leave a mark that the first-time report was sent
     } 
 
-    //2. Do nothing if Shtirlitz was disabled
-    if( !enabled() ) {
-        return;
-    }
-
-    //3. Check if previous report was sent more than a week ago
+    // Check if previous report was sent more than a week ago
     if( !allVersionsFirstLaunch  ) {
         QVariant prevDateQvar = AppContext::getSettings()->getValue( SETTINGS_PREVIOUS_REPORT_DATE );
         QDate prevDate = prevDateQvar.toDate();
@@ -162,11 +166,11 @@ void Shtirlitz::saveGatheredInfo() {
 }
 
 bool Shtirlitz::enabled() {
-    //1. Check environment variable for developers
+    // Check environment variable for developers
     if( QProcess::systemEnvironment().contains(ENV_UGENE_DEV) ) {
         return false;
     }
-    return AppContext::getAppSettings()->getUserAppsSettings()->enableCollectingStatistics();
+    return AppContext::getAppSettings()->getUserAppsSettings()->isStatisticsCollectionEnabled();
 }
 
 void Shtirlitz::sendCountersReport() {
