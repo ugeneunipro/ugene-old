@@ -145,7 +145,7 @@ void QDRunDialog::sl_run() {
 QDRunDialogTask::QDRunDialogTask(QDScheme* _scheme, const QString& _inUri, const QString& outUri, bool addToProject)
 : Task(tr("Query Designer"), TaskFlags_NR_FOSCOE), scheme(_scheme), inUri(_inUri), output(outUri),
 addToProject(addToProject), openProjTask(NULL), loadTask(NULL), scheduler(NULL),
-inDoc(NULL), ato(NULL) {
+docWithSequence(NULL), ato(NULL) {
     tpm = Progress_Manual;
     stateInfo.progress = 0;
     if (addToProject && !AppContext::getProject()) {
@@ -169,18 +169,18 @@ QList<Task*> QDRunDialogTask::init() {
     if (AppContext::getProject()) {
         foreach(Document* doc, AppContext::getProject()->getDocuments()) {
             if (doc->getURLString()==inUri) {
-                inDoc = doc;
+                docWithSequence = doc;
                 break;
             }
         }
     }
 
-    if (inDoc) {
-        if (!inDoc->isLoaded()) {
-            loadTask = new LoadUnloadedDocumentTask(inDoc);
+    if (docWithSequence) {
+        if (!docWithSequence->isLoaded()) {
+            loadTask = new LoadUnloadedDocumentTask(docWithSequence);
             res.append(loadTask);
         } else {
-            setupQuery(inDoc);
+            setupQuery(docWithSequence);
             res.append(scheduler);
         }
     } else {
@@ -198,7 +198,7 @@ QList<Task*> QDRunDialogTask::init() {
                 }
             }
             if (!loadTask) {
-                setError(tr("Sequence is not supplied."));
+                setError(tr("Sequence not found!"));
             }
         }
     }
@@ -215,7 +215,7 @@ void QDRunDialogTask::setupQuery(Document* doc) {
         settings.region = seqObj->getSequenceRange();
         settings.scheme = scheme;
         settings.sequenceObj = seqObj;
-        settings.annotationsObj = new AnnotationTableObject(GObjectTypes::ANNOTATION_TABLE);
+        settings.annotationsObj = new AnnotationTableObject("Query Designer Results");
         settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
         scheduler = new QDScheduler(settings);
         connect(scheduler, SIGNAL(si_progressChanged()), SLOT(sl_updateProgress()));
@@ -230,23 +230,14 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
     if (subTask == openProjTask) {
         st << init();
     } else if (subTask == loadTask) {
-        if (!inDoc) {
+        if (!docWithSequence) {
             LoadDocumentTask* t = qobject_cast<LoadDocumentTask*>(subTask);
             assert(t);
-            inDoc = t->getDocument();
+            docWithSequence = t->getDocument();
         }
-        setupQuery(inDoc);
+        setupQuery(docWithSequence);
         st.append(scheduler);
     } else if (subTask == scheduler) {
-        ato = scheduler->getSettings().annotationsObj;
-        
-        if(ato->getAnnotations().isEmpty()) {
-            coreLog.info(tr("Annotation table is empty"));
-            return st;
-        }
-
-        ato->setGObjectName(output);
-
         DocumentFormatRegistry* dfr = AppContext::getDocumentFormatRegistry();
         DocumentFormat* df = dfr->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
@@ -254,32 +245,31 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
         IOAdapterFactory* io = ior->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
 
         GUrl url(output, GUrl_File);
-
         QList<GObject*> gobjects;
-        gobjects.append(ato);
-
-        Document* doc = new Document(df, io, url, gobjects);
+        gobjects.append(scheduler->getSettings().annotationsObj);
+        Document* docWithAnnotations = new Document(df, io, url, gobjects);
 
         Project* proj = AppContext::getProject();
         if (!addToProject) {
             scheme->setDNA(NULL);
-            SaveDocumentTask* saveTask = new SaveDocumentTask(doc, SaveDoc_DestroyAfter, QSet<QString>());
+            SaveDocumentTask* saveTask = new SaveDocumentTask(docWithAnnotations, SaveDoc_DestroyAfter, QSet<QString>());
             st.append(saveTask);
         } else {
             Document* sameUrlDoc = proj->findDocumentByURL(url);
             if (sameUrlDoc) {
                 proj->removeDocument(sameUrlDoc);
             }
-            st.append(new AddDocumentTask(doc));
-            assert(inDoc && inDoc->isLoaded());
-            if (proj && proj->getDocuments().contains(inDoc)) {
-                st.append(new OpenViewTask(inDoc));
+            st.append(new SaveDocumentTask(docWithAnnotations));
+            st.append(new AddDocumentTask(docWithAnnotations));
+            assert(docWithSequence && docWithSequence->isLoaded());
+            if (proj && proj->getDocuments().contains(docWithSequence)) {
+                st.append(new OpenViewTask(docWithSequence));
             } else {
-                const GUrl& fullPath = inDoc->getURL();
-                DocumentFormat* format = inDoc->getDocumentFormat();
-                IOAdapterFactory * iof = inDoc->getIOAdapterFactory();
+                const GUrl& fullPath = docWithSequence->getURL();
+                DocumentFormat* format = docWithSequence->getDocumentFormat();
+                IOAdapterFactory * iof = docWithSequence->getIOAdapterFactory();
                 Document* clonedDoc = new Document(format, iof, fullPath);
-                clonedDoc->loadFrom(inDoc);
+                clonedDoc->loadFrom(docWithSequence);
                 assert(!clonedDoc->isTreeItemModified());
                 assert(clonedDoc->isLoaded());
                 st.append(new AddDocumentTask(clonedDoc));

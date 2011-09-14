@@ -54,7 +54,7 @@ QDScheduler::QDScheduler(const QDRunSettings& _settings)
     // if annotation table is not added to project
     // annotations will be added in subtask thread
     // => leave some progress bar space for it
-    Document* annObjDoc = settings.annotationsObj->getDocument();
+    Document* annObjDoc = settings.annotationsObj == NULL ? NULL : settings.annotationsObj->getDocument();
     if (annObjDoc) {
         progressDelta = 100 / settings.scheme->getActors().size();
     } else {

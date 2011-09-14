@@ -61,10 +61,10 @@ public:
 
 class AnnotationGroup;
 
-class CompareATObjectsTask : public Task {
+class CompareAnnotationGroupsTask : public Task {
     Q_OBJECT
 public:
-    CompareATObjectsTask(const QList<AnnotationGroup*>& _grp1,
+    CompareAnnotationGroupsTask(const QList<AnnotationGroup*>& _grp1,
         const QList<AnnotationGroup*>& _grp2)
         : Task(tr("Compare annotation tables task"), TaskFlag_None),
         grps1(_grp1), grps2(_grp2), equal(false) {}

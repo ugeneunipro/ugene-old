@@ -95,7 +95,7 @@ public:
         bool mustInit = true,
         bool allowAltStart = false,
         bool allowOverlap = false,
-		bool includeStopCodon = true
+		bool includeStopCodon = false
 		) : strand(strand), complementTT(complementTT), proteinTT(proteinTT),
         searchRegion(searchRegion), minLen(minLen), mustFit(mustFit), 
         mustInit(mustInit), allowAltStart(allowAltStart), allowOverlap(allowOverlap), 

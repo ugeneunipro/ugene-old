@@ -182,7 +182,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="55"/>
         <source>Save results to</source>
-        <translation>Сохранить реультаты в</translation>
+        <translation>Сохранить результаты в</translation>
     </message>
     <message>
         <location filename="../src/ui/RunQueryDialog.ui" line="80"/>

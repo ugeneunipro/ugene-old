@@ -57,7 +57,7 @@ private:
     Task* openProjTask;
     Task* loadTask;
     QDScheduler* scheduler;
-    Document* inDoc;
+    Document* docWithSequence;
     AnnotationTableObject* ato;
 };
 

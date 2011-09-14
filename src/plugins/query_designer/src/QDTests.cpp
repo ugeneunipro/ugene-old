@@ -25,6 +25,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Designer/QDScheduler.h>
 
@@ -41,7 +42,7 @@ void GTest_QDSchedulerTest::init(XMLTestFormat *, const QDomElement& el) {
     sched = NULL;
     expectedResult = NULL;
     seqObj = NULL;
-    result = new AnnotationTableObject("QDResult");
+    result = new AnnotationTableObject("Query Designer Results");
     schema = new QDScheme;
 
     seqName = el.attribute(SEQUENCE_NAME);
@@ -126,11 +127,16 @@ void GTest_QDSchedulerTest::prepare() {
 QList<Task*> GTest_QDSchedulerTest::onSubTaskFinished(Task* subTask) {
     QList<Task*> subs;
     if (subTask==sched) {
-        const QList<AnnotationGroup*>& res = result->getRootGroup()->getSubgroup(GROUP_NAME, false)->getSubgroups();
-        const QList<AnnotationGroup*>& expRes = expectedResult->getRootGroup()->getSubgroup(GROUP_NAME, false)->getSubgroups();;
-        subs.append(new CompareATObjectsTask(res, expRes));
+        AnnotationGroup* resG = result->getRootGroup()->getSubgroup(GROUP_NAME, false);
+        AnnotationGroup* expResG = expectedResult->getRootGroup()->getSubgroup(GROUP_NAME, false);
+        CHECK_EXT(resG!=NULL, setError("Group not found!" + GROUP_NAME), subs);
+        CHECK_EXT(expResG!=NULL, setError("Exp group not found!" + GROUP_NAME), subs);
+        
+        const QList<AnnotationGroup*>& res = resG->getSubgroups();
+        const QList<AnnotationGroup*>& expRes = expResG->getSubgroups();;
+        subs.append(new CompareAnnotationGroupsTask(res, expRes));
     } else {
-        CompareATObjectsTask* compareTask = qobject_cast<CompareATObjectsTask*>(subTask);
+        CompareAnnotationGroupsTask* compareTask = qobject_cast<CompareAnnotationGroupsTask*>(subTask);
         assert(compareTask);
         if (!compareTask->areEqual()) {
             setError(tr("Results do not match."));
@@ -181,7 +187,7 @@ static bool containsGroup(const QList<AnnotationGroup*>& grps, AnnotationGroup* 
     return false;
 }
 
-void CompareATObjectsTask::run() {
+void CompareAnnotationGroupsTask::run() {
     foreach(AnnotationGroup* g1, grps1) {
         if(!containsGroup(grps2, g1)) {
             equal = false;

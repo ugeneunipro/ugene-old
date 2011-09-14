@@ -198,7 +198,7 @@ Task* QDWorker::tick() {
     DNASequence seq = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
 
     QDRunSettings settings;
-    settings.annotationsObj = new AnnotationTableObject("QDResult");
+    settings.annotationsObj = new AnnotationTableObject("Query Designer Results");
     settings.scheme = scheme;
     settings.sequenceObj = new DNASequenceObject("QQQ", seq);
     settings.region = settings.sequenceObj->getSequenceRange();
