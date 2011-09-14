@@ -226,10 +226,10 @@ int main(int argc, char **argv)
         fprintf(stderr, "Console interface for Unipro UGENE v%s\n"
 #ifdef Q_OS_WIN
             "Hint: Use 'ugeneui.exe' command to run GUI version of UGENE\n"
-            "Hint: Use 'ugene.exe --help' or 'ugene.exe --help=<sectionName>' for more information\n"
+            "Hint: Run 'ugene --usage', 'ugene.exe --help' or 'ugene.exe --help=<sectionName>' for more information\n"
 #else
             "Hint: Use 'ugene -ui' command to run GUI version of UGENE\n"
-            "Hint: Use 'ugene --help' or 'ugene --help=<sectionName>' for more information\n"
+            "Hint: Run 'ugene --usage', 'ugene --help' or 'ugene --help=<sectionName>' for more information\n"
 #endif
             , version.text.toAscii().constData());
         return -1;   
