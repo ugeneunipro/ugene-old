@@ -47,8 +47,12 @@ public:
     DocumentUpdater(QObject* p=NULL);
 private slots:
     void sl_update();
+    void sl_updateTaskStateChanged();
 private:
-    void excludeDocuments(const QList<Task*>& tasks, QList<Document*>& documents);
+    void excludeDocumentsInTasks(const QList<Task*>& tasks, QList<Document*>& documents);
+    void update();
+    Task* updateTask;
+    bool recursion;
 };
 
 class ProjectViewWidget : public QWidget, public Ui_ProjectViewWidget {

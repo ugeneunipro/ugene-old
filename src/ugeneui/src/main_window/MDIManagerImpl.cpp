@@ -108,7 +108,7 @@ bool MWMDIManagerImpl::eventFilter(QObject *obj, QEvent *event) {
 		MDIItem* item = getMDIItem(qw);
         uiLog.trace(QString("Processing close window request for '%1'").arg(getWindowName(item)));
         
-        //check if user realy wants to close the window, ignore event if not
+        //check if user really wants to close the window, ignore event if not
         if (!onCloseEvent(item->w)) {
             uiLog.trace(QString("Ignoring close window request for '%1'").arg(getWindowName(item)));
             event->ignore();

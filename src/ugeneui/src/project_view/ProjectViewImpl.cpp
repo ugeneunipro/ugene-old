@@ -67,21 +67,48 @@ namespace U2 {
 
 #define SETTINGS_ROOT QString("projecview/")
 
-#define UPDATER_TIMEOUT 1000
+#define UPDATER_TIMEOUT 3000
 
 DocumentUpdater::DocumentUpdater(QObject* p) : QObject(p) {
     QTimer* timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(sl_update()));
     timer->start(UPDATER_TIMEOUT);
+    recursion = false;
+    updateTask = NULL;
 }
 
 void DocumentUpdater::sl_update() {
+    if (recursion || updateTask != NULL) {
+        return;
+    }
+    recursion = true;
+    update();
+    recursion = false;
+}
+
+static bool hasActiveDialogs(QObject* o) {
+    const QObjectList& childObjects = o->children();
+    bool res = false;
+    foreach(QObject* o, childObjects) {
+        if (hasActiveDialogs(o)) {
+            return true;
+        }
+    }
+    QDialog* d = qobject_cast<QDialog*>(o);
+    if ( d != NULL && d->isVisible() ) {
+        //coreLog.trace(QString("Rejecting dialog %1").arg(o->metaObject()->className()));
+        return true;
+    }
+    return false;
+}
+
+void DocumentUpdater::update() {
     Project* prj = AppContext::getProject();
     assert(prj);
 
     // don't check documents currently used by save/load tasks
     QList<Document*> docs2check = prj->getDocuments();
-    excludeDocuments(AppContext::getTaskScheduler()->getTopLevelTasks(), docs2check);
+    excludeDocumentsInTasks(AppContext::getTaskScheduler()->getTopLevelTasks(), docs2check);
 
     // build list of documents which files were modified between calls to sl_update()
     QList<Document*> outdatedDocs;
@@ -108,10 +135,23 @@ void DocumentUpdater::sl_update() {
             outdatedDocs.append(doc);
         }
     }
+
+    if (outdatedDocs.isEmpty()) {
+        return;
+    }
+    
+    coreLog.trace(QString("Found %1 outdated docs!").arg(outdatedDocs.size()));
+    foreach(GObjectViewWindow*  vw, GObjectViewUtils::getAllActiveViews()) {
+        if (hasActiveDialogs(vw)) {
+            coreLog.trace(QString("View: '%1' has active dialogs, skipping reload").arg(vw->windowTitle()));
+            return;
+        }
+    }
+
     
     // query user what documents he wants to reload
     // reloaded document modification time will be updated in load task
-    QList<Document*> need2reload;
+    QList<Document*> docs2Reload;
     QListIterator<Document*> iter(outdatedDocs);
     while (iter.hasNext()) {
         Document* doc = iter.next();
@@ -123,13 +163,13 @@ void DocumentUpdater::sl_update() {
 
         switch (btn) {
             case QMessageBox::Yes:
-                need2reload.append(doc);
+                docs2Reload.append(doc);
                 break;
             case QMessageBox::YesToAll:
-                need2reload.append(doc);
+                docs2Reload.append(doc);
                 while (iter.hasNext()) {
                     doc = iter.next();
-                    need2reload.append(doc);
+                    docs2Reload.append(doc);
                 }
                 break;
             case QMessageBox::No:
@@ -146,7 +186,7 @@ void DocumentUpdater::sl_update() {
         }
     }
 
-    if (need2reload.isEmpty()) {
+    if (docs2Reload.isEmpty()) {
         return;
     }
 
@@ -157,7 +197,7 @@ void DocumentUpdater::sl_update() {
     QList<GObjectViewState*> states;
     QList<GObjectViewWindow*> viewWindows;
 
-    foreach(Document* doc, need2reload) {
+    foreach(Document* doc, docs2Reload) {
         QList<GObjectViewWindow*> viewWnds = GObjectViewUtils::findViewsWithAnyOfObjects(doc->getObjects());
         foreach(GObjectViewWindow* vw, viewWnds) {
             if (viewWindows.contains(vw)) {
@@ -209,13 +249,21 @@ void DocumentUpdater::sl_update() {
 
     QList<Task*> subs;
     subs << reloadTask << updateViewTask;
-    Task* t = new MultiTask(tr("Reload documents and restore view state task"), subs);
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    updateTask = new MultiTask(tr("Reload documents and restore view state task"), subs);
+    connect(updateTask, SIGNAL(si_stateChanged()), SLOT(sl_updateTaskStateChanged()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
 }
 
-void DocumentUpdater::excludeDocuments(const QList<Task*>& tasks, QList<Document*>& documents) {
+void DocumentUpdater::sl_updateTaskStateChanged() {
+    SAFE_POINT(updateTask != NULL, "updateTask is NULL?", );
+    if (updateTask->isFinished()) {
+        updateTask = NULL;
+    }
+}
+
+void DocumentUpdater::excludeDocumentsInTasks(const QList<Task*>& tasks, QList<Document*>& documents) {
     foreach(Task* task, tasks) {
-        excludeDocuments(task->getSubtasks(), documents);
+        excludeDocumentsInTasks(task->getSubtasks(), documents);
         SaveDocumentTask* saveTask = qobject_cast<SaveDocumentTask*>(task);
         if (saveTask) {
             documents.removeAll(saveTask->getDocument());
