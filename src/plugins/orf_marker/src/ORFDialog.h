@@ -92,7 +92,6 @@ private:
     U2Region panViewSelection;
     ORFFindTask* task;
     QTimer* timer;
-    U2Region initialSelection;
     RegionSelector* rs;
     bool isRegionOk;
 };

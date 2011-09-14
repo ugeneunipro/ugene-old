@@ -145,6 +145,7 @@ void ORFFindAlgorithm::find(
 					int ind = i;
 					if (cfg.includeStopCodon) {
 						ind -= 3;
+                        len += 3;
 					}
                     if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind, len), frame - 3));
                 }

@@ -42,6 +42,7 @@ public:
     U2Region getRegion(bool *ok = NULL) const;
 
     void setRegion(const U2Region& value);
+    void setWholeRegionSelected();
     void reset();
 
     void showErrorMessage();

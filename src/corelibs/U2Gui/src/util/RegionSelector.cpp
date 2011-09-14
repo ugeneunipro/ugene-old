@@ -271,6 +271,12 @@ void RegionSelector::showErrorMessage(){
     }
     msgBox.exec();//all other errors
 }
+
+void RegionSelector::setWholeRegionSelected()
+{
+    comboBox->setCurrentIndex(0);
+}
+
 ///////////////////////////////////////
 //RegionLineEdit
 //only for empty field highlight

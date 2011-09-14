@@ -76,13 +76,12 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     ctx = _ctx;
     task = NULL;
     
-    initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
-    
     initSettings();
 
     int seqLen = ctx->getSequenceLen();
 
     rs=new RegionSelector(this, seqLen, false, ctx->getSequenceSelection());
+    rs->setWholeRegionSelected();
     rangeSelectorLayout->addWidget(rs);
 
     resultsTree->setSortingEnabled(true);
