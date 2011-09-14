@@ -535,6 +535,14 @@ void GTest_CheckAnnotationsLocationsInTwoObjects::init(XMLTestFormat *tf, const 
 
 }
 
+struct AnnotationsLess {     
+    bool operator()(Annotation* a1, Annotation* a2) const {
+        U2Region r1 = a1->getLocation()->regions.first();
+        U2Region r2 = a2->getLocation()->regions.first();
+        return r1.startPos < r2.startPos || ( r1.startPos == r2.startPos && r1.endPos() < r2.endPos());
+    } 
+}; 
+
 Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
     Document* doc = getContext<Document>(this, docContextName);
     if (doc == NULL) {
@@ -570,11 +578,13 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
                 return ReportResult_Finished;
             }
 //////////////////////////////////////////////////////////
-            const QList<Annotation*>& annList = myAnnotation->getAnnotations();
-            const QList<Annotation*>& annList2 = myAnnotation2->getAnnotations();
+            QList<Annotation*> annList1 = myAnnotation->getAnnotations();
+            QList<Annotation*> annList2 = myAnnotation2->getAnnotations();
+            qSort(annList1.begin(), annList1.end(), AnnotationsLess());
+            qSort(annList2.begin(), annList2.end(), AnnotationsLess());
             
-            for(int n=0;(n != annList.size())&&(n != annList2.size());n++){
-                const U2Location& l1 = annList.at(n)->getLocation();
+            for(int n=0;(n != annList1.size())&&(n != annList2.size());n++){
+                const U2Location& l1 = annList1.at(n)->getLocation();
                 const U2Location& l2 = annList2.at(n)->getLocation();
                 if (l1 != l2){
                     U2Region r1 = l1->regions.first();

@@ -159,7 +159,9 @@ Task::ReportResult GTest_RunCMDLine::report() {
         }
         setError( "Process finished with error" + err);
     }
-    
+    if (proc->exitStatus() == QProcess::CrashExit) {
+        setError("Process is crashed!");
+    }
     return ReportResult_Finished;
 }
 
