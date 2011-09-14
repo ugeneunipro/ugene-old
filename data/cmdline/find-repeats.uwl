@@ -18,7 +18,7 @@ workflow find-repeats{
         inverted:false;
         max-distance:5000;
         min-distance:0;
-        min-length:5;
+        min-length:25;
         result-name:repeat_unit;
         threads:0;
     }
