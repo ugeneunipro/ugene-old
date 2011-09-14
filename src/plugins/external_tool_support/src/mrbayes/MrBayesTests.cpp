@@ -42,7 +42,7 @@
 namespace U2 {
 QList<XMLTestFactory*> MrBayesToolTests::createTestFactories(){
     QList<XMLTestFactory* > res;
-    //res.append(GTest_MrBayes::createFactory());
+    res.append(GTest_MrBayes::createFactory());
     return res;
 }
 

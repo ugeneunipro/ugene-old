@@ -67,18 +67,18 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     registry->registerPhyTreeGenerator(new MrBayesAdapter(), MRBAYES_TOOL_NAME);
 
-    GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
-    XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
-    assert(xmlTestFormat!=NULL);
-
-    GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
-    l->qlist = MrBayesToolTests::createTestFactories();
-
-    foreach(XMLTestFactory* f, l->qlist) { 
-        bool res = xmlTestFormat->registerTestFactory(f);
-        Q_UNUSED(res);
-        assert(res);
-    }
+//     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
+//     XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
+//     assert(xmlTestFormat!=NULL);
+// 
+//     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
+//     l->qlist = MrBayesToolTests::createTestFactories();
+// 
+//     foreach(XMLTestFactory* f, l->qlist) { 
+//         bool res = xmlTestFormat->registerTestFactory(f);
+//         Q_UNUSED(res);
+//         assert(res);
+//     }
 }
 
 ////////////////////////////////////////

@@ -64,6 +64,7 @@
 #include "tcoffee/TCoffeeSupport.h"
 #include "tcoffee/TCoffeeWorker.h"
 #include "mrbayes/MrBayesSupport.h"
+#include "mrbayes/MrBayesTests.h"
 #include "blast/FormatDBSupport.h"
 #include "blast/BlastAllSupport.h"
 #include "blast/BlastAllWorker.h"
@@ -78,6 +79,7 @@
 #include "bwa/BwaTask.h"
 #include "bwa/BwaSettingsWidget.h"
 #include "bwa/bwa_tests/bwaTests.h"
+
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -244,6 +246,21 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         l->qlist = BwaTests::createTestFactories();
 
         foreach(XMLTestFactory *f, l->qlist) {
+            bool res = xmlTestFormat->registerTestFactory(f);
+            Q_UNUSED(res);
+            assert(res);
+        }
+    }
+    {
+
+        GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
+        XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
+        assert(xmlTestFormat!=NULL);
+
+        GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
+        l->qlist = MrBayesToolTests::createTestFactories();
+
+        foreach(XMLTestFactory* f, l->qlist) { 
             bool res = xmlTestFormat->registerTestFactory(f);
             Q_UNUSED(res);
             assert(res);
