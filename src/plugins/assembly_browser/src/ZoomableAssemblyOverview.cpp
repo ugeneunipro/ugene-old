@@ -545,14 +545,18 @@ void ZoomableAssemblyOverview::wheelEvent(QWheelEvent * e) {
 
     // zoom
     if(Qt::NoButton == e->buttons()) {
-        QApplication::sendEvent(ui->getReadsArea(), e);
-    } if(e->modifiers() & Qt::ControlModifier) {
-        for(int i = 0; i < numSteps; ++i) {
-            if(positive) {
-                sl_zoomIn(e->pos());
-            } else {
-                sl_zoomOut(e->pos());
+        if(e->modifiers() & Qt::ControlModifier) {
+            // with Ctrl: zoom overview
+            for(int i = 0; i < numSteps; ++i) {
+                if(positive) {
+                    sl_zoomIn(e->pos());
+                } else {
+                    sl_zoomOut(e->pos());
+                }
             }
+        } else {
+            // without Ctrl: zoom reads area
+            QApplication::sendEvent(ui->getReadsArea(), e);
         }
     }
     QWidget::wheelEvent(e);
