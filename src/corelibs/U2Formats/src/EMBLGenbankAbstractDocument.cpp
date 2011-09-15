@@ -40,6 +40,8 @@
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <memory>
+
 namespace U2 {
 
 /* TRANSLATOR U2::EMBLGenbankAbstractDocument */    
@@ -328,6 +330,19 @@ QString EMBLGenbankAbstractDocument::genObjectName(QSet<QString>& usedNames, con
     return res;
 }
 
+DNASequence* EMBLGenbankAbstractDocument::loadSequence( IOAdapter* io, TaskStateInfo& ti) {
+    while(true) {
+        std::auto_ptr<Document> document(loadDocument(io, ti, QVariantMap(), DocumentLoadMode_SingleObject));
+        if(ti.isCoR()) {
+            return NULL;
+        }
+        foreach(GObject *object, document->getObjects()) {
+            if(object->getGObjectType() == GObjectTypes::SEQUENCE) {
+                return new DNASequence(((DNASequenceObject *)object)->getDNASequence());
+            }
+        }
+    }
+}
 
 static void checkQuotes(const char* str, int len, bool& outerQuotes, bool& doubleQuotes) {
     char qChar = '\"';

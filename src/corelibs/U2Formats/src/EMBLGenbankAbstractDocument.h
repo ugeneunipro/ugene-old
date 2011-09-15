@@ -53,6 +53,8 @@ public:
 
     // move to utils??
     static QString	genObjectName(QSet<QString>& usedNames, const QString& name, const QVariantMap& info, int n, const GObjectType& t);
+
+    virtual DNASequence* loadSequence( IOAdapter* io, TaskStateInfo& ti);
     
 protected:
 
