@@ -212,9 +212,9 @@ U2DbiIterator<U2Feature>* SQLiteFeatureDbi::getFeatures(const FeatureQuery& fq, 
 
 static void addKeyCommon(SQLiteQuery& qk, const U2DataId& featureId, const U2FeatureKey& key) {
     qk.reset();
-    qk.bindDataId(0, featureId);
-    qk.bindString(1, key.name);
-    qk.bindString(2, key.value);
+    qk.bindDataId(1, featureId);
+    qk.bindString(2, key.name);
+    qk.bindString(3, key.value);
     qk.insert();
 }
 
@@ -222,14 +222,14 @@ void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKe
     SQLiteTransaction t(db, os);
 
     SQLiteQuery qf("INSERT INTO Feature(parent, sequence, strand, start, len) VALUES(?1, ?2, ?3, ?4, ?5)" , db, os);
-    SQLiteQuery qk("INSERT INTO FeatureKey(feature, key, value) VALUES(?1, ?2, ?3)"  , db, os);
-    SQLiteQuery qr("INSERT INTO FeatureLocationIndex(id, start, end) VALUES(?1, ?2, ?3)"  , db, os);
+    SQLiteQuery qk("INSERT INTO FeatureKey(feature, name, value) VALUES(?1, ?2, ?3)"  , db, os);
+    SQLiteQuery qr("INSERT INTO FeatureLocationRTreeIndex(id, start, end) VALUES(?1, ?2, ?3)"  , db, os);
 
-    qf.bindDataId(0, feature.parentFeatureId);
-    qf.bindDataId(1, feature.sequenceId);
-    qf.bindInt32(2, feature.location.strand.getDirectionValue());
-    qf.bindInt64(3, feature.location.region.startPos);
-    qf.bindInt64(4, feature.location.region.length);
+    qf.bindDataId(1, feature.parentFeatureId);
+    qf.bindDataId(2, feature.sequenceId);
+    qf.bindInt32(3, feature.location.strand.getDirectionValue());
+    qf.bindInt64(4, feature.location.region.startPos);
+    qf.bindInt64(5, feature.location.region.length);
     feature.id = qf.insert(U2Type::Feature);
     CHECK_OP(os, );
 
@@ -238,9 +238,9 @@ void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKe
         CHECK_OP(os, );
     }
     
-    qr.bindDataId(0, feature.id);
-    qr.bindInt64(1, feature.location.region.startPos);
-    qr.bindInt64(2, feature.location.region.endPos());
+    qr.bindDataId(1, feature.id);
+    qr.bindInt64(2, feature.location.region.startPos);
+    qr.bindInt64(3, feature.location.region.endPos());
     qr.execute();
 }
 
