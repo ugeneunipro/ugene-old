@@ -68,7 +68,6 @@ U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2Op
 
 QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) {
     GTIMER(c1, t1, "SQLiteSequenceDbi::getSequenceData");
-    GCOUNTER(c2, t2, "SQLiteSequenceDbi::getSequenceData -> calls");
     QByteArray res;
     res.reserve(region.length);
     SQLiteQuery q("SELECT sstart, send, data FROM SequenceData WHERE sequence = ?1 "

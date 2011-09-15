@@ -128,7 +128,6 @@ private:
 
 void NucleotideColorsRenderer::render(const QSize &_size, bool _text, const QFont &_font) {
     GTIMER(c1, t1, "NucleotideColorsRenderer::render");
-    GCOUNTER(c2, t2, "NucleotideColorsRenderer::render -> calls");
 
     if (_size != size || _text != text || (text && _font != font)) {
         // update cache
@@ -201,7 +200,6 @@ const QColor ComplementColorsRenderer::complementColor("#70F970");
 
 void ComplementColorsRenderer::render(const QSize &_size, bool _text, const QFont &_font) {
     GTIMER(c1, t1, "ComplementColorsRenderer::render");
-    GCOUNTER(c2, t2, "ComplementColorsRenderer::render -> calls");
 
     if (_size != size || _text != text || (text && _font != font)) {
         // update cache
@@ -288,7 +286,6 @@ DiffNucleotideColorsRenderer::DiffNucleotideColorsRenderer()
 
 void DiffNucleotideColorsRenderer::render(const QSize &_size, bool _text, const QFont &_font) {
     GTIMER(c1, t1, "DiffNucleotideColorsRenderer::render");
-    GCOUNTER(c2, t2, "DiffNucleotideColorsRenderer::render -> calls");
 
     if (_size != size || _text != text || (text && _font != font)) {
         // update cache

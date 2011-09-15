@@ -498,6 +498,8 @@ int main(int argc, char **argv)
         Shtirlitz::wakeup();
     }
 
+    GCOUNTER(cvar, tvar, "ugeneui launch");
+
     //3 run QT GUI
     t1.stop();
     coreLog.info(AppContextImpl::tr("UGENE started"));

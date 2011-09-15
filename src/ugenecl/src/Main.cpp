@@ -438,6 +438,8 @@ int main(int argc, char **argv)
     
     openDocs();
     registerCoreServices();
+
+    GCOUNTER(cvar, tvar, "ugenecl launch");
     
     //3 run QT 
     t1.stop();

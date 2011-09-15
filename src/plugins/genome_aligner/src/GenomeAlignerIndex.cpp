@@ -214,7 +214,6 @@ bool GenomeAlignerIndex::loadPart(int part) {
     currentPart = part;
     if (build) {
         GTIMER(c, v, "GenomeAlignerIndex::build");
-        GCOUNTER(c1, v1, "GenomeAlignerIndex::build");
         SAType arrLen = 0;
         sArray = indexPart.sArray;
         bitMask = indexPart.bitMask;
@@ -235,7 +234,6 @@ bool GenomeAlignerIndex::loadPart(int part) {
         return true;
     } else {
         GTIMER(c, v, "GenomeAlignerIndex::load");
-        GCOUNTER(c1, v1, "GenomeAlignerIndex::load");
         return indexPart.load(part);
     }
 }
