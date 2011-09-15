@@ -39,6 +39,7 @@ const QString ORFSettingsKeys::MIN_LEN("orf_finder/min_length");
 const QString ORFSettingsKeys::MUST_FIT("orf_finder/must_fit");
 const QString ORFSettingsKeys::MUST_INIT("orf_finder/must_init");
 const QString ORFSettingsKeys::SEARCH_REGION("orf_finder/region");
+const QString ORFSettingsKeys::INCLUDE_STOP_CODON("orf_finder/incldue_stop_codon");
 
 void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::AMINO_TRANSL, cfg.proteinTT->getTranslationId());
@@ -49,6 +50,7 @@ void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::MIN_LEN, cfg.minLen);
     s->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(cfg.searchRegion));
     s->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(cfg.strand));
+	s->setValue(ORFSettingsKeys::INCLUDE_STOP_CODON, cfg.includeStopCodon);
 }
 
 void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
@@ -65,7 +67,8 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
     if (!translId.isEmpty()) {
         cfg.proteinTT = AppContext::getDNATranslationRegistry()->lookupTranslation(translId);
     }
-
+	
+	cfg.includeStopCodon = s->getValue(ORFSettingsKeys::INCLUDE_STOP_CODON, false).toBool();
     cfg.searchRegion = s->getValue(ORFSettingsKeys::SEARCH_REGION).value<U2Region>();
 }
 

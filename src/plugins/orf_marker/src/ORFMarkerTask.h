@@ -44,6 +44,7 @@ public:
     static const QString MUST_INIT;
     static const QString ALLOW_ALT_START;
     static const QString ALLOW_OVERLAP;
+	static const QString INCLUDE_STOP_CODON;
 	
     static void save(const ORFAlgorithmSettings& cfg, Settings* st);
     static void read(ORFAlgorithmSettings& cfg, const Settings* st);
