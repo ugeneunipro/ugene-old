@@ -312,20 +312,22 @@ void ExportProjectTask::prepare(){
 }
 
 Task::ReportResult ExportProjectTask::report() {
+    if (hasError() || isCanceled()) {
+        return ReportResult_Finished;
+    }
     Project *pr = AppContext::getProject();
 
     QList<Document*> docList = pr->getDocuments();
     foreach(Document* doc, docList){
         if(doc->getURL().isEmpty()){
-            coreLog.error(tr("One of the documents has empty URL"));
+            setError(tr("One of the project documents has empty URL"));
             return ReportResult_Finished;
         }
     }
-
+    
     QString error;
     QDir dDir(GUrlUtils::prepareDirLocation(destinationDir, error));
     if (!error.isEmpty()){
-        coreLog.error(error);
         setError(error);
         return ReportResult_Finished;
     }
@@ -339,14 +341,14 @@ Task::ReportResult ExportProjectTask::report() {
             QFileInfo fi(f);
             QString resultPath = destinationDir + "/" + fi.fileName();
             if (resultPath != origPath && !f.copy(resultPath)){
-                if(QFile::exists(resultPath)) {
-                    coreLog.error(tr("Error during coping documents: file already exist"));
+                if (QFile::exists(resultPath)) {
+                    setError(tr("Error during coping documents: file already exist"));
                 } else {
-                    coreLog.error(tr("Error during coping documents"));
+                    setError(tr("Error during coping documents"));
                 }
                 return ReportResult_Finished;
             }
-            urlRemap[origPath] = resultPath;
+            urlRemap[origPath] = GUrl(resultPath).getURLString();
         }
     }
     if(pr->getProjectName().isEmpty()){
