@@ -160,7 +160,6 @@ Section "Build"
     !insertmacro AddPlugin weight_matrix
     !insertmacro AddPlugin workflow_designer
     !insertmacro AddPlugin dbi_bam
-    !insertmacro AddPlugin dbi_sqlite
     !insertmacro AddPlugin assembly_browser
     !insertmacro AddPlugin expert_discovery
     !insertmacro AddPlugin ptools

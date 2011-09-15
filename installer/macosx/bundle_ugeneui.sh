@@ -96,7 +96,6 @@ add-plugin umuscle
 add-plugin weight_matrix
 add-plugin workflow_designer
 add-plugin opencl_support
-add-plugin dbi_sqlite
 add-plugin dbi_bam
 add-plugin assembly_browser
 #add-plugin dbi_file

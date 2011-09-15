@@ -32,7 +32,21 @@ HEADERS += src/ABIFormat.h \
            src/StreamSequenceReader.h \
            src/StreamSequenceWriter.h \
            src/SwissProtPlainTextFormat.h \
-           src/tasks/ConvertAssemblyToSamTask.h
+           src/sqlite_dbi/SQLiteAnnotationDbi.h \
+           src/sqlite_dbi/SQLiteAssemblyDbi.h \
+           src/sqlite_dbi/SQLiteAttributeDbi.h \
+           src/sqlite_dbi/SQLiteDbi.h \
+           src/sqlite_dbi/SQLiteDbiPlugin.h \
+           src/sqlite_dbi/SQLiteFeatureDbi.h \
+           src/sqlite_dbi/SQLiteMsaDbi.h \
+           src/sqlite_dbi/SQLiteObjectDbi.h \
+           src/sqlite_dbi/SQLiteSequenceDbi.h \
+           src/sqlite_dbi/SQLiteVariantDbi.h \
+           src/tasks/ConvertAssemblyToSamTask.h \
+           src/sqlite_dbi/assembly/AssemblyPackAlgorithm.h \
+           src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.h \
+           src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
+           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h
 SOURCES += src/ABIFormat.cpp \
            src/ACEFormat.cpp \
            src/ASNFormat.cpp \
@@ -62,6 +76,20 @@ SOURCES += src/ABIFormat.cpp \
            src/StreamSequenceReader.cpp \
            src/StreamSequenceWriter.cpp \
            src/SwissProtPlainTextFormat.cpp \
-           src/tasks/ConvertAssemblyToSamTask.cpp
+           src/sqlite_dbi/SQLiteAnnotationDbi.cpp \
+           src/sqlite_dbi/SQLiteAssemblyDbi.cpp \
+           src/sqlite_dbi/SQLiteAttributeDbi.cpp \
+           src/sqlite_dbi/SQLiteDbi.cpp \
+           src/sqlite_dbi/SQLiteDbiPlugin.cpp \
+           src/sqlite_dbi/SQLiteFeatureDbi.cpp \
+           src/sqlite_dbi/SQLiteMsaDbi.cpp \
+           src/sqlite_dbi/SQLiteObjectDbi.cpp \
+           src/sqlite_dbi/SQLiteSequenceDbi.cpp \
+           src/sqlite_dbi/SQLiteVariantDbi.cpp \
+           src/tasks/ConvertAssemblyToSamTask.cpp \
+           src/sqlite_dbi/assembly/AssemblyPackAlgorithm.cpp \
+           src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp \
+           src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \
+           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp
 RESOURCES += U2Formats.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

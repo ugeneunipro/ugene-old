@@ -160,7 +160,7 @@ private:
     friend class SQLiteAttributeDbi;
 };
 
-class SQLiteDbiFactory : public U2DbiFactory {
+class U2FORMATS_EXPORT SQLiteDbiFactory : public U2DbiFactory {
 public:
     SQLiteDbiFactory();
 

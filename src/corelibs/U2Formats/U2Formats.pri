@@ -8,13 +8,16 @@ UGENE_RELATIVE_DESTDIR = ''
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2FORMATS_DLL
 
 LIBS += -L../../_release -lU2Core -lU2Algorithm
+LIBS += -lugenedb
+
+INCLUDEPATH += ../../libs_3rdparty/sqlite3/src
 
 !debug_and_release|build_pass {
 
     CONFIG(debug, debug|release) {
         DESTDIR=../../_debug
-        LIBS -= -L../../_release -lU2Core -lU2Algorithm
-        LIBS += -L../../_debug -lU2Cored -lU2Algorithmd
+        LIBS -= -L../../_release -lU2Core -lU2Algorithm -lugenedb
+        LIBS += -L../../_debug -lU2Cored -lU2Algorithmd -lugenedbd
     }
 
     CONFIG(release, debug|release) {

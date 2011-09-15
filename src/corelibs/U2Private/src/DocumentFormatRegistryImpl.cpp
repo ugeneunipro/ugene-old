@@ -20,6 +20,10 @@
  */
 
 #include "DocumentFormatRegistryImpl.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/DbiDocumentFormat.h>
+
 #include <U2Formats/PlainTextFormat.h>
 #include <U2Formats/FastaFormat.h>
 #include <U2Formats/GenbankPlainTextFormat.h>
@@ -42,6 +46,7 @@
 #include <U2Formats/ACEFormat.h>
 #include <U2Formats/PDWFormat.h>
 #include <U2Formats/SwissProtPlainTextFormat.h>
+#include <U2Formats/SQLiteDbi.h>
 
 namespace U2 {
 
@@ -169,6 +174,9 @@ void DocumentFormatRegistryImpl::init() {
     PDWFormat *pdw = new PDWFormat(this);
     registerFormat(pdw);
 
+    AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());
+    DbiDocumentFormat* sdbi = new DbiDocumentFormat(SQLiteDbiFactory::ID, "usqlite", tr("UGENE Database"), QStringList()<<"ugenedb" );
+    registerFormat(sdbi);
 }
 
 }//namespace

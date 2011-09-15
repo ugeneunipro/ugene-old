@@ -122,6 +122,7 @@ U2Assembly SQLiteAssemblyDbi::getAssemblyObject(const U2DataId& assemblyId, U2Op
 }
 
 qint64 SQLiteAssemblyDbi::countReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::countReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::countReadsAt");
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     if ( a == NULL ) {
@@ -132,6 +133,7 @@ qint64 SQLiteAssemblyDbi::countReads(const U2DataId& assemblyId, const U2Region&
 
 
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     if ( a != NULL ) {
@@ -141,6 +143,7 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assem
 }
 
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsAt -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
     
     quint64 t0 = GTimer::currentTimeMicros();
@@ -159,6 +162,7 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& 
 }
 
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os)  {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::getReadsByName -> calls");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsByName");
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     if ( a != NULL ) {
@@ -256,6 +260,7 @@ void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2Da
 }
 
 void SQLiteAssemblyDbi::addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::addReads");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::addReads");
 
     quint64 t0 = GTimer::currentTimeMicros();
@@ -278,6 +283,7 @@ void SQLiteAssemblyDbi::addReads(const U2DataId& assemblyId, U2DbiIterator<U2Ass
 
 /**  Packs assembly rows: assigns packedViewRow value for every read in assembly */
 void SQLiteAssemblyDbi::pack(const U2DataId& assemblyId, U2AssemblyPackStat& stat, U2OpStatus& os) {
+    GCOUNTER(c1, t1, "SQLiteAssemblyDbi::pack");
     GTIMER(c2, t2, "SQLiteAssemblyDbi::pack");
 
     quint64 t0 = GTimer::currentTimeMicros();
