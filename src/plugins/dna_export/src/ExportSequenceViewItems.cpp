@@ -335,6 +335,27 @@ static QList<SharedAnnotationData> findAnnotationsInRegion(const U2Region& regio
     return result;
 }
 
+// removes all annotation regions that does not intersect the given region
+// adjusts startpos to make in relative to the given region
+static void adjustAnnotationLocations(const U2Region& r, QList<SharedAnnotationData>& anns) {
+    for (int i = anns.size(); --i >= 0;) {
+        SharedAnnotationData& d = anns[i];
+        for (int j = d->location->regions.size(); --j >= 0; ) {
+            U2Region& ar = d->location->regions[j];
+            U2Region resr = ar.intersect(r);
+            if (resr.isEmpty()) {
+                d->location->regions.remove(j);
+                continue;
+            }
+            resr.startPos -= r.startPos;
+            d->location->regions[j] = resr;
+        }
+        if( d->location->regions.isEmpty()) {
+            anns.removeAt(i);
+        }
+    }
+}
+
 void ADVExportContext::sl_saveSelectedSequences() {
     ADVSequenceObjectContext* seqCtx = view->getSequenceInFocus();
     DNASequenceSelection* sel  = NULL;
@@ -386,7 +407,10 @@ void ADVExportContext::sl_saveSelectedSequences() {
         ei.complTT = seqCtx->getComplementTT();
         ei.aminoTT = d.translate ? (d.useSpecificTable ? GObjectUtils::findAminoTT(seqCtx->getSequenceObject(), false, d.translationTable) : seqCtx->getAminoTT()) : NULL;
         ei.backTT = d.backTranslate ? GObjectUtils::findBackTranslationTT(seqCtx->getSequenceObject(), d.translationTable) : NULL;
-        ei.annotations = findAnnotationsInRegion(r, seqCtx->getAnnotationObjects(true).toList());
+        if (s.saveAnnotations) {
+            ei.annotations = findAnnotationsInRegion(r, seqCtx->getAnnotationObjects(true).toList());
+            adjustAnnotationLocations(r, ei.annotations);
+        }
         s.items.append(ei);
     }
     Task* t = ExportUtils::wrapExportTask(new ExportSequenceTask(s), d.addToProject);

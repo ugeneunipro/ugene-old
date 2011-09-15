@@ -29,6 +29,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/GObjectTypes.h>
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -198,9 +199,9 @@ Task* QDWorker::tick() {
     DNASequence seq = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
 
     QDRunSettings settings;
-    settings.annotationsObj = new AnnotationTableObject("Query Designer Results");
+    settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
     settings.scheme = scheme;
-    settings.sequenceObj = new DNASequenceObject("QQQ", seq);
+    settings.sequenceObj = new DNASequenceObject(GObjectTypes::getTypeInfo(GObjectTypes::SEQUENCE).name, seq);
     settings.region = settings.sequenceObj->getSequenceRange();
     scheme->setDNA(settings.sequenceObj);
     bool outputType = actor->getParameter(OUTPUT_ATTR)->getAttributeValue<bool>();

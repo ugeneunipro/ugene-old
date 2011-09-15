@@ -42,7 +42,7 @@ void GTest_QDSchedulerTest::init(XMLTestFormat *, const QDomElement& el) {
     sched = NULL;
     expectedResult = NULL;
     seqObj = NULL;
-    result = new AnnotationTableObject("Query Designer Results");
+    result = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
     schema = new QDScheme;
 
     seqName = el.attribute(SEQUENCE_NAME);

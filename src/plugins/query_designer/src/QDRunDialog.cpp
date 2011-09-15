@@ -215,7 +215,7 @@ void QDRunDialogTask::setupQuery(Document* doc) {
         settings.region = seqObj->getSequenceRange();
         settings.scheme = scheme;
         settings.sequenceObj = seqObj;
-        settings.annotationsObj = new AnnotationTableObject("Query Designer Results");
+        settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
         settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
         scheduler = new QDScheduler(settings);
         connect(scheduler, SIGNAL(si_progressChanged()), SLOT(sl_updateProgress()));

@@ -63,6 +63,7 @@ QList<Task*> AddExportedDocumentAndOpenViewTask::onSubTaskFinished( Task* subTas
             Document* sameURLdoc = prj->findDocumentByURL(fullPath);
             if (sameURLdoc) {
                 taskLog.trace(tr("Document is already added to the project %1").arg(doc->getURL().getURLString()));
+                subTasks << new LoadUnloadedDocumentAndOpenViewTask(sameURLdoc);
                 return subTasks;
             }
         }
@@ -75,8 +76,8 @@ QList<Task*> AddExportedDocumentAndOpenViewTask::onSubTaskFinished( Task* subTas
         if (!clonedDoc->isStateLocked()) {
             clonedDoc->setModified(doc->isModified());
         }
-        subTasks.append(new AddDocumentTask(clonedDoc));
-        subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(clonedDoc));           
+        subTasks << new AddDocumentTask(clonedDoc);
+        subTasks << new LoadUnloadedDocumentAndOpenViewTask(clonedDoc);
     }
     //TODO: provide a report if subtask fails
     return subTasks;
