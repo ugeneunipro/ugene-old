@@ -53,6 +53,7 @@ private:
 };
 
 class LockDocumentTest: public ProjectViewTests {
+	Q_OBJECT
 public:
     LockDocumentTest(const QString &_document, const QString &name): ProjectViewTests(name), document(_document) {}
     void execute();
@@ -63,6 +64,7 @@ private:
 };
 
 class UnlockDocumentTest: public ProjectViewTests {
+	Q_OBJECT
 public:
     UnlockDocumentTest(const QString &_document, const QString &name): ProjectViewTests(name), document(_document) {}
     void execute();
@@ -94,6 +96,7 @@ private:
 };
 
 class TestTaskView: public TaskViewTest{
+	Q_OBJECT
 public:
     TestTaskView(const QString &_path, const QString &_name): TaskViewTest(_name), path(_path) {}
     void execute();

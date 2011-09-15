@@ -181,6 +181,7 @@ private:
 };
 
 class ExpertDiscoverySignalsAutoAnnotationUpdater : public AutoAnnotationsUpdater{
+	Q_OBJECT
 public:
     ExpertDiscoverySignalsAutoAnnotationUpdater();
     Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa);

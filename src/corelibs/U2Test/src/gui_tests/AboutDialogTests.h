@@ -8,6 +8,7 @@
 namespace U2 {
 
 class AboutDialogTests: public GUITest {
+	Q_OBJECT
 public:
     AboutDialogTests(const QString &name): GUITest(name) {}
     void openDialogByMenu();
@@ -16,6 +17,7 @@ public:
 };
 
 class Test1AboutDialog: public AboutDialogTests {
+	Q_OBJECT
 public:
     Test1AboutDialog(const QString &name):
       AboutDialogTests(name){}
@@ -24,6 +26,7 @@ public:
 };
 
 class Test2AboutDialog: public AboutDialogTests {
+	Q_OBJECT
 public:
     Test2AboutDialog(const QString &name):
       AboutDialogTests(name){}
@@ -32,6 +35,7 @@ public:
 };
 
 class Test3AboutDialog: public AboutDialogTests {
+	Q_OBJECT
 public:
     Test3AboutDialog(const QString &name):
       AboutDialogTests(name){}
@@ -39,6 +43,7 @@ public:
       void checkResult();
 };
 class Test4AboutDialog: public AboutDialogTests {
+	Q_OBJECT
 public:
     Test4AboutDialog(const QString &name):
       AboutDialogTests(name){}
@@ -47,6 +52,7 @@ public:
 };
 
 class Test5AboutDialog: public AboutDialogTests {
+	Q_OBJECT
 public:
     Test5AboutDialog(const QString &name):
       AboutDialogTests(name){}

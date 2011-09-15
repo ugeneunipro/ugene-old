@@ -75,12 +75,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="231"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="237"/>
         <source>allow_alternative_label</source>
         <translation>Allow alternative init codons</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="257"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="263"/>
         <source>find_all_wit</source>
         <translation>Start searching ORFs</translation>
     </message>
@@ -105,19 +105,17 @@
         <translation type="obsolete">Save results as annotations</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="282"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="288"/>
         <source>clear_list_button</source>
         <translation>Clear results</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="364"/>
         <source>rstart_label</source>
-        <translation>Range start:</translation>
+        <translation type="obsolete">Range start:</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="400"/>
         <source>rend_label</source>
-        <translation>Range end:</translation>
+        <translation type="obsolete">Range end:</translation>
     </message>
     <message>
         <location filename="../src/ui/ORFDialogUI.ui" line="134"/>
@@ -149,8 +147,8 @@
         <translation>Specifies that each ORF found must start with the start codon</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="225"/>
-        <location filename="../src/ui/ORFDialogUI.ui" line="228"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="231"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="234"/>
         <location filename="../src/ORFQuery.cpp" line="199"/>
         <location filename="../src/ORFWorker.cpp" line="83"/>
         <source>allow_alt_tip</source>
@@ -164,61 +162,40 @@ accordingly to the current translation table.</translation>
         <translation>Search in both strands</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="260"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="266"/>
         <source>Preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="443"/>
-        <location filename="../src/ui/ORFDialogUI.ui" line="446"/>
         <source>sel_bt_tip</source>
-        <translation>Set the range to current sequence selection</translation>
+        <translation type="obsolete">Set the range to current sequence selection</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="430"/>
-        <location filename="../src/ui/ORFDialogUI.ui" line="433"/>
         <source>pv_bt_tip</source>
-        <translation>Set the range to Panoramic View range</translation>
+        <translation type="obsolete">Set the range to Panoramic View range</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="456"/>
-        <location filename="../src/ui/ORFDialogUI.ui" line="459"/>
         <source>seq_bt_tip</source>
-        <translation>Set the range to the whole sequence</translation>
+        <translation type="obsolete">Set the range to the whole sequence</translation>
     </message>
     <message>
         <source>save_as_annotations</source>
         <translation type="obsolete">Save as annotations..</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="344"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="350"/>
         <source>region</source>
         <translation>Location</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="349"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="355"/>
         <source>compl</source>
         <translation>Strand</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="354"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="360"/>
         <source>len</source>
         <translation>Length</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="449"/>
-        <source>Selection range</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="436"/>
-        <source>Overview range</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="462"/>
-        <source>Sequence range</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -229,7 +206,7 @@ accordingly to the current translation table.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFMarkerTask.cpp" line="102"/>
+        <location filename="../src/ORFMarkerTask.cpp" line="101"/>
         <source>Annotation obj %1 is locked for modifications</source>
         <translation type="unfinished"></translation>
     </message>
@@ -248,21 +225,36 @@ accordingly to the current translation table.</translation>
     </message>
     <message>
         <location filename="../src/ORFWorker.cpp" line="165"/>
-        <source>, allow ORFs &lt;u&gt;starting with any codon&lt;/u&gt; other than terminator</source>
-        <translation></translation>
+        <source>starting with any codon</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="167"/>
-        <source>, take into account &lt;u&gt;alternative start codons&lt;/u&gt;</source>
-        <translation></translation>
+        <location filename="../src/ORFWorker.cpp" line="166"/>
+        <source>, allow ORFs %1 other than terminator</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="170"/>
-        <source>, &lt;u&gt;ignore non-terminated&lt;/u&gt; ORFs</source>
-        <translation></translation>
+        <location filename="../src/ORFWorker.cpp" line="168"/>
+        <source>alternative start codons</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="187"/>
+        <location filename="../src/ORFWorker.cpp" line="169"/>
+        <source>, take into account %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ORFWorker.cpp" line="172"/>
+        <source>ignore non-terminated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ORFWorker.cpp" line="173"/>
+        <source>, %1 ORFs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ORFWorker.cpp" line="192"/>
         <source>For each nucleotide sequence%1, find ORFs in &lt;u&gt;%2&lt;/u&gt; using the &lt;u&gt;%3&lt;/u&gt;.&lt;br&gt;Detect only ORFs &lt;u&gt;not shorter than %4 bps&lt;/u&gt;%5.&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%6&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -270,7 +262,7 @@ accordingly to the current translation table.</translation>
 <context>
     <name>U2::LocalWorkflow::ORFWorker</name>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="277"/>
+        <location filename="../src/ORFWorker.cpp" line="282"/>
         <source>Found %1 ORFs</source>
         <translation></translation>
     </message>
@@ -305,17 +297,17 @@ accordingly to the current translation table.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="175"/>
+        <location filename="../src/ORFWorker.cpp" line="178"/>
         <source>both strands</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="176"/>
+        <location filename="../src/ORFWorker.cpp" line="179"/>
         <source>direct strand</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="177"/>
+        <location filename="../src/ORFWorker.cpp" line="180"/>
         <source>complement strand</source>
         <translation></translation>
     </message>
@@ -360,22 +352,22 @@ accordingly to the current translation table.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="224"/>
+        <location filename="../src/ORFWorker.cpp" line="229"/>
         <source>ORF: result name is empty, default name used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="229"/>
+        <location filename="../src/ORFWorker.cpp" line="234"/>
         <source>ORF: Incorrect value: min-length must be greater then zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="230"/>
+        <location filename="../src/ORFWorker.cpp" line="235"/>
         <source>Incorrect value: min-length must be greater then zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="254"/>
+        <location filename="../src/ORFWorker.cpp" line="259"/>
         <source>Bad sequence supplied to ORFWorker: %1</source>
         <translation></translation>
     </message>
@@ -383,7 +375,7 @@ accordingly to the current translation table.</translation>
 <context>
     <name>U2::ORFAutoAnnotationsUpdater</name>
     <message>
-        <location filename="../src/ORFMarkerTask.cpp" line="121"/>
+        <location filename="../src/ORFMarkerTask.cpp" line="120"/>
         <source>ORFs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -399,47 +391,47 @@ accordingly to the current translation table.</translation>
         <translation type="obsolete">Close</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="222"/>
+        <location filename="../src/ORFDialog.cpp" line="200"/>
         <source>progress_%1%</source>
         <translation>Progress %1%. </translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="224"/>
+        <location filename="../src/ORFDialog.cpp" line="202"/>
         <source>%1_results_found.</source>
         <translation>%1 results found.</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="274"/>
+        <location filename="../src/ORFDialog.cpp" line="252"/>
         <source>warning</source>
         <translation>Warning!</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="274"/>
+        <location filename="../src/ORFDialog.cpp" line="252"/>
         <source>results_list_not_empty_ask_clear</source>
         <translation>Results list contains results from the previous search. Clear?</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="169"/>
+        <location filename="../src/ORFDialog.cpp" line="157"/>
         <source>start_codons</source>
         <translation>Start codons:</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="170"/>
+        <location filename="../src/ORFDialog.cpp" line="158"/>
         <source>alt_start_codons</source>
         <translation>Alternative start codons:</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="171"/>
+        <location filename="../src/ORFDialog.cpp" line="159"/>
         <source>stop_codons</source>
         <translation>Stop codons:</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="441"/>
+        <location filename="../src/ORFDialog.cpp" line="413"/>
         <source>complem_strand</source>
         <translation>complement</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="441"/>
+        <location filename="../src/ORFDialog.cpp" line="413"/>
         <source>direct_strand</source>
         <translation>direct</translation>
     </message>

@@ -36,7 +36,7 @@ class U2OpStatus;
 */
 class U2CORE_EXPORT U2BitCompression : public QObject {
 public:    
-
+	Q_OBJECT
     static QByteArray compress(const char* text, int uncompressedLen, int alphabetSize, const int* alphabetCharNums, U2OpStatus& os);
 
     static QByteArray uncompress(const char* data, const QByteArray& alphabetChars, U2OpStatus& os);

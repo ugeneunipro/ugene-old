@@ -69,6 +69,7 @@ private:
 };
 
 class ExternalToolSupportUtils : public QObject {
+	Q_OBJECT
 public:
     static bool removeTmpDir(const QString& absoulutePath, QString& errMsg);
     static QString createTmpDir(const QString& dirName, int uniqueId,  QString& errMsg);

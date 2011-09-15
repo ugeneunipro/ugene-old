@@ -31,6 +31,7 @@ namespace U2 {
  class RemoteServiceMachineFactory;
 
 class RemoteServicePingTask : public Task {
+	Q_OBJECT
 public:
     RemoteServicePingTask(const QString& url);
     virtual void prepare();

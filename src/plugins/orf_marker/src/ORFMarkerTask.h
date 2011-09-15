@@ -69,6 +69,7 @@ public:
  
  
 class ORFAutoAnnotationsUpdater : public AutoAnnotationsUpdater {
+	Q_OBJECT
 public:
      ORFAutoAnnotationsUpdater();
      Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa);

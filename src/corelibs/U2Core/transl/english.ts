@@ -2,184 +2,44 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>Document</name>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="379"/>
-        <source>Document is not loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="392"/>
-        <source>IO adapter does not support write operation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="398"/>
-        <source>No write support for document format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="468"/>
-        <source>Locked by user</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DocumentFormat</name>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="42"/>
-        <source>The document is created not by UGENE</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="43"/>
-        <source>Document sequences were merged</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="64"/>
-        <location filename="../src/models/DocumentModel.cpp" line="70"/>
-        <source>Writing is not supported for this format (%1). Feel free to send a feature request though.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>GObject</name>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
-        <source>Unknown</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
-        <source>Unloaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
-        <source>Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
-        <source>Sequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
-        <source>Sequences</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
-        <source>Annotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
-        <source>Annotations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
-        <source>Chromatogram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
-        <source>Chromatograms</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
-        <source>Alignment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
-        <source>Alignments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
-        <source>Tree</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
-        <source>Trees</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
-        <source>3D model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
-        <source>3D models</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
-        <source>Index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
-        <source>Indexes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
-        <source>Assembly</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
-        <source>Assemblies</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="427"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="422"/>
         <source>This is not ESearch result!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="486"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="481"/>
         <source>Use Genbank DNA accession number. For example: NC_001363 or D11266</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="487"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="482"/>
         <source>Use Genbank protein accession number. For example: AAA59172.1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="488"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="483"/>
         <source>Use PDB molecule four-letter identifier. For example: 3INS or 1CRN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="489"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="484"/>
         <source>Use SWISS-PROT accession number. For example: Q9IGQ6 or A0N8V2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="490"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="485"/>
         <source>Use UniProtKB/Swiss-Prot accession number. For example: P16152</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="491"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="486"/>
         <source>Use UniProtKB/TrEMBL accession number. For example: D0VTW9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="525"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="520"/>
         <source>Use %1 unique identifier.</source>
         <translation></translation>
     </message>
@@ -187,22 +47,23 @@
 <context>
     <name>U2::AddDocumentTask</name>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="31"/>
-        <source>Add document to the project: %1</source>
-        <translation></translation>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="34"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="41"/>
+        <source>Adding document to project: %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="39"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="76"/>
         <source>No project is opened</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="48"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="85"/>
         <source>Document is already added to the project %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="53"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="90"/>
         <source>Document was removed</source>
         <translation></translation>
     </message>
@@ -210,17 +71,17 @@
 <context>
     <name>U2::AddPartToSequenceTask</name>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="46"/>
+        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="47"/>
         <source>Insert subsequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="60"/>
+        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="61"/>
         <source>Insertion position is out of bounds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="71"/>
+        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="72"/>
         <source>Document is locked</source>
         <translation></translation>
     </message>
@@ -228,7 +89,17 @@
 <context>
     <name>U2::AddSequencesToAlignmentTask</name>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="68"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="46"/>
+        <source>Object is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="51"/>
+        <source>Object is locked for modifications.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="97"/>
         <source>Sequence %1 from %2 has different alphabet</source>
         <translation></translation>
     </message>
@@ -236,12 +107,12 @@
 <context>
     <name>U2::AnnotationTableObject</name>
     <message>
-        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="153"/>
+        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="158"/>
         <source>Sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="158"/>
+        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="163"/>
         <source>Translation</source>
         <translation></translation>
     </message>
@@ -249,73 +120,76 @@
 <context>
     <name>U2::AppResourcePool</name>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="45"/>
+        <location filename="../src/globals/AppResources.cpp" line="46"/>
         <source>Threads</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="49"/>
+        <location filename="../src/globals/AppResources.cpp" line="50"/>
         <source>Memory</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="49"/>
+        <location filename="../src/globals/AppResources.cpp" line="50"/>
         <source>Mb</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/AppResources.cpp" line="52"/>
+        <location filename="../src/globals/AppResources.cpp" line="53"/>
         <source>Project</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/globals/AppResources.cpp" line="55"/>
-        <source>Phytree</source>
         <translation></translation>
     </message>
 </context>
 <context>
     <name>U2::AutoAnnotationsSupport</name>
     <message>
-        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="107"/>
+        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="111"/>
         <source>Auto-annotations [%1 | %2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::AutoAnnotationsUpdateTask</name>
+    <message>
+        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="214"/>
+        <source>Empty auto-annotation object</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::CMDLineCoreOptions</name>
     <message>
-        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="49"/>
+        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="52"/>
         <source>Shows help information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="56"/>
+        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="59"/>
         <source>Loads UGENE configuration.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="57"/>
+        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="60"/>
         <source>Loads configuration from the specified .ini file. By default the UGENE.ini file is used.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="58"/>
+        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="61"/>
         <source>&lt;path_to_file&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="62"/>
+        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="65"/>
         <source>Specifies the language to use.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="63"/>
+        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="66"/>
         <source>Specifies the language to use. The following values are available: CS, EN, RU.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="64"/>
+        <location filename="../src/cmdline/CMDLineCoreOptions.cpp" line="67"/>
         <source>&lt;language_code&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -559,39 +433,97 @@
     </message>
 </context>
 <context>
+    <name>U2::DeleteAnnotationsFromObjectTask</name>
+    <message>
+        <location filename="../src/gobjects/AnnotationTableObject.h" line="231"/>
+        <source>Delete annotations from object task</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::Document</name>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="395"/>
+        <source>Document is not loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="408"/>
+        <source>IO adapter does not support write operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="414"/>
+        <source>No write support for document format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="484"/>
+        <source>Locked by user</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::DocumentFormat</name>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="43"/>
+        <source>The document is created not by UGENE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="44"/>
+        <source>Document sequences were merged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="75"/>
+        <location filename="../src/models/DocumentModel.cpp" line="81"/>
+        <source>Writing is not supported for this format (%1). Feel free to send a feature request though.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::DocumentProviderTask</name>
+    <message>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="60"/>
+        <source>[unknown]</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::ExportToNewFileFromIndexTask</name>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="35"/>
+        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="36"/>
         <source>Export from index</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="40"/>
+        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="41"/>
         <source>Export filename is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="44"/>
+        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="45"/>
         <source>Index is inconsistent</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="48"/>
+        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="49"/>
         <source>Document numbers list is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="71"/>
+        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="72"/>
         <source>Invalid document number: %1, max: %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="97"/>
+        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="98"/>
         <source>No IO adapter found for URL: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="102"/>
+        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="103"/>
         <source>Can&apos;t open file for write: &apos;%1&apos;</source>
         <translation></translation>
     </message>
@@ -613,29 +545,127 @@
     </message>
 </context>
 <context>
+    <name>U2::GObject</name>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
+        <source>Unloaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
+        <source>Sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
+        <source>Sequences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
+        <source>Annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
+        <source>Annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
+        <source>Chromatogram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
+        <source>Chromatograms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
+        <source>Alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
+        <source>Alignments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
+        <source>Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
+        <source>Trees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
+        <source>3D model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
+        <source>3D models</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
+        <source>Index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
+        <source>Indexes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
+        <source>Assembly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
+        <source>Assemblies</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::GUrlUtils</name>
     <message>
-        <location filename="../src/io/GUrlUtils.cpp" line="67"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="69"/>
         <source>Renamed %1 to %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/io/GUrlUtils.cpp" line="71"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="73"/>
         <source>Failed to rename %1 to %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/io/GUrlUtils.cpp" line="193"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="195"/>
         <source>Directory is not specified</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/io/GUrlUtils.cpp" line="200"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="202"/>
         <source>Directory can&apos;t be created: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/io/GUrlUtils.cpp" line="205"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="207"/>
         <source>Directory can&apos;t be read: %1</source>
         <translation></translation>
     </message>
@@ -692,7 +722,7 @@
 <context>
     <name>U2::GzippedHttpFileAdapterFactory</name>
     <message>
-        <location filename="../src/io/HttpFileAdapter.cpp" line="49"/>
+        <location filename="../src/io/HttpFileAdapter.cpp" line="50"/>
         <source>HTTP GZIP adaptor</source>
         <translation></translation>
     </message>
@@ -700,7 +730,7 @@
 <context>
     <name>U2::GzippedLocalFileAdapterFactory</name>
     <message>
-        <location filename="../src/io/LocalFileAdapter.cpp" line="37"/>
+        <location filename="../src/io/LocalFileAdapter.cpp" line="38"/>
         <source>GZIP file</source>
         <translation></translation>
     </message>
@@ -708,7 +738,7 @@
 <context>
     <name>U2::HttpFileAdapterFactory</name>
     <message>
-        <location filename="../src/io/HttpFileAdapter.cpp" line="40"/>
+        <location filename="../src/io/HttpFileAdapter.cpp" line="41"/>
         <source>HTTP file</source>
         <translation></translation>
     </message>
@@ -736,108 +766,133 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="41"/>
+        <location filename="../src/globals/L10n.h" line="39"/>
+        <source>Internal error!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/globals/L10n.h" line="42"/>
         <source>Error opening URL for read: &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="42"/>
+        <location filename="../src/globals/L10n.h" line="43"/>
         <source>Error opening URL for write: &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="43"/>
+        <location filename="../src/globals/L10n.h" line="44"/>
         <source>Write error: &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="44"/>
+        <location filename="../src/globals/L10n.h" line="45"/>
         <source>Read error: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="45"/>
+        <location filename="../src/globals/L10n.h" line="46"/>
         <source>File is too large: &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="46"/>
+        <location filename="../src/globals/L10n.h" line="47"/>
         <source>File not found %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="47"/>
+        <location filename="../src/globals/L10n.h" line="48"/>
         <source>%1 is not a file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="49"/>
+        <location filename="../src/globals/L10n.h" line="50"/>
         <source>Invalid file format. Expected file format: %1,  File: %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="53"/>
+        <location filename="../src/globals/L10n.h" line="54"/>
         <source>Can&apos;t save image to file %1, format %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="55"/>
+        <location filename="../src/globals/L10n.h" line="56"/>
         <source>Document not found: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="56"/>
+        <location filename="../src/globals/L10n.h" line="57"/>
         <source> bp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="59"/>
-        <source>Phylogram</source>
-        <translation></translation>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="96"/>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="104"/>
+        <source>Failed to detect IO adapter for %1</source>
+        <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>U2::LoadDataFromEntrezTask</name>
     <message>
-        <location filename="../src/globals/L10n.h" line="60"/>
-        <source>Cladogram</source>
-        <translation></translation>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="368"/>
+        <source>Sequence with ID=%1 is not found.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::LoadDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="186"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="208"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="218"/>
         <source>Read document: &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="192"/>
-        <source>Invalid document format %1</source>
-        <translation></translation>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="227"/>
+        <source>Document format is NULL!</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="261"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="231"/>
+        <source>IO adapter factory is NULL!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="289"/>
         <source>Document not found %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="289"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="312"/>
+        <source>Maximum number of objects per document limit reached for %1. Try different options for opening the document!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="342"/>
         <source>Object not found: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="296"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="349"/>
         <source>Can&apos;t add object. Document format constraints check failed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="380"/>
+        <source>Format does not support writing of alignments</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::LoadRemoteDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="183"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="171"/>
         <source>Undefined database: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="202"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="190"/>
         <source>Cannot find %1 in %2 database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -845,42 +900,37 @@
 <context>
     <name>U2::LoadUnloadedDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="62"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="79"/>
         <source>Load &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="69"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="86"/>
         <source>Document not found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="76"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="93"/>
         <source>Starting load document from %1, document format %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="96"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="119"/>
         <source>Document was removed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="102"/>
-        <source>Error: %1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="130"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="152"/>
         <source>Document is locked</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="150"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="172"/>
         <source>Project Document:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="168"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="190"/>
         <source>Annotation object not found</source>
         <translation></translation>
     </message>
@@ -888,7 +938,7 @@
 <context>
     <name>U2::LocalFileAdapterFactory</name>
     <message>
-        <location filename="../src/io/LocalFileAdapter.cpp" line="28"/>
+        <location filename="../src/io/LocalFileAdapter.cpp" line="29"/>
         <source>Local file</source>
         <translation></translation>
     </message>
@@ -896,18 +946,18 @@
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="67"/>
+        <location filename="../src/util/MSAUtils.cpp" line="70"/>
         <source>Sequences have different alphabets.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="102"/>
-        <location filename="../src/util/MSAUtils.cpp" line="107"/>
+        <location filename="../src/util/MSAUtils.cpp" line="105"/>
+        <location filename="../src/util/MSAUtils.cpp" line="110"/>
         <source>Alignment is empty!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="113"/>
+        <location filename="../src/util/MSAUtils.cpp" line="116"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation></translation>
     </message>
@@ -943,12 +993,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/RemoveAnnotationsTask.cpp" line="48"/>
-        <source>Subgroup %1 is not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/tasks/RemoveAnnotationsTask.cpp" line="70"/>
+        <location filename="../src/tasks/RemoveAnnotationsTask.cpp" line="101"/>
         <source>Waiting for object lock released</source>
         <translation type="unfinished"></translation>
     </message>
@@ -960,21 +1005,26 @@
         <source>Remove document</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="../src/tasks/RemoveDocumentTask.cpp" line="94"/>
+        <source>Cannot remove document %1, since it is locked by some task.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::RemovePartFromSequenceTask</name>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="46"/>
+        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="47"/>
         <source>Remove subsequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="64"/>
+        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="65"/>
         <source>Region to delete is larger than the whole sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="80"/>
+        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="81"/>
         <source>Document is locked</source>
         <translation></translation>
     </message>
@@ -982,17 +1032,17 @@
 <context>
     <name>U2::ReplacePartOfSequenceTask</name>
     <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="46"/>
+        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="47"/>
         <source>Replace subsequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="65"/>
+        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="66"/>
         <source>Region to replace larger then whole sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="81"/>
+        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="82"/>
         <source>Document is locked</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1013,53 +1063,53 @@
 <context>
     <name>U2::SQLiteL10n</name>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="103"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="111"/>
         <source>Error querying database: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="107"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="115"/>
         <source>Found more results than expected!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="184"/>
-        <source>Unexpected query result code: %1</source>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="225"/>
+        <source>Unexpected query result code: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="299"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="340"/>
         <source>Error binding text value! Query: &apos;%1&apos;, idx: %2, value: &apos;%3&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="311"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="352"/>
         <source>Error binding int32 value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="323"/>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="335"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="364"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="376"/>
         <source>Error binding int64 value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="348"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="389"/>
         <source>Error binding boolean value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="365"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="406"/>
         <source>Error binding blob value! Query: &apos;%1&apos;, idx: %2, size: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="378"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="419"/>
         <source>Unexpected row count! Query: &apos;%1&apos;, rows: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="409"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="450"/>
         <source>Query produced no results: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1142,6 +1192,24 @@
     </message>
 </context>
 <context>
+    <name>U2::SequenceUtils</name>
+    <message>
+        <location filename="../src/util/SequenceUtils.cpp" line="137"/>
+        <source>Failed to derive common alphabet!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/SequenceUtils.cpp" line="161"/>
+        <source>Not enough memory to complete operation!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/SequenceUtils.cpp" line="199"/>
+        <source>File content was merged</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::SequenceWalkerSubtask</name>
     <message>
         <location filename="../src/tasks/SequenceWalkerTask.cpp" line="140"/>
@@ -1150,15 +1218,20 @@
     </message>
 </context>
 <context>
-    <name>U2::VFSAdapterFactory</name>
+    <name>U2::U2AnnotationUtils</name>
     <message>
-        <location filename="../src/io/VFSAdapter.cpp" line="30"/>
-        <source>Memory buffer</source>
-        <translation></translation>
+        <location filename="../src/util/U2AnnotationUtils.cpp" line="29"/>
+        <source>Group path is empty!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/U2AnnotationUtils.cpp" line="32"/>
+        <source>Not a valid group path: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>U2AssemblyUtils</name>
+    <name>U2::U2AssemblyUtils</name>
     <message>
         <location filename="../src/util/U2AssemblyUtils.cpp" line="53"/>
         <source>Invalid CIGAR op: &apos;%1&apos;!</source>
@@ -1166,7 +1239,7 @@
     </message>
 </context>
 <context>
-    <name>U2BitCompression</name>
+    <name>U2::U2BitCompression</name>
     <message>
         <location filename="../src/util/U2Bits.cpp" line="89"/>
         <source>Bit compression: illegal character in text &apos;%1&apos;</source>
@@ -1174,30 +1247,38 @@
     </message>
 </context>
 <context>
-    <name>U2DbiPool</name>
+    <name>U2::U2DbiPool</name>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="64"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="67"/>
         <source>No URL provided!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="74"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="77"/>
         <source>Invalid database type: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="98"/>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="109"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="102"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="115"/>
         <source>DbiPool: DBI not found! URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>U2DbiUtils</name>
+    <name>U2::U2DbiUtils</name>
     <message>
         <location filename="../src/dbi/U2DbiUtils.cpp" line="30"/>
         <source>Feature is not supported: %1, dbi: %2</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::VFSAdapterFactory</name>
+    <message>
+        <location filename="../src/io/VFSAdapter.cpp" line="32"/>
+        <source>Memory buffer</source>
+        <translation></translation>
     </message>
 </context>
 </TS>

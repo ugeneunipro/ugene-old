@@ -19,6 +19,7 @@ protected:
 };
 
 class TaskViewTest: public GUITest {
+	Q_OBJECT
 public:
     TaskViewTest(const QString &name): GUITest(name) {}
     QString getTaskProgress(const QString &taskName);

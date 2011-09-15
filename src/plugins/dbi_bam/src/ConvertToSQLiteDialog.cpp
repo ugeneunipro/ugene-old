@@ -288,7 +288,7 @@ void ConvertToSQLiteDialog::accept() {
 }
 
 static const QString DIR_HELPER_DOMAIN("ConvertToSQLiteDialog");
-void U2::BAM::ConvertToSQLiteDialog::on_destinationUrlButton_clicked() {
+void ConvertToSQLiteDialog::on_destinationUrlButton_clicked() {
     QString dir = sourceUrl.dirPath() + "/" + sourceUrl.baseFileName();
     QString returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite);
     if(!returnedValue.isEmpty()) {

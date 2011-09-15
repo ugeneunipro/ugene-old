@@ -975,69 +975,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>MrBayesDialog</name>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="41"/>
-        <source>MrBayes Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="47"/>
-        <source>Model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="56"/>
-        <source>ModelType</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="66"/>
-        <source>Rate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="73"/>
-        <source>Gamma</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="96"/>
-        <source>MCMC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="102"/>
-        <source>Chain Length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="122"/>
-        <source>Subsampling Frequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="129"/>
-        <source>Burn-in Length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="136"/>
-        <source>Heated Chains</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="143"/>
-        <source>Heated Chain Temp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MrBayesDialog.ui" line="150"/>
-        <source>Random Seed</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../src/ExternalToolSupportSettings.cpp" line="117"/>
@@ -1204,7 +1141,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/blast/BlastAllSupportTask.cpp" line="181"/>
         <source>Output file not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выходной файл не найден</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllSupportTask.cpp" line="183"/>
@@ -1268,7 +1205,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="140"/>
         <source>Output file not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выходной файл не найден</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="142"/>
@@ -1491,7 +1428,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/cap3/CAP3SupportTask.cpp" line="109"/>
         <source>Output file not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выходной файл не найден</translation>
     </message>
     <message>
         <location filename="../src/cap3/CAP3SupportTask.cpp" line="111"/>
@@ -1564,7 +1501,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="150"/>
         <source>Output file not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выходной файл не найден</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="152"/>
@@ -1652,57 +1589,57 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ExternalToolSupportPlugin</name>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="94"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="93"/>
         <source>External tool support</source>
         <translation type="unfinished">Поддержка внешних инструментов</translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="94"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="93"/>
         <source>Runs other external tools</source>
         <translation type="unfinished">Модуль позволяет использовать внешние программы</translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="117"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="112"/>
         <source>ClustalW...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="123"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="118"/>
         <source>MAFFT...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="129"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="124"/>
         <source>T-Coffee...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="136"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="131"/>
         <source>Multiple alignment</source>
         <translation>Множественное выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="178"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="173"/>
         <source>FormatDB...</source>
         <translation>Создать БД BLAST...</translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="181"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="176"/>
         <source>BLAST+ make DB...</source>
         <translation>Создать БД BLAST+...</translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="187"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="182"/>
         <source>BLAST Search...</source>
         <translation>Искать с помощью BLAST...</translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="195"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="190"/>
         <source>BLAST+ Search...</source>
         <translation>Искать с помощью BLAST+...</translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="200"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="195"/>
         <source>BLAST</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1710,12 +1647,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ExternalToolSupportService</name>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="334"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="329"/>
         <source>External tools support</source>
         <translation>Поддержка внешних инструментов</translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="334"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="329"/>
         <source>Provides support to run external tools from UGENE</source>
         <translation>Позволяет запускать внешние инструменты из UGENE</translation>
     </message>
@@ -2700,7 +2637,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/mafft/MAFFTSupportTask.cpp" line="133"/>
         <source>Output file not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выходной файл не найден</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTSupportTask.cpp" line="135"/>
@@ -2732,66 +2669,30 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::MrBayesGetCalculatedTreeTask</name>
     <message>
-        <location filename="../src/mrbayes/MrBayesTask.cpp" line="176"/>
         <source>Generating output trees from MrBayes</source>
-        <translation>Создание выходных дереьев черезе MrBayes</translation>
+        <translation type="obsolete">Создание выходных дереьев черезе MrBayes</translation>
     </message>
     <message>
-        <location filename="../src/mrbayes/MrBayesTask.cpp" line="183"/>
         <source>Output file not found</source>
-        <translation>Выходной файл не найден</translation>
+        <translation type="obsolete">Выходной файл не найден</translation>
     </message>
     <message>
-        <location filename="../src/mrbayes/MrBayesTask.cpp" line="210"/>
         <source>No trees are found</source>
-        <translation>Деревья не найдены</translation>
+        <translation type="obsolete">Деревья не найдены</translation>
     </message>
 </context>
 <context>
     <name>U2::MrBayesPrepareDataForCalculation</name>
     <message>
-        <location filename="../src/mrbayes/MrBayesTask.cpp" line="35"/>
         <source>Generating input file for MrBayes</source>
-        <translation>Создание входного файла для MRBayes</translation>
-    </message>
-</context>
-<context>
-    <name>U2::MrBayesSupport</name>
-    <message>
-        <location filename="../src/mrbayes/MrBayesSupport.cpp" line="47"/>
-        <source>&lt;i&gt;MrBayes&lt;/i&gt; MrBayes is a program for the Bayesian estimation of phylogeny.Bayesian inference of phylogeny is based upon a quantity called the posterior probability distribution of trees, which is the probability of a tree conditioned on the observations. The conditioning is accomplished using Bayes&apos;s theorem. The posterior probability distribution of trees is impossible to calculate analytically; instead, MrBayes uses a simulation technique called Markov chain Monte Carlo (or MCMC) to approximate the posterior probabilities of trees.</source>
-        <translation></translation>
+        <translation type="obsolete">Создание входного файла для MRBayes</translation>
     </message>
 </context>
 <context>
     <name>U2::MrBayesSupportTask</name>
     <message>
-        <location filename="../src/mrbayes/MrBayesTask.cpp" line="81"/>
         <source>MrBayes tree calculation</source>
-        <translation>MrBayes вычисление деревьев</translation>
-    </message>
-</context>
-<context>
-    <name>U2::MrBayesWidget</name>
-    <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="61"/>
-        <source>Substitution model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="65"/>
-        <source>Rate Matrix (fixed)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="171"/>
-        <source>Path for %1 tool not selected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="172"/>
-        <source>Do you want to select it now?</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">MrBayes вычисление деревьев</translation>
     </message>
 </context>
 <context>
@@ -2914,7 +2815,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="127"/>
         <source>Output file not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выходной файл не найден</translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="129"/>

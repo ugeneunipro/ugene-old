@@ -76,12 +76,12 @@
         <translation type="unfinished">Учитывать перекрытые</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="231"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="237"/>
         <source>allow_alternative_label</source>
         <translation>Альтернативные старт-кодоны</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="257"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="263"/>
         <source>find_all_wit</source>
         <translation>Начать поиск ORF</translation>
     </message>
@@ -106,19 +106,17 @@
         <translation type="obsolete">Сохранить результаты как аннотации</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="282"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="288"/>
         <source>clear_list_button</source>
         <translation>Сбросить результаты</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="364"/>
         <source>rstart_label</source>
-        <translation>Начало региона поиска:</translation>
+        <translation type="obsolete">Начало региона поиска:</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="400"/>
         <source>rend_label</source>
-        <translation>Конец региона поиска: </translation>
+        <translation type="obsolete">Конец региона поиска: </translation>
     </message>
     <message>
         <location filename="../src/ui/ORFDialogUI.ui" line="134"/>
@@ -149,8 +147,8 @@
         <translation>Указывает, что старт-кодон является обязательным</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="225"/>
-        <location filename="../src/ui/ORFDialogUI.ui" line="228"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="231"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="234"/>
         <location filename="../src/ORFQuery.cpp" line="199"/>
         <location filename="../src/ORFWorker.cpp" line="83"/>
         <source>allow_alt_tip</source>
@@ -164,61 +162,52 @@
         <translation>Искать в прямой и комплeментарной последовательностях</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="260"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="266"/>
         <source>Preview</source>
         <translation type="unfinished">Просмотреть</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="443"/>
-        <location filename="../src/ui/ORFDialogUI.ui" line="446"/>
         <source>sel_bt_tip</source>
-        <translation>Искать в селектированном регионе</translation>
+        <translation type="obsolete">Искать в селектированном регионе</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="430"/>
-        <location filename="../src/ui/ORFDialogUI.ui" line="433"/>
         <source>pv_bt_tip</source>
-        <translation>Установить регион поиска к отображаемому в панораме</translation>
+        <translation type="obsolete">Установить регион поиска к отображаемому в панораме</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="456"/>
-        <location filename="../src/ui/ORFDialogUI.ui" line="459"/>
         <source>seq_bt_tip</source>
-        <translation>Искать во всей последовательности</translation>
+        <translation type="obsolete">Искать во всей последовательности</translation>
     </message>
     <message>
         <source>save_as_annotations</source>
         <translation type="obsolete">Сохранить результаты</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="344"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="350"/>
         <source>region</source>
         <translation>Регион</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="349"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="355"/>
         <source>compl</source>
         <translation>Стренд</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="354"/>
+        <location filename="../src/ui/ORFDialogUI.ui" line="360"/>
         <source>len</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="449"/>
         <source>Selection range</source>
-        <translation>Выбранный регион</translation>
+        <translation type="obsolete">Выбранный регион</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="436"/>
         <source>Overview range</source>
-        <translation>Видимый регион</translation>
+        <translation type="obsolete">Видимый регион</translation>
     </message>
     <message>
-        <location filename="../src/ui/ORFDialogUI.ui" line="462"/>
         <source>Sequence range</source>
-        <translation>Вся последовательность</translation>
+        <translation type="obsolete">Вся последовательность</translation>
     </message>
 </context>
 <context>
@@ -268,7 +257,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFMarkerTask.cpp" line="102"/>
+        <location filename="../src/ORFMarkerTask.cpp" line="101"/>
         <source>Annotation obj %1 is locked for modifications</source>
         <translation type="unfinished"></translation>
     </message>
@@ -291,21 +280,48 @@
     </message>
     <message>
         <location filename="../src/ORFWorker.cpp" line="165"/>
+        <source>starting with any codon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ORFWorker.cpp" line="166"/>
+        <source>, allow ORFs %1 other than terminator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ORFWorker.cpp" line="168"/>
+        <source>alternative start codons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ORFWorker.cpp" line="169"/>
+        <source>, take into account %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ORFWorker.cpp" line="172"/>
+        <source>ignore non-terminated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ORFWorker.cpp" line="173"/>
+        <source>, %1 ORFs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>, allow ORFs &lt;u&gt;starting with any codon&lt;/u&gt; other than terminator</source>
-        <translation>, допускать ORF &lt;u&gt;начинающиеся с любого кодона&lt;/u&gt; кроме терминатора</translation>
+        <translation type="obsolete">, допускать ORF &lt;u&gt;начинающиеся с любого кодона&lt;/u&gt; кроме терминатора</translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="167"/>
         <source>, take into account &lt;u&gt;alternative start codons&lt;/u&gt;</source>
-        <translation>, принимать во внимание &lt;u&gt;альтернативные старт-кодоны&lt;/u&gt;</translation>
+        <translation type="obsolete">, принимать во внимание &lt;u&gt;альтернативные старт-кодоны&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="170"/>
         <source>, &lt;u&gt;ignore non-terminated&lt;/u&gt; ORFs</source>
-        <translation>, &lt;u&gt;исключать нетерминированные&lt;/u&gt; ORF</translation>
+        <translation type="obsolete">, &lt;u&gt;исключать нетерминированные&lt;/u&gt; ORF</translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="187"/>
+        <location filename="../src/ORFWorker.cpp" line="192"/>
         <source>For each nucleotide sequence%1, find ORFs in &lt;u&gt;%2&lt;/u&gt; using the &lt;u&gt;%3&lt;/u&gt;.&lt;br&gt;Detect only ORFs &lt;u&gt;not shorter than %4 bps&lt;/u&gt;%5.&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%6&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -317,7 +333,7 @@
 <context>
     <name>U2::LocalWorkflow::ORFWorker</name>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="277"/>
+        <location filename="../src/ORFWorker.cpp" line="282"/>
         <source>Found %1 ORFs</source>
         <translation>Найдено %1 ORF регионов</translation>
     </message>
@@ -356,12 +372,12 @@
         <translation>Альтернативные кодоны</translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="224"/>
+        <location filename="../src/ORFWorker.cpp" line="229"/>
         <source>ORF: result name is empty, default name used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="229"/>
+        <location filename="../src/ORFWorker.cpp" line="234"/>
         <source>ORF: Incorrect value: min-length must be greater then zero</source>
         <translation type="unfinished"></translation>
     </message>
@@ -370,17 +386,17 @@
         <translation type="obsolete">Поиск ORF</translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="175"/>
+        <location filename="../src/ORFWorker.cpp" line="178"/>
         <source>both strands</source>
         <translation>все</translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="176"/>
+        <location filename="../src/ORFWorker.cpp" line="179"/>
         <source>direct strand</source>
         <translation>только прямые</translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="177"/>
+        <location filename="../src/ORFWorker.cpp" line="180"/>
         <source>complement strand</source>
         <translation>только комплементарные</translation>
     </message>
@@ -434,12 +450,12 @@
         <translation type="obsolete">нк</translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="230"/>
+        <location filename="../src/ORFWorker.cpp" line="235"/>
         <source>Incorrect value: min-length must be greater then zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ORFWorker.cpp" line="254"/>
+        <location filename="../src/ORFWorker.cpp" line="259"/>
         <source>Bad sequence supplied to ORFWorker: %1</source>
         <translation>Неверная последовательность для поиска ORF: %1</translation>
     </message>
@@ -447,7 +463,7 @@
 <context>
     <name>U2::ORFAutoAnnotationsUpdater</name>
     <message>
-        <location filename="../src/ORFMarkerTask.cpp" line="121"/>
+        <location filename="../src/ORFMarkerTask.cpp" line="120"/>
         <source>ORFs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -463,47 +479,47 @@
         <translation type="obsolete">Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="222"/>
+        <location filename="../src/ORFDialog.cpp" line="200"/>
         <source>progress_%1%</source>
         <translation>Прогресс %1</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="224"/>
+        <location filename="../src/ORFDialog.cpp" line="202"/>
         <source>%1_results_found.</source>
         <translation>Найдено %1</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="274"/>
+        <location filename="../src/ORFDialog.cpp" line="252"/>
         <source>warning</source>
         <translation>Подтверждение</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="274"/>
+        <location filename="../src/ORFDialog.cpp" line="252"/>
         <source>results_list_not_empty_ask_clear</source>
         <translation>Сбросить предыдущие результаты?</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="169"/>
+        <location filename="../src/ORFDialog.cpp" line="157"/>
         <source>start_codons</source>
         <translation>Старт-кодоны</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="170"/>
+        <location filename="../src/ORFDialog.cpp" line="158"/>
         <source>alt_start_codons</source>
         <translation>Альтернативные кодоны</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="171"/>
+        <location filename="../src/ORFDialog.cpp" line="159"/>
         <source>stop_codons</source>
         <translation>Стоп-кодоны</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="441"/>
+        <location filename="../src/ORFDialog.cpp" line="413"/>
         <source>complem_strand</source>
         <translation>комплeментарный</translation>
     </message>
     <message>
-        <location filename="../src/ORFDialog.cpp" line="441"/>
+        <location filename="../src/ORFDialog.cpp" line="413"/>
         <source>direct_strand</source>
         <translation>прямой</translation>
     </message>

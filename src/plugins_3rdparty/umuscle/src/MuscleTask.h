@@ -131,6 +131,7 @@ public:
 };
 
 class MuscleWithExtFileSpecifySupportTask : public Task {
+	Q_OBJECT
 public:
     MuscleWithExtFileSpecifySupportTask(const MuscleTaskSettings& config);
     ~MuscleWithExtFileSpecifySupportTask();
