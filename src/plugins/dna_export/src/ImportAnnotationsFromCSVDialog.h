@@ -34,7 +34,7 @@ class SaveDocumentGroupController;
 class ImportAnnotationsFromCSVTaskConfig;
 class CSVParsingConfig;
 
-class ImportAnnotationsFromCSVDialog : public QWizard, Ui_ImportAnnotationsFromCSVDialog {
+class ImportAnnotationsFromCSVDialog : public QDialog, Ui_ImportAnnotationsFromCSVDialog {
     Q_OBJECT
 public:
     ImportAnnotationsFromCSVDialog(QWidget* w);

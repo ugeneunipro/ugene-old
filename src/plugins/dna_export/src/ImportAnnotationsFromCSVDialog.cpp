@@ -30,11 +30,11 @@
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
 
-#include <U2Gui/ScriptEditorDialog.h>
-
 #include <U2Core/AnnotationTableObject.h>
 
+#include <U2Gui/ScriptEditorDialog.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/SaveDocumentGroupController.h>
 
 #include <QtCore/QFileInfo>
@@ -57,11 +57,11 @@ namespace U2 {
 #define SKIP_LINES_PREFIX    QString("skip_lines_prefix")
 
 ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w) 
-: QWizard(w)
+: QDialog (w)
 {
     setupUi(this);
     connect(readFileButton, SIGNAL(clicked()), SLOT(sl_readFileClicked()));
-    connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(sl_previewClicked()));
+    connect(previewButton, SIGNAL(clicked()), SLOT(sl_previewClicked()));
     connect(guessButton, SIGNAL(clicked()), SLOT(sl_guessSeparatorClicked()));
     connect(scriptButton, SIGNAL(clicked()), SLOT(sl_scriptSeparatorClicked()));
     connect(separatorEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_separatorChanged(const QString&)));
@@ -117,8 +117,6 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
     connect(removeQuotesCheck, SIGNAL(toggled(bool)),SLOT(sl_removeQuotesToggled(bool)));
     connect(separatorsModeCheck, SIGNAL(toggled(bool)), SLOT(sl_separatorsModeToggled(bool)));
     connect(linesToSkipBox, SIGNAL(valueChanged(int)), SLOT(sl_linesToSkipChanged(int)));
-
-    setButtonText(NextButton, tr("Preview"));
 }
 
 void ImportAnnotationsFromCSVDialog::accept() {
@@ -321,9 +319,9 @@ void ImportAnnotationsFromCSVDialog::sl_prefixToSkipChanged(const QString& v) {
 
 void ImportAnnotationsFromCSVDialog::sl_readFileClicked() {
     // show the dialog
-    LastUsedDirHelper lod;
-    
-    lod.url = QFileDialog::getOpenFileName(this, tr("Select CSV file to read"), lod);
+    LastUsedDirHelper lod("CSV");
+    QString filter = DialogUtils::prepareFileFilter(tr("CSV Files"), QStringList() << "csv", true, QStringList());
+    lod.url = QFileDialog::getOpenFileName(this, tr("Select CSV file to read"), lod, filter);
     if (lod.url.isEmpty()) {
         return;
     }
