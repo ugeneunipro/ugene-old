@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-class AssemblyBrowserFactory : public GObjectViewFactory {
+class U2VIEW_EXPORT AssemblyBrowserFactory : public GObjectViewFactory {
     Q_OBJECT
 public:
     AssemblyBrowserFactory(QObject * parent = 0);

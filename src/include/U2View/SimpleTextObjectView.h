@@ -1,1 +1,1 @@
-#include "../../corelibs/U2View/src/util_ov_textview/SimpleTextObjectView.h"
+#include "../../corelibs/U2View/src/ov_text/SimpleTextObjectView.h"

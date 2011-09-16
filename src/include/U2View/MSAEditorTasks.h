@@ -1,1 +1,1 @@
-#include "../../corelibs/U2View/src/util_ov_msaedit/MSAEditorTasks.h"
+#include "../../corelibs/U2View/src/ov_msa/MSAEditorTasks.h"

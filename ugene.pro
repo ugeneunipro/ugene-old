@@ -32,7 +32,6 @@ SUBDIRS += \
           src/plugins_3rdparty/phylip \
           src/plugins_3rdparty/kalign \
           src/plugins_3rdparty/ptools \
-          src/plugins/assembly_browser \
           src/plugins/biostruct3d_view \
           src/plugins/chroma_view \
           src/plugins/circular_view \

@@ -1,1 +1,1 @@
-#include "../../corelibs/U2View/src/util_ov_annotated_dna/PanView.h"
+#include "../../corelibs/U2View/src/ov_sequence/PanView.h"

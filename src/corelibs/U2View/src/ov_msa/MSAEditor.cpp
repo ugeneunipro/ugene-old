@@ -30,7 +30,7 @@
 #include "MSAEditorStatusBar.h"
 #include "MSAEditorUndoFramework.h"
 
-#include <util_ov_phyltree/TreeViewerTasks.h>
+#include <ov_phyltree/TreeViewerTasks.h>
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>

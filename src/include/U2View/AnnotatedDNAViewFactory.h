@@ -1,1 +1,1 @@
-#include "../../corelibs/U2View/src/util_ov_annotated_dna/AnnotatedDNAViewFactory.h"
+#include "../../corelibs/U2View/src/ov_sequence/AnnotatedDNAViewFactory.h"

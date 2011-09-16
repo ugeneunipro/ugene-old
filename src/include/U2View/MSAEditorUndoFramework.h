@@ -1,1 +1,1 @@
-#include "../../corelibs/U2View/src/util_ov_msaedit/MSAEditorUndoFramework.h"
+#include "../../corelibs/U2View/src/ov_msa/MSAEditorUndoFramework.h"

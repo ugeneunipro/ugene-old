@@ -27,6 +27,7 @@
 #include <U2View/MSAEditorFactory.h>
 #include <U2View/UIndexViewerFactory.h>
 #include <U2View/TreeViewerFactory.h>
+#include <U2View/AssemblyBrowserFactory.h>
 
 namespace U2 {
 
@@ -46,6 +47,9 @@ void ProjectViewImpl::registerBuiltInObjectViews() {
     reg->registerGObjectViewFactory( f );
 
     f = new TreeViewerFactory();
+    reg->registerGObjectViewFactory(f);
+
+    f = new AssemblyBrowserFactory();
     reg->registerGObjectViewFactory(f);
 }
 

@@ -1,1 +1,1 @@
-#include "../../corelibs/U2View/src/util_ov_msaedit/DeleteGapsDialog.h"
+#include "../../corelibs/U2View/src/ov_msa/DeleteGapsDialog.h"

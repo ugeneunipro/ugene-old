@@ -1,1 +1,1 @@
-#include "../../corelibs/U2View/src/util_ov_annotated_dna/GSequenceGraphViewWithFactory.h"
+#include "../../corelibs/U2View/src/ov_sequence/GSequenceGraphViewWithFactory.h"

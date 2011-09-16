@@ -24,7 +24,7 @@
 
 #include <ui/ui_BranchSettingsDialog.h>
 
-#include <util_ov_phyltree/GraphicsBranchItem.h>
+#include <ov_phyltree/GraphicsBranchItem.h>
 #include <QtGui/QDialog>
 
 namespace U2 {
