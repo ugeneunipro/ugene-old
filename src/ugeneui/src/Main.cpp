@@ -353,14 +353,17 @@ int main(int argc, char **argv)
     GObjectViewFactoryRegistry* ovfr = new GObjectViewFactoryRegistry();
     appContext->setObjectViewFactoryRegistry(ovfr);
 
+    U2DbiRegistry *dbiRegistry = new U2DbiRegistry();
+    appContext->setDbiRegistry(dbiRegistry);
+
+    DocumentFormatRegistryImpl* dfr = new DocumentFormatRegistryImpl();
+    appContext->setDocumentFormatRegistry(dfr);
+
     PluginSupportImpl* psp = new PluginSupportImpl();
     appContext->setPluginSupport(psp);
 
     ServiceRegistryImpl* sreg = new ServiceRegistryImpl() ;
     appContext->setServiceRegistry(sreg);
-
-    DocumentFormatRegistryImpl* dfr = new DocumentFormatRegistryImpl();
-    appContext->setDocumentFormatRegistry(dfr);
 
     DocumentFormatConfigurators* dfc = new DocumentFormatConfigurators();
     appContext->setDocumentFormatConfigurators(dfc);
@@ -404,9 +407,6 @@ int main(int argc, char **argv)
 
     ExternalToolRegistry* etr = new ExternalToolRegistry();
     appContext->setExternalToolRegistry(etr);
-
-    U2DbiRegistry *dbiRegistry = new U2DbiRegistry();
-    appContext->setDbiRegistry(dbiRegistry);
 
     QDActorPrototypeRegistry* qpr = new QDActorPrototypeRegistry();
     appContext->setQDActorFactoryRegistry(qpr);
@@ -579,6 +579,9 @@ int main(int argc, char **argv)
 
     appContext->setDocumentFormatRegistry(NULL);
     delete dfr;
+
+    appContext->setDbiRegistry(NULL);
+    delete dbiRegistry;
 
     appContext->setTaskScheduler(NULL);
     delete ts;
