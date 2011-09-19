@@ -75,10 +75,12 @@ KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config)
 }
 
 void KalignTask::_run() {
+    algoLog.info(tr("Kalign alignment started"));
     assert(!hasError());
     doAlign(); 
     if (!hasError() && !isCanceled()) {
         assert(resultMA.getAlphabet()!=NULL);
+        algoLog.info(tr("Kalign alignment successfully finished"));
     }
 }
 
@@ -201,6 +203,7 @@ void KalignGObjectRunFromSchemaTask::prepare() {
         stateInfo.setError(tr("Object '%1' is locked").arg(objName));
         return;
     }
+    algoLog.info(tr("Kalign alignment started"));
     
     lock = new StateLock(KALIGN_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
@@ -241,6 +244,7 @@ Task::ReportResult KalignGObjectRunFromSchemaTask::report() {
         return ReportResult_Finished;
     }
     obj->setMAlignment(maObj->getMAlignment());
+    algoLog.info(tr("Kalign alignment successfully finished"));
     return ReportResult_Finished;
 }
 

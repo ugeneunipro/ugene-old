@@ -31,6 +31,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Gui/OpenViewTask.h>
@@ -66,6 +67,8 @@ ClustalWSupportTask::ClustalWSupportTask(MAlignmentObject* _mAObject, const Clus
 }
 
 void ClustalWSupportTask::prepare(){
+    algoLog.info(tr("ClustalW alignment started"));
+
     //Add new subdir for temporary files
     //Directory name is ExternalToolName + CurrentDate + CurrentTime
 
@@ -73,6 +76,9 @@ void ClustalWSupportTask::prepare(){
                          QDate::currentDate().toString("dd.MM.yyyy")+"_"+
                          QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
                          QString::number(QCoreApplication::applicationPid())+"/";
+    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.aln";
+    ioLog.details(tr("Saving data to temporary file '%1'").arg(url));
+
     //Check and remove subdir for temporary files
     QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName);
     if(tmpDir.exists()){
@@ -89,8 +95,6 @@ void ClustalWSupportTask::prepare(){
         return;
     }
 
-    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.aln";
-
     saveTemporaryDocumentTask = new SaveAlignmentTask(mAObject->getMAlignment(), url, BaseDocumentFormats::CLUSTAL_ALN);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
@@ -104,6 +108,7 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
     if(hasError() || isCanceled()) {
         return res;
     }
+    QString outputUrl = url+".out.aln";
     if(subTask==saveTemporaryDocumentTask){
         QStringList arguments;
         arguments <<"-ALIGN"<< "-INFILE="+url;
@@ -137,7 +142,7 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
         if(settings.endGaps) arguments<<"-ENDGAPS";
         if(settings.noPGaps) arguments<<"-NOPGAP";
         if(settings.noHGaps) arguments<<"-NOHGAP";
-        arguments << "-OUTFILE="+url+".out.aln";
+        arguments << "-OUTFILE="+outputUrl;
         logParser=new ClustalWLogParser(mAObject->getMAlignment().getNumRows());
         clustalWTask=new ExternalToolRunTask(CLUSTAL_TOOL_NAME,arguments, logParser);
         clustalWTask->setSubtaskProgressWeight(95);
@@ -145,36 +150,40 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
     }else if(subTask==clustalWTask){
         assert(logParser);
         delete logParser;
-        if(!QFileInfo(url+".out.aln").exists()){
+        if(!QFileInfo(outputUrl).exists()){
             if(AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->isValid()){
-                stateInfo.setError(tr("Output file not found"));
+                stateInfo.setError(tr("Output file %1 not found").arg(outputUrl));
             }else{
-                stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
+                stateInfo.setError(tr("Output file %3 not found. May be %1 tool path '%2' not valid?")
                                    .arg(AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->getPath()));
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->getPath())
+                                   .arg(outputUrl));
             }
             emit si_stateChanged();
             return res;
         }
+        ioLog.details(tr("Loading output file '%1'").arg(outputUrl));
         loadTemporyDocumentTask=
                 new LoadDocumentTask(BaseDocumentFormats::CLUSTAL_ALN,
-                                     url+".out.aln",
+                                     outputUrl,
                                      AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
         loadTemporyDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTemporyDocumentTask);
     }else if(subTask==loadTemporyDocumentTask){
         newDocument=loadTemporyDocumentTask->takeDocument();
-        assert(newDocument!=NULL);
+        SAFE_POINT(newDocument!=NULL, QString("output document '%1' not loaded").arg(newDocument->getURLString()), res);
+        SAFE_POINT(newDocument->getObjects().length()==1, QString("no objects in output document '%1'").arg(newDocument->getURLString()), res);
 
         //move MAlignment from new alignment to old document
-        assert(newDocument->getObjects().length()==1);
         MAlignmentObject* newMAligmentObject=qobject_cast<MAlignmentObject*>(newDocument->getObjects().first());
-        assert(newMAligmentObject!=NULL);
+        SAFE_POINT(newMAligmentObject!=NULL, "newDocument->getObjects().first() is not a MAlignmentObject", res);
+
         resultMA=newMAligmentObject->getMAlignment();
         mAObject->setMAlignment(resultMA);
         if(currentDocument != NULL){
             currentDocument->setModified(true);
         }
+        algoLog.info(tr("ClustalW alignment successfully finished"));
         //new document deleted in destructor of LoadDocumentTask
     }
     return res;

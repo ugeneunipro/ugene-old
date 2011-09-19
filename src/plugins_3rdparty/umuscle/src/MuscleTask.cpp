@@ -72,6 +72,8 @@ MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
     assert(config.nThreads > 0);
     setMaxParallelSubtasks(config.nThreads);
 
+    algoLog.info(tr("MUSCLE alignment started"));
+
     ctx = new MuscleContext(config.nThreads);
     ctx->params.g_bStable = config.stableMode;
     ctx->params.g_uMaxIters = config.maxIterations;
@@ -111,7 +113,9 @@ void MuscleTask::run() {
     TaskLocalData::bindToMuscleTLSContext(ctx);
 
     assert(!hasError());
-    
+
+    algoLog.details(tr("Performing MUSCLE alignment..."));
+
     switch(config.op) {
         case MuscleTaskOp_Align:
             doAlign(false); 
@@ -130,6 +134,10 @@ void MuscleTask::run() {
         assert(resultMA.getAlphabet() != NULL);
     }
     TaskLocalData::detachMuscleTLSContext();
+
+    if(!stateInfo.isCoR()) {
+        algoLog.info(tr("MUSCLE alignment successfully finished"));
+    }
 }
 
 void MuscleTask::doAlign(bool refine) {
@@ -561,6 +569,7 @@ void MuscleGObjectRunFromSchemaTask::prepare() {
         stateInfo.setError(tr("Object '%1' is locked").arg(objName));
         return;
     }
+    algoLog.info(tr("MUSCLE alignment started"));
     
     lock = new StateLock(MUSCLE_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
@@ -601,6 +610,7 @@ Task::ReportResult MuscleGObjectRunFromSchemaTask::report() {
         return ReportResult_Finished;
     }
     obj->setMAlignment(maObj->getMAlignment());
+    algoLog.info(tr("MUSCLE alignment successfully finished"));
     return ReportResult_Finished;
 }
 

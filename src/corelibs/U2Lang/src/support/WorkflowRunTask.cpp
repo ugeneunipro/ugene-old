@@ -541,7 +541,7 @@ Task(tr("Monitoring execution of workflow schema"), TaskFlag_NoRun), schemaPath(
     foreach(const QString& arg, args ) {
         line+=" " + arg;
     }
-    coreLog.trace("Starting process: " + line);
+    coreLog.details("Starting UGENE workflow in separate process: " + line);
     proc->start(cmdlineUgenePath, args);
     bool startedSuccessfully = proc->waitForStarted();
     if(!startedSuccessfully) {
@@ -591,7 +591,7 @@ void WorkflowRunInProcessMonitorTask::writeLog(QString message) {
              && !logLine.startsWith(MSG_NUM_KEYWORD)
              && !logLine.startsWith(MSG_PASSED_KEYWORD)) {
                 logLine.prepend(SEP_PROCESS_PREFIX);
-                taskLog.info(logLine);
+                taskLog.trace(logLine);
             }
         }
     }

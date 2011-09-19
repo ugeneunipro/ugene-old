@@ -34,6 +34,7 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/OpenViewTask.h>
 
@@ -60,6 +61,8 @@ TCoffeeSupportTask::TCoffeeSupportTask(MAlignmentObject* _mAObject, const TCoffe
 }
 
 void TCoffeeSupportTask::prepare(){
+    algoLog.info(tr("T-Coffee alignment started"));
+
     //Add new subdir for temporary files
     //Directory name is ExternalToolName + CurrentDate + CurrentTime
 
@@ -67,6 +70,9 @@ void TCoffeeSupportTask::prepare(){
                          QDate::currentDate().toString("dd.MM.yyyy")+"_"+
                          QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
                          QString::number(QCoreApplication::applicationPid())+"/";
+    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
+    ioLog.details(tr("Saving data to temporary file '%1'").arg(url));
+
     //Check and remove subdir for temporary files
     QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName);
     if(tmpDir.exists()){
@@ -82,7 +88,6 @@ void TCoffeeSupportTask::prepare(){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }
-    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
 
     saveTemporaryDocumentTask=new SaveMSA2SequencesTask(mAObject->getMAlignment(), url, false, BaseDocumentFormats::PLAIN_FASTA);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
@@ -97,6 +102,7 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
     if(hasError() || isCanceled()) {
         return res;
     }
+    QString outputUrl = url+".msf";
     if(subTask==saveTemporaryDocumentTask){
         QStringList arguments;
         if(url.contains(" ")){
@@ -114,7 +120,7 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         if(settings.numIterations!= -1) {
             arguments <<"-iterate"<<QString::number(settings.numIterations);
         }
-        arguments <<"-outfile"<<url+".msf";
+        arguments <<"-outfile"<<outputUrl;
         logParser=new TCoffeeLogParser();
         tCoffeeTask=new ExternalToolRunTask(TCOFFEE_TOOL_NAME, arguments, logParser);
         tCoffeeTask->setSubtaskProgressWeight(95);
@@ -122,31 +128,33 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
     }else if(subTask==tCoffeeTask){
         assert(logParser);
         delete logParser;
-        if(!QFileInfo(url+".msf").exists()){
+        if(!QFileInfo(outputUrl).exists()){
             if(AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->isValid()){
-                stateInfo.setError(tr("Output file not found"));
+                stateInfo.setError(tr("Output file %1 not found").arg(outputUrl));
             }else{
-                stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
+                stateInfo.setError(tr("Output file %3 not found. May be %1 tool path '%2' not valid?")
                                    .arg(AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getPath()));
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getPath())
+                                   .arg(outputUrl));
             }
             emit si_stateChanged();
             return res;
         }
+        ioLog.details(tr("Loading output file '%1'").arg(outputUrl));
         
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         QVariantMap hints;
         hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
-        loadTmpDocumentTask = new LoadDocumentTask(BaseDocumentFormats::MSF, url+".msf", iof, hints);
+        loadTmpDocumentTask = new LoadDocumentTask(BaseDocumentFormats::MSF, outputUrl, iof, hints);
                         
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTmpDocumentTask);
     } else if (subTask==loadTmpDocumentTask) {
         newDocument=loadTmpDocumentTask->takeDocument();
-        assert(newDocument!=NULL);
+        SAFE_POINT(newDocument!=NULL, QString("output document '%1' not loaded").arg(newDocument->getURLString()), res);
+        SAFE_POINT(newDocument->getObjects().length()!=0, QString("no objects in output document '%1'").arg(newDocument->getURLString()), res);
 
         //move MAlignment from new alignment to old document
-        assert(newDocument->getObjects().length()==1);
         MAlignmentObject* newMAligmentObject=qobject_cast<MAlignmentObject*>(newDocument->getObjects().first());
         assert(newMAligmentObject!=NULL);
         resultMA=newMAligmentObject->getMAlignment();
@@ -154,6 +162,7 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         if (currentDocument != NULL){
             currentDocument->setModified(true);
         }
+        algoLog.info(tr("T-Coffee alignment successfully finished"));
         //new document deleted in destructor of LoadDocumentTask
     }
     return res;
@@ -268,15 +277,10 @@ void TCoffeeLogParser::parseErrOutput(const QString& partOfLog){
     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
     lastErrLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
-        if(buf.contains(QRegExp("^\\d+"))
-            ||buf.contains("WARNING")
-            ||buf.contains(QRegExp("^-\\w"))
-            ||buf.contains("[Submit")
-            ||buf.contains("[Relax")
-            ||buf.contains("[Update]")){
-            algoLog.trace(buf);
+        if(buf.contains("WARNING")){
+            algoLog.info("MAFFT: " + buf);
         }else{
-            algoLog.info(buf);
+            algoLog.trace(buf);
         }
     }
 }

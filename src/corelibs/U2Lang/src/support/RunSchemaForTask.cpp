@@ -162,6 +162,8 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
             assert(iof != NULL);
             DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(callback->inputFileFormat());
             assert(df != NULL);
+            ioLog.details(tr("Saving workflow schema input to '%1'").arg(saveInputTmpFilename));
+
             inputDocument = new Document(df, iof, saveInputTmpFilename, callback->createInputData());
             saveInputTask = new SaveDocumentTask(inputDocument);
             res << saveInputTask;
@@ -173,6 +175,7 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
             if(hasError()) {
                 return res;
             }
+            taskLog.details(tr("Running workflow schema %1 in separate process").arg(schemaName));
             runSchemaTask = new WorkflowRunInProcessTask(schema, schema.getIterations());
             res << runSchemaTask;
         }
@@ -181,6 +184,7 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
         {
             IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(resultTmpFilename));
             assert(iof != NULL);
+            ioLog.details(tr("Loading result file '%1'").arg(resultTmpFilename));
             loadResultTask = new LoadDocumentTask(callback->outputFileFormat(), resultTmpFilename, iof, resultDocHints);
             res << loadResultTask;
         }

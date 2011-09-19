@@ -45,7 +45,7 @@ Task(tr("Loading schema"), TaskFlag_None),
 }
 
 void LoadWorkflowTask::run() {
-    ioLog.details(tr("Loading schema from file: %1").arg(url));
+    ioLog.details(tr("Loading workflow schema from file: %1").arg(url));
     
     QFile file(url);
     if (!file.open(QIODevice::ReadOnly)) {

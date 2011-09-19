@@ -83,6 +83,7 @@ MusclePrepareTask::MusclePrepareTask(MuscleWorkPool *wp)
 }
 
 void MusclePrepareTask::run() {
+    algoLog.details(tr("Preparing MUSCLE alignment..."));
     TaskLocalData::bindToMuscleTLSContext(workpool->ctx);
     try {
         workpool->ph = new MuscleParamsHelper(workpool->ti, workpool->ctx);
@@ -94,6 +95,7 @@ void MusclePrepareTask::run() {
         }
     }
     TaskLocalData::detachMuscleTLSContext();
+    algoLog.details(tr("MUSCLE prepared successfully"));
 }
 
 void MusclePrepareTask::_run() {

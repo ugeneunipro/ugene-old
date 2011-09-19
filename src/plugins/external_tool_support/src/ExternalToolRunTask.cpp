@@ -62,8 +62,6 @@ void ExternalToolRunTask::prepare(){
     if (hasError() || isCanceled()) {
         return;
     }
-    algoLog.trace("Program executable: "+program);
-    algoLog.trace("Program arguments: "+arguments.join(" "));
 }
 void ExternalToolRunTask::run(){
     if (hasError() || isCanceled()) {
@@ -73,6 +71,9 @@ void ExternalToolRunTask::run(){
     ExternalToolRunTaskHelper* h = new ExternalToolRunTaskHelper(this);
     connect(externalToolProcess,SIGNAL(readyReadStandardOutput()), h, SLOT(sl_onReadyToReadLog()));
     connect(externalToolProcess,SIGNAL(readyReadStandardError()), h, SLOT(sl_onReadyToReadErrLog()));
+
+    algoLog.details(tr("Launching %1 tool: %2 %3").arg(toolName).arg(program).arg(arguments.join(" ")));
+
     externalToolProcess->start(program, arguments);
     //externalToolProcess->state()
     if (!externalToolProcess->waitForStarted(3000)){
@@ -95,6 +96,8 @@ void ExternalToolRunTask::run(){
         int exitCode = externalToolProcess->exitCode();
         if(exitCode != EXIT_SUCCESS && !hasError()) {
             setError(tr("%1 tool exited with code %2").arg(toolName).arg(exitCode));
+        } else {
+            algoLog.details(tr("Tool %1 finished successfully").arg(toolName));
         }
     }
 }

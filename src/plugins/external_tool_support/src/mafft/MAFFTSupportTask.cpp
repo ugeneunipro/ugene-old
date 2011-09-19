@@ -33,6 +33,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Gui/OpenViewTask.h>
@@ -60,6 +61,8 @@ MAFFTSupportTask::MAFFTSupportTask(MAlignmentObject* _mAObject, const MAFFTSuppo
 }
 
 void MAFFTSupportTask::prepare(){
+    algoLog.info(tr("MAFFT alignment started"));
+
     //Add new subdir for temporary files
     //Directory name is ExternalToolName + CurrentDate + CurrentTime
 
@@ -67,6 +70,9 @@ void MAFFTSupportTask::prepare(){
                          QDate::currentDate().toString("dd.MM.yyyy")+"_"+
                          QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
                          QString::number(QCoreApplication::applicationPid())+"/";
+    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
+    ioLog.details(tr("Saving data to temporary file '%1'").arg(url));
+
     //Check and remove subdir for temporary files
     QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName);
     if(tmpDir.exists()){
@@ -82,7 +88,6 @@ void MAFFTSupportTask::prepare(){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }
-    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
 
     saveTemporaryDocumentTask=new SaveMSA2SequencesTask(mAObject->getMAlignment(), url, false, BaseDocumentFormats::PLAIN_FASTA);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
@@ -109,6 +114,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
     if(hasError() || isCanceled()) {
         return res;
     }
+    QString outputUrl = url+".out.fa";
     if (subTask == saveTemporaryDocumentTask){
         QStringList arguments;
         if(settings.gapOpenPenalty != -1) {
@@ -121,34 +127,36 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
             arguments <<"--maxiterate"<<QString::number(settings.maxNumberIterRefinement);
         }
         arguments <<url;
-        logParser = new MAFFTLogParser(mAObject->getMAlignment().getNumRows(), settings.maxNumberIterRefinement, url+".out.fa");
+        logParser = new MAFFTLogParser(mAObject->getMAlignment().getNumRows(), settings.maxNumberIterRefinement, outputUrl);
         mAFFTTask = new ExternalToolRunTask(MAFFT_TOOL_NAME, arguments, logParser);
         mAFFTTask->setSubtaskProgressWeight(95);
         res.append(mAFFTTask);
     } else if (subTask == mAFFTTask) {
         assert(logParser);
         delete logParser;
-        if (!QFileInfo(url+".out.fa").exists()) {
+        if (!QFileInfo(outputUrl).exists()) {
             if (AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->isValid()){
-                stateInfo.setError(tr("Output file not found"));
+                stateInfo.setError(tr("Output file '%1' not found").arg(outputUrl));
             } else {
-                stateInfo.setError(tr("Output file not found. May be %1 tool path '%2' not valid?")
+                stateInfo.setError(tr("Output file '%3' not found. May be %1 tool path '%2' not valid?")
                                    .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getName())
-                                   .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getPath()));
+                                   .arg(AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getPath())
+                                   .arg(outputUrl));
             }
             emit si_stateChanged();
             return res;
         }
+        ioLog.details(tr("Loading output file '%1'").arg(outputUrl));
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        loadTmpDocumentTask= new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA, url+".out.fa", iof);
+        loadTmpDocumentTask= new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA, outputUrl, iof);
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTmpDocumentTask);
     } else if (subTask == loadTmpDocumentTask) {
         newDocument=loadTmpDocumentTask->takeDocument();
-        assert(newDocument!=NULL);
+        SAFE_POINT(newDocument!=NULL, QString("output document '%1' not loaded").arg(newDocument->getURLString()), res);
+        SAFE_POINT(newDocument->getObjects().length()!=0, QString("no objects in output document '%1'").arg(newDocument->getURLString()), res);
 
         //move MAlignment from new alignment to old document
-        assert(newDocument->getObjects().length()!=0);
         resultMA = MSAUtils::seq2ma(newDocument->getObjects(), stateInfo);
         if (hasError()) {
             emit si_stateChanged(); //TODO: task can't emit this signal!
@@ -158,6 +166,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
         if(currentDocument != NULL){
             currentDocument->setModified(true);
         }
+        algoLog.info(tr("MAFFT alignment successfully finished"));
         //new document deleted in destructor of LoadDocumentTask
     }
     return res;
@@ -282,15 +291,13 @@ void MAFFTLogParser::parseErrOutput(const QString& partOfLog){
     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
     lastErrLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
-        if(buf.contains(QRegExp("\\d+ / ?\\d+"))
-            ||buf.contains("WARNING")
-            ||buf.contains(QRegExp("STEP \\d+"))
+        if(buf.contains("WARNING")
             ||buf.contains("rejected.")
             ||buf.contains("identical.")
             ||buf.contains("accepted.")){
-            algoLog.trace(buf);
-        }else{
-            algoLog.info(buf);
+            algoLog.info("MAFFT: " + buf);
+        }else if(!buf.isEmpty()){
+            algoLog.trace("MAFFT: " + buf);
         }
     }
 }
