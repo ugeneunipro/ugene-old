@@ -34,8 +34,9 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
-
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/OpenViewTask.h>
 
 namespace U2 {
@@ -233,11 +234,11 @@ QList<Task*> MAFFTWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTask
         return res;
     }
     if (subTask==loadDocumentTask){
-        currentDocument=loadDocumentTask->getDocument()->clone();
-        assert(currentDocument!=NULL);
-        assert(currentDocument->getObjects().length()==1);
+        currentDocument=loadDocumentTask->takeDocument();
+        SAFE_POINT(currentDocument != NULL, QString("Failed loading document: %1").arg(loadDocumentTask->getURLString()), res);
+        SAFE_POINT(currentDocument->getObjects().length() == 1, QString("Number of objects != 1 : %1").arg(loadDocumentTask->getURLString()), res);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
-        assert(mAObject!=NULL);
+        SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
         mAFFTSupportTask=new MAFFTSupportTask(mAObject,settings);
         res.append(mAFFTSupportTask);
     } else if (subTask == mAFFTSupportTask){

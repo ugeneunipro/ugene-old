@@ -36,13 +36,14 @@
 namespace U2 {
 
 class GSequenceLineViewRenderArea;
-class DNASequenceObject;
 class DNASequenceSelection;
 class LRegionsSelection;
 class GScrollBar;
 class ADVSequenceObjectContext;
 class GObjectViewOpConstraints;
 class GObject;
+class U2SequenceDbi;
+class DNASequenceObject;
 
 enum GSLV_UpdateFlag {
     GSLV_UF_NeedCompleteRedraw  = 1<<0,
@@ -70,8 +71,6 @@ public:
     const U2Region& getVisibleRange() const {return visibleRange;}
 
     ADVSequenceObjectContext* getSequenceContext() const {return ctx;}
-
-    const U2Region& getSequenceRange() const;
 
     virtual void setStartPos(int pos);
 
@@ -103,6 +102,8 @@ public:
     virtual QAction* getZoomToSelectionAction() const {return coherentRangeView == NULL ? NULL : coherentRangeView->getZoomToSelectionAction();}
 
     virtual QAction* getZoomToSequenceAction() const {return coherentRangeView == NULL ? NULL : coherentRangeView->getZoomToSequenceAction();}
+    
+    virtual U2SequenceDbi* getSequenceDbi() const;
     
     virtual DNASequenceObject* getSequenceObject() const;
 

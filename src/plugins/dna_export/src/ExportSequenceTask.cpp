@@ -42,7 +42,7 @@ namespace U2 {
 //ExportSequenceTask
 
 ExportSequenceTask::ExportSequenceTask(const ExportSequenceTaskSettings& s) 
-: AbstractExportTask("", TaskFlag_None), config(s)
+: DocumentProviderTask("", TaskFlag_None), config(s)
 {
     setTaskName(tr("Export sequence to '%1'").arg(QFileInfo(s.fileName).fileName()));
     setVerboseLogMode(true);
@@ -153,7 +153,7 @@ void ExportSequenceTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(config.formatId);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.fileName));
-    doc.reset(f->createNewDocument(iof, config.fileName)); 
+    resultDocument = f->createNewDocument(iof, config.fileName); 
     QList<ExportSequenceItem> notMergedItems;
     foreach(const ExportSequenceItem& ei0, config.items) {
         QList<ExportSequenceItem> r1Items;
@@ -216,10 +216,10 @@ void ExportSequenceTask::run() {
         name = ExportUtils::genUniqueName(usedNames, name);
         usedNames.insert(name);
         DNASequenceObject* seqObj = new DNASequenceObject(name, ri.sequence);
-        doc->addObject(seqObj);
+        resultDocument->addObject(seqObj);
         Document::Constraints c;
         c.objectTypeToAdd.append(GObjectTypes::ANNOTATION_TABLE);
-        bool annotationsSupported = doc->checkConstraints(c);
+        bool annotationsSupported = resultDocument->checkConstraints(c);
         if (annotationsSupported && !ri.annotations.isEmpty()) {
             QString aName = ExportUtils::genUniqueName(usedNames, name + " annotations");
             AnnotationTableObject *annObj = new AnnotationTableObject(aName);
@@ -231,11 +231,11 @@ void ExportSequenceTask::run() {
             annObj->addAnnotations(annotations);
             annObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
             annObj->setModified(false);
-            doc->addObject(annObj);
+            resultDocument->addObject(annObj);
         }
     }
     //store the document
-    f->storeDocument(doc.get(), stateInfo);
+    f->storeDocument(resultDocument, stateInfo);
 }
 
 
@@ -243,7 +243,7 @@ void ExportSequenceTask::run() {
 // Export sequence under annotations
 
 ExportAnnotationSequenceTask::ExportAnnotationSequenceTask(const ExportAnnotationSequenceTaskSettings& s)
-: AbstractExportTask(tr("Export annotations"), TaskFlags_NR_FOSCOE), config(s) 
+: DocumentProviderTask(tr("Export annotations"), TaskFlags_NR_FOSCOE), config(s) 
 {
     extractSubTask = new ExportAnnotationSequenceSubTask(config);
     addSubTask(extractSubTask);

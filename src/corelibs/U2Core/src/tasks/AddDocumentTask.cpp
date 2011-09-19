@@ -51,13 +51,7 @@ QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
     }
 
     if (subTask == dpt) {
-        Document* doc = dpt->takeDocument();
-        if (!doc->isMainThreadModificationOnly()) {
-            document = doc->clone();
-            delete doc;
-        } else {
-            document = doc;
-        }
+        document = dpt->takeDocument();
         if (AppContext::getProject() == NULL) {
             res << AppContext::getProjectLoader()->createNewProjectTask();
         } else if (conf.unloadExistingDocument) {

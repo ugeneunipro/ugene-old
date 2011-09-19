@@ -38,6 +38,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
@@ -56,7 +57,9 @@ namespace U2 {
 /* TRANSLATOR U2::LoadUnloadedDocumentTask */    
 //////////////////////////////////////////////////////////////////////////
 // DocumentProviderTask
-DocumentProviderTask::DocumentProviderTask(const QString& name, TaskFlags flags) : Task(name, flags), resultDocument(NULL) {
+DocumentProviderTask::DocumentProviderTask(const QString& name, TaskFlags flags) 
+: Task(name, flags), resultDocument(NULL) 
+{
     documentDescription = tr("[unknown]");
 }
 
@@ -64,6 +67,22 @@ void DocumentProviderTask::cleanup(){
     delete resultDocument;
     resultDocument = NULL;
 }
+
+Document* DocumentProviderTask::getDocument(bool mainThread)  {
+    if (resultDocument != NULL && mainThread) {
+        if (resultDocument->thread() != QCoreApplication::instance()->thread()) {
+            resultDocument->moveToThread(QCoreApplication::instance()->thread());
+        }
+    }
+    return resultDocument;
+}
+
+Document* DocumentProviderTask::takeDocument(bool mainThread) {
+    Document* d = getDocument(mainThread); 
+    resultDocument = NULL; 
+    return d;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // LoadUnloadedDocumentTask
@@ -151,8 +170,8 @@ Task::ReportResult LoadUnloadedDocumentTask::report() {
         if (!readyToLoad) {
             stateInfo.setError(tr("Document is locked")); //todo: wait instead?
         }  else {
-            Document* doc = subtask->getDocument();
-            unloadedDoc->loadFrom(doc); // doc was load in a separate thread -> clone all GObjects
+            Document* doc = subtask->takeDocument();
+            unloadedDoc->loadFrom(doc); // get document copy
             assert(!unloadedDoc->isTreeItemModified());
             assert(unloadedDoc->isLoaded());
         }
@@ -223,14 +242,9 @@ LoadDocumentTask::LoadDocumentTask(DocumentFormat* f, const GUrl& u,
 
 void LoadDocumentTask::init() {
     tpm = Progress_Manual;
-    if (format == NULL) {
-        setError(tr("Document format is NULL!"));
-        return;
-    }
-    if (iof == NULL) {
-        setError(tr("IO adapter factory is NULL!"));
-        return;
-    }
+    CHECK_EXT(format != NULL,  setError(tr("Document format is NULL!")), );
+    CHECK_EXT(iof != NULL, setError(tr("IO adapter factory is NULL!")), );
+    documentDescription = url.getURLString();
 }
 
 LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
@@ -327,7 +341,6 @@ Task::ReportResult LoadDocumentTask::report() {
     if (stateInfo.hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
-    assert(resultDocument != NULL);
     resultDocument->setLastUpdateTime();
     return ReportResult_Finished;
 }
@@ -429,6 +442,10 @@ void LoadDocumentTask::renameObjects(Document* doc, const QStringList& names) {
         }
         currentIter++;
     }
+}
+
+QString LoadDocumentTask::getURLString() const {
+    return url.getURLString();
 }
 
 GObject* LDTObjectFactory::create(const GObjectReference& ref) {

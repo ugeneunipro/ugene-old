@@ -36,7 +36,7 @@ DNASequenceObjectSequenceDbiWrapper::DNASequenceObjectSequenceDbiWrapper(const Q
 
 static DNASequenceObject* findObjById(const U2DataId & seqId, const QList<DNASequenceObject*> & objs) {
     foreach(DNASequenceObject* obj, objs) {
-        if(obj->getGObjectName().toUtf8() == seqId) {
+        if (obj->getDbiObjectId() == seqId) {
             return obj;
         }
     }
@@ -72,7 +72,6 @@ DNASequenceObject::DNASequenceObject(const QString& name, const DNASequence& seq
 : GObject(GObjectTypes::SEQUENCE, name, hintsMap), dnaSeq(seq), dbi(NULL)
 {
     assert(dnaSeq.alphabet!=NULL);
-    seqRange = U2Region(0, dnaSeq.seq.length());
     dbi = new DNASequenceObjectSequenceDbiWrapper(QList<DNASequenceObject*>() << this, NULL);
 }
 
@@ -117,19 +116,21 @@ void DNASequenceObject::setCircular(bool val) {
     dnaSeq.circular = val;
 }
 
-void DNASequenceObject::setSequence( DNASequence seq ){
+void DNASequenceObject::setSequence( const DNASequence& seq ){
     dnaSeq = seq;
     U2Region range(0, seq.length());
-    seqRange = range;
     setModified(true);
     emit si_sequenceChanged();
 }
 
-void DNASequenceObject::setQuality( const DNAQuality& quality )
-{
+void DNASequenceObject::setQuality( const DNAQuality& quality ) {
     setModified(true);
     dnaSeq.quality = quality;
     emit si_sequenceChanged();
+}
+
+U2DataId DNASequenceObject::getDbiObjectId() const {
+    return getGObjectName().toUtf8();
 }
 
 DNASequenceObjectConstraints::DNASequenceObjectConstraints(QObject* p) 

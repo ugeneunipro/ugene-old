@@ -277,11 +277,6 @@ QList<GObject*> Document::findGObjectByType(GObjectType t, UnloadedObjectFilter 
     return GObjectUtils::select(objects, t, f);
 }
 
-Document* Document::clone() const {
-    Document* doc = new Document(df, io, url, QList<UnloadedObjectInfo>(), ctxState->getMap());
-    doc->loadFrom(this);
-    return doc;
-}
 
 void Document::checkUnloadedState() const {
 #ifdef _DEBUG

@@ -37,23 +37,27 @@ class IOAdapterFactory;
 class StateLock;
 class LoadDocumentTask;
 
-/** Base interface for different document loading tasks */
+/** 
+    Base interface for different document loading tasks 
+*/
 class U2CORE_EXPORT DocumentProviderTask : public Task {
     Q_OBJECT
 public:
     DocumentProviderTask(const QString& name, TaskFlags flags);
     virtual ~DocumentProviderTask() {cleanup();}
 
-    virtual Document* getDocument()  {return resultDocument;}
-    virtual Document* takeDocument() {Document* d = resultDocument; resultDocument = NULL; return d;}
+    virtual Document* getDocument(bool mainThread = true); 
+    virtual Document* takeDocument(bool mainThread = true);
 
     virtual void cleanup();
     virtual QString getDocumentDescription() const {return documentDescription;}
 
 protected:
     Document* resultDocument;
+    
     /** provider's document description */
     QString   documentDescription;
+    
 };
 
 
@@ -121,6 +125,7 @@ public:
     virtual ReportResult report();
     
     const GUrl& getURL() const {return url;}
+    QString getURLString() const;
 
 private:
     void init();

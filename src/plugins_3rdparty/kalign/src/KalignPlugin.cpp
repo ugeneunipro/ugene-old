@@ -152,7 +152,7 @@ void KalignPlugin::sl_documentLoaded(Task* task) {
     if (rc != QDialog::Accepted) {
         return;
     }
-    Task * kalignTask = new KAlignAndSaveTask(loadTask->takeDocument()->clone(), s); //clone -> move to main thread
+    Task * kalignTask = new KAlignAndSaveTask(loadTask->takeDocument(), s);
     AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);
 }
 

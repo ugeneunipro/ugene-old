@@ -31,6 +31,7 @@ class ExportSequencesDialog;
 class ExportSequenceTaskSettings;
 class AbstractExportTask;
 class Annotation;
+class DocumentProviderTask;
 
 class ExportUtils: public QObject {
     Q_OBJECT
@@ -38,7 +39,7 @@ public:
 
     static void loadDNAExportSettingsFromDlg(ExportSequenceTaskSettings& s, const ExportSequencesDialog& d);
 
-    static Task* wrapExportTask(AbstractExportTask* t, bool addToProject);
+    static Task* wrapExportTask(DocumentProviderTask* t, bool addToProject);
 
     // generates unique name using prefix + numbers
     static QString genUniqueName(const QSet<QString>& names, QString prefix);

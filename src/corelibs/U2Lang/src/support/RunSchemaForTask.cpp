@@ -191,8 +191,7 @@ QList<Task*> WorkflowRunSchemaForTask::onSubTaskFinished(Task* subTask) {
         break;
     case NOTHING:
         if (loadResultTask != NULL && loadResultTask->getDocument() != NULL) {
-            Document* doc = loadResultTask->getDocument();
-            resultDocument = doc->clone();
+            resultDocument = loadResultTask->takeDocument();
         }
         break;
     default:

@@ -316,8 +316,6 @@ public:
 
     bool unload();
 
-    Document* clone() const;
-
     bool checkConstraints(const Constraints& c) const;
     
     GHints* getGHints() const {return ctxState;}

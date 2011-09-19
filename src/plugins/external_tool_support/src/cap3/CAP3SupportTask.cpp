@@ -135,11 +135,12 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
 
     } else  if( subTask == loadTmpDocumentTask  ) {
         
-        Document* doc = loadTmpDocumentTask->getDocument();
+        Document* doc = loadTmpDocumentTask->takeDocument();
         SAFE_POINT(doc != NULL, "Failed loading result document", res);
         
         if (doc->getObjects().size() == 0) {
             // TODO: delete new file?
+            delete doc;
             setError(tr("No assembly is found for provided reads"));
             return res;
         }
@@ -150,9 +151,7 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
                 res.append( AppContext::getProjectLoader()->createNewProjectTask() );
             }
             
-            // clone doc because it was created in another thread
-            Document* clonedDoc = doc->clone();
-            res.append(new AddDocumentAndOpenViewTask(clonedDoc));
+            res.append(new AddDocumentAndOpenViewTask(doc));
         }
         
     }

@@ -32,7 +32,6 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
-
 #include <U2Core/AddDocumentTask.h>
 #include <U2Gui/OpenViewTask.h>
 
@@ -254,11 +253,11 @@ QList<Task*> ClustalWWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subT
         return res;
     }
     if (subTask == loadDocumentTask){
-        currentDocument=loadDocumentTask->getDocument()->clone();  // clone doc because it was created in another thread
-        assert(currentDocument!=NULL);
-        assert(currentDocument->getObjects().length()==1);
-        mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
-        assert(mAObject!=NULL);
+        currentDocument=loadDocumentTask->takeDocument();
+        SAFE_POINT(currentDocument != NULL, QString("Failed loading document: %1").arg(loadDocumentTask->getURLString()), res);
+        SAFE_POINT(currentDocument->getObjects().length() == 1, QString("Number of objects != 1 : %1").arg(loadDocumentTask->getURLString()), res);
+        mAObject = qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
+        SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
         clustalWSupportTask=new ClustalWSupportTask(mAObject,settings);
         res.append(clustalWSupportTask);
     } else if (subTask == clustalWSupportTask) {

@@ -577,7 +577,8 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter& p
     }
     
     
-    if (U1AnnotationUtils::isSplitted(a->getLocation(), getGSequenceLineViewAnnotated()->getSequenceRange())) {
+    U2Region sRange = getGSequenceLineViewAnnotated()->getSequenceObject()->getSequenceRange();
+    if (U1AnnotationUtils::isSplitted(a->getLocation(), sRange)) {
         return;
     }
 

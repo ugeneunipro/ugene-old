@@ -32,13 +32,14 @@ namespace U2 {
 
 class U2SequenceDbi;
 
+//TODO: rename to U2SequenceGObject
 class  U2CORE_EXPORT DNASequenceObject: public GObject {
     Q_OBJECT
 public:
     DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap = QVariantMap());
     ~DNASequenceObject();
     
-    const U2Region& getSequenceRange() const {return seqRange;}
+    U2Region getSequenceRange() const {return U2Region(0, dnaSeq.seq.length());}
 
     const QByteArray& getSequence() const {return dnaSeq.seq;}
 
@@ -58,7 +59,7 @@ public:
 
     virtual bool checkConstraints(const GObjectConstraints* c) const;
 
-    void setSequence(DNASequence seq);
+    void setSequence(const DNASequence& seq);
 
     void setQuality(const DNAQuality& quality);
 
@@ -68,12 +69,13 @@ public:
 
     U2SequenceDbi* asDbi() const {return dbi;}
 
+    U2DataId getDbiObjectId() const;
+
 signals:
     void si_sequenceChanged();
 
 protected:
     DNASequence     dnaSeq;
-    U2Region        seqRange;
     U2SequenceDbi*  dbi;
 };
 

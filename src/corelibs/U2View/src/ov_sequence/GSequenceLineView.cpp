@@ -23,7 +23,6 @@
 
 #include "ADVSequenceObjectContext.h"
 
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -400,10 +399,10 @@ void GSequenceLineView::setCoherentRangeView(GSequenceLineView* _rangeView) {
 
 
 void GSequenceLineView::sl_onFrameRangeChanged() {
-    //todo: optimize and do not redraw frame if visual coords of the frame are not changed!
+    //TODO: optimize and do not redraw frame if visual coords of the frame are not changed!
 #ifdef _DEBUG
     const U2Region& newRange = frameView->getVisibleRange();
-    assert(newRange.startPos >= 0 && newRange.endPos() <= ctx->getSequenceObject()->getSequenceLen() && newRange.length >= 0);
+    assert(newRange.startPos >= 0 && newRange.endPos() <= ctx->getSequenceLen() && newRange.length >= 0);
 #endif
     addUpdateFlags(GSLV_UF_FrameChanged);
     update();
@@ -435,6 +434,10 @@ DNASequenceObject* GSequenceLineView::getSequenceObject() const {
     return ctx->getSequenceObject();
 }
 
+U2SequenceDbi* GSequenceLineView::getSequenceDbi() const {
+    return ctx->getSequenceDbi();
+}
+
 void GSequenceLineView::completeUpdate(){
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw); 
     update();
@@ -445,10 +448,6 @@ void GSequenceLineView::sl_sequenceChanged(){
     completeUpdate();
 }
 
-const U2Region& GSequenceLineView::getSequenceRange() const
-{
-    return ctx->getSequenceObject()->getSequenceRange();
-}
 
 //////////////////////////////////////////////////////////////////////////
 /// GSequenceLineViewRenderArea

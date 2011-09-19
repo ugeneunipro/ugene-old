@@ -43,7 +43,7 @@ void ExportUtils::loadDNAExportSettingsFromDlg(ExportSequenceTaskSettings& s, co
     s.saveAnnotations = d.withAnnotations;
 }
 
-Task* ExportUtils::wrapExportTask(AbstractExportTask* t, bool addToProject) {
+Task* ExportUtils::wrapExportTask(DocumentProviderTask* t, bool addToProject) {
     if (!addToProject) {
         return t;
     }

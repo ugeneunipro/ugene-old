@@ -41,6 +41,7 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Lang/WorkflowSettings.h>
 
@@ -470,11 +471,11 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
         return res;
     }
     if (subTask == loadDocumentTask){
-        currentDocument = loadDocumentTask->getDocument()->clone(); //clone -> to move to main thread here
-        assert(currentDocument!=NULL);
-        assert(currentDocument->getObjects().length()==1);
+        currentDocument = loadDocumentTask->takeDocument();
+        SAFE_POINT(currentDocument != NULL, QString("Failed loading document: %1").arg(loadDocumentTask->getURLString()), res);
+        SAFE_POINT(currentDocument->getObjects().length() == 1, QString("Number of objects != 1 : %1").arg(loadDocumentTask->getURLString()), res);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
-        assert(mAObject!=NULL);
+        SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
         if (config.alignRegion) {
             if((config.regionToAlign.startPos > mAObject->getLength())
                 || ((config.regionToAlign.startPos + config.regionToAlign.length) > mAObject->getLength()))

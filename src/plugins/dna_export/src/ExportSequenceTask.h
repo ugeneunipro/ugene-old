@@ -69,17 +69,14 @@ public:
 };
 
 /** Exports sequences a file */
-class ExportSequenceTask: public AbstractExportTask {
+class ExportSequenceTask: public DocumentProviderTask {
     Q_OBJECT
 public:
     ExportSequenceTask(const ExportSequenceTaskSettings& s);
     
     void run();
-    
-    virtual Document* getDocument() const {return doc.get();}
 
 private:
-    std::auto_ptr<Document> doc; 
     ExportSequenceTaskSettings config;
 };
 
@@ -104,7 +101,7 @@ public:
     ExportSequenceTaskSettings exportSequenceSettings; // extra configuration for ExportSequenceTask
 };
 
-class ExportAnnotationSequenceSubTask : public Task{
+class ExportAnnotationSequenceSubTask : public Task {
 Q_OBJECT
 public:
     ExportAnnotationSequenceSubTask(ExportAnnotationSequenceTaskSettings& s);
@@ -113,12 +110,11 @@ private:
     ExportAnnotationSequenceTaskSettings& config;
 };
 
-class ExportAnnotationSequenceTask : public AbstractExportTask {
+class ExportAnnotationSequenceTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     ExportAnnotationSequenceTask(const ExportAnnotationSequenceTaskSettings& s);
 
-    virtual Document* getDocument() const {return exportSubTask->getDocument();}
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:

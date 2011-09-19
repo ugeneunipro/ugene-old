@@ -229,11 +229,11 @@ QList<Task*> TCoffeeWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTa
         return res;
     }
     if (subTask==loadDocumentTask){
-        currentDocument=loadDocumentTask->getDocument()->clone();
-        assert(currentDocument!=NULL);
-        assert(currentDocument->getObjects().length()==1);
+        currentDocument=loadDocumentTask->takeDocument();
+        SAFE_POINT(currentDocument != NULL, QString("Failed loading document: %1").arg(loadDocumentTask->getURLString()), res);
+        SAFE_POINT(currentDocument->getObjects().length() == 1, QString("Number of objects != 1 : %1").arg(loadDocumentTask->getURLString()), res);
         mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
-        assert(mAObject!=NULL);
+        SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
         tCoffeeSupportTask=new TCoffeeSupportTask(mAObject,settings);
         res.append(tCoffeeSupportTask);
     } else if (subTask == tCoffeeSupportTask){

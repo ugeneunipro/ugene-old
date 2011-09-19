@@ -283,14 +283,20 @@ GObject* ADVSequenceObjectContext::getSequenceGObject() const {
     return seqObj;
 }
 
-void ADVSequenceObjectContext::addAutoAnnotationObject( AnnotationTableObject* obj )
-{
+U2SequenceDbi* ADVSequenceObjectContext::getSequenceDbi() const {
+    return seqObj->asDbi();
+}
+
+U2DataId ADVSequenceObjectContext::getSequenceId() const {
+    return seqObj->getDbiObjectId();
+}
+
+void ADVSequenceObjectContext::addAutoAnnotationObject( AnnotationTableObject* obj ){
     autoAnnotations.insert(obj);
     emit si_annotationObjectAdded(obj);
 }
 
-QSet<AnnotationTableObject*> ADVSequenceObjectContext::getAnnotationObjects(bool includeAutoAnnotations) const
-{
+QSet<AnnotationTableObject*> ADVSequenceObjectContext::getAnnotationObjects(bool includeAutoAnnotations) const {
     QSet<AnnotationTableObject*> result = annotations;
     if (includeAutoAnnotations) {
         result += autoAnnotations;

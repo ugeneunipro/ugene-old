@@ -28,75 +28,61 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <memory>
+#include <U2Core/LoadDocumentTask.h>
 
 
 namespace U2 {
 
-/** Base class for all export tasks */
-class AbstractExportTask : public Task {
-public:
-    AbstractExportTask(const QString& _name, TaskFlags f) : Task(_name, f){}
-    virtual Document* getDocument() const = 0;
-};
 
 /** A task to adds exported document to project and open view*/
 //TODO: make this task a general purpose routine
 class AddExportedDocumentAndOpenViewTask: public Task {
     Q_OBJECT
 public:
-    AddExportedDocumentAndOpenViewTask(AbstractExportTask* t);
+    AddExportedDocumentAndOpenViewTask(DocumentProviderTask* t);
     QList<Task*> onSubTaskFinished( Task* subTask );
 private:
-    AbstractExportTask* exportTask;
+    DocumentProviderTask* exportTask;
 };
 
 
 /** A task to save alignment to CLUSTAL */
-class ExportAlignmentTask : public AbstractExportTask  {
+class ExportAlignmentTask : public DocumentProviderTask  {
     Q_OBJECT
 public:
     ExportAlignmentTask(const MAlignment& ma, const QString& fileName, DocumentFormatId f);
 
     void run();
 
-    virtual Document* getDocument() const {return doc.get();}
-
 private:
     MAlignment              ma;
     QString                 fileName;
     DocumentFormatId        format;
-    std::auto_ptr<Document> doc;
 };
 
 
 /** A task to export alignment to FASTA */
-class ExportMSA2SequencesTask : public AbstractExportTask {
+class ExportMSA2SequencesTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     ExportMSA2SequencesTask(const MAlignment& ma, const QString& url, bool trimAli, DocumentFormatId format);
 
     void run();
 
-    virtual Document* getDocument() const {return doc.get();}
-
 private:
     MAlignment              ma;
     QString                 url;
     bool                    trimAli;
     QString                 format;
-    std::auto_ptr<Document> doc;
 };
 
-class ExportMSA2MSATask : public AbstractExportTask {
+class ExportMSA2MSATask : public DocumentProviderTask {
     Q_OBJECT
 public:
     ExportMSA2MSATask(const MAlignment& ma, int offset, int len, const QString& url, 
         const QList<DNATranslation*>& aminoTranslations, DocumentFormatId format);
 
     void run();
-
-    virtual Document* getDocument() const {return doc.get();}
 
 private:
     MAlignment              ma;
@@ -105,7 +91,6 @@ private:
     QString                 url;
     QString                 format;
     QList<DNATranslation*>  aminoTranslations; // amino translation for a sequences in alignment. If not NULL -> sequence is translated
-    std::auto_ptr<Document> doc;
 };
 
 class DNAChromatogramObject;
@@ -122,12 +107,12 @@ struct ExportChromatogramTaskSettings {
 };
 
 
-class ExportDNAChromatogramTask : public AbstractExportTask {
+class ExportDNAChromatogramTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     ExportDNAChromatogramTask(DNAChromatogramObject* chromaObj, const ExportChromatogramTaskSettings& url);
     void prepare();
-    virtual Document* getDocument() const;
+    QList<Task*> onSubTaskFinished(Task* subTask);
 private:
     DNAChromatogramObject*  cObj;
     ExportChromatogramTaskSettings settings;

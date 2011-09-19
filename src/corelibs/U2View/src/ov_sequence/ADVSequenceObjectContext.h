@@ -22,7 +22,7 @@
 #ifndef _U2_ADV_SEQUENCE_OBJECT_CONTEXT_H_
 #define _U2_ADV_SEQUENCE_OBJECT_CONTEXT_H_
 
-#include  <U2Core/global.h>
+#include  <U2Core/U2Type.h>
 
 #include <QtCore/QSet>
 #include <QtGui/QWidget>
@@ -40,17 +40,20 @@ class AnnotationTableObject;
 class AnnotationSelection;
 class GObject;
 class Annotation;
+class U2SequenceDbi;
 
 class U2VIEW_EXPORT ADVSequenceObjectContext : public QObject {
     Q_OBJECT
 public:
     ADVSequenceObjectContext(AnnotatedDNAView* v, DNASequenceObject* obj);
     
-    AnnotatedDNAView* getAnnotatedDNAView() const {return view;}
-    DNATranslation* getComplementTT() const {return complTT;}
-    DNATranslation* getAminoTT() const {return aminoTT;}
-    DNASequenceObject* getSequenceObject() const {return seqObj;}
-    GObject*           getSequenceGObject() const;
+    AnnotatedDNAView*   getAnnotatedDNAView() const {return view;}
+    DNATranslation*     getComplementTT() const {return complTT;}
+    DNATranslation*     getAminoTT() const {return aminoTT;}
+    DNASequenceObject*  getSequenceObject() const {return seqObj;}
+    GObject*            getSequenceGObject() const;
+    U2SequenceDbi*      getSequenceDbi() const;
+    U2DataId            getSequenceId() const;
 
     const QByteArray& getSequenceData() const;
     int getSequenceLen() const;
