@@ -30,6 +30,8 @@
 #include <U2Lang/SchemaSerializer.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/Marker.h>
+#include <U2Lang/MarkerAttribute.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/ExternalToolCfg.h>
 
@@ -48,7 +50,8 @@ const QString HRSchemaSerializer::HEADER_LINE           = "#!UGENE_WORKFLOW";
 const QString HRSchemaSerializer::OLD_XML_HEADER        = "<!DOCTYPE GB2WORKFLOW>";
 const QString HRSchemaSerializer::BODY_START            = "workflow";
 const QString HRSchemaSerializer::META_START            = ".meta";
-const QString HRSchemaSerializer::ITERATION_START       = ".iteration";
+const QString HRSchemaSerializer::DOT_ITERATION_START   = ".iteration";
+const QString HRSchemaSerializer::ITERATION_START       = "iteration";
 const QString HRSchemaSerializer::DATAFLOW_SIGN         = "->";
 const QString HRSchemaSerializer::EQUALS_SIGN           = ":";
 const QString HRSchemaSerializer::UNDEFINED_CONSTRUCT   = HRSchemaSerializer::tr("Undefined construct at '%1 %2'");
@@ -75,6 +78,14 @@ const QString HRSchemaSerializer::FORMAT_PORT           = "format";
 const QString HRSchemaSerializer::CMDLINE               = "cmdline";
 const QString HRSchemaSerializer::DESCRIPTION           = "description";
 const QString HRSchemaSerializer::PROMPTER              = "templatedescription";
+const QString HRSchemaSerializer::FUNCTION_START        = "@";
+const QString HRSchemaSerializer::COMMA                 = ",";
+const QString HRSchemaSerializer::MARKER                = "marker";
+const QString HRSchemaSerializer::MARKER_TYPE           = "marker-type";
+const QString HRSchemaSerializer::MARKER_NAME           = "marker-name";
+const QString HRSchemaSerializer::QUAL_NAME             = "qualifier-name";
+const QString HRSchemaSerializer::ANN_NAME              = "annotation-name";
+const QString HRSchemaSerializer::ACTOR_BINDINGS        = ".actor-bindings";
 
 template <class T>
 static void setIfNotNull(const T & what, T * to) {
@@ -257,7 +268,7 @@ void HRSchemaSerializer::Tokenizer::tokenize(const QString & d) {
             continue;
         }
         if(depth == 1) {
-            isElemDef = !line.startsWith(META_START) && !line.startsWith(ITERATION_START) && !line.contains(DATAFLOW_SIGN) 
+            isElemDef = !line.startsWith(META_START) && !line.startsWith(DOT_ITERATION_START) && !line.contains(DATAFLOW_SIGN) 
                 && !line.startsWith(INPUT_START) && !line.startsWith(OUTPUT_START) && !line.startsWith(ATTRIBUTES_START);
             elemDefHeader = true;
         } else {
@@ -352,6 +363,14 @@ void HRSchemaSerializer::Tokenizer::tokenizeLine(const QString & l, QTextStream 
                 finishAtQuote = true;
             }
             continue;
+        } else if (ch == FUNCTION_START.at(0)) {
+            if (finishAtQuote) {
+                curToken.append(ch);
+            } else {
+                addToken(curToken);
+                curToken.clear();
+                addToken(ch);
+            }
         } else {
             curToken.append(ch);
         }
@@ -555,6 +574,80 @@ static QString parseAfter(const QString & dottedStr, int ind) {
     return res.mid(0, res.size() - HRSchemaSerializer::DOT.size());
 }
 
+void HRSchemaSerializer::parseFunctionDefinition(Tokenizer &tokenizer, QMap<QString, Actor*> &actorMap) {
+    QString name = tokenizer.take();
+    QString actorName = parseAt(name, 0);
+    QString functionName = parseAfter(name, 0);
+    if (!actorMap.contains(actorName)) {
+        throw ReadFailed(tr("Unknown actor name \"%1\" at a function definition").arg(actorName));
+    }
+    tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+
+    ParsedPairs pairs(tokenizer);
+    QString functionType = pairs.equalPairs.take(TYPE_ATTR);
+    if(functionType.isEmpty()) {
+        throw ReadFailed(tr("Type attribute is not set for %1 function").arg(functionName));
+    }
+    if (functionType == HRSchemaSerializer::MARKER) {
+        HRSchemaSerializer::parseMarkerDefinition(actorMap[actorName], functionName, pairs);
+    }
+}
+
+void HRSchemaSerializer::parseMarkerDefinition(Actor *proc, const QString &markerId, ParsedPairs &pairs) {
+    MarkerAttribute *markerAttr = dynamic_cast<MarkerAttribute*>(proc->getParameter("markers"));
+    if (NULL == markerAttr) {
+        throw ReadFailed(tr("%1 actor has not markers attribute").arg(proc->getId()));
+    }
+    QString markerType = pairs.equalPairs.take(HRSchemaSerializer::MARKER_TYPE);
+    QString markerName = pairs.equalPairs.take(HRSchemaSerializer::MARKER_NAME);
+    QMap<QString, Marker*> &markersMap = markerAttr->getMarkers();
+    if(markerType.isEmpty()) {
+        throw ReadFailed(tr("Type attribute is not set for %1 marker").arg(markerId));
+    }
+    if(markerName.isEmpty()) {
+        throw ReadFailed(tr("Name attribute is not set for %1 marker").arg(markerId));
+    }
+    if (!markersMap.contains(markerId)) {
+        throw ReadFailed(tr("Unknown %1 marker at %2 actor").arg(markerId).arg(proc->getId()));
+    } else if (NULL != markersMap.value(markerId)) {
+        throw ReadFailed(tr("Redefinition of %1 marker at %2 actor").arg(markerId).arg(proc->getId()));
+    }
+
+    Marker *marker = NULL;
+
+    if (markerType == MarkerTypes::QUAL_INT_VALUE_MARKER_ID
+     || markerType == MarkerTypes::QUAL_TEXT_VALUE_MARKER_ID
+     || markerType == MarkerTypes::QUAL_FLOAT_VALUE_MARKER_ID) {
+        QString qualName = pairs.equalPairs.take(HRSchemaSerializer::QUAL_NAME);
+        if(qualName.isEmpty()) {
+            throw ReadFailed(tr("Qualifier name attribute is not set for %1 marker").arg(markerId));
+        }
+        marker = new QualifierMarker(markerType, markerName, qualName);
+    } else if (MarkerTypes::ANNOTATION_LENGTH_MARKER_ID == markerType
+     || MarkerTypes::ANNOTATION_COUNT_MARKER_ID == markerType) {
+        QString annName = pairs.equalPairs.take(HRSchemaSerializer::ANN_NAME);
+        marker = new AnnotationMarker(markerType, markerName, annName);
+    } else if (MarkerTypes::TEXT_MARKER_ID == markerType) {
+        marker = new TextMarker(markerType, markerName);
+    } else {
+        marker = new SequenceMarker(markerType, markerName);
+    }
+    foreach(const QString & key, pairs.equalPairs.keys()) {
+        marker->addValue(key, pairs.equalPairs.value(key));
+    }
+
+    markersMap.insert(markerId, marker);
+    // TODO: make common way to get marked object output port
+    assert(1 == proc->getOutputPorts().size());
+    Port *outPort = proc->getOutputPorts().at(0);
+    assert(outPort->getOutputType()->isMap());
+    QMap<Descriptor, DataTypePtr> outTypeMap = outPort->getOutputType()->getDatatypesMap();
+    Descriptor newSlot = MarkerSlots::getSlotByMarkerType(markerType, markerName);
+    outTypeMap[newSlot] = BaseTypes::STRING_TYPE();
+    DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outTypeMap));
+    outPort->setNewType(newType);
+}
+
 static void skipBlock(HRSchemaSerializer::Tokenizer & tokenizer) {
     while(tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
         QString tok = tokenizer.take();
@@ -603,6 +696,54 @@ Iteration HRSchemaSerializer::parseIteration(Tokenizer & tokenizer, const QStrin
         }
     }
     return iteration;
+}
+
+ActorBindingsGraph HRSchemaSerializer::parseActorBindings(Tokenizer &tokenizer, const QMap<QString, Actor*> &actorMap, QList<QPair<Port*, Port*> > &links) {
+    ActorBindingsGraph graph;
+
+    if (!links.isEmpty()) {
+        throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Links list is not empty. Maybe .meta is defined earlier than actor-bindings"));
+    }
+
+    while (tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
+        QString from = tokenizer.take();
+        QString srcActorName = HRSchemaSerializer::parseAt(from, 0);
+        Actor * srcActor = actorMap.value(srcActorName);
+        if(srcActor == NULL) {
+            throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Undefined element id: '%1'").arg(srcActorName));
+        }
+        QString srcPortId = HRSchemaSerializer::parseAt(from, 1);
+        Port * srcPort = srcActor->getPort(srcPortId);
+        if(srcPort == NULL) {
+            throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Cannot find '%1' port at '%2'").arg(srcPortId).arg(srcActorName));
+        }
+
+        tokenizer.assertToken(HRSchemaSerializer::DATAFLOW_SIGN);
+        QString to = tokenizer.take();
+        QString dstActorName = HRSchemaSerializer::parseAt(to, 0);
+        Actor * dstActor = actorMap.value(dstActorName);
+        if(dstActor == NULL) {
+            throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Undefined element id: '%1'").arg(dstActorName));
+        }
+        QString dstPortId = HRSchemaSerializer::parseAt(to, 1);
+        Port * dstPort = dstActor->getPort(dstPortId);
+        if(dstPort == NULL) {
+            throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Cannot find '%1' port at '%2'").arg(dstPortId).arg(dstActorName));
+        }
+
+        links << QPair<Port*, Port*>(srcPort, dstPort);
+
+        if (!graph.addBinding(srcActor, dstPort)) {
+            throw ReadFailed(tr("Duplicate binding at '%1'").arg(from + HRSchemaSerializer::DATAFLOW_SIGN + to));
+        }
+    }
+
+    QString message;
+    if (!graph.validateGraph(message)) {
+        throw ReadFailed(tr("Validating actor bindings graph failed: '%1'").arg(message));
+    }
+
+    return graph;
 }
 
 void HRSchemaSerializer::parseAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap) {
@@ -712,6 +853,11 @@ static QPair<Port*, Port*> parseLinkVisualBlock(WorkflowSchemaReaderData& data, 
     if(dstPort == NULL) {
         throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Cannot find '%1' port at '%2'").arg(dstPortId).arg(dstActorName));
     }
+    if (NULL != data.schema->getActorBindingsGraph()) {
+        if (!data.schema->getActorBindingsGraph()->contains(srcActor, dstPort)) {
+            throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Undefined data-flow link: '%1'. Define it in actor-bindings").arg(from + HRSchemaSerializer::DATAFLOW_SIGN + to));
+        }
+    }
     return QPair<Port*, Port*>(srcPort, dstPort);
 }
 
@@ -727,7 +873,10 @@ static void parseVisual(WorkflowSchemaReaderData & data) {
             skipBlock(data.tokenizer);
         } else if(next == HRSchemaSerializer::DATAFLOW_SIGN) {
             QString to = data.tokenizer.take();
-            data.links << parseLinkVisualBlock(data, tok, to);
+            QPair<Port*, Port*> result = parseLinkVisualBlock(data, tok, to);
+            if (NULL == data.schema->getActorBindingsGraph()) {
+                data.links << result;
+            }
         }
     }
 }
@@ -762,10 +911,20 @@ static void parseBody(WorkflowSchemaReaderData & data) {
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             parseMeta(data);
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
-        } else if(tok == HRSchemaSerializer::ITERATION_START) {
+        } else if(tok == HRSchemaSerializer::DOT_ITERATION_START) {
             QString itName = tokenizer.look() == HRSchemaSerializer::BLOCK_START ? "" : tokenizer.take();
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             data.schema->getIterations() << HRSchemaSerializer::parseIteration(tokenizer, itName, data.actorMap);
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if (tok == HRSchemaSerializer::ACTOR_BINDINGS) {
+            if (NULL != data.schema->getActorBindingsGraph()) {
+                throw HRSchemaSerializer::ReadFailed("Double defining of actor bindings");
+            }
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            data.schema->setActorBindingsGraph(HRSchemaSerializer::parseActorBindings(tokenizer, data.actorMap, data.links));
+            tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if (tok == HRSchemaSerializer::FUNCTION_START) {
+            HRSchemaSerializer::parseFunctionDefinition(tokenizer, data.actorMap);
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else if(next == HRSchemaSerializer::DATAFLOW_SIGN) {
             data.dataflowLinks << HRSchemaSerializer::parseDataflow(tokenizer, tok, data.actorMap);
@@ -796,12 +955,15 @@ static void setFlows(WorkflowSchemaReaderData & data) {
         }
     } else {
         HRSchemaSerializer::FlowGraph graph(data.dataflowLinks);
+        ActorBindingsGraph bindingsGraph;
         graph.minimize();
         foreach(Port * input, graph.graph.keys()) {
             foreach(Port * output, graph.graph.value(input)) {
                 tryToConnect(data.schema, input, output);
+                bindingsGraph.addBinding(input->owner(), output);
             }
         }
+        data.schema->setActorBindingsGraph(bindingsGraph);
     }
 }
 
@@ -1023,6 +1185,75 @@ QString HRSchemaSerializer::elementsDefinition(const QList<Actor*> & procs, cons
     return res + NEW_LINE;
 }
 
+static QString markerDefinitionBlock(Marker *marker, bool copyMode) {
+    assert(marker != NULL);
+    QString res;
+    res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::TYPE_ATTR, HRSchemaSerializer::MARKER);
+    res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::MARKER_TYPE, marker->getType());
+    res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::MARKER_NAME, marker->getName());
+
+    if (QUALIFIER == marker->getGroup()) {
+        const QString &qualName = dynamic_cast<QualifierMarker*>(marker)->getQualifierName();
+        if (!qualName.isEmpty()) {
+            res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::QUAL_NAME, qualName);
+        }
+    } else if (ANNOTATION == marker->getGroup()) {
+        const QString &annName = dynamic_cast<AnnotationMarker*>(marker)->getAnnotationName();
+        if (!annName.isEmpty()) {
+            res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::QUAL_NAME, annName);
+        }
+    }
+
+    foreach(QString key, marker->getValues().keys()) {
+        QString val = marker->getValues().value(key);
+        res += HRSchemaSerializer::makeEqualsPair("\"" + key + "\"", val);
+    }
+    return res;
+}
+
+QString HRSchemaSerializer::markersDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode) {
+    QString res;
+    foreach( Actor * actor, procs) {
+        foreach (Attribute *attr, actor->getAttributes()) {
+            if (MARKER_GROUP == attr->getGroup()) {
+                MarkerAttribute *mAttr = dynamic_cast<MarkerAttribute*>(attr);
+                foreach (QString markerId, mAttr->getMarkers().keys()) {
+                    QString blockName = FUNCTION_START + nmap[actor->getId()] + DOT;
+                    blockName += markerId;
+                    res += makeBlock(blockName, NO_NAME, markerDefinitionBlock(mAttr->getMarkers().value(markerId), copyMode));
+                }
+            }
+        }
+    }
+    return res + NEW_LINE;
+}
+
+static QString actorBindingsBlock(const ActorBindingsGraph *graph, const HRSchemaSerializer::NamesMap &nmap, bool copyMode) {
+    QString res;
+    
+    foreach (Actor *actor, graph->getBindings().keys()) {
+        QString srcActorId = nmap[actor->getId()];
+        QString srcPortId = actor->getOutputPorts().first()->getId();
+        foreach (Port *dstPort, graph->getBindings().value(actor)) {
+            QString dstActorId = nmap[dstPort->owner()->getId()];
+            QString dstPortId = dstPort->getId();
+
+            res += HRSchemaSerializer::makeArrowPair(srcActorId+HRSchemaSerializer::DOT+srcPortId,
+                dstActorId+HRSchemaSerializer::DOT+dstPortId, 2) + HRSchemaSerializer::NEW_LINE;
+        }
+    }
+    return res;
+}
+
+QString HRSchemaSerializer::actorBindings(const ActorBindingsGraph *graph, const NamesMap &nmap, bool copyMode) {
+    QString res;
+    if (NULL == graph) {
+        return res;
+    }
+    res += makeBlock(HRSchemaSerializer::ACTOR_BINDINGS, NO_NAME, actorBindingsBlock(graph, nmap, copyMode));
+    return res + NEW_LINE;
+}
+
 static bool containsProcWithId(const QList<Actor*> & procs, const ActorId & id) {
     foreach(Actor * a, procs) {
         if(a->getId() == id) {
@@ -1091,7 +1322,7 @@ QString HRSchemaSerializer::iterationsDefinition(const QList<Iteration> & iterat
     
     QString res;
     foreach( const Iteration & iteration, iterations ) {
-        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::ITERATION_START, iteration.name, iterationData(iteration, nmap));
+        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::DOT_ITERATION_START, iteration.name, iterationData(iteration, nmap));
     }
     return res;
 }
@@ -1171,6 +1402,8 @@ static QString bodyItself(const Schema & schema, bool copyMode) {
     HRSchemaSerializer::NamesMap nmap = HRSchemaSerializer::generateElementNames(schema.getProcesses());
     QString res;
     res += HRSchemaSerializer::elementsDefinition(schema.getProcesses(), nmap, copyMode);
+    res += HRSchemaSerializer::markersDefinition(schema.getProcesses(), nmap, copyMode);
+    res += HRSchemaSerializer::actorBindings(schema.getActorBindingsGraph(), nmap, copyMode);
     res += HRSchemaSerializer::dataflowDefinition(schema.getProcesses(), nmap);
     res += HRSchemaSerializer::iterationsDefinition(schema.getIterations(), nmap, false);
     res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::META_START, HRSchemaSerializer::NO_NAME, metaData(schema, nmap));

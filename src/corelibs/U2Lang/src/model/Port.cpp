@@ -60,6 +60,10 @@ DataTypePtr PortDescriptor::getOutputType() const {
     return type;
 }
 
+void PortDescriptor::setNewType(const DataTypePtr &newType) {
+    type = newType;
+}
+
 /**************************
 * Port
 **************************/

@@ -1,0 +1,169 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#ifndef _U2_WORKFLOW_MARKER_H_
+#define _U2_WORKFLOW_MARKER_H_
+
+#include <U2Core/global.h>
+#include <U2Lang/Datatype.h>
+#include <U2Lang/Descriptor.h>
+
+namespace U2 {
+
+enum U2LANG_EXPORT MarkerDataType {
+    INTEGER,
+    FLOAT,
+    STRING,
+    BOOLEAN
+};
+
+class U2LANG_EXPORT MarkerTypes : public QObject {
+    Q_OBJECT
+public:
+    static const QString SEQ_LENGTH_MARKER_ID;
+    static const QString ANNOTATION_COUNT_MARKER_ID;
+    static const QString ANNOTATION_LENGTH_MARKER_ID;
+    static const QString QUAL_INT_VALUE_MARKER_ID;
+    static const QString QUAL_TEXT_VALUE_MARKER_ID;
+    static const QString QUAL_FLOAT_VALUE_MARKER_ID;
+    static const QString TEXT_MARKER_ID;
+
+    static MarkerDataType getDataTypeById(const QString &typeId);
+};
+
+class U2LANG_EXPORT MarkerAttributes : public QObject {
+    Q_OBJECT
+public:
+    static const Descriptor LENGTH_MARKER_ATTRIBUTE();
+    static const Descriptor ANNOTATION_COUNT_MARKER_ATTRIBUTE();
+    static const Descriptor ANNOTATION_VALUE_MARKER_ATTRIBUTE();
+    static const Descriptor FILENAME_MARKER_ATTRIBUTE();
+
+};
+
+class U2LANG_EXPORT MarkerSlots : public QObject {
+    Q_OBJECT
+public:
+    static const Descriptor getSlotByMarkerType(const QString &markerId, const QString &slotName);
+};
+
+class U2LANG_EXPORT MarkerPorts : public QObject {
+    Q_OBJECT
+public:
+    static const QString IN_MARKER_SEQ_PORT();
+    static const QString OUT_MARKER_SEQ_PORT();
+};
+
+/************************************************************************/
+/* Marker
+/************************************************************************/
+enum MarkerGroup {
+    SEQUENCE,
+    ANNOTATION,
+    QUALIFIER,
+    TEXT
+};
+
+class U2LANG_EXPORT Marker : public QObject{
+    Q_OBJECT
+public:
+    Marker(const QString &markerType, const QString &markerName);
+    virtual ~Marker() {}
+    virtual void addValue(QString name, QString value);
+    virtual QString getMarkingResult(const QVariant &object);
+    virtual MarkerGroup getGroup() = 0;
+
+    const QString &getName() const;
+    const QString &getType() const;
+    const QMap<QString, QString> &getValues() const;
+
+
+protected:
+    QString type;
+    QString name;
+    MarkerDataType dataType;
+    QMap<QString, QString> values;
+
+private:
+    bool getMarkerIntResult(const QVariant &object, QVariantList &expr);
+    bool getMarkerFloatResult(const QVariant &object, QVariantList &expr);
+    bool getMarkerStringResult(const QVariant &object, QVariantList &expr);
+};
+
+/************************************************************************/
+/* SequencerMarker
+/************************************************************************/
+class U2LANG_EXPORT SequenceMarker : public Marker {
+    Q_OBJECT
+public:
+    SequenceMarker(const QString &markerType, const QString &markerName) : Marker(markerType, markerName) {}
+    virtual QString getMarkingResult(const QVariant &object);
+    virtual MarkerGroup getGroup();
+};
+
+/************************************************************************/
+/* QualifierMarker
+/************************************************************************/
+class U2LANG_EXPORT QualifierMarker : public Marker {
+    Q_OBJECT
+public:
+    QualifierMarker(const QString &markerType, const QString &markerName, const QString &qualName)
+        : Marker(markerType, markerName), qualName(qualName) {}
+    virtual QString getMarkingResult(const QVariant &object);
+    virtual MarkerGroup getGroup();
+
+    const QString &getQualifierName() const;
+
+private:
+    QString qualName;
+};
+
+/************************************************************************/
+/* AnnotationMarker
+/************************************************************************/
+class U2LANG_EXPORT AnnotationMarker : public Marker {
+    Q_OBJECT
+public:
+    AnnotationMarker(const QString &markerType, const QString &markerName, const QString &annName)
+        : Marker(markerType, markerName), annName(annName) {}
+    virtual QString getMarkingResult(const QVariant &object);
+    virtual MarkerGroup getGroup();
+
+    const QString &getAnnotationName() const;
+
+private:
+    QString annName;
+};
+
+/************************************************************************/
+/* TextMarker
+/************************************************************************/
+class U2LANG_EXPORT TextMarker : public Marker {
+    Q_OBJECT
+public:
+    TextMarker(const QString &markerType, const QString &markerName) : Marker(markerType, markerName) {}
+    virtual QString getMarkingResult(const QVariant &object);
+    virtual MarkerGroup getGroup();
+};
+
+} // U2
+
+#endif // _U2_WORKFLOW_MARKER_H_

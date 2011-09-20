@@ -62,6 +62,7 @@ public:
     virtual void addComplement(IntegralBus* b) {assert(!complement);complement = b;}
     
     QString getPortId() const {return portId;}
+    DataTypePtr getBusType() const {return busType;}
     
 protected:
     virtual Message composeMessage(const Message&);

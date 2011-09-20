@@ -149,7 +149,7 @@ Actor* IntegralBusPort::getLinkedActorById(ActorId id) const {
         ret = NULL;
     } else if( res.size() > 1 ) {
         ret = res.first();
-        assert(false);
+        //assert(false);
     } else {
         ret = res.first();
     }

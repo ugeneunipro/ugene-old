@@ -48,6 +48,7 @@ public:
 
     virtual DataTypePtr getType() const;
     DataTypePtr getOutputType() const;
+    void setNewType(const DataTypePtr &newType);
 
 protected:
     // type of data that this port contains

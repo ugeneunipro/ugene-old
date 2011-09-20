@@ -28,7 +28,7 @@ namespace Workflow {
 /**************************
  * Schema
  **************************/
-Schema::Schema() : deepCopy(false) {
+Schema::Schema() : deepCopy(false), graph(NULL) {
 }
 
 Schema::~Schema() {
@@ -44,6 +44,7 @@ Schema & Schema::operator =( const Schema & other ) {
     flows = other.flows;
     iterations = other.iterations;
     domain = other.domain;
+    graph = (NULL == other.graph) ? NULL : new ActorBindingsGraph(*(other.graph));
     deepCopy = false;
     return *this;
 }
@@ -63,6 +64,8 @@ void Schema::reset() {
         flows.clear();
         qDeleteAll(procs);
         procs.clear();
+        delete graph;
+        graph = NULL;
     }
 }
 
@@ -98,6 +101,16 @@ const QList<Iteration> & Schema::getIterations() const {
 
 QList<Iteration> & Schema::getIterations() {
     return iterations;
+}
+
+void Schema::setActorBindingsGraph(const ActorBindingsGraph &newGraph) {
+    graph = new ActorBindingsGraph(newGraph);
+}
+const ActorBindingsGraph *Schema::getActorBindingsGraph() const {
+    return graph;
+}
+ActorBindingsGraph *Schema::getActorBindingsGraph() {
+    return graph;
 }
 
 const QList<Actor*> & Schema::getProcesses() const {
@@ -189,7 +202,37 @@ void Metadata::reset() {
     url = QString();
 }
 
+/**************************
+ * ActorBindingGraph
+ **************************/
+bool ActorBindingsGraph::validateGraph(QString &message) {
+    return true;
+}
 
+bool ActorBindingsGraph::addBinding(Actor *actor, Port *port) {
+    QList<Port*> ports;
+    if (bindings.contains(actor)) {
+        ports = bindings.value(actor);
+        if (ports.contains(port)) {
+            return false;
+        }
+    }
+    ports.append(port);
+    bindings.insert(actor, ports);
+    return true;
+}
+
+bool ActorBindingsGraph::contains(Actor *actor, Port *port) {
+    if (bindings.contains(actor)) {
+        QList<Port*> &ports = bindings[actor];
+        return ports.contains(port);
+    }
+    return false;
+}
+
+const QMap<Actor*, QList<Port*> > ActorBindingsGraph::getBindings() const {
+    return bindings;
+}
 
 }//Workflow namespace
 

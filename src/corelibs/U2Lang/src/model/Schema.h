@@ -40,6 +40,8 @@ namespace Workflow {
 class Actor;
 class Link;
 class Iteration;
+class Port;
+class ActorBindingsGraph;
 
 /**
  * Schema is oriented graph of actors
@@ -64,6 +66,10 @@ public:
     
     const QList<Iteration> & getIterations() const;
     QList<Iteration> & getIterations();
+
+    void setActorBindingsGraph(const ActorBindingsGraph &graph);
+    const ActorBindingsGraph *getActorBindingsGraph() const;
+    ActorBindingsGraph *getActorBindingsGraph();
     
     const QList<Actor*> & getProcesses() const;
     void addProcess(Actor * a);
@@ -92,6 +98,7 @@ private:
     // this means that every actor, link and iteration was copied
     // if true -> need to delete all corresponding data
     bool deepCopy;
+    ActorBindingsGraph *graph;
     
 }; // Schema
 
@@ -147,6 +154,24 @@ public:
     QString comment;
     
 }; // Metadata
+
+/**
+ * Schema's actors' graph
+ * saves with schema to file and loads with it
+ */
+class U2LANG_EXPORT ActorBindingsGraph {
+public:
+    ActorBindingsGraph() {}
+    virtual ~ActorBindingsGraph() {}
+
+    bool validateGraph(QString &message);
+    bool addBinding(Actor *actor, Port *port);
+    bool contains(Actor *actor, Port *port);
+    const QMap<Actor*, QList<Port*> > getBindings() const;
+
+private:
+    QMap<Actor*, QList<Port*> > bindings;
+}; // ActorBindingsGraph
 
 }//Workflow namespace
 

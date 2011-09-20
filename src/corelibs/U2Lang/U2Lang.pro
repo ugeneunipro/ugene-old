@@ -21,6 +21,8 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/IntegralBus.h \
            src/model/IntegralBusModel.h \
            src/model/IntegralBusType.h \
+           src/model/Marker.h \
+           src/model/MarkerAttribute.h \
            src/model/Peer.h \
            src/model/Port.h \
            src/model/QDConstraint.h \
@@ -34,6 +36,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/CoreLibConstants.h \
            src/support/HRSchemaSerializer.h \
            src/support/MapDatatypeEditor.h \
+           src/support/MarkerUtils.h \
            src/support/RunSchemaForTask.h \
            src/support/SchemaSerializer.h \
            src/support/WorkflowEnvImpl.h \
@@ -58,6 +61,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/IntegralBus.cpp \
            src/model/IntegralBusModel.cpp \
            src/model/IntegralBusType.cpp \
+           src/model/Marker.cpp \
+           src/model/MarkerAttribute.cpp \
            src/model/Port.cpp \
            src/model/QDConstraint.cpp \
            src/model/QDScheme.cpp \
@@ -68,6 +73,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/CoreLibConstants.cpp \
            src/support/HRSchemaSerializer.cpp \
            src/support/MapDatatypeEditor.cpp \
+           src/support/MarkerUtils.cpp \
            src/support/RunSchemaForTask.cpp \
            src/support/SchemaSerializer.cpp \
            src/support/WorkflowEnvImpl.cpp \

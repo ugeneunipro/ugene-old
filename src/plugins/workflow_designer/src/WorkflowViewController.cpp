@@ -1379,6 +1379,7 @@ WorkflowScene::~WorkflowScene() {
 
 Schema WorkflowScene::getSchema() const {
     Schema schema;
+    ActorBindingsGraph graph;
     foreach(QGraphicsItem* it, items()) {
         if (it->type() == WorkflowProcessItemType) 
         {
@@ -1386,10 +1387,13 @@ Schema WorkflowScene::getSchema() const {
         } 
         else if (it->type() == WorkflowBusItemType) 
         {
-            schema.addFlow((static_cast<WorkflowBusItem*>(it))->getBus());
+            Link *link = (static_cast<WorkflowBusItem*>(it))->getBus();
+            schema.addFlow(link);
+            graph.addBinding(link->source()->owner(), link->destination());
         }
     }
     schema.getIterations() = iterations;
+    schema.setActorBindingsGraph(graph);
 
     return schema;
 }

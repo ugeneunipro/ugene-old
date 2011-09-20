@@ -38,6 +38,7 @@ using namespace Workflow;
 class ExternalProcessConfig;
 class DataConfig;
 class AttributeConfig;
+struct WorkflowSchemaReaderData;
 
 class U2LANG_EXPORT HRSchemaSerializer : public QObject {
     Q_OBJECT
@@ -53,6 +54,7 @@ public:
     static const QString OLD_XML_HEADER;
     static const QString BODY_START;
     static const QString META_START;
+    static const QString DOT_ITERATION_START;
     static const QString ITERATION_START;
     static const QString DATAFLOW_SIGN;
     static const QString EQUALS_SIGN;
@@ -80,6 +82,14 @@ public:
     static const QString CMDLINE;
     static const QString DESCRIPTION;
     static const QString PROMPTER;
+    static const QString FUNCTION_START;
+    static const QString COMMA;
+    static const QString MARKER;
+    static const QString MARKER_TYPE;
+    static const QString MARKER_NAME;
+    static const QString QUAL_NAME;
+    static const QString ANN_NAME;
+    static const QString ACTOR_BINDINGS;
     
 public:
     struct U2LANG_EXPORT ReadFailed {
@@ -134,10 +144,13 @@ public:
     static void parseBodyHeader(Tokenizer & tokenizer, Metadata * meta, bool needName = true);
     static Actor* parseElementsDefinition(Tokenizer & tokenizer, const QString & actorName, QMap<QString, Actor*> & actorMap, 
                                             QMap<ActorId, ActorId>* idMap = NULL);
+    static void parseFunctionDefinition(Tokenizer & tokenizer, QMap<QString, Actor*> & actorMap);
+    static void parseMarkerDefinition(Actor *proc, const QString &markerId, ParsedPairs &pairs);
     static QPair<Port*, Port*> parseDataflow(Tokenizer & tokenizer, const QString & srcTok, const QMap<QString, Actor*> & actorMap);
     static QString parseAt(const QString & dottedStr, int ind);
     static Iteration parseIteration(Tokenizer & tokenizer, const QString & iterationName, 
                                         const QMap<QString, Actor*> & actorMap, bool pasteMode = false);
+    static ActorBindingsGraph parseActorBindings(Tokenizer &tokenizer, const QMap<QString, Actor*> &actorMap, QList<QPair<Port*, Port*> > &links);
     static void parseAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
     static void parseAliasesHelp(Tokenizer & tokenizer, const QList<Actor*> & procs);
     // if slot has no val-> add it to binding
@@ -152,6 +165,8 @@ public:
     static QString makeArrowPair( const QString & left, const QString & right, int tabsNum = 1 );
     static QString scriptBlock(const QString & scriptText, int tabsNum = 3);
     static QString elementsDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
+    static QString markersDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
+    static QString actorBindings(const ActorBindingsGraph *graph, const NamesMap &nmap, bool copyMode = false);
     static QString dataflowDefinition(const QList<Actor*> & procs, const NamesMap & nmap);
     static QString iterationsDefinition(const QList<Iteration> & iterations, const NamesMap & nmap, bool checkDummyIteration = true);
     static QString schemaAliases(const QList<Actor*> & procs, const NamesMap& nmap);

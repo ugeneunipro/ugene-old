@@ -69,6 +69,14 @@ private:
 }; // AttributeScript
 
 /**
+ * Existing types of attibutes
+ */
+enum AttributeGroup {
+    COMMON_GROUP,
+    MARKER_GROUP
+};
+
+/**
  * Value of certain type that can be identified by (descriptors) id
  */
 class U2LANG_EXPORT Attribute : public Descriptor {
@@ -79,10 +87,10 @@ public:
     const DataTypePtr getAttributeType()const;
     bool isRequiredAttribute() const;
     
-    void setAttributeValue(const QVariant & newVal);
+    virtual void setAttributeValue(const QVariant & newVal);
     // attribute value is kept in qvariant
     // but it can be transformed to value of specific type using scripting or not (see getAttributeValue)
-    const QVariant & getAttributePureValue() const;
+    virtual const QVariant & getAttributePureValue() const;
     
     // base realization without scripting. to support scripting for other types: see template realizations
     template<typename T> T getAttributeValue() const {
@@ -105,6 +113,10 @@ public:
     void addRelation(const AttributeRelation *relation);
     QVector<const AttributeRelation*> &getRelations();
 
+    virtual Attribute *clone();
+
+    virtual AttributeGroup getGroup();
+
     
 private:
     template<typename T> T getAttributeValueWithoutScript() const {
@@ -113,7 +125,7 @@ private:
     
     void debugCheckAttributeId() const;
     
-private:
+protected:
     // type of value
     const DataTypePtr   type;
     // attribute can be required or not

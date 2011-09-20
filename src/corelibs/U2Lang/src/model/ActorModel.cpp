@@ -257,7 +257,7 @@ Actor* ActorPrototype::createInstance(AttributeScript *script, const QVariantMap
         proc->ports[pid] = p;
     }
     foreach(Attribute* a, getAttributes()) {
-        proc->addParameter(a->getId(), new Attribute(*a));
+        proc->addParameter(a->getId(), a->clone());
     }
     if (ed) {
         proc->setEditor(ed);

@@ -122,6 +122,14 @@ QVector<const AttributeRelation*> &Attribute::getRelations() {
     return relations;
 }
 
+Attribute *Attribute::clone() {
+    return new Attribute(*this);
+}
+
+AttributeGroup Attribute::getGroup() {
+    return COMMON_GROUP;
+}
+
 /*************************************
 *  AttributeScript
 *************************************/
