@@ -236,7 +236,7 @@ private:
     
     bool isSequenceCharsVisible() const;
 
-    PanView* getPanView() const {return (PanView*)view;}
+    PanView* getPanView() const {return static_cast<PanView*>(view);}
 
     int getLineY(int line) const {
         return cachedView->height() - ((numLines - line) * lineHeight);

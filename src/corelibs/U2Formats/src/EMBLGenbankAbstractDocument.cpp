@@ -338,7 +338,7 @@ DNASequence* EMBLGenbankAbstractDocument::loadSequence( IOAdapter* io, TaskState
         }
         foreach(GObject *object, document->getObjects()) {
             if(object->getGObjectType() == GObjectTypes::SEQUENCE) {
-                return new DNASequence(((DNASequenceObject *)object)->getDNASequence());
+                return new DNASequence(( static_cast<DNASequenceObject*>(object))->getDNASequence());
             }
         }
     }

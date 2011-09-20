@@ -365,11 +365,13 @@ void PanView::updateActions() {
     }
     zoomToSequenceAction->setEnabled(visibleRange.startPos != 0 || visibleRange.endPos() != seqLen);
 
-    increasePanViewHeight->setEnabled(((PanViewRenderArea*)renderArea)->canIncreaseLines());
-    decreasePanViewHeight->setEnabled(((PanViewRenderArea*)renderArea)->canDecreaseLines());
-    increase5PanViewHeight->setEnabled(((PanViewRenderArea*)renderArea)->canIncreaseLines());
-    decrease5PanViewHeight->setEnabled(((PanViewRenderArea*)renderArea)->canDecreaseLines());
-    resetAnnotations->setEnabled(!((PanViewRenderArea*)renderArea)->isDefaultSize());
+	PanViewRenderArea* panViewRenderArea = static_cast<PanViewRenderArea*>(renderArea);
+
+    increasePanViewHeight->setEnabled(panViewRenderArea->canIncreaseLines());
+    decreasePanViewHeight->setEnabled(panViewRenderArea->canDecreaseLines());
+    increase5PanViewHeight->setEnabled(panViewRenderArea ->canIncreaseLines());
+    decrease5PanViewHeight->setEnabled(panViewRenderArea ->canDecreaseLines());
+    resetAnnotations->setEnabled(!panViewRenderArea->isDefaultSize());
     //showAllAnnotations->setEnabled(!((PanViewRenderArea*)renderArea)->isAllLinesShown());
     panViewToolButton->setEnabled(isVisible() && (increasePanViewHeight->isEnabled() || decreasePanViewHeight->isEnabled() || 
         increase5PanViewHeight->isEnabled() || decrease5PanViewHeight->isEnabled() || resetAnnotations->isEnabled()));

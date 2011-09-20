@@ -439,7 +439,7 @@ void AnnotationsTreeViewL::sl_onAnnotationObjectAdded(AnnotationTableObject* obj
     
     assert(findGroupItem(obj->getRootGroup()) == NULL);
     LazyAnnotationTreeViewModel *model = static_cast<LazyAnnotationTreeViewModel *>(tree->model());
-    AVGroupItemL *root = (AVGroupItemL*)model->getItem(QModelIndex());
+    AVGroupItemL *root = static_cast<AVGroupItemL *>(model->getItem(QModelIndex()));
     AVGroupItemL* groupItem = createGroupItem(root, obj->getRootGroup());
     if(tree->lineHeight == 1) {
         //tree->lineHeight = tree->rowHeight(model->guessIndex(groupItem));
@@ -2054,20 +2054,20 @@ void LazyTreeView::sl_expanded(const QModelIndex &index) {
         return;
     }
     LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
-    QTreeWidgetItem *item = (QTreeWidgetItem *)modell->getItem(index);
+    QTreeWidgetItem *item = modell->getItem(index);
     treeWalker->expand(modell->getItem(index));
     emit itemExpanded(item);
     
-    realNumberOfItems += getExpandedNumber((AVItemL*)item);
+    realNumberOfItems += getExpandedNumber(static_cast<AVItemL*>(item));
     updateSlider();
 }
 
 void LazyTreeView::sl_collapsed(const QModelIndex &index) {
     LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
-    QTreeWidgetItem *item = (QTreeWidgetItem *)modell->getItem(index);
+    QTreeWidgetItem *item = modell->getItem(index);
 
     treeWalker->collapse(modell->getItem(index));
-    realNumberOfItems -= getExpandedNumber((AVItemL*)item);
+    realNumberOfItems -= getExpandedNumber(static_cast<AVItemL*>(item));
 
     updateSlider();
     emit itemCollapsed(item);
@@ -2076,7 +2076,7 @@ void LazyTreeView::sl_collapsed(const QModelIndex &index) {
 void LazyTreeView::insertItemBehindView(int row, QTreeWidgetItem *item) {
     QTreeWidgetItem *parent = item->parent();
     LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(model());
-    lm->nextToAdd = (AVItemL*)item;
+    lm->nextToAdd = static_cast<AVItemL*>(item);
 
     lm->debugFlag = true;
     lm->insertRow(row, guessIndex(parent));
@@ -2086,7 +2086,7 @@ void LazyTreeView::insertItem(int row, QTreeWidgetItem *item, bool removeLast) {
 
     QTreeWidgetItem *parent = item->parent();
     LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(model());
-    lm->nextToAdd = (AVItemL*)item;
+    lm->nextToAdd = static_cast<AVItemL*>(item);
 
     lm->debugFlag = true;
     lm->insertRow(row, guessIndex(parent));
@@ -2424,7 +2424,7 @@ int LazyTreeView::getPositionInTree(QTreeWidgetItem *item) {
     int pos = 0;
     foreach(int i, indexes) {
         for(int j = 0; j < i; j++) {
-            pos += getExpandedNumber((AVItemL*)item->child(j));
+            pos += getExpandedNumber((static_cast<AVItemL*>(item->child(j))));
         }
         item = item->child(i);
     }
@@ -2455,7 +2455,7 @@ void LazyTreeView::mouseDoubleClickEvent( QMouseEvent * event ) {
     LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
     QPoint pos = event->pos();
     QModelIndex index = indexAt(pos);
-    QTreeWidgetItem *item = (QTreeWidgetItem *)modell->getItem(index);
+    QTreeWidgetItem *item = modell->getItem(index);
     //selectionModel()->select(index, QItemSelectionModel::Select);
 
     QTreeView::mouseDoubleClickEvent(event);
@@ -2466,7 +2466,7 @@ void LazyTreeView::mousePressEvent( QMouseEvent *event ) {
     LazyAnnotationTreeViewModel *modell = static_cast<LazyAnnotationTreeViewModel*>(model());
     QPoint pos = event->pos();
     QModelIndex index = indexAt(pos);
-    QTreeWidgetItem *item = (QTreeWidgetItem *)modell->getItem(index);
+    QTreeWidgetItem *item = modell->getItem(index);
 
     QTreeView::mousePressEvent(event);
     emit itemClicked(item, index.column());

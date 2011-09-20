@@ -1433,7 +1433,7 @@ QMap<ActorId, ActorId> HRSchemaSerializer::deepCopy(const Schema& from, Schema* 
 
 static QString inputsDefenition(const QList<DataConfig> &inputs) {
     QString res = HRSchemaSerializer::TAB + HRSchemaSerializer::INPUT_START + " {\n";
-    foreach(const DataConfig cfg, inputs) {
+    foreach(const DataConfig& cfg, inputs) {
         res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + cfg.attrName + " {\n";
         res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "type:" + cfg.type + ";\n";
         res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "format:" + cfg.format + ";\n";
@@ -1448,7 +1448,7 @@ static QString inputsDefenition(const QList<DataConfig> &inputs) {
 
 static QString outputsDefenition(const QList<DataConfig> &inputs) {
     QString res = HRSchemaSerializer::TAB + HRSchemaSerializer::OUTPUT_START + " {\n";
-    foreach(const DataConfig cfg, inputs) {
+    foreach(const DataConfig& cfg, inputs) {
         res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + cfg.attrName + " {\n";
         res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "type:" + cfg.type + ";\n";
         res += HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + HRSchemaSerializer::TAB + "format:" + cfg.format + ";\n";

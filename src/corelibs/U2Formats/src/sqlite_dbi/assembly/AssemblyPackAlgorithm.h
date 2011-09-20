@@ -40,6 +40,7 @@ class PackAlgorithmAdapter {
 public:
     virtual U2DbiIterator<PackAlgorithmData>* selectAllReads(U2OpStatus& os) = 0;
     virtual void assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os) = 0;
+	virtual ~PackAlgorithmAdapter(){}
 };
 
 #define PACK_TAIL_SIZE 50000
