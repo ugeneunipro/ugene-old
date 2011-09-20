@@ -633,6 +633,7 @@ void ExpertDiscoveryData::generateRecognitionReportFull(){
     saveRepDialog.setFileMode(QFileDialog::AnyFile);
     saveRepDialog.setNameFilter(tr("Hypertext files (*.htm *.html)"));
     saveRepDialog.setViewMode(QFileDialog::Detail);
+    saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
 
     if(saveRepDialog.exec()){
         QStringList fileNames = saveRepDialog.selectedFiles();
@@ -678,8 +679,7 @@ bool ExpertDiscoveryData::generateRecognizationReportFooter(ostream& out) const{
 }
 bool ExpertDiscoveryData::generateRecognizationReport(ostream& out, const SequenceBase& rBase, QString strName, bool bSuppressNulls){
 
-    if (&rBase == &posBase)
-    {
+    if (&rBase == &posBase){
         return generateRecognizationReportPositive(out, strName, bSuppressNulls);
     }
 

@@ -41,6 +41,8 @@ class U2OpStatus;
 //data loader hints
 #define ProjectLoaderHint_CloseActiveProject "close-active-project"
 #define ProjectLoaderHint_ForceFormatOptions "force-format-options"
+#define ProjectLoaderHint_LoadWithoutView "load-without-view"
+#define ProjectLoaderHint_LoadUnloadedDocument "load-unloaded-document"
 
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {

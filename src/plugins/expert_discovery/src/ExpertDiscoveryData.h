@@ -33,7 +33,6 @@ enum SequenceType {POSITIVE_SEQUENCE, NEGATIVE_SEQUENCE, CONTROL_SEQUENCE, UNKNO
 class ExpertDiscoveryData : public QObject{
     Q_OBJECT
 public:
-
     static const std::string FAMILY_LETTERS;
     static const std::string FAMILY_LETTERS_METHOD;
 
@@ -110,25 +109,20 @@ public:
     QList<EDPISequence*> selSequences;
     
 private:
-    SequenceBase posBase;
-    SequenceBase negBase;
-    SequenceBase conBase;
-
-    MetaInfoBase    desc;
-    MarkingBase     posAnn;
-    MarkingBase     negAnn;
-    MarkingBase     conAnn;
-
-    CSFolder        rootFolder;
-
-    bool modified;
-
+    SequenceBase                posBase;
+    SequenceBase                negBase;
+    SequenceBase                conBase;
+    MetaInfoBase                desc;
+    MarkingBase                 posAnn;
+    MarkingBase                 negAnn;
+    MarkingBase                 conAnn;
+    CSFolder                    rootFolder;
+    bool                        modified;
     SelectedSignalsContainer    selectedSignals;
 
+
     inline Sequence prerareSequence(const GObject* obj) const;
-
     static std::string char2string(char ch);
-
 };
 }//namespace
 

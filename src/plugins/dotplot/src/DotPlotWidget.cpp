@@ -561,7 +561,7 @@ bool DotPlotWidget::sl_showLoadFileDialog() {
 }
 
 // creating new dotplot or changing settings
-bool DotPlotWidget::sl_showSettingsDialog() {
+bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 
     if (dotPlotTask) { // Check if there is already some dotPlotTask
         DotPlotDialogs::taskRunning();
@@ -571,7 +571,7 @@ bool DotPlotWidget::sl_showSettingsDialog() {
 
     Q_ASSERT(dnaView);
 
-    DotPlotDialog d(this, dnaView, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor);
+    DotPlotDialog d(this, dnaView, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor, disableLoad);
     if (d.exec()) {
         setMinimumHeight(200);
 
@@ -629,23 +629,7 @@ bool DotPlotWidget::sl_showSettingsDialog() {
         Q_ASSERT(sequenceX->getSequenceObject());
         Q_ASSERT(sequenceY->getSequenceObject());
 
-
-        foreach (ADVSequenceWidget *advSeqWidget, sequenceX->getSequenceWidgets()) {
-            ADVSingleSequenceWidget *ssw = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
-            if (ssw) {
-               
-                //zoomUseX->setPanView(ssw->getPanView());
-                break;
-            }
-        }
-        foreach (ADVSequenceWidget *advSeqWidget, sequenceY->getSequenceWidgets()) {
-            ADVSingleSequenceWidget *ssw = qobject_cast<ADVSingleSequenceWidget*>(advSeqWidget);
-            if (ssw) {
-                //zoomUseY.setPanView(ssw->getPanView());
-                break;
-            }
-        }
-
+        
         DNAAlphabet *al = sequenceX->getAlphabet();
         if ((al->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) || (al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT())) {
             al = sequenceY->getAlphabet();

@@ -287,6 +287,7 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
     }
 
     doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>(), formatSettings);
+    doc->setUserModLock(false);
 
     addSubTask(new AddDocumentTask(doc)); // add document to the project
     addSubTask(new LoadUnloadedDocumentTask(doc)); // load document

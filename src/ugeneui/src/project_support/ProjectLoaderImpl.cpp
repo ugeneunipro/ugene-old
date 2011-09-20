@@ -316,7 +316,14 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                             continue;
                         }
                         AD2P_DocumentInfo info;
-                        info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
+                        if(hints.value(ProjectLoaderHint_LoadWithoutView, false).toBool() == true){
+                            info.openView = false;
+                        }else{
+                            info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
+                        }
+                        if(hints.value(ProjectLoaderHint_LoadUnloadedDocument, false).toBool() == true){
+                            info.loadDocuments = true;
+                        }
                         info.url = url;
                         info.hints = dr.rawDataCheckResult.properties;
                         if (!info.hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
@@ -691,7 +698,10 @@ QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
             if (info.openView) {
                 res << new AddDocumentAndOpenViewTask(doc);
             } else {
-                res << new AddDocumentTask(doc);
+                res<<new AddDocumentTask(doc);
+                if(info.loadDocuments){
+                    res<<new LoadUnloadedDocumentTask(doc);
+                }
             }
         }
         

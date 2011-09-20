@@ -42,8 +42,9 @@ namespace U2 {
 
 DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, 
                              ADVSequenceObjectContext *sequenceX, ADVSequenceObjectContext *sequenceY, 
-                             bool dir, bool inv, const QColor &dColor, const QColor &iColor)
+                             bool dir, bool inv, const QColor &dColor, const QColor &iColor, bool hideLoadSequences)
 : QDialog(parent), xSeq(sequenceX), ySeq(sequenceY), adv(currentADV), directColor(dColor), invertedColor(iColor)
+,openSequenceTask(NULL), curURL("")
 {
     setupUi(this);
 
@@ -108,6 +109,10 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
     connect(invertedDefaultColorButton, SIGNAL(clicked()), SLOT(sl_invertedDefaultColorButton()));
 
     connect(loadSequenceButton, SIGNAL(clicked()), SLOT(sl_loadSequenceButton()));
+
+    if(hideLoadSequences){
+        loadSequenceButton->hide();
+    }
 }
 
 void DotPlotDialog::accept() {
@@ -240,8 +245,17 @@ void DotPlotDialog::sl_loadSequenceButton(){
             tasks->addSubTask( AppContext::getProjectLoader()->createNewProjectTask() );
         }
 
-        DotPlotLoadDocumentsTask *t = new DotPlotLoadDocumentsTask(lod.url, false, NULL, false, false);
-        tasks->addSubTask(t);
+        //DotPlotLoadDocumentsTask *t = new DotPlotLoadDocumentsTask(lod.url, -1, NULL, -1, false);
+        //tasks->addSubTask(t);
+        QVariantMap hints;
+        hints[ProjectLoaderHint_LoadWithoutView] = true;
+        hints[ProjectLoaderHint_LoadUnloadedDocument] = true;
+        openSequenceTask = AppContext::getProjectLoader()->openWithProjectTask(lod.url, hints);
+        if(openSequenceTask == NULL){
+            return;
+        }
+        curURL = lod.url;
+        tasks->addSubTask(openSequenceTask);
 
         connect( AppContext::getTaskScheduler(), SIGNAL( si_stateChanged(Task*) ), SLOT( sl_loadTaskStateChanged(Task*) ) );
 
@@ -253,8 +267,32 @@ void DotPlotDialog::sl_loadSequenceButton(){
 void DotPlotDialog::sl_loadTaskStateChanged(Task* t){
     DotPlotLoadDocumentsTask *loadTask = qobject_cast<DotPlotLoadDocumentsTask*>(t);
     if (!loadTask || !loadTask->isFinished()) {
-        return;
+            if(t->isFinished()){
+                if(curURL == ""){
+                    return;
+                }
+                GUrl URL(curURL);
+                Project *project = AppContext::getProject();
+                Q_ASSERT(project);
+                Document *doc = project->findDocumentByURL(URL);
+                if (!doc || !doc->isLoaded()) {
+                    return;
+                }
+                QList<GObject*> docObjects  = doc->getObjects();
+                foreach (GObject* obj, docObjects) {
+                    DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+                    if (seqObj != NULL){
+                        QString name = seqObj->getGObjectName();
+                        xAxisCombo->addItem(name);
+                        yAxisCombo->addItem(name);
+                        sequences << seqObj;
+                    }
+                }
+                curURL = "";
+            }
+            return;
     }
+    
 
     if (loadTask->getStateInfo().hasError()) {
         DotPlotDialogs::filesOpenError();

@@ -86,7 +86,7 @@ signals:
     void si_dotPlotSelecting();
 
 public slots:
-    bool sl_showSettingsDialog();
+    bool sl_showSettingsDialog(bool disableLoad = false);
 
 private slots:
     void sl_taskFinished(Task*);

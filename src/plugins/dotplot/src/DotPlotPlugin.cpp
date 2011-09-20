@@ -173,7 +173,7 @@ void DotPlotViewContext::sl_buildDotPlot() {
     dotPlot->setSequences(getSequenceByFile(firstFile), getSequenceByFile(secondFile));
 
     // show settings dialog
-    if (dotPlot && (dotPlot->sl_showSettingsDialog())) {
+    if (dotPlot && (dotPlot->sl_showSettingsDialog(createdByWizard))) {
         DotPlotSplitter* splitter = getView(dnaView, true); // create new splitter
         Q_ASSERT(splitter);
         splitter->addView(dotPlot);
@@ -184,6 +184,7 @@ void DotPlotViewContext::sl_buildDotPlot() {
         delete dotPlot; // user clicked cancel button
         dotPlot = NULL;
     }
+    createdByWizard = false;
 }
 
 // DotPlotWidget said we should remove it from the splitter
@@ -228,7 +229,7 @@ void DotPlotViewContext::initViewContext(GObjectView* v) {
 
     // this view context is created by dotplot wizard
     if (createdByWizard) {
-        createdByWizard = false;
+//        createdByWizard = false;
 
         QWidget* widget = av->getWidget()->parentWidget();
         Q_ASSERT(widget != NULL);

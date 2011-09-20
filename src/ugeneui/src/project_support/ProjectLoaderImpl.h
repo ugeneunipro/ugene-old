@@ -124,12 +124,13 @@ private:
 
 class AD2P_DocumentInfo {
 public:
-    AD2P_DocumentInfo() : iof (NULL), openView(false) {}
+    AD2P_DocumentInfo() : iof (NULL), openView(false), loadDocuments(false) {}
     GUrl                    url;
     DocumentFormatId        formatId;
     IOAdapterFactory*       iof;
     QVariantMap             hints;
     bool                    openView;
+    bool                    loadDocuments;
 };
 
 class AD2P_ProviderInfo {

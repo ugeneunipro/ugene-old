@@ -43,7 +43,7 @@ struct State{
         dMinNegCorrelation    = -1;
         dMaxNegCorrelation    = 1;
         bCorrelationImportant = false;
-        bCheckFisherMinimization = false;
+        bCheckFisherMinimization = true;
         bStoreOnlyDifferent = true;
         bUmEnabled = false;
         dUmBound = 0.05;
