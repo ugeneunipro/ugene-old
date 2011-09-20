@@ -37,6 +37,7 @@ class Document;
 class QDScheduler;
 class SaveDocumentTask;
 class AnnotationTableObject;
+class DocumentProviderTask;
 
 class QDRunDialogTask : public Task {
     Q_OBJECT
@@ -48,17 +49,17 @@ private slots:
     void sl_updateProgress();
 private:
     QList<Task*> init();
-    void setupQuery(Document* doc);
+    void setupQuery();
 private:
-    QDScheme* scheme;
-    QString inUri;
-    QString output;
-    bool addToProject;
-    Task* openProjTask;
-    Task* loadTask;
-    QDScheduler* scheduler;
-    Document* docWithSequence;
-    AnnotationTableObject* ato;
+    QDScheme*               scheme;
+    QString                 inUri;
+    QString                 output;
+    bool                    addToProject;
+    Task*                   openProjTask;
+    DocumentProviderTask*   loadTask;
+    QDScheduler*            scheduler;
+    Document*               docWithSequence;
+    AnnotationTableObject*  annObj;
 };
 
 class QueryViewController;
@@ -88,11 +89,11 @@ private slots:
     void sl_selectScheme();
     void sl_okBtnClicked();
 private:
-    ADVSequenceObjectContext* ctx;
-    CreateAnnotationWidgetController* cawc;
-    QDScheme* scheme;
-    QTextDocument* txtDoc;
-    RegionSelector* rs;
+    ADVSequenceObjectContext*           ctx;
+    CreateAnnotationWidgetController*   cawc;
+    QDScheme*                           scheme;
+    QTextDocument*                      txtDoc;
+    RegionSelector*                     rs;
 };
 
 }//namespace

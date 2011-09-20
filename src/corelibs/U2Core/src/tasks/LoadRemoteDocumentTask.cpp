@@ -33,6 +33,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/CopyDataTask.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/U2SafePoints.h>
 
 
 #include <QtCore/QFileInfo>
@@ -63,18 +64,20 @@ const QString UNIPROTKB_TREMBL("UniProtKB/TrEMBL");
 #define FASTA_FORMAT "fasta"
 
 
-LoadRemoteDocumentTask::LoadRemoteDocumentTask( const GUrl& fileUrl) : 
-Task("LoadRemoteDocument", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL),
-loadDocumentTask(NULL), doc(NULL) {
+LoadRemoteDocumentTask::LoadRemoteDocumentTask( const GUrl& fileUrl) 
+: DocumentProviderTask(tr("Load remote document"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL),
+loadDocumentTask(NULL) 
+{
     
     sourceUrl = fileUrl;
     fileName = sourceUrl.fileName();
     GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
 }
 
-LoadRemoteDocumentTask::LoadRemoteDocumentTask(const QString & accId, const QString & dbNm, const QString & fullPathDir) :
-Task("LoadRemoteDocument", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL), 
-loadDocumentTask(NULL), doc(NULL), accNumber(accId), dbName(dbNm) {
+LoadRemoteDocumentTask::LoadRemoteDocumentTask(const QString & accId, const QString & dbNm, const QString & fullPathDir)
+: DocumentProviderTask(tr("Load remote document"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL), 
+loadDocumentTask(NULL), accNumber(accId), dbName(dbNm) 
+{
     
     RemoteDBRegistry::getRemoteDBRegistry().convertAlias(dbName);
     sourceUrl = GUrl(RemoteDBRegistry::getRemoteDBRegistry().getURL(accId, dbName));
@@ -152,7 +155,7 @@ void LoadRemoteDocumentTask::prepare() {
     if( cache != NULL && cache->contains(fileName)) {
         QString cachedUrl = cache->getFullPath(fileName);
         if( fullPath == cachedUrl ) {
-            if ( initLoadDocumentTask() ) {
+            if (initLoadDocumentTask() ) {
                 addSubTask(loadDocumentTask);
             } 
             return;
@@ -182,8 +185,7 @@ Task::ReportResult LoadRemoteDocumentTask::report()
     return ReportResult_Finished;
 }
 
-QList<Task*> LoadRemoteDocumentTask::onSubTaskFinished( Task* subTask )
-{
+QList<Task*> LoadRemoteDocumentTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> subTasks;
     if (subTask->hasError()) {
         if( subTask == copyDataTask || subTask == loadDataFromEntrezTask ) {
@@ -204,22 +206,19 @@ QList<Task*> LoadRemoteDocumentTask::onSubTaskFinished( Task* subTask )
                 notLoadedFile.remove();
             }
         }
-    } else  if ( subTask == loadDocumentTask) {
-        doc = loadDocumentTask->getDocument();
+    } else if ( subTask == loadDocumentTask) {
+        resultDocument = loadDocumentTask->takeDocument();
     }
     return subTasks;
 }
 
-bool LoadRemoteDocumentTask::initLoadDocumentTask(  )
-{
-    Q_ASSERT(!fullPath.isEmpty());
-
+bool LoadRemoteDocumentTask::initLoadDocumentTask() {
     // Check if the document has been loaded 
     Project* proj = AppContext::getProject();
     if (proj != NULL) {
-        Document* foundDoc = proj->findDocumentByURL(fullPath);
-        if (foundDoc != NULL) {
-            doc = foundDoc;
+        resultDocument = proj->findDocumentByURL(fullPath);
+        if (resultDocument != NULL) {
+            docOwner = false;
             return false;
         }
     }
@@ -227,28 +226,17 @@ bool LoadRemoteDocumentTask::initLoadDocumentTask(  )
     // Detect format
     if (formatId.isEmpty()) {
         QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(fullPath);
-        if (formats.isEmpty()) {
-            stateInfo.setError("Unknown file format!");
-            return false;
-        } else {
-            formatId = formats.first().format->getFormatId();
-        }
+        CHECK_EXT(!formats.isEmpty(), setError(tr("Unknown file format!")), false)
+        formatId = formats.first().format->getFormatId();
     }
     IOAdapterFactory * iow = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    loadDocumentTask =  new LoadDocumentTask(formatId, fullPath, iow);
+    loadDocumentTask = new LoadDocumentTask(formatId, fullPath, iow);
 
     return true;
 }
 
-Document* LoadRemoteDocumentTask::getDocument()
-{
-    return doc;
-}
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-RecentlyDownloadedCache::RecentlyDownloadedCache()
-{
+RecentlyDownloadedCache::RecentlyDownloadedCache() {
     QStringList fileNames = AppContext::getAppSettings()->getUserAppsSettings()->getRecentlyDownloadedFileNames();
     foreach (const QString& path, fileNames) {
         QFileInfo info(path);
@@ -258,8 +246,7 @@ RecentlyDownloadedCache::RecentlyDownloadedCache()
     }
 }
 
-bool RecentlyDownloadedCache::contains(const QString& fileName)
-{
+bool RecentlyDownloadedCache::contains(const QString& fileName) {
     if (!urlMap.contains(fileName)) {
         return false;
     } else {
@@ -269,31 +256,24 @@ bool RecentlyDownloadedCache::contains(const QString& fileName)
     }
 }
 
-void RecentlyDownloadedCache::append( const QString& fileName )
-{
+void RecentlyDownloadedCache::append( const QString& fileName ) {
     QFileInfo info(fileName);
     urlMap.insert(info.fileName(), fileName);
 }
 
-void RecentlyDownloadedCache::remove(const QString& fullPath) 
-{
+void RecentlyDownloadedCache::remove(const QString& fullPath) {
     urlMap.remove(QFileInfo(fullPath).fileName());
 }
 
-QString RecentlyDownloadedCache::getFullPath( const QString& fileName )
-{
-    Q_ASSERT(urlMap.contains(fileName));
+QString RecentlyDownloadedCache::getFullPath( const QString& fileName ) {
     return urlMap.value(fileName);
 }
 
-RecentlyDownloadedCache::~RecentlyDownloadedCache()
-{
+RecentlyDownloadedCache::~RecentlyDownloadedCache() {
     //TODO: cache depends on AppSettings! get rid of this dependency!
     QStringList fileNames = urlMap.values();
     AppSettings* settings = AppContext::getAppSettings();
-    Q_ASSERT(settings != NULL);
     UserAppsSettings* us = settings->getUserAppsSettings();
-    Q_ASSERT(us != NULL);
     us->setRecentlyDownloadedFileNames(fileNames);
 }
 
@@ -311,8 +291,7 @@ LoadDataFromEntrezTask::~LoadDataFromEntrezTask() {
     delete networkManager;
 }
 
-void LoadDataFromEntrezTask::run()
-{
+void LoadDataFromEntrezTask::run() {
     stateInfo.progress = 0;
     ioLog.trace("Load data from Entrez started...");
     loop = new QEventLoop;
@@ -379,8 +358,7 @@ void LoadDataFromEntrezTask::run()
     downloadedFile.close();
 }
 
-void LoadDataFromEntrezTask::sl_replyFinished( QNetworkReply* reply )
-{
+void LoadDataFromEntrezTask::sl_replyFinished( QNetworkReply* reply ) {
     if (reply == searchReply) {
         QXmlInputSource source(reply);
         ESearchResultHandler* handler = new ESearchResultHandler;
@@ -401,14 +379,12 @@ void LoadDataFromEntrezTask::sl_replyFinished( QNetworkReply* reply )
     loop->exit();
 }
 
-void LoadDataFromEntrezTask::sl_onError( QNetworkReply::NetworkError error )
-{
+void LoadDataFromEntrezTask::sl_onError( QNetworkReply::NetworkError error ) {
     stateInfo.setError(QString("NetworkReply error %1").arg(error));
     loop->exit();
 }
 
-void LoadDataFromEntrezTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal )
-{
+void LoadDataFromEntrezTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ) {
     stateInfo.progress = bytesSent/ bytesTotal * 100;
 }
 
@@ -460,8 +436,7 @@ bool ESearchResultHandler::fatalError( const QXmlParseException &exception )
 
 //////////////////////////////////////////////////////////////////////////
 
-RemoteDBRegistry::RemoteDBRegistry()
-{
+RemoteDBRegistry::RemoteDBRegistry() {
     queryDBs.insert(GENBANK_DNA,  GENBANK_NUCLEOTIDE_ID);
     queryDBs.insert(GENBANK_PROTEIN, GENBANK_PROTEIN_ID);
 
@@ -486,20 +461,17 @@ RemoteDBRegistry::RemoteDBRegistry()
     hints.insert(UNIPROTKB_TREMBL, QObject::tr("Use UniProtKB/TrEMBL accession number. For example: D0VTW9"));
 }
 
-RemoteDBRegistry& RemoteDBRegistry::getRemoteDBRegistry()
-{
+RemoteDBRegistry& RemoteDBRegistry::getRemoteDBRegistry() {
     static RemoteDBRegistry registry;
     return registry;
 }
 
 
-QList<QString> RemoteDBRegistry::getDBs()
-{
+QList<QString> RemoteDBRegistry::getDBs() {
     return  ( queryDBs.keys() + httpDBs.keys() );
 }
 
-QString RemoteDBRegistry::getURL( const QString& accId, const QString& dbName )
-{
+QString RemoteDBRegistry::getURL( const QString& accId, const QString& dbName ) {
     QString result("");
     if (httpDBs.contains(dbName)) {
         result = QString(httpDBs.value(dbName)).arg(accId);
@@ -507,13 +479,11 @@ QString RemoteDBRegistry::getURL( const QString& accId, const QString& dbName )
     return result; 
 }
 
-QString RemoteDBRegistry::getDbEntrezName( const QString& dbName )
-{
+QString RemoteDBRegistry::getDbEntrezName( const QString& dbName ){
     return queryDBs.value(dbName);
 }
 
-QString RemoteDBRegistry::getHint( const QString& dbName )
-{
+QString RemoteDBRegistry::getHint( const QString& dbName ) {
     if (hints.contains(dbName)) {
         return hints.value(dbName);
     } else {
@@ -522,12 +492,10 @@ QString RemoteDBRegistry::getHint( const QString& dbName )
 
 }
 
-void RemoteDBRegistry::convertAlias( QString& dbName )
-{
+void RemoteDBRegistry::convertAlias( QString& dbName ) {
     if (aliases.contains(dbName)) {
         dbName = aliases.value(dbName);
     }
-
 }
 
 } //namespace

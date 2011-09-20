@@ -53,10 +53,11 @@ public:
     virtual QString getDocumentDescription() const {return documentDescription;}
 
 protected:
-    Document* resultDocument;
+    Document*   resultDocument;
+    bool        docOwner;
     
     /** provider's document description */
-    QString   documentDescription;
+    QString     documentDescription;
     
 };
 
@@ -80,17 +81,18 @@ public:
     LDTObjectFactory*   objFactory;     // if not NULL and 'checkObjRef' is not found -> 'objFactory' is used to create obj
 };
 
-class U2CORE_EXPORT LoadUnloadedDocumentTask : public Task {
+class U2CORE_EXPORT LoadUnloadedDocumentTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     LoadUnloadedDocumentTask(Document* d, const LoadDocumentTaskConfig& config = LoadDocumentTaskConfig());
     
     virtual void prepare();
     virtual ReportResult report();
+    virtual Document* getDocument(bool mainThread = true); 
+
 
     static QString getResourceName(Document* d);
    
-    Document* getDocument() const;
     const LoadDocumentTaskConfig& getConfig() const {return config;}
     
     static LoadUnloadedDocumentTask* findActiveLoadingTask(Document* d);
@@ -99,7 +101,7 @@ public:
 private:
     void clearResourceUse();
     
-    class LoadDocumentTask* subtask;
+    LoadDocumentTask*       loadTask;
     QPointer<Document>      unloadedDoc;
     QString                 resName;
     LoadDocumentTaskConfig  config;

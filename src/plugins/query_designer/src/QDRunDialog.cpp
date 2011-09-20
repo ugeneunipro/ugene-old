@@ -41,6 +41,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/AnnotatedDNAViewTasks.h>
@@ -57,6 +58,10 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
+
+//TODO: there are issues with 'docWithSequence' here
+// Issue 1: if docWithSequence removed from the project during calc -> crash
+// Issue 2: if docWithSequence is loaded and task is failed -> memleak
 
 namespace U2 {
 
@@ -145,7 +150,8 @@ void QDRunDialog::sl_run() {
 QDRunDialogTask::QDRunDialogTask(QDScheme* _scheme, const QString& _inUri, const QString& outUri, bool addToProject)
 : Task(tr("Query Designer"), TaskFlags_NR_FOSCOE), scheme(_scheme), inUri(_inUri), output(outUri),
 addToProject(addToProject), openProjTask(NULL), loadTask(NULL), scheduler(NULL),
-docWithSequence(NULL), ato(NULL) {
+docWithSequence(NULL), annObj(NULL) 
+{
     tpm = Progress_Manual;
     stateInfo.progress = 0;
     if (addToProject && !AppContext::getProject()) {
@@ -166,21 +172,16 @@ void QDRunDialogTask::sl_updateProgress() {
 
 QList<Task*> QDRunDialogTask::init() {
     QList<Task*> res;
-    if (AppContext::getProject()) {
-        foreach(Document* doc, AppContext::getProject()->getDocuments()) {
-            if (doc->getURLString()==inUri) {
-                docWithSequence = doc;
-                break;
-            }
-        }
+    if (AppContext::getProject() != NULL) {
+        docWithSequence = AppContext::getProject()->findDocumentByURL(inUri);
     }
 
-    if (docWithSequence) {
+    if (docWithSequence != NULL) {
         if (!docWithSequence->isLoaded()) {
             loadTask = new LoadUnloadedDocumentTask(docWithSequence);
             res.append(loadTask);
         } else {
-            setupQuery(docWithSequence);
+            setupQuery();
             res.append(scheduler);
         }
     } else {
@@ -205,38 +206,34 @@ QList<Task*> QDRunDialogTask::init() {
     return res;
 }
 
-void QDRunDialogTask::setupQuery(Document* doc) {
-    const QList<GObject*>& objs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
-    if (!objs.isEmpty()) {
-        DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(objs.first());
-        assert(seqObj);
-        scheme->setDNA(seqObj);
-        QDRunSettings settings;
-        settings.region = seqObj->getSequenceRange();
-        settings.scheme = scheme;
-        settings.sequenceObj = seqObj;
-        settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
-        settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
-        scheduler = new QDScheduler(settings);
-        connect(scheduler, SIGNAL(si_progressChanged()), SLOT(sl_updateProgress()));
-    }
+void QDRunDialogTask::setupQuery() {
+    const QList<GObject*>& objs = docWithSequence->findGObjectByType(GObjectTypes::SEQUENCE);
+    CHECK_EXT(!objs.isEmpty(), setError(tr("Sequence not found, document: %1").arg(docWithSequence->getURLString())), );
+
+    DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(objs.first());
+    scheme->setDNA(seqObj);
+    QDRunSettings settings;
+    settings.region = seqObj->getSequenceRange();
+    settings.scheme = scheme;
+    settings.sequenceObj = seqObj;
+    settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
+    settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
+    scheduler = new QDScheduler(settings);
+    connect(scheduler, SIGNAL(si_progressChanged()), SLOT(sl_updateProgress()));
 }
 
 QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
-    QList<Task*> st;
-    if (hasError() || isCanceled()) {
-        return st;
-    }
+    QList<Task*> res;
+    CHECK_OP(stateInfo, res);
+
     if (subTask == openProjTask) {
-        st << init();
+        res << init();
     } else if (subTask == loadTask) {
-        if (!docWithSequence) {
-            LoadDocumentTask* t = qobject_cast<LoadDocumentTask*>(subTask);
-            assert(t);
-            docWithSequence = t->getDocument();
+        if (docWithSequence == NULL) {
+            docWithSequence = loadTask->takeDocument();
         }
-        setupQuery(docWithSequence);
-        st.append(scheduler);
+        setupQuery();
+        res.append(scheduler);
     } else if (subTask == scheduler) {
         DocumentFormatRegistry* dfr = AppContext::getDocumentFormatRegistry();
         DocumentFormat* df = dfr->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
@@ -253,31 +250,24 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
         if (!addToProject) {
             scheme->setDNA(NULL);
             SaveDocumentTask* saveTask = new SaveDocumentTask(docWithAnnotations, SaveDoc_DestroyAfter, QSet<QString>());
-            st.append(saveTask);
+            res.append(saveTask);
         } else {
             Document* sameUrlDoc = proj->findDocumentByURL(url);
             if (sameUrlDoc) {
                 proj->removeDocument(sameUrlDoc);
             }
-            st.append(new SaveDocumentTask(docWithAnnotations));
-            st.append(new AddDocumentTask(docWithAnnotations));
+            res.append(new SaveDocumentTask(docWithAnnotations));
+            res.append(new AddDocumentTask(docWithAnnotations));
             assert(docWithSequence && docWithSequence->isLoaded());
             if (proj && proj->getDocuments().contains(docWithSequence)) {
-                st.append(new OpenViewTask(docWithSequence));
+                res.append(new OpenViewTask(docWithSequence));
             } else {
-                const GUrl& fullPath = docWithSequence->getURL();
-                DocumentFormat* format = docWithSequence->getDocumentFormat();
-                IOAdapterFactory * iof = docWithSequence->getIOAdapterFactory();
-                Document* clonedDoc = new Document(format, iof, fullPath);
-                clonedDoc->loadFrom(docWithSequence);
-                assert(!clonedDoc->isTreeItemModified());
-                assert(clonedDoc->isLoaded());
-                st.append(new AddDocumentTask(clonedDoc));
-                st.append(new OpenViewTask(clonedDoc));
+                res.append(new AddDocumentTask(docWithSequence));
+                res.append(new OpenViewTask(docWithSequence));
             }
         }
     }
-    return st;
+    return res;
 }
 
 /************************************************************************/

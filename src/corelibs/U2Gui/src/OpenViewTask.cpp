@@ -20,6 +20,7 @@
  */
 
 #include "OpenViewTask.h"
+
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/AppContext.h>
@@ -27,20 +28,20 @@
 #include <U2Core/Log.h>
 #include <U2Core/ResourceTracker.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Gui/ObjectViewModel.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/GHints.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/BaseDocumentFormats.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-
 #include <U2Core/AnnotationTableObject.h>
+
+#include <U2Gui/ObjectViewModel.h>
 
 #include <QtCore/QFileInfo>
 #include <QtGui/QApplication>
@@ -215,8 +216,7 @@ void LoadRemoteDocumentAndOpenViewTask::prepare()
     addSubTask(loadRemoteDocTask);
 }
 
-QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask )
-{
+QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask) {
     QList<Task*> subTasks;
     if (subTask->hasError()) {
         return subTasks;
@@ -246,10 +246,9 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
         if (proj == NULL) {
             subTasks.append(AppContext::getProjectLoader()->openWithProjectTask(fullPath));
         } else {
-            Document* doc = loadRemoteDocTask->getDocument();
-            assert(doc != NULL);
-
-            if ( proj->getDocuments().contains(doc) ) {
+            Document* doc = loadRemoteDocTask->takeDocument();
+            SAFE_POINT(doc != NULL, "loadRemoteDocTask->takeDocument() returns NULL!", subTasks);
+            if (proj->getDocuments().contains(doc)) {
                 if (doc->isLoaded()) {
                     subTasks.append(new OpenViewTask(doc));
                 } else {
@@ -257,14 +256,8 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
                 }
             } else {
                 // Add document to project
-                DocumentFormat* format = doc->getDocumentFormat(); 
-                IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-                Document* clonedDoc = new Document(format, iof, fullPath);
-                clonedDoc->loadFrom(doc); // doc was loaded in a separate thread -> clone all GObjects
-                assert(!clonedDoc->isTreeItemModified());
-                assert(clonedDoc->isLoaded());
-                subTasks.append(new AddDocumentTask(clonedDoc));
-                subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(clonedDoc));
+                subTasks.append(new AddDocumentTask(doc));
+                subTasks.append(new LoadUnloadedDocumentAndOpenViewTask(doc));
             }    
         }
     }

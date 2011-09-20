@@ -58,13 +58,15 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // DocumentProviderTask
 DocumentProviderTask::DocumentProviderTask(const QString& name, TaskFlags flags) 
-: Task(name, flags), resultDocument(NULL) 
+: Task(name, flags), resultDocument(NULL), docOwner(true)
 {
     documentDescription = tr("[unknown]");
 }
 
 void DocumentProviderTask::cleanup(){
-    delete resultDocument;
+    if (docOwner) {
+        delete resultDocument;
+    }
     resultDocument = NULL;
 }
 
@@ -78,9 +80,8 @@ Document* DocumentProviderTask::getDocument(bool mainThread)  {
 }
 
 Document* DocumentProviderTask::takeDocument(bool mainThread) {
-    Document* d = getDocument(mainThread); 
-    resultDocument = NULL; 
-    return d;
+    docOwner = false;
+    return getDocument(mainThread); 
 }
 
 
@@ -91,13 +92,16 @@ Document* DocumentProviderTask::takeDocument(bool mainThread) {
 //TODO: avoid multiple load tasks when opening view for unloaded doc!
 
 LoadUnloadedDocumentTask::LoadUnloadedDocumentTask(Document* d, const LoadDocumentTaskConfig& _config)
-: Task("", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), subtask(NULL), unloadedDoc(d), config(_config)
+: DocumentProviderTask ("", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), loadTask(NULL), unloadedDoc(d), config(_config)
 {
     assert(config.checkObjRef.objType != GObjectTypes::UNLOADED);
+    assert(unloadedDoc != NULL);
+
     setVerboseLogMode(true);
     setTaskName(tr("Load '%1'").arg(d->getName()));
     setUseDescriptionFromSubtask(true);
-    assert(d!=NULL);
+    docOwner = false;
+    resultDocument = d;
 }
 
 void LoadUnloadedDocumentTask::prepare() {
@@ -116,8 +120,8 @@ void LoadUnloadedDocumentTask::prepare() {
         namesList << obj->getGObjectName();
     }
     hints[GObjectHint_NamesList] = namesList;
-    subtask = new LoadDocumentTask(format, url, iof, hints, config);
-    addSubTask(subtask);
+    loadTask = new LoadDocumentTask(format, url, iof, hints, config);
+    addSubTask(loadTask);
 
     resName = getResourceName(unloadedDoc);
     AppContext::getResourceTracker()->registerResourceUser(resName, this);
@@ -145,7 +149,7 @@ Task::ReportResult LoadUnloadedDocumentTask::report() {
             clearResourceUse();
             resName.clear();
         }
-    } else if (isCanceled() || (subtask!=NULL && subtask->isCanceled())) {
+    } else if (isCanceled() || (loadTask!=NULL && loadTask->isCanceled())) {
         //do nothing
     } else if (unloadedDoc->isLoaded()) {
         //do nothing
@@ -170,7 +174,7 @@ Task::ReportResult LoadUnloadedDocumentTask::report() {
         if (!readyToLoad) {
             stateInfo.setError(tr("Document is locked")); //todo: wait instead?
         }  else {
-            Document* doc = subtask->takeDocument();
+            Document* doc = loadTask->takeDocument();
             unloadedDoc->loadFrom(doc); // get document copy
             assert(!unloadedDoc->isTreeItemModified());
             assert(unloadedDoc->isLoaded());
@@ -180,10 +184,6 @@ Task::ReportResult LoadUnloadedDocumentTask::report() {
         clearResourceUse();
     }
     return res;
-}
-
-Document* LoadUnloadedDocumentTask::getDocument() const {
-    return unloadedDoc;
 }
 
 
@@ -214,6 +214,13 @@ bool LoadUnloadedDocumentTask::addLoadingSubtask(Task* t, const LoadDocumentTask
         return true;
     }
     return false;
+}
+
+Document* LoadUnloadedDocumentTask::getDocument(bool mainThread) {
+    if (unloadedDoc.isNull()) {
+        return NULL;
+    }
+    return DocumentProviderTask::getDocument();
 }
 
 //////////////////////////////////////////////////////////////////////////

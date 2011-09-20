@@ -23,8 +23,7 @@
 #define _U2_LOAD_REMOTE_DOCUMENT_TASK_H_
 
 
-#include <U2Core/GUrl.h>
-#include <U2Core/Task.h>
+#include <U2Core/LoadDocumentTask.h>
 
 #include <QtCore/QEventLoop>
 #include <QtCore/QUrl>
@@ -77,7 +76,7 @@ public:
 };
 
 
-class U2CORE_EXPORT LoadRemoteDocumentTask : public Task {
+class U2CORE_EXPORT LoadRemoteDocumentTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     static QString getFileFormat(const QString & dbName);
@@ -91,20 +90,19 @@ public:
     virtual void prepare();
     virtual ReportResult report();
     QString getLocalUrl(){ return fullPath; }
-    Document* getDocument();
-
+    
     QString getAccNumber() const { return accNumber; }
     QString getDBName() const { return dbName; }
 
 protected:
     QList<Task*> onSubTaskFinished(Task* subTask);
+
 private:
     bool openView;
     bool initLoadDocumentTask(); 
     DocumentFormatId formatId;
     CopyDataTask* copyDataTask;
     LoadDocumentTask* loadDocumentTask;
-    Document* doc;
     LoadDataFromEntrezTask* loadDataFromEntrezTask;
     GUrl    sourceUrl;
     QString accNumber, dbName, format;

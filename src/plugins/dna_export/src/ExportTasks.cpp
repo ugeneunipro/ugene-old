@@ -68,17 +68,9 @@ QList<Task*> AddExportedDocumentAndOpenViewTask::onSubTaskFinished( Task* subTas
                 return subTasks;
             }
         }
-        DocumentFormat* format = doc->getDocumentFormat();
-        IOAdapterFactory * iof = doc->getIOAdapterFactory();
-        Document* clonedDoc = new Document(format, iof, fullPath);
-        clonedDoc->loadFrom(doc); // doc was loaded in a separate thread -> clone all GObjects
-        assert(!clonedDoc->isTreeItemModified());
-        assert(clonedDoc->isLoaded());
-        if (!clonedDoc->isStateLocked()) {
-            clonedDoc->setModified(doc->isModified());
-        }
-        subTasks << new AddDocumentTask(clonedDoc);
-        subTasks << new LoadUnloadedDocumentAndOpenViewTask(clonedDoc);
+        exportTask->takeDocument();
+        subTasks << new AddDocumentTask(doc);
+        subTasks << new LoadUnloadedDocumentAndOpenViewTask(doc);
     }
     //TODO: provide a report if subtask fails
     return subTasks;
