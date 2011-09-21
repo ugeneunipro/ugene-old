@@ -227,7 +227,7 @@ private:
     bool readValid;
 };
 
-class ReferenceIterator {
+class ReferenceIterator : public Iterator {
 public:
     ReferenceIterator(int referenceId, Iterator &iterator):
         referenceId(referenceId),
@@ -235,26 +235,101 @@ public:
     {
     }
 
-    U2AssemblyRead next() {
+    virtual bool hasNext() {
+        return iterator.hasNext() && (iterator.peekReferenceId() == referenceId);
+    }
+
+    virtual U2AssemblyRead next() {
         if(!hasNext()) {
             throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
         }
         return iterator.next();
     }
 
-    U2AssemblyRead peek() {
+    virtual void skip() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        iterator.skip();
+    }
+
+    virtual const U2AssemblyRead &peek() {
         if(!hasNext()) {
             throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
         }
         return iterator.peek();
     }
 
-    bool hasNext() {
-        return iterator.hasNext() && (iterator.peekReferenceId() == referenceId);
+    virtual int peekReferenceId() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        return iterator.peekReferenceId();
     }
 
 private:
     int referenceId;
+    Iterator &iterator;
+};
+
+class SkipUnmappedIterator : public Iterator {
+public:
+    SkipUnmappedIterator(Iterator &iterator):
+        iterator(iterator)
+    {
+    }
+
+    virtual bool hasNext() {
+        skipUnmappedReads();
+        return iterator.hasNext();
+    }
+
+    virtual U2AssemblyRead next() {
+        skipUnmappedReads();
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        return iterator.next();
+    }
+
+    virtual void skip() {
+        skipUnmappedReads();
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        iterator.skip();
+    }
+
+    virtual const U2AssemblyRead &peek() {
+        skipUnmappedReads();
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        return iterator.peek();
+    }
+
+    virtual int peekReferenceId() {
+        skipUnmappedReads();
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
+        return iterator.peekReferenceId();
+    }
+
+private:
+    void skipUnmappedReads() {
+        while(iterator.hasNext()) {
+            if(-1 == iterator.peekReferenceId() ||
+               ReadFlagsUtils::isUnmappedRead(iterator.peek()->flags) ||
+               iterator.peek()->cigar.isEmpty()) {
+                iterator.skip();
+            } else {
+                break;
+            }
+        }
+    }
+
+private:
     Iterator &iterator;
 };
 
@@ -273,8 +348,10 @@ public:
 
 class SequentialDbiIterator : public DbiIterator {
 public:
-    SequentialDbiIterator(int referenceId, Iterator &iterator, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
-        referenceIterator(referenceId, iterator),
+    SequentialDbiIterator(int referenceId, bool skipUnmapped, Iterator &inputIterator, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
+        referenceIterator(referenceId, inputIterator),
+        skipUnmappedIterator(skipUnmapped? new SkipUnmappedIterator(referenceIterator):NULL),
+        iterator(skipUnmapped? (Iterator *)skipUnmappedIterator.get():(Iterator *)&referenceIterator),
         readsImported(0),
         stateInfo(stateInfo),
         ioAdapter(ioAdapter)
@@ -285,7 +362,7 @@ public:
         if(stateInfo.isCanceled()) {
             return false;
         }
-        return referenceIterator.hasNext();
+        return iterator->hasNext();
     }
 
     virtual U2AssemblyRead next() {
@@ -294,14 +371,14 @@ public:
         }
         stateInfo.progress = ioAdapter.getProgress();
         readsImported++;
-        return referenceIterator.next();
+        return iterator->next();
     }
 
     virtual U2AssemblyRead peek() {
         if(!hasNext()) {
             throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
         }
-        return referenceIterator.peek();
+        return iterator->peek();
     }
 
     virtual qint64 getReadsImported() {
@@ -310,6 +387,8 @@ public:
 
 private:
     ReferenceIterator referenceIterator;
+    std::auto_ptr<SkipUnmappedIterator> skipUnmappedIterator;
+    Iterator *iterator;
     qint64 readsImported;
     TaskStateInfo &stateInfo;
     const IOAdapter &ioAdapter;
@@ -317,9 +396,9 @@ private:
 
 class IndexedBamDbiIterator : public DbiIterator {
 public:
-    IndexedBamDbiIterator(int referenceId, BamReader &reader, const Index &index, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
+    IndexedBamDbiIterator(int referenceId, bool skipUnmapped, BamReader &reader, const Index &index, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
         iterator(reader),
-        dbiIterator(referenceId, iterator, stateInfo, ioAdapter)
+        dbiIterator(referenceId, skipUnmapped, iterator, stateInfo, ioAdapter)
     {
         {
             VirtualOffset minOffset = VirtualOffset(0xffffffffffffLL, 0xffff);
@@ -433,9 +512,9 @@ void ConvertToSQLiteTask::run() {
                     U2OpStatusImpl opStatus;
                     std::auto_ptr<DbiIterator> dbiIterator;
                     if(bamInfo.hasIndex()) {
-                        dbiIterator.reset(new IndexedBamDbiIterator(referenceId, *bamReader, bamInfo.getIndex(), stateInfo, *ioAdapter));
+                        dbiIterator.reset(new IndexedBamDbiIterator(referenceId, !bamInfo.isUnmappedSelected(), *bamReader, bamInfo.getIndex(), stateInfo, *ioAdapter));
                     } else {
-                        dbiIterator.reset(new SequentialDbiIterator(referenceId, *iterator, stateInfo, *ioAdapter));
+                        dbiIterator.reset(new SequentialDbiIterator(referenceId, !bamInfo.isUnmappedSelected(), *iterator, stateInfo, *ioAdapter));
                     }
                     sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", dbiIterator.get(), importInfo, opStatus);
                     if(opStatus.hasError()) {
@@ -459,7 +538,23 @@ void ConvertToSQLiteTask::run() {
             }
 
             if(bamInfo.isUnmappedSelected()) {
-                SequentialDbiIterator dbiIterator(-1, *iterator, stateInfo, *ioAdapter);
+                if(bamInfo.hasIndex() && !reader->getHeader().getReferences().isEmpty()) {
+                    const Index &index = bamInfo.getIndex();
+                    VirtualOffset maxOffset = VirtualOffset(0, 0);
+                    foreach(const Index::ReferenceIndex::Bin &bin, index.getReferenceIndices()[reader->getHeader().getReferences().size() - 1].getBins()) {
+                        foreach(const Index::ReferenceIndex::Chunk &chunk, bin.getChunks()) {
+                            if(chunk.getStart() < chunk.getEnd() && maxOffset < chunk.getStart()) {
+                                maxOffset = chunk.getStart();
+                            }
+                        }
+                    }
+                    bamReader->seek(maxOffset);
+                    iterator.reset(new BamIterator(*bamReader));
+                    while(iterator->hasNext() && iterator->peekReferenceId() != -1) {
+                        iterator->skip();
+                    }
+                }
+                SequentialDbiIterator dbiIterator(-1, false, *iterator, stateInfo, *ioAdapter);
                 U2Assembly assembly;
                 assembly.visualName = "Unmapped";
                 U2AssemblyReadsImportInfo & importInfo = importInfos[-1];
@@ -475,11 +570,19 @@ void ConvertToSQLiteTask::run() {
                 assemblies.insert(-1, assembly);
             }
         } else {
-            std::auto_ptr<Iterator> iterator;
+            std::auto_ptr<Iterator> inputIterator;
             if(sam) {
-                iterator.reset(new SamIterator(*samReader));
+                inputIterator.reset(new SamIterator(*samReader));
             } else {
-                iterator.reset(new BamIterator(*bamReader));
+                inputIterator.reset(new BamIterator(*bamReader));
+            }
+            std::auto_ptr<SkipUnmappedIterator> skipUnmappedIterator;
+            Iterator *iterator;
+            if(!bamInfo.isUnmappedSelected()) {
+                skipUnmappedIterator.reset(new SkipUnmappedIterator(*inputIterator));
+                iterator = skipUnmappedIterator.get();
+            } else {
+                iterator = inputIterator.get();
             }
 
             for(int referenceId = 0;referenceId < reader->getHeader().getReferences().size(); referenceId++) {
@@ -521,8 +624,7 @@ void ConvertToSQLiteTask::run() {
                 int readCount = 0;
                 while(iterator->hasNext() && (readCount < READS_CHUNK_SIZE)) {
                     int referenceId = iterator->peekReferenceId();
-                    if(((-1 == referenceId) && bamInfo.isUnmappedSelected()) ||
-                        bamInfo.isReferenceSelected(referenceId)) {
+                    if((-1 == referenceId) || bamInfo.isReferenceSelected(referenceId)) {
                         U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                         reads[referenceId].append(iterator->next());
                         readCount++;

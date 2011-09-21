@@ -74,10 +74,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
         }
     }
     ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 5);
-    {
-        // TODO: deal with unmapped reads
-        //ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
-    }
+    ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
     ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb");
     ui.sourceUrlView->setText(QDir::cleanPath(sourceUrl.getURLString()));
     ui.okButton->setFocus();
@@ -220,8 +217,7 @@ void ConvertToSQLiteDialog::hideAddToProjectOption() {
 
 void ConvertToSQLiteDialog::accept() {
     destinationUrl = GUrl(ui.destinationUrlEdit->text());
-    // TODO: deal with unmapped reads
-    //bamInfo.setUnmappedSelected(ui.importUnmappedBox->checkState() == Qt::Checked);
+    bamInfo.setUnmappedSelected(ui.importUnmappedBox->checkState() == Qt::Checked);
     if(destinationUrl.isEmpty()) {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
         QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination URL is not specified"));
@@ -240,14 +236,6 @@ void ConvertToSQLiteDialog::accept() {
             QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Please select contigs to import"));
             return;
         }
-        // TODO: deal with unmapped reads
-//         if(bamInfo.hasIndex() && selected && bamInfo.isUnmappedSelected()) {
-//             if(QMessageBox::Cancel == QMessageBox::question(this, windowTitle(), BAMDbiPlugin::tr("With importing unmapped reads is not possible to use an index. Import may takes a long time.\nContinue?"),
-//                 QMessageBox::Ok, QMessageBox::Cancel)) 
-//             {
-//                 return;
-//             }
-//         }
         
         Project * prj = AppContext::getProject();
         if(prj != NULL) {
