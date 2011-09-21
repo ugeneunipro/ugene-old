@@ -315,7 +315,12 @@ void LoadDocumentTask::run() {
         // and used for LoadUnloadedDocument & LoadDocument privately
         hints.remove(GObjectHint_NamesList);
 
-        resultDocument = format->loadDocument(iof, url, stateInfo, hints);
+        try {
+            resultDocument = format->loadDocument(iof, url, stateInfo, hints);
+        } catch(std::bad_alloc) {
+            resultDocument = NULL;
+            setError(tr("Not enough memory to load document %1").arg(url.getURLString()));
+        }
 
         if (resultDocument != NULL) {
             if (!renameList.isEmpty()) {
