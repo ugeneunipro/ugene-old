@@ -102,9 +102,9 @@ const QString MarkerPorts::OUT_MARKER_SEQ_PORT() {
     return "out-marked-seq";
 }
 
-/* ***********************************************************************/
-/* Marker
-/* ***********************************************************************/
+/************************************************************************/
+/* Marker */
+/************************************************************************/
 Marker::Marker(const QString &markerType, const QString &markerName)
 : type(markerType), name(markerName)
 {
@@ -239,9 +239,9 @@ const QString Marker::toString() const {
     return res;
 }
 
-/* ***********************************************************************/
-/* SequencerMarker
-/* ***********************************************************************/
+/************************************************************************/
+/* SequencerMarker */
+/************************************************************************/
 QString SequenceMarker::getMarkingResult(const QVariant &object) {
     DNASequence seq = qVariantValue<DNASequence>(object);
 
@@ -257,9 +257,9 @@ MarkerGroup SequenceMarker::getGroup() {
     return SEQUENCE;
 }
 
-/* ***********************************************************************/
-/* QualifierMarker
-/* ***********************************************************************/
+/************************************************************************/
+/* QualifierMarker */
+/************************************************************************/
 QString QualifierMarker::getMarkingResult(const QVariant &object) {
     QList<SharedAnnotationData> anns = QVariantUtils::var2ftl(object.toList());
 
@@ -296,9 +296,9 @@ const QString &QualifierMarker::getQualifierName() const {
     return qualName;
 }
 
-/* ***********************************************************************/
-/* AnnotationMarker
-/* ***********************************************************************/
+/************************************************************************/
+/* AnnotationMarker */
+/************************************************************************/
 QString AnnotationMarker::getMarkingResult(const QVariant &object) {
     QList<SharedAnnotationData> anns = QVariantUtils::var2ftl(object.toList());
 
@@ -321,9 +321,9 @@ const QString &AnnotationMarker::getAnnotationName() const {
     return annName;
 }
 
-/* ***********************************************************************/
-/* TextMarker
-/* ***********************************************************************/
+/************************************************************************/
+/* TextMarker */
+/************************************************************************/
 QString TextMarker::getMarkingResult(const QVariant &object) {
     if (MarkerTypes::TEXT_MARKER_ID == type) {
         return Marker::getMarkingResult(object);
