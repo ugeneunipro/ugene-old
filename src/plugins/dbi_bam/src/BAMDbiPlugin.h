@@ -26,9 +26,12 @@
 #include <U2Core/U2Dbi.h>
 #include <U2Core/Log.h>
 #include <U2Core/DocumentImport.h>
-#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/DocumentProviderTask.h>
 
 namespace U2 {
+
+class LoadDocumentTask;
+
 namespace BAM {
 
 class BAMDbiPlugin : public Plugin {

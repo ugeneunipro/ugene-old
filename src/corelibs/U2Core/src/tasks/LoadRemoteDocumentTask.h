@@ -23,7 +23,8 @@
 #define _U2_LOAD_REMOTE_DOCUMENT_TASK_H_
 
 
-#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/DocumentProviderTask.h>
+#include <U2Core/GUrl.h>
 
 #include <QtCore/QEventLoop>
 #include <QtCore/QUrl>

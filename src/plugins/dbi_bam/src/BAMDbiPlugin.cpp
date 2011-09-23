@@ -29,6 +29,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/LoadDocumentTask.h>
 
 #include <U2Formats/SAMFormat.h>
 

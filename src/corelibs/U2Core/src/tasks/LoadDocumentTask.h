@@ -22,9 +22,9 @@
 #ifndef _U2_LOAD_DOCUMENT_TASK_H_
 #define _U2_LOAD_DOCUMENT_TASK_H_
 
-#include <U2Core/Task.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/GObjectReference.h>
+#include <U2Core/DocumentProviderTask.h>
 
 #include <QtCore/QPointer>
 #include <QtCore/QVariantMap>
@@ -36,31 +36,6 @@ class DocumentFormat;
 class IOAdapterFactory;
 class StateLock;
 class LoadDocumentTask;
-
-/** 
-    Base interface for different document loading tasks 
-*/
-class U2CORE_EXPORT DocumentProviderTask : public Task {
-    Q_OBJECT
-public:
-    DocumentProviderTask(const QString& name, TaskFlags flags);
-    virtual ~DocumentProviderTask() {cleanup();}
-
-    virtual Document* getDocument(bool mainThread = true); 
-    virtual Document* takeDocument(bool mainThread = true);
-
-    virtual void cleanup();
-    virtual QString getDocumentDescription() const {return documentDescription;}
-
-protected:
-    Document*   resultDocument;
-    bool        docOwner;
-    
-    /** provider's document description */
-    QString     documentDescription;
-    
-};
-
 
 // creates object using name and type info from ref
 //NOTE: the default impl can create only limited set of objects

@@ -26,7 +26,7 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/MAlignmentObject.h>
-
+#include <U2Core/LoadDocumentTask.h>
 
 
 namespace U2{
@@ -34,34 +34,32 @@ namespace U2{
 
 class U2ALGORITHM_EXPORT CreateSubalignmentSettings {
 public:
-    CreateSubalignmentSettings(const U2Region& w, const QStringList& sNames,
-        const GUrl& path, bool save, bool add) :
-    window(w), seqNames(sNames), url(path), saveImmediately(save), addToProject(add) {}
-    U2Region window;
+    CreateSubalignmentSettings(const U2Region& w, const QStringList& sNames, const GUrl& path, bool save, bool add) 
+        : window(w), seqNames(sNames), url(path), saveImmediately(save), addToProject(add) {}
+    
+    U2Region    window;
     QStringList seqNames;
-    GUrl url;
-    bool saveImmediately;
-    bool addToProject;
+    GUrl        url;
+    bool        saveImmediately;
+    bool        addToProject;
 };
    
     
-class U2ALGORITHM_EXPORT CreateSubalignmentTask : public Task {
+class U2ALGORITHM_EXPORT CreateSubalignmentTask : public DocumentProviderTask {
     Q_OBJECT
 public:    
     CreateSubalignmentTask(MAlignmentObject* _maObj, const CreateSubalignmentSettings& settings );
-    ~CreateSubalignmentTask();
 
     virtual void prepare();
-    virtual void cleanup();
-    Document* takeDocument();
     const CreateSubalignmentSettings& getSettings() { return cfg; }
 
 private:
-    Document*                   curDoc;
-    MAlignmentObject*           maObj;
+    Document*                   origDoc;
+    MAlignmentObject*           origMAObj;
+    MAlignmentObject*           resultMAObj;
+    
     CreateSubalignmentSettings  cfg;
-    Document*                   newDoc;
-    bool                        saveToAnother;
+    bool                        createCopy;
 };
 
 }

@@ -28,7 +28,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/DocumentProviderTask.h>
 
 
 namespace U2 {

@@ -26,6 +26,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 
@@ -194,23 +195,18 @@ void CreateSubalignimentDialogController::selectSeqNames(){
 
 
 CreateSubalignmentAndOpenViewTask::CreateSubalignmentAndOpenViewTask( MAlignmentObject* maObj, const CreateSubalignmentSettings& settings )
-:Task("CreateSubalignmentAndOpenViewTask", TaskFlags_NR_FOSCOE)
+:Task(tr("Create sub-alignment and open view: %1").arg(maObj->getDocument()->getName()), TaskFlags_NR_FOSCOE)
 {
     csTask = new CreateSubalignmentTask(maObj, settings);
     addSubTask(csTask);
     setMaxParallelSubtasks(1);
 }
 
-QList<Task*> CreateSubalignmentAndOpenViewTask::onSubTaskFinished( Task* subTask )
-{
+QList<Task*> CreateSubalignmentAndOpenViewTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-
-    propagateSubtaskError();
-    if (hasError() || isCanceled()) {
-        return res;
-    }
-
-    if ( (subTask == csTask) && csTask->getSettings().addToProject ) {
+    CHECK_OP(stateInfo, res);
+    
+    if ((subTask == csTask) && csTask->getSettings().addToProject) {
         Document* doc = csTask->takeDocument();
         assert(doc != NULL);
         res.append(new AddDocumentAndOpenViewTask(doc));

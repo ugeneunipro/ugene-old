@@ -133,6 +133,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/CopyDataTask.h \
            src/tasks/CreateAnnotationTask.h \
            src/tasks/CreateFileIndexTask.h \
+           src/tasks/DocumentProviderTask.h \
            src/tasks/ExportToNewFileFromIndexTask.h \
            src/tasks/ExtractAnnotatedRegionTask.h \
            src/tasks/FailTask.h \
@@ -257,6 +258,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/CopyDataTask.cpp \
            src/tasks/CreateAnnotationTask.cpp \
            src/tasks/CreateFileIndexTask.cpp \
+           src/tasks/DocumentProviderTask.cpp \
            src/tasks/ExportToNewFileFromIndexTask.cpp \
            src/tasks/ExtractAnnotatedRegionTask.cpp \
            src/tasks/GetDocumentFromIndexTask.cpp \

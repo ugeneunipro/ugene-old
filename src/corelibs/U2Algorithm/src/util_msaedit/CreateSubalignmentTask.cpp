@@ -29,18 +29,16 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2{
 
-CreateSubalignmentTask::CreateSubalignmentTask(MAlignmentObject* _maObj, const CreateSubalignmentSettings& settings )
-: Task(tr("Extract selected as MSA task"), TaskFlags_NR_FOSCOE),
-maObj(_maObj), cfg(settings)
+CreateSubalignmentTask::CreateSubalignmentTask(MAlignmentObject* maObj, const CreateSubalignmentSettings& settings )
+:DocumentProviderTask(tr("Create sub-alignment: %1").arg(maObj->getDocument()->getName()), TaskFlags_NR_FOSCOE), 
+origMAObj(maObj), cfg(settings)
 {
-    curDoc = maObj->getDocument();
-    newDoc = NULL;
-    if (cfg.url == curDoc->getURL() || cfg.url.isEmpty()) {
-        saveToAnother = false;
-    }
+    origDoc = maObj->getDocument();
+    createCopy = cfg.url != origDoc->getURL() || cfg.url.isEmpty();
 }
 
 void CreateSubalignmentTask::prepare() {
@@ -59,27 +57,17 @@ void CreateSubalignmentTask::prepare() {
         }
     }
 
-    newDoc = curDoc;
-
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.url));
-    if (saveToAnother) {
-        QList<GObject*> GObjList = curDoc->getObjects();
-        newDoc = dfd->createNewDocument(iof, cfg.url, curDoc->getGHintsMap());
-        foreach(GObject* go, GObjList){
-            GObject *cl = go->clone();
-            newDoc->addObject(cl);
-            if (go == maObj){
-                maObj = static_cast<MAlignmentObject*> (cl);
-            }
-        }
-        foreach(GObject* o, newDoc->getObjects()) {
-            GObjectUtils::updateRelationsURL(o, curDoc->getURL(), cfg.url);
-        }
+    if (createCopy) {
+        resultDocument = dfd->createNewDocument(iof, cfg.url, origDoc->getGHintsMap());
+        resultMAObj = new MAlignmentObject(origMAObj->getMAlignment(), origMAObj->getGHintsMap());
+        resultDocument->addObject(resultMAObj);
+        GObjectUtils::updateRelationsURL(resultMAObj, origDoc->getURL(), cfg.url);
     } else {
-        if(newDoc->isStateLocked()) {
-            coreLog.error(tr("Document is locked"));
-            return;
-        }
+        CHECK_EXT(origDoc->isStateLocked(), setError(tr("Document is locked: %1").arg(resultDocument->getURLString())), );
+        resultDocument = origDoc;
+        resultMAObj = origMAObj;
+        docOwner = false;
     }
 
     //TODO: add "remove empty rows and columns" flag to crop function
@@ -87,32 +75,11 @@ void CreateSubalignmentTask::prepare() {
     foreach (const QString& name, cfg.seqNames) {
         rowNames.insert(name);
     }
-    maObj->crop(cfg.window, rowNames);
+    resultMAObj->crop(cfg.window, rowNames);
     
     if (cfg.saveImmediately) {
-        addSubTask(new SaveDocumentTask(newDoc, iof, cfg.url));
+        addSubTask(new SaveDocumentTask(resultDocument, iof));
     }
-    
-
  }
-
-void CreateSubalignmentTask::cleanup() {
-    if (newDoc != NULL) {
-        delete newDoc;
-        newDoc = NULL;
-    }
-}
-
-Document* CreateSubalignmentTask::takeDocument() {
-    Document* doc = newDoc;
-    newDoc = NULL;
-    return doc;
-}
-
-CreateSubalignmentTask::~CreateSubalignmentTask() {
-    cleanup();
-}
-
-
 
 }
