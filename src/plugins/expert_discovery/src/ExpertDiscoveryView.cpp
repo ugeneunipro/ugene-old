@@ -775,7 +775,7 @@ Document* ExpertDiscoveryView::createUDocument(SequenceType sType){
     baseName.append(suffix);
     GUrl URL(baseName);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
-    DocumentFormat* dformat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA);
+    DocumentFormat* dformat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA);
     Document* doc = new Document(dformat,iof,URL);
     doc->setLoaded(true);
 

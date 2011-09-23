@@ -22,13 +22,13 @@
 #ifndef _U2_KALIGN_TASK_H_
 #define _U2_KALIGN_TASK_H_
 
-#include <QtCore/QPointer>
+
 #include <U2Core/Task.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TLSTask.h>
-#include <U2Lang/RunSchemaForTask.h>
 #include <U2Algorithm/MAlignmentUtilTasks.h>
+
 
 #define KALIGN_CONTEXT_ID "kalign"
 
@@ -39,6 +39,7 @@ namespace U2 {
 class StateLock;
 class MAlignmentObject;
 class LoadDocumentTask;
+class SimpleMSAWorkflowTask;
 
 class KalignContext : public TLSContext {
 public:
@@ -79,7 +80,7 @@ protected:
 };
 
 //locks MAlignment object and propagate KalignTask results to it
-class  KalignGObjectTask : public MAlignmentGObjectTask {
+class  KalignGObjectTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     KalignGObjectTask(MAlignmentObject* obj, const KalignTaskSettings& config);
@@ -96,7 +97,7 @@ public:
 #ifndef RUN_WORKFLOW_IN_THREADS
 /**
 * runs kalign from cmdline schema in separate process
-* using data/schemas_private/kalign.uwl schema
+* using data/cmdline/align-kalign.uwl schema
 * schema has following aliases:
 * in - input file with alignment (will be set in WorkflowRunSchemaForTask)
 * out - output file with result (will be set in WorkflowRunSchemaForTask)
@@ -106,29 +107,12 @@ public:
 * gap-open-penalty - kalign parameter
 * gap-terminal-penalty - kalign parameter
 */
-class KalignGObjectRunFromSchemaTask : public MAlignmentGObjectTask, public WorkflowRunSchemaForTaskCallback {
+class KalignGObjectRunFromSchemaTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & config);
-    ~KalignGObjectRunFromSchemaTask();
-    
-    // from Task
-    virtual void prepare();
-    virtual ReportResult report();
-
-    // from WorkflowRunSchemaForTaskCallback
-    virtual bool saveInput()const;
-    virtual QList<GObject*> createInputData() const;
-    virtual DocumentFormatId inputFileFormat()const;
-    virtual QVariantMap getSchemaData() const;
-    virtual DocumentFormatId outputFileFormat() const;
-    virtual bool saveOutput() const;
-    
 private:
-    StateLock * lock;
-    KalignTaskSettings config;
-    WorkflowRunSchemaForTask * runSchemaTask;
-    QString objName;
+    KalignTaskSettings      config;
 };
 
 #endif // RUN_WORKFLOW_IN_THREADS

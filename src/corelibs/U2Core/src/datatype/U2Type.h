@@ -101,10 +101,10 @@ public:
 /** 
     Cross database data reference
 */
-class U2CORE_EXPORT U2DataRef {
+class U2CORE_EXPORT U2EntityRef {
 public:
-    U2DataRef() {}
-    U2DataRef(const QString& _dbiId, const U2DataId& _entityId, const U2DbiFactoryId& fid) : dbiId(_dbiId),entityId(_entityId), factoryId(fid){}
+    U2EntityRef() {}
+    U2EntityRef(const QString& _dbiId, const U2DataId& _entityId, const U2DbiFactoryId& fid) : dbiId(_dbiId),entityId(_entityId), factoryId(fid){}
 
     /** database  id */
     QString         dbiId;
@@ -166,7 +166,7 @@ public:
 
 
     // remote data element id;
-    U2DataRef   dataRef;
+    U2EntityRef   dataRef;
 
     // implement U2Object
     virtual U2DataType getType() { return U2Type::CrossDatabaseReference; }

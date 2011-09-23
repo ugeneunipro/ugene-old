@@ -36,10 +36,15 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+
+#if (defined(Q_OS_WIN32) || defined(Q_OS_WINCE))
+#include <Windows.h>
+#endif
 
 namespace U2 {
 
@@ -52,7 +57,6 @@ static const QString ERROR_KEYWORD("#%*ugene-finished-with-error#%*");
 static const QString STATE_KEYWORD("#%&state#%&");
 static const QString MSG_NUM_KEYWORD("#%$msgnum#%$");
 static const QString MSG_PASSED_KEYWORD("#%$msgpassed#%$");
-static const QString SEP_PROCESS_PREFIX("Workflow separate process: ");
 
 /*******************************************
  * WorkflowRunTask
@@ -261,7 +265,7 @@ DocumentFormat *getDocumentFormatByProtoId(QString protoId) {
         formatId = BaseDocumentFormats::PLAIN_TEXT;
     } 
     else if (CoreLibConstants::WRITE_FASTA_PROTO_ID == protoId) {
-        formatId = BaseDocumentFormats::PLAIN_FASTA;
+        formatId = BaseDocumentFormats::FASTA;
     }
     else if (CoreLibConstants::WRITE_GENBANK_PROTO_ID == protoId) {
         formatId = BaseDocumentFormats::PLAIN_GENBANK;
@@ -474,7 +478,7 @@ QList<Task*> WorkflowIterationRunInProcessTask::onSubTaskFinished(Task* subTask)
         return res;
     }
     if(saveSchemaTask == subTask) {
-        monitor = new WorkflowRunInProcessMonitorTask(tempFile.fileName());
+        monitor = new RunCmdlineWorkflowTask(tempFile.fileName());
         monitor->setSubtaskProgressWeight(1);
         res << monitor;
     } else if(monitor == subTask) {
@@ -522,38 +526,71 @@ QStringList WorkflowIterationRunInProcessTask::getFiles() {
 /***********************************
  * WorkflowRunInProcessMonitorTask
  ***********************************/
-WorkflowRunInProcessMonitorTask::WorkflowRunInProcessMonitorTask(const QString & path) : 
-Task(tr("Monitoring execution of workflow schema"), TaskFlag_NoRun), schemaPath(path), proc(new QProcess(this)){
+static bool containsPrefix(const QStringList& list, const QString& prefix) {
+    foreach(const QString& listItem, list) {
+        if (listItem.startsWith(prefix)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+RunCmdlineWorkflowTask::RunCmdlineWorkflowTask(const RunCmdlineWorkflowTaskConfig& _conf)
+: Task(tr("Workflow process"), TaskFlag_NoRun), conf(_conf), proc(new QProcess(this))
+{
+    processLogPrefix = "process:?>";
+}
+
+static QString getLogLevelName(LogLevel l) {
+    switch(l) {
+        case LogLevel_TRACE: return "TRACE";
+        case LogLevel_DETAILS: return "DETAILS";
+        case LogLevel_INFO: return "INFO";
+        case LogLevel_ERROR: return "ERROR";
+        default:
+            assert(0);
+    }
+    return "";
+}
+
+void RunCmdlineWorkflowTask::prepare() {
+    
     QStringList args;
     // FIXME: use defined constants!
-    args << QString("--task=%1").arg(schemaPath);
+    args << QString("--task=%1").arg(conf.schemaPath);
     args << "--log-no-task-progress";
-    args << "--log-level-info";
     args << QString("--%1").arg(OUTPUT_PROGRESS_OPTION);
     args << "--lang=en";
     args << QString("--%1").arg(OUTPUT_ERROR_OPTION);
     args << QString("--ini-file='%1'").arg(AppContext::getSettings()->fileName());
+    args << conf.args;
+    
+    if (!containsPrefix(args, "--log-level")) {
+        QString logLevel = getLogLevelName(conf.logLevel2Commute).toLower();
+        args << ("--log-level-" + logLevel);
+    }
+
     connect(proc, SIGNAL(error(QProcess::ProcessError)), SLOT(sl_onError(QProcess::ProcessError)));
     connect(proc, SIGNAL(readyReadStandardOutput()), SLOT(sl_onReadStandardOutput()));
     QString cmdlineUgenePath(WorkflowSettings::getCmdlineUgenePath());
-    assert(!cmdlineUgenePath.isEmpty());
+    SAFE_POINT(!cmdlineUgenePath.isEmpty(), "ugenecl cmdline is empty!?", );
     QString line = cmdlineUgenePath;
     foreach(const QString& arg, args ) {
         line+=" " + arg;
     }
-    coreLog.details("Starting UGENE workflow in separate process: " + line);
+    coreLog.details("Starting UGENE workflow: " + line);
     proc->start(cmdlineUgenePath, args);
+#if (defined(Q_OS_WIN32) || defined(Q_OS_WINCE))
+    processLogPrefix = QString("process:%1>").arg(proc->pid()->dwProcessId);
+#else
+    processLogPrefix = QString("process:%1>").arg(proc->pid());
+#endif
     bool startedSuccessfully = proc->waitForStarted();
-    if(!startedSuccessfully) {
-        setError(tr("Cannot start process '%1'").arg(cmdlineUgenePath));
-        return;
-    }
+    CHECK_EXT(startedSuccessfully, setError(tr("Cannot start process '%1'").arg(cmdlineUgenePath)), );
 }
 
-WorkflowRunInProcessMonitorTask::~WorkflowRunInProcessMonitorTask() {
-}
-
-void WorkflowRunInProcessMonitorTask::sl_onError(QProcess::ProcessError err) {
+void RunCmdlineWorkflowTask::sl_onError(QProcess::ProcessError err) {
     QString msg;
     switch(err) {
     case QProcess::FailedToStart:
@@ -573,7 +610,7 @@ void WorkflowRunInProcessMonitorTask::sl_onError(QProcess::ProcessError err) {
     setError(msg);
 }
 
-void WorkflowRunInProcessMonitorTask::writeLog(QString message) {
+void RunCmdlineWorkflowTask::writeLog(const QString& message) {
     QStringList lines = message.split(QChar('\n'));
 
     foreach(QString line, lines) {
@@ -581,23 +618,29 @@ void WorkflowRunInProcessMonitorTask::writeLog(QString message) {
         if ("" == line) {
             continue;
         }
-        QRegExp rx("\\[.+\\]\\[INFO\\]");
-        if (0 == rx.indexIn(line)) {
+        for (int i = conf.logLevel2Commute; i < LogLevel_NumLevels; i++) {
+            QString logLevelName = getLogLevelName((LogLevel)i);
+            QRegExp rx("\\[.+\\]\\[" + logLevelName + "\\]");
+            if (rx.indexIn(line) != 0) {
+                continue;
+            }
             QString logLine = line.right(line.length() - rx.matchedLength());
             logLine = logLine.simplified();
-            if (!logLine.startsWith(OUTPUT_PROGRESS_TAG)
-             && !logLine.startsWith(ERROR_KEYWORD)
-             && !logLine.startsWith(STATE_KEYWORD)
-             && !logLine.startsWith(MSG_NUM_KEYWORD)
-             && !logLine.startsWith(MSG_PASSED_KEYWORD)) {
-                logLine.prepend(SEP_PROCESS_PREFIX);
-                taskLog.trace(logLine);
+            bool commandToken = logLine.startsWith(OUTPUT_PROGRESS_TAG)
+                || logLine.startsWith(ERROR_KEYWORD)
+                || logLine.startsWith(STATE_KEYWORD)
+                || logLine.startsWith(MSG_NUM_KEYWORD)
+                || logLine.startsWith(MSG_PASSED_KEYWORD);
+
+            if (commandToken)  {
+                continue;
             }
+            taskLog.message((LogLevel)i, processLogPrefix + logLine);
         }
     }
 }
 
-void WorkflowRunInProcessMonitorTask::sl_onReadStandardOutput() {
+void RunCmdlineWorkflowTask::sl_onReadStandardOutput() {
     QString data(proc->readAllStandardOutput());
     writeLog(data);
 
@@ -657,31 +700,31 @@ void WorkflowRunInProcessMonitorTask::sl_onReadStandardOutput() {
     }
 }
 
-Task::ReportResult WorkflowRunInProcessMonitorTask::report() {
+Task::ReportResult RunCmdlineWorkflowTask::report() {
     assert(proc != NULL);
-    if(hasError()) {
+    if (hasError()) {
         return ReportResult_Finished;
     }
-    if(isCanceled()) {
+    if (isCanceled()) {
         proc->kill();
         return ReportResult_Finished;
     }
     QProcess::ProcessState st = proc->state();
-    if(st == QProcess::Running) {
+    if (st == QProcess::Running) {
         return ReportResult_CallMeAgain;
     }
     return ReportResult_Finished;
 }
 
-WorkerState WorkflowRunInProcessMonitorTask::getState(const ActorId& id) {
+WorkerState RunCmdlineWorkflowTask::getState(const ActorId& id) {
     return states.value(id, WorkerWaiting);
 }
 
-int WorkflowRunInProcessMonitorTask::getMsgNum(const QString & ids) {
+int RunCmdlineWorkflowTask::getMsgNum(const QString & ids) {
     return msgNums.value(ids, 0);
 }
 
-int WorkflowRunInProcessMonitorTask::getMsgPassed(const QString & ids) {
+int RunCmdlineWorkflowTask::getMsgPassed(const QString & ids) {
     return msgPassed.value(ids, 0);
 }
 

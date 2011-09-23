@@ -78,7 +78,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
         return NULL;
     }
     QList<GObject*> objects;
-    U2DataRef ref;
+    U2EntityRef ref;
     ref.dbiId = url;
     ref.factoryId = id;
     foreach(U2DataId id, objectIds) {

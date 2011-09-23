@@ -66,7 +66,7 @@ DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) 
     conf.fileNameEdit = outputEdit;
     conf.formatCombo = formatCombo;
     conf.fileDialogButton = outputButton;
-    conf.defaultFormatId = BaseDocumentFormats::PLAIN_FASTA;
+    conf.defaultFormatId = BaseDocumentFormats::FASTA;
     //conf.defaultFileName = defaultFileName;
     conf.saveTitle = tr("Save sequences");
     saveGroupContoller = new SaveDocumentGroupController(conf, this);

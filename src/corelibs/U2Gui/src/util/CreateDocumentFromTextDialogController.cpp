@@ -58,7 +58,7 @@ CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(Q
     ui->setupUi(this);
 
     //TODO: use format name here 
-	ui->formatBox->addItem("FASTA", BaseDocumentFormats::PLAIN_FASTA);
+	ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
     ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
 
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));

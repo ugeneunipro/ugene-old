@@ -204,7 +204,7 @@ void PrepareInputForCAP3Task::prepare() {
         
         if (!results.isEmpty()) {
             DocumentFormat* format = results.first().format;
-            if (format->getFormatId() == BaseDocumentFormats::PLAIN_FASTA) {
+            if (format->getFormatId() == BaseDocumentFormats::FASTA) {
                 onlyCopyFiles = true;
             }
         }

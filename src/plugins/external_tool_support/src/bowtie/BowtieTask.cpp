@@ -218,7 +218,7 @@ void BowtieAssembleTask::prepare() {
     {
         QList<FormatDetectionResult> detectionResults = DocumentUtils::detectFormat(settings.shortReadUrls.first());
         if(!detectionResults.isEmpty()) {
-            if(detectionResults.first().format->getFormatId() == BaseDocumentFormats::PLAIN_FASTA) {
+            if(detectionResults.first().format->getFormatId() == BaseDocumentFormats::FASTA) {
                 arguments.append("-f");
             } else if(detectionResults.first().format->getFormatId() == BaseDocumentFormats::RAW_DNA_SEQUENCE) {
                 arguments.append("-r");

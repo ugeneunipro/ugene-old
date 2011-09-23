@@ -40,6 +40,11 @@ public:
     static QByteArray readFileHeader( IOAdapter* io, int size = 65536 );
 
     static IOAdapter* open(const GUrl& url, U2OpStatus& os, IOAdapterMode mode = IOAdapterMode_Read);
+
+
+    static IOAdapterFactory* get(const IOAdapterId&);
+
+
 };
 
 }//namespace

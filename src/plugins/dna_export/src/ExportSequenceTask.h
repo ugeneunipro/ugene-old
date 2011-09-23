@@ -47,7 +47,7 @@ public:
         mergeGap = 0;
         strand = TriState_Yes;
         allAminoFrames = false;
-        formatId = BaseDocumentFormats::PLAIN_FASTA;
+        formatId = BaseDocumentFormats::FASTA;
         mostProbable = true;
         saveAnnotations = false;
     }

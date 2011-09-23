@@ -310,7 +310,7 @@ void SeqWriter::data2doc(Document* doc, const QVariantMap& data){
         return;
     }
     DocumentFormatId fid = format->getFormatId();
-    if( fid == BaseDocumentFormats::PLAIN_FASTA ) {
+    if( fid == BaseDocumentFormats::FASTA ) {
         FastaWriter::data2document( doc, data );
     }
     else if( fid == BaseDocumentFormats::PLAIN_GENBANK ) {

@@ -27,15 +27,17 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
 #include <U2Core/DocumentModel.h>
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorFactory.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/GAutoDeleteList.h>
+
 #include <U2Lang/WorkflowSettings.h>
 
-#include <U2Core/GAutoDeleteList.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorFactory.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
@@ -168,10 +170,7 @@ void MuscleMSAEditorContext::sl_align() {
     assert(action!=NULL);
     MSAEditor* ed = action->getMSAEditor();
     MAlignmentObject* obj = ed->getMSAObject(); 
-    if (obj == NULL)
-        return;
-    assert(!obj->isStateLocked());
-
+    
     const QRect selection = action->getMSAEditor()->getCurrentSelection();
     MuscleTaskSettings s;
     if (!selection.isNull() ) {
@@ -191,7 +190,7 @@ void MuscleMSAEditorContext::sl_align() {
     }
     
     
-    MAlignmentGObjectTask* muscleTask = NULL;
+    AlignGObjectTask* muscleTask = NULL;
 // if not defined -> we have two options, otherwise run in threads
 #ifndef RUN_WORKFLOW_IN_THREADS
     if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
@@ -202,10 +201,12 @@ void MuscleMSAEditorContext::sl_align() {
 #else
     muscleTask = new MuscleGObjectTask(obj, s);
 #endif // RUN_WORKFLOW_IN_THREADS
-    assert(muscleTask != NULL);
-    
-    MSAAlignMultiTask* alignTask = new MSAAlignMultiTask(obj, muscleTask, dlg.translateToAmino());
-    AppContext::getTaskScheduler()->registerTopLevelTask( alignTask );
+
+    if (dlg.translateToAmino()) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, muscleTask));
+    } else {
+        AppContext::getTaskScheduler()->registerTopLevelTask(muscleTask);
+    }
 }
 
 void MuscleMSAEditorContext::sl_alignSequencesToProfile() {

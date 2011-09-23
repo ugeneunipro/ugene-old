@@ -209,7 +209,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     QString defaultFileNameDir = fi.absoluteDir().absolutePath();
     QString defaultFileName = defaultFileNameDir + "/" + fi.baseName() + "_new.fa";
     ExportSequencesDialog d(allowMerge, allowComplement, allowTranslate, allowBackTranslate, defaultFileName,
-        BaseDocumentFormats::PLAIN_FASTA, AppContext::getMainWindow()->getQMainWindow());
+        BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
     
     d.setWindowTitle(exportSequencesToSequenceFormatAction->text());
     int rc = d.exec();

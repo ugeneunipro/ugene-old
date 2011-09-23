@@ -73,6 +73,7 @@ public:
     static QList<DNASequence> toSequences(const GObject* obj);
 
     static int getMergeGap(const QVariantMap& hints);
+
 };
 
 }//namespace

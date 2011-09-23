@@ -18,6 +18,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/Datatype.h \
            src/model/DatatypeConversion.h \
            src/model/Descriptor.h \
+           src/model/ExternalToolCfg.h \
            src/model/IntegralBus.h \
            src/model/IntegralBusModel.h \
            src/model/IntegralBusType.h \
@@ -32,13 +33,12 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/WorkflowEnv.h \
            src/model/WorkflowManager.h \
            src/model/WorkflowTransport.h \
-		   src/model/ExternalToolCfg.h \
            src/support/CoreLibConstants.h \
            src/support/HRSchemaSerializer.h \
            src/support/MapDatatypeEditor.h \
            src/support/MarkerUtils.h \
-           src/support/RunSchemaForTask.h \
            src/support/SchemaSerializer.h \
+           src/support/SimpleWorkflowTask.h \
            src/support/WorkflowEnvImpl.h \
            src/support/WorkflowIOTasks.h \
            src/support/WorkflowRunTask.h \
@@ -74,12 +74,11 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/HRSchemaSerializer.cpp \
            src/support/MapDatatypeEditor.cpp \
            src/support/MarkerUtils.cpp \
-           src/support/RunSchemaForTask.cpp \
            src/support/SchemaSerializer.cpp \
+           src/support/SimpleWorkflowTask.cpp \
            src/support/WorkflowEnvImpl.cpp \
            src/support/WorkflowIOTasks.cpp \
            src/support/WorkflowRunTask.cpp \
            src/support/WorkflowSettings.cpp \
            src/support/WorkflowUtils.cpp
-
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

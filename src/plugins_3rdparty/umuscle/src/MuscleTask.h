@@ -26,7 +26,6 @@
 #include <U2Core/Task.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Lang/RunSchemaForTask.h>
 #include <U2Algorithm/MAlignmentUtilTasks.h>
 
 class MuscleContext;
@@ -37,6 +36,7 @@ class StateLock;
 class MAlignmentObject;
 class LoadDocumentTask;
 class MuscleParallelTask;
+class SimpleMSAWorkflowTask;
 
 enum MuscleTaskOp {
     MuscleTaskOp_Align,
@@ -116,7 +116,7 @@ public:
 };
 
 //locks MAlignment object and propagate MuscleTask results to it
-class  MuscleGObjectTask : public MAlignmentGObjectTask {
+class  MuscleGObjectTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     MuscleGObjectTask(MAlignmentObject* obj, const MuscleTaskSettings& config);
@@ -154,7 +154,7 @@ private:
 #ifndef RUN_WORKFLOW_IN_THREADS
 /**
  * runs muscle from cmdline schema in separate process
- * using data/schemas_private/muscle.uwl schema
+ * using data/cmdline/align.uwl schema
  * schema has following aliases:
  * in - input file with alignment (will be set in WorkflowRunSchemaForTask)
  * out - output file with result (will be set in WorkflowRunSchemaForTask)
@@ -164,32 +164,12 @@ private:
  * max-iterations - muscle iterations number parameter
  * range - muscle align region parameter
  */
-class MuscleGObjectRunFromSchemaTask : public MAlignmentGObjectTask, public WorkflowRunSchemaForTaskCallback {
+class MuscleGObjectRunFromSchemaTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     MuscleGObjectRunFromSchemaTask(MAlignmentObject * obj, const MuscleTaskSettings & config);
-    ~MuscleGObjectRunFromSchemaTask();
-    
-    // from Task
-    virtual void prepare();
-    virtual ReportResult report();
-    
-    // from WorkflowRunSchemaForTaskCallback
-    virtual bool saveInput() const;
-    virtual QList<GObject*> createInputData() const;
-    virtual DocumentFormatId inputFileFormat()const;
-    virtual QVariantMap getSchemaData() const;
-    virtual DocumentFormatId outputFileFormat() const;
-    virtual bool saveOutput() const;
-    
 private:
-    void assertConfig();
-    
-private:
-    QString                     objName;
-    MuscleTaskSettings          config;
-    WorkflowRunSchemaForTask *  runSchemaTask;
-    StateLock*                  lock;
+    MuscleTaskSettings config;
 };
 
 #endif // RUN_WORKFLOW_IN_THREADS

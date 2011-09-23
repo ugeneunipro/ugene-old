@@ -26,10 +26,12 @@
 
 namespace U2 {
 
+class DocumentFormat;
+
 class U2CORE_EXPORT BaseDocumentFormats {
 public:
     static const DocumentFormatId PLAIN_TEXT;
-    static const DocumentFormatId PLAIN_FASTA;
+    static const DocumentFormatId FASTA;
     static const DocumentFormatId PLAIN_GENBANK;
     static const DocumentFormatId PLAIN_EMBL;
     static const DocumentFormatId PLAIN_SWISS_PROT;
@@ -51,6 +53,8 @@ public:
     static const DocumentFormatId NEXUS;
     static const DocumentFormatId MEGA;
     static const DocumentFormatId PDW;
+
+    static DocumentFormat* get(const DocumentFormatId& formatId);
 };
 
 

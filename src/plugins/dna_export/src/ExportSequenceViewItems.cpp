@@ -288,11 +288,11 @@ void ADVExportContext::sl_saveSelectedAnnotationsSequence() {
         }
     }
 
-    QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA)->getSupportedDocumentFileExtensions().first();
+    QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA)->getSupportedDocumentFileExtensions().first();
     GUrl seqUrl = view->getSequenceInFocus()->getSequenceGObject()->getDocument()->getURL();
     GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "_annotation." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
-    ExportSequencesDialog d(true, allowComplement, allowTranslation, allowBackTranslation, defaultUrl.getURLString(), BaseDocumentFormats::PLAIN_FASTA, AppContext::getMainWindow()->getQMainWindow());
+    ExportSequencesDialog d(true, allowComplement, allowTranslation, allowBackTranslation, defaultUrl.getURLString(), BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
     d.setWindowTitle(annotations2SequenceAction->text());
     d.disableAllFramesOption(true); // only 1 frame is suitable
     d.disableStrandOption(true);    // strand is already recorded in annotation
@@ -374,11 +374,11 @@ void ADVExportContext::sl_saveSelectedSequences() {
     bool amino = seqCtx->getAminoTT()!=NULL;
     bool nucleic = GObjectUtils::findBackTranslationTT(seqCtx->getSequenceObject())!=NULL;
 
-    QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA)->getSupportedDocumentFileExtensions().first();
+    QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA)->getSupportedDocumentFileExtensions().first();
     GUrl seqUrl = seqCtx->getSequenceGObject()->getDocument()->getURL();
     GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "_region." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
-    ExportSequencesDialog d(merge, complement, amino, nucleic, defaultUrl.getURLString(), BaseDocumentFormats::PLAIN_FASTA, AppContext::getMainWindow()->getQMainWindow());
+    ExportSequencesDialog d(merge, complement, amino, nucleic, defaultUrl.getURLString(), BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
     d.setWindowTitle(sequence2SequenceAction->text());
     int rc = d.exec();
     if (rc == QDialog::Rejected) {

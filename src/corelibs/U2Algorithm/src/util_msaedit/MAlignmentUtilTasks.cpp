@@ -24,6 +24,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/U2SafePoints.h>
 
 
 #include "MAlignmentUtilTasks.h"
@@ -65,13 +66,10 @@ void TranslateMSA2AminoTask::run()
         MAlignmentRow row(dna.getName(), buf);  
         resultMA.addRow(row);
     }
-
-    
-
 }
 
-Task::ReportResult TranslateMSA2AminoTask::report()
-{
+
+Task::ReportResult TranslateMSA2AminoTask::report() {
     if (!resultMA.isEmpty()) {
         maObj->setMAlignment(resultMA);
     }
@@ -81,41 +79,33 @@ Task::ReportResult TranslateMSA2AminoTask::report()
 
 
 //////////////////////////////////////////////////////////////////////////
-/// MSAAlignMultiTask
+/// AlignInAminoFormTask
 
-MSAAlignMultiTask::MSAAlignMultiTask( MAlignmentObject* obj, MAlignmentGObjectTask* t, bool toAmino )
-: Task ("MSAAlignMultiTask",TaskFlags_FOSCOE), alignTask(t), maObj(obj), clonedObj(NULL), convertToAmino(toAmino)
+AlignInAminoFormTask::AlignInAminoFormTask( MAlignmentObject* obj, AlignGObjectTask* t )
+: Task ("Align in amino form", TaskFlags_FOSCOE), alignTask(t), maObj(obj), clonedObj(NULL)
 {
     setMaxParallelSubtasks(1);
 }
 
-void MSAAlignMultiTask::prepare()
-{
-    if (convertToAmino == true && maObj->getAlphabet()->isNucleic()) {
-        clonedObj = qobject_cast<MAlignmentObject*> ( maObj->clone() );
-        alignTask->setMAObject(clonedObj);
-        bufMA = clonedObj->getMAlignment();
-        addSubTask(new TranslateMSA2AminoTask(clonedObj));
-    }
-
-    addSubTask(alignTask);
-
+AlignInAminoFormTask::~AlignInAminoFormTask() {
+    delete clonedObj;
 }
 
-Task::ReportResult MSAAlignMultiTask::report() {
-    if (!bufMA.isEmpty() && convertToAmino) {
-        maObj->setMAlignment(bufMA);
-    }
-
-    return ReportResult_Finished;
-}
-
-void MSAAlignMultiTask::run() {
-    if ( hasError() || isCanceled() ) {
-        return;
-    }
+void AlignInAminoFormTask::prepare() {
+    CHECK_EXT(maObj->getAlphabet()->isNucleic(), setError("AlignInAminoFormTask: Input alphabet it not nucleic!"), );
     
-    if (bufMA.isEmpty() || !convertToAmino) {
+    clonedObj = qobject_cast<MAlignmentObject*> ( maObj->clone() );
+    alignTask->setMAObject(clonedObj);
+    bufMA = clonedObj->getMAlignment();
+    addSubTask(new TranslateMSA2AminoTask(clonedObj));
+    addSubTask(alignTask);
+}
+
+
+void AlignInAminoFormTask::run() {
+    CHECK_OP(stateInfo, );
+    
+    if (bufMA.isEmpty()) {
         return;
     }
     
@@ -137,7 +127,7 @@ void MSAAlignMultiTask::run() {
         for (int pos =0; pos < row.getCoreEnd(); ++pos) {
             char c = newMA.charAt(rowIdx, pos);
             if (c == MAlignment_GapChar) {
-                bufMA.insertChars(rowIdx,pos,MAlignment_GapChar,3);
+                bufMA.insertChars(rowIdx, pos, MAlignment_GapChar, 3);
             }
         }
     }
@@ -145,6 +135,15 @@ void MSAAlignMultiTask::run() {
     
 }
 
+Task::ReportResult AlignInAminoFormTask::report() {
+    CHECK_OP(stateInfo, Task::ReportResult_Finished);
+
+    if (!bufMA.isEmpty()) {
+        maObj->setMAlignment(bufMA);
+    }
+
+    return ReportResult_Finished;
+}
 
 
 } // U2

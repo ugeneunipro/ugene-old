@@ -83,7 +83,7 @@ void GTest_Bowtie::init(XMLTestFormat *tf, const QDomElement& el) {
 	usePrebuildIndex = true;
 	subTaskFailed = false;
 	indexName = el.attribute(INDEX_ATTR);
-	format = BaseDocumentFormats::PLAIN_FASTA;
+	format = BaseDocumentFormats::FASTA;
 	patternFormat = BaseDocumentFormats::PLAIN_TEXT;
 	if(indexName.isEmpty()) {failMissingValue(INDEX_ATTR); return;}
 	QString buildStr = el.attribute(BUILD_INDEX_ATTR);
@@ -99,7 +99,7 @@ void GTest_Bowtie::init(XMLTestFormat *tf, const QDomElement& el) {
 	negativeError = el.attribute(NEGATIVE_ATTR);
 	QString formatStr = el.attribute(FORMAT_ATTR);
 	if(!formatStr.isEmpty()) {
-		if(formatStr == "fasta") format = BaseDocumentFormats::PLAIN_FASTA;
+		if(formatStr == "fasta") format = BaseDocumentFormats::FASTA;
 		else if(formatStr == "fastq") format = BaseDocumentFormats::FASTQ;
 		else { failMissingValue(FORMAT_ATTR); return; }
 	}

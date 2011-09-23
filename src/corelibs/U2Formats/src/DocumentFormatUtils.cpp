@@ -314,4 +314,5 @@ int DocumentFormatUtils::getMergeGap(const QVariantMap& hints) {
     return res;
 }
 
+
 } //namespace

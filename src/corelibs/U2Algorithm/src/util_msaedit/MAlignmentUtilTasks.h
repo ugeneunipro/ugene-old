@@ -49,13 +49,13 @@ private:
 
 
 /**
- Wrapper for multiple alginment task
+ Wrapper for multiple alignment task
 */
 
-class U2ALGORITHM_EXPORT MAlignmentGObjectTask : public Task {
+class U2ALGORITHM_EXPORT AlignGObjectTask : public Task {
     Q_OBJECT
 public:
-    MAlignmentGObjectTask(const QString& taskName, TaskFlags f, MAlignmentObject* maobj)
+    AlignGObjectTask(const QString& taskName, TaskFlags f, MAlignmentObject* maobj)
         : Task(taskName, f), obj(maobj) {}
     void setMAObject(MAlignmentObject* maobj) { obj = maobj; }
     MAlignmentObject* getMAObject() { return obj; }
@@ -71,19 +71,19 @@ protected:
  2) avoid errors of inserting gaps within codon boundaries  
 */
 
-class U2ALGORITHM_EXPORT MSAAlignMultiTask : public Task {
+class U2ALGORITHM_EXPORT AlignInAminoFormTask : public Task {
     Q_OBJECT
 public:
-    MSAAlignMultiTask(MAlignmentObject* obj, MAlignmentGObjectTask* alignTask, bool convertToAmino);
+    AlignInAminoFormTask(MAlignmentObject* obj, AlignGObjectTask* alignTask);
+    ~AlignInAminoFormTask();
+
     virtual void prepare();
     virtual void run();
     virtual ReportResult report();
 protected:
-    MAlignmentGObjectTask* alignTask;
+    AlignGObjectTask* alignTask;
     MAlignmentObject *maObj, *clonedObj;
-    bool convertToAmino;
     MAlignment bufMA;
-
 };
 
 

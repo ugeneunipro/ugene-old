@@ -312,9 +312,11 @@ public:
 
     void setLoaded(bool v);
 
-    void loadFrom(const Document* d);
+    /** Takes content from sourceDoc. Source doc becomes unloaded after this op is completed! */
+    void loadFrom(Document* sourceDoc);
 
-    bool unload();
+    /** If deleteObjects is false -> does not delete objects and leaves them without parent */
+    bool unload(bool deleteObjects = true);
 
     bool checkConstraints(const Constraints& c) const;
     
@@ -347,7 +349,7 @@ private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Document* const &in);
     static void fromScriptValue(const QScriptValue &object, Document* &out);
 protected:
-    void _removeObject(GObject* o);
+    void _removeObject(GObject* o, bool deleteObjects = true);
     void _addObject(GObject* obj);
     void _addObjectToHierarchy(GObject* obj);
 

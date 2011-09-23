@@ -34,7 +34,7 @@ class U2FORMATS_EXPORT  FastaFormat : public DocumentFormat {
 public:
     FastaFormat(QObject* p);
 
-    virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::PLAIN_FASTA;}
+    virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::FASTA;}
 
     virtual const QString& getFormatName() const {return formatName;}
 

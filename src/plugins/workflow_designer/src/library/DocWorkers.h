@@ -59,7 +59,7 @@ protected:
 class FastaWriter : public BaseDocWriter {
     Q_OBJECT
 public:
-    FastaWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::PLAIN_FASTA){}
+    FastaWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::FASTA){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
 public:

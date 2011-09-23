@@ -90,7 +90,7 @@ void MAFFTSupportTask::prepare(){
         return;
     }
 
-    saveTemporaryDocumentTask=new SaveMSA2SequencesTask(mAObject->getMAlignment(), url, false, BaseDocumentFormats::PLAIN_FASTA);
+    saveTemporaryDocumentTask=new SaveMSA2SequencesTask(mAObject->getMAlignment(), url, false, BaseDocumentFormats::FASTA);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
 }
@@ -149,7 +149,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
         }
         ioLog.details(tr("Loading output file '%1'").arg(outputUrl));
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        loadTmpDocumentTask= new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA, outputUrl, iof);
+        loadTmpDocumentTask= new LoadDocumentTask(BaseDocumentFormats::FASTA, outputUrl, iof);
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTmpDocumentTask);
     } else if (subTask == loadTmpDocumentTask) {

@@ -34,6 +34,8 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/LoadDocumentTask.h>
 
 #include <U2Algorithm/MSAAlignAlgRegistry.h>
 
@@ -205,9 +207,6 @@ void KalignMSAEditorContext::sl_align() {
     assert(action!=NULL);
     MSAEditor* ed = action->getMSAEditor();
     MAlignmentObject* obj = ed->getMSAObject(); 
-    if (obj == NULL)
-        return;
-    assert(!obj->isStateLocked());
     
     KalignTaskSettings s;
     KalignDialogController dlg(ed->getWidget(), obj->getMAlignment(), s, true);
@@ -217,7 +216,7 @@ void KalignMSAEditorContext::sl_align() {
         return;
     }
     
-    MAlignmentGObjectTask * kalignTask = NULL;
+    AlignGObjectTask * kalignTask = NULL;
 #ifndef RUN_WORKFLOW_IN_THREADS
     if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
         kalignTask = new KalignGObjectRunFromSchemaTask(obj, s);
@@ -227,8 +226,11 @@ void KalignMSAEditorContext::sl_align() {
 #else
     kalignTask = new KalignGObjectTask(obj, s);
 #endif // RUN_WORKFLOW_IN_THREADS
-    assert(kalignTask != NULL);
-    AppContext::getTaskScheduler()->registerTopLevelTask( new MSAAlignMultiTask(obj, kalignTask, dlg.translateToAmino()) );
+    if (dlg.translateToAmino()) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, kalignTask));
+    } else {
+        AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);
+    }
 }
 
 }//namespace

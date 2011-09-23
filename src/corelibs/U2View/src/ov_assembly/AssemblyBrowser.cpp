@@ -96,7 +96,7 @@ showInfoAction(0), exportToSamAction(0)
     if(gobject) {
         objects.append(o);
         requiredObjects.append(o);
-        const U2DataRef& ref= gobject->getDbiRef();
+        const U2EntityRef& ref= gobject->getEntityRef();
         model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus)));
         sl_assemblyLoaded();
     }   
@@ -457,7 +457,7 @@ void AssemblyBrowser::sl_assemblyLoaded() {
 
     U2AssemblyDbi * assmDbi = dbi->getAssemblyDbi();
 
-    U2DataId objectId = gobject->getDbiRef().entityId;
+    U2DataId objectId = gobject->getEntityRef().entityId;
     U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(objectId, dbiOpStatus);
     LOG_OP(dbiOpStatus);
 

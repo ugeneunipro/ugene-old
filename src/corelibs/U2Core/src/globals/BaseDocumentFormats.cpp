@@ -20,11 +20,13 @@
  */
 
 #include "BaseDocumentFormats.h"
+#include <U2Core/AppContext.h>
+#include <U2Core/DocumentModel.h>
 
 namespace U2 {
 
 const DocumentFormatId BaseDocumentFormats::PLAIN_TEXT("text");
-const DocumentFormatId BaseDocumentFormats::PLAIN_FASTA("fasta");
+const DocumentFormatId BaseDocumentFormats::FASTA("fasta");
 const DocumentFormatId BaseDocumentFormats::PLAIN_GENBANK("genbank");
 const DocumentFormatId BaseDocumentFormats::PLAIN_EMBL("embl");
 const DocumentFormatId BaseDocumentFormats::PLAIN_SWISS_PROT("swiss-prot");
@@ -46,5 +48,10 @@ const DocumentFormatId BaseDocumentFormats::NEXUS("nexus");
 const DocumentFormatId BaseDocumentFormats::MEGA("mega");
 const DocumentFormatId BaseDocumentFormats::ACE("ace");
 const DocumentFormatId BaseDocumentFormats::PDW("pdw");
+
+DocumentFormat* BaseDocumentFormats::get(const DocumentFormatId& formatId) {
+    return AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+}
+
 
 }//namespace

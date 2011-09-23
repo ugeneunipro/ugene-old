@@ -96,11 +96,11 @@ Kalign_Load_Align_Compare_Task::Kalign_Load_Align_Compare_Task( QString inFileUR
 
 void Kalign_Load_Align_Compare_Task::prepare() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(str_inFileURL));
-    loadTask1 = new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,str_inFileURL,iof);
+    loadTask1 = new LoadDocumentTask(BaseDocumentFormats::FASTA,str_inFileURL,iof);
     loadTask1->setSubtaskProgressWeight(0);
     addSubTask(loadTask1);
     iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(str_patFileURL));
-    loadTask2 = new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,str_patFileURL,iof);
+    loadTask2 = new LoadDocumentTask(BaseDocumentFormats::FASTA,str_patFileURL,iof);
     addSubTask(loadTask2);
     loadTask1->setSubtaskProgressWeight(0);
 }
@@ -344,12 +344,12 @@ void GTest_Kalign_Load_Align_QScore::prepare() {
     }
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(env->getVar("COMMON_DATA_DIR")+"/"+inFileURL));
-    loadTask1 = new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,env->getVar("COMMON_DATA_DIR")+"/"+inFileURL,iof);
+    loadTask1 = new LoadDocumentTask(BaseDocumentFormats::FASTA,env->getVar("COMMON_DATA_DIR")+"/"+inFileURL,iof);
     loadTask1->setSubtaskProgressWeight(0);
     addSubTask(loadTask1);
     iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(env->getVar("COMMON_DATA_DIR")+"/"+patFileURL));
 
-    loadTask2 = new LoadDocumentTask(BaseDocumentFormats::PLAIN_FASTA,env->getVar("COMMON_DATA_DIR")+"/"+patFileURL,iof);
+    loadTask2 = new LoadDocumentTask(BaseDocumentFormats::FASTA,env->getVar("COMMON_DATA_DIR")+"/"+patFileURL,iof);
 
     addSubTask(loadTask2);
     loadTask1->setSubtaskProgressWeight(0);

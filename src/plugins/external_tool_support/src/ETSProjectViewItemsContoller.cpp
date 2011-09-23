@@ -65,7 +65,7 @@ void ETSProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
     QList<Document*> set = SelectionUtils::getSelectedDocs(ms);
     bool hasFastaDocs=false;
     foreach(Document* doc,set){
-        if(doc->getDocumentFormatId() == BaseDocumentFormats::PLAIN_FASTA){
+        if(doc->getDocumentFormatId() == BaseDocumentFormats::FASTA){
             hasFastaDocs=true;
             break;
         }
@@ -121,7 +121,7 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());//???
     FormatDBSupportTaskSettings settings;
     foreach(Document* doc,pv->getDocumentSelection()->getSelectedDocuments()){
-        if(doc->getDocumentFormatId() == BaseDocumentFormats::PLAIN_FASTA){
+        if(doc->getDocumentFormatId() == BaseDocumentFormats::FASTA){
             settings.inputFilesPath.append(doc->getURLString());
         }
     }

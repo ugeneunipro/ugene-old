@@ -117,7 +117,7 @@ signals:
     
 }; // WorkflowRunInProcessTask
 
-class WorkflowRunInProcessMonitorTask;
+class RunCmdlineWorkflowTask;
 
 class WorkflowIterationRunInProcessTask : public Task {
     Q_OBJECT
@@ -137,33 +137,44 @@ private:
     Schema* schema;
     QTemporaryFile tempFile;
     SaveWorkflowTask * saveSchemaTask;
-    WorkflowRunInProcessMonitorTask * monitor;
+    RunCmdlineWorkflowTask * monitor;
     QMap<ActorId, ActorId> rmap;
     
 }; // WorkflowIterationRunInProcessTask
 
-class WorkflowRunInProcessMonitorTask : public Task {
+class RunCmdlineWorkflowTaskConfig {
+public:
+    RunCmdlineWorkflowTaskConfig(const QString& _schemaPath = QString(), const QStringList& _args = QStringList()) 
+        : schemaPath(_schemaPath), args(_args), logLevel2Commute(LogLevel_INFO) {}
+
+    QString         schemaPath;
+    QStringList     args;
+    LogLevel        logLevel2Commute;
+};
+
+class RunCmdlineWorkflowTask : public Task {
     Q_OBJECT
 public:
-    WorkflowRunInProcessMonitorTask(const QString & schemaPath);
-    ~WorkflowRunInProcessMonitorTask();
+    RunCmdlineWorkflowTask(const RunCmdlineWorkflowTaskConfig& conf);
     
+    void prepare();
     virtual ReportResult report();
     WorkerState getState(const ActorId & id);
     int getMsgNum(const QString & ids);
     int getMsgPassed(const QString & ids);
-    void writeLog(QString message);
+    void writeLog(const QString& message);
     
 private slots:
     void sl_onError(QProcess::ProcessError);
     void sl_onReadStandardOutput();
     
 private:
-    QString schemaPath;
-    QProcess * proc;
-    QMap<ActorId, WorkerState> states;
-    QMap<QString, int> msgNums;
-    QMap<QString, int> msgPassed;
+    RunCmdlineWorkflowTaskConfig   conf;
+    QProcess*                               proc;
+    QMap<ActorId, WorkerState>              states;
+    QMap<QString, int>                      msgNums;
+    QMap<QString, int>                      msgPassed;
+    QString                                 processLogPrefix;
     
 }; // WorkflowRunInProcessMonitorTask
 

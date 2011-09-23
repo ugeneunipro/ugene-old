@@ -108,4 +108,9 @@ IOAdapter* IOAdapterUtils::open(const GUrl& url, U2OpStatus& os, IOAdapterMode m
     return io;
 }
 
+IOAdapterFactory* IOAdapterUtils::get(const IOAdapterId& id) {
+    return AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(id);
+}
+
+
 } //namespace

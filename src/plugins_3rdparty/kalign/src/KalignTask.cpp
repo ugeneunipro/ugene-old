@@ -42,8 +42,12 @@ extern "C" {
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Gui/OpenViewTask.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Lang/WorkflowSettings.h>
+#include <U2Lang/SimpleWorkflowTask.h>
+
+#include <U2Gui/OpenViewTask.h>
 
 extern "C" kalign_context *getKalignContext() {
     U2::KalignContext* ctx = static_cast<U2::KalignContext*>(U2::TLSUtils::current(KALIGN_CONTEXT_ID));
@@ -122,7 +126,7 @@ TLSContext* KalignTask::createContextInstance()
 // KalignGObjectTask
 
 KalignGObjectTask::KalignGObjectTask(MAlignmentObject* _obj, const KalignTaskSettings& _config) 
-: MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE, _obj), lock(NULL), kalignTask(NULL), config(_config)
+: AlignGObjectTask("", TaskFlags_NR_FOSCOE, _obj), lock(NULL), kalignTask(NULL), config(_config)
 {
     QString aliName = obj->getDocument()->getName();
     QString tn;
@@ -137,37 +141,27 @@ KalignGObjectTask::~KalignGObjectTask() {
 }
 
 void KalignGObjectTask::prepare() {
-    if (obj.isNull()) {
-        stateInfo.setError(tr("object_removed"));
-        return;
-    }
-    if (obj->isStateLocked()) {
-        stateInfo.setError(tr("object_is_state_locked"));
-        return;
-    }
+    CHECK_EXT(!obj.isNull(), stateInfo.setError(tr("Object is removed!")), );
+    CHECK_EXT(!obj->isStateLocked(), stateInfo.setError(tr("Object is state-locked!")), );
 
     lock = new StateLock(KALIGN_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
     kalignTask = new KalignTask(obj->getMAlignment(), config);
-
     addSubTask(kalignTask);
 }
 
 Task::ReportResult KalignGObjectTask::report() {
-    if (lock!=NULL) {
+    if (lock != NULL) {
         obj->unlockState(lock);
         delete lock;
         lock = NULL;
     }
     propagateSubtaskError();
-    if (hasError() || isCanceled()) {
-        return ReportResult_Finished;
-    }
-    assert(!obj.isNull());
-    if (obj->isStateLocked()) {
-        stateInfo.setError(tr("object_is_state_locked"));
-        return ReportResult_Finished;
-    }
+    CHECK_OP(stateInfo, ReportResult_Finished);
+    
+    SAFE_POINT(!obj.isNull(), "Object was removed?!", ReportResult_Finished);
+    CHECK_EXT(!obj->isStateLocked(), stateInfo.setError(tr("object_is_state_locked")), ReportResult_Finished);
+    
     assert(kalignTask->inputMA.getNumRows() == kalignTask->resultMA.getNumRows());
     obj->setMAlignment(kalignTask->resultMA);    
 
@@ -180,107 +174,22 @@ Task::ReportResult KalignGObjectTask::report() {
 
 #ifndef RUN_WORKFLOW_IN_THREADS
 
-KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * o, const KalignTaskSettings & c) :
-MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE,o), config(c), lock(NULL), runSchemaTask(NULL), objName(o->getDocument()->getName()) 
+KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * o, const KalignTaskSettings & c) 
+: AlignGObjectTask("", TaskFlags_NR_FOSCOE,o), config(c)
 {
-    setTaskName(tr("KALIGN align '%1' in separate process").arg(objName));
+    QString tName = tr("KAlign align '%1'").arg(o->getDocument()->getName());
+    setTaskName(tName);
     setUseDescriptionFromSubtask(true);
     setVerboseLogMode(true);
-}
 
-KalignGObjectRunFromSchemaTask::~KalignGObjectRunFromSchemaTask() {
-    assert(lock == NULL);
-}
-
-static const QString KALIGN_SCHEMA_NAME("kalign");
-
-void KalignGObjectRunFromSchemaTask::prepare() {
-    if (obj.isNull()) {
-        stateInfo.setError(tr("Object '%1' removed").arg(objName));
-        return;
-    }
-    if (obj->isStateLocked()) {
-        stateInfo.setError(tr("Object '%1' is locked").arg(objName));
-        return;
-    }
-    algoLog.info(tr("Kalign alignment started"));
-    
-    lock = new StateLock(KALIGN_LOCK_REASON, StateLockFlag_LiveLock);
-    obj->lockState(lock);
-    QVariantMap hints;
-    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
-    runSchemaTask = new WorkflowRunSchemaForTask(KALIGN_SCHEMA_NAME, this, hints);
-    addSubTask(runSchemaTask);
-}
-
-Task::ReportResult KalignGObjectRunFromSchemaTask::report() {
-    if (lock!=NULL) {
-        obj->unlockState(lock);
-        delete lock;
-        lock = NULL;
-    }
-    
-    propagateSubtaskError();
-    if(hasError() || isCanceled()) {
-        return ReportResult_Finished;
-    }
-    
-    if (obj->isStateLocked()) {
-        setError(tr("Object '%1' is locked").arg(objName));
-        return ReportResult_Finished;
-    }
-    
-    std::auto_ptr<Document> result(runSchemaTask->takeDocument());
-    QList<GObject*> objs = result->getObjects();
-    assert(objs.size() == 1);
-    const QString KALIGN_TASK_NO_RESULT_ERROR(tr("Undefined error: Kalign task did not produced result"));
-    if( objs.isEmpty() ) {
-        setError(KALIGN_TASK_NO_RESULT_ERROR);
-        return ReportResult_Finished;
-    }
-    MAlignmentObject * maObj = qobject_cast<MAlignmentObject*>(objs.first());
-    if(maObj == NULL) {
-        setError(KALIGN_TASK_NO_RESULT_ERROR);
-        return ReportResult_Finished;
-    }
-    obj->setMAlignment(maObj->getMAlignment());
-    algoLog.info(tr("Kalign alignment successfully finished"));
-    return ReportResult_Finished;
-}
-
-bool KalignGObjectRunFromSchemaTask::saveInput() const {
-    return true;
-}
-
-QList<GObject*> KalignGObjectRunFromSchemaTask::createInputData() const {
-    QList<GObject*> objs;
-    objs << obj.data()->clone();
-    return objs;
-}
-
-DocumentFormatId KalignGObjectRunFromSchemaTask::inputFileFormat() const {
-    if(obj != NULL && obj->getDocument() != NULL && obj->getDocument()->getDocumentFormat() != NULL) {
-        return obj->getDocument()->getDocumentFormat()->getFormatId();
-    } else {
-        return BaseDocumentFormats::CLUSTAL_ALN;
-    }
-}
-
-DocumentFormatId KalignGObjectRunFromSchemaTask::outputFileFormat() const {
-    return inputFileFormat();
-}
-
-QVariantMap KalignGObjectRunFromSchemaTask::getSchemaData() const {
-    QVariantMap res;
-    res["bonus-score"] = qVariantFromValue(config.secret);
-    res["gap-ext-penalty"] = qVariantFromValue(config.gapExtenstionPenalty);
-    res["gap-open-penalty"] = qVariantFromValue(config.gapOpenPenalty);
-    res["gap-terminal-penalty"] = qVariantFromValue(config.termGapPenalty);
-    return res;
-}
-
-bool KalignGObjectRunFromSchemaTask::saveOutput() const {
-    return true;
+    SimpleMSAWorkflowTaskConfig conf;
+    conf.algoName = "KAlign";
+    conf.schemaName = "align-kalign";
+    conf.schemaArgs << QString("--bonus-score=%1").arg(config.secret);
+    conf.schemaArgs<< QString("--gap-ext-penalty=%1").arg(config.gapExtenstionPenalty);
+    conf.schemaArgs<< QString("--gap-open-penalty=%1").arg(config.gapOpenPenalty);
+    conf.schemaArgs<< QString("--gap-terminal-penalty=%1").arg(config.termGapPenalty);
+    addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
 }
 
 #endif // RUN_WORKFLOW_IN_THREADS

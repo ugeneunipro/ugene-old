@@ -89,7 +89,7 @@ void TCoffeeSupportTask::prepare(){
         return;
     }
 
-    saveTemporaryDocumentTask=new SaveMSA2SequencesTask(mAObject->getMAlignment(), url, false, BaseDocumentFormats::PLAIN_FASTA);
+    saveTemporaryDocumentTask=new SaveMSA2SequencesTask(mAObject->getMAlignment(), url, false, BaseDocumentFormats::FASTA);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
 }

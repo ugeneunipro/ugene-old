@@ -174,8 +174,8 @@ Task::ReportResult LoadUnloadedDocumentTask::report() {
         if (!readyToLoad) {
             stateInfo.setError(tr("Document is locked")); //todo: wait instead?
         }  else {
-            Document* doc = loadTask->takeDocument();
-            unloadedDoc->loadFrom(doc); // get document copy
+            Document* sourceDoc = loadTask->getDocument();
+            unloadedDoc->loadFrom(sourceDoc); // get all data from source doc;
             assert(!unloadedDoc->isTreeItemModified());
             assert(unloadedDoc->isLoaded());
         }

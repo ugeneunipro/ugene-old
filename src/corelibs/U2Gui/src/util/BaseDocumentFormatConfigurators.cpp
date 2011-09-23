@@ -39,7 +39,7 @@ namespace U2 {
 
 
 void BaseDocumentFormatConfigurators::initBuiltInConfigurators() {
-    AppContext::getDocumentFormatConfigurators()->registerConfigurator(new MultiPartDocFormatConfigurator(BaseDocumentFormats::PLAIN_FASTA));
+    AppContext::getDocumentFormatConfigurators()->registerConfigurator(new MultiPartDocFormatConfigurator(BaseDocumentFormats::FASTA));
     AppContext::getDocumentFormatConfigurators()->registerConfigurator(new MultiPartDocFormatConfigurator(BaseDocumentFormats::PLAIN_GENBANK));
     AppContext::getDocumentFormatConfigurators()->registerConfigurator(new MultiPartDocFormatConfigurator(BaseDocumentFormats::PLAIN_EMBL));
     AppContext::getDocumentFormatConfigurators()->registerConfigurator(new MultiPartDocFormatConfigurator(BaseDocumentFormats::FASTQ));

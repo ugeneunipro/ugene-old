@@ -79,7 +79,7 @@ void BlastAllSupportTask::prepare(){
     sequenceObject= new DNASequenceObject("input sequence", DNASequence(settings.querySequence, settings.alphabet));
     objects.append(sequenceObject);
     url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
-    tmpDoc = new Document(AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA),
+    tmpDoc = new Document(AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA),
              AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE),
              GUrl(url), objects);
     

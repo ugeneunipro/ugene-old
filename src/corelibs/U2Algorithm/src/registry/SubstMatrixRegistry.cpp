@@ -88,7 +88,7 @@ void SubstMatrixRegistry::readMatrices() {
     for (int i = 0; i < ls.size(); i++) {
         const QString& fileName = ls.at(i);
         QFileInfo fi(builtInMatrixDir + "/" + fileName);
-        coreLog.details(tr("Reading substitution matrix from %1").arg(fi.canonicalFilePath()));
+        coreLog.trace(tr("Reading substitution matrix from %1").arg(fi.canonicalFilePath()));
         QString error;
         SMatrix matrix = readMatrixFromFile(fi.canonicalFilePath(), error);
         if (!matrix.isEmpty()) {

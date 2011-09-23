@@ -58,7 +58,7 @@ public:
     U2OpStatus&     os;
 
 private: //TODO
-    DbiHandle & operator=(const DbiHandle & DbiHandle_);
+    DbiHandle & operator=(const DbiHandle & dbiHandle);
 };
 
 

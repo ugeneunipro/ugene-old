@@ -49,7 +49,7 @@ ExportMSA2SequencesDialog::ExportMSA2SequencesDialog(QWidget* p): QDialog(p) {
     conf.formatCombo = formatCombo;
     conf.fileNameEdit = fileNameEdit;
     conf.parentWidget = this;
-    conf.defaultFormatId = BaseDocumentFormats::PLAIN_FASTA;
+    conf.defaultFormatId = BaseDocumentFormats::FASTA;
     saveContoller = new SaveDocumentGroupController(conf, this);
 }
 

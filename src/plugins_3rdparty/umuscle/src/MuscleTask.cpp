@@ -42,8 +42,11 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Gui/OpenViewTask.h>
+
 #include <U2Lang/WorkflowSettings.h>
+#include <U2Lang/SimpleWorkflowTask.h>
+
+#include <U2Gui/OpenViewTask.h>
 
 #include "muscle/muscle.h" 
 #include "muscle/muscle_context.h" 
@@ -349,7 +352,7 @@ Task::ReportResult MuscleAddSequencesToProfileTask::report() {
 // MuscleGObjectTask
 
 MuscleGObjectTask::MuscleGObjectTask(MAlignmentObject* _obj, const MuscleTaskSettings& _config) 
-: MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE,_obj), lock(NULL), muscleTask(NULL), config(_config)
+: AlignGObjectTask("", TaskFlags_NR_FOSCOE,_obj), lock(NULL), muscleTask(NULL), config(_config)
 {
     QString aliName = obj->getDocument()->getName();
     QString tn;
@@ -528,130 +531,40 @@ Task::ReportResult MuscleWithExtFileSpecifySupportTask::report(){
 
 //////////////////////////////////
 //MuscleGObjectRunFromSchemaTask
-static const QString LOCK_NAME("muscle state lock");
-static const QString MUSCLE_SCHEMA_NAME("muscle");
-
-MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject * o, const MuscleTaskSettings & c) :
-MAlignmentGObjectTask("", TaskFlags_NR_FOSCOE, o), objName(o->getDocument()->getName()), config(c), runSchemaTask(NULL), lock(NULL){
-    assertConfig();
+MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject * o, const MuscleTaskSettings & c) 
+: AlignGObjectTask("", TaskFlags_NR_FOSCOE, o), config(c)
+{
+    assert(config.op == MuscleTaskOp_Align || config.op == MuscleTaskOp_Refine);
+    assert(config.profile.isEmpty());
+    setUseDescriptionFromSubtask(true);
+    setVerboseLogMode(true);
+    
+    QString objName = o->getDocument()->getName();
     assert(!objName.isEmpty());
     
-    QString name;
+    QString tName;
     switch(config.op) {
         case MuscleTaskOp_Align:
-            name = tr("MUSCLE run in separate process align '%1'").arg(objName);
+            tName = tr("MUSCLE align '%1'").arg(objName);
             break;
         case MuscleTaskOp_Refine: 
-            name = tr("MUSCLE run in separate process refine '%1'").arg(objName);
+            tName = tr("MUSCLE refine '%1'").arg(objName);
             break;
         default: 
             assert(false);
     }
-    setTaskName(name);
-    setUseDescriptionFromSubtask(true);
-    setVerboseLogMode(true);
-}
+    setTaskName(tName);
 
-MuscleGObjectRunFromSchemaTask::~MuscleGObjectRunFromSchemaTask() {
-    assert(lock == NULL);
-}
-
-void MuscleGObjectRunFromSchemaTask::assertConfig() {
-    assert(config.op == MuscleTaskOp_Align || config.op == MuscleTaskOp_Refine);
-    assert(config.profile.isEmpty());
-}
-
-void MuscleGObjectRunFromSchemaTask::prepare() {
-    if (obj.isNull()) {
-        stateInfo.setError(tr("Object '%1' removed").arg(objName));
-        return;
+    SimpleMSAWorkflowTaskConfig conf;
+    conf.algoName = "Muscle";
+    conf.schemaName = "align";
+    conf.schemaArgs << QString("--mode=%1").arg(config.mode);
+    conf.schemaArgs << QString("--max-iterations=%1").arg(config.maxIterations);
+    conf.schemaArgs << QString("--stable=%1").arg(config.stableMode);
+    if (config.alignRegion) {
+        conf.schemaArgs << QString("--range=%1").arg(QString("%1..%2").arg(config.regionToAlign.startPos + 1).arg(config.regionToAlign.endPos()));
     }
-    if (obj->isStateLocked()) {
-        stateInfo.setError(tr("Object '%1' is locked").arg(objName));
-        return;
-    }
-    algoLog.info(tr("MUSCLE alignment started"));
-    
-    lock = new StateLock(MUSCLE_LOCK_REASON, StateLockFlag_LiveLock);
-    obj->lockState(lock);
-    QVariantMap hints;
-    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
-    runSchemaTask = new WorkflowRunSchemaForTask(MUSCLE_SCHEMA_NAME, this, hints);
-    addSubTask(runSchemaTask);
-}
-
-Task::ReportResult MuscleGObjectRunFromSchemaTask::report() {
-    if (lock!=NULL) {
-        obj->unlockState(lock);
-        delete lock;
-        lock = NULL;
-    }
-    
-    propagateSubtaskError();
-    if(hasError() || isCanceled()) {
-        return ReportResult_Finished;
-    }
-    
-    if (obj->isStateLocked()) {
-        setError(tr("Object '%1' is locked").arg(objName));
-        return ReportResult_Finished;
-    }
-    
-    std::auto_ptr<Document> result(runSchemaTask->takeDocument());
-    QList<GObject*> objs = result->getObjects();
-    assert(objs.size() == 1);
-    const QString MUSCLE_TASK_NO_RESULT_ERROR(tr("Undefined error: muscle task did not produced result"));
-    if( objs.isEmpty() ) {
-        setError(MUSCLE_TASK_NO_RESULT_ERROR);
-        return ReportResult_Finished;
-    }
-    MAlignmentObject * maObj = qobject_cast<MAlignmentObject*>(objs.first());
-    if(maObj == NULL) {
-        setError(MUSCLE_TASK_NO_RESULT_ERROR);
-        return ReportResult_Finished;
-    }
-    obj->setMAlignment(maObj->getMAlignment());
-    algoLog.info(tr("MUSCLE alignment successfully finished"));
-    return ReportResult_Finished;
-}
-
-bool MuscleGObjectRunFromSchemaTask::saveInput() const {
-    return true;
-}
-
-QList<GObject*> MuscleGObjectRunFromSchemaTask::createInputData() const {
-    QList<GObject*> objs;
-    objs << obj.data()->clone();
-    return objs;
-}
-
-QVariantMap MuscleGObjectRunFromSchemaTask::getSchemaData() const {
-    QVariantMap res;
-    res["mode"] = qVariantFromValue((int)config.mode);
-    res["max-iterations"] = qVariantFromValue(config.maxIterations);
-    res["stable"] = qVariantFromValue(config.stableMode);
-    if(!config.alignRegion) {
-        res["range"] = qVariantFromValue(QString("Whole alignment"));
-    } else {
-        res["range"] = qVariantFromValue(QString("%1..%2").arg(config.regionToAlign.startPos + 1).arg(config.regionToAlign.endPos()));
-    }
-    return res;
-}
-
-DocumentFormatId MuscleGObjectRunFromSchemaTask::outputFileFormat() const {
-    return inputFileFormat();
-}
-
-DocumentFormatId MuscleGObjectRunFromSchemaTask::inputFileFormat() const {
-    if(obj != NULL && obj->getDocument() != NULL && obj->getDocument()->getDocumentFormat() != NULL) {
-        return obj->getDocument()->getDocumentFormat()->getFormatId();
-    } else {
-        return BaseDocumentFormats::CLUSTAL_ALN;
-    }
-}
-
-bool MuscleGObjectRunFromSchemaTask::saveOutput() const {
-    return true;
+    addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
 }
 
 #endif // RUN_WORKFLOW_IN_THREADS

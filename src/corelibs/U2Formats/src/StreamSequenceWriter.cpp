@@ -66,7 +66,7 @@ StreamShortReadsWriter::~StreamShortReadsWriter() {
 
 
 StreamShortReadWriter::StreamShortReadWriter( bool writeQualityExplicitly) : writeQuality(writeQualityExplicitly) {
-    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_FASTA);
+    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA);
     fastaFormat = qobject_cast<FastaFormat*> (df);
     assert(fastaFormat != NULL);
 

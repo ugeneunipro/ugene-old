@@ -50,7 +50,7 @@ public:
         delegateForTypes = NULL;
         delegateForFormats = NULL;
         itemData.type = BaseTypes::DNA_SEQUENCE_TYPE()->getId();
-        itemData.format = BaseDocumentFormats::PLAIN_FASTA;
+        itemData.format = BaseDocumentFormats::FASTA;
     }
     ~CfgExternalToolItem() {
         delete delegateForTypes;

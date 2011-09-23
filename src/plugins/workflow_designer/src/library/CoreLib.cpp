@@ -130,7 +130,7 @@ void CoreLib::init() {
         Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("A sequence along with FASTA header line."));
         p << new PortDescriptor(pd, fastaTypeSet, true);
         a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::PLAIN_FASTA, acd, p, pd.getId(), a);
+        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::FASTA, acd, p, pd.getId(), a);
         proto->setPrompter(new WriteFastaPrompter("FASTA"));
         r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
     }
@@ -278,7 +278,7 @@ void CoreLib::init() {
             p << new PortDescriptor(pd, typeSet, true);
             a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
             Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
-                supportedFormats.contains( BaseDocumentFormats::PLAIN_FASTA ) ? BaseDocumentFormats::PLAIN_FASTA : supportedFormats.first() );
+                supportedFormats.contains( BaseDocumentFormats::FASTA ) ? BaseDocumentFormats::FASTA : supportedFormats.first() );
             a << docFormatAttr;
             WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a );
             IntegralBusActorPrototype * proto = childProto;

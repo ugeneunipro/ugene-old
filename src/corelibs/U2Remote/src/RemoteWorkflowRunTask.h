@@ -26,7 +26,6 @@
 #include <U2Remote/RemoteMachine.h>
 
 #include <U2Lang/Schema.h>
-#include <U2Lang/RunSchemaForTask.h>
 
 #include <QtCore/QEventLoop>
 

@@ -59,7 +59,7 @@ RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U
 
     connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
 
-    ui->formatBox->addItem("FASTA", BaseDocumentFormats::PLAIN_FASTA);
+    ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
     ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
     connect(ui->mergeAnnotationsBox, SIGNAL(toggled(bool)), this, SLOT(sl_mergeAnnotationsToggled(bool)));
     sl_indexChanged(0);
@@ -127,7 +127,7 @@ void RemovePartFromSequenceDialogController::sl_mergeAnnotationsToggled( bool ){
     if(ui->mergeAnnotationsBox->isChecked()){
         ui->formatBox->removeItem(ui->formatBox->findText("FASTA"));
     }else{
-        ui->formatBox->addItem("FASTA", BaseDocumentFormats::PLAIN_FASTA);
+        ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
     }
     sl_indexChanged(ui->formatBox->findText("Genbank"));
 }

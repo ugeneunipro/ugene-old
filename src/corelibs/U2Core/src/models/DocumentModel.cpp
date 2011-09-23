@@ -31,6 +31,7 @@
 
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/UnloadedObject.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QFileInfo>
 
@@ -237,7 +238,7 @@ void Document::removeObject(GObject* obj) {
     _removeObject(obj);
 }
 
-void Document::_removeObject(GObject* obj) {
+void Document::_removeObject(GObject* obj, bool deleteObjects) {
     assert(obj->getParentStateLockItem() == this);
     obj->setModified(false);
 
@@ -246,9 +247,12 @@ void Document::_removeObject(GObject* obj) {
     obj->setGHints(new GHintsDefaultImpl());
 
     assert(objects.size() == getChildItems().size());
+
     emit si_objectRemoved(obj);
     
-    delete obj;
+    if (deleteObjects) {
+        delete obj;
+    }
 }
 
 
@@ -309,61 +313,54 @@ void Document::checkLoadedState() const {
 
 static StateLock* NULL_LOCK = NULL;
 
-void Document::loadFrom(const Document* d) {
-    assert(d->getDocumentFormat() == df);
-    assert(!isLoaded() && d->isLoaded());
+void Document::loadFrom(Document* sourceDoc) {
+    SAFE_POINT(!isLoaded(), QString("Document is already loaded: ").arg(getURLString()), )
 
-    d->checkLoadedState();
+    sourceDoc->checkLoadedState();
     checkUnloadedState();
 
-    int nDocLocks = 0; 
-    qCount(modLocks, modLocks + DocumentModLock_NUM_LOCKS, NULL_LOCK, nDocLocks);
-    nDocLocks = DocumentModLock_NUM_LOCKS - nDocLocks;
-
-#ifdef _DEBUG
-    int totalLocks = locks.count();    
-    assert(totalLocks == nDocLocks);
-#endif
-    
     loadStateChangeMode = true;
 
     QMap<QString, UnloadedObjectInfo> unloadedInfo;
-    foreach(GObject* obj, objects) { //remove all unloaded objects
+    foreach(GObject* obj, objects) { //remove all unloaded objects but save hints
         unloadedInfo.insert(obj->getGObjectName(), UnloadedObjectInfo(obj));
         _removeObject(obj);
     }
-    ctxState->setAll(d->getGHints()->getMap());
+    ctxState->setAll(sourceDoc->getGHints()->getMap());
     
-    lastUpdateTime = d->getLastUpdateTime();
+    lastUpdateTime = sourceDoc->getLastUpdateTime();
 
-    //copy instance modlocks if any
+    //copy instance mod-locks if any
     StateLock* mLock = modLocks[DocumentModLock_FORMAT_AS_INSTANCE];
-    if (mLock!=NULL) {
-        unlockState(mLock);
-        delete mLock;
-        modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = NULL;
-    }
-    StateLock* dLock = d->modLocks[DocumentModLock_FORMAT_AS_INSTANCE];
-    if (dLock!=NULL) {
+    StateLock* dLock = sourceDoc->modLocks[DocumentModLock_FORMAT_AS_INSTANCE];
+    if (mLock != NULL) {
+        if (dLock == NULL) {
+            unlockState(mLock);
+            delete mLock;
+            modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = NULL;
+        } else {
+            mLock->setUserDesc(dLock->getUserDesc());
+        }
+    } else if (dLock!=NULL) {
         modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = new StateLock(dLock->getUserDesc());
         lockState(modLocks[DocumentModLock_FORMAT_AS_INSTANCE]);
     }
     
-    QList<GObject*> objects = d->getObjects();
-    foreach(GObject* origObj, objects) {
-        GObject* clonedObj = origObj->clone();
-        //merge hints, TODO: add constrains to ObjectRelations!!
-        UnloadedObjectInfo info = unloadedInfo.value(clonedObj->getGObjectName());
-        if (info.type == clonedObj->getGObjectType()) {
-            QVariantMap mergedHints = clonedObj->getGHintsMap();
+    QList<GObject*> sourceObjects = sourceDoc->getObjects();
+    sourceDoc->unload(false);
+    foreach(GObject* obj, sourceObjects) {
+        //TODO: add constrains to ObjectRelations!!
+        UnloadedObjectInfo info = unloadedInfo.value(obj->getGObjectName());
+        if (info.type == obj->getGObjectType()) {
+            QVariantMap mergedHints = obj->getGHintsMap();
             foreach(const QString& k, info.hints.keys()) {
                 if (!mergedHints.contains(k)) {
                     mergedHints.insert(k, info.hints.value(k));
                 }
             }
-            clonedObj->getGHints()->setMap(mergedHints);
+            obj->getGHints()->setMap(mergedHints);
         }
-        _addObject(clonedObj);
+        _addObject(obj);
     }
     
     setLoaded(true); 
@@ -492,7 +489,7 @@ void Document::setUserModLock(bool v) {
     }
 }
 
-bool Document::unload() {
+bool Document::unload(bool deleteObjects) {
     assert(isLoaded());
     
     bool liveLocked = hasLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock);
@@ -503,18 +500,10 @@ bool Document::unload() {
 
     loadStateChangeMode = true;
 
-    int nDocLocks = 0; 
-    qCount(modLocks, modLocks + DocumentModLock_NUM_LOCKS, NULL_LOCK, nDocLocks);
-    nDocLocks = DocumentModLock_NUM_LOCKS - nDocLocks;
-    int totalLocks = locks.count();    
-    if (nDocLocks!=totalLocks) {
-        assert(0);
-        return false;
-    }
     QList<UnloadedObjectInfo> unloadedInfo;
     foreach(GObject* obj, objects) { //Note: foreach copies object list
         unloadedInfo.append(UnloadedObjectInfo(obj));
-        _removeObject(obj);
+        _removeObject(obj, deleteObjects);
     }
     addUnloadedObjects(unloadedInfo);
     
