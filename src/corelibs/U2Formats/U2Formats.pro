@@ -90,4 +90,7 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \
            src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp
 RESOURCES += U2Formats.qrc
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/chinese \
+                transl/czech.ts \
+                transl/english.ts \
+                transl/russian.ts
