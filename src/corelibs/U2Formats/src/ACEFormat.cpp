@@ -305,7 +305,7 @@ static inline void parseAFTag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* bu
     } 
 }
 
-static inline void parseRDandQATag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, QMap< QString, int> &posMap, QMap< QString, bool> &complMap, QSet<QString> &names, QString& name, QByteArray& sequence){
+static inline void parseRDandQATag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, QMap< QString, int> &, QMap< QString, bool> &, QSet<QString> &names, QString& name, QByteArray& sequence){
     QString line;
     qint64 len = 0;
     bool ok = true;

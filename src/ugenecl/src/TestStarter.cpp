@@ -109,7 +109,7 @@ void TestStarter::addTestSuite(GTestSuite *ts) {
     emit si_testSuiteAdded(ts);
 }
 
-void TestStarter::updateDefaultEnvValues(GTestSuite* ts) {
+void TestStarter::updateDefaultEnvValues(GTestSuite* ) {
     QMap<QString, QString> vars = env->getVars();
     if (vars.contains("COMMON_DATA_DIR") && vars.value("COMMON_DATA_DIR").isEmpty()) {
         env->setVar("COMMON_DATA_DIR", "/_common_data");

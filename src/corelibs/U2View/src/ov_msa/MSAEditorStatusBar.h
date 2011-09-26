@@ -48,7 +48,7 @@ public:
 private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&) {updateCoords();}
     void sl_lockStateChanged() {updateLock();}
-    void sl_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev){updateCoords();}
+    void sl_selectionChanged(const MSAEditorSelection& , const MSAEditorSelection& ){updateCoords();}
     void sl_findNext();
     void sl_findPrev();
     void sl_findFocus();

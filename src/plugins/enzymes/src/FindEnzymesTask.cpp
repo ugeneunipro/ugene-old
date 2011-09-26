@@ -309,7 +309,7 @@ void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti)
                                 || dna.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
   
     const SequenceWalkerConfig& c = t->getGlobalConfig();
-    const char* pattern = enzyme->seq.constData();
+
     // Note that enzymes algorithm filters N symbols in sequence by itself
     if (useExtendedComparator) {
         FindEnzymesAlgorithm<ExtendedDNAlphabetComparator> algo;

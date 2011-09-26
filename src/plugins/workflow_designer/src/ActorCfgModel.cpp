@@ -305,7 +305,6 @@ Attribute* ActorCfgModel::getAttributeByRow(int row) const{
         //FIXME: handle error
         x = 0;
     }
-    QVariantMap& cfg = iterations[x].cfg[subject->getId()];
 
     QList<Attribute*>visibleAttrs;
     foreach(Attribute* a, attrs) {

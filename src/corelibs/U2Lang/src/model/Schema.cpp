@@ -205,7 +205,7 @@ void Metadata::reset() {
 /**************************
  * ActorBindingGraph
  **************************/
-bool ActorBindingsGraph::validateGraph(QString &message) {
+bool ActorBindingsGraph::validateGraph(QString &) {
     return true;
 }
 

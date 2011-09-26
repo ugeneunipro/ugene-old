@@ -53,8 +53,7 @@ void DNAFlexGraphAlgorithm::calculate(
     assert(windowData !=NULL);
 
     const QByteArray& sequence = sequenceObject->getSequence();
-    int seqLength = sequence.length();
-    int regionLength = region.length;
+
     int windowSize = windowData->window;
     int windowStep = windowData->step;
 

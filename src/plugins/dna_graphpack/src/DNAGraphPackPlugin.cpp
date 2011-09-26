@@ -58,9 +58,6 @@ DNAGraphPackPlugin::DNAGraphPackPlugin()
 
 DNAGraphPackViewContext::DNAGraphPackViewContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID) 
 {
-    GraphAction* baseContentGcAction = new GraphAction(
-        new BaseContentGraphFactory(BaseContentGraphFactory::GC, this));
-
     graphFactories.append(new BaseContentGraphFactory(BaseContentGraphFactory::GC, this));
     graphFactories.append(new BaseContentGraphFactory(BaseContentGraphFactory::AG, this));
     graphFactories.append(new DeviationGraphFactory(DeviationGraphFactory::GC, this));

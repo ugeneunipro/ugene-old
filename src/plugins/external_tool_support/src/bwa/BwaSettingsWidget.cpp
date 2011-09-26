@@ -89,7 +89,7 @@ QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() {
     return settings;
 }
 
-void BwaSettingsWidget::buildIndexUrl(const GUrl &url) {
+void BwaSettingsWidget::buildIndexUrl(const GUrl &) {
     // do nothing
 }
 
@@ -134,7 +134,7 @@ QString BwaBuildSettingsWidget::getIndexFileExtension() {
     return QString();
 }
 
-void BwaBuildSettingsWidget::buildIndexUrl(const GUrl& url) {
+void BwaBuildSettingsWidget::buildIndexUrl(const GUrl& ) {
     // do nothing
 }
 

@@ -156,7 +156,7 @@ U2AnnotationGroup SQLiteAnnotationDbi::createGroup(const U2DataId& sequenceId, c
 
 }
 
-void SQLiteAnnotationDbi::removeGroup(const U2DataId& groupId, U2OpStatus& os) {
+void SQLiteAnnotationDbi::removeGroup(const U2DataId& , U2OpStatus& ) {
     //TODO: 
     assert(0);
 }
@@ -214,8 +214,8 @@ U2DbiIterator<U2DataId>* SQLiteAnnotationDbi::getAnnotationsBySequence(const U2D
 }
     
 
-U2DbiIterator<U2DataId>* SQLiteAnnotationDbi::getAnnotationsByGroup(const U2DataId& groupId, const U2Region& region, 
-                qint64 offset, qint64 count, U2OpStatus& os)
+U2DbiIterator<U2DataId>* SQLiteAnnotationDbi::getAnnotationsByGroup(const U2DataId& , const U2Region& ,
+                qint64 , qint64 , U2OpStatus& )
 {
     
     //TODO:
@@ -267,7 +267,7 @@ U2Annotation SQLiteAnnotationDbi::getAnnotation(const U2DataId& annotationId, U2
     return res;
 }
 
-QList<U2DataId> SQLiteAnnotationDbi::getAnnotationGroups(const U2DataId& annotationId, U2OpStatus& os) {
+QList<U2DataId> SQLiteAnnotationDbi::getAnnotationGroups(const U2DataId& , U2OpStatus& ) {
     QList<U2DataId> res;
     //TODO:
     assert(0);
@@ -327,32 +327,32 @@ void SQLiteAnnotationDbi::createAnnotations(QList<U2Annotation>& annotations, co
     }
 }
 
-void SQLiteAnnotationDbi::removeAnnotation(const U2DataId& annotationId, U2OpStatus& os) {
+void SQLiteAnnotationDbi::removeAnnotation(const U2DataId& , U2OpStatus& ) {
     //TODO:
     assert(0);
 }
 
-void SQLiteAnnotationDbi::removeAnnotations(const QList<U2DataId>& annotationIds, U2OpStatus& os) {
+void SQLiteAnnotationDbi::removeAnnotations(const QList<U2DataId>& , U2OpStatus& ) {
     //TODO:
     assert(0);
 }
     
-void SQLiteAnnotationDbi::updateLocation(const U2DataId& annotationId, const U2Location& location, U2OpStatus& os) {
+void SQLiteAnnotationDbi::updateLocation(const U2DataId& , const U2Location& , U2OpStatus& ) {
     //TODO:
     assert(0);
 }
     
-void SQLiteAnnotationDbi::updateName(const U2DataId& annotationId, const QString& newName, U2OpStatus& os) {
+void SQLiteAnnotationDbi::updateName(const U2DataId& , const QString& , U2OpStatus& ) {
     //TODO:
     assert(0);
 }
     
-void SQLiteAnnotationDbi::createQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os) {
+void SQLiteAnnotationDbi::createQualifier(const U2DataId& , const U2Qualifier& , U2OpStatus& ) {
     //TODO:
     assert(0);
 }
     
-void SQLiteAnnotationDbi::removeQualifier(const U2DataId& annotationId, const U2Qualifier& q, U2OpStatus& os) {
+void SQLiteAnnotationDbi::removeQualifier(const U2DataId& , const U2Qualifier& , U2OpStatus& ) {
     //TODO:
     assert(0);
 }
@@ -378,7 +378,7 @@ void SQLiteAnnotationDbi::addToGroup(const U2DataId& groupId, const U2DataId& an
     q.execute();
 }
     
-void SQLiteAnnotationDbi::removeFromGroup(const U2DataId& groupId, const U2DataId& annotationId, U2OpStatus& os) {
+void SQLiteAnnotationDbi::removeFromGroup(const U2DataId& , const U2DataId& , U2OpStatus& ) {
     //TODO:
     assert(0);
 }

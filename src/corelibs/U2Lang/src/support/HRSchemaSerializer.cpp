@@ -1185,7 +1185,7 @@ QString HRSchemaSerializer::elementsDefinition(const QList<Actor*> & procs, cons
     return res + NEW_LINE;
 }
 
-static QString markerDefinitionBlock(Marker *marker, bool copyMode) {
+static QString markerDefinitionBlock(Marker *marker, bool ) {
     assert(marker != NULL);
     QString res;
     res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::TYPE_ATTR, HRSchemaSerializer::MARKER);
@@ -1228,7 +1228,7 @@ QString HRSchemaSerializer::markersDefinition(const QList<Actor*> & procs, const
     return res + NEW_LINE;
 }
 
-static QString actorBindingsBlock(const ActorBindingsGraph *graph, const HRSchemaSerializer::NamesMap &nmap, bool copyMode) {
+static QString actorBindingsBlock(const ActorBindingsGraph *graph, const HRSchemaSerializer::NamesMap &nmap, bool ) {
     QString res;
     
     foreach (Actor *actor, graph->getBindings().keys()) {

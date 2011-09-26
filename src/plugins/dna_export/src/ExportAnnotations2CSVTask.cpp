@@ -47,8 +47,9 @@ ExportAnnotations2CSVTask::ExportAnnotations2CSVTask(const QList<Annotation*>& a
     complementTranslation(complementTranslation),
     exportSequence(exportSequence),
     url(url),
-    separator(sep),
-    append(apnd)
+    append(apnd),
+    separator(sep)
+
 {
     GCOUNTER( cvar, tvar, "ExportAnnotattions2CSVTask" );
 }

@@ -150,7 +150,7 @@ void CreatePhyTreeDialogController::sl_browseClicked()
     lod.url = newUrl.getURLString();
 }
 
-void CreatePhyTreeDialogController::sl_comboIndexChaged(int index){
+void CreatePhyTreeDialogController::sl_comboIndexChaged(int ){
     clearContrWidgets();
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     PhyTreeGenerator* generator = registry->getGenerator(ui->algorithmBox->currentText());

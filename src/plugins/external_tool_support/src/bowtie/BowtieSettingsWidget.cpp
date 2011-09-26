@@ -81,7 +81,7 @@ QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() {
     return settings;
 }
 
-void BowtieSettingsWidget::buildIndexUrl(const GUrl &url) {
+void BowtieSettingsWidget::buildIndexUrl(const GUrl &) {
     // do nothing
 }
 
@@ -109,7 +109,7 @@ QString BowtieBuildSettingsWidget::getIndexFileExtension() {
     return QString();
 }
 
-void BowtieBuildSettingsWidget::buildIndexUrl(const GUrl& url) {
+void BowtieBuildSettingsWidget::buildIndexUrl(const GUrl& ) {
     // do nothing
 }
 

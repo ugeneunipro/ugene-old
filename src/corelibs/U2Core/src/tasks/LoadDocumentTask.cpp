@@ -187,7 +187,7 @@ bool LoadUnloadedDocumentTask::addLoadingSubtask(Task* t, const LoadDocumentTask
     return false;
 }
 
-Document* LoadUnloadedDocumentTask::getDocument(bool mainThread) {
+Document* LoadUnloadedDocumentTask::getDocument(bool ) {
     if (unloadedDoc.isNull()) {
         return NULL;
     }

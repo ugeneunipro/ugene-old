@@ -504,7 +504,7 @@ qint64 ObjectDbi::getFolderGlobalVersion(const QString &folder, U2OpStatus &os) 
     }
 }
 
-U2DbiIterator<U2DataId>* ObjectDbi::getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os) {
+U2DbiIterator<U2DataId>* ObjectDbi::getObjectsByVisualName(const QString& , U2DataType , U2OpStatus& ) {
     //todo:
     return NULL;
 }

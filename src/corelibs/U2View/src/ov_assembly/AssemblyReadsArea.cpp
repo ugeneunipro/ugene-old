@@ -516,8 +516,8 @@ void AssemblyReadsArea::drawCurrentReadHighlight(QPainter &p) {
 
 void AssemblyReadsArea::drawReadsShadowing(QPainter &p) {
      if (shadowingEnabled) {
-        int screenLinePos;
-        qint64 asmLinePos;
+        int screenLinePos = 0;
+        qint64 asmLinePos = 0;
 
         if (shadowingData.mode == ShadowingData::FREE) {
             screenLinePos = curPos.x();
@@ -913,11 +913,11 @@ void AssemblyReadsArea::sl_onBindShadowing() {
 void AssemblyReadsArea::sl_onShadowingJump() {
     int onScreen = cachedReads.visibleBases.length;
     int center = onScreen / 2;
-    quint64 pos = shadowingData.boundPos;
+    qint64 pos = shadowingData.boundPos;
     pos = (pos < center) ? 0 : shadowingData.boundPos - center;
 
     U2OpStatusImpl os;
-    quint64 len = model->getModelLength(os);
+    qint64 len = model->getModelLength(os);
     pos = (pos > len - onScreen +1) ? len - onScreen +1 : pos;
 
     browser->setXOffsetInAssembly(pos);

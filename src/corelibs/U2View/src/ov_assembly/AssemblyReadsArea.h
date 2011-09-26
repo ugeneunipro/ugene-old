@@ -211,7 +211,7 @@ private:
             : mode(FREE), boundPos(0) {}
 
         enum ShadowingMode {FREE, CENTERED, BIND} mode;
-        quint64 boundPos;
+        qint64 boundPos;
     } shadowingData;
 
     bool scribbling;
