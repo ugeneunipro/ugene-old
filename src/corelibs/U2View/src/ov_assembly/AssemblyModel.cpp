@@ -39,6 +39,9 @@
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GObjectTypes.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
@@ -53,7 +56,7 @@ namespace U2 {
 
 AssemblyModel::AssemblyModel(const DbiHandle & dbiHandle_) : 
 cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), assemblyDbi(0), dbiHandle(dbiHandle_),
-refSeqDbiHandle(0), loadingReference(false), refDoc(0), md5Retrieved(false), cachedReadsNumber(NO_VAL), speciesRetrieved(false),
+loadingReference(false), refDoc(0), md5Retrieved(false), cachedReadsNumber(NO_VAL), speciesRetrieved(false),
 uriRetrieved(false){
     Project * prj = AppContext::getProject();
     if(prj != NULL) {
@@ -67,10 +70,6 @@ AssemblyModel::~AssemblyModel() {
 }
 
 void AssemblyModel::cleanup() {
-    if(refSeqDbiHandle != NULL) {
-        delete refSeqDbiHandle;
-        refSeqDbiHandle = NULL;
-    }
     referenceDbi = NULL;
     reference.length = 0;
     refDoc = NULL;
@@ -361,22 +360,42 @@ void AssemblyModel::sl_referenceDocLoadedStateChanged() {
 void AssemblyModel::sl_referenceLoaded() {
     U2OpStatusImpl status;
     U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, status);
-    cleanup();
-    refSeqDbiHandle = new DbiHandle(ref.dataRef.factoryId, ref.dataRef.dbiId, false, status);
-    if(status.hasError()) {
-        LOG_OP(status);
-        sl_unassociateReference();
-        loadingReference = false;
-        return;
+    U2SequenceDbi *seqDbi = NULL;
+    bool canCreateDbiHandle = (AppContext::getDbiRegistry()->getDbiFactoryById(ref.dataRef.factoryId) != NULL);
+    if(canCreateDbiHandle) {
+        // If we have correct reference to another ugenedb, create its handle and get sequence dbi
+
+        DbiHandle refSeqDbiHandle(ref.dataRef.factoryId, ref.dataRef.dbiId, false, status);
+        if(status.hasError()) {
+            coreLog.error(tr("Failed to associate reference with assembly: %1").arg(status.getError()));
+            sl_unassociateReference();
+            loadingReference = false;
+            return;
+        }
+        seqDbi = refSeqDbiHandle.dbi->getSequenceDbi();
+    } else {
+        // But if cross-reference points to invalid dbi type, try to get DNASequenceObject directly
+        // from the refDoc and then use a dbi wrapper over it
+
+        SAFE_POINT( ! refDoc.isNull() && refDoc->isLoaded(), "document containing reference sequence not loaded",);
+        GObject * obj = GObjectUtils::selectOne(refDoc->getObjects(), GObjectTypes::SEQUENCE, UOF_LoadedOnly);
+        DNASequenceObject * seqObj = qobject_cast<DNASequenceObject*>(obj);
+        if(seqObj == NULL) {
+            coreLog.error(tr("Failed to associate reference with assembly: %1").arg(tr("no sequence found in document")));
+            sl_unassociateReference();
+            loadingReference = false;
+            return;
+        }
+        seqDbi = seqObj->asDbi();
     }
-    U2SequenceDbi * seqDbi = refSeqDbiHandle->dbi->getSequenceDbi();
+
     if(seqDbi != NULL) {
         U2Sequence refSeq = seqDbi->getSequenceObject(ref.dataRef.entityId, status);
         SAFE_POINT_OP(status,);
         
         setReference(seqDbi, refSeq);
     } else {
-        assert(false);
+        FAIL("seqDbi is NULL",);
     }
     loadingReference = false;
 }

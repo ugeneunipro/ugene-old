@@ -105,7 +105,6 @@ private:
     U2AssemblyDbi * assemblyDbi;
 
     DbiHandle dbiHandle;
-    DbiHandle * refSeqDbiHandle;
 
     bool loadingReference;
     QPointer<Document> refDoc;
