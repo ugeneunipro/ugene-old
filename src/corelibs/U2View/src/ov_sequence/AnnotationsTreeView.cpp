@@ -24,7 +24,7 @@
 #include "AnnotatedDNAView.h"
 #include "ADVConstants.h"
 #include "ADVSequenceObjectContext.h"
-
+#include "AutoAnnotationUtils.h"
 #include "EditAnnotationDialogController.h"
 
 #include <U2Core/AppContext.h>
@@ -210,7 +210,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
     connect(pasteAnnotationsAction, SIGNAL(triggered()), SLOT(sl_pasteAnnotations));
     tree->addAction(pasteAnnotationsAction);*/
 
-    updateState();
+	updateState();
 
     isDragging = false;
     resetDragAndDropData();
@@ -825,6 +825,20 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     selItems = tree->selectedItems();
     lastClickedColumn = tree->columnAt(viewportPos.x());
     updateColumnContextActions(selItems.size() == 1 ? static_cast<AVItem*>(selItems.first()) : static_cast<AVItem*>(NULL), lastClickedColumn);
+	
+	if (selItems.size() == 1) {
+		AnnotationTableObject* aObj = static_cast<AVItem*>(selItems.first())->getAnnotationTableObject();
+		if (AutoAnnotationsSupport::isAutoAnnotation(aObj)) {
+			ADVSequenceObjectContext* seqCtx = ctx->getSequenceContext(aObj);
+			QList<QAction*> tActions = AutoAnnotationUtils::getAutoAnnotationToggleActions(seqCtx);
+			if (!tActions.isEmpty()) {
+				QMenu* aaSubMenu = m->addMenu("Auto-annotations highlighting");
+				aaSubMenu->setIcon(QIcon(":core/images/predefined_annotation_groups.png"));
+				aaSubMenu->addActions(tActions);
+			}
+
+		}
+	}
 
     //Add active context actions to the top level menu
     QList<QAction*> contextActions;
@@ -1792,6 +1806,9 @@ void AnnotationsTreeView::sl_annotationObjectModifiedStateChanged() {
 AVItem* AnnotationsTreeView::currentItem(){
     return static_cast<AVItem*>(tree->currentItem());
 }
+
+
+
 //////////////////////////////////////////////////////////////////////////
 /// Tree model
 bool AVItem::processLinks(const QString& qName, const QString& qValue, int col) {

@@ -36,26 +36,32 @@ public:
     AutoAnnotationsADVAction(ADVSequenceWidget* widget, AutoAnnotationObject* aaObj);
     ~AutoAnnotationsADVAction();
     QList<QAction*> getToggleActions();
+	QAction* getSelectAllAction() { return selectAllAction; } 
+	QAction* getDeselectAllAction() { return deselectAllAction; }
     AutoAnnotationObject* getAAObj() {return aaObj; }
     QAction* findToggleAction(const QString& groupName);
-    void addUpdaterToMenu(AutoAnnotationsUpdater* updater);
+	void addUpdaterToMenu(AutoAnnotationsUpdater* updater);
     static const QString ACTION_NAME;
 
 private slots:
     void sl_toggle(bool toggled);
     void sl_autoAnnotationUpdateStarted();
     void sl_autoAnnotationUpdateFinished();
+	void sl_onSelectAll();
+	void sl_onDeselectAll();
 private:
     void updateMenu();
-    AutoAnnotationObject* aaObj;
+	AutoAnnotationObject* aaObj;
     QMenu* menu;
-    int updatesCount;
+    QAction *selectAllAction,*deselectAllAction;
+	int updatesCount;
 };
 
 class U2VIEW_EXPORT AutoAnnotationUtils {
 public:
     static AutoAnnotationsADVAction* findAutoAnnotationADVAction(ADVSequenceObjectContext* ctx);
     static QAction* findAutoAnnotationsToggleAction(ADVSequenceObjectContext* ctx, const QString& name);
+	static QList<QAction*> getAutoAnnotationToggleActions(ADVSequenceObjectContext* ctx);
     static void triggerAutoAnnotationsUpdate(ADVSequenceObjectContext* ctx, const QString& aaGroupName);
 };
 

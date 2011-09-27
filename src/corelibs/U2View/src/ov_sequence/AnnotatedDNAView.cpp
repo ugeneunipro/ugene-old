@@ -398,10 +398,9 @@ void AnnotatedDNAView::buildStaticMenu(QMenu* m) {
     addEditMenu(m);
     m->addSeparator();
 
- 
+	m->addAction(statistics);
     m->addAction(annotationSettingsAction);
-    m->addAction(statistics);
-
+    
     annotationsView->adjustStaticMenu(m);
 
     GObjectView::buildStaticMenu(m);
@@ -614,6 +613,7 @@ void AnnotatedDNAView::sl_onContextMenuRequested(const QPoint & scrollAreaPos) {
     addEditMenu(&m);
     addRemoveMenu(&m);
     m.addSeparator()->setObjectName(ADV_MENU_SECTION2_SEP);
+	m.addAction(statistics);
 
     if (annotationSelection->getSelection().size() == 1) {
         Annotation* a = annotationSelection->getSelection().first().annotation;
@@ -633,9 +633,8 @@ void AnnotatedDNAView::sl_onContextMenuRequested(const QPoint & scrollAreaPos) {
         m.addAction(toggleHLAction);
     }
     annotationSettingsAction->setObjectName("annotation_settings_action");
-    m.addAction(annotationSettingsAction);
-    m.addAction(statistics);
-
+	m.addAction(annotationSettingsAction);
+    
     if (focusedWidget!=NULL) {
         focusedWidget->buildPopupMenu(m);
     }

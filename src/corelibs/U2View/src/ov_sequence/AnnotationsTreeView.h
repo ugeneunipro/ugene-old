@@ -144,6 +144,7 @@ private:
     AVAnnotationItem* buildAnnotationTree(AVGroupItem* parentGroup, Annotation* a);
     void populateAnnotationQualifiers(AVAnnotationItem* ai);
     void updateAllAnnotations(ATVAnnUpdateFlags flags);
+	QMenu* getAutoAnnotationsHighligtingMenu(AnnotationTableObject* aObj);
 
     AVGroupItem* findGroupItem(const AnnotationGroup* g) const;
     AVAnnotationItem* findAnnotationItem(const AnnotationGroup* g, const Annotation* a) const;
@@ -190,7 +191,7 @@ private:
     QIcon               removeColumnIcon;
     QTimer              sortTimer;
     QPoint              dragStartPos;
-
+	QMenu*				highlightAutoAnnotationsMenu;
     // drag&drop related data
     bool                    isDragging;
     bool                    dndCopyOnly;
