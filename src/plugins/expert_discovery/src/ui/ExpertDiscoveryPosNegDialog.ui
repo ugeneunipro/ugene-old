@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>476</width>
-    <height>194</height>
+    <width>509</width>
+    <height>360</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Positive and Negative sequences</string>
+   <string>Load positive and negative sequence bases</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -32,24 +32,27 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>File with positive sequences</string>
+        <string>Positive sequences file</string>
+       </property>
+       <property name="buddy">
+        <cstring>firstFileEdit</cstring>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
+     <item row="3" column="1" colspan="2">
       <widget class="QLineEdit" name="firstFileEdit"/>
      </item>
-     <item row="0" column="3">
+     <item row="3" column="3">
       <widget class="QToolButton" name="openFirstButton">
        <property name="text">
         <string>...</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="4" column="0">
       <spacer name="verticalSpacer_3">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -62,14 +65,14 @@
        </property>
       </spacer>
      </item>
-     <item row="2" column="0" colspan="2">
+     <item row="5" column="0" colspan="2">
       <widget class="QCheckBox" name="oneSequenceCheckBox">
        <property name="text">
         <string>Generate negative sequences</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="6" column="0">
       <spacer name="verticalSpacer_2">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -82,24 +85,62 @@
        </property>
       </spacer>
      </item>
-     <item row="4" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>File with negative sequences</string>
+        <string>Negative sequences file</string>
+       </property>
+       <property name="buddy">
+        <cstring>secondFileEdit</cstring>
        </property>
       </widget>
      </item>
-     <item row="4" column="1" colspan="2">
+     <item row="7" column="1" colspan="2">
       <widget class="QLineEdit" name="secondFileEdit">
        <property name="enabled">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="4" column="3">
+     <item row="7" column="3">
       <widget class="QToolButton" name="openSecondButton">
        <property name="text">
         <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="4">
+      <widget class="QLabel" name="instructionLabel">
+       <property name="text">
+        <string>This is the first step of creating a new ExpertDiscovery project.
+Load the sequences you want to analyze by choosing any file with a sequence or multiple sequences.
+
+Positive sequence base contains a regulation object you are interested in.
+Negative sequence base doesn't have it. 
+You also may generate negative sequences automatically.
+
+ExpertDiscovery will extract complex signals which reflect a structure of your regulation object. 
+The more sequences you provide the better will be the result</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <spacer name="verticalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="0" colspan="4">
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -136,7 +177,7 @@
      <item>
       <widget class="QPushButton" name="startButton">
        <property name="text">
-        <string>Ok</string>
+        <string>Next</string>
        </property>
        <property name="default">
         <bool>true</bool>
@@ -155,13 +196,13 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>firstFileEdit</tabstop>
   <tabstop>openFirstButton</tabstop>
-  <tabstop>secondFileEdit</tabstop>
+  <tabstop>firstFileEdit</tabstop>
+  <tabstop>oneSequenceCheckBox</tabstop>
   <tabstop>openSecondButton</tabstop>
+  <tabstop>secondFileEdit</tabstop>
   <tabstop>startButton</tabstop>
   <tabstop>cancelButton</tabstop>
-  <tabstop>oneSequenceCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

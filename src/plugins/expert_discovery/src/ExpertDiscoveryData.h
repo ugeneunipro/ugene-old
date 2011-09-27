@@ -92,12 +92,15 @@ public:
     QList<EDPISequence*> getSelectetSequencesList();
 
     void generateRecognitionReportFull();
-    bool generateRecognizationReportHeader(ostream& out) const;
-    bool generateRecognizationReportFooter(ostream& out) const;
-    bool generateRecognizationReport(ostream& out, const SequenceBase& rBase, QString strName, bool bSuppressNulls);
-    bool generateRecognizationReportPositive(ostream& out, QString strName, bool bSuppressNulls);
+    bool generateRecognizationReportHeader(QString& resultText) const;
+    bool generateRecognizationReportFooter(QString& resultText) const;
+    bool generateRecognizationReportSignals(QString& resultText) const;
+    bool generateRecognizationReport(const SequenceBase& rBase, QString strName, bool bSuppressNulls, QString& resultText);
+    bool generateRecognizationReportPositive(QString strName, bool bSuppressNulls, QString& resultText);
     int  getSequencesCountWithScoreMoreThan(double dScore, const SequenceBase& rBase) const;
     void generateRecognizationReport(EDProjectItem* pItem);
+
+    void setBaseFilename(const SequenceBase& base, const QString& fileName);
 
     bool isModified() {return modified;}
     void setModifed(bool modFlag = true){modified = modFlag;}
@@ -120,6 +123,7 @@ private:
     bool                        modified;
     SelectedSignalsContainer    selectedSignals;
 
+    std::map<const SequenceBase*, std::string> fileNamesMap;
 
     inline Sequence prerareSequence(const GObject* obj) const;
     static std::string char2string(char ch);

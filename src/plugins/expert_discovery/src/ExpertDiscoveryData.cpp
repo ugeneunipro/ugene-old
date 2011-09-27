@@ -2,6 +2,8 @@
 #include "ExpertDiscoverySetupRecBoundDialog.h"
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/AppContext.h>
+#include <U2View/WebWindow.h>
 
 #include <fstream>
 #include <set>
@@ -604,6 +606,8 @@ void ExpertDiscoveryData::cleanup(){
     negBase.clear();
     conBase.clear();
 
+    fileNamesMap.clear();
+
     desc.clear();
     posAnn.clear();
     negAnn.clear();
@@ -650,37 +654,80 @@ void ExpertDiscoveryData::generateRecognitionReportFull(){
             mb.exec();
             return;
         }
+        QString resultText;
 
-        if(!generateRecognizationReportHeader(out) ||
-           !generateRecognizationReport(out, posBase, "Positive", false) ||
-           !generateRecognizationReport(out, negBase, "Negative", true) ||
-           (conBase.getSize() != 0 && !generateRecognizationReport(out, conBase, "Control", true)) ||
-           !generateRecognizationReportFooter(out))
+        if(!generateRecognizationReportHeader(resultText) ||
+           !generateRecognizationReport(posBase, "Positive", false, resultText) ||
+           !generateRecognizationReport(negBase, "Negative", true, resultText) ||
+           (conBase.getSize() != 0 && !generateRecognizationReport(conBase, "Control", true, resultText)) ||
+           !generateRecognizationReportSignals(resultText) ||
+           !generateRecognizationReportFooter(resultText))
         {
             QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
             mb.exec();
             return;
+        }else{
+            out<<resultText.toStdString();
+            QString title;
+            WebWindow* w = new WebWindow(title, resultText);
+            w->setWindowIcon(QIcon(":core/images/chart_bar.png"));
+            AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
         }
 
     }
 }
-bool ExpertDiscoveryData::generateRecognizationReportHeader(ostream& out) const{
-    
-    out << "<HTML><HEAD><TITLE> UGENE (ExpertDiscovery plugin): Recognition report</TITLE></HEAD><BODY>" << endl
-        << "<H1>ExpertDiscovery 2.0 and UGENE: Recognization report</H1><BR>" << endl
-        << "<I>Report genrated at " << (QDateTime::currentDateTime().toString("hh:mm on dd/MM/yyyy").toStdString())
-        << "<BR>Recognization bound was set to " << recognizationBound
-        << "</I><BR><BR><BR>" << endl;
+bool ExpertDiscoveryData::generateRecognizationReportHeader(QString& resultText ) const
+{
+    resultText.append("<HTML><HEAD><TITLE> UGENE (ExpertDiscovery plugin): Recognition report</TITLE></HEAD><BODY>\n");
+    resultText.append("<H1>UGENE (ExpertDiscovery plugin): Recognition report</H1><BR>\n");
+    resultText.append("<I>Report generated at ");
+    resultText.append(QDateTime::currentDateTime().toString("hh:mm on dd/MM/yyyy"));
+
+    resultText.append(QString("\n<BR><BR>Recognition bound was set to %1\n").arg(recognizationBound));
+    resultText.append("<BR><BR>The recognition result for each sequence provide the foloving details:\n");
+    resultText.append("<BR>Score - the more the score the more signals are found in the sequence\n");
+    resultText.append("<BR>Recognized - the sequence is recognized if its score higher than the recognition bound\n");
+    resultText.append("<BR>FP_Learning - S(negative)/count(negative)\n");
+    resultText.append("<BR>FP_Control - S(control)/count(countrol)\n");
+    resultText.append("<BR>     S - amount of sequences in a sequence base having a score higher than the current sequence score\n");
+    resultText.append("<BR>     count - amount of sequences in a sequence base\n");
+    resultText.append("</I><BR><BR><BR>\n");
     return true;
 }
-bool ExpertDiscoveryData::generateRecognizationReportFooter(ostream& out) const{
-    out << "</BODY></HTML>";
+bool ExpertDiscoveryData::generateRecognizationReportFooter(QString& resultText) const{
+    resultText.append("</BODY></HTML>\n");
     return true;
 }
-bool ExpertDiscoveryData::generateRecognizationReport(ostream& out, const SequenceBase& rBase, QString strName, bool bSuppressNulls){
+bool ExpertDiscoveryData::generateRecognizationReportSignals(QString& resultText) const{
+    const SignalList& rSelList = selectedSignals.GetSelectedSignals();
+    if (rSelList.size() == 0)
+        return true;
+
+    resultText.append("<BR><H2>Selected signals</H2><BR>");
+    resultText.append(QString("Total signals selected <I>%1</I><BR>").arg(selectedSignals.GetSelectedSignals().size()));
+
+    resultText.append("Details: <BR>");
+    resultText.append("<TABLE border=1>");
+    resultText.append("<TR align=center><TD>Signal No</TD><TD>Signal Name</TD><TD>Positive Coverage</TD><TD>Probability</TD><TD>Fisher</TD></TR>\n");
+    SignalList::const_iterator iter = rSelList.begin();
+    int i = 0;
+    while (iter != rSelList.end()) {
+        const Signal* pSignal = (*iter);
+        resultText.append(QString("<TD>%1</TD>").arg(i+1));
+        resultText.append(QString("<TD>%1</TD>").arg(QString::fromStdString(pSignal->getName())));
+        resultText.append(QString("<TD>%1</TD>").arg(pSignal->getPriorPosCoverage()/100));
+        resultText.append(QString("<TD>%1</TD>").arg(pSignal->getPriorProbability()));
+        resultText.append(QString("<TD>%1</TD>").arg(pSignal->getPriorFisher()));
+        i++;
+        iter++;
+    }
+    resultText.append("</TABLE><BR>");
+    return true;
+}
+bool ExpertDiscoveryData::generateRecognizationReport(const SequenceBase& rBase, QString strName, bool bSuppressNulls, QString& resultText){
 
     if (&rBase == &posBase){
-        return generateRecognizationReportPositive(out, strName, bSuppressNulls);
+        return generateRecognizationReportPositive(strName, bSuppressNulls, resultText);
     }
 
     if(rBase.getSize() == 0){
@@ -697,33 +744,47 @@ bool ExpertDiscoveryData::generateRecognizationReport(ostream& out, const Sequen
         if (dScore > recognizationBound) nRecognized++;
         if (dScore == 0) nNulls++;
     }
-    out << "<BR><H2>" << strName.toStdString() << " base</H2><BR>"
-        << "Total sequences: <I>" << rBase.getSize() << "</I><BR>"
-        << "Recognized sequences: <I>" << nRecognized << "</I><BR>";
+    resultText.append("<BR><H2>");
+    resultText.append(strName);
+    resultText.append(" base</H2><BR>");
+    resultText.append(QString("Total sequences: <I>%1</I><BR>").arg(rBase.getSize()));
+    resultText.append(QString("Recognized sequences: <I>%1</I><BR>").arg(nRecognized));
 
-    if (bSuppressNulls)
-        out << "Sequences with zero score: <I>" << nNulls << "</I><BR>";
+    if (bSuppressNulls){
+        resultText.append(QString("Sequences with zero score: <I>%1</I><BR>").arg(nNulls));
+    }
 
-    out    << "Details: <BR>"
-        << "<TABLE border=1>"
-        << "<TR align=center><TD>Sequence No</TD><TD>Sequence Name</TD><TD>Score</TD><TD>Result</TD></TR>" << endl;
+    if(fileNamesMap.find(&rBase) != fileNamesMap.end()){
+        std::map<const SequenceBase*, std::string>::iterator it;
+        it = fileNamesMap.find(&rBase);
+        QString filename = QString::fromStdString(it->second);
+        if(filename != ""){
+            resultText.append("<BR> The sequence base was loaded from the file: ");
+            resultText.append(filename);
+            resultText.append("<BR>\n");
+        }
+    }
+
+    resultText.append("Details: <BR>");
+    resultText.append("<TABLE border=1>");
+    resultText.append("<TR align=center><TD>Sequence No</TD><TD>Sequence Name</TD><TD>Score</TD><TD>Result</TD></TR>\n");
 
     for (int i=0; i<rBase.getSize(); i++)
     {
         const Sequence& rSeq = rBase.getSequence(i);
         if (bSuppressNulls && rSeq.getScore()==0) continue;
         const char* result = (rSeq.getScore() >= recognizationBound)?"Recognized":"Not recognized";
-        out << "<TR align=center><TD>" << i+1 << "</TD>"
-            << "<TD>" << rSeq.getName() << "</TD>"
-            << "<TD>" << rSeq.getScore() << "</TD>"
-            << "<TD>" << result << "</TD></TR>" << endl;
+        resultText.append(QString("<TR align=center><TD>%1</TD>").arg(i+1));
+        resultText.append(QString("<TD>%1</TD>").arg(QString::fromStdString(rSeq.getName())));
+        resultText.append(QString("<TD>%1</TD>").arg(rSeq.getScore()));
+        resultText.append(QString("<TD>%1</TD></TR>\n").arg(result));
     }
 
-    out << "</TABLE><BR>";
+    resultText.append("</TABLE><BR>");
     return true;
 }
 
-bool ExpertDiscoveryData::generateRecognizationReportPositive(ostream& out, QString strName, bool bSuppressNulls){
+bool ExpertDiscoveryData::generateRecognizationReportPositive(QString strName, bool bSuppressNulls, QString& resultText){
     const SequenceBase& rBase = posBase;
    
     int nRecognized = 0;
@@ -736,16 +797,30 @@ bool ExpertDiscoveryData::generateRecognizationReportPositive(ostream& out, QStr
         if (dScore > recognizationBound) nRecognized++;
         if (dScore == 0) nNulls++;
     }
-    out << "<BR><H2>" << strName.toStdString() << " base</H2><BR>"
-        << "Total sequences: <I>" << rBase.getSize() << "</I><BR>"
-        << "Recognized sequences: <I>" << nRecognized << "</I><BR>";
+    resultText.append("<BR><H2>");
+    resultText.append(strName);
+    resultText.append(" base</H2><BR>");
+    resultText.append(QString("Total sequences: <I>%1</I><BR>").arg(rBase.getSize()));
+    resultText.append(QString("Recognized sequences: <I>%1</I><BR>").arg(nRecognized));
 
-    if (bSuppressNulls)
-        out << "Sequences with zero score: <I>" << nNulls << "</I><BR>";
+    if (bSuppressNulls){
+        resultText.append(QString("Sequences with zero score: <I>%1</I><BR>").arg(nNulls));
+    }
 
-    out    << "Details: <BR>"
-        << "<TABLE border=1>"
-        << "<TR align=center><TD>Sequence No</TD><TD>Sequence Name</TD><TD>Score</TD><TD>Result</TD><TD>FP_Learning</TD><TD>FP_Control</TD></TR>" << endl;
+    if(fileNamesMap.find(&rBase) != fileNamesMap.end()){
+        std::map<const SequenceBase*, std::string>::iterator it;
+        it = fileNamesMap.find(&rBase);
+        QString filename = QString::fromStdString(it->second);
+        if(filename != ""){
+            resultText.append("<BR> The sequence base was loaded from the file: ");
+            resultText.append(filename);
+            resultText.append("<BR>\n");
+        }
+    }
+
+    resultText.append("Details: <BR>");
+    resultText.append("<TABLE border=1>");
+    resultText.append("<TR align=center><TD>Sequence No</TD><TD>Sequence Name</TD><TD>Score</TD><TD>Result</TD><TD>FP_Learning</TD><TD>FP_Control</TD></TR>\n");
 
     for (int i=0; i<rBase.getSize(); i++)
     {
@@ -755,15 +830,15 @@ bool ExpertDiscoveryData::generateRecognizationReportPositive(ostream& out, QStr
         double fp_learning = getSequencesCountWithScoreMoreThan(rSeq.getScore(), negBase) / (double) negBase.getSize();
 
         const char* result = (rSeq.getScore() >= recognizationBound)?"Recognized":"Not recognized";
-        out << "<TR align=center><TD>" << i+1 << "</TD>"
-            << "<TD>" << rSeq.getName() << "</TD>"
-            << "<TD>" << rSeq.getScore() << "</TD>"
-            << "<TD>" << result << "</TD>"
-            << "<TD>" << setiosflags(ios::scientific) << fp_learning << "</TD>"
-            << "<TD>" << fp_control << resetiosflags(ios::scientific) << "</TD></TR>" << endl;
+        resultText.append(QString("<TR align=center><TD>%1</TD>").arg(i+1));
+        resultText.append(QString("<TD>%1</TD>").arg(QString::fromStdString(rSeq.getName())));
+        resultText.append(QString("<TD>%1</TD>").arg(rSeq.getScore()));
+        resultText.append(QString("<TD>%1</TD>").arg(result));
+        resultText.append(QString("<TD>%1</TD>").arg(fp_learning));
+        resultText.append(QString("<TD>%1</TD></TR>\n").arg(fp_control));
     }
 
-    out << "</TABLE><BR>";
+    resultText.append("</TABLE><BR>");
     return true;
 }
 
@@ -807,16 +882,27 @@ void ExpertDiscoveryData::generateRecognizationReport(EDProjectItem* pItem){
             return;
         }
 
-        if(!generateRecognizationReportHeader(out) ||
-            !generateRecognizationReport(out, pBase->getSequenceBase(), pBase->getName(), true) ||
-            !generateRecognizationReportFooter(out))
+        QString resultText;
+        if(!generateRecognizationReportHeader(resultText) ||
+            !generateRecognizationReport(pBase->getSequenceBase(), pBase->getName(), true, resultText) ||
+            !generateRecognizationReportFooter(resultText))
         {
             QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
             mb.exec();
             return;
+        }else{
+            out<<resultText.toStdString();
+            QString title;
+            WebWindow* w = new WebWindow(title, resultText);
+            w->setWindowIcon(QIcon(":core/images/chart_bar.png"));
+            AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
         }
 
     }
+}
+
+void ExpertDiscoveryData::setBaseFilename(const SequenceBase& base, const QString& fileName){
+    fileNamesMap[&base] = fileName.toStdString();
 }
 
 int ExpertDiscoveryData::getMaxPosSequenceLen(){

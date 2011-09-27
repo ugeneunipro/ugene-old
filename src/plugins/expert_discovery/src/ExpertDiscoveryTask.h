@@ -78,9 +78,9 @@ signals:
 class ExpertDiscoveryLoadPosNegMrkTask: public Task{
     Q_OBJECT
 public:
-    ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, bool appendToCurrentMrk, ExpertDiscoveryData& edData);
+    ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, bool appendToCurrentMrk, bool isLettersMarkup, ExpertDiscoveryData& edData);
 
-    void run(){};
+    void run();
     void prepare();
     ReportResult report();
 
@@ -88,6 +88,7 @@ private:
     QString firstFile, secondFile, thirdFile;
     bool generateDescr;
     bool appendToCurrent;
+    bool nucleotidesMarkup;
 
     ExpertDiscoveryData& edData;
     Document* posDoc;
@@ -97,7 +98,7 @@ private:
     //Document* loadFile(QString inFile);
 
 signals:
-        void si_stateChanged(Task* task);
+    void si_stateChanged(Task* task);
 };
 
 class ExpertDiscoveryLoadControlMrkTask: public Task{

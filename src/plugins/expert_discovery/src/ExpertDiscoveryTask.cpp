@@ -44,33 +44,12 @@ namespace U2 {
 ExpertDiscoveryLoadPosNegTask::ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg)
 : Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel)){
     firstFile = firstF;
-
     secondFile = secondF;
-
     this->generateNeg = generateNeg;
 }
 
 ExpertDiscoveryLoadPosNegTask::~ExpertDiscoveryLoadPosNegTask(){
-    // error while loading documents
-    if (hasError()) {
-        Project *project = AppContext::getProject();
-
-        // skip added to the project documents
-        if (project) {
-            QList<Document*> projectDocs = project->getDocuments();
-
-            foreach (Document *doc, projectDocs) {
-                docs.removeAll(doc);
-            }
-        }
-
-        // delete loaded but not added to the project documents
-//        qDeleteAll(docs);
-        foreach (Document *doc, docs) {
-//            docs.removeAll(doc);
-            delete doc;
-        }
-   }
+    
 }
 
 void ExpertDiscoveryLoadPosNegTask::prepare(){
@@ -167,7 +146,7 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
     }
 }
 
-#define NUMBER_OF_NEGATIVE_PER_POSITIVE 10
+#define NUMBER_OF_NEGATIVE_PER_POSITIVE 100
 QList<GObject*> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GObject*> &objects){
     QList<GObject*> neg;
     int acgtContent[4];
@@ -191,7 +170,6 @@ QList<GObject*> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GO
 }
 
 void ExpertDiscoveryLoadPosNegTask::calculateACGTContent(const DNASequenceObject& seq, int* acgtContent) {
-    //assert(seq.getAlphabet()->isNucleic());
     acgtContent[0] = acgtContent[1] = acgtContent[2] = acgtContent[3] = 0;
     int seqLen = seq.getSequenceLen();
     int total = seq.getSequenceLen();
@@ -217,7 +195,6 @@ void ExpertDiscoveryLoadPosNegTask::calculateACGTContent(const DNASequenceObject
 
 
 QByteArray ExpertDiscoveryLoadPosNegTask::generateRandomSequence(const int* acgtContent, int seqLen)  {
-
     QByteArray randomSequence;
     randomSequence.reserve(seqLen);
 
@@ -243,25 +220,24 @@ QByteArray ExpertDiscoveryLoadPosNegTask::generateRandomSequence(const int* acgt
     return randomSequence;
 }
 
-ExpertDiscoveryLoadPosNegMrkTask::ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, bool appendToCurrentMrk, ExpertDiscoveryData& edD)
-: Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel |TaskFlag_FailOnSubtaskError))
+ExpertDiscoveryLoadPosNegMrkTask::ExpertDiscoveryLoadPosNegMrkTask(QString firstF, QString secondF, QString thirdF, bool generateDescr, bool appendToCurrentMrk,  bool isLettersMarkup, ExpertDiscoveryData& edD)
+: Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_FailOnSubtaskCancel |TaskFlag_FailOnSubtaskError))
 ,edData(edD)
 ,posDoc(NULL)
 ,negDoc(NULL)
 {
     firstFile = firstF;
-
     secondFile = secondF;
-
     thirdFile = thirdF;
-
     this->generateDescr = generateDescr;
-
     appendToCurrent = appendToCurrentMrk;
+    nucleotidesMarkup = isLettersMarkup;
 }
 
 void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
-
+    if(nucleotidesMarkup){
+        return;
+    }
     edData.clearScores();
 
     if(!appendToCurrent){
@@ -303,10 +279,12 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
         mb.exec();
         setError(str);
         return;
-       // return false;
     }
 
     QString strNegName = secondFile;
+    if(strNegName.isEmpty()){
+        return;
+    }
     try {
         if (strNegName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
             if (!edData.loadAnnotation(edData.getNegMarkBase(), edData.getNegSeqBase(), strNegName))
@@ -338,12 +316,13 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
         mb.exec();
         setError(str);
         return;
-       // return false;
     }
+}
 
-   
-
- //   return true;
+void ExpertDiscoveryLoadPosNegMrkTask::run(){
+    if(nucleotidesMarkup){
+        edData.markupLetters();
+    }
 }
 
 
@@ -404,7 +383,6 @@ Task::ReportResult ExpertDiscoveryLoadPosNegMrkTask::report(){
         mb.exec();
         setError(str);
         return ReportResult_Finished;
-        //     return false;
     }
 
     edData.getPosSeqBase().setMarking(edData.getPosMarkBase());
@@ -450,7 +428,6 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
                            int startPos = reg.startPos;
                            int endPos = reg.startPos + reg.length - 1;
                            if (endPos >= startPos && startPos >= 0) {
-                               //mrk.set(signalName.toStdString(), familyName.toStdString(), DDisc::Interval(startPos, endPos));
                                mrk.set(a->getAnnotationName().toStdString(), "UGENE Annotation", DDisc::Interval(startPos, endPos));
                            }
                        }
@@ -484,26 +461,7 @@ ExpertDiscoveryLoadControlTask::ExpertDiscoveryLoadControlTask(QString firstF)
 }
 
 ExpertDiscoveryLoadControlTask::~ExpertDiscoveryLoadControlTask(){
-    // error while loading documents
-    if (hasError()) {
-        Project *project = AppContext::getProject();
-
-        // skip added to the project documents
-        if (project) {
-            QList<Document*> projectDocs = project->getDocuments();
-
-            foreach (Document *doc, projectDocs) {
-                docs.removeAll(doc);
-            }
-        }
-
-        // delete loaded but not added to the project documents
-//        qDeleteAll(docs);
-        foreach (Document *doc, docs) {
-//            docs.removeAll(doc);
-            delete doc;
-        }
-   }
+   
 }
 
 void ExpertDiscoveryLoadControlTask::prepare(){
@@ -514,7 +472,6 @@ void ExpertDiscoveryLoadControlTask::prepare(){
         docs << doc;
     }
 }
-
 
 Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
     GUrl URL(inFile);
@@ -568,44 +525,19 @@ ExpertDiscoverySignalExtractorTask::~ExpertDiscoverySignalExtractorTask(){
 }
 
 void ExpertDiscoverySignalExtractorTask::run(){
-
     GCOUNTER(cvar,tvar, "ExpertDiscoverySignalExtractor" );
-    //test
-    //folder = &data->getRootFolder();
-        //performNextStep();
-    //
     if(!extractor){
         return;
     }
-
     stateInfo.progress = 0;
-//test
-//     Signal* ps = NULL;
-//     OpReiteration *op = new OpReiteration();
-//     op->setCount(Interval(1,2));
-//     op->setDistance(Interval(1,2));
-//     ps = new Signal(op,"olegSig","descrSig");
-//     emit si_newSignalReady(ps->clone(), folder);
-// 
-//     Signal* ps1 = NULL;
-//     OpReiteration *op1 = new OpReiteration();
-//     op->setCount(Interval(1,2));
-//     op->setDistance(Interval(1,2));
-//     ps1 = new Signal(op,"olegSig","descrSig1");
-//     emit si_newSignalReady(ps1->clone(), folder);
-//test
     while(performNextStep()){
         if (stateInfo.cancelFlag) break;
         stateInfo.progress = short(extractor->progress() + 0.5);
     }
 
     stateInfo.progress = 100;
-
 }
 void ExpertDiscoverySignalExtractorTask::prepare(){
-    //relocate
-    //data->markupLetters();
-
     ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen());
     if(w.exec()){
         PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
@@ -637,28 +569,9 @@ bool ExpertDiscoverySignalExtractorTask::performNextStep(){
     Signal* pSignal = NULL;
     bool needOneMore = extractor->step(&pSignal);
     if (pSignal){
-        //void* pointer = (void*)(pSignal->clone());
-        //QVariant signal = qVariantFromValue<void*>(pointer);
         emit si_newSignalReady(pSignal->clone(), folder);
     }
     return needOneMore;
-
-    //test
-    /*Signal* ps = NULL;
-    OpReiteration *op = new OpReiteration();
-    op->setCount(Interval(1,2));
-    op->setDistance(Interval(1,2));
-    ps = new Signal(op,"olegSig","descrSig");
-    emit si_newSignalReady(ps->clone(), folder);
-
-    Signal* ps1 = NULL;
-    OpReiteration *op1 = new OpReiteration();
-    op->setCount(Interval(1,2));
-    op->setDistance(Interval(1,2));
-    ps1 = new Signal(op,"olegSig","descrSig1");
-    emit si_newSignalReady(ps1->clone(), folder);
-
-    return false;*/
 }
 
 ExpertDiscoveryCreateADVTask::ExpertDiscoveryCreateADVTask(const MultiGSelection& selObjects)

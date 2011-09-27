@@ -125,18 +125,18 @@ private:
     QList<GObject*>     edObjects;
     EDPISequence*       curEDsequence;
 
-    Document* posUDoc;
-    Document* negUDoc;
-    Document* conUDoc;
+    Document*           posUDoc;
+    Document*           negUDoc;
+    Document*           conUDoc;
 
-    Task* extrTask;
+    Task*               extrTask;
 
     ExpertDiscoverySignalsAutoAnnotationUpdater* edAutoAnnotationsUpdater;
 
-    const EDProcessedSignal* curPS;
-    bool updatePS;
+    const EDProcessedSignal*    curPS;
+    bool                        updatePS;
 
-    QMutex mutex;
+    QMutex                      mutex;
 
 signals:
     void si_insertSeqGObjects(const QList<GObject*>& objects);

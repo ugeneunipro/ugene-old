@@ -338,10 +338,10 @@
   </widget>
   <widget class="QWizardPage" name="SignalsExtrWizP3">
    <property name="title">
-    <string>Select folder</string>
+    <string>Select a folder</string>
    </property>
    <property name="subTitle">
-    <string>Select folder to store extracted complex signals</string>
+    <string>Select a folder to store extracted complex signals</string>
    </property>
    <attribute name="pageId">
     <string notr="true">3</string>

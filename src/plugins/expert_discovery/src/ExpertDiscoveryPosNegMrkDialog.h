@@ -16,11 +16,13 @@ public:
     QString getThirdFileName() const {return thirdFileName;}
     bool isGenerateDescr() const {return generateDescr;}
     bool isAppendToCurrentMarkup() const {return addToCurrentCheck->isChecked();}
+    bool isNucleotidesMarkup() const {return lettersCheck->isChecked();}
 protected slots:
     void sl_openFirstFile();
     void sl_openSecondFile();
     void sl_openThirdFile();
     void sl_oneSequence();
+    void sl_lettersMarkup();
 
 private:
     QString firstFileName;

@@ -276,6 +276,7 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
 
     posUDoc = docs.first();
     d.setPosBase(posUDoc->getObjects());
+    d.setBaseFilename(d.getPosSeqBase(), posUDoc->getURLString());
 
     foreach(GObject* gobj, posUDoc->getObjects()){
         //addObject(gobj);
@@ -287,6 +288,7 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
 
     negUDoc = docs.at(1);
     d.setNegBase(negUDoc->getObjects());
+    d.setBaseFilename(d.getNegSeqBase(), negUDoc->getURLString());
 
     foreach(GObject* gobj, negUDoc->getObjects()){
         //addObject(gobj);
@@ -321,7 +323,7 @@ void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegMrkDialog(){
     ExpertDiscoveryPosNegMrkDialog dialog(QApplication::activeWindow());
     if (dialog.exec()) {
         
-        ExpertDiscoveryLoadPosNegMrkTask *t = new ExpertDiscoveryLoadPosNegMrkTask(dialog.getFirstFileName(), dialog.getSecondFileName(), dialog.getThirdFileName(), dialog.isGenerateDescr(), dialog.isAppendToCurrentMarkup(), d );
+        ExpertDiscoveryLoadPosNegMrkTask *t = new ExpertDiscoveryLoadPosNegMrkTask(dialog.getFirstFileName(), dialog.getSecondFileName(), dialog.getThirdFileName(), dialog.isGenerateDescr(), dialog.isAppendToCurrentMarkup(), dialog.isNucleotidesMarkup(), d );
         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadPosNegMrkTaskStateChanged() ) );
         tasks->addSubTask(t);
     }
@@ -540,6 +542,7 @@ void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
     d.clearContrAnnot();
 
     d.setConBase(conUDoc->getObjects());
+    d.setBaseFilename(d.getConSeqBase(), conUDoc->getURLString());
 
     foreach(GObject* gobj, conUDoc->getObjects()){
         edObjects.push_back(gobj);

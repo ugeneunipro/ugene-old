@@ -18,8 +18,15 @@ ExpertDiscoveryPosNegMrkDialog::ExpertDiscoveryPosNegMrkDialog(QWidget *parent)
     connect(openSecondButton, SIGNAL(clicked()), SLOT(sl_openSecondFile()));
     connect(openThirdButton, SIGNAL(clicked()), SLOT(sl_openThirdFile()));
     connect(oneSequenceCheckBox, SIGNAL(clicked()), SLOT(sl_oneSequence()));
+    connect(lettersCheck, SIGNAL(clicked()), SLOT(sl_lettersMarkup()));
 
     oneSequenceCheckBox->click();
+
+    //hiding description file for now
+    oneSequenceCheckBox->hide();
+    label_4->hide();
+    thirdFileEdit->hide();
+    openThirdButton->hide();
 
     filter = DialogUtils::prepareFileFilter("Markup files", QStringList() << "xml" << "gb");
 }
@@ -35,17 +42,16 @@ void ExpertDiscoveryPosNegMrkDialog::accept(){
 
  
     if (!firstFileName.isEmpty() && !secondFileName.isEmpty()) {
-        if(secondFileName == firstFileName){
-            QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Positive and negative sequences markups can't be in the one file. Select another file for one of them"));
-            mb.exec();
-        }else if(!generateDescr && thirdFileName.isEmpty()){
+        if(!generateDescr && thirdFileName.isEmpty()){
             QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Select description file"));
             mb.exec();
         }else{
             QDialog::accept();
         }
-    }else {
-        QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Select files for ExpertDiscovery"));
+    }else if(lettersCheck->isChecked() || !firstFileName.isEmpty()){
+        QDialog::accept();
+    }else{
+        QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Select positive markup file at least or chose 'Nucleotides markup'"));
         mb.exec();
     }
 }
@@ -56,6 +62,14 @@ void ExpertDiscoveryPosNegMrkDialog::sl_oneSequence() {
     openThirdButton->setDisabled(oneSequenceCheckBox->isChecked());
     generateDescr = oneSequenceCheckBox->isChecked();
 
+}
+
+void ExpertDiscoveryPosNegMrkDialog::sl_lettersMarkup(){
+    openFirstButton->setDisabled(lettersCheck->isChecked());
+    firstFileEdit->setDisabled(lettersCheck->isChecked());
+    openSecondButton->setDisabled(lettersCheck->isChecked());
+    secondFileEdit->setDisabled(lettersCheck->isChecked());
+    addToCurrentCheck->setDisabled(lettersCheck->isChecked());
 }
 
 void ExpertDiscoveryPosNegMrkDialog::sl_openFirstFile(){
