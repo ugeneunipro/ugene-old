@@ -87,7 +87,7 @@ void AssemblyReadsArea::createMenu() {
         QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
         connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
 
-    QMenu * cellRendererMenu = readMenu->addMenu(tr("Coloring parameter"));
+    QMenu * cellRendererMenu = readMenu->addMenu(tr("Read highlighting"));
     {
         QList<AssemblyCellRendererFactory*> factories = browser->getCellRendererRegistry()->getFactories();
 

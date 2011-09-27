@@ -280,6 +280,94 @@ private:
     QFont font;
 };
 
+class PairedColorsRenderer : public AssemblyCellRenderer {
+public:
+    PairedColorsRenderer()
+        : AssemblyCellRenderer(),
+          pairedImages(), unpairedImages(), unknownChar(),
+          size(), text(false), font() {}
+
+    virtual ~PairedColorsRenderer() {}
+
+    virtual void render(const QSize &size, bool text, const QFont &font);
+
+    virtual QPixmap cellImage(char c);
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c);
+    virtual QPixmap cellImage(const U2AssemblyRead &read, char c, char ref);
+
+private:
+    void update();
+
+private:
+    // images cache
+    QHash<char, QPixmap> pairedImages, unpairedImages;
+    QPixmap unknownChar;
+
+    // cached cells parameters
+    QSize size;
+    bool text;
+    QFont font;
+
+private:
+    static const QColor pairedColor, unpairedColor;
+};
+
+const QColor PairedColorsRenderer::pairedColor("#4EE1AD");
+const QColor PairedColorsRenderer::unpairedColor("#BBBBBB");
+
+void PairedColorsRenderer::render(const QSize &_size, bool _text, const QFont &_font) {
+    GTIMER(c1, t1, "PairedReadsColorsRenderer::render");
+
+    if (_size != size || _text != text || (text && _font != font)) {
+        // update cache
+        size = _size, text = _text, font = _font;
+        update();
+    }
+}
+
+void PairedColorsRenderer::update() {
+    pairedImages.clear();
+    unpairedImages.clear();
+
+    foreach(char c, assemblyAlphabet) {
+        QPixmap pimg(size), npimg(size);
+        QColor pcolor = pairedColor, ucolor = unpairedColor, textColor = Qt::black;
+
+        if (isGap(c)) {
+            pcolor = ucolor =  QColor("#FBFBFB");
+            textColor = Qt::red;
+        }
+
+        drawCell(pimg, pcolor, text, c, font, textColor);
+        drawCell(npimg, ucolor, text, c, font, textColor);
+
+        pairedImages.insert(c, pimg);
+        unpairedImages.insert(c, npimg);
+    }
+
+    unknownChar = QPixmap(size);
+    drawCell(unknownChar, QColor("#FBFBFB"), text, '?', font, Qt::red);
+}
+
+QPixmap PairedColorsRenderer::cellImage(char c) {
+    c = (!nucleotideColorScheme.contains(c)) ? 'N' : c;
+    return unpairedImages.value(c, unknownChar);
+}
+
+QPixmap PairedColorsRenderer::cellImage(const U2AssemblyRead &read, char c) {
+    c = (!nucleotideColorScheme.contains(c)) ? 'N' : c;
+
+    if (ReadFlagsUtils::isPairedRead(read->flags)) {
+        return pairedImages.value(c, unknownChar);
+    } else {
+        return unpairedImages.value(c, unknownChar);
+    }
+}
+
+QPixmap PairedColorsRenderer::cellImage(const U2AssemblyRead &read, char c, char) {
+    return cellImage(read, c);
+}
+
 DiffNucleotideColorsRenderer::DiffNucleotideColorsRenderer()
     : AssemblyCellRenderer(), colorScheme(nucleotideColorScheme),
   highlightedImages(), normalImages(), unknownChar(), size(), text(false), font() {}
@@ -347,6 +435,7 @@ AssemblyCellRendererFactory::AssemblyCellRendererFactory(const QString &_id, con
 QString AssemblyCellRendererFactory::ALL_NUCLEOTIDES = "ASSEMBLY_RENDERER_ALL_NUCLEOTIDES";
 QString AssemblyCellRendererFactory::DIFF_NUCLEOTIDES = "ASSEMBLY_RENDERER_DIFF_NUCLEOTIDES";
 QString AssemblyCellRendererFactory::STRAND_DIRECTION = "ASSEMBLY_RENDERER_STRAND_DIRECTION";
+QString AssemblyCellRendererFactory::PAIRED = "ASSEMBLY_RENDERER_PAIRED";
 
 class NucleotideColorsRendererFactory : public AssemblyCellRendererFactory {
 public:
@@ -375,6 +464,16 @@ public:
 
     virtual AssemblyCellRenderer* create() {
         return new ComplementColorsRenderer();
+    }
+};
+
+class PairedColorsRendererFactory : public AssemblyCellRendererFactory {
+public:
+    PairedColorsRendererFactory(const QString &_id, const QString &_name)
+        : AssemblyCellRendererFactory(_id, _name) {}
+
+    virtual AssemblyCellRenderer* create() {
+        return new PairedColorsRenderer();
     }
 };
 
@@ -408,6 +507,8 @@ void AssemblyCellRendererFactoryRegistry::initBuiltInRenderers() {
                                                    tr("Difference")));
     addFactory(new ComplementColorsRendererFactory(AssemblyCellRendererFactory::STRAND_DIRECTION,
                                                    tr("Strand direction")));
+    addFactory(new PairedColorsRendererFactory(AssemblyCellRendererFactory::PAIRED,
+                                                   tr("Paired reads")));
 }
 
 AssemblyCellRendererFactoryRegistry::~AssemblyCellRendererFactoryRegistry() {

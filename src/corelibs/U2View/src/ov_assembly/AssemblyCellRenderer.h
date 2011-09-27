@@ -64,6 +64,7 @@ public:
     static QString ALL_NUCLEOTIDES;
     static QString DIFF_NUCLEOTIDES;
     static QString STRAND_DIRECTION;
+    static QString PAIRED;
 
 private:
     QString id;
