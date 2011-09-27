@@ -52,7 +52,7 @@ TCoffeeSupport::TCoffeeSupport(const QString& name, const QString& path) : Exter
         warnIcon = QIcon(":external_tool_support/images/tcoffee_warn.png");
     }
 #ifdef Q_OS_WIN
-    executableFileName="t_coffee.exe";//need check on windows
+    executableFileName="t_coffee.bat";
 #else
     #ifdef Q_OS_LINUX
     executableFileName="t_coffee";
@@ -61,7 +61,7 @@ TCoffeeSupport::TCoffeeSupport(const QString& name, const QString& path) : Exter
     validationArguments<<"-h";
     validMessage="PROGRAM: T-COFFEE";
     description=tr("<i>T-Coffee</i> is a multiple sequence alignment package.");
-    versionRegExp=QRegExp("PROGRAM: T-COFFEE \\(Version_(\\d+\\.\\d+_\\d+)");
+    versionRegExp=QRegExp("PROGRAM: T-COFFEE \\(Version_(\\d+\\.\\d+)");
     toolKitName="T-Coffee";
 }
 
