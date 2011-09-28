@@ -539,6 +539,7 @@ void ExpertDiscoverySignalExtractorTask::run(){
 }
 void ExpertDiscoverySignalExtractorTask::prepare(){
     ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen());
+    connect(&w, SIGNAL(si_newFolder()), SLOT(sl_newFolder()));
     if(w.exec()){
         PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
         predicatBase->create(w.getPredicates());
@@ -572,6 +573,10 @@ bool ExpertDiscoverySignalExtractorTask::performNextStep(){
         emit si_newSignalReady(pSignal->clone(), folder);
     }
     return needOneMore;
+}
+
+void ExpertDiscoverySignalExtractorTask::sl_newFolder(){
+    emit si_newFolder();
 }
 
 ExpertDiscoveryCreateADVTask::ExpertDiscoveryCreateADVTask(const MultiGSelection& selObjects)

@@ -20,6 +20,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
     posRecLineEdit->setText(QString("%1").arg(probPosRej));
     negRecLineEdit->setText(QString("%1").arg(probNegRec));
 
+    connect(optimizeRecognitionBoundButton, SIGNAL(clicked()), SLOT(sl_optRecBound()));
     connect(recBoundSpinBox, SIGNAL(valueChanged ( double )), SLOT(sl_recBoundChaged(double)));
     sl_recBoundChaged(recognizationBound);
 }
@@ -36,6 +37,22 @@ void ExpertDiscoverySetupRecBoundDialog::sl_recBoundChaged(double val){
     updateProbs();
     posRecLineEdit->setText(QString("%1").arg(probPosRej));
     negRecLineEdit->setText(QString("%1").arg(probNegRec));
+}
+void ExpertDiscoverySetupRecBoundDialog::sl_optRecBound(){
+    double dPosScore = 0;
+    for (uint i=0; i<posScore.size(); i++){
+        dPosScore += posScore[i];
+    }
+    dPosScore /= posScore.size();
+
+    double dNegScore = 0;
+    for (uint i=0; i<negScore.size(); i++)
+    {
+        dNegScore += negScore[i];
+    }
+    dNegScore /= negScore.size();
+    sl_recBoundChaged((dPosScore + dNegScore)/2);
+    recBoundSpinBox->setValue(recognizationBound);
 }
 
 void ExpertDiscoverySetupRecBoundDialog::updateProbs(){

@@ -346,8 +346,8 @@
    <attribute name="pageId">
     <string notr="true">3</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_6">
-    <item>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0" colspan="2">
      <widget class="QTreeWidget" name="treeFoldersWidget">
       <attribute name="headerVisible">
        <bool>false</bool>
@@ -358,6 +358,26 @@
        </property>
       </column>
      </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="createSubfolderButton">
+      <property name="text">
+       <string>Create Root Subfolder</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <spacer name="horizontalSpacer_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>

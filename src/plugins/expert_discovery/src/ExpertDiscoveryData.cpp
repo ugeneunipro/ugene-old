@@ -207,7 +207,7 @@ void ExpertDiscoveryData::setRecBound(){
 }
 bool ExpertDiscoveryData::updateScores(){
  
-    QProgressDialog pd(tr("Setting up recognization bound. Please wait"), tr("Cancel"), 0, 100);
+    QProgressDialog pd(tr("Setting up recognition bound. Please wait"), tr("Cancel"), 0, 100);
     pd.setWindowModality(Qt::WindowModal);
     pd.show();
 

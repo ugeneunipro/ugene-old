@@ -29,7 +29,7 @@ class EDProjectTree : public QTreeWidget{
 public:
     EDProjectTree(QWidget *parent, ExpertDiscoveryData &data);
 
-    CSFolder &getRootItem(){edData.getRootFolder();};
+    CSFolder &getRootItem(){return edData.getRootFolder();}
 
     EDProjectItem* findEDItem(void* pData);
     CSFolder* findFolder(EDPICSDirectory *pFolder) const;
@@ -52,8 +52,10 @@ public:
     void updateSortingRecurs(EDProjectItem* pItem);
 
     bool isUpdatingItem() {return updatingItem;}
-protected slots:
+
+public slots:
     void sl_newFolder();
+protected slots:
     void sl_newSignal();
     void sl_deletePI();
     void sl_selAllSig();

@@ -102,8 +102,11 @@ protected slots:
     void sl_deleteButton();
 
     void sl_idChanged(int id);
+    void sl_createSubfolder();
 
     void sl_selectionChanged (QTreeWidgetItem * current, QTreeWidgetItem * previous);
+signals:
+    void si_newFolder();
 
 private:
     int posSize;

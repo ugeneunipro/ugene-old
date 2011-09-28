@@ -135,8 +135,12 @@ private:
 
     bool performNextStep();
 
+protected slots:
+    void sl_newFolder();
+
 signals:
     void si_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
+    void si_newFolder();
 };
 
 class ExpertDiscoveryCreateADVTask: public Task{

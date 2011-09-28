@@ -60,6 +60,7 @@ private slots:
     void sl_openDoc();
     void sl_saveDoc();
     void sl_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
+    void sl_newFolder();
     void sl_optimizeRecBound();
     void sl_setRecBound();
     void sl_extractSignals();

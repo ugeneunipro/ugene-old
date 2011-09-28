@@ -8,7 +8,8 @@ namespace U2 {
 
 ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f, int positiveSize)
 : QWizard(parent)
-,posSize(positiveSize){
+,posSize(positiveSize)
+,folder(NULL){
 
     setupUi(this);
 //1 page
@@ -59,8 +60,10 @@ ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f,
 //page 3
     folder = f;
     updateTree();
+    connect(createSubfolderButton, SIGNAL(clicked()), SLOT(sl_createSubfolder()));
 
     connect(this, SIGNAL(currentIdChanged ( int )), this, SLOT( sl_idChanged(int )));
+    
     hideParameters();
 }
 
@@ -175,8 +178,12 @@ void ExpertDiscoveryExtSigWiz::sl_idChanged(int id){
     }
 }
 
-void ExpertDiscoveryExtSigWiz::accept(){
+void ExpertDiscoveryExtSigWiz::sl_createSubfolder(){
+    emit si_newFolder();
+    updateTree();
+}
 
+void ExpertDiscoveryExtSigWiz::accept(){
 
     //page2
     QVariant variant;
@@ -297,9 +304,11 @@ void ExpertDiscoveryExtSigWiz::updateTree(const CSFolder* pFolder, QTreeWidgetIt
     QVariant variant = qVariantFromValue<void*>(pointer);
     nTreeItem->setData(0, Qt::UserRole, variant);
     int nFolderNum = pFolder->getFolderNumber();
-    for (int i=0; i<nFolderNum; i++) 
+    for (int i=0; i<nFolderNum; i++){
         updateTree(pFolder->getSubfolder(i), nTreeItem);
-    
+    }
+
+    nTreeItem->setExpanded(true);
 }
 
 void ExpertDiscoveryExtSigWiz::sl_selectionChanged (QTreeWidgetItem * current, QTreeWidgetItem * previous){

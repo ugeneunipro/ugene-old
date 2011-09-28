@@ -131,9 +131,9 @@ void ExpertDiscoveryView::createActions(){
     setUpRecBound->setIcon(QIcon(":expert_discovery/images/setRecBound.png"));
     connect(setUpRecBound, SIGNAL(triggered()), SLOT(sl_setRecBound()));
     
-    optimizeRecBound = new QAction(tr("Optimize Recognition Bound"), this);
-    optimizeRecBound->setIcon(QIcon(":expert_discovery/images/optRecBound.png"));
-    connect(optimizeRecBound, SIGNAL(triggered()), SLOT(sl_optimizeRecBound()));
+//     optimizeRecBound = new QAction(tr("Optimize Recognition Bound"), this);
+//     optimizeRecBound->setIcon(QIcon(":expert_discovery/images/optRecBound.png"));
+//     connect(optimizeRecBound, SIGNAL(triggered()), SLOT(sl_optimizeRecBound()));
 
     loadControlSeqAction = new QAction(tr("Load control sequences"), this);
     loadControlSeqAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeq.png"));
@@ -156,7 +156,7 @@ void ExpertDiscoveryView::createActions(){
     connect(generateFullReportAction, SIGNAL(triggered()), SLOT(sl_generateFullReport()));
 
     setUpRecBound->setEnabled(false);
-    optimizeRecBound->setEnabled(false);
+    //optimizeRecBound->setEnabled(false);
     loadControlSeqAction->setEnabled(false);
     extractSignalsAction->setEnabled(false);
     loadMarkupAction->setEnabled(false);
@@ -173,7 +173,7 @@ void ExpertDiscoveryView::sl_newDoc(){
     }
 
     setUpRecBound->setEnabled(false);
-    optimizeRecBound->setEnabled(false);
+    //optimizeRecBound->setEnabled(false);
     loadControlSeqAction->setEnabled(false);
     extractSignalsAction->setEnabled(false);
     loadMarkupAction->setEnabled(false);
@@ -304,7 +304,7 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
 
 
     setUpRecBound->setEnabled(true);
-    optimizeRecBound->setEnabled(true);
+    //optimizeRecBound->setEnabled(true);
     loadControlSeqAction->setEnabled(true);
     loadMarkupAction->setEnabled(true);
     generateFullReportAction->setEnabled(true);
@@ -461,7 +461,7 @@ void ExpertDiscoveryView::sl_updateAll(){
 
     bool enableActions = d.getPosSeqBase().getSize() != 0  || d.getNegSeqBase().getSize() != 0;
     setUpRecBound->setEnabled(enableActions);
-    optimizeRecBound->setEnabled(enableActions);
+    //optimizeRecBound->setEnabled(enableActions);
     loadControlSeqAction->setEnabled(enableActions);
     extractSignalsAction->setEnabled(enableActions);
     loadMarkupAction->setEnabled(enableActions);
@@ -571,6 +571,19 @@ void ExpertDiscoveryView::sl_newSignalReady(DDisc::Signal* signal, CSFolder* fol
     signalsWidget->addSubitem(pItem, pParent);  
     signalsWidget->updateSorting();
 }
+void ExpertDiscoveryView::sl_newFolder(){
+    CSFolder* pFolder = &(signalsWidget->getRootItem());
+    CSFolder* pNewFolder = new CSFolder();
+    pNewFolder->setName(pFolder->makeUniqueFolderName());
+    if (pFolder->addFolder( pNewFolder ) < 0) {
+        delete pNewFolder;
+        return;
+    }
+    EDPICSFolder* newFol = new EDPICSFolder(pNewFolder);
+    EDProjectItem* pParent = signalsWidget->findEDItem(pFolder);
+    signalsWidget->addSubitem(newFol, pParent);  
+    signalsWidget->updateSorting();
+}
 
 void ExpertDiscoveryView::sl_optimizeRecBound(){
     d.optimizeRecognizationBound();
@@ -587,6 +600,7 @@ void ExpertDiscoveryView::sl_extractSignals(){
     ExpertDiscoverySignalExtractorTask *t = new ExpertDiscoverySignalExtractorTask(&d);
     extrTask = t;
     connect(t, SIGNAL(si_newSignalReady(DDisc::Signal* , CSFolder* )), SLOT(sl_newSignalReady(DDisc::Signal* , CSFolder* )));
+    connect(t, SIGNAL(si_newFolder()), SLOT(sl_newFolder()));
     tasks->addSubTask(t);
     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
 }
@@ -944,7 +958,7 @@ void ExpertDiscoveryViewWindow::setupMDIToolbar(QToolBar* tb){
     tb->addAction(curEdView->getExtractSignalsAction());
     tb->addSeparator();
     tb->addAction(curEdView->getSetUpRecBoundAction());
-    tb->addAction(curEdView->getOptimizeRecBoundAction()); 
+    //tb->addAction(curEdView->getOptimizeRecBoundAction()); 
     tb->addSeparator();
     tb->addAction(curEdView->getGenerateFullReportAction());
     

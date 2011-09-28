@@ -31,6 +31,7 @@ private:
 
 protected slots:
     void sl_recBoundChaged(double val);
+    void sl_optRecBound();
 };
 
 }//namespace
