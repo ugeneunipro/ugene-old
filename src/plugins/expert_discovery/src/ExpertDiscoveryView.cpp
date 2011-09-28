@@ -309,10 +309,8 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
     loadMarkupAction->setEnabled(true);
     generateFullReportAction->setEnabled(true);
 
-    if(!loadTask->isGenerateNeg()){
-        //markup
-        sl_showExpertDiscoveryPosNegMrkDialog();
-    }
+    //markup
+    sl_showExpertDiscoveryPosNegMrkDialog();
 
     wizzard = false;
 }

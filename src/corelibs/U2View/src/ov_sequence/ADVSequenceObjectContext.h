@@ -80,7 +80,7 @@ public:
 
     QList<Annotation*> selectRelatedAnnotations(const QList<Annotation*>& alist) const;
     QVector<bool> getTranslationRowsVisibleStatus();
-    void hideTranslationRows();
+    void setTranslationsVisible(bool enable);
 
 private slots:
     void sl_setAminoTranslation();
@@ -105,6 +105,7 @@ private:
     DNASequenceSelection*           selection;
     QActionGroup*                   translations;
     QActionGroup*                   visibleFrames;
+    QVector<QAction*>               translationRowsStatus;
     QList<ADVSequenceWidget*>       seqWidgets;
     QSet<AnnotationTableObject*>    annotations;
     QSet<AnnotationTableObject*>    autoAnnotations;

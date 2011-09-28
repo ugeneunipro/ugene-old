@@ -73,6 +73,8 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, DNASeque
                 a->setChecked(true);
                 //set row id
                 a->setData(i);
+                //save status
+                translationRowsStatus.append(a);
                 connect(a, SIGNAL(triggered()), SLOT(sl_toggleTranslations()));
             }
         }
@@ -128,12 +130,14 @@ QList<GObject*> ADVSequenceObjectContext::getAnnotationGObjects() const {
 void ADVSequenceObjectContext::sl_showDirectOnly(){
     bool needUpdate = false;
     QList<QAction*> actionList = visibleFrames->actions();
+    translationRowsStatus.clear();
     int i = 0;
     for(; i < 3; i++){
         QAction *a = actionList[i];
         if(!a->isChecked()){
             needUpdate = true;
             a->setChecked(true);
+            translationRowsStatus.append(a);
         }
     }
     for(; i < 6; i++){
@@ -151,6 +155,7 @@ void ADVSequenceObjectContext::sl_showDirectOnly(){
 void ADVSequenceObjectContext::sl_showComplOnly(){
     bool needUpdate = false;
     QList<QAction*> actionList = visibleFrames->actions();
+    translationRowsStatus.clear();
     int i = 0;
     for(; i < 3; i++){
         QAction *a = actionList[i];
@@ -164,6 +169,7 @@ void ADVSequenceObjectContext::sl_showComplOnly(){
         if(!a->isChecked()){
             needUpdate = true;
             a->setChecked(true);
+            translationRowsStatus.append(a);
         }
     }
     if(needUpdate){
@@ -173,10 +179,12 @@ void ADVSequenceObjectContext::sl_showComplOnly(){
 
 void ADVSequenceObjectContext::sl_showShowAll(){
     bool needUpdate = false;
+    translationRowsStatus.clear();
     foreach(QAction* a, visibleFrames->actions()){
         if(!a->isChecked()) {
             needUpdate = true;
             a->setChecked(true);
+            translationRowsStatus.append(a);
         }
     }
     if(needUpdate){
@@ -307,6 +315,7 @@ QSet<AnnotationTableObject*> ADVSequenceObjectContext::getAnnotationObjects(bool
 }
 
 void ADVSequenceObjectContext::sl_toggleTranslations(){
+    translationRowsStatus.clear();
     emit si_translationRowsChanged();
 }
 
@@ -319,17 +328,27 @@ QVector<bool> ADVSequenceObjectContext::getTranslationRowsVisibleStatus(){
     }
     return result;
 }
-
-void ADVSequenceObjectContext::hideTranslationRows(){
+void ADVSequenceObjectContext::setTranslationsVisible(bool enable){
     bool needUpdate = false;
+    if(!enable){
+        translationRowsStatus.clear();
+    }
     foreach(QAction* a, visibleFrames->actions()){
-        if(a->isChecked()) {
-            needUpdate = true;
-            a->setChecked(false);
+        if(!enable){//hide
+            if(a->isChecked()) {
+                needUpdate = true;
+                a->setChecked(false);
+                translationRowsStatus.append(a);
+            }
+        }else{//show
+            if(!a->isChecked() && translationRowsStatus.contains(a)) {
+                needUpdate = true;
+                a->setChecked(true);
+            }
         }
     }
     if(needUpdate){
         emit si_translationRowsChanged();
-    }
+    }  
 }
 }//namespace

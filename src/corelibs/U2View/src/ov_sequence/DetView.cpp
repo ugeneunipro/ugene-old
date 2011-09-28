@@ -160,7 +160,7 @@ void DetView::setShowTranslation(bool t) {
     showTranslationAction->disconnect(this);
     showTranslationAction->setChecked(t);
     if(!t){
-        getSequenceContext()->hideTranslationRows();
+        getSequenceContext()->setTranslationsVisible(t);
     }
     connect(showTranslationAction, SIGNAL(triggered(bool)), SLOT(sl_showTranslationToggle(bool)));
 
@@ -215,7 +215,9 @@ void DetView::sl_translationRowsChanged(){
         anyFrame = anyFrame || b;
     }
     if(!anyFrame){
-        sl_showTranslationToggle(false);
+        if(showTranslationAction->isChecked()){
+            sl_showTranslationToggle(false);
+        }
         return;
     }
     if(!showTranslationAction->isChecked()){
@@ -228,17 +230,10 @@ void DetView::sl_translationRowsChanged(){
 }
 
 void DetView::sl_showTranslationToggle( bool v ){
-    QVector<bool> visibleRows = getSequenceContext()->getTranslationRowsVisibleStatus();
-    bool anyFrame = false;
-    foreach(bool b, visibleRows){
-        anyFrame = anyFrame || b;
-    }
-    if(!anyFrame && v){
-        QMessageBox::warning(this, tr("warning"), DetView::tr("Select at least one visible row for translations"));
-        showTranslationAction->setChecked(false);
-        return;
-    }
-    setShowTranslation(v);
+    showTranslationAction->setChecked(v);
+    getSequenceContext()->setTranslationsVisible(v);
+    updateSize();
+    //setShowTranslation(v);
 }
 //////////////////////////////////////////////////////////////////////////
 /// render
