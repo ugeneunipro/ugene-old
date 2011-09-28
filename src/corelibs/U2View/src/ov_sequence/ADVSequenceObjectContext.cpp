@@ -341,7 +341,7 @@ void ADVSequenceObjectContext::setTranslationsVisible(bool enable){
                 translationRowsStatus.append(a);
             }
         }else{//show
-            if(!a->isChecked() && translationRowsStatus.contains(a)) {
+            if(!a->isChecked() && (translationRowsStatus.contains(a) || translationRowsStatus.isEmpty())) {
                 needUpdate = true;
                 a->setChecked(true);
             }
