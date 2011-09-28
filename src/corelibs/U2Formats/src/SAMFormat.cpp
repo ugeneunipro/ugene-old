@@ -87,6 +87,8 @@ bool SAMFormat::validateField(int num, QByteArray &field, TaskStateInfo *ti) {
 SAMFormat::SAMFormat( QObject* p ): DocumentFormat(p, DocumentFormatFlags_SW, QStringList()<< "sam")
 {
     formatName = tr("SAM");
+	formatDescription = tr("The Sequence Alignment/Map (SAM) format is a generic alignment format for"
+		"storing read alignments against reference sequence");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
     skipDetection = false;
 }

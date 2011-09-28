@@ -53,6 +53,7 @@ PDWFormat::PDWFormat(QObject* p)
 : DocumentFormat(p, DocumentFormatFlag(0), QStringList()<<"pdw")
 {
     formatName = tr("pDRAW");
+	formatDescription = tr("pDRAW is a sequence file format used by pDRAW software");
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
     supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;
 }

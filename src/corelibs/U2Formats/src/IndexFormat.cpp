@@ -482,6 +482,8 @@ const QString IndexFormat::WRITE_LOCK_REASON    = "Index files are read only";
 
 IndexFormat::IndexFormat( QObject* obj ) : DocumentFormat( obj, DocumentFormatFlag_SupportWriting, QStringList("uind")) {
     format_name = tr("Index");
+	formatDescription = tr("Index is a format used for storing index information in index files" 
+		"for a set of others , usually large files");
     supportedObjectTypes+=GObjectTypes::UINDEX;
 }
 

@@ -42,6 +42,7 @@ const char MegaFormat::MEGA_END_COMMENT=';';
 
 MegaFormat::MegaFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_SW, QStringList("meg")) {
     formatName = tr("Mega");
+	formatDescription = tr("Mega is a file format of native MEGA program");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 

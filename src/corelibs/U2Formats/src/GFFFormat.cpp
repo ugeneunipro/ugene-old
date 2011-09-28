@@ -43,6 +43,7 @@ namespace U2{
 
 GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlags_SW, QStringList("gff")){
     formatName = tr("GFF");
+	formatDescription = tr("GFF is a format used for storing features and annotations");
     supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
 }

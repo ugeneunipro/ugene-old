@@ -43,6 +43,8 @@ namespace U2 {
 SwissProtPlainTextFormat::SwissProtPlainTextFormat(QObject* p)
 : EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_SWISS_PROT, tr("Swiss-Prot"), 80, DocumentFormatFlag_SupportStreaming, p)
 {
+	formatDescription = tr("SwissProt is a format of the UniProtKB/Swiss-prot database used for "
+			"storing annotated protein sequence");
     fileExtensions << "sw" << "em" << "emb" << "embl" << "txt";
     sequenceStartPrefix = "SQ";
     fPrefix = "FT";

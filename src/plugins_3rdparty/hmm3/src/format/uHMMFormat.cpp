@@ -308,6 +308,7 @@ const QString           UHMMFormat::WRITE_LOCK_REASON   = UHMMFormat::tr( "hmm_f
 
 UHMMFormat::UHMMFormat( QObject* obj ) : DocumentFormat( obj, DocumentFormatFlags_SW, QStringList("hmm")) {
     formatName = tr( "hmmer_format" );
+	formatDescription = tr("hmm is a format for storing hmm profiles");
 	supportedObjectTypes+=UHMMObject::UHMM_OT;
 }
 
