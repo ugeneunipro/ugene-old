@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EditStringMarkerWidget</class>
+ <widget class="QWidget" name="EditStringMarkerWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>270</width>
+    <height>116</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QRadioButton" name="startsButton">
+     <property name="text">
+      <string>Starts with</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <attribute name="buttonGroup">
+      <string>buttonGroup</string>
+     </attribute>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="startsEdit"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QRadioButton" name="endsButton">
+     <property name="text">
+      <string>Ends with</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string>buttonGroup</string>
+     </attribute>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="endsEdit"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QRadioButton" name="containsButton">
+     <property name="text">
+      <string>Contains</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string>buttonGroup</string>
+     </attribute>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="containsEdit"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QRadioButton" name="regexpButton">
+     <property name="text">
+      <string>Regular expression</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string>buttonGroup</string>
+     </attribute>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="regexpEdit"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>startsButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>startsEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>12</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>endsButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>endsEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>110</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>47</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>containsButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>containsEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>regexpButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>regexpEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>93</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
+</ui>

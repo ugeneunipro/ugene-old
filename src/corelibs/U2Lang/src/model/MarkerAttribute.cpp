@@ -40,9 +40,6 @@ void MarkerAttribute::setAttributeValue(const QVariant &newVal) {
 }
 
 const QVariant &MarkerAttribute::getAttributePureValue() const {
-    if (!value.toString().isEmpty()) {
-        return value;
-    }
     QString result;
     bool first = true;
 

@@ -45,6 +45,8 @@ public:
     }; // ItemValueRole
 
 public:    
+    ConfigurationEditor() {}
+    ConfigurationEditor(const ConfigurationEditor&) {}
     virtual ~ConfigurationEditor() {}
 
     // editing widget
@@ -57,6 +59,9 @@ public:
     
     // commit data to model
     virtual void commit() {}
+
+    // make another editor
+    virtual ConfigurationEditor *clone() {return new ConfigurationEditor(*this);}
 
 }; // ConfigurationEditor
 

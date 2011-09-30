@@ -57,6 +57,7 @@ public:
     virtual PropertyDelegate* removeDelegate( const QString & name ) {return delegates.take( name );}
     virtual void addDelegate( PropertyDelegate * del, const QString & name ) { delegates.insert( name, del ); }
     virtual void commit() {}
+    virtual ConfigurationEditor *clone() {return new ConfigurationEditor(*this);}
 protected:
     QMap<QString, PropertyDelegate*> delegates;
     

@@ -222,6 +222,19 @@ public:
     
 }; // Prompter
 
+/**
+ * base class for Actor's configuration editor
+ */
+class U2LANG_EXPORT ActorConfigurationEditor : public ConfigurationEditor {
+public:
+    ActorConfigurationEditor() : cfg(NULL) {}
+    virtual void setConfiguration(Actor *actor) {cfg = actor;}
+    virtual ConfigurationEditor *clone() {return new ActorConfigurationEditor(*this);}
+
+protected:
+    Actor *cfg;
+}; // ActorConfigurationEditor
+
 }//Workflow namespace
 
 }//GB2 namespace

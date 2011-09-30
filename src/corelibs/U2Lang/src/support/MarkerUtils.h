@@ -45,6 +45,10 @@ private:
     static bool stringToIntValue(const QString &string, QVariantList &value);
     static bool stringToFloatValue(const QString &string, QVariantList &value);
     static bool stringToTextValue(const QString &string, QVariantList &value);
+
+    static void integerValueToString(const QVariantList &value, QString &string);
+    static void floatValueToString(const QVariantList &value, QString &string);
+    static void textValueToString(const QVariantList &value, QString &string);
 };
 
 } // U2

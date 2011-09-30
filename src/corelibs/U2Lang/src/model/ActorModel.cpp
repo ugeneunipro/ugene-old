@@ -259,9 +259,6 @@ Actor* ActorPrototype::createInstance(AttributeScript *script, const QVariantMap
     foreach(Attribute* a, getAttributes()) {
         proc->addParameter(a->getId(), a->clone());
     }
-    if (ed) {
-        proc->setEditor(ed);
-    }
     if (val) {
         proc->setValidator(val);
     }
@@ -273,6 +270,16 @@ Actor* ActorPrototype::createInstance(AttributeScript *script, const QVariantMap
     while (i.hasNext()) {
         i.next();
         proc->setParameter(i.key(), i.value());
+    }
+    if (ed) {
+        ActorConfigurationEditor *actorEd = dynamic_cast<ActorConfigurationEditor*>(ed);
+        if (NULL != actorEd) {
+            ActorConfigurationEditor *editor = dynamic_cast<ActorConfigurationEditor*>(ed->clone());
+            editor->setConfiguration(proc);
+            proc->setEditor(editor);
+        } else {
+            proc->setEditor(ed);
+        }
     }
     return proc;
 }

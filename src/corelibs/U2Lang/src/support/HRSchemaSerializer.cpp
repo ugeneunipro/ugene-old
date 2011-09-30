@@ -557,6 +557,7 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
     foreach( const QString & key, pairs.equalPairs.keys() ) {
         proc->getParameter(key)->setAttributeValue(getAttrValue(proc, key, pairs.equalPairs.value(key)));
     }
+
     return proc;
 }
 
@@ -937,6 +938,18 @@ static void parseBody(WorkflowSchemaReaderData & data) {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::UNDEFINED_CONSTRUCT.arg(tok).arg(next));
         }
     }
+
+    foreach (Actor *proc, data.actorMap.values()) {
+        ActorPrototype *proto = proc->getProto();
+        if (NULL != proto->getEditor()) {
+            ActorConfigurationEditor *actorEd = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor());
+            if (NULL != actorEd) {
+                ActorConfigurationEditor *editor = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor()->clone());
+                editor->setConfiguration(proc);
+                proc->setEditor(editor);
+            }
+        }
+    }
 }
 
 static void tryToConnect(Schema * schema, Port * input, Port * output) {
@@ -1200,7 +1213,7 @@ static QString markerDefinitionBlock(Marker *marker, bool ) {
     } else if (ANNOTATION == marker->getGroup()) {
         const QString &annName = dynamic_cast<AnnotationMarker*>(marker)->getAnnotationName();
         if (!annName.isEmpty()) {
-            res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::QUAL_NAME, annName);
+            res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::ANN_NAME, annName);
         }
     }
 

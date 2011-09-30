@@ -30,6 +30,8 @@ HEADERS += src/ActorCfgModel.h \
            src/library/GenericReadActor.h \
            src/library/GenericReadWorker.h \
            src/library/ImportAnnotationsWorker.h \
+           src/library/MarkSequenceWorker.h \
+           src/library/PassFilterWorker.h \
            src/library/RemoteDBFetcherWorker.h \
            src/library/ScriptWorker.h \
            src/library/SequenceSplitWorker.h \
@@ -80,6 +82,8 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/GenericReadActor.cpp \
            src/library/GenericReadWorker.cpp \
            src/library/ImportAnnotationsWorker.cpp \
+           src/library/MarkSequenceWorker.cpp \
+           src/library/PassFilterWorker.cpp \
            src/library/RemoteDBFetcherWorker.cpp \
            src/library/ScriptWorker.cpp \
            src/library/SequenceSplitWorker.cpp \

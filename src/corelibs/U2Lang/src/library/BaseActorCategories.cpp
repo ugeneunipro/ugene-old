@@ -67,5 +67,9 @@ const Descriptor BaseActorCategories::CATEGORY_EXTERNAL() {
     return Descriptor("ex", tr("Custom Elements with CMD Tools"),"");
 }
 
+const Descriptor BaseActorCategories::CATEGORY_DATAFLOW() {
+    return Descriptor("ex", tr("Data flow"),"");
+}
+
 }//Workflow namespace
 }//GB2 namespace

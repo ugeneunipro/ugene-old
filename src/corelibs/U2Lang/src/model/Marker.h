@@ -47,17 +47,25 @@ public:
     static const QString TEXT_MARKER_ID;
 
     static MarkerDataType getDataTypeById(const QString &typeId);
+
+    static const Descriptor SEQ_LENGTH();
+    static const Descriptor ANNOTATION_COUNT();
+    static const Descriptor ANNOTATION_LENGTH();
+    static const Descriptor QUAL_INT_VALUE();
+    static const Descriptor QUAL_TEXT_VALUE();
+    static const Descriptor QUAL_FLOAT_VALUE();
+    static const Descriptor TEXT();
 };
 
-class U2LANG_EXPORT MarkerAttributes : public QObject {
-    Q_OBJECT
-public:
-    static const Descriptor LENGTH_MARKER_ATTRIBUTE();
-    static const Descriptor ANNOTATION_COUNT_MARKER_ATTRIBUTE();
-    static const Descriptor ANNOTATION_VALUE_MARKER_ATTRIBUTE();
-    static const Descriptor FILENAME_MARKER_ATTRIBUTE();
-
-};
+//class U2LANG_EXPORT MarkerAttributes : public QObject {
+//    Q_OBJECT
+//public:
+//    static const Descriptor LENGTH_MARKER_ATTRIBUTE();
+//    static const Descriptor ANNOTATION_COUNT_MARKER_ATTRIBUTE();
+//    static const Descriptor ANNOTATION_VALUE_MARKER_ATTRIBUTE();
+//    static const Descriptor FILENAME_MARKER_ATTRIBUTE();
+//
+//};
 
 class U2LANG_EXPORT MarkerSlots : public QObject {
     Q_OBJECT
@@ -86,14 +94,22 @@ class U2LANG_EXPORT Marker : public QObject{
     Q_OBJECT
 public:
     Marker(const QString &markerType, const QString &markerName);
+    Marker(const Marker &m);
     virtual ~Marker() {}
     virtual void addValue(QString name, QString value);
     virtual QString getMarkingResult(const QVariant &object);
     virtual MarkerGroup getGroup() = 0;
+    virtual Marker *clone() = 0;
+    virtual bool hasAdditionalParameter();
+    virtual void setAdditionalParameter(const QVariant &param);
+    virtual QVariant getAdditionalParameter();
+    virtual QString getAdditionalParameterName();
 
     const QString &getName() const;
     const QString &getType() const;
     const QMap<QString, QString> &getValues() const;
+    QMap<QString, QString> &getValues();
+    void setName(const QString &newName);
 
     const QString toString() const;
 
@@ -109,6 +125,11 @@ private:
     bool getMarkerStringResult(const QVariant &object, QVariantList &expr);
 };
 
+class U2LANG_EXPORT MarkerFactory {
+public:
+    static Marker *createInstanse(const QString &type, const QVariant &additionalParam);
+};
+
 /************************************************************************/
 /* SequencerMarker */
 /************************************************************************/
@@ -118,6 +139,7 @@ public:
     SequenceMarker(const QString &markerType, const QString &markerName) : Marker(markerType, markerName) {}
     virtual QString getMarkingResult(const QVariant &object);
     virtual MarkerGroup getGroup();
+    virtual Marker *clone();
 };
 
 /************************************************************************/
@@ -130,6 +152,11 @@ public:
         : Marker(markerType, markerName), qualName(qualName) {}
     virtual QString getMarkingResult(const QVariant &object);
     virtual MarkerGroup getGroup();
+    virtual Marker *clone();
+    virtual bool hasAdditionalParameter();
+    virtual void setAdditionalParameter(const QVariant &param);
+    virtual QVariant getAdditionalParameter();
+    virtual QString getAdditionalParameterName();
 
     const QString &getQualifierName() const;
 
@@ -147,6 +174,11 @@ public:
         : Marker(markerType, markerName), annName(annName) {}
     virtual QString getMarkingResult(const QVariant &object);
     virtual MarkerGroup getGroup();
+    virtual Marker *clone();
+    virtual bool hasAdditionalParameter();
+    virtual void setAdditionalParameter(const QVariant &param);
+    virtual QVariant getAdditionalParameter();
+    virtual QString getAdditionalParameterName();
 
     const QString &getAnnotationName() const;
 
@@ -163,6 +195,7 @@ public:
     TextMarker(const QString &markerType, const QString &markerName) : Marker(markerType, markerName) {}
     virtual QString getMarkingResult(const QVariant &object);
     virtual MarkerGroup getGroup();
+    virtual Marker *clone();
 };
 
 } // U2

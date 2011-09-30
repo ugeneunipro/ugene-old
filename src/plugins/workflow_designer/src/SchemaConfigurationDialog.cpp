@@ -268,7 +268,17 @@ SchemaConfigurationDialog::SchemaConfigurationDialog(const Schema& sh, const QLi
     
     iterationBox->hide();
  
-    CfgTreeModel *model = new CfgTreeModel(sh.getProcesses(), iterationList->list(), this);
+    // TODO: implement correct SchemaConfigurationDialog for actors with a custom editor
+    QList<Actor*> processes;
+    foreach (Actor *proc, sh.getProcesses()) {
+        if (NULL == proc->getEditor()) {
+            processes << proc;
+        } else if (NULL == proc->getEditor()->getWidget()) {
+            processes << proc;
+        }
+    }
+    CfgTreeModel *model = new CfgTreeModel(processes, iterationList->list(), this);
+    // end of TODO
     ProxyDelegate *delegate = new ProxyDelegate(this);
     treeView->setModel(model);
     treeView->setItemDelegate(delegate);  

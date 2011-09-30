@@ -225,6 +225,17 @@ void WorkflowPalette::sortTree() {
             addTopLevelItem(item);
         }
     }
+
+    text = BaseActorCategories::CATEGORY_DATAFLOW().getDisplayName();
+    if (!findItems(text, Qt::MatchExactly).isEmpty())
+    {
+        item = findItems(text, Qt::MatchExactly).first();
+        if (item)
+        {
+            takeTopLevelItem(indexFromItem(item).row());
+            addTopLevelItem(item);
+        }
+    }
 }
 
 QMenu* WorkflowPalette::createMenu(const QString& name) {

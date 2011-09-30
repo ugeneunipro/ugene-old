@@ -24,6 +24,8 @@
 #include "WorkflowDocument.h"
 #include "WorkflowSettingsController.h"
 #include "library/CoreLib.h"
+#include "library/PassFilterWorker.h"
+#include "library/MarkSequenceWorker.h"
 #include "WorkflowSamples.h"
 #include <util/SaveSchemaImageUtils.h>
 
@@ -70,6 +72,8 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
         AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(new WorkflowViewFactory(this));
     }
     Workflow::CoreLib::init();
+    LocalWorkflow::PassFilterWorkerFactory::init();
+    LocalWorkflow::MarkSequenceWorkerFactory::init();
     AppContext::getDocumentFormatRegistry()->registerFormat(new WorkflowDocFormat(this));
     
     // xml workflow tests removed. commented for future uses

@@ -470,8 +470,7 @@ void WorkflowEditor::edit(Configuration* cfg) {
         connect(paramBox, SIGNAL(toggled(bool)), SLOT(sl_resizeSplitter(bool)));
     } else {
         tableSplitter->hide();
-        if (customWidget) { 
-            if (actor) assert(0 && "No support for iterations yet");
+        if (customWidget) {
             paramBox->layout()->addWidget(customWidget);
             customWidget->setVisible(paramBox->isChecked());
             /*if(paramBox->isChecked()) {

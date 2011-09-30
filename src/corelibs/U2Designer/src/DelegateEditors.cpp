@@ -19,10 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-
-
-#include "DelegateEditors.h"
-
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
@@ -35,6 +31,8 @@
 #include <U2Gui/ScriptEditorDialog.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
+
+#include "DelegateEditors.h"
 
 namespace U2 {
 

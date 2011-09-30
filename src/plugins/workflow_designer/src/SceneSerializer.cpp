@@ -129,6 +129,14 @@ QString SceneSerializer::xml2scene(const QDomElement& projectElement, WorkflowSc
         Actor* proc = proto->createInstance(NULL);
         actorMap[id] = proc;
         proc->setLabel(procElement.attribute(NAME_ATTR));
+        if (NULL != proto->getEditor()) {
+            ActorConfigurationEditor *actorEd = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor());
+            if (NULL != actorEd) {
+                ActorConfigurationEditor *editor = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor()->clone());
+                editor->setConfiguration(proc);
+                proc->setEditor(editor);
+            }
+        }
         WorkflowProcessItem* it = new WorkflowProcessItem(proc);
         it->loadState(procElement);
         scene->addItem(it);
@@ -142,6 +150,17 @@ QString SceneSerializer::xml2scene(const QDomElement& projectElement, WorkflowSc
 //            }
 //            WorkflowPortItem * p = it->getPort(pd->getId());
 //        }
+    }
+    foreach(Actor* proc, actorMap) {
+        ActorPrototype *proto = proc->getProto();
+        if (NULL != proto->getEditor()) {
+            ActorConfigurationEditor *actorEd = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor());
+            if (NULL != actorEd) {
+                ActorConfigurationEditor *editor = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor()->clone());
+                editor->setConfiguration(proc);
+                proc->setEditor(editor);
+            }
+        }
     }
     return QString();
 }

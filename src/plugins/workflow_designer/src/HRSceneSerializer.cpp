@@ -562,6 +562,18 @@ static void parseBodyItself(WorkflowSceneReaderData & data) {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::UNDEFINED_CONSTRUCT.arg(tok).arg(nextTok));
         }
     }
+
+    foreach (Actor *proc, data.actorMap.values()) {
+        ActorPrototype *proto = proc->getProto();
+        if (NULL != proto->getEditor()) {
+            ActorConfigurationEditor *actorEd = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor());
+            if (NULL != actorEd) {
+                ActorConfigurationEditor *editor = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor()->clone());
+                editor->setConfiguration(proc);
+                proc->setEditor(editor);
+            }
+        }
+    }
 }
 
 void setFlowParameters(const HRSchemaSerializer::ParsedPairs & p, WorkflowBusItem * bit) {

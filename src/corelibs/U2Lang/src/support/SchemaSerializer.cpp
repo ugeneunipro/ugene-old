@@ -442,6 +442,18 @@ QString SchemaSerializer::xml2schema(const QDomElement& projectElement, Schema* 
         }
     }
     updatePortBindings(procMap.values());
+
+    foreach(Actor* proc, procMap) {
+        ActorPrototype *proto = proc->getProto();
+        if (NULL != proto->getEditor()) {
+            ActorConfigurationEditor *actorEd = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor());
+            if (NULL != actorEd) {
+                ActorConfigurationEditor *editor = dynamic_cast<ActorConfigurationEditor*>(proto->getEditor()->clone());
+                editor->setConfiguration(proc);
+                proc->setEditor(editor);
+            }
+        }
+    }
     
     return QString();
 }

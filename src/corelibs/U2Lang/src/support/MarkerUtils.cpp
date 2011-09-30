@@ -33,34 +33,30 @@ const QString MarkerUtils::CONTAINS_OPERATION("contains");
 const QString MarkerUtils::REGEXP_OPERATION("regexp");
 
 void MarkerUtils::valueToString(MarkerDataType dataType, const QVariantList &value, QString &string) {
+    assert(value.size() >= 1);
+    if (REST_OPERATION == value.at(0).toString()) {
+        string.clear();
+        string.append(REST_OPERATION);
+        return;
+    }
     if (INTEGER == dataType) {
         assert(value.size() > 1);
-        QString operation = value.at(0).toString();
-
-        if (INTERVAL_OPERATION == operation) {
-            assert(3 == value.size());
-            bool ok1 = false;
-            bool ok2 = false;
-            string = value.at(1).toInt(&ok1) + INTERVAL_OPERATION + value.at(2).toInt(&ok2);
-            assert(ok1);
-            assert(ok2);
-        } else if (LESS_OPERATION == operation) {
-            assert(2 == value.size());
-            bool ok = false;
-            string = LESS_OPERATION + value.at(1).toInt(&ok);
-            assert(ok);
-        } else if (GREATER_OPERATION == operation) {
-            assert(2 == value.size());
-            bool ok = false;
-            string = LESS_OPERATION + value.at(1).toInt(&ok);
-            assert(ok);
-        } else {
-            assert(0);
-        }
+        integerValueToString(value, string);
+    } else if (FLOAT == dataType) {
+        assert(value.size() > 1);
+        floatValueToString(value, string);
+    } else if (STRING == dataType) {
+        assert(2 == value.size());
+        textValueToString(value, string);
     }
 }
 
 bool MarkerUtils::stringToValue(MarkerDataType dataType, const QString &string, QVariantList &value) {
+    if (REST_OPERATION == string) {
+        value.append(string);
+        return true;
+    }
+
     if (INTEGER == dataType) {
         return stringToIntValue(string, value);
     } else if (FLOAT == dataType) {
@@ -156,5 +152,69 @@ bool MarkerUtils::stringToTextValue(const QString &string, QVariantList &value) 
 
     return true;
 }
+
+void MarkerUtils::integerValueToString(const QVariantList &value, QString &string) {
+    QString operation = value.at(0).toString();
+
+    if (INTERVAL_OPERATION == operation) {
+        assert(3 == value.size());
+        bool ok1 = false;
+        bool ok2 = false;
+        QByteArray num1 = QByteArray::number(value.at(1).toInt(&ok1));
+        QByteArray num2 = QByteArray::number(value.at(2).toInt(&ok2));
+        string = num1 + INTERVAL_OPERATION + num2;
+        assert(ok1);
+        assert(ok2);
+    } else if (LESS_OPERATION == operation) {
+        assert(2 == value.size());
+        bool ok = false;
+        QByteArray num = QByteArray::number(value.at(1).toInt(&ok));
+        string = LESS_OPERATION + num;
+        assert(ok);
+    } else if (GREATER_OPERATION == operation) {
+        assert(2 == value.size());
+        bool ok = false;
+        QByteArray num = QByteArray::number(value.at(1).toInt(&ok));
+        string = GREATER_OPERATION + num;
+        assert(ok);
+    } else {
+        assert(0);
+    }
+}
+
+void MarkerUtils::floatValueToString(const QVariantList &value, QString &string) {
+    QString operation = value.at(0).toString();
+
+    if (INTERVAL_OPERATION == operation) {
+        assert(3 == value.size());
+        bool ok1 = false;
+        bool ok2 = false;
+        QByteArray num1 = QByteArray::number(value.at(1).toFloat(&ok1));
+        QByteArray num2 = QByteArray::number(value.at(2).toFloat(&ok2));
+        string = num1 + INTERVAL_OPERATION + num2;
+        assert(ok1);
+        assert(ok2);
+    } else if (LESS_OPERATION == operation) {
+        assert(2 == value.size());
+        bool ok = false;
+        QByteArray num = QByteArray::number(value.at(1).toFloat(&ok));
+        string = LESS_OPERATION + num;
+        assert(ok);
+    } else if (GREATER_OPERATION == operation) {
+        assert(2 == value.size());
+        bool ok = false;
+        QByteArray num = QByteArray::number(value.at(1).toFloat(&ok));
+        string = GREATER_OPERATION + num;
+        assert(ok);
+    } else {
+        assert(0);
+    }
+}
+
+void MarkerUtils::textValueToString(const QVariantList &value, QString &string) {
+    string += value.at(0).toString() + " ";
+    string += value.at(1).toString();
+}
+
 
 } // U2
