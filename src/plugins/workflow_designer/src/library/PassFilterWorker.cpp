@@ -121,9 +121,15 @@ Worker *PassFilterWorkerFactory::createWorker(Actor* a) {
  * FilterSequencePrompter
  *******************************/
 QString PassFilterPrompter::composeRichDoc() {
-    QString spec = tr("Filter data in the workflow channel by passed values");
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_TEXT_PORT_ID()));
+    Actor* producer = input->getProducer(BaseSlots::TEXT_SLOT().getId());
+    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    QString producerName = tr("<u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
+    QString passVals = getRequiredParam(BaseSlots::TEXT_SLOT().getId());
+    passVals = getHyperlink(BaseSlots::TEXT_SLOT().getId(), passVals);
 
-    return spec;
+    QString res = tr("Filter data in the workflow channel from %1 by passed values: %2").arg(producerName).arg(passVals);
+    return res;
 }
 
 
