@@ -177,16 +177,22 @@ void URLLineEdit::sl_onBrowseWithAdding() {
 void URLLineEdit::browse(bool addFiles) {
     LastUsedDirHelper lod(type);
     QString lastDir = lod.dir;
-    GUrl currentUrl(text());
-    QDir dir(currentUrl.dirPath());
-    if(!text().isEmpty() && dir.exists()) {
-        lastDir = currentUrl.dirPath();
+    if(!text().isEmpty()) {
+        QString curPath(text());
+        int slashPos = curPath.lastIndexOf("/");
+        slashPos = qMax(slashPos, curPath.lastIndexOf("\\"));
+        if (slashPos >= 0) {
+            QDir dir(curPath.left(slashPos + 1));
+            if (dir.exists()) {
+                lastDir = dir.absolutePath();
+            }
+        }
     }
 
     QString name;
     if(isPath){
         lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
-    }else if (multi) {
+    } else if (multi) {
         QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lastDir, FileFilter);
         if (addFiles) {
             name = this->text();
