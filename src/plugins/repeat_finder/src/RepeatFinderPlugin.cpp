@@ -25,6 +25,7 @@
 #include "FindRepeatsDialog.h"
 #include "FindTandemsDialog.h"
 #include "RepeatQuery.h"
+#include "TandemQuery.h"
 #include "RFTaskFactory.h"
 
 
@@ -63,6 +64,7 @@ RepeatFinderPlugin::RepeatFinderPlugin() : Plugin(tr("Repeats Finder"), tr("Sear
 
     QDActorPrototypeRegistry* pr = AppContext::getQDActorProtoRegistry();
     pr->registerProto(new QDRepeatActorPrototype());
+    pr->registerProto(new QDTandemActorPrototype());
     
     //tests
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
