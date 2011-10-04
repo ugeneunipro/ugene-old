@@ -52,18 +52,22 @@ private slots:
     void sl_addAllPushButtonClicked();
     void sl_removePushButtonClicked();
     void sl_clearPushButtonClicked();
+	void sl_addAnnBtnClicked();
+	void sl_removeAnnBtnClicked();
+	void sl_removeAllAnnsBtnClicked();
     void sl_timerUpdate();
     void sl_taskStateChanged();
     
 private:
     void addAnnotationWidget();
-    void searchForAnnotatedEnzymes(ADVSequenceObjectContext* ctx);
+	void searchForAnnotatedEnzymes(ADVSequenceObjectContext* ctx);
     void updateAvailableEnzymeWidget();
     void updateSelectedEnzymeWidget();
     void setUiEnabled(bool enabled);
     bool loadEnzymesFile();
     QList<SEnzymeData> findEnzymeDataById(const QString& id);
-    
+    QDialog* createSelectAnnotationsDialog();
+
     ADVSequenceObjectContext*           seqCtx;
     DNASequenceObject*                  dnaObj;
     AnnotationTableObject*              sourceObj;

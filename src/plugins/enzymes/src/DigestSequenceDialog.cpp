@@ -20,6 +20,7 @@
  */
 
 #include <QtGui/QMessageBox>
+#include <QtGui/QDialogButtonBox>
 
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
@@ -31,6 +32,7 @@
 #include <U2Core/Settings.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Formats/GenbankLocationParser.h>
 
 #include "EnzymesIO.h"
 #include "EnzymesQuery.h"
@@ -66,6 +68,10 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     connect(addAllButton, SIGNAL(clicked()), SLOT(sl_addAllPushButtonClicked()));
     connect(removeButton, SIGNAL(clicked()), SLOT(sl_removePushButtonClicked()));
     connect(clearButton, SIGNAL(clicked()), SLOT(sl_clearPushButtonClicked()));
+	connect(addAnnBtn, SIGNAL(clicked()), SLOT(sl_addAnnBtnClicked()));
+	connect(removeAnnBtn, SIGNAL(clicked()), SLOT(sl_removeAnnBtnClicked()));
+	connect(removeAllAnnsBtn, SIGNAL(clicked()), SLOT(sl_removeAllAnnsBtnClicked()));
+
     
     updateAvailableEnzymeWidget();
     seqNameLabel->setText(dnaObj->getGObjectName());
@@ -132,8 +138,25 @@ void DigestSequenceDialog::accept()
     const CreateAnnotationModel& m = ac->getModel();
     AnnotationTableObject* aObj = m.getAnnotationObject();
     assert(aObj != NULL);
+
+	DigestSequenceTaskConfig cfg;
+	cfg.enzymeData = resultEnzymes;
+	
+	int itemCount = conservedAnnsWidget->count();
+	for (int row = 0; row < itemCount; ++row ) {
+		const QString& annEncoded = conservedAnnsWidget->item(row)->text();
+		QStringList annData = annEncoded.split(" ");
+		assert(annData.size() == 2);
+		QString aName = annData.at(0);
+		QString locationStr(annData.at(1));
+		U2Location l;
+		Genbank::LocationParser::parseLocation(qPrintable(locationStr), locationStr.size(), l);
+		foreach (const U2Region& region, l->regions) {
+			cfg.conservedRegions.insertMulti(aName, region);
+		}
+	}
     
-    DigestSequenceTask* task = new DigestSequenceTask(dnaObj, sourceObj, aObj, resultEnzymes);
+    DigestSequenceTask* task = new DigestSequenceTask(dnaObj, sourceObj, aObj, cfg);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     
@@ -300,6 +323,56 @@ void DigestSequenceDialog::setUiEnabled( bool enabled )
     removeButton->setEnabled(enabled);
     clearButton->setEnabled(enabled);
 }
+
+void DigestSequenceDialog::sl_addAnnBtnClicked()
+{
+	QDialog dlg;
+	dlg.setWindowTitle(tr("Select annotations"));
+	QVBoxLayout* layout = new QVBoxLayout(&dlg);
+	QListWidget* listWidget(new QListWidget(&dlg));
+	QSet<AnnotationTableObject*> aObjs = seqCtx->getAnnotationObjects(false);
+	foreach(AnnotationTableObject* aObj, aObjs) {
+		QList<Annotation*> anns = aObj->getAnnotations();
+		foreach(Annotation* a, anns) {
+			listWidget->addItem( QString("%1 %2").arg(a->getAnnotationName())
+				.arg(Genbank::LocationParser::buildLocationString(a->data())) );
+		}
+	}
+	listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	layout->addWidget(listWidget);
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+		Qt::Horizontal, &dlg);
+	connect(buttonBox, SIGNAL(accepted()), &dlg, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), &dlg, SLOT(reject()));
+	layout->addWidget(buttonBox);
+	dlg.setLayout(layout);
+	
+	if (dlg.exec() == QDialog::Accepted) {
+		QList<QListWidgetItem*> items = listWidget->selectedItems();
+		foreach(QListWidgetItem* item, items) {
+			const QString& itemText = item->text();
+			if (conservedAnnsWidget->findItems(itemText,Qt::MatchExactly).isEmpty()) {
+				conservedAnnsWidget->addItem(itemText);
+			}
+		}
+	}
+}
+
+void DigestSequenceDialog::sl_removeAnnBtnClicked()
+{
+	QList<QListWidgetItem*> items = conservedAnnsWidget->selectedItems();
+	foreach (QListWidgetItem* item, items) {
+		int row = conservedAnnsWidget->row(item);
+		conservedAnnsWidget->takeItem(row);
+		delete item;
+	}
+}
+
+void DigestSequenceDialog::sl_removeAllAnnsBtnClicked()
+{
+	conservedAnnsWidget->clear();
+}
+
 
 
 

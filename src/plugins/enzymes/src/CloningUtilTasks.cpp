@@ -43,9 +43,9 @@
 namespace U2 {
 
 DigestSequenceTask::DigestSequenceTask(  const DNASequenceObject* so, AnnotationTableObject* source, 
-                                       AnnotationTableObject* dest, const QList<SEnzymeData>& cutSites )
+                                       AnnotationTableObject* dest, const DigestSequenceTaskConfig& config)
                                        :   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
-                                       searchForRestrictionSites(false), sourceObj(source), destObj(dest), dnaObj(so), enzymeData(cutSites)
+                                        sourceObj(source), destObj(dest), dnaObj(so), cfg(config)
 {
     GCOUNTER(cvar,tvar,"DigestSequenceIntoFragments");
 
@@ -56,7 +56,7 @@ DigestSequenceTask::DigestSequenceTask(  const DNASequenceObject* so, Annotation
 
 }
 
-DigestSequenceTask::DigestSequenceTask( const DNASequenceObject* so, AnnotationTableObject* aobj, 
+/*DigestSequenceTask::DigestSequenceTask( const DNASequenceObject* so, AnnotationTableObject* aobj, 
                                        const QList<SEnzymeData>& cutSites )
 :   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
     searchForRestrictionSites(true), sourceObj(aobj), destObj(aobj), dnaObj(so), enzymeData(cutSites)
@@ -66,18 +66,18 @@ DigestSequenceTask::DigestSequenceTask( const DNASequenceObject* so, AnnotationT
     assert(sourceObj != NULL);
     assert(destObj != NULL);
     assert(dnaObj != NULL);
-}
+}*/
 
 void DigestSequenceTask::prepare() {
     seqRange = dnaObj->getSequenceRange();
     isCircular = dnaObj->isCircular();
     
-    if (searchForRestrictionSites) {
+    if (cfg.searchForRestrictionSites) {
         assert(sourceObj == destObj);
-        FindEnzymesTaskConfig cfg;
-        cfg.circular = isCircular;
-        cfg.groupName = ANNOTATION_GROUP_ENZYME;
-        Task* t = new FindEnzymesToAnnotationsTask(sourceObj, dnaObj->getDNASequence(), enzymeData, cfg);
+        FindEnzymesTaskConfig feCfg;
+        feCfg.circular = isCircular;
+        feCfg.groupName = ANNOTATION_GROUP_ENZYME;
+        Task* t = new FindEnzymesToAnnotationsTask(sourceObj, dnaObj->getDNASequence(), cfg.enzymeData, feCfg);
         addSubTask(t);
     }  
         
@@ -119,18 +119,20 @@ AnnotationData* DigestSequenceTask::createFragment( int pos1, const DNAFragmentT
 
 Task::ReportResult DigestSequenceTask::report()
 {
-    if (hasError() || isCanceled()) {
+	checkForConservedAnnotations();
+
+	if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
-
-    saveResults();
+	
+	saveResults();
     
     return ReportResult_Finished;
 }
 
 void DigestSequenceTask::findCutSites()
 {
-    foreach (const SEnzymeData& enzyme, enzymeData) {
+    foreach (const SEnzymeData& enzyme, cfg.enzymeData) {
         
         if (enzyme->cutDirect == ENZYME_CUT_UNKNOWN || enzyme->cutComplement == ENZYME_CUT_UNKNOWN) {
             setError(tr("Can't use restriction site %1 for digestion,  cleavage site is unknown ").arg(enzyme->id));
@@ -276,8 +278,13 @@ void DigestSequenceTask::saveResults()
 
 QString DigestSequenceTask::generateReport() const
 {
-    QString res;
-    QString topology = dnaObj->isCircular() ? tr("circular") : tr("linear");
+	QString res;
+
+	if (hasError()) {
+		return res;
+	}
+
+	QString topology = dnaObj->isCircular() ? tr("circular") : tr("linear");
     res+= tr("<h3><br>Digest into fragments %1 (%2)</h3>").arg(dnaObj->getDocument()->getName()).arg(topology);
     res+=tr("<br>Generated %1 fragments.").arg(results.count());
     int counter = 1;
@@ -293,6 +300,28 @@ QString DigestSequenceTask::generateReport() const
 
     return res;
 
+}
+
+void DigestSequenceTask::checkForConservedAnnotations()
+{
+	QMap<QString, U2Region>::const_iterator it = cfg.conservedRegions.constBegin();
+	for( ; it != cfg.conservedRegions.constEnd(); ++it) {
+		bool found = false;
+		U2Region annRegion = it.value();
+		foreach (const SharedAnnotationData& data, results) {
+			U2Region resRegion = data->location->regions.first();
+			if (resRegion.contains(annRegion)) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			QString locationStr = QString("%1..%2").arg(annRegion.startPos + 1).arg(annRegion.endPos());
+			setError(tr("Conserved annotation %1 (%2) is disrupted by the digestion. Try changing the restriction sites.")
+				.arg(it.key()).arg(locationStr) );
+			return;
+		}
+	}
 }
 
 
