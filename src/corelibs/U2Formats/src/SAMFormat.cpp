@@ -101,8 +101,11 @@ FormatCheckResult SAMFormat::checkRawData( const QByteArray& rawData, const GUrl
     //try to find SAM header
     if(rx.indexIn(rawData) != 0) {
         // if no header try to parse first alignment line
-        QList<QByteArray> fieldValues = rawData.split(SPACE);
+        QList<QByteArray> fieldValues = rawData.split('\n')[0].split(SPACE);
         int readFieldsCount = fieldValues.count();
+        if(readFieldsCount < 11) {
+            return FormatDetection_NotMatched;
+        }
         for(int i=0; i < qMin(11, readFieldsCount); i++) {
             if(!validateField(i, fieldValues[i])) {
                 return FormatDetection_NotMatched;
