@@ -312,6 +312,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReads(const U2Regio
 
 U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
     QVector< U2DbiIterator<U2AssemblyRead>* > iterators;
+    QVector<QByteArray> selectedIdExtras;
     U2Region targetRowRange(minRow, maxRow - minRow);
     foreach(MTASingleTableAdapter* a, adapters) {
         const U2Region rowRegion(a->rowPos * rowsPerRange, rowsPerRange);
@@ -319,6 +320,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByRow(const U2
             continue;
         }
         iterators << a->singleTableAdapter->getReadsByRow(r, minRow, maxRow, os);
+        selectedIdExtras << a->idExtra;
         if (os.hasError()) {
             break;
         }
@@ -327,7 +329,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByRow(const U2
         qDeleteAll(iterators);
         return NULL;
     } 
-    return new MTAReadsIterator(iterators, idExtras);
+    return new MTAReadsIterator(iterators, selectedIdExtras);
 }
 
 U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByName(const QByteArray& name, U2OpStatus& os) {
