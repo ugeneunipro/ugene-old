@@ -21,6 +21,7 @@
 
 #include "LocalDomain.h"
 
+#include <U2Lang/LastReadyScheduler.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/IntegralBusType.h>
 #include <U2Lang/WorkflowSettings.h>
@@ -306,7 +307,12 @@ CommunicationChannel* LocalDomainFactory::createConnection(Link* l) {
 }
 
 Scheduler* LocalDomainFactory::createScheduler(Schema* sh) {
-    SimplestSequentialScheduler* sc = new SimplestSequentialScheduler(sh);
+    Scheduler *sc = NULL;
+    if (NULL == sh->getActorBindingsGraph()) {
+        sc = new SimplestSequentialScheduler(sh);
+    } else {
+        sc = new LastReadyScheduler(sh);
+    }
     return sc;
 }
 

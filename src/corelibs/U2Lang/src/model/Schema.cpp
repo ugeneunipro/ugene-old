@@ -234,6 +234,46 @@ const QMap<Actor*, QList<Port*> > ActorBindingsGraph::getBindings() const {
     return bindings;
 }
 
+QMap<int, QList<Actor*> > ActorBindingsGraph::getTopologicalSortedGraph(QList<Actor*> actors) const {
+    QMap<Actor*, QList<Port*> > graph = bindings;
+    QMap<int, QList<Actor*> > result;
+
+    int vertexLabel = 0;
+    while (!graph.isEmpty()) {
+        QList<Actor*> endVertexes;
+        {
+            foreach (Actor *a, actors) {
+                if (!graph.keys().contains(a)) { // so, there is no arcs from this actor
+                    endVertexes.append(a);
+                }
+            }
+        }
+        result.insert(vertexLabel, endVertexes);
+
+        foreach (Actor *a, graph.keys()) {
+            QList<Port*> ports = graph.value(a);
+            foreach (Port *p, ports) {
+                if (endVertexes.contains(p->owner())) {
+                    ports.removeOne(p);
+                }
+            }
+            if (ports.isEmpty()) {
+                graph.remove(a);
+            } else {
+                graph.insert(a, ports);
+            }
+        }
+
+        foreach (Actor *a, endVertexes) {
+            actors.removeOne(a);
+        }
+        vertexLabel++;
+    }
+    result.insert(vertexLabel, actors);
+
+    return result;
+}
+
 }//Workflow namespace
 
 }//GB2namespace

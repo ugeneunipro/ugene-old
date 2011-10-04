@@ -877,8 +877,22 @@ static void parseVisual(WorkflowSchemaReaderData & data) {
             QPair<Port*, Port*> result = parseLinkVisualBlock(data, tok, to);
             if (NULL == data.schema->getActorBindingsGraph()) {
                 data.links << result;
+            } else {
+                if (!data.schema->getActorBindingsGraph()->contains(result.first->owner(), result.second)) {
+                    throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Undefined data-flow link: '%1'. Define it in actor-bindings").arg(tok));
+                }
             }
         }
+    }
+
+    if (NULL == data.schema->getActorBindingsGraph()) {
+        ActorBindingsGraph graph;
+        QListIterator<QPair<Port*, Port*> > i(data.links);
+        while (i.hasNext()) {
+            QPair<Port*, Port*> pair = i.next();
+            graph.addBinding(pair.first->owner(), pair.second);
+        }
+        data.schema->setActorBindingsGraph(graph);
     }
 }
 

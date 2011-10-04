@@ -6,6 +6,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/library/BasePorts.h \
            src/library/BaseSlots.h \
            src/library/BaseTypes.h \
+           src/library/LastReadyScheduler.h \
            src/library/LocalDomain.h \
            src/library/ScriptLibrary.h \
            src/model/ActorModel.h \
@@ -49,6 +50,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BasePorts.cpp \
            src/library/BaseSlots.cpp \
            src/library/BaseTypes.cpp \
+           src/library/LastReadyScheduler.cpp \
            src/library/LocalDomain.cpp \
            src/library/ScriptLibrary.cpp \
            src/model/ActorModel.cpp \

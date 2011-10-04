@@ -168,6 +168,7 @@ public:
     bool addBinding(Actor *actor, Port *port);
     bool contains(Actor *actor, Port *port);
     const QMap<Actor*, QList<Port*> > getBindings() const;
+    QMap<int, QList<Actor*> > getTopologicalSortedGraph(QList<Actor*> actors) const;
 
 private:
     QMap<Actor*, QList<Port*> > bindings;
