@@ -256,7 +256,7 @@ public:
 
     void addAnnotation(Annotation* a, const QString& groupName = QString());
 
-    void addAnnotation(Annotation* a, QStringList& groupsNames);
+    void addAnnotation(Annotation* a, const QList<QString>& groupsNames);
 
     void addAnnotations(const QList<Annotation*>& annotations, const QString& groupName = QString());
 

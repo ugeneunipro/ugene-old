@@ -156,7 +156,8 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
     
     DNASequence seq = w->getSequence();
     seq.setName(ui->nameEdit->text());
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), QList<GObject*>(), seq, QVariantMap(), os);
+    QList<GObject*> objs;
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), objs, seq, QVariantMap(), os);
     CHECK_OP_EXT(os, delete doc, );
     doc->addObject(seqObj);
 

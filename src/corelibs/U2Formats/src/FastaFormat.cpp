@@ -190,7 +190,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
             
             //TODO parse header
             DbiConnection con(dbiRef, os);
-            con.dbi->getAttributeDbi()->createStringAttribute(U2StringAttribute(seq.id, DNAInfo::FASTA_HDR, headerLine), os);
+            U2StringAttribute attr(seq.id, DNAInfo::FASTA_HDR, headerLine);
+            con.dbi->getAttributeDbi()->createStringAttribute(attr, os);
             CHECK_OP(os, );
             
             objects << new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id));

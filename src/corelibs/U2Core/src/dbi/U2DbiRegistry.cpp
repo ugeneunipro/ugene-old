@@ -46,7 +46,8 @@ U2DbiRegistry::~U2DbiRegistry() {
         ref.nUsers = 1;
     }
     foreach(const TmpDbiRef& ref, tmpDbis) {
-        deallocateTmpDbi(ref.dbiRef, U2OpStatus2Log());
+        U2OpStatus2Log os;
+        deallocateTmpDbi(ref.dbiRef, os);
     }
     qDeleteAll(factories.values());
 }

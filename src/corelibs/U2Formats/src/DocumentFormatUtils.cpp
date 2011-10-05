@@ -245,7 +245,8 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
         }
     }
     ;
-    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, objects, DNASequence("Sequence", mergedSequence, al), hints, os);
+    DNASequence seq("Sequence", mergedSequence, al);
+    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, objects, seq, hints, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     

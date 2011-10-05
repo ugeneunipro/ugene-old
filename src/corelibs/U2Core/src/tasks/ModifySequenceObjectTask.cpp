@@ -121,7 +121,8 @@ void ModifySequenceContentTask::fixAnnotations(){
                     an->replaceRegions(newRegions[0]);
                     for (int i = 1; i < newRegions.size(); i++) {
                         Annotation* copy = new Annotation(an->data());
-                        ato->addAnnotation(copy, an->getFullGroupsNames());
+                        QStringList groupNames = an->getFullGroupsNames();
+                        ato->addAnnotation(copy, groupNames);
                     }
                 }
             }
@@ -137,7 +138,8 @@ void ModifySequenceContentTask::cloneSequenceAndAnnotations(){
         return;
     }
     U2SequenceObject *oldSeqObj = seqObj;
-    newDoc = df->createNewLoadedDocument(iof, url, U2OpStatus2Log(), curDoc->getGHintsMap());
+    U2OpStatus2Log os;
+    newDoc = df->createNewLoadedDocument(iof, url, os, curDoc->getGHintsMap());
     SAFE_POINT_EXT(df->isObjectOpSupported(newDoc, DocumentFormat::DocObjectOp_Add, GObjectTypes::SEQUENCE), stateInfo.setError("Failed to add sequence object to document!"), );
     U2Sequence clonedSeq = U2SequenceUtils::copySequence(oldSeqObj->getSequenceRef(), newDoc->getDbiRef(), stateInfo); 
     CHECK_OP(stateInfo, );
@@ -173,7 +175,8 @@ void ModifySequenceContentTask::cloneSequenceAndAnnotations(){
                 if (aObj == NULL) {
                     continue;
                 }
-                GObject *cl = aObj->clone(newDoc->getDbiRef(), U2OpStatus2Log());
+                U2OpStatus2Log os;
+                GObject *cl = aObj->clone(newDoc->getDbiRef(), os);
                 newDoc->addObject(cl);
                 GObjectUtils::updateRelationsURL(cl, curDoc->getURL(), newDoc->getURL());
             }

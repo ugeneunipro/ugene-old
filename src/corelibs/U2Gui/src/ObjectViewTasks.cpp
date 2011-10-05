@@ -32,7 +32,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatus.h>
-#include <U2Core/L10N.h>
+#include <U2Core/L10n.h>
 
 namespace U2 {
 

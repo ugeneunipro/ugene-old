@@ -106,7 +106,8 @@ void StructuralAlignmentDialog::accept() {
 
     // Since we unable to change mob structure we clone the GObject
     // TODO: clone live-range?
-    BioStruct3DObject *mobClone = qobject_cast<BioStruct3DObject*> (mobSubset.obj->clone(U2DbiRef(), U2OpStatus2Log()));
+    U2OpStatus2Log os;
+    BioStruct3DObject *mobClone = qobject_cast<BioStruct3DObject*> (mobSubset.obj->clone(U2DbiRef(), os));
     mobSubset.obj = mobClone;
 
     StructuralAlignmentTaskSettings settings(refSubset, mobSubset);

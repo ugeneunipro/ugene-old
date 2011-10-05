@@ -86,7 +86,7 @@ QString U2SequenceObject::getSequenceName() const  {
     if (cachedName.isEmpty()) {
         U2OpStatus2Log os;
         DbiConnection con(entityRef.dbiRef, os);
-        CHECK_OP(os, -1);
+        CHECK_OP(os, "");
         cachedName = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).visualName;
     }
     return cachedName;

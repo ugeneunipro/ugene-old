@@ -591,7 +591,7 @@ void AnnotationTableObject::addAnnotation(Annotation* a, const QString& groupNam
     emit si_onAnnotationsAdded(QList<Annotation*>()<<a);
 }
 
-void AnnotationTableObject::addAnnotation(Annotation* a, QStringList& groupsNames) {
+void AnnotationTableObject::addAnnotation(Annotation* a, const QList<QString>& groupsNames) {
     SAFE_POINT(a->obj == NULL, "Annotation belongs to another object", );
     if(groupsNames.isEmpty()){
         addAnnotation(a);

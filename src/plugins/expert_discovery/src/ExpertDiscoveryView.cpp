@@ -794,7 +794,8 @@ Document* ExpertDiscoveryView::createUDocument(SequenceType sType){
     GUrl url(baseName);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     DocumentFormat* dformat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA);
-    Document* doc = dformat->createNewLoadedDocument(iof, url, U2OpStatus2Log());
+    U2OpStatus2Log os;
+    Document* doc = dformat->createNewLoadedDocument(iof, url, os);
     return doc;
 }
 

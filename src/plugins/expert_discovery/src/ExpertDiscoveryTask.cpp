@@ -303,7 +303,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
                     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
                     negDoc = f->createNewUnloadedDocument(iof, URL, stateInfo);
-                    CHECK_OP(stateInfo);
+                    CHECK_OP(stateInfo,);
                     addSubTask(new LoadUnloadedDocumentTask(negDoc));
                 } else {
                     ifstream fNegAnn(strNegName.toStdString().c_str());

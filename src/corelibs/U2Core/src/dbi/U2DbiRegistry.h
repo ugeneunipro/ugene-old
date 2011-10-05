@@ -42,7 +42,7 @@ class U2CORE_EXPORT U2DbiRegistry : public QObject {
     Q_OBJECT
     class TmpDbiRef {
     public:
-        TmpDbiRef(const QString& _alias = QString(), U2DbiRef& _dbiRef = U2DbiRef(), int _nUsers = 0) 
+        TmpDbiRef(const QString& _alias = QString(), const U2DbiRef& _dbiRef = U2DbiRef(), int _nUsers = 0)
             : alias(_alias), dbiRef(_dbiRef), nUsers(_nUsers){}
 
         QString     alias;

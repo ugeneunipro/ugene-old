@@ -45,7 +45,7 @@
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Formats/DocumentFormatUtils.h>
 
-#include <memory.h>
+#include <memory>
 
 namespace U2 {
 using namespace Workflow;
