@@ -758,7 +758,9 @@ void ConvertToSQLiteTask::run() {
         assert(destinationUrl.isLocalFile());
         QFile::remove(destinationUrl.getURLString());
     } catch(const Exception &e) {
-        setError(e.getMessage());
+        setError(tr("BAM import for '%1' failed: %2")
+                 .arg(sourceUrl.getURLString())
+                 .arg(e.getMessage()));
         assert(destinationUrl.isLocalFile());
         QFile::remove(destinationUrl.getURLString());
     }

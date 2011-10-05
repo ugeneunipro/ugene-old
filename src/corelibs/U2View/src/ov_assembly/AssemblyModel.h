@@ -75,6 +75,8 @@ public:
     
     qint64 getReadsNumber(U2OpStatus & os);
     bool hasReads(U2OpStatus & os);
+
+    QList<U2AssemblyRead> findMateReads(U2AssemblyRead read, U2OpStatus& os);
     
 private:
     void cleanup();

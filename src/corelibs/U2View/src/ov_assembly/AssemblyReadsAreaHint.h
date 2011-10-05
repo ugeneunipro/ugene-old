@@ -39,7 +39,7 @@ public:
     
 public:
     AssemblyReadsAreaHint(QWidget * p);
-    void setData(const U2AssemblyRead& r);
+    void setData(U2AssemblyRead r, QList<U2AssemblyRead> mates);
     
 protected:
     bool eventFilter(QObject *, QEvent *);

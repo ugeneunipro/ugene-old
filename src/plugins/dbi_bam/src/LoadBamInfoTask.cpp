@@ -91,7 +91,9 @@ void LoadInfoTask::run() {
             }
         }
     } catch(const Exception &ex) {
-        stateInfo.setError(ex.getMessage());
+        stateInfo.setError(tr("Loading BAM info for file '%1' failed: %2")
+                           .arg(sourceUrl.getURLString())
+                           .arg(ex.getMessage()));
     }
 }
 

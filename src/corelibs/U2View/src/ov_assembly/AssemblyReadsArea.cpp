@@ -457,7 +457,17 @@ void AssemblyReadsArea::updateHint() {
     // 2. set hint info
     if(read->id != hintData.curReadId) {
         hintData.curReadId = read->id;
-        hintData.hint.setData(read);
+
+        // find mates
+        U2OpStatusImpl status;
+        QList<U2AssemblyRead> mates = model->findMateReads(read, status);
+        if(status.hasError()) {
+            LOG_OP(status);
+            mates = QList<U2AssemblyRead>();
+        }
+
+        // set data
+        hintData.hint.setData(read, mates);
     }
 
     // 3. move hint if needed

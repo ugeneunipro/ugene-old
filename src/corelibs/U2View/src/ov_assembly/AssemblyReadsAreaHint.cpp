@@ -137,16 +137,20 @@ QString getReadNameWrapped(QString n) {
     return ret;
 }
 
-void AssemblyReadsAreaHint::setData(const U2AssemblyRead& r) {
+static QString formatReadPosString(U2AssemblyRead r) {
+    qint64 len = U2AssemblyUtils::getEffectiveReadLength(r);
+    return QString("<b>From</b>&nbsp;%1&nbsp;<b>to</b>&nbsp;%2&nbsp;<b>Row</b>:&nbsp;%3").
+        arg(r->leftmostPos + 1).
+        arg(r->leftmostPos + len).
+        arg(r->packedViewRow + 1);
+}
+
+static QString formatReadInfo(U2AssemblyRead r) {
     QString text;
-    text += "<table cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"20%\">";
     text += QString("<tr><td><b>%1</b></td></tr>").arg(getReadNameWrapped(r->name));
     {
         qint64 len = U2AssemblyUtils::getEffectiveReadLength(r);
-        text += QString("<tr><td><b>From</b>&nbsp;%1&nbsp;<b>to</b>&nbsp;%2&nbsp;<b>Row</b>:&nbsp;%3</td></tr>").
-            arg(r->leftmostPos + 1).
-            arg(r->leftmostPos + len).
-            arg(r->packedViewRow + 1);
+        text += QString("<tr><td>%1</td></tr>").arg(formatReadPosString(r));
         text += QString("<tr><td><b>Length</b>:&nbsp;%1</td></tr>").arg(len);
     }
     text += QString("<tr><td><b>Cigar</b>:&nbsp;%1</td></tr>").arg(getCigarString(U2AssemblyUtils::cigar2String(r->cigar)));
@@ -156,7 +160,28 @@ void AssemblyReadsAreaHint::setData(const U2AssemblyRead& r) {
     }
     text += QString("<tr><td><b>Read sequence</b>:&nbsp;%1</td></tr>").arg(getReadSequence(r->readSequence));
     if(ReadFlagsUtils::isUnmappedRead(r->flags)) {
-        text += QString("<tr><td><b><font color=\"red\">%1</font></b></td></tr>").arg(tr("Unmapped"));
+        text += QString("<tr><td><b><font color=\"red\">%1</font></b></td></tr>").arg(AssemblyReadsAreaHint::tr("Unmapped"));
+    }
+    return text;
+}
+
+void AssemblyReadsAreaHint::setData(U2AssemblyRead r, QList<U2AssemblyRead> mates) {
+    QString text;
+    text += "<table cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"20%\">";
+    text += formatReadInfo(r);
+
+    int nMates = mates.length();
+    if(nMates == 1) {
+        U2AssemblyRead pair = mates.first();
+        text += QString("<tr><td>&nbsp;</td></tr><tr><td><b>Paired read:</b></td></tr>");
+        text += formatReadInfo(pair);
+    } else if(nMates > 0) {
+        text += QString("<tr><td><b>%1 more segments in read:</b></td></tr>").arg(nMates);
+        foreach(U2AssemblyRead mate, mates) {
+            text += QString("<tr><td>&nbsp;-&nbsp;%1 <b>Length</b> %2</td></tr>")
+                    .arg(formatReadPosString(mate))
+                    .arg(U2AssemblyUtils::getEffectiveReadLength(mate));
+        }
     }
     text += "</table>";
     label->setText(text);

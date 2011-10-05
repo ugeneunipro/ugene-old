@@ -476,6 +476,27 @@ bool AssemblyModel::hasReads(U2OpStatus & os) {
     return getReadsNumber(os) != 0;
 }
 
+
+QList<U2AssemblyRead> AssemblyModel::findMateReads(U2AssemblyRead read, U2OpStatus& os) {
+    QList<U2AssemblyRead> result;
+
+    // don't even try to search if flag Fragmented is not set
+    if(! ReadFlagsUtils::isPairedRead(read->flags)) {
+        return result;
+    }
+
+    std::auto_ptr<U2DbiIterator<U2AssemblyRead> > it(assemblyDbi->getReadsByName(assembly.id, read->name, os));
+    CHECK_OP(os, result);
+
+    while (it->hasNext()) {
+        U2AssemblyRead r = it->next();
+        if(r->id != read->id) {
+            result << r;
+        }
+    }
+    return result;
+}
+
 QByteArray AssemblyModel::getReferenceSpecies(U2OpStatus & os) {
     if(!speciesRetrieved) {
         speciesRetrieved = true;
