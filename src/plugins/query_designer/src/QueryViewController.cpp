@@ -368,6 +368,13 @@ QList<QGraphicsItem*> QueryScene::getElements(const QRectF& area) {
     return items;
 }
 
+void QueryScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
+    if (!mouseEvent->isAccepted() && view->getActor() && (mouseEvent->button() == Qt::LeftButton)) {
+        addActor( view->getActor(), mouseEvent->scenePos());
+    }
+    QGraphicsScene::mousePressEvent(mouseEvent);
+}
+
 #define BINDING_AREA 50
 void QueryScene::dragEnterEvent(QGraphicsSceneDragDropEvent *) {}
 
@@ -511,6 +518,7 @@ void QueryScene::addActor(QDActor* actor, const QPointF& pos) {
     connect(actor->getParameters(), SIGNAL(si_modified()), ruler, SLOT(sl_updateText()));
     emit_schemeChanged();
     setModified(true);
+    emit si_itemAdded();
 }
 
 void QueryScene::addDistanceConstraint(QDElement* src, QDElement* dst, QDDistanceType distType, int min, int max) {
@@ -623,7 +631,7 @@ enum {ElementsTab,GroupsTab,SamplesTab};
 
 #define PALETTE_STATE "query_palette_settings"
 
-QueryViewController::QueryViewController() : MWMDIWindow(tr("Query Designer")) {
+QueryViewController::QueryViewController() : MWMDIWindow(tr("Query Designer")), currentActor(NULL) {
     GCOUNTER(cvar, tvar, "OpenQDWindow");
     scene = new QueryScene(this);
 
@@ -642,6 +650,7 @@ QueryViewController::QueryViewController() : MWMDIWindow(tr("Query Designer")) {
     editor = new QueryEditor(this);
 
     connect(scene, SIGNAL(selectionChanged()), SLOT(sl_editItem()));
+    connect(scene, SIGNAL(si_itemAdded()), SLOT(sl_itemAdded()));
     connect(palette, SIGNAL(processSelected(QDActorPrototype*)), SLOT(sl_elementSelected(QDActorPrototype*)));
     connect(samples, SIGNAL(setupGlass(GlassPane*)), sceneView, SLOT(setGlass(GlassPane*)));
     connect(samples, SIGNAL(itemActivated(QDDocument*)), SLOT(sl_pasteSample(QDDocument*)));
@@ -987,6 +996,17 @@ void QueryViewController::sl_editItem() {
 void QueryViewController::sl_elementSelected(QDActorPrototype* proto) {
     scene->clearSelection();
     editor->showProto(proto);
+
+    if (!proto) {
+        scene->views().at(0)->unsetCursor();
+        scene->views().at(0)->setCursor(Qt::ArrowCursor);
+        currentActor = NULL;
+    } else {
+        scene->views().at(0)->setCursor(Qt::CrossCursor);
+        delete currentActor;
+        currentActor = NULL;
+        currentActor = proto->createInstance();
+    }
 }
 
 void QueryViewController::sl_pasteSample(QDDocument* content) {
@@ -1026,6 +1046,15 @@ void QueryViewController::sl_setGlobalStrand(QAction* a) {
     if (scheme->getStrand()!=old) {
         scene->setModified(true);
     }
+}
+
+void QueryViewController::sl_itemAdded() {
+    currentActor = NULL;
+
+    palette->resetSelection();
+    assert(scene->views().size() == 1);
+    scene->views().at(0)->unsetCursor();
+    scene->views().at(0)->setCursor(Qt::ArrowCursor);
 }
 
 void QueryViewController::sl_scrollUp() {

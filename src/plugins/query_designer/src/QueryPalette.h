@@ -44,6 +44,7 @@ public:
 
     QVariant saveState() const;
     void restoreState(const QVariant&);
+    void resetSelection();
 signals:
     void processSelected(QDActorPrototype*);
 protected:

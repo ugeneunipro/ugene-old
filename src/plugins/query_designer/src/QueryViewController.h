@@ -86,6 +86,7 @@ public:
     void setModified(bool b);
 signals:
     void si_schemeChanged();
+    void si_itemAdded();
 public slots:
     void sl_showLabel(bool show);
     void sl_showSchemeDesc(bool show);
@@ -98,6 +99,7 @@ public:
     static const QSizeF MAX_SCENE_SIZE;
     static const QSizeF DEFAULT_SCENE_SIZE;
 protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
     void dropEvent(QGraphicsSceneDragDropEvent *event);
@@ -143,6 +145,7 @@ public:
     QDScheme* getScheme() const { return scene->getScheme(); }
     static void setupConstraintEditor(QDConstraint* c);
     void enableSaveAction(bool enable);
+    QDActor *getActor() {return currentActor;}
 protected:
     bool onCloseEvent();
 private slots:
@@ -158,6 +161,7 @@ private slots:
     void sl_selectEditorCell(const QString& link);
     void sl_updateTitle();
     void sl_setGlobalStrand(QAction* a);
+    void sl_itemAdded();
 
     void sl_scrollUp();
 private:
@@ -194,6 +198,7 @@ private:
 
     QString         inFile_, outFile_;
     QString         schemeUri;
+    QDActor         *currentActor;
 };
 
 class AddConstraintDialog : public QDialog, public Ui_AddConstraintDialog {

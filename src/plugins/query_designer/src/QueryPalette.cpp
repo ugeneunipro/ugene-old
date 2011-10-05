@@ -229,7 +229,7 @@ void QueryPalette::sl_selectProcess(bool checked) {
         assert(currentAction);
     }
 
-    if (currentAction && currentAction->data().type() != QVariant::String) {
+    if (checked && currentAction && currentAction->data().type() != QVariant::String) {
         emit processSelected(qVariantValue<QDActorPrototype*>(currentAction->data()));
     } else {
         emit processSelected(NULL);
@@ -319,6 +319,13 @@ void QueryPalette::restoreState(const QVariant& v) {
     const QVariantList& l = v.toList();
     for(int i=0, n=l.size(); i<n; i++) {
         topLevelItem(i)->setExpanded(l.at(i).toBool());
+    }
+}
+
+void QueryPalette::resetSelection() {
+    if (currentAction) {
+        currentAction->setChecked(false);
+        currentAction = NULL;
     }
 }
 
