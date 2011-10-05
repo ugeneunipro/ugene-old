@@ -36,7 +36,6 @@
 #include <U2Formats/NewickFormat.h>
 #include <U2Formats/PDBFormat.h>
 #include <U2Formats/FastqFormat.h>
-#include <U2Formats/IndexFormat.h>
 #include <U2Formats/ASNFormat.h>
 #include <U2Formats/MSFFormat.h>
 #include <U2Formats/GFFFormat.h>
@@ -145,9 +144,6 @@ void DocumentFormatRegistryImpl::init() {
 
     FastqFormat* ftq = new FastqFormat(this);
     registerFormat(ftq);
-
-    IndexFormat* indf = new IndexFormat(this);
-    registerFormat(indf);
 
     ASNFormat* asn = new ASNFormat(this);
     registerFormat(asn);

@@ -123,6 +123,7 @@ public:
 
     void prepare();
     void run();
+    void cleanup();
         
     QString                 seqObjName;
     QString                 query;
@@ -130,6 +131,7 @@ public:
     BitsTable               bt;
     int                     nMismatches;
     DNASequence*            seqObj;
+    QByteArray              wholeSeq;
     SArrayIndex*            index;
     SArrayBasedFindTask*    findTask;
     QList<int>              expectedResults;

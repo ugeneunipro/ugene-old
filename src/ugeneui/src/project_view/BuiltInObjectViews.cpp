@@ -25,7 +25,6 @@
 #include <U2View/SimpleTextObjectView.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
-#include <U2View/UIndexViewerFactory.h>
 #include <U2View/TreeViewerFactory.h>
 #include <U2View/AssemblyBrowserFactory.h>
 
@@ -42,9 +41,6 @@ void ProjectViewImpl::registerBuiltInObjectViews() {
 
     f = new MSAEditorFactory();
     reg->registerGObjectViewFactory(f);
-
-    f = new UIndexViewerFactory();
-    reg->registerGObjectViewFactory( f );
 
     f = new TreeViewerFactory();
     reg->registerGObjectViewFactory(f);
@@ -69,11 +65,6 @@ void ProjectViewImpl::unregisterBuiltInObjectViews() {
     f = reg->getFactoryById(MSAEditorFactory::ID);
     assert(f!=NULL);
     reg->unregisterGObjectViewFactory(f);
-    delete f;
-
-    f = reg->getFactoryById( UIndexViewerFactory::ID );
-    assert( NULL != f );
-    reg->unregisterGObjectViewFactory( f );
     delete f;
 
     f = reg->getFactoryById(TreeViewerFactory::ID);

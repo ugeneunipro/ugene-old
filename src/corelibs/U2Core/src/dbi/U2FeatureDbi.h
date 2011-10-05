@@ -72,7 +72,7 @@ public:
 /**
     An interface to obtain 'read' access to sequence features
 */
-class U2CORE_EXPORT U2FeatureDbi : public U2ChildDbi {
+class U2FeatureDbi : public U2ChildDbi {
 protected:
     U2FeatureDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 

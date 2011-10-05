@@ -44,7 +44,7 @@ KarlinGraphFactory::KarlinGraphFactory(QObject* p)
 }
 
 //+
-bool KarlinGraphFactory::isEnabled(DNASequenceObject* o) const {
+bool KarlinGraphFactory::isEnabled(U2SequenceObject* o) const {
     DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic();
 }
@@ -93,7 +93,7 @@ KarlinGraphAlgorithm::~KarlinGraphAlgorithm()
     delete[] global_relative_abundance_values;
 }
 
-void KarlinGraphAlgorithm::calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void KarlinGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
@@ -108,7 +108,7 @@ void KarlinGraphAlgorithm::calculate(QVector<float>& res, DNASequenceObject* o, 
     DNATranslation* complTrans = complTs.first();
     mapTrans = complTrans->getOne2OneMapper();
     
-    const QByteArray& seq = o->getSequence();
+    QByteArray seq = o->getWholeSequenceData();
     int seqLen = seq.size();
     const char* seqc = seq.constData();
     if (global_relative_abundance_values == NULL) {

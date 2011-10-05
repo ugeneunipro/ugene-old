@@ -31,7 +31,7 @@ DNAChromatogramObject::DNAChromatogramObject(const DNAChromatogram& c, const QSt
 
 }
 
-GObject* DNAChromatogramObject::clone() const {
+GObject* DNAChromatogramObject::clone(const U2DbiRef&, U2OpStatus&) const {
     DNAChromatogramObject* cln = new DNAChromatogramObject(chrom, getGObjectName(), getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
     return cln;

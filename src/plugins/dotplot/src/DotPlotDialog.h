@@ -32,7 +32,7 @@ namespace U2 {
 class ADVSequenceObjectContext;
 class GObject;
 class AnnotatedDNAView;
-class DNASequenceObject;
+class U2SequenceObject;
 
 class DotPlotDialog : public QDialog, public Ui_DotPlotDialog{
     Q_OBJECT
@@ -74,7 +74,7 @@ protected slots:
     void sl_loadTaskStateChanged(Task* t);
 
 private:
-    QList<DNASequenceObject*>   sequences;
+    QList<U2SequenceObject*>   sequences;
     ADVSequenceObjectContext    *xSeq, *ySeq;
     AnnotatedDNAView*           adv;
 

@@ -43,7 +43,7 @@ public:
     UnloadedObject(const QString& objectName, const GObjectType& loadedObjectType, const QVariantMap& hintsMap = QVariantMap());
     UnloadedObject(const UnloadedObjectInfo& info);
 
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
     
     GObjectType getLoadedObjectType() const {return loadedObjectType;}
     void setLoadedObjectType(const GObjectType& lot);

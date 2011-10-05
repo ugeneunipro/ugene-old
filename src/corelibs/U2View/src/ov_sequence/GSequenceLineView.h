@@ -42,8 +42,7 @@ class GScrollBar;
 class ADVSequenceObjectContext;
 class GObjectViewOpConstraints;
 class GObject;
-class U2SequenceDbi;
-class DNASequenceObject;
+class U2SequenceObject;
 
 enum GSLV_UpdateFlag {
     GSLV_UF_NeedCompleteRedraw  = 1<<0,
@@ -76,7 +75,7 @@ public:
 
     virtual void setCenterPos(int pos);
 
-    int getSequenceLen() const {return seqLen;}
+    int getSequenceLength() const {return seqLen;}
     
     virtual void addUpdateFlags(GSLV_UpdateFlags newFlags) {lastUpdateFlags|=newFlags;}
        
@@ -103,9 +102,7 @@ public:
 
     virtual QAction* getZoomToSequenceAction() const {return coherentRangeView == NULL ? NULL : coherentRangeView->getZoomToSequenceAction();}
     
-    virtual U2SequenceDbi* getSequenceDbi() const;
-    
-    virtual DNASequenceObject* getSequenceObject() const;
+    virtual U2SequenceObject* getSequenceObject() const;
 
     virtual void buildPopupMenu(QMenu& m){ Q_UNUSED(m); }
 
@@ -153,7 +150,7 @@ protected:
 
     ADVSequenceObjectContext*       ctx;
     GSequenceLineViewRenderArea*    renderArea;
-    U2Region                         visibleRange;
+    U2Region                        visibleRange;
     GScrollBar*                     scrollBar;
     qint64                          lastPressPos;
     qint64                          seqLen;

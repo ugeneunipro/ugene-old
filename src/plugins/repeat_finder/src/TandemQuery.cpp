@@ -77,12 +77,12 @@ Task *QDTandemActor::getAlgorithmTask(const QVector<U2Region> &location) {
     settings.showOverlappedTandems = cfg->getParameter(SHOW_OVERLAPPED_TANDEMS_ATTRIBUTE)->getAttributeValue<bool>();
     settings.nThreads = cfg->getParameter(N_THREADS_ATTRIBUTE)->getAttributeValue<int>();
 
-    DNASequenceObject *dna = scheme->getDNA();
+    const DNASequence& dnaSeq = scheme->getSequence();
     Task *task = new Task(tr("TandemQDTask"), TaskFlag_NoRun);
     foreach(const U2Region &r, location) {
         FindTandemsTaskSettings localSettings(settings);
         localSettings.seqRegion = r;
-        TandemFinder *subTask = new TandemFinder(localSettings, dna->getDNASequence());
+        TandemFinder *subTask = new TandemFinder(localSettings, dnaSeq);
         task->addSubTask(subTask);
         subTasks.append(subTask);
     }
@@ -93,7 +93,8 @@ Task *QDTandemActor::getAlgorithmTask(const QVector<U2Region> &location) {
 void QDTandemActor::sl_onAlgorithmTaskFinished() {
     QList<SharedAnnotationData> annotations;
     {
-        FindTandemsToAnnotationsTask helperTask(settings, scheme->getDNA()->getDNASequence(), "repeat unit", QString(), GObjectReference());
+        const DNASequence& dnaSeq = scheme->getSequence();
+        FindTandemsToAnnotationsTask helperTask(settings, dnaSeq, "repeat unit", QString(), GObjectReference());
         foreach(TandemFinder *task, subTasks) {
             annotations.append(helperTask.importTandemAnnotations(task->getResults(), task->getSettings().seqRegion.startPos, task->getSettings().showOverlappedTandems));
         }

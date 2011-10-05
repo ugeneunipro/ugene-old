@@ -29,7 +29,7 @@
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 
 class ImportQualityScoresConfig {
 public:
@@ -63,7 +63,7 @@ private:
 class ImportPhredQualityScoresTask : public Task {
     Q_OBJECT
 public:
-    ImportPhredQualityScoresTask(const QList<DNASequenceObject*>& sequences, ImportQualityScoresConfig& config);
+    ImportPhredQualityScoresTask(const QList<U2SequenceObject*>& sequences, ImportQualityScoresConfig& config);
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -71,7 +71,7 @@ public:
 private:
     ReadQualityScoresTask* readQualitiesTask;
     ImportQualityScoresConfig config;
-    QList<DNASequenceObject*> seqList;
+    QList<U2SequenceObject*> seqList;
 };
 
 

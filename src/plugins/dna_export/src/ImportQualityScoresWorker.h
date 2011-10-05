@@ -22,13 +22,14 @@
 #ifndef _IMPORT_PHRED_QUALITY_WORKER_H_
 #define _IMPORT_PHRED_QUALITY_WORKER_H_
 
+#include <U2Core/DNASequence.h>
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 #include "ImportQualityScoresTask.h"
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 
 namespace LocalWorkflow {
 
@@ -57,8 +58,10 @@ private slots:
 protected:
     CommunicationChannel *input, *output;
     QString resultName,transId;
-    ImportQualityScoresConfig cfg;
-    QList<DNASequenceObject*> seqObjs;
+    ReadQualityScoresTask* readTask;
+    QString             fileName;
+    DNAQualityType      type;
+    QList<DNASequence>  seqList;
 }; 
 
 class ImportPhredQualityWorkerFactory : public DomainFactory {

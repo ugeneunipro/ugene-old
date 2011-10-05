@@ -25,6 +25,7 @@
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GHints.h>
 #include <U2Core/Counter.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 
 #include <QtGui/QMessageBox>
@@ -686,7 +687,7 @@ void ExpertDiscoveryView::createEDSequence(){
     if(!seqInfocus){
         return;
     }
-    DNASequenceObject* dnaSeqObject = seqInfocus->getSequenceObject();
+    U2SequenceObject* dnaSeqObject = seqInfocus->getSequenceObject();
     const QString& seqName = dnaSeqObject->getSequenceName();
 
     SequenceType seqType = d.getSequenceTypeByName(seqName);
@@ -721,11 +722,11 @@ void ExpertDiscoveryView::updateEDSequenceProperties(){
      propWidget->sl_treeSelChanged(curEDsequence);
 }
 
-DNASequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* sItem){
-    DNASequenceObject* dnaSeqObj = NULL;
+U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* sItem){
+    U2SequenceObject* dnaSeqObj = NULL;
     bool seqFound = false;
     foreach(GObject* obj, edObjects){
-        dnaSeqObj = dynamic_cast<DNASequenceObject*>(obj);
+        dnaSeqObj = dynamic_cast<U2SequenceObject*>(obj);
         if(dnaSeqObj){
             if(dnaSeqObj->getSequenceName().compare(sItem->getSequenceName(), Qt::CaseInsensitive) == 0){
                 seqFound = true;
@@ -737,7 +738,9 @@ DNASequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence*
         QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toAscii());
         DNASequence dnaseq (sItem->getSequenceName(), seqarray);
         dnaseq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
-        DNASequenceObject* danseqob = new DNASequenceObject(sItem->getSequenceName(), dnaseq);
+        assert(0);
+        //TODO: avoid use od objects without doc! U2SequenceObject* danseqob = new U2SequenceObject(sItem->getSequenceName(), dnaseq);
+        U2SequenceObject* danseqob  = NULL;
         edObjects.append(danseqob);
 
         SequenceType sType = d.getSequenceTypeByName(sItem->getSequenceName());
@@ -788,12 +791,10 @@ Document* ExpertDiscoveryView::createUDocument(SequenceType sType){
     }
     QString suffix = QString(".fa");
     baseName.append(suffix);
-    GUrl URL(baseName);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
+    GUrl url(baseName);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     DocumentFormat* dformat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA);
-    Document* doc = new Document(dformat,iof,URL);
-    doc->setLoaded(true);
-
+    Document* doc = dformat->createNewLoadedDocument(iof, url, U2OpStatus2Log());
     return doc;
 }
 
@@ -824,7 +825,7 @@ void ExpertDiscoveryView::sl_showSequence(){
         return;
     }
 
-    DNASequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(sItem);
+    U2SequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(sItem);
     
     QList<EDPISequence*> selSeqList = d.getSelectetSequencesList();
     d.clearSelectedSequencesList();
@@ -832,8 +833,8 @@ void ExpertDiscoveryView::sl_showSequence(){
         signalsWidget->updateItem(curS);
     }
     d.addSequenceToSelected(sItem);
-    QList<DNASequenceObject*> listdna;
-    listdna.append(dynamic_cast<DNASequenceObject*>(dnaSeqObj));
+    QList<U2SequenceObject*> listdna;
+    listdna.append(dynamic_cast<U2SequenceObject*>(dnaSeqObj));
     AnnotatedDNAView* danadv = new AnnotatedDNAView(dnaSeqObj->getSequenceName(),listdna);
     initADVView(danadv);
     signalsWidget->updateItem(sItem);
@@ -846,7 +847,7 @@ void ExpertDiscoveryView::sl_addToShown(){
         return;
     }
 
-    DNASequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(sItem);
+    U2SequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(sItem);
     if(currentAdv){
         if(currentAdv->getSequenceContexts().size() >= MAX_SEQUENCES_COUNT_ON_WIDGET){
             return;
@@ -857,8 +858,8 @@ void ExpertDiscoveryView::sl_addToShown(){
     //auto annotations bug
 
     d.addSequenceToSelected(sItem);
-    QList<DNASequenceObject*> listdna;
-    listdna.append(dynamic_cast<DNASequenceObject*>(dnaSeqObj));
+    QList<U2SequenceObject*> listdna;
+    listdna.append(dynamic_cast<U2SequenceObject*>(dnaSeqObj));
     if(currentAdv){
         foreach(ADVSequenceObjectContext* curSoc, currentAdv->getSequenceContexts()){
             listdna.append(curSoc->getSequenceObject());
@@ -887,7 +888,7 @@ void ExpertDiscoveryView::sl_showFirstSequences(){
     int baseSize = seqBase.getSize();
     int widgetItemsCount = baseSize < MAX_SEQUENCES_COUNT_TO_ONCE_DISPLAY ? baseSize : MAX_SEQUENCES_COUNT_TO_ONCE_DISPLAY;
 
-    QList<DNASequenceObject*> listdna;
+    QList<U2SequenceObject*> listdna;
 
     for(int i = 0; i < widgetItemsCount; i++){
         QTreeWidgetItem* tItem = sItem->child(i);
@@ -895,10 +896,10 @@ void ExpertDiscoveryView::sl_showFirstSequences(){
         if(!pItemSequence){
             continue;
         }
-        DNASequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(pItemSequence);
+        U2SequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(pItemSequence);
         d.addSequenceToSelected(pItemSequence);
         signalsWidget->updateItem(pItemSequence);
-        listdna.append(dynamic_cast<DNASequenceObject*>(dnaSeqObj));
+        listdna.append(dynamic_cast<U2SequenceObject*>(dnaSeqObj));
     }
 
 

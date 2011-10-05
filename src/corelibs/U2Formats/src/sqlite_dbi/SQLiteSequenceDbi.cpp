@@ -32,9 +32,8 @@ SQLiteSequenceDbi::SQLiteSequenceDbi(SQLiteDbi* dbi) : U2SequenceDbi(dbi), SQLit
 }
 
 void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
-    if (os.hasError()) {
-        return;
-    }
+    CHECK_OP(os, );
+    
     // sequence object
     SQLiteQuery("CREATE TABLE Sequence (object INTEGER, length INTEGER NOT NULL DEFAULT 0, alphabet TEXT NOT NULL, "
                             "circular INTEGER NOT NULL DEFAULT 0, "
@@ -48,12 +47,13 @@ void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
 
 U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) {
     U2Sequence res;
+
+    DBI_TYPE_CHECK(sequenceId, U2Type::Sequence, os, res);
     dbi->getSQLiteObjectDbi()->getObject(res, sequenceId, os);
 
-    SAFE_POINT_OP(os, res)
+    CHECK_OP(os, res)
 
-    SQLiteQuery q("SELECT Sequence.length, Sequence.alphabet, Sequence.circular FROM Sequence "
-        " WHERE Sequence.object = ?1", db, os);
+    SQLiteQuery q("SELECT Sequence.length, Sequence.alphabet, Sequence.circular FROM Sequence WHERE Sequence.object = ?1", db, os);
     q.bindDataId(1, sequenceId);
     if (q.step()) {
         res.length = q.getInt64(0);
@@ -70,7 +70,8 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
     GTIMER(c1, t1, "SQLiteSequenceDbi::getSequenceData");
     GCOUNTER(c2, t2, "SQLiteSequenceDbi::getSequenceData -> calls");
     QByteArray res;
-    res.reserve(region.length);
+    //TODO: check mem-overflow, compare region.length with sequence length!
+    // res.reserve(region.length);
     SQLiteQuery q("SELECT sstart, send, data FROM SequenceData WHERE sequence = ?1 "
             "AND  ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart AND send > ?2)) ORDER BY sstart", db, os);
     q.bindDataId(1, sequenceId);
@@ -123,22 +124,23 @@ void SQLiteSequenceDbi::updateSequenceObject(U2Sequence& sequence, U2OpStatus& o
 
 #define SEQUENCE_CHUNK_SIZE (1024*1024)
 
-static QList<QByteArray> quantify(const QList<QByteArray> input) {
+static QList<QByteArray> quantify(const QList<QByteArray>& input) {
     QList<QByteArray> res;
     QByteArray currentChunk;
     foreach (const QByteArray& i, input) {
-        int d = SEQUENCE_CHUNK_SIZE - currentChunk.length();
-        if (i.length() <= d) { //if 'i' fits into chunk - just add it
+        int bytes2Chunk = SEQUENCE_CHUNK_SIZE - currentChunk.length();
+        if (i.length() <= bytes2Chunk) { //if 'i' fits into chunk - just add it
             currentChunk.append(i);
         } else  { // 'i' does not fit into chunk -> split it into separate chunks
-            for (int j = 0; j < i.length(); j += d) {
+            for (int j = 0; j < i.length(); j += bytes2Chunk) {
                 if (j > 0) {
-                    d = qMin(SEQUENCE_CHUNK_SIZE, i.length() - j);
+                    bytes2Chunk = qMin(SEQUENCE_CHUNK_SIZE, i.length() - j);
                 }
-                currentChunk.append(i.constData() + j, + d);
-                assert(currentChunk.length() == SEQUENCE_CHUNK_SIZE);
-                res.append(currentChunk);
-                currentChunk.clear();
+                currentChunk.append(i.constData() + j, bytes2Chunk);
+                if (currentChunk.length() == SEQUENCE_CHUNK_SIZE) {
+                    res.append(currentChunk);
+                    currentChunk.clear();
+                }
             }
         }
         if (currentChunk.length() == SEQUENCE_CHUNK_SIZE) {

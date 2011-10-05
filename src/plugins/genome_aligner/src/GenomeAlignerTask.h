@@ -34,14 +34,14 @@
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 class DNATranslation;
 class LoadDocumentTask;
 class GenomeAlignerIndexTask;
 class GenomeAlignerIndex;
 class ReadShortReadsSubTask;
 class WriteAlignedReadsSubTask;
-class DbiHandle;
+class DbiConnection;
 
 class GenomeAlignerTask : public DnaAssemblyToReferenceTask {
     Q_OBJECT

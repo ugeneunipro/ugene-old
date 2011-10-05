@@ -57,10 +57,10 @@ void CreateObjectRelationDialogController::accept() {
     
     GObject* selObj = objects[idx];
     if (role == GObjectRelationRole::SEQUENCE && assObj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
-        DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(selObj);
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(selObj);
         AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(assObj);
         AnnotationTableObjectConstraints c;
-        c.sequenceSizeToFit = dnaObj->getSequenceLen();
+        c.sequenceSizeToFit = dnaObj->getSequenceLength();
         bool res = ao->checkConstraints(&c);
         if (!res) {
             int rc = QMessageBox::question(this, tr("Warning"), 

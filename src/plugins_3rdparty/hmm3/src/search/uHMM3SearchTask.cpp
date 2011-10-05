@@ -30,6 +30,7 @@
 #include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceObject.h>
 
 #include <gobject/uHMMObject.h>
@@ -597,17 +598,11 @@ void UHMM3SWSearchToAnnotationsTask::setSequence() {
         stateInfo.setError( tr( "No sequence objects loaded" ) );
         return;
     }
-    DNASequenceObject * seqObj = qobject_cast< DNASequenceObject* >( objs.first() );
-    if( NULL == seqObj ) {
-        stateInfo.setError( tr( "Unknown sequence type loaded" ) );
-        return;
-    }
+    U2SequenceObject * seqObj = qobject_cast< U2SequenceObject* >( objs.first() );
+    CHECK_EXT(seqObj != NULL, setError( tr( "Unknown sequence type loaded" ) ), )
     
-    sequence = seqObj->getDNASequence();
-    if( sequence.isNull() ) {
-        stateInfo.setError( tr( "Empty sequence loaded" ) );
-        return;
-    }
+    sequence = seqObj->getWholeSequence();
+    CHECK_EXT(sequence.length() > 0, setError(tr( "Empty sequence loaded")),  );
 }
 
 QList< Task* > UHMM3SWSearchToAnnotationsTask::onSubTaskFinished( Task * subTask ) {

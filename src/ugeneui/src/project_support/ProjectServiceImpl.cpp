@@ -28,8 +28,10 @@
 #include <project_support/ExportProjectDialogController.h>
 
 #include <AppContextImpl.h>
+
 #include <U2Core/L10n.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/MainWindow.h>
 #include <U2Core/Settings.h>
@@ -99,11 +101,11 @@ void ProjectServiceImpl::sl_saveAs() {
 
     QDir dir(d.projectFolderEdit->text());
 
-    QString errorMessage;
-    QString fullPath = GUrlUtils::prepareDirLocation(d.projectFolderEdit->text(), errorMessage);
+    U2OpStatus2Log os;
+    QString fullPath = GUrlUtils::prepareDirLocation(d.projectFolderEdit->text(), os);
 
     if (fullPath.isEmpty()) {
-        QMessageBox::critical(0, L10N::errorTitle(), errorMessage);
+        QMessageBox::critical(0, L10N::errorTitle(), os.getError());
         return;
     }
 

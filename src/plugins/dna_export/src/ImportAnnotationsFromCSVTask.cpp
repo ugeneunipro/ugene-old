@@ -28,18 +28,20 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
-#include <U2Gui/ObjectViewModel.h>
-
-#include <U2View/AnnotatedDNAView.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TextUtils.h>
-
 #include <U2Core/ScriptTask.h>
+
+#include <U2Gui/ObjectViewModel.h>
+
+#include <U2View/AnnotatedDNAView.h>
+
 
 #include <memory>
 
@@ -73,11 +75,12 @@ static void adjustRelations(AnnotationTableObject* ao) {
         return;
     }
 
-    foreach(DNASequenceObject *seqObj, seqView->getSequenceObjectsWithContexts()){
+    foreach(U2SequenceObject *seqObj, seqView->getSequenceObjectsWithContexts()){
+        U2Region seqRegion(0, seqObj->getSequenceLength());
         bool outOfRange = false;
         foreach(const Annotation* ann, ao->getAnnotations()) {
             const QVector<U2Region>& locations = ann->getRegions();
-            if(locations.last().endPos() > seqObj->getSequenceLen()) {
+            if (!seqRegion.contains(locations.last())) {
                 outOfRange = true;
                 break;
             }
@@ -159,7 +162,9 @@ QList<Annotation*> ImportAnnotationsFromCSVTask::prepareAnnotations() const {
 Document* ImportAnnotationsFromCSVTask::prepareNewDocument(const QList<Annotation*>& annotations) const {
     IOAdapterId ioId = IOAdapterUtils::url2io(config.dstFile);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
-    Document* result = config.df->createNewDocument(iof, config.dstFile);
+    U2OpStatus2Log os;
+    Document* result = config.df->createNewLoadedDocument(iof, config.dstFile, os);
+    CHECK_OP(os, NULL);
     AnnotationTableObject* ao = new AnnotationTableObject("Annotations");
     ao->addAnnotations(annotations);
     ao->setModified(false);

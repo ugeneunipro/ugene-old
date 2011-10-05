@@ -62,7 +62,7 @@ private:
     ExternalToolRunTask*        blastAllTask;
     BlastTaskSettings           settings;
 
-    DNASequenceObject*          sequenceObject;
+    U2SequenceObject*          sequenceObject;
     Document*                   tmpDoc;
 
     QList<SharedAnnotationData> result;

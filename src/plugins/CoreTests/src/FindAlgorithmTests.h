@@ -40,7 +40,7 @@ private:
     bool translatetoAmino;
     QString sequenceName;
     QString docName;
-    DNASequenceObject *se; 
+    U2SequenceObject *se; 
     QList<U2Region> expectedResults;
     FindAlgorithmTask *t;
 };

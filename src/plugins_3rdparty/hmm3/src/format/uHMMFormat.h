@@ -47,9 +47,7 @@ public:
     virtual const QString& getFormatName() const;
     
     
-    virtual Document* loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& formatSettings, DocumentLoadMode mode = DocumentLoadMode_Whole );
-    
-    virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
+    virtual void storeDocument( Document* d, IOAdapter* io, U2OpStatus& os );
     
     virtual FormatCheckResult checkRawData( const QByteArray& data, const GUrl& = GUrl()) const;
     
@@ -57,7 +55,9 @@ public:
         QString what;
         UHMMWriteException( const QString& msg ) : what( msg ) {}
     }; // UHMMWriteException
-    
+
+protected:
+    Document* loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os);
 private:
     QString formatName;
     

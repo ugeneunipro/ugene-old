@@ -35,7 +35,7 @@ namespace U2 {
 
 class LoadEnzymeFileTask;
 class AnnotationTableObject;
-class DNASequenceObject;
+class U2SequenceObject;
 
 //cppcheck-suppress noConstructor
 class GTest_FindEnzymes : public GTest {
@@ -53,7 +53,7 @@ private:
     QString                 enzymesUrl;
     QString                 seqObjCtx;
     QString                 aObjName;
-    DNASequenceObject*      seqObj;
+    U2SequenceObject*      seqObj;
     QVector<U2Region>         excludedRegions;
     QStringList             enzymeNames;
     AnnotationTableObject*  aObj;
@@ -77,7 +77,7 @@ private:
     QStringList             enzymeNames;
     bool                    searchForEnzymes;
     AnnotationTableObject*  aObj;
-    DNASequenceObject*      seqObj;
+    U2SequenceObject*      seqObj;
     LoadEnzymeFileTask*     loadTask;
 };
 

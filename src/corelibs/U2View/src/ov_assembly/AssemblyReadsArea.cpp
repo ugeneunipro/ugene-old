@@ -33,6 +33,7 @@
 #include <QtGui/QClipboard>
 
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/Timer.h>
 #include <U2Core/Log.h>
@@ -45,6 +46,8 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AddDocumentTask.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
 
 #include "AssemblyBrowser.h"
 #include "ShortReadIterator.h"
@@ -825,24 +828,30 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
             assert(false);
             return;
         }
-        QList<GObject*> objs;
-        foreach(const U2AssemblyRead & r, reads) {
-            DNAAlphabet * al = AppContext::getDNAAlphabetRegistry()->findAlphabet(r->readSequence);
-            DNASequence seq = DNASequence(r->readSequence, al);
-            seq.quality = DNAQuality(r->quality, DNAQualityType_Sanger);
-            objs << new DNASequenceObject(r->name, seq);
-        }
         IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(model.filepath));
-        Document * doc = new Document(df, iof, model.filepath, objs);
+        U2OpStatus2Log os;
+        Document * doc = df->createNewLoadedDocument(iof, model.filepath, os);
+        CHECK_OP(os, )
         SaveDocFlags fl;
         fl |= SaveDoc_Overwrite;
         fl |= SaveDoc_DestroyAfter;
+
+        QList<GObject*> objs;
+        foreach(const U2AssemblyRead & r, reads) {
+            DNAAlphabet * al = U2AlphabetUtils::findBestAlphabet(r->readSequence);
+            DNASequence seq = DNASequence(r->name, r->readSequence, al);
+            seq.quality = DNAQuality(r->quality, DNAQualityType_Sanger);
+            U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), objs, seq, QVariantMap(), os);
+            CHECK_OP(os, );
+            doc->addObject(seqObj);
+        }
+
         SaveDocumentTask * saveDocTask = new SaveDocumentTask(doc, fl);
         Task * t = NULL;
-        if(!model.addToProject) { // only saving
+        if (!model.addToProject) { // only saving
             t = saveDocTask;
         } else { // save, add doc
-            t = new AddDocumentTask(new Document(df, iof, model.filepath)); // new doc because doc will be deleted
+            t = new AddDocumentTask(doc);
             t->addSubTask(saveDocTask);
             t->setMaxParallelSubtasks(1);
         }

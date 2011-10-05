@@ -11,7 +11,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/DIProperties.h \
            src/datatype/DNAAlphabet.h \
            src/datatype/DNAAlphabetRegistryImpl.h \
-           src/datatype/DNAAlphabetUtils.h \
            src/datatype/DNAChromatogram.h \
            src/datatype/DNAInfo.h \
            src/datatype/DNAQuality.h \
@@ -41,7 +40,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Type.h \
            src/datatype/U2TypeIds.h \
            src/datatype/U2Variant.h \
-           src/datatype/UIndex.h \
            src/datatype/Vector3D.h \
            src/dbi/DbiDocumentFormat.h \
            src/dbi/U2AbstractDbi.h \
@@ -101,7 +99,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/gobjects/MAlignmentObject.h \
            src/gobjects/PhyTreeObject.h \
            src/gobjects/TextObject.h \
-           src/gobjects/UIndexObject.h \
            src/gobjects/UnloadedObject.h \
            src/io/HttpFileAdapter.h \
            src/io/IOAdapter.h \
@@ -128,23 +125,18 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/selection/SelectionUtils.h \
            src/selection/TextSelection.h \
            src/tasks/AddDocumentTask.h \
-           src/tasks/AddPartToSequenceTask.h \
            src/tasks/AddSequencesToAlignmentTask.h \
            src/tasks/CopyDataTask.h \
            src/tasks/CreateAnnotationTask.h \
-           src/tasks/CreateFileIndexTask.h \
            src/tasks/DocumentProviderTask.h \
-           src/tasks/ExportToNewFileFromIndexTask.h \
            src/tasks/ExtractAnnotatedRegionTask.h \
            src/tasks/FailTask.h \
-           src/tasks/GetDocumentFromIndexTask.h \
            src/tasks/LoadDocumentTask.h \
            src/tasks/LoadRemoteDocumentTask.h \
+           src/tasks/ModifySequenceObjectTask.h \
            src/tasks/MultiTask.h \
            src/tasks/RemoveAnnotationsTask.h \
            src/tasks/RemoveDocumentTask.h \
-           src/tasks/RemovePartFromSequenceTask.h \
-           src/tasks/ReplacePartOfSequenceTask.h \
            src/tasks/ReverseSequenceTask.h \
            src/tasks/SaveDocumentStreamingTask.h \
            src/tasks/SaveDocumentTask.h \
@@ -162,11 +154,13 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/SequenceUtils.h \
            src/util/TextUtils.h \
            src/util/U1AnnotationUtils.h \
+           src/util/U2AlphabetUtils.h \
            src/util/U2AnnotationUtils.h \
            src/util/U2AssemblyUtils.h \
            src/util/U2AttributeUtils.h \
            src/util/U2Bits.h \
-           src/util/U2OpStatusUtils.h
+           src/util/U2OpStatusUtils.h \
+           src/util/U2SequenceUtils.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineRegistry.cpp \
            src/cmdline/CMDLineUtils.cpp \
@@ -191,7 +185,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/PWMatrix.cpp \
            src/datatype/SMatrix.cpp \
            src/datatype/U2Region.cpp \
-           src/datatype/UIndex.cpp \
            src/datatype/Vector3D.cpp \
            src/dbi/DbiDocumentFormat.cpp \
            src/dbi/U2DbiRegistry.cpp \
@@ -230,7 +223,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/gobjects/MAlignmentObject.cpp \
            src/gobjects/PhyTreeObject.cpp \
            src/gobjects/TextObject.cpp \
-           src/gobjects/UIndexObject.cpp \
            src/gobjects/UnloadedObject.cpp \
            src/io/HttpFileAdapter.cpp \
            src/io/IOAdapter.cpp \
@@ -253,22 +245,17 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/selection/SelectionTypes.cpp \
            src/selection/SelectionUtils.cpp \
            src/tasks/AddDocumentTask.cpp \
-           src/tasks/AddPartToSequenceTask.cpp \
            src/tasks/AddSequencesToAlignmentTask.cpp \
            src/tasks/CopyDataTask.cpp \
            src/tasks/CreateAnnotationTask.cpp \
-           src/tasks/CreateFileIndexTask.cpp \
            src/tasks/DocumentProviderTask.cpp \
-           src/tasks/ExportToNewFileFromIndexTask.cpp \
            src/tasks/ExtractAnnotatedRegionTask.cpp \
-           src/tasks/GetDocumentFromIndexTask.cpp \
            src/tasks/LoadDocumentTask.cpp \
            src/tasks/LoadRemoteDocumentTask.cpp \
+           src/tasks/ModifySequenceObjectTask.cpp \
            src/tasks/MultiTask.cpp \
            src/tasks/RemoveAnnotationsTask.cpp \
            src/tasks/RemoveDocumentTask.cpp \
-           src/tasks/RemovePartFromSequenceTask.cpp \
-           src/tasks/ReplacePartOfSequenceTask.cpp \
            src/tasks/ReverseSequenceTask.cpp \
            src/tasks/SaveDocumentStreamingTask.cpp \
            src/tasks/SaveDocumentTask.cpp \
@@ -286,10 +273,12 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/SequenceUtils.cpp \
            src/util/TextUtils.cpp \
            src/util/U1AnnotationUtils.cpp \
+           src/util/U2AlphabetUtils.cpp \
            src/util/U2AnnotationUtils.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \
-           src/util/U2Bits.cpp
+           src/util/U2Bits.cpp \
+           src/util/U2SequenceUtils.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

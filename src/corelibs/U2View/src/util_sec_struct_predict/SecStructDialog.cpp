@@ -26,6 +26,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/SecStructPredictAlgRegistry.h>
 #include <U2Algorithm/SecStructPredictTask.h>
@@ -49,7 +50,7 @@ SecStructDialog::SecStructDialog( ADVSequenceObjectContext* _ctx, QWidget *p ) :
     
     U2Region initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
 
-    int seqLen = ctx->getSequenceLen();
+    int seqLen = ctx->getSequenceLength();
 
     rangeStartSpinBox->setMinimum(1);
     rangeStartSpinBox->setMaximum(seqLen);
@@ -111,27 +112,28 @@ void SecStructDialog::updateState()
 
 }
 
-void SecStructDialog::sl_onStartPredictionClicked()
-{
-    assert(task == NULL);
+void SecStructDialog::sl_onStartPredictionClicked() {
+    SAFE_POINT(task == NULL, "Found pending prediction task!", );
+
     SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algorithmComboBox->currentText());
 
     //prepare target sequence
-    const QByteArray & seq = ctx->getSequenceData();
     rangeStart = rangeStartSpinBox->value();
     rangeEnd = rangeEndSpinBox->value();
-    assert(rangeStart <= rangeEnd);
-    assert(rangeStart >= 0 && rangeEnd <= seq.size() );
-
-    task = factory->createTaskInstance(seq.mid(rangeStart, rangeEnd - rangeStart));
+    
+    SAFE_POINT(rangeStart <= rangeEnd, "Illegal region!", );
+    SAFE_POINT(rangeStart >= 0 && rangeEnd <= ctx->getSequenceLength(), "Illegal region!", );
+    
+    U2Region r(rangeStart, rangeEnd - rangeStart);
+    QByteArray seqPart = ctx->getSequenceData(r);
+    task = factory->createTaskInstance(seqPart);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     results.clear();
     
     updateState();
 }
 
-void SecStructDialog::sl_onTaskFinished( Task* t )
-{
+void SecStructDialog::sl_onTaskFinished(Task* t) {
     if (t != task || t->getState()!= Task::State_Finished) {
         return;
     }
@@ -175,7 +177,7 @@ void SecStructDialog::sl_onSaveAnnotations()
     m.hideLocation = true;
     m.hideAnnotationName = true;
     m.data->name = SEC_STRUCT_ANNOTATION_GROUP_NAME;
-    m.sequenceLen = ctx->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
     if (rc != QDialog::Accepted) {

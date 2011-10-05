@@ -28,9 +28,12 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2AlphabetUtils.h>
+
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2View/ADVSequenceObjectContext.h>
 #include <U2Gui/DialogUtils.h>
+
+#include <U2View/ADVSequenceObjectContext.h>
 
 #include <U2Algorithm/EnzymeModel.h>
 #include "CreateFragmentDialog.h"
@@ -45,7 +48,7 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
         
     seqObj = ctx->getSequenceObject();
 
-    rs=new RegionSelector(this, ctx->getSequenceLen(), false, ctx->getSequenceSelection());
+    rs=new RegionSelector(this, ctx->getSequenceLength(), false, ctx->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
 
     relatedAnnotations = ctx->getAnnotationObjects(true).toList();
@@ -54,7 +57,7 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
 
 }
 
-CreateFragmentDialog::CreateFragmentDialog( DNASequenceObject* obj, QWidget* p )
+CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, QWidget* p )
 : QDialog(p)
 {
     setupUi(this);
@@ -70,7 +73,7 @@ CreateFragmentDialog::CreateFragmentDialog( DNASequenceObject* obj, QWidget* p )
         relatedAnnotations.append(aObj);
     }
 
-    rs=new RegionSelector(this, seqObj->getSequenceLen(), false);
+    rs=new RegionSelector(this, seqObj->getSequenceLength(), false);
     rangeSelectorLayout->addWidget(rs);
 
     setupAnnotationsWidget();
@@ -84,7 +87,7 @@ void CreateFragmentDialog::accept()
 
     if (leftEndBox->isChecked()) {
         leftOverhang = lCustomOverhangEdit->text();
-        DNAAlphabet* alph = AppContext::getDNAAlphabetRegistry()->findAlphabet(leftOverhang.toAscii());
+        DNAAlphabet* alph = U2AlphabetUtils::findBestAlphabet(leftOverhang.toAscii());
         if (!alph->isNucleic()) {
             QMessageBox::warning(this, windowTitle(),tr("5'overhang contains unsupported symbols!"));
             return;
@@ -94,7 +97,7 @@ void CreateFragmentDialog::accept()
 
     if (rightEndBox->isChecked()) {
         rightOverhang = rCustomOverhangEdit->text();
-        DNAAlphabet* alph = AppContext::getDNAAlphabetRegistry()->findAlphabet(rightOverhang.toAscii());
+        DNAAlphabet* alph = U2AlphabetUtils::findBestAlphabet(rightOverhang.toAscii());
         if (!alph->isNucleic()) {
             QMessageBox::warning(this, windowTitle(),tr("3'overhang contains unsupported symbols!"));
             return;
@@ -150,14 +153,13 @@ void CreateFragmentDialog::accept()
 }
 
 
-void CreateFragmentDialog::setupAnnotationsWidget()
-{
+void CreateFragmentDialog::setupAnnotationsWidget() {
     CreateAnnotationModel acm;
     acm.sequenceObjectRef = GObjectReference(seqObj);
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.data->name = ANNOTATION_GROUP_FRAGMENTS;
-    acm.sequenceLen = seqObj->getSequenceLen();
+    acm.sequenceLen = seqObj->getSequenceLength();
     ac = new CreateAnnotationWidgetController(acm, this);
     QWidget* caw = ac->getWidget();    
     QVBoxLayout* l = new QVBoxLayout();

@@ -43,6 +43,7 @@
 #include <U2Core/CMDLineUtils.h>
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 
 #include <U2Gui/ObjectViewModel.h>
@@ -325,13 +326,9 @@ Task::ReportResult ExportProjectTask::report() {
         }
     }
     
-    QString error;
-    QDir dDir(GUrlUtils::prepareDirLocation(destinationDir, error));
-    if (!error.isEmpty()){
-        setError(error);
-        return ReportResult_Finished;
-    }
-
+    QDir dDir(GUrlUtils::prepareDirLocation(destinationDir, stateInfo));
+    CHECK_OP(stateInfo, ReportResult_Finished);
+    
     QMap<QString, QString> urlRemap;
     foreach(Document* doc, docList){
         QString origPath = doc->getURLString();

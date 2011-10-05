@@ -47,13 +47,15 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* createNewDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs = QVariantMap());
+    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs = QVariantMap());
 
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
 
-    virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io);
+    virtual void storeDocument( Document* d, IOAdapter* io, U2OpStatus& os);
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url = GUrl()) const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os);
 
 private:
     QString formatName;
@@ -68,7 +70,7 @@ public:
 
     QString getSceneRawData() const {return serializedScene;}
     void setSceneRawData(const QString & data);
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os) const;
     virtual bool isTreeItemModified () const;
     void setView(WorkflowView* view);
     WorkflowView* getView() const {return view;}

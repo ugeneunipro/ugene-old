@@ -21,16 +21,16 @@
 
 #include "GObjectUtils.h"
 
-#include "DNASequenceObject.h"
 #include "AnnotationTableObject.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/GHints.h>
 #include <U2Core/GUrl.h>
-
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectTypes.h>
@@ -163,14 +163,14 @@ GObject* GObjectUtils::selectObjectByReference(const GObjectReference& r, const 
     return NULL;
 }
 
-DNATranslation* GObjectUtils::findComplementTT(DNASequenceObject* so) {
-    if (!so->getAlphabet()->isNucleic()) {
+DNATranslation* GObjectUtils::findComplementTT(DNAAlphabet* al) {
+    if (!al->isNucleic()) {
         return NULL;
     }
-    return AppContext::getDNATranslationRegistry()->lookupComplementTranslation(so->getAlphabet());
+    return AppContext::getDNATranslationRegistry()->lookupComplementTranslation(al);
 }
 
-DNATranslation* GObjectUtils::findAminoTT(DNASequenceObject* so, bool fromHintsOnly, const QString& table) {
+DNATranslation* GObjectUtils::findAminoTT(U2SequenceObject* so, bool fromHintsOnly, const QString& table) {
     if (!so->getAlphabet()->isNucleic()) {
         return NULL;
     }
@@ -191,7 +191,7 @@ DNATranslation* GObjectUtils::findAminoTT(DNASequenceObject* so, bool fromHintsO
     return res;
 }
 
-DNATranslation* GObjectUtils::findBackTranslationTT(DNASequenceObject* so, const QString& table) {
+DNATranslation* GObjectUtils::findBackTranslationTT(U2SequenceObject* so, const QString& table) {
     if (!so->getAlphabet()->isAmino()) {
         return NULL;
     }

@@ -9,17 +9,17 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentFormatConfigurators.h>
 #include <U2Core/L10n.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-
+#include <U2Core/U2SequenceUtils.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
-
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
 #include <U2Core/DocumentModel.h>
@@ -74,7 +74,7 @@ void ExpertDiscoveryLoadPosNegTask::prepare(){
 
 
 Document* ExpertDiscoveryLoadPosNegTask::loadFile(QString inFile){
-    GUrl URL(inFile);
+    GUrl url(inFile);
 
     //Project *project = AppContext::getProject();
 
@@ -93,10 +93,10 @@ Document* ExpertDiscoveryLoadPosNegTask::loadFile(QString inFile){
     }
 
     DocumentFormat* format = formats.first().format;
-    Q_ASSERT(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
 
-    Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());
+    Document* doc = format->createNewUnloadedDocument(iof, url, stateInfo);
+    CHECK_OP(stateInfo, NULL);
     //addSubTask(new AddDocumentTask(doc)); // add document to the project
 
     LoadUnloadedDocumentTask* ld = new LoadUnloadedDocumentTask(doc);
@@ -130,12 +130,16 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
     }
     baseName.append(suffix);
     QString negFileName = positiveDoc->getURL().dirPath().append("/"+baseName);
-    GUrl URL(negFileName);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
-    QList<GObject*> negObjects = sequencesGenerator(positiveDoc->getObjects());
-    negativeDoc = new Document(positiveDoc->getDocumentFormat(),iof,URL,negObjects);
-
-    negativeDoc->setLoaded(true);
+    GUrl url(negFileName);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+    QList<DNASequence> negObjects = sequencesGenerator(positiveDoc->getObjects());
+    negativeDoc = positiveDoc->getDocumentFormat()->createNewLoadedDocument(iof, url, stateInfo);
+    CHECK_OP(stateInfo, );
+    foreach(const DNASequence& dnaSeq, negObjects) {
+        U2EntityRef seqRef = U2SequenceUtils::import(negativeDoc->getDbiRef(), dnaSeq, stateInfo);
+        CHECK_OP(stateInfo, );
+        negativeDoc->addObject(new U2SequenceObject(dnaSeq.getName(), seqRef));
+    }
 
     Project *project = AppContext::getProject();
     //project->addDocument(negativeDoc);
@@ -147,21 +151,20 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
 }
 
 #define NUMBER_OF_NEGATIVE_PER_POSITIVE 100
-QList<GObject*> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GObject*> &objects){
-    QList<GObject*> neg;
+QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GObject*> &objects){
+    QList<DNASequence> neg;
     int acgtContent[4];
 
     foreach(GObject* obj, objects){
         if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-            DNASequenceObject* seq = (DNASequenceObject*)obj;
+            U2SequenceObject* seq = (U2SequenceObject*)obj;
             calculateACGTContent(*seq,acgtContent);
             for (int i = 0; i < NUMBER_OF_NEGATIVE_PER_POSITIVE; i++){
-                QByteArray curArr = generateRandomSequence(acgtContent, seq->getSequenceLen());
+                QByteArray curArr = generateRandomSequence(acgtContent, seq->getSequenceLength());
                 QString name = seq->getGObjectName();
                 name = name.append(QString("_neg%1").arg(i));
-                DNASequence curSeq = DNASequence(seq->getDNASequence().getName().append(QString("_neg%1").arg(i)), curArr,seq->getAlphabet());
-                DNASequenceObject* curSeqObj = new DNASequenceObject(name, curSeq);
-                neg.append(curSeqObj);
+                DNASequence curSeq = DNASequence(seq->getSequenceName().append(QString("_neg%1").arg(i)), curArr,seq->getAlphabet());
+                neg << curSeq;
             }
         }
     }
@@ -169,12 +172,13 @@ QList<GObject*> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GO
     return neg;
 }
 
-void ExpertDiscoveryLoadPosNegTask::calculateACGTContent(const DNASequenceObject& seq, int* acgtContent) {
+void ExpertDiscoveryLoadPosNegTask::calculateACGTContent(const U2SequenceObject& seq, int* acgtContent) {
     acgtContent[0] = acgtContent[1] = acgtContent[2] = acgtContent[3] = 0;
-    int seqLen = seq.getSequenceLen();
-    int total = seq.getSequenceLen();
+    int seqLen = seq.getSequenceLength();
+    int total = seq.getSequenceLength();
+    QByteArray seqArr = seq.getWholeSequenceData();
     for (int i=0; i < seqLen; i++) {
-        char c = seq.getSequence().at(i);
+        char c = seqArr.at(i);
         if (c == 'A') {
             acgtContent[0]++;
         } else if (c == 'C') {
@@ -257,11 +261,12 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
             QList<FormatDetectionResult> curFormats = DocumentUtils::detectFormat(firstFile);
             if (!curFormats.isEmpty()){
                 if(curFormats.first().format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
-                    GUrl URL(strPosName);
-                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
+                    GUrl url(strPosName);
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
                     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
-                    posDoc = new Document(f , iof, URL, QList<UnloadedObjectInfo>());
+                    posDoc = f->createNewUnloadedDocument(iof, url, stateInfo);
+                    CHECK_OP(stateInfo, );
                     addSubTask(new LoadUnloadedDocumentTask(posDoc));
 
                 } else {
@@ -297,7 +302,8 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
                     DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
-                    negDoc = new Document(f, iof, URL, QList<UnloadedObjectInfo>());
+                    negDoc = f->createNewUnloadedDocument(iof, URL, stateInfo);
+                    CHECK_OP(stateInfo);
                     addSubTask(new LoadUnloadedDocumentTask(negDoc));
                 } else {
                     ifstream fNegAnn(strNegName.toStdString().c_str());
@@ -474,7 +480,7 @@ void ExpertDiscoveryLoadControlTask::prepare(){
 }
 
 Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
-    GUrl URL(inFile);
+    GUrl url(inFile);
 
 //     Project *project = AppContext::getProject();
 // 
@@ -493,9 +499,9 @@ Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
     }
 
     DocumentFormat* format = formats.first().format;
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
 
-    Document* doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>());
+    Document* doc = format->createNewUnloadedDocument(iof, url, stateInfo);
     //addSubTask(new AddDocumentTask(doc)); // add document to the project
     addSubTask(new LoadUnloadedDocumentTask(doc)); // load document
 
@@ -662,7 +668,7 @@ ExpertDiscoveryCreateViewTask::ExpertDiscoveryCreateViewTask(const QList<GObject
 #define MAX_SEQ_OBJS_PER_VIEW 50
 
 
-static QString deriveViewName(const QList<DNASequenceObject*>& seqObjects) {
+static QString deriveViewName(const QList<U2SequenceObject*>& seqObjects) {
     QString viewName;
     if (seqObjects.size() > 1) {
         bool singleDocument = true;
@@ -685,7 +691,7 @@ static QString deriveViewName(const QList<DNASequenceObject*>& seqObjects) {
     return viewName;
 }
 
-static bool objLessThan(const DNASequenceObject* o1 , const DNASequenceObject* o2) {
+static bool objLessThan(const U2SequenceObject* o1 , const U2SequenceObject* o2) {
     if (o1->getDocument() == o2->getDocument()) {
         return o1->getGObjectName() < o2->getGObjectName();
     }
@@ -697,11 +703,11 @@ void ExpertDiscoveryCreateViewTask::open() {
     if (stateInfo.hasError() || sequenceObjectRefs.isEmpty()) {
         return;
     }
-    QList<DNASequenceObject*> seqObjects;
+    QList<U2SequenceObject*> seqObjects;
     QList<GObject*> allSequenceObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE);
     foreach(const GObjectReference& r, sequenceObjectRefs) {
         GObject* obj = GObjectUtils::selectObjectByReference(r, allSequenceObjects, UOF_LoadedOnly);
-        DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
         if (seqObj!=NULL) {
             seqObjects.append(seqObj);
             if (seqObjects.size() > MAX_SEQ_OBJS_PER_VIEW) {
@@ -740,7 +746,7 @@ Task* ExpertDiscoverySignalsAutoAnnotationUpdater::createAutoAnnotationsUpdateTa
     }
 
     AnnotationTableObject* aObj = aa->getAnnotationObject();
-    const DNASequence& dna = aa->getSeqObject()->getDNASequence();
+    const DNASequence& dna = aa->getSeqObject()->getWholeSequence();
     Task* task = new ExpertDiscoveryToAnnotationTask(aObj, dna, edData, curPS, *mutex);
     return task;
 }

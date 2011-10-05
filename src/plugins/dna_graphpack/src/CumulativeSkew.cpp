@@ -52,7 +52,7 @@ CumulativeSkewGraphFactory::CumulativeSkewGraphFactory(GCumulativeSkewType t, QO
     }
 }
 
-bool CumulativeSkewGraphFactory::isEnabled(DNASequenceObject* o) const {
+bool CumulativeSkewGraphFactory::isEnabled(U2SequenceObject* o) const {
     DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic();
 }
@@ -106,12 +106,12 @@ float CumulativeSkewGraphAlgorithm::getValue(int begin, int end, const QByteArra
     return resultValue;
 }
 
-void CumulativeSkewGraphAlgorithm::calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void CumulativeSkewGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    const QByteArray& seq = o->getSequence();
+    QByteArray seq = o->getWholeSequenceData();
 
     for (int i = 0; i < nSteps; i++)    {
         int start = vr.startPos + i * d->step;

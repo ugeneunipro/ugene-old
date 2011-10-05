@@ -32,7 +32,11 @@
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/SequenceUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/GUIUtils.h>
 
 #include <QtCore/QTextStream>
@@ -108,11 +112,12 @@ void ADVClipboard::copySequenceSelection(bool complement, bool amino) {
     QString res;
     QVector<U2Region> regions = seqCtx->getSequenceSelection()->getSelectedRegions();
     if (!regions.isEmpty()) {
-        DNASequenceObject* seqObj = seqCtx->getSequenceObject();
+        U2SequenceObject* seqObj = seqCtx->getSequenceObject();
         DNATranslation* complTT = complement ? seqCtx->getComplementTT() : NULL;
         DNATranslation* aminoTT = amino ? seqCtx->getAminoTT() : NULL;
-        QList<QByteArray> seqParts = SequenceUtils::extractSequence(seqObj->getSequence(), regions, complTT, aminoTT, false, seqObj->isCircular());
-        res = SequenceUtils::joinRegions(seqParts);
+        U2OpStatus2Log os;
+        QList<QByteArray> seqParts = U2SequenceUtils::extractRegions(seqObj->getSequenceRef(), regions, complTT, aminoTT, false, os);
+        res = U1SequenceUtils::joinRegions(seqParts);
     }
     QApplication::clipboard()->setText(res);
 }
@@ -149,9 +154,10 @@ void ADVClipboard::sl_copyAnnotationSequence() {
             res.append(gapSym);//?? generate sequence with len == region-len using default sym?
             continue;
         }
-        const QByteArray& sequence = seqCtx->getSequenceData();
         DNATranslation* complTT = sd.annotation->getStrand().isCompementary() ? seqCtx->getComplementTT() : NULL;
-        AnnotationSelection::getAnnotationSequence(res, sd, gapSym, sequence, complTT, NULL);
+        U2OpStatus2Log os;
+        AnnotationSelection::getAnnotationSequence(res, sd, gapSym, seqCtx->getSequenceRef(), complTT, NULL, os);
+        CHECK_OP(os, );
     }
     QApplication::clipboard()->setText(res);
 }
@@ -174,15 +180,16 @@ void ADVClipboard::sl_copyAnnotationSequenceTranslation() {
             res.append(gapSym);//?? generate sequence with len == region-len using default sym?
             continue;
         }
-        const QByteArray& sequence = seqCtx->getSequenceData();
         DNATranslation* complTT = sd.annotation->getStrand().isCompementary() ? seqCtx->getComplementTT() : NULL;
         DNATranslation* aminoTT = seqCtx->getAminoTT();
         if (aminoTT == NULL) {
             continue;
         }
-        QList<QByteArray> nuclParts = SequenceUtils::extractRegions(sequence, sd.annotation->getRegions(), complTT);
-        QList<QByteArray> aminoParts = SequenceUtils::translateRegions(nuclParts, aminoTT, sd.annotation->isJoin());
-        res = SequenceUtils::joinRegions(aminoParts);
+        U2OpStatus2Log os;
+        QList<QByteArray> parts = U2SequenceUtils::extractRegions(seqCtx->getSequenceRef(), sd.annotation->getRegions(), complTT, 
+                                        aminoTT, sd.annotation->isJoin(), os);
+        CHECK_OP(os, );
+        res = U1SequenceUtils::joinRegions(parts);
     }
     QApplication::clipboard()->setText(res);
 }

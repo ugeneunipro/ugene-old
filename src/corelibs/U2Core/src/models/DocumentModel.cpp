@@ -28,10 +28,15 @@
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GUrlUtils.h>
-
+#include <U2Core/U2Dbi.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 
 #include <QtCore/QFileInfo>
 
@@ -45,43 +50,65 @@ const QString DocumentFormat::CREATED_NOT_BY_UGENE = DocumentFormat::tr( "The do
 const QString DocumentFormat::MERGED_SEQ_LOCK = DocumentFormat::tr( "Document sequences were merged" );
 const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
-Document* DocumentFormat::createNewDocument(IOAdapterFactory* io, const GUrl& url, const QVariantMap& hints) {
-    Document* d = new Document(this, io, url, QList<UnloadedObjectInfo>(), hints);
-    d->setLoaded(true);
-    return d;
-}
 
-Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, TaskStateInfo& ti, const QVariantMap& hints) {
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
-    if (!io->open(url, IOAdapterMode_Read)) {
-        ti.setError(L10N::errorOpeningFileRead(url));
-        return NULL;
-    }
-    Document * doc = loadDocument(io.get(), ti, hints, DocumentLoadMode_Whole);
+Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, const QVariantMap& hints) {
+    CHECK_EXT(!iof->isResourceAvailable(url), os.setError(tr("File is already exists: %1").arg(url.getURLString())), NULL);
+    Document* doc = createNewUnloadedDocument(iof, url, os, hints);
+    CHECK_OP(os, NULL);
+    doc->setLoaded(true);
     return doc;
 }
 
-GObject* DocumentFormat::loadObject(IOAdapter*, TaskStateInfo& ti) {
-    ti.setError("This document format is not support streaming reading mode");
-    return NULL;
-}
-
-DNASequence* DocumentFormat::loadSequence(IOAdapter*, TaskStateInfo& ti) {
-    ti.setError("This document format is not support streaming reading mode");
-    return NULL;
-}
-
-void DocumentFormat::storeDocument( Document* , TaskStateInfo& ts, IOAdapter* ) {
-    assert(0);
-    ts.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName()));
-}
-
-void DocumentFormat::storeDocument(Document* doc, TaskStateInfo& ti, IOAdapterFactory* iof, const GUrl& newDocURL) {
-    if (!formatFlags.testFlag(DocumentFormatFlag_SupportWriting)) {
-        assert(0);
-        ti.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName()));
-        return;
+Document* DocumentFormat::createNewUnloadedDocument(IOAdapterFactory* iof, const GUrl& url, 
+                                                    U2OpStatus& os, const QVariantMap& hints, 
+                                                    const QList<UnloadedObjectInfo>& info, 
+                                                    const QString& instanceModLockDesc) {
+    
+    U2DbiRef tmpDbiRef;
+/*
+    bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
+    if (useTmpDbi) {
+        tmpDbiRef = AppContext::getDbiRegistry()->allocateTmpDbi(SESSION_TMP_DBI_ALIAS, os);
+        CHECK_OP(os, NULL);
     }
+*/
+    Document* doc = new Document(this, iof, url, tmpDbiRef, tmpDbiRef.isValid(), info, hints, instanceModLockDesc);
+    return doc;
+}
+
+Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, const QVariantMap& hints, U2OpStatus& os) {
+    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    if (!io->open(url, IOAdapterMode_Read)) {
+        os.setError(L10N::errorOpeningFileRead(url));
+        return NULL;
+    }
+    Document* res = NULL;
+    bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
+    if (useTmpDbi) {
+        TmpDbiHandle dh(SESSION_TMP_DBI_ALIAS, os);
+        CHECK_OP(os, NULL); 
+        res = loadDocument(io.get(), dh.dbiRef, hints, os);
+        CHECK_OP(os, NULL);
+        dh.deallocate = false; //DBI will be deallocated by document..
+    } else {
+        res = loadDocument(io.get(), U2DbiRef(), hints, os);        
+    }
+    return res;
+}
+
+DNASequence* DocumentFormat::loadSequence(IOAdapter*, U2OpStatus& os) {
+    os.setError("This document format does not support streaming reading mode");
+    return NULL;
+}
+
+void DocumentFormat::storeDocument( Document* , IOAdapter* , U2OpStatus& os) {
+    assert(0);
+    os.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName()));
+}
+
+void DocumentFormat::storeDocument(Document* doc, U2OpStatus& os, IOAdapterFactory* iof, const GUrl& newDocURL) {
+    SAFE_POINT_EXT(formatFlags.testFlag(DocumentFormatFlag_SupportWriting), 
+        os.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName())), );
     
     assert(doc->getDocumentModLock(DocumentModLock_FORMAT_AS_INSTANCE) == NULL);
     if (iof == NULL) {
@@ -92,22 +119,19 @@ void DocumentFormat::storeDocument(Document* doc, TaskStateInfo& ti, IOAdapterFa
     GUrl url = newDocURL.isEmpty() ? doc->getURL() : newDocURL;
     if (url.isLocalFile()) {
         QString error;
-        QString res = GUrlUtils::prepareFileLocation(url.getURLString(), error);
-        if (!error.isEmpty()) {
-            ti.setError(error);
-            return;
-        }
+        QString res = GUrlUtils::prepareFileLocation(url.getURLString(), os);
+        CHECK_OP(os, );
         Q_UNUSED(res);
         assert(res == url.getURLString()); //ensure that GUrls are always canonical
     }
     
     std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
-        ti.setError(L10N::errorOpeningFileWrite(url));
+        os.setError(L10N::errorOpeningFileWrite(url));
         return;
     }
     
-    storeDocument(doc, ti, io.get());
+    storeDocument(doc, io.get(), os);
 }
 
 bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const {
@@ -157,10 +181,13 @@ bool DocumentFormat::isObjectOpSupported(const Document* d, DocObjectOp op, GObj
 //////////////////////////////////////////////////////////////////////////
 ///Document
 
-Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, const QList<UnloadedObjectInfo>& unloadedObjects,
-                   const QVariantMap& hints, const QString& instanceModLockDesc)
+Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
+                   const U2DbiRef& _dbiRef, bool tmpDbi,
+                   const QList<UnloadedObjectInfo>& unloadedObjects,const QVariantMap& hints, 
+                   const QString& instanceModLockDesc)
                    : StateLockableTreeItem(), df(_df), io(_io), url(_url)
 {
+    dbiHandle = _dbiRef.isValid() ? new TmpDbiHandle(_dbiRef, tmpDbi) : NULL;
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
     
@@ -176,9 +203,12 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
 }
 
 Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
-                   const QList<GObject*>& _objects, const QVariantMap& hints, const QString& instanceModLockDesc)
+                   const U2DbiRef& _dbiRef, bool tmpDbi,
+                   const QList<GObject*>& _objects, const QVariantMap& hints, 
+                   const QString& instanceModLockDesc)
                    : StateLockableTreeItem(), df(_df), io(_io), url(_url)
 {
+    dbiHandle = _dbiRef.isValid() ? new TmpDbiHandle(_dbiRef, tmpDbi) : NULL;
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
 
@@ -195,6 +225,18 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
     assert(!isModified());
 }
 
+static void deallocateDbiResources(TmpDbiHandle* h, GObject* obj) {
+    CHECK(h != NULL && h->isValid() && h->deallocate, );
+    U2OpStatus2Log os;
+    DbiConnection con(h->dbiRef, os);
+    CHECK_OP(os, );
+    U2EntityRef objRef = obj->getEntityRef();
+    if (objRef.isValid()) {
+        con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
+    }
+}
+
+
 Document::~Document() {
     for (int i=0;i<DocumentModLock_NUM_LOCKS; i++) {
         StateLock* sl = modLocks[i];
@@ -203,16 +245,18 @@ Document::~Document() {
             delete sl;
         }
     }
+    
     foreach(GObject* obj, objects) {
+        deallocateDbiResources(dbiHandle, obj);
         obj->setGHints(NULL);
     }
     delete ctxState;
+    delete dbiHandle;
 }
 
 void Document::addObject(GObject* obj){
     assert(obj != NULL && obj->getDocument()==NULL);
     assert(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Add, obj->getGObjectType()));
-    //assert(findGObjectByName(obj->getGObjectName())==NULL);
     assert(isLoaded());
     assert(obj->getGObjectType()!=GObjectTypes::UNLOADED);
     assert(!obj->isTreeItemModified());
@@ -251,6 +295,7 @@ void Document::_removeObject(GObject* obj, bool deleteObjects) {
     emit si_objectRemoved(obj);
     
     if (deleteObjects) {
+        deallocateDbiResources(dbiHandle, obj);
         delete obj;
     }
 }
@@ -314,7 +359,7 @@ void Document::checkLoadedState() const {
 
 void Document::loadFrom(Document* sourceDoc) {
     SAFE_POINT(!isLoaded(), QString("Document is already loaded: ").arg(getURLString()), )
-
+        
     sourceDoc->checkLoadedState();
     checkUnloadedState();
 
@@ -345,6 +390,10 @@ void Document::loadFrom(Document* sourceDoc) {
         lockState(modLocks[DocumentModLock_FORMAT_AS_INSTANCE]);
     }
     
+    delete dbiHandle;
+    dbiHandle = sourceDoc->dbiHandle;
+    sourceDoc->dbiHandle = NULL;
+
     QList<GObject*> sourceObjects = sourceDoc->getObjects();
     sourceDoc->unload(false);
     foreach(GObject* obj, sourceObjects) {
@@ -361,7 +410,6 @@ void Document::loadFrom(Document* sourceDoc) {
         }
         _addObject(obj);
     }
-    
     setLoaded(true); 
     
     //TODO: rebind local objects relations if url!=d.url
@@ -512,11 +560,19 @@ bool Document::unload(bool deleteObjects) {
         modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = NULL;
     }
     
+    delete dbiHandle;
+    dbiHandle = NULL;
+
     setLoaded(false);
     
     loadStateChangeMode = false;
 
     return true;
+}
+
+const U2DbiRef& Document::getDbiRef() const {
+    static U2DbiRef emptyRef;
+    return dbiHandle == NULL ? emptyRef : dbiHandle->dbiRef;
 }
 
 void Document::setModified(bool modified, const QString& modType) {

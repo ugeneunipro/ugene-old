@@ -30,7 +30,7 @@
 namespace U2 {
 
 class AnnotationTableObject;
-class DNASequenceObject;
+class U2SequenceObject;
 class QDScheduler;
 class QDScheme;
 
@@ -47,7 +47,7 @@ private:
     QString seqName;
     QString schemaUri;
     QString expectedResName;
-    DNASequenceObject* seqObj;
+    U2SequenceObject* seqObj;
     AnnotationTableObject* expectedResult;
     AnnotationTableObject* result;
     QDScheme* schema;

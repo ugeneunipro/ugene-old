@@ -28,6 +28,8 @@
 #include <U2Core/Log.h>
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <algorithm>
 #include <QtCore/QVector>
@@ -285,11 +287,9 @@ void MuscleAdapter::align2Profiles(const MAlignment& ma1, const MAlignment& ma2,
 
 void MuscleAdapter::align2ProfilesUnsafe(const MAlignment& ma1, const MAlignment& ma2, MAlignment& res, TaskStateInfo& ti) {
     assert(!ma1.isEmpty() && !ma2.isEmpty());
-    DNAAlphabet* al = DNAAlphabet::deriveCommonAlphabet(ma1.getAlphabet(), ma2.getAlphabet());
-    if (al == NULL) {
-        ti.setError(  tr("Incompatible alphabets") );
-        return;
-    }
+    DNAAlphabet* al = U2AlphabetUtils::deriveCommonAlphabet(ma1.getAlphabet(), ma2.getAlphabet());
+    CHECK_EXT(al != NULL, ti.setError(  tr("Incompatible alphabets") ), );
+
     MuscleContext *ctx = getMuscleContext();
 
     MuscleParamsHelper ph(ti,ctx);
@@ -467,12 +467,9 @@ void MuscleAdapter::addUnalignedSequencesToProfile(const MAlignment& ma, const M
 
 
 void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, const MAlignment& unalignedSeqs, MAlignment& res, TaskStateInfo& ti) {
-    DNAAlphabet* al = DNAAlphabet::deriveCommonAlphabet(ma.getAlphabet(), unalignedSeqs.getAlphabet());
-    if (al == NULL) {
-        ti.setError(  tr("Incompatible alphabets") );
-        return;
-    }
-    
+    DNAAlphabet* al = U2AlphabetUtils::deriveCommonAlphabet(ma.getAlphabet(), unalignedSeqs.getAlphabet());
+    CHECK_EXT(al != NULL, ti.setError(tr("Incompatible alphabets")), );
+        
     // init muscle
     MuscleContext *ctx = getMuscleContext();
 
@@ -480,9 +477,7 @@ void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, c
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
     
     setupAlphaAndScore(al, ti);
-    if (ti.hasError()) {
-        return;
-    }
+    CHECK_OP(ti, );
     
     MSA::SetIdCount(ma.getNumRows() + 1);
 

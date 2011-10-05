@@ -46,22 +46,19 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-    
     static const QString UGENE_MARK;
     static const QString DEFAULT_OBJ_NAME;
 
     // move to utils??
     static QString	genObjectName(QSet<QString>& usedNames, const QString& name, const QVariantMap& info, int n, const GObjectType& t);
 
-    virtual DNASequence* loadSequence( IOAdapter* io, TaskStateInfo& ti);
-    
 protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
-    virtual void load(IOAdapter* io, QList<GObject*>& objects, QVariantMap& fs, TaskStateInfo& si, QString& writeLockReason, DocumentLoadMode mode);
+    virtual void load(const U2DbiRef& dbiRef, IOAdapter* io, QList<GObject*>& objects, QVariantMap& fs, U2OpStatus& si, QString& writeLockReason);
     
     virtual int     readMultilineQualifier(IOAdapter* io, char* cbuff, int maxSize, bool prevLineHasMaxSize);
-    virtual SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, TaskStateInfo& si, int offset);
+    virtual SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, U2OpStatus& si, int offset);
     virtual bool    readSequence(QByteArray& sequence, ParserState*);
 
     virtual bool readEntry(QByteArray& sequence, ParserState*) = 0;
@@ -98,7 +95,7 @@ public:
 
 class ParserState {
 public:
-    ParserState(int off, IOAdapter* io, EMBLGenbankDataEntry* e, TaskStateInfo& si)
+    ParserState(int off, IOAdapter* io, EMBLGenbankDataEntry* e, U2OpStatus& si)
         : valOffset(off), entry(e), io(io), buff(NULL), len(0), si(si) {}
     const int valOffset;
     EMBLGenbankDataEntry* entry;
@@ -106,7 +103,7 @@ public:
     static const int READ_BUFF_SIZE = 8192;
     char* buff;
     int len;
-    TaskStateInfo& si;
+    U2OpStatus& si;
     QString value() const;
     QString key () const;
     bool hasKey(const char*, int slen) const;

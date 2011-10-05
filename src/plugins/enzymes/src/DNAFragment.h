@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 class DNAAlphabet;
 class AnnotationTableObject;
 class Annotation;
@@ -52,7 +52,7 @@ private:
     // Contains fragment region and cuts info
     Annotation* annotatedFragment;
     // Parent sequence of the fragment
-    DNASequenceObject* dnaObj;
+    U2SequenceObject* dnaObj;
     // Annotations associated with parent sequence
     // When ligate or export fragments they must be saved
     QList<AnnotationTableObject*> relatedAnnotations;
@@ -68,7 +68,7 @@ private:
 
 public:
     DNAFragment() : annotatedFragment(NULL), dnaObj(NULL), reverseCompl(false) {}
-    DNAFragment(Annotation* fragment, DNASequenceObject* sObj, const QList<AnnotationTableObject*> relatedAnns);
+    DNAFragment(Annotation* fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject*> relatedAnns);
     DNAFragment( const DNAFragment& other );
     DNAFragment& operator=(const DNAFragment& other);
     bool isEmpty() const { return annotatedFragment == NULL || dnaObj == NULL; }
@@ -80,7 +80,7 @@ public:
     int getLength() const;
     bool isInverted() const { return reverseCompl; }
     DNAAlphabet* getAlphabet() const;
-    const QByteArray& getSourceSequence() const;
+    QByteArray getSourceSequence() const;
     const DNAFragmentTerm& getLeftTerminus() const;
     const DNAFragmentTerm& getRightTerminus() const;
     void setInverted(bool inverted = true);

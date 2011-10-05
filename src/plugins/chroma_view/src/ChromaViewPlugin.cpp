@@ -80,7 +80,7 @@ static DNAChromatogramObject* findChromaObj(ADVSingleSequenceWidget* sw) {
         return NULL;
     }
     DNAChromatogramObject* chromaObj = qobject_cast<DNAChromatogramObject*>(chromaObjs.first());
-    assert(chromaObj->getChromatogram().seqLength == sw->getSequenceLen());
+    assert(chromaObj->getChromatogram().seqLength == sw->getSequenceLength());
     return chromaObj;
 }
 

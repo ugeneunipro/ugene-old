@@ -132,7 +132,7 @@ void GTest_AnnotatorSearch::prepare() {
         return;
     }
     assert(obj!=NULL);
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(  QString("error can't cast to sequence from GObject") );
         return;
@@ -146,7 +146,7 @@ void GTest_AnnotatorSearch::prepare() {
     aoList.append(ao);
     CollocationsAlgorithmSettings cfg;
     cfg.distance = regionSize;
-    cfg.searchRegion = mySequence->getSequenceRange();
+    cfg.searchRegion = U2Region(0, mySequence->getSequenceLength());
     cfg.st = st;
     searchTask = new CollocationSearchTask(aoList, groupsToSearch, cfg);
     addSubTask(searchTask);

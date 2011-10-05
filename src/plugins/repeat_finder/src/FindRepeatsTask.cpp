@@ -65,17 +65,17 @@ void RevComplSequenceTask::cleanup() {
 
 
 FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq, const DNASequence& seq2) 
-: Task(tr("Find repeats in a single sequence"), TaskFlags_FOSCOE), settings(s), directSequence(seq), directSequence2(seq2)
+: Task(tr("Find repeats in a single sequence"), TaskFlags_FOSCOE), settings(s), seq1(seq), seq2(seq2)
 {
     GCOUNTER( cvar, tvar, "FindRepeatsTask" );
     if (settings.seqRegion.length == 0) {
-        settings.seqRegion= U2Region(0, directSequence.length());
+        settings.seqRegion= U2Region(0, seq1.length());
     }
     if (seq.constData() == seq2.constData()) {
         settings.seq2Region = settings.seqRegion;
     }
     else {
-        settings.seq2Region = U2Region(0, directSequence2.length());
+        settings.seq2Region = U2Region(0, seq2.length());
     }
 
     revComplTask = NULL;
@@ -83,8 +83,8 @@ FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequ
     startTime = GTimer::currentTimeMicros();
     if (settings.inverted) {
         stateInfo.setDescription(tr("Rev-complementing sequence"));
-        assert(directSequence.alphabet->isNucleic());
-        revComplTask = new RevComplSequenceTask(directSequence, settings.seqRegion);
+        assert(seq1.alphabet->isNucleic());
+        revComplTask = new RevComplSequenceTask(seq1, settings.seqRegion);
         revComplTask->setSubtaskProgressWeight(0);
         addSubTask(revComplTask);
     } else {
@@ -109,17 +109,17 @@ QList<Task*> FindRepeatsTask::onSubTaskFinished(Task* subTask) {
 RFAlgorithmBase* FindRepeatsTask::createRFTask() {
     stateInfo.setDescription(tr("Searching repeats ..."));
 
-    const char* seqX = directSequence.constData() + settings.seqRegion.startPos;
+    const char* seqX = seq1.constData() + settings.seqRegion.startPos;
     const char* seqY = revComplTask == NULL ? seqX : revComplTask->complementSequence.constData();
     int seqXLen = settings.seqRegion.length;
     int seqYLen = settings.seqRegion.length;
 
-    if (directSequence.constData() != directSequence2.constData()) {
-        seqY = directSequence2.constData();
-        seqYLen = directSequence2.length();
+    if (seq1.constData() != seq2.constData()) {
+        seqY = seq2.constData();
+        seqYLen = seq2.length();
     }
     RFAlgorithmBase* t = RFAlgorithmBase::createTask(this, seqX, seqXLen, seqY, seqYLen,
-        directSequence.alphabet, settings.minLen, settings.mismatches, settings.algo, settings.nThreads);
+        seq1.alphabet, settings.minLen, settings.mismatches, settings.algo, settings.nThreads);
 
     t->setReportReflected(settings.reportReflected);
     return t;
@@ -203,7 +203,7 @@ void FindRepeatsTask::filterNestedRepeats() {
 }
 
 void FindRepeatsTask::cleanup() {
-    directSequence.seq.clear();
+    seq1.seq.clear();
     results.clear();
 }
 
@@ -324,7 +324,8 @@ FindRepeatsToAnnotationsTask::FindRepeatsToAnnotationsTask(const FindRepeatsTask
         LoadUnloadedDocumentTask::addLoadingSubtask(this, 
             LoadDocumentTaskConfig(true, annObjRef, new LDTObjectFactory(this)));
     }
-    addSubTask(findTask = new FindRepeatsTask(s, seq, seq));
+    findTask = new FindRepeatsTask(s, seq, seq);
+    addSubTask(findTask);
 }
 
 QList<Task*> FindRepeatsToAnnotationsTask::onSubTaskFinished(Task* subTask) {

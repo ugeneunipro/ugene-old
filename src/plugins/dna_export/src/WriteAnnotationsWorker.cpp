@@ -29,6 +29,9 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
@@ -37,7 +40,9 @@
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
+
 #include <U2Designer/DelegateEditors.h>
+
 #include <U2Gui/DialogUtils.h>
 
 #include "ExportAnnotations2CSVTask.h"
@@ -112,8 +117,10 @@ Task * WriteAnnotationsWorker::tick() {
     } else {
         fl |= SaveDoc_DestroyAfter;
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
-        Document * doc = new Document(AppContext::getDocumentFormatRegistry()->getFormatById(formatId), iof, filepath);
-        doc->setLoaded(true);
+        DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+        U2OpStatusImpl os;
+        Document * doc = df->createNewLoadedDocument(iof, filepath, os);
+        CHECK_OP(os, new FailTask(os.getError()));
         att->setModified(false);
         doc->addObject(att); // savedoc task will delete doc -> doc will delete att
         return new SaveDocumentTask(doc, fl, excludeFileNames);

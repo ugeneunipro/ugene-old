@@ -55,7 +55,7 @@ class AnnotationTableObject;
 class MolecularSurfaceCalcTask;
 class Task;
 class AnnotationSelection;
-class DNASequenceObject;
+class U2SequenceObject;
 class ADVSequenceObjectContext;
 class LRegionsSelection;
 class GLFrameManager;
@@ -286,7 +286,7 @@ private:
     Vector3D rotAxis, lastPos;
 
     // light
-    GLfloat lightPostion[4];
+    GLfloat lightPosition[4];
 
     QColor backgroundColor;
     QColor selectionColor;

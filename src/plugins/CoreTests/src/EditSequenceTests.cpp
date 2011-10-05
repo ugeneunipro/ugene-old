@@ -22,9 +22,8 @@
 #include "EditSequenceTests.h"
 
 #include <U2Core/LoadDocumentTask.h>
-
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/AppContext.h>
-
 #include <U2Core/AnnotationTableObject.h>
 
 namespace U2{
@@ -94,30 +93,29 @@ void GTest_AddPartToSequenceTask::prepare(){
         stateInfo.setError(GTest::tr("context not found %1").arg(docName));
         return;
     }
-    dnaso=(DNASequenceObject*)loadedDocument->findGObjectByName(seqName);
+    dnaso=(U2SequenceObject*)loadedDocument->findGObjectByName(seqName);
     if (dnaso==NULL){
         stateInfo.setError(GTest::tr("Sequence %1 not found").arg(seqName));
     }else{
         QList<Document*> docList;
         docList.append(loadedDocument);
-        DNASequence seqToIns("test", insertedSequence.toAscii(), AppContext::getDNAAlphabetRegistry()->findAlphabet(insertedSequence.toAscii()));
-        AddPartToSequenceTask* t=new AddPartToSequenceTask(loadedDocument->getDocumentFormatId(), dnaso, startPos, seqToIns, strat);
+        DNASequence seqToIns("test", insertedSequence.toAscii(), U2AlphabetUtils::findBestAlphabet(insertedSequence.toAscii()));
+        Task* t = new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, 0), seqToIns, strat);
         addSubTask(t);
     }
 }
 
 Task::ReportResult GTest_AddPartToSequenceTask::report(){
-    if (dnaso->getSequenceLen()!=expectedSequence.size())
-    {
+    if (dnaso->getSequenceLength()!=expectedSequence.size()) {
         stateInfo.setError(GTest::tr("Length of sequence is incorrect. Expected:%2, but Actual:%1")
-            .arg(dnaso->getSequenceLen())
+            .arg(dnaso->getSequenceLength())
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare ( dnaso->getSequence(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare( dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
         stateInfo.setError(GTest::tr("Sequence is incorrect. Expected:%1, but Actual:%2")
-            .arg((QString)(dnaso->getSequence()))
+            .arg((QString)(dnaso->getWholeSequenceData()))
             .arg(expectedSequence));
         return ReportResult_Finished;
     }
@@ -214,28 +212,27 @@ void GTest_RemovePartFromSequenceTask::prepare(){
         stateInfo.setError(GTest::tr("context not found %1").arg(docName));
         return;
     }
-    dnaso=(DNASequenceObject*)loadedDocument->findGObjectByName(seqName);
+    dnaso=(U2SequenceObject*)loadedDocument->findGObjectByName(seqName);
     if (dnaso==NULL){
         stateInfo.setError(GTest::tr("Sequence %1 not found").arg(seqName));
     }else{
         QList<Document*> docList;
         docList.append(loadedDocument);
-        addSubTask(new RemovePartFromSequenceTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length), strat));
+        addSubTask(new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length), DNASequence(), strat));
     }
 }
 
 Task::ReportResult GTest_RemovePartFromSequenceTask::report(){
-    if (dnaso->getSequenceLen()!=expectedSequence.size())
-    {
+    if (dnaso->getSequenceLength()!=expectedSequence.size()) {
         stateInfo.setError(GTest::tr("Length of sequence is incorrect. Expected:%2, but Actual:%1")
-            .arg(dnaso->getSequenceLen())
+            .arg(dnaso->getSequenceLength())
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare ( dnaso->getSequence(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare ( dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
         stateInfo.setError(GTest::tr("Sequence is incorrect. Expected:%1, but Actual:%2")
-            .arg((QString)(dnaso->getSequence()))
+            .arg((QString)(dnaso->getWholeSequenceData()))
             .arg(expectedSequence));
         return ReportResult_Finished;
     }
@@ -338,29 +335,29 @@ void GTest_ReplacePartOfSequenceTask::prepare(){
         stateInfo.setError(GTest::tr("Context not found %1").arg(docName));
         return;
     }
-    dnaso=(DNASequenceObject*)loadedDocument->findGObjectByName(seqName);
+    dnaso=(U2SequenceObject*)loadedDocument->findGObjectByName(seqName);
     if (dnaso==NULL){
         stateInfo.setError(GTest::tr("Sequence %1 not found").arg(seqName));
     }else{
         QList<Document*> docList;
         docList.append(loadedDocument);
         DNASequence dna("Inserted DNA", insertedSequence.toAscii());
-        addSubTask(new ReplacePartOfSequenceTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length),dna, strat));
+        addSubTask(new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length), dna, strat));
     }
 }
 
 Task::ReportResult GTest_ReplacePartOfSequenceTask::report(){
-    if (dnaso->getSequenceLen()!=expectedSequence.size())
+    if (dnaso->getSequenceLength()!=expectedSequence.size())
     {
         stateInfo.setError(GTest::tr("Length of sequence is incorrect. Expected:%2, but Actual:%1")
-            .arg(dnaso->getSequenceLen())
+            .arg(dnaso->getSequenceLength())
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare ( dnaso->getSequence(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare ( dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
         stateInfo.setError(GTest::tr("Sequence is incorrect. Actual:%1, but expected:%2")
-            .arg((QString)(dnaso->getSequence()))
+            .arg((QString)(dnaso->getWholeSequenceData()))
             .arg(expectedSequence));
         return ReportResult_Finished;
     }

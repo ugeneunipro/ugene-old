@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-DNAFragment::DNAFragment( Annotation* fragment, DNASequenceObject* sObj, const QList<AnnotationTableObject*> relatedAnns )
+DNAFragment::DNAFragment( Annotation* fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject*> relatedAnns )
     : annotatedFragment(fragment), dnaObj(sObj), relatedAnnotations(relatedAnns), reverseCompl(false)
 {   
     assert(fragment != NULL);
@@ -92,14 +92,14 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
         foreach (Annotation* a, annotations) {
             if (isDNAFragment(a)) {
                 // Find related sequence object
-                DNASequenceObject* dnaObj = NULL;
+                U2SequenceObject* dnaObj = NULL;
                 QList<GObjectRelation> relations = aObj->getObjectRelations();
                 foreach (const GObjectRelation& relation, relations ) {
                     if (relation.role != GObjectRelationRole::SEQUENCE) {
                         continue;
                     }
                     GObject* relatedObj = GObjectUtils::selectObjectByReference(relation.ref, sObjects, UOF_LoadedOnly);
-                    dnaObj = qobject_cast<DNASequenceObject*>(relatedObj);
+                    dnaObj = qobject_cast<U2SequenceObject*>(relatedObj);
                 }
                 if (dnaObj == NULL) {
                     continue;
@@ -150,7 +150,7 @@ QByteArray DNAFragment::getSequence() const
     QByteArray seq;
     const U2Location& location = annotatedFragment->getLocation();
     foreach (const U2Region& region, location->regions) {
-        seq += dnaObj->getSequence().mid(region.startPos, region.length);
+        seq += dnaObj->getSequenceData(region);
     }
     
     assert(!seq.isEmpty());
@@ -264,14 +264,12 @@ int DNAFragment::getLength() const
     return len;
 }
 
-const QByteArray& DNAFragment::getSourceSequence() const
-{
+QByteArray DNAFragment::getSourceSequence() const {
     assert(!isEmpty());
-    return dnaObj->getSequence(); 
+    return dnaObj->getWholeSequenceData(); 
 }
 
-void DNAFragment::updateTerms()
-{
+void DNAFragment::updateTerms() {
     if (annotatedFragment == NULL) {
         return;
     }

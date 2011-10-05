@@ -127,17 +127,17 @@ Task* QDSiteconActor::getAlgorithmTask(const QVector<U2Region>& location) {
         return new FailTask(err);
     }*/
 
-    DNASequenceObject* dna = scheme->getDNA();
+    const DNASequence& dnaSeq = scheme->getSequence();
     QDStrandOption stOp = getStrandToRun();
     if (stOp == QDStrand_ComplementOnly || stOp == QDStrand_Both) {
         QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(dna->getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+            lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
         if (!compTTs.isEmpty()) {
             settings.complTT = compTTs.first();
         }
     }
     
-    t = new QDSiteconTask(urls, settings, dna, location);
+    t = new QDSiteconTask(urls, settings, dnaSeq, location);
     connect(new TaskSignalMapper(t),SIGNAL(si_taskFinished(Task*)),SLOT(sl_onAlgorithmTaskFinished(Task*)));
     return t;
 }
@@ -202,9 +202,10 @@ QDSiteconActorPrototype::QDSiteconActorPrototype() {
 //Task
 //////////////////////////////////////////////////////////////////////////
 QDSiteconTask::QDSiteconTask( const QStringList& urls, const SiteconSearchCfg& _cfg,
-                             DNASequenceObject* _dna, const QVector<U2Region>& _searchRegion )
+                             const DNASequence& _dna, const QVector<U2Region>& _searchRegion )
                              : Task( tr("Sitecon Query"), TaskFlag_NoRun ),
-                             cfg(_cfg), dna(_dna), searchRegion(_searchRegion) {
+                             cfg(_cfg), dnaSeq(_dna), searchRegion(_searchRegion) 
+{
     loadModelsTask = new SiteconReadMultiTask(urls);
     addSubTask(loadModelsTask);
 }
@@ -214,9 +215,9 @@ QList<Task*> QDSiteconTask::onSubTaskFinished(Task* subTask) {
     if (subTask == loadModelsTask) {
         QList<SiteconModel> models = loadModelsTask->getResult();
         foreach(const U2Region& r, searchRegion) {
-            const char* seq = dna->getSequence().constData() + r.startPos;
+            QByteArray seq = dnaSeq.seq.mid(r.startPos, r.length);
             foreach(const SiteconModel& m, models) {
-                st.append(new SiteconSearchTask(m, seq, r.length, cfg, r.startPos));
+                st.append(new SiteconSearchTask(m, seq, cfg, r.startPos));
             }
         }
     }

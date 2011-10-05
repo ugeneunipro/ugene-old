@@ -22,7 +22,7 @@
 #include "MSFFormat.h"
 
 #include <U2Formats/DocumentFormatUtils.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
@@ -30,6 +30,9 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiUtils.h>
 
 namespace U2 {
 
@@ -107,12 +110,12 @@ int MSFFormat::getCheckSum(const QByteArray& seq) {
     return sum;
 }
 
-void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti) {
+void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti) {
     MAlignment al(io->getURL().baseFileName());
 
     //skip comments
     int checkSum = -1;
-    while (!ti.cancelFlag && checkSum < 0) {
+    while (!ti.isCoR() && checkSum < 0) {
         QByteArray line;
         if (getNextLine(io, line)) {
             ti.setError(MSFFormat::tr("Incorrect format"));
@@ -124,13 +127,13 @@ void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti)
             if (!ok || checkSum < 0)
                 checkSum = CHECK_SUM_MOD;
         }
-        ti.progress = io->getProgress();
+        ti.setProgress(io->getProgress());
     }
 
     //read info
     int sum = 0;
     QMap <QString, int> seqs;
-    while (!ti.cancelFlag) {
+    while (!ti.isCoR()) {
         QByteArray line;
         if (getNextLine(io, line)) {
             ti.setError(MSFFormat::tr("Unexpected end of file"));
@@ -155,7 +158,7 @@ void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti)
             sum = (sum + check) % CHECK_SUM_MOD;
         }
 
-        ti.progress = io->getProgress();
+        ti.setProgress(io->getProgress());
     }
     if (checkSum < CHECK_SUM_MOD && sum < CHECK_SUM_MOD && sum != checkSum) {
         ti.setError(MSFFormat::tr("Check sum test failed"));
@@ -164,7 +167,7 @@ void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti)
 
     //read data
     bool eof = false;
-    while (!eof && !ti.cancelFlag) {
+    while (!eof && !ti.isCoR()) {
         QByteArray line;
         eof = getNextLine(io, line);
         if (line.isEmpty()) {
@@ -188,7 +191,7 @@ void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti)
             al.appendChars(i, subSeq.constData(), subSeq.length());
         }
 
-        ti.progress = io->getProgress();
+        ti.setProgress(io->getProgress());
     }
 
     //checksum
@@ -204,28 +207,22 @@ void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti)
         al.replaceChars(i, '~', MAlignment_GapChar);
     }
 
-    DocumentFormatUtils::assignAlphabet(al);
-    if (al.getAlphabet() == NULL) {
-        ti.setError(MSFFormat::tr("Alphabet unknown"));
-        return;
-    }
-
+    U2AlphabetUtils::assignAlphabet(al);
+    CHECK_EXT(al.getAlphabet() != NULL, ti.setError(MSFFormat::tr("Alphabet unknown")), );
+    
     MAlignmentObject* obj = new MAlignmentObject(al);
     objects.append(obj);
 }
 
-Document* MSFFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
-    QList <GObject*> objs;
-    load(io, objs, ti);
+Document* MSFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
+    QList<GObject*> objs;
+    load(io, objs, os);
 
-    if (ti.hasError()) {
-        qDeleteAll(objs);
-        return NULL;
-    }
-    return new Document(this, io->getFactory(), io->getURL(), objs, fs);
+    CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
+    return new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objs, fs);
 }
 
-static bool writeBlock(IOAdapter *io, Document* d, TaskStateInfo& ti, const QByteArray& buf) {
+static bool writeBlock(IOAdapter *io, Document* d, U2OpStatus& ti, const QByteArray& buf) {
     int len = io->writeBlock(buf);
     if (len != buf.length()) {
         ti.setError(L10N::errorWritingFile(d->getURL()));
@@ -234,7 +231,7 @@ static bool writeBlock(IOAdapter *io, Document* d, TaskStateInfo& ti, const QByt
     return false;
 }
 
-void MSFFormat::storeDocument( Document* d, TaskStateInfo& ti, IOAdapter* io ) {
+void MSFFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
     const MAlignmentObject* obj = NULL;
     if((d->getObjects().size() != 1) || ((obj = qobject_cast<const MAlignmentObject*>(d->getObjects().first())) == NULL)) {
         ti.setError("No data to write;");
@@ -285,7 +282,7 @@ void MSFFormat::storeDocument( Document* d, TaskStateInfo& ti, IOAdapter* io ) {
         return;
     }
 
-    for (int i = 0; !ti.cancelFlag && i < maLen; i += CHARS_IN_ROW) {
+    for (int i = 0; !ti.isCoR() && i < maLen; i += CHARS_IN_ROW) {
         /* write numbers */ {
             QByteArray line(maxNameLen + 2, ' ');
             QString t = QString("%1").arg(i + 1);

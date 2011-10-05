@@ -33,7 +33,7 @@ class  U2CORE_EXPORT BioStruct3DObject: public GObject {
 public:
     BioStruct3DObject(const BioStruct3D& bioStruct, const QString& objectName, const QVariantMap& hintsMap = QVariantMap());
     const BioStruct3D& getBioStruct3D() const { return bioStruct3D;}
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
 
 protected:
     BioStruct3D     bioStruct3D;

@@ -34,7 +34,7 @@ public:
     AssemblyObject(const U2EntityRef& ref, const QString& objectName, const QVariantMap& hints) 
         : GObject(GObjectTypes::ASSEMBLY, objectName, hints), entityRef(ref){};
 
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef&, U2OpStatus& ) const;
     const U2EntityRef& getEntityRef() const {return entityRef;}
 protected:
     U2EntityRef entityRef;

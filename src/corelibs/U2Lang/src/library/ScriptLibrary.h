@@ -21,17 +21,9 @@
 
 #ifndef _WORKFLOW_SCRIPT_FUNC_H_
 #define _WORKFLOW_SCRIPT_FUNC_H_
+
+#include <U2Core/global.h>
 #include <QtScript>
-
-#include <U2Core/AppContext.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
-
-#include <U2Core/DNASequence.h>
-#include <U2Core/AnnotationData.h>
-#include <U2Core/MAlignment.h>
-
-#include <U2Core/MSAUtils.h>
 
 
 namespace U2 {

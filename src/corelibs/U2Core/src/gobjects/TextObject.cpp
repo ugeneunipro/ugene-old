@@ -28,7 +28,7 @@ void TextObject::setText(const QString& newText) {
     setModified(true);
 }
 
-GObject* TextObject::clone() const {
+GObject* TextObject::clone(const U2DbiRef&, U2OpStatus&) const {
     TextObject* cln = new TextObject(text, getGObjectName(), getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
     return cln;

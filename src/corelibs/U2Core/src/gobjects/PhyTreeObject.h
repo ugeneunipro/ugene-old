@@ -42,7 +42,7 @@ public:
     // TODO: move branches to private data, add getters and setters
     const PhyNode* findPhyNodeByName(const QString& name);
 
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
     
     // Utility functions
     

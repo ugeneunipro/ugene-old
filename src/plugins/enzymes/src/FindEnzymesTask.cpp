@@ -27,7 +27,7 @@
 #include <U2Core/Counter.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/DNAAlphabetUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/Settings.h>
 #include <U2Formats/GenbankFeatures.h>
 #include <U2Formats/GenbankLocationParser.h>
@@ -41,7 +41,7 @@ namespace U2 {
 
 FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const DNASequence& seq, 
                                                            const QList<SEnzymeData>& _enzymes, const FindEnzymesTaskConfig& config)
-: Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), dna(seq), enzymes(_enzymes), aObj(aobj), cfg(config)
+: Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), dnaSeq(seq), enzymes(_enzymes), aObj(aobj), cfg(config)
 {
     GCOUNTER( cvar, tvar, "FindEnzymesToAnnotationsTask" );
     seqRange = U2Region(0, seq.length());
@@ -55,7 +55,7 @@ void FindEnzymesToAnnotationsTask::prepare()
         stateInfo.setError(tr("No enzymes selected."));
         return;
     }
-    fTask = new FindEnzymesTask(dna, seqRange, enzymes, cfg.maxResults, cfg.circular);
+    fTask = new FindEnzymesTask(dnaSeq, seqRange, enzymes, cfg.maxResults, cfg.circular);
     addSubTask(fTask);
 }
 
@@ -259,18 +259,18 @@ void FindEnzymesTask::cleanup() {
 FindSingleEnzymeTask::FindSingleEnzymeTask(const DNASequence& _seq, const U2Region& region, const SEnzymeData& _enzyme, 
                                            FindEnzymesAlgListener* l, bool _circular, int mr)
 : Task(tr("Find enzyme '%1'").arg(_enzyme->id), TaskFlag_NoRun), 
-dna(_seq), region(region), enzyme(_enzyme), maxResults(mr), resultListener(l), circular(_circular)
+dnaSeq(_seq), region(region), enzyme(_enzyme), maxResults(mr), resultListener(l), circular(_circular)
 {
-    assert(dna.alphabet->isNucleic());
+    assert(dnaSeq.alphabet->isNucleic());
     if (resultListener == NULL) {
         resultListener = this;
     }
-    if (region.length != dna.length()) {
+    if (region.length != dnaSeq.length()) {
         circular = false;
     }
     SequenceWalkerConfig swc;
     
-    swc.seq = dna.seq.constData() + region.startPos;
+    swc.seq = dnaSeq.seq.constData() + region.startPos;
     swc.seqSize = region.length;
     swc.chunkSize = region.length;
     
@@ -296,7 +296,7 @@ void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti)
     if (enzyme->seq.isEmpty()) {
         return;
     }
-    if (dna.length() < enzyme->seq.length()) {
+    if (dnaSeq.length() < enzyme->seq.length()) {
         return;
     }
     if (!enzyme->alphabet->isNucleic()) {
@@ -304,19 +304,19 @@ void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti)
         return;
     }
     bool useExtendedComparator = enzyme->alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
-                                || dna.alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
-                                || dna.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
-                                || dna.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
+                                || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
+                                || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
+                                || dnaSeq.alphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
   
     const SequenceWalkerConfig& c = t->getGlobalConfig();
 
     // Note that enzymes algorithm filters N symbols in sequence by itself
     if (useExtendedComparator) {
         FindEnzymesAlgorithm<ExtendedDNAlphabetComparator> algo;
-        algo.run(dna, c.range, enzyme, resultListener, ti);
+        algo.run(dnaSeq, c.range, enzyme, resultListener, ti);
     } else {
         FindEnzymesAlgorithm<ExactDNAAlphabetComparatorN1M_N2M> algo;
-        algo.run(dna, c.range, enzyme, resultListener, ti);
+        algo.run(dnaSeq, c.range, enzyme, resultListener, ti);
     }
 }
 
@@ -369,7 +369,7 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
     }
     
     AnnotationTableObject* aObj = aa->getAnnotationObject();
-    const DNASequence& dna = aa->getSeqObject()->getDNASequence();
+    DNASequence dna = aa->getSeqObject()->getWholeSequence();
     Task* task = new FindEnzymesToAnnotationsTask(aObj, dna, selectedEnzymes, cfg );
 
     return task;

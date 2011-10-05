@@ -31,7 +31,7 @@ namespace U2 {
 /**
     An interface to access to sequence objects
 */
-class U2CORE_EXPORT U2SequenceDbi : public U2ChildDbi {
+class U2SequenceDbi : public U2ChildDbi {
 protected:
     U2SequenceDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
@@ -75,11 +75,10 @@ public:
         Note: 'regionToReplace' length can differ from dataToInsert length, so the method
         can be used to insert/remove sequence regions.
 
-        WARNING: The passed region 'startPos' has to be between 0 and sequence length inclusive.
+        NOTE: The passed region 'startPos' has to be between 0 and sequence length inclusive.
         If the sequence is empty 'regionToReplace.startPos' has to be 0.
-
-        //TODO think about annotations: should we fix locations automatically?? If yes, emit notifications??
-        // varlax: I think this should be left to user, no automatic fixes.
+        
+        HINT: use U2_REGION_MAX to replace or clear whole the sequence
 
         Requires: U2DbiFeature_WriteSequence feature support
     */

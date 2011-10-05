@@ -43,6 +43,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/SelectionUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/UnloadDocumentTask.h>
@@ -938,30 +939,34 @@ void ProjectViewImpl::sl_saveCopy() {
             return;
         }
         QList<GObject*> objs = d->getObjects();
-        Document *dd = df->createNewDocument(iof, h.url, d->getGHintsMap());
+        U2OpStatus2Log os;
+        std::auto_ptr<Document> dp(df->createNewLoadedDocument(iof, h.url, os, d->getGHintsMap()));
+        CHECK_OP(os, );
         foreach(GObject* go, objs){
-            if(df->isObjectOpSupported(dd, DocumentFormat::DocObjectOp_Add, go->getGObjectType())){
-                GObject *cl = go->clone();
+            if(df->isObjectOpSupported(dp.get(), DocumentFormat::DocObjectOp_Add, go->getGObjectType())){
+                GObject *cl = go->clone(dp->getDbiRef(), os);
                 if (cl->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT){
                     QString name=QFileInfo(dialog.getDocumentURL()).baseName();
                     cl->setGObjectName(name);
                     cl->setModified(false);
                 }
-                dd->addObject(cl);
+                dp->addObject(cl);
             }
         }
-        foreach(GObject* o, dd->getObjects()) {
+        foreach(GObject* o, dp->getObjects()) {
             GObjectUtils::updateRelationsURL(o, d->getURL(), h.url);
         }
-        Task* t = NULL;
-        t = new SaveDocumentTask(dd, iof, h.url); //TODO: memory leak here! Create wrapper-like task that cleans resources on finish
-        AppContext::getTaskScheduler()->registerTopLevelTask(t);
-
+        Document *d = dp.release();
         if (addToProject) {
-            Project *p = AppContext::getProject(); //TODO: add to project only if save was successful!
-            dd->setModified(true);
-            p->addDocument(dd);
-        } 
+            Project *p = AppContext::getProject();
+            d->setModified(true);
+            p->addDocument(d);
+        }  
+        SaveDocumentTask* t = new SaveDocumentTask(d, iof, h.url);
+        if (!addToProject) {
+            t->addFlag(SaveDoc_DestroyAfter);
+        }
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
 }
 

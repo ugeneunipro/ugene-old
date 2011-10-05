@@ -75,7 +75,7 @@ void GTest_QDSchedulerTest::prepare() {
         stateInfo.setError("can't find sequence");
         return;
     }
-    seqObj = qobject_cast<DNASequenceObject*>(seqDoc->findGObjectByType(GObjectTypes::SEQUENCE).first());
+    seqObj = qobject_cast<U2SequenceObject*>(seqDoc->findGObjectByType(GObjectTypes::SEQUENCE).first());
     if (seqObj == NULL){
         stateInfo.setError("can't find sequence");
         return;
@@ -115,8 +115,8 @@ void GTest_QDSchedulerTest::prepare() {
     }
 
     QDRunSettings s;
-    schema->setDNA(seqObj);
-    s.region = seqObj->getSequenceRange();
+    schema->setSequence(seqObj->getWholeSequence());
+    s.region = U2Region(0, seqObj->getSequenceLength());
     s.scheme = schema;
     s.annotationsObj = result;
     s.groupName = GROUP_NAME;

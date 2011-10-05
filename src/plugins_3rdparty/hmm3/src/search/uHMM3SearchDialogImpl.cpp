@@ -43,7 +43,7 @@ const QString UHMM3SearchDialogImpl::DOM_E_MINUS_PREFIX         = "1E";
 const QString UHMM3SearchDialogImpl::HMM_FILES_DIR_ID           = "uhmmer3_search_dlg_impl_hmm_dir";
 const QString UHMM3SearchDialogImpl::ANNOTATIONS_DEFAULT_NAME   = "hmm_signal";
 
-UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const DNASequenceObject * seqObj, QWidget * p ) : QDialog( p ) {
+UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, QWidget * p ) : QDialog( p ) {
     assert( NULL != seqObj );
     
     setupUi( this );
@@ -53,7 +53,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const DNASequenceObject * seqObj, 
     useScoreTresholdGroup.addButton( useTCTresholdsButton );
     useExplicitScoreTresholdButton->setChecked( true );
     
-    model.sequence = seqObj->getDNASequence();
+    model.sequence = seqObj->getWholeSequence();
     setModelValues(); // default settings here
     
     // Annotations widget
@@ -61,7 +61,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const DNASequenceObject * seqObj, 
     annModel.hideLocation = true;
     annModel.sequenceObjectRef = seqObj;
     annModel.data->name = ANNOTATIONS_DEFAULT_NAME;
-    annModel.sequenceLen = seqObj->getSequenceLen();
+    annModel.sequenceLen = seqObj->getSequenceLength();
     annotationsWidgetController = new CreateAnnotationWidgetController( annModel, this );
     QWidget * firstTab = tabWidget->widget( 0 );
     assert( NULL != firstTab );

@@ -38,11 +38,14 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Formats/DocumentFormatUtils.h>
+
+#include <memory.h>
 
 namespace U2 {
 using namespace Workflow;
@@ -141,24 +144,19 @@ void LoadMSATask::run() {
     }
     ioLog.info(tr("Reading MSA from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    Document *doc = format->loadDocument(iof, url, stateInfo, QVariantMap());
-    assert(isCanceled() || doc!=NULL || hasError());
-    assert(doc == NULL || doc->isLoaded());
-    if (!isCanceled() && doc!=NULL && doc->isLoaded()) {
-        if (!doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT).isEmpty()) {
-            foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-                results.append(((MAlignmentObject*)go)->getMAlignment());
-            }
-        } else {
-            MAlignment ma = MSAUtils::seq2ma(doc->findGObjectByType(GObjectTypes::SEQUENCE), stateInfo);
-            if (!hasError()) {
-                results.append(ma);
-            } 
+    std::auto_ptr<Document> doc(format->loadDocument(iof, url, QVariantMap(), stateInfo));
+    CHECK_OP(stateInfo, );
+    if (!doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT).isEmpty()) {
+        foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+            results.append(((MAlignmentObject*)go)->getMAlignment());
         }
+    } else {
+        MAlignment ma = MSAUtils::seq2ma(doc->findGObjectByType(GObjectTypes::SEQUENCE), stateInfo);
+        if (!hasError()) {
+            results.append(ma);
+        } 
     }
-    if (doc != NULL && doc->isLoaded()) {
-        doc->unload();
-    }
+
 }
 
 /**************************
@@ -227,77 +225,72 @@ void LoadSeqTask::run() {
     }
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    Document *doc = format->loadDocument(iof, url, stateInfo, cfg);
-    assert(isCanceled() || doc!=NULL || hasError());
-    assert(doc == NULL || doc->isLoaded());
-    if (!isCanceled() && doc!=NULL && doc->isLoaded()) {
-        const QSet<GObjectType>& types = format->getSupportedObjectTypes();
-        if (types.contains(GObjectTypes::SEQUENCE)) {
-            QList<GObject*> seqObjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
-            QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-            foreach(GObject* go, seqObjs) {
-                assert(go != NULL);
-                const DNASequence& dna = ((DNASequenceObject*)go)->getDNASequence();
-                if (!selector->matches(dna)) {
+    std::auto_ptr<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
+    CHECK_OP(stateInfo, );
+
+    const QSet<GObjectType>& types = format->getSupportedObjectTypes();
+    if (types.contains(GObjectTypes::SEQUENCE)) {
+        QList<GObject*> seqObjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+        QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+        foreach(GObject* go, seqObjs) {
+            assert(go != NULL);
+            DNASequence dna = ((U2SequenceObject*)go)->getWholeSequence();
+            if (!selector->matches(dna)) {
+                continue;
+            }
+            QVariantMap m;
+            m.insert(BaseSlots::URL_SLOT().getId(), url);
+            m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<DNASequence>(dna));
+            QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+            QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(go, 
+                GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, 
+                allLoadedAnnotations, UOF_LoadedOnly);
+            if (!annotations.isEmpty()) {
+                QList<SharedAnnotationData> l;
+                foreach(GObject * annGObj, annotations) {
+                    AnnotationTableObject* att = qobject_cast<AnnotationTableObject*>(annGObj);
+                    foreach(Annotation* a, att->getAnnotations()) {
+                        l << a->data();
+                    }
+                    annObjs.removeAll(annGObj);
+                }
+                m.insert(BaseSlots::ANNOTATION_TABLE_SLOT().getId(), qVariantFromValue<QList<SharedAnnotationData> >(l));
+            }
+            results.append(m);
+        }
+
+        // if there are annotations that are not connected to a sequence -> put them  independently
+        foreach(GObject * annObj, annObjs) {
+            AnnotationTableObject* att = qobject_cast<AnnotationTableObject*>(annObj);
+            if(att->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE).isEmpty()) {
+                assert(att != NULL);
+                QVariantMap m;
+                m.insert(BaseSlots::URL_SLOT().getId(), url);
+
+                QList<SharedAnnotationData> l;
+                foreach(Annotation* a, att->getAnnotations()) {
+                    l << a->data();
+                }
+                m.insert(BaseSlots::ANNOTATION_TABLE_SLOT().getId(), qVariantFromValue<QList<SharedAnnotationData> >(l));
+                results.append(m);
+            }
+        }
+    } else {
+        //TODO merge seqs from alignment
+        //             QString mergeToken = MERGE_MULTI_DOC_GAP_SIZE_SETTINGS;
+        //             bool merge = cfg.contains(mergeToken);
+        //             int gaps = cfg.value(mergeToken).toInt();
+        foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+            foreach(const DNASequence& s, MSAUtils::ma2seq(((MAlignmentObject*)go)->getMAlignment(), false)) {
+                if (!selector->matches(s)) {
                     continue;
                 }
                 QVariantMap m;
                 m.insert(BaseSlots::URL_SLOT().getId(), url);
-                m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<DNASequence>(dna));
-                QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-                QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(go, 
-                    GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, 
-                    allLoadedAnnotations, UOF_LoadedOnly);
-                if (!annotations.isEmpty()) {
-                    QList<SharedAnnotationData> l;
-                    foreach(GObject * annGObj, annotations) {
-                        AnnotationTableObject* att = qobject_cast<AnnotationTableObject*>(annGObj);
-                        foreach(Annotation* a, att->getAnnotations()) {
-                            l << a->data();
-                        }
-                        annObjs.removeAll(annGObj);
-                    }
-                    m.insert(BaseSlots::ANNOTATION_TABLE_SLOT().getId(), qVariantFromValue<QList<SharedAnnotationData> >(l));
-                }
+                m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<DNASequence>(s));
                 results.append(m);
             }
-            
-            // if there are annotations that are not connected to a sequence -> put them  independently
-            foreach(GObject * annObj, annObjs) {
-                AnnotationTableObject* att = qobject_cast<AnnotationTableObject*>(annObj);
-                if(att->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE).isEmpty()) {
-                    assert(att != NULL);
-                    QVariantMap m;
-                    m.insert(BaseSlots::URL_SLOT().getId(), url);
-                    
-                    QList<SharedAnnotationData> l;
-                    foreach(Annotation* a, att->getAnnotations()) {
-                        l << a->data();
-                    }
-                    m.insert(BaseSlots::ANNOTATION_TABLE_SLOT().getId(), qVariantFromValue<QList<SharedAnnotationData> >(l));
-                    results.append(m);
-                }
-            }
-        } else {
-            //TODO merge seqs from alignment
-//             QString mergeToken = MERGE_MULTI_DOC_GAP_SIZE_SETTINGS;
-//             bool merge = cfg.contains(mergeToken);
-//             int gaps = cfg.value(mergeToken).toInt();
-            foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-                foreach(const DNASequence& s, MSAUtils::ma2seq(((MAlignmentObject*)go)->getMAlignment(), false)) {
-                    if (!selector->matches(s)) {
-                        continue;
-                    }
-                    QVariantMap m;
-                    m.insert(BaseSlots::URL_SLOT().getId(), url);
-                    m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<DNASequence>(s));
-                    results.append(m);
-                }
-            }
         }
-    }
-    if (doc!=NULL && doc->isLoaded()) {
-        doc->unload();
     }
 }
 

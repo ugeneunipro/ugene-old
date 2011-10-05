@@ -42,14 +42,15 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
-    static void exportDocumentToSCF(const QString& fileName, const DNAChromatogram& cd, const DNASequence& dna, TaskStateInfo& ts);
+    static void exportDocumentToSCF(const QString& fileName, const DNAChromatogram& cd, const QByteArray& seq, U2OpStatus& ts);
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 private:
-    Document* parseSCF(SeekableBuf*, IOAdapterFactory* io, const GUrl& url, const QVariantMap& fs, U2OpStatus& os);
+    Document* parseSCF(const U2DbiRef& dbiRef, SeekableBuf*, IOAdapterFactory* io, const GUrl& url, const QVariantMap& fs, U2OpStatus& os);
 
     QString formatName;
 };

@@ -25,6 +25,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/BaseDocumentFormats.h>
 
@@ -76,7 +77,8 @@ QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
                 if(d==NULL) {
                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
                     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
-                    d = df->createNewDocument(iof, url);
+                    d = df->createNewLoadedDocument(iof, url, stateInfo);
+                    CHECK_OP(stateInfo, res);
                     d->addObject(aobj);
                     AppContext::getProject()->addDocument(d);
                 } else {

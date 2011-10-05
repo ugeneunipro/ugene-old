@@ -92,7 +92,7 @@ protected:
     void filterNestedRepeats();
 
     FindRepeatsTaskSettings     settings;
-    DNASequence                 directSequence, directSequence2;
+    DNASequence                 seq1, seq2;
     QVector<RFResult>           results;
     QMutex                      resultsLock;
     RevComplSequenceTask*       revComplTask;

@@ -97,7 +97,7 @@ showInfoAction(0), exportToSamAction(0)
         objects.append(o);
         requiredObjects.append(o);
         const U2EntityRef& ref= gobject->getEntityRef();
-        model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiHandle(ref.factoryId, ref.dbiId, dbiOpStatus)));
+        model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiConnection(ref.dbiRef, dbiOpStatus)));
         sl_assemblyLoaded();
     }   
     onObjectAdded(gobject);
@@ -137,7 +137,7 @@ bool AssemblyBrowser::eventFilter(QObject* o, QEvent* e) {
 }
 
 QString AssemblyBrowser::tryAddObject(GObject * obj) {
-    DNASequenceObject * seqObj = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * seqObj = qobject_cast<U2SequenceObject*>(obj);
     if(seqObj == NULL) {
         return tr("Only sequence object can be added to assembly browser");
     }
@@ -148,21 +148,15 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
     }
     assert(seqDoc->getDocumentFormat() != NULL);
     
-    U2SequenceDbi * seqDbi = seqObj->asDbi();
-    assert(seqDbi != NULL);
-    U2OpStatusImpl status;
-    QString seqObjName = seqObj->getGObjectName();
-    U2Sequence u2SeqObj = seqDbi->getSequenceObject(seqObjName.toAscii(), status);
-    if(status.hasError()) {
-        return status.getError();
-    }
-        
+    
+    U2OpStatus2Log os;
+    qint64 seqLen = seqObj->getSequenceLength();    
     QStringList errs;
-    qint64 modelLen = model->getModelLength(status);
-    if(u2SeqObj.length != modelLen) {
-        errs << tr("- Reference sequence is %1 than assembly").arg(u2SeqObj.length < modelLen ? tr("lesser") : tr("bigger"));
+    qint64 modelLen = model->getModelLength(os);
+    if (seqLen != modelLen) {
+        errs << tr("- Reference sequence is %1 than assembly").arg(seqLen < modelLen ? tr("lesser") : tr("bigger"));
     }
-    if(seqObjName != gobject->getGObjectName()) {
+    if (seqObj->getGObjectName() != gobject->getGObjectName()) {
         errs << tr("- Reference and assembly names not match");
     }
     
@@ -185,19 +179,16 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         setRef = btn == QMessageBox::Ok;
     }
     if(setRef) {
-        model->setReference(seqDbi, u2SeqObj);
-        U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiHandle().dbi->getCrossDatabaseReferenceDbi();
+        model->setReference(seqObj);
+        U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiConnection().dbi->getCrossDatabaseReferenceDbi();
         U2CrossDatabaseReference crossDbRef;
-        crossDbRef.dataRef.dbiId = u2SeqObj.dbiId;
-        crossDbRef.dataRef.entityId = u2SeqObj.id;
+        crossDbRef.dataRef.dbiRef = seqObj->getSequenceRef().dbiRef;
         crossDbRef.dataRef.version = 1;
-        crossDbRef.dataRef.factoryId = "FileDbi_" + seqDoc->getDocumentFormatId();
-        crossDbi->createCrossReference(crossDbRef, status);
-        LOG_OP(status);
+        crossDbi->createCrossReference(crossDbRef, os);
+        LOG_OP(os);
         model->associateWithReference(crossDbRef);
     }
 
-    GCOUNTER( cvar, tvar, "AssemblyBrowser:associate_with_reference" );
     return "";
 }
 
@@ -452,7 +443,7 @@ void AssemblyBrowser::sl_assemblyLoaded() {
     assert(model);
     GTIMER(c1, t1, "AssemblyBrowser::sl_assemblyLoaded");
     LOG_OP(dbiOpStatus);
-    U2Dbi * dbi = model->getDbiHandle().dbi;
+    U2Dbi * dbi = model->getDbiConnection().dbi;
     assert(U2DbiState_Ready == dbi->getState());
 
     U2AssemblyDbi * assmDbi = dbi->getAssemblyDbi();
@@ -555,12 +546,12 @@ void AssemblyBrowser::sl_saveScreenshot() {
 
 void AssemblyBrowser::sl_exportToSam() {
     U2OpStatusImpl os;
-    QHash<QString, QString> metaInfo = model->getDbiHandle().dbi->getDbiMetaInfo(os);
+    QHash<QString, QString> metaInfo = model->getDbiConnection().dbi->getDbiMetaInfo(os);
 
-    ConvertAssemblyToSamDialog dialog(ui, metaInfo["url"]);
+    ConvertAssemblyToSamDialog dialog(ui, metaInfo[U2_DBI_OPTION_URL]);
 
     if (dialog.exec()) {
-        ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(&(model->getDbiHandle()), dialog.getSamFileUrl());
+        ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(&(model->getDbiConnection()), dialog.getSamFileUrl());
         AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
     }
 }

@@ -9,6 +9,8 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2MsaDbi.h>
 
 
 namespace U2 {
@@ -19,7 +21,7 @@ ConvertToSQLiteTask::ConvertToSQLiteTask(const QString& file, const QString& dbU
         QFile::remove(dbUrl);
     }
 
-    U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById("SQLiteDbi");
+    U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById(SQLITE_DBI_ID);
     dbi.reset(factory->createDbi());
 
     QHash<QString, QString> props;
@@ -83,11 +85,11 @@ void FillDbTask::addSequence(U2Sequence& seq, const QByteArray& data) {
 void FillDbTask::run() {
     foreach(GObject* obj, objects) {
         if (obj->getGObjectType() == GObjectTypes::SEQUENCE) {
-            DNASequenceObject* dna = qobject_cast<DNASequenceObject*>(obj);
+            U2SequenceObject* dna = qobject_cast<U2SequenceObject*>(obj);
             U2Sequence sequence;
             sequence.circular = dna->isCircular();
             sequence.alphabet = dna->getAlphabet()->getId();
-            addSequence(sequence, dna->getSequence());
+            addSequence(sequence, dna->getWholeSequenceData());
         } else if (obj->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT) {
             U2MsaDbi* msaDbi = dbi->getMsaDbi();
 

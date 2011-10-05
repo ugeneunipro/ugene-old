@@ -35,9 +35,12 @@ public:
 
     virtual DocumentFormatId getFormatId()const;
     virtual const QString &getFormatName()const;
-    virtual Document *loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVariantMap &fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-    virtual void storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io);
+    virtual void storeDocument(Document *d, IOAdapter *io, U2OpStatus &os);
     virtual FormatCheckResult checkRawData(const QByteArray &rawData, const GUrl& url = GUrl())const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os);
+
 private:
     static const QString FORMAT_ID;
     const QString formatName;

@@ -54,7 +54,7 @@ void seqboot_getoptions(void)
 //  boolean done1;
 
   data = seqs;
-  seq = dna;
+  seq = dnaSeq;
   bootstrap = true;
   jackknife = false;
   permute = false;
@@ -802,7 +802,7 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
           printf( " DATATYPE=");
           if (data == seqs) {
             switch (seq) { 
-              case (dna): printf( "DNA missing=N gap=-"); break;
+              case (dnaSeq): printf( "DNA missing=N gap=-"); break;
               case (rna): printf( "RNA missing=N gap=-"); break;
               case (protein):
                 printf( "protein missing=? gap=-");
@@ -841,7 +841,7 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
         if (rewrite && xml) {
           printf("   <sequence");
           switch (seq) {
-            case (dna): printf(" type=\"dna\""); break;
+            case (dnaSeq): printf(" type=\"dna\""); break;
             case (rna): printf(" type=\"rna\""); break;
             case (protein): printf( " type=\"protein\""); break;
           }

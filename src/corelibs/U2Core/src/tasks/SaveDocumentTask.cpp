@@ -29,6 +29,8 @@
 #include <U2Core/L10n.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/GObjectUtils.h>
 #include <QtGui/QMessageBox>
@@ -58,6 +60,9 @@ doc(_doc), iof(doc->getIOAdapterFactory()), url(doc->getURL()), flags(f), exclud
     assert(doc!=NULL);
 }
 
+void SaveDocumentTask::addFlag(SaveDocFlag f) {
+    flags|=f;
+}
 
 void SaveDocumentTask::prepare() {
     if (doc.isNull()) {
@@ -76,16 +81,9 @@ void SaveDocumentTask::run() {
     coreLog.info(tr("Saving document %1\n").arg(url.getURLString()));
     DocumentFormat* df = doc->getDocumentFormat();
 
-    if (flags.testFlag(SaveDoc_Append)) {
-        std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
-        if (!io->open(url, IOAdapterMode_Append)) {
-            setError(L10N::errorOpeningFileWrite(url));
-            return;
-        }
-        df->storeDocument(doc, stateInfo, io.get());
-    } else {
-        df->storeDocument(doc, stateInfo, iof, url);
-    }
+    std::auto_ptr<IOAdapter> io(IOAdapterUtils::open(url, stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
+    CHECK_OP(stateInfo, );
+    df->storeDocument(doc, io.get(), stateInfo);
 }
 
 Task::ReportResult SaveDocumentTask::report() {
@@ -95,9 +93,8 @@ Task::ReportResult SaveDocumentTask::report() {
         delete lock;
         lock = NULL;
     }
-    if (hasError() || doc.isNull()) {
-        return ReportResult_Finished;
-    }
+    CHECK_OP(stateInfo, ReportResult_Finished);
+    
     if (url == doc->getURL() && iof == doc->getIOAdapterFactory()) {
         doc->makeClean();
     }
@@ -177,24 +174,18 @@ SaveCopyAndAddToProjectTask::SaveCopyAndAddToProjectTask(Document* doc, IOAdapte
 }
 
 Task::ReportResult SaveCopyAndAddToProjectTask::report() {
-    if (hasError() || isCanceled()) {
-        return ReportResult_Finished;
-    }
+    CHECK_OP(stateInfo, ReportResult_Finished);
     Project* p = AppContext::getProject();
-    if (p == NULL) {
-        setError(tr("No active project found"));
-        return ReportResult_Finished;
-    }
-    if (p->isStateLocked()) {
-        setError(tr("Project is locked"));
-        return ReportResult_Finished;
-    }
+    CHECK_EXT(p != NULL, setError(tr("No active project found")), ReportResult_Finished);
+    CHECK_EXT(!p->isStateLocked(), setError(tr("Project is locked")), ReportResult_Finished);
+        
     const GUrl& url = saveTask->getURL();
     if (p->findDocumentByURL(url)) {
         setError(tr("Document is already added to the project %1").arg(url.getURLString()));
         return ReportResult_Finished;
     }
-    Document* doc = new Document(df, saveTask->getIOAdapterFactory(), url, info, hints);
+    Document* doc = df->createNewUnloadedDocument(saveTask->getIOAdapterFactory(), url, stateInfo, hints, info);
+    CHECK_OP(stateInfo, ReportResult_Finished);
     foreach(GObject* o, doc->getObjects()) {
         GObjectUtils::updateRelationsURL(o, origURL, url);
     }

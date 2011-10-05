@@ -41,7 +41,7 @@ public:
     BaseContentGraphFactory(GType t, QObject* p);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
-    virtual bool isEnabled(DNASequenceObject* o) const;
+    virtual bool isEnabled(U2SequenceObject* o) const;
 private:
     QBitArray map;
 };
@@ -51,7 +51,7 @@ public:
     BaseContentGraphAlgorithm(const QBitArray& map);
     virtual ~BaseContentGraphAlgorithm() {}
 
-    virtual void calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
+    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
 
 private:
     void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps);

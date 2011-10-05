@@ -24,7 +24,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObject.h>
-
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/LoadDocumentTask.h>
 
 #include <U2Algorithm/PWMConversionAlgorithm.h>
@@ -183,16 +183,16 @@ Task::ReportResult GTest_PFMCreateTest::report() {
         }
         QList<DNASequence*> data;
         for (int i = 0; i < size; i++) {
-            DNASequenceObject* seq = (DNASequenceObject*)list[i];
-            if (seq->getSequenceLen() != length) {
-                stateInfo.setError(QString("wrong length of %1 sequence: %2").arg(i + 1).arg(seq->getSequenceLen()));
+            U2SequenceObject* seq = (U2SequenceObject*)list[i];
+            if (seq->getSequenceLength() != length) {
+                stateInfo.setError(QString("wrong length of %1 sequence: %2").arg(i + 1).arg(seq->getSequenceLength()));
                 return ReportResult_Finished;  
             }
             if (seq->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                 stateInfo.setError(QString("Wrong sequence alphabet"));
                 return ReportResult_Finished;  
             }
-            DNASequence* s = new DNASequence(QString("%1 sequence").arg(i + 1), seq->getSequence(), seq->getAlphabet());
+            DNASequence* s = new DNASequence(QString("%1 sequence").arg(i + 1), seq->getWholeSequenceData(), seq->getAlphabet());
             data.push_back(s);
         }
         PFMatrix pfm(data, type);
@@ -347,16 +347,16 @@ Task::ReportResult GTest_PWMCreateTest::report() {
         }
         QList<DNASequence*> data;
         for (int i = 0; i < size; i++) {
-            DNASequenceObject* seq = (DNASequenceObject*)list[i];
-            if (seq->getSequenceLen() != length) {
-                stateInfo.setError(GTest::tr("wrong length of %1 sequence: %2").arg(i).arg(seq->getSequenceLen()));
+            U2SequenceObject* seq = (U2SequenceObject*)list[i];
+            if (seq->getSequenceLength() != length) {
+                stateInfo.setError(GTest::tr("wrong length of %1 sequence: %2").arg(i).arg(seq->getSequenceLength()));
                 return ReportResult_Finished;  
             }
             if (seq->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                 stateInfo.setError(GTest::tr("Wrong %1 sequence alphabet").arg(i));
                 return ReportResult_Finished;  
             }
-            DNASequence* s = new DNASequence(QString("%1 sequence").arg(i), seq->getSequence(), seq->getAlphabet());
+            DNASequence* s = new DNASequence(QString("%1 sequence").arg(i), seq->getWholeSequenceData(), seq->getAlphabet());
             data.push_back(s);
         }
 

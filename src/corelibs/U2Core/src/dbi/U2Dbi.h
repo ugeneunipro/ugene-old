@@ -29,6 +29,7 @@
 #include <U2Core/U2Attribute.h>
 #include <U2Core/U2Msa.h>
 #include <U2Core/U2Sequence.h>
+#include <U2Core/GUrl.h>
 
 #include <QtCore/QHash>
 #include <QtCore/QSet>
@@ -130,7 +131,7 @@ enum U2CORE_EXPORT U2DbiFeature {
     DBI factory provides functions to create new DBI instances
     and check file content to ensure that file is a valid database file
 */
-class U2DbiFactory {
+class U2CORE_EXPORT U2DbiFactory {
 public:
     U2DbiFactory() {}
     virtual ~U2DbiFactory(){};
@@ -147,6 +148,10 @@ public:
         and can be used by factory directly to check database header
     */
     virtual FormatCheckResult isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const = 0;
+
+    virtual GUrl id2Url(const U2DbiId& id) const = 0;
+
+    virtual bool isDbiExists(const U2DbiId& id) const = 0;
 };
 
 
@@ -154,7 +159,7 @@ public:
     Database access interface. 
     Database examples: fasta file, genbank file, BAM file, SQLite file
 */
-class U2CORE_EXPORT U2Dbi {
+class U2Dbi {
 public:
     virtual ~U2Dbi(){}
     //////////////////////////////////////////////////////////////////////////
@@ -194,6 +199,8 @@ public:
 
     /** Return factory instance for this DBI */
     virtual U2DbiFactoryId getFactoryId() const  = 0;
+
+    virtual U2DbiRef getDbiRef() const {return U2DbiRef(getFactoryId(), getDbiId());}
 
     /** Returns all features supported by this DBI instance */
     virtual const QSet<U2DbiFeature>& getFeatures() const = 0;
@@ -276,7 +283,7 @@ public:
     Base class for all *Dbi classes provided by U2Dbi
     Contains reference to root-level dbi
 */
-class U2CORE_EXPORT U2ChildDbi {
+class U2ChildDbi {
 protected:
     U2ChildDbi(U2Dbi* _rootDbi) : rootDbi (_rootDbi){}
     

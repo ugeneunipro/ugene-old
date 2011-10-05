@@ -278,19 +278,15 @@ void BlastPlusSupportContext::sl_showDialog() {
     if(dlg.exec() == QDialog::Accepted) {
 
         //prepare query
-        const QByteArray& sequence = seqCtx->getSequenceData();
         DNASequenceSelection* s = seqCtx->getSequenceSelection();
         QVector<U2Region> regions;
-        if(s->isEmpty()) {
-            int seqLen = seqCtx->getSequenceLen();
-            regions.append(U2Region(0, seqLen));
-        }
-        else {
-            regions =  s->getSelectedRegions();
+        if (s->isEmpty()) {
+            regions.append(U2Region(0, seqCtx->getSequenceLength()));
+        } else {
+            regions = s->getSelectedRegions();
         }
         foreach(const U2Region& r, regions) {
-            QByteArray query( sequence.constData() + r.startPos, r.length );
-            settings.querySequence = query;
+            settings.querySequence = seqCtx->getSequenceData(r);
 //            DNATranslation * aminoT = (dlg.translateToAmino ? seqCtx->getAminoTT() : 0);
 //            DNATranslation * complT = (dlg.translateToAmino ? seqCtx->getComplementTT() : 0);
             settings.offsInGlobalSeq=r.startPos;

@@ -17,7 +17,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GObject.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
 
@@ -193,13 +193,12 @@ void GTest_uHMMERSearch::prepare() {
         return;
     }
     assert(obj!=NULL);
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(  QString("error can't cast to sequence from GObject") );
         return;
     }
 
-    const DNASequence& dnaSequence = mySequence->getDNASequence();
     UHMMSearchSettings s;
     if (expertOptions){
         s.globE = evalueCutoff;
@@ -234,9 +233,11 @@ void GTest_uHMMERSearch::prepare() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
     assert(aDoc == NULL);
-    aDoc = df->createNewDocument(iof, url);
+    aDoc = df->createNewLoadedDocument(iof, url, stateInfo);
+    CHECK_OP(stateInfo, );
     AnnotationTableObject* ao = new AnnotationTableObject("Annotations");
     aDoc->addObject(ao);
+    DNASequence dnaSequence = mySequence->getWholeSequence();
     searchTask = new HMMSearchToAnnotationsTask(env->getVar("COMMON_DATA_DIR")+"/"+hmmFileName, dnaSequence, ao, annotationName, annotationName, s);
     addSubTask(searchTask);
 }

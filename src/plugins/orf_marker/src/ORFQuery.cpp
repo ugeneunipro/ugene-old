@@ -101,7 +101,7 @@ QString QDORFActor::getText() const {
 
 Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     Task* t = NULL;
-    DNASequenceObject* dna = scheme->getDNA();
+    const DNASequence& dnaSeq = scheme->getSequence();
     QMap<QString, Attribute*> params = cfg->getParameters();
 
     switch (getStrandToRun()) {
@@ -120,11 +120,11 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     settings.mustInit = params.value(INIT_ATTR)->getAttributePureValue().toBool();
     settings.allowAltStart = params.value(ALT_ATTR)->getAttributePureValue().toBool();
 
-    settings.searchRegion = dna->getSequenceRange();
+    settings.searchRegion = U2Region(0, dnaSeq.length());
 
     if (settings.strand != ORFAlgorithmStrand_Direct) {
         QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(dna->getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+            lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
         if (!compTTs.isEmpty()) {
             settings.complementTT = compTTs.first();
         } else {
@@ -134,7 +134,7 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
 
     const QString& transId = params.value(ID_ATTR)->getAttributeValue<QString>();
     settings.proteinTT = AppContext::getDNATranslationRegistry()->
-        lookupTranslation(dna->getAlphabet(), DNATranslationType_NUCL_2_AMINO, transId);
+        lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_AMINO, transId);
 
     if (!settings.proteinTT) {
         return new FailTask(tr("Bad sequence"));
@@ -145,7 +145,7 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     foreach(const U2Region& r, searchLocation) {
         ORFAlgorithmSettings stngs(settings);
         stngs.searchRegion = r;
-        ORFFindTask* sub = new ORFFindTask(stngs, dna->getSequence());
+        ORFFindTask* sub = new ORFFindTask(stngs, dnaSeq.seq);
         orfTasks.append(sub);
         t->addSubTask(sub);
     }

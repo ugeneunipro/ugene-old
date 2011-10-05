@@ -76,7 +76,7 @@ void GTest_ImportPhredQualityScoresTask::prepare() {
             return;
         }
 
-        DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+        U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
         if(mySequence == NULL){
             stateInfo.setError(QString("Can't cast to sequence from: %1").arg(obj->getGObjectName()));
             return;

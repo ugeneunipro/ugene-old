@@ -261,7 +261,7 @@ void LoadDocumentTask::prepare() {
         QString error;
         Project *p = AppContext::getProject();
         if (p) {
-            if(!AppContext::getProject()->lockResources(memUseMB, url.getURLString(), error)) {
+            if (!p->lockResources(memUseMB, url.getURLString(), error)) {
                 stateInfo.setError(error);
             }
         } else {
@@ -271,45 +271,41 @@ void LoadDocumentTask::prepare() {
 }
 
 void LoadDocumentTask::run() {
-    if(hasError() || isCanceled()) {
-        return;
-    }
+    CHECK_OP(stateInfo, );
     if (config.createDoc && iof->isResourceAvailable(url) == TriState_No) {
-        if (iof->isIOModeSupported(IOAdapterMode_Write)) {
-            resultDocument = format->createNewDocument(iof, url, hints);
-        } else {
-            setError(tr("Document not found %1").arg(url.getURLString()));
-        }
-    } else {
-        QStringList renameList = hints.value(GObjectHint_NamesList).toStringList();
-        // removing this value from hints -> name list changes are not tracked in runtime
-        // and used for LoadUnloadedDocument & LoadDocument privately
-        hints.remove(GObjectHint_NamesList);
+        CHECK_EXT(iof->isIOModeSupported(IOAdapterMode_Write), setError(tr("Document not found %1").arg(url.getURLString())), );
+        resultDocument = format->createNewLoadedDocument(iof, url, stateInfo, hints);
+        return;
+    } 
 
-        try {
-            resultDocument = format->loadDocument(iof, url, stateInfo, hints);
-        } catch(std::bad_alloc) {
-            resultDocument = NULL;
-            setError(tr("Not enough memory to load document %1").arg(url.getURLString()));
-        }
+    QStringList renameList = hints.value(GObjectHint_NamesList).toStringList();
+    // removing this value from hints -> name list changes are not tracked in runtime
+    // and used for LoadUnloadedDocument & LoadDocument privately
+    hints.remove(GObjectHint_NamesList);
 
-        if (resultDocument != NULL) {
-            if (!renameList.isEmpty()) {
-                renameObjects(resultDocument, renameList);
-            }
-            Document* convertedDoc = createCopyRestructuredWithHints(resultDocument, stateInfo);
-            if (convertedDoc != NULL) {
+    try {
+        resultDocument = format->loadDocument(iof, url, hints, stateInfo);
+    } catch(std::bad_alloc) {
+        resultDocument = NULL;
+        setError(tr("Not enough memory to load document %1").arg(url.getURLString()));
+    }
+
+    if (resultDocument != NULL) {
+        if (!renameList.isEmpty()) {
+            renameObjects(resultDocument, renameList);
+        }
+        Document* convertedDoc = createCopyRestructuredWithHints(resultDocument, stateInfo);
+        if (convertedDoc != NULL) {
+            delete resultDocument;
+            resultDocument = convertedDoc;
+        }
+        if (hints.contains(DocumentReadingMode_MaxObjectsInDoc) ) {
+            int maxObjects = hints.value(DocumentReadingMode_MaxObjectsInDoc).toInt();
+            int docObjects = resultDocument->getObjects().size();
+            if (docObjects > maxObjects) {
+                setError(tr("Maximum number of objects per document limit reached for %1. Try different options for opening the document!").arg(resultDocument->getURLString()));
                 delete resultDocument;
-                resultDocument = convertedDoc;
-            }
-            if (hints.contains(DocumentReadingMode_MaxObjectsInDoc) ) {
-                int maxObjects = hints.value(DocumentReadingMode_MaxObjectsInDoc).toInt();
-                int docObjects = resultDocument->getObjects().size();
-                if (docObjects > maxObjects) {
-                    setError(tr("Maximum number of objects per document limit reached for %1. Try different options for opening the document!").arg(resultDocument->getURLString()));
-                    delete resultDocument;
-                    resultDocument = NULL;
-                }
+                resultDocument = NULL;
             }
         }
     }
@@ -357,7 +353,7 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc,
     Document *resultDoc = NULL;
     const QVariantMap& hints = doc->getGHintsMap();
     if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
-        QList<DNASequenceObject*> seqObjects;
+        QList<U2SequenceObject*> seqObjects;
         MAlignment ma = MSAUtils::seq2ma(doc->getObjects(), os);
         if (ma.isEmpty()) {
             return NULL;
@@ -372,7 +368,7 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc,
         objTypeConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
         bool makeReadOnly = !doc->getDocumentFormat()->checkConstraints(objTypeConstraints);
 
-        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), objects, hints, 
+        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), U2DbiRef(), false, objects, hints, 
             makeReadOnly ? tr("Format does not support writing of alignments") : QString());
 
         doc->propagateModLocks(resultDoc);
@@ -381,7 +377,7 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc,
         if (mergeGap < 0 || GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE).count() <= 1) {
             return NULL;
         }
-        resultDoc = SequenceUtils::mergeSequences(doc, mergeGap, os);
+        resultDoc = U1SequenceUtils::mergeSequences(doc, mergeGap, os);
         if (os.hasError()) {
             delete resultDoc;
             resultDoc = NULL;

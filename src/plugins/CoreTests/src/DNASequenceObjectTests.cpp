@@ -71,13 +71,13 @@ Task::ReportResult GTest_DNASequenceSize::report() {
         return ReportResult_Finished;  
     }
 
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(QString("can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
     }
-    int tempLength=mySequence->getDNASequence().length();
-    if(tempLength != seqSize){
+    int tempLength=mySequence->getSequenceLength();
+    if (tempLength != seqSize){
         stateInfo.setError(QString("sequence size not matched: %1, expected %2 ").arg(tempLength).arg(seqSize));
     }
     return ReportResult_Finished;
@@ -107,7 +107,7 @@ Task::ReportResult GTest_DNASequenceAlphabet::report() {
         return ReportResult_Finished;  
     }
 
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(QString("can't cast to sequence from: %1").arg(name));
         return ReportResult_Finished;
@@ -157,16 +157,16 @@ Task::ReportResult GTest_DNASequencePart::report() {
         return ReportResult_Finished;  
     }
 
-    DNASequenceObject * objSequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * objSequence = qobject_cast<U2SequenceObject*>(obj);
     if (objSequence==NULL) {
         stateInfo.setError(QString("can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
     }
-    if (objSequence->getSequence().length() < startPos + subseq.length()) {
-        stateInfo.setError(QString("sequence size is less that region end: size=%1, region-end=%2, objectName=%3").arg(objSequence->getSequence().size()).arg(startPos + subseq.length()).arg(obj->getGObjectName()));
+    if (objSequence->getSequenceLength() < startPos + subseq.length()) {
+        stateInfo.setError(QString("sequence size is less that region end: size=%1, region-end=%2, objectName=%3").arg(objSequence->getSequenceLength()).arg(startPos + subseq.length()).arg(obj->getGObjectName()));
         return ReportResult_Finished;
     }
-    QByteArray objSubSeq = objSequence->getSequence().mid(startPos, subseq.length());
+    QByteArray objSubSeq = objSequence->getSequenceData(U2Region(startPos, subseq.length()));
     if (!objSequence->getAlphabet()->isCaseSensitive()) {
         subseq = subseq.toUpper();
     }
@@ -213,7 +213,7 @@ Task::ReportResult GTest_DNASequenceAlphabetType::report() {
         return ReportResult_Finished;  
     }
 
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(QString("can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
@@ -248,7 +248,7 @@ Task::ReportResult GTest_DNASequenceAlphabetId::report() {
         return ReportResult_Finished;  
     }
 
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(QString("can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
@@ -293,20 +293,20 @@ Task::ReportResult GTest_DNAcompareSequencesNamesInTwoObjects::report() {
     const QList<GObject*>& objs2 = doc2->getObjects();
     GObject*obj=NULL;
     GObject*obj2=NULL;
-    DNASequenceObject * mySequence;
-    DNASequenceObject * mySequence2;
+    U2SequenceObject * mySequence;
+    U2SequenceObject * mySequence2;
 
     for(int i=0;(i!=objs.size())&&(i!=objs2.size());i++){
         obj = objs.at(i);
         obj2 = objs2.at(i);
         
         if((obj->getGObjectType()== GObjectTypes::SEQUENCE)&&(obj2->getGObjectType() == GObjectTypes::SEQUENCE)){
-            mySequence = qobject_cast<DNASequenceObject*>(obj);
+            mySequence = qobject_cast<U2SequenceObject*>(obj);
             if(mySequence==NULL){
                 stateInfo.setError(QString("can't cast to sequence from: %1 in position %2").arg(obj->getGObjectName()).arg(i));
                 return ReportResult_Finished;
             }
-            mySequence2 = qobject_cast<DNASequenceObject*>(obj2);
+            mySequence2 = qobject_cast<U2SequenceObject*>(obj2);
             if(mySequence2==NULL){
                 stateInfo.setError(QString("can't cast to sequence from: %1 in position %2").arg(obj2->getGObjectName()).arg(i));
                 return ReportResult_Finished;
@@ -366,25 +366,25 @@ Task::ReportResult GTest_DNAcompareSequencesInTwoObjects::report() {
     const QList<GObject*>& objs2 = doc2->getObjects();
     GObject*obj=NULL;
     GObject*obj2=NULL;
-    DNASequenceObject * mySequence;
-    DNASequenceObject * mySequence2;
+    U2SequenceObject * mySequence;
+    U2SequenceObject * mySequence2;
 
     for(int i=0;(i!=objs.size())&&(i!=objs2.size());i++){
         obj = objs.at(i);
         obj2 = objs2.at(i);
         
         if((obj->getGObjectType()== GObjectTypes::SEQUENCE)&&(obj2->getGObjectType()== GObjectTypes::SEQUENCE)){
-            mySequence = qobject_cast<DNASequenceObject*>(obj);
+            mySequence = qobject_cast<U2SequenceObject*>(obj);
             if(mySequence==NULL){
                 stateInfo.setError(QString("can't cast to sequence from: %1 in position %2").arg(obj->getGObjectName()).arg(i));
                 return ReportResult_Finished;
             }
-            mySequence2 = qobject_cast<DNASequenceObject*>(obj2);
+            mySequence2 = qobject_cast<U2SequenceObject*>(obj2);
             if(mySequence2==NULL){
                 stateInfo.setError(QString("can't cast to sequence from: %1 in position %2").arg(obj2->getGObjectName()).arg(i));
                 return ReportResult_Finished;
             }
-            if(mySequence->getSequence()!=mySequence2->getSequence()){
+            if(mySequence->getWholeSequenceData() != mySequence2->getWholeSequenceData()){
                 stateInfo.setError(QString("Sequences of object in position %1 not matched").arg(i));
                 return ReportResult_Finished;
             }
@@ -438,20 +438,20 @@ Task::ReportResult GTest_DNAcompareSequencesAlphabetsInTwoObjects::report() {
     const QList<GObject*>& objs2 = doc2->getObjects();
     GObject*obj=NULL;
     GObject*obj2=NULL;
-    DNASequenceObject * mySequence;
-    DNASequenceObject * mySequence2;
+    U2SequenceObject * mySequence;
+    U2SequenceObject * mySequence2;
 
     for(int i=0;(i!=objs.size())&&(i!=objs2.size());i++){
         obj = objs.at(i);
         obj2 = objs2.at(i);
         
         if((obj->getGObjectType()== GObjectTypes::SEQUENCE)&&(obj2->getGObjectType()== GObjectTypes::SEQUENCE)){
-            mySequence = qobject_cast<DNASequenceObject*>(obj);
+            mySequence = qobject_cast<U2SequenceObject*>(obj);
             if(mySequence==NULL){
                 stateInfo.setError(QString("can't cast to sequence from: %1 in position %2").arg(obj->getGObjectName()).arg(i));
                 return ReportResult_Finished;
             }
-            mySequence2 = qobject_cast<DNASequenceObject*>(obj2);
+            mySequence2 = qobject_cast<U2SequenceObject*>(obj2);
             if(mySequence2==NULL){
                 stateInfo.setError(QString("can't cast to sequence from: %1 in position %2").arg(obj2->getGObjectName()).arg(i));
                 return ReportResult_Finished;
@@ -934,7 +934,7 @@ Task::ReportResult GTest_DNASequenceQualityScores::report() {
         return ReportResult_Finished;  
     }
 
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(QString("Can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
@@ -1000,7 +1000,7 @@ Task::ReportResult GTest_DNASequenceQualityValue::report() {
         return ReportResult_Finished;  
     }
 
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(QString("Can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
@@ -1039,7 +1039,7 @@ void GTest_CompareDNASequenceQualityInTwoObjects::init(XMLTestFormat* tf, const 
     }
 }
 
-static DNASequenceObject * getSeqObj( Document * doc ) {
+static U2SequenceObject * getSeqObj( Document * doc ) {
     if( doc == NULL ) {
         return NULL;
     }
@@ -1048,17 +1048,17 @@ static DNASequenceObject * getSeqObj( Document * doc ) {
     if( seqObjs.isEmpty() ) {
         return NULL;
     }
-    return qobject_cast<DNASequenceObject*>(seqObjs.first());
+    return qobject_cast<U2SequenceObject*>(seqObjs.first());
 }
 
 Task::ReportResult GTest_CompareDNASequenceQualityInTwoObjects::report() {
-    DNASequenceObject * seq1Obj = getSeqObj(getContext<Document>(this, doc1CtxName));
+    U2SequenceObject * seq1Obj = getSeqObj(getContext<Document>(this, doc1CtxName));
     if(seq1Obj == NULL) {
         setError(QString("Cannot find sequence object at '%1' document").arg(doc1CtxName));
         return ReportResult_Finished;
     }
     
-    DNASequenceObject * seq2Obj = getSeqObj(getContext<Document>(this, doc2CtxName));
+    U2SequenceObject * seq2Obj = getSeqObj(getContext<Document>(this, doc2CtxName));
     if(seq2Obj == NULL) {
         setError(QString("Cannot find sequence object at '%1' document").arg(doc2CtxName));
         return ReportResult_Finished;

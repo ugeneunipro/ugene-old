@@ -23,15 +23,17 @@
 #include "EnzymesIO.h"
 #include "FindEnzymesTask.h"
 
-#include <U2Gui/DialogUtils.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
-#include <U2Lang/BaseTypes.h>
-#include <QtGui/QInputDialog>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
+
+#include <U2Lang/BaseTypes.h>
+
+#include <QtGui/QInputDialog>
+#include <U2Gui/DialogUtils.h>
 
 
 namespace U2 {
@@ -58,7 +60,6 @@ QString QDEnzymesActor::getText() const {
 Task* QDEnzymesActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = NULL;
 
-    const DNASequence& seq = scheme->getDNA()->getDNASequence();
     bool circular = cfg->getParameter(CIRC_ATTR)->getAttributePureValue().toBool();
     
     assert(!location.isEmpty());
@@ -74,6 +75,7 @@ Task* QDEnzymesActor::getAlgorithmTask(const QVector<U2Region>& location) {
         }
     }
 
+    const DNASequence& seq = scheme->getSequence();
     foreach(const U2Region& r, location) {
         FindEnzymesTask* st = new FindEnzymesTask(seq, r, enzymes, INT_MAX, circular);
         t->addSubTask(st);

@@ -40,12 +40,14 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+
     
 private:
-    Document* parseABI(SeekableBuf*, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os);
+    Document* parseABI(const U2DbiRef& dbiRef, SeekableBuf*, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os);
     QString formatName;
 };
 

@@ -33,6 +33,8 @@
 #include <U2Core/Version.h>
 #include <U2Core/GUrl.h>
 
+#include <QtCore/QFile>
+
 #include <sqlite3.h>
 
 namespace U2 {
@@ -262,7 +264,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         SQLiteQuery("PRAGMA main.locking_mode = EXCLUSIVE", db, os).execute();
         SQLiteQuery("PRAGMA temp_store = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA journal_mode = MEMORY", db, os).execute();
-        SQLiteQuery("PRAGMA cache_size = 200000", db, os).execute();
+        SQLiteQuery("PRAGMA cache_size = 50000", db, os).execute();
         //SQLiteQuery("PRAGMA page_size = 4096", db, os).execute();
         //TODO: int sqlite3_enable_shared_cache(int);
         //TODO: read_uncommitted
@@ -379,6 +381,10 @@ FormatCheckResult SQLiteDbiFactory::isValidDbi(const QHash<QString, QString>& pr
     return FormatDetection_NotMatched;
 }
 
-const U2DbiFactoryId SQLiteDbiFactory::ID = "SQLiteDbi";
+bool SQLiteDbiFactory::isDbiExists(const U2DbiId& id) const {
+    return QFile::exists(id);
+}
+
+const U2DbiFactoryId SQLiteDbiFactory::ID = SQLITE_DBI_ID;
 
 }//namespace

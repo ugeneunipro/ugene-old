@@ -37,6 +37,7 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/GHints.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Gui/RangeSelector.h>
 #include <U2Gui/PositionSelector.h>
@@ -171,7 +172,7 @@ void ADVSingleSequenceWidget::init() {
     updateSelectionActions();
 
 #define MIN_SEQUENCE_LEN_TO_USE_FULL_MODE 100
-    if (seqCtx->getSequenceLen() < MIN_SEQUENCE_LEN_TO_USE_FULL_MODE) {
+    if (seqCtx->getSequenceLength() < MIN_SEQUENCE_LEN_TO_USE_FULL_MODE) {
         //sequence is rather small -> show panview only by default
         setOverviewCollapsed(true);
         setDetViewCollapsed(true);
@@ -361,8 +362,8 @@ GSequenceLineView* ADVSingleSequenceWidget::findSequenceViewByPos(const QPoint& 
     return NULL;
 }
 
-int ADVSingleSequenceWidget::getSequenceLen() const {
-    return getSequenceContext()->getSequenceLen();
+int ADVSingleSequenceWidget::getSequenceLength() const {
+    return getSequenceContext()->getSequenceLength();
 }
 
 
@@ -381,7 +382,7 @@ DNASequenceSelection* ADVSingleSequenceWidget::getSequenceSelection() const {
     return seqCtx->getSequenceSelection();
 }
 
-DNASequenceObject* ADVSingleSequenceWidget::getSequenceObject() const {
+U2SequenceObject* ADVSingleSequenceWidget::getSequenceObject() const {
     ADVSequenceObjectContext* seqCtx = getSequenceContext();
     return seqCtx->getSequenceObject();
 }
@@ -498,10 +499,12 @@ void ADVSingleSequenceWidget::sl_onSelectRange() {
     ADVSequenceObjectContext* ctx = getSequenceContext();
     DNASequenceSelection* selection=ctx->getSequenceSelection();
     RangeSelector* rs;
-    if(selection->isEmpty()){
-        rs=new RangeSelector(&dlg, 1, ctx->getSequenceLen(), ctx->getSequenceLen(), true);
-    }else{
-        rs=new RangeSelector(&dlg, selection->getSelectedRegions().first().startPos + 1, selection->getSelectedRegions().first().endPos(), ctx->getSequenceLen(), true);
+    qint64 wholeSeqLen = ctx->getSequenceLength();
+    if (selection->isEmpty()) {
+        rs = new RangeSelector(&dlg, 1, wholeSeqLen, wholeSeqLen, true);
+    } else {
+        U2Region selReg = selection->getSelectedRegions().first();
+        rs = new RangeSelector(&dlg, selReg.startPos + 1, selReg.endPos(), wholeSeqLen, true);
     }
     int rc = dlg.exec();
     if (rc == QDialog::Accepted) {
@@ -570,7 +573,7 @@ void ADVSingleSequenceWidget::sl_zoomToRange() {
         end=regions.first().endPos();
     }
     
-    RangeSelector* rs = new RangeSelector(&dlg, start, end, getSequenceLen(), true);
+    RangeSelector* rs = new RangeSelector(&dlg, start, end, getSequenceLength(), true);
 
     int rc = dlg.exec();
     if (rc == QDialog::Accepted) {
@@ -600,7 +603,7 @@ void ADVSingleSequenceWidget::updateState(const QVariantMap& m) {
     U2Region panReg = myData.value(PAN_REG_NAME).value<U2Region>();
     int detPos = myData.value(DET_POS_NAME).toInt();
     
-    U2Region seqRange(0, getActiveSequenceContext()->getSequenceLen());
+    U2Region seqRange(0, getActiveSequenceContext()->getSequenceLength());
     if (seqRange.contains(detPos)) {
         detView->setStartPos(detPos);
     }
@@ -684,7 +687,7 @@ void ADVSingleSequenceWidget::sl_saveScreenshot() {
 }
 
 void ADVSingleSequenceWidget::closeView() {
-    DNASequenceObject* dnaObj = getSequenceObject();
+    U2SequenceObject* dnaObj = getSequenceObject();
     AnnotatedDNAView* v = getAnnotatedDNAView();
     v->removeObject(dnaObj);
 }
@@ -698,7 +701,7 @@ void ADVSingleSequenceWidget::sl_createCustomRuler() {
     int offset = panView->getVisibleRange().center();
     
     AnnotationSelection * annSelection = getDetGSLView()->getSequenceContext()->getAnnotationsSelection();
-    DNASequenceObject * seqObj = getSequenceObject();
+    U2SequenceObject * seqObj = getSequenceObject();
     int annOffset = INT_MAX;
     foreach(const AnnotationSelectionData & selectionData, annSelection->getSelection()) {
         Annotation * ann = selectionData.annotation;
@@ -721,7 +724,7 @@ void ADVSingleSequenceWidget::sl_createCustomRuler() {
         offset = selection.first().startPos;
     }
     
-    CreateRulerDialogController d(namesToFilter, getSequenceObject()->getSequenceRange(), offset);
+    CreateRulerDialogController d(namesToFilter, U2Region(0, getSequenceObject()->getSequenceLength()), offset);
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
         return;
@@ -794,7 +797,7 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     l->setSpacing(4);
     l->setContentsMargins(5, 1, 0, 2);
 
-    DNASequenceObject* seqObj = ctx->getSequenceObject();
+    U2SequenceObject* seqObj = ctx->getSequenceObject();
     QString objName = seqObj->getGObjectName();
     pixLabel= new QLabel(this);
     QFont f = pixLabel->font();
@@ -807,7 +810,7 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     pixLabel->setFont(f);
     QString objInfoTip = "<i>" + objName  + "</i>"
         + "<br>" + tr("Alphabet: <b>%1</b>").arg(seqObj->getAlphabet()->getName()) 
-        + "<br>" + tr(" Sequence size: <b>%1</b>").arg(seqObj->getSequenceLen())
+        + "<br>" + tr(" Sequence size: <b>%1</b>").arg(seqObj->getSequenceLength())
         + "<br>" + tr(" File:&nbsp;<b>%1</b>").arg(seqObj->getDocument()->getURLString());
     pixLabel->setToolTip(objInfoTip);
     pixLabel->installEventFilter(this);
@@ -851,7 +854,7 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
 }
 
 void ADVSingleSequenceHeaderWidget::updateTitle() {
-    DNASequenceObject* seqObj = ctx->getSequenceObject();
+    U2SequenceObject* seqObj = ctx->getSequenceObject();
     QString newTitle = seqObj->getGObjectName() + " [" + getShortAlphabetName(seqObj->getAlphabet()) +"]";
     setTitle(newTitle);
 }

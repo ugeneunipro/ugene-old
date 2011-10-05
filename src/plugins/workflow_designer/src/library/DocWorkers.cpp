@@ -23,12 +23,7 @@
 #include "CoreLib.h"
 #include "GenericReadWorker.h"
 
-#include <U2Lang/WorkflowEnv.h>
 #include <U2Core/QVariantUtils.h>
-#include <U2Lang/CoreLibConstants.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BaseAttributes.h>
 #include <U2Core/Log.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -39,13 +34,23 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/EMBLGenbankAbstractDocument.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AppContext.h>
+
+#include <U2Formats/EMBLGenbankAbstractDocument.h>
+
+#include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseAttributes.h>
 #include <U2Lang/WorkflowUtils.h>
 
 namespace U2 {
@@ -165,6 +170,22 @@ void TextWriter::data2doc(Document* doc, const QVariantMap& data) {
     }
 }
 
+static void addSeqObject(Document* doc, const DNASequence& seq) {
+    if (seq.alphabet == NULL || seq.length() == 0 || doc->findGObjectByName(seq.getName())) {
+        return;
+    }
+    algoLog.trace(QString("Adding seq [%1] to %3 doc %2").arg(seq.getName()).arg(doc->getURLString()).arg(doc->getDocumentFormat()->getFormatName()));
+
+    if (doc->getDocumentFormat()->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Add, GObjectTypes::SEQUENCE)) {
+        U2OpStatus2Log os;
+        U2EntityRef seqRef = U2SequenceUtils::import(doc->getDbiRef(), seq, os);
+        CHECK_OP(os, );
+        doc->addObject(new U2SequenceObject(seq.getName(), seqRef));
+    } else {
+        algoLog.trace("Failed to add sequence object to document: op is not supported!");
+    }
+}
+
 /*************************************
 * FastaWriter
 *************************************/
@@ -177,16 +198,14 @@ void FastaWriter::data2document(Document* doc, const QVariantMap& data) {
     QString sequenceName = data.value(BaseSlots::FASTA_HEADER_SLOT().getId()).toString();
     if (sequenceName.isEmpty()) {
         sequenceName = seq.getName();
+        if (sequenceName.isEmpty()) {
+            sequenceName = QString("unknown sequence %1").arg(doc->getObjects().size());
+        }
     } else {
         seq.info.insert(DNAInfo::FASTA_HDR, sequenceName);
     }
-    if (sequenceName.isEmpty()) {
-        sequenceName = QString("unknown sequence %1").arg(doc->getObjects().size());
-    }
-    if (seq.alphabet && seq.length() != 0 && !doc->findGObjectByName(sequenceName)) {
-        algoLog.trace(QString("Adding seq [%1] to FASTA doc %2").arg(sequenceName).arg(doc->getURLString()));
-        doc->addObject(new DNASequenceObject(sequenceName, seq));
-    }
+    seq.setName(sequenceName);
+    addSeqObject(doc, seq);
 }
 
 /*************************************
@@ -198,15 +217,10 @@ void FastQWriter::data2doc(Document* doc, const QVariantMap& data) {
 
 void FastQWriter::data2document(Document* doc, const QVariantMap& data) {
     DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
-    QString sequenceName = seq.getName(); 
-    if (sequenceName.isEmpty()) {
-        sequenceName = QString("unknown sequence %1").arg(doc->getObjects().size());
+    if (seq.getName().isEmpty()) {
+        seq.setName(QString("unknown sequence %1").arg(doc->getObjects().size()));
     }
-    if (seq.alphabet && seq.length() != 0 && !doc->findGObjectByName(sequenceName)) {
-        algoLog.trace(QString("Adding seq [%1] to FASTQ doc %2").arg(sequenceName).arg(doc->getURLString()));
-        doc->addObject(new DNASequenceObject(sequenceName, seq));
-        algoLog.info( QString("Sequence %1 added to document").arg(sequenceName) );
-    }
+    addSeqObject(doc, seq);
 }
 
 /*************************************
@@ -219,19 +233,10 @@ void RawSeqWriter::data2doc(Document* doc, const QVariantMap& data) {
 // same as FastQWriter::data2document
 void RawSeqWriter::data2document(Document* doc, const QVariantMap& data) {
     DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
-    QString sequenceName = seq.getName(); 
-    if (sequenceName.isEmpty()) {
-        sequenceName = QString("unknown sequence %1").arg(doc->getObjects().size());
+    if (seq.getName().isEmpty()) {
+        seq.setName(QString("unknown sequence %1").arg(doc->getObjects().size()));
     }
-    if (seq.alphabet && seq.length() != 0 && !doc->findGObjectByName(sequenceName)) {
-        algoLog.trace(QString("Adding seq [%1] to Raw sequence document %2").arg(sequenceName).arg(doc->getURLString()));
-        if(doc->getDocumentFormat()->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Add, GObjectTypes::SEQUENCE)) {
-            doc->addObject(new DNASequenceObject(sequenceName, seq));
-            algoLog.info( QString("Sequence %1 added to document").arg(sequenceName) );
-        } else {
-            algoLog.error( QString("Cannot add sequence %1 to document" ).arg(sequenceName) );
-        }
-    }
+    addSeqObject(doc, seq);
 }
 
 /*************************************
@@ -243,22 +248,8 @@ void GenbankWriter::data2doc(Document* doc, const QVariantMap& data) {
 
 void GenbankWriter::data2document(Document* doc, const QVariantMap& data) {
     DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
-    
-    /*QStringList order;
-    order << DNAInfo::DEFINITION << DNAInfo::ACCESSION << DNAInfo::VERSION;
-    order << DNAInfo::PROJECT << DNAInfo::KEYWORDS << DNAInfo::SEGMENT;
-    foreach(const QString& key, order) {
-        if (seq.info.contains(key)) {
-            QVariant v = seq.info.take(key);
-            if (!(v.canConvert(QVariant::String)||v.canConvert(QVariant::StringList))) {
-                seq.info.remove(key);
-            }
-        }
-    }*/
-
     QMapIterator<QString, QVariant> it(seq.info);
-    while (it.hasNext())
-    {
+    while (it.hasNext()) {
         it.next();
         if ( !(it.value().type() == QVariant::String || it.value().type() == QVariant::StringList) ) {
             seq.info.remove(it.key());
@@ -266,22 +257,20 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data) {
     }
 
 
-    QString sequenceName = seq.getName(); //data.value(CoreLib::GENBANK_ACN_SLOT_ID).toString();
     QString annotationName;
-    if (sequenceName.isEmpty()) {
+    if (seq.getName().isEmpty()) {
         int num = doc->findGObjectByType(GObjectTypes::SEQUENCE).size();
-        sequenceName = QString("unknown sequence %1").arg(num);
+        seq.setName(QString("unknown sequence %1").arg(num));
         int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
         annotationName = QString("unknown features %1").arg(featuresNum);
     } else {
-        annotationName = sequenceName + " features";
+        annotationName = seq.getName() + " features";
     }
 
     QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
-    DNASequenceObject* dna = qobject_cast<DNASequenceObject*>(doc->findGObjectByName(sequenceName));
+    U2SequenceObject* dna = qobject_cast<U2SequenceObject*>(doc->findGObjectByName(seq.getName()));
     if (!dna && !seq.isNull()) {
-        doc->addObject(dna = new DNASequenceObject(sequenceName, seq));
-        algoLog.trace(QString("Adding seq [%1] to GB doc %2").arg(sequenceName).arg(doc->getURLString()));
+        addSeqObject(doc, seq);
     }
     if (!atl.isEmpty()) {
         AnnotationTableObject* att = NULL;

@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 class AnnotatedDNAView;
 
 class OpenAnnotatedDNAViewTask : public ObjectViewTask {

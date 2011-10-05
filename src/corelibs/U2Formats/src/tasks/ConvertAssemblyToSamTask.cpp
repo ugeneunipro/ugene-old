@@ -31,6 +31,7 @@
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiRegistry.h>
 
 #include <U2Formats/SAMFormat.h>
 
@@ -48,7 +49,7 @@ dbFileUrl(db), samFileUrl(sam), handle(NULL)
 {
 }
 
-ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(const DbiHandle *h, GUrl sam)
+ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(const DbiConnection *h, GUrl sam)
 : Task("ConvertAssemblyToSamTask", (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
 samFileUrl(sam), handle(h)
 {
@@ -65,9 +66,9 @@ void ConvertAssemblyToSamTask::run() {
     
     //init assembly objects
     U2OpStatusImpl status;
-    QSharedPointer<DbiHandle> dbiHandle;
+    QSharedPointer<DbiConnection> dbiHandle;
     if (NULL == handle) {
-        dbiHandle = QSharedPointer<DbiHandle>(new DbiHandle("SQLiteDbi", dbFileUrl.getURLString(), false, status));
+        dbiHandle = QSharedPointer<DbiConnection>(new DbiConnection(U2DbiRef(SQLITE_DBI_ID, dbFileUrl.getURLString()), false, status));
         handle = dbiHandle.data();
     }
     U2ObjectDbi *odbi = handle->dbi->getObjectDbi();

@@ -14,7 +14,6 @@ HEADERS += src/ABIFormat.h \
            src/GenbankLocationParser.h \
            src/GenbankPlainTextFormat.h \
            src/GFFFormat.h \
-           src/IndexFormat.h \
            src/IOLibUtils.h \
            src/MegaFormat.h \
            src/MSFFormat.h \
@@ -59,7 +58,6 @@ SOURCES += src/ABIFormat.cpp \
            src/GenbankLocationParser.cpp \
            src/GenbankPlainTextFormat.cpp \
            src/GFFFormat.cpp \
-           src/IndexFormat.cpp \
            src/MegaFormat.cpp \
            src/MSFFormat.cpp \
            src/NewickFormat.cpp \

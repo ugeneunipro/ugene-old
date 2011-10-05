@@ -54,7 +54,7 @@ private:
 //FIXME! this class is a partial copy of DetView
 class Translator {
 public:
-    Translator(const DNASequenceObject *s, const QString& tid);
+    Translator(const U2SequenceObject *s, const QString& tid);
 
     //void setAminoTranslation(const QString& id);
     DNATranslation* getComplTranslation() const {return complTransl;}
@@ -62,7 +62,7 @@ public:
 
 private:
     //QStringList translations;
-    const DNASequenceObject* seq;
+    const U2SequenceObject* seq;
     DNATranslation* complTransl;
     DNATranslation* aminoTransl;
 

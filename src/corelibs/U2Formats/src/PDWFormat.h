@@ -30,7 +30,7 @@ namespace U2 {
 class IOAdapter;
 class Annotation;
 class AnnotationTableObject;
-class DNASequenceObject;
+class U2SequenceObject;
 
 class U2FORMATS_EXPORT  PDWFormat : public DocumentFormat {
     Q_OBJECT
@@ -41,20 +41,21 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-        
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 private:
     
-    static QByteArray parseSequence(IOAdapter* io, TaskStateInfo& ti);
+    static QByteArray parseSequence(IOAdapter* io, U2OpStatus& ti);
 
-    static Annotation* parseAnnotation(IOAdapter* io, TaskStateInfo& ti);
+    static Annotation* parseAnnotation(IOAdapter* io, U2OpStatus& ti);
 
     static QByteArray readPdwValue(const QByteArray& readBuf, const QByteArray& valueName);
 
-    void load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, TaskStateInfo& ti, 
-        DNASequenceObject* dnaObj, AnnotationTableObject* aObj);
+    void load(IOAdapter* io, const U2DbiRef& ref, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& ti, 
+        U2SequenceObject*& dnaObj, AnnotationTableObject*& aObj);
     
     QString formatName;
 

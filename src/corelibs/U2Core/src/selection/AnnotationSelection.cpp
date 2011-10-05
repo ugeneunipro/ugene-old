@@ -25,6 +25,10 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SequenceUtils.h>
 
 
 namespace U2 {
@@ -177,28 +181,28 @@ const AnnotationSelectionData* AnnotationSelection::getAnnotationData(const Anno
 }
 
 
-void AnnotationSelection::getAnnotationSequence(QByteArray& res, const AnnotationSelectionData& sd, char gapSym, 
-                                                const QByteArray& sequence, DNATranslation* complTT, DNATranslation* aminoTT) 
+void AnnotationSelection::getAnnotationSequence(QByteArray& res, const AnnotationSelectionData& ad, char gapSym, 
+                                                const U2EntityRef& seqRef, DNATranslation* complTT, DNATranslation* aminoTT,
+                                                U2OpStatus& os)
 {
-    int start = sd.locationIdx == -1 ? 0 : sd.locationIdx;
-    QVector<U2Region> r = sd.annotation->getRegions();
-    int nLocations = sd.locationIdx == -1 ? r.size() : 1;
-    U2Region sequenceRange(0, sequence.size());
-    for (int j = start, last = start + nLocations; j < last; j++) {
-        if (j!=start) {
+    QVector<U2Region> regions;
+    if (ad.locationIdx == -1) {
+        regions = ad.annotation->getLocation()->regions;
+    } else {
+        regions << ad.annotation->getLocation()->regions.at(ad.locationIdx);
+    }
+    QList<QByteArray> parts  = U2SequenceUtils::extractRegions(seqRef, regions, complTT, aminoTT, false, os);
+    CHECK_OP(os, );
+    qint64 resLen = 0;
+    foreach(const QByteArray& p, parts) {
+        resLen += p.length();
+    }
+    res.reserve(resLen);
+    foreach(const QByteArray& p, parts) {
+        if (res.size() > 0) {
             res.append(gapSym);
         }
-        U2Region reg = r.at(j).intersect(sequenceRange);
-        QByteArray partSeq(sequence.constData() + reg.startPos, reg.length);
-        if (complTT!=NULL) {
-            TextUtils::translate(complTT->getOne2OneMapper(), partSeq.data(), partSeq.size());
-            TextUtils::reverse(partSeq.data(), partSeq.size());
-        }
-        if (aminoTT!=NULL) {
-            aminoTT->translate(partSeq.data(), reg.length, partSeq.data(), reg.length);
-            partSeq.resize(partSeq.size()/3);
-        }
-        res.append(partSeq);
+        res.append(p);
     }
 }
 

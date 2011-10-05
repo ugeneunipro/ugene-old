@@ -30,6 +30,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/RepeatFinderSettings.h>
@@ -61,7 +62,6 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
     minLen(100), identity(100),
     pixMapUpdateNeeded(true), deleteDotPlotFlag(false), dotPlotTask(NULL), pixMap(NULL), miniMap(NULL),
     nearestRepeat(NULL),
-    sharedSeqX(NULL), sharedSeqY(NULL),
     clearedByRepitSel(false)
 {
     dpDirectResultListener = new DotPlotResultsListener();
@@ -206,7 +206,7 @@ QPointF DotPlotWidget::zoomTo(Qt::Axis axis, const U2Region &lr, bool emitSignal
     int seqLen = 0;
     switch (axis) {
         case Qt::XAxis :
-            seqLen = sequenceX->getSequenceLen();
+            seqLen = sequenceX->getSequenceLength();
 
             zoom.setX(seqLen/(float)lr.length);
             shiftX = -lr.startPos*w/(float)seqLen;
@@ -214,7 +214,7 @@ QPointF DotPlotWidget::zoomTo(Qt::Axis axis, const U2Region &lr, bool emitSignal
             break;
 
         case Qt::YAxis :
-            seqLen = sequenceY->getSequenceLen();
+            seqLen = sequenceY->getSequenceLength();
 
             zoom.setY(seqLen/(float)lr.length);
             shiftY = -lr.startPos*h/(float)seqLen;
@@ -329,6 +329,9 @@ void DotPlotWidget::sl_taskFinished(Task *task) {
     dotPlotTask = NULL;
     dpDirectResultListener->setTask(NULL);
     dpRevComplResultsListener->setTask(NULL);
+    
+    seqXCache.clear();
+    seqYCache.clear();
 
     if (deleteDotPlotFlag) {
         deleteDotPlotFlag = false;
@@ -412,7 +415,7 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
     DNASequenceSelection *dnaSelection = qobject_cast<DNASequenceSelection*>(sen);
     if (dnaSelection) {
        
-        const DNASequenceObject *selectedSequence = dnaSelection->getSequenceObject();
+        const U2SequenceObject *selectedSequence = dnaSelection->getSequenceObject();
             if (selectedSequence == sequenceX->getSequenceGObject()) {
                 if(!nearestSelecting)
                     clearedByRepitSel = false;
@@ -565,132 +568,128 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 
     if (dotPlotTask) { // Check if there is already some dotPlotTask
         DotPlotDialogs::taskRunning();
-
         return false;
     }
 
     Q_ASSERT(dnaView);
 
     DotPlotDialog d(this, dnaView, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor, disableLoad);
-    if (d.exec()) {
-        setMinimumHeight(200);
-
-        nearestRepeat = NULL;
-        nearestInverted = false;
-
-        bool res = false;
-        if ((sequenceX != d.getXSeq()) || (sequenceY != d.getYSeq())) {
-            res = true;
-        }
-
-        sequenceX = d.getXSeq();
-        sequenceY = d.getYSeq();
-
-        if(res){
-            resetZooming();
-        }
-
-        direct = d.isDirect();
-        inverted = d.isInverted();
-
-        Q_ASSERT(direct || inverted);
-
-        dotPlotDirectColor = d.getDirectColor();
-        dotPlotInvertedColor = d.getInvertedColor();
-
-        Q_ASSERT(d.minLenBox);
-        Q_ASSERT(d.identityBox);
-
-        minLen = d.minLenBox->value();
-        identity = d.identityBox->value();
-
-        connectSequenceSelectionSignals();
-
-        Q_ASSERT(dpDirectResultListener);
-        Q_ASSERT(dpDirectResultListener->dotPlotList);
-        dpDirectResultListener->dotPlotList->clear();
-
-        Q_ASSERT(dpRevComplResultsListener);
-        Q_ASSERT(dpRevComplResultsListener->dotPlotList);
-        dpRevComplResultsListener->dotPlotList->clear();
-
-        Q_ASSERT(sequenceX);
-        Q_ASSERT(sequenceY);
-
-        if ((sequenceX->getAlphabet()->getType() != sequenceY->getAlphabet()->getType()) || (sequenceX->getAlphabet()->getType() != DNAAlphabet_NUCL)){
-
-            sequenceX = NULL;
-            sequenceY = NULL;
-
-            DotPlotDialogs::wrongAlphabetTypes();
-            return false;
-        }
-
-        Q_ASSERT(sequenceX->getSequenceObject());
-        Q_ASSERT(sequenceY->getSequenceObject());
-
-        
-        DNAAlphabet *al = sequenceX->getAlphabet();
-        if ((al->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) || (al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT())) {
-            al = sequenceY->getAlphabet();
-        }
-
-        sharedSeqX = sequenceX->getSequenceObject()->getSequence();
-        sharedSeqY = sequenceY->getSequenceObject()->getSequence();
-
-        RepeatFinderTaskFactoryRegistry *tfr = AppContext::getRepeatFinderTaskFactoryRegistry();
-        RepeatFinderTaskFactory *factory = tfr->getFactory("");
-        SAFE_POINT(factory != NULL, "Repeats factory is NULL!", false);
-
-        QList<Task*> tasks;
-
-        if (d.isDirect()) {
-            RepeatFinderSettings cDirect(
-                dpDirectResultListener,
-                sequenceX->getSequenceObject()->getSequence().data(),
-                sequenceX->getSequenceLen(),
-                false,                        // direct
-                sequenceY->getSequenceObject()->getSequence().data(),
-                sequenceY->getSequenceLen(),
-                al,
-                d.getMinLen(), d.getMismatches(),
-                d.getAlgo()
-            );
-
-            Task *dotPlotDirectTask = factory->getTaskInstance(cDirect);
-            dpDirectResultListener->setTask(dotPlotDirectTask);
-
-            tasks << dotPlotDirectTask;
-        }
-
-        if (d.isInverted()) {
-            RepeatFinderSettings cInverse(
-                dpRevComplResultsListener,
-                sequenceX->getSequenceObject()->getSequence().constData(),
-                sequenceX->getSequenceLen(),
-                true,                        // inverted
-                sequenceY->getSequenceObject()->getSequence().constData(),
-                sequenceY->getSequenceLen(),
-                al,
-                d.getMinLen(), d.getMismatches(),
-                d.getAlgo()
-            );
-
-            Task *dotPlotInversedTask = factory->getTaskInstance(cInverse);
-            dpRevComplResultsListener->setTask(dotPlotInversedTask);
-            dpRevComplResultsListener->xLen = sequenceX->getSequenceLen();
-
-            tasks << dotPlotInversedTask;
-        }
-
-        dotPlotTask = new MultiTask("Searching repeats", tasks);
-
-        TaskScheduler* ts = AppContext::getTaskScheduler();
-        ts->registerTopLevelTask(dotPlotTask);
-    }
-    else {
+    if (d.exec() != QDialog::Accepted) {
         return false;
     }
+    setMinimumHeight(200);
+
+    nearestRepeat = NULL;
+    nearestInverted = false;
+
+    bool res = false;
+    if ((sequenceX != d.getXSeq()) || (sequenceY != d.getYSeq())) {
+        res = true;
+    }
+
+    sequenceX = d.getXSeq();
+    sequenceY = d.getYSeq();
+
+    if (res){
+        resetZooming();
+    }
+
+    direct = d.isDirect();
+    inverted = d.isInverted();
+
+    Q_ASSERT(direct || inverted);
+
+    dotPlotDirectColor = d.getDirectColor();
+    dotPlotInvertedColor = d.getInvertedColor();
+
+    Q_ASSERT(d.minLenBox);
+    Q_ASSERT(d.identityBox);
+
+    minLen = d.minLenBox->value();
+    identity = d.identityBox->value();
+
+    connectSequenceSelectionSignals();
+
+    Q_ASSERT(dpDirectResultListener);
+    Q_ASSERT(dpDirectResultListener->dotPlotList);
+    dpDirectResultListener->dotPlotList->clear();
+
+    Q_ASSERT(dpRevComplResultsListener);
+    Q_ASSERT(dpRevComplResultsListener->dotPlotList);
+    dpRevComplResultsListener->dotPlotList->clear();
+
+    Q_ASSERT(sequenceX);
+    Q_ASSERT(sequenceY);
+
+    if ((sequenceX->getAlphabet()->getType() != sequenceY->getAlphabet()->getType()) || (sequenceX->getAlphabet()->getType() != DNAAlphabet_NUCL)){
+
+        sequenceX = NULL;
+        sequenceY = NULL;
+
+        DotPlotDialogs::wrongAlphabetTypes();
+        return false;
+    }
+
+    Q_ASSERT(sequenceX->getSequenceObject());
+    Q_ASSERT(sequenceY->getSequenceObject());
+
+
+    DNAAlphabet *al = sequenceX->getAlphabet();
+    if ((al->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) || (al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT())) {
+        al = sequenceY->getAlphabet();
+    }
+
+    RepeatFinderTaskFactoryRegistry *tfr = AppContext::getRepeatFinderTaskFactoryRegistry();
+    RepeatFinderTaskFactory *factory = tfr->getFactory("");
+    SAFE_POINT(factory != NULL, "Repeats factory is NULL!", false);
+
+    QList<Task*> tasks;
+
+    seqXCache = sequenceX->getSequenceObject()->getWholeSequenceData();
+    seqYCache = sequenceY->getSequenceObject()->getWholeSequenceData();
+    if (d.isDirect()) {
+        RepeatFinderSettings cDirect(
+            dpDirectResultListener,
+            seqXCache.constData(),
+            seqXCache.length(),
+            false,                        // direct
+            seqYCache.constData(),
+            seqYCache.length(),
+            al,
+            d.getMinLen(), d.getMismatches(),
+            d.getAlgo()
+            );
+
+        Task *dotPlotDirectTask = factory->getTaskInstance(cDirect);
+        dpDirectResultListener->setTask(dotPlotDirectTask);
+
+        tasks << dotPlotDirectTask;
+    }
+
+    if (d.isInverted()) {
+        RepeatFinderSettings cInverse(
+            dpRevComplResultsListener,
+            seqXCache.constData(),
+            seqXCache.length(),
+            true,                        // inverted
+            seqYCache.constData(),
+            seqYCache.length(),
+            al,
+            d.getMinLen(), d.getMismatches(),
+            d.getAlgo()
+            );
+
+        Task *dotPlotInversedTask = factory->getTaskInstance(cInverse);
+        dpRevComplResultsListener->setTask(dotPlotInversedTask);
+        dpRevComplResultsListener->xLen = sequenceX->getSequenceLength();
+
+        tasks << dotPlotInversedTask;
+    }
+
+    dotPlotTask = new MultiTask("Searching repeats", tasks);
+
+    TaskScheduler* ts = AppContext::getTaskScheduler();
+    ts->registerTopLevelTask(dotPlotTask);
 
     return true;
 }
@@ -739,13 +738,14 @@ void DotPlotWidget::pixMapUpdate() {
     if (!pixMapUpdateNeeded || !sequenceX || !sequenceY || dotPlotTask) {
         return;
     }
-
-    if ((sequenceX->getSequenceLen() <= 0) || (sequenceY->getSequenceLen() <= 0)) {
+    qint64 seqXLen = sequenceX->getSequenceLength();
+    qint64 seqYLen = sequenceY->getSequenceLength();
+    if (seqXLen <= 0 || seqYLen <= 0) {
         return;
     }
 
-    float ratioX = w/(float)sequenceX->getSequenceLen();
-    float ratioY = h/(float)sequenceY->getSequenceLen();
+    float ratioX = w/(float)seqXLen;
+    float ratioY = h/(float)seqYLen;
     //float ratioY = ratioX;
 
     delete pixMap;
@@ -932,8 +932,8 @@ void DotPlotWidget::drawNearestRepeat(QPainter& p) const {
     p.save();
     p.setPen(dotPlotNearestRepeatColor);
 
-    float ratioX = w/(float)sequenceX->getSequenceLen();
-    float ratioY = h/(float)sequenceY->getSequenceLen();
+    float ratioX = w/(float)sequenceX->getSequenceLength();
+    float ratioY = h/(float)sequenceY->getSequenceLength();
 
     QLine line;
     if (getLineToDraw(*nearestRepeat, &line, ratioX, ratioY, nearestInverted)) {
@@ -1010,8 +1010,8 @@ void DotPlotWidget::drawRulers(QPainter &p) const{
         endY = sequenceCoords(unshiftedUnzoomed(QPointF(0,h))).y();
 
     QPoint extraLen(0, 0);
-    int xSeqLen = sequenceX->getSequenceLen();
-    int ySeqLen = sequenceY->getSequenceLen();
+    int xSeqLen = sequenceX->getSequenceLength();
+    int ySeqLen = sequenceY->getSequenceLength();
 
     if (xSeqLen && ySeqLen) {
         float ratioX = w/(float)xSeqLen;
@@ -1077,8 +1077,8 @@ void DotPlotWidget::drawSelection(QPainter &p) const{
     p.setBrush(QBrush(QColor(200, 200, 200, 100)));
 
     float xLeft, xLen, yBottom, yLen;
-    int xSeqLen = sequenceX->getSequenceLen();
-    int ySeqLen = sequenceY->getSequenceLen();
+    int xSeqLen = sequenceX->getSequenceLength();
+    int ySeqLen = sequenceY->getSequenceLength();
 
     Q_ASSERT(xSeqLen);
     Q_ASSERT(ySeqLen);
@@ -1189,8 +1189,8 @@ void DotPlotWidget::calcZooming(const QPointF &oldzoom, const QPointF &nZoom, co
         return;
     }
 
-    float seqLenX = sequenceX->getSequenceLen();
-    float seqLenY = sequenceY->getSequenceLen();
+    float seqLenX = sequenceX->getSequenceLength();
+    float seqLenY = sequenceY->getSequenceLength();
 
     QPointF newzoom(nZoom);
     // limit maximum zoom
@@ -1295,8 +1295,8 @@ QPoint DotPlotWidget::sequenceCoords(const QPointF &c) const {
     Q_ASSERT(sequenceX);
     Q_ASSERT(sequenceY);
 
-    int xLen = sequenceX->getSequenceLen();
-    int yLen = sequenceY->getSequenceLen();
+    int xLen = sequenceX->getSequenceLength();
+    int yLen = sequenceY->getSequenceLength();
 
     Q_ASSERT(w>0);
     Q_ASSERT(h>0);
@@ -1416,12 +1416,12 @@ const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
     Q_ASSERT(sequenceX);
     Q_ASSERT(sequenceY);
 
-    if ((sequenceX->getSequenceLen() <= 0) || (sequenceY->getSequenceLen() <= 0)) {
+    if ((sequenceX->getSequenceLength() <= 0) || (sequenceY->getSequenceLength() <= 0)) {
         return NULL;
     }
 
-    float ratioX = w/(float)sequenceX->getSequenceLen();
-    float ratioY = h/(float)sequenceY->getSequenceLen();
+    float ratioX = w/(float)sequenceX->getSequenceLength();
+    float ratioY = h/(float)sequenceY->getSequenceLength();
 
     ratioX*=ratioX;
     ratioY*=ratioY;
@@ -1564,8 +1564,8 @@ QString DotPlotWidget::makeToolTipText() const{
     QString upLineSeq ="";
     QString middleLineSeq = "";
     QString downLineSeq = "";
-    QByteArray repX = sequenceX->getSequenceObject()->getSequence().mid(nearestRepeat->x, nearestRepeat->len);
-    QByteArray repY = sequenceY->getSequenceObject()->getSequence().mid(nearestRepeat->y, nearestRepeat->len);
+    QByteArray repX = sequenceX->getSequenceObject()->getSequenceData(U2Region(nearestRepeat->x, nearestRepeat->len));
+    QByteArray repY = sequenceY->getSequenceObject()->getSequenceData(U2Region(nearestRepeat->y, nearestRepeat->len));
     if (nearestInverted) {
         DNATranslation* complT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(sequenceX->getAlphabet());
         assert(complT != NULL);
@@ -1756,7 +1756,7 @@ QString DotPlotWidget::getYSequenceName() {
     return sequenceY->getSequenceObject()->getGObjectName();
 }
 
-void DotPlotWidget::setSequences(DNASequenceObject* seqX, DNASequenceObject* seqY)
+void DotPlotWidget::setSequences(U2SequenceObject* seqX, U2SequenceObject* seqY)
 {
     CHECK(dnaView != NULL,);
     if(seqX != NULL) {
@@ -1825,8 +1825,8 @@ bool DotPlotWidget::hasSelection() {
 }
 
 bool DotPlotWidget::canZoomIn(){
-    float seqLenX = sequenceX->getSequenceLen();
-    float seqLenY = sequenceY->getSequenceLen();
+    float seqLenX = sequenceX->getSequenceLength();
+    float seqLenY = sequenceY->getSequenceLength();
 
     return ((zoom.x() < seqLenX) && (zoom.y() < seqLenY));
 }

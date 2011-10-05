@@ -32,9 +32,9 @@
 #include <U2Core/Task.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
-
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/DNAChromatogram.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNAChromatogramObject.h>
@@ -154,14 +154,13 @@ void ChromatogramView::buildPopupMenu(QMenu& m) {
 
 static const int MAX_DNA_LEN = 1000*1000*1000;
 
-void ChromatogramView::mousePressEvent(QMouseEvent* me)
-{
+void ChromatogramView::mousePressEvent(QMouseEvent* me) {
     setFocus();
     if (me->button() == Qt::RightButton || editDNASeq == NULL) {
         GSequenceLineView::mousePressEvent(me);
         return;
     }
-    if (editDNASeq!=NULL && editDNASeq->getSequenceLen()>MAX_DNA_LEN) {
+    if (editDNASeq != NULL && editDNASeq->getSequenceLength() > MAX_DNA_LEN) {
         GSequenceLineView::mousePressEvent(me);
         return;
     }
@@ -203,29 +202,29 @@ void ChromatogramView::sl_onPopupMenuCkicked(QAction* a) {
     }
     char newBase = a->text().at(0).toAscii();
     char curBase = currentBaseCalls.at(selIndex);
+    U2OpStatus2Log os;
     if (newBase != curBase) {
-        DNASequence editSequence = editDNASeq->getDNASequence();
         int editSeqIdx = getEditSeqIndex(selIndex);
-        if (curBase==GAP_CHAR) {
+        if (curBase == GAP_CHAR) {
             bool ok = gapIndexes.removeOne(selIndex);
             assert(ok);
             Q_UNUSED(ok);
-            editSequence.seq.insert(editSeqIdx, newBase);
+            QByteArray insData(&newBase, 1); 
+            editDNASeq->replaceRegion(U2Region(editSeqIdx, 0), DNASequence(insData), os);//insert
         } else {
             if (newBase!=GAP_CHAR) {
-                editSequence.seq[editSeqIdx] = newBase;
+                QByteArray insData(&newBase, 1); 
+                editDNASeq->replaceRegion(U2Region(editSeqIdx, 1), DNASequence(insData), os); //replace
             } else {
-                editSequence.seq.remove(editSeqIdx,1);
+                editDNASeq->replaceRegion(U2Region(editSeqIdx, 1), DNASequence(), os); //remove
                 gapIndexes.append(selIndex);
             }
         }
         
         currentBaseCalls[selIndex] = newBase;
 
-        editDNASeq->setSequence(editSequence);
-
         indexOfChangedChars.insert(selIndex);
-        char refBase = ctx->getSequenceData().at(selIndex);
+        char refBase = ctx->getSequenceData(U2Region(selIndex, 1)).at(0);
         if (newBase == refBase) {
             indexOfChangedChars.remove(selIndex);
         }
@@ -254,12 +253,15 @@ void ChromatogramView::sl_addNewSequenceObject() {
 
     DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(m.format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(m.io);
-    Document* doc = format->createNewDocument(iof, m.url);
+    U2OpStatus2Log os;
+    Document* doc = format->createNewLoadedDocument(iof, m.url, os);
+    CHECK_OP(os, );
     p->addDocument(doc);
 
-    DNASequenceObject* so = ctx->getSequenceObject();
-    editDNASeq = qobject_cast<DNASequenceObject*>(so->clone());
-    currentBaseCalls = editDNASeq->getSequence();
+    U2SequenceObject* so = ctx->getSequenceObject();
+    editDNASeq = qobject_cast<U2SequenceObject*>(so->clone(doc->getDbiRef(), os));
+    CHECK_OP(os, );
+    currentBaseCalls = editDNASeq->getWholeSequenceData();
     doc->addObject(editDNASeq);
     ctx->getAnnotatedDNAView()->addObject(editDNASeq);
     indexOfChangedChars.clear();
@@ -273,8 +275,8 @@ void ChromatogramView::sl_onAddExistingSequenceObject() {
     ProjectTreeControllerModeSettings s;
     s.allowMultipleSelection = false;
     s.objectTypesToShow.append(GObjectTypes::SEQUENCE);
-    DNASequenceObjectConstraints ac;
-    ac.exactSequenceSize = ctx->getSequenceObject()->getSequence().length();
+    U2SequenceObjectConstraints ac;
+    ac.sequenceSize = ctx->getSequenceLength();
     s.objectConstraints.append(&ac);
     ac.alphabetType = ctx->getSequenceObject()->getAlphabet()->getType();
     s.groupMode = ProjectTreeGroupMode_Flat;
@@ -286,7 +288,7 @@ void ChromatogramView::sl_onAddExistingSequenceObject() {
     if (objs.size()!=0) {
         GObject* go = objs.first();
         if (go->getGObjectType() == GObjectTypes::SEQUENCE) {
-            editDNASeq = qobject_cast<DNASequenceObject*>(go);
+            editDNASeq = qobject_cast<U2SequenceObject*>(go);
             QString err = ctx->getAnnotatedDNAView()->addObject(editDNASeq);
             assert(err.isEmpty());
             indexOfChangedChars.clear();
@@ -305,7 +307,7 @@ void ChromatogramView::sl_onSequenceObjectLoaded(Task* t) {
         lut->getDocument()->getObjects(), UOF_LoadedOnly);
     assert(go);
     if (go) {
-        editDNASeq = qobject_cast<DNASequenceObject*>(go);
+        editDNASeq = qobject_cast<U2SequenceObject*>(go);
         QString err = ctx->getAnnotatedDNAView()->addObject(editDNASeq);
         assert(err.isEmpty());
         indexOfChangedChars.clear();
@@ -330,12 +332,12 @@ void ChromatogramView::sl_removeChanges()   {
         return;
     }
 
-    DNASequenceObject* seqObject = ctx->getSequenceObject();
-    const QByteArray& sequence = seqObject->getSequence();
+    U2SequenceObject* seqObject = ctx->getSequenceObject();
+    QByteArray sequence = seqObject->getWholeSequenceData();
     for (QSet<int>::const_iterator it = indexOfChangedChars.constBegin(); it != indexOfChangedChars.constEnd(); ++it)  {
         currentBaseCalls[*it] = sequence[*it];
     }
-    editDNASeq->setSequence(DNASequence(currentBaseCalls));
+    editDNASeq->setWholeSequence(DNASequence(currentBaseCalls));
     indexOfChangedChars.clear();
 }
 
@@ -344,9 +346,9 @@ bool ChromatogramView::checkObject(GObject* obj) {
     if (obj->getGObjectType()!=GObjectTypes::SEQUENCE || obj->isStateLocked()) {
         return false;   
     }
-    DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
     bool ok = (dnaObj->getAlphabet() == ctx->getSequenceObject()->getAlphabet()
-        && dnaObj->getSequence().length() == ctx->getSequenceObject()->getSequence().length());
+        && dnaObj->getSequenceLength() == ctx->getSequenceObject()->getSequenceLength());
 
     return ok;
 }
@@ -405,8 +407,7 @@ ChromatogramViewRenderArea::~ChromatogramViewRenderArea()
 }
 
 
-void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd)
-{
+void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
     static const QColor colorForIds[4] = { Qt::darkGreen, Qt::blue, Qt::black, Qt::red};
     static const QString baseForIds[4] = { "A", "C", "G", "T" };
     static const qreal dividerTraceOrBaseCallsLines = 2;
@@ -418,7 +419,7 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd)
     assert(!visible.isEmpty());
 
     ADVSequenceObjectContext* seqCtx = view->getSequenceContext();
-    const QByteArray& ba = seqCtx->getSequenceData();
+    QByteArray seq = seqCtx->getSequenceObject()->getWholeSequenceData();
 
     GSLV_UpdateFlags uf = view->getUpdateFlags();
     bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) || 
@@ -433,10 +434,10 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd)
         p.fillRect(0, 0, pd->width(), heightPD, Qt::white);
         if (pd->width()/charWidth>visible.length/dividerBoolShowBaseCallsChars) {
             //draw basecalls
-            drawOriginalBaseCalls(0, heightAreaBC-charHeight-addUpIfQVL, width(), charHeight, p, visible, ba); 
+            drawOriginalBaseCalls(0, heightAreaBC-charHeight-addUpIfQVL, width(), charHeight, p, visible, seq); 
 
             if (chroma.hasQV && chromaView->showQV()) {
-                drawQualityValues(0, charHeight, width(), heightAreaBC - 2*charHeight, p, visible, ba);     
+                drawQualityValues(0, charHeight, width(), heightAreaBC - 2*charHeight, p, visible, seq);     
             }
             //drawOriginalBaseCalls(0, 0, width(), charHeight, p, visible, qobject_cast<ChromatogramView*>(view)->fastaSeq, false);
         } else {
@@ -454,7 +455,7 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd)
         if (pd->width()/charWidth>visible.length/dividerTraceOrBaseCallsLines) {
             drawChromatogramTrace(0, heightAreaBC - addUpIfQVL, pd->width(), height() - heightAreaBC + addUpIfQVL, p, visible);
         } else {
-            drawChromatogramBaseCallsLines(0, heightAreaBC, pd->width(), height() - heightAreaBC, p, visible, ba);
+            drawChromatogramBaseCallsLines(0, heightAreaBC, pd->width(), height() - heightAreaBC, p, visible, seq);
         }
     }
     QPainter p(pd);

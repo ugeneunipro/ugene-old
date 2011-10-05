@@ -120,8 +120,8 @@ ImportPhredQualityWorker::ImportPhredQualityWorker(Actor* a) : BaseWorker(a), in
 void ImportPhredQualityWorker::init() {
     input = ports.value(BasePorts::IN_SEQ_PORT_ID());
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
-    cfg.fileName = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>();
-    cfg.type = DNAQuality::getDNAQualityTypeByName( actor->getParameter(QUALITY_TYPE_ATTR)->getAttributeValue<QString>() );
+    fileName = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>();
+    type = DNAQuality::getDNAQualityTypeByName( actor->getParameter(QUALITY_TYPE_ATTR)->getAttributeValue<QString>() );
 }
 
 bool ImportPhredQualityWorker::isReady() {
@@ -131,29 +131,34 @@ bool ImportPhredQualityWorker::isReady() {
 Task* ImportPhredQualityWorker::tick() {
     while (!input->isEnded()) {
         DNASequence dna = input->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-        seqObjs.append(new DNASequenceObject(dna.getName(), dna));
+        seqList << dna;
     }
     
-    if( seqObjs.isEmpty() ) {
+    if (seqList.isEmpty() ) {
          algoLog.error( tr("Sequence list is empty.") );
          return NULL;
     }
 
-    Task* t = new ImportPhredQualityScoresTask(seqObjs, cfg);
+    Task* t = new ReadQualityScoresTask(fileName, type);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     
     return t;
 }
 
 void ImportPhredQualityWorker::sl_taskFinished() {
-    ImportPhredQualityScoresTask* t = qobject_cast<ImportPhredQualityScoresTask*>(sender());
-    if (t->getState() != Task::State_Finished) {
+    ReadQualityScoresTask* readQualitiesTask = qobject_cast<ReadQualityScoresTask*>(sender());
+    if (readQualitiesTask->getState() != Task::State_Finished) {
        return;
     }
     
-    foreach (DNASequenceObject* obj, seqObjs) {
-        DNASequence dna = obj->getDNASequence();
-        QVariant v = qVariantFromValue<DNASequence>(dna);
+    QMap<QString,DNAQuality> qualities = readQualitiesTask->getResult();
+    for (int i =0; i < seqList.size(); i++){
+        DNASequence& seq = seqList[i];
+        const QString& name = seq.getName();
+        if (qualities.contains(name)) {
+            seq.quality = qualities.value(name);
+        }
+        QVariant v = qVariantFromValue<DNASequence>(seq);
         output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), v));
     }
     
@@ -169,7 +174,7 @@ bool ImportPhredQualityWorker::isDone() {
 }
 
 void ImportPhredQualityWorker::cleanup() {
-    qDeleteAll(seqObjs);
+    seqList.clear();
 }
 
 } //namespace LocalWorkflow

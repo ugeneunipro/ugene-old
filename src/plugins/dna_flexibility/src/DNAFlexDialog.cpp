@@ -39,7 +39,7 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
     ctx = _ctx;
 
     // Get the sequence length
-    int sequenceLength = ctx->getSequenceObject()->getSequenceLen();
+    int sequenceLength = ctx->getSequenceObject()->getSequenceLength();
 
     // Creating and initializing the annotation model
     CreateAnnotationModel annotModel;
@@ -96,7 +96,7 @@ void DNAFlexDialog::accept()
         annotModel.getAnnotationObject(),
         annotName,
         annotGroup,
-        ctx->getSequenceObject()->getDNASequence());
+        ctx->getSequenceObject()->getWholeSequence());
 
     // Registering the task
     AppContext::getTaskScheduler()->registerTopLevelTask(task);

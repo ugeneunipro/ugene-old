@@ -26,6 +26,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GObject.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
@@ -44,7 +45,7 @@ namespace U2 {
 #define TRANSLATION_ID_ATTR "translation_id"
 #define EXPECTED_RESULTS_ATTR  "expected_results"
 
-Translator::Translator(const DNASequenceObject *s, const QString& tid) : seq(s), complTransl(NULL), aminoTransl(NULL) {
+Translator::Translator(const U2SequenceObject *s, const QString& tid) : seq(s), complTransl(NULL), aminoTransl(NULL) {
     DNAAlphabet* al = seq->getAlphabet();
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     aminoTransl = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, ("NCBI-GenBank #" + tid));
@@ -172,16 +173,14 @@ void GTest_ORFMarkerTask::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_ORFMarkerTask::prepare() {
-    DNASequenceObject * mySequence = getContext<DNASequenceObject>(this, seqName);
-    if(mySequence==NULL){
-        stateInfo.setError(  QString("error can't cast to sequence from GObject") );
-        return;
-    }
+    U2SequenceObject * mySequence = getContext<U2SequenceObject>(this, seqName);
+    CHECK_EXT(mySequence != NULL, setError("Can't cast to sequence from GObject"), );
+    
     Translator tr(mySequence, translationId);
     settings.complementTT = tr.getComplTranslation();
     settings.proteinTT = tr.getAminoTranslation();
-    settings.searchRegion = mySequence->getSequenceRange();
-	task = new ORFFindTask(settings, mySequence->getSequence());
+    settings.searchRegion = U2Region(0, mySequence->getSequenceLength());
+	task = new ORFFindTask(settings, mySequence->getWholeSequenceData());
     addSubTask(task);
 }
 

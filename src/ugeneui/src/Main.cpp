@@ -66,7 +66,6 @@
 #include <U2Gui/LogView.h>
 
 #include <U2View/MSAColorScheme.h>
-#include <U2View/UIndexSupport.h>
 #include <U2View/DnaAssemblyUtils.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
@@ -448,7 +447,6 @@ int main(int argc, char **argv)
     Workflow::WorkflowEnv::init(new Workflow::WorkflowEnvImpl());
     Workflow::WorkflowEnv::getDomainRegistry()->registerEntry(new LocalWorkflow::LocalDomainFactory());
     
-    UIndexSupport indexSupport;
 
     DnaAssemblyAlgRegistry* assemblyReg = new DnaAssemblyAlgRegistry();
     appContext->setDnaAssemblyAlgRegistry(assemblyReg);

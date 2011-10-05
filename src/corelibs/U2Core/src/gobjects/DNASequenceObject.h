@@ -23,81 +23,73 @@
 #define _U2_DNA_SEQUENCE_OBJECT_H_
 
 #include <U2Core/GObject.h>
-#include <U2Core/U2Region.h>
-#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2Type.h>
 #include <U2Core/DNASequence.h>
-#include <U2Core/U2AbstractDbi.h>
 
 namespace U2 {
 
-class U2SequenceDbi;
+class DNAAlphabet;
+class U2Region;
+class U2OpStatus;
 
-//TODO: rename to U2SequenceGObject
-class  U2CORE_EXPORT DNASequenceObject: public GObject {
+
+class U2CORE_EXPORT U2SequenceObject : public GObject {
     Q_OBJECT
 public:
-    DNASequenceObject(const QString& name, const DNASequence& seq, const QVariantMap& hintsMap = QVariantMap());
-    ~DNASequenceObject();
+    U2SequenceObject(const QString& name, const U2EntityRef& seqRef, const QVariantMap& hintsMap = QVariantMap());
     
-    U2Region getSequenceRange() const {return U2Region(0, dnaSeq.seq.length());}
+    U2EntityRef getSequenceRef() const {return getEntityRef();}
 
-    const QByteArray& getSequence() const {return dnaSeq.seq;}
+    qint64 getSequenceLength() const;
 
-    DNAAlphabet* getAlphabet() const {return dnaSeq.alphabet;}
+    QString getSequenceName() const ;
+
+    DNASequence getWholeSequence() const;
     
-    const DNAQuality& getQuality() const { return dnaSeq.quality; }
+    QByteArray getWholeSequenceData() const;
+    
+    QByteArray getSequenceData(const U2Region& r) const;
+    
+    void setWholeSequence(const DNASequence& seq);
 
-    const DNASequence& getDNASequence() const {return dnaSeq;}
+    bool isCircular() const;
+    
+    void setCircular(bool v);
 
-    int getSequenceLen() const {return dnaSeq.length();}
+    DNAAlphabet* getAlphabet() const;
 
-    const QString getSequenceName() const {return dnaSeq.getName(); }
+    void replaceRegion(const U2Region& region, const DNASequence& seq, U2OpStatus& os);
 
-    virtual GObject* clone() const;
+    GObject* clone(const U2DbiRef& ref, U2OpStatus& os) const;
 
-    void setBase(int pos, char base);
+    bool checkConstraints(const GObjectConstraints* c) const;
 
-    virtual bool checkConstraints(const GObjectConstraints* c) const;
+    void setQuality(const DNAQuality& q);
 
-    void setSequence(const DNASequence& seq);
+    DNAQuality getQuality() const;
 
-    void setQuality(const DNAQuality& quality);
-
-    bool isCircular() const {return dnaSeq.circular;}
-
-    void setCircular(bool val);
-
-    U2SequenceDbi* asDbi() const {return dbi;}
-
-    U2DataId getDbiObjectId() const;
+    QString getSequenceAttribute(const QString& seqAttr) const;
 
 signals:
     void si_sequenceChanged();
 
 protected:
-    DNASequence     dnaSeq;
-    U2SequenceDbi*  dbi;
+    mutable DNAAlphabet*    cachedAlphabet;
+    mutable qint64          cachedLength;
+    mutable QString         cachedName;
+    mutable TriState        cachedCircular;
+
 };
 
-class U2CORE_EXPORT DNASequenceObjectConstraints : public GObjectConstraints   {
+
+class U2CORE_EXPORT U2SequenceObjectConstraints : public GObjectConstraints   {
     Q_OBJECT
 public:
-    DNASequenceObjectConstraints(QObject* p = NULL);
-    int exactSequenceSize;
+    U2SequenceObjectConstraints(QObject* p = NULL);
+    qint64          sequenceSize;
     DNAAlphabetType alphabetType;
 };
 
-class U2CORE_EXPORT DNASequenceObjectSequenceDbiWrapper: public QObject, public U2SimpleSequenceDbi {
-public:
-    DNASequenceObjectSequenceDbiWrapper(const QList<DNASequenceObject*> & _seqObjs, U2Dbi * root);
-    
-    U2Sequence getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os);
-
-    QByteArray getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os);
-
-private:
-    QList<DNASequenceObject*> seqObjs;
-};
 
 }//namespace
 

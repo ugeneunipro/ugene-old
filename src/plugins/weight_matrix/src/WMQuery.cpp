@@ -31,6 +31,8 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/DNAAlphabet.h>
+
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QApplication>
@@ -43,9 +45,10 @@ namespace U2 {
 /************************************************************************/
 
 WMQDTask::WMQDTask(const QString& url, const WeightMatrixSearchCfg& cfg,
-                   DNASequenceObject* sqnc, const QString& resName, const QVector<U2Region>& location)
-: Task(tr("Weight matrix query"), TaskFlag_NoRun), settings(cfg), seqObj(sqnc),
-resultName(resName), location(location) {
+                   const DNASequence&  sqnc, const QString& resName, const QVector<U2Region>& location)
+: Task(tr("Weight matrix query"), TaskFlag_NoRun), settings(cfg), dnaSeq(sqnc),
+resultName(resName), location(location) 
+{
     readTask = new PWMatrixReadTask(url);
     addSubTask(readTask);
 }
@@ -55,9 +58,9 @@ QList<Task*> WMQDTask::onSubTaskFinished(Task* subTask) {
     if (subTask==readTask) {
         PWMatrix model = readTask->getResult();
         foreach(const U2Region& r, location) {
+            QByteArray seqBlock = dnaSeq.seq.mid(r.startPos, r.length);
             subtasks << new WeightMatrixSingleSearchTask(model,
-                seqObj->getSequence().constData() + r.startPos,
-                r.length,
+                seqBlock,
                 settings,
                 r.startPos);
         }
@@ -92,8 +95,8 @@ int QDWMActor::getMinResultLen() const {
 }
 
 int QDWMActor::getMaxResultLen() const {
-    if (scheme->getDNA()) {
-        return scheme->getDNA()->getSequenceLen();
+    if (!scheme->getSequence().isNull()) {
+        return scheme->getSequence().length();
     }
     return 30;//FIX ME: supply reasonable value
 }
@@ -127,24 +130,22 @@ QString QDWMActor::getText() const {
 
 Task* QDWMActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = NULL;
-    DNASequenceObject* dna = scheme->getDNA();
-    assert(dna);
+    const DNASequence& dnaSeq = scheme->getSequence();
     QMap<QString, Attribute*> params = cfg->getParameters();
 
     WeightMatrixSearchCfg config;
     config.minPSUM = params.value(SCORE_ATTR)->getAttributeValue<int>();
     const QString& modelUrl = params.value(PROFILE_URL_ATTR)->getAttributeValue<QString>();
 
-    if (dna->getAlphabet()->getType() == DNAAlphabet_NUCL) {        
+    if (dnaSeq.alphabet->getType() == DNAAlphabet_NUCL) {        
         config.complOnly = strand == QDStrand_ComplementOnly;
         if (strand == QDStrand_Both || strand == QDStrand_ComplementOnly) {
-            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                lookupTranslation(dna->getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
             if (!compTTs.isEmpty()) {
                 config.complTT = compTTs.first();
             }
         }
-        t = new WMQDTask(modelUrl, config, dna, "", location);
+        t = new WMQDTask(modelUrl, config, dnaSeq, "", location);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onAlgorithmTaskFinished(Task*)));
     } else {
         QString err = tr("%1: sequence should be nucleic.").arg(getParameters()->getLabel());

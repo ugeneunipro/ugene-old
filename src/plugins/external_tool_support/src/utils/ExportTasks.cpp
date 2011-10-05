@@ -36,6 +36,8 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
@@ -58,7 +60,7 @@ void SaveAlignmentTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileName));
-    doc.reset(f->createNewDocument(iof, fileName));
+    doc.reset(f->createNewLoadedDocument(iof, fileName, stateInfo));
     doc->addObject(new MAlignmentObject(ma));
     f->storeDocument(doc.get(), stateInfo);
 }
@@ -79,7 +81,8 @@ void SaveMSA2SequencesTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    doc.reset(f->createNewDocument(iof, url));
+    doc.reset(f->createNewLoadedDocument(iof, url, stateInfo));
+    CHECK_OP(stateInfo, );
 
     QList<DNASequence> lst = MSAUtils::ma2seq(ma, trimAli);
     QSet<QString> usedNames;
@@ -88,7 +91,9 @@ void SaveMSA2SequencesTask::run() {
         if (usedNames.contains(name)) {
             name = TextUtils::variate(name, " ", usedNames, false, 1);
         }
-        doc->addObject(new DNASequenceObject(name, s));
+        U2EntityRef seqRef = U2SequenceUtils::import(doc->getDbiRef(), s, stateInfo);
+        CHECK_OP(stateInfo, );
+        doc->addObject(new U2SequenceObject(name, seqRef));
         usedNames.insert(name);
     }
     f->storeDocument(doc.get(), stateInfo);

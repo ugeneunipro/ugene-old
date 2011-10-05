@@ -35,6 +35,7 @@
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QSet>
 
@@ -114,12 +115,8 @@ OpenSavedTreeViewerTask::OpenSavedTreeViewerTask(const QString& viewName, const 
     GObjectReference ref = state.getPhyObject();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
     if (doc == NULL) {
-        doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject());
-        if (!doc) {
-            stateIsIllegal = true;
-            stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
-            return;
-        }
+        doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject(), stateInfo);
+        CHECK_OP_EXT(stateInfo, stateIsIllegal = true, );
     }
     if (!doc->isLoaded()) {
         documentsToLoad.append(doc);

@@ -27,7 +27,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
-#include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/PluginModel.h>
@@ -39,6 +38,8 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -56,6 +57,8 @@
 #include <U2Designer/DelegateEditors.h>
 
 #include <U2Gui/DialogUtils.h>
+
+#include <memory>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -311,9 +314,8 @@ bool SWWorker::isReady() {
 QString SWWorker::readPatternsFromFile(const QString url) {
     QFileInfo fi(url);
     QString pattern;
-    if (!fi.exists()) {
-        return "";
-    }
+    CHECK(fi.exists(), pattern);
+    
     QList<FormatDetectionResult> fs = DocumentUtils::detectFormat(url);
     DocumentFormat* format = NULL;
 
@@ -325,47 +327,34 @@ QString SWWorker::readPatternsFromFile(const QString url) {
         }
     }
 
-    if (format == NULL) {
-        return "";
-    }
+    CHECK(format != NULL, pattern);
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+    IOAdapterId ioId = IOAdapterUtils::url2io(url);
+    IOAdapterFactory* iof = IOAdapterUtils::get(ioId);
+    U2OpStatus2Log os;
+    std::auto_ptr<Document> doc(format->loadDocument(iof, url, QVariantMap(), os));
+    CHECK_OP(os, pattern);
 
-    IOAdapter *io = iof->createIOAdapter();
-    if (!io->open(url, IOAdapterMode_Read)) {
-        return "";
-    }
-
-    QVariantMap hints;
-    TaskStateInfo stateInfo;
-    Document *doc = format->loadDocument(io, stateInfo, hints);
-//    assert(isCanceled() || doc!=NULL || hasError());
-    assert(doc == NULL || doc->isLoaded());
-    if (doc!=NULL && doc->isLoaded()) {
-        const QSet<GObjectType>& types = format->getSupportedObjectTypes();
-        if (types.contains(GObjectTypes::SEQUENCE)) {
-            QList<GObject*> seqObjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
-            QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-            foreach(GObject* go, seqObjs) {
-                assert(go != NULL);
-                const DNASequence& dna = ((DNASequenceObject*)go)->getDNASequence();
-                pattern += QString(dna.constData()) + ";";
-                patternNames[dna.constData()] = dna.getName();
-                if(!dna.info[DNAInfo::FASTA_HDR].toString().isEmpty()) {
-                    fastaHeaders[dna.constData()] = dna.info[DNAInfo::FASTA_HDR].toString();
-                }
-            }
-
-        } else {
-            foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-                foreach(const DNASequence& s, MSAUtils::ma2seq(((MAlignmentObject*)go)->getMAlignment(), false)) {
-                    pattern += QString(s.constData()) + ";";
-                }
+    const QSet<GObjectType>& types = format->getSupportedObjectTypes();
+    if (types.contains(GObjectTypes::SEQUENCE)) {
+        QList<GObject*> seqObjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+        QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+        foreach(GObject* go, seqObjs) {
+            assert(go != NULL);
+            const DNASequence& dna = ((U2SequenceObject*)go)->getWholeSequence();
+            pattern += QString(dna.constData()) + ";";
+            patternNames[dna.constData()] = dna.getName();
+            if(!dna.info[DNAInfo::FASTA_HDR].toString().isEmpty()) {
+                fastaHeaders[dna.constData()] = dna.info[DNAInfo::FASTA_HDR].toString();
             }
         }
-    }
-    if (doc!=NULL && doc->isLoaded()) {
-        doc->unload();
+
+    } else {
+        foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+            foreach(const DNASequence& s, MSAUtils::ma2seq(((MAlignmentObject*)go)->getMAlignment(), false)) {
+                pattern += QString(s.constData()) + ";";
+            }
+        }
     }
     return pattern;
 }

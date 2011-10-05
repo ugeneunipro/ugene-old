@@ -23,6 +23,7 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <QtCore/QDir>
 
@@ -154,7 +155,7 @@ SMatrix SubstMatrixRegistry::parseMatrix(const QString& name, const QByteArray& 
                 }
                 alphaRow.append(c);
             }
-            alphabet = AppContext::getDNAAlphabetRegistry()->findAlphabet(alphaRow);
+            alphabet = U2AlphabetUtils::findBestAlphabet(alphaRow);
             if (!alphabet->isAmino() && !alphabet->isNucleic()) {
                 error = tr("Alphabet is neither nucleic nor protein!");
                 return SMatrix();

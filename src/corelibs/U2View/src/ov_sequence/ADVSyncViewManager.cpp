@@ -235,7 +235,7 @@ void ADVSyncViewManager::sl_rangeChanged() {
         }
         int panOffset = pan->getSyncOffset();
         int resultOffset = panOffset - activeOffset;
-        qint64 seqLen = pan->getSeqLen();
+        qint64 seqLen = pan->getSequenceLength();
         qint64 newStart = qBound(qint64(0), activeRange.startPos + resultOffset, seqLen);
         qint64 nVisible = qMin(activeRange.length, seqLen);
         if (newStart + nVisible > seqLen) {
@@ -469,17 +469,18 @@ void ADVSyncViewManager::sl_onSelectionChanged( LRegionsSelection* sel, const QV
         
         DNASequenceSelection* selection = w->getSequenceSelection();
         selection->clear();
+        qint64 seqLen = w->getSequenceLength();
         foreach(U2Region r, added) {
             r.startPos -= offset;
 
             if (r.startPos < 0) {
                 r.startPos = 0;
             }
-
-            if (r.endPos() > w->getSequenceLen()) {
-                r.length = w->getSequenceLen() - r.startPos;
+                
+            if (r.endPos() > seqLen) {
+                r.length = seqLen - r.startPos;
             }
-            if(r.length > 0) {
+            if (r.length > 0) {
                 selection->addRegion(r);
             }
         }
@@ -489,8 +490,7 @@ void ADVSyncViewManager::sl_onSelectionChanged( LRegionsSelection* sel, const QV
     selectionRecursion = false;
 }
 
-void ADVSyncViewManager::toggleCheckedAction( SyncMode mode )
-{
+void ADVSyncViewManager::toggleCheckedAction(SyncMode mode) {
     switch (mode) {
         case SyncMode_AnnSel:
             lockByAnnSelAction->toggle();
@@ -503,8 +503,7 @@ void ADVSyncViewManager::toggleCheckedAction( SyncMode mode )
     }
 }
 
-void ADVSyncViewManager::updateAutoAnnotationActions()
-{
+void ADVSyncViewManager::updateAutoAnnotationActions() {
     aaActionMap.clear();
     toggleAutoAnnotationsMenu->clear();
 
@@ -530,15 +529,14 @@ void ADVSyncViewManager::updateAutoAnnotationActions()
     foreach (const QString& aName, actionNames) {
         QAction* action = new QAction(toggleAutoAnnotationsMenu);
         action->setObjectName(aName);
-        connect(action, SIGNAL(triggered()), SLOT(sl_toggleAutoAnnotaionsHighlighting()));
+        connect(action, SIGNAL(triggered()), SLOT(sl_toggleAutoAnnotationHighlighting()));
         toggleAutoAnnotationsMenu->addAction(action);
     }
 }
 
 #define HAVE_ENABLED_AUTOANNOTATIONS "have_enabled_autoannotations"
 
-void ADVSyncViewManager::sl_toggleAutoAnnotaionsHighlighting()
-{
+void ADVSyncViewManager::sl_toggleAutoAnnotationHighlighting() {
     QAction* menuAction = qobject_cast<QAction*>( sender() );
     if (menuAction == NULL) {
         return;
@@ -554,8 +552,7 @@ void ADVSyncViewManager::sl_toggleAutoAnnotaionsHighlighting()
 
 }
 
-void ADVSyncViewManager::sl_updateAutoAnnotationsMenu()
-{
+void ADVSyncViewManager::sl_updateAutoAnnotationsMenu() {
     QList<QAction*> menuActions = toggleAutoAnnotationsMenu->actions();
     
     foreach (QAction* menuAction, menuActions) {

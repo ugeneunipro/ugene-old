@@ -49,7 +49,7 @@ BaseContentGraphFactory::BaseContentGraphFactory(GType t, QObject* p)
     }
 }
 
-bool BaseContentGraphFactory::isEnabled(DNASequenceObject* o) const {
+bool BaseContentGraphFactory::isEnabled(U2SequenceObject* o) const {
     DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic();
 }
@@ -125,11 +125,11 @@ void BaseContentGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res
     }
 }
 
-void BaseContentGraphAlgorithm::calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void BaseContentGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
-    const QByteArray& seq = o->getSequence();
+    QByteArray seq = o->getWholeSequenceData();
     int startPos = vr.startPos;
 
 

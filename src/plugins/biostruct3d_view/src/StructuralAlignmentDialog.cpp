@@ -26,6 +26,8 @@
 #include <U2Core/BioStruct3DObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
@@ -103,7 +105,8 @@ void StructuralAlignmentDialog::accept() {
     BioStruct3DReference mobSubset(mob->getSubset());
 
     // Since we unable to change mob structure we clone the GObject
-    BioStruct3DObject *mobClone = qobject_cast<BioStruct3DObject*> (mobSubset.obj->clone());
+    // TODO: clone live-range?
+    BioStruct3DObject *mobClone = qobject_cast<BioStruct3DObject*> (mobSubset.obj->clone(U2DbiRef(), U2OpStatus2Log()));
     mobSubset.obj = mobClone;
 
     StructuralAlignmentTaskSettings settings(refSubset, mobSubset);

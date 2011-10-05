@@ -30,12 +30,14 @@
 namespace U2 {
 
 class Document;
+class Task;
+class U2SequenceObject;
 
 class AssemblyModel : public QObject {
     Q_OBJECT
 public:
     //TODO refactor 
-    AssemblyModel(const DbiHandle & dbiHandle);
+    AssemblyModel(const DbiConnection& dbiConnection);
     ~AssemblyModel();
     
     bool isEmpty() const;
@@ -63,11 +65,11 @@ public:
     bool hasReference() const;
     bool referenceAssociated()const;
     
-    void setReference(U2SequenceDbi * dbi, const U2Sequence & seq);
+    void setReference(U2SequenceObject* seqObj);
 
     QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
 
-    const DbiHandle & getDbiHandle() const {return dbiHandle;}
+    const DbiConnection& getDbiConnection() const {return dbiHandle;}
     
     void associateWithReference(const U2CrossDatabaseReference & ref);
     
@@ -81,7 +83,7 @@ public:
 private:
     void cleanup();
     void startLoadReferenceTask(Task * t);
-    Task * createLoadReferenceAndAddtoProjectTask(const U2CrossDatabaseReference& ref);
+    Task * createLoadReferenceAndAddToProjectTask(const U2CrossDatabaseReference& ref);
     
 signals:
     void si_referenceChanged();
@@ -100,17 +102,14 @@ private:
     qint64 cachedModelLength;
     qint64 cachedModelHeight;
 
-    U2Sequence reference;
-    U2SequenceDbi * referenceDbi;
     
     U2Assembly assembly;
     U2AssemblyDbi * assemblyDbi;
-
-    DbiHandle dbiHandle;
+    DbiConnection dbiHandle;
 
     bool loadingReference;
-    QPointer<Document> refDoc;
-    
+    U2SequenceObject* refObj;
+
     QByteArray referenceMd5;
     bool md5Retrieved;
     

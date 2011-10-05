@@ -34,7 +34,7 @@
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 
 class GTest_CreateSubalignimentTask : public GTest {
     Q_OBJECT

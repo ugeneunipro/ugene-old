@@ -41,6 +41,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -161,8 +162,8 @@ void ExportProjectViewItemsContoller::addImportMenu(QMenu& m) {
 
 static bool hasComplementForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
-        DNASequenceObject* so = qobject_cast<DNASequenceObject*>(o);
-        if (o == NULL || GObjectUtils::findComplementTT(so) == NULL) {
+        U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
+        if (o == NULL || GObjectUtils::findComplementTT(so->getAlphabet()) == NULL) {
             return false;
         } 
     }
@@ -171,7 +172,7 @@ static bool hasComplementForAll(const QList<GObject*>& set) {
 
 static bool hasAminoForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
-        DNASequenceObject* so = qobject_cast<DNASequenceObject*>(o);
+        U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         if (o == NULL || GObjectUtils::findAminoTT(so, false, NULL) == NULL) {
             return false;
         } 
@@ -181,7 +182,7 @@ static bool hasAminoForAll(const QList<GObject*>& set) {
 
 static bool hasNucleicForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
-        DNASequenceObject* so = qobject_cast<DNASequenceObject*>(o);
+        U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         if (o == NULL || GObjectUtils::findBackTranslationTT(so) == NULL) {
             return false;
         } 
@@ -225,7 +226,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
                                                             : QList<GObject*>();
     QStringList objectNames;
     foreach(GObject* o, set) {
-        DNASequenceObject* so = qobject_cast<DNASequenceObject*>(o);
+        U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         QString docUrl = so->getDocument()->getURLString();
         QList<SharedAnnotationData> anns;
         if (s.saveAnnotations) {
@@ -239,9 +240,9 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
             }
         }
         ExportSequenceItem ei;
-        ei.sequence = so->getDNASequence();
+        ei.sequence = so->getWholeSequence();
         ei.annotations = anns;
-        ei.complTT = GObjectUtils::findComplementTT(so);
+        ei.complTT = GObjectUtils::findComplementTT(so->getAlphabet());
         ei.aminoTT = d.translate ? GObjectUtils::findAminoTT(so, false, d.useSpecificTable ? d.translationTable : NULL) : NULL;
         ei.backTT = d.backTranslate ? GObjectUtils::findBackTranslationTT(so, d.translationTable) : NULL;
         s.items.append(ei);

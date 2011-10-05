@@ -329,7 +329,7 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
 {
     ProjectTreeControllerModeSettings settings;
     settings.objectTypesToShow.append(GObjectTypes::SEQUENCE);
-    std::auto_ptr<DNASequenceObjectConstraints> seqConstraints(new DNASequenceObjectConstraints());
+    std::auto_ptr<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
     seqConstraints->alphabetType = DNAAlphabet_NUCL;
     settings.objectConstraints.append(seqConstraints.get());
 
@@ -340,7 +340,7 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
             if (obj->isUnloaded()) {
                 continue;
             }
-            DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+            U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
             
             if (seqObj) {
                 CreateFragmentDialog dlg(seqObj, this);

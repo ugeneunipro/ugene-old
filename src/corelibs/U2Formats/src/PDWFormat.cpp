@@ -24,12 +24,12 @@
 #include "DocumentFormatUtils.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GObjectRelationRoles.h>
-
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
@@ -70,8 +70,8 @@ FormatCheckResult PDWFormat::checkRawData(const QByteArray& rawData, const GUrl&
 }
 
 #define READ_BUFF_SIZE  4096
-void PDWFormat::load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects, TaskStateInfo& ti, 
-                     DNASequenceObject* dnaObj, AnnotationTableObject* aObj)
+void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os, 
+                     U2SequenceObject*& seqObj, AnnotationTableObject*& annObj)
 {
     
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
@@ -83,30 +83,29 @@ void PDWFormat::load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects
     QString dnaName(docUrl.baseFileName());
     QList<Annotation*> annotations;
     
-    while (!ti.cancelFlag) {
+    while (!os.isCoR()) {
         //read header
         len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
         if (len == 0) { //end if stream
             break;
         }
         if (!lineOk) {
-            ti.setError(PDWFormat::tr("Line is too long"));
+            os.setError(PDWFormat::tr("Line is too long"));
         }
         
         if (readBuff.startsWith(PDW_DNANAME_TAG)) {
             dnaName = readPdwValue(readBuff, PDW_DNANAME_TAG);
         } else if (readBuff.startsWith(PDW_SEQUENCE_TAG)) {
-            QByteArray seq = parseSequence(io, ti);
-            DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findAlphabet(seq);
-            DNASequence dna(dnaName, seq , alphabet);
+            QByteArray seq = parseSequence(io, os);
+            DNAAlphabet* alphabet = U2AlphabetUtils::findBestAlphabet(seq);
+            DNASequence dnaSeq(dnaName, seq , alphabet);
             if (isCircular) {
                 DNALocusInfo loi;
                 loi.topology = "circular";
                 loi.name = dnaName;
-                dna.info.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
+                dnaSeq.info.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
             }
-            dnaObj = new DNASequenceObject(dnaName, dna);
-            objects.append(dnaObj);
+            seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, dnaSeq, QVariantMap(), os);
             break;
         } else if (readBuff.startsWith(PDW_CIRCULAR_TAG)) {
             QByteArray val = readPdwValue(readBuff, PDW_CIRCULAR_TAG);
@@ -114,63 +113,51 @@ void PDWFormat::load(IOAdapter* io, const GUrl& docUrl, QList<GObject*>& objects
                 isCircular = true;
             }
         } else if (readBuff.startsWith(PDW_ANNOTATION_TAG)) {
-            Annotation* a = parseAnnotation(io, ti);
+            Annotation* a = parseAnnotation(io, os);
             assert(a != NULL);
             annotations.append(a);
         }  
     }
     
     if (!annotations.isEmpty()) {
-        aObj = new AnnotationTableObject(QString("%1 annotations").arg(dnaName));
-        aObj->addAnnotations(annotations);
-        objects.append(aObj);
+        annObj = new AnnotationTableObject(QString("%1 annotations").arg(dnaName));
+        annObj->addAnnotations(annotations);
+        objects.append(annObj);
 
     }
 
-    if (!ti.hasError() && !ti.cancelFlag && objects.isEmpty()) {
-        ti.setError(Document::tr("Document is empty."));
-    }
+    CHECK_OP(os, );
+    CHECK_EXT(!objects.isEmpty(), os.setError(Document::tr("Document is empty.")), );
 }
 
 
-Document* PDWFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& _fs, DocumentLoadMode mode) {
-    Q_UNUSED(mode);
-  
-    DNASequenceObject* dnaObj = NULL;
-    AnnotationTableObject* aObj = NULL;
-    
-    if( NULL == io || !io->isOpen() ) {
-        ti.setError(L10N::badArgument("IO adapter"));
-        return NULL;
-    }
-    
+Document* PDWFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& _fs, U2OpStatus& os){
+    U2SequenceObject* seqObj = NULL;
+    AnnotationTableObject* annObj = NULL;
+    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QVariantMap fs = _fs;
     QList<GObject*> objects;
     
-    load(io, io->getURL(), objects, ti, dnaObj, aObj);
+    load(io, dbiRef, io->getURL(), objects, os, seqObj, annObj);
 
-    if (ti.hasError() || ti.cancelFlag) {
-        qDeleteAll(objects);
-        return NULL;
-    }
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
     QString lockReason(DocumentFormat::CREATED_NOT_BY_UGENE);
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), objects, fs, lockReason);
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, lockReason);
 
-    if ( (dnaObj != NULL) && (aObj != NULL)) {
-        aObj->addObjectRelation(dnaObj, GObjectRelationRole::SEQUENCE);
+    if (seqObj != NULL && annObj != NULL) {
+        annObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
     }
 
     return doc;
 }
 
-QByteArray PDWFormat::parseSequence( IOAdapter* io, TaskStateInfo& ti )
-{
+QByteArray PDWFormat::parseSequence( IOAdapter* io, U2OpStatus& ti ) {
     QByteArray result;
     
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     
-    while (!ti.cancelFlag) {
+    while (!ti.isCoR()) {
     
         bool lineOk = false;
         qint64 len = io->readUntil(readBuff.data(), READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
@@ -212,7 +199,7 @@ QByteArray PDWFormat::readPdwValue( const QByteArray& readBuf, const QByteArray&
 #define PDW_ANNOTATION_END      "Annotation_End"
 #define PDW_ANNOTATION_ORIENT   "Annotation_Orientation"
 
-Annotation* PDWFormat::parseAnnotation( IOAdapter* io, TaskStateInfo& ti )
+Annotation* PDWFormat::parseAnnotation( IOAdapter* io, U2OpStatus& ti )
 {
     QByteArray readBuf(READ_BUFF_SIZE+1, 0);
 
@@ -220,7 +207,7 @@ Annotation* PDWFormat::parseAnnotation( IOAdapter* io, TaskStateInfo& ti )
     QByteArray aName;
     bool cmpl = false;
 
-    while (!ti.cancelFlag) {
+    while (!ti.isCoR()) {
 
         bool lineOk = false;
         qint64 len = io->readUntil(readBuf.data(), READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);

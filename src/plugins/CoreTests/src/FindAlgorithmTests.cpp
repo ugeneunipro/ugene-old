@@ -170,13 +170,13 @@ void GTest_FindAlgorithmTest::prepare(){
 
     foreach(GObject *go, list){
        if(go->getGObjectName() == sequenceName){
-           se = qobject_cast<DNASequenceObject *>(go);
+           se = qobject_cast<U2SequenceObject *>(go);
            break;
        }
     }
     
-    settings.sequence = se->getSequence();
-    settings.complementTT = GObjectUtils::findComplementTT(se);
+    settings.sequence = se->getWholeSequenceData();
+    settings.complementTT = GObjectUtils::findComplementTT(se->getAlphabet());
     if(translatetoAmino){
         settings.proteinTT = GObjectUtils::findAminoTT(se, false);
     }

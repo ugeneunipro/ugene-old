@@ -27,18 +27,18 @@
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 
 class U2CORE_EXPORT DNASequenceSelection : public LRegionsSelection {
     
     Q_OBJECT
 
 public:
-    DNASequenceSelection(DNASequenceObject* _obj, QObject* p = NULL) : LRegionsSelection(GSelectionTypes::DNASEQUENCE, p), obj(_obj) {}
-    const DNASequenceObject* getSequenceObject() const { return obj; }
+    DNASequenceSelection(U2SequenceObject* _obj, QObject* p = NULL) : LRegionsSelection(GSelectionTypes::DNASEQUENCE, p), obj(_obj) {}
+    const U2SequenceObject* getSequenceObject() const { return obj; }
 
 private:
-    DNASequenceObject* obj;
+    U2SequenceObject* obj;
 };
 
 }//namespace

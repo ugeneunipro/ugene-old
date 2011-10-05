@@ -56,10 +56,8 @@
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/DNASequenceSelection.h>
-
-#include <U2Core/AddPartToSequenceTask.h>
-#include <U2Core/ReplacePartOfSequenceTask.h>
 #include <U2Core/ReverseSequenceTask.h>
+#include <U2Core/ModifySequenceObjectTask.h>
 
 #include <U2View/FindDialog.h>//BUG:423: move to plugins!?
 #include <U2View/SecStructPredictUtils.h>
@@ -86,7 +84,7 @@ namespace U2 {
 
 /* TRANSLATOR U2::AnnotatedDNAView */
 
-AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<DNASequenceObject*>& dnaObjects) 
+AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2SequenceObject*>& dnaObjects) 
 : GObjectView(AnnotatedDNAViewFactory::ID, viewName)
 {
     timerId = 0;
@@ -119,7 +117,7 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<DNASeque
 
     syncViewManager = new ADVSyncViewManager(this);
     
-    foreach(DNASequenceObject* dnaObj, dnaObjects) {
+    foreach(U2SequenceObject* dnaObj, dnaObjects) {
         addObject(dnaObj);
     }
 
@@ -313,7 +311,7 @@ bool AnnotatedDNAView::onObjectRemoved(GObject* o) {
         annotations.removeOne(ao);
         emit si_annotationObjectRemoved(ao);
     } else if (o->getGObjectType() == GObjectTypes::SEQUENCE) {
-        DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(o);
+        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(o);
         ADVSequenceObjectContext* seqCtx = getSequenceContext(seqObj);
         if (seqCtx!=NULL) {
             foreach(ADVSequenceWidget* w, seqCtx->getSequenceWidgets()) {
@@ -362,7 +360,7 @@ void AnnotatedDNAView::buildStaticToolbar(QToolBar* tb) {
     tb->addSeparator();
     
     if (posSelector == NULL && !seqContexts.isEmpty()) {
-        int len = seqContexts.first()->getSequenceLen();
+        qint64 len = seqContexts.first()->getSequenceLength();
         posSelector = new PositionSelector(tb, 1, len);
         connect(posSelector, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
         posSelectorWidgetAction = tb->addWidget(posSelector);
@@ -454,7 +452,7 @@ void AnnotatedDNAView::addRemoveMenu(QMenu* m) {
 
 void AnnotatedDNAView::addEditMenu(QMenu* m) {
     ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
-    DNASequenceObject *seqObj = seqCtx->getSequenceObject();
+    U2SequenceObject *seqObj = seqCtx->getSequenceObject();
     Document *curDoc = seqObj->getDocument();
     QMenu* rm = m->addMenu(tr("Edit sequence"));
     
@@ -707,7 +705,7 @@ QString AnnotatedDNAView::addObject(GObject* o) {
     }
    
     if (o->getGObjectType() == GObjectTypes::SEQUENCE) {
-        DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(o);
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(o);
         ADVSequenceObjectContext* sc = new ADVSequenceObjectContext(this, dnaObj);
         seqContexts.append(sc);
         //if mainSplitter==NULL -> its view initialization and widgets will be added later
@@ -735,7 +733,7 @@ QList<ADVSequenceObjectContext*> AnnotatedDNAView::findRelatedSequenceContexts(G
     QList<GObject*> relatedObjects = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, GObjectRelationRole::SEQUENCE, objects, UOF_LoadedOnly);
     QList<ADVSequenceObjectContext*> res;
     foreach(GObject* seqObj, relatedObjects) {
-        DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(seqObj);
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(seqObj);
         ADVSequenceObjectContext* ctx = getSequenceContext(dnaObj);
         res.append(ctx);
     }
@@ -755,7 +753,7 @@ void AnnotatedDNAView::sl_onShowPosSelectorRequest() {
     QDialog dlg(getWidget());
     dlg.setModal(true);
     dlg.setWindowTitle(tr("Go To"));
-    std::auto_ptr<PositionSelector> ps(new PositionSelector(&dlg, 1, seqCtx->getSequenceLen(), true));
+    std::auto_ptr<PositionSelector> ps(new PositionSelector(&dlg, 1, seqCtx->getSequenceLength(), true));
     connect(ps.get(), SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
     dlg.exec();
 }
@@ -791,7 +789,7 @@ QList<ADVSequenceObjectContext*> AnnotatedDNAView::getAllSeqContextsInFocus() co
     return getSequenceWidgetInFocus()->getSequenceContexts();
 }
 
-ADVSequenceObjectContext* AnnotatedDNAView::getSequenceContext(DNASequenceObject* obj) const {
+ADVSequenceObjectContext* AnnotatedDNAView::getSequenceContext(U2SequenceObject* obj) const {
     foreach(ADVSequenceObjectContext* seqCtx, seqContexts) {
         if(seqCtx->getSequenceObject() == obj) {
             return seqCtx;
@@ -881,8 +879,8 @@ void AnnotatedDNAView::sl_onDocumentLoadedStateChanged() {
     GObjectView::sl_onDocumentLoadedStateChanged();
 }
 
-QList<DNASequenceObject*> AnnotatedDNAView::getSequenceObjectsWithContexts() const {
-    QList<DNASequenceObject*> res;
+QList<U2SequenceObject*> AnnotatedDNAView::getSequenceObjectsWithContexts() const {
+    QList<U2SequenceObject*> res;
     foreach(ADVSequenceObjectContext* cx, seqContexts) {
         res.append(cx->getSequenceObject());
     }
@@ -915,7 +913,7 @@ void AnnotatedDNAView::updateState(const AnnotatedDNAViewState& s) {
         if (seqCtx == NULL) {
             continue;
         }
-        U2Region wholeSeq(0, seqCtx->getSequenceLen());
+        U2Region wholeSeq(0, seqCtx->getSequenceLength());
         U2Region finalSel = reg.intersect(wholeSeq);
         seqCtx->getSequenceSelection()->clear();
         if (!finalSel.isEmpty()) {
@@ -935,19 +933,19 @@ void AnnotatedDNAView::updateState(const AnnotatedDNAViewState& s) {
 
 void AnnotatedDNAView::sl_addSequencePart(){
     ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
-    DNASequenceObject *seqObj = seqCtx->getSequenceObject();
+    U2SequenceObject *seqObj = seqCtx->getSequenceObject();
     
     EditSequencDialogConfig cfg;
 
     cfg.mode = EditSequenceMode_Insert;
-    cfg.source = U2Region(0, seqObj->getSequenceLen());
+    cfg.source = U2Region(0, seqObj->getSequenceLength());
     cfg.alphabet = seqObj->getAlphabet();
         
     EditSequenceDialogController dialog(cfg, getSequenceWidgetInFocus());
     int result = dialog.exec();
     
     if(result == QDialog::Accepted){
-        Task *t = new AddPartToSequenceTask(dialog.getDocumentFormatId(), seqObj, dialog.getPosToInsert(),
+        Task *t = new ModifySequenceContentTask(dialog.getDocumentFormatId(), seqObj, U2Region(dialog.getPosToInsert(), 0),
             dialog.getNewSequence(), dialog.getAnnotationStrategy(), dialog.getDocumentPath(), dialog.mergeAnnotations());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
@@ -956,11 +954,11 @@ void AnnotatedDNAView::sl_addSequencePart(){
 
 void AnnotatedDNAView::sl_removeSequencePart(){
     ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
-    DNASequenceObject *seqObj = seqCtx->getSequenceObject();
+    U2SequenceObject *seqObj = seqCtx->getSequenceObject();
 
     Document *curDoc = seqObj->getDocument();
     QString filter = DialogUtils::prepareDocumentsFileFilter(curDoc->getDocumentFormat()->getFormatId(), false);
-    U2Region source(0, seqObj->getSequenceLen());
+    U2Region source(0, seqObj->getSequenceLength());
 
     U2Region selection = source;
     if( seqCtx->getSequenceSelection()->getSelectedRegions().size() > 0){
@@ -974,10 +972,10 @@ void AnnotatedDNAView::sl_removeSequencePart(){
     }
     Task *t;
     if(dialog.modifyCurrentDocument()){
-        t = new RemovePartFromSequenceTask(dialog.getDocumentFormatId(), seqObj, dialog.getRegionToDelete(), dialog.getStrategy(), seqObj->getDocument()->getURL());
+        t = new ModifySequenceContentTask(dialog.getDocumentFormatId(), seqObj, dialog.getRegionToDelete(), DNASequence(), dialog.getStrategy(), seqObj->getDocument()->getURL());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
     }else{
-        t = new RemovePartFromSequenceTask(dialog.getDocumentFormatId(), seqObj, dialog.getRegionToDelete(), dialog.getStrategy(), dialog.getNewDocumentPath(), dialog.mergeAnnotations());
+        t = new ModifySequenceContentTask(dialog.getDocumentFormatId(), seqObj, dialog.getRegionToDelete(), DNASequence(), dialog.getStrategy(), dialog.getNewDocumentPath(), dialog.mergeAnnotations());
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     seqCtx->getSequenceSelection()->clear();
@@ -985,23 +983,23 @@ void AnnotatedDNAView::sl_removeSequencePart(){
 
 void AnnotatedDNAView::sl_replaceSequencePart() {
     ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
-    DNASequenceObject *seqObj = seqCtx->getSequenceObject();
+    U2SequenceObject *seqObj = seqCtx->getSequenceObject();
 
     EditSequencDialogConfig cfg;
 
     cfg.mode = EditSequenceMode_Replace;
-    cfg.source = U2Region(0, seqObj->getSequenceLen());
+    cfg.source = U2Region(0, seqObj->getSequenceLength());
     cfg.alphabet = seqObj->getAlphabet();
     U2Region selection = seqCtx->getSequenceSelection()->getSelectedRegions().first();
-    cfg.initialText = seqObj->getSequence().mid(selection.startPos, selection.length);
-
+    cfg.initialText = seqObj->getSequenceData(selection);
+    
     EditSequenceDialogController dlg(cfg, getSequenceWidgetInFocus());
     int result = dlg.exec();
     
     if (result != QDialog::Accepted){
         return;
     }
-    Task *t = new ReplacePartOfSequenceTask(dlg.getDocumentFormatId(), seqObj, selection, dlg.getNewSequence(), 
+    Task *t = new ModifySequenceContentTask(dlg.getDocumentFormatId(), seqObj, selection, dlg.getNewSequence(), 
         dlg.getAnnotationStrategy(), dlg.getDocumentPath(), dlg.mergeAnnotations());
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
@@ -1011,7 +1009,7 @@ void AnnotatedDNAView::sl_replaceSequencePart() {
 void AnnotatedDNAView::sl_removeSelectedSequenceObject() {
     ADVSequenceWidget* sw = getSequenceWidgetInFocus();
     ADVSequenceObjectContext* soc = sw->getActiveSequenceContext();
-    DNASequenceObject* so = soc->getSequenceObject();
+    U2SequenceObject* so = soc->getSequenceObject();
     removeObject(so);
 }
 
@@ -1078,7 +1076,7 @@ void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
     
     // 2. update components
     if (obj->getGObjectType() == GObjectTypes::SEQUENCE) {
-        DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
         ADVSequenceObjectContext* ctx = getSequenceContext(seqObj);
         foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
             w->onSequenceObjectRenamed(oldName);
@@ -1090,7 +1088,7 @@ void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
 void AnnotatedDNAView::sl_reverseSequence()
 {
     ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
-    DNASequenceObject *seqObj = seqCtx->getSequenceObject();
+    U2SequenceObject *seqObj = seqCtx->getSequenceObject();
     QList<AnnotationTableObject*> annotations = seqCtx->getAnnotationObjects(false).toList();
     
     DNATranslation* complTr = NULL;
@@ -1114,6 +1112,8 @@ void AnnotatedDNAView::sl_showStatistics(){
 
 DNAStatProfileTask::DNAStatProfileTask(AnnotatedDNAView *v):Task(tr("Generate sequence statistics profile"), TaskFlag_None){
     ctx = v->getSequenceInFocus();
+    contentCounter.resize(256);
+    contentCounter.fill(0);
 }
 
 void DNAStatProfileTask::run(){
@@ -1142,10 +1142,13 @@ void DNAStatProfileTask::run(){
     resultText+="<tr><td></td><td>" + 
         DNAStatProfileTask::tr("Symbol counts") + "</td><td>" +
         DNAStatProfileTask::tr("Symbol percents %") + "</td></tr>";
-    QMap<QChar, int>::const_iterator it(counter.begin());
-    for(;it != counter.end(); it++){
-        const QChar symbol = it.key();
-        const int cnt = it.value();
+
+    for (int i = 0; i < 256; i++) {
+        char symbol = char(i);
+        qint64 cnt = contentCounter[i];
+        if (cnt == 0) {
+            continue;
+        }
         float percentage = cnt/(float)seqLen * 100;
         resultText+=QString("<tr><td><b>%1</b></td><td>%2</td><td>%3</td></tr>").arg(symbol).arg(QString::number(cnt)).arg(QString::number(percentage, 'g', 4));
     }
@@ -1169,39 +1172,46 @@ void DNAStatProfileTask::run(){
 
 Task::ReportResult DNAStatProfileTask::report(){
     assert(!resultText.isEmpty());
-    QString title = DNAStatProfileTask::tr("Statistics for %1 sequence").arg(ctx->getSequenceObject()->getSequenceName());
+    QString title = DNAStatProfileTask::tr("Statistics for %1 sequence").arg(ctx->getSequenceObject()->getGObjectName());
     WebWindow* w = new WebWindow(title, resultText);
     w->setWindowIcon(QIcon(":core/images/chart_bar.png"));
     AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
-    return Task::ReportResult_Finished;
     return ReportResult_Finished;
 }
 
 void DNAStatProfileTask::computeStats(){
-    seqLen = ctx->getSequenceLen();
+    seqLen = ctx->getSequenceLength();
     QByteArray alphabetChars = ctx->getAlphabet()->getAlphabetChars();
     
-    foreach(const char c, ctx->getSequenceData()){
-        if(counter.contains(c)){
-            counter[c]++;
-        }else{
-            counter.insert(c, 1);
-        }
-    }
+    U2Region wholeSeqReg(0, ctx->getSequenceLength());
+    qint64 blockSize = 1024*1024;
+    qint64 prevEnd = 0;
+    bool dinucl = ctx->getAlphabet()->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    QByteArray nucPair = "NN";
 
-    if(ctx->getAlphabet()->getId() == "NUCL_DNA_DEFAULT_ALPHABET"){
-        QByteArray nucPair = "NN";
-        foreach(const char c, ctx->getSequenceData()){
+    do {
+        U2Region r = wholeSeqReg.intersect(U2Region(prevEnd, blockSize));
+        prevEnd += blockSize;
+        QByteArray seqBlock = ctx->getSequenceData(r);
+        foreach(char c, seqBlock){
+            contentCounter[uchar(c)]++;
+            if (!dinucl) {
+                continue;
+            }
             nucPair[0] = nucPair[1];
             nucPair[1] = c;
-            if(nucPair.contains("-") || nucPair.contains("N")) continue;
-            if(diNuclCounter.contains(nucPair)){
+            if (!nucPair.contains("-") && !nucPair.contains("N")) {
+                continue;
+            }
+            if (diNuclCounter.contains(nucPair)){
                 diNuclCounter[nucPair]++;
-            }else{
+            } else {
                 diNuclCounter.insert(nucPair, 1);
             }
         }
-    }
+    } while (prevEnd < wholeSeqReg.endPos());
+
+        
 }
 
 

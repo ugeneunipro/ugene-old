@@ -502,10 +502,28 @@ qint64 SQLiteQuery::getLastRowId() {
 
 //////////////////////////////////////////////////////////////////////////
 // SQLite transaction helper
+
+static void checkStack(const QVector<SQLiteTransaction*>& stack) {
+#ifdef _DEBUG
+    QThread* expectedThread = QThread::currentThread();
+    for (int i = 0; i < stack.size(); i++) {
+        SQLiteTransaction* t = stack[i];
+        assert(t->thread == expectedThread);
+    }
+#else 
+    Q_UNUSED(stack);
+#endif
+}
+
 SQLiteTransaction::SQLiteTransaction(DbRef* ref, U2OpStatus& _os)
 : db(ref), os(_os) 
 {
-    if (db->useTransaction && db->transactionDepth == 0) {
+#ifdef _DEBUG
+    thread = QThread::currentThread();
+#endif
+    QMutexLocker m(&db->lock);
+
+    if (db->useTransaction && db->transactionStack.isEmpty()) {
         db->lock.lock();
         int rc = sqlite3_exec(db->handle, "BEGIN TRANSACTION;", NULL, NULL, NULL);
         if (rc != SQLITE_OK) {
@@ -515,11 +533,22 @@ SQLiteTransaction::SQLiteTransaction(DbRef* ref, U2OpStatus& _os)
         }
 
     }
-    db->transactionDepth++;
+    if (db->useTransaction) {
+        checkStack(db->transactionStack);
+        db->transactionStack << this;
+    }
 }
 
 SQLiteTransaction::~SQLiteTransaction() {
-    if (db->useTransaction && db->transactionDepth == 1) {
+    QMutexLocker m(&db->lock);
+
+    assert(db->transactionStack.last() == this);
+    if (db->useTransaction) {
+        checkStack(db->transactionStack);
+        db->transactionStack.pop_back();
+    }
+
+    if (db->useTransaction && db->transactionStack.isEmpty()) {
         int rc;
         if (os.hasError()) {
             rc = sqlite3_exec(db->handle, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);
@@ -531,7 +560,7 @@ SQLiteTransaction::~SQLiteTransaction() {
             os.setError(SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
         }
     }
-    db->transactionDepth--;
+    
 }
 
 

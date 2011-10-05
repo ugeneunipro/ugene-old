@@ -31,7 +31,7 @@
 namespace U2 {
 
 class AnnotatedDNAView;
-class DNASequenceObject;
+class U2SequenceObject;
 class DNASequenceSelection;
 class ADVSequenceWidgetAction;
 class ADVSequenceObjectContext;
@@ -44,7 +44,7 @@ public:
 
     AnnotatedDNAView* getAnnotatedDNAView() const {return ctx;}
 
-    virtual QList<DNASequenceObject*> getSequenceObjects() const;
+    virtual QList<U2SequenceObject*> getSequenceObjects() const;
     virtual QList<ADVSequenceObjectContext*> getSequenceContexts() const {return seqContexts;}
 
     /** actions associated with this block. Automatically deleted with block*/
@@ -78,8 +78,8 @@ public:
     virtual void onSequenceObjectRenamed(const QString& oldName) = 0;
     
 signals:
-    void si_sequenceObjectAdded(DNASequenceObject*);
-    void si_sequenceObjectRemoved(DNASequenceObject* );
+    void si_sequenceObjectAdded(U2SequenceObject*);
+    void si_sequenceObjectRemoved(U2SequenceObject* );
     
 protected:
     AnnotatedDNAView*                   ctx;

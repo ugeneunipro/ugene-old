@@ -90,11 +90,12 @@ FindDialog::FindDialog(ADVSequenceObjectContext* context): QDialog(context->getA
     if(!selection.isEmpty()) {
         initialSelection = selection.first();
     }
-    rs=new RegionSelector(this, ctx->getSequenceLen(), false, ctx->getSequenceSelection());
+    int seqLen = context->getSequenceLength();
+
+    rs = new RegionSelector(this, seqLen, false, ctx->getSequenceSelection());
     horizontalLayout->addWidget(rs);
 
-    int seqLen = context->getSequenceLen();
-
+    
     sbCurrentPos->setMinimum(1);
     sbCurrentPos->setMaximum(seqLen);
     sbCurrentPos->setValue(rs->getRegion().startPos+1);
@@ -219,7 +220,7 @@ void FindDialog::sl_onSaveAnnotations() {
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
-    m.sequenceLen = ctx->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
@@ -332,7 +333,7 @@ void FindDialog::tunePercentBox() {
 //line ed
 void FindDialog::sl_onSearchPatternChanged(const QString&) {
     if (leFind->text().length() > getCompleteSearchRegion().length) {//if pattern greater then search region
-        rs->setRegion(U2Region(0,sequence->getSequenceLen()));
+        rs->setRegion(U2Region(0,sequence->getSequenceLength()));
     }
     tunePercentBox();
     updateState();
@@ -460,7 +461,7 @@ void FindDialog::runTask(bool singleShot) {
     assert(task == NULL);
     
     FindAlgorithmTaskSettings s;
-    s.sequence = ctx->getSequenceData();
+    s.sequence = ctx->getSequenceObject()->getWholeSequenceData();
     s.pattern = leFind->text().toLocal8Bit();
     s.strand = rbBoth->isChecked() ? FindAlgorithmStrand_Both : (rbDirect->isChecked() ? FindAlgorithmStrand_Direct : FindAlgorithmStrand_Complement);
     s.complementTT = ctx->getComplementTT();

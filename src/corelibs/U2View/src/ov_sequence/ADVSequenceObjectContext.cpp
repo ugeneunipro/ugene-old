@@ -37,7 +37,7 @@
 
 namespace U2 {
 
-ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, DNASequenceObject* obj) 
+ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2SequenceObject* obj) 
 : QObject(v), view(v), seqObj(obj), aminoTT(NULL), complTT(NULL), selection(NULL), translations(NULL), visibleFrames(NULL)
 {
     selection = new DNASequenceSelection(seqObj, this);
@@ -45,7 +45,7 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, DNASeque
     DNAAlphabet* al  = getAlphabet();
     if (al->isNucleic()) {
         DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
-        complTT = GObjectUtils::findComplementTT(seqObj);
+        complTT = GObjectUtils::findComplementTT(seqObj->getAlphabet());
         aminoTT = GObjectUtils::findAminoTT(seqObj, true);
         clarifyAminoTT = aminoTT == NULL;
         
@@ -107,16 +107,20 @@ void ADVSequenceObjectContext::guessAminoTT(AnnotationTableObject* ao) {
 }
 
 
-const QByteArray& ADVSequenceObjectContext::getSequenceData() const {
-    return seqObj->getSequence();
-}
-
-int ADVSequenceObjectContext::getSequenceLen() const {
-    return seqObj->getSequenceLen();
+qint64 ADVSequenceObjectContext::getSequenceLength() const {
+    return seqObj->getSequenceLength();
 }
 
 DNAAlphabet* ADVSequenceObjectContext::getAlphabet() const {
     return seqObj->getAlphabet();
+}
+
+QByteArray ADVSequenceObjectContext::getSequenceData(const U2Region& r) const {
+    return seqObj->getSequenceData(r);
+}
+
+U2EntityRef ADVSequenceObjectContext::getSequenceRef() const {
+    return seqObj->getSequenceRef();
 }
 
 QList<GObject*> ADVSequenceObjectContext::getAnnotationGObjects() const {
@@ -289,14 +293,6 @@ QList<Annotation*> ADVSequenceObjectContext::selectRelatedAnnotations(const QLis
 
 GObject* ADVSequenceObjectContext::getSequenceGObject() const {
     return seqObj;
-}
-
-U2SequenceDbi* ADVSequenceObjectContext::getSequenceDbi() const {
-    return seqObj->asDbi();
-}
-
-U2DataId ADVSequenceObjectContext::getSequenceId() const {
-    return seqObj->getDbiObjectId();
 }
 
 void ADVSequenceObjectContext::addAutoAnnotationObject( AnnotationTableObject* obj ){

@@ -29,7 +29,7 @@ namespace U2 {
 /** 
     Representation for set of genomic variations. 
 */
-class U2CORE_EXPORT U2VariantTrack : public U2Object {
+class U2VariantTrack : public U2Object {
 public:
     U2VariantTrack() {}
     U2VariantTrack(const U2DataId& id, const QString& dbId, qint64 version) : U2Object(id, dbId, version){}
@@ -42,7 +42,7 @@ public:
 };
 
 /** Database representation of genomic variations such as snps, indels, etc.  */
-class U2CORE_EXPORT U2Variant : public U2Entity {
+class U2Variant : public U2Entity {
 public:
     U2Variant() : startPos(0), endPos(0) {}
 

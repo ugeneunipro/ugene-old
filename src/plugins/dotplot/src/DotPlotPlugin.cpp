@@ -141,7 +141,7 @@ void DotPlotViewContext::sl_showDotPlotDialog() {
     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
 }
 
-static DNASequenceObject * getSequenceByFile(QString file) {
+static U2SequenceObject * getSequenceByFile(QString file) {
     Project *project = AppContext::getProject();
     SAFE_POINT(project != NULL, "No project loaded", NULL);
 
@@ -150,7 +150,7 @@ static DNASequenceObject * getSequenceByFile(QString file) {
 
     QList<GObject*> sequences = GObjectUtils::select(doc->getObjects(), GObjectTypes::SEQUENCE, UOF_LoadedOnly);
     if(! sequences.isEmpty()) {
-        return qobject_cast<DNASequenceObject*>(sequences.first());
+        return qobject_cast<U2SequenceObject*>(sequences.first());
     }
     return NULL;
 }

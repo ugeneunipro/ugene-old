@@ -31,6 +31,8 @@ class Annotation;
 class AnnotationGroup;
 class AnnotationTableObject;
 class DNATranslation;
+class U2EntityRef;
+class U2OpStatus;
 
 class U2CORE_EXPORT AnnotationSelectionData {
 public:
@@ -77,8 +79,8 @@ public:
     
     bool contains(const Annotation* a, int locationIdx) const;
 
-    static void getAnnotationSequence(QByteArray& res, const AnnotationSelectionData& sd, char gapSym, 
-                                      const QByteArray& seq, DNATranslation* complTT, DNATranslation* aminoTT);
+    static void getAnnotationSequence(QByteArray& res, const AnnotationSelectionData& ad, char gapSym, 
+                                      const U2EntityRef& ref, DNATranslation* complTT, DNATranslation* aminoTT, U2OpStatus& os);
 
     // Returns list of locations of all selected annotations that belongs to the objects in list
     QVector<U2Region> getSelectedLocations(const QSet<AnnotationTableObject*>& objects) const;

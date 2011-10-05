@@ -87,7 +87,7 @@ public:
 class WeightMatrixSearchTask : public Task {
     Q_OBJECT
 public:
-    WeightMatrixSearchTask(const QList< QPair< PWMatrix, WeightMatrixSearchCfg > >& models, const char* seq, int len, int resultsOffset);
+    WeightMatrixSearchTask(const QList< QPair< PWMatrix, WeightMatrixSearchCfg > >& models, const QByteArray& seq, int resultsOffset);
     
     QList<WeightMatrixSearchResult> takeResults();
 
@@ -103,7 +103,7 @@ private:
 class WeightMatrixSingleSearchTask : public Task, public SequenceWalkerCallback {
     Q_OBJECT
 public:
-    WeightMatrixSingleSearchTask(const PWMatrix& model, const char* seq, int len, const WeightMatrixSearchCfg& cfg, int resultsOffset);
+    WeightMatrixSingleSearchTask(const PWMatrix& model, const QByteArray& seq, const WeightMatrixSearchCfg& cfg, int resultsOffset);
     
     virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti);
     QList<WeightMatrixSearchResult> takeResults();
@@ -116,6 +116,7 @@ private:
     WeightMatrixSearchCfg               cfg;
     QList<WeightMatrixSearchResult>     results;
     int                                 resultsOffset;
+    QByteArray                          seq;
 };
 
 }//namespace

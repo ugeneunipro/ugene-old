@@ -44,7 +44,7 @@ namespace U2 {
 
 ////////////////////////////////////////
 //BlastAllSupportRunDialog
-BlastAllSupportRunDialog::BlastAllSupportRunDialog(DNASequenceObject* _dnaso, BlastTaskSettings& _settings, QString &_lastDBPath, QString &_lastDBName, QWidget* _parent) :
+BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, BlastTaskSettings& _settings, QString &_lastDBPath, QString &_lastDBName, QWidget* _parent) :
         BlastRunCommonDialog(_settings, _parent), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
 {
     CreateAnnotationModel ca_m;
@@ -52,7 +52,7 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(DNASequenceObject* _dnaso, Bl
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
     ca_m.sequenceObjectRef = GObjectReference(dnaso);
-    ca_m.sequenceLen = dnaso->getSequenceLen();
+    ca_m.sequenceLen = dnaso->getSequenceLength();
     ca_c = new CreateAnnotationWidgetController(ca_m, this);
     //lowerCaseCheckBox->hide();
     QWidget *wdgt = ca_c->getWidget();
@@ -196,10 +196,10 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_inputFileLoadTaskStateChange
         }
         foreach(GObject* gobj, s->getDocument()->getObjects()){
             if(gobj->getGObjectType()==GObjectTypes::SEQUENCE){
-                DNASequenceObject* seq=(DNASequenceObject*)gobj;
+                U2SequenceObject* seq=(U2SequenceObject*)gobj;
                 BlastTaskSettings localSettings;
-                localSettings.querySequence=seq->getDNASequence().seq;
-                localSettings.alphabet=seq->getDNASequence().alphabet;
+                localSettings.querySequence = seq->getWholeSequenceData();
+                localSettings.alphabet = seq->getAlphabet();
                 if(localSettings.alphabet->getType() != DNAAlphabet_AMINO){
                     localSettings.isNucleotideSeq=true;
                 }
@@ -209,7 +209,7 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_inputFileLoadTaskStateChange
             }
         }
 
-        //DNASequenceObject* seq=(DNASequenceObject*)sequencesRefList[0];
+        //U2SequenceObject* seq=(U2SequenceObject*)sequencesRefList[0];
         CreateAnnotationModel ca_m;
         ca_m.data->name = "misc_feature";
         ca_m.hideAnnotationName = true;

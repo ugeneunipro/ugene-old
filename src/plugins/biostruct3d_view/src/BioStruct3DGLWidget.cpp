@@ -105,7 +105,7 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
 
         defaultsSettings(), currentColorSchemeName(), currentGLRendererName(),
         rotAngle(0), spinAngle(0), rotAxis(), lastPos(),
-        lightPostion(), backgroundColor(DEFAULT_BACKGROUND_COLOR),
+        backgroundColor(DEFAULT_BACKGROUND_COLOR),
         selectionColor(DEFAULT_SELECTION_COLOR), animationTimer(0),
         unselectedShadingLevel(DEFAULT_SHADING_LEVEL),
 
@@ -113,6 +113,7 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
         resetAlignmentAction(0), colorSchemeActions(0), rendererActions(0), molSurfaceRenderActions(0),
         molSurfaceTypeActions(0), selectColorSchemeMenu(0), selectRendererMenu(0), displayMenu(0)
 {
+    lightPosition[0] = lightPosition[1] = lightPosition[2] = lightPosition[3] = 0;
     GCOUNTER( cvar, tvar, "BioStruct3DGLWidget" );
 
     QString currentModelID = obj->getBioStruct3D().pdbId;
@@ -206,7 +207,7 @@ void BioStruct3DGLWidget::initializeGL() {
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPostion);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glEnable(GL_BLEND);                                         // Enable Blending
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -333,16 +334,14 @@ void BioStruct3DGLWidget::contextMenuEvent(QContextMenuEvent *event) {
 
 void BioStruct3DGLWidget::setLightPosition( const Vector3D& pos )
 {
-    lightPostion[0] = pos.x;
-    lightPostion[1] = pos.y;
-    lightPostion[2] = pos.z;
-    lightPostion[3] = 1.0;
+    lightPosition[0] = pos.x;
+    lightPosition[1] = pos.y;
+    lightPosition[2] = pos.z;
+    lightPosition[3] = 1.0;
 }
 
-static int getSequenceChainId(const DNASequenceObject* seqObj) {
-    const QVariantMap &info = seqObj->getDNASequence().info;
-    int id = info.value(DNAInfo::CHAIN_ID, qVariantFromValue(-1)).toInt();
-
+static int getSequenceChainId(const U2SequenceObject* seqObj) {
+    int id = seqObj->getSequenceAttribute(DNAInfo::CHAIN_ID).toInt();
     return id;
 }
 
@@ -351,13 +350,13 @@ void BioStruct3DGLWidget::sl_onSequenceSelectionChanged(LRegionsSelection *s, co
         return;
 
     DNASequenceSelection* selection = qobject_cast<DNASequenceSelection*>(s);
-    const DNASequenceObject* seqObj = selection->getSequenceObject();
+    const U2SequenceObject* seqObj = selection->getSequenceObject();
     assert(seqObj);
 
     const BioStruct3DRendererContext &ctx = contexts.first();
 
-    // check that biostruct and sequence objects are from the same doucment
-    // apropriate relation check must be here
+    // check that biostruct and sequence objects are from the same document
+    // appropriate relation check must be here
     if (seqObj->getDocument() == ctx.obj->getDocument()) {
         int chainId = getSequenceChainId(seqObj);
         assert(ctx.biostruct->moleculeMap.contains(chainId));

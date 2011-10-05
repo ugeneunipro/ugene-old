@@ -98,7 +98,7 @@ private:
 
     void createEDSequence();
     void updateEDSequenceProperties();
-    DNASequenceObject* getSeqObjectFromEDSequence(EDPISequence* sItem);
+    U2SequenceObject* getSeqObjectFromEDSequence(EDPISequence* sItem);
     Document* createUDocument(SequenceType sType);
 
     bool wizzard;

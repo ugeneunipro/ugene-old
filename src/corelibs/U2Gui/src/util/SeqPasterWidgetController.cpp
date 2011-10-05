@@ -23,6 +23,7 @@
 #include "ui/ui_SeqPasterWidget.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/DNAAlphabet.h>
 
 namespace U2{
@@ -84,15 +85,14 @@ QString SeqPasterWidgetController::validate(){
     
     QByteArray seq = ((ui->sequenceEdit->document())->toPlainText()).toUtf8();
     seq=QString(seq).remove(QRegExp("\\s")).toAscii();
-    DNAAlphabetRegistry *r = AppContext::getDNAAlphabetRegistry();
     DNAAlphabet *alph = NULL;
     if(ui->useCustomSettingsBox->isChecked()){
-        alph = r->findById((ui->alphabetBox->itemData(ui->alphabetBox->currentIndex())).toString());
+        alph = U2AlphabetUtils::getById((ui->alphabetBox->itemData(ui->alphabetBox->currentIndex())).toString());
     }else{
-        if(preferred != NULL){
+        if (preferred != NULL){
             alph = preferred;
-        }else{
-            alph = r->findAlphabet(seq);
+        } else {
+            alph = U2AlphabetUtils::findBestAlphabet(seq);
         }
     }
     if(alph == NULL){

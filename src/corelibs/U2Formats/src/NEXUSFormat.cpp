@@ -22,17 +22,18 @@
 #include "NEXUSFormat.h"
 #include "NEXUSParser.h"
 
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
-
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/PhyTreeObject.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
-#include <U2Core/TextUtils.h>
-
-#include <U2Core/DNAAlphabet.h>
 
 namespace U2 
 {
@@ -424,12 +425,9 @@ bool NEXUSParser::readDataContents(Context &ctx) {
             // Determine alphabet & replace missing chars
             if (ctx.contains("missing")) {
                 char missing = ctx["missing"].toAscii()[0];
-                DocumentFormatUtils::assignAlphabet(ma, missing);
-                if (ma.getAlphabet() == 0) {
-                    errors.append("Unknown alphabet");
-                    return false;
-                }
-
+                U2AlphabetUtils::assignAlphabet(ma, missing);
+                CHECK_EXT(ma.getAlphabet() != NULL, errors.append("Unknown alphabet"), false);
+                
                 char ourMissing = ma.getAlphabet()->getDefaultSymbol();
 
                 // replace missing
@@ -437,7 +435,8 @@ bool NEXUSParser::readDataContents(Context &ctx) {
                     ma.replaceChars(i, missing, ourMissing);
                 }
             } else {
-                DocumentFormatUtils::assignAlphabet(ma);
+                U2AlphabetUtils::assignAlphabet(ma);
+                CHECK_EXT(ma.getAlphabet() != NULL, errors.append("Unknown alphabet"), false);
             }
 
             if (ma.getAlphabet() == 0) {
@@ -617,7 +616,7 @@ void NEXUSParser::addObject(GObject *obj) {
     objects.append(obj);
 }
 
-QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, TaskStateInfo &ti) {
+QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, U2OpStatus &ti) {
     assert(io && "io must exist");
 
     const int HEADER_LEN = 6;
@@ -641,27 +640,23 @@ QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, TaskStateInfo &ti) {
     return objects;
 }
 
-Document* NEXUSFormat::loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVariantMap &fs, DocumentLoadMode) {
+Document* NEXUSFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     assert(io && "IO must exist");
 
-    QList<GObject*> objects = loadObjects(io, ti);
-    if (ti.hasError())
-    {
-        qDeleteAll(objects);
-        return 0;
-    }
-
-    Document *d = new Document(this, io->getFactory(), io->getURL(), objects, fs);
+    QList<GObject*> objects = loadObjects(io, os);
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
+    
+    Document *d = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
     return d;
 }
 
-void writeHeader(IOAdapter *io, TaskStateInfo&) {
+void writeHeader(IOAdapter *io, U2OpStatus&) {
     QByteArray line;
     QTextStream(&line) << "#NEXUS\n\n";
     io->writeBlock(line);
 }
 
-void writeMAligment(const MAlignment &ma, IOAdapter *io, TaskStateInfo&) {
+void writeMAligment(const MAlignment &ma, IOAdapter *io, U2OpStatus&) {
     QByteArray line;
     QByteArray tabs, tab(4, ' ');
 
@@ -781,7 +776,7 @@ static void writeNode(PhyNode* node, IOAdapter* io) {
 }
 
 // spike: PhyTreeData don't have own name
-void writePhyTree(const PhyTree &pt, QString name, IOAdapter *io, TaskStateInfo&)
+void writePhyTree(const PhyTree &pt, QString name, IOAdapter *io, U2OpStatus&)
 {
     QByteArray line;
     QByteArray tabs, tab(4, ' ');
@@ -806,11 +801,11 @@ void writePhyTree(const PhyTree &pt, QString name, IOAdapter *io, TaskStateInfo&
     line.clear();
 }
 
-void writePhyTree(const PhyTree &pt, IOAdapter *io, TaskStateInfo &ti) {
+void writePhyTree(const PhyTree &pt, IOAdapter *io, U2OpStatus &ti) {
     writePhyTree(pt, "Tree", io, ti);
 }
 
-void NEXUSFormat::storeObjects(QList<GObject*> objects, IOAdapter *io, TaskStateInfo &ti) {
+void NEXUSFormat::storeObjects(QList<GObject*> objects, IOAdapter *io, U2OpStatus &ti) {
     assert(io && "IO must exist");
     writeHeader(io, ti);
 
@@ -830,7 +825,7 @@ void NEXUSFormat::storeObjects(QList<GObject*> objects, IOAdapter *io, TaskState
     }
 }
 
-void NEXUSFormat::storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io) {
+void NEXUSFormat::storeDocument(Document *d, U2OpStatus &ts, IOAdapter *io) {
     QList<GObject*> objects = d->getObjects();
     storeObjects(objects, io, ts);
 }

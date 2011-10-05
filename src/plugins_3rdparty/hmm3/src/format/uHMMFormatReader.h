@@ -47,7 +47,7 @@ public:
     static const QString HMMER3_VERSION_HEADER;
     
 public:
-    UHMMFormatReader( IOAdapter * i, TaskStateInfo & tsi );
+    UHMMFormatReader( IOAdapter * i, U2OpStatus & os);
     P7_HMM * getNextHmm();
     
     struct UHMMFormatReaderException {
@@ -62,7 +62,7 @@ private:
     
 private:
     IOAdapter *     io; // opened io adapter
-    TaskStateInfo & ti;
+    U2OpStatus&     os;
     
 }; // UHMMFormatReader
 

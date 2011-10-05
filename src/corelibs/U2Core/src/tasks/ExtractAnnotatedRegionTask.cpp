@@ -67,8 +67,8 @@ void ExtractAnnotatedRegionTask::prepareTranslations() {
 void ExtractAnnotatedRegionTask::run() {
     QVector<U2Region> safeLocation = inputAnn->getRegions();
     U2Region::bound(0, inputSeq.length(), safeLocation);
-    QList<QByteArray> resParts = SequenceUtils::extractRegions(inputSeq.constData(), safeLocation, complT);
-    QVector<U2Region> resLocation = SequenceUtils::toJoinedRegions(resParts);
+    QList<QByteArray> resParts = U1SequenceUtils::extractRegions(inputSeq.seq, safeLocation, complT, NULL, inputSeq.circular);
+    QVector<U2Region> resLocation = U1SequenceUtils::getJoinedMapping(resParts);
     if (aminoT == NULL) { // extension does not work for translated annotations
         if (cfg.extLeft > 0) {
             int annStart = safeLocation.first().startPos;
@@ -87,10 +87,10 @@ void ExtractAnnotatedRegionTask::run() {
             resParts.append(postSeq);
         }
     } else {
-        resParts = SequenceUtils::translateRegions(resParts, aminoT, inputAnn->isJoin());
-        resLocation = SequenceUtils::toJoinedRegions(resParts);
+        resParts = U1SequenceUtils::translateRegions(resParts, aminoT, inputAnn->isJoin());
+        resLocation = U1SequenceUtils::getJoinedMapping(resParts);
     }
-    resultedSeq.seq = resParts.size() == 1 ? resParts.first() : SequenceUtils::joinRegions(resParts);
+    resultedSeq.seq = resParts.size() == 1 ? resParts.first() : U1SequenceUtils::joinRegions(resParts);
     resultedAnn = inputAnn;
     resultedAnn->location->regions = resLocation;
     resultedAnn->setStrand(U2Strand::Direct);

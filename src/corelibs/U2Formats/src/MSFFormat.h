@@ -40,15 +40,16 @@ public:
 
     virtual const QString& getFormatName() const { return formatName; }
 
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-
-    virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
+    virtual void storeDocument( Document* d, U2OpStatus& ts, IOAdapter* io );
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
     
 private:
-    void save(IOAdapter* io, Document* doc, TaskStateInfo& ti);
-    void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti);
+    void save(IOAdapter* io, Document* doc, U2OpStatus& ti);
+    void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti);
 
     QString formatName;
     

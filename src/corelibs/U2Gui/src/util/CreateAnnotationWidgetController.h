@@ -51,7 +51,7 @@ public:
 
     GObjectReference        annotationObjectRef; // the object to be loaded
     QString                 newDocUrl;        // the URL of new document with annotation table to be created
-    int                     sequenceLen;        //length of target sequence for validation purposes
+    qint64                  sequenceLen;        //length of target sequence for validation purposes
 
     AnnotationTableObject*  getAnnotationObject() const;
 };

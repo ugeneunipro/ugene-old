@@ -112,7 +112,7 @@ PWMSearchDialogController::PWMSearchDialogController(ADVSequenceObjectContext* _
     task = NULL;
     
     initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
-    int seqLen = ctx->getSequenceLen();
+    int seqLen = ctx->getSequenceLength();
 
     rs=new RegionSelector(this, seqLen, true, ctx->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
@@ -223,7 +223,7 @@ void PWMSearchDialogController::sl_onSaveAnnotations() {
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
-    m.sequenceLen = ctx->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
@@ -453,8 +453,7 @@ void PWMSearchDialogController::runTask() {
         return;
     }
 
-    const char* seq = ctx->getSequenceData().constData() + reg.startPos;
-
+    
     DNATranslation* complTT = rbBoth->isChecked() || rbComplement->isChecked() ? ctx->getComplementTT() : NULL;
     bool complOnly = rbComplement->isChecked();
 
@@ -467,7 +466,9 @@ void PWMSearchDialogController::runTask() {
 
     sl_onClearList();
 
-    task = new WeightMatrixSearchTask(queue, seq, len, reg.startPos);
+    QByteArray seq = ctx->getSequenceData(reg);
+
+    task = new WeightMatrixSearchTask(queue, seq, reg.startPos);
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onTaskFinished()));
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     updateState();

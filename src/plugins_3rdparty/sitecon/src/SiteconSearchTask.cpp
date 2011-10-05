@@ -24,20 +24,20 @@
 
 namespace U2 {
 
-SiteconSearchTask::SiteconSearchTask(const SiteconModel& m, const char* s, int l, const SiteconSearchCfg& cfg, int ro) 
-: Task(tr("sitecon_search"), TaskFlags_NR_FOSCOE), model(m), cfg(cfg), resultsOffset(ro)
+SiteconSearchTask::SiteconSearchTask(const SiteconModel& m, const QByteArray& seq, const SiteconSearchCfg& cfg, int ro) 
+: Task(tr("sitecon_search"), TaskFlags_NR_FOSCOE), model(m), cfg(cfg), resultsOffset(ro), wholeSeq(seq)
 {
     GCOUNTER( cvar, tvar, "SiteconSearchTask" );
     model.checkState(true);
     model.matrix = SiteconAlgorithm::normalize(model.matrix, model.settings);
     SequenceWalkerConfig c;
-    c.seq = s;
-    c.seqSize = l;
+    c.seq = wholeSeq.constData();
+    c.seqSize = wholeSeq.length();
     c.complTrans  = cfg.complTT;
     c.strandToWalk = cfg.complTT == NULL ? StrandOption_DirectOnly : StrandOption_Both;
     c.aminoTrans = NULL;
 
-    c.chunkSize = l;
+    c.chunkSize = seq.length();
     c.overlapSize = 0;
 
     SequenceWalkerTask* t = new SequenceWalkerTask(c, this, tr("sitecon_search_parallel"));

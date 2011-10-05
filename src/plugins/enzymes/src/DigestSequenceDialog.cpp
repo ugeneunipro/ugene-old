@@ -53,7 +53,7 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
 {
     setupUi(this);
         
-    dnaObj = qobject_cast<DNASequenceObject*>(ctx->getSequenceGObject());
+    dnaObj = qobject_cast<U2SequenceObject*>(ctx->getSequenceGObject());
     sourceObj = NULL;
     assert(dnaObj != NULL);
     hintLabel->setText(QString());
@@ -171,7 +171,7 @@ void DigestSequenceDialog::addAnnotationWidget()
     acm.sequenceObjectRef = GObjectReference(dnaObj);
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
-    acm.sequenceLen = dnaObj->getSequenceLen();
+    acm.sequenceLen = dnaObj->getSequenceLength();
     acm.data->name = ANNOTATION_GROUP_FRAGMENTS;
     ac = new CreateAnnotationWidgetController(acm, this);
     QWidget* caw = ac->getWidget();    

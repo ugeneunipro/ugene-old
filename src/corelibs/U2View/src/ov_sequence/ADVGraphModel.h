@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 class GSequenceGraphData;
 class GSequenceGraphWindowData;
 class GSequenceGraphView;
@@ -40,7 +40,7 @@ class GSequenceGraphView;
 class U2VIEW_EXPORT GSequenceGraphAlgorithm {
 public:
     virtual ~GSequenceGraphAlgorithm(){}
-    virtual void calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d) = 0;
+    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d) = 0;
 };
 
 class U2VIEW_EXPORT GSequenceGraphWindowData {

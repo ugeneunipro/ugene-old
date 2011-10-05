@@ -37,6 +37,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/DIProperties.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -109,11 +110,9 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(inFile));
     TaskStateInfo ti;
     QVariantMap hints;
-    Document *doc = format->loadDocument(iof, inFile, ti, hints);
-    if (ti.hasError()) {
-        return;
-    }
-
+    Document *doc = format->loadDocument(iof, inFile, hints, ti);
+    CHECK_OP(ti, );
+    
     assert (doc != NULL);
 
     QList<GObject*> mobjs = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
@@ -126,14 +125,14 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
         if (!mobjs.isEmpty()) {
             QList<MAlignmentRow> rows;
             foreach (GObject* obj, mobjs) {
-                DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
+                U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
                 if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                     ti.setError(  tr("Wrong sequence alphabet") );
                 }
-                rows.append(MAlignmentRow(dnaObj->getDNASequence().getName(), dnaObj->getSequence()));
+                rows.append(MAlignmentRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData()));
             }
-            DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(mobjs.first());
-            MAlignment ma(dnaObj->getDNASequence().getName(), dnaObj->getAlphabet(), rows);
+            U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
+            MAlignment ma(dnaObj->getSequenceName(), dnaObj->getAlphabet(), rows);
             replaceLogo(ma);
         } else {
             PFMatrix pfm = WeightMatrixIO::readPFMatrix(iof, lod.url, ti);
@@ -438,13 +437,13 @@ QList<Task*> PFMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
             if (!mobjs.isEmpty()) {
                 QList<MAlignmentRow> rows;
                 foreach (GObject* obj, mobjs) {
-                    DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
+                    U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
                     if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                         stateInfo.setError(  tr("Wrong sequence alphabet") );
                     }
-                    rows.append(MAlignmentRow(dnaObj->getDNASequence().getName(), dnaObj->getSequence()));
+                    rows.append(MAlignmentRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData()));
                 }
-                DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(mobjs.first());
+                U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
                 QString baseName = d->getURL().baseFileName();
                 MAlignment ma(baseName, dnaObj->getAlphabet(), rows);
                 buildTask = new PFMatrixBuildTask(settings, ma);
@@ -568,13 +567,13 @@ QList<Task*> PWMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
             if (!mobjs.isEmpty()) {
                 QList<MAlignmentRow> rows;
                 foreach (GObject* obj, mobjs) {
-                    DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
+                    U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
                     if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                         stateInfo.setError(  tr("Wrong sequence alphabet") );
                     }
-                    rows.append(MAlignmentRow(dnaObj->getDNASequence().getName(), dnaObj->getSequence()));
+                    rows.append(MAlignmentRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData()));
                 }
-                DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(mobjs.first());
+                U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
                 QString baseName = d->getURL().baseFileName();
                 MAlignment ma(baseName, dnaObj->getAlphabet(), rows);
                 buildTask = new PWMatrixBuildTask(settings, ma);

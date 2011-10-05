@@ -145,8 +145,8 @@ void UHMM3Plugin::sl_buildProfile() {
 }
 
 /* TODO: same as in function sl_search in uHMMPlugin.cpp */
-DNASequenceObject * UHMM3Plugin::getDnaSequenceObject() const {
-    DNASequenceObject * seqObj = NULL;
+U2SequenceObject * UHMM3Plugin::getDnaSequenceObject() const {
+    U2SequenceObject * seqObj = NULL;
     GObjectViewWindow * activeWnd = qobject_cast< GObjectViewWindow* >( AppContext::getMainWindow()->getMDIManager()->getActiveWindow() );
     if( NULL != activeWnd ) {
         AnnotatedDNAView * dnaView = qobject_cast< AnnotatedDNAView* >( activeWnd->getObjectView() );
@@ -157,14 +157,14 @@ DNASequenceObject * UHMM3Plugin::getDnaSequenceObject() const {
         if( NULL != projView ) {
             const GObjectSelection * objSelection = projView->getGObjectSelection();
             GObject* obj = objSelection->getSelectedObjects().size() == 1 ? objSelection->getSelectedObjects().first() : NULL;
-            seqObj = qobject_cast< DNASequenceObject* >( obj );
+            seqObj = qobject_cast< U2SequenceObject* >( obj );
         }
     }
     return seqObj;
 }
 
 void UHMM3Plugin::sl_searchHMMSignals() {
-    DNASequenceObject * seqObj = getDnaSequenceObject();
+    U2SequenceObject * seqObj = getDnaSequenceObject();
     if( NULL == seqObj ) {
         QMessageBox::critical( NULL, tr( "Error!" ), tr( "Target sequence not selected: no opened annotated dna view" ) );
         return;
@@ -175,7 +175,7 @@ void UHMM3Plugin::sl_searchHMMSignals() {
 }
 
 void UHMM3Plugin::sl_phmmerSearch() {
-    DNASequenceObject * seqObj = getDnaSequenceObject();
+    U2SequenceObject * seqObj = getDnaSequenceObject();
     if( NULL == seqObj ) {
         QMessageBox::critical( NULL, tr( "Error!" ), tr( "Target sequence not selected: no opened annotated dna view" ) );
         return;
@@ -251,7 +251,7 @@ void UHMM3ADVContext::initViewContext( GObjectView * view ) {
 void UHMM3ADVContext::sl_search() {
     QWidget * parent = getParentWidget( sender() );
     assert( NULL != parent );
-    DNASequenceObject * seqObj = getSequenceInFocus( sender() );
+    U2SequenceObject * seqObj = getSequenceInFocus( sender() );
     if( NULL == seqObj ) {
         QMessageBox::critical( parent, tr( "error" ), tr( "No sequence in focus found" ) );
         return;
@@ -276,7 +276,7 @@ QWidget * UHMM3ADVContext::getParentWidget( QObject * sender ) {
     return NULL; // unreachable code
 }
 
-DNASequenceObject * UHMM3ADVContext::getSequenceInFocus( QObject * sender ) {
+U2SequenceObject * UHMM3ADVContext::getSequenceInFocus( QObject * sender ) {
     assert( NULL != sender );
     GObjectViewAction * action = qobject_cast< GObjectViewAction* >( sender );
     assert( NULL != action );

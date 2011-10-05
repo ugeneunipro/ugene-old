@@ -31,41 +31,21 @@ namespace U2  {
 class Document;
 class DocumentFormat;
 class DNAAlphabet;
-class DNASequenceObject;
+class U2SequenceObject;
 class GObject;
 class MAlignment;
 class DNASequence;
+class U2Sequence;
 class GUrl;
 class AnnotationSettings;
 class U2OpStatus;
+class AnnotationTableObject;
+class U2DbiRef;
 
 class U2FORMATS_EXPORT DocumentFormatUtils : public QObject {
     Q_OBJECT
 public:
-    static DNASequenceObject* addSequenceObject(QList<GObject*>& objects, const QString& name, DNASequence& seq, 
-        const QVariantMap& hints, U2OpStatus& os);
-
-    /** if no docURL provided -> relations are not set*/
-    static DNASequenceObject* addMergedSequenceObject(QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigs, 
-                            QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping, const QVariantMap& hints, U2OpStatus& os);
-
-    static DNAAlphabet* findAlphabet(const QByteArray& arr);
-    
-    static QList<DNAAlphabet*> findAlphabets(const QByteArray& arr);
-
-    static DNAAlphabet* findAlphabet(const QByteArray& arr, const QVector<U2Region>& regionsToProcess);
-
-    static void trySqueeze(QByteArray& a);
-
-    static int getIntSettings(const QVariantMap& fs, const char* sName, int defVal);
-
-    static void updateFormatSettings(QList<GObject*>& objects, QVariantMap& fs);
-
     static QList<DocumentFormatId> toIds(const QList<DocumentFormat*>& formats);
-
-    static void assignAlphabet(MAlignment& ma);
-
-    static void assignAlphabet(MAlignment& ma, char ignore);
 
     static QList<AnnotationSettings*> predefinedSettings();
 
@@ -73,6 +53,27 @@ public:
     static QList<DNASequence> toSequences(const GObject* obj);
 
     static int getMergeGap(const QVariantMap& hints);
+    
+    static int getMergedSize(const QVariantMap& hints, int defaultVal);
+
+    static void updateFormatHints(QList<GObject*>& objects, QVariantMap& fs);
+
+
+
+    static U2SequenceObject* addSequenceObject(const U2DbiRef& dbiRef, const QString& name, const QByteArray& seq, bool circular, const QVariantMap& hints, U2OpStatus& os);
+
+    /** Doc URL here is used to set up sequence<->annotation relations */
+    static AnnotationTableObject* addAnnotationsForMergedU2Sequence(const GUrl& docUrl, const QStringList& contigs, 
+        const U2Sequence& mergedSequence, const QVector<U2Region>& mergedMapping, U2OpStatus& os);
+
+
+    
+    static U2SequenceObject* addSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, DNASequence& seq, const QVariantMap& hints, U2OpStatus& os);
+
+    /** if no docURL provided -> relations are not set*/
+    static U2SequenceObject* addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigs, 
+        QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping, const QVariantMap& hints, U2OpStatus& os);
+
 
 };
 

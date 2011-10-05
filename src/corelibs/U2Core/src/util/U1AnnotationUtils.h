@@ -36,31 +36,20 @@ private:
     U1AnnotationUtils(){}
 public:
 
-    enum AnnotationStrategyForResize{
+    enum AnnotationStrategyForResize {
         AnnotationStrategyForResize_Resize, 
         AnnotationStrategyForResize_Remove,
         AnnotationStrategyForResize_Split_To_Joined,
         AnnotationStrategyForResize_Split_To_Separate
     };
 
-    /** Corrects annotation locations for a sequence. The passed list is updated with new locations, 
-        the returned list contains removed locations if any.
-        If specified strategy is 'remove', removes all locations which intersect the removed region or fall inside it.
-    */
-    static QVector<U2Region> fixLocationsForRemovedRegion(const U2Region& regionToDelete, QVector<U2Region>& loc, AnnotationStrategyForResize s);
 
-    /** Corrects annotation locations for a sequence. The passed list is updated with new locations, 
-    the returned list contains removed locations if any.
-    If specified strategy is 'remove', removes all locations which contain the insert position inside them.
-    Note, if a region starts at the insert position, it is just moved to the right.
-    */
-    static QVector<U2Region> fixLocationsForInsertedRegion(qint64 insertPos, qint64 len, QVector<U2Region>& loc, AnnotationStrategyForResize s, Annotation *an = NULL, AnnotationTableObject *ato = NULL);
-
-    /** Corrects annotation locations for a sequence. The passed list is updated with new locations, 
-    the returned list contains removed locations if any.
+    /** Corrects annotation locations for a sequence. The passed list is original locations
+    The returned list contains set of regions. Each set is per 1 annotation.
     If specified strategy is 'remove', removes all locations which intersect the modified region or fall inside it.
     */
-    static QVector<U2Region> fixLocationsForReplacedRegion(const U2Region& regionToDelete, qint64 newLen, QVector<U2Region>& loc, AnnotationStrategyForResize s);
+    static QList< QVector<U2Region> > fixLocationsForReplacedRegion(const U2Region& region2Remove, qint64 region2InsertLength,  
+        const QVector<U2Region>& originalLoc, AnnotationStrategyForResize s );
 
     /** returns translation frame[0,1,2] the region is placed on */
     static int getRegionFrame(int sequenceLen, U2Strand strand, bool order, int region, const QVector<U2Region>& location);

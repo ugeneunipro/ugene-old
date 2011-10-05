@@ -164,7 +164,7 @@ void uHMMPlugin::sl_search() {
     //1. check that annotated DNA view is active
     //2. if not -> check that DNASequence object is selected in project view
 
-    DNASequenceObject* obj = NULL;
+    U2SequenceObject* obj = NULL;
 
     MWMDIWindow* w = AppContext::getMainWindow()->getMDIManager()->getActiveWindow();
     if (w!=NULL) {
@@ -184,7 +184,7 @@ void uHMMPlugin::sl_search() {
         if (pv!=NULL) {
             const GObjectSelection* sel = pv->getGObjectSelection();
             GObject* o = sel->getSelectedObjects().size() == 1 ? sel->getSelectedObjects().first() : NULL;
-            obj = qobject_cast<DNASequenceObject*>(o);
+            obj = qobject_cast<U2SequenceObject*>(o);
         }
     }
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();

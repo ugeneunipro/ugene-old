@@ -21,11 +21,11 @@
 
 #include "MSAUtils.h"
 
-#include <U2Core/Task.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Core/MAlignment.h>
 
@@ -47,25 +47,19 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
     return true;
 }
 
-
-MAlignment MSAUtils::seq2ma( const QList<GObject*>& list, U2OpStatus& os) {
+MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
     MAlignment ma(MA_OBJECT_NAME);
-    foreach(GObject* obj, list) {
-        DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
-        if (dnaObj == NULL) {
-            continue;
-        }
-        const DNASequence& seq = dnaObj->getDNASequence();
+    foreach(const DNASequence& seq, list) {
         DNAAlphabet* al = ma.getAlphabet();
         if (al == NULL) {
-            al = dnaObj->getAlphabet();
+            al = seq.alphabet;
         } else {
-            al = DNAAlphabet::deriveCommonAlphabet(al, dnaObj->getAlphabet());
+            al = U2AlphabetUtils::deriveCommonAlphabet(al, seq.alphabet);
             if (al == NULL) {
-                if(ma.getAlphabet()->getType() == DNAAlphabet_AMINO && dnaObj->getAlphabet()->getType() == DNAAlphabet_NUCL ) {
+                if (ma.getAlphabet()->getType() == DNAAlphabet_AMINO && seq.alphabet->isNucleic()) {
                     al = ma.getAlphabet();
-                } else if(ma.getAlphabet()->getId() == "NUCL_DNA_EXTENDED_ALPHABET") {
-                    al = dnaObj->getAlphabet();
+                } else if (ma.getAlphabet()->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()) {
+                    al = seq.alphabet;
                 } else {
                     os.setError(tr("Sequences have different alphabets."));
                     break;
@@ -74,13 +68,23 @@ MAlignment MSAUtils::seq2ma( const QList<GObject*>& list, U2OpStatus& os) {
         }
         ma.setAlphabet(al);
         //TODO: handle memory overflow
-        MAlignmentRow row(dnaObj->getGObjectName(), seq.seq, 0);
+        MAlignmentRow row(seq.getName(), seq.seq, 0);
         ma.addRow(row);
     }
-    if (os.hasError()) {
-        ma.clear();
-    }
+    CHECK_OP(os, MAlignment());
     return ma;
+}
+
+MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os) {
+    QList<DNASequence> dnaList;
+    foreach(GObject* obj, list) {
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
+        if (dnaObj == NULL) {
+            continue;
+        }
+        dnaList << dnaObj->getWholeSequence();
+    }
+    return seq2ma(dnaList, os);
 }
 
 QList<DNASequence> MSAUtils::ma2seq(const MAlignment& ma, bool trimGaps) {
@@ -100,7 +104,7 @@ QList<DNASequence> MSAUtils::ma2seq(const MAlignment& ma, bool trimGaps) {
 }
 
 
-bool MSAUtils::checkPackedModelSymmetry(MAlignment& ali, TaskStateInfo& ti) {
+bool MSAUtils::checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti) {
     if (ali.getLength() == 0) {
         ti.setError(tr("Alignment is empty!"));
         return false;

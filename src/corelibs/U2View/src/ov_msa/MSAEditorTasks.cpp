@@ -29,6 +29,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/UnloadedObject.h>
@@ -117,12 +118,8 @@ OpenSavedMSAEditorTask::OpenSavedMSAEditorTask(const QString& viewName, const QV
     GObjectReference ref = state.getMSAObjectRef();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
     if (doc == NULL) {
-        doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject());
-        if (!doc) {
-            stateIsIllegal = true;
-            stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
-            return;
-        }
+        doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject(), stateInfo);
+        CHECK_OP_EXT(stateInfo, stateIsIllegal = true ,);
     }
     if (!doc->isLoaded()) {
         documentsToLoad.append(doc);
@@ -131,9 +128,8 @@ OpenSavedMSAEditorTask::OpenSavedMSAEditorTask(const QString& viewName, const QV
 }
 
 void OpenSavedMSAEditorTask::open() {
-    if (stateInfo.hasError()) {
-        return;
-    }
+    CHECK_OP(stateInfo, );
+    
     MSAEditorState state(stateData);
     GObjectReference ref = state.getMSAObjectRef();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);

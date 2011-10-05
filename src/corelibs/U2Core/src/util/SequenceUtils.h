@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SEQUENCE_UTILS_H_
-#define _U2_SEQUENCE_UTILS_H_
+#ifndef _U1_SEQUENCE_UTILS_H_
+#define _U1_SEQUENCE_UTILS_H_
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
@@ -28,20 +28,21 @@
 namespace U2 {
 
 class DNATranslation;
-class U2OpStatus;
 class Document;
+class U2OpStatus;
 
-class U2CORE_EXPORT SequenceUtils : public QObject {
+class U2CORE_EXPORT U1SequenceUtils : public QObject {
     Q_OBJECT
 public:
     
-    /** 
-        Extracts sequences regions
-        If 'complTT' != NULL - reverse & complements regions. 
-        (Note: the order of complemented regions is also reversed)
-    */
-    static QList<QByteArray> extractRegions(const QByteArray& seq, const QVector<U2Region>& regions, DNATranslation* complTT);
     
+    /** Extract sequence parts marked by the regions
+        Note: the order of complemented regions is also reversed
+    */
+    static QList<QByteArray> extractRegions(const QByteArray& seq, const QVector<U2Region>& regions, 
+        DNATranslation* complTT, DNATranslation* aminoTT = NULL, bool circular = false, bool join = false);
+
+
     /** Joins sequence parts into a single sequence */
     static QByteArray joinRegions(const QList<QByteArray>& parts);
 
@@ -51,13 +52,9 @@ public:
     static QList<QByteArray> translateRegions(const QList<QByteArray>& origParts, DNATranslation* aminoTT, bool join);
 
     
-    /** Extract sequence parts marked by the regions*/
-    static QList<QByteArray> extractSequence(const QByteArray& seq, const QVector<U2Region>& regions, 
-                                            DNATranslation* complTT, DNATranslation* aminoTT, bool join, bool circular);
-
 
     /** Returns regions locations as if they were joined */
-    static QVector<U2Region> toJoinedRegions(const QList<QByteArray>& seqParts);
+    static QVector<U2Region> getJoinedMapping(const QList<QByteArray>& seqParts);
 
     static Document* mergeSequences(const Document* doc, int mergeGap, U2OpStatus& os);
 };

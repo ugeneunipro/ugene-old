@@ -21,6 +21,13 @@
 
 #include "RemoteBLASTWorker.h"
 
+#include <U2Core/Log.h>
+#include <U2Core/DNASequence.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/U2AlphabetUtils.h>
+
+#include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -28,12 +35,8 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
+
 #include <U2Designer/DelegateEditors.h>
-#include <U2Lang/CoreLibConstants.h>
-#include <U2Core/Log.h>
-#include <U2Core/DNASequence.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/FailTask.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -192,7 +195,7 @@ Task* RemoteBLASTWorker::tick() {
     DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
     
     seq.info.clear();
-    DNAAlphabet *alp = AppContext::getDNAAlphabetRegistry()->findAlphabet(seq.seq);
+    DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
     /*if(seq.length()>MAX_BLAST_SEQ_LEN) {
         log.error(tr("The sequence is too long"));
         return NULL;

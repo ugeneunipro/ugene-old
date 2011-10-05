@@ -25,6 +25,8 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "ExportSequencesDialog.h"
 #include "ExportSequenceTask.h"
@@ -71,11 +73,10 @@ Task * ExportUtils::saveAnnotationsTask(const QString & filepath, const Document
     SaveDocFlags fl(SaveDoc_Roll);
     fl |= SaveDoc_DestroyAfter;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
-    assert(iof != NULL);
     DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(format);
-    assert(df != NULL);
-    Document * doc = new Document(df, iof, filepath);
-    doc->setLoaded(true);
+    U2OpStatus2Log os;
+    Document * doc = df->createNewLoadedDocument(iof, filepath, os);
+    CHECK_OP(os, NULL);
     
     // object and annotations will be deleted when savedoc task will delete doc
     AnnotationTableObject * att = new AnnotationTableObject("exported_annotations");

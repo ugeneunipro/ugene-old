@@ -25,11 +25,11 @@
 #include <U2Core/global.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/UnloadedObject.h>
 #include <U2Core/U2FormatCheckResult.h>
 
 #include "StateLockableDataModel.h"
 
-#include <U2Core/UnloadedObject.h>
 
 #include <QtCore/QMimeData>
 #include <QtCore/QPointer>
@@ -37,7 +37,7 @@
 
 namespace U2 {
 
-class TaskStateInfo;
+class U2OpStatus;
 
 class Document;
 class GObject;
@@ -46,14 +46,7 @@ class IOAdapterFactory;
 class IOAdapter;
 class DocumentFormatConstraints;
 class GHints;
-
-/** Document loading mode */
-enum DocumentLoadMode {
-    // load all objects from document
-    DocumentLoadMode_Whole,    
-    // load single (the first after the current io position) object
-    DocumentLoadMode_SingleObject
-};
+class TmpDbiHandle;
 
 // Additional info about document format
 enum DocumentFormatFlag {
@@ -66,7 +59,7 @@ enum DocumentFormatFlag {
     // Document can't be read from packed stream. Used for database files
     DocumentFormatFlag_NoPack               = 1<<3,
     // Document is not fully loaded to memory. Used for database files
-    DocumentFormatFlag_NoFullMemoryLoad     = 1<<4
+    DocumentFormatFlag_NoFullMemoryLoad     = 1<<4,
 };
 
 
@@ -127,34 +120,29 @@ public:
     */
     virtual QStringList getSupportedDocumentFileExtensions() const {return fileExtensions;}
 
-    virtual Document* createNewDocument(IOAdapterFactory* io, const GUrl& url, const QVariantMap& hints = QVariantMap());
+    /** Creates new empty document in loaded form. Assigns DBI if needed */
+    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const GUrl& url,  U2OpStatus& os, const QVariantMap& hints = QVariantMap());
 
-    /* io - opened IOAdapter.
-    * if document format supports streaming reading it must correctly process DocumentLoadMode
-    * otherwise, it will load all file from starting position ( default )
-    */
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& hints, 
-                                    DocumentLoadMode mode = DocumentLoadMode_Whole) = 0;
+    /** Creates new document in unloaded state. Assigns DBI if needed */
+    virtual Document* createNewUnloadedDocument(IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, 
+        const QVariantMap& hints = QVariantMap(),  const QList<UnloadedObjectInfo>& info = QList<UnloadedObjectInfo>(), 
+        const QString& instanceModLockDesc = QString());
 
     /** A method for compatibility with old code : creates IO adapter and loads document in DocumentLoadMode_Whole  */
-    virtual Document* loadDocument(IOAdapterFactory* iof, const GUrl& url, TaskStateInfo& ti, const QVariantMap& hints);
+    virtual Document* loadDocument(IOAdapterFactory* iof, const GUrl& url, const QVariantMap& hints, U2OpStatus& os);
 
-    /** Loads single object in streaming mode. 
-    Note! this function is available only if format supports streaming mode 
+    /** 
+        Loads single dna sequence in streaming mode. 
+        Note! this function is available only if format supports streaming mode and sequences as an stored data type
     */
-    virtual GObject* loadObject( IOAdapter* io, TaskStateInfo& ti);
+    virtual DNASequence* loadSequence( IOAdapter* io, U2OpStatus& ti);
 
-    /** Loads single dna sequence in streaming mode. 
-    Note! this function is available only if format supports streaming mode and sequences as an stored data type
-    */
-    virtual DNASequence* loadSequence( IOAdapter* io, TaskStateInfo& ti);
-
-    virtual void storeDocument(Document* d, TaskStateInfo& ts, IOAdapterFactory* io = NULL, const GUrl& newDocURL = GUrl());
+    virtual void storeDocument(Document* d, U2OpStatus& os, IOAdapterFactory* io = NULL, const GUrl& newDocURL = GUrl());
     
     /* io - opened IOAdapter
      * so you can store many documents to this file
      */
-    virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io);
+    virtual void storeDocument( Document* d, IOAdapter* io, U2OpStatus& os);
     
     /** Checks if object can be added/removed to the document */
     virtual bool isObjectOpSupported(const Document* d, DocObjectOp op, GObjectType t) const;
@@ -186,6 +174,13 @@ public:
     bool checkFlags(DocumentFormatFlags flagsToCheck) const { return (formatFlags | flagsToCheck) == formatFlags;}
 
 protected:
+    
+   /* io - opened IOAdapter.
+    * if document format supports streaming reading it must correctly process DocumentLoadMode
+    * otherwise, it will load all file from starting position ( default )
+    */
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os) = 0;
+
     DocumentFormatFlags formatFlags;
     QStringList         fileExtensions;
     QSet<GObjectType>   supportedObjectTypes;
@@ -243,6 +238,8 @@ signals:
     void si_documentFormatUnregistered(DocumentFormat*);
 };
 
+
+
 enum DocumentModLock {
     DocumentModLock_IO,
     DocumentModLock_USER,
@@ -270,12 +267,16 @@ public:
 
     //Creates document in unloaded state. Populates it with unloaded objects
     Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
-        const QList<UnloadedObjectInfo>& unloadedObjects = QList<UnloadedObjectInfo>(),
-        const QVariantMap& hints = QVariantMap(), const QString& instanceModLockDesc = QString());
+                    const U2DbiRef& _dbiRef, bool tmpDbi,
+                    const QList<UnloadedObjectInfo>& unloadedObjects = QList<UnloadedObjectInfo>(),
+                    const QVariantMap& hints = QVariantMap(), 
+                    const QString& instanceModLockDesc = QString());
 
     //Creates document in loaded state. 
     Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
-                    const QList<GObject*>& objects, const QVariantMap& hints = QVariantMap(), 
+                    const U2DbiRef& _dbiRef, bool tmpDbi,
+                    const QList<GObject*>& objects, 
+                    const QVariantMap& hints = QVariantMap(), 
                     const QString& instanceModLockDesc = QString());
 
     virtual ~Document();
@@ -344,6 +345,8 @@ public:
 
     const QDateTime& getLastUpdateTime() const { return lastUpdateTime; }
 
+    const U2DbiRef& getDbiRef() const;
+
     static void setupToEngine(QScriptEngine *engine);
 private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Document* const &in);
@@ -362,8 +365,9 @@ protected:
 
     DocumentFormat* const       df;
     IOAdapterFactory* const     io;
+    GUrl                        url;
+    TmpDbiHandle*               dbiHandle;
 
-    GUrl                url;
     QString             name; /* display name == short pathname, excluding the path */
     QList<GObject*>     objects;
     GHints*             ctxState;

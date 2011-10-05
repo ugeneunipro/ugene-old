@@ -26,6 +26,7 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/Settings.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include "ORFMarkerTask.h"
 
@@ -128,34 +129,30 @@ ORFAutoAnnotationsUpdater::ORFAutoAnnotationsUpdater()
 Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
     AnnotationTableObject* aObj = aa->getAnnotationObject();
-    DNASequenceObject* dnaObj = aa->getSeqObject();
-    DNAAlphabet* al = dnaObj->getAlphabet();
-    Q_UNUSED(al);
-    assert(al != NULL);
-
+    U2SequenceObject* dnaObj = aa->getSeqObject();
+    
     ORFAlgorithmSettings cfg;
     ORFSettingsKeys::read(cfg, AppContext::getSettings());
     
-    cfg.complementTT = GObjectUtils::findComplementTT(dnaObj);
+    cfg.complementTT = GObjectUtils::findComplementTT(dnaObj->getAlphabet());
     if (cfg.proteinTT == NULL) {
         cfg.proteinTT = GObjectUtils::findAminoTT(dnaObj,false);
     }
-    if (cfg.searchRegion.isEmpty() || cfg.searchRegion.endPos() >= dnaObj->getSequenceLen() + 1 ) {
-        cfg.searchRegion = U2Region(0, dnaObj->getSequenceLen());
+    qint64 seqLen = dnaObj->getSequenceLength();
+    if (cfg.searchRegion.isEmpty() || cfg.searchRegion.endPos() >= seqLen + 1 ) {
+        cfg.searchRegion = U2Region(0, dnaObj->getSequenceLength());
     }
     
-    Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getDNASequence(), cfg );
+    Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getWholeSequence(), cfg );
 
     return task;
     
 }
 
-bool ORFAutoAnnotationsUpdater::checkConstraints( const AutoAnnotationConstraints& constraints )
-{
+bool ORFAutoAnnotationsUpdater::checkConstraints( const AutoAnnotationConstraints& constraints ) {
     if (constraints.alphabet == NULL) {
         return false;
     }
-
     return constraints.alphabet->isNucleic();
 }
 

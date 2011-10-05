@@ -31,6 +31,9 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include <QtXml/QDomDocument>
 
@@ -75,13 +78,14 @@ void BlastAllSupportTask::prepare(){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }
-    QList<GObject*> objects;
-    sequenceObject= new DNASequenceObject("input sequence", DNASequence(settings.querySequence, settings.alphabet));
-    objects.append(sequenceObject);
-    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
-    tmpDoc = new Document(AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA),
-             AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE),
-             GUrl(url), objects);
+    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA);
+    tmpDoc = df->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(url), stateInfo);
+    CHECK_OP(stateInfo, );
+
+    U2EntityRef seqRef = U2SequenceUtils::import(tmpDoc->getDbiRef(), DNASequence(settings.querySequence, settings.alphabet), stateInfo);
+    CHECK_OP(stateInfo, );
+    sequenceObject = new U2SequenceObject("input sequence", seqRef);
+    url = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
     
     saveTemporaryDocumentTask = new SaveDocumentTask(tmpDoc, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE), url);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
@@ -194,7 +198,8 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
                 if(!settings.outputResFile.isEmpty()) {
                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
                     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
-                    Document *d = df->createNewDocument(iof, settings.outputResFile);
+                    Document *d = df->createNewLoadedDocument(iof, settings.outputResFile, stateInfo);
+                    CHECK_OP(stateInfo, res);
                     d->addObject(settings.aobj);
                     AppContext::getProject()->addDocument(d);
                 }
@@ -397,7 +402,8 @@ void BlastAllSupportMultiTask::prepare(){
     //create document
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
-    doc = df->createNewDocument(iof, url);
+    doc = df->createNewLoadedDocument(iof, url, stateInfo);
+    CHECK_OP(stateInfo, );
 
     foreach(BlastTaskSettings settings, settingsList){
         settings.needCreateAnnotations=false;

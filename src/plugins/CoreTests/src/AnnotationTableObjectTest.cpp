@@ -270,7 +270,7 @@ void GTest_CheckAnnotationSequence::init(XMLTestFormat *tf, const QDomElement& e
 
 Task::ReportResult GTest_CheckAnnotationSequence::report() {
     
-    DNASequenceObject* dnaObj = getContext<DNASequenceObject>(this, seqCtxName);
+    U2SequenceObject* dnaObj = getContext<U2SequenceObject>(this, seqCtxName);
     if (dnaObj == NULL) {
         stateInfo.setError("Invalid sequence constext");
     }
@@ -286,7 +286,7 @@ Task::ReportResult GTest_CheckAnnotationSequence::report() {
         stateInfo.setError(QString("Annotation % doesn't have any location").arg(aCtxName));
     }
     U2Region reg = a->location->regions.first();
-    QString seq = dnaObj->getSequence().mid(reg.startPos, reg.length);
+    QString seq = dnaObj->getSequenceData(reg);
     
     if (seq != seqPart) {    
         stateInfo.setError(QString("Sequence of annotation does not matched, seq=\"%1\" , expected=\"%2\"").arg(seq).arg(seqPart));

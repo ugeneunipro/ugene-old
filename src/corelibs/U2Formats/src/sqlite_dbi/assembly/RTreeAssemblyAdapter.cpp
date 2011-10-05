@@ -26,6 +26,7 @@
 
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SqlHelpers.h>
+#include <U2Core/Log.h>
 
 namespace U2 {
 

@@ -23,7 +23,7 @@
 #define _U2_REMOVE_PART_FROM_SEQUENCE_CONTROLLER_H_
 
 #include <U2Core/U2Region.h>
-#include <U2Core/RemovePartFromSequenceTask.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <QtGui/QDialog>
 

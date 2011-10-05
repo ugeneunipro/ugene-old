@@ -48,6 +48,7 @@ public:
     static QString errorIsNotAFile(const GUrl& url) {return tr("%1 is not a file").arg(url.getURLString());}
 
     static QString notValidFileFormat(const QString& type, const GUrl& url) {return tr("Invalid file format. Expected file format: %1,  File: %2").arg(type).arg(url.getURLString());}
+    static QString notSupportedFileFormat(const GUrl& url) {return tr("Invalid file format! File: %1").arg(url.getURLString());}
 
     // working with qt plugins: images, scripts, styles
     static QString errorImageSave(const QString& file, const QString& format) {

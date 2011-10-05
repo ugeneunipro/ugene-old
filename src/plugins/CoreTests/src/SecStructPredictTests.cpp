@@ -112,7 +112,7 @@ void GTest_SecStructPredictTask::init(XMLTestFormat *tf, const QDomElement& el) 
 
 void GTest_SecStructPredictTask::prepare()
 {
-    DNASequenceObject * mySequence = getContext<DNASequenceObject>(this, seqName);
+    U2SequenceObject * mySequence = getContext<U2SequenceObject>(this, seqName);
     if(mySequence==NULL){
         stateInfo.setError(  QString("error can't cast to sequence from GObject") );
         return;
@@ -123,7 +123,7 @@ void GTest_SecStructPredictTask::prepare()
         return;
     }
     SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algName);
-    task = factory->createTaskInstance(mySequence->getSequence());
+    task = factory->createTaskInstance(mySequence->getWholeSequenceData());
     addSubTask(task);
 }
 

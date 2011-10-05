@@ -78,7 +78,7 @@ public:
     QString getXSequenceName();
     QString getYSequenceName();
 
-    void setSequences(DNASequenceObject* seqX, DNASequenceObject* seqY);
+    void setSequences(U2SequenceObject* seqX, U2SequenceObject* seqY);
 
 signals:
     void si_removeDotPlot();
@@ -161,9 +161,8 @@ private:
     QColor dotPlotInvertedColor;
     QColor dotPlotNearestRepeatColor;
 
-    QByteArray sharedSeqX, sharedSeqY;
     bool clearedByRepitSel;
-
+    QByteArray seqXCache, seqYCache; //cached sequence, used only during DP computation
 
     void pixMapUpdate();
 

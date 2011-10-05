@@ -147,8 +147,8 @@ Task* QDRepeatActor::getAlgorithmTask(const QVector<U2Region>& location) {
 
     assert(identity <= 100 && identity >= 0);
     assert(settings.minDist>=0);
-    DNASequenceObject* dna = scheme->getDNA();
-    if (!dna->getAlphabet()->isNucleic()) {
+    const DNASequence& dnaSeq = scheme->getSequence();
+    if (!dnaSeq.alphabet->isNucleic()) {
         return new FailTask(tr("Sequence should be nucleic"));
     }
 
@@ -156,7 +156,7 @@ Task* QDRepeatActor::getAlgorithmTask(const QVector<U2Region>& location) {
     foreach(const U2Region& r, location) {
         FindRepeatsTaskSettings stngs(settings);
         stngs.seqRegion = r;
-        FindRepeatsToAnnotationsTask* st = new FindRepeatsToAnnotationsTask(stngs, dna->getDNASequence(), 
+        FindRepeatsToAnnotationsTask* st = new FindRepeatsToAnnotationsTask(stngs, dnaSeq, 
                                                             "repeat unit", QString(), GObjectReference());
         t->addSubTask(st);
         repTasks.append(st);

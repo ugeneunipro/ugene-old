@@ -25,17 +25,22 @@
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/AppContext.h>
+
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/ExternalToolCfg.h>
-#include <U2Designer/DelegateEditors.h>
-#include "WorkflowEditorDelegates.h"
+
 #include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/ConfigurationEditor.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 
+
+#include <U2Designer/DelegateEditors.h>
+
+#include "WorkflowEditorDelegates.h"
 
 namespace U2 {
 

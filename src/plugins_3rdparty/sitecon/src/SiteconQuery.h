@@ -66,14 +66,14 @@ class QDSiteconTask : public Task {
     Q_OBJECT
 public:
     QDSiteconTask(const QStringList& urls, const SiteconSearchCfg& cfg,
-        DNASequenceObject* dna, const QVector<U2Region>& searchRegion);
+        const DNASequence& dna, const QVector<U2Region>& searchRegion);
     QList<SiteconSearchResult> getResults() const { return results; }
 protected:
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
     SiteconReadMultiTask* loadModelsTask;
     SiteconSearchCfg cfg;
-    DNASequenceObject* dna;
+    DNASequence dnaSeq;
     QVector<U2Region> searchRegion;
     QList<SiteconSearchResult> results;
 };

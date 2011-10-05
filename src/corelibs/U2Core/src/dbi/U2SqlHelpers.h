@@ -27,6 +27,8 @@
 
 #include <QtCore/QMutex>
 #include <QtCore/QStringList>
+#include <QtCore/QVector>
+#include <QtCore/QThread>
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -34,16 +36,16 @@ struct sqlite3_stmt;
 namespace U2 {
 
 class SQLiteQuery;
+class SQLiteTransaction;
 
 class U2CORE_EXPORT DbRef {
 public:
-    DbRef() : handle(NULL), lock(QMutex::Recursive), useTransaction(true), transactionDepth(0){}
-    DbRef(sqlite3* db) : handle(db), lock(QMutex::Recursive), useTransaction(true), transactionDepth(0) {}
+    DbRef(sqlite3* db = NULL) : handle(db), lock(QMutex::Recursive), useTransaction(true) {}
 
-    sqlite3*    handle;
-    QMutex      lock;
-    bool        useTransaction;
-    int         transactionDepth;
+    sqlite3*                    handle;
+    QMutex                      lock;
+    bool                        useTransaction;
+    QVector<SQLiteTransaction*> transactionStack;
 };
 
 class U2CORE_EXPORT SQLiteUtils {
@@ -188,7 +190,7 @@ public:
 
     /** Executes update and returns number of rows affected. 
         Fails if result count != expectedRowCount
-        'expectedRowCount' == 1 disables row-count check
+        'expectedRowCount' == -1 disables row-count check
     */
     qint64 update(qint64 expectedRows = -1);
 
@@ -249,6 +251,11 @@ public:
 private:
     DbRef* db;
     U2OpStatus& os;
+
+#ifdef _DEBUG
+public:
+    QThread* thread;
+#endif
 };
 
 /** Data loader adapter for SqlQueryIterator */

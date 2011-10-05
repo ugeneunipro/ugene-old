@@ -22,6 +22,13 @@
 #include "ScriptLibrary.h"
 
 #include <U2Core/Log.h>
+#include <U2Core/DNASequence.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/AnnotationData.h>
 
 namespace U2 {
 
@@ -240,8 +247,7 @@ QScriptValue WorkflowScriptLibrary::sequenceFromText(QScriptContext *ctx, QScrip
     QString text = ctx->argument(0).toString();
     //QString name = ctx->argument(1).toString();
     DNASequence seq(text.toAscii());
-    DNAAlphabetRegistry* r = AppContext::getDNAAlphabetRegistry();
-    seq.alphabet = r->findAlphabet(seq.seq);
+    seq.alphabet = U2AlphabetUtils::findBestAlphabet(seq.seq);
     if(seq.alphabet->getId() == BaseDNAAlphabetIds::RAW()) {
         seq.seq = QByteArray();
     }
@@ -369,7 +375,7 @@ QScriptValue WorkflowScriptLibrary::findInAlignment(QScriptContext *ctx, QScript
         if(seq.seq.isEmpty()) {
             return ctx->throwError(QObject::tr("Empty or invalid sequence"));
         }
-        foreach(const DNASequence& alnSeq, MSAUtils::ma2seq(aln,true)) {
+        foreach(const DNASequence& alnSeq, MSAUtils::ma2seq(aln, true)) {
             if(alnSeq.seq == seq.seq) {
                 break;
             }

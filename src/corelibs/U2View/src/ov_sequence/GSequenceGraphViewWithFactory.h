@@ -45,7 +45,7 @@ public:
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v) = 0;
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v) = 0;
 
-    virtual bool isEnabled(DNASequenceObject* o) const  = 0;
+    virtual bool isEnabled(U2SequenceObject* o) const  = 0;
 
     const QString& getGraphName() const {return graphName;}
 

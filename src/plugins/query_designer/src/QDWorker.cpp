@@ -201,9 +201,9 @@ Task* QDWorker::tick() {
     QDRunSettings settings;
     settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
     settings.scheme = scheme;
-    settings.sequenceObj = new DNASequenceObject(GObjectTypes::getTypeInfo(GObjectTypes::SEQUENCE).name, seq);
-    settings.region = settings.sequenceObj->getSequenceRange();
-    scheme->setDNA(settings.sequenceObj);
+    settings.dnaSequence = seq;
+    settings.region = U2Region(0, seq.length());
+    scheme->setSequence(settings.dnaSequence);
     bool outputType = actor->getParameter(OUTPUT_ATTR)->getAttributeValue<bool>();
     if (outputType) {
         settings.outputType = QDRunSettings::Single;

@@ -49,7 +49,7 @@ public:
     static const QString ANNOTATIONS_DEFAULT_NAME;
     
 public:
-    UHMM3SearchDialogImpl( const DNASequenceObject * seqObj, QWidget * p = NULL );
+    UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, QWidget * p = NULL );
     
 private:
     void setModelValues();

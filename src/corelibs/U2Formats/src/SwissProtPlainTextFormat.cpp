@@ -29,7 +29,7 @@
 #include <U2Core/GObjectUtils.h>
 
 #include <U2Core/IOAdapter.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNAInfo.h>
 #include <U2Core/QVariantUtils.h>
@@ -106,7 +106,7 @@ bool SwissProtPlainTextFormat::readIdLine(ParserState* s) {
 }
 
 bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
-    TaskStateInfo& si = st->si;
+    U2OpStatus& si = st->si;
     QString lastTagName;
     bool hasLine = false;
     while (hasLine || st->readNextLine(false)) {
@@ -199,7 +199,7 @@ bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) 
             st->entry->tags.insertMulti(lastTagName, st->value());
         }
     }
-    if (!st->isNull() && !si.hasError() && !si.cancelFlag) {
+    if (!st->isNull() && !si.isCoR()) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Record is truncated."));
     }
 
@@ -208,7 +208,7 @@ bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) 
 bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
 
     IOAdapter* io = st->io;
-    TaskStateInfo& si = st->si;
+    U2OpStatus& si = st->si;
     si.setDescription(tr("Reading sequence %1").arg(st->entry->name));
     int headerSeqLen = st->entry->seqLen;
     res.reserve(res.size() + headerSeqLen);
@@ -223,7 +223,7 @@ bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
     bool ok = true;
     int len;
     while (ok && (len = io->readLine(buff, READ_BUFF_SIZE)) > 0) {
-        if (si.cancelFlag) {
+        if (si.isCoR()) {
             res.clear();
             break;
         }
@@ -252,14 +252,15 @@ bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
             break;
         }
 
-        si.progress = io->getProgress();
+        si.setProgress(io->getProgress());
     }
-    if (!si.hasError() && !si.cancelFlag && buff[0] != '/') {
+    if (!si.isCoR() && buff[0] != '/') {
         si.setError(tr("Sequence is truncated"));
     }
     writer.close();
     return true;
 }
+
 void SwissProtPlainTextFormat::readAnnotations(ParserState *st, int offset){
     st->si.setDescription(tr("Reading annotations %1").arg(st->entry->name));
     st->entry->hasAnnotationObjectFlag = true;
@@ -288,7 +289,7 @@ void SwissProtPlainTextFormat::readAnnotations(ParserState *st, int offset){
 //column annotation key starts with
 #define K_COL 5
 
-SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, char* cbuff, int len, int READ_BUFF_SIZE, TaskStateInfo& si, int offset){
+SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, char* cbuff, int len, int READ_BUFF_SIZE, U2OpStatus& si, int offset){
 
     AnnotationData* a = new AnnotationData();
     SharedAnnotationData f(a);

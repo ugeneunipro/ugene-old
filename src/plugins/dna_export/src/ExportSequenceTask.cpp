@@ -34,6 +34,8 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/SequenceUtils.h>
+#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 
 namespace U2 {
@@ -153,7 +155,8 @@ void ExportSequenceTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(config.formatId);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.fileName));
-    resultDocument = f->createNewDocument(iof, config.fileName); 
+    resultDocument = f->createNewLoadedDocument(iof, config.fileName, stateInfo); 
+    CHECK_OP(stateInfo, );
     QList<ExportSequenceItem> notMergedItems;
     foreach(const ExportSequenceItem& ei0, config.items) {
         QList<ExportSequenceItem> r1Items;
@@ -163,10 +166,8 @@ void ExportSequenceTask::run() {
         if (config.strand == TriState_No || config.strand == TriState_Unknown) { 
             r1Items.append(toRevComplement(ei0, stateInfo));
         }
-        if (hasError()) {
-            return;
-        }
-     
+        CHECK_OP(stateInfo, );
+        
         // translate to amino or back-translate if needed
         QList<ExportSequenceItem> r2Items;
         foreach(const ExportSequenceItem& ei1, r1Items) {
@@ -215,7 +216,9 @@ void ExportSequenceTask::run() {
         }
         name = ExportUtils::genUniqueName(usedNames, name);
         usedNames.insert(name);
-        DNASequenceObject* seqObj = new DNASequenceObject(name, ri.sequence);
+        U2EntityRef seqRef = U2SequenceUtils::import(resultDocument->getDbiRef(), ri.sequence, stateInfo);
+        CHECK_OP(stateInfo, );
+        U2SequenceObject* seqObj = new U2SequenceObject(name, seqRef);
         resultDocument->addObject(seqObj);
         Document::Constraints c;
         c.objectTypeToAdd.append(GObjectTypes::ANNOTATION_TABLE);
@@ -267,19 +270,19 @@ void ExportAnnotationSequenceSubTask::run() {
     // extract sequences for every annotation & form ExportSequenceTaskSettings
     foreach(const ExportSequenceAItem& ei, config.items) {
         foreach(const SharedAnnotationData& ad, ei.annotations) {
-            QList<QByteArray> annSequence = SequenceUtils::extractRegions(ei.sequence.seq, ad->location->regions, 
+            QList<QByteArray> annSequence = U1SequenceUtils::extractRegions(ei.sequence.seq, ad->location->regions, 
                                             ad->getStrand().isCompementary() ? ei.complTT : NULL);
             DNAAlphabet* al = ei.sequence.alphabet;
             if (ei.aminoTT != NULL) {
-                QList<QByteArray> aminoRegions = SequenceUtils::translateRegions(annSequence, ei.aminoTT, ad->isJoin());
+                QList<QByteArray> aminoRegions = U1SequenceUtils::translateRegions(annSequence, ei.aminoTT, ad->isJoin());
                 annSequence = aminoRegions;
                 al = ei.aminoTT->getDstAlphabet();
             }
             SharedAnnotationData newAnn = ad;
             newAnn->location->strand = U2Strand::Direct;
-            newAnn->location->regions = SequenceUtils::toJoinedRegions(annSequence);
+            newAnn->location->regions = U1SequenceUtils::getJoinedMapping(annSequence);
             ExportSequenceItem esi; // both complement & amino ops were already done, so => NULL
-            esi.sequence = DNASequence(ad->name, SequenceUtils::joinRegions(annSequence), al);
+            esi.sequence = DNASequence(ad->name, U1SequenceUtils::joinRegions(annSequence), al);
             esi.annotations.append(newAnn);
             config.exportSequenceSettings.items.append(esi);
         }

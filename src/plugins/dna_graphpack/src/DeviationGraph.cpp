@@ -48,7 +48,7 @@ DeviationGraphFactory::DeviationGraphFactory(GDeviationType t, QObject* p)
     }
 }
 
-bool DeviationGraphFactory::isEnabled(DNASequenceObject* o) const {
+bool DeviationGraphFactory::isEnabled(U2SequenceObject* o) const {
     DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic();
 }
@@ -143,12 +143,12 @@ void DeviationGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, 
     }
 }
 
-void DeviationGraphAlgorithm::calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void DeviationGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    const QByteArray& seq = o->getSequence();
+    QByteArray seq = o->getWholeSequenceData();
     int startPos = vr.startPos;
     if (d->window % d->step != 0) {
         windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps);

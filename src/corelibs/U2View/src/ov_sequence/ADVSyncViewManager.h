@@ -57,7 +57,7 @@ private slots:
     void sl_sync();
 
     void sl_toggleVisualMode();
-    void sl_toggleAutoAnnotaionsHighlighting();
+    void sl_toggleAutoAnnotationHighlighting();
     void sl_updateAutoAnnotationsMenu();
     void sl_updateVisualMode();
     

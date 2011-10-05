@@ -36,6 +36,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/SAMFormat.h>
 
@@ -81,8 +82,6 @@ void GTest_Bwa::init(XMLTestFormat *tf, const QDomElement& el) {
     readsFileName = "";
     patternFileName = "";
     negativeError = "";
-    ma1 = NULL;
-    ma2 = NULL;
     usePrebuildIndex = true;
     subTaskFailed = false;
     indexName = el.attribute(INDEX_ATTR);
@@ -324,13 +323,8 @@ QList<Task*> GTest_Bwa::onSubTaskFinished(Task* subTask) {
     } else if (subTask == resultLoadTask) {
 
         Document* doc = resultLoadTask->getDocument();
-        if (doc == NULL) {
-            setError("Failed to load result document");
-            return res;
-        }
-
-        ma1 =  qobject_cast<MAlignmentObject*> (doc->getObjects().first()->clone());
-
+        CHECK_EXT(doc != NULL, setError("Failed to load result document"), res);
+        ma1 =  qobject_cast<MAlignmentObject*> (doc->getObjects().first())->getMAlignment();
         QFileInfo patternFile(env->getVar("COMMON_DATA_DIR")+"/"+patternFileName);
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(patternFile.absoluteFilePath()));
 
@@ -352,15 +346,10 @@ QList<Task*> GTest_Bwa::onSubTaskFinished(Task* subTask) {
         assert(doc!=NULL);
 
         QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
-        if (list.size() == 0) {
-            stateInfo.setError(  QString("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT) );
-            return res;
-        }
-        ma2 = qobject_cast<MAlignmentObject*>(list.first());
-        if(ma2 == NULL) {
-            stateInfo.setError(QString("Can't cast GObject to MAlignmentObject"));
-            return res;
-        }
+        CHECK_EXT(list.size() > 0, setError(  QString("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT) ), res);
+        MAlignmentObject* ma2Obj = qobject_cast<MAlignmentObject*>(list.first());
+        CHECK_EXT(ma2Obj != NULL, setError(QString("Can't cast GObject to MAlignmentObject")), res);
+        ma2 = ma2Obj->getMAlignment();
     }
     return res;
 }
@@ -371,8 +360,8 @@ void GTest_Bwa::run() {
         return;
     }
 
-    const QList<MAlignmentRow> &alignedSeqs1 = ma1->getMAlignment().getRows();
-    const QList<MAlignmentRow> &alignedSeqs2 = ma2->getMAlignment().getRows();
+    const QList<MAlignmentRow> &alignedSeqs1 = ma1.getRows();
+    const QList<MAlignmentRow> &alignedSeqs2 = ma2.getRows();
 
     if(alignedSeqs1.count() != alignedSeqs2.count()) {
         stateInfo.setError(QString("Aligned sequences number not matched \"%1\", expected \"%2\"").arg(alignedSeqs1.count()).arg(alignedSeqs2.count()));
@@ -450,26 +439,10 @@ void GTest_Bwa::cleanup() {
         QFile::remove(tmpResult.absoluteFilePath() + ".sai");
     }
 
-    delete ma1;
-    ma1 = NULL;
-    ma2 = NULL;
+    ma1.clear();
+    ma2.clear();
 }
 
-QList<DNASequence> GTest_Bwa::dnaObjList_to_dnaList(QList<GObject*> dnaSeqs) {
-    QList<DNASequence> res;
-    int seqCount = dnaSeqs.count();
-    DNASequenceObject *seq = qobject_cast<DNASequenceObject *>(dnaSeqs[0]);
-    MAlignment ma("Alignment",seq->getAlphabet());
-    for(int i=0; i<seqCount; i++) {
-        seq = qobject_cast<DNASequenceObject *>(dnaSeqs[i]);
-        if(seq == NULL) {
-            stateInfo.setError(  QString("Can't cast GObject to DNASequenceObject") );
-            return res;
-        }
-        res.append(seq->getDNASequence());
-    }
-    return res;
-}
 
 GTest_Bwa::~GTest_Bwa() {
     cleanup();

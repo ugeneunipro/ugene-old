@@ -25,6 +25,7 @@
 #include <U2Core/GObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/Task.h>
 
 #include <QtCore/QSet>
 #include <QtCore/QTimer>
@@ -35,7 +36,7 @@ class Annotation;
 class U2Qualifier;
 class AnnotationGroup;
 class AnnotationTableObject;
-class DNASequenceObject;
+class U2SequenceObject;
 class DNATranslation;
 
 enum AnnotationModificationType {
@@ -127,6 +128,8 @@ public:
     void removeQualifier(const QString& name, const QString& val) {removeQualifier(U2Qualifier(name, val));}
 
     const QList<AnnotationGroup*>& getGroups() const {return groups;}
+    
+    QStringList getFullGroupsNames() const;
 
     void findQualifiers(const QString& name, QVector<U2Qualifier>& res) const {return d->findQualifiers(name, res);}
     
@@ -134,7 +137,7 @@ public:
 
     SharedAnnotationData data() const {return d;}
     
-    QString getQualifiersTip(int maxRows, DNASequenceObject* = NULL, DNATranslation* complTT = NULL, DNATranslation* aminoTT = NULL) const;
+    QString getQualifiersTip(int maxRows, U2SequenceObject* = NULL, DNATranslation* complTT = NULL, DNATranslation* aminoTT = NULL) const;
     
     static bool annotationLessThan(Annotation *first, Annotation *second);
     
@@ -261,7 +264,7 @@ public:
     
     void removeAnnotations(const QList<Annotation*>& annotations);
 
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef& ref, U2OpStatus& os) const;
 
     void selectAnnotationsByName(const QString& name, QList<Annotation*>& res);
 
@@ -308,7 +311,7 @@ class U2CORE_EXPORT AnnotationTableObjectConstraints : public GObjectConstraints
 public:
     AnnotationTableObjectConstraints(QObject* p = NULL);
     AnnotationTableObjectConstraints(const AnnotationTableObjectConstraints& c, QObject* p = NULL);
-    int sequenceSizeToFit;
+    qint64 sequenceSizeToFit;
 };
 
 bool U2CORE_EXPORT annotationLessThanByRegion(const Annotation* a1, const Annotation* a2);

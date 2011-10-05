@@ -23,7 +23,6 @@
 #include "IOLibUtils.h"
 #include "DocumentFormatUtils.h"
 
-#include <U2Core/Task.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectReference.h>
@@ -71,29 +70,22 @@ FormatCheckResult ABIFormat::checkRawData(const QByteArray& rawData, const GUrl&
     return hasBinaryBlocks ? FormatDetection_Matched : FormatDetection_NotMatched;
 }
 
-Document* ABIFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
+Document* ABIFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     QByteArray readBuff;
     QByteArray block(BUFF_SIZE, 0);
     quint64 len = 0;
     while ((len=io->readBlock(block.data(),BUFF_SIZE)) > 0) {
         readBuff.append(QByteArray(block.data(), len));
-        if (readBuff.size()>CHECK_MB) {
-            ti.setError(L10N::errorFileTooLarge(io->getURL())); 
-            break;
-        }
-    }
-    if (ti.hasError()) {
-        return NULL;
+        CHECK_EXT(readBuff.size() <= CHECK_MB, os.setError(L10N::errorFileTooLarge(io->getURL())), NULL);
     }
 
     SeekableBuf sf;
     sf.head = readBuff.constData();
     sf.pos = 0;
     sf.size = readBuff.size();
-    Document* doc = parseABI(&sf, io, fs, ti);
-    if (doc == NULL && !ti.hasError()) {
-        ti.setError(tr("Not a valid ABIF file: %1").arg(io->toString()));
-    }
+    Document* doc = parseABI(dbiRef, &sf, io, fs, os);
+    CHECK_OP(os, NULL)
+    CHECK_EXT(doc != NULL, os.setError(tr("Not a valid ABIF file: %1").arg(io->toString())), NULL);
     return doc;
 }
 
@@ -401,7 +393,7 @@ static void replace_nl(char *string) {
     }
 }
 
-Document* ABIFormat::parseABI(SeekableBuf* fp, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {
+Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {
 
     float fspacing; /* average base spacing */
     uint numPoints, numBases;
@@ -819,20 +811,17 @@ skip_bases:
     cd.traceLength = numPoints;
     assert(cd.A.size() == int(numPoints + 1));
 
-    DNASequence dna(sequence);
+    DNASequence dna(sequenceName, sequence);
     dna.info.insert(DNAInfo::COMMENT, sequenceComment.split("\n"));
-    dna.info.insert(DNAInfo::ID, sequenceName);
-
+    
     QList<GObject*> objects;
-    DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sequenceName, dna, fs, os);
-    if (os.hasError()) {
-        return NULL;
-    }
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, dna, fs, os);
+    CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");
     objects.append(chromObj);
     objects.append(new TextObject(sequenceComment, "Info"));
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), objects, fs);
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
     chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
     return doc;
 }

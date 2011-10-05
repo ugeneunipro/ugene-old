@@ -20,7 +20,7 @@
  */
 
 #include <QApplication>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
 
@@ -34,8 +34,7 @@ QMutex StdResidueDictionary::standardDictionaryLock;
 std::auto_ptr<StdResidueDictionary> StdResidueDictionary::standardDictionary(NULL);
 
 
-bool StdResidueDictionary::load( const QString& fileName )
-{
+bool StdResidueDictionary::load( const QString& fileName ) {
     
     IOAdapterFactory*   iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     
@@ -50,7 +49,7 @@ bool StdResidueDictionary::load( const QString& fileName )
         return false;
     }
 
-    TaskStateInfo ti;
+    U2OpStatus2Log ti;
     ASNFormat::AsnParser asnParser(io.get(),ti);
     AsnNode* rootElem = asnParser.loadAsnTree(); 
     if (ti.hasError()) {

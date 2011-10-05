@@ -31,7 +31,7 @@ namespace U2 {
 class GObject;
 class GHints;
 class AnnotationTableObject;
-class DNASequenceObject;
+class U2SequenceObject;
 class DNAAlphabet;
 class StateLock;
 
@@ -48,10 +48,10 @@ class U2CORE_EXPORT AutoAnnotationObject : public QObject
     Q_OBJECT
 public:
     static const QString AUTO_ANNOTATION_HINT;
-    AutoAnnotationObject(DNASequenceObject* obj);
+    AutoAnnotationObject(U2SequenceObject* obj);
     ~AutoAnnotationObject();
     AnnotationTableObject* getAnnotationObject() const { return aobj; }
-    DNASequenceObject* getSeqObject() const {return dnaObj; }
+    U2SequenceObject* getSeqObject() const {return dnaObj; }
     void setGroupEnabled(const QString& groupName, bool enabled);
     void update();
     void updateGroup(const QString& groupName);
@@ -61,7 +61,7 @@ signals:
     void si_updateFinshed();
 private:
     void handleUpdate(QList<AutoAnnotationsUpdater*> updaters);
-    DNASequenceObject* dnaObj;
+    U2SequenceObject* dnaObj;
     AnnotationTableObject*  aobj;
     AutoAnnotationsSupport* aaSupport;
     QSet<QString> enabledGroups;

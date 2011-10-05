@@ -63,7 +63,7 @@ protected:
 private:
     SaveDocumentTask*               saveTemporaryDocumentTask;
     ExternalToolRunTask*            blastPlusTask;
-    DNASequenceObject*              sequenceObject;
+    U2SequenceObject*              sequenceObject;
     Document*                       tmpDoc;
     QList<SharedAnnotationData>     result;
 

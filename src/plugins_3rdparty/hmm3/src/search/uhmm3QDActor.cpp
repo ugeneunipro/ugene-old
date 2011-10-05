@@ -73,7 +73,7 @@ QString UHMM3QDActor::getText() const {
 }
 
 Task* UHMM3QDActor::getAlgorithmTask( const QVector<U2Region>& location ) {
-    DNASequence dnaSeq = scheme->getDNA()->getDNASequence();
+    const DNASequence& dnaSeq = scheme->getSequence();
     const char* seq = dnaSeq.seq.constData();
 
     QMap<QString, Attribute*> params = cfg->getParameters();

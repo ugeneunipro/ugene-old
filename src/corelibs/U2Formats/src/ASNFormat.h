@@ -37,7 +37,7 @@ class BioStruct3D;
 class MoleculeData;
 class ResidueData;
 class AnnotationTableObject;
-class DNASequenceObject;
+class U2SequenceObject;
 class AtomData;
 typedef QSharedDataPointer<AtomData> SharedAtom;
 typedef QHash<int, SharedAtom> AtomCoordSet;
@@ -75,9 +75,12 @@ public:
     ~ASNFormat();
     virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::PLAIN_ASN;}
     virtual const QString& getFormatName() const {return formatName;}
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
     virtual FormatCheckResult checkRawData(const QByteArray& data, const GUrl& = GUrl()) const;
 
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+
+public:
     class U2FORMATS_EXPORT AsnParser 
     {
         static const char* filetypeTag;
@@ -91,7 +94,7 @@ public:
 
         // Data
         IOAdapter *io;        
-        TaskStateInfo& ts;
+        U2OpStatus& ts;
         QByteArray buffer;
         char prev;
         ParseState curState;
@@ -120,7 +123,7 @@ public:
 
 
     public:
-        AsnParser(IOAdapter* _io, TaskStateInfo& _ts) : 
+        AsnParser(IOAdapter* _io, U2OpStatus& _ts) : 
           io(_io), ts(_ts), prev(' '), curElementKind(ASN_NO_KIND), 
           validFile(false), haveErrors(false), insideRoot(false), fileAtEnd(false) {}
         ~AsnParser() {}
@@ -158,7 +161,7 @@ private:
     class BioStructLoader{
     public:
         BioStructLoader() : standardDictionary(0), localDictionary(0) {}
-        void loadBioStructFromAsnTree(AsnNode* rootNode, BioStruct3D& struc, TaskStateInfo& info);
+        void loadBioStructFromAsnTree(AsnNode* rootNode, BioStruct3D& struc, U2OpStatus& os);
         const StdResidueDictionary * getStandardDictionary() const {return standardDictionary;}
         void setStandardDictionary( const StdResidueDictionary * _standardDictionary ) {standardDictionary = _standardDictionary;}
     private:

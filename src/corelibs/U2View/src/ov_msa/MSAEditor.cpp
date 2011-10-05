@@ -34,13 +34,26 @@
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/PhyTreeObject.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/Settings.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/IOAdapterUtils.h>
+
+#include <U2Algorithm/PhyTreeGeneratorTask.h>
+#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
+
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/DialogUtils.h>
-#include <U2Core/AppContext.h>
-
-#include <QtCore/QEvent>
-
 #include <QtGui/QLabel>
 #include <QtGui/QPainter>
 #include <QtGui/QVBoxLayout>
@@ -51,22 +64,12 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFontDialog>
-
-#include <U2Core/IOAdapter.h>
-#include <U2Core/Counter.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/Settings.h>
-#include <U2Core/SaveDocumentTask.h>
 #include <U2Gui/GScrollBar.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
 
-#include <U2Core/PhyTreeObject.h>
-#include <U2Algorithm/PhyTreeGeneratorTask.h>
-#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 #include <U2View/CreatePhyTreeDialogController.h>
+
+#include <QtCore/QEvent>
+
 
 namespace U2 {
 
@@ -267,10 +270,14 @@ void MSAEditor::sl_openTree() {
         treeFileName = GUrlUtils::rollFileName(msaURL.dirPath() + "/" + msaURL.baseFileName() + ".nwk", DocumentUtils::getNewDocFileNameExcludesHint());
     }
 
-    PhyTreeObject *newObj = new PhyTreeObject(treeGeneratorTask->getResult(), "Tree");
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::NEWICK);
-    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    Document *d = new Document(df, iof, treeFileName, QList<GObject*>()<<newObj);
+    IOAdapterFactory *iof = IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE);
+    U2OpStatus2Log os;
+    Document *d = df->createNewLoadedDocument(iof, treeFileName, os);
+    CHECK_OP(os, );
+
+    PhyTreeObject *newObj = new PhyTreeObject(treeGeneratorTask->getResult(), "Tree");
+    d->addObject(newObj);
     p->addDocument(d);
 
     Task* saveTask = new SaveDocumentTask(d);
@@ -492,15 +499,15 @@ bool MSAEditor::eventFilter(QObject*, QEvent* e) {
             if (msaObject->isStateLocked()) {
                 return false;
             }
-            DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*> (gomd->objPtr.data());
+            U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*> (gomd->objPtr.data());
             if (dnaObj != NULL ) {
-                if (DNAAlphabet::deriveCommonAlphabet(dnaObj->getAlphabet(), msaObject->getAlphabet()) == NULL) {
+                if (U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), msaObject->getAlphabet()) == NULL) {
                     return false;
                 }
                 if (e->type() == QEvent::DragEnter) {
                     de->acceptProposedAction();
                 } else {     
-                    msaObject->addRow(dnaObj->getDNASequence());
+                    msaObject->addRow(dnaObj->getWholeSequence());
                 }    
             }
         }

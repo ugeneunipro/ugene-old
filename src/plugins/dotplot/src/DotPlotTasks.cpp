@@ -25,14 +25,14 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Formats/DocumentFormatUtils.h>
-
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentFormatConfigurators.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
 
 
 namespace U2 {
@@ -258,12 +258,12 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
     if(inFile == ""){
         return NULL;
     }
-    GUrl URL(inFile);
+    GUrl url(inFile);
 
     Project *project = AppContext::getProject();
 
     Q_ASSERT(project);
-    Document *doc = project->findDocumentByURL(URL);
+    Document *doc = project->findDocumentByURL(url);
 
     // document already present in the project
     if (doc) {
@@ -278,15 +278,16 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
 
     DocumentFormat* format = formats.first().format;
     Q_ASSERT(format);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
 
-    QVariantMap formatSettings;
+    QVariantMap hints;
     if (gapSize >= 0) {
         QString mergeToken = DocumentReadingMode_SequenceMergeGapSize;
-        formatSettings[mergeToken] = gapSize;
+        hints[mergeToken] = gapSize;
     }
 
-    doc = new Document(format, iof, URL, QList<UnloadedObjectInfo>(), formatSettings);
+    doc = format->createNewUnloadedDocument(iof, url, stateInfo, hints);
+    CHECK_OP(stateInfo, NULL);
     doc->setUserModLock(false);
 
     addSubTask(new AddDocumentTask(doc)); // add document to the project
@@ -295,8 +296,7 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
     return doc;
 }
 
-DotPlotLoadDocumentsTask::~DotPlotLoadDocumentsTask() {
-
+DotPlotLoadDocumentsTask::~DotPlotLoadDocumentsTask() { 
     // error while loading documents
     if (hasError()) {
         Project *project = AppContext::getProject();

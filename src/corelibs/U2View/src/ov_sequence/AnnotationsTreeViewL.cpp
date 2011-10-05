@@ -1724,7 +1724,7 @@ void AnnotationsTreeViewL::renameItem(AVItemL* item) {
         QList<ADVSequenceObjectContext*> soList = ctx->findRelatedSequenceContexts(ai->annotation->getGObject());
         assert(soList.size() == 1);
         ADVSequenceObjectContext* so = soList.first();
-        U2Region seqRange = so->getSequenceObject()->getSequenceRange();
+        U2Region seqRange(0, so->getSequenceObject()->getSequenceLength());
         EditAnnotationDialogController dialog(ai->annotation, seqRange, this);
         moveDialogToItem(ai, dialog);
         int result = dialog.exec();

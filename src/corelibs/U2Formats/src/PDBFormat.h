@@ -31,7 +31,7 @@ namespace U2 {
 
 class IOAdapter;
 class AnnotationTableObject;
-class DNASequenceObject;
+class U2SequenceObject;
 class AtomData;
 typedef QSharedDataPointer<AtomData> SharedAtom;
 
@@ -43,15 +43,16 @@ public:
     virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::PLAIN_PDB;}
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
     static int getElementNumberByName(const QByteArray& elementName);
     static char getAcronymByName(const QByteArray& name);
     static QHash<QByteArray, int> createAtomNumMap();
     static void calculateBonds(BioStruct3D& bioStruct);
-    static Document* createDocumentFromBioStruct3D(BioStruct3D &bioStruct, DocumentFormat* format, IOAdapterFactory* iof, const GUrl& url, TaskStateInfo& ti, const QVariantMap& fs );
+    static Document* createDocumentFromBioStruct3D(const U2DbiRef& dbi, BioStruct3D &bioStruct, DocumentFormat* format, IOAdapterFactory* iof, const GUrl& url, U2OpStatus& ti, const QVariantMap& fs );
 
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 private:
     
@@ -81,25 +82,25 @@ private:
         
         // Methods
         QByteArray getSpecValue(const QByteArray& specLine, const QByteArray& valueName);
-        void parseHeader(BioStruct3D& biostruct, TaskStateInfo& ti);
-        void parseCompound(BioStruct3D& biostruct, TaskStateInfo& ti);
-        void parseDBRef(BioStruct3D& biostruct, TaskStateInfo& ti);
-        void parseSequence(BioStruct3D& biostruct, TaskStateInfo& ti);
-        void parseSecondaryStructure(BioStruct3D& biostruct, TaskStateInfo& ti);
-        void parseHet(BioStruct3D& biostruct, TaskStateInfo& ti);
-        void parseAtomConnections(BioStruct3D& biostruct, TaskStateInfo& ti);
-        void parseAtom(BioStruct3D& biostruct, TaskStateInfo& ti);
+        void parseHeader(BioStruct3D& biostruct, U2OpStatus& ti);
+        void parseCompound(BioStruct3D& biostruct, U2OpStatus& ti);
+        void parseDBRef(BioStruct3D& biostruct, U2OpStatus& ti);
+        void parseSequence(BioStruct3D& biostruct, U2OpStatus& ti);
+        void parseSecondaryStructure(BioStruct3D& biostruct, U2OpStatus& ti);
+        void parseHet(BioStruct3D& biostruct, U2OpStatus& ti);
+        void parseAtomConnections(BioStruct3D& biostruct, U2OpStatus& ti);
+        void parseAtom(BioStruct3D& biostruct, U2OpStatus& ti);
 
         void createMolecule( char chainIdentifier, BioStruct3D &biostruct, int chainIndex );
 
-        void parseModel(BioStruct3D& biostruct, TaskStateInfo& ti);
+        void parseModel(BioStruct3D& biostruct, U2OpStatus& ti);
         void updateSecStructChainIndexes( BioStruct3D& biostruc );
         void updateResidueIndexes( BioStruct3D& biostruc );
         bool seqResContains(char chainIdentier, int residueIndex, char acronym);
         QByteArray getNextSpecLine();
     public:
         PDBParser(IOAdapter* io);
-        void parseBioStruct3D(BioStruct3D& biostruct, TaskStateInfo& ts);
+        void parseBioStruct3D(BioStruct3D& biostruct, U2OpStatus& ts);
     };
 
 };

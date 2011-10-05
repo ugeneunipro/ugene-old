@@ -28,6 +28,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QList>
 #include <memory>
@@ -239,20 +240,10 @@ void GTest_UHMM3Search::setAndCheckArgs() {
         return;
     }
     QList< GObject* > objsList = seqDoc->findGObjectByType( GObjectTypes::SEQUENCE );
-    if( objsList.isEmpty() ) {
-        stateInfo.setError( "no_dna_sequence_objects_in_document" );
-        return;
-    }
-    DNASequenceObject* seqObj = qobject_cast< DNASequenceObject* >( objsList.first() );
-    if( NULL == seqObj ) {
-        stateInfo.setError( "cannot_cast_to_dna_object" );
-        return;
-    }
-    sequence = seqObj->getDNASequence();
-    if( !sequence.length() ) {
-        stateInfo.setError( "empty_sequence_given" );
-        return;
-    }
+    CHECK_EXT(!objsList.isEmpty(),setError("No sequence objects found!"), );
+    U2SequenceObject* seqObj = qobject_cast< U2SequenceObject* >( objsList.first() );
+    sequence = seqObj->getWholeSequence();
+    CHECK_EXT(sequence.length() > 0, setError(tr("Sequence is empty")), );
     
     if( !machinePath.isEmpty() ) {
         machinePath = env->getVar( "COMMON_DATA_DIR" ) + "/" + machinePath;

@@ -77,6 +77,10 @@ public:
 
     virtual FormatCheckResult isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus &os) const;
 
+    virtual GUrl id2Url(const U2DbiId& id) const {return GUrl(id, GUrl_File);}
+    
+    virtual bool isDbiExists(const U2DbiId& id) const;
+
 public:
     static const QString ID;
 };

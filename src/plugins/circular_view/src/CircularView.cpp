@@ -181,7 +181,7 @@ void CircularView::mouseMoveEvent( QMouseEvent * e )
         }
 
         // compute selection
-        int seqLen = ctx->getSequenceLen();
+        int seqLen = ctx->getSequenceLength();
         int selStart = lastPressPos / (360.0*graduation) * seqLen + 0.5f;
         int selEnd = a / (360.0*graduation) * seqLen + 0.5f;
         int selLen = selEnd-selStart;
@@ -234,7 +234,7 @@ void CircularView::setAngle(int angle) {
 void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection* selection, const QList<Annotation*>& added, const QList<Annotation*>& removed) {
     
     foreach (Annotation* a, added) {
-        bool splitted =  U1AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange()); 
+        bool splitted =  U1AnnotationUtils::isSplitted(a->getLocation(), U2Region(0, ctx->getSequenceLength()));
         int locationIdx = selection->getAnnotationData(a)->locationIdx;
         if (splitted && locationIdx != -1) {
             // set locationIdx = -1 to make sure whole annotation region is selected
@@ -542,7 +542,7 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
 
     //QString docName = ctx->getSequenceGObject()->getDocument()->getName();
     QString docName = ctx->getSequenceGObject()->getGObjectName();
-    QString seqLen = QString::number(ctx->getSequenceLen()) + " bp";
+    QString seqLen = QString::number(ctx->getSequenceLength()) + " bp";
     int docNameFullLength = docName.length();
 
     QFont font = p.font();
@@ -580,7 +580,7 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
 
 void CircularViewRenderArea::drawSequenceSelection( QPainter& p ) {
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    int seqLen = ctx->getSequenceLen();
+    int seqLen = ctx->getSequenceLength();
     const QVector<U2Region>& selection = view->getSequenceContext()->getSequenceSelection()->getSelectedRegions();
 
     QList<QPainterPath*> paths;
@@ -696,7 +696,7 @@ qreal CircularViewRenderArea::getVisibleAngle() const {
 
 QPair<int,int> CircularViewRenderArea::getVisibleRange() const {
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    int seqLen = ctx->getSequenceObject()->getSequenceLen();
+    int seqLen = ctx->getSequenceObject()->getSequenceLength();
     if (verticalOffset <= parentWidget()->height()) {
         return qMakePair<int,int>(0, seqLen);
     }
@@ -712,7 +712,7 @@ QPair<int,int> CircularViewRenderArea::getVisibleRange() const {
 void CircularViewRenderArea::drawRuler( QPainter& p ) {
     p.save();
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    const U2Region& range = ctx->getSequenceObject()->getSequenceRange();
+    U2Region range(0, ctx->getSequenceLength());
     int seqLen = range.length;
     normalizeAngle(rotationDegree);
 
@@ -788,7 +788,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
 
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
 
-    int seqLen = ctx->getSequenceLen();
+    int seqLen = ctx->getSequenceLength();
 
     const QVector<U2Region>& location = a->getRegions();
 
@@ -820,7 +820,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annota
 
     QList<CircurlarAnnotationRegionItem*> regions;
 
-    bool splitted = U1AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange());
+    bool splitted = U1AnnotationUtils::isSplitted(a->getLocation(), U2Region(0, ctx->getSequenceLength()));
     bool splittedItemIsReady = false;
 
     foreach(const U2Region& r, location) {
@@ -909,9 +909,10 @@ void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, Annotation*
     }
 
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    bool splitted = U1AnnotationUtils::isSplitted(a->getLocation(), ctx->getSequenceObject()->getSequenceRange());
+    U2Region seqReg(0, ctx->getSequenceLength());
+    bool splitted = U1AnnotationUtils::isSplitted(a->getLocation(), seqReg);
 
-    int seqLen = ctx->getSequenceLen();
+    int seqLen = seqReg.length;
     const QVector<U2Region>& location = a->getRegions();
     for(int r = 0; r < location.count(); r++) {
         if (splitted && r != 0) {

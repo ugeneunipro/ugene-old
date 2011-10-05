@@ -164,7 +164,7 @@ void Primer3ADVContext::sl_showDialog() {
         if(QDialog::Accepted == dialog.exec())
         {
             Primer3TaskSettings settings = dialog.getSettings();
-            settings.setSequence(seqCtx->getSequenceData());
+            settings.setSequence(seqCtx->getSequenceObject()->getWholeSequenceData());
             U2Region region=dialog.getRegion();
             settings.setIncludedRegion(qMakePair(
                     (int)region.startPos + settings.getFirstBaseIndex(),

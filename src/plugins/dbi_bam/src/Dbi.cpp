@@ -337,6 +337,11 @@ FormatCheckResult DbiFactory::isValidDbi(const QHash<QString, QString> &properti
     return res;
 }
 
+
+bool DbiFactory::isDbiExists(const U2DbiId& id) const {
+    return QFile::exists(id);
+}
+
 const QString DbiFactory::ID = "BAMDbi";
 
 // ObjectDbi

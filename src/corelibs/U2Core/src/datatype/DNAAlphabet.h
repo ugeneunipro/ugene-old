@@ -26,7 +26,6 @@
 #include <U2Core/U2Region.h>
 
 #include <QtCore/QBitArray>
-
 namespace U2 {
 
 class U2CORE_EXPORT BaseDNAAlphabetIds : public QObject {
@@ -76,9 +75,7 @@ public:
     QByteArray getAlphabetChars(bool forceBothCases = false) const;
 
     int getNumAlphabetChars() const {return numChars;}
-
-    static DNAAlphabet* deriveCommonAlphabet(DNAAlphabet* al1, DNAAlphabet* al2);
-
+    
 private:
     QString             id;
     QString             name;
@@ -95,15 +92,9 @@ public:
 
     virtual void unregisterAlphabet(DNAAlphabet* a) = 0;
 
-    virtual DNAAlphabet* findById(const QString id) const = 0;
+    virtual DNAAlphabet* findById(const QString& id) const = 0;
 
     virtual QList<DNAAlphabet*> getRegisteredAlphabets() const =  0;
-
-    virtual DNAAlphabet* findAlphabet(const QByteArray& seq) const = 0;
-
-    virtual QList<DNAAlphabet*> findAlphabets(const QByteArray& seq) const = 0;
-
-    virtual QList<DNAAlphabet*> findAlphabets(const QByteArray& seq, const QVector<U2Region>& regionsToProcess, bool onlyOne) const = 0;
 };
 
 }//namespace

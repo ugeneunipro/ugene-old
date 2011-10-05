@@ -32,9 +32,7 @@
 
 #include <QtXml/QDomElement>
 
-#include <U2Core/RemovePartFromSequenceTask.h>
-#include <U2Core/AddPartToSequenceTask.h>
-#include <U2Core/ReplacePartOfSequenceTask.h>
+#include <U2Core/ModifySequenceObjectTask.h>
 
 namespace U2 {
 
@@ -56,7 +54,7 @@ private:
     QString             annotationName;
     QString             expectedSequence;
     QVector<U2Region>      expectedRegions;
-    DNASequenceObject*  dnaso;
+    U2SequenceObject*  dnaso;
 };
 
 class GTest_AddPartToSequenceTask : GTest {
@@ -76,7 +74,7 @@ private:
     QString             annotationName;
     QString             expectedSequence;
     QVector<U2Region>      expectedRegions;
-    DNASequenceObject*  dnaso;
+    U2SequenceObject*  dnaso;
 };
 
 class GTest_ReplacePartOfSequenceTask : GTest {
@@ -97,7 +95,7 @@ private:
     QString             annotationName;
     QString             expectedSequence;
     QVector<U2Region>      expectedRegions;
-    DNASequenceObject*  dnaso;
+    U2SequenceObject*  dnaso;
 };
 
 

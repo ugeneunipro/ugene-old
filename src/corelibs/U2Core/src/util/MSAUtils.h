@@ -30,7 +30,6 @@ namespace U2 {
 class GObject;
 class MAlignment;
 class MAlignmentRow;
-class TaskStateInfo;
 class U2OpStatus;
 
 class U2CORE_EXPORT MSAUtils : public QObject {
@@ -41,13 +40,15 @@ public:
     
     static MAlignment seq2ma(const QList<GObject*>& dnas, U2OpStatus& os);
 
+    static MAlignment seq2ma(const QList<DNASequence>& dnas, U2OpStatus& os);
+
     static QList<DNASequence> ma2seq(const MAlignment& ma, bool trimGaps);
 
     // Returns row index or -1 if name is not present
     static int getRowIndexByName(const MAlignment& ma, const QString& name);
 
     //checks that alignment is not empty and all packed sequence parts has equal length
-    static bool checkPackedModelSymmetry(MAlignment& ali, TaskStateInfo& ti);
+    static bool checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti);
 };
 
 

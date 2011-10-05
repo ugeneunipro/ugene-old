@@ -42,6 +42,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/SimpleWorkflowTask.h>
@@ -303,18 +304,15 @@ QList<Task*> MuscleAddSequencesToProfileTask::onSubTaskFinished(Task* subTask) {
     //todo: move to utility alphabet reduction
     DNAAlphabet* al = NULL;
     foreach(GObject* obj, seqObjects) {
-        DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
         DNAAlphabet* objAl = dnaObj->getAlphabet();
         if (al == NULL) {
             al = objAl;
         } else if (al != objAl) {
-            al = DNAAlphabet::deriveCommonAlphabet(al, objAl);
-            if (al == NULL) {
-                stateInfo.setError(tr("Sequences in file have different alphabets %1").arg(loadTask->getDocument()->getURLString()));
-                return res;
-            }
+            al = U2AlphabetUtils::deriveCommonAlphabet(al, objAl);
+            CHECK_EXT(al != NULL, setError(tr("Sequences in file have different alphabets %1").arg(loadTask->getDocument()->getURLString())), res);
         }
-        s.profile.addRow(MAlignmentRow(dnaObj->getGObjectName(), dnaObj->getSequence()));
+        s.profile.addRow(MAlignmentRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData()));
     }
     if(!seqObjects.isEmpty()) {
         s.profile.setAlphabet(al);

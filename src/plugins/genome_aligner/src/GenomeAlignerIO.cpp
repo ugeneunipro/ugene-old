@@ -26,8 +26,13 @@
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
+
 #include <U2Formats/DocumentFormatUtils.h>
 
 namespace U2 {
@@ -88,7 +93,6 @@ namespace LocalWorkflow {
 GenomeAlignerCommunicationChanelReader::GenomeAlignerCommunicationChanelReader(CommunicationChannel* reads) {
     assert(reads != NULL);
     this->reads = reads;
-    obj = new DNASequenceObject("obj", DNASequence(QByteArray("aaa"), DocumentFormatUtils::findAlphabet("aaa")));
 }
 
 bool GenomeAlignerCommunicationChanelReader::isEnd() {
@@ -106,7 +110,6 @@ SearchQuery *GenomeAlignerCommunicationChanelReader::read() {
 }
 
 GenomeAlignerCommunicationChanelReader::~GenomeAlignerCommunicationChanelReader() {
-    delete obj;
 }
 
 /************************************************************************/
@@ -151,7 +154,6 @@ const qint64 GenomeAlignerDbiReader::readBunchSize = 1000;
 GenomeAlignerDbiReader::GenomeAlignerDbiReader(U2AssemblyDbi *_rDbi, U2Assembly _assembly)
 : rDbi(_rDbi), assembly(_assembly)
 {
-    obj = new DNASequenceObject("obj", DNASequence(QByteArray("aaa"), DocumentFormatUtils::findAlphabet("aaa")));
     wholeAssembly.startPos = 0;
     wholeAssembly.length = rDbi->getMaxEndPos(assembly.id, status);
     currentRead = reads.end();
@@ -207,7 +209,7 @@ inline void checkOperationStatus(const U2OpStatus &status) {
 
 GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refName, int refLength) {
     //TODO: support several assemblies.
-    dbiHandle = QSharedPointer<DbiHandle>(new DbiHandle("SQLiteDbi", dbiFilePath, true, status));
+    dbiHandle = QSharedPointer<DbiConnection>(new DbiConnection(U2DbiRef(SQLITE_DBI_ID, dbiFilePath), true, status));
     checkOperationStatus(status);
     sqliteDbi = dbiHandle->dbi;
     wDbi = sqliteDbi->getAssemblyDbi();

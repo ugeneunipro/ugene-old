@@ -163,7 +163,7 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
 
     foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE))
     {
-        DNASequenceObject *dnao = qobject_cast<DNASequenceObject*>(gobj);
+        U2SequenceObject *dnao = qobject_cast<U2SequenceObject*>(gobj);
         assert(dnao);
 
         QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
@@ -184,7 +184,7 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
         }
 
         QVariantMap messageData;
-        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue(dnao->getDNASequence());
+        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue(dnao->getWholeSequence());
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue(sads);
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);

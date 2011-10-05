@@ -21,13 +21,16 @@
 
 #include "MegaFormat.h"
 #include <U2Formats/DocumentFormatUtils.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
 
 namespace U2 {
 
@@ -46,18 +49,14 @@ MegaFormat::MegaFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_SW, Q
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 
-Document* MegaFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
-    QList <GObject*> objs;
-    load(io, objs, ti);
-
-    if (ti.hasError()) {
-        qDeleteAll(objs);
-        return NULL;
-    }
-    return new Document(this, io->getFactory(), io->getURL(), objs, fs);
+Document* MegaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
+    QList<GObject*> objs;
+    load(io, objs, os);
+    CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
+    return new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objs, fs);
 }
 
-void MegaFormat::storeDocument( Document* d, TaskStateInfo& ti, IOAdapter* io ) {
+void MegaFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
     if( NULL == d ) {
         ti.setError(L10N::badArgument("doc"));
         return;
@@ -83,7 +82,7 @@ FormatCheckResult MegaFormat::checkRawData(const QByteArray& rawData, const GUrl
     return FormatDetection_Matched;
 }
 
-static bool checkModel(const MAlignment& al, TaskStateInfo& ti) {
+static bool checkModel(const MAlignment& al, U2OpStatus& ti) {
     //check that all sequences are of equal size
     int size = 0;
     for (int i=0, n = al.getNumRows(); i<n; i++) {
@@ -136,7 +135,7 @@ bool MegaFormat::checkName(QByteArray &name) {
     return true;
 }
 
-bool MegaFormat::readName(IOAdapter* io, QByteArray &line, QByteArray &name, TaskStateInfo &ti) {
+bool MegaFormat::readName(IOAdapter* io, QByteArray &line, QByteArray &name, U2OpStatus &ti) {
     bool eof=false;
 
     line=line.mid(1);
@@ -160,11 +159,11 @@ bool MegaFormat::readName(IOAdapter* io, QByteArray &line, QByteArray &name, Tas
         ti.setError(MegaFormat::tr("Bad name of sequence"));
     }
 
-    ti.progress=io->getProgress();
+    ti.setProgress(io->getProgress());
     return eof;
 }
 
-bool MegaFormat::skipComments(IOAdapter *io, QByteArray &line, TaskStateInfo &ti) {
+bool MegaFormat::skipComments(IOAdapter *io, QByteArray &line, U2OpStatus &ti) {
     int i=0;
     bool eof=false;
     bool hasEnd=false;
@@ -225,7 +224,7 @@ bool MegaFormat::skipComments(IOAdapter *io, QByteArray &line, TaskStateInfo &ti
         }
     }
 
-    ti.progress = io->getProgress();
+    ti.setProgress(io->getProgress());
     return eof;
 }
 
@@ -243,7 +242,7 @@ void MegaFormat::workUpIndels(MAlignment& al) {
     }
 }
 
-void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateInfo &ti) {
+void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::U2OpStatus &os) {
     MAlignment al(io->getURL().baseFileName());
     QByteArray line;
     bool eof=false;
@@ -251,40 +250,37 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskState
     int sequenceIdx=0;
     bool lastIteration=false;
 
-    readHeader(io, line, ti);
-    if (ti.hasError()) {
+    readHeader(io, line, os);
+    if (os.hasError()) {
         return;
     }
-    readTitle(io, line, ti);
-    if (ti.hasError()) {
+    readTitle(io, line, os);
+    if (os.hasError()) {
         return;
     }
 
     //read data
-    while (!ti.cancelFlag && !lastIteration) {
+    while (!os.isCoR() && !lastIteration) {
         QByteArray name;
         QByteArray value;
 
         //read name of a sequence
-        if (readName(io, line, name, ti)) {
+        if (readName(io, line, name, os)) {
             if (!eof && name.isEmpty()) {
-                ti.setError(MegaFormat::tr("Incorrect format"));
+                os.setError(MegaFormat::tr("Incorrect format"));
                 return;
             } else if (name.isEmpty()) {
                 break;
             }
         }
-        if (ti.hasError()) {
-            return;
-        }
-
+        CHECK_OP(os, );
+        
         //read the sequence
-        eof=readSequence(io, line, ti, value, &lastIteration);
-        if (ti.hasError()) {
-            return;
-        }
+        eof=readSequence(io, line, os, value, &lastIteration);
+        CHECK_OP(os, );
+
         if (0==sequenceIdx && value.contains(MEGA_IDENTICAL)) {
-            ti.setError(MegaFormat::tr("Identical symbol at the first sequence"));
+            os.setError(MegaFormat::tr("Identical symbol at the first sequence"));
             return;
         }
 
@@ -306,7 +302,7 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskState
                 const MAlignmentRow *item=&al.getRow(sequenceIdx);
 
                 if (item->getName()!=name) {
-                    ti.setError(MegaFormat::tr("Incorrect order of sequences' names"));
+                    os.setError(MegaFormat::tr("Incorrect order of sequences' names"));
                     return;
                 }
                 al.appendChars(sequenceIdx, value.constData(), value.size());
@@ -318,24 +314,19 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskState
         }
     }
 
-    checkModel(al, ti);
-    if (ti.hasError()) {
-        return;
-    }
-
-    DocumentFormatUtils::assignAlphabet(al);
-    if (al.getAlphabet() == NULL) {
-        ti.setError(MegaFormat::tr("Alphabet unknown"));
-        return;
-    }
-
+    checkModel(al, os);
+    CHECK_OP(os, );
+    
+    U2AlphabetUtils::assignAlphabet(al);
+    CHECK_EXT(al.getAlphabet() != NULL, os.setError( tr("Alphabet is unknown")), );
+    
     workUpIndels(al); //replace '.' by symbols from the first sequence
 
     MAlignmentObject* obj = new MAlignmentObject(al);
     objects.append(obj);
 }
 
-void MegaFormat::save(U2::IOAdapter *io, U2::Document *d, U2::TaskStateInfo &ti) {
+void MegaFormat::save(U2::IOAdapter *io, U2::Document *d, U2::U2OpStatus &ti) {
     const MAlignmentObject* obj = NULL;
     if( (d->getObjects().size() != 1)
         || ((obj = qobject_cast<const MAlignmentObject*>(d->getObjects().first())) == NULL)) {
@@ -387,7 +378,7 @@ void MegaFormat::save(U2::IOAdapter *io, U2::Document *d, U2::TaskStateInfo &ti)
     }
 }
 
-void MegaFormat::readHeader(U2::IOAdapter *io, QByteArray &line, U2::TaskStateInfo &ti) {
+void MegaFormat::readHeader(U2::IOAdapter *io, QByteArray &line, U2::U2OpStatus &ti) {
     skipWhites(io, line);
     if (line.isEmpty()) {
         ti.setError(MegaFormat::tr("No header"));
@@ -412,7 +403,7 @@ void MegaFormat::readHeader(U2::IOAdapter *io, QByteArray &line, U2::TaskStateIn
     }
     line=line.mid(MEGA_HEADER.length());
     line=line.trimmed();
-    ti.progress = io->getProgress();
+    ti.setProgress(io->getProgress());
 }
 
 void MegaFormat::skipWhites(U2::IOAdapter *io, QByteArray &line) {
@@ -427,7 +418,7 @@ void MegaFormat::skipWhites(U2::IOAdapter *io, QByteArray &line) {
     }
 }
 
-void MegaFormat::readTitle(U2::IOAdapter *io, QByteArray &line, U2::TaskStateInfo &ti) {
+void MegaFormat::readTitle(U2::IOAdapter *io, QByteArray &line, U2::U2OpStatus &ti) {
     skipWhites(io, line);
     if (line.isEmpty()) {
         ti.setError(MegaFormat::tr("No data in file"));
@@ -476,15 +467,15 @@ void MegaFormat::readTitle(U2::IOAdapter *io, QByteArray &line, U2::TaskStateInf
         }
         line=line.mid(sepIdx);
     }
-    ti.progress = io->getProgress();
+    ti.setProgress(io->getProgress());
 }
 
-bool MegaFormat::readSequence(U2::IOAdapter *io, QByteArray &line, U2::TaskStateInfo &ti, 
+bool MegaFormat::readSequence(U2::IOAdapter *io, QByteArray &line, U2::U2OpStatus &ti, 
                               QByteArray &value, bool *lastIteration) {
     bool hasPartOfSequence=false;
     bool eof=false;
-    while (!ti.cancelFlag) {
-        //delete spaces from the sequence untill #
+    while (!ti.isCoR()) {
+        //delete spaces from the sequence until #
         int spaceIdx=line.indexOf(' ');
         int separatorIdx;
         while (-1!=spaceIdx) {
@@ -507,7 +498,7 @@ bool MegaFormat::readSequence(U2::IOAdapter *io, QByteArray &line, U2::TaskState
                     break;
                 }
             }
-            ti.progress = io->getProgress();
+            ti.setProgress(io->getProgress());
             line=line.simplified();
             continue;
         }
@@ -548,14 +539,14 @@ bool MegaFormat::readSequence(U2::IOAdapter *io, QByteArray &line, U2::TaskState
         if (-1==separatorIdx) {
             if (getNextLine(io, line)) {
                 if (!line.isEmpty()) {
-                    ti.progress = io->getProgress();
+                    ti.setProgress(io->getProgress());
                     line=line.simplified();
                     continue;
                 }
                 eof=true;
                 break;
             }
-            ti.progress = io->getProgress();
+            ti.setProgress(io->getProgress());
             line=line.simplified();
             continue;
         } else {

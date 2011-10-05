@@ -37,7 +37,7 @@
 namespace U2 {
 
 class ADVSequenceObjectContext;
-class DNASequenceObject;
+class U2SequenceObject;
 class FindAlgorithmTask;
 class Task;
 class FRListItem;
@@ -109,7 +109,7 @@ private:
 
 private:
     ADVSequenceObjectContext*   ctx;
-    DNASequenceObject*          sequence;
+    U2SequenceObject*          sequence;
 
     QString prevSearchString;
     int prevAlgorithm; //0 - 100%, 1-mismatch, 2-insdel

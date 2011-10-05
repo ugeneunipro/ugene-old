@@ -39,9 +39,7 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-
-    virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
+    virtual void storeDocument( Document* d, U2OpStatus& ts, IOAdapter* io );
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
@@ -62,11 +60,14 @@ public:
 
     };
 
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+
 private:
 
     static bool getSectionTags(QByteArray &line, const QByteArray &sectionName, QList<QByteArray> &tags);
 
-    static bool validateField(int num, QByteArray &field, TaskStateInfo *ti = NULL);
+    static bool validateField(int num, QByteArray &field, U2OpStatus *ti = NULL);
 
     static const QByteArray VERSION;
 

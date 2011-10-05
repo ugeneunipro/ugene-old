@@ -43,9 +43,9 @@ private:
 
     Document* loadFile(QString inFile);
 
-    QList<GObject*> sequencesGenerator(const QList<GObject*> &);
+    QList<DNASequence> sequencesGenerator(const QList<GObject*> &);
     QByteArray generateRandomSequence(const int* acgtContent, int seqLen);
-    void calculateACGTContent(const DNASequenceObject& seq, int* acgtContent);
+    void calculateACGTContent(const U2SequenceObject& seq, int* acgtContent);
 
 protected slots:
     void sl_generateNegativeSample(Task* task);

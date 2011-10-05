@@ -30,7 +30,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
-
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/MAlignmentObject.h>

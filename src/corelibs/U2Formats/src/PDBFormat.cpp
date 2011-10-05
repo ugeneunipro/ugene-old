@@ -21,12 +21,11 @@
 
 #include <QtCore/QStringList>
 
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
-
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/BioStruct3DObject.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -34,7 +33,12 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiUtils.h>
+
 #include <U2Algorithm/MolecularSurface.h>
+
 #include <time.h>
 #include <memory>
 
@@ -79,37 +83,35 @@ FormatCheckResult PDBFormat::checkRawData(const QByteArray& rawData, const GUrl&
 }
 
 
-Document* PDBFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
+Document* PDBFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     GUrl url = io->getURL();
     ioLog.trace("Start PDB parsing: " +url.getURLString());
 
     BioStruct3D bioStruct;
     PDBParser pdbParser(io);
     clock_t t1 =  clock();
-    pdbParser.parseBioStruct3D(bioStruct, ti);
+    pdbParser.parseBioStruct3D(bioStruct, os);
     clock_t t2 =  clock();
     perfLog.trace("PDB file parsing time: " + QString::number((float)( t2 - t1)/ CLOCKS_PER_SEC ));
     
-    if (ti.hasError() || ti.cancelFlag) {
-        return NULL;
-    }
+    CHECK_OP(os, NULL);
     io->close();
-    ti.progress = 80;
+    os.setProgress(80);
     
     algoLog.trace("Calculating center and max distance...");
     bioStruct.calcCenterAndMaxDistance();
-    ti.progress = 85;
+    os.setProgress(85);
 
     algoLog.trace("Generating chains annotations...");
     bioStruct.generateAnnotations();
-    ti.progress = 90;
+    os.setProgress(90);
     calculateBonds(bioStruct);
     
     algoLog.trace("Calculating bonds...");
-    Document* doc = createDocumentFromBioStruct3D(bioStruct, this,  io->getFactory(), url, ti, fs);
+    Document* doc = createDocumentFromBioStruct3D(dbiRef, bioStruct, this,  io->getFactory(), url, os, fs);
 
     ioLog.trace("PDB parsing finished: " + url.getURLString());
-    ti.progress = 100;
+    os.setProgress(100);
     return doc;
 }
 
@@ -172,14 +174,13 @@ PDBFormat::PDBParser::PDBParser(IOAdapter* _io) : io(_io), currentPDBLine(""), c
 
 #define READ_BUF_SIZE 4096
 
-void PDBFormat::PDBParser::parseBioStruct3D( BioStruct3D& biostruct, TaskStateInfo& ti )
-{
+void PDBFormat::PDBParser::parseBioStruct3D( BioStruct3D& biostruct, U2OpStatus& ti ) {
     
     QByteArray readBuff(READ_BUF_SIZE+1, 0);
     char* buf = readBuff.data();
     qint64 len = 0;
 
-    while (!ti.cancelFlag && !ti.hasError()) {
+    while (!ti.isCoR()) {
 
         bool lineOk = true;
 
@@ -193,7 +194,7 @@ void PDBFormat::PDBParser::parseBioStruct3D( BioStruct3D& biostruct, TaskStateIn
         }
         currentPDBLine = QString(QByteArray::fromRawData(buf, len));
 
-        ti.progress = io->getProgress()*0.8;
+        ti.setProgress(io->getProgress() * 0.8);
 
         if (currentPDBLine.startsWith("HEADER")) {
             parseHeader(biostruct, ti);
@@ -241,19 +242,17 @@ void PDBFormat::PDBParser::parseBioStruct3D( BioStruct3D& biostruct, TaskStateIn
         }
     }
     
-    if (ti.cancelFlag || ti.hasError()) {
-        return;
-    }
-
+    CHECK_OP(ti, );
+    
     if (!flagAtomRecordPresent) {
-        ti.setError(U2::PDBFormat::tr("Some mandaroty records are absent"));
+        ti.setError(U2::PDBFormat::tr("Some mandatory records are absent"));
     }
     
     updateSecStructChainIndexes(biostruct);
 
 }
 
-void PDBFormat::PDBParser::parseHeader( BioStruct3D& biostruct, TaskStateInfo&)
+void PDBFormat::PDBParser::parseHeader( BioStruct3D& biostruct, U2OpStatus&)
 {
     /*
     Record Format 
@@ -290,7 +289,7 @@ bool PDBFormat::PDBParser::seqResContains(char chainIdentifier, int residueIndex
     }
 }
 
-void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, TaskStateInfo&)
+void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, U2OpStatus&)
 {   
     /*
     Record Format 
@@ -400,7 +399,7 @@ void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, TaskStateInfo&)
 
 }
 
-void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, TaskStateInfo& ti )
+void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, U2OpStatus& ti )
 {
     /*
     
@@ -470,7 +469,7 @@ void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, Task
     biostruct.secondaryStructures.append(secStruct);
 }
 
-// void PDBFormat::PDBParser::parseCompound(BioStruct3D& biostruct, TaskStateInfo& ti) 
+// void PDBFormat::PDBParser::parseCompound(BioStruct3D& biostruct, U2OpStatus& ti) 
 // {
 //     /*
 //     Record Format
@@ -573,7 +572,7 @@ void PDBFormat::PDBParser::parseSecondaryStructure( BioStruct3D& biostruct, Task
 // }
 
 
-void PDBFormat::PDBParser::parseSequence( BioStruct3D& biostruct, TaskStateInfo& ti )
+void PDBFormat::PDBParser::parseSequence( BioStruct3D& biostruct, U2OpStatus& ti )
 {
     Q_UNUSED(biostruct);
     /*
@@ -631,7 +630,7 @@ int PDBFormat::getElementNumberByName( const QByteArray& elementName )
 }
 
 
-// void PDBFormat::PDBParser::parseDBRef( BioStruct3D& biostruct, TaskStateInfo& ti )
+// void PDBFormat::PDBParser::parseDBRef( BioStruct3D& biostruct, U2OpStatus& ti )
 // {
 //     /* Record Format
 //      
@@ -680,7 +679,7 @@ QByteArray PDBFormat::PDBParser::getNextSpecLine()
 
 }
 
-void PDBFormat::PDBParser::parseModel( BioStruct3D& biostruct, TaskStateInfo& ti )
+void PDBFormat::PDBParser::parseModel( BioStruct3D& biostruct, U2OpStatus& ti )
 {
     /*
     COLUMNS        DATA  TYPE    FIELD          DEFINITION
@@ -914,43 +913,47 @@ QHash<QByteArray, int> PDBFormat::createAtomNumMap()
     return atomNumMap;
 }
 
-Document* PDBFormat::createDocumentFromBioStruct3D( BioStruct3D &bioStruct, DocumentFormat* format, IOAdapterFactory* iof, const GUrl& url, TaskStateInfo& ti, const QVariantMap& fs  )
+Document* PDBFormat::createDocumentFromBioStruct3D(const U2DbiRef& dbiRef, BioStruct3D &bioStruct, DocumentFormat* format, IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, const QVariantMap& fs  )
 {
-    Q_UNUSED(ti);
     QList<GObject*> objects;
-    QMap< AnnotationTableObject*, DNASequenceObject*> relationsMap;
+    QMap< AnnotationTableObject*, U2SequenceObject*> relationsMap;
     QString objectName = bioStruct.pdbId.isEmpty() ? url.baseFileName() : bioStruct.pdbId;
 
     BioStruct3DObject* biostrucObj = new BioStruct3DObject(bioStruct, objectName);
     
+    TmpDbiObjects dbiObjects(dbiRef, os);
     foreach(int key, bioStruct.moleculeMap.keys()) {
         // Create dna sequence object
         QByteArray sequence = bioStruct.getRawSequenceByChainId(key);
         QString sequenceName(QString(bioStruct.pdbId) + QString(" chain %1 sequence").arg(key));
-        DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findAlphabet(sequence);
-        DNASequence dna(sequence, al);
-        dna.info.insert(DNAInfo::DEFINITION, sequenceName);
-        dna.info.insert(DNAInfo::COMMENT, bioStruct.descr);
-        dna.info.insert(DNAInfo::ID, sequenceName);
-        dna.info.insert(DNAInfo::CHAIN_ID, key);
-        DNASequenceObject* dnaObj = new DNASequenceObject(sequenceName, dna);
+        DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(sequence);
+        DNASequence dnaSeq(sequenceName, sequence, al);
+        dnaSeq.info.insert(DNAInfo::DEFINITION, sequenceName);
+        dnaSeq.info.insert(DNAInfo::COMMENT, bioStruct.descr);
+        dnaSeq.info.insert(DNAInfo::CHAIN_ID, key);
+        U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, dnaSeq, QVariantMap(), os);
+        dbiObjects.objects << seqObj->getSequenceRef().entityId;
+        if (os.isCoR()) {
+            break;
+        }
+        
         // create AnnnotationTableObject
         AnnotationTableObject* aObj = new AnnotationTableObject(QString(bioStruct.pdbId) + QString(" chain %1 annotation").arg(key));
         foreach (SharedAnnotationData sd, bioStruct.moleculeMap.value(key)->annotations) {
             aObj->addAnnotation(new Annotation(sd), ""); 
         }
-        objects.append(dnaObj);
         objects.append(aObj);
-        relationsMap.insert(aObj, dnaObj);
+        relationsMap.insert(aObj, seqObj);
     }    
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
     objects.append(biostrucObj);
-    Document* doc = new Document(format, iof, url, objects, fs);
+    Document* doc = new Document(format, iof, url, dbiRef, dbiRef.isValid(), objects, fs);
 
     // set object relations
-    QMap< AnnotationTableObject*, DNASequenceObject*>::const_iterator i;
+    QMap< AnnotationTableObject*, U2SequenceObject*>::const_iterator i;
     for (i = relationsMap.constBegin(); i != relationsMap.constEnd(); ++i) {
-        DNASequenceObject* dnao = i.value();
+        U2SequenceObject* dnao = i.value();
         AnnotationTableObject* ao = i.key();
         ao->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
         biostrucObj->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);

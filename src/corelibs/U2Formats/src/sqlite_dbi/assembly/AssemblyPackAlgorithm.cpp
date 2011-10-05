@@ -23,6 +23,7 @@
 
 #include <U2Core/Timer.h>
 #include <U2Core/GAutoDeleteList.h>
+#include <U2Core/Log.h>
 
 #include <memory>
 

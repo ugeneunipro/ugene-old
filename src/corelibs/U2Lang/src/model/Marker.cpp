@@ -19,9 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/QVariantUtils.h>
+#include <U2Core/DNASequence.h>
+
 #include <U2Lang/MarkerUtils.h>
 #include <U2Lang/WorkflowEnv.h>
-#include <U2Core/QVariantUtils.h>
 
 #include "Marker.h"
 

@@ -22,11 +22,13 @@
 #include "ProjectParsing.h"
 
 #include <U2Core/IOAdapter.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/L10n.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/ObjectViewModel.h>
 
 #include <QtXml/qdom.h>
 
@@ -109,7 +111,7 @@ static QVariant toRelativeRelations(const QList<GObjectRelation>& absRelations, 
 }
 
 
-void ProjectFileUtils::saveProjectFile(TaskStateInfo& ts, Project* project, 
+void ProjectFileUtils::saveProjectFile(U2OpStatus& ts, Project* project, 
                                           const QString& projectUrl, const QMap<QString, QString>& docUrlRemap) 
 {
     QDomDocument xmlDoc("GB2PROJECT");
@@ -220,7 +222,7 @@ void ProjectFileUtils::saveProjectFile(TaskStateInfo& ts, Project* project,
 
 
 
-void ProjectFileUtils::loadXMLProjectModel(const QString& url, TaskStateInfo& si, QDomDocument& doc, QString& version) {
+void ProjectFileUtils::loadXMLProjectModel(const QString& url, U2OpStatus& si, QDomDocument& doc, QString& version) {
     assert(doc.isNull());
 
     QFile f(url);
@@ -288,9 +290,7 @@ ProjectParserRegistry * ProjectParserRegistry::instance(){
 //////////////////////////////////////////////////////////////////////////
 // Parser for v1.0 format
 
-Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const QDomDocument& xmlDoc, TaskStateInfo& si ){
-    Q_UNUSED(si); //TODO: report about errors using si!!!
-
+Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const QDomDocument& xmlDoc, U2OpStatus& os) {
     QDomElement projectElement = xmlDoc.documentElement();
     QString name = projectElement.attribute("name");
     quint64 oid = qMax(quint64(0), projectElement.attribute("oid").toULongLong());
@@ -379,8 +379,11 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
                 unloadedObjects.append(info);
                 objNames.insert(info.name);
             }
+        
         }
-        Document* d = new Document(df, iof, docUrl, unloadedObjects, fs, instanceLock ? tr("The last loaded state was locked by format") : QString());
+        QString lockReason = instanceLock ? tr("The last loaded state was locked by format") : QString();
+        Document* d = df->createNewUnloadedDocument(iof, docUrl, os, fs, unloadedObjects, lockReason);
+        CHECK_OP_EXT(os, qDeleteAll(documents), NULL);
         d->setUserModLock(readonly);
         documents.append(d);
     }

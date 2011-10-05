@@ -220,8 +220,8 @@ Task* SiteconSearchWorker::tick() {
             }
         }
         QList<Task*> subtasks;
-        foreach(SiteconModel model, models) {
-            subtasks << new SiteconSearchTask(model, seq.constData(), seq.length(), config, 0);
+        foreach(const SiteconModel& model, models) {
+            subtasks << new SiteconSearchTask(model, seq.seq, config, 0);
         }
         Task* t = new MultiTask(tr("Search TFBS in %1").arg(seq.getName()), subtasks);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));

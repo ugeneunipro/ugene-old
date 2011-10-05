@@ -21,14 +21,14 @@
 
 #include "MAlignmentObject.h"
 
-#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/MSAUtils.h>
 
 namespace U2 {
 
-GObject* MAlignmentObject::clone() const {
+GObject* MAlignmentObject::clone(const U2DbiRef&, U2OpStatus&) const {
     MAlignmentObject* cln = new MAlignmentObject(msa, getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
     return cln;
@@ -168,7 +168,7 @@ void MAlignmentObject::addRow(const DNASequence& seq, int seqIdx) {
 
     MAlignment maBefore = msa;
 
-    DNAAlphabet* newAlphabet = DNAAlphabet::deriveCommonAlphabet(seq.alphabet, getAlphabet());
+    DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(seq.alphabet, getAlphabet());
     assert(newAlphabet != NULL);
     msa.setAlphabet(newAlphabet);
 

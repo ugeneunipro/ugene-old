@@ -31,6 +31,8 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include <U2Gui/OpenViewTask.h>
 
@@ -215,7 +217,7 @@ QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
         const QString& name = cfg.getSequenceName();
         DNAAlphabet* alp = cfg.getAlphabet();
         assert(alp);
-        IOAdapterFactory * io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.getOutUrlString()));
+        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.getOutUrlString()));
 
         if (seqs.size() == 1) {
             const QByteArray& seq = seqs.first();
@@ -231,12 +233,16 @@ QList<Task*> DNASequenceGeneratorTask::onSubTaskFinished(Task* subTask) {
         }
 
         if (cfg.saveDoc) {
-            QList<GObject*> sequences;
-            foreach(DNASequence s, results) {
-                DNASequenceObject* dnaObj = new DNASequenceObject(s.getName(), s);
-                sequences.append(dnaObj);
+            Document* doc = cfg.getDocumentFormat()->createNewLoadedDocument(iof, cfg.getOutUrlString(), stateInfo);
+            CHECK_OP(stateInfo, tasks);
+
+            foreach(const DNASequence& s, results) {
+                U2EntityRef seqRef = U2SequenceUtils::import(doc->getDbiRef(), s, stateInfo);
+                if (stateInfo.isCoR()) {
+                    break;
+                } 
+                doc->addObject(new U2SequenceObject(s.getName(), seqRef));
             }
-            Document* doc = new Document(cfg.getDocumentFormat(), io, GUrl(cfg.getOutUrlString()), sequences);
             saveTask = new SaveDocumentTask(doc, SaveDoc_Overwrite);
             tasks.append(saveTask);
         }
@@ -276,9 +282,9 @@ EvaluateBaseContentTask::EvaluateBaseContentTask(GObject* obj)
 
 void EvaluateBaseContentTask::run() {
     if (_obj->getGObjectType() == GObjectTypes::SEQUENCE) {
-        DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(_obj);
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(_obj);
         alp = dnaObj->getAlphabet();
-        DNASequenceGenerator::evaluateBaseContent(dnaObj->getDNASequence(), result);
+        DNASequenceGenerator::evaluateBaseContent(dnaObj->getWholeSequence(), result);
     } else if (_obj->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT) {
         MAlignmentObject* maObj = qobject_cast<MAlignmentObject*>(_obj);
         alp = maObj->getAlphabet();

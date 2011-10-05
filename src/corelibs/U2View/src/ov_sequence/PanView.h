@@ -86,8 +86,6 @@ public:
     // [0..seqLen)
     virtual void setVisibleRange(const U2Region& reg, bool signal = true);
 
-    int getSeqLen() const {return seqLen;}
-
     PVRowsManager* getRowsManager() const {return rowsManager;}
 
     virtual void setNumBasesVisible(int n);

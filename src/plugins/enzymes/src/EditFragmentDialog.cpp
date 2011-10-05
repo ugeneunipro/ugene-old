@@ -26,6 +26,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/Task.h>
 
 #include <U2Algorithm/EnzymeModel.h>
@@ -200,44 +201,32 @@ void EditFragmentDialog::updatePreview()
     previewEdit->setText(preview);
 }
 
-void EditFragmentDialog::sl_updatePreview()
-{
+void EditFragmentDialog::sl_updatePreview() {
     updatePreview();
 }
 
-void EditFragmentDialog::sl_customOverhangSet( const QString& )
-{
+void EditFragmentDialog::sl_customOverhangSet( const QString& ) {
     updatePreview();
 }
 
-void EditFragmentDialog::sl_onLeftResetClicked()
-{
+void EditFragmentDialog::sl_onLeftResetClicked() {
     resetLeftOverhang();
     updatePreview();
 }
 
-void EditFragmentDialog::sl_onRightResetClicked()
-{
+void EditFragmentDialog::sl_onRightResetClicked() {
     resetRightOverhang();
     updatePreview();
 
 }
 
-bool EditFragmentDialog::isValidOverhang( const QString& text )
-{
+bool EditFragmentDialog::isValidOverhang( const QString& text ) {
     QByteArray seq(text.toAscii());
-    DNAAlphabetRegistry *r = AppContext::getDNAAlphabetRegistry();
-    DNAAlphabet *alph = r->findAlphabet(seq);
-    if (alph == NULL ) {
-        return false;
-    }
-
-    return alph->isNucleic() ? true : false;
-
+    DNAAlphabet *alph = U2AlphabetUtils::findBestAlphabet(seq);
+    return alph != NULL && alph->isNucleic() ? true : false;
 }
 
-void EditFragmentDialog::resetLeftOverhang()
-{
+void EditFragmentDialog::resetLeftOverhang() {
     QByteArray enzymeId = dnaFragment.getLeftTerminus().enzymeId;
     if (enzymeId.isEmpty()) {
         return;

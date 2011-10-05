@@ -30,6 +30,8 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/SAMFormat.h>
 
@@ -81,7 +83,7 @@ BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface fo
 
 void BAMDbiPlugin::sl_converter() {
     try {
-        if(!AppContext::getDbiRegistry()->getRegisteredDbiFactories().contains("SQLiteDbi")) {
+        if(!AppContext::getDbiRegistry()->getRegisteredDbiFactories().contains(SQLITE_DBI_ID)) {
             throw Exception(tr("SQLite DBI plugin is not loaded"));
         }
         LastUsedDirHelper lod;
@@ -148,13 +150,10 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
     AddDocumentTask * addTask = NULL;
     if(doc == NULL) {
         IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url.getURLString()));
-        assert(iof != NULL);
         DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById("usqlite");
-        if(df == NULL) {
-            assert(false);
-            return;
-        }
-        doc = new Document(df, iof, url);
+        U2OpStatus2Log os;
+        doc = df->createNewUnloadedDocument(iof, url, os);
+        CHECK_OP(os, );
         addTask = new AddDocumentTask(doc);
     }
     LoadUnloadedDocumentAndOpenViewTask * openViewTask = new LoadUnloadedDocumentAndOpenViewTask(doc);

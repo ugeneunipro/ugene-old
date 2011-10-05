@@ -91,7 +91,7 @@ void ADVAnnotationCreation::sl_createAnnotation() {
     CreateAnnotationModel m;
     m.useUnloadedObjects = true;
     m.sequenceObjectRef = GObjectReference(seqCtx->getSequenceObject());
-    m.sequenceLen = seqCtx->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = seqCtx->getSequenceObject()->getSequenceLength();
     if (!seqCtx->getSequenceSelection()->isEmpty()) {
         m.data->location->regions << seqCtx->getSequenceSelection()->getSelectedRegions();
     }

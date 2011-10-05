@@ -38,16 +38,15 @@ public:
     virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::FASTQ;}
 
     virtual const QString& getFormatName() const {return fn;}
-    
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
 
-    virtual GObject *loadObject( IOAdapter* io, TaskStateInfo& ti);
-
-    virtual DNASequence *loadSequence( IOAdapter* io, TaskStateInfo& ti);
+    virtual DNASequence *loadSequence( IOAdapter* io, U2OpStatus& os);
     
-    virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
+    virtual void storeDocument( Document* d, IOAdapter* io, U2OpStatus& os );
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 private:
     QString fn;

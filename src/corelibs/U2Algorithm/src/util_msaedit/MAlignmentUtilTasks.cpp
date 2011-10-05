@@ -25,6 +25,7 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/DNAAlphabet.h>
 
 
 #include "MAlignmentUtilTasks.h"
@@ -44,14 +45,10 @@ TranslateMSA2AminoTask::TranslateMSA2AminoTask( MAlignmentObject* obj )
     translations = AppContext::getDNATranslationRegistry()->lookupTranslation(maObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO);
 }
 
-void TranslateMSA2AminoTask::run()
-{
+void TranslateMSA2AminoTask::run() {
     assert(!translations.isEmpty());
 
-    if (translations.isEmpty()) {
-        setError(tr("Unable to find suitable translation for %1").arg(maObj->getGObjectName()));
-        return;
-    }
+    CHECK_EXT(translations.isEmpty(), setError(tr("Unable to find suitable translation for %1").arg(maObj->getGObjectName())), );
 
     DNATranslation* transl = translations.first();
 
@@ -94,7 +91,8 @@ AlignInAminoFormTask::~AlignInAminoFormTask() {
 void AlignInAminoFormTask::prepare() {
     CHECK_EXT(maObj->getAlphabet()->isNucleic(), setError("AlignInAminoFormTask: Input alphabet it not nucleic!"), );
     
-    clonedObj = qobject_cast<MAlignmentObject*> ( maObj->clone() );
+    
+    clonedObj = new MAlignmentObject(maObj->getMAlignment(), maObj->getGHintsMap());
     alignTask->setMAObject(clonedObj);
     bufMA = clonedObj->getMAlignment();
     addSubTask(new TranslateMSA2AminoTask(clonedObj));

@@ -21,10 +21,12 @@
 
 #include "NewickFormat.h"
 
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
 
 namespace U2 {
 
@@ -42,16 +44,12 @@ NewickFormat::NewickFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_W
 
 #define BUFF_SIZE 1024
 
-static QList<GObject*> parseTrees(IOAdapter* io, TaskStateInfo& si);
+static QList<GObject*> parseTrees(IOAdapter* io, U2OpStatus& si);
 
-Document* NewickFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
-    QList<GObject*> objects = parseTrees(io, ti);
-    if (ti.hasError()) {
-        qDeleteAll(objects);
-        return NULL;
-    }
-
-    Document* d = new Document(this, io->getFactory(), io->getURL(), objects, fs);
+Document* NewickFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
+    QList<GObject*> objects = parseTrees(io, os);
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
+    Document* d = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
     return d;
 }
 
@@ -83,8 +81,7 @@ static void writeNode(IOAdapter* io, PhyNode* node) {
     }
 }
 
-void NewickFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io) {
-    Q_UNUSED(ts);
+void NewickFormat::storeDocument( Document* d, U2OpStatus& , IOAdapter* io) {
     assert(d->getDocumentFormat() == this);
 
     foreach(GObject* obj, d->getObjects()) {
@@ -163,7 +160,7 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
  Newlines may appear anywhere except within labels or branch_lengths.
  Comments are enclosed in square brackets and may appear anywhere newlines are permitted. 
 */
-static QList<GObject*> parseTrees(IOAdapter *io, TaskStateInfo& si) {
+static QList<GObject*> parseTrees(IOAdapter *io, U2OpStatus& si) {
     QList<GObject*> objects;
     QByteArray block(BUFF_SIZE, '\0');
     int blockLen;
@@ -259,14 +256,14 @@ static QList<GObject*> parseTrees(IOAdapter *io, TaskStateInfo& si) {
             } 
             lastStr.clear();
         }
-        if (si.hasError() || si.cancelFlag) {
+        if (si.isCoR()) {
             delete rd;
             rd = NULL;
             break;
         }
-        si.progress = io->getProgress();
+        si.setProgress(io->getProgress());
     }
-    if (!si.hasError() && !si.cancelFlag) {
+    if (!si.isCoR()) {
         if (!branchStack.isEmpty() || nodeStack.size()!=1) {
             delete rd;
             si.setError(NewickFormat::tr("Unexpected end of file"));

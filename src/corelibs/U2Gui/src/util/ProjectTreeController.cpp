@@ -33,6 +33,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
@@ -1090,8 +1091,7 @@ void ProjectTreeController::sl_objectRemovedFromActiveView(GObjectView*, GObject
     updateObjectActiveStateVisual(o);
 }
 
-void ProjectTreeController::sl_onAddObjectToSelectedDocument()
-{
+void ProjectTreeController::sl_onAddObjectToSelectedDocument() {
     QSet<Document*> selectedDocuments = getDocsInSelection(true);
     assert(selectedDocuments.size() == 1);
     Document* doc = selectedDocuments.values().first();
@@ -1105,25 +1105,24 @@ void ProjectTreeController::sl_onAddObjectToSelectedDocument()
     }
     
     QSet<GObjectType> types = doc->getDocumentFormat()->getSupportedObjectTypes();
-    foreach( const GObjectType& type, types) {
+    foreach(const GObjectType& type, types) {
         settings.objectTypesToShow.append(type);
     }
     
-    QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,tree);
-
+    QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings, tree);
+    U2OpStatus2Log os;
     if (!objects.isEmpty()) {
         foreach(GObject* obj, objects) {
             if (obj->isUnloaded()) {
                 continue;
             }
-            doc->addObject(obj->clone());
-
+            doc->addObject(obj->clone(doc->getDbiRef(), os));
+            CHECK_OP(os, );
         }
     }
 }
 
-void ProjectTreeController::sl_onRemoveSelectedObjects()
-{
+void ProjectTreeController::sl_onRemoveSelectedObjects() {
     QList<GObject*> objs = getGObjectSelection()->getSelectedObjects();
 
     if (objs.isEmpty()) {

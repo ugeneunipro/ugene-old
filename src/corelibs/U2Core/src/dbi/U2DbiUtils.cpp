@@ -23,6 +23,11 @@
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2ObjectDbi.h>
+
+#include <QtCore/QFile>
 
 namespace U2 {
 
@@ -41,19 +46,49 @@ void U2DbiUtils::logNotSupported(U2DbiFeature f, U2Dbi* dbi, U2OpStatus& os) {
 #endif
 }
 
+U2DbiRef U2DbiUtils::toRef(U2Dbi* dbi) {
+    if (dbi == NULL) {
+        return U2DbiRef();
+    }
+    return U2DbiRef(dbi->getFactoryId(), dbi->getDbiId());
+}
+
 //////////////////////////////////////////////////////////////////////////
-// U2DbiHandle
-DbiHandle::DbiHandle(U2DbiFactoryId id, const QString& url,  U2OpStatus& _os) : dbi(NULL), os(_os) {
-    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(id, url, false, os);
+// DbiConnection
+DbiConnection::DbiConnection(const U2DbiRef& ref,  U2OpStatus& _os) : dbi(NULL), os(_os) {
+    open(ref, os);    
 }
 
-DbiHandle::DbiHandle(U2DbiFactoryId id, const QString& url,  bool create, U2OpStatus& _os) : dbi(NULL), os(_os) {
-    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(id, url, create, os);
+DbiConnection::DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& _os) : dbi(NULL), os(_os) {
+    open(ref, create, os);
 }
 
-DbiHandle::DbiHandle(const DbiHandle& dbiHandle) : dbi(dbiHandle.dbi), os(dbiHandle.os) {
-    if (dbiHandle.dbi != NULL) {
+DbiConnection::DbiConnection(const DbiConnection& dbiConnection) : dbi(dbiConnection.dbi), os(dbiConnection.os) {
+    if (dbiConnection.dbi != NULL) {
         AppContext::getDbiRegistry()->getGlobalDbiPool()->addRef(dbi, os);
+    }
+}
+
+DbiConnection::~DbiConnection() {
+    close();
+}
+
+void DbiConnection::open(const U2DbiRef& ref,  U2OpStatus& _os)  {
+    SAFE_POINT_EXT(!isOpen(), _os.setError(QString("Connection is already opened! %1").arg(dbi->getDbiId())), );
+    os = _os;
+    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(ref, false, os);
+}
+
+void DbiConnection::open(const U2DbiRef& ref,  bool create, U2OpStatus& _os)  {
+    SAFE_POINT_EXT(!isOpen(), _os.setError(QString("Connection is already opened! %1").arg(dbi->getDbiId())), );
+    os = _os;
+    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(ref, create, os);
+}
+
+void DbiConnection::close() {
+    if (dbi != NULL) {
+        AppContext::getDbiRegistry()->getGlobalDbiPool()->releaseDbi(dbi, os);
+        dbi = NULL;
     }
 }
 
@@ -62,12 +97,42 @@ static U2OpStatus& getStubOpStatus() {
     return stubOs;
 }
 
-DbiHandle::DbiHandle() : dbi(NULL), os(getStubOpStatus()) {
+DbiConnection::DbiConnection() : dbi(NULL), os(getStubOpStatus()) {
 }
 
-DbiHandle::~DbiHandle() {
-    if (dbi != NULL) {
-        AppContext::getDbiRegistry()->getGlobalDbiPool()->releaseDbi(dbi, os);
+//////////////////////////////////////////////////////////////////////////
+// TmpDbiHandle
+
+TmpDbiHandle::TmpDbiHandle(const QString& alias, U2OpStatus& os)  {
+    deallocate = false;
+    dbiRef = AppContext::getDbiRegistry()->allocateTmpDbi(alias, os);
+    CHECK_OP(os, );
+    deallocate = true;
+}
+
+TmpDbiHandle::TmpDbiHandle(const U2DbiRef& _dbiRef, bool _deallocate) 
+: dbiRef(_dbiRef), deallocate(_deallocate)
+{
+}
+
+TmpDbiHandle::~TmpDbiHandle () {
+    if (deallocate) {
+        U2OpStatus2Log os;
+        AppContext::getDbiRegistry()->deallocateTmpDbi(dbiRef, os);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+// TmpDbiObjects
+TmpDbiObjects::~TmpDbiObjects() {
+    if (os.isCoR()) {
+        foreach(const U2DataId& id, objects) {
+            if (!id.isEmpty()) {
+                U2OpStatus2Log os2log;
+                DbiConnection con(dbiRef, os2log);
+                con.dbi->getObjectDbi()->removeObject(id, os2log);
+            }
+        }
     }
 }
 

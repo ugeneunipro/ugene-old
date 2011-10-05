@@ -36,6 +36,8 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Formats/SAMFormat.h>
 
@@ -78,8 +80,6 @@ void GTest_Bowtie::init(XMLTestFormat *tf, const QDomElement& el) {
 	readsFileName = "";
 	patternFileName = "";
 	negativeError = "";
-	ma1 = NULL;
-	ma2 = NULL;
 	usePrebuildIndex = true;
 	subTaskFailed = false;
 	indexName = el.attribute(INDEX_ATTR);
@@ -256,7 +256,7 @@ QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
            return res;
         }
     
-        ma1 =  qobject_cast<MAlignmentObject*> (doc->getObjects().first()->clone());
+        ma1 =  qobject_cast<MAlignmentObject*> (doc->getObjects().first())->getMAlignment();
 		
 		QFileInfo patternFile(env->getVar("COMMON_DATA_DIR")+"/"+patternFileName);
 		IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(patternFile.absoluteFilePath()));
@@ -287,25 +287,18 @@ QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
 				return res;
 			}
 			TextObject* text = qobject_cast<TextObject*>(list.first());
-			MAlignment ma;
-			parseBowtieOutput(ma, text->getText());
-			ma.setName("name");
-			ma2 = new MAlignmentObject(ma);
-			if(ma2 == NULL) {
-				stateInfo.setError(QString("Can't cast GObject to MAlignmentObject"));
-				return res;
-			}
+			parseBowtieOutput(ma2, text->getText());
+			ma2.setName("name");
+            CHECK_EXT(ma2.isEmpty(), setError(QString("Can't cast GObject to MAlignmentObject")), res);
 		} else {
 			QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
 			if (list.size() == 0) {
 				stateInfo.setError(  QString("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT) );
 				return res;
 			}
-			ma2 = qobject_cast<MAlignmentObject*>(list.first());
-			if(ma2 == NULL) {
-				stateInfo.setError(QString("Can't cast GObject to MAlignmentObject"));
-				return res;
-			}
+            MAlignmentObject* maObj = qobject_cast<MAlignmentObject*>(list.first());
+            CHECK_EXT(maObj != NULL, setError(QString("Can't cast GObject to MAlignmentObject")), res;)
+			ma2 = maObj->getMAlignment();
 		}
 	}
 	return res;
@@ -315,8 +308,8 @@ void GTest_Bowtie::run() {
 	
 	if(subTaskFailed) return;
 
-	const QList<MAlignmentRow> &alignedSeqs1 = ma1->getMAlignment().getRows();
-	const QList<MAlignmentRow> &alignedSeqs2 = ma2->getMAlignment().getRows();
+	const QList<MAlignmentRow> &alignedSeqs1 = ma1.getRows();
+	const QList<MAlignmentRow> &alignedSeqs2 = ma2.getRows();
 
 	if(alignedSeqs1.count() != alignedSeqs2.count()) {
 		stateInfo.setError(QString("Aligned sequences number not matched \"%1\", expected \"%2\"").arg(alignedSeqs1.count()).arg(alignedSeqs2.count()));
@@ -393,32 +386,11 @@ void GTest_Bowtie::cleanup()
         QFile::remove(tmpResult.absoluteFilePath());
     }
 
-	delete ma1;
-	if(patternFormat == BaseDocumentFormats::PLAIN_TEXT)
-		delete ma2;
-	ma1 = NULL;
-	ma2 = NULL;
+	ma1.clear();
+	ma2.clear();
 }
 
-QList<DNASequence> GTest_Bowtie::dnaObjList_to_dnaList(QList<GObject*> dnaSeqs) {
-
-	QList<DNASequence> res;
-	int seqCount = dnaSeqs.count();
-	DNASequenceObject *seq = qobject_cast<DNASequenceObject *>(dnaSeqs[0]);
-	MAlignment ma("Alignment",seq->getAlphabet());
-	for(int i=0; i<seqCount; i++) {
-		seq = qobject_cast<DNASequenceObject *>(dnaSeqs[i]);
-		if(seq == NULL) {
-			stateInfo.setError(  QString("Can't cast GObject to DNASequenceObject") );
-			return res;
-		}
-		res.append(seq->getDNASequence());
-	}
-	return res;
-}
-
-void GTest_Bowtie::parseBowtieOutput( MAlignment& result, QString text )
-{
+void GTest_Bowtie::parseBowtieOutput( MAlignment& result, QString text ) {
 	QRegExp rx("(\\S+)\\s+([\\+\\-])\\s+\\S+\\s+(\\d+)\\s+(\\S+)\\s(\\S+)(?!\\n)");
 	int pos = 0;
 	while ((pos = rx.indexIn(text, pos)) != -1) {
@@ -427,17 +399,11 @@ void GTest_Bowtie::parseBowtieOutput( MAlignment& result, QString text )
 		int offset = rx.cap(3).toInt();
 		QByteArray sequence = rx.cap(4).toAscii();
 		QByteArray quality = rx.cap(5).toAscii();
-		if(isReverseComplement) {
-            DNAAlphabet *al = AppContext::getDNAAlphabetRegistry()->findAlphabet(sequence);
-            if(al == NULL) {
-                stateInfo.setError(QString("Can't find alphabet for sequence \"%1\"").arg(QString(sequence)));
-                return;
-            }
+		if (isReverseComplement) {
+            DNAAlphabet *al = U2AlphabetUtils::findBestAlphabet(sequence);
+            CHECK_EXT(al!=NULL, setError(QString("Can't find alphabet for sequence \"%1\"").arg(QString(sequence))), );
             DNATranslation* tr = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(al);
-            if(tr == NULL) {
-                stateInfo.setError(QString("Can't translation for alphabet \"%1\"").arg(al->getName()));
-                return;
-            }
+            CHECK_EXT(tr != NULL, setError(QString("Can't translation for alphabet \"%1\"").arg(al->getName())), );
             TextUtils::translate(tr->getOne2OneMapper(), sequence.data(), sequence.size());
             TextUtils::reverse(sequence.data(), sequence.size());
             TextUtils::reverse(quality.data(), quality.size());

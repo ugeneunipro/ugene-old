@@ -31,7 +31,7 @@
 namespace U2 {
 
 class AnnotatedDNAView;
-class DNASequenceObject;
+class U2SequenceObject;
 class DNAAlphabet;
 class DNATranslation;
 class DNASequenceSelection;
@@ -40,24 +40,24 @@ class AnnotationTableObject;
 class AnnotationSelection;
 class GObject;
 class Annotation;
-class U2SequenceDbi;
+class U2Region;
 
 class U2VIEW_EXPORT ADVSequenceObjectContext : public QObject {
     Q_OBJECT
 public:
-    ADVSequenceObjectContext(AnnotatedDNAView* v, DNASequenceObject* obj);
+    ADVSequenceObjectContext(AnnotatedDNAView* v, U2SequenceObject* obj);
     
     AnnotatedDNAView*   getAnnotatedDNAView() const {return view;}
     DNATranslation*     getComplementTT() const {return complTT;}
     DNATranslation*     getAminoTT() const {return aminoTT;}
-    DNASequenceObject*  getSequenceObject() const {return seqObj;}
+    U2SequenceObject*   getSequenceObject() const {return seqObj;}
     GObject*            getSequenceGObject() const;
-    U2SequenceDbi*      getSequenceDbi() const;
-    U2DataId            getSequenceId() const;
-
-    const QByteArray& getSequenceData() const;
-    int getSequenceLen() const;
+    
+    qint64 getSequenceLength() const;
     DNAAlphabet* getAlphabet() const;
+    QByteArray getSequenceData(const U2Region& r) const;
+    U2EntityRef getSequenceRef() const;
+
 
     DNASequenceSelection*   getSequenceSelection() const {return selection;}
     
@@ -99,7 +99,7 @@ private:
 
 
     AnnotatedDNAView*               view;
-    DNASequenceObject*              seqObj;
+    U2SequenceObject*               seqObj;
     DNATranslation*                 aminoTT;
     DNATranslation*                 complTT;
     DNASequenceSelection*           selection;

@@ -7,7 +7,7 @@ DEFINES+=UGENE_VER_MAJOR=$${UGENE_VER_MAJOR}
 DEFINES+=UGENE_VER_MINOR=$${UGENE_VER_MINOR}
 DEFINES+=UGENE_VER_PATCH=$${UGENE_VER_PATCH}
 
-win32 : CONFIG -= flat  #group the files within the source/header group depending on the directory they reside in file system
+#win32 : CONFIG -= flat  #group the files within the source/header group depending on the directory they reside in file system
 win32 : QMAKE_CXXFLAGS += /MP # use parallel build with nmake
 win32 : DEFINES+= _WINDOWS
 

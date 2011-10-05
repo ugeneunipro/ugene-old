@@ -21,13 +21,16 @@
 
 #include "BlastQuery.h"
 
-#include <U2Designer/DelegateEditors.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/DNAAlphabet.h>
+
 #include <U2Lang/BaseTypes.h>
+
+#include <U2Designer/DelegateEditors.h>
 
 namespace U2 {
 
@@ -57,7 +60,7 @@ QString QDCDDActor::getText() const {
 }
 
 Task* QDCDDActor::getAlgorithmTask(const QVector<U2Region>& location) {
-    DNASequenceObject* dna = scheme->getDNA();
+    const DNASequence& dnaSeq = scheme->getSequence();
 
     settings.dbChoosen = "cdd";
     settings.params = "db=cdd"; //to do: supply db choice
@@ -69,8 +72,8 @@ Task* QDCDDActor::getAlgorithmTask(const QVector<U2Region>& location) {
 
     settings.retries = 60;
 
-    DNAAlphabet* alph = dna->getAlphabet();
-    settings.complT = GObjectUtils::findComplementTT(dna);
+    DNAAlphabet* alph = dnaSeq.alphabet;
+    settings.complT = GObjectUtils::findComplementTT(dnaSeq.alphabet);
     settings.aminoT = NULL;
     if (!alph->isAmino()) {
         DNATranslationType tt;
@@ -90,8 +93,7 @@ Task* QDCDDActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = new Task(tr("CDD Search"), TaskFlag_NoRun);
     foreach(const U2Region& r, location) {
         RemoteBLASTTaskSettings s(settings);
-        QByteArray query(dna->getSequence().constData() + r.startPos, r.length);
-        s.query = query;
+        s.query = dnaSeq.seq.mid(r.startPos, r.length);
         RemoteBLASTTask* sub = new RemoteBLASTTask(s);
         t->addSubTask(sub);
         offsetMap[sub] = r.startPos;

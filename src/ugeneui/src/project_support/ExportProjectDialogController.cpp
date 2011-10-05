@@ -23,6 +23,7 @@
 
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 
@@ -59,11 +60,11 @@ void ExportProjectDialogController::accept(){
     QString dirPath = exportFolderEdit->text();
     projectFile = fixProjectFile(projectFileEdit->text());
     
-    QString error;
-    exportDir = GUrlUtils::prepareDirLocation(dirPath, error);
+    U2OpStatus2Log os;
+    exportDir = GUrlUtils::prepareDirLocation(dirPath, os);
     if (exportDir.isEmpty()) {
-        assert(!error.isEmpty());
-        QMessageBox::critical(this, this->windowTitle(), error);
+        assert(os.hasError());
+        QMessageBox::critical(this, this->windowTitle(), os.getError());
         return;
     }
 	QDialog::accept();

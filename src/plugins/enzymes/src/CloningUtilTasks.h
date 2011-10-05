@@ -40,7 +40,7 @@
 namespace U2 {
 
 
-class DNASequenceObject;
+class U2SequenceObject;
 
 struct DigestSequenceTaskConfig {
 	DigestSequenceTaskConfig() : searchForRestrictionSites(false) {}
@@ -53,7 +53,7 @@ struct DigestSequenceTaskConfig {
 class DigestSequenceTask : public Task {
     Q_OBJECT
 public:
-    DigestSequenceTask(const DNASequenceObject* dnaObj, AnnotationTableObject* destTable, 
+    DigestSequenceTask(U2SequenceObject* dnaObj, AnnotationTableObject* destTable, 
 		AnnotationTableObject* sourceTable, const DigestSequenceTaskConfig& cfg);
     virtual void prepare();
     virtual void run();
@@ -70,7 +70,7 @@ private:
 	bool isCircular;
     U2Region seqRange;
     AnnotationTableObject *sourceObj, *destObj;
-    const DNASequenceObject*  dnaObj;
+    U2SequenceObject*  dnaObj;
     DigestSequenceTaskConfig cfg;
 	QMap<int, SEnzymeData> cutSiteMap;
 	QList<SharedAnnotationData> results;

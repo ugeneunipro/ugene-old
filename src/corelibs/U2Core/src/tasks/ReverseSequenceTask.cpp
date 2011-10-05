@@ -29,15 +29,14 @@
 
 namespace U2 {
 
-ReverseSequenceTask::ReverseSequenceTask( DNASequenceObject* dObj, QList<AnnotationTableObject*> annotations, DNASequenceSelection* s, DNATranslation* transl )
+ReverseSequenceTask::ReverseSequenceTask( U2SequenceObject* dObj, QList<AnnotationTableObject*> annotations, DNASequenceSelection* s, DNATranslation* transl )
 :Task("ReverseSequenceTask", TaskFlags_NR_FOSCOE), seqObj(dObj), aObjs(annotations), selection(s), complTr(transl)
 {
 
 }
 
-Task::ReportResult ReverseSequenceTask::report()
-{
-    DNASequence sequence = seqObj->getDNASequence();
+Task::ReportResult ReverseSequenceTask::report() {
+    DNASequence sequence = seqObj->getWholeSequence();
     if(sequence.length() == 0) {
         return ReportResult_Finished;
     }
@@ -48,7 +47,7 @@ Task::ReportResult ReverseSequenceTask::report()
         complTr->translate(data, len);
     }
     TextUtils::reverse(data, len);
-    seqObj->setSequence(sequence);
+    seqObj->setWholeSequence(sequence);
 
     // mirror selection
     if (selection != NULL) {

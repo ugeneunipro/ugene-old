@@ -39,7 +39,7 @@ protected:
     bool readEntry(QByteArray&, ParserState*);
     bool readSequence(QByteArray& sequence, ParserState*);
     void readAnnotations(ParserState*, int offset);
-    SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, TaskStateInfo& si, int offset);
+    SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, U2OpStatus& si, int offset);
     //void readAnnotations(ParserState*, int offset);
     QMap<QString, QString> tagMap;
 };

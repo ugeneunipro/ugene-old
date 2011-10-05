@@ -108,15 +108,15 @@ void Kalign_Load_Align_Compare_Task::prepare() {
 MAlignment Kalign_Load_Align_Compare_Task::dna_to_ma(QList<GObject*> dnaSeqs) {
 
     int seqCount = dnaSeqs.count();
-    DNASequenceObject *seq = qobject_cast<DNASequenceObject *>(dnaSeqs[0]);
+    U2SequenceObject *seq = qobject_cast<U2SequenceObject *>(dnaSeqs[0]);
     MAlignment ma("Alignment",seq->getAlphabet());
     for(int i=0; i<seqCount; i++) {
-        seq = qobject_cast<DNASequenceObject *>(dnaSeqs[i]);
+        seq = qobject_cast<U2SequenceObject *>(dnaSeqs[i]);
         if(seq == NULL) {
-            stateInfo.setError(  QString("Can't cast GObject to DNASequenceObject") );
+            stateInfo.setError(  QString("Can't cast GObject to U2SequenceObject") );
             return ma;
         }
-        MAlignmentRow row(seq->getDNASequence().getName(), seq->getSequence());
+        MAlignmentRow row(seq->getSequenceName(), seq->getWholeSequenceData());
         ma.addRow(row);
     }
     return ma;
@@ -358,15 +358,15 @@ void GTest_Kalign_Load_Align_QScore::prepare() {
 MAlignment GTest_Kalign_Load_Align_QScore::dna_to_ma(QList<GObject*> dnaSeqs) {
 
     int seqCount = dnaSeqs.count();
-    DNASequenceObject *seq = qobject_cast<DNASequenceObject *>(dnaSeqs[0]);
+    U2SequenceObject *seq = qobject_cast<U2SequenceObject *>(dnaSeqs[0]);
     MAlignment ma("Alignment",seq->getAlphabet());
     for(int i=0; i<seqCount; i++) {
-        seq = qobject_cast<DNASequenceObject *>(dnaSeqs[i]);
+        seq = qobject_cast<U2SequenceObject *>(dnaSeqs[i]);
         if(seq == NULL) {
-            stateInfo.setError(  QString("Can't cast GObject to DNASequenceObject") );
+            stateInfo.setError(  QString("Can't cast GObject to U2SequenceObject") );
             return ma;
         }
-        MAlignmentRow row(seq->getDNASequence().getName(), seq->getSequence());
+        MAlignmentRow row(seq->getSequenceName(), seq->getWholeSequenceData());
         ma.addRow(row);
     }
     return ma;

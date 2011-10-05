@@ -111,7 +111,7 @@ private:
 
     int posToComplTransLine(int p) const;
     int posToDirectTransLine(int p) const;
-    bool deriveTranslationCharColor(int pos, U2Strand strand, QList<Annotation*> annotationsInRange, QColor& result);
+    bool deriveTranslationCharColor(qint64 pos, U2Strand strand, QList<Annotation*> annotationsInRange, QColor& result);
 
     int numLines;
     int rulerLine;

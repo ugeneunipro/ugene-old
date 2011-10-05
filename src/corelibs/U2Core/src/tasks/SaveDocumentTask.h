@@ -65,6 +65,8 @@ public:
     //used in file-name rolling mode
     void setExcludeFileNames(const QSet<QString>& _excludeFileNames) {excludeFileNames = _excludeFileNames;}
 
+    void addFlag(SaveDocFlag f);
+
 private:
     StateLock*          lock;
     QPointer<Document>  doc;

@@ -2,6 +2,10 @@ include (U2View.pri)
 
 # Input
 HEADERS += src/WebWindow.h \
+           _tmp/ui/ui_CreateFileIndexDialog.h \
+           _tmp/ui/ui_UIndexExportToNewFileDialog.h \
+           _tmp/ui/ui_UIndexViewHeaderItemWidget.h \
+           _tmp/ui/ui_UIndexViewWidget.h \
            src/ov_assembly/AssemblyBrowser.h \
            src/ov_assembly/AssemblyBrowserFactory.h \
            src/ov_assembly/AssemblyBrowserSettings.h \
@@ -96,15 +100,6 @@ HEADERS += src/WebWindow.h \
            src/util_find_dialog/FindDialog.h \
            src/util_msa_align/MSAAlignDialog.h \
            src/util_msa_align/MSAAlignGUIExtension.h \
-           src/util_ov_indexview/CreateFileIndexDialog.h \
-           src/util_ov_indexview/UIndexExportToNewFileDialogImpl.h \
-           src/util_ov_indexview/UIndexSupport.h \
-           src/util_ov_indexview/UIndexViewer.h \
-           src/util_ov_indexview/UIndexViewerFactory.h \
-           src/util_ov_indexview/UIndexViewerTasks.h \
-           src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.h \
-           src/util_ov_indexview/UIndexViewWidgetImpl.h \
-           src/util_ov_indexview/UIndexViewWidgetKey.h \
            src/util_sec_struct_predict/SecStructDialog.h \
            src/util_sec_struct_predict/SecStructPredictUtils.h \
            src/util_smith_waterman/SmithWatermanDialog.h \
@@ -126,10 +121,6 @@ FORMS += src/ov_assembly/ui/ExportReadsDialog.ui \
          src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
          src/util_find_dialog/ui/FindDialogUI.ui \
          src/util_msa_align/ui/PerformAlignmentDialog.ui \
-         src/util_ov_indexview/ui/CreateFileIndexDialog.ui \
-         src/util_ov_indexview/ui/UIndexExportToNewFileDialog.ui \
-         src/util_ov_indexview/ui/UIndexViewHeaderItemWidget.ui \
-         src/util_ov_indexview/ui/UIndexViewWidget.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui
@@ -224,14 +215,6 @@ SOURCES += src/WebWindow.cpp \
            src/util_dna_assembly/DnaAssemblyUtils.cpp \
            src/util_find_dialog/FindDialog.cpp \
            src/util_msa_align/MSAAlignDialog.cpp \
-           src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp \
-           src/util_ov_indexview/UIndexSupport.cpp \
-           src/util_ov_indexview/UIndexViewer.cpp \
-           src/util_ov_indexview/UIndexViewerFactory.cpp \
-           src/util_ov_indexview/UIndexViewerTasks.cpp \
-           src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp \
-           src/util_ov_indexview/UIndexViewWidgetImpl.cpp \
-           src/util_ov_indexview/UIndexViewWidgetKey.cpp \
            src/util_sec_struct_predict/SecStructDialog.cpp \
            src/util_sec_struct_predict/SecStructPredictUtils.cpp \
            src/util_smith_waterman/SmithWatermanDialog.cpp \

@@ -39,11 +39,11 @@ const QString UHMM3PhmmerDialogImpl::DOM_E_PLUS_PREFIX          = "1E+";
 const QString UHMM3PhmmerDialogImpl::DOM_E_MINUS_PREFIX         = "1E";
 const QString UHMM3PhmmerDialogImpl::ANNOTATIONS_DEFAULT_NAME   = "signal";
 
-UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const DNASequenceObject * seqObj, QWidget * p ) : QDialog( p ) {
+UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, QWidget * p ) : QDialog( p ) {
     assert( NULL != seqObj );
     setupUi( this );
     
-    model.dbSequence = seqObj->getDNASequence();
+    model.dbSequence = seqObj->getWholeSequence();
     setModelValues(); // default model here
     
     // Annotations widget
@@ -51,7 +51,7 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const DNASequenceObject * seqObj, 
     annModel.hideLocation = true;
     annModel.sequenceObjectRef = seqObj;
     annModel.data->name = ANNOTATIONS_DEFAULT_NAME;
-    annModel.sequenceLen = seqObj->getSequenceLen();
+    annModel.sequenceLen = seqObj->getSequenceLength();
     annotationsWidgetController = new CreateAnnotationWidgetController( annModel, this );
     QWidget * firstTab = mainTabWidget->widget( 0 );
     assert( NULL != firstTab );

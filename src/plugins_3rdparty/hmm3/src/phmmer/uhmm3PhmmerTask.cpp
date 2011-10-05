@@ -134,12 +134,12 @@ DNASequence UHMM3PhmmerTask::getSequenceFromDocument( Document * doc, TaskStateI
         ti.setError( tr( "no_dna_sequence_objects_in_document" ) );
         return ret;
     }
-    DNASequenceObject* seqObj = qobject_cast< DNASequenceObject* >( objsList.first() );
+    U2SequenceObject* seqObj = qobject_cast< U2SequenceObject* >( objsList.first() );
     if( NULL == seqObj ) {
         ti.setError( tr( "cannot_cast_to_dna_object" ) );
         return ret;
     }
-    ret = seqObj->getDNASequence();
+    ret = seqObj->getWholeSequence();
     if( !ret.length() ) {
         ti.setError( tr( "empty_sequence_given" ) );
         return ret;

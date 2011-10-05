@@ -59,7 +59,8 @@ void CreateSubalignmentTask::prepare() {
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.url));
     if (createCopy) {
-        resultDocument = dfd->createNewDocument(iof, cfg.url, origDoc->getGHintsMap());
+        resultDocument = dfd->createNewLoadedDocument(iof, cfg.url, stateInfo, origDoc->getGHintsMap());
+        CHECK_OP(stateInfo, );
         resultMAObj = new MAlignmentObject(origMAObj->getMAlignment(), origMAObj->getGHintsMap());
         resultDocument->addObject(resultMAObj);
         GObjectUtils::updateRelationsURL(resultMAObj, origDoc->getURL(), cfg.url);

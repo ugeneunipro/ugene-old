@@ -37,7 +37,7 @@ namespace U2 {
 
 class AnnotatedDNAView;
 class AnnotatedDNAViewState;
-class DNASequenceObject;
+class U2SequenceObject;
 class AnnotationTableObject;
 class GSequenceLineView;
 class AnnotationsTreeView;
@@ -60,7 +60,7 @@ class AutoAnnotationsUpdater;
 class U2VIEW_EXPORT AnnotatedDNAView : public GObjectView {
     Q_OBJECT
 public:
-    AnnotatedDNAView(const QString& viewName, const QList<DNASequenceObject*>& dnaObjects);
+    AnnotatedDNAView(const QString& viewName, const QList<U2SequenceObject*>& dnaObjects);
     ~AnnotatedDNAView();
 
     virtual void buildStaticToolbar(QToolBar* tb);
@@ -76,7 +76,7 @@ public:
     // view content
     const QList<ADVSequenceObjectContext*>& getSequenceContexts() const {return seqContexts;}
 
-    QList<DNASequenceObject*> getSequenceObjectsWithContexts() const;
+    QList<U2SequenceObject*> getSequenceObjectsWithContexts() const;
     
     QList<GObject*> getSequenceGObjectsWithContexts() const;
 
@@ -104,7 +104,7 @@ public:
 
     ADVSequenceObjectContext* getSequenceContext(AnnotationTableObject* obj) const;
 
-    ADVSequenceObjectContext* getSequenceContext(DNASequenceObject*) const;
+    ADVSequenceObjectContext* getSequenceContext(U2SequenceObject*) const;
     
     ADVSequenceObjectContext* getSequenceContext(const GObjectReference& r) const;
 
@@ -239,6 +239,7 @@ private:
     int                         timerId;
 };
 
+//TODO: move into separate file!
 class DNAStatProfileTask : public Task {
     Q_OBJECT
 public:
@@ -250,9 +251,10 @@ private:
     void computeStats();
 
     ADVSequenceObjectContext* ctx;
-    int seqLen;
-    QMap<QChar, int> counter;
-    QMap<QByteArray, int> diNuclCounter;
+    qint64 seqLen;
+    QVector<qint64>         contentCounter;
+    //TODO: optimize
+    QMap<QByteArray, int>   diNuclCounter;
 
     QString resultText;
 };

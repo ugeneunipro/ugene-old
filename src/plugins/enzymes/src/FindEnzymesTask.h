@@ -75,7 +75,7 @@ public:
     ReportResult report();
     
 private:
-    const DNASequence&                  dna;
+    DNASequence                         dnaSeq;
     QList<SEnzymeData>                  enzymes;
     QMap<QString,SharedAnnotationData>  resultMap;
     U2Region                            seqRange;
@@ -124,7 +124,7 @@ public:
     virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti);
     void cleanup();
 private:
-    const DNASequence&          dna;
+    DNASequence                 dnaSeq;
     U2Region                    region;
     SEnzymeData                 enzyme;
     int                         maxResults;

@@ -46,7 +46,7 @@ public:
 
     virtual bool isWidgetOnlyObject(GObject* o) const;
 
-    DNASequenceObject* getEditedSequence() const {return editDNASeq;}
+    U2SequenceObject* getEditedSequence() const {return editDNASeq;}
     bool showQV() const {return showQVAction->isChecked();}
 
 protected:
@@ -70,7 +70,7 @@ private:
     bool checkObject(GObject* obj);
     int getEditSeqIndex(int bcIndex);
 
-    DNASequenceObject*          editDNASeq;
+    U2SequenceObject*          editDNASeq;
     QByteArray                  currentBaseCalls;
     QSet<int>                   indexOfChangedChars;
     QList<int>                  gapIndexes;

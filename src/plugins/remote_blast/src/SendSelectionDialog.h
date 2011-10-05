@@ -41,7 +41,7 @@ class AnnotationTableObject;
 class SendSelectionDialog: public QDialog, Ui_Dialog {
     Q_OBJECT
 public:
-    SendSelectionDialog( const DNASequenceObject* dnaso, bool _isAminoSeq, QWidget *p = NULL );
+    SendSelectionDialog( const U2SequenceObject* dnaso, bool _isAminoSeq, QWidget *p = NULL );
     QString getGroupName() const;
     AnnotationTableObject* getAnnotationObject() const;
     const CreateAnnotationModel *getModel() const;

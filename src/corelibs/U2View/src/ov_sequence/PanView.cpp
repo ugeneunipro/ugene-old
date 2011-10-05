@@ -34,8 +34,9 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceSelection.h>
+
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
 
@@ -423,7 +424,7 @@ void PanView::sl_zoomToSelection() {
     if (visibleRange==selRegion) {
         return;
     }
-    assert(ctx->getSequenceObject()->getSequenceRange().contains(selRegion));
+    SAFE_POINT(U2Region(0, ctx->getSequenceObject()->getSequenceLength()).contains(selRegion), "Invalid selection region", );
     visibleRange = selRegion;
     onVisibleRangeChanged();
 }
@@ -559,8 +560,8 @@ void PanView::setSyncOffset(int o) {
 }
 
 void PanView::sl_sequenceChanged(){
-    seqLen = ctx->getSequenceLen();
-    U2Region curSource(0, ctx->getSequenceLen()), newRange(0,0);
+    seqLen = ctx->getSequenceLength();
+    U2Region curSource(0, ctx->getSequenceLength()), newRange(0,0);
     if(!curSource.contains(visibleRange)){
         if (curSource.length > visibleRange.length){
             newRange.startPos = visibleRange.startPos - (visibleRange.endPos() - curSource.endPos());
@@ -802,8 +803,8 @@ void PanViewRenderArea::drawSequence(QPainter& p) {
         p.setFont(smallSequenceFont);
         halfCharByFont = smallCharWidth / 2.0f;
     }
-    const QByteArray& seq = view->getSequenceContext()->getSequenceData();
     const U2Region& visibleRange = view->getVisibleRange();
+    QByteArray seq = view->getSequenceContext()->getSequenceData(visibleRange);
     int y = getLineY(getSelectionLine()) + lineHeight - yCharOffset;
     for (int i = visibleRange.startPos; i < visibleRange.endPos(); i++) {
         char c = seq[i];

@@ -47,7 +47,7 @@ SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
     ctxSeq = ctx;
     dialogConfig = _dialogConfig;
     setupUi(this);
-    rs=new RegionSelector(this, ctx->getSequenceLen(), true, ctx->getSequenceSelection());
+    rs = new RegionSelector(this, ctx->getSequenceLength(), true, ctx->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
 
     substMatrixRegistry = AppContext::getSubstMatrixRegistry();
@@ -108,13 +108,13 @@ void SmithWatermanDialog::updateVisualState() {
 
 void SmithWatermanDialog::addAnnotationWidget() {
 
-    DNASequenceObject *dnaso = qobject_cast<DNASequenceObject*>(ctxSeq->getSequenceGObject());
+    U2SequenceObject *dnaso = qobject_cast<U2SequenceObject*>(ctxSeq->getSequenceGObject());
     CreateAnnotationModel acm;
 
     acm.sequenceObjectRef = GObjectReference(dnaso);
     acm.hideAnnotationName = false;
     acm.hideLocation = true;
-    acm.sequenceLen = dnaso->getSequenceLen();
+    acm.sequenceLen = dnaso->getSequenceLength();
     ac = new CreateAnnotationWidgetController(acm, this);
     QWidget* caw = ac->getWidget();    
     QVBoxLayout* l = new QVBoxLayout();
@@ -222,7 +222,7 @@ void SmithWatermanDialog::sl_bttnRun() {
 bool SmithWatermanDialog::readParameters() {
     clearAll();
 
-    config.sqnc = ctxSeq->getSequenceData();
+    config.sqnc = ctxSeq->getSequenceObject()->getWholeSequenceData();
     
     DNATranslation* aminoTT = 0;
     bool isTranslation = radioTranslation->isChecked();

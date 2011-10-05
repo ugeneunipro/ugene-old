@@ -48,7 +48,7 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
     {
         selection = context->getSequenceSelection()->getSelectedRegions().first();
     }
-    sequenceLength = context->getSequenceLen();
+    sequenceLength = context->getSequenceLength();
     rs=new RegionSelector(this, sequenceLength, false, context->getSequenceSelection());
     ui.rangeSelectorLayout->addWidget(rs);
 

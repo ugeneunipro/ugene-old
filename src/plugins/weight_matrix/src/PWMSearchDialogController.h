@@ -41,7 +41,7 @@
 namespace U2 {
 
 class ADVSequenceObjectContext;
-class DNASequenceObject;
+class U2SequenceObject;
 class WeightMatrixSearchTask;
 class Task;
 class WeightMatrixResultItem;

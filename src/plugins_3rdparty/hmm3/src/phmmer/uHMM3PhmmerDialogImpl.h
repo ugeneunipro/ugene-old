@@ -49,7 +49,7 @@ private:
     static const QString    ANNOTATIONS_DEFAULT_NAME;
     static const int        ANNOTATIONS_WIDGET_LOCATION = 1;
 public:
-    UHMM3PhmmerDialogImpl( const DNASequenceObject * seqObj, QWidget * p = NULL );
+    UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, QWidget * p = NULL );
     
 private:
     void setModelValues();

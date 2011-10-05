@@ -82,7 +82,7 @@ public:
 class SiteconSearchTask : public Task, public SequenceWalkerCallback {
     Q_OBJECT
 public:
-    SiteconSearchTask(const SiteconModel& model, const char* seq, int len, const SiteconSearchCfg& cfg, int resultsOffset);
+    SiteconSearchTask(const SiteconModel& model, const QByteArray& seq, const SiteconSearchCfg& cfg, int resultsOffset);
     
     virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti);
     QList<SiteconSearchResult> takeResults();
@@ -95,6 +95,7 @@ private:
     SiteconSearchCfg            cfg;
     QList<SiteconSearchResult>  results;
     int                         resultsOffset;
+    QByteArray                  wholeSeq;
 };
 
 }//namespace

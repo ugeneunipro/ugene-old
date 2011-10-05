@@ -30,13 +30,13 @@
 namespace U2 {
 
 class LoadDocumentTask;
-class DbiHandle;
+class DbiConnection;
 
 class U2FORMATS_EXPORT ConvertAssemblyToSamTask : public Task {
     Q_OBJECT
 public:
     ConvertAssemblyToSamTask(GUrl dbFileUrl, GUrl samFileUrl);
-    ConvertAssemblyToSamTask(const DbiHandle *handle, GUrl samFileUrl);
+    ConvertAssemblyToSamTask(const DbiConnection *handle, GUrl samFileUrl);
     void run();
     QString generateReport() const;
 
@@ -44,7 +44,7 @@ private:
     GUrl dbFileUrl;
     GUrl samFileUrl;
 
-    const DbiHandle *handle;
+    const DbiConnection *handle;
 };
 
 }// U2

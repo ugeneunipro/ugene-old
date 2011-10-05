@@ -29,6 +29,8 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MAlignment.h>
+
 #include <U2Lang/Schema.h>
 #include <U2Lang/WorkflowIOTasks.h>
 #include <U2Lang/WorkflowRunTask.h>

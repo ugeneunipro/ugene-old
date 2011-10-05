@@ -33,6 +33,7 @@ namespace U2 {
 
 class TaskStateInfo;
 class Logger;
+class U2OpStatus;
 
 
 class U2CORE_EXPORT GUrlUtils : public QObject {
@@ -75,13 +76,16 @@ public:
     // Returns canonical path to file. Does not create nor remove file, affects just directory
     // Returns empty string and error message if some error occurs
     // Sample usage: processing URLs in "save file" inputs
-    static QString prepareFileLocation(const QString& filePath, QString& errorMessage);
+    static QString prepareFileLocation(const QString& filePath, U2OpStatus& os);
 
     // checks that dir path is valid. Creates the directory if needed. 
     // Returns canonical directory path. Does not affect directory if already exists.
     // Returns empty string and error message if some error occurs
     // Sample usage: processing URLs in "save dir" inputs
-    static QString prepareDirLocation(const QString& dirPath, QString& errorMessage);
+    static QString prepareDirLocation(const QString& dirPath, U2OpStatus& os);
+
+    static QString prepareTmpFileLocation(const QString& dir, const QString& prefix, const QString& ext, U2OpStatus& os);
+
 };
 
 } //namespace

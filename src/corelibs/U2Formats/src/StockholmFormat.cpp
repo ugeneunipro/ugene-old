@@ -24,14 +24,15 @@
 #include "DocumentFormatUtils.h"
 
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
-
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/MAlignmentInfo.h>
+#include <U2Core/U2DbiUtils.h>
 
 #include <U2Core/TextUtils.h>
 
@@ -448,7 +449,7 @@ static void changeGaps( QByteArray& seq ) {
 }
 
 // returns true if operation was not canceled
-static bool loadOneMsa( IOAdapter* io, TaskStateInfo& tsi, MAlignment& msa, AnnotationBank& ann_bank ) {
+static bool loadOneMsa( IOAdapter* io, U2OpStatus& tsi, MAlignment& msa, AnnotationBank& ann_bank ) {
     assert( NULL != io );
 
     QByteArray buf( BUF_SZ, TERM_SYM );
@@ -464,7 +465,7 @@ static bool loadOneMsa( IOAdapter* io, TaskStateInfo& tsi, MAlignment& msa, Anno
     //read blocks
     bool firstBlock = true;
     while ( 1 ) {
-        if( tsi.cancelFlag ) {
+        if( tsi.isCoR()) {
             return false;
         }
         skipMany( io, ann_bank );
@@ -483,7 +484,7 @@ static bool loadOneMsa( IOAdapter* io, TaskStateInfo& tsi, MAlignment& msa, Anno
             if ( name.startsWith( COMMENT_OR_MARKUP_LINE ) ) {
                 ann_bank.addAnnotation( getAnnotation( line ) );
                 hasSeqs = !blockEnded( io );
-                tsi.progress = io->getProgress();
+                tsi.setProgress(io->getProgress());
                 continue;
             }
             changeGaps( seq );
@@ -506,7 +507,7 @@ static bool loadOneMsa( IOAdapter* io, TaskStateInfo& tsi, MAlignment& msa, Anno
             }
             seq_ind++;
             hasSeqs = !blockEnded( io );
-            tsi.progress = io->getProgress();
+            tsi.setProgress(io->getProgress());
         }
         firstBlock = false;
         //check sequence length after every block
@@ -520,8 +521,8 @@ static bool loadOneMsa( IOAdapter* io, TaskStateInfo& tsi, MAlignment& msa, Anno
     if ( msa.getNumRows() == 0 ) {
         throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: empty sequence alignment" ) );
     }
-    DocumentFormatUtils::assignAlphabet( msa );
-    if ( msa.getAlphabet() == NULL) {
+    U2AlphabetUtils::assignAlphabet(msa);
+    if (msa.getAlphabet() == NULL) {
         throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: unknown alphabet" ) );
     }
     return true;
@@ -568,9 +569,7 @@ static void setMsaInfo( const QHash< QString, QString>& annMap, MAlignment& ma )
     ma.setInfo(info);
 }
 
-static void load( IOAdapter* io, QList<GObject*>& l, TaskStateInfo& tsi, bool& uni_file, bool onlyOne ) {
-    assert( NULL != io );
-
+static void load( IOAdapter* io, QList<GObject*>& l, U2OpStatus& tsi, bool& uni_file) {
     QStringList names_list;
     QString filename = io->getURL().baseFileName();
     while( !io->isEof() ) {
@@ -597,9 +596,6 @@ static void load( IOAdapter* io, QList<GObject*>& l, TaskStateInfo& tsi, bool& u
         MAlignmentObject* obj = new MAlignmentObject(msa);
         obj->setIndexInfo(annMap);
         l.append( obj );
-        if( onlyOne ) {
-            break;
-        }
     }
 }
 
@@ -677,41 +673,35 @@ StockholmFormat::StockholmFormat( QObject *obj ) : DocumentFormat( obj , Documen
 }
 
 
-Document* StockholmFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs , DocumentLoadMode mode) {
-    if( NULL == io || !io->isOpen() ) {
-        ti.setError(L10N::badArgument("IO adapter"));
-        return NULL;
-    }
-    
-    QList<GObject*> obj_list;
+Document* StockholmFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
+    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
+    QList<GObject*> objects;
     try {
         bool uniFile = false;
-        QString write_lock_reason;
-        load( io, obj_list, ti, uniFile, mode);
+        QString lockReason;
+        load( io, objects, os, uniFile);
         if ( !uniFile ) {
-            write_lock_reason = DocumentFormat::CREATED_NOT_BY_UGENE;
+            lockReason = DocumentFormat::CREATED_NOT_BY_UGENE;
         }
-        return new Document( this, io->getFactory(), io->getURL(), obj_list, fs, write_lock_reason );
+        return new Document( this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, lockReason );
     }
     catch ( const StockholmBaseException& e ) {
-        ti.setError(e.msg);
+        os.setError(e.msg);
     }
     catch ( ... ) {
-        ti.setError(tr( "unknown error occurred" ));
+        os.setError(tr( "unknown error occurred" ));
     }
-    qDeleteAll(obj_list);
+    qDeleteAll(objects);
     return NULL;
 }
 
-void StockholmFormat::storeDocument( Document* doc, TaskStateInfo& ti, IOAdapter* io ) {
+void StockholmFormat::storeDocument( Document* doc, U2OpStatus& ti, IOAdapter* io ) {
     try {
         foreach( GObject* p_obj, doc->getObjects() ) {
             const MAlignmentObject* aln_obj = qobject_cast<const MAlignmentObject*>( p_obj );
             assert( NULL != aln_obj );
             save( io, aln_obj->getMAlignment(), aln_obj->getGObjectName() );
-            if( ti.cancelFlag ) {
-                return;
-            }
+            CHECK_OP(ti, );
         }
     } catch( const StockholmBaseException& ex ) {
         ti.setError( ex.msg );

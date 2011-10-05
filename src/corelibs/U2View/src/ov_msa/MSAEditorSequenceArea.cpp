@@ -1461,7 +1461,7 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
 
     ProjectTreeControllerModeSettings settings;
     settings.objectTypesToShow.append(GObjectTypes::SEQUENCE);
-    std::auto_ptr<DNASequenceObjectConstraints> seqConstraints(new DNASequenceObjectConstraints());
+    std::auto_ptr<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
     seqConstraints->alphabetType = msaObject->getAlphabet()->getType();
     settings.objectConstraints.append(seqConstraints.get());
 
@@ -1472,9 +1472,9 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
             if (obj->isUnloaded()) {
                 continue;
             }
-            DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+            U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
             if (seqObj) {
-                msaObject->addRow(seqObj->getDNASequence(), 0);
+                msaObject->addRow(seqObj->getWholeSequenceData(), 0);
                 cancelSelection();
             }
         }

@@ -31,7 +31,7 @@ namespace U2 {
 /**
     An interface to access to Variant tracks
 */
-class U2CORE_EXPORT U2VariantDbi : public U2ChildDbi {
+class U2VariantDbi : public U2ChildDbi {
 protected:
     U2VariantDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 

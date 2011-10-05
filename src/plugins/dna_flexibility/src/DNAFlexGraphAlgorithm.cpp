@@ -46,13 +46,13 @@ DNAFlexGraphAlgorithm::~DNAFlexGraphAlgorithm()
  */
 void DNAFlexGraphAlgorithm::calculate(
     QVector<float>& result,
-    DNASequenceObject* sequenceObject,
+    U2SequenceObject* sequenceObject,
     const U2Region& region,
     const GSequenceGraphWindowData* windowData)
 {
     assert(windowData !=NULL);
 
-    const QByteArray& sequence = sequenceObject->getSequence();
+    QByteArray sequence = sequenceObject->getWholeSequenceData();
 
     int windowSize = windowData->window;
     int windowStep = windowData->step;

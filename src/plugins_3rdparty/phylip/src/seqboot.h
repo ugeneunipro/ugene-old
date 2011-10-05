@@ -18,7 +18,7 @@ typedef enum {
 } datatype;
 
 typedef enum {
-  dna, rna, protein
+  dnaSeq, rna, protein
 } seqtype;
 
 /*** Config vars ***/

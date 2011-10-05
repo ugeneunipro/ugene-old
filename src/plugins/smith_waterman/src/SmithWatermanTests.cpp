@@ -150,20 +150,20 @@ void GTest_SmithWatermnan::init(XMLTestFormat *, const QDomElement& el) {
 void GTest_SmithWatermnan::prepare() {
 
     //get search sequence
-    DNASequenceObject * searchSeqObj = getContext<DNASequenceObject>(this, searchSeqDocName);
+    U2SequenceObject * searchSeqObj = getContext<U2SequenceObject>(this, searchSeqDocName);
     if(searchSeqObj==NULL){
         stateInfo.setError(QString("error can't cast to sequence from GObject"));
         return;
     }
-    searchSeq = searchSeqObj->getDNASequence().seq;
+    searchSeq = searchSeqObj->getWholeSequenceData();
 
     //get pattern sequence
-    DNASequenceObject * patternSeqObj = getContext<DNASequenceObject>(this, patternSeqDocName);
+    U2SequenceObject * patternSeqObj = getContext<U2SequenceObject>(this, patternSeqDocName);
     if(patternSeqObj==NULL){
         stateInfo.setError(QString("error can't cast to sequence from GObject"));
         return;
     }
-    patternSeq = patternSeqObj->getDNASequence().seq;
+    patternSeq = patternSeqObj->getWholeSequenceData();
 
     //set subst matrix
 
@@ -339,20 +339,20 @@ void GTest_SmithWatermnanPerf::init(XMLTestFormat *tf, const QDomElement& el) {
 void GTest_SmithWatermnanPerf::prepare() {
 
     //get search sequence
-    DNASequenceObject * searchSeqObj = getContext<DNASequenceObject>(this, searchSeqDocName);
+    U2SequenceObject * searchSeqObj = getContext<U2SequenceObject>(this, searchSeqDocName);
     if(searchSeqObj==NULL){
         stateInfo.setError(QString("error can't cast to sequence from GObject"));
         return;
     }
-    searchSeq = searchSeqObj->getDNASequence().seq;
+    searchSeq = searchSeqObj->getWholeSequenceData();
 
     //get pattern sequence
-    DNASequenceObject * patternSeqObj = getContext<DNASequenceObject>(this, patternSeqDocName);
+    U2SequenceObject * patternSeqObj = getContext<U2SequenceObject>(this, patternSeqDocName);
     if(patternSeqObj==NULL){
         stateInfo.setError(QString("error can't cast to sequence from GObject"));
         return;
     }
-    patternSeq = patternSeqObj->getDNASequence().seq;
+    patternSeq = patternSeqObj->getWholeSequenceData();
 
     setTaskName(QString("Test seq size %1").arg(patternSeq.size()));
 

@@ -25,6 +25,8 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatus.h>
 
 #include "uHMMFormatReader.h"
 
@@ -38,54 +40,54 @@ const int EMPTY_READ    = 0;
 const char TERM_SYM     = '\0';
 
 enum HMMERHeaderTags {
-    BAD_TAG = -1,
-    NAME,
-    ACC,
-    DESC,
-    LENG,
-    ALPH,
-    RF,
-    CS,
-    MAP,
-    DATE,
-    COM,
-    NSEQ,
-    EFFN,
-    CKSUM,
-    STATS,
-    GA,
-    TC,
-    NC,
-    NULE, // in HMMER2 only
-    HMM,
-    BM,
-    SM
+    HMM3_BAD_TAG = -1,
+    HMM3_NAME,
+    HMM3_ACC,
+    HMM3_DESC,
+    HMM3_LENG,
+    HMM3_ALPH,
+    HMM3_RF,
+    HMM3_CS,
+    HMM3_MAP,
+    HMM3_DATE,
+    HMM3_COM,
+    HMM3_NSEQ,
+    HMM3_EFFN,
+    HMM3_CKSUM,
+    HMM3_STATS,
+    HMM3_GA,
+    HMM3_TC,
+    HMM3_NC,
+    HMM3_NULE, // in HMMER2 only
+    HMM3_HMM,
+    HMM3_BM,
+    HMM3_SM
 }; // HMMERHeaderTags
 
 static QMap< QByteArray, HMMERHeaderTags > getHeaderTagsMap() {
     static QMap< QByteArray, HMMERHeaderTags > ret;
     if (ret.isEmpty()) {
-        ret["NAME"]     = NAME;
-        ret["ACC"]      = ACC;
-        ret["DESC"]     = DESC;
-        ret["LENG"]     = LENG;
-        ret["ALPH"]     = ALPH;
-        ret["RF"]       = RF;
-        ret["CS"]       = CS;
-        ret["MAP"]      = MAP;
-        ret["DATE"]     = DATE;
-        ret["COM"]      = COM;
-        ret["NSEQ"]     = NSEQ;
-        ret["EFFN"]     = EFFN;
-        ret["CKSUM"]    = CKSUM;
-        ret["STATS"]    = STATS;
-        ret["GA"]       = GA;
-        ret["TC"]       = TC;
-        ret["NC"]       = NC;
-        ret["NULE"]     = NULE;
-        ret["HMM"]      = HMM;
-        ret["BM"]       = BM;
-        ret["SM"]       = SM;
+        ret["NAME"]     = HMM3_NAME;
+        ret["ACC"]      = HMM3_ACC;
+        ret["DESC"]     = HMM3_DESC;
+        ret["LENG"]     = HMM3_LENG;
+        ret["ALPH"]     = HMM3_ALPH;
+        ret["RF"]       = HMM3_RF;
+        ret["CS"]       = HMM3_CS;
+        ret["MAP"]      = HMM3_MAP;
+        ret["DATE"]     = HMM3_DATE;
+        ret["COM"]      = HMM3_COM;
+        ret["NSEQ"]     = HMM3_NSEQ;
+        ret["EFFN"]     = HMM3_EFFN;
+        ret["CKSUM"]    = HMM3_CKSUM;
+        ret["STATS"]    = HMM3_STATS;
+        ret["GA"]       = HMM3_GA;
+        ret["TC"]       = HMM3_TC;
+        ret["NC"]       = HMM3_NC;
+        ret["NULE"]     = HMM3_NULE;
+        ret["HMM"]      = HMM3_HMM;
+        ret["BM"]       = HMM3_BM;
+        ret["SM"]       = HMM3_SM;
     }
     return ret;
 }
@@ -118,7 +120,7 @@ static void getTagValue( const QByteArray& ln, QByteArray& tag, QByteArray& val 
     QStringList words = line.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
     
     if( 1 >= words.size() ) {
-        if( words.size() == 1 && getHeaderTagsMap().value(words.at(0).toAscii(), BAD_TAG) == NAME ) {
+        if( words.size() == 1 && getHeaderTagsMap().value(words.at(0).toAscii(), HMM3_BAD_TAG) == HMM3_NAME ) {
             tag = words.at(0).toAscii();
             val = "hmm_profile";
         } else {
@@ -337,15 +339,9 @@ const QString UHMMFormatReader::READ_FAILED                     = UHMMFormatRead
 const QString UHMMFormatReader::HMMER2_VERSION_HEADER           = "HMMER2";
 const QString UHMMFormatReader::HMMER3_VERSION_HEADER           = "HMMER3";
 
-UHMMFormatReader::UHMMFormatReader( IOAdapter * i, TaskStateInfo & tsi ) : io( i ), ti( tsi ) {
-    if( ti.hasError() || ti.cancelFlag ) {
-        return;
-    }
-    
-    if( NULL == io || !io->isOpen() ) {
-        ti.setError( HMM_FORMAT_READER_ERROR_PREFIX + L10N::badArgument( "io adapter" ) );
-        return;
-    }
+UHMMFormatReader::UHMMFormatReader( IOAdapter * i, U2OpStatus& _os) : io( i ), os( _os ) {
+    CHECK_OP(os, );
+    CHECK_EXT(io!=NULL && io->isOpen(), os.setError( HMM_FORMAT_READER_ERROR_PREFIX + L10N::badArgument( "io adapter" ) ), );
 }
 
 UHMMFormatReader::HMMER_VERSIONS UHMMFormatReader::getVersion( const QByteArray & str ) const {
@@ -360,9 +356,7 @@ UHMMFormatReader::HMMER_VERSIONS UHMMFormatReader::getVersion( const QByteArray 
 }
 
 P7_HMM * UHMMFormatReader::getNextHmm() {
-    if( ti.hasError() || ti.cancelFlag ) {
-        return NULL;
-    }
+    CHECK_OP(os, NULL);
     
     QByteArray header;
     readLine( io, header );
@@ -377,7 +371,7 @@ P7_HMM * UHMMFormatReader::getNextHmm() {
         ret = readHMMER3ASCII();
         break;
     case UNKNOWN_VERSION:
-        ti.setError( tr( "Input file made by unknown version of HMMER or is not HMM profile file" ) );
+        os.setError( tr( "Input file made by unknown version of HMMER or is not HMM profile file" ) );
         break;
     default:
         assert( false );
@@ -414,25 +408,25 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
             
             readLine( io, line );
             getTagValue( line, tagStr, valueStr );
-            tag = headerTagsMap.value( tagStr, BAD_TAG );
+            tag = headerTagsMap.value( tagStr, HMM3_BAD_TAG );
             switch( tag ) {
-            case NAME:
+            case HMM3_NAME:
                 p7_hmm_SetName( hmm, valueStr.data() );
                 break;
-            case ACC:
+            case HMM3_ACC:
                 p7_hmm_SetAccession( hmm, valueStr.data() );
                 break;
-            case DESC:
+            case HMM3_DESC:
                 p7_hmm_SetDescription( hmm, valueStr.data() );
                 break;
-            case LENG:
+            case HMM3_LENG:
                 setInteger( hmm->M, valueStr );
                 if( 0 >= hmm->M ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
                         UHMMFormatReader::tr( "length_of_a_model_should_be_positive.we_have:%1" ).arg( hmm->M ) );
                 }
                 break;
-            case ALPH:
+            case HMM3_ALPH:
                 {
                     int abcType = esl_abc_EncodeType( valueStr.data() );
                     if( eslUNKNOWN == abcType ) {
@@ -442,61 +436,61 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
                     abc = esl_alphabet_Create( abcType );
                 }
                 break;
-            case RF:
+            case HMM3_RF:
                 setYesNoValue( hmm->flags, p7H_RF, valueStr );
                 break;
-            case CS:
+            case HMM3_CS:
                 setYesNoValue( hmm->flags, p7H_CS, valueStr );
                 break;
-            case MAP:
+            case HMM3_MAP:
                 setYesNoValue( hmm->flags, p7H_MAP, valueStr );
                 break;
-            case DATE:
+            case HMM3_DATE:
                 allocAndCopyStr( valueStr, &(hmm->ctime) );
                 break;
-            case COM: // COM is command line that was used to create this hmm. we don't need it
+            case HMM3_COM: // COM is command line that was used to create this hmm. we don't need it
                 break;
-            case NSEQ:
+            case HMM3_NSEQ:
                 setInteger( hmm->nseq, valueStr );
                 if( 0 >= hmm->nseq ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
                         UHMMFormatReader::tr( "nseq_should_be_positive.we_have:%1" ).arg( hmm->nseq ) );
                 }
                 break;
-            case EFFN:
+            case HMM3_EFFN:
                 setFloat( hmm->eff_nseq, valueStr );
                 if( 0 >= hmm->eff_nseq ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
                         UHMMFormatReader::tr( "effn_should_be_positive.we_have:%1" ).arg( hmm->eff_nseq ) );
                 }
                 break;
-            case CKSUM:
+            case HMM3_CKSUM:
                 setUInteger( hmm->checksum, valueStr );
                 hmm->flags |= p7H_CHKSUM;
                 break;
-            case STATS:
+            case HMM3_STATS:
                 setHmmStats( hmm->evparam, valueStr, statstracker );
                 break;
-            case GA:
+            case HMM3_GA:
                 set2Floats( hmm->cutoff[p7_GA1], hmm->cutoff[p7_GA2], valueStr );
                 hmm->flags |= p7H_GA;
                 break;
-            case TC:
+            case HMM3_TC:
                 set2Floats( hmm->cutoff[p7_TC1], hmm->cutoff[p7_TC2], valueStr );
                 hmm->flags |= p7H_TC;
                 break;
-            case NC:
+            case HMM3_NC:
                 set2Floats( hmm->cutoff[p7_NC1], hmm->cutoff[p7_NC2], valueStr );
                 hmm->flags |= p7H_NC;
                 break;
-            case HMM:
+            case HMM3_HMM:
                 isHeaderSection = false;
                 continue;
-            case BM:
-            case SM:
+            case HMM3_BM:
+            case HMM3_SM:
                 //TODO: update HMMER and start use these fields too
                 break;
-            case BAD_TAG:
+            case HMM3_BAD_TAG:
                 throw UHMMFormatReader::UHMMFormatReaderException(
                     UHMMFormatReader::tr( "unrecognized_tag_in_header_section:%1" ).arg( QString(tagStr) ) );
             default:
@@ -624,18 +618,13 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
         assert( 0 <= hmm->M );
         assert( NULL != hmm->abc );
     } catch( const UHMMFormatReaderException & ex ) {
-        ti.setError( ex.what );
+        os.setError( ex.what );
     } catch(...) {
-        ti.setError( HMMER3_UNKNOWN_ERROR );
+        os.setError( HMMER3_UNKNOWN_ERROR );
     }
     esl_alphabet_Destroy( abc );
     
-    if( ti.hasError() ) {
-        p7_hmm_Destroy( hmm );
-        return NULL;
-    }
-    assert( NULL != hmm );
-    
+    CHECK_OP_EXT(os, p7_hmm_Destroy( hmm ), NULL);
     return hmm;
 }
 
@@ -673,25 +662,25 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
             
             readLine( io, line, &tokens );
             getTagValue( line, tagStr, valueStr );
-            tag = headerTagsMap.value( tagStr, BAD_TAG );
+            tag = headerTagsMap.value( tagStr, HMM3_BAD_TAG );
             switch( tag ) {
-            case NAME:
+            case HMM3_NAME:
                 p7_hmm_SetName( hmm, valueStr.data() );
                 break;
-            case ACC:
+            case HMM3_ACC:
                 p7_hmm_SetAccession( hmm, valueStr.data() );
                 break;
-            case DESC:
+            case HMM3_DESC:
                 p7_hmm_SetDescription( hmm, valueStr.data() );
                 break;
-            case LENG:
+            case HMM3_LENG:
                 setInteger( hmm->M, valueStr );
                 if( 0 >= hmm->M ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
                         UHMMFormatReader::tr( "length_of_a_model_should_be_positive.we_have:%1" ).arg( hmm->M ) );
                 }
                 break;
-            case ALPH:
+            case HMM3_ALPH:
                 {
                     triedToSetAlph = true;
                     if(valueStr.toLower() != "nucleic") { // try to encode abc in hmm section
@@ -704,40 +693,40 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
                     }
                 }
                 break;
-            case RF:
+            case HMM3_RF:
                 setYesNoValue( hmm->flags, p7H_RF, valueStr );
                 break;
-            case CS:
+            case HMM3_CS:
                 setYesNoValue( hmm->flags, p7H_CS, valueStr );
                 break;
-            case MAP:
+            case HMM3_MAP:
                 setYesNoValue( hmm->flags, p7H_MAP, valueStr );
                 break;
-            case DATE:
+            case HMM3_DATE:
                 allocAndCopyStr( valueStr, &(hmm->ctime) );
                 break;
-            case COM: // we don't need it
+            case HMM3_COM: // we don't need it
                 break;
-            case NSEQ:
+            case HMM3_NSEQ:
                 setInteger( hmm->nseq, valueStr );
                 if( 0 >= hmm->nseq ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
                         UHMMFormatReader::tr( "nseq_should_be_positive.we_have:%1" ).arg( hmm->nseq ) );
                 }
                 break;
-            case GA:
+            case HMM3_GA:
                 set2Floats( hmm->cutoff[p7_GA1], hmm->cutoff[p7_GA2], valueStr );
                 hmm->flags |= p7H_GA;
                 break;
-            case TC:
+            case HMM3_TC:
                 set2Floats( hmm->cutoff[p7_TC1], hmm->cutoff[p7_TC2], valueStr );
                 hmm->flags |= p7H_TC;
                 break;
-            case NC:
+            case HMM3_NC:
                 set2Floats( hmm->cutoff[p7_NC1], hmm->cutoff[p7_NC2], valueStr );
                 hmm->flags |= p7H_NC;
                 break;
-            case NULE:
+            case HMM3_NULE:
                 {
                     int K = 0;
                     if( !triedToSetAlph) {
@@ -756,14 +745,14 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
                     }
                 }
                 break;
-            case HMM:
+            case HMM3_HMM:
                 {
                     if(abc == NULL) {
                         if(!triedToSetAlph) {
                             throw UHMMFormatReaderException(tr("ALPH section must precede HMM"));
                         } else {
                             QString val(valueStr);
-                            DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findAlphabet(val.remove(QRegExp("\\s+")).toAscii());
+                            DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(val.remove(QRegExp("\\s+")).toAscii());
                             if(al == NULL || !al->isNucleic()) {
                                 throw UHMMFormatReaderException(tr("Unknown alphabet"));
                             } else {
@@ -903,20 +892,15 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
             throw UHMMFormatReaderException( tr( "Failed to calibrate HMMER2 model after input conversion" ) );
         }
     } catch( const UHMMFormatReaderException & ex ) {
-        ti.setError( ex.what );
+        os.setError( ex.what );
     } catch(...) {
-        ti.setError( HMMER3_UNKNOWN_ERROR );
+        os.setError( HMMER3_UNKNOWN_ERROR );
     }
     
     p7_bg_Destroy(bg);
     esl_alphabet_Destroy( abc );
     
-    if( ti.hasError() ) {
-        p7_hmm_Destroy( hmm );
-        return NULL;
-    }
-    assert( NULL != hmm );
-    
+    CHECK_OP_EXT(os, p7_hmm_Destroy( hmm ), NULL);
     return hmm;
 }
 

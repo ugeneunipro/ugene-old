@@ -104,12 +104,12 @@ bool AutoAnnotationsSupport::isAutoAnnotation( const GObject* obj )
 
 //////////////////////////////////////////////////////////////////////////
 
-AutoAnnotationObject::AutoAnnotationObject( DNASequenceObject* obj ) : dnaObj(obj)
+AutoAnnotationObject::AutoAnnotationObject( U2SequenceObject* obj ) : dnaObj(obj)
 {
     QVariantMap hints;
     hints.insert(AUTO_ANNOTATION_HINT, true);
     aobj = new AnnotationTableObject(AutoAnnotationsSupport::tr("Auto-annotations [%1 | %2]")
-        .arg(obj->getDocument()->getName()).arg(obj->getSequenceName()), hints);
+        .arg(obj->getDocument()->getName()).arg(obj->getGObjectName()), hints);
     aobj->addObjectRelation(dnaObj, GObjectRelationRole::SEQUENCE);
     aaSupport = AppContext::getAutoAnnotationsSupport();
 }

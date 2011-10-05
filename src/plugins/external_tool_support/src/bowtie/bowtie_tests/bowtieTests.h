@@ -50,7 +50,6 @@ public:
 	QList<Task*> onSubTaskFinished(Task* subTask);
 	
 private:    
-	QList<DNASequence> dnaObjList_to_dnaList(QList<GObject*> dnaSeqs);
 	void parseBowtieOutput(MAlignment& result, QString text);
 	DnaAssemblyToRefTaskSettings config;
     QString readsFileName;
@@ -63,8 +62,8 @@ private:
 	LoadDocumentTask* resultLoadTask;
 	LoadDocumentTask* patternLoadTask;
 	BowtieTask* bowtieTask;
-	MAlignmentObject* ma1;
-	MAlignmentObject* ma2;
+	MAlignment ma1;
+	MAlignment ma2;
 	DocumentFormatId format;
 	DocumentFormatId patternFormat;
 };

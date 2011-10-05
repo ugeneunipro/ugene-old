@@ -33,6 +33,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/U2SafePoints.h>
 
 
 namespace U2 {
@@ -82,11 +83,9 @@ QDScheduler::~QDScheduler() {
 
 QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
     QList<Task*> subs;
-    if (subTask->hasError()) {
-        propagateSubtaskError();
-        return subs;
-    }
-    if (isCanceled() || linker->isCancelled() || subTask == createAnnsTask) {
+    propagateSubtaskError();
+    CHECK_OP(stateInfo, subs);
+    if (linker->isCancelled() || subTask == createAnnsTask) {
         return subs;
     }
     
@@ -188,7 +187,7 @@ QVector<U2Region> joinRegions(QVector<U2Region>& regions) {
 QVector<U2Region> QDResultLinker::findLocation(QDStep* step) {
     QVector<U2Region> res;
     if (candidates.isEmpty()) {
-        res << scheme->getDNA()->getSequenceRange();
+        res << U2Region(0, scheme->getSequence().length());
         return res;
     }
     QDActor* actor = step->getActor();
@@ -197,7 +196,7 @@ QVector<U2Region> QDResultLinker::findLocation(QDStep* step) {
         bool complement = candidate->strand == QDStrand_ComplementOnly;
         QVector<U2Region> actorLocation;
         foreach(QDSchemeUnit* su, units) {
-            U2Region suRegion = scheme->getDNA()->getSequenceRange();
+            U2Region suRegion(0, scheme->getSequence().length());
             foreach(const QDResultUnit& ru, candidate->getResultsList()) {
                 foreach(QDConstraint* c, step->getConstraints(su, ru->owner)) {
                     QDDistanceConstraint* dc = static_cast<QDDistanceConstraint*>(c);
@@ -558,7 +557,7 @@ void QDResultLinker::createAnnotations(const QString& groupPrefix) {
 void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
     const QDRunSettings& settings = sched->getSettings();
     int offset = settings.offset;
-    const U2Region& seqRange = scheme->getDNA()->getSequenceRange();
+    U2Region seqRange(0, scheme->getSequence().length());
     QList<Annotation*> anns;
     foreach(QDResultGroup* candidate, candidates) {
         if (sched->isCanceled()) {

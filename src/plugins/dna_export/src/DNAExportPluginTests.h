@@ -31,7 +31,7 @@
 
 namespace U2 {
 
-class DNASequenceObject;
+class U2SequenceObject;
 class MAlignmentObject;
 
 class GTest_ImportPhredQualityScoresTask : public GTest {
@@ -41,7 +41,7 @@ public:
 
     void prepare();
     
-    QList<DNASequenceObject*> seqList;
+    QList<U2SequenceObject*> seqList;
     QStringList seqNameList;
     QString     fileName;
 

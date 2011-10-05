@@ -95,13 +95,10 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
 
     QList<DocumentFormatId> dfIdList = AppContext::getDocumentFormatRegistry()->getRegisteredFormats(), supportedFormats;
     
-    //CRITICAL: do not create doc here -> add the way to learn about constraints without doc!
     foreach(DocumentFormatId dfId, dfIdList){
         DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(dfId);
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::VFS_FILE);
-        Document *d = df->createNewDocument(iof, GUrl("fake", GUrl_VFSFile));
-        bool supported = df->isObjectOpSupported(d, DocumentFormat::DocObjectOp_Add, GObjectTypes::MULTIPLE_ALIGNMENT);
-        if(supported){
+        if (df->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT) && df->getFlags().testFlag(DocumentFormatFlag_SupportWriting)) {
             foreach(QString ext, df->getSupportedDocumentFileExtensions()){
                 filter.append("*." + ext + " ");
             }

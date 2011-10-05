@@ -31,6 +31,8 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/L10N.h>
 
 namespace U2 {
 
@@ -95,19 +97,18 @@ Task::ReportResult ObjectViewTask::report() {
     return ReportResult_Finished;
 }
 
-Document* ObjectViewTask::createDocumentAndAddToProject( const QString& docUrl, Project* p ) {
-    SAFE_POINT(p!=NULL, "Project is NULL!", NULL);
+Document* ObjectViewTask::createDocumentAndAddToProject( const QString& docUrl, Project* p, U2OpStatus& os) {
+    SAFE_POINT(p != NULL, "Project is NULL!", NULL);
 
     QFileInfo fi(docUrl);
-    if (!fi.exists()) {
-        return NULL;
-    }
+    CHECK_EXT(fi.exists(), os.setError(L10N::errorFileNotFound(docUrl)),  NULL);
+
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(docUrl));
     QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(docUrl);
-    if (dfs.isEmpty()) {
-        return NULL;
-    }
-    Document* doc = new Document( dfs.first().format, iof, GUrl(docUrl) );
+    CHECK_EXT(!dfs.isEmpty(), os.setError(L10N::notSupportedFileFormat(docUrl)), NULL);
+
+    DocumentFormat* df = dfs.first().format;
+    Document* doc = df->createNewUnloadedDocument(iof, GUrl(docUrl), os);
     p->addDocument(doc);
     return doc;
 }

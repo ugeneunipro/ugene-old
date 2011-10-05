@@ -30,14 +30,14 @@
 namespace U2 {
 
 class Document;
-class DNASequenceObject;
+class U2SequenceObject;
 
 // save dotplot to the file
 class SaveDotPlotTask : public Task {
     Q_OBJECT
 public:
     SaveDotPlotTask(const QString &file, QList<DotPlotResults> *dotPlotDirectList, QList<DotPlotResults> *dotPlotInverseList, 
-        DNASequenceObject *seqX, DNASequenceObject *seqY, int mLen, int ident)
+        U2SequenceObject *seqX, U2SequenceObject *seqY, int mLen, int ident)
         : Task(tr("DotPlot saving"), TaskFlags_FOSCOE), filename(file), directList(dotPlotDirectList), inverseList(dotPlotInverseList), 
         sequenceX(seqX), sequenceY(seqY), minLen(mLen), identity(ident)
     {
@@ -51,7 +51,7 @@ public:
 private:
     QString filename;
     QList<DotPlotResults> *directList, *inverseList;
-    DNASequenceObject *sequenceX, *sequenceY;
+    U2SequenceObject *sequenceX, *sequenceY;
     int minLen, identity;
 
     void saveDotPlot(QTextStream &stream);
@@ -63,8 +63,8 @@ class LoadDotPlotTask : public Task {
 public:
 
     LoadDotPlotTask(const QString &file, QList<DotPlotResults> *dotPlotDirectList, 
-        QList<DotPlotResults> *dotPlotInverseList, DNASequenceObject *seqX, 
-        DNASequenceObject *seqY, int *mLen, int *ident, bool *dir, bool *inv)
+        QList<DotPlotResults> *dotPlotInverseList, U2SequenceObject *seqX, 
+        U2SequenceObject *seqY, int *mLen, int *ident, bool *dir, bool *inv)
         : Task(tr("DotPlot loading"), TaskFlags_FOSCOE), filename(file), 
         directList(dotPlotDirectList), inverseList(dotPlotInverseList), 
         sequenceX(seqX), sequenceY(seqY), minLen(mLen), identity(ident), direct(dir), inverted(inv)
@@ -79,7 +79,7 @@ public:
 private:
     QString filename;
     QList<DotPlotResults> *directList, *inverseList;
-    DNASequenceObject *sequenceX, *sequenceY;
+    U2SequenceObject *sequenceX, *sequenceY;
     int *minLen, *identity;
     bool *direct, *inverted;
 

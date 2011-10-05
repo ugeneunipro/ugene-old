@@ -36,13 +36,13 @@ class PWMatrixReadTask;
 class WMQDTask : public Task {
     Q_OBJECT
 public:
-    WMQDTask(const QString& url, const WeightMatrixSearchCfg& cfg, DNASequenceObject* sqnc,
+    WMQDTask(const QString& url, const WeightMatrixSearchCfg& cfg, const DNASequence& sqnc,
         const QString& resName, const QVector<U2Region>& location);
     QList<Task*> onSubTaskFinished(Task* subTask);
     QList<WeightMatrixSearchResult> takeResults();
 private:
     WeightMatrixSearchCfg settings;
-    DNASequenceObject* seqObj;
+    DNASequence dnaSeq;
     QString resultName;
     PWMatrixReadTask* readTask;
     QList<WeightMatrixSearchResult> res;

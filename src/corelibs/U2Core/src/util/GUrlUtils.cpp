@@ -24,6 +24,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatus.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -103,7 +104,6 @@ QString GUrlUtils::rollFileName(const QString& originalUrl, const QString& rolle
     return resultUrl;
 }
 
-
 QUrl GUrlUtils::gUrl2qUrl( const GUrl& gurl) {
     if( gurl.isVFSFile() ) {
         return QUrl();
@@ -175,13 +175,11 @@ QString GUrlUtils::prepareFileName(const QString& url, const QString& baseSuffix
 // checks that file path is valid: creates required directory if needed. 
 // Returns canonical path to file. Does not create nor remove file, affects just directory
 // Sample usage: processing URLs in "save file" inputs
-QString GUrlUtils::prepareFileLocation(const QString& filePath, QString& errorMessage) {
+QString GUrlUtils::prepareFileLocation(const QString& filePath, U2OpStatus& os) {
     QFileInfo fi(filePath);
     QString dirPath = fi.absoluteDir().absolutePath();
-    QString canonicalDirPath = prepareDirLocation(dirPath, errorMessage);
-    if (!errorMessage.isEmpty()) {
-        return QString();
-    }
+    QString canonicalDirPath = prepareDirLocation(dirPath, os);
+    CHECK_OP(os, QString());
     // examples with "/" at the end: 
     QString result = canonicalDirPath + (canonicalDirPath.endsWith("/") ? "" : "/") + fi.fileName();
     return result;
@@ -190,25 +188,39 @@ QString GUrlUtils::prepareFileLocation(const QString& filePath, QString& errorMe
 // checks that dir path is valid. Creates the directory if needed. 
 // Returns canonical directory path. Does not affect directory if already exists.
 // Sample usage: processing URLs in "save dir" inputs
-QString GUrlUtils::prepareDirLocation(const QString& dirPath, QString& errorMessage) {
-    if (dirPath.isEmpty()) {
-        errorMessage = tr("Directory is not specified");
-        return QString();
-    }
+QString GUrlUtils::prepareDirLocation(const QString& dirPath, U2OpStatus& os) {
+    CHECK_EXT(!dirPath.isEmpty(), os.setError(tr("Directory is not specified")), QString());
     QDir targetDir(dirPath);
     if (!targetDir.exists()) {
         QString absPath = targetDir.absolutePath();
         if (!targetDir.mkpath(absPath)) {
-            errorMessage = tr("Directory can't be created: %1").arg(absPath);
+            os.setError(tr("Directory can't be created: %1").arg(absPath));
             return QString();
         } 
         targetDir = QDir(absPath); //It looks like QT caches results for QDir? Create new QDir instance in this case!
         if (!targetDir.isReadable()) {
-            errorMessage = tr("Directory can't be read: %1").arg(absPath);
+            os.setError(tr("Directory can't be read: %1").arg(absPath));
             return QString();
         }
     }
     QString result = targetDir.canonicalPath();
+    return result;
+}
+
+
+QString GUrlUtils::prepareTmpFileLocation(const QString& dir, const QString& prefix, const QString& ext, U2OpStatus& os) {
+    int i = 0;
+    QString result;
+    while (true) {
+        QString name = QString("%1_%2.%3").arg(prefix).arg(i).arg(ext);
+        QString filePath = prepareFileLocation(dir + "/" + name, os);
+        CHECK_OP(os, result);
+        if (!QFile::exists(filePath)) {
+            result = filePath;
+            break;
+        }
+        i++;
+    }
     return result;
 }
 

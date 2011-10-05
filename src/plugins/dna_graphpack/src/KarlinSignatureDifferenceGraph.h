@@ -38,7 +38,7 @@ public:
     KarlinGraphFactory(QObject* p);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
-    virtual bool isEnabled(DNASequenceObject* o) const;
+    virtual bool isEnabled(U2SequenceObject* o) const;
 };
 
 class KarlinGraphAlgorithm : public GSequenceGraphAlgorithm {
@@ -46,7 +46,7 @@ public:
     KarlinGraphAlgorithm();
     virtual ~KarlinGraphAlgorithm();
 
-    virtual void calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
+    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
 private:
     float getValue (int start, int end, const QByteArray& s);
     void calculateRelativeAbundance (const char* seq, int length, float* results);

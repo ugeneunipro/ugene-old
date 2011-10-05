@@ -23,7 +23,7 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/DNAAlphabetUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 namespace U2 {
 
@@ -63,7 +63,7 @@ void DNAAlphabetRegistryImpl::unregisterAlphabet(DNAAlphabet* a) {
     assert(n==1); Q_UNUSED(n);
 }
 
-DNAAlphabet* DNAAlphabetRegistryImpl::findById(const QString id) const {
+DNAAlphabet* DNAAlphabetRegistryImpl::findById(const QString& id) const {
     foreach(DNAAlphabet* al, alphabets) {
         if (al->getId() == id) {
             return al;
@@ -72,43 +72,6 @@ DNAAlphabet* DNAAlphabetRegistryImpl::findById(const QString id) const {
     return NULL;
 }
 
-DNAAlphabet* DNAAlphabetRegistryImpl::findAlphabet(const QByteArray& seq) const {
-    foreach(DNAAlphabet* al, alphabets) {
-        if (DNAAlphabetUtils::matches(al, seq)) {
-            return al;
-        }
-    }
-    return NULL;
-}
 
-QList<DNAAlphabet*> DNAAlphabetRegistryImpl::findAlphabets(const QByteArray& seq) const {
-    QList<DNAAlphabet*> res;
-    foreach(DNAAlphabet* al, alphabets) {
-        if (DNAAlphabetUtils::matches(al, seq)) {
-            res.push_back(al);
-        }
-    }
-    return res;
-}
-
-QList<DNAAlphabet*> DNAAlphabetRegistryImpl::findAlphabets(const QByteArray& seq, const QVector<U2Region>& regionsToProcess, bool onlyOne) const {
-    QList<DNAAlphabet*> res;
-    foreach(DNAAlphabet* al, alphabets) {
-        bool err = false;
-        foreach (const U2Region& r, regionsToProcess) {
-            if (!DNAAlphabetUtils::matches(al, seq, r)) {
-                err = true;
-                break;
-            }
-        }
-        if (!err) {
-            res.push_back(al);
-            if (onlyOne) {
-                break;
-            }
-        }
-    }
-    return res;
-}
 
 }//namespace

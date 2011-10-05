@@ -37,7 +37,7 @@ public:
 
     virtual void setText(const QString& newText);
 
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
 
 protected:
     QString text;

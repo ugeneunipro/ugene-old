@@ -26,7 +26,7 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/L10n.h>
 
 #include <U2Core/DNAInfo.h>
@@ -122,7 +122,7 @@ bool GenbankPlainTextFormat::readIdLine(ParserState* st) {
 
 
 bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
-    TaskStateInfo& si = st->si;
+    U2OpStatus& si = st->si;
     QString lastTagName;
     bool hasLine = false;
     while (hasLine || st->readNextLine(true)) {
@@ -207,7 +207,7 @@ bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
             st->entry->tags.insertMulti(lastTagName, st->value());
         }
     }
-    if (!st->isNull() && !si.hasError() && !si.cancelFlag) {
+    if (!st->isNull() && !si.isCoR()) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Record is truncated."));
     }
 
@@ -217,9 +217,9 @@ bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
 //////////////////////////////////////////////////////////////////////////
 /// saving
 
-static QString genLocusString(QList<GObject*> aos, DNASequenceObject* so);
+static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so);
 static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, TaskStateInfo& si);
-static void writeSequence(IOAdapter* io, DNASequenceObject* ao, TaskStateInfo& si);
+static void writeSequence(IOAdapter* io, U2SequenceObject* ao, TaskStateInfo& si);
 static void prepareMultiline(QString& lineToChange, int spacesOnLineStart, bool newLineAtTheEnd = true, int maxLineLen = 79);
 
 #define VAL_OFF 12
@@ -257,9 +257,9 @@ static bool writeKeyword(IOAdapter* io, TaskStateInfo& si, const QString& key, c
 }
 
 typedef QPair<QString, QString> StrPair;
-static QList<StrPair> formatKeywords(DNASequenceObject* so) {
+static QList<StrPair> formatKeywords(U2SequenceObject* so) {
     QList<StrPair> res;
-    QMultiMap<QString, QVariant> tags(so->getDNASequence().info);
+    QMultiMap<QString, QVariant> tags(so->getWholeSequence().info);
 
     tags.remove(DNAInfo::LOCUS);
     tags.remove(DNAInfo::ID);
@@ -347,7 +347,7 @@ void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IO
 
     while (!seqs.isEmpty() || !anns.isEmpty()) {
 
-        DNASequenceObject* so = seqs.isEmpty() ? NULL : static_cast<DNASequenceObject*>(seqs.takeFirst());
+        U2SequenceObject* so = seqs.isEmpty() ? NULL : static_cast<U2SequenceObject*>(seqs.takeFirst());
         QList<GObject*> aos;
         if (so) {
             if (!anns.isEmpty()) {
@@ -434,10 +434,10 @@ static QString padToLen(const QString& s, int width) {
     }
 }
 
-static QString genLocusString(QList<GObject*> aos, DNASequenceObject* so) {
+static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so) {
     QString loc, date;
     if (so) {
-        const DNASequence& dna = so->getDNASequence();
+        DNASequence dna = so->getWholeSequence();
         QString len = QString::number(dna.length());
         loc = dna.getName();
         if (loc.isEmpty()) {
@@ -588,10 +588,10 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, TaskStateInfo& 
     }
 }
 
-static void writeSequence(IOAdapter* io, DNASequenceObject* ao, TaskStateInfo& si) {
+static void writeSequence(IOAdapter* io, U2SequenceObject* ao, TaskStateInfo& si) {
     static const int charsInLine = 60;
 
-    const QByteArray& seq = ao->getSequence();
+    QByteArray seq = ao->getWholeSequenceData();
     int slen = seq.length();
     const char* sequence = seq.constData();
     const char* spaces = TextUtils::SPACE_LINE.constData();

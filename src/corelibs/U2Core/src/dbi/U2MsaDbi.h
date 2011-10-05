@@ -31,7 +31,7 @@ namespace U2 {
 /**
     An interface to obtain access to multiple sequence alignment
 */
-class U2CORE_EXPORT U2MsaDbi : public U2ChildDbi {
+class U2MsaDbi : public U2ChildDbi {
 protected:
     U2MsaDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {} 
 

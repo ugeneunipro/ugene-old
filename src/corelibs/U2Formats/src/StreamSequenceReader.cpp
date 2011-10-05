@@ -29,8 +29,7 @@
 
 namespace U2 {
 
-DNASequence* StreamSequenceReader::getNextSequenceObject()
-{
+DNASequence* StreamSequenceReader::getNextSequenceObject() {
     if (hasNext()) {
         DNASequence* result = currentSeq.get();
         lookupPerformed = false;
@@ -47,8 +46,7 @@ StreamSequenceReader::StreamSequenceReader()
 
 }
 
-bool StreamSequenceReader::hasNext()
-{
+bool StreamSequenceReader::hasNext() {
     if (readers.isEmpty()) {
         return false;
     }
@@ -80,8 +78,7 @@ bool StreamSequenceReader::hasNext()
     return true;
 }
 
-bool StreamSequenceReader::init( const QList<GUrl>& urls )
-{
+bool StreamSequenceReader::init( const QList<GUrl>& urls ) {
     foreach (const GUrl& url, urls) {
         QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(url);    
         if (detectedFormats.isEmpty()) {
@@ -113,13 +110,11 @@ bool StreamSequenceReader::init( const QList<GUrl>& urls )
 
 }
 
-QString StreamSequenceReader::getErrorMessage()
-{
+QString StreamSequenceReader::getErrorMessage() {
     return taskInfo.getError();
 }
 
-int StreamSequenceReader::getProgress()
-{
+int StreamSequenceReader::getProgress() {
     if (readers.count() == 0) {
         return 0;
     }
@@ -133,8 +128,7 @@ int StreamSequenceReader::getProgress()
     return progress;
 }
 
-StreamSequenceReader::~StreamSequenceReader()
-{
+StreamSequenceReader::~StreamSequenceReader() {
     for(int i =0; i < readers.size(); ++i) {
         delete readers[i].io;
         readers[i].io = NULL;

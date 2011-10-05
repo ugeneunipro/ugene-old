@@ -30,7 +30,7 @@ BioStruct3DObject::BioStruct3DObject(const BioStruct3D& struct3D, const QString&
 {
 }
 
-GObject* BioStruct3DObject::clone() const {
+GObject* BioStruct3DObject::clone(const U2DbiRef&, U2OpStatus&) const {
     BioStruct3DObject* cln = new BioStruct3DObject(bioStruct3D,getGObjectName(), getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
     return cln;

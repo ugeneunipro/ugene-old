@@ -21,10 +21,11 @@
 
 #include <QtCore/QStringList>
 
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/L10n.h>
 
 #include <U2Core/GObjectTypes.h>
@@ -67,48 +68,42 @@ FormatCheckResult ASNFormat::checkRawData(const QByteArray& rawData, const GUrl&
 }
 
 
-Document* ASNFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
+Document* ASNFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     BioStruct3D bioStruct;
     
     const StdResidueDictionary* stdResidueDict = StdResidueDictionary::getStandardDictionary();
-    if (stdResidueDict == NULL) {
-        ti.setError(tr("Standard residue dictionary not found"));
-        return NULL;
-    }
-
-    AsnParser asnParser(io, ti);
+    CHECK_EXT(stdResidueDict != NULL, os.setError(tr("Standard residue dictionary not found")), NULL);
+    
+    AsnParser asnParser(io, os);
     ioLog.trace("ASN: Parsing: " +io->toString());
     
     std::auto_ptr<AsnNode> rootElem(asnParser.loadAsnTree());
     ioLog.trace(QString("ASN tree for %1 was built").arg(io->toString()));
-    ti.progress = 30;
+    os.setProgress(30);
     
     if (rootElem.get() != NULL) {
         BioStructLoader ldr;
         ldr.setStandardDictionary( stdResidueDict );
-        ldr.loadBioStructFromAsnTree(rootElem.get(), bioStruct, ti);
+        ldr.loadBioStructFromAsnTree(rootElem.get(), bioStruct, os);
     }
-    ti.progress = 80;
+    os.setProgress(80);
     
-    if (ti.hasError() || ti.cancelFlag) {
-        return NULL;
-    }
+    CHECK_OP(os, NULL);
     ioLog.trace(QString("BioStruct3D loaded from ASN tree (%1)").arg(io->toString()));
     
     bioStruct.calcCenterAndMaxDistance();
     bioStruct.generateAnnotations();
-    ti.progress = 90;
+    os.setProgress(90);
     
-    Document* doc = PDBFormat::createDocumentFromBioStruct3D(bioStruct, this, io->getFactory(), io->toString(), ti, fs);
+    Document* doc = PDBFormat::createDocumentFromBioStruct3D(dbiRef, bioStruct, this, io->getFactory(), io->toString(), os, fs);
     
     ioLog.trace("ASN Parsing finished: " + io->toString());
-    ti.progress = 100;
+    os.setProgress(100);
 
     return doc;
 }
 
-AsnNode* ASNFormat::findFirstNodeByName(AsnNode* rootElem, const QString& nodeName )
-{
+AsnNode* ASNFormat::findFirstNodeByName(AsnNode* rootElem, const QString& nodeName ) {
     if (rootElem->name == nodeName) {
         return rootElem;
     }
@@ -123,8 +118,7 @@ AsnNode* ASNFormat::findFirstNodeByName(AsnNode* rootElem, const QString& nodeNa
     return NULL;
 }
 
-AsnNodeList ASNFormat::findNodesByName( AsnNode* root, const QString& nodeName, AsnNodeList& nodes /*= AsnNodeList()*/ )
-{
+AsnNodeList ASNFormat::findNodesByName( AsnNode* root, const QString& nodeName, AsnNodeList& nodes) {
     if (root->name == nodeName) {
         nodes.append(root);
     }
@@ -136,8 +130,7 @@ AsnNodeList ASNFormat::findNodesByName( AsnNode* root, const QString& nodeName, 
     return nodes;    
 }
 
-QString ASNFormat::getAsnNodeTypeName( const AsnNode* node )
-{
+QString ASNFormat::getAsnNodeTypeName( const AsnNode* node ) {
     switch(node->kind) {
         case ASN_NO_KIND:
             return QString("ASN_NO_KIND");
@@ -150,20 +143,18 @@ QString ASNFormat::getAsnNodeTypeName( const AsnNode* node )
         default:
             Q_ASSERT(0);
     }
-    
     return QString("");
 
 }
 
-void ASNFormat::BioStructLoader::loadBioStructPdbId( AsnNode* rootNode, BioStruct3D& struc)
-{
+void ASNFormat::BioStructLoader::loadBioStructPdbId( AsnNode* rootNode, BioStruct3D& struc) {
     AsnNode* nameNode = ASNFormat::findFirstNodeByName(rootNode, "name");
-    Q_ASSERT(nameNode != NULL);
+    SAFE_POINT(nameNode != NULL, "nameNode == NULL?", );;
     struc.pdbId = nameNode->value;
 
 }
 
-void ASNFormat::BioStructLoader::loadBioStructFromAsnTree( AsnNode* rootNode, BioStruct3D& struc, TaskStateInfo& ti )
+void ASNFormat::BioStructLoader::loadBioStructFromAsnTree( AsnNode* rootNode, BioStruct3D& struc, U2OpStatus& ti )
 {
     /*
         id              SEQUENCE OF Biostruc-id,

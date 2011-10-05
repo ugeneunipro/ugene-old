@@ -58,9 +58,7 @@ public:
         return format_name;
     }
 
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-
-    virtual void storeDocument( Document* doc, TaskStateInfo& ti, IOAdapter* io );
+    virtual void storeDocument( Document* doc, U2OpStatus& ti, IOAdapter* io );
 
     virtual FormatCheckResult checkRawData(const QByteArray& data, const GUrl& = GUrl()) const;
 
@@ -80,6 +78,9 @@ public:
     struct BadFileData : public StockholmBaseException {
         BadFileData( const QString& msg ): StockholmBaseException( msg ){}
     };
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 }; // StockholmFormat
 

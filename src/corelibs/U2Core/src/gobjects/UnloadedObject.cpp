@@ -38,7 +38,7 @@ UnloadedObject::UnloadedObject(const UnloadedObjectInfo& info)
     setLoadedObjectType(info.type);
 }
 
-GObject* UnloadedObject::clone() const {
+GObject* UnloadedObject::clone(const U2DbiRef&, U2OpStatus&) const {
     UnloadedObject* cln = new UnloadedObject(getGObjectName(), getLoadedObjectType(), getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
     return cln;

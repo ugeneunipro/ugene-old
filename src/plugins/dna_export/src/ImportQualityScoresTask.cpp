@@ -27,12 +27,11 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "ImportQualityScoresTask.h"
 #include <time.h>
 #include <memory>
-
-#define ULOG_IMPORT_QUALITY_SCORES "Dna_export: import quality scores"
 
 namespace U2 {
 
@@ -113,47 +112,43 @@ void ReadQualityScoresTask::recordQuality( int headerCounter )
 //////////////////////////////////////////////////////////////////////////
 
 
-ImportPhredQualityScoresTask::ImportPhredQualityScoresTask(const QList<DNASequenceObject*>& sequences, ImportQualityScoresConfig& cfg )
+ImportPhredQualityScoresTask::ImportPhredQualityScoresTask(const QList<U2SequenceObject*>& sequences, ImportQualityScoresConfig& cfg )
 : Task("ImportPhredQualityScores", TaskFlags_NR_FOSCOE), readQualitiesTask(NULL), config(cfg), seqList(sequences)
 {
     
 }
 
-void ImportPhredQualityScoresTask::prepare()
-{
+void ImportPhredQualityScoresTask::prepare() {
     readQualitiesTask = new ReadQualityScoresTask(config.fileName, config.type);
     addSubTask(readQualitiesTask);
 }
 
-QList<Task*> ImportPhredQualityScoresTask::onSubTaskFinished( Task* subTask )
-{
+QList<Task*> ImportPhredQualityScoresTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
-    if ( subTask->hasError() || subTask->isCanceled() ) {
+    CHECK_OP(subTask->getStateInfo(), subTasks);
+
+    if (subTask != readQualitiesTask) {
         return subTasks;
     }
-
-    if (subTask == readQualitiesTask) {
-        QMap<QString,DNAQuality> qualities = readQualitiesTask->getResult();
-        if (config.createNewDocument) {
-            assert(0);
-            //TODO: consider creating this option
-        } else {
-            foreach (DNASequenceObject* obj, seqList) {
-                if (obj->isStateLocked()) {
-                    setError(QString("Unable to modify sequence %1: object is locked.").arg(obj->getGObjectName()));
-                    continue;
-                }
-                QString dnaName = obj->getDNASequence().getName().split(' ').first();
-                if (qualities.contains(dnaName)) {
-                    obj->setQuality(qualities.value(dnaName));
-                } else {
-                    setError(QString("Quality scores for %1 are not found.").arg(dnaName));
-                    break;
-                }
+    QMap<QString,DNAQuality> qualities = readQualitiesTask->getResult();
+    if (config.createNewDocument) {
+        assert(0);
+        //TODO: consider creating this option
+    } else {
+        foreach (U2SequenceObject* obj, seqList) {
+            if (obj->isStateLocked()) {
+                setError(QString("Unable to modify sequence %1: object is locked.").arg(obj->getGObjectName()));
+                continue;
+            }
+            QString seqName = obj->getGObjectName().split(' ').first();
+            if (qualities.contains(seqName)) {
+                obj->setQuality(qualities.value(seqName));
+            } else {
+                setError(QString("Quality scores for %1 are not found.").arg(seqName));
+                break;
             }
         }
     }
-
     return subTasks;
 }
 

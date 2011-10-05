@@ -39,7 +39,7 @@
 namespace U2 {
 
 class ADVSequenceObjectContext;
-class DNASequenceObject;
+class U2SequenceObject;
 class ORFFindTask;
 class Task;
 
@@ -87,7 +87,7 @@ private:
 
 private:
     ADVSequenceObjectContext* ctx;
-    DNASequenceObject* sequence;
+    U2SequenceObject* sequence;
 
     U2Region panViewSelection;
     ORFFindTask* task;

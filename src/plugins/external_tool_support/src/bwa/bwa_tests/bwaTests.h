@@ -50,7 +50,6 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:    
-    QList<DNASequence> dnaObjList_to_dnaList(QList<GObject*> dnaSeqs);
     DnaAssemblyToRefTaskSettings config;
     QString readsFileName;
     GUrl readsFileUrl;
@@ -62,8 +61,8 @@ private:
     LoadDocumentTask* resultLoadTask;
     LoadDocumentTask* patternLoadTask;
     BwaTask* bwaTask;
-    MAlignmentObject* ma1;
-    MAlignmentObject* ma2;
+    MAlignment ma1;
+    MAlignment ma2;
 };
 
 class BwaTests {

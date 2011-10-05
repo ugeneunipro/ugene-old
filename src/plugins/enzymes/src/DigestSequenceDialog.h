@@ -37,7 +37,7 @@
 namespace U2 {
 
 class ADVSequenceObjectContext;
-class DNASequenceObject;
+class U2SequenceObject;
 class CreateAnnotationWidgetController;
 class AnnotationTableObject;
 
@@ -69,7 +69,7 @@ private:
     QDialog* createSelectAnnotationsDialog();
 
     ADVSequenceObjectContext*           seqCtx;
-    DNASequenceObject*                  dnaObj;
+    U2SequenceObject*                  dnaObj;
     AnnotationTableObject*              sourceObj;
     EnzymesSelectorDialogHandler        enzymesSelectorHandler;
     CreateAnnotationWidgetController*   ac;

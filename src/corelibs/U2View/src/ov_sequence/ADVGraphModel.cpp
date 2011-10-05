@@ -383,7 +383,7 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
 
     int step = wdata.step;
     int win = wdata.window;
-    int seqLen = view->getSequenceLen();
+    qint64 seqLen = view->getSequenceLength();
 
     points.firstPoints.resize(numPoints);
     points.firstPoints.fill(UNKNOWN_VAL);
@@ -472,7 +472,7 @@ void GSequenceGraphDrawer::calculateWithFit(GSequenceGraphData* d, PairVector& p
     float basesPerPoint = (alignedLast - alignedFirst) / float(nPoints);
     assert(int(basesPerPoint) >= wdata.step); //ensure that every point is associated with some step data
     QVector<float> pointData;
-    DNASequenceObject* o = view->getSequenceObject();
+    U2SequenceObject* o = view->getSequenceObject();
     int len = qMax(int(basesPerPoint), wdata.window);
 #ifdef DEBUG
     int lastBase = alignedLast + wdata.window;
@@ -500,7 +500,7 @@ void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector
     assert((alignedLast - alignedFirst) % step == 0);
 
     U2Region r(alignedFirst, alignedLast - alignedFirst + win);
-    DNASequenceObject* o = view->getSequenceObject();
+    U2SequenceObject* o = view->getSequenceObject();
     QVector<float> res;
     d->ga->calculate(res, o, r, &wdata);
     const U2Region& vr = view->getVisibleRange();
@@ -551,7 +551,7 @@ void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector
 
 
 void GSequenceGraphDrawer::showSettingsDialog() {
-    WindowStepSelectorDialog d(view, U2Region(1, view->getSequenceLen()-1),
+    WindowStepSelectorDialog d(view, U2Region(1, view->getSequenceLength()-1),
                                wdata.window, wdata.step, commdata.min, commdata.max, commdata.enableCuttoff);
     int res = d.exec();
     if (res == QDialog::Accepted) {

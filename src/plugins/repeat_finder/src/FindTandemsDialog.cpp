@@ -67,7 +67,7 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
     m.data->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
     m.sequenceObjectRef = sc->getSequenceObject();
     m.useUnloadedObjects = true;
-    m.sequenceLen = sc->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = sc->getSequenceObject()->getSequenceLength();
     ac = new CreateAnnotationWidgetController(m, this);
     
     QWidget* caw = ac->getWidget();
@@ -88,7 +88,7 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
     repeatLenComboBox->addItem(tr("Custom"), TSConstants::PresetCustom);
     repeatLenComboBox->setCurrentIndex(TSConstants::PresetAll);
 
-    int seqLen = sc->getSequenceLen();
+    int seqLen = sc->getSequenceLength();
 
 //    Settings* s = AppContext::getSettings();
 
@@ -214,7 +214,7 @@ void FindTandemsDialog::accept() {
     }
 
     ac->prepareAnnotationObject();
-    const DNASequence& seq = sc->getSequenceObject()->getDNASequence();
+    DNASequence seq = sc->getSequenceObject()->getWholeSequenceData();
 
     FindTandemsTaskSettings settings;
     const CreateAnnotationModel& cam = ac->getModel();
@@ -248,7 +248,7 @@ quint64 FindTandemsDialog::areaSize() const {
         return 0;
     }
     int minDist = 0;
-    int maxDist = sc->getSequenceLen();
+    int maxDist = sc->getSequenceLength();
 
     quint64 dRange = qMax(0, maxDist - minDist);
     

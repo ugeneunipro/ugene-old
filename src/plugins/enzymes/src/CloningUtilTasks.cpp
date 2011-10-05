@@ -35,6 +35,10 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2SequenceUtils.h>
+
 #include <U2Gui/OpenViewTask.h>
 
 #include "FindEnzymesTask.h"
@@ -42,7 +46,7 @@
 
 namespace U2 {
 
-DigestSequenceTask::DigestSequenceTask(  const DNASequenceObject* so, AnnotationTableObject* source, 
+DigestSequenceTask::DigestSequenceTask( U2SequenceObject* so, AnnotationTableObject* source, 
                                        AnnotationTableObject* dest, const DigestSequenceTaskConfig& config)
                                        :   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
                                         sourceObj(source), destObj(dest), dnaObj(so), cfg(config)
@@ -56,7 +60,7 @@ DigestSequenceTask::DigestSequenceTask(  const DNASequenceObject* so, Annotation
 
 }
 
-/*DigestSequenceTask::DigestSequenceTask( const DNASequenceObject* so, AnnotationTableObject* aobj, 
+/*DigestSequenceTask::DigestSequenceTask( const U2SequenceObject* so, AnnotationTableObject* aobj, 
                                        const QList<SEnzymeData>& cutSites )
 :   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
     searchForRestrictionSites(true), sourceObj(aobj), destObj(aobj), dnaObj(so), enzymeData(cutSites)
@@ -69,7 +73,7 @@ DigestSequenceTask::DigestSequenceTask(  const DNASequenceObject* so, Annotation
 }*/
 
 void DigestSequenceTask::prepare() {
-    seqRange = dnaObj->getSequenceRange();
+    seqRange = U2Region(0, dnaObj->getSequenceLength());
     isCircular = dnaObj->isCircular();
     
     if (cfg.searchForRestrictionSites) {
@@ -77,7 +81,7 @@ void DigestSequenceTask::prepare() {
         FindEnzymesTaskConfig feCfg;
         feCfg.circular = isCircular;
         feCfg.groupName = ANNOTATION_GROUP_ENZYME;
-        Task* t = new FindEnzymesToAnnotationsTask(sourceObj, dnaObj->getDNASequence(), cfg.enzymeData, feCfg);
+        Task* t = new FindEnzymesToAnnotationsTask(sourceObj, dnaObj->getWholeSequence(), cfg.enzymeData, feCfg);
         addSubTask(t);
     }  
         
@@ -162,20 +166,15 @@ void DigestSequenceTask::findCutSites()
 
 void DigestSequenceTask::run()
 {
-    if (hasError() || isCanceled()) {
-        return;
-    }
-
+    CHECK_OP(stateInfo, );
+    
     findCutSites();
 
-    if (cutSiteMap.isEmpty()) {
-        return;
-    }
+    CHECK(!cutSiteMap.isEmpty(), );
 
     QMap<int,SEnzymeData>::const_iterator prev = cutSiteMap.constBegin(), current = cutSiteMap.constBegin();
     int count = 2;
-    const QByteArray& sourceSeq = dnaObj->getSequence();
-
+    
     while ( (++current) != cutSiteMap.constEnd() )  {
         int pos1 = prev.key();
         int pos2 = current.key();
@@ -202,7 +201,7 @@ void DigestSequenceTask::run()
         int leftCutCompl = len1 - enzyme1->cutComplement;
         int leftCutPos = pos1 + qMax(enzyme1->cutDirect, leftCutCompl);
         int leftOverhangStart = pos1 + qMin(enzyme1->cutDirect, leftCutCompl);
-        leftTerm.overhang = sourceSeq.mid(leftOverhangStart, leftCutPos - leftOverhangStart);
+        leftTerm.overhang = dnaObj->getSequenceData(U2Region(leftOverhangStart, leftCutPos - leftOverhangStart));
         leftTerm.enzymeId = enzyme1->id.toAscii();
         leftTerm.isDirect = enzyme1->cutDirect < leftCutCompl; 
 
@@ -210,7 +209,7 @@ void DigestSequenceTask::run()
         int rightCutCompl = len2 - enzyme2->cutComplement;
         int rightCutPos = pos2 + qMin(enzyme2->cutDirect, rightCutCompl );
         int rightOverhangStart = pos2 + qMax(enzyme2->cutDirect, rightCutCompl );
-        rightTerm.overhang = sourceSeq.mid(rightCutPos, rightOverhangStart - rightCutPos);
+        rightTerm.overhang = dnaObj->getSequenceData(U2Region(rightCutPos, rightOverhangStart - rightCutPos));
         rightTerm.enzymeId = enzyme2->id.toAscii();
         rightTerm.isDirect = enzyme2->cutDirect > rightCutCompl;
 
@@ -229,26 +228,27 @@ void DigestSequenceTask::run()
     int firstCutPos = first.key() + qMin(firstCutter->cutDirect, fcLen - firstCutter->cutComplement);
     int rightOverhangStart = first.key() + qMax(firstCutter->cutDirect, fcLen - firstCutter->cutComplement);
     bool rightOverhangIsDirect = firstCutter->cutDirect > fcLen - firstCutter->cutComplement;
-    QByteArray firstRightOverhang = sourceSeq.mid(firstCutPos, rightOverhangStart - firstCutPos);
+    QByteArray firstRightOverhang = dnaObj->getSequenceData(U2Region(firstCutPos, rightOverhangStart - firstCutPos));
     
     const SEnzymeData& lastCutter = prev.value();
     int lcLen = lastCutter->seq.length();
     int lastCutPos = prev.key() + qMax(lastCutter->cutDirect, lcLen - lastCutter->cutComplement);
     int leftOverhangStart = prev.key() + qMin(lastCutter->cutDirect, fcLen - lastCutter->cutComplement);
     bool leftOverhangIsDirect = lastCutter->cutDirect < lcLen - lastCutter->cutComplement;
-    
-    if (lastCutPos >= sourceSeq.length()) {
+    qint64 seqLen = dnaObj->getSequenceLength();
+    if (lastCutPos >= seqLen) {
         // last restriction site is situated between sequence start and end
         assert(isCircular);
-        int leftCutPos = lastCutPos - sourceSeq.length();
-        QByteArray leftOverhang = sourceSeq.mid(leftOverhangStart) + sourceSeq.mid(0, leftCutPos);
+        int leftCutPos = lastCutPos - seqLen;
+        QByteArray leftOverhang = dnaObj->getSequenceData(U2Region(leftOverhangStart, seqLen - leftOverhangStart)) 
+            + dnaObj->getSequenceData(U2Region(0, leftCutPos));
         QByteArray rightOverhang = first == prev ? leftOverhang : firstRightOverhang;
         AnnotationData* ad1 = createFragment(leftCutPos, DNAFragmentTerm(lastCutter->id, leftOverhang, leftOverhangIsDirect), 
             firstCutPos, DNAFragmentTerm(firstCutter->id, rightOverhang, rightOverhangIsDirect) );
         ad1->name = QString("Fragment 1");
         results.append(SharedAnnotationData(ad1));
     } else {
-        QByteArray lastLeftOverhang = sourceSeq.mid(leftOverhangStart, lastCutPos - leftOverhangStart);
+        QByteArray lastLeftOverhang = dnaObj->getSequenceData(U2Region(leftOverhangStart, lastCutPos - leftOverhangStart));
         if (isCircular) {
             AnnotationData* ad = createFragment(lastCutPos, DNAFragmentTerm(lastCutter->id, lastLeftOverhang, leftOverhangIsDirect), 
                 firstCutPos, DNAFragmentTerm(firstCutter->id, firstRightOverhang,rightOverhangIsDirect) );
@@ -402,7 +402,7 @@ void LigateFragmentsTask::prepare()
                     .arg(dnaFragment.getName()).arg(dnaFragment.getSequenceName()) );
                 return;
             }
-            resultAlphabet = DNAAlphabet::deriveCommonAlphabet(resultAlphabet,fragmentAlphabet);
+            resultAlphabet = U2AlphabetUtils::deriveCommonAlphabet(resultAlphabet,fragmentAlphabet);
         }
         
         // check if overhangs are compatible
@@ -640,15 +640,20 @@ void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<Ann
                     
     dna.info.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
 
-    DNASequenceObject* dnaObj = new DNASequenceObject(seqName, dna);
-    objects.append(dnaObj);
-   
+    
+    resultDoc = df->createNewLoadedDocument(iof, cfg.docUrl, stateInfo);
+    CHECK_OP(stateInfo, );
+    
+    U2EntityRef seqRef = U2SequenceUtils::import(resultDoc->getDbiRef(), dna, stateInfo);
+    CHECK_OP_EXT(stateInfo, delete resultDoc; resultDoc = NULL, );
+
+    U2SequenceObject* dnaObj = new U2SequenceObject(seqName, seqRef);
+    resultDoc->addObject(dnaObj);
+
     AnnotationTableObject* aObj = new AnnotationTableObject(QString("%1 annotations").arg(seqName));
     aObj->addAnnotations(annotations);
-    objects.append(aObj);
-    
-    resultDoc = new Document(df, iof, cfg.docUrl, objects);
-    resultDoc->setModified(true);
+    resultDoc->addObject(aObj);
+
     aObj->addObjectRelation(dnaObj,GObjectRelationRole::SEQUENCE);
     
 

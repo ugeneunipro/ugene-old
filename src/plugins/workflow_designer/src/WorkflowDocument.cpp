@@ -28,6 +28,8 @@
 #include <U2Core/L10n.h>
 #include <U2Core/Task.h>
 #include <U2Core/SelectionUtils.h>
+#include <U2Core/U2DbiUtils.h>
+
 #include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowIOTasks.h>
 #include <U2Lang/WorkflowUtils.h>
@@ -62,7 +64,7 @@ void WorkflowGObject::setSceneRawData(const QString & data) {
     serializedScene = data;
 }
 
-GObject* WorkflowGObject::clone() const {
+GObject* WorkflowGObject::clone(const U2DbiRef&, U2OpStatus&) const {
     WorkflowGObject* copy = new WorkflowGObject(getGObjectName(), serializedScene, getGHintsMap());
     assert(!view);
     return copy;
@@ -79,8 +81,8 @@ WorkflowDocFormat::WorkflowDocFormat(QObject* p)
 		"workflow schema with the text file");
 }
 
-Document* WorkflowDocFormat::createNewDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs) {
-    Document* d = DocumentFormat::createNewDocument(io, url, fs);
+Document* WorkflowDocFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs) {
+    Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
     GObject* o = new WorkflowGObject(tr("Workflow Schema"), "");
     d->addObject(o);
     return d;
@@ -88,18 +90,17 @@ Document* WorkflowDocFormat::createNewDocument(IOAdapterFactory* io, const QStri
 
 #define BUFF_SIZE 1024
 
-Document* WorkflowDocFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode) {
-    Q_UNUSED(mode);
+Document* WorkflowDocFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os) {
     QByteArray  rawData;
     QByteArray block(BUFF_SIZE, '\0');
     int blockLen = 0;
     while ((blockLen = io->readBlock(block.data(), BUFF_SIZE)) > 0) {
         rawData.append(block.data(), blockLen);
-        ti.progress = io->getProgress();
+        os.setProgress(io->getProgress());
     }
     
     if (checkRawData(rawData).score != FormatDetection_Matched) {
-        ti.setError(tr("Invalid header. %1 expected").arg(HRSchemaSerializer::HEADER_LINE));
+        os.setError(tr("Invalid header. %1 expected").arg(HRSchemaSerializer::HEADER_LINE));
         rawData.clear();
         return NULL;
     }
@@ -108,11 +109,10 @@ Document* WorkflowDocFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, cons
     QList<GObject*> objects;
     QString data = QString::fromUtf8(rawData.data(), rawData.size());
     objects.append(new WorkflowGObject(tr("Workflow Schema"), data));
-    return new Document(this, io->getFactory(), io->getURL(), objects, fs);
+    return new Document(this, io->getFactory(), io->getURL(), targetDb, targetDb.isValid(), objects, hints);
 }
 
-void WorkflowDocFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io) {
-    Q_UNUSED(ts)
+void WorkflowDocFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& ) {
     assert(d->getDocumentFormat() == this);
     assert(d->getObjects().size() ==1);
 

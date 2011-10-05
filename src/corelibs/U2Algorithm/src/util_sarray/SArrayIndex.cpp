@@ -43,11 +43,13 @@ skipGap(_skipGap), gapOffset(_gapOffset), indexFileName(""), refFileName("")
     prebuiltIdx = false;
 }
 
-CreateSArrayIndexTask::CreateSArrayIndexTask( const DNASequenceObject* obj, int windowSize, bool useBitMask, bool _prebuiltIdx, const QString &idxFN,const QString &refFN )
+CreateSArrayIndexTask::CreateSArrayIndexTask( const U2SequenceObject* obj, int windowSize, bool useBitMask, bool _prebuiltIdx, const QString &idxFN,const QString &refFN )
 :Task("Create SArray index", TaskFlag_None), 
-index(NULL), seq(obj->getDNASequence().constData()), size(obj->getSequenceLen()), w(windowSize), 
+index(NULL), seqArray(obj->getWholeSequenceData()), w(windowSize), 
 unknownChar('\0'), skipGap(0), gapOffset(0), prebuiltIdx(_prebuiltIdx), indexFileName(idxFN), refFileName(refFN)
 {
+    size = seqArray.length();
+    seq = seqArray.constData();
     DNAAlphabetType seqType = obj->getAlphabet()->getType();
     unknownChar = seqType == DNAAlphabet_AMINO ? 'X' : seqType==DNAAlphabet_NUCL ? 'N' : '\0';   
     if (useBitMask) {

@@ -31,10 +31,10 @@
 #include <U2Core/GObjectRelationRoles.h>
 
 #include <U2Core/IOAdapter.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/L10n.h>
-
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/DNAInfo.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
@@ -59,18 +59,16 @@ EMBLGenbankAbstractDocument::EMBLGenbankAbstractDocument(const DocumentFormatId&
 //////////////////////////////////////////////////////////////////////////
 // loading
 
-Document* EMBLGenbankAbstractDocument::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& _fs, DocumentLoadMode mode) {
+Document* EMBLGenbankAbstractDocument::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& _fs, U2OpStatus& os) {
     QVariantMap fs = _fs;
     QList<GObject*> objects;
     QString writeLockReason;
-    load(io, objects, fs, ti, writeLockReason, mode);
+    load(dbiRef, io, objects, fs, os, writeLockReason);
 
-    if (ti.hasError() || ti.cancelFlag) {
-        return NULL;
-    }
-
-    DocumentFormatUtils::updateFormatSettings(objects, fs);
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), objects, fs, writeLockReason);
+    CHECK_OP(os, NULL);
+    
+    DocumentFormatUtils::updateFormatHints(objects, fs);
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, writeLockReason);
     return doc;
 }
 
@@ -80,7 +78,7 @@ const QString EMBLGenbankAbstractDocument::UGENE_MARK("UNIMARK");
 const QString EMBLGenbankAbstractDocument::DEFAULT_OBJ_NAME("unnamed");
 
 
-void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, QVariantMap& fs, TaskStateInfo& si, QString& writeLockReason, DocumentLoadMode mode) {
+void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QList<GObject*>& objects, QVariantMap& fs, U2OpStatus& os, QString& writeLockReason) {
     writeLockReason.clear();
 
     //get settings
@@ -93,8 +91,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
     QStringList contigs;
     QVector<U2Region> mergedMapping;
 
-    int predictedSize = qMax(100*1000, 
-        DocumentFormatUtils::getIntSettings(fs, DocumentReadingMode_SequenceMergingFinalSizeHint, merge ? 0 : io->left()));
+    int predictedSize = qMax(100*1000, DocumentFormatUtils::getMergedSize(fs,merge ? 0 : io->left()));
 
     sequence.reserve(predictedSize + (merge ? gapSize : 0));
     
@@ -104,10 +101,12 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
     GObjectReference sequenceRef(GObjectReference(io->getURL().getURLString(), "", GObjectTypes::SEQUENCE));
 
     QByteArray readBuffer(ParserState::READ_BUFF_SIZE, '\0');
-    ParserState st(getFormatId() == BaseDocumentFormats::PLAIN_GENBANK ? 12 : 5, io, NULL, si);
+    ParserState st(getFormatId() == BaseDocumentFormats::PLAIN_GENBANK ? 12 : 5, io, NULL, os);
     st.buff = readBuffer.data();
 
-    for (int i=0; !si.hasError() && !si.cancelFlag; i++) {
+    TmpDbiObjects dbiObjects(dbiRef, os);
+
+    for (int i=0; !os.isCoR(); i++) {
         if (!merge) {
             sequence.clear();
         } else if (sequence.size() > 0) {
@@ -117,7 +116,7 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
 
         EMBLGenbankDataEntry data;
         st.entry = &data;
-        si.setDescription(tr("Reading entry header"));
+        os.setDescription(tr("Reading entry header"));
         if (!readEntry(sequence, &st)) {
             break;
         }
@@ -160,62 +159,63 @@ void EMBLGenbankAbstractDocument::load(IOAdapter* io, QList<GObject*>& objects, 
             assert(data.features.isEmpty());
         }
         
-        if (!si.hasError() && !si.cancelFlag) {
+        if (!os.isCoR()) {
             int sequenceLen = sequence.size() - sequenceStart;
             QString sequenceName = genObjectName(usedNames, data.name, data.tags, i+1, GObjectTypes::SEQUENCE);
             if (merge && sequenceLen == 0 && annotationsObject!=NULL) {
-                si.setError(tr("Merge error: found annotations without sequence"));
+                os.setError(tr("Merge error: found annotations without sequence"));
                 break;
             } else if (merge) {
                 contigs.append(sequenceName);
                 mergedMapping.append(U2Region(sequenceStart, sequenceLen));
             } else if (sequenceLen!=0){
-                DNASequence seq(sequence);
+                DNASequence seq(sequenceName, sequence);
                 seq.info = data.tags;
                 seq.circular = data.circular;
-                DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sequenceName, seq, fs, si);
-                if (si.hasError()) {
+                U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, seq, fs, os);
+                if (os.isCoR()) {
                     break;
                 }
                 SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
+                dbiObjects.objects << seqObj->getSequenceRef().entityId;
+
+
                 if (annotationsObject!=NULL) {
                     sequenceRef.objName = seqObj->getGObjectName();
                     annotationsObject->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
                 }
             }
         }
-        if( mode == DocumentLoadMode_SingleObject ) {
-            break;
-        }
     }
-    
-    if (!si.hasError() && !si.cancelFlag && merge && !contigs.isEmpty()) {
-        assert(sequence.size() > gapSize);
-        assert(qEqual(sequence.constEnd() - gapSize, sequence.constEnd(), gapSequence.constBegin()));
-        sequence.resize(sequence.size() - gapSize);//remove last gap
-        DNASequenceObject* so = DocumentFormatUtils::addMergedSequenceObject(objects, io->getURL(), contigs, sequence, mergedMapping, fs, si);
-        if (si.hasError()) {
-            qDeleteAll(objects);
-            delete mergedAnnotations;
-            return;
-        }
-        SAFE_POINT(so != NULL, "DocumentFormatUtils::addMergedSequenceObject returned NULL but didn't set error",);
-        if (mergedAnnotations!=NULL) {
-            sequenceRef.objName = so->getGObjectName();
-            mergedAnnotations->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
-            objects.append(mergedAnnotations);
-        }
-    }
-
-    if (!si.hasError() && !si.cancelFlag && objects.isEmpty()) {
-        si.setError(U2::Document::tr("Document is empty."));
-    }
+    CHECK_OP(os, );
+    CHECK_EXT(!objects.isEmpty(), os.setError(Document::tr("Document is empty.")), );
+    SAFE_POINT(contigs.size() == mergedMapping.size(), "contigs <-> regions mapping failed!", );
 
     if (!toolMark) {
         writeLockReason = DocumentFormat::CREATED_NOT_BY_UGENE;
-    } else if (merge && contigs.size() > 1) {
+    } else if (merge) {
         writeLockReason = DocumentFormat::MERGED_SEQ_LOCK;
     }
+
+    if (!merge) {
+        return;
+    }
+
+    assert(qEqual(sequence.constEnd() - gapSize, sequence.constEnd(), gapSequence.constBegin()));
+    sequence.resize(sequence.size() - gapSize);//remove last gap
+    U2SequenceObject* so = DocumentFormatUtils::addMergedSequenceObjectDeprecated(dbiRef, objects, io->getURL(), contigs, sequence, mergedMapping, fs, os);
+    if (os.hasError()) {
+        qDeleteAll(objects);
+        delete mergedAnnotations;
+        return;
+    }
+    SAFE_POINT(so != NULL, "DocumentFormatUtils::addMergedSequenceObject returned NULL but didn't set error",);
+    if (mergedAnnotations!=NULL) {
+        sequenceRef.objName = so->getGObjectName();
+        mergedAnnotations->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
+        objects.append(mergedAnnotations);
+    }
+
 }
 
 //column annotation data starts with
@@ -330,20 +330,6 @@ QString EMBLGenbankAbstractDocument::genObjectName(QSet<QString>& usedNames, con
     return res;
 }
 
-DNASequence* EMBLGenbankAbstractDocument::loadSequence( IOAdapter* io, TaskStateInfo& ti) {
-    while(true) {
-        std::auto_ptr<Document> document(loadDocument(io, ti, QVariantMap(), DocumentLoadMode_SingleObject));
-        if(ti.isCoR()) {
-            return NULL;
-        }
-        foreach(GObject *object, document->getObjects()) {
-            if(object->getGObjectType() == GObjectTypes::SEQUENCE) {
-                return new DNASequence(( static_cast<DNASequenceObject*>(object))->getDNASequence());
-            }
-        }
-    }
-}
-
 static void checkQuotes(const char* str, int len, bool& outerQuotes, bool& doubleQuotes) {
     char qChar = '\"';
     assert(len>=0);
@@ -357,7 +343,7 @@ static void checkQuotes(const char* str, int len, bool& outerQuotes, bool& doubl
 }
 
 SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, char* cbuff, int len, 
-                                                                 int READ_BUFF_SIZE, TaskStateInfo& si, int offset) 
+                                                                 int READ_BUFF_SIZE, U2OpStatus& si, int offset) 
 {
     AnnotationData* a = new AnnotationData();
     SharedAnnotationData f(a);
@@ -447,7 +433,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
 bool EMBLGenbankAbstractDocument::readSequence(QByteArray& res, ParserState* st) {
     // FIXME use ParserState instead
     IOAdapter* io = st->io;
-    TaskStateInfo& si = st->si;
+    U2OpStatus& si = st->si;
     si.setDescription(tr("Reading sequence %1").arg(st->entry->name));
     int headerSeqLen = st->entry->seqLen;
     res.reserve(res.size() + headerSeqLen);
@@ -464,7 +450,7 @@ bool EMBLGenbankAbstractDocument::readSequence(QByteArray& res, ParserState* st)
     int dataOffset = 0;
     bool numIsPrefix = getFormatId() == BaseDocumentFormats::PLAIN_GENBANK;
     while (ok && (len = io->readLine(buff, READ_BUFF_SIZE)) > 0) {
-        if (si.cancelFlag) {
+        if (si.isCoR()) {
             res.clear();
             break;
         }
@@ -516,9 +502,9 @@ bool EMBLGenbankAbstractDocument::readSequence(QByteArray& res, ParserState* st)
             break;
         }
 
-        si.progress = io->getProgress();
+        si.setProgress(io->getProgress());
     }
-    if (!si.hasError() && !si.cancelFlag && buff[0] != '/') {
+    if (!si.isCoR() && buff[0] != '/') {
         si.setError(tr("Sequence is truncated"));
     }
     writer.close();
@@ -567,15 +553,12 @@ QString ParserState::value() const {
     return len > valOffset ? QString::fromLocal8Bit(buff + valOffset, len - valOffset) : QString();
 }
 
-bool ParserState::readNextLine(bool emptyOK)
-{
-    if (si.cancelFlag || si.hasError()) {
-        len = 0;
-        return false;
-    }
+bool ParserState::readNextLine(bool emptyOK) {
+    CHECK_OP_EXT(si, len = 0, false);
+
     bool ok = false;
     len = io->readLine(buff, READ_BUFF_SIZE, &ok);
-    si.progress = io->getProgress();
+    si.setProgress(io->getProgress());
 
     if (!ok && len == READ_BUFF_SIZE) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Line is too long."));

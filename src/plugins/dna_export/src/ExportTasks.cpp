@@ -27,7 +27,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNATranslationImpl.h>
-#include <U2Formats/SCFFormat.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -36,9 +35,13 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Gui/OpenViewTask.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+
+#include <U2Formats/SCFFormat.h>
+
+#include <U2Gui/OpenViewTask.h>
 
 namespace U2 {
 
@@ -92,7 +95,8 @@ void ExportAlignmentTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileName));
-    resultDocument = f->createNewDocument(iof, fileName);
+    resultDocument = f->createNewLoadedDocument(iof, fileName, stateInfo);
+    CHECK_OP(stateInfo, );
     resultDocument->addObject(new MAlignmentObject(ma));
     f->storeDocument(resultDocument, stateInfo);
 }
@@ -113,15 +117,19 @@ void ExportMSA2SequencesTask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    resultDocument = f->createNewDocument(iof, url);
+    resultDocument = f->createNewLoadedDocument(iof, url, stateInfo);
+    CHECK_OP(stateInfo, );
     QList<DNASequence> lst = MSAUtils::ma2seq(ma, trimAli);
     QSet<QString> usedNames;
-    foreach(const DNASequence& s, lst) {
+    foreach(DNASequence s, lst) {
         QString name = s.getName();
         if (usedNames.contains(name)) {
             name = TextUtils::variate(name, " ", usedNames, false, 1);
+            s.setName(name);
         }
-        resultDocument->addObject(new DNASequenceObject(name, s));
+        U2EntityRef seqRef = U2SequenceUtils::import(resultDocument->getDbiRef(), s, stateInfo);
+        CHECK_OP(stateInfo, );
+        resultDocument->addObject(new U2SequenceObject(name, seqRef));
         usedNames.insert(name);
     }
     f->storeDocument(resultDocument, stateInfo);
@@ -143,10 +151,11 @@ void ExportMSA2MSATask::run() {
     DocumentFormatRegistry* r = AppContext::getDocumentFormatRegistry();
     DocumentFormat* f = r->getFormatById(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    resultDocument = f->createNewDocument(iof, url);
+    resultDocument = f->createNewLoadedDocument(iof, url, stateInfo);
+    CHECK_OP(stateInfo, );
 
     QList<DNASequence> lst = MSAUtils::ma2seq(ma, true);
-    QList<GObject*> res;
+    QList<DNASequence> seqList;
     for (int i = offset; i < offset + len; i++) {    
         DNASequence& s = lst[i];
         QString name = s.getName();
@@ -166,12 +175,12 @@ void ExportMSA2MSATask::run() {
 
             resseq.replace("*","X");
             DNASequence rs(name, resseq, aminoTT->getDstAlphabet());
-            res << new DNASequenceObject(name, rs);
+            seqList << rs;
         } else {
-            res << new DNASequenceObject(name, s);
+            seqList << s;
         }                
     }
-    MAlignment ma = MSAUtils::seq2ma(res, stateInfo);
+    MAlignment ma = MSAUtils::seq2ma(seqList, stateInfo);
     CHECK_OP(stateInfo, );
     resultDocument->addObject(new MAlignmentObject(ma));
     f->storeDocument(resultDocument, stateInfo);
@@ -204,14 +213,14 @@ void ExportDNAChromatogramTask::prepare() {
     QString seqObjName = relatedObjs.first().ref.objName;
 
     GObject* resObj = d->findGObjectByName(seqObjName);
-    DNASequenceObject * sObj = qobject_cast<DNASequenceObject*>(resObj);
+    U2SequenceObject * sObj = qobject_cast<U2SequenceObject*>(resObj);
     assert(sObj != NULL);
 
     DNAChromatogram cd = cObj->getChromatogram();
-    DNASequence dna = sObj->getSequence();
+    QByteArray seq = sObj->getWholeSequenceData();
     
     if (settings.reverse) {
-        TextUtils::reverse(dna.seq.data(), dna.seq.length());
+        TextUtils::reverse(seq.data(), seq.length());
         reverseVector(cd.A);
         reverseVector(cd.C);
         reverseVector(cd.G);
@@ -245,7 +254,7 @@ void ExportDNAChromatogramTask::prepare() {
 
     if (settings.complement) {
         DNATranslation* tr = AppContext::getDNATranslationRegistry()->lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);
-        tr->translate(dna.seq.data(), dna.length());
+        tr->translate(seq.data(), seq.length());
         qSwap(cd.A,cd.T);
         qSwap(cd.C, cd.G);
         qSwap(cd.prob_A, cd.prob_T);
@@ -253,11 +262,9 @@ void ExportDNAChromatogramTask::prepare() {
     
     }
     
-    SCFFormat::exportDocumentToSCF(settings.url, cd, dna, stateInfo);
-    if (stateInfo.hasError()) {
-        return;
-    }
-
+    SCFFormat::exportDocumentToSCF(settings.url, cd, seq, stateInfo);
+    CHECK_OP(stateInfo, );
+    
     if (settings.loadDocument) {
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         loadTask = new LoadDocumentTask(BaseDocumentFormats::SCF, settings.url, iof );

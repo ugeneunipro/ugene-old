@@ -25,6 +25,7 @@
 #include <U2Core/global.h>
 #include "StateLockableDataModel.h"
 #include "GObjectReference.h"
+#include <U2Core/U2Type.h>
 
 #include <QtCore/QMimeData>
 #include <QtCore/QPointer>
@@ -43,6 +44,8 @@ namespace U2 {
 class Document;
 class GObjectConstraints;
 class GHints;
+class U2DbiRef;
+class U2OpStatus;
 
 class U2CORE_EXPORT GObject : public StateLockableTreeItem {
     friend class DocumentFormat;
@@ -60,8 +63,6 @@ public:
     virtual void setGObjectName(const QString& newName);
 
     GObjectType getGObjectType() const {return type;}
-
-    virtual GObject* clone() const =  0;
 
     virtual bool checkConstraints(const GObjectConstraints* c) const {Q_UNUSED(c); return true;}
 
@@ -95,16 +96,21 @@ public:
     
     void setIndexInfo( const QHash<QString, QString>& ii) {indexInfo = ii;}
 
+    const U2EntityRef& getEntityRef() const {return entityRef;}
+
     bool isUnloaded() const;
+
+    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os) const = 0;
 
 signals:
     void si_nameChanged(const QString& oldName);
 
-private:
+protected:
     GObjectType                 type;
     QString                     name;
     GHints*                     hints;
     QHash<QString, QString>     indexInfo;
+    U2EntityRef                 entityRef;
 };
 
 class GObjectConstraints : public QObject {

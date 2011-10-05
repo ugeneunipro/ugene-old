@@ -39,7 +39,7 @@ public:
     CumulativeSkewGraphFactory(GCumulativeSkewType t, QObject* p);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
-    virtual bool isEnabled(DNASequenceObject* o) const;
+    virtual bool isEnabled(U2SequenceObject* o) const;
 private:
     QPair<char, char> cumPair;
 };
@@ -50,7 +50,7 @@ public:
     virtual ~CumulativeSkewGraphAlgorithm() {}
 
     float getValue(int begin, int end, const QByteArray& seq);
-    virtual void calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
+    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
 
 private:
     QPair<char, char> p;

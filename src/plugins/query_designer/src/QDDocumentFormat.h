@@ -42,13 +42,14 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* createNewDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs = QVariantMap());
+    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs = QVariantMap());
 
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-
-    virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io);
+    virtual void storeDocument( Document* d, IOAdapter* io, U2OpStatus& os);
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os);
 
 private:
     QString formatName;
@@ -63,7 +64,7 @@ public:
     QDGObject(const QString& objectName, const QString& data, const QVariantMap& map = QVariantMap())
         : GObject(TYPE, objectName), serializedScene(data), scene(NULL) { Q_UNUSED(map); }
 
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os) const;
     QueryScene* getScene() const { return scene; }
     void setSceneRawData(const QString& d) { serializedScene=d; }
     QString getSceneRawData() const { return serializedScene; }

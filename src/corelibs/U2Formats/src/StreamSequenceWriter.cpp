@@ -23,6 +23,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/SAMFormat.h>
 #include <U2Formats/FastaFormat.h>
@@ -82,10 +83,10 @@ bool StreamShortReadWriter::init( const GUrl& url ) {
 }
 
 bool StreamShortReadWriter::writeNextSequence( const DNASequence& seq ) {   
-    TaskStateInfo info;
-    fastaFormat->storeSequence(seq,io,info);
+    U2OpStatus2Log os;
+    fastaFormat->storeSequence(seq, io, os);
     
-    return !info.hasError();
+    return !os.hasError();
 }
 
 void StreamShortReadWriter::close() {

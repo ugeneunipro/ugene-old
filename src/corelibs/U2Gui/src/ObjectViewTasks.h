@@ -33,6 +33,7 @@ namespace U2 {
 class Document;
 class GObject;
 class Project;
+class U2OpStatus;
 
 class U2GUI_EXPORT ObjectViewTask : public Task {
     Q_OBJECT
@@ -55,7 +56,7 @@ public:
 
     virtual void onDocumentLoaded(Document* d){ Q_UNUSED(d); }
 
-    static Document* createDocumentAndAddToProject(const QString& docUrl, Project* p);
+    static Document* createDocumentAndAddToProject(const QString& docUrl, Project* p, U2OpStatus& os);
 
 protected:
     Type                    taskType;

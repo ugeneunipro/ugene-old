@@ -34,6 +34,7 @@ class AnnotationSelection;
 class Annotation;
 class LRegionsSelection;
 class MAlignment;
+class U2OpStatus;
 
 class ExportSequenceViewItemsController : public GObjectViewWindowContext {
     Q_OBJECT
@@ -73,8 +74,8 @@ protected slots:
     void updateActions();
 
 private:
-    QString prepareMAFromAnnotations(MAlignment& ma, bool translate);
-    QString prepareMAFromSequences(MAlignment& ma, bool translate);
+    void prepareMAFromAnnotations(MAlignment& ma, bool translate, U2OpStatus& os);
+    void prepareMAFromSequences(MAlignment& ma, bool translate, U2OpStatus& os);
     void fetchSequencesFromRemoteDB(const QString & listId);
 
     void selectionToAlignment(const QString& title, bool annotations, bool translate);

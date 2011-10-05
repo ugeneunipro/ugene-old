@@ -28,7 +28,7 @@
 namespace U2 {
 
 
-class U2CORE_EXPORT U2CrossDatabaseReferenceDbi : public U2ChildDbi {
+class U2CrossDatabaseReferenceDbi : public U2ChildDbi {
 protected:
     U2CrossDatabaseReferenceDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 public:

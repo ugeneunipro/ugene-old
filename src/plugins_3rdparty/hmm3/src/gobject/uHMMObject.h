@@ -47,7 +47,7 @@ public:
     const P7_HMM* getHMM() const;
     P7_HMM* takeHMM();
     
-    virtual GObject* clone() const;
+    virtual GObject* clone(const U2DbiRef& ref, U2OpStatus& os) const;
     
 private:
     P7_HMM* hmm;

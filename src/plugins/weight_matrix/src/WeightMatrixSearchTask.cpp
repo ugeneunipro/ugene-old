@@ -25,11 +25,11 @@
 
 namespace U2 {
 //Weight matrix multiple search
-WeightMatrixSearchTask::WeightMatrixSearchTask(const QList<QPair<PWMatrix,WeightMatrixSearchCfg> > &m, const char *s, int l, int ro)
+WeightMatrixSearchTask::WeightMatrixSearchTask(const QList<QPair<PWMatrix,WeightMatrixSearchCfg> > &m, const QByteArray& seq, int ro)
 : Task(tr("Weight matrix multiple search"), TaskFlags_NR_FOSCOE), models(m), resultsOffset(ro)
 {
     for (int i = 0, n = m.size(); i < n; i++) {
-        addSubTask(new WeightMatrixSingleSearchTask(m[i].first, s, l, m[i].second, ro));
+        addSubTask(new WeightMatrixSingleSearchTask(m[i].first, seq, m[i].second, ro));
     }
 }
 
@@ -52,18 +52,18 @@ QList<WeightMatrixSearchResult> WeightMatrixSearchTask::takeResults() {
 }
 
 //Weight matrix single search
-WeightMatrixSingleSearchTask::WeightMatrixSingleSearchTask(const PWMatrix& m, const char* s, int l, const WeightMatrixSearchCfg& cfg, int ro) 
-: Task(tr("Weight matrix search"), TaskFlags_NR_FOSCOE), model(m), cfg(cfg), resultsOffset(ro)
+WeightMatrixSingleSearchTask::WeightMatrixSingleSearchTask(const PWMatrix& m, const QByteArray& _seq, const WeightMatrixSearchCfg& cfg, int ro) 
+: Task(tr("Weight matrix search"), TaskFlags_NR_FOSCOE), model(m), cfg(cfg), resultsOffset(ro), seq(_seq)
 {
     GCOUNTER( cvar, tvar, "WeightMatrixSingleSearchTask" );
     SequenceWalkerConfig c;
-    c.seq = s;
-    c.seqSize = l;
+    c.seq = seq.constData();
+    c.seqSize = seq.length();
     c.complTrans  = cfg.complTT;
     c.strandToWalk = cfg.complTT == NULL ? StrandOption_DirectOnly : StrandOption_Both;
     c.aminoTrans = NULL;
 
-    c.chunkSize = l;
+    c.chunkSize = seq.length();
     c.overlapSize = 0;
 
     SequenceWalkerTask* t = new SequenceWalkerTask(c, this, tr("Weight matrix search parallel"));

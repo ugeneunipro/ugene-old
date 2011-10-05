@@ -39,6 +39,7 @@
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectTypes.h>
@@ -54,12 +55,13 @@ namespace U2 {
 // AssemblyModel
 //==============================================================================
 
-AssemblyModel::AssemblyModel(const DbiHandle & dbiHandle_) : 
-cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), referenceDbi(0), assemblyDbi(0), dbiHandle(dbiHandle_),
-loadingReference(false), refDoc(0), md5Retrieved(false), cachedReadsNumber(NO_VAL), speciesRetrieved(false),
-uriRetrieved(false){
+AssemblyModel::AssemblyModel(const DbiConnection& dbiCon_) : 
+cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), assemblyDbi(0), dbiHandle(dbiCon_),
+loadingReference(false), refObj(NULL), md5Retrieved(false), cachedReadsNumber(NO_VAL), speciesRetrieved(false),
+uriRetrieved(false)
+{
     Project * prj = AppContext::getProject();
-    if(prj != NULL) {
+    if (prj != NULL) {
         connect(prj, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_referenceDocRemoved(Document*)));
         connect(prj, SIGNAL(si_documentAdded(Document*)), SLOT(sl_referenceDocAdded(Document*)));
     }
@@ -70,9 +72,7 @@ AssemblyModel::~AssemblyModel() {
 }
 
 void AssemblyModel::cleanup() {
-    referenceDbi = NULL;
-    reference.length = 0;
-    refDoc = NULL;
+    refObj = NULL;
 }
 
 bool AssemblyModel::isEmpty() const {
@@ -169,7 +169,7 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
         }
         // if cannot from attributes -> set from reference or max end pos
         if(cachedModelLength == NO_VAL) {
-            qint64 refLen = hasReference() ? reference.length : 0;
+            qint64 refLen = hasReference() ? refObj->getSequenceLength() : 0;
             qint64 assLen = assemblyDbi->getMaxEndPos(assembly.id, os);
             LOG_OP(os);
             cachedModelLength = qMax(refLen, assLen);
@@ -249,16 +249,16 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
         Project * prj = AppContext::getProject();
         SAFE_POINT(prj!=NULL, tr("No active project found!"), );
 
-        refDoc = prj->findDocumentByURL(crossRef.dataRef.dbiId);
+        Document* refDoc = prj->findDocumentByURL(crossRef.dataRef.dbiRef.dbiId);
         Task * t = NULL;
         if( refDoc != NULL ) { // document already in project, load if it is not loaded
-            if(refDoc->isLoaded()) {
+            if (refDoc->isLoaded()) {
                 sl_referenceLoaded();
             } else {
                 t = new LoadUnloadedDocumentTask(refDoc);
             }
         } else { // no document at project -> create doc, add it to project and load it
-            t = createLoadReferenceAndAddtoProjectTask(crossRef);
+            t = createLoadReferenceAndAddToProjectTask(crossRef);
             SAFE_POINT(t, "Failed to load reference sequence!",);
         }
         
@@ -272,18 +272,22 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
     }
 }
 
-Task * AssemblyModel::createLoadReferenceAndAddtoProjectTask(const U2CrossDatabaseReference& ref) {
+Task * AssemblyModel::createLoadReferenceAndAddToProjectTask(const U2CrossDatabaseReference& ref) {
     // hack: factoryId in FileDbi looks like FileDbi_formatId
-    DocumentFormatId fid = ref.dataRef.factoryId.mid(ref.dataRef.factoryId.indexOf("_") + 1);
+    QString factoryId = ref.dataRef.dbiRef.dbiFactoryId;
+    DocumentFormatId fid = factoryId.mid(factoryId.indexOf("_") + 1);
     DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
     SAFE_POINT(df, QString("Document format is not supported? %1").arg(fid), NULL);
     
-    QString url = ref.dataRef.dbiId;
+    QString url = ref.dataRef.dbiRef.dbiId;
     IOAdapterId iofId = IOAdapterUtils::url2io(url);
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(iofId);
     SAFE_POINT(iof, QString("IO-factory is unknown? %1, url: %2").arg(iofId).arg(url), NULL);
 
-    refDoc = new Document(df, iof, url);
+    U2OpStatus2Log os;
+    Document* refDoc = df->createNewUnloadedDocument(iof, url, os);
+    CHECK_OP(os, NULL);
+
     Task * t = new LoadUnloadedDocumentTask(refDoc);
     t->addSubTask(new AddDocumentTask(refDoc));
     t->setMaxParallelSubtasks(1);
@@ -307,14 +311,14 @@ void AssemblyModel::sl_referenceLoadingFailed() {
 
 // when reference doc removed from project
 void AssemblyModel::sl_referenceDocRemoved(Document* d) {
-    if(d != NULL && d == refDoc) {
+    if (d != NULL && refObj != NULL && refObj->getDocument() == d) {
         QMessageBox::StandardButtons fl = QMessageBox::Yes | QMessageBox::No;
         QMessageBox::StandardButton btn = QMessageBox::question(QApplication::activeWindow(), tr("Errors"), 
             tr("Remove association with '%1' assembly").arg(assembly.visualName), fl, QMessageBox::Yes);
-        if(btn == QMessageBox::Yes) {
+        if (btn == QMessageBox::Yes) {
             sl_unassociateReference();
         } else {
-            refDoc->disconnect(SIGNAL(si_loadedStateChanged()));
+            refObj->getDocument()->disconnect(this);
             cleanup();
             emit si_referenceChanged();
         }
@@ -325,14 +329,14 @@ void AssemblyModel::sl_referenceDocRemoved(Document* d) {
 void AssemblyModel::sl_referenceDocAdded(Document * d) {
     SAFE_POINT(d, "Reference document is NULL!", );
 
-    if(refDoc.isNull() && !assembly.referenceId.isEmpty()) {
+    if (refObj == NULL && !assembly.referenceId.isEmpty()) {
         U2OpStatusImpl status;
         U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, status);
         SAFE_POINT_OP(status,);
         
-        if(ref.dataRef.dbiId == d->getURLString()) {
-            if(!d->isLoaded()) {
-                startLoadReferenceTask(new LoadUnloadedDocumentTask(refDoc = d));
+        if (ref.dataRef.dbiRef.dbiId == d->getURLString()) {
+            if (!d->isLoaded()) {
+                startLoadReferenceTask(new LoadUnloadedDocumentTask(d));
             } else {
                 assert(false);
             }
@@ -346,8 +350,7 @@ void AssemblyModel::sl_referenceDocLoadedStateChanged() {
     SAFE_POINT(doc, "Reference document is NULL!", );
     
     if(doc->isLoaded()) {
-        if(!loadingReference) {
-            refDoc = doc;
+        if (!loadingReference) {
             sl_referenceLoaded();
         }
     } else { // refDoc unloaded
@@ -358,72 +361,36 @@ void AssemblyModel::sl_referenceDocLoadedStateChanged() {
 
 // document is loaded and in the project -> create dbi handle and set reference
 void AssemblyModel::sl_referenceLoaded() {
-    U2OpStatusImpl status;
-    U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, status);
-    U2SequenceDbi *seqDbi = NULL;
-    bool canCreateDbiHandle = (AppContext::getDbiRegistry()->getDbiFactoryById(ref.dataRef.factoryId) != NULL);
-    if(canCreateDbiHandle) {
-        // If we have correct reference to another ugenedb, create its handle and get sequence dbi
-
-        DbiHandle refSeqDbiHandle(ref.dataRef.factoryId, ref.dataRef.dbiId, false, status);
-        if(status.hasError()) {
-            coreLog.error(tr("Failed to associate reference with assembly: %1").arg(status.getError()));
-            sl_unassociateReference();
-            loadingReference = false;
-            return;
-        }
-        seqDbi = refSeqDbiHandle.dbi->getSequenceDbi();
-    } else {
-        // But if cross-reference points to invalid dbi type, try to get DNASequenceObject directly
-        // from the refDoc and then use a dbi wrapper over it
-
-        SAFE_POINT( ! refDoc.isNull() && refDoc->isLoaded(), "document containing reference sequence not loaded",);
-        GObject * obj = GObjectUtils::selectOne(refDoc->getObjects(), GObjectTypes::SEQUENCE, UOF_LoadedOnly);
-        DNASequenceObject * seqObj = qobject_cast<DNASequenceObject*>(obj);
-        if(seqObj == NULL) {
-            coreLog.error(tr("Failed to associate reference with assembly: %1").arg(tr("no sequence found in document")));
-            sl_unassociateReference();
-            loadingReference = false;
-            return;
-        }
-        seqDbi = seqObj->asDbi();
+    U2OpStatusImpl os;
+    U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, os);
+    refObj = NULL;
+    Document* refDoc = AppContext::getProject()->findDocumentByURL(ref.dataRef.dbiRef.dbiId);
+    if (refDoc != NULL) {
+        refObj = qobject_cast<U2SequenceObject*>(refDoc->findGObjectByName(ref.dataRef.entityId.constData()));
     }
-
-    if(seqDbi != NULL) {
-        U2Sequence refSeq = seqDbi->getSequenceObject(ref.dataRef.entityId, status);
-        SAFE_POINT_OP(status,);
-        
-        setReference(seqDbi, refSeq);
-    } else {
-        FAIL("seqDbi is NULL",);
+    
+    if (refObj == NULL) {
+        sl_unassociateReference();
     }
     loadingReference = false;
 }
 
 bool AssemblyModel::hasReference() const {
-    return (bool)referenceDbi;
+    return refObj != NULL;
 }
 
 bool AssemblyModel::referenceAssociated() const {
     return !assembly.referenceId.isEmpty();
 }
 
-void AssemblyModel::setReference(U2SequenceDbi * dbi, const U2Sequence & seq) {
-    if(refDoc.isNull()) {
-        Project * p = AppContext::getProject();
-        if(p != NULL) {
-            refDoc = p->findDocumentByURL(seq.dbiId);
-        }
-    }
-    reference = seq;
-    referenceDbi = dbi;
+void AssemblyModel::setReference(U2SequenceObject* seqObj) {
+    refObj = seqObj;
     emit si_referenceChanged();
 }
 
 QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus& os) {
-    SAFE_POINT(!refDoc.isNull() && refDoc->isLoaded(), "Reference document is not ready!", QByteArray());
-
-    return referenceDbi->getSequenceData(reference.id, region, os);
+    SAFE_POINT(refObj, "Reference document is not ready!", QByteArray());
+    return refObj->getSequenceData(region);
 }
 
 void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref) {

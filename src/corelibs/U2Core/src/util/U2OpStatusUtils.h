@@ -23,7 +23,7 @@
 #define _U2_OPSTATUS_UTILS_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Core/Task.h>
+#include <U2Core/Log.h>
 
 namespace U2 {
 
@@ -86,6 +86,23 @@ private:
     if (os.hasError()) {\
         coreLog.error(QString("Operation failed: %1 at %2:%3").arg(os.getError()).arg(__FILE__).arg(__LINE__));\
     }
+
+
+/** 
+    Used to dump error ops to coreLog. 
+    LogLevel is specified as param. Default is ERROR
+*/
+class U2CORE_EXPORT U2OpStatus2Log : public U2OpStatusImpl {
+public:
+    U2OpStatus2Log(LogLevel l = LogLevel_ERROR) : level (l){}
+    virtual ~U2OpStatus2Log() {
+        if (hasError()) {
+            coreLog.message(level, getError());
+        }
+    }
+private:
+    LogLevel level;
+};
 
 }// namespace
 

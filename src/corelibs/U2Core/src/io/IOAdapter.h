@@ -47,6 +47,7 @@ public:
 
     virtual bool isIOModeSupported(IOAdapterMode m) const = 0;
 
+    /** Returns YES if resource exists and available to read */
     virtual TriState isResourceAvailable(const GUrl& url) const = 0;
 
 };

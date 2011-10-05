@@ -41,7 +41,7 @@ GSequenceLineView::GSequenceLineView(QWidget* p, ADVSequenceObjectContext* _ctx)
 lastUpdateFlags(GSLV_UF_ViewResized), featureFlags(GSLV_FF_SupportsCustomRange),
 frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
 {
-    seqLen = ctx->getSequenceLen();
+    seqLen = ctx->getSequenceLength();
     setFocusPolicy(Qt::WheelFocus);
 
     scrollBar = new GScrollBar(Qt::Horizontal, this);
@@ -402,7 +402,7 @@ void GSequenceLineView::sl_onFrameRangeChanged() {
     //TODO: optimize and do not redraw frame if visual coords of the frame are not changed!
 #ifdef _DEBUG
     const U2Region& newRange = frameView->getVisibleRange();
-    assert(newRange.startPos >= 0 && newRange.endPos() <= ctx->getSequenceLen() && newRange.length >= 0);
+    assert(newRange.startPos >= 0 && newRange.endPos() <= ctx->getSequenceLength() && newRange.length >= 0);
 #endif
     addUpdateFlags(GSLV_UF_FrameChanged);
     update();
@@ -430,13 +430,10 @@ void GSequenceLineView::setVisibleRange(const U2Region& newRange, bool signal) {
     }
 }
 
-DNASequenceObject* GSequenceLineView::getSequenceObject() const {
+U2SequenceObject* GSequenceLineView::getSequenceObject() const {
     return ctx->getSequenceObject();
 }
 
-U2SequenceDbi* GSequenceLineView::getSequenceDbi() const {
-    return ctx->getSequenceDbi();
-}
 
 void GSequenceLineView::completeUpdate(){
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw); 

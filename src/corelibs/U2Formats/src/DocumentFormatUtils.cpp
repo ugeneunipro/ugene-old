@@ -34,99 +34,51 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Formats/GenbankFeatures.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+
+#include <U2Formats/GenbankFeatures.h>
 
 namespace U2 {
 
-DNAAlphabet* DocumentFormatUtils::findAlphabet(const QByteArray& arr) {
-    DNAAlphabetRegistry* r = AppContext::getDNAAlphabetRegistry();
-    return r->findAlphabet(arr);
-}
-
-DNAAlphabet* DocumentFormatUtils::findAlphabet(const QByteArray& arr, const QVector<U2Region>& regionsToProcess) {
-    DNAAlphabetRegistry* r = AppContext::getDNAAlphabetRegistry();
-    QList<DNAAlphabet*> als = r->findAlphabets(arr, regionsToProcess, true);
-    assert(!als.empty());
-    return als.first();
+static int getIntSettings(const QVariantMap& fs, const char* sName, int defVal) {
+    QVariant v = fs.value(sName);
+    if (v.type()!= QVariant::Int) {
+        return defVal;
+    }
+    return v.toInt();
 }
 
 
-QList<DNAAlphabet*> DocumentFormatUtils::findAlphabets(const QByteArray& arr) {
-    DNAAlphabetRegistry* r = AppContext::getDNAAlphabetRegistry();
-    QList<DNAAlphabet*> als = r->findAlphabets(arr);
-    return als;
-}
-
-DNASequenceObject* DocumentFormatUtils::addSequenceObject(QList<GObject*>& objects, const QString& name, DNASequence& seq, 
-                                                          const QVariantMap& hints, U2OpStatus& os) 
+U2SequenceObject* DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef, const QString& name, const QByteArray& seq,  bool circular, const QVariantMap& hints, U2OpStatus& os) 
 {
-    if (hints.contains(DocumentReadingMode_MaxObjectsInDoc) && !hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
-        int n = hints.value(DocumentReadingMode_MaxObjectsInDoc).toInt();
-        if (n > 0 && n <= objects.size()) {
-            os.setError(tr("Maximum number of objects per document limit reached. Try different options for opening the document!"));
-            return NULL;
-        }
-    }
-    if (seq.alphabet== NULL) {
-        seq.alphabet = findAlphabet(seq.seq);
-        if (seq.alphabet == NULL) {
-            os.setError(tr("Undefined sequence alphabet"));
-            return NULL;
-        }
-    }
+    U2SequenceImporter importer;
+    
+    importer.startSequence(dbiRef, name, circular, os);
+    CHECK_OP(os, NULL);
+    
+    importer.addBlock(seq.constData(), seq.length(), os);
+    CHECK_OP(os, NULL);
+    
+    U2Sequence sequence = importer.finalizeSequence(os);
+    CHECK_OP(os, NULL);
 
-    if (!seq.alphabet->isCaseSensitive()) {
-        TextUtils::translate(TextUtils::UPPER_CASE_MAP, const_cast<char*>(seq.seq.constData()), seq.seq.length());
-    }
-
-    trySqueeze(seq.seq);
-
-    DNASequenceObject* so = new DNASequenceObject(name, seq);
-    objects.append(so);
+    U2SequenceObject* so = new U2SequenceObject(name, U2EntityRef(dbiRef, sequence.id), hints);
     return so;
 }
 
 
-DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>& objects, const GUrl& docUrl, 
-                                                                const QStringList& contigNames, QByteArray& mergedSequence, 
-                                                                const QVector<U2Region>& mergedMapping,
-                                                                const QVariantMap& hints, U2OpStatus& os) 
+AnnotationTableObject* DocumentFormatUtils::addAnnotationsForMergedU2Sequence(const GUrl& docUrl, const QStringList& contigNames, 
+                                                                        const U2Sequence& mergedSequence, 
+                                                                        const QVector<U2Region>& mergedMapping, 
+                                                                        U2OpStatus& os) 
 {
-    if (contigNames.size() == 1) {
-        DNAAlphabet* al = findAlphabet(mergedSequence);
-        const QString& name = contigNames.first();
-        DNASequence seq( mergedSequence, al );
-        return DocumentFormatUtils::addSequenceObject(objects, name, seq, hints, os);
-    }
-
-    assert(contigNames.size() >=2);
-    assert(contigNames.size() == mergedMapping.size());
-
-    DNAAlphabet* al = findAlphabet(mergedSequence, mergedMapping);
-    char defSym = al->getDefaultSymbol();
-    //fill gaps with defSym
-    for (int i = 1; i < mergedMapping.size(); i++) {
-        const U2Region& prev = mergedMapping[i-1];
-        const U2Region& next = mergedMapping[i];
-        int gapSize = next.startPos - prev.endPos();
-        assert(gapSize >= 0);
-        if (gapSize > 0) {
-            qMemSet(mergedSequence.data() + prev.endPos(), defSym, (size_t)gapSize);
-        }
-    }
-    DNASequence seq( mergedSequence, al );
-    DNASequenceObject* so = addSequenceObject(objects, "Sequence", seq, hints, os);
-    if(os.hasError()) {
-        return NULL;
-    }
-    SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
-
     AnnotationTableObject* ao = new AnnotationTableObject("Contigs");
 
     //save relation if docUrl is not empty
     if (!docUrl.isEmpty()) {
-        GObjectReference r(docUrl.getURLString(), so->getGObjectName(), GObjectTypes::SEQUENCE);
+        GObjectReference r(docUrl.getURLString(), mergedSequence.visualName, GObjectTypes::SEQUENCE);
         ao->addObjectRelation(GObjectRelation(r, GObjectRelationRole::SEQUENCE));
     }
 
@@ -137,45 +89,11 @@ DNASequenceObject* DocumentFormatUtils::addMergedSequenceObject(QList<GObject*>&
         d->location->regions << mergedMapping[i];
         ao->addAnnotation(new Annotation(d), NULL);
     }
-    objects.append(ao);
-    return so;
+    return ao;
 }
 
 
-#define MAX_REALLOC_SIZE (300*1000*1000)
-#define MIN_K_TO_REALLOC 1.07
-void DocumentFormatUtils::trySqueeze(QByteArray& a) {
-    //squeeze can cause 2x memory usage -> avoid squeezing of large arrays
-    float k =  float(a.capacity()) / a.size();
-    if (a.size() <= MAX_REALLOC_SIZE && k > MIN_K_TO_REALLOC) {
-        a.squeeze();
-    }
-}
 
-
-int DocumentFormatUtils::getIntSettings(const QVariantMap& fs, const char* sName, int defVal) {
-    QVariant v = fs.value(sName);
-    if (v.type()!= QVariant::Int) {
-        return defVal;
-    }
-    return v.toInt();
-}
-
-void DocumentFormatUtils::updateFormatSettings(QList<GObject*>& objects, QVariantMap& fs) {
-    //1. remove all cached sequence sizes
-    //2. add new sizes
-    QList<GObject*> sequences;
-    foreach(GObject* obj, objects) {
-        if (obj->getGObjectType() == GObjectTypes::SEQUENCE) {
-            sequences.append(obj);
-        }
-    }
-    if (sequences.size() == 1) {
-        DNASequenceObject* so = qobject_cast<DNASequenceObject*>(sequences.first());
-        int len = so->getSequence().length();
-        fs[DocumentReadingMode_SequenceMergingFinalSizeHint] = len;
-    }
-}
 
 
 class ExtComparator {
@@ -196,70 +114,6 @@ QList<DocumentFormatId> DocumentFormatUtils::toIds(const QList<DocumentFormat*>&
         result.append(f->getFormatId());
     }
     return result;
-}
-
-void DocumentFormatUtils::assignAlphabet(MAlignment& ma) {
-    QList<DNAAlphabet*> matchedAlphabets;
-    for (int i=0, n = ma.getNumRows();i<n; i++) {
-        const MAlignmentRow& item = ma.getRow(i);
-        QList<DNAAlphabet*> als = DocumentFormatUtils::findAlphabets(item.getCore());
-        if (i == 0) {
-            matchedAlphabets = als;
-        } else {
-            QMutableListIterator<DNAAlphabet*> it(matchedAlphabets);
-            while (it.hasNext()) {
-                DNAAlphabet* al = it.next();
-                if (!als.contains(al)) {
-                    it.remove();
-                }
-            }
-            if (matchedAlphabets.isEmpty()) {
-                break;
-            }
-        }
-    }
-    if (matchedAlphabets.isEmpty()) {
-        return; //nothing matched
-    }
-
-    ma.setAlphabet(matchedAlphabets.first());
-
-    if (!ma.getAlphabet()->isCaseSensitive()) {
-        ma.toUpperCase();
-    }
-}
-
-void DocumentFormatUtils::assignAlphabet(MAlignment& ma, char ignore) {
-    QList<DNAAlphabet*> matchedAlphabets;
-    for (int i=0, n = ma.getNumRows();i<n; i++) {
-        const MAlignmentRow& item = ma.getRow(i);
-        QByteArray core = item.getCore();
-        core.replace(ignore, MAlignment_GapChar);
-        QList<DNAAlphabet*> als = DocumentFormatUtils::findAlphabets(core);
-        if (i == 0) {
-            matchedAlphabets = als;
-        } else {
-            QMutableListIterator<DNAAlphabet*> it(matchedAlphabets);
-            while (it.hasNext()) {
-                DNAAlphabet* al = it.next();
-                if (!als.contains(al)) {
-                    it.remove();
-                }
-            }
-            if (matchedAlphabets.isEmpty()) {
-                break;
-            }
-        }
-    }
-    if (matchedAlphabets.isEmpty()) {
-        return; //nothing matched
-    }
-
-    ma.setAlphabet(matchedAlphabets.first());
-
-    if (!ma.getAlphabet()->isCaseSensitive()) {
-        ma.toUpperCase();
-    }
 }
 
 QList<AnnotationSettings*> DocumentFormatUtils::predefinedSettings() {
@@ -285,9 +139,9 @@ QList<AnnotationSettings*> DocumentFormatUtils::predefinedSettings() {
 
 QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
     QList<DNASequence> res;
-    const DNASequenceObject* seqObj = qobject_cast<const DNASequenceObject*>(obj);
+    const U2SequenceObject* seqObj = qobject_cast<const U2SequenceObject*>(obj);
     if (seqObj != NULL) {
-        res << seqObj->getDNASequence();
+        res << seqObj->getWholeSequence();
         return res;
     }
     const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
@@ -312,6 +166,107 @@ int DocumentFormatUtils::getMergeGap(const QVariantMap& hints) {
         res = getIntSettings(hints, MERGE_MULTI_DOC_GAP_SIZE_SETTINGS_DEPRECATED, -1);
     }
     return res;
+}
+
+
+int DocumentFormatUtils::getMergedSize(const QVariantMap& hints, int defaultVal) {
+    int res = getIntSettings(hints, DocumentReadingMode_SequenceMergingFinalSizeHint, defaultVal);
+    return res;
+}
+
+void DocumentFormatUtils::updateFormatHints(QList<GObject*>& objects, QVariantMap& fs) {
+    //1. remove all cached sequence sizes
+    //2. add new sizes
+    QList<GObject*> sequences;
+    foreach(GObject* obj, objects) {
+        if (obj->getGObjectType() == GObjectTypes::SEQUENCE) {
+            sequences.append(obj);
+        }
+    }
+    if (sequences.size() == 1) {
+        U2SequenceObject* so = qobject_cast<U2SequenceObject*>(sequences.first());
+        int len = so->getSequenceLength();
+        fs[DocumentReadingMode_SequenceMergingFinalSizeHint] = len;
+    }
+}
+
+
+U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, 
+                                                                   DNASequence& sequence, const QVariantMap& hints, U2OpStatus& os) 
+{
+    if (sequence.alphabet== NULL) {
+        sequence.alphabet = U2AlphabetUtils::findBestAlphabet(sequence.seq);
+        CHECK_EXT(sequence.alphabet != NULL, os.setError(tr("Undefined sequence alphabet")), NULL);
+    }
+
+    if (!sequence.alphabet->isCaseSensitive()) {
+        TextUtils::translate(TextUtils::UPPER_CASE_MAP, const_cast<char*>(sequence.seq.constData()), sequence.seq.length());
+    }
+
+    U2SequenceImporter importer;
+    importer.startSequence(dbiRef, sequence.getName(), sequence.circular, os);
+    CHECK_OP(os, NULL);
+    importer.addBlock(sequence.seq.constData(), sequence.seq.length(), os);
+    CHECK_OP(os, NULL);
+    U2Sequence u2seq = importer.finalizeSequence(os);
+    CHECK_OP(os, NULL);
+    
+    U2SequenceObject* so = new U2SequenceObject(sequence.getName(), U2EntityRef(dbiRef, u2seq.id));
+    objects << so;
+    return so;
+}
+
+
+U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, const GUrl& docUrl, 
+                                                                const QStringList& contigNames, QByteArray& mergedSequence, 
+                                                                const QVector<U2Region>& mergedMapping,
+                                                                const QVariantMap& hints, U2OpStatus& os) 
+{
+    if (contigNames.size() == 1) {
+        DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence);
+        const QString& name = contigNames.first();
+        DNASequence seq(name, mergedSequence, al );
+        return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, seq, hints, os);
+    }
+
+    assert(contigNames.size() >= 2);
+    assert(contigNames.size() == mergedMapping.size());
+
+    DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence, mergedMapping);
+    char defSym = al->getDefaultSymbol();
+    //fill gaps with defSym
+    for (int i = 1; i < mergedMapping.size(); i++) {
+        const U2Region& prev = mergedMapping[i-1];
+        const U2Region& next = mergedMapping[i];
+        int gapSize = next.startPos - prev.endPos();
+        assert(gapSize >= 0);
+        if (gapSize > 0) {
+            qMemSet(mergedSequence.data() + prev.endPos(), defSym, (size_t)gapSize);
+        }
+    }
+    ;
+    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, objects, DNASequence("Sequence", mergedSequence, al), hints, os);
+    CHECK_OP(os, NULL);
+    SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
+    
+
+    AnnotationTableObject* ao = new AnnotationTableObject("Annotations");
+
+    //save relation if docUrl is not empty
+    if (!docUrl.isEmpty()) {
+        GObjectReference r(docUrl.getURLString(), so->getGObjectName(), GObjectTypes::SEQUENCE);
+        ao->addObjectRelation(GObjectRelation(r, GObjectRelationRole::SEQUENCE));
+    }
+
+    //save mapping info as annotations
+    for (int i = 0; i < contigNames.size(); i++) {
+        SharedAnnotationData d(new AnnotationData());
+        d->name = "contig";
+        d->location->regions << mergedMapping[i];
+        ao->addAnnotation(new Annotation(d), NULL);
+    }
+    objects.append(ao);
+    return so;
 }
 
 

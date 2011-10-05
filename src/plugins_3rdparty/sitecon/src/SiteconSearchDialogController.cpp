@@ -88,7 +88,7 @@ SiteconSearchDialogController::SiteconSearchDialogController(ADVSequenceObjectCo
     task = NULL;
     
     initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
-    int seqLen = ctx->getSequenceLen();
+    int seqLen = ctx->getSequenceLength();
     rs=new RegionSelector(this, seqLen, true, ctx->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
 
@@ -233,7 +233,7 @@ void SiteconSearchDialogController::sl_onSaveAnnotations() {
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
-    m.sequenceLen = ctx->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
@@ -287,9 +287,8 @@ void SiteconSearchDialogController::runTask() {
         QMessageBox::critical(this, tr("error"), tr("range_is_too_small"));
         return;
     }
-    const char* seq = ctx->getSequenceData().constData() + reg.startPos;
-    int len = reg.length;
-
+    QByteArray seq = ctx->getSequenceData(reg);
+    
     SiteconSearchCfg cfg;
     cfg.complTT = rbBoth->isChecked() || rbComplement->isChecked() ? ctx->getComplementTT() : NULL;
     cfg.complOnly = rbComplement->isChecked();
@@ -302,7 +301,7 @@ void SiteconSearchDialogController::runTask() {
     //TODO: ask if to clear
     sl_onClearList();
 
-    task = new SiteconSearchTask(*model, seq, len, cfg, reg.startPos);
+    task = new SiteconSearchTask(*model, seq, cfg, reg.startPos);
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onTaskFinished()));
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     updateState();

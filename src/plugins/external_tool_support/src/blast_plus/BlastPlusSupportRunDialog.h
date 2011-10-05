@@ -35,13 +35,13 @@ namespace U2 {
 class BlastPlusSupportRunDialog : public BlastRunCommonDialog {
     Q_OBJECT
 public:
-    BlastPlusSupportRunDialog(DNASequenceObject* dnaso, BlastTaskSettings& settings, QString &_lastDBPath, QString &_lastDBName, QWidget* parent);
+    BlastPlusSupportRunDialog(U2SequenceObject* dnaso, BlastTaskSettings& settings, QString &_lastDBPath, QString &_lastDBName, QWidget* parent);
 protected slots:
     virtual void sl_runQuery();
     virtual void sl_lineEditChanged();
 
 private:
-    DNASequenceObject*  dnaso;
+    U2SequenceObject*  dnaso;
     bool checkToolPath();
     QString &lastDBPath;
     QString &lastDBName;

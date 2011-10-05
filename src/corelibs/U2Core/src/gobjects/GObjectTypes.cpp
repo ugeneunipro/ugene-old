@@ -48,7 +48,6 @@ REGISTER_TYPE(CHROMATOGRAM,         "OT_CHROMATOGRAM",  GObject::tr("Chromatogra
 REGISTER_TYPE_EX(MULTIPLE_ALIGNMENT,   "OT_MSA",        GObject::tr("Alignment"),       GObject::tr("Alignments"),     "m",     ":core/images/msa.png");
 REGISTER_TYPE_EX(PHYLOGENETIC_TREE, "OT_PTREE",         GObject::tr("Tree"),            GObject::tr("Trees"),          "tr",    ":core/images/tree.png");
 REGISTER_TYPE_EX(BIOSTRUCTURE_3D,   "OT_BIOSTRUCT3D",   GObject::tr("3D model"),        GObject::tr("3D models"),      "3d",    ":core/images/biostruct3d.png");
-REGISTER_TYPE_EX(UINDEX,            "OT_INDEX",         GObject::tr("Index"),           GObject::tr("Indexes"),        "i",     ":core/images/table.png");
 REGISTER_TYPE(ASSEMBLY,             "OT_ASSEMBLY",      GObject::tr("Assembly"),        GObject::tr("Assemblies"),     "as");
 
 static QHash<GObjectType, GObjectTypeInfo>& getTypeMap() {

@@ -98,9 +98,10 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     
     sw->addADVSequenceWidgetAction(action);
 
-    const DNASequence& dna = sw->getSequenceContext()->getSequenceObject()->getDNASequence();
-    if (dna.length() < MIN_LENGTH_TO_AUTO_SHOW) {
-        if (dna.circular) {
+    qint64 len = sw->getSequenceContext()->getSequenceLength();
+    if (len < MIN_LENGTH_TO_AUTO_SHOW) {
+        bool circular = sw->getSequenceContext()->getSequenceObject()->isCircular();
+        if (circular) {
             action->trigger();
         }
     }

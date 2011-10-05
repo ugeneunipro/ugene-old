@@ -119,13 +119,13 @@ void SendSelectionDialog::alignComboBoxes() {
     }
 }
 
-SendSelectionDialog::SendSelectionDialog(const DNASequenceObject* dnaso, bool _isAminoSeq, QWidget *p):QDialog(p), translateToAmino(false), isAminoSeq(_isAminoSeq), extImported(false) {
+SendSelectionDialog::SendSelectionDialog(const U2SequenceObject* dnaso, bool _isAminoSeq, QWidget *p):QDialog(p), translateToAmino(false), isAminoSeq(_isAminoSeq), extImported(false) {
     CreateAnnotationModel ca_m;
     ca_m.data->name = "misc_feature";
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
     ca_m.sequenceObjectRef = GObjectReference(dnaso);
-    ca_m.sequenceLen = dnaso->getSequenceLen();
+    ca_m.sequenceLen = dnaso->getSequenceLength();
     ca_c = new CreateAnnotationWidgetController(ca_m, this);
     setupUi(this);
     int idx = 2;

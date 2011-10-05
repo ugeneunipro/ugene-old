@@ -189,7 +189,7 @@ Task* PWMatrixSearchWorker::tick() {
         }
         QList<Task*> subtasks;
         foreach(PWMatrix model, models) {
-            subtasks << new WeightMatrixSingleSearchTask(model, seq.constData(), seq.length(), config, 0);
+            subtasks << new WeightMatrixSingleSearchTask(model, seq.seq, config, 0);
         }
         Task* t = new MultiTask(tr("Search TFBS in %1").arg(seq.getName()), subtasks);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));

@@ -40,7 +40,7 @@ public:
 
     virtual void calculate(
        QVector<float>&,
-       DNASequenceObject*,
+       U2SequenceObject*,
        const U2Region&,
        const GSequenceGraphWindowData*);
 };

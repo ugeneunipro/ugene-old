@@ -110,29 +110,26 @@ void RemoteBLASTViewContext::sl_showDialog() {
     SendSelectionDialog dlg( seqCtx->getSequenceObject(), isAminoSeq, av->getWidget() );
     if( QDialog::Accepted == dlg.exec() ) {
         //prepare query
-        const QByteArray& sequence = seqCtx->getSequenceData();
         DNASequenceSelection* s = seqCtx->getSequenceSelection();
         QVector<U2Region> regions;
-        if(s->isEmpty()) {
-            int seqLen = seqCtx->getSequenceLen();
-            regions.append(U2Region(0, seqLen));
-        }
-        else {
+        if (s->isEmpty()) {
+            regions.append(U2Region(0, seqCtx->getSequenceLength()));
+        } else {
             regions =  s->getSelectedRegions();
         }
         foreach(const U2Region& r, regions) {
-        QByteArray query( sequence.constData() + r.startPos, r.length );
+            QByteArray query = seqCtx->getSequenceData(r);
 
-        DNATranslation * aminoT = (dlg.translateToAmino ? seqCtx->getAminoTT() : 0);
-        DNATranslation * complT = (dlg.translateToAmino ? seqCtx->getComplementTT() : 0);
+            DNATranslation * aminoT = (dlg.translateToAmino ? seqCtx->getAminoTT() : 0);
+            DNATranslation * complT = (dlg.translateToAmino ? seqCtx->getComplementTT() : 0);
 
-        RemoteBLASTTaskSettings cfg = dlg.cfg;
-        cfg.query = query;
-        cfg.aminoT = aminoT;
-        cfg.complT = complT;
+            RemoteBLASTTaskSettings cfg = dlg.cfg;
+            cfg.query = query;
+            cfg.aminoT = aminoT;
+            cfg.complT = complT;
 
-        Task * t = new RemoteBLASTToAnnotationsTask(cfg, r.startPos, dlg.getAnnotationObject(), dlg.getUrl(),dlg.getGroupName());
-        AppContext::getTaskScheduler()->registerTopLevelTask( t );
+            Task * t = new RemoteBLASTToAnnotationsTask(cfg, r.startPos, dlg.getAnnotationObject(), dlg.getUrl(),dlg.getGroupName());
+            AppContext::getTaskScheduler()->registerTopLevelTask( t );
         }
     }
 }

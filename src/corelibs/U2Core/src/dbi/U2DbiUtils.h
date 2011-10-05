@@ -23,7 +23,6 @@
 #define _U2_DBI_UTILS_H_
 
 #include <U2Core/U2Dbi.h>
-#include <U2Core/Task.h>
 
 namespace U2 {
 
@@ -33,34 +32,75 @@ class U2OpStatus;
     Helper class that allocates connection in constructor and automatically releases it in the destructor 
     It uses app-global connection pool.
 
-    Note: DbiHandle caches U2OpStatus and reuses it in destructor on DBI release. Ensure that 
+    Note: DbiConnection caches U2OpStatus and reuses it in destructor on DBI release. Ensure that 
     U2OpStatus live range contains DbiHandle live range
 */
-class U2CORE_EXPORT DbiHandle {
+class U2CORE_EXPORT DbiConnection {
 public:
     /** Opens connection to existing DBI */
-    DbiHandle(U2DbiFactoryId id, const QString& url,  U2OpStatus& os);
+    DbiConnection(const U2DbiRef& ref,  U2OpStatus& os);
     
     /** Opens connection to existing DBI or create news DBI*/
-    DbiHandle(U2DbiFactoryId id, const QString& url,  bool create, U2OpStatus& os);
+    DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& os);
 
-    DbiHandle(const DbiHandle & dbiHandle_);
+    DbiConnection(const DbiConnection & dbiConnection_);
 
-    /** Constructs empty invalid dbi handle */
-    DbiHandle();
+    /** Constructs not opened dbi connection */
+    DbiConnection();
 
-    ~DbiHandle();
+    ~DbiConnection();
 
-    bool isValid() const {return dbi != NULL;}
+    /** Opens connection to existing DBI */
+    void open(const U2DbiRef& ref,  U2OpStatus& os);
+
+    /** Opens connection to existing DBI or create news DBI*/
+    void open(const U2DbiRef& ref,  bool create, U2OpStatus& os);
+    
+    void close();
+
+    bool isOpen() const {return dbi != NULL;}
     
     U2Dbi*          dbi;
 
     U2OpStatus&     os;
 
 private: //TODO
-    DbiHandle & operator=(const DbiHandle & dbiHandle);
+    DbiConnection & operator=(const DbiConnection & dbiHandle);
 };
 
+
+/** 
+    Helper class to track DBI instance live range
+*/
+class U2CORE_EXPORT TmpDbiHandle {
+public:
+    TmpDbiHandle(const QString& alias, U2OpStatus& os);
+    
+    TmpDbiHandle(const U2DbiRef& dbi, bool deallocate);
+    
+    ~TmpDbiHandle();
+
+    bool isValid() const {return dbiRef.isValid();}
+    
+    /** DBI reference */
+    U2DbiRef            dbiRef;
+
+    /** If true will close all DBI connection in destructor and remove DBI file */
+    bool                deallocate;
+
+private: //TODO
+    TmpDbiHandle & operator=(const TmpDbiHandle & dbiHandle);
+};
+
+class U2CORE_EXPORT TmpDbiObjects {
+public:
+    TmpDbiObjects(const U2DbiRef& _dbiRef, U2OpStatus& _os) : dbiRef(_dbiRef), os(_os){}
+    ~TmpDbiObjects();
+    
+    U2DbiRef            dbiRef;
+    QList<U2DataId>     objects;
+    U2OpStatus&         os;
+};
 
 /**
     Iterator over buffered data set
@@ -110,6 +150,8 @@ public:
     static void logNotSupported(U2DbiFeature f, U2Dbi* dbi, U2OpStatus& os);
 
     template<class T> static QList<T> toList(U2DbiIterator<T>* it);
+
+    static U2DbiRef toRef(U2Dbi* dbi);
 };
 
 

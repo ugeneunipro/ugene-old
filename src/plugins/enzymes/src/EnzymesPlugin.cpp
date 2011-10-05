@@ -165,7 +165,7 @@ void EnzymesPlugin::sl_onOpenCreateFragmentDialog()
 
     }
 
-    DNASequenceObject* dnaObj = view->getSequenceInFocus()->getSequenceObject();
+    U2SequenceObject* dnaObj = view->getSequenceInFocus()->getSequenceObject();
     assert(dnaObj != NULL);
     if (!dnaObj->getAlphabet()->isNucleic()) {
         QMessageBox::information(QApplication::activeWindow(), openCreateFragmentDialog->text(),

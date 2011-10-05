@@ -65,8 +65,8 @@ Sequence ExpertDiscoveryData::prerareSequence(const GObject* obj) const{
     const QString& name  = obj->getGObjectName();
     std::string n = name.toStdString();
 
-    DNASequenceObject* seq = (DNASequenceObject*)obj;
-    const QByteArray& seqArr =  seq->getSequence();
+    U2SequenceObject* seq = (U2SequenceObject*)obj;
+    QByteArray seqArr =  seq->getWholeSequenceData();
     std::string seqStr = std::string(seqArr.data(),seqArr.length());
     Sequence seqReady = Sequence(n, seqStr);
 

@@ -39,7 +39,7 @@ public:
     ~UHMM3Plugin();
     
 private:
-    DNASequenceObject * getDnaSequenceObject() const;
+    U2SequenceObject * getDnaSequenceObject() const;
     
 private slots:
     void sl_buildProfile();
@@ -76,7 +76,7 @@ protected slots:
     
 private:
     QWidget * getParentWidget( QObject * sender );
-    DNASequenceObject * getSequenceInFocus( QObject * sender );
+    U2SequenceObject * getSequenceInFocus( QObject * sender );
     
 protected:
     virtual void initViewContext( GObjectView * view );

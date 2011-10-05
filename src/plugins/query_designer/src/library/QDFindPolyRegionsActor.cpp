@@ -149,12 +149,12 @@ QString QDFindPolyActor::getText() const {
 }
 
 Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
-    DNASequence sequence = scheme->getDNA()->getDNASequence();
+    const DNASequence& sequence = scheme->getSequence();
     FindPolyRegionsSettings settings;
 
     settings.strand = getStrandToRun();
     if (settings.strand != QDStrand_DirectOnly) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(scheme->getDNA()->getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(scheme->getSequence().alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
         if (!compTTs.isEmpty()) {
             settings.complTT = compTTs.first();
         } else {

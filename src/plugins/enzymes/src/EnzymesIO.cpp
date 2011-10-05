@@ -28,6 +28,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Core/Settings.h>
@@ -70,7 +71,7 @@ QList<SEnzymeData> EnzymesIO::readEnzymes(const QString& url, TaskStateInfo& ti)
     for (int i=0, n = res.count(); i<n; i++) {
         SEnzymeData& d = res[i];
         if (d->alphabet == NULL) {
-            d->alphabet = AppContext::getDNAAlphabetRegistry()->findAlphabet(d->seq);
+            d->alphabet = U2AlphabetUtils::findBestAlphabet(d->seq);
             if (!d->alphabet->isNucleic()) {
                 algoLog.error(tr("Non-nucleic enzyme alphabet: '%1', alphabet: %2, sequence '%3'")
                     .arg(d->id).arg(d->alphabet->getId()).arg(QString(d->seq)));

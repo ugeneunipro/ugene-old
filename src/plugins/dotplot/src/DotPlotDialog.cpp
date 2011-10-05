@@ -65,7 +65,7 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
     //sequences in the project
     QList<GObject*> allSequences  = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE);
     foreach (GObject* obj, allSequences) {
-        DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
         QString name = seqObj->getGObjectName();
         
         xAxisCombo->addItem(name);
@@ -121,8 +121,8 @@ void DotPlotDialog::accept() {
     SAFE_POINT(xIdx >= 0 && xIdx < sequences.length(), QString("DotPlotDialog: index is out of range: %1").arg(xIdx),);
     SAFE_POINT(yIdx >= 0 && yIdx < sequences.length(), QString("DotPlotDialog: index is out of range: %1").arg(yIdx),);
         
-    DNASequenceObject* objX = sequences[xIdx];
-    DNASequenceObject* objY = sequences[yIdx];
+    U2SequenceObject* objX = sequences[xIdx];
+    U2SequenceObject* objY = sequences[yIdx];
 
     if (!isObjectInADV(objX)) {
         adv->addObject(objX);
@@ -149,11 +149,11 @@ void DotPlotDialog::sl_minLenHeuristics() {
     int xIdx = xAxisCombo->currentIndex();
     int yIdx = yAxisCombo->currentIndex();
     
-    DNASequenceObject *objX = sequences.at(xIdx);
-    DNASequenceObject *objY = sequences.at(yIdx);
+    U2SequenceObject *objX = sequences.at(xIdx);
+    U2SequenceObject *objY = sequences.at(yIdx);
 
-    qint64 xSeqLen = objX->getSequenceLen();
-    qint64 ySeqLen = objY->getSequenceLen();
+    qint64 xSeqLen = objX->getSequenceLength();
+    qint64 ySeqLen = objY->getSequenceLength();
 
     double nVariations = xSeqLen*ySeqLen;
     double resCount = 1000;
@@ -280,7 +280,7 @@ void DotPlotDialog::sl_loadTaskStateChanged(Task* t){
                 }
                 QList<GObject*> docObjects  = doc->getObjects();
                 foreach (GObject* obj, docObjects) {
-                    DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+                    U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
                     if (seqObj != NULL){
                         QString name = seqObj->getGObjectName();
                         xAxisCombo->addItem(name);
@@ -303,7 +303,7 @@ void DotPlotDialog::sl_loadTaskStateChanged(Task* t){
     foreach (Document* doc, docs) {
         QList<GObject*> docObjects  = doc->getObjects();
         foreach (GObject* obj, docObjects) {
-            DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+            U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
             if (seqObj != NULL){
                 QString name = seqObj->getGObjectName();
                 xAxisCombo->addItem(name);

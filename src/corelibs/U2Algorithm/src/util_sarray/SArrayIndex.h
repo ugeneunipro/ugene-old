@@ -30,14 +30,14 @@
 namespace U2 {
 
 class SArrayIndex;
-class DNASequenceObject;
+class U2SequenceObject;
 class BitsTable;
 
 /// A task to create SArrayIndex
 class U2ALGORITHM_EXPORT CreateSArrayIndexTask : public Task {
     Q_OBJECT
 public:
-    CreateSArrayIndexTask(const DNASequenceObject* obj, int windowSize, bool useBitMask = false,
+    CreateSArrayIndexTask(const U2SequenceObject* obj, int windowSize, bool useBitMask = false,
                         bool prebuiltIdx = false, const QString &fileName = "", const QString &refFileName = "");
     CreateSArrayIndexTask(const char* seq, quint32 size,  quint32 w, char unknownChar=0, 
                         const quint32* bitTable = NULL, quint32 bitCharLen = 0, 
@@ -54,6 +54,7 @@ public:
     const quint32* getBitTable() const {return bitTable; }
     
 private:
+    QByteArray      seqArray;
     const char*     seq;
     quint32         size;
     quint32         w;

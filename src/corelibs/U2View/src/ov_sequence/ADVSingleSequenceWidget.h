@@ -42,7 +42,7 @@
 namespace U2 {
 
 class AnnotatedDNAView;
-class DNASequenceObject;
+class U2SequenceObject;
 class GSequenceLineView;
 class DetView;
 class PanView;
@@ -82,13 +82,13 @@ public:
 
     DNASequenceSelection*   getSequenceSelection() const;
     
-    int getSequenceLen() const;
+    int getSequenceLength() const;
 
     virtual void addSequenceView(GSequenceLineView* v, QWidget* after = NULL);
 
     virtual void removeSequenceView(GSequenceLineView* v, bool deleteView = true);
 
-    DNASequenceObject* getSequenceObject() const;
+    U2SequenceObject* getSequenceObject() const;
 
     virtual void buildPopupMenu(QMenu& m);
 

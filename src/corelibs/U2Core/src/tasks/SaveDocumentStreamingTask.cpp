@@ -58,7 +58,7 @@ void SaveDocumentStreamingTask::run() {
         return;
     }
     DocumentFormat* df = doc->getDocumentFormat();
-    df->storeDocument( doc, stateInfo, io );
+    df->storeDocument( doc, io, stateInfo);
 }
 
 Task::ReportResult SaveDocumentStreamingTask::report() {

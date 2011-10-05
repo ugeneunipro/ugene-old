@@ -30,6 +30,8 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2DbiUtils.h>
+
 #include <U2Formats/StreamSequenceReader.h>
 #include <U2Formats/StreamSequenceWriter.h>
 #include <U2Lang/LocalDomain.h>
@@ -125,7 +127,6 @@ public:
     int getProgress();
 private:
     CommunicationChannel* reads;
-    DNASequenceObject *obj;
 };
 
 class GenomeAlignerMAlignmentWriter : public GenomeAlignerWriter {
@@ -152,7 +153,6 @@ public:
     int getProgress();
 private:
     bool end;
-    DNASequenceObject *obj;
     U2AssemblyDbi *rDbi;
     U2Assembly assembly;
     QList<U2AssemblyRead> reads;
@@ -175,7 +175,7 @@ public:
     void setReferenceName(const QString &) {};
 private:
     U2OpStatusImpl status;
-    QSharedPointer<DbiHandle> dbiHandle;
+    QSharedPointer<DbiConnection> dbiHandle;
     U2Dbi* sqliteDbi;
     U2AssemblyDbi *wDbi;
     U2Assembly assembly;

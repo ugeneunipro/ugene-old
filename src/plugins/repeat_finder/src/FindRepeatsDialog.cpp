@@ -73,7 +73,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     m.data->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
     m.sequenceObjectRef = sc->getSequenceObject();
     m.useUnloadedObjects = true;
-    m.sequenceLen = sc->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = sc->getSequenceObject()->getSequenceLength();
     ac = new CreateAnnotationWidgetController(m, this);
     
     QWidget* caw = ac->getWidget();
@@ -87,10 +87,10 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     algoCombo->addItem(tr("Suffix index"), RFAlgorithm_Suffix);
     algoCombo->addItem(tr("Diagonals"), RFAlgorithm_Diagonal);
 
-    int seqLen = sc->getSequenceLen();
+    qint64 seqLen = sc->getSequenceLength();
 
     Settings* s = AppContext::getSettings();
-    minLenBox->setValue(s->getValue(SETTINGS_ROOT + MIN_LEN_SETTINGS, qBound(5, seqLen / 100, 100)).toInt());
+    minLenBox->setValue(s->getValue(SETTINGS_ROOT + MIN_LEN_SETTINGS, qBound(5, int(seqLen / 100), 100)).toInt());
     minLenBox->setMaximum(seqLen);
     identityBox->setValue(s->getValue(SETTINGS_ROOT + IDENTITY_SETTINGS, 100).toInt());
     minDistBox->setValue(s->getValue(SETTINGS_ROOT + MIN_DIST_SETTINGS, 0).toInt());
@@ -211,7 +211,7 @@ void FindRepeatsDialog::accept() {
     int minLen = minLenBox->value();
     int identPerc = identityBox->value();
     int minDist = minDistCheck->isChecked() ? minDistBox->value() : 0;
-    int maxDist = maxDistCheck->isChecked() ? maxDistBox->value(): sc->getSequenceLen();
+    int maxDist = maxDistCheck->isChecked() ? maxDistBox->value(): sc->getSequenceLength();
     bool inverted = invertCheck->isChecked();
     bool isRegionOk = false;
     U2Region range = rs->getRegion(&isRegionOk);
@@ -237,7 +237,6 @@ void FindRepeatsDialog::accept() {
     RFAlgorithm algo = algoCheck->isChecked() ? RFAlgorithm(algoCombo->itemData(algoCombo->currentIndex()).toInt()) : RFAlgorithm_Auto;
 
     ac->prepareAnnotationObject();
-    const DNASequence& seq = sc->getSequenceObject()->getDNASequence();
     
     FindRepeatsTaskSettings settings;
     const CreateAnnotationModel& cam = ac->getModel();
@@ -254,7 +253,9 @@ void FindRepeatsDialog::accept() {
     settings.reportReflected = false;
     settings.filterNested = !allowNestedCheck->isChecked();
     
-    FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seq, cam.data->name, cam.groupName, cam.annotationObjectRef);
+    FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, sc->getSequenceObject()->getWholeSequence(), 
+        cam.data->name, cam.groupName, cam.annotationObjectRef);
+
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     
     saveState();
@@ -287,7 +288,7 @@ quint64 FindRepeatsDialog::areaSize() const {
         return 0;
     }
     int minDist = minDistCheck->isChecked() ? minDistBox->value() : 0;
-    int maxDist = maxDistCheck->isChecked() ? maxDistBox->value(): sc->getSequenceLen();
+    int maxDist = maxDistCheck->isChecked() ? maxDistBox->value(): sc->getSequenceLength();
 
     quint64 dRange = qMax(0, maxDist - minDist);
     

@@ -36,7 +36,7 @@
 namespace U2 {
 
 class ADVSequenceObjectContext;
-class DNASequenceObject;
+class U2SequenceObject;
 class SiteconSearchTask;
 class Task;
 class SiteconResultItem;

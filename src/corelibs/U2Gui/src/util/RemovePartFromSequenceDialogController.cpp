@@ -25,6 +25,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/ModifySequenceObjectTask.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 

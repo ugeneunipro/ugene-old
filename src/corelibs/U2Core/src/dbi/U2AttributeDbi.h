@@ -31,7 +31,7 @@ namespace U2 {
 /**
     A configuration for sorting by attribute operation
 */
-class U2CORE_EXPORT U2DbiSortConfig {
+class U2DbiSortConfig {
 public:
     U2DbiSortConfig() : ascending(true) {}
 
@@ -51,7 +51,7 @@ public:
 /**
     An interface to obtain access to object attributes
 */
-class U2CORE_EXPORT U2AttributeDbi: public U2ChildDbi {
+class U2AttributeDbi: public U2ChildDbi {
 protected:
     U2AttributeDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 

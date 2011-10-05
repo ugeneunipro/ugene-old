@@ -96,11 +96,11 @@ void CreateDocumentFromTextDialogController::accept(){
         return;
     }
 
-    QString errorMessage;
-    QString fullPath = GUrlUtils::prepareFileLocation(ui->filepathEdit->text(), errorMessage);
+    U2OpStatus2Log os;
+    QString fullPath = GUrlUtils::prepareFileLocation(ui->filepathEdit->text(), os);
 
     if (fullPath.isEmpty()) {
-        QMessageBox::critical(this, L10N::errorTitle(), errorMessage);
+        QMessageBox::critical(this, L10N::errorTitle(), os.getError());
         return;
     }
     
@@ -137,7 +137,9 @@ void CreateDocumentFromTextDialogController::sl_projectLoaded() {
 void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
     Project *p = AppContext::getProject();
     QString errorMessage; Q_UNUSED(errorMessage);
-    QString fullPath = GUrlUtils::prepareFileLocation(ui->filepathEdit->text(), errorMessage);
+    U2OpStatus2Log  os;
+    QString fullPath = GUrlUtils::prepareFileLocation(ui->filepathEdit->text(), os);
+    CHECK_OP(os, );
     GUrl url(fullPath);
     Document *loadedDoc=p->findDocumentByURL(url);
     if (loadedDoc) {
@@ -146,17 +148,18 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
         return;
     }
     
-    QList<GObject*> objects;
-    const QString seqName(ui->nameEdit->text());
-    DNASequence seq = w->getSequence();
-    QVariantMap hints; U2OpStatusImpl os;
-    DocumentFormatUtils::addSequenceObject(objects, seqName, seq, hints, os);
-    SAFE_POINT_OP(os,);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(ui->filepathEdit->text()));
     QVariant currentId = ui->formatBox->itemData(ui->formatBox->currentIndex());
     DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(currentId.toString());
-    doc = new Document(df, iof, fullPath, objects);
-    doc->setModified(true);
+    doc = df->createNewLoadedDocument(iof, fullPath, os);
+    CHECK_OP_EXT(os, delete doc, );
+    
+    DNASequence seq = w->getSequence();
+    seq.setName(ui->nameEdit->text());
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), QList<GObject*>(), seq, QVariantMap(), os);
+    CHECK_OP_EXT(os, delete doc, );
+    doc->addObject(seqObj);
+
     p->addDocument(doc);
     if(ui->saveImmediatelyBox->isChecked()){
         AppContext::getTaskScheduler()->registerTopLevelTask(new SaveDocumentTask(doc, doc->getIOAdapterFactory(), doc->getURL()));

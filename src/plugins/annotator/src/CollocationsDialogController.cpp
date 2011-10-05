@@ -43,7 +43,7 @@
 #include <QtCore/QFileInfo>
 
 namespace U2 {
-class DNASequenceObject;
+class U2SequenceObject;
 
 //TODO: support results separation on complement and direct strands
 
@@ -190,7 +190,7 @@ void CollocationsDialogController::sl_searchClicked() {
     cfg.distance = regionSpin->value();
     assert(task == NULL);
     const QList<AnnotationTableObject*>& aObjects = ctx->getAnnotationObjects().toList();
-    cfg.searchRegion = U2Region(0, ctx->getSequenceLen());
+    cfg.searchRegion = U2Region(0, ctx->getSequenceLength());
     if (!wholeAnnotationsBox->isChecked()) {
         cfg.st = CollocationsAlgorithm::PartialSearch;
     }
@@ -216,7 +216,7 @@ void CollocationsDialogController::sl_saveClicked() {
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceGObject();
     m.hideLocation = true;
-    m.sequenceLen = ctx->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
     if (rc != QDialog::Accepted) {

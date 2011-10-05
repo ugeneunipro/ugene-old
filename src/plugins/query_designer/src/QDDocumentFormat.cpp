@@ -35,7 +35,7 @@ namespace U2 {
  //////////////////////////////////////////////////////////////////////////
 const GObjectType QDGObject::TYPE("query-obj");
 
-GObject* QDGObject::clone() const {
+GObject* QDGObject::clone(const U2DbiRef& , U2OpStatus& ) const {
     QDGObject* copy = new QDGObject(getGObjectName(), serializedScene, getGHintsMap());
     return copy;
 }
@@ -52,26 +52,25 @@ formatName(tr("Query Schema")) {
     supportedObjectTypes += QDGObject::TYPE;
 }
 
-Document* QDDocFormat::createNewDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs /* = QVariantMap()*/ ) {
-    Document* d = DocumentFormat::createNewDocument(io, url, fs);
+Document* QDDocFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs ) {
+    Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
     GObject* o = new QDGObject(tr("Query Schema"), "");
     d->addObject(o);
     return d;
 }
 
 #define BUFF_SIZE 1024
-Document* QDDocFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode /* = DocumentLoadMode_Whole*/ ) {
-    Q_UNUSED(mode);
+Document* QDDocFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os) {
     QByteArray  rawData;
     QByteArray block(BUFF_SIZE, '\0');
     int blockLen = 0;
     while ((blockLen = io->readBlock(block.data(), BUFF_SIZE)) > 0) {
         rawData.append(block.data(), blockLen);
-        ti.progress = io->getProgress();
+        os.setProgress(io->getProgress());
     }
 
     if (checkRawData(rawData).score != FormatDetection_Matched) {
-        ti.setError(tr("Invalid header. %1 expected").arg(QDDocument::HEADER_LINE));
+        os.setError(tr("Invalid header. %1 expected").arg(QDDocument::HEADER_LINE));
         rawData.clear();
         return NULL;
     }
@@ -79,11 +78,10 @@ Document* QDDocFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVa
     QList<GObject*> objects;
     QString data = QString::fromUtf8(rawData.data(), rawData.size());
     objects.append(new QDGObject(tr("Query Schema"), data));
-    return new Document(this, io->getFactory(), io->getURL(), objects, fs);
+    return new Document(this, io->getFactory(), io->getURL(), targetDb, targetDb.isValid(), objects, hints);
 }
 
-void QDDocFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter* io) {
-    Q_UNUSED(ts)
+void QDDocFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& ) {
     assert(d->getDocumentFormat() == this);
     assert(d->getObjects().size() ==1);
 

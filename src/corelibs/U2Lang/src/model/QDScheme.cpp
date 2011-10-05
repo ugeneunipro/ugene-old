@@ -295,7 +295,7 @@ QDScheme::getConstraints(QDSchemeUnit const* su1, QDSchemeUnit const* su2) const
 
 void QDScheme::clear() {
     //delete dna;
-    dna = NULL;
+    dna = DNASequence();
     foreach(QDActor* a, actors) {
         removeActor(a);
     }

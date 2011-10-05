@@ -15,7 +15,7 @@ const QString BaseDbiTest::DB_URL("db_url");
 void BaseDbiTest::SetUp() {
     testData = GetParam();
     
-    U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById("SQLiteDbi");
+    U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById(SQLITE_DBI_ID);
     ASSERT_NE((U2DbiFactory *)NULL, factory);
 
     dbi.reset(factory->createDbi());

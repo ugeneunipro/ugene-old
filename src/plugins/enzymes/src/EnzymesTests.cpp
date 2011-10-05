@@ -132,7 +132,7 @@ void GTest_FindEnzymes::prepare() {
     }
     
     //get sequence object
-    seqObj = getContext<DNASequenceObject>(this, seqObjCtx);
+    seqObj = getContext<U2SequenceObject>(this, seqObjCtx);
     if (seqObj == NULL) {
         stateInfo.setError(  QString("Sequence context not found %1").arg(seqObjCtx) );
         return;
@@ -170,7 +170,7 @@ QList<Task*> GTest_FindEnzymes::onSubTaskFinished(Task* subTask) {
     cfg.maxHitCount = maxHits;
     cfg.excludedRegions = excludedRegions;
 
-    FindEnzymesToAnnotationsTask* t = new FindEnzymesToAnnotationsTask(aObj, seqObj->getDNASequence(), enzymesToSearch, cfg);
+    FindEnzymesToAnnotationsTask* t = new FindEnzymesToAnnotationsTask(aObj, seqObj->getWholeSequence(), enzymesToSearch, cfg);
     res.append(t);
     return res;
 }
@@ -267,7 +267,7 @@ void GTest_DigestIntoFragments::prepare() {
     }
 
     //get sequence object
-    seqObj = getContext<DNASequenceObject>(this, seqObjCtx);
+    seqObj = getContext<U2SequenceObject>(this, seqObjCtx);
     if (seqObj == NULL) {
         stateInfo.setError(  QString("Sequence context not found %1").arg(seqObjCtx) );
         return;
@@ -363,7 +363,7 @@ void GTest_LigateFragments::prepare() {
     }
 
     foreach (const QString& seqObjCtx, seqObjNames ) {
-        GObject* seqObj = getContext<DNASequenceObject>(this, seqObjCtx);
+        GObject* seqObj = getContext<U2SequenceObject>(this, seqObjCtx);
         if (seqObj == NULL) {
             stateInfo.setError(  QString("Sequence objext context not found %1").arg(seqObjCtx) );
             return;

@@ -23,14 +23,15 @@
 
 #include "FindRepeatsTask.h"
 #include "RF_SArray_TandemFinder.h"
-#include <U2Algorithm/SArrayIndex.h>
-#include <U2Algorithm/SArrayBasedFindTask.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
-
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Algorithm/SArrayIndex.h>
+#include <U2Algorithm/SArrayBasedFindTask.h>
 
 namespace U2 {
 
@@ -149,16 +150,16 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
     if (hasError() || isCanceled()) {
         return;
     }
-    DNASequenceObject * seqObj = getContext<DNASequenceObject>(this, seq);
-    if (seqObj == NULL){
+    U2SequenceObject * seq1IObj = getContext<U2SequenceObject>(this, seq);
+    if (seq1IObj == NULL){
         stateInfo.setError("can't find sequence1");
         return;
     }
 
-    DNASequenceObject * seq2Obj = seqObj;
+    U2SequenceObject * seq2Obj = seq1IObj;
 
     if (seq != seq2) {
-        seq2Obj = getContext<DNASequenceObject>(this, seq2);
+        seq2Obj = getContext<U2SequenceObject>(this, seq2);
         if (seq2Obj == NULL){
             stateInfo.setError("can't find sequence2");
             return;
@@ -166,10 +167,10 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
     }
 
     if (region.isEmpty()) {
-        region = seqObj->getSequenceRange();
+        region = U2Region(0, seq1IObj->getSequenceLength());
     }
     
-    int maxLen = seqObj->getSequenceLen();
+    int maxLen = seq1IObj->getSequenceLength();
     if (minD == -1) {
         minD = -maxLen;
     } 
@@ -203,7 +204,7 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
             continue;
         }
         s.algo = algo;
-        Task* sub = new FindRepeatsTask(s, seqObj->getDNASequence(), seq2Obj->getDNASequence());
+        Task* sub = new FindRepeatsTask(s, seq1IObj->getWholeSequence(), seq2Obj->getWholeSequence());
         addSubTask(sub);
     }
 }
@@ -424,19 +425,17 @@ void GTest_FindRealTandemRepeatsTask::init(XMLTestFormat *tf, const QDomElement&
 }
 
 void GTest_FindRealTandemRepeatsTask::prepare() {
-    if (hasError() || isCanceled()) {
-        return;
-    }
-    DNASequenceObject * seqObj = getContext<DNASequenceObject>(this, sequence);
+    CHECK_OP(stateInfo, );
+    U2SequenceObject * seqObj = getContext<U2SequenceObject>(this, sequence);
     if (seqObj == NULL){
         stateInfo.setError("can't find sequence1");
         return;
     }
     if (region.isEmpty()) {
-        region = seqObj->getSequenceRange();
+        region = U2Region(0, seqObj->getSequenceLength());
     }
 
-    int maxLen = seqObj->getSequenceLen();
+    int maxLen = seqObj->getSequenceLength();
     if (minD == -1) {
         minD = -maxLen;
     }
@@ -450,7 +449,7 @@ void GTest_FindRealTandemRepeatsTask::prepare() {
     s.seqRegion = region;
     s.nThreads = 1;//todo: add to settings
 
-    addSubTask( new TandemFinder(s, seqObj->getDNASequence()) );
+    addSubTask( new TandemFinder(s, seqObj->getWholeSequence()) );
 }
 
 void GTest_FindRealTandemRepeatsTask::run() {
@@ -565,13 +564,14 @@ void GTest_SArrayBasedFindTask::init(XMLTestFormat *tf, const QDomElement& el) {
 
 }
 
+void GTest_SArrayBasedFindTask::cleanup() {
+    wholeSeq = QByteArray();
+}
 
-void GTest_SArrayBasedFindTask::prepare()
-{
-    if (hasError() || isCanceled()) {
-        return;
-    }
-    DNASequenceObject * seqObj = getContext<DNASequenceObject>(this, seqObjName);
+void GTest_SArrayBasedFindTask::prepare() {
+    CHECK_OP(stateInfo, );
+    
+    U2SequenceObject * seqObj = getContext<U2SequenceObject>(this, seqObjName);
     if (seqObj == NULL){
         stateInfo.setError(QString("Can't find index sequence %1").arg(seqObjName));
         return;
@@ -592,7 +592,8 @@ void GTest_SArrayBasedFindTask::prepare()
         prefixSize = prefixSize / (nMismatches + 1);
     }
     
-    index = new SArrayIndex(seqObj->getSequence().constData(), seqObj->getSequenceLen(), prefixSize, stateInfo, unknownChar, bitMask, bitCharLen);
+    wholeSeq = seqObj->getWholeSequenceData();
+    index = new SArrayIndex(wholeSeq.constData(), seqObj->getSequenceLength(), prefixSize, stateInfo, unknownChar, bitMask, bitCharLen);
     
     if (hasError()) {
         return;

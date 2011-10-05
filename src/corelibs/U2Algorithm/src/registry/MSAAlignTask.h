@@ -27,7 +27,6 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequence.h>
-#include <U2Core/UIndex.h>
 
 namespace U2 {
 

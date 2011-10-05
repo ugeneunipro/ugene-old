@@ -67,7 +67,7 @@ class NEXUSParser
 // NEXUS File format parser
 {
 public:
-    NEXUSParser (IOAdapter *io_, TaskStateInfo &ti_)
+    NEXUSParser (IOAdapter *io_, U2OpStatus &ti_)
         : io(io_), ti(ti_), tz(io)
     {
         assert(io_ && "IO must exist");
@@ -93,7 +93,7 @@ private:
     bool readDataContents(Context &ctx);
     bool readTreesContents(Context &ctx);
 
-    void reportProgress() { ti.progress = io->getProgress(); }
+    void reportProgress() { ti.setProgress(io->getProgress()); }
 
     // append object to objects, and resolve name conflicts
     void addObject(GObject *obj);
@@ -113,7 +113,7 @@ private:
 
 private:
     IOAdapter *io;
-    TaskStateInfo &ti;
+    U2OpStatus &ti;
     Tokenizer tz;
 
     QList<GObject*> objects;

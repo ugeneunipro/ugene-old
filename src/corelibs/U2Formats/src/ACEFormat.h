@@ -37,12 +37,14 @@ public:
 
     virtual DocumentFormatId getFormatId() const { return BaseDocumentFormats::ACE; }
     virtual const QString& getFormatName() const { return formatName; }
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
-    
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+   
 private:
     QString formatName;
-    void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti);
+    void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti);
 
     static const QString CO;
     static const QString RD;

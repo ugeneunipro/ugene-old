@@ -25,13 +25,13 @@ class LoadUnloadedDocumentTask;
 class DNATranslation;
 class HMMSearchTask;
 class HMMSearchTaskResult;
-class DNASequenceObject;
+class U2SequenceObject;
 class HMMReadTask;
 
 class HMMSearchDialogController : public QDialog, public Ui_HMMSearchDialog {
     Q_OBJECT
 public:
-    HMMSearchDialogController(const DNASequenceObject* obj, QWidget* p = NULL);
+    HMMSearchDialogController(const U2SequenceObject* obj, QWidget* p = NULL);
 
 public slots:
     void reject();

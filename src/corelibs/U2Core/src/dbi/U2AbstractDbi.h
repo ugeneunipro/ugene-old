@@ -42,12 +42,13 @@ namespace U2 {
 
 /** Default (empty) implementation for optional DBI methods */
 class U2AbstractDbi : public U2Dbi {
-public:
+protected:
     U2AbstractDbi(const U2DbiFactoryId& fid) {
         state = U2DbiState_Void;
         factoryId = fid;
     }
-    
+
+public:    
     virtual bool flush(U2OpStatus&) {return true;}
 
     virtual U2DbiState getState() const {return state;}
@@ -104,6 +105,7 @@ class U2SimpleObjectDbi : public U2ObjectDbi {
 protected:
     U2SimpleObjectDbi(U2Dbi* rootDbi) : U2ObjectDbi(rootDbi) {}
 
+public:
     virtual void removeObject(const U2DataId&, const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
     }
@@ -134,6 +136,7 @@ class U2SimpleSequenceDbi: public U2SequenceDbi {
 protected:
     U2SimpleSequenceDbi(U2Dbi* rootDbi) : U2SequenceDbi(rootDbi) {}
 
+public:
     virtual void createSequenceObject(U2Sequence&, const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi(), os);
     }
@@ -149,10 +152,11 @@ protected:
 
 
 /** Default no-op implementation for write  methods of U2MsaDbi */
-class U2SimpleMsaDbi: public U2MsaDbi{
+class U2SimpleMsaDbi : public U2MsaDbi {
 protected:
     U2SimpleMsaDbi(U2Dbi* rootDbi) : U2MsaDbi(rootDbi) {}
-    
+
+public:
     virtual void createMsaObject(U2Msa&, const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteMsa, getRootDbi(), os);
     }
@@ -172,6 +176,7 @@ class U2SimpleAssemblyDbi: public U2AssemblyDbi{
 protected:
     U2SimpleAssemblyDbi(U2Dbi* rootDbi) : U2AssemblyDbi(rootDbi) {}
 
+public:
     virtual void createAssemblyObject(U2Assembly&, const QString&,  U2DbiIterator<U2AssemblyRead>*, U2AssemblyReadsImportInfo&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
@@ -198,15 +203,14 @@ protected:
 };
 
 /** Default no-op implementation for write  methods of U2FeatureDbi */
-class U2SimpleFeatureDbi: public U2FeatureDbi {
+class U2SimpleFeatureDbi : public U2FeatureDbi {
 protected:
     U2SimpleFeatureDbi(U2Dbi* rootDbi) : U2FeatureDbi(rootDbi) {}
 
+public:
     virtual void createFeature(U2Feature&, const QList<U2FeatureKey>&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
     }
-
-
 
     virtual void addKey(const U2DataId&, const U2FeatureKey&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteFeatures, getRootDbi(), os);
@@ -234,7 +238,8 @@ protected:
 class U2SimpleAttributeDbi: public U2AttributeDbi {
 protected:
     U2SimpleAttributeDbi(U2Dbi* rootDbi) : U2AttributeDbi(rootDbi) {}
-    
+
+public:    
     virtual void removeAttributes(const QList<U2DataId>&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }
@@ -278,6 +283,7 @@ class U2SimpleVariantDbi: public U2VariantDbi {
 protected:
     U2SimpleVariantDbi(U2Dbi* rootDbi) : U2VariantDbi(rootDbi) {}
 
+public:
     virtual void createVariantTrack(U2VariantTrack& , U2DbiIterator<U2Variant>* , const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteVariant, getRootDbi(), os); 
     }

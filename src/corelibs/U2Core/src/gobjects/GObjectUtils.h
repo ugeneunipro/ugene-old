@@ -29,10 +29,11 @@ namespace U2 {
 
 class AnnotationTableObject;
 class Annotation;
-class DNASequenceObject;
+class U2SequenceObject;
 class DNATranslation;
 class DNASequence;
 class GUrl;
+class DNAAlphabet;
 
 class U2CORE_EXPORT GObjectUtils {
 public:
@@ -60,11 +61,11 @@ public:
 
     static GObject*         selectObjectByReference(const GObjectReference& r, UnloadedObjectFilter f);
 
-    static DNATranslation*  findComplementTT(DNASequenceObject* so);
+    static DNATranslation*  findComplementTT(DNAAlphabet* al);
 
-    static DNATranslation*  findAminoTT(DNASequenceObject* so, bool fromHintsOnly, const QString& table = NULL);
+    static DNATranslation*  findAminoTT(U2SequenceObject* so, bool fromHintsOnly, const QString& table = NULL);
 
-    static DNATranslation*  findBackTranslationTT(DNASequenceObject* so, const QString& table = NULL);
+    static DNATranslation*  findBackTranslationTT(U2SequenceObject* so, const QString& table = NULL);
 
     //checks object type for both loaded and unloaded states
     static bool             hasType(GObject* obj, const GObjectType& type);

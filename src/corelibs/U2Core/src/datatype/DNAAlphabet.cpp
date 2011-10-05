@@ -71,17 +71,6 @@ QByteArray DNAAlphabet::getAlphabetChars(bool forceBothCases) const {
     return res;
 }
 
-DNAAlphabet* DNAAlphabet::deriveCommonAlphabet(DNAAlphabet* al1, DNAAlphabet* al2) {
-    if (al1  == al2) {
-        return al1;
-    }
-    if (al1->getType()!=al2->getType()) {
-        return NULL;
-    }
-    DNAAlphabet* resAl = al1->getNumAlphabetChars() >= al2->getNumAlphabetChars() ? al1 : al2;
-    return resAl;
-}
-
 
 bool DNAAlphabet::containsAll(const char* str, int len) const {
     for (int i=0; i < len; i++) {

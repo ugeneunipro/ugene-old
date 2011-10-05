@@ -36,12 +36,12 @@ class CreateFragmentDialog : public QDialog, public Ui_CreateFragmentDialog {
     Q_OBJECT
 public:
     CreateFragmentDialog(ADVSequenceObjectContext* seqCtx, QWidget* p);
-    CreateFragmentDialog(DNASequenceObject* seqObj, QWidget* p);
+    CreateFragmentDialog(U2SequenceObject* seqObj, QWidget* p);
     virtual void accept();
     const DNAFragment& getFragment() { return dnaFragment; }
 private:
     CreateAnnotationWidgetController* ac;
-    DNASequenceObject*  seqObj;
+    U2SequenceObject*  seqObj;
     QList<AnnotationTableObject*> relatedAnnotations;
     QSet<QString>  enzymesSelection;
     void setupAnnotationsWidget();

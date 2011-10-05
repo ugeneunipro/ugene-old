@@ -24,13 +24,16 @@
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiUtils.h>
 
 #include <U2Algorithm/MSAConsensusUtils.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
@@ -52,7 +55,7 @@ ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFor
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 
-void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&, TaskStateInfo& ti) {
+void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&, U2OpStatus& os) {
     static int READ_BUFF_SIZE = 1024;
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
@@ -71,11 +74,11 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
     //1 skip first line
     int len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
     if (!lineOk || !readBuffer.startsWith( CLUSTAL_HEADER )) {
-        ti.setError( ClustalWAlnFormat::tr("Illegal header line"));
+        os.setError( ClustalWAlnFormat::tr("Illegal header line"));
     }
 
     //read data
-    while (!ti.cancelFlag && (len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Include, &lineOk)) > 0) {
+    while (!os.isCoR() && (len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Include, &lineOk)) > 0) {
         if( QByteArray::fromRawData( buff, len ).startsWith( CLUSTAL_HEADER ) ) {
             io->skip( -len );
             break;
@@ -91,7 +94,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
             if (al.getNumRows() == 0) {
                 continue;//initial empty lines
             }
-            ti.setError( ClustalWAlnFormat::tr("Error parsing file"));
+            os.setError( ClustalWAlnFormat::tr("Error parsing file"));
             break;
         }
         
@@ -103,7 +106,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
                 valIdx++;
             }
             if (valIdx <= 0 || valIdx >= len-1) {
-                ti.setError( ClustalWAlnFormat::tr("Invalid alignment format"));
+                os.setError( ClustalWAlnFormat::tr("Invalid alignment format"));
                 break;
             }
             valStartPos = valIdx;
@@ -144,13 +147,13 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
                 assert(lastBlockLine);
                 // consensus line
             } else {
-                ti.setError( ClustalWAlnFormat::tr("Incorrect number of sequences in block"));
+                os.setError( ClustalWAlnFormat::tr("Incorrect number of sequences in block"));
                 break;
             } 
             if (rowIdx != -1) {
                 const MAlignmentRow& row = al.getRow(rowIdx);
                 if (row.getName() != name) {
-                    ti.setError( ClustalWAlnFormat::tr("Sequence names are not matched"));
+                    os.setError( ClustalWAlnFormat::tr("Sequence names are not matched"));
                     break;
                 }
                 al.appendChars(rowIdx, value.constData(), value.size());
@@ -158,7 +161,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
         }
         if (lastBlockLine) {
             firstBlock = false;
-            if (!MSAUtils::checkPackedModelSymmetry(al, ti)) {
+            if (!MSAUtils::checkPackedModelSymmetry(al, os)) {
                 break;
             }
             sequenceIdx = 0;
@@ -166,39 +169,32 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
             sequenceIdx++;
         }
 
-        ti.progress = io->getProgress();
+        os.setProgress(io->getProgress());
     }
-    MSAUtils::checkPackedModelSymmetry(al, ti);
-    if (ti.hasError()) {
+    MSAUtils::checkPackedModelSymmetry(al, os);
+    if (os.hasError()) {
         return;
     }
-    DocumentFormatUtils::assignAlphabet(al);
-    if (al.getAlphabet() == NULL) {
-        ti.setError( ClustalWAlnFormat::tr("Alphabet is unknown"));
-        return;
-    }
-
+    U2AlphabetUtils::assignAlphabet(al);
+    CHECK_EXT(al.getAlphabet()!=NULL, os.setError( ClustalWAlnFormat::tr("Alphabet is unknown")), );
+    
     MAlignmentObject* obj = new MAlignmentObject(al);
     objects.append(obj);
 }
 
-Document* ClustalWAlnFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
+Document* ClustalWAlnFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     QList<GObject*> objects;
-    load(io, objects, fs, ti);
-    
-    if (ti.hasError()) {
-        qDeleteAll( objects );
-        return NULL;
-    }
+    load(io, objects, fs, os);
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);    
     assert(objects.size() == 1);
-    return new Document(this, io->getFactory(), io->getURL(), objects, fs);
+    return new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
 }
 
 #define MAX_LINE_LEN    80
 #define MAX_NAME_LEN    39
 #define SEQ_ALIGNMENT    5
 
-void ClustalWAlnFormat::save(IOAdapter* io, Document* d, TaskStateInfo& ti) {
+void ClustalWAlnFormat::save(IOAdapter* io, Document* d, U2OpStatus& ti) {
     const MAlignmentObject* obj = NULL;
     if( (d->getObjects().size() != 1)
         || ((obj = qobject_cast<const MAlignmentObject*>(d->getObjects().first())) == NULL)) {
@@ -278,15 +274,9 @@ void ClustalWAlnFormat::save(IOAdapter* io, Document* d, TaskStateInfo& ti) {
     }
 }
 
-void ClustalWAlnFormat::storeDocument( Document* d, TaskStateInfo& ti, IOAdapter* io ) {
-    if( NULL == d ) {
-        ti.setError(L10N::badArgument("doc"));
-        return;
-    }
-    if( NULL == io || !io->isOpen() ) {
-        ti.setError(L10N::badArgument("IO adapter"));
-        return;
-    }
+void ClustalWAlnFormat::storeDocument(Document* d, U2OpStatus& ti, IOAdapter* io) {
+    CHECK_EXT(d!=NULL, ti.setError(L10N::badArgument("doc")), );
+    CHECK_EXT(io != NULL && io->isOpen(), ti.setError(L10N::badArgument("IO adapter")), );
     save(io, d, ti);
 }
 

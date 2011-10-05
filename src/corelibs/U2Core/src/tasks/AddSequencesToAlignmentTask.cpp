@@ -27,6 +27,7 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 namespace U2 {
 
@@ -86,12 +87,12 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
     QList<GObject*> seqObjects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     
     foreach(GObject* obj, seqObjects) {
-        DNASequenceObject* dnaObj = qobject_cast<DNASequenceObject*>(obj);
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
         assert(dnaObj != NULL);
-        DNAAlphabet* newAlphabet = DNAAlphabet::deriveCommonAlphabet(dnaObj->getAlphabet(), bufMa.getAlphabet());
+        DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), bufMa.getAlphabet());
         if (newAlphabet != NULL) {
             bufMa.setAlphabet(newAlphabet);
-            MAlignmentRow row(dnaObj->getDNASequence().getName(), dnaObj->getSequence(), 0);
+            MAlignmentRow row(dnaObj->getGObjectName(), dnaObj->getWholeSequenceData(), 0);
             bufMa.addRow(row);
         } else {
             stateInfo.setError(tr("Sequence %1 from %2 has different alphabet").arg(dnaObj->getGObjectName()).arg(loadTask->getDocument()->getURLString()));

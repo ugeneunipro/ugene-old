@@ -24,9 +24,12 @@
 #include <QtCore/QList>
 #include <QtCore/QtAlgorithms>
 
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Task.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
 
 #include <gobject/uHMMObject.h>
 #include "uHMMFormat.h"
@@ -36,30 +39,25 @@ using namespace U2;
 
 const QString UHMMFormat::WRITE_FAILED  = UHMMFormat::tr( "write_to_file_failed" );
 
-static void loadOne( IOAdapter* io, QList< GObject* >& objects, TaskStateInfo& si ) {
-    if( si.hasError() || si.cancelFlag) {
-        return;
-    }
+static void loadOne( IOAdapter* io, QList< GObject* >& objects, U2OpStatus& os) {
+    CHECK_OP(os, );
     
-    UHMMFormatReader reader( io, si );
+    UHMMFormatReader reader( io, os);
     P7_HMM * hmm = reader.getNextHmm();
     
-    if( si.hasError() ) {
-        assert( NULL == hmm );
-        return;
-    }
+    CHECK_OP(os, );
     
-    assert( NULL != hmm );
+    assert(hmm  != NULL);
     QString objName( hmm->name );
     UHMMObject* obj = new UHMMObject( hmm, objName );
     objects.append( obj );
 }
 
-static void loadAll( IOAdapter* io, QList< GObject* >& objects, TaskStateInfo& ti ) {
+static void loadAll( IOAdapter* io, QList< GObject* >& objects, U2OpStatus& os) {
     assert( NULL != io && io->isOpen() );
     
-    while( !io->isEof() && !ti.hasError() && !ti.cancelFlag ) {
-        loadOne( io, objects, ti );
+    while( !io->isEof() && !os.isCoR()) {
+        loadOne( io, objects, os);
     }
 }
 
@@ -143,10 +141,10 @@ static void writeHMMProb( IOAdapter* io, int fieldwidth, float p ) {
     }
 }
 
-static void saveOne( IOAdapter* io, const P7_HMM* hmm, TaskStateInfo& ti ) {
+static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
     assert( NULL != hmm );
     assert( NULL != io && io->isOpen() );
-    assert( !ti.hasError() );
+    assert( !os.hasError() );
     
     try {
         int k = 0;
@@ -274,37 +272,32 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, TaskStateInfo& ti ) {
         }
         writeHMMASCIIStr( io, QByteArray( "//\n" ) );
     } catch( const UHMMFormat::UHMMWriteException& ex ) {
-        ti.setError( ex.what );
+        os.setError( ex.what );
     } catch(...) {
-        ti.setError( UHMMFormat::tr( "unknown_error_occurred" ) );
+        os.setError( UHMMFormat::tr( "unknown_error_occurred" ) );
     }
 }
 
-static void saveAll( IOAdapter* io, const QList< GObject* >& objects, TaskStateInfo& ti ) {
+static void saveAll( IOAdapter* io, const QList< GObject* >& objects, U2OpStatus& os ) {
     assert( NULL != io && io->isOpen() );
     QList< const P7_HMM* > hmms;
     
     foreach( const GObject* obj, objects ) {
-        const UHMMObject* hmmObj = qobject_cast< const UHMMObject* >( obj );
-        if( NULL == hmmObj ) {
-            ti.setError( L10N::badArgument( "Objects in document" ) );
-            return;
-        }
+        const UHMMObject* hmmObj = qobject_cast< const UHMMObject* >(obj);
+        CHECK_EXT(hmmObj != NULL, os.setError(L10N::badArgument("Objects in document")), );
         hmms.append( hmmObj->getHMM() );
     }
     
     foreach( const P7_HMM* hmm, hmms ) {
-        saveOne( io, hmm, ti );
-        if( ti.hasError() || ti.cancelFlag ) {
-            return;
-        }
+        saveOne(io, hmm, os);
+        CHECK_OP(os, );
     }
 }
 
 namespace U2 {
 
-const DocumentFormatId  UHMMFormat::UHHMER_FORMAT_ID       = "hmmer_document_format";
-const QString           UHMMFormat::WRITE_LOCK_REASON   = UHMMFormat::tr( "hmm_files_are_read_only" );
+const DocumentFormatId  UHMMFormat::UHHMER_FORMAT_ID   = "hmmer_document_format";
+const QString           UHMMFormat::WRITE_LOCK_REASON  = UHMMFormat::tr( "hmm_files_are_read_only" );
 
 UHMMFormat::UHMMFormat( QObject* obj ) : DocumentFormat( obj, DocumentFormatFlags_SW, QStringList("hmm")) {
     formatName = tr( "hmmer_format" );
@@ -320,23 +313,16 @@ const QString& UHMMFormat::getFormatName() const {
     return formatName;
 }
 
-Document* UHMMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& hints, DocumentLoadMode mode ) {
+Document* UHMMFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os) {
     QList< GObject* > objects;
-    if (mode == DocumentLoadMode_Whole) {
-        loadAll( io, objects, ti );
-    } else {
-        loadOne(io, objects, ti);
-    }
-    if( ti.hasError() || ti.cancelFlag ) {
-        qDeleteAll( objects );
-        return NULL;
-    }
-    return new Document( this, io->getFactory(), io->getURL(), objects, hints, WRITE_LOCK_REASON );
+    loadAll( io, objects, os );
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
+    return new Document( this, io->getFactory(), io->getURL(), targetDb, targetDb.isValid(), objects, hints, WRITE_LOCK_REASON );
 }
 
 
-void UHMMFormat::storeDocument( Document* doc, TaskStateInfo& ti, IOAdapter* io ) {
-    saveAll( io, doc->getObjects(), ti );
+void UHMMFormat::storeDocument( Document* doc, IOAdapter* io, U2OpStatus& os) {
+    saveAll(io, doc->getObjects(), os);
 }
 
 FormatCheckResult UHMMFormat::checkRawData( const QByteArray& data, const GUrl&) const {

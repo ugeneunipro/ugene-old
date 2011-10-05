@@ -24,12 +24,12 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Core/Task.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -47,10 +47,6 @@ DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFo
 }    
 
 
-Document* DbiDocumentFormat::createNewDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs) {
-    Document* d = DocumentFormat::createNewDocument(io, url, fs);
-    return d;
-}
 
 static void renameObjectsIfNamesEqual(QList<GObject*> & objs) {
     for(int i = 0; i < objs.size(); ++i) {
@@ -63,25 +59,22 @@ static void renameObjectsIfNamesEqual(QList<GObject*> & objs) {
     }
 }
 
-Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, const QVariantMap& fs, DocumentLoadMode) {
+Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     //1. open db
     //2. read all assembly & sequence objects
     //3. close db
     QString url = io->getURL().getURLString();
-    DbiHandle handle(id, url, true, ts);
-    if(ts.isCoR()) {
-        return NULL;
-    }
+    U2DbiRef srcDbiRef(id, url);
+    DbiConnection handle(srcDbiRef, true, os);
+    CHECK_OP(os, NULL);
     
     U2ObjectDbi* odbi = handle.dbi->getObjectDbi();
-    QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, ts);
-    if (ts.isCoR()) {
-        return NULL;
-    }
+    QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, os);
+    CHECK_OP(os, NULL);
+    
     QList<GObject*> objects;
     U2EntityRef ref;
-    ref.dbiId = url;
-    ref.factoryId = id;
+    ref.dbiRef = srcDbiRef;
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle.dbi->getEntityTypeById(id);
         switch (objectType) {
@@ -94,7 +87,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
                         coreLog.error(status.getError());
                         break;
                     }
-                    if(name.isEmpty()) {
+                    if (name.isEmpty()) {
                         assert(false);
                         name = "Assembly";
                     }
@@ -107,15 +100,15 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, TaskStateInfo& ts, cons
     }
     renameObjectsIfNamesEqual(objects);
     
-    Document* d = new Document(this, io->getFactory(), io->getURL(), objects, fs);
+    Document* d = new Document(this, io->getFactory(), io->getURL(), U2DbiRef(), false, objects, fs);
     return d;
 }
 
-void DbiDocumentFormat::storeDocument(Document* d, TaskStateInfo& ts, IOAdapter*) {
+void DbiDocumentFormat::storeDocument(Document* d, U2OpStatus& ts, IOAdapter*) {
     // 1. get db
     // 2. call sync
     QString url = d->getURLString();
-    DbiHandle handle(id, url, true, ts);
+    DbiConnection handle(U2DbiRef(id, url), true, ts);
     if (!ts.isCoR()) {
         handle.dbi->flush(ts);
     }

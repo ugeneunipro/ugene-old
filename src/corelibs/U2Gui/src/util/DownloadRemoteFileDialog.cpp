@@ -19,11 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QXmlInputSource>
-#include <QMessageBox>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+
+#include <QtXml/QXmlInputSource>
+
+#include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 
 #include <U2Core/AppContext.h>
@@ -33,6 +35,8 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include "DownloadRemoteFileDialog.h"
@@ -119,11 +123,11 @@ void DownloadRemoteFileDialog::accept()
         return;
     }
 
-    QString errorMessage;
-    fullPath = GUrlUtils::prepareDirLocation(fullPath, errorMessage);
+    U2OpStatus2Log os;
+    fullPath = GUrlUtils::prepareDirLocation(fullPath, os);
 
     if (fullPath.isEmpty()) {
-        QMessageBox::critical(this, L10N::errorTitle(), errorMessage);
+        QMessageBox::critical(this, L10N::errorTitle(), os.getError());
         ui->saveFilenameLineEdit->setFocus();
         return;
     }        

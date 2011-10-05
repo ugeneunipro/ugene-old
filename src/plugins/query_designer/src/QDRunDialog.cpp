@@ -210,12 +210,12 @@ void QDRunDialogTask::setupQuery() {
     const QList<GObject*>& objs = docWithSequence->findGObjectByType(GObjectTypes::SEQUENCE);
     CHECK_EXT(!objs.isEmpty(), setError(tr("Sequence not found, document: %1").arg(docWithSequence->getURLString())), );
 
-    DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(objs.first());
-    scheme->setDNA(seqObj);
+    U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(objs.first());
+    scheme->setSequence(seqObj->getWholeSequence());
     QDRunSettings settings;
-    settings.region = seqObj->getSequenceRange();
+    settings.region = U2Region(0, seqObj->getSequenceLength());
     settings.scheme = scheme;
-    settings.sequenceObj = seqObj;
+    settings.dnaSequence = seqObj->getWholeSequence();
     settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
     settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
     scheduler = new QDScheduler(settings);
@@ -242,13 +242,13 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
         IOAdapterFactory* io = ior->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
 
         GUrl url(output, GUrl_File);
-        QList<GObject*> gobjects;
-        gobjects.append(scheduler->getSettings().annotationsObj);
-        Document* docWithAnnotations = new Document(df, io, url, gobjects);
+        Document* docWithAnnotations = df->createNewLoadedDocument(io, url, stateInfo);
+        CHECK_OP(stateInfo, res);
+        docWithAnnotations->addObject(scheduler->getSettings().annotationsObj);
 
         Project* proj = AppContext::getProject();
         if (!addToProject) {
-            scheme->setDNA(NULL);
+            scheme->setSequence(DNASequence());
             SaveDocumentTask* saveTask = new SaveDocumentTask(docWithAnnotations, SaveDoc_DestroyAfter, QSet<QString>());
             res.append(saveTask);
         } else {
@@ -277,7 +277,7 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
 QDDialog::QDDialog(ADVSequenceObjectContext* _ctx)
 : QDialog(_ctx->getAnnotatedDNAView()->getWidget()), ctx(_ctx), scheme(NULL), txtDoc(NULL) {
     setupUi(this);
-    rs=new RegionSelector(this, ctx->getSequenceLen(), false, ctx->getSequenceSelection());
+    rs=new RegionSelector(this, ctx->getSequenceLength(), false, ctx->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
 
     addAnnotationsWidget();
@@ -285,14 +285,14 @@ QDDialog::QDDialog(ADVSequenceObjectContext* _ctx)
 }
 
 void QDDialog::addAnnotationsWidget() {
-    DNASequenceObject *dnaso = qobject_cast<DNASequenceObject*>(ctx->getSequenceGObject());
+    U2SequenceObject *dnaso = qobject_cast<U2SequenceObject*>(ctx->getSequenceGObject());
     CreateAnnotationModel acm;
     acm.sequenceObjectRef = GObjectReference(dnaso);
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.data->name = "Query_results";
     acm.useUnloadedObjects = true;
-    acm.sequenceLen = dnaso->getSequenceLen();
+    acm.sequenceLen = dnaso->getSequenceLength();
     cawc = new CreateAnnotationWidgetController(acm, this);
     QWidget* caw = cawc->getWidget();
     QVBoxLayout* l = new QVBoxLayout();
@@ -381,7 +381,7 @@ void QDDialog::sl_okBtnClicked() {
 
     bool isRegionOk=false;
     rs->getRegion(&isRegionOk);
-    if(!isRegionOk){
+    if (!isRegionOk){
         rs->showErrorMessage();
         return;
     }
@@ -390,14 +390,14 @@ void QDDialog::sl_okBtnClicked() {
     const CreateAnnotationModel& m = cawc->getModel();
     
     
-    scheme->setDNA(ctx->getSequenceObject());
+    scheme->setSequence(ctx->getSequenceObject()->getWholeSequence());
     QDRunSettings settings;
     GObject* ao = GObjectUtils::selectObjectByReference(m.annotationObjectRef, UOF_LoadedOnly);
     settings.annotationsObj = qobject_cast<AnnotationTableObject*>(ao);
     settings.annotationsObjRef = m.annotationObjectRef;
     settings.groupName = m.groupName;
     settings.scheme = scheme;
-    settings.sequenceObj = ctx->getSequenceObject();
+    settings.dnaSequence = ctx->getSequenceObject()->getWholeSequence();
     settings.viewName = ctx->getAnnotatedDNAView()->getName();
     settings.region = rs->getRegion();
 

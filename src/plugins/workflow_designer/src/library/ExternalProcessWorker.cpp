@@ -20,24 +20,31 @@
  */
 
 #include "ExternalProcessWorker.h"
+
+#include <U2Core/AppSettings.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/TextObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SequenceUtils.h>
+
 #include <U2Lang/BaseTypes.h>
-#include <U2Designer/DelegateEditors.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/ExternalToolCfg.h>
-#include <U2Core/AppSettings.h>
-#include <QtCore/QDateTime>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Lang/BaseSlots.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/TextObject.h>
 
+#include <U2Designer/DelegateEditors.h>
+
+#include <QtCore/QDateTime>
+#include <memory>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -133,98 +140,85 @@ const QString ExternalProcessWorker::generateURL(const QString &extention, const
     return url;
 }
 
+class BusyHelper {
+public:
+    BusyHelper(bool& _b) : b(_b), keepBusy(false){ b = true;}
+    ~BusyHelper() {b = keepBusy;}
+    bool& b;
+    bool keepBusy;
+};
+
 Task* ExternalProcessWorker::tick() {
-    if(busy) {
-        return NULL;
-    }
-    busy = true;
+    CHECK(!busy, NULL);
+    
+    BusyHelper busyLock(busy);
+
     QString execString = commandLine;
     foreach(Attribute *a, actor->getAttributes()) {
         int i = execString.indexOf(QRegExp("\\$" + a->getDisplayName() + "(\\W|$)"));
         if(i != -1) {
-            //commandLine.replace("$" + a->getDisplayName(), a->getAttributeValue<QString>()); //set parameters in command line with attributes values
             execString.replace(i, a->getDisplayName().size() + 1 , a->getAttributeValue<QString>()); //set parameters in command line with attributes values
         }
     }
 
     int i = 0;
-    
+    U2OpStatus2Log os;
     foreach(const DataConfig& dataCfg, cfg->inputs) { //write all input data to files
         DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format);
-        IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+        IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
         inputUrls << url;
-        /*Document *d = new Document(f, io, url);
-        d->setLoaded(true);*/
-        Document *d = NULL;
-
+        std::auto_ptr<Document> d(f->createNewLoadedDocument(iof, url, os));
+        CHECK_OP(os, NULL);
 
         Message inputMessage = getMessageAndSetupScriptValues(inputs[i]);
-        QList<GObject*> l;
         QVariantMap qm = inputMessage.getData().toMap();
-        if(dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
+        if (dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
             DNASequence seq = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-            //d->addObject(new DNASequenceObject(seq.getName(), seq));
-            l << new DNASequenceObject(seq.getName(), seq);
-            d = new Document(f, io, url, l);
+            U2EntityRef seqRef = U2SequenceUtils::import(d->getDbiRef(), seq, os);
+            CHECK_OP(os, NULL);
+            d->addObject(new U2SequenceObject(seq.getName(), seqRef));
         } else if(dataCfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
             QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
             AnnotationTableObject * aobj = new AnnotationTableObject("anns");
-            foreach(SharedAnnotationData ann, anns) {
+            foreach(const SharedAnnotationData& ann, anns) {
                 QStringList list;
                 aobj->addAnnotation(new Annotation(ann));
             }
-            l << aobj;
-            //d->addObject(aobj);
-            d = new Document(f, io, url, l);
+            d->addObject(aobj);
         } else if(dataCfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
             MAlignment ma = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-            l << new MAlignmentObject(ma);
-            //d->addObject(new MAlignmentObject(ma));
-            d = new Document(f, io, url, l);
-        } else if(dataCfg.type == SEQ_WITH_ANNS) {
+            d->addObject(new MAlignmentObject(ma));
+        } else if (dataCfg.type == SEQ_WITH_ANNS) {
             DNASequence seq = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-            DNASequenceObject*dnaObj =  new DNASequenceObject(seq.getName(), seq);
-            //d->addObject(dnaObj);
-            l << dnaObj;
-
+            U2EntityRef seqRef = U2SequenceUtils::import(d->getDbiRef(), seq, os);
+            CHECK_OP(os, NULL);
+            U2SequenceObject* dnaObj = new U2SequenceObject(seq.getName(), seqRef);
+            d->addObject(dnaObj);
+            
             QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
             AnnotationTableObject * aobj = new AnnotationTableObject("anns");
-            foreach(SharedAnnotationData ann, anns) {
-                QStringList list;
+            foreach(const SharedAnnotationData& ann, anns) {
                 aobj->addAnnotation(new Annotation(ann));
             }
             
-            l << aobj;
-            d = new Document(f, io, url, l);
-
+            d->addObject(aobj);
+            
             QList<GObjectRelation> rel;
             rel << GObjectRelation(GObjectReference(dnaObj), GObjectRelationRole::SEQUENCE);
             aobj->setObjectRelations(rel);
         } else if(dataCfg.type == BaseTypes::STRING_TYPE()->getId()) {
             QString str = qm.value(BaseSlots::TEXT_SLOT().getId()).value<QString>();
-            TextObject *obj = new TextObject(str, "tmp_text_object");
-            l << obj;
-            d = new Document(f, io, url, l);
+            d->addObject(new TextObject(str, "tmp_text_object"));
         }
         
-        //TODO: document can be NULL here!!!
-
-        //IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        //QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
-        //inputUrls << url;
-        //Document *d = new Document(f, io, url, l);
-        TaskStateInfo ts;
-        f->storeDocument(d, ts, io);
+        f->storeDocument(d.get(), os);
+        CHECK_OP(os, NULL);
 
         int ind = execString.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
-        if(ind != -1) {
+        if (ind != -1) {
             execString.replace(ind, dataCfg.attrName.size() + 1 , url); 
         }
-        //commandLine.replace("$" + dataCfg.attrName, url);
-        
-        delete d;
-        i++;
     }
 
     foreach(const DataConfig &dataCfg, cfg->outputs) { 
@@ -235,11 +229,11 @@ Task* ExternalProcessWorker::tick() {
         if(ind != -1) {
             execString.replace(ind, dataCfg.attrName.size() + 1 , "\"" + url1 + "\""); 
         }
-        //commandLine.replace("$" + dataCfg.attrName, url1);
     }
     
     LaunchExternalToolTask *task = new LaunchExternalToolTask(execString);
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onTaskFinishied()));
+    busyLock.keepBusy = true;
     return task;
 }
 
@@ -253,11 +247,11 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             QString url = i.key();
 
             DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(cfg.format);
-            IOAdapterFactory *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-            TaskStateInfo ts;
-            Document * d = f->loadDocument(io, url,ts, QVariantMap());
-
-            if(d == NULL) {
+            IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            U2OpStatus2Log os;
+            std::auto_ptr<Document> d(f->loadDocument(iof, url, QVariantMap(), os));
+            
+            if (os.hasError()) {
                 //coreLog.error(tr("Can't open document"));
                 bool isEnded = true;
                 foreach(CommunicationChannel *ch, inputs) {
@@ -273,10 +267,10 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 return;
             }
 
-            if(cfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()){
-                DNASequenceObject *obj = static_cast<DNASequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
+            if( cfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()){
+                U2SequenceObject *obj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<DNASequence>(obj->getDNASequence());
+                v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<DNASequence>(obj->getWholeSequence());
             } else if(cfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
                 MAlignmentObject *obj =  static_cast<MAlignmentObject *> (d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT, UOF_LoadedAndUnloaded).first());
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
@@ -291,9 +285,9 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue(list);
             } else if(cfg.type == SEQ_WITH_ANNS) {
                 if(!d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
-                    DNASequenceObject *seqObj = static_cast<DNASequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
-                    DNASequence seq = seqObj->getSequence();
-                    seq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::RAW());
+                    U2SequenceObject *seqObj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
+                    DNASequence seq = seqObj->getWholeSequence();
+                    seq.alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::RAW());
                     v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<DNASequence>(seq);
                 }
                 if(!d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).isEmpty()) {

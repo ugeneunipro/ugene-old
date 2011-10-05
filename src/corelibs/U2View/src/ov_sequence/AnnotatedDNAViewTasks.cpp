@@ -100,7 +100,7 @@ OpenAnnotatedDNAViewTask::OpenAnnotatedDNAViewTask(const QList<GObject*>& object
 #define MAX_SEQ_OBJS_PER_VIEW 50
 
 
-static QString deriveViewName(const QList<DNASequenceObject*>& seqObjects) {
+static QString deriveViewName(const QList<U2SequenceObject*>& seqObjects) {
     QString viewName;
     if (seqObjects.size() > 1) {
         bool singleDocument = true;
@@ -128,11 +128,11 @@ void OpenAnnotatedDNAViewTask::open() {
     if (stateInfo.hasError() || sequenceObjectRefs.isEmpty()) {
         return;
     }
-    QList<DNASequenceObject*> seqObjects;
+    QList<U2SequenceObject*> seqObjects;
     QList<GObject*> allSequenceObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE);
     foreach(const GObjectReference& r, sequenceObjectRefs) {
         GObject* obj = GObjectUtils::selectObjectByReference(r, allSequenceObjects, UOF_LoadedOnly);
-        DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
         if (seqObj!=NULL) {
             seqObjects.append(seqObj);
             if (seqObjects.size() > MAX_SEQ_OBJS_PER_VIEW) {
@@ -167,14 +167,14 @@ void OpenAnnotatedDNAViewTask::updateTitle(AnnotatedDNAView* v) {
 
 //////////////////////////////////////////////////////////////////////////
 // open view from state
-static QSet<Document*> selectDocuments(Project* p, const QList<GObjectReference>& refs) {
+static QSet<Document*> selectDocuments(Project* p, const QList<GObjectReference>& refs, U2OpStatus& os) {
     QSet<Document*> res;
     foreach(const GObjectReference& r, refs) {
         Document* doc = p->findDocumentByURL(r.docUrl);
-        if (doc!=NULL) {
+        if (doc != NULL) {
             res.insert(doc);
         } else {
-            doc = ObjectViewTask::createDocumentAndAddToProject(r.docUrl, p);
+            doc = ObjectViewTask::createDocumentAndAddToProject(r.docUrl, p, os);
             if (doc) {
                 res.insert(doc);
             }
@@ -196,7 +196,7 @@ OpenSavedAnnotatedDNAViewTask::OpenSavedAnnotatedDNAViewTask(const QString& view
     foreach(const GObjectReference& ref, refs) {
         Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
         if (doc == NULL) {
-            doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject());
+            doc = createDocumentAndAddToProject(ref.docUrl, AppContext::getProject(), stateInfo);
             if (!doc) {
                 stateIsIllegal = true;
                 stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
@@ -209,7 +209,7 @@ OpenSavedAnnotatedDNAViewTask::OpenSavedAnnotatedDNAViewTask(const QString& view
         }
     }
     
-    QSet<Document*> adocs = selectDocuments(AppContext::getProject(), state.getAnnotationObjects());
+    QSet<Document*> adocs = selectDocuments(AppContext::getProject(), state.getAnnotationObjects(), stateInfo);
     foreach(Document* adoc, adocs) {
         if (!adoc->isLoaded()) {
             documentsToLoad.append(adoc);
@@ -222,7 +222,7 @@ void OpenSavedAnnotatedDNAViewTask::open() {
         return;
     }
     AnnotatedDNAViewState state(stateData);
-    QList<DNASequenceObject*> sequenceObjects;
+    QList<U2SequenceObject*> sequenceObjects;
     foreach(const GObjectReference& ref, state.getSequenceObjects()) {
         Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
         if (doc == NULL) {
@@ -236,7 +236,7 @@ void OpenSavedAnnotatedDNAViewTask::open() {
             stateInfo.setError(tr("DNA sequence object not found: %1").arg(ref.objName));
             return;
         }
-        DNASequenceObject* dnaObj= qobject_cast<DNASequenceObject*>(obj);
+        U2SequenceObject* dnaObj= qobject_cast<U2SequenceObject*>(obj);
         sequenceObjects.append(dnaObj);
     }
     AnnotatedDNAView* v = new AnnotatedDNAView(viewName, sequenceObjects);

@@ -23,7 +23,7 @@
 #include "DocumentFormatUtils.h"
 
 #include <U2Core/IOAdapter.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/Log.h>
@@ -32,14 +32,14 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/U2SafePoints.h>
-
+#include <U2Core/U2DbiUtils.h>
 
 namespace U2{
 
 #define READ_BUFF_SIZE 4096         //file reader buffer size
 #define SEQUENCE_TAG " sequence"    //tag for sequence object
 #define FEATURES_TAG " features"    //tag for annotation table
-#define LINE_LEN 70                 //line length for 
+#define SAVE_LINE_LEN 70                 //line length for 
 
 GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlags_SW, QStringList("gff")){
     formatName = tr("GFF");
@@ -49,21 +49,15 @@ GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlags_SW, QStri
 }
 
 
-Document* GFFFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode){
-    if( NULL == io || !io->isOpen() ) {
-        ti.setError(L10N::badArgument("IO adapter"));
-        return NULL;
-    }
+Document* GFFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
+    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
 
-    load(io, objects, fs, ti);
+    load(io, dbiRef, objects, fs, os);
 
-    if (ti.hasError() || ti.cancelFlag) {
-        qDeleteAll(objects);
-        return NULL;
-    }
-
-    Document* doc = new Document( this, io->getFactory(), io->getURL(), objects);
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
+    
+    Document* doc = new Document( this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects);
     return doc;
 }
 
@@ -114,7 +108,7 @@ static QString fromEscapedString( const QString & val ) {
     return ret;
 }
 
-void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& hints, TaskStateInfo& si){
+void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
     int len = io->readLine(buff.data, READ_BUFF_SIZE);
     buff.data[len] = '\0';
@@ -122,7 +116,7 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&
     QStringList words = qstrbuf.split(QRegExp("\\s+"));
     bool isOk;
     QSet <AnnotationTableObject*> atoSet;
-    QMap <QString, DNASequenceObject*> seqMap;
+    QMap <QString, U2SequenceObject*> seqMap;
     //header validation
     validateHeader(words);
 
@@ -132,6 +126,7 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&
     QString headerName, objName;
     QByteArray seq;
     QSet<QString> names;
+    TmpDbiObjects dbiObjects(dbiRef, os);
     while((len = io->readLine(buff.data, READ_BUFF_SIZE)) > 0){
         qstrbuf.clear();
         buff.data[len] = '\0';
@@ -147,42 +142,40 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&
                 objName = headerName + SEQUENCE_TAG;
                 DNASequence sequence(objName, seq);
                 sequence.info.insert(DNAInfo::FASTA_HDR, objName);
-                sequence.info.insert(DNAInfo::ID, objName);
-                DNASequenceObject *dnaso = DocumentFormatUtils::addSequenceObject(objects, objName, sequence, hints, si);
-                if (si.hasError()) {
-                    return;
-                }
-                SAFE_POINT(dnaso != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
-                seqMap.insert(objName, dnaso);
+                U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, sequence, hints, os);
+                CHECK_OP(os, );
+                SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
+                dbiObjects.objects << seqObj->getSequenceRef().entityId;
+                seqMap.insert(objName, seqObj);
                 headerName = words.join(" ").remove(">");
                 seq = "";
             } else {
                 if(words.size() > 1){
-                    si.setError(tr("Parsing error: sequence in FASTA sequence has whitespaces at line %1").arg(lineNumber));
+                    os.setError(tr("Parsing error: sequence in FASTA sequence has whitespaces at line %1").arg(lineNumber));
                     return;
                 }
                 seq.append(words[0]);
             }
         } else if (!words[0].startsWith("#")){
             if(words.size() != 9){
-                si.setError(tr("Parsing error: too few fields at line %1").arg(lineNumber));
+                os.setError(tr("Parsing error: too few fields at line %1").arg(lineNumber));
                 return;
             }
             //annotation's region
             int start = words[3].toInt(&isOk);
             if(!isOk){
-                si.setError(tr("Parsing error: start position at line %1 is not integer").arg(lineNumber));
+                os.setError(tr("Parsing error: start position at line %1 is not integer").arg(lineNumber));
                 return;
             }
 
             int end = words[4].toInt(&isOk);
             if(!isOk){
-                si.setError(tr("Parsing error: end position at line %1 is not integer").arg(lineNumber));
+                os.setError(tr("Parsing error: end position at line %1 is not integer").arg(lineNumber));
                 return;
             }
 
             if(start > end){
-                si.setError(tr("Parsing error: incorrect annotation region at line %1").arg(lineNumber));
+                os.setError(tr("Parsing error: incorrect annotation region at line %1").arg(lineNumber));
                 return;
             }
 
@@ -201,7 +194,7 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&
                 foreach(QString p, pairs){
                     QStringList qual = p.split("=", QString::SkipEmptyParts);
                     if(qual.size() != 2){
-                        si.setError(tr("Parsing error: one of the qualifiers in attributes are incorrect at line %1").arg(lineNumber));
+                        os.setError(tr("Parsing error: one of the qualifiers in attributes are incorrect at line %1").arg(lineNumber));
                         return;
                     }
                     qual[0] = fromEscapedString(qual[0]);
@@ -286,14 +279,15 @@ void GFFFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&
         DNASequence sequence(objName, seq);
         sequence.info.insert(DNAInfo::FASTA_HDR, objName);
         sequence.info.insert(DNAInfo::ID, objName);
-        DNASequenceObject *dnaso = DocumentFormatUtils::addSequenceObject(objects, objName, sequence, hints, si);
-        if (si.hasError()) {
+        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, sequence, hints, os);
+        if (os.hasError()) {
             qDeleteAll(seqMap.values());
             seqMap.clear();
             return;
         }
-        SAFE_POINT(dnaso != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
-        seqMap.insert(objName, dnaso);
+        SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
+        seqMap.insert(objName, seqObj);
+        dbiObjects.objects << seqObj->getSequenceRef().entityId;
     }
     
     //linking annotation tables with corresponding sequences
@@ -376,7 +370,7 @@ QStringList GFFFormat::parseLine( QString line ) const{
     return result;
 }
 
-void GFFFormat::storeDocument( Document* doc, TaskStateInfo& si, IOAdapter* io ){
+void GFFFormat::storeDocument( Document* doc, U2OpStatus& si, IOAdapter* io ){
     QByteArray header("##gff-version\t3\n");
     qint64 len = io->writeBlock(header);
     if (len!=header.size()) {
@@ -450,7 +444,7 @@ void GFFFormat::storeDocument( Document* doc, TaskStateInfo& si, IOAdapter* io )
             return;
         }
         foreach(GObject *s, sequences){
-            DNASequenceObject *dnaso = qobject_cast<DNASequenceObject*>(s);
+            U2SequenceObject *dnaso = qobject_cast<U2SequenceObject*>(s);
             QString fastaHeader = dnaso->getGObjectName();
             int tagSize = QString(SEQUENCE_TAG).size(), headerSize = fastaHeader.size();
             fastaHeader = fastaHeader.left(headerSize - tagSize);  //removing previously added tag
@@ -462,10 +456,11 @@ void GFFFormat::storeDocument( Document* doc, TaskStateInfo& si, IOAdapter* io )
                 return;
             }
             
-            const char* seq = dnaso->getSequence().constData();
-            int len = dnaso->getSequence().length();
-            for (int i = 0; i < len; i += LINE_LEN ) {
-                int chunkSize = qMin( LINE_LEN, len - i );
+            DNASequence wholeSeq = dnaso->getWholeSequence();
+            const char* seq = wholeSeq.constData();
+            int len = wholeSeq.length();
+            for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
+                int chunkSize = qMin( SAVE_LINE_LEN, len - i );
                 if (io->writeBlock( seq + i, chunkSize ) != chunkSize || !io->writeBlock( "\n", 1 )) {
                     si.setError(L10N::errorWritingFile(doc->getURL()));
                     return;

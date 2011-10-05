@@ -40,7 +40,7 @@ public:
     DeviationGraphFactory(GDeviationType t, QObject* p);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
-    virtual bool isEnabled(DNASequenceObject* o) const;
+    virtual bool isEnabled(U2SequenceObject* o) const;
 private:
     QPair<char, char> devPair;
 };
@@ -50,7 +50,7 @@ public:
     DeviationGraphAlgorithm(const QPair<char, char>& _p);
     virtual ~DeviationGraphAlgorithm() {}
 
-    virtual void calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
+    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
 
 private:
     void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps);

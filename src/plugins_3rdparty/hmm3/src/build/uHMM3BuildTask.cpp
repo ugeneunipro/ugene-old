@@ -30,6 +30,9 @@
 #include <U2Core/Log.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <gobject/uHMMObject.h>
 
 #include "uhmm3build.h"
@@ -57,7 +60,12 @@ static Document * getSavingDocument( const QList< P7_HMM* >& hmms, const QString
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( outfile ) );
     assert( NULL != iof );
     
-    return new Document( hmmFrmt, iof, outfile, docObjects, QVariantMap() );
+    U2OpStatus2Log os;
+    Document* doc = hmmFrmt->createNewLoadedDocument(iof, outfile, os, QVariantMap());
+    CHECK_OP(os, NULL);
+    foreach(GObject* obj, docObjects) {
+        doc->addObject(obj);
+    }
 }
 
 namespace U2 {

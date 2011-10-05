@@ -42,7 +42,7 @@ namespace U2 {
 
 Overview::Overview(QWidget *p, ADVSequenceObjectContext *ctx) : GSequenceLineView(p, ctx) {
     renderArea = new OverviewRenderArea(this);
-    visibleRange = U2Region(0, ctx->getSequenceLen());
+    visibleRange = U2Region(0, ctx->getSequenceLength());
     renderArea->setMouseTracking(true);
 
     ADVSingleSequenceWidget* ssw = qobject_cast<ADVSingleSequenceWidget*>(p);
@@ -206,7 +206,7 @@ void Overview::mousePressEvent(QMouseEvent *me) {
             mousePosToSlider = QPoint(renderAreaPos - detSlider.center().toPoint());
         }
         else {
-            int seqLen = ctx->getSequenceLen();
+            int seqLen = ctx->getSequenceLength();
             int panVisLen = panView->getVisibleRange().length;
             int detVisLen = detView->getVisibleRange().length;
 
@@ -261,7 +261,8 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
             return;
         }
 
-        if(panView->isVisible()) {
+        if (panView->isVisible()) {
+            qint64 seqLen = ctx->getSequenceLength();
             if(panSliderMovedRight) {
                 OverviewRenderArea* ra = static_cast<OverviewRenderArea*>(renderArea);
                 
@@ -274,7 +275,7 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
 
                 panVisLen = panView->getVisibleRange().length + panVisLen;
                 pos = renderArea->coordToPos(panSlider.left()) ;
-                if(panVisLen > 0 && panView->getSeqLen() >= (panVisLen + pos)) {
+                if(panVisLen > 0 && seqLen >= (panVisLen + pos)) {
                     panView->setVisibleRange(U2Region(pos, panVisLen));
                 }
             } else if(panSliderMovedLeft) {
@@ -289,18 +290,18 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
 
                 panVisLen = panView->getVisibleRange().length + panVisLen + offset;
                 pos = panView->getVisibleRange().endPos() - panVisLen;
-                if(panVisLen > 0 && pos > 0 && (panVisLen + pos) <= ctx->getSequenceLen()) {
+                if(panVisLen > 0 && pos > 0 && (panVisLen + pos) <= seqLen) {
                     panView->setVisibleRange(U2Region(pos, panVisLen));
                 }
             } else if(panSliderClicked) {
                 int panVisLen = panView->getVisibleRange().length;
-                pos = qBound(0, pos, ctx->getSequenceLen() - panVisLen);
+                pos = qBound(qint64(0), qint64(pos), seqLen - panVisLen);
                 panView->setVisibleRange(U2Region(pos, panVisLen));
             }
         }
         if (detSliderClicked) {
             int detVisLen = detView->getVisibleRange().length;
-            pos = qBound(0, pos, ctx->getSequenceLen() - detVisLen);
+            pos = qBound(qint64(0), qint64(pos), seqLen - detVisLen);
             detView->setVisibleRange(U2Region(pos, detVisLen));
         }
     }
@@ -311,11 +312,12 @@ void Overview::mouseDoubleClickEvent(QMouseEvent* me) {
     if(me->buttons() & Qt::LeftButton) {
         OverviewRenderArea* ra = static_cast<OverviewRenderArea*>(renderArea);
 
+        qint64 seqLen = ctx->getSequenceLength();
         QRectF panSlider(ra->getPanSlider());
         int panVisLen = panView->getVisibleRange().length;
         QPoint renderAreaPos = toRenderAreaPoint(me->pos());
         int panPos = ra->coordToPos(renderAreaPos.x() - panSlider.width()/2);
-        panPos = qBound(0, panPos, ctx->getSequenceLen() - panVisLen);
+        panPos = qBound(qint64(0), qint64(panPos), seqLen - panVisLen);
         panView->setVisibleRange(U2Region(panPos, panVisLen));
         
         //don't process detSlider when details view is collapsed
@@ -325,7 +327,7 @@ void Overview::mouseDoubleClickEvent(QMouseEvent* me) {
             QRectF detSlider(ra->getDetSlider());
             int detVisLen = detView->getVisibleRange().length;
             int detPos = ra->coordToPos(renderAreaPos.x());
-            detPos = qBound(0, detPos, ctx->getSequenceLen() - detVisLen);
+            detPos = qBound(qint64(0), qint64(detPos), seqLen - detVisLen);
             detView->setVisibleRange(U2Region(detPos, detVisLen));
         }
 
@@ -422,9 +424,9 @@ int OverviewRenderArea::getAnnotationDensity (int pos) const {
 void OverviewRenderArea::setAnnotationsOnPos() {
     annotationsOnPos.clear();
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    int len = ctx->getSequenceLen();
+    qint64 len = ctx->getSequenceLength();
     annotationsOnPos.resize(len);
-    const U2Region& sequenceRange = ctx->getSequenceObject()->getSequenceRange();
+    U2Region sequenceRange(0, ctx->getSequenceObject()->getSequenceLength());
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
     foreach(AnnotationTableObject* at, aObjs) {
@@ -519,7 +521,7 @@ void OverviewRenderArea::drawRuler(QPainter &p) {
     pen.setWidth(PEN_WIDTH);
     p.setPen(pen);
     Overview* gv = static_cast<Overview*>(view);
-    int seqLen = gv->ctx->getSequenceLen();
+    qint64 seqLen = gv->ctx->getSequenceLength();
     U2Region visibleRange = gv->getVisibleRange();
 
     float halfChar = getCurrentScale() / 2;

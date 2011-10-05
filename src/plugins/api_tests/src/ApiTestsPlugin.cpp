@@ -37,7 +37,7 @@ void ApiTestsPlugin::convert() {
     QString db("E:/!sandbox/alignment-dbi");
     AppContext::getTaskScheduler()->registerTopLevelTask(new ConvertToSQLiteTask(file, db));*/
     std::auto_ptr<U2Dbi> dbi;
-    U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById("SQLiteDbi");
+    U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById(SQLITE_DBI_ID);
     dbi.reset(factory->createDbi());
 
     QHash<QString, QString> props;

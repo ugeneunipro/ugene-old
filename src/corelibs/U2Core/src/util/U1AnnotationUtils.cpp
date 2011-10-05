@@ -23,188 +23,69 @@
 
 namespace U2 {
 
-QVector<U2Region> U1AnnotationUtils::fixLocationsForRemovedRegion( const U2Region& regionToDelete, 
-                                                                QVector<U2Region>& regionList, 
-                                                                AnnotationStrategyForResize s )
+QList< QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(const U2Region& region2Remove, qint64 region2InsertLength,  
+        const QVector<U2Region>& original, AnnotationStrategyForResize s )
 {
-    //assert (s == AnnotationStrategyForResize_Remove || s == AnnotationStrategyForResize_Resize);
-    QVector<U2Region> toDelete, toReplace;
-    foreach(U2Region reg, regionList){
-        toDelete.append(reg);
-        if (s != AnnotationStrategyForResize_Remove){
-            if(reg.contains(regionToDelete)){
-                reg.length -= regionToDelete.length;
-            }else if (regionToDelete.contains(reg)) {
-                reg.length = 0;
-            }else if(reg.intersects(regionToDelete)){
-                if(reg.startPos <= regionToDelete.startPos){
-                    reg.length -= reg.endPos() - regionToDelete.startPos;
-                }else{
-                    reg.length -= regionToDelete.endPos() - reg.startPos;
-                    reg.startPos = regionToDelete.startPos;
-                }
-            }else if(reg.startPos >= regionToDelete.endPos()){
-                reg.startPos -= regionToDelete.length;
-            } 
+    
+    QList< QVector<U2Region> > res;
+    qint64 dLen = region2InsertLength - region2Remove.length;
+    if (s == AnnotationStrategyForResize_Resize) {
+        if (region2Remove.length == region2InsertLength) {
+            res << original;
+            return res;
         }
-        else {
-            if(reg.intersects(regionToDelete) || regionToDelete.contains(reg)){
-                reg.length = 0;
-            }else if(reg.startPos >= regionToDelete.endPos()){
-                reg.startPos -= regionToDelete.length;
+    }
+    res << QVector<U2Region>();
+    QVector<U2Region>& updated =  res[0];
+
+    foreach(U2Region r, original) {
+        //if location ends before modification
+        if (r.endPos() < region2Remove.startPos) {
+            updated << r;
+            continue;
+        }
+        // if location starts after the modification
+        if (r.startPos >= region2Remove.endPos()) { 
+            r.startPos += dLen;
+            updated << r;
+            continue;
+        }
+        if (s == AnnotationStrategyForResize_Remove) {
+            continue;
+        }
+        if (s == AnnotationStrategyForResize_Resize) {
+            // if location contains modified region -> update it length
+            if (r.contains(region2Remove)) {
+                r.length += dLen;
+                updated << r;
+                continue;
             }
+            continue;
         }
-        if (reg.length != 0) {
-            toDelete.pop_back();
-            toReplace.append(reg);
-        }
-    }
-    regionList.clear();
-    regionList << toReplace;
-
-    return toDelete;
-}
-
-QVector<U2Region> U1AnnotationUtils::fixLocationsForInsertedRegion( qint64 insertPos, qint64 len, 
-                                                                 QVector<U2Region>& regionList, 
-                                                                 AnnotationStrategyForResize s,
-                                                                 Annotation *an, AnnotationTableObject *ato)
-{
-    QVector<U2Region> toReplace, toDelete, toSplit;
-    foreach(U2Region reg, regionList){
-        if(reg.endPos() <= insertPos){
-            toReplace.append(reg);
-        } else {
-            if (s == AnnotationStrategyForResize_Resize){
-                if(reg.startPos < insertPos && reg.endPos() > insertPos){
-                    reg.length += len;
-                    toReplace.append(reg);
-                }else if(reg.startPos >= insertPos){
-                    reg.startPos += len;
-                    toReplace.append(reg);
-                }                                
-            }else if(s == AnnotationStrategyForResize_Split_To_Joined){
-                if(reg.startPos < insertPos && reg.endPos() > insertPos){
-                    U2Region firstPart, secondPart;
-                    firstPart.startPos = reg.startPos;
-                    firstPart.length = insertPos - reg.startPos;
-                    secondPart.startPos = firstPart.endPos() + len;
-                    secondPart.length = reg.length - firstPart.length;
-                    toReplace.append(firstPart);
-                    toReplace.append(secondPart);
-                }else if(reg.startPos >= insertPos){
-                    reg.startPos += len;
-                    toReplace.append(reg);
-                }                                
-            }else if(s == AnnotationStrategyForResize_Split_To_Separate){
-                if(reg.startPos < insertPos && reg.endPos() > insertPos){
-                    U2Region firstPart, secondPart;
-                    firstPart.startPos = reg.startPos;
-                    firstPart.length = insertPos - reg.startPos;
-                    secondPart.startPos = firstPart.endPos() + len;
-                    secondPart.length = reg.length - firstPart.length;
-                    toReplace.append(firstPart);
-                    toSplit.append(secondPart);
-                }else if(reg.startPos >= insertPos){
-                    reg.startPos += len;
-                    toSplit.append(reg);
-                }                      
-            }else if(s == AnnotationStrategyForResize_Remove){
-                if(reg.startPos < insertPos && reg.endPos() > insertPos){
-                    toDelete.append(reg);
-                }else if(reg.startPos >= insertPos){
-                    reg.startPos += len;
-                    toReplace.append(reg);
-                }                                
+        assert(s == AnnotationStrategyForResize_Split_To_Joined || s == AnnotationStrategyForResize_Split_To_Separate);
+        //leave left part in original(updated) locations and push right into new one
+        bool join = (s == AnnotationStrategyForResize_Split_To_Joined);
+        U2Region interR = r.intersect(region2Remove);
+        U2Region leftR = r.startPos < interR.startPos ? U2Region(r.startPos, interR.startPos - r.startPos) : U2Region();
+        U2Region rightR = r.endPos() > interR.endPos() ? U2Region(interR.endPos(), r.endPos() - interR.endPos()) : U2Region();
+        if (leftR.isEmpty()) {
+            if (!rightR.isEmpty()) {
+                updated << rightR;
             }
+            continue;
         }
-    }
-
-    if(s == AnnotationStrategyForResize_Split_To_Separate && toSplit.size() > 0){
-        assert(an != NULL && ato != NULL);
-        Annotation *splitted = new Annotation(an->data());
-        splitted->setAnnotationName(an->getAnnotationName());
-        QStringList groupsList;
-        foreach(AnnotationGroup *group, an->getGroups()){
-            groupsList.append(group->getGroupName());
-        }
-        splitted->replaceRegions(toSplit);
-        ato->addAnnotation(splitted, groupsList);
-    }
-    regionList.clear();
-    regionList << toReplace;
-    return toDelete;
-}
-
-QVector<U2Region> U1AnnotationUtils::fixLocationsForReplacedRegion( const U2Region& regionToReplace, 
-                                                                 qint64 newLen, QVector<U2Region>& loc, 
-                                                                 AnnotationStrategyForResize s )
-{
-    if (s == AnnotationStrategyForResize_Remove) {
-        QVector<U2Region> l1 = fixLocationsForRemovedRegion(regionToReplace, loc, s);
-        QVector<U2Region> l2 = fixLocationsForInsertedRegion(regionToReplace.startPos, newLen, loc, s);
-        assert(l2.isEmpty()); Q_UNUSED(l2);
-        return l1;
-    } else {
-        int offset = newLen - regionToReplace.length;
-        if (s == AnnotationStrategyForResize_Resize && offset == 0) {
-            return QVector<U2Region>();
-        }
-        assert(s == AnnotationStrategyForResize_Resize); // FIXME do we ever need to SPLIT when replacing ???
-
-        QVector<U2Region> toReplace, toDelete;
-        foreach(U2Region reg, loc){
-            if(reg.endPos() <= regionToReplace.startPos){
-                toReplace.append(reg);
+        updated << leftR;
+        if (!rightR.isEmpty()) {
+            if (join) {
+                updated << rightR;
             } else {
-                if (reg.contains(regionToReplace)) {
-                    reg.length += offset;
-                } else if (reg.startPos >= regionToReplace.endPos()) {
-                    reg.startPos += offset;
-                } else {
-                    // start pos and/or end pos lie inside the regionToReplace
-                    // let's assume offset is applied at the region end
-                    if (offset > 0) {
-                        if (reg.endPos() <= regionToReplace.endPos()) {
-                            // leave it as is
-                        } else {
-                            // append tail
-                            reg.length += offset;
-                        }
-                    } else {
-                        if (reg.endPos() <= regionToReplace.endPos() + offset) {
-                            // leave it as is
-                        } else if (reg.startPos < regionToReplace.endPos() + offset && reg.endPos() >= regionToReplace.endPos()) {    
-                            // crop inner subregion
-                            reg.length += offset;
-                        } else if (reg.startPos >= regionToReplace.endPos() + offset && reg.endPos() <= regionToReplace.endPos()) {
-                            // drop the region
-                            reg.length = 0;
-                        } else if (reg.startPos < regionToReplace.endPos() + offset) {
-                            // crop tail
-                            assert(reg.endPos() < regionToReplace.endPos() && reg.endPos() > regionToReplace.endPos() + offset);
-                            reg.length -= reg.endPos() - regionToReplace.startPos;
-                        } else {
-                            // crop head
-                            assert(reg.startPos >= regionToReplace.endPos() + offset && reg.startPos < regionToReplace.endPos());
-                            assert(reg.endPos() > regionToReplace.endPos());
-                            reg.length = reg.endPos() - regionToReplace.endPos();
-                            reg.startPos = regionToReplace.endPos() + offset;
-                        }
-                    }
-                }
-                assert(reg.length >= 0);
-                if (reg.length == 0) {
-                    toDelete.append(reg);
-                } else {
-                    toReplace.append(reg);
-                }
+                QVector<U2Region> extraAnnReg;
+                extraAnnReg << rightR;
+                res << extraAnnReg;
             }
         }
-        loc.clear();
-        loc << toReplace;
-        return toDelete;
     }
+    return res;
 }
 
 int U1AnnotationUtils::getRegionFrame(int sequenceLen, U2Strand strand, bool order, int region, const QVector<U2Region>& location) {

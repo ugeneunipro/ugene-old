@@ -33,7 +33,6 @@
 #include "DNATranslationImplTests.h"
 #include "BioStruct3DObjectTests.h"
 #include "TaskTests.h"
-#include "FilesIndexingTests.h"
 #include "AsnParserTests.h"
 #include "SequenceWalkerTests.h"
 #include "PhyTreeObjectTests.h"
@@ -92,7 +91,7 @@ void CoreTests::registerFactories() {
     //Document model tests
     registerFactory<DocumentModelTests>(xmlTestFormat);
 
-    //DNASequenceObject Tests
+    //U2SequenceObject Tests
     registerFactory<DNASequenceObjectTests>(xmlTestFormat);
 
     //DNATranslationImplTests Tests
@@ -112,9 +111,6 @@ void CoreTests::registerFactories() {
 
     //Task Tests
     registerFactory<TaskTests>(xmlTestFormat);
-
-    // Indexing files tests
-    registerFactory<FilesIndexingTests>(xmlTestFormat);
 
     // Edit sequence tests
     registerFactory<EditSequenceTests>(xmlTestFormat);

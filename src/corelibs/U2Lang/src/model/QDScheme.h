@@ -23,6 +23,7 @@
 #define _U2_QD_SCHEME_H_
 
 #include <U2Core/AnnotationData.h>
+#include <U2Core/DNASequence.h>
 #include <U2Lang/Configuration.h>
 
 #include <QtCore/QSharedData>
@@ -214,19 +215,19 @@ private:
     QList<QDSchemeUnit*> schemeUnits;
 };
 
-class DNASequenceObject;
+class U2SequenceObject;
 class U2LANG_EXPORT QDScheme : public QObject {
     Q_OBJECT
 public:
-    QDScheme() : dna(NULL), strand(QDStrand_Both) {}
+    QDScheme() :  strand(QDStrand_Both) {}
     ~QDScheme();
     void clear();
     void addActor(QDActor* a);
     void addConstraint(QDConstraint* constraint);
     bool removeActor(QDActor* a);
     void removeConstraint(QDConstraint* constraint);
-    DNASequenceObject* getDNA() const { return dna; }
-    void setDNA(DNASequenceObject* sequence) { dna = sequence; }
+    const DNASequence& getSequence() const { return dna; }
+    void setSequence(const DNASequence& sequence) { dna = sequence; }
     const QList<QDActor*>& getActors() const { return actors; }
     QList<QDConstraint*> getConstraints() const;
     QList<QDConstraint*> getConstraints(QDSchemeUnit const* su1, QDSchemeUnit const* su2) const;
@@ -259,7 +260,7 @@ private:
     QList<QDActor*> actors;
     QMap< QString, QList<QDActor*> > actorGroups;
     QMap< QString, int > actorGroupReqNum;
-    DNASequenceObject* dna;
+    DNASequence dna;
     QDStrandOption strand;
 };
 

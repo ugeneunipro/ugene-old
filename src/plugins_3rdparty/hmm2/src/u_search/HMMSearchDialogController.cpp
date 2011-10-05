@@ -22,8 +22,8 @@
 
 namespace U2 {
 
-HMMSearchDialogController::HMMSearchDialogController(const DNASequenceObject* seqObj, QWidget* p) 
-: QDialog(p) , dnaSequence(seqObj->getDNASequence())
+HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seqObj, QWidget* p) 
+: QDialog(p) , dnaSequence(seqObj->getWholeSequence())
 {
     searchTask = NULL;
     setupUi(this);
@@ -32,7 +32,7 @@ HMMSearchDialogController::HMMSearchDialogController(const DNASequenceObject* se
     cm.hideLocation = true;
     cm.sequenceObjectRef = seqObj;
     cm.data->name = "hmm_signal";
-    cm.sequenceLen = seqObj->getSequenceLen();
+    cm.sequenceLen = seqObj->getSequenceLength();
     createController = new CreateAnnotationWidgetController(cm, this);
     
     QWidget* w = createController->getWidget();

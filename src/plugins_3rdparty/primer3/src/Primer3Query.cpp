@@ -60,10 +60,10 @@ QString QDPrimerActor::getText() const {
 
 Task* QDPrimerActor::getAlgorithmTask(const QVector<U2Region>& /*location*/ ) {
     Task* t = NULL;
-    DNASequenceObject* seqObj = scheme->getDNA();
-    settings.setSequence(seqObj->getSequence());
+    const DNASequence& dnaSeq = scheme->getSequence();
+    settings.setSequence(dnaSeq.seq);
 
-    const U2Region& seqRange = seqObj->getSequenceRange();
+    U2Region seqRange(0, dnaSeq.length());
     settings.setIncludedRegion(qMakePair(int(seqRange.startPos + settings.getFirstBaseIndex()),int(seqRange.length)));
 
     QList<QPair<int, int> > list;
@@ -72,8 +72,7 @@ Task* QDPrimerActor::getAlgorithmTask(const QVector<U2Region>& /*location*/ ) {
     ok = Primer3Dialog::parseIntervalList(excludedRegsStr, ",", &list);
     if (ok) {
         settings.setExcludedRegion(list);
-    }
-    else {
+    } else {
         algoLog.error(tr("%1 invalid input. Excluded regions.").arg(cfg->getLabel()));
         return NULL;
     }
@@ -82,8 +81,7 @@ Task* QDPrimerActor::getAlgorithmTask(const QVector<U2Region>& /*location*/ ) {
     ok = Primer3Dialog::parseIntervalList(targetsStr, ",", &list);
     if (ok) {
         settings.setTarget(list);
-    }
-    else {
+    } else {
         algoLog.error(tr("%1 invalid input. Targets.").arg(cfg->getLabel()));
         return NULL;
     }
@@ -92,8 +90,7 @@ Task* QDPrimerActor::getAlgorithmTask(const QVector<U2Region>& /*location*/ ) {
     ok = Primer3Dialog::parseIntervalList(sizeRangesAttr, "-", &list);
     if (ok) {
         settings.setProductSizeRange(list);
-    }
-    else {
+    } else {
         algoLog.error(tr("%1 invalid input. Product size ranges.").arg(cfg->getLabel()));
     }
 

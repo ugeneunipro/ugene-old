@@ -28,7 +28,7 @@
 #include <U2Core/GObjectUtils.h>
 
 #include <U2Core/IOAdapter.h>
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNAInfo.h>
 #include <U2Core/QVariantUtils.h>
@@ -129,7 +129,7 @@ bool EMBLPlainTextFormat::readIdLine(ParserState* s) {
 }
 
 bool EMBLPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
-    TaskStateInfo& si = st->si;
+    U2OpStatus& si = st->si;
     QString lastTagName;
     bool hasLine = false;
     while (hasLine || st->readNextLine(false)) {
@@ -218,7 +218,7 @@ bool EMBLPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
             st->entry->tags.insertMulti(lastTagName, st->value());
         }
     }
-    if (!st->isNull() && !si.hasError() && !si.cancelFlag) {
+    if (!st->isNull() && !si.isCoR()) {
         si.setError(U2::EMBLGenbankAbstractDocument::tr("Record is truncated."));
     }
 

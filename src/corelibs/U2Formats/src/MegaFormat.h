@@ -35,24 +35,25 @@ public:
 
     virtual DocumentFormatId getFormatId() const { return BaseDocumentFormats::MEGA; }
     virtual const QString& getFormatName() const { return formatName; }
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-    virtual void storeDocument(Document* d, TaskStateInfo& ts, IOAdapter* io );
+    virtual void storeDocument(Document* d, U2OpStatus& ts, IOAdapter* io );
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
-    
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+
 private:
     QString formatName;
-    void load(IOAdapter* io, QList<GObject*>& objects, TaskStateInfo& ti);
-    void save(IOAdapter* io, Document* d, TaskStateInfo& ti);
+    void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti);
+    void save(IOAdapter* io, Document* d, U2OpStatus& ti);
     static void skipWhites(IOAdapter *io, QByteArray &line);
-    static void readHeader(IOAdapter* io, QByteArray &line, TaskStateInfo &ti);
-    static void readTitle(IOAdapter* io, QByteArray &line, TaskStateInfo &ti);
-    static bool readName(IOAdapter* io, QByteArray &line, QByteArray &name, TaskStateInfo &ti);
-    static bool readSequence(IOAdapter* io, QByteArray &line, TaskStateInfo &ti,
+    static void readHeader(IOAdapter* io, QByteArray &line, U2OpStatus &ti);
+    static void readTitle(IOAdapter* io, QByteArray &line, U2OpStatus &ti);
+    static bool readName(IOAdapter* io, QByteArray &line, QByteArray &name, U2OpStatus &ti);
+    static bool readSequence(IOAdapter* io, QByteArray &line, U2OpStatus &ti,
                              QByteArray &value, bool *lastIteration);
 
     static void workUpIndels(MAlignment & al);
     static bool getNextLine(IOAdapter* io, QByteArray& line);
-    static bool skipComments(IOAdapter* io, QByteArray &line, TaskStateInfo &ti);
+    static bool skipComments(IOAdapter* io, QByteArray &line, U2OpStatus &ti);
     static bool checkName(QByteArray &name);
     static const QByteArray MEGA_HEADER;
     static const char MEGA_SEPARATOR;

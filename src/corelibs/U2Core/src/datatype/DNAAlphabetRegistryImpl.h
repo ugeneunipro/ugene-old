@@ -38,15 +38,9 @@ public:
 
     virtual void unregisterAlphabet(DNAAlphabet* a);
 
-    virtual DNAAlphabet* findById(const QString id) const;
+    virtual DNAAlphabet* findById(const QString& id) const;
 
     virtual QList<DNAAlphabet*> getRegisteredAlphabets() const {return alphabets;}
-
-    virtual DNAAlphabet* findAlphabet(const QByteArray& seq) const;
-
-    virtual QList<DNAAlphabet*> findAlphabets(const QByteArray& seq) const;
-
-    virtual QList<DNAAlphabet*> findAlphabets(const QByteArray& seq, const QVector<U2Region>& regionsToProcess, bool onlyOne) const;
 
 private:
     void initBaseAlphabets();

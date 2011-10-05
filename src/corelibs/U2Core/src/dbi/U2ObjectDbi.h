@@ -32,7 +32,7 @@ namespace U2 {
     Folders have unique string IDs - constructed similar to full folders names on Unix systems
     The root folder "/" is required for any DBI
 */
-class U2CORE_EXPORT U2ObjectDbi : public U2ChildDbi {
+class U2ObjectDbi : public U2ChildDbi {
 protected:
     U2ObjectDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {}
 
@@ -100,6 +100,7 @@ public:
         Requires: U2DbiFeature_RemoveObjects feature support
     */
     virtual void removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) = 0;
+    virtual void removeObject(const U2DataId& dataId, U2OpStatus& os) { removeObject(dataId, QString(), os); }
     
     /** 
         Removes collection of objects from the specified folder. If folder is empty - removes object from all folders.
@@ -108,6 +109,7 @@ public:
         Requires: U2DbiFeature_RemoveObjects feature support
     */
     virtual void removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) = 0;
+    virtual void removeObjects(const QList<U2DataId>& dataIds, U2OpStatus& os) { removeObjects(dataIds, QString(), os); }
 
 
     /** Creates folder in the database.

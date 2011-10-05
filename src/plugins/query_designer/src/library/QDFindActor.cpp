@@ -27,6 +27,7 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Lang/BaseTypes.h>
 
@@ -64,7 +65,7 @@ QString QDFindActor::getText() const {
 
 Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = new Task(tr("Find"), TaskFlag_NoRun);
-    settings.sequence = scheme->getDNA()->getSequence();
+    settings.sequence = scheme->getSequence().seq;
     settings.pattern = cfg->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().toAscii().toUpper();
 
     switch(getStrandToRun()) {
@@ -80,7 +81,7 @@ Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
     }
 
     if (settings.strand != FindAlgorithmStrand_Direct) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(scheme->getDNA()->getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(scheme->getSequence().alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
         if (!compTTs.isEmpty()) {
             settings.complementTT = compTTs.first();
         } else {
@@ -94,7 +95,7 @@ Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
         return new FailTask(err);
     }
 
-    DNAAlphabet* ptrnAl = AppContext::getDNAAlphabetRegistry()->findAlphabet(settings.pattern);
+    DNAAlphabet* ptrnAl = U2AlphabetUtils::findBestAlphabet(settings.pattern);
     if (ptrnAl->getType()!=DNAAlphabet_NUCL) {
         QString err = tr("%1: pattern has to be nucleic").arg(getParameters()->getLabel());
         return new FailTask(err);

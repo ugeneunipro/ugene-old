@@ -685,7 +685,11 @@ QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
             if (GObjectTypes::getTypeInfo(t).type == GObjectTypes::UNKNOWN) {
                 unsupportedObjectType = true;
             }
-            doc = new Document(df, info.iof, info.url, QList<UnloadedObjectInfo>(), info.hints);
+            U2OpStatus2Log os;
+            doc = df->createNewUnloadedDocument(info.iof, info.url, os, info.hints);
+            if (doc == NULL) {
+                continue;
+            }
         }
         if (unsupportedObjectType) {
             if (info.openView) {

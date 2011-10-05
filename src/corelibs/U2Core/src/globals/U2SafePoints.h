@@ -68,6 +68,21 @@
 
 
 /** 
+    Recover utility. Must be used when code tries to recover from invalid internal state
+    by returning from the method some default value.
+    Asserts in debug mode. Performs extra recovery op in release
+
+    Warning: never use this function as a simple check since it stops application execution in debug mode
+            use CHECK_OP instead
+*/
+#define SAFE_POINT_EXT(condition, extraOp, result)  \
+    if (!(condition)) { \
+        assert(condition); \
+        extraOp; \
+        return result; \
+    } \
+
+/** 
     FAIL utility. Same as SAFE_POINT but uses unconditional fail.
     Can be used in code that must be unreachable
 */

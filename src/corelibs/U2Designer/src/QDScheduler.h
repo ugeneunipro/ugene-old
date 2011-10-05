@@ -26,6 +26,7 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/GObjectReference.h>
+#include <U2Core/DNASequence.h>
 
 
 namespace U2 {
@@ -35,17 +36,17 @@ class LoadUnloadedDocumentTask;
 
 class QDRunSettings {
 public:
-    QDRunSettings(): sequenceObj(NULL), annotationsObj(NULL), scheme(NULL),
+    QDRunSettings():  annotationsObj(NULL), scheme(NULL),
     offset(0), outputType(Group) {}
 
-    DNASequenceObject* sequenceObj;
-    AnnotationTableObject* annotationsObj;
-    GObjectReference annotationsObjRef;
-    QString groupName;
-    U2Region region;
-    QDScheme* scheme;
-    QString   viewName;
-    int offset;
+    DNASequence             dnaSequence;
+    AnnotationTableObject*  annotationsObj;
+    GObjectReference        annotationsObjRef;
+    QString                 groupName;
+    U2Region                region;
+    QDScheme*               scheme;
+    QString                 viewName;
+    int                     offset;
 
     enum OutputType { Group, Single };
     OutputType outputType;

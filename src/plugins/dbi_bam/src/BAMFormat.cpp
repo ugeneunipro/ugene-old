@@ -30,6 +30,8 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/Version.h>
+#include <U2Core/U2AlphabetUtils.h>
+
 #include "Reader.h"
 #include "Writer.h"
 #include "BAMDbiPlugin.h"
@@ -57,10 +59,7 @@ const QString &BAMFormat::getFormatName()const {
     return formatName;
 }
 
-Document *BAMFormat::loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVariantMap &fs, DocumentLoadMode mode) {
-    assert(DocumentLoadMode_Whole == mode);
-    Q_UNUSED(fs);
-    Q_UNUSED(mode);
+Document* BAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& ref, const QVariantMap&, U2OpStatus& os) {
     try {
         QList<GObject *> objects;
         QVariantMap hints;
@@ -73,7 +72,7 @@ Document *BAMFormat::loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVaria
                 alignment.setLength(reference.getLength());
                 alignments.push_back(alignment);
             }
-            while(!reader.isEof() && !ti.cancelFlag) {
+            while(!reader.isEof() && !os.isCoR()) {
                 Alignment alignment = reader.readAlignment();
                 if(!(alignment.getFlags() & Unmapped) &&
                    !alignment.getSequence().isEmpty() &&
@@ -115,27 +114,25 @@ Document *BAMFormat::loadDocument(IOAdapter *io, TaskStateInfo &ti, const QVaria
                     }
                     alignments[alignment.getReferenceId()].addRow(row);
                 }
-                ti.progress = io->getProgress();
+                os.setProgress(io->getProgress());
             }
         }
         foreach(MAlignment alignment, alignments) {
-            DocumentFormatUtils::assignAlphabet(alignment);
+            U2AlphabetUtils::assignAlphabet(alignment);
             if(NULL == alignment.getAlphabet()) {
                 throw Exception(BAMDbiPlugin::tr("Alphabet is unknown"));
             }
             objects.push_back(new MAlignmentObject(alignment));
         }
-        if(ti.cancelFlag) {
-            return NULL;
-        }
-        return new Document(this, io->getFactory(), io->getURL(), objects, hints, lockReason);
+        CHECK_OP(os, NULL);
+        return new Document(this, io->getFactory(), io->getURL(), ref, ref.isValid(), objects, hints, lockReason);
     } catch(const Exception &e) {
-        ti.setError(e.getMessage());
+        os.setError(e.getMessage());
         return NULL;
     }
 }
 
-void BAMFormat::storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io) {
+void BAMFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus& os) {
     try {
         Writer writer(*io);
         QList<MAlignmentObject *> alignments;
@@ -200,12 +197,12 @@ void BAMFormat::storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io) {
                         alignment.setCigar(cigar);
                     }
                     writer.writeRead(alignment);
-                    if(ts.cancelFlag) {
+                    if (os.isCoR()) {
                         break;
                     }
                 }
                 referenceId++;
-                if(ts.cancelFlag) {
+                if (os.isCoR()) {
                     break;
                 }
             }
@@ -213,7 +210,7 @@ void BAMFormat::storeDocument(Document *d, TaskStateInfo &ts, IOAdapter *io) {
         // TODO: build index
         writer.finish();
     } catch(const Exception &e) {
-        ts.setError(e.getMessage());
+        os.setError(e.getMessage());
     }
 }
 

@@ -173,6 +173,11 @@ public:
     /** Checks that data pointed by properties is a valid DBI resource */
     virtual FormatCheckResult isValidDbi(const QHash<QString, QString>& properties, const QByteArray& rawData, U2OpStatus& os) const;
 
+    virtual GUrl id2Url(const U2DbiId& id) const {return GUrl(id, GUrl_File);}
+
+    virtual bool isDbiExists(const U2DbiId& id) const;
+
+
 public:
     static const U2DbiFactoryId ID;
 };

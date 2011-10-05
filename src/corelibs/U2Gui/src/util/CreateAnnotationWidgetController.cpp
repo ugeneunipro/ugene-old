@@ -34,6 +34,8 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/Settings.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 
 #include <U2Formats/GenbankLocationParser.h>
@@ -299,7 +301,9 @@ void CreateAnnotationWidgetController::prepareAnnotationObject() {
         assert(AppContext::getProject()->findDocumentByURL(model.newDocUrl)==NULL);
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
-        Document* d = df->createNewDocument(iof, model.newDocUrl);
+        U2OpStatus2Log os;
+        Document* d = df->createNewLoadedDocument(iof, model.newDocUrl, os);
+        CHECK_OP(os, );
         AnnotationTableObject* aobj = new AnnotationTableObject("Annotations");
         aobj->addObjectRelation(GObjectRelation(model.sequenceObjectRef, GObjectRelationRole::SEQUENCE));
         d->addObject(aobj);

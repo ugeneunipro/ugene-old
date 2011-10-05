@@ -69,7 +69,7 @@ public:
 /**
     An interface to obtain  access to assembly data
 */
-class U2CORE_EXPORT U2AssemblyDbi : public U2ChildDbi {
+class U2AssemblyDbi : public U2ChildDbi {
 protected:
     U2AssemblyDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {} 
 

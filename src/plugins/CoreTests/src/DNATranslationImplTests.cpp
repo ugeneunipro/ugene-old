@@ -85,7 +85,7 @@ Task::ReportResult GTest_DNATranslation3to1Test::report() {
         return ReportResult_Finished;  
     }
 
-    DNASequenceObject * mySequence = qobject_cast<DNASequenceObject*>(obj);
+    U2SequenceObject * mySequence = qobject_cast<U2SequenceObject*>(obj);
     if(mySequence==NULL){
         stateInfo.setError(QString("error can't cast to sequence from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
@@ -109,7 +109,7 @@ Task::ReportResult GTest_DNATranslation3to1Test::report() {
     } else{
         tempValue=(strTo-strFrom+1);
     }
-    QByteArray myByteArray = mySequence->getSequence().mid(strFrom,tempValue);
+    QByteArray myByteArray = mySequence->getSequenceData(U2Region(strFrom,tempValue));
     QByteArray rezult(myByteArray.length() / 3, 0);
     int n = aminoTransl->translate(myByteArray, myByteArray.length(), rezult.data(), rezult.length());    
     assert(n == rezult.length()); Q_UNUSED(n);

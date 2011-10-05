@@ -471,12 +471,11 @@ void ConvertToSQLiteTask::run() {
 
         U2OpStatusImpl opStatus;
 
-        DbiHandle dbiHandle("SQLiteDbi", destinationUrl.getURLString(), true, opStatus);
-        U2Dbi* sqliteDbi = dbiHandle.dbi;
-        if(opStatus.hasError()) {
+        DbiConnection dbiHandle(U2DbiRef(SQLITE_DBI_ID, destinationUrl.getURLString()), true, opStatus);
+        if (opStatus.hasError()) {
             throw Exception(opStatus.getError());
         }
-
+        U2Dbi* sqliteDbi = dbiHandle.dbi;
         if(!append) {
             sqliteDbi->getObjectDbi()->createFolder("/", opStatus);
             if(opStatus.hasError()) {

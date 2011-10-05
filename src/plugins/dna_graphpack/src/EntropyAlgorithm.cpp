@@ -52,7 +52,7 @@ EntropyGraphFactory::EntropyGraphFactory(QObject* p)
 #define MAX_CHARS_IN_ALPHABET 7
 #define MAX_INDEX_SIZE 512
 
-bool EntropyGraphFactory::isEnabled(DNASequenceObject* o) const {
+bool EntropyGraphFactory::isEnabled(U2SequenceObject* o) const {
     DNAAlphabet* al = o->getAlphabet();
     return al->isNucleic() && al->getAlphabetChars().size() <= MAX_CHARS_IN_ALPHABET;
 }
@@ -80,12 +80,12 @@ EntropyGraphAlgorithm::EntropyGraphAlgorithm()
 {
 }
 
-void EntropyGraphAlgorithm::calculate(QVector<float>& res, DNASequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void EntropyGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    const QByteArray& seq = o->getSequence();
+    QByteArray seq = o->getWholeSequenceData();
     const DNAAlphabet* al = o->getAlphabet();
     
     // prepare index -> TODO: make it once and cache!

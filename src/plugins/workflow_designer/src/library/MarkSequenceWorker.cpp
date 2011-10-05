@@ -32,7 +32,9 @@
 #include <U2Lang/MarkerAttribute.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Core/Log.h>
+
 #include <U2Core/QVariantUtils.h>
+#include <U2Core/DNASequence.h>
 
 #include "MarkSequenceWorker.h"
 

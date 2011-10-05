@@ -19,43 +19,47 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_REPLACE_PART_OF_SEQUENCE_TASK_H_
-#define _U2_REPLACE_PART_OF_SEQUENCE_TASK_H_
+#ifndef _U2_MODIFY_SEQUENCE_OBJECT_TASK_H_
+#define _U2_MODIFY_SEQUENCE_OBJECT_TASK_H_
 
 #include <U2Core/Task.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/U1AnnotationUtils.h>
 
 namespace U2 {
 
-class Annotation;
+class U2SequenceObject;
 
-class U2CORE_EXPORT ReplacePartOfSequenceTask : public Task {
+class U2CORE_EXPORT ModifySequenceContentTask : public Task {
     Q_OBJECT
 public:
-    ReplacePartOfSequenceTask(DocumentFormatId _dfId, DNASequenceObject *_seqObj, U2Region _regionToReplace, const DNASequence& newSeq, 
-        U1AnnotationUtils::AnnotationStrategyForResize _str = U1AnnotationUtils::AnnotationStrategyForResize_Resize, 
-        const GUrl& _url = GUrl(), bool _mergeAnnotations = false);
+    ModifySequenceContentTask(const DocumentFormatId& _dfId, 
+                              U2SequenceObject *_seqObj, 
+                              const U2Region& _regionToReplace,
+                              const DNASequence& sequence2Insert,
+                              U1AnnotationUtils::AnnotationStrategyForResize _str = U1AnnotationUtils::AnnotationStrategyForResize_Resize, 
+                              const GUrl& _url = GUrl(), 
+                              bool _mergeAnnotations = false);
+
     virtual Task::ReportResult report();
 
 private:
     void fixAnnotations();
-    void preparationForSave();
-    
-    DocumentFormatId dfId;
-    bool mergeAnnotations;
-    Document *curDoc;
-    Document *newDoc;
-    bool save;
-    GUrl url;
+    void cloneSequenceAndAnnotations();
+
+    DocumentFormatId    resultFormatId;
+    bool                mergeAnnotations;
+    Document*           curDoc;
+    Document*           newDoc;
+    bool                inplaceMod;
+    GUrl                url;
     U1AnnotationUtils::AnnotationStrategyForResize strat;
-    QList<Document*> docs;
-    DNASequenceObject *seqObj;
-    QByteArray newSeq;
-    U2Region regionToReplace;
+    QList<Document*>    docs;
+    U2SequenceObject*   seqObj;
+    U2Region            regionToReplace;
+    DNASequence         sequence2Insert;
 };
 
-} // U2
+}//ns
 
-#endif //_U2_REPLACE_PART_OF_SEQUENCE_TASK_H_
+#endif

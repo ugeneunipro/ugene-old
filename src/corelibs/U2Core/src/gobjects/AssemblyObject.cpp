@@ -23,7 +23,8 @@
 
 namespace U2 {
 
-GObject* AssemblyObject::clone() const {
+GObject* AssemblyObject::clone(const U2DbiRef&, U2OpStatus&) const {
+    //TODO: run real cloning here!
     AssemblyObject* cln = new AssemblyObject(entityRef, getGObjectName(), getGHintsMap());
     return cln;
 }

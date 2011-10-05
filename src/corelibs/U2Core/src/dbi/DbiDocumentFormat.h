@@ -39,13 +39,12 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* createNewDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs = QVariantMap());
-
-    virtual Document* loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode mode = DocumentLoadMode_Whole);
-
-    virtual void storeDocument(Document* d, TaskStateInfo& ts, IOAdapter* io);
+    virtual void storeDocument(Document* d, U2OpStatus& ts, IOAdapter* io);
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url = GUrl()) const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 private:
     QString             formatName;

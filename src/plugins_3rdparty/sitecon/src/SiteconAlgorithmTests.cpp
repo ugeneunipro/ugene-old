@@ -27,7 +27,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -495,19 +495,16 @@ void GTest_SiteconSearchTask::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_SiteconSearchTask::prepare() {
-    DNASequenceObject * mySequence = getContext<DNASequenceObject>(this, seqName);
-    if(mySequence==NULL){
-        stateInfo.setError(  QString("error can't cast to sequence from GObject") );
-        return;
-    }
-    seqData = mySequence->getSequence();
+    U2SequenceObject * mySequence = getContext<U2SequenceObject>(this, seqName);
+    CHECK_EXT(mySequence != NULL, setError( QString("error can't cast to sequence from GObject")), );
+    
     SiteconSearchCfg cfg;
     cfg.complOnly = complOnly;
     cfg.minPSUM = tresh;
-    if(isNeedCompliment){
-        cfg.complTT = GObjectUtils::findComplementTT(mySequence);
+    if (isNeedCompliment){
+        cfg.complTT = GObjectUtils::findComplementTT(mySequence->getAlphabet());
     }
-    task = new SiteconSearchTask(model, seqData.constData(), mySequence->getSequenceLen(), cfg, 0);    
+    task = new SiteconSearchTask(model, mySequence->getWholeSequenceData(), cfg, 0);    
     addSubTask(task);
 }
 

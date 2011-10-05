@@ -33,11 +33,12 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/U1AnnotationUtils.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/TextUtils.h>
+
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
-#include <U2Core/TextUtils.h>
 
 #include <QtGui/QTextEdit>
 #include <QtGui/QPainter>
@@ -189,7 +190,7 @@ void DetView::mouseReleaseEvent(QMouseEvent* me) {
 }
 
 void DetView::sl_sequenceChanged(){
-    seqLen = ctx->getSequenceLen();
+    seqLen = ctx->getSequenceLength();
     int w = width();
     int charWidth = renderArea->getCharWidth();
     int visibleSymbolsCount = w / charWidth;
@@ -311,7 +312,7 @@ U2Region DetViewRenderArea::getAnnotationYRange(Annotation* a, int region, const
         aminoState = as->amino ? TriState_Yes : TriState_No;
     }
     bool transl = getDetView()->hasTranslations() && aminoState == TriState_Yes;
-    int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLen(), a->getStrand(), a->isOrder(), region, a->getRegions());
+    int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLength(), a->getStrand(), a->isOrder(), region, a->getRegions());
     int line = -1;
     if (complement) {
         if (transl) {
@@ -393,14 +394,14 @@ void DetViewRenderArea::drawDirect(QPainter& p) {
     p.setPen(Qt::black);
 
     const U2Region visibleRange = view->getVisibleRange();
-    assert(visibleRange.length * charWidth <= width());
+    SAFE_POINT(visibleRange.length * charWidth <= width(), "Illegal visible range value!", );
 
-    const QByteArray& sequence = view->getSequenceContext()->getSequenceData();
-    const char* seq = sequence.data() + visibleRange.startPos;
+    QByteArray sequence = view->getSequenceContext()->getSequenceData(visibleRange);
+    const char* seq = sequence.constData();
 
     /// draw base line;
     int y = getTextY(baseLine);
-    for(int i=0;i < visibleRange.length; i++) {
+    for(int i = 0; i < visibleRange.length; i++) {
         char nucl = seq[i];
         p.drawText(i*charWidth + xCharOffset, y, QString(nucl));
     }
@@ -413,9 +414,8 @@ void DetViewRenderArea::drawComplement(QPainter& p) {
     DetView* detView = getDetView();
     if (complementLine > 0) {
         const U2Region visibleRange = detView->getVisibleRange();
-
-        const QByteArray& sequence = detView->getSequenceContext()->getSequenceData();
-        const char* seq = sequence.data() + detView->getVisibleRange().startPos;
+        QByteArray visibleSequence = detView->getSequenceContext()->getSequenceData(visibleRange);
+        const char* seq = visibleSequence.constData();
 
         DNATranslation* complTrans = detView->getComplementTT();
         QByteArray map = complTrans->getOne2OneMapper();
@@ -435,7 +435,7 @@ static QByteArray translate(DNATranslation* t, const char* seq, int seqLen) {
     return res;
 }
 
-int correctLine( QVector<bool> visibleRows, int line){
+static int correctLine( QVector<bool> visibleRows, int line){
     int retLine = line;
     assert(visibleRows.size() == 6);
     for(int i = 0; i < line; i++){
@@ -457,11 +457,13 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     DNATranslation3to1Impl* aminoTable = (DNATranslation3to1Impl*)detView->getAminoTT();
     assert(aminoTable!=NULL && aminoTable->isThree2One());
 
-    const QByteArray& sequence = detView->getSequenceContext()->getSequenceData();
     const U2Region& visibleRange  = detView->getVisibleRange();
-
-    qint64 maxUsablePos = qMin(visibleRange.endPos() + 1, qint64(sequence.length()));
-    qint64 minUsablePos = qMax(visibleRange.startPos - 1, qint64(0));
+    qint64 wholeSeqLen = detView->getSequenceLength();
+    qint64 minUsedPos = qMax(visibleRange.startPos - 1, qint64(0));
+    qint64 maxUsedPos = qMin(visibleRange.endPos() + 1, wholeSeqLen);
+    U2Region seqBlockRegion(minUsedPos, maxUsedPos - minUsedPos);
+    QByteArray seqBlockData = detView->getSequenceContext()->getSequenceData(seqBlockRegion);
+    const char* seqBlock = seqBlockData.constData();
 
     QColor startC(0,0x99,0);
     QColor stopC(0x99,0,0);
@@ -486,34 +488,33 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
         for(int i = 0; i < 3; i++) {
             if(visibleRows[i] == true){
                 int indent = (visibleRange.startPos + i) % 3;
-                int dnaStartPos = visibleRange.startPos + indent - 3;
-                if (dnaStartPos < minUsablePos) {
-                    dnaStartPos+=3;
+                int seqStartPos = visibleRange.startPos + indent - 3;
+                if (seqStartPos < minUsedPos) {
+                    seqStartPos += 3;
                 }
-                int dnaLen = maxUsablePos - dnaStartPos;
-                const char* seqStart = sequence.data();
-                const char* dnaSeq = sequence.data() + dnaStartPos;
-                QByteArray amino = translate(aminoTable, dnaSeq, dnaLen);
+                const char* seq  = seqBlock + (visibleRange.startPos - seqBlockRegion.startPos);
+                QByteArray amino = translate(aminoTable, seq, visibleRange.length);
 
                 
                 int y = getTextY(firstDirectTransLine + directLine++);
-                int dx = dnaStartPos - visibleRange.startPos;
-                for(int j = 0, n = amino.length(); j < n ; j++, dnaSeq += 3) {
+                int dx = seqStartPos - visibleRange.startPos;
+                for(int j = 0, n = amino.length(); j < n ; j++, seq += 3) {
                     char amin = amino[j];
                     int xpos = 3 * j + 1 + dx;
                     assert(xpos >= 0 && xpos < visibleRange.length);
                     int x =  xpos * charWidth + xCharOffset;
 
                     QColor charColor;
-                    bool inAnnotation = deriveTranslationCharColor(dnaSeq - seqStart, U2Strand::Direct, annotationsInRange, charColor);
+                    bool inAnnotation = deriveTranslationCharColor(seq - seqBlock  + seqBlockRegion.startPos, 
+                                U2Strand::Direct, annotationsInRange, charColor);
 
-                    if (aminoTable->isStartCodon(dnaSeq)) {
+                    if (aminoTable->isStartCodon(seq)) {
                         p.setPen(inAnnotation ? charColor : startC);
                         p.setFont(inAnnotation ? fontB : fontBS);
-                    } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, dnaSeq)) {
+                    } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, seq)) {
                         p.setPen(inAnnotation ? charColor : startC);
                         p.setFont(inAnnotation ? fontI: fontIS);
-                    } else if (aminoTable->isStopCodon(dnaSeq)) {
+                    } else if (aminoTable->isStopCodon(seq)) {
                         p.setPen(inAnnotation ? charColor : stopC);
                         p.setFont(inAnnotation ? fontB : fontBS);
                     } else {
@@ -528,47 +529,45 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     if (detView->hasComplementaryStrand()) {//reverse translations
         DNATranslation* complTable = detView->getComplementTT();
         assert(complTable!=NULL);
-        int seqLen = sequence.length();
-        int usableSize = maxUsablePos - minUsablePos;
-        QByteArray revComplDna(usableSize, 0);
-        complTable->translate(sequence.data() + minUsablePos, usableSize, revComplDna.data(), usableSize);
+        QByteArray revComplDna(seqBlockRegion.length, 0);
+        complTable->translate(seqBlock, seqBlockRegion.length, revComplDna.data(), seqBlockRegion.length);
         TextUtils::reverse(revComplDna.data(), revComplDna.size());
         int complLine = 0;
         for(int i = 0; i < 3; i++) {
-            int indent = (seqLen - visibleRange.endPos() + i) % 3;
-            int revComplStartPos = visibleRange.endPos() - indent + 3; //start of the reverse complement sequence in direct coords
-            if (revComplStartPos > maxUsablePos) {
-                revComplStartPos-=3;
+            int indent = (wholeSeqLen - visibleRange.endPos() + i) % 3;
+            qint64 revComplStartPos = visibleRange.endPos() - indent + 3; //start of the reverse complement sequence in direct coords
+            if (revComplStartPos > maxUsedPos) {
+                revComplStartPos -= 3;
             }
-            int revComplDnaOffset = maxUsablePos - revComplStartPos;
+            qint64 revComplDnaOffset = maxUsedPos - revComplStartPos;
             assert(revComplDnaOffset >= 0);
             const char* revComplData = revComplDna.constData();
-            const char* dnaSeq = revComplData + revComplDnaOffset;
-            int dnaLen = revComplStartPos - minUsablePos;
-            QByteArray amino = translate(aminoTable, dnaSeq, dnaLen);
-            complLine = (seqLen - revComplStartPos) % 3;
+            const char* seq = revComplData + revComplDnaOffset;
+            int seqLen = revComplStartPos - minUsedPos;
+            QByteArray amino = translate(aminoTable, seq, seqLen);
+            complLine = (wholeSeqLen - revComplStartPos) % 3;
             if(visibleRows[complLine+3] == true){
                 complLine = correctLine(visibleRows, complLine);
                 //int line = (seqLen - revComplStartPos) % 3;
                 int y = getTextY(firstComplTransLine + complLine);
                 int dx = visibleRange.endPos() - revComplStartPos;
-                for(int j = 0, n = amino.length(); j < n ; j++, dnaSeq +=3) {
+                for(int j = 0, n = amino.length(); j < n ; j++, seq +=3) {
                     char amin = amino[j];
                     int xpos = visibleRange.length - (3 * j + 2 + dx);
                     assert(xpos >= 0 && xpos < visibleRange.length);
                     int x =  xpos * charWidth + xCharOffset;
 
                     QColor charColor;
-                    bool inAnnotation = deriveTranslationCharColor(maxUsablePos - (dnaSeq - revComplDna.constData()), 
+                    bool inAnnotation = deriveTranslationCharColor(maxUsedPos - (seq - revComplDna.constData()), 
                         U2Strand::Complementary, annotationsInRange, charColor);
 
-                    if (aminoTable->isStartCodon(dnaSeq)) {
+                    if (aminoTable->isStartCodon(seq)) {
                         p.setPen(inAnnotation ? charColor : startC);
                         p.setFont(inAnnotation ? fontB : fontBS);
-                    } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, dnaSeq)) {
+                    } else if (aminoTable->isCodon(DNATranslationRole_Start_Alternative, seq)) {
                         p.setPen(inAnnotation ? charColor : startC);
                         p.setFont(inAnnotation ? fontI : fontIS);
-                    } else if (aminoTable->isStopCodon(dnaSeq)) {
+                    } else if (aminoTable->isStopCodon(seq)) {
                         p.setPen(inAnnotation ? charColor : stopC);
                         p.setFont(inAnnotation ? fontB : fontBS);
                     } else {
@@ -584,7 +583,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     p.setFont(sequenceFont);
 }
 
-bool DetViewRenderArea::deriveTranslationCharColor(int pos, U2Strand strand, QList<Annotation*> annotationsInRange, QColor& result) {
+bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, U2Strand strand, QList<Annotation*> annotationsInRange, QColor& result) {
     // logic:
     // no annotations found -> grey
     // found annotation that is on translation -> black
@@ -594,7 +593,7 @@ bool DetViewRenderArea::deriveTranslationCharColor(int pos, U2Strand strand, QLi
     int nAnnotations = 0;
     U2Region tripletRange = strand == U2Strand::Complementary ? U2Region(pos - 2, 2) : U2Region(pos, 2);
     AnnotationSettings* as = NULL;
-    int sequenceLen = view->getSequenceLen();
+    int sequenceLen = view->getSequenceLength();
     foreach (Annotation* a, annotationsInRange) {
         if (a->getStrand() != strand) {
             continue;            
@@ -694,7 +693,7 @@ int DetViewRenderArea::posToDirectTransLine(int p) const {
 
 int DetViewRenderArea::posToComplTransLine(int p) const {
     assert(firstComplTransLine >= 0);
-    return firstComplTransLine + (view->getSequenceLen() - p) % 3;
+    return firstComplTransLine + (view->getSequenceLength() - p) % 3;
 }
 
 

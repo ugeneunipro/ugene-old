@@ -22,7 +22,7 @@
 #include "SAMFormat.h"
 #include "DocumentFormatUtils.h"
 
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/L10n.h>
@@ -36,6 +36,8 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <QtCore/QRegExp>
 
@@ -74,7 +76,7 @@ const SAMFormat::Field SAMFormat::samFields[] = { //alignment section fields exc
     Field("QUAL", "[!-~]+|\\*")
 };
 
-bool SAMFormat::validateField(int num, QByteArray &field, TaskStateInfo *ti) {
+bool SAMFormat::validateField(int num, QByteArray &field, U2OpStatus *ti) {
     if(!samFields[num].getPattern().exactMatch(field)) {
         if(ti != NULL) {
             ti->setError(SAMFormat::tr("Field \"%1\" not matched pattern \"%2\", expected pattern \"%3\"").arg(samFields[num].name).arg(QString(field)).arg(samFields[num].getPattern().pattern()));
@@ -164,13 +166,9 @@ static void prepareRead(const QByteArray& core, const QByteArray& quality, QByte
     }
 }
 
-Document* SAMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVariantMap& _fs, DocumentLoadMode mode /*= DocumentLoadMode_Whole*/ )
-{
-    Q_UNUSED(mode);
-    if( NULL == io || !io->isOpen() ) {
-        ti.setError(L10N::badArgument("IO adapter"));
-        return NULL;
-    }
+Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& _fs, U2OpStatus& os) {
+    CHECK_EXT(io != NULL   && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
+        
     QList<GObject*> objects;
     QVariantMap fs = _fs;
 
@@ -186,8 +184,7 @@ Document* SAMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
     QByteArray fields[11];
 
     int len = 0;
-    while(!ti.cancelFlag && (len = io->readLine(buff, READ_BUFF_SIZE, &lineOk)) > 0)
-    {
+    while(!os.isCoR() && (len = io->readLine(buff, READ_BUFF_SIZE, &lineOk)) > 0) {
         QByteArray line = QByteArray::fromRawData( buff, len );
 
         if(line.startsWith(SAM_SECTION_START)) { //Parse sections
@@ -208,8 +205,8 @@ Document* SAMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
                     if(tag.startsWith(TAG_VERSION)) { //Check file format version
                         QByteArray versionStr = QByteArray::fromRawData(tag.constData() + 3, tag.length() - 3);
                         QList<QByteArray> version = versionStr.split('.');
-                        if(version[0].toInt() != 1 && version[1].toInt() > 3) {
-                            ti.setError(SAMFormat::tr("Unsupported file version \"%1\"").arg(QString(versionStr)));
+                        if (version[0].toInt() != 1 && version[1].toInt() > 3) {
+                            os.setError(SAMFormat::tr("Unsupported file version \"%1\"").arg(QString(versionStr)));
                             return NULL;
                         }
                     }
@@ -257,19 +254,19 @@ Document* SAMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
                 }
             }
 
-            // skiping optional tags
+            // skipping optional tags
             if(!TextUtils::LINE_BREAKS.at(lastTerminator))
                 while((len = io->readLine(buff, READ_BUFF_SIZE, &lineOk)) > 0 && !lineOk);
         }
 
         if(readFieldsCount < 11) {
-            ti.setError(SAMFormat::tr("Unexpected end of file"));
+            os.setError(SAMFormat::tr("Unexpected end of file"));
             return NULL;
         }
 
         for(int i=0; i < qMin(11, readFieldsCount); i++) {
             fields[i] = fieldValues[i];
-             if(!validateField(i, fields[i], &ti)) {
+             if (!validateField(i, fields[i], &os)) {
                  return NULL;
             }
         }
@@ -292,16 +289,10 @@ Document* SAMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
         } else {
             if(isReversed) {
                 QByteArray &seq = fields[9];
-                DNAAlphabet *al = AppContext::getDNAAlphabetRegistry()->findAlphabet(seq);
-                if(al == NULL) {
-                    ti.setError(SAMFormat::tr("Can't find alphabet for sequence \"%1\"").arg(QString(seq)));
-                    return NULL;
-                }
+                DNAAlphabet *al = U2AlphabetUtils::findBestAlphabet(seq);
+                CHECK_EXT(al != NULL, os.setError(SAMFormat::tr("Can't find alphabet for sequence \"%1\"").arg(QString(seq))), NULL);
                 DNATranslation* tr = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(al);
-                if(tr == NULL) {
-                    ti.setError(SAMFormat::tr("Can't translation for alphabet \"%1\"").arg(al->getName()));
-                    return NULL;
-                }
+                CHECK_EXT(tr != NULL, os.setError(SAMFormat::tr("Can't translation for alphabet \"%1\"").arg(al->getName())), NULL);
                 TextUtils::translate(tr->getOne2OneMapper(), seq.data(), seq.size());
                 TextUtils::reverse(seq.data(), seq.size());
                 row.setSequence(seq, fields[3].toInt()-1);
@@ -326,41 +317,30 @@ Document* SAMFormat::loadDocument( IOAdapter* io, TaskStateInfo& ti, const QVari
             maMap[rname].addRow(row);
         }
 
-        ti.progress = io->getProgress();
+        os.setProgress(io->getProgress());
     }
 
     foreach(MAlignment ma, maMap.values()) {
-        DocumentFormatUtils::assignAlphabet(ma);
-        if (ma.getAlphabet() == NULL) {
-            ti.setError( SAMFormat::tr("Alphabet is unknown"));
-            return NULL;
-        }
-
+        U2AlphabetUtils::assignAlphabet(ma);
+        CHECK_EXT(ma.getAlphabet() != NULL, os.setError( SAMFormat::tr("Alphabet is unknown")), NULL);
         objects.append(new MAlignmentObject(ma));
     }
 
-    if(defaultMA.getRows().count() != 0) {
-        DocumentFormatUtils::assignAlphabet(defaultMA);
-        if (defaultMA.getAlphabet() == NULL) {
-            ti.setError( SAMFormat::tr("Alphabet is unknown"));
-            return NULL;
-        }
-
+    if (defaultMA.getRows().count() != 0) {
+        U2AlphabetUtils::assignAlphabet(defaultMA);
+        CHECK_EXT(defaultMA.getAlphabet() != NULL, os.setError( SAMFormat::tr("Alphabet is unknown")), NULL);
         objects.append(new MAlignmentObject(defaultMA));
     }
 
-    if (ti.hasError() || ti.cancelFlag) {
-        qDeleteAll(objects);
-        return NULL;
-    }
-
-    DocumentFormatUtils::updateFormatSettings(objects, fs);
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), objects, fs, lockReason);
+    CHECK_EXT(os.hasError(), qDeleteAll(objects), NULL);
+    
+    DocumentFormatUtils::updateFormatHints(objects, fs);
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, lockReason);
     return doc;
 }
 
 
-void SAMFormat::storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io )
+void SAMFormat::storeDocument( Document* d, U2OpStatus& ts, IOAdapter* io )
 {
     //TODO: sorting options?
     if( NULL == d ) {

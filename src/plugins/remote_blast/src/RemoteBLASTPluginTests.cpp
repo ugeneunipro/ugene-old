@@ -184,8 +184,6 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
 }
 
 void GTest_RemoteBLAST::prepare() {
-    DNAAlphabet *alp = AppContext::getDNAAlphabetRegistry()->findAlphabet(sequence.toAscii());
-    DNASequenceObject mySequence("seq", DNASequence(sequence.toAscii(), alp));
     QByteArray query(sequence.toAscii());
     ao = new AnnotationTableObject("aaa");
     RemoteBLASTTaskSettings cfg;

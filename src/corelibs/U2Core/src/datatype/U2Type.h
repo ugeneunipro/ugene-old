@@ -26,6 +26,7 @@
 
 namespace U2 {
 
+class U2Dbi;
 
 /**
     UGENE built-in data-types
@@ -50,8 +51,6 @@ typedef QString U2DbiFactoryId;
 */
 
 typedef QString U2DbiId;
-
-
 
 
 /** 
@@ -98,25 +97,40 @@ public:
 
 };
 
+/** Dbi reference: dbiURL & DBI type */
+class U2CORE_EXPORT U2DbiRef {
+public:
+    U2DbiRef(const U2DbiFactoryId& _dbiFactoryId = U2DbiFactoryId(), const U2DbiId& _dbiId = U2DbiId()) 
+        : dbiFactoryId(_dbiFactoryId), dbiId(_dbiId){};
+    
+    bool isValid() const {return !dbiFactoryId.isEmpty() && !dbiId.isEmpty();}
+
+    U2DbiFactoryId  dbiFactoryId;
+    U2DbiId         dbiId;
+
+    bool operator==(const U2DbiRef& r2) const {
+        return dbiFactoryId == r2.dbiFactoryId && dbiId == r2.dbiId;
+    }
+};
+
+
 /** 
     Cross database data reference
 */
 class U2CORE_EXPORT U2EntityRef {
 public:
     U2EntityRef() {}
-    U2EntityRef(const QString& _dbiId, const U2DataId& _entityId, const U2DbiFactoryId& fid) : dbiId(_dbiId),entityId(_entityId), factoryId(fid){}
+    U2EntityRef(const U2DbiRef& _dbiRef, const U2DataId& _entityId) : dbiRef(_dbiRef),entityId(_entityId){}
+    bool isValid() const {return dbiRef.isValid() && !entityId.isEmpty();}
 
     /** database  id */
-    QString         dbiId;
+    U2DbiRef         dbiRef;
 
     /** DB local data reference */
     U2DataId        entityId;
 
     /** Object version number this reference is valid for */
     qint64          version;
-    
-    /** Type of the dbi driver (factory)*/
-    U2DbiFactoryId  factoryId;
 };
 
 /** 
@@ -139,10 +153,10 @@ public:
 class U2CORE_EXPORT U2Object : public U2Entity {
 public:
     U2Object() : version(0){}
-    U2Object(U2DataId id, const QString& _dbId, qint64 v) : U2Entity(id), dbiId(_dbId), version(v) {}
+    U2Object(U2DataId id, const U2DbiId& _dbId, qint64 v) : U2Entity(id), dbiId(_dbId), version(v) {}
     
     /** Source of the object: database id */
-    QString     dbiId;
+    U2DbiId     dbiId;
 
     /** Version of the object. Same as modification count of the object */
     qint64      version;
@@ -150,7 +164,7 @@ public:
     /** The name of the object shown to user. Any reasonably short text */
     QString     visualName;
 
-    /** The type of the object. Should be overriden in subclasses */
+    /** The type of the object. Should be overridden in subclasses */
     virtual U2DataType getType() { return U2Type::Unknown; }
 };
 

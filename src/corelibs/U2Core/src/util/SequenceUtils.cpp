@@ -25,46 +25,22 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2DbiRegistry.h>
 
 namespace U2 {
 
-QList<QByteArray> SequenceUtils::extractRegions(const QByteArray& seq, const QVector<U2Region>& regions, DNATranslation* complTT) {
-    QVector<U2Region> safeLocation = regions;
-    U2Region::bound(0, seq.length(), safeLocation);
-
-    QList<QByteArray> resParts;
-    for (int i = 0, n = safeLocation.size(); i < n; i++) {
-        const U2Region& oReg = safeLocation.at(i);
-        if (complTT == NULL) {
-            resParts.append(seq.mid(oReg.startPos, oReg.length));
-        } else {
-            QByteArray arr = seq.mid(oReg.startPos, oReg.length);
-            TextUtils::reverse(arr.data(), arr.length());
-            complTT->translate(arr.data(), arr.length());
-            resParts.prepend(arr);
-        }
-    }
-    return resParts;
-}
-
-QByteArray SequenceUtils::joinRegions(const QList<QByteArray>& parts) {
-    if (parts.size() == 1) {
-        return parts.first();
-    }
-    QByteArray res;
-    foreach(const QByteArray& p, parts) {
-        res.append(p);
-    }
-    return res;
-}
-
-QList<QByteArray> SequenceUtils::translateRegions(const QList<QByteArray>& origParts, DNATranslation* aminoTT, bool join) {
+QList<QByteArray> U1SequenceUtils::translateRegions(const QList<QByteArray>& origParts, DNATranslation* aminoTT, bool join) {
     QList<QByteArray> resParts;
     assert(aminoTT != NULL);
     if (join) {
-        resParts.append(SequenceUtils::joinRegions(origParts));
+        resParts.append(U1SequenceUtils::joinRegions(origParts));
     }  else {
         resParts.append(origParts);
     }
@@ -78,33 +54,57 @@ QList<QByteArray> SequenceUtils::translateRegions(const QList<QByteArray>& origP
     return resParts;
 }
 
-
-QList<QByteArray> SequenceUtils::extractSequence(const QByteArray& seq, const QVector<U2Region>& origLocation, 
-                                         DNATranslation* complTT, DNATranslation* aminoTT, bool join, bool circular)
+static QList<QByteArray> _extractRegions(const QByteArray& seq, const QVector<U2Region>& regions, DNATranslation* complTT) 
 {
-    QList<QByteArray> resParts = extractRegions(seq, origLocation, complTT);
-    if (circular && resParts.size() > 1) {
+    QList<QByteArray> res;
+
+    QVector<U2Region> safeLocation = regions;
+    U2Region::bound(0, seq.size(), safeLocation);
+
+    for (int i = 0, n = safeLocation.size(); i < n; i++) {
+        const U2Region& oReg = safeLocation.at(i);
+        if (complTT == NULL) {
+            QByteArray part = seq.mid(oReg.startPos, oReg.length);
+            res.append(part);
+        } else {
+            QByteArray arr = seq.mid(oReg.startPos, oReg.length);
+            TextUtils::reverse(arr.data(), arr.length());
+            complTT->translate(arr.data(), arr.length());
+            res.prepend(arr);
+        }
+    }
+    return res;
+}
+
+QList<QByteArray> U1SequenceUtils::extractRegions(const QByteArray& seq, const QVector<U2Region>& origLocation, 
+                                                DNATranslation* complTT, DNATranslation* aminoTT, bool circular, bool join)
+{
+    QList<QByteArray> res = _extractRegions(seq, origLocation, complTT);
+    if (circular && res.size() > 1) {
         const U2Region& firstL = origLocation.first();
         const U2Region& lastL = origLocation.last();
-        if (firstL.startPos == 0 && lastL.endPos() == seq.length()) { 
-            QByteArray lastS = resParts.last();
-            QByteArray firstS = resParts.first();
-            resParts.removeLast();
-            resParts[0] = lastS.append(firstS);
+        if (firstL.startPos == 0 && lastL.endPos() == seq.size()) { 
+            QByteArray lastS = res.last();
+            QByteArray firstS = res.first();
+            res.removeLast();
+            res[0] = lastS.append(firstS);
         }
     }
     if (aminoTT != NULL) {
-        resParts = translateRegions(resParts, aminoTT, join);
-    } else if (join) {
-        QByteArray joined = joinRegions(resParts);
-        resParts.clear();
-        resParts.append(joined);
+        res = translateRegions(res, aminoTT, join);
+    } 
+
+    if (join && res.size() > 1) {
+        QByteArray joined = joinRegions(res);
+        res.clear();
+        res.append(joined);
     }
-    return resParts;
+
+    return res;
 }
 
 
-QVector<U2Region> SequenceUtils::toJoinedRegions(const QList<QByteArray>& seqParts) {
+QVector<U2Region> U1SequenceUtils::getJoinedMapping(const QList<QByteArray>& seqParts) {
     QVector<U2Region>  res;
     int prevEnd = 0;
     foreach(const QByteArray& seq, seqParts) {
@@ -114,25 +114,24 @@ QVector<U2Region> SequenceUtils::toJoinedRegions(const QList<QByteArray>& seqPar
     return res;
 }
 
-
-Document* SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2OpStatus& os) {
+Document* U1SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2OpStatus& os) {
     // prepare  annotation object -> sequence object mapping first
     // and precompute resulted sequence size and alphabet
     int mergedSize = 0;
     QHash< QString, QList<AnnotationTableObject*> > annotationsBySequenceObjectName;
-    QList<DNASequenceObject*> seqObjects;
+    QList<U2SequenceObject*> seqObjects;
     QString docUrl = doc->getURLString();
     DNAAlphabet* al = NULL;
     foreach(GObject* obj, doc->getObjects()) {
         AnnotationTableObject* annObj = qobject_cast<AnnotationTableObject*>(obj);
         if (annObj == NULL) {
-            DNASequenceObject* seqObj = qobject_cast<DNASequenceObject*>(obj);
+            U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
             if (seqObj != NULL) {
                 seqObjects << seqObj;
                 mergedSize += mergedSize == 0 ? 0 : mergeGap;
-                mergedSize += seqObj->getSequenceLen();
+                mergedSize += seqObj->getSequenceLength();
                 DNAAlphabet* seqAl = seqObj->getAlphabet(); 
-                al = (al == NULL) ?  seqAl : DNAAlphabet::deriveCommonAlphabet(al, seqAl);
+                al = (al == NULL) ?  seqAl : U2AlphabetUtils::deriveCommonAlphabet(al, seqAl);
                 if (al == NULL) {
                     os.setError(tr("Failed to derive common alphabet!"));
                     break;
@@ -151,26 +150,28 @@ Document* SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2OpS
             }
         }
     }
-    if (os.hasError()) {
-        return NULL;
-    }
-    if (seqObjects.isEmpty()) {
-        return NULL;
-    }
-    if (mergedSize > 1000*1000*1000) { //2Gb (max qbytearray size) / 2
-        os.setError(tr("Not enough memory to complete operation!"));
-        return NULL;
-    }
-    DNASequence seq(doc->getURL().fileName(), QByteArray(), al);
-    seq.seq.reserve(mergedSize); //TODO: check if memory op succeed!!!
-    AnnotationTableObject* annObj = new AnnotationTableObject(seq.getName() + " annotations");
+    CHECK_OP(os, NULL);
+    CHECK(!seqObjects.isEmpty(), NULL);
+
+    TmpDbiHandle dbiHandle(SESSION_TMP_DBI_ALIAS, os);
+    CHECK_OP(os, NULL);
+    U2SequenceImporter seqImport;
+    QString seqName = doc->getURL().fileName();
+    seqImport.startSequence(dbiHandle.dbiRef, seqName, false, os);
+    CHECK_OP(os, NULL);
+
+    AnnotationTableObject* annObj = new AnnotationTableObject(seqName + " annotations");
     QByteArray delim(mergeGap, al->getDefaultSymbol());
-    foreach(DNASequenceObject* seqObj, seqObjects) {
-        if (!seq.seq.isEmpty()) {
-            seq.seq.append(delim);
+    qint64 currentSeqLen = 0;
+    foreach(U2SequenceObject* seqObj, seqObjects) {
+        if (currentSeqLen > 0) {
+            seqImport.addBlock(delim.constData(), delim.size(), os);
+            CHECK_OP(os, NULL);
+            currentSeqLen+=delim.size();
         }
-        U2Region contigReg(seq.seq.length(), seqObj->getSequenceLen());
-        seq.seq.append(seqObj->getSequence());
+        U2Region contigReg(currentSeqLen, seqObj->getSequenceLength());
+        seqImport.addSequenceBlock(seqObj->getSequenceRef(), U2_REGION_MAX, os);
+        CHECK_OP(os, NULL);
 
         SharedAnnotationData ad(new AnnotationData());
         ad->name = "contig";
@@ -193,12 +194,34 @@ Document* SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2OpS
             }
         }
     }
-    DNASequenceObject* seqObj = new DNASequenceObject(seq.getName(), seq);
+    U2Sequence u2seq = seqImport.finalizeSequence(os);
+    CHECK_OP(os, NULL);
+    dbiHandle.deallocate = false;
+    U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiHandle.dbiRef, u2seq.id));
     QList<GObject*> objects; objects << seqObj << annObj;
-    QVariantMap hints;
-    Document* resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), objects, hints, tr("File content was merged"));
+    Document* resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), 
+        dbiHandle.dbiRef, dbiHandle.dbiRef.isValid(), objects, QVariantMap(), tr("File content was merged"));
     doc->propagateModLocks(resultDoc);
     return resultDoc;
 }
+
+QByteArray U1SequenceUtils::joinRegions(const QList<QByteArray>& parts) {
+    if (parts.size() == 1) {
+        return parts.first();
+    }
+    int size =0;
+    foreach(const QByteArray& p, parts) {
+        size += p.size();
+    }
+    QByteArray res;
+    res.reserve(size);
+    foreach(const QByteArray& p, parts) {
+        res.append(p);
+    }
+    return res;
+}
+
+
+
 
 }//namespace

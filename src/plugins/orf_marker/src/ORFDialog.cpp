@@ -78,7 +78,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     
     initSettings();
 
-    int seqLen = ctx->getSequenceLen();
+    qint64 seqLen = ctx->getSequenceLength();
 
     rs=new RegionSelector(this, seqLen, false, ctx->getSequenceSelection());
     rs->setWholeRegionSelected();
@@ -224,7 +224,7 @@ void ORFDialog::sl_onSaveAnnotations() {
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
     m.data->name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
-    m.sequenceLen = ctx->getSequenceObject()->getSequenceLen();
+    m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
@@ -284,7 +284,7 @@ void ORFDialog::runTask() {
         return;
     }
 
-    task = new ORFFindTask(s, ctx->getSequenceData());
+    task = new ORFFindTask(s, ctx->getSequenceObject()->getWholeSequenceData());
     
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     updateState();

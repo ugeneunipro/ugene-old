@@ -31,7 +31,7 @@
 namespace U2 {
 
 class GenomeAlignerIndex;
-class DNASequenceObject;
+class U2SequenceObject;
 
 class GenomeAlignerIndexSettings {
 public:

@@ -96,7 +96,7 @@ BioStruct3DViewContext::BioStruct3DViewContext(QObject* p)
 void BioStruct3DViewContext::initViewContext(GObjectView* v)  {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
 
-    DNASequenceObject* dna=av->getSequenceInFocus()->getSequenceObject();
+    U2SequenceObject* dna=av->getSequenceInFocus()->getSequenceObject();
     Document* doc = dna->getDocument();
     QList<GObject*> biostructObjs = doc->findGObjectByType(GObjectTypes::BIOSTRUCTURE_3D);
     if (biostructObjs.isEmpty()) {

@@ -31,6 +31,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/MultiTask.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
@@ -69,9 +70,9 @@ void BaseDocReader::init() {
         }
         if (!doc) {
             DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
-            assert(format);
             IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-            doc = new Document(format, iof, url);
+            U2OpStatus2Log os;
+            doc = format->createNewUnloadedDocument(iof, url, os);
         }
         //TODO lock document???
         docs.insert(doc, newDoc);
@@ -229,8 +230,8 @@ Task* BaseDocWriter::tick() {
                 anUrl = GUrlUtils::ensureFileExt(anUrl, format->getSupportedDocumentFileExtensions()).getURLString();
             }
             urlAttribute->setAttributeValue(anUrl);*/
-            doc = new Document(format, iof, anUrl);
-            doc->setLoaded(true);
+            U2OpStatus2Log os;
+            doc = format->createNewLoadedDocument(iof, anUrl, os);
             docs.insert(anUrl, doc);
         }
         data2doc(doc, data);

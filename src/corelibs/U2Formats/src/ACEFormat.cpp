@@ -21,7 +21,6 @@
 
 #include "ACEFormat.h"
 #include <U2Formats/DocumentFormatUtils.h>
-#include <U2Core/Task.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GObjectTypes.h>
@@ -29,15 +28,18 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 namespace U2 {
 
-    const QString ACEFormat::CO = "CO";
-    const QString ACEFormat::RD = "RD";
-    const QString ACEFormat::QA = "QA";
-    const QString ACEFormat::AS = "AS";
-    const QString ACEFormat::AF = "AF";
-    const QString ACEFormat::BQ = "BQ";
+const QString ACEFormat::CO = "CO";
+const QString ACEFormat::RD = "RD";
+const QString ACEFormat::QA = "QA";
+const QString ACEFormat::AS = "AS";
+const QString ACEFormat::AF = "AF";
+const QString ACEFormat::BQ = "BQ";
 
 ACEFormat::ACEFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(0), QStringList("ace")) {
     formatName = tr("ACE");
@@ -199,7 +201,7 @@ static bool checkSeq(const QByteArray &seq){
 
 #define READ_BUFF_SIZE  4096
 
-static inline void skipBreaks(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, qint64* len){
+static inline void skipBreaks(U2::IOAdapter *io, U2OpStatus &ti, char* buff, qint64* len){
     bool lineOk = true;
     *len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
     if (*len == 0) { //end if stream
@@ -211,7 +213,7 @@ static inline void skipBreaks(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* bu
         return;
     }
 }
-static inline void parseConsensus(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, QString& consName, QSet<QString> &names, QString& headerLine, QByteArray& consensus){
+static inline void parseConsensus(U2::IOAdapter *io, U2OpStatus &ti, char* buff, QString& consName, QSet<QString> &names, QString& headerLine, QByteArray& consensus){
     char aceBStartChar = 'B';
     QBitArray aceBStart = TextUtils::createBitMap(aceBStartChar);
     qint64 len = 0;
@@ -237,8 +239,8 @@ static inline void parseConsensus(U2::IOAdapter *io, U2::TaskStateInfo &ti, char
         len = TextUtils::remove(buff, len, TextUtils::WHITES);
         buff[len] = 0;
         consensus.append(buff);
-        ti.progress = io->getProgress();
-    } while (!ti.cancelFlag && !ok);
+        ti.setProgress(io->getProgress());
+    } while (!ti.isCoR() && !ok);
     len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
     line = QString(QByteArray::fromRawData(buff, len)).trimmed();
     if(!line.startsWith("BQ")){
@@ -253,7 +255,7 @@ static inline void parseConsensus(U2::IOAdapter *io, U2::TaskStateInfo &ti, char
     consensus.replace('*',MAlignment_GapChar);
 }
 
-static inline void parseAFTag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, int count, QMap< QString, int> &posMap, QMap< QString, bool> &complMap, QSet<QString> &names){
+static inline void parseAFTag(U2::IOAdapter *io, U2OpStatus &ti, char* buff, int count, QMap< QString, int> &posMap, QMap< QString, bool> &complMap, QSet<QString> &names){
     int count1 = count;
     QString readLine;
     QString name;
@@ -261,7 +263,7 @@ static inline void parseAFTag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* bu
     int readPos = 0;
     int complStrand = 0;
     int paddedStart = 0;
-    while (!ti.cancelFlag && count1>0) {
+    while (!ti.isCoR() && count1>0) {
         do{
             skipBreaks(io, ti, buff, &len);
             if(ti.hasError()){
@@ -302,11 +304,11 @@ static inline void parseAFTag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* bu
         names.insert(name);
 
         count1--;
-        ti.progress = io->getProgress();
+        ti.setProgress(io->getProgress());
     } 
 }
 
-static inline void parseRDandQATag(U2::IOAdapter *io, U2::TaskStateInfo &ti, char* buff, QMap< QString, int> &, QMap< QString, bool> &, QSet<QString> &names, QString& name, QByteArray& sequence){
+static inline void parseRDandQATag(U2::IOAdapter *io, U2OpStatus &ti, char* buff, QMap< QString, int> &, QMap< QString, bool> &, QSet<QString> &names, QString& name, QByteArray& sequence){
     QString line;
     qint64 len = 0;
     bool ok = true;
@@ -336,8 +338,8 @@ static inline void parseRDandQATag(U2::IOAdapter *io, U2::TaskStateInfo &ti, cha
         len = TextUtils::remove(buff, len, TextUtils::WHITES);
         buff[len] = 0;
         sequence.append(buff);
-        ti.progress = io->getProgress();
-    } while (!ti.cancelFlag && !ok);
+        ti.setProgress(io->getProgress());
+    } while (!ti.isCoR() && !ok);
     len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
     line = QString(QByteArray::fromRawData(buff, len)).trimmed();
     if(!line.startsWith("QA")){
@@ -385,7 +387,7 @@ static inline void parseRDandQATag(U2::IOAdapter *io, U2::TaskStateInfo &ti, cha
     
 }
 
-void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateInfo &ti) {
+void ACEFormat::load(IOAdapter *io, QList<GObject*> &objects, U2OpStatus &os) {
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
@@ -398,19 +400,19 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
 
      //skip leading whites if present
     bool lineOk = true;
-    skipBreaks(io, ti, buff, &len);
-    if(ti.hasError()){
+    skipBreaks(io, os, buff, &len);
+    if(os.hasError()){
         return;
     }
     QString headerLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
 
     if (!headerLine.startsWith(AS)) {
-        ti.setError(ACEFormat::tr("First line is not an ace header"));
+        os.setError(ACEFormat::tr("First line is not an ace header"));
         return ;
     }
     int contigC = contigCount(headerLine);
     if(-1==contigC){
-         ti.setError(ACEFormat::tr("No contig count tag in the header line"));
+         os.setError(ACEFormat::tr("No contig count tag in the header line"));
         return ;
     }
     for(int i =0; i < contigC; i++){
@@ -418,19 +420,19 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
             QBitArray nonWhites = ~TextUtils::WHITES;
             io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
             //read header
-            skipBreaks(io, ti, buff, &len);
-            if(ti.hasError()){
+            skipBreaks(io, os, buff, &len);
+            if(os.hasError()){
                 return;
             }
             headerLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
             if (!headerLine.startsWith(CO)) {
-                ti.setError(ACEFormat::tr("Must be CO keyword"));
+                os.setError(ACEFormat::tr("Must be CO keyword"));
                 return ;
             }
         }else{
             do{
-                skipBreaks(io, ti, buff, &len);
-                if(ti.hasError()){
+                skipBreaks(io, os, buff, &len);
+                if(os.hasError()){
                     return;
                 }
                 headerLine = QString(QByteArray::fromRawData(buff, len)).trimmed();
@@ -438,7 +440,7 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
         }
         count = readsCount(headerLine);
         if(-1 == count){
-            ti.setError(ACEFormat::tr("There is no note about reads count"));
+            os.setError(ACEFormat::tr("There is no note about reads count"));
             return ;
         }
         //consensus
@@ -446,8 +448,8 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
         QByteArray consensus;
         QString consName;
 
-        parseConsensus(io, ti, buff, consName, names, headerLine, consensus);
-        if (ti.hasError()){
+        parseConsensus(io, os, buff, consName, names, headerLine, consensus);
+        if (os.hasError()){
             return;
         }
 
@@ -455,17 +457,15 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
         al.addRow(MAlignmentRow(consName, consensus));
 
         //AF
-        parseAFTag(io, ti, buff, count, posMap, complMap, names);
-        if (ti.hasError()){
+        parseAFTag(io, os, buff, count, posMap, complMap, names);
+        if (os.hasError()){
             return;
         }
         //RD and QA
-        while (!ti.cancelFlag && count>0) {
-            parseRDandQATag(io, ti, buff, posMap, complMap, names, name, sequence);
-            if (ti.hasError()){
-                return;
-            }
-
+        while (!os.isCoR() && count>0) {
+            parseRDandQATag(io, os, buff, posMap, complMap, names, name, sequence);
+            CHECK_OP(os, );
+            
             bool isComplement = complMap.take(name);
             int pos = posMap.value(name) - 1;
             QString rowName(name);
@@ -479,13 +479,10 @@ void ACEFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::TaskStateI
             al.addRow(row);
 
             count--;
-            ti.progress = io->getProgress();
+            os.setProgress(io->getProgress());
         }
-        DocumentFormatUtils::assignAlphabet(al);
-        if (al.getAlphabet() == NULL) {
-             ti.setError( ACEFormat::tr("Alphabet unknown"));
-             return;
-        }
+        U2AlphabetUtils::assignAlphabet(al);
+        CHECK_EXT(al.getAlphabet() != NULL, ACEFormat::tr("Alphabet unknown"), );
         MAlignmentObject* obj = new MAlignmentObject(al);
         objects.append(obj);
     }
@@ -500,15 +497,13 @@ FormatCheckResult ACEFormat::checkRawData(const QByteArray& rawData, const GUrl&
     return FormatDetection_AverageSimilarity;
 }
 
-Document* ACEFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
+Document* ACEFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     QList <GObject*> objs;
-    load(io, objs, ti);
+    load(io, objs, os);
 
-    if (ti.hasError()) {
-        qDeleteAll(objs);
-        return NULL;
-    }
-    Document *doc = new Document(this, io->getFactory(), io->getURL(), objs, fs);
+    CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
+    
+    Document *doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objs, fs);
 
     return doc;
 }

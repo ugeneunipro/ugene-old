@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/FailTask.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/BaseSlots.h>
@@ -101,14 +101,8 @@ Task * Text2SequenceWorker::tick() {
     }
     QByteArray txt = inputMessage.getData().toMap().value(BaseSlots::TEXT_SLOT().getId()).value<QString>().toUtf8();
     
-    DNAAlphabetRegistry * alphabetRegistry = AppContext::getDNAAlphabetRegistry();
-    DNAAlphabet * alphabet = NULL;
-    if(alId == ALPHABET_ATTR_ID_DEF_VAL) {
-        alphabet = alphabetRegistry->findAlphabet(txt);
-    } else {
-        alphabet = alphabetRegistry->findById(alId);
-    }
-    if(alphabet == NULL) {
+    DNAAlphabet * alphabet = (alId == ALPHABET_ATTR_ID_DEF_VAL) ? U2AlphabetUtils::findBestAlphabet(txt) : U2AlphabetUtils::getById(alId);
+    if (alphabet == NULL) {
         QString msg;
         if(alId == ALPHABET_ATTR_ID_DEF_VAL) {
             msg = tr("Alphabet cannot be automatically detected");

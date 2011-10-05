@@ -419,7 +419,7 @@ FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
     maxHitSB->setMinimum(ANY_VALUE);
     minHitSB->setMinimum(ANY_VALUE);
 
-    rs=new RegionSelector(this, sctx->getSequenceLen(), false, sctx->getSequenceSelection());
+    rs = new RegionSelector(this, sctx->getSequenceLength(), false, sctx->getSequenceSelection());
     rs->setEnabled(false);
     rangeSelectorLayout->addWidget(rs);
     connect(excludeRegionBox,SIGNAL(toggled(bool)),rs,SLOT(setEnabled(bool)));

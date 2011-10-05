@@ -105,9 +105,7 @@ U2DbiIterator<U2DataId>* SQLiteObjectDbi::getObjectsByVisualName(const QString& 
 
 void SQLiteObjectDbi::removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) {
     removeObjectImpl(dataId, folder, os);
-    if (os.hasError()) {
-        return;
-    }
+    CHECK_OP(os, );
     onFolderUpdated(folder);
 }
 
@@ -129,33 +127,31 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
         os.setError(SQLiteL10N::tr("Not an object! Id: %1, type: %2").arg(SQLiteUtils::text(objectId)).arg(type));
         return false;
     }
-    qint64 folderId = SQLiteQuery("SELECT id FROM Folder WHERE path = '"+folder+"'", db, os).selectInt64();
-    if (os.hasError()) {
-        return false;
+    if (folder.isEmpty()) {
+        SQLiteQuery deleteQ("DELETE FROM FolderContent WHERE object = ?1", db, os);
+        deleteQ.bindDataId(1, objectId);
+        CHECK_OP(os, false);
+    } else {
+        qint64 folderId = SQLiteQuery("SELECT id FROM Folder WHERE path = '" + folder + "'", db, os).selectInt64();
+        CHECK_OP(os, false);
+
+        SQLiteQuery deleteQ("DELETE FROM FolderContent WHERE folder = ?1 AND object = ?2", db, os);
+        deleteQ.bindInt64(1, folderId);
+        deleteQ.bindDataId(2, objectId);
+        deleteQ.update();
+        CHECK_OP(os, false);
     }
-    SQLiteQuery deleteQ("DELETE FROM FolderContent WHERE folder = ?1 AND object = ?2", db, os);
-    deleteQ.bindInt64(1, folderId);
-    deleteQ.bindDataId(2, objectId);
-    int nRecords = deleteQ.update();
-    if (os.hasError()) {
-        return false;
-    }
-    if (nRecords == 0) {
-        os.setError(SQLiteL10N::tr("Object: %1 not found in folder: %2").arg(SQLiteUtils::text(objectId)).arg(folder));
-        return false;
-    }
+    
     QStringList folders = getObjectFolders(objectId, os);
-    if (os.hasError()) {
-        return false;
-    }
+    CHECK_OP(os, false);
+
     if (!folders.isEmpty()) { // object is a part of another folder ->  do not erase
         return false;
     }    
     QList<U2DataId> parents = getParents(objectId, os);
-    if (os.hasError()) {
-        return false;
-    }
-    if (parents.isEmpty()) { // object is a part of another object ->  do not erase
+    CHECK_OP(os, false);
+
+    if (!parents.isEmpty()) { // object is a part of another object ->  do not erase
         //update top_level flag!
         SQLiteQuery toplevelQ("UPDATE Object SET rank = " + QString::number(SQLiteDbiObjectRank_Child) + " WHERE id = ?1", db, os);
         toplevelQ.bindDataId(1, objectId);
@@ -169,9 +165,8 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
 
     removeObjectAttributes(objectId, os);
 
-    if (os.hasError()) {
-        return false;
-    }
+    CHECK_OP(os, false);
+
     switch (type) {
         case U2Type::Sequence:
             SQLiteUtils::remove("Sequence", "object", objectId, 1, db, os);
@@ -196,9 +191,8 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
         default:
             os.setError(SQLiteL10N::tr("Unknown object type! Id: %1, type: %2").arg(SQLiteUtils::text(objectId)).arg(type));
     }
-    if (os.hasError()) {
-        return false;
-    }
+    CHECK_OP(os, false);
+
     SQLiteUtils::remove("Object", "id", objectId, 1, db, os);
     return !os.hasError();
 }
@@ -512,8 +506,8 @@ void SQLiteCrossDatabaseReferenceDbi::createCrossReference(U2CrossDatabaseRefere
 
     SQLiteQuery q("INSERT INTO CrossDatabaseReference(object, factory, dbi, rid, version) VALUES(?1, ?2, ?3, ?4, ?5)", db, os);
     q.bindDataId(1, reference.id);
-    q.bindString(2, reference.dataRef.factoryId);
-    q.bindString(3, reference.dataRef.dbiId);
+    q.bindString(2, reference.dataRef.dbiRef.dbiFactoryId);
+    q.bindString(3, reference.dataRef.dbiRef.dbiId);
     q.bindBlob(4, reference.dataRef.entityId);
     q.bindInt64(5, reference.dataRef.version);
     q.execute();
@@ -525,8 +519,8 @@ U2CrossDatabaseReference SQLiteCrossDatabaseReferenceDbi::getCrossReference(cons
         " WHERE o.id = ?1 AND r.object = o.id", db, os);
     q.bindDataId(1, objectId);
     if (q.step())  {
-        res.dataRef.factoryId = q.getString(0);
-        res.dataRef.dbiId = q.getString(1);
+        res.dataRef.dbiRef.dbiFactoryId= q.getString(0);
+        res.dataRef.dbiRef.dbiId = q.getString(1);
         res.dataRef.entityId = q.getBlob(2);
         res.dataRef.version = q.getInt64(3);
         res.visualName = q.getString(4);
@@ -538,8 +532,8 @@ U2CrossDatabaseReference SQLiteCrossDatabaseReferenceDbi::getCrossReference(cons
 
 void SQLiteCrossDatabaseReferenceDbi::updateCrossReference(const U2CrossDatabaseReference& reference, U2OpStatus& os) {
     SQLiteQuery q("UPDATE CrossDatabaseReference SET factory = ?1, dbi = ?2, rid = ?3, version = ?4 WHERE object = ?5", db, os);
-    q.bindString(1, reference.dataRef.factoryId);
-    q.bindString(2, reference.dataRef.dbiId);
+    q.bindString(1, reference.dataRef.dbiRef.dbiFactoryId);
+    q.bindString(2, reference.dataRef.dbiRef.dbiId);
     q.bindBlob(3, reference.dataRef.entityId);
     q.bindInt64(4, reference.dataRef.version);
     q.bindDataId(5, reference.id);

@@ -45,8 +45,8 @@ ADVSequenceWidgetAction* ADVSequenceWidget::getADVSequenceWidgetAction(const QSt
     return NULL;
 }
 
-QList<DNASequenceObject*> ADVSequenceWidget::getSequenceObjects() const {
-    QList<DNASequenceObject*> res;
+QList<U2SequenceObject*> ADVSequenceWidget::getSequenceObjects() const {
+    QList<U2SequenceObject*> res;
     foreach(ADVSequenceObjectContext* ctx, seqContexts) {
         res.append(ctx->getSequenceObject());
     }

@@ -21,12 +21,12 @@
 
 #include "AnnotationTableObject.h"
 #include "GObjectTypes.h"
-#include "DNASequenceObject.h"
 
 #include <U2Core/Timer.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include <QtCore/QBitArray>
 // for Qt::escape
@@ -76,7 +76,7 @@ bool Annotation::isValidAnnotationName(const QString& n) {
     return true;
 }
 
-QString Annotation::getQualifiersTip(int maxRows, DNASequenceObject* seq, DNATranslation* comlTT, DNATranslation* aminoTT) const {
+QString Annotation::getQualifiersTip(int maxRows, U2SequenceObject* seq, DNATranslation* comlTT, DNATranslation* aminoTT) const {
     QString tip;
     int rows = 0;
     const int QUALIFIER_VALUE_CUT = 40;
@@ -122,8 +122,7 @@ QString Annotation::getQualifiersTip(int maxRows, DNASequenceObject* seq, DNATra
                 complete = false;
             }
             if (getStrand().isCompementary()) {
-                const char* str = seq->getSequence().constData() + r.endPos() - len;
-                QByteArray ba(str, len);
+                QByteArray ba = seq->getSequenceData(U2Region(r.endPos() - len, len));
                 comlTT->translate(ba.data(), len);
                 TextUtils::reverse(ba.data(), len);
                 seqVal += QString::fromLocal8Bit(ba.data(), len);
@@ -132,10 +131,9 @@ QString Annotation::getQualifiersTip(int maxRows, DNASequenceObject* seq, DNATra
                     aminoVal += QString::fromLocal8Bit(ba.data(), aminoLen);
                 }
             } else {
-                const char* str = seq->getSequence().constData() + r.startPos;
-                seqVal += QString::fromLocal8Bit(str, len);
+                QByteArray ba = seq->getSequenceData(U2Region(r.startPos, len));
+                seqVal += QString::fromLocal8Bit(ba.constData(), len);
                 if (aminoTT!=NULL) {
-                    QByteArray ba(str, len);
                     int aminoLen = aminoTT->translate(ba.data(), len);
                     aminoVal += QString::fromLocal8Bit(ba.data(), aminoLen);
                 }
@@ -164,6 +162,14 @@ QString Annotation::getQualifiersTip(int maxRows, DNASequenceObject* seq, DNATra
         }
     }
     return tip;
+}
+
+QStringList Annotation::getFullGroupsNames() const {
+    QStringList res;
+    foreach(AnnotationGroup* g, getGroups()) {
+        res << g->getGroupPath();
+    }
+    return res;
 }
 
 bool Annotation::annotationLessThan(Annotation *first, Annotation *second) {
@@ -540,7 +546,7 @@ AnnotationTableObject::~AnnotationTableObject() {
     delete rootGroup;
 }
 
-GObject* AnnotationTableObject::clone() const {
+GObject* AnnotationTableObject::clone(const U2DbiRef&, U2OpStatus&) const {
     GTIMER(c2,t2,"AnnotationTableObject::clone");
     AnnotationTableObject* cln = new AnnotationTableObject(getGObjectName(), getGHintsMap());
     cln->setIndexInfo(getIndexInfo());

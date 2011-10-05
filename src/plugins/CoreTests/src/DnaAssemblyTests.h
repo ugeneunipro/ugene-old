@@ -31,7 +31,7 @@ namespace U2 {
 
 class DnaAssemblyMultiTask;
 class MAlignmentObject;
-class DNASequenceObject;
+class U2SequenceObject;
 class LoadDocumentTask;
 
 class GTest_DnaAssemblyToReferenceTask : public GTest {

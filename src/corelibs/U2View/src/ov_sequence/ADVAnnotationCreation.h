@@ -32,7 +32,7 @@ namespace U2 {
 
 class CreateAnnotationsTask;
 class AnnotatedDNAView;
-class DNASequenceObject;
+class U2SequenceObject;
 
 class U2VIEW_EXPORT ADVAnnotationCreation : public QObject {
     Q_OBJECT

@@ -23,7 +23,7 @@
 #include "IOLibUtils.h"
 #include "DocumentFormatUtils.h"
 
-#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectReference.h>
@@ -59,7 +59,7 @@ FormatCheckResult SCFFormat::checkRawData(const QByteArray& rawData, const GUrl&
 }
 
 
-Document* SCFFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVariantMap& fs, DocumentLoadMode) {
+Document* SCFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     GUrl url = io->getURL();
     QByteArray readBuff;
     QByteArray block(BUFF_SIZE, 0);
@@ -67,25 +67,20 @@ Document* SCFFormat::loadDocument(IOAdapter* io, TaskStateInfo& ti, const QVaria
     while ((len=io->readBlock(block.data(),BUFF_SIZE)) > 0) {
         readBuff.append(QByteArray(block.data(), len));
         if (readBuff.size()>CHECK_MB) {
-            ti.setError(L10N::errorFileTooLarge(url)); 
+            os.setError(L10N::errorFileTooLarge(url)); 
             break;
         }
     }
 
-    if (ti.hasError()) {
-        return NULL;
-    }
-
+    CHECK_OP(os, NULL);
+    
     SeekableBuf sf;
     sf.head = readBuff.constData();
     sf.pos = 0;
     sf.size = readBuff.size();
-    Document* doc = parseSCF(&sf, io->getFactory(), url, fs, ti);
-    if (doc == NULL && !ti.hasError()) {
-        if (!ti.hasError()) {
-            ti.setError(tr("Failed to parse SCF file: %1").arg(url.getURLString()));
-        }
-    }
+    Document* doc = parseSCF(dbiRef, &sf, io->getFactory(), url, fs, os);
+    CHECK_OP(os, NULL);
+    CHECK_EXT(doc != NULL, os.setError(tr("Failed to parse SCF file: %1").arg(url.getURLString())), NULL);
     return doc;
 }
 
@@ -520,7 +515,7 @@ int read_scf_bases3(SeekableBuf *fp, Bases *b, size_t num_bases)
     return 0;
 }
 
-Document* SCFFormat::parseSCF(SeekableBuf* fp, IOAdapterFactory* iof, const GUrl& url, const QVariantMap& fs, U2OpStatus& os) {    
+Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapterFactory* iof, const GUrl& url, const QVariantMap& fs, U2OpStatus& os) {    
     Header h;
     float scf_version;
     int sections = READ_ALL;
@@ -640,7 +635,6 @@ Document* SCFFormat::parseSCF(SeekableBuf* fp, IOAdapterFactory* iof, const GUrl
 
     cd.hasQV = true;
 
-    DNASequence dna(sequence);
     QString sampleName;
     QStringList vals = comments.split("\n");
     // detect sample name per http://www.ncbi.nlm.nih.gov/Traces/trace.cgi?cmd=show&f=formats&m=doc&s=format
@@ -653,20 +647,16 @@ Document* SCFFormat::parseSCF(SeekableBuf* fp, IOAdapterFactory* iof, const GUrl
     if (sampleName.isEmpty()) {
         sampleName = url.baseFileName();
     }
-    if (!sampleName.isEmpty()) {
-        dna.info.insert(DNAInfo::ID, sampleName);
-    }
+    DNASequence dna(sampleName , sequence);
     dna.info.insert(DNAInfo::COMMENT, vals);
 
     QList<GObject*> objects;
-    DNASequenceObject* seqObj = DocumentFormatUtils::addSequenceObject(objects, sampleName + " sequence", dna, fs, os);
-    if (os.hasError()) {
-        return NULL;
-    }
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, dna, fs, os);
+    CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, sampleName + " chromatogram");
     objects.append(chromObj);
-    Document* doc = new Document(this, iof, url, objects, fs);
+    Document* doc = new Document(this, iof, url, dbiRef, dbiRef.isValid(), objects, fs);
     chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
     return doc;
 }
@@ -1148,7 +1138,7 @@ inline QString scf_version_float2str(float f) {
  }
 
 
-void SCFFormat::exportDocumentToSCF( const QString& fileName, const DNAChromatogram& cd, const DNASequence& dna, TaskStateInfo& ts ) {
+void SCFFormat::exportDocumentToSCF( const QString& fileName, const DNAChromatogram& cd, const QByteArray& seq, U2OpStatus& ts ) {
     
     {
         QFile file(fileName);
@@ -1175,7 +1165,7 @@ void SCFFormat::exportDocumentToSCF( const QString& fileName, const DNAChromatog
         return;
     }
 
-    saveChromatogramToSCF(cd,dna.seq,fp);
+    saveChromatogramToSCF(cd, seq, fp);
 
     fclose(fp);  
 }

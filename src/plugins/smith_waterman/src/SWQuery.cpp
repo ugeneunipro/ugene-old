@@ -156,12 +156,12 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
         return new FailTask(err);
     }
 
-    DNASequenceObject* dna = scheme->getDNA();
-    settings.sqnc = QByteArray(dna->getSequence().constData(), dna->getSequenceLen());
+    const DNASequence& dnaSeq = scheme->getSequence();
+    settings.sqnc = dnaSeq.seq;
 
     if (settings.strand != StrandOption_DirectOnly) {
         QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(dna->getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+            lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
         if (!compTTs.isEmpty()) {
             settings.complTT = compTTs.first();
         } else {
@@ -171,8 +171,8 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     }
 
     if (params.value(AMINO_ATTR)->getAttributeValue<bool>()) {
-        DNATranslationType tt = (dna->getAlphabet()->getType() == DNAAlphabet_NUCL) ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
-        QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(dna->getAlphabet(), tt);
+        DNATranslationType tt = (dnaSeq.alphabet->getType() == DNAAlphabet_NUCL) ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
+        QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(dnaSeq.alphabet, tt);
         if (!TTs.isEmpty()) {
             settings.aminoTT = TTs.first(); //FIXME let user choose or use hints ?
         }
@@ -181,7 +181,7 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
 
     if (settings.pSm.isEmpty()) {
         QString matrixName;
-        QStringList lst = AppContext::getSubstMatrixRegistry()->selectMatrixNamesByAlphabet(dna->getAlphabet());
+        QStringList lst = AppContext::getSubstMatrixRegistry()->selectMatrixNamesByAlphabet(dnaSeq.alphabet);
         if (!lst.isEmpty()) {
             matrixName = lst.first();
             settings.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(matrixName);
@@ -189,7 +189,7 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
         assert(!settings.pSm.isEmpty());
     }
 
-    settings.globalRegion = dna->getSequenceRange();
+    settings.globalRegion = U2Region(0, dnaSeq.length());
 
     //SmithWatermanReportCallbackImpl* rcb = new SmithWatermanReportCallbackImpl(NULL, resultName, QString()); //FIXME!!! where to delete?
     //settings.resultCallback = rcb;

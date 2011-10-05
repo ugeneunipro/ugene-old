@@ -22,7 +22,15 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2DbiRegistry.h>
-#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
+
+#include <QtCore/QFile>
+#include <QtCore/QCoreApplication>
 
 namespace U2 {
 
@@ -31,11 +39,85 @@ U2DbiRegistry::U2DbiRegistry(QObject *parent) : QObject(parent) {
 }
 
 U2DbiRegistry::~U2DbiRegistry() {
+    coreLog.trace("Deallocating U2DbiRegistry");
+    for (int i = 0; i < tmpDbis.size(); i++) {
+        TmpDbiRef& ref = tmpDbis[i];
+        coreLog.trace(QString("BUG: tmp DBI was not deallocated: %1 %2 [%3]").arg(ref.alias).arg(ref.dbiRef.dbiId).arg(ref.nUsers));
+        ref.nUsers = 1;
+    }
+    foreach(const TmpDbiRef& ref, tmpDbis) {
+        deallocateTmpDbi(ref.dbiRef, U2OpStatus2Log());
+    }
     qDeleteAll(factories.values());
 }
 
+QList<U2DbiRef> U2DbiRegistry::listTmpDbis() const {
+    QList<U2DbiRef> res;
+    foreach(const TmpDbiRef& ref, tmpDbis) {
+        res << ref.dbiRef;
+    }
+    return res;
+}
+
+void U2DbiRegistry::deallocateTmpDbi(const U2DbiRef& dbiRef, U2OpStatus& os) {
+    QMutexLocker l(&lock);
+    int i = 0;
+    bool found = false;
+    for (;i < tmpDbis.size(); i++) {
+        TmpDbiRef& ref = tmpDbis[i];
+        if (ref.dbiRef == dbiRef) {
+            found = true;
+            ref.nUsers--;
+            if (ref.nUsers > 0) {
+                return;
+            }
+            break;
+        }
+    }
+    if (!found) {
+        coreLog.error(tr("TMP dbi is not found: %1").arg(dbiRef.dbiId));
+        return;
+    }
+    const TmpDbiRef& ref = tmpDbis.at(i);
+    coreLog.trace("Deallocating tmp dbi: " + dbiRef.dbiId + " with alias: " + ref.alias);
+    pool->closeAllConnections(ref.dbiRef.dbiId, os);
+    if (QFile::exists(ref.dbiRef.dbiId)) {
+        QFile::remove(ref.dbiRef.dbiId);
+    }
+    tmpDbis.removeAt(i);
+}
+
+U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
+    QMutexLocker m(&lock);
+    for (int i = 0; i < tmpDbis.size(); i++) {
+        TmpDbiRef& ref = tmpDbis[i];
+        if (ref.alias == alias) {
+            ref.nUsers++;
+            return ref.dbiRef;
+        }
+    }
+    
+    U2DbiRef res;
+    qint64 pid = QCoreApplication::applicationPid();
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" +  QString("ugene_tmp/p%1").arg(pid);
+    QString url = GUrlUtils::prepareTmpFileLocation(tmpDirPath, alias, "ugenedb", os);
+    CHECK_OP(os, res);
+
+    res.dbiId = url;
+    res.dbiFactoryId = DEFAULT_DBI_ID;
+
+    {
+        //create tmp dbi
+        DbiConnection con(res, true, os); 
+        CHECK_OP(os, U2DbiRef());
+    }
+    coreLog.trace("Allocated tmp dbi: " + res.dbiId);
+    tmpDbis << TmpDbiRef(alias, res, 1);
+    return res;
+}
+
 bool U2DbiRegistry::registerDbiFactory(U2DbiFactory *factory) {
-    if(factories.contains(factory->getId())) {
+    if (factories.contains(factory->getId())) {
         return false;
     }
     factories.insert(factory->getId(), factory);
@@ -51,18 +133,21 @@ U2DbiFactory *U2DbiRegistry::getDbiFactoryById(U2DbiFactoryId id) const {
     return factories.value(id, NULL);
 }
 
+
 //////////////////////////////////////////////////////////////////////////
 // U2DbiPool
 
 U2DbiPool::U2DbiPool(QObject* p) : QObject(p) {
 }
 
-U2Dbi* U2DbiPool::openDbi(const U2DbiFactoryId& id, const QString& url, bool create, U2OpStatus& os) {
+U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os) {
     QMutexLocker m(&lock);
 
-    ioLog.trace(QString("DbiPool: Opening DBI. Url: %1, factory: %2").arg(url).arg(id));
-
     U2Dbi* dbi = NULL;
+    QString url = ref.dbiId;
+
+    ioLog.trace(QString("DbiPool: Opening DBI. Url: %1, factory: %2").arg(url).arg(ref.dbiFactoryId));
+
     if (url.isEmpty()) {
         os.setError(tr("No URL provided!"));
         return NULL;
@@ -72,9 +157,9 @@ U2Dbi* U2DbiPool::openDbi(const U2DbiFactoryId& id, const QString& url, bool cre
         int cnt = dbiCountersByUrl[url];
         dbiCountersByUrl[url] = cnt + 1;
     } else {
-        U2DbiFactory* f = AppContext::getDbiRegistry()->getDbiFactoryById(id);
+        U2DbiFactory* f = AppContext::getDbiRegistry()->getDbiFactoryById(ref.dbiFactoryId);
         if (f == NULL) {
-            os.setError(tr("Invalid database type: %1").arg(id));
+            os.setError(tr("Invalid database type: %1").arg(ref.dbiFactoryId));
             return NULL;
         }
         dbi = f->createDbi();
@@ -128,5 +213,21 @@ void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
     ioLog.trace(QString("DBIPool: resource is released. Url: %1").arg(url));
 }
 
+
+void U2DbiPool::closeAllConnections(const QString& url, U2OpStatus& os) {
+    QMutexLocker m(&lock);
+
+    if (!dbiByUrl.contains(url)) {
+        return;
+    }
+    U2Dbi* dbi = dbiByUrl[url];
+    dbi->shutdown(os);
+    delete dbi;
+
+    dbiByUrl.remove(url);
+    int nActive  = dbiCountersByUrl.value(url, 0);
+    dbiCountersByUrl.remove(url);
+    ioLog.trace(QString("DBIPool: closing all connections. Url: %1, active references: %2 ").arg(url).arg(nActive));
+}
 
 } // namespace U2
