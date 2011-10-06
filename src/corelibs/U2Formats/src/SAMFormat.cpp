@@ -332,7 +332,7 @@ Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
         objects.append(new MAlignmentObject(defaultMA));
     }
 
-    CHECK_EXT(os.hasError(), qDeleteAll(objects), NULL);
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
     DocumentFormatUtils::updateFormatHints(objects, fs);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, lockReason);
