@@ -188,7 +188,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
         }
     }
     CHECK_OP(os, );
-    CHECK_EXT(!objects.isEmpty(), os.setError(Document::tr("Document is empty.")), );
+    CHECK_EXT(!objects.isEmpty() || merge, os.setError(Document::tr("Document is empty.")), );
     SAFE_POINT(contigs.size() == mergedMapping.size(), "contigs <-> regions mapping failed!", );
 
     if (!toolMark) {

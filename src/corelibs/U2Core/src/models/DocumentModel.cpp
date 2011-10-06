@@ -288,7 +288,7 @@ void Document::_removeObject(GObject* obj, bool deleteObjects) {
 
     obj->setParentStateLockItem(NULL);
     objects.removeOne(obj);
-    obj->setGHints(new GHintsDefaultImpl());
+    obj->setGHints(new GHintsDefaultImpl(obj->getGHintsMap()));
 
     assert(objects.size() == getChildItems().size());
 
