@@ -289,7 +289,7 @@ QList<Task*> GTest_Bowtie::onSubTaskFinished(Task* subTask) {
 			TextObject* text = qobject_cast<TextObject*>(list.first());
 			parseBowtieOutput(ma2, text->getText());
 			ma2.setName("name");
-            CHECK_EXT(ma2.isEmpty(), setError(QString("Can't cast GObject to MAlignmentObject")), res);
+            CHECK_EXT(!ma2.isEmpty(), setError(QString("Can't cast GObject to MAlignmentObject")), res);
 		} else {
 			QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
 			if (list.size() == 0) {

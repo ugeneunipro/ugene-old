@@ -52,7 +52,7 @@ const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
 
 Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, const QVariantMap& hints) {
-    CHECK_EXT(!iof->isResourceAvailable(url), os.setError(tr("File is already exists: %1").arg(url.getURLString())), NULL);
+    CHECK_EXT(TriState_No == iof->isResourceAvailable(url), os.setError(tr("File is already exists: %1").arg(url.getURLString())), NULL);
     Document* doc = createNewUnloadedDocument(iof, url, os, hints);
     CHECK_OP(os, NULL);
     doc->setLoaded(true);
