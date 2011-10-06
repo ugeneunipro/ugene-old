@@ -815,7 +815,7 @@ skip_bases:
     dna.info.insert(DNAInfo::COMMENT, sequenceComment.split("\n"));
     
     QList<GObject*> objects;
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, dna, fs, os);
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, sequenceName, objects, dna, fs, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");

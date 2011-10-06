@@ -231,10 +231,10 @@ static bool writeBlock(IOAdapter *io, Document* d, U2OpStatus& ti, const QByteAr
     return false;
 }
 
-void MSFFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
+void MSFFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     const MAlignmentObject* obj = NULL;
     if((d->getObjects().size() != 1) || ((obj = qobject_cast<const MAlignmentObject*>(d->getObjects().first())) == NULL)) {
-        ti.setError("No data to write;");
+        os.setError("No data to write;");
         return;
     }
     const MAlignment& ma = obj->getMAlignment();
@@ -261,7 +261,7 @@ void MSFFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
     line += "  " + CHECK_FIELD;
     line += " " + QByteArray::number(checkSum);
     line += "  " + END_OF_HEADER_LINE + "\n\n";
-    if (writeBlock(io, d, ti, line))
+    if (writeBlock(io, d, os, line))
         return;
 
     //write info
@@ -274,15 +274,15 @@ void MSFFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
         line += " " + QString("%1").arg(checkSums[row.getName()], -maxCheckSumLen);
         line += "  " + WEIGHT_FIELD;
         line += " " + QByteArray::number(WEIGHT_VALUE) + "\n";
-        if (writeBlock(io, d, ti, line)) {
+        if (writeBlock(io, d, os, line)) {
             return;
         }
     }
-    if (writeBlock(io, d, ti, "\n" + SECTION_SEPARATOR + "\n\n")) {
+    if (writeBlock(io, d, os, "\n" + SECTION_SEPARATOR + "\n\n")) {
         return;
     }
 
-    for (int i = 0; !ti.isCoR() && i < maLen; i += CHARS_IN_ROW) {
+    for (int i = 0; !os.isCoR() && i < maLen; i += CHARS_IN_ROW) {
         /* write numbers */ {
             QByteArray line(maxNameLen + 2, ' ');
             QString t = QString("%1").arg(i + 1);
@@ -295,7 +295,7 @@ void MSFFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
                 line += s;
             }
             line += '\n';
-            if (writeBlock(io, d, ti, line)) {
+            if (writeBlock(io, d, os, line)) {
                 return;
             }
         }
@@ -303,7 +303,7 @@ void MSFFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
         //write sequence
         foreach(const MAlignmentRow& row, ma.getRows()) {
             QByteArray line = row.getName().toLocal8Bit();
-            line.replace(' ', '_'); // since ' ' is a delimeter for MSF parser spaces in name not supported
+            line.replace(' ', '_'); // since ' ' is a delimiter for MSF parser spaces in name not supported
             line = line.leftJustified(maxNameLen+1);
 
             for (int j = 0; j < CHARS_IN_ROW && i + j < maLen; j += CHARS_IN_WORD) {
@@ -312,11 +312,11 @@ void MSFFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
                 line += row.mid(i + j, nChars).toByteArray(nChars).replace(MAlignment_GapChar, '.');
             }
             line += '\n';
-            if (writeBlock(io, d, ti, line)) {
+            if (writeBlock(io, d, os, line)) {
                 return;
             }
         }
-        if (writeBlock(io, d, ti, "\n")) {
+        if (writeBlock(io, d, os, "\n")) {
             return;
         }
     }

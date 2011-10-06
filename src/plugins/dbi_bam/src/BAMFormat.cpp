@@ -132,7 +132,7 @@ Document* BAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& ref, const QVar
     }
 }
 
-void BAMFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus& os) {
+void BAMFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     try {
         Writer writer(*io);
         QList<MAlignmentObject *> alignments;

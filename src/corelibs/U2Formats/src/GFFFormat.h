@@ -38,7 +38,7 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual void storeDocument( Document* d, U2OpStatus& ts, IOAdapter* io );
+    virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 

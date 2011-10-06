@@ -695,18 +695,18 @@ Document* StockholmFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     return NULL;
 }
 
-void StockholmFormat::storeDocument( Document* doc, U2OpStatus& ti, IOAdapter* io ) {
+void StockholmFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os) {
     try {
         foreach( GObject* p_obj, doc->getObjects() ) {
             const MAlignmentObject* aln_obj = qobject_cast<const MAlignmentObject*>( p_obj );
             assert( NULL != aln_obj );
             save( io, aln_obj->getMAlignment(), aln_obj->getGObjectName() );
-            CHECK_OP(ti, );
+            CHECK_OP(os, );
         }
     } catch( const StockholmBaseException& ex ) {
-        ti.setError( ex.msg );
+        os.setError( ex.msg );
     } catch(...) {
-        ti.setError(tr( "unknown error occurred" ));
+        os.setError(tr( "unknown error occurred" ));
     }
 }
 

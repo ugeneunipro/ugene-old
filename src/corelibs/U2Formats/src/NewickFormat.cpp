@@ -81,7 +81,7 @@ static void writeNode(IOAdapter* io, PhyNode* node) {
     }
 }
 
-void NewickFormat::storeDocument( Document* d, U2OpStatus& , IOAdapter* io) {
+void NewickFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     assert(d->getDocumentFormat() == this);
 
     foreach(GObject* obj, d->getObjects()) {

@@ -81,7 +81,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     CHECK_OP(os, );
     CHECK_EXT(seq.size() > 0, os.setError(RawDNASequenceFormat::tr("Sequence is empty")), );
     DNASequence dnaSeq("Sequence", seq);
-    DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, dnaSeq, hints, os);
+    DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, dnaSeq.getName(), objects, dnaSeq, hints, os);
 }
 
 Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
@@ -104,12 +104,12 @@ FormatCheckResult RawDNASequenceFormat::checkRawData(const QByteArray& rawData, 
     return hasBinaryData ? FormatDetection_NotMatched : FormatDetection_VeryLowSimilarity; 
 }
 
-void RawDNASequenceFormat::storeDocument( Document* d, U2OpStatus& ts, IOAdapter* io) {
+void RawDNASequenceFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     assert(d->getObjects().size() ==1);
     GObject* obj = d->getObjects().first();
     U2SequenceObject* so = qobject_cast<U2SequenceObject*>(obj);
     assert(so!=NULL);
-    PlainTextFormat::storeRawData(so->getWholeSequenceData(), ts, io);
+    PlainTextFormat::storeRawData(so->getWholeSequenceData(), os, io);
 }
 
 

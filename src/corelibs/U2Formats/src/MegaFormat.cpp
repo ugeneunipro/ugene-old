@@ -56,16 +56,16 @@ Document* MegaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const 
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objs, fs);
 }
 
-void MegaFormat::storeDocument( Document* d, U2OpStatus& ti, IOAdapter* io ) {
+void MegaFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     if( NULL == d ) {
-        ti.setError(L10N::badArgument("doc"));
+        os.setError(L10N::badArgument("doc"));
         return;
     }
     if( NULL == io || !io->isOpen() ) {
-        ti.setError(L10N::badArgument("IO adapter"));
+        os.setError(L10N::badArgument("IO adapter"));
         return;
     }
-    save(io, d, ti);
+    save(io, d, os);
 }
 
 FormatCheckResult MegaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {

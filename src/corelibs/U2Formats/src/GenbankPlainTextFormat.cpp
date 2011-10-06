@@ -28,7 +28,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/L10n.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/DNAInfo.h>
 
 #include <U2Core/AnnotationTableObject.h>
@@ -218,12 +218,12 @@ bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
 /// saving
 
 static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so);
-static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, TaskStateInfo& si);
-static void writeSequence(IOAdapter* io, U2SequenceObject* ao, TaskStateInfo& si);
+static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& os);
+static void writeSequence(IOAdapter* io, U2SequenceObject* ao, U2OpStatus& os);
 static void prepareMultiline(QString& lineToChange, int spacesOnLineStart, bool newLineAtTheEnd = true, int maxLineLen = 79);
 
 #define VAL_OFF 12
-static bool writeKeyword(IOAdapter* io, TaskStateInfo& si, const QString& key, const QString& value, bool wrap = true /*TODO*/) {
+static bool writeKeyword(IOAdapter* io, U2OpStatus& os, const QString& key, const QString& value, bool wrap = true /*TODO*/) {
     Q_UNUSED(wrap);
     try {
         assert(key.length() < VAL_OFF);
@@ -250,7 +250,7 @@ static bool writeKeyword(IOAdapter* io, TaskStateInfo& si, const QString& key, c
         }
 
     } catch( int ) {
-        si.setError(GenbankPlainTextFormat::tr("Error writing document"));
+        os.setError(GenbankPlainTextFormat::tr("Error writing document"));
         return false;
     }
     return true;
@@ -340,7 +340,7 @@ static QList<StrPair> formatKeywords(U2SequenceObject* so) {
     return res;
 }
 
-void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IOAdapter* io ) {
+void GenbankPlainTextFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os) {
     QList<GObject*> seqs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     QList<GObject*> anns = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
     int seqCounter = seqs.size();
@@ -363,14 +363,14 @@ void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IO
 
         // write mandatory locus string
         QString locusString = genLocusString(aos, so);
-        if (!writeKeyword(io, si, DNAInfo::LOCUS, locusString, false)) {
+        if (!writeKeyword(io, os, DNAInfo::LOCUS, locusString, false)) {
             return;
         }
         // write other keywords
         if (so) {
             QList<StrPair> lst(formatKeywords(so));
             foreach (const StrPair& p, lst) {
-                if (!writeKeyword(io, si, p.first, p.second)) {
+                if (!writeKeyword(io, os, p.first, p.second)) {
                     return;
                 }
             }
@@ -383,11 +383,11 @@ void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IO
             if(annsAndSeqObjs[0]->getGObjectType() == GObjectTypes::SEQUENCE && seqCounter > 1){
                 unimark += " sequence";
             }
-            if (!writeKeyword(io, si, UGENE_MARK, unimark, false)) {
+            if (!writeKeyword(io, os, UGENE_MARK, unimark, false)) {
                 return;
             }
             for (int x=1; x < annsAndSeqObjs.size(); x++) {
-                if (!writeKeyword(io, si, QString(), annsAndSeqObjs[x]->getGObjectName(), false)) {
+                if (!writeKeyword(io, os, QString(), annsAndSeqObjs[x]->getGObjectName(), false)) {
                     return;
                 }
             }
@@ -395,25 +395,21 @@ void GenbankPlainTextFormat::storeDocument( Document* doc, TaskStateInfo& si, IO
 
         // write annotations
         if (!aos.isEmpty()) {
-            writeAnnotations(io, aos, si);
-            if (si.hasError()) {
-                return;
-            }
+            writeAnnotations(io, aos, os);
+            CHECK_OP(os, );
         }
 
         if (so) {
             //todo: store sequence alphabet!
-            writeSequence(io, so, si);
-            if (si.hasError()) {
-                return;
-            }
+            writeSequence(io, so, os);
+            CHECK_OP(os, );
         }
 
         // write last line marker
         QByteArray lastLine("//\n");
         qint64 len = io->writeBlock(lastLine);
         if (len!=lastLine.size()) {
-            si.setError(L10N::errorWritingFile(doc->getURL()));
+            os.setError(L10N::errorWritingFile(doc->getURL()));
             return;
         }
     }
@@ -471,7 +467,7 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so) {
     return loc;
 }
 
-static void writeQualifier(const QString& name, const QString& val, IOAdapter* io, TaskStateInfo& si, const char* spaceLine) {
+static void writeQualifier(const QString& name, const QString& val, IOAdapter* io, U2OpStatus& si, const char* spaceLine) {
     int len = io->writeBlock(spaceLine, 21);
     if (len != 21) {
         si.setError(GenbankPlainTextFormat::tr("Error writing document"));
@@ -491,7 +487,7 @@ static void writeQualifier(const QString& name, const QString& val, IOAdapter* i
     }
 }
 
-static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, TaskStateInfo& si) {
+static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si) {
     assert(!aos.isEmpty());
     QByteArray header("FEATURES             Location/Qualifiers\n");
 
@@ -588,7 +584,7 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, TaskStateInfo& 
     }
 }
 
-static void writeSequence(IOAdapter* io, U2SequenceObject* ao, TaskStateInfo& si) {
+static void writeSequence(IOAdapter* io, U2SequenceObject* ao, U2OpStatus& si) {
     static const int charsInLine = 60;
 
     QByteArray seq = ao->getWholeSequenceData();

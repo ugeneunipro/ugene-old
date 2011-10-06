@@ -68,7 +68,8 @@ public:
 
 
     
-    static U2SequenceObject* addSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, DNASequence& seq, const QVariantMap& hints, U2OpStatus& os);
+    static U2SequenceObject* addSequenceObjectDeprecated(const U2DbiRef& dbiRef, const QString& seqObjName, 
+        QList<GObject*>& objects, DNASequence& seq, const QVariantMap& hints, U2OpStatus& os);
 
     /** if no docURL provided -> relations are not set*/
     static U2SequenceObject* addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigs, 

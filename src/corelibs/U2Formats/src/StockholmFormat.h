@@ -58,7 +58,7 @@ public:
         return format_name;
     }
 
-    virtual void storeDocument( Document* doc, U2OpStatus& ti, IOAdapter* io );
+    virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
 
     virtual FormatCheckResult checkRawData(const QByteArray& data, const GUrl& = GUrl()) const;
 

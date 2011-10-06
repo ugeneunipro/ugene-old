@@ -340,15 +340,14 @@ Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 }
 
 
-void SAMFormat::storeDocument( Document* d, U2OpStatus& ts, IOAdapter* io )
-{
+void SAMFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     //TODO: sorting options?
     if( NULL == d ) {
-        ts.setError(L10N::badArgument("doc"));
+        os.setError(L10N::badArgument("doc"));
         return;
     }
     if( NULL == io || !io->isOpen() ) {
-        ts.setError(L10N::badArgument("IO adapter"));
+        os.setError(L10N::badArgument("IO adapter"));
         return;
     }
 

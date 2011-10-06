@@ -825,9 +825,9 @@ void NEXUSFormat::storeObjects(QList<GObject*> objects, IOAdapter *io, U2OpStatu
     }
 }
 
-void NEXUSFormat::storeDocument(Document *d, U2OpStatus &ts, IOAdapter *io) {
+void NEXUSFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     QList<GObject*> objects = d->getObjects();
-    storeObjects(objects, io, ts);
+    storeObjects(objects, io, os);
 }
 
 FormatCheckResult NEXUSFormat::checkRawData(const QByteArray &rawData, const GUrl&) const {

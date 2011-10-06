@@ -80,7 +80,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, 
     
     bool lineOk = false;
     bool isCircular = false;
-    QString dnaName(docUrl.baseFileName());
+    QString seqName(docUrl.baseFileName());
     QList<Annotation*> annotations;
     
     while (!os.isCoR()) {
@@ -94,18 +94,18 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, 
         }
         
         if (readBuff.startsWith(PDW_DNANAME_TAG)) {
-            dnaName = readPdwValue(readBuff, PDW_DNANAME_TAG);
+            seqName = readPdwValue(readBuff, PDW_DNANAME_TAG);
         } else if (readBuff.startsWith(PDW_SEQUENCE_TAG)) {
             QByteArray seq = parseSequence(io, os);
             DNAAlphabet* alphabet = U2AlphabetUtils::findBestAlphabet(seq);
-            DNASequence dnaSeq(dnaName, seq , alphabet);
+            DNASequence dnaSeq(seqName, seq , alphabet);
             if (isCircular) {
                 DNALocusInfo loi;
                 loi.topology = "circular";
-                loi.name = dnaName;
+                loi.name = seqName;
                 dnaSeq.info.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
             }
-            seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, dnaSeq, QVariantMap(), os);
+            seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, seqName, objects, dnaSeq, QVariantMap(), os);
             break;
         } else if (readBuff.startsWith(PDW_CIRCULAR_TAG)) {
             QByteArray val = readPdwValue(readBuff, PDW_CIRCULAR_TAG);
@@ -120,7 +120,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, 
     }
     
     if (!annotations.isEmpty()) {
-        annObj = new AnnotationTableObject(QString("%1 annotations").arg(dnaName));
+        annObj = new AnnotationTableObject(QString("%1 annotations").arg(seqName));
         annObj->addAnnotations(annotations);
         objects.append(annObj);
 

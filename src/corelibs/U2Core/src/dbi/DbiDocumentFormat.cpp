@@ -104,13 +104,13 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
     return d;
 }
 
-void DbiDocumentFormat::storeDocument(Document* d, U2OpStatus& ts, IOAdapter*) {
+void DbiDocumentFormat::storeDocument(Document* d, IOAdapter*, U2OpStatus& os) {
     // 1. get db
     // 2. call sync
     QString url = d->getURLString();
-    DbiConnection handle(U2DbiRef(id, url), true, ts);
-    if (!ts.isCoR()) {
-        handle.dbi->flush(ts);
+    DbiConnection handle(U2DbiRef(id, url), true, os);
+    if (!os.isCoR()) {
+        handle.dbi->flush(os);
     }
 }
 

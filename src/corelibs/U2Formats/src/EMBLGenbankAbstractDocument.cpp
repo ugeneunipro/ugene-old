@@ -172,7 +172,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                 DNASequence seq(sequenceName, sequence);
                 seq.info = data.tags;
                 seq.circular = data.circular;
-                U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, seq, fs, os);
+                U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, sequenceName, objects, seq, fs, os);
                 if (os.isCoR()) {
                     break;
                 }

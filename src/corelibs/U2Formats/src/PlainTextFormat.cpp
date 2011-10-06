@@ -80,15 +80,15 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     return d;
 }
 
-void PlainTextFormat::storeDocument( Document* d, U2OpStatus& ts, IOAdapter* io) {
-    assert(d->getObjects().size() ==1);
+void PlainTextFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
+    assert(d->getObjects().size() == 1);
     GObject* obj = d->getObjects().first();
     TextObject* to = qobject_cast<TextObject*>(obj);
     assert(to!=NULL);
     const QString& text = to->getText();
 
     QByteArray local8bit = text.toLocal8Bit();
-    storeRawData(local8bit, ts, io);
+    storeRawData(local8bit, os, io);
 }
 
 void PlainTextFormat::storeRawData(const QByteArray& rawData, U2OpStatus& ts, IOAdapter* io) {

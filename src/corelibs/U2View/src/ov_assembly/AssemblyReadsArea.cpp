@@ -841,7 +841,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
             DNAAlphabet * al = U2AlphabetUtils::findBestAlphabet(r->readSequence);
             DNASequence seq = DNASequence(r->name, r->readSequence, al);
             seq.quality = DNAQuality(r->quality, DNAQualityType_Sanger);
-            U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), objs, seq, QVariantMap(), os);
+            U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), seq.getName(), objs, seq, QVariantMap(), os);
             CHECK_OP(os, );
             doc->addObject(seqObj);
         }

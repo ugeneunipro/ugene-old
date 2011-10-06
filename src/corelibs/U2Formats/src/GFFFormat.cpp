@@ -142,7 +142,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 objName = headerName + SEQUENCE_TAG;
                 DNASequence sequence(objName, seq);
                 sequence.info.insert(DNAInfo::FASTA_HDR, objName);
-                U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, sequence, hints, os);
+                U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, sequence, hints, os);
                 CHECK_OP(os, );
                 SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
                 dbiObjects.objects << seqObj->getSequenceRef().entityId;
@@ -279,7 +279,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         DNASequence sequence(objName, seq);
         sequence.info.insert(DNAInfo::FASTA_HDR, objName);
         sequence.info.insert(DNAInfo::ID, objName);
-        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, sequence, hints, os);
+        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, sequence, hints, os);
         if (os.hasError()) {
             qDeleteAll(seqMap.values());
             seqMap.clear();
@@ -370,11 +370,11 @@ QStringList GFFFormat::parseLine( QString line ) const{
     return result;
 }
 
-void GFFFormat::storeDocument( Document* doc, U2OpStatus& si, IOAdapter* io ){
+void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
     QByteArray header("##gff-version\t3\n");
     qint64 len = io->writeBlock(header);
     if (len!=header.size()) {
-        si.setError(L10N::errorWritingFile(doc->getURL()));
+        os.setError(L10N::errorWritingFile(doc->getURL()));
         return;
     }
     QByteArray qbaRow;
@@ -430,7 +430,7 @@ void GFFFormat::storeDocument( Document* doc, U2OpStatus& si, IOAdapter* io ){
                 qbaRow = row.join("\t").toAscii() + "\n";
                 qint64 len = io->writeBlock(qbaRow);
                 if (len!=qbaRow.size()) {
-                    si.setError(L10N::errorWritingFile(doc->getURL()));
+                    os.setError(L10N::errorWritingFile(doc->getURL()));
                     return;
                 }
             }
@@ -440,7 +440,7 @@ void GFFFormat::storeDocument( Document* doc, U2OpStatus& si, IOAdapter* io ){
     if(!sequences.isEmpty()){
         qbaRow = "##FASTA\n";
         if (io->writeBlock(qbaRow) != qbaRow.size()) {
-            si.setError(L10N::errorWritingFile(doc->getURL()));
+            os.setError(L10N::errorWritingFile(doc->getURL()));
             return;
         }
         foreach(GObject *s, sequences){
@@ -452,7 +452,7 @@ void GFFFormat::storeDocument( Document* doc, U2OpStatus& si, IOAdapter* io ){
             fastaHeader.append( '\n' );
             qbaRow = fastaHeader.toAscii();
             if (io->writeBlock(qbaRow) != qbaRow.size()) {
-                si.setError(L10N::errorWritingFile(doc->getURL()));
+                os.setError(L10N::errorWritingFile(doc->getURL()));
                 return;
             }
             
@@ -462,7 +462,7 @@ void GFFFormat::storeDocument( Document* doc, U2OpStatus& si, IOAdapter* io ){
             for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
                 int chunkSize = qMin( SAVE_LINE_LEN, len - i );
                 if (io->writeBlock( seq + i, chunkSize ) != chunkSize || !io->writeBlock( "\n", 1 )) {
-                    si.setError(L10N::errorWritingFile(doc->getURL()));
+                    os.setError(L10N::errorWritingFile(doc->getURL()));
                     return;
                 }
             }

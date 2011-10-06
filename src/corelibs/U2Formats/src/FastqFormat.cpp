@@ -222,7 +222,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
              DNASequence seq(objName, sequence);
              seq.quality = DNAQuality(qualityScores);
              seq.info.insert(DNAInfo::FASTA_HDR, headerLine);
-             U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, seq, hints, os);
+             U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, seq, hints, os);
              if (os.hasError()) {
                  break;
              }

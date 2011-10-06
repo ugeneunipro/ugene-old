@@ -274,10 +274,10 @@ void ClustalWAlnFormat::save(IOAdapter* io, Document* d, U2OpStatus& ti) {
     }
 }
 
-void ClustalWAlnFormat::storeDocument(Document* d, U2OpStatus& ti, IOAdapter* io) {
-    CHECK_EXT(d!=NULL, ti.setError(L10N::badArgument("doc")), );
-    CHECK_EXT(io != NULL && io->isOpen(), ti.setError(L10N::badArgument("IO adapter")), );
-    save(io, d, ti);
+void ClustalWAlnFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
+    CHECK_EXT(d!=NULL, os.setError(L10N::badArgument("doc")), );
+    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
+    save(io, d, os);
 }
 
 FormatCheckResult ClustalWAlnFormat::checkRawData(const QByteArray& data, const GUrl&) const {

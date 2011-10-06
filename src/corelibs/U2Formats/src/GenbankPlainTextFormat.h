@@ -31,7 +31,7 @@ class U2FORMATS_EXPORT GenbankPlainTextFormat : public EMBLGenbankAbstractDocume
 public:
     GenbankPlainTextFormat(QObject* p);
 
-    virtual void storeDocument( Document* d, TaskStateInfo& ts, IOAdapter* io );
+    virtual void storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os);
     
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 

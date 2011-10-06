@@ -191,9 +191,16 @@ void DocumentFormatUtils::updateFormatHints(QList<GObject*>& objects, QVariantMa
 }
 
 
-U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, 
+U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRef& dbiRef, const QString& seqObjName, QList<GObject*>& objects, 
                                                                    DNASequence& sequence, const QVariantMap& hints, U2OpStatus& os) 
 {
+#ifdef _DEBUG
+    foreach(GObject* obj, objects) {
+        const QString& name = obj->getGObjectName();
+        assert(name != seqObjName);
+    }
+#endif
+
     if (sequence.alphabet== NULL) {
         sequence.alphabet = U2AlphabetUtils::findBestAlphabet(sequence.seq);
         CHECK_EXT(sequence.alphabet != NULL, os.setError(tr("Undefined sequence alphabet")), NULL);
@@ -211,13 +218,14 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRe
     U2Sequence u2seq = importer.finalizeSequence(os);
     CHECK_OP(os, NULL);
     
-    U2SequenceObject* so = new U2SequenceObject(sequence.getName(), U2EntityRef(dbiRef, u2seq.id));
+    U2SequenceObject* so = new U2SequenceObject(seqObjName, U2EntityRef(dbiRef, u2seq.id));
     objects << so;
     return so;
 }
 
 
-U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, const GUrl& docUrl, 
+U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, 
+                                                                QList<GObject*>& objects, const GUrl& docUrl, 
                                                                 const QStringList& contigNames, QByteArray& mergedSequence, 
                                                                 const QVector<U2Region>& mergedMapping,
                                                                 const QVariantMap& hints, U2OpStatus& os) 
@@ -226,7 +234,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
         DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence);
         const QString& name = contigNames.first();
         DNASequence seq(name, mergedSequence, al );
-        return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objects, seq, hints, os);
+        return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, name, objects, seq, hints, os);
     }
 
     assert(contigNames.size() >= 2);
@@ -246,7 +254,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     }
     ;
     DNASequence seq("Sequence", mergedSequence, al);
-    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, objects, seq, hints, os);
+    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, "Sequence", objects, seq, hints, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     

@@ -312,7 +312,7 @@ void LoadDocumentTask::run() {
     if (config.checkObjRef.isValid() && !hasError()) {
         processObjRef();
     }
-    assert(isCanceled() || resultDocument != NULL || hasError());
+    assert(stateInfo.isCoR() || resultDocument != NULL);
     assert(resultDocument == NULL || resultDocument->isLoaded());
 }
 
