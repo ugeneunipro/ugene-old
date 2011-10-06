@@ -25,7 +25,12 @@
 #include <U2Core/global.h>
 
 #include <QtCore/QVector>
-
+//small hack, may be bad
+#ifndef LLONG_MAX
+#ifdef Q_OS_LINUX
+#include <limits.h>
+#endif
+#endif
 namespace U2 {
 
 /** Predefined region - acts as hint for a function that all possible range must be processed */
