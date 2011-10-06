@@ -199,8 +199,8 @@ void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef, const QString& vi
     con.open(dbiRef, true, os);
     CHECK_OP(os, );
 
-    sequence.id.clear();
-    sequence.visualName= visualName;
+    sequence = U2Sequence();
+    sequence.visualName = visualName;
     sequence.circular = circular;
     
     con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
@@ -211,11 +211,14 @@ void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) 
     // derive common alphabet
     DNAAlphabet* blockAl = U2AlphabetUtils::findBestAlphabet(data, len);
     CHECK_EXT(blockAl != NULL, os.setError("Failed to match sequence alphabet!"), );
+
     DNAAlphabet* oldAl = U2AlphabetUtils::getById(sequence.alphabet);
     DNAAlphabet* resAl = blockAl;
     if (oldAl != NULL) {
         resAl = U2AlphabetUtils::deriveCommonAlphabet(blockAl, oldAl);
-    }
+        CHECK_EXT(resAl!=NULL, os.setError(U2SequenceUtils::tr("Failed to derive sequence alphabet!")), );
+    } 
+    
     if (resAl != oldAl) {
         sequence.alphabet.id = resAl->getId();
         con.dbi->getSequenceDbi()->updateSequenceObject(sequence, os);

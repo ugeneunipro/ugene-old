@@ -225,8 +225,8 @@ DNAAlphabet* U2AlphabetUtils::deriveCommonAlphabet(DNAAlphabet* al1, DNAAlphabet
     if (al1  == al2) {
         return al1;
     }
-    if (al1->getType()!=al2->getType()) {
-        return NULL;
+    if (al1->getType() != al2->getType()) {
+        return getById(BaseDNAAlphabetIds::RAW());
     }
     DNAAlphabet* resAl = al1->getNumAlphabetChars() >= al2->getNumAlphabetChars() ? al1 : al2;
     return resAl;

@@ -201,7 +201,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
         sequenceNumber++;
     }
     CHECK_OP(os, );
-    CHECK_EXT(!objects.isEmpty(), os.setError(Document::tr("Document is empty.")), );
+    CHECK_EXT(!objects.isEmpty() || merge, os.setError(Document::tr("Document is empty.")), );
     SAFE_POINT(headers.size() == mergedMapping.size(), "headers <-> regions mapping failed!", );
 
     if (!merge) {
