@@ -128,6 +128,8 @@ static const QString ID;
 static const QString DATE;
 static const QString EMBL_ID;
 static const QString FASTA_HDR;
+static const QString FASTQ_QUAL_CODES;
+static const QString FASTQ_QUAL_TYPE;
 
 static QString getPrimaryAccession(const QVariantMap&);
 static QString getContig(const QVariantMap&);

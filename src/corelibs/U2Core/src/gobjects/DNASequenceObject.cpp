@@ -26,6 +26,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2AttributeDbi.h>
 
 #include "GObjectTypes.h"
 
@@ -172,12 +173,35 @@ void U2SequenceObject::setCircular(bool v) {
 }
 
 void U2SequenceObject::setQuality(const DNAQuality& q) {
-    //TODO: save as attribute! remove or update old one!
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+
+    U2ByteArrayAttribute qualityCodes(entityRef.entityId, DNAInfo::FASTQ_QUAL_CODES,q.qualCodes);
+    U2IntegerAttribute   qualityType(entityRef.entityId, DNAInfo::FASTQ_QUAL_TYPE,q.type);
+    con.dbi->getAttributeDbi()->createByteArrayAttribute(qualityCodes,os);
+    CHECK_OP(os, );
+    con.dbi->getAttributeDbi()->createIntegerAttribute(qualityType,os);
+    CHECK_OP(os, );
 }
 
 DNAQuality U2SequenceObject::getQuality() const {
-    //TODO:
+    //TODO: may be remove redundant checks
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    QStringList availableAttr=con.dbi->getAttributeDbi()->getAvailableAttributeNames(os);
+    CHECK_OP(os, DNAQuality());
     DNAQuality res;
+    CHECK(availableAttr.contains("FASTQ_QUAL_CODES"),res);
+    CHECK(availableAttr.contains("FASTQ_QUAL_TYPE"),res);
+    U2DataId id=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_CODES,os).first();
+    CHECK_OP(os, DNAQuality());
+    res.qualCodes=con.dbi->getAttributeDbi()->getByteArrayAttribute(id,os).value;
+    CHECK_OP(os, DNAQuality());
+    id=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_TYPE,os).first();
+    CHECK_OP(os, DNAQuality());
+    res.type=(DNAQualityType)con.dbi->getAttributeDbi()->getIntegerAttribute(id,os).value;
+    CHECK_OP(os, DNAQuality());
     return res;
 }
 

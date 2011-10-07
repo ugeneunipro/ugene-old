@@ -67,6 +67,8 @@ const QString DNAInfo::CHAIN_ID = "CHAIN_ID";
 
 const QString DNAInfo::DATE = "DATE";
 const QString DNAInfo::FASTA_HDR = "FASTA_HDR";
+const QString DNAInfo::FASTQ_QUAL_CODES = "FASTQ_QUAL_CODES";
+const QString DNAInfo::FASTQ_QUAL_TYPE = "FASTQ_QUAL_TYPE";
 const QString DNAInfo::EMBL_ID = "EMBL_ID";
 const QString DNAInfo::ID = "ID";
 

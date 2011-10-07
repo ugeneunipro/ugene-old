@@ -227,6 +227,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
                  break;
              }
              dbiObjects.objects << seqObj->getSequenceRef().entityId;
+             seqObj->setQuality(seq.quality);
          }
      }
 
