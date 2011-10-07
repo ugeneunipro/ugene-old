@@ -42,7 +42,9 @@ int byg_detect(int* text,int n)
 		T[i] = 0; 
 	}
 	for (i= 0;i < 20;i++){
-		T[(int)aacode[unique_aa[i]-65]] |= 1;
+		if(-1 != aacode[unique_aa[i]-65]) {
+			T[(int)aacode[unique_aa[i]-65]] |= 1;
+		}
 	}
 	for (i = 0;i < n;i++){
 	//	k_printf("%d\n",text[i]);
