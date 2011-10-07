@@ -220,7 +220,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
     q.bindDataId(2, assembly.referenceId);
     q.bindString(3, elenMethod);
     q.bindString(4, SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_NO_COMPRESSION);
-    q.execute();
+    q.insert();
     SAFE_POINT_OP(os,);
 
     AssemblyAdapter* a = getAdapter(assembly.id, os);

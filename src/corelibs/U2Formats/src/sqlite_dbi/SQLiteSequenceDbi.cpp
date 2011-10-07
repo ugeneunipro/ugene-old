@@ -35,7 +35,7 @@ void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
     CHECK_OP(os, );
     
     // sequence object
-    SQLiteQuery("CREATE TABLE Sequence (object INTEGER, length INTEGER NOT NULL DEFAULT 0, alphabet TEXT NOT NULL, "
+    SQLiteQuery("CREATE TABLE Sequence (object INTEGER UNIQUE, length INTEGER NOT NULL DEFAULT 0, alphabet TEXT NOT NULL, "
                             "circular INTEGER NOT NULL DEFAULT 0, "
                              "FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
 
@@ -96,14 +96,14 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
 
 void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) {
     dbi->getSQLiteObjectDbi()->createObject(sequence, folder, SQLiteDbiObjectRank_TopLevel, os);
-    if (os.hasError()) {
-        return;
-    }
+    CHECK_OP(os, );
+    
     SQLiteQuery q("INSERT INTO Sequence(object, alphabet, circular) VALUES(?1, ?2, ?3)", db, os);
     q.bindDataId(1, sequence.id);
     q.bindString(2, sequence.alphabet.id);
     q.bindBool(3, sequence.circular);
-    q.execute();
+    q.insert();
+    assert(!os.hasError());
 }
 
 

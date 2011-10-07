@@ -88,6 +88,8 @@ QByteArray SQLiteUtils::toDbExtra(const U2DataId& id) {
 }
 
 qint64 SQLiteUtils::remove(const QString& table, const QString& field, const U2DataId& id, qint64 expectedRows, DbRef* db, U2OpStatus& os) {
+    QMutexLocker m(&db->lock); // lock db in order to retrieve valid row id for insert
+
     SQLiteQuery q(QString("DELETE FROM %1 WHERE %2 = ?1").arg(table).arg(field), db, os);
     q.bindDataId(1, id);
     return q.update(expectedRows);
@@ -230,6 +232,7 @@ void SQLiteQuery::ensureDone() {
     bool done = !step();
     if (!done && !hasError()) {
         setError(SQLiteL10n::tooManyResults());
+        assert(0);
     }
 }
 
@@ -413,6 +416,8 @@ void SQLiteQuery::execute() {
 }
 
 qint64 SQLiteQuery::update(qint64 expectedRows) {
+    QMutexLocker m(&db->lock); // lock db in order to retrieve valid row id for insert
+
     if (step()) {
         qint64 res = getInt64(0);
         if (expectedRows != -1 && expectedRows != res) {
@@ -424,7 +429,8 @@ qint64 SQLiteQuery::update(qint64 expectedRows) {
 }
 
 qint64 SQLiteQuery::insert() {
-    QMutexLocker(&db->lock); // lock db in order to retrieve valid row id for insert
+    QMutexLocker m(&db->lock); // lock db in order to retrieve valid row id for insert
+
     execute();
     if (hasError()) {
         return -1;
