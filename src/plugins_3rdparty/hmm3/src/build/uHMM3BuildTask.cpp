@@ -66,6 +66,7 @@ static Document * getSavingDocument( const QList< P7_HMM* >& hmms, const QString
     foreach(GObject* obj, docObjects) {
         doc->addObject(obj);
     }
+    return doc;
 }
 
 namespace U2 {
