@@ -55,49 +55,43 @@ U2DbiRef U2DbiUtils::toRef(U2Dbi* dbi) {
 
 //////////////////////////////////////////////////////////////////////////
 // DbiConnection
-DbiConnection::DbiConnection(const U2DbiRef& ref,  U2OpStatus& _os) : dbi(NULL), os(_os) {
+DbiConnection::DbiConnection(const U2DbiRef& ref,  U2OpStatus& os) : dbi(NULL) {
     open(ref, os);    
 }
 
-DbiConnection::DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& _os) : dbi(NULL), os(_os) {
+DbiConnection::DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& os) : dbi(NULL) {
     open(ref, create, os);
 }
 
-DbiConnection::DbiConnection(const DbiConnection& dbiConnection) : dbi(dbiConnection.dbi), os(dbiConnection.os) {
+DbiConnection::DbiConnection(const DbiConnection& dbiConnection) : dbi(dbiConnection.dbi) {
     if (dbiConnection.dbi != NULL) {
+        U2OpStatus2Log os;
         AppContext::getDbiRegistry()->getGlobalDbiPool()->addRef(dbi, os);
     }
 }
 
 DbiConnection::~DbiConnection() {
-    close();
+    U2OpStatus2Log os;
+    close(os);
 }
 
-void DbiConnection::open(const U2DbiRef& ref,  U2OpStatus& _os)  {
-    SAFE_POINT_EXT(!isOpen(), _os.setError(QString("Connection is already opened! %1").arg(dbi->getDbiId())), );
-    os = _os;
-    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(ref, false, os);
+void DbiConnection::open(const U2DbiRef& ref,  U2OpStatus& os)  {
+    open(ref, false, os);
 }
 
-void DbiConnection::open(const U2DbiRef& ref,  bool create, U2OpStatus& _os)  {
-    SAFE_POINT_EXT(!isOpen(), _os.setError(QString("Connection is already opened! %1").arg(dbi->getDbiId())), );
-    os = _os;
+void DbiConnection::open(const U2DbiRef& ref,  bool create, U2OpStatus& os)  {
+    SAFE_POINT_EXT(!isOpen(), os.setError(QString("Connection is already opened! %1").arg(dbi->getDbiId())), );
     dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(ref, create, os);
 }
 
-void DbiConnection::close() {
+void DbiConnection::close(U2OpStatus& os) {
     if (dbi != NULL) {
         AppContext::getDbiRegistry()->getGlobalDbiPool()->releaseDbi(dbi, os);
         dbi = NULL;
     }
 }
 
-static U2OpStatus& getStubOpStatus() {
-    static U2OpStatusImpl stubOs;
-    return stubOs;
-}
-
-DbiConnection::DbiConnection() : dbi(NULL), os(getStubOpStatus()) {
+DbiConnection::DbiConnection() : dbi(NULL) {
 }
 
 //////////////////////////////////////////////////////////////////////////

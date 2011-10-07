@@ -53,8 +53,17 @@ const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
 Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, const QVariantMap& hints) {
     CHECK_EXT(TriState_No == iof->isResourceAvailable(url), os.setError(tr("File is already exists: %1").arg(url.getURLString())), NULL);
-    Document* doc = createNewUnloadedDocument(iof, url, os, hints);
-    CHECK_OP(os, NULL);
+
+    U2DbiRef tmpDbiRef;
+    bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
+    if (useTmpDbi) {
+        TmpDbiHandle dh(SESSION_TMP_DBI_ALIAS, os);
+        CHECK_OP(os, NULL);
+        dh.deallocate = false; //DBI will be deallocated by document..
+        tmpDbiRef = dh.dbiRef;
+    }
+
+    Document* doc = new Document(this, iof, url, tmpDbiRef, tmpDbiRef.isValid(), QList<UnloadedObjectInfo>(), hints, QString());
     doc->setLoaded(true);
     return doc;
 }
@@ -63,16 +72,8 @@ Document* DocumentFormat::createNewUnloadedDocument(IOAdapterFactory* iof, const
                                                     U2OpStatus& os, const QVariantMap& hints, 
                                                     const QList<UnloadedObjectInfo>& info, 
                                                     const QString& instanceModLockDesc) {
-    
-    U2DbiRef tmpDbiRef;
-/*
-    bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
-    if (useTmpDbi) {
-        tmpDbiRef = AppContext::getDbiRegistry()->allocateTmpDbi(SESSION_TMP_DBI_ALIAS, os);
-        CHECK_OP(os, NULL);
-    }
-*/
-    Document* doc = new Document(this, iof, url, tmpDbiRef, tmpDbiRef.isValid(), info, hints, instanceModLockDesc);
+    U2DbiRef emptyDbiRef;
+    Document* doc = new Document(this, iof, url, emptyDbiRef, false, info, hints, instanceModLockDesc);
     return doc;
 }
 
@@ -259,7 +260,7 @@ void Document::addObject(GObject* obj){
     assert(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Add, obj->getGObjectType()));
     assert(isLoaded());
     assert(obj->getGObjectType()!=GObjectTypes::UNLOADED);
-    assert(!obj->isTreeItemModified());
+    //assert(!obj->isTreeItemModified());
 
     _addObject(obj);
 }

@@ -279,7 +279,8 @@ void U2SequenceImporter::_addBuffer2Db(U2OpStatus& os) {
 
 U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
     _addBuffer2Db(os);
-    con.close();
+    LOG_OP(os);
+    con.close(os);
     return sequence;
 }
 

@@ -56,13 +56,11 @@ public:
     /** Opens connection to existing DBI or create news DBI*/
     void open(const U2DbiRef& ref,  bool create, U2OpStatus& os);
     
-    void close();
+    void close(U2OpStatus& os);
 
     bool isOpen() const {return dbi != NULL;}
     
     U2Dbi*          dbi;
-
-    U2OpStatus&     os;
 
 private: //TODO
     DbiConnection & operator=(const DbiConnection & dbiHandle);
