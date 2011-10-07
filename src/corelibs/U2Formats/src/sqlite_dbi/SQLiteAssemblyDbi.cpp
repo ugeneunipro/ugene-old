@@ -105,9 +105,11 @@ AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpS
 
 U2Assembly SQLiteAssemblyDbi::getAssemblyObject(const U2DataId& assemblyId, U2OpStatus& os) {
     U2Assembly res;
+
+    DBI_TYPE_CHECK(assemblyId, U2Type::Assembly, os, res);
     dbi->getSQLiteObjectDbi()->getObject(res, assemblyId, os);
 
-    SAFE_POINT_OP(os, res);
+    CHECK_OP(os, res);
 
     SQLiteQuery q("SELECT Assembly.reference FROM Assembly "
                 " WHERE Assembly.object = ?1", db, os);
