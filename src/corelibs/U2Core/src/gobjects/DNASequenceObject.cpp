@@ -176,6 +176,18 @@ void U2SequenceObject::setQuality(const DNAQuality& q) {
     U2OpStatus2Log os;
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, );
+    QList<U2DataId> idQualList=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_CODES,os);
+    CHECK_OP(os, );
+    if(!idQualList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(idQualList.first(),os);
+        CHECK_OP(os, );
+    }
+    QList<U2DataId> idQualTypeList=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_TYPE,os);
+    CHECK_OP(os, );
+    if(!idQualTypeList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(idQualTypeList.first(),os);
+        CHECK_OP(os, );
+    }
 
     U2ByteArrayAttribute qualityCodes(entityRef.entityId, DNAInfo::FASTQ_QUAL_CODES,q.qualCodes);
     U2IntegerAttribute   qualityType(entityRef.entityId, DNAInfo::FASTQ_QUAL_TYPE,q.type);
@@ -189,19 +201,17 @@ DNAQuality U2SequenceObject::getQuality() const {
     //TODO: may be remove redundant checks
     U2OpStatus2Log os;
     DbiConnection con(entityRef.dbiRef, os);
-    QStringList availableAttr=con.dbi->getAttributeDbi()->getAvailableAttributeNames(os);
-    CHECK_OP(os, DNAQuality());
     DNAQuality res;
-    CHECK(availableAttr.contains("FASTQ_QUAL_CODES"),res);
-    CHECK(availableAttr.contains("FASTQ_QUAL_TYPE"),res);
-    U2DataId id=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_CODES,os).first();
-    CHECK_OP(os, DNAQuality());
-    res.qualCodes=con.dbi->getAttributeDbi()->getByteArrayAttribute(id,os).value;
-    CHECK_OP(os, DNAQuality());
-    id=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_TYPE,os).first();
-    CHECK_OP(os, DNAQuality());
-    res.type=(DNAQualityType)con.dbi->getAttributeDbi()->getIntegerAttribute(id,os).value;
-    CHECK_OP(os, DNAQuality());
+    QList<U2DataId> idQualList=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_CODES,os);
+    CHECK_OP(os, res);
+    QList<U2DataId> idQualTypeList=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_TYPE,os);
+    CHECK_OP(os, res);
+    if(!idQualList.isEmpty() && !idQualTypeList.isEmpty()){
+        res.qualCodes=con.dbi->getAttributeDbi()->getByteArrayAttribute(idQualList.first(),os).value;
+        CHECK_OP(os, DNAQuality());
+        res.type=(DNAQualityType)con.dbi->getAttributeDbi()->getIntegerAttribute(idQualTypeList.first(),os).value;
+        CHECK_OP(os, DNAQuality());
+    }
     return res;
 }
 
