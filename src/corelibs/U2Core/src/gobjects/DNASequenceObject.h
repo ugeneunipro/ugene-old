@@ -70,6 +70,8 @@ public:
 
     QString getSequenceAttribute(const QString& seqAttr) const;
 
+	QVariantMap getSequenceInfo()const;
+
 signals:
     void si_sequenceChanged();
 

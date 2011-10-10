@@ -220,6 +220,16 @@ QString U2SequenceObject::getSequenceAttribute(const QString& seqAttr) const {
     return "";
 }
 
+QVariantMap U2SequenceObject::getSequenceInfo()const{
+	QVariantMap info;
+	QString name = this->getSequenceName();
+
+	if (!name.isEmpty()) {
+		info.insert(DNAInfo::ID,name);	
+	}
+	return info;
+}
+
 }//namespace
 
 

@@ -211,11 +211,12 @@ void QDRunDialogTask::setupQuery() {
     CHECK_EXT(!objs.isEmpty(), setError(tr("Sequence not found, document: %1").arg(docWithSequence->getURLString())), );
 
     U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(objs.first());
-    scheme->setSequence(seqObj->getWholeSequence());
+	DNASequence sequence = seqObj->getWholeSequence();
+    scheme->setSequence(sequence);
     QDRunSettings settings;
     settings.region = U2Region(0, seqObj->getSequenceLength());
     settings.scheme = scheme;
-    settings.dnaSequence = seqObj->getWholeSequence();
+    settings.dnaSequence = sequence;
     settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
     settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
     scheduler = new QDScheduler(settings);
@@ -389,15 +390,15 @@ void QDDialog::sl_okBtnClicked() {
     cawc->prepareAnnotationObject();
     const CreateAnnotationModel& m = cawc->getModel();
     
-    
-    scheme->setSequence(ctx->getSequenceObject()->getWholeSequence());
+    DNASequence sequence = ctx->getSequenceObject()->getWholeSequence();
+    scheme->setSequence(sequence);
     QDRunSettings settings;
     GObject* ao = GObjectUtils::selectObjectByReference(m.annotationObjectRef, UOF_LoadedOnly);
     settings.annotationsObj = qobject_cast<AnnotationTableObject*>(ao);
     settings.annotationsObjRef = m.annotationObjectRef;
     settings.groupName = m.groupName;
     settings.scheme = scheme;
-    settings.dnaSequence = ctx->getSequenceObject()->getWholeSequence();
+    settings.dnaSequence = sequence;
     settings.viewName = ctx->getAnnotatedDNAView()->getName();
     settings.region = rs->getRegion();
 

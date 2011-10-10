@@ -259,7 +259,9 @@ static bool writeKeyword(IOAdapter* io, U2OpStatus& os, const QString& key, cons
 typedef QPair<QString, QString> StrPair;
 static QList<StrPair> formatKeywords(U2SequenceObject* so) {
     QList<StrPair> res;
-    QMultiMap<QString, QVariant> tags(so->getWholeSequence().info);
+	
+    QMultiMap<QString, QVariant> tags(so->getSequenceInfo());
+	
 
     tags.remove(DNAInfo::LOCUS);
     tags.remove(DNAInfo::ID);
