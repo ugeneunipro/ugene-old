@@ -546,7 +546,7 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        
+        muscleTask = new MuscleTask(ma1->getMAlignment(),config);
         res << muscleTask;
         this->connect(muscleTask,SIGNAL(si_progressChanged()),SLOT(sl_muscleProgressChg()));
     }
@@ -594,9 +594,6 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
 }
 
 void GTest_Muscle_Load_Align_QScore::run() {
-    const QList<MAlignmentRow> &alignedSeqs1 = ma1->getMAlignment().getRows();
-    const QList<MAlignmentRow> &alignedSeqs2 = ma2->getMAlignment().getRows();
-
     double qscore = QScore(ma1->getMAlignment(), ma2->getMAlignment(), stateInfo);
     if(stateInfo.hasError()) {
         return;

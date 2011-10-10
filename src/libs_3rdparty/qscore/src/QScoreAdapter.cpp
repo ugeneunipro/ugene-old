@@ -10,15 +10,17 @@ namespace U2 {
     for (int i=0, n = ma.getNumRows(); i<n; i++) {
       const MAlignmentRow& aseq = ma.getRow(i);
 
-      char* seq  = new char[aseq.getCoreLength()+1];
-      memcpy(seq, aseq.getCore().constData(), aseq.getCoreLength());
-      seq[aseq.getCoreLength()] = '\0';
+      char *sequence = new char[ma.getLength() + 1];
+      for(int position = 0;position < ma.getLength();position++) {
+          sequence[position] = aseq.chatAt(position);
+      }
+      sequence[ma.getLength()] = '\0';
 
       char* name = new char[aseq.getName().length() + 1];
       memcpy(name, aseq.getName().toLocal8Bit().data(), aseq.getName().length());
       name[aseq.getName().length()] = '\0';
 
-      muscleMSA.AppendSeq(seq, aseq.getCoreLength(), name);
+      muscleMSA.AppendSeq(sequence, ma.getLength(), name);
     }
   }
 
@@ -28,8 +30,8 @@ namespace U2 {
       convertMAlignment2MSA(msaTest, maTest);
       convertMAlignment2MSA(msaRef, maRef);
       return QScore(&msaTest, &msaRef);
-    } catch(...) {
-      ti.setError(QString("QScore throws exception: "));
+    } catch(const QScoreException &e) {
+      ti.setError(QString("QScore throws exception: %1").arg(e.str));
       return 0;
     }
 

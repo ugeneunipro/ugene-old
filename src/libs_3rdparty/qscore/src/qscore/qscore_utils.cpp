@@ -8,6 +8,7 @@ void Quit_Qscore(const char *szFormat, ...)
 
 		va_start(ArgList, szFormat);
 		vsprintf(e.str, szFormat, ArgList);
+		va_end(ArgList);
 		
 		throw e;
 		//	exit(EXIT_FatalError);
