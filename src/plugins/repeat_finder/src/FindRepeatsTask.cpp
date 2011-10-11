@@ -71,10 +71,9 @@ FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequ
     if (settings.seqRegion.length == 0) {
         settings.seqRegion= U2Region(0, seq1.length());
     }
-    if (seq.constData() == seq2.constData()) {
+    if (QByteArray(seq1.constData()) == QByteArray(seq2.constData())) {
         settings.seq2Region = settings.seqRegion;
-    }
-    else {
+    }else {
         settings.seq2Region = U2Region(0, seq2.length());
     }
 
@@ -114,7 +113,7 @@ RFAlgorithmBase* FindRepeatsTask::createRFTask() {
     int seqXLen = settings.seqRegion.length;
     int seqYLen = settings.seqRegion.length;
 
-    if (seq1.constData() != seq2.constData()) {
+    if (QByteArray(seq1.constData()) != QByteArray(seq2.constData())) {
         seqY = seq2.constData();
         seqYLen = seq2.length();
     }

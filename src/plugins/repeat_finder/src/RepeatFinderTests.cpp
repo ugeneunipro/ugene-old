@@ -156,16 +156,6 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
         return;
     }
 
-    U2SequenceObject * seq2Obj = seq1IObj;
-
-    if (seq != seq2) {
-        seq2Obj = getContext<U2SequenceObject>(this, seq2);
-        if (seq2Obj == NULL){
-            stateInfo.setError("can't find sequence2");
-            return;
-        }
-    }
-
     if (region.isEmpty()) {
         region = U2Region(0, seq1IObj->getSequenceLength());
     }
@@ -194,6 +184,7 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
     s.maxDist = maxD;
     s.inverted = inverted;
     s.seqRegion = region; 
+    s.seq2Region = region;
     s.reportReflected = reflect;
     s.filterNested = filterNested;
     s.nThreads = 1;//todo: add to settings 
@@ -204,7 +195,7 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
             continue;
         }
         s.algo = algo;
-        Task* sub = new FindRepeatsTask(s, seq1IObj->getWholeSequence(), seq2Obj->getWholeSequence());
+        Task* sub = new FindRepeatsTask(s, seq1IObj->getWholeSequence(), seq1IObj->getWholeSequence());
         addSubTask(sub);
     }
 }
