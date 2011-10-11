@@ -153,9 +153,9 @@ void ORFDialog::sl_translationChanged() {
     }
 
     QString text = QString("<table border=0>")
-        + "<tr><td>" + tr("start_codons") + "&nbsp;&nbsp;&nbsp;</td><td><b>" + startCodons + "</b></td></tr>"
-        + "<tr><td>" + tr("alt_start_codons") + "&nbsp;&nbsp;&nbsp;</td><td><b>" + altStarts + "</b></td></tr>"
-        + "<tr><td>" + tr("stop_codons") + "&nbsp;&nbsp;&nbsp;</td><td><b>" + stopCodons + "</b></td></tr>"
+        + "<tr><td>" + tr("Start codons") + "&nbsp;&nbsp;&nbsp;</td><td><b>" + startCodons + "</b></td></tr>"
+        + "<tr><td>" + tr("Alternative start codons") + "&nbsp;&nbsp;&nbsp;</td><td><b>" + altStarts + "</b></td></tr>"
+        + "<tr><td>" + tr("Stop codons") + "&nbsp;&nbsp;&nbsp;</td><td><b>" + stopCodons + "</b></td></tr>"
         + "</table>";
     
     codonsView->setText(text);
@@ -196,9 +196,9 @@ void ORFDialog::updateState() {
 void ORFDialog::updateStatus() {
     QString message;
     if (task != NULL) {
-        message = tr("progress_%1%").arg(task->getProgress());
+        message = tr("Progress %1%").arg(task->getProgress());
     }
-    message += tr("%1_results_found.").arg(resultsTree->topLevelItemCount());
+    message += tr("%1 results found.").arg(resultsTree->topLevelItemCount());
     statusLabel->setText(message);
 }
 
@@ -248,7 +248,7 @@ void ORFDialog::sl_onClearList() {
 
 void ORFDialog::sl_onFindAll() {
     if (resultsTree->topLevelItemCount() > 0) {
-        int res = QMessageBox::warning(this, tr("warning"), tr("results_list_not_empty_ask_clear"), 
+		int res = QMessageBox::warning(this, L10N::warningTitle(), tr("Results list contains results from the previous search. Clear?"), 
                                 QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
         if (res == QMessageBox::Cancel) {
             return;
@@ -411,7 +411,7 @@ ORFListItem::ORFListItem(const ORFFindResult& r) : res(r)
 {
     QString range = QString(" [%1 %2] ").arg(res.region.startPos + 1).arg(res.region.endPos());
     setText(0, range);
-    setText(1, " "+(res.frame < 0 ? ORFDialog::tr("complem_strand") : ORFDialog::tr("direct_strand"))+" ");
+    setText(1, " "+(res.frame < 0 ? ORFDialog::tr("Complement") : ORFDialog::tr("Direct"))+" ");
     setText(2, " "+QString::number(res.region.length)+" ");
 }
 

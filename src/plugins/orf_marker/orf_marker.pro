@@ -15,4 +15,4 @@ SOURCES += src/ORFDialog.cpp \
            src/ORFQuery.cpp \
            src/ORFWorker.cpp
 RESOURCES += orf_marker.qrc
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/english.ts transl/russian.ts

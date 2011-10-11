@@ -53,7 +53,8 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-ORFMarkerPlugin::ORFMarkerPlugin() : Plugin(tr("orfname"), tr("orfdesc")), viewCtx(NULL) {
+ORFMarkerPlugin::ORFMarkerPlugin() :
+    Plugin(tr("ORF Marker"), tr("Searches for open reading frames (ORF) in a DNA sequence.")), viewCtx(NULL) {
     if (AppContext::getMainWindow()) {
         viewCtx = new ORFViewContext(this);
         viewCtx->init();

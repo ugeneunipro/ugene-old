@@ -32,13 +32,13 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Find ORFs settings</string>
+   <string>ORF Marker</string>
   </property>
   <property name="toolTip">
    <string/>
   </property>
   <property name="whatsThis">
-   <string>find_dialog_wit</string>
+   <string>Find Open Reading Frames in sequence</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -57,19 +57,19 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>strand_group</string>
+          <string>Strand</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <widget class="QRadioButton" name="rbBoth">
             <property name="toolTip">
-             <string>strand_both_wit</string>
+             <string>Search in both strands</string>
             </property>
             <property name="whatsThis">
-             <string>strand_both_wit</string>
+             <string>Search in both strands</string>
             </property>
             <property name="text">
-             <string>strand_both</string>
+             <string>Both</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -79,13 +79,13 @@
           <item>
            <widget class="QRadioButton" name="rbDirect">
             <property name="toolTip">
-             <string>strand_direct_wit</string>
+             <string>Search frames in direct strand only</string>
             </property>
             <property name="whatsThis">
-             <string>strand_direct_wit</string>
+             <string>Search frames in direct strand only</string>
             </property>
             <property name="text">
-             <string>strand_direct_label</string>
+             <string>Direct</string>
             </property>
             <property name="shortcut">
              <string/>
@@ -98,13 +98,13 @@
           <item>
            <widget class="QRadioButton" name="rbComplement">
             <property name="toolTip">
-             <string>strand_complement_wit</string>
+             <string>Search frames in complement strand only</string>
             </property>
             <property name="whatsThis">
-             <string>strand_complement_wit</string>
+             <string>Search frames in complement strand only</string>
             </property>
             <property name="text">
-             <string>strand_complement_label</string>
+             <string>Complement</string>
             </property>
             <property name="shortcut">
              <string/>
@@ -123,7 +123,7 @@
           </size>
          </property>
          <property name="title">
-          <string>param_group</string>
+          <string>Search Settings</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
@@ -131,13 +131,13 @@
             <item>
              <widget class="QCheckBox" name="ckMinLen">
               <property name="toolTip">
-               <string>min_len_tip</string>
+               <string>Ignore ORFs shorter than the specified length</string>
               </property>
               <property name="whatsThis">
-               <string>min_len_tip</string>
+               <string>Ignore ORFs shorter than the specified length</string>
               </property>
               <property name="text">
-               <string>min_len_label</string>
+               <string>Min length, bp:</string>
               </property>
               <property name="checked">
                <bool>true</bool>
@@ -180,26 +180,28 @@
           <item>
            <widget class="QCheckBox" name="ckFit">
             <property name="toolTip">
-             <string>must_fit_tip</string>
+             <string>Ignore boundary ORFs which last beyond the search region(i.e. have no stop codon within the range).
+             </string>
             </property>
             <property name="whatsThis">
-             <string>must_fit_tip</string>
+             <string>Ignore boundary ORFs which last beyond the search region(i.e. have no stop codon within the range).
+             </string>
             </property>
             <property name="text">
-             <string>must_fit_label</string>
+             <string>Must terminate within region</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="ckInit">
             <property name="toolTip">
-             <string>must_init_tip</string>
+             <string>Specifies that each ORF found must start with the start codon</string>
             </property>
             <property name="whatsThis">
-             <string>must_init_tip</string>
+             <string>Specifies that each ORF found must start with the start codon</string>
             </property>
             <property name="text">
-             <string>must_init_label</string>
+             <string>Must start with init codon</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -209,10 +211,13 @@
           <item>
            <widget class="QCheckBox" name="ckOverlap">
             <property name="toolTip">
-             <string>allow_overlap_tip</string>
+             <string>
+               Allow alternative (downstream) initiators, when another start codon is located within a longer ORF.
+               Then all possible ORF will be found, not only the longest ones.
+             </string>
             </property>
             <property name="text">
-             <string>Allow overlap</string>
+             <string>Allow overlaps</string>
             </property>
            </widget>
           </item>
@@ -228,13 +233,19 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>allow_alt_tip</string>
+             <string>
+               Allow ORFs starting with alternative initiation codons,
+               accordingly to the current translation table.
+             </string>
             </property>
             <property name="whatsThis">
-             <string>allow_alt_tip</string>
+             <string>
+               Allow ORFs starting with alternative initiation codons,
+               accordingly to the current translation table.
+             </string>
             </property>
             <property name="text">
-             <string>allow_alternative_label</string>
+             <string>Allow alternative init codons</string>
             </property>
            </widget>
           </item>
@@ -274,7 +285,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="whatsThis">
-          <string>find_all_wit</string>
+          <string>Start searching ORFs</string>
          </property>
          <property name="text">
           <string>Preview</string>
@@ -299,7 +310,7 @@ p, li { white-space: pre-wrap; }
           </sizepolicy>
          </property>
          <property name="text">
-          <string>clear_list_button</string>
+          <string>Clear results</string>
          </property>
          <property name="shortcut">
           <string/>
@@ -361,17 +372,17 @@ p, li { white-space: pre-wrap; }
      </property>
      <column>
       <property name="text">
-       <string>region</string>
+       <string>Region</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>compl</string>
+       <string>Strand</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>len</string>
+       <string>Length</string>
       </property>
      </column>
     </widget>

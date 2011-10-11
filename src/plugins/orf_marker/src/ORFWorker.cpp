@@ -78,12 +78,14 @@ void ORFWorkerFactory::init() {
     {
         Descriptor nd(NAME_ATTR, ORFWorker::tr("Annotate as"), ORFWorker::tr("Name of the result annotations marking found ORFs"));
         Descriptor ttd(ID_ATTR, ORFWorker::tr("Genetic code"), ORFWorker::tr("Which genetic code should be used for translating the input nucleotide sequence."));
-        Descriptor ld(LEN_ATTR, ORFWorker::tr("Min length"), QApplication::translate("ORFDialogBase", "min_len_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor fd(FIT_ATTR, ORFWorker::tr("Require stop codon"), QApplication::translate("ORFDialogBase", "must_fit_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor ind(INIT_ATTR, ORFWorker::tr("Require init codon"), QApplication::translate("ORFDialogBase", "must_init_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor ad(ALT_ATTR, ORFWorker::tr("Allow alternative codons"), QApplication::translate("ORFDialogBase", "allow_alt_tip", 0, QApplication::UnicodeUTF8));
-		Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set"));
-		
+        Descriptor ld(LEN_ATTR, ORFWorker::tr("Min length, bp:"), QApplication::translate("ORFDialogBase", "Ignore ORFs shorter than the specified length", 0, QApplication::UnicodeUTF8));
+        Descriptor fd(FIT_ATTR, ORFWorker::tr("Require stop codon"), QApplication::translate("ORFDialogBase", "Require stop codon", 0, QApplication::UnicodeUTF8));
+        Descriptor ind(INIT_ATTR, ORFWorker::tr("Require init codon"), QApplication::translate("ORFDialogBase", "\n""Ignore boundary ORFs which last beyond the search region\n""(i.e. have no stop codon within the range).\n", 0, QApplication::UnicodeUTF8));
+        Descriptor ad(ALT_ATTR, ORFWorker::tr("Allow alternative codons"), QApplication::translate("ORFDialogBase", "\n"
+            "               Allow ORFs starting with alternative initiation codons,\n"
+            "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
+        Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set"));
+        
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("ORF"));
         a << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, QVariant(100));
@@ -91,12 +93,12 @@ void ORFWorkerFactory::init() {
         a << new Attribute(fd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         a << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, QVariant(true));
         a << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, QVariant(false));
-		a << new Attribute(isc, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+        a << new Attribute(isc, BaseTypes::BOOL_TYPE(), false, QVariant(false));
 
 
     }
 
-    Descriptor desc(ACTOR_ID, ORFWorker::tr("ORF marker"), 
+    Descriptor desc(ACTOR_ID, ORFWorker::tr("ORF Marker"), 
         ORFWorker::tr("Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations." 
         "<p>Protein sequences are skipped if any supplied to input."
         "<p><dfn>ORFs are DNA sequence regions that could potentially encode a protein,"
@@ -164,7 +166,7 @@ QString ORFPrompter::composeRichDoc() {
     cfg.mustFit = getParameter(FIT_ATTR).toBool();
     cfg.mustInit = getParameter(INIT_ATTR).toBool();
     cfg.allowAltStart = getParameter(ALT_ATTR).toBool();
-	cfg.includeStopCodon = getParameter(ISC_ATTR).toBool();
+    cfg.includeStopCodon = getParameter(ISC_ATTR).toBool();
 
     QString extra;
     if (!cfg.mustInit) {
@@ -230,7 +232,7 @@ Task* ORFWorker::tick() {
     cfg.mustFit = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>();
     cfg.mustInit = actor->getParameter(INIT_ATTR)->getAttributeValue<bool>();
     cfg.allowAltStart = actor->getParameter(ALT_ATTR)->getAttributeValue<bool>();
-	cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>();
+    cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>();
     resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
     if(resultName.isEmpty()){
         algoLog.error(tr("ORF: result name is empty, default name used"));
