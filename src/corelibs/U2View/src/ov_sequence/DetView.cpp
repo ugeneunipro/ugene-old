@@ -486,18 +486,22 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
 
     {//direct translations
         for(int i = 0; i < 3; i++) {
-            if(visibleRows[i] == true){
-                int indent = (visibleRange.startPos + i) % 3;
-                int seqStartPos = visibleRange.startPos + indent - 3;
-                if (seqStartPos < minUsedPos) {
-                    seqStartPos += 3;
-                }
-                const char* seq  = seqBlock + (visibleRange.startPos - seqBlockRegion.startPos);
-                QByteArray amino = translate(aminoTable, seq, visibleRange.length);
+            int indent = (visibleRange.startPos + i) % 3;
+            qint64 seqStartPos = visibleRange.startPos + indent - 3;
+            if (seqStartPos < minUsedPos) {
+                seqStartPos += 3;
+            }
+            int line = seqStartPos % 3;//0,1,2
+            if(visibleRows[line] == true){
+                const char* seq  = seqBlock + (seqStartPos - minUsedPos);
+                QByteArray amino = translate(aminoTable, seq, maxUsedPos - seqStartPos);
 
-                
-                int y = getTextY(firstDirectTransLine + directLine++);
-                int dx = seqStartPos - visibleRange.startPos;
+                int yOffset=0;
+                for (int k=0; k < line; k++){
+                    yOffset += (visibleRows[k]== true ? 0 : 1);
+                }
+                int y = getTextY(firstDirectTransLine + line - yOffset);//directLine++);
+                int dx = seqStartPos - visibleRange.startPos;//-1,0,1,2(if startPos==0)
                 for(int j = 0, n = amino.length(); j < n ; j++, seq += 3) {
                     char amin = amino[j];
                     int xpos = 3 * j + 1 + dx;
@@ -505,7 +509,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
                     int x =  xpos * charWidth + xCharOffset;
 
                     QColor charColor;
-                    bool inAnnotation = deriveTranslationCharColor(seq - seqBlock  + seqBlockRegion.startPos, 
+                    bool inAnnotation = deriveTranslationCharColor(seq - seqBlock  + seqBlockRegion.startPos,
                                 U2Strand::Direct, annotationsInRange, charColor);
 
                     if (aminoTable->isStartCodon(seq)) {
