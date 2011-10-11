@@ -41,7 +41,7 @@ AddDocumentTask::AddDocumentTask(DocumentProviderTask * _dpt, const AddDocumentT
 Task( tr("Adding document to project: %1").arg(_dpt->getDocumentDescription()), TaskFlags_NR_FOSCOE), document(NULL), dpt(_dpt), conf(c)
 {
     addSubTask(dpt);
-    setSubtaskProgressWeight(0);
+    // setSubtaskProgressWeight(0);
 }
 
 QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {

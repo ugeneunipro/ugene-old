@@ -58,6 +58,9 @@ qint64 BgzfReader::read(char *buff, qint64 maxSize) {
         if(0 == stream.avail_in) {
             qint64 returnedValue = ioAdapter.readBlock(buffer, sizeof(buffer));
             if(-1 == returnedValue) {
+                coreLog.error(QString("in BgzfReader::read, failed to read %1 bytes from ioAdapter, after %2 bytes already read")
+                              .arg(sizeof(buffer))
+                              .arg(ioAdapter.bytesRead()));
                 throw IOException(BAMDbiPlugin::tr("Can't read input"));
             } else if(0 == returnedValue) {
                 endOfFile = true;
@@ -71,6 +74,9 @@ qint64 BgzfReader::read(char *buff, qint64 maxSize) {
         if(Z_STREAM_END == returnedValue) {
             nextBlock();
         } else if(Z_OK != returnedValue) {
+            coreLog.error(QString("in BgzfReader::read, failed to decompress %1 bytes, after %2 raw bytes already read")
+                          .arg(sizeof(buffer))
+                          .arg(ioAdapter.bytesRead()));
             throw InvalidFormatException(BAMDbiPlugin::tr("Can't decompress data"));
         }
     }
@@ -107,17 +113,32 @@ void BgzfReader::seek(VirtualOffset offset) {
     if((offset.getCoffset() == headerOffset) && (offset.getUoffset() >= (int)stream.total_out)) {
         qint64 toSkip = offset.getUoffset() - stream.total_out;
         if(skip(toSkip) < toSkip) {
+            coreLog.error(QString("in BgzfReader::seek, cannot seek to offset {coffset=%1,uoffset=%2}, failed to skip %3")
+                          .arg(offset.getCoffset())
+                          .arg(offset.getUoffset())
+                          .arg(toSkip));
             throw InvalidFormatException(BAMDbiPlugin::tr("Unexpected end of file"));
         }
     } else {
-        if(!ioAdapter.skip(offset.getCoffset() - ioAdapter.bytesRead())) {
+        qint64 toSkipIo = offset.getCoffset() - ioAdapter.bytesRead();
+        if(!ioAdapter.skip(toSkipIo)) {
+            coreLog.error(QString("in BgzfReader::seek, cannot seek to offset {coffset=%1,uoffset=%2}, ioAdapter failed to skip %3")
+                          .arg(offset.getCoffset())
+                          .arg(offset.getUoffset())
+                          .arg(toSkipIo));
             throw IOException(BAMDbiPlugin::tr("Can't read input"));
         }
         stream.next_in = Z_NULL;
         stream.avail_in = 0;
         headerOffset = ioAdapter.bytesRead();
         inflateReset(&stream);
-        if(skip(offset.getUoffset()) < offset.getUoffset()) {
+        qint64 toSkip = offset.getUoffset();
+        if(skip(toSkip) < toSkip) {
+            coreLog.error(QString("in BgzfReader::seek, cannot seek to offset {coffset=%1,uoffset=%2}, failed to skip %3 after ioAdapter skipped %4")
+                          .arg(offset.getCoffset())
+                          .arg(offset.getUoffset())
+                          .arg(toSkip)
+                          .arg(toSkipIo));
             throw InvalidFormatException(BAMDbiPlugin::tr("Unexpected end of file"));
         }
     }
@@ -131,6 +152,9 @@ void BgzfReader::nextBlock() {
         if(0 == stream.avail_in) {
             qint64 returnedValue = ioAdapter.readBlock(buffer, sizeof(buffer));
             if(-1 == returnedValue) {
+                coreLog.error(QString("in BgzfReader::nextBlock, failed to read %1 bytes from ioAdapter, after %2 bytes already read")
+                              .arg(sizeof(buffer))
+                              .arg(ioAdapter.bytesRead()));
                 throw IOException(BAMDbiPlugin::tr("Can't read input"));
             } else if(0 == returnedValue) {
                 endOfFile = true;
@@ -147,6 +171,9 @@ void BgzfReader::nextBlock() {
         } else if(Z_BUF_ERROR == returnedValue) {
             break;
         } else if(Z_OK != returnedValue) {
+            coreLog.error(QString("in BgzfReader::nextBlock, failed to decompress %1 bytes, after %2 raw bytes already read")
+                          .arg(sizeof(buffer))
+                          .arg(ioAdapter.bytesRead()));
             throw InvalidFormatException(BAMDbiPlugin::tr("Can't decompress data"));
         }
     }

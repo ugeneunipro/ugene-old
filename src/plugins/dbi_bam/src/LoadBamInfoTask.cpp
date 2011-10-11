@@ -37,7 +37,7 @@ namespace BAM {
 LoadInfoTask::LoadInfoTask(const GUrl& _sourceUrl, bool _sam)
     : Task(tr("Load BAM info"), TaskFlag_None), sourceUrl(_sourceUrl), sam(_sam)
 {
-
+    setSubtaskProgressWeight(0);
 }
 
 const GUrl& LoadInfoTask::getSourceUrl() const {

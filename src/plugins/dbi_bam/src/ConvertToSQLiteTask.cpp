@@ -360,7 +360,7 @@ public:
 
     virtual bool hasNext() {
         if(stateInfo.isCanceled()) {
-            return false;
+            throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
         }
         return iterator->hasNext();
     }
@@ -398,7 +398,8 @@ class IndexedBamDbiIterator : public DbiIterator {
 public:
     IndexedBamDbiIterator(int referenceId, bool skipUnmapped, BamReader &reader, const Index &index, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
         iterator(reader),
-        dbiIterator(referenceId, skipUnmapped, iterator, stateInfo, ioAdapter)
+        dbiIterator(referenceId, skipUnmapped, iterator, stateInfo, ioAdapter),
+        hasReads(false)
     {
         {
             VirtualOffset minOffset = VirtualOffset(0xffffffffffffLL, 0xffff);
@@ -406,22 +407,31 @@ public:
                 foreach(const Index::ReferenceIndex::Chunk &chunk, bin.getChunks()) {
                     if(minOffset > chunk.getStart()) {
                         minOffset = chunk.getStart();
+                        hasReads = true;
                     }
                 }
             }
-            reader.seek(minOffset);
+            if(hasReads) {
+                reader.seek(minOffset);
+            }
         }
     }
 
     virtual bool hasNext() {
-        return dbiIterator.hasNext();
+        return hasReads && dbiIterator.hasNext();
     }
 
     virtual U2AssemblyRead next() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
         return dbiIterator.next();
     }
 
     virtual U2AssemblyRead peek() {
+        if(!hasNext()) {
+            throw Exception(BAMDbiPlugin::tr("The iteration has no next element"));
+        }
         return dbiIterator.peek();
     }
 
@@ -432,6 +442,7 @@ public:
 private:
     BamIterator iterator;
     SequentialDbiIterator dbiIterator;
+    bool hasReads;
 };
 
 static const int READS_CHUNK_SIZE = 250*1000;
@@ -440,6 +451,10 @@ static const int READS_CHUNK_SIZE = 250*1000;
 
 void ConvertToSQLiteTask::run() {
     try {
+
+        taskLog.info(tr("Converting assembly from %1 to %2 started")
+                     .arg(sourceUrl.fileName())
+                     .arg(destinationUrl.fileName()));
 
         time_t startTime = time(0);
 
@@ -507,6 +522,11 @@ void ConvertToSQLiteTask::run() {
                 if(bamInfo.isReferenceSelected(referenceId)) {
                     U2Assembly assembly;
                     assembly.visualName = reader->getHeader().getReferences()[referenceId].getName();
+                    taskLog.details(tr("Importing assembly '%1' (%2 of %3)")
+                                    .arg(assembly.visualName)
+                                    .arg(referenceId + 1)
+                                    .arg(reader->getHeader().getReferences().size()));
+
                     U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                     U2OpStatusImpl opStatus;
                     std::auto_ptr<DbiIterator> dbiIterator;
@@ -524,6 +544,10 @@ void ConvertToSQLiteTask::run() {
                     }
                     totalReadsImported += dbiIterator->getReadsImported();
                     assemblies.insert(referenceId, assembly);
+                    taskLog.details(tr("Succesfully imported %1 reads for assembly '%2' (total %3 reads imported)")
+                                    .arg(dbiIterator->getReadsImported())
+                                    .arg(assembly.visualName)
+                                    .arg(totalReadsImported));
                 } else {
                     if(!bamInfo.hasIndex()) {
                         while(iterator->hasNext() && iterator->peekReferenceId() == referenceId) {
@@ -537,6 +561,7 @@ void ConvertToSQLiteTask::run() {
             }
 
             if(bamInfo.isUnmappedSelected()) {
+                taskLog.details(tr("Importing unmapped reads"));
                 if(bamInfo.hasIndex() && !reader->getHeader().getReferences().isEmpty()) {
                     const Index &index = bamInfo.getIndex();
                     VirtualOffset maxOffset = VirtualOffset(0, 0);
@@ -584,10 +609,12 @@ void ConvertToSQLiteTask::run() {
                 iterator = inputIterator.get();
             }
 
+            taskLog.details(tr("No bam index given, preparing sequential import"));
             for(int referenceId = 0;referenceId < reader->getHeader().getReferences().size(); referenceId++) {
                 if(bamInfo.isReferenceSelected(referenceId)) {
                     U2Assembly assembly;
                     assembly.visualName = reader->getHeader().getReferences()[referenceId].getName();
+
                     U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                     U2OpStatusImpl opStatus;
                     sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
@@ -615,6 +642,7 @@ void ConvertToSQLiteTask::run() {
                 importInfo.packed = false;
             }
 
+            taskLog.details(tr("Importing reads sequentially"));
             while(iterator->hasNext()) {
                 QMap<int, QList<U2AssemblyRead> > reads;
                 foreach(int index, assemblies.keys()) {
@@ -647,6 +675,11 @@ void ConvertToSQLiteTask::run() {
             U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
             // Pack reads only if t were not packed on import
             if(!importInfo.packed) {
+                taskLog.details(tr("Packing reads for assembly '%1' (%2 of %3)")
+                                .arg(assemblies[referenceId].visualName)
+                                .arg(referenceId + 1)
+                                .arg(reader->getHeader().getReferences().size()));
+
                 U2OpStatusImpl opStatus;
                 U2AssemblyPackStat stat;
                 sqliteDbi->getAssemblyDbi()->pack(assemblies[referenceId].id, stat, opStatus);
@@ -717,6 +750,7 @@ void ConvertToSQLiteTask::run() {
 
                 U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                 qint64 maxProw = importInfo.packStat.maxProw;
+                qint64 readsCount = importInfo.packStat.readsCount;
                 if(maxProw > 0)
                 {
                     U2IntegerAttribute maxProwAttr;
@@ -728,10 +762,10 @@ void ConvertToSQLiteTask::run() {
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }
-                } else {
-                    taskLog.details("Warning: incorrect maxProw <= 0, probably packing was not done! Attribute was not set");
+                } else if(readsCount > 0){
+                    // if there are reads, but maxProw == 0 => error
+                    taskLog.details(QString("Warning: incorrect maxProw == %1, probably packing was not done! Attribute was not set").arg(maxProw));
                 }
-                qint64 readsCount = importInfo.packStat.readsCount;
                 if(readsCount > 0)
                 {
                     U2IntegerAttribute countReadsAttr;
@@ -743,22 +777,29 @@ void ConvertToSQLiteTask::run() {
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }
-                } else {
-                    taskLog.details("Warning: incorrect readsCount <= 0, probably packing was not done! Attribute was not set");
                 }
             }
         }
 
         time_t totalTime = time(0) - startTime;
         
-        ioLog.trace(QString("BAM %1: imported %2 reads, total time %3 s, pack time %4").arg(sourceUrl.fileName()).arg(QString::number(totalReadsImported)).arg(QString::number(totalTime)).arg(QString::number(packTime)));
+        taskLog.info(QString("Converting assembly from %1 to %2 succesfully finished: imported %3 reads, total time %4 s, pack time %5 s")
+                     .arg(sourceUrl.fileName())
+                     .arg(destinationUrl.fileName())
+                     .arg(totalReadsImported)
+                     .arg(totalTime)
+                     .arg(packTime));
 
     } catch(const CancelledException & /*e*/) {
         assert(destinationUrl.isLocalFile());
         QFile::remove(destinationUrl.getURLString());
+        taskLog.info(tr("Converting assembly from %1 to %2 cancelled")
+                     .arg(sourceUrl.fileName())
+                     .arg(destinationUrl.fileName()));
     } catch(const Exception &e) {
-        setError(tr("BAM import for '%1' failed: %2")
-                 .arg(sourceUrl.getURLString())
+        setError(tr("Converting assembly from %1 to %2 failed: %3")
+                 .arg(sourceUrl.fileName())
+                 .arg(destinationUrl.fileName())
                  .arg(e.getMessage()));
         assert(destinationUrl.isLocalFile());
         QFile::remove(destinationUrl.getURLString());
