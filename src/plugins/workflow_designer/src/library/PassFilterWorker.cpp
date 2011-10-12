@@ -59,7 +59,7 @@ bool PassFilterWorker::isReady() {
 }
 
 Task *PassFilterWorker::tick() {
-    if (inChannel->hasMessage()) {
+    while (inChannel->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = inputMessage.getData().toMap();
         QString value = data.value(BaseSlots::TEXT_SLOT().getId()).toString();
@@ -67,7 +67,8 @@ Task *PassFilterWorker::tick() {
         if (passedValues.contains(value)) {
             outChannel->put(inputMessage);
         }
-    } else {
+    }
+    if (inChannel->isEnded()) {
         done = true;
         outChannel->setEnded();
     }

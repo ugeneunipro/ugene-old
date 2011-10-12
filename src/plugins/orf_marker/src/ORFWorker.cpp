@@ -285,7 +285,7 @@ void ORFWorker::sl_taskFinished() {
     if (output) {
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(ORFFindResult::toTable(res, resultName));
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
+        if ( (!input->hasMessage()) && input->isEnded() ) {
             output->setEnded();
         }
         algoLog.info(tr("Found %1 ORFs").arg(res.size()));

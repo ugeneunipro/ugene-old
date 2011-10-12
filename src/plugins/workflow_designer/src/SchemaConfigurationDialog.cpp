@@ -103,7 +103,7 @@ public:
 
     int columnCount(const QModelIndex &parent) const { 
         Q_UNUSED(parent);
-        return iterations.size() + 2; 
+        return iterations.size() + SERVICE_COLUMNS_COUNT; 
     }
 
     int rowCount ( const QModelIndex & parent = QModelIndex() ) const {
@@ -130,7 +130,8 @@ public:
             switch(section) {
                 case 0: return SchemaConfigurationDialog::tr("Name");
                 case 1: return SchemaConfigurationDialog::tr("Default value");
-                default: return iterations.at(section - 2).name;
+                case 2: return SchemaConfigurationDialog::tr("Common value");
+                default: return iterations.at(section - SERVICE_COLUMNS_COUNT).name;
             }
         }
         return QVariant();
@@ -171,11 +172,20 @@ public:
             }
             return QVariant();
         }
+
+        bool isDefaultVal = true;
+        QVariant commonVal;
+        bool common = true;
+        if (2 == col) {
+            commonVal = getCommonValue(index, common);
+
+            isDefaultVal = common && (commonVal == item->actor->getParameter(item->name)->getAttributePureValue());
+        }
+
         // parameter value
         QVariant val = item->actor->getParameter(item->name)->getAttributePureValue();
-        bool isDefaultVal = true;
-        if (col > 1) {
-            const CfgMap& cfg = iterations.at(col-2).cfg;
+        if (col > SERVICE_COLUMNS_COUNT-1) {
+            const CfgMap& cfg = iterations.at(col-SERVICE_COLUMNS_COUNT).cfg;
             ActorId aid = item->actor->getId();
             if (cfg.contains(aid)) {
                 const QVariantMap& params = cfg[aid];
@@ -185,6 +195,9 @@ public:
                 }
             }
         }
+        if (2 == col) {
+            val = common ? commonVal : QVariant();
+        }
         ConfigurationEditor* ed = item->actor->getEditor();
         PropertyDelegate* pd = ed ? ed->getDelegate(item->name) : NULL;
         switch (role)
@@ -192,6 +205,9 @@ public:
         case Qt::DisplayRole: 
         case Qt::ToolTipRole:
             {
+                if (2 == col && val.isNull()) {
+                    return val;
+                }
                 if(pd) {
                     return pd->getDisplayValue(val);
                 } else {
@@ -205,9 +221,34 @@ public:
             return qVariantFromValue<PropertyDelegate*>(pd);
         case Qt::EditRole:
         case ConfigurationEditor::ItemValueRole:
+            if (2 == col && val.isNull()) {
+                val = item->actor->getParameter(item->name)->getAttributePureValue();
+            }
             return val;
         }
         return QVariant();
+    }
+
+    QVariant getCommonValue(const QModelIndex &index, bool &isCommon) const {
+        CfgTreeItem *item = getItem(index);
+        QVariant commonValue;
+        isCommon = true;
+
+        bool first = true;
+        for (int i=0; i<iterations.count(); i++) {
+            ActorId aid = item->actor->getId();
+            QVariantMap& cfg = iterations[i].cfg[aid];
+            QVariant iterVal = cfg.contains(item->name) ? cfg.value(item->name) : item->actor->getParameter(item->name)->getAttributePureValue();
+            if (first) {
+                commonValue = iterVal;
+                first = false;
+            } else if (commonValue != iterVal) {
+                isCommon = false;
+                break;
+            }
+        }
+
+        return commonValue;
     }
 
     /*Used to modify the item of data associated with a specified model index. 
@@ -224,24 +265,32 @@ public:
         {
         case Qt::EditRole:
         case ConfigurationEditor::ItemValueRole:
-            /*if (col == 1) {
-                QVariant old = item->actor->getParameter(item->name)->getAttributePureValue();
-                if (old != value) {
-                    item->actor->setParameter(item->name, value);
-                    emit dataChanged(index, createIndex(index.row(), iterations.size() + 1, item));
-                
-                }return true;
-            } else {*/
+            if (2 == col) {
+                bool common = false;
+                QVariant old = getCommonValue(index, common);
+                if (common && old == value) {
+                    break;
+                }
+                if (value.isNull() || value.toString().isEmpty()) {
+                    break;
+                }
+                for (int i=0; i<iterations.count(); i++) {
+                    QModelIndex iterIdx(index.parent().child(index.row(), i+SERVICE_COLUMNS_COUNT));
+                    setData(iterIdx, value, role);
+                }
+            } else {
                 ActorId aid = item->actor->getId();
-                QVariantMap& cfg = iterations[col-2].cfg[aid];
+                QVariantMap& cfg = iterations[col-SERVICE_COLUMNS_COUNT].cfg[aid];
                 const QString& key = item->name;
                 QVariant old = cfg.contains(key) ? cfg.value(key) : item->actor->getParameter(key)->getAttributePureValue();
                 if (old != value) {
                     cfg.insert(key, value);
 
                     emit dataChanged(index, index);
+                    QModelIndex commonIdx(index.parent().child(index.row(), 2));
+                    emit dataChanged(commonIdx, commonIdx);
                 }
-           // }
+            }
             return true;
         }
         return false;
@@ -249,6 +298,8 @@ public:
 
 public:
     QList<Iteration>& iterations;
+
+    static const int SERVICE_COLUMNS_COUNT = 3;
 private:
     CfgTreeItem* root;
 };
@@ -286,10 +337,12 @@ SchemaConfigurationDialog::SchemaConfigurationDialog(const Schema& sh, const QLi
     dataView->setItemDelegate(delegate);
 
     for (int i = 0; i < iterationList->list().size(); i++) {
-        treeView->hideColumn(i + 2);
+        treeView->hideColumn(i + CfgTreeModel::SERVICE_COLUMNS_COUNT);
     }
 
-    dataView->hideColumn(1);
+    for (int i = 1; i < CfgTreeModel::SERVICE_COLUMNS_COUNT; i++) {
+        dataView->hideColumn(i);
+    }
     //dataView->hideColumn(0);
     //plain hiding of the lead column breaks tree expanded state synchronization
     //so below is a workaround to make the column effectively invisible.

@@ -66,7 +66,7 @@ bool MarkSequenceWorker::isReady() {
 }
 
 Task *MarkSequenceWorker::tick() {
-    if (inChannel->hasMessage()) {
+    while (inChannel->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = inputMessage.getData().toMap();
         DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
@@ -89,7 +89,8 @@ Task *MarkSequenceWorker::tick() {
         }
         Message mes(mtype, m);
         outChannel->put(mes);
-    } else {
+    }
+    if (inChannel->isEnded()) {
         done = true;
         outChannel->setEnded();
     }
