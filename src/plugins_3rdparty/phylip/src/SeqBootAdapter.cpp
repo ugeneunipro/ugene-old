@@ -53,7 +53,8 @@ void SeqBoot::clearGenratedSequences(){
 }
 
 QString SeqBoot::getTmpFileTemplate(){
-    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("phylip");
+    //QString path = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("phylip");
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath();
     if(path.isEmpty()){
         return path;
     }else{

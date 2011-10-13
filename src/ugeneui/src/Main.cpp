@@ -357,8 +357,7 @@ int main(int argc, char **argv)
     
     DocumentFormatRegistryImpl* dfr = new DocumentFormatRegistryImpl();
     appContext->setDocumentFormatRegistry(dfr);
-    dbiRegistry->initSessionDbi();
-
+    
     PluginSupportImpl* psp = new PluginSupportImpl();
     appContext->setPluginSupport(psp);
 

@@ -68,10 +68,9 @@ public:
 
     QList<U2DbiRef> listTmpDbis() const;
 
+private:
     void initSessionDbi();
 
-private:
-    
     QHash<U2DbiFactoryId, U2DbiFactory *>   factories;
     U2DbiPool*                              pool;
     QList<TmpDbiRef>                        tmpDbis;
@@ -79,6 +78,7 @@ private:
 
     /** this connection is opened during the whole ugene session*/
     DbiConnection*                          sessionDbiConnection;
+    bool                                    sessionDbiInitDone;
 };
 
 /** 

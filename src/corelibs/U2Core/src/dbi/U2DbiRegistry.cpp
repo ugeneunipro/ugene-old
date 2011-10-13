@@ -34,12 +34,14 @@
 
 namespace U2 {
 
-U2DbiRegistry::U2DbiRegistry(QObject *parent) : QObject(parent) {
+    U2DbiRegistry::U2DbiRegistry(QObject *parent) : QObject(parent), lock(QMutex::Recursive) {
     pool = new U2DbiPool(this);
     sessionDbiConnection = NULL;
+    sessionDbiInitDone = false;
 }
 
 void U2DbiRegistry::initSessionDbi() {
+    sessionDbiInitDone = true;
     U2OpStatus2Log os;
     U2DbiRef dbiRef = allocateTmpDbi(SESSION_TMP_DBI_ALIAS, os);
     CHECK_OP(os, );
@@ -105,6 +107,7 @@ void U2DbiRegistry::deallocateTmpDbi(const U2DbiRef& dbiRef, U2OpStatus& os) {
 
 U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
     QMutexLocker m(&lock);
+    
     for (int i = 0; i < tmpDbis.size(); i++) {
         TmpDbiRef& ref = tmpDbis[i];
         if (ref.alias == alias) {
@@ -112,7 +115,11 @@ U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
             return ref.dbiRef;
         }
     }
-    
+
+    if (alias == SESSION_TMP_DBI_ALIAS && !sessionDbiInitDone) { //once used -> cache connection
+        initSessionDbi();
+    }
+
     U2DbiRef res;
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
     QString url = GUrlUtils::prepareTmpFileLocation(tmpDirPath, alias, "ugenedb", os);
