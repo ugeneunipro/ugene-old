@@ -22,7 +22,7 @@ ExpertDiscoveryPosNegMrkDialog::ExpertDiscoveryPosNegMrkDialog(QWidget *parent)
 
     oneSequenceCheckBox->click();
 
-    //hiding description file for now
+    //hiding description file for now (in order to useless)
     oneSequenceCheckBox->hide();
     label_4->hide();
     thirdFileEdit->hide();

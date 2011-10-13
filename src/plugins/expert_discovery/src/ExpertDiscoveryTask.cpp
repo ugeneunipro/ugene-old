@@ -15,6 +15,10 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
+
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -129,19 +133,34 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
         suffix = QString(".").append(suffix);
     }
     baseName.append(suffix);
+    
     QString negFileName = positiveDoc->getURL().dirPath().append("/"+baseName);
     GUrl url(negFileName);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    QList<DNASequence> negObjects = sequencesGenerator(positiveDoc->getObjects());
+ 
     negativeDoc = positiveDoc->getDocumentFormat()->createNewLoadedDocument(iof, url, stateInfo);
     CHECK_OP(stateInfo, );
-    foreach(const DNASequence& dnaSeq, negObjects) {
-        U2EntityRef seqRef = U2SequenceUtils::import(negativeDoc->getDbiRef(), dnaSeq, stateInfo);
+    const QList<GObject*>& posObjects = positiveDoc->getObjects();
+    bool isMsa = false;
+    if(!posObjects.isEmpty()){
+        if (posObjects.first()->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT){
+            isMsa = true;
+        }
+    }
+    QList<DNASequence> negObjects = sequencesGenerator(posObjects);
+    if(!isMsa){
+        foreach(const DNASequence& dnaSeq, negObjects) {
+            U2EntityRef seqRef = U2SequenceUtils::import(negativeDoc->getDbiRef(), dnaSeq, stateInfo);
+            CHECK_OP(stateInfo, );
+            negativeDoc->addObject(new U2SequenceObject(dnaSeq.getName(), seqRef));
+        }
+    }else{
+        MAlignment msa = MSAUtils::seq2ma(negObjects, stateInfo);
         CHECK_OP(stateInfo, );
-        negativeDoc->addObject(new U2SequenceObject(dnaSeq.getName(), seqRef));
+        negativeDoc->addObject(new MAlignmentObject(msa));
     }
 
-    Project *project = AppContext::getProject();
+    //Project *project = AppContext::getProject();
     //project->addDocument(negativeDoc);
 
     if (negativeDoc) {
@@ -150,7 +169,7 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
     }
 }
 
-#define NUMBER_OF_NEGATIVE_PER_POSITIVE 100
+#define NUMBER_OF_NEGATIVE_PER_POSITIVE 10
 QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GObject*> &objects){
     QList<DNASequence> neg;
     int acgtContent[4];
@@ -158,7 +177,7 @@ QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList
     foreach(GObject* obj, objects){
         if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
             U2SequenceObject* seq = (U2SequenceObject*)obj;
-            calculateACGTContent(*seq,acgtContent);
+            calculateACGTContent(seq->getWholeSequence(),acgtContent);
             for (int i = 0; i < NUMBER_OF_NEGATIVE_PER_POSITIVE; i++){
                 QByteArray curArr = generateRandomSequence(acgtContent, seq->getSequenceLength());
                 QString name = seq->getGObjectName();
@@ -166,17 +185,33 @@ QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList
                 DNASequence curSeq = DNASequence(seq->getSequenceName().append(QString("_neg%1").arg(i)), curArr,seq->getAlphabet());
                 neg << curSeq;
             }
+        }else if(obj->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT){
+            MAlignmentObject* mobj =  qobject_cast<MAlignmentObject*>(obj);
+            if(mobj){
+                const MAlignment& ma = mobj->getMAlignment();
+                QList<DNASequence> sequences = MSAUtils::ma2seq(ma, false);
+                foreach(DNASequence seq, sequences){
+                    calculateACGTContent(seq,acgtContent);
+                    for (int i = 0; i < NUMBER_OF_NEGATIVE_PER_POSITIVE; i++){
+                        QByteArray curArr = generateRandomSequence(acgtContent, seq.length());
+                        QString name = seq.getName();
+                        name = name.append(QString("_neg%1").arg(i));
+                        DNASequence curSeq = DNASequence(seq.getName().append(QString("_neg%1").arg(i)), curArr,seq.alphabet);
+                        neg << curSeq;
+                    }
+                }
+            }
         }
     }
 
     return neg;
 }
 
-void ExpertDiscoveryLoadPosNegTask::calculateACGTContent(const U2SequenceObject& seq, int* acgtContent) {
+void ExpertDiscoveryLoadPosNegTask::calculateACGTContent(const DNASequence& seq, int* acgtContent) {
     acgtContent[0] = acgtContent[1] = acgtContent[2] = acgtContent[3] = 0;
-    int seqLen = seq.getSequenceLength();
-    int total = seq.getSequenceLength();
-    QByteArray seqArr = seq.getWholeSequenceData();
+    int seqLen = seq.length();
+    int total = seq.length();
+    QByteArray seqArr = seq.constSequence();
     for (int i=0; i < seqLen; i++) {
         char c = seqArr.at(i);
         if (c == 'A') {
@@ -544,7 +579,7 @@ void ExpertDiscoverySignalExtractorTask::run(){
     stateInfo.progress = 100;
 }
 void ExpertDiscoverySignalExtractorTask::prepare(){
-    ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen());
+    ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen(), data->isLettersMarkedUp());
     connect(&w, SIGNAL(si_newFolder()), SLOT(sl_newFolder()));
     if(w.exec()){
         PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
@@ -771,6 +806,7 @@ ExpertDiscoveryToAnnotationTask::ExpertDiscoveryToAnnotationTask(AnnotationTable
 :Task(tr("Find and store expert discovery signals on a sequence"), TaskFlags_FOSCOE), dna(seq), edData(d), aObj(aobj), curPS(ps), mutex(mut){
 
     seqRange = U2Region(0, seq.length());
+    curDnaName = seq.getName();
 }
 
 void ExpertDiscoveryToAnnotationTask::run(){
@@ -791,11 +827,11 @@ void ExpertDiscoveryToAnnotationTask::run(){
     assert(edData);
     int seqNumber = -1;
     DDisc::Sequence edSeq;
-    seqNumber = edData->getPosSeqBase().getObjNo(dna.getName().toStdString().c_str());
+    seqNumber = edData->getPosSeqBase().getObjNo(curDnaName.toStdString().c_str());
     if(seqNumber == -1){
-        seqNumber = edData->getNegSeqBase().getObjNo(dna.getName().toStdString().c_str());
+        seqNumber = edData->getNegSeqBase().getObjNo(curDnaName.toStdString().c_str());
         if(seqNumber == -1){
-             seqNumber = edData->getConSeqBase().getObjNo(dna.getName().toStdString().c_str());
+             seqNumber = edData->getConSeqBase().getObjNo(curDnaName.toStdString().c_str());
              if(seqNumber == -1){
                  stateInfo.setError(tr("No expert discovery sequence"));
                  return;

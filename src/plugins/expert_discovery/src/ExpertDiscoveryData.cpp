@@ -3,6 +3,8 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2View/WebWindow.h>
 
 #include <fstream>
@@ -27,48 +29,28 @@ ExpertDiscoveryData::ExpertDiscoveryData (){
 }
 
 void ExpertDiscoveryData::setPosBase(const QList<GObject*> & objects){
-    foreach(GObject* obj, objects){
-        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-            Sequence seq = prerareSequence(obj);
-            seq.setHasScore(false);
-            posBase.addSequence(seq);
-            QString name=QString::fromStdString(seq.getName());
-            recDataStorage.addSequence(name);
-        }
-    }
+    setBase(objects, posBase);
 }
 void ExpertDiscoveryData::setNegBase(const QList<GObject*> & objects){
-    foreach(GObject* obj, objects){
-        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-            Sequence seq = prerareSequence(obj);
-            seq.setHasScore(false);
-            negBase.addSequence(seq);
-            QString name=QString::fromStdString(seq.getName());
-            recDataStorage.addSequence(name);
-        }
-    }
+    setBase(objects, negBase);
 }
 
 void ExpertDiscoveryData::setConBase(const QList<GObject*> & objects){
-    foreach(GObject* obj, objects){
-        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-            Sequence seq = prerareSequence(obj);
-            seq.setHasScore(false);
-            conBase.addSequence(seq);
-            QString name=QString::fromStdString(seq.getName());
-            recDataStorage.addSequence(name);
-        }
-    }
+    setBase(objects, conBase);
 }
 
-Sequence ExpertDiscoveryData::prerareSequence(const GObject* obj) const{
-    const QString& name  = obj->getGObjectName();
-    std::string n = name.toStdString();
-
+inline Sequence ExpertDiscoveryData::prepareSequence( const GObject* obj ) const{
     U2SequenceObject* seq = (U2SequenceObject*)obj;
     QByteArray seqArr =  seq->getWholeSequenceData();
     std::string seqStr = std::string(seqArr.data(),seqArr.length());
-    Sequence seqReady = Sequence(n, seqStr);
+    Sequence seqReady = Sequence(obj->getGObjectName().toStdString(), seqStr);
+
+    return seqReady;
+}
+inline Sequence ExpertDiscoveryData::prepareSequence(MAlignmentRow& row) const{
+    const QByteArray& seqArr = row.getCore();
+    std::string seqStr = std::string(seqArr.data(),seqArr.length());
+    Sequence seqReady = Sequence(row.getName().toStdString(), seqStr);
 
     return seqReady;
 }
@@ -270,6 +252,31 @@ bool ExpertDiscoveryData::isLettersMarkedUp(void) const
 std::string ExpertDiscoveryData::char2string(char ch) {
     char ar[] = {ch, 0};
     return std::string(ar);
+}
+
+void ExpertDiscoveryData::setBase(const QList<GObject*> &objects, SequenceBase& base){
+    foreach(GObject* obj, objects){
+        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+            Sequence seq = prepareSequence(obj);
+            seq.setHasScore(false);
+            base.addSequence(seq);
+            QString name=QString::fromStdString(seq.getName());
+            recDataStorage.addSequence(name);
+        }else if(obj->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT){
+            MAlignmentObject* mobj =  qobject_cast<MAlignmentObject*>(obj);
+            if(mobj){
+                const MAlignment& ma = mobj->getMAlignment();
+                const QList<MAlignmentRow>& rows = ma.getRows();
+                foreach(MAlignmentRow row, rows){
+                    Sequence seq = prepareSequence(row);
+                    seq.setHasScore(false);
+                    base.addSequence(seq);
+                    QString name=QString::fromStdString(seq.getName());
+                    recDataStorage.addSequence(name);   
+                }
+            }
+        }
+    }
 }
 
 void ExpertDiscoveryData::switchSelection(EDProjectItem* pItem, bool upd){
@@ -511,39 +518,6 @@ bool ExpertDiscoveryData::loadAnnotation(MarkingBase& base, const SequenceBase& 
     return true;  
        
 }
-
-// bool ExpertDiscoveryData::loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc){
-// 
-//     foreach(GObject* obj, doc->getObjects()){
-//         GObject* objk1 = obj;
-//     }
-// //     int objN = seqBase.getObjNo(sequenceId.toStdString().c_str());
-// //     if(objN >= 0){
-// //         QDomNode pInstanceNode = pSequence.firstChild();
-// //         if(pInstanceNode.toElement().tagName() != "instance"){
-// //             return false;
-// //         }
-// //         Marking mrk;
-// //         try {
-// //             mrk = base.getMarking(objN);
-// //         }
-// //         catch (...) {}
-// //         while(!pInstanceNode.isNull()){
-// //             QDomElement pInstance = pInstanceNode.toElement();
-// //             if(pInstance.tagName() == "instance"){
-// //                 int startPos = pInstance.attribute("start").toInt() - 1;
-// //                 int endPos = pInstance.attribute("end").toInt() - 1;
-// //                 if (endPos >= startPos && startPos >= 0) {
-// //                     mrk.set(signalName.toStdString(), familyName.toStdString(), DDisc::Interval(startPos, endPos));
-// //                 }
-// //                 //instance
-// //             }
-// //             pInstanceNode = pInstanceNode.nextSibling();
-// //         }
-// //         base.setMarking(objN, mrk);
-// //     }
-//     return true;
-// }
 
 bool ExpertDiscoveryData::generateDescription(bool clearDescr){
     if(clearDescr){

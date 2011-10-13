@@ -45,7 +45,7 @@ private:
 
     QList<DNASequence> sequencesGenerator(const QList<GObject*> &);
     QByteArray generateRandomSequence(const int* acgtContent, int seqLen);
-    void calculateACGTContent(const U2SequenceObject& seq, int* acgtContent);
+    void calculateACGTContent(const DNASequence& seq, int* acgtContent);
 
 protected slots:
     void sl_generateNegativeSample(Task* task);
@@ -212,6 +212,7 @@ private:
     void recDataToAnnotation();
     void csToAnnotation(int seqNumberm, unsigned int seqLen);
 
+    QString                             curDnaName;
     const DNASequence&                  dna;
     ExpertDiscoveryData*                edData;
     const EDProcessedSignal*            curPS;

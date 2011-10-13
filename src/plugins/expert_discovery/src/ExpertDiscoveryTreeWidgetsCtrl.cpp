@@ -54,7 +54,6 @@ void EDProjectTree::updateTree(int flag, EDProjectItem* item){
 }
 
 void EDProjectTree::remake(){
-    
 
     addTopLevelItem(&seqRoot);
     seqRoot.setText(0,"Sequences");
@@ -116,8 +115,6 @@ void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent
 
 }
 
-
-
 void EDProjectTree::updateItem(EDProjectItem* pItem){
     pItem->setText(0, pItem->getName());
     pItem->setIcon(0, getItemIcon(pItem));
@@ -142,8 +139,7 @@ void EDProjectTree::updateItem(EDProjectItem* pItem){
 
     
 }
-void EDProjectTree::updateItemState(EDProjectItem *pItem)
-{
+void EDProjectTree::updateItemState(EDProjectItem *pItem){
     QFont curFont = pItem->font(0);
     if (edData.isSignalSelected(pItem))
         curFont.setBold(true);
@@ -387,6 +383,9 @@ void EDProjectTree::createPopupsAndActions(){
     clearPriorAllSigAction = new QAction(tr("Clear prior parameters of all signals"), this);
     connect(clearPriorAllSigAction, SIGNAL(triggered(bool)), SLOT(sl_clearPriorAllSig()));
 
+    addSignalToMarkupAction = new QAction(tr("Add signal to markup"), this);
+    connect(addSignalToMarkupAction, SIGNAL(triggered(bool)), SLOT(sl_addSignalToMarkup()));
+
     selDeselSigAction = new QAction(tr("Select/deselect signal"), this);
     connect(selDeselSigAction, SIGNAL(triggered(bool)), SLOT(sl_selDeselSig()));
 
@@ -457,8 +456,9 @@ void EDProjectTree::createPopupsAndActions(){
     popupMenuCS->addAction(selDeselSigAction);
     popupMenuCS->addAction(deletePIAction);
     popupMenuCS->addSeparator();
-    popupMenuCS->addAction(setCurPriorAction);
-    popupMenuCS->addAction(clearCurPriorAction);
+    popupMenuCS->addAction(addSignalToMarkupAction);
+    //popupMenuCS->addAction(setCurPriorAction);
+    //popupMenuCS->addAction(clearCurPriorAction);
     
 
     popupMenuDir = new QMenu(this);
@@ -1033,6 +1033,9 @@ void EDProjectTree::sl_clearPriorAllSig(){
             updateTree(ED_CURRENT_ITEM_CHANGED, pCS);
         }
     }
+}
+void EDProjectTree::sl_addSignalToMarkup(){
+
 }
 void EDProjectTree::sl_selDeselSig(){
     EDProjectItem* pItem = dynamic_cast<EDProjectItem*>(currentItem());

@@ -26,7 +26,7 @@
 #include <U2Core/GHints.h>
 #include <U2Core/Counter.h>
 #include <U2Core/U2OpStatusUtils.h>
-
+#include <U2Core/U2SequenceUtils.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -279,11 +279,16 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
     d.setPosBase(posUDoc->getObjects());
     d.setBaseFilename(d.getPosSeqBase(), posUDoc->getURLString());
 
+    bool isSequencesDoc = true;
     foreach(GObject* gobj, posUDoc->getObjects()){
         //addObject(gobj);
-        edObjects.push_back(gobj);
+        if(gobj->getGObjectType()==GObjectTypes::SEQUENCE){
+            edObjects.push_back(gobj);
+        }else{
+            isSequencesDoc = false;
+        }
     }
-    if(posUDoc->isStateLocked()){
+    if(posUDoc->isStateLocked() || !isSequencesDoc){
         posUDoc = NULL;
     }
 
@@ -291,12 +296,17 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
     d.setNegBase(negUDoc->getObjects());
     d.setBaseFilename(d.getNegSeqBase(), negUDoc->getURLString());
 
+    isSequencesDoc = true;
     foreach(GObject* gobj, negUDoc->getObjects()){
         //addObject(gobj);
-        edObjects.push_back(gobj);
+        if(gobj->getGObjectType()==GObjectTypes::SEQUENCE){
+            edObjects.push_back(gobj);
+        }else{
+            isSequencesDoc = false;
+        }
     }
 
-    if(negUDoc->isStateLocked()){
+    if(negUDoc->isStateLocked() || !isSequencesDoc){
         negUDoc = NULL;
     }
 
@@ -543,11 +553,16 @@ void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
     d.setConBase(conUDoc->getObjects());
     d.setBaseFilename(d.getConSeqBase(), conUDoc->getURLString());
 
+    bool isSequencesDoc = true;
     foreach(GObject* gobj, conUDoc->getObjects()){
-        edObjects.push_back(gobj);
+        if(gobj->getGObjectType() == GObjectTypes::SEQUENCE){
+            edObjects.push_back(gobj);
+        }else{
+            isSequencesDoc = false;
+        }
     }
 
-    if(conUDoc->isStateLocked()){
+    if(conUDoc->isStateLocked() || !isSequencesDoc){
         conUDoc = NULL;
     }
 
@@ -735,41 +750,57 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
         }
     }
     if(!seqFound){ //add to edObjects
-        QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toAscii());
-        DNASequence dnaseq (sItem->getSequenceName(), seqarray);
-        dnaseq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
-        assert(0);
-        //TODO: avoid use od objects without doc! U2SequenceObject* danseqob = new U2SequenceObject(sItem->getSequenceName(), dnaseq);
-        U2SequenceObject* danseqob  = NULL;
-        edObjects.append(danseqob);
+//         QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toAscii());
+//         DNASequence dnaseq (sItem->getSequenceName(), seqarray);
+//         dnaseq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+//         //TODO: avoid use od objects without doc! U2SequenceObject* danseqob = new U2SequenceObject(sItem->getSequenceName(), dnaseq);
+//         U2SequenceObject* danseqob  = NULL;
+//         edObjects.append(danseqob);
 
         SequenceType sType = d.getSequenceTypeByName(sItem->getSequenceName());
+        Document* curDoc = NULL;
         switch(sType){
             case POSITIVE_SEQUENCE:
                 if(!posUDoc){
                     posUDoc = createUDocument(sType);
                     posUDoc->setName("Positive");
                 }
-                posUDoc->addObject(danseqob);
+                curDoc = posUDoc;
+                //posUDoc->addObject(danseqob);
                 break;
             case NEGATIVE_SEQUENCE:
                 if(!negUDoc){
                     negUDoc = createUDocument(sType);
                     negUDoc->setName("Negative");
                 }
-                negUDoc->addObject(danseqob);
+                curDoc = negUDoc;
+                //negUDoc->addObject(danseqob);
                 break;
             case CONTROL_SEQUENCE:
                 if(!conUDoc){
                     conUDoc = createUDocument(sType);
                     conUDoc->setName("Control");
                 }
-                conUDoc->addObject(danseqob);
+                curDoc = conUDoc;
+                //conUDoc->addObject(danseqob);
                 break;
             default:
                 return NULL;
         }
-
+        QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toAscii());
+        DNASequence dnaseq (sItem->getSequenceName(), seqarray);
+        dnaseq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
+        TaskStateInfo stateInfo;
+        U2EntityRef seqRef = U2SequenceUtils::import(curDoc->getDbiRef(), dnaseq, stateInfo);
+        if (stateInfo.isCoR()) {
+            return NULL;
+        } 
+        if(!curDoc){
+            return NULL;
+        }
+        U2SequenceObject* danseqob = new U2SequenceObject(sItem->getSequenceName(), seqRef);
+        curDoc->addObject(danseqob);
+        edObjects.append(danseqob);
         return danseqob;
     }   
     return NULL;

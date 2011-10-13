@@ -18,7 +18,8 @@ ExpertDiscoveryPosNegDialog::ExpertDiscoveryPosNegDialog(QWidget *parent)
     connect(openSecondButton, SIGNAL(clicked()), SLOT(sl_openSecondFile()));
     connect(oneSequenceCheckBox, SIGNAL(clicked()), SLOT(sl_oneSequence()));
 
-    filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
+    filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true)+
+        ";;" + DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, false);
 }
 
 void ExpertDiscoveryPosNegDialog::accept(){

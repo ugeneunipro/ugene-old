@@ -66,7 +66,7 @@ public:
 class ExpertDiscoveryExtSigWiz : public QWizard, public Ui_SignalsExtrWiz{
     Q_OBJECT
 public:
-    ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f, int positiveSize);
+    ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f, int positiveSize, bool isLetters);
     virtual ~ExpertDiscoveryExtSigWiz();
 
     double  getProbability() {return state.dProbability/100;}
@@ -90,6 +90,8 @@ public:
 
     void setFolder(CSFolder* f){folder = f;}
     CSFolder* getFolder(){return folder;}
+
+    void predicatesByDefault(bool isLetters);
 
     virtual void accept();
 

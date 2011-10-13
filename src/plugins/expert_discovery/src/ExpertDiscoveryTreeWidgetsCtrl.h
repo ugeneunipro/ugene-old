@@ -14,15 +14,6 @@
 
 namespace U2 {
 
-
-//     class MyTreeWidget : public QTreeView{
-//         Q_OBJECT
-//     public:
-//         MyTreeWidget(QWidget *parent);
-
-// 
-//     };
-
 class EDProjectTree : public QTreeWidget{
     Q_OBJECT
 
@@ -62,6 +53,7 @@ protected slots:
     void sl_deselAllSig();
     void sl_setPriorAllSig();
     void sl_clearPriorAllSig();
+    void sl_addSignalToMarkup();
     void sl_selDeselSig();
     void sl_setCurPrior();
     void sl_clearCurPrior();
@@ -110,6 +102,7 @@ private:
     QAction*    deselAllSigAction;
     QAction*    setPriorAllSigAction;
     QAction*    clearPriorAllSigAction;
+    QAction*    addSignalToMarkupAction;
     QAction*    selDeselSigAction;
     QAction*    setCurPriorAction;
     QAction*    clearCurPriorAction;

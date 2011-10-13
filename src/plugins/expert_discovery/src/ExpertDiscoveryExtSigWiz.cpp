@@ -6,7 +6,7 @@
 
 namespace U2 {
 
-ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f, int positiveSize)
+ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f, int positiveSize, bool isLetters)
 : QWizard(parent)
 ,posSize(positiveSize)
 ,folder(NULL){
@@ -56,6 +56,8 @@ ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f,
     intervItem->setText(0,"Interval");
 
     connect(predicatesTree, SIGNAL(currentItemChanged (QTreeWidgetItem*, QTreeWidgetItem*)), SLOT(sl_selectionChanged (QTreeWidgetItem*, QTreeWidgetItem*)));
+
+    predicatesByDefault(isLetters);
 
 //page 3
     folder = f;
@@ -181,6 +183,31 @@ void ExpertDiscoveryExtSigWiz::sl_idChanged(int id){
 void ExpertDiscoveryExtSigWiz::sl_createSubfolder(){
     emit si_newFolder();
     updateTree();
+}
+void ExpertDiscoveryExtSigWiz::predicatesByDefault(bool isLetters){
+    if(isLetters){
+        for(int i = 0; i < 3; i++){ //generate D(0,0), D(1,1), D(2,2)
+            OpDistance *pOp = new OpDistance;
+            pOp->setDistance(Interval(i,i));
+            QTreeWidgetItem *op = new QTreeWidgetItem(distItem);
+            op->setText(0, QString::fromStdString(pOp->getDescription()));
+            void* pointer = (void*)pOp;
+            QVariant variant = qVariantFromValue<void*>(pointer);
+            op->setData(0, Qt::UserRole, variant);
+            distItem->setExpanded(true);
+        }
+    }else{  //generate D(0,10), D(10,20)
+        for(int i = 0; i < 20; i+=10){
+            OpDistance *pOp = new OpDistance;
+            pOp->setDistance(Interval(i,i+10));
+            QTreeWidgetItem *op = new QTreeWidgetItem(distItem);
+            op->setText(0, QString::fromStdString(pOp->getDescription()));
+            void* pointer = (void*)pOp;
+            QVariant variant = qVariantFromValue<void*>(pointer);
+            op->setData(0, Qt::UserRole, variant);
+            distItem->setExpanded(true);
+        }
+    }
 }
 
 void ExpertDiscoveryExtSigWiz::accept(){

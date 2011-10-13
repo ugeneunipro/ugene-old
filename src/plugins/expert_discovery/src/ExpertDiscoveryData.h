@@ -17,6 +17,7 @@ using namespace DDisc;
 class EDProjectItem;
 class EDPICS;
 class EDPISequence;
+class MAlignmentRow;
 
 const int ED_UPDATE_ALL             = 0;
 const int ED_CURRENT_ITEM_CHANGED   = 1;
@@ -125,8 +126,10 @@ private:
 
     std::map<const SequenceBase*, std::string> fileNamesMap;
 
-    inline Sequence prerareSequence(const GObject* obj) const;
+    inline Sequence prepareSequence(const GObject* obj) const;
+    inline Sequence prepareSequence(MAlignmentRow& row) const;
     static std::string char2string(char ch);
+    void setBase(const QList<GObject*> &objects, SequenceBase& base);
 };
 }//namespace
 
