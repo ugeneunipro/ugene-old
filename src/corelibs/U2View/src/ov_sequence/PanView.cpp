@@ -806,9 +806,9 @@ void PanViewRenderArea::drawSequence(QPainter& p) {
     const U2Region& visibleRange = view->getVisibleRange();
     QByteArray seq = view->getSequenceContext()->getSequenceData(visibleRange);
     int y = getLineY(getSelectionLine()) + lineHeight - yCharOffset;
-    for (int i = visibleRange.startPos; i < visibleRange.endPos(); i++) {
+    for (int i = 0; i < visibleRange.length; i++) {
         char c = seq[i];
-        int x = qRound(posToCoordF(i) + halfCharByScale - halfCharByFont);
+        int x = qRound(posToCoordF(visibleRange.startPos + i) + halfCharByScale - halfCharByFont);
         p.drawText(x, y, QString(c));
     }
 
