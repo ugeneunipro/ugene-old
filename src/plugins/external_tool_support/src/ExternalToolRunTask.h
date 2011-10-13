@@ -71,8 +71,8 @@ private:
 class ExternalToolSupportUtils : public QObject {
 	Q_OBJECT
 public:
-    static bool removeTmpDir(const QString& absoulutePath, QString& errMsg);
-    static QString createTmpDir(const QString& dirName, int uniqueId,  QString& errMsg);
+    static void removeTmpDir(const QString& absoulutePath, U2OpStatus& os);
+    static QString createTmpDir(const QString& domain, U2OpStatus& os);
 };
 
 
@@ -85,7 +85,7 @@ public:
     QString getLastError() const {return lastError;}
     
 private:
-    /* If any error occured, this variable will be non-empty */
+    /* If any error occurred, this variable will be non-empty */
     QString     lastError;
     /* Percent values in range 0..100, negative if unknown. */
     int         progress;

@@ -28,6 +28,9 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
@@ -188,10 +191,10 @@ bool MrBayesWidget::checkSettings(QString& , const CreatePhyTreeSettings& ){
     if (path.isEmpty()){
         return false;
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return false;
-    }
+    U2OpStatus2Log os(LogLevel_DETAILS);
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os, false);
+    
     return true;
 }
 

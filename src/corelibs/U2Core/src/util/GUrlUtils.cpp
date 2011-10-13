@@ -224,4 +224,20 @@ QString GUrlUtils::prepareTmpFileLocation(const QString& dir, const QString& pre
     return result;
 }
 
+
+void GUrlUtils::removeDir(const QString& dirPath, U2OpStatus& os) {
+    QDir dir(dirPath);
+    CHECK(dir.exists(), );
+    QList<QFileInfo> entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);
+    foreach(const QFileInfo& info, entries) {
+        if (info.isDir()) {
+            removeDir(info.absoluteFilePath(), os);
+        } else {
+            QFile::remove(info.absoluteFilePath());
+        }
+        CHECK_OP(os, );
+    }
+    QDir().rmdir(dirPath);
+}
+
 }//namespace

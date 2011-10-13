@@ -42,7 +42,7 @@ ExternalToolSupportAction::ExternalToolSupportAction(QObject* p, GObjectView* v,
     }
     connect(AppContext::getAppSettings()->getUserAppsSettings(), SIGNAL(si_temporaryPathChanged()), SLOT(sl_pathChanged()));
     if(!isOneOfToolConfigured ||
-       (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty())){
+       (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty())){
         isConfiguredToolFont.setItalic(true);
         setFont(isConfiguredToolFont);
 //        setText(text()+"...");
@@ -77,7 +77,7 @@ ExternalToolSupportAction::ExternalToolSupportAction(const QString& _text, QObje
     }
     connect(AppContext::getAppSettings()->getUserAppsSettings(), SIGNAL(si_temporaryPathChanged()), SLOT(sl_pathChanged()));
     if(!isOneOfToolConfigured ||
-       (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty())){
+       (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty())){
         isConfiguredToolFont.setItalic(true);
         setFont(isConfiguredToolFont);
 //        setText(text()+"...");
@@ -107,7 +107,7 @@ void ExternalToolSupportAction::sl_pathChanged() {
         }
     }
     if(!isOneOfToolConfigured ||
-       (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty())){
+       (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty())){
         isConfiguredToolFont.setItalic(true);
         setFont(isConfiguredToolFont);
 //        if(!text().endsWith("...")){

@@ -26,6 +26,8 @@
 #include <U2Gui/ObjectViewModel.h>
 
 #define BLASTALL_TOOL_NAME "BlastAll"
+#define BLASTALL_TMP_DIR    "blast_all"
+
 namespace U2 {
 
 class BlastAllSupport : public ExternalTool {

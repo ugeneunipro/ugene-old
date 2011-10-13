@@ -23,9 +23,13 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/GUrlUtils.h>
 
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
+#include <QtCore/QProcessEnvironment>
+
 #include <QtGui/QDesktopServices>
 #include <QtGui/QApplication>
 #include <QtGui/QStyle>
@@ -44,6 +48,25 @@ namespace U2 {
 #define TEMPORARY_DIR QString("temporary_dir")
 #define COLLECTING_STATISTICS QString("collecting_statistics")
 #define WINDOW_LAYOUT  QString("tabbed_windows")
+
+//TODO: create a special ENV header to keep all env-vars ugene depends
+#define UGENE_SKIP_TMP_DIR_CLEANUP "UGENE_SKIP_TMP_DIR_CLEANUP"
+
+UserAppsSettings::UserAppsSettings() {
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    cleanupTmpDir = !env.contains(UGENE_SKIP_TMP_DIR_CLEANUP);
+}
+
+
+UserAppsSettings::~UserAppsSettings() {
+    if (cleanupTmpDir) {
+        QString path = getCurrentProcessTemporaryDirPath();
+        coreLog.trace(tr("Cleaning temp dir: %1").arg(path));
+        U2OpStatus2Log os;
+        GUrlUtils::removeDir(path, os);
+    }
+}
+
 
 QString UserAppsSettings::getWebBrowserURL() const {
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + WEB_BROWSER, QString("")).toString();
@@ -95,34 +118,28 @@ void UserAppsSettings::setVisualStyle(const QString& newStyle) {
     return AppContext::getSettings()->setValue(SETTINGS_ROOT + VISUAL_STYLE, newStyle.toLower());
 }
 
-QString UserAppsSettings::getDownloadDirPath() const
-{
+QString UserAppsSettings::getDownloadDirPath() const {
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + DOWNLOAD_DIR, QDir::homePath()+"/.UGENE_downloaded").toString();
 }
 
-void UserAppsSettings::setDownloadDirPath(const QString& newPath) const
-{
+void UserAppsSettings::setDownloadDirPath(const QString& newPath) const {
     AppContext::getSettings()->setValue(SETTINGS_ROOT + DOWNLOAD_DIR, newPath);
 }
 
-QStringList UserAppsSettings::getRecentlyDownloadedFileNames() const
-{
+QStringList UserAppsSettings::getRecentlyDownloadedFileNames() const {
     QStringList empty;
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + RECENTLY_DOWNLOADED, empty).toStringList();
 }
 
-void UserAppsSettings::setRecentlyDownloadedFileNames(const QStringList& fileNames) const
-{
+void UserAppsSettings::setRecentlyDownloadedFileNames(const QStringList& fileNames) const {
     AppContext::getSettings()->setValue(SETTINGS_ROOT + RECENTLY_DOWNLOADED, fileNames);
 }
 
-QString UserAppsSettings::getTemporaryDirPath() const
-{
+QString UserAppsSettings::getUserTemporaryDirPath() const {
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + TEMPORARY_DIR, QDesktopServices::storageLocation(QDesktopServices::TempLocation)).toString();
 }
 
-void UserAppsSettings::setTemporaryDirPath(const QString& newPath)
-{
+void UserAppsSettings::setUserTemporaryDirPath(const QString& newPath) {
     AppContext::getSettings()->setValue(SETTINGS_ROOT + TEMPORARY_DIR, newPath);
     emit si_temporaryPathChanged();
 }
@@ -135,15 +152,23 @@ void UserAppsSettings::setEnableCollectingStatistics(bool b) {
     AppContext::getSettings()->setValue(SETTINGS_ROOT + COLLECTING_STATISTICS, b);
 }
 
-bool UserAppsSettings::tabbedWindowLayout() const
-{
+bool UserAppsSettings::tabbedWindowLayout() const {
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + WINDOW_LAYOUT).toBool();
 }
 
-void UserAppsSettings::setTabbedWindowLayout(bool b)
-{
+void UserAppsSettings::setTabbedWindowLayout(bool b) {
     AppContext::getSettings()->setValue(SETTINGS_ROOT + WINDOW_LAYOUT, b);
     emit si_windowLayoutChanged();
+}
+
+
+QString UserAppsSettings::getCurrentProcessTemporaryDirPath(const QString& domain) const {
+    qint64 pid = QCoreApplication::applicationPid();
+    QString tmpDirPath = getUserTemporaryDirPath() + "/" +  QString("ugene_tmp/p%1").arg(pid);
+    if (!domain.isEmpty()) {
+        tmpDirPath += "/" + domain;
+    }
+    return tmpDirPath;
 }
 
 }//namespace

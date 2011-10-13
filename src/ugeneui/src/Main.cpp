@@ -354,9 +354,10 @@ int main(int argc, char **argv)
 
     U2DbiRegistry *dbiRegistry = new U2DbiRegistry();
     appContext->setDbiRegistry(dbiRegistry);
-
+    
     DocumentFormatRegistryImpl* dfr = new DocumentFormatRegistryImpl();
     appContext->setDocumentFormatRegistry(dfr);
+    dbiRegistry->initSessionDbi();
 
     PluginSupportImpl* psp = new PluginSupportImpl();
     appContext->setPluginSupport(psp);
@@ -515,83 +516,83 @@ int main(int argc, char **argv)
     
     delete dcu;
 
-    appContext->setGUITestBase(NULL);
     delete tb;
+    appContext->setGUITestBase(NULL);
     
-    appContext->setVirtualFileSystemRegistry( NULL );
     delete vfsReg;
+    appContext->setVirtualFileSystemRegistry( NULL );
     
-    appContext->setRecentlyDownloadedCache(NULL);
     delete rdc;
+    appContext->setRecentlyDownloadedCache(NULL);
 
-    appContext->setSWResultFilterRegistry(NULL);
     delete swrfr;
+    appContext->setSWResultFilterRegistry(NULL);
 
-    appContext->setSmithWatermanTaskFactoryRegistry(NULL);
     delete swar;
+    appContext->setSmithWatermanTaskFactoryRegistry(NULL);
 
-    appContext->setMolecularSurfaceFactoryRegistry(NULL);
     delete msfr;
+    appContext->setMolecularSurfaceFactoryRegistry(NULL);
 
-    appContext->setSubstMatrixRegistry(NULL);
     delete smr;
+    appContext->setSubstMatrixRegistry(NULL);
 
-    appContext->setMSAColorSchemeRegistry(NULL);
     delete mcsr;
+    appContext->setMSAColorSchemeRegistry(NULL);
 
-    appContext->setDBXRefRegistry(NULL);
     delete dbxr;
+    appContext->setDBXRefRegistry(NULL);
 
-    appContext->setProjectLoader(NULL);
     delete pli;
+    appContext->setProjectLoader(NULL);
 
-    appContext->setServiceRegistry(NULL);
     delete sreg;
+    appContext->setServiceRegistry(NULL);
 
-    appContext->setPluginSupport(NULL);
     delete psp;
+    appContext->setPluginSupport(NULL);
 
-    appContext->setExternalToolRegistry(NULL);
     delete etr;
+    appContext->setExternalToolRegistry(NULL);
 
-    appContext->setMainWindow(NULL);
     delete mw;
+    appContext->setMainWindow(NULL);
 
-    appContext->setTestFramework(0);
     delete tf;
+    appContext->setTestFramework(0);
 
-    appContext->setObjectViewFactoryRegistry(NULL);
     delete ovfr;
+    appContext->setObjectViewFactoryRegistry(NULL);
 
-    appContext->setDNAAlphabetRegistry(NULL);
     delete dal;
+    appContext->setDNAAlphabetRegistry(NULL);
 
-    appContext->setDNATranslationRegistry(NULL);
     delete dtr;
+    appContext->setDNATranslationRegistry(NULL);
 
-    appContext->setIOAdapterRegistry(NULL);
     delete io;
+    appContext->setIOAdapterRegistry(NULL);
 
-    appContext->setDocumentFormatConfigurators(NULL);
     delete dfc;
+    appContext->setDocumentFormatConfigurators(NULL);
 
-    appContext->setDocumentFormatRegistry(NULL);
     delete dfr;
+    appContext->setDocumentFormatRegistry(NULL);
 
-    appContext->setDbiRegistry(NULL);
     delete dbiRegistry;
+    appContext->setDbiRegistry(NULL);
 
-    appContext->setTaskScheduler(NULL);
     delete ts;
+    appContext->setTaskScheduler(NULL);
 
-    appContext->setAnnotationSettingsRegistry(NULL);
     delete asr;
+    appContext->setAnnotationSettingsRegistry(NULL);
 
-    appContext->setResourceTracker(NULL);
     delete resTrack;
+    appContext->setResourceTracker(NULL);
 
-    appContext->setCudaGpuRegistry(NULL);
     delete cgr;
+    appContext->setCudaGpuRegistry(NULL);
 
     delete oclgr;
     appContext->setOpenCLGpuRegistry(NULL);
@@ -599,50 +600,50 @@ int main(int argc, char **argv)
     delete cmdLineRegistry;
     appContext->setCMDLineRegistry(NULL);
 
-    appContext->setSecStructPedictAlgRegistry(NULL);
     delete sspar;
+    appContext->setSecStructPedictAlgRegistry(NULL);
 
-    appContext->setMSAConsensusAlgorithmRegistry(NULL);
     delete msaConsReg;
+    appContext->setMSAConsensusAlgorithmRegistry(NULL);
     
-    appContext->setMSADistanceAlgorithmRegistry(NULL);
     delete msaDistReg;
+    appContext->setMSADistanceAlgorithmRegistry(NULL);
 
-    appContext->setPWMConversionAlgorithmRegistry(NULL);
     delete pwmConvReg;
+    appContext->setPWMConversionAlgorithmRegistry(NULL);
 
-    appContext->setDnaAssemblyAlgRegistry(NULL);
     delete assemblyReg;
+    appContext->setDnaAssemblyAlgRegistry(NULL);
 
-    appContext->setMSAAlignAlgRegistry(NULL);
     delete alignReg;
+    appContext->setMSAAlignAlgRegistry(NULL);
     
-    appContext->setDataBaseRegistry(NULL);
     delete dbr;
+    appContext->setDataBaseRegistry(NULL);
 
-    appContext->setAutoAnnotationsSupport(NULL);
     delete aaSupport;
+    appContext->setAutoAnnotationsSupport(NULL);
 
-    appContext->setQDActorFactoryRegistry(NULL);
     delete qpr;
+    appContext->setQDActorFactoryRegistry(NULL);
 
-    appContext->setCDSearchFactoryRegistry(NULL);
     delete cdsfr;
+    appContext->setCDSearchFactoryRegistry(NULL);
 
-    appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
     delete saar;
+    appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
 
-    appContext->setAppSettingsGUI(NULL);
     delete appSettingsGUI;
+    appContext->setAppSettingsGUI(NULL);
 
-    appContext->setAppSettings(NULL);
     delete appSettings;
+    appContext->setAppSettings(NULL);
 
-    appContext->setSettings(NULL);
     delete settings;
+    appContext->setSettings(NULL);
 
-    appContext->setGlobalSettings(NULL);
     delete globalSettings;
+    appContext->setGlobalSettings(NULL);
 
     return rc;   
 }

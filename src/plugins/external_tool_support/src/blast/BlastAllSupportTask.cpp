@@ -64,7 +64,8 @@ void BlastAllSupportTask::prepare(){
                          QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
                          QString::number(QCoreApplication::applicationPid())+"/";
     //Check and remove subdir for temporary files
-    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName);
+    QString blastTmpDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BLASTALL_TMP_DIR);
+    QDir tmpDir(blastTmpDir + "/ "+ tmpDirName);
     if(tmpDir.exists()){
         foreach(const QString& file, tmpDir.entryList()){
             tmpDir.remove(file);
@@ -74,7 +75,7 @@ void BlastAllSupportTask::prepare(){
             return;
         }
     }
-    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName)){
+    if (!tmpDir.mkpath(tmpDir.absolutePath())) {
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }
@@ -85,7 +86,7 @@ void BlastAllSupportTask::prepare(){
     U2EntityRef seqRef = U2SequenceUtils::import(tmpDoc->getDbiRef(), DNASequence(settings.querySequence, settings.alphabet), stateInfo);
     CHECK_OP(stateInfo, );
     sequenceObject = new U2SequenceObject("input sequence", seqRef);
-    url = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
+    url = tmpDir.absolutePath() + "/tmp.fa";
     
     saveTemporaryDocumentTask = new SaveDocumentTask(tmpDoc, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE), url);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);

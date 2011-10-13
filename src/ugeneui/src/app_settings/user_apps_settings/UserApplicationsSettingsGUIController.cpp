@@ -73,7 +73,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageController::getSavedState()
     state->openLastProjectFlag = s->openLastProjectAtStartup();
     state->style = s->getVisualStyle();
     state->downloadsDirPath = s->getDownloadDirPath();
-    state->temporaryDirPath = s->getTemporaryDirPath();
+    state->temporaryDirPath = s->getUserTemporaryDirPath();
     state->enableStatistics = s->isStatisticsCollectionEnabled();
     state->tabbedWindowLayout = s->tabbedWindowLayout();
     return state;
@@ -87,7 +87,7 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     st->setUseDefaultWebBrowser(state->useDefaultWebBrowser);
     st->setOpenLastProjectAtStartup(state->openLastProjectFlag);
     st->setDownloadDirPath(state->downloadsDirPath);
-    st->setTemporaryDirPath(state->temporaryDirPath);
+    st->setUserTemporaryDirPath(state->temporaryDirPath);
     st->setEnableCollectingStatistics(state->enableStatistics);
     st->setTabbedWindowLayout(state->tabbedWindowLayout);
     

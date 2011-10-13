@@ -26,7 +26,8 @@
 #include <U2View/MSAEditor.h>
 #include "utils/ExternalToolSupportAction.h"
 
-#define TCOFFEE_TOOL_NAME "T-Coffee"
+#define TCOFFEE_TOOL_NAME   "T-Coffee"
+#define TCOFFEE_TMP_DIR     "tcoffee"
 
 namespace U2 {
 

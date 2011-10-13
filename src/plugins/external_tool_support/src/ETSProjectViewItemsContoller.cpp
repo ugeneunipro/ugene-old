@@ -29,6 +29,8 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
 #include <U2Core/SelectionModel.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/GObjectUtils.h>
 
@@ -77,11 +79,12 @@ void ETSProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
         subMenu->addAction(makeBLASTDBOnSelectionAction);
     }
 }
+
 void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
     ExternalToolSupportAction* s = qobject_cast<ExternalToolSupportAction*>(sender());
     assert(s != NULL);
     assert((s->getToolNames().contains(FORMATDB_TOOL_NAME))||(s->getToolNames().contains(MAKEBLASTDB_TOOL_NAME)));
-    //Check that formatDB and tempory directory path defined
+    //Check that formatDB and temporary directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(s->getToolNames().at(0))->getPath().isEmpty()){
         QMessageBox msgBox;
         if(s->getToolNames().at(0) == FORMATDB_TOOL_NAME){
@@ -110,11 +113,10 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
     if (AppContext::getExternalToolRegistry()->getByName(s->getToolNames().at(0))->getPath().isEmpty()){
         return;
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return;
-    }
-
+    U2OpStatus2Log os(LogLevel_DETAILS);
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os, );
+    
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
 

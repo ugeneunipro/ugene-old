@@ -70,11 +70,12 @@ void TCoffeeSupportTask::prepare(){
                          QDate::currentDate().toString("dd.MM.yyyy")+"_"+
                          QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
                          QString::number(QCoreApplication::applicationPid())+"/";
-    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(TCOFFEE_TMP_DIR) + "/" + tmpDirName;
+    url = tmpDirPath + "tmp.fa";
     ioLog.details(tr("Saving data to temporary file '%1'").arg(url));
 
     //Check and remove subdir for temporary files
-    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName);
+    QDir tmpDir(tmpDirPath);
     if(tmpDir.exists()){
         foreach(QString file, tmpDir.entryList()){
             tmpDir.remove(file);
@@ -84,7 +85,7 @@ void TCoffeeSupportTask::prepare(){
             return;
         }
     }
-    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName)){
+    if(!tmpDir.mkpath(tmpDirPath)){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }

@@ -25,6 +25,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 namespace U2 {
 
@@ -93,23 +94,17 @@ MrBayesSupportTask::MrBayesSupportTask(const MAlignment& _ma, const CreatePhyTre
 void MrBayesSupportTask::prepare(){
     //Add new subdir for temporary files
 
-    QString errMsg;
-    tmpDirUrl = ExternalToolSupportUtils::createTmpDir("MrBayes", getTaskId(), errMsg);
-    if (tmpDirUrl.isEmpty()) {
-        setError(errMsg);
-        return;
-    }
-
+    tmpDirUrl = ExternalToolSupportUtils::createTmpDir(MRBAYES_TMP_DIR, stateInfo);
+    CHECK_OP(stateInfo, );
+    
     prepareDataTask = new MrBayesPrepareDataForCalculation(inputMA, settings, tmpDirUrl);
     prepareDataTask->setSubtaskProgressWeight(5);
     addSubTask(prepareDataTask);
 }
 
 Task::ReportResult MrBayesSupportTask::report(){
-    QString errMsg;
-    if (!ExternalToolSupportUtils::removeTmpDir(tmpDirUrl,errMsg)) {
-        stateInfo.setError(errMsg);
-    }
+    U2OpStatus2Log os;
+    ExternalToolSupportUtils::removeTmpDir(tmpDirUrl,os);
     return ReportResult_Finished;
 }
 

@@ -35,6 +35,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/MainWindow.h>
 
@@ -181,10 +183,10 @@ void BlastPlusSupport::sl_runWithExtFileSpecify(){
             return;
         }
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return;
-    }
+    U2OpStatus2Log os;
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os, );
+    
     //Call select input file and setup settings dialog
     QList<BlastTaskSettings> settingsList;
     BlastTaskSettings settings;
@@ -262,10 +264,11 @@ void BlastPlusSupportContext::sl_showDialog() {
             return;
         }
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return;
-    }
+    
+    U2OpStatus2Log os(LogLevel_DETAILS);
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os, );
+
     QAction* a = (QAction*)sender();
     GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(a);
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());

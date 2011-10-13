@@ -184,53 +184,38 @@ void ExternalToolLogParser::parseErrOutput(const QString& partOfLog){
     }
 }
 
-bool ExternalToolSupportUtils::removeTmpDir( const QString& tmpDirUrl, QString& errMsg )
-{
-    if(!tmpDirUrl.isEmpty()){
-        QDir tmpDir(tmpDirUrl);
-        foreach(const QString& file, tmpDir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries)){
-            if (!tmpDir.remove(file)) {
-                errMsg = tr("Can not remove files from temporary directory.");
-                return false;
-            }
-        }
-        if(!tmpDir.rmdir(tmpDir.absolutePath())){
-            errMsg = tr("Can not remove directory for temporary files.");
-            return false;
-        }
-    } else {
-        errMsg = tr("Can not remove temporary directory: path is empty.");
-        return false;
+void ExternalToolSupportUtils::removeTmpDir( const QString& tmpDirUrl, U2OpStatus& os) {
+    if (tmpDirUrl.isEmpty()) {
+        os.setError(tr("Can not remove temporary directory: path is empty."));
+        return;
     }
-
-    return true;
+    QDir tmpDir(tmpDirUrl);
+    foreach(const QString& file, tmpDir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries)){
+        if (!tmpDir.remove(file)) {
+            os.setError(tr("Can not remove files from temporary directory."));
+            return;
+        }
+    }
+    if (!tmpDir.rmdir(tmpDir.absolutePath())){
+        os.setError(tr("Can not remove directory for temporary files."));
+    }
 }
 
-QString ExternalToolSupportUtils::createTmpDir( const QString& dirName, int id,  QString& errMsg )
-{
-    //Directory name is ExternalToolName + unique ID + CurrentDate + CurrentTime
-    
-    QString tmpDirName = dirName+"_"+QString::number(id)+ "_" +
-        QDate::currentDate().toString("dd.MM.yyyy")+"_"+
-        QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
-        QString::number(QCoreApplication::applicationPid())+"/";
-    
-    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName);
-    
-    //Remove dir for temporary files if it exists already
-    
-    if(tmpDir.exists()){
-        if (!removeTmpDir(tmpDir.absolutePath(), errMsg)) {
-            return QString();
+QString ExternalToolSupportUtils::createTmpDir(const QString& domain, U2OpStatus& os) {
+    int i = 0;
+    while (true)  {
+        QString tmpDirName = QString("d_%1").arg(i);
+        QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(domain) + "/" + tmpDirName;
+        QDir tmpDir(tmpDirPath);
+
+        if (!tmpDir.exists()) {
+            if (!QDir().mkpath(tmpDirPath)) {
+                os.setError(tr("Can not create directory for temporary files."));
+            } 
+            return tmpDir.absolutePath();
         }
+        i++;
     }
-
-    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName)){
-        errMsg = tr("Can not create directory for temporary files.");
-        return QString();
-    }
-
-    return tmpDir.absolutePath();
 }
 
 }//namespace

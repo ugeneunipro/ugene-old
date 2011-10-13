@@ -27,6 +27,7 @@
 #include "utils/ExternalToolSupportAction.h"
 
 #define MAFFT_TOOL_NAME "MAFFT"
+#define MAFFT_TMP_DIR   "mafft"
 
 namespace U2 {
 

@@ -808,7 +808,7 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
 
 Document* ExpertDiscoveryView::createUDocument(SequenceType sType){
 
-    QString baseName = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/ED";
+    QString baseName = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("expert_discovery");
     switch(sType){
         case POSITIVE_SEQUENCE:
                 baseName.append("_Positive");

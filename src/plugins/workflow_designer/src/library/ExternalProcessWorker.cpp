@@ -135,7 +135,7 @@ bool ExternalProcessWorkerFactory::init(ExternalProcessConfig *cfg) {
 
 const QString ExternalProcessWorker::generateURL(const QString &extention, const QString &name) {
     QString url;
-    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath();
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("wd_external");
     url = path + "/tmp" + name + QString::number(QDateTime::currentDateTime().toTime_t()) +  "." + extention;
     return url;
 }

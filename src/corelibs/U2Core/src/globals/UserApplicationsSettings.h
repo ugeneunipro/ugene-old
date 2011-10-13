@@ -29,6 +29,9 @@ namespace U2 {
 class U2CORE_EXPORT UserAppsSettings : public QObject {
     Q_OBJECT
 public:
+    UserAppsSettings();
+    ~UserAppsSettings();
+
     QString getWebBrowserURL() const;
     void setWebBrowserURL(const QString& url);
 
@@ -53,9 +56,13 @@ public:
     QStringList getRecentlyDownloadedFileNames() const;
     void setRecentlyDownloadedFileNames(const QStringList& fileNames) const;
 
-    // specify dir for downloaded files
-    QString getTemporaryDirPath() const;
-    void setTemporaryDirPath(const QString& newPath);
+    // temporary dir path as specified by user
+    QString getUserTemporaryDirPath() const;
+    void setUserTemporaryDirPath(const QString& newPath);
+
+    // temporary dir for the current process: userTemporaryDirPath + "ugene_tmp/p" + processId + "/domain"
+    // domain is used here to avoid collision between different algorithms
+    QString getCurrentProcessTemporaryDirPath(const QString& domain = QString()) const;
 
     bool isStatisticsCollectionEnabled() const;
     void setEnableCollectingStatistics(bool b);
@@ -66,6 +73,9 @@ public:
 signals:
     void si_temporaryPathChanged();
     void si_windowLayoutChanged();
+
+private:
+    bool cleanupTmpDir;
 };
 
 }//namespace

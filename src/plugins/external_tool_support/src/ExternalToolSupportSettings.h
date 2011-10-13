@@ -29,6 +29,9 @@
 #include <U2Core/global.h>
 
 namespace U2 {
+
+class U2OpStatus;    
+
 class Watcher : public QObject {
     Q_OBJECT
 signals:
@@ -46,7 +49,7 @@ public:
     static bool getExternalTools();
     static void setExternalTools();
 
-    static void checkTemporaryDir();
+    static void checkTemporaryDir(U2OpStatus& os);
 
     static Watcher * const watcher;
 private:

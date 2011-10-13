@@ -37,7 +37,6 @@
 
 namespace U2 {
 
-
 void ClustalWSupportTaskSettings::reset() {
     gapExtenstionPenalty = -1;
     gapOpenPenalty = -1;
@@ -75,11 +74,12 @@ void ClustalWSupportTask::prepare(){
                          QDate::currentDate().toString("dd.MM.yyyy")+"_"+
                          QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
                          QString::number(QCoreApplication::applicationPid())+"/";
-    url=AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.aln";
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(CLUSTAL_TMP_DIR) + "/" + tmpDirName;
+    url= tmpDirPath + "tmp.aln";
     ioLog.details(tr("Saving data to temporary file '%1'").arg(url));
 
     //Check and remove subdir for temporary files
-    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName);
+    QDir tmpDir(tmpDirPath);
     if(tmpDir.exists()){
         foreach(const QString& file, tmpDir.entryList()){
             tmpDir.remove(file);
@@ -89,7 +89,7 @@ void ClustalWSupportTask::prepare(){
             return;
         }
     }
-    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName)){
+    if(!tmpDir.mkpath(tmpDirPath)){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }
@@ -98,6 +98,7 @@ void ClustalWSupportTask::prepare(){
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
 }
+
 QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     if(subTask->hasError()) {

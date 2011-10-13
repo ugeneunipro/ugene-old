@@ -59,7 +59,7 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
     readSlider->setMaximum(systemSize);
     readSlider->setValue(systemSize*2/3);
 
-    indexDirEdit->setText(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath());
+    indexDirEdit->setText(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("aligner"));
 
     partSizeLabel->setText(QByteArray::number(partSlider->value()) + " Mb");
     indexSizeLabel->setText(QByteArray::number(partSlider->value()*13) + " Mb");

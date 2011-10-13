@@ -28,6 +28,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
@@ -90,10 +92,10 @@ void MAFFTSupport::sl_runWithExtFileSpecify(){
     if (path.isEmpty()){
         return;
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return;
-    }
+    U2OpStatus2Log os(LogLevel_DETAILS);
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os, );
+
     //Call select input file and setup settings dialog
     MAFFTSupportTaskSettings settings;
     MAFFTWithExtFileSpecifySupportRunDialog mAFFTRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
@@ -174,10 +176,10 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
     if (AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->getPath().isEmpty()){
         return;
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return;
-    }
+    U2OpStatus2Log os(LogLevel_DETAILS);
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os, );
+
     //Call run MAFFT align dialog
     MAFFTSupportAction* action = qobject_cast<MAFFTSupportAction*>(sender());
     assert(action!=NULL);

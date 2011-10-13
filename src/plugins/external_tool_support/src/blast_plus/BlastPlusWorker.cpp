@@ -241,7 +241,7 @@ Task* BlastPlusWorker::tick() {
     }
     path=actor->getParameter(BLASTPLUS_TMP_DIR_PATH)->getAttributeValue<QString>();
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getAppSettings()->getUserAppsSettings()->setTemporaryDirPath(path);
+        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
     }
     DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
     

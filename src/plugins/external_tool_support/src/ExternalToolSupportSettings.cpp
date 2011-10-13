@@ -23,10 +23,12 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Gui/AppSettingsGUI.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/Settings.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U2OpStatus.h>
+
+#include <U2Gui/AppSettingsGUI.h>
 
 #include <QtCore/QSettings>
 #include <QtCore/QFile>
@@ -111,8 +113,8 @@ void ExternalToolSupportSettings::setExternalTools() {
     prevNumberExternalTools = numberExternalTools;
 }
 
-void ExternalToolSupportSettings::checkTemporaryDir(){
-    if(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
+void ExternalToolSupportSettings::checkTemporaryDir(U2OpStatus& os){
+    if (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty()){
         QMessageBox msgBox;
         msgBox.setWindowTitle(QObject::tr("Path for temporary files"));
         msgBox.setText(QObject::tr("Path for temporary files not selected."));
@@ -120,17 +122,12 @@ void ExternalToolSupportSettings::checkTemporaryDir(){
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);
         int ret = msgBox.exec();
-        switch (ret) {
-           case QMessageBox::Yes:
-               AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_USER_APPS);
-               break;
-           case QMessageBox::No:
-               return;
-               break;
-           default:
-               assert(NULL);
-               break;
-         }
+        if (ret ==  QMessageBox::Yes) {
+            AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_USER_APPS);
+        }
+    }
+    if (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty()) {
+        os.setError(UserAppsSettings::tr("Temporary UGENE dir is empty"));
     }
 }
 

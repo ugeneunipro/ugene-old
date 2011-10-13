@@ -75,7 +75,8 @@ void BlastPlusSupportCommonTask::prepare(){
                          QTime::currentTime().toString("hh.mm.ss.zzz")+"_"+
                          QString::number(QCoreApplication::applicationPid())+"/";
     //Check and remove subdir for temporary files
-    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName);
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BLASTPLUS_TMP_DIR) + "/" + tmpDirName;
+    QDir tmpDir(tmpDirPath);
     if(tmpDir.exists()){
         foreach(const QString& file, tmpDir.entryList()){
             tmpDir.remove(file);
@@ -85,11 +86,11 @@ void BlastPlusSupportCommonTask::prepare(){
             return;
         }
     }
-    if(!tmpDir.mkpath(AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath()+"/"+tmpDirName)){
+    if(!tmpDir.mkpath(tmpDirPath)){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }
-    url = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" + tmpDirName + "tmp.fa";
+    url = tmpDirPath + "tmp.fa";
     if (url.contains(" ")){
         stateInfo.setError("Temporary directory path have space(s). Try select any other directory without spaces.");
         return;

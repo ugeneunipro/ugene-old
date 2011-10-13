@@ -27,6 +27,8 @@
 #include "utils/ExternalToolSupportAction.h"
 
 #define CLUSTAL_TOOL_NAME "ClustalW"
+#define CLUSTAL_TMP_DIR "clustal"
+
 namespace U2 {
 
 class ClustalWSupport : public ExternalTool {

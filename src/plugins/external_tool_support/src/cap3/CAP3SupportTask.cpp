@@ -24,6 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -64,13 +65,9 @@ void CAP3SupportTask::prepare(){
     
     //Add new subdir for temporary files
     
-    QString errMsg;
-    tmpDirUrl = ExternalToolSupportUtils::createTmpDir("CAP3", getTaskId(), errMsg);
-    if (tmpDirUrl.isEmpty()) {
-        setError(errMsg);
-        return;
-    }
-
+    tmpDirUrl = ExternalToolSupportUtils::createTmpDir(CAP3_TMP_DIR, stateInfo);
+    CHECK_OP(stateInfo, );
+    
     prepareDataForCAP3Task = new PrepareInputForCAP3Task(settings.inputFiles, tmpDirUrl);
     addSubTask(prepareDataForCAP3Task);
 
@@ -161,26 +158,19 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
 }
 
 
-Task::ReportResult CAP3SupportTask::report(){
-
-    QString errMsg;
-    if (!ExternalToolSupportUtils::removeTmpDir(tmpDirUrl,errMsg)) {
-        stateInfo.setError(errMsg);
-    }
-
+Task::ReportResult CAP3SupportTask::report() {
+    U2OpStatus2Log os;
+    ExternalToolSupportUtils::removeTmpDir(tmpDirUrl,os);
     return ReportResult_Finished;
 }
 
 //////////////////////////////////////////
 ////CAP3LogParser
 
-CAP3LogParser::CAP3LogParser()
-{
-
+CAP3LogParser::CAP3LogParser() {
 }
 
-int CAP3LogParser::getProgress()
-{
+int CAP3LogParser::getProgress() {
     return 0;
 }
 

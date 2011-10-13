@@ -153,7 +153,7 @@ Task* TCoffeeWorker::tick() {
     }
     path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>();
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getAppSettings()->getUserAppsSettings()->setTemporaryDirPath(path);
+        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
     }
     MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
     

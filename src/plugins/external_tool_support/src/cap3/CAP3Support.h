@@ -27,6 +27,7 @@
 #include "utils/ExternalToolSupportAction.h"
 
 #define CAP3_TOOL_NAME "CAP3"
+#define CAP3_TMP_DIR    "cap3"
 namespace U2 {
 
 class CAP3Support : public ExternalTool {

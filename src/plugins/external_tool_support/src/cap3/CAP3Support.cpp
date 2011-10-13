@@ -27,6 +27,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Gui/MainWindow.h>
@@ -95,10 +97,10 @@ void CAP3Support::sl_runWithExtFileSpecify(){
     if (path.isEmpty()){
         return;
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return;
-    }
+    U2OpStatus2Log os(LogLevel_DETAILS);
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os,);
+
     //Call select input file and setup settings dialog
     CAP3SupportTaskSettings settings;
     CAP3SupportDialog cap3Dialog(settings, QApplication::activeWindow());

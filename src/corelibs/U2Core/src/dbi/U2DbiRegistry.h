@@ -30,6 +30,7 @@
 namespace U2 {
 
 class U2DbiPool;
+class DbiConnection;
 
 #define SQLITE_DBI_ID "SQLiteDbi"
 #define DEFAULT_DBI_ID SQLITE_DBI_ID
@@ -67,12 +68,17 @@ public:
 
     QList<U2DbiRef> listTmpDbis() const;
 
+    void initSessionDbi();
+
 private:
     
     QHash<U2DbiFactoryId, U2DbiFactory *>   factories;
     U2DbiPool*                              pool;
     QList<TmpDbiRef>                        tmpDbis;
     QMutex                                  lock;
+
+    /** this connection is opened during the whole ugene session*/
+    DbiConnection*                          sessionDbiConnection;
 };
 
 /** 

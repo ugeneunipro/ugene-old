@@ -36,9 +36,24 @@ namespace U2 {
 
 U2DbiRegistry::U2DbiRegistry(QObject *parent) : QObject(parent) {
     pool = new U2DbiPool(this);
+    sessionDbiConnection = NULL;
+}
+
+void U2DbiRegistry::initSessionDbi() {
+    U2OpStatus2Log os;
+    U2DbiRef dbiRef = allocateTmpDbi(SESSION_TMP_DBI_ALIAS, os);
+    CHECK_OP(os, );
+    sessionDbiConnection = new DbiConnection(dbiRef, os);
 }
 
 U2DbiRegistry::~U2DbiRegistry() {
+    if (sessionDbiConnection != NULL) {
+        U2DbiRef ref = sessionDbiConnection->dbi->getDbiRef();
+        delete sessionDbiConnection;
+        U2OpStatus2Log os;
+        deallocateTmpDbi(ref, os);
+    }
+
     coreLog.trace("Deallocating U2DbiRegistry");
     for (int i = 0; i < tmpDbis.size(); i++) {
         TmpDbiRef& ref = tmpDbis[i];
@@ -99,8 +114,7 @@ U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
     }
     
     U2DbiRef res;
-    qint64 pid = QCoreApplication::applicationPid();
-    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath() + "/" +  QString("ugene_tmp/p%1").arg(pid);
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
     QString url = GUrlUtils::prepareTmpFileLocation(tmpDirPath, alias, "ugenedb", os);
     CHECK_OP(os, res);
 

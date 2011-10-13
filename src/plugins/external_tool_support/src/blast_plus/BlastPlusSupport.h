@@ -31,6 +31,8 @@
 #define TBLASTN_TOOL_NAME "TBlastN"
 #define TBLASTX_TOOL_NAME "TBlastX"
 #define RPSBLAST_TOOL_NAME "RPSBlast"
+#define BLASTPLUS_TMP_DIR    "blast_plus"
+
 namespace U2 {
 
 class BlastPlusSupport : public ExternalTool {

@@ -86,6 +86,8 @@ public:
 
     static QString prepareTmpFileLocation(const QString& dir, const QString& prefix, const QString& ext, U2OpStatus& os);
 
+    static void removeDir(const QString& path, U2OpStatus& os);
+
 };
 
 } //namespace

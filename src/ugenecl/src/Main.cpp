@@ -331,9 +331,10 @@ int main(int argc, char **argv)
 
     U2DbiRegistry *dbiRegistry = new U2DbiRegistry();
     appContext->setDbiRegistry(dbiRegistry);
-
+    
     DocumentFormatRegistryImpl* dfr = new DocumentFormatRegistryImpl();
     appContext->setDocumentFormatRegistry(dfr);
+    dbiRegistry->initSessionDbi();
 
     PluginSupportImpl* psp = new PluginSupportImpl();
     appContext->setPluginSupport(psp);

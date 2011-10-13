@@ -28,17 +28,21 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
-#include <U2Gui/MainWindow.h>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-#include <U2Core/MAlignmentObject.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/MainWindow.h>
+
+#include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
 
 namespace U2 {
 
@@ -90,10 +94,11 @@ void TCoffeeSupport::sl_runWithExtFileSpecify(){
     if (path.isEmpty()){
         return;
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return;
-    }
+    U2OpStatus2Log os(LogLevel_DETAILS);
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os, );
+    
+
     //Call select input file and setup settings dialog
     TCoffeeSupportTaskSettings settings;
     TCoffeeWithExtFileSpecifySupportRunDialog tCoffeeRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
@@ -150,7 +155,7 @@ void TCoffeeSupportContext::buildMenu(GObjectView* view, QMenu* m) {
         }
 }
 void TCoffeeSupportContext::sl_align_with_TCoffee() {
-    //Check that T-Coffee and tempory directory path defined
+    //Check that T-Coffee and temporary directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getPath().isEmpty()){
         QMessageBox msgBox;
         msgBox.setWindowTitle(TCOFFEE_TOOL_NAME);
@@ -174,10 +179,10 @@ void TCoffeeSupportContext::sl_align_with_TCoffee() {
     if (AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->getPath().isEmpty()){
         return;
     }
-    ExternalToolSupportSettings::checkTemporaryDir();
-    if (AppContext::getAppSettings()->getUserAppsSettings()->getTemporaryDirPath().isEmpty()){
-        return;
-    }
+    U2OpStatus2Log os(LogLevel_DETAILS);
+    ExternalToolSupportSettings::checkTemporaryDir(os);
+    CHECK_OP(os, );
+
     //Call run T-Coffee align dialog
     TCoffeeSupportAction* action = qobject_cast<TCoffeeSupportAction*>(sender());
     assert(action!=NULL);
