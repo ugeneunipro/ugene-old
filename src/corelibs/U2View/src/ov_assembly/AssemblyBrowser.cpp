@@ -24,7 +24,7 @@
 #include "AssemblyBrowserFactory.h"
 #include "ZoomableAssemblyOverview.h"
 #include "AssemblyReferenceArea.h"
-#include "AssemblyDensityGraph.h"
+#include "AssemblyCoverageGraph.h"
 #include "AssemblyRuler.h"
 #include "AssemblyReadsArea.h"
 #include "AssemblyBrowserSettings.h"
@@ -717,7 +717,7 @@ void AssemblyBrowser::onObjectRenamed(GObject*, const QString&) {
 //==============================================================================
 
 AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(browser_), zoomableOverview(0), 
-referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
+referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
     U2OpStatusImpl os;
     if(browser->getModel()->hasReads(os)) { // has mapped reads -> show rich visualization
         setMinimumSize(300, 200);
@@ -727,7 +727,7 @@ referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
 
         zoomableOverview = new ZoomableAssemblyOverview(this, true); //zooming temporarily disabled -iefremov
         referenceArea = new AssemblyReferenceArea(this);
-        densityGraph = new AssemblyDensityGraph(this);
+        coverageGraph = new AssemblyCoverageGraph(this);
         ruler = new AssemblyRuler(this);
         readsArea  = new AssemblyReadsArea(this, readsHBar, readsVBar);
 
@@ -742,7 +742,7 @@ referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
 
         readsLayout->addWidget(referenceArea, 0, 0);
         readsLayout->addWidget(ruler, 1, 0);
-        readsLayout->addWidget(densityGraph, 2, 0);
+        readsLayout->addWidget(coverageGraph, 2, 0);
 
         readsLayout->addWidget(readsArea, 3, 0);
         readsLayout->addWidget(readsVBar, 3, 1, 1, 1);
@@ -758,7 +758,7 @@ referenceArea(0), densityGraph(0), ruler(0), readsArea(0){
         connect(readsArea, SIGNAL(si_heightChanged()), zoomableOverview, SLOT(sl_visibleAreaChanged()));
         connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
-        connect(densityGraph, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
+        connect(coverageGraph, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
         connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
         connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), readsArea, SLOT(sl_redraw()));

@@ -179,7 +179,7 @@ private:
 class AssemblyOverview;
 class ZoomableAssemblyOverview;
 class AssemblyReferenceArea;
-class AssemblyDensityGraph;
+class AssemblyCoverageGraph;
 class AssemblyRuler;
 class AssemblyReadsArea;
 
@@ -202,7 +202,7 @@ private:
     AssemblyBrowser * browser;
     ZoomableAssemblyOverview * zoomableOverview;        
     AssemblyReferenceArea * referenceArea;
-    AssemblyDensityGraph * densityGraph;
+    AssemblyCoverageGraph * coverageGraph;
     AssemblyRuler * ruler;
     AssemblyReadsArea * readsArea;
     

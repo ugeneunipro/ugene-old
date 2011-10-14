@@ -264,7 +264,7 @@ QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::initHotkeyDescrip
 }
 
 void AssemblyReadsArea::showWelcomeScreen() {
-    GTIMER(c1, t1, "AssemblyReadsArea::drawDensityGraph");
+    GTIMER(c1, t1, "AssemblyReadsArea::showWelcomeScreen");
 
     cachedReads.clear();
     QString text = tr("<a href=\"%1\">Zoom in to see the reads</a>").arg(ZOOM_LINK);
