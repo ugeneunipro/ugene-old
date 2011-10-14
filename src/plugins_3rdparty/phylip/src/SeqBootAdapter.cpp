@@ -25,6 +25,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <QtCore/QByteArray>
 #include <QtCore/QSharedData>
@@ -53,8 +55,9 @@ void SeqBoot::clearGenratedSequences(){
 }
 
 QString SeqBoot::getTmpFileTemplate(){
-    //QString path = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("phylip");
-    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath();
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("phylip");
+    U2OpStatus2Log os;
+    GUrlUtils::prepareDirLocation(path, os);
     if(path.isEmpty()){
         return path;
     }else{
