@@ -73,6 +73,9 @@ BlastRunCommonDialog::BlastRunCommonDialog(BlastTaskSettings& _settings, QWidget
 }
 void BlastRunCommonDialog::sl_onMatchScoresChanged(int index){
     Q_UNUSED(index);
+    if(!scoresComboBox->isVisible()){
+        return;
+    }
     settings.matchReward=scoresComboBox->currentText().split(" ").at(0).toInt();
     settings.mismatchPenalty=scoresComboBox->currentText().split(" ").at(1).toInt();
     //For help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html
@@ -137,6 +140,9 @@ void BlastRunCommonDialog::sl_onMatchScoresChanged(int index){
 }
 void BlastRunCommonDialog::sl_onMatrixChanged(int index){
     Q_UNUSED(index);
+    if(!matrixComboBox->isVisible()){
+        return;
+    }
     settings.matrix=matrixComboBox->currentText();
     //For help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node77.html
     //Last values is default
@@ -325,6 +331,7 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
     }
 }
 void BlastRunCommonDialog::getSettings(BlastTaskSettings &localSettings){
+    localSettings.programName=programName->currentText();
     localSettings.databaseNameAndPath=databasePathLineEdit->text()+"/"+baseNameLineEdit->text();
     localSettings.expectValue=evalueSpinBox->value();
     localSettings.wordSize=wordSizeSpinBox->value();
