@@ -196,7 +196,12 @@ Task* QDWorker::tick() {
 
     Message inputMessage = getMessageAndSetupScriptValues(input);
     QVariantMap map = inputMessage.getData().toMap();
-    DNASequence seq = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+    U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
 
     QDRunSettings settings;
     settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);

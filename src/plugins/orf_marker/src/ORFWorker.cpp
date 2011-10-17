@@ -35,8 +35,10 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/GObjectTypes.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Algorithm/ORFAlgorithmTask.h>
 #include <U2Core/FailTask.h>
 #include <QtGui/QApplication>
@@ -243,7 +245,13 @@ Task* ORFWorker::tick() {
         algoLog.error(tr("ORF: Incorrect value: min-length must be greater then zero"));
         return new FailTask(tr("Incorrect value: min-length must be greater then zero"));
     }
-    DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+
+    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
     
     if (!seq.isNull() && seq.alphabet->getType() == DNAAlphabet_NUCL) {
         ORFAlgorithmSettings config(cfg);

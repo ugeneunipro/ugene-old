@@ -23,6 +23,7 @@
 #define _U2_WORKFLOW_MNGR_H_
 
 #include <U2Lang/ActorModel.h>
+#include <U2Lang/DbiDataStorage.h>
 #include <U2Lang/WorkflowTransport.h>
 #include <U2Lang/Schema.h>
 
@@ -41,6 +42,21 @@ namespace U2 {
 namespace Workflow {
 
 /**
+ * Contains a common data for whole workflow running process
+ */
+class U2LANG_EXPORT WorkflowContext {
+public:
+    WorkflowContext();
+    ~WorkflowContext();
+
+    bool init();
+    DbiDataStorage *getDataStorage();
+
+private:
+    DbiDataStorage *storage;
+};
+
+/**
  * Worker represents actor at runtime
  * takes input data from and puts output data to CommunicationChannels
  * 
@@ -48,6 +64,7 @@ namespace Workflow {
  */
 class U2LANG_EXPORT Worker {
 public:
+    Worker() : context(NULL) {}
     virtual ~Worker() {}
     
     // initialize input and output ports
@@ -62,6 +79,11 @@ public:
     virtual bool isDone() = 0;
     // opened files, etc...
     virtual void cleanup() = 0;
+
+    void setContext(WorkflowContext *newContext) {context = newContext;}
+
+protected:
+    WorkflowContext *context;
 
 }; // Worker
 

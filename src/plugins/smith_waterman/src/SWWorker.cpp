@@ -22,6 +22,7 @@
 #include "SWWorker.h"
 
 #include <U2Core/DNASequence.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
@@ -364,7 +365,13 @@ Task* SWWorker::tick() {
     SmithWatermanSettings cfg;
     
     // sequence
-    DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
+
     if(seq.isNull()) {
         return new FailTask(tr("Null sequence supplied to Smith-Waterman: %1").arg(seq.getName()));
     }

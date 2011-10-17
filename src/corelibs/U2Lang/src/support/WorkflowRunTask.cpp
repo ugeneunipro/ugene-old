@@ -20,6 +20,7 @@
  */
 
 #include "WorkflowRunTask.h"
+#include <U2Lang/DbiDataStorage.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/Schema.h>
@@ -37,7 +38,6 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
-
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
@@ -171,7 +171,7 @@ Task::ReportResult WorkflowRunTask::report() {
 * WorkflowIterationRunTask
 *******************************************/
 WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh, const Iteration& it) : 
-Task(QString("%1").arg(it.name), TaskFlags_NR_FOSCOE), schema(new Schema()), scheduler(NULL) {
+Task(QString("%1").arg(it.name), TaskFlags_NR_FOSCOE), context(NULL), schema(new Schema()), scheduler(NULL) {
     rmap = HRSchemaSerializer::deepCopy(sh, schema);
     schema->applyConfiguration(it, rmap);
     
@@ -195,6 +195,7 @@ WorkflowIterationRunTask::~WorkflowIterationRunTask() {
     }
     scheduler = NULL;
     delete schema;
+    delete context;
 }
 
 void WorkflowIterationRunTask::prepare() {
@@ -226,11 +227,19 @@ void WorkflowIterationRunTask::prepare() {
         QString key = lst.join("|");
         lmap.insert(key, cc);
     }
+
+    context = new WorkflowContext();
+    if (!context->init()) {
+        stateInfo.setError(tr("Failed to create a worflow context"));
+        return;
+    }
+
     scheduler = df->createScheduler(schema);
     if (!scheduler) {
         stateInfo.setError(  tr("Failed to create scheduler in domain %1").arg(df->getDisplayName()) );
         return;
     }
+    scheduler->setContext(context);
     scheduler->init();
     while(scheduler->isReady() && !isCanceled()) {
         Task* t = scheduler->tick();

@@ -69,7 +69,12 @@ Task *MarkSequenceWorker::tick() {
     while (inChannel->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = inputMessage.getData().toMap();
-        DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
+        U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
         QList<SharedAnnotationData> anns = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
 
         MarkerAttribute *attr = dynamic_cast<MarkerAttribute*>(actor->getParameter("markers"));
@@ -79,7 +84,7 @@ Task *MarkSequenceWorker::tick() {
 
             QString res;
             if (SEQUENCE == marker->getGroup()) {
-                res = marker->getMarkingResult(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
+                res = marker->getMarkingResult(qVariantFromValue<DNASequence>(seq));
             } else if (QUALIFIER == marker->getGroup() || ANNOTATION == marker->getGroup()) {
                 res = marker->getMarkingResult(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()));
             } else if (TEXT == marker->getGroup()) {

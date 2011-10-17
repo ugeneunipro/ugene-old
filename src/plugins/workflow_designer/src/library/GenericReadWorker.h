@@ -39,7 +39,7 @@ public:
 class LoadSeqTask : public Task {
     Q_OBJECT
 public:
-    LoadSeqTask(QString url, const QVariantMap& cfg, DNASelector* sel) 
+    LoadSeqTask(QString url, const QVariantMap& cfg, DNASelector* sel)
         : Task(tr("Read sequences from %1").arg(url), TaskFlag_None),
         url(url), selector(sel), cfg(cfg) {}
     virtual void prepare();

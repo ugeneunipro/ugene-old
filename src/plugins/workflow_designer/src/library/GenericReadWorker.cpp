@@ -39,6 +39,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -225,6 +226,7 @@ void LoadSeqTask::run() {
     }
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+    cfg.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
     std::auto_ptr<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
     CHECK_OP(stateInfo, );
 
@@ -240,7 +242,7 @@ void LoadSeqTask::run() {
             }
             QVariantMap m;
             m.insert(BaseSlots::URL_SLOT().getId(), url);
-            m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<DNASequence>(dna));
+            m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), go->getEntityRef().entityId);
             QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
             QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(go, 
                 GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, 

@@ -99,6 +99,7 @@ class U2CORE_EXPORT DocumentFormat: public QObject {
 public:
     static const QString CREATED_NOT_BY_UGENE;
     static const QString MERGED_SEQ_LOCK;
+    static const QString DBI_ALIAS_HINT;
 
     enum DocObjectOp {
         DocObjectOp_Add,
@@ -120,15 +121,22 @@ public:
     */
     virtual QStringList getSupportedDocumentFileExtensions() const {return fileExtensions;}
 
-    /** Creates new empty document in loaded form. Assigns DBI if needed */
-    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const GUrl& url,  U2OpStatus& os, const QVariantMap& hints = QVariantMap());
+    /** Creates new empty document in loaded form.
+     * Assigns DBI if needed
+     * Hints contain additional information for document loading Common hints:
+     * 1) DBI_ALIAS_HINT is used for keeping special DBI-alias
+     */
+    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const GUrl& url, U2OpStatus& os, const QVariantMap& hints = QVariantMap());
 
     /** Creates new document in unloaded state. Assigns DBI if needed */
     virtual Document* createNewUnloadedDocument(IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, 
         const QVariantMap& hints = QVariantMap(),  const QList<UnloadedObjectInfo>& info = QList<UnloadedObjectInfo>(), 
         const QString& instanceModLockDesc = QString());
 
-    /** A method for compatibility with old code : creates IO adapter and loads document in DocumentLoadMode_Whole  */
+    /** A method for compatibility with old code : creates IO adapter and loads document in DocumentLoadMode_Whole
+     * Hints contain additional information for document loading. Common hints:
+     * 1) DBI_ALIAS_HINT is used for keeping special DBI-alias
+     */
     virtual Document* loadDocument(IOAdapterFactory* iof, const GUrl& url, const QVariantMap& hints, U2OpStatus& os);
 
     /** 

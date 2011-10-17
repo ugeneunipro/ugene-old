@@ -25,6 +25,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/IOAdapter.h>
@@ -174,10 +175,12 @@ Task* ExternalProcessWorker::tick() {
         Message inputMessage = getMessageAndSetupScriptValues(inputs[i]);
         QVariantMap qm = inputMessage.getData().toMap();
         if (dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
-            DNASequence seq = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-            U2EntityRef seqRef = U2SequenceUtils::import(d->getDbiRef(), seq, os);
-            CHECK_OP(os, NULL);
-            d->addObject(new U2SequenceObject(seq.getName(), seqRef));
+            U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+            U2SequenceObject *seqObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
+            if (NULL == seqObj) {
+                return NULL;
+            }
+            d->addObject(seqObj);
         } else if(dataCfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
             QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
             AnnotationTableObject * aobj = new AnnotationTableObject("anns");
@@ -190,10 +193,11 @@ Task* ExternalProcessWorker::tick() {
             MAlignment ma = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
             d->addObject(new MAlignmentObject(ma));
         } else if (dataCfg.type == SEQ_WITH_ANNS) {
-            DNASequence seq = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-            U2EntityRef seqRef = U2SequenceUtils::import(d->getDbiRef(), seq, os);
-            CHECK_OP(os, NULL);
-            U2SequenceObject* dnaObj = new U2SequenceObject(seq.getName(), seqRef);
+            U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+            U2SequenceObject *dnaObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
+            if (NULL == dnaObj) {
+                return NULL;
+            }
             d->addObject(dnaObj);
             
             QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
@@ -288,7 +292,8 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                     U2SequenceObject *seqObj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
                     DNASequence seq = seqObj->getWholeSequence();
                     seq.alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::RAW());
-                    v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<DNASequence>(seq);
+                    U2DataId seqId = context->getDataStorage()->putSequence(seq);
+                    v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
                 }
                 if(!d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).isEmpty()) {
                     AnnotationTableObject *obj = static_cast<AnnotationTableObject *>(d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).first());

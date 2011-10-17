@@ -48,16 +48,19 @@ namespace U2 {
 
 const QString DocumentFormat::CREATED_NOT_BY_UGENE = DocumentFormat::tr( "The document is created not by UGENE" );
 const QString DocumentFormat::MERGED_SEQ_LOCK = DocumentFormat::tr( "Document sequences were merged" );
+const QString DocumentFormat::DBI_ALIAS_HINT("dbi_alias");
 const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
 
 Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, const QVariantMap& hints) {
-    CHECK_EXT(TriState_No == iof->isResourceAvailable(url), os.setError(tr("File is already exists: %1").arg(url.getURLString())), NULL);
-
     U2DbiRef tmpDbiRef;
     bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
     if (useTmpDbi) {
-        TmpDbiHandle dh(SESSION_TMP_DBI_ALIAS, os);
+        QString alias = SESSION_TMP_DBI_ALIAS;
+        if (hints.contains(DBI_ALIAS_HINT)) {
+            alias = hints.value(DBI_ALIAS_HINT).toString();
+        }
+        TmpDbiHandle dh(alias, os);
         CHECK_OP(os, NULL);
         dh.deallocate = false; //DBI will be deallocated by document..
         tmpDbiRef = dh.dbiRef;
@@ -83,14 +86,21 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
         os.setError(L10N::errorOpeningFileRead(url));
         return NULL;
     }
+
     Document* res = NULL;
     bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
     if (useTmpDbi) {
-        TmpDbiHandle dh(SESSION_TMP_DBI_ALIAS, os);
+        QString alias = SESSION_TMP_DBI_ALIAS;
+        if (hints.contains(DBI_ALIAS_HINT)) {
+            alias = hints.value(DBI_ALIAS_HINT).toString();
+        }
+        TmpDbiHandle dh(alias, os);
         CHECK_OP(os, NULL); 
         res = loadDocument(io.get(), dh.dbiRef, hints, os);
         CHECK_OP(os, NULL);
-        dh.deallocate = false; //DBI will be deallocated by document..
+
+        //DBI will be deallocated by document..
+        dh.deallocate = false;
     } else {
         res = loadDocument(io.get(), U2DbiRef(), hints, os);        
     }
@@ -247,10 +257,13 @@ Document::~Document() {
         }
     }
     
-    foreach(GObject* obj, objects) {
-        deallocateDbiResources(dbiHandle, obj);
-        obj->setGHints(NULL);
+    if ((NULL != dbiHandle) && (!dbiHandle->deallocate)) {
+        foreach(GObject* obj, objects) {
+            deallocateDbiResources(dbiHandle, obj);
+            obj->setGHints(NULL);
+        }
     }
+
     delete ctxState;
     delete dbiHandle;
 }

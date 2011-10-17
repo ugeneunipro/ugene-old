@@ -256,7 +256,12 @@ Task* FindWorker::tick() {
     
     // sequence
     QVariantMap qm = inputMessage.getData().toMap();
-    DNASequence seq = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
     if(seq.isNull()) {
         return new FailTask(tr("Null sequence supplied to FindWorker: %1").arg(seq.getName()));
     }

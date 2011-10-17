@@ -63,7 +63,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
 public:
-    static void data2document(Document*, const QVariantMap&);
+    static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
 
 class GenbankWriter : public BaseDocWriter {
@@ -73,7 +73,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
 public:
-    static void data2document(Document*, const QVariantMap&);
+    static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
 
 class FastQWriter : public BaseDocWriter {
@@ -83,7 +83,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
 public:
-    static void data2document(Document*, const QVariantMap&);
+    static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
 
 class RawSeqWriter : public BaseDocWriter {
@@ -93,7 +93,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
 public:
-    static void data2document(Document*, const QVariantMap&);
+    static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
 
 

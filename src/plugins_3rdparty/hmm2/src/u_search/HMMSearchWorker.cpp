@@ -20,6 +20,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/Log.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/MultiTask.h>
@@ -176,7 +177,13 @@ Task* HMMSearchWorker::tick() {
         return NULL;
     }
     
-    DNASequence dnaSequence = seqPort->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+    U2DataId seqId = seqPort->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence dnaSequence = seqObj->getWholeSequence();
+
     if (dnaSequence.alphabet->getType() != DNAAlphabet_RAW) {
         QList<Task*> subtasks;
         foreach(plan7_s* hmm, hmms) {

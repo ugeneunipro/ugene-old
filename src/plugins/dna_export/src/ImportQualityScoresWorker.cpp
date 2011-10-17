@@ -130,7 +130,12 @@ bool ImportPhredQualityWorker::isReady() {
 
 Task* ImportPhredQualityWorker::tick() {
     while (!input->isEnded()) {
-        DNASequence dna = input->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+        U2DataId seqId = input->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence dna = seqObj->getWholeSequence();
         seqList << dna;
     }
     
@@ -158,8 +163,8 @@ void ImportPhredQualityWorker::sl_taskFinished() {
         if (qualities.contains(name)) {
             seq.quality = qualities.value(name);
         }
-        QVariant v = qVariantFromValue<DNASequence>(seq);
-        output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), v));
+        U2DataId dataId = context->getDataStorage()->putSequence(seq);
+        output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), dataId));
     }
     
     if (input->isEnded()) {

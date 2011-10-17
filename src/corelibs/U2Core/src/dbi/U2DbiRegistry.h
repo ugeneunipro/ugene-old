@@ -35,6 +35,7 @@ class DbiConnection;
 #define SQLITE_DBI_ID "SQLiteDbi"
 #define DEFAULT_DBI_ID SQLITE_DBI_ID
 #define SESSION_TMP_DBI_ALIAS "session"
+#define WORKFLOW_SESSION_TMP_DBI_ALIAS "workflow_session"
 
 /** 
     Keep all DBI types registered in the system

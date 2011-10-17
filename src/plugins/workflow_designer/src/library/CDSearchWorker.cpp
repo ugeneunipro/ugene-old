@@ -156,7 +156,12 @@ bool CDSearchWorker::isDone() {
 
 Task* CDSearchWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
 
     settings.query = seq.seq;
     settings.alp = seq.alphabet;

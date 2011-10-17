@@ -65,7 +65,8 @@ Task * Alignment2SequenceWorker::tick() {
     QList<DNASequence> seqs = MSAUtils::ma2seq(ma,true);
     foreach(const DNASequence &seq, seqs) {
         QVariantMap msgData;
-        msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<DNASequence>(seq);
+        U2DataId seqId = context->getDataStorage()->putSequence(seq);
+        msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
         output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
     }
     if(!input->hasMessage()) {

@@ -33,6 +33,7 @@
 #include <U2Lang/CoreLibConstants.h>
 
 #include <U2Core/DNASequence.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
@@ -200,7 +201,12 @@ Task* RepeatWorker::tick() {
         return new FailTask(tr("Incorrect value: identity value must be between 0 and 100"));
     }
     QVariantMap map = inputMessage.getData().toMap();
-    DNASequence seq = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+    U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
     
     if(cfg.minDist < 0){
         algoLog.error(tr("Incorrect value: minimal distance must be greater then zero"));

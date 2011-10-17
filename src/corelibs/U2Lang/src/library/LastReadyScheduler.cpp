@@ -37,6 +37,7 @@ LastReadyScheduler::~LastReadyScheduler() {
 
 void LastReadyScheduler::init() {
     foreach(Actor* a, schema->getProcesses()) {
+        a->castPeer<BaseWorker>()->setContext(context);
         a->castPeer<BaseWorker>()->init();
     }
 

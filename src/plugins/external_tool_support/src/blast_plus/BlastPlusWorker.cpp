@@ -44,6 +44,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/DNASequenceObject.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -243,7 +244,13 @@ Task* BlastPlusWorker::tick() {
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
         AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
     }
-    DNASequence seq = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
+
+    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
     
     if( seq.length() < 1) {
         return new FailTask(tr("Empty sequence supplied to BLAST"));

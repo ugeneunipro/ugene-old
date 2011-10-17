@@ -32,6 +32,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2DbiRegistry.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
@@ -231,7 +232,9 @@ Task* BaseDocWriter::tick() {
             }
             urlAttribute->setAttributeValue(anUrl);*/
             U2OpStatus2Log os;
-            doc = format->createNewLoadedDocument(iof, anUrl, os);
+            QVariantMap hints;
+            hints.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
+            doc = format->createNewLoadedDocument(iof, anUrl, os, hints);
             docs.insert(anUrl, doc);
         }
         data2doc(doc, data);

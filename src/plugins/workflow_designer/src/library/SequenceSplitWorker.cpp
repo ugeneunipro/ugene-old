@@ -129,7 +129,12 @@ Task * SequenceSplitWorker::tick() {
     cfg.gapSym = '-'; //FIXME
     QVariantMap qm = inputMessage.getData().toMap();
     
-    DNASequence inputSeq = qm.value( BaseSlots::DNA_SEQUENCE_SLOT().getId() ).value<DNASequence>();
+    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence inputSeq = seqObj->getWholeSequence();
     inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
     
     bool noSeq = inputSeq.isNull();
@@ -181,14 +186,13 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
         QString name = resSeq.getName() + "|" + resAnn->name + "|" + QString::number(++count);
         resSeq.info[DNAInfo::ID] = name;
 
-        QVariant vSeq = qVariantFromValue<DNASequence>(resSeq);
-
         QList<SharedAnnotationData> annToPut;
         annToPut.push_back( resAnn );
         QVariant vAnns = qVariantFromValue<QList<SharedAnnotationData> >(annToPut);
 
         QVariantMap messageData;
-        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = vSeq;
+        U2DataId seqId = context->getDataStorage()->putSequence(resSeq);
+        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = seqId;
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = vAnns;
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById( REGIONED_SEQ_TYPE );

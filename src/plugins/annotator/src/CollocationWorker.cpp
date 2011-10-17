@@ -34,6 +34,7 @@
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
@@ -187,7 +188,13 @@ Task* CollocationWorker::tick() {
     QString annotations = actor->getParameter(ANN_ATTR)->getAttributeValue<QString>();
     names = QSet<QString>::fromList(annotations.split(QRegExp("\\W+"), QString::SkipEmptyParts));
     QVariantMap qm = inputMessage.getData().toMap();
-    DNASequence seq = qm.value(SEQ_SLOT).value<DNASequence>();
+
+    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
     
     QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(qm.value(FEATURE_TABLE_SLOT).toList());
     if (!seq.isNull() && !atl.isEmpty()) {

@@ -184,7 +184,8 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
         }
 
         QVariantMap messageData;
-        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue(dnao->getWholeSequence());
+        U2DataId seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
+        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = seqId;
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue(sads);
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);

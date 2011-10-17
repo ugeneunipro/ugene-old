@@ -23,6 +23,7 @@
 #define _U2_FLOWTASK_H_
 
 #include <U2Core/Task.h>
+#include <U2Lang/DbiDataStorage.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/WorkflowIOTasks.h>
@@ -95,6 +96,7 @@ protected:
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:
+    WorkflowContext *context;
     Schema* schema;
     Scheduler* scheduler;
     QMap<ActorId, ActorId> rmap;

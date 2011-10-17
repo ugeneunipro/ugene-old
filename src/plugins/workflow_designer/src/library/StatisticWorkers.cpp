@@ -83,7 +83,12 @@ bool DNAStatWorker::isReady() {
 Task* DNAStatWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
     QVariantMap qm = inputMessage.getData().toMap();
-    DNASequence dna = qVariantValue<DNASequence>( qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()) );
+    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence dna = seqObj->getWholeSequence();
 
     if(!dna.alphabet->isNucleic()) {
         return new FailTask(tr("Sequence must be nucleotide"));

@@ -18,6 +18,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/ConfigurationValidator.h \
            src/model/Datatype.h \
            src/model/DatatypeConversion.h \
+           src/model/DbiDataStorage.h \
            src/model/Descriptor.h \
            src/model/ExternalToolCfg.h \
            src/model/IntegralBus.h \
@@ -59,6 +60,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/AttributeRelation.cpp \
            src/model/Configuration.cpp \
            src/model/Datatype.cpp \
+           src/model/DbiDataStorage.cpp \
            src/model/Descriptor.cpp \
            src/model/IntegralBus.cpp \
            src/model/IntegralBusModel.cpp \
@@ -71,6 +73,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/QueryDesignerRegistry.cpp \
            src/model/Schema.cpp \
            src/model/WorkflowEnv.cpp \
+           src/model/WorkflowManager.cpp \
            src/model/WorkflowTransport.cpp \
            src/support/CoreLibConstants.cpp \
            src/support/HRSchemaSerializer.cpp \

@@ -28,7 +28,6 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectUtils.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextObject.h>
 #include <U2Core/GObjectRelationRoles.h>
@@ -190,11 +189,17 @@ static void addSeqObject(Document* doc, const DNASequence& seq) {
 * FastaWriter
 *************************************/
 void FastaWriter::data2doc(Document* doc, const QVariantMap& data) {
-    data2document(doc, data);
+    data2document(doc, data, context);
 }
 
-void FastaWriter::data2document(Document* doc, const QVariantMap& data) {
-    DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
+void FastaWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
+    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
+
     QString sequenceName = data.value(BaseSlots::FASTA_HEADER_SLOT().getId()).toString();
     if (sequenceName.isEmpty()) {
         sequenceName = seq.getName();
@@ -212,11 +217,17 @@ void FastaWriter::data2document(Document* doc, const QVariantMap& data) {
 * FastQWriter
 *************************************/
 void FastQWriter::data2doc(Document* doc, const QVariantMap& data) {
-    data2document(doc, data);
+    data2document(doc, data, context);
 }
 
-void FastQWriter::data2document(Document* doc, const QVariantMap& data) {
-    DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
+void FastQWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
+    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
+
     if (seq.getName().isEmpty()) {
         seq.setName(QString("unknown sequence %1").arg(doc->getObjects().size()));
     }
@@ -227,12 +238,18 @@ void FastQWriter::data2document(Document* doc, const QVariantMap& data) {
  * RawSeqWriter
  *************************************/
 void RawSeqWriter::data2doc(Document* doc, const QVariantMap& data) {
-    data2document(doc, data);
+    data2document(doc, data, context);
 }
 
 // same as FastQWriter::data2document
-void RawSeqWriter::data2document(Document* doc, const QVariantMap& data) {
-    DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
+void RawSeqWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
+    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
+
     if (seq.getName().isEmpty()) {
         seq.setName(QString("unknown sequence %1").arg(doc->getObjects().size()));
     }
@@ -243,11 +260,17 @@ void RawSeqWriter::data2document(Document* doc, const QVariantMap& data) {
  * GenbankWriter
  *************************************/
 void GenbankWriter::data2doc(Document* doc, const QVariantMap& data) {
-    data2document(doc, data);
+    data2document(doc, data, context);
 }
 
-void GenbankWriter::data2document(Document* doc, const QVariantMap& data) {
-    DNASequence seq = qVariantValue<DNASequence>(data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()));
+void GenbankWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
+    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
+
     QMapIterator<QString, QVariant> it(seq.info);
     while (it.hasNext()) {
         it.next();
@@ -300,14 +323,13 @@ void SeqWriter::data2doc(Document* doc, const QVariantMap& data){
     }
     DocumentFormatId fid = format->getFormatId();
     if( fid == BaseDocumentFormats::FASTA ) {
-        FastaWriter::data2document( doc, data );
-    }
-    else if( fid == BaseDocumentFormats::PLAIN_GENBANK ) {
-        GenbankWriter::data2document( doc, data );
+        FastaWriter::data2document( doc, data, context );
+    } else if( fid == BaseDocumentFormats::PLAIN_GENBANK ) {
+        GenbankWriter::data2document( doc, data, context );
     } else if ( fid == BaseDocumentFormats::FASTQ) {
-        FastQWriter::data2document( doc, data );    
+        FastQWriter::data2document( doc, data, context );    
     } else if( fid == BaseDocumentFormats::RAW_DNA_SEQUENCE ) {
-        RawSeqWriter::data2document( doc, data );
+        RawSeqWriter::data2document( doc, data, context );
     } else {
         assert(0);
         ioLog.error(QString("Unknown data format for writing: %1").arg(fid));
