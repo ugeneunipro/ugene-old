@@ -61,6 +61,17 @@ Document* GFFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     return doc;
 }
 
+int readLongLine(QString &buffer, IOAdapter* io, gauto_array<char> &charbuff){
+    int len;
+    buffer.clear();
+    do {
+        len = io->readLine(charbuff.data, READ_BUFF_SIZE -1);
+        charbuff.data[len] = '\0';
+        buffer.append(QString(charbuff.data));
+    }while (len == READ_BUFF_SIZE - 1);
+    return buffer.length();
+}
+
 void validateHeader( QStringList words){
     bool isOk = false;
     if(words.size() < 2){
@@ -127,10 +138,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     QByteArray seq;
     QSet<QString> names;
     TmpDbiObjects dbiObjects(dbiRef, os);
-    while((len = io->readLine(buff.data, READ_BUFF_SIZE)) > 0){
-        qstrbuf.clear();
-        buff.data[len] = '\0';
-        qstrbuf = QString(buff.data);
+    while((len = readLongLine(qstrbuf, io, buff)) > 0){
         //retrieving annotations from  document
         words = parseLine(qstrbuf);
         if(fastaSectionStarts){
@@ -370,6 +378,14 @@ QStringList GFFFormat::parseLine( QString line ) const{
     return result;
 }
 
+QString normalizeQualifier(QString qual){
+    QRegExp rx("  +");
+    if(qual.contains(rx)){
+        qual.replace(rx, " ");
+    }
+    return qual;
+}
+
 void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
     QByteArray header("##gff-version\t3\n");
     qint64 len = io->writeBlock(header);
@@ -417,13 +433,13 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
                 //filling fields with qualifiers data
                 foreach(U2Qualifier q, qualVec){
                     if(q.name == "source"){
-                        row[1] = q.value;
+                        row[1] = normalizeQualifier(q.value);
                     }else if(q.name == "score"){
-                        row[5] = q.value;
+                        row[5] = normalizeQualifier(q.value);
                     }else if(q.name == "phase"){
-                        row[7] = q.value;
+                        row[7] = normalizeQualifier(q.value);
                     }else{
-                        additionalQuals.append(";" + escapeBadCharacters(q.name) + "=" + escapeBadCharacters(q.value));
+                        additionalQuals.append(";" + escapeBadCharacters(q.name) + "=" + escapeBadCharacters(normalizeQualifier(q.value)));
                     }
                 }
                 row[8] = additionalQuals;
