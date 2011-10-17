@@ -66,8 +66,6 @@ private:
 // Friend IO functions
     friend istream& operator >>(istream& in, Set& set);
     friend ostream& operator <<(ostream& out, const Set& set);
-    //friend CArchive& operator >>(CArchive& ar, Set& set);
-    //friend CArchive& operator <<(CArchive& ar, const Set& set);
 };
 
 ///////////////////////////////////////////////////////////////////////
@@ -87,20 +85,6 @@ inline ostream& operator <<(ostream& out, const Set& set) {
     out.write((char*)set.data, sizeof(SET_TYPE)*int(set.data_size));
     return out;
 }
-
-/*inline CArchive& operator <<(CArchive& ar, const Set& set) {
-    ar.Write((const void *)&set.obj_num, sizeof(int));
-    ar.Write((const void *)set.data, sizeof(SET_TYPE)*int(set.data_size));
-    return ar;
-}
-
-inline CArchive& operator >>(CArchive& ar, Set& set) {
-    int obj_num;
-    ar.Read((void *)&obj_num, sizeof(int));
-    set.init(obj_num);
-    ar.Read((void *)set.data, sizeof(SET_TYPE)*int(set.data_size));
-    return ar;
-}*/
 
 
 ///////////////////////////////////////////////////////////////////////

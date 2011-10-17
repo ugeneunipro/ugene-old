@@ -1035,7 +1035,7 @@ void EDProjectTree::sl_clearPriorAllSig(){
     }
 }
 void EDProjectTree::sl_addSignalToMarkup(){
-
+    emit si_addToMarkup();
 }
 void EDProjectTree::sl_selDeselSig(){
     EDProjectItem* pItem = dynamic_cast<EDProjectItem*>(currentItem());

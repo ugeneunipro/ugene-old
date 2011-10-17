@@ -36,6 +36,8 @@ class ExpertDiscoveryData : public QObject{
 public:
     static const std::string FAMILY_LETTERS;
     static const std::string FAMILY_LETTERS_METHOD;
+    static const QString FAMILY_ED_SIGNAL;
+    static const QString FAMILY_ED_METHOD;
 
     ExpertDiscoveryData ();
 

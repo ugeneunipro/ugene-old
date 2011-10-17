@@ -47,7 +47,8 @@ ExpertDiscoveryView::ExpertDiscoveryView(GObjectViewFactoryId factoryId, const Q
 ,negUDoc(NULL)
 ,conUDoc(NULL)
 ,extrTask(NULL)
-,updatesCount(0){
+,updatesCount(0)
+,curTask(NULL){
 
     createActions();
 
@@ -79,9 +80,9 @@ QWidget* ExpertDiscoveryView::createWidget(){
     signalsWidget->setHeaderLabel("Items");
 
     propWidget = new EDPropertiesTable(splitter);
- 
+
     QSplitter* verticalSplitter = new QSplitter(Qt::Vertical);
-    
+
     verticalSplitter->addWidget(signalsWidget);
     verticalSplitter->addWidget(propWidget);
 
@@ -91,12 +92,13 @@ QWidget* ExpertDiscoveryView::createWidget(){
     connect(signalsWidget, SIGNAL(itemActivated ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
     connect(signalsWidget, SIGNAL(currentItemChanged ( QTreeWidgetItem * , QTreeWidgetItem * ) ), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
     connect(signalsWidget, SIGNAL(si_loadMarkup(bool ) ), SLOT(sl_treeWidgetMarkup(bool )));
+    connect(signalsWidget, SIGNAL(si_addToMarkup()), SLOT(sl_treeWidgetAddMarkup()));
     connect(signalsWidget, SIGNAL(si_showSequence() ), SLOT(sl_showSequence()));
     connect(signalsWidget, SIGNAL(si_addToShown() ), SLOT(sl_addToShown()));
     connect(signalsWidget, SIGNAL(si_clearDisplayed() ), SLOT(sl_clearDisplayed()));
     connect(signalsWidget, SIGNAL(si_showFirstSequences() ), SLOT(sl_showFirstSequences()));
     connect(signalsWidget, SIGNAL(si_changeProp(QTreeWidgetItem*)), propWidget, SLOT(sl_treeSelChanged(QTreeWidgetItem*)));
- 
+
     connect(propWidget, SIGNAL(si_propChanged(EDProjectItem*, const EDPIProperty*, QString )), signalsWidget, SLOT(sl_propChanged(EDProjectItem* , const EDPIProperty* , QString )));
 
     GObjectViewFactory* factory = AppContext::getObjectViewFactoryRegistry()->getFactoryById("ED");
@@ -131,10 +133,10 @@ void ExpertDiscoveryView::createActions(){
     setUpRecBound = new QAction(tr("Set Recognition Bound"), this);
     setUpRecBound->setIcon(QIcon(":expert_discovery/images/setRecBound.png"));
     connect(setUpRecBound, SIGNAL(triggered()), SLOT(sl_setRecBound()));
-    
-//     optimizeRecBound = new QAction(tr("Optimize Recognition Bound"), this);
-//     optimizeRecBound->setIcon(QIcon(":expert_discovery/images/optRecBound.png"));
-//     connect(optimizeRecBound, SIGNAL(triggered()), SLOT(sl_optimizeRecBound()));
+
+    //     optimizeRecBound = new QAction(tr("Optimize Recognition Bound"), this);
+    //     optimizeRecBound->setIcon(QIcon(":expert_discovery/images/optRecBound.png"));
+    //     connect(optimizeRecBound, SIGNAL(triggered()), SLOT(sl_optimizeRecBound()));
 
     loadControlSeqAction = new QAction(tr("Load control sequences"), this);
     loadControlSeqAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeq.png"));
@@ -148,9 +150,9 @@ void ExpertDiscoveryView::createActions(){
     loadMarkupAction->setIcon(QIcon(":expert_discovery/images/loadMarkup.png"));
     connect(loadMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryPosNegMrkDialog()));
 
-//     loadControlMarkupAction = new QAction(tr("Load control sequences markup"), this);
-//     loadControlMarkupAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeqAnnot.png"));
-//     connect(loadControlMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryControlMrkDialog()));
+    //     loadControlMarkupAction = new QAction(tr("Load control sequences markup"), this);
+    //     loadControlMarkupAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeqAnnot.png"));
+    //     connect(loadControlMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryControlMrkDialog()));
 
     generateFullReportAction = new QAction(tr("Generate recognition report"), this);
     generateFullReportAction->setIcon(QIcon(":expert_discovery/images/genRep.png"));
@@ -163,7 +165,7 @@ void ExpertDiscoveryView::createActions(){
     loadMarkupAction->setEnabled(false);
     //loadControlMarkupAction->setEnabled(false);
     generateFullReportAction->setEnabled(false);
-    
+
 }
 
 void ExpertDiscoveryView::sl_newDoc(){
@@ -190,7 +192,7 @@ void ExpertDiscoveryView::sl_newDoc(){
     signalsWidget->clearTree();
     signalsWidget->updateTree(ED_UPDATE_ALL);
     d.setModifed(false);
-   
+
     sl_showExpertDiscoveryPosNegDialog(); 
 }
 
@@ -223,7 +225,7 @@ void ExpertDiscoveryView::sl_saveDoc(){
     if (lod.url.length() <= 0) {
         return;
     }
-    
+
     Task* t = new ExpertDiscoverySaveDocumentTask(d, lod.url);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
@@ -238,8 +240,6 @@ bool ExpertDiscoveryView::askForSave(){
         return true;
     else 
         return false;
-
-
 }
 
 void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegDialog(){
@@ -331,7 +331,7 @@ void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegMrkDialog(){
 
     ExpertDiscoveryPosNegMrkDialog dialog(QApplication::activeWindow());
     if (dialog.exec()) {
-        
+
         ExpertDiscoveryLoadPosNegMrkTask *t = new ExpertDiscoveryLoadPosNegMrkTask(dialog.getFirstFileName(), dialog.getSecondFileName(), dialog.getThirdFileName(), dialog.isGenerateDescr(), dialog.isAppendToCurrentMarkup(), dialog.isNucleotidesMarkup(), d );
         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadPosNegMrkTaskStateChanged() ) );
         tasks->addSubTask(t);
@@ -354,30 +354,30 @@ void ExpertDiscoveryView::sl_loadPosNegMrkTaskStateChanged(){
     extractSignalsAction->setEnabled(true);
 }
 
-void ExpertDiscoveryView::sl_showExpertDiscoveryControlMrkDialog(){
-    Task *tasks = new Task("Loading control sequences markups", TaskFlag_NoRun);
-
-    ExpertDiscoveryControlMrkDialog dialog(QApplication::activeWindow());
-    if (dialog.exec()) {
-
-        ExpertDiscoveryLoadControlMrkTask *t = new ExpertDiscoveryLoadControlMrkTask(dialog.getFirstFileName(), d );
-        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlMrkTaskStateChanged() ) );
-        tasks->addSubTask(t);
-    }
-
-    AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
-}
-void ExpertDiscoveryView::sl_loadControlMrkTaskStateChanged(){
-    ExpertDiscoveryLoadControlMrkTask *loadTask = qobject_cast<ExpertDiscoveryLoadControlMrkTask*>(sender());
-    if (!loadTask || !loadTask->isFinished()) {
-        return;
-    }
-
-    if (loadTask->getStateInfo().hasError()) {
-        ExpertDiscoveryErrors::markupLoadError();
-        return;
-    }
-}
+// void ExpertDiscoveryView::sl_showExpertDiscoveryControlMrkDialog(){
+//     Task *tasks = new Task("Loading control sequences markups", TaskFlag_NoRun);
+// 
+//     ExpertDiscoveryControlMrkDialog dialog(QApplication::activeWindow());
+//     if (dialog.exec()) {
+// 
+//         ExpertDiscoveryLoadControlMrkTask *t = new ExpertDiscoveryLoadControlMrkTask(dialog.getFirstFileName(), d );
+//         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlMrkTaskStateChanged() ) );
+//         tasks->addSubTask(t);
+//     }
+// 
+//     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
+// }
+// void ExpertDiscoveryView::sl_loadControlMrkTaskStateChanged(){
+//     ExpertDiscoveryLoadControlMrkTask *loadTask = qobject_cast<ExpertDiscoveryLoadControlMrkTask*>(sender());
+//     if (!loadTask || !loadTask->isFinished()) {
+//         return;
+//     }
+// 
+//     if (loadTask->getStateInfo().hasError()) {
+//         ExpertDiscoveryErrors::markupLoadError();
+//         return;
+//     }
+// }
 
 void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
     if(!adv){
@@ -395,7 +395,7 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
     adv->setClosingInterface(closeInterface);
     currentAdv = adv;
     splitter->addWidget(adv->getWidget());
-//    adv->addAutoAnnotationsUpdated(edAutoAnnotationsUpdater);
+    //    adv->addAutoAnnotationsUpdated(edAutoAnnotationsUpdater);
 
     QList<ADVSequenceWidget*> curSequenceWidgets = currentAdv->getSequenceWidgets();
     foreach(ADVSequenceWidget* seqWidget, curSequenceWidgets){
@@ -418,7 +418,7 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
         connect(aaobj, SIGNAL(si_updateStarted()), SLOT(sl_autoAnnotationUpdateStarted()));
         connect(aaobj, SIGNAL(si_updateFinshed()), SLOT(sl_autoAnnotationUpdateFinished()));
     }
-    
+
     connect(adv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
 
     createEDSequence();
@@ -441,7 +441,7 @@ void ExpertDiscoveryView::sl_testView(){
 
     AnnotatedDNAView* adv = viewTask->getADV();
     initADVView(adv);
-    
+
 }
 
 void ExpertDiscoveryView::sl_newViewTask(Task* t){
@@ -449,7 +449,7 @@ void ExpertDiscoveryView::sl_newViewTask(Task* t){
     if(!edTask){
         return;
     }
-   
+
     connect(edTask,SIGNAL( si_stateChanged() ), SLOT( sl_testView() ) );
 }
 
@@ -500,7 +500,7 @@ void ExpertDiscoveryView::sl_showExpertDiscoveryControlDialog(){
 
     ExpertDiscoveryControlDialog d(QApplication::activeWindow());
     if (d.exec()) {
-       Q_ASSERT(AppContext::getProject());
+        Q_ASSERT(AppContext::getProject());
         ExpertDiscoveryLoadControlTask *t = new ExpertDiscoveryLoadControlTask(d.getFirstFileName());
         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlTaskStateChanged() ) );
         tasks->addSubTask(t);
@@ -530,7 +530,7 @@ void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
 
     if(d.getConSeqBase().getSize() != 0){
         clearSequencesView();
-    
+
         QList<EDPISequence*> selSeqList = d.getSelectetSequencesList();
         d.clearSelectedSequencesList();
         foreach(EDPISequence* curS, selSeqList){
@@ -641,44 +641,71 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
        case PIT_CSN_DISTANCE:
        case PIT_CSN_MRK_ITEM:
        case PIT_MRK_ITEM:{
-           EDPICSNode* pPICSN = dynamic_cast<EDPICSNode*>(pItem);
-
-           
-
-           if (curPS == pPICSN->getProcessedSignal(d)) {
-               updatePS = false;
-           }
-           else {
-               //mutex.lock();
-               curPS = pPICSN->getProcessedSignal(d);
-               updatePS = true;
-               //mutex.unlock();
-           }
-
-           if (curPS == NULL) {
-               updateAnnotations();
-               updatePS = false;
-               propWidget->sl_treeSelChanged(pItem);
-               return;
+           //check if running!!!!
+           if(curTask){
+               if(curTask->isFinished()){
+                   curTask = new ExpertDiscoveryUpdateSelectionTask(this, tItem);
+                   connect( curTask, SIGNAL( si_stateChanged() ), SLOT( sl_updateTaskFinished() ) );
+                   //signalsWidget->setEnabled(false);
+                   AppContext::getTaskScheduler()->registerTopLevelTask(curTask);
+               }else{
+                    return;
+               }
+           }else{
+               curTask = new ExpertDiscoveryUpdateSelectionTask(this, tItem);
+               connect( curTask, SIGNAL( si_stateChanged() ), SLOT( sl_updateTaskFinished() ) );
+               //signalsWidget->setEnabled(false);
+               AppContext::getTaskScheduler()->registerTopLevelTask(curTask);
            }
 
-           if(updatePS){
-                updateAnnotations();
-                updatePS = false;
-           }
+//            ExpertDiscoveryUpdateSelectionTask* t = new ExpertDiscoveryUpdateSelectionTask(this, tItem);
+//            AppContext::getTaskScheduler()->registerTopLevelTask(t);
+
+
+           //            EDPICSNode* pPICSN = dynamic_cast<EDPICSNode*>(pItem);
+           // 
+           //            if (curPS == pPICSN->getProcessedSignal(d)) { //to separate process
+           //                updatePS = false;
+           //            }
+           //            else {
+           //                mutex.lock();
+           //                curPS = pPICSN->getProcessedSignal(d);
+           //                updatePS = true;
+           //                mutex.unlock();
+           //            }
+           // 
+           //            if (curPS == NULL) {
+           //                updateAnnotations();
+           //                updatePS = false;
+           //                propWidget->sl_treeSelChanged(pItem);
+           //                return;
+           //            }
+           // 
+           //            if(updatePS){
+           //                 updateAnnotations();
+           //                 updatePS = false;
+           //            }
            break;
-       }
+                         }
        default:
            //mutex.lock();
            curPS = NULL;
+           propWidget->sl_treeSelChanged(tItem);
            //mutex.unlock();
     }
 
-    propWidget->sl_treeSelChanged(tItem);
+    // 
+}
+
+void ExpertDiscoveryView::sl_updateTaskFinished(){
+    ExpertDiscoveryUpdateSelectionTask* task = dynamic_cast<ExpertDiscoveryUpdateSelectionTask*>(sender());
+    if(task && (curTask == task) && task->isFinished()){
+        curTask = NULL;
+    }
 }
 
 void ExpertDiscoveryView::updateAnnotations(){
-    
+
     if(!currentAdv || !signalsWidget->isEnabled() || signalsWidget->isUpdatingItem()){
         return;
     }
@@ -715,15 +742,15 @@ void ExpertDiscoveryView::createEDSequence(){
     switch(seqType){
         case POSITIVE_SEQUENCE:
             curEDsequence = new EDPISequence(d.getPosSeqBase(), d.getPosSeqBase().getObjNo(seqName.toStdString().c_str()), d);
-        break;
+            break;
 
         case NEGATIVE_SEQUENCE:
             curEDsequence = new EDPISequence(d.getNegSeqBase(), d.getNegSeqBase().getObjNo(seqName.toStdString().c_str()), d);
-        break;
+            break;
 
         case CONTROL_SEQUENCE:
             curEDsequence = new EDPIControlSequence(d.getConSeqBase(), d.getConSeqBase().getObjNo(seqName.toStdString().c_str()), d);
-        break;
+            break;
     }
 
     updateEDSequenceProperties();
@@ -733,8 +760,7 @@ void ExpertDiscoveryView::updateEDSequenceProperties(){
     if(!curEDsequence){
         return;
     }
-
-     propWidget->sl_treeSelChanged(curEDsequence);
+    propWidget->sl_treeSelChanged(curEDsequence);
 }
 
 U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* sItem){
@@ -749,14 +775,7 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
             }
         }
     }
-    if(!seqFound){ //add to edObjects
-//         QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toAscii());
-//         DNASequence dnaseq (sItem->getSequenceName(), seqarray);
-//         dnaseq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
-//         //TODO: avoid use od objects without doc! U2SequenceObject* danseqob = new U2SequenceObject(sItem->getSequenceName(), dnaseq);
-//         U2SequenceObject* danseqob  = NULL;
-//         edObjects.append(danseqob);
-
+    if(!seqFound){ 
         SequenceType sType = d.getSequenceTypeByName(sItem->getSequenceName());
         Document* curDoc = NULL;
         switch(sType){
@@ -766,7 +785,6 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
                     posUDoc->setName("Positive");
                 }
                 curDoc = posUDoc;
-                //posUDoc->addObject(danseqob);
                 break;
             case NEGATIVE_SEQUENCE:
                 if(!negUDoc){
@@ -774,7 +792,6 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
                     negUDoc->setName("Negative");
                 }
                 curDoc = negUDoc;
-                //negUDoc->addObject(danseqob);
                 break;
             case CONTROL_SEQUENCE:
                 if(!conUDoc){
@@ -782,7 +799,6 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
                     conUDoc->setName("Control");
                 }
                 curDoc = conUDoc;
-                //conUDoc->addObject(danseqob);
                 break;
             default:
                 return NULL;
@@ -811,13 +827,13 @@ Document* ExpertDiscoveryView::createUDocument(SequenceType sType){
     QString baseName = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("expert_discovery");
     switch(sType){
         case POSITIVE_SEQUENCE:
-                baseName.append("_Positive");
+            baseName.append("_Positive");
             break;
         case NEGATIVE_SEQUENCE:
-                baseName.append("_Negative");
+            baseName.append("_Negative");
             break;
         case CONTROL_SEQUENCE:
-                baseName.append("_Control");
+            baseName.append("_Control");
             break;
     }
     QString suffix = QString(".fa");
@@ -842,6 +858,12 @@ void ExpertDiscoveryView::sl_treeWidgetMarkup(bool isLetters){
     }
 }
 
+void ExpertDiscoveryView::sl_treeWidgetAddMarkup(){
+    ExpertDiscoveryMarkupTask *addToMarkupTask = new ExpertDiscoveryMarkupTask(d, curPS);
+    connect(addToMarkupTask, SIGNAL( si_stateChanged() ), SLOT( sl_updateMarking() ) );
+    AppContext::getTaskScheduler()->registerTopLevelTask(addToMarkupTask);
+}
+
 void ExpertDiscoveryView::sl_generateFullReport(){
     if(d.getSelectedSignalsContainer().GetSelectedSignals().size() == 0){
         QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("No signals are selected to generate report"));
@@ -849,6 +871,13 @@ void ExpertDiscoveryView::sl_generateFullReport(){
     }else{
         d.generateRecognitionReportFull();
     }
+}
+void ExpertDiscoveryView::sl_updateMarking(){
+    ExpertDiscoveryMarkupTask *markuptask = qobject_cast<ExpertDiscoveryMarkupTask*>(sender());
+    if (!markuptask || !markuptask->isFinished()) {
+        return;
+    }
+    signalsWidget->updateMarkup();
 }
 
 void ExpertDiscoveryView::sl_showSequence(){
@@ -858,7 +887,7 @@ void ExpertDiscoveryView::sl_showSequence(){
     }
 
     U2SequenceObject* dnaSeqObj = getSeqObjectFromEDSequence(sItem);
-    
+
     QList<EDPISequence*> selSeqList = d.getSelectetSequencesList();
     d.clearSelectedSequencesList();
     foreach(EDPISequence* curS, selSeqList){

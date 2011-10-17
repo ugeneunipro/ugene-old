@@ -138,6 +138,7 @@ public slots:
 signals:
     void si_loadMarkup(bool isLetters);
     void si_showSequence();
+    void si_addToMarkup();
     void si_addToShown();
     void si_showFirstSequences();
     void si_clearDisplayed();

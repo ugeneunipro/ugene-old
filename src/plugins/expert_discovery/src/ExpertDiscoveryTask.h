@@ -5,6 +5,8 @@
 #include "DDisc/MetaInfo.h"
 #include "ExpertDiscoveryData.h"
 #include "ExpertDiscoveryCSUtil.h"
+#include "ExpertDiscoveryView.h"
+
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectSelection.h>
@@ -226,6 +228,24 @@ private:
     QMutex&                             mutex;
 };
 
+class ExpertDiscoveryUpdateSelectionTask : public Task{
+    Q_OBJECT
+public:
+    ExpertDiscoveryUpdateSelectionTask(ExpertDiscoveryView* currentView, QTreeWidgetItem* tItem);
+    void run();
+    ReportResult report();
+private:
+    AnnotatedDNAView*                   currentAdv;
+    const EDProcessedSignal*            curPS;
+    ExpertDiscoveryView*                view;
+    QTreeWidgetItem*                    curretItem;
+    bool                                updatePS;
+    EDProjectItem*                      pItem;
+
+    void updateAnnotations();
+
+};
+
 class ExpertDiscoverySaveDocumentTask : public Task{
     Q_OBJECT
 public:
@@ -246,6 +266,22 @@ public:
 private:
     ExpertDiscoveryData& edData;
     QString filename;
+};
+
+class ExpertDiscoveryMarkupTask : public Task{
+    Q_OBJECT
+public:
+    ExpertDiscoveryMarkupTask(ExpertDiscoveryData& data);
+    ExpertDiscoveryMarkupTask(ExpertDiscoveryData& data, const EDProcessedSignal* signal);
+
+    void run();
+private:
+    ExpertDiscoveryData& edData;
+    bool isLettersMarkup;
+    const EDProcessedSignal* signal;
+    QString curSignalName;
+
+    void addSignalMarkup(SequenceBase& rBase, MarkingBase& rAnn, bool isPos);
 };
         
 }//namespace

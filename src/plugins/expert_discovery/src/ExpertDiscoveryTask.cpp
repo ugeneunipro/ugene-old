@@ -29,6 +29,8 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/Counter.h>
+#include <U2View/AutoAnnotationUtils.h>
+
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
@@ -852,14 +854,14 @@ void ExpertDiscoveryToAnnotationTask::run(){
     }
 
     //cs start
-   // mutex.lock();
+    //mutex.lock();
     csToAnnotation(seqNumber, edSeq.getSize());
     
     hasRecData = edData->recDataStorage.getRecognizationData(recData, &edSeq, edData->getSelectedSignalsContainer());
     if(hasRecData){
         recDataToAnnotation();    
     }
-   // mutex.unlock();
+    //mutex.unlock();
     //cs end
     
 }
@@ -904,8 +906,6 @@ void ExpertDiscoveryToAnnotationTask::csToAnnotation(int seqNumber, unsigned int
 
     const Set& set = isPos? curPS->getYesRealizations(seqNumber) : curPS->getNoRealizations(seqNumber);
 
-
-   
     unsigned int i = 0;
     unsigned int j = 0;
     QString first_data = "";
@@ -1010,6 +1010,82 @@ void ExpertDiscoveryToAnnotationTask::recDataToAnnotation(){
 }
 
 
+ExpertDiscoveryUpdateSelectionTask::ExpertDiscoveryUpdateSelectionTask(ExpertDiscoveryView* currentView, QTreeWidgetItem* tItem)
+:Task("Update selection task", TaskFlag_None)
+,view(currentView)
+,curretItem(tItem)
+{
+    currentAdv = view->getCurrentAdv();
+    curPS = view->getCurrentProcessedSignals();
+    updatePS = true;
+    pItem = NULL;
+    
+}
+
+void ExpertDiscoveryUpdateSelectionTask::run(){
+    assert(curretItem);
+    pItem = dynamic_cast<EDProjectItem*>(curretItem);
+    assert(pItem);
+
+    switch(pItem->getType()){
+       case PIT_CS:
+       case PIT_CSN_WORD:
+       case PIT_CSN_INTERVAL:
+       case PIT_CSN_REPETITION:
+       case PIT_CSN_DISTANCE:
+       case PIT_CSN_MRK_ITEM:
+       case PIT_MRK_ITEM:{
+           EDPICSNode* pPICSN = dynamic_cast<EDPICSNode*>(pItem);
+          
+           if (curPS == pPICSN->getProcessedSignal(view->getExpertDiscoveryData())) { //to separate process
+               updatePS = false;
+           }
+           else {
+               curPS = pPICSN->getProcessedSignal(view->getExpertDiscoveryData());
+               updatePS = true;
+           }
+
+           
+       }
+       break;
+       default:
+           assert(0);
+    }
+
+    
+}
+Task::ReportResult ExpertDiscoveryUpdateSelectionTask::report(){
+    if (curPS == NULL) {
+        updateAnnotations();
+        updatePS = false;
+        view->getPropertiesWidget()->sl_treeSelChanged(pItem);
+        view->setProcessedSignals(curPS);
+        return ReportResult_Finished;
+    }
+
+    if(updatePS){
+        updateAnnotations();
+    }
+    view->getPropertiesWidget()->sl_treeSelChanged(curretItem);
+    view->setProcessedSignals(curPS);
+    return ReportResult_Finished;
+}
+
+void ExpertDiscoveryUpdateSelectionTask::updateAnnotations(){
+    if(!currentAdv || !view->getProjectTree()->isEnabled() || view->getProjectTree()->isUpdatingItem()){
+        return;
+    }
+
+    view->getAutoAnnotationUpdater()->setEDProcSignals(curPS);
+    //AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
+
+    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
+        AutoAnnotationUtils::triggerAutoAnnotationsUpdate(sctx, "ExpertDiscover Signals");
+    }
+
+    //AppContext::getAutoAnnotationsSupport()->unregisterAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
+}
+
 ExpertDiscoverySaveDocumentTask::ExpertDiscoverySaveDocumentTask(ExpertDiscoveryData& data, const QString& fileName)
 :Task("Save ExpertDiscovery document task", TaskFlag_None)
 ,edData(data)
@@ -1102,6 +1178,84 @@ void ExpertDiscoveryLoadDocumentTask::run(){
     edData.getConSeqBase().setMarking(edData.getConMarkBase());
 
     edData.getSelectedSignalsContainer().load(inStream, edData.getRootFolder());
+}
+
+ExpertDiscoveryMarkupTask::ExpertDiscoveryMarkupTask(ExpertDiscoveryData& data)
+:Task("ExpertDiscovery markup letters", TaskFlag_None), edData(data){
+    isLettersMarkup = true;
+    signal = NULL;
+}
+ExpertDiscoveryMarkupTask::ExpertDiscoveryMarkupTask(ExpertDiscoveryData& data, const EDProcessedSignal* _signal)
+:Task("ExpertDiscovery signal markup", TaskFlag_None), edData(data){
+    isLettersMarkup = false;
+    signal = _signal;
+}
+void ExpertDiscoveryMarkupTask::run(){
+    if(isLettersMarkup){
+        stateInfo.progress = 0;
+        edData.markupLetters();
+        stateInfo.progress = 100;
+    }else{
+        if(!signal){
+            return;
+        }
+        edData.clearScores();
+        
+        // Adding new signal family for letters
+        std::string strFamilyName = ExpertDiscoveryData::FAMILY_ED_SIGNAL.toStdString();
+        std::string strMethodName = ExpertDiscoveryData::FAMILY_ED_METHOD.toStdString();
+
+        Family ed_signals;
+        bool initialiseFamily = false;
+        try{
+            ed_signals = edData.getDescriptionBase().getSignalFamily(strFamilyName);
+        }catch(...){
+            initialiseFamily = true;
+            ed_signals.setName(strFamilyName);
+        }
+
+        MetaInfo mi;
+        int number = ed_signals.getSignalNumber();
+        curSignalName = QString("ED_SIGNAL_%1").arg(number);
+        mi.setName(curSignalName.toStdString());
+        mi.setNo(number);
+        mi.setMethodName(strMethodName);
+        ed_signals.AddInfo(mi);
+
+        if(initialiseFamily){
+            edData.getDescriptionBaseNoConst().addFamily(ed_signals);
+        }
+
+        addSignalMarkup(edData.getPosSeqBase(), edData.getPosMarkBase(), true);
+        addSignalMarkup(edData.getNegSeqBase(), edData.getNegMarkBase(), false);
+
+        edData.setModifed();
+    }
+}
+
+void ExpertDiscoveryMarkupTask::addSignalMarkup(SequenceBase& rBase, MarkingBase& rAnn, bool isPos){
+    std::string strFamilyName = ExpertDiscoveryData::FAMILY_ED_SIGNAL.toStdString();
+    
+    int size = rBase.getSize();
+    std::string seq;
+    for (int i=0; i<size; i++) {
+        const Set& signalSet = isPos ? signal->getYesRealizations(i) : signal->getNoRealizations(i);
+        seq = rBase.getSequence(i).getSequence();
+        Marking mrk;
+        try {
+            mrk = rAnn.getMarking(i);
+            }
+            catch (exception) {
+            }
+            int len = (int)seq.size();
+            for (int j=0; j<len; j++) {
+                if(signalSet.is_set(j)){
+                    mrk.set(curSignalName.toStdString(), strFamilyName, Interval(j,j));
+                }
+            }
+            rAnn.setMarking(i, mrk);
+        }
+     rBase.setMarking(rAnn);
 }
 
 }//namespace

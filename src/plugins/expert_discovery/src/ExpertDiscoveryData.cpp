@@ -22,6 +22,8 @@ namespace U2 {
 
 const std::string ExpertDiscoveryData::FAMILY_LETTERS = "_LETTERS_";
 const std::string ExpertDiscoveryData::FAMILY_LETTERS_METHOD = "EXPERT_DISCOVERY_LETTERS_MARKUP_METHOD";
+const QString ExpertDiscoveryData::FAMILY_ED_SIGNAL = "ExpertDiscovery_Signals";
+const QString ExpertDiscoveryData::FAMILY_ED_METHOD = "EXPERT_DISCOVERY_METHOD";
 
 ExpertDiscoveryData::ExpertDiscoveryData (){
     recognizationBound = 0;

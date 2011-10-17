@@ -15,7 +15,7 @@
 
 namespace U2{
 class ExpertDiscoverySignalsAutoAnnotationUpdater;
-
+class ExpertDiscoveryUpdateSelectionTask;
 
 class ExpertDiscoveryView : public GObjectView{
     Q_OBJECT
@@ -25,6 +25,7 @@ public:
     virtual ~ExpertDiscoveryView();
     void insertSeqView(QWidget* view);
 
+    //view content
     QAction* getNewDocAction(){return newDoc;}
     QAction* getOpenDocAction(){return openDoc;}
     QAction* getSaveDocAction(){return saveDoc;}
@@ -32,55 +33,67 @@ public:
     QAction* getOptimizeRecBoundAction(){return optimizeRecBound;}
     QAction* getLoadControlSeqAction(){return loadControlSeqAction;}
     QAction* getExtractSignalsAction(){return extractSignalsAction;}
-    QAction* getLoadMarkupAction(){return loadMarkupAction;}
     QAction* getLoadControlMarkupAction(){return loadControlMarkupAction;}
     QAction* getGenerateFullReportAction(){return generateFullReportAction;}
     Task*    getExtractTask(){return extrTask;}
-
-    QList<GObject*> getEDObjects(){ return edObjects;}
+    
+    QAction* getLoadMarkupAction(){return loadMarkupAction;}
+    QList<GObject*> getEDObjects() {return edObjects;}
+    
+    EDProjectTree* getProjectTree() {return signalsWidget;}
+    EDPropertiesTable* getPropertiesWidget() {return  propWidget;}
+    AnnotatedDNAView* getCurrentAdv() {return currentAdv;}
+    ExpertDiscoveryData& getExpertDiscoveryData(){return d;}
+    ExpertDiscoverySignalsAutoAnnotationUpdater* getAutoAnnotationUpdater() {return edAutoAnnotationsUpdater;}
+    const EDProcessedSignal* getCurrentProcessedSignals(){return curPS;}
+    void setProcessedSignals(const EDProcessedSignal* PS){curPS = PS;}
 
     bool askForSave();
 
 
 private slots:
+    //     void sl_showExpertDiscoveryControlMrkDialog();
+    //     void sl_loadControlMrkTaskStateChanged();
+
+    void sl_newDoc();
+
+    void sl_openDoc();
+    void sl_saveDoc();
     void sl_showExpertDiscoveryPosNegDialog();
     void sl_loadPosNegTaskStateChanged();
-
-    void sl_showExpertDiscoveryControlDialog();
-    void sl_loadControlTaskStateChanged();
 
     void sl_showExpertDiscoveryPosNegMrkDialog();
     void sl_loadPosNegMrkTaskStateChanged();
 
-    void sl_showExpertDiscoveryControlMrkDialog();
-    void sl_loadControlMrkTaskStateChanged();
-    void sl_newDoc();
+    void sl_showExpertDiscoveryControlDialog();
+    void sl_loadControlTaskStateChanged();
 
-    void clearSequencesView();
-    void sl_openDoc();
-    void sl_saveDoc();
-    void sl_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
-    void sl_newFolder();
-    void sl_optimizeRecBound();
     void sl_setRecBound();
     void sl_extractSignals();
-    void sl_treeItemSelChanged(QTreeWidgetItem* tItem);
-    void sl_sequenceItemSelChanged(ADVSequenceWidget*);
-    void sl_treeWidgetMarkup(bool isLetters);
+    void sl_optimizeRecBound();
     void sl_generateFullReport();
+    void sl_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
+    void sl_newFolder();
+    void sl_treeItemSelChanged(QTreeWidgetItem* tItem);
+    void sl_updateTaskFinished();
+    void sl_treeWidgetMarkup(bool isLetters);
+    void sl_treeWidgetAddMarkup();
+    void sl_updateMarking();
 
     void sl_showSequence();
     void sl_addToShown();
     void sl_showFirstSequences();
     void sl_clearDisplayed();
 
-    void sl_testView(); 
-
-    void sl_newViewTask(Task* t);
+    void clearSequencesView();
     void sl_updateAll();
 
     void sl_autoAnnotationUpdateStarted();
     void sl_autoAnnotationUpdateFinished();
+
+    void sl_sequenceItemSelChanged(ADVSequenceWidget*);
+    void sl_newViewTask(Task* t);
+    void sl_testView(); 
 
     //void sl_propChanged(QTreeWidgetItem* item);
 
@@ -138,6 +151,7 @@ private:
     bool                        updatePS;
 
     QMutex                      mutex;
+    ExpertDiscoveryUpdateSelectionTask* curTask;
 
 signals:
     void si_insertSeqGObjects(const QList<GObject*>& objects);
