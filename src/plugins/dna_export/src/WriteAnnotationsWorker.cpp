@@ -31,6 +31,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/MultiTask.h>
 
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
@@ -76,59 +77,79 @@ bool WriteAnnotationsWorker::isReady() {
 }
 
 Task * WriteAnnotationsWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(annotationsPort);
     QString formatId = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId())->getAttributeValue<QString>();
     DocumentFormat * format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+    SaveDocFlags fl(actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>());
     if( formatId != CSV_FORMAT_ID && format == NULL ) {
         return new FailTask(tr("Unrecognized formatId: '%1'").arg(formatId));
     }
-    
-    QString filepath = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>();
-    filepath = filepath.isEmpty() ? inputMessage.getData().toMap().value(BaseSlots::URL_SLOT().getId()).value<QString>() : filepath;
-    if (filepath.isEmpty()) {
-        return new FailTask(tr("Unspecified URL to write %1").arg(formatId));
-    }
-    QStringList exts = formatId == CSV_FORMAT_ID ? QStringList("csv") : format->getSupportedDocumentFileExtensions();
-    filepath = GUrlUtils::ensureFileExt(filepath, exts).getURLString();
-    
-    SaveDocFlags fl(actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>());
-    
-    QString objName = actor->getParameter(ANNOTATIONS_NAME)->getAttributeValue<QString>();
-    if(objName.isEmpty()) {
-        objName = ANNOTATIONS_NAME_DEF_VAL;
-        coreLog.details(tr("Annotations name not specified. Default value used: '%1'").arg(objName));
-    }
-    AnnotationTableObject * att = new AnnotationTableObject(objName);
-    QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(inputMessage.getData().toMap().
-        value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
-    foreach(const SharedAnnotationData & ad, atl) {
-        att->addAnnotation(new Annotation(ad), QString());
-    }
-    
-    QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
-    if(formatId == CSV_FORMAT_ID) {
-        createdAnnotationObjects << att; // will delete in destructor
-        TaskStateInfo ti;
-        if(fl.testFlag(SaveDoc_Roll) && !GUrlUtils::renameFileWithNameRoll(filepath, ti, excludeFileNames, &coreLog)) {
-            return new FailTask(ti.getError());
+
+    while(annotationsPort->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(annotationsPort);
+        
+        QString filepath = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>();
+        filepath = filepath.isEmpty() ? inputMessage.getData().toMap().value(BaseSlots::URL_SLOT().getId()).value<QString>() : filepath;
+        if (filepath.isEmpty()) {
+            return new FailTask(tr("Unspecified URL to write %1").arg(formatId));
         }
-        return new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), NULL, false, filepath, fl.testFlag(SaveDoc_Append)
-                                                , actor->getParameter(SEPARATOR)->getAttributeValue<QString>());
-    } else {
-        fl |= SaveDoc_DestroyAfter;
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
-        DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
-        U2OpStatusImpl os;
-        Document * doc = df->createNewLoadedDocument(iof, filepath, os);
-        CHECK_OP(os, new FailTask(os.getError()));
-        att->setModified(false);
-        doc->addObject(att); // savedoc task will delete doc -> doc will delete att
-        return new SaveDocumentTask(doc, fl, excludeFileNames);
+        QStringList exts = formatId == CSV_FORMAT_ID ? QStringList("csv") : format->getSupportedDocumentFileExtensions();
+        filepath = GUrlUtils::ensureFileExt(filepath, exts).getURLString();
+        
+        QString objName = actor->getParameter(ANNOTATIONS_NAME)->getAttributeValue<QString>();
+        if(objName.isEmpty()) {
+            objName = ANNOTATIONS_NAME_DEF_VAL;
+            coreLog.details(tr("Annotations name not specified. Default value used: '%1'").arg(objName));
+        }
+        AnnotationTableObject * att = NULL;
+        if (annotationsByUrl.contains(filepath)) {
+            att = annotationsByUrl.value(filepath);
+        } else {
+            att = new AnnotationTableObject(objName);
+            annotationsByUrl.insert(filepath, att);
+        }
+
+        QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(inputMessage.getData().toMap().
+            value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
+        foreach(const SharedAnnotationData & ad, atl) {
+            att->addAnnotation(new Annotation(ad));
+        }
+    } // while
+
+    done = annotationsPort->isEnded();
+    if (!done) {
+        return NULL;
     }
+    
+    QList<Task*> taskList;
+    QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
+    foreach (QString filepath, annotationsByUrl.keys()) {
+        AnnotationTableObject *att = annotationsByUrl.value(filepath);
+
+        if(formatId == CSV_FORMAT_ID) {
+            createdAnnotationObjects << att; // will delete in destructor
+            TaskStateInfo ti;
+            if(fl.testFlag(SaveDoc_Roll) && !GUrlUtils::renameFileWithNameRoll(filepath, ti, excludeFileNames, &coreLog)) {
+                return new FailTask(ti.getError());
+            }
+            taskList << new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), NULL, false, filepath, fl.testFlag(SaveDoc_Append)
+                , actor->getParameter(SEPARATOR)->getAttributeValue<QString>());
+        } else {
+            fl |= SaveDoc_DestroyAfter;
+            IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
+            DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+            U2OpStatusImpl os;
+            Document * doc = df->createNewLoadedDocument(iof, filepath, os);
+            CHECK_OP(os, new FailTask(os.getError()));
+            att->setModified(false);
+            doc->addObject(att); // savedoc task will delete doc -> doc will delete att
+            taskList << new SaveDocumentTask(doc, fl, excludeFileNames);
+        }
+    }
+    return taskList.size() == 1 ? taskList.first() : new MultiTask(tr("Save annotations"), taskList);
 }
 
 bool WriteAnnotationsWorker::isDone() {
-    return annotationsPort->isEnded();
+    return done;
 }
 
 void WriteAnnotationsWorker::cleanup() {
@@ -160,7 +181,7 @@ void WriteAnnotationsWorkerFactory::init() {
         supportedFormats.append(CSV_FORMAT_ID);
         Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false,
             supportedFormats.contains(BaseDocumentFormats::PLAIN_GENBANK) ? BaseDocumentFormats::PLAIN_GENBANK : supportedFormats.first());
-        Attribute *urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
+        Attribute *urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
         attrs << docFormatAttr;
         attrs << urlAttr;
         attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
