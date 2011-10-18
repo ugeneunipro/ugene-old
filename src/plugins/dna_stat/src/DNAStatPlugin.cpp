@@ -22,10 +22,13 @@
 #include "DNAStatPlugin.h"
 #include "DNAStatMSAProfileDialog.h"
 #include "DistanceMatrixMSAProfileDialog.h"
+#include "DNAStatProfileTask.h"
 
 #include <U2Core/AppContext.h>
-
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
@@ -47,10 +50,16 @@ DNAStatPlugin::DNAStatPlugin() : Plugin(tr("DNA Statistics"), tr("Provides stati
 {
     statViewCtx = new DNAStatMSAEditorContext(this);
     statViewCtx->init();
-    distanceViewCtx = new DistanceMatrixMSAEditorContext(this);
+    
+	distanceViewCtx = new DistanceMatrixMSAEditorContext(this);
     distanceViewCtx->init();
+	
+	dnaStatsViewCtx = new DNAViewStatsContext(this);
+	dnaStatsViewCtx->init();
+
 }
 
+//////////////////////////////////////////////////////////////////////////
 
 DNAStatMSAEditorContext::DNAStatMSAEditorContext(QObject* p) : 
 GObjectViewWindowContext(p, MSAEditorFactory::ID) {}
@@ -85,6 +94,8 @@ void DNAStatMSAEditorContext::sl_showMSAProfileDialog() {
     d.exec();
 }
 
+//////////////////////////////////////////////////////////////////////////
+
 DistanceMatrixMSAEditorContext::DistanceMatrixMSAEditorContext(QObject* p) : 
 GObjectViewWindowContext(p, MSAEditorFactory::ID) {}
 
@@ -117,6 +128,47 @@ void DistanceMatrixMSAEditorContext::sl_showDistanceMatrixDialog() {
     DistanceMatrixMSAProfileDialog d(msaEd->getWidget(), msaEd);
     d.exec();
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+
+DNAViewStatsContext::DNAViewStatsContext( QObject* p ) 
+: GObjectViewWindowContext(p, AnnotatedDNAViewFactory::ID)
+{ }
+
+void DNAViewStatsContext::buildMenu( GObjectView* v, QMenu* m )
+{
+	AnnotatedDNAView* view = qobject_cast<AnnotatedDNAView*>(v);
+	SAFE_POINT(view != NULL, "View is NULL", );
+
+	QList<GObjectViewAction *> actions = getViewActions(v);
+ 	foreach(GObjectViewAction* a, actions) {
+		m->addAction(a);
+	}    
+}
+
+void DNAViewStatsContext::initViewContext( GObjectView* view )
+{
+	AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>(view);
+	
+	SAFE_POINT(dnaView != NULL, "Annotated view is NULL", );
+		
+	GObjectViewAction* dnaStatsAction = new GObjectViewAction(this, view, tr("Statistics"));
+	connect(dnaStatsAction, SIGNAL(triggered()), SLOT(sl_showDnaStats()));
+	addViewAction(dnaStatsAction);	
+}
+
+void DNAViewStatsContext::sl_showDnaStats()
+{
+	GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(sender());
+	SAFE_POINT(viewAction != NULL, "ViewAction is NULL", );
+
+	AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
+	SAFE_POINT(dnaView != NULL, "View is NULL", );
+
+	AppContext::getTaskScheduler()->registerTopLevelTask( new DNAStatProfileTask(dnaView));
+}
+
 
 
 

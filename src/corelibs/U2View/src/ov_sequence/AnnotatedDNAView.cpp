@@ -141,10 +141,6 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     reverseSequenceAction = new QAction(tr("Reverse complement sequence"), this);
     connect(reverseSequenceAction, SIGNAL(triggered()), SLOT(sl_reverseSequence()));
 
-    statistics = new QAction(tr("Statistics"), this);
-    connect(statistics, SIGNAL(triggered()), SLOT(sl_showStatistics()));
-
-
     SecStructPredictViewAction::createAction(this);
 
 }
@@ -395,8 +391,6 @@ void AnnotatedDNAView::buildStaticMenu(QMenu* m) {
     addRemoveMenu(m);
     addEditMenu(m);
     m->addSeparator();
-
-	m->addAction(statistics);
     m->addAction(annotationSettingsAction);
     
     annotationsView->adjustStaticMenu(m);
@@ -611,7 +605,6 @@ void AnnotatedDNAView::sl_onContextMenuRequested(const QPoint & scrollAreaPos) {
     addEditMenu(&m);
     addRemoveMenu(&m);
     m.addSeparator()->setObjectName(ADV_MENU_SECTION2_SEP);
-	m.addAction(statistics);
 
     if (annotationSelection->getSelection().size() == 1) {
         Annotation* a = annotationSelection->getSelection().first().annotation;
@@ -1064,10 +1057,6 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged() {
             }
         }
     }
-    
-    
-    
-
 }
 
 void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
@@ -1100,120 +1089,6 @@ void AnnotatedDNAView::sl_reverseSequence()
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
 }   
-
-void AnnotatedDNAView::sl_showStatistics(){
-    AppContext::getTaskScheduler()->registerTopLevelTask(new DNAStatProfileTask(this));
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// task
-
-
-DNAStatProfileTask::DNAStatProfileTask(AnnotatedDNAView *v):Task(tr("Generate sequence statistics profile"), TaskFlag_None){
-    ctx = v->getSequenceInFocus();
-    contentCounter.resize(256);
-    contentCounter.fill(0);
-}
-
-void DNAStatProfileTask::run(){
-    computeStats();
-    QString seqName = ctx->getSequenceGObject()->getGObjectName(), url = ctx->getSequenceGObject()->getDocument()->getURL().getURLString();   
- 
-    //setup style
-    resultText= "<STYLE TYPE=\"text/css\"><!-- \n";
-    resultText+="table.tbl   {\n border-width: 1px;\n border-style: solid;\n border-spacing: 0;\n border-collapse: collapse;\n}\n";
-    resultText+="table.tbl td{\n max-width: 200px;\n min-width: 20px;\n text-align: center;\n border-width: 1px;\n ";
-    resultText+="border-style: solid;\n margin:0px;\n padding: 0px;\n}\n";
-    resultText+="--></STYLE>\n";
-
-    //header
-    resultText+="<h2>" + DNAStatProfileTask::tr("Sequence Statistics") + "</h2><br>\n";
-    
-    resultText+="<table>\n";
-    resultText+="<tr><td><b>" + DNAStatProfileTask::tr("Sequence file:") + "</b></td><td>" + url + "@" + seqName + "</td></tr><tr><td><b>" + 
-        DNAStatProfileTask::tr("Sequence length:") + "</b></td><td>" + QString::number(seqLen) + "</td></tr>\n";
-    resultText+="</table>\n";
-    resultText+="<br><br>\n";
-
-    resultText+="<table class=tbl>";
-
-    resultText+="<table class=tbl>";
-    resultText+="<tr><td></td><td>" + 
-        DNAStatProfileTask::tr("Symbol counts") + "</td><td>" +
-        DNAStatProfileTask::tr("Symbol percents %") + "</td></tr>";
-
-    for (int i = 0; i < 256; i++) {
-        char symbol = char(i);
-        qint64 cnt = contentCounter[i];
-        if (cnt == 0) {
-            continue;
-        }
-        float percentage = cnt/(float)seqLen * 100;
-        resultText+=QString("<tr><td><b>%1</b></td><td>%2</td><td>%3</td></tr>").arg(symbol).arg(QString::number(cnt)).arg(QString::number(percentage, 'g', 4));
-    }
-    resultText+= "</table>\n";
-    if(!diNuclCounter.isEmpty()){
-        resultText+="<br>";
-        resultText+="<table class=tbl>";
-        resultText+="<tr><td></td><td>" + 
-            DNAStatProfileTask::tr("Dinucleotide counts") + "</td><td>" +
-            DNAStatProfileTask::tr("Dinucleotide percents %") + "</td></tr>";
-        QMap<QByteArray, int>::const_iterator it(diNuclCounter.begin());
-        for(;it != diNuclCounter.end(); it++){
-            const QByteArray diNucl = it.key();
-            const int cnt = it.value();
-            float percentage = cnt/(float)seqLen * 100;
-            resultText+=QString("<tr><td><b>%1</b></td><td>%2</td><td>%3</td></tr>").arg(QString(diNucl)).arg(QString::number(cnt)).arg(QString::number(percentage, 'g', 4));
-        }
-        resultText+= "</table>\n";
-    }
-}
-
-Task::ReportResult DNAStatProfileTask::report(){
-    assert(!resultText.isEmpty());
-    QString title = DNAStatProfileTask::tr("Statistics for %1 sequence").arg(ctx->getSequenceObject()->getGObjectName());
-    WebWindow* w = new WebWindow(title, resultText);
-    w->setWindowIcon(QIcon(":core/images/chart_bar.png"));
-    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
-    return ReportResult_Finished;
-}
-
-void DNAStatProfileTask::computeStats(){
-    seqLen = ctx->getSequenceLength();
-    QByteArray alphabetChars = ctx->getAlphabet()->getAlphabetChars();
-    
-    U2Region wholeSeqReg(0, ctx->getSequenceLength());
-    qint64 blockSize = 1024*1024;
-    qint64 prevEnd = 0;
-    bool dinucl = ctx->getAlphabet()->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
-    QByteArray nucPair = "NN";
-
-    do {
-        U2Region r = wholeSeqReg.intersect(U2Region(prevEnd, blockSize));
-        prevEnd += blockSize;
-        QByteArray seqBlock = ctx->getSequenceData(r);
-        foreach(char c, seqBlock){
-            contentCounter[uchar(c)]++;
-            if (!dinucl) {
-                continue;
-            }
-            nucPair[0] = nucPair[1];
-            nucPair[1] = c;
-            if (!nucPair.contains("-") && !nucPair.contains("N")) {
-                continue;
-            }
-            if (diNuclCounter.contains(nucPair)){
-                diNuclCounter[nucPair]++;
-            } else {
-                diNuclCounter.insert(nucPair, 1);
-            }
-        }
-    } while (prevEnd < wholeSeqReg.endPos());
-
-        
-}
-
 
 
 }//namespace

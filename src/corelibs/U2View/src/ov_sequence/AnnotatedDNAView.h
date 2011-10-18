@@ -149,7 +149,7 @@ protected:
     virtual bool isChildWidgetObject(GObject* o) const;
     virtual void addAnalyseMenu(QMenu* m);
     virtual void addAddMenu(QMenu* m);
-    virtual void addExportMenu(QMenu* m);
+	virtual void addExportMenu(QMenu* m);
     virtual void addAlignMenu(QMenu* m);
     virtual void addRemoveMenu(QMenu* m);
     virtual void addEditMenu(QMenu* m);
@@ -181,7 +181,6 @@ private slots:
     void sl_replaceSequencePart();
     void sl_sequenceModifyTaskStateChanged();
     void sl_reverseSequence();
-    void sl_showStatistics();
     
     virtual void sl_onDocumentAdded(Document*);
     virtual void sl_onDocumentLoadedStateChanged();
@@ -213,8 +212,7 @@ private:
     QAction*            replaceSequencePart;
     QAction*            removeSequenceObjectAction;         
     QAction*            reverseSequenceAction;
-    QAction*            statistics;
-
+    
     PositionSelector*   posSelector;
     
     QList<ADVSequenceObjectContext*>    seqContexts;
@@ -239,25 +237,6 @@ private:
     int                         timerId;
 };
 
-//TODO: move into separate file!
-class DNAStatProfileTask : public Task {
-    Q_OBJECT
-public:
-    DNAStatProfileTask(AnnotatedDNAView *v);
-    void run();
-    ReportResult report();
-
-private:
-    void computeStats();
-
-    ADVSequenceObjectContext* ctx;
-    qint64 seqLen;
-    QVector<qint64>         contentCounter;
-    //TODO: optimize
-    QMap<QByteArray, int>   diNuclCounter;
-
-    QString resultText;
-};
 
 }//namespace;
 
