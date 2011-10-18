@@ -1,0 +1,157 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#include "ExpertDiscoveryGraphs.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/TextUtils.h>
+
+namespace U2{
+
+    ExpertDiscoveryScoreGraphAlgorithm::ExpertDiscoveryScoreGraphAlgorithm(ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType)
+:edData(data)
+,edSeqNumber(_edSeqNumber)
+,edSeqType(sType)
+{
+}
+
+
+ExpertDiscoveryScoreGraphAlgorithm::~ExpertDiscoveryScoreGraphAlgorithm()
+{
+}
+
+/**
+ * Calculates data for a score graph
+ *
+ * @param result Points of the graph
+ * @param sequenceObject The sequence used to draw the graph
+ * @param region The region of the sequence to use
+ * @param windowData Current parameters of the graph (window, step, etc.)
+ */
+void ExpertDiscoveryScoreGraphAlgorithm::calculate(
+    QVector<float>& result,
+    U2SequenceObject* sequenceObject,
+    const U2Region& region,
+    const GSequenceGraphWindowData* windowData)
+{
+    assert(windowData !=NULL);
+
+    
+    QByteArray sequence = sequenceObject->getWholeSequenceData();
+
+    int windowSize = windowData->window;
+    int windowStep = windowData->step;
+
+    // Variables
+    int windowLeft = region.startPos;
+    float windowThreshold = 0;
+
+    // Getting the number of steps
+    int stepsNumber = GSequenceGraphUtils::getNumSteps(region, windowData->window, windowData->step);
+
+    // Allocating memory for the results
+    result.reserve(stepsNumber);
+
+    // Calculating the results
+    RecognizationData recData = edData.getRecognitionData(edSeqNumber, edSeqType);
+    for (int i = 0; i < stepsNumber; ++i)
+    {
+        // Calculating the threshold in the current window
+        windowThreshold = 0;
+        for (int j = windowLeft; j < windowLeft + windowSize - 1; ++j)
+        {
+            if(j < recData.size()){
+                windowThreshold+=recData[j];
+            }
+            //windowThreshold += FindHighFlexRegionsAlgorithm::flexibilityAngle(sequence[j], sequence[j + 1]);
+        }
+        windowThreshold /= (windowSize - 1);
+
+
+        // Returning the point on the graph
+        result.append(windowThreshold);
+
+        // Enlarging the left position to the step
+        windowLeft += windowStep;
+    }
+}
+
+
+/**
+ * Name of the graph (shown to a user)
+ */
+static QString nameByType() {
+    return ExpertDiscoveryScoreGraphFactory::tr("Score graph");
+
+}
+
+
+/**
+ * Constructor of the ExpertDiscovery score graph
+ */
+ExpertDiscoveryScoreGraphFactory::ExpertDiscoveryScoreGraphFactory(QObject* parent, ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType)
+    : GSequenceGraphFactory(nameByType(), parent)
+    ,edData(data)
+    ,edSeqNumber(_edSeqNumber)
+    ,edSeqType(sType)
+{
+}
+
+
+/**
+ * Verification
+ */
+bool ExpertDiscoveryScoreGraphFactory::isEnabled(U2SequenceObject* sequenceObject) const {
+    DNAAlphabet* alphabet = sequenceObject->getAlphabet();
+    return alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+}
+
+
+/**
+ * Initializes graph data
+ */
+QList<GSequenceGraphData*> ExpertDiscoveryScoreGraphFactory::createGraphs(GSequenceGraphView* view)
+{
+    Q_UNUSED(view);
+    QList<GSequenceGraphData*> res;
+    assert(isEnabled(view->getSequenceObject()));
+    assert(edSeqType!=UNKNOWN_SEQUENCE);
+    GSequenceGraphData* data = new GSequenceGraphData(getGraphName());
+    data->ga = new ExpertDiscoveryScoreGraphAlgorithm(edData, edSeqNumber, edSeqType);
+    res.append(data);
+    return res;
+}
+
+
+/**
+ * Initializes the graph drawer
+ */
+GSequenceGraphDrawer* ExpertDiscoveryScoreGraphFactory::getDrawer(GSequenceGraphView* view)
+{
+    GSequenceGraphWindowData wd(DEFAULT_WINDOW_STEP, DEFAULT_WINDOW_SIZE);
+    return new GSequenceGraphDrawer(view, wd);
+}
+
+
+
+}//namespace

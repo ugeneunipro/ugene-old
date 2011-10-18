@@ -6,6 +6,7 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2View/WebWindow.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <fstream>
 #include <set>
@@ -136,9 +137,10 @@ bool ExpertDiscoveryData::updateScore(Sequence& rSeq){
 
     // Evaluation of sequence score
     double dScore = 0;
-    
+
+    U2OpStatus2Log st;
     RecognizationData data;
-    if (!recDataStorage.getRecognizationData(data, &rSeq, selectedSignals))
+    if (!recDataStorage.getRecognizationData(data, &rSeq, selectedSignals, st))
         return false;
     for (int i=0; i<(int)data.size(); i++)
         dScore += data[i];
@@ -354,6 +356,41 @@ SequenceType ExpertDiscoveryData::getSequenceTypeByName(const QString& seqName){
     }else{
         return UNKNOWN_SEQUENCE;
     }
+}
+int ExpertDiscoveryData::getSequenceIndex(const QString& seqName, SequenceType type){
+    switch(type){
+        case POSITIVE_SEQUENCE:
+            return posBase.getObjNo(seqName.toStdString().c_str());
+        case NEGATIVE_SEQUENCE:
+            return negBase.getObjNo(seqName.toStdString().c_str());
+        case CONTROL_SEQUENCE:
+            return conBase.getObjNo(seqName.toStdString().c_str());
+        default:
+            return -1;
+    }
+}
+RecognizationData ExpertDiscoveryData::getRecognitionData(int seqIndex, SequenceType type){
+    RecognizationData d;
+
+    SequenceBase base;
+    switch(type){
+        case POSITIVE_SEQUENCE:
+            base = posBase;
+            break;
+        case NEGATIVE_SEQUENCE:
+            base = negBase;
+            break;
+        case CONTROL_SEQUENCE:
+            base = conBase;
+            break;
+        default:
+            return d;
+    }
+    U2OpStatus2Log st;
+    const Sequence& seq = base.getSequence(seqIndex);
+
+    recDataStorage.getRecognizationData(d, &seq, selectedSignals, st);
+    return d;
 }
 
 bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secondF, const QString& thirdF, bool generateDescr){

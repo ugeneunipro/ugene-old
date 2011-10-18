@@ -81,6 +81,8 @@ public:
     void onClearSignalPriorParams(EDPICS *pItem);
 
     SequenceType getSequenceTypeByName(const QString& seqName);
+    int getSequenceIndex(const QString& seqName, SequenceType type);
+    RecognizationData getRecognitionData(int seqIndex, SequenceType type);
 
     bool loadMarkup(const QString& firstF, const QString& secondF, const QString& thirdF, bool generateDescr);
     bool loadAnnotation(MarkingBase& base, const SequenceBase& seqBase, QString strFileName);

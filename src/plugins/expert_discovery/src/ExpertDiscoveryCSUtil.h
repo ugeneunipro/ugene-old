@@ -4,6 +4,9 @@
 #include "DDisc/Signal.h"
 #include "DDisc/Sequence.h"
 #include "ExpertDiscoverySet.h"
+
+#include <U2Core/U2OpStatus.h>
+
 #include <vector>
 #include <QVector>
 #include <QMap>
@@ -194,7 +197,7 @@ public:
     ~RecognizationDataStorage();
     void clear();
     void addSequence(QString& seqName);
-    bool getRecognizationData(RecognizationData& d, const Sequence* seq, const SelectedSignalsContainer& rSe);
+    bool getRecognizationData(RecognizationData& d, const Sequence* seq, const SelectedSignalsContainer& rSe, U2OpStatus& st);
     
 private:
     RecognizationData* getRecData(const Sequence* seq);

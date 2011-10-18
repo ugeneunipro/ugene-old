@@ -14,6 +14,7 @@ HEADERS += 	src/ExpertDiscoveryPlugin.h \
 		src/ExpertDiscoveryTask.h \
 		src/ExpertDiscoveryData.h \
 		src/ExpertDiscoverySet.h \
+		src/ExpertDiscoveryGraphs.h \
 		src/ExpertDiscoveryExtSigWiz.h \
 		src/ExpertDiscoveryCSUtil.h \
 		src/ExpertDiscoveryTreeWidgets.h \
@@ -48,6 +49,7 @@ SOURCES += 	src/ExpertDiscoveryPlugin.cpp \
 		src/ExpertDiscoveryTask.cpp \
 		src/ExpertDiscoveryData.cpp \
 		src/ExpertDiscoverySet.cpp \
+		src/ExpertDiscoveryGraphs.cpp \
 		src/ExpertDiscoveryExtSigWiz.cpp \
 		src/ExpertDiscoveryCSUtil.cpp \
 		src/ExpertDiscoveryTreeWidgets.cpp \

@@ -546,7 +546,7 @@ void RecognizationDataStorage::addSequence(QString& seqName){
     }
     recMap.insert(seqName, NULL);
 }
-bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, const Sequence* seq, const SelectedSignalsContainer& rSe){
+bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, const Sequence* seq, const SelectedSignalsContainer& rSe, U2OpStatus& st){
  
     if (seq->isHasScore() && !(getRecData(seq) == NULL)){
         data = *getRecData(seq);
@@ -555,17 +555,25 @@ bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, con
     }
   
     const SignalList& rSelList = rSe.GetSelectedSignals();
-    if (rSelList.size() == 0)
+    int listSize = rSelList.size();
+    if (listSize == 0)
         return false;
 
     data.resize(seq->getSize());
     fill(data.begin(), data.end(), 0);
 
+    st.setProgress(0);
+
     SignalList::const_iterator iter = rSelList.begin();
+    int it = 0;
     while (iter != rSelList.end()) {
+        st.setProgress(100*(it)/listSize);
         const Signal* pSignal = (*iter);
         Context& context = pSignal->createCompartibleContext();
         while (pSignal->find(*seq,context)) {
+            if(st.isCanceled()){
+                return false;
+            }
             double t = pSignal->getPriorProbability()/100;
             if (t>=1) t = 0.999999;
             int nPos = context.getPosition();
@@ -585,7 +593,9 @@ bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, con
         }
         context.destroy();
         iter++;
+        it++;
     }
+    st.setProgress(100);
     RecognizationData* d = recMap.value(QString::fromStdString(seq->getName()));
     if(d != NULL){
         delete d;

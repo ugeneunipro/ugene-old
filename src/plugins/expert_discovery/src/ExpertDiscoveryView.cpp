@@ -6,6 +6,7 @@
 #include "ExpertDiscoveryControlMrkDialog.h"
 #include "ExpertDiscoveryExtSigWiz.h"
 #include "ExpertDiscoveryPlugin.h"
+#include "ExpertDiscoveryGraphs.h"
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2View/ADVUtils.h>
@@ -397,8 +398,20 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
     splitter->addWidget(adv->getWidget());
     //    adv->addAutoAnnotationsUpdated(edAutoAnnotationsUpdater);
 
+    //hide complement strand and translations, adding the graph action
     QList<ADVSequenceWidget*> curSequenceWidgets = currentAdv->getSequenceWidgets();
     foreach(ADVSequenceWidget* seqWidget, curSequenceWidgets){
+        ADVSequenceObjectContext* cont = seqWidget->getActiveSequenceContext();
+        U2SequenceObject* seqObj = cont->getSequenceObject();
+        QString seqName = seqObj->getSequenceName();
+        SequenceType sType = d.getSequenceTypeByName(seqName);
+        int seqNumber = d.getSequenceIndex(seqName, sType);
+         
+        if(seqNumber!=-1){
+            GSequenceGraphFactory* graphFactory = new ExpertDiscoveryScoreGraphFactory(seqWidget, d, seqNumber, sType);
+            GraphAction* graphAction = new GraphAction(graphFactory);
+            GraphMenuAction::addGraphAction(seqWidget->getActiveSequenceContext(), graphAction);
+        }
 
         ADVSingleSequenceWidget* singleSeqWidget = dynamic_cast<ADVSingleSequenceWidget*>(seqWidget);
         if(singleSeqWidget){

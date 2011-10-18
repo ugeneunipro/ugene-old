@@ -203,29 +203,45 @@ private:
     QMutex* mutex;
 
 };
+class ExpertDiscoveryGetRecognitionDataTask :public Task{
+    Q_OBJECT
+public:
+    ExpertDiscoveryGetRecognitionDataTask(ExpertDiscoveryData& data, RecognizationData& _recData, Sequence& seq);
+    void run();
+    bool hasRecData(){return isRecData;}
+private:
+    bool isRecData;
+    Sequence curSequence;
+    ExpertDiscoveryData& edData;
+    RecognizationData& recData;
+
+};
 
 class ExpertDiscoveryToAnnotationTask : public Task{
     Q_OBJECT
 public:
     ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut);
+    void prepare();
     void run();
     ReportResult report();
 private:
+    QList<Task*> onSubTaskFinished(Task* subTask);
     void recDataToAnnotation();
     void csToAnnotation(int seqNumberm, unsigned int seqLen);
 
-    QString                             curDnaName;
-    const DNASequence&                  dna;
-    ExpertDiscoveryData*                edData;
-    const EDProcessedSignal*            curPS;
-    QList<SharedAnnotationData>         resultList;
-    U2Region                            seqRange;
-    QPointer<AnnotationTableObject>     aObj;
-    RecognizationData                   recData;
-    bool                                hasRecData;
-    bool                                isControl;
-    bool                                isPos;
-    QMutex&                             mutex;
+    QString                                 curDnaName;
+    ExpertDiscoveryGetRecognitionDataTask*  recDataTask;
+    const DNASequence&                      dna;
+    ExpertDiscoveryData*                    edData;
+    const EDProcessedSignal*                curPS;
+    QList<SharedAnnotationData>             resultList;
+    U2Region                                seqRange;
+    QPointer<AnnotationTableObject>         aObj;
+    RecognizationData                       recData;
+    bool                                    hasRecData;
+    bool                                    isControl;
+    bool                                    isPos;
+    QMutex&                                 mutex;
 };
 
 class ExpertDiscoveryUpdateSelectionTask : public Task{

@@ -805,13 +805,13 @@ bool ExpertDiscoverySignalsAutoAnnotationUpdater::checkConstraints(const AutoAnn
 }
 
 ExpertDiscoveryToAnnotationTask::ExpertDiscoveryToAnnotationTask(AnnotationTableObject* aobj, const DNASequence& seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut)
-:Task(tr("Find and store expert discovery signals on a sequence"), TaskFlags_FOSCOE), dna(seq), edData(d), aObj(aobj), curPS(ps), mutex(mut){
+:Task(tr("Find and store expert discovery signals on a sequence"), TaskFlags_FOSCOE), dna(seq), edData(d), aObj(aobj), curPS(ps), mutex(mut), recDataTask(NULL){
 
     seqRange = U2Region(0, seq.length());
     curDnaName = seq.getName();
 }
 
-void ExpertDiscoveryToAnnotationTask::run(){
+void ExpertDiscoveryToAnnotationTask::prepare(){
     if (isCanceled() || hasError()) {
         return;
     }
@@ -833,14 +833,14 @@ void ExpertDiscoveryToAnnotationTask::run(){
     if(seqNumber == -1){
         seqNumber = edData->getNegSeqBase().getObjNo(curDnaName.toStdString().c_str());
         if(seqNumber == -1){
-             seqNumber = edData->getConSeqBase().getObjNo(curDnaName.toStdString().c_str());
-             if(seqNumber == -1){
-                 stateInfo.setError(tr("No expert discovery sequence"));
-                 return;
-             }else{
-                 edSeq = edData->getConSeqBase().getSequence(seqNumber); 
-                 isControl = true;
-             }
+            seqNumber = edData->getConSeqBase().getObjNo(curDnaName.toStdString().c_str());
+            if(seqNumber == -1){
+                stateInfo.setError(tr("No expert discovery sequence"));
+                return;
+            }else{
+                edSeq = edData->getConSeqBase().getSequence(seqNumber); 
+                isControl = true;
+            }
         }else{
             edSeq = edData->getNegSeqBase().getSequence(seqNumber);
             isControl = false;
@@ -852,18 +852,19 @@ void ExpertDiscoveryToAnnotationTask::run(){
         isControl = false;
         isPos = true;
     }
-
     //cs start
     //mutex.lock();
     csToAnnotation(seqNumber, edSeq.getSize());
-    
-    hasRecData = edData->recDataStorage.getRecognizationData(recData, &edSeq, edData->getSelectedSignalsContainer());
-    if(hasRecData){
-        recDataToAnnotation();    
-    }
+
+    recDataTask = new ExpertDiscoveryGetRecognitionDataTask(*edData, recData, edSeq);
+    addSubTask(recDataTask);
+   
     //mutex.unlock();
     //cs end
-    
+}
+
+void ExpertDiscoveryToAnnotationTask::run(){
+      
 }
 
 Task::ReportResult ExpertDiscoveryToAnnotationTask::report(){
@@ -968,6 +969,16 @@ void ExpertDiscoveryToAnnotationTask::csToAnnotation(int seqNumber, unsigned int
 //         data->qualifiers.append(U2Qualifier("name", name));
 //         resultList.append(data);
 //     }
+}
+
+QList<Task*> ExpertDiscoveryToAnnotationTask::onSubTaskFinished(Task* subTask){
+    QList<Task*> res;
+    if(subTask == recDataTask){
+        if(recDataTask->hasRecData()){
+            recDataToAnnotation();
+        }
+    }
+    return res;
 }
 
 void ExpertDiscoveryToAnnotationTask::recDataToAnnotation(){
@@ -1084,6 +1095,19 @@ void ExpertDiscoveryUpdateSelectionTask::updateAnnotations(){
     }
 
     //AppContext::getAutoAnnotationsSupport()->unregisterAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
+}
+
+ExpertDiscoveryGetRecognitionDataTask::ExpertDiscoveryGetRecognitionDataTask(ExpertDiscoveryData& data, RecognizationData& _recData, Sequence& seq)
+:Task("ExpertDiscvery recognition task", TaskFlag_None)
+,edData(data)
+,recData(_recData)
+,curSequence(seq)
+,isRecData(false)
+{
+
+}
+void ExpertDiscoveryGetRecognitionDataTask::run(){
+    isRecData = edData.recDataStorage.getRecognizationData(recData, &curSequence, edData.getSelectedSignalsContainer(), stateInfo);
 }
 
 ExpertDiscoverySaveDocumentTask::ExpertDiscoverySaveDocumentTask(ExpertDiscoveryData& data, const QString& fileName)
