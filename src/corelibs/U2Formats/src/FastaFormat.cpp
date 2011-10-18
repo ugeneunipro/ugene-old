@@ -161,7 +161,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
             seqImporter.startSequence(dbiRef, objName, false, os);
             CHECK_OP(os, );
         } 
-        if (sequenceNumber > 1 && merge) {
+        if (sequenceNumber >= 1 && merge) {
             seqImporter.addDefaultSymbolsBlock(gapSize, os);
             sequenceStart += gapSize;
             CHECK_OP(os, );

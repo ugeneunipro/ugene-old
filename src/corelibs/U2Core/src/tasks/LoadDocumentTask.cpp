@@ -374,7 +374,7 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc,
         doc->propagateModLocks(resultDoc);
     } else if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
         int mergeGap = hints.value(DocumentReadingMode_SequenceMergeGapSize).toInt();
-        if (mergeGap < 0 || GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE).count() <= 1) {
+        if (mergeGap < 0 || doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedOnly).count() <= 1) {
             return NULL;
         }
         resultDoc = U1SequenceUtils::mergeSequences(doc, mergeGap, os);
