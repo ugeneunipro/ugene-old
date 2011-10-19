@@ -834,7 +834,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
         CHECK_OP(os, )
         SaveDocFlags fl;
         fl |= SaveDoc_Overwrite;
-        fl |= SaveDoc_DestroyAfter;
+		fl |= SaveDoc_DestroyAfter;
 
         QList<GObject*> objs;
         foreach(const U2AssemblyRead & r, reads) {
@@ -851,7 +851,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
         if (!model.addToProject) { // only saving
             t = saveDocTask;
         } else { // save, add doc
-            t = new AddDocumentTask(doc);
+            t = new AddDocumentTask(new Document(df, iof, model.filepath)); // new doc because doc will be deleted
             t->addSubTask(saveDocTask);
             t->setMaxParallelSubtasks(1);
         }

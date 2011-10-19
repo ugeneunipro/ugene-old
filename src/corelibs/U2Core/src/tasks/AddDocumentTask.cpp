@@ -46,11 +46,14 @@ Task( tr("Adding document to project: %1").arg(_dpt->getDocumentDescription()), 
 
 QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    if (propagateSubtaskError() || dpt->isCanceled()) {
+    if (propagateSubtaskError()) {
         return res;
     }
 
-    if (subTask == dpt) {
+    if (subTask == dpt && dpt != NULL) {
+        if(dpt->isCanceled()){
+            return res;
+        }
         document = dpt->takeDocument();
         if (AppContext::getProject() == NULL) {
             res << AppContext::getProjectLoader()->createNewProjectTask();
