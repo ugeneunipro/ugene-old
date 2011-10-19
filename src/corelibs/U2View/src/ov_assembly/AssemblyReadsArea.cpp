@@ -851,7 +851,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
         if (!model.addToProject) { // only saving
             t = saveDocTask;
         } else { // save, add doc
-            t = new AddDocumentTask(new Document(df, iof, model.filepath)); // new doc because doc will be deleted
+            t = new AddDocumentTask(new Document(df, iof, model.filepath, U2DbiRef(), false)); // new doc because doc will be deleted
             t->addSubTask(saveDocTask);
             t->setMaxParallelSubtasks(1);
         }
