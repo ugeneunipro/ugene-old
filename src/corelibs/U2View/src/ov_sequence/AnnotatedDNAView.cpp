@@ -61,7 +61,6 @@
 
 #include <U2View/FindDialog.h>//BUG:423: move to plugins!?
 #include <U2View/SecStructPredictUtils.h>
-#include <U2View/WebWindow.h>
 
 #include <U2Gui/AnnotationSettingsDialogController.h>
 #include <U2Gui/GUIUtils.h>

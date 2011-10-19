@@ -22,7 +22,7 @@
 #include "DNAStatPlugin.h"
 #include "DNAStatMSAProfileDialog.h"
 #include "DistanceMatrixMSAProfileDialog.h"
-#include "DNAStatProfileTask.h"
+#include "DNAStatsWindow.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
@@ -165,8 +165,13 @@ void DNAViewStatsContext::sl_showDnaStats()
 
 	AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
 	SAFE_POINT(dnaView != NULL, "View is NULL", );
+	
+	ADVSequenceObjectContext* ctx = dnaView->getSequenceInFocus();
+	SAFE_POINT( ctx != NULL, "Context is NULL", );
 
-	AppContext::getTaskScheduler()->registerTopLevelTask( new DNAStatProfileTask(dnaView));
+	DNAStatsWindow* w = new DNAStatsWindow(ctx);
+    w->setWindowIcon(QIcon(":core/images/chart_bar.png"));
+    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
 }
 
 

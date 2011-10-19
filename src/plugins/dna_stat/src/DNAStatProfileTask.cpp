@@ -32,8 +32,8 @@
 
 namespace U2 {
 
-DNAStatProfileTask::DNAStatProfileTask(AnnotatedDNAView *v):Task(tr("Generate sequence statistics profile"), TaskFlag_None){
-    ctx = v->getSequenceInFocus();
+DNAStatProfileTask::DNAStatProfileTask(ADVSequenceObjectContext* context):Task(tr("Generate sequence statistics profile"), TaskFlag_None){
+    ctx = context;
     contentCounter.resize(256);
     contentCounter.fill(0);
 	nA = nC = nG = nT = 0;
@@ -76,7 +76,19 @@ void DNAStatProfileTask::run(){
 		} else {
 			molarWeight = nA * 313.21 + nT * 304.2 + nC * 289.18 + nG * 329.21 + 17.04;
 		}
+		
+		int molarAbsCoef = nA*15400 + nT*8800 + nC*7300 + nG*11700;
+		
+		float meltingTm = 0;
+		if (seqLen < 15) {
+			meltingTm = (nA+nT) * 2 + (nG + nC) * 4;
+		} else {
+			meltingTm = 64.9 + 41*(nG + nC-16.4)/(float)(nA+nT+nG+nC);
+		}
+
 		resultText += "<tr><td><b>Molar Weight:</b></td><td>" + QString("%1 Da").arg(molarWeight, 0, 'f', 2) + "</td></tr>\n";
+		resultText += "<tr><td><b>Molar ext. coef.:</b></td><td>" + QString("%1 I/mol (at 260 nm)").arg(molarAbsCoef) + "</td></tr>\n";
+		resultText += "<tr><td><b>Melting Tm:</b></td><td>" + QString("%1 C (at salt CC 50 mM, primer CC 50 mM, pH 7.0)").arg(meltingTm, 0, 'f', 2) + "</td></tr>\n";
 	}
 	
     resultText+="</table>\n";
@@ -105,7 +117,7 @@ void DNAStatProfileTask::run(){
         resultText+="<tr><td></td><td>" + 
             DNAStatProfileTask::tr("Dinucleotide counts") + "</td><td>" +
             DNAStatProfileTask::tr("Dinucleotide percents %") + "</td></tr>";
-        QMap<QByteArray, int>::const_iterator it(diNuclCounter.begin());
+		QMap<QByteArray, int>::const_iterator it(diNuclCounter.begin());
         for(;it != diNuclCounter.end(); it++){
             const QByteArray diNucl = it.key();
             const int cnt = it.value();
@@ -118,10 +130,7 @@ void DNAStatProfileTask::run(){
 
 Task::ReportResult DNAStatProfileTask::report(){
     assert(!resultText.isEmpty());
-    QString title = DNAStatProfileTask::tr("Statistics for %1 sequence").arg(ctx->getSequenceObject()->getGObjectName());
-    WebWindow* w = new WebWindow(title, resultText);
-    w->setWindowIcon(QIcon(":core/images/chart_bar.png"));
-    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
+    
     return ReportResult_Finished;
 }
 

@@ -27,15 +27,15 @@
 
 namespace U2 {
 
-class AnnotatedDNAView;
 class ADVSequenceObjectContext;
 
 class DNAStatProfileTask : public Task {
     Q_OBJECT
 public:
-    DNAStatProfileTask(AnnotatedDNAView *v);
+    DNAStatProfileTask(ADVSequenceObjectContext *context);
     void run();
     ReportResult report();
+	const QString& getResult() const { return resultText; }
 
 private:
     void computeStats();
