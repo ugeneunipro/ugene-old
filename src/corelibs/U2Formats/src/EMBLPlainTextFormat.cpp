@@ -33,6 +33,7 @@
 #include <U2Core/DNAInfo.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -128,7 +129,7 @@ bool EMBLPlainTextFormat::readIdLine(ParserState* s) {
     return true;
 }
 
-bool EMBLPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
+bool EMBLPlainTextFormat::readEntry(ParserState* st,U2SequenceImporter& seqImporter, int& sequenceLen,int& fullSequenceLen, bool merge, int gapSize,U2OpStatus& os) {
     U2OpStatus& si = st->si;
     QString lastTagName;
     bool hasLine = false;
@@ -190,7 +191,7 @@ bool EMBLPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
         }
 
         if (st->hasKey("FT", 2)) {
-            readAnnotations(st, sequence.size());
+            readAnnotations(st, fullSequenceLen);
             hasLine = true;
             continue;
         }
@@ -201,7 +202,11 @@ bool EMBLPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
         }
         else if (st->hasKey("SQ", 2)) {
             //reading sequence
-            readSequence(sequence, st);
+			if(merge && gapSize){
+				seqImporter.addDefaultSymbolsBlock(gapSize,os);
+				CHECK_OP(os,false);
+			}
+            readSequence(st,seqImporter,sequenceLen,fullSequenceLen,os);
             return true;
         }
 

@@ -34,6 +34,7 @@
 #include <U2Core/DNAInfo.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -105,7 +106,7 @@ bool SwissProtPlainTextFormat::readIdLine(ParserState* s) {
     return true;
 }
 
-bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
+bool SwissProtPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqImporter, int& sequenceLen,int& fullSequenceLen, bool merge, int gapSize, U2OpStatus& os) {
     U2OpStatus& si = st->si;
     QString lastTagName;
     bool hasLine = false;
@@ -171,7 +172,7 @@ bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) 
           In general the feature table lists posttranslational modifications, binding sites, enzyme active sites, local secondary structure or other characteristics reported in the cited references.
         */
         if (st->hasKey("FT", 2)) {
-            readAnnotations(st, sequence.size());
+            readAnnotations(st, fullSequenceLen);
             hasLine = true;
             continue;
         }
@@ -182,7 +183,8 @@ bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) 
         }
         else if (st->hasKey("SQ", 2)) {
             //reading sequence
-            readSequence(sequence, st);
+            readSequence(st,seqImporter,sequenceLen,fullSequenceLen,os);
+			CHECK_OP(os,false);
             return true;
         }
 
@@ -205,7 +207,8 @@ bool SwissProtPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) 
 
     return false;
 }
-bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
+bool SwissProtPlainTextFormat::readSequence(ParserState *st, U2SequenceImporter& seqImporter, int& sequenceLen, int& fullSequenceLen, U2OpStatus& os){
+	QByteArray res;
 
     IOAdapter* io = st->io;
     U2OpStatus& si = st->si;
@@ -219,7 +222,7 @@ bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
 
     //reading sequence
     QBuffer writer(&res);
-    writer.open( QIODevice::WriteOnly | QIODevice::Append );
+    writer.open( QIODevice::WriteOnly);
     bool ok = true;
     int len;
     while (ok && (len = io->readLine(buff, READ_BUFF_SIZE)) > 0) {
@@ -237,6 +240,9 @@ bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
             break;
         }
 
+		bool isSeek = writer.seek(0);
+		assert(isSeek);
+
         //add buffer to result
         for (int i= 0; i < len; i++) {
             char c = buff[i];
@@ -247,10 +253,17 @@ bool SwissProtPlainTextFormat::readSequence(QByteArray &res, ParserState *st){
                 }
             }
         }
+		
         if (!ok) {
             si.setError(tr("Error reading sequence: memory allocation failed"));
             break;
         }
+		
+		seqImporter.addBlock(res,res.size(),os);
+		CHECK_OP(os,false);
+		sequenceLen += res.size();
+		fullSequenceLen += res.size();
+		res.clear();
 
         si.setProgress(io->getProgress());
     }

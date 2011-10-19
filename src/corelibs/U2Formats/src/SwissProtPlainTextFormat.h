@@ -36,8 +36,8 @@ public:
 protected:
 
     bool readIdLine(ParserState*);
-    bool readEntry(QByteArray&, ParserState*);
-    bool readSequence(QByteArray& sequence, ParserState*);
+    bool readEntry(ParserState*, U2SequenceImporter&,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&);
+    bool readSequence(ParserState*, U2SequenceImporter&, int&, int&, U2OpStatus&);
     void readAnnotations(ParserState*, int offset);
     SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, U2OpStatus& si, int offset);
     //void readAnnotations(ParserState*, int offset);

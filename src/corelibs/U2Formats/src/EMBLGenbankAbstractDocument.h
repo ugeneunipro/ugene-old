@@ -27,6 +27,7 @@
 
 #include <QtCore/QStringList>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/U2SequenceUtils.h>
 
 
 namespace U2 {
@@ -59,9 +60,9 @@ protected:
     
     virtual int     readMultilineQualifier(IOAdapter* io, char* cbuff, int maxSize, bool prevLineHasMaxSize);
     virtual SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, U2OpStatus& si, int offset);
-    virtual bool    readSequence(QByteArray& sequence, ParserState*);
+    virtual bool    readSequence(ParserState*, U2SequenceImporter& , int&, int&, U2OpStatus&);
 
-    virtual bool readEntry(QByteArray& sequence, ParserState*) = 0;
+    virtual bool readEntry(ParserState*, U2SequenceImporter& ,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&) = 0;	
     virtual void readAnnotations(ParserState*, int offset);
     
     

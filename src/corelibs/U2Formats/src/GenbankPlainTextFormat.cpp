@@ -121,7 +121,7 @@ bool GenbankPlainTextFormat::readIdLine(ParserState* st) {
 
 
 
-bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
+bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqImporter, int& sequenceLen,int& fullSequenceLen,bool merge, int gapSize, U2OpStatus& os) {
     U2OpStatus& si = st->si;
     QString lastTagName;
     bool hasLine = false;
@@ -136,7 +136,7 @@ bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
             continue;
         }
         if (st->hasKey("FEATURES") && st->readNextLine()) {
-            readAnnotations(st, sequence.size());
+            readAnnotations(st, fullSequenceLen);
             hasLine = true;
             continue;
         }
@@ -193,7 +193,11 @@ bool GenbankPlainTextFormat::readEntry(QByteArray& sequence, ParserState* st) {
                 if (st->len >0) {
                     st->io->skip(-st->len - 1);
                 }
-                readSequence(sequence, st);
+				if(merge && gapSize){
+					seqImporter.addDefaultSymbolsBlock(gapSize,os);
+					CHECK_OP(os,false);
+				}
+                readSequence(st,seqImporter,sequenceLen,fullSequenceLen,os);
             }
             return true;
         }

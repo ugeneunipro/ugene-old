@@ -215,7 +215,15 @@ void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) 
     DNAAlphabet* oldAl = U2AlphabetUtils::getById(sequence.alphabet);
     DNAAlphabet* resAl = blockAl;
     if (oldAl != NULL) {
-        resAl = U2AlphabetUtils::deriveCommonAlphabet(blockAl, oldAl);
+		if(oldAl->getType() == DNAAlphabet_AMINO && resAl->getType() == DNAAlphabet_NUCL){
+			resAl = oldAl;
+		}
+		else if(resAl->getType() == DNAAlphabet_AMINO && oldAl->getType() == DNAAlphabet_NUCL){
+			oldAl = resAl;
+		}
+		else{
+			resAl = U2AlphabetUtils::deriveCommonAlphabet(blockAl, oldAl);
+		}
         CHECK_EXT(resAl!=NULL, os.setError(U2SequenceUtils::tr("Failed to derive sequence alphabet!")), );
     } 
     

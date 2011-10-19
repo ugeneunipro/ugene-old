@@ -29,6 +29,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include "DocumentFormatUtils.h"
 #include "FastqFormat.h"
@@ -166,6 +167,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
      TmpDbiObjects dbiObjects(dbiRef, os);
 
      int sequenceStart = 0;
+
+	 U2SequenceImporter seqImporter;
+
+	 int seqNumber = 0;
+
      while (!os.isCoR()) {
          //read header
          readBuff.clear();
@@ -177,26 +183,37 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
              break;
          }
 
+		 QString headerLine = QString::fromLatin1(readBuff.data()+1, readBuff.length()-1);
+
+		 if (merge == false   || seqNumber == 0){		
+				QString objName = (merge) ? "Sequence" : TextUtils::variate(headerLine, "_", names)  ;
+				names.insert(objName);
+				seqImporter.startSequence(dbiRef,objName,false,os);
+				CHECK_OP(os,);
+		 }
+
          //read sequence
-         if (!merge) {
-             sequence.clear();
-         } else if (sequence.size() > 0) {
-             sequence.append(gapSequence);
-         }
-         sequenceStart = sequence.size();
+		 if (merge && sequence.length() > 0) {
+					seqImporter.addDefaultSymbolsBlock(gapSize,os);
+					sequenceStart += sequence.length();
+					sequenceStart+=gapSize;
+					CHECK_OP(os,);
+		 }
+         sequence.clear();  
          if(!readUntil(sequence, io, os, SEQ_QUAL_SEPARATOR)) {
             break;
          }
-         int seqLen = sequence.size() - sequenceStart;
+         seqImporter.addBlock(sequence.data(),sequence.length(),os);
+		 CHECK_OP(os,);
 
          // read +<seqname>
          secondBuff.clear();
-         secondBuff.reserve(readBuff.size());
+         secondBuff.reserve(readBuff.length());
          if (!readLine(secondBuff, io, os)) {
              break;
          }
-         if (secondBuff[0]!= '+' || (secondBuff.size() != 1 && secondBuff.size() != readBuff.size())
-             || (readBuff.size() == secondBuff.size() && strncmp(readBuff.data()+1, secondBuff.data()+1, readBuff.size() - 1))) {
+         if (secondBuff[0]!= '+' || (secondBuff.length() != 1 && secondBuff.length() != readBuff.length() )
+             || (readBuff.length()  == secondBuff.length() && strncmp(readBuff.data()+1, secondBuff.data()+1, readBuff.length() - 1))) {
              os.setError(U2::FastqFormat::tr("Not a valid FASTQ file: %1").arg(docUrl.getURLString()));
              break;
          }
@@ -204,41 +221,43 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
          // read qualities
          qualityScores.clear();
          
-         if( !readBlock(qualityScores, io, os, seqLen) ) {
+         if( !readBlock(qualityScores, io, os, sequence.length()) ) {
             break;
          }
          
-         if ( qualityScores.length() != sequence.length() - sequenceStart) {
+         if ( qualityScores.length() != sequence.length()) {
              os.setError(U2::FastqFormat::tr("Not a valid FASTQ file: %1. Bad quality scores: inconsistent size.").arg(docUrl.getURLString()));   
          }
-         
-         QString headerLine = QString::fromLatin1(readBuff.data()+1, readBuff.length()-1);
+         seqNumber++;
          if (merge) {
              headers.append(headerLine);
-             mergedMapping.append(U2Region(sequenceStart, seqLen));
+             mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
          } else {
-             QString objName = TextUtils::variate(headerLine, "_", names);
-             names.insert(objName);
-             DNASequence seq(objName, sequence);
-             seq.quality = DNAQuality(qualityScores);
-             seq.info.insert(DNAInfo::FASTA_HDR, headerLine);
-             U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, seq, hints, os);
-             if (os.hasError()) {
-                 break;
-             }
-             dbiObjects.objects << seqObj->getSequenceRef().entityId;
-             seqObj->setQuality(seq.quality);
+             U2Sequence u2seq = seqImporter.finalizeSequence(os);
+			 CHECK_OP(os,);
+
+			 U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
+
+			 objects << seqObj;
+			 dbiObjects.objects << seqObj->getSequenceRef().entityId;
+			 seqObj->setQuality(DNAQuality(qualityScores));
          }
      }
 
      CHECK_OP(os, );
-     CHECK_EXT(!objects.isEmpty(), os.setError(Document::tr("Document is empty.")), );
+     CHECK_EXT(!objects.isEmpty() || merge, os.setError(Document::tr("Document is empty.")), );
      SAFE_POINT(headers.size() == mergedMapping.size(), "headers <-> regions mapping failed!", );
 
      if (!merge) {
          return;
      }
-     DocumentFormatUtils::addMergedSequenceObjectDeprecated(dbiRef, objects, docUrl, headers, sequence, mergedMapping, hints, os);
+	 U2Sequence u2seq = seqImporter.finalizeSequence(os);
+	 CHECK_OP(os,);
+
+	 dbiObjects.objects << u2seq.id;
+
+	 objects << new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
+	 objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(docUrl, headers, u2seq, mergedMapping, os);
      if (headers.size() > 1) {
          writeLockReason = DocumentFormat::MERGED_SEQ_LOCK;
      }

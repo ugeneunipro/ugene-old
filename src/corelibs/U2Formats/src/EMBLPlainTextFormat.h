@@ -36,7 +36,7 @@ public:
 protected:
 
     bool readIdLine(ParserState*);
-    bool readEntry(QByteArray&, ParserState*);
+    bool readEntry(ParserState*, U2SequenceImporter&,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&);
     //void readAnnotations(ParserState*, int offset);
     QMap<QString, QString> tagMap;
 };
