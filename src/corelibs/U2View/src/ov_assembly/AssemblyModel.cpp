@@ -44,6 +44,8 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectTypes.h>
 
+#include <U2Gui/ObjectViewTasks.h>
+
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
 
@@ -273,24 +275,13 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
 }
 
 Task * AssemblyModel::createLoadReferenceAndAddToProjectTask(const U2CrossDatabaseReference& ref) {
-    // hack: factoryId in FileDbi looks like FileDbi_formatId
-    QString factoryId = ref.dataRef.dbiRef.dbiFactoryId;
-    DocumentFormatId fid = factoryId.mid(factoryId.indexOf("_") + 1);
-    DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
-    SAFE_POINT(df, QString("Document format is not supported? %1").arg(fid), NULL);
-    
     QString url = ref.dataRef.dbiRef.dbiId;
-    IOAdapterId iofId = IOAdapterUtils::url2io(url);
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(iofId);
-    SAFE_POINT(iof, QString("IO-factory is unknown? %1, url: %2").arg(iofId).arg(url), NULL);
 
     U2OpStatus2Log os;
-    Document* refDoc = df->createNewUnloadedDocument(iof, url, os);
+    Document* refDoc = ObjectViewTask::createDocumentAndAddToProject(url, AppContext::getProject(), os);
     CHECK_OP(os, NULL);
 
     Task * t = new LoadUnloadedDocumentTask(refDoc);
-    t->addSubTask(new AddDocumentTask(refDoc));
-    t->setMaxParallelSubtasks(1);
     return t;
 }
 

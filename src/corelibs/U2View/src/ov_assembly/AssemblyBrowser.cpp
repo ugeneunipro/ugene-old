@@ -182,7 +182,11 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         model->setReference(seqObj);
         U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiConnection().dbi->getCrossDatabaseReferenceDbi();
         U2CrossDatabaseReference crossDbRef;
-        crossDbRef.dataRef.dbiRef = seqObj->getSequenceRef().dbiRef;
+        // Cannot simply use seqObj->getSequenceRef(), since it points to a temporary dbi
+        // TODO: make similar method seqObj->getPersistentSequenctRef()
+        crossDbRef.dataRef.dbiRef.dbiId = seqDoc->getURLString();
+        crossDbRef.dataRef.dbiRef.dbiFactoryId = "document";
+        crossDbRef.dataRef.entityId = seqObj->getGObjectName().toUtf8();
         crossDbRef.dataRef.version = 1;
         crossDbi->createCrossReference(crossDbRef, os);
         LOG_OP(os);
