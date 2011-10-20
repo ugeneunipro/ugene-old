@@ -22,7 +22,7 @@
 #ifndef _U2_DNA_STATS_WINDOW_H_
 #define _U2_DNA_STATS_WINDOW_H_
 
-#include <QtWebkit/QWebView>
+#include <QtWebKit/QWebView>
 
 #include <U2Core/global.h>
 #include <U2Gui/MainWindow.h>
