@@ -82,7 +82,7 @@ static QVector<U2Region> toRange(const QVector<int>& startPos) {
     return res;
 }
 
-void MultiTableAssemblyAdapter::initTables(QList<U2AssemblyRead>& reads, U2OpStatus& os) {
+void MultiTableAssemblyAdapter::initTables(const QList<U2AssemblyRead>& reads, U2OpStatus& os) {
     if (os.hasError()) {
         return;
     }
@@ -386,20 +386,6 @@ static U2DataId addTable2Id(const U2DataId& id, const QByteArray& idExtra) {
     return res;
 }
 
-#define NREADS_AT_ONCE 250000
-
-static QList<U2AssemblyRead> fetchReads(U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {
-    QList<U2AssemblyRead> res;
-    for (int i = 0; i < NREADS_AT_ONCE && it->hasNext(); i++) {
-        U2AssemblyRead read = it->next();
-        if (os.hasError()) {
-            break;
-        }
-        res << read;
-    }
-    return res;
-}
-
 static void ensureGridSize(QVector <QVector < QList<U2AssemblyRead> > > & grid, int rowPos, int nElens) {
     int oldRows = grid.size();
     if (oldRows > rowPos) {
@@ -412,13 +398,14 @@ static void ensureGridSize(QVector <QVector < QList<U2AssemblyRead> > > & grid, 
     }
 }
 
-#define N_READS_TO_ADD_AT_ONCE 100000
+#define N_READS_TO_FLUSH_TOTAL 100000
+#define N_READS_TO_FLUSH_PER_RANGE 10000
 
 void MultiTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) {
     bool empty = adaptersGrid.isEmpty();
-    QList<U2AssemblyRead> reads = fetchReads(it, os);
     if (empty) {
-        initTables(reads, os);
+        // TODO: fetch some reads for analysis. By now not needed, since regions are hard-coded anyway
+        initTables(QList<U2AssemblyRead>(), os);
         if (os.hasError()) {
             return;
         }
@@ -429,12 +416,15 @@ void MultiTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2As
     PackAlgorithmContext packContext;
 
     QVector <QVector < QList<U2AssemblyRead> > > readsGrid; //reads sorted by range
-    for (int readsChunk = 0; !os.isCoR(); readsChunk++) {
-        int nReads = reads.size();
+    bool lastIteration = false;
+    qint64 readsInGrid = 0;
+    while(!os.isCoR()) {
         int nElens = elenRanges.size();
-        bool lastIteration = reads.isEmpty();
-        for (int i = 0; i < nReads && !os.isCoR(); i++) {
-            U2AssemblyRead& read = reads[i];
+        if(it->hasNext()) {
+            U2AssemblyRead read = it->next();
+            if (os.isCoR()) {
+                break;
+            }
             int readLen = read->readSequence.length();
             read->effectiveLen = readLen + U2AssemblyUtils::getCigarExtraLength(read->cigar);
             int elenPos = getElenRangePosByLength(read->effectiveLen);
@@ -444,27 +434,33 @@ void MultiTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2As
             int rowPos = getRowRangePosByRow(read->packedViewRow);
             ensureGridSize(readsGrid, rowPos, nElens);
             readsGrid[rowPos][elenPos] << read;
+            ++ii.nReads;
+            ++readsInGrid;
+        } else {
+            lastIteration = true;
         }
+
         int nRows = readsGrid.size();
-        for (int rowPos = 0; rowPos < nRows && !os.isCoR(); rowPos++) {
-            for (int elenPos = 0; elenPos < nElens && !os.isCoR(); elenPos++) {
-                QList<U2AssemblyRead>& rangeReads = readsGrid[rowPos][elenPos];
-                int nRangeReads = rangeReads.size();
-                if (nRangeReads == 0 || (!lastIteration && nRangeReads < N_READS_TO_ADD_AT_ONCE)) {
-                    continue;
+        if(lastIteration || readsInGrid > N_READS_TO_FLUSH_TOTAL) {
+            for (int rowPos = 0; rowPos < nRows && !os.isCoR(); rowPos++) {
+                for (int elenPos = 0; elenPos < nElens && !os.isCoR(); elenPos++) {
+                    QList<U2AssemblyRead>& rangeReads = readsGrid[rowPos][elenPos];
+                    int nRangeReads = rangeReads.size();
+                    if (nRangeReads == 0 || (!lastIteration && nRangeReads < N_READS_TO_FLUSH_PER_RANGE)) {
+                        continue;
+                    }
+                    MTASingleTableAdapter* adapter = getAdapterByRowAndElenRange(rowPos, elenPos, true, os);
+                    U2AssemblyReadsImportInfo rangeReadsImportInfo;
+                    BufferedDbiIterator<U2AssemblyRead> rangeReadsIterator(rangeReads);
+                    adapter->singleTableAdapter->addReads(&rangeReadsIterator, rangeReadsImportInfo, os);
+                    readsInGrid -= rangeReads.size();
+                    rangeReads.clear();
                 }
-                MTASingleTableAdapter* adapter = getAdapterByRowAndElenRange(rowPos, elenPos, true, os);
-                U2AssemblyReadsImportInfo rangeReadsImportInfo;
-                BufferedDbiIterator<U2AssemblyRead> rangeReadsIterator(rangeReads);
-                adapter->singleTableAdapter->addReads(&rangeReadsIterator, rangeReadsImportInfo, os);
-                rangeReads.clear();
             }
         }
-        ii.nReads+=nReads;
         if (lastIteration) {
             break;
         }
-        reads = fetchReads(it, os);
     }
     createReadsIndexes(os);
 

@@ -92,7 +92,7 @@ protected:
     void syncTables(U2OpStatus& os);
     
     /** For a new and empty assembly analyzes reads data and calculate ranges */
-    void initTables(QList<U2AssemblyRead>& reads, U2OpStatus& os);
+    void initTables(const QList<U2AssemblyRead>& reads, U2OpStatus& os);
 
     /** Re-reads table info from DB */
     void rereadTables(const QByteArray& idata, U2OpStatus& os);
