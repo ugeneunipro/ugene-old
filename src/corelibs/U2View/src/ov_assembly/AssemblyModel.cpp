@@ -359,11 +359,13 @@ void AssemblyModel::sl_referenceLoaded() {
     if (refDoc != NULL) {
         refObj = qobject_cast<U2SequenceObject*>(refDoc->findGObjectByName(ref.dataRef.entityId.constData()));
     }
-    
+
+    loadingReference = false;
     if (refObj == NULL) {
         sl_unassociateReference();
+    } else {
+        emit si_referenceChanged();
     }
-    loadingReference = false;
 }
 
 bool AssemblyModel::hasReference() const {
