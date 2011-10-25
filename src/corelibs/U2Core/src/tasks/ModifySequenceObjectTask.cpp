@@ -54,7 +54,7 @@ ModifySequenceContentTask::ModifySequenceContentTask(const DocumentFormatId& _df
                                                      bool _mergeAnnotations )
 
 :Task(tr("Modify sequence task"), TaskFlag_NoRun), resultFormatId(_dfId), mergeAnnotations(_mergeAnnotations),
-curDoc(seqObj->getDocument()), newDoc(NULL), url(_url), strat(_str), seqObj(_seqObj), 
+curDoc(_seqObj->getDocument()), newDoc(NULL), url(_url), strat(_str), seqObj(_seqObj), 
 regionToReplace(_regionTodelete), sequence2Insert(seq2Insert) 
 {
     GCOUNTER( cvar, tvar, "Modify sequence task" );
@@ -62,8 +62,8 @@ regionToReplace(_regionTodelete), sequence2Insert(seq2Insert)
 }
 
 Task::ReportResult ModifySequenceContentTask::report(){
-    CHECK(regionToReplace.isEmpty() && sequence2Insert.seq.isEmpty(), ReportResult_Finished);
-    CHECK_EXT(curDoc->isStateLocked(), setError(tr("Document is locked")), ReportResult_Finished);
+	CHECK(!(regionToReplace.isEmpty() && sequence2Insert.seq.isEmpty()), ReportResult_Finished);
+    CHECK_EXT(!curDoc->isStateLocked(), setError(tr("Document is locked")), ReportResult_Finished);
         
     U2Region seqRegion(0, seqObj->getSequenceLength());
     if (!seqRegion.contains(regionToReplace)){
@@ -114,16 +114,21 @@ void ModifySequenceContentTask::fixAnnotations(){
                 QList<Annotation*> annList = ato->getAnnotations();
                 foreach(Annotation *an, annList){
                     QVector<U2Region> locs = an->getRegions();
+					
                     QList< QVector<U2Region> > newRegions = U1AnnotationUtils::fixLocationsForReplacedRegion(regionToReplace, sequence2Insert.seq.length(), an->getRegions(), strat);
-                    if (newRegions.isEmpty()) {
+
+                    if (newRegions[0].isEmpty()) {
                         ato->removeAnnotation(an);
                     }
-                    an->replaceRegions(newRegions[0]);
-                    for (int i = 1; i < newRegions.size(); i++) {
-                        Annotation* copy = new Annotation(an->data());
-                        QStringList groupNames = an->getFullGroupsNames();
-                        ato->addAnnotation(copy, groupNames);
-                    }
+					else{
+						an->replaceRegions(newRegions[0]);					
+						
+						for (int i = 1; i < newRegions.size(); i++) {
+							Annotation* copy = new Annotation(an->data());
+							QStringList groupNames = an->getFullGroupsNames();
+							ato->addAnnotation(copy, groupNames);
+						}	
+					}
                 }
             }
         }

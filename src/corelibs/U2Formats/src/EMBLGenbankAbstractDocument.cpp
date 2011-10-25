@@ -197,7 +197,6 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 				    dbiObjects.objects << seqObj->getSequenceRef().entityId;
 
 					if (annotationsObject!=NULL) {				
-						printf("ANNOTATION\n!");
 						sequenceRef.objName = seqObj->getGObjectName();
 						annotationsObject->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));					
 					}

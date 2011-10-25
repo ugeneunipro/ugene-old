@@ -40,7 +40,7 @@ QList< QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(cons
 
     foreach(U2Region r, original) {
         //if location ends before modification
-        if (r.endPos() < region2Remove.startPos) {
+		if (r.endPos() <= region2Remove.startPos) {
             updated << r;
             continue;
         }
@@ -56,10 +56,27 @@ QList< QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(cons
         if (s == AnnotationStrategyForResize_Resize) {
             // if location contains modified region -> update it length
             if (r.contains(region2Remove)) {
-                r.length += dLen;
-                updated << r;
-                continue;
+				// if set A = set B - do nothing
+				if(!(r.startPos == region2Remove.startPos && r.endPos() == region2Remove.endPos())){
+					r.length += dLen;
+					updated << r;
+				}
             }
+			// if location partly contain (in the end) region2remove - update length
+			else if(r.contains(U2Region(region2Remove.startPos,0))){
+				if(dLen < 0){
+					r.length -= (r.endPos() - region2Remove.startPos) ;
+				}
+				updated << r;
+			}
+			else if(r.contains(U2Region(region2Remove.endPos(),0))){
+				if(dLen < 0){
+					int diff = region2Remove.endPos() - r.startPos;
+					r.startPos += diff + dLen;
+					r.length -= diff; 
+				}
+				updated << r;
+			}
             continue;
         }
         assert(s == AnnotationStrategyForResize_Split_To_Joined || s == AnnotationStrategyForResize_Split_To_Separate);
@@ -67,7 +84,7 @@ QList< QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(cons
         bool join = (s == AnnotationStrategyForResize_Split_To_Joined);
         U2Region interR = r.intersect(region2Remove);
         U2Region leftR = r.startPos < interR.startPos ? U2Region(r.startPos, interR.startPos - r.startPos) : U2Region();
-        U2Region rightR = r.endPos() > interR.endPos() ? U2Region(interR.endPos(), r.endPos() - interR.endPos()) : U2Region();
+        U2Region rightR = r.endPos() > interR.endPos() ? U2Region(interR.endPos()+dLen, r.endPos() - interR.endPos()) : U2Region();
         if (leftR.isEmpty()) {
             if (!rightR.isEmpty()) {
                 updated << rightR;

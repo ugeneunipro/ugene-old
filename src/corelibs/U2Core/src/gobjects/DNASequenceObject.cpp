@@ -152,7 +152,9 @@ QByteArray U2SequenceObject::getSequenceData(const U2Region& r) const {
 }
 
 void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& seq, U2OpStatus& os) {
-    CHECK_EXT(seq.alphabet == getAlphabet() || seq.seq.isEmpty(), os.setError(tr("Modified sequence & region have different alphabet")), );
+	// seq.alphabet == NULL - for tests.
+    CHECK_EXT(seq.alphabet == getAlphabet() || seq.seq.isEmpty() || seq.alphabet == NULL, 
+		os.setError(tr("Modified sequence & region have different alphabet")), );
     
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, );
