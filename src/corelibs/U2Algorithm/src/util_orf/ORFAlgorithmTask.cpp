@@ -55,7 +55,7 @@ void ORFFindTask::onResult(const ORFFindResult& r) {
         }
         return;
     }
-    assert(r.region.length % 3 == 0);
+    assert((r.region.length + r.joinedRegion.length) % 3 == 0);
     newResults.append(r);
 }
 

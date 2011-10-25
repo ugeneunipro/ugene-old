@@ -46,7 +46,14 @@ static void checkNumberEnd(U2Location& location , int& x1, int& x2, const char* 
         x2 = parseNum(str, len);
     }
     if (x2!=-1 || addToResultsIfOne) {
-        x2 = qMax(x1, x2); //if x2 == -1 -> make it == x2
+        if(x1 > x2){
+            if(x2 == -1){
+                x2 = qMax(x1, x2); //if x2 == -1 -> make it == x2
+            }else{
+                qSwap(x1, x2); //revers if x1 > x2
+            }
+        }
+        
         if (x1 > 0 && x1 <= x2) {
             int lLen = x2 - x1 + 1; //both x1 and x2 are inclusive
             location->regions << U2Region(x1-1, lLen); //-1 because in gb files location starts from 1

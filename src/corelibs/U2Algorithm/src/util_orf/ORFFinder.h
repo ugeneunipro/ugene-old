@@ -33,9 +33,11 @@ class DNATranslation;
 
 class U2ALGORITHM_EXPORT ORFFindResult {
 public:
-    ORFFindResult () : region(0, 0), frame(0){}
+    ORFFindResult () : region(0, 0), frame(0), isJoined(false){}
     ORFFindResult (const U2Region& _r, int frame) 
-        : region(_r), frame(frame){}
+        : region(_r), frame(frame), isJoined(false){}
+    ORFFindResult (const U2Region& _r, const U2Region& _r_joined, int frame) 
+        :region(_r), joinedRegion(_r_joined), frame(frame), isJoined(true){}
     
     void clear() {region.startPos = 0; region.length = 0; frame = 0;}
     
@@ -50,6 +52,9 @@ public:
         data = new AnnotationData;
         data->name = name;
         data->location->regions << region;
+        if(isJoined){
+            data->location->regions << joinedRegion;
+        }
         data->setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
         //data->qualifiers.append(U2Qualifier("frame", QString::number(frame)));
         data->qualifiers.append(U2Qualifier("dna_len", QString::number(region.length)));
@@ -60,6 +65,8 @@ public:
     }
 
     U2Region region;
+    U2Region joinedRegion;
+    bool isJoined;
     int frame;
 
     static QList<SharedAnnotationData> toTable(const QList<ORFFindResult>& res, const QString& name)
@@ -95,11 +102,12 @@ public:
         bool mustInit = true,
         bool allowAltStart = false,
         bool allowOverlap = false,
-		bool includeStopCodon = false
+		bool includeStopCodon = false,
+        bool circularSearch = false
 		) : strand(strand), complementTT(complementTT), proteinTT(proteinTT),
         searchRegion(searchRegion), minLen(minLen), mustFit(mustFit), 
         mustInit(mustInit), allowAltStart(allowAltStart), allowOverlap(allowOverlap), 
-		includeStopCodon(includeStopCodon) {}
+		includeStopCodon(includeStopCodon), circularSearch(circularSearch) {}
     
     ORFAlgorithmStrand          strand;
     DNATranslation*             complementTT;
@@ -111,6 +119,7 @@ public:
     bool                        allowAltStart;
     bool                        allowOverlap;
 	bool						includeStopCodon;
+    bool                        circularSearch;
     static const QString        ANNOTATION_GROUP_NAME;
     // strand string ids
     static const QString        STRAND_DIRECT;

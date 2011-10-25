@@ -27,6 +27,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -81,9 +82,6 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
         sequences << seqObj;
     }
 
-
-
-    
     if (xSeqIndex >= 0) {
         xAxisCombo->setCurrentIndex(xSeqIndex);
     }
@@ -92,7 +90,7 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
     } else if (sequences.size() > 1) {    // choose the second sequence for Y axis by default
         yAxisCombo->setCurrentIndex(1);
     }
-
+   
     minLenBox->setValue(minLen);
     identityBox->setValue(identity);
 
@@ -176,7 +174,6 @@ RFAlgorithm DotPlotDialog::getAlgo() const {
         int index = algoCombo->currentIndex();
         return RFAlgorithm(algoCombo->itemData(index).toInt());
     }
-
     return RFAlgorithm_Auto;
 }
 

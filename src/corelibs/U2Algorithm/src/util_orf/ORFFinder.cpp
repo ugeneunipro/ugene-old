@@ -63,6 +63,7 @@ void ORFFindAlgorithm::find(
     bool mustInit = cfg.mustInit;
     bool allowAltStart = cfg.allowAltStart;
     bool allowOverlap = cfg.allowOverlap;
+    bool circularSearch = cfg.circularSearch;
     int minLen = qMax(cfg.minLen, 3);
 
     int onePercentLen = cfg.searchRegion.length/100;
@@ -108,6 +109,36 @@ void ORFFindAlgorithm::find(
                 leftTillPercent = onePercentLen;
             }
         }
+
+        if(circularSearch && !stopFlag){
+            //circular
+            int regLen = end - cfg.searchRegion.startPos;
+            int minInitiator = end;
+            bool initiatorsRemain = false;
+            for (int i=0; i<3;i++) {
+                foreach(int initiator, start[i]) {
+                    if(initiator < minInitiator){
+                        minInitiator = initiator;
+                        initiatorsRemain = true;
+                    }
+
+                }
+            }
+            for(int i = cfg.searchRegion.startPos; i < minInitiator && !stopFlag && initiatorsRemain; i++) {
+                int frame =(regLen+i)%3;
+                QList<int>* initiators = start + frame;
+                if (!initiators->isEmpty() && aTT->isStopCodon(sequence + i)) {
+                    foreach(int initiator, *initiators) {
+                        int len = regLen + i - initiator;
+                        if (len>=minLen){                            
+                            rl->onResult(ORFFindResult(U2Region(initiator, end-initiator), U2Region(cfg.searchRegion.startPos, i), frame));
+                        }
+                    }
+                    initiators->clear();
+                }
+            }
+        }
+
         if (!mustFit && !stopFlag) {
             //check if non-terminated ORFs remained
             for (int i=0; i<3;i++) {
@@ -117,7 +148,7 @@ void ORFFindAlgorithm::find(
                     if (len>=minLen) rl->onResult(ORFFindResult(U2Region(initiator, len), i + 1));
                 }
             }
-        }
+         }
     }
 
     if (isComplement(cfg.strand)) {
@@ -127,6 +158,7 @@ void ORFFindAlgorithm::find(
             revComplDna.data(), cfg.searchRegion.length);
         TextUtils::reverse(revComplDna.data(), revComplDna.size());
         const char* rcSeq = revComplDna.data();
+        const char* rcSeqCyrcular = rcSeq;
 
         QList<int> start[3];
         if (!mustInit) {
@@ -165,6 +197,33 @@ void ORFFindAlgorithm::find(
             if (leftTillPercent == 0) {
                 percentsCompleted = qMin(percentsCompleted+1,100);
                 leftTillPercent = onePercentLen;
+            }
+        }
+        if(circularSearch && !stopFlag){
+            int regLen = cfg.searchRegion.endPos() - cfg.searchRegion.startPos;
+            int maxInitiator = -1;
+            bool initiatorsRemain = false;
+            for (int i=0; i<3;i++) {
+                foreach(int initiator, start[i]) {
+                    if(initiator > maxInitiator){
+                        maxInitiator = initiator;
+                        initiatorsRemain = true;
+                    }
+
+                }
+            }
+            for(int i = cfg.searchRegion.endPos(); i >= maxInitiator && !stopFlag && initiatorsRemain; rcSeqCyrcular++, i--) {
+                int frame =(regLen+i)%3;
+                QList<int>* initiators = start + frame;
+                if (!initiators->isEmpty() && aTT->isStopCodon(rcSeqCyrcular)) {
+                    foreach(int initiator, *initiators) {
+                        int len = regLen + initiator - i ;
+                        if (len>=minLen){                            
+                            rl->onResult(ORFFindResult(U2Region(i, cfg.searchRegion.endPos()-i), U2Region(end, initiator), frame - 3));
+                        }
+                    }
+                    initiators->clear();
+                }
             }
         }
         if (!mustFit && !stopFlag) {

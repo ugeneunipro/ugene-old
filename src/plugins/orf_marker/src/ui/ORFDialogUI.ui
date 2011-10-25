@@ -263,6 +263,13 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="ckCircularSearch">
+            <property name="text">
+             <string>Circular Search</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>

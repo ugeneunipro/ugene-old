@@ -621,7 +621,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
     Q_ASSERT(sequenceX);
     Q_ASSERT(sequenceY);
 
-    if ((sequenceX->getAlphabet()->getType() != sequenceY->getAlphabet()->getType()) || (sequenceX->getAlphabet()->getType() != DNAAlphabet_NUCL)){
+    if ((sequenceX->getAlphabet()->getType() != sequenceY->getAlphabet()->getType())){
 
         sequenceX = NULL;
         sequenceY = NULL;
@@ -635,8 +635,11 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 
 
     DNAAlphabet *al = sequenceX->getAlphabet();
+    RFAlgorithm alg = d.getAlgo();
     if ((al->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) || (al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT())) {
         al = sequenceY->getAlphabet();
+    }else{
+        alg = RFAlgorithm_Diagonal; // only this algorithm works with protein sequences
     }
 
     RepeatFinderTaskFactoryRegistry *tfr = AppContext::getRepeatFinderTaskFactoryRegistry();
@@ -657,7 +660,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
             seqYCache.length(),
             al,
             d.getMinLen(), d.getMismatches(),
-            d.getAlgo()
+            alg
             );
 
         Task *dotPlotDirectTask = factory->getTaskInstance(cDirect);
@@ -676,7 +679,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
             seqYCache.length(),
             al,
             d.getMinLen(), d.getMismatches(),
-            d.getAlgo()
+            alg
             );
 
         Task *dotPlotInversedTask = factory->getTaskInstance(cInverse);

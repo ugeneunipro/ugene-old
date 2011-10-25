@@ -41,6 +41,7 @@ CheckUpdatesTask::CheckUpdatesTask(bool startUp)
 {
     runOnStartup = startUp;
     setVerboseLogMode(true);
+    startError = false;
 }
 
 #define SITE_URL  QString("ugene.unipro.ru")
@@ -60,13 +61,18 @@ void CheckUpdatesTask::run() {
     stateInfo.setDescription(QString());
 
     if (http.error() != QHttp::NoError) {
-        stateInfo.setError(  tr("Connection error: %1").arg(http.errorString()) );
+        if(!runOnStartup){
+            stateInfo.setError(  tr("Connection error while checking for updates: %1").arg(http.errorString()) );
+        }else{
+            uiLog.error(tr("Connection error while checking for updates: %1").arg(http.errorString()));
+            startError = true;
+        }
         return;
     }
 }
 
 Task::ReportResult CheckUpdatesTask::report() {
-    if (hasError()) {
+    if (hasError() || startError) {
         return ReportResult_Finished;
     }
 

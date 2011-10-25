@@ -194,7 +194,7 @@ void DotPlotDialogs::loadWrongFormat() {
 
 void DotPlotDialogs::wrongAlphabetTypes() {
 
-    QMessageBox mb(QMessageBox::Critical, tr("Wrong alphabet types"), tr("Both sequence alphabets must be 4-symbols DNA alphabets"));
+    QMessageBox mb(QMessageBox::Critical, tr("Wrong alphabet types"), tr("Both sequence must have the same alphabet"));
     mb.exec();
 }
 

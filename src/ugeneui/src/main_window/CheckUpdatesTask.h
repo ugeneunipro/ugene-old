@@ -39,6 +39,7 @@ public:
 
     Version siteVersion;
     bool    runOnStartup;
+    bool    startError;
 };
 
 

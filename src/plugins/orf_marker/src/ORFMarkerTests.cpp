@@ -44,6 +44,7 @@ namespace U2 {
 #define ALT_INIT_ATTR "allow_alt_init_codons"
 #define TRANSLATION_ID_ATTR "translation_id"
 #define EXPECTED_RESULTS_ATTR  "expected_results"
+#define CIRCULAR_ATTR  "circular_search"
 
 Translator::Translator(const U2SequenceObject *s, const QString& tid) : seq(s), complTransl(NULL), aminoTransl(NULL) {
     DNAAlphabet* al = seq->getAlphabet();
@@ -159,6 +160,13 @@ void GTest_ORFMarkerTask::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
 
+    QString circularSearch = el.attribute(CIRCULAR_ATTR);
+    if (circularSearch == "true") {
+        settings.circularSearch = true;
+    } else{
+        settings.circularSearch = false;
+    }
+
     QString strTranslationId = el.attribute(TRANSLATION_ID_ATTR);
     if (strTranslationId.isEmpty()) {
         failMissingValue(TRANSLATION_ID_ATTR);
@@ -188,6 +196,9 @@ Task::ReportResult GTest_ORFMarkerTask::report() {
     QVector<U2Region> actualResults;
     foreach(ORFFindResult i, task->popResults()){
         actualResults.append(i.region);
+        if(i.isJoined){
+            actualResults.append(i.joinedRegion);
+        }
     }
     int actualSize = actualResults.size(), expectedSize = expectedResults.size();
     if (actualSize != expectedSize) {
