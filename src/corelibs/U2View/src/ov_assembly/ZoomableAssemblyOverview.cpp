@@ -19,9 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include "ZoomableAssemblyOverview.h"
 
-#include <math.h>
+#include "ZoomableAssemblyOverview.h"
+#include "AssemblyBrowser.h"
+#include "AssemblyReadsArea.h"
+#include "AssemblyBrowserSettings.h"
+
+#include <U2Core/Log.h>
+#include <U2Core/AppContext.h>
 
 #include <QtCore/qglobal.h>
 #include <QtGui/QApplication>
@@ -30,12 +35,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
 
-#include <U2Core/Log.h>
-#include <U2Core/AppContext.h>
-
-#include "AssemblyBrowser.h"
-#include "AssemblyReadsArea.h"
-#include "AssemblyBrowserSettings.h"
+#include <math.h>
 
 namespace U2 {
 

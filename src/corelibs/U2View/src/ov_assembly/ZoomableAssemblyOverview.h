@@ -22,14 +22,15 @@
 #ifndef __ZOOMABLE_ASSEMBLY_OVERVIEW_H__
 #define __ZOOMABLE_ASSEMBLY_OVERVIEW_H__
 
-#include <QtCore/QSharedPointer>
-#include <QtGui/QWidget>
+#include "AssemblyBrowserSettings.h"
+#include "CoverageInfo.h"
+//#include <U2Core/BackgroundTaskRunner.h>
 
 #include <U2Core/U2Region.h>
 
-#include "AssemblyBrowserSettings.h"
-#include "CoverageInfo.h"
-#include "BackgroundTaskRunner.h"
+#include <QtCore/QSharedPointer>
+#include <QtGui/QWidget>
+
 
 class QMenu;
 

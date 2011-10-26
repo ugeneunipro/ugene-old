@@ -20,13 +20,12 @@
  */
 
 #include "AssemblyCoverageGraph.h"
-
-#include <QtGui/QPainter>
-#include <QtGui/QMouseEvent>
-
 #include "AssemblyBrowser.h"
 
 #include <U2Core/U2SafePoints.h>
+#include <QtGui/QPainter>
+#include <QtGui/QMouseEvent>
+
 
 namespace U2 {
 

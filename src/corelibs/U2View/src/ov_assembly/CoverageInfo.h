@@ -22,13 +22,14 @@
 #ifndef __COVERAGE_INFO_H__
 #define __COVERAGE_INFO_H__
 
+#include "AssemblyModel.h"
+
+#include <U2Core/U2Region.h>
+#include "BackgroundTaskRunner.h"
+
 #include <QtCore/QVector>
 #include <QtCore/QSharedPointer>
 
-#include <U2Core/U2Region.h>
-
-#include "BackgroundTaskRunner.h"
-#include "AssemblyModel.h"
 
 namespace U2 {
 

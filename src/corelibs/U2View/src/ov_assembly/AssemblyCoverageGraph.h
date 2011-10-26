@@ -22,12 +22,10 @@
 #ifndef __ASSEMBLY_COVERAGE_GRAPH_H__
 #define __ASSEMBLY_COVERAGE_GRAPH_H__
 
+#include "CoverageInfo.h"
+
 #include <QtGui/QWidget>
 #include <QtCore/QSharedPointer>
-
-#include "AssemblyModel.h"
-#include "CoverageInfo.h"
-#include "BackgroundTaskRunner.h"
 
 namespace U2 {
 
