@@ -663,6 +663,8 @@ void AnnotationsTreeView::sl_onGroupRemoved(AnnotationGroup* parent, AnnotationG
         return;
     }
     assert(parent!=NULL && pg!=NULL);
+
+    tree->disconnect(this, SIGNAL(sl_onItemSelectionChanged()));
     
     for(int i = 0, n = pg->childCount(); i < n; i++) {
         AVItem* item = static_cast<AVItem*>(pg->child(i));
@@ -671,7 +673,10 @@ void AnnotationsTreeView::sl_onGroupRemoved(AnnotationGroup* parent, AnnotationG
             break;
         }
     }
+
     pg->updateVisual();
+
+    connect(tree, SIGNAL(itemSelectionChanged()), SLOT(sl_onItemSelectionChanged ()));
 }
 
 void AnnotationsTreeView::sl_onGroupRenamed(AnnotationGroup* g, const QString& oldName) {
