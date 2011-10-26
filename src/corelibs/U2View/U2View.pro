@@ -76,6 +76,7 @@ HEADERS += src/WebWindow.h \
            src/ov_sequence/DetView.h \
            src/ov_sequence/EditAnnotationDialogController.h \
            src/ov_sequence/GraphMenu.h \
+           src/ov_sequence/GraphSettingsDialog.h \
            src/ov_sequence/GSequenceGraphView.h \
            src/ov_sequence/GSequenceGraphViewWithFactory.h \
            src/ov_sequence/GSequenceLineView.h \
@@ -193,6 +194,7 @@ SOURCES += src/WebWindow.cpp \
            src/ov_sequence/DetView.cpp \
            src/ov_sequence/EditAnnotationDialogController.cpp \
            src/ov_sequence/GraphMenu.cpp \
+           src/ov_sequence/GraphSettingsDialog.cpp \
            src/ov_sequence/GSequenceGraphView.cpp \
            src/ov_sequence/GSequenceGraphViewWithFactory.cpp \
            src/ov_sequence/GSequenceLineView.cpp \

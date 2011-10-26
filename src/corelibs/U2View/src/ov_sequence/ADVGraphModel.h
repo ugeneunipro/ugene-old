@@ -76,15 +76,19 @@ struct PairVector {
 class U2VIEW_EXPORT GSequenceGraphDrawer : public QObject{
     Q_OBJECT
 public:
-    GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd);
+    GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
+		QMap<QString,QColor> colorMap = QMap<QString,QColor>());
     virtual ~GSequenceGraphDrawer();
 
     virtual void draw(QPainter& p, GSequenceGraphData* d, const QRect& rect);
 
     virtual void showSettingsDialog();
     
-    const GSequenceGraphWindowData& getWindowData() {return wdata;}
+	const GSequenceGraphWindowData& getWindowData() {return wdata;}
     const GSequenceGraphMinMaxCutOffData& getCutOffData() {return commdata;}
+	const QMap<QString,QColor>& getColors() {return lineColors;}
+	
+	static const QString DEFAULT_COLOR;
 
 protected:
     void calculatePoints(GSequenceGraphData* d, PairVector& points, float& min, float& max, int numPoints);
@@ -94,10 +98,10 @@ protected:
     
     // calculates points (< visual area size) and expands points to fill all visual area size
     void calculateWithExpand(GSequenceGraphData* d, PairVector& points, int alignedStart, int alignedEnd);
-
 protected:
     GSequenceGraphView*             view;
     QFont*                          defFont;
+	QMap<QString, QColor>			lineColors;
 
     GSequenceGraphWindowData        wdata;
     GSequenceGraphMinMaxCutOffData  commdata;

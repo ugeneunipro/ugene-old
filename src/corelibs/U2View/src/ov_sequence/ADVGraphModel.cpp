@@ -21,6 +21,7 @@
 
 #include "ADVGraphModel.h"
 #include "GSequenceGraphView.h"
+#include "GraphSettingsDialog.h"
 #include "WindowStepSelectorWidget.h"
 
 #include <math.h>
@@ -137,10 +138,16 @@ int GSequenceGraphUtils::getNumSteps(const U2Region& range, int w, int s) {
 //////////////////////////////////////////////////////////////////////////
 //drawer
 
-GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd) 
-: QObject(v), view(v), wdata(wd) 
+const QString GSequenceGraphDrawer::DEFAULT_COLOR(tr("Default color"));
+
+GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
+										   QMap<QString,QColor> colors) 
+: QObject(v), view(v), wdata(wd), lineColors(colors) 
 {
     defFont = new QFont("Arial", 8);
+	if (colors.isEmpty()) {
+		lineColors.insert(DEFAULT_COLOR, Qt::black);
+	}
 }
 
 GSequenceGraphDrawer::~GSequenceGraphDrawer() {
@@ -185,9 +192,15 @@ void GSequenceGraphDrawer::draw(QPainter& p, GSequenceGraphData* d, const QRect&
         QRect minTextRect(rect.x(), rect.bottom()-12, rect.width(), 12);
         p.drawText(minTextRect, Qt::AlignRight, minprefix + QString::number((double) min, 'g', 4));
     }
-
-    QPen graphPen(Qt::SolidLine);
-    graphPen.setWidth(1);
+	
+	QPen graphPen(Qt::SolidLine);
+	if  (lineColors.contains(d->graphName)) {
+		graphPen.setColor(lineColors.value(d->graphName));
+	} else {
+		graphPen.setColor(lineColors.value(DEFAULT_COLOR));
+	}
+	
+	graphPen.setWidth(1);
     p.setPen(graphPen);
 
 
@@ -551,18 +564,21 @@ void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector
 
 
 void GSequenceGraphDrawer::showSettingsDialog() {
-    WindowStepSelectorDialog d(view, U2Region(1, view->getSequenceLength()-1),
-                               wdata.window, wdata.step, commdata.min, commdata.max, commdata.enableCuttoff);
-    int res = d.exec();
-    if (res == QDialog::Accepted) {
-        wdata.window = d.getWindowStepSelector()->getWindow();
-        wdata.step = d.getWindowStepSelector()->getStep();
-        commdata.enableCuttoff = d.getMinMaxSelector()->getState();
-        commdata.min = d.getMinMaxSelector()->getMin();
-        commdata.max = d.getMinMaxSelector()->getMax();
-        view->update();
-    }
+    
+	GraphSettingsDialog dlg(this, U2Region(1, view->getSequenceLength()-1), view);
+	
+	if (dlg.exec() == QDialog::Accepted) {
+		wdata.window = dlg.getWindowSelector()->getWindow();
+		wdata.step = dlg.getWindowSelector()->getStep();
+		commdata.enableCuttoff = dlg.getMinMaxSelector()->getState();
+		commdata.min = dlg.getMinMaxSelector()->getMin();
+		commdata.max = dlg.getMinMaxSelector()->getMax();
+		lineColors = dlg.getColors();
+		view->update();
+	}
 }
+
+
 
 
 } // namespace
