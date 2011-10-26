@@ -1,7 +1,19 @@
 include (dna_graphpack.pri)
 
 # Input
-HEADERS += src/BaseContentGraph.h src/DNAGraphPackPlugin.h src/DeviationGraph.h src/EntropyAlgorithm.h src/KarlinSignatureDifferenceGraph.h src/CumulativeSkew.h
-SOURCES += src/BaseContentGraph.cpp src/DNAGraphPackPlugin.cpp src/DeviationGraph.cpp src/EntropyAlgorithm.cpp src/KarlinSignatureDifferenceGraph.cpp src/CumulativeSkew.cpp
+HEADERS += src/BaseContentGraph.h \
+           src/CumulativeSkew.h \
+           src/DeviationGraph.h \
+           src/DNAGraphPackPlugin.h \
+           src/EntropyAlgorithm.h \
+           src/GCFramePlot.h \
+           src/KarlinSignatureDifferenceGraph.h
+SOURCES += src/BaseContentGraph.cpp \
+           src/CumulativeSkew.cpp \
+           src/DeviationGraph.cpp \
+           src/DNAGraphPackPlugin.cpp \
+           src/EntropyAlgorithm.cpp \
+           src/GCFramePlot.cpp \
+           src/KarlinSignatureDifferenceGraph.cpp
 RESOURCES += dna_graphpack.qrc
-TRANSLATIONS += transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

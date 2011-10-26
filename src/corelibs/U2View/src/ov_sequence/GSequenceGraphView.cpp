@@ -180,7 +180,8 @@ void GSequenceGraphViewRA::drawAll(QPaintDevice* pd) {
 
     const QList<GSequenceGraphData*>& graphs = getGraphView()->getGraphs();
     foreach(GSequenceGraphData* d, graphs) {
-        gd->draw(p, d, graphRect);
+		//TODO: change model to corretly draw min and max
+		gd->draw(p, d, graphRect, d == graphs.last());
     }
 
     drawFrame(p);

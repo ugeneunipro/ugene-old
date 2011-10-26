@@ -80,7 +80,7 @@ public:
 		QMap<QString,QColor> colorMap = QMap<QString,QColor>());
     virtual ~GSequenceGraphDrawer();
 
-    virtual void draw(QPainter& p, GSequenceGraphData* d, const QRect& rect);
+    virtual void draw(QPainter& p, GSequenceGraphData* d, const QRect& rect, bool drawMaxMin);
 
     virtual void showSettingsDialog();
     

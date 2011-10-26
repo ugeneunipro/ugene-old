@@ -157,7 +157,7 @@ GSequenceGraphDrawer::~GSequenceGraphDrawer() {
 //TODO:
 #define UNKNOWN_VAL -1 
 
-void GSequenceGraphDrawer::draw(QPainter& p, GSequenceGraphData* d, const QRect& rect) {
+void GSequenceGraphDrawer::draw(QPainter& p, GSequenceGraphData* d, const QRect& rect, bool drawMaxMin) {
     float min=0;
     float max=0;
     PairVector points;
@@ -175,7 +175,7 @@ void GSequenceGraphDrawer::draw(QPainter& p, GSequenceGraphData* d, const QRect&
         maxprefix = ">=";
     }
 
-    {
+    if (drawMaxMin) {
         //draw min/max
         QPen minMaxPen(Qt::DashDotDotLine);
         minMaxPen.setWidth(1);
