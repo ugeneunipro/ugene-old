@@ -100,7 +100,16 @@ QString Annotation::getQualifiersTip(int maxRows, U2SequenceObject* seq, DNATran
         }
         tip += "</nobr>";
     }
-    if (seq && rows <= maxRows && (getStrand().isCompementary() || comlTT != NULL)) {
+
+    bool canShowSeq = true;
+    int seqLen = seq ? seq->getSequenceLength() : 0;
+    foreach(const U2Region& r, d->getRegions()) {
+        if (r.endPos() > seqLen) {
+            canShowSeq = false;
+        }
+    }
+
+    if (seq && rows <= maxRows && (getStrand().isCompementary() || comlTT != NULL) && canShowSeq) {
         QVector<U2Region> loc = getRegions();
         if (getStrand().isCompementary()) {
             qStableSort(loc.begin(), loc.end(), qGreater<U2Region>()); 
