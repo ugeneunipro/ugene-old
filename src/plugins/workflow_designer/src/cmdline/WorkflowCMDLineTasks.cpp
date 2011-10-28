@@ -114,7 +114,7 @@ static void setSchemaCMDLineOptions( Schema * schema, int optionsStartAtIdx ) {
         Actor * actor = WorkflowUtils::findActorByParamAlias( schema->getProcesses(), paramAlias, paramName );
         if( actor == NULL ) {
             assert( paramName.isEmpty() );
-            coreLog.info( WorkflowRunFromCMDLineBase::tr( "alias '%1' not set in schema" ).arg( paramAlias ) );
+            coreLog.details( WorkflowRunFromCMDLineBase::tr( "alias '%1' not set in schema" ).arg( paramAlias ) );
             continue;
         }
 
