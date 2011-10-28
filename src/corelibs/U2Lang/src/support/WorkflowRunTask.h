@@ -147,7 +147,7 @@ private:
 class RunCmdlineWorkflowTaskConfig {
 public:
     RunCmdlineWorkflowTaskConfig(const QString& _schemaPath = QString(), const QStringList& _args = QStringList()) 
-        : schemaPath(_schemaPath), args(_args), logLevel2Commute(LogLevel_INFO) {}
+        : schemaPath(_schemaPath), args(_args), logLevel2Commute(LogLevel_TRACE) {}
 
     QString         schemaPath;
     QStringList     args;
