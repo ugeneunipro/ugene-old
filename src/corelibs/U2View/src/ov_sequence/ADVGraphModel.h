@@ -72,12 +72,13 @@ struct PairVector {
     bool useIntervals;
 };
 
+typedef QMap<QString,QColor> ColorMap;
 
 class U2VIEW_EXPORT GSequenceGraphDrawer : public QObject{
     Q_OBJECT
 public:
     GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
-		QMap<QString,QColor> colorMap = QMap<QString,QColor>());
+		ColorMap colorMap = ColorMap());
     virtual ~GSequenceGraphDrawer();
 
     virtual void draw(QPainter& p, GSequenceGraphData* d, const QRect& rect, bool drawMaxMin);
@@ -86,7 +87,7 @@ public:
     
 	const GSequenceGraphWindowData& getWindowData() {return wdata;}
     const GSequenceGraphMinMaxCutOffData& getCutOffData() {return commdata;}
-	const QMap<QString,QColor>& getColors() {return lineColors;}
+	const ColorMap& getColors() {return lineColors;}
 	
 	static const QString DEFAULT_COLOR;
 
@@ -101,7 +102,7 @@ protected:
 protected:
     GSequenceGraphView*             view;
     QFont*                          defFont;
-	QMap<QString, QColor>			lineColors;
+	ColorMap						lineColors;
 
     GSequenceGraphWindowData        wdata;
     GSequenceGraphMinMaxCutOffData  commdata;
