@@ -57,9 +57,6 @@ EXCLUDE_LIST=(
     "*.user"
     "../../src/plugins/atistream_support"
     "../../src/libs_3rdparty/libssh"
-    "../../src/plugins/test_runner"
-    "../../src/plugins/CoreTests"
-    "../../src/plugins/perf_monitor"
     "../../src/libs_3rdparty/openssl"
 )
 
