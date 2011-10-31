@@ -23,6 +23,7 @@
 #define _U2_ASSEMBLY_UTILS_H_
 
 #include <U2Core/U2Assembly.h>
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
@@ -79,6 +80,21 @@ public:
         Returns all characters that may appear in CIGAR string
     */
     static QByteArray getCigarAlphabetChars();
+
+    /**
+        Serializes U2AssemblyCoverageStat to byte array for storing in dbi attribute
+    */
+    static QByteArray serializeCoverageStat(const U2AssemblyCoverageStat& coverageStat);
+
+    /**
+        Deserializes U2AssemblyCoverageStat that was serialized with serializeCoverageStat function
+    */
+    static void deserializeCoverageStat(QByteArray data, U2AssemblyCoverageStat& res, U2OpStatus &os);
+
+    /**
+        Size of array of cached coverage
+    */
+    static const int MAX_COVERAGE_VECTOR_SIZE;
 };
 
 } //namespace

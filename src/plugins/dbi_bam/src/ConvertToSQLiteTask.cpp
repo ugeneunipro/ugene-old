@@ -35,6 +35,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2AssemblyUtils.h>
 
 #include <limits>
 #include <memory>
@@ -66,6 +67,13 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
         }
     }
     reads.clear();
+}
+
+static void enableCoverageOnImport(U2AssemblyCovereageImportInfo &cii, int referenceLength) {
+    cii.computeCoverage = true;
+    int coverageInfoSize = qMin(U2AssemblyUtils::MAX_COVERAGE_VECTOR_SIZE, referenceLength);
+    cii.coverageBasesPerPoint = qMax(1.0, ((double)referenceLength)/coverageInfoSize);
+    cii.coverage.coverage.resize(coverageInfoSize);
 }
 
 namespace {
@@ -518,16 +526,18 @@ void ConvertToSQLiteTask::run() {
                 }
             }
 
-            for(int referenceId = 0;referenceId < reader->getHeader().getReferences().size(); referenceId++) {
+            const QList<Header::Reference> &references = reader->getHeader().getReferences();
+            for(int referenceId = 0;referenceId < references.size(); referenceId++) {
                 if(bamInfo.isReferenceSelected(referenceId)) {
                     U2Assembly assembly;
-                    assembly.visualName = reader->getHeader().getReferences()[referenceId].getName();
+                    assembly.visualName = references[referenceId].getName();
                     taskLog.details(tr("Importing assembly '%1' (%2 of %3)")
                                     .arg(assembly.visualName)
                                     .arg(referenceId + 1)
                                     .arg(reader->getHeader().getReferences().size()));
 
                     U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
+                    enableCoverageOnImport(importInfo.coverageInfo, references[referenceId].getLength());
                     U2OpStatusImpl opStatus;
                     std::auto_ptr<DbiIterator> dbiIterator;
                     if(bamInfo.hasIndex()) {
@@ -751,6 +761,7 @@ void ConvertToSQLiteTask::run() {
                 U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                 qint64 maxProw = importInfo.packStat.maxProw;
                 qint64 readsCount = importInfo.packStat.readsCount;
+                const U2AssemblyCoverageStat & coverageStat = importInfo.coverageInfo.coverage;
                 if(maxProw > 0)
                 {
                     U2IntegerAttribute maxProwAttr;
@@ -774,6 +785,18 @@ void ConvertToSQLiteTask::run() {
                     countReadsAttr.version = assembly.version;
                     countReadsAttr.value = readsCount;
                     attributeDbi->createIntegerAttribute(countReadsAttr, opStatus);
+                    if(opStatus.hasError()) {
+                        throw Exception(opStatus.getError());
+                    }
+                }
+                if(!coverageStat.coverage.isEmpty()) {
+                    static const QByteArray COVERAGE_STAT_ATTRIBUTE_NAME("coverageStat");
+                    U2ByteArrayAttribute attribute;
+                    attribute.objectId = assembly.id;
+                    attribute.name = COVERAGE_STAT_ATTRIBUTE_NAME;
+                    attribute.value = U2AssemblyUtils::serializeCoverageStat(coverageStat);
+                    attribute.version = assembly.version;
+                    attributeDbi->createByteArrayAttribute(attribute, opStatus);
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }

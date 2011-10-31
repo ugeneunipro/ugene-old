@@ -38,10 +38,24 @@ public:
     virtual U2AssemblyRead next(U2OpStatus& os) = 0;
 };
 
+class U2AssemblyCovereageImportInfo {
+public:
+    U2AssemblyCovereageImportInfo() : computeCoverage(false), coverageBasesPerPoint(1) {}
+
+    /** Specifies if assembly coverage is needed to be computed at import time*/
+    bool computeCoverage;
+
+    /** Place to save coverage info */
+    U2AssemblyCoverageStat coverage;
+
+    /** Shows how many real bases are in 1 coverage point */
+    double coverageBasesPerPoint;
+};
+
 /** Additional reads info used during reads import into assembly */
 class U2AssemblyReadsImportInfo {
 public:
-    U2AssemblyReadsImportInfo() : nReads(0), packed(false), computeCoverage(false), maxEndPosHint(0), coverageBasesPerPoint(1) {}
+    U2AssemblyReadsImportInfo() : nReads(0), packed(false) {}
     
     /** Number of reads added during import */
     qint64 nReads;
@@ -52,18 +66,7 @@ public:
     /* Place where to save pack statistics */
     U2AssemblyPackStat packStat;
 
-    
-    /** Specifies if assembly coverage is needed to be computed at import time*/
-    bool computeCoverage;
-
-    /** coverage size hint - tells max end pos for reads if not 0*/
-    int  maxEndPosHint;
-    
-    /** Place to save coverage info */
-    U2AssemblyCoverageStat coverage;
-    
-    /** Shows how many real bases are in 1 coverage point */
-    int             coverageBasesPerPoint;
+    U2AssemblyCovereageImportInfo coverageInfo;
 };
 
 /**

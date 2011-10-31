@@ -443,60 +443,20 @@ void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U
     }
 }
 
-#define MAX_COVERAGE_VECTOR_SIZE (1000*1000)
-
-static void remapCoverage(U2AssemblyReadsImportInfo& ii, int newSize, int newBasesPerPoint) {
-    int oldSize = ii.coverage.coverage.size();
-    SAFE_POINT(oldSize < newSize, "Invalid new coverage vector size!",);
-    SAFE_POINT(ii.coverageBasesPerPoint <= newBasesPerPoint, "Invalid new coverage bases per point value!",);
-    SAFE_POINT(newSize < MAX_COVERAGE_VECTOR_SIZE, "New coverage vector size is too large", );
-
-    ii.coverage.coverage.resize(newSize);
-    if (ii.coverageBasesPerPoint == newBasesPerPoint || oldSize == 0) {
-        return;
-    }
-    //remap
-    int nPointsToMerge = newBasesPerPoint / ii.coverageBasesPerPoint;
-    U2Range<int>* data = ii.coverage.coverage.data();
-    int oldSizeInNewVector = oldSize / nPointsToMerge;
-    int oldI = 0;
-    for (int i = 0; i < oldSizeInNewVector; i++) {
-        U2Range<int> res = data[oldI];
-        for (int oldEnd = oldI + nPointsToMerge; ++oldI < oldEnd;) {
-            U2Range<int> oldVal = data[oldI];
-            res = res + oldVal;
-        }
-        data[i] = res;
-    }
-    qFill(data + oldSizeInNewVector, data + oldSize, U2Range<int>());
-}
-
-
-void SQLiteAssemblyUtils::addToCoverage(U2AssemblyReadsImportInfo& ii, const U2AssemblyRead& read) {
+void SQLiteAssemblyUtils::addToCoverage(U2AssemblyCovereageImportInfo& ii, const U2AssemblyRead& read) {
     if (!ii.computeCoverage) {
         return;
     }
     int csize = ii.coverage.coverage.size();
-    int basesPerPoint = qMax(1, ii.coverageBasesPerPoint);
-    int endPos = (read->leftmostPos + read->effectiveLen) / basesPerPoint;
-    if (endPos >= csize) {
-        // resize and remap coverage info
-        int newCSize = ii.maxEndPosHint > 0 ? ii.maxEndPosHint : endPos * 2;
-        while (newCSize > MAX_COVERAGE_VECTOR_SIZE) {
-            basesPerPoint*=2;
-            if (newCSize/2 == MAX_COVERAGE_VECTOR_SIZE) {
-                newCSize = MAX_COVERAGE_VECTOR_SIZE;
-                break;
-            }
-            newCSize/=2;
-        }
-        remapCoverage(ii, newCSize, basesPerPoint);
-        endPos = (read->leftmostPos + read->effectiveLen) / basesPerPoint;
-        ii.coverageBasesPerPoint = basesPerPoint;
+
+    int startPos = (int)(read->leftmostPos / ii.coverageBasesPerPoint);
+    int endPos = (int)((read->leftmostPos + read->effectiveLen - 1) / ii.coverageBasesPerPoint);
+    if(endPos > csize - 1) {
+        coreLog.trace(QString("addToCoverage: endPos > csize - 1: %1 > %2").arg(endPos).arg(csize-1));
+        endPos = csize - 1;
     }
-    int startPos = read->leftmostPos / basesPerPoint;
     U2Range<int>* coverageData = ii.coverage.coverage.data();
-    for (int i = startPos; i <= endPos; i++) {
+    for (int i = startPos; i <= endPos && i < csize; i++) {
         coverageData[i].minValue++;
         coverageData[i].maxValue++;
     }

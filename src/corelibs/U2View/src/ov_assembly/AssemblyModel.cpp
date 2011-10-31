@@ -101,18 +101,7 @@ const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
             if(!os.isCoR()) {
                 if(attr.hasValidId()) {
                     // TODO: check version
-                    QByteArray data = attr.value;
-                    if(!data.isEmpty() && 0 == (data.size() % 4)) {
-                        for(int index = 0;index < data.size()/4;index++) {
-                            int value = 0;
-                            for(int i = 0;i < 4;i++) {
-                                value |= ((int)data[index*4 + i] & 0xff) << (i*8);
-                            }
-                            cachedCoverageStat.coverage.append(U2Range<int>(value, value));
-                        }
-                    } else {
-                        os.setError("Invalid attribute size");
-                    }
+                    U2AssemblyUtils::deserializeCoverageStat(attr.value, cachedCoverageStat, os);
                 } else {
                     qint64 length = getModelLength(os);
                     if(!os.isCoR()) {
@@ -121,16 +110,10 @@ const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
                         cachedCoverageStat.coverage.resize(coverageCacheSize);
                         calculateCoverageStat(U2Region(0, length), cachedCoverageStat, os);
                         if(!os.isCoR()) {
-                            QByteArray data;
-                            for(int index = 0;index < cachedCoverageStat.coverage.size();index++) {
-                                for(int i = 0;i < 4;i++) {
-                                    data.append((char)(cachedCoverageStat.coverage[index].maxValue >> (i*8)));
-                                }
-                            }
                             U2ByteArrayAttribute attribute;
                             attribute.objectId = assembly.id;
                             attribute.name = COVERAGE_STAT_ATTRIBUTE_NAME;
-                            attribute.value = data;
+                            attribute.value = U2AssemblyUtils::serializeCoverageStat(cachedCoverageStat);
                             attribute.version = assembly.version;
                             U2OpStatusImpl opStatus;
                             attributeDbi->createByteArrayAttribute(attribute, opStatus);

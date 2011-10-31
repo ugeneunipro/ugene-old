@@ -28,6 +28,8 @@
 
 namespace U2 {
 
+const int U2AssemblyUtils::MAX_COVERAGE_VECTOR_SIZE = 1000*1000;
+
 U2CigarOp U2AssemblyUtils::char2Cigar(char c, QString& err) {
     char cu = TextUtils::UPPER_CASE_MAP[c];
     switch (cu) {
@@ -134,6 +136,31 @@ static QByteArray prepareCigarChars() {
 QByteArray U2AssemblyUtils::getCigarAlphabetChars() {
     static QByteArray res = prepareCigarChars();
     return res;
+}
+
+QByteArray U2AssemblyUtils::serializeCoverageStat(const U2AssemblyCoverageStat& coverageStat) {
+    QByteArray data;
+    for(int index = 0;index < coverageStat.coverage.size();index++) {
+        for(int i = 0;i < 4;i++) {
+            data.append((char)(coverageStat.coverage[index].maxValue >> (i*8)));
+        }
+    }
+    return data;
+}
+
+void U2AssemblyUtils::deserializeCoverageStat(QByteArray data, U2AssemblyCoverageStat& res, U2OpStatus &os) {
+    res.coverage.clear();
+    if(!data.isEmpty() && 0 == (data.size() % 4)) {
+        for(int index = 0;index < data.size()/4;index++) {
+            int value = 0;
+            for(int i = 0;i < 4;i++) {
+                value |= ((int)data[index*4 + i] & 0xff) << (i*8);
+            }
+            res.coverage.append(U2Range<int>(value, value));
+        }
+    } else {
+        os.setError("Invalid attribute size");
+    }
 }
 
 } //namespace

@@ -168,7 +168,7 @@ void RTreeAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2Assembl
 
         insertIQ.execute();
 
-        SQLiteAssemblyUtils::addToCoverage(ii, read);
+        SQLiteAssemblyUtils::addToCoverage(ii.coverageInfo, read);
 
         ii.nReads++;
 

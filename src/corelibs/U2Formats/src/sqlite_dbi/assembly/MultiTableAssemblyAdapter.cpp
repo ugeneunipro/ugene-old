@@ -451,8 +451,11 @@ void MultiTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2As
                     }
                     MTASingleTableAdapter* adapter = getAdapterByRowAndElenRange(rowPos, elenPos, true, os);
                     U2AssemblyReadsImportInfo rangeReadsImportInfo;
+                    // pass the same coverage info through all adapters to accumulate coverage
+                    rangeReadsImportInfo.coverageInfo = ii.coverageInfo;
                     BufferedDbiIterator<U2AssemblyRead> rangeReadsIterator(rangeReads);
                     adapter->singleTableAdapter->addReads(&rangeReadsIterator, rangeReadsImportInfo, os);
+                    ii.coverageInfo = rangeReadsImportInfo.coverageInfo;
                     readsInGrid -= rangeReads.size();
                     rangeReads.clear();
                 }
