@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include "ExpertDiscoveryGraphs.h"
+
 namespace U2 {
 
 
@@ -28,10 +30,15 @@ private:
 
     void updateProbs();
 
+    ExpertDiscoveryRecognitionErrorGraphWidget*     graphWidget;
+
 
 protected slots:
     void sl_recBoundChaged(double val);
     void sl_optRecBound();
+
+    void sl_intervalChanged(int val);
+    void sl_recalculateValues();
 };
 
 }//namespace

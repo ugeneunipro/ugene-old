@@ -33,6 +33,7 @@ namespace U2{
 ,edSeqNumber(_edSeqNumber)
 ,edSeqType(sType)
 {
+    recData = edData.getRecognitionData(edSeqNumber, edSeqType);
 }
 
 
@@ -73,7 +74,6 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
     result.reserve(stepsNumber);
 
     // Calculating the results
-    RecognizationData recData = edData.getRecognitionData(edSeqNumber, edSeqType);
     for (int i = 0; i < stepsNumber; ++i)
     {
         // Calculating the threshold in the current window
@@ -83,7 +83,6 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
             if(j < recData.size()){
                 windowThreshold+=recData[j];
             }
-            //windowThreshold += FindHighFlexRegionsAlgorithm::flexibilityAngle(sequence[j], sequence[j + 1]);
         }
         windowThreshold /= (windowSize - 1);
 
@@ -153,5 +152,138 @@ GSequenceGraphDrawer* ExpertDiscoveryScoreGraphFactory::getDrawer(GSequenceGraph
 }
 
 
+
+QColor ExpertDiscoveryRecognitionErrorGraphWidget::ER1COLOR = QColor(255, 0, 0);
+QColor ExpertDiscoveryRecognitionErrorGraphWidget::ER2COLOR = QColor(0, 0, 255);
+QColor ExpertDiscoveryRecognitionErrorGraphWidget::BOUNDCOLOR = QColor(255,0,255);
+
+ExpertDiscoveryRecognitionErrorGraphWidget::ExpertDiscoveryRecognitionErrorGraphWidget(QWidget* parent,
+const std::vector<double>& _posScore, const std::vector<double>& _negScore, const CalculateErrorTaskInfo& _calcualteSettings)
+:QWidget(parent), redraw(false), posScore(_posScore), negScore(_negScore), recBound(0), calcualteSettings(_calcualteSettings){
+
+    connect(&errorsTask, SIGNAL(si_finished()), SLOT(sl_redraw()));
+    sl_calculateErrors(calcualteSettings);
+}
+void ExpertDiscoveryRecognitionErrorGraphWidget::draw(double curRecBound){
+    recBound = curRecBound;
+    redraw = true;
+    update();
+}
+
+void ExpertDiscoveryRecognitionErrorGraphWidget::sl_redraw(){
+    draw(recBound);
+}
+
+void ExpertDiscoveryRecognitionErrorGraphWidget::sl_calculateErrors(const CalculateErrorTaskInfo& _calcualteSettings){
+    calcualteSettings = _calcualteSettings;
+    errorsTask.run(new ExpertDiscoveryCalculateErrors(calcualteSettings));
+}
+
+void ExpertDiscoveryRecognitionErrorGraphWidget::paintEvent(QPaintEvent * e){
+    drawAll();
+    QWidget::paintEvent(e);
+}
+
+void ExpertDiscoveryRecognitionErrorGraphWidget::drawAll(){
+    if(pixmap.size() != size()){
+        pixmap = QPixmap(size());
+        redraw = true;
+    }
+    if(redraw){
+        pixmap.fill(Qt::white);
+        QPainter p(&pixmap);
+        
+        if(errorsTask.isFinished()){
+            drawGraph(p);
+            redraw = false;
+        }
+    }
+    QPainter p(this);
+    p.drawPixmap(0, 0, pixmap);
+}
+
+void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
+
+    double step = calcualteSettings.scoreStep;
+
+    assert(step!=0);
+
+    int regLen = calcualteSettings.scoreReg.length;
+    int stepsNum = regLen/step;
+
+    int offset = 2;
+    int scoreWidthPoint = 0;
+    const ErrorsInfo& errorsInfo = errorsTask.getResult();
+    QPainterPath erFirstTypePath;
+    QPainterPath erSecondTypePath;
+    if (stepsNum  < width()){
+        double pixelStep = double(width())/stepsNum;
+        double ratioY = double(errorsInfo.maxErrorVal)/(height());
+        
+        int hPixels = 0;
+        if(stepsNum!=0){
+            hPixels = qint64(double(errorsInfo.errorFirstType[0])/ratioY +0.5);
+            erFirstTypePath.moveTo(QPointF(0, height() - hPixels));
+
+            hPixels = qint64(double(errorsInfo.errorSecondType[0])/ratioY +0.5);
+            erSecondTypePath.moveTo(QPointF(0, height() - hPixels));
+        }
+        for(int i = 1; i < stepsNum; i++){
+            hPixels = qint64(double(errorsInfo.errorFirstType[i])/ratioY +0.5);
+            erFirstTypePath.lineTo(QPointF(i*pixelStep, height() - hPixels));
+
+            hPixels = qint64(double(errorsInfo.errorSecondType[i])/ratioY +0.5);
+            erSecondTypePath.lineTo(QPointF(i*pixelStep, height() - hPixels));
+        }
+        scoreWidthPoint = int(((recBound-calcualteSettings.scoreReg.startPos)/calcualteSettings.scoreReg.length)*width()+0.5);
+    }else{                                                   //average value per pixel used
+        int windowSize = int((double(stepsNum)/width()) +0.5);
+        double ratioY = double(errorsInfo.maxErrorVal)/(height());
+
+        int hPixels = 0;
+        if(stepsNum!=0){
+            hPixels = qint64(double(errorsInfo.errorFirstType[0])/ratioY +0.5);
+            erFirstTypePath.moveTo(QPointF(0, height() - hPixels));
+
+            hPixels = qint64(double(errorsInfo.errorSecondType[0])/ratioY +0.5);
+            erSecondTypePath.moveTo(QPointF(0, height() - hPixels));
+        }
+        for(int i = 0; i < stepsNum; i+=windowSize){
+            double val = 0;
+            for (int j = 0; (j < windowSize) && (i+j<stepsNum); j++){
+                val+= errorsInfo.errorFirstType[i+j];
+            }
+            hPixels = qint64(val/(ratioY*windowSize) + 0.5);
+            erFirstTypePath.lineTo(QPointF(i, height() - hPixels));
+
+            val = 0;
+            for (int j = 0; (j < windowSize) && (i+j<stepsNum); j++){
+                val+= errorsInfo.errorSecondType[i+j];
+            }
+            hPixels = qint64(val/(ratioY*windowSize) + 0.5);
+            erSecondTypePath.lineTo(QPointF(i, height() - hPixels));
+            if((calcualteSettings.scoreReg.length/double(stepsNum)*i + calcualteSettings.scoreReg.startPos < recBound)){
+                scoreWidthPoint = i;
+            }
+        }
+    }
+    QPen linePen(ER1COLOR);
+    linePen.setWidth(3);
+
+    p.setPen(linePen);
+    p.drawPath(erFirstTypePath);
+
+    linePen.setColor(ER2COLOR);
+    p.setPen(linePen);
+    p.drawPath(erSecondTypePath);
+
+    //scoreWidthPoint = int((recBound/50.0)*width()+0.5);
+
+    if(recBound >= calcualteSettings.scoreReg.startPos){
+        linePen.setColor(BOUNDCOLOR);
+        p.setPen(linePen);
+        p.drawLine(QPoint(scoreWidthPoint, 0), QPoint(scoreWidthPoint, height()));
+    }
+}
 
 }//namespace

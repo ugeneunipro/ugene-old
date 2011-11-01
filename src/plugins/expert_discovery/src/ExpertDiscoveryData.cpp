@@ -225,17 +225,17 @@ bool ExpertDiscoveryData::updateScores(){
     }
     
     pd.setLabelText(tr("Updating control sequences"));
-    for (int i=0; i<conBase.getSize(); i++)
-    {
-        if (pd.wasCanceled())
-            return false;
-        Sequence& rSeq = conBase.getSequence(i);
-        if (!rSeq.isHasScore())
-        {
-            updateScore(rSeq);
-        }
-        pd.setValue((100*(i+posBase.getSize() + negBase.getSize()))/sizeTotal);
-    }
+//     for (int i=0; i<conBase.getSize(); i++)
+//     {
+//         if (pd.wasCanceled())
+//             return false;
+//         Sequence& rSeq = conBase.getSequence(i);
+//         if (!rSeq.isHasScore())
+//         {
+//             updateScore(rSeq);
+//         }
+//         pd.setValue((100*(i+posBase.getSize() + negBase.getSize()))/sizeTotal);
+//     }
 
     return true;   
 }

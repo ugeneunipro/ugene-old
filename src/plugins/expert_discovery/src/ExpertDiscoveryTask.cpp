@@ -5,7 +5,6 @@
 
 //#include <U2Formats/DocumentFormatUtils.h>
 
-#include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentFormatConfigurators.h>
 #include <U2Core/L10n.h>
@@ -42,7 +41,7 @@
 #include <QtCore/QList>
 
 #include <fstream>
-
+#include <limits>
 
 
 namespace U2 {
@@ -1280,6 +1279,49 @@ void ExpertDiscoveryMarkupTask::addSignalMarkup(SequenceBase& rBase, MarkingBase
             rAnn.setMarking(i, mrk);
         }
      rBase.setMarking(rAnn);
+}
+
+
+ExpertDiscoveryCalculateErrors::ExpertDiscoveryCalculateErrors(const CalculateErrorTaskInfo& _settings)
+:BackgroundTask<ErrorsInfo>(tr("Error calculation"), TaskFlag_None), settings(_settings){
+    tpm = Progress_Manual;
+}
+void ExpertDiscoveryCalculateErrors::run(){
+
+    double step = settings.scoreStep;
+    int stepsNum = settings.scoreReg.length / step;
+    stateInfo.progress = 0;
+    result.errorFirstType.resize(stepsNum);
+    result.errorSecondType.resize(stepsNum);
+    result.maxErrorVal = 0;
+    result.minErrorVal = std::numeric_limits<double>::max();
+    double probPosRej = 0;
+    double probNegRec = 0;
+    double curScore = settings.scoreReg.startPos;
+    for(int i = 0; i < stepsNum; i++, curScore+=step){
+        stateInfo.progress = (i/stepsNum)*100;
+        probPosRej = 0;
+        int size = (int)settings.posScore.size();
+        for (int j=0; j<size; j++)
+            if (settings.posScore[j] <= curScore) probPosRej++;
+        probPosRej /= settings.posScore.size();
+        result.errorFirstType[i] = probPosRej;
+
+        probNegRec = 0;
+        size = (int)settings.negScore.size();
+        for (int j=0; j<size; j++)
+            if (settings.negScore[j] > curScore) probNegRec++;
+        probNegRec /= settings.negScore.size(); 
+        result.errorSecondType[i] = probNegRec;
+
+        result.maxErrorVal = qMax(result.maxErrorVal, probPosRej);
+        result.maxErrorVal = qMax(result.maxErrorVal, probNegRec);
+
+        result.minErrorVal = qMin(result.minErrorVal, probPosRej);
+        result.minErrorVal = qMin(result.minErrorVal, probNegRec);
+    }
+
+    stateInfo.progress = 100;
 }
 
 }//namespace

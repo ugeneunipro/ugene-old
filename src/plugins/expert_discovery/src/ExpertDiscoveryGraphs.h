@@ -24,6 +24,7 @@
 
 
 #include "ExpertDiscoveryData.h"
+#include "ExpertDiscoveryTask.h"
 #include <U2View/GraphMenu.h>
 #include <U2View/GSequenceGraphView.h>
 
@@ -47,6 +48,8 @@ private:
     int edSeqNumber;
     ExpertDiscoveryData& edData;
     SequenceType edSeqType;
+    RecognizationData recData;
+
 };
 
 
@@ -75,6 +78,42 @@ private:
 };
 
 
+class ExpertDiscoveryRecognitionErrorGraphWidget : public QWidget {
+    Q_OBJECT
+public:
+    ExpertDiscoveryRecognitionErrorGraphWidget(QWidget* parent,
+    const std::vector<double>& posScore,
+    const std::vector<double>& negScore,
+    const CalculateErrorTaskInfo& _calcualteSettings);
+    void draw(double curRecBound);
+
+    static QColor ER1COLOR;
+    static QColor ER2COLOR;
+    static QColor BOUNDCOLOR;
+
+protected:
+    void paintEvent(QPaintEvent * event);
+
+public slots:
+    void sl_calculateErrors(const CalculateErrorTaskInfo& _calcualteSettings);
+    void sl_redraw();
+
+private:
+    void drawAll();
+    void drawGraph(QPainter& p);
+
+    QPixmap     pixmap;
+    bool        redraw;
+
+    BackgroundTaskRunner<ErrorsInfo> errorsTask;
+
+    const std::vector<double>& posScore;
+    const std::vector<double>& negScore;
+
+    double recBound;
+    CalculateErrorTaskInfo calcualteSettings;
+
+};
 
 }//namespace
 
