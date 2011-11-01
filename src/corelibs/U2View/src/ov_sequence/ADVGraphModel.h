@@ -81,7 +81,7 @@ public:
 		ColorMap colorMap = ColorMap());
     virtual ~GSequenceGraphDrawer();
 
-    virtual void draw(QPainter& p, GSequenceGraphData* d, const QRect& rect, bool drawMaxMin);
+    virtual void draw(QPainter& p, QList<GSequenceGraphData*> graphs, const QRect& rect);
 
     virtual void showSettingsDialog();
     
@@ -92,6 +92,8 @@ public:
 	static const QString DEFAULT_COLOR;
 
 protected:
+	void drawGraph(QPainter& p, GSequenceGraphData* graph, const QRect& rect);
+
     void calculatePoints(GSequenceGraphData* d, PairVector& points, float& min, float& max, int numPoints);
     
     // calculates points (> visual area size) and fits the result into visual size
@@ -103,7 +105,8 @@ protected:
     GSequenceGraphView*             view;
     QFont*                          defFont;
 	ColorMap						lineColors;
-
+	float							globalMin, globalMax;
+	
     GSequenceGraphWindowData        wdata;
     GSequenceGraphMinMaxCutOffData  commdata;
 };

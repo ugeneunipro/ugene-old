@@ -179,11 +179,8 @@ void GSequenceGraphViewRA::drawAll(QPaintDevice* pd) {
     drawHeader(p);
 
     const QList<GSequenceGraphData*>& graphs = getGraphView()->getGraphs();
-    foreach(GSequenceGraphData* d, graphs) {
-		//TODO: change model to corretly draw min and max
-		gd->draw(p, d, graphRect, d == graphs.last());
-    }
-
+    gd->draw(p, graphs, graphRect);
+	
     drawFrame(p);
     drawSelection(p);
 }

@@ -157,218 +157,232 @@ GSequenceGraphDrawer::~GSequenceGraphDrawer() {
 //TODO:
 #define UNKNOWN_VAL -1 
 
-void GSequenceGraphDrawer::draw(QPainter& p, GSequenceGraphData* d, const QRect& rect, bool drawMaxMin) {
-    float min=0;
-    float max=0;
-    PairVector points;
-    int nPoints = rect.width();
-    calculatePoints(d, points, min, max, nPoints);
-
-    assert(points.firstPoints.size() == nPoints);
-
-    double comin = commdata.min, comax = commdata.max;
-    QString minprefix, maxprefix;
-    if (commdata.enableCuttoff){
-        min = comin;
-        max = comax;
-        minprefix = "<=";
-        maxprefix = ">=";
-    }
-
-    if (drawMaxMin) {
-        //draw min/max
-        QPen minMaxPen(Qt::DashDotDotLine);
-        minMaxPen.setWidth(1);
-        p.setPen(minMaxPen);
-        p.setFont(*defFont);
-
-        //max
-        p.drawLine(rect.topLeft(), rect.topRight());
-        QRect maxTextRect(rect.x(), rect.y(), rect.width(), 12);
-        p.drawText(maxTextRect, Qt::AlignRight, maxprefix + QString::number((double) max, 'g', 4));
-
-        //min
-        p.drawLine(rect.bottomLeft(), rect.bottomRight());
-        QRect minTextRect(rect.x(), rect.bottom()-12, rect.width(), 12);
-        p.drawText(minTextRect, Qt::AlignRight, minprefix + QString::number((double) min, 'g', 4));
-    }
+void GSequenceGraphDrawer::draw(QPainter& p, QList<GSequenceGraphData*> graphs, const QRect& rect) {
+    
+	globalMin = 0;
+	globalMax = 0;
 	
+	foreach (GSequenceGraphData* graph, graphs) {
+		drawGraph(p, graph, rect);
+	}
+	
+	{
+		 //draw min/max
+		 QPen minMaxPen(Qt::DashDotDotLine);
+		 minMaxPen.setWidth(1);
+		 p.setPen(minMaxPen);
+		 p.setFont(*defFont);
+
+		 //max
+		 p.drawLine(rect.topLeft(), rect.topRight());
+		 QRect maxTextRect(rect.x(), rect.y(), rect.width(), 12);
+		 p.drawText(maxTextRect, Qt::AlignRight, QString::number((double) globalMax, 'g', 4));
+
+		 //min
+		 p.drawLine(rect.bottomLeft(), rect.bottomRight());
+		 QRect minTextRect(rect.x(), rect.bottom()-12, rect.width(), 12);
+		 p.drawText(minTextRect, Qt::AlignRight, QString::number((double) globalMin, 'g', 4));
+	 }
+}
+
+
+void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const QRect& rect )
+{
+	float min=0;
+	float max=0;
+	PairVector points;
+	int nPoints = rect.width();
+	calculatePoints(d, points, min, max, nPoints);
+
+	assert(points.firstPoints.size() == nPoints);
+
+	double comin = commdata.min, comax = commdata.max;
+	if (commdata.enableCuttoff){
+		min = comin;
+		max = comax;
+	}
+	
+	globalMin = qMin(globalMin, min);
+	globalMax = qMax(globalMax, max);
+
 	QPen graphPen(Qt::SolidLine);
 	if  (lineColors.contains(d->graphName)) {
 		graphPen.setColor(lineColors.value(d->graphName));
 	} else {
 		graphPen.setColor(lineColors.value(DEFAULT_COLOR));
 	}
-	
+
 	graphPen.setWidth(1);
-    p.setPen(graphPen);
+	p.setPen(graphPen);
 
 
-    int graphHeight = rect.bottom() - rect.top() - 2;
-    float kh = (min == max) ? 1 : graphHeight / (max - min);
+	int graphHeight = rect.bottom() - rect.top() - 2;
+	float kh = (min == max) ? 1 : graphHeight / (max - min);
 
-    int prevY = -1;
-    int prevX = -1;
+	int prevY = -1;
+	int prevX = -1;
 
-    if (!commdata.enableCuttoff) {
-        ////////cutoff off
-        for (int i = 0, n = nPoints; i < n; i++) {
-            float fy1 = points.firstPoints[i];
-            if (fy1 == UNKNOWN_VAL) {
-                continue;
-            }
-            int dy1 = qRound((fy1 - min) * kh);
-            assert(dy1 <= graphHeight);
-            int y1 = rect.bottom() - 1 - dy1;
-            int x = rect.left() + i;
-            assert(y1 > rect.top() && y1 < rect.bottom());
-            if (prevX != -1) {
-                p.drawLine(prevX, prevY , x, y1);
-            }
-            prevY = y1;
-            prevX = x;
-            if (points.useIntervals) {
-                float fy2 = points.secondPoints[i];
-                if (fy2 == UNKNOWN_VAL) {
-                    continue;
-                }
-                int dy2 = qRound((fy2 - min) * kh);
-                assert(dy2 <= graphHeight);
-                int y2 = rect.bottom() - 1 - dy2;
-                assert(y2 > rect.top() && y2 < rect.bottom());
-                if (prevX != -1){
-                    p.drawLine(prevX, prevY , x, y2);
-                }
-                prevY = y2;
-                prevX = x;
-            }
-        }
-    } else    {
-        ////////cutoff on
+	if (!commdata.enableCuttoff) {
+		////////cutoff off
+		for (int i = 0, n = nPoints; i < n; i++) {
+			float fy1 = points.firstPoints[i];
+			if (fy1 == UNKNOWN_VAL) {
+				continue;
+			}
+			int dy1 = qRound((fy1 - min) * kh);
+			assert(dy1 <= graphHeight);
+			int y1 = rect.bottom() - 1 - dy1;
+			int x = rect.left() + i;
+			assert(y1 > rect.top() && y1 < rect.bottom());
+			if (prevX != -1) {
+				p.drawLine(prevX, prevY , x, y1);
+			}
+			prevY = y1;
+			prevX = x;
+			if (points.useIntervals) {
+				float fy2 = points.secondPoints[i];
+				if (fy2 == UNKNOWN_VAL) {
+					continue;
+				}
+				int dy2 = qRound((fy2 - min) * kh);
+				assert(dy2 <= graphHeight);
+				int y2 = rect.bottom() - 1 - dy2;
+				assert(y2 > rect.top() && y2 < rect.bottom());
+				if (prevX != -1){
+					p.drawLine(prevX, prevY , x, y2);
+				}
+				prevY = y2;
+				prevX = x;
+			}
+		}
+	} else    {
+		////////cutoff on
 
-        float fymin = comin;
-        float fymax = comax;
-        float fymid = (comin + comax)/2;
-        float fy;
-        int prevFY = -1;
-        bool rp = false, lp = false;
-        int ymid = rect.bottom() - 1 - qRound((fymid - min) * kh);
-        if (points.useIntervals){
-            for (int i=0, n = nPoints; i < n; i++) {
-                fy = points.firstPoints[i];
-                if (fy == UNKNOWN_VAL) {
-                    continue;
-                }
-                if (fy >= fymax) {
-                    fy = fymax;
-                }
-                else {
-                    if (fy <= fymin) fy = fymin;
-                            else    fy = fymid;
-                }
-                int dy = qRound((fy - min) * kh);
-                assert(dy <= graphHeight);
-                int y = rect.bottom() - 1 - dy;
-                int x = rect.left() + i;
-                assert(y > rect.top() && y < rect.bottom());
-                p.drawLine(x, ymid , x, y);
-            }
-            for (int i=0, n = points.secondPoints.size(); i < n; i++) {
-                fy = points.secondPoints[i];
-                if (fy == UNKNOWN_VAL) {
-                    continue;
-                }
-                if (fy >= fymax) {
-                    fy = fymax;
-                }
-                else {
-                    if (fy <= fymin) fy = fymin;
-                            else    fy = fymid;
-                }
-                int dy = qRound((fy - min) * kh);
-                assert(dy <= graphHeight);
-                int y = rect.bottom() - 1 - dy;
-                int x = rect.left() + i;
-                assert(y > rect.top() && y < rect.bottom());
-                p.drawLine(x, ymid , x, y);
-            }
-        } else {
-            for (int i=0, n = points.firstPoints.size(); i < n; i++) {
-                fy = points.firstPoints[i];
-                rp = false;
-                lp = false;
-                    if (fy == UNKNOWN_VAL) {
-                    continue;
-                }
-                if (fy >= fymax) {
-                    fy = fymax;
-                    if (prevFY == int(fymid)) lp=true;
-                }
-                else {
-                    fy = fymid;
-                    if (prevFY == int(fymax)) rp=true;
-                }
-                int dy = qRound((fy - min) * kh);
-                assert(dy <= graphHeight);
-                int y = rect.bottom() - 1 - dy;
-                int x = rect.left() + i;
-                if (lp) {
-                    p.drawLine(prevX, prevY, x, prevY);
-                    prevX = x;
-                }
-                if (rp) {
-                    p.drawLine(prevX,prevY,prevX,y);
-                    prevY = y;
-                }
-                assert(y > rect.top() && y < rect.bottom());
-                if (prevX!=-1){
-                    p.drawLine(prevX, prevY , x, y);
-                }
-                prevY = y;
-                prevX = x;
-                                prevFY = (int) fy;
-            }
-            prevY = -1;
-            prevX = -1;
-            prevFY = -1;
-            for (int i=0, n = points.firstPoints.size(); i < n; i++) {
-                fy = points.firstPoints[i];
-                rp = false;
-                lp = false;
-                if (fy == UNKNOWN_VAL) {
-                    continue;
-                }
-                if (fy <= fymin) {
-                    fy = fymin;
-                    if (prevFY == int(fymid)) lp=true;
-                }
-                else {
-                    fy = fymid;
-                    if (prevFY == int(fymin)) rp=true;
-                }
-                int dy = qRound((fy - min) * kh);
-                assert(dy <= graphHeight);
-                int y = rect.bottom() - 1 - dy;
-                int x = rect.left() + i;
-                if (lp) {
-                    p.drawLine(prevX, prevY, x, prevY);
-                    prevX = x;
-                }
-                if (rp) {
-                    p.drawLine(prevX,prevY,prevX,y);
-                    prevY = y;
-                }
-                assert(y > rect.top() && y < rect.bottom());
-                if (prevX!=-1){
-                    p.drawLine(prevX, prevY , x, y);
-                }
-                prevY = y;
-                prevX = x;
-                prevFY = (int) fy;
-            }
-        }
-    }
+		float fymin = comin;
+		float fymax = comax;
+		float fymid = (comin + comax)/2;
+		float fy;
+		int prevFY = -1;
+		bool rp = false, lp = false;
+		int ymid = rect.bottom() - 1 - qRound((fymid - min) * kh);
+		if (points.useIntervals){
+			for (int i=0, n = nPoints; i < n; i++) {
+				fy = points.firstPoints[i];
+				if (fy == UNKNOWN_VAL) {
+					continue;
+				}
+				if (fy >= fymax) {
+					fy = fymax;
+				}
+				else {
+					if (fy <= fymin) fy = fymin;
+					else    fy = fymid;
+				}
+				int dy = qRound((fy - min) * kh);
+				assert(dy <= graphHeight);
+				int y = rect.bottom() - 1 - dy;
+				int x = rect.left() + i;
+				assert(y > rect.top() && y < rect.bottom());
+				p.drawLine(x, ymid , x, y);
+			}
+			for (int i=0, n = points.secondPoints.size(); i < n; i++) {
+				fy = points.secondPoints[i];
+				if (fy == UNKNOWN_VAL) {
+					continue;
+				}
+				if (fy >= fymax) {
+					fy = fymax;
+				}
+				else {
+					if (fy <= fymin) fy = fymin;
+					else    fy = fymid;
+				}
+				int dy = qRound((fy - min) * kh);
+				assert(dy <= graphHeight);
+				int y = rect.bottom() - 1 - dy;
+				int x = rect.left() + i;
+				assert(y > rect.top() && y < rect.bottom());
+				p.drawLine(x, ymid , x, y);
+			}
+		} else {
+			for (int i=0, n = points.firstPoints.size(); i < n; i++) {
+				fy = points.firstPoints[i];
+				rp = false;
+				lp = false;
+				if (fy == UNKNOWN_VAL) {
+					continue;
+				}
+				if (fy >= fymax) {
+					fy = fymax;
+					if (prevFY == int(fymid)) lp=true;
+				}
+				else {
+					fy = fymid;
+					if (prevFY == int(fymax)) rp=true;
+				}
+				int dy = qRound((fy - min) * kh);
+				assert(dy <= graphHeight);
+				int y = rect.bottom() - 1 - dy;
+				int x = rect.left() + i;
+				if (lp) {
+					p.drawLine(prevX, prevY, x, prevY);
+					prevX = x;
+				}
+				if (rp) {
+					p.drawLine(prevX,prevY,prevX,y);
+					prevY = y;
+				}
+				assert(y > rect.top() && y < rect.bottom());
+				if (prevX!=-1){
+					p.drawLine(prevX, prevY , x, y);
+				}
+				prevY = y;
+				prevX = x;
+				prevFY = (int) fy;
+			}
+			prevY = -1;
+			prevX = -1;
+			prevFY = -1;
+			for (int i=0, n = points.firstPoints.size(); i < n; i++) {
+				fy = points.firstPoints[i];
+				rp = false;
+				lp = false;
+				if (fy == UNKNOWN_VAL) {
+					continue;
+				}
+				if (fy <= fymin) {
+					fy = fymin;
+					if (prevFY == int(fymid)) lp=true;
+				}
+				else {
+					fy = fymid;
+					if (prevFY == int(fymin)) rp=true;
+				}
+				int dy = qRound((fy - min) * kh);
+				assert(dy <= graphHeight);
+				int y = rect.bottom() - 1 - dy;
+				int x = rect.left() + i;
+				if (lp) {
+					p.drawLine(prevX, prevY, x, prevY);
+					prevX = x;
+				}
+				if (rp) {
+					p.drawLine(prevX,prevY,prevX,y);
+					prevY = y;
+				}
+				assert(y > rect.top() && y < rect.bottom());
+				if (prevX!=-1){
+					p.drawLine(prevX, prevY , x, y);
+				}
+				prevY = y;
+				prevX = x;
+				prevFY = (int) fy;
+			}
+		}
+	}
+
 }
+
 
 static void align(int start, int end, int win, int step, int seqLen, int& alignedFirst, int& alignedLast) {
     int win2 = (win + 1) / 2;

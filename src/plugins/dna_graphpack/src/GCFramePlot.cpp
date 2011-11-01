@@ -27,13 +27,11 @@
 #include <U2Algorithm/RollingArray.h>
 
 
-/* TRANSLATOR U2::GCFramePlotFactory */
-
 namespace U2 {
 
-#define OFFSET_NULL "Line 1"
-#define OFFSET_ONE	"Line 2"
-#define OFFSET_TWO  "Line 3"
+#define OFFSET_NULL "Frame 1"
+#define OFFSET_ONE	"Frame 2"
+#define OFFSET_TWO  "Frame 3"
 
 GCFramePlotFactory::GCFramePlotFactory(QObject* p)
 : GSequenceGraphFactory("GC Frame Plot", p)  
@@ -49,8 +47,7 @@ bool GCFramePlotFactory::isEnabled(U2SequenceObject* o) const {
 QList<GSequenceGraphData*> GCFramePlotFactory::createGraphs(GSequenceGraphView* v) {
     Q_UNUSED(v);
     
-	//TODO: Create 1 graph instead of 3. Current solution is not optimal. 
-	// All points should be calculated during one loop over the window.
+	//TODO: All points should be calculated during one loop over the window.
 	
 	QList<GSequenceGraphData*> res;
     assert(isEnabled(v->getSequenceObject()));
@@ -96,7 +93,12 @@ void GCFramePlotAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, co
         int start = startPos + i * d->step;
         int end = start + d->window;
         int base_count = 0;
-        for (int x = start + offset; x < end; x += 3) {
+		
+		while (start % 3 != offset) {
+			start++;
+		}
+
+        for (int x = start; x < end; x += 3) {
             char c = seq[x];
             if (map[(uchar)c]) {
                 base_count++;
