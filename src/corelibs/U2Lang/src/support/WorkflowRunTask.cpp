@@ -94,9 +94,11 @@ void WorkflowRunTask::sl_outputProgressAndState() {
     foreach(Link * l, flows) {
         ActorId srcId = rmap.key(l->source()->owner()->getId());
         ActorId dstId = rmap.key(l->destination()->owner()->getId());
-        assert(!srcId.isEmpty() && !dstId.isEmpty());
-        coreLog.info(QString("%1:%2:%3:%4").arg(MSG_NUM_KEYWORD).arg(srcId).arg(dstId).arg(getMsgNum(l)));
-        coreLog.info(QString("%1:%2:%3:%4").arg(MSG_PASSED_KEYWORD).arg(srcId).arg(dstId).arg(getMsgPassed(l)));
+
+        if(!srcId.isEmpty() && !dstId.isEmpty()){
+            coreLog.info(QString("%1:%2:%3:%4").arg(MSG_NUM_KEYWORD).arg(srcId).arg(dstId).arg(getMsgNum(l)));
+            coreLog.info(QString("%1:%2:%3:%4").arg(MSG_PASSED_KEYWORD).arg(srcId).arg(dstId).arg(getMsgPassed(l)));
+        }
     }
 }
 
@@ -589,6 +591,7 @@ void RunCmdlineWorkflowTask::prepare() {
         line+=" " + arg;
     }
     coreLog.details("Starting UGENE workflow: " + line);
+
     proc->start(cmdlineUgenePath, args);
 #if (defined(Q_OS_WIN32) || defined(Q_OS_WINCE))
     processLogPrefix = QString("process:%1>").arg(proc->pid()->dwProcessId);
