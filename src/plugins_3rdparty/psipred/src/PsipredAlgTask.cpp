@@ -53,9 +53,18 @@ void PsipredAlgTask::run()
         return;
     }
 
+    if(sequence.size() < 5){ //seq2mtx constraint
+        stateInfo.setError(SecStructPredictTask::tr("psipred: sequence is too short, min seq size is 5"));
+        return;
+    }
+
     QTemporaryFile matrixFile; 
-    
+    try{
     seq2mtx(sequence.constData(), sequence.length(), &matrixFile);
+    }catch(const char* msg){
+        stateInfo.setError(QString("psipred error: %1").arg(msg));
+        return;
+    }
     matrixFile.reset();
     
     {
@@ -65,7 +74,12 @@ void PsipredAlgTask::run()
         weightFileNames << ":psipred/datafiles/weights_s.dat3";
 
         PsiPassOne pass1 (&matrixFile, weightFileNames);
-        pass1.runPsiPass();
+        try{
+            pass1.runPsiPass();
+        }catch(const char* msg){
+            stateInfo.setError(QString("psipred error: %1").arg(msg));
+            return;
+        }
     }
 
     const char* psipass2_args[] = 
@@ -78,7 +92,12 @@ void PsipredAlgTask::run()
     
     {
         PsiPassTwo pass2;
-        pass2.runPsiPass(7, psipass2_args, output);
+        try{
+            pass2.runPsiPass(7, psipass2_args, output);
+        }catch(const char* msg){
+            stateInfo.setError(QString("psipred error: %1").arg(msg));
+            return;
+        }
     }
 
     results = SecStructPredictUtils::saveAlgorithmResultsAsAnnotations(output, PSIPRED_ANNOTATION_NAME);

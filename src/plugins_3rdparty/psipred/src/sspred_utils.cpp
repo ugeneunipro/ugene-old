@@ -13,7 +13,8 @@ void err( const char *s )
 void fail( const char *s )
 {
     err(s);
-    exit(1);
+    throw(s);  //to avoid exit
+    //exit(1);
 }
 
 int aanum(int ch)
