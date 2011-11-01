@@ -2116,8 +2116,8 @@ It could cause an error. Do you want to continue?</source>
     </message>
     <message>
         <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="153"/>
-        <source>Start position must be greater than end position</source>
-        <translation>Начальная позиция должна быть больше конечной позиции</translation>
+        <source>Start position must be less than end position!</source>
+        <translation>Начальная позиция должна быть меньше конечной позиции!</translation>
     </message>
     <message>
         <source>Start position must be integer</source>

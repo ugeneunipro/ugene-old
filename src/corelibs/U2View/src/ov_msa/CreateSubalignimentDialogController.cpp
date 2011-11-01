@@ -156,7 +156,7 @@ void CreateSubalignimentDialogController::accept(){
     int seqLen = mobj->getMAlignment().getLength();
     
     if( start > end ) {
-        QMessageBox::critical(this, windowTitle(), tr("Start position must be greater than end position"));
+        QMessageBox::critical(this, windowTitle(), tr("Start position must be less than end position!"));
         return;
     }
     

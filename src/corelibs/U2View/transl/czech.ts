@@ -2005,7 +2005,7 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="../src/util_ov_msaedit/CreateSubalignimentDialogController.cpp" line="153"/>
-        <source>Start position must be greater than end position</source>
+        <source>Start position must be less than end position!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
