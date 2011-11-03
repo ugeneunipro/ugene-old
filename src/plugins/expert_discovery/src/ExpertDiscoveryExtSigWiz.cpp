@@ -181,7 +181,35 @@ void ExpertDiscoveryExtSigWiz::sl_idChanged(int id){
 }
 
 void ExpertDiscoveryExtSigWiz::sl_createSubfolder(){
-    emit si_newFolder();
+    QString folderName = folderNameEdit->text();
+
+    if(folderName.isEmpty()){
+        QMessageBox mb(QMessageBox::Critical, tr("Specify folder name"), tr("Please specify a name for your folder"));
+        mb.exec();
+        folderNameEdit->setFocus();
+        return;
+    }
+    
+    QTreeWidgetItem* csItem = treeFoldersWidget->topLevelItem(0);
+    assert(csItem!=NULL);
+
+    bool isUniqueName = true;
+    for (int i = 0 ; i < csItem->childCount(); i++){
+        QTreeWidgetItem* item  = csItem->child(i);
+        if(item->text(0) == folderName){
+            isUniqueName = false;
+            break;
+        }
+    }
+
+    if(!isUniqueName){
+        QMessageBox mb(QMessageBox::Critical, tr("Specify folder name"), tr("Item with the same name already exist. Please enter another name"));
+        mb.exec();
+        folderNameEdit->setFocus();
+        return;
+    }
+
+    emit si_newFolder(folderName);
     updateTree();
 }
 void ExpertDiscoveryExtSigWiz::predicatesByDefault(bool isLetters){

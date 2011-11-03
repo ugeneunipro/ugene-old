@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>457</width>
-    <height>465</height>
+    <width>463</width>
+    <height>534</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -347,7 +347,7 @@
     <string notr="true">3</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="0" colspan="2">
+    <item row="0" column="0" colspan="3">
      <widget class="QTreeWidget" name="treeFoldersWidget">
       <attribute name="headerVisible">
        <bool>false</bool>
@@ -367,17 +367,20 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <spacer name="horizontalSpacer_5">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+     <widget class="QLabel" name="label_8">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
+      <property name="text">
+       <string>Folder Name:</string>
       </property>
-     </spacer>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLineEdit" name="folderNameEdit"/>
     </item>
    </layout>
   </widget>

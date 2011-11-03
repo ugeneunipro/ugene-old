@@ -108,7 +108,7 @@ protected slots:
 
     void sl_selectionChanged (QTreeWidgetItem * current, QTreeWidgetItem * previous);
 signals:
-    void si_newFolder();
+    void si_newFolder(const QString& folderName);
 
 private:
     int posSize;

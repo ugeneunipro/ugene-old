@@ -598,10 +598,14 @@ void ExpertDiscoveryView::sl_newSignalReady(DDisc::Signal* signal, CSFolder* fol
     signalsWidget->addSubitem(pItem, pParent);  
     signalsWidget->updateSorting();
 }
-void ExpertDiscoveryView::sl_newFolder(){
+void ExpertDiscoveryView::sl_newFolder(const QString& folderName){
     CSFolder* pFolder = &(signalsWidget->getRootItem());
     CSFolder* pNewFolder = new CSFolder();
-    pNewFolder->setName(pFolder->makeUniqueFolderName());
+    if(folderName.isEmpty()){
+        pNewFolder->setName(pFolder->makeUniqueFolderName());
+    }else{
+        pNewFolder->setName(folderName);
+    }
     if (pFolder->addFolder( pNewFolder ) < 0) {
         delete pNewFolder;
         return;
@@ -627,7 +631,7 @@ void ExpertDiscoveryView::sl_extractSignals(){
     ExpertDiscoverySignalExtractorTask *t = new ExpertDiscoverySignalExtractorTask(&d);
     extrTask = t;
     connect(t, SIGNAL(si_newSignalReady(DDisc::Signal* , CSFolder* )), SLOT(sl_newSignalReady(DDisc::Signal* , CSFolder* )));
-    connect(t, SIGNAL(si_newFolder()), SLOT(sl_newFolder()));
+    connect(t, SIGNAL(si_newFolder(const QString&)), SLOT(sl_newFolder(const QString&)));
     tasks->addSubTask(t);
     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
 }

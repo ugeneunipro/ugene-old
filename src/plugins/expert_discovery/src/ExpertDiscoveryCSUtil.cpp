@@ -153,28 +153,27 @@ namespace U2 {
     QString	CSFolder::makeUniqueSignalName() const
     {
         QString strPrefix = "NewSignal";
-        //if (!strPrefix.LoadString(IDS_PFX_SIGNAL)) ASSERT(0);
 
         int n = 0;
         QString strResult = "NewSignal";
-        while (getSignalIndexByName(strResult)>=0) {
+        do{
             strResult = strPrefix + QString("%1").arg(n);
             n++;
-        }
+        }while (getSignalIndexByName(strResult)>=0);
+        
         return strResult;
     }
 
     QString	CSFolder::makeUniqueFolderName() const
     {
         QString strPrefix= "NewFolder";
-        //if (!strPrefix.LoadString(IDS_PFX_FOLDER)) ASSERT(0);
 
         int n = 0;
         QString strResult = "NewFolder";
-        while (getFolderIndexByName(strResult)>=0) {
+        do{
             strResult = strPrefix + QString("%1").arg(n);
             n++;
-        }
+        }while (getFolderIndexByName(strResult)>=0);
         return strResult;
     }
 

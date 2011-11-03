@@ -73,7 +73,7 @@ private slots:
     void sl_optimizeRecBound();
     void sl_generateFullReport();
     void sl_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
-    void sl_newFolder();
+    void sl_newFolder(const QString& folderName);
     void sl_treeItemSelChanged(QTreeWidgetItem* tItem);
     void sl_updateTaskFinished();
     void sl_treeWidgetMarkup(bool isLetters);

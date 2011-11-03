@@ -139,11 +139,11 @@ private:
     bool performNextStep();
 
 protected slots:
-    void sl_newFolder();
+    void sl_newFolder(const QString& folderName);
 
 signals:
     void si_newSignalReady(DDisc::Signal* signal, CSFolder* folder);
-    void si_newFolder();
+    void si_newFolder(const QString& folderName);
 };
 
 class ExpertDiscoveryCreateADVTask: public Task{

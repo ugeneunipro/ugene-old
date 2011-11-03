@@ -3,8 +3,6 @@
 #include "ExpertDiscoveryExtSigWiz.h"
 #include "ExpertDiscoveryPersistent.h"
 
-//#include <U2Formats/DocumentFormatUtils.h>
-
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentFormatConfigurators.h>
 #include <U2Core/L10n.h>
@@ -81,16 +79,6 @@ void ExpertDiscoveryLoadPosNegTask::prepare(){
 Document* ExpertDiscoveryLoadPosNegTask::loadFile(QString inFile){
     GUrl url(inFile);
 
-    //Project *project = AppContext::getProject();
-
-    //Q_ASSERT(project);
-    //Document *doc = project->findDocumentByURL(URL);
-
-    // document already present in the project
-//     if (doc) {
-//         return doc;
-//     }
-
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         stateInfo.setError(tr("Detecting format error for file %1").arg(inFile));
@@ -102,7 +90,6 @@ Document* ExpertDiscoveryLoadPosNegTask::loadFile(QString inFile){
 
     Document* doc = format->createNewUnloadedDocument(iof, url, stateInfo);
     CHECK_OP(stateInfo, NULL);
-    //addSubTask(new AddDocumentTask(doc)); // add document to the project
 
     LoadUnloadedDocumentTask* ld = new LoadUnloadedDocumentTask(doc);
     if(generateNeg){
@@ -161,16 +148,13 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
         negativeDoc->addObject(new MAlignmentObject(msa));
     }
 
-    //Project *project = AppContext::getProject();
-    //project->addDocument(negativeDoc);
-
     if (negativeDoc) {
         negativeDoc->setName("Negative");
         docs << negativeDoc;
     }
 }
 
-#define NUMBER_OF_NEGATIVE_PER_POSITIVE 10
+#define NUMBER_OF_NEGATIVE_PER_POSITIVE 100
 QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GObject*> &objects){
     QList<DNASequence> neg;
     int acgtContent[4];
@@ -518,16 +502,6 @@ void ExpertDiscoveryLoadControlTask::prepare(){
 Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
     GUrl url(inFile);
 
-//     Project *project = AppContext::getProject();
-// 
-//     Q_ASSERT(project);
-//     Document *doc = project->findDocumentByURL(URL);
-// 
-//     // document already present in the project
-//     if (doc) {
-//         return doc;
-//     }
-
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         stateInfo.setError(tr("Detecting format error for file %1").arg(inFile));
@@ -538,7 +512,6 @@ Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
 
     Document* doc = format->createNewUnloadedDocument(iof, url, stateInfo);
-    //addSubTask(new AddDocumentTask(doc)); // add document to the project
     addSubTask(new LoadUnloadedDocumentTask(doc)); // load document
 
     return doc;
@@ -581,7 +554,7 @@ void ExpertDiscoverySignalExtractorTask::run(){
 }
 void ExpertDiscoverySignalExtractorTask::prepare(){
     ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen(), data->isLettersMarkedUp());
-    connect(&w, SIGNAL(si_newFolder()), SLOT(sl_newFolder()));
+    connect(&w, SIGNAL(si_newFolder(const QString&)), SLOT(sl_newFolder(const QString&)));
     if(w.exec()){
         PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
         predicatBase->create(w.getPredicates());
@@ -617,8 +590,8 @@ bool ExpertDiscoverySignalExtractorTask::performNextStep(){
     return needOneMore;
 }
 
-void ExpertDiscoverySignalExtractorTask::sl_newFolder(){
-    emit si_newFolder();
+void ExpertDiscoverySignalExtractorTask::sl_newFolder(const QString& folderName){
+    emit si_newFolder(folderName);
 }
 
 ExpertDiscoveryCreateADVTask::ExpertDiscoveryCreateADVTask(const MultiGSelection& selObjects)
@@ -628,7 +601,6 @@ ExpertDiscoveryCreateADVTask::ExpertDiscoveryCreateADVTask(const MultiGSelection
 {
     
 }
-
 
 void ExpertDiscoveryCreateADVTask::run(){
 //     QSet<GObject*> objectsToOpen = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &multiSelection, UOF_LoadedAndUnloaded);
@@ -702,8 +674,6 @@ ExpertDiscoveryCreateViewTask::ExpertDiscoveryCreateViewTask(const QList<GObject
 }
 
 #define MAX_SEQ_OBJS_PER_VIEW 50
-
-
 static QString deriveViewName(const QList<U2SequenceObject*>& seqObjects) {
     QString viewName;
     if (seqObjects.size() > 1) {
@@ -893,7 +863,6 @@ void ExpertDiscoveryToAnnotationTask::csToAnnotation(int seqNumber, unsigned int
         return;
     }
 
-    //EDProcessedSignal curPsCopy = *curPS;
     if(isPos){
         if(curPS->getYesSequenceNumber() <= seqNumber){
             return;
@@ -1054,8 +1023,6 @@ void ExpertDiscoveryUpdateSelectionTask::run(){
                curPS = pPICSN->getProcessedSignal(view->getExpertDiscoveryData());
                updatePS = true;
            }
-
-           
        }
        break;
        default:
