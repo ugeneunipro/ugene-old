@@ -101,6 +101,7 @@ public slots:
 private:
     void drawAll();
     void drawGraph(QPainter& p);
+    void drawRuler(QPainter& p);
 
     QPixmap     pixmap;
     bool        redraw;
@@ -112,6 +113,10 @@ private:
 
     double recBound;
     CalculateErrorTaskInfo calcualteSettings;
+
+    int w;
+    int h;
+    int textOffset;
 
 };
 

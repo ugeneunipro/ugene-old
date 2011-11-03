@@ -26,6 +26,8 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TextUtils.h>
 
+#include <U2Gui/GraphUtils.h>
+
 namespace U2{
 
     ExpertDiscoveryScoreGraphAlgorithm::ExpertDiscoveryScoreGraphAlgorithm(ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType)
@@ -161,6 +163,9 @@ ExpertDiscoveryRecognitionErrorGraphWidget::ExpertDiscoveryRecognitionErrorGraph
 const std::vector<double>& _posScore, const std::vector<double>& _negScore, const CalculateErrorTaskInfo& _calcualteSettings)
 :QWidget(parent), redraw(false), posScore(_posScore), negScore(_negScore), recBound(0), calcualteSettings(_calcualteSettings){
 
+    textOffset = 15;
+    w = width() - 2*textOffset;
+    h = height() - 2*textOffset;
     connect(&errorsTask, SIGNAL(si_finished()), SLOT(sl_redraw()));
     sl_calculateErrors(calcualteSettings);
 }
@@ -187,14 +192,21 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::paintEvent(QPaintEvent * e){
 void ExpertDiscoveryRecognitionErrorGraphWidget::drawAll(){
     if(pixmap.size() != size()){
         pixmap = QPixmap(size());
+        w = width() - 2*textOffset;
+        h = height() - 2*textOffset;
         redraw = true;
     }
     if(redraw){
-        pixmap.fill(Qt::white);
+        pixmap.fill(Qt::transparent);
         QPainter p(&pixmap);
         
         if(errorsTask.isFinished()){
-            drawGraph(p);
+            QPixmap graphPixmap = QPixmap(w, h);
+            graphPixmap.fill(Qt::white);
+            QPainter grP(&graphPixmap);
+            drawGraph(grP);
+            p.drawPixmap(textOffset, textOffset, graphPixmap);
+            drawRuler(p);
             redraw = false;
         }
     }
@@ -216,37 +228,37 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
     const ErrorsInfo& errorsInfo = errorsTask.getResult();
     QPainterPath erFirstTypePath;
     QPainterPath erSecondTypePath;
-    if (stepsNum  < width()){
-        double pixelStep = double(width())/stepsNum;
-        double ratioY = double(errorsInfo.maxErrorVal)/(height());
+    if (stepsNum  < w){
+        double pixelStep = double(w)/stepsNum;
+        double ratioY = double(errorsInfo.maxErrorVal)/(h);
         
         int hPixels = 0;
         if(stepsNum!=0){
             hPixels = qint64(double(errorsInfo.errorFirstType[0])/ratioY +0.5);
-            erFirstTypePath.moveTo(QPointF(0, height() - hPixels));
+            erFirstTypePath.moveTo(QPointF(0, h - hPixels));
 
             hPixels = qint64(double(errorsInfo.errorSecondType[0])/ratioY +0.5);
-            erSecondTypePath.moveTo(QPointF(0, height() - hPixels));
+            erSecondTypePath.moveTo(QPointF(0, h - hPixels));
         }
         for(int i = 1; i < stepsNum; i++){
             hPixels = qint64(double(errorsInfo.errorFirstType[i])/ratioY +0.5);
-            erFirstTypePath.lineTo(QPointF(i*pixelStep, height() - hPixels));
+            erFirstTypePath.lineTo(QPointF(i*pixelStep, h - hPixels));
 
             hPixels = qint64(double(errorsInfo.errorSecondType[i])/ratioY +0.5);
-            erSecondTypePath.lineTo(QPointF(i*pixelStep, height() - hPixels));
+            erSecondTypePath.lineTo(QPointF(i*pixelStep, h - hPixels));
         }
-        scoreWidthPoint = int(((recBound-calcualteSettings.scoreReg.startPos)/calcualteSettings.scoreReg.length)*width()+0.5);
+        scoreWidthPoint = int(((recBound-calcualteSettings.scoreReg.startPos)/calcualteSettings.scoreReg.length)*w+0.5);
     }else{                                                   //average value per pixel used
-        int windowSize = int((double(stepsNum)/width()) +0.5);
-        double ratioY = double(errorsInfo.maxErrorVal)/(height());
+        int windowSize = int((double(stepsNum)/w) +0.5);
+        double ratioY = double(errorsInfo.maxErrorVal)/(h);
 
         int hPixels = 0;
         if(stepsNum!=0){
             hPixels = qint64(double(errorsInfo.errorFirstType[0])/ratioY +0.5);
-            erFirstTypePath.moveTo(QPointF(0, height() - hPixels));
+            erFirstTypePath.moveTo(QPointF(0, h - hPixels));
 
             hPixels = qint64(double(errorsInfo.errorSecondType[0])/ratioY +0.5);
-            erSecondTypePath.moveTo(QPointF(0, height() - hPixels));
+            erSecondTypePath.moveTo(QPointF(0, h - hPixels));
         }
         for(int i = 0; i < stepsNum; i+=windowSize){
             double val = 0;
@@ -254,14 +266,14 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
                 val+= errorsInfo.errorFirstType[i+j];
             }
             hPixels = qint64(val/(ratioY*windowSize) + 0.5);
-            erFirstTypePath.lineTo(QPointF(i, height() - hPixels));
+            erFirstTypePath.lineTo(QPointF(i, h - hPixels));
 
             val = 0;
             for (int j = 0; (j < windowSize) && (i+j<stepsNum); j++){
                 val+= errorsInfo.errorSecondType[i+j];
             }
             hPixels = qint64(val/(ratioY*windowSize) + 0.5);
-            erSecondTypePath.lineTo(QPointF(i, height() - hPixels));
+            erSecondTypePath.lineTo(QPointF(i, h - hPixels));
             if((calcualteSettings.scoreReg.length/double(stepsNum)*i + calcualteSettings.scoreReg.startPos < recBound)){
                 scoreWidthPoint = i;
             }
@@ -282,8 +294,27 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
     if(recBound >= calcualteSettings.scoreReg.startPos){
         linePen.setColor(BOUNDCOLOR);
         p.setPen(linePen);
-        p.drawLine(QPoint(scoreWidthPoint, 0), QPoint(scoreWidthPoint, height()));
+        p.drawLine(QPoint(scoreWidthPoint, 0), QPoint(scoreWidthPoint, h ));
     }
+}
+
+void ExpertDiscoveryRecognitionErrorGraphWidget::drawRuler(QPainter& p){
+    GraphUtils::RulerConfig rConf;
+
+    rConf.notchSize = 2;
+    rConf.textPosition = GraphUtils::RIGHT;
+    QFont rulerFont;
+
+    rulerFont.setFamily("Arial");
+    rulerFont.setPointSize(8);
+
+    int startX = calcualteSettings.scoreReg.startPos;
+    int endX = calcualteSettings.scoreReg.length;
+
+    GraphUtils::drawRuler(p, QPoint(textOffset, textOffset + h), w, startX, endX, rulerFont, rConf);
+    rConf.textPosition = GraphUtils::LEFT;
+    rConf.direction = GraphUtils::BTT;
+    GraphUtils::drawRuler(p, QPoint(textOffset, textOffset), h, 0, 1, rulerFont, rConf);
 }
 
 }//namespace

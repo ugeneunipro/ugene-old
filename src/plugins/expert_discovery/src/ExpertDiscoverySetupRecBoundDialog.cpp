@@ -17,12 +17,15 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
 
     setupUi(this);
     
+    boundLabel->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::BOUNDCOLOR.name()));
+    er1Lable->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::ER1COLOR.name()));
+    er2Label->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::ER2COLOR.name()));
+
     recBoundSpinBox->setValue(recognizationBound);
     posRecLineEdit->setText(QString("%1").arg(probPosRej));
     negRecLineEdit->setText(QString("%1").arg(probNegRec));
 
     
-//    QBrush br = boundLabel->b
     CalculateErrorTaskInfo settings;
     settings.scoreReg = U2Region(0, 50);
     settings.scoreStep = 0.1;
