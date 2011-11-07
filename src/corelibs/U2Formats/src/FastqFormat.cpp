@@ -166,7 +166,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
 
      TmpDbiObjects dbiObjects(dbiRef, os);
 
-     int sequenceStart = 0;
+     qint64 sequenceStart = 0;
 
 	 U2SequenceImporter seqImporter;
 

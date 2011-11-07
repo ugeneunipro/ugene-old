@@ -141,7 +141,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
     io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
 
     U2SequenceImporter seqImporter;
-    int sequenceStart = 0;
+    qint64 sequenceStart = 0;
     int sequenceNumber = 0;
     while (!os.isCoR()) {
         //read header

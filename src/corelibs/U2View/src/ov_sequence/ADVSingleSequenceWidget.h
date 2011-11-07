@@ -122,7 +122,7 @@ public:
 
     virtual int getNumBasesVisible() const;
 
-    virtual void setNumBasesVisible(int n);
+    virtual void setNumBasesVisible(qint64 n);
     
     QAction* getSelectRangeAction() const {return selectRangeAction1;}
 

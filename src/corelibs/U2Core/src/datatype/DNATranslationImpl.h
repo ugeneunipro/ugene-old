@@ -31,7 +31,7 @@ class DNATranslation1to1Impl : public DNATranslation {
 public:
     DNATranslation1to1Impl(const QString& id, const QString& _name, DNAAlphabet* src, DNAAlphabet* dst, QByteArray mapper121);
 
-    virtual int translate(const char* src, int src_len, char* dst, int dst_capacity) const;
+    virtual qint64 translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const;
     virtual int translate(char* src_and_dst, int len) const;
 
     virtual bool isOne2One() const {return true;}
@@ -205,7 +205,7 @@ public:
         const QList<Mapping3To1<char> >& mapping, char defaultChar, const QMap<DNATranslationRole,QList<Triplet> >& roles);
     virtual ~DNATranslation3to1Impl();
 
-    virtual int translate(const char* src, int src_len, char* dst, int dst_capacity) const;
+    virtual qint64 translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const;
     virtual int translate(char* src_and_dst, int len) const;
 
     virtual bool isThree2One() const {return true;}
@@ -279,8 +279,8 @@ public:
         const BackTranslationRules& rules);
     virtual ~DNATranslation1to3Impl();
 
-    virtual int translate(const char* src, int src_len, char* dst, int dst_capacity, BackTranslationMode mode) const;
-    virtual int translate(const char* src, int src_len, char* dst, int dst_capacity) const;
+    virtual qint64 translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity, BackTranslationMode mode) const;
+    virtual qint64 translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const;
     virtual int translate(char* src_and_dst, int len) const;
 
     virtual bool isOne2Three() const {return true;}

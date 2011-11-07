@@ -175,11 +175,11 @@ QList<AnnotationSelectionData> GSequenceLineViewAnnotated::selectAnnotationByCoo
     QList<AnnotationSelectionData> res;
     GSequenceLineViewAnnotatedRenderArea* ra = (GSequenceLineViewAnnotatedRenderArea*)renderArea;
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    int pos = ra->coordToPos(p.x());
-    int dPos = 0;
+    qint64 pos = ra->coordToPos(p.x());
+    qint64 dPos = 0;
     if (visibleRange.length > renderArea->width()) {
         float scale = renderArea->getCurrentScale();
-        dPos = (int) ( 1 / (scale) );
+        dPos = (qint64) ( 1 / (scale) );
         assert(dPos < seqLen);
     }
     U2Region reg(pos-dPos, 1 + 2*dPos);

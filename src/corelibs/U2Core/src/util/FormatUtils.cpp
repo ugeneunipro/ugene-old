@@ -23,7 +23,7 @@
 
 namespace U2 {
 
-QString FormatUtils::splitThousands(int num) {
+QString FormatUtils::splitThousands(qint64 num) {
     QString prefix = "";
     QString numStr = QString::number(num);
     QString result = "";
@@ -34,14 +34,13 @@ QString FormatUtils::splitThousands(int num) {
     return result;
 }
 
-QString FormatUtils::formatNumber(int num) {
-    int rem;
+QString FormatUtils::formatNumber(qint64 num) {
     if (num >= 1000 * 1000 * 1000) {
-        if ((rem = num % (1000 * 1000 * 1000)) == 0) {
-            return QString::number(rem) + QString("G");
+        if (num % (1000 * 1000 * 1000) == 0) {
+            return QString::number(num/(double)(1000 * 1000 * 1000)) + QString("G");
         }
         if (num % (100 * 1000 * 1000) == 0) {
-            return QString::number(num / (double) (1000 * 1000 * 100), 'f', 1) +
+            return QString::number(num / (double) (1000 * 1000 * 1000), 'f', 1) +
                 QString("G");
         }
     }

@@ -44,6 +44,8 @@ frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
     seqLen = ctx->getSequenceLength();
     setFocusPolicy(Qt::WheelFocus);
 
+	coefScrollBarMapping = (seqLen >= INT_MAX) ? (((double)INT_MAX)/seqLen) : 1;
+
     scrollBar = new GScrollBar(Qt::Horizontal, this);
     
     connect(ctx->getSequenceSelection(),
@@ -73,15 +75,16 @@ void GSequenceLineView::updateScrollBar() {
     scrollBar->disconnect(this);
 
     scrollBar->setMinimum(0);
-    scrollBar->setMaximum(seqLen - visibleRange.length);
-    scrollBar->setSliderPosition(visibleRange.startPos);
+	scrollBar->setMaximum(int (seqLen * coefScrollBarMapping) );
+
+	scrollBar->setSliderPosition(int(coefScrollBarMapping * visibleRange.startPos));
 
     //todo:
     int singleStep = getSingleStep();
     int pageStep = getPageStep();
 
-    scrollBar->setSingleStep(singleStep);
-    scrollBar->setPageStep(pageStep);
+    scrollBar->setSingleStep(singleStep/coefScrollBarMapping );
+    scrollBar->setPageStep(pageStep * coefScrollBarMapping);
 
     scrollBar->setDisabled(visibleRange.length == seqLen);
 
@@ -107,17 +110,18 @@ void GSequenceLineView::sl_onScrollBarMoved(int pos) {
         coherentRangeView->sl_onScrollBarMoved(pos);
         return;
     }
-    setStartPos(pos);
+	assert(coefScrollBarMapping != 0);
+    setStartPos(pos / coefScrollBarMapping);
 
     if (lastPressPos!=-1) {
         QAbstractSlider::SliderAction aAction = scrollBar->getRepeatAction();
         if (aAction == QAbstractSlider::SliderSingleStepAdd) {
-            int selStart = qMin(lastPressPos, visibleRange.endPos());
-            int selEnd = qMax(lastPressPos, visibleRange.endPos());
+            qint64 selStart = qMin(lastPressPos, visibleRange.endPos());
+            qint64 selEnd = qMax(lastPressPos, visibleRange.endPos());
             setSelection(U2Region(selStart, selEnd - selStart));
         } else if (aAction == QAbstractSlider::SliderSingleStepSub) {
-            int selStart = qMin(lastPressPos, visibleRange.startPos);
-            int selEnd = qMax(lastPressPos, visibleRange.startPos);
+            qint64 selStart = qMin(lastPressPos, visibleRange.startPos);
+            qint64 selEnd = qMax(lastPressPos, visibleRange.startPos);
             setSelection(U2Region(selStart, selEnd - selStart));
         }
     }
@@ -183,7 +187,7 @@ void GSequenceLineView::mouseReleaseEvent(QMouseEvent* me) {
         bool singleBaseSelectionMode = km.testFlag(Qt::AltModifier);
         if (me->button() == Qt::LeftButton && singleBaseSelectionMode) {
             QPoint areaPoint = toRenderAreaPoint(me->pos());
-            int pos = renderArea->coordToPos(areaPoint.x());
+            qint64 pos = renderArea->coordToPos(areaPoint.x());
             if (pos == lastPressPos) {
                 U2Region rgn(pos, 1);
                 if (rgn.startPos >=0 && rgn.endPos() <= seqLen) {
@@ -225,7 +229,8 @@ void GSequenceLineView::mouseMoveEvent(QMouseEvent* me) {
         } else if (selStart + selLen > seqLen) {
             selLen = seqLen - selStart;
         }
-        setSelection(U2Region(selStart, selLen));
+
+		setSelection(U2Region(selStart, selLen));
 
     }
     QWidget::mouseMoveEvent(me);
@@ -234,7 +239,7 @@ void GSequenceLineView::mouseMoveEvent(QMouseEvent* me) {
 void GSequenceLineView::mouseDoubleClickEvent(QMouseEvent* me) {
     QPoint areaPoint = toRenderAreaPoint(me->pos());
     if (renderArea->rect().contains(areaPoint)) {
-        int pos = renderArea->coordToPos(areaPoint.x());
+        qint64 pos = renderArea->coordToPos(areaPoint.x());
         emit si_centerPosition(pos);
     }
     QWidget::mouseDoubleClickEvent(me);
@@ -279,15 +284,15 @@ void GSequenceLineView::keyPressEvent(QKeyEvent *e) {
     }
 }
 
-void GSequenceLineView::setCenterPos(int centerPos) {
+void GSequenceLineView::setCenterPos(qint64 centerPos) {
     SAFE_POINT(centerPos <= seqLen && centerPos >= 0, QString("Center pos is out of sequence range! value: %1").arg(centerPos),);
 
-    int newPos = qMax(qint64(0), centerPos - visibleRange.length/2);
+    qint64 newPos = qMax(qint64(0), centerPos - visibleRange.length/2);
     setStartPos(newPos);
 }
 
 
-void GSequenceLineView::setStartPos(int newPos) {
+void GSequenceLineView::setStartPos(qint64 newPos) {
     if (newPos + visibleRange.length > seqLen) {
         newPos = seqLen - visibleRange.length;
     }
@@ -526,21 +531,21 @@ void GSequenceLineViewRenderArea::paintEvent(QPaintEvent *e) {
     QWidget::paintEvent(e);
 }
 
-float GSequenceLineViewRenderArea::getCurrentScale() const {
-    return float(width()) / view->getVisibleRange().length;
+double GSequenceLineViewRenderArea::getCurrentScale() const {
+    return double(width()) / view->getVisibleRange().length;
 }
 
 
-int GSequenceLineViewRenderArea::coordToPos(int _x) const {
+qint64 GSequenceLineViewRenderArea::coordToPos(int _x) const {
     int x = qBound(0, _x, width());
     const U2Region& vr = view->getVisibleRange();
-    float scale = getCurrentScale();
-    int pos = vr.startPos + int(x/scale+0.5f);
+    double scale = getCurrentScale();
+    qint64 pos = vr.startPos + (x/scale+0.5f);
     assert(pos >= vr.startPos && pos <= vr.endPos());
     return pos;
 }
 
-float GSequenceLineViewRenderArea::posToCoordF(int p, bool useVirtualSpace) const {
+float GSequenceLineViewRenderArea::posToCoordF(qint64 p, bool useVirtualSpace) const {
     const U2Region& visibleRange = view->getVisibleRange();
     if (!useVirtualSpace && !visibleRange.contains(p) && p!=visibleRange.endPos()) {
         return -1;
@@ -552,7 +557,7 @@ float GSequenceLineViewRenderArea::posToCoordF(int p, bool useVirtualSpace) cons
 }
 
 
-int GSequenceLineViewRenderArea::posToCoord(int p, bool useVirtualSpace) const {
+int GSequenceLineViewRenderArea::posToCoord(qint64 p, bool useVirtualSpace) const {
     return qRound(posToCoordF(p, useVirtualSpace));
 }
 

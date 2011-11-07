@@ -389,7 +389,7 @@ void PanView::sl_zoomInAction() {
         }
     }
     U2Region newVisibleRange = visibleRange;
-    newVisibleRange.length = qMax(int(visibleRange.length + 1) / 2, minNuclsPerScreen);
+    newVisibleRange.length = qMax((visibleRange.length + 1) / 2, (qint64)minNuclsPerScreen);
     if (newVisibleRange.length!=visibleRange.length) {
         newVisibleRange.startPos = visibleRange.startPos + (visibleRange.length - newVisibleRange.length)/2;
         setVisibleRange(newVisibleRange);
@@ -472,15 +472,15 @@ void PanView::centerRow(int row) {
 }
 
 
-void PanView::sl_onRangeChangeRequest(int start, int end) {
+void PanView::sl_onRangeChangeRequest(qint64 start, qint64 end) {
     uiLog.trace(tr("range change request: [%1, %2]").arg(start).arg(end));
     setVisibleRange(U2Region(start-1, end));
 }
 
-void PanView::setNumBasesVisible(int n) {
-    int nBases = qBound(minNuclsPerScreen, n, (int)seqLen);
-    int center = visibleRange.startPos + visibleRange.length / 2;
-    int newStart = qMax(0, center - nBases / 2);
+void PanView::setNumBasesVisible(qint64 n) {
+    qint64 nBases = qBound((qint64)minNuclsPerScreen, n, seqLen);
+    qint64 center = visibleRange.startPos + visibleRange.length / 2;
+    qint64 newStart = qMax(qint64(0), center - nBases / 2);
     assert(newStart + nBases <= seqLen);
     setVisibleRange(U2Region(newStart, nBases));
 }
@@ -699,8 +699,8 @@ void PanViewRenderArea::drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p
         if (rulerStartOffset >= w)  {
             continue;
         }
-        int startPos = visibleRange.startPos + 1 - ri.offset;
-        int endPos = visibleRange.endPos() - ri.offset;
+        qint64 startPos = visibleRange.startPos + 1 - ri.offset;
+        qint64 endPos = visibleRange.endPos() - ri.offset;
         int x = firstCharCenter;
 
         if (firstCharCenter <= rulerStartOffset) {
@@ -716,9 +716,9 @@ void PanViewRenderArea::drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p
             rulerWidth--; // make the end of the ruler visible
         }
         int offsetToFirstNotch = c.predefinedChunk - visibleRange.startPos%c.predefinedChunk;
-        int mainRuler = visibleRange.startPos + offsetToFirstNotch; 
-        int newStartPos = visibleRange.startPos - ri.offset + offsetToFirstNotch;
-        int lim = startPos + ri.offset;
+        qint64 mainRuler = visibleRange.startPos + offsetToFirstNotch; 
+        qint64 newStartPos = visibleRange.startPos - ri.offset + offsetToFirstNotch;
+        qint64 lim = startPos + ri.offset;
         for(; mainRuler < lim; mainRuler += c.predefinedChunk, newStartPos += c.predefinedChunk);
         c.correction = newStartPos;
         GraphUtils::drawRuler(p, QPoint(x, y), rulerWidth, startPos, endPos, rulerFont, c);

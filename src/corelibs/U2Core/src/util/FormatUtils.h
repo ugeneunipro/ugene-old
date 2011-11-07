@@ -31,9 +31,9 @@ namespace U2 {
 class U2CORE_EXPORT FormatUtils {
 
 public:
-    static QString splitThousands(int num);
+    static QString splitThousands(qint64 num);
 
-    static QString formatNumber(int num);
+    static QString formatNumber(qint64 num);
     static QString formatNumberWithSeparators(int num);
     static QString insertSeparators(int num);
     

@@ -29,6 +29,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include <U2Core/TextUtils.h>
 
@@ -47,48 +48,64 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
 
 
 static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os) {
-    static int READ_BUFF_SIZE = 4096;
+	static const int READ_BUFF_SIZE = 4096;
+	U2SequenceImporter  seqImporter; 
 
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
 
-    int wholeSize = io->left();
     const QBitArray& ALPHAS = TextUtils::ALPHA_NUMS;
 
     QByteArray seq;
-    if (wholeSize != -1) {
-        seq.reserve(wholeSize);
-    }
 
     //reading sequence
     QBuffer writer(&seq);
-    writer.open( QIODevice::WriteOnly | QIODevice::Append );
+    writer.open(QIODevice::WriteOnly);
     bool ok = true;
     int len = 0;
+	bool isStarted = false;
+
     while (ok && (len = io->readBlock(buff, READ_BUFF_SIZE)) > 0) {
+		seq.clear();
+		bool isSeek = writer.seek(0);
+		assert(isSeek);
         if (os.isCoR()) {
             break;
         }
+		
         for (int i=0; i<len && ok; i++) {
             char c = buff[i];
             if (ALPHAS[(uchar)c]) {
                 ok = writer.putChar(c);
             }
         }
+		if(seq.size()>0 && isStarted == false ){
+			isStarted = true;
+			seqImporter.startSequence(dbiRef,"Sequence",false,os);
+		}
+		if(isStarted){
+			seqImporter.addBlock(seq.data(),seq.size(),os);
+		}
+		if (os.isCoR()) {
+			break;
+		}
         os.setProgress(io->getProgress());
     }
     writer.close();
+
     CHECK_OP(os, );
-    CHECK_EXT(seq.size() > 0, os.setError(RawDNASequenceFormat::tr("Sequence is empty")), );
-    DNASequence dnaSeq("Sequence", seq);
-    DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, dnaSeq.getName(), objects, dnaSeq, hints, os);
+
+	CHECK_EXT(isStarted == true, os.setError(RawDNASequenceFormat::tr("Sequence is empty")), );
+	U2Sequence u2seq = seqImporter.finalizeSequence(os);
+	CHECK_OP(os, );
+
+	objects << new U2SequenceObject(u2seq.visualName,U2EntityRef(dbiRef, u2seq.id));
 }
 
 Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
-    QList<GObject*> objects;
-    load(io, dbiRef, objects, fs, os);
-    CHECK_OP(os, NULL);
-    
+	QList<GObject*> objects;
+	load(io, dbiRef, objects, fs, os);	
+	CHECK_OP(os, NULL);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
     return doc;
 }

@@ -79,7 +79,7 @@ public:
 
     inline static void translate(const QByteArray& map, char* seq, int len) { translate(map, seq, len, seq);}
 
-    inline static void translate(const QByteArray& map, const char* src, int len, char* dst);
+    inline static void translate(const QByteArray& map, const char* src, qint64 len, char* dst);
 
     inline static void reverse(const char* srcSeq, char* dstSeq, int len);
 
@@ -186,7 +186,7 @@ inline void TextUtils::applyMap(const QBitArray& map, const char* srcSeq, int le
     }
 }
 
-inline void TextUtils::translate(const QByteArray& map, const char* src, int len, char* dst) {
+inline void TextUtils::translate(const QByteArray& map, const char* src, qint64 len, char* dst) {
     const char* src_pos = src;
     const char* mapData = map.constData();
     for (char *dst_pos = dst, *end_pos = dst + len; dst_pos < end_pos; ++dst_pos,++src_pos) {

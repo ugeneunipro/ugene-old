@@ -88,7 +88,7 @@ public:
 
     PVRowsManager* getRowsManager() const {return rowsManager;}
 
-    virtual void setNumBasesVisible(int n);
+    virtual void setNumBasesVisible(qint64 n);
 
     void setSyncOffset(int o);
  
@@ -131,7 +131,7 @@ private slots:
     
     void sl_onRowBarMoved(int);
 
-    void sl_onRangeChangeRequest(int start, int end);
+    void sl_onRangeChangeRequest(qint64 start, qint64 end);
 
     virtual void sl_onDNASelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed);
     virtual void sl_onAnnotationSettingsChanged(const QStringList& changedSettings);

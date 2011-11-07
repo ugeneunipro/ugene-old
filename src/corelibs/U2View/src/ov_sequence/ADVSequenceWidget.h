@@ -73,7 +73,7 @@ public:
 
     virtual int getNumBasesVisible() const = 0;
 
-    virtual void setNumBasesVisible(int n) = 0;
+    virtual void setNumBasesVisible(qint64 n) = 0;
 
     virtual void onSequenceObjectRenamed(const QString& oldName) = 0;
     

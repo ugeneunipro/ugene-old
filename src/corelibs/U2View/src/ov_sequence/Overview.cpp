@@ -206,16 +206,16 @@ void Overview::mousePressEvent(QMouseEvent *me) {
             mousePosToSlider = QPoint(renderAreaPos - detSlider.center().toPoint());
         }
         else {
-            int seqLen = ctx->getSequenceLength();
-            int panVisLen = panView->getVisibleRange().length;
-            int detVisLen = detView->getVisibleRange().length;
+            qint64 seqLen = ctx->getSequenceLength();
+            qint64 panVisLen = panView->getVisibleRange().length;
+            qint64 detVisLen = detView->getVisibleRange().length;
 
-            int panPos = renderArea->coordToPos(renderAreaPos.x() - panSlider.width()/2);
-            panPos = qBound(0, panPos, seqLen-panVisLen);
+            qint64 panPos = renderArea->coordToPos(renderAreaPos.x() - panSlider.width()/2);
+            panPos = qBound(qint64(0), panPos, seqLen-panVisLen);
             panView->setVisibleRange(U2Region(panPos, panVisLen));
 
-            int detPos = renderArea->coordToPos(renderAreaPos.x());
-            detPos = qBound(0, detPos, seqLen-detVisLen);
+            qint64 detPos = renderArea->coordToPos(renderAreaPos.x());
+            detPos = qBound(qint64(0), detPos, seqLen-detVisLen);
             detView->setVisibleRange(U2Region(detPos, detVisLen));
         }
     }
@@ -243,11 +243,11 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
     }
 
     if (me->buttons() & Qt::LeftButton) {
-        int pos = renderArea->coordToPos(renderAreaPos.x() - mousePosToSlider.x());
+        qint64 pos = renderArea->coordToPos(renderAreaPos.x() - mousePosToSlider.x());
         if(lastPressPos!=-1) {//make selection
             U2Region selection;
-            int mousePos = renderArea->coordToPos(renderAreaPos.x());
-            int selLen = mousePos-lastPressPos;
+            qint64 mousePos = renderArea->coordToPos(renderAreaPos.x());
+            qint64 selLen = mousePos-lastPressPos;
             if(selLen>0) {
                 selection.startPos=lastPressPos;
                 selection.length=selLen;
@@ -268,7 +268,7 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
                 
                 QRectF panSlider(ra->getPanSlider());
                 qreal length = me->pos().x() - panSlider.right();
-                int panVisLen = renderArea->coordToPos(qAbs(length));
+                qint64 panVisLen = renderArea->coordToPos(qAbs(length));
                 if(length < 0) {
                     panVisLen *= -1;
                 }
@@ -283,7 +283,7 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
 
                 QRectF panSlider(ra->getPanSlider());
                 int length = panSlider.left() - me->pos().x();
-                int panVisLen = renderArea->coordToPos(qAbs(length));
+                qint64 panVisLen = renderArea->coordToPos(qAbs(length));
                 if(length < 0) {
                     panVisLen *= -1;
                 }
@@ -294,13 +294,13 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
                     panView->setVisibleRange(U2Region(pos, panVisLen));
                 }
             } else if(panSliderClicked) {
-                int panVisLen = panView->getVisibleRange().length;
+                qint64 panVisLen = panView->getVisibleRange().length;
                 pos = qBound(qint64(0), qint64(pos), seqLen - panVisLen);
                 panView->setVisibleRange(U2Region(pos, panVisLen));
             }
         }
         if (detSliderClicked) {
-            int detVisLen = detView->getVisibleRange().length;
+            qint64 detVisLen = detView->getVisibleRange().length;
             pos = qBound(qint64(0), qint64(pos), seqLen - detVisLen);
             detView->setVisibleRange(U2Region(pos, detVisLen));
         }
@@ -314,9 +314,9 @@ void Overview::mouseDoubleClickEvent(QMouseEvent* me) {
 
         qint64 seqLen = ctx->getSequenceLength();
         QRectF panSlider(ra->getPanSlider());
-        int panVisLen = panView->getVisibleRange().length;
+        qint64 panVisLen = panView->getVisibleRange().length;
         QPoint renderAreaPos = toRenderAreaPoint(me->pos());
-        int panPos = ra->coordToPos(renderAreaPos.x() - panSlider.width()/2);
+        qint64 panPos = ra->coordToPos(renderAreaPos.x() - panSlider.width()/2);
         panPos = qBound(qint64(0), qint64(panPos), seqLen - panVisLen);
         panView->setVisibleRange(U2Region(panPos, panVisLen));
         
@@ -325,8 +325,8 @@ void Overview::mouseDoubleClickEvent(QMouseEvent* me) {
         assert(parent);
         if(!parent->isDetViewCollapsed()) {
             QRectF detSlider(ra->getDetSlider());
-            int detVisLen = detView->getVisibleRange().length;
-            int detPos = ra->coordToPos(renderAreaPos.x());
+            qint64 detVisLen = detView->getVisibleRange().length;
+            qint64 detPos = ra->coordToPos(renderAreaPos.x());
             detPos = qBound(qint64(0), qint64(detPos), seqLen - detVisLen);
             detView->setVisibleRange(U2Region(detPos, detVisLen));
         }
@@ -369,9 +369,9 @@ QString Overview::createToolTip(QHelpEvent *he) {
     OverviewRenderArea* ra = qobject_cast<OverviewRenderArea*>(renderArea);
     QPoint renderAreaPos = toRenderAreaPoint(he->pos());
     int halfChar = ra->getCurrentScale()/2;
-    int pos = ra->coordToPos(renderAreaPos.x() + halfChar);
-    int pos2 = ra->coordToPos(renderAreaPos.x() + halfChar +1);
-    int delta=0;
+    qint64 pos = ra->coordToPos(renderAreaPos.x() + halfChar);
+    qint64 pos2 = ra->coordToPos(renderAreaPos.x() + halfChar +1);
+    qint64 delta=0;
     if(pos2-1>pos) {
         delta=pos2-pos-1;
     }
@@ -435,7 +435,7 @@ void OverviewRenderArea::setAnnotationsOnPos() {
             if(as->visible) {
                 foreach(const U2Region& r, a->getRegions()) {
                     U2Region innerRegion = r.intersect(sequenceRange);
-                    for(int i = innerRegion.startPos;i < innerRegion.endPos(); i++) {
+                    for(qint64 i = innerRegion.startPos;i < innerRegion.endPos(); i++) {
                         annotationsOnPos[i]++;
                     }
                 }
@@ -563,7 +563,7 @@ void OverviewRenderArea::drawGraph(QPainter& p) {
     int halfChar = getCurrentScale()/2;
     for(int i = 0; i < width(); i++) {
         int count;
-        int pos1 = coordToPos(i+halfChar);
+        qint64 pos1 = coordToPos(i+halfChar);
         if(pos1<1 || pos1>annotationsOnPos.size()+1) {
             continue;
         }
@@ -571,7 +571,7 @@ void OverviewRenderArea::drawGraph(QPainter& p) {
             count=annotationsOnPos.at(pos1-1);
         }
         else {
-            int pos2 = coordToPos(i) - 1;
+            qint64 pos2 = coordToPos(i) - 1;
             count = annotationsOnPos.at(pos1-1);
             for (int pos = pos1; pos < pos2; pos++) {
                 int nextCount = annotationsOnPos.at(pos-1);

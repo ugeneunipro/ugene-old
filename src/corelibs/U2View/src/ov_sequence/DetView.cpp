@@ -176,7 +176,7 @@ void DetView::mouseReleaseEvent(QMouseEvent* me) {
     if (me->button() == Qt::LeftButton && singleBaseSelectionMode) {
         QPoint areaPoint = toRenderAreaPoint(me->pos());
         if ((static_cast<DetViewRenderArea*>(renderArea))->isOnTranslationsLine(areaPoint.y())) {
-            int pos = renderArea->coordToPos(areaPoint.x());
+            qint64 pos = renderArea->coordToPos(areaPoint.x());
             if (pos == lastPressPos) {
                 U2Region rgn(pos-1, 3);
                 if (rgn.startPos >=0 && rgn.endPos() <= seqLen) {
@@ -428,10 +428,10 @@ void DetViewRenderArea::drawComplement(QPainter& p) {
     }
 }
 
-static QByteArray translate(DNATranslation* t, const char* seq, int seqLen) {
+static QByteArray translate(DNATranslation* t, const char* seq, qint64 seqLen) {
     QByteArray res(seqLen / 3, 0);
-    int n = t->translate(seq, seqLen, res.data(), res.length());
-        assert(n == res.length()); Q_UNUSED(n);
+    qint64 n = t->translate(seq, seqLen, res.data(), seqLen/3);
+//    assert(n == res.length()); Q_UNUSED(n);
     return res;
 }
 
@@ -547,7 +547,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
             assert(revComplDnaOffset >= 0);
             const char* revComplData = revComplDna.constData();
             const char* seq = revComplData + revComplDnaOffset;
-            int seqLen = revComplStartPos - minUsedPos;
+            qint64 seqLen = revComplStartPos - minUsedPos;
             QByteArray amino = translate(aminoTable, seq, seqLen);
             complLine = (wholeSeqLen - revComplStartPos) % 3;
             if(visibleRows[complLine+3] == true){
@@ -716,16 +716,16 @@ void DetViewRenderArea::highlight(QPainter& p, const U2Region& r, int line) {
     p.drawRect(x, y, width, height);
 }
 
-int DetViewRenderArea::coordToPos(int x) const {
+qint64 DetViewRenderArea::coordToPos(int x) const {
     U2Region visibleRange = view->getVisibleRange();
-        int pos = visibleRange.startPos + int(x / (float)charWidth + 0.5f);
+        qint64 pos = visibleRange.startPos + int(x / (float)charWidth + 0.5f);
     if (pos > visibleRange.endPos()) {
         pos = visibleRange.endPos();
     }
     return pos;
 }
 
-float DetViewRenderArea::posToCoordF(int x, bool useVirtualSpace) const {
+float DetViewRenderArea::posToCoordF(qint64 x, bool useVirtualSpace) const {
     const U2Region& visible = view->getVisibleRange();
     if (!useVirtualSpace && !visible.contains(x) && visible.endPos()!=x) {
         return -1;
@@ -735,9 +735,9 @@ float DetViewRenderArea::posToCoordF(int x, bool useVirtualSpace) const {
     return res;
 }
 
-float DetViewRenderArea::getCurrentScale() const {
+double DetViewRenderArea::getCurrentScale() const {
     assert(0); //TODO: must never be called. Not tested if called
-    return (float)charWidth;
+    return (double)charWidth;
 } 
 
 void DetViewRenderArea::updateSize()  {

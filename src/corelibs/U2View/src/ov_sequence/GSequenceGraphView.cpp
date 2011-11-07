@@ -56,7 +56,7 @@ GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx
     //process double clicks as centering requests
     ADVSingleSequenceWidget* ssw = baseView == NULL ? NULL : qobject_cast<ADVSingleSequenceWidget*>(baseView->parentWidget());
     if (ssw != NULL) {
-        connect(this, SIGNAL(si_centerPosition(int)), ssw, SLOT(sl_onLocalCenteringRequest(int)));
+        connect(this, SIGNAL(si_centerPosition(qint64)), ssw, SLOT(sl_onLocalCenteringRequest(qint64)));
     }
 
     pack();
@@ -197,8 +197,8 @@ void GSequenceGraphViewRA::drawHeader(QPainter& p) {
 }
 
 
-float GSequenceGraphViewRA::getCurrentScale() const {
-    return float(graphRect.width()) / view->getVisibleRange().length;
+double GSequenceGraphViewRA::getCurrentScale() const {
+    return double(graphRect.width()) / view->getVisibleRange().length;
 }
 
 

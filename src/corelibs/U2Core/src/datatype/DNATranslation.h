@@ -59,7 +59,7 @@ public:
     DNATranslation(const QString& _id, const QString& _name, DNAAlphabet* src, DNAAlphabet* dst);
     virtual ~DNATranslation(){}
 
-    virtual int translate(const char* src, int src_len, char* dst, int dst_capacity) const = 0;
+    virtual qint64 translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const = 0;
     virtual int translate(char* src_and_dst, int len) const = 0;
 
     const QString& getTranslationName() const {return name;}

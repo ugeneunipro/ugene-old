@@ -506,7 +506,7 @@ void ChromatogramViewRenderArea::setAreaHeight(int newH) {
     areaHeight = newH;
 }
 
-int ChromatogramViewRenderArea::coordToPos(int c) const {
+qint64 ChromatogramViewRenderArea::coordToPos(int c) const {
     const U2Region& visibleRange = view->getVisibleRange();
     if (visibleRange.startPos+visibleRange.length==chroma.seqLength 
         && c>k*chroma.baseCalls[chroma.seqLength-1]+b)
@@ -522,7 +522,7 @@ int ChromatogramViewRenderArea::coordToPos(int c) const {
     return visibleRange.startPos+m;
 }
 
-int ChromatogramViewRenderArea::posToCoord(int p, bool useVirtualSpace) const {
+int ChromatogramViewRenderArea::posToCoord(qint64 p, bool useVirtualSpace) const {
     const U2Region& visibleRange = view->getVisibleRange();
     if (!useVirtualSpace && !visibleRange.contains(p) && p!=visibleRange.endPos()) {
         return -1;

@@ -116,7 +116,7 @@ void ADVSingleSequenceWidget::init() {
 
     panView = new PanView(this, seqCtx);
     panView->setObjectName("pan_view");
-    connect(panView, SIGNAL(si_centerPosition(int)), SLOT(sl_onLocalCenteringRequest(int)));
+    connect(panView, SIGNAL(si_centerPosition(qint64)), SLOT(sl_onLocalCenteringRequest(qint64)));
 
     zoomUseObject.setPanView(panView);
 
@@ -289,7 +289,7 @@ int ADVSingleSequenceWidget::getNumBasesVisible() const {
     return panView->getVisibleRange().length;
 }
 
-void ADVSingleSequenceWidget::setNumBasesVisible(int n) {
+void ADVSingleSequenceWidget::setNumBasesVisible(qint64 n) {
     panView->setNumBasesVisible(n);
 }
 

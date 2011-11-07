@@ -81,9 +81,9 @@ class DetViewRenderArea : public GSequenceLineViewAnnotatedRenderArea {
 public:
     DetViewRenderArea(DetView* d);
 
-    virtual int coordToPos(int x) const;
-    virtual float posToCoordF(int x, bool useVirtualSpace = false) const;
-    virtual float getCurrentScale() const;
+    virtual qint64 coordToPos(int x) const;
+    virtual float posToCoordF(qint64 x, bool useVirtualSpace = false) const;
+    virtual double getCurrentScale() const;
 
     DetView* getDetView() const {return static_cast<DetView*>(view);}
 

@@ -260,7 +260,9 @@ bool SwissProtPlainTextFormat::readSequence(ParserState *st, U2SequenceImporter&
         }
 		
 		seqImporter.addBlock(res,res.size(),os);
-		CHECK_OP(os,false);
+		if(os.isCoR()){
+			break;
+		}
 		sequenceLen += res.size();
 		fullSequenceLen += res.size();
 		res.clear();

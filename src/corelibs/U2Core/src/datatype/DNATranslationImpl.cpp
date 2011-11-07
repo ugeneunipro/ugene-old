@@ -35,8 +35,8 @@ DNATranslation1to1Impl::DNATranslation1to1Impl(const QString& id, const QString&
     assert(map.size() == 256);
 }
 
-int DNATranslation1to1Impl::translate(const char* src, int src_len, char* dst, int dst_capacity) const {
-    int len = qMin(src_len, dst_capacity);
+qint64 DNATranslation1to1Impl::translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const {
+	qint64 len = qMin(src_len, dst_capacity);
     TextUtils::translate(map, src, len, dst);
     return len;
 }
@@ -89,9 +89,9 @@ DNATranslation3to1Impl::~DNATranslation3to1Impl() {
     delete[] cod_lens;
 }
 
-int DNATranslation3to1Impl::translate(const char* src, int src_len, char* dst, int dst_capacity) const {
+qint64 DNATranslation3to1Impl::translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const {
     bool caseSensitive = srcAlphabet->isCaseSensitive();
-    int resLen = qMin(src_len/3, dst_capacity);
+    qint64 resLen = qMin(src_len/3, dst_capacity);
     if (caseSensitive) {
         for(int dstIdx=0, srcIdx=0; dstIdx < resLen; dstIdx++, srcIdx+=3) {
             char c = index.map(src + srcIdx);
@@ -194,9 +194,9 @@ DNATranslation1to3Impl::DNATranslation1to3Impl(const QString& _id, const QString
 DNATranslation1to3Impl::~DNATranslation1to3Impl() {
 }
 
-int DNATranslation1to3Impl::translate (const char* src, int src_len, char* dst, int dst_capacity, BackTranslationMode mode) const {
+qint64 DNATranslation1to3Impl::translate (const char* src, qint64 src_len, char* dst, qint64 dst_capacity, BackTranslationMode mode) const {
     bool caseSensitive = srcAlphabet->isCaseSensitive();
-    int resLen = qMin(src_len * 3, dst_capacity);
+    qint64 resLen = qMin(src_len * 3, dst_capacity);
     switch (mode) {
         case USE_MOST_PROBABLE_CODONS : 
         {
@@ -257,7 +257,7 @@ int DNATranslation1to3Impl::translate (const char* src, int src_len, char* dst, 
     return resLen;
 }
 
-int DNATranslation1to3Impl::translate(const char* src, int src_len, char* dst, int dst_capacity) const {
+qint64 DNATranslation1to3Impl::translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const {
     return translate(src, src_len, dst, dst_capacity, USE_MOST_PROBABLE_CODONS);
 }
 

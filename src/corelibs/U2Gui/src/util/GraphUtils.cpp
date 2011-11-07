@@ -105,7 +105,7 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
             p.drawLine(pos.x(), pos.y() + len, pos.x() + c.arrowWidth, pos.y() + len - c.arrowLen);
         }
         if (start / chunk != end / chunk) {
-            int currnotch;
+            qint64 currnotch;
             if(c.correction != 0){
                 currnotch = c.correction;
             }else{
@@ -183,7 +183,7 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
                 p.drawLine(pos.x() + len, pos.y(), pos.x() + len - c.arrowLen, pos.y() + c.arrowWidth);
             }
             if (start / chunk != end / chunk) {
-                int currnotch; 
+                qint64 currnotch; 
                 if(c.correction != 0){
                     currnotch = c.correction;
                 }else{
@@ -210,7 +210,7 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
                 p.drawLine(pos.x(), pos.y(), pos.x() + c.arrowLen, pos.y() + c.arrowWidth);
             }
             if (start / chunk != end / chunk) {
-                int currnotch;
+                qint64 currnotch;
                 if(c.correction != 0){
                     currnotch = c.correction;
                 }else{

@@ -105,7 +105,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     TmpDbiObjects dbiObjects(dbiRef, os);
 	int num_sequence = 0;
 
-	int sequenceStart = 0;
+	qint64 sequenceStart = 0;
 	int sequenceSize = 0;
 	int fullSequenceSize = 0;
 
@@ -529,7 +529,9 @@ bool EMBLGenbankAbstractDocument::readSequence(ParserState* st, U2SequenceImport
         }
 		
 		seqImporter.addBlock(res.data(),res.size(),os);
-		CHECK_OP(os,false);
+		if(os.isCoR()){
+			break;
+		}
 		sequenceLen += res.size();
 		fullSequenceLen += res.size();
 		res.clear();

@@ -71,11 +71,11 @@ public:
 
     ADVSequenceObjectContext* getSequenceContext() const {return ctx;}
 
-    virtual void setStartPos(int pos);
+    virtual void setStartPos(qint64 pos);
 
-    virtual void setCenterPos(int pos);
+    virtual void setCenterPos(qint64 pos);
 
-    int getSequenceLength() const {return seqLen;}
+    qint64 getSequenceLength() const {return seqLen;}
     
     virtual void addUpdateFlags(GSLV_UpdateFlags newFlags) {lastUpdateFlags|=newFlags;}
        
@@ -112,7 +112,7 @@ public:
 
 signals:
     void si_visibleRangeChanged();
-    void si_centerPosition(int pos);
+    void si_centerPosition(qint64 pos);
 
 protected:
     void resizeEvent(QResizeEvent* e);
@@ -158,6 +158,7 @@ protected:
     GSLV_FeatureFlags               featureFlags;
     GSequenceLineView*              frameView;
     GSequenceLineView*              coherentRangeView;
+	double coefScrollBarMapping;
 
     // special flag setup by child classes that tells to this class do or skip
     // any changes to selection on mouse ops
@@ -171,11 +172,11 @@ public:
     GSequenceLineViewRenderArea(GSequenceLineView* p);
     ~GSequenceLineViewRenderArea();
 
-    virtual int coordToPos(int x) const;
-    virtual int posToCoord(int p, bool useVirtualSpace = false) const;
-    virtual float posToCoordF(int p, bool useVirtualSpace = false) const;
+    virtual qint64 coordToPos(int x) const;
+    virtual int posToCoord(qint64 p, bool useVirtualSpace = false) const;
+    virtual float posToCoordF(qint64 p, bool useVirtualSpace = false) const;
     //number of pixels per base
-    virtual float getCurrentScale() const;
+    virtual double getCurrentScale() const;
     //char width, derived from current 'font'
     int getCharWidth() const {return charWidth;}
 

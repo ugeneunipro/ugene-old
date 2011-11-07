@@ -69,7 +69,7 @@ protected:
     bool        panSliderMovedRight;
     bool        panSliderMovedLeft;
 
-    int         offset;
+    qint64         offset;
 private:
     PanView*        panView;
     DetView*        detView;

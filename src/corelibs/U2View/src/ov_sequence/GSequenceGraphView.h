@@ -76,7 +76,7 @@ public:
     ~GSequenceGraphViewRA();
     virtual GSequenceGraphView* getGraphView() const {return static_cast<GSequenceGraphView*>(view);}
     
-    float getCurrentScale() const;
+    double getCurrentScale() const;
 
 protected:
     virtual void drawAll(QPaintDevice* pd);
