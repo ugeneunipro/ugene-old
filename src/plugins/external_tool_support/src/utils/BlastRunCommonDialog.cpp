@@ -73,7 +73,7 @@ BlastRunCommonDialog::BlastRunCommonDialog(BlastTaskSettings& _settings, QWidget
 }
 void BlastRunCommonDialog::sl_onMatchScoresChanged(int index){
     Q_UNUSED(index);
-    if(!scoresComboBox->isVisible()){
+    if(programName->currentText() != "blastn"){
         return;
     }
     settings.matchReward=scoresComboBox->currentText().split(" ").at(0).toInt();
@@ -140,7 +140,7 @@ void BlastRunCommonDialog::sl_onMatchScoresChanged(int index){
 }
 void BlastRunCommonDialog::sl_onMatrixChanged(int index){
     Q_UNUSED(index);
-    if(!matrixComboBox->isVisible()){
+    if(programName->currentText() == "blastn"){
         return;
     }
     settings.matrix=matrixComboBox->currentText();
