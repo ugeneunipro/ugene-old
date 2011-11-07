@@ -26,6 +26,7 @@
 #include <QtCore/QMutex>
 #include <QtCore/QMutexLocker>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/GObject.h>
 
 namespace U2 {
 
@@ -81,9 +82,14 @@ public:
     QList<U2AssemblyRead> findMateReads(U2AssemblyRead read, U2OpStatus& os);
     
 private:
-    void cleanup();
+    /**
+        Unsets reference only for current session (e.g. when ref doc is closed),
+        association in ugenedb still exists
+    */
+    void unsetReference();
     void startLoadReferenceTask(Task * t);
     Task * createLoadReferenceAndAddToProjectTask(const U2CrossDatabaseReference& ref);
+    void onReferenceRemoved();
     
 signals:
     void si_referenceChanged();
@@ -94,6 +100,7 @@ private slots:
     void sl_referenceDocLoadedStateChanged();
     void sl_referenceDocRemoved(Document*);
     void sl_referenceDocAdded(Document *);
+    void sl_referenceObjRemoved(GObject* o);
     void sl_unassociateReference();
     
 private:

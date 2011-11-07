@@ -70,10 +70,10 @@ uriRetrieved(false)
 }
 
 AssemblyModel::~AssemblyModel() {
-    cleanup();
+    unsetReference();
 }
 
-void AssemblyModel::cleanup() {
+void AssemblyModel::unsetReference() {
     refObj = NULL;
 }
 
@@ -283,19 +283,31 @@ void AssemblyModel::sl_referenceLoadingFailed() {
     emit si_referenceChanged(); // to update reference area
 }
 
+
+void AssemblyModel::onReferenceRemoved() {
+    QMessageBox::StandardButtons fl = QMessageBox::Yes | QMessageBox::No;
+    QMessageBox::StandardButton btn = QMessageBox::question(QApplication::activeWindow(), tr("Errors"),
+        tr("Remove association of '%1' sequence with '%2' assembly?").arg(refObj->getGObjectName()).arg(assembly.visualName),fl, QMessageBox::Yes);
+    if (btn == QMessageBox::Yes) {
+        sl_unassociateReference();
+    } else {
+        refObj->getDocument()->disconnect(this);
+        unsetReference();
+        emit si_referenceChanged();
+    }
+}
+
 // when reference doc removed from project
 void AssemblyModel::sl_referenceDocRemoved(Document* d) {
     if (d != NULL && refObj != NULL && refObj->getDocument() == d) {
-        QMessageBox::StandardButtons fl = QMessageBox::Yes | QMessageBox::No;
-        QMessageBox::StandardButton btn = QMessageBox::question(QApplication::activeWindow(), tr("Errors"), 
-            tr("Remove association with '%1' assembly").arg(assembly.visualName), fl, QMessageBox::Yes);
-        if (btn == QMessageBox::Yes) {
-            sl_unassociateReference();
-        } else {
-            refObj->getDocument()->disconnect(this);
-            cleanup();
-            emit si_referenceChanged();
-        }
+        onReferenceRemoved();
+    }
+}
+
+// when reference obj removed from its document
+void AssemblyModel::sl_referenceObjRemoved(GObject* o) {
+    if (refObj != NULL && refObj == o) {
+        onReferenceRemoved();
     }
 }
 
@@ -328,7 +340,7 @@ void AssemblyModel::sl_referenceDocLoadedStateChanged() {
             sl_referenceLoaded();
         }
     } else { // refDoc unloaded
-        cleanup();
+        unsetReference();
         emit si_referenceChanged();
     }
 }
@@ -349,6 +361,8 @@ void AssemblyModel::sl_referenceLoaded() {
     } else {
         emit si_referenceChanged();
     }
+
+    connect(refDoc, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_referenceObjRemoved(GObject*)));
 }
 
 bool AssemblyModel::hasReference() const {
@@ -476,7 +490,7 @@ void AssemblyModel::sl_unassociateReference() {
         U2OpStatusImpl status;
         assemblyDbi->updateAssemblyObject(assembly, status);
         LOG_OP(status);
-        cleanup();
+        unsetReference();
         emit si_referenceChanged();
     }
 }
