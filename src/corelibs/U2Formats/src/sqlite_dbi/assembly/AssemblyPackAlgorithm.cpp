@@ -73,7 +73,7 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
         stat.maxProw = ctx.maxProw;
 
         if ((++nPacked % PACK_TRACE_CHECKPOINT) == 0) {
-            perfLog.trace(QString("Assembly: number packed reads so far: %1 of %2 (%3%)").arg(nPacked).arg(stat.readsCount).arg((nPacked/stat.readsCount)*100));
+            perfLog.trace(QString("Assembly: number packed reads so far: %1 of %2 (%3%)").arg(nPacked).arg(stat.readsCount).arg(100*nPacked/stat.readsCount));
         }
     }
     assert(stat.readsCount == nPacked);

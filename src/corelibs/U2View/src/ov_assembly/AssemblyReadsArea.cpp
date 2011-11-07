@@ -335,6 +335,16 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
         return;
     }
 
+    QByteArray referenceRegion;
+    if(model->hasReference() && browser->areCellsVisible()) {
+        U2OpStatusImpl status;
+        referenceRegion = model->getReferenceRegion(cachedReads.visibleBases, status);
+        if(status.hasError()) {
+            LOG_OP(status);
+            referenceRegion = QByteArray();
+        }
+    }
+
     // 1. Render cells using AssemblyCellRenderer
     cachedReads.letterWidth = browser->getCellWidth();
 
@@ -369,20 +379,10 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             continue;
         }
 
-        if(browser->areCellsVisible()) { //->draw color rects 
+        if(browser->areCellsVisible()) { //->draw color rects
             int firstVisibleBase = readVisibleBases.startPos - readBases.startPos; 
             int x_pix_start = browser->calcPainterOffset(xToDrawRegion.startPos);
             int y_pix_start = browser->calcPainterOffset(yToDrawRegion.startPos);
-
-            QByteArray referenceRegion;
-            if(model->hasReference()) {
-                U2OpStatusImpl status;
-                referenceRegion = model->getReferenceRegion(readVisibleBases, status);
-                if(status.hasError()) {
-                    LOG_OP(status);
-                    referenceRegion = QByteArray();
-                }
-            }
 
             //iterate over letters of the read
             QList<U2CigarToken> cigar(read->cigar); // hack: to show reads without cigar but with mapped position
@@ -398,7 +398,8 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
                 QPoint cellStart(x_pix_start + x_pix_offset, y_pix_start);
                 QPixmap cellImage;
                 if(! referenceRegion.isEmpty()) {
-                    cellImage = cellRenderer->cellImage(read, c, referenceRegion[basesPainted-1]);
+                    int posInRef = readVisibleBases.startPos - cachedReads.visibleBases.startPos + basesPainted - 1;
+                    cellImage = cellRenderer->cellImage(read, c, referenceRegion[posInRef]);
                 } else {
                     cellImage = cellRenderer->cellImage(read, c);
                 }
