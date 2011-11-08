@@ -84,7 +84,7 @@ Task::ReportResult AddDocumentTask::report() {
             p->addDocument(document);
         }
     } else {
-        stateInfo.setError(stateInfo.getError() + tr("Document was removed"));
+        stateInfo.setError(stateInfo.getError() + tr(". Document was removed"));
     }
     return ReportResult_Finished;
 }

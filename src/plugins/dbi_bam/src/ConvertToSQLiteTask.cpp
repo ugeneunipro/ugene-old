@@ -574,18 +574,24 @@ void ConvertToSQLiteTask::run() {
                 taskLog.details(tr("Importing unmapped reads"));
                 if(bamInfo.hasIndex() && !reader->getHeader().getReferences().isEmpty()) {
                     const Index &index = bamInfo.getIndex();
+                    bool maxOffsetFound = false;
                     VirtualOffset maxOffset = VirtualOffset(0, 0);
-                    foreach(const Index::ReferenceIndex::Bin &bin, index.getReferenceIndices()[reader->getHeader().getReferences().size() - 1].getBins()) {
-                        foreach(const Index::ReferenceIndex::Chunk &chunk, bin.getChunks()) {
-                            if(chunk.getStart() < chunk.getEnd() && maxOffset < chunk.getStart()) {
-                                maxOffset = chunk.getStart();
+                    for(int refId = 0; refId < reader->getHeader().getReferences().size(); ++refId) {
+                        foreach(const Index::ReferenceIndex::Bin &bin, index.getReferenceIndices()[refId].getBins()) {
+                            foreach(const Index::ReferenceIndex::Chunk &chunk, bin.getChunks()) {
+                                if(chunk.getStart() < chunk.getEnd() && maxOffset < chunk.getStart()) {
+                                    maxOffset = chunk.getStart();
+                                    maxOffsetFound = true;
+                                }
                             }
                         }
                     }
-                    bamReader->seek(maxOffset);
-                    iterator.reset(new BamIterator(*bamReader));
-                    while(iterator->hasNext() && iterator->peekReferenceId() != -1) {
-                        iterator->skip();
+                    if(maxOffsetFound) {
+                        bamReader->seek(maxOffset);
+                        iterator.reset(new BamIterator(*bamReader));
+                        while(iterator->hasNext() && iterator->peekReferenceId() != -1) {
+                            iterator->skip();
+                        }
                     }
                 }
                 SequentialDbiIterator dbiIterator(-1, false, *iterator, stateInfo, *ioAdapter);

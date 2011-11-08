@@ -147,7 +147,7 @@ void OpenAssemblyBrowserTask::open() {
             delete v;
             continue;
         }
-        if(modelLen <= 0) {
+        if(modelLen == 0 && v->getModel()->hasReads(status)) {
             QString message = tr("Cannot open assembly browser for %1: model length should be > 0").arg(o->getDocument()->getURLString());
             coreLog.error(message);
             AppContext::getMainWindow()->getNotificationStack()->addError(message);

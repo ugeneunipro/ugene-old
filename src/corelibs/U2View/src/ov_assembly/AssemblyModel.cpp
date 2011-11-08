@@ -147,8 +147,8 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
             }
             // ignore incorrect attribute value and remove corrupted attribute (auto-fix incorrectly converted ugenedb)
             if(cachedModelLength == 0) {
-                cachedModelLength = NO_VAL;
                 coreLog.details(QString("ignored incorrect value of attribute %1: should be > 0, got %2. Bad attribute removed!").arg(QString(REFERENCE_ATTRIBUTE_NAME)).arg(cachedModelLength));
+                cachedModelLength = NO_VAL;
                 U2AttributeUtils::removeAttribute(attributeDbi, attr.id, os);
             }
         }
