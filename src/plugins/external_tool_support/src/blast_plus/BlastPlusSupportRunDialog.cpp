@@ -50,8 +50,8 @@ namespace U2 {
 
 ////////////////////////////////////////
 //BlastAllSupportRunDialog
-BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, BlastTaskSettings& _settings, QString &_lastDBPath, QString &_lastDBName, QWidget* _parent) :
-        BlastRunCommonDialog(_settings, _parent), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
+BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, QString &_lastDBPath, QString &_lastDBName, QWidget* _parent) :
+        BlastRunCommonDialog(_parent), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
 {
     CreateAnnotationModel ca_m;
     ca_m.data->name = "misc_feature";
@@ -175,8 +175,8 @@ void BlastPlusSupportRunDialog::sl_runQuery(){
 }
 ////////////////////////////////////////
 //BlastPlusWithExtFileSpecifySupportRunDialog
-BlastPlusWithExtFileSpecifySupportRunDialog::BlastPlusWithExtFileSpecifySupportRunDialog(QList<BlastTaskSettings>& _settingsList, QString &_lastDBPath, QString &_lastDBName, QWidget *_parent) :
-        BlastRunCommonDialog(_settingsList[0], _parent), settingsList(_settingsList), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
+BlastPlusWithExtFileSpecifySupportRunDialog::BlastPlusWithExtFileSpecifySupportRunDialog(QString &_lastDBPath, QString &_lastDBName, QWidget *_parent) :
+        BlastRunCommonDialog(_parent), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
 {
     ca_c=NULL;
     wasNoOpenProject=false;
@@ -205,6 +205,10 @@ BlastPlusWithExtFileSpecifySupportRunDialog::BlastPlusWithExtFileSpecifySupportR
     baseNameLineEdit->setText(lastDBName);
     connect(cancelButton,SIGNAL(clicked()),SLOT(sl_cancel()));
     connect(this,SIGNAL(rejected()),SLOT(sl_cancel()));
+}
+
+const QList<BlastTaskSettings> &BlastPlusWithExtFileSpecifySupportRunDialog::getSettingsList() const {
+    return settingsList;
 }
 
 void BlastPlusWithExtFileSpecifySupportRunDialog::sl_lineEditChanged(){
@@ -278,6 +282,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLoadTaskStateChang
                 sequencesRefList.append(GObjectReference(gobj));
             }
         }
+        settings = settingsList.first();
 
         //U2SequenceObject* seq=(U2SequenceObject*)sequencesRefList[0];
         CreateAnnotationModel ca_m;

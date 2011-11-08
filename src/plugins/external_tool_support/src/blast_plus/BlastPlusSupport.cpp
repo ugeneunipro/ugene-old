@@ -188,13 +188,11 @@ void BlastPlusSupport::sl_runWithExtFileSpecify(){
     CHECK_OP(os, );
     
     //Call select input file and setup settings dialog
-    QList<BlastTaskSettings> settingsList;
-    BlastTaskSettings settings;
-    settingsList.append(settings);
-    BlastPlusWithExtFileSpecifySupportRunDialog blastPlusRunDialog(settingsList, lastDBPath, lastDBName, AppContext::getMainWindow()->getQMainWindow());
+    BlastPlusWithExtFileSpecifySupportRunDialog blastPlusRunDialog(lastDBPath, lastDBName, AppContext::getMainWindow()->getQMainWindow());
     if(blastPlusRunDialog.exec() != QDialog::Accepted){
         return;
     }
+    QList<BlastTaskSettings> settingsList = blastPlusRunDialog.getSettingsList();
     BlastPlusSupportMultiTask* blastPlusSupportMultiTask = new BlastPlusSupportMultiTask(settingsList,settingsList[0].outputResFile);
     AppContext::getTaskScheduler()->registerTopLevelTask(blastPlusSupportMultiTask);
 }
@@ -274,12 +272,12 @@ void BlastPlusSupportContext::sl_showDialog() {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
     assert(av);
 
-    BlastTaskSettings settings;
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
-    BlastPlusSupportRunDialog dlg(seqCtx->getSequenceObject(), settings, lastDBPath, lastDBName, av->getWidget());
+    BlastPlusSupportRunDialog dlg(seqCtx->getSequenceObject(), lastDBPath, lastDBName, av->getWidget());
     //Call run blastall dialog
     if(dlg.exec() == QDialog::Accepted) {
 
+        BlastTaskSettings settings = dlg.getSettings();
         //prepare query
         DNASequenceSelection* s = seqCtx->getSequenceSelection();
         QVector<U2Region> regions;

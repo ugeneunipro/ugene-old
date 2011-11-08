@@ -44,8 +44,8 @@ namespace U2 {
 
 ////////////////////////////////////////
 //BlastAllSupportRunCommonDialog
-BlastRunCommonDialog::BlastRunCommonDialog(BlastTaskSettings& _settings, QWidget* _parent) :
-            QDialog(_parent), settings(_settings)
+BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
+            QDialog(_parent)
 {
     setupUi(this);
     //I don`t know what this in local BLAST
@@ -70,6 +70,9 @@ BlastRunCommonDialog::BlastRunCommonDialog(BlastTaskSettings& _settings, QWidget
     connect(restoreButton,SIGNAL(clicked()),SLOT(sl_restoreDefault()));
     sl_onProgNameChange(0);
     okButton->setEnabled(false);
+}
+const BlastTaskSettings &BlastRunCommonDialog::getSettings() const {
+    return settings;
 }
 void BlastRunCommonDialog::sl_onMatchScoresChanged(int index){
     Q_UNUSED(index);

@@ -34,7 +34,9 @@ namespace U2 {
 class BlastRunCommonDialog : public QDialog, public Ui_BlastAllSupportDialog {
     Q_OBJECT
 public:
-    BlastRunCommonDialog(BlastTaskSettings& settings, QWidget* parent);
+    BlastRunCommonDialog(QWidget* parent);
+
+    const BlastTaskSettings &getSettings()const;
 protected slots:
     virtual void sl_runQuery() = 0;
     virtual void sl_lineEditChanged() = 0;
@@ -49,7 +51,7 @@ protected slots:
 protected:
     void getSettings(BlastTaskSettings& settings);
 
-    BlastTaskSettings&                  settings;
+    BlastTaskSettings                   settings;
     bool                                needRestoreDefault;
     CreateAnnotationWidgetController*   ca_c;
 };
