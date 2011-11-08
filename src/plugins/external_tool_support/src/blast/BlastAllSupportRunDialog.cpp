@@ -44,8 +44,8 @@ namespace U2 {
 
 ////////////////////////////////////////
 //BlastAllSupportRunDialog
-BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, BlastTaskSettings& _settings, QString &_lastDBPath, QString &_lastDBName, QWidget* _parent) :
-        BlastRunCommonDialog(_settings, _parent), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
+BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, QString &_lastDBPath, QString &_lastDBName, QWidget* _parent) :
+        BlastRunCommonDialog(_parent), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
 {
     CreateAnnotationModel ca_m;
     ca_m.data->name = "misc_feature";
@@ -105,8 +105,8 @@ void BlastAllSupportRunDialog::sl_runQuery(){
 }
 ////////////////////////////////////////
 //BlastAllWithExtFileSpecifySupportRunDialog
-BlastAllWithExtFileSpecifySupportRunDialog::BlastAllWithExtFileSpecifySupportRunDialog(QList<BlastTaskSettings>& _settingsList, QString &_lastDBPath, QString &_lastDBName,QWidget* _parent) :
-        BlastRunCommonDialog(_settingsList[0], _parent), settingsList(_settingsList), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
+BlastAllWithExtFileSpecifySupportRunDialog::BlastAllWithExtFileSpecifySupportRunDialog(QString &_lastDBPath, QString &_lastDBName,QWidget* _parent) :
+        BlastRunCommonDialog(_parent), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
 {
     ca_c=NULL;
     wasNoOpenProject=false;
@@ -135,6 +135,10 @@ BlastAllWithExtFileSpecifySupportRunDialog::BlastAllWithExtFileSpecifySupportRun
     baseNameLineEdit->setText(lastDBName);
     connect(cancelButton,SIGNAL(clicked()),SLOT(sl_cancel()));
     connect(this,SIGNAL(rejected()),SLOT(sl_cancel()));
+}
+
+const QList<BlastTaskSettings> &BlastAllWithExtFileSpecifySupportRunDialog::getSettingsList() const {
+    return settingsList;
 }
 
 void BlastAllWithExtFileSpecifySupportRunDialog::sl_lineEditChanged(){
