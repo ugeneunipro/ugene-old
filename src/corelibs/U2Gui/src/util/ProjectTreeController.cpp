@@ -425,7 +425,7 @@ void ProjectTreeController::sl_onCloseEditor(QWidget*,QAbstractItemDelegate::End
 			return;
 		} else if (newName.length() == 0  || newName.length() > maxNameLength) {
 			
-			QMessageBox::critical(0, "Error", tr("The name should be not empty and not longer than %1 characters").arg(maxNameLength));
+			QMessageBox::critical(0, "Error", tr("The name must be not empty and not longer than %1 characters").arg(maxNameLength));
 			return;
 
 		} else if (objItem->obj->getDocument()->findGObjectByName(newName) != NULL) {
