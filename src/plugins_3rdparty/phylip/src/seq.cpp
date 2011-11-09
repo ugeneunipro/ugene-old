@@ -371,7 +371,7 @@ void getbasefreqs(double freqa, double freqc, double freqg, double freqt,
   *freqcy = freqc / *freqy;
   *freqgr = freqg / *freqr;
   *freqty = freqt / *freqy;
-  printf("TTRATIO: %g\n", *ttratio);
+  //printf("TTRATIO: %g\n", *ttratio);
   aa = *ttratio * (*freqr) * (*freqy) - freqa * freqg - freqc * freqt;
   bb = freqa * (*freqgr) + freqc * (*freqty);
   *xi = aa / (aa + bb);

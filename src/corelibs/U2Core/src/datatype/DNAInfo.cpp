@@ -71,6 +71,7 @@ const QString DNAInfo::FASTQ_QUAL_CODES = "FASTQ_QUAL_CODES";
 const QString DNAInfo::FASTQ_QUAL_TYPE = "FASTQ_QUAL_TYPE";
 const QString DNAInfo::EMBL_ID = "EMBL_ID";
 const QString DNAInfo::ID = "ID";
+const QString DNAInfo::GENBANK_HEADER = "GENBANK_HEADER";
 
 
 QString DNAInfo::getPrimaryAccession( const QVariantMap& vm)

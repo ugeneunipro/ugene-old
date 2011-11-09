@@ -130,6 +130,7 @@ static const QString EMBL_ID;
 static const QString FASTA_HDR;
 static const QString FASTQ_QUAL_CODES;
 static const QString FASTQ_QUAL_TYPE;
+static const QString GENBANK_HEADER;
 
 static QString getPrimaryAccession(const QVariantMap&);
 static QString getContig(const QVariantMap&);
@@ -155,9 +156,13 @@ public:
 
 class U2CORE_EXPORT DNAReferenceInfo {
 public:
+//     unparsed references info
+    QString referencesRecord;
+
+//     TODO: parser reference info
     int id;
     QString range;
-    QList< QPair<QString, QStringList> > data; //TODO
+    QList< QPair<QString, QStringList> > data;
 };
 
 }//namespace

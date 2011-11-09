@@ -39,6 +39,7 @@ protected:
 
     bool readIdLine(ParserState*);
     bool readEntry(ParserState*, U2SequenceImporter&,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&);
+    void readHeaderAttributes(QVariantMap& tags, DbiConnection& con, U2SequenceObject* so);
     //void readAnnotations(ParserState*, int offset);
 };
 

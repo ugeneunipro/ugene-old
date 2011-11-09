@@ -200,6 +200,9 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 						sequenceRef.objName = seqObj->getGObjectName();
 						annotationsObject->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));					
 					}
+
+                    readHeaderAttributes(data.tags, con, seqObj);
+                    toolMark = data.tags.contains(UGENE_MARK); //the mark might be added in the readHeaderAttributes method
 				}
 			}
 		}
