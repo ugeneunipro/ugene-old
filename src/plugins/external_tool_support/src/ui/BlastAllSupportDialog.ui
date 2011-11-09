@@ -143,23 +143,23 @@
         </layout>
        </item>
        <item>
-        <widget class="QLabel" name="label_14">
+        <widget class="QPushButton" name="selectDatabasePushButton">
          <property name="text">
-          <string>Select database path:</string>
+          <string>Select database</string>
          </property>
         </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLineEdit" name="databasePathLineEdit"/>
-         </item>
-         <item>
-          <widget class="QToolButton" name="databaseToolButton">
+          <widget class="QLabel" name="label_14">
            <property name="text">
-            <string>...</string>
+            <string>Database path:</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="databasePathLineEdit"/>
          </item>
         </layout>
        </item>

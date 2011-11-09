@@ -56,7 +56,7 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
     numberOfCPUSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     //Connecting people
     connect(programName,SIGNAL(currentIndexChanged(int)),SLOT(sl_onProgNameChange(int)));
-    connect(databaseToolButton,SIGNAL(clicked()),SLOT(sl_onBrowseDatabasePath()));
+    connect(selectDatabasePushButton,SIGNAL(clicked()),SLOT(sl_onBrowseDatabasePath()));
     connect(databasePathLineEdit,SIGNAL(textChanged(QString)),SLOT(sl_lineEditChanged()));
     connect(baseNameLineEdit,SIGNAL(textChanged(QString)),SLOT(sl_lineEditChanged()));
     connect(matrixComboBox,SIGNAL(currentIndexChanged(int)),SLOT(sl_onMatrixChanged(int)));
@@ -234,11 +234,12 @@ void BlastRunCommonDialog::sl_onBrowseDatabasePath(){
     LastUsedDirHelper lod("Database Directory");
 
     QString name;
-    lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory with database files"), lod.dir);
+    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir);
     if (!name.isEmpty()) {
-        databasePathLineEdit->setText(name);
+        QFileInfo fileInfo(name);
+        baseNameLineEdit->setText(fileInfo.fileName().replace(QRegExp("(\\.\\d+)?(\\.(phr|pin|psq))?$", Qt::CaseInsensitive), QString()));
+        databasePathLineEdit->setText(fileInfo.dir().path());
     }
-    databasePathLineEdit->setFocus();
 }
 void BlastRunCommonDialog::sl_onProgNameChange(int index){
     Q_UNUSED(index);
