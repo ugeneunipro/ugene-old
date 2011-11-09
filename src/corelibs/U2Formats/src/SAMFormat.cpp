@@ -281,34 +281,16 @@ Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
         MAlignmentRow row;
 
         short flag = fields[1].toShort();
-        bool isReversed = flag & 0x0010;
 
         row.setName(fields[0]);
         if(fields[9] == "*") {
             row.setSequence("", 0);
         } else {
-            if(isReversed) {
-                QByteArray &seq = fields[9];
-                DNAAlphabet *al = U2AlphabetUtils::findBestAlphabet(seq);
-                CHECK_EXT(al != NULL, os.setError(SAMFormat::tr("Can't find alphabet for sequence \"%1\"").arg(QString(seq))), NULL);
-                DNATranslation* tr = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(al);
-                CHECK_EXT(tr != NULL, os.setError(SAMFormat::tr("Can't translation for alphabet \"%1\"").arg(al->getName())), NULL);
-                TextUtils::translate(tr->getOne2OneMapper(), seq.data(), seq.size());
-                TextUtils::reverse(seq.data(), seq.size());
-                row.setSequence(seq, fields[3].toInt()-1);
-            } else {
                 row.setSequence(fields[9], fields[3].toInt()-1);
-            }   
         }
 
         if(fields[10] != "*") {
-            if(isReversed) {
-                QByteArray &seq = fields[10];
-                TextUtils::reverse(seq.data(), seq.size());
-                row.setQuality(DNAQuality(seq));
-            }
-            else
-                row.setQuality(DNAQuality(fields[10]));
+            row.setQuality(DNAQuality(fields[10]));
         }
 
         if(rname == "*") {

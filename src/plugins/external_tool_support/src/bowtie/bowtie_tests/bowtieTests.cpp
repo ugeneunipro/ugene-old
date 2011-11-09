@@ -395,19 +395,9 @@ void GTest_Bowtie::parseBowtieOutput( MAlignment& result, QString text ) {
 	int pos = 0;
 	while ((pos = rx.indexIn(text, pos)) != -1) {
 		QString name = rx.cap(1);
-		bool isReverseComplement = rx.cap(2)[0] == '-';
 		int offset = rx.cap(3).toInt();
 		QByteArray sequence = rx.cap(4).toAscii();
 		QByteArray quality = rx.cap(5).toAscii();
-		if (isReverseComplement) {
-            DNAAlphabet *al = U2AlphabetUtils::findBestAlphabet(sequence);
-            CHECK_EXT(al!=NULL, setError(QString("Can't find alphabet for sequence \"%1\"").arg(QString(sequence))), );
-            DNATranslation* tr = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(al);
-            CHECK_EXT(tr != NULL, setError(QString("Can't translation for alphabet \"%1\"").arg(al->getName())), );
-            TextUtils::translate(tr->getOne2OneMapper(), sequence.data(), sequence.size());
-            TextUtils::reverse(sequence.data(), sequence.size());
-            TextUtils::reverse(quality.data(), quality.size());
-		}
 		MAlignmentRow row(name, sequence, offset);
 		row.setQuality(DNAQuality(quality));
 		result.addRow(row);
