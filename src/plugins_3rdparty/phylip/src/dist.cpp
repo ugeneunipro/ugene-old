@@ -1,6 +1,8 @@
 #include "phylip.h"
 #include "dist.h"
 
+#include <QtCore/QString>
+
 /* version 3.6. (c) Copyright 1993-2004 by the University of Washington.
    Written by Joseph Felsenstein, Akiko Fuseki, Sean Lamont, and Andrew Keeffe.
    Permission is granted to copy and use this program provided no fee is
@@ -554,7 +556,9 @@ void treeoutr(node *p, long *col, tree *curtree)
   if (p == curtree->root)
     fprintf(outtree, ";\n");
   else {
-    fprintf(outtree, ":%*.5f", (int)(w + 7), x);
+    // HACK: format using Qt instead of ":%*.5f" which uses system locale radix sign, which can be ","
+    QString number = QString("%1").arg(x, (int)(w + 7), 'f', 5);
+    fprintf(outtree, ":%s", number.toStdString().c_str());
     (*col) += w + 8;
   }
 }  /* treeoutr */
@@ -611,7 +615,9 @@ void dist_treeout(node *p, long *col, double m, boolean njoin, node *start)
   if (p == start)
     fprintf(outtree, ";\n");
   else {
-    fprintf(outtree, ":%*.5f", (int) w + 7, x);
+    // HACK: format using Qt instead of ":%*.5f" which uses system locale radix sign, which can be ","
+    QString number = QString("%1").arg(x, (int)(w + 7), 'f', 5);
+    fprintf(outtree, ":%s", number.toStdString().c_str());
     *col += w + 8;
   }
 }  /* treeout */

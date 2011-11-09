@@ -115,7 +115,7 @@ void SeqBootModelWidget::restoreDefault(){
 #define SEED_MIN 5
 #define SEED_MAX 32765
 bool SeqBootModelWidget::checkSettings(QString& msg, const CreatePhyTreeSettings& settings){
-    if(!((settings.seed > SEED_MIN) && (settings.seed <SEED_MAX) && (settings.seed%2 == 1))){
+    if(!((settings.seed >= SEED_MIN) && (settings.seed <= SEED_MAX) && (settings.seed%2 == 1))){
         msg = tr("Seed must be odd");
         return false;
     }
