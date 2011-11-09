@@ -22,8 +22,10 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
+#include <U2View/ADVAnnotationCreation.h>
 
 #include "ADVSequenceObjectContext.h"
 #include "AutoAnnotationUtils.h"
@@ -186,6 +188,8 @@ void AutoAnnotationsADVAction::sl_autoAnnotationUpdateFinished()
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+
 QAction* AutoAnnotationUtils::findAutoAnnotationsToggleAction( ADVSequenceObjectContext* ctx, const QString& groupName )
 {
     foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
@@ -281,6 +285,58 @@ QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequence
 	}
 
 	return res;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+
+ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( AnnotationGroup* ag, 
+															   GObjectReference& ref, 
+															   ADVSequenceObjectContext* ctx)
+:Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx)
+{
+	
+}
+
+
+void ExportAutoAnnotationsGroupTask::prepare()
+{
+	QSet<Annotation*> annsToExport;
+	aGroup->findAllAnnotationsInGroupSubTree(annsToExport);
+
+	QList<SharedAnnotationData> aData;
+	foreach(Annotation* a, annsToExport) {
+		aData.append(a->data());
+	}
+	
+	SAFE_POINT(aData.size() > 0, "No auto-annotations to export!", );
+
+	AnnotationTableObject* obj = new AnnotationTableObject("permanent");
+	
+	createTask = 
+		new ADVCreateAnnotationsTask(seqCtx->getAnnotatedDNAView(), aRef, aGroup->getGroupName(), aData );
+
+	addSubTask(createTask);
+}
+
+
+QList<Task*> ExportAutoAnnotationsGroupTask::onSubTaskFinished( Task* subTask )
+{
+	QList<Task*> res;
+
+	if (!subTask->isFinished() || subTask->hasError() || subTask->isCanceled()) {
+		return res;
+	}
+	
+	if (subTask == createTask) {
+		QAction* toggleAction =  AutoAnnotationUtils::findAutoAnnotationsToggleAction(seqCtx, aGroup->getGroupName());
+		if (toggleAction != NULL && toggleAction->isChecked()) {
+			toggleAction->trigger();
+		}
+	}
+
+	return res;
+
 }
 
 } //namespace

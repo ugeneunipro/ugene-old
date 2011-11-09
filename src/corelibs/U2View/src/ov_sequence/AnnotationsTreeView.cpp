@@ -48,6 +48,8 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/EditQualifierDialog.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/CreateAnnotationDialog.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include <U2Gui/TreeWidgetUtils.h>
 
@@ -194,6 +196,10 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
     addQualifierAction->setShortcutContext(Qt::WindowShortcut);
     connect(addQualifierAction, SIGNAL(triggered()), SLOT(sl_addQualifier()));
     tree->addAction(addQualifierAction);
+
+	exportAutoAnnotationsGroup = new QAction(tr("Make auto-annotations persistent"), this);
+	connect(exportAutoAnnotationsGroup, SIGNAL(triggered()), SLOT(sl_exportAutoAnnotationsGroup()));
+
 
 /*    cutAnnotationsAction = new QAction(tr("cut_annotations"), this);
 //    cutAnnotationsAction->setShortcut(QKeySequence(Qt::K));
@@ -832,7 +838,8 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     updateColumnContextActions(selItems.size() == 1 ? static_cast<AVItem*>(selItems.first()) : static_cast<AVItem*>(NULL), lastClickedColumn);
 	
 	if (selItems.size() == 1) {
-		AnnotationTableObject* aObj = static_cast<AVItem*>(selItems.first())->getAnnotationTableObject();
+		AVItem* avItem = static_cast<AVItem*>(selItems.first());
+		AnnotationTableObject* aObj = avItem->getAnnotationTableObject();
 		if (AutoAnnotationsSupport::isAutoAnnotation(aObj)) {
 			ADVSequenceObjectContext* seqCtx = ctx->getSequenceContext(aObj);
 			QList<QAction*> tActions = AutoAnnotationUtils::getAutoAnnotationToggleActions(seqCtx);
@@ -841,7 +848,9 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
 				aaSubMenu->setIcon(QIcon(":core/images/predefined_annotation_groups.png"));
 				aaSubMenu->addActions(tActions);
 			}
-
+			if (avItem->parent() != NULL) {
+				m->addAction(exportAutoAnnotationsGroup);
+			}
 		}
 	}
 
@@ -1810,6 +1819,29 @@ void AnnotationsTreeView::sl_annotationObjectModifiedStateChanged() {
 
 AVItem* AnnotationsTreeView::currentItem(){
     return static_cast<AVItem*>(tree->currentItem());
+}
+
+void AnnotationsTreeView::sl_exportAutoAnnotationsGroup()
+{
+	AVItem* item = static_cast<AVItem*> ( tree->currentItem() );
+	AnnotationGroup* ag = item->getAnnotationGroup();
+	if (ag == NULL) {
+		return;
+	}
+	ADVSequenceObjectContext* seqCtx = ctx->getSequenceInFocus();
+
+	CreateAnnotationModel m;
+	m.hideAnnotationName = true;
+	m.hideLocation = true;
+	m.groupName = ag->getGroupName();
+	m.sequenceObjectRef = GObjectReference(seqCtx->getSequenceObject());
+	
+	CreateAnnotationDialog dlg(this, m);
+	dlg.setWindowTitle(tr("Create permanent annotation"));
+	if (dlg.exec() == QDialog::Accepted) {
+		ExportAutoAnnotationsGroupTask* task = new ExportAutoAnnotationsGroupTask(ag, m.annotationObjectRef, seqCtx);
+		AppContext::getTaskScheduler()->registerTopLevelTask(task);
+	}
 }
 
 

@@ -22,6 +22,7 @@
 #ifndef _U2_AUTO_ANNOTATION_UTILS_H_
 #define _U2_AUTO_ANNOTATION_UTILS_H_
 
+#include <U2Core/GObjectReference.h>
 #include "ADVSingleSequenceWidget.h"
 
 namespace U2 {
@@ -55,6 +56,21 @@ private:
     QMenu* menu;
     QAction *selectAllAction,*deselectAllAction;
 	int updatesCount;
+};
+
+class ADVCreateAnnotationsTask;
+
+class ExportAutoAnnotationsGroupTask : public Task {
+public:
+	ExportAutoAnnotationsGroupTask(AnnotationGroup* ag, GObjectReference& aRef, ADVSequenceObjectContext* seqCtx);
+	virtual void prepare();
+	virtual QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+	AnnotationGroup* aGroup;
+	GObjectReference aRef;
+	AnnotatedDNAView* view;
+	ADVSequenceObjectContext* seqCtx;
+	ADVCreateAnnotationsTask* createTask;
 };
 
 class U2VIEW_EXPORT AutoAnnotationUtils {

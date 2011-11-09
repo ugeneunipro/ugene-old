@@ -111,6 +111,7 @@ private slots:
     void sl_onRemoveColumnByHeaderClick();
     void sl_onCopyColumnText();
     void sl_onCopyColumnURL();
+	void sl_exportAutoAnnotationsGroup();
     
     void sl_rename();
     void sl_edit();
@@ -174,6 +175,7 @@ private:
     QAction*            removeColumnByHeaderClickAction;
     QAction*            copyColumnTextAction;
     QAction*            copyColumnURLAction;
+	QAction*			exportAutoAnnotationsGroup;
 //    QAction*            cutAnnotationsAction;
 //    QAction*            copyAnnotationsAction;
 //    QAction*            pasteAnnotationsAction;

@@ -225,7 +225,7 @@ QString CreateAnnotationWidgetController::validate() {
         }
     }
 
-	if (model.data->name.isEmpty()) {
+	if (model.data->name.isEmpty() && !model.hideAnnotationName ) {
         ui->annotationNameEdit->setFocus();
 		return tr("Annotation name is empty");
 	}
@@ -235,7 +235,7 @@ QString CreateAnnotationWidgetController::validate() {
         return tr("Annotation name is too long!\nMaximum allowed size: %1 (Genbank format compatibility issue)").arg(GBFeatureUtils::MAX_KEY_LEN);
 	}
 
-    if (!Annotation::isValidAnnotationName(model.data->name)) {
+    if (!Annotation::isValidAnnotationName(model.data->name) && !model.hideAnnotationName) {
         ui->annotationNameEdit->setFocus();
         return tr("Illegal annotation name");
     }
