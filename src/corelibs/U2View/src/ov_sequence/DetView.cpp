@@ -669,10 +669,15 @@ void DetViewRenderArea::drawSequenceSelection(QPainter& p) {
         }
         if (detView->hasTranslations()) {
             int translLine = posToDirectTransLine(r.startPos);
-            highlight(p, r, translLine);
-            if (detView->hasComplementaryStrand()) {
-                int complTransLine = posToComplTransLine(r.endPos());
-                highlight(p, r, complTransLine);
+			if(r.length >= 3){
+				highlight(p, U2Region(r.startPos,r.length / 3 * 3), translLine);
+			}			
+            if (detView->hasComplementaryStrand()) {			
+                int complTransLine = posToComplTransLine(r.endPos());				
+				if(r.length >= 3){
+					qint64 translLen = r.length /3 * 3;
+					highlight(p, U2Region(r.endPos()-translLen,translLen), complTransLine);
+				}
             }
         }
     }
