@@ -156,6 +156,10 @@ Ignore boundary ORFs which last beyond the search region
 </source>
         <translation>Игнорировать границы ORF, находящиеся за пределами области поиска(т.е. не имеющие стоп-кодона в пределах диапазона).</translation>
     </message>
+    <message>
+        <source>Circular Search</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::FindORFsToAnnotationsTask</name>

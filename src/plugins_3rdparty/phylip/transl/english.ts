@@ -58,6 +58,15 @@
     </message>
 </context>
 <context>
+    <name>U2::DistMatrixModelWidget</name>
+    <message>
+        <location filename="../src/DistMatrixModelWidget.cpp" line="117"/>
+        <source>Probably, for that alignment there is no enough memory to run PHYLIP dnadist module.The module will require more than %1 MB in the estimation.
+It could cause an error. Do you want to continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::PhylipPlugin</name>
     <message>
         <location filename="../src/PhylipPlugin.cpp" line="54"/>
@@ -68,6 +77,14 @@
         <location filename="../src/PhylipPlugin.cpp" line="54"/>
         <source>PHYLIP (the PHYLogeny Inference Package) is a package of programs for inferring phylogenies (evolutionary trees). Original version at: http://evolution.genetics.washington.edu/phylip.html</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::SeqBootModelWidget</name>
+    <message>
+        <location filename="../src/SeqBootModelWidget.cpp" line="119"/>
+        <source>Seed must be odd</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

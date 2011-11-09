@@ -4,82 +4,131 @@
 <context>
     <name>Document</name>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="448"/>
         <source>Document is not loaded</source>
-        <translation type="obsolete">Dokument není nahrán</translation>
+        <translation type="unfinished">Dokument není nahrán</translation>
     </message>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="461"/>
         <source>IO adapter does not support write operation</source>
-        <translation type="obsolete">IO adaptér nepodporuje operaci zápisu</translation>
+        <translation type="unfinished">IO adaptér nepodporuje operaci zápisu</translation>
     </message>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="467"/>
         <source>No write support for document format</source>
-        <translation type="obsolete">žádná podpora pro zápis pro formát dokumentu</translation>
+        <translation type="unfinished">žádná podpora pro zápis pro formát dokumentu</translation>
     </message>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="537"/>
         <source>Locked by user</source>
-        <translation type="obsolete">Zamknuto uživatelem</translation>
+        <translation type="unfinished">Zamknuto uživatelem</translation>
     </message>
 </context>
 <context>
     <name>DocumentFormat</name>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="49"/>
+        <source>The document is created not by UGENE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="50"/>
+        <source>Document sequences were merged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="117"/>
+        <location filename="../src/models/DocumentModel.cpp" line="122"/>
         <source>Writing is not supported for this format (%1). Feel free to send a feature request though.</source>
-        <translation type="obsolete">Zápis není u tohoto formátu podporován (%1). Neostýchejte se však poslat žádost o tuto vlastnost.</translation>
+        <translation type="unfinished">Zápis není u tohoto formátu podporován (%1). Neostýchejte se však poslat žádost o tuto vlastnost.</translation>
     </message>
 </context>
 <context>
     <name>GObject</name>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
         <source>Unknown</source>
-        <translation type="obsolete">Neznámý</translation>
+        <translation type="unfinished">Neznámý</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
         <source>Unloaded</source>
-        <translation type="obsolete">Nenahraný</translation>
+        <translation type="unfinished">Nenahraný</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequence</source>
-        <translation type="obsolete">Sekvence</translation>
+        <translation type="unfinished">Sekvence</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequences</source>
-        <translation type="obsolete">Sekvence</translation>
+        <translation type="unfinished">Sekvence</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotations</source>
-        <translation type="obsolete">Poznámky</translation>
+        <translation type="unfinished">Poznámky</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotation</source>
-        <translation type="obsolete">Poznámka</translation>
+        <translation type="unfinished">Poznámka</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Chromatograms</source>
-        <translation type="obsolete">Chromatogramy</translation>
+        <translation type="unfinished">Chromatogramy</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
+        <source>Chromatogram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Alignment</source>
-        <translation type="obsolete">Zarovnání</translation>
+        <translation type="unfinished">Zarovnání</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Alignments</source>
-        <translation type="obsolete">Zarovnání</translation>
+        <translation type="unfinished">Zarovnání</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Tree</source>
-        <translation type="obsolete">Strom</translation>
+        <translation type="unfinished">Strom</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Trees</source>
-        <translation type="obsolete">Stromy</translation>
+        <translation type="unfinished">Stromy</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>3D model</source>
-        <translation type="obsolete">Trojrozměrný model</translation>
+        <translation type="unfinished">Trojrozměrný model</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>3D models</source>
-        <translation type="obsolete">Trojrozměrné modely</translation>
+        <translation type="unfinished">Trojrozměrné modely</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
+        <source>Assembly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
+        <source>Assemblies</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Index</source>
@@ -91,44 +140,53 @@
     </message>
 </context>
 <context>
+    <name>L10N</name>
+    <message>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="96"/>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="104"/>
+        <source>Failed to detect IO adapter for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="422"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="398"/>
         <source>This is not ESearch result!</source>
         <translation>Toto není výsledek ESearch!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="481"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="456"/>
         <source>Use Genbank DNA accession number. For example: NC_001363 or D11266</source>
         <translation>Použít číslo pro přistoupení k DNA v Genbank. Například: NC_001363 nebo D11266</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="482"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="457"/>
         <source>Use Genbank protein accession number. For example: AAA59172.1</source>
         <translation>Použít číslo pro přistoupení k bílkovině (proteinu) v Genbank. Například: AAA59172.1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="483"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="458"/>
         <source>Use PDB molecule four-letter identifier. For example: 3INS or 1CRN</source>
         <translation>Použít čtyřpísmenný identifikátor pro molekulu PDB. Například: 3INS nebo 1CRN</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="484"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="459"/>
         <source>Use SWISS-PROT accession number. For example: Q9IGQ6 or A0N8V2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="485"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="460"/>
         <source>Use UniProtKB/Swiss-Prot accession number. For example: P16152</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="486"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="461"/>
         <source>Use UniProtKB/TrEMBL accession number. For example: D0VTW9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="520"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="490"/>
         <source>Use %1 unique identifier.</source>
         <translation>Použít %1 jedinečný identifikátor.</translation>
     </message>
@@ -150,17 +208,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="76"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="73"/>
         <source>No project is opened</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="85"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="82"/>
         <source>Document is already added to the project %1</source>
         <translation>Dokument je již přidán do projektu %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="90"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="87"/>
         <source>Document was removed</source>
         <translation>Dokument byl odstraněn</translation>
     </message>
@@ -188,35 +246,32 @@
         <translation type="obsolete">One of the documents is locked</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="47"/>
         <source>Insert subsequence</source>
-        <translation type="unfinished">Insert subsequence</translation>
+        <translation type="obsolete">Insert subsequence</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="61"/>
         <source>Insertion position is out of bounds</source>
-        <translation>Poloha k vložení je mimo hranice sekvence</translation>
+        <translation type="obsolete">Poloha k vložení je mimo hranice sekvence</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="72"/>
         <source>Document is locked</source>
-        <translation>Dokument je uzamčen</translation>
+        <translation type="obsolete">Dokument je uzamčen</translation>
     </message>
 </context>
 <context>
     <name>U2::AddSequencesToAlignmentTask</name>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="46"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="47"/>
         <source>Object is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="51"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="52"/>
         <source>Object is locked for modifications.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="97"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="98"/>
         <source>Sequence %1 from %2 has different alphabet</source>
         <translation>Sekvence %1 z %2 má jinou abecedu</translation>
     </message>
@@ -224,12 +279,12 @@
 <context>
     <name>U2::AnnotationTableObject</name>
     <message>
-        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="158"/>
+        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="156"/>
         <source>Sequence</source>
         <translation>Sekvence</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="163"/>
+        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="161"/>
         <source>Translation</source>
         <translation>Překlad</translation>
     </message>
@@ -396,50 +451,40 @@
 <context>
     <name>U2::CreateFileIndexTask</name>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="79"/>
         <source>Create index: %1</source>
-        <translation>Vytvořit rejstřík: %1</translation>
+        <translation type="obsolete">Vytvořit rejstřík: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="87"/>
         <source>No files to index</source>
-        <translation>Žádné soubory pro rejstřík</translation>
+        <translation type="obsolete">Žádné soubory pro rejstřík</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="91"/>
         <source>Internal error: inconsistent input data</source>
-        <translation>Vnitřní chyba: odporující si vstupní data</translation>
+        <translation type="obsolete">Vnitřní chyba: odporující si vstupní data</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="95"/>
         <source>Illegal output file parameters</source>
-        <translation>Neplatné parametry výstupního souboru</translation>
+        <translation type="obsolete">Neplatné parametry výstupního souboru</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="115"/>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="143"/>
         <source>Can&apos;t open file for read: &apos;%1&apos;</source>
-        <translation>Nelze otevřít soubor pro čtení: &apos;%1&apos;</translation>
+        <translation type="obsolete">Nelze otevřít soubor pro čtení: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="121"/>
         <source>Error creating gzipped output</source>
-        <translation>Chyba při vytváření zazipovaného výstupu (gzip)</translation>
+        <translation type="obsolete">Chyba při vytváření zazipovaného výstupu (gzip)</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="128"/>
         <source>Can&apos;t create index using %1 IO adapter</source>
-        <translation>Rejstřík nelze pomocí %1 IO adaptéru vytvořit</translation>
+        <translation type="obsolete">Rejstřík nelze pomocí %1 IO adaptéru vytvořit</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="150"/>
         <source>Can&apos;t detect file format: %1</source>
-        <translation>Nelze zjistit souborový formát: %1</translation>
+        <translation type="obsolete">Nelze zjistit souborový formát: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="155"/>
         <source>UGENE can&apos;t index files of a specified format: %1</source>
-        <translation>UGENE nedokáže vytvořit rejstřík ze souborů zadaného formátu: %1</translation>
+        <translation type="obsolete">UGENE nedokáže vytvořit rejstřík ze souborů zadaného formátu: %1</translation>
     </message>
 </context>
 <context>
@@ -710,9 +755,17 @@
     </message>
 </context>
 <context>
+    <name>U2::DbiDocumentFormat</name>
+    <message>
+        <location filename="../src/dbi/DbiDocumentFormat.cpp" line="43"/>
+        <source>ugenedb is a internal UGENE database file format</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::DeleteAnnotationsFromObjectTask</name>
     <message>
-        <location filename="../src/gobjects/AnnotationTableObject.h" line="231"/>
+        <location filename="../src/gobjects/AnnotationTableObject.h" line="234"/>
         <source>Delete annotations from object task</source>
         <translation type="unfinished"></translation>
     </message>
@@ -720,24 +773,20 @@
 <context>
     <name>U2::Document</name>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="395"/>
         <source>Document is not loaded</source>
-        <translation type="unfinished">Dokument není nahrán</translation>
+        <translation type="obsolete">Dokument není nahrán</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="408"/>
         <source>IO adapter does not support write operation</source>
-        <translation type="unfinished">IO adaptér nepodporuje operaci zápisu</translation>
+        <translation type="obsolete">IO adaptér nepodporuje operaci zápisu</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="414"/>
         <source>No write support for document format</source>
-        <translation type="unfinished">žádná podpora pro zápis pro formát dokumentu</translation>
+        <translation type="obsolete">žádná podpora pro zápis pro formát dokumentu</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="484"/>
         <source>Locked by user</source>
-        <translation type="unfinished">Zamknuto uživatelem</translation>
+        <translation type="obsolete">Zamknuto uživatelem</translation>
     </message>
 </context>
 <context>
@@ -747,26 +796,14 @@
         <translation type="obsolete">Document was created not by UGENE</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="43"/>
-        <source>The document is created not by UGENE</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="44"/>
-        <source>Document sequences were merged</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/models/DocumentModel.cpp" line="75"/>
-        <location filename="../src/models/DocumentModel.cpp" line="81"/>
         <source>Writing is not supported for this format (%1). Feel free to send a feature request though.</source>
-        <translation type="unfinished">Zápis není u tohoto formátu podporován (%1). Neostýchejte se však poslat žádost o tuto vlastnost.</translation>
+        <translation type="obsolete">Zápis není u tohoto formátu podporován (%1). Neostýchejte se však poslat žádost o tuto vlastnost.</translation>
     </message>
 </context>
 <context>
     <name>U2::DocumentProviderTask</name>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="60"/>
+        <location filename="../src/tasks/DocumentProviderTask.cpp" line="32"/>
         <source>[unknown]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -774,39 +811,32 @@
 <context>
     <name>U2::ExportToNewFileFromIndexTask</name>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="72"/>
         <source>Invalid document number: %1, max: %2</source>
-        <translation>Neplatné číslo dokumentu: %1, max: %2</translation>
+        <translation type="obsolete">Neplatné číslo dokumentu: %1, max: %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="98"/>
         <source>No IO adapter found for URL: %1</source>
-        <translation>Pro adresu (URL): %1 nebyl nalezen žádný adaptér I/O</translation>
+        <translation type="obsolete">Pro adresu (URL): %1 nebyl nalezen žádný adaptér I/O</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="103"/>
         <source>Can&apos;t open file for write: &apos;%1&apos;</source>
-        <translation>Nelze otevřít soubor pro zápis: &apos;%1&apos;</translation>
+        <translation type="obsolete">Nelze otevřít soubor pro zápis: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="41"/>
         <source>Export filename is empty</source>
-        <translation>Název souboru pro vyvedení je prázdný</translation>
+        <translation type="obsolete">Název souboru pro vyvedení je prázdný</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="45"/>
         <source>Index is inconsistent</source>
-        <translation>Rejstřík je nesouvislý</translation>
+        <translation type="obsolete">Rejstřík je nesouvislý</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="49"/>
         <source>Document numbers list is empty</source>
-        <translation>Seznam s čísly dokumentů je prázdný</translation>
+        <translation type="obsolete">Seznam s čísly dokumentů je prázdný</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="36"/>
         <source>Export from index</source>
-        <translation>Vyvést z rejstříku</translation>
+        <translation type="obsolete">Vyvést z rejstříku</translation>
     </message>
 </context>
 <context>
@@ -832,125 +862,90 @@
 <context>
     <name>U2::GObject</name>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
         <source>Unknown</source>
-        <translation type="unfinished">Neznámý</translation>
+        <translation type="obsolete">Neznámý</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
         <source>Unloaded</source>
-        <translation type="unfinished">Nenahraný</translation>
+        <translation type="obsolete">Nenahraný</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
-        <source>Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequence</source>
-        <translation type="unfinished">Sekvence</translation>
+        <translation type="obsolete">Sekvence</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequences</source>
-        <translation type="unfinished">Sekvence</translation>
+        <translation type="obsolete">Sekvence</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotations</source>
-        <translation type="unfinished">Annotations</translation>
+        <translation type="obsolete">Annotations</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotation</source>
-        <translation type="unfinished">Poznámka</translation>
+        <translation type="obsolete">Poznámka</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
-        <source>Chromatogram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Chromatograms</source>
-        <translation type="unfinished">Chromatogramy</translation>
+        <translation type="obsolete">Chromatogramy</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Alignment</source>
-        <translation type="unfinished">Zarovnání</translation>
+        <translation type="obsolete">Zarovnání</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Alignments</source>
-        <translation type="unfinished">Zarovnání</translation>
+        <translation type="obsolete">Zarovnání</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Tree</source>
-        <translation type="unfinished">Strom</translation>
+        <translation type="obsolete">Strom</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Trees</source>
-        <translation type="unfinished">Stromy</translation>
+        <translation type="obsolete">Stromy</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>3D model</source>
-        <translation type="unfinished">Trojrozměrný model</translation>
+        <translation type="obsolete">Trojrozměrný model</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>3D models</source>
-        <translation type="unfinished">Trojrozměrné modely</translation>
+        <translation type="obsolete">Trojrozměrné modely</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
         <source>Index</source>
-        <translation type="unfinished">Rejstřík</translation>
+        <translation type="obsolete">Rejstřík</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
         <source>Indexes</source>
-        <translation type="unfinished">Rejstříky</translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
-        <source>Assembly</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
-        <source>Assemblies</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Rejstříky</translation>
     </message>
 </context>
 <context>
     <name>U2::GUrlUtils</name>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="69"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="70"/>
         <source>Renamed %1 to %2</source>
         <translation>Přejmenováno %1 na %2</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="73"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="74"/>
         <source>Failed to rename %1 to %2</source>
         <translation>Nepodařilo se přejmenovat %1 na %2</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="195"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="192"/>
         <source>Directory is not specified</source>
         <translation>Adresář není určen</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="202"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="197"/>
         <source>Directory can&apos;t be created: %1</source>
         <translation>Adresář nelze vytvořit: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="207"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="202"/>
         <source>Directory can&apos;t be read: %1</source>
         <translation>Adresář nelze přečíst: %1</translation>
     </message>
@@ -958,50 +953,40 @@
 <context>
     <name>U2::GetDocumentFromIndexTask</name>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="111"/>
         <source>Can&apos;t find IO adapter: %1</source>
-        <translation>Nelze najít IO adaptér: %1</translation>
+        <translation type="obsolete">Nelze najít IO adaptér: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="118"/>
         <source>Can&apos;t open file for read: &apos;%1&apos;</source>
-        <translation>Soubor nelze otevřít pro čtení: &apos;%1&apos;</translation>
+        <translation type="obsolete">Soubor nelze otevřít pro čtení: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="126"/>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="143"/>
         <source>Error positioning in indexed file</source>
-        <translation>Chyba při umísťování v rejstříkovaném souboru</translation>
+        <translation type="obsolete">Chyba při umísťování v rejstříkovaném souboru</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="137"/>
         <source>GZIP index is corrupted</source>
-        <translation>Rejstřík GZIP je poškozen</translation>
+        <translation type="obsolete">Rejstřík GZIP je poškozen</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="155"/>
         <source>Get document from index</source>
-        <translation>Dostat dokument z rejstříku</translation>
+        <translation type="obsolete">Dostat dokument z rejstříku</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="158"/>
         <source>Index is empty</source>
-        <translation>Rejstřík je prázdný</translation>
+        <translation type="obsolete">Rejstřík je prázdný</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="162"/>
         <source>Invalid document number: %1, max: %2</source>
-        <translation>Neplatný dokument s číslem: %1, max: %2</translation>
+        <translation type="obsolete">Neplatný dokument s číslem: %1, max: %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="178"/>
         <source>Index is corrupted</source>
-        <translation>Rejstřík je poškozen</translation>
+        <translation type="obsolete">Rejstřík je poškozen</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="191"/>
         <source>Unknown document format: %1</source>
-        <translation>Neznámý formát dokumentu: %1</translation>
+        <translation type="obsolete">Neznámý formát dokumentu: %1</translation>
     </message>
 </context>
 <context>
@@ -1103,17 +1088,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="54"/>
+        <location filename="../src/globals/L10n.h" line="51"/>
+        <source>Invalid file format! File: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/globals/L10n.h" line="55"/>
         <source>Can&apos;t save image to file %1, format %2</source>
         <translation>Nelze uložit obrázek do souboru %1, formát %2</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="56"/>
+        <location filename="../src/globals/L10n.h" line="57"/>
         <source>Document not found: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="57"/>
+        <location filename="../src/globals/L10n.h" line="58"/>
         <source> bp</source>
         <translation></translation>
     </message>
@@ -1122,17 +1112,11 @@
         <source>Internal error, bad argument: %1</source>
         <translation>Vnitřní chyba, špatný argument: %1</translation>
     </message>
-    <message>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="96"/>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="104"/>
-        <source>Failed to detect IO adapter for %1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>U2::LoadDataFromEntrezTask</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="368"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="347"/>
         <source>Sequence with ID=%1 is not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1144,8 +1128,8 @@
         <translation type="obsolete">Invalid document format %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="208"/>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="218"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="205"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="215"/>
         <source>Read document: &apos;%1&apos;</source>
         <translation>Číst dokument: &apos;%1&apos;</translation>
     </message>
@@ -1154,37 +1138,42 @@
         <translation type="obsolete">Neplatný formát dokumentu %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="227"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="223"/>
         <source>Document format is NULL!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="231"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="224"/>
         <source>IO adapter factory is NULL!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="289"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="276"/>
         <source>Document not found %1</source>
         <translation>Dokument nenalezen %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="312"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="290"/>
+        <source>Not enough memory to load document %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="306"/>
         <source>Maximum number of objects per document limit reached for %1. Try different options for opening the document!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="342"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="334"/>
         <source>Object not found: %1</source>
         <translation>Předmět nenalezen %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="349"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="341"/>
         <source>Can&apos;t add object. Document format constraints check failed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="380"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="372"/>
         <source>Format does not support writing of alignments</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1196,13 +1185,24 @@
 <context>
     <name>U2::LoadRemoteDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="171"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="68"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="78"/>
+        <source>Load remote document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="174"/>
         <source>Undefined database: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="190"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="192"/>
         <source>Cannot find %1 in %2 database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="229"/>
+        <source>Unknown file format!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1221,17 +1221,17 @@
         <translation type="obsolete">Document is locked</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="79"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="72"/>
         <source>Load &apos;%1&apos;</source>
         <translation>Nahrát &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="93"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="87"/>
         <source>Starting load document from %1, document format %2</source>
         <translation>Začíná se s nahráváním dokumentu z %1, formát dokumentu %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="119"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="113"/>
         <source>Document was removed</source>
         <translation>Dokument byl odstraněn</translation>
     </message>
@@ -1240,22 +1240,22 @@
         <translation type="obsolete">Chyba: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="86"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="80"/>
         <source>Document not found</source>
         <translation>Dokument nenalezen</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="152"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="146"/>
         <source>Document is locked</source>
         <translation>Dokument je uzamknut</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="172"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="162"/>
         <source>Project Document:</source>
         <translation>Projektový dokument:</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="190"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="180"/>
         <source>Annotation object not found</source>
         <translation>Předmět s poznámkou nenalezen</translation>
     </message>
@@ -1275,41 +1275,59 @@
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="70"/>
+        <location filename="../src/util/MSAUtils.cpp" line="64"/>
         <source>Sequences have different alphabets.</source>
         <translation>Sekvence mají rozdílné abecedy.</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="105"/>
-        <location filename="../src/util/MSAUtils.cpp" line="110"/>
+        <location filename="../src/util/MSAUtils.cpp" line="109"/>
+        <location filename="../src/util/MSAUtils.cpp" line="114"/>
         <source>Alignment is empty!</source>
         <translation>Zarovnání je prázdné!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="116"/>
+        <location filename="../src/util/MSAUtils.cpp" line="120"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation>Sekvence v zarovnání mají rozdílné velikosti!</translation>
     </message>
 </context>
 <context>
+    <name>U2::ModifySequenceContentTask</name>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="56"/>
+        <source>Modify sequence task</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="66"/>
+        <source>Document is locked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="70"/>
+        <source>Region to delete is larger than the whole sequence</source>
+        <translation type="unfinished">Cílová oblast je větší než celá sekvence</translation>
+    </message>
+</context>
+<context>
     <name>U2::RelocateDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="210"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="201"/>
         <source>Relocate document %1 -&gt; %2</source>
         <translation>Přestěhovat dokument %1 -&gt; %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="217"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="208"/>
         <source>No active project found</source>
         <translation>Nenalezen žádný činný projekt</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="221"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="212"/>
         <source>Project is locked</source>
         <translation>Projekt je uzamknut</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="230"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="221"/>
         <source>Only unloaded objects can be relocated</source>
         <translation>Pouze vyložené předměty mohou být přestěhovány</translation>
     </message>
@@ -1347,23 +1365,20 @@
 <context>
     <name>U2::RemovePartFromSequenceTask</name>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="47"/>
         <source>Remove subsequence</source>
-        <translation type="unfinished">Remove subsequence</translation>
+        <translation type="obsolete">Remove subsequence</translation>
     </message>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="65"/>
         <source>Region to delete is larger than the whole sequence</source>
-        <translation>Cílová oblast je větší než celá sekvence</translation>
+        <translation type="obsolete">Cílová oblast je větší než celá sekvence</translation>
     </message>
     <message>
         <source>Region to delete larger then whole sequence</source>
         <translation type="obsolete">Target region is larger than the whole sequence</translation>
     </message>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="81"/>
         <source>Document is locked</source>
-        <translation>Dokument je uzamčen</translation>
+        <translation type="obsolete">Dokument je uzamčen</translation>
     </message>
     <message>
         <source>Document is in locked state</source>
@@ -1372,24 +1387,6 @@
     <message>
         <source>One of the documents is in locked state</source>
         <translation type="obsolete">One of the documents is locked</translation>
-    </message>
-</context>
-<context>
-    <name>U2::ReplacePartOfSequenceTask</name>
-    <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="47"/>
-        <source>Replace subsequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="66"/>
-        <source>Region to replace larger then whole sequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="82"/>
-        <source>Document is locked</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1416,53 +1413,53 @@
 <context>
     <name>U2::SQLiteL10n</name>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="111"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="113"/>
         <source>Error querying database: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="115"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="117"/>
         <source>Found more results than expected!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="225"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="227"/>
         <source>Unexpected query result code: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="340"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="343"/>
         <source>Error binding text value! Query: &apos;%1&apos;, idx: %2, value: &apos;%3&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="352"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="355"/>
         <source>Error binding int32 value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="364"/>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="376"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="367"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="379"/>
         <source>Error binding int64 value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="389"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="392"/>
         <source>Error binding boolean value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="406"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="409"/>
         <source>Error binding blob value! Query: &apos;%1&apos;, idx: %2, size: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="419"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="424"/>
         <source>Unexpected row count! Query: &apos;%1&apos;, rows: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="450"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="456"/>
         <source>Query produced no results: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1470,22 +1467,22 @@
 <context>
     <name>U2::SaveCopyAndAddToProjectTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="164"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="161"/>
         <source>Save a copy %1</source>
         <translation>Uložit kopii %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="185"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="179"/>
         <source>No active project found</source>
         <translation>Nenalezen žádný činný projekt</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="189"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="180"/>
         <source>Project is locked</source>
         <translation>Projekt je uzamknut</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="194"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="184"/>
         <source>Document is already added to the project %1</source>
         <translation>Dokument je již přidán do projektu %1</translation>
     </message>
@@ -1505,8 +1502,8 @@
 <context>
     <name>U2::SaveDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="42"/>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="55"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="44"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="57"/>
         <source>Save document</source>
         <translation>Uložit dokument</translation>
     </message>
@@ -1515,7 +1512,7 @@
         <translation type="obsolete">Save document</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="76"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="81"/>
         <source>Saving document %1
 </source>
         <translation>Ukládá se dokument %1
@@ -1525,17 +1522,17 @@
 <context>
     <name>U2::SaveMiltipleDocuments</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="119"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="116"/>
         <source>Save multiple documents</source>
         <translation>Uložit více dokumentů</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="131"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="128"/>
         <source>Question?</source>
         <translation>Otázka?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="131"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="128"/>
         <source>Save document: %1</source>
         <translation>Uložit dokument: %1</translation>
     </message>
@@ -1566,24 +1563,6 @@
     </message>
 </context>
 <context>
-    <name>U2::SequenceUtils</name>
-    <message>
-        <location filename="../src/util/SequenceUtils.cpp" line="137"/>
-        <source>Failed to derive common alphabet!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/SequenceUtils.cpp" line="161"/>
-        <source>Not enough memory to complete operation!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/SequenceUtils.cpp" line="199"/>
-        <source>File content was merged</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>U2::SequenceWalkerSubtask</name>
     <message>
         <source>sequence_walker_subtask</source>
@@ -1596,7 +1575,57 @@
     </message>
 </context>
 <context>
-    <name>U2::U2AnnotationUtils</name>
+    <name>U2::U1SequenceUtils</name>
+    <message>
+        <location filename="../src/util/SequenceUtils.cpp" line="136"/>
+        <source>Failed to derive common alphabet!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/SequenceUtils.cpp" line="203"/>
+        <source>File content was merged</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::U2SequenceObject</name>
+    <message>
+        <location filename="../src/gobjects/DNASequenceObject.cpp" line="155"/>
+        <source>Modified sequence &amp; region have different alphabet</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::U2SequenceUtils</name>
+    <message>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="47"/>
+        <source>Alphabet is not found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="227"/>
+        <source>Failed to derive sequence alphabet!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::UserAppsSettings</name>
+    <message>
+        <location filename="../src/globals/UserApplicationsSettings.cpp" line="64"/>
+        <source>Cleaning temp dir: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::VFSAdapterFactory</name>
+    <message>
+        <location filename="../src/io/VFSAdapter.cpp" line="32"/>
+        <source>Memory buffer</source>
+        <translation>Vyrovnávací paměť paměti</translation>
+    </message>
+</context>
+<context>
+    <name>U2AnnotationUtils</name>
     <message>
         <location filename="../src/util/U2AnnotationUtils.cpp" line="29"/>
         <source>Group path is empty!</source>
@@ -1609,7 +1638,7 @@
     </message>
 </context>
 <context>
-    <name>U2::U2AssemblyUtils</name>
+    <name>U2AssemblyUtils</name>
     <message>
         <location filename="../src/util/U2AssemblyUtils.cpp" line="53"/>
         <source>Invalid CIGAR op: &apos;%1&apos;!</source>
@@ -1617,7 +1646,7 @@
     </message>
 </context>
 <context>
-    <name>U2::U2BitCompression</name>
+    <name>U2BitCompression</name>
     <message>
         <location filename="../src/util/U2Bits.cpp" line="89"/>
         <source>Bit compression: illegal character in text &apos;%1&apos;</source>
@@ -1625,38 +1654,38 @@
     </message>
 </context>
 <context>
-    <name>U2::U2DbiPool</name>
+    <name>U2DbiPool</name>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="67"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="174"/>
         <source>No URL provided!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="77"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="184"/>
         <source>Invalid database type: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="102"/>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="115"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="209"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="222"/>
         <source>DbiPool: DBI not found! URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>U2::U2DbiUtils</name>
+    <name>U2DbiRegistry</name>
     <message>
-        <location filename="../src/dbi/U2DbiUtils.cpp" line="30"/>
-        <source>Feature is not supported: %1, dbi: %2</source>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="96"/>
+        <source>TMP dbi is not found: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>U2::VFSAdapterFactory</name>
+    <name>U2DbiUtils</name>
     <message>
-        <location filename="../src/io/VFSAdapter.cpp" line="32"/>
-        <source>Memory buffer</source>
-        <translation>Vyrovnávací paměť paměti</translation>
+        <location filename="../src/dbi/U2DbiUtils.cpp" line="35"/>
+        <source>Feature is not supported: %1, dbi: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

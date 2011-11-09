@@ -4,90 +4,131 @@
 <context>
     <name>Document</name>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="448"/>
         <source>Document is not loaded</source>
-        <translation type="obsolete">文档未载入</translation>
+        <translation type="unfinished">文档未载入</translation>
     </message>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="461"/>
         <source>IO adapter does not support write operation</source>
-        <translation type="obsolete">您的 IO 接口不支持写入操作</translation>
+        <translation type="unfinished">您的 IO 接口不支持写入操作</translation>
     </message>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="467"/>
         <source>No write support for document format</source>
-        <translation type="obsolete">不支持以该文档格式写入</translation>
+        <translation type="unfinished">不支持以该文档格式写入</translation>
     </message>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="537"/>
         <source>Locked by user</source>
-        <translation type="obsolete">已被用户锁定</translation>
+        <translation type="unfinished">已被用户锁定</translation>
     </message>
 </context>
 <context>
     <name>DocumentFormat</name>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="49"/>
         <source>The document is created not by UGENE</source>
-        <translation type="obsolete">该文档不是由 UGENE 创建的</translation>
+        <translation type="unfinished">该文档不是由 UGENE 创建的</translation>
     </message>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="50"/>
         <source>Document sequences were merged</source>
-        <translation type="obsolete">文档里的序列已合并</translation>
+        <translation type="unfinished">文档里的序列已合并</translation>
     </message>
     <message>
+        <location filename="../src/models/DocumentModel.cpp" line="117"/>
+        <location filename="../src/models/DocumentModel.cpp" line="122"/>
         <source>Writing is not supported for this format (%1). Feel free to send a feature request though.</source>
-        <translation type="obsolete">目前尚不支持以该种格式写入 (%1)。您可以向我们提出新功能请求.</translation>
+        <translation type="unfinished">目前尚不支持以该种格式写入 (%1)。您可以向我们提出新功能请求.</translation>
     </message>
 </context>
 <context>
     <name>GObject</name>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
         <source>Unknown</source>
-        <translation type="obsolete">未知</translation>
+        <translation type="unfinished">未知</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
         <source>Unloaded</source>
-        <translation type="obsolete">未载入</translation>
+        <translation type="unfinished">未载入</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
         <source>Text</source>
-        <translation type="obsolete">文本</translation>
+        <translation type="unfinished">文本</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequence</source>
-        <translation type="obsolete">序列</translation>
+        <translation type="unfinished">序列</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequences</source>
-        <translation type="obsolete">序列</translation>
+        <translation type="unfinished">序列</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotation</source>
-        <translation type="obsolete">注释</translation>
+        <translation type="unfinished">注释</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
+        <source>Annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Chromatogram</source>
-        <translation type="obsolete">色谱图</translation>
+        <translation type="unfinished">色谱图</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Chromatograms</source>
-        <translation type="obsolete">色谱图</translation>
+        <translation type="unfinished">色谱图</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Alignment</source>
-        <translation type="obsolete">序列比对</translation>
+        <translation type="unfinished">序列比对</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
+        <source>Alignments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Tree</source>
-        <translation type="obsolete">树</translation>
+        <translation type="unfinished">树</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Trees</source>
-        <translation type="obsolete">树</translation>
+        <translation type="unfinished">树</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>3D model</source>
-        <translation type="obsolete">3D 模型</translation>
+        <translation type="unfinished">3D 模型</translation>
     </message>
     <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>3D models</source>
-        <translation type="obsolete">3D 模型</translation>
+        <translation type="unfinished">3D 模型</translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
+        <source>Assembly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
+        <source>Assemblies</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Index</source>
@@ -99,44 +140,53 @@
     </message>
 </context>
 <context>
+    <name>L10N</name>
+    <message>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="96"/>
+        <location filename="../src/util/IOAdapterUtils.cpp" line="104"/>
+        <source>Failed to detect IO adapter for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="422"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="398"/>
         <source>This is not ESearch result!</source>
         <translation>这不是 ESearch 的结果!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="481"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="456"/>
         <source>Use Genbank DNA accession number. For example: NC_001363 or D11266</source>
         <translation>使用 Genbank 格式的 DNA 序列号。例如：NC_001363 或 D11266</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="482"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="457"/>
         <source>Use Genbank protein accession number. For example: AAA59172.1</source>
         <translation>使用 Genbank 格式的蛋白序列号。例如：AAA59172.1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="483"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="458"/>
         <source>Use PDB molecule four-letter identifier. For example: 3INS or 1CRN</source>
         <translation>使用 PDB 格式的由四个字符组成的分子序列号。如：3INS 或 1CRN</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="484"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="459"/>
         <source>Use SWISS-PROT accession number. For example: Q9IGQ6 or A0N8V2</source>
         <translation>使用 SWISS-PROT 格式的序列号。例如：Q9IGQ6 或 A0N8V2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="485"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="460"/>
         <source>Use UniProtKB/Swiss-Prot accession number. For example: P16152</source>
         <translation>使用 UniProtKB/Swiss-Prot 格式的序列号。例如：P16152</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="486"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="461"/>
         <source>Use UniProtKB/TrEMBL accession number. For example: D0VTW9</source>
         <translation>使用 UniProtKB/TrEMBL 格式的序列号。例如：D0VTW9</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="520"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="490"/>
         <source>Use %1 unique identifier.</source>
         <translation>使用 %1 特定格式的序列号.</translation>
     </message>
@@ -150,17 +200,17 @@
         <translation>添加文档到工程 %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="76"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="73"/>
         <source>No project is opened</source>
         <translation>未打开任何工程</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="85"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="82"/>
         <source>Document is already added to the project %1</source>
         <translation>文档已被添加到工程 %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddDocumentTask.cpp" line="90"/>
+        <location filename="../src/tasks/AddDocumentTask.cpp" line="87"/>
         <source>Document was removed</source>
         <translation>文档已被移除</translation>
     </message>
@@ -168,35 +218,32 @@
 <context>
     <name>U2::AddPartToSequenceTask</name>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="47"/>
         <source>Insert subsequence</source>
-        <translation>插入子序列</translation>
+        <translation type="obsolete">插入子序列</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="61"/>
         <source>Insertion position is out of bounds</source>
-        <translation>插入位置已超出边界</translation>
+        <translation type="obsolete">插入位置已超出边界</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddPartToSequenceTask.cpp" line="72"/>
         <source>Document is locked</source>
-        <translation>文档已被锁定</translation>
+        <translation type="obsolete">文档已被锁定</translation>
     </message>
 </context>
 <context>
     <name>U2::AddSequencesToAlignmentTask</name>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="46"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="47"/>
         <source>Object is empty.</source>
         <translation>对象为空.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="51"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="52"/>
         <source>Object is locked for modifications.</source>
         <translation>对象已被锁定，用于编辑.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="97"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="98"/>
         <source>Sequence %1 from %2 has different alphabet</source>
         <translation>来自 %2 的序列 %1 的类型不同</translation>
     </message>
@@ -204,12 +251,12 @@
 <context>
     <name>U2::AnnotationTableObject</name>
     <message>
-        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="158"/>
+        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="156"/>
         <source>Sequence</source>
         <translation>序列</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="163"/>
+        <location filename="../src/gobjects/AnnotationTableObject.cpp" line="161"/>
         <source>Translation</source>
         <translation>翻译</translation>
     </message>
@@ -332,50 +379,40 @@
 <context>
     <name>U2::CreateFileIndexTask</name>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="79"/>
         <source>Create index: %1</source>
-        <translation>创建索引： %1</translation>
+        <translation type="obsolete">创建索引： %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="87"/>
         <source>No files to index</source>
-        <translation>没有需要索引的文件</translation>
+        <translation type="obsolete">没有需要索引的文件</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="91"/>
         <source>Internal error: inconsistent input data</source>
-        <translation>内部错误：不一致的输入数据</translation>
+        <translation type="obsolete">内部错误：不一致的输入数据</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="95"/>
         <source>Illegal output file parameters</source>
-        <translation>输出文件的参数非法</translation>
+        <translation type="obsolete">输出文件的参数非法</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="115"/>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="143"/>
         <source>Can&apos;t open file for read: &apos;%1&apos;</source>
-        <translation>无法打开文件 &apos;%1&apos; 以供读取</translation>
+        <translation type="obsolete">无法打开文件 &apos;%1&apos; 以供读取</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="121"/>
         <source>Error creating gzipped output</source>
-        <translation>创建以 gzip 格式压缩的输出数据时发生错误</translation>
+        <translation type="obsolete">创建以 gzip 格式压缩的输出数据时发生错误</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="128"/>
         <source>Can&apos;t create index using %1 IO adapter</source>
-        <translation>无法使用 %1 IO 接口创建索引</translation>
+        <translation type="obsolete">无法使用 %1 IO 接口创建索引</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="150"/>
         <source>Can&apos;t detect file format: %1</source>
-        <translation>无法检测文件格式： %1</translation>
+        <translation type="obsolete">无法检测文件格式： %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateFileIndexTask.cpp" line="155"/>
         <source>UGENE can&apos;t index files of a specified format: %1</source>
-        <translation>UGENE 无法以 %1 格式索引文件</translation>
+        <translation type="obsolete">UGENE 无法以 %1 格式索引文件</translation>
     </message>
 </context>
 <context>
@@ -530,9 +567,17 @@
     </message>
 </context>
 <context>
+    <name>U2::DbiDocumentFormat</name>
+    <message>
+        <location filename="../src/dbi/DbiDocumentFormat.cpp" line="43"/>
+        <source>ugenedb is a internal UGENE database file format</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::DeleteAnnotationsFromObjectTask</name>
     <message>
-        <location filename="../src/gobjects/AnnotationTableObject.h" line="231"/>
+        <location filename="../src/gobjects/AnnotationTableObject.h" line="234"/>
         <source>Delete annotations from object task</source>
         <translation>从对象任务中删除注释</translation>
     </message>
@@ -540,49 +585,41 @@
 <context>
     <name>U2::Document</name>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="395"/>
         <source>Document is not loaded</source>
-        <translation type="unfinished">文档未载入</translation>
+        <translation type="obsolete">文档未载入</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="408"/>
         <source>IO adapter does not support write operation</source>
-        <translation type="unfinished">您的 IO 接口不支持写入操作</translation>
+        <translation type="obsolete">您的 IO 接口不支持写入操作</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="414"/>
         <source>No write support for document format</source>
-        <translation type="unfinished">不支持以该文档格式写入</translation>
+        <translation type="obsolete">不支持以该文档格式写入</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="484"/>
         <source>Locked by user</source>
-        <translation type="unfinished">已被用户锁定</translation>
+        <translation type="obsolete">已被用户锁定</translation>
     </message>
 </context>
 <context>
     <name>U2::DocumentFormat</name>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="43"/>
         <source>The document is created not by UGENE</source>
-        <translation type="unfinished">该文档不是由 UGENE 创建的</translation>
+        <translation type="obsolete">该文档不是由 UGENE 创建的</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="44"/>
         <source>Document sequences were merged</source>
-        <translation type="unfinished">文档里的序列已合并</translation>
+        <translation type="obsolete">文档里的序列已合并</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="75"/>
-        <location filename="../src/models/DocumentModel.cpp" line="81"/>
         <source>Writing is not supported for this format (%1). Feel free to send a feature request though.</source>
-        <translation type="unfinished">目前尚不支持以该种格式写入 (%1)。您可以向我们提出新功能请求.</translation>
+        <translation type="obsolete">目前尚不支持以该种格式写入 (%1)。您可以向我们提出新功能请求.</translation>
     </message>
 </context>
 <context>
     <name>U2::DocumentProviderTask</name>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="60"/>
+        <location filename="../src/tasks/DocumentProviderTask.cpp" line="32"/>
         <source>[unknown]</source>
         <translation>[未知]</translation>
     </message>
@@ -590,39 +627,32 @@
 <context>
     <name>U2::ExportToNewFileFromIndexTask</name>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="36"/>
         <source>Export from index</source>
-        <translation>根据索引导出</translation>
+        <translation type="obsolete">根据索引导出</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="41"/>
         <source>Export filename is empty</source>
-        <translation>导出的文件名为空</translation>
+        <translation type="obsolete">导出的文件名为空</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="45"/>
         <source>Index is inconsistent</source>
-        <translation>索引不一致</translation>
+        <translation type="obsolete">索引不一致</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="49"/>
         <source>Document numbers list is empty</source>
-        <translation>文件数目列表为空</translation>
+        <translation type="obsolete">文件数目列表为空</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="72"/>
         <source>Invalid document number: %1, max: %2</source>
-        <translation>不合法的文件数目：%1，最多允许 %2 个文件</translation>
+        <translation type="obsolete">不合法的文件数目：%1，最多允许 %2 个文件</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="98"/>
         <source>No IO adapter found for URL: %1</source>
-        <translation>未找到适用于 URL： %1 的 IO 接口</translation>
+        <translation type="obsolete">未找到适用于 URL： %1 的 IO 接口</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExportToNewFileFromIndexTask.cpp" line="103"/>
         <source>Can&apos;t open file for write: &apos;%1&apos;</source>
-        <translation>无法打开文件 &apos;%1&apos; 以供写入</translation>
+        <translation type="obsolete">无法打开文件 &apos;%1&apos; 以供写入</translation>
     </message>
 </context>
 <context>
@@ -644,125 +674,90 @@
 <context>
     <name>U2::GObject</name>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="42"/>
         <source>Unknown</source>
-        <translation type="unfinished">未知</translation>
+        <translation type="obsolete">未知</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="43"/>
         <source>Unloaded</source>
-        <translation type="unfinished">未载入</translation>
+        <translation type="obsolete">未载入</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="44"/>
         <source>Text</source>
-        <translation type="unfinished">文本</translation>
+        <translation type="obsolete">文本</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequence</source>
-        <translation type="unfinished">序列</translation>
+        <translation type="obsolete">序列</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="45"/>
         <source>Sequences</source>
-        <translation type="unfinished">序列</translation>
+        <translation type="obsolete">序列</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
         <source>Annotation</source>
-        <translation type="unfinished">注释</translation>
+        <translation type="obsolete">注释</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="46"/>
-        <source>Annotations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Chromatogram</source>
-        <translation type="unfinished">色谱图</translation>
+        <translation type="obsolete">色谱图</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="47"/>
         <source>Chromatograms</source>
-        <translation type="unfinished">色谱图</translation>
+        <translation type="obsolete">色谱图</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
         <source>Alignment</source>
-        <translation type="unfinished">序列比对</translation>
+        <translation type="obsolete">序列比对</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="48"/>
-        <source>Alignments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Tree</source>
-        <translation type="unfinished">树</translation>
+        <translation type="obsolete">树</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="49"/>
         <source>Trees</source>
-        <translation type="unfinished">树</translation>
+        <translation type="obsolete">树</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>3D model</source>
-        <translation type="unfinished">3D 模型</translation>
+        <translation type="obsolete">3D 模型</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="50"/>
         <source>3D models</source>
-        <translation type="unfinished">3D 模型</translation>
+        <translation type="obsolete">3D 模型</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
         <source>Index</source>
-        <translation type="unfinished">索引</translation>
+        <translation type="obsolete">索引</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="51"/>
         <source>Indexes</source>
-        <translation type="unfinished">索引</translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
-        <source>Assembly</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gobjects/GObjectTypes.cpp" line="52"/>
-        <source>Assemblies</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">索引</translation>
     </message>
 </context>
 <context>
     <name>U2::GUrlUtils</name>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="69"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="70"/>
         <source>Renamed %1 to %2</source>
         <translation>把 %1 重命名为 %2</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="73"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="74"/>
         <source>Failed to rename %1 to %2</source>
         <translation>不能把 %1 重命名为 %2</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="195"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="192"/>
         <source>Directory is not specified</source>
         <translation>未指定目录</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="202"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="197"/>
         <source>Directory can&apos;t be created: %1</source>
         <translation>无法创建目录： %1</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="207"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="202"/>
         <source>Directory can&apos;t be read: %1</source>
         <translation>无法读取目录： %1</translation>
     </message>
@@ -770,50 +765,40 @@
 <context>
     <name>U2::GetDocumentFromIndexTask</name>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="111"/>
         <source>Can&apos;t find IO adapter: %1</source>
-        <translation>未找到 IO 接口：%1</translation>
+        <translation type="obsolete">未找到 IO 接口：%1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="118"/>
         <source>Can&apos;t open file for read: &apos;%1&apos;</source>
-        <translation>无法打开文件 &apos;%1&apos; 以供读取</translation>
+        <translation type="obsolete">无法打开文件 &apos;%1&apos; 以供读取</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="126"/>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="143"/>
         <source>Error positioning in indexed file</source>
-        <translation>索引文件的位置错误</translation>
+        <translation type="obsolete">索引文件的位置错误</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="137"/>
         <source>GZIP index is corrupted</source>
-        <translation type="unfinished">GZIP 索引崩溃</translation>
+        <translation type="obsolete">GZIP 索引崩溃</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="155"/>
         <source>Get document from index</source>
-        <translation>从索引获取文件</translation>
+        <translation type="obsolete">从索引获取文件</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="158"/>
         <source>Index is empty</source>
-        <translation>索引为空</translation>
+        <translation type="obsolete">索引为空</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="162"/>
         <source>Invalid document number: %1, max: %2</source>
-        <translation>不合法的文件数目：%1，最多允许 %2 个文件</translation>
+        <translation type="obsolete">不合法的文件数目：%1，最多允许 %2 个文件</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="178"/>
         <source>Index is corrupted</source>
-        <translation>索引崩溃</translation>
+        <translation type="obsolete">索引崩溃</translation>
     </message>
     <message>
-        <location filename="../src/tasks/GetDocumentFromIndexTask.cpp" line="191"/>
         <source>Unknown document format: %1</source>
-        <translation>未知的文件格式：%1</translation>
+        <translation type="obsolete">未知的文件格式：%1</translation>
     </message>
 </context>
 <context>
@@ -908,17 +893,22 @@
         <translation>文件格式非法。预期的文件格式：%1，文件：%2</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="54"/>
+        <location filename="../src/globals/L10n.h" line="51"/>
+        <source>Invalid file format! File: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/globals/L10n.h" line="55"/>
         <source>Can&apos;t save image to file %1, format %2</source>
         <translation>无法把图像保存为文件 %1，格式 %2</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="56"/>
+        <location filename="../src/globals/L10n.h" line="57"/>
         <source>Document not found: %1</source>
         <translation>未找到文件 %1</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="57"/>
+        <location filename="../src/globals/L10n.h" line="58"/>
         <source> bp</source>
         <translation> bp</translation>
     </message>
@@ -930,17 +920,11 @@
         <source>Cladogram</source>
         <translation type="obsolete">进化树</translation>
     </message>
-    <message>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="96"/>
-        <location filename="../src/util/IOAdapterUtils.cpp" line="104"/>
-        <source>Failed to detect IO adapter for %1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>U2::LoadDataFromEntrezTask</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="368"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="347"/>
         <source>Sequence with ID=%1 is not found.</source>
         <translation>未找到 ID=%1 的序列.</translation>
     </message>
@@ -948,43 +932,48 @@
 <context>
     <name>U2::LoadDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="208"/>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="218"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="205"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="215"/>
         <source>Read document: &apos;%1&apos;</source>
         <translation>读取文档：&apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="227"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="223"/>
         <source>Document format is NULL!</source>
         <translation>文档格式为空!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="231"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="224"/>
         <source>IO adapter factory is NULL!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="289"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="276"/>
         <source>Document not found %1</source>
         <translation>未找到文档 %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="312"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="290"/>
+        <source>Not enough memory to load document %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="306"/>
         <source>Maximum number of objects per document limit reached for %1. Try different options for opening the document!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="342"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="334"/>
         <source>Object not found: %1</source>
         <translation>未找到对象： %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="349"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="341"/>
         <source>Can&apos;t add object. Document format constraints check failed: %1</source>
         <translation>无法添加对象。文档格式参数检查失败：%1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="380"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="372"/>
         <source>Format does not support writing of alignments</source>
         <translation>该格式不支持写入比对结果</translation>
     </message>
@@ -992,50 +981,61 @@
 <context>
     <name>U2::LoadRemoteDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="171"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="68"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="78"/>
+        <source>Load remote document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="174"/>
         <source>Undefined database: &apos;%1&apos;</source>
         <translation>未定义的数据库：&apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="190"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="192"/>
         <source>Cannot find %1 in %2 database</source>
         <translation>无法在数据库 %2 中找到 %1</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="229"/>
+        <source>Unknown file format!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::LoadUnloadedDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="79"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="72"/>
         <source>Load &apos;%1&apos;</source>
         <translation>载入 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="86"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="80"/>
         <source>Document not found</source>
         <translation>未找到文档</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="93"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="87"/>
         <source>Starting load document from %1, document format %2</source>
         <translation>开始从 %1 载入文档，文档格式为 %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="119"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="113"/>
         <source>Document was removed</source>
         <translation>文档已被移除</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="152"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="146"/>
         <source>Document is locked</source>
         <translation>文档已被锁定</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="172"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="162"/>
         <source>Project Document:</source>
         <translation>工程文档:</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="190"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="180"/>
         <source>Annotation object not found</source>
         <translation>未找到注释对象</translation>
     </message>
@@ -1051,41 +1051,59 @@
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="70"/>
+        <location filename="../src/util/MSAUtils.cpp" line="64"/>
         <source>Sequences have different alphabets.</source>
         <translation>序列的类型不同.</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="105"/>
-        <location filename="../src/util/MSAUtils.cpp" line="110"/>
+        <location filename="../src/util/MSAUtils.cpp" line="109"/>
+        <location filename="../src/util/MSAUtils.cpp" line="114"/>
         <source>Alignment is empty!</source>
         <translation>比对为空!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="116"/>
+        <location filename="../src/util/MSAUtils.cpp" line="120"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation>比对中的序列长度不同!</translation>
     </message>
 </context>
 <context>
+    <name>U2::ModifySequenceContentTask</name>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="56"/>
+        <source>Modify sequence task</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="66"/>
+        <source>Document is locked</source>
+        <translation type="unfinished">文档已被锁定</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="70"/>
+        <source>Region to delete is larger than the whole sequence</source>
+        <translation type="unfinished">要删除的区域比整个序列还大</translation>
+    </message>
+</context>
+<context>
     <name>U2::RelocateDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="210"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="201"/>
         <source>Relocate document %1 -&gt; %2</source>
         <translation>重定位文档 %1 -&gt; %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="217"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="208"/>
         <source>No active project found</source>
         <translation>未找到活动的工程</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="221"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="212"/>
         <source>Project is locked</source>
         <translation>工程已被锁定</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="230"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="221"/>
         <source>Only unloaded objects can be relocated</source>
         <translation type="unfinished">只有未载入的对象才能被重定位</translation>
     </message>
@@ -1119,37 +1137,31 @@
 <context>
     <name>U2::RemovePartFromSequenceTask</name>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="47"/>
         <source>Remove subsequence</source>
-        <translation>移除子序列</translation>
+        <translation type="obsolete">移除子序列</translation>
     </message>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="65"/>
         <source>Region to delete is larger than the whole sequence</source>
-        <translation>要删除的区域比整个序列还大</translation>
+        <translation type="obsolete">要删除的区域比整个序列还大</translation>
     </message>
     <message>
-        <location filename="../src/tasks/RemovePartFromSequenceTask.cpp" line="81"/>
         <source>Document is locked</source>
-        <translation>文档已被锁定</translation>
+        <translation type="obsolete">文档已被锁定</translation>
     </message>
 </context>
 <context>
     <name>U2::ReplacePartOfSequenceTask</name>
     <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="47"/>
         <source>Replace subsequence</source>
-        <translation>替换子序列</translation>
+        <translation type="obsolete">替换子序列</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="66"/>
         <source>Region to replace larger then whole sequence</source>
-        <translation>要替换的区域比整个序列还大</translation>
+        <translation type="obsolete">要替换的区域比整个序列还大</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReplacePartOfSequenceTask.cpp" line="82"/>
         <source>Document is locked</source>
-        <translation>文档已被锁定</translation>
+        <translation type="obsolete">文档已被锁定</translation>
     </message>
 </context>
 <context>
@@ -1168,53 +1180,53 @@
 <context>
     <name>U2::SQLiteL10n</name>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="111"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="113"/>
         <source>Error querying database: %1</source>
         <translation>请求数据库时发生错误：%1</translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="115"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="117"/>
         <source>Found more results than expected!</source>
         <translation>查得的结果数量超出预期!</translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="225"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="227"/>
         <source>Unexpected query result code: %1 (%2)</source>
         <translation type="unfinished">未知的查询结果代码：%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="340"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="343"/>
         <source>Error binding text value! Query: &apos;%1&apos;, idx: %2, value: &apos;%3&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="352"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="355"/>
         <source>Error binding int32 value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="364"/>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="376"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="367"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="379"/>
         <source>Error binding int64 value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="389"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="392"/>
         <source>Error binding boolean value! Query: &apos;%1&apos;, idx: %2, value: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="406"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="409"/>
         <source>Error binding blob value! Query: &apos;%1&apos;, idx: %2, size: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="419"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="424"/>
         <source>Unexpected row count! Query: &apos;%1&apos;, rows: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2SqlHelpers.cpp" line="450"/>
+        <location filename="../src/dbi/U2SqlHelpers.cpp" line="456"/>
         <source>Query produced no results: %1</source>
         <translation>查询条目没有得到结果：%1</translation>
     </message>
@@ -1222,22 +1234,22 @@
 <context>
     <name>U2::SaveCopyAndAddToProjectTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="164"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="161"/>
         <source>Save a copy %1</source>
         <translation>保存副本 %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="185"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="179"/>
         <source>No active project found</source>
         <translation>未找到活动的工程</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="189"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="180"/>
         <source>Project is locked</source>
         <translation>工程已被锁定</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="194"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="184"/>
         <source>Document is already added to the project %1</source>
         <translation>文档已被添加到工程 %1</translation>
     </message>
@@ -1253,13 +1265,13 @@
 <context>
     <name>U2::SaveDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="42"/>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="55"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="44"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="57"/>
         <source>Save document</source>
         <translation>保存文档</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="76"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="81"/>
         <source>Saving document %1
 </source>
         <translation>正在保存文档 %1
@@ -1269,17 +1281,17 @@
 <context>
     <name>U2::SaveMiltipleDocuments</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="119"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="116"/>
         <source>Save multiple documents</source>
         <translation>保存多个文档</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="131"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="128"/>
         <source>Question?</source>
         <translation>有问题吗?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="131"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="128"/>
         <source>Save document: %1</source>
         <translation>保存文档： %1</translation>
     </message>
@@ -1300,19 +1312,12 @@
 <context>
     <name>U2::SequenceUtils</name>
     <message>
-        <location filename="../src/util/SequenceUtils.cpp" line="137"/>
-        <source>Failed to derive common alphabet!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util/SequenceUtils.cpp" line="161"/>
         <source>Not enough memory to complete operation!</source>
-        <translation>内存不足，无法完成操作!</translation>
+        <translation type="obsolete">内存不足，无法完成操作!</translation>
     </message>
     <message>
-        <location filename="../src/util/SequenceUtils.cpp" line="199"/>
         <source>File content was merged</source>
-        <translation>文件内容被合并</translation>
+        <translation type="obsolete">文件内容被合并</translation>
     </message>
 </context>
 <context>
@@ -1324,71 +1329,20 @@
     </message>
 </context>
 <context>
-    <name>U2::U2AnnotationUtils</name>
+    <name>U2::U1SequenceUtils</name>
     <message>
-        <location filename="../src/util/U2AnnotationUtils.cpp" line="29"/>
-        <source>Group path is empty!</source>
+        <location filename="../src/util/SequenceUtils.cpp" line="136"/>
+        <source>Failed to derive common alphabet!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/U2AnnotationUtils.cpp" line="32"/>
-        <source>Not a valid group path: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::U2AssemblyUtils</name>
-    <message>
-        <location filename="../src/util/U2AssemblyUtils.cpp" line="53"/>
-        <source>Invalid CIGAR op: &apos;%1&apos;!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::U2BitCompression</name>
-    <message>
-        <location filename="../src/util/U2Bits.cpp" line="89"/>
-        <source>Bit compression: illegal character in text &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/util/SequenceUtils.cpp" line="203"/>
+        <source>File content was merged</source>
+        <translation type="unfinished">文件内容被合并</translation>
     </message>
 </context>
 <context>
     <name>U2::U2DbiPool</name>
-    <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="67"/>
-        <source>No URL provided!</source>
-        <translation type="unfinished">未提供 URL 地址!</translation>
-    </message>
-    <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="77"/>
-        <source>Invalid database type: %1</source>
-        <translation type="unfinished">数据库类型非法: %1</translation>
-    </message>
-    <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="102"/>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="115"/>
-        <source>DbiPool: DBI not found! URL: %1</source>
-        <translation type="unfinished">DbiPool：未能够找到 DBI！ URL: %1</translation>
-    </message>
-</context>
-<context>
-    <name>U2::U2DbiUtils</name>
-    <message>
-        <location filename="../src/dbi/U2DbiUtils.cpp" line="30"/>
-        <source>Feature is not supported: %1, dbi: %2</source>
-        <translation type="unfinished">不支持该功能：%1，dbi：%2</translation>
-    </message>
-</context>
-<context>
-    <name>U2::VFSAdapterFactory</name>
-    <message>
-        <location filename="../src/io/VFSAdapter.cpp" line="32"/>
-        <source>Memory buffer</source>
-        <translation>内存缓冲区</translation>
-    </message>
-</context>
-<context>
-    <name>U2DbiPool</name>
     <message>
         <source>No URL provided!</source>
         <translation type="obsolete">未提供 URL 地址!</translation>
@@ -1403,10 +1357,111 @@
     </message>
 </context>
 <context>
-    <name>U2DbiUtils</name>
+    <name>U2::U2DbiUtils</name>
     <message>
         <source>Feature is not supported: %1, dbi: %2</source>
         <translation type="obsolete">不支持该功能：%1，dbi：%2</translation>
+    </message>
+</context>
+<context>
+    <name>U2::U2SequenceObject</name>
+    <message>
+        <location filename="../src/gobjects/DNASequenceObject.cpp" line="155"/>
+        <source>Modified sequence &amp; region have different alphabet</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::U2SequenceUtils</name>
+    <message>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="47"/>
+        <source>Alphabet is not found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="227"/>
+        <source>Failed to derive sequence alphabet!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::UserAppsSettings</name>
+    <message>
+        <location filename="../src/globals/UserApplicationsSettings.cpp" line="64"/>
+        <source>Cleaning temp dir: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::VFSAdapterFactory</name>
+    <message>
+        <location filename="../src/io/VFSAdapter.cpp" line="32"/>
+        <source>Memory buffer</source>
+        <translation>内存缓冲区</translation>
+    </message>
+</context>
+<context>
+    <name>U2AnnotationUtils</name>
+    <message>
+        <location filename="../src/util/U2AnnotationUtils.cpp" line="29"/>
+        <source>Group path is empty!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util/U2AnnotationUtils.cpp" line="32"/>
+        <source>Not a valid group path: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2AssemblyUtils</name>
+    <message>
+        <location filename="../src/util/U2AssemblyUtils.cpp" line="53"/>
+        <source>Invalid CIGAR op: &apos;%1&apos;!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2BitCompression</name>
+    <message>
+        <location filename="../src/util/U2Bits.cpp" line="89"/>
+        <source>Bit compression: illegal character in text &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2DbiPool</name>
+    <message>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="174"/>
+        <source>No URL provided!</source>
+        <translation type="unfinished">未提供 URL 地址!</translation>
+    </message>
+    <message>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="184"/>
+        <source>Invalid database type: %1</source>
+        <translation type="unfinished">数据库类型非法: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="209"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="222"/>
+        <source>DbiPool: DBI not found! URL: %1</source>
+        <translation type="unfinished">DbiPool：未能够找到 DBI！ URL: %1</translation>
+    </message>
+</context>
+<context>
+    <name>U2DbiRegistry</name>
+    <message>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="96"/>
+        <source>TMP dbi is not found: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2DbiUtils</name>
+    <message>
+        <location filename="../src/dbi/U2DbiUtils.cpp" line="35"/>
+        <source>Feature is not supported: %1, dbi: %2</source>
+        <translation type="unfinished">不支持该功能：%1，dbi：%2</translation>
     </message>
 </context>
 </TS>

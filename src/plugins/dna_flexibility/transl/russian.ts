@@ -11,7 +11,7 @@
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="38"/>
         <source>The DNA Flexibility plugin allows searching for high DNA flexibility regions.</source>
-        <translation>Модуль "ДНК флексибильность" позволяет искать в ДНК районы высокой флексибильности.</translation>
+        <translation>Модуль &quot;ДНК флексибильность&quot; позволяет искать в ДНК районы высокой флексибильности.</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAFlexDialog.ui" line="48"/>
@@ -74,23 +74,31 @@
     <message>
         <location filename="../src/HighFlexSettings.cpp" line="101"/>
         <source>Invalid high flex setting window step is stored in the application settings.</source>
-		<translation>Настройки приложения содержат некорректный параметр window step.</translation>
+        <translation>Настройки приложения содержат некорректный параметр window step.</translation>
     </message>
     <message>
         <location filename="../src/HighFlexSettings.cpp" line="113"/>
         <source>Invalid high flex setting threshold is stored in the application settings.</source>
-		<translation>Настройки приложения содержат некорректный параметр threshold.</translation>
+        <translation>Настройки приложения содержат некорректный параметр threshold.</translation>
+    </message>
+</context>
+<context>
+    <name>U2::DNAFlexGraphFactory</name>
+    <message>
+        <location filename="../src/DNAFlexGraph.cpp" line="40"/>
+        <source>DNA Flexibility</source>
+        <translation type="unfinished">ДНК флексибильность</translation>
     </message>
 </context>
 <context>
     <name>U2::DNAFlexPlugin</name>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="47"/>
+        <location filename="../src/DNAFlexPlugin.cpp" line="49"/>
         <source>DNA Flexibility</source>
-		<translation>ДНК флексибильность</translation>
+        <translation>ДНК флексибильность</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="48"/>
+        <location filename="../src/DNAFlexPlugin.cpp" line="50"/>
         <source>Searches a DNA sequence for regions of high DNA helix flexibility.</source>
         <translation>Позволяет искать в ДНК районы высокой флексибильности.</translation>
     </message>
@@ -100,7 +108,7 @@
     <message>
         <location filename="../src/DNAFlexTask.cpp" line="43"/>
         <source>DNA Flexibility task</source>
-		<translation>Задача анализа ДНК флексибильности</translation>
+        <translation>Задача анализа ДНК флексибильности</translation>
     </message>
     <message>
         <location filename="../src/DNAFlexTask.cpp" line="67"/>
@@ -111,12 +119,16 @@
 <context>
     <name>U2::DNAFlexViewContext</name>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="83"/>
         <source>The input sequence must contain only A, C, G and T characters!</source>
-        <translation>Входная последовательность должна состоять из букв A, C, G и T!</translation>
+        <translation type="obsolete">Входная последовательность должна состоять из букв A, C, G и T!</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="109"/>
+        <location filename="../src/DNAFlexPlugin.cpp" line="89"/>
+        <source>Unsupported sequence alphabet, only standard DNA alphabet is supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAFlexPlugin.cpp" line="112"/>
         <source>Find high DNA flexibility regions...</source>
         <translation>Найти районы высокой флексибильности...</translation>
     </message>

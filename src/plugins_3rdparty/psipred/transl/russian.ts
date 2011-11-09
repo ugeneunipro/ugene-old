@@ -4,7 +4,7 @@
 <context>
     <name>SecStructPredictTask</name>
     <message>
-        <location filename="../src/PsipredAlgTask.cpp" line="30"/>
+        <location filename="../src/PsipredAlgTask.cpp" line="52"/>
         <source>psipred: sequence is too long, max seq size is 10000</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12,7 +12,7 @@
 <context>
     <name>U2</name>
     <message>
-        <location filename="../src/PsipredAlgTask.cpp" line="14"/>
+        <location filename="../src/PsipredAlgTask.cpp" line="36"/>
         <source>PsiPred</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20,12 +20,12 @@
 <context>
     <name>U2::PsipredPlugin</name>
     <message>
-        <location filename="../src/PsipredPlugin.cpp" line="34"/>
+        <location filename="../src/PsipredPlugin.cpp" line="55"/>
         <source>PsiPred</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PsipredPlugin.cpp" line="34"/>
+        <location filename="../src/PsipredPlugin.cpp" line="55"/>
         <source>PsiPred protein secondary structure prediction</source>
         <translation type="unfinished">Предсказание вторичной структуры протеинов PsiPred</translation>
     </message>

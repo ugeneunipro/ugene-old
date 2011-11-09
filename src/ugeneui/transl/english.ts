@@ -24,6 +24,24 @@
     </message>
 </context>
 <context>
+    <name>AppContextImpl</name>
+    <message>
+        <location filename="../src/Main.cpp" line="292"/>
+        <source>UGENE initialization started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.cpp" line="312"/>
+        <source>Style not available %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.cpp" line="503"/>
+        <source>UGENE started</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AppSettingsDialog</name>
     <message>
         <location filename="../src/app_settings/ui/AppSettingsDialog.ui" line="13"/>
@@ -560,31 +578,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::AddDocumentsToProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="620"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="635"/>
         <source>Loading documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="662"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="677"/>
         <source>No active project found!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::AppContextImpl</name>
-    <message>
-        <location filename="../src/Main.cpp" line="293"/>
-        <source>UGENE initialization started</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.cpp" line="313"/>
-        <source>Style not available %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.cpp" line="503"/>
-        <source>UGENE started</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -617,49 +617,50 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="50"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="51"/>
         <source>Connecting to updates server</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="63"/>
-        <source>Connection error: %1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="77"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="83"/>
         <source>Newer version available. You can download it from our site.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="82"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="88"/>
         <source>Don&apos;t ask again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="93"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="99"/>
         <source>Your version:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="94"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="100"/>
         <source>Latest version:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="97"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="103"/>
         <source>You have the latest version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="78"/>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="101"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="84"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="107"/>
         <source>Version information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="81"/>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="106"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="65"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="67"/>
+        <source>Connection error while checking for updates: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="87"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="112"/>
         <source>Visit web site</source>
         <translation></translation>
     </message>
@@ -667,17 +668,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CloseProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="61"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="62"/>
         <source>close_project_task_name</source>
         <translation>Close project</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="67"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="68"/>
         <source>error_no_active_project</source>
         <translation>No active project found</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="85"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="86"/>
         <source>Save and close project</source>
         <translation></translation>
     </message>
@@ -693,7 +694,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DisableProjectViewTask</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="943"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="996"/>
         <source>disable_project_view</source>
         <translation>Disable project viewer</translation>
     </message>
@@ -759,32 +760,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DocumentUpdater</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="120"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="162"/>
         <source>Document &apos;%1&apos; was modified. Do you wish to reload it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="154"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="196"/>
         <source>Reload documents task</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="181"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="223"/>
         <source>Unable to unload &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="190"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="232"/>
         <source>Reload &apos;%1&apos; task</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="193"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="235"/>
         <source>Restore state task</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="211"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="253"/>
         <source>Reload documents and restore view state task</source>
         <translation type="unfinished"></translation>
     </message>
@@ -800,7 +801,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::EnableProjectViewTask</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="931"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="984"/>
         <source>enable_project_view</source>
         <translation>Enable ProjectView</translation>
     </message>
@@ -808,7 +809,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ExportProjectDialogController</name>
     <message>
-        <location filename="../src/project_support/ExportProjectDialogController.cpp" line="74"/>
+        <location filename="../src/project_support/ExportProjectDialogController.cpp" line="75"/>
         <source>Choose Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -816,22 +817,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ExportProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="301"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="302"/>
         <source>Export project task</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="320"/>
-        <source>One of the documents has empty URL</source>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="324"/>
+        <source>One of the project documents has empty URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="343"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="342"/>
         <source>Error during coping documents: file already exist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="345"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="344"/>
         <source>Error during coping documents</source>
         <translation type="unfinished"></translation>
     </message>
@@ -839,17 +840,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::GTest_ExportProject</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="447"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="446"/>
         <source>GTest_ExportProject::prepare unable to clean directory for exporting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="452"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="451"/>
         <source>GTest_ExportProject::prepare unable to create directory for exporting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="472"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="471"/>
         <source>GTest_ExportProject::cleanup unable to delete exported files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -857,17 +858,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::GTest_LoadDocumentFromProject</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="533"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="532"/>
         <source>No project loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="537"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="536"/>
         <source>Document name to load is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="552"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="551"/>
         <source>File %1 not found in project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -875,7 +876,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::GTest_LoadProject</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="394"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="393"/>
         <source>Unload previous project, then load new</source>
         <translation type="unfinished"></translation>
     </message>
@@ -883,12 +884,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LoadProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="255"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="256"/>
         <source>load_project_task_name</source>
         <translation>Load project</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="275"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="276"/>
         <source>Unable to detect parser for project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -905,17 +906,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Was locked during the last load</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="266"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="267"/>
         <source>Loading project from: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="276"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="277"/>
         <source>failed to parse project file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="281"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="282"/>
         <source>Project loaded: %1</source>
         <translation></translation>
     </message>
@@ -1163,12 +1164,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::OpenProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="92"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="93"/>
         <source>open_project_task_name</source>
         <translation>Open project/document</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="99"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="100"/>
         <source>invalid_url%1</source>
         <translation>Not a readable file: %1</translation>
     </message>
@@ -1180,12 +1181,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::OpenWithProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="713"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="735"/>
         <source>Opening document: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="715"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="737"/>
         <source>Opening %1 documents</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1290,12 +1291,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectDialogController</name>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="568"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="583"/>
         <source>Choose directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="602"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="617"/>
         <source>&lt;html&gt;&lt;body align=&quot;center&quot;&gt;&lt;br&gt;Project file already exists.&lt;br&gt;Are you sure you want to overwrite it?&lt;body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1335,82 +1336,82 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectLoaderImpl</name>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="70"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="74"/>
         <source>&amp;New project...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="159"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="163"/>
         <source>UGENE project file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="161"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="165"/>
         <source>Select files to open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="264"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="268"/>
         <source>Project file &apos;%1&apos; ignored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="271"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="275"/>
         <source>The document with the same URL is already added to the project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="273"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="277"/>
         <source>warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="282"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="286"/>
         <source>The document is already loaded and added to project: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="332"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="344"/>
         <source>Failed to detect file format: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="362"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="376"/>
         <source>Project is already opened</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="368"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="382"/>
         <source>New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="369"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="383"/>
         <source>New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="370"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="384"/>
         <source>This Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="378"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="393"/>
         <source>Failed to open new instance of UGENE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="384"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="399"/>
         <source>Stopped loading project: %1. Reason: active project found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="590"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="605"/>
         <source>new_project_default_name</source>
         <translation>New Project</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="592"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="607"/>
         <source>new_project_default_file</source>
         <translation>project</translation>
     </message>
@@ -1419,17 +1420,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Project files</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="76"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="80"/>
         <source>New document from text...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="81"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="85"/>
         <source>Open</source>
         <translation>&amp;Open...</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="87"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="91"/>
         <source>Access remote database...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1438,22 +1439,22 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Open project or data file</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="516"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="531"/>
         <source>Save project as</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="517"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="532"/>
         <source>Save</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="101"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="105"/>
         <source>Recent Projects</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="105"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="109"/>
         <source>Recent Files</source>
         <translation></translation>
     </message>
@@ -1461,7 +1462,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectServiceDisableTask</name>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="183"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="185"/>
         <source>project_disable_task</source>
         <translation>Disable Project</translation>
     </message>
@@ -1469,27 +1470,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectServiceEnableTask</name>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="138"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="140"/>
         <source>project_enable_task</source>
         <translation>Enable Project</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="147"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="149"/>
         <source>&amp;Save all</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="156"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="158"/>
         <source>&amp;Close project</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="162"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="164"/>
         <source>Export project...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="153"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="155"/>
         <source>Save project &amp;as...</source>
         <translation></translation>
     </message>
@@ -1497,12 +1498,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectServiceImpl</name>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="47"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="49"/>
         <source>project_sname</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="47"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="49"/>
         <source>project_sdesc</source>
         <translation>Project service is available when opened a project file. Other services that depends on Project service will be automatically started after this service is enabled.</translation>
     </message>
@@ -1510,17 +1511,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectViewImpl</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="259"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="309"/>
         <source>projectview_sname</source>
         <translation>ProjectView</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="259"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="309"/>
         <source>projectview_sdesc</source>
         <translation>ProjectView service provides basic project visualization and manipulation functionality</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="310"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="359"/>
         <source>save_selected_modified_docs_action</source>
         <translation>Save selected documents</translation>
     </message>
@@ -1533,87 +1534,87 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">adding existing document: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="514"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="563"/>
         <source>Select files to open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="583"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="632"/>
         <source>active_views_menu</source>
         <translation>Active views</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="636"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="685"/>
         <source>activate_view_action_%1</source>
         <translation>Activate view: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="646"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="695"/>
         <source>open_view_action_%1</source>
         <translation>Open new view: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="655"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="704"/>
         <source>open_state_%1_%2</source>
         <translation>Open saved view &apos;%1&apos; with a state &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="676"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="725"/>
         <source>open_view_submenu_%1</source>
         <translation> &apos;%1&apos; view states</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="703"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="752"/>
         <source>add_to_view_action_%1</source>
         <translation>Add to view: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="746"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="795"/>
         <source>open_view_menu</source>
         <translation>Open view</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="747"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="796"/>
         <source>add_to_view_menu</source>
         <translation>Add to view</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="811"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="860"/>
         <source>error_adding_object_to_view_title</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="486"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="535"/>
         <source>unnamed_project_name</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="305"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="354"/>
         <source>Open as...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="313"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="362"/>
         <source>Relocate..</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="317"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="366"/>
         <source>Save a copy..</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="857"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="906"/>
         <source>Select new file location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="882"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="931"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="882"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="931"/>
         <source>Document with the same URL is added to the project. 
  Remove it from the project first.</source>
         <translation></translation>
@@ -1622,12 +1623,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectViewWidget</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="239"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="289"/>
         <source>Project</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="232"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="282"/>
         <source>Group mode</source>
         <translation></translation>
     </message>
@@ -1635,7 +1636,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::RegisterProjectServiceTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="291"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="292"/>
         <source>Register project</source>
         <translation></translation>
     </message>
@@ -1651,12 +1652,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::SaveOnlyProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="192"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="193"/>
         <source>Save project</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="238"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="239"/>
         <source>Saving project %1</source>
         <translation></translation>
     </message>
@@ -1664,17 +1665,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::SaveProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="147"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="148"/>
         <source>Save current project?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="178"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="179"/>
         <source>Save documents, remove phantom docs, save  project</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="128"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="129"/>
         <source>save_project_task_name</source>
         <translation>Save project</translation>
     </message>
@@ -1739,17 +1740,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Shtirlitz</name>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="107"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="116"/>
         <source>Statistical reports</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="113"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="122"/>
         <source>Shtirlitz is sending the first-time report</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="130"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="134"/>
         <source>%1 days passed passed since previous Shtirlitz&apos;s report. Shtirlitz is sending the new one.</source>
         <translation></translation>
     </message>
@@ -1757,22 +1758,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ShtirlitzTask</name>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="266"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="270"/>
         <source>Connecting to remote server</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="286"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="290"/>
         <source>Cannot resolve destination path for statistical reports</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="290"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="294"/>
         <source>Network error while resolving destination URL: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="303"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="307"/>
         <source>Network error while sending report: </source>
         <translation></translation>
     </message>
@@ -2045,85 +2046,81 @@ p, li { white-space: pre-wrap; }
         <translation>Language of User Interface (applied after restart)</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="35"/>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="142"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="41"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="154"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="202"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="256"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="57"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="63"/>
         <source>Window Layout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="63"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="69"/>
         <source>Multiple documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="66"/>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="76"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="72"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="82"/>
         <source>buttonGroup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="73"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="79"/>
         <source>Tabbed documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="98"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="104"/>
         <source>web_browser</source>
         <translation>Preferred Web browser</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="115"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="121"/>
         <source>use_default_web_browser</source>
         <translation>System default browser</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="125"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="131"/>
         <source>web_browser_path</source>
         <translation>Specified executable</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="154"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="166"/>
         <source>Project</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="160"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="172"/>
         <source>auto_open_project_at_startup</source>
         <translation>Open last project at startup</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="170"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="182"/>
         <source>Path to downloaded data:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="181"/>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="220"/>
-        <source>Browse...</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="193"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="214"/>
         <source>Statistical reports</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="199"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="220"/>
         <source>Enable statistical reports collecting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="209"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="230"/>
         <source>Path for temporary files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="45"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="51"/>
         <source>Appearance</source>
         <translation></translation>
     </message>

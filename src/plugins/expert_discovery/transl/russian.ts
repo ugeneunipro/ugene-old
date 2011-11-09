@@ -23,6 +23,10 @@
         <source>Probability of negative sequence recognition:</source>
         <translation>Вероятность узнавания негативной последовательности:</translation>
     </message>
+    <message>
+        <source>Optimize Recognition Bound</source>
+        <translation type="unfinished">Оптимизация порога распознования</translation>
+    </message>
 </context>
 <context>
     <name>ExpertDiscoveryAdvSetDialog</name>
@@ -97,6 +101,10 @@
         <source>Ok</source>
         <translation>Ок</translation>
     </message>
+    <message>
+        <source>You may load any sequence file to recognize your complex signals on the sequences.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExpertDiscoveryControlMrkDialog</name>
@@ -125,7 +133,7 @@
     <name>ExpertDiscoveryPosNegDialog</name>
     <message>
         <source>File with positive sequences</source>
-        <translation>Файл с позитивными последовательностями</translation>
+        <translation type="obsolete">Файл с позитивными последовательностями</translation>
     </message>
     <message>
         <source>...</source>
@@ -137,7 +145,7 @@
     </message>
     <message>
         <source>File with negative sequences</source>
-        <translation>Файл с негативными последовательностями</translation>
+        <translation type="obsolete">Файл с негативными последовательностями</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -145,18 +153,46 @@
     </message>
     <message>
         <source>Positive and Negative sequences</source>
-        <translation>Позитивные и негативные последовательности</translation>
+        <translation type="obsolete">Позитивные и негативные последовательности</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation>Ок</translation>
+        <translation type="obsolete">Ок</translation>
+    </message>
+    <message>
+        <source>Load positive and negative sequence bases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Positive sequences file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Negative sequences file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the first step of creating a new ExpertDiscovery project.
+Load the sequences you want to analyze by choosing any file with a sequence or multiple sequences.
+
+Positive sequence base contains a regulation object you are interested in.
+Negative sequence base doesn&apos;t have it. 
+You also may generate negative sequences automatically.
+
+ExpertDiscovery will extract complex signals which reflect a structure of your regulation object. 
+The more sequences you provide the better will be the result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ExpertDiscoveryPosNegMrkDialog</name>
     <message>
         <source>File with positive sequences markup</source>
-        <translation>Файл с разметками позититивных последовательностей</translation>
+        <translation type="obsolete">Файл с разметками позититивных последовательностей</translation>
     </message>
     <message>
         <source>...</source>
@@ -168,7 +204,7 @@
     </message>
     <message>
         <source>File with negative sequences markup</source>
-        <translation>Файл с разметками негативных последовательнстей</translation>
+        <translation type="obsolete">Файл с разметками негативных последовательнстей</translation>
     </message>
     <message>
         <source>Description file</source>
@@ -189,6 +225,28 @@
     <message>
         <source>Append to Current Markup</source>
         <translation>Добавить к текущей разметке</translation>
+    </message>
+    <message>
+        <source>Positive sequences markup file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Negative sequences markup file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On this step you need to load markups for the sequences. 
+Markaup is an annotation of a sequence with elementary signals.
+Markup gives information where elementary signals are located in the sequences.
+
+Complex signals will be build from the elementary signals and operations applied to them. 
+
+Load markup for your sequences in specified XML format or genbank format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nucleotides Markup</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -267,11 +325,11 @@
     </message>
     <message>
         <source>Select folder</source>
-        <translation>Выбор директории</translation>
+        <translation type="obsolete">Выбор директории</translation>
     </message>
     <message>
         <source>Select folder to store extracted complex signals</source>
-        <translation>Выбор директории для сохранения комплексных сигналов</translation>
+        <translation type="obsolete">Выбор директории для сохранения комплексных сигналов</translation>
     </message>
     <message>
         <source>Extractor Parameters setup</source>
@@ -279,7 +337,7 @@
     </message>
     <message>
         <source>Please create some predicates that will be used in complex signal construction process.</source>
-        <translation>Необходимо создать пердикаты, которые будут использоваться при конструировании комплексных сигналов.</translation>
+        <translation type="obsolete">Необходимо создать пердикаты, которые будут использоваться при конструировании комплексных сигналов.</translation>
     </message>
     <message>
         <source>Minimal Complexity</source>
@@ -291,11 +349,31 @@
     </message>
     <message>
         <source>Aligned</source>
-        <translation>Выровненная выборка</translation>
+        <translation type="obsolete">Выровненная выборка</translation>
     </message>
     <message>
         <source>Coverage bound</source>
         <translation>Порог покрытия</translation>
+    </message>
+    <message>
+        <source>Please create some predicates that will be used in complex signal construction process. Note, some predicates are generated by default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aligned (If you sequence set is aligned, Interval predicated will be generated)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a folder to store extracted complex signals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Root Subfolder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -490,6 +568,10 @@
         <source>Order</source>
         <translation>Порядок</translation>
     </message>
+    <message>
+        <source>Add signal to markup</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::ExpertDiscoveryAdvSetDialog</name>
@@ -562,7 +644,7 @@
     <name>U2::ExpertDiscoveryData</name>
     <message>
         <source>Setting up recognization bound. Please wait</source>
-        <translation>Установка порога распознования. Пожалуйста, подождите</translation>
+        <translation type="obsolete">Установка порога распознования. Пожалуйста, подождите</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -591,6 +673,10 @@
     <message>
         <source>Report generation failed</source>
         <translation>Ошибка генерации отчета</translation>
+    </message>
+    <message>
+        <source>Setting up recognition bound. Please wait</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -729,7 +815,7 @@
     </message>
     <message>
         <source>Positive and negative sequences markups can&apos;t be in the one file. Select another file for one of them</source>
-        <translation>Разметка позитивной и негативной выборки не может быть в одном и том же файле. Выберете другой файл для одной из них</translation>
+        <translation type="obsolete">Разметка позитивной и негативной выборки не может быть в одном и том же файле. Выберете другой файл для одной из них</translation>
     </message>
     <message>
         <source>Select description file</source>
@@ -737,7 +823,7 @@
     </message>
     <message>
         <source>Select files for ExpertDiscovery</source>
-        <translation>Выберете файлы для ExpertDiscovery</translation>
+        <translation type="obsolete">Выберете файлы для ExpertDiscovery</translation>
     </message>
     <message>
         <source>Open positive sequences markup file</source>
@@ -750,6 +836,17 @@
     <message>
         <source>Open description file</source>
         <translation>Открыть файл описания</translation>
+    </message>
+    <message>
+        <source>Select positive markup file at least or chose &apos;Nucleotides markup&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoveryScoreGraphFactory</name>
+    <message>
+        <source>Score graph</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -817,7 +914,7 @@
     </message>
     <message>
         <source>Load control sequences markup</source>
-        <translation>Загрузка разметок контрольных последовательностей</translation>
+        <translation type="obsolete">Загрузка разметок контрольных последовательностей</translation>
     </message>
     <message>
         <source>Generate recognition report</source>
@@ -853,7 +950,7 @@
     </message>
     <message>
         <source>Optimize Recognition Bound</source>
-        <translation>Оптимизация порога распознования</translation>
+        <translation type="obsolete">Оптимизация порога распознования</translation>
     </message>
     <message>
         <source>New Expert Discovery Document</source>

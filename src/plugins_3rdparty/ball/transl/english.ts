@@ -4,12 +4,12 @@
 <context>
     <name>U2::BallPlugin</name>
     <message>
-        <location filename="../src/BallPlugin.cpp" line="16"/>
+        <location filename="../src/BallPlugin.cpp" line="37"/>
         <source>BALL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BallPlugin.cpp" line="16"/>
+        <location filename="../src/BallPlugin.cpp" line="37"/>
         <source>A port of BALL framework for molecular surface calculation</source>
         <translation></translation>
     </message>

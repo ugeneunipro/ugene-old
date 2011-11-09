@@ -4,80 +4,80 @@
 <context>
     <name>GTest</name>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="331"/>
+        <location filename="../src/Primer3Tests.cpp" line="352"/>
         <source>Contradiction in primer_task definition</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="319"/>
+        <location filename="../src/Primer3Tests.cpp" line="340"/>
         <source>Unrecognized PRIMER_TASK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="184"/>
+        <location filename="../src/Primer3Tests.cpp" line="205"/>
         <source>Illegal TARGET value: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="202"/>
-        <location filename="../src/Primer3Tests.cpp" line="270"/>
+        <location filename="../src/Primer3Tests.cpp" line="223"/>
+        <location filename="../src/Primer3Tests.cpp" line="291"/>
         <source>Illegal PRIMER_DEFAULT_PRODUCT value: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="220"/>
+        <location filename="../src/Primer3Tests.cpp" line="241"/>
         <source>Illegal PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION value: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="235"/>
+        <location filename="../src/Primer3Tests.cpp" line="256"/>
         <source>Illegal INCLUDED_REGION value: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="288"/>
+        <location filename="../src/Primer3Tests.cpp" line="309"/>
         <source>Illegal EXCLUDED_REGION value: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="389"/>
+        <location filename="../src/Primer3Tests.cpp" line="410"/>
         <source>Missing SEQUENCE tag</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="396"/>
+        <location filename="../src/Primer3Tests.cpp" line="417"/>
         <source>Error in sequence quality data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="398"/>
+        <location filename="../src/Primer3Tests.cpp" line="419"/>
         <source>Sequence quality data missing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="421"/>
+        <location filename="../src/Primer3Tests.cpp" line="442"/>
         <source>PRIMER_PAIRS_NUMBER is incorrect. Expected:%2, but Actual:%3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="523"/>
+        <location filename="../src/Primer3Tests.cpp" line="544"/>
         <source>%1 is incorrect. Expected:%2,%3, but Actual:NULL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="532"/>
+        <location filename="../src/Primer3Tests.cpp" line="553"/>
         <source>%1 is incorrect. Expected:NULL, but Actual:%2,%3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="542"/>
+        <location filename="../src/Primer3Tests.cpp" line="563"/>
         <source>%1 is incorrect. Expected:%2,%3, but Actual:%4,%5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Tests.cpp" line="581"/>
-        <location filename="../src/Primer3Tests.cpp" line="591"/>
-        <location filename="../src/Primer3Tests.cpp" line="601"/>
+        <location filename="../src/Primer3Tests.cpp" line="602"/>
+        <location filename="../src/Primer3Tests.cpp" line="612"/>
+        <location filename="../src/Primer3Tests.cpp" line="622"/>
         <source>%1 is incorrect. Expected:%2, but Actual:%3</source>
         <translation></translation>
     </message>
@@ -649,32 +649,12 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="2892"/>
-        <source>Range Start:</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="2909"/>
-        <source>Range End:</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="2926"/>
-        <source>Selection range</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="2933"/>
-        <source>Sequence range</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="2953"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="2908"/>
         <source>Reset Form</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="2960"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="2915"/>
         <source>Pick Primers</source>
         <translation></translation>
     </message>
@@ -682,57 +662,57 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="173"/>
+        <location filename="../src/Primer3Query.cpp" line="185"/>
         <source>Primer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="174"/>
+        <location filename="../src/Primer3Query.cpp" line="186"/>
         <source>PCR primer design</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="176"/>
+        <location filename="../src/Primer3Query.cpp" line="188"/>
         <source>Excluded regions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="177"/>
+        <location filename="../src/Primer3Query.cpp" line="189"/>
         <source>Targets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="178"/>
+        <location filename="../src/Primer3Query.cpp" line="190"/>
         <source>Product size ranges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="179"/>
+        <location filename="../src/Primer3Query.cpp" line="191"/>
         <source>Number to return</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="181"/>
+        <location filename="../src/Primer3Query.cpp" line="193"/>
         <source>Max repeat mispriming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="182"/>
+        <location filename="../src/Primer3Query.cpp" line="194"/>
         <source>Max template mispriming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="183"/>
+        <location filename="../src/Primer3Query.cpp" line="195"/>
         <source>Max 3&apos; stability</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="184"/>
+        <location filename="../src/Primer3Query.cpp" line="196"/>
         <source>Pair max repeat mispriming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="185"/>
+        <location filename="../src/Primer3Query.cpp" line="197"/>
         <source>Pair max template mispriming</source>
         <translation type="unfinished"></translation>
     </message>
@@ -740,7 +720,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3ADVContext</name>
     <message>
-        <location filename="../src/Primer3Plugin.cpp" line="110"/>
+        <location filename="../src/Primer3Plugin.cpp" line="130"/>
         <source>Primer3...</source>
         <translation></translation>
     </message>
@@ -748,107 +728,107 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3Dialog</name>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="39"/>
+        <location filename="../src/Primer3Dialog.cpp" line="55"/>
         <source>NONE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="40"/>
+        <location filename="../src/Primer3Dialog.cpp" line="56"/>
         <source>HUMAN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="41"/>
+        <location filename="../src/Primer3Dialog.cpp" line="57"/>
         <source>RODENT_AND_SIMPLE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="42"/>
+        <location filename="../src/Primer3Dialog.cpp" line="58"/>
         <source>RODENT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="43"/>
+        <location filename="../src/Primer3Dialog.cpp" line="59"/>
         <source>DROSOPHILA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="330"/>
+        <location filename="../src/Primer3Dialog.cpp" line="331"/>
         <source>Start Codon Position</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="344"/>
+        <location filename="../src/Primer3Dialog.cpp" line="345"/>
         <source>Product Min Tm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="358"/>
+        <location filename="../src/Primer3Dialog.cpp" line="359"/>
         <source>Product Opt Tm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="372"/>
+        <location filename="../src/Primer3Dialog.cpp" line="373"/>
         <source>Product Max Tm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="386"/>
+        <location filename="../src/Primer3Dialog.cpp" line="387"/>
         <source>Opt GC%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="400"/>
+        <location filename="../src/Primer3Dialog.cpp" line="401"/>
         <source>Inside Penalty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="414"/>
+        <location filename="../src/Primer3Dialog.cpp" line="415"/>
         <source>Internal Oligo Opt Tm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="426"/>
+        <location filename="../src/Primer3Dialog.cpp" line="427"/>
         <source>Excluded Regions</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="438"/>
+        <location filename="../src/Primer3Dialog.cpp" line="439"/>
         <source>Internal Oligo Excluded Regions</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="450"/>
+        <location filename="../src/Primer3Dialog.cpp" line="451"/>
         <source>Targets</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="462"/>
+        <location filename="../src/Primer3Dialog.cpp" line="463"/>
         <source>Product Size Ranges</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="499"/>
+        <location filename="../src/Primer3Dialog.cpp" line="500"/>
         <source>Sequence Quality</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="506"/>
+        <location filename="../src/Primer3Dialog.cpp" line="507"/>
         <source>Sequence quality list length must be equal to the sequence length</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="528"/>
+        <location filename="../src/Primer3Dialog.cpp" line="529"/>
         <source>Can&apos;t pick hyb oligo and only one primer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="548"/>
+        <location filename="../src/Primer3Dialog.cpp" line="549"/>
         <source>Nothing to pick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="567"/>
+        <location filename="../src/Primer3Dialog.cpp" line="568"/>
         <source>The field &apos;%1&apos; has invalid value</source>
         <translation></translation>
     </message>
@@ -856,12 +836,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3Plugin</name>
     <message>
-        <location filename="../src/Primer3Plugin.cpp" line="34"/>
+        <location filename="../src/Primer3Plugin.cpp" line="55"/>
         <source>Primer3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Plugin.cpp" line="34"/>
+        <location filename="../src/Primer3Plugin.cpp" line="55"/>
         <source>Integrated tool for PCR primers design.</source>
         <translation></translation>
     </message>
@@ -869,7 +849,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3Task</name>
     <message>
-        <location filename="../src/Primer3Task.cpp" line="309"/>
+        <location filename="../src/Primer3Task.cpp" line="330"/>
         <source>Pick primers task</source>
         <translation>Pick primers</translation>
     </message>
@@ -877,7 +857,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3ToAnnotationsTask</name>
     <message>
-        <location filename="../src/Primer3Task.cpp" line="541"/>
+        <location filename="../src/Primer3Task.cpp" line="561"/>
         <source>Search primers to annotations</source>
         <translation></translation>
     </message>
@@ -885,17 +865,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::QDPrimerActor</name>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="62"/>
+        <location filename="../src/Primer3Query.cpp" line="76"/>
         <source>%1 invalid input. Excluded regions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="72"/>
+        <location filename="../src/Primer3Query.cpp" line="85"/>
         <source>%1 invalid input. Targets.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="82"/>
+        <location filename="../src/Primer3Query.cpp" line="94"/>
         <source>%1 invalid input. Product size ranges.</source>
         <translation type="unfinished"></translation>
     </message>

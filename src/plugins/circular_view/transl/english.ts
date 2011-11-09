@@ -4,7 +4,7 @@
 <context>
     <name>U2::CircularViewAction</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="176"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="201"/>
         <source>Show circular view</source>
         <translation></translation>
     </message>
@@ -12,80 +12,88 @@
 <context>
     <name>U2::CircularViewContext</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="51"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="72"/>
         <source>Save circular view as image</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="156"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="177"/>
         <source>Remove circular view</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="162"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="186"/>
         <source>Show circular view</source>
         <translation></translation>
     </message>
 </context>
 <context>
-    <name>U2::CircularViewHeaderWidget</name>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="179"/>
-        <source>Zoom in</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="180"/>
-        <source>Zoom out</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="181"/>
-        <source>Fit in view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="185"/>
-        <source>Save circular view as image</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="195"/>
-        <source>Raster image (*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="196"/>
-        <source>Vector image (*.svg)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="197"/>
-        <source>Portable document (*.pdf *.ps)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="199"/>
-        <source>Export circular view to image</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="227"/>
-        <source>Unexpected error while exporting image!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>U2::CircularViewPlugin</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="34"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="55"/>
         <source>CircularView</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="34"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="55"/>
         <source>Enables drawing of DNA sequences using circular representation</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::CircularViewRenderArea</name>
+    <message>
+        <location filename="../src/CircularView.cpp" line="443"/>
+        <source>circular view size %1 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::CircularViewSplitter</name>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="53"/>
+        <source>Zoom In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="58"/>
+        <source>Zoom Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="63"/>
+        <source>Fit To Full View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="68"/>
+        <source>Save circular view as image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="73"/>
+        <source>Show/hide restriction sites map</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::RestrctionMapWidget</name>
+    <message>
+        <location filename="../src/RestrictionMapWidget.cpp" line="64"/>
+        <location filename="../src/RestrictionMapWidget.cpp" line="76"/>
+        <source>site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RestrictionMapWidget.cpp" line="64"/>
+        <location filename="../src/RestrictionMapWidget.cpp" line="76"/>
+        <source>sites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/RestrictionMapWidget.cpp" line="103"/>
+        <source>Restriction Sites Map</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

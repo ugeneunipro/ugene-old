@@ -109,11 +109,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/ConstructMoleculeDialog.ui" line="182"/>
-        <source>Edit Overhangs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/ConstructMoleculeDialog.ui" line="189"/>
         <source>Clear molecule contents</source>
         <translation type="unfinished"></translation>
@@ -146,6 +141,11 @@
     <message>
         <location filename="../src/ui/ConstructMoleculeDialog.ui" line="227"/>
         <source>Setting this option checked will result in ignoring overhangs while constructing new molecule.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ConstructMoleculeDialog.ui" line="182"/>
+        <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -197,69 +197,39 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="30"/>
-        <source>Region</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="36"/>
-        <source>Whole Sequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="46"/>
-        <source>Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="53"/>
-        <source>Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="60"/>
-        <source>Start:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="77"/>
-        <source>End:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="99"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="35"/>
         <source>Include Left Overhang</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="113"/>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="159"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="49"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="95"/>
         <source>Direct</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="123"/>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="169"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="59"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="105"/>
         <source>Reverse-complement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="145"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="81"/>
         <source>Include Right Overhang</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="207"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="143"/>
         <source>Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="235"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="171"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/CreateFragmentDialog.ui" line="242"/>
+        <location filename="../src/ui/CreateFragmentDialog.ui" line="178"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -303,6 +273,7 @@
     </message>
     <message>
         <location filename="../src/ui/DigestSequenceDialog.ui" line="108"/>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="175"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
@@ -319,21 +290,46 @@
     </message>
     <message>
         <location filename="../src/ui/DigestSequenceDialog.ui" line="146"/>
+        <source>Conserved Annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="152"/>
+        <source>List of conserved annotations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="159"/>
+        <source>Conserved annotations can not be &quot;distrupted&quot; when cutting occurs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="168"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="182"/>
+        <source>Remove All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="218"/>
         <source>Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DigestSequenceDialog.ui" line="179"/>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="251"/>
         <source>&lt;hint label&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DigestSequenceDialog.ui" line="201"/>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="273"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/DigestSequenceDialog.ui" line="208"/>
+        <location filename="../src/ui/DigestSequenceDialog.ui" line="280"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -346,59 +342,59 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="28"/>
-        <source>Left Overhang</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/EditFragmentDialog.ui" line="43"/>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="128"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="135"/>
         <source>Overhang</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/EditFragmentDialog.ui" line="63"/>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="148"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="155"/>
         <source>Custom overhang</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="77"/>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="162"/>
-        <source>Direct</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="87"/>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="172"/>
-        <source>Reverse-complement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="116"/>
-        <source>Right Overhang</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/EditFragmentDialog.ui" line="34"/>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="122"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="129"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="206"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="77"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="169"/>
+        <source>5&apos;-3&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="94"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="186"/>
+        <source>3&apos;-5&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="123"/>
+        <source>Right End</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="220"/>
         <source>Preview:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="101"/>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="189"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="110"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="205"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="28"/>
+        <source>Left End</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/EditFragmentDialog.ui" line="53"/>
-        <location filename="../src/ui/EditFragmentDialog.ui" line="138"/>
+        <location filename="../src/ui/EditFragmentDialog.ui" line="145"/>
         <source>Blunt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -526,57 +522,37 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="99"/>
+        <location filename="../src/ui/FindEnzymesDialog.ui" line="89"/>
         <source>Maximum hits:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="138"/>
+        <location filename="../src/ui/FindEnzymesDialog.ui" line="118"/>
         <source>Enzymes must not cut in the following region</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="141"/>
+        <location filename="../src/ui/FindEnzymesDialog.ui" line="121"/>
         <source>Exclude region:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="153"/>
-        <source>Range start:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="180"/>
-        <source>Range end:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="207"/>
-        <source>Use current seuquence selection range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="210"/>
-        <source>Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="233"/>
+        <location filename="../src/ui/FindEnzymesDialog.ui" line="139"/>
         <source>Circular molecule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="262"/>
+        <location filename="../src/ui/FindEnzymesDialog.ui" line="168"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="242"/>
+        <location filename="../src/ui/FindEnzymesDialog.ui" line="148"/>
         <source>&lt;status label&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindEnzymesDialog.ui" line="272"/>
+        <location filename="../src/ui/FindEnzymesDialog.ui" line="178"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -584,12 +560,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2</name>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="45"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="47"/>
         <source>The restrictions sites are being updated. Please wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="46"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="48"/>
         <source>Hint: there are no available enzymes. Use &quot;Analyze-&gt;Find Restrictions Sites&quot; feature to find them.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -597,58 +573,58 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ConstructMoleculeDialog</name>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="80"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="81"/>
         <source>No fragments are selected!
  Please construct molecule from available fragments.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="108"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="109"/>
         <source>Set new molecule file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="108"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="109"/>
         <source>Genbank (*.gb )</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="197"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="198"/>
         <source>Blunt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="198"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="199"/>
         <source>Fwd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="199"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="200"/>
         <source>Rev</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="216"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="217"/>
         <source>5&apos;overhang</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="225"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="226"/>
         <source>3&apos;overhang</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="227"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="228"/>
         <source>yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="227"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="228"/>
         <source>no</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ConstructMoleculeDialog.cpp" line="228"/>
+        <location filename="../src/ConstructMoleculeDialog.cpp" line="229"/>
         <source>Make fragment reverse complement</source>
         <translation type="unfinished"></translation>
     </message>
@@ -656,23 +632,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CreateFragmentDialog</name>
     <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="94"/>
+        <location filename="../src/CreateFragmentDialog.cpp" line="92"/>
         <source>5&apos;overhang contains unsupported symbols!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="104"/>
+        <location filename="../src/CreateFragmentDialog.cpp" line="102"/>
         <source>3&apos;overhang contains unsupported symbols!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="117"/>
-        <source>Sequence selection is empty!
-Choose another region.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="127"/>
+        <location filename="../src/CreateFragmentDialog.cpp" line="113"/>
         <source>Invalid fragment region!
 Choose another region.</source>
         <translation type="unfinished"></translation>
@@ -681,94 +651,114 @@ Choose another region.</source>
 <context>
     <name>U2::DigestSequenceDialog</name>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="108"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="114"/>
         <source>No enzymes are selected! Please select enzymes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="114"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="120"/>
         <source>Cannot load enzymes library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="196"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="219"/>
         <source> : %1 cut(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="285"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="308"/>
         <source>Auto-annotations update task is NULL.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DigestSequenceDialog.cpp" line="330"/>
+        <source>Select annotations</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::DigestSequenceTask</name>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="136"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="142"/>
         <source>Can&apos;t use restriction site %1 for digestion,  cleavage site is unknown </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="191"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="192"/>
         <source>Unable to digest into fragments: intersecting restriction sites %1 (%2..%3) and %4 (%5..%6)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="280"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="287"/>
         <source>circular</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="280"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="287"/>
         <source>linear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="281"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="288"/>
         <source>&lt;h3&gt;&lt;br&gt;Digest into fragments %1 (%2)&lt;/h3&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="282"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="289"/>
         <source>&lt;br&gt;Generated %1 fragments.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="287"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="294"/>
         <source>&lt;br&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;%1:&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;From %3 (%2) To %5 (%4) - %6 bp </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/CloningUtilTasks.cpp" line="320"/>
+        <source>Conserved annotation %1 (%2) is disrupted by the digestion. Try changing the restriction sites.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::EditFragmentDialog</name>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="111"/>
-        <source>Left overhang is empty. Please enter the overhang or set blunt 5&apos;Terminus.</source>
+        <location filename="../src/EditFragmentDialog.cpp" line="127"/>
+        <source>Left overhang is empty. Please enter the overhang or set blunt left end.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="115"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="131"/>
         <source>Invalid left overhang: unsupported alphabet!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="126"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="151"/>
+        <source>Right overhang is empty. Please enter the overhang or set blunt right end.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/EditFragmentDialog.cpp" line="155"/>
         <source>Invalid right overhang: unsupported alphabet!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="142"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="176"/>
         <source> (INVERTED)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="144"/>
+        <location filename="../src/EditFragmentDialog.cpp" line="178"/>
         <source>Fragment of %1%2&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EditFragmentDialog.cpp" line="164"/>
-        <source>&lt;tr&gt; &lt;td align=&quot;center&quot;&gt; 5&apos;End &lt;/td&gt;&lt;td&gt;&lt;/td&gt; &lt;td align=&quot;center&quot;&gt; 3&apos;End &lt;/td&gt; &lt;/tr&gt;</source>
+        <location filename="../src/EditFragmentDialog.cpp" line="193"/>
+        <source>&lt;tr&gt; &lt;td align=&quot;center&quot;&gt; 5&apos; &lt;/td&gt;&lt;td&gt;&lt;/td&gt; &lt;td align=&quot;center&quot;&gt; 3&apos; &lt;/td&gt; &lt;/tr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/EditFragmentDialog.cpp" line="199"/>
+        <source>&lt;tr&gt; &lt;td align=&quot;center&quot;&gt; 3&apos; &lt;/td&gt;&lt;td&gt;&lt;/td&gt; &lt;td align=&quot;center&quot;&gt; 5&apos; &lt;/td&gt; &lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -788,25 +778,25 @@ Choose another region.</source>
 <context>
     <name>U2::EnzymesIO</name>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="39"/>
+        <location filename="../src/EnzymesIO.cpp" line="44"/>
         <source>Bairoch format</source>
         <translation> </translation>
     </message>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="48"/>
+        <location filename="../src/EnzymesIO.cpp" line="53"/>
         <location filename="../src/EnzymesIO.cpp" line="88"/>
         <location filename="../src/EnzymesIO.cpp" line="95"/>
         <source>Unsupported URI type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="61"/>
+        <location filename="../src/EnzymesIO.cpp" line="66"/>
         <location filename="../src/EnzymesIO.cpp" line="108"/>
         <source>Unsupported enzymes file format</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesIO.cpp" line="71"/>
+        <location filename="../src/EnzymesIO.cpp" line="76"/>
         <source>Non-nucleic enzyme alphabet: &apos;%1&apos;, alphabet: %2, sequence &apos;%3&apos;</source>
         <translation></translation>
     </message>
@@ -818,8 +808,8 @@ Choose another region.</source>
     </message>
     <message>
         <location filename="../src/EnzymesIO.cpp" line="193"/>
-        <source>Illegal cut pos: %1, line %2</source>
-        <translation></translation>
+        <source>Restriction enzymes: Illegal cut pos: %1, line %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -888,49 +878,49 @@ To start ligation create a project or open an existing.</source>
 <context>
     <name>U2::EnzymesSelectorWidget</name>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="145"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="144"/>
         <source>File not exists: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="152"/>
-        <location filename="../src/FindEnzymesDialog.cpp" line="190"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="151"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="189"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="196"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="195"/>
         <source>New enzymes database has been saved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="197"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="196"/>
         <source>Do you want to work with new database?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="276"/>
-        <location filename="../src/FindEnzymesDialog.cpp" line="350"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="275"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="349"/>
         <source>Select enzyme database file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="312"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="311"/>
         <source>Minimum length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="312"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="311"/>
         <source>Enter minimum length of recognition sites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="361"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="360"/>
         <source>Error!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="361"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="360"/>
         <source>No enzyme selected!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -938,7 +928,7 @@ To start ligation create a project or open an existing.</source>
 <context>
     <name>U2::FindEnzymesAutoAnnotationUpdater</name>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="329"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="331"/>
         <source>Restriction Sites</source>
         <translation type="unfinished"></translation>
     </message>
@@ -951,17 +941,17 @@ To start ligation create a project or open an existing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="452"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="460"/>
         <source>&lt;html&gt;&lt;body align=&quot;center&quot;&gt;No enzymes are selected!                Do you want to turn off &lt;br&gt;enzymes annotations highlighting?&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="474"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="482"/>
         <source>Error!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesDialog.cpp" line="474"/>
+        <location filename="../src/FindEnzymesDialog.cpp" line="482"/>
         <source>Minimum hit value must be lesser or equal then maximum!</source>
         <translation></translation>
     </message>
@@ -969,12 +959,12 @@ To start ligation create a project or open an existing.</source>
 <context>
     <name>U2::FindEnzymesTask</name>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="156"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="154"/>
         <source>Find Enzymes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="170"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="168"/>
         <location filename="../src/FindEnzymesTask.cpp" line="287"/>
         <source>Number of results exceed %1, stopping</source>
         <translation></translation>
@@ -988,22 +978,22 @@ To start ligation create a project or open an existing.</source>
 <context>
     <name>U2::FindEnzymesToAnnotationsTask</name>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="46"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="44"/>
         <source>Find and store enzymes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="57"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="55"/>
         <source>No enzymes selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="72"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="70"/>
         <source>Annotation table does not exist</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/FindEnzymesTask.cpp" line="77"/>
+        <location filename="../src/FindEnzymesTask.cpp" line="75"/>
         <source>Annotation table is read-only</source>
         <translation></translation>
     </message>
@@ -1029,22 +1019,22 @@ To start ligation create a project or open an existing.</source>
 <context>
     <name>U2::LigateFragmentsTask</name>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="314"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="343"/>
         <source>Fragments %1 and  %2 are inconsistent. Blunt and sticky ends incompatibility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="324"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="353"/>
         <source>Right overhang from %1 and left overhang from %2 are inconsistent.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="372"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="401"/>
         <source>Unknown DNA alphabet in fragment %1 of %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="438"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="467"/>
         <source>Add constructed molecule</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1060,42 +1050,42 @@ To start ligation create a project or open an existing.</source>
 <context>
     <name>U2::QDEnzymesActor</name>
     <message>
-        <location filename="../src/EnzymesQuery.cpp" line="55"/>
+        <location filename="../src/EnzymesQuery.cpp" line="57"/>
         <source>Find enzymes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesQuery.cpp" line="65"/>
+        <location filename="../src/EnzymesQuery.cpp" line="66"/>
         <source>Enzymes query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesQuery.cpp" line="109"/>
+        <location filename="../src/EnzymesQuery.cpp" line="111"/>
         <source>RestrictionSites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesQuery.cpp" line="110"/>
+        <location filename="../src/EnzymesQuery.cpp" line="112"/>
         <source>Finds restriction cut sites in supplied DNA sequence.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesQuery.cpp" line="112"/>
+        <location filename="../src/EnzymesQuery.cpp" line="114"/>
         <source>Enzymes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesQuery.cpp" line="112"/>
+        <location filename="../src/EnzymesQuery.cpp" line="114"/>
         <source>Restriction enzymes used to recognize the restriction sites.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesQuery.cpp" line="113"/>
+        <location filename="../src/EnzymesQuery.cpp" line="115"/>
         <source>Circular</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/EnzymesQuery.cpp" line="113"/>
+        <location filename="../src/EnzymesQuery.cpp" line="115"/>
         <source>If &lt;i&gt;True&lt;/i&gt; considers the sequence circular. That allows to search for restriction sites between the end and the beginning of the sequence.</source>
         <translation type="unfinished"></translation>
     </message>

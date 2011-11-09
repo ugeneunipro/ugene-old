@@ -23,6 +23,10 @@
         <source>Probability of negative sequence recognition:</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Optimize Recognition Bound</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExpertDiscoveryAdvSetDialog</name>
@@ -97,6 +101,10 @@
         <source>Ok</source>
         <translation></translation>
     </message>
+    <message>
+        <source>You may load any sequence file to recognize your complex signals on the sequences.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExpertDiscoveryControlMrkDialog</name>
@@ -124,10 +132,6 @@
 <context>
     <name>ExpertDiscoveryPosNegDialog</name>
     <message>
-        <source>File with positive sequences</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>...</source>
         <translation></translation>
     </message>
@@ -136,38 +140,46 @@
         <translation></translation>
     </message>
     <message>
-        <source>File with negative sequences</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <source>Positive and Negative sequences</source>
-        <translation></translation>
+        <source>Load positive and negative sequence bases</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ok</source>
-        <translation></translation>
+        <source>Positive sequences file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Negative sequences file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the first step of creating a new ExpertDiscovery project.
+Load the sequences you want to analyze by choosing any file with a sequence or multiple sequences.
+
+Positive sequence base contains a regulation object you are interested in.
+Negative sequence base doesn&apos;t have it. 
+You also may generate negative sequences automatically.
+
+ExpertDiscovery will extract complex signals which reflect a structure of your regulation object. 
+The more sequences you provide the better will be the result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ExpertDiscoveryPosNegMrkDialog</name>
-    <message>
-        <source>File with positive sequences markup</source>
-        <translation></translation>
-    </message>
     <message>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
         <source>Generate description file</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>File with negative sequences markup</source>
         <translation></translation>
     </message>
     <message>
@@ -189,6 +201,28 @@
     <message>
         <source>Append to Current Markup</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Positive sequences markup file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Negative sequences markup file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On this step you need to load markups for the sequences. 
+Markaup is an annotation of a sequence with elementary signals.
+Markup gives information where elementary signals are located in the sequences.
+
+Complex signals will be build from the elementary signals and operations applied to them. 
+
+Load markup for your sequences in specified XML format or genbank format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nucleotides Markup</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -262,19 +296,7 @@
         <translation></translation>
     </message>
     <message>
-        <source>Select folder</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Select folder to store extracted complex signals</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Extractor Parameters setup</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Please create some predicates that will be used in complex signal construction process.</source>
         <translation></translation>
     </message>
     <message>
@@ -286,12 +308,28 @@
         <translation></translation>
     </message>
     <message>
-        <source>Aligned</source>
+        <source>Coverage bound</source>
         <translation></translation>
     </message>
     <message>
-        <source>Coverage bound</source>
-        <translation></translation>
+        <source>Please create some predicates that will be used in complex signal construction process. Note, some predicates are generated by default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aligned (If you sequence set is aligned, Interval predicated will be generated)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a folder to store extracted complex signals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Root Subfolder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -467,6 +505,10 @@
         <source>Order</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Add signal to markup</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::ExpertDiscoveryAdvSetDialog</name>
@@ -538,10 +580,6 @@
 <context>
     <name>U2::ExpertDiscoveryData</name>
     <message>
-        <source>Setting up recognization bound. Please wait</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -568,6 +606,10 @@
     <message>
         <source>Report generation failed</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Setting up recognition bound. Please wait</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -701,15 +743,7 @@
         <translation></translation>
     </message>
     <message>
-        <source>Positive and negative sequences markups can&apos;t be in the one file. Select another file for one of them</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Select description file</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Select files for ExpertDiscovery</source>
         <translation></translation>
     </message>
     <message>
@@ -723,6 +757,17 @@
     <message>
         <source>Open description file</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Select positive markup file at least or chose &apos;Nucleotides markup&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoveryScoreGraphFactory</name>
+    <message>
+        <source>Score graph</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -777,10 +822,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>Load control sequences markup</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Generate recognition report</source>
         <translation></translation>
     </message>
@@ -810,10 +851,6 @@
     </message>
     <message>
         <source>Set Recognition Bound</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Optimize Recognition Bound</source>
         <translation></translation>
     </message>
     <message>

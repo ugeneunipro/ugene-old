@@ -83,14 +83,22 @@
     </message>
 </context>
 <context>
+    <name>U2::DNAFlexGraphFactory</name>
+    <message>
+        <location filename="../src/DNAFlexGraph.cpp" line="40"/>
+        <source>DNA Flexibility</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::DNAFlexPlugin</name>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="47"/>
+        <location filename="../src/DNAFlexPlugin.cpp" line="49"/>
         <source>DNA Flexibility</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="48"/>
+        <location filename="../src/DNAFlexPlugin.cpp" line="50"/>
         <source>Searches a DNA sequence for regions of high DNA helix flexibility.</source>
         <translation></translation>
     </message>
@@ -111,12 +119,12 @@
 <context>
     <name>U2::DNAFlexViewContext</name>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="83"/>
-        <source>The input sequence must contain only A, C, G and T characters!</source>
-        <translation></translation>
+        <location filename="../src/DNAFlexPlugin.cpp" line="89"/>
+        <source>Unsupported sequence alphabet, only standard DNA alphabet is supported</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexPlugin.cpp" line="109"/>
+        <location filename="../src/DNAFlexPlugin.cpp" line="112"/>
         <source>Find high DNA flexibility regions...</source>
         <translation></translation>
     </message>

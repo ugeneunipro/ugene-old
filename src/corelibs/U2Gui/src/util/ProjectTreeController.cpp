@@ -404,6 +404,8 @@ bool ProjectTreeController::eventFilter(QObject* o, QEvent* e) {
     return false;
 }
 
+
+
 void ProjectTreeController::sl_onCloseEditor(QWidget*,QAbstractItemDelegate::EndEditHint) {
     QTreeWidgetItem* item = tree->currentItem();
     SAFE_POINT(item != NULL, "Unexpected current item on edit!",);
@@ -411,7 +413,30 @@ void ProjectTreeController::sl_onCloseEditor(QWidget*,QAbstractItemDelegate::End
     SAFE_POINT(pvi->isObjectItem(), "Not an object type item on edit!",);
     ProjViewObjectItem* objItem = static_cast<ProjViewObjectItem*>(pvi);
     if (!AppContext::getProject()->isStateLocked()) {
-        QString newName = item->text(0);
+		int maxNameLength = 50;
+		static QRegExp invalidCharactersRegExp("[\\\\|/+;=*]"); // \\\\ is a simple backslash	
+		QString invalidCharacters = invalidCharactersRegExp.pattern();
+		invalidCharacters.remove(0, 2).chop(1); // getting rid of the brackets and duplicate backslashes
+
+
+        QString newName = item->text(0).trimmed();
+
+		if (newName == objItem->obj->getGObjectName()) {
+			return;
+		} else if (newName.length() == 0  || newName.length() > maxNameLength) {
+			
+			QMessageBox::critical(0, "Error", tr("The name should be not empty and not longer than %1 characters").arg(maxNameLength));
+			return;
+
+		} else if (objItem->obj->getDocument()->findGObjectByName(newName) != NULL) {
+			QMessageBox::critical(0, "Error", tr("Duplicate object names are not allowed"));
+			return;
+
+		} else if (newName.contains(invalidCharactersRegExp) != NULL) {
+			QMessageBox::critical(0, "Error", tr("The name can't contain any of the following characters: %1").arg(invalidCharacters));
+			return;
+		}
+
         coreLog.trace(QString("Renaming object %1 to %2").arg(objItem->obj->getGObjectName()).arg(newName));
         objItem->obj->setGObjectName(newName);
     }
@@ -707,18 +732,20 @@ void ProjectTreeController::sl_onLockedStateChanged() {
     updateActions();
 }
 
+
 void ProjectTreeController::sl_onRename() {
     QList<QTreeWidgetItem*> selItems = tree->selectedItems();
     if (selItems.size() != 1) {
         return;
     }
+	
     ProjViewItem *item = static_cast<ProjViewItem *>(selItems.last());
     if (item != NULL && item->isObjectItem() && !AppContext::getProject()->isStateLocked()) {
         ProjViewObjectItem *objItem = static_cast<ProjViewObjectItem*>(item);
-        QString oldName = objItem->obj->getGObjectName();
+		
         objItem->setFlags(objItem->flags() | Qt::ItemIsEditable);
         objItem->setText(0, objItem->obj->getGObjectName());
-        tree->editItem(objItem);
+		tree->editItem(objItem);
     }
 }
 

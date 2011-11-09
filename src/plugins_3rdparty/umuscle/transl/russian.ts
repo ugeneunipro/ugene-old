@@ -200,31 +200,31 @@
 <context>
     <name>U2::MuscleAdapter</name>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="70"/>
+        <location filename="../src/MuscleAdapter.cpp" line="72"/>
         <source>No sequences in input file</source>
         <translation>Выравнивание не содержит данных</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="97"/>
+        <location filename="../src/MuscleAdapter.cpp" line="99"/>
         <source>alignment_is_empty</source>
         <translation>Выравнивание не содержит данных</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="48"/>
-        <location filename="../src/MuscleAdapter.cpp" line="196"/>
-        <location filename="../src/MuscleAdapter.cpp" line="281"/>
+        <location filename="../src/MuscleAdapter.cpp" line="50"/>
+        <location filename="../src/MuscleAdapter.cpp" line="198"/>
+        <location filename="../src/MuscleAdapter.cpp" line="283"/>
         <location filename="../src/MuscleAdapter.cpp" line="463"/>
         <source>Internal MUSCLE error: %1</source>
         <translation>Внутренняя ошибка MUSCLE: %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="274"/>
+        <location filename="../src/MuscleAdapter.cpp" line="276"/>
         <source>Invalid input alignment</source>
         <translation>Некорректное входное выравнивание</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="290"/>
-        <location filename="../src/MuscleAdapter.cpp" line="472"/>
+        <location filename="../src/MuscleAdapter.cpp" line="291"/>
+        <location filename="../src/MuscleAdapter.cpp" line="471"/>
         <source>Incompatible alphabets</source>
         <translation>Несовместимые алфавиты</translation>
     </message>
@@ -243,12 +243,12 @@
         <translation type="obsolete">Выравнивание не нормализовано</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="501"/>
+        <location filename="../src/MuscleAdapter.cpp" line="496"/>
         <source>Aligning sequence %1 of %2</source>
         <translation>Выравнивается последовательность %1 из %2</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAdapter.cpp" line="533"/>
+        <location filename="../src/MuscleAdapter.cpp" line="528"/>
         <source>Merging results: %1 of %2</source>
         <translation>Объединяются результаты: %1 из %2</translation>
     </message>
@@ -261,12 +261,12 @@
 <context>
     <name>U2::MuscleAddSequencesToProfileTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="242"/>
+        <location filename="../src/MuscleTask.cpp" line="255"/>
         <source>MUSCLE align profiles &apos;%1&apos; vs &apos;%2&apos;</source>
         <translation>MUSCLE выравнивает &apos;%1&apos; к &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="244"/>
+        <location filename="../src/MuscleTask.cpp" line="257"/>
         <source>MUSCLE align &apos;%2&apos; by profile &apos;%1&apos;</source>
         <translation>MUSCLE добавляет &apos;%2&apos; к &apos;%1&apos;</translation>
     </message>
@@ -275,17 +275,17 @@
         <translation type="obsolete">Не удалось определить формат файла</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="301"/>
+        <location filename="../src/MuscleTask.cpp" line="313"/>
         <source>Sequences in file have different alphabets %1</source>
         <translation>Последовательности в файле имеют разные алфавиты: %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="321"/>
+        <location filename="../src/MuscleTask.cpp" line="331"/>
         <source>No sequences found in file %1</source>
         <translation>Файл не содержит последовательностей: %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="323"/>
+        <location filename="../src/MuscleTask.cpp" line="333"/>
         <source>No alignment found in file %1</source>
         <translation>Файл не содержит выравниваний: %1</translation>
     </message>
@@ -381,62 +381,46 @@
 <context>
     <name>U2::MuscleGObjectRunFromSchemaTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="533"/>
-        <source>MUSCLE run in separate process align &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/MuscleTask.cpp" line="546"/>
+        <source>MUSCLE align &apos;%1&apos;</source>
+        <translation type="unfinished">MUSCLE выравнивает &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="536"/>
-        <source>MUSCLE run in separate process refine &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/MuscleTask.cpp" line="557"/>
-        <source>Object &apos;%1&apos; removed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/MuscleTask.cpp" line="561"/>
-        <location filename="../src/MuscleTask.cpp" line="586"/>
-        <source>Object &apos;%1&apos; is locked</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/MuscleTask.cpp" line="593"/>
-        <source>Undefined error: muscle task did not produced result</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/MuscleTask.cpp" line="549"/>
+        <source>MUSCLE refine &apos;%1&apos;</source>
+        <translation type="unfinished">MUSCLE улучшает &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
     <name>U2::MuscleGObjectTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="349"/>
+        <location filename="../src/MuscleTask.cpp" line="359"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation>MUSCLE выравнивает &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="352"/>
+        <location filename="../src/MuscleTask.cpp" line="362"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation>MUSCLE улучшает &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="355"/>
+        <location filename="../src/MuscleTask.cpp" line="365"/>
         <source>MUSCLE add to profile &apos;%1&apos;</source>
         <translation>MUSCLE добавляет в выравнивание &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="358"/>
+        <location filename="../src/MuscleTask.cpp" line="368"/>
         <source>MUSCLE align profiles</source>
         <translation>MUSCLE выравнивает пару выравниваний</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="373"/>
+        <location filename="../src/MuscleTask.cpp" line="383"/>
         <source>object_removed</source>
         <translation>Объект был удалён</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="377"/>
-        <location filename="../src/MuscleTask.cpp" line="400"/>
+        <location filename="../src/MuscleTask.cpp" line="387"/>
+        <location filename="../src/MuscleTask.cpp" line="410"/>
         <source>object_is_state_locked</source>
         <translation>Объект заблокирован</translation>
     </message>
@@ -479,27 +463,27 @@
         <translation type="obsolete">Выровнять с другим выравниванием ...</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="135"/>
+        <location filename="../src/MusclePlugin.cpp" line="137"/>
         <source>Align with MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="142"/>
+        <location filename="../src/MusclePlugin.cpp" line="144"/>
         <source>Align sequences to profile with MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="149"/>
+        <location filename="../src/MusclePlugin.cpp" line="151"/>
         <source>Align profile to profile with MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="226"/>
+        <location filename="../src/MusclePlugin.cpp" line="227"/>
         <source>Select file with sequences</source>
         <translation>Выбор файла последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="243"/>
+        <location filename="../src/MusclePlugin.cpp" line="244"/>
         <source>Select file with alignment</source>
         <translation>Выбор файла выравнивания</translation>
     </message>
@@ -519,22 +503,22 @@
 <context>
     <name>U2::MusclePlugin</name>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="57"/>
+        <location filename="../src/MusclePlugin.cpp" line="59"/>
         <source>MUSCLE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="58"/>
+        <location filename="../src/MusclePlugin.cpp" line="60"/>
         <source>A port of MUSCLE package for multiple sequence alignment. Check http://www.drive5.com/muscle/ for the original version</source>
         <translation>Порт пакета MUSCLE для выравнивания множественных последовательностей. ￼Сайт оригинального пакета http://www.drive5.com/muscle/</translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="66"/>
+        <location filename="../src/MusclePlugin.cpp" line="68"/>
         <source>MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="71"/>
+        <location filename="../src/MusclePlugin.cpp" line="73"/>
         <source>Multiple alignment</source>
         <translation type="unfinished">Множественное выравнивание</translation>
     </message>
@@ -546,17 +530,27 @@
 <context>
     <name>U2::MusclePrepareTask</name>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="93"/>
+        <location filename="../src/MuscleParallel.cpp" line="86"/>
+        <source>Preparing MUSCLE alignment...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleParallel.cpp" line="94"/>
         <source>Internal parallel MUSCLE error: %1</source>
         <translation>Внутренняя ошибка: %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="133"/>
+        <location filename="../src/MuscleParallel.cpp" line="98"/>
+        <source>MUSCLE prepared successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleParallel.cpp" line="135"/>
         <source>No sequences in input file</source>
         <translation>Выравнивание не содержит данных</translation>
     </message>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="160"/>
+        <location filename="../src/MuscleParallel.cpp" line="162"/>
         <source>alignment_is_empty</source>
         <translation>Выравнивание не содержит данных</translation>
     </message>
@@ -599,15 +593,30 @@
 <context>
     <name>U2::MuscleTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="68"/>
+        <location filename="../src/MuscleTask.cpp" line="73"/>
         <source>MUSCLE alignment</source>
         <translation>Выравнивание MUSCLE</translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleTask.cpp" line="80"/>
+        <source>MUSCLE alignment started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleTask.cpp" line="122"/>
+        <source>Performing MUSCLE alignment...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleTask.cpp" line="144"/>
+        <source>MUSCLE alignment successfully finished</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::MuscleWithExtFileSpecifySupportTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="443"/>
+        <location filename="../src/MuscleTask.cpp" line="453"/>
         <source>input_format_error</source>
         <translation type="unfinished">Не удалось определить формат файла</translation>
     </message>
@@ -615,17 +624,17 @@
 <context>
     <name>U2::ProgressiveAlignTask</name>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="272"/>
+        <location filename="../src/MuscleParallel.cpp" line="274"/>
         <source>ProgressiveAlignTask</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="294"/>
+        <location filename="../src/MuscleParallel.cpp" line="296"/>
         <source>Internal parallel MUSCLE error: %1</source>
         <translation>Внутренняя ошибка: %1</translation>
     </message>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="299"/>
+        <location filename="../src/MuscleParallel.cpp" line="301"/>
         <source>alignment &quot;%1&quot; Parallel MUSCLE Iter 1 accomplished. Time elapsed %2 ms</source>
         <translation></translation>
     </message>
@@ -633,12 +642,12 @@
 <context>
     <name>U2::ProgressiveAlignWorker</name>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="350"/>
+        <location filename="../src/MuscleParallel.cpp" line="352"/>
         <source>ProgressiveAlignWorker</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="364"/>
+        <location filename="../src/MuscleParallel.cpp" line="366"/>
         <source>Internal parallel MUSCLE error: %1</source>
         <translation>Внутренняя ошибка: %1</translation>
     </message>
@@ -646,12 +655,12 @@
 <context>
     <name>U2::RefineTask</name>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="524"/>
+        <location filename="../src/MuscleParallel.cpp" line="526"/>
         <source>RefineTask</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="547"/>
+        <location filename="../src/MuscleParallel.cpp" line="549"/>
         <source>Internal parallel MUSCLE error: %1</source>
         <translation>Внутренняя ошибка: %1</translation>
     </message>
@@ -659,12 +668,12 @@
 <context>
     <name>U2::RefineTreeTask</name>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="479"/>
+        <location filename="../src/MuscleParallel.cpp" line="481"/>
         <source>RefineTreeTask</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="491"/>
+        <location filename="../src/MuscleParallel.cpp" line="493"/>
         <source>Internal parallel MUSCLE error: %1</source>
         <translation>Внутренняя ошибка: %1</translation>
     </message>
@@ -672,7 +681,7 @@
 <context>
     <name>U2::RefineWorker</name>
     <message>
-        <location filename="../src/MuscleParallel.cpp" line="600"/>
+        <location filename="../src/MuscleParallel.cpp" line="602"/>
         <source>Internal parallel MUSCLE error: %1</source>
         <translation type="unfinished">Внутренняя ошибка: %1</translation>
     </message>

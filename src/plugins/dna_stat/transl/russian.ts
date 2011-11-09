@@ -145,7 +145,7 @@
 <context>
     <name>U2::DNAStatMSAEditorContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="42"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="72"/>
         <source>Generate grid profile</source>
         <translation>Показать сеточный отчет</translation>
     </message>
@@ -153,27 +153,27 @@
 <context>
     <name>U2::DNAStatMSAProfileDialog</name>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="27"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="50"/>
         <source>CSV files</source>
         <translation>CSV файлы</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="29"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="52"/>
         <source>HTML files</source>
         <translation>HTML файлы</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="31"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="54"/>
         <source>Select file to save report to..</source>
         <translation>Выберете файл для сохранения отчета</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="74"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="97"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="74"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="97"/>
         <source>File URL is empty</source>
         <translation>Не указан файл для сохранения отчета</translation>
     </message>
@@ -181,57 +181,57 @@
 <context>
     <name>U2::DNAStatMSAProfileTask</name>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="87"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="110"/>
         <source>Generate alignment profile</source>
         <translation>Генерация сеточного отчета</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="99"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="122"/>
         <source>No output file name specified</source>
         <translation>Не указано имя файла для сохранения отчета</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="117"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="140"/>
         <source>Alignment file:</source>
         <translation>Файл:</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="118"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="141"/>
         <source>Table content:</source>
         <translation>Результаты:</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="118"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="141"/>
         <source>symbol percents</source>
         <translation>процент символа</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="118"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="141"/>
         <source>symbol counts</source>
         <translation>количество символов</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="214"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="237"/>
         <source>Can&apos;t open file for write: %1</source>
         <translation>Не могу открыть файл для записи: %1</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="226"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="249"/>
         <source>Alignment profile</source>
         <translation>Отчет для множественного выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="226"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="249"/>
         <source>Alignment profile for %1</source>
         <translation>Отчет для множественного выравнивания %1</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="114"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="137"/>
         <source>Multiple Sequence Alignment Grid Profile</source>
         <translation>Сеточный отчет для множественного выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="182"/>
+        <location filename="../src/DNAStatMSAProfileDialog.cpp" line="205"/>
         <source>Legend:</source>
         <translation>Легенда:</translation>
     </message>
@@ -239,20 +239,79 @@
 <context>
     <name>U2::DNAStatPlugin</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="25"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="49"/>
         <source>DNA Statistics</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="25"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="49"/>
         <source>Provides statistical reports for sequences and alignments</source>
         <translation>Набор статистических отчетов</translation>
     </message>
 </context>
 <context>
+    <name>U2::DNAStatProfileTask</name>
+    <message>
+        <location filename="../src/DNAStatProfileTask.cpp" line="35"/>
+        <source>Generate sequence statistics profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAStatProfileTask.cpp" line="55"/>
+        <source>Sequence Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAStatProfileTask.cpp" line="58"/>
+        <source>Sequence file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAStatProfileTask.cpp" line="59"/>
+        <source>Sequence length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAStatProfileTask.cpp" line="101"/>
+        <source>Symbol counts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAStatProfileTask.cpp" line="102"/>
+        <source>Symbol percents %</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAStatProfileTask.cpp" line="118"/>
+        <source>Dinucleotide counts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAStatProfileTask.cpp" line="119"/>
+        <source>Dinucleotide percents %</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::DNAStatsWindow</name>
+    <message>
+        <location filename="../src/DNAStatsWindow.cpp" line="37"/>
+        <source>Statistics for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::DNAViewStatsContext</name>
+    <message>
+        <location filename="../src/DNAStatPlugin.cpp" line="156"/>
+        <source>Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::DistanceMatrixMSAEditorContext</name>
     <message>
-        <location filename="../src/DNAStatPlugin.cpp" line="75"/>
+        <location filename="../src/DNAStatPlugin.cpp" line="107"/>
         <source>Generate distance matrix</source>
         <translation type="unfinished"></translation>
     </message>
@@ -260,27 +319,27 @@
 <context>
     <name>U2::DistanceMatrixMSAProfileDialog</name>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="34"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="58"/>
         <source>CSV files</source>
         <translation type="unfinished">CSV файлы</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="36"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="60"/>
         <source>HTML files</source>
         <translation type="unfinished">HTML файлы</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="38"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="62"/>
         <source>Select file to save report to..</source>
         <translation type="unfinished">Выберете файл для сохранения отчета</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="79"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="103"/>
         <source>Error</source>
         <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="79"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="103"/>
         <source>File URL is empty</source>
         <translation type="unfinished">Не указан файл для сохранения отчета</translation>
     </message>
@@ -288,57 +347,57 @@
 <context>
     <name>U2::DistanceMatrixMSAProfileTask</name>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="92"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="116"/>
         <source>Generate distance matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="110"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="134"/>
         <source>No output file name specified</source>
         <translation type="unfinished">Не указано имя файла для сохранения отчета</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="125"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="149"/>
         <source>Multiple Sequence Alignment Distance Matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="128"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="152"/>
         <source>Alignment file:</source>
         <translation type="unfinished">Файл:</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="129"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="153"/>
         <source>Table content:</source>
         <translation type="unfinished">Результаты:</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="129"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="153"/>
         <source>similarity percents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="129"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="153"/>
         <source>similarity distance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="171"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="195"/>
         <source>Legend:</source>
         <translation type="unfinished">Легенда:</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="203"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="227"/>
         <source>Can&apos;t open file for write: %1</source>
         <translation type="unfinished">Не могу открыть файл для записи: %1</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="218"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="242"/>
         <source>Distance matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="218"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="242"/>
         <source>Distance matrix for %1</source>
         <translation type="unfinished"></translation>
     </message>

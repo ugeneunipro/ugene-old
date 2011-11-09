@@ -429,7 +429,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="370"/>
-        <source>Threads:</source>
+        <source>Threads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -521,6 +521,168 @@ bowtie is somewhat slower when --best is specified.
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="477"/>
         <source>--all</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BwaBuildSettings</name>
+    <message>
+        <location filename="../src/ui/BwaBuildSettings.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaBuildSettings.ui" line="22"/>
+        <source>Algorithm (-a)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaBuildSettings.ui" line="36"/>
+        <source>bwtsw</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaBuildSettings.ui" line="41"/>
+        <source>div</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaBuildSettings.ui" line="46"/>
+        <source>is</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaBuildSettings.ui" line="56"/>
+        <source>Colorspace (-c)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BwaSettings</name>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="20"/>
+        <source>Max gap extensions (-e)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="30"/>
+        <source>Indel offset (-i)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="40"/>
+        <source>Max long deletion extensions (-d)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="50"/>
+        <source>Seed length (-l)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="60"/>
+        <source>Max seed differences (-k)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="70"/>
+        <source>Max queue entries (-m)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="143"/>
+        <source>Enable long gaps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="179"/>
+        <source>Missing prob (-n)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="189"/>
+        <source>Max #diff (-n)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="206"/>
+        <source>Best hits (-R)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="226"/>
+        <source>Gap open penalty (-O)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="256"/>
+        <source>Barcode length (-B)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="276"/>
+        <source>Quality threshold (-q)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="306"/>
+        <source>Mismatch penalty (-M)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="316"/>
+        <source>Gap extension penalty (-E)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="326"/>
+        <source>Threads (-t)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="336"/>
+        <source>Colorspace (-c)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="343"/>
+        <source>Long-scaled gap penalty
+for long deletions (-L)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="351"/>
+        <source>Non-iterative mode (-N)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="360"/>
+        <source>Max gap opens (-o)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="370"/>
+        <source>Index algorithm (-a)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="391"/>
+        <source>bwtsw</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="396"/>
+        <source>div</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/BwaSettings.ui" line="401"/>
+        <source>is</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -974,19 +1136,82 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>MrBayesDialog</name>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="41"/>
+        <source>MrBayes Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="47"/>
+        <source>Model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="56"/>
+        <source>ModelType</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="66"/>
+        <source>Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="73"/>
+        <source>Gamma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="96"/>
+        <source>MCMC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="102"/>
+        <source>Chain Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="122"/>
+        <source>Subsampling Frequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="129"/>
+        <source>Burn-in Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="136"/>
+        <source>Heated Chains</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="143"/>
+        <source>Heated Chain Temp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MrBayesDialog.ui" line="150"/>
+        <source>Random Seed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-        <location filename="../src/ExternalToolSupportSettings.cpp" line="117"/>
+        <location filename="../src/ExternalToolSupportSettings.cpp" line="119"/>
         <source>Path for temporary files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportSettings.cpp" line="118"/>
+        <location filename="../src/ExternalToolSupportSettings.cpp" line="120"/>
         <source>Path for temporary files not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportSettings.cpp" line="119"/>
+        <location filename="../src/ExternalToolSupportSettings.cpp" line="121"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1066,17 +1291,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastAllSupport</name>
     <message>
-        <location filename="../src/blast/BlastAllSupport.cpp" line="69"/>
+        <location filename="../src/blast/BlastAllSupport.cpp" line="71"/>
         <source>The &lt;i&gt;blastall&lt;/i&gt; is the old program developed and distributed                     by the NCBI for running BLAST searches. The NCBI recommends                    that people start using the programs of the BLAST+ package instead.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupport.cpp" line="83"/>
+        <location filename="../src/blast/BlastAllSupport.cpp" line="85"/>
         <source>Path for BLAST %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupport.cpp" line="84"/>
+        <location filename="../src/blast/BlastAllSupport.cpp" line="86"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1084,17 +1309,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastAllSupportContext</name>
     <message>
-        <location filename="../src/blast/BlastAllSupport.cpp" line="130"/>
+        <location filename="../src/blast/BlastAllSupport.cpp" line="132"/>
         <source>Query with BLAST...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupport.cpp" line="150"/>
+        <location filename="../src/blast/BlastAllSupport.cpp" line="152"/>
         <source>Path for BLAST %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupport.cpp" line="151"/>
+        <location filename="../src/blast/BlastAllSupport.cpp" line="153"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1102,17 +1327,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastAllSupportMultiTask</name>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="447"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="454"/>
         <source>Source file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="448"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="455"/>
         <source>Used databse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="450"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="457"/>
         <source>No any results found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1128,27 +1353,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastAllSupportTask</name>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="70"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="74"/>
         <source>Subdirectory for temporary files exists. Can not remove this directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="75"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="79"/>
         <source>Can not create directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="181"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="186"/>
         <source>Output file not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="183"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="188"/>
         <source>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllSupportTask.cpp" line="224"/>
+        <location filename="../src/blast/BlastAllSupportTask.cpp" line="230"/>
         <source>Can not remove directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1179,12 +1404,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastPlusSupport</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="158"/>
+        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="160"/>
         <source>Path for BLAST+ tools not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="159"/>
+        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="161"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1192,27 +1417,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastPlusSupportCommonTask</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="81"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="85"/>
         <source>Subdirectory for temporary files exists. Can not remove this directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="86"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="90"/>
         <source>Can not create directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="140"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="146"/>
         <source>Output file not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="142"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="148"/>
         <source>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="183"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="190"/>
         <source>Can not remove directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1220,17 +1445,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastPlusSupportContext</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="213"/>
+        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="215"/>
         <source>Query with BLAST+...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="239"/>
+        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="241"/>
         <source>Path for BLAST+ tools not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="240"/>
+        <location filename="../src/blast_plus/BlastPlusSupport.cpp" line="242"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1238,17 +1463,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastPlusSupportMultiTask</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="412"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="420"/>
         <source>Source file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="413"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="421"/>
         <source>Used databse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="415"/>
+        <location filename="../src/blast_plus/BlastPlusSupportCommonTask.cpp" line="423"/>
         <source>No any results found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1307,32 +1532,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BlastRunCommonDialog</name>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="228"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="234"/>
         <source>Select a directory with database files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="238"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="244"/>
         <source>Direct nucleotide alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="242"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="248"/>
         <source>Direct protein alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="246"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="252"/>
         <source>Protein alignment, input nucleotide is translated input protein before the search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="250"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="256"/>
         <source>Protein alignment, nucleotide database is translated input protein before the search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="254"/>
+        <location filename="../src/utils/BlastRunCommonDialog.cpp" line="260"/>
         <source>Protein alignment, both input query and database are translated before the search</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1340,7 +1565,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BowtieAssembleTask</name>
     <message>
-        <location filename="../src/bowtie/BowtieTask.cpp" line="129"/>
+        <location filename="../src/bowtie/BowtieTask.cpp" line="150"/>
         <source>Reference index file &quot;%1&quot; does not exist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1348,7 +1573,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BowtieBuildIndexTask</name>
     <message>
-        <location filename="../src/bowtie/BowtieTask.cpp" line="24"/>
+        <location filename="../src/bowtie/BowtieTask.cpp" line="45"/>
         <source>Reference file &quot;%1&quot; does not exist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1356,40 +1581,56 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BowtieSupport</name>
     <message>
-        <location filename="../src/bowtie/BowtieSupport.cpp" line="36"/>
+        <location filename="../src/bowtie/BowtieSupport.cpp" line="57"/>
         <source>&lt;i&gt;Bowtie&lt;i&gt; is an ultrafast, memory-efficient short read aligner. It aligns short DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp reads per hour. Bowtie indexes the genome with a Burrows-Wheeler index to keep its memory footprint small: typically about 2.2 GB for the human genome (2.9 GB for paired-end).</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::BwaSupport</name>
+    <message>
+        <location filename="../src/bwa/BwaSupport.cpp" line="46"/>
+        <source>&lt;i&gt;Burrows-Wheeler Aligner (BWA)&lt;/i&gt; is an efficient program that aligns relatively short nucleotide sequences against a long reference sequence such as the human genome.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::BwaTask</name>
+    <message>
+        <location filename="../src/bwa/BwaTask.cpp" line="223"/>
+        <source>Multiple read files are not supported</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::CAP3Support</name>
     <message>
-        <location filename="../src/cap3/CAP3Support.cpp" line="63"/>
+        <location filename="../src/cap3/CAP3Support.cpp" line="65"/>
         <source>&lt;i&gt;CAP3&lt;/i&gt; is a contig assembly program.                    &lt;br&gt;It allows to assembly long DNA reads (up to 1000 bp).                    &lt;br&gt;Binaries can be downloaded from http://seq.cs.iastate.edu/cap3.html</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3Support.cpp" line="66"/>
+        <location filename="../src/cap3/CAP3Support.cpp" line="68"/>
         <source>&lt;br&gt;&lt;br&gt; Huang, X. and Madan, A.  (1999)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3Support.cpp" line="67"/>
+        <location filename="../src/cap3/CAP3Support.cpp" line="69"/>
         <source>&lt;br&gt;CAP3: A DNA Sequence Assembly Program,</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3Support.cpp" line="68"/>
+        <location filename="../src/cap3/CAP3Support.cpp" line="70"/>
         <source>&lt;br&gt;Genome Research, 9: 868-877.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3Support.cpp" line="78"/>
+        <location filename="../src/cap3/CAP3Support.cpp" line="80"/>
         <source>Path for %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3Support.cpp" line="79"/>
+        <location filename="../src/cap3/CAP3Support.cpp" line="81"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1425,22 +1666,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CAP3SupportTask</name>
     <message>
-        <location filename="../src/cap3/CAP3SupportTask.cpp" line="109"/>
+        <location filename="../src/cap3/CAP3SupportTask.cpp" line="106"/>
         <source>Output file not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3SupportTask.cpp" line="111"/>
+        <location filename="../src/cap3/CAP3SupportTask.cpp" line="108"/>
         <source>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3SupportTask.cpp" line="125"/>
+        <location filename="../src/cap3/CAP3SupportTask.cpp" line="122"/>
         <source>Output file not found: copy from tmp dir failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3SupportTask.cpp" line="143"/>
+        <location filename="../src/cap3/CAP3SupportTask.cpp" line="141"/>
         <source>No assembly is found for provided reads</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1448,17 +1689,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ClustalWSupport</name>
     <message>
-        <location filename="../src/clustalw/ClustalWSupport.cpp" line="64"/>
+        <location filename="../src/clustalw/ClustalWSupport.cpp" line="66"/>
         <source>&lt;i&gt;ClustalW&lt;/i&gt; is a free sequence alignment software for DNA or proteins.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clustalw/ClustalWSupport.cpp" line="74"/>
+        <location filename="../src/clustalw/ClustalWSupport.cpp" line="76"/>
         <source>Path for %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clustalw/ClustalWSupport.cpp" line="75"/>
+        <location filename="../src/clustalw/ClustalWSupport.cpp" line="77"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1466,17 +1707,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ClustalWSupportContext</name>
     <message>
-        <location filename="../src/clustalw/ClustalWSupport.cpp" line="137"/>
+        <location filename="../src/clustalw/ClustalWSupport.cpp" line="139"/>
         <source>Align with ClustalW...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clustalw/ClustalWSupport.cpp" line="160"/>
+        <location filename="../src/clustalw/ClustalWSupport.cpp" line="162"/>
         <source>Path for %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clustalw/ClustalWSupport.cpp" line="161"/>
+        <location filename="../src/clustalw/ClustalWSupport.cpp" line="163"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1484,27 +1725,47 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ClustalWSupportTask</name>
     <message>
-        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="83"/>
-        <source>Subdirectory for temporary files exists. Can not remove this directory.</source>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="68"/>
+        <source>ClustalW alignment started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="79"/>
+        <source>Saving data to temporary file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="88"/>
+        <source>Subdirectory for temporary files exists. Can not remove this directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="93"/>
         <source>Can not create directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="150"/>
-        <source>Output file not found</source>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="155"/>
+        <source>Output file %1 not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="152"/>
-        <source>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</source>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="157"/>
+        <source>Output file %3 not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="190"/>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="165"/>
+        <source>Loading output file &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="186"/>
+        <source>ClustalW alignment successfully finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="199"/>
         <source>Can not remove directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1520,7 +1781,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ClustalWWithExtFileSpecifySupportTask</name>
     <message>
-        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="226"/>
+        <location filename="../src/clustalw/ClustalWSupportTask.cpp" line="235"/>
         <source>input_format_error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1528,32 +1789,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ETSProjectViewItemsContoller</name>
     <message>
-        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="48"/>
+        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="50"/>
         <source>FormatDB...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="49"/>
+        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="51"/>
         <source>BLAST+ make DB...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="74"/>
+        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="76"/>
         <source>BLAST</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="89"/>
+        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="92"/>
         <source>Path for BLAST %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="92"/>
+        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="95"/>
         <source>Path for BLAST+ %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="94"/>
+        <location filename="../src/ETSProjectViewItemsContoller.cpp" line="97"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1571,70 +1832,85 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolRunTask.cpp" line="81"/>
+        <location filename="../src/ExternalToolRunTask.cpp" line="75"/>
+        <source>Launching %1 tool: %2 %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ExternalToolRunTask.cpp" line="82"/>
         <source>Can not run %1 tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolRunTask.cpp" line="83"/>
+        <location filename="../src/ExternalToolRunTask.cpp" line="84"/>
         <source>Can not run %1 tool. May be tool path &apos;%2&apos; not valid?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ExternalToolRunTask.cpp" line="98"/>
+        <source>%1 tool exited with code %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ExternalToolRunTask.cpp" line="100"/>
+        <source>Tool %1 finished successfully</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::ExternalToolSupportPlugin</name>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="93"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="100"/>
         <source>External tool support</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="93"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="100"/>
         <source>Runs other external tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="112"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="123"/>
         <source>ClustalW...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="118"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="129"/>
         <source>MAFFT...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="124"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="135"/>
         <source>T-Coffee...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="131"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="142"/>
         <source>Multiple alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="173"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="186"/>
         <source>FormatDB...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="176"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="189"/>
         <source>BLAST+ make DB...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="182"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="195"/>
         <source>BLAST Search...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="190"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="203"/>
         <source>BLAST+ Search...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="195"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="208"/>
         <source>BLAST</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1642,12 +1918,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ExternalToolSupportService</name>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="329"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="372"/>
         <source>External tools support</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolSupportPlugin.cpp" line="329"/>
+        <location filename="../src/ExternalToolSupportPlugin.cpp" line="372"/>
         <source>Provides support to run external tools from UGENE</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1713,22 +1989,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ExternalToolSupportUtils</name>
     <message>
-        <location filename="../src/ExternalToolRunTask.cpp" line="184"/>
+        <location filename="../src/ExternalToolRunTask.cpp" line="195"/>
         <source>Can not remove files from temporary directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolRunTask.cpp" line="189"/>
+        <location filename="../src/ExternalToolRunTask.cpp" line="200"/>
         <source>Can not remove directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolRunTask.cpp" line="193"/>
+        <location filename="../src/ExternalToolRunTask.cpp" line="189"/>
         <source>Can not remove temporary directory: path is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExternalToolRunTask.cpp" line="220"/>
+        <location filename="../src/ExternalToolRunTask.cpp" line="213"/>
         <source>Can not create directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1749,27 +2025,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::FormatDBSupport</name>
     <message>
-        <location filename="../src/blast/FormatDBSupport.cpp" line="64"/>
+        <location filename="../src/blast/FormatDBSupport.cpp" line="67"/>
         <source>The &lt;i&gt;formatdb&lt;/i&gt; formats protein or nucleotide source databases before these databases can be searched by &lt;i&gt;blastall&lt;/i&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/FormatDBSupport.cpp" line="80"/>
+        <location filename="../src/blast/FormatDBSupport.cpp" line="83"/>
         <source>The &lt;i&gt;makeblastdb&lt;/i&gt; formats protein or nucleotide source databases before these databases can be searched by other BLAST+ tools.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/FormatDBSupport.cpp" line="94"/>
+        <location filename="../src/blast/FormatDBSupport.cpp" line="97"/>
         <source>Path for BLAST %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/FormatDBSupport.cpp" line="97"/>
+        <location filename="../src/blast/FormatDBSupport.cpp" line="100"/>
         <source>Path for BLAST+ %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/FormatDBSupport.cpp" line="99"/>
+        <location filename="../src/blast/FormatDBSupport.cpp" line="102"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1808,17 +2084,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::BlastAllPrompter</name>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="288"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="295"/>
         <source>unset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="289"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="296"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="290"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="297"/>
         <source>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1826,152 +2102,152 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::BlastAllWorker</name>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="69"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="76"/>
         <source>Input sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="70"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="77"/>
         <source>Sequence for which annotations is searched.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="71"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="78"/>
         <source>Annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="71"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="78"/>
         <source>Found annotations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="80"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="87"/>
         <source>Search type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="81"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="88"/>
         <source>Select type of BLAST searches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="82"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="89"/>
         <source>Database Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="83"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="90"/>
         <source>Path with database files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="84"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="91"/>
         <source>Database Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="85"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="92"/>
         <source>Base name for BLAST DB files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="86"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="93"/>
         <source>Expected value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="87"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="94"/>
         <source>This setting specifies the statistical significance threshold for reporting matches against database sequences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="88"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="95"/>
         <source>Annotate as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="89"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="96"/>
         <source>Name for annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="90"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="97"/>
         <source>Tool Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="91"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="98"/>
         <source>External tool path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="92"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="99"/>
         <source>Temporary directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="93"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="100"/>
         <source>Directory for temporary files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="95"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="102"/>
         <source>BLAST output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="96"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="103"/>
         <source>Location of BLAST output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="97"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="104"/>
         <source>BLAST output type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="98"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="105"/>
         <source>Type of BLAST output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="99"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="106"/>
         <source>Gapped alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="100"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="107"/>
         <source>Perform gapped alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="147"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="154"/>
         <source>Local BLAST search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="148"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="155"/>
         <source>Finds annotations for DNA sequence in local database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="355"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="369"/>
         <source>Empty sequence supplied to BLAST</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="364"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="378"/>
         <source>Selected BLAST search with nucleotide input sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="369"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="383"/>
         <source>Selected BLAST search with amino acid input sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast/BlastAllWorker.cpp" line="376"/>
+        <location filename="../src/blast/BlastAllWorker.cpp" line="390"/>
         <source>Not selected BLAST output file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1979,17 +2255,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::BlastPlusPrompter</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="195"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="190"/>
         <source>unset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="196"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="191"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="197"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="192"/>
         <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1997,152 +2273,152 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::BlastPlusWorker</name>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="77"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="72"/>
         <source>Input sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="78"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="73"/>
         <source>Sequence for which annotations is searched.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="79"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="74"/>
         <source>Annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="79"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="74"/>
         <source>Found annotations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="88"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="83"/>
         <source>Search type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="89"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="84"/>
         <source>Select type of BLAST+ searches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="90"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="85"/>
         <source>Database Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="91"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="86"/>
         <source>Path with database files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="92"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="87"/>
         <source>Database Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="93"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="88"/>
         <source>Base name for BLAST+ DB files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="94"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="89"/>
         <source>Expected value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="95"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="90"/>
         <source>This setting specifies the statistical significance threshold for reporting matches against database sequences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="96"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="91"/>
         <source>Annotate as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="97"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="92"/>
         <source>Name for annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="98"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="93"/>
         <source>Tool Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="99"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="94"/>
         <source>External tool path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="100"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="95"/>
         <source>Temporary directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="101"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="96"/>
         <source>Directory for temporary files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="102"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="97"/>
         <source>BLAST output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="103"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="98"/>
         <source>Location of BLAST output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="104"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="99"/>
         <source>BLAST output type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="105"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="100"/>
         <source>Type of BLAST output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="106"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="101"/>
         <source>Gapped alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="107"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="102"/>
         <source>Perform gapped alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="127"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="122"/>
         <source>Local BLAST+ search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="128"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="123"/>
         <source>Finds annotations for DNA sequence in local database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="255"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="256"/>
         <source>Empty sequence supplied to BLAST</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="264"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="265"/>
         <source>Selected BLAST search with nucleotide input sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="269"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="270"/>
         <source>Selected BLAST search with amino acid input sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="276"/>
+        <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="277"/>
         <source>Not selected BLAST output file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2565,17 +2841,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::MAFFTSupport</name>
     <message>
-        <location filename="../src/mafft/MAFFTSupport.cpp" line="63"/>
+        <location filename="../src/mafft/MAFFTSupport.cpp" line="65"/>
         <source>&lt;i&gt;MAFFT&lt;/i&gt; is a multiple sequence alignment program for unix-like operating systems. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupport.cpp" line="73"/>
+        <location filename="../src/mafft/MAFFTSupport.cpp" line="75"/>
         <source>Path for %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupport.cpp" line="74"/>
+        <location filename="../src/mafft/MAFFTSupport.cpp" line="76"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2583,17 +2859,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::MAFFTSupportContext</name>
     <message>
-        <location filename="../src/mafft/MAFFTSupport.cpp" line="136"/>
+        <location filename="../src/mafft/MAFFTSupport.cpp" line="138"/>
         <source>Align with MAFFT...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupport.cpp" line="157"/>
+        <location filename="../src/mafft/MAFFTSupport.cpp" line="159"/>
         <source>Path for %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupport.cpp" line="158"/>
+        <location filename="../src/mafft/MAFFTSupport.cpp" line="160"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2601,38 +2877,58 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::MAFFTSupportTask</name>
     <message>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="77"/>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="65"/>
+        <source>MAFFT alignment started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="76"/>
+        <source>Saving data to temporary file &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="85"/>
         <source>Subdir for temporary files exists. Can not remove this directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="82"/>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="90"/>
         <source>Can not create directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="96"/>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="98"/>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="103"/>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="105"/>
         <source>Can not open output file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="99"/>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="106"/>
         <source> May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="133"/>
-        <source>Output file not found</source>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="141"/>
+        <source>Output file &apos;%1&apos; not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="135"/>
-        <source>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</source>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="143"/>
+        <source>Output file &apos;%3&apos; not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="173"/>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="151"/>
+        <source>Loading output file &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="171"/>
+        <source>MAFFT alignment successfully finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="184"/>
         <source>Can not remove directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2648,8 +2944,73 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::MAFFTWithExtFileSpecifySupportTask</name>
     <message>
-        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="206"/>
+        <location filename="../src/mafft/MAFFTSupportTask.cpp" line="217"/>
         <source>input_format_error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::MrBayesGetCalculatedTreeTask</name>
+    <message>
+        <location filename="../src/mrbayes/MrBayesTask.cpp" line="185"/>
+        <source>Generating output trees from MrBayes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mrbayes/MrBayesTask.cpp" line="192"/>
+        <source>Output file is not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mrbayes/MrBayesTask.cpp" line="219"/>
+        <source>No trees are found</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::MrBayesPrepareDataForCalculation</name>
+    <message>
+        <location filename="../src/mrbayes/MrBayesTask.cpp" line="36"/>
+        <source>Generating input file for MrBayes</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::MrBayesSupport</name>
+    <message>
+        <location filename="../src/mrbayes/MrBayesSupport.cpp" line="56"/>
+        <source>&lt;i&gt;MrBayes&lt;/i&gt; MrBayes is a program for the Bayesian estimation of phylogeny.Bayesian inference of phylogeny is based upon a quantity called the posterior probability distribution of trees, which is the probability of a tree conditioned on the observations. The conditioning is accomplished using Bayes&apos;s theorem. The posterior probability distribution of trees is impossible to calculate analytically; instead, MrBayes uses a simulation technique called Markov chain Monte Carlo (or MCMC) to approximate the posterior probabilities of trees.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::MrBayesSupportTask</name>
+    <message>
+        <location filename="../src/mrbayes/MrBayesTask.cpp" line="82"/>
+        <source>MrBayes tree calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::MrBayesWidget</name>
+    <message>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="64"/>
+        <source>Substitution model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="68"/>
+        <source>Rate Matrix (fixed)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="174"/>
+        <source>Path for %1 tool not selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mrbayes/MrBayesDialogWidget.cpp" line="175"/>
+        <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2665,12 +3026,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::PrepareInputForCAP3Task</name>
     <message>
-        <location filename="../src/cap3/CAP3SupportTask.cpp" line="253"/>
+        <location filename="../src/cap3/CAP3SupportTask.cpp" line="242"/>
         <source>Failed to initialize sequence writer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/cap3/CAP3SupportTask.cpp" line="282"/>
+        <location filename="../src/cap3/CAP3SupportTask.cpp" line="271"/>
         <source>Failed to write sequence %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2678,7 +3039,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::SaveAlignmentTask</name>
     <message>
-        <location filename="../src/utils/ExportTasks.cpp" line="51"/>
+        <location filename="../src/utils/ExportTasks.cpp" line="53"/>
         <source>Export alignment to &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2686,7 +3047,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::SaveMSA2SequencesTask</name>
     <message>
-        <location filename="../src/utils/ExportTasks.cpp" line="71"/>
+        <location filename="../src/utils/ExportTasks.cpp" line="73"/>
         <source>Export alignment to sequence: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2694,17 +3055,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::TCoffeeSupport</name>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="63"/>
+        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="67"/>
         <source>&lt;i&gt;T-Coffee&lt;/i&gt; is a multiple sequence alignment package.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="73"/>
+        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="77"/>
         <source>Path for %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="74"/>
+        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="78"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2712,17 +3073,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::TCoffeeSupportContext</name>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="136"/>
+        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="141"/>
         <source>Align with T-Coffee...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="157"/>
+        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="162"/>
         <source>Path for %1 tool not selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="158"/>
+        <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="163"/>
         <source>Do you want to select it now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2730,27 +3091,47 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::TCoffeeSupportTask</name>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="77"/>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="64"/>
+        <source>T-Coffee alignment started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="75"/>
+        <source>Saving data to temporary file &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="84"/>
         <source>Subdir for temporary files exists. Can not remove this directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="82"/>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="89"/>
         <source>Can not create directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="127"/>
-        <source>Output file not found</source>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="134"/>
+        <source>Output file %1 not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="129"/>
-        <source>Output file not found. May be %1 tool path &apos;%2&apos; not valid?</source>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="136"/>
+        <source>Output file %3 not found. May be %1 tool path &apos;%2&apos; not valid?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="169"/>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="144"/>
+        <source>Loading output file &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="166"/>
+        <source>T-Coffee alignment successfully finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="179"/>
         <source>Can not remove directory for temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2766,8 +3147,16 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::TCoffeeWithExtFileSpecifySupportTask</name>
     <message>
-        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="202"/>
+        <location filename="../src/tcoffee/TCoffeeSupportTask.cpp" line="212"/>
         <source>input_format_error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserAppsSettings</name>
+    <message>
+        <location filename="../src/ExternalToolSupportSettings.cpp" line="130"/>
+        <source>Temporary UGENE dir is empty</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

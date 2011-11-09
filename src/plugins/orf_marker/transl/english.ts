@@ -140,6 +140,10 @@ Ignore boundary ORFs which last beyond the search region
 </source>
         <translation></translation>
     </message>
+    <message>
+        <source>Circular Search</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>U2::FindORFsToAnnotationsTask</name>
