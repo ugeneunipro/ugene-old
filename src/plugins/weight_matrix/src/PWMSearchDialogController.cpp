@@ -274,7 +274,6 @@ void PWMSearchDialogController::addToQueue() {
     queue.append(queueElement);
     model = PWMatrix();
     intermediate = PFMatrix();
-    modelFileEdit->setText("");
 }
 
 void PWMSearchDialogController::reject() {
