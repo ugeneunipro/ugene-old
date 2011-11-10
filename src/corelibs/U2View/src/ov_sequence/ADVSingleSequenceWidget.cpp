@@ -472,7 +472,7 @@ bool ADVSingleSequenceWidget::eventFilter(QObject* o, QEvent* e) {
     return false;
 }
 
-void ADVSingleSequenceWidget::sl_onLocalCenteringRequest(int pos) {
+void ADVSingleSequenceWidget::sl_onLocalCenteringRequest(qint64 pos) {
     detView->setCenterPos(pos);
 }
 

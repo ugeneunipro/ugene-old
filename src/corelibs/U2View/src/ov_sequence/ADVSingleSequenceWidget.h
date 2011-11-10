@@ -139,7 +139,7 @@ protected slots:
     void sl_onSelectInRange();
     void sl_onSelectOutRange();
     void sl_zoomToRange();
-    void sl_onLocalCenteringRequest(int pos);
+    void sl_onLocalCenteringRequest(qint64 pos);
     void sl_createCustomRuler();
     void sl_removeCustomRuler();
     
