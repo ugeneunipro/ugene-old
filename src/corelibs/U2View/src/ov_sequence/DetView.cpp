@@ -290,15 +290,11 @@ void DetViewRenderArea::updateLines() {
         numLines = 5;
         QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
 
-        for(int i = 0; i<6; i++ ){
+        for(int i = 0; i<3; i++ ){
             if(!v[i]){
-                if(i<3){
                     baseLine--;
                     rulerLine--;
-                    complementLine--;
-                    firstComplTransLine--;
-                }
-                numLines--;
+	                numLines--;
             }
         }
     }
