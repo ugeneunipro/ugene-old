@@ -177,6 +177,16 @@ QList<SharedAnnotationData> RemoteBLASTTask::getResultedAnnotations() const {
 
 void RemoteBLASTTask::createAnnotations(const Query &q, HttpRequest *t) {
     QList<SharedAnnotationData> annotations = t->getAnnotations();
+    {
+        QRegExp regExp("&" + ReqParams::hits + "=([^&]*)");
+        if(cfg.params.contains(regExp)) {
+            bool ok = false;
+            int maxHits = regExp.cap(1).toInt(&ok);
+            if(ok) {
+                annotations = annotations.mid(0, maxHits);
+            }
+        }
+    }
     if(annotations.isEmpty()) return;
 
     if(cfg.filterResult) {
