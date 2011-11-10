@@ -673,16 +673,17 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
 
     if ((e->button() == Qt::LeftButton)){
         origin = e->pos();
-        cursorPos = coordToPos(e->pos());
-        MSAEditorSelection s = ui->seqArea->getSelection();
-        if ( s.getRect().contains(cursorPos) ){ 
-            shifting = true;
-        } else {
-            rubberBand->setGeometry(QRect(origin, QSize()));
-            rubberBand->show();
-            ui->seqArea->cancelSelection();
-        }
-        if ( isInRange(cursorPos) ) {
+        QPoint p = coordToPos(e->pos());
+        if(isInRange(p)) {
+            setCursorPos(p);
+            MSAEditorSelection s = ui->seqArea->getSelection();
+            if ( s.getRect().contains(cursorPos) ){
+                shifting = true;
+            } else {
+                rubberBand->setGeometry(QRect(origin, QSize()));
+                rubberBand->show();
+                ui->seqArea->cancelSelection();
+            }
             scribbling = true;
         }
     }
