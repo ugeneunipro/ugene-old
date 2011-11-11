@@ -90,6 +90,8 @@ SiteconSearchDialogController::SiteconSearchDialogController(ADVSequenceObjectCo
     initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
     int seqLen = ctx->getSequenceLength();
     rs=new RegionSelector(this, seqLen, true, ctx->getSequenceSelection());
+    rs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    rs->setMinimumHeight(96);
     rangeSelectorLayout->addWidget(rs);
 
     connectGUI();
@@ -214,7 +216,7 @@ void SiteconSearchDialogController::updateModel(const SiteconModel& m) {
     for (int i=qMax(pStart-1, 0); i <=qMin(pEnd+1, 99); i++) {
         QString text = tr("%1%\terr1=%2\terr2=%3").arg(i).arg(model->err1[i]).arg(model->err2[i]);
         errLevelBox->addItem(text, QVariant(i));
-        if (activeIdx == -1 && model->err1[i] >= 0.75F) {
+        if (activeIdx == -1 && model->err1[i] >= 0.5F) {
             activeIdx = errLevelBox->count()-1;
         }
     }

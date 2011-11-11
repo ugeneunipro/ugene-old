@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>264</width>
-    <height>414</height>
+    <width>550</width>
+    <height>427</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,13 +64,25 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="1,1">
+     <property name="spacing">
+      <number>6</number>
+     </property>
      <item>
       <widget class="QGroupBox" name="bgStrand">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>96</height>
+        </size>
        </property>
        <property name="title">
         <string>strand_group</string>
@@ -80,6 +92,12 @@
          <widget class="QRadioButton" name="rbBoth">
           <property name="text">
            <string>strand_both</string>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>15</width>
+            <height>16</height>
+           </size>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -96,6 +114,12 @@
           </property>
           <property name="text">
            <string>strand_direct_label</string>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>15</width>
+            <height>16</height>
+           </size>
           </property>
           <property name="shortcut">
            <string/>
@@ -116,6 +140,12 @@
           <property name="text">
            <string>strand_complement_label</string>
           </property>
+          <property name="iconSize">
+           <size>
+            <width>15</width>
+            <height>16</height>
+           </size>
+          </property>
           <property name="shortcut">
            <string/>
           </property>
@@ -125,7 +155,11 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="rangeSelectorLayout"/>
+      <layout class="QHBoxLayout" name="rangeSelectorLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+      </layout>
      </item>
     </layout>
    </item>
