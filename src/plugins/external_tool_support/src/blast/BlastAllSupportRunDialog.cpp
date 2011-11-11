@@ -266,7 +266,10 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
     }
     if(!docAlreadyInProject){
         QString url = inputFileLineEdit->text();
-        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openWithProjectTask(url));
+        Task * t = AppContext::getProjectLoader()->openWithProjectTask(url);
+        if (t != NULL) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(t);
+        }
     }
     lastDBPath=databasePathLineEdit->text();
     lastDBName=baseNameLineEdit->text();

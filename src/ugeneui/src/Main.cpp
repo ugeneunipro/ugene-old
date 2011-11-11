@@ -470,19 +470,19 @@ int main(int argc, char **argv)
     
     if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_TEST)) {
     QStringList urls = CMDLineRegistryUtils::getPureValues();
+
+    if(urls.isEmpty() && AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {
+        QString lastProject = ProjectLoaderImpl::getLastProjectURL();
+        if (!lastProject.isEmpty()) {
+            urls << lastProject;
+        }
+    }
+
     if( !urls.isEmpty() ) {
         // defer loading until all plugins/services loaded
         QObject::connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), 
             new TaskStarter( new OpenWithProjectTask(urls) ), SLOT( registerTask() ) );
         
-    } else if (AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {
-        QString lastProject = ProjectLoaderImpl::getLastProjectURL();
-        if (!lastProject.isEmpty()) {
-            Task* t = AppContext::getProjectLoader()->openWithProjectTask(lastProject);
-            // defer project start until all plugins/services loaded
-            QObject::connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), 
-                new TaskStarter(t), SLOT(registerTask()));
-        }
     }
     }
     

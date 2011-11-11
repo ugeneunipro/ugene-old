@@ -739,7 +739,10 @@ OpenWithProjectTask::OpenWithProjectTask(const QStringList& _urls)
 }
 
 void OpenWithProjectTask::prepare() {
-    addSubTask(AppContext::getProjectLoader()->openWithProjectTask(urls));
+    Task * t = AppContext::getProjectLoader()->openWithProjectTask(urls);
+    if (t != NULL) {
+        addSubTask(t);
+    }
 }
 
 
