@@ -45,6 +45,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/SequenceUtils.h>
+#include <U2Core/BaseDocumentFormats.h>
 
 #include <QtCore/QFileInfo>
 
@@ -241,6 +242,15 @@ LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
     return new LoadDocumentTask( df->getFormatId(), url, iof );
 }
 
+static bool isLoadToMem(const DocumentFormatId& id){
+	// files that use dbi not loaded to memory
+	if(id == BaseDocumentFormats::FASTA || id ==  BaseDocumentFormats::PLAIN_GENBANK || 
+		id == BaseDocumentFormats::RAW_DNA_SEQUENCE || id == BaseDocumentFormats::FASTQ 
+		|| id == BaseDocumentFormats::GFF || id == BaseDocumentFormats::PDW){		
+			return false;
+	}	
+	return true;	
+}
 
 void LoadDocumentTask::prepare() {
     if(hasError() || isCanceled()) {
@@ -248,7 +258,8 @@ void LoadDocumentTask::prepare() {
     }
     
     int memUseMB = 0;
-    if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad)) { // document is fully loaded to memory
+	
+    if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad) && isLoadToMem(format->getFormatId())) { // document is fully loaded to memory
         QFileInfo file(url.getURLString());
         memUseMB = file.size() / (1024*1024);
         if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
