@@ -94,8 +94,7 @@ void MarkerEditor::sl_onMarkerEdited(const QString &markerId, const QString &old
         assert(outPort->getOutputType()->isMap());
         QMap<Descriptor, DataTypePtr> outTypeMap = outPort->getOutputType()->getDatatypesMap();
 
-        Descriptor newSlot = MarkerSlots::getSlotByMarkerType(marker->getType(), oldMarkerName);
-        newSlot.setDisplayName(marker->getName());
+        Descriptor newSlot = MarkerSlots::getSlotByMarkerType(marker->getType(), marker->getName());
         outTypeMap.remove(oldMarkerName);
         outTypeMap[newSlot] = BaseTypes::STRING_TYPE();
         DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outTypeMap));

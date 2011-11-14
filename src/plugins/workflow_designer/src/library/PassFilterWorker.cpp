@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Designer/DelegateEditors.h>
+
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseAttributes.h>
@@ -108,6 +110,7 @@ void PassFilterWorkerFactory::init() {
         PassFilterWorker::tr("Check an incoming text value if that is contained in passed values list. If it is contained then a data goes on moving through the workflow and vice versa."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
+    proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
     proto->setPrompter(new PassFilterPrompter());
 
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATAFLOW(), proto);
