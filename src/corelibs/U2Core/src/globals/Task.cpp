@@ -136,8 +136,8 @@ void Task::addTaskResource(const TaskResourceUsage& r) {
 
 void TaskScheduler::addSubTask(Task* t, Task* sub) {
     SAFE_POINT(t != NULL, "When adding subtask to TaskScheduler, the parent task is NULL",);
-    SAFE_POINT(sub->getParentTask() == NULL, "Task already has a parent!",);
     SAFE_POINT(sub != NULL, "When adding subtask to TaskScheduler, the subtask is NULL",);
+    SAFE_POINT(sub->getParentTask() == NULL, "Task already has a parent!",);
 
     sub->parentTask = t;
     t->subtasks.append(sub);
