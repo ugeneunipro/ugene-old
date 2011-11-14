@@ -79,11 +79,15 @@ private slots:
     void sl_aboutAction();
     void sl_checkUpdatesAction();
     void sl_visitWeb();
-    void sl_downloadManualAction();
+    void sl_viewOnlineDocumentation();
+    void sl_openManualAction();
+    void sl_openWDManualAction();
+    void sl_openQDManualAction();
 
 private:
     void createActions();
     void prepareGUI();
+    void openManual(const QString& name);
 
     QMainWindow*			mw;
     FixedMdiArea*			mdi;
@@ -99,7 +103,10 @@ private:
     QAction*				aboutAction;
     QAction*				checkUpdateAction;
     QAction*                visitWebAction;
-    QAction*                downloadManualAction;
+    QAction*                viewOnlineDocumentation;
+    QAction*                openManualAction;
+    QAction*                openWDManualAction;
+    QAction*                openQDManualAction;
 
     bool                    shutDownInProcess;
 };

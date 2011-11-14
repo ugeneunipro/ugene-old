@@ -54,6 +54,10 @@
 
 namespace U2 {
 
+#define USER_MANUAL_FILE_NAME "UniproUGENE_UserManual.pdf"
+#define WD_USER_MANUAL_FILE_NAME "WorkflowDesigner_UserManual.pdf"
+#define QD_USER_MANUAL_FILE_NAME "QueryDesigner_UserManual.pdf"
+
 /* TRANSLATOR U2::MainWindowImpl */
 
 #define SETTINGS_DIR QString("main_window/")
@@ -132,9 +136,12 @@ MainWindowImpl::MainWindowImpl() {
 	dockManager = NULL;
 	exitAction = NULL;
     visitWebAction = NULL;
+    viewOnlineDocumentation = NULL;
     checkUpdateAction = NULL;
     aboutAction = NULL;
-    downloadManualAction = NULL;
+    openManualAction = NULL;
+    openWDManualAction = NULL;
+    openQDManualAction = NULL;
     shutDownInProcess = false;
     nStack = NULL;
 }
@@ -189,11 +196,20 @@ void MainWindowImpl::createActions() {
     visitWebAction = new QAction(tr("Visit UGENE's Web Site"), this);
     connect(visitWebAction, SIGNAL(triggered()), SLOT(sl_visitWeb()));
 
+    viewOnlineDocumentation = new QAction(tr("View Online UGENE's Documentations"), this);
+    connect(viewOnlineDocumentation, SIGNAL(triggered()), SLOT(sl_viewOnlineDocumentation()));
+
     checkUpdateAction = new QAction(tr("Check for Updates"), this);
     connect(checkUpdateAction, SIGNAL(triggered()), SLOT(sl_checkUpdatesAction()));
 
-    downloadManualAction = new QAction(tr("Download user manual"), this);
-    connect(downloadManualAction, SIGNAL(triggered()),SLOT(sl_downloadManualAction()));
+    openManualAction = new QAction(tr("Open User manual"), this);
+    connect(openManualAction, SIGNAL(triggered()),SLOT(sl_openManualAction()));
+
+    openWDManualAction = new QAction(tr("Open Workflow Designer manual"), this);
+    connect(openWDManualAction, SIGNAL(triggered()),SLOT(sl_openWDManualAction()));
+
+    openQDManualAction = new QAction(tr("Open Query Designer manual"), this);
+    connect(openQDManualAction, SIGNAL(triggered()),SLOT(sl_openQDManualAction()));
 
 }
 
@@ -243,9 +259,13 @@ void MainWindowImpl::prepareGUI() {
 
     aboutAction->setObjectName(ACTION__ABOUT);
     aboutAction->setParent(mw);
-    menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(checkUpdateAction);
-    menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(downloadManualAction);
+    menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(openManualAction);
+    menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(openWDManualAction);
+    menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(openQDManualAction);
+    menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(viewOnlineDocumentation);
+    menuManager->getTopLevelMenu(MWMENU_HELP)->addSeparator();
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(visitWebAction);
+    menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(checkUpdateAction);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(aboutAction);
 
 	mdiManager = new MWMDIManagerImpl(this, mdi);
@@ -277,12 +297,31 @@ void MainWindowImpl::runClosingTask() {
 void MainWindowImpl::sl_visitWeb() {
     GUIUtils::runWebBrowser("http://ugene.unipro.ru");
 }
-
-void MainWindowImpl::sl_downloadManualAction()
-{
-    GUIUtils::runWebBrowser("http://ugene.unipro.ru/downloads/UniproUGENE_UserManual.pdf");
+void MainWindowImpl::sl_viewOnlineDocumentation(){
+    GUIUtils::runWebBrowser("http://ugene.unipro.ru/documentation.html");
 }
 
+void MainWindowImpl::sl_openManualAction()
+{
+    openManual(USER_MANUAL_FILE_NAME);
+}
+void MainWindowImpl::sl_openWDManualAction()
+{
+    openManual(WD_USER_MANUAL_FILE_NAME);
+}
+void MainWindowImpl::sl_openQDManualAction()
+{
+    openManual(QD_USER_MANUAL_FILE_NAME);
+}
+
+void MainWindowImpl::openManual(const QString& name){
+    QFileInfo fileInfo( QString(PATH_PREFIX_DATA)+":"+"/manuals/" + name );
+    if(!fileInfo.exists()){
+        GUIUtils::runWebBrowser(QString("http://ugene.unipro.ru/downloads/") + name);
+    }else{
+        QDesktopServices::openUrl(QUrl(fileInfo.absoluteFilePath()));
+    }
+}
 QMenu* MainWindowImpl::getTopLevelMenu( const QString& sysName ) const
 {
     return menuManager->getTopLevelMenu(sysName);
