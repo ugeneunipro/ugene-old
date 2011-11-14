@@ -32,6 +32,7 @@ copy %RELEASE_DIR%\transl_cn.qm %OUTPUT_DIR%
 
 REM copy data
 svn export %U_ROOT%\data %OUTPUT_DIR%\data
+copy %U_ROOT%\data\manuals\*.pdf %OUTPUT_DIR%\data\manuals\
 
 REM copy libs 
 copy %RELEASE_DIR%\ugenedb.dll %OUTPUT_DIR%
