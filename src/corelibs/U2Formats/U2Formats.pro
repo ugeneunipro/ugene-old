@@ -88,7 +88,7 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \
            src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp
 RESOURCES += U2Formats.qrc
-TRANSLATIONS += transl/chinese \
+TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
