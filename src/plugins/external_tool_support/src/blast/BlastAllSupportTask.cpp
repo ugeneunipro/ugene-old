@@ -65,7 +65,7 @@ void BlastAllSupportTask::prepare(){
                          QString::number(QCoreApplication::applicationPid())+"/";
     //Check and remove subdir for temporary files
     QString blastTmpDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BLASTALL_TMP_DIR);
-    QDir tmpDir(blastTmpDir + "/ "+ tmpDirName);
+    QDir tmpDir(blastTmpDir + "/"+ tmpDirName);
     if(tmpDir.exists()){
         foreach(const QString& file, tmpDir.entryList()){
             tmpDir.remove(file);
@@ -86,6 +86,7 @@ void BlastAllSupportTask::prepare(){
     U2EntityRef seqRef = U2SequenceUtils::import(tmpDoc->getDbiRef(), DNASequence(settings.querySequence, settings.alphabet), stateInfo);
     CHECK_OP(stateInfo, );
     sequenceObject = new U2SequenceObject("input sequence", seqRef);
+    tmpDoc->addObject(sequenceObject);
     url = tmpDir.absolutePath() + "/tmp.fa";
     
     saveTemporaryDocumentTask = new SaveDocumentTask(tmpDoc, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE), url);
@@ -108,7 +109,7 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
         if(!settings.filter.isEmpty()){
             arguments <<"-F"<<settings.filter;
         }
-        arguments <<"-d"<< "\""+settings.databaseNameAndPath+"\"";
+        arguments <<"-d"<< settings.databaseNameAndPath;
         arguments <<"-e"<< QString::number(settings.expectValue);
         arguments <<"-n"<< (settings.megablast ? "T" : "F");
         arguments <<"-W"<< QString::number(settings.wordSize);
