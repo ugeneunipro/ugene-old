@@ -40,6 +40,7 @@
 #include <U2Core/ProjectModel.h>
 
 #include <U2Core/DocumentSelection.h>
+#include <U2Core/L10n.h>
 
 #include <U2Gui/GUIUtils.h>
 
@@ -202,7 +203,7 @@ void MainWindowImpl::createActions() {
     checkUpdateAction = new QAction(tr("Check for Updates"), this);
     connect(checkUpdateAction, SIGNAL(triggered()), SLOT(sl_checkUpdatesAction()));
 
-    openManualAction = new QAction(tr("Open User manual"), this);
+    openManualAction = new QAction(tr("Open UGENE User manual"), this);
     connect(openManualAction, SIGNAL(triggered()),SLOT(sl_openManualAction()));
 
     openWDManualAction = new QAction(tr("Open Workflow Designer manual"), this);
@@ -319,7 +320,26 @@ void MainWindowImpl::openManual(const QString& name){
     if(!fileInfo.exists()){
         GUIUtils::runWebBrowser(QString("http://ugene.unipro.ru/downloads/") + name);
     }else{
-        QDesktopServices::openUrl(QUrl(fileInfo.absoluteFilePath()));
+        if(!QDesktopServices::openUrl(QUrl("file:///"+fileInfo.absoluteFilePath()))){
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(L10N::warningTitle());
+            msgBox.setText(tr("Can not open %1 file. ").arg(name));
+            msgBox.setInformativeText(tr("You can try open it manualy from here: %1 \nor view online documentation.\n\nDo you want view online documentation?").arg(fileInfo.absolutePath()));
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+            switch (ret) {
+               case QMessageBox::Yes:
+                   GUIUtils::runWebBrowser("http://ugene.unipro.ru/documentation.html");
+                   break;
+               case QMessageBox::No:
+                   return;
+                   break;
+               default:
+                   assert(NULL);
+                   break;
+             }
+        }
     }
 }
 QMenu* MainWindowImpl::getTopLevelMenu( const QString& sysName ) const
