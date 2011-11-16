@@ -90,7 +90,7 @@ void AssemblyReadsArea::createMenu() {
         QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
         connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
 
-    QMenu * cellRendererMenu = readMenu->addMenu(tr("Read highlighting"));
+    QMenu * cellRendererMenu = readMenu->addMenu(tr("Reads highlighting"));
     {
         QList<AssemblyCellRendererFactory*> factories = browser->getCellRendererRegistry()->getFactories();
 
@@ -114,7 +114,7 @@ void AssemblyReadsArea::createMenu() {
 static const QString BIND_HERE(AssemblyReadsArea::tr("Lock here"));
 
 QMenu* AssemblyReadsArea::createShadowingMenu() {
-    QMenu *shadowingMenu = new QMenu(tr("Read shadowing"));
+    QMenu *shadowingMenu = new QMenu(tr("Reads shadowing"));
 
     disableShadowing = shadowingMenu->addAction(tr("Disabled"));
     disableShadowing->setCheckable(true);

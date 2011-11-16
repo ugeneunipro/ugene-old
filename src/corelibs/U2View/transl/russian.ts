@@ -2138,7 +2138,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="93"/>
-        <source>Read highlighting</source>
+        <source>Reads highlighting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2148,7 +2148,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="117"/>
-        <source>Read shadowing</source>
+        <source>Reads shadowing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
