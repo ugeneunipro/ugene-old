@@ -61,6 +61,7 @@ namespace U2 {
 CreateAnnotationModel::CreateAnnotationModel() : defaultIsNewDoc(false), hideLocation(false), hideAnnotationName(false) {
 	data = new AnnotationData();
     useUnloadedObjects = false;
+	hideAutoAnnotationsOption = true;
 }
 
 AnnotationTableObject* CreateAnnotationModel::getAnnotationObject() const {
@@ -95,9 +96,8 @@ CreateAnnotationWidgetController::CreateAnnotationWidgetController(const CreateA
         ui->showNameGroupsButton->setMenu(menu);
         ui->showNameGroupsButton->setPopupMode(QToolButton::InstantPopup);
     }
-
-
-    QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR).toString();
+    
+	QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR).toString();
     if (dir.isEmpty() || !QDir(dir).exists()) {
         dir = QDir::homePath();
         Project* prj = AppContext::getProject();
@@ -155,6 +155,12 @@ CreateAnnotationWidgetController::CreateAnnotationWidgetController(const CreateA
         ui->existingObjectButton->setDisabled(true);
         ui->newFileRB->setChecked(true);
     }
+	
+	if (model.hideAutoAnnotationsOption) {
+		ui->useAutoAnnotationsRB->hide();
+	} else {
+		ui->useAutoAnnotationsRB->setChecked(true);
+	}
 
     connect(ui->newFileButton, SIGNAL(clicked()), SLOT(sl_onNewDocClicked()));
     connect(ui->existingObjectButton, SIGNAL(clicked()), SLOT(sl_onLoadObjectsClicked()));
@@ -400,4 +406,10 @@ void CreateAnnotationWidgetController::setFocusToNameEdit()
 {
     ui->annotationNameEdit->setFocus();
 }
+
+bool CreateAnnotationWidgetController::useAutoAnnotationModel() const
+{
+	return ui->useAutoAnnotationsRB->isChecked();
+}
+
 } // namespace

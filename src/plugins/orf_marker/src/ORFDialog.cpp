@@ -103,6 +103,8 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     connect(transCombo, SIGNAL(currentIndexChanged ( int )), SLOT(sl_translationChanged()));    
     sl_translationChanged();
 
+	createAnnotationWidget();
+
 }
 
 static QString triplet2str(const Triplet& t) {
@@ -214,31 +216,6 @@ bool ORFDialog::eventFilter(QObject *obj, QEvent *ev) {
         //TODO add advanced context menu (delete, sort, save etc)??
     }
     return false;
-}
-
-void ORFDialog::sl_onSaveAnnotations() {
-    if (resultsTree->topLevelItemCount() == 0) {
-        return;
-    }
-    CreateAnnotationModel m;
-    m.sequenceObjectRef = ctx->getSequenceObject();
-    m.hideLocation = true;
-    m.data->name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
-    m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
-    CreateAnnotationDialog d(this, m);
-    int rc = d.exec();
-    if (rc != QDialog::Accepted) {
-        return;
-    }
-    const QString& name = m.data->name;
-    QList<SharedAnnotationData> list;
-    for (int i=0, n = resultsTree->topLevelItemCount(); i<n; ++i) {
-        ORFListItem* item = static_cast<ORFListItem* >(resultsTree->topLevelItem(i));
-        list.append(item->res.toAnnotation(name));
-    }
-
-    CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), m.groupName, list);
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 void ORFDialog::sl_onClearList() {
@@ -354,8 +331,16 @@ void ORFDialog::accept()
         return;
     }
     ORFSettingsKeys::save(s, AppContext::getSettings());
-    AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
-
+    if (ac->useAutoAnnotationModel()) {
+		AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
+	} else {
+		ac->prepareAnnotationObject();
+		const CreateAnnotationModel& m = ac->getModel();
+		AnnotationTableObject* aObj = m.getAnnotationObject();
+		FindORFsToAnnotationsTask* orfTask = 
+			new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getWholeSequence(),s, m.groupName);
+		AppContext::getTaskScheduler()->registerTopLevelTask(orfTask);
+	}
     QDialog::accept();
 }
 
@@ -403,6 +388,27 @@ U2::ORFAlgorithmStrand ORFDialog::getAlgStrand() const
 {
     return rbBoth->isChecked() ? ORFAlgorithmStrand_Both : 
         (rbDirect->isChecked() ? ORFAlgorithmStrand_Direct : ORFAlgorithmStrand_Complement);
+}
+
+void ORFDialog::createAnnotationWidget()
+{
+	CreateAnnotationModel acm;
+	
+	U2SequenceObject* seqObj = ctx->getSequenceObject();
+	acm.sequenceObjectRef = GObjectReference(seqObj);
+	acm.hideAnnotationName = true;
+	acm.hideLocation = true;
+	acm.hideAutoAnnotationsOption = false;
+	acm.data->name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
+	acm.sequenceLen = seqObj->getSequenceLength();
+	ac = new CreateAnnotationWidgetController(acm, this);
+	QWidget* caw = ac->getWidget();    
+	QVBoxLayout* l = new QVBoxLayout();
+	l->setMargin(0);
+	l->addWidget(caw);
+	annotationsWidget->setLayout(l);
+	annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
+	
 }
 
 

@@ -53,6 +53,8 @@ public:
     QString                 newDocUrl;        // the URL of new document with annotation table to be created
     qint64                  sequenceLen;        //length of target sequence for validation purposes
 
+	bool					hideAutoAnnotationsOption; // show automated highlighting for new annotation if possible
+
     AnnotationTableObject*  getAnnotationObject() const;
 };
 
@@ -75,6 +77,9 @@ public:
 
     // add model property instead ??
     bool isNewObject() const;
+
+	// property of GUI
+	bool useAutoAnnotationModel() const;
 
     void setFocusToNameEdit();
 

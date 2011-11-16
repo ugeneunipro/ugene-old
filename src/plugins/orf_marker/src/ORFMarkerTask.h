@@ -55,7 +55,7 @@ public:
      Q_OBJECT
  public:
      FindORFsToAnnotationsTask(AnnotationTableObject* aobj, const DNASequence& seq, 
-         const ORFAlgorithmSettings& settings);
+         const ORFAlgorithmSettings& settings, const QString& groupName = QString());
      
      void run();
      ReportResult report();
@@ -65,6 +65,7 @@ public:
      QPointer<AnnotationTableObject>    aObj;
      ORFFindTask*                       fTask;
      ORFAlgorithmSettings               cfg;
+	 QString							groupName;
      const DNASequence&                 dna;
  };
  

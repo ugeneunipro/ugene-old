@@ -40,6 +40,7 @@ namespace U2 {
 
 class ADVSequenceObjectContext;
 class U2SequenceObject;
+class CreateAnnotationWidgetController;
 class ORFFindTask;
 class Task;
 
@@ -59,7 +60,6 @@ protected:
 private slots:
     
     //buttons:
-    void sl_onSaveAnnotations();
     void sl_onClearList();
     void sl_onFindAll();
 
@@ -86,8 +86,10 @@ private:
     ORFAlgorithmStrand getAlgStrand() const;
 
 private:
+	void createAnnotationWidget();
     ADVSequenceObjectContext* ctx;
     U2SequenceObject* sequence;
+	CreateAnnotationWidgetController* ac;
 
     U2Region panViewSelection;
     ORFFindTask* task;

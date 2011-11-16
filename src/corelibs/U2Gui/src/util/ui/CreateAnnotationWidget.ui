@@ -35,7 +35,7 @@
       <string>Save annotation(s) to</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QRadioButton" name="existingObjectRB">
         <property name="text">
          <string>Existing annotation table</string>
@@ -45,10 +45,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QComboBox" name="existingObjectCombo"/>
       </item>
-      <item row="0" column="2">
+      <item row="1" column="2">
        <widget class="QToolButton" name="existingObjectButton">
         <property name="text">
          <string>...</string>
@@ -59,27 +59,34 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QRadioButton" name="newFileRB">
         <property name="text">
          <string>Create new table</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QLineEdit" name="newFileEdit">
         <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="2" column="2">
        <widget class="QToolButton" name="newFileButton">
         <property name="enabled">
          <bool>false</bool>
         </property>
         <property name="text">
          <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QRadioButton" name="useAutoAnnotationsRB">
+        <property name="text">
+         <string>Use auto-annotations table</string>
         </property>
        </widget>
       </item>
@@ -265,6 +272,22 @@
     <hint type="destinationlabel">
      <x>681</x>
      <y>54</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useAutoAnnotationsRB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>groupBox_2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>89</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>245</x>
+     <y>164</y>
     </hint>
    </hints>
   </connection>
