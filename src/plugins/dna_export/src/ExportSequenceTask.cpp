@@ -258,8 +258,10 @@ QList<Task*> ExportAnnotationSequenceTask::onSubTaskFinished(Task* subTask) {
         exportSubTask = new ExportSequenceTask(config.exportSequenceSettings);
         res.append(exportSubTask);  
     }
+	this->resultDocument = this->exportSubTask->takeDocument();
     return res;
 }
+
 
 ExportAnnotationSequenceSubTask::ExportAnnotationSequenceSubTask(ExportAnnotationSequenceTaskSettings& s) 
 : Task(tr("Extract annotation regions"), TaskFlag_None), config(s) 
