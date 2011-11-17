@@ -220,6 +220,7 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_inputFileLoadTaskStateChange
         ca_m.hideLocation = true;
         ca_m.sequenceObjectRef = sequencesRefList[0];//GObjectReference(seq);//not needed, it unused
         ca_m.sequenceLen = 10;//dnaso->getSequenceLen();
+        ca_m.defaultIsNewDoc = true;
         if(ca_c != NULL){
             verticalLayout_4->removeWidget(ca_c->getWidget());
             delete ca_c;
