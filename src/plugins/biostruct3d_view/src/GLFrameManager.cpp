@@ -23,6 +23,7 @@
 
 #include "GLFrameManager.h"
 #include <U2Core/Log.h>
+#include <GL/glu.h>
 
 namespace U2 {
 

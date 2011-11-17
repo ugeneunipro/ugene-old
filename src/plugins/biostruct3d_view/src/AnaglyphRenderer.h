@@ -26,6 +26,7 @@
 
 #include <QColor>
 #include <QtOpenGL>
+#include <GL/glu.h>
 
 namespace U2 {
 

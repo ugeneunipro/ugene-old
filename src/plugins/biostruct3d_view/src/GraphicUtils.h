@@ -25,6 +25,7 @@
 #include <U2Core/Vector3D.h>
 #include <U2Core/Log.h>
 #include <QtOpenGL>
+#include <GL/glu.h>
 
 class GLUquadric;
 
