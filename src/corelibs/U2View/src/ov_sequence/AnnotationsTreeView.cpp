@@ -675,6 +675,9 @@ void AnnotationsTreeView::sl_onGroupRemoved(AnnotationGroup* parent, AnnotationG
     for(int i = 0, n = pg->childCount(); i < n; i++) {
         AVItem* item = static_cast<AVItem*>(pg->child(i));
         if (item->type == AVItemType_Group && (static_cast<AVGroupItem*>(item))->group == g) {
+            if (item->parent() != NULL) {
+                item->parent()->removeChild(item);
+            }
             delete item;
             break;
         }

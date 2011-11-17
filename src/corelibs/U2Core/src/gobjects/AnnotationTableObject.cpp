@@ -450,7 +450,7 @@ void AnnotationGroup::removeSubgroup(AnnotationGroup* g) {
     obj->setModified(true);
     g->clear();
     subgroups.removeOne(g);
-    g->obj = NULL;
+
     obj->emit_onGroupRemoved(this, g);
     delete g;
 }
