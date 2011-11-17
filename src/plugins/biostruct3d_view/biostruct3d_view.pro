@@ -50,4 +50,8 @@ SOURCES += src/BallAndStickGLRenderer.cpp \
 RESOURCES += biostruct3d_view.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
 
-LIBS += -lGLU
+win32 {
+    LIBS += -lGLU32
+} else {
+    LIBS += -lGLU
+}
