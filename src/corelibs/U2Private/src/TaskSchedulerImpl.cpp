@@ -113,6 +113,7 @@ void TaskSchedulerImpl::propagateStateToParent(Task* task) {
     if (task->isCanceled() && parentTask->getFlags().testFlag(TaskFlag_FailOnSubtaskCancel)) {
         TaskStateInfo& tsi = getTaskStateInfo(parentTask);
         tsi.setError( tr("Subtask {%1} is canceled %2").arg(task->getTaskName()).arg(task->getError()) );
+    } else if (task->isCanceled() && parentTask->getFlags().testFlag(TaskFlag_CancelOnSubtaskCancel)) {
         cancelTask(parentTask);
     } else if (task->hasError() && parentTask->getFlags().testFlag(TaskFlag_FailOnSubtaskError)) {
         TaskStateInfo& tsi = getTaskStateInfo(parentTask);

@@ -632,7 +632,7 @@ Project* ProjectLoaderImpl::createProject(const QString& name, const QString& ur
 // Add documents to project task
 
 AddDocumentsToProjectTask::AddDocumentsToProjectTask(const QList<AD2P_DocumentInfo>& _docsInfo, const QList<AD2P_ProviderInfo>& _provInfo) 
-: Task(tr("Loading documents"), TaskFlags_NR_FOSCOE), docsInfo(_docsInfo), providersInfo(_provInfo), loadTasksAdded(false)
+: Task(tr("Loading documents"), TaskFlags_NR_FOSE_COSC), docsInfo(_docsInfo), providersInfo(_provInfo), loadTasksAdded(false)
 {    
     setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
 

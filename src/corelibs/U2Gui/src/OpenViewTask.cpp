@@ -267,14 +267,14 @@ QList<Task*> LoadRemoteDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask
 
 
 AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( Document* doc, const AddDocumentTaskConfig& conf)
-:Task(tr("Opening view for document: %1").arg(doc->getURL().fileName()), TaskFlags_NR_FOSCOE)
+:Task(tr("Opening view for document: %1").arg(doc->getURL().fileName()), TaskFlags_NR_FOSE_COSC)
 {
     setMaxParallelSubtasks(1);
     addSubTask(new AddDocumentTask(doc, conf));
 } 
 
 AddDocumentAndOpenViewTask::AddDocumentAndOpenViewTask( DocumentProviderTask* dp, const AddDocumentTaskConfig& conf )
-:Task(tr("Opening view for document: %1").arg(dp->getDocumentDescription()), TaskFlags_NR_FOSCOE)
+:Task(tr("Opening view for document: %1").arg(dp->getDocumentDescription()), TaskFlags_NR_FOSE_COSC)
 {
     setMaxParallelSubtasks(1);
     addSubTask(new AddDocumentTask(dp, conf));

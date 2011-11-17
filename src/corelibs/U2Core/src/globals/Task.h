@@ -117,6 +117,8 @@ enum TaskFlag {
 
     TaskFlag_PropagateSubtaskDesc = 1 << 12, // task use description from the subtask (last changed)
 
+    TaskFlag_CancelOnSubtaskCancel = 1 << 13, // only cancel flag is set if subtask was canceled and parent is neither canceled nor have errors
+
 
     // Reporting options
     TaskFlag_ReportingIsSupported = 1 << 20, // task supports reporting
@@ -135,6 +137,11 @@ enum TaskFlag {
 #define TaskFlags_FOSCOE                (TaskFlags(TaskFlag_FailOnSubtaskError) | TaskFlag_FailOnSubtaskCancel)
 #define TaskFlags_NR_FOSCOE             (TaskFlags_FOSCOE | TaskFlag_NoRun)
 #define TaskFlags_RBSF_FOSCOE           (TaskFlags_FOSCOE | TaskFlag_RunBeforeSubtasksFinished)
+
+// TODO: use this new alternative to FOSCOE, more logical: fail on error, cancel on cancel
+#define TaskFlags_FOSE_COSC             (TaskFlags(TaskFlag_FailOnSubtaskError) | TaskFlag_CancelOnSubtaskCancel)
+#define TaskFlags_NR_FOSE_COSC          (TaskFlags_FOSE_COSC | TaskFlag_NoRun)
+#define TaskFlags_RBSF_FOSE_COSC        (TaskFlags_FOSE_COSC | TaskFlag_RunBeforeSubtasksFinished)
 
 typedef QFlags<TaskFlag> TaskFlags;
 typedef QVarLengthArray<TaskResourceUsage, 1> TaskResources;
