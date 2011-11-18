@@ -68,9 +68,27 @@ public:
 
     DNAQuality getQuality() const;
 
-    QString getSequenceAttribute(const QString& seqAttr) const;
+	void setSequenceInfo(const QVariantMap& info);
 
-	QVariantMap getSequenceInfo()const;
+	QVariantMap getSequenceInfo() const;
+
+	QString getStringAttribute(const QString& seqAttr) const;
+
+	void setStringAttribute(const QString& newStringAttributeValue, const QString& type);
+
+	qint64 getIntegerAttribute(const QString& seqAttr) const;
+
+	void setIntegerAttribute(int newIntegerAttributeValue, const QString& type);
+
+	double getRealAttribute(const QString& seqAttr) const;
+
+	void setRealAttribute(double newRealAttributeValue, const QString& type);
+
+	QByteArray getByteArrayAttribute(const QString& seqAttr) const;
+
+	void setByteArrayAttribute(const QByteArray& newByteArrayAttributeValue, const QString& type);
+
+	
 
 signals:
     void si_sequenceChanged();

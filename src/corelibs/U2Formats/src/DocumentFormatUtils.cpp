@@ -219,6 +219,7 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRe
     CHECK_OP(os, NULL);
     
     U2SequenceObject* so = new U2SequenceObject(seqObjName, U2EntityRef(dbiRef, u2seq.id));
+	so->setSequenceInfo(sequence.info);
     objects << so;
     return so;
 }

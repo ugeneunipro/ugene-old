@@ -171,7 +171,7 @@ bool GenericSeqActorProto::isAcceptableDrop(const QMimeData* md, QVariantMap* pa
         const U2SequenceObject* obj = qobject_cast<const U2SequenceObject*>(gomd->objPtr.data());
         if (obj) {
             params->insert(BaseAttributes::URL_IN_ATTRIBUTE().getId(), obj->getDocument()->getURLString());
-            QString acc = obj->getSequenceAttribute(DNAInfo::ACCESSION);
+            QString acc = obj->getStringAttribute(DNAInfo::ACCESSION);
             if (acc.isEmpty()) {
                 acc = obj->getSequenceName();
             }

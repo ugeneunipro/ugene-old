@@ -341,7 +341,7 @@ void BioStruct3DGLWidget::setLightPosition( const Vector3D& pos )
 }
 
 static int getSequenceChainId(const U2SequenceObject* seqObj) {
-    int id = seqObj->getSequenceAttribute(DNAInfo::CHAIN_ID).toInt();
+    int id = seqObj->getIntegerAttribute(DNAInfo::CHAIN_ID);
     return id;
 }
 
