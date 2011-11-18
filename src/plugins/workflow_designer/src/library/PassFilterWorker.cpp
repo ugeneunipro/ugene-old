@@ -46,8 +46,8 @@ PassFilterWorker::PassFilterWorker(Actor *p)
 }
 
 void PassFilterWorker::init() {
-    inChannel = ports.value(BasePorts::IN_TEXT_PORT_ID());
-    outChannel = ports.value(BasePorts::OUT_TEXT_PORT_ID());
+    inChannel = ports.value("in-data");
+    outChannel = ports.value("filtered-data");
 
     foreach (QString val, actor->getAttributes().first()->getAttributePureValue().toString().split(",")) {
         passedValues << val.trimmed();
@@ -94,13 +94,13 @@ void PassFilterWorkerFactory::init() {
     QMap<Descriptor, DataTypePtr> inTypeMap;
     QMap<Descriptor, DataTypePtr> outTypeMap;
     Descriptor passDesc(BaseSlots::TEXT_SLOT().getId(), PassFilterWorker::tr("Passing values"), PassFilterWorker::tr("Passing values."));
+    Descriptor outDesc("filtered_data", PassFilterWorker::tr("Filtered data"), PassFilterWorker::tr("Filtered data"));
     inTypeMap[passDesc] = BaseTypes::STRING_TYPE();
-    outTypeMap[passDesc] = BaseTypes::STRING_TYPE();
     DataTypePtr inTypeSet(new MapDataType(BaseSlots::TEXT_SLOT(), inTypeMap));
-    DataTypePtr outTypeSet(new MapDataType(BaseSlots::TEXT_SLOT(), outTypeMap));
+    DataTypePtr outTypeSet(new MapDataType(outDesc, outTypeMap));
 
-    portDescs << new PortDescriptor(BasePorts::IN_TEXT_PORT_ID(), inTypeSet, true);
-    portDescs << new PortDescriptor(BasePorts::OUT_TEXT_PORT_ID(), outTypeSet, false);
+    portDescs << new PortDescriptor("in-data", inTypeSet, true);
+    portDescs << new PortDescriptor("filtered-data", outTypeSet, false);
 
     Descriptor passVals(BaseSlots::TEXT_SLOT().getId(), PassFilterWorker::tr("Passed values"), PassFilterWorker::tr("Comma separated list of values which are passed by this filter."));
     attrs << new Attribute(passVals, BaseTypes::STRING_TYPE(), true);
@@ -125,7 +125,7 @@ Worker *PassFilterWorkerFactory::createWorker(Actor* a) {
  * FilterSequencePrompter
  *******************************/
 QString PassFilterPrompter::composeRichDoc() {
-    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_TEXT_PORT_ID()));
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort("in-data"));
     Actor* producer = input->getProducer(BaseSlots::TEXT_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr("<u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);

@@ -1,5 +1,5 @@
 #!UGENE_WORKFLOW
-#This chema reads sequences from a file and checks them annotations.
+#This schema reads sequences from a file and checks them annotations.
 #
 #1) If amount of annotations of some sequence is greater than 1 then this sequence is marked by the "good" value.
 #2) Other sequences are marked by the default "Rest" value.
@@ -7,6 +7,7 @@
 #After marking the sequences are filtered using them annotation count marks and they are written to different files.
 #
 #You can change the threshold of annotation amount (1 is set now). Also you can set the name of annotations that must be counted (any name is set now).
+#
 #
 
 workflow "Sequnce's annotation marking"{
@@ -54,21 +55,21 @@ workflow "Sequnce's annotation marking"{
     }
 
     .actor-bindings {
-        pass-filter.out-text->write-sequence.in-sequence
+        pass-filter.filtered-data->write-sequence.in-sequence
         read-sequence.out-sequence->mark-sequence.in-sequence
-        mark-sequence.out-marked-seq->pass-filter.in-text
-        mark-sequence.out-marked-seq->pass-filter2.in-text
-        pass-filter2.out-text->write-sequence2.in-sequence
+        mark-sequence.out-marked-seq->pass-filter.in-data
+        mark-sequence.out-marked-seq->pass-filter2.in-data
+        pass-filter2.filtered-data->write-sequence2.in-sequence
     }
 
     read-sequence.annotations->mark-sequence.in-sequence.annotations
     read-sequence.sequence->mark-sequence.in-sequence.sequence
-    mark-sequence.annotation_count->pass-filter.in-text.text
+    mark-sequence.annotation_count->pass-filter.in-data.text
     read-sequence.annotations->write-sequence.in-sequence.annotations
     read-sequence.sequence->write-sequence.in-sequence.sequence
     read-sequence.annotations->write-sequence2.in-sequence.annotations
     read-sequence.sequence->write-sequence2.in-sequence.sequence
-    mark-sequence.annotation_count->pass-filter2.in-text.text
+    mark-sequence.annotation_count->pass-filter2.in-data.text
 
     .iteration "Default iteration"{
         id:7;
@@ -86,9 +87,9 @@ workflow "Sequnce's annotation marking"{
     .meta {
         visual {
             read-sequence {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Читает последовательнсоти из <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>не указан</span></a>.</p></body></html>";
                 tooltip:"Reads sequences and annotations if any from local or remote files.";
-                pos:"-735 -765";
+                pos:"-720 -750";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:175.101;
@@ -96,7 +97,7 @@ workflow "Sequnce's annotation marking"{
             mark-sequence {
                 description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Marker (for sequence)</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Mark incoming sequences by user defined values</p></body></html>";
                 tooltip:"Check an incoming sequence using user defined criterias and mark the sequence by the appropriate value for every criteria.";
-                pos:"-735 -570";
+                pos:"-720 -555";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
@@ -105,53 +106,53 @@ workflow "Sequnce's annotation marking"{
             pass-filter {
                 description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Annotated sequences filter</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Filter data in the workflow channel from <span style=' text-decoration: underline;'>Marker (for sequence)</span> by passed values: <a href='param:text'><span style=' text-decoration: underline; color:#0000ff;'>good</span></a></p></body></html>";
                 tooltip:"Check an incoming text value if that is contained in passed values list. If it is contained then a data goes on moving through the workflow and vice versa.";
-                pos:"-539 -704";
+                pos:"-525 -690";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-text.angle:180;
-                out-text.angle:360;
+                in-data.angle:180;
+                filtered-data.angle:360;
             }
             write-sequence {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write annotated sequences</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Read sequence</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write annotated sequences</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Сохранить все последовательности из <span style=' text-decoration: underline;'>Read sequence</span> в <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>не указан</span></a>.</p></body></html>";
                 tooltip:"Writes all supplied sequences to file(s) in selected format.";
-                pos:"-330 -705";
+                pos:"-286 -690";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
             write-sequence2 {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write not annotated sequences</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Read sequence</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write not annotated sequences</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Сохранить все последовательности из <span style=' text-decoration: underline;'>Read sequence</span> в <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>не указан</span></a>.</p></body></html>";
                 tooltip:"Writes all supplied sequences to file(s) in selected format.";
-                pos:"-329 -450";
+                pos:"-278 -435";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 76 92";
+                bounds:"-30 -30 107 79";
                 in-sequence.angle:180;
-            }
-            read-sequence.out-sequence->mark-sequence.in-sequence {
-                text-pos:"-21.5 24";
-            }
-            mark-sequence.out-marked-seq->pass-filter.in-text {
-                text-pos:"-45 -37";
-            }
-            pass-filter.out-text->write-sequence.in-sequence {
-                text-pos:"-24 -24";
             }
             pass-filter2 {
                 description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Not annotated sequences filter</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Filter data in the workflow channel from <span style=' text-decoration: underline;'>Marker (for sequence)</span> by passed values: <a href='param:text'><span style=' text-decoration: underline; color:#0000ff;'>Rest</span></a></p></body></html>";
                 tooltip:"Check an incoming text value if that is contained in passed values list. If it is contained then a data goes on moving through the workflow and vice versa.";
-                pos:"-538 -450";
+                pos:"-525 -435";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 105 91";
-                in-text.angle:180;
-                out-text.angle:360;
+                in-data.angle:180;
+                filtered-data.angle:360;
             }
-            mark-sequence.out-marked-seq->pass-filter2.in-text {
+            pass-filter.filtered-data->write-sequence.in-sequence {
+                text-pos:"-32 -24";
+            }
+            read-sequence.out-sequence->mark-sequence.in-sequence {
+                text-pos:"-21.5 24";
+            }
+            mark-sequence.out-marked-seq->pass-filter.in-data {
                 text-pos:"-45 -37";
             }
-            pass-filter2.out-text->write-sequence2.in-sequence {
-                text-pos:"-24 -24";
+            mark-sequence.out-marked-seq->pass-filter2.in-data {
+                text-pos:"-45 -37";
+            }
+            pass-filter2.filtered-data->write-sequence2.in-sequence {
+                text-pos:"-31 -24";
             }
         }
     }
