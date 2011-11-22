@@ -110,6 +110,7 @@ private:
     static const QString BLK_TREES;
     static const QString CMD_TREE;
     static const QString CMD_UTREE;
+    static const QString CMD_TRANSLATE;
 
 private:
     IOAdapter *io;

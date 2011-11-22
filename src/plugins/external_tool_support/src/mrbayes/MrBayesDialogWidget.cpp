@@ -243,10 +243,12 @@ QString MrBayesWidget::generateMrBayesSettingsScript(){
     burnin = burninSpin->value();
 
     script = script.append("mcmc ngen=%1 samplefreq=%2 printfreq=%3 nchains=%4 temp=%5 savebrlens=yes " 
-        "startingtree=random seed=%6;\n").arg(ngen).arg(sfreq).arg(printfreq).arg(nchains).arg(temp).arg(seed);
+        "starttree=random;\n").arg(ngen).arg(sfreq).arg(printfreq).arg(nchains).arg(temp).arg(seed);
 
     if(sfreq < burnin) burnin = 0;
     script = script.append("sumt burnin=%1;\n").arg(burnin);
+
+    script = script.append("set seed=%1;\n").arg(seed);
 
     script.append("End;\n");
     return script;

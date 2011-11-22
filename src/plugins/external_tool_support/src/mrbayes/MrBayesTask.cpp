@@ -30,7 +30,7 @@
 namespace U2 {
 
 #define TMPFILENAME "tmp.nex"
-#define TREEFILEEXT ".con"
+#define TREEFILEEXT ".con.tre"
 
 MrBayesPrepareDataForCalculation::MrBayesPrepareDataForCalculation(const MAlignment& _ma, const CreatePhyTreeSettings& s, const QString& url)
 :Task(tr("Generating input file for MrBayes"), TaskFlags_NR_FOSCOE), ma(_ma), settings(s), tmpDirUrl(url){

@@ -259,6 +259,7 @@ const QString NEXUSParser::CMD_MATRIX      = "matrix";
 const QString NEXUSParser::BLK_TREES       = "trees";
 const QString NEXUSParser::CMD_TREE        = "tree";
 const QString NEXUSParser::CMD_UTREE       = "utree";
+const QString NEXUSParser::CMD_TRANSLATE   = "translate";
 
 QList<GObject*> NEXUSParser::loadObjects()
 {
@@ -458,11 +459,40 @@ bool NEXUSParser::readDataContents(Context &ctx) {
 }
 
 bool NEXUSParser::readTreesContents(Context&) {
+    QMap <QString, QString> namesTranslation;
+
     while (true) {
         QString cmd = tz.look().toLower(); // cmd name
         bool weightDefault = false, weightValue = false;
 
-        if (cmd == CMD_TREE || cmd == CMD_UTREE) {
+        if(cmd == CMD_TRANSLATE){
+            tz.skip(); //cmd name == CMD_TRANSLATE
+
+            QString name;
+            QString translation;
+
+            while(true){
+                if (tz.look() == "")
+                { errors.append("Unexpected EOF"); break; }
+
+                if (tz.look() == ";") {
+                    tz.skip();
+                    break;
+                }
+                
+                if(tz.look() == ","){
+                    tz.skip();
+                    continue;
+                }
+
+                name = tz.get();
+                translation = tz.get();
+
+                namesTranslation.insert(name, translation);
+
+                //break;
+            }
+        }else if (cmd == CMD_TREE || cmd == CMD_UTREE) {
             tz.skip(); // cmd name == CMD_TREE
 
             QString treeName = "Tree";
@@ -486,7 +516,7 @@ bool NEXUSParser::readTreesContents(Context&) {
             QStack<PhyBranch*> branchStack;
 
             enum State {NAME, WEIGHT} state = NAME;
-            QString acc, name;
+            QString acc, name, translation;
 
             QSet<QString> ops = QSet<QString>()<<"("<<","<<")"<<":"<<";";
             while (true) {
@@ -537,7 +567,12 @@ bool NEXUSParser::readTreesContents(Context&) {
                         assert(state == NAME);
 
                         weightDefault = true;
-                        name = acc;
+                        translation = namesTranslation.value(acc);
+                        if(translation.isEmpty()){
+                            name = acc;
+                        }else{
+                            name = translation;
+                        }
                         acc.clear();
                     }
 
@@ -560,7 +595,12 @@ bool NEXUSParser::readTreesContents(Context&) {
                 } else if (tok == ":") {
                     if (state == WEIGHT)
                         { errors.append(QString("Unexpected \'%1\'").arg(":")); break; }
-                    name = acc;
+                    translation = namesTranslation.value(acc);
+                    if(translation.isEmpty()){
+                        name = acc;
+                    }else{
+                        name = translation;
+                    }
                     acc.clear();
                     state = WEIGHT;
                 } else if (tok == ";") {
