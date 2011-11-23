@@ -468,6 +468,31 @@ Task* BlastAllWorker::tick() {
 //                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html").arg(scores));
 //        }
 //    }
+
+    if(cfg.programName == "blastn"){
+        cfg.megablast = true;
+        cfg.wordSize = 28;
+        cfg.windowSize = 0;
+    }else{
+        cfg.megablast = false;
+        cfg.wordSize = 3;
+        cfg.windowSize  = 40;
+    }
+    //set X dropoff values
+    if(cfg.programName == "blastn"){
+        cfg.xDropoffFGA = 100;
+        cfg.xDropoffGA = 20;
+        cfg.xDropoffUnGA = 10;
+    }else if (cfg.programName == "tblastx"){
+        cfg.xDropoffFGA = 0;
+        cfg.xDropoffGA = 0;
+        cfg.xDropoffUnGA = 7;
+    }else{
+        cfg.xDropoffFGA = 25;
+        cfg.xDropoffGA = 15;
+        cfg.xDropoffUnGA = 7;
+    }
+
     Task* t = new BlastAllSupportTask(cfg);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;
