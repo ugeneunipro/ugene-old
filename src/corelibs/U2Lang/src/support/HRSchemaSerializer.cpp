@@ -142,7 +142,8 @@ static QString valueString(const QString & s) {
     str.replace("\"", "'");
     if( str.contains(QRegExp("\\s") ) || str.contains(HRSchemaSerializer::SEMICOLON) || 
         str.contains(HRSchemaSerializer::EQUALS_SIGN) || str.contains(HRSchemaSerializer::DATAFLOW_SIGN) || 
-        str.contains(HRSchemaSerializer::BLOCK_START) || str.contains(HRSchemaSerializer::BLOCK_END)) {
+        str.contains(HRSchemaSerializer::BLOCK_START) || str.contains(HRSchemaSerializer::BLOCK_END) ||
+        str.contains(HRSchemaSerializer::FUNCTION_START)) {
         return quotedString(str);
     } else {
         return str;
