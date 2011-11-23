@@ -48,6 +48,7 @@ PassFilterWorker::PassFilterWorker(Actor *p)
 void PassFilterWorker::init() {
     inChannel = ports.value("in-data");
     outChannel = ports.value("filtered-data");
+    mtype = ports.value("filtered-data")->getBusType();
 
     foreach (QString val, actor->getAttributes().first()->getAttributePureValue().toString().split(",")) {
         passedValues << val.trimmed();
@@ -67,6 +68,7 @@ Task *PassFilterWorker::tick() {
         QString value = data.value(BaseSlots::TEXT_SLOT().getId()).toString();
 
         if (passedValues.contains(value)) {
+            Message mes(mtype, QVariantMap());
             outChannel->put(inputMessage);
         }
     }

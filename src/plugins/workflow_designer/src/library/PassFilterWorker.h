@@ -52,6 +52,7 @@ public:
 private:
     CommunicationChannel *inChannel;
     CommunicationChannel *outChannel;
+    DataTypePtr mtype;
     bool done;
     QStringList passedValues;
 
