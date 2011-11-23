@@ -302,9 +302,12 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
             att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject*>(relAnns.first());
         }
         if (!att) {
-            doc->addObject(att = new AnnotationTableObject(annotationName));
-            if (dna) {
-                att->addObjectRelation(dna, GObjectRelationRole::SEQUENCE);
+            att = qobject_cast<AnnotationTableObject*>(doc->findGObjectByName(annotationName));
+            if (NULL == att) {
+                doc->addObject(att = new AnnotationTableObject(annotationName));
+                if (dna) {
+                    att->addObjectRelation(dna, GObjectRelationRole::SEQUENCE);
+                }
             }
             algoLog.trace(QString("Adding features [%1] to GB doc %2").arg(annotationName).arg(doc->getURLString()));
         }
