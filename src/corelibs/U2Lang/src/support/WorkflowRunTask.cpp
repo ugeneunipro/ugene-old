@@ -126,7 +126,12 @@ QString WorkflowRunTask::generateReport() const {
             res += QString("<tr><td><i>%1</i></td></tr>").arg(tr("Output files:"));
         
             foreach(const QString &link, links) {
-                res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
+                GUrl url(link);
+                if (url.isLocalFile()) {
+                    if (QFile::exists(link)) {
+                        res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
+                    }
+                }
             }
         }
         res+="<tr><td></td></tr>";
@@ -447,7 +452,12 @@ QString WorkflowRunInProcessTask::generateReport() const {
         if(!links.isEmpty() && !sub->hasError()) {
             res += QString("<tr><td><i>%1</i></td></tr>").arg(tr("Output files:"));
             foreach(const QString &link, links) {
-                res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
+                GUrl url(link);
+                if (url.isLocalFile()) {
+                    if (QFile::exists(link)) {
+                        res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
+                    }
+                }
             }
         }
         res+="<tr><td></td></tr>";

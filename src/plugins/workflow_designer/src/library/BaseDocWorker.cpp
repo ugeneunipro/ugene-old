@@ -253,8 +253,9 @@ Task* BaseDocWriter::tick() {
 Task* BaseDocWriter::processDocs()
 {
     if(docs.isEmpty()) {
-        //coreLog.error( "nothing to write: no documents" );
-        return new FailTask("nothing to write: no documents");
+        coreLog.error( "nothing to write: no documents" );
+        return NULL;
+        //return new FailTask("nothing to write: no documents");
     }
     QList<Task*> tlist;
     QMapIterator<QString, Document*> it(docs);
