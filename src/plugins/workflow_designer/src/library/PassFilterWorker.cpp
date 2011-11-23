@@ -35,7 +35,7 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-const QString PassFilterWorkerFactory::ACTOR_ID("pass-filter");
+const QString PassFilterWorkerFactory::ACTOR_ID("filter-by-values");
 
 /*******************************
  * FilterSequenceWorker
@@ -106,7 +106,7 @@ void PassFilterWorkerFactory::init() {
     attrs << new Attribute(passVals, BaseTypes::STRING_TYPE(), true);
 
     Descriptor protoDesc(PassFilterWorkerFactory::ACTOR_ID,
-        PassFilterWorker::tr("Filter"),
+        PassFilterWorker::tr("Filter by values"),
         PassFilterWorker::tr("Check an incoming text value if that is contained in passed values list. If it is contained then a data goes on moving through the workflow and vice versa."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);

@@ -21,11 +21,11 @@ workflow "Sequnce's length marking"{
         markers:m1;
     }
     pass-filter {
-        type:pass-filter;
+        type:filter-by-values;
         name:"Short sequences filter";
     }
     pass-filter2 {
-        type:pass-filter;
+        type:filter-by-values;
         name:"Long sequences filter";
     }
     write-sequence {

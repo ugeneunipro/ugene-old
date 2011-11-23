@@ -24,7 +24,7 @@ workflow "Sequnce's annotation marking"{
         markers:m1;
     }
     pass-filter {
-        type:pass-filter;
+        type:filter-by-values;
         name:"Annotated sequences filter";
     }
     write-sequence {
@@ -42,7 +42,7 @@ workflow "Sequnce's annotation marking"{
         write-mode:2;
     }
     pass-filter2 {
-        type:pass-filter;
+        type:filter-by-values;
         name:"Not annotated sequences filter";
     }
 
