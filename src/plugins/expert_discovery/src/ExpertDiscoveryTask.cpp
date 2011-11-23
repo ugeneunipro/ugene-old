@@ -1129,7 +1129,7 @@ ExpertDiscoveryLoadDocumentTask::ExpertDiscoveryLoadDocumentTask(ExpertDiscovery
 ,edData(data)
 ,filename(fileName)
 {
-
+    tpm = Progress_Manual;
 }
 
 void ExpertDiscoveryLoadDocumentTask::run(){
@@ -1140,6 +1140,11 @@ void ExpertDiscoveryLoadDocumentTask::run(){
     QFile file(filename);
     if(!file.open(QIODevice::ReadOnly)) {
         setError(L10N::errorOpeningFileRead(filename));
+        return;
+    }
+
+    stateInfo.progress = 0;
+    if(stateInfo.isCanceled()){
         return;
     }
 
@@ -1155,19 +1160,35 @@ void ExpertDiscoveryLoadDocumentTask::run(){
 
     edData.setRecBound(m_dRecognizationBound);
 
+    stateInfo.progress = 10;
+    if(stateInfo.isCanceled()){
+        return;
+    }
+    
     EDPMSeqBase::load(inStream, edData.getPosSeqBase());
     EDPMSeqBase::load(inStream, edData.getNegSeqBase());
     EDPMSeqBase::load(inStream, edData.getConSeqBase());
+    stateInfo.progress = 50;
+    if(stateInfo.isCanceled()){
+        return;
+    }
     EDPMMrkBase::load(inStream, edData.getPosMarkBase(), edData.getPosSeqBase().getSize());
     EDPMMrkBase::load(inStream, edData.getNegMarkBase(), edData.getNegSeqBase().getSize());
     EDPMMrkBase::load(inStream, edData.getConMarkBase(), edData.getConSeqBase().getSize());
     EDPMDescription::load(inStream, edData.getDescriptionBaseNoConst());
+
+    stateInfo.progress = 80;
+    if(stateInfo.isCanceled()){
+        return;
+    }
 
     edData.getPosSeqBase().setMarking(edData.getPosMarkBase());
     edData.getNegSeqBase().setMarking(edData.getNegMarkBase());
     edData.getConSeqBase().setMarking(edData.getConMarkBase());
 
     edData.getSelectedSignalsContainer().load(inStream, edData.getRootFolder());
+
+    stateInfo.progress = 100;
 }
 
 ExpertDiscoveryMarkupTask::ExpertDiscoveryMarkupTask(ExpertDiscoveryData& data)
@@ -1270,14 +1291,14 @@ void ExpertDiscoveryCalculateErrors::run(){
         probPosRej = 0;
         int size = (int)settings.posScore.size();
         for (int j=0; j<size; j++)
-            if (settings.posScore[j] <= curScore) probPosRej++;
+            if (settings.posScore[j] < curScore) probPosRej++;
         probPosRej /= settings.posScore.size();
         result.errorFirstType[i] = probPosRej;
 
         probNegRec = 0;
         size = (int)settings.negScore.size();
         for (int j=0; j<size; j++)
-            if (settings.negScore[j] > curScore) probNegRec++;
+            if (settings.negScore[j] >= curScore) probNegRec++;
         probNegRec /= settings.negScore.size(); 
         result.errorSecondType[i] = probNegRec;
 
@@ -1305,27 +1326,21 @@ ExpertDiscoverySearchTask::ExpertDiscoverySearchTask(ExpertDiscoveryData& data, 
 
     c.chunkSize = edData.getMaxPosSequenceLen();
     c.nThreads = 1;         //for now ExpertDiscovery signal can be processed only in one thread
-    c.overlapSize = c.chunkSize - 1;
+    c.overlapSize = c.chunkSize - 1; //move window to 1bp 
 
     SequenceWalkerTask* t = new SequenceWalkerTask(c, this, tr("ExpertDiscovery Search Parallel"));
     addSubTask(t);
 }
 
 void ExpertDiscoverySearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
-    //TODO: process border case as if there are 'N' chars before 0 and after seqlen
     if (cfg.complOnly && !t->isDNAComplemented()) {
         return;
     }
     U2Region globalRegion = t->getGlobalRegion();
     qint64 seqLen = globalRegion.length;
     const char* seq = t->getGlobalConfig().seq + globalRegion.startPos;
-    ti.progress =0;
-    //qint64 lenPerPercent = seqLen / 100;
-    //qint64 pLeft = lenPerPercent;
     DNATranslation* complTT = t->isDNAComplemented() ? t->getGlobalConfig().complTrans : NULL;
-    //float psum = SiteconAlgorithm::calculatePSum(seq+i, modelSize, model.matrix, model.settings, model.deviationThresh, complTT);
     float score = ExpertDiscoveryData::calculateSequenceScore(seq, seqLen, edData, complTT);
-        //SiteconAlgorithm::calculatePSum(seq+i, modelSize, model.matrix, model.settings, model.deviationThresh, complTT);
     if (score < 0) {
         ti.setError(  tr("Internal error, score:%1").arg(score) );
         return;

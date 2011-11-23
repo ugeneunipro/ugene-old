@@ -773,7 +773,7 @@ bool ExpertDiscoveryData::generateRecognizationReport(const SequenceBase& rBase,
         Sequence& rSeq = const_cast<Sequence&>(rBase.getSequence(i));
         updateScore(rSeq);
         double dScore = rSeq.getScore();
-        if (dScore > recognizationBound) nRecognized++;
+        if (dScore >= recognizationBound) nRecognized++;
         if (dScore == 0) nNulls++;
     }
     resultText.append("<BR><H2>");
@@ -826,7 +826,7 @@ bool ExpertDiscoveryData::generateRecognizationReportPositive(QString strName, b
         Sequence& rSeq = const_cast<Sequence&>(rBase.getSequence(i));
         updateScore(rSeq);
         double dScore = rSeq.getScore();
-        if (dScore > recognizationBound) nRecognized++;
+        if (dScore >= recognizationBound) nRecognized++;
         if (dScore == 0) nNulls++;
     }
     resultText.append("<BR><H2>");
@@ -878,7 +878,7 @@ int ExpertDiscoveryData::getSequencesCountWithScoreMoreThan(double dScore, const
     int result = 0;
     for (int i=0; i<rBase.getSize(); i++) {
         const Sequence& rSeq = rBase.getSequence(i);
-        if (rSeq.getScore() > dScore)
+        if (rSeq.getScore() >= dScore)
             result++;
     }
     return result;

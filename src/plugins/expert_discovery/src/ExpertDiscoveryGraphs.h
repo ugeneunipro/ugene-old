@@ -91,6 +91,9 @@ public:
     static QColor ER2COLOR;
     static QColor BOUNDCOLOR;
 
+signals:
+    void si_showWarning(bool isShown);
+
 protected:
     void paintEvent(QPaintEvent * event);
 

@@ -716,7 +716,7 @@ QString EDPISequence::getResult() const
         return "False";
 
     if ((m_rSeq.isHasScore() || edData.updateScore(const_cast<Sequence&>(m_rSeq))) &&
-        m_rSeq.getScore() > edData.getRecognizationBound())
+        m_rSeq.getScore() >= edData.getRecognizationBound())
         return "True";
     else
         return "False";

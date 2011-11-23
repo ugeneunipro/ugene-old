@@ -39,6 +39,8 @@ protected slots:
 
     void sl_intervalChanged(int val);
     void sl_recalculateValues();
+
+    void sl_showWarning(bool isShown);
 };
 
 }//namespace

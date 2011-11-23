@@ -90,9 +90,9 @@ QWidget* ExpertDiscoveryView::createWidget(){
 
     splitter->addWidget(verticalSplitter);
 
-    //connect(signalsWidget, SIGNAL(itemClicked ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
+    connect(signalsWidget, SIGNAL(itemClicked ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
     connect(signalsWidget, SIGNAL(itemActivated ( QTreeWidgetItem * , int )), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
-    connect(signalsWidget, SIGNAL(currentItemChanged ( QTreeWidgetItem * , QTreeWidgetItem * ) ), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
+    //connect(signalsWidget, SIGNAL(currentItemChanged ( QTreeWidgetItem * , QTreeWidgetItem * ) ), SLOT(sl_treeItemSelChanged(QTreeWidgetItem *)));
     connect(signalsWidget, SIGNAL(si_loadMarkup(bool ) ), SLOT(sl_treeWidgetMarkup(bool )));
     connect(signalsWidget, SIGNAL(si_addToMarkup()), SLOT(sl_treeWidgetAddMarkup()));
     connect(signalsWidget, SIGNAL(si_showSequence() ), SLOT(sl_showSequence()));
@@ -214,6 +214,10 @@ void ExpertDiscoveryView::sl_openDoc(){
     curPS = NULL;
     signalsWidget->clearTree();
     signalsWidget->updateTree(ED_UPDATE_ALL);
+
+    openDoc->setEnabled(false);
+    newDoc->setEnabled(false);
+    saveDoc->setEnabled(false);
 
     Task* t = new ExpertDiscoveryLoadDocumentTask(d, lod.url);
     connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_updateAll() ) );
@@ -477,7 +481,12 @@ void ExpertDiscoveryView::sl_updateAll(){
         return;
     }
 
-    if (loadTask->getStateInfo().hasError()) {
+    openDoc->setEnabled(true);
+    newDoc->setEnabled(true);
+    saveDoc->setEnabled(true);
+
+    if (loadTask->getStateInfo().hasError() || loadTask->getStateInfo().isCanceled()) {
+        d.cleanup();
         return;
     }
     signalsWidget->updateTree(ED_CURRENT_ITEM_CHANGED,NULL);

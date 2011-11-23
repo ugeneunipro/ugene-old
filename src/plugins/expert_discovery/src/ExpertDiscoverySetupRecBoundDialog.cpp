@@ -25,6 +25,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
     posRecLineEdit->setText(QString("%1").arg(probPosRej));
     negRecLineEdit->setText(QString("%1").arg(probNegRec));
 
+    warningLabel->setVisible(false);
     
     CalculateErrorTaskInfo settings;
     settings.scoreReg = U2Region(0, 50);
@@ -44,6 +45,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
     graphWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     graphWidget->draw(recognizationBound);
 
+    connect(graphWidget, SIGNAL(si_showWarning(bool)), SLOT(sl_showWarning(bool)));
     connect(optimizeRecognitionBoundButton, SIGNAL(clicked()), SLOT(sl_optRecBound()));
     connect(recBoundSpinBox, SIGNAL(valueChanged ( double )), SLOT(sl_recBoundChaged(double)));
     connect(calculateButton, SIGNAL(clicked()), SLOT(sl_recalculateValues()));
@@ -69,6 +71,10 @@ void ExpertDiscoverySetupRecBoundDialog::sl_recBoundChaged(double val){
     posRecLineEdit->setText(QString("%1").arg(probPosRej));
     negRecLineEdit->setText(QString("%1").arg(probNegRec));
 }
+
+void ExpertDiscoverySetupRecBoundDialog::sl_showWarning(bool isShown){
+    warningLabel->setVisible(isShown);
+}
 void ExpertDiscoverySetupRecBoundDialog::sl_optRecBound(){
     double dPosScore = 0;
     for (uint i=0; i<posScore.size(); i++){
@@ -89,12 +95,12 @@ void ExpertDiscoverySetupRecBoundDialog::sl_optRecBound(){
 void ExpertDiscoverySetupRecBoundDialog::updateProbs(){
     probPosRej = 0;
     for (int i=0; i<(int)posScore.size(); i++)
-        if (posScore[i] <= recognizationBound) probPosRej++;
+        if (posScore[i] < recognizationBound) probPosRej++;
     probPosRej /= posScore.size();
 
     probNegRec = 0;
     for (int i=0; i<(int)negScore.size(); i++)
-        if (negScore[i] > recognizationBound) probNegRec++;
+        if (negScore[i] >= recognizationBound) probNegRec++;
     probNegRec /= negScore.size();    
 }
 

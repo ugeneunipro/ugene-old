@@ -229,6 +229,8 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
     QPainterPath erFirstTypePath;
     QPainterPath erSecondTypePath;
     if (stepsNum  < w){
+        emit si_showWarning(false);
+
         double pixelStep = double(w)/stepsNum;
         double ratioY = double(errorsInfo.maxErrorVal)/(h);
         
@@ -249,6 +251,7 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
         }
         scoreWidthPoint = int(((recBound-calcualteSettings.scoreReg.startPos)/calcualteSettings.scoreReg.length)*w+0.5);
     }else{                                                   //average value per pixel used
+        emit si_showWarning(true);
         int windowSize = int((double(stepsNum)/w) +0.5);
         double ratioY = double(errorsInfo.maxErrorVal)/(h);
 
@@ -274,7 +277,7 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
             }
             hPixels = qint64(val/(ratioY*windowSize) + 0.5);
             erSecondTypePath.lineTo(QPointF(i, h - hPixels));
-            if((calcualteSettings.scoreReg.length/double(stepsNum)*i + calcualteSettings.scoreReg.startPos < recBound)){
+            if((calcualteSettings.scoreReg.length/double(stepsNum)*i + calcualteSettings.scoreReg.startPos <= recBound)){
                 scoreWidthPoint = i;
             }
         }
@@ -289,9 +292,7 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
     p.setPen(linePen);
     p.drawPath(erSecondTypePath);
 
-    //scoreWidthPoint = int((recBound/50.0)*width()+0.5);
-
-    if(recBound >= calcualteSettings.scoreReg.startPos){
+    if(recBound >= calcualteSettings.scoreReg.startPos && recBound <= calcualteSettings.scoreReg.endPos()){
         linePen.setColor(BOUNDCOLOR);
         p.setPen(linePen);
         p.drawLine(QPoint(scoreWidthPoint, 0), QPoint(scoreWidthPoint, h ));
