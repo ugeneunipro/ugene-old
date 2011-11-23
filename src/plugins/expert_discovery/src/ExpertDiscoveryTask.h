@@ -19,8 +19,10 @@
 #include <U2Core/GObjectReference.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/U2Region.h>
 
-#include <QMutex>
+#include <QtCore/QMutex>
 
 namespace U2 {
 
@@ -416,5 +418,63 @@ public:
 private:
     CalculateErrorTaskInfo settings;
 };   
+
+//search
+class ExpertDiscoverySearchResult {
+public:
+    ExpertDiscoverySearchResult() : strand(U2Strand::Direct), score(0){}
+
+    SharedAnnotationData toAnnotation(const QString& name) const {
+        SharedAnnotationData data;
+        data = new AnnotationData;
+        data->name = name;
+        data->location->regions << region;
+        data->setStrand(strand);
+        data->qualifiers.append(U2Qualifier("score", QString::number(score)));
+        return data;
+    }
+
+    static QList<SharedAnnotationData> toTable(const QList<ExpertDiscoverySearchResult>& res, const QString& name)
+    {
+        QList<SharedAnnotationData> list;
+        foreach (const ExpertDiscoverySearchResult& f, res) {
+            list.append(f.toAnnotation(name));
+        }
+        return list;
+    }
+
+    U2Region region;
+    U2Strand strand;
+    float   score;
+};
+
+class ExpertDiscoverySearchCfg {
+public:
+    ExpertDiscoverySearchCfg() : minSCORE(0), complTT(NULL), complOnly(false) {}
+    float minSCORE;
+    DNATranslation* complTT;
+    bool complOnly;
+    U2Region searchRegion;
+};
+
+class ExpertDiscoverySearchTask : public Task, public SequenceWalkerCallback {
+    Q_OBJECT
+public:
+    ExpertDiscoverySearchTask(ExpertDiscoveryData& data, const QByteArray& seq, const ExpertDiscoverySearchCfg& cfg, int resultsOffset);
+
+    virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti);
+    QList<ExpertDiscoverySearchResult> takeResults();
+
+private:
+    void addResult(const ExpertDiscoverySearchResult& r);
+
+    QMutex                              lock;
+    ExpertDiscoveryData&                edData;
+    ExpertDiscoverySearchCfg            cfg;
+    QList<ExpertDiscoverySearchResult>  results;
+    int                                 resultsOffset;
+    QByteArray                          wholeSeq;
+};
+
         
 }//namespace

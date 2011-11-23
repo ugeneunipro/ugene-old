@@ -88,6 +88,8 @@ private slots:
     void clearSequencesView();
     void sl_updateAll();
 
+    void sl_search();
+
     void sl_autoAnnotationUpdateStarted();
     void sl_autoAnnotationUpdateFinished();
 

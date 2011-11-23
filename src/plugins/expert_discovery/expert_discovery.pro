@@ -20,6 +20,7 @@ HEADERS += 	src/ExpertDiscoveryPlugin.h \
 		src/ExpertDiscoveryTreeWidgets.h \
 		src/ExpertDiscoveryTreeWidgetsCtrl.h \
 		src/ExpertDiscoveryPersistent.h \
+		src/ExpertDiscoverySearchDialogController.h \
 	   	src/DDisc/definitions.h \
 		src/DDisc/statmath.h \
 		src/DDisc/Signal.h  \
@@ -34,7 +35,8 @@ FORMS +=   src/ui/ExpertDiscoveryPosNegDialog.ui \
 	   src/ui/ExpertDiscoveryControlMrkDialog.ui \
 	   src/ui/ExpertDiscoveryAdvSetDialog.ui \
 	   src/ui/ExpertDiscoverySigExtrWiz.ui \
-	   src/ui/ExpertDiscoverySetupRecBoundDialog.ui
+	   src/ui/ExpertDiscoverySetupRecBoundDialog.ui \
+           src/ui/ExpertDiscoverySearchDialog.ui \
 
 SOURCES += 	src/ExpertDiscoveryPlugin.cpp \
 		src/ExpertDiscoveryView.cpp \
@@ -55,6 +57,7 @@ SOURCES += 	src/ExpertDiscoveryPlugin.cpp \
 		src/ExpertDiscoveryTreeWidgets.cpp \
 		src/ExpertDiscoveryTreeWidgetsCtrl.cpp \
 		src/ExpertDiscoveryPersistent.cpp \
+		src/ExpertDiscoverySearchDialogController.cpp \
 	   	src/DDisc/Definitions.cpp \
 		src/DDisc/statmath.cpp \
 		src/DDisc/Signal.cpp  \

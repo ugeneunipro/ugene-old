@@ -18,6 +18,7 @@ class EDProjectItem;
 class EDPICS;
 class EDPISequence;
 class MAlignmentRow;
+class DNATranslation;
 
 const int ED_UPDATE_ALL             = 0;
 const int ED_CURRENT_ITEM_CHANGED   = 1;
@@ -47,6 +48,7 @@ public:
 
     void markupLetters(void);
     void markupLetters(SequenceBase& rBase, MarkingBase& rAnn);
+    void markupLetters(Sequence& seq);
     bool isLettersMarkedUp(void) const;
     void clearScores();
 
@@ -111,6 +113,8 @@ public:
     void setModifed(bool modFlag = true){modified = modFlag;}
 
     int getMaxPosSequenceLen();
+
+    static float calculateSequenceScore(const char* seq, int seqLen, ExpertDiscoveryData& edData, DNATranslation* complTT);
     
     double recognizationBound;
     RecognizationDataStorage recDataStorage;

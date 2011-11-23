@@ -1,5 +1,6 @@
 #include "ExpertDiscoveryData.h"
 #include "ExpertDiscoverySetupRecBoundDialog.h"
+#include "DDisc/Context.h"
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/AppContext.h>
@@ -7,6 +8,8 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2View/WebWindow.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/TextUtils.h>
 
 #include <fstream>
 #include <set>
@@ -18,6 +21,7 @@
 #include <QFileDialog>
 #include <QTime>
 #include <QDomDocument>
+#include <QtCore/qmath.h>
 
 namespace U2 {
 
@@ -121,6 +125,21 @@ void ExpertDiscoveryData::markupLetters(SequenceBase& rBase, MarkingBase& rAnn){
         rAnn.setMarking(i, mrk);
     }
     rBase.setMarking(rAnn);
+}
+
+void ExpertDiscoveryData::markupLetters(Sequence& edSeq){
+    std::string strFamilyName = ExpertDiscoveryData::FAMILY_LETTERS;
+    const char letter[] = {'A','C','T','G','\0'};
+    std::string seq;
+    seq = edSeq.getSequence();
+
+    Marking mrk;
+    int len = (int)seq.size();
+    for (int j=0; j<len; j++) {
+        if (strchr(letter, seq[j]) != NULL)
+            mrk.set(char2string(seq[j]), strFamilyName, Interval(j,j));
+    }
+    edSeq.setSequenceMarking(mrk);
 }
 void ExpertDiscoveryData::clearScores(){
     posBase.clearScores();
@@ -930,6 +949,79 @@ int ExpertDiscoveryData::getMaxPosSequenceLen(){
     }
 
     return maxLen;
+}
+
+float ExpertDiscoveryData::calculateSequenceScore(const char* seq, int seqLen, ExpertDiscoveryData& edData, DNATranslation* complTT){
+    
+    Sequence edSequence;
+    if(complTT != NULL){
+        QByteArray revComplDna(seqLen, 0);    
+        complTT->translate(seq, seqLen, revComplDna.data(), seqLen);
+        TextUtils::reverse(revComplDna.data(), revComplDna.size());
+        edSequence.setSequence(revComplDna.data());
+    }else{
+        edSequence.setSequence(std::string(seq, seqLen));
+    }
+
+    Marking mrk;
+    if(edData.isLettersMarkedUp()){
+        std::string strFamilyName = ExpertDiscoveryData::FAMILY_LETTERS;
+        const char letter[] = {'A','C','T','G','\0'};
+        std::string seq;
+        seq = edSequence.getSequence();
+
+        int len = (int)seq.size();
+        for (int j=0; j<len; j++) {
+            if (strchr(letter, seq[j]) != NULL)
+                mrk.set(char2string(seq[j]), strFamilyName, Interval(j,j));
+        }
+        edSequence.setSequenceMarking(mrk);
+    }
+    
+    const SignalList& rSelList = edData.getSelectedSignalsContainer().GetSelectedSignals();
+    int listSize = rSelList.size();
+    if (listSize == 0){
+        return 0;
+    }
+
+    RecognizationData data;
+    data.resize(seqLen);
+    fill(data.begin(), data.end(), 0);
+ 
+    SignalList::const_iterator iter = rSelList.begin();
+    int it = 0;
+    while (iter != rSelList.end()) {
+        const Signal* pSignal = (*iter);
+        DDisc::Context& context = pSignal->createCompartibleContext();
+        while (pSignal->find(edSequence,context)) {
+            double t = pSignal->getPriorProbability()/100;
+            if (t>=1) t = 0.999999;
+            int nPos = context.getPosition();
+            int not_null_length = 0;
+            double value = -qLn(1-t);
+            for (int i=0; i<context.getLength(); i++)
+            {
+                if (context.isSignalPart(nPos+i))
+                    not_null_length++;
+            }
+            value /= not_null_length;
+            for (int i=0; i<context.getLength(); i++)
+            {
+                if (context.isSignalPart(nPos+i))
+                    data[nPos + i] += value;
+            }
+        }
+        context.destroy();
+        iter++;
+        it++;
+    }
+    
+    float score = 0;
+    for (int i = 0; i < seqLen; i++){
+        score+=data[i];
+    }
+
+    return score;
 }
 
 }//namespace

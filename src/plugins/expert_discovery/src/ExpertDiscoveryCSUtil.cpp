@@ -351,19 +351,15 @@ void EDProcessedSignal::makeStandardProcessing(Operation *pOp, const SequenceBas
     if (a[1][1]+a[1][0] != 0) {
         m_dProbability = 100*a[1][1]/double(a[1][1]+a[1][0]);
         str = QString("%1").arg(m_dProbability) + "% ( ";
-        //str = (to_string(m_dProbability)+"% ( ").c_str();
     }
-    //str += (to_string(a[1][1]) + " / " + to_string(a[1][1]+a[1][0]) + " )").c_str();
     str += QString("%1").arg(a[1][1]) + " / " + QString("%1").arg(a[1][1]+a[1][0]) + " )";
     addProperty("Probability", str);
 
     str = "Undefined ( ";
     if (aseq[1][1]+aseq[0][1]!= 0) {
         m_dPosCoverage = 100*aseq[1][1]/double(aseq[1][1]+aseq[0][1]);
-        //str = (to_string(m_dPosCoverage)+"% ( ").c_str();
         str = QString("%1").arg(m_dPosCoverage)+"% ( ";
     }
-    //str += (to_string(aseq[1][1]) + " / " + to_string(aseq[1][1]+aseq[0][1]) + " )").c_str();
     str += QString("%1").arg(aseq[1][1]) + " / " + QString("%1").arg(aseq[1][1]+aseq[0][1]) + " )";
     addProperty("Pos. coverage", str);
 
@@ -377,12 +373,10 @@ void EDProcessedSignal::makeStandardProcessing(Operation *pOp, const SequenceBas
 
 
     m_dFisher = fisher(a[0][0], a[0][1], a[1][0], a[1][1]);
-    //str.Format("%E", m_dFisher);
     
     addProperty("Fisher", QString("%1").arg(m_dFisher));
 
     m_dUl = ul(a[0][0], a[0][1], a[1][0], a[1][1]);
-    //str.Format("%E", m_dUl);
     addProperty("Ul", QString("%1").arg(m_dUl));
 
     rContext.destroy();
@@ -448,7 +442,6 @@ void EDProcessedDistance::process(Operation *pOp, const SequenceBase *pYesBase, 
     if (dCC == CORELATION_UNDEFINED)
         str = "Undefined";
     else 
-        //str = to_string(dCC);
         str = QString("%1").arg(dCC);
     addProperty("Param. corelation on neg.", str);
 }

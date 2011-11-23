@@ -7,6 +7,7 @@
 #include "ExpertDiscoveryExtSigWiz.h"
 #include "ExpertDiscoveryPlugin.h"
 #include "ExpertDiscoveryGraphs.h"
+#include "ExpertDiscoverySearchDialogController.h"
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2View/ADVUtils.h>
@@ -432,6 +433,10 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
         connect(aaobj, SIGNAL(si_updateFinshed()), SLOT(sl_autoAnnotationUpdateFinished()));
     }
 
+    ADVGlobalAction* a = new ADVGlobalAction(adv, QIcon(), tr("Search for regions with ExpertDiscovery"), 80);
+    a->addAlphabetFilter(DNAAlphabet_NUCL);
+    connect(a, SIGNAL(triggered()), SLOT(sl_search()));
+
     connect(adv, SIGNAL( si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*) ), SLOT( sl_sequenceItemSelChanged(ADVSequenceWidget*) ));
 
     createEDSequence();
@@ -497,6 +502,16 @@ void ExpertDiscoveryView::sl_autoAnnotationUpdateStarted(){
     if(updatesCount > 0){
         signalsWidget->setEnabled(false);
     }
+}
+
+void ExpertDiscoveryView::sl_search(){
+    GObjectViewAction* action = qobject_cast<GObjectViewAction*>(sender());
+    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(action->getObjectView());
+
+    ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
+    assert(seqCtx->getAlphabet()->isNucleic());
+    ExpertDiscoverySearchDialogController sdialog(seqCtx, d, av->getWidget());
+    sdialog.exec();
 }
 void ExpertDiscoveryView::sl_autoAnnotationUpdateFinished(){
     updatesCount--;

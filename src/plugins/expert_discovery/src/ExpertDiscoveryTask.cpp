@@ -1073,7 +1073,7 @@ ExpertDiscoveryGetRecognitionDataTask::ExpertDiscoveryGetRecognitionDataTask(Exp
 
 }
 void ExpertDiscoveryGetRecognitionDataTask::run(){
-    isRecData = edData.recDataStorage.getRecognizationData(recData, &curSequence, edData.getSelectedSignalsContainer(), stateInfo);
+    //isRecData = edData.recDataStorage.getRecognizationData(recData, &curSequence, edData.getSelectedSignalsContainer(), stateInfo);
 }
 
 ExpertDiscoverySaveDocumentTask::ExpertDiscoverySaveDocumentTask(ExpertDiscoveryData& data, const QString& fileName)
@@ -1289,6 +1289,70 @@ void ExpertDiscoveryCalculateErrors::run(){
     }
 
     stateInfo.progress = 100;
+}
+
+//search
+
+ExpertDiscoverySearchTask::ExpertDiscoverySearchTask(ExpertDiscoveryData& data, const QByteArray& seq, const ExpertDiscoverySearchCfg& cfg, int ro) 
+: Task(tr("ExpertDiscovery Search"), TaskFlags_NR_FOSCOE), edData(data), cfg(cfg), resultsOffset(ro), wholeSeq(seq)
+{
+    SequenceWalkerConfig c;
+    c.seq = wholeSeq.constData();
+    c.seqSize = wholeSeq.length();
+    c.complTrans  = cfg.complTT;
+    c.strandToWalk = cfg.complTT == NULL ? StrandOption_DirectOnly : StrandOption_Both;
+    c.aminoTrans = NULL;
+
+    c.chunkSize = edData.getMaxPosSequenceLen();
+    c.nThreads = 1;         //for now ExpertDiscovery signal can be processed only in one thread
+    c.overlapSize = c.chunkSize - 1;
+
+    SequenceWalkerTask* t = new SequenceWalkerTask(c, this, tr("ExpertDiscovery Search Parallel"));
+    addSubTask(t);
+}
+
+void ExpertDiscoverySearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
+    //TODO: process border case as if there are 'N' chars before 0 and after seqlen
+    if (cfg.complOnly && !t->isDNAComplemented()) {
+        return;
+    }
+    U2Region globalRegion = t->getGlobalRegion();
+    qint64 seqLen = globalRegion.length;
+    const char* seq = t->getGlobalConfig().seq + globalRegion.startPos;
+    ti.progress =0;
+    //qint64 lenPerPercent = seqLen / 100;
+    //qint64 pLeft = lenPerPercent;
+    DNATranslation* complTT = t->isDNAComplemented() ? t->getGlobalConfig().complTrans : NULL;
+    //float psum = SiteconAlgorithm::calculatePSum(seq+i, modelSize, model.matrix, model.settings, model.deviationThresh, complTT);
+    float score = ExpertDiscoveryData::calculateSequenceScore(seq, seqLen, edData, complTT);
+        //SiteconAlgorithm::calculatePSum(seq+i, modelSize, model.matrix, model.settings, model.deviationThresh, complTT);
+    if (score < 0) {
+        ti.setError(  tr("Internal error, score:%1").arg(score) );
+        return;
+    }
+    ExpertDiscoverySearchResult r;
+    r.score = score;
+    if (r.score >= cfg.minSCORE) {//report result
+        r.strand = t->isDNAComplemented() ? U2Strand::Complementary : U2Strand::Direct;
+        r.region.startPos = globalRegion.startPos + resultsOffset;
+        r.region.length = seqLen;
+        addResult(r);
+    }
+}
+
+
+void ExpertDiscoverySearchTask::addResult(const ExpertDiscoverySearchResult& r) {
+    lock.lock();
+    results.append(r);
+    lock.unlock();
+}
+
+QList<ExpertDiscoverySearchResult> ExpertDiscoverySearchTask::takeResults() {
+    lock.lock();
+    QList<ExpertDiscoverySearchResult> res = results;
+    results.clear();
+    lock.unlock();
+    return res;
 }
 
 }//namespace
