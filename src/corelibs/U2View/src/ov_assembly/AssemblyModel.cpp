@@ -242,13 +242,12 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
             } else {
                 t = new LoadUnloadedDocumentTask(refDoc);
             }
+
+            connect(refDoc, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
         } else { // no document at project -> create doc, add it to project and load it
             t = createLoadReferenceAndAddToProjectTask(crossRef);
             SAFE_POINT(t, "Failed to load reference sequence!",);
         }
-        
-        // 3. watch load-unload doc
-        connect(refDoc, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
         
         // 4. run task and wait for finished in referenceLoaded()
         if(t != NULL) {
@@ -321,11 +320,7 @@ void AssemblyModel::sl_referenceDocAdded(Document * d) {
         SAFE_POINT_OP(status,);
         
         if (ref.dataRef.dbiRef.dbiId == d->getURLString()) {
-            if (!d->isLoaded()) {
-                startLoadReferenceTask(new LoadUnloadedDocumentTask(d));
-            } else {
-                assert(false);
-            }
+            connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
         }
     }
 }
@@ -349,20 +344,14 @@ void AssemblyModel::sl_referenceDocLoadedStateChanged() {
 void AssemblyModel::sl_referenceLoaded() {
     U2OpStatusImpl os;
     U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, os);
-    refObj = NULL;
+    U2SequenceObject* obj = NULL;
     Document* refDoc = AppContext::getProject()->findDocumentByURL(ref.dataRef.dbiRef.dbiId);
     if (refDoc != NULL) {
-        refObj = qobject_cast<U2SequenceObject*>(refDoc->findGObjectByName(ref.dataRef.entityId.constData()));
+        obj = qobject_cast<U2SequenceObject*>(refDoc->findGObjectByName(ref.dataRef.entityId.constData()));
     }
 
     loadingReference = false;
-    if (refObj == NULL) {
-        sl_unassociateReference();
-    } else {
-        emit si_referenceChanged();
-    }
-
-    connect(refDoc, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_referenceObjRemoved(GObject*)));
+    setReference(obj);
 }
 
 bool AssemblyModel::hasReference() const {
@@ -375,6 +364,9 @@ bool AssemblyModel::referenceAssociated() const {
 
 void AssemblyModel::setReference(U2SequenceObject* seqObj) {
     refObj = seqObj;
+    if(seqObj != NULL) {
+        connect(seqObj->getDocument(), SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_referenceObjRemoved(GObject*)));
+    }
     emit si_referenceChanged();
 }
 
