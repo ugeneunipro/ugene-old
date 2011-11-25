@@ -67,7 +67,7 @@ EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, QWidget
             typeBox->setCurrentIndex(res);
         }
     } else {
-        this->setWindowTitle(tr("Create a new marker group"));
+        this->setWindowTitle(tr("Create Marker Group"));
         this->marker = MarkerFactory::createInstanse(typeIds.at(typeBox->currentIndex()), QVariant());
     }
     currentTypeIndex = typeBox->currentIndex();
@@ -359,7 +359,7 @@ EditMarkerDialog::EditMarkerDialog(bool isNew, const QString &type, const QStrin
             return;
         }
     } else {
-        this->setWindowTitle(tr("Create a new marker"));
+        this->setWindowTitle(tr("Create Marker"));
     }
 
     if (!type.isEmpty()) {

@@ -1379,8 +1379,8 @@ it is better to leave the list intact.</source>
     <name>U2::LocalWorkflow::MarkSequencePrompter</name>
     <message>
         <location filename="../src/library/MarkSequenceWorker.cpp" line="160"/>
-        <source>Mark incoming sequences by user defined values</source>
-        <translation type="unfinished"></translation>
+        <source>Adds one or several marks to the input sequence.</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1407,13 +1407,13 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/MarkSequenceWorker.cpp" line="139"/>
-        <source>Marker (for sequence)</source>
-        <translation type="unfinished"></translation>
+        <source>Sequence Marker</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/MarkSequenceWorker.cpp" line="140"/>
-        <source>Check an incoming sequence using user defined criterias and mark the sequence by the appropriate value for every criteria.</source>
-        <translation type="unfinished"></translation>
+        <source>Adds one or several marks to the input sequence depending on the sequence properties. Use this element, for example, in conjunction with the Filter element.</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/MarkSequenceWorker.cpp" line="141"/>
@@ -1440,31 +1440,31 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="132"/>
-        <source>Filter data in the workflow channel from %1 by passed values: %2</source>
-        <translation type="unfinished"></translation>
+        <source>Filters input data from %1 by value(s) %2.</source>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::PassFilterWorker</name>
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="94"/>
-        <source>Passing values</source>
-        <translation type="unfinished"></translation>
+        <source>Input values</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="94"/>
-        <source>Passing values.</source>
-        <translation type="unfinished"></translation>
+        <source>Input values.</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="103"/>
-        <source>Passed values</source>
-        <translation type="unfinished"></translation>
+        <source>Filter by value(s)</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="103"/>
-        <source>Comma separated list of values which are passed by this filter.</source>
-        <translation type="unfinished"></translation>
+        <source>Semicolon-separated list of values used to filter the input data.</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="107"/>
@@ -1473,8 +1473,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/PassFilterWorker.cpp" line="108"/>
-        <source>Check an incoming text value if that is contained in passed values list. If it is contained then a data goes on moving through the workflow and vice versa.</source>
-        <translation type="unfinished"></translation>
+        <source>Passes through only data that matches the input filter value (or values).</source>
+        <translation></translation>
     </message>
 </context>
 <context>

@@ -95,7 +95,7 @@ void PassFilterWorkerFactory::init() {
 
     QMap<Descriptor, DataTypePtr> inTypeMap;
     QMap<Descriptor, DataTypePtr> outTypeMap;
-    Descriptor passDesc(BaseSlots::TEXT_SLOT().getId(), PassFilterWorker::tr("Passing values"), PassFilterWorker::tr("Passing values."));
+    Descriptor passDesc(BaseSlots::TEXT_SLOT().getId(), PassFilterWorker::tr("Input values"), PassFilterWorker::tr("Input values."));
     Descriptor outDesc("filtered_data", PassFilterWorker::tr("Filtered data"), PassFilterWorker::tr("Filtered data"));
     inTypeMap[passDesc] = BaseTypes::STRING_TYPE();
     DataTypePtr inTypeSet(new MapDataType(BaseSlots::TEXT_SLOT(), inTypeMap));
@@ -104,12 +104,14 @@ void PassFilterWorkerFactory::init() {
     portDescs << new PortDescriptor("in-data", inTypeSet, true);
     portDescs << new PortDescriptor("filtered-data", outTypeSet, false);
 
-    Descriptor passVals(BaseSlots::TEXT_SLOT().getId(), PassFilterWorker::tr("Passed values"), PassFilterWorker::tr("Comma separated list of values which are passed by this filter."));
+    Descriptor passVals(BaseSlots::TEXT_SLOT().getId(),
+        PassFilterWorker::tr("Filter by value(s)"),
+        PassFilterWorker::tr("Semicolon-separated list of values used to filter the input data."));
     attrs << new Attribute(passVals, BaseTypes::STRING_TYPE(), true);
 
     Descriptor protoDesc(PassFilterWorkerFactory::ACTOR_ID,
-        PassFilterWorker::tr("Filter by values"),
-        PassFilterWorker::tr("Check an incoming text value if that is contained in passed values list. If it is contained then a data goes on moving through the workflow and vice versa."));
+        PassFilterWorker::tr("Filter"),
+        PassFilterWorker::tr("Passes through only data that matches the input filter value (or values)."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
@@ -134,7 +136,7 @@ QString PassFilterPrompter::composeRichDoc() {
     QString passVals = getRequiredParam(BaseSlots::TEXT_SLOT().getId());
     passVals = getHyperlink(BaseSlots::TEXT_SLOT().getId(), passVals);
 
-    QString res = tr("Filter data in the workflow channel from %1 by passed values: %2").arg(producerName).arg(passVals);
+    QString res = tr("Filters input data from %1 by value(s) %2.").arg(producerName).arg(passVals);
     return res;
 }
 

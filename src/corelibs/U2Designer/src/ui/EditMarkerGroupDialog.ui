@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Edit marker group</string>
+   <string>Edit Marker Group</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

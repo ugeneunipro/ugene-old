@@ -974,7 +974,7 @@ does not exist!</source>
     <message>
         <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="59"/>
         <source>Annotation name</source>
-        <translation type="unfinished">Имя аннотации</translation>
+        <translation>Имя аннотации</translation>
     </message>
     <message>
         <location filename="../src/util/AnnotationSettingsDialogImpl.cpp" line="60"/>

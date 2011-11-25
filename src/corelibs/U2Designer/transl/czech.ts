@@ -63,13 +63,13 @@
     <name>EditMarkerDialog</name>
     <message>
         <location filename="../src/ui/EditMarkerDialog.ui" line="20"/>
-        <source>Edit marker</source>
-        <translation type="unfinished"></translation>
+        <source>Edit Marker</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerDialog.ui" line="28"/>
         <source>Marker name:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerDialog.ui" line="35"/>
@@ -81,7 +81,7 @@
     <name>EditMarkerGroupDialog</name>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="14"/>
-        <source>Edit marker group</source>
+        <source>Edit Marker Group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -196,8 +196,8 @@
     <name>U2::EditMarkerDialog</name>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="362"/>
-        <source>Create a new marker</source>
-        <translation type="unfinished"></translation>
+        <source>Create Marker</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="400"/>
@@ -210,8 +210,8 @@
     <name>U2::EditMarkerGroupDialog</name>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="70"/>
-        <source>Create a new marker group</source>
-        <translation type="unfinished"></translation>
+        <source>Create Marker Group</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="149"/>
@@ -273,12 +273,12 @@
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="308"/>
         <source>Marker name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="310"/>
         <source>Marker value</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>

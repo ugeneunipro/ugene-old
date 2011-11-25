@@ -68,7 +68,7 @@ const Descriptor BaseActorCategories::CATEGORY_EXTERNAL() {
 }
 
 const Descriptor BaseActorCategories::CATEGORY_DATAFLOW() {
-    return Descriptor("df", tr("Data flow"),"");
+    return Descriptor("df", tr("Data Flow"),"");
 }
 
 }//Workflow namespace

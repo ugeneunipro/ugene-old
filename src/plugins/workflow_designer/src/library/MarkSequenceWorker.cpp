@@ -136,8 +136,9 @@ void MarkSequenceWorkerFactory::init() {
 
    
     Descriptor protoDesc(MarkSequenceWorkerFactory::ACTOR_ID,
-        MarkSequenceWorker::tr("Marker (for sequence)"),
-        MarkSequenceWorker::tr("Check an incoming sequence using user defined criterias and mark the sequence by the appropriate value for every criteria."));
+        MarkSequenceWorker::tr("Sequence Marker"),
+        MarkSequenceWorker::tr("Adds one or several marks to the input sequence depending on the sequence properties. "
+                               "Use this element, for example, in conjunction with the Filter element."));
     attrs << new MarkerAttribute(Descriptor("markers", MarkSequenceWorker::tr("Markers"), MarkSequenceWorker::tr("Markers.")), BaseTypes::STRING_TYPE(), false);
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
@@ -157,7 +158,7 @@ Worker *MarkSequenceWorkerFactory::createWorker(Actor* a) {
  * MarkSequencePrompter
  *******************************/
 QString MarkSequencePrompter::composeRichDoc() {
-    return tr("Mark incoming sequences by user defined values");
+    return tr("Adds one or several marks to the input sequence.");
 }
 
 

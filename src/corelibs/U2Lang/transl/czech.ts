@@ -862,7 +862,7 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="387"/>
         <source>Qualifier name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1034,7 +1034,7 @@
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="71"/>
-        <source>Data flow</source>
+        <source>Data Flow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

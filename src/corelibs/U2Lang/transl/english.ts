@@ -202,7 +202,7 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="442"/>
         <source>Annotation name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -458,7 +458,7 @@
     <message>
         <location filename="../src/support/HRSchemaSerializer.cpp" line="624"/>
         <source>Qualifier name attribute is not set for %1 marker</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/support/HRSchemaSerializer.cpp" line="706"/>
@@ -606,7 +606,7 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="145"/>
         <source>Rest</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -614,37 +614,37 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="90"/>
         <source>Sequence length marker.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="92"/>
         <source>Annotation count marker.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="94"/>
         <source>Annotation length marker.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="96"/>
         <source>Qualifier integer value marker.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="98"/>
         <source>Qualifier text value marker.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="100"/>
         <source>Qualifier float value marker.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="102"/>
         <source>Text marker.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -652,72 +652,72 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="67"/>
         <source>Length markers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="67"/>
         <source>Length markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="70"/>
         <source>Annotation count markers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="70"/>
         <source>Annotation count markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="73"/>
         <source>Annotation length markers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="73"/>
         <source>Annotation length markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="76"/>
         <source>Qualifier integer value markers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="76"/>
         <source>Qualifier integer value markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="79"/>
         <source>Qualifier float value markers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="79"/>
         <source>Qualifier float value markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="82"/>
         <source>Qualifier text value markers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="82"/>
         <source>Qualifier text value markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="85"/>
         <source>Text markers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="85"/>
         <source>Text markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -744,7 +744,7 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="387"/>
         <source>Qualifier name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -897,8 +897,8 @@
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="71"/>
-        <source>Data flow</source>
-        <translation type="unfinished"></translation>
+        <source>Data Flow</source>
+        <translation></translation>
     </message>
 </context>
 <context>

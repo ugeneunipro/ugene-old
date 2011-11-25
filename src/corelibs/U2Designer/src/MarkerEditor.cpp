@@ -174,9 +174,9 @@ QVariant MarkerGroupListCfgModel::headerData(int section, Qt::Orientation orient
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch(section) {
         case 0:
-            return tr("Marker group name");
+            return tr("Marker Group");
         case 1:
-            return tr("Marker value");
+            return tr("Marker Value");
         default:
             assert(false);
         }

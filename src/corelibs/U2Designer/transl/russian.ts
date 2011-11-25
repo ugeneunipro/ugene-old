@@ -6,27 +6,27 @@
     <message>
         <location filename="../src/ui/EditFloatMarkerWidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/EditFloatMarkerWidget.ui" line="20"/>
         <source>Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Интервал:</translation>
     </message>
     <message>
         <location filename="../src/ui/EditFloatMarkerWidget.ui" line="39"/>
         <source>..</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/EditFloatMarkerWidget.ui" line="58"/>
         <source>Less than:</source>
-        <translation type="unfinished"></translation>
+        <translation>Меньше чем:</translation>
     </message>
     <message>
         <location filename="../src/ui/EditFloatMarkerWidget.ui" line="85"/>
         <source>Greater than:</source>
-        <translation type="unfinished"></translation>
+        <translation>Больше чем:</translation>
     </message>
 </context>
 <context>
@@ -34,7 +34,7 @@
     <message>
         <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="20"/>
         <source>Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Интервал:</translation>
     </message>
     <message>
         <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="26"/>
@@ -46,78 +46,78 @@
     <message>
         <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="45"/>
         <source>..</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="64"/>
         <source>Less than:</source>
-        <translation type="unfinished"></translation>
+        <translation>Меньше чем:</translation>
     </message>
     <message>
         <location filename="../src/ui/EditIntegerMarkerWidget.ui" line="94"/>
         <source>Greater than:</source>
-        <translation type="unfinished"></translation>
+        <translation>Больше чем:</translation>
     </message>
 </context>
 <context>
     <name>EditMarkerDialog</name>
     <message>
         <location filename="../src/ui/EditMarkerDialog.ui" line="20"/>
-        <source>Edit marker</source>
-        <translation type="unfinished"></translation>
+        <source>Edit Marker</source>
+        <translation>Свойства маркера</translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerDialog.ui" line="28"/>
         <source>Marker name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя маркера</translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerDialog.ui" line="35"/>
         <source>NewMarker</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>EditMarkerGroupDialog</name>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="14"/>
-        <source>Edit marker group</source>
-        <translation type="unfinished"></translation>
+        <source>Edit Marker Group</source>
+        <translation>Свойства группы маркеров</translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="22"/>
         <source>Marker group name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя группы маркеров:</translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="29"/>
         <source>NewMarkerGroup</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="36"/>
         <source>Marker group type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип группы маркеров:</translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="46"/>
         <source>Parameter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметр:</translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="60"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="80"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства</translation>
     </message>
     <message>
         <location filename="../src/ui/EditMarkerGroupDialog.ui" line="87"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -130,7 +130,7 @@
     <message>
         <location filename="../src/ui/EditStringMarkerWidget.ui" line="20"/>
         <source>Starts with</source>
-        <translation type="unfinished"></translation>
+        <translation>Начиная с</translation>
     </message>
     <message>
         <location filename="../src/ui/EditStringMarkerWidget.ui" line="26"/>
@@ -143,17 +143,17 @@
     <message>
         <location filename="../src/ui/EditStringMarkerWidget.ui" line="36"/>
         <source>Ends with</source>
-        <translation type="unfinished"></translation>
+        <translation>Заканчивая</translation>
     </message>
     <message>
         <location filename="../src/ui/EditStringMarkerWidget.ui" line="49"/>
         <source>Contains</source>
-        <translation type="unfinished"></translation>
+        <translation>Содержит</translation>
     </message>
     <message>
         <location filename="../src/ui/EditStringMarkerWidget.ui" line="62"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулярное выражение</translation>
     </message>
 </context>
 <context>
@@ -166,17 +166,17 @@
     <message>
         <location filename="../src/ui/MarkerEditorWidget.ui" line="22"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <location filename="../src/ui/MarkerEditorWidget.ui" line="42"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства</translation>
     </message>
     <message>
         <location filename="../src/ui/MarkerEditorWidget.ui" line="49"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -184,74 +184,74 @@
     <message>
         <location filename="../src/WorkflowGUIUtils.cpp" line="49"/>
         <source>Select a sample to start</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите пример</translation>
     </message>
     <message>
         <location filename="../src/WorkflowGUIUtils.cpp" line="142"/>
         <source>Double click to load the sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Двойной щелчок загрузит пример</translation>
     </message>
 </context>
 <context>
     <name>U2::EditMarkerDialog</name>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="362"/>
-        <source>Create a new marker</source>
-        <translation type="unfinished"></translation>
+        <source>Create Marker</source>
+        <translation>Создание маркера</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="400"/>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="405"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
 </context>
 <context>
     <name>U2::EditMarkerGroupDialog</name>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="70"/>
-        <source>Create a new marker group</source>
-        <translation type="unfinished"></translation>
+        <source>Create Marker Group</source>
+        <translation>Создание группы маркеров</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="149"/>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="255"/>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="260"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="149"/>
         <source>You can not remove the required marker &quot;rest&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы не можете удалить выбранный маркер &quot;rest&quot;</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="168"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Ожидание</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="168"/>
         <source>Are you really want to change marker&apos;s type? Some data can be lost!</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действиетльно хотите изменить тип маркера? Некоторые данные могут быть утеряны!</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="199"/>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="223"/>
         <source>Marker&apos;s name contains a comma symbol: &quot;%1&quot;. It is not permitted for marker names</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя маркера содержит запрещенный символ: &quot;%1&quot;. Это недопустимо для имени маркера.</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="205"/>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="228"/>
         <source>Duplicate marker&apos;s value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторяющееся значение маркера: %1</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="212"/>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="233"/>
         <source>Duplicate marker&apos;s name: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторящееся имя маркера: %1</translation>
     </message>
 </context>
 <context>
@@ -260,12 +260,12 @@
         <location filename="../src/MarkerEditorWidget.cpp" line="95"/>
         <location filename="../src/MarkerEditorWidget.cpp" line="110"/>
         <source>Duplicate marker&apos;s name: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторящееся имя маркера: %1</translation>
     </message>
     <message>
         <location filename="../src/MarkerEditorWidget.cpp" line="117"/>
         <source>Marker&apos;s name contains spaces: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя маркера содержит пробелы</translation>
     </message>
 </context>
 <context>
@@ -273,12 +273,12 @@
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="308"/>
         <source>Marker name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя маркера</translation>
     </message>
     <message>
         <location filename="../src/EditMarkerGroupDialog.cpp" line="310"/>
         <source>Marker value</source>
-        <translation type="unfinished"></translation>
+        <translation>Значение маркера</translation>
     </message>
 </context>
 <context>
@@ -286,7 +286,7 @@
     <message>
         <location filename="../src/QDScheduler.h" line="164"/>
         <source>Prepare annotations task</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -393,13 +393,13 @@
     <name>U2::Workflow::MarkerGroupListCfgModel</name>
     <message>
         <location filename="../src/MarkerEditor.cpp" line="178"/>
-        <source>Marker group name</source>
-        <translation type="unfinished"></translation>
+        <source>Marker Group</source>
+        <translation>Группа маркеров</translation>
     </message>
     <message>
         <location filename="../src/MarkerEditor.cpp" line="180"/>
-        <source>Marker value</source>
-        <translation type="unfinished"></translation>
+        <source>Marker Value</source>
+        <translation>Значение маркера</translation>
     </message>
 </context>
 <context>

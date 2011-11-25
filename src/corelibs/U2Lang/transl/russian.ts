@@ -202,7 +202,7 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="442"/>
         <source>Annotation name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя аннотации</translation>
     </message>
 </context>
 <context>
@@ -210,12 +210,12 @@
     <message>
         <location filename="../src/library/BaseTypes.cpp" line="44"/>
         <source>Sequence</source>
-        <translation type="unfinished">Последовательность</translation>
+        <translation>Последовательность</translation>
     </message>
     <message>
         <location filename="../src/library/BaseTypes.cpp" line="44"/>
         <source>A sequence</source>
-        <translation type="unfinished">Биологически-значимая последовательность (ДНК, РНК, протеины)</translation>
+        <translation>Биологически-значимая последовательность (ДНК, РНК, протеины)</translation>
     </message>
     <message>
         <source>Set of DNA annotations</source>
@@ -743,7 +743,7 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="145"/>
         <source>Rest</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -751,37 +751,37 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="90"/>
         <source>Sequence length marker.</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер по длине последовательности.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="92"/>
         <source>Annotation count marker.</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер по количеству аннотаций.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="94"/>
         <source>Annotation length marker.</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер по длине аннотации.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="96"/>
         <source>Qualifier integer value marker.</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер по целочисленному квалификатору.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="98"/>
         <source>Qualifier text value marker.</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер по текстовому квалификатору.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="100"/>
         <source>Qualifier float value marker.</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер по квалификатору с запятой.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="102"/>
         <source>Text marker.</source>
-        <translation type="unfinished"></translation>
+        <translation>Текстовый маркер.</translation>
     </message>
 </context>
 <context>
@@ -789,72 +789,72 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="67"/>
         <source>Length markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркеры по длине</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="67"/>
         <source>Length markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа маркеров по длине.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="70"/>
         <source>Annotation count markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркеры по количеству аннотаций</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="70"/>
         <source>Annotation count markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа маркеров по количеству аннотаций.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="73"/>
         <source>Annotation length markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркеры по длине аннотаций</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="73"/>
         <source>Annotation length markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа маркеров по длине аннотаций.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="76"/>
         <source>Qualifier integer value markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркеры по целочисленным квалификаторам</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="76"/>
         <source>Qualifier integer value markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа маркеров по целочисленным квалификаторам.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="79"/>
         <source>Qualifier float value markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркеры по квалификаторам с запятыми</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="79"/>
         <source>Qualifier float value markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа маркеров по квалификаторам с запятой.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="82"/>
         <source>Qualifier text value markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркеры по текстовым квалификаторам</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="82"/>
         <source>Qualifier text value markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа маркеров по текстовым квалификаторам.</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="85"/>
         <source>Text markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Текстовые маркеры</translation>
     </message>
     <message>
         <location filename="../src/model/Marker.cpp" line="85"/>
         <source>Text markers group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Группа текстовых маркеров.</translation>
     </message>
 </context>
 <context>
@@ -881,7 +881,7 @@
     <message>
         <location filename="../src/model/Marker.cpp" line="387"/>
         <source>Qualifier name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя квалификатора</translation>
     </message>
 </context>
 <context>
@@ -1049,8 +1049,8 @@
     </message>
     <message>
         <location filename="../src/library/BaseActorCategories.cpp" line="71"/>
-        <source>Data flow</source>
-        <translation type="unfinished"></translation>
+        <source>Data Flow</source>
+        <translation>Поток данных</translation>
     </message>
 </context>
 <context>
