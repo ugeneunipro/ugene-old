@@ -68,7 +68,7 @@ echo Copying plugins
 add-plugin annotator
 add-plugin ball
 add-plugin biostruct3d_view
-add-plugin bowtie
+#add-plugin bowtie
 add-plugin chroma_view
 add-plugin circular_view
 add-plugin remote_service
