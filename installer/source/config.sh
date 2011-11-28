@@ -9,6 +9,7 @@ DST_NAME=$U_NAME-$U_VERSION
 SRC_FILES=(
     "./COPYRIGHT"
     "./LICENSE"
+    "./LICENSE.3rd_party"
     "../.././ugene.pro"
     "../../src/gen_bin_script.cmd"
     "../../src/ugene_globals.pri"
