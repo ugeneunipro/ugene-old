@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <qendian.h>
 
 #include "LocalFileAdapter.h"
 
@@ -434,6 +435,22 @@ GZipIndex ZlibAdapter::buildGzipIndex( IOAdapter* io, qint64 span, bool* ok ) {
     (void)inflateEnd(&strm);
     setIfYouCan( true, ok );
     return index;
+}
+
+qint64 ZlibAdapter::getUncompressedFileSizeInBytes(const GUrl &url) {
+    QFile file(url.getURLString());
+    if (!file.open(QIODevice::ReadOnly)) {
+        return -1;
+    }
+
+    int wordSizeInBytes = 4;
+    file.seek(file.size() - wordSizeInBytes);
+    QByteArray buffer = file.read(wordSizeInBytes);
+    assert(buffer.size() == wordSizeInBytes);
+
+    quint32 result = qFromLittleEndian<quint32>((uchar*)buffer.data());
+    file.close();
+    return result;
 }
 
 GUrl ZlibAdapter::getURL() const {

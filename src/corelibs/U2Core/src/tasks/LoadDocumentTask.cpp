@@ -33,6 +33,7 @@
 #include <U2Core/GHints.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/ZlibAdapter.h>
 
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GObjectTypes.h>
@@ -262,8 +263,17 @@ void LoadDocumentTask::prepare() {
     if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad) && isLoadToMem(format->getFormatId())) { // document is fully loaded to memory
         QFileInfo file(url.getURLString());
         memUseMB = file.size() / (1024*1024);
-        if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
-            memUseMB *= 2.5; //Need to calculate compress level
+
+        double DEFAULT_COMPRESS_RATIO = 2.5;
+        if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE) {
+            quint64 fileSizeInBytes = ZlibAdapter::getUncompressedFileSizeInBytes(url);
+            if (fileSizeInBytes < 0) {
+                memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level
+            } else {
+                memUseMB = fileSizeInBytes / (1024*1024);
+            }
+        } else if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
+            memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level  
         }
         coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
     }
