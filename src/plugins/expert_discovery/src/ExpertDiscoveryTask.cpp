@@ -154,7 +154,7 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
     }
 }
 
-#define NUMBER_OF_NEGATIVE_PER_POSITIVE 100
+#define NUMBER_OF_NEGATIVE_PER_POSITIVE 1000
 QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GObject*> &objects){
     QList<DNASequence> neg;
     int acgtContent[4];
@@ -1016,7 +1016,7 @@ void ExpertDiscoveryUpdateSelectionTask::run(){
        case PIT_MRK_ITEM:{
            EDPICSNode* pPICSN = dynamic_cast<EDPICSNode*>(pItem);
           
-           if (curPS == pPICSN->getProcessedSignal(view->getExpertDiscoveryData())) { //to separate process
+           if (curPS == pPICSN->getProcessedSignal(view->getExpertDiscoveryData())) { 
                updatePS = false;
            }
            else {
@@ -1097,8 +1097,6 @@ void ExpertDiscoverySaveDocumentTask::run(){
     
     QDataStream out(&file);
 
-    //out.setByteOrder(QDataStream::LittleEndian);
-
     EDPMCSFolder::save(out, &edData.getRootFolder());
 
     out << edData.getRecognizationBound();
@@ -1117,8 +1115,6 @@ void ExpertDiscoverySaveDocumentTask::run(){
     edData.getConSeqBase().setMarking(edData.getConMarkBase());
    
     edData.getSelectedSignalsContainer().save(out, edData.getRootFolder());
-
-    out << false << 1;  //LargeSequeceMode (for compatibility with the old version)
 
     edData.setModifed(false);
 

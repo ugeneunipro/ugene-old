@@ -172,6 +172,7 @@ void ExpertDiscoveryExtSigWiz::sl_idChanged(int id){
             break;
         }
         case 3:
+            sl_selectionChanged(predicatesTree->currentItem(), predicatesTree->currentItem());
             if((intervItem->childCount() == 0 ) && (repetItem->childCount() == 0 ) && (distItem->childCount() == 0 ) && !alignedCheck->isChecked()){
                 back();
                 QMessageBox mb(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
