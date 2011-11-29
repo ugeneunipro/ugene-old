@@ -783,7 +783,7 @@ bool ExpertDiscoveryData::generateRecognizationReport(const SequenceBase& rBase,
     resultText.append(QString("Recognized sequences: <I>%1</I><BR>").arg(nRecognized));
 
     if (bSuppressNulls){
-        resultText.append(QString("Sequences with zero score: <I>%1</I><BR>").arg(nNulls));
+        resultText.append(QString("Sequences with zero score (NOT SHOWN): <I>%1</I><BR>").arg(nNulls));
     }
 
     if(fileNamesMap.find(&rBase) != fileNamesMap.end()){

@@ -16,16 +16,59 @@
         <translation></translation>
     </message>
     <message>
-        <source>Recognition Bound</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Probability of negative sequence recognition:</source>
         <translation></translation>
     </message>
     <message>
         <source>Optimize Recognition Bound</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Recognition Bound:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Minimum Bound:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Maximum Bound:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Bound Step:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Recalculate Graph Values</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Recognition Graph</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Score</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>P
+r
+o
+b
+a
+b
+i
+l
+i
+t
+y
+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;B&gt;Tip:&lt;/B&gt; Window may be resized to see more detailed graph</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -103,7 +146,7 @@
     </message>
     <message>
         <source>You may load any sequence file to recognize your complex signals on the sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -145,15 +188,15 @@
     </message>
     <message>
         <source>Load positive and negative sequence bases</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Positive sequences file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Negative sequences file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>This is the first step of creating a new ExpertDiscovery project.
@@ -165,11 +208,11 @@ You also may generate negative sequences automatically.
 
 ExpertDiscovery will extract complex signals which reflect a structure of your regulation object. 
 The more sequences you provide the better will be the result</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -204,11 +247,11 @@ The more sequences you provide the better will be the result</source>
     </message>
     <message>
         <source>Positive sequences markup file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Negative sequences markup file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>On this step you need to load markups for the sequences. 
@@ -218,11 +261,78 @@ Markup gives information where elementary signals are located in the sequences.
 Complex signals will be build from the elementary signals and operations applied to them. 
 
 Load markup for your sequences in specified XML format or genbank format.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Nucleotides Markup</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>ExpertDiscoverySearchDialog</name>
+    <message>
+        <source>ExpertDiscovery Search Window</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Recognition Bound</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Strand</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Both</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>strand_direct_wit</source>
+        <translation>Direct</translation>
+    </message>
+    <message>
+        <source>Direct</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>strand_complement_wit</source>
+        <translation>Complement</translation>
+    </message>
+    <message>
+        <source>Complement</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>range</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>strand</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>psum</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Clear Results</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Save As Annotation</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -313,23 +423,27 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Please create some predicates that will be used in complex signal construction process. Note, some predicates are generated by default.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Aligned (If you sequence set is aligned, Interval predicated will be generated)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Select a folder</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Select a folder to store extracted complex signals</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Create Root Subfolder</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Folder Name:</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -507,7 +621,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Add signal to markup</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -518,6 +632,13 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Minimal complexity must not be grater then maximal complexity and positive</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoveryCalculateErrors</name>
+    <message>
+        <source>Error calculation</source>
         <translation></translation>
     </message>
 </context>
@@ -609,7 +730,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Setting up recognition bound. Please wait</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -655,6 +776,18 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Minimal complexity must not be grater then maximal complexity and positive</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Specify folder name</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Please specify a name for your folder</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Item with the same name already exist. Please enter another name</source>
         <translation></translation>
     </message>
 </context>
@@ -706,11 +839,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Expert Discovery plugin</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Expert Discovery (alpha)</source>
-        <translation></translation>
+        <translation>ExpertDiscovery is a system for analysis and recognition of gene regulatory regions using hierarchical approach. It implements a powerful machine learning method &quot;Discovery&quot; (http://math.nsc.ru/AP/ScientificDiscovery/)</translation>
     </message>
 </context>
 <context>
@@ -760,14 +889,75 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Select positive markup file at least or chose &apos;Nucleotides markup&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>U2::ExpertDiscoveryScoreGraphFactory</name>
     <message>
         <source>Score graph</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoverySearchDialogController</name>
+    <message>
+        <source>Cancel</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Progress %1%</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>%1 results found.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>complement strand</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>direct strand</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoverySearchTask</name>
+    <message>
+        <source>ExpertDiscovery Search</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>ExpertDiscovery Search Parallel</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Internal error, score:%1</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoverySetupRecBoundDialog</name>
+    <message>
+        <source>Wrong bound interval</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Minimal bound must not be grater then maximal bound</source>
+        <translation>Minimal bound must not be less then maximal bound</translation>
+    </message>
+    <message>
+        <source>Wrong step value</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Bound step must be non zero</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -863,6 +1053,10 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Save Expert Discovery Document</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Search for regions with ExpertDiscovery</source>
         <translation></translation>
     </message>
 </context>

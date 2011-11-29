@@ -17,7 +17,7 @@
     </message>
     <message>
         <source>Recognition Bound</source>
-        <translation>Порог распознавания</translation>
+        <translation type="obsolete">Порог распознавания</translation>
     </message>
     <message>
         <source>Probability of negative sequence recognition:</source>
@@ -25,7 +25,65 @@
     </message>
     <message>
         <source>Optimize Recognition Bound</source>
-        <translation type="unfinished">Оптимизация порога распознования</translation>
+        <translation>Оптимизация порога распознования</translation>
+    </message>
+    <message>
+        <source>Recognition Bound:</source>
+        <translation>Порог распознавания:</translation>
+    </message>
+    <message>
+        <source>Minimum Bound:</source>
+        <translation>Минимальный порог:</translation>
+    </message>
+    <message>
+        <source>Maximum Bound:</source>
+        <translation>Максимальный порог:</translation>
+    </message>
+    <message>
+        <source>Bound Step:</source>
+        <translation>Шаг порога:</translation>
+    </message>
+    <message>
+        <source>Recalculate Graph Values</source>
+        <translation>Пересчитать значения графика</translation>
+    </message>
+    <message>
+        <source>Recognition Graph</source>
+        <translation>График распознавания</translation>
+    </message>
+    <message>
+        <source>Score</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>P
+r
+o
+b
+a
+b
+i
+l
+i
+t
+y
+</source>
+        <translation>В
+е
+р
+о
+я
+т
+н
+о
+с
+т
+ь
+</translation>
+    </message>
+    <message>
+        <source>&lt;B&gt;Tip:&lt;/B&gt; Window may be resized to see more detailed graph</source>
+        <translation>&lt;B&gt;Подсказка:&lt;/B&gt; Можно расширить окно, чтобы увидеть более детальный график</translation>
     </message>
 </context>
 <context>
@@ -103,7 +161,7 @@
     </message>
     <message>
         <source>You may load any sequence file to recognize your complex signals on the sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы можете загрузить любой файл с последовательностями, чтобы распознать комплексные сигналы на них.</translation>
     </message>
 </context>
 <context>
@@ -161,15 +219,15 @@
     </message>
     <message>
         <source>Load positive and negative sequence bases</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка позитивных и негативных выборок последовательностей</translation>
     </message>
     <message>
         <source>Positive sequences file</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл с позитивной выборкой</translation>
     </message>
     <message>
         <source>Negative sequences file</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл с негативной выборкой</translation>
     </message>
     <message>
         <source>This is the first step of creating a new ExpertDiscovery project.
@@ -181,11 +239,19 @@ You also may generate negative sequences automatically.
 
 ExpertDiscovery will extract complex signals which reflect a structure of your regulation object. 
 The more sequences you provide the better will be the result</source>
-        <translation type="unfinished"></translation>
+        <translation>Это первый шаг создания нового проекта ExpertDiscovery.
+Загрузите последовательности, которые вы хотел бы проанализировать, выбрав файл с последовательностью или с несколькими последовательностями.
+
+Позитивная выборка последовательностей содержит интересующий регуляторный объект.
+Негативная выборка не содержит его.
+Негативная выборка может быть сгенерирована автоматически.
+
+ExpertDiscovery построит комплексные сигналы, которые отражают структуру регуляторного объекта.
+Чем больше последовательностей вы загрузите, тем лучше будет результат</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Далее</translation>
     </message>
 </context>
 <context>
@@ -228,11 +294,11 @@ The more sequences you provide the better will be the result</source>
     </message>
     <message>
         <source>Positive sequences markup file</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл разметки позитивной выборки</translation>
     </message>
     <message>
         <source>Negative sequences markup file</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл разметки негативной выборки</translation>
     </message>
     <message>
         <source>On this step you need to load markups for the sequences. 
@@ -242,11 +308,84 @@ Markup gives information where elementary signals are located in the sequences.
 Complex signals will be build from the elementary signals and operations applied to them. 
 
 Load markup for your sequences in specified XML format or genbank format.</source>
-        <translation type="unfinished"></translation>
+        <translation>На этом шаге требуется загрузить разметки последовательностей.
+Разметкой является аннотация последовательности элементарными сигналами.
+Разметка говорит о том, где находятся элементарные сигналы на последовательностях.
+
+Комплексные сигналы будут построены на основании элементарных сигналов и операций над ними.
+
+Загрузите разметки в специализированном формате XML или в формате genbank.</translation>
     </message>
     <message>
         <source>Nucleotides Markup</source>
-        <translation type="unfinished"></translation>
+        <translation>Разметка нуклеотидами</translation>
+    </message>
+</context>
+<context>
+    <name>ExpertDiscoverySearchDialog</name>
+    <message>
+        <source>ExpertDiscovery Search Window</source>
+        <translation>Распознавание сигналов на с помощью комплексных сигналов ExpertDiscovery</translation>
+    </message>
+    <message>
+        <source>Recognition Bound</source>
+        <translation>Порог распознавания</translation>
+    </message>
+    <message>
+        <source>Strand</source>
+        <translation>Направление</translation>
+    </message>
+    <message>
+        <source>Both</source>
+        <translation>Все</translation>
+    </message>
+    <message>
+        <source>strand_direct_wit</source>
+        <translation>Прямое</translation>
+    </message>
+    <message>
+        <source>Direct</source>
+        <translation>Прямое</translation>
+    </message>
+    <message>
+        <source>strand_complement_wit</source>
+        <translation>Комплементарное</translation>
+    </message>
+    <message>
+        <source>Complement</source>
+        <translation>Комплементарное</translation>
+    </message>
+    <message>
+        <source>range</source>
+        <translation>Диапазон</translation>
+    </message>
+    <message>
+        <source>strand</source>
+        <translation>Направление</translation>
+    </message>
+    <message>
+        <source>psum</source>
+        <translation>psum</translation>
+    </message>
+    <message>
+        <source>Clear Results</source>
+        <translation>Очистить</translation>
+    </message>
+    <message>
+        <source>Save As Annotation</source>
+        <translation>Сохранить как аннотации</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Состояние</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Поиск</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -357,23 +496,27 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Please create some predicates that will be used in complex signal construction process. Note, some predicates are generated by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, создайте некоторые предикаты, на основании которых будут построены комплексные сигналы. Некоторые предикаты создаются по умолчанию.</translation>
     </message>
     <message>
         <source>Aligned (If you sequence set is aligned, Interval predicated will be generated)</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровненные (Если выборка выровненна, предикаты &quot;Интервал&quot; будут созданы автоматически)</translation>
     </message>
     <message>
         <source>Select a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите папку</translation>
     </message>
     <message>
         <source>Select a folder to store extracted complex signals</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите папку для сохранения выделенных сигналов</translation>
     </message>
     <message>
         <source>Create Root Subfolder</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать подпапку корня</translation>
+    </message>
+    <message>
+        <source>Folder Name:</source>
+        <translation>Имя папки:</translation>
     </message>
 </context>
 <context>
@@ -570,7 +713,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Add signal to markup</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить сигнал в разметку</translation>
     </message>
 </context>
 <context>
@@ -582,6 +725,13 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <message>
         <source>Minimal complexity must not be grater then maximal complexity and positive</source>
         <translation>Минимальная сложность должна быть меньше, чем максимальная и положительной</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoveryCalculateErrors</name>
+    <message>
+        <source>Error calculation</source>
+        <translation>Ошибка вычисления</translation>
     </message>
 </context>
 <context>
@@ -676,7 +826,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Setting up recognition bound. Please wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Установка порога распознавания. Пожалуйста подождите</translation>
     </message>
 </context>
 <context>
@@ -723,6 +873,18 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <message>
         <source>Minimal complexity must not be grater then maximal complexity and positive</source>
         <translation>Минимальная сложность должна быть меньше, чем максимальная и положительной</translation>
+    </message>
+    <message>
+        <source>Specify folder name</source>
+        <translation>Укажите имя папки</translation>
+    </message>
+    <message>
+        <source>Please specify a name for your folder</source>
+        <translation>Пожалуйста, укажите имя для вашей папки</translation>
+    </message>
+    <message>
+        <source>Item with the same name already exist. Please enter another name</source>
+        <translation>Элемент с таким же именем уже существует. Пожалуйста, введите другое имя</translation>
     </message>
 </context>
 <context>
@@ -773,15 +935,11 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Expert Discovery plugin</source>
-        <translation>ExpertDiscovery plugin</translation>
+        <translation>ExpertDiscovery это система для анализа и распознавания регуляторных областей, использующая иерархический подход.Она реализует мощный метода машинного обучения &quot;Discovery&quot; (http://math.nsc.ru/AP/ScientificDiscovery/)</translation>
     </message>
     <message>
         <source>ExpertDiscovery</source>
         <translation type="obsolete">ExpertDiscovery</translation>
-    </message>
-    <message>
-        <source>Expert Discovery (alpha)</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -839,14 +997,75 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Select positive markup file at least or chose &apos;Nucleotides markup&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите, по крайней мере, файл с разметкой позитивной выборки или выберите &apos;Разметка нуклеотидами&apos;</translation>
     </message>
 </context>
 <context>
     <name>U2::ExpertDiscoveryScoreGraphFactory</name>
     <message>
         <source>Score graph</source>
-        <translation type="unfinished"></translation>
+        <translation>График распознавания</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoverySearchDialogController</name>
+    <message>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Закрыть</translation>
+    </message>
+    <message>
+        <source>Progress %1%</source>
+        <translation>Прогресс %1%</translation>
+    </message>
+    <message>
+        <source>%1 results found.</source>
+        <translation>%1 найденных результатов.</translation>
+    </message>
+    <message>
+        <source>complement strand</source>
+        <translation>комплементарная цепь</translation>
+    </message>
+    <message>
+        <source>direct strand</source>
+        <translation>прямая цепь</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoverySearchTask</name>
+    <message>
+        <source>ExpertDiscovery Search</source>
+        <translation>ExpertDiscovery поиск</translation>
+    </message>
+    <message>
+        <source>ExpertDiscovery Search Parallel</source>
+        <translation>ExpertDiscovery параллельный поиск</translation>
+    </message>
+    <message>
+        <source>Internal error, score:%1</source>
+        <translation>Внутренняя ошибка, вес: %1</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ExpertDiscoverySetupRecBoundDialog</name>
+    <message>
+        <source>Wrong bound interval</source>
+        <translation>Неверный интервал порога</translation>
+    </message>
+    <message>
+        <source>Minimal bound must not be grater then maximal bound</source>
+        <translation>Минимальный порог должен быть меньше, чем максимальный порог</translation>
+    </message>
+    <message>
+        <source>Wrong step value</source>
+        <translation>Неверное значение шага</translation>
+    </message>
+    <message>
+        <source>Bound step must be non zero</source>
+        <translation>Шаг порога должен быть ненулевым</translation>
     </message>
 </context>
 <context>
@@ -963,6 +1182,10 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <message>
         <source>Save Expert Discovery Document</source>
         <translation>Сохранить документ Expert Discovery</translation>
+    </message>
+    <message>
+        <source>Search for regions with ExpertDiscovery</source>
+        <translation>Поиск областей с ExpertDiscovery</translation>
     </message>
 </context>
 <context>
