@@ -72,10 +72,6 @@ BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface fo
     {
         MainWindow *mainWindow = AppContext::getMainWindow();
         if (NULL != mainWindow) {
-            QAction *converterAction = new QAction(tr("Import BAM/SAM File..."), this);
-            connect(converterAction, SIGNAL(triggered()), SLOT(sl_converter()));
-            mainWindow->getTopLevelMenu(MWMENU_TOOLS)->addAction(converterAction);
-
             AppContext::getDocumentFormatRegistry()->getImportSupport()->addDocumentImporter(new BAMImporter());
         }
     }
