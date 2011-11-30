@@ -47,7 +47,7 @@ void EDProjectTree::updateTree(int flag, EDProjectItem* item){
     case ED_ITEM_STATE_CHANGED		:	updateItemState(item);	break;
     case ED_ITEM_ADDED				:	internalRemake(item, dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(item)->parent()));	break;
     case ED_ITEM_DELETED			:	/*deleteItem(pItem);*/  break;
-    case ED_CURRENT_ITEM_CHANGED	:	setCurrentItem(item); break;
+    case ED_CURRENT_ITEM_CHANGED	:	setCurrentItem(item); emit si_changeProp(item); break;
     case ED_UPDATE_CHILDREN		    :	updateChildren(item); break;
     case ED_MRK_UPDATE              :   updateMarkup(); break; 
     };

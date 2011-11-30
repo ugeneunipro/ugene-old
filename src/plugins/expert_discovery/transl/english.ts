@@ -311,10 +311,6 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
         <translation></translation>
     </message>
     <message>
-        <source>psum</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Clear Results</source>
         <translation></translation>
     </message>
@@ -332,6 +328,10 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Cancel</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>score</source>
         <translation></translation>
     </message>
 </context>

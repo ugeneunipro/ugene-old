@@ -1311,7 +1311,7 @@ void ExpertDiscoveryCalculateErrors::run(){
 //search
 
 ExpertDiscoverySearchTask::ExpertDiscoverySearchTask(ExpertDiscoveryData& data, const QByteArray& seq, const ExpertDiscoverySearchCfg& cfg, int ro) 
-: Task(tr("ExpertDiscovery Search"), TaskFlags_NR_FOSCOE), edData(data), cfg(cfg), resultsOffset(ro), wholeSeq(seq)
+: Task(tr("ExpertDiscovery Search"), TaskFlags_NR_FOSCOE), edData(data), cfg(cfg), resultsOffset(ro), wholeSeq(seq), lenLeft(0)
 {
     SequenceWalkerConfig c;
     c.seq = wholeSeq.constData();
@@ -1324,12 +1324,19 @@ ExpertDiscoverySearchTask::ExpertDiscoverySearchTask(ExpertDiscoveryData& data, 
     c.nThreads = 1;         //for now ExpertDiscovery signal can be processed only in one thread
     c.overlapSize = c.chunkSize - 1; //move window to 1bp 
 
+    //for progress
+    lenLeft = wholeSeq.size();
+    if (c.strandToWalk == StrandOption_Both){
+        lenLeft*=2;
+    }
+    stateInfo.progress = 0;
+
     SequenceWalkerTask* t = new SequenceWalkerTask(c, this, tr("ExpertDiscovery Search Parallel"));
     addSubTask(t);
 }
 
 void ExpertDiscoverySearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
-    if (cfg.complOnly && !t->isDNAComplemented()) {
+    if ((cfg.complOnly && !t->isDNAComplemented()) || ti.isCanceled()) {
         return;
     }
     U2Region globalRegion = t->getGlobalRegion();
@@ -1348,6 +1355,10 @@ void ExpertDiscoverySearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo
         r.region.startPos = globalRegion.startPos + resultsOffset;
         r.region.length = seqLen;
         addResult(r);
+    }
+
+    if(ti.progress <= 100){
+        ti.progress+= (int)(100/(float)lenLeft  + 0.5);
     }
 }
 

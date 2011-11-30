@@ -474,6 +474,8 @@ private:
     QList<ExpertDiscoverySearchResult>  results;
     int                                 resultsOffset;
     QByteArray                          wholeSeq;
+    int                                 lenLeft;
+    int                                 curLeft;
 };
 
         

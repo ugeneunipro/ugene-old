@@ -122,7 +122,7 @@
      </column>
      <column>
       <property name="text">
-       <string>psum</string>
+       <string>score</string>
       </property>
      </column>
     </widget>
