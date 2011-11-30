@@ -25,4 +25,7 @@ SOURCES += src/GTest.cpp \
            src/gui_tests/GUITestLauncher.cpp \
            src/gui_tests/GUITestBase.cpp
 
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/chinese.ts \
+                transl/czech.ts \
+                transl/english.ts \
+                transl/russian.ts

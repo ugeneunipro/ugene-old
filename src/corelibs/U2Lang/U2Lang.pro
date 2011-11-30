@@ -86,4 +86,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/WorkflowRunTask.cpp \
            src/support/WorkflowSettings.cpp \
            src/support/WorkflowUtils.cpp
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+
+TRANSLATIONS += transl/chinese.ts \
+                transl/czech.ts \
+                transl/english.ts \
+                transl/russian.ts

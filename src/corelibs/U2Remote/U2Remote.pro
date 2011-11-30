@@ -38,4 +38,7 @@ SOURCES += src/DistributedComputingUtil.cpp \
            src/SerializeUtils.cpp \
            src/SynchHttp.cpp
 
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/chinese.ts \
+                transl/czech.ts \
+                transl/english.ts \
+                transl/russian.ts
