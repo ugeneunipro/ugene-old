@@ -41,7 +41,7 @@ class U2DESIGNER_EXPORT MarkerEditor : public QObject, public ActorConfiguration
     Q_OBJECT
 public:
     MarkerEditor();
-    MarkerEditor(const MarkerEditor &) : markerModel(NULL) {}
+    MarkerEditor(const MarkerEditor &) : QObject(), markerModel(NULL) {}
     virtual ~MarkerEditor();
     virtual QWidget *getWidget();
     virtual void setConfiguration(Actor *actor);

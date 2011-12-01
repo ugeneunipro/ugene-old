@@ -66,8 +66,8 @@ public:
 
     U2Region region;
     U2Region joinedRegion;
-    bool isJoined;
     int frame;
+    bool isJoined;
 
     static QList<SharedAnnotationData> toTable(const QList<ORFFindResult>& res, const QString& name)
     {

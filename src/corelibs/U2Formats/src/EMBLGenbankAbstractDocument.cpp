@@ -461,7 +461,6 @@ bool EMBLGenbankAbstractDocument::readSequence(ParserState* st, U2SequenceImport
     IOAdapter* io = st->io;
     U2OpStatus& si = st->si;
     si.setDescription(tr("Reading sequence %1").arg(st->entry->name));
-    int headerSeqLen = st->entry->seqLen;
     //res.reserve(res.size() + headerSeqLen);
 
     static int READ_BUFF_SIZE = 4096;
@@ -514,7 +513,7 @@ bool EMBLGenbankAbstractDocument::readSequence(ParserState* st, U2SequenceImport
         }
 
 		bool isSeek = writer.seek(0);
-		assert(isSeek);
+                assert(isSeek);Q_UNUSED(isSeek);
 
         //add buffer to result	
         for (int i= (numIsPrefix ? dataOffset : 0), n = (numIsPrefix ? len : len -  dataOffset) ; i < n; i++) {

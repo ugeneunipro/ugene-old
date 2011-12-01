@@ -74,7 +74,9 @@ Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const G
 Document* DocumentFormat::createNewUnloadedDocument(IOAdapterFactory* iof, const GUrl& url, 
                                                     U2OpStatus& os, const QVariantMap& hints, 
                                                     const QList<UnloadedObjectInfo>& info, 
-                                                    const QString& instanceModLockDesc) {
+                                                    const QString& instanceModLockDesc)
+{
+    Q_UNUSED(os);
     U2DbiRef emptyDbiRef;
     Document* doc = new Document(this, iof, url, emptyDbiRef, false, info, hints, instanceModLockDesc);
     return doc;

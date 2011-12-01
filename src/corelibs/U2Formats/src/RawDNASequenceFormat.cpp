@@ -47,7 +47,7 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
 }
 
 
-static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os) {
+static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, U2OpStatus& os) {
 	static const int READ_BUFF_SIZE = 4096;
 	U2SequenceImporter  seqImporter; 
 
@@ -68,7 +68,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     while (ok && (len = io->readBlock(buff, READ_BUFF_SIZE)) > 0) {
 		seq.clear();
 		bool isSeek = writer.seek(0);
-		assert(isSeek);
+                assert(isSeek); Q_UNUSED(isSeek);
         if (os.isCoR()) {
             break;
         }
@@ -104,7 +104,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
 
 Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
 	QList<GObject*> objects;
-	load(io, dbiRef, objects, fs, os);	
+        load(io, dbiRef, objects, os);
 	CHECK_OP(os, NULL);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
     return doc;

@@ -35,9 +35,9 @@ namespace U2 {
 
 namespace Workflow {
 
-/* ***********************************************************************/
-/* MarkerEditor
-/* ***********************************************************************/
+/* ***********************************************************************
+ * MarkerEditor
+ * ***********************************************************************/
 MarkerEditor::MarkerEditor()
 : ActorConfigurationEditor(), markerModel(NULL)
 {
@@ -119,6 +119,7 @@ void MarkerEditor::sl_onMarkerAdded(const QString &markerId) {
 }
 
 void MarkerEditor::sl_onMarkerRemoved(const QString &markerId, const QString &markerName) {
+    Q_UNUSED(markerId);
     { // TODO: make common way to get marked object output port
         assert(1 == cfg->getOutputPorts().size());
         Port *outPort = cfg->getOutputPorts().at(0);
@@ -131,9 +132,9 @@ void MarkerEditor::sl_onMarkerRemoved(const QString &markerId, const QString &ma
     }
 }
 
-/* ***********************************************************************/
-/* MarkerCfgModel
-/* ***********************************************************************/
+/* ***********************************************************************
+* MarkerCfgModel
+* ***********************************************************************/
 MarkerGroupListCfgModel::MarkerGroupListCfgModel(QObject *parent, QMap<QString, Marker*> &markers)
 : QAbstractTableModel(parent), markers(markers)
 {
@@ -166,7 +167,7 @@ int MarkerGroupListCfgModel::rowCount(const QModelIndex &) const {
     return markers.size();
 }
 
-Qt::ItemFlags MarkerGroupListCfgModel::flags( const QModelIndex & index ) const {
+Qt::ItemFlags MarkerGroupListCfgModel::flags( const QModelIndex & ) const {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
@@ -186,10 +187,11 @@ QVariant MarkerGroupListCfgModel::headerData(int section, Qt::Orientation orient
 }
 
 bool MarkerGroupListCfgModel::setData( const QModelIndex & index, const QVariant & value, int role ) {
+    Q_UNUSED(index); Q_UNUSED(value); Q_UNUSED(role);
     return true;
 }
 
-bool MarkerGroupListCfgModel::removeRows(int row, int count, const QModelIndex &parent) {
+bool MarkerGroupListCfgModel::removeRows(int row, int count, const QModelIndex &) {
     if (1 != count) {
         return true;
     }

@@ -65,7 +65,7 @@ public:
      QPointer<AnnotationTableObject>    aObj;
      ORFFindTask*                       fTask;
      ORFAlgorithmSettings               cfg;
-	 QString							groupName;
+    QString                             groupName;
      const DNASequence&                 dna;
  };
  

@@ -74,6 +74,7 @@ AnnotationTableObject* DocumentFormatUtils::addAnnotationsForMergedU2Sequence(co
                                                                         const QVector<U2Region>& mergedMapping, 
                                                                         U2OpStatus& os) 
 {
+    Q_UNUSED(os);
     AnnotationTableObject* ao = new AnnotationTableObject("Contigs");
 
     //save relation if docUrl is not empty
@@ -191,8 +192,8 @@ void DocumentFormatUtils::updateFormatHints(QList<GObject*>& objects, QVariantMa
 }
 
 
-U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRef& dbiRef, const QString& seqObjName, QList<GObject*>& objects, 
-                                                                   DNASequence& sequence, const QVariantMap& hints, U2OpStatus& os) 
+U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRef& dbiRef, const QString& seqObjName,
+                                                                   QList<GObject*>& objects, DNASequence& sequence, U2OpStatus& os)
 {
 #ifdef _DEBUG
     foreach(GObject* obj, objects) {
@@ -229,13 +230,13 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
                                                                 QList<GObject*>& objects, const GUrl& docUrl, 
                                                                 const QStringList& contigNames, QByteArray& mergedSequence, 
                                                                 const QVector<U2Region>& mergedMapping,
-                                                                const QVariantMap& hints, U2OpStatus& os) 
+                                                                U2OpStatus& os)
 {
     if (contigNames.size() == 1) {
         DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence);
         const QString& name = contigNames.first();
         DNASequence seq(name, mergedSequence, al );
-        return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, name, objects, seq, hints, os);
+        return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, name, objects, seq, os);
     }
 
     assert(contigNames.size() >= 2);
@@ -255,7 +256,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     }
     ;
     DNASequence seq("Sequence", mergedSequence, al);
-    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, "Sequence", objects, seq, hints, os);
+    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, "Sequence", objects, seq, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     

@@ -54,11 +54,11 @@ static QString findWorkflowPath(const QString & schemaName) {
     return QString();
 }
 
-static QString getFormatExt(const QString& docFormatId) {
+/*static QString getFormatExt(const QString& docFormatId) {
     DocumentFormat* df = BaseDocumentFormats::get(docFormatId);
     SAFE_POINT(df, QString("Document format is not found: %1").arg(docFormatId) ,"");
     return df->getSupportedDocumentFileExtensions().first();
-}
+}*/
 
 
 SimpleInOutWorkflowTask::SimpleInOutWorkflowTask(const SimpleInOutWorkflowTaskConfig& _conf)

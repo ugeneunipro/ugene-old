@@ -45,7 +45,7 @@ U2SequenceObjectConstraints::U2SequenceObjectConstraints(QObject* p)
 // U2SequenceObject
 U2SequenceObject::U2SequenceObject(const QString& name, const U2EntityRef& seqRef, const QVariantMap& hintsMap) 
 : GObject(GObjectTypes::SEQUENCE, name, hintsMap),  
-cachedLength(-1), cachedAlphabet(NULL), cachedCircular(TriState_Unknown)
+cachedAlphabet(NULL), cachedLength(-1), cachedCircular(TriState_Unknown)
 {
     entityRef = seqRef;
 }
@@ -53,9 +53,6 @@ cachedLength(-1), cachedAlphabet(NULL), cachedCircular(TriState_Unknown)
 bool U2SequenceObject::checkConstraints(const GObjectConstraints* c) const {
     const U2SequenceObjectConstraints* dnac = qobject_cast<const U2SequenceObjectConstraints*>(c);
     SAFE_POINT(dnac != NULL, "Not a U2SequenceObjectConstraints!", NULL);
-
-    bool resultDNAConstraints = true;
-    bool resultAlphabetType = true;
 
     if (dnac->sequenceSize != NO_LENGTH_CONSTRAINT) {
         qint64 seqLen = getSequenceLength();
@@ -171,7 +168,7 @@ GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os) const {
     return new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id), getGHintsMap());
 }
 
-void U2SequenceObject::setCircular(bool v) {
+void U2SequenceObject::setCircular(bool) {
     //TODO:
 }
 

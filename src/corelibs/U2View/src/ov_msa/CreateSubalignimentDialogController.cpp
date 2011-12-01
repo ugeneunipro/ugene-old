@@ -97,7 +97,6 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
     
     foreach(DocumentFormatId dfId, dfIdList){
         DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(dfId);
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::VFS_FILE);
         if (df->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT) && df->getFlags().testFlag(DocumentFormatFlag_SupportWriting)) {
             foreach(QString ext, df->getSupportedDocumentFileExtensions()){
                 filter.append("*." + ext + " ");

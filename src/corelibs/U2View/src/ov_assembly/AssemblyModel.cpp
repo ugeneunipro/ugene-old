@@ -371,7 +371,7 @@ void AssemblyModel::setReference(U2SequenceObject* seqObj) {
 }
 
 QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus& os) {
-    SAFE_POINT(refObj, "Reference document is not ready!", QByteArray());
+    SAFE_POINT_EXT(refObj, os.setError(tr("Reference document is not ready!")), QByteArray());
     return refObj->getSequenceData(region);
 }
 

@@ -942,7 +942,6 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s) {
     }
 
     emit si_selectionChanged(selection, prevSelection);
-    QPoint current = prevSelection.topLeft(), prev = prevSelection.topLeft();
     update();
 
 }
@@ -953,7 +952,6 @@ void MSAEditorSequenceArea::setCursorPos(const QPoint& p) {
         return;
     }
     
-    QPoint prev = cursorPos;
     cursorPos = p;
     
     highlightSelection = false;

@@ -120,6 +120,7 @@ static QString fromEscapedString( const QString & val ) {
 }
 
 void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
+    Q_UNUSED(hints);
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
     int len = io->readLine(buff.data, READ_BUFF_SIZE);
     buff.data[len] = '\0';
@@ -150,7 +151,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 objName = headerName + SEQUENCE_TAG;
                 DNASequence sequence(objName, seq);
                 sequence.info.insert(DNAInfo::FASTA_HDR, objName);
-                U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, sequence, hints, os);
+                U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, sequence, os);
                 CHECK_OP(os, );
                 SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
                 dbiObjects.objects << seqObj->getSequenceRef().entityId;
@@ -287,7 +288,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         DNASequence sequence(objName, seq);
         sequence.info.insert(DNAInfo::FASTA_HDR, objName);
         sequence.info.insert(DNAInfo::ID, objName);
-        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, sequence, hints, os);
+        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, sequence, os);
         if (os.hasError()) {
             qDeleteAll(seqMap.values());
             seqMap.clear();

@@ -149,7 +149,7 @@ static bool readBlock( QByteArray & block, IOAdapter * io, U2OpStatus & ti, qint
 /**
  * FASTQ format specification: http://maq.sourceforge.net/fastq.shtml
  */
-static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os,
+static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os,
                  int gapSize, int predictedSize, QString& writeLockReason) {
      writeLockReason.clear();
      QByteArray readBuff, secondBuff;
@@ -272,7 +272,7 @@ Document* FastqFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
     int predictedSize = qMax(100*1000, DocumentFormatUtils::getMergedSize(hints, gapSize==-1 ? 0 : io->left()));
 
     QString lockReason;
-    load(io, dbiRef, io->getURL(), objects, hints, os, gapSize, predictedSize, lockReason);
+    load(io, dbiRef, io->getURL(), objects, os, gapSize, predictedSize, lockReason);
 
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     DocumentFormatUtils::updateFormatHints(objects, hints);

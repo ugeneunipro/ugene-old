@@ -298,6 +298,7 @@ int MarkerListCfgModel::rowCount(const QModelIndex &) const {
 }
 
 Qt::ItemFlags MarkerListCfgModel::flags( const QModelIndex & index ) const {
+    Q_UNUSED(index);
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
@@ -317,10 +318,12 @@ QVariant MarkerListCfgModel::headerData(int section, Qt::Orientation orientation
 }
 
 bool MarkerListCfgModel::setData(const QModelIndex & index, const QVariant & value, int role) {
+    Q_UNUSED(index); Q_UNUSED(value); Q_UNUSED(role);
     return true;
 }
 
 bool MarkerListCfgModel::removeRows(int row, int count, const QModelIndex &parent) {
+    Q_UNUSED(parent);
     if (1 != count) {
         return true;
     }

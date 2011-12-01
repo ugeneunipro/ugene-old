@@ -60,6 +60,7 @@ static void renameObjectsIfNamesEqual(QList<GObject*> & objs) {
 }
 
 Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
+    Q_UNUSED(dbiRef);
     //1. open db
     //2. read all assembly & sequence objects
     //3. close db

@@ -116,7 +116,7 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
 }
 
 #define READ_BUFF_SIZE  4096
-static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints,
+static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects,
                  int gapSize, QString& writeLockReason, U2OpStatus& os) 
 {
     static char fastaHeaderStartChar = '>';
@@ -229,7 +229,7 @@ Document* FastaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
     int gapSize = qBound(-1, DocumentFormatUtils::getMergeGap(fs), 1000 * 1000);
     
     QString lockReason;
-    load(io, dbiRef, objects, fs, gapSize, lockReason, os);
+    load(io, dbiRef, objects, gapSize, lockReason, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, lockReason);

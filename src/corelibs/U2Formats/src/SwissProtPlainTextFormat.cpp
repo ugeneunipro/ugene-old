@@ -107,6 +107,8 @@ bool SwissProtPlainTextFormat::readIdLine(ParserState* s) {
 }
 
 bool SwissProtPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqImporter, int& sequenceLen,int& fullSequenceLen, bool merge, int gapSize, U2OpStatus& os) {
+    Q_UNUSED(merge);
+    Q_UNUSED(gapSize);
     U2OpStatus& si = st->si;
     QString lastTagName;
     bool hasLine = false;
@@ -240,8 +242,8 @@ bool SwissProtPlainTextFormat::readSequence(ParserState *st, U2SequenceImporter&
             break;
         }
 
-		bool isSeek = writer.seek(0);
-		assert(isSeek);
+        bool isSeek = writer.seek(0);
+        assert(isSeek); Q_UNUSED(isSeek);
 
         //add buffer to result
         for (int i= 0; i < len; i++) {

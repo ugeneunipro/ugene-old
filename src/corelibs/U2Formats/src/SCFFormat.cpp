@@ -651,7 +651,7 @@ Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
     dna.info.insert(DNAInfo::COMMENT, vals);
 
     QList<GObject*> objects;
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, sampleName + " sequence", objects, dna, fs, os);
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, sampleName + " sequence", objects, dna, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, sampleName + " chromatogram");

@@ -64,7 +64,9 @@ protected:
 
     virtual bool readEntry(ParserState*, U2SequenceImporter& ,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&) = 0;	
     virtual void readAnnotations(ParserState*, int offset);
-    virtual void readHeaderAttributes(QVariantMap& tags, DbiConnection& con, U2SequenceObject* so) {}; // does nothing if not overloaded
+    virtual void readHeaderAttributes(QVariantMap& tags, DbiConnection& con, U2SequenceObject* so) {
+        Q_UNUSED(tags); Q_UNUSED(con); Q_UNUSED(so);
+    } // does nothing if not overloaded
     
     DocumentFormatId id;
     QString     formatName;

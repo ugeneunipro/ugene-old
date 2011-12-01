@@ -266,7 +266,7 @@ void LoadDocumentTask::prepare() {
 
         double DEFAULT_COMPRESS_RATIO = 2.5;
         if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE) {
-            quint64 fileSizeInBytes = ZlibAdapter::getUncompressedFileSizeInBytes(url);
+            qint64 fileSizeInBytes = ZlibAdapter::getUncompressedFileSizeInBytes(url);
             if (fileSizeInBytes < 0) {
                 memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level
             } else {

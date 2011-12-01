@@ -426,7 +426,7 @@ void DetViewRenderArea::drawComplement(QPainter& p) {
 
 static QByteArray translate(DNATranslation* t, const char* seq, qint64 seqLen) {
     QByteArray res(seqLen / 3, 0);
-    qint64 n = t->translate(seq, seqLen, res.data(), seqLen/3);
+    /*qint64 n = */t->translate(seq, seqLen, res.data(), seqLen/3);
 //    assert(n == res.length()); Q_UNUSED(n);
     return res;
 }
@@ -475,7 +475,6 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     fontBS.setBold(true);
     QFont fontIS = sequenceFontSmall;
     fontIS.setItalic(true);
-    int directLine = 0;
 
     QList<Annotation*> annotationsInRange = detView->findAnnotationsInRange(visibleRange);
 

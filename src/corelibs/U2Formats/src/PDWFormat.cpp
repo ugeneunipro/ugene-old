@@ -105,7 +105,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, 
                 loi.name = seqName;
                 dnaSeq.info.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
             }
-            seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, seqName, objects, dnaSeq, QVariantMap(), os);
+            seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, seqName, objects, dnaSeq, os);
             break;
         } else if (readBuff.startsWith(PDW_CIRCULAR_TAG)) {
             QByteArray val = readPdwValue(readBuff, PDW_CIRCULAR_TAG);

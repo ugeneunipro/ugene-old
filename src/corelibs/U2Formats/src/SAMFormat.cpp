@@ -280,7 +280,7 @@ Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 
         MAlignmentRow row;
 
-        short flag = fields[1].toShort();
+        //short flag = fields[1].toShort();
 
         row.setName(fields[0]);
         if(fields[9] == "*") {

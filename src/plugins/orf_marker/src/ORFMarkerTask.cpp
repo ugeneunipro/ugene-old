@@ -82,8 +82,8 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 // find ORFS and save 2 annotations task
 
 FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj, const DNASequence& seq, 
-													 const ORFAlgorithmSettings& settings, const QString& gName )
-  :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), dna(seq), groupName(gName)
+    const ORFAlgorithmSettings& settings, const QString& gName )
+  :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), dna(seq)
 {
     fTask = new ORFFindTask(cfg, dna.seq);
     addSubTask(fTask);

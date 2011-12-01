@@ -290,17 +290,14 @@ QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequence
 //////////////////////////////////////////////////////////////////////////
 
 
-ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( AnnotationGroup* ag, 
-															   GObjectReference& ref, 
-															   ADVSequenceObjectContext* ctx)
+ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( AnnotationGroup* ag, GObjectReference& ref, ADVSequenceObjectContext* ctx)
 :Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx)
 {
 	
 }
 
 
-void ExportAutoAnnotationsGroupTask::prepare()
-{
+void ExportAutoAnnotationsGroupTask::prepare() {
 	QSet<Annotation*> annsToExport;
 	aGroup->findAllAnnotationsInGroupSubTree(annsToExport);
 
@@ -311,17 +308,13 @@ void ExportAutoAnnotationsGroupTask::prepare()
 	
 	SAFE_POINT(aData.size() > 0, "No auto-annotations to export!", );
 
-	AnnotationTableObject* obj = new AnnotationTableObject("permanent");
-	
-	createTask = 
-		new ADVCreateAnnotationsTask(seqCtx->getAnnotatedDNAView(), aRef, aGroup->getGroupName(), aData );
+        createTask =  new ADVCreateAnnotationsTask(seqCtx->getAnnotatedDNAView(), aRef, aGroup->getGroupName(), aData );
 
 	addSubTask(createTask);
 }
 
 
-QList<Task*> ExportAutoAnnotationsGroupTask::onSubTaskFinished( Task* subTask )
-{
+QList<Task*> ExportAutoAnnotationsGroupTask::onSubTaskFinished( Task* subTask ) {
 	QList<Task*> res;
 
 	if (!subTask->isFinished() || subTask->hasError() || subTask->isCanceled()) {

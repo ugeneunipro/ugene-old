@@ -142,7 +142,7 @@ const QString GSequenceGraphDrawer::DEFAULT_COLOR(tr("Default color"));
 
 GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
 										   QMap<QString,QColor> colors) 
-: QObject(v), view(v), wdata(wd), lineColors(colors) 
+: QObject(v), view(v), lineColors(colors), wdata(wd)
 {
     defFont = new QFont("Arial", 8);
 	if (colors.isEmpty()) {

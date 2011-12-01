@@ -104,8 +104,8 @@ protected:
 protected:
     GSequenceGraphView*             view;
     QFont*                          defFont;
-	ColorMap						lineColors;
-	float							globalMin, globalMax;
+    ColorMap                        lineColors;
+    float                           globalMin, globalMax;
 	
     GSequenceGraphWindowData        wdata;
     GSequenceGraphMinMaxCutOffData  commdata;
