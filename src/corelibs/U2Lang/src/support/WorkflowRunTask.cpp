@@ -102,6 +102,18 @@ void WorkflowRunTask::sl_outputProgressAndState() {
     }
 }
 
+inline bool isValidFile(const QString &link, const qint64 &processStartTime) {
+    GUrl url(link);
+    if (url.isLocalFile()) {
+        if (QFile::exists(link)) {
+            QFileInfo info(link);
+            bool createdAtThisRun = (info.lastModified().toTime_t() >= processStartTime);
+            return createdAtThisRun;
+        }
+    }
+    return false;
+}
+
 QString WorkflowRunTask::generateReport() const {
     QString res;
     res+="<table width='75%'>";
@@ -125,12 +137,10 @@ QString WorkflowRunTask::generateReport() const {
         if(!links.isEmpty() && !sub->hasError()) {
             res += QString("<tr><td><i>%1</i></td></tr>").arg(tr("Output files:"));
         
+            qint64 startTimeSec = timeInfo.startTime/1000000;
             foreach(const QString &link, links) {
-                GUrl url(link);
-                if (url.isLocalFile()) {
-                    if (QFile::exists(link)) {
-                        res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
-                    }
+                if (isValidFile(link, startTimeSec)) {
+                    res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
                 }
             }
         }
@@ -451,12 +461,11 @@ QString WorkflowRunInProcessTask::generateReport() const {
         QStringList links = (qobject_cast<WorkflowIterationRunInProcessTask*>(sub))->getFiles();
         if(!links.isEmpty() && !sub->hasError()) {
             res += QString("<tr><td><i>%1</i></td></tr>").arg(tr("Output files:"));
+
+            qint64 startTimeSec = timeInfo.startTime/1000000;
             foreach(const QString &link, links) {
-                GUrl url(link);
-                if (url.isLocalFile()) {
-                    if (QFile::exists(link)) {
-                        res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
-                    }
+                if (isValidFile(link, startTimeSec)) {
+                    res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
                 }
             }
         }

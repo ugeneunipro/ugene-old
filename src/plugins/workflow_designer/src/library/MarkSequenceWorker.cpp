@@ -145,6 +145,7 @@ void MarkSequenceWorkerFactory::init() {
 
     proto->setEditor(new MarkerEditor());
     proto->setPrompter(new MarkSequencePrompter());
+    proto->setPortValidator(inPd.getId(), new ScreenedSlotValidator(BaseSlots::URL_SLOT().getId()));
     
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATAFLOW(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new MarkSequenceWorkerFactory());
