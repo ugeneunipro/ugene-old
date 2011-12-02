@@ -25,7 +25,11 @@
 #include <U2Core/Vector3D.h>
 #include <U2Core/Log.h>
 #include <QtOpenGL>
-#include <GL/glu.h>
+#if defined(Q_WS_MAC)
+# include <OpenGL/glu.h>
+#else
+# include <GL/glu.h>
+#endif
 
 class GLUquadric;
 

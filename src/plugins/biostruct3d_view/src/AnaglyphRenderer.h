@@ -26,7 +26,8 @@
 
 #include <QColor>
 #include <QtOpenGL>
-#include <GL/glu.h>
+// include this for proper cross-platform including of glu.h
+#include "GraphicUtils.h"
 
 namespace U2 {
 
