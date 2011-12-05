@@ -30,37 +30,6 @@
     </message>
 </context>
 <context>
-    <name>ImageExportForm</name>
-    <message>
-        <source>Export Image</source>
-        <translation type="obsolete">Экспорт изображения</translation>
-    </message>
-    <message>
-        <source>File name</source>
-        <translation type="obsolete">Имя файла</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">Формат изображения</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Ширина</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">Высота</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">Сохранить</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Отмена</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../src/TubeGLRenderer.cpp" line="32"/>
@@ -263,10 +232,6 @@
         <translation>Молекулярная поверхность</translation>
     </message>
     <message>
-        <source>Models</source>
-        <translation type="obsolete">Модели</translation>
-    </message>
-    <message>
         <location filename="../src/BioStruct3DGLWidget.cpp" line="581"/>
         <source>Error</source>
         <translation>Ошибка</translation>
@@ -275,14 +240,6 @@
         <location filename="../src/BioStruct3DGLWidget.cpp" line="581"/>
         <source>Unable to open file %1 for writing</source>
         <translation>Невозможно открыть файл %1 для записи</translation>
-    </message>
-    <message>
-        <source>Exclusive</source>
-        <translation type="obsolete">Выбрать одну</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation type="obsolete">Выбрать все</translation>
     </message>
     <message>
         <location filename="../src/BioStruct3DGLWidget.cpp" line="765"/>
@@ -382,33 +339,6 @@
         <location filename="../src/BioStruct3DViewPlugin.cpp" line="79"/>
         <source>Visualizes 3D structures of biological molecules.</source>
         <translation>Визуализирует 3D структуры биологических молекул.</translation>
-    </message>
-</context>
-<context>
-    <name>U2::ExportImageDialog</name>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
-    </message>
-    <message>
-        <source>The filename is empty!</source>
-        <translation type="obsolete">Не указано имя файла!</translation>
-    </message>
-    <message>
-        <source>Overwrite file?</source>
-        <translation type="obsolete">Перезаписать файл?</translation>
-    </message>
-    <message>
-        <source>The file &quot;%1&quot; already exists. Do you wish to overwrite it?</source>
-        <translation type="obsolete">Файл &quot;%1&quot; уже существует. Перезаписать?</translation>
-    </message>
-    <message>
-        <source>Save image to...</source>
-        <translation type="obsolete">Выберите файл для сохранения изображения...</translation>
-    </message>
-    <message>
-        <source>Saving image to &apos;%1&apos;...</source>
-        <translation type="obsolete">Запись изображения в &apos;%1&apos;...</translation>
     </message>
 </context>
 <context>
