@@ -5,7 +5,7 @@ BUILD_DIR=./ugeneui_bundle
 RELEASE_DIR=../../src/_release
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
-PATH_TO_QT="/usr/local/Trolltech/Qt-4.7.3/lib"
+PATH_TO_QT="/usr/local/Trolltech/Qt-4.7.4/lib"
 
 source bundle_common.sh
 
@@ -115,7 +115,7 @@ if [ ! "$1" ]
    then
       echo
       echo pkg-dmg running...
-      pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-x86-r${BUILD_VCS_NUMBER_new_trunk} --license ../source/LICENSE --volname "Unipro UGENE $VERSION" --symlink /Applications
+      ./pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-x86-r${BUILD_VCS_NUMBER_new_trunk} --license ../source/LICENSE --volname "Unipro UGENE $VERSION" --symlink /Applications
     
 fi
 
