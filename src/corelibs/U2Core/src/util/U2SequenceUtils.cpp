@@ -81,6 +81,8 @@ U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiR
     QByteArray wholeSeq = srcCon.dbi->getSequenceDbi()->getSequenceData(srcSeq.entityId, U2_REGION_MAX, os);
     CHECK_OP(os, res);
     dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), wholeSeq, os);
+
+   
     return res;
 }
 

@@ -27,6 +27,7 @@
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2AttributeUtils.h>
 
 #include "GObjectTypes.h"
 
@@ -165,7 +166,15 @@ void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& 
 GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os) const {
     U2Sequence seq = U2SequenceUtils::copySequence(entityRef, dbiRef, os);
     CHECK_OP(os, NULL);
-    return new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id), getGHintsMap());
+
+    U2SequenceObject* res = new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id), getGHintsMap());
+
+    //TODO: copy attributes of the sequence. Now it can only try copying GenBank header
+    QString gbHeader;
+    gbHeader = getStringAttribute(DNAInfo::GENBANK_HEADER);
+    res->setStringAttribute(gbHeader, DNAInfo::GENBANK_HEADER);
+
+    return res;
 }
 
 void U2SequenceObject::setCircular(bool) {
@@ -266,6 +275,12 @@ QVariantMap U2SequenceObject::getSequenceInfo() const {
 		resultingInfo.insert(DNAInfo::DEFINITION, con.dbi->getAttributeDbi()->getStringAttribute(definitionList.first(),os).value);
 		CHECK_OP(os, QVariantMap());
 	}
+    U2StringAttribute attr = U2AttributeUtils::findStringAttribute(con.dbi->getAttributeDbi(), entityRef.entityId, DNAInfo::GENBANK_HEADER, os);
+    if(attr.hasValidId()) {
+        resultingInfo.insert(DNAInfo::GENBANK_HEADER, attr.value);
+        CHECK_OP(os, QVariantMap());
+    }
+    
     QString name = this->getSequenceName();
     if (!name.isEmpty()) {
         resultingInfo.insert(DNAInfo::ID,name);  
