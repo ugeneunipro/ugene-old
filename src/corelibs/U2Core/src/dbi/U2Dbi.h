@@ -64,7 +64,7 @@ class U2Dbi;
 /**
     Operational state of the database.
 */
-enum U2CORE_EXPORT U2DbiState {
+enum U2DbiState {
     U2DbiState_Void = 1,
     U2DbiState_Starting = 2,
     U2DbiState_Ready = 3,
@@ -74,7 +74,7 @@ enum U2CORE_EXPORT U2DbiState {
 /**
     DBI feature flags
 */
-enum U2CORE_EXPORT U2DbiFeature {
+enum U2DbiFeature {
     
     /** DBI supports sequence reading methods */
     U2DbiFeature_ReadSequence                   = 1,

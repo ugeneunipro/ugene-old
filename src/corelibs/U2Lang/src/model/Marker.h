@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-enum U2LANG_EXPORT MarkerDataType {
+enum MarkerDataType {
     INTEGER,
     FLOAT,
     STRING,
