@@ -177,6 +177,14 @@ void MultiTableAssemblyAdapter::rereadTables(const QByteArray& idata, U2OpStatus
 }
 
 void MultiTableAssemblyAdapter::flushTables(U2OpStatus& os)  {
+    bool empty = adaptersGrid.isEmpty();
+    if (empty) {
+        // TODO: fetch some reads for analysis. By now not needed, since regions are hard-coded anyway
+        initTables(QList<U2AssemblyRead>(), os);
+        if (os.hasError()) {
+            return;
+        }
+    }
     QByteArray idata;
     for(int i = 0; i < elenRanges.size(); i++) {
         int rangeStart = elenRanges[i].startPos;
