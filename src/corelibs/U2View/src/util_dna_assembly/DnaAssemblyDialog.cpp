@@ -280,13 +280,16 @@ QMap<QString, QVariant> DnaAssemblyDialog::getCustomSettings() {
 
 void DnaAssemblyDialog::addGuiExtension() {
     static const int insertPos = verticalLayout->count() - 2;
-    
+
+    int macFixDelta = 50;
+
     // cleanup previous extension
     if (customGUI != NULL) {
         layout()->removeWidget(customGUI);         
         setMinimumHeight(minimumHeight() - customGUI->minimumHeight());
         delete customGUI;
         customGUI = NULL;
+        macFixDelta = 0;
     }
     
     // insert new extension widget
@@ -314,9 +317,10 @@ void DnaAssemblyDialog::addGuiExtension() {
         customGUI->setMinimumHeight(extensionMinHeight);
         verticalLayout->insertWidget(insertPos, customGUI);
         // adjust sizes
-        // TODO: fix min height on Mac OS normally
-        setMinimumHeight(customGUI->minimumHeight() + minimumHeight() + 50);
-        if (minimumWidth() < customGUI->minimumWidth()) {
+        // HACK: add 50 to min height when dialog first shown, 50 to width always (fix for Mac OS)
+        // TODO: handle margins in proper way so this hack not needed
+        setMinimumHeight(customGUI->minimumHeight() + minimumHeight() + macFixDelta);
+        if (minimumWidth() < customGUI->minimumWidth() + 50) {
             setMinimumWidth(customGUI->minimumWidth() + 50);
         };
         if (!refSeqEdit->text().isEmpty()) {
