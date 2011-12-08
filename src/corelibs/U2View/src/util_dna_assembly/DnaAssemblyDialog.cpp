@@ -314,9 +314,10 @@ void DnaAssemblyDialog::addGuiExtension() {
         customGUI->setMinimumHeight(extensionMinHeight);
         verticalLayout->insertWidget(insertPos, customGUI);
         // adjust sizes
-        setMinimumHeight(customGUI->minimumHeight() + minimumHeight());
+        // TODO: fix min height on Mac OS normally
+        setMinimumHeight(customGUI->minimumHeight() + minimumHeight() + 50);
         if (minimumWidth() < customGUI->minimumWidth()) {
-            setMinimumWidth(customGUI->minimumWidth());
+            setMinimumWidth(customGUI->minimumWidth() + 50);
         };
         if (!refSeqEdit->text().isEmpty()) {
             QString error;

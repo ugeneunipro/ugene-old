@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>317</width>
-    <height>285</height>
+    <width>455</width>
+    <height>358</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -126,10 +126,16 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_alignOptions">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>129</height>
+           <height>160</height>
           </size>
          </property>
          <property name="toolTip">
@@ -140,7 +146,16 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <layout class="QGridLayout" name="gridLayout_2">
+           <layout class="QGridLayout" name="gridLayout_2" rowminimumheight="20,20,20,20">
+            <property name="horizontalSpacing">
+             <number>3</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>9</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
             <item row="1" column="0">
              <widget class="QCheckBox" name="reverseBox">
               <property name="enabled">
