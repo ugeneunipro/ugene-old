@@ -255,7 +255,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
     }
     assert(selectedItems.length()==1);
     QString name=selectedItems.at(0)->text(0);
-    if((selectedItems.at(0)->text(0) != "BLAST") && (selectedItems.at(0)->text(0) != "BLAST+") && (selectedItems.at(0)->text(0) != "BowtieToolkit")){
+    if((selectedItems.at(0)->text(0) != "BLAST") && (selectedItems.at(0)->text(0) != "BLAST+") && (selectedItems.at(0)->text(0) != "Bowtie")){
         descriptionTextEdit->setText(AppContext::getExternalToolRegistry()->getByName(selectedItems.at(0)->text(0))->getDescription());
         if(!externalToolsInfo[selectedItems.at(0)->text(0)].version.isEmpty()){
             descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Version: ")+externalToolsInfo[selectedItems.at(0)->text(0)].version);
@@ -271,7 +271,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
     if(selectedItems.at(0)->text(0) == "BLAST+"){
         descriptionTextEdit->setText(tr("<i>BLAST+</i> is a new version of the BLAST package from the NCBI."));
     }
-    if(selectedItems.at(0)->text(0) == "BowtieToolkit"){
+    if(selectedItems.at(0)->text(0) == "Bowtie"){
         descriptionTextEdit->setText(tr("<i>Bowtie<i> is an ultrafast, memory-efficient short read aligner. "
                        "It aligns short DNA sequences (reads) to the human genome at "
                        "a rate of over 25 million 35-bp reads per hour. "
@@ -315,6 +315,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                         bool fileNotFound=true;
                         QString executableFileName=AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                         while (it.hasNext()&&fileNotFound) {
+                            it.next();
                             QFileInfo info(it.filePath()+"/"+executableFileName);
                             if(info.exists() && info.isFile() && info.isExecutable()){
                                 QString path=QDir::toNativeSeparators(it.filePath()+"/"+executableFileName);
@@ -329,7 +330,6 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                                 AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);
                                 fileNotFound=false;
                             }
-                            it.next();
                         }
                     }
                 }

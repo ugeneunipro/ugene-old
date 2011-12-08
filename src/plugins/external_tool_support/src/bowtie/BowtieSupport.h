@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-#define BOWTIE_TOOL_NAME "Bowtie"
+#define BOWTIE_TOOL_NAME "Bowtie "  //this space is a dirty hack
 #define BOWTIE_BUILD_TOOL_NAME "Bowtie-build"
 
 class BowtieSupport : public ExternalTool {

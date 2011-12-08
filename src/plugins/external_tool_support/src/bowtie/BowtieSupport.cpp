@@ -61,7 +61,7 @@ BowtieSupport::BowtieSupport(const QString &name, const QString &path):
                    "its memory footprint small: typically about 2.2 GB for the human "
                    "genome (2.9 GB for paired-end).");
     versionRegExp=QRegExp("version (\\d+\\.\\d+\\.\\d+)");
-    toolKitName="BowtieToolkit";
+    toolKitName="Bowtie";
 }
 
 } // namespace U2

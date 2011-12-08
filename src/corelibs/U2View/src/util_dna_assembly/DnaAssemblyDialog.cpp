@@ -148,7 +148,7 @@ void DnaAssemblyDialog::accept() {
         }
     }
     if (getAlgorithmName() == "Bowtie") {
-        if(AppContext::getExternalToolRegistry()->getByName("Bowtie")->getPath().isEmpty() ||
+        if(AppContext::getExternalToolRegistry()->getByName("Bowtie ")->getPath().isEmpty() ||
            AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
             QMessageBox msgBox;
             msgBox.setWindowTitle(tr("DNA Assembly"));
@@ -168,7 +168,7 @@ void DnaAssemblyDialog::accept() {
                 assert(NULL);
                 break;
             }
-            if(AppContext::getExternalToolRegistry()->getByName("Bowtie")->getPath().isEmpty() ||
+            if(AppContext::getExternalToolRegistry()->getByName("Bowtie ")->getPath().isEmpty() ||
                AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
                 return;
             }
