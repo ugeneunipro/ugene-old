@@ -25,9 +25,9 @@ mkdir "${TARGET_EXE_DIR}/plugins"
 mkdir "${TARGET_EXE_DIR}/data"
 
 echo copying translations
-cp $RELEASE_DIR/transl_en.qm "$TARGET_EXE_DIR"
-cp $RELEASE_DIR/transl_ru.qm "$TARGET_EXE_DIR"
+cp $RELEASE_DIR/transl_*.qm "$TARGET_EXE_DIR"
 cp -R ./qt_menu.nib "${TARGET_EXE_DIR}/../Resources"
+find "${TARGET_EXE_DIR}/../Resources/qt_menu.nib" -name ".svn" | xargs rm -rf
 
 echo copying data dir
 
