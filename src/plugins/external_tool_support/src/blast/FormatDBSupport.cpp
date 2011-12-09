@@ -58,7 +58,7 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
 #ifdef Q_OS_WIN
     executableFileName="formatdb.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="formatdb";
     #endif
 #endif
@@ -74,7 +74,7 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
 #ifdef Q_OS_WIN
     executableFileName="makeblastdb.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="makeblastdb";
     #endif
 #endif

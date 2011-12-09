@@ -69,7 +69,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="blastn.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="blastn";
     #endif
 #endif
@@ -81,7 +81,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="blastp.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="blastp";
     #endif
 #endif
@@ -93,7 +93,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="blastx.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="blastx";
     #endif
 #endif
@@ -105,7 +105,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="tblastn.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="tblastn";
     #endif
 #endif
@@ -117,7 +117,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="tblastx.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="tblastx";
     #endif
 #endif
@@ -131,7 +131,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="rpsblast.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="rpsblast";
     #endif
 #endif

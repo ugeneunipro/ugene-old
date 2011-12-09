@@ -57,7 +57,7 @@ ClustalWSupport::ClustalWSupport(const QString& name, const QString& path) : Ext
 #ifdef Q_OS_WIN
     executableFileName="clustalw2.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="clustalw2";
     #endif
 #endif

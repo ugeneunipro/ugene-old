@@ -47,7 +47,7 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
 #ifdef Q_OS_WIN
     executableFileName="mrbayes.exe";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="mrbayes"; //need check on unix
     #endif
 #endif

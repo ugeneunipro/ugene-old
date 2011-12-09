@@ -58,7 +58,7 @@ TCoffeeSupport::TCoffeeSupport(const QString& name, const QString& path) : Exter
 #ifdef Q_OS_WIN
     executableFileName="t_coffee.bat";
 #else
-    #ifdef Q_OS_LINUX
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     executableFileName="t_coffee";
     #endif
 #endif
