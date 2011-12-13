@@ -11,6 +11,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/library/ScriptLibrary.h \
            src/model/ActorModel.h \
            src/model/ActorPrototypeRegistry.h \
+           src/model/Aliasing.h \
            src/model/Attribute.h \
            src/model/AttributeRelation.h \
            src/model/Configuration.h \
@@ -21,6 +22,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/DbiDataStorage.h \
            src/model/Descriptor.h \
            src/model/ExternalToolCfg.h \
+           src/model/IncludedProtoFactory.h \
            src/model/IntegralBus.h \
            src/model/IntegralBusModel.h \
            src/model/IntegralBusType.h \
@@ -32,6 +34,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/QDScheme.h \
            src/model/QueryDesignerRegistry.h \
            src/model/Schema.h \
+           src/model/SchemaActorsRegistry.h \
            src/model/WorkflowEnv.h \
            src/model/WorkflowManager.h \
            src/model/WorkflowTransport.h \
@@ -40,6 +43,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/MapDatatypeEditor.h \
            src/support/MarkerUtils.h \
            src/support/SchemaSerializer.h \
+           src/support/ScriptWorkerSerializer.h \
            src/support/SimpleWorkflowTask.h \
            src/support/WorkflowEnvImpl.h \
            src/support/WorkflowIOTasks.h \
@@ -56,12 +60,14 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/library/ScriptLibrary.cpp \
            src/model/ActorModel.cpp \
            src/model/ActorPrototypeRegistry.cpp \
+           src/model/Aliasing.cpp \
            src/model/Attribute.cpp \
            src/model/AttributeRelation.cpp \
            src/model/Configuration.cpp \
            src/model/Datatype.cpp \
            src/model/DbiDataStorage.cpp \
            src/model/Descriptor.cpp \
+           src/model/IncludedProtoFactory.cpp \
            src/model/IntegralBus.cpp \
            src/model/IntegralBusModel.cpp \
            src/model/IntegralBusType.cpp \
@@ -72,6 +78,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/QDScheme.cpp \
            src/model/QueryDesignerRegistry.cpp \
            src/model/Schema.cpp \
+           src/model/SchemaActorsRegistry.cpp \
            src/model/WorkflowEnv.cpp \
            src/model/WorkflowManager.cpp \
            src/model/WorkflowTransport.cpp \
@@ -80,6 +87,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/MapDatatypeEditor.cpp \
            src/support/MarkerUtils.cpp \
            src/support/SchemaSerializer.cpp \
+           src/support/ScriptWorkerSerializer.cpp \
            src/support/SimpleWorkflowTask.cpp \
            src/support/WorkflowEnvImpl.cpp \
            src/support/WorkflowIOTasks.cpp \

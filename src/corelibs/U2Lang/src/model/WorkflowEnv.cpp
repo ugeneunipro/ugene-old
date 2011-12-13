@@ -39,6 +39,7 @@ bool WorkflowEnv::init(WorkflowEnv* env) {
     instance = env;
     env->dvfReg = env->initDataTypeValueFactoryRegistry();
     env->ecfgReg = env->initExternalToolCfgRegistry();
+    env->schemaActorsReg = env->initSchemaActorsRegistry();
     return true;
 }
 

@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <U2Lang/Datatype.h>
 #include <U2Lang/ExternalToolCfg.h>
+#include <U2Lang/SchemaActorsRegistry.h>
 #include "Descriptor.h"
 
 namespace U2 {
@@ -53,6 +54,7 @@ public:
     static DomainFactoryRegistry* getDomainRegistry() {return getInstance()->domain;}
     static DataTypeValueFactoryRegistry* getDataTypeValueFactoryRegistry() { return getInstance()->dvfReg; }
     static ExternalToolCfgRegistry* getExternalCfgRegistry() {return getInstance()->ecfgReg;}
+    static SchemaActorsRegistry *getSchemaActorsRegistry() {return getInstance()->schemaActorsReg;}
     
 protected:
     static WorkflowEnv* instance;
@@ -67,6 +69,7 @@ protected:
     virtual DomainFactoryRegistry* initDomainRegistry() = 0;
     virtual DataTypeValueFactoryRegistry* initDataTypeValueFactoryRegistry() = 0;
     virtual ExternalToolCfgRegistry* initExternalToolCfgRegistry() = 0;
+    virtual SchemaActorsRegistry *initSchemaActorsRegistry() = 0;
     
 protected:
     DataTypeRegistry* data;
@@ -74,6 +77,7 @@ protected:
     DomainFactoryRegistry* domain;
     DataTypeValueFactoryRegistry* dvfReg;
     ExternalToolCfgRegistry *ecfgReg;
+    SchemaActorsRegistry *schemaActorsReg;
     
 }; // WorkflowEnv
 

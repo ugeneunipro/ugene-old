@@ -27,6 +27,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QByteArray>
 #include <U2Core/global.h>
+#include <U2Lang/Aliasing.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/Port.h>
 
@@ -52,6 +53,8 @@ public:
     static const QString NO_ERROR;
     static const QString HEADER_LINE;
     static const QString OLD_XML_HEADER;
+    static const QString INCLUDE;
+    static const QString INCLUDE_AS;
     static const QString BODY_START;
     static const QString META_START;
     static const QString DOT_ITERATION_START;
@@ -66,8 +69,14 @@ public:
     static const QString DOT;
     static const QString DASH;
     static const QString ITERATION_ID;
-    static const QString ALIASES_START;
-    static const QString ALIASES_HELP_START;
+    static const QString PARAM_ALIASES_START;
+    static const QString PORT_ALIASES_START;
+
+    // -------------- backward compatibility --------------
+        static const QString ALIASES_HELP_START;
+        static const QString OLD_ALIASES_START;
+    // ----------------------------------------------------
+
     static const QString VISUAL_START;
     static const QString UNDEFINED_META_BLOCK;
     static const QString TAB;
@@ -90,6 +99,8 @@ public:
     static const QString QUAL_NAME;
     static const QString ANN_NAME;
     static const QString ACTOR_BINDINGS;
+    static const QString SOURCE_PORT;
+    static const QString ALIAS;
     
 public:
     struct U2LANG_EXPORT ReadFailed {
@@ -141,6 +152,7 @@ public:
     typedef QMap<ActorId, QString> NamesMap;
     
     static void parseHeader(Tokenizer & tokenizer, Metadata * meta);
+    static void parseIncludes(Tokenizer &tokenizer, QList<QString> includedUrls);
     static void parseBodyHeader(Tokenizer & tokenizer, Metadata * meta, bool needName = true);
     static Actor* parseElementsDefinition(Tokenizer & tokenizer, const QString & actorName, QMap<QString, Actor*> & actorMap, 
                                             QMap<ActorId, ActorId>* idMap = NULL);
@@ -151,12 +163,18 @@ public:
     static Iteration parseIteration(Tokenizer & tokenizer, const QString & iterationName, 
                                         const QMap<QString, Actor*> & actorMap, bool pasteMode = false);
     static ActorBindingsGraph parseActorBindings(Tokenizer &tokenizer, const QMap<QString, Actor*> &actorMap, QList<QPair<Port*, Port*> > &links);
-    static void parseAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
-    static void parseAliasesHelp(Tokenizer & tokenizer, const QList<Actor*> & procs);
+    static void parseParameterAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
+    static void parsePortAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap, QList<PortAlias> &portAliases);
+
+    // -------------- backward compatibility --------------
+        static void parseOldAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
+        static void parseAliasesHelp(Tokenizer & tokenizer, const QList<Actor*> & procs);
+    // ----------------------------------------------------
+
     // if slot has no val-> add it to binding
     static void addEmptyValsToBindings(const QList<Actor*> & procs);
     // idMap not null in copy mode
-    static QString string2Schema(const QString & data, Schema * schema, Metadata * meta = NULL, QMap<ActorId, ActorId>* idMap = NULL);
+    static QString string2Schema(const QString & data, Schema * schema, Metadata * meta = NULL, QMap<ActorId, ActorId>* idMap = NULL, QList<QString> includedUrls = QList<QString>());
     
     static void addPart( QString & to, const QString & w);
     static QString header2String(const Metadata * meta);
@@ -164,13 +182,14 @@ public:
     static QString makeEqualsPair(const QString & key, const QString & value, int tabsNum = 2);
     static QString makeArrowPair( const QString & left, const QString & right, int tabsNum = 1 );
     static QString scriptBlock(const QString & scriptText, int tabsNum = 3);
+    static QString includesDefinition(const QList<Actor*> & procs);
     static QString elementsDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
     static QString markersDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
     static QString actorBindings(const ActorBindingsGraph *graph, const NamesMap &nmap, bool copyMode = false);
     static QString dataflowDefinition(const QList<Actor*> & procs, const NamesMap & nmap);
     static QString iterationsDefinition(const QList<Iteration> & iterations, const NamesMap & nmap, bool checkDummyIteration = true);
-    static QString schemaAliases(const QList<Actor*> & procs, const NamesMap& nmap);
-    static QString aliasesHelp(const QList<Actor*> & procs);
+    static QString schemaParameterAliases(const QList<Actor*> & procs, const NamesMap& nmap);
+    static QString schemaPortAliases(const QList<Actor*> &procs, const NamesMap &nmap, const QList<PortAlias> &portAliases);
     static NamesMap generateElementNames(const QList<Actor*>& procs);
     static QString schema2String(const Schema & schema, const Metadata * meta, bool copyMode = false);
 

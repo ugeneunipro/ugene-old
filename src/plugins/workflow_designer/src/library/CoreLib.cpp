@@ -63,6 +63,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/ScriptWorkerSerializer.h>
 
 #include <U2Core/global.h>
 #include <U2Gui/DialogUtils.h>
@@ -319,72 +320,27 @@ void CoreLib::initUsersWorkers() {
         //log.info(tr("There isn't directory with users workflow elements"));
         return;
     }
-    dir.setNameFilters(QStringList() << "*.usa"); //think about file extension
+    dir.setNameFilters(QStringList() << "*.usa"); //think about file extension // Answer: Ok :)
     QFileInfoList fileList = dir.entryInfoList();
     
     foreach(const QFileInfo& fileInfo, fileList) {
         QString url = fileInfo.filePath();
         QFile file(url);
-        //fileInfo.setFile(file);
-        QDomDocument xml;
         file.open(QIODevice::ReadOnly);
         QByteArray content = file.readAll();
         file.close();
+        
         QString error;
-        xml.setContent(content,false,&error);
-        if(!error.isEmpty()) {
-            coreLog.message(LogLevel_ERROR, tr("Can't load actor %1").arg(url), ULOG_CAT_IO);
-            continue;
-        }
-        QDomElement doc = xml.documentElement();
-        DataTypeRegistry *dtr = WorkflowEnv::getDataTypeRegistry();
-        assert(dtr);
-
-        //QDomElement actor = doc.elementsByTagName(ACTOR_ELEMENT).item(0).toElement();
-
-        //QDomElement input = actor.elementsByTagName(INPUT_PORT_ELEMENT).item(0).toElement();
-        QDomNodeList inputs = doc.elementsByTagName(IN_SLOT_ELEMENT);
-        QList<DataTypePtr> inputTypes;
-        for(int i = 0; i < inputs.size(); i++) {
-            QDomElement slot = inputs.item(i).toElement();
-            QString id = slot.attribute(SLOT_ID);
-            inputTypes << dtr->getById(id);
+        ActorPrototype *proto = ScriptWorkerSerializer::string2actor(content, QString(), error, url);
+        if (NULL == proto) {
+            coreLog.error(error);
+            return;
         }
 
-        //QDomElement output = doc.elementsByTagName(OUTPUT_PORT_ELEMENT).item(0).toElement();
-        QDomNodeList outputs = doc.elementsByTagName(OUT_SLOT_ELEMENT);
-        QList<DataTypePtr> outputTypes;
-        for(int i = 0; i < outputs.size(); i++) {
-            QDomElement slot = outputs.item(i).toElement();
-            QString id = slot.attribute(SLOT_ID);
-            outputTypes << dtr->getById(id);
-        }
+        WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_SCRIPT(), proto);
 
-        //QDomElement attribute = doc.elementsByTagName(ATTRIBUTE_ELEMENT).item(0).toElement();
-        QDomNodeList attributes = doc.elementsByTagName(ATTR_ELEMENT);
-        QList<Attribute *>attrs;
-        for(int i = 0;i < attributes.size(); i++) {
-            QDomElement attr = attributes.item(i).toElement();
-            QString typeId = attr.attribute(TYPE_ID);
-            QString name = attr.attribute(NAME_ID);
-
-            DataTypePtr ptr = dtr->getById(typeId);
-            Descriptor desc(name, name, ptr->getDisplayName());
-            if(ptr == BaseTypes::BOOL_TYPE()) {
-                attrs << new Attribute(desc, ptr, false, QVariant(false));
-            }
-            else {
-                attrs << new Attribute(desc, ptr);
-            }
-        }
-
-        QDomElement name = doc.elementsByTagName(NAME_ELEMENT).item(0).toElement();
-        QString actorName = name.attribute(NAME_ID);
-
-        QDomElement descr = doc.elementsByTagName(DESCR_ELEMENT).item(0).toElement();
-        QString actorDesc = descr.attribute(DESCR_ID);
-
-        ScriptWorkerFactory::init(inputTypes, outputTypes, attrs, actorName, actorDesc);
+        DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID );
+        localDomain->registerEntry( new ScriptWorkerFactory(proto->getId()) );
     }
 }
 
@@ -407,6 +363,7 @@ void CoreLib::initExternalToolsWorkers() {
         cfg = HRSchemaSerializer::string2Actor(data);
 
         if(cfg) {
+            cfg->filePath = url;
             ExternalProcessWorkerFactory::init(cfg);
         }
         file.close();

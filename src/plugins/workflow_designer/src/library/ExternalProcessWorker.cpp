@@ -41,6 +41,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/ExternalToolCfg.h>
 #include <U2Lang/BaseSlots.h>
+#include <U2Lang/IncludedProtoFactory.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -55,82 +56,9 @@ const static QString OUTPUT_PORT_TYPE("output-for-");
 static const QString OUT_PORT_ID("out");
 
 bool ExternalProcessWorkerFactory::init(ExternalProcessConfig *cfg) {
-    DataTypeRegistry *dtr = WorkflowEnv::getDataTypeRegistry();
-    QList<PortDescriptor*> portDescs; 
-    foreach(const DataConfig& dcfg, cfg->inputs) {
-        QMap<Descriptor, DataTypePtr> map;
-        if(dcfg.type == SEQ_WITH_ANNS) {
-            map[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-            map[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        } else {
-            map[WorkflowUtils::getSlotDescOfDatatype(dtr->getById(dcfg.type))] = dtr->getById(dcfg.type);
-        }
-
-        DataTypePtr input( new MapDataType(Descriptor(INPUT_PORT_TYPE + dcfg.attrName), map) );
-        DataTypeRegistry * dr = WorkflowEnv::getDataTypeRegistry();
-        assert(dr);
-        dr->registerEntry( input );
-        portDescs << new PortDescriptor(Descriptor(dcfg.attrName, dcfg.attrName, dcfg.description), input, true);
-    }
-
-    QMap<Descriptor, DataTypePtr> map;
-    foreach(const DataConfig& dcfg, cfg->outputs) {
-        if(dcfg.type == SEQ_WITH_ANNS) {
-            map[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
-            map[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-        } else {
-            map[WorkflowUtils::getSlotDescOfDatatype(dtr->getById(dcfg.type))] = dtr->getById(dcfg.type);
-        }
-    }
-    if(!map.isEmpty()) {
-        DataTypePtr outSet( new MapDataType(Descriptor(OUTPUT_PORT_TYPE + cfg->name), map) );
-        DataTypeRegistry * dr = WorkflowEnv::getDataTypeRegistry();
-        assert(dr);
-        dr->registerEntry( outSet );
-        Descriptor outDesc( OUT_PORT_ID, ExternalProcessWorker::tr("output data"), ExternalProcessWorker::tr("output data") );
-        portDescs << new PortDescriptor( outDesc, outSet, false, true );
-    }
-
-    Descriptor desc( cfg->name, cfg->name, cfg->description.isEmpty() ? cfg->name : cfg->description );
-
-    QList<Attribute*> attribs;
-    QMap<QString, PropertyDelegate*> delegates;
-    foreach(const AttributeConfig& acfg, cfg->attrs) {
-        //PropertyDelegate *delegate = NULL;
-        DataTypePtr type;
-        QString descr = acfg.description.isEmpty() ? acfg.type : acfg.description;
-        if(acfg.type == "URL") {
-            type = BaseTypes::STRING_TYPE();
-            delegates[acfg.attrName] = new URLDelegate("All Files(*.*)","");
-            attribs << new Attribute(Descriptor(acfg.attrName, acfg.attrName, descr), type);
-        } else if(acfg.type == "String") {
-            type = BaseTypes::STRING_TYPE();
-            attribs << new Attribute(Descriptor(acfg.attrName, acfg.attrName, descr), type);
-        } else if(acfg.type == "Number") {
-            type = BaseTypes::NUM_TYPE();
-            attribs << new Attribute(Descriptor(acfg.attrName, acfg.attrName, descr), type);
-        } else if(acfg.type == "Boolean") {
-            type = BaseTypes::BOOL_TYPE();
-            attribs << new Attribute(Descriptor(acfg.attrName, acfg.attrName, descr), type, false, QVariant(false));
-        }
-
-        //attribs << new Attribute(Descriptor(acfg.attrName, acfg.attrName, acfg.type), type);
-        /*if(delegate) {
-            delegates[acfg.attrName] = acfg.delegate;
-        }*/
-    }
-
-    ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
-
-    proto->setEditor(new DelegateEditor(delegates));
-    proto->setIconPath(":workflow_designer/images/external_cmd_tool.png");
-
-    proto->setPrompter( new ExternalProcessWorkerPrompter() );
+    ActorPrototype *proto = IncludedProtoFactory::getExternalToolProto(cfg);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_EXTERNAL(), proto);
-
-    DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID );
-    WorkflowEnv::getExternalCfgRegistry()->registerExternalTool(cfg);
-    localDomain->registerEntry( new ExternalProcessWorkerFactory(cfg->name) );
+    IncludedProtoFactory::registerExternalToolWorker(cfg);
     return true;
 }
 

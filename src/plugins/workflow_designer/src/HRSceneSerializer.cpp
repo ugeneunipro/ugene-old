@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/Log.h>
+#include <U2Lang/Aliasing.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/HRSchemaSerializer.h>
 
@@ -145,12 +146,12 @@ static QString metaData(WorkflowScene * scene, const HRSchemaSerializer::NamesMa
     QString res;
     Schema schema = scene->getSchema();
     if(schema.hasParamAliases()) {
-        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::ALIASES_START, HRSchemaSerializer::NO_NAME, 
-                                             HRSchemaSerializer::schemaAliases(schema.getProcesses(), nmap), 2);
+        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::PARAM_ALIASES_START, HRSchemaSerializer::NO_NAME, 
+                                             HRSchemaSerializer::schemaParameterAliases(schema.getProcesses(), nmap), 2);
     }
-    if(schema.hasAliasHelp()) {
-        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::ALIASES_HELP_START, HRSchemaSerializer::NO_NAME, 
-                                             HRSchemaSerializer::aliasesHelp(schema.getProcesses()), 2);
+    if(schema.hasPortAliases()) {
+        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::PORT_ALIASES_START, HRSchemaSerializer::NO_NAME, 
+            HRSchemaSerializer::schemaPortAliases(schema.getProcesses(), nmap, scene->getPortAliases()), 2);
     }
     res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::VISUAL_START, HRSchemaSerializer::NO_NAME, visualData(scene->items(), nmap), 2);
     return res;
@@ -173,33 +174,26 @@ static QString bodyItself(WorkflowScene * scene) {
 QString HRSceneSerializer::scene2String(WorkflowScene * scene, const Metadata & meta) {
     assert(scene != NULL);
     QString res;
+    Schema schema = scene->getSchema();
     HRSchemaSerializer::addPart(res, HRSchemaSerializer::header2String(&meta));
+    HRSchemaSerializer::addPart(res, HRSchemaSerializer::includesDefinition(schema.getProcesses()));
     HRSchemaSerializer::addPart(res, HRSchemaSerializer::makeBlock(HRSchemaSerializer::BODY_START, meta.name, bodyItself(scene), 0, true));
     return res;
 }
 
 static QString itemsMeta(const QList<Actor*> & procs, const QList<QGraphicsItem*> & items, const HRSchemaSerializer::NamesMap& nmap) {
     QString res;
-    bool hasAliases = false;
+    bool hasParameterAliases = false;
     foreach(Actor * a, procs) {
         if(a->hasParamAliases()) {
-            hasAliases = true; break;
+            hasParameterAliases = true; break;
         }
     }
-    if(hasAliases) {
-        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::ALIASES_START, HRSchemaSerializer::NO_NAME,
-                                                HRSchemaSerializer::schemaAliases(procs, nmap), 2);
+    if(hasParameterAliases) {
+        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::PARAM_ALIASES_START, HRSchemaSerializer::NO_NAME,
+                                                HRSchemaSerializer::schemaParameterAliases(procs, nmap), 2);
     }
-    bool hasAliasHelp = false;
-    foreach(Actor * a, procs) {
-        if(a->hasAliasHelp()) {
-            hasAliasHelp = true; break;
-        }
-    }
-    if(hasAliasHelp) {
-        res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::ALIASES_HELP_START, HRSchemaSerializer::NO_NAME, 
-                                             HRSchemaSerializer::aliasesHelp(procs), 2);
-    }
+
     return res + HRSchemaSerializer::makeBlock(HRSchemaSerializer::VISUAL_START, HRSchemaSerializer::NO_NAME, visualData(items, nmap));
 }
 
@@ -250,6 +244,7 @@ struct WorkflowSceneReaderData {
     QList<QPair<Port*, Port*> > dataflowLinks;
     bool pasteMode;
     ActorBindingsGraph *graph;
+    QList<PortAlias> portAliases;
     
     struct LinkData {
         LinkData(WorkflowPortItem * s, WorkflowPortItem * d) : src(s), dst(d) {}
@@ -433,7 +428,7 @@ static void parseLinkVisualBlock(WorkflowSceneReaderData & data, const QString &
     if (NULL == data.graph) {
         data.links << linkData;
     } else {
-        if (!data.graph->contains(srcActor, dstPort)) {
+        if (!data.graph->contains(srcPort, dstPort)) {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Undefined data-flow link: '%1'. Define it in actor-bindings").arg(from + HRSchemaSerializer::DATAFLOW_SIGN + to));
         }
         int pos = data.links.indexOf(linkData);
@@ -459,18 +454,25 @@ static void parseVisual(WorkflowSceneReaderData & data) {
 }
 
 static void parseMeta(WorkflowSceneReaderData & data) {
-    while(data.tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
+    while (data.tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
         QString tok = data.tokenizer.take();
-        if(tok == HRSchemaSerializer::ALIASES_START) {
+        if (HRSchemaSerializer::PARAM_ALIASES_START == tok) {
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
-            HRSchemaSerializer::parseAliases(data.tokenizer, data.actorMap);
+            HRSchemaSerializer::parseParameterAliases(data.tokenizer, data.actorMap);
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
-        }
-        else if(tok == HRSchemaSerializer::VISUAL_START) {
+        } else if (HRSchemaSerializer::PORT_ALIASES_START == tok) {
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            HRSchemaSerializer::parsePortAliases(data.tokenizer, data.actorMap, data.portAliases);
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if (HRSchemaSerializer::VISUAL_START == tok) {
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             parseVisual(data);
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
-        } else if(tok == HRSchemaSerializer::ALIASES_HELP_START) {
+        } else if (HRSchemaSerializer::OLD_ALIASES_START == tok) {
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            HRSchemaSerializer::parseOldAliases(data.tokenizer, data.actorMap);
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if (HRSchemaSerializer::ALIASES_HELP_START == tok) {
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             HRSchemaSerializer::parseAliasesHelp(data.tokenizer, data.actorMap.values());
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
@@ -516,7 +518,7 @@ static void parseActorBindings(WorkflowSceneReaderData &data) {
         WorkflowSceneReaderData::LinkData linkData(data.procMap[srcActorName]->getPort(srcPortId), data.procMap[dstActorName]->getPort(dstPortId));
         data.links << linkData;
 
-        if (!graph.addBinding(srcActor, dstPort)) {
+        if (!graph.addBinding(srcPort, dstPort)) {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::tr("Duplicate binding at '%1'").arg(from + HRSchemaSerializer::DATAFLOW_SIGN + to));
         }
     }
@@ -624,26 +626,35 @@ static void setFlows(WorkflowSceneReaderData & data) {
                     pairs = data.links[ind].pairs;
                 }
                 tryToConnect(input, output, pairs, data.select);
-                bindingsGraph.addBinding(input->getOwner()->getProcess(), output->getPort());
+                bindingsGraph.addBinding(input->getPort(), output->getPort());
             }
         }
     }
 }
 
-QString HRSceneSerializer::string2Scene(const QString & bytes, WorkflowScene * scene, Metadata * meta, bool select, bool pasteMode) {
+QString HRSceneSerializer::string2Scene(const QString & bytes, WorkflowScene * scene, Metadata * meta, bool select, bool pasteMode, QList<QString> includedUrls) {
     try{
         WorkflowSceneReaderData data(bytes, scene, meta, select, pasteMode);
         HRSchemaSerializer::parseHeader(data.tokenizer, data.meta);
         data.tokenizer.removeCommentTokens();
+
+        QString tok = data.tokenizer.look();
+        while (HRSchemaSerializer::INCLUDE == tok) {
+            HRSchemaSerializer::parseIncludes(data.tokenizer, includedUrls);
+            tok = data.tokenizer.look();
+        }
         HRSchemaSerializer::parseBodyHeader(data.tokenizer, data.meta, !pasteMode);
+
         if(scene != NULL) {
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             parseBodyItself(data);
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
             if( data.iterations.isEmpty() ) {
                 if(!pasteMode) {
-                    data.iterations << Iteration("Default iteration");
+                    scene->setIterated(false, Iteration("Default iteration"));
                 }
+            } else {
+                scene->setIterated(true);
             }
             setFlows(data);
             HRSchemaSerializer::addEmptyValsToBindings(data.actorMap.values());
@@ -656,6 +667,7 @@ QString HRSceneSerializer::string2Scene(const QString & bytes, WorkflowScene * s
                 }
             }
             scene->setIterations(data.iterations);
+            scene->setPortAliases(data.portAliases);
         }
     } catch(const HRSchemaSerializer::ReadFailed & ex) {
         return ex.what;

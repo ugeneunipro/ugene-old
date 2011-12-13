@@ -69,7 +69,7 @@ Task *PassFilterWorker::tick() {
 
         if (passedValues.contains(value)) {
             Message mes(mtype, QVariantMap());
-            outChannel->put(inputMessage);
+            outChannel->put(mes);
         }
     }
     if (inChannel->isEnded()) {

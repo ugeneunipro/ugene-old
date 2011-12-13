@@ -52,6 +52,8 @@ private:
     QMap<int, QList<Actor*> > topologicSortedGraph;
     BaseWorker *lastWorker;
     Task *lastTask;
+
+    WorkerState getWorkerState(Actor* a);
 };
 
 } // LocalWorkflow

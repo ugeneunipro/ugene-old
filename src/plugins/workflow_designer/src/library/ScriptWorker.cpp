@@ -31,6 +31,7 @@
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/IntegralBusType.h>
 #include <U2Lang/ScriptLibrary.h>
+#include <U2Lang/IncludedProtoFactory.h>
 
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
@@ -88,56 +89,11 @@ QString ScriptPromter::composeRichDoc() {
     return target->getProto()->getDocumentation();
 }
 
-
-bool ScriptWorkerFactory::init(QList<DataTypePtr > input, QList<DataTypePtr > output, QList<Attribute *> attrs, const QString& name, const QString &description) {
-    QList<PortDescriptor*> portDescs; 
-    QList<Attribute*> attribs = attrs;
-
-    QMap<Descriptor, DataTypePtr> map;
-    foreach(const DataTypePtr & tptr, input) {
-        if(tptr == DataTypePtr()) {
-            coreLog.error(ScriptWorker::tr("For input port was set empty data type"));
-            return false;
-        }
-        map[WorkflowUtils::getSlotDescOfDatatype(tptr)] = tptr;
-    }
-
-    DataTypePtr inSet( new MapDataType(Descriptor(INPUT_PORT_TYPE + name), map) );
-    DataTypeRegistry * dr = WorkflowEnv::getDataTypeRegistry();
-    assert(dr);
-    dr->registerEntry( inSet );
-
-    map.clear();
-    foreach(const DataTypePtr & tptr, output) {
-        if(tptr == DataTypePtr()) {
-            coreLog.error(ScriptWorker::tr("For output port was set empty data type"));
-            return false;
-        }
-        map[WorkflowUtils::getSlotDescOfDatatype(tptr)] = tptr;
-    }
-    
-    DataTypePtr outSet( new MapDataType(Descriptor(OUTPUT_PORT_TYPE + name), map) );
-    dr->registerEntry( outSet );
-
-    Descriptor inDesc( IN_PORT_ID, ScriptWorker::tr("input data"), ScriptWorker::tr("input data") );
-    Descriptor outDesc( OUT_PORT_ID, ScriptWorker::tr("output data"), ScriptWorker::tr("output data") );
-
-    portDescs << new PortDescriptor( inDesc, inSet, /*input*/ true );
-    portDescs << new PortDescriptor( outDesc, outSet, /*input*/false, /*multi*/true );
-
-
-    Descriptor desc( ScriptWorkerFactory::ACTOR_ID + name, name, description );
-    ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
-
-    proto->setEditor( new DelegateEditor(QMap<QString, PropertyDelegate*>()) );
-    proto->setIconPath(":workflow_designer/images/script.png");
-
-    proto->setPrompter( new ScriptPromter() );
-    proto->setScriptFlag();
+bool ScriptWorkerFactory::init(QList<DataTypePtr > input, QList<DataTypePtr > output, QList<Attribute *> attrs,
+                               const QString& name, const QString &description, const QString &actorFilePath) {
+    ActorPrototype * proto = IncludedProtoFactory::getScriptProto(input, output, attrs, name, description, actorFilePath);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_SCRIPT(), proto);
-
-    DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID );
-    localDomain->registerEntry( new ScriptWorkerFactory(ACTOR_ID + name) );
+    IncludedProtoFactory::registerScriptWorker(ACTOR_ID + name);
     return true;
 }
 

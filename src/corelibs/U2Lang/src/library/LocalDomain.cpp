@@ -175,9 +175,7 @@ void SimplestSequentialScheduler::cleanup() {
 SimplestSequentialScheduler::~SimplestSequentialScheduler() {
 }
 
-U2::Workflow::WorkerState SimplestSequentialScheduler::getWorkerState( ActorId id) {
-    Actor* a = schema->actorById(id);
-    assert(a);
+WorkerState SimplestSequentialScheduler::getWorkerState(Actor* a) {
     BaseWorker* w = a->castPeer<BaseWorker>();
     if (lastWorker == w) {
         Task* t = lastTask;
@@ -192,6 +190,43 @@ U2::Workflow::WorkerState SimplestSequentialScheduler::getWorkerState( ActorId i
         return WorkerReady;
     }
     return WorkerWaiting;
+}
+
+U2::Workflow::WorkerState SimplestSequentialScheduler::getWorkerState( ActorId id) {
+    Actor* a = schema->actorById(id);
+    if (NULL == a) {
+        QList<Actor*> actors = schema->actorsByOwnerId(id);
+        assert(actors.size() > 0);
+
+        bool someWaiting = false;
+        bool someDone = false;
+        bool someReady = false;
+        foreach (Actor *a, actors) {
+            WorkerState state = getWorkerState(a);
+            switch (state) {
+                case WorkerRunning:
+                    return WorkerRunning;
+                case WorkerWaiting:
+                    someWaiting = true;
+                    break;
+                case WorkerDone:
+                    someDone = true;
+                    break;
+                case WorkerReady:
+                    someReady = true;
+            }
+        }
+        if (someWaiting) {
+            return WorkerWaiting;
+        } else if (someReady) {
+            return WorkerReady;
+        } else {
+            assert(someDone);
+            return WorkerDone;
+        }
+    } else {
+        return getWorkerState(a);
+    }
 }
 
 /*****************************

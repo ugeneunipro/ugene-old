@@ -271,7 +271,7 @@ QVariant ActorCfgModel::headerData( int section, Qt::Orientation orientation, in
 
 bool ActorCfgModel::setAttributeValue( const Attribute * attr, QVariant & attrValue ) const{
     assert(attr != NULL);
-    bool isDefaultVal = true;
+    bool isDefaultVal = attr->isDefaultValue();
 
     attrValue = attr->getAttributePureValue();
 

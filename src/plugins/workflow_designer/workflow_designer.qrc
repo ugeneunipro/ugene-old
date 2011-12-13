@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="workflow_designer/" >
+	<file>images/checked_tag.png</file>
 	<file>images/delete.png</file>
 	<file>images/editcopy.png</file>
 	<file>images/editcut.png</file>
@@ -15,6 +16,7 @@
 	<file>images/leftarrow.png</file>
 	<file>images/mag_circle.png</file>
 	<file>images/ok.png</file>
+	<file>images/port_relationship.png</file>
 	<file>images/rot_arrow.png</file>
 	<file>images/rot_cur.png</file>
 	<file>images/run.png</file>

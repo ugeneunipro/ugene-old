@@ -686,7 +686,8 @@ void CreateExternalProcessDialog::accept() {
     if(!d.exists()) {
         d.mkdir(dir);
     }
-    QFile file(dir + cfg->name + ".etc");
+    cfg->filePath = dir + cfg->name + ".etc";
+    QFile file(cfg->filePath);
     file.open(QIODevice::WriteOnly);
     file.write(str.toAscii());
     file.close();

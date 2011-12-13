@@ -51,6 +51,8 @@ public:
 
     bool eventFilter(QObject* object, QEvent* event);
 
+    void setIterated(bool iterated);
+
 signals:
     void iterationSelected();
 
@@ -64,6 +66,7 @@ public slots:
     void commit();
     void resetIterations();
     void commitIterations();
+    void sl_iteratedChanged();
     void sl_resizeSplitter(bool);
     
 protected:

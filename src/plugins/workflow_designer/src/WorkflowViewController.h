@@ -23,6 +23,7 @@
 #define _U2_WORKFLOW_VIEW_CONTROLLER_H_
 
 #include <U2Lang/ActorModel.h>
+#include <U2Lang/Aliasing.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/WorkflowRunTask.h>
 
@@ -75,6 +76,17 @@ public:
     void clearScene();
 
     void setupLinkCtxMenu(const QString& href, Actor* actor, const QPoint& pos);
+
+    const QList<PortAlias> &getPortAliases() const;
+    bool addPortAlias(const PortAlias &alias);
+    void setPortAliases(const QList<PortAlias> &aliases);
+
+    bool isIterated() const;
+    /*
+     * If it isn't iterated then there is one iteration that isn't shown to a user.
+     * This hidden iteration is @defaultIteration.
+     */
+    void setIterated(bool iterated, const Iteration &defaultIteration = Iteration(tr("Default iteration")));
     
 public slots:
     void sl_deleteItem();
@@ -113,6 +125,9 @@ private:
     WorkflowAbstractRunner* runner;
     int hint;
     QAction* openDocumentsAction;
+    QList<PortAlias> portAliases;
+    // if it isn't iterated then there are one iteration and it isn't shown to a user
+    bool iterated;
     
 }; // WorkflowScene
 
@@ -155,6 +170,8 @@ public:
         LOCAL_HOST,
         REMOTE_MACHINE
     }; // RunMode
+public slots:
+    void sl_updateUi();
 private slots:
     void sl_editItem();
     void sl_onSelectionChanged();
@@ -185,8 +202,10 @@ private slots:
     void sl_pickInfo(QListWidgetItem*);
     void sl_launch();
     void sl_stop();
+    void sl_iterationsMode();
     void sl_configureIterations();
-    void sl_configureAliases();
+    void sl_configureParameterAliases();
+    void sl_configurePortAliases();
 
     void sl_toggleLock(bool = true);
     void sl_createScript();
@@ -236,8 +255,10 @@ private:
     QAction* externalToolAction;
     QAction* appendExternalTool;
     
+    QAction* iterationModeAction;
     QAction* configureIterationsAction;
-    QAction* configureAliasesAction;
+    QAction* configureParameterAliasesAction;
+    QAction* configurePortAliasesAction;
     QAction* runAction;
     QAction* stopAction;
     QAction* validateAction;

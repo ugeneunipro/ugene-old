@@ -73,5 +73,10 @@ ExternalToolCfgRegistry* WorkflowEnvImpl::initExternalToolCfgRegistry() {
     return ecfgReg;
 }
 
+SchemaActorsRegistry *WorkflowEnvImpl::initSchemaActorsRegistry() {
+    SchemaActorsRegistry *actorsRegistry = new SchemaActorsRegistry();
+    return actorsRegistry;
+}
+
 }//namespace Workflow
 }//namespace U2

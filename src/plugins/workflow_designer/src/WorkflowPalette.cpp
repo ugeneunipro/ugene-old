@@ -419,7 +419,7 @@ void WorkflowPalette::editElement() {
                 emit si_protoDeleted(id);
                 reg->unregisterProto(proto->getId());
             }
-            LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name,desc);
+            LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name, desc, dlg.getActorFilePath());
         }
     } else { //External process category
         ExternalProcessConfig *cfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());

@@ -40,6 +40,7 @@ protected:
     virtual DomainFactoryRegistry* initDomainRegistry();
     virtual DataTypeValueFactoryRegistry* initDataTypeValueFactoryRegistry();
     virtual ExternalToolCfgRegistry* initExternalToolCfgRegistry();
+    virtual SchemaActorsRegistry *initSchemaActorsRegistry();
     
 }; // WorkflowEnvImpl
 

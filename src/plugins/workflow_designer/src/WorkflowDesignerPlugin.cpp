@@ -28,9 +28,11 @@
 #include "library/CoreLib.h"
 #include "library/PassFilterWorker.h"
 #include "library/MarkSequenceWorker.h"
+#include "library/IncludedProtoFactoryImpl.h"
 
 #include <util/SaveSchemaImageUtils.h>
 
+#include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/WorkflowEnv.h>
 
 #include <U2Core/AppContext.h>
@@ -73,6 +75,7 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
         AppContext::getAppSettingsGUI()->registerPage(new WorkflowSettingsPageController());
         AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(new WorkflowViewFactory(this));
     }
+    IncludedProtoFactory::init(new IncludedProtoFactoryImpl());
     Workflow::CoreLib::init();
     LocalWorkflow::PassFilterWorkerFactory::init();
     LocalWorkflow::MarkSequenceWorkerFactory::init();

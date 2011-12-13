@@ -71,5 +71,13 @@ const Descriptor BaseActorCategories::CATEGORY_DATAFLOW() {
     return Descriptor("df", tr("Data Flow"),"");
 }
 
+const Descriptor BaseActorCategories::CATEGORY_INCLUDES() {
+    return Descriptor("inc", tr("Includes"),"");
+}
+
+const Descriptor BaseActorCategories::CATEGORY_SCHEMAS() {
+    return Descriptor("sch", tr("Schemas"),"");
+}
+
 }//Workflow namespace
 }//GB2 namespace

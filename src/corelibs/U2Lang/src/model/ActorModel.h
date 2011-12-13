@@ -81,6 +81,12 @@ public:
     
     void setScriptFlag(bool flag = true);
     bool isScriptFlagSet() {return isScript;}
+
+    void setSchema(const QString &path);
+    void setNonStandard(const QString &path);
+    bool isStandardFlagSet() {return isStandard;}
+    bool isSchemaFlagSet() {return isSchema;}
+    QString getFilePath() {return actorFilePath;}
     
 protected:
     // create port and sets p as owner of new port
@@ -107,6 +113,12 @@ protected:
     // actor can be written on a script by user
     // in such case user can define attributes and input, output ports of actor
     bool isScript;
+    // actor can be a standard actor or external tool or script actor included from file
+    bool isStandard;
+    // if actor is non standard then its meta is kept in actorFilePath
+    QString actorFilePath;
+    // actor can implement some big schema
+    bool isSchema;
     
 }; // ActorPrototype
 
@@ -160,6 +172,9 @@ public:
     
     AttributeScript *getScript() const;
     void setScript(AttributeScript* _script);
+
+    ActorId getOwner() const;
+    void setOwner(const ActorId &owner);
     
 signals:
     void si_labelChanged();
@@ -182,7 +197,7 @@ protected:
     // description of actor
     // has setter and getter
     ActorDocument* doc;
-    // user can set aliases for schema parameters and use them in cmdline
+    // user can set aliases for schema parameters and use them in cmdline or in other schemas through includes
     // ( paramName, alias ) pairs
     QMap<QString, QString> paramAliases;
     // (alias, alias help message) pairs
@@ -190,6 +205,8 @@ protected:
     // actor can be written on script
     // this object identifies it's text and variables
     AttributeScript * script;
+    // an actor could be a subactor of some another
+    ActorId owner;
     
 }; // Actor
 

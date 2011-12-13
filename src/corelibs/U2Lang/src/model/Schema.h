@@ -22,6 +22,7 @@
 #ifndef _U2_WORKFLOW_ITERATION_H_
 #define _U2_WORKFLOW_ITERATION_H_
 
+#include <U2Lang/Aliasing.h>
 #include <U2Lang/Attribute.h>
 
 #include <QtCore/QPair>
@@ -59,6 +60,7 @@ public:
     void applyConfiguration(const Iteration&, QMap<ActorId, ActorId>);
     
     Actor* actorById(ActorId);
+    QList<Actor*> actorsByOwnerId(ActorId);
     int iterationById(int);
     
     QString getDomain() const;
@@ -83,6 +85,14 @@ public:
     
     bool hasParamAliases() const;
     bool hasAliasHelp() const;
+    bool hasPortAliases() const;
+
+    const QList<PortAlias> &getPortAliases() const;
+    bool addPortAlias(const PortAlias &alias);
+    void setPortAliases(const QList<PortAlias> &aliases);
+
+    // replaces dummy processes (schema-processes) by his schemas and set up correct links
+    bool expand();
     
 private:
     // set of actors
@@ -98,7 +108,19 @@ private:
     // this means that every actor, link and iteration was copied
     // if true -> need to delete all corresponding data
     bool deepCopy;
+    // keeps how ports are visually connected (it often repeats flows)
     ActorBindingsGraph *graph;
+    // keeps new names of ports (and inner slots) for includes
+    QList<PortAlias> portAliases;
+
+private:
+    void setAliasedAttributes(Actor *proc, Actor *subProc);
+    void replaceInLinksAndSlots(Actor *proc, const PortAlias &portAlias);
+    void replaceOutLinks(Actor *proc, const PortAlias &portAlias);
+    void replaceOutSlots(Actor *proc, const PortAlias &portAlias);
+    void replacePortAliases(const PortAlias &subPortAlias);
+
+    bool recursiveExpand(QList<QString> &schemaIds);
     
 }; // Schema
 
@@ -119,6 +141,9 @@ public:
     void remap(QMap<ActorId, ActorId>);
     
     bool isEmpty() const;
+
+    const QMap<ActorId, QVariantMap> &getConfig() const;
+    QMap<ActorId, QVariantMap> &getConfig();
     
 private:
     static int nextId();
@@ -165,13 +190,15 @@ public:
     virtual ~ActorBindingsGraph() {}
 
     bool validateGraph(QString &message);
-    bool addBinding(Actor *actor, Port *port);
-    bool contains(Actor *actor, Port *port);
-    const QMap<Actor*, QList<Port*> > getBindings() const;
+    bool addBinding(Port *source, Port *dest);
+    bool contains(Port *source, Port *dest);
+    void removeBinding(Port *source, Port *dest);
+    const QMap<Port*, QList<Port*> > & getBindings() const;
+    QMap<Port*, QList<Port*> > & getBindings();
     QMap<int, QList<Actor*> > getTopologicalSortedGraph(QList<Actor*> actors) const;
 
 private:
-    QMap<Actor*, QList<Port*> > bindings;
+    QMap<Port*, QList<Port*> > bindings;
 }; // ActorBindingsGraph
 
 }//Workflow namespace

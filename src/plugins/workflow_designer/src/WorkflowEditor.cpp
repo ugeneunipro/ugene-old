@@ -87,6 +87,7 @@ WorkflowEditor::WorkflowEditor(WorkflowView *p)
     connect(iterationList, SIGNAL(iterationListAboutToChange()), SLOT(finishPropertyEditing()));
     connect(iterationList, SIGNAL(selectionChanged()), SLOT(updateIterationData()));
     connect(iterationList, SIGNAL(listChanged()), SLOT(commitIterations()));
+    connect(iterationList, SIGNAL(iteratedChanged()), SLOT(sl_iteratedChanged()));
     connect(iterationList, SIGNAL(selectionChanged()), SIGNAL(iterationSelected()));
 
     connect(nameEdit, SIGNAL(editingFinished()), SLOT(editingLabelFinished()));
@@ -254,6 +255,11 @@ void WorkflowEditor::resetIterations() {
 void WorkflowEditor::commitIterations() {
     uiLog.trace("committing iterations data");
     owner->getScene()->setIterations(iterationList->list());
+}
+
+void WorkflowEditor::sl_iteratedChanged() {
+    owner->getScene()->setIterated(true);
+    owner->sl_updateUi();
 }
 
 void WorkflowEditor::finishPropertyEditing() {
@@ -504,6 +510,10 @@ bool WorkflowEditor::eventFilter(QObject* object, QEvent* event) {
         }
     }
     return false;
+}
+
+void WorkflowEditor::setIterated(bool iterated) {
+    iterationBox->setVisible(iterated);
 }
 
 void WorkflowEditor::sl_linkActivated(const QString& url) {

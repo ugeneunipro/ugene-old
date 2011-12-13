@@ -34,7 +34,7 @@ public:
     static QString scene2String(WorkflowScene * scene, const Metadata & meta);
     // returns error or empty string
     static QString string2Scene(const QString & data, WorkflowScene * scene, Metadata * meta = NULL, 
-                                bool select = false, bool pasteMode = false);
+                                bool select = false, bool pasteMode = false, QList<QString> includedUrls = QList<QString>());
     
     static QString items2String(const QList<QGraphicsItem*> & items, const QList<Iteration> & iterations);
     

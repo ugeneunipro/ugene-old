@@ -124,6 +124,7 @@ public:
 
     // adds this link to p1 and p2 bindings
     void connect(Port* p1, Port* p2);
+    void disconnect();
 
     Port* source() const;
     Port* destination() const;
@@ -135,6 +136,17 @@ private:
     Port *dest;
 
 }; // Link
+
+class U2LANG_EXPORT ActorPortsAliases {
+public:
+    ActorPortsAliases() {}
+    bool addAlias(const QString &newPortName, const QString &newSlotName, const Port *port, const QString &slotId);
+    bool hasAlias(const QString &portName, const QString &slotName) const;
+    bool getAlias();
+
+private:
+    QMap<QPair<QString, QString>, QPair<Port*, QString> > outPortAliases;
+};
 
 }
 

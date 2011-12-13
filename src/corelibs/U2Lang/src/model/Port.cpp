@@ -94,7 +94,11 @@ bool Port::canBind(const Port* other) const {
     if (this == other || proc == other->proc || isInput() == other->isInput()) {
         return false;
     }
-    if ((!isMulti() && getWidth() != 0) || (!other->isMulti() && other->getWidth() != 0)) {
+    bool thisMulty = isMulti();
+    int thisWidth = getWidth();
+    bool otherMulty = other->isMulti();
+    int otherWidth = other->getWidth();
+    if ((!thisMulty && thisWidth != 0) || (!otherMulty && otherWidth != 0)) {
         return false;
     }
     return !bindings.contains(const_cast<Port*>(other));
@@ -146,6 +150,13 @@ void Link::connect(Port* p1, Port* p2) {
     }
     p1->addLink(this);
     p2->addLink(this);
+}
+
+void Link::disconnect() {
+    if (NULL != src && NULL != dest) {
+        src->removeLink(this);
+        dest->removeLink(this);
+    }
 }
 
 }

@@ -611,7 +611,8 @@ bool CreateScriptElementDialog::saveParams() {
 
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     IOAdapter *io = iof->createIOAdapter();
-    if(io->open( url + name + ".usa", IOAdapterMode_Write )) {
+    actorFilePath = url + name + ".usa";
+    if(io->open(actorFilePath, IOAdapterMode_Write)) {
         io->writeBlock(doc.toByteArray());
         io->close();
         return true;
@@ -686,6 +687,10 @@ const QString CreateScriptElementDialog::getName() const {
 
 const QString CreateScriptElementDialog::getDescription() const {
     return description;
+}
+
+const QString CreateScriptElementDialog::getActorFilePath() const {
+    return actorFilePath;
 }
 
 } //namespace

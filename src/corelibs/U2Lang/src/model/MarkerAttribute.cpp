@@ -54,6 +54,10 @@ const QVariant &MarkerAttribute::getAttributePureValue() const {
     return value;
 }
 
+bool MarkerAttribute::isDefaultValue() const {
+    return (defaultValue == getAttributePureValue());
+}
+
 Attribute *MarkerAttribute::clone() {
     return new MarkerAttribute(*this);
 }

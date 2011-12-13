@@ -79,6 +79,7 @@
 #include "ChooseItemDialog.h"
 #include "CreateScriptWorker.h"
 #include "HRSceneSerializer.h"
+#include "PortAliasesConfigurationDialog.h"
 #include "SceneSerializer.h"
 #include "SchemaAliasesConfigurationDialogImpl.h"
 #include "SchemaConfigurationDialog.h"
@@ -189,6 +190,7 @@ scriptingMode(false) {
     splitter->addWidget(infoSplitter);
 
     propertyEditor = new WorkflowEditor(this);
+    propertyEditor->setIterated(scene->isIterated());
     //connect(scene, SIGNAL(selectionChanged()), propertyEditor, SLOT(clearContents()));
     //connect(scene, SIGNAL(selectionChanged()), propertyEditor, SLOT(hide()));
     connect(scene, SIGNAL(selectionChanged()), SLOT(sl_editItem()));
@@ -340,14 +342,26 @@ void WorkflowView::createActions() {
     deleteAction->setShortcuts(QKeySequence::Delete);
     connect(deleteAction, SIGNAL(triggered()), scene, SLOT(sl_deleteItem()));
 
-    configureAliasesAction = new QAction(tr("Configure command line aliases..."), this);
-    configureAliasesAction->setIcon(QIcon(":workflow_designer/images/table_relationship.png"));
-    connect(configureAliasesAction, SIGNAL(triggered()), SLOT(sl_configureAliases()));
+    configureParameterAliasesAction = new QAction(tr("Configure parameter aliases..."), this);
+    configureParameterAliasesAction->setIcon(QIcon(":workflow_designer/images/table_relationship.png"));
+    connect(configureParameterAliasesAction, SIGNAL(triggered()), SLOT(sl_configureParameterAliases()));
 
+    configurePortAliasesAction = new QAction(tr("Configure port and slot aliases..."), this);
+    configurePortAliasesAction->setIcon(QIcon(":workflow_designer/images/port_relationship.png"));
+    connect(configurePortAliasesAction, SIGNAL(triggered()), SLOT(sl_configurePortAliases()));
+
+    iterationModeAction = new QAction(tr("Switch on/off iteration mode"), this);
+    iterationModeAction->setIcon(QIcon(":workflow_designer/images/checked_tag.png"));
+    iterationModeAction->setCheckable(true);
+    connect(iterationModeAction, SIGNAL(triggered()), SLOT(sl_iterationsMode()));
+    
     configureIterationsAction = new QAction(tr("Configure iterations..."), this);
     configureIterationsAction->setIcon(QIcon(":workflow_designer/images/tag.png"));
     //configureIterationsAction ->setShortcut(QKeySequence::Delete);
-    connect(configureIterationsAction , SIGNAL(triggered()), SLOT(sl_configureIterations()));
+    connect(configureIterationsAction, SIGNAL(triggered()), SLOT(sl_configureIterations()));
+    connect(iterationModeAction, SIGNAL(toggled(bool)), configureIterationsAction, SLOT(setEnabled(bool)));
+    iterationModeAction->setChecked(scene->isIterated());
+    configureIterationsAction->setEnabled(scene->isIterated());
     
     selectAction = new QAction(tr("Select all elements"), this);
     selectAction->setShortcuts(QKeySequence::SelectAll);
@@ -436,7 +450,7 @@ void WorkflowView::sl_createScript() {
         QList<Attribute*> attrs = dlg.getAttributes();
         QString name = dlg.getName();
         QString desc = dlg.getDescription();
-        if(LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name,desc)) {
+        if(LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name, desc, dlg.getActorFilePath())) {
             ActorPrototype *proto = WorkflowEnv::getProtoRegistry()->getProto(LocalWorkflow::ScriptWorkerFactory::ACTOR_ID + name);
             QRectF rect = scene->sceneRect();
             scene->addProcess( scene->createActor( proto, QVariantMap()), rect.center());
@@ -479,6 +493,7 @@ void WorkflowView::sl_appendExternalToolWorker() {
             if(WorkflowEnv::getProtoRegistry()->getProto(cfg->name)) {
                 coreLog.error("Element with this name already exists");
             } else {
+                cfg->filePath = url;
                 LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
                 ActorPrototype *proto = WorkflowEnv::getProtoRegistry()->getProto(cfg->name);
                 QRectF rect = scene->sceneRect();
@@ -543,10 +558,12 @@ void WorkflowView::sl_toggleLock(bool b) {
     loadAction->setEnabled(b);
     //newAction->setEnabled(b);
 
+    iterationModeAction->setEnabled(b);
     configureIterationsAction->setEnabled(b);
     runAction->setEnabled(b);
     validateAction->setEnabled(b);
-    configureAliasesAction->setEnabled(b);
+    configureParameterAliasesAction->setEnabled(b);
+    configurePortAliasesAction->setEnabled(b);
     
     propertyEditor->setEnabled(b);
     palette->setEnabled(b);
@@ -685,7 +702,11 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addAction(validateAction);
     tb->addAction(runAction);
     tb->addAction(stopAction);
-    tb->addAction(configureAliasesAction);
+    tb->addSeparator();
+    tb->addAction(configureParameterAliasesAction);
+    tb->addAction(configurePortAliasesAction);
+    tb->addSeparator();
+    tb->addAction(iterationModeAction);
     tb->addAction(configureIterationsAction);
     tb->addSeparator();
     tb->addAction(createScriptAcction);
@@ -750,7 +771,11 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addAction(validateAction);
     m->addAction(runAction);
     m->addAction(stopAction);
-    m->addAction(configureAliasesAction);
+    m->addSeparator();
+    m->addAction(configureParameterAliasesAction);
+    m->addAction(configurePortAliasesAction);
+    m->addSeparator();
+    m->addAction(iterationModeAction);
     m->addAction(configureIterationsAction);
     m->addSeparator();
     m->addAction(createScriptAcction);
@@ -973,6 +998,31 @@ void WorkflowView::sl_stop() {
     }
 }
 
+void WorkflowView::sl_iterationsMode() {
+    bool iterated = iterationModeAction->isChecked();
+
+    if (!iterated && scene->getIterations().size() > 1) {
+        QMessageBox askBox(QMessageBox::Question, tr("Workflow Designer"),
+            tr("Do you really want to switch off iteration mode?"),
+            QMessageBox::Yes | QMessageBox::No, this);
+        askBox.setDefaultButton(QMessageBox::Yes);
+        askBox.setTextFormat(Qt::RichText);
+        askBox.setInformativeText(tr("A data from the current \"%1\" iteration will be saved "
+            "and other iterations data will be lost.").arg(propertyEditor->getCurrentIteration().name));
+        if (QMessageBox::No == askBox.exec()) {
+            iterationModeAction->setChecked(true);
+            return;
+        }
+    }
+
+    if (scene->isIterated() != iterated) {
+        scene->setIterated(iterated, propertyEditor->getCurrentIteration());
+        propertyEditor->setIterated(iterated);
+        propertyEditor->resetIterations();
+        scene->setModified(true);
+    }
+}
+
 void WorkflowView::sl_configureIterations() {
     propertyEditor->commit();
     SchemaConfigurationDialog d(scene->getSchema(), scene->getIterations(), this);
@@ -997,7 +1047,7 @@ static Actor* findActorById( const Schema & sc, const ActorId & id ) {
     return ret;
 }
 
-void WorkflowView::sl_configureAliases() {
+void WorkflowView::sl_configureParameterAliases() {
     SchemaAliasesConfigurationDialogImpl dlg( scene->getSchema(), this );
     int ret = QDialog::Accepted;
     do {
@@ -1032,6 +1082,50 @@ void WorkflowView::sl_configureAliases() {
             assert(false);
         }
     } while( ret == QDialog::Accepted );
+}
+
+void WorkflowView::sl_configurePortAliases() {
+    PortAliasesConfigurationDialog dlg(scene->getSchema(), this);
+    if (QDialog::Accepted == dlg.exec()) {
+        PortAliasesCfgDlgModel model = dlg.getModel();
+
+        QList<PortAlias> portAliases;
+        foreach (Port *port, model.ports.keys()) {
+            PortAlias portAlias(port, model.ports.value(port).first, model.ports.value(port).second);
+
+            foreach (Descriptor slotDescr, model.aliases.value(port).keys()) {
+                QString actorId;
+                QString slotId;
+                {
+                    if (port->isInput()) {
+                        actorId = port->owner()->getId();
+                        slotId = slotDescr.getId();
+                    } else {
+                        QStringList tokens = slotDescr.getId().split(':');
+                        assert(2 == tokens.size());
+                        actorId = tokens[0];
+                        slotId = tokens[1];
+                    }
+                }
+
+                Port *sourcePort = NULL;
+                foreach (Port *p, scene->getActor(actorId)->getPorts()) {
+                    DataTypePtr dt = p->Port::getType();
+                    QList<Descriptor> descs = dt->getAllDescriptors();
+                    if(descs.contains(slotId)) {
+                        sourcePort = p;
+                        break;
+                    }
+                }
+                assert(NULL != sourcePort);
+
+                portAlias.addSlot(sourcePort, slotId, model.aliases.value(port).value(slotDescr));
+            }
+            portAliases.append(portAlias);
+        }
+
+        scene->setPortAliases(portAliases);
+    }
 }
 
 void WorkflowView::sl_selectProcess(Workflow::ActorPrototype* p) {
@@ -1091,6 +1185,8 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         HRSceneSerializer::string2Scene(s, NULL, &meta);
         sl_setRunMode();
         sl_updateTitle();
+        scene->setIterated(false);
+        sl_updateUi();
     } else {
         scene->clearScene();
         propertyEditor->resetIterations();
@@ -1269,6 +1365,7 @@ void WorkflowView::sl_loadScene() {
         Task* t = new LoadWorkflowSceneTask(scene, &meta, url); //FIXME unsynchronized meta usage
         TaskSignalMapper* m = new TaskSignalMapper(t);
         connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_updateTitle()));
+        connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_updateUi()));
         connect(m, SIGNAL(si_taskFinished(Task*)), scene, SLOT(centerView()));
         connect(m, SIGNAL(si_taskFinished(Task*)), propertyEditor, SLOT(resetIterations()));
         if(LoadWorkflowTask::detectFormat(IOAdapterUtils::readFileHeader(url)) == LoadWorkflowTask::XML) {
@@ -1299,10 +1396,18 @@ void WorkflowView::sl_newScene() {
     propertyEditor->resetIterations();
     scene->setModified(false);
     scene->update();
+    this->sl_updateUi();
 }
 
 void WorkflowView::sl_updateTitle() {
     setWindowTitle(tr("Workflow Designer - %1").arg(meta.name));    
+}
+
+void WorkflowView::sl_updateUi() {
+    bool iterated = scene->isIterated();
+    propertyEditor->setIterated(iterated);
+    iterationModeAction->setChecked(iterated);
+    scene->setModified(false);
 }
 
 void WorkflowView::saveState() {
@@ -1367,8 +1472,8 @@ static bool canDrop(const QMimeData* m, QList<ActorPrototype*>& lst) {
     return !lst.isEmpty();
 }
 
-WorkflowScene::WorkflowScene(WorkflowView *parent) 
-: QGraphicsScene(parent), controller(parent), modified(false), locked(false), runner(NULL), hint(0){
+WorkflowScene::WorkflowScene(WorkflowView *parent)
+: QGraphicsScene(parent), controller(parent), modified(false), locked(false), runner(NULL), hint(0), iterated(false) {
     openDocumentsAction = new QAction(tr("Open document(s)"), this);
     connect(openDocumentsAction, SIGNAL(triggered()), SLOT(sl_openDocuments()));
 }
@@ -1389,11 +1494,23 @@ Schema WorkflowScene::getSchema() const {
         {
             Link *link = (static_cast<WorkflowBusItem*>(it))->getBus();
             schema.addFlow(link);
-            graph.addBinding(link->source()->owner(), link->destination());
+            graph.addBinding(link->source(), link->destination());
         }
     }
-    schema.getIterations() = iterations;
+    if (iterated) {
+        schema.getIterations() = iterations;
+    } else {
+        assert(1 == iterations.size());
+        Iteration it = iterations.first();
+
+        foreach (Actor* a, schema.getProcesses()) {
+            if (it.cfg.contains(a->getId())) {
+                a->setParameters(it.cfg.value(a->getId()));
+            }
+        }
+    }
     schema.setActorBindingsGraph(graph);
+    schema.setPortAliases(portAliases);
 
     return schema;
 }
@@ -1459,6 +1576,19 @@ QList<Actor*> WorkflowScene::getAllProcs() const {
         }
     }
     return res;
+}
+
+Actor *WorkflowScene::getActor(ActorId id) const {
+    foreach (QGraphicsItem * item, items()) {
+        if (item->type() == WorkflowProcessItemType) {
+            Actor *a = static_cast<WorkflowProcessItem*>(item)->getProcess();
+            if (a->getId() == id) {
+                return a;
+            }
+        }
+    }
+
+    return NULL;
 }
 
 void WorkflowScene::contextMenuEvent(QGraphicsSceneContextMenuEvent * e) {
@@ -1587,6 +1717,40 @@ void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QP
     }
 }
 
+const QList<PortAlias> &WorkflowScene::getPortAliases() const {
+    return portAliases;
+}
+
+bool WorkflowScene::addPortAlias(const PortAlias &newAlias) {
+    foreach (const PortAlias &alias, portAliases) {
+        if (alias.getAlias() == newAlias.getAlias()) {
+            return false;
+        }
+        if (alias.getSourcePort() == newAlias.getSourcePort()) {
+            return false;
+        }
+    }
+
+    portAliases.append(newAlias);
+    return true;
+}
+
+void WorkflowScene::setPortAliases(const QList<PortAlias> &aliases) {
+    portAliases = aliases;
+}
+
+bool WorkflowScene::isIterated() const {
+    return iterated;
+}
+
+void WorkflowScene::setIterated(bool iterated, const Iteration &defaultIteration) {
+    this->iterated = iterated;
+    if (!iterated) {
+        iterations.clear();
+        iterations.append(defaultIteration);
+    }
+}
+
 void WorkflowScene::sl_openDocuments() {
     const QString& urlStr = qVariantValue<QString>(openDocumentsAction->data());
     const QStringList& _urls = WorkflowUtils::expandToUrls(urlStr);
@@ -1680,6 +1844,7 @@ void WorkflowScene::sl_reset() {
         delete it;
     }
     iterations.clear();
+    iterated = false;
 }
 
 void WorkflowScene::setModified(bool b) {

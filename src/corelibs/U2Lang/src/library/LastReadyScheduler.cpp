@@ -81,9 +81,7 @@ void LastReadyScheduler::cleanup() {
     }
 }
 
-WorkerState LastReadyScheduler::getWorkerState(ActorId id) {
-    Actor* a = schema->actorById(id);
-    assert(a);
+WorkerState LastReadyScheduler::getWorkerState(Actor* a) {
     BaseWorker* w = a->castPeer<BaseWorker>();
     if (lastWorker == w) {
         Task* t = lastTask;
@@ -98,6 +96,43 @@ WorkerState LastReadyScheduler::getWorkerState(ActorId id) {
         return WorkerReady;
     }
     return WorkerWaiting;
+}
+
+WorkerState LastReadyScheduler::getWorkerState(ActorId id) {
+    Actor* a = schema->actorById(id);
+    if (NULL == a) {
+        QList<Actor*> actors = schema->actorsByOwnerId(id);
+        assert(actors.size() > 0);
+
+        bool someWaiting = false;
+        bool someDone = false;
+        bool someReady = false;
+        foreach (Actor *a, actors) {
+            WorkerState state = getWorkerState(a);
+            switch (state) {
+                case WorkerRunning:
+                    return WorkerRunning;
+                case WorkerWaiting:
+                    someWaiting = true;
+                    break;
+                case WorkerDone:
+                    someDone = true;
+                    break;
+                case WorkerReady:
+                    someReady = true;
+            }
+        }
+        if (someWaiting) {
+            return WorkerWaiting;
+        } else if (someReady) {
+            return WorkerReady;
+        } else {
+            assert(someDone);
+            return WorkerDone;
+        }
+    } else {
+        return getWorkerState(a);
+    }
 }
 
 } // LocalWorkflow

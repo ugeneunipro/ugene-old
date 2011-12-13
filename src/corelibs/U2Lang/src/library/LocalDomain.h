@@ -97,6 +97,8 @@ private:
     Schema* schema;
     BaseWorker* lastWorker;
     Task* lastTask;
+
+    WorkerState getWorkerState(Actor* a);
     
 }; // SimplestSequentialScheduler
 

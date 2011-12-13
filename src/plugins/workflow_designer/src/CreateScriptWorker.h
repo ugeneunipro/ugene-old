@@ -47,6 +47,7 @@ public:
     QList<Attribute*> getAttributes() const;
     const QString getName() const;
     const QString getDescription() const;
+    const QString getActorFilePath() const;
 
 private slots:
     void sl_addInputClicked();
@@ -71,6 +72,7 @@ private:
     QString name;
     QString description;
     bool editing;
+    QString actorFilePath;
 };
 
 } //namespace

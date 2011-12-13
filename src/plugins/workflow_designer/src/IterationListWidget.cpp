@@ -329,6 +329,7 @@ bool IterationListWidget::expandList(const ActorId& id, const QString& key, cons
             }
             setList(dataList);
             emit listChanged();
+            emit iteratedChanged();
             return true;
         }
     }

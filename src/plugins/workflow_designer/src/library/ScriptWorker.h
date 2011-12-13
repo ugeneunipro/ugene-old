@@ -79,7 +79,8 @@ class ScriptWorkerFactory: public DomainFactory {
     
 public:
     ScriptWorkerFactory(QString name) : DomainFactory(name) {}
-    static bool init(QList<DataTypePtr > input, QList<DataTypePtr > output, QList<Attribute*> attrs, const QString& name,const QString &description);
+    static bool init(QList<DataTypePtr > input, QList<DataTypePtr > output, QList<Attribute*> attrs,
+        const QString& name,const QString &description, const QString &actorFilePath);
     virtual Worker* createWorker(Actor* a) {return new ScriptWorker(a);}
 
     static const QString ACTOR_ID;

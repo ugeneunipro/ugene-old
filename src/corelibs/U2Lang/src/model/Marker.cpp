@@ -146,7 +146,7 @@ Marker::Marker(const QString &markerType, const QString &markerName)
 }
 
 Marker::Marker(const Marker &m)
-: type(m.type), name(m.name), dataType(m.dataType), values(m.values)
+: QObject(), type(m.type), name(m.name), dataType(m.dataType), values(m.values)
 {
 
 }

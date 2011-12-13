@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Configure command line aliases</string>
+   <string>Configure parameter aliases</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -71,7 +71,7 @@
       </column>
       <column>
        <property name="text">
-        <string>Command line alias</string>
+        <string>Parameter alias</string>
        </property>
       </column>
       <column>

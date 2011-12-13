@@ -220,6 +220,11 @@ void WorkflowIterationRunTask::prepare() {
         return;
     }
     
+    bool res = schema->expand();
+    if (!res) {
+        stateInfo.setError(tr("Failed to preprocess the schema. Some of included files are broken"));
+        return;
+    }
     DomainFactory* df = WorkflowEnv::getDomainRegistry()->getById(schema->getDomain());
     assert( df != NULL ); // checked in constructor
     foreach(Actor* a, schema->getProcesses()) {

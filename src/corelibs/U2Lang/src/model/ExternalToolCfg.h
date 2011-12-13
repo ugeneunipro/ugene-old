@@ -39,6 +39,7 @@ public:
     QString name;
     QString description;
     QString templateDescription;
+    QString filePath;
 };
 
 

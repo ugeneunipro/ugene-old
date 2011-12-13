@@ -87,7 +87,7 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
         attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
         attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, SPLIT);
         attrs << new Attribute(gd, BaseTypes::NUM_TYPE(), false, 10);
-        attrs << new Attribute(acd, BaseTypes::STRING_TYPE(), false);
+        attrs << new Attribute(acd, BaseTypes::STRING_TYPE(), false, QString());
     }
 
     QMap<QString, PropertyDelegate*> delegates;

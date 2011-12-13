@@ -90,7 +90,10 @@ public:
     virtual void setAttributeValue(const QVariant & newVal);
     // attribute value is kept in qvariant
     // but it can be transformed to value of specific type using scripting or not (see getAttributeValue)
-    virtual const QVariant & getAttributePureValue() const;
+    virtual const QVariant &getAttributePureValue() const;
+    virtual const QVariant &getDefaultPureValue() const;
+    virtual bool isDefaultValue() const;
+
     
     // base realization without scripting. to support scripting for other types: see template realizations
     template<typename T> T getAttributeValue() const {
@@ -132,8 +135,9 @@ protected:
     // values of required attributes cannot be empty
     // used in configuration validations
     const bool          required;
-    // pure value. if script exists, value should be processed throw it
+    // pure value and default pure value. if script exists, value should be processed throw it
     QVariant            value;
+    QVariant            defaultValue;
     // script text and variable values for script evaluating
     // script variables get values only in runtime
     AttributeScript     scriptData;

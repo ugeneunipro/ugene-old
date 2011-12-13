@@ -48,6 +48,7 @@ signals:
     void iterationListAboutToChange();
     void selectionChanged();
     void listChanged();
+    void iteratedChanged();
     
 private slots:
     void sl_addIteration();

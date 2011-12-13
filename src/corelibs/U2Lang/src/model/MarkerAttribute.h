@@ -32,6 +32,7 @@ public:
     MarkerAttribute(const Descriptor& d, const DataTypePtr type, bool required = false, const QVariant & defaultValue = QVariant());
     virtual void setAttributeValue(const QVariant & newVal);
     virtual const QVariant &getAttributePureValue() const;
+    virtual bool isDefaultValue() const;
     virtual Attribute *clone();
     virtual AttributeGroup getGroup();
 

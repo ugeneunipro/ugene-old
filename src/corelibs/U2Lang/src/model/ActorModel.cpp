@@ -28,7 +28,7 @@ namespace Workflow {
 /**************************
  * Actor
  **************************/
-Actor::Actor(ActorPrototype* proto, AttributeScript * _script) : proto(proto), doc(NULL), script(_script) {
+Actor::Actor(ActorPrototype* proto, AttributeScript * _script) : proto(proto), doc(NULL), script(_script), owner(NULL) {
     if(script == NULL) {
         if(proto->isScriptFlagSet()) {
             script = new AttributeScript();
@@ -102,6 +102,14 @@ AttributeScript * Actor::getScript() const {
 
 void Actor::setScript(AttributeScript* _script) {
     script->setScriptText(_script->getScriptText());
+}
+
+ActorId Actor::getOwner() const {
+    return owner;
+}
+
+void Actor::setOwner(const ActorId &owner) {
+    this->owner = owner;
 }
 
 ActorPrototype * Actor::getProto() const {
@@ -300,10 +308,21 @@ void ActorPrototype::setScriptFlag(bool flag) {
     isScript = flag;
 }
 
+void ActorPrototype::setNonStandard(const QString &path) {
+    isStandard = false;
+    actorFilePath = path;
+}
+
+void ActorPrototype::setSchema(const QString &path) {
+    isStandard = false;
+    isSchema = true;
+    actorFilePath = path;
+}
+
 ActorPrototype::ActorPrototype(const Descriptor& d, 
                                const QList<PortDescriptor*>& ports, 
                                const QList<Attribute*>& attrs)
-                  : VisualDescriptor(d), attrs(attrs), ports(ports), ed(NULL), val(NULL), prompter(NULL), isScript(false) {
+: VisualDescriptor(d), attrs(attrs), ports(ports), ed(NULL), val(NULL), prompter(NULL), isScript(false), isStandard(true), isSchema(false) {
 }
 
 ActorPrototype::~ActorPrototype()

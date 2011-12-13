@@ -32,7 +32,8 @@ namespace U2 {
  *  Attribute
  *************************************/
 Attribute::Attribute(const Descriptor& d, const DataTypePtr t, bool req, const QVariant & defaultValue )
-: Descriptor(d), type(t), required(req), value(defaultValue) {
+: Descriptor(d), type(t), required(req), defaultValue(defaultValue) {
+    value = defaultValue;
     debugCheckAttributeId();
 }
 
@@ -53,11 +54,23 @@ bool Attribute::isRequiredAttribute() const {
 }
 
 void Attribute::setAttributeValue(const QVariant & newVal) {
-    value = newVal;
+    if (QVariant() == newVal) {
+        value = defaultValue;
+    } else {
+        value = newVal;
+    }
 }
 
-const QVariant & Attribute::getAttributePureValue() const {
+const QVariant &Attribute::getAttributePureValue() const {
     return value;
+}
+
+const QVariant &Attribute::getDefaultPureValue() const {
+    return defaultValue;
+}
+
+bool Attribute::isDefaultValue() const {
+    return (value == defaultValue);
 }
 
 const AttributeScript & Attribute::getAttributeScript() const {
