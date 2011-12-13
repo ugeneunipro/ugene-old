@@ -12,6 +12,11 @@ HEADERS += src/AppSettingsGUI.h \
            src/ProjectParsing.h \
            src/ProjectView.h \
            src/UnloadDocumentTask.h \
+           src/options_panel/GroupHeaderImageWidget.h \
+           src/options_panel/GroupOptionsWidget.h \
+           src/options_panel/OptionsPanel.h \
+           src/options_panel/OptionsPanelGroup.h \
+           src/options_panel/OptionsPanelWidget.h \
            src/util/AddNewDocumentDialogController.h \
            src/util/AddNewDocumentDialogImpl.h \
            src/util/AnnotationSettingsDialogController.h \
@@ -78,6 +83,11 @@ SOURCES += src/MainWindow.cpp \
            src/OpenViewTask.cpp \
            src/ProjectParsing.cpp \
            src/UnloadDocumentTask.cpp \
+           src/options_panel/GroupOptionsWidget.cpp \
+           src/options_panel/GroupHeaderImageWidget.cpp \
+           src/options_panel/OptionsPanel.cpp \
+           src/options_panel/OptionsPanelGroup.cpp \
+           src/options_panel/OptionsPanelWidget.cpp \
            src/util/AddNewDocumentDialogImpl.cpp \
            src/util/AnnotationSettingsDialogImpl.cpp \
            src/util/AuthenticationDialog.cpp \

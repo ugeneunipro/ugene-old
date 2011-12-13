@@ -61,6 +61,7 @@
 
 #include <U2View/FindDialog.h>//BUG:423: move to plugins!?
 #include <U2View/SecStructPredictUtils.h>
+#include <U2View/SequenceInfo.h>
 
 #include <U2Gui/AnnotationSettingsDialogController.h>
 #include <U2Gui/GUIUtils.h>
@@ -69,6 +70,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/EditSequenceDialogController.h>
 #include <U2Gui/RemovePartFromSequenceDialogController.h>
+#include <U2Gui/OptionsPanel.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollArea>
@@ -160,7 +162,9 @@ QWidget* AnnotatedDNAView::createWidget() {
     scrollArea = new QScrollArea();
     scrollArea->setObjectName("annotated_DNA_scrollarea");
     scrollArea->setWidgetResizable(true);
+
     mainSplitter->addWidget(scrollArea);
+    mainSplitter->setHandleWidth(1); // make smaller the distance between the Annotations Editor and the  sequence sub-views
     mainSplitter->setCollapsible(mainSplitter->indexOf(scrollArea), false);
     mainSplitter->setStretchFactor(mainSplitter->count()-1, 5);
     
@@ -179,7 +183,6 @@ QWidget* AnnotatedDNAView::createWidget() {
         addSequenceWidget(block);
     }
 
-    
     mainSplitter->addWidget(annotationsView);
     mainSplitter->setCollapsible(mainSplitter->indexOf(annotationsView), false);
     mainSplitter->setStretchFactor(mainSplitter->count()-1, 1);
@@ -206,7 +209,51 @@ QWidget* AnnotatedDNAView::createWidget() {
 
     mainSplitter->setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::SEQUENCE).icon);
 
+    optionsPanel = new OptionsPanel(this);
+    optionsPanel->addGroup(QPixmap(":core/images/info.png"), "Information", new SequenceInfo(this));
+
+    /** BEGIN: For Test Purposes*/
+    optionsPanel->addGroup(QPixmap(":core/images/graphs.png"), "Title2", new QLabel(
+        "Test\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"));
+    optionsPanel->addGroup(QPixmap(":core/images/find_dialog.png"), "Title3", new QLabel("Test"));
+    optionsPanel->addGroup(QPixmap(":core/images/chart_bar.png"), "Title4", new QLabel("Test"));
+    optionsPanel->addGroup(QPixmap(":core/images/color_wheel.png"), "Title5", new QLabel(
+        "Test\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"
+        "The quick brown fox jumps over.\n"));
+    /** END: For Test Purposes */
+
     return mainSplitter;
+}
+
+OptionsPanel* AnnotatedDNAView::getOptionsPanel()
+{
+    return optionsPanel;
 }
 
 void AnnotatedDNAView::sl_splitterMoved(int, int) {
@@ -1055,6 +1102,8 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged() {
                 }
             }
         }
+
+        emit si_sequenceModified(seqCtx);
     }
 }
 

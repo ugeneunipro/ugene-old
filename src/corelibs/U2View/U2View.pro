@@ -84,6 +84,7 @@ HEADERS += src/WebWindow.h \
            src/ov_sequence/Overview.h \
            src/ov_sequence/PanView.h \
            src/ov_sequence/PanViewRows.h \
+           src/ov_sequence/SequenceInfo.h \
            src/ov_sequence/WindowStepSelectorWidget.h \
            src/ov_text/SimpleTextObjectView.h \
            src/ov_text/SimpleTextObjectViewTasks.h \
@@ -202,6 +203,7 @@ SOURCES += src/WebWindow.cpp \
            src/ov_sequence/Overview.cpp \
            src/ov_sequence/PanView.cpp \
            src/ov_sequence/PanViewRows.cpp \
+           src/ov_sequence/SequenceInfo.cpp \
            src/ov_sequence/WindowStepSelectorWidget.cpp \
            src/ov_text/SimpleTextObjectView.cpp \
            src/ov_text/SimpleTextObjectViewTasks.cpp \

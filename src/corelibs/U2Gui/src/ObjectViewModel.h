@@ -121,6 +121,7 @@ protected:
 };
 
 class GObjectViewCloseInterface;
+class OptionsPanel;
 
 class U2GUI_EXPORT GObjectView : public QObject {
     Q_OBJECT
@@ -133,7 +134,10 @@ public:
     
     void setName(const QString& name);
 
-    QWidget* getWidget();
+    QWidget*        getWidget();
+
+    /** Returns the options panel object, or 0 if it is not defined */
+    virtual OptionsPanel*   getOptionsPanel();
 
     const QList<GObject*>& getObjects() const {return objects;}
 
@@ -198,13 +202,13 @@ protected slots:
 protected:
     GObjectViewFactoryId                factoryId;
     QString                             viewName;
-    QWidget*			                widget;
-    QList<GObject*>		                objects;
-    QList<GObject*>		                requiredObjects;
+    QWidget*                            widget;
+    QList<GObject*>                     objects;
+    QList<GObject*>                     requiredObjects;
     GObjectViewCloseInterface*          closeInterface;
-    bool				                closing;
+    bool                                closing;
     QList<GObjectViewObjectHandler*>    objectHandlers;
-
+    OptionsPanel*                       optionsPanel;
 };
 
 class U2GUI_EXPORT GObjectViewCloseInterface {
@@ -251,8 +255,8 @@ private:
     void updateDocumentConnections(Document* o, bool added);
 
 protected:
-    GObjectView*		view;
-    bool				persistent;
+    GObjectView*        view;
+    bool                persistent;
 };
 
 //////////////////////////////////////////////////////////////////////////

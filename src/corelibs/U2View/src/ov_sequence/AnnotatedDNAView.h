@@ -56,6 +56,7 @@ class ADVObjectHandler;
 class ADVGlobalAction;
 class AutoAnnotationObject;
 class AutoAnnotationsUpdater;
+class OptionsPanel;
 
 class U2VIEW_EXPORT AnnotatedDNAView : public GObjectView {
     Q_OBJECT
@@ -70,9 +71,9 @@ public:
     virtual Task* updateViewTask(const QString& stateName, const QVariantMap& stateData);
 
     virtual QVariantMap saveState();
-    
-    
-    
+
+    virtual OptionsPanel* getOptionsPanel();
+
     // view content
     const QList<ADVSequenceObjectContext*>& getSequenceContexts() const {return seqContexts;}
 
@@ -149,7 +150,7 @@ protected:
     virtual bool isChildWidgetObject(GObject* o) const;
     virtual void addAnalyseMenu(QMenu* m);
     virtual void addAddMenu(QMenu* m);
-	virtual void addExportMenu(QMenu* m);
+    virtual void addExportMenu(QMenu* m);
     virtual void addAlignMenu(QMenu* m);
     virtual void addRemoveMenu(QMenu* m);
     virtual void addEditMenu(QMenu* m);
@@ -166,7 +167,10 @@ signals:
     void si_sequenceWidgetRemoved(ADVSequenceWidget* w);
 
     void si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
-   
+
+    /** Emitted when a part was added to a sequence, or it was removed or replaced */
+    void si_sequenceModified(ADVSequenceObjectContext*);
+
 private slots:
     void sl_onContextMenuRequested(const QPoint & pos);
     void sl_onFindDialog();
@@ -210,7 +214,7 @@ private:
     QAction*            addSequencePart;
     QAction*            removeSequencePart;
     QAction*            replaceSequencePart;
-    QAction*            removeSequenceObjectAction;         
+    QAction*            removeSequenceObjectAction;
     QAction*            reverseSequenceAction;
     
     PositionSelector*   posSelector;

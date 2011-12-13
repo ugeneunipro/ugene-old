@@ -29,6 +29,8 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/OptionsPanel.h>
+
 #include <QtCore/QFileInfo>
 #include <QtGui/QVBoxLayout>
 
@@ -79,6 +81,7 @@ GObjectView::GObjectView(GObjectViewFactoryId _factoryId, const QString& _viewNa
     factoryId = _factoryId;
     viewName = _viewName;
     widget = NULL;
+    optionsPanel = NULL;
     closeInterface = NULL;
     closing = false;
 
@@ -213,6 +216,10 @@ QWidget* GObjectView::getWidget()  {
     return widget;
 }
 
+OptionsPanel* GObjectView::getOptionsPanel() {
+    return 0;
+}
+
 void GObjectView::setClosingInterface(GObjectViewCloseInterface* i) {
     closeInterface = i;
 }
@@ -261,12 +268,34 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
     v->setParent(this);
     v->setClosingInterface(this);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
+    // Initialize the layout of the whole windows
+    QHBoxLayout *windowLayout = new QHBoxLayout();
+    windowLayout->setContentsMargins(0, 0, 0, 0);
+    windowLayout->setSpacing(0);
+
+    // Get the GObject widget and options panel
     QWidget* viewWidget = v->getWidget();
-    viewWidget->setParent(this);
-    layout->addWidget(viewWidget);
-    setLayout(layout);
+    SAFE_POINT((viewWidget != 0), "Internal error: not initialized GObjectView widget.",);
+
+    OptionsPanel* optionsPanel = v->getOptionsPanel();
+
+    // Initialize the layout of the object part only
+    QVBoxLayout *objectLayout = new QVBoxLayout();
+    objectLayout->setContentsMargins(0, 0, 0, 0);
+    objectLayout->setSpacing(0);
+
+    // Add the widget to the layout and "parent" it
+    objectLayout->addWidget(viewWidget);
+    
+    // Set the layout of the whole window
+    windowLayout->addLayout(objectLayout);
+    if (optionsPanel != NULL)
+    {
+        windowLayout->addWidget(optionsPanel->getMainWidget());
+    }
+    setLayout(windowLayout);
+
+    // Set the icon
     setWindowIcon(viewWidget->windowIcon());
 }
 
