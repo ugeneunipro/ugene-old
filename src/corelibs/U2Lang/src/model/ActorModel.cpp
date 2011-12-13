@@ -28,7 +28,7 @@ namespace Workflow {
 /**************************
  * Actor
  **************************/
-Actor::Actor(ActorPrototype* proto, AttributeScript * _script) : proto(proto), doc(NULL), script(_script), owner(NULL) {
+Actor::Actor(ActorPrototype* proto, AttributeScript * _script) : proto(proto), doc(NULL), script(_script), owner(ActorId()) {
     if(script == NULL) {
         if(proto->isScriptFlagSet()) {
             script = new AttributeScript();
